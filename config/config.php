@@ -8,4 +8,8 @@ return [
 	'pass' => '', // gogogo
 	
 	// JWT
-	'jwt_secret_key' =>''];
+	'jwt_secret_key' =>'',
+	// hours
+	'token_expiration_time' => 24
+	
+	];
