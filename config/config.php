@@ -9,7 +9,7 @@ return [
 	
 	// JWT
 	'jwt_secret_key' =>'',
-	'token_expiration_time' => 24, // hours
+	'token_expiration_time' => 60, // minutes
 	'encryption' => 'HS256'
 	
 	];
