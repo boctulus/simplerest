@@ -28,7 +28,8 @@ class UsersModel extends Model
 		'password' => '',
 		'firstname' => 'STR',
 		'lastname'=> 'STR',
-		'enabled' => 'INT'
+		'enabled' => 'INT',
+		'quota' => 'INT'
 	];
 
 	/*
