@@ -14,15 +14,13 @@ return [
 		], 
 
 		'debug_mode' => true,
-
-		'API' => [
-			'version'=> '1'
-		],	
 		
 		// JWT
 		'jwt_secret_key' =>'',
-		'token_expiration_time' => 5, // minutes, i.e 5
-		'extended_token_expiration_time' => 3, // minutes, i.e 3
+		'token_expiration_time' => 300,
 		'encryption' => 'HS256',
-		'enabled_auth' => true
+		'enabled_auth' => true,
+
+		// Refresh token
+		'refresh_secret_key' => ''
 	];
