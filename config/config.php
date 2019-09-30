@@ -3,27 +3,32 @@
 require_once 'constants.php';
 
 return [
-		'BASE_URL' => '/',   
-		'DEFAULT_CONTROLLER' => 'ProductsController',
+	'BASE_URL' => '/',   
+	'DEFAULT_CONTROLLER' => 'ProductsController',
 
-		'database' => [
-			'host' => 'localhost',
-			'db_name' => 'api_sb', 
-			'user' => 'boctulus', 
-			'pass' => 'gogogo2k'
-		], 
+	'database' => [
+		'host' => 'localhost',
+		'db_name' => 'api_sb', 
+		'user' => 'boctulus', 
+		'pass' => 'gogogo2k'
+	], 
 
-		'debug_mode' => true,
+	'debug_mode'   => true,
+	
+	'enabled_auth' => true,
+
+	'access_token' => [
+		'secret_key' =>'',
+		'expiration_time' => 60,
+		'encryption' => 'HS256'			
+	],
+
+	'refresh_token' => [
+		'secret_key' => ''
+	],
+
+	'session' => [
+		'secret_key' => ''
+	]
 		
-		// JWT
-		'jwt_secret_key' =>'',
-		'token_expiration_time' => 600,
-		'encryption' => 'HS256',
-		'enabled_auth' => true,
-
-		// Refresh token
-		'refresh_secret_key' => '',
-
-		// session
-		'session_secret_key' => ''
-	];
+];
