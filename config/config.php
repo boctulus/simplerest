@@ -17,7 +17,7 @@ return [
 		
 		// JWT
 		'jwt_secret_key' =>'',
-		'token_expiration_time' => 60,
+		'token_expiration_time' => 600,
 		'encryption' => 'HS256',
 		'enabled_auth' => true,
 
