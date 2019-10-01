@@ -19,7 +19,7 @@ return [
 
 	'access_token' => [
 		'secret_key' =>'',
-		'expiration_time' => 6000,
+		'expiration_time' => 60,
 		'encryption' => 'HS256'			
 	],
 
