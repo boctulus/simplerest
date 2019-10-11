@@ -29,6 +29,9 @@ return [
 
 	'session' => [
 		'secret_key' => ''
-	]
+	],
+
+	// podría haber otro límite que dependa del rol del usuario o algo en su registro
+	'max_records' => 50
 		
 ];
