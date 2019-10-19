@@ -19,16 +19,14 @@ return [
 
 	'access_token' => [
 		'secret_key' =>'',
-		'expiration_time' => 600000,   // seconds
+		'expiration_time' => 60,   // seconds
 		'encryption' => 'HS256'			
 	],
 
 	'refresh_token' => [
-		'secret_key' => ''
-	],
-
-	'session' => [
-		'secret_key' => ''
+		'secret_key' => '',
+		'expiration_time' => 315360000,   // seconds
+		'encryption' => 'HS256'	
 	],
 
 	// podría haber otro límite que dependa del rol del usuario o algo en su registro
