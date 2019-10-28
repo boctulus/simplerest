@@ -30,6 +30,13 @@ return [
 	],
 
 	// podría haber otro límite que dependa del rol del usuario o algo en su registro
-	'max_records' => 50
+	'max_records' => 50,
+
+	// seconds
+	'email' => [
+		'secret_key' => '',
+		'expires_in' => 7 * 24 * 3600,
+		'encryption' => 'HS256'	
+	]
 		
 ];
