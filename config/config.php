@@ -41,7 +41,18 @@ return [
 	'email' => [
 		'secret_key' => '',
 		'expires_in' => 7 * 24 * 3600,
-		'encryption' => 'HS256'	
+		'encryption' => 'HS256',
+		'mailer' => [
+			'host' => 'smtp.easyname.com',
+			'username' => '162997mail6',
+			'password' => '',
+			'port' => 465,
+			'secure' => 'ssl',
+			'dkim_domain' => '127.0.0.1',
+			'SMTPDebug' => 0,
+			'CharSet' => 'UTF-8',
+			'Debugoutput' => 'html'
+		]
 	],
 
 	'pretty' => true,	
