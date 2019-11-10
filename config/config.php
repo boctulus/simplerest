@@ -34,7 +34,8 @@ return [
 		'encryption' => 'HS256'	
 	],
 
-	// 'registered' or other role
+	// aditional role to 'registered' after being registered
+	// leave empty for none
 	'registration_role' => 'regular',
 
 	// seconds
@@ -42,16 +43,20 @@ return [
 		'secret_key' => '',
 		'expires_in' => 7 * 24 * 3600,
 		'encryption' => 'HS256',
-		'mailer' => [
-			'host' => 'smtp.easyname.com',
-			'username' => '162997mail6',
-			'password' => '',
-			'port' => 465,
-			'secure' => 'ssl',
-			'dkim_domain' => '127.0.0.1',
-			'SMTPDebug' => 0,
-			'CharSet' => 'UTF-8',
-			'Debugoutput' => 'html'
+		'mailer' =>  [	
+			'from'	 => ['no_responder@simplerest.mapapulque.ro', 'No responder'],	
+			'object' => [
+				'Host' => 'smtp.easyname.com',
+				'Username' => '162997mail6',
+				'Password' => '',
+				'Port' => 587,
+	            'SMTPAuth' => true,
+				'SMTPSecure' => 'ssl',
+				'SMTPDebug' => 4,
+				'CharSet' => 'UTF-8',
+				'Debugoutput' => 'html',
+				'SMTPSecure' => false
+			]
 		]
 	],
 
