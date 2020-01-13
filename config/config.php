@@ -21,8 +21,6 @@ return [
 	], 
 
 	'debug_mode'   => true,
-	
-	'enabled_auth' => true,
 
 	'access_token' => [
 		'secret_key' =>'',
