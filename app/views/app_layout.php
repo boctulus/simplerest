@@ -3,8 +3,13 @@
 <?php
     use simplerest\libs\Url;
     use simplerest\libs\Factory;
+    use simplerest\libs\Strings;
 
-    $base_url = Url::getBaseUrl(Url::currentUrl()) . Factory::config()['BASE_URL'] . '/';
+    $base_url = Url::getBaseUrl(Url::currentUrl()) . Factory::config()['BASE_URL'];
+    
+    if (!Strings::endsWith('/', $base_url)){
+        $base_url .= "/";
+    }
 ?>    
 <head>
     <meta charset="utf-8">
