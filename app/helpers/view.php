@@ -18,7 +18,7 @@ function assets($resource){
 
     $config = Factory::config();
       
-    $public =  $config['BASE_URL'] . 'public';
+    $public =  $config['BASE_URL'] . '/public';
     return http_protocol() . '://' . $_SERVER['HTTP_HOST']. $public. '/assets/'.$resource;
 }
 
