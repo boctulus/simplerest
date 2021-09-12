@@ -20,6 +20,8 @@ class InstallController extends ConsoleController
             Estoy seguro no hay un ; más que para indicar terminación de sentencias
         */
         $sentences = explode(';', $file);
+
+        Model::query('SET foreign_key_checks = 0');
         
         foreach ($sentences as $sentence){
             $sentence = trim($sentence);
@@ -36,6 +38,8 @@ class InstallController extends ConsoleController
                 dd($e, 'Sql Exception');
             }
         }
+
+        Model::query('SET foreign_key_checks = 1');
     }
 
 }

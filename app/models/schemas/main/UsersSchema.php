@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\models\schemas;
+namespace simplerest\models\schemas\main;
 
 use simplerest\core\interfaces\ISchema;
 
@@ -40,36 +40,14 @@ class UsersSchema implements ISchema
 			],
 
 			'relationships' => [
-				'books' => [
-					['books.editor_id','users.id'],
-					['books.author_id','users.id']
-				],
-				'user_tb_permissions' => [
-					['user_tb_permissions.user_id','users.id']
-				],
-				'facturas4' => [
-					['facturas4.user_id','users.id']
-				],
-				'user_roles' => [
-					['user_roles.user_id','users.id']
-				],
-				'facturas' => [
-					['facturas.user_id','users.id']
+				'collections' => [
+					['collections.belongs_to','users.id']
 				],
 				'folder_permissions' => [
 					['folder_permissions.belongs_to','users.id']
 				],
-				'collections' => [
-					['collections.belongs_to','users.id']
-				],
-				'boletas' => [
-					['boletas.user_id','users.id']
-				],
 				'files' => [
 					['files.belongs_to','users.id']
-				],
-				'api_keys' => [
-					['api_keys.user_id','users.id']
 				],
 				'user_sp_permissions' => [
 					['user_sp_permissions.user_id','users.id']
@@ -77,11 +55,17 @@ class UsersSchema implements ISchema
 				'folder_other_permissions' => [
 					['folder_other_permissions.belongs_to','users.id']
 				],
-				'products' => [
-					['products.belongs_to','users.id']
+				'api_keys' => [
+					['api_keys.user_id','users.id']
 				],
 				'folders' => [
 					['folders.belongs_to','users.id']
+				],
+				'user_roles' => [
+					['user_roles.user_id','users.id']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','users.id']
 				]
 			]
 		];

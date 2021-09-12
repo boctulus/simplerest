@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\UserRolesSchema;
+use simplerest\models\schemas\main\UserRolesSchema;
 
 class UserRolesModel extends Model
  { 

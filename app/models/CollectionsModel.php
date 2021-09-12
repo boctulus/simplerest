@@ -4,13 +4,10 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\CollectionsSchema;
+use simplerest\models\schemas\main\CollectionsSchema;
 
 class CollectionsModel extends Model
- { 
-	### TRAITS
-	### PROPERTIES
-
+{ 
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
