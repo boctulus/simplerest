@@ -1,8 +1,0 @@
-{
-  "name": "byjg/jwt-wrapper-example",
-  "description": "Just an example of JWT Wrapper",
-  "license": "MIT",
-  "require": {
-    "byjg/jwt-wrapper": "2.0.*"
-  }
-}
