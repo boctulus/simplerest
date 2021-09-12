@@ -1,0 +1,15 @@
+INSTALACIÓN
+===========
+
+1) Parado en el root del proyecto:
+
+composer install
+php com install
+
+2) Configure de mínima:
+
+config/config.php
+.env
+config/acl.php
+
+

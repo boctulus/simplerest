@@ -4,9 +4,9 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\DB;
-use simplerest\models\schemas\WebhooksSchema;
 use simplerest\libs\Factory;
 use simplerest\libs\Validator;
+use simplerest\models\schemas\main\WebhooksSchema;
 
 class WebhooksModel extends Model
 { 

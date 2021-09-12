@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\UserSpPermissionsSchema;
+use simplerest\models\schemas\main\UserSpPermissionsSchema;
 
 class UserSpPermissionsModel extends Model
  { 
