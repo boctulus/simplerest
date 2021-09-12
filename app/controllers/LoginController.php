@@ -149,10 +149,9 @@ class LoginController extends MyController
 	function change_pass_by_link($jwt, $exp)
 	{
 		// Es menos costoso veririficar así en principio
-		if ((int) $exp < time())
+		if ((int) $exp < time()){
 			$error = 'Link is outdated';
-		else{
-
+		}else{
 			if($jwt != null)
 			{
 				try {
@@ -184,14 +183,14 @@ class LoginController extends MyController
 			}     
 		}	
 
-		$email = DB::table('users')->where(['id' => $payload->uid])->value('email');
-		//Debug::dd($email);
-
+		
 		if (!isset($error)){						
 			//
 			// Cargar vista 
 			// donde poder setear una nueva contraseña
 			//
+
+			$email = DB::table('users')->where(['id' => $payload->uid])->value('email');
 
 			$this->view('update_pass.php', [
 				'title'=>'Recuperación de contraseña', 

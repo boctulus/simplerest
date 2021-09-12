@@ -199,6 +199,29 @@ CREATE TABLE `user_tb_permissions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_spanish_ci;
 
 --
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `email_notifications` (
+  `id` int(11) NOT NULL,
+  `from_addr` varchar(320) DEFAULT NULL,
+  `from_name` varchar(80) DEFAULT NULL,
+  `to_addr` varchar(320) NOT NULL,
+  `to_name` varchar(80) DEFAULT NULL,
+  `cc_addr` varchar(320) DEFAULT NULL,
+  `cc_name` varchar(80) DEFAULT NULL,
+  `bcc_addr` varchar(320) DEFAULT NULL,
+  `bcc_name` varchar(80) DEFAULT NULL,
+  `replyto_addr` varchar(320) DEFAULT NULL,
+  `subject` varchar(80) NOT NULL,
+  `body` text,
+  `sent_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
 -- Table structure for table `webhooks`
 --
 
@@ -217,6 +240,13 @@ CREATE TABLE `webhooks` (
   `deleted_at` datetime DEFAULT NULL,
   `deleted_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16;
+
+
+--
+-- Indexes for table `email_notifications`
+--
+ALTER TABLE `email_notifications`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `api_keys`
@@ -330,73 +360,80 @@ ALTER TABLE `webhooks`
 -- AUTO_INCREMENT for table `collections`
 --
 ALTER TABLE `collections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=226;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `folders`
 --
 ALTER TABLE `folders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `folder_other_permissions`
 --
 ALTER TABLE `folder_other_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `folder_permissions`
 --
 ALTER TABLE `folder_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=503;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sp_permissions`
 --
 ALTER TABLE `sp_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=513;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_roles`
 --
 ALTER TABLE `user_roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=238;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_sp_permissions`
 --
 ALTER TABLE `user_sp_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_tb_permissions`
 --
 ALTER TABLE `user_tb_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `webhooks`
 --
 ALTER TABLE `webhooks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+--
+-- AUTO_INCREMENT for table `email_notifications`
+--
+ALTER TABLE `email_notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

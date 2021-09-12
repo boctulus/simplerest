@@ -88,7 +88,7 @@ function login(){
 
 	$.ajax({
 		type: "POST",
-		url: base_url + 'api/v1/auth/login',
+		url: base_url + '/api/v1/auth/login',
 		data: JSON.stringify(obj),
 		dataType: 'json',
 		success: function(res){
@@ -212,7 +212,7 @@ function update_pass()
 
 	$.ajax({
 		type : "POST",
-		url: base_url + "/api/v1/auth/change_pass",
+		url: base_url + "/api/v1/auth/change_pass_process",
 		headers: {"Authorization": 'Bearer ' + token},
 		data : JSON.stringify(obj),
 		dataType: 'json',
