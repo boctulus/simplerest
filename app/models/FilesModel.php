@@ -5,11 +5,11 @@ namespace simplerest\models;
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\FilesSchema;
+use simplerest\traits\Uuids;
 
 class FilesModel extends Model
  { 
-	### TRAITS
-	### PROPERTIES
+	use Uuids;
 
 	protected $hidden   = [];
 	protected $not_fillable = ['filename_as_stored']; 

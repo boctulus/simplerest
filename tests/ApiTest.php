@@ -2,20 +2,18 @@
 
 namespace simplerest\tests;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once __DIR__ . '../../vendor/autoload.php';
+require_once __DIR__ . '../../public/app.php';
 
 use PHPUnit\Framework\TestCase;
-use simplerest\models\UsersModel;
 use simplerest\libs\DB;
 use simplerest\libs\Factory;
 use simplerest\libs\Debug;
 
-define('HOST', 'simplerest.lan');
-define('BASE_URL', 'http://'. HOST .'/');
+$config = include __DIR__ . '../../config/config.php';
+
+define('HOST', $config['APP_URL']);
+define('BASE_URL', HOST .'/');
 
 // API UNIT TEST
 class ApiTest extends TestCase
@@ -284,10 +282,10 @@ class ApiTest extends TestCase
         );
 
         $item = DB::table('products')->where(['id', $id])->assoc()->first();
-        //Debug::dd(DB::getQueryLog());
+        //dd(DB::getQueryLog());
 
-        //Debug::dd($item);
-        //Debug::dd($res['data']);
+        //dd($item);
+        //dd($res['data']);
 
         $this->assertEquals($item, $res['data']); 
     }
@@ -615,10 +613,10 @@ class ApiTest extends TestCase
         ->where(['belongs_to' => $this->uid, $field => $vals[0]])->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
         if ($model_arr != $res['data']){
-            Debug::dd(DB::getQueryLog());
-            Debug::dd($model_arr, 'MODELO:');
-            Debug::dd(BASE_URL . "api/v1/products?{$field}[eq]=". urlencode($vals[0]));
-            Debug::dd($res['data'], 'API response:');
+            dd(DB::getLog());
+            dd($model_arr, 'MODELO:');
+            dd(BASE_URL . "api/v1/products?{$field}[eq]=". urlencode($vals[0]));
+            dd($res['data'], 'API response:');
         }
 
         $this->assertEquals($model_arr,$res['data']);
@@ -633,7 +631,7 @@ class ApiTest extends TestCase
         ->where(['belongs_to', $this->uid])
         ->select($fields)->first();
 
-        //Debug::dd($values);
+        //dd($values);
 
         $fv = [];
         $w  = [];
@@ -650,7 +648,7 @@ class ApiTest extends TestCase
         }
         
         $url_params = implode('&', $fv);
-        //Debug::dd($url_params);
+        //dd($url_params);
 
         $ch = curl_init();
 
@@ -698,7 +696,7 @@ class ApiTest extends TestCase
         ->where(['belongs_to', $this->uid])
         ->where($w)->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        //Debug::dd(DB::getQueryLog()); 
+        //dd(DB::getQueryLog()); 
 
         $this->assertEquals($model_arr,$res['data']); 
     }
@@ -709,7 +707,7 @@ class ApiTest extends TestCase
         $values = $this->get_rand_vals('products', $field, 2, $this->uid);
 
         $values_str = implode(',', array_map('urlencode',$values));
-        //Debug::dd("api/v1/products?{$field}[in]=$values_str");
+        //dd("api/v1/products?{$field}[in]=$values_str");
 
         $ch = curl_init();
 
@@ -768,7 +766,7 @@ class ApiTest extends TestCase
         $values = $this->get_rand_vals('products', $field, 2, $this->uid);
 
         $values_str = implode(',', array_map('urlencode',$values));
-        //Debug::dd("api/v1/products?$field=$values_str");
+        //dd("api/v1/products?$field=$values_str");
 
         $ch = curl_init();
 
@@ -827,7 +825,7 @@ class ApiTest extends TestCase
         $values = $this->get_rand_vals('products', $field, 2, $this->uid);
 
         $values_str = implode(',', array_map('urlencode',$values));
-        //Debug::dd("api/v1/products?{$field}[in]=$values_str");
+        //dd("api/v1/products?{$field}[in]=$values_str");
 
         $ch = curl_init();
 
@@ -1017,13 +1015,13 @@ class ApiTest extends TestCase
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $res = json_decode($response, true);
 
-        //Debug::dd($res, 'Response:');
+        //dd($res, 'Response:');
 
         if (curl_errno($ch)) {
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1075,13 +1073,13 @@ class ApiTest extends TestCase
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $res = json_decode($response, true);
 
-        //Debug::dd($res, 'Response:');
+        //dd($res, 'Response:');
 
         if (curl_errno($ch)) {
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1137,7 +1135,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1193,7 +1191,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1253,7 +1251,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1309,7 +1307,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1365,7 +1363,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1421,7 +1419,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1477,7 +1475,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1533,7 +1531,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1590,7 +1588,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1662,7 +1660,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1736,7 +1734,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1794,7 +1792,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1807,7 +1805,7 @@ class ApiTest extends TestCase
         ])
         ->assoc()->hide([$field])->first();
 
-        //Debug::dd(DB::getQueryLog()); 
+        //dd(DB::getQueryLog()); 
 
         $this->assertEquals($model_arr,$res['data']); 
     }
@@ -1851,7 +1849,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1866,7 +1864,7 @@ class ApiTest extends TestCase
         ])
         ->assoc()->get();
 
-        //Debug::dd(DB::getQueryLog()); 
+        //dd(DB::getQueryLog()); 
 
         $this->assertEquals($model_arr,$res['data']); 
     }
@@ -1910,7 +1908,7 @@ class ApiTest extends TestCase
             $error_msg = curl_error($ch);
 
             if (isset($res['error']))
-                Debug::dd($res['error']);
+                dd($res['error']);
 
             throw new \Exception("$error_msg ($http_code)");
         }
@@ -1925,9 +1923,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        //Debug::dd(DB::getQueryLog()); 
-        //Debug::dd($model_arr);
-        //Debug::dd($res['data']);
+        //dd(DB::getQueryLog()); 
+        //dd($model_arr);
+        //dd($res['data']);
 
         $this->assertEquals($model_arr, $res['data']); 
     }

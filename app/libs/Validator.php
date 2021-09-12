@@ -52,6 +52,9 @@ class Validator implements IValidator
 			'str' => function($dato) {
 				return is_string($dato);
 			},
+			'string' => function($dato) {
+				return is_string($dato);
+			},
 			'alpha' => function($dato) {                                   
 				return (preg_match('/^[a-z]+$/i',$dato) == 1); 
 			},	
@@ -79,7 +82,7 @@ class Validator implements IValidator
 			'alpha_spaces_utf8' => function($dato) {                                   
 				return (preg_match('/^[\pL\pM\p{Zs}]+$/u',$dato) == 1); 		
 			},
-			'not_num' => function($dato) {
+			'notnum' => function($dato) {
 				return preg_match('/[0-9]+/',$dato) == 0;
 			},
 			'email' => function($dato) {
@@ -163,7 +166,7 @@ class Validator implements IValidator
         bindtextdomain('validator', LOCALE_PATH);
 		textdomain('validator');
 
-		//Debug::dd($data, 'DATA:');
+		//dd($data, 'DATA:');
 
 		if (empty($rules))
 			throw new \InvalidArgumentException('No validation rules!');
@@ -184,7 +187,7 @@ class Validator implements IValidator
 			
 		$msg = [];
 		foreach($rules as $field => $rule){
-			//Debug::dd($rule, "RULE $field :");
+			//dd($rule, "RULE $field :");
 			
 			//var_export(array_diff(array_keys($rule), ['messages']));
 			if (isset($rules[$field]['messages'])){
@@ -192,7 +195,7 @@ class Validator implements IValidator
 			}				
 
 			//if (isset($data[$field]))			
-			//	Debug::dd($data[$field], 'VALOR:');			
+			//	dd($data[$field], 'VALOR:');			
 
 			//echo "---------------------------------<p/>\n";
 			
@@ -209,7 +212,7 @@ class Validator implements IValidator
 			}
 				
 			foreach ((array) $data[$field] as $dato){
-				//Debug::dd(['field' => $field, 'data' => $dato]);
+				//dd(['field' => $field, 'data' => $dato]);
 
 				//var_export($rules[$field]['messages']);
 				//var_export(array_diff(array_keys($rule), ['messages']));
@@ -217,7 +220,7 @@ class Validator implements IValidator
 				//$constraints = array_diff(array_keys($rule), ['messages']);
 				//var_export($constraints);
 
-				if (!isset($dato) || $dato == '' || $dato == null){
+				if (!isset($dato) || $dato === '' || $dato === null){
 					//var_export(['field' =>$dato, 'required' => $rule['required']]);
 	
 					if ($this->required && isset($rule['required']) && $rule['required']){
@@ -371,7 +374,6 @@ class Validator implements IValidator
 
 		return $validated;
 	}
-	
 	
 	
 	private static function isValidDate($date, $format = 'd-m-Y') {

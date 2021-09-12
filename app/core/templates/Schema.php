@@ -20,7 +20,11 @@ class __NAME__ implements ISchema
 
 			'nullable'		=> __NULLABLES__,
 
-			'rules' 		=> __RULES__
+			'rules' 		=> __RULES__,
+
+			'relationships' => [
+				__RELATIONS__
+			]
 		];
 	}	
 }

@@ -16,7 +16,7 @@ Algunas características:
 - Versionado
 - Internacionalización
 - Query Builder
-- Migrations
+- Migrations (en progreso)
 - Multitenant support
 - Service Providers
 - Validator y auto-validaciones en los modelos
@@ -91,10 +91,10 @@ OJO ! afecta al DownloadController
 	POST /api/v1/auth/register	
 
 	{
-    	"name": "Pablo",
-		"username": "crack777",
-		"password" : "xxxxxx"
-	}
+		"username": "super_ventas",
+		"email": "b2@mail.com",
+		"password": "gogogo"
+	}		
 
 <-- campos mínimos
 

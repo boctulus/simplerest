@@ -64,7 +64,6 @@ class Model {
 	protected $limit;
 	protected $offset;
 	protected $pag_vals = [];
-	protected $roles;
 	protected $validator;
 	protected $input_mutators = [];
 	protected $output_mutators = [];
@@ -78,7 +77,49 @@ class Model {
 	protected $fetch_mode_default = \PDO::FETCH_ASSOC;
 	protected $data = []; 
 
+	protected $createdAt = 'created_at';
+	protected $updatedAt = 'updated_at';
+	protected $deletedAt = 'deleted_at'; 
+	protected $createdBy = 'created_by';
+	protected $updatedBy = 'updated_by';
+	protected $deletedBy = 'deleted_by'; 
+	protected $locked    = 'locked';
+	protected $belongsTo = 'belongs_to';
+
 	
+	function createdAt(){
+		return $this->createdBy;
+	}
+
+	function createdBy(){
+		return $this->createdBy;
+	}
+
+	function updatedAt(){
+		return $this->updatedAt;
+	}
+
+	function updatedBy(){
+		return $this->updatedBy;
+	}
+
+	function deletedAt(){
+		return $this->deletedAt;
+	}
+
+	function deletedBy(){
+		return $this->deletedBy;
+	}
+
+	function locked(){
+		return $this->locked;
+	}
+
+	function belongsTo(){
+		return $this->belongsTo;
+	}
+
+
 	function __construct(bool $connect = false, $schema = null){
 		if ($connect){
 			$this->connect();
@@ -100,22 +141,27 @@ class Model {
 		if (empty($this->table_name)){
 			$class_name = get_class($this);
 			$class_name = substr($class_name, strrpos($class_name, '\\')+1);
-			$str = Strings::fromCamelCase($class_name);
+			$str = Strings::camelToSnake($class_name);
 			$this->table_name = strtolower(substr($str, 0, strlen($str)-6));
 		}
 		*/
 	
 
-		//Debug::dd($this->table_name, 'table_name:');  // mode <-- por "model" recortado!!
+		//dd($this->table_name, 'table_name:');  // mode <-- por "model" recortado!!
 		
 		if ($this->schema == null){
 			return;
 		}	
 
-		//Debug::dd($this->schema, 'SCHEMA:');
+		//dd($this->schema, 'SCHEMA:');
 
 		$this->attributes = array_keys($this->schema['attr_types']);
+
+		if (in_array('', $this->attributes, true)){
+			throw new \Exception("An attribute is invalid");
+		}
 		
+		/*
 		if ($this->schema['id_name'] == NULL){
 			if ($this->inSchema(['id'])){
 				$this->schema['id_name'] = 'id';
@@ -123,38 +169,54 @@ class Model {
 				throw new \Exception("Undefined table identifier for '".$this->table_name. "' Use 'id' or \$id_name to specify another field name");
 			}
 		}			
+		*/
 
-
+	
 		if ($this->fillable == NULL){
 			$this->fillable = $this->attributes;
-			$this->unfill(['locked', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by']);
+			$this->unfill([
+							$this->locked, 
+							$this->createdAt,							
+							$this->updatedAt, 							
+							$this->deletedAt, 
+							$this->createdBy, 
+							$this->updatedBy, 
+							$this->deletedBy
+			]);	
 		}
 
 		$this->unfill($this->not_fillable);
 
-		// innecesario, debería provenir del propio schema !
-		$this->schema['nullable'][] = 'locked';
-		$this->schema['nullable'][] = 'belongs_to';
-		$this->schema['nullable'][] = 'created_at';
-		$this->schema['nullable'][] = 'updated_at';
-		$this->schema['nullable'][] = 'deleted_at';
-		$this->schema['nullable'][] = 'created_by';
-		$this->schema['nullable'][] = 'updated_by';
-		$this->schema['nullable'][] = 'deleted_by';
+		// debería ser innecesario pues debería provenir del propio schema !
+		$this->schema['nullable'][] = $this->locked;		
+		$this->schema['nullable'][] = $this->createdAt;
+		$this->schema['nullable'][] = $this->updatedAt;
+		$this->schema['nullable'][] = $this->deletedAt;
+		$this->schema['nullable'][] = $this->createdBy;
+		$this->schema['nullable'][] = $this->updatedBy;
+		$this->schema['nullable'][] = $this->deletedBy;
+		$this->schema['nullable'][] = $this->belongsTo;
 
-		$to_fill = [$this->schema['id_name']];
+		$to_fill = [];
 
-		if ($this->inSchema(['created_by'])){
-			$to_fill[] = 'created_by';
+		if (!empty($this->schema['id_name'])){
+			$to_fill[] = $this->schema['id_name'];
 		}
 
-		if ($this->inSchema(['updated_by'])){
-			$to_fill[] = 'updated_by';
+		if ($this->inSchema([$this->createdBy])){
+			$to_fill[] = $this->createdBy;
 		}
 
-		$this->fill($to_fill);				
+		if ($this->inSchema([$this->updatedBy])){
+			$to_fill[] = $this->updatedBy;
+		}
+
+		$this->fill($to_fill);		
 		
-		$this->soft_delete = $this->inSchema(['deleted_at']);
+		$this->soft_delete = $this->inSchema([$this->deletedAt]);
+
+		// Kill dupes
+		$this->schema['nullable'] = array_unique($this->schema['nullable']);
 	
 		/*
 		 Validations
@@ -191,6 +253,10 @@ class Model {
 	*/
 	function getKeyName(){
 		return $this->schema['id_name'];
+	}
+
+	function getTableName(){
+		return $this->table_name;
 	}
 
 	/*
@@ -323,16 +389,16 @@ class Model {
 		return $this;
 	}
 
-	// debe remover cualquier condición que involucre a 'deleted_at' en el WHERE !!!!
+	// debe remover cualquier condición que involucre a $this->deletedAt en el WHERE !!!!
 	function showDeleted($state = true){
 		$this->show_deleted = $state;
 		return $this;
 	}
 
 	function setSoftDelete(bool $status) {
-		if (!$this->inSchema(['deleted_at'])){
+		if (!$this->inSchema([$this->deletedAt])){
 			if ($status){
-				throw new SqlException("There is no 'deleted_at' for table '".$this->from()."' in the attr_types");
+				throw new SqlException("There is no $this->deletedAt for table '".$this->from()."' in the attr_types");
 			}
 		} 
 		
@@ -363,10 +429,15 @@ class Model {
 
 		if ($this->table_name == null){
 			throw new \Exception("No table_name defined");
-			$this->table_name = '';
 		}
 
-		$from = $this->table_alias != null ? $this->table_name. ' as '.$this->table_alias : $this->table_name.' ';  
+		$tb_name = $this->table_name;
+
+		if (DB::driver() == 'pgsql' && DB::schema() != null){
+			$tb_name = DB::schema() . '.' . $tb_name;
+		}
+
+		$from = $this->table_alias != null ? $tb_name. ' as '.$this->table_alias : $tb_name.' ';  
 		return $from;
 	}
 
@@ -416,7 +487,7 @@ class Model {
 	 *
 	 * @param  mixed $fields
 	 *
-	 * @return void
+	 * @return object
 	 */
 	function fill(array $fields){
 		foreach ($fields as $f)
@@ -445,26 +516,88 @@ class Model {
 		if (!empty($this->fillable) && !empty($fields)){			
 			foreach ($fields as $uf){
 				$k = array_search($uf, $this->fillable);
-				unset($this->fillable[$k]);
+
+				if ($k !== false){
+					unset($this->fillable[$k]);
+				}				
 			}
 		}
 
 		return $this;
 	}
 
-	// INNER JOIN
-	function join($table, $on1, $op, $on2) {
-		$this->joins[] = [$table, $on1, $op, $on2, ' INNER JOIN'];
+	// INNER | LEFT | RIGTH JOIN
+	function join($table, $on1 = null, $op = '=', $on2 = null, string $type = 'INNER JOIN') {
+		// try auto-join
+		if ($on1 == null && $on2 == null){
+			if ($this->schema == NULL){
+				throw new \Exception("Undefined schema for ". $this->table_name); 
+			}
+
+			if (!isset($this->schema['relationships'])){
+				throw new \Exception("Undefined relationships for table '{$this->table_name}'"); 
+			}
+
+			$rel = $this->schema['relationships'];
+
+			if (!isset($rel[$table])){				
+				if (preg_match('/([a-zA-Z][a-zA-Z0-9]+) as ([a-zA-Z][a-zA-Z0-9]+)/', $table, $matches)){
+					$tb = $matches[1];
+					$fk = $matches[2];
+				} else {
+					throw new \Exception("Undefined relationship \$rel" . '["' . $table . '"]');
+				}
+
+				if (!isset($rel[$tb])){
+					throw new \Exception("There is no explicit relationship between '{$this->table_name}' and '$tb'");
+				}				
+			}	
+			
+			if (!isset($fk)){
+				if (count($rel[$table][0]) != 2){
+					throw new \Exception("Unexpected number of arguments for relationship between {$this->table_name} and $table");
+				}
+
+				$on1 = $rel[$table][0][0];
+				$on2 = $rel[$table][0][1];
+			} else {
+				$found = false;
+				foreach ($rel[$tb] as $r){
+					if (Strings::startsWith($fk, $r[0])){
+						$found = true;
+						//dd($r);
+						[$on1, $on2] = $r;
+						break;
+					}
+				}
+
+				if (!$found){
+					throw new \Exception("FK '$fk' in '$tb' not found!");
+				}
+			}			
+		}
+
+		$this->joins[] = [$table, $on1, $op, $on2, $type];
 		return $this;
 	}
 
-	function leftJoin($table, $on1, $op, $on2) {
-		$this->joins[] = [$table, $on1, $op, $on2, ' LEFT JOIN'];
+	function leftJoin($table, $on1 = null, $op = '=', $on2 = null) {
+		$this->join($table, $on1, $op, $on2, 'LEFT JOIN');
 		return $this;
 	}
 
-	function rightJoin($table, $on1, $op, $on2) {
-		$this->joins[] = [$table, $on1, $op, $on2, ' RIGHT JOIN'];
+	function rightJoin($table, $on1 = null, $op = '=', $on2 = null) {
+		$this->join($table, $on1, $op, $on2, 'RIGHT JOIN');
+		return $this;
+	}
+
+	function crossJoin($table) {
+		$this->join($table, null, null, null, 'CROSS JOIN');
+		return $this;
+	}
+
+	function naturalJoin($table) {
+		$this->join($table, null, null, null, 'NATURAL JOIN');
 		return $this;
 	}
 	
@@ -478,24 +611,36 @@ class Model {
 		return $this;
 	}
 
-	function take(int $limit){
-		$this->limit = $limit;
+
+	function reorder(){
+		$this->order = [];
+		$this->raw_order = [];
 		return $this;
 	}
 
-	function limit(int $limit){
-		$this->limit = $limit;
+	function take(int $limit = null){
+		if ($limit !== null){
+			$this->limit = $limit;
+		}
+
 		return $this;
 	}
 
-	function offset(int $n){
-		$this->offset = $n;
+	function limit(int $limit = null){
+		return $this->take($limit);
+	}
+
+	function offset(int $n = null)
+	{
+		if ($n !== null){
+			$this->offset = $n;
+		}
+		
 		return $this;
 	}
 
-	function skip(int $n){
-		$this->offset = $n;
-		return $this;
+	function skip(int $n = null){
+		return $this->offset($n);
 	}
 
 	function groupBy(array $g){
@@ -566,6 +711,27 @@ class Model {
 		return $this;
 	}
 
+	function whereRegEx(string $field, $value){	
+		$this->whereRaw("$field REGEXP ?", [$value]);
+		return $this;
+	}
+
+	// alias
+	function whereRegExp(string $field, $value){
+		return $this->whereRegEx($field, $value);
+	}
+
+	function whereNotRegEx(string $field, $value){	
+		$this->whereRaw("NOT $field REGEXP ?", [$value]);
+		return $this;
+	}
+
+	// alias
+	function whereNotRegExp(string $field, $value){
+		return $this->whereNotRegEx($field, $value);
+	}
+
+
 	function havingRaw(string $q, array $vals = null){
 		if (substr_count($q, '?') != count($vals))
 			throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
@@ -612,12 +778,11 @@ class Model {
 		else
 			$fields = $this->fields;	
 
-		if (!$existance){
-			if (empty($conjunction))
-				$conjunction = 'AND';
+		$paginator = null;
 
-			// remove hidden
-			
+		if (!$existance)
+		{			
+			// remove hidden			
 			if (!empty($this->hidden)){			
 			
 				if (empty($this->select_raw_q)){
@@ -633,19 +798,18 @@ class Model {
 				}			
 
 			}
-
 							
 			if ($this->distinct){
 				$remove = [$this->schema['id_name']];
 
-				if ($this->inSchema(['created_at']))
-					$remove[] = 'created_at';
+				if ($this->inSchema([$this->createdAt]))
+					$remove[] = $this->createdAt;
 
-				if ($this->inSchema(['updated_at']))
-					$remove[] = 'updated_at';
+				if ($this->inSchema([$this->updatedAt]))
+					$remove[] = $this->updatedAt;
 
-				if ($this->inSchema(['deleted_at']))
-					$remove[] = 'deleted_at';
+				if ($this->inSchema([$this->deletedAt]))
+					$remove[] = $this->deletedAt;
 
 				if (!empty($fields)){
 					$fields = array_diff($fields, $remove);
@@ -685,7 +849,7 @@ class Model {
 		}			
 
 
-		//Debug::dd($fields, 'FIELDS:');
+		//dd($fields, 'FIELDS:');
 
 		if (!$existance){
 			if ($aggregate_func != null){
@@ -693,8 +857,8 @@ class Model {
 					if ($aggregate_field == null)
 						$aggregate_field = '*';
 
-					//Debug::dd($fields, 'FIELDS:');
-					//Debug::dd([$aggregate_field], 'AGGREGATE FIELD:');
+					//dd($fields, 'FIELDS:');
+					//dd([$aggregate_field], 'AGGREGATE FIELD:');
 
 					if (!empty($fields))
 						$_f = implode(", ", $fields). ',';
@@ -717,7 +881,7 @@ class Model {
 			}else{
 				$q = 'SELECT ';
 
-				//Debug::dd($fields);
+				//dd($fields);
 				
 				// SELECT RAW
 				if (!empty($this->select_raw_q)){
@@ -745,8 +909,8 @@ class Model {
 		////////////////////////
 
 
-		//Debug::dd($vars, 'VARS:');
-		//Debug::dd($values, 'VALS:');
+		//dd($vars, 'VARS:');
+		//dd($values, 'VALS:');
 
 		// Validación
 		if (!empty($this->validator)){
@@ -759,92 +923,76 @@ class Model {
 		// JOINS
 		$joins = '';
 		foreach ($this->joins as $j){
-			$joins .= "$j[4] $j[0] ON $j[1]$j[2]$j[3] ";
+			if ($j[4] == 'CROSS JOIN' || $j[4] == 'NATURAL JOIN'){
+				$joins .= " $j[4] $j[0] ";
+			} else {
+				$joins .= " $j[4] $j[0] ON $j[1]$j[2]$j[3] ";
+			}
 		}
 
 		$q  .= $joins;
 		
+
 		// WHERE
-		$where = '';
-		
-		if (!empty($this->where_raw_q))
-			$where = $this->where_raw_q.' ';
+		$where_section = $this->whereFormedQuery();
+		if (!empty($where_section)){
 
-		if (!empty($this->where)){
-			$implode = '';
+			// patch
+			$where_section = str_replace(
+							[
+								'AND OR', 
+								'(AND ',
+								'(OR '
+							], 
+							[	'OR ',
+								'( ',
+								'( '
+							], $where_section);
 
-			$cnt = count($this->where);
+			$where_section = str_replace('(  NOT ', '(NOT ', $where_section);	
 
-			if ($cnt>0){
-				$implode .= $this->where[0];
-				for ($ix=1; $ix<$cnt; $ix++){
-					$implode .= ' '.$this->where_group_op[$ix] . ' '.$this->where[$ix];
-				}
-			}			
-
-			$where = trim($where);
-
-			if (!empty($where)){
-				$where = rtrim($where);
-				$where = "($where) AND ". $implode. ' ';
-			}else{
-				$where = "$implode ";
-			}
-		}			
-
-		$where = trim($where);
-		
-		if ($this->inSchema(['deleted_at'])){
-			if (!$this->show_deleted){
-				if (empty($where))
-					$where = "deleted_at IS NULL";
-				else
-					$where =  ($where[0]=='(' && $where[strlen($where)-1] ==')' ? $where :   "($where)" ) . " AND deleted_at IS NULL";
-
-			}
+			$q  .= ' WHERE ' . $where_section;
 		}
-		
-		if (!empty($where)){
-			$q  .= 'WHERE '.ltrim($where);
-		}
-		
+						
 		$group = (!empty($this->group)) ? 'GROUP BY '.implode(',', $this->group) : '';
 		$q  .= " $group";
 
 	
 		// HAVING
+		$having_section = $this->havingFormedQuery();
+		
+		if (!empty($having_section)){
 
-		$having = ''; 
-		if (!empty($this->having_raw_q)){
-			$having = 'HAVING '.$this->having_raw_q; 
+			// patch
+			$having_section = str_replace(
+							[
+								'AND OR', 
+								'(AND ',
+								'(OR '
+							], 
+							[	'OR ',
+								'( ',
+								'( '
+							], $having_section);
+
+			$having_section = str_replace('(  NOT ', '(NOT ', $having_section);	
+
+			$q  .= ' HAVING ' . $having_section;
 		}
 
-		if (!empty($this->having)){
-			$implode = '';
-
-			$cnt = count($this->having);
-
-			if ($cnt>0){
-				$implode .= $this->having[0];
-				for ($ix=1; $ix<$cnt; $ix++){
-					$implode .= ' '.$this->having_group_op[$ix] . ' '.$this->having[$ix];
-				}
-			}			
-
-			if (!empty($having)){
-				$having = rtrim($having);
-				$having = "($having) AND ". $implode. ' ';
-			}else{
-				$having = "HAVING $implode ";
+		if ($this->randomize){
+			switch (DB::driver()){
+				case 'mysql':
+				case 'sqlite':
+					$q .= ' ORDER BY RAND() ';
+					break;
+				case 'pgsql':
+					$q .= ' ORDER BY RANDOM() ';
+					break;
+				default: 
+					throw new \Exception("Invalid driver");	
 			}
-		}	
-
-		$q .= ' '.$having;
-
-
-		if ($this->randomize)
-			$q .= ' ORDER BY RAND() ';
-		else {
+		} else {
 			if (!empty($this->raw_order))
 				$q .= ' ORDER BY '.implode(', ', $this->raw_order);
 		}
@@ -877,9 +1025,9 @@ class Model {
 		$q = String::removeRTrim('OR',  $q);
 		*/
 
-		//Debug::dd($q, 'Query:');
-		//Debug::dd($vars, 'Vars:');
-		//Debug::dd($values, 'Vals:');
+		//dd($q, 'Query:');
+		//dd($vars, 'Vars:');
+		//dd($values, 'Vals:');
 		//var_dump($q);
 		//exit;
 		//var_export($vars);
@@ -890,9 +1038,93 @@ class Model {
 		return $q;	
 	}
 
-	function getBindings(){
-		$pag = !empty($this->pag_vals) ? [ $this->pag_vals[0][1], $this->pag_vals[1][1] ] : [];
+	function whereFormedQuery(){
+		$where = '';
+		
+		if (!empty($this->where_raw_q))
+			$where = $this->where_raw_q.' ';
 
+		if (!empty($this->where)){
+			$implode = '';
+
+			$cnt = count($this->where);
+
+			if ($cnt>0){
+				$implode .= $this->where[0];
+				for ($ix=1; $ix<$cnt; $ix++){
+					$implode .= ' '.$this->where_group_op[$ix] . ' '.$this->where[$ix];
+				}
+			}			
+
+			$where = trim($where);
+
+			if (!empty($where)){
+				$where = "($where) AND ". $implode. ' '; // <-------------
+			}else{
+				$where = "$implode ";
+			}
+		}			
+
+		$where = trim($where);
+		
+		if ($this->inSchema([$this->deletedAt])){
+			if (!$this->show_deleted){
+				if (empty($where))
+					$where = "{$this->deletedAt} IS NULL";
+				else
+					$where =  ($where[0]=='(' && $where[strlen($where)-1] ==')' ? $where :   "($where)" ) . " AND {$this->deletedAt} IS NULL";
+
+			}
+		}
+		
+		return ltrim($where);
+	}
+
+	function havingFormedQuery(){
+		$having = '';
+		
+		if (!empty($this->having_raw_q))
+			$having = $this->having_raw_q.' ';
+
+		if (!empty($this->having)){
+			$implode = '';
+
+			$cnt = count($this->having);
+
+			if ($cnt>0){
+				$implode .= $this->having[0];
+				for ($ix=1; $ix<$cnt; $ix++){
+					$implode .= ' '.$this->having_group_op[$ix] . ' '.$this->having[$ix];
+				}
+			}			
+
+			$having = trim($having);
+			
+			if (!empty($having)){
+				$having = "($having) AND ". $implode. ' ';
+			}else{
+				$having = "$implode ";
+			}
+		}		
+
+		return trim($having);
+	}
+
+
+	function getBindings()
+	{	
+		$pag = [];
+		if (!empty($this->pag_vals)){
+			switch (count($this->pag_vals)){
+				case 2:
+					$pag = [ $this->pag_vals[0][1], $this->pag_vals[1][1] ];
+				break;
+				case 1: 	
+					$pag = [ $this->pag_vals[0][1] ];
+				break;
+			} 
+		}
+		
 		$values = array_merge(	
 								$this->select_raw_vals,
 								$this->from_raw_vals,
@@ -916,143 +1148,88 @@ class Model {
 		return $this;
 	}
 
+	/*
+		 https://www.php.net/manual/en/pdo.constants.php
+
+	*/
 	protected function bind(string $q)
 	{
-		$st = $this->conn->prepare($q);		
-
-		foreach($this->select_raw_vals as $ix => $val){
-				
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			else 
-				$type = \PDO::PARAM_STR;	
-
-			$st->bindValue($ix +1, $val, $type);
-			//echo "Bind: ".($ix+1)." - $val ($type)\n";
+		if ($this->conn == null){
+			$this->connect();
 		}
+
+		$vals = array_merge($this->select_raw_vals, 
+							$this->from_raw_vals, 
+							$this->where_raw_vals,
+							$this->w_vals,
+							$this->having_raw_vals,
+							$this->h_vals,
+							$this->union_vals);
+
+		///////////////[ BUG FIXES ]/////////////////
+
+		$_vals = [];
+		$reps  = 0;
+		foreach($vals as $ix => $val)
+		{				
+			if($val === NULL){
+				$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
+				$reps++;
+
+			/*
+				Corrección para operaciones entre enteros y floats en PGSQL
+			*/
+			} elseif(DB::driver() == 'pgsql' && is_float($val)){ 
+				$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
+				$reps++;
+				$_vals[] = $val;
+			} else {
+				$_vals[] = $val;
+			}
+		}
+
+		$vals = $_vals;
+
+		///////////////////////////////////////////
+
 		
-		$sh1 = count($this->select_raw_vals);	
-
-		foreach($this->from_raw_vals as $ix => $val){
-				
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			else 
-				$type = \PDO::PARAM_STR;	
-
-			$st->bindValue($ix +1 + $sh1, $val, $type);
-			//echo "Bind: ".($ix+1+$sh1)." - $val ($type) <br/>\n";
-		}
-		
-		$sh2 = count($this->from_raw_vals);	
-
-		foreach($this->where_raw_vals as $ix => $val){
-				
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			else 
-				$type = \PDO::PARAM_STR;	
-
-			$st->bindValue($ix +1 + $sh1 + $sh2, $val, $type);
-			//echo "Bind: ".($ix+1)." - $val ($type)\n";
-		}
-		
-		$sh3 = count($this->where_raw_vals);	
-
-
-		foreach($this->w_vals as $ix => $val){
-				
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
-			}elseif(isset($this->w_vars[$ix]) && isset($this->schema['attr_types'][$this->w_vars[$ix]])){
-				$const = $this->schema['attr_types'][$this->w_vars[$ix]];
-				$type = constant("PDO::PARAM_{$const}");
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			elseif(is_string($val))
-				$type = \PDO::PARAM_STR;	
-
-			$st->bindValue($ix +1 + $sh1 + $sh2 + $sh3, $val, $type);
-			//echo "Bind: ".($ix+1)." - $val ($type)\n";
-		}
-
-		$sh4 = count($this->w_vals);
-
-
-		foreach($this->having_raw_vals as $ix => $val){
-				
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			else 
-				$type = \PDO::PARAM_STR;	
-
-			$st->bindValue($ix +1 + $sh1 + $sh2 + $sh3 + $sh4, $val, $type);
-			//echo "Bind: ".($ix+1)." - $val ($type)\n";
-		}
-
-		$sh5 = count($this->having_raw_vals);
-
-
-		foreach($this->h_vals as $ix => $val){
-				
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
-			}elseif(isset($this->h_vars[$ix]) && isset($this->schema['attr_types'][$this->h_vars[$ix]])){
-				$const = $this->schema['attr_types'][$this->h_vars[$ix]];
-				$type = constant("PDO::PARAM_{$const}");
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			elseif(is_string($val))
-				$type = \PDO::PARAM_STR;	
-
-			$st->bindValue($ix +1 + $sh1 + $sh2 + $sh3 + $sh4 +$sh5, $val, $type);
-			//echo "Bind: ".($ix+1)." - $val ($type)\n";
-		}
-
-		$sh6 = count($this->h_vals);
+		$st = $this->conn->prepare($q);			
 	
-
-		foreach($this->union_vals as $ix => $val){
-				
+		foreach($vals as $ix => $val)
+		{				
 			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
+				$type = \PDO::PARAM_NULL; // 0
 			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
+				$type = \PDO::PARAM_INT;  // 1
 			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			else 
-				$type = \PDO::PARAM_STR;	
+				$type = \PDO::PARAM_BOOL; // 5
+			elseif(is_string($val)){
+				if(mb_strlen($val) < 4000){
+					$type = \PDO::PARAM_STR;  // 2
+				} else {
+					$type = \PDO::PARAM_LOB;  // 3
+				}
+			}elseif(is_float($val))
+				$type = \PDO::PARAM_STR;  // 2
+			elseif(is_resource($val))	
+				// https://stackoverflow.com/a/36724762/980631
+				$type = \PDO::PARAM_LOB;  // 3
+			elseif(is_array($val)){
+				throw new \Exception("where value can not be an array!");				
+			}else {
+				var_dump($val);
+				throw new \Exception("Unsupported type");
+			}	
 
-			$st->bindValue($ix +1 + $sh1 + $sh2 + $sh3 + $sh4 + $sh5 +$sh6, $val, $type);
+			$st->bindValue($ix +1 , $val, $type);
 			//echo "Bind: ".($ix+1)." - $val ($type)\n";
 		}
 
-		$sh7 = count($this->union_vals);
-
+		$sh = count($vals);
 
 		$bindings = $this->pag_vals;
 		foreach($bindings as $ix => $binding){
-			$st->bindValue($ix +1 +$sh1 +$sh2 +$sh3 +$sh4 +$sh5 +$sh6 +$sh7, $binding[1], $binding[2]);
+			$st->bindValue($ix +1 +$sh, $binding[1], $binding[2]);
 		}		
 		
 		return $st;	
@@ -1078,9 +1255,9 @@ class Model {
 			} elseif(is_string($val))
 				$bindings[$ix] = "'$val'";	
 		}
-				
+
 		$sql = Arrays::str_replace_array('?', $bindings, $pre_compiled_sql);
-		return trim(preg_replace('!\s+!', ' ', $sql));
+		return trim(preg_replace('!\s+!', ' ', $sql)).';';
 	}
 
 	// Debug query
@@ -1098,16 +1275,15 @@ class Model {
 		return $this->dd2();
 	}
 
+	function getWhere(){
+		return $this->where;
+	}
+
 	function get(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, $pristine = false){
 		$this->onReading();
 
 		$q = $this->toSql($fields, $order, $limit, $offset);
 		$st = $this->bind($q);
-
-
-		//Debug::dd($q, 'Q'); ////////
-		//var_dump($this->from());
-		//exit;
 
 		$count = null;
 		if ($this->exec && $st->execute()){
@@ -1150,6 +1326,10 @@ class Model {
 				
 		return $ret;
 	}
+
+	function getOne(array $fields = null, $pristine = false){
+		return $this->first($fields, $pristine);
+	}
 	
 	function value($field){
 		$this->onReading();
@@ -1159,7 +1339,7 @@ class Model {
 
 		$count = null;
 		if ($this->exec && $st->execute()) {
-			$ret = $st->fetch(\PDO::FETCH_NUM)[0];
+			$ret = $st->fetch(\PDO::FETCH_NUM)[0] ?? false;
 			
 			$count = $st->rowCount();
 			$this->onRead($count);
@@ -1269,8 +1449,8 @@ class Model {
 		$q = $this->toSql(null, null, null, null, false, 'COUNT', $field, $alias);
 		$st = $this->bind($q);
 
-		//Debug::dd($q, 'Q');
-		//Debug::dd($this->table_raw_q, 'RAW Q');
+		//dd($q, 'Q');
+		//dd($this->table_raw_q, 'RAW Q');
 		//exit;
 
 		if (empty($this->group)){
@@ -1286,8 +1466,103 @@ class Model {
 		}	
 	}
 
+	function getWhereVals(){
+		return $this->w_vals;
+	}
 
-	function _where($conditions, $group_op = 'AND', $conjunction)
+	function getWhereVars(){
+		return $this->w_vars;
+	}
+
+	function getWhereRawVals(){
+		return $this->where_raw_vals;
+	}
+
+	function getHavingVals(){
+		return $this->h_vals;
+	}
+
+	function getHavingVars(){
+		return $this->h_vars;
+	}
+
+	function getHavingRawVals(){
+		return $this->having_raw_vals;
+	}
+
+	// crea un grupo dentro del where
+	function group(callable $closure, string $conjunction = 'AND', bool $negate = false) 
+	{	
+		$not = $negate ? ' NOT ' : '';
+
+		$m = new Model();		
+		call_user_func($closure, $m);	
+
+		$w_formed 	= $m->whereFormedQuery();
+
+		if (!empty($w_formed)){
+			$w_vars   	= $m->getWhereVars();
+			$w_vals   	= $m->getWhereVals();
+			$w_raw_vals = $m->getWhereRawVals();
+
+			$this->where[] = "$conjunction $not($w_formed)";	
+			$this->w_vars  = array_merge($this->w_vars, $w_vars);
+			$this->w_vals  = array_merge($this->w_vals, $w_raw_vals, $w_vals); // *
+			
+			$this->where_group_op[] = '';
+		}
+
+
+		$h_formed 	= $m->havingFormedQuery();
+
+		if(!empty($h_formed)){
+			$h_vars   	= $m->getHavingVars();
+			$h_vals   	= $m->getHavingVals();
+			$h_raw_vals = $m->getHavingRawVals();
+
+			$this->having[] = "$conjunction $not($h_formed)";	
+			$this->h_vars  = array_merge($this->h_vars, $h_vars);
+			$this->h_vals  = array_merge($this->h_vals, $h_raw_vals, $h_vals); // *
+			
+			$this->having_group_op[] = '';
+		}
+
+		return $this;
+	}
+
+	function and(callable $closure){
+		return $this->group($closure, 'AND', false);
+	}
+
+	function or(callable $closure){
+		return $this->group($closure, 'OR', false);
+	}
+
+	function andNot(callable $closure){
+		return $this->group($closure, 'AND', true);
+	}
+
+	// alias
+	function not(callable $closure){
+		return $this->andNot($closure);
+	}
+
+	function orNot(callable $closure){
+		return $this->group($closure, 'OR', true);
+	}
+
+
+	function when($precondition = null, callable $closure = null, callable $closure2 = null){
+		if (!empty($precondition)){			
+			call_user_func($closure, $this);	
+		} elseif ($closure2 != null){
+			call_user_func($closure2, $this);
+		}
+		
+		return $this;	
+	}
+
+	protected function _where($conditions = null, $group_op = 'AND', $conjunction = null)
 	{
 		if (empty($conditions)){
 			return;
@@ -1306,13 +1581,14 @@ class Model {
 		$ops    = [];
 		if (count($conditions)>0){
 			if(is_array($conditions[Arrays::array_key_first($conditions)])){
-				foreach ($conditions as $cond) {
+
+				foreach ($conditions as $ix => $cond) {
 					if ($cond[0] == null)
 						throw new SqlException("Field can not be NULL");
 
 					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN']) ))
 					{						
-						if($this->schema['attr_types'][$cond[0]] == 'STR')	
+						if($this->schema['attr_types'][$cond[0]] == 'STR')	//
 							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);   
 						
 						$in_val = implode(', ', $cond[1]);
@@ -1329,6 +1605,7 @@ class Model {
 							$ops[] = $cond[2] ?? '=';
 					}	
 				}
+
 			}else{
 				$vars[]   = $conditions[0];
 				$this->w_vals[] = $conditions[1];
@@ -1358,12 +1635,35 @@ class Model {
 		$this->where[] = ' ' .$ws_str;
 		////////////////////////////////////////////
 
-		//Debug::dd($this->where);
+		//dd($this->where, '$this->where');
+		//dd($this->where_group_op, 'OPERATORS');
 		//exit;
-		//Debug::dd($this->w_vars, 'WHERE VARS');	
-		//Debug::dd($this->w_vals, 'WHERE VALS');	
+		//dd($this->w_vars, 'WHERE VARS');	
+		//dd($this->w_vals, 'WHERE VALS');	
 
 		return;
+	}
+
+	function whereColumn(string $field1, string $field2, string $op = '='){
+		$validation = Factory::validador()->validate([ 
+					'col1' => ['type' => 'alpha_num_dash'], 
+					'col2' => ['type' => 'alpha_num_dash']
+				],
+				[
+					'col1' => $field1, 
+					'col2' => $field2
+				]);
+
+		if (!$validation){
+			throw new InvalidValidationException(json_encode($validation));
+		}
+
+		if (!in_array($op, ['=', '>', '<', '<=', '>=', '!='])){
+			throw new \InvalidArgumentException("Invalid operator '$op'");
+		}	
+
+		$this->where_raw_q = "{$field1}{$op}{$field2}";
+		return $this;
 	}
 
 	function where($conditions, $conjunction = 'AND'){
@@ -1376,13 +1676,35 @@ class Model {
 		return $this;
 	}
 
+	function whereOr($conditions){
+		$this->_where($conditions, 'AND', 'OR');
+		return $this;
+	}
+
+	// ok
 	function orHaving($conditions, $conjunction = 'AND'){
 		$this->_having($conditions, 'OR', $conjunction);
 		return $this;
 	}
 
-	function find(int $id){
-		return $this->where([$this->schema['id_name'] => $id])->get();
+	function orWhereRaw(string $q, array $vals = null){
+		$this->or(function($x) use ($q, $vals){
+			$x->whereRaw($q, $vals);
+		});
+
+		return $this;
+	}
+
+	function orHavingRaw(string $q, array $vals = null){
+		$this->or(function($x) use ($q, $vals){
+			$x->HavingRaw($q, $vals);
+		});
+
+		return $this;
+	}
+
+	function find($id){
+		return $this->where([$this->schema['id_name'] => $id]);
 	}
 
 	function whereNull(string $field){
@@ -1432,22 +1754,21 @@ class Model {
 	}
 
 	function oldest(){
-		$this->orderBy(['created_at' => 'DESC']);
+		$this->orderBy([$this->createdAt => 'ASC']);
 		return $this;
 	}
 
 	function latest(){
-		$this->orderBy(['created_at' => 'DESC']);
+		$this->oldest();
 		return $this;
 	}
 
 	function newest(){
-		$this->orderBy(['created_at' => 'ASC']);
+		$this->orderBy([$this->createdAt => 'DESC']);
 		return $this;
 	}
-
 	
-	function _having(array $conditions, $group_op = 'AND', $conjunction)
+	function _having(array $conditions = null, $group_op = 'AND', $conjunction = null)
 	{	
 		if (Arrays::is_assoc($conditions)){
             $conditions = Arrays::nonassoc($conditions);
@@ -1456,17 +1777,17 @@ class Model {
 		if ((count($conditions) == 3 || count($conditions) == 2) && !is_array($conditions[1]))
 			$conditions = [$conditions];
 	
-		//Debug::dd($conditions, 'COND:');
+		//dd($conditions, 'COND:');
 
 		$_having = [];
 		foreach ((array) $conditions as $cond) {		
 		
 			if (Arrays::is_assoc($cond)){
-				//Debug::dd($cond, 'COND PRE-CAMBIO');
+				//dd($cond, 'COND PRE-CAMBIO');
 				$cond[0] = Arrays::array_key_first($cond);
 				$cond[1] = $cond[$cond[0]];
 
-				//Debug::dd([$cond[0], $cond[1]], 'COND POST-CAMBIO');
+				//dd([$cond[0], $cond[1]], 'COND POST-CAMBIO');
 			}
 			
 			$op = $cond[2] ?? '=';	
@@ -1488,9 +1809,9 @@ class Model {
 		$this->having[] = ' ' .$ws_str;
 		////////////////////////////////////////////
 
-		//Debug::dd($this->having, 'HAVING:');
-		//Debug::dd($this->h_vars, 'VARS');
-		//Debug::dd($this->h_vals, 'VALUES');
+		//dd($this->having, 'HAVING:');
+		//dd($this->h_vars, 'VARS');
+		//dd($this->h_vals, 'VALUES');
 
 		return $this;
 	}
@@ -1498,6 +1819,18 @@ class Model {
 	function having(array $conditions, $conjunction = 'AND'){
 		$this->_having($conditions, 'AND', $conjunction);
 		return $this;
+	}
+
+	/*
+		No admite eventos
+	*/
+	static function query(string $raw_sql){
+		$conn = DB::getConnection();
+
+		$query = $conn->query($raw_sql);
+
+		$output = $query->fetchAll();
+		return $output;
 	}
 
 	/**
@@ -1522,13 +1855,13 @@ class Model {
 			throw new SqlException('Array of data should be associative');
 		}
 			
-		if (isset($data['created_by']))
-			unset($data['created_by']);
+		if (isset($data[$this->createdBy]))
+			unset($data[$this->createdBy]);
 	
 
 		$data = $this->applyInputMutator($data, 'UPDATE');
 		$vars   = array_keys($data);
-		$values = array_values($data);
+		$vals = array_values($data);
 
 		
 		//var_dump($data); ///
@@ -1558,29 +1891,62 @@ class Model {
 		}
 		$set =trim(substr($set, 0, strlen($set)-2));
 
-		if ($set_updated_at && $this->inSchema(['updated_at'])){
+		if ($set_updated_at && $this->inSchema([$this->updatedAt])){
 			$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
 			$at = $d->format('Y-m-d G:i:s');
 
-			$set .= ", updated_at = '$at'";
+			$set .= ", {$this->updatedAt} = '$at'";
 		}
 
 		$where = implode(' AND ', $this->where);
 
 		$q = "UPDATE ".$this->from() .
 				" SET $set WHERE " . $where;		
+
+
+		$vals = array_merge($vals, $this->w_vals);
+		$vars = array_merge($vars, $this->w_vars);		
+
+		///////////////[ BUG FIXES ]/////////////////
+
+		$_vals = [];
+		$reps  = 0;
+		foreach($vals as $ix => $val)
+		{				
+			if($val === NULL){
+				$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
+				$reps++;
+
+			/*
+				Corrección para operaciones entre enteros y floats en PGSQL
+			*/
+			} elseif(DB::driver() == 'pgsql' && is_float($val)){ 
+				$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
+				$reps++;
+				$_vals[] = $val;
+			} else {
+				$_vals[] = $val;
+			}
+		}
+
+		$vals = $_vals;
+
+		///////////////////////////////////////////
+
 	
 		$st = $this->conn->prepare($q);
 
-		$values = array_merge($values, $this->w_vals);
-		$vars   = array_merge($vars, $this->w_vars);
 
 		//var_export($q);
 		//var_export($vars);
-		//var_export($values);
+		//var_export($vals);
 		//exit;
 
-		foreach($values as $ix => $val){			
+		foreach($vals as $ix => $val){		
+			if (is_array($val)){
+				throw new \InvalidArgumentException("Invalid value. Can not be array: ". var_export($val, true));
+			}
+			
 			if(is_null($val)){
 				$type = \PDO::PARAM_NULL;
 			}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$vars[$ix]])){
@@ -1597,7 +1963,7 @@ class Model {
 			//echo "Bind: ".($ix+1)." - $val ($type)\n";
 		}
 
-		$this->last_bindings = $values;
+		$this->last_bindings = $vals;
 		$this->last_pre_compiled_query = $q;
 	 
 		if (!$this->exec){
@@ -1642,9 +2008,9 @@ class Model {
 			if (!empty($data)){
 				$to_fill = array_keys($data);
 			}
-			$to_fill[] = 'deleted_at';
+			$to_fill[] = $this->deletedAt;
 
-			$data =  array_merge($data, ['deleted_at' => $at]);
+			$data =  array_merge($data, [$this->deletedAt => $at]);
 
 			$this->fill($to_fill);
 			return $this->update($data, false);
@@ -1653,25 +2019,11 @@ class Model {
 		$where = implode(' AND ', $this->where);
 
 		$q = "DELETE FROM ". $this->from() . " WHERE " . $where;
-		
-		$st = $this->conn->prepare($q);
-		
-		$vars = $this->w_vars;		
-		foreach($this->w_vals as $ix => $val){			
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
-			}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$vars[$ix]])){
-				$const = $this->schema['attr_types'][$vars[$ix]];
-				$type = constant("PDO::PARAM_{$const}");
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			elseif(is_string($val))
-				$type = \PDO::PARAM_STR;	
+		//dd($q);
+		//exit;     ///////////////////
 
-			$st->bindValue($ix+1, $val, $type);
-		}
+		
+		$st = $this->bind($q);
 	 
 		$this->last_bindings = $this->getBindings();
 		$this->last_pre_compiled_query = $q;
@@ -1688,7 +2040,7 @@ class Model {
 	/*
 		@return mixed false | integer 
 	*/
-	function create(array $data)
+	function create(array $data, $ignore_duplicates = false)
 	{
 		if ($this->conn == null)
 			throw new SqlException('No connection');
@@ -1698,7 +2050,7 @@ class Model {
 	
 		$this->data = $data;	
 
-		//Debug::dd($data, 'DATA');
+		//dd($data, 'DATA');
 		//exit;
 		
 		$data = $this->applyInputMutator($data, 'CREATE');
@@ -1728,11 +2080,11 @@ class Model {
 		$symbols = array_map(function($v){ return '?';}, $vars);
 		$str_vals = implode(', ',$symbols);
 
-		if ($this->inSchema(['created_at'])){
+		if ($this->inSchema([$this->createdAt])){
 			$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
 			$at = $d->format('Y-m-d G:i:s');
 
-			$str_vars .= ', created_at';
+			$str_vars .= ", {$this->createdAt}";
 			$str_vals .= ", '$at'";
 		}
 
@@ -1752,7 +2104,7 @@ class Model {
 			elseif(is_string($val))
 				$type = \PDO::PARAM_STR;	
 
-			//Debug::dd($type, "TYPE for $val");	
+			//dd($type, "TYPE for $val");	
 
 			$st->bindValue($ix+1, $val, $type);
 		}
@@ -1760,11 +2112,26 @@ class Model {
 		$this->last_bindings = $vals;
 		$this->last_pre_compiled_query = $q;
 
+
 		if (!$this->exec){
 			return NULL;
 		}	
 
-		$result = $st->execute();
+		if ($ignore_duplicates){
+			try {
+                $result = $st->execute();
+            } catch (\PDOException $e){
+                if (!Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())){
+                    throw new \PDOException($e->getMessage());
+                }
+            }
+		} else {
+			$result = $st->execute();
+		}
+		
+		if (!isset($result)){
+			return;
+		}
 
 		if ($result){
 			// sin schema no hay forma de saber la PRI Key. Intento con 'id' 
@@ -1781,8 +2148,12 @@ class Model {
 			$this->last_inserted_id = false;	
 		}
 
-		return $this->last_inserted_id;	
-		
+		return $this->last_inserted_id;		
+	}
+	
+
+	function insert(Array $data){
+		return $this->create($data);
 	}
 	
 	/*
@@ -1835,7 +2206,7 @@ class Model {
 	protected function boot() { }
 
 	protected function onReading() { }
-	protected function onRead(?int $count) { }
+	protected function onRead(int $count) { }
 	
 	protected function onDeleting() { }
 	protected function onDeleted(?int $count) { }
@@ -1863,6 +2234,7 @@ class Model {
 	 * @return bool
 	 */
 	function inSchema(array $props){
+		// debería chequear que la tabla exista
 
 		if (empty($props))
 			throw new \InvalidArgumentException("Attributes not found!");
@@ -1937,6 +2309,10 @@ class Model {
 
 	function getRules(){
 		return $this->schema['rules'] ?? NULL;
+	}
+
+	function getRule(string $name){
+		return $this->schema['rules'][$name] ?? NULL;
 	}
 
 	/**

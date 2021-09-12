@@ -7,10 +7,7 @@ use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\UsersSchema;
 
 class UsersModel extends Model
- { 
-	### TRAITS
-	### PROPERTIES
-
+ { 	
 	protected $hidden   = [	'password' ];
 	protected $not_fillable = ['confirmed_email', 'active'];
 

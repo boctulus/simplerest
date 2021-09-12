@@ -77,7 +77,7 @@ class GoogleController extends Controller
         }
         */
 
-        //Debug::dd($auth);        
+        //dd($auth);        
         /*
             Array
             (
@@ -113,7 +113,7 @@ class GoogleController extends Controller
             ["exp"]=> int(1571718220) } 
         */
 
-        //Debug::dd($payload);
+        //dd($payload);
         
         if (!$payload)
             exit;

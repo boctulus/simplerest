@@ -1,0 +1,22 @@
+
+<div id="app">
+    <v-app>
+        <v-main>
+        <v-container>
+            <h1>Home</h1>
+
+                <v-data-table 
+                    :headers="headers"
+                    :items="cotizaciones_computed"
+                    :items-per-page="5"
+                    class="elevation-1"
+                    :footer-props="{
+                        'items-per-page-text':'Resultados por página'
+                    }"
+                ></v-data-table>
+        </v-container>
+        </v-main>
+    </v-app>
+</div>
+
+

@@ -14,6 +14,9 @@ if (!defined('CONFIG_PATH'))
 if (!defined('UPLOADS_PATH'))
     define('UPLOADS_PATH', ROOT_PATH . 'uploads'. DIRECTORY_SEPARATOR); 
 
+if (!defined('STORAGE_PATH'))
+    define('STORAGE_PATH', ROOT_PATH . 'storage'. DIRECTORY_SEPARATOR);     
+
 if (!defined('LOGS_PATH'))
     define('LOGS_PATH', ROOT_PATH . 'logs'. DIRECTORY_SEPARATOR); 
 
@@ -28,7 +31,13 @@ if (!defined('CORE_PATH'))
     define('CORE_PATH', APP_PATH . 'core'. DIRECTORY_SEPARATOR);
     
 if (!defined('MODELS_PATH'))
-    define('MODELS_PATH', APP_PATH . 'models'. DIRECTORY_SEPARATOR);    
+    define('MODELS_PATH', APP_PATH . 'models'. DIRECTORY_SEPARATOR);   
+
+if (!defined('MIGRATIONS_PATH'))
+    define('MIGRATIONS_PATH', MODELS_PATH . 'migrations'. DIRECTORY_SEPARATOR);   
+
+if (!defined('ETC_PATH'))
+    define('ETC_PATH', APP_PATH . 'etc'. DIRECTORY_SEPARATOR);     
 
 if (!defined('SECURITY_PATH'))
     define('SECURITY_PATH', APP_PATH . 'security'. DIRECTORY_SEPARATOR);    

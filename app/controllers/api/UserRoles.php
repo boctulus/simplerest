@@ -6,13 +6,13 @@ use simplerest\controllers\MyApiController;
 use simplerest\libs\Factory;
 
 
-class UserRoles extends MyApiController
+class UserRoles extends MyApiController  /* implements IApiController */
 {    
     protected $table_name = 'user_roles';
 
     function __construct()
     {
-        if (Factory::request()->hasAuth() && $this->isRegistered()){
+        if (Factory::request()->hasAuth() && Factory::acl()->isRegistered()){
             $this->callable = ['get'];
 
             $this->is_retrievable   = true;

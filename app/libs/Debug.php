@@ -35,9 +35,6 @@ class Debug
 			$v = $v ? 'true' : 'false';
 		}	
 
-		
-		ob_start();
-
 		if (!empty($msg)){
 			echo "--[ $msg ]-- ". $br;
 		}
@@ -51,14 +48,15 @@ class Debug
 		if ($cli || $postman){
 			echo $p;
 		}
-
-		$ret = ob_get_contents();
-		ob_end_clean();
-
-		return $ret;
 	}	
 
-	static public function dd($var, $msg = null){
+	static public function dd($val, $msg = null, callable $precondition_fn = null){
+		if ($precondition_fn != NULL){
+            if (!call_user_func($precondition_fn, $val)){
+				return;
+			}
+		}
+
 		$cli = (php_sapi_name() == 'cli');
 		
 		$pre = !$cli;
@@ -68,11 +66,11 @@ class Debug
 		}
 
 		if ($pre) {
-			self::pre(function() use ($var, $msg){ 
-				echo self::export($var, $msg); 
+			self::pre(function() use ($val, $msg){ 
+				self::export($val, $msg); 
 			});
 		} else {
-			echo self::export($var, $msg);
+			self::export($val, $msg);
 		}
 	}
 

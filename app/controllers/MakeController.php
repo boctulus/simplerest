@@ -7,50 +7,83 @@ use simplerest\core\Request;
 use simplerest\libs\Factory;
 use simplerest\libs\Debug;
 use simplerest\libs\DB;
+use simplerest\libs\Files;
 use simplerest\libs\Strings;
+use simplerest\libs\Schema;
 
 /*
     Class generator
 
     Commands:
 
-    make schema SuperAwesome [-f | --force]
-    make schema super_awesome  [-f | --force]
+    make schema SuperAwesome [--force | -f]
+    make schema super_awesome  [--force | -f]
 
-    make model SuperAwesomeModel  [-f | --force]
-    make model SuperAwesome [-f | --force]
-    make model super_awesome  [-f | --force]
+    make model SuperAwesomeModel  [--force | -f]
+    make model SuperAwesome [--force | -f]
+    make model super_awesome  [--force | -f]
 
-    make controller SuperAwesome  [-f | --force]
+    make controller SuperAwesome  [--force | -f]
 
-    make api SuperAwesome  [-f | --force]
-    make api super_awesome  [-f | --force]
+    make api SuperAwesome  [--force | -f]
+    make api super_awesome  [--force | -f]
+
+    make api all --from:dsi [--force | -f]
+
+    <-- "from:" is required in this case.
 
     make any SuperAwesome  [-s | --schema ] 
-                            [-m | --model] 
-                            [-c | --controller ] 
-                            [-a | --api ] 
-                            [-f | --force]
+                           [-m | --model] 
+                           [-c | --controller ] 
+                           [-a | --api ] 
+                           [-p | --provider | --service ]
+          
+                           [--force | -f]
 
-    Example:
+    make any all           [-s | --schema ] 
+                           [-m | --model] 
+                           [-c | --controller ] 
+                           [-a | --api ] 
+                           [-p | --provider | --service ]
+          
+                           [--force | -f]
+
+    More examples:
     
     make any baz -s -m -a -f
+    make any tbl_contacto -sam --from:dsi
+    make any all -sam --from:dsi
+    make any all -samf --from:dsi
+
+    Note:
+
+    To execute a command like
+    
+    make schema SuperAwesome [--force | -f]
+
+    ... call 'php' interpreter + 'com' controller first. 
+
+    php com make schema SuperAwesome [--force | -f]
 
 */
 class MakeController extends Controller
 {
     const SCHEMAS_PATH = MODELS_PATH . 'schemas' . DIRECTORY_SEPARATOR;
+    const SERVICE_PROVIDERS_PATH = ROOT_PATH . 'providers' . DIRECTORY_SEPARATOR; //
 
-    const MODEL_TEMPLATE  = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR. 'Model.php';
-    const SCHEMA_TEMPLATE = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR. 'Schema.php';
-    const CONTROLLER_TEMPLATE = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR. 'Controller.php';
-    const API_TEMPLATE = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR. 'ApiRestfulController.php';
+    const TEMPLATES = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR;
+
+    const MODEL_TEMPLATE  = self::TEMPLATES . 'Model.php';
+    const SCHEMA_TEMPLATE = self::TEMPLATES . 'Schema.php';
+    const MIGRATION_TEMPLATE  = self::TEMPLATES . 'Migration.php';
+    const CONTROLLER_TEMPLATE = self::TEMPLATES . 'Controller.php';
+    const CONSOLE_TEMPLATE = self::TEMPLATES . 'ConsoleController.php';
+    const API_TEMPLATE = self::TEMPLATES . 'ApiRestfulController.php';
+    const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; //
 
     protected $class_name;
-    protected $model_name;
     protected $ctr_name;
     protected $api_name; 
-    protected $model_table;
     protected $excluded_files = [];
 
     function __construct()
@@ -81,7 +114,7 @@ class MakeController extends Controller
                 }                 
             }
 
-            //Debug::dd($this->excluded_files);
+            //dd($this->excluded_files);
             //exit; ///
         }
 
@@ -92,30 +125,34 @@ class MakeController extends Controller
         echo <<<STR
         Commmands:
                         
-        make schema SuperAwesome [-f | --force]
-        make schema super_awesome  [-f | --force]
+        make schema SuperAwesome [--force | -f]
+        make schema super_awesome  [--force | -f]
                  
-        make model SuperAwesomeModel  [-f | --force]
-        make model SuperAwesome [-f | --force]
-        make model super_awesome  [-f | --force]
+        make model SuperAwesomeModel  [--force | -f]
+        make model SuperAwesome [--force | -f]
+        make model super_awesome  [--force | -f]
          
-        make controller SuperAwesome  [-f | --force]
+        make controller SuperAwesome  [--force | -f]
         
-        make api SuperAwesome  [-f | --force]
-        make api super_awesome  [-f | --force]
+        make api SuperAwesome  [--force | -f]
+        make api super_awesome  [--force | -f]
+
+        php com make model all --from:dsi [--force | -f]
          
-        make any SuperAwesome   [-s | --schema ] 
-                                [-m | --model] 
-                                [-c | --controller ] 
-                                [-a | --api ] 
-                                [-f | --force]
-                          
+        make any SuperAwesome   [--schema | -s] 
+                                [--model | -m] 
+                                [--controller | -c]
+                                [--console ] 
+                                [--api | -a] 
+                                [--provider | --service | -p]
+                                [--force | -f]
+                                
                                 -sam  = -s -a -m
-                                -samf = -s -a -m -f                       
-        Example:
-                 
-        make any baz -s -m -a -f
-        make any baz -samf
+                                -samf = -s -a -m -f                                                  
+
+        make migration rename_some_column
+        make migration another_table_change --table=foo
+
         STR;
     }
 
@@ -133,22 +170,13 @@ class MakeController extends Controller
         */
     }
 
-    function getTables(){
-        static $tables;
-
-        if ($tables == NULL){
-            $tables = DB::select('SHOW TABLES', 'COLUMN');
-        }
-
-        return $tables;
-    } 
-
     function setup($name) {
         static $prev_name;
 
-        if ($this->class_name != null && $this->class_name == $prev_name)
-            return;
+        //if ($this->class_name != null && $this->class_name == $prev_name)
+        //    return;
 
+        $name = ucfirst($name);    
         $name_lo = strtolower($name);
 
         if (Strings::endsWith('model', $name_lo)){
@@ -160,28 +188,22 @@ class MakeController extends Controller
         $name_uc = ucfirst($name);
 
         if (strpos($name, '_') !== false) {
-            $class_name  = Strings::toCamelCase($name);
-            $model_table = $name_lo;
+            $camel_case  = Strings::snakeToCamel($name);
+            $snake_case = $name_lo;
         } elseif ($name == $name_lo){
-            $model_table = $name;
-            $class_name  = ucfirst($name);
+            $snake_case = $name;
+            $camel_case  = ucfirst($name);
         } elseif ($name == $name_uc) {
-            $class_name  = $name; 
+            $camel_case  = $name; 
         }
         
-        if (!isset($model_table)){
-            $model_table = Strings::fromCamelCase($class_name);
+        if (!isset($snake_case)){
+            $snake_case = Strings::camelToSnake($camel_case);
         }
 
-        $this->model_table  = $model_table;
-        $this->class_name   = $class_name;
-        $this->model_name   = $class_name . 'Model';
-        $this->ctr_name     = $class_name . 'Controller';
-        $this->api_name     = $class_name;     
+        $this->camel_case  = $camel_case; 
+        $this->snake_case  = $snake_case;
         
-        //Debug::dd($this->model_name,  'model name');
-        //Debug::dd($this->model_table, 'table name');
-
         $prev_name = $name;
     }
 
@@ -190,21 +212,49 @@ class MakeController extends Controller
                                 [-m | --model] 
                                 [-c | --controller ] 
                                 [-a | --api ] 
-                                [-f | --force]
+                                [--force | -f]
 
                                 -sam  = -s -a -m
                                 -samf = -s -a -m -f
 
-             any  *             options                   
+        make any  all           options    
+
+        Ej:
+
+        make any tbl_contacto -sam --from:dsi
+
+        make any all          -sam --from:dsi
+
+
+        Remember to call "php com" before "com"
+
+        Ej:
+
+        php com make any all -samf --from:dsi
 
     */
-    function any($name, ...$opt){        
+    function any($name, ...$opt){ 
         if (count($opt) == 0){
             echo "Nothing to do. Please specify action using options.\r\nUse 'make help' for help.\r\n";
             exit;
         }
 
-        $names = $name == '*' ? $this->getTables() : [$name];
+        foreach ($opt as $o){            
+            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $from_db = $matches[1];
+                DB::getConnection($from_db);
+            }
+        }
+
+        if ($name == 'all'){
+            $tables = Schema::getTables();
+            
+            foreach ($tables as $table){
+                $this->schema($table, ...$opt);
+            }
+        }
+
+        $names = $name == 'all' ? $tables : [$name];
         
         switch($opt[0]){
             case '-sam':
@@ -229,6 +279,14 @@ class MakeController extends Controller
                 $opt = array_intersect($opt, ['-f', '--force']);
                 $this->controller($name, ...$opt);
             }
+            if (in_array('--console', $opt)){
+                $opt = array_intersect($opt, ['-f', '--force']);
+                $this->console($name, ...$opt);
+            }
+            if (in_array('-p', $opt) || in_array('--service', $opt) || in_array('--provider', $opt)){
+                $opt = array_intersect($opt, ['-f', '--force']);
+                $this->provider($name, ...$opt);
+            }
         }            
     }
 
@@ -247,7 +305,7 @@ class MakeController extends Controller
 
         $this->setup($name);    
     
-        $filename = $this->ctr_name.'.php';
+        $filename = $this->camel_case . 'Controller'.'.php';
         $dest_path = CONTROLLERS_PATH . $sub_path . $filename;
 
         if (in_array($dest_path, $this->excluded_files)){
@@ -277,7 +335,64 @@ class MakeController extends Controller
         }
         
         $data = file_get_contents(self::CONTROLLER_TEMPLATE);
-        $data = str_replace('__NAME__', $this->ctr_name, $data);
+        $data = str_replace('__NAME__', $this->camel_case . 'Controller', $data);
+        $data = str_replace('__NAMESPACE', $namespace, $data);
+
+        $ok = (bool) file_put_contents($dest_path, $data);
+        
+        if (!$ok) {
+            throw new \Exception("Failed trying to write $dest_path");
+        } else {
+            print_r("$dest_path was generated\r\n");
+        } 
+    }
+
+    function console($name, ...$opt) {
+        $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
+        $namespace = 'simplerest\\controllers';
+
+        $sub_path = '';
+        if (strpos($name, DIRECTORY_SEPARATOR) !== false){
+            $exp = explode(DIRECTORY_SEPARATOR, $name);
+            $sub = implode(DIRECTORY_SEPARATOR, array_slice($exp, 0, count($exp)-1));
+            $sub_path = $sub . DIRECTORY_SEPARATOR;
+            $name = $exp[count($exp)-1];
+            $namespace .= "\\$sub";
+        }
+
+        $this->setup($name);    
+    
+        $filename = $this->camel_case . 'Controller'.'.php';
+        $dest_path = CONTROLLERS_PATH . $sub_path . $filename;
+
+        if (in_array($dest_path, $this->excluded_files)){
+            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
+            return; 
+        } elseif (file_exists($dest_path)){
+            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
+                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
+                return;
+            } elseif (!is_writable($dest_path)){
+                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
+                return;
+            }
+        }
+    
+        if (in_array($filename, $this->excluded_files)){
+            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
+            return; 
+        } elseif (file_exists($dest_path)){
+            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
+                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
+                return;
+            } elseif (!is_writable($dest_path)){
+                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
+                return;
+            }
+        }
+        
+        $data = file_get_contents(self::CONSOLE_TEMPLATE);
+        $data = str_replace('__NAME__', $this->camel_case . 'Controller', $data);
         $data = str_replace('__NAMESPACE', $namespace, $data);
 
         $ok = (bool) file_put_contents($dest_path, $data);
@@ -290,9 +405,26 @@ class MakeController extends Controller
     }
 
     function api($name, ...$opt) { 
+        foreach ($opt as $o){            
+            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $from_db = $matches[1];
+                DB::getConnection($from_db);
+            }
+        }
+
+        if ($name == 'all'){
+            $tables = Schema::getTables();
+            
+            foreach ($tables as $table){
+                $this->api($table, ...$opt);
+            }
+
+            return;
+        }
+
         $this->setup($name);    
     
-        $filename = $this->api_name.'.php';
+        $filename = $this->camel_case.'.php';
 
         $dest_path = API_PATH . $filename;
 
@@ -323,7 +455,7 @@ class MakeController extends Controller
         }
 
         $data = file_get_contents(self::API_TEMPLATE);
-        $data = str_replace('__NAME__', $this->api_name, $data);
+        $data = str_replace('__NAME__', $this->camel_case, $data);
         $data = str_replace('__SOFT_DELETE__', 'true', $data); // debe depender del schema
 
         $ok = (bool) file_put_contents($dest_path, $data);
@@ -336,20 +468,59 @@ class MakeController extends Controller
     }
 
     protected function get_pdo_const(string $sql_type){
-        if (preg_match('/int\([0-9]+\)$/', $sql_type) == 1){
+        if ((preg_match('/int\([0-9]+\)$/', $sql_type) == 1) || (preg_match('/int$/', $sql_type) == 1)){
             return 'INT';
         } else {
             return 'STR';
         }
     }
 
-    function schema($name, ...$opt) { 
+    function schema($name, ...$opt) 
+    {
+        foreach ($opt as $o){            
+            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $from_db = $matches[1];
+                DB::getConnection($from_db);
+            }
+        }
+
+        if ($name == 'all'){
+            $tables = Schema::getTables();
+            
+            foreach ($tables as $table){
+                $this->schema($table, ...$opt);
+            }
+
+            return;
+        }
+
         $this->setup($name);    
 
-        $filename = $this->class_name.'Schema.php';
+        $filename = $this->camel_case.'Schema.php';
 
+
+        $file = file_get_contents(self::SCHEMA_TEMPLATE);
+        $file = str_replace('__NAME__', $this->camel_case.'Schema', $file);
+        
         // destination
-        $dest_path = self::SCHEMAS_PATH . $filename;
+
+        DB::getConnection();
+        $current = DB::getCurrentConnectionId();
+     
+        if ($current == Factory::config()['db_connection_default']){
+            $file = str_replace('namespace simplerest\models\schemas', 'namespace simplerest\models\schemas' . "\\$current", $file);
+
+            Files::mkdir_ignore(self::SCHEMAS_PATH . $current);
+            $dest_path = self::SCHEMAS_PATH . "$current/". $filename;
+        }  else {
+            $dest_path = self::SCHEMAS_PATH . $filename;
+        } 
+
+        if (!Schema::hasTable($name)){
+            echo "Tabla '$name' no encontrada. Recuerde el nombre es sensible al case\r\n";
+            return;
+        }
+        
 
         if (in_array($dest_path, $this->excluded_files)){
             echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
@@ -377,11 +548,8 @@ class MakeController extends Controller
             }
         }
 
-        $file = file_get_contents(self::SCHEMA_TEMPLATE);
-        $file = str_replace('__NAME__', $this->class_name.'Schema', $file);
-
         try {
-            $fields = DB::select("SHOW COLUMNS FROM {$this->model_table}");
+            $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}");
         } catch (\Exception $e) {
             echo '[ SQL Error ] '. DB::getLog(). "\r\n";
             echo $e->getMessage().  "\r\n";
@@ -402,8 +570,14 @@ class MakeController extends Controller
             if ($field['Null']  == 'YES') { $nullables[] = $field['Field']; }
             
             if ($field['Key'] == 'PRI'){ 
+                // Posible fuente de problemas !!!!!!!!!!!!!!!!!!!
                 if ($id_name != NULL){
-                    throw new \Exception("Only one Primary Key is allowed by convention");
+                    $msg = "A table should have simple Primary Key by convention for table \"$name\"";
+                    
+                    Files::logger($msg);
+                    //Files::logger($msg, 'errores.txt');
+                    //dd($msg, 'Warning');
+                    //return;
                 }
                 
                 $id_name = $field['Field'];
@@ -414,7 +588,7 @@ class MakeController extends Controller
             }
             $types[$field['Field']] = $this->get_pdo_const($field['Type']);
             $types_raw[$field['Field']] = $field['Type'];
-
+         
             if ($field['Key'] == 'PRI'){ 
                 $field_name_lo = strtolower($field['Field']);
                 if ($field_name_lo == 'uuid' || $field_name_lo == 'guid'){
@@ -427,9 +601,11 @@ class MakeController extends Controller
             }    
         }
 
+        /*
         if ($id_name == NULL){
             throw new \Exception("No Primary Key found!");
         }
+        */
 
         $nullables = array_unique($nullables);
 
@@ -452,17 +628,41 @@ class MakeController extends Controller
         $rules  = "[\r\n". implode(",\r\n", $_rules). "\r\n\t\t\t]";
 
         if ($uuid){
-            $nullables[] = $id_name;
+            if (!empty($id_name)){
+                $nullables[] = $id_name;
+            }
+                
             //Strings::replace('### IMPORTS', 'use simplerest\traits\Uuids;', $file); 
             //Strings::replace('### TRAITS', "use Uuids;", $file);        
         }
 
-        Strings::replace('__TABLE_NAME__', "'{$this->model_table}'", $file);  
-        Strings::replace('__ID__', "'$id_name'", $file);  
+
+        /*
+            Relationships
+        */
+
+        $relations = '';
+        $rels = Schema::getAllRelations($name, true);
+        
+        $g = [];
+        $c = 0;
+        foreach ($rels as $tb => $rs){
+            $grp = "\t\t\t\t\t" . implode(",\r\n\t\t\t\t\t", $rs);
+            $grp = ($c != 0 ? "\t\t\t\t" : '') . "'$tb' => [\r\n$grp\r\n\t\t\t\t]";
+            $g[] = $grp;
+            $c++;
+        }
+
+        $relations = implode(",\r\n", $g);
+
+
+        Strings::replace('__TABLE_NAME__', "'{$this->snake_case}'", $file);  
+        Strings::replace('__ID__', !empty($id_name) ? "'$id_name'" : 'NULL', $file);          
         Strings::replace('__ATTR_TYPES__', $attr_types, $file);
         Strings::replace('__NULLABLES__', '['. implode(', ',array_map($escf, $nullables)). ']',$file);        
         //Strings::replace('__NOT_FILLABLE__', '['.implode(', ',array_map($escf, $not_fillable)). ']',$file);
         Strings::replace('__RULES__', $rules, $file);
+        Strings::replace('__RELATIONS__', $relations, $file);
         
 
         $ok = (bool) file_put_contents($dest_path, $file);
@@ -476,10 +676,11 @@ class MakeController extends Controller
 
     function getUuid(){
         try {
-            $fields = DB::select("SHOW COLUMNS FROM {$this->model_table}");
+            $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}");
         } catch (\Exception $e) {
             echo '[ SQL Error ] '. DB::getLog(). "\r\n";
             echo $e->getMessage().  "\r\n";
+            throw $e;
         }
         
         $id_name =  NULL;
@@ -500,11 +701,28 @@ class MakeController extends Controller
     }
 
     function model($name, ...$opt) { 
-        $this->setup($name);    
+        foreach ($opt as $o){            
+            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $from_db = $matches[1];
+                DB::getConnection($from_db);
+            }
+        }
 
-        $filename = $this->model_name.'.php';
+        if ($name == 'all'){
+            $tables = Schema::getTables();
+            
+            foreach ($tables as $table){
+                $this->model($table, ...$opt);
+            }
 
-        // destination
+            return;
+        }
+
+        $this->setup($name);  
+
+        $filename = $this->camel_case . 'Model'.'.php';
+
+        // destination        
         $dest_path = MODELS_PATH . $filename;
 
         if (in_array($dest_path, $this->excluded_files)){
@@ -534,15 +752,23 @@ class MakeController extends Controller
         }
 
         $file = file_get_contents(self::MODEL_TEMPLATE);
-        $file = str_replace('__NAME__', $this->class_name.'Model', $file);
+        $file = str_replace('__NAME__', $this->camel_case.'Model', $file);
 
         $imports = [];
         $traits  = [];
         $proterties = [];
 
-        $imports[] = "use simplerest\\models\\schemas\\{$this->class_name}Schema;";
+
+        DB::getConnection();
+        $current = DB::getCurrentConnectionId();
+     
+        if ($current == Factory::config()['db_connection_default']){
+            $extra = "$current\\";
+        }
+
+        $imports[] = "use simplerest\\models\\schemas\\$extra{$this->camel_case}Schema;";
        
-        Strings::replace('__SCHEMA_CLASS__', "{$this->class_name}Schema", $file); 
+        Strings::replace('__SCHEMA_CLASS__', "{$this->camel_case}Schema", $file); 
 
         if ($uuid = $this->getUuid()){
             $imports[] = 'use simplerest\traits\Uuids;';
@@ -561,4 +787,113 @@ class MakeController extends Controller
            echo "[ Done ] '$dest_path' was generated\r\n";
         } 
     }
+
+    function migration($name, ...$opt) 
+    {
+        $this->setup($name);
+
+        // 2020_10_28_141833_yyy
+        $date = date("Y_m_d");
+        $secs = time() - 1603750000;
+        $filename = $date . '_'. $secs . '_' . $this->snake_case . '.php'; 
+
+        // destination
+        $dest_path = MIGRATIONS_PATH . $filename;
+
+        $file = file_get_contents(self::MIGRATION_TEMPLATE);
+        $file = str_replace('__NAME__', $this->camel_case, $file);
+
+        $to_db   = null;
+        $tb_name = null;
+        $from_db = null;
+
+        $up_rep = '';
+        foreach ($opt as $o){
+            if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $to_db = $matches[1];
+            }
+
+            if (preg_match('/^--table[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $tb_name = $matches[1];
+            }
+
+            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $from_db = $matches[1];
+            }
+        }
+
+
+        dd($from_db, 'FROM DB');
+
+
+        if (!empty($to_db)){
+            $up_rep .= "Factory::config()['db_connection_default'] = '$to_db';\r\n\r\n";
+        }
+        
+        if (!empty($tb_name)){
+            if (!empty($up_rep)){
+                $up_rep .= "\t\t";
+            }
+
+            $up_rep .= "\$sc = new Schema('$tb_name');\r\n";
+        }
+        
+        $up_rep .= "";        
+        Strings::replace('### UP', $up_rep, $file);
+
+
+        $ok = (bool) file_put_contents($dest_path, $file);
+        
+        if (!$ok) {
+            throw new \Exception("Failed trying to write $dest_path");
+        } else {
+           echo "[ Done ] '$dest_path' was generated\r\n";
+        } 
+    }    
+
+
+    function provider($name, ...$opt) {
+        $this->setup($name);    
+    
+        $filename = $this->camel_case . 'ServiceProvider'.'.php';
+        $dest_path = self::SERVICE_PROVIDERS_PATH . $filename;
+
+        if (in_array($dest_path, $this->excluded_files)){
+            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
+            return; 
+        } elseif (file_exists($dest_path)){
+            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
+                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
+                return;
+            } elseif (!is_writable($dest_path)){
+                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
+                return;
+            }
+        }
+
+        if (in_array($filename, $this->excluded_files)){
+            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
+            return; 
+        } elseif (file_exists($dest_path)){
+            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
+                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
+                return;
+            } elseif (!is_writable($dest_path)){
+                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
+                return;
+            }
+        }
+
+        $data = file_get_contents(self::SERVICE_PROVIDER_TEMPLATE);
+        $data = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $data);
+        
+        $ok = (bool) file_put_contents($dest_path, $data);
+        
+        if (!$ok) {
+            throw new \Exception("Failed trying to write $dest_path");
+        } else {
+            print_r("$dest_path was generated\r\n");
+        } 
+    }
+
 }
