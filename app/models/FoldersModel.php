@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\FoldersSchema;
+use simplerest\models\schemas\main\FoldersSchema;
 
 class FoldersModel extends Model
  { 

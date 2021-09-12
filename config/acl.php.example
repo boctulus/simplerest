@@ -19,50 +19,48 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     $acl
     ->addRole('guest', -1)
+    ->addResourcePermissions('roles', ['read_all'])
+    ->addResourcePermissions('products', ['read_all'])  //  ---- es importante el read_all_trashcah !!!
     ->addResourcePermissions('baz', ['read'])
     ->addResourcePermissions('bar', ['read', 'write'])
-
+    ->addResourcePermissions('divisas', ['read', 'write'])
+    ->addResourcePermissions('cotizaciones', ['read', 'write'])
     //->setGuest('guest')
 
     ->addRole('registered', 1)
     ->addInherit('guest')
     ->addResourcePermissions('user_roles', ['read'])
+    ->addResourcePermissions('products', ['write'])
     ->addResourcePermissions('super_cool_table', ['read', 'write'])
-    
-    
-    ->addRole('usuario', 10) 
-    ->addInherit('registered')
-    ->addSpecialPermissions(['read_all'])
-    
 
-    ->addRole('admin', 50) 
+    ->addRole('basic', 2) 
     ->addInherit('registered')
-    //->addResourcePermissions('tbl_empresa', ['read', 'write'])
-    ->addSpecialPermissions(['read_all'])
-    
+    ->addResourcePermissions('products', ['write'])    
+    ->addResourcePermissions('files', ['read','list_all', 'write'])
+    //->addSpecialPermissions(['read_all'])
+
+
+    //->addRole('registeredO', 1)
+    //->addRole('registered', 10)
+
+    ->addRole('regular', 3)
+    ->addInherit('registered')
+    ->addResourcePermissions('products', ['read', 'write'])
+    ->addResourcePermissions('foo', ['read', 'update'])
+    //->addResourcePermissions('users', ['read', 'update'])
+
    
-    ->addRole('supervisor', 100)  // salta sino especifico el id al leerlo
+    ->addRole('supervisor', 502)  // salta sino especifico el id al leerlo
     ->addInherit('registered')
     ->addResourcePermissions('users', ['read_all'])  // <--
 
+    ->addRole('admin', 100)
+    ->addInherit('registered')
+    ->addSpecialPermissions(['read_all', 'write_all', 'read_all_folders', 'lock', 'fill_all', 'impersonate'])
  
-    ->addRole('dsi', 500)
-    ->addInherit('supervisor')
-    ->addSpecialPermissions([
-        'read_all', 
-        'write_all', 
-        'read_all_folders', 
-        'lock', 
-        'fill_all', 
-        'impersonate',        
-        'read_all_trashcan',
-        'write_all_trashcan',
-        'write_all_folders', 
-        'write_all_collections'
-    ])     
 
-    ->addRole('superadmin', 900)
-    ->addInherit('dsi')
+    ->addRole('superadmin', 500)
+    ->addInherit('admin')
     ->addSpecialPermissions([
         'read_all_trashcan',
         'write_all_trashcan',
@@ -72,18 +70,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
         'grant'
     ]);
 
-                            
-
-        
-        
-
-    /////////////////////
-
-    //dd($acl->hasResourcePermission('list', ['basic'], 'super_cool_table'));
-    //dd($acl->getSpPermissions());
-    //dd($acl->getRolePermissions(), 'perms');
-    //exit;    
-    /////////////////////
+                        
 
     if (!is_writable($acl_file)){
         throw new \Exception("$acl_file is not writable. Check permissions");   

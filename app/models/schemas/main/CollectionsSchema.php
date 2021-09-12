@@ -1,38 +1,38 @@
 <?php
 
-namespace simplerest\models\schemas;
+namespace simplerest\models\schemas\main;
 
 use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class FoldersSchema implements ISchema
+class CollectionsSchema implements ISchema
 { 
 	### TRAITS
 	
 	function get(){
 		return [
-			'table_name'	=> 'folders',
+			'table_name'	=> 'collections',
 
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'tb' => 'STR',
-				'name' => 'STR',
-				'belongs_to' => 'INT'
+				'entity' => 'STR',
+				'refs' => 'STR',
+				'belongs_to' => 'INT',
+				'created_at' => 'STR'
 			],
 
 			'nullable'		=> ['id'],
 
 			'rules' 		=> [
-				'tb' => ['max' => 40],
-				'name' => ['max' => 40]
+				'entity' => ['max' => 80]
 			],
 
 			'relationships' => [
 				'users' => [
-					['users.id','folders.belongs_to']
+					['users.id','collections.belongs_to']
 				]
 			]
 		];

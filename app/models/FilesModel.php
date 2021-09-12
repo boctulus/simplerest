@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\FilesSchema;
+use simplerest\models\schemas\main\FilesSchema;
 use simplerest\traits\Uuids;
 
 class FilesModel extends Model
