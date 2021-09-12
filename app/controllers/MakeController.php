@@ -125,19 +125,20 @@ class MakeController extends Controller
         echo <<<STR
         Commmands:
                         
-        make schema SuperAwesome [--force | -f]
         make schema super_awesome  [--force | -f]
-                 
+
         make model SuperAwesomeModel  [--force | -f]
         make model SuperAwesome [--force | -f]
         make model super_awesome  [--force | -f]
-         
+
         make controller SuperAwesome  [--force | -f]
-        
-        make api SuperAwesome  [--force | -f]
+
+        make api SuperAwesome   [--force | -f]
         make api super_awesome  [--force | -f]
 
-        php com make model all --from:dsi [--force | -f]
+        make api all --from:dsi [--force | -f]
+
+        <-- "from:" is required in this case.]
          
         make any SuperAwesome   [--schema | -s] 
                                 [--model | -m] 
@@ -148,10 +149,18 @@ class MakeController extends Controller
                                 [--force | -f]
                                 
                                 -sam  = -s -a -m
-                                -samf = -s -a -m -f                                                  
+                                -samf = -s -a -m -f
 
         make migration rename_some_column
         make migration another_table_change --table=foo
+
+        Examples:
+
+        make any baz -s -m -a -f
+        make any tbl_contacto -sam --from:dsi
+        make any all -sam  --from:dsi
+        make any all -samf --from:dsi
+        make any all -s -f --from:main                        
 
         STR;
     }
