@@ -32,14 +32,20 @@ class InstallController extends ConsoleController
 
             dd($sentence, 'SENTENCE');
 
-            try {
+            #try {
                 $ok = Model::query($sentence);
-            } catch (\Exception $e){
-                dd($e, 'Sql Exception');
-            }
+            #} catch (\Exception $e){
+                #dd($e, 'Sql Exception');
+            #}
         }
 
         Model::query('SET foreign_key_checks = 1');
+
+        $res = shell_exec("php com make schema all -f --from:main");
+        dd($res);
+
+        $res = shell_exec("php com make model all --from:main");
+        dd($res);
     }
 
 }

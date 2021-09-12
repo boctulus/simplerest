@@ -906,17 +906,16 @@ class AuthController extends Controller implements IAuth
 		}
     
         // Queue email
-        $ok = (bool) DB::table('messages')->create([
-            'from_email' => null,
-            'from_name'  => null,
-            'to_email'   => $email, 
+        $ok = (bool) DB::table('email_notifications')
+        ->create([
+            'to_addr'   => $email, 
             'to_name'    => '', 
             'subject'    => 'Cambio de contraseña', 
             'body'       => "Para cambiar la contraseña siga el enlace:<br/><a href='$url'>$url</a>"
         ]);
 
         /*
-            Posteriormente leer la tabla messages y....
+            Posteriormente leer la tabla email_notifications y....
             basado en un tamplate, hacer algo como:
 
             $mail_sent = Utils::send_mail($email, null, 'Recuperación de password', "Hola!<p/>Para re-establecer la el password siga el enlace</br>$url");
@@ -1033,6 +1032,115 @@ class AuthController extends Controller implements IAuth
             }     
         }	
 
-    }      
+    }   
+    
+    function change_pass_process()
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+
+        $data  = Factory::request()->getBody();
+
+        if ($data == null)
+            return;
+
+        if (!isset($data->password) || empty($data->password))
+            Factory::response()->sendError('Bad request', 400, 'Lacks password in request');
+
+        $request = Factory::request();
+
+        $headers = $request->headers();
+        $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+        if (empty($auth)){
+            Factory::response()->sendError('Authorization not found',400);
+        }
+
+        try {                                             
+            list($refresh) = sscanf($auth, 'Bearer %s');
+
+            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['email_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+            
+            if (empty($payload))
+                Factory::response()->sendError('Unauthorized!',401);                     
+
+            if (empty($payload->uid)){
+                Factory::response()->sendError('uid is needed',400);
+            }
+
+            $ok = DB::table('users')
+            ->find($payload->uid)
+            ->update([
+                'password' => $data->password
+            ]);
+
+            if (!$ok){
+                Factory::response()->sendError("Unexpected error trying to update password", 500); 
+            }
+
+            $uid = $payload->uid;
+            
+            $u = DB::table($this->users_table);
+            $row = $u->find($uid)->first();
+
+
+            $active = 1;    
+            if ($u->inSchema(['active'])){
+                $active = $row['active']; 
+
+                if ($active == null) {
+
+                    if ($row['confirmed_email'] === "0") {
+                        Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
+                    } else {
+                        Factory::response()->sendError('Non authorized', 403, 'Account pending for activation');
+                    }
+                }
+
+                if ($active == 0 || (string) $active === "0") {
+                    Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+                } 
+            }                
+
+            // Fetch roles && permissions
+            $acl   = Factory::acl();
+
+            $uid   = $payload->uid;            
+            $roles = $acl->fetchRoles($uid); 
+            $perms = $acl->fetchPermissions($uid);
+
+            //var_export($perms);
+
+            $access  = $this->gen_jwt([ 'uid' => $uid, 
+                                        'roles' => $roles, 
+                                        'permissions' => $perms,
+                                        'active' => $active, 
+            ], 'access_token');
+
+            // el refresh no debe llevar ni roles ni permisos por seguridad !
+            $refresh = $this->gen_jwt([ 'uid' => $uid
+            ], 'refresh_token');
+
+            Factory::response()->send([ 
+                                        'access_token'=> $access,
+                                        'token_type' => 'bearer', 
+                                        'expires_in' => $this->config['access_token']['expiration_time'],
+                                        'refresh_token' => $refresh,   
+                                        'roles' => $roles,
+                                        'uid' => $uid
+                                        ]);
+
+        } catch (\Exception $e) {
+            /*
+            * the token was not able to be decoded.
+            * this is likely because the signature was not able to be verified (tampered token)
+            *
+            * reach this point if token is empty or invalid
+            */
+            Factory::response()->sendError($e->getMessage(),401);
+        }	
+
+    }
+
 
 }

@@ -17,7 +17,7 @@ class MigrationsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'STR',
+				'id' => 'INT',
 				'migration' => 'STR',
 				'batch' => 'INT'
 			],
