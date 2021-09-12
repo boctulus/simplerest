@@ -29,7 +29,7 @@ class UsersSchema implements ISchema
 				'deleted_at' => 'STR'
 			],
 
-			'nullable'		=> ['id', 'active', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
+			'nullable'		=> ['id', 'username', 'active', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
 
 			'rules' 		=> [
 				'username' => ['max' => 15],
@@ -40,32 +40,32 @@ class UsersSchema implements ISchema
 			],
 
 			'relationships' => [
-				'folder_permissions' => [
-					['folder_permissions.belongs_to','users.id']
-				],
-				'user_tb_permissions' => [
-					['user_tb_permissions.user_id','users.id']
-				],
-				'files' => [
-					['files.belongs_to','users.id']
+				'folder_other_permissions' => [
+					['folder_other_permissions.belongs_to','users.id']
 				],
 				'api_keys' => [
 					['api_keys.user_id','users.id']
 				],
-				'folder_other_permissions' => [
-					['folder_other_permissions.belongs_to','users.id']
-				],
-				'user_sp_permissions' => [
-					['user_sp_permissions.user_id','users.id']
-				],
 				'folders' => [
 					['folders.belongs_to','users.id']
+				],
+				'collections' => [
+					['collections.belongs_to','users.id']
 				],
 				'user_roles' => [
 					['user_roles.user_id','users.id']
 				],
-				'collections' => [
-					['collections.belongs_to','users.id']
+				'user_sp_permissions' => [
+					['user_sp_permissions.user_id','users.id']
+				],
+				'folder_permissions' => [
+					['folder_permissions.belongs_to','users.id']
+				],
+				'files' => [
+					['files.belongs_to','users.id']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','users.id']
 				]
 			]
 		];
