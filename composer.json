@@ -15,9 +15,7 @@
         "google/apiclient": "^2.0",
         "facebook/graph-sdk": "^5.7",
         "phpmailer/phpmailer": "^6.1",
-        "guzzlehttp/guzzle": "~7.0",
         "symfony/polyfill-uuid": "^1.18",
-        "srmklive/paypal": "^3.0",
         "vlucas/phpdotenv": "^5.2"
     },
     "autoload": {
