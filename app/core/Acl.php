@@ -2,84 +2,51 @@
 
 namespace simplerest\core;
 
-use simplerest\core\Model;
+use simplerest\core\interfaces\IAcl;
 use simplerest\libs\DB;
 use simplerest\libs\Factory;
-use simplerest\libs\Debug;
 
-class Acl 
+abstract class Acl implements IAcl
 {
-    protected $roles = [];
-    protected $role_perms = [];
     protected $role_ids   = [];
     protected $role_names = [];
-    protected $sp_permissions = [];
-    protected $sp_permissions_names = []; 
+    protected $role_perms = [];
     protected $current_role;
     protected $guest_name = 'guest';
-    
-    public function __construct() { 
-        $this->config = Factory::config();
-        $this->setup();
+    protected $sp_permissions = [];    
+
+
+    public function __construct()
+    {
+        $this->sp_permissions = [
+            'read_all',
+            'write_all',
+            'read_all_folders',
+            'write_all_folders',
+            'read_all_trashcan',
+            'write_all_trashcan',
+            'lock',
+            'transfer',
+            'impersonate',
+            'fill_all',
+            'grant'
+        ]; 
     }
 
-    protected function setup(){        
-        // get all available sp_permissions
-        $this->sp_permissions = DB::table('sp_permissions')->get();
-
-        foreach($this->sp_permissions as $spr){
-            $this->sp_permissions_names[] = $spr['name'];
-        }
-
-        // get all available roles
-        $this->roles = DB::table('roles')->get();
-
-        foreach($this->roles as $rr){
-            $this->role_names[] = $rr['name'];
-        }
-    }
-
-    public function getSpPermissions(){
-        return $this->sp_permissions_names;
-    }
-
-    public function addRole(string $role_name, $role_id = NULL) {
-        $create = true;
-
+    public function addRole(string $role_name, $role_id = null) {
+       
         if (in_array($role_id, $this->role_ids)){
-            $create = false;
-
-            foreach ($this->roles as $rr){
-                if ($rr['id'] == $role_id && $rr['name'] != $role_name){
-                    throw new \Exception("Role id '$role_id' can not be repetead. Trying to assign to '$role_name' but it was used for '{$rr['name']}' and it should be UNIQUE.");      
-                }
-            }
+            throw new \Exception("Role id '$role_id' can not be repetead. It should be UNIQUE.");
         }
 
         if (in_array($role_name, $this->role_names)){
-            $create = false;
-            
-            foreach ($this->roles as $rr){
-                if ($rr['id'] != $role_id && $rr['name'] == $role_name){
-                    if ($role_id != NULL) {
-                        throw new \Exception("Role name '$role_name' can not be repetead. Trying to assign to id '$role_id' but it was used for '{$rr['id']}' and it should be UNIQUE.");  
-                    }
-                       
-                }
-            }
+            throw new \Exception("Role name '$role_name' can not be repetead. It should be UNIQUE.");
         }
 
         if ($role_name == 'guest'){
             $this->guest_name = 'guest';
         }
 
-        if ($create){
-            $role_id = DB::table('roles')->create([
-                'id'   => $role_id,
-                'name' => $role_name
-            ]);
-        }
-        
         $this->role_ids[]   = $role_id;
         $this->role_names[] = $role_name;
         
@@ -104,7 +71,6 @@ class Acl
         return $this;
     }    	
 	    
-
     public function addInherit(string $role_name, $to_role = null) {
         if ($to_role != null){
             $this->current_role = $to_role;
@@ -155,7 +121,7 @@ class Acl
 
         // chequear que $sp_permissions no se cualquier cosa
         foreach ($sp_permissions as $spp){
-            if (!in_array($spp, $this->sp_permissions_names)){
+            if (!in_array($spp, $this->sp_permissions)){
                 throw new \Exception("'$spp' is not a valid special permission");
             }
 
@@ -232,12 +198,9 @@ class Acl
         return $this;
     }
 
-    
-    /*
-        Methods which could be static
-    */
 
-    public function setGuest(string $guest_name){
+
+   public function setGuest(string $guest_name){
         if (!in_array($guest_name, $this->role_names)){
             throw new \Exception("Please add the rol '$guest_name' *before* to set as guest role to avoid mistakes");
         }
@@ -280,16 +243,13 @@ class Acl
         return isset($this->role_perms[$role_name]);
     }
 
-    // sería mucho más rápido si pudiea acceder como $sp_permissions['perm']['role']
-    // solo sería hacer un isset($sp_permissions['perm']['role'])
     public function hasSpecialPermission(string $perm, Array $role_names){
-        if (!in_array($perm, $this->sp_permissions_names)){
+        if (!in_array($perm, $this->sp_permissions)){
             throw new \InvalidArgumentException("hasSpecialPermission : invalid permission '$perm'");    
         }
 
         foreach ($role_names as $r_name){
             if (!isset($this->role_perms[$r_name])){
-                //var_dump($this->role_perms);
                 throw new \InvalidArgumentException("hasSpecialPermission : invalid role name '$r_name'");
             }
 
@@ -301,11 +261,6 @@ class Acl
         return false;
     }
 
-    /*
-        @param $perm string show|list|create|update|delete
-        @param $role_names Array 
-        @param $resource string
-    */
     public function hasResourcePermission(string $perm, Array $role_names, string $resource){
         if (!in_array($perm, ['show', 'show_all', 'list', 'list_all', 'create', 'update', 'delete'])){
             throw new \InvalidArgumentException("hasResourcePermission : invalid permission '$perm'");    
@@ -351,51 +306,129 @@ class Acl
         return $this->role_perms;
     }
 
-   
+
+    ////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    // Also needed but not in interface
+
+    public function getTbPermissions(string $table = NULL){
+        if (empty($this->permissions)){
+            return NULL;
+        }
+
+        $tb_perms = $this->permissions['tb'];
+
+        if ($table == NULL)
+            return $tb_perms;
+
+        if (!isset($tb_perms[$table]))
+            return NULL;
+
+        return $tb_perms[$table];
+    }
+
+
+    // Related with AuthController !
+
+    function getUserIdFromApiKey($api_key){
+        $uid = DB::table('api_keys')
+        ->where(['value', $api_key])
+        ->value('user_id');
+
+        return $uid;
+    }
+
+    function fetchRoles($uid) : Array {
+        $rows = DB::table('user_roles')
+        ->assoc()
+        ->where(['user_id', $uid])
+        ->select(['role_id as role'])
+        ->get();	
+
+        $acl = Factory::acl();
+
+        $roles = [];
+        if (count($rows) != 0){
+            foreach ($rows as $row){
+                $roles[] = $acl->getRoleName($row['role']);
+            }
+        }
+
+        //dd($roles, 'roles');
+        return $roles;
+    }
+
+    function fetchTbPermissions($uid) : Array {
+        $_permissions = DB::table('user_tb_permissions')
+        ->assoc()
+        ->select([  
+                    'tb', 
+                    'can_list_all as la',
+                    'can_show_all as ra', 
+                    'can_list as l',
+                    'can_show as r',
+                    'can_create as c',
+                    'can_update as u',
+                    'can_delete as d'])
+        ->where(['user_id' => $uid])
+        ->get();
+
+        $perms = [];
+        foreach ((array) $_permissions as $p){
+            $tb = $p['tb'];
+            $perms[$tb] =  $p['la'] * 64 + $p['ra'] * 32 +  $p['l'] * 16 + $p['r'] * 8 + $p['c'] * 4 + $p['u'] * 2 + $p['d'];
+        }
+
+        return $perms;
+    }
+
+    function fetchSpPermissions($uid) : Array {
+        $perms = DB::table('user_sp_permissions')
+        ->assoc()
+        ->where(['user_id' => $uid])
+        ->join('sp_permissions', 'user_sp_permissions.sp_permission_id', '=', 'sp_permissions.id')
+        ->pluck('name');
+
+        return $perms ?? [];
+    }
+
+    function fetchPermissions($uid) : Array { 
+        return [
+                'tb' => $this->fetchTbPermissions($uid), 
+                'sp' => $this->fetchSpPermissions($uid) 
+        ];
+    }
+
+    public function addUserRoles(Array $roles, $uid) {
+        foreach ($roles as $role) {
+            $role_id = $this->getRoleId($role);
+
+            if ($role_id == null){
+                throw new \Exception("Role $role is invalid");
+            }
+            
+            // lo ideal es validar los roles y obtener los ids para luego hacer un "INSERT in bulk"
+            $ur_id = DB::table('user_roles')
+            ->where(['id' => $uid])
+            ->create(['user_id' => $uid, 'role_id' => $role_id]);
+
+            if (empty($ur_id))
+                throw new \Exception("Error registrating user role $role");             
+        }         
+    }
+
+    public function isGuest(){
+        return $this->roles == [$this->getGuest()];
+    }
+
+    public function isRegistered(){
+        return !$this->isGuest();
+    }
+
+    public function getRoles(){
+        return $this->roles;
+    }
 
 }
 
-
-// Testing
-
-/*
-
-$acl = new Acl();
-
-$acl
-->addRole('guest', -1)
-->addResourcePermissions('products', ['show'])
-->addResourcePermissions('foo', ['write'])
-->addResourcePermissions('bar', ['read'])
-//->setGuest('guest')
-
-->addRole('basic', 2)
-->addInherit('guest')
-->addResourcePermissions('products', ['list', 'update'])
-->addResourcePermissions('foo', ['show'])
-->addResourcePermissions('bar', ['list'])
-
-->addRole('regular', 3)
-->addInherit('guest')
-->addResourcePermissions('products', ['read', 'write'])
-->addResourcePermissions('foo', ['read', 'update'])
-
-->addRole('admin', 100)
-->addInherit('guest')
-->addSpecialPermissions(['read_all', 'write_all'])
-
-->addRole('superadmin', 500)
-->addInherit('admin')
-->addSpecialPermissions(['lock', 'fill_all']);
-
-//var_dump($acl->getRolePermissions());
-//var_dump($acl->getAcl());
-//var_dump($acl->getRolePermissions());
-//var_dump($acl->hasResourcePermission('read', ['guest', 'admin'], 'xxx'));
-//var_dump($acl->getResourcePermissions('basic', 'products', 'read'));
-//var_dump($acl->hasResourcePermission('show', ['regular', 'basic'], 'foo'));
-var_dump($acl->isAllowed('write', ['admin'], 'baz'));
-
-//var_dump($acl->hasSpecialPermission('lock', ['superadmin', 'admin']));
-
-*/

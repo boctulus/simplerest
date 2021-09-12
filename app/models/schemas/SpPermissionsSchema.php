@@ -17,14 +17,20 @@ class SpPermissionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-			'id' => 'INT',
-			'name' => 'STR'
-		],
+				'id' => 'INT',
+				'name' => 'STR'
+			],
 
 			'nullable'		=> ['id'],
 
 			'rules' 		=> [
 				'name' => ['max' => 45]
+			],
+
+			'relationships' => [
+				'user_sp_permissions' => [
+					['user_sp_permissions.sp_permission_id','sp_permissions.id']
+				]
 			]
 		];
 	}	

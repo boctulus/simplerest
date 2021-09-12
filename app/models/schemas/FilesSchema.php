@@ -14,27 +14,34 @@ class FilesSchema implements ISchema
 		return [
 			'table_name'	=> 'files',
 
-			'id_name'		=> 'id',
+			'id_name'		=> 'uuid',
 
 			'attr_types'	=> [
-			'id' => 'INT',
-			'filename' => 'STR',
-			'file_ext' => 'STR',
-			'filename_as_stored' => 'STR',
-			'belongs_to' => 'INT',
-			'guest_access' => 'INT',
-			'locked' => 'INT',
-			'broken' => 'INT',
-			'created_at' => 'STR',
-			'deleted_at' => 'STR'
-		],
+				'uuid' => 'STR',
+				'filename' => 'STR',
+				'file_ext' => 'STR',
+				'filename_as_stored' => 'STR',
+				'belongs_to' => 'INT',
+				'guest_access' => 'INT',
+				'locked' => 'INT',
+				'broken' => 'INT',
+				'created_at' => 'STR',
+				'deleted_at' => 'STR'
+			],
 
-			'nullable'		=> ['id', 'belongs_to', 'guest_access', 'broken', 'deleted_at'],
+			'nullable'		=> ['belongs_to', 'guest_access', 'broken', 'deleted_at', 'uuid'],
 
 			'rules' 		=> [
+				'uuid' => ['max' => 36],
 				'filename' => ['max' => 255],
 				'file_ext' => ['max' => 30],
 				'filename_as_stored' => ['max' => 60]
+			],
+
+			'relationships' => [
+				'users' => [
+					['users.id','files.belongs_to']
+				]
 			]
 		];
 	}	

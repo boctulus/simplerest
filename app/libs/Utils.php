@@ -3,22 +3,34 @@
 namespace simplerest\libs;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use simplerest\libs\Factory;
 
 class Utils {
-	static function send_mail(string $to_email, string $to_name, $subject, $body, $alt_body = null){
-		$config = include CONFIG_PATH . 'config.php';
+
+    /*
+        Gmail => habilitar:
+
+        https://myaccount.google.com/lesssecureapps
+    */
+    static function sendMail(string $to_email, string $to_name, $subject, $body, $alt_body = null){
+		$config = Factory::config();
 
 		$mail = new PHPMailer();
         $mail->isSMTP();
+
+        $mailer = $config['email']['mailer_default'];
         
-        foreach ($config['email']['mailer']['object'] as $k => $prop){
+        foreach ($config['email']['mailers'][$mailer] as $k => $prop){
 			$mail->{$k} = $prop;
         }	
     
-        $mail->setFrom($config['email']['mailer']['from'][0], $config['email']['mailer']['from'][1]);    
+        $mail->setFrom(
+            $config['email']['from']['address'], 
+            $config['email']['from']['name']
+        );
+
         $mail->addAddress($to_email, $to_name);
-       
-        $mail->uidject = $subject;
+        $mail->Subject = $subject;
 		$mail->msgHTML($body); 
 		
 		if (!is_null($alt_body))

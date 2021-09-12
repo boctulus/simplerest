@@ -17,14 +17,18 @@ class RolesSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-			'id' => 'INT',
-			'name' => 'STR'
-		],
+				'id' => 'INT',
+				'name' => 'STR'
+			],
 
 			'nullable'		=> ['id'],
 
 			'rules' 		=> [
 				'name' => ['max' => 50]
+			],
+
+			'relationships' => [
+				
 			]
 		];
 	}	

@@ -5,7 +5,7 @@ namespace simplerest\controllers;
 class UsersController extends MyController
 {
 	function index(){
-		$this->view('users.php');
+		return view('users.php');
 	}
 }
 	

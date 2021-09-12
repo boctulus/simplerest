@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace simplerest\core;
 
+use simplerest\libs\DB;
+
 class Paginator
 {
     protected $orders = [];
@@ -34,8 +36,8 @@ class Paginator
         if (!empty($this->orders)){
             $query .= ' ORDER BY ';
             
-            foreach($this->orders as $field => $order){
-                $order = strtoupper($order);
+            foreach($this->orders as $field => $_order){
+                $order = strtoupper($_order);
                 
                 $field = filter_var($field, FILTER_SANITIZE_STRING);
 
@@ -46,21 +48,60 @@ class Paginator
                 if ($order == 'ASC' || $order == 'DESC'){
                     $query .= "$field $order, ";
                 }else
-                    throw new \InvalidArgumentException("order should be ASC or DESC!");   
+                    throw new \InvalidArgumentException("Order direction '$_order' is invalid. Order should be ASC or DESC!");   
 
+                    
                 if(!in_array($field,$this->attributes))
                     throw new \InvalidArgumentException("property '$field' not found!");   
 
                 
             }
             $query = substr($query,0,strlen($query)-2);
-
         }
 
-        if($this->limit >0){
-            $query .= " LIMIT ?, ?"; 
-            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
-            $this->binding[] = [2 , $this->limit, \PDO::PARAM_INT];
+        $ol = [$this->limit !== null, !empty($this->offset)];
+        //dd($ol, 'ol');
+
+        // https://stackoverflow.com/questions/595123/is-there-an-ansi-sql-alternative-to-the-mysql-limit-keyword
+        if ($ol[0] || $ol[1]){
+            switch (DB::driver()){
+                case 'mysql':
+                case 'sqlite':
+                    switch($ol){
+                        case [true, true]:
+                            $query .= " LIMIT ?, ?";
+                            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
+                            $this->binding[] = [2 , $this->limit,  \PDO::PARAM_INT];
+                        break;
+                        case [true, false]:
+                            $query .= " LIMIT ?";
+                            $this->binding[] = [1 , $this->limit, \PDO::PARAM_INT];
+                        break;
+                        case [false, true]:
+                            // https://stackoverflow.com/questions/7018595/sql-offset-only
+                            $query .= " LIMIT ?, 18446744073709551615";
+                            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
+                        break;
+                    } 
+                    break;    
+                case 'pgsql': 
+                    switch($ol){
+                        case [true, true]:
+                            $query .= " OFFSET ? LIMIT ?";
+                            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
+                            $this->binding[] = [2 , $this->limit,  \PDO::PARAM_INT];
+                        break;
+                        case [true, false]:
+                            $query .= " LIMIT ?";
+                            $this->binding[] = [1 , $this->limit, \PDO::PARAM_INT];
+                        break;
+                        case [false, true]:
+                            $query .= " OFFSET ?";
+                            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
+                        break;
+                    } 
+                    break;            
+            }
         }
 
         $this->query = $query;

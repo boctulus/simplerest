@@ -2,10 +2,6 @@
 
 namespace simplerest\tests;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once __DIR__ . '../../vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
@@ -62,7 +58,7 @@ class ValidatorTest extends TestCase
 			])
         );
 		
-		$this->assertIsArray((new Validator())->validate(
+		$this->assertTrue((new Validator())->validate(
 			[
 				'username' => [],
 				'correo'   => ['type'=>'string','max'=>'30'],
@@ -189,14 +185,20 @@ class ValidatorTest extends TestCase
 			Validator::isType(' 16.3  ','int')
         );
 		
+		/*
 		$this->assertTrue(
-			Validator::isType('16.3','decimal')
-        );
-		
+			Validator::isType('16.3','decimal(8,2)')
+		);
+			
 		$this->assertTrue(
-			Validator::isType('-.023','decimal')
-        );
+			Validator::isType('-.02','decimal(8,2');
+		);
 		
+		$this->assertFalse(
+			Validator::isType('-.02','decimal(8,2');
+        );
+		*/
+
 		$this->assertTrue(
 			Validator::isType('.023','number')
         );
