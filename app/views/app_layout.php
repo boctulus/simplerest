@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+<?php
+    use simplerest\libs\Url;
+    use simplerest\libs\Factory;
+
+    $base_url = Url::getBaseUrl(Url::currentUrl()) . Factory::config()['BASE_URL'] . '/';
+?>    
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title><?php echo $titleee ?? ''; ?></title>
+
+    <base href="<?php echo $base_url; ?>">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -21,7 +29,7 @@
 
 </head>
 <body>
-    <?php 
+    <?php
         if (!isset($hidenav) || !$hidenav){
             section('navbar.php'); 
         }            
