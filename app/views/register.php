@@ -33,7 +33,7 @@
 
 				<div class="input-group" style="margin-bottom:1em;">
 					<span class="input-group-addon">
-					<i class="glyphicon glyphicon-user"></i>
+					<i class="glyphicon glyphicon-envelope"></i>
 					</span>
 					<input type="text" class="form-control" id="username" placeholder="Username" required="required">
 				</div>
@@ -61,7 +61,7 @@
 			<button type="submit" class="btn btn-primary btn-lg btn-block login-btn" onClick="register()">Registrarse</button>
 		</div>
 
-		Ya posee cuenta? <a href="/login">ingresar</a>
+		Ya posee cuenta? <a href="login">ingresar</a>
 	</div>
 </div>	
 	
