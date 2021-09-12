@@ -12,4 +12,10 @@ config/config.php
 .env
 config/acl.php
 
+3) Ajustar permisos de carpetas:
+
+logs
+app/security
+
+
 
