@@ -26,7 +26,7 @@ class Debug
 			if ($type == 'boolean'){
 				echo $x;
 			} else {
-				echo var_export($x);
+				echo trim(var_export($x, true), "'");
 			}	
 		};
 
