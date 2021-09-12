@@ -1,1 +1,0 @@
-2021-09-12 09:00:48	remember-me http://simplerest.lan/login/change_pass_by_link/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTQ1MTY0NywiZXhwIjoxNjMyMDU2NDQ3LCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6MX0.M-mAf7-LdJdUEewd51bmRmnfXumVOmp4pOLFw_VJCpo/1632056447
