@@ -20,7 +20,7 @@ class MyController extends Controller {
             $vars_to_be_passed['title'] = $_title;
         }
 
-        parent::view($view_path, $vars_to_be_passed, $layout);
+        view($view_path, $vars_to_be_passed, $layout);
    }
 
 }

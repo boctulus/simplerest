@@ -14,45 +14,57 @@ use simplerest\core\exceptions\InvalidValidationException;
 
 class MySelf extends MyApiController 
 {  
-    protected $model_name = 'UsersModel';
+    protected $model_table = 'users';
+	protected $active = 'active';
 
     function __construct() 
     { 
-        if (Factory::request()->hasAuth()){
-            $this->callable = ['get', 'put', 'patch', 'delete'];
+        parent::__construct();
 
-            $this->is_listable = true;
-            $this->is_retrievable = true;
+        if (Factory::request()->authMethod() != NULL){
+                $this->callable = ['get', 'put', 'patch', 'delete'];
+
+                $this->is_listable = true;
+                $this->is_retrievable = true;
         } else {
             Factory::response()->sendError("Forbidden", 403, "You need to be authenticated");
         }
-        
-        parent::__construct();
     }
 
     function get($id = null){
-        $id = $this->auth['uid'];
+        $id = $this->uid;
         parent::get($id);
     } 
 
     function put($id = NULL)
     { 
-        $id = $this->auth['uid'];
+        $id = $this->uid;
         parent::put($id);
     } //
 
     function patch($id = NULL)
     { 
-        $id = $this->auth['uid'];
+        $id = $this->uid;
         parent::patch($id);
     } //
         
-    function delete($id = null){
-        $id = $this->auth['uid'];
+    function onPuttingAfterCheck($id, &$data){
+        $this->instance->fill([$this->active]);
+    }
 
-        $ok = (bool) DB::table('users')->where([['id', $id], ['active', 1]])
-            ->fill(['active'])
-        ->update(['active' => 0]);
+    function delete($id = null){
+        $id = $this->uid;
+
+        $u = DB::table($this->model_table);
+
+        if ($u->inSchema(['active'])){
+            Factory::response()->send("Account deactivation not implemented", 501);
+        }
+
+        $ok = (bool) $u
+        ->where([['id', $id], [$this->active, 1]])
+        ->fill([$this->active])
+        ->update([$this->active => 0]);
 
         if ($ok) {
             Factory::response()->send("Your account was succesfully disabled");

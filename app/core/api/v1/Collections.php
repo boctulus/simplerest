@@ -29,12 +29,13 @@ class Collections extends MyApiController
 
     function __construct()
     {
-        if (Factory::request()->hasAuth()){
+        if (Factory::request()->authMethod() !== NULL){
             $this->callable = ['get', 'post', 'put', 'patch', 'delete'];
 
             $this->is_listable = true;
             $this->is_retrievable = true;
         }  
+        
         parent::__construct();
     }
 

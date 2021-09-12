@@ -26,6 +26,10 @@ class MigrationsSchema implements ISchema
 
 			'rules' 		=> [
 				'migration' => ['max' => 255]
+			],
+
+			'relationships' => [
+				
 			]
 		];
 	}	

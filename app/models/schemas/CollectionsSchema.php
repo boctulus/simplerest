@@ -17,17 +17,23 @@ class CollectionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-			'id' => 'INT',
-			'entity' => 'STR',
-			'refs' => 'STR',
-			'belongs_to' => 'INT',
-			'created_at' => 'STR'
-		],
+				'id' => 'INT',
+				'entity' => 'STR',
+				'refs' => 'STR',
+				'belongs_to' => 'INT',
+				'created_at' => 'STR'
+			],
 
 			'nullable'		=> ['id'],
 
 			'rules' 		=> [
 				'entity' => ['max' => 80]
+			],
+
+			'relationships' => [
+				'users' => [
+					['users.id','collections.belongs_to']
+				]
 			]
 		];
 	}	

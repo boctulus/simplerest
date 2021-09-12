@@ -83,15 +83,15 @@ class LoginController extends MyController
         $time = time();
 
         $payload = [
-            'alg' => $this->config['email']['encryption'],
+            'alg' => $this->config['email_token']['encryption'],
             'typ' => 'JWT',
             'iat' => $time, 
-            'exp' => $time + $this->config['email']['expires_in'],
+            'exp' => $time + $this->config['email_token']['expires_in'],
             'ip'  => $_SERVER['REMOTE_ADDR'],
             'email' => $email
          ];
 
-        return \Firebase\JWT\JWT::encode($payload, $this->config['email']['secret_key'],  $this->config['email']['encryption']);
+        return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
     }
 
 	protected function gen_jwt(array $props, string $token_type){
@@ -131,7 +131,7 @@ class LoginController extends MyController
 				'title'=>'Confirmación de correo', 
 				'hidenav'=> true,
 				'access_token' => $access,
-				'expires_in' => $this->config['email']['expires_in'],
+				'expires_in' => $this->config['email_token']['expires_in'],
 				'refresh_token' => $refresh
 			]);
 	
@@ -146,7 +146,7 @@ class LoginController extends MyController
 
 	}
 
-	function change_pass($jwt, $exp)
+	function change_pass_by_link($jwt, $exp)
 	{
 		// Es menos costoso veririficar así en principio
 		if ((int) $exp < time())
@@ -158,13 +158,13 @@ class LoginController extends MyController
 				try {
 					// Checking for token invalidation or outdated token
 					
-					$payload = \Firebase\JWT\JWT::decode($jwt, $this->config['email']['secret_key'], [ $this->config['email']['encryption'] ]);
+					$payload = \Firebase\JWT\JWT::decode($jwt, $this->config['email_token']['secret_key'], [ $this->config['email_token']['encryption'] ]);
 					
 					if (empty($payload))
 						$error = 'Unauthorized!';                     
 
-					if (empty($payload->email)){
-						$error = 'email is needed';
+					if (empty($payload->uid)){
+						$error = 'uid is needed';
 					}
 
 					if ($payload->exp < time())
@@ -183,6 +183,9 @@ class LoginController extends MyController
 				$error = 'Authorization jwt token not found';
 			}     
 		}	
+
+		$email = DB::table('users')->where(['id' => $payload->uid])->value('email');
+		//Debug::dd($email);
 
 		if (!isset($error)){						
 			//

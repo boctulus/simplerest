@@ -22,7 +22,7 @@ class Response
 
 
     protected function __construct() { 
-        static::$config = include CONFIG_PATH . 'config.php';
+        static::$config = Factory::config();
         static::$pretty = static::$config['pretty'];
     }
 
@@ -39,12 +39,12 @@ class Response
         return static::$instance;
     }
     
-    function redirect(string $url){
+    static function redirect(string $url){
         if (!headers_sent()) {
             header("Location: $url");
             exit;
         }else
-            throw new \Exception("Headers already sent in in $filename on line $line. Unable to redirect to $url");
+            throw new \Exception("Headers already sent");
     }
 
     function asObject(bool $val = true){
@@ -121,14 +121,24 @@ class Response
         }    
 
         if (static::$as_object || is_object($data) || is_array($data)) {
-            $arr = ['data' => $data, 
+            $arr = [];
+
+            if (static::$config['paginator']['position'] == 'TOP'){
+                if (static::$paginator != NULL)
+                    $arr['paginator'] = static::$paginator;
+            }
+
+            $arr = array_merge($arr,[
+                    'data' => $data, 
                     'status_code' => $http_code,
                     'error' => '', 
                     'error_detail' => '' 
-            ];
+            ]);
 
-            if (static::$paginator != NULL)
-                $arr['paginator'] = static::$paginator;
+            if (static::$config['paginator']['position'] == 'BOTTOM'){
+                if (static::$paginator != NULL)
+                    $arr['paginator'] = static::$paginator;
+            }
 
             $data = $this->encode($arr);
             header('Content-type:application/json;charset=utf-8');

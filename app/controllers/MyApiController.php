@@ -9,7 +9,7 @@ if (!file_exists(CORE_PATH . 'api'. DIRECTORY_SEPARATOR . $api_version . DIRECTO
 }
 
 class_alias("\simplerest\core\api\\$api_version\ApiController", 'simplerest\controllers\ApiController');
-class_alias("\simplerest\core\api\\$api_version\AuthController",'simplerest\controllers\AuthController');
+//class_alias("\simplerest\core\api\\$api_version\AuthController",'simplerest\controllers\AuthController');
 
 class MyApiController extends ApiController
 {
