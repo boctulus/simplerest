@@ -1,1 +1,0 @@
-ALTER TABLE `simplerest`.`permissions` ADD UNIQUE `user_table` (`id`, `table`);
