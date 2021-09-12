@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\models\schemas;
+namespace simplerest\models\schemas\main;
 
 use simplerest\core\interfaces\ISchema;
 

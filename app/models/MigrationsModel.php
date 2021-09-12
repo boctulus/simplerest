@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\MigrationsSchema;
+use simplerest\models\schemas\main\MigrationsSchema;
 
 class MigrationsModel extends Model
 { 

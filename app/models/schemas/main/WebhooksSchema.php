@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\models\schemas;
+namespace simplerest\models\schemas\main;
 
 use simplerest\core\interfaces\ISchema;
 
@@ -40,6 +40,10 @@ class WebhooksSchema implements ISchema
 				'op' => ['max' => 10],
 				'conditions' => ['max' => 1024],
 				'callback' => ['max' => 255]
+			],
+
+			'relationships' => [
+				
 			]
 		];
 	}	

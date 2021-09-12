@@ -1,18 +1,18 @@
 <?php
 
-namespace simplerest\models\schemas;
+namespace simplerest\models\schemas\main;
 
 use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class RolesSchema implements ISchema
+class SpPermissionsSchema implements ISchema
 { 
 	### TRAITS
 	
 	function get(){
 		return [
-			'table_name'	=> 'roles',
+			'table_name'	=> 'sp_permissions',
 
 			'id_name'		=> 'id',
 
@@ -24,11 +24,13 @@ class RolesSchema implements ISchema
 			'nullable'		=> ['id'],
 
 			'rules' 		=> [
-				'name' => ['max' => 50]
+				'name' => ['max' => 45]
 			],
 
 			'relationships' => [
-				
+				'user_sp_permissions' => [
+					['user_sp_permissions.sp_permission_id','sp_permissions.id']
+				]
 			]
 		];
 	}	

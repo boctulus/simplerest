@@ -60,7 +60,7 @@ return [
 
 	'db_connection_default' => 'main', 
 	
-	'DateTimeZone' => 'America/Argentina/Buenos_Aires',
+	'DateTimeZone' => 'America/Bogota',
 
 	'error_handling'   => true,
 	'debug'   => env('APP_DEBUG', true),
