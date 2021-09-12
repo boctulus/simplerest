@@ -1,6 +1,7 @@
-const base_url = getSiteRoot();
-const login_page = base_url + 'login';  
+const base_url = getSiteRoot().replace(/\/$/, "");
+const login_page = base_url + '/login';  
 
+//console.log(base_url);
 //console.log(base_url + 'login');
 
 function checkpoint()
@@ -43,7 +44,7 @@ function register(){
 
 	$.ajax({
 		type : "POST",
-		url: "/api/v1/auth/register",
+		url: base_url + "/api/v1/auth/register",
 		data : JSON.stringify(obj),
 		dataType: 'json',
 		success : function(res) {
@@ -87,7 +88,7 @@ function login(){
 
 	$.ajax({
 		type: "POST",
-		url: '/api/v1/auth/login',
+		url: base_url + 'api/v1/auth/login',
 		data: JSON.stringify(obj),
 		dataType: 'json',
 		success: function(res){
@@ -127,7 +128,7 @@ function renew(){
 
 	$.ajax({
 		type: "POST",
-		url: '/api/v1/auth/token',
+		url: base_url + '/api/v1/auth/token',
 		dataType: 'json',
 		headers: {"Authorization": 'Bearer ' + localStorage.getItem('refresh_token')}, 
 		success: function(res){
@@ -164,11 +165,11 @@ function rememberme(){
 
 	$.ajax({
 		type: "POST",
-		url: '/login/rememberme_process',
+		url: base_url + '/api/v1/auth/rememberme',
 		data: JSON.stringify(obj),
 		dataType: 'text', 
 		success: function(res){
-			window.location.replace('/login/rememeberme_mail_sent/' + window.btoa(obj.email));
+			window.location.replace(base_url + '/login/rememberme_mail_sent/' + window.btoa(obj.email));
 		},
 		error: function(xhr, status, error){
 			console.log('ERROR');
@@ -189,6 +190,7 @@ function rememberme(){
 	return false;
 }
 
+
 function update_pass()
 {
 	if ($('#password').val() != $('#password_confirmation').val()){
@@ -200,11 +202,17 @@ function update_pass()
 	var obj = {};
 	
 	obj.password = $('#password').val();
-	var token = window.location.pathname.split('/')[3];
+	
+	const slugs = window.location.pathname.split('/');
+	const token = slugs[slugs.indexOf('change_pass_by_link')+1];
+
+	if (typeof token === 'undefined'){
+		$('#passChangeError').text('No autorizado');
+	}
 
 	$.ajax({
 		type : "POST",
-		url: "/login/change_pass_process",
+		url: base_url + "/api/v1/auth/change_pass",
 		headers: {"Authorization": 'Bearer ' + token},
 		data : JSON.stringify(obj),
 		dataType: 'json',

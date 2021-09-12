@@ -5,13 +5,11 @@ namespace simplerest\core;
 use simplerest\traits\ExceptionHandler;
 use simplerest\libs\Factory;
 
-include HELPERS_PATH . 'view.php';
-
 class View
 {
     use ExceptionHandler;
 
-    function __construct(string $view_path, array $vars_to_be_passed  = null, $layout = 'app_layout.php')
+    function __construct(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php', string $footer = null)
     {
 		$this->config = Factory::config();
 
@@ -27,6 +25,6 @@ class View
         $content = ob_get_contents();
         ob_end_clean();
 
-        include VIEWS_PATH . "layouts/{$layout}"; 
+        include VIEWS_PATH . "$layout"; 
     }
 }

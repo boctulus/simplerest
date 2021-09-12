@@ -17,17 +17,23 @@ class UserRolesSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-			'id' => 'INT',
-			'user_id' => 'INT',
-			'role_id' => 'INT',
-			'created_at' => 'STR',
-			'updated_at' => 'STR'
-		],
+				'id' => 'INT',
+				'user_id' => 'INT',
+				'role_id' => 'INT',
+				'created_at' => 'STR',
+				'updated_at' => 'STR'
+			],
 
-			'nullable'		=> ['id', 'updated_at'],
+			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
 			'rules' 		=> [
 
+			],
+
+			'relationships' => [
+				'users' => [
+					['users.id','user_roles.user_id']
+				]
 			]
 		];
 	}	

@@ -1,0 +1,93 @@
+<!--
+
+  https://www.freecodecamp.org/news/learn-vuetify-in-5-minutes/
+  https://stackoverflow.com/questions/57371009/vuetify-remove-pagination-on-v-data-table
+  https://stackoverflow.com/questions/62259868/vuetify-change-text-rows-per-page-text-in-v-data-tables-footer
+
+  API:
+  http://az.lan/api/v1/cotizaciones?tenantid=db3
+
+-->
+
+<script>
+    new Vue({
+      el: '#app',
+      components: {
+        
+      },      
+      vuetify: new Vuetify(), 
+      data () {
+        return {
+          headers: [
+            { text: 'Moneda', value: 'divisa', align: 'start' },
+            { text: 'Compra', value: 'buy_at' },
+            { text: 'Venta', value: 'sell_at' },
+            { text: 'Arbitraje', value: 'arbitration' }
+          ],
+          divisas: [ ],
+          cotizaciones: [
+            /*
+            {
+              divisa_id: 100,
+              buy_at: 17,
+              sell_at: 21,
+              arbitration: 2
+            }
+            */
+          ],
+        }
+      },  
+
+      computed: {
+        cotizaciones_computed: function() {
+          let arr = [];
+
+          this.cotizaciones.forEach((obj, index) => {
+              arr[index] = obj;              
+
+              this.divisas.forEach((divisa) => {
+                if (divisa.id == arr[index].divisa_id){
+                  arr[index].divisa = divisa.name;
+                }
+              });
+          });
+
+          return arr;
+        }
+      },
+
+      mounted () {
+        axios
+        .request({
+              url: 'http://az.lan/api/v1/divisas?tenantid=db4',  
+              method: 'get',
+              headers: {
+                  //'Authorization': `Bearer ${this.$store.state.auth.authUser.accessToken}`
+              }
+        })
+        .then(response => {
+          //console.log(response.data.data);
+          this.divisas = response.data.data;
+        }).catch((error) => {
+          console.log(error);
+        });
+
+        axios
+        .request({
+              url: 'http://az.lan/api/v1/cotizaciones?tenantid=db4',  
+              method: 'get',
+              headers: {
+                  //'Authorization': `Bearer ${this.$store.state.auth.authUser.accessToken}`
+              }
+        })
+        .then(response => {
+          //console.log(response.data.data);
+          this.cotizaciones = response.data.data;
+        }).catch((error) => {
+          console.log(error);
+        });
+
+      }
+    })
+
+</script>

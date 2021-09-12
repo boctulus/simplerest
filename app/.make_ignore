@@ -4,7 +4,6 @@
 # Models
 UsersModel.php
 FilesModel.php
-FooModel.php
 
 # Controllers
 UsersController.php
@@ -14,10 +13,8 @@ MakeController.php
 LoginController.php
 GoogleController.php
 FacebookController.php
-ProductsController.php
-DumbController.php
-DumbAuthController.php
-DownloadController.php
+WebhooksModel.php
+
 
 # Apis 
 controllers/api/Me.php
