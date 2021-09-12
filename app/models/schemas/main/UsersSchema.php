@@ -40,23 +40,23 @@ class UsersSchema implements ISchema
 			],
 
 			'relationships' => [
-				'collections' => [
-					['collections.belongs_to','users.id']
-				],
 				'folder_permissions' => [
 					['folder_permissions.belongs_to','users.id']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','users.id']
 				],
 				'files' => [
 					['files.belongs_to','users.id']
 				],
-				'user_sp_permissions' => [
-					['user_sp_permissions.user_id','users.id']
+				'api_keys' => [
+					['api_keys.user_id','users.id']
 				],
 				'folder_other_permissions' => [
 					['folder_other_permissions.belongs_to','users.id']
 				],
-				'api_keys' => [
-					['api_keys.user_id','users.id']
+				'user_sp_permissions' => [
+					['user_sp_permissions.user_id','users.id']
 				],
 				'folders' => [
 					['folders.belongs_to','users.id']
@@ -64,8 +64,8 @@ class UsersSchema implements ISchema
 				'user_roles' => [
 					['user_roles.user_id','users.id']
 				],
-				'user_tb_permissions' => [
-					['user_tb_permissions.user_id','users.id']
+				'collections' => [
+					['collections.belongs_to','users.id']
 				]
 			]
 		];
