@@ -65,7 +65,7 @@
 			<div class="form-group" >		
 					
 				<div style="text-align:right; margin-bottom:1em;">
-					Tiene cuenta? <a href="/login">Ingresar</a>
+					Tiene cuenta? <a href="login">Ingresar</a>
 				</div>
 
 				<div class="input-group" style="margin-bottom:1em;">
@@ -83,7 +83,7 @@
 				<button type="submit" class="btn btn-primary btn-lg btn-block login-btn" onClick="rememberme()">Recuérdame</button>
 			</div>
 
-			No registrado? <a href="/login/register">regístrese</a>
+			No registrado? <a href="login/register">regístrese</a>
 		</form>		
 		
 	</div>

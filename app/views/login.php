@@ -64,9 +64,9 @@
 			<div class="form-group" >
 
 				<div class="text-center social-btn">
-					<a href="/facebook/login" class="btn btn-primary btn-block"><i class="fa fa-facebook"></i> Sign in with <b>Facebook</b></a>
+					<a href="facebook/login" class="btn btn-primary btn-block"><i class="fa fa-facebook"></i> Sign in with <b>Facebook</b></a>
 					<!--a href="#" class="btn btn-info btn-block"><i class="fa fa-twitter"></i> Sign in with <b>Twitter</b></a-->
-					<a href="/google/login" class="btn btn-danger btn-block"><i class="fa fa-google"></i> Sign in with <b>Google</b></a>
+					<a href="google/login" class="btn btn-danger btn-block"><i class="fa fa-google"></i> Sign in with <b>Google</b></a>
 				</div>
 
 				<div class="or-seperator"><i>or</i></div>
@@ -90,7 +90,7 @@
 			</div>
 
 			<div style="margin-bottom:1em;">
-				<a href="/login/rememberme">Recordar contraseña</a>
+				<a href="login/rememberme">Recordar contraseña</a>
 			</div>	
 
 			<div class="form-group">
@@ -98,7 +98,7 @@
 			</div>
 			
 			<div style="text-align:right;">
-				No registrado? <a href="/login/register">regístrese</a>
+				No registrado? <a href="login/register">regístrese</a>
 			</div>	
 		</form>		
 		
