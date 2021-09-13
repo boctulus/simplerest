@@ -60,7 +60,18 @@
 					  <li><a href="#">Separated link</a>
 					  </li-->
 					  <li>
+
+					  	<!--
+							Pueden estar ambos botones de logout y login y mostrar uno u el otro dependiendo de si
+							localStorage.getItem('access_token')
+							es null o no
+						-->
+
 						<button type="submit" class="btn btn-link btn-logout" onclick="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</button>
+
+						<!--button type="submit" class="btn btn-link btn-logout" onclick="login()"><span class="glyphicon glyphicon-log-in"></span> Login</button-->
+
+
 					  </li>
 					</ul>
 				  </li>

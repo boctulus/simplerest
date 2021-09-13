@@ -600,7 +600,7 @@ class AuthController extends Controller implements IAuth
                 if ($email_confirmation)
                 {                 
                     $exp = time() + $this->config['email_token']['expires_in'];
-                    $base_url =  HTTP_PROTOCOL . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
+                    $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
                     $token = $this->gen_jwt_email_conf($data['email'], $roles, []);
                     $url = $base_url . (!$this->config['REMOVE_API_SLUG'] ? "api/$api_version" : $api_version) . '/auth/confirm_email/' . $token . '/' . $exp; 
                 } 
@@ -894,7 +894,7 @@ class AuthController extends Controller implements IAuth
                 Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
             }
 
-            $base_url =  HTTP_PROTOCOL . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
+            $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
             
 
             $token = $this->gen_jwt_rememberme($uid);

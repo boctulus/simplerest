@@ -2,7 +2,7 @@
 
 use simplerest\core\Route;
 use simplerest\core\Response;
-use simplerest\libs\Factory;
+use simplerest\libs\Url;
 
 
 function route(string $name){
@@ -10,16 +10,9 @@ function route(string $name){
 }
 
 function http_protocol(){
-    $config = Factory::config();
-
-    if ($config['HTTPS'] == 1 || strtolower($config['HTTPS']) == 'on'){
-        $protocol = 'https';
-    } else {
-        $protocol = 'http';
-    }
-
-    return $protocol;
+    return Url::http_protocol();
 }
+
 
 function redirect(string $url){
     return Response::redirect($url);

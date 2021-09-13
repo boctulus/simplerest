@@ -16,12 +16,12 @@ class Url {
        
         if (isset($config['HTTPS']) && $config['HTTPS'] != null){
             if ($config['HTTPS'] == 1 || strtolower($config['HTTPS']) == 'on'){
-                $protocol = 'https:';
+                $protocol = 'https';
             } else {
-                $protocol = 'http:';
+                $protocol = 'http';
             }
         } else {
-            $protocol = self::has_ssl($_SERVER['HTTP_HOST']) ? 'https:' : 'http:';
+            $protocol = self::has_ssl($_SERVER['HTTP_HOST']) ? 'https' : 'http';
         } 
         
         return $protocol;
