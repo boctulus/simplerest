@@ -8,7 +8,6 @@ use simplerest\libs\Debug;
 use simplerest\libs\Arrays;
 use simplerest\libs\Factory;
 use simplerest\libs\Strings;
-use InvalidArgumentException;
 use simplerest\libs\Files;    
 use simplerest\libs\Validator;
 use simplerest\core\interfaces\IApi;
