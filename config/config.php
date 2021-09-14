@@ -65,6 +65,11 @@ return [
 	'error_handling'   => true,
 	'debug'   => env('APP_DEBUG', true),
 
+	/*
+		Define users's table name
+	*/
+	'users_table' =>  'tbl_usuario_empresa',
+
 	'access_token' => [
 		'secret_key' 		=> env('TOKENS_ACCSS_SECRET_KEY'),
 		'expiration_time'	=> 60 * 15 * 10000,   // seconds (normalmente 60 * 15)

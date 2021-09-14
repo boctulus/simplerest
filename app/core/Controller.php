@@ -11,6 +11,7 @@ abstract class Controller
     use ExceptionHandler;
 
     protected $callable = [];
+    protected $users_table;
     
     function __construct() {
         $this->config = Factory::config();
@@ -18,6 +19,8 @@ abstract class Controller
         if ($this->config['error_handling']) {
             set_exception_handler([$this, 'exception_handler']);
         }
+
+        $this->users_table = $this->config['users_table'];
     }
 
     protected function getConnection() {

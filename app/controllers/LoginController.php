@@ -5,9 +5,6 @@ namespace simplerest\controllers;
 use simplerest\libs\Debug;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
-use simplerest\models\UsersModel;
-use simplerest\models\RolesModel;
-use simplerest\libs\Utils;
 
 class LoginController extends MyController
 {
@@ -190,7 +187,7 @@ class LoginController extends MyController
 			// donde poder setear una nueva contraseña
 			//
 
-			$email = DB::table('users')->where(['id' => $payload->uid])->value('email');
+			$email = DB::table($this->users_table)->where(['id' => $payload->uid])->value('email');
 
 			$this->view('update_pass.php', [
 				'title'=>'Recuperación de contraseña', 
