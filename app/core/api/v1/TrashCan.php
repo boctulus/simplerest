@@ -26,7 +26,7 @@ class TrashCan extends MyApiController
         if (empty($entity))
             Factory::response()->sendError('Entity is required', 400);
 
-        $entity = Strings::toCamelCase($entity);
+        $entity = Strings::snakeToCamel($entity);
 
         $this->model_name = ucfirst($entity) . 'Model';
         $this->model_table = strtolower($entity);

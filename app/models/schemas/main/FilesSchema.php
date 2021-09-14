@@ -8,9 +8,7 @@ use simplerest\core\interfaces\ISchema;
 
 class FilesSchema implements ISchema
 { 
-	### TRAITS
-	
-	function get(){
+	static function get(){
 		return [
 			'table_name'	=> 'files',
 
