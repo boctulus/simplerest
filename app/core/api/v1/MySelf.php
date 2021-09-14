@@ -9,18 +9,22 @@ use simplerest\libs\Arrays;
 use simplerest\libs\DB;
 use simplerest\libs\Debug;
 use simplerest\libs\Url;
+use simplerest\libs\Strings;
 use simplerest\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
 
 class MySelf extends MyApiController 
 {  
-    protected $model_table = 'users';
-	protected $active = 'active';
-
     function __construct() 
     { 
+        $this->config = Factory::config();
+        $this->model_table = $this->config['users_table'];
+
         parent::__construct();
 
+        $model = get_user_model_name();
+        $this->active = $model::$active;
+  
         if (Factory::request()->authMethod() != NULL){
                 $this->callable = ['get', 'put', 'patch', 'delete'];
 
@@ -57,7 +61,7 @@ class MySelf extends MyApiController
 
         $u = DB::table($this->model_table);
 
-        if ($u->inSchema(['active'])){
+        if ($u->inSchema([$this->active])){
             Factory::response()->send("Account deactivation not implemented", 501);
         }
 

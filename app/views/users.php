@@ -10,8 +10,8 @@
 
 
 <script type="text/javascript">
-	const endpoint = 'api/users';
-	const minutes_for_refresh = 2 // 2
+	const endpoint = 'api/v1/users';
+	const minutes_for_refresh = 2 
 
 	let $data = [];
 	let table = new JqTable('tb_users');

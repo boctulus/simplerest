@@ -8,9 +8,7 @@ use simplerest\core\interfaces\ISchema;
 
 class __NAME__ implements ISchema
 { 
-	### TRAITS
-	
-	function get(){
+	static function get(){
 		return [
 			'table_name'	=> __TABLE_NAME__,
 

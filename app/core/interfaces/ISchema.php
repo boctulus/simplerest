@@ -3,5 +3,5 @@
 namespace simplerest\core\interfaces;
 
 interface ISchema {
-    function get(); 
+    static function get(); 
 }

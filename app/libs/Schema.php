@@ -1259,9 +1259,6 @@ class Schema
 		return $this->query;
 	}
 	
-	// ALTER TABLE `users` CHANGE `lastname` `lastname` VARCHAR(80) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-	
-	// ALTER TABLE `users` CHANGE `id` `id` INT(20) UNSIGNED NOT NULL;
 	function change()
 	{	
 		foreach ($this->fields as $name => $field)

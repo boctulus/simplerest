@@ -8,9 +8,7 @@ use simplerest\core\interfaces\ISchema;
 
 class TblUsuarioEmpresaSchema implements ISchema
 { 
-	### TRAITS
-	
-	function get(){
+	static function get(){
 		return [
 			'table_name'	=> 'tbl_usuario_empresa',
 
@@ -30,7 +28,7 @@ class TblUsuarioEmpresaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['use_intId'],
+			'nullable'		=> ['use_intId', 'use_varNombre', 'use_varTipo', 'use_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'rules' 		=> [
 				'use_varNombre' => ['max' => 250],

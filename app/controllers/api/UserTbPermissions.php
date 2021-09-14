@@ -33,7 +33,6 @@ class UserTbPermissions extends MyApiController
         if (empty($data))
             Factory::response()->sendError('Invalid JSON',400);
         
-        $model    = '\\simplerest\\models\\'.$this->model_name;
         $instance = DB::table('user_tb_permissions')->assoc();
 
         try {

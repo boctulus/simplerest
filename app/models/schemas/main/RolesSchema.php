@@ -8,9 +8,7 @@ use simplerest\core\interfaces\ISchema;
 
 class RolesSchema implements ISchema
 { 
-	### TRAITS
-	
-	function get(){
+	static function get(){
 		return [
 			'table_name'	=> 'roles',
 
