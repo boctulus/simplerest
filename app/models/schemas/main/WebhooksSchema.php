@@ -8,9 +8,7 @@ use simplerest\core\interfaces\ISchema;
 
 class WebhooksSchema implements ISchema
 { 
-	### TRAITS
-	
-	function get(){
+	static function get(){
 		return [
 			'table_name'	=> 'webhooks',
 

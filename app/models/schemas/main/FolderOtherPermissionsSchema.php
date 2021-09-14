@@ -8,9 +8,7 @@ use simplerest\core\interfaces\ISchema;
 
 class FolderOtherPermissionsSchema implements ISchema
 { 
-	### TRAITS
-	
-	function get(){
+	static function get(){
 		return [
 			'table_name'	=> 'folder_other_permissions',
 

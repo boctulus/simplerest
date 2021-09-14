@@ -122,7 +122,7 @@ class ModelTest extends TestCase
     $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE size = '1L' ORDER BY size DESC, cost ASC;");
 
     // 
-    $query = DB::table('users')
+    $query = DB::table($this->users_table)
     ->where([ 'id'=> 160] )
     ->count();
     $this->assertEquals(DB::getLog(), 'SELECT COUNT(*) FROM users WHERE (id = 160) AND deleted_at IS NULL;');
@@ -444,7 +444,7 @@ class ModelTest extends TestCase
     $this->assertEquals(DB::getLog(), "SELECT id, name, cost, description FROM products WHERE (belongs_to = 90 AND (name IN ('CocaCola', 'PesiLoca') OR cost >= 550 OR cost < 100) AND description IS NOT NULL) AND deleted_at IS NULL;");   
 
       //  
-    DB::table('users')->unhide(['password'])
+    DB::table($this->users_table)->unhide(['password'])
       ->where([ 'email'=> 'nano@g.c', 
                 'username' => 'nano' 
       ], 'OR') 
@@ -454,7 +454,7 @@ class ModelTest extends TestCase
     $this->assertEquals(DB::getLog(), "SELECT * FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
 
     //  
-    $rows = DB::table('users')
+    $rows = DB::table($this->users_table)
         ->where([ 'email'=> 'nano@g.c' ]) 
         ->orWhere(['username' => 'nano' ])
         ->showDeleted()
@@ -464,7 +464,7 @@ class ModelTest extends TestCase
     $this->assertEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE email = 'nano@g.c' OR username = 'nano';");
 
     //  
-    $rows = DB::table('users')
+    $rows = DB::table($this->users_table)
         ->where([ 'email'=> 'nano@g.c' ]) 
         ->orWhere(['username' => 'nano' ])
         //->showDeleted()
@@ -741,7 +741,7 @@ class ModelTest extends TestCase
           case [true,  false]:
           case [false, false]:
           case [false, true ]:      
-            $users = DB::table('users')->select([
+            $users = DB::table($this->users_table)->select([
               "users.id",
               "users.name",
               "users.email",
@@ -757,7 +757,7 @@ class ModelTest extends TestCase
     }
 
     function test_crossjoin(){
-         DB::table('users')
+         DB::table($this->users_table)
         ->crossJoin('products')
         ->where(['users.id', 90])
         ->unhideAll()
@@ -766,14 +766,14 @@ class ModelTest extends TestCase
 
         $this->assertEquals(DB::getLog(), 'SELECT * FROM users CROSS JOIN products WHERE users.id = 90;');
 
-        DB::table('users')->crossJoin('products')->crossJoin('roles')
+        DB::table($this->users_table)->crossJoin('products')->crossJoin('roles')
         ->unhideAll()
         ->showDeleted()
         ->dontExec()->count();
 
         $this->assertEquals(DB::getLog(), 'SELECT COUNT(*) FROM users CROSS JOIN products CROSS JOIN roles;');
 
-         DB::table('users')->crossJoin('products')->crossJoin('roles')
+         DB::table($this->users_table)->crossJoin('products')->crossJoin('roles')
         ->where(['users.id', 90])
         ->unhideAll()
         ->showDeleted()
@@ -781,7 +781,7 @@ class ModelTest extends TestCase
 
         $this->assertEquals(DB::getLog(), 'SELECT * FROM users CROSS JOIN products CROSS JOIN roles WHERE users.id = 90;');
 
-        DB::table('users')->crossJoin('products')->crossJoin('roles')
+        DB::table($this->users_table)->crossJoin('products')->crossJoin('roles')
         ->join('user_sp_permissions', 'users.id', '=', 'user_sp_permissions.user_id')
         ->unhideAll()
         ->showDeleted()
@@ -816,7 +816,7 @@ class ModelTest extends TestCase
   
   function test_subqueries(){
     //  
-    $sub = DB::table('users')
+    $sub = DB::table($this->users_table)
     ->select(['id'])
     ->whereRaw('password IS NULL');
 
@@ -828,7 +828,7 @@ class ModelTest extends TestCase
     $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE belongs_to IN (SELECT id FROM users WHERE (password IS NULL) AND deleted_at IS NULL);");   
 
     //  
-    $sub = DB::table('users')->showDeleted()
+    $sub = DB::table($this->users_table)->showDeleted()
     ->select(['id'])
     ->whereRaw('confirmed_email = 1')
     ->where(['password', 100, '<']);
@@ -843,7 +843,7 @@ class ModelTest extends TestCase
     $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE (belongs_to IN (SELECT id FROM users WHERE (confirmed_email = 1) AND password < 100)) AND size = '1L';");  
 
     // 
-    $sub = DB::table('users')->showDeleted()
+    $sub = DB::table($this->users_table)->showDeleted()
     ->selectRaw('users.id')
     ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
     ->whereRaw('confirmed_email = 1')
@@ -861,7 +861,7 @@ class ModelTest extends TestCase
     $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE (belongs_to IN (SELECT users.id FROM users INNER JOIN user_roles ON users.id=user_roles.user_id WHERE (confirmed_email = 1) AND password < 100 AND role_id = 2)) AND size = '1L' ORDER BY id DESC;");    
     
     //  
-    $sub = DB::table('users')->showDeleted()
+    $sub = DB::table($this->users_table)->showDeleted()
     ->selectRaw('users.id')
     ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
     ->whereRaw('confirmed_email = 1')
@@ -920,7 +920,7 @@ class ModelTest extends TestCase
   }
 
   function test_delete(){
-    $u = DB::table('users');
+    $u = DB::table($this->users_table);
     $u->where(['id' => 100000])->dontExec()->setSoftDelete(false)->delete();
     $this->assertEquals(DB::getLog(), "DELETE FROM users WHERE id = 100000;");
   }
@@ -938,7 +938,7 @@ class ModelTest extends TestCase
   */
   
   function test_update(){
-    $u = DB::table('users');
+    $u = DB::table($this->users_table);
     $u->where(['id' => 100000])
     ->update(['firstname' => 'Nico', 'lastname' => 'Buzzi']);    
     $this->assertEquals(DB::getLog(), "UPDATE users SET firstname = 'Nico', lastname = 'Buzzi' WHERE id = 100000;");
@@ -947,7 +947,7 @@ class ModelTest extends TestCase
     ->update(['firstname' => 'Nicolay']);
     $this->assertEquals(DB::getLog(), "UPDATE users SET firstname = 'Nicolay' WHERE id = 100000 AND lastname IN ('AAA', 'Buzzi');");
 
-    $u = DB::table('users');
+    $u = DB::table($this->users_table);
     $u->where(['id' => 100000])
     ->update(['firstname' => NULL]);
     $this->assertEquals(DB::getLog(), "UPDATE users SET firstname = NULL WHERE id = 100000;");
@@ -959,7 +959,7 @@ class ModelTest extends TestCase
     $unhide = ['password'];
     $hide   = ['username', 'confirmed_email', 'firstname','lastname', 'deleted_at', 'belongs_to'];
 
-    $u = DB::table('users');
+    $u = DB::table($this->users_table);
     $u->unhide($unhide);
     $u->hide($hide);
     $u->where(['id'=> 100000])->get();
@@ -971,13 +971,13 @@ class ModelTest extends TestCase
 
   function test_fill1(){ 
     $this->expectException(\InvalidArgumentException::class);
-    $u = DB::table('users');
+    $u = DB::table($this->users_table);
     $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe', 'confirmed_email' => 1]);
   }
 
   function test_fill2(){
     $this->expectException(\InvalidArgumentException::class);
-    $u = DB::table('users');
+    $u = DB::table($this->users_table);
     $u->unfill(['password']);
     $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe']);
   }
@@ -985,7 +985,7 @@ class ModelTest extends TestCase
 
   function test_when(){    
     $fn = function($lastname){
-        DB::table('users')
+        DB::table($this->users_table)
         ->when($lastname, function ($q) use ($lastname) {
             $q->where(['lastname', $lastname]);
         })
@@ -1028,14 +1028,14 @@ class ModelTest extends TestCase
   }
 
   function test_wherecol(){
-    DB::table('users')
+    DB::table($this->users_table)
     ->whereColumn('firstname', 'lastname', '=')
     ->unhideAll()
     ->showDeleted()
     ->dontExec()->get();
     $this->assertEquals(DB::getLog(), "SELECT * FROM users WHERE firstname=lastname;");
 
-    DB::table('users')
+    DB::table($this->users_table)
     ->whereColumn('firstname', 'lastname', '!=')
     ->unhideAll()
     ->showDeleted()

@@ -17,8 +17,13 @@ use simplerest\libs\Files;
 
 class AuthController extends Controller implements IAuth
 {
-    protected $users_table = 'users';
-    protected $role_field  = 'rol';
+    protected $role_field;
+    protected $__email;
+    protected $__username;
+    protected $__password;
+    protected $__confirmed_email;
+    protected $__active;
+
     public $uid;
 
     function __construct()
@@ -30,6 +35,14 @@ class AuthController extends Controller implements IAuth
         header('Content-Type: application/json; charset=UTF-8');
 
         parent::__construct();
+
+        $model = get_user_model_name();    
+           
+        $this->__email           = $model::$email;
+        $this->__username        = $model::$username;
+        $this->__password        = $model::$password;
+        $this->__confirmed_email = $model::$confirmed_email;
+        $this->__active          = $model::$active;
     }
        
     protected function gen_jwt(array $props, string $token_type, int $expires_in = null){
@@ -85,14 +98,14 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $data  = Factory::request()->getBody();
+        $data  = Factory::request()->getBody(false);
 
         if ($data == null)
             return;
             
-        $email = $data->email ?? null;
-        $username = $data->username ?? null;  
-        $password = $data->password ?? null;         
+        $email    = $data[$this->__email]    ?? null;
+        $username = $data[$this->__username] ?? null;  
+        $password = $data[$this->__password] ?? null;         
         
         if (empty($email) && empty($username) ){
             Factory::response()->sendError('email or username are required',400);
@@ -103,26 +116,26 @@ class AuthController extends Controller implements IAuth
         try {              
             $u = DB::table($this->users_table);
 
-            $row = $u->assoc()->unhide(['password'])
-            ->where([ 'email'=> $email, 'username' => $username ], 'OR')
+            $row = $u->assoc()->unhide([$this->__password])
+            ->where([$this->__email => $email, $this->__username => $username ], 'OR')
             ->setValidator((new Validator())->setRequired(false))  
             ->first();
 
             if (!$row)
                 throw new Exception("Incorrect username / email or password");
 
-            $hash = $row['password'];
+            $hash = $row[$this->__password];
 
             if (!password_verify($password, $hash))
                 Factory::response()->sendError('Incorrect username / email or password', 401);
 
             $active = 1;    
-            if ($u->inSchema(['active'])){
-                $active = $row['active']; 
+            if ($u->inSchema([$this->__active])){
+                $active = $row[$this->__active]; 
 
                 if ($active == null) {
 
-                    if ($row['confirmed_email'] === "0") {
+                    if ($row[$this->__confirmed_email] === "0") {
                         Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
                     } else {
                         Factory::response()->sendError('Non authorized', 403, 'Account pending for activation');
@@ -260,8 +273,8 @@ class AuthController extends Controller implements IAuth
                     throw new Exception("User to impersonate does not exist");
 
                 $active = true;    
-                if ($u->inSchema(['active'])){
-                    $active = $row['active'];
+                if ($u->inSchema([$this->__active])){
+                    $active = $row[$this->__active];
 
                     if ($active === NULL) {
                         Factory::response()->sendError('Account to be impersonated is pending for activation', 500);
@@ -441,8 +454,8 @@ class AuthController extends Controller implements IAuth
                     throw new \Exception("User not found");
 
                 $active = 1;    
-                if ($u->inSchema(['active'])){
-                    $active = $row['active']; 
+                if ($u->inSchema([$this->__active])){
+                    $active = $row[$this->__active]; 
 
                     if ($active == 0 || (string) $active === "0") {
                         Factory::response()
@@ -553,28 +566,28 @@ class AuthController extends Controller implements IAuth
             if (!empty($missing))
                 Factory::response()->sendError('Bad request', 400, 'There are missing attributes in your request: '.implode(',',$missing));
 
-            $email_in_schema = $u->inSchema(['email']);
+            $email_in_schema = $u->inSchema([$this->__email]);
 
             if ($email_in_schema)
             {
                 // se hace en el modelo pero es más rápido hacer chequeos acá
 
-                if (empty($data['email']))
+                if (empty($data[$this->__email]))
                     throw new Exception("Email is empty");
                     
-                if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL))
+                if (!filter_var($data[$this->__email], FILTER_VALIDATE_EMAIL))
                     throw new Exception("Invalid email");  
 
-                if (DB::table($this->users_table)->where(['email', $data['email']])->exists())
+                if (DB::table($this->users_table)->where([$this->__email, $data[$this->__email]])->exists())
                     Factory::response()->sendError('Email already exists');    
             }            
 
-            if (DB::table($this->users_table)->where(['username', $data['username']])->exists())
+            if (DB::table($this->users_table)->where([$this->__username , $data[$this->__username]])->exists())
                 Factory::response()->sendError('Username already exists');
 
-            if ($u->inSchema(['active'])){  
-                $u->fill(['active']);      
-                $data['active'] = $this->config['pre_activated'] ?? false;
+            if ($u->inSchema([$this->__active])){  
+                $u->fill([$this->__active]);      
+                $data[$this->__active] = $this->config['pre_activated'] ?? false;
             }
 
             $uid = $u
@@ -595,13 +608,13 @@ class AuthController extends Controller implements IAuth
                 (debería ser con un hook y enviar correo)
             */  
             if (!$this->config['pre_activated']){  
-                $email_confirmation = $email_in_schema && $u->inSchema(['confirmed_email']);
+                $email_confirmation = $email_in_schema && $u->inSchema([$this->__confirmed_email]);
 
                 if ($email_confirmation)
                 {                 
                     $exp = time() + $this->config['email_token']['expires_in'];
                     $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
-                    $token = $this->gen_jwt_email_conf($data['email'], $roles, []);
+                    $token = $this->gen_jwt_email_conf($data[$this->__email], $roles, []);
                     $url = $base_url . (!$this->config['REMOVE_API_SLUG'] ? "api/$api_version" : $api_version) . '/auth/confirm_email/' . $token . '/' . $exp; 
                 } 
             }
@@ -795,24 +808,24 @@ class AuthController extends Controller implements IAuth
                 
                 $u = DB::table($this->users_table);
 
-                if (!$u->inSchema(['confirmed_email'])){
+                if (!$u->inSchema([$this->__confirmed_email])){
                     Factory::response()->sendError('Email confirmation is not implemented', 501);
                 }    
 
                 $rows = $u->assoc()
                 ->select([$u->getIdName()])
-                ->when($u->inSchema(['active']), function($q){
-                    $q->addSelect('active');
+                ->when($u->inSchema([$this->__active]), function($q){
+                    $q->addSelect($this->__active);
                 })
-                ->where(['email', $payload->email])
+                ->where([$this->__email, $payload->email])
                 ->get();
 
                 if (count($rows) == 0){
                     Factory::response()->sendError("Not found", 404, "Email not found");
                 }
 
-                if ($u->inSchema(['active'])){
-                    if ((string) $rows[0]['active'] === "0") {
+                if ($u->inSchema([$this->__active])){
+                    if ((string) $rows[0][$this->__active] === "0") {
                         Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
                     }
                 }
@@ -820,8 +833,8 @@ class AuthController extends Controller implements IAuth
                 $uid  = $rows[0][$u->getIdName()];
                 
                 $ok = $u
-                ->fill(['confirmed_email'])
-                ->update(['confirmed_email' => 1]);
+                ->fill([$this->__confirmed_email])
+                ->update([$this->__confirmed_email => 1]);
 
             } catch (\Exception $e) {
                 /*
@@ -876,19 +889,20 @@ class AuthController extends Controller implements IAuth
 			Factory::response()->sendError('Empty email', 400);
 
 		try {	
+            $__id = get_name_id($this->users_table);
 
-			$u = (DB::table('users'))->assoc();
-			$rows = $u->where(['email', $email])->get(['id', 'active']);
+			$u = (DB::table($this->users_table))->assoc();
+			$rows = $u->where([$this->__email, $email])->get([$__id, $this->__active]);
 
 			if (count($rows) === 0){
                 // Email not found
                 Factory::response()->sendError('Please check your e-mail', 400); 
             }
 		
-            $uid = $rows[0]['id'];	//
+            $uid = $rows[0][$__id];	//
             $exp = time() + $this->config['email_token']['expires_in'];	
 
-            $active = $rows[0]['active'];
+            $active = $rows[0][$this->__active];
 
             if ((string) $active === "0") {
                 Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
@@ -985,8 +999,8 @@ class AuthController extends Controller implements IAuth
                         throw new Exception("Uid not found");
 
                     $active = true;    
-                    if ($u->inSchema(['active'])){    
-                        $active = $row['active'];                     
+                    if ($u->inSchema([$this->__active])){    
+                        $active = $row[$this->__active];                     
 
                         if ($active === false) {
                             Factory::response()->sendError('Non authorized', 403, 'Deactivated account');
@@ -1068,10 +1082,10 @@ class AuthController extends Controller implements IAuth
                 Factory::response()->sendError('uid is needed',400);
             }
 
-            $ok = DB::table('users')
+            $ok = DB::table($this->users_table)
             ->find($payload->uid)
             ->update([
-                'password' => $data->password
+                $this->__password => $data->password
             ]);
 
             if (!$ok){
@@ -1085,12 +1099,12 @@ class AuthController extends Controller implements IAuth
 
 
             $active = 1;    
-            if ($u->inSchema(['active'])){
-                $active = $row['active']; 
+            if ($u->inSchema([$this->__active])){
+                $active = $row[$this->__active]; 
 
                 if ($active == null) {
 
-                    if ($row['confirmed_email'] === "0") {
+                    if ($row[$this->__confirmed_email] === "0") {
                         Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
                     } else {
                         Factory::response()->sendError('Non authorized', 403, 'Account pending for activation');

@@ -8,9 +8,7 @@ use simplerest\core\interfaces\ISchema;
 
 class ApiKeysSchema implements ISchema
 { 
-	### TRAITS
-	
-	function get(){
+	static function get(){
 		return [
 			'table_name'	=> 'api_keys',
 
