@@ -34,11 +34,9 @@ function register(){
 		return;
 	}else $('#registerError').text('');
 
-	obj.username = $('#username').val();
-	obj.email = $('#email').val();	
-	obj.password = $('#password').val();
-	obj.firstname = $('#firstname').val();	
-	obj.lastname = $('#lastname').val();
+	obj[$__username] = $('#username').val();
+	obj[$__email]    = $('#email').val();	
+	obj[$__password]  = $('#password').val();
 
 	$.ajax({
 		type : "POST",
@@ -75,11 +73,11 @@ function login(){
 	var obj ={};
 	
 	if ($('#email_username').val().match(/@/) != null)
-		obj.email    = $('#email_username').val();	
+		obj[$__email]    = $('#email_username').val();	
 	else
-		obj.username = $('#email_username').val();
+		obj[$__username] = $('#email_username').val();
 	
-	obj.password = $('#password').val();
+	obj[$__password] = $('#password').val();
 	
 	// get form data
 	//obj = this.serializeObject();
@@ -167,7 +165,7 @@ function rememberme(){
 		data: JSON.stringify(obj),
 		dataType: 'text', 
 		success: function(res){
-			window.location.replace(base_url + '/login/rememberme_mail_sent/' + window.btoa(obj.email));
+			window.location.replace(base_url + '/login/rememberme_mail_sent/' + window.btoa(obj[$__email]));
 		},
 		error: function(xhr, status, error){
 			console.log('ERROR');
@@ -199,7 +197,7 @@ function update_pass()
 
 	var obj = {};
 	
-	obj.password = $('#password').val();
+	obj[$__password] = $('#password').val();
 	
 	const slugs = window.location.pathname.split('/');
 	const token = slugs[slugs.indexOf('change_pass_by_link')+1];

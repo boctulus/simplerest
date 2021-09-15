@@ -33,7 +33,7 @@
 
 				<div class="input-group" style="margin-bottom:1em;">
 					<span class="input-group-addon">
-					<i class="glyphicon glyphicon-envelope"></i>
+					<i class="glyphicon glyphicon-user"></i>
 					</span>
 					<input type="text" class="form-control" id="username" placeholder="Username" required="required">
 				</div>
