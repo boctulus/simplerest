@@ -1,8 +1,6 @@
 const base_url = getSiteRoot().replace(/\/$/, "");
 const login_page = base_url + '/login';  
 
-//console.log(base_url);
-//console.log(base_url + 'login');
 
 function checkpoint()
 {

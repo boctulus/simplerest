@@ -12,7 +12,7 @@ class ApiKeysSchema implements ISchema
 		return [
 			'table_name'	=> 'api_keys',
 
-			'id_name'		=> 'uuid',
+			'id_name'		=> NULL,
 
 			'attr_types'	=> [
 				'uuid' => 'STR',
@@ -21,7 +21,7 @@ class ApiKeysSchema implements ISchema
 				'created_at' => 'STR'
 			],
 
-			'nullable'		=> ['created_at', 'uuid'],
+			'nullable'		=> ['created_at'],
 
 			'rules' 		=> [
 				'uuid' => ['max' => 36],
@@ -29,8 +29,8 @@ class ApiKeysSchema implements ISchema
 			],
 
 			'relationships' => [
-				'users' => [
-					['users.id','api_keys.user_id']
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','api_keys.user_id']
 				]
 			]
 		];

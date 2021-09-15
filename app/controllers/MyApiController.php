@@ -2,6 +2,8 @@
 
 namespace simplerest\controllers;
 
+use simplerest\core\interfaces\IApi;
+
 global $api_version;
 
 if (!file_exists(CORE_PATH . 'api'. DIRECTORY_SEPARATOR . $api_version . DIRECTORY_SEPARATOR . 'ApiController.php')){  

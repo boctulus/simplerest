@@ -1,0 +1,26 @@
+NOTAS DEV
+=========
+
+Si se desea cambiar de tabla de usuarios, es necesario actualizar la referencia a esa tabla en el archivo config/config.php
+
+Ej:
+
+'users_table' =>  'tbl_usuario_empresa'
+
+Y hacia la tabla usuarios hay en principio (auth granular) relaciones desde varias tablas: 	
+
+user_tb_permissions
+user_sp_permissions
+user_roles
+------------------------
+api_keys
+------------------------
+collections
+------------------------
+files
+------------------------
+folder_other_permissions
+folder_permissions
+folders
+
+La solución ideal es que las tablas sean creadas por un Serivice Provider via migraciones.

@@ -771,6 +771,7 @@ class MakeController extends Controller
         DB::getConnection();
         $current = DB::getCurrentConnectionId();
      
+        $extra = '';
         if ($current == Factory::config()['db_connection_default']){
             $extra = "$current\\";
         }
@@ -830,10 +831,6 @@ class MakeController extends Controller
                 $from_db = $matches[1];
             }
         }
-
-
-        dd($from_db, 'FROM DB');
-
 
         if (!empty($to_db)){
             $up_rep .= "Factory::config()['db_connection_default'] = '$to_db';\r\n\r\n";

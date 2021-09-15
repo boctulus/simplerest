@@ -15,22 +15,23 @@ class FoldersSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'INT',
+				'id' => 'STR',
 				'tb' => 'STR',
 				'name' => 'STR',
-				'belongs_to' => 'INT'
+				'belongs_to' => 'INT',
+				'created_at' => 'STR'
 			],
 
 			'nullable'		=> ['id'],
 
 			'rules' 		=> [
-				'tb' => ['max' => 40],
-				'name' => ['max' => 40]
+				'tb' => ['max' => 50],
+				'name' => ['max' => 50]
 			],
 
 			'relationships' => [
-				'users' => [
-					['users.id','folders.belongs_to']
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','folders.belongs_to']
 				]
 			]
 		];
