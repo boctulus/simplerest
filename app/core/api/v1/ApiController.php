@@ -51,7 +51,7 @@ abstract class ApiController extends ResourceController implements IApi
         }
 
         if ($this->model_name != null){
-            $this->model_table = Strings::camelToSnake(Strings::removeRTrim('Model', $this->model_name));
+            $this->model_table = Strings::camelToSnake(Strings::rTrim('Model', $this->model_name));
         }else {
             if ($this->model_table != null){            
                 $this->model_name = implode(array_map('ucfirst',explode('_', $this->model_table))) . 'Model';

@@ -59,7 +59,7 @@ class Collections extends MyApiController
         }
 
         try {            
-            $entity = Strings::toCamelCase($entity);    
+            $entity = Strings::snakeToCamel($entity);    
            
             $model_name   = ucfirst($entity) . 'Model';
             $table_name = strtolower($entity);
@@ -121,7 +121,7 @@ class Collections extends MyApiController
                     Factory::response()->sendError('Forbidden', 403, 'You are not the owner');
                 }         
                                
-                $entity = Strings::toCamelCase($row['entity']);    
+                $entity = Strings::snakeToCamel($row['entity']);    
            
                 $model_name   = ucfirst($entity) . 'Model';
                 $table_name = strtolower($entity);
@@ -201,7 +201,7 @@ class Collections extends MyApiController
                 Factory::response()->sendError('Forbidden', 403, 'You are not the owner');
             }         
 
-            $entity = Strings::toCamelCase($row['entity']);    
+            $entity = Strings::snakeToCamel($row['entity']);    
            
             $model_name = ucfirst($entity) . 'Model';
             $table_name = strtolower($entity);

@@ -60,3 +60,14 @@ function get_name_id(string $table_name){
 
     return $class::get()['id_name'];
 }
+
+function generateMigrationFileName($name){
+        
+    // 2020_10_28_141833_yyy
+    $date = date("Y_m_d");
+    $secs = time() - 1603750000;
+    $filename = $date . '_'. $secs . '_' . Strings::camelToSnake($name) . '.php'; 
+
+    // destination
+    return MIGRATIONS_PATH . $filename;
+}

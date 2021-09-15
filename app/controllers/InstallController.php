@@ -32,12 +32,17 @@ class InstallController extends ConsoleController
 
             dd($sentence, 'SENTENCE');
 
-            #try {
+            try {
                 $ok = Model::query($sentence);
-            #} catch (\Exception $e){
-                #dd($e, 'Sql Exception');
-            #}
+            } catch (\Exception $e){
+                dd($e, 'Sql Exception');
+            }
         }
+
+        /*
+            Luego de crear tablas básicas, corro migraciones para crear el resto
+        */
+        $res = shell_exec('php com migrations migrate');
 
         Model::query('SET foreign_key_checks = 1');
 

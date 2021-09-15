@@ -18,11 +18,11 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     $acl = new Acl();
 
     $acl
-    ->addRole('guest', -1)
+    ->addRole('guest', 1)
     // ...
     //->setGuest('guest')
 
-    ->addRole('registered', 1)
+    ->addRole('registered', 2)
     ->addInherit('guest')
     // ...
     
@@ -34,12 +34,12 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     ->addRole('admin', 50) 
     ->addInherit('registered')
-    ->addSpecialPermissions(['read_all'])
+    ->addSpecialPermissions(['read_all', 'write_all'])
     
    
     ->addRole('supervisor', 100)  
     ->addInherit('registered')
-    ->addResourcePermissions('users', ['read_all']) 
+    ->addResourcePermissions('tbl_usuario_empresa', ['read_all']) 
 
  
     ->addRole('dsi', 500)

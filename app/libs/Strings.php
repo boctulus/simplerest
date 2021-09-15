@@ -181,7 +181,7 @@ class Strings
 		return ($s1 == $s2);
 	}
 
-	static function removeRTrim($needle, $haystack)
+	static function rTrim($needle, $haystack)
     {
         if (substr($haystack, -strlen($needle)) === $needle){
 			return substr($haystack, 0, - strlen($needle));

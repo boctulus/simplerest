@@ -10,10 +10,13 @@ class UsersModel extends Model
  { 	
 	protected $hidden   = [	'password' ];
 	protected $not_fillable = ['confirmed_email', 'active'];
+
+	public static $active	= 'active';
+	public static $username	= 'username';
+	public static $email	= 'email';
+	public static $password = 'password';
+	public static $confirmed_email = 'confirmed_email';
 	
-	public    $active    = 'active';
-	public 	  $username  = 'username';
-	public 	  $email 	 = 'email';
 
     function __construct(bool $connect = false){		
 		$this->registerInputMutator('password', function($pass){ 

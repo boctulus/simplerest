@@ -12,7 +12,7 @@ class FilesSchema implements ISchema
 		return [
 			'table_name'	=> 'files',
 
-			'id_name'		=> 'uuid',
+			'id_name'		=> NULL,
 
 			'attr_types'	=> [
 				'uuid' => 'STR',
@@ -27,7 +27,7 @@ class FilesSchema implements ISchema
 				'deleted_at' => 'STR'
 			],
 
-			'nullable'		=> ['belongs_to', 'guest_access', 'broken', 'deleted_at', 'uuid'],
+			'nullable'		=> ['belongs_to', 'guest_access', 'broken', 'deleted_at'],
 
 			'rules' 		=> [
 				'uuid' => ['max' => 36],
@@ -37,8 +37,8 @@ class FilesSchema implements ISchema
 			],
 
 			'relationships' => [
-				'users' => [
-					['users.id','files.belongs_to']
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','files.belongs_to']
 				]
 			]
 		];

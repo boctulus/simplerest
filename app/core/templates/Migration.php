@@ -1,8 +1,8 @@
 <?php
 
-use simplerest\core\Schema;
-
+use simplerest\core\interfaces\IMigration;
 use simplerest\libs\Factory;
+use simplerest\libs\Schema;
 
 class __NAME__ implements IMigration
 {

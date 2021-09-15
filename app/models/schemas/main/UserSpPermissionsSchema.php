@@ -15,15 +15,16 @@ class UserSpPermissionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'INT',
+				'id' => 'STR',
 				'sp_permission_id' => 'INT',
 				'user_id' => 'INT',
 				'created_by' => 'INT',
 				'created_at' => 'STR',
+				'updated_by' => 'INT',
 				'updated_at' => 'STR'
 			],
 
-			'nullable'		=> ['id', 'created_by', 'updated_at'],
+			'nullable'		=> ['id', 'created_by', 'updated_by', 'updated_at'],
 
 			'rules' 		=> [
 
@@ -33,8 +34,8 @@ class UserSpPermissionsSchema implements ISchema
 				'sp_permissions' => [
 					['sp_permissions.id','user_sp_permissions.sp_permission_id']
 				],
-				'users' => [
-					['users.id','user_sp_permissions.user_id']
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','user_sp_permissions.user_id']
 				]
 			]
 		];

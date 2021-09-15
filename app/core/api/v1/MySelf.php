@@ -24,6 +24,7 @@ class MySelf extends MyApiController
 
         $model = get_user_model_name();
         $this->active = $model::$active;
+        $this->__id   = get_name_id($this->config['users_table']);
   
         if (Factory::request()->authMethod() != NULL){
                 $this->callable = ['get', 'put', 'patch', 'delete'];
@@ -66,7 +67,7 @@ class MySelf extends MyApiController
         }
 
         $ok = (bool) $u
-        ->where([['id', $id], [$this->active, 1]])
+        ->where([[$this->__id, $id], [$this->active, 1]])
         ->fill([$this->active])
         ->update([$this->active => 0]);
 

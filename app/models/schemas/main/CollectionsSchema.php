@@ -15,7 +15,7 @@ class CollectionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'INT',
+				'id' => 'STR',
 				'entity' => 'STR',
 				'refs' => 'STR',
 				'belongs_to' => 'INT',
@@ -29,8 +29,8 @@ class CollectionsSchema implements ISchema
 			],
 
 			'relationships' => [
-				'users' => [
-					['users.id','collections.belongs_to']
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','collections.belongs_to']
 				]
 			]
 		];
