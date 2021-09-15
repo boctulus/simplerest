@@ -924,7 +924,26 @@ Ej:
 	->get(['cost', 'size', 'belongs_to']); 
 
 
-Transacciones
+# Transacciones
+
+La forma básica de crear una transacción con su "roll back" en caso de fallo tiene la siguiente estructura:
+
+	DB::beginTransaction();
+
+	try {
+
+		// ...
+		// ...
+		
+		DB::commit(); 
+
+	}catch(\Exception $e){
+		DB::rollback();
+
+		dd($e->getMessage(), "Error en transacción");
+	}	
+
+Ej:
 
 	DB::beginTransaction();
 
@@ -955,6 +974,14 @@ Transacciones
 Otra forma de realizar transacciones es usando una función anómima con transaction()
 
 	DB::transaction(function(){
+		// operación sobre la base de datos   
+		// operación sobre la base de datos 
+		// operación sobre la base de datos 
+	}); 
+
+Ej:
+
+	DB::transaction(function(){
 		$name = '';
 		for ($i=0;$i<20;$i++)
 			$name .= chr(rand(97,122));
@@ -966,8 +993,6 @@ Otra forma de realizar transacciones es usando una función anómima con transac
 			'cost' => rand(0,500),
 			'belongs_to' => 90
 		]);   
-
-		throw new \Exception("AAA"); 
 	});     
 
 
@@ -1349,19 +1374,25 @@ Un uso práctico de estos eventos es para des-confirmar un email cuando se ha ca
 
 La función isDirty() acepta un campo o un array de campos o incluso puede estar vacia en cuyo caso verifica si algún campo sería cambiado.
 
-Otro uso práctico de event hooks es para ocultar registros basados en cierta condición. Ej: si un campo definido por el usuario hidden = 1 entonces devolver 404 (No found)
+Otro uso práctico sería el uso del evento onReading() para hacer un (inner, left, right, natural, cross,...) JOIN automático para devolver el contenido de tablas relacionadas cada vez que se lea un registro de esa tabla. Así:
 
-	protected function onReading() {
-		$this->where(['hide' => 0]);
+class MaestroModel extends Model
+{ 
+	// ...
+
+	function onReading(){
+		$this->leftJoin('detalle');
 	}
-
+}
 
 Desde cualquier hook del modelo es posible acceder a propiedades útiles como $w_vars y $w_vals -entre otras- con las que es posible reconstruir el where.
 
-En el caso de Laravel, también se incluyen los eventos onRestoring() y onRestored() para cuando existe un soft-delete
+A futuro podrían incluirse los eventos onRestoring() y onRestored() para cuando existe un soft-delete
 
 
-Las APIs que extienden a ApiController también tienen varios event hooks
+# Hooks en APIs
+
+Al igual que los modelos, las APIs que extienden a ApiController también tienen varios event hooks
 
 	protected function onGetting($id) { }
     protected function onGot($id, $count){ }
@@ -2669,6 +2700,8 @@ make schema foo --include-defaults
 make schema all --include-defaults
 make schema * --include-defaults
 
+Se planea agregar el comando "schema-change" (por ahora no-disponible) 
+
 make schema-change foo --include-defaults
 make schema-change all --include-defaults
 make schema-change * --include-defaults
@@ -2679,7 +2712,7 @@ make schema-change foo --remove=algun_campo
 
 make schema xxxx
 
-El parámetro --include-defaults crea o agrega los campos manejados automáticamente por el framework:
+El parámetro --include-defaults crearía o agregaría los campos manejados automáticamente por el framework:
 
 created_at
 created_by
@@ -2781,6 +2814,14 @@ Para volver para atrás migraciones con "migrations rollback"
 	Rolled back  '2020_10_28_161757_create_cable_categories.php' --ok
 
 <-- por defecto solo regresa una migración hacia atrás
+
+Por defecto se ejecutan todas las migraciones pendientes (registradas en la tabla `migrations`) en órden cronológico (que en realidad es órden alfabético para los nombres de los archivos). 
+
+Es posible especificar el archivo concreto de migración a ejecutar:
+
+	$ php com migrations migrate --file=2021_09_13_27908784_user_roles.php
+
+En el dado caso solo se ejecutará esa transacción.
 
 
 # Multitenant
