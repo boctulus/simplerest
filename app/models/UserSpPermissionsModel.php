@@ -7,9 +7,9 @@ use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\UserSpPermissionsSchema;
 
 class UserSpPermissionsModel extends Model
- { 
-	### TRAITS
-	### PROPERTIES
+{ 
+	
+	
 
 	protected $hidden   = [];
 	protected $not_fillable = [];
