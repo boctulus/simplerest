@@ -29,7 +29,7 @@ if (!defined('MODELS_PATH'))
     define('MODELS_PATH', APP_PATH . 'models'. DIRECTORY_SEPARATOR);   
 
 if (!defined('MIGRATIONS_PATH'))
-    define('MIGRATIONS_PATH', MODELS_PATH . 'migrations'. DIRECTORY_SEPARATOR);   
+    define('MIGRATIONS_PATH', APP_PATH . 'migrations'. DIRECTORY_SEPARATOR);   
 
 if (!defined('ETC_PATH'))
     define('ETC_PATH', APP_PATH . 'etc'. DIRECTORY_SEPARATOR);     
