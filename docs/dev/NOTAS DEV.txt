@@ -24,3 +24,5 @@ folder_permissions
 folders
 
 La solución ideal es que las tablas sean creadas por un Serivice Provider via migraciones.
+
+Actualmente todas esas tablas son creadas via migraciones en el script de Instalación del framework pero podrían no ser todas necesarias ya que un ACL personalizado podría no requerirlas.

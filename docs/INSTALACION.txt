@@ -16,6 +16,14 @@ app/security
 
         'users_table' =>  'tbl_usuario_empresa'
 
+-- Parado en el root del proyecto:
+
+composer install
+
+-- Parado nuevamente en el root del proyecto
+
+php com install
+
 -- Configurar campos en el Modelo correspondiente para la "usuarios". Ej:
 
     Para TblUsuarioEmpresaModel
@@ -63,18 +71,12 @@ app/security
 
     Notar que hay campos para funcionalidades especiales que podrían no estar definidos en su tabla "usuarios" y por tanto dichas funcionalidades no estarán disponibles.
 
--- Parado en el root del proyecto:
-
-composer install
-
-y luego
-
-php com install
 
 -- Configurar el ACL
 
 config/acl.php
 
 
+Notas:
 
-
+- El instalador solo crea schemas y modelos de la base de datos principal (conexión "main" en el config.php) y no crea por defecto ningún endpoint. Para crear endpoints o más modelos / esquemas refiérase a la DOCUMENTACION. 
