@@ -7,18 +7,8 @@ function view(string $view_path, array $vars_to_be_passed  = null, string $layou
     return (new View($view_path, $vars_to_be_passed, $layout, $footer)); 
 }
 
-function assets($resource){
-    /*
-    if (!empty($_SERVER['HTTPS']) && ('on' == $_SERVER['HTTPS'])) {
-        $protocol = 'https:';
-    } else {
-        $protocol = 'http:';
-    }
-    */
-
-    $config = Factory::config();
-      
-    $public =  $config['BASE_URL'] . '/public';
+function assets($resource){       
+    $public =  config()['BASE_URL'] . '/public';
     return http_protocol() . '://' . $_SERVER['HTTP_HOST']. $public. '/assets/'.$resource;
 }
 

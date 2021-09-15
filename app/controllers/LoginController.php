@@ -8,16 +8,51 @@ use simplerest\libs\DB;
 
 class LoginController extends MyController
 {
+	/*
+		Nombres de los campos en la tabla "users"
+	*/
+    protected $__email;
+    protected $__username;
+    protected $__password;
+    protected $__confirmed_email;
+    protected $__active;
+
+	function __construct()
+    { 
+        parent::__construct();
+
+        $model = get_user_model_name();    
+           
+        $this->__email           = $model::$email;
+        $this->__username        = $model::$username;
+        $this->__password        = $model::$password;
+    }
+
 	function index(){
 		$this->login();
 	}
 	
 	function login(){	
-		$this->view('login.php', [ 'title'=>'Ingreso', 'hidenav'=> true ]);
+		/*
+			Cargo vista y paso variables
+		*/
+		$this->view('login.php', [ 
+			'title'      =>'Ingreso', 
+			'hidenav'    => true,
+			'__email'    => $this->__email,
+			'__username' => $this->__username,
+			'__password' => $this->__password
+		]);
 	}
 	
 	function register(){
-		$this->view('register.php', ['title'=>'Registro', 'hidenav'=> true]);
+		$this->view('register.php', [
+			'title'      =>'Registro', 
+			'hidenav'    => true,
+			'__email'    => $this->__email,
+			'__username' => $this->__username,
+			'__password' => $this->__password
+		]);
 	}
 
 	/*
@@ -107,12 +142,25 @@ class LoginController extends MyController
     }
 
 	function rememberme(){
-		$this->view('rememberme.php', ['title'=>'Recuérdame', 'hidenav'=> true]);
+		$this->view('rememberme.php', [
+			'title'=>'Recuérdame', 
+			'hidenav'=> true,
+			'__email'    => $this->__email,
+			'__username' => $this->__username,
+			'__password' => $this->__password
+		]);
 	}
 
 	
 	function rememberme_mail_sent(){
-		$this->view('rememberme_mail_sent.php', ['title'=>'Recuérdame', 'hidenav'=> true]);
+		$this->view('rememberme_mail_sent.php', [
+			'title'=>'Recuérdame', 
+			'hidenav'=> true,
+			'__email'    => $this->__email,
+			'__username' => $this->__username,
+			'__password' => $this->__password
+			]
+		);
 	}
 
 	function confirm_email($jwt, $exp)
@@ -190,15 +238,21 @@ class LoginController extends MyController
 			$email = DB::table($this->users_table)->where(['id' => $payload->uid])->value('email');
 
 			$this->view('update_pass.php', [
-				'title'=>'Recuperación de contraseña', 
-				'hidenav'=> true
+				'title'		 =>'Recuperación de contraseña', 
+				'hidenav'	 => true,
+				'__email'    => $this->__email,
+				'__username' => $this->__username,
+				'__password' => $this->__password
 			]);
 	
 		}else {
 			$this->view('generic.php', [
 				'title'=>'Recuperación de contraseña', 
 				'hidenav'=> false,
-				'error' => $error
+				'error' => $error,
+				'__email'    => $this->__email,
+				'__username' => $this->__username,
+				'__password' => $this->__password
 			]);
 		}
 	}

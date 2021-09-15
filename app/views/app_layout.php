@@ -24,6 +24,16 @@
     <link href="<?= assets('css/toastr.css') ?>" rel="stylesheet"/>
     <link href="<?= assets('css/core.css"') ?>" rel="stylesheet"/>
     
+    <!--
+        Me traigo los nombres de las keys con que debo armar los JSON
+        para pegarle a los endpoints
+    -->
+    <script>
+        let $__email    = '<?php echo $__email;    ?>'; 
+        let $__username = '<?php echo $__username; ?>';
+        let $__password = '<?php echo $__password; ?>';
+    </script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>	
     <script src="<?= assets('js/toastr.min.js') ?>"></script> <!-- flash notifications -->	
@@ -42,7 +52,7 @@
     
     <div class="container">
         <main>
-           <?= $content ?>
+           <?php echo $content; ?>
         </main>
     </div>
 </body>
