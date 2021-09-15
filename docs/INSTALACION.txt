@@ -1,21 +1,80 @@
 INSTALACIÓN
 ===========
 
-1) Parado en el root del proyecto:
-
-composer install
-php com install
-
-2) Configure de mínima:
-
-config/config.php
-.env
-config/acl.php
-
-3) Ajustar permisos de carpetas:
+-- Ajustar permisos de carpetas:
 
 logs
 app/security
+
+-- Copiar el archivo .env.example a .env y configurar
+
+-- Configurar config/config.php 
+
+    - Conexiones a bases de datos (ver .env)
+    
+    - Declarar cual será la tabla de usuarios (de la DB principal). Ej: 
+
+        'users_table' =>  'tbl_usuario_empresa'
+
+-- Configurar campos en el Modelo correspondiente para la "usuarios". Ej:
+
+    Para TblUsuarioEmpresaModel
+
+        class TblUsuarioEmpresaModel extends Model
+        { 
+            protected $hidden    	= ['use_decPassword'];
+            protected $not_fillable = ['est_intIdEstado'];
+
+            protected $createdAt 	= 'use_dtimFechaCreacion';
+            protected $updatedAt 	= 'use_dtimFechaActualizacion';
+            //protected $deletedAt  = 'deleted_at'; 
+            protected $createdBy 	= 'usu_intIdCreador';
+            protected $updatedBy 	= 'usu_intIdActualizador';
+            //protected $deletedBy  = 'deleted_by'; 
+            //protected $locked     = 'locked';
+            //protected $belongsTo  = 'belongs_to';
+
+            public static $active	= 'est_intIdEstado';
+            public static $username	= 'use_varUsuario';
+            public static $email	= 'use_varEmail';
+            public static $password = 'use_decPassword';
+            public static $confirmed_email;
+
+
+            function __construct(bool $connect = false){
+                $this->registerInputMutator(self::$password, function($pass){ 
+                    return password_hash($pass, PASSWORD_DEFAULT); 
+                }, function($op, $dato){
+                    return ($dato !== null);
+                });
+
+                //$this->registerOutputMutator('password', function($pass){ return '******'; } );
+                parent::__construct($connect, new TblUsuarioEmpresaSchema());
+            }
+            
+            /*
+            function onUpdating(&$data) {
+                if ($this->isDirty('email')) {
+                    $this->fill(['confirmed_email'])->update(['confirmed_email' => 0]);
+                }
+            }
+            */
+        }
+
+    Notar que hay campos para funcionalidades especiales que podrían no estar definidos en su tabla "usuarios" y por tanto dichas funcionalidades no estarán disponibles.
+
+-- Parado en el root del proyecto:
+
+composer install
+
+y luego
+
+php com install
+
+-- Configurar el ACL
+
+config/acl.php
+
 
 
 

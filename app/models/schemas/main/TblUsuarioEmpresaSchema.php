@@ -28,7 +28,7 @@ class TblUsuarioEmpresaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['use_intId', 'use_varNombre', 'use_varTipo', 'use_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['use_intId', 'use_dtimFechaActualizacion', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'rules' 		=> [
 				'use_varNombre' => ['max' => 250],

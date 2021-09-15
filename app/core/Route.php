@@ -242,7 +242,7 @@ class Route
     }
 
     public static function get(string $uri, $callback){
-        $uri = Strings::removeRTrim('/', $uri);
+        $uri = Strings::rTrim('/', $uri);
         static::$current_verb = 'GET';
         static::$current_uri = $uri;
         static::$current = ['GET', $uri];
@@ -270,7 +270,7 @@ class Route
     }
 
     public static function post(string $uri, $callback){
-        $uri = Strings::removeRTrim('/', $uri);
+        $uri = Strings::rTrim('/', $uri);
         static::$current_verb = 'POST';
         static::$current_uri = $uri;
         static::$current = ['POST', $uri];
@@ -279,7 +279,7 @@ class Route
     }
 
     public static function put(string $uri, $callback){
-        $uri = Strings::removeRTrim('/', $uri);
+        $uri = Strings::rTrim('/', $uri);
         static::$current_verb = 'PUT';
         static::$current = ['PUT', $uri];
         static::$routes['PUT'][$uri] = $callback;
@@ -287,7 +287,7 @@ class Route
     }
 
     public static function patch(string $uri, $callback){
-        $uri = Strings::removeRTrim('/', $uri);
+        $uri = Strings::rTrim('/', $uri);
         static::$current_verb = 'PATCH';
         static::$current_uri = $uri;
         static::$current = ['PATCH', $uri];
@@ -296,7 +296,7 @@ class Route
     }
 
     public static function delete(string $uri, $callback){
-        $uri = Strings::removeRTrim('/', $uri);
+        $uri = Strings::rTrim('/', $uri);
         static::$current_verb = 'DELETE';
         static::$current_uri = $uri;
         static::$current = ['DELETE', $uri];
@@ -305,7 +305,7 @@ class Route
     }
     
     public static function options(string $uri, $callback){
-        $uri = Strings::removeRTrim('/', $uri);
+        $uri = Strings::rTrim('/', $uri);
         static::$current_verb = 'OPTIONS';
         static::$current_uri = $uri;
         static::$current = ['OPTIONS', $uri];

@@ -15,12 +15,13 @@ class FolderPermissionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'INT',
+				'id' => 'STR',
 				'folder_id' => 'INT',
 				'belongs_to' => 'INT',
 				'access_to' => 'INT',
 				'r' => 'INT',
-				'w' => 'INT'
+				'w' => 'INT',
+				'created_at' => 'STR'
 			],
 
 			'nullable'		=> ['id'],
@@ -30,8 +31,9 @@ class FolderPermissionsSchema implements ISchema
 			],
 
 			'relationships' => [
-				'users' => [
-					['users.id','folder_permissions.belongs_to']
+				'tbl_usuario_empresa' => [
+					['access_tos.use_intId','folder_permissions.access_to'],
+					['access_toss.use_intId','folder_permissions.belongs_to']
 				]
 			]
 		];

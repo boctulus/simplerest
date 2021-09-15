@@ -18,7 +18,7 @@ class UserTbPermissions extends MyApiController
     function __construct()
     {
 
-        // Falta limitar acceso !!!
+        // Falta limitar acceso
         $this->callable = ['post', 'put', 'get', 'put', 'patch'];
 
         $this->is_listable = true;
