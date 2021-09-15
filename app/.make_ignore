@@ -18,10 +18,10 @@ WebhooksModel.php
 
 # Apis 
 controllers/api/Me.php
-controllers/api/Products.php
 controllers/api/Roles.php
 controllers/api/UserRoles.php
 controllers/api/UserSpPermissions.php
 controllers/api/UserTbPermissions.php
+controllers/api/Migrations.php
 
 # Schemas

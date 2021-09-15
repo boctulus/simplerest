@@ -15,7 +15,7 @@ class UserTbPermissionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'INT',
+				'id' => 'STR',
 				'tb' => 'STR',
 				'can_list_all' => 'INT',
 				'can_show_all' => 'INT',
@@ -27,18 +27,19 @@ class UserTbPermissionsSchema implements ISchema
 				'user_id' => 'INT',
 				'created_by' => 'INT',
 				'created_at' => 'STR',
+				'updated_by' => 'INT',
 				'updated_at' => 'STR'
 			],
 
-			'nullable'		=> ['id', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'created_by', 'updated_at'],
+			'nullable'		=> ['id', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'created_by', 'updated_by', 'updated_at'],
 
 			'rules' 		=> [
 				'tb' => ['max' => 80]
 			],
 
 			'relationships' => [
-				'users' => [
-					['users.id','user_tb_permissions.user_id']
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','user_tb_permissions.user_id']
 				]
 			]
 		];

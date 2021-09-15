@@ -15,7 +15,7 @@ class RolesSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'INT',
+				'id' => 'STR',
 				'name' => 'STR'
 			],
 

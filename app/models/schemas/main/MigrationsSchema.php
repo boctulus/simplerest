@@ -16,14 +16,14 @@ class MigrationsSchema implements ISchema
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'migration' => 'STR',
-				'batch' => 'INT'
+				'filename' => 'STR',
+				'created_at' => 'STR'
 			],
 
-			'nullable'		=> ['id'],
+			'nullable'		=> ['id', 'created_at'],
 
 			'rules' 		=> [
-				'migration' => ['max' => 255]
+				'filename' => ['max' => 255]
 			],
 
 			'relationships' => [

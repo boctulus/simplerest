@@ -1004,8 +1004,8 @@ class Model {
 
 
 		$q = rtrim($q);
-		$q = Strings::removeRTrim('AND', $q);
-		$q = Strings::removeRTrim('OR',  $q);
+		$q = Strings::rTrim('AND', $q);
+		$q = Strings::rTrim('OR',  $q);
 
 
 		// PAGINATION
@@ -1021,8 +1021,8 @@ class Model {
 		
 		/*
 		$q = rtrim($q);
-		$q = String::removeRTrim('AND', $q);
-		$q = String::removeRTrim('OR',  $q);
+		$q = String::rTrim('AND', $q);
+		$q = String::rTrim('OR',  $q);
 		*/
 
 		//dd($q, 'Query:');
@@ -2049,9 +2049,6 @@ class Model {
 			throw new \InvalidArgumentException('Array of data should be associative');
 	
 		$this->data = $data;	
-
-		//dd($data, 'DATA');
-		//exit;
 		
 		$data = $this->applyInputMutator($data, 'CREATE');
 		$vars = array_keys($data);

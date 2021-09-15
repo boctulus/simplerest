@@ -6,7 +6,6 @@ require_once __DIR__ . '../../vendor/autoload.php';
 require_once __DIR__ . '../../public/app.php';
 
 use PHPUnit\Framework\TestCase;
-use simplerest\models\UsersModel;
 use simplerest\models\RolesModel;
 use simplerest\libs\DB;
 use simplerest\libs\Factory;

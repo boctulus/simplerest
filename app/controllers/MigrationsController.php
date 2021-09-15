@@ -5,7 +5,7 @@ namespace simplerest\controllers;
 use simplerest\core\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\Schema;
+use simplerest\libs\Schema;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
 use simplerest\libs\Strings;
@@ -27,19 +27,30 @@ class MigrationsController extends Controller
         Migrating: 2020_10_28_145609_as_d_f
         Migrated:  2020_10_28_145609_as_d_f
 
+        php com migrations migrate --file=2021_09_14_27905675_user_sp_permissions.php
+
     */
     function migrate(...$opt) {
         $filenames = [];
-        foreach (new \DirectoryIterator(MIGRATIONS_PATH) as $fileInfo) {
-            if($fileInfo->isDot()) continue;
-            $filenames[] = $fileInfo->getFilename();
-        }   
-
-        asort($filenames);
+    
+        if (count ($opt) >=1 && Strings::startsWith('--file=', $opt[0])){
+            $filenames = [ substr($opt[0], 7) ];
+        } else {
+            foreach (new \DirectoryIterator(MIGRATIONS_PATH) as $fileInfo) {
+                if($fileInfo->isDot()) continue;
+                $filenames[] = $fileInfo->getFilename();
+            }   
+    
+            asort($filenames);    
+        }
 
         foreach ($filenames as $filename) {        
-            $class_name = Strings::toCamelCase(substr(substr($filename,18),0,-4));
-            
+            if (DB::table('migrations')->where(['filename' => $filename])->exists()){
+                continue;
+            }
+
+            $class_name = Strings::snakeToCamel(substr(substr($filename,20),0,-4));
+                        
             require_once MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $filename;
 
             if (!class_exists($class_name)){
@@ -47,10 +58,18 @@ class MigrationsController extends Controller
             }
 
             echo "Migrating '$filename'\r\n";
+            
             if (!in_array('--simulate', $opt)){
                 (new $class_name())->up();
+            } else {
+                continue;
             }
+            
             echo "Migrated  '$filename' --ok\r\n";
+            
+            DB::table('migrations')->create([
+                'filename' => $filename
+            ]);
         }         
     }
 
@@ -81,7 +100,7 @@ class MigrationsController extends Controller
         $cnt = min($steps, count($filenames));
         for ($i=0; $i<$cnt; $i++){
             $filename   = $filenames[$i];            
-            $class_name = Strings::toCamelCase(substr(substr($filename,18),0,-4));
+            $class_name = Strings::snakeToCamel(substr(substr($filename,18),0,-4));
 
             require_once MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $filename;
 
