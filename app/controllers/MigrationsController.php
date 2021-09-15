@@ -10,6 +10,7 @@ use simplerest\libs\Factory;
 use simplerest\libs\DB;
 use simplerest\libs\Strings;
 use simplerest\libs\Debug;
+use simplerest\models\MigrationsModel;
 
 class MigrationsController extends Controller
 {
@@ -44,8 +45,8 @@ class MigrationsController extends Controller
             asort($filenames);    
         }
 
-        foreach ($filenames as $filename) {        
-            if (DB::table('migrations')->where(['filename' => $filename])->exists()){
+        foreach ($filenames as $filename) {
+            if (Schema::hasTable('migrations') && (new MigrationsModel(true))->where(['filename' => $filename])->exists()){
                 continue;
             }
 
