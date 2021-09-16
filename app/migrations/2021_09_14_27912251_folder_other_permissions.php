@@ -13,7 +13,7 @@ class FolderOtherPermissions implements IMigration
     */
     public function up()
     {
-        Factory::config()['db_connection_default'] = 'main';
+        config()['db_connection_default'] = 'main';
 
 		$sc = new Schema('folder_other_permissions');
 

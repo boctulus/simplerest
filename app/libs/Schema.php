@@ -194,7 +194,7 @@ class Schema
     }
 
 	static function getTables(string $conn_id = null) {	
-		$config = Factory::config();
+		$config = config();
 		
 		if ($conn_id != null){
 			if (!isset($config['db_connections'][$conn_id])){

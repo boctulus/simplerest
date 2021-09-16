@@ -21,6 +21,10 @@ class LoginController extends MyController
     { 
         parent::__construct();
 
+		/*
+			Recibo los nombres de las keys con que se deben armar los JSON
+			para pegarle a los endpoints. Posteriormente los pasaré a cada vista
+		*/
         $model = get_user_model_name();    
            
         $this->__email           = $model::$email;

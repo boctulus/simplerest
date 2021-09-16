@@ -21,7 +21,7 @@ class AuthTest extends TestCase
 
 	function __construct() {
 		parent::__construct();
-        $this->config = Factory::config();
+        $this->config = config();
     }
 
     /*
