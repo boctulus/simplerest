@@ -1360,6 +1360,8 @@ abstract class ApiController extends ResourceController implements IApi
             throw new \InvalidArgumentException("Invalid webhook operation for $op");
         }
 
+        DB::getDefaultConnection();
+
         $webhooks = DB::table('webhooks')
         ->where(['op' => $op, 'entity' => $this->model_table])
         ->get();
