@@ -56,6 +56,21 @@ return [
 			]
 		],
 
+		'db_legion' => [
+			'host'		=> env('DB_HOST_DSI', '127.0.0.1'),
+			'port'		=> env('DB_PORT_DSI'),
+			'driver' 	=> env('DB_CONNECTION_DSI'),
+			'db_name' 	=> 'db_legion_20210809_Manana', 
+			'user'		=> env('DB_USERNAME_DSI'), 
+			'pass'		=> env('DB_PASSWORD_DSI'),
+			'charset'	=> 'utf8',
+			//'schema'	=> 'az',  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],	
+
 		'db_flor' => [
 			'host'		=> env('DB_HOST_DSI', '127.0.0.1'),
 			'port'		=> env('DB_PORT_DSI'),

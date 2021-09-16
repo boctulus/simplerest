@@ -759,6 +759,10 @@ class AuthController extends Controller implements IAuth
 
                 if (DB::table($this->users_table)->inSchema([$this->role_field])){
                     $ret['roles'] = [ Factory::acl()->getRoleName($ret['roles']) ]; 
+                } else {
+                    if (Factory::acl()->isRegistered()){
+                        $ret['roles'] = [ Factory::acl()->getRegistered()];
+                    }
                 } 
             break;
             default:

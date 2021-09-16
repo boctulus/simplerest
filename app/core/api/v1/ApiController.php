@@ -65,7 +65,6 @@ abstract class ApiController extends ResourceController implements IApi
         
         $perms = $this->acl->getTbPermissions($this->model_table);
         //dd($perms, 'perms'); /////
-        //dd($this->acl->getRolePermissions());
         //dd($this->acl->hasSpecialPermission('read_all', $this->roles));
         //exit; ///
 
@@ -829,7 +828,7 @@ abstract class ApiController extends ResourceController implements IApi
                 
                 if ($rows === false){
                     $db = DB::getCurrentDB();   
-                    Factory::response()->sendError("Something goes wrong with $db.{$this->model_table}");
+                    //Factory::response()->sendError("Something goes wrong with $db.{$this->model_table}");
                 }
 
 

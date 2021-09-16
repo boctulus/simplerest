@@ -14,7 +14,7 @@ abstract class Controller
     protected $users_table;
     
     function __construct() {
-        $this->config = Factory::config();
+        $this->config = config();
 
         if ($this->config['error_handling']) {
             set_exception_handler([$this, 'exception_handler']);

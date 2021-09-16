@@ -24,7 +24,7 @@ class DB
 			return null;
 		}
 
-		return Factory::config()['db_connections'][static::$current_id_conn];
+		return config()['db_connections'][static::$current_id_conn];
 	}
 
 	public static function database(){
@@ -55,7 +55,7 @@ class DB
 	}
 
     public static function getConnection(string $conn_id = null) {
-		$config = Factory::config();
+		$config = config();
 		
 		$cc = count($config['db_connections']);
 		
