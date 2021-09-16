@@ -130,7 +130,7 @@ class Model {
 			$this->table_name = $this->schema['table_name'];
 		}
 
-		$this->config = Factory::config();
+		$this->config = config();
 
 		if ($this->config['error_handling']) {
             set_exception_handler([$this, 'exception_handler']);

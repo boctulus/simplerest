@@ -54,7 +54,7 @@ trait ExceptionHandler
             dd($e->getMessage(), 'ERR MSG');
             dd($backtrace, 'BACKTRACE');
         } else {
-            if (Factory::config()['debug']){
+            if (config()['debug']){
                 Factory::response()->sendError($e->getMessage(), 500, [
                     'location'=> $error_location,
                     'back_trace' => $backtrace

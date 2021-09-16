@@ -12,7 +12,7 @@ class Url {
     }
 
     static function http_protocol(){
-        $config = Factory::config();
+        $config = config();
        
         if (isset($config['HTTPS']) && $config['HTTPS'] != null){
             if ($config['HTTPS'] == 1 || strtolower($config['HTTPS']) == 'on'){

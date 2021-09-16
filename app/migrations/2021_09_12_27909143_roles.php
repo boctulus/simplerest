@@ -13,7 +13,7 @@ class Roles implements IMigration
     */
     public function up()
     {
-        Factory::config()['db_connection_default'] = 'main';
+        config()['db_connection_default'] = 'main';
 
         $sc = (new Schema('roles'))
 

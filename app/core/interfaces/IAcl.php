@@ -13,7 +13,7 @@ interface IAcl {
     
     public function addResourcePermissions(string $table, Array $tb_permissions, $to_role = null);
     
-    public function setGuest(string $guest_name);
+    public function setAsGuest(string $guest_name);
 
     public function getGuest();
 

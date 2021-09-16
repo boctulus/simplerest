@@ -17,7 +17,7 @@ class Acl extends \simplerest\core\Acl
 
 
     public function __construct() { 
-        $this->config = Factory::config();
+        $this->config = config();
         $this->setup();
     }
 

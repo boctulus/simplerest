@@ -13,7 +13,7 @@ class Utils {
         https://myaccount.google.com/lesssecureapps
     */
     static function sendMail(string $to_email, string $to_name, $subject, $body, $alt_body = null){
-		$config = Factory::config();
+		$config = config();
 
 		$mail = new PHPMailer();
         $mail->isSMTP();

@@ -22,7 +22,7 @@ class Response
 
 
     protected function __construct() { 
-        static::$config = Factory::config();
+        static::$config = config();
         static::$pretty = static::$config['pretty'];
     }
 

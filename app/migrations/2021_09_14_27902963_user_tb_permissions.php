@@ -13,7 +13,7 @@ class UserTbPermissions implements IMigration
     */
     public function up()
     {
-        Factory::config()['db_connection_default'] = 'main';
+        config()['db_connection_default'] = 'main';
 
         $sc = (new Schema('user_tb_permissions'))
 

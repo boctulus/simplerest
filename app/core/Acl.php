@@ -13,6 +13,7 @@ abstract class Acl implements IAcl
     protected $role_perms = [];
     protected $current_role;
     protected $guest_name = 'guest';
+    protected $registered_name = 'registered';
     protected $sp_permissions = [];    
 
 
@@ -200,12 +201,21 @@ abstract class Acl implements IAcl
 
 
 
-   public function setGuest(string $guest_name){
+   public function setAsGuest(string $guest_name){
         if (!in_array($guest_name, $this->role_names)){
             throw new \Exception("Please add the rol '$guest_name' *before* to set as guest role to avoid mistakes");
         }
 
         $this->guest_name = $guest_name;
+        return $this;
+    }
+
+    function setAsRegistered(string $name){
+        if (!in_array($name, $this->role_names)){
+            throw new \Exception("Please add the rol '$name' *before* to set as registered role to avoid mistakes");
+        }
+
+        $this->registered_name = $name;
         return $this;
     }
 
@@ -217,8 +227,16 @@ abstract class Acl implements IAcl
         return $this->guest_name;
     }
 
+    public function getRegistered(){
+        if ($this->registered_name == NULL){
+            throw new \Exception("Undefined guest rol in ACL");
+        }
+
+        return $this->registered_name;
+    }
+
     public function getRoleName($role_id = NULL){
-        if ($role_id == NULL){
+        if ($role_id === NULL){
             return $this->role_names;
         }
 

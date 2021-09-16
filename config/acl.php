@@ -19,12 +19,16 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     $acl
     ->addRole('guest', 1)
+    ->addResourcePermissions('tbl_usuario_empresa', ['read'])
+    ->addResourcePermissions('tbl_estado_civil', ['read'])
     // ...
-    //->setGuest('guest')
+    //->setAsGuest('guest')
 
     ->addRole('registered', 2)
     ->addInherit('guest')
+    ->addResourcePermissions('tbl_scritp_tablas', ['read'])
     // ...
+    ->setAsRegistered('registered')
     
     
     ->addRole('usuario', 10) 

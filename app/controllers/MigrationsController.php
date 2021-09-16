@@ -141,7 +141,7 @@ class MigrationsController extends Controller
     */
     function fresh(...$opt) 
     {   
-        $config = Factory::config();
+        $config = config();
 
         $force = false;
         $conn_id = $config['db_connection_default'];
@@ -170,7 +170,7 @@ class MigrationsController extends Controller
 
         Schema::FKcheck(0);
         
-        Factory::config()['db_connection_default'] = $conn_id;
+        config()['db_connection_default'] = $conn_id;
         $conn = DB::getConnection();  
 
         $tables = Schema::getTables();
