@@ -119,7 +119,7 @@ class ApiTest extends TestCase
 
     function __construct() {
 		parent::__construct();
-        $this->config = Factory::config();
+        $this->config = config();
 
         list($this->at, $this->rt) = $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);
         $this->uid = $this->get_me($this->at)['id'];

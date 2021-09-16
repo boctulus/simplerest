@@ -516,7 +516,7 @@ class MakeController extends Controller
         DB::getConnection();
         $current = DB::getCurrentConnectionId();
      
-        if ($current == Factory::config()['db_connection_default']){
+        if ($current == config()['db_connection_default']){
             $file = str_replace('namespace simplerest\models\schemas', 'namespace simplerest\models\schemas' . "\\$current", $file);
 
             Files::mkdir_ignore(self::SCHEMAS_PATH . $current);
@@ -772,7 +772,7 @@ class MakeController extends Controller
         $current = DB::getCurrentConnectionId();
      
         $extra = '';
-        if ($current == Factory::config()['db_connection_default']){
+        if ($current == config()['db_connection_default']){
             $extra = "$current\\";
         }
 
@@ -833,7 +833,7 @@ class MakeController extends Controller
         }
 
         if (!empty($to_db)){
-            $up_rep .= "Factory::config()['db_connection_default'] = '$to_db';\r\n\r\n";
+            $up_rep .= "config()['db_connection_default'] = '$to_db';\r\n\r\n";
         }
         
         if (!empty($tb_name)){

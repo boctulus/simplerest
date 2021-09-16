@@ -17,7 +17,7 @@ class MySelf extends MyApiController
 {  
     function __construct() 
     { 
-        $this->config = Factory::config();
+        $this->config = config();
         $this->model_table = $this->config['users_table'];
 
         parent::__construct();

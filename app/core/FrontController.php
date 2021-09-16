@@ -19,7 +19,7 @@ class FrontController
         global $argv;
         global $api_version;
 
-        $config = Factory::config();
+        $config = config();
 
         //Time::setUnit('MILI');
         //$t = Time::exec(function() use ($config, &$api_version) { 

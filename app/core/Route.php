@@ -27,7 +27,7 @@ class Route
     protected static function setup() {
         global $argv;
         
-        $config = Factory::config();
+        $config = config();
 
         if (php_sapi_name() != 'cli'){
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
