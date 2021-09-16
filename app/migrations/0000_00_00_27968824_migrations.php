@@ -20,7 +20,7 @@ class Migrations implements IMigration
         try {
             Model::query("
             CREATE TABLE `migrations` (
-                `id` int(10) UNSIGNED NOT NULL,
+                `id` int(10) NOT NULL,
                 `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
                 `created_at` DATETIME NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
