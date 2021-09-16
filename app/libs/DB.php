@@ -131,6 +131,10 @@ class DB
 		
 		return self::$connections[static::$current_id_conn];
 	}
+
+	static function getDefaultConnection(){
+		return self::getConnection(config()['db_connection_default']);
+	}
 	
     static function closeConnection(string $conn_id = null) {
 		if ($conn_id == null){
