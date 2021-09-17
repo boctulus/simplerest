@@ -29,9 +29,9 @@
         para pegarle a los endpoints
     -->
     <script>
-        let $__email    = '<?php echo $__email;    ?>'; 
-        let $__username = '<?php echo $__username; ?>';
-        let $__password = '<?php echo $__password; ?>';
+        let $__email    = '<?php echo $__email ?? null;    ?>'; 
+        let $__username = '<?php echo $__username ?? null; ?>';
+        let $__password = '<?php echo $__password ?? null; ?>';
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

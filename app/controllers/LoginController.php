@@ -3,7 +3,7 @@
 namespace simplerest\controllers;
 
 use simplerest\libs\Debug;
-use simplerest\libs\Factory;
+use simplerest\core\Request;
 use simplerest\libs\DB;
 
 class LoginController extends MyController
@@ -115,6 +115,7 @@ class LoginController extends MyController
 	/*
         JWT token for email confirmation & remember me
     */
+	/*
     protected function gen_jwt_email_conf(string $email){
         $time = time();
 
@@ -124,12 +125,15 @@ class LoginController extends MyController
             'iat' => $time, 
             'exp' => $time + $this->config['email_token']['expires_in'],
             'ip'  => $_SERVER['REMOTE_ADDR'],
+			'user_agent' => Request::user_agent(),
             'email' => $email
          ];
 
         return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
     }
+	*/
 
+	/*
 	protected function gen_jwt(array $props, string $token_type){
         $time = time();
 
@@ -144,6 +148,7 @@ class LoginController extends MyController
 
         return \Firebase\JWT\JWT::encode($payload, $this->config[$token_type]['secret_key'],  $this->config[$token_type]['encryption']);
     }
+	*/
 
 	function rememberme(){
 		$this->view('rememberme.php', [
