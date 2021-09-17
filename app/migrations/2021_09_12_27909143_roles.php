@@ -21,7 +21,7 @@ class Roles implements IMigration
         ->setCharset('utf8')
         ->setCollation('utf8_general_ci')
 
-        ->integer('id')->auto()->unsigned()->pri()
+        ->integer('id')->unsigned()->auto()->pri()
         ->varchar('name', 50);
 
         $res = $sc->create();

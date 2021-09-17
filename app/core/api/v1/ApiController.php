@@ -64,9 +64,9 @@ abstract class ApiController extends ResourceController implements IApi
         }
         
         $perms = $this->acl->getTbPermissions($this->model_table);
+        
         //dd($perms, 'perms'); /////
         //dd($this->acl->hasSpecialPermission('read_all', $this->roles));
-        //exit; ///
 
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':

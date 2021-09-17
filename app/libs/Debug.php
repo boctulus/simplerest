@@ -14,7 +14,7 @@ class Debug
 
 	protected static function export($v, $msg = null) 
 	{			
-		$postman = Url::is_postman();
+		$postman = Url::is_postman() || Url::is_insomnia();
 		
 		$cli  = (php_sapi_name() == 'cli');
 		$br   = ($cli || $postman) ? PHP_EOL : '<br/>';
@@ -61,7 +61,7 @@ class Debug
 		
 		$pre = !$cli;
 		
-		if (Url::is_postman()){
+		if (Url::is_postman() || Url::is_insomnia()){
 			$pre = false;
 		}
 

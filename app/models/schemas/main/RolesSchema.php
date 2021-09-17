@@ -26,7 +26,9 @@ class RolesSchema implements ISchema
 			],
 
 			'relationships' => [
-				
+				'user_roles' => [
+					['user_roles.role_id','roles.id']
+				]
 			]
 		];
 	}	
