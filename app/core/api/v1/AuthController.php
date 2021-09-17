@@ -53,7 +53,8 @@ class AuthController extends Controller implements IAuth
             'typ' => 'JWT',
             'iat' => $time, 
             'exp' => $time + ($expires_in != null ? $expires_in : $this->config[$token_type]['expiration_time']),
-            'ip'  => Request::ip()
+            'ip'  => Request::ip(),
+            'user_agent' => Request::user_agent()
         ];
         
         $payload = array_merge($payload, $props);
@@ -70,6 +71,7 @@ class AuthController extends Controller implements IAuth
             'iat' => $time, 
             'exp' => $time + $this->config['email_token']['expires_in'],
             'ip'  => Request::ip(),
+            'user_agent' => Request::user_agent(),
             'email' => $email,
             'roles' => $roles,
             'permissions' => $perms
@@ -87,6 +89,7 @@ class AuthController extends Controller implements IAuth
             'iat' => $time, 
             'exp' => $time + $this->config['email_token']['expires_in'],
             'ip'  => Request::ip(),
+            'user_agent' => Request::user_agent(),
             'uid' => $uid
          ];
 
@@ -761,7 +764,10 @@ class AuthController extends Controller implements IAuth
                     $ret['roles'] = [ Factory::acl()->getRoleName($ret['roles']) ]; 
                 } else {
                     if (Factory::acl()->isRegistered()){
-                        $ret['roles'] = [ Factory::acl()->getRegistered()];
+                        // sino preguntara sobre-escribiría roles
+                        if (empty($ret['roles'])){
+                            $ret['roles'] = [ Factory::acl()->getRegistered()];
+                        }                        
                     }
                 } 
             break;
@@ -923,6 +929,10 @@ class AuthController extends Controller implements IAuth
 			Factory::response()->sendError($e->getMessage(), 500);
 		}
     
+        /*
+            Debería haber un hook aquí 
+        */
+
         // Queue email
         $ok = (bool) DB::table('email_notifications')
         ->create([

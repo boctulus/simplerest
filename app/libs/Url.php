@@ -58,6 +58,10 @@ class Url {
 		return (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PostmanRuntime') !== false);	
 	}
 
+    static function is_insomnia(){
+        return Strings::startsWith('insomnia', $_SERVER['HTTP_USER_AGENT']);
+    }
+
     static function getQueryParam(string $url, string $param){
         $query = parse_url($url, PHP_URL_QUERY);
 

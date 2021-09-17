@@ -17,7 +17,7 @@ class UserRolesSchema implements ISchema
 			'attr_types'	=> [
 				'id' => 'STR',
 				'user_id' => 'INT',
-				'role_id' => 'INT',
+				'role_id' => 'STR',
 				'created_by' => 'INT',
 				'created_at' => 'STR',
 				'updated_by' => 'INT',
@@ -31,8 +31,8 @@ class UserRolesSchema implements ISchema
 			],
 
 			'relationships' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','user_roles.user_id']
+				'roles' => [
+					['roles.id','user_roles.role_id']
 				]
 			]
 		];
