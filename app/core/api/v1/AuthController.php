@@ -154,8 +154,8 @@ class AuthController extends Controller implements IAuth
             $acl   = Factory::acl();
 
             $uid   = $row[$u->getIdName()];            
-            $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $acl->fetchRoles($uid); 
-            $perms = $acl->fetchPermissions($uid);
+            $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid); 
+            $perms = $this->fetchPermissions($uid);
 
             //var_export($perms);
 
@@ -231,7 +231,7 @@ class AuthController extends Controller implements IAuth
             if ($u->inSchema([$this->role_field])){
                 $roles = [ $acl->getRoleName($u->find($payload->uid)->value($this->role_field)) ];
             } else {
-                $roles = $acl->fetchRoles($payload->uid);
+                $roles = $this->fetchRoles($payload->uid);
             }
 
             if (!$acl->hasSpecialPermission("impersonate", $roles) && !(isset($payload->impersonated_by) && !empty($payload->impersonated_by)) ){
@@ -286,8 +286,8 @@ class AuthController extends Controller implements IAuth
                     }  
                 }
                 
-                $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $acl->fetchRoles($uid);
-                $perms = $acl->fetchPermissions($uid);
+                $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid);
+                $perms = $this->fetchPermissions($uid);
             }    
 
             $impersonated_by = $payload->impersonated_by ?? $payload->uid;
@@ -359,9 +359,8 @@ class AuthController extends Controller implements IAuth
 
         $uid = $payload->impersonated_by;
         
-        $acl   = Factory::acl();
-        $roles = $acl->fetchRoles($uid);
-        $perms = $acl->fetchPermissions($uid);
+        $roles = $this->fetchRoles($uid);
+        $perms = $this->fetchPermissions($uid);
 
         //////
         
@@ -468,7 +467,7 @@ class AuthController extends Controller implements IAuth
 
                 $acl   = $acl ?? Factory::acl();
                 $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $acl->fetchRoles($uid); 
-                $perms = $acl->fetchPermissions($uid);
+                $perms = $this->fetchPermissions($uid);
             }            
 
           
@@ -602,7 +601,7 @@ class AuthController extends Controller implements IAuth
             
             if ($many_to_many && !empty($roles))
             {
-                $acl->addUserRoles($roles, $uid);
+                $this->addUserRoles($roles, $uid);
             }     
             
             /* 
@@ -675,14 +674,26 @@ class AuthController extends Controller implements IAuth
             try{
                 $payload = \Firebase\JWT\JWT::decode($jwt, $this->config['access_token']['secret_key'], [ $this->config['access_token']['encryption'] ]);
                 
+                $config = config();
+                
                 if (empty($payload))
                     Factory::response()->sendError('Unauthorized!',401);             
 
-                if (!isset($payload->ip) || empty($payload->ip))
-                    Factory::response()->sendError('Unauthorized',401,'Lacks IP in web token');
+                if (isset($config['restrict_by_ip']) && $config['restrict_by_ip']){
+                    if (!isset($payload->ip) || empty($payload->ip))
+                        Factory::response()->sendError('Unauthorized',401,'Lacks IP in web token');
 
-                if ($payload->ip != Request::ip())
-                    Factory::response()->sendError('Unauthorized!',401, 'IP change'); 
+                    if ($payload->ip != Request::ip())
+                        Factory::response()->sendError('Unauthorized!',401, 'IP change');
+                }        
+
+                if (isset($config['restrict_by_user_agent']) && $config['restrict_by_user_agent']){
+                    if (!isset($payload->user_agent) || empty($payload->ip))
+                        Factory::response()->sendError('Unauthorized',401,'Lacks user agent in web token');
+
+                    if ($payload->user_agent != Request::user_agent())
+                        Factory::response()->sendError('Unauthorized!',401, 'You can only use one device at time'); 
+                }    
 
                 if (!isset($payload->uid) || empty($payload->uid))
                     Factory::response()->sendError('Unauthorized',401,'Lacks id in web token');  
@@ -735,7 +746,7 @@ class AuthController extends Controller implements IAuth
                 $api_key = Factory::request()->getApiKey();
 
                 $acl = Factory::acl();
-                $uid = $acl->getUserIdFromApiKey($api_key);
+                $uid = $this->getUserIdFromApiKey($api_key);
 
                 if ($uid == NULL){
                     Factory::response()->sendError('Invalid API Key', 401);
@@ -747,13 +758,13 @@ class AuthController extends Controller implements IAuth
                     $rid   = $u->where([$u->getIdName() => $uid])->value($this->role_field);
                     $roles = [ $acl->getRoleName($rid) ]; 
                 } else {
-                    $roles = $acl->fetchRoles($uid);
+                    $roles = $this->fetchRoles($uid);
                 }
                 
                 $ret = [
                     'uid'           => $uid,
                     'roles'         => $roles,
-                    'permissions'   => $acl->fetchPermissions($uid),
+                    'permissions'   => $this->fetchPermissions($uid),
                     'active'        => true //
                 ];
             break;
@@ -990,8 +1001,7 @@ class AuthController extends Controller implements IAuth
 
                     $uid = $payload->uid;
 
-                    $acl   = Factory::acl();
-                    
+                    $acl   = Factory::acl();                    
 
                     $u = DB::table($this->users_table);
 
@@ -999,10 +1009,10 @@ class AuthController extends Controller implements IAuth
                         $rid   = $u->find($uid)->value($this->role_field);
                         $roles = [ $acl->getRoleName($rid) ]; 
                     } else {
-                        $roles = $acl->fetchRoles($uid);
+                        $roles = $this->fetchRoles($uid);
                     }
                     
-                    $perms = $acl->fetchPermissions($uid);
+                    $perms = $this->fetchPermissions($uid);
 
 
                     $row = $u->assoc()
@@ -1131,11 +1141,10 @@ class AuthController extends Controller implements IAuth
             }                
 
             // Fetch roles && permissions
-            $acl   = Factory::acl();
 
             $uid   = $payload->uid;            
-            $roles = $acl->fetchRoles($uid); 
-            $perms = $acl->fetchPermissions($uid);
+            $roles = $this->fetchRoles($uid); 
+            $perms = $this->fetchPermissions($uid);
 
             //var_export($perms);
 
@@ -1168,6 +1177,100 @@ class AuthController extends Controller implements IAuth
             Factory::response()->sendError($e->getMessage(),401);
         }	
 
+    }
+
+
+    /*
+    
+        Related with AuthController and ACL
+
+    */
+
+    function getUserIdFromApiKey($api_key){
+        $uid = DB::table('api_keys')
+        ->where(['value', $api_key])
+        ->value('user_id');
+
+        return $uid;
+    }
+
+    function fetchRoles($uid) : Array {
+        $rows = DB::table('user_roles')
+        ->assoc()
+        ->where(['user_id', $uid])
+        ->select(['role_id as role'])
+        ->get();	
+
+        $acl = Factory::acl();
+
+        $roles = [];
+        if (count($rows) != 0){
+            foreach ($rows as $row){
+                $roles[] = $acl->getRoleName($row['role']);
+            }
+        }
+
+        //dd($roles, 'roles');
+        return $roles;
+    }
+
+    function fetchTbPermissions($uid) : Array {
+        $_permissions = DB::table('user_tb_permissions')
+        ->assoc()
+        ->select([  
+                    'tb', 
+                    'can_list_all as la',
+                    'can_show_all as ra', 
+                    'can_list as l',
+                    'can_show as r',
+                    'can_create as c',
+                    'can_update as u',
+                    'can_delete as d'])
+        ->where(['user_id' => $uid])
+        ->get();
+
+        $perms = [];
+        foreach ((array) $_permissions as $p){
+            $tb = $p['tb'];
+            $perms[$tb] =  $p['la'] * 64 + $p['ra'] * 32 +  $p['l'] * 16 + $p['r'] * 8 + $p['c'] * 4 + $p['u'] * 2 + $p['d'];
+        }
+
+        return $perms;
+    }
+
+    function fetchSpPermissions($uid) : Array {
+        $perms = DB::table('user_sp_permissions')
+        ->assoc()
+        ->where(['user_id' => $uid])
+        ->join('sp_permissions', 'user_sp_permissions.sp_permission_id', '=', 'sp_permissions.id')
+        ->pluck('name');
+
+        return $perms ?? [];
+    }
+
+    function fetchPermissions($uid) : Array { 
+        return [
+                'tb' => $this->fetchTbPermissions($uid), 
+                'sp' => $this->fetchSpPermissions($uid) 
+        ];
+    }
+
+    public function addUserRoles(Array $roles, $uid) {
+        foreach ($roles as $role) {
+            $role_id = acl()->getRoleId($role);
+
+            if ($role_id == null){
+                throw new \Exception("Role $role is invalid");
+            }
+            
+            // lo ideal es validar los roles y obtener los ids para luego hacer un "INSERT in bulk"
+            $ur_id = DB::table('user_roles')
+            ->where(['id' => $uid])
+            ->create(['user_id' => $uid, 'role_id' => $role_id]);
+
+            if (empty($ur_id))
+                throw new \Exception("Error registrating user role $role");             
+        }         
     }
 
 
