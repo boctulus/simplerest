@@ -3,6 +3,7 @@
 use simplerest\libs\Strings;
 use simplerest\libs\DB;
 use simplerest\core\Model;
+use simplerest\libs\Factory;
 
 if (!function_exists('env')){
     function env(string $key, $default_value = null){
@@ -12,6 +13,10 @@ if (!function_exists('env')){
 
 function config(){
     return include CONFIG_PATH . '/config.php';
+}
+
+function acl(){
+    return Factory::acl();
 }
 
 function get_user_model_name(){
