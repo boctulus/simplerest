@@ -3,8 +3,6 @@
 namespace simplerest\core;
 
 use simplerest\core\interfaces\IAcl;
-use simplerest\libs\DB;
-use simplerest\libs\Factory;
 
 abstract class Acl implements IAcl
 {
