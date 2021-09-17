@@ -21,16 +21,17 @@ abstract class Acl implements IAcl
     {
         $this->sp_permissions = [
             'read_all',
-            'write_all',
             'read_all_folders',
-            'write_all_folders',
             'read_all_trashcan',
+            'write_all',            
+            'write_all_folders',            
             'write_all_trashcan',
-            'lock',
-            'transfer',
-            'impersonate',
+            'write_all_collections',
             'fill_all',
-            'grant'
+            'grant',
+            'impersonate',
+            'lock',
+            'transfer'
         ]; 
     }
 

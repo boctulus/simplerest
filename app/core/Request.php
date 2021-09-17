@@ -184,6 +184,10 @@ class Request  implements \ArrayAccess, Arrayable
         return $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
     }
 
+    static function user_agent(){
+        return $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+    }
+
     /* Arrayable Interface */ 
 
     function toArray(){

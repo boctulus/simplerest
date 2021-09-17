@@ -1,5 +1,5 @@
 
-<!-- Sign up -->	
+<!-- Sign up -->
 
 <div class="row vcenter">
 	<div class="col-xs-12 col-sm-12 col-md-6 col-md-push-3">
