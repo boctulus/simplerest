@@ -503,8 +503,7 @@ abstract class ApiController extends ResourceController implements IApi
                         $_id = $rows[0][$this->instance->getSchema()['id_name']];  
 
                         foreach (static::$connectable as $tb){
-                            $m = get_model_name($tb);
-                            $schema = (new $m())->getSchema();
+                            $schema = get_schema_name($tb)::get();
                            
                             $rs = $schema['relationships'];
 
@@ -516,8 +515,7 @@ abstract class ApiController extends ResourceController implements IApi
                             $d2m = true;
 
                             foreach($rx as $r){
-                                $r1 = $r[1];
-                                list($tb, $field) = explode('.', $r1);
+                                list($tb, $field) = explode('.', $r[1]);
                                 $addons[$tb] = DB::table($tb)->where([$field => $_id])->get();
                             }
                         }
@@ -525,10 +523,10 @@ abstract class ApiController extends ResourceController implements IApi
                         // maestro al detalle 
                         
                         if (!$d2m){
-                            foreach (static::$connectable as $tb){
-                                $schema = $this->instance->getSchema();
+                            $schema = $this->instance->getSchema();
+                            $rs = $schema['relationships'];
 
-                                $rs = $schema['relationships'];
+                            foreach (static::$connectable as $tb){                                
                                 $rx = $rs[$tb] ?? null;
 
                                 if ($rx === null){
