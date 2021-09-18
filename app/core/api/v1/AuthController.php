@@ -151,7 +151,6 @@ class AuthController extends Controller implements IAuth
             }                
 
             // Fetch roles && permissions
-            $acl   = Factory::acl();
 
             $uid   = $row[$u->getIdName()];            
             $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid); 
@@ -1186,7 +1185,7 @@ class AuthController extends Controller implements IAuth
 
     */
 
-    function getUserIdFromApiKey($api_key){
+    protected function getUserIdFromApiKey($api_key){
         $uid = DB::table('api_keys')
         ->where(['value', $api_key])
         ->value('user_id');
@@ -1194,7 +1193,7 @@ class AuthController extends Controller implements IAuth
         return $uid;
     }
 
-    function fetchRoles($uid) : Array {
+    protected function fetchRoles($uid) : Array {
         $rows = DB::table('user_roles')
         ->assoc()
         ->where(['user_id', $uid])
@@ -1214,7 +1213,7 @@ class AuthController extends Controller implements IAuth
         return $roles;
     }
 
-    function fetchTbPermissions($uid) : Array {
+    protected function fetchTbPermissions($uid) : Array {
         $_permissions = DB::table('user_tb_permissions')
         ->assoc()
         ->select([  
@@ -1238,7 +1237,7 @@ class AuthController extends Controller implements IAuth
         return $perms;
     }
 
-    function fetchSpPermissions($uid) : Array {
+    protected function fetchSpPermissions($uid) : Array {
         $perms = DB::table('user_sp_permissions')
         ->assoc()
         ->where(['user_id' => $uid])
@@ -1248,14 +1247,14 @@ class AuthController extends Controller implements IAuth
         return $perms ?? [];
     }
 
-    function fetchPermissions($uid) : Array { 
+    protected function fetchPermissions($uid) : Array { 
         return [
                 'tb' => $this->fetchTbPermissions($uid), 
                 'sp' => $this->fetchSpPermissions($uid) 
         ];
     }
 
-    public function addUserRoles(Array $roles, $uid) {
+    protected function addUserRoles(Array $roles, $uid) {
         foreach ($roles as $role) {
             $role_id = acl()->getRoleId($role);
 
@@ -1272,6 +1271,8 @@ class AuthController extends Controller implements IAuth
                 throw new \Exception("Error registrating user role $role");             
         }         
     }
+
+
 
 
 }
