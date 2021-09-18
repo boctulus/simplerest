@@ -6,7 +6,6 @@ use simplerest\libs\Debug;
 use simplerest\core\Request;
 use simplerest\libs\Factory;
 use simplerest\core\Controller;
-use simplerest\core\api\v1\AuthController;
 use simplerest\libs\DB;
 
 
