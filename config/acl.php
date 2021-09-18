@@ -26,6 +26,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addRole('registered', 2)
     ->addInherit('guest')
     ->addResourcePermissions('tbl_scritp_tablas', ['read'])
+    ->addResourcePermissions('products', ['read_all'])
     // ...
     ->setAsRegistered('registered')
     

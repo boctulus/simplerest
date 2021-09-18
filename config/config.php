@@ -104,7 +104,7 @@ return [
 		Restrictions can be aplied
 	*/
 	'restrict_by_ip'	=> true,
-	'restrict_by_user_agent' => true,
+	'restrict_by_user_agent' => false,
 
 	'access_token' => [
 		'secret_key' 		=> env('TOKENS_ACCSS_SECRET_KEY'),
