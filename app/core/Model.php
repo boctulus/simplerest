@@ -2329,4 +2329,8 @@ class Model {
 		return $this;
 	}
 
+	function getConn(){
+		return $this->conn;
+	}
+
 }
