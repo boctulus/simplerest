@@ -8,7 +8,8 @@ use simplerest\libs\Debug;
 use simplerest\libs\Arrays;
 use simplerest\libs\Factory;
 use simplerest\libs\Strings;
-use simplerest\libs\Files;    
+use simplerest\libs\Files;  
+use simplerest\core\Request;  
 use simplerest\libs\Validator;
 use simplerest\core\interfaces\IApi;
 use simplerest\core\interfaces\IAuth;
@@ -21,6 +22,7 @@ abstract class ApiController extends ResourceController implements IApi
 {
     static protected $folder_field;
     static protected $soft_delete = true;
+    static protected $connectable = [];
 
     protected $is_listable;
     protected $is_retrievable;
@@ -283,8 +285,7 @@ abstract class ApiController extends ResourceController implements IApi
 
         $this->id     = $id;
         $this->folder = Arrays::shift($_get,'folder');
-
-      
+    
         // event hook
         $this->onGettingBeforeCheck($id);
 
@@ -481,7 +482,74 @@ abstract class ApiController extends ResourceController implements IApi
                     $this->onGot($id, 1);
                     $this->webhook('show', $rows[0], $id);
 
-                    Factory::response()->send($rows[0]);
+
+                    /*
+                         HATEOAS
+                    */
+
+                    $addons = [];
+
+                    
+                    if (!empty(static::$connectable)){
+                        $tenantid = Factory::request()->getTenantId();
+                        if ($tenantid !== null){
+                            DB::setConnection($tenantid);
+                        }  
+                        
+                        $d2m = false;
+
+                        // detalle a maestro
+                        
+                        $_id = $rows[0][$this->instance->getSchema()['id_name']];  
+
+                        foreach (static::$connectable as $tb){
+                            $m = get_model_name($tb);
+                            $schema = (new $m())->getSchema();
+                           
+                            $rs = $schema['relationships'];
+
+                            $rx = $rs[$this->model_table] ?? null;
+                            if ($rx === null){
+                                continue;
+                            }                         
+
+                            $d2m = true;
+
+                            foreach($rx as $r){
+                                $r1 = $r[1];
+                                list($tb, $field) = explode('.', $r1);
+                                $addons[$tb] = DB::table($tb)->where([$field => $_id])->get();
+                            }
+                        }
+
+                        // maestro al detalle 
+                        
+                        if (!$d2m){
+                            foreach (static::$connectable as $tb){
+                                $schema = $this->instance->getSchema();
+
+                                $rs = $schema['relationships'];
+                                $rx = $rs[$tb] ?? null;
+
+                                if ($rx === null){
+                                    continue;
+                                }                         
+
+                                foreach($rx as $r){
+                                    list($tb0, $field0) = explode('.', $r[0]);
+                                    list($tb1, $field1) = explode('.', $r[1]);
+
+                                    $_id = $rows[0][$field1];  
+
+                                    $addons[$tb0] = DB::table($tb0)->where([$field0 => $_id])->get();
+                                }
+                            }
+                        }
+                        
+                    }
+                    
+                    $res = array_merge($rows[0], $addons);
+                    Factory::response()->send($res);
                 }
             }else{    
                 // "list

@@ -28,6 +28,14 @@ function get_model_name($table_name){
 }
 
 function get_schema_name($table_name){
+    if (DB::getCurrentConnectionId() == null){
+        $tenantid = Factory::request()->getTenantId();
+
+        if ($tenantid !== null){
+            DB::getConnection($tenantid);
+        }
+    }
+    
     if (DB::getCurrentConnectionId() == null || DB::getCurrentConnectionId() == config()['db_connection_default']){
         $extra = config()['db_connection_default'] . '\\';
     } else {

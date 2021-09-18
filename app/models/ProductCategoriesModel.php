@@ -4,22 +4,18 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\ProductsSchema;
+use simplerest\models\schemas\ProductCategoriesSchema;
 
-class ProductsModel extends Model
+class ProductCategoriesModel extends Model
 { 
+	
+	
+
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new ProductsSchema());
+        parent::__construct($connect, new ProductCategoriesSchema());
 	}	
-
-	/*
-	function onReading()
-	{
-		$this->leftJoin('product_categories');
-	}
-	*/
 }
 
