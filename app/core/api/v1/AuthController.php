@@ -4,7 +4,6 @@ namespace simplerest\core\api\v1;
 
 use Exception;
 use simplerest\core\Controller;
-use simplerest\core\interfaces\IAuth;
 use simplerest\core\Request;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
@@ -14,15 +13,22 @@ use simplerest\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\libs\Files;
 
+use simplerest\core\interfaces\IAuth;
+use simplerest\core\interfaces\IDbAccess;
+use simplerest\traits\DbAccess;
 
 class AuthController extends Controller implements IAuth
 {
+    use DbAccess;
+
     protected $role_field;
     protected $__email;
     protected $__username;
     protected $__password;
     protected $__confirmed_email;
     protected $__active;
+    
+    protected $db_access;
 
     public $uid;
 
@@ -162,6 +168,7 @@ class AuthController extends Controller implements IAuth
                                         'roles' => $roles, 
                                         'permissions' => $perms,
                                         'active' => $active, 
+                                        'db_access' => $this->getDbAccess($uid)
             ], 'access_token');
 
             // el refresh no debe llevar ni roles ni permisos por seguridad !
@@ -465,7 +472,7 @@ class AuthController extends Controller implements IAuth
                 }
 
                 $acl   = $acl ?? Factory::acl();
-                $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $acl->fetchRoles($uid); 
+                $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid); 
                 $perms = $this->fetchPermissions($uid);
             }            
 
@@ -624,7 +631,8 @@ class AuthController extends Controller implements IAuth
                                         'uid' => $uid, 
                                         'roles' => $roles,
                                         'permissions' => [],
-                                        'active' => $this->config['pre_activated'] ? true : null
+                                        'active' => $this->config['pre_activated'] ? true : null,
+                                        'db_access' => $this->getDbAccess($uid)
             ], 'access_token');
 
             $refresh = $this->gen_jwt([
@@ -780,6 +788,9 @@ class AuthController extends Controller implements IAuth
                         }                        
                     }
                 } 
+
+                //dd($ret);
+
             break;
             default:
                 $ret = [
@@ -998,7 +1009,7 @@ class AuthController extends Controller implements IAuth
                         Factory::response()->sendError('uid is needed',400);
                     }
 
-                    $uid = $payload->uid;
+                    $uid = $payload->uid; 
 
                     $acl   = Factory::acl();                    
 
@@ -1036,7 +1047,8 @@ class AuthController extends Controller implements IAuth
                     $access  = $this->gen_jwt([ 'uid' => $uid,
                                                 'roles' => $roles, 
                                                 'permissions' => $perms, 
-                                                'active' => $active
+                                                'active' => $active,
+                                                'db_access' => $this->getDbAccess($uid)
                     ], 'access_token');
                     
                     $refresh  = $this->gen_jwt([ 
@@ -1151,6 +1163,7 @@ class AuthController extends Controller implements IAuth
                                         'roles' => $roles, 
                                         'permissions' => $perms,
                                         'active' => $active, 
+                                        'db_access' => $this->getDbAccess($uid)
             ], 'access_token');
 
             // el refresh no debe llevar ni roles ni permisos por seguridad !
@@ -1271,8 +1284,5 @@ class AuthController extends Controller implements IAuth
                 throw new \Exception("Error registrating user role $role");             
         }         
     }
-
-
-
 
 }

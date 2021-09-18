@@ -106,6 +106,5 @@ class Acl extends \simplerest\core\Acl
         return $this->sp_permissions;
     }
 
-
 }
 
