@@ -21,7 +21,7 @@ Algunas características:
 - Service Providers
 - Validator y auto-validaciones en los modelos
 - WebHooks
-- HATEOAS
+- Sub-recursos
 
 
 (*) A pesar de ser un framework orientado a API Rest es posible servir vistas aunque no posee un motor de plantillas. Es posible que esta característica sea removida en futuras versiones.
