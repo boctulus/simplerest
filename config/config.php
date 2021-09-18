@@ -104,7 +104,14 @@ return [
 		Response format
 	*/
 	'include_enity_name' => true,
-	'nest_sub_resources' => false,
+	'nest_sub_resources' => false,	
+	'paginator' => [
+					'max_limit' => 50,
+					'default_limit' => 10,
+					'position' => 'TOP'
+	],
+	
+	'pretty' => false,
 
 	/*
 		Restrictions can be aplied
@@ -166,14 +173,6 @@ return [
 		],
 
 		'mailer_default' => 'smtp'
-	],
-
-	'pretty' => false,	
-	
-	'paginator' => [
-					'max_limit' => 50,
-					'default_limit' => 10,
-					'position' => 'TOP'
 	],
 
 	'google_auth'  => [
