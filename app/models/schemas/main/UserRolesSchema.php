@@ -33,6 +33,9 @@ class UserRolesSchema implements ISchema
 			'relationships' => [
 				'roles' => [
 					['roles.id','user_roles.role_id']
+				],
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','user_roles.user_id']
 				]
 			]
 		];

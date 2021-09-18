@@ -7,6 +7,9 @@ use simplerest\controllers\MyApiController;
 class TblUsuarioEmpresa extends MyApiController
 { 
     static protected $soft_delete = true;
+    static protected $connectable = [
+        'user_roles'
+    ];
 
     function __construct()
     {       
