@@ -1824,10 +1824,15 @@ class Model {
 	/*
 		No admite eventos
 	*/
-	static function query(string $raw_sql){
+	static function query(string $raw_sql, $fetch_mode = null){
 		$conn = DB::getConnection();
 
+
 		$query = $conn->query($raw_sql);
+
+		if ($fetch_mode !== null){
+			$query->setFetchMode($fetch_mode);
+		}
 
 		$output = $query->fetchAll();
 		return $output;

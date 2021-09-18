@@ -55,6 +55,10 @@ class Url {
     }
 
     static function is_postman(){
+        if (!isset($_SERVER['HTTP_USER_AGENT'])){
+            return false;
+        }
+        
 		return (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PostmanRuntime') !== false);	
 	}
 
