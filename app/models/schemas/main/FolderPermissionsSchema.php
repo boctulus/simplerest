@@ -32,8 +32,8 @@ class FolderPermissionsSchema implements ISchema
 
 			'relationships' => [
 				'tbl_usuario_empresa' => [
-					['access_tos.use_intId','folder_permissions.access_to'],
-					['access_toss.use_intId','folder_permissions.belongs_to']
+					['belongs_tos.use_intId','folder_permissions.belongs_to'],
+					['belongs_toss.use_intId','folder_permissions.access_to']
 				]
 			]
 		];

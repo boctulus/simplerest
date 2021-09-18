@@ -110,7 +110,7 @@ return [
 					'default_limit' => 10,
 					'position' => 'TOP'
 	],
-	
+
 	'pretty' => false,
 
 	/*

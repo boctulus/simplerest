@@ -19,7 +19,6 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     $acl
     ->addRole('guest', 1)
-    ->addResourcePermissions('tbl_usuario_empresa', ['read'])
     // ...
     //->setAsGuest('guest')
 
@@ -27,6 +26,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addInherit('guest')
     ->addResourcePermissions('tbl_scritp_tablas', ['read'])
     ->addResourcePermissions('products', ['read_all'])
+    ->addResourcePermissions('tbl_usuario_empresa', ['read'])
     // ...
     ->setAsRegistered('registered')
     
