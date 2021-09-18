@@ -101,6 +101,12 @@ return [
 	'users_table' =>  'tbl_usuario_empresa',
 
 	/*
+		Response format
+	*/
+	'include_enity_name' => true,
+	'nest_sub_resources' => false,
+
+	/*
 		Restrictions can be aplied
 	*/
 	'restrict_by_ip'	=> true,

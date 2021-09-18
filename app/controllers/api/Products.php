@@ -7,7 +7,7 @@ use simplerest\controllers\MyApiController;
 class Products extends MyApiController
 { 
     static protected $soft_delete = true;
-    static protected $connectable = [
+    static protected $connect_to = [
         'product_categories'
     ];
 

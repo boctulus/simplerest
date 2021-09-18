@@ -22,7 +22,7 @@ abstract class ApiController extends ResourceController implements IApi
 {
     static protected $folder_field;
     static protected $soft_delete = true;
-    static protected $connectable = [];
+    static protected $connect_to = [];
 
     protected $is_listable;
     protected $is_retrievable;
@@ -490,7 +490,7 @@ abstract class ApiController extends ResourceController implements IApi
                     $addons = [];
 
                     
-                    if (!empty(static::$connectable)){
+                    if (!empty(static::$connect_to)){
                         $tenantid = Factory::request()->getTenantId();
                         if ($tenantid !== null){
                             DB::setConnection($tenantid);
@@ -502,7 +502,7 @@ abstract class ApiController extends ResourceController implements IApi
                         
                         $_id = $rows[0][$this->instance->getSchema()['id_name']];  
 
-                        foreach (static::$connectable as $tb){
+                        foreach (static::$connect_to as $tb){
                             $schema = get_schema_name($tb)::get();
                            
                             $rs = $schema['relationships'];
@@ -520,13 +520,13 @@ abstract class ApiController extends ResourceController implements IApi
                             }
                         }
 
-                        // maestro al detalle 
+                        // maestro a detalle 
                         
                         if (!$d2m){
                             $schema = $this->instance->getSchema();
                             $rs = $schema['relationships'];
 
-                            foreach (static::$connectable as $tb){                                
+                            foreach (static::$connect_to as $tb){                                
                                 $rx = $rs[$tb] ?? null;
 
                                 if ($rx === null){
@@ -546,7 +546,29 @@ abstract class ApiController extends ResourceController implements IApi
                         
                     }
                     
-                    $res = array_merge($rows[0], $addons);
+                    if ($this->config['include_enity_name']){
+                        if ($this->config['nest_sub_resources']){
+                            $res = array_merge($rows[0], $addons);
+                
+                            if ($this->config['include_enity_name']){
+                                $res = [$this->model_table => $res];
+                            }
+                        } else {
+                            if ($this->config['include_enity_name']){
+                                $res = [$this->model_table => $rows[0]];
+                            }
+                
+                            $res = array_merge($res, $addons);
+                        }
+                    } else {
+                        if ($this->config['nest_sub_resources']){
+                            $res = array_merge($rows[0], $addons);
+
+                        } else {                            
+                            $res = [$rows[0], $addons];
+                        }                       
+                    }
+
                     Factory::response()->send($res);
                 }
             }else{    
@@ -897,6 +919,9 @@ abstract class ApiController extends ResourceController implements IApi
                     //Factory::response()->sendError("Something goes wrong with $db.{$this->model_table}");
                 }
 
+                if ($this->config['include_enity_name']){
+                    $res = [$this->model_table => $rows];
+                }
 
                 $res = Factory::response()->setPretty($pretty);
 
@@ -944,6 +969,11 @@ abstract class ApiController extends ResourceController implements IApi
                 // event hook
                 $this->onGot($id, $total);
                 $this->webhook('list', $rows);
+                
+                if ($this->config['include_enity_name']){
+                    $rows = [$this->model_table => $rows];
+                }
+
                 $res->send($rows);
             }
 
