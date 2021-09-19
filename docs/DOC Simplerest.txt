@@ -203,11 +203,20 @@ Al seguir el enlace se devuelve un nuevo JSON con el access token necesario para
     "error_detail": ""
 }
 
+Finalmente para cambiar efectivamente la contraseña se hace uso del siguiente endpoint enviando las credenciales correspondientes (access token)
+
+	POST /api/v1/auth/change_pass_process
+
+	{
+		"password": "xxxxx"
+	}
+
+
 # Renovación de tokens
 
 	POST /api/v1/auth/token
 
-<-- enviando el refres_token 
+<-- enviando el refres_token en headers y sin body
 
 Se devolverá un nuevo acccess token en un JSON como este:
 

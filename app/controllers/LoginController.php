@@ -30,6 +30,7 @@ class LoginController extends MyController
         $this->__email           = $model::$email;
         $this->__username        = $model::$username;
         $this->__password        = $model::$password;
+		$this->__id 			 = get_name_id($this->config['users_table']);
     }
 
 	function index(){
@@ -244,7 +245,7 @@ class LoginController extends MyController
 			// donde poder setear una nueva contraseña
 			//
 
-			$email = DB::table($this->users_table)->where(['id' => $payload->uid])->value('email');
+			$email = DB::table($this->users_table)->where([$this->__id => $payload->uid])->value($this->__email);
 
 			$this->view('update_pass.php', [
 				'title'		 =>'Recuperación de contraseña', 
