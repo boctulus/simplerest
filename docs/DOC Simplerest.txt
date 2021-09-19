@@ -66,14 +66,17 @@ Algunas características:
 # Requerimientos 
 
 	PHP 7.4+
-	MySQL / MariaDB 
+	MySQL / MariaDB - SqlLite - PostgreSql (*)
 	Apache Web Server 2.4
 
-Es posible hacer funcionar el framework con Nginx y es muy probable que con pocos ajustes funcione en un motor distinto a MySQL como PostgreeSql.
+Es posible hacer funcionar el framework con Nginx y en cuanto a PostgreSql está parcialmente soportado porque no se dispone actualmente de migraciones para este motor de base de datos.
+
 
 # Instalación
 
-Se debe configurar el archivo config.php en la carpeta config. Se admiten múltiples bases de datos.
+Hay varios archivos por configurar y hay que correr un script de instalación.
+
+Vea archivo adjunto sobre Instalación para más información.
 
 
 # Endpoints que comienzan o no con /api
