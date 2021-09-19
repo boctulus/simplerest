@@ -15,7 +15,7 @@ class FoldersSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'STR',
+				'id' => 'INT',
 				'tb' => 'STR',
 				'name' => 'STR',
 				'belongs_to' => 'INT',

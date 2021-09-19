@@ -15,9 +15,9 @@ class UserRolesSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'STR',
+				'id' => 'INT',
 				'user_id' => 'INT',
-				'role_id' => 'STR',
+				'role_id' => 'INT',
 				'created_by' => 'INT',
 				'created_at' => 'STR',
 				'updated_by' => 'INT',

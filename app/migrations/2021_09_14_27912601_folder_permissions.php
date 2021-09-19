@@ -18,7 +18,7 @@ class FolderPermissions implements IMigration
 		$sc = new Schema('folder_permissions');
 
         $sc
-        ->int('id')->auto()->unsigned()->pri()
+        ->int('id')->auto()->pri()
         ->int('folder_id')->index()
         ->int('belongs_to')->index()
         ->int('access_to')->index()

@@ -15,7 +15,7 @@ class FolderOtherPermissionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'STR',
+				'id' => 'INT',
 				'folder_id' => 'INT',
 				'belongs_to' => 'INT',
 				'guest' => 'INT',

@@ -58,11 +58,15 @@ class Url {
         if (!isset($_SERVER['HTTP_USER_AGENT'])){
             return false;
         }
-        
+
 		return (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PostmanRuntime') !== false);	
 	}
 
     static function is_insomnia(){
+        if (!isset($_SERVER['HTTP_USER_AGENT'])){
+            return false;
+        }
+        
         return Strings::startsWith('insomnia', $_SERVER['HTTP_USER_AGENT']);
     }
 

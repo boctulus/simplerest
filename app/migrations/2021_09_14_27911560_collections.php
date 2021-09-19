@@ -18,7 +18,7 @@ class Collections implements IMigration
 		$sc = new Schema('collections');
         
         $sc
-        ->integer('id')->auto()->unsigned()->pri()
+        ->integer('id')->auto()->pri()
         ->varchar('entity', 80)
         ->longtext('refs')
         ->integer('belongs_to')->index()
