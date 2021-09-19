@@ -49,6 +49,8 @@ class AuthController extends Controller implements IAuth
         $this->__password        = $model::$password;
         $this->__confirmed_email = $model::$confirmed_email;
         $this->__active          = $model::$active;
+
+        $this->__id = get_name_id($this->users_table);
     }
        
     protected function gen_jwt(array $props, string $token_type, int $expires_in = null){
@@ -920,17 +922,15 @@ class AuthController extends Controller implements IAuth
 			Factory::response()->sendError('Empty email', 400);
 
 		try {	
-            $__id = get_name_id($this->users_table);
-
 			$u = (DB::table($this->users_table))->assoc();
-			$rows = $u->where([$this->__email, $email])->get([$__id, $this->__active]);
+			$rows = $u->where([$this->__email, $email])->get([$this->__id, $this->__active]);
 
 			if (count($rows) === 0){
                 // Email not found
                 Factory::response()->sendError('Please check your e-mail', 400); 
             }
 		
-            $uid = $rows[0][$__id];	//
+            $uid = $rows[0][$this->__id];	//
             $exp = time() + $this->config['email_token']['expires_in'];	
 
             $active = $rows[0][$this->__active];
