@@ -8,6 +8,11 @@ app/security
 
 -- Copiar el archivo .env.example a .env y configurar
 
+-- Si Ud. tiene una tabla usuarios prosiga con el paso siguiente y sino corra las siguiente migraciones que le creará una tabla "users" con todas las capacidades del framework:
+
+    php com migrations migrate --file=0000_00_00_00000000_migrations.php
+    php com migrations migrate --file=0000_00_00_00000001_users.php
+
 -- Configurar config/config.php 
 
     - Conexiones a bases de datos (ver .env)
@@ -24,7 +29,7 @@ composer install
 
 php com install
 
--- Configurar campos en el Modelo correspondiente para la "usuarios". Ej:
+-- Si Ud. tiene una tabla "users" distinta a la provista en migraciones debe configurar campos en el Modelo correspondiente para su tabla "usuarios". Ej:
 
     Para TblUsuarioEmpresaModel
 
