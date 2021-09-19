@@ -21,7 +21,7 @@ class UserSpPermissions implements IMigration
         ->setCharset('utf8')
         ->setCollation('utf8_general_ci')
 
-        ->integer('id')->auto()->unsigned()->pri()
+        ->integer('id')->auto()->pri()
         ->integer('sp_permission_id')->index()
         ->integer('user_id')->index()
         ->integer ('created_by')->nullable()->index()

@@ -15,7 +15,7 @@ class UserSpPermissionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'STR',
+				'id' => 'INT',
 				'sp_permission_id' => 'INT',
 				'user_id' => 'INT',
 				'created_by' => 'INT',

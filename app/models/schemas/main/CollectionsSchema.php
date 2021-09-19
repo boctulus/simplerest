@@ -15,7 +15,7 @@ class CollectionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'STR',
+				'id' => 'INT',
 				'entity' => 'STR',
 				'refs' => 'STR',
 				'belongs_to' => 'INT',

@@ -21,7 +21,7 @@ class UserTbPermissions implements IMigration
         ->setCharset('utf8')
         ->setCollation('utf8_general_ci')
 
-        ->integer('id')->auto()->unsigned()->pri()
+        ->integer('id')->auto()->pri()
         ->varchar('tb', 80)->index()
         ->bool('can_list_all')->nullable()
         ->bool('can_show_all')->nullable()
