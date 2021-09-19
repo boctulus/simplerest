@@ -15,7 +15,7 @@ class FolderPermissionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'STR',
+				'id' => 'INT',
 				'folder_id' => 'INT',
 				'belongs_to' => 'INT',
 				'access_to' => 'INT',

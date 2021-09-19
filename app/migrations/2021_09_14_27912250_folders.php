@@ -18,7 +18,7 @@ class Folders implements IMigration
 		$sc = new Schema('folders');
 
         $sc
-        ->integer('id')->auto()->unsigned()->pri()
+        ->integer('id')->auto()->pri()
         ->varchar('tb', 50)->index()
         ->varchar('name', 50)->index()
         ->integer('belongs_to')->index()

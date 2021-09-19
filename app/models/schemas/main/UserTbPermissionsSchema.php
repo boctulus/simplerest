@@ -15,7 +15,7 @@ class UserTbPermissionsSchema implements ISchema
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id' => 'STR',
+				'id' => 'INT',
 				'tb' => 'STR',
 				'can_list_all' => 'INT',
 				'can_show_all' => 'INT',

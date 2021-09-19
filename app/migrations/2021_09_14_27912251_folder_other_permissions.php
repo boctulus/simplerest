@@ -18,7 +18,7 @@ class FolderOtherPermissions implements IMigration
 		$sc = new Schema('folder_other_permissions');
 
         $sc
-        ->int('id')->auto()->unsigned()->pri()
+        ->int('id')->auto()->pri()
         ->int('folder_id')->index()
         ->int('belongs_to')->index()
         ->bool('guest')->default(0)

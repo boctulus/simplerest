@@ -305,7 +305,7 @@ class Schema
 	
 	// type
 	
-	function int(string $name, int $len = NULL){
+	function int(string $name, int $len = 11){
 		$this->current_field = $name;
 		$this->fields[$this->current_field] = [];
 		$this->fields[$this->current_field]['type'] = 'INT';
@@ -316,7 +316,7 @@ class Schema
 		return $this;		
 	}	
 	
-	function integer(string $name, int $len = NULL){
+	function integer(string $name, int $len = 11){
 		$this->int($name, $len);
 		return $this;		
 	}	
