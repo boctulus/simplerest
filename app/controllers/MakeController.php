@@ -477,11 +477,29 @@ class MakeController extends Controller
     }
 
     protected function get_pdo_const(string $sql_type){
-        if ((preg_match('/int\([0-9]+\)$/', $sql_type) == 1) || (preg_match('/int$/', $sql_type) == 1)){
+        if (Strings::startsWith('int', $sql_type) || 
+        Strings::startsWith('tinyint', $sql_type) || 
+        Strings::startsWith('smallint', $sql_type) ||
+        Strings::startsWith('mediumint', $sql_type) ||
+        Strings::startsWith('bigint', $sql_type) ||
+        Strings::startsWith('serial', $sql_type)
+        ){
             return 'INT';
-        } else {
-            return 'STR';
-        }
+        }   
+
+        if (Strings::startsWith('bit', $sql_type) || 
+        Strings::startsWith('bool', $sql_type)){
+            return 'BOOL';
+        } 
+
+        // chequear
+        if (Strings::startsWith('timestamp', $sql_type) || 
+        Strings::startsWith('year', $sql_type)){
+            return 'INT';
+        } 
+
+        // el resto (default)
+        return 'STR'; 
     }
 
     function schema($name, ...$opt) 
@@ -579,14 +597,10 @@ class MakeController extends Controller
             if ($field['Null']  == 'YES') { $nullables[] = $field['Field']; }
             
             if ($field['Key'] == 'PRI'){ 
-                // Posible fuente de problemas !!!!!!!!!!!!!!!!!!!
                 if ($id_name != NULL){
                     $msg = "A table should have simple Primary Key by convention for table \"$name\"";
                     
-                    Files::logger($msg);
-                    //Files::logger($msg, 'errores.txt');
-                    //dd($msg, 'Warning');
-                    //return;
+                    Files::logger($msg);      
                 }
                 
                 $id_name = $field['Field'];

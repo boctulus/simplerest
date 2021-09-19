@@ -39,9 +39,7 @@ class TblUsuarioEmpresaSchema implements ISchema
 			],
 
 			'relationships' => [
-				'user_roles' => [
-					['user_roles.user_id', 'tbl_usuario_empresa.use_intId']
-				]
+				
 			]
 		];
 	}	

@@ -21,9 +21,9 @@ class UserRoles implements IMigration
         ->setCharset('utf8')
         ->setCollation('utf8_general_ci')
 
-        ->integer('id')->unsigned()->auto()->pri()
+        ->integer('id')->auto()->pri()
         ->integer('user_id')->index()
-        ->integer('role_id')->unsigned()->index()
+        ->integer('role_id')->index()
         ->integer ('created_by')->nullable()->index()
         ->datetime('created_at')
         ->integer('updated_by')->nullable()->index()
