@@ -71,14 +71,13 @@ class Request  implements \ArrayAccess, Arrayable
 
     function getTenantId(){
         return  
-            Factory::auth()->check()['tenantid'] ??
             $this->shiftQuery('tenantid') ??
-            static::$headers['x-tenant-id'] ??                 
+            static::$headers['x-tenant-id'] ??             
             NULL;
     }
 
     function hasTenantId(){
-        return $this->getTenantId() != NULL; 
+        return $this->getTenantId() !== NULL; 
     }
 
     function authMethod(){

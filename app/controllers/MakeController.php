@@ -179,11 +179,10 @@ class MakeController extends Controller
         */
     }
 
-    function setup($name) {
+    function setup(string $name) {
         static $prev_name;
 
-        //if ($this->class_name != null && $this->class_name == $prev_name)
-        //    return;
+        $name = str_replace('-', '_', $name);
 
         $name = ucfirst($name);    
         $name_lo = strtolower($name);
