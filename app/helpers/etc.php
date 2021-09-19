@@ -27,15 +27,11 @@ function get_model_name($table_name){
     return '\\simplerest\\models\\' . Strings::snakeToCamel($table_name).  'Model';
 }
 
-function get_schema_name($table_name){
-    if (DB::getCurrentConnectionId() == null){
-        $tenantid = Factory::request()->getTenantId();
-
-        if ($tenantid !== null){
-            DB::getConnection($tenantid);
-        }
-    }
-    
+function get_schema_name($table_name, $tenant_id = null){
+    if ($tenant_id !== null){
+        DB::getConnection($tenant_id); 
+    }    
+      
     if (DB::getCurrentConnectionId() == null || DB::getCurrentConnectionId() == config()['db_connection_default']){
         $extra = config()['db_connection_default'] . '\\';
     } else {
@@ -65,8 +61,8 @@ function inSchema(array $props, string $table_name){
 	return true;
 }
 
-function get_name_id(string $table_name){
-    $class = get_schema_name($table_name);
+function get_name_id(string $table_name, $tenant_id = null){
+    $class = get_schema_name($table_name, $tenant_id);
 
     if (!class_exists($class)){
         throw new \Exception("Class $class does not exist");
