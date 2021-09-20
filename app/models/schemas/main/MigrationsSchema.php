@@ -17,6 +17,7 @@ class MigrationsSchema implements ISchema
 			'attr_types'	=> [
 				'id' => 'INT',
 				'filename' => 'STR',
+				'skip' => 'INT',
 				'created_at' => 'STR'
 			],
 

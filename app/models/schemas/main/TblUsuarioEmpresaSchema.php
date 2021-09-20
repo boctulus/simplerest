@@ -18,6 +18,7 @@ class TblUsuarioEmpresaSchema implements ISchema
 				'use_intId' => 'INT',
 				'use_varNombre' => 'STR',
 				'use_varEmail' => 'STR',
+				'est_intIdConfirmEmail' => 'INT',
 				'use_varUsuario' => 'STR',
 				'use_decPassword' => 'STR',
 				'use_varTipo' => 'STR',
@@ -28,7 +29,7 @@ class TblUsuarioEmpresaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['use_intId', 'use_varNombre', 'use_varTipo', 'use_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['use_intId', 'use_varNombre', 'est_intIdConfirmEmail', 'use_varTipo', 'use_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'rules' 		=> [
 				'use_varNombre' => ['max' => 250],
