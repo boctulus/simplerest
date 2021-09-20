@@ -5,6 +5,7 @@ namespace simplerest\controllers;
 use simplerest\core\ConsoleController;
 use simplerest\core\Model;
 use simplerest\libs\Schema;
+use simplerest\libs\DB;
 
 class InstallController extends ConsoleController
 {
@@ -15,13 +16,14 @@ class InstallController extends ConsoleController
     }
 
     private function install()
-    {
+    {    
         Schema::disableForeignKeyConstraints();
         
         $res = shell_exec('php com migrations migrate');
         dd($res);
         
         Schema::enableForeignKeyConstraints();
+
 
         $res = shell_exec("php com make schema all -f --from:main");
         dd($res);
