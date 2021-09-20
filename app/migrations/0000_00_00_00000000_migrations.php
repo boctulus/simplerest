@@ -22,7 +22,6 @@ class Migrations implements IMigration
             CREATE TABLE `migrations` (
                 `id` int(11) NOT NULL,
                 `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-                `skip` tinyint(1) NOT NULL DEFAULT '0',
                 `created_at` DATETIME NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             ");

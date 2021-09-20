@@ -15,12 +15,10 @@ use simplerest\libs\Files;
 
 use simplerest\core\interfaces\IAuth;
 use simplerest\core\interfaces\IDbAccess;
-use simplerest\traits\DbAccess;
+
 
 class AuthController extends Controller implements IAuth
 {
-    use DbAccess;
-
     protected $role_field;
     protected $__email;
     protected $__username;
@@ -516,7 +514,7 @@ class AuthController extends Controller implements IAuth
 
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
-            
+
         DB::beginTransaction();
 
         try {
@@ -525,6 +523,8 @@ class AuthController extends Controller implements IAuth
             if ($data == null)
                 Factory::response()->sendError('Bad request',400, 'Invalid JSON');
  
+            // Hook
+            $this->onRegister($data);        
         
             $acl = Factory::acl();
             $u   = DB::table($this->users_table);
@@ -612,28 +612,16 @@ class AuthController extends Controller implements IAuth
                 $this->addUserRoles($roles, $uid);
             }     
             
-            /* 
-                Email confirmation
+            $is_active = $this->config['pre_activated'] ? true : null;
 
-                (debería ser con un hook y enviar correo)
-            */  
-            if (!$this->config['pre_activated']){  
-                $email_confirmation = $email_in_schema && $u->inSchema([$this->__confirmed_email]);
-
-                if ($email_confirmation)
-                {                 
-                    $exp = time() + $this->config['email_token']['expires_in'];
-                    $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
-                    $token = $this->gen_jwt_email_conf($data[$this->__email], $roles, []);
-                    $url = $base_url . (!$this->config['REMOVE_API_SLUG'] ? "api/$api_version" : $api_version) . '/auth/confirm_email/' . $token . '/' . $exp; 
-                } 
-            }
+            // Hook
+            $this->onRegistered($data, $uid, $is_active, $roles);
                 
             $access  = $this->gen_jwt([
                                         'uid' => $uid, 
                                         'roles' => $roles,
                                         'permissions' => [],
-                                        'active' => $this->config['pre_activated'] ? true : null,
+                                        'active' => $is_active,
                                         'db_access' => $this->getDbAccess($uid)
             ], 'access_token');
 
@@ -648,14 +636,7 @@ class AuthController extends Controller implements IAuth
                 'expires_in' => $this->config['access_token']['expiration_time'],
                 'refresh_token' => $refresh,
                 'roles' => $roles
-            ];
-
-            
-            if (isset($email_confirmation) && $email_confirmation){
-                Files::logger("Email confirmation link $url");
-                //dd($url, 'email_confirmation_link');
-            }
-                
+            ];    
 
             DB::commit();    
             Factory::response()->send($res);
@@ -911,12 +892,12 @@ class AuthController extends Controller implements IAuth
         sino no hacer nada.
     */
 	function rememberme(){
-		$data  = Factory::request()->getBody();
+		$data  = Factory::request()->getBody(false);
 
 		if ($data == null)
 			Factory::response()->sendError('Invalid JSON',400);
 
-		$email = $data->email ?? null;
+		$email = $data['email'] ?? null;
 
 		if ($email == null)
 			Factory::response()->sendError('Empty email', 400);
@@ -929,6 +910,9 @@ class AuthController extends Controller implements IAuth
                 // Email not found
                 Factory::response()->sendError('Please check your e-mail', 400); 
             }
+
+            // Hook
+            $this->onRemember($data);
 		
             $uid = $rows[0][$this->__id];	//
             $exp = time() + $this->config['email_token']['expires_in'];	
@@ -939,8 +923,7 @@ class AuthController extends Controller implements IAuth
                 Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
             }
 
-            $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
-            
+            $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']);            
 
             $token = $this->gen_jwt_rememberme($uid);
             
@@ -950,32 +933,9 @@ class AuthController extends Controller implements IAuth
 			Factory::response()->sendError($e->getMessage(), 500);
 		}
     
-        /*
-            Debería haber un hook aquí 
-        */
+        // Hook
+        $this->onRemembered($data, $url);
 
-        // Queue email
-        $ok = (bool) DB::table('email_notifications')
-        ->create([
-            'to_addr'   => $email, 
-            'to_name'    => '', 
-            'subject'    => 'Cambio de contraseña', 
-            'body'       => "Para cambiar la contraseña siga el enlace:<br/><a href='$url'>$url</a>"
-        ]);
-
-        /*
-            Posteriormente leer la tabla email_notifications y....
-            basado en un tamplate, hacer algo como:
-
-            $mail_sent = Utils::send_mail($email, null, 'Recuperación de password', "Hola!<p/>Para re-establecer la el password siga el enlace</br>$url");
-        */
-
-        if (!$ok){
-            Files::logger("remember-me error al agendar envio de correo a $email");
-            exit;
-        }
-
-        Files::logger("remember-me $url");
         Factory::response()->send(['msg' => 'Por favor chequee su correo'], 200);         
     }
     
@@ -1285,4 +1245,12 @@ class AuthController extends Controller implements IAuth
         }         
     }
 
+    /*
+        Event Hooks
+    */
+
+    function onRegister(Array $data){ }
+    function onRegistered($data, $uid, $is_active, $roles){ }
+    function onRemember($data){}
+    function onRemembered($data, $link_url){}
 }

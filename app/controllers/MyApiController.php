@@ -3,22 +3,22 @@
 namespace simplerest\controllers;
 
 use simplerest\core\interfaces\IApi;
+use simplerest\libs\Strings;
 
 global $api_version;
 
-if (!file_exists(CORE_PATH . 'api'. DIRECTORY_SEPARATOR . $api_version . DIRECTORY_SEPARATOR . 'ApiController.php')){  
-    \simplerest\core\Response::getInstance()->sendError("API version $api_version is not supported", 400);
+if ($api_version[0] != 'v' || !is_numeric(substr($api_version, 1))){
+    throw new \Exception("Invalid API version");
 }
 
-class_alias("\simplerest\core\api\\$api_version\ApiController", 'simplerest\controllers\ApiController');
+/*
+    Agregue según se vayan creando versiones
+*/
 
-class MyApiController extends ApiController
-{
-    static protected $folder_field;
-        
-    function __construct()
-    {
-        parent::__construct();
-    }
-
+if ($api_version == 'v1'){
+    class MyApiController extends \simplerest\core\api\v1\ApiController {}
+    return;
 }
+
+
+

@@ -150,7 +150,7 @@ return [
 	/*
 		If you need email confirmation then pre_activated should be false
 	*/
-	'pre_activated' => true,
+	'pre_activated' => false,
 
 	'email' => [
 		'from'		=> [
