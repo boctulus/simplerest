@@ -387,6 +387,22 @@ En el primer por ejemplo caso carga la clase /app/core/api/v1/ApiController
 
 La clase MyApiController en /app/controllers es la responsable de seleccionar la versión solicitada de la API.
 
+Cuando sea necesario crear una nueva versión de la API, deberá agregarse al MyApiController algo como:
+
+	if ($api_version == 'v2'){
+		class MyApiController extends \simplerest\core\api\v2\ApiController {}
+		return;
+	}
+
+Debe hacerse lo mismo en MyAuthController.php 
+
+	if ($api_version == 'v2'){
+    	class AuthController extends \simplerest\core\api\v1\AuthController {}
+    	return;
+	}
+
+Esto posibilita hacer uso de hooks en la clase extendida. 
+
 Las urls comienzan *sin* /api si en /config/config.php 
 
 	'REMOVE_API_SLUG' => true
@@ -1361,7 +1377,19 @@ Por último tenemos los campos ocultos:
 	protected $hidden   = [	'password' ];
 
 
-# Event hooks 
+# Hooks sobre el módulo de autenticación
+
+La clase AuthController provee varios hooks que pueden usarse en MyAuthController
+
+function onRegister(Array $data){ }
+function onRegistered($data, $uid, $is_active, $roles){ }
+function onRemember($data){}
+function onRemembered($data, $link_url){}
+
+Más hooks se irán agregando ***
+
+
+# Hooks sobre el modelo
 
 Se definen varios event hooks sobre el modelo que se disparan ante una operación CRUD
 
