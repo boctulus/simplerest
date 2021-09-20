@@ -24,7 +24,7 @@ class TblBaseDatosSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['dba_intId'],
+			'nullable'		=> ['dba_intId', 'dba_dtimFechaCreacion', 'dba_dtimFechaActualizacion'],
 
 			'rules' 		=> [
 				'dba_varNombre' => ['max' => 250]

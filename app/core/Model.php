@@ -75,6 +75,7 @@ class Model {
 	protected $last_inserted_id;
 	protected $paginator = true;
 	protected $fetch_mode_default = \PDO::FETCH_ASSOC;
+	protected $last_operation;
 	protected $data = []; 
 
 	protected $createdAt = 'created_at';
@@ -1035,6 +1036,8 @@ class Model {
 		
 		$this->last_bindings = $this->getBindings();
 		$this->last_pre_compiled_query = $q;
+		$this->last_operation = 'get';
+
 		return $q;	
 	}
 
@@ -1261,7 +1264,11 @@ class Model {
 	}
 
 	// Debug query
-	function dd(){		
+	function dd(){
+		if ($this->last_operation == 'create'){
+			return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
+		}
+
 		return $this->_dd($this->toSql(), $this->getBindings());
 	}
 
@@ -1970,6 +1977,7 @@ class Model {
 
 		$this->last_bindings = $vals;
 		$this->last_pre_compiled_query = $q;
+		$this->last_operation = 'update';
 	 
 		if (!$this->exec){
 			return 0;
@@ -2032,6 +2040,7 @@ class Model {
 	 
 		$this->last_bindings = $this->getBindings();
 		$this->last_pre_compiled_query = $q;
+		$this->last_operation = 'delete';
 
 		if($this->exec && $st->execute()) {
 			$count = $st->rowCount();
@@ -2083,8 +2092,7 @@ class Model {
 		$str_vals = implode(', ',$symbols);
 
 		if ($this->inSchema([$this->createdAt])){
-			$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
-			$at = $d->format('Y-m-d G:i:s');
+			$at = datetime();
 
 			$str_vars .= ", {$this->createdAt}";
 			$str_vals .= ", '$at'";
@@ -2113,9 +2121,11 @@ class Model {
 
 		$this->last_bindings = $vals;
 		$this->last_pre_compiled_query = $q;
-
+		$this->last_operation = 'create';
 
 		if (!$this->exec){
+			// Ejecuto igual el hook a fines de poder ver la query con dd()
+			$this->onCreated($data, null);
 			return NULL;
 		}	
 
@@ -2130,7 +2140,7 @@ class Model {
 		} else {
 			$result = $st->execute();
 		}
-		
+	
 		if (!isset($result)){
 			return;
 		}
