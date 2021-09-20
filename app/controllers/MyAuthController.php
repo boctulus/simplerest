@@ -31,13 +31,9 @@ class MyAuthController extends AuthController {
     use DbAccess;
 
     /*
-        Hooks
+        Uso de hooks
     */
 
-    function onRegister(Array $data){
-
-    }
-    
     function onRegistered($data, $uid, $is_active, $roles){ 
         global $api_version;
 
@@ -71,12 +67,35 @@ class MyAuthController extends AuthController {
                 }                
             }
         }
+
+        /*
+            Registro el usuario como futuro propierario de una base de datos
+            (podría pedirse que sea solo cuando el usuario quede "activo" para evitar crear una DB ante un SPAM)
+        */
+
+        //DB::transaction(function() use ($uid, $roles){
+            if (in_array('admin', $roles)){
+                $at = datetime();
+
+                $db_id = DB::table('tbl_base_datos')
+                ->fill(['usu_intIdActualizador'])
+                ->create([
+                    'dba_varNombre'    => 'db-' . $uid,
+                    'usu_intIdCreador' => $uid,
+                    'usu_intIdActualizador' => $uid,
+                    'dba_dtimFechaCreacion' => $at,
+                    'dba_dtimFechaActualizacion' => $at
+                ]); 
+
+                $dbuid = DB::table('tbl_usuarios_x_base_datos')
+                ->create([
+                    'bas_intIdBasedatos' => $db_id,
+                    'usu_intIdUsuario'   => $uid
+                ]);
+            }
+        //});
     }
 
-    function onRemember($data){
-
-    }
-    
     function onRemembered($data, $link)
     {
         // Queue email
@@ -97,12 +116,14 @@ class MyAuthController extends AuthController {
             o lo mismo pero usando un Service Provider
         */
 
-        if (!$ok && $this->config['debug']){
-            Files::logger("remember-me error al agendar envio de correo a {$data[$this->__email]}");
-            exit;
-        }
+        if ($this->config['debug']){
+            if (!$ok){
+                Files::logger("remember-me error al agendar envio de correo a {$data[$this->__email]}");
+                exit;
+            }
 
-         Files::logger("remember-me $link");
+            Files::logger("remember-me $link");
+        }        
     }
     
 }

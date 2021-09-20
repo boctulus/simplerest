@@ -1245,6 +1245,10 @@ class AuthController extends Controller implements IAuth
         }         
     }
 
+    function hasDbAccess($user_id, string $db_connection){
+        return in_array($db_connection, $this->getDbAccess($user_id));
+    } 
+
     /*
         Event Hooks
     */
@@ -1254,5 +1258,5 @@ class AuthController extends Controller implements IAuth
     function onRemember($data){}
     function onRemembered($data, $link_url){}
 
-    function getDbAccess($uid) {}
+    function getDbAccess($uid) : Array { return []; }
 }

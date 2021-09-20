@@ -836,12 +836,12 @@ class MakeController extends Controller
                 $to_db = $matches[1];
             }
 
-            if (preg_match('/^--table[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
-                $tb_name = $matches[1];
-            }
-
             if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
                 $from_db = $matches[1];
+            }
+
+            if (preg_match('/^--table[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $tb_name = $matches[1];
             }
         }
 

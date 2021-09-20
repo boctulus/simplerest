@@ -107,5 +107,12 @@ function readSql(string $path){
         } catch (\Exception $e){
             dd($e, 'Sql Exception');
         }
-    }
+    }    
+}
+
+function datetime(){
+    $d = new \DateTime(NULL, new \DateTimeZone(config()['DateTimeZone']));
+    $at = $d->format('Y-m-d G:i:s');
+
+    return $at;
 }

@@ -34,11 +34,28 @@ class MigrationsController extends Controller
     function migrate(...$opt) {
         $filenames = [];
     
+        $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
+
         if (count ($opt) >=1 && Strings::startsWith('--file=', $opt[0])){
-            $filenames = [ substr($opt[0], 7) ];
+            $_f = substr($opt[0], 7);
+                        
+            if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
+                $fr = explode(DIRECTORY_SEPARATOR, $_f);
+
+                $_f = $fr[count($fr)-1];
+
+                unset($fr[count($fr)-1]);
+                $path = implode(DIRECTORY_SEPARATOR, $fr) . DIRECTORY_SEPARATOR;
+
+                if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
+                    $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
+                }
+            } 
+            
+            $filenames = [ $_f ];
         } else {
             foreach (new \DirectoryIterator(MIGRATIONS_PATH) as $fileInfo) {
-                if($fileInfo->isDot()) continue;
+                if($fileInfo->isDot()  || $fileInfo->isDir()) continue;
                 $filenames[] = $fileInfo->getFilename();
             }   
     
@@ -52,7 +69,7 @@ class MigrationsController extends Controller
 
             $class_name = Strings::snakeToCamel(substr(substr($filename,20),0,-4));
                         
-            require_once MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $filename;
+            require_once $path . $filename;
 
             if (!class_exists($class_name)){
                 throw new \Exception ("Class '$class_name' does not exists in $filename");

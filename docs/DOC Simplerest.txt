@@ -1072,7 +1072,7 @@ Ej:
 	->get());
 
 
-# Debuguear una query
+# Debuguear una query (desde el controlador)
 
 Hay varios métodos para hacer un debug de una query comenzando por DB::dd() que ocupa el lugar del método get()
 
@@ -1153,6 +1153,56 @@ Como si fueran pocas funciones de debug existe el método getLog()
 	$res = $model->create(['name' => 'Jhon', 'age' => 32]);
 	dd($model->getLog());
 	
+
+# Debuguear una query (desde el propio modelo)
+
+Es posible usar hooks sobre el modelo para debuguear una query. Por ejemplo si se desea debuguear un create ("INSERT INTO") sería así:
+
+	class XXXXXModel extends Model
+	{ 
+		// ...
+
+		function onCreated(array &$data, $last_inserted_id)
+		{
+			dd($this->dd());
+		}
+	}
+
+Si la query falla entonces solo simule que se ejecuta usando el método dontExec() así: 
+
+	class XXXXXModel extends Model
+	{ 
+		// ...
+
+		function onCreating(array &$data)
+		{
+			$this->dontExec();
+		}
+
+		function onCreated(array &$data, $last_inserted_id)
+		{
+			dd($this->dd());
+		}
+	}
+
+Y por supuesto que puede Introducir un "break point" con un exit en caso de no usar un debuger como XDEBUG:
+
+	class XXXXXModel extends Model
+	{ 
+		// ...
+
+		function onCreating(array &$data)
+		{
+			$this->dontExec();
+		}
+
+		function onCreated(array &$data, $last_inserted_id)
+		{
+			dd($this->dd());
+			exit; // (*)
+		}
+	}
+
 
 #### Campos manejados por el framework
 
@@ -2835,6 +2885,45 @@ Los archivos de migraciones son creados con el comando "make migrate" o "migrati
 o
 	$ php com make migration create_cables
 
+Los archivos creados por "make migration" implementan la interface IMigration y en si poseen dos métodos que pueden considerarse "hooks": up y down
+
+	public function up()
+    {   
+		// ...
+	}
+
+	public function down()
+    {   
+		// ...
+	}
+
+Lo que se coloque en up() es corrido durante la migración mientras que el código en down() es ejecutado al hace un "rollback".
+
+Es importante notar que la migración se ejecutará sobre la conexión de base de datos activa la cual se puede setear desde la misma migración ya sea en el constructor o bien en los métodos up() y down()
+
+	public function up()
+    {   
+        config()['db_connection_default'] = 'main';
+
+		// ..
+	}
+
+Puede que exista un escenario donde se prefiera no hacer el seteo de la conexión dentro de la migración. 
+
+Al momento de crear la migración (con "make migration") hay parámetros que se pueden pasar:
+
+--to=  (conexión a la db)
+--from= (conexión a la db)
+--table= 
+
+Si se especifica --to=  entonces se agregará automáticamente el seteo a la conexión en el método up()
+
+public function up()
+{   
+	config()['db_connection_default'] = 'main';
+
+	// ..
+}
 
 Para ejecutar las migraciones pendiente es con "migrations migrate"
 
@@ -2863,6 +2952,16 @@ Es posible especificar el archivo concreto de migración a ejecutar:
 	$ php com migrations migrate --file=2021_09_13_27908784_user_roles.php
 
 En el dado caso solo se ejecutará esa transacción.
+
+Si en --file se incluye una ruta se ejecutará desde esa ruta (absoluta o relativa). Ej:
+
+	$ php com migrations migrate --file=users/0000_00_00_00000001_users.php
+
+Las migraciones se pueden "simular" agregando el parámetro --simulate
+
+Ej:
+
+	$ php com migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
 
 
 # Multitenant
