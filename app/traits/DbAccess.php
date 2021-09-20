@@ -5,10 +5,11 @@ namespace simplerest\traits;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
 use simplerest\core\Model;
+use simplerest\libs\Arrays;
 
 trait DbAccess
 {
-    function getDbAccess($user_id){
+    function getDbAccess($user_id) : Array {
         // casting o validación por seguridad
         $user_id = (int) $user_id;
 
@@ -19,8 +20,4 @@ trait DbAccess
 
         return array_column($dbs, 0);
     }
-
-    function hasDbAccess($user_id, string $db_connection){
-        return in_array($db_connection, $this->getDbAccess($user_id));
-    } 
 }

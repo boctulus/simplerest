@@ -45,26 +45,10 @@ class UsersSchema implements ISchema
 
 			'relationships' => [
 				'users' => [
-					['updated_bys.id','users.updated_by'],
-					['updated_byss.id','users.deleted_by'],
-					['updated_bysss.id','users.belongs_to'],
-					['updated_byssss.id','users.created_by'],
-					['users.deleted_by','users.id'],
-					['users.belongs_to','users.id'],
-					['users.created_by','users.id'],
-					['users.updated_by','users.id']
-				],
-				'user_roles' => [
-					['user_roles.user_id','users.use_intId']
-				],
-				'user_sp_permissions' => [
-					['user_sp_permissions.user_id','users.use_intId']
-				],
-				'api_keys' => [
-					['api_keys.user_id','users.use_intId']
-				],
-				'user_tb_permissions' => [
-					['user_tb_permissions.user_id','users.use_intId']
+					['belongs_tos.id','users.belongs_to'],
+					['belongs_toss.id','users.created_by'],
+					['belongs_tosss.id','users.updated_by'],
+					['belongs_tossss.id','users.deleted_by']
 				]
 			]
 		];
