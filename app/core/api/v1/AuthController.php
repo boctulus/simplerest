@@ -1253,4 +1253,6 @@ class AuthController extends Controller implements IAuth
     function onRegistered($data, $uid, $is_active, $roles){ }
     function onRemember($data){}
     function onRemembered($data, $link_url){}
+
+    function getDbAccess($uid) {}
 }
