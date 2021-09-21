@@ -66,7 +66,7 @@ class AuthController extends Controller implements IAuth
         return \Firebase\JWT\JWT::encode($payload, $this->config[$token_type]['secret_key'],  $this->config[$token_type]['encryption']);
     }
 
-    protected function gen_jwt_email_conf(string $email, array $roles, array $perms){
+    protected function gen_jwt_email_conf(string $email, array $roles, array $perms, $uid){
         $time = time();
 
         $payload = [
@@ -78,7 +78,8 @@ class AuthController extends Controller implements IAuth
             'user_agent' => Request::user_agent(),
             'email' => $email,
             'roles' => $roles,
-            'permissions' => $perms
+            'permissions' => $perms,
+            'db_access' => $this->getDbAccess($uid)
          ];
 
         return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
@@ -94,7 +95,8 @@ class AuthController extends Controller implements IAuth
             'exp' => $time + $this->config['email_token']['expires_in'],
             'ip'  => Request::ip(),
             'user_agent' => Request::user_agent(),
-            'uid' => $uid
+            'uid' => $uid,
+            'db_access' => $this->getDbAccess($uid)
          ];
 
         return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
@@ -119,6 +121,8 @@ class AuthController extends Controller implements IAuth
         }else if (empty($password)){
             Factory::response()->sendError('password is required',400);
         }
+
+        $this->onLogin($data);
 
         try {              
             $u = DB::table($this->users_table);
@@ -156,22 +160,24 @@ class AuthController extends Controller implements IAuth
 
             // Fetch roles && permissions
 
-            $uid   = $row[$u->getIdName()];            
-            $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid); 
-            $perms = $this->fetchPermissions($uid);
-
-            //var_export($perms);
+            $uid       = $row[$u->getIdName()];            
+            $roles     = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid); 
+            $perms     = $this->fetchPermissions($uid);
+            $db_access = $this->getDbAccess($uid);
+       
 
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 
                                         'permissions' => $perms,
                                         'active' => $active, 
-                                        'db_access' => $this->getDbAccess($uid)
+                                        'db_access' => $db_access
             ], 'access_token');
 
             // el refresh no debe llevar ni roles ni permisos por seguridad !
             $refresh = $this->gen_jwt([ 'uid' => $uid
             ], 'refresh_token');
+
+            $this->onLogged($data, $uid, $active, $roles, $perms);
 
             Factory::response()->send([ 
                                         'access_token'=> $access,
@@ -179,7 +185,8 @@ class AuthController extends Controller implements IAuth
                                         'expires_in' => $this->config['access_token']['expiration_time'],
                                         'refresh_token' => $refresh,   
                                         'roles' => $roles,
-                                        'uid' => $uid
+                                        'uid' => $uid,
+                                        'db_access' => $db_access
                                         ]);
           
         } catch (InvalidValidationException $e) { 
@@ -213,8 +220,6 @@ class AuthController extends Controller implements IAuth
         if (empty($auth)){
             Factory::response()->sendError('Authorization not found',400);
         }
-
-        //print_r($auth);
 
         try 
         {                                      
@@ -296,11 +301,14 @@ class AuthController extends Controller implements IAuth
 
             $impersonated_by = $payload->impersonated_by ?? $payload->uid;
 
+            $db_access = $this->getDbAccess($uid);
+
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 
                                         'permissions' => $perms,
                                         'impersonated_by' => $impersonated_by,
                                         'active' => $active,
+                                        'db_access' => $db_access
             ], 'access_token');
 
             $refresh  = $this->gen_jwt(['uid' => $uid, 
@@ -314,9 +322,11 @@ class AuthController extends Controller implements IAuth
                 'expires_in' => $this->config['access_token']['expiration_time'],
                 'roles' => $roles,
                 'uid' => $uid,
+                'db_access' => $db_access,
                 'impersonated_by' => $impersonated_by
             ];
 
+            $this->onImpersonated($data, $uid, $active, $roles, $perms, $impersonated_by);
     
             Factory::response()->send($res);      
 
@@ -369,11 +379,13 @@ class AuthController extends Controller implements IAuth
         //////
         
         try {              
+            $db_access = $this->getDbAccess($uid);
             
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 
                                         'permissions' => $perms,
-                                        'active' => 1
+                                        'active' => 1,
+                                        'db_access' => $db_access
             ], 'access_token');
 
             $refresh = $this->gen_jwt([ 'uid' => $uid,
@@ -385,7 +397,8 @@ class AuthController extends Controller implements IAuth
                                         'token_type' => 'bearer', 
                                         'expires_in' => $this->config['access_token']['expiration_time'],
                                         'refresh_token' => $refresh,   
-                                        'roles' => $roles
+                                        'roles' => $roles,
+                                        'db_access' => $db_access
                                     ]);
           
         } catch (InvalidValidationException $e) { 
@@ -474,22 +487,24 @@ class AuthController extends Controller implements IAuth
                 $perms = $this->fetchPermissions($uid);
             }            
 
+            $db_access = $this->getDbAccess($uid);
           
             $access  = $this->gen_jwt([ 'uid' => $payload->uid,
                                         'roles' => $roles, 
                                         'permissions' => $perms, 
                                         'impersonated_by' => $impersonated_by,
-                                        'active' => $active
+                                        'active' => $active,
+                                        'db_access' => $db_access
                                     ], 
             'access_token');
 
-            ///////////
             $res = [ 
                 'uid' => $payload->uid,
                 'access_token'=> $access,
                 'token_type' => 'bearer', 
                 'expires_in' => $this->config['access_token']['expiration_time'],
-                'roles' => $roles
+                'roles' => $roles,
+                'db_access' => $db_access
             ];
 
             if (isset($payload->impersonated_by) && $payload->impersonated_by != null){
@@ -612,6 +627,8 @@ class AuthController extends Controller implements IAuth
             
             $is_active = $this->config['pre_activated'] ? true : null;
 
+            $db_access = $this->getDbAccess($uid);
+
             // Hook
             $this->onRegistered($data, $uid, $is_active, $roles);
                 
@@ -620,7 +637,7 @@ class AuthController extends Controller implements IAuth
                                         'roles' => $roles,
                                         'permissions' => [],
                                         'active' => $is_active,
-                                        'db_access' => $this->getDbAccess($uid)
+                                        'db_access' => $db_access
             ], 'access_token');
 
             $refresh = $this->gen_jwt([
@@ -633,7 +650,8 @@ class AuthController extends Controller implements IAuth
                 'token_type' => 'bearer', 
                 'expires_in' => $this->config['access_token']['expiration_time'],
                 'refresh_token' => $refresh,
-                'roles' => $roles
+                'roles' => $roles,
+                'db_access' => $db_access
             ];    
 
             DB::commit();    
@@ -729,7 +747,13 @@ class AuthController extends Controller implements IAuth
         if ($ret != null)
             return $ret;
 
-        switch (Factory::request()->authMethod()){
+        $active = null;
+        $perms  = [];
+        $roles  = [];
+
+        $auth_method = Factory::request()->authMethod();    
+
+        switch ($auth_method){
             case 'API_KEY': 
                 $api_key = Factory::request()->getApiKey();
 
@@ -748,12 +772,15 @@ class AuthController extends Controller implements IAuth
                 } else {
                     $roles = $this->fetchRoles($uid);
                 }
+
+                $active = true;
+                $perms  = $this->fetchPermissions($uid);
                 
                 $ret = [
                     'uid'           => $uid,
                     'roles'         => $roles,
-                    'permissions'   => $this->fetchPermissions($uid),
-                    'active'        => true //
+                    'permissions'   => $perms,
+                    'active'        => $active 
                 ];
             break;
             case 'JWT':
@@ -780,19 +807,23 @@ class AuthController extends Controller implements IAuth
                     }
                 } 
 
-                //dd($ret);
-
             break;
             default:
+                $perms = []; 
+                $roles = [Factory::acl()->getGuest()];
+
                 $ret = [
                     'uid' => null,
-                    'roles' => [Factory::acl()->getGuest()],
-                    'permissions' => [],
-                    'active' => null
+                    'roles' => $roles,
+                    'permissions' => $perms,
+                    'active' => $active
                 ];
         }
 
         $this->uid = $ret['uid'];
+
+        // Hook
+        $this->onChecked($this->uid, $active, $roles, $perms, $auth_method);
 
         return $ret;
     }
@@ -873,16 +904,20 @@ class AuthController extends Controller implements IAuth
 
         $roles = $payload->roles ?? [];
         $perms = $payload->permissions ?? [];
+        $db_access = $this->getDbAccess($uid);
 
         $access  = $this->gen_jwt([ 'uid' => $uid,   
                                     'roles' => $roles, 
                                     'permissions' => $perms,
-                                    'active' => 1                     // *
+                                    'active' => 1,                     // *
+                                    'db_access' => $db_access
         ], 'access_token');
 
         $refresh = $this->gen_jwt(['uid' => $uid, 
         ], 'refresh_token');
 
+        // Hook
+        $this->onConfirmedEmail($uid, $roles, $perms);
         
         Factory::response()->send([
             'uid' => $uid,  
@@ -890,7 +925,8 @@ class AuthController extends Controller implements IAuth
             'token_type' => 'bearer', 
             'expires_in' => $this->config['access_token']['expiration_time'],
             'refresh_token' => $refresh,
-            'roles' => $roles   
+            'roles' => $roles,
+            'db_access' => $db_access 
         ]);	
 
     }     
@@ -944,7 +980,7 @@ class AuthController extends Controller implements IAuth
         // Hook
         $this->onRemembered($data, $url);
 
-        Factory::response()->send(['msg' => 'Por favor chequee su correo'], 200);         
+        Factory::response()->sendOK();         
     }
     
 
@@ -1012,11 +1048,13 @@ class AuthController extends Controller implements IAuth
                     if ($payload->exp < time())
                         Factory::response()->sendError('Token expired, please log in',401);
 
+                    $db_access = $this->getDbAccess($uid);
+
                     $access  = $this->gen_jwt([ 'uid' => $uid,
                                                 'roles' => $roles, 
                                                 'permissions' => $perms, 
                                                 'active' => $active,
-                                                'db_access' => $this->getDbAccess($uid)
+                                                'db_access' => $db_access
                     ], 'access_token');
                     
                     $refresh  = $this->gen_jwt([ 
@@ -1031,7 +1069,8 @@ class AuthController extends Controller implements IAuth
                                     'token_type' => 'bearer', 
                                     'expires_in' => $this->config['access_token']['expiration_time'],
                                     'roles' => $roles,
-                                    'permissions' => $perms                                            
+                                    'permissions' => $perms,
+                                    'db_access' => $db_access                                            
                     ]);
                     
 
@@ -1121,22 +1160,24 @@ class AuthController extends Controller implements IAuth
 
             // Fetch roles && permissions
 
-            $uid   = $payload->uid;            
-            $roles = $this->fetchRoles($uid); 
-            $perms = $this->fetchPermissions($uid);
-
-            //var_export($perms);
+            $uid       = $payload->uid;            
+            $roles     = $this->fetchRoles($uid); 
+            $perms     = $this->fetchPermissions($uid);
+            $db_access = $this->getDbAccess($uid);
 
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 
                                         'permissions' => $perms,
                                         'active' => $active, 
-                                        'db_access' => $this->getDbAccess($uid)
+                                        'db_access' => $db_access
             ], 'access_token');
 
             // el refresh no debe llevar ni roles ni permisos por seguridad !
             $refresh = $this->gen_jwt([ 'uid' => $uid
             ], 'refresh_token');
+
+            // Hook
+            $this->onChangedPassword($uid, $roles, $perms);
 
             Factory::response()->send([ 
                                         'access_token'=> $access,
@@ -1144,7 +1185,8 @@ class AuthController extends Controller implements IAuth
                                         'expires_in' => $this->config['access_token']['expiration_time'],
                                         'refresh_token' => $refresh,   
                                         'roles' => $roles,
-                                        'uid' => $uid
+                                        'uid' => $uid,
+                                        'db_access' => $db_access
                                         ]);
 
         } catch (\Exception $e) {
@@ -1265,6 +1307,12 @@ class AuthController extends Controller implements IAuth
     function onRegistered($data, $uid, $is_active, $roles){ }
     function onRemember($data){}
     function onRemembered($data, $link_url){}
+    function onLogin($data){}
+    function onLogged($data, $uid, $active, $roles, $perms){}
+    function onImpersonated($data, $uid, $active, $roles, $perms, $impersonated_by){}	
+    function onChecked($uid, $active, $roles, $perms, $auth_method){}
+    function onConfirmedEmail($uid, $roles, $perms){}
+    function onChangedPassword($uid, $roles, $perms){}
 
     function getDbAccess($uid) : Array { return []; }
 }

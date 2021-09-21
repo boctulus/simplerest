@@ -50,7 +50,7 @@ class MyAuthController extends AuthController {
             {                 
                 $exp = time() + $this->config['email_token']['expires_in'];
                 $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
-                $token = $this->gen_jwt_email_conf($data[$this->__email], $roles, []);
+                $token = $this->gen_jwt_email_conf($data[$this->__email], $roles, [], $uid);
                 $url = $base_url . (!$this->config['REMOVE_API_SLUG'] ? "api/$api_version" : $api_version) . '/auth/confirm_email/' . $token . '/' . $exp; 
 
                 // Queue email
@@ -161,7 +161,9 @@ class MyAuthController extends AuthController {
             }
 
             Files::logger("remember-me $link");
-        }        
+        }    
+        
+        Factory::response()->send(['msg' => 'Por favor ahora revise su correo'], 200);
     }
     
 }
