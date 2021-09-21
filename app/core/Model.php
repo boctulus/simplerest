@@ -121,7 +121,7 @@ class Model {
 	}
 
 
-	function __construct(bool $connect = false, $schema = null){
+	function __construct(bool $connect = false, $schema = null, bool $load_config = true){
 		if ($connect){
 			$this->connect();
 		}
@@ -131,11 +131,14 @@ class Model {
 			$this->table_name = $this->schema['table_name'];
 		}
 
-		$this->config = config();
+		if ($load_config){
+			$this->config = config();
 
-		if ($this->config['error_handling']) {
-            set_exception_handler([$this, 'exception_handler']);
+			if ($this->config['error_handling']) {
+				set_exception_handler([$this, 'exception_handler']);
+			}
 		}
+		
 		
 		/////////////// ***
 		/*
@@ -1904,7 +1907,12 @@ class Model {
 		$set =trim(substr($set, 0, strlen($set)-2));
 
 		if ($set_updated_at && $this->inSchema([$this->updatedAt])){
-			$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
+			if (isset($this->config)){
+				$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
+			} else {
+				$d = new \DateTime();
+			}
+						
 			$at = $d->format('Y-m-d G:i:s');
 
 			$set .= ", {$this->updatedAt} = '$at'";
@@ -2014,7 +2022,12 @@ class Model {
 		$this->onDeleting();
 
 		if ($this->soft_delete){
-			$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
+			if (isset($this->config)){
+				$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
+			} else {
+				$d = new \DateTime();
+			}
+			;
 			$at = $d->format('Y-m-d G:i:s');
 
 			$to_fill = [];
