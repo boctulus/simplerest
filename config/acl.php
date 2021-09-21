@@ -34,12 +34,13 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     
     ->addRole('usuario', 10) 
     ->addInherit('registered')
+    ->addResourcePermissions('tbl_descuento', ['read'])
     // ...
     
 
     ->addRole('admin', 50) 
     ->addInherit('registered')
-    ->addSpecialPermissions(['read_all', 'write_all'])
+    //->addSpecialPermissions(['read_all', 'write_all'])
     
    
     ->addRole('supervisor', 100)  

@@ -2,6 +2,7 @@
 
 require_once 'constants.php';
 require_once HELPERS_PATH. 'etc.php';
+require_once HELPERS_PATH. 'dsi.php'; // agregado
 
 // puede afectar el punto decimal al formar sentencias SQL !!!
 // setlocale(LC_ALL, 'es_AR.UTF-8');
@@ -25,7 +26,9 @@ return [
 	'HTTPS' => 'Off',
 	'DEFAULT_CONTROLLER' => 'HomeController',
 
-	'db_connections' => [
+	'db_connections' => get_db_connections()
+	/*
+	[
 		'main' => [
 			'host'		=> env('DB_HOST', '127.0.0.1'),
 			'port'		=> env('DB_PORT'),
@@ -98,9 +101,8 @@ return [
 				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
 				\PDO::ATTR_EMULATE_PREPARES => false
 			]
-		]			
-
-	], 
+		]
+	] */ , 	
 
 	'db_connection_default' => 'main', 
 	

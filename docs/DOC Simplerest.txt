@@ -621,6 +621,29 @@ c) Usando la clase DB para obtener la instancia
 
 	- Obtiene una conexión a la base de datos aún antes de hacer cualquier tipo de validación.
 
+Es de destacar que podría darse el caso de que sea Ud. necesite acceder a la base de datos desde el archivo config.php pero si se hiciera DB::table('xxx') se generaría una referencia circular porque se incluiría nuevamente el archivo config.php
+
+La solución es crear una conexión directamente sin uso de las clases Model o DB y luego especificar que el modelo no deba ni crear conexión ni intentar cargar el config.php para nada.
+
+Ej:
+
+	$dbname = 'nombre_db';
+    $user = 'boctulus';
+    $pass = 'xxxxxxxxxxxxxxx';
+    $dsn  =  "mysql:dbname=$dbname;host=127.0.0.1";
+
+    try {
+        $conn = new \PDO($dsn, $user, $pass);
+    } catch (PDOException $e) {
+        throw new \Exception('DB connection fails: ' . $e->getMessage());
+    }
+
+    $m = (new Model(false, null, false))
+    ->setConn($conn);
+    
+    $rows = $m->table('mi_tabla')
+    ->get();
+
 
 # Inserción de registros
 

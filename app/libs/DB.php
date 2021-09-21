@@ -43,7 +43,7 @@ class DB
 	}
 
 	public static function driver(){
-		return self::getCurrent()['driver'];
+		return self::getCurrent()['driver'] ?? NULL;
 	}
 
 	public static function schema(){
