@@ -3067,6 +3067,26 @@ Las bases de datos admitidas para un usuario en particular para el caso de auten
   }
 
 
+Cuando un usuario se loguea obtiene las conexiones a las DB(s) que ese usuario puede utilizar como un arreglo llamado “db_access” y estas son devueltas en la respuesta para que esa información pueda incluirse via parámetro ?tenantid=  en cada request para acceder a esas DB(s)
+
+El arreglo “db_access” se arma via hook en el AuthController que es extendido por MyAuthController y es donde se define el método getDbAccess aunque también podría definirse en un Trait.  Ver trait DbAccess
+
+	function getDbAccess($user_id) : Array {}
+
+Un ejemplo de este método sería:
+
+	function getDbAccess($user_id) : Array {
+        // casting o validación por seguridad
+        $user_id = (int) $user_id;
+
+        $dbs = Model::query("SELECT dba_varNombre FROM `tbl_usuarios_x_base_datos` as uxb
+        INNER JOIN tbl_usuario_empresa as u ON u.use_intId = uxb.usu_intIdUsuario 
+        INNER JOIN tbl_base_datos as db ON db.dba_intId = bas_intIdBasedatos
+        WHERE uxb.`usu_intIdUsuario` = $user_id",  \PDO::FETCH_NUM);
+
+        return array_column($dbs, 0);
+    }
+
 https://stackoverflow.com/questions/13761336/rest-api-with-multi-tenant-database-separated-by-client/13764490#13764490
 https://medium.com/@vivekmadurai/multi-tenancy-in-rest-api-a570d728620c
 https://dzone.com/articles/multi-tenancy-in-the-api-world-made-easy

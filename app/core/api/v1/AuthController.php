@@ -371,8 +371,7 @@ class AuthController extends Controller implements IAuth
             Factory::response()->sendError($e->getMessage(), 400);
         }	
 
-        $uid = $payload->impersonated_by;
-        
+        $uid   = $payload->impersonated_by;        
         $roles = $this->fetchRoles($uid);
         $perms = $this->fetchPermissions($uid);
 
@@ -424,8 +423,6 @@ class AuthController extends Controller implements IAuth
         if (empty($auth)){
             Factory::response()->sendError('Authorization not found',400);
         }
-
-        //print_r($auth);
 
         try {                                      
             // refresh token
@@ -618,7 +615,7 @@ class AuthController extends Controller implements IAuth
             ->create($data);
 
             if (empty($uid))
-                throw new \Exception('Error creating user');
+                throw new \Exception('Error on user creation');
             
             if ($many_to_many && !empty($roles))
             {
@@ -1232,7 +1229,6 @@ class AuthController extends Controller implements IAuth
             }
         }
 
-        //dd($roles, 'roles');
         return $roles;
     }
 
