@@ -13,7 +13,6 @@ function http_protocol(){
     return Url::http_protocol();
 }
 
-
 function redirect(string $url){
     return Response::redirect($url);
 }
