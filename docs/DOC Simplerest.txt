@@ -1433,12 +1433,18 @@ Por último tenemos los campos ocultos:
 
 La clase AuthController provee varios hooks que pueden usarse en MyAuthController
 
-function onRegister(Array $data){ }
-function onRegistered($data, $uid, $is_active, $roles){ }
-function onRemember($data){}
-function onRemembered($data, $link_url){}
+	function onRegister($data){ }
+    function onRegistered($data, $uid, $is_active, $roles){ }
+    function onRemember($data){}
+    function onRemembered($data, $link_url){}
+    function onLogin($data){}
+    function onLogged($data, $uid, $active, $roles, $perms){}
+    function onImpersonated($data, $uid, $active, $roles, $perms, $impersonated_by){}	
+    function onChecked($uid, $active, $roles, $perms, $auth_method){}
+    function onConfirmedEmail($uid, $roles, $perms){}
+    function onChangedPassword($uid, $roles, $perms){}
 
-Más hooks se irán agregando ***
+    function getDbAccess($uid) : Array { return []; }
 
 
 # Hooks sobre el modelo
