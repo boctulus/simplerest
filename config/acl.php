@@ -27,13 +27,13 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('tbl_scritp_tablas', ['read'])
     ->addResourcePermissions('products', ['read_all'])
     ->addResourcePermissions('tbl_usuario_empresa', ['read'])
+    ->addResourcePermissions('tbl_estado_civil', ['read'])
     // ...
     ->setAsRegistered('registered')
     
     
     ->addRole('usuario', 10) 
     ->addInherit('registered')
-    ->addResourcePermissions('tbl_estado_civil', ['read'])
     // ...
     
 

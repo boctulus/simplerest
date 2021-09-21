@@ -17,6 +17,8 @@ class Migrations implements IMigration
     {
         config()['db_connection_default'] = 'main';
 
+        DB::beginTransaction();
+        
         try {
             Model::query("
             CREATE TABLE `migrations` (

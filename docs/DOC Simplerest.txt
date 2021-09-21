@@ -1000,7 +1000,9 @@ Ej:
 		DB::rollback();            
 	}            
 
-Otra forma de realizar transacciones es usando una función anómima con transaction()
+Cabe notar que se olvidara colocar el DB::beginTransaction() se producirá el error "There is no active transaction".
+
+Una forma más conveniente de realizar transacciones es usando una función anómima con transaction()
 
 	DB::transaction(function(){
 		// operación sobre la base de datos   
@@ -2966,6 +2968,8 @@ Ej:
 
 # Multitenant
 
+El framework tiene implementación de multitenencia a dos niveles: tablas y bases de datos. 
+
 El método DB::getConnection() permite especificar opcionalmente el identificador de la conexión a base de datos a la que nos queremos conectar y la clase Model acepta una conexión así que es posible hacer lo siguiente:
 
 Ej:
@@ -3042,17 +3046,20 @@ El tenant-id permitir que se pueda especificar no solo desde la url y del header
 o
   X-TENANT-ID (header)
 
-para JWT incluirlo en el payload como "tenantid"
+Las bases de datos admitidas para un usuario en particular para el caso de autenticación via tokens JWT estaá incluida en el payload como "db_access"
 
   {
     “sub”: “1234567890”,
     “name”: “<user-name>”,
     “iat”: 1516239022,
     “userid”: “<user-id>”,
-    “tenantid”: “<tenant-id>”
+    “db_access”: [
+		"<db-connection1>",
+		"<db-connection1>",
+		..
+	]
   }
 
-El tenantid identifica la conexión de base de datos a fin de poder seleccionarla.
 
 https://stackoverflow.com/questions/13761336/rest-api-with-multi-tenant-database-separated-by-client/13764490#13764490
 https://medium.com/@vivekmadurai/multi-tenancy-in-rest-api-a570d728620c
@@ -3066,6 +3073,13 @@ Ventajas del multi-tenant implementado con múltiples DB(s) ->
   Para que tenga sentido habría que crear un usuario del motor de DB (mysql, etc) para manejar cada DB con permisos restringidos a esa DB.
 
   - Si las DB están distribuidas en distintos servidores (accesibles via API por ejemplo) se puede distrubuir la carga de un servidor creando nuevos usuarios (ej: vendedores) en otro servidor cuando ese esté saturado.
+
+
+Además del multitenant via DB se pueden tener varios usuarios compartiendo tablas y el sistema es capaz de garantizar el aislamiento de los recursos (registros) de cada usuario gracias al uso del ACL.
+
+Para que la separación de recursos por usuario dentro del ámbito de las tablas de una misma base de datos sea posible es necesario que esté definido el campo 'belongs_to' o equivalente via la propiedad $belongsTo en el modelo de la tabla correspondiente y esté presente en la tabla como tal.  
+
+El campo 'belongs_to' es de manejo automático del framework y se saca provecho definiendo permisos como "read" y "read_all" para las tablas que lo implementan.
 
 
 # Sub-recursos 
