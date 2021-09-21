@@ -19,6 +19,10 @@ function acl(){
     return Factory::acl();
 }
 
+function request(){
+    return Factory::request();
+}
+
 function get_user_model_name(){
     return '\\simplerest\\models\\' . Strings::snakeToCamel(config()['users_table']). 'Model';
 }

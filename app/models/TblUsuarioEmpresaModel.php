@@ -34,7 +34,7 @@ class TblUsuarioEmpresaModel extends Model
 			return ($dato !== null);
 		});
 
-		//$this->registerOutputMutator('password', function($pass){ return '******'; } );
+		//$this->registerOutputMutator('use_decPassword', function($pass){ return '******'; } );
         parent::__construct($connect, new TblUsuarioEmpresaSchema());
 	}
 	

@@ -167,6 +167,14 @@ class DB
 			return static::$raw_sql;
 		}
 	}
+
+	static function disableAutoCommit(){
+		static::getConnection()->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
+	}
+
+	static function enableAutoCommit(){
+		static::getConnection()->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
+	}
 	
 	public static function table($from, $alias = NULL, bool $connect = true) {
 		// Usar un wrapper y chequear el tipo
@@ -211,14 +219,12 @@ class DB
 	// https://github.com/laravel/framework/blob/4.1/src/Illuminate/DB/Connection.php#L417
 	public static function transaction(\Closure $callback)
     {
-		//static::getConnection()->setAttribute(\PDO::ATTR_AUTOCOMMIT, 0);
 		static::beginTransaction();
 
 		try
 		{
 			$result = $callback();
 			static::commit();
-			//static::getConnection()->setAttribute(\PDO::ATTR_AUTOCOMMIT, 1);
 		}catch (\Exception $e){
 			static::rollBack();
 			throw $e;
