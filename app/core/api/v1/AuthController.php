@@ -25,8 +25,6 @@ class AuthController extends Controller implements IAuth
     protected $__password;
     protected $__confirmed_email;
     protected $__active;
-    
-    protected $db_access;
 
     public $uid;
 
@@ -760,6 +758,16 @@ class AuthController extends Controller implements IAuth
             break;
             case 'JWT':
                 $ret = $this->jwtPayload();
+
+                $tenantid = Factory::request()->getTenantId();
+
+                if ($tenantid !== null){
+                    $db_access = $ret['db_access'] ?? [];
+                    
+                    if (!in_array($tenantid, $db_access)){
+                        Factory::response()->sendError("Forbidden", 403, "No db access");
+                    }
+                }
 
                 if (DB::table($this->users_table)->inSchema([$this->role_field])){
                     $ret['roles'] = [ Factory::acl()->getRoleName($ret['roles']) ]; 

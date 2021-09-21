@@ -48,7 +48,7 @@ abstract class ApiController extends ResourceController implements IApi
 
         $this->tenantid = Factory::request()->getTenantId();
 
-        if ($this->tenantid !== null){
+        if ($this->tenantid !== null){           
             $this->conn = DB::getConnection($this->tenantid);
         }
 

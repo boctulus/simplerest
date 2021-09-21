@@ -70,30 +70,68 @@ class MyAuthController extends AuthController {
 
         /*
             Registro el usuario como futuro propierario de una base de datos
-            (podría pedirse que sea solo cuando el usuario quede "activo" para evitar crear una DB ante un SPAM)
+
+            Llamo a los SP(s)
         */
 
-        //DB::transaction(function() use ($uid, $roles){
-            if (in_array('admin', $roles)){
-                $at = datetime();
+        $at = datetime();
 
-                $db_id = DB::table('tbl_base_datos')
-                ->fill(['usu_intIdActualizador'])
-                ->create([
-                    'dba_varNombre'    => 'db-' . $uid,
-                    'usu_intIdCreador' => $uid,
-                    'usu_intIdActualizador' => $uid,
-                    'dba_dtimFechaCreacion' => $at,
-                    'dba_dtimFechaActualizacion' => $at
-                ]); 
+        if (in_array('admin', $roles)){
+            $db_id = DB::table('tbl_base_datos')
+            ->fill(['usu_intIdActualizador'])
+            ->create([
+                'dba_varNombre'    => 'db-' . $uid,
+                'usu_intIdCreador' => $uid,
+                'usu_intIdActualizador' => $uid,
+                'dba_dtimFechaCreacion' => $at,
+                'dba_dtimFechaActualizacion' => $at
+            ]); 
+        }
 
-                $dbuid = DB::table('tbl_usuarios_x_base_datos')
-                ->create([
-                    'bas_intIdBasedatos' => $db_id,
-                    'usu_intIdUsuario'   => $uid
-                ]);
-            }
-        //});
+        /*
+            Ahora debo crear la DB, proceso que puede demorar
+
+            Podría crear una tarea programada para esto que revise
+            si hay pendiente crear alguna DB en 'tbl_base_datos'
+        */
+
+        /*
+        $tenant = request()->getTenantId();
+        DB::setConnection($tenant);
+
+        $idtbu = DB::table('tbl_usuario')
+        ->fill(['est_intIdEstado'])
+        ->create(
+            [
+                'usu_varNroIdentificacion' => $data['use_varUsuario'], // ???
+                'usu_varEmail' => $data['use_varEmail'],
+                'usu_varPassword' => $data['use_decPassword'],
+                'est_intIdEstado' => $data['est_intIdEstado']
+                // ..
+            ]
+        );
+
+        DB::setConnection('main');
+
+        if (in_array('usuario', $roles)){
+            //
+            //    Debo macthear con las conexiones de la DB
+            //
+            $db_id = DB::table('tbl_base_datos')
+            ->where(['dba_varNombre' => $tenant])
+            ->value('dba_intId');
+            
+            if ($db_id === null){
+                throw new \Exception("Invalid database selection");
+            }        
+        }
+
+        $dbuid = DB::table('tbl_usuarios_x_base_datos')
+        ->create([
+            'bas_intIdBasedatos' => $db_id,
+            'usu_intIdUsuario'   => $uid
+        ]);
+        */
     }
 
     function onRemembered($data, $link)
