@@ -26,7 +26,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addInherit('guest')
     ->addResourcePermissions('tbl_scritp_tablas', ['read'])
     ->addResourcePermissions('products', ['read_all'])
-    ->addResourcePermissions('tbl_usuario_empresa', ['read'])
+    //->addResourcePermissions('tbl_usuario_empresa', ['read'])
     ->addResourcePermissions('tbl_estado_civil', ['read'])
     // ...
     ->setAsRegistered('registered')
@@ -44,7 +44,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
    
     ->addRole('supervisor', 100)  
     ->addInherit('registered')
-    ->addResourcePermissions('tbl_usuario_empresa', ['read_all']) 
+    //->addResourcePermissions('tbl_usuario_empresa', ['read_all']) 
 
  
     ->addRole('dsi', 500)
