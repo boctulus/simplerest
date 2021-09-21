@@ -1300,12 +1300,12 @@ class AuthController extends Controller implements IAuth
     */
 
     function onRegister(Array $data){ }
-    function onRegistered($data, $uid, $is_active, $roles){ }
-    function onRemember($data){}
-    function onRemembered($data, $link_url){}
-    function onLogin($data){}
-    function onLogged($data, $uid, $active, $roles, $perms){}
-    function onImpersonated($data, $uid, $active, $roles, $perms, $impersonated_by){}	
+    function onRegistered(Array $data, $uid, $is_active, $roles){ }
+    function onRemember(Array $data){}
+    function onRemembered(Array $data, $link_url){}
+    function onLogin(Array $data){}
+    function onLogged(Array $data, $uid, $active, $roles, $perms){}
+    function onImpersonated(Array $data, $uid, $active, $roles, $perms, $impersonated_by){}	
     function onChecked($uid, $active, $roles, $perms, $auth_method){}
     function onConfirmedEmail($uid, $roles, $perms){}
     function onChangedPassword($uid, $roles, $perms){}
