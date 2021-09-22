@@ -3372,6 +3372,44 @@ Leer
 https://devdojo.com/devdojo/how-to-create-a-laravel-package
 
 
+# Como servir vistas en el FrontEnd
+
+Si bien SimpleRest es un framework RAD orientado a crear APIs, implementa la arquitectura Modelo-Vista-Controlador (MVC) y por ende es capaz de servie vistas.
+
+Las vistas son servidas desde los controladores así que como priemr paso necesita es tener un controlador o crearlo:
+
+	php com make controller mi_controlador
+
+Luego dentro debe tener un método que servirá la vista llamando a $this->view('nombre-vista')
+
+	function mi_metodo_de_controlador(){
+		// ...
+
+		$this->view('mi_archivo_vista.php');
+	}
+	
+La vista puede requerir de datos y éstos son proporcionados por el controlador como un array con el nombre de las variables y sus valores. Ej:
+
+	$this->view('mi_archivo_vista.php', [
+		'nombre' => 'Pablo',
+		'apellido' => 'Bozzolo'
+	]);
+
+Y ya dentro de la vista, se crearan las variables $nombre y $apellido así:
+
+<!-- Vista mi_archivo_vista.php -->
+<?php
+
+	var_dump($nombre); // Pablo
+	var_dump($apellido);  // Bozzolo
+?>
+
+Por supuesto que pueden pasarse arrays y que las vistas pueden contener HTML, PHP, CSS y JavaScript.
+
+
+# Templates
+
+
 # NGINX web server
 
 Agregar en el bloque lo siguiente:
