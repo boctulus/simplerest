@@ -23,6 +23,7 @@ function get_db_connections()
     $user = 'boctulus';
     $pass = 'gogogo#*$U&_441@#';
     $charset = 'utf8';
+    
     $dsn  =  "$driver:dbname=$dbname;port=$port;host=$host";
 
     try {
