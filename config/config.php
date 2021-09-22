@@ -26,6 +26,11 @@ return [
 	'HTTPS' => 'Off',
 	'DEFAULT_CONTROLLER' => 'HomeController',
 
+	/*
+		Es posible cargar la lista de conexiones disponibles
+		de forma dinámica
+	*/
+
 	'db_connections' => get_db_connections()
 	/*
 	[

@@ -204,12 +204,12 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $data  = Factory::request()->getBody();
+        $data  = Factory::request()->getBody(false);
 
-        if ($data == null)
+        if ($data === null)
             return;
             
-        if (!isset($data->uid) && !isset($data->role))
+        if (!isset($data['uid']) && !isset($data['role']))
             Factory::response()->sendError('Bad request', 400, 'Nothing to impersonate');
 
         $request = Factory::request();
@@ -249,8 +249,8 @@ class AuthController extends Controller implements IAuth
 
             $guest_role = $acl->getGuest();
 
-            $impersonate_user = $data->uid ?? null;
-            $impersonate_role = $data->role ?? null;
+            $impersonate_user = $data['uid'] ?? null;
+            $impersonate_role = $data['role'] ?? null;
             
             if (!empty($impersonate_role)){
                 if ($impersonate_role == $guest_role){

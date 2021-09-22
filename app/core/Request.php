@@ -35,6 +35,7 @@ class Request  implements \ArrayAccess, Arrayable
             }
             static::$instance = new static();
         }
+        
         return static::$instance;
     }
 

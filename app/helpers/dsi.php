@@ -16,10 +16,14 @@ function get_db_connections()
         return $connections;
     }
 
+    $driver = 'mysql';
+    $host   = '127.0.0.1';
+    $port   = 3306;
     $dbname = 'db_admin_dsi';
     $user = 'boctulus';
     $pass = 'gogogo#*$U&_441@#';
-    $dsn  =  "mysql:dbname=$dbname;host=127.0.0.1";
+    $charset = 'utf8';
+    $dsn  =  "$driver:dbname=$dbname;port=$port;host=$host";
 
     try {
         $conn = new \PDO($dsn, $user, $pass);
@@ -36,13 +40,13 @@ function get_db_connections()
     $connections = [
         // cargo conexión principal
         'main' => [
-			'host'		=> '127.0.0.1',
-			'port'		=> 3306,
-			'driver' 	=> 'mysql',
+			'host'		=> $host,
+			'port'		=> $port,
+			'driver' 	=> $driver,
 			'db_name' 	=> 'db_admin_dsi',
-			'user'		=> 'boctulus', 
-			'pass'		=> 'gogogo#*$U&_441@#',
-			'charset'	=> 'utf8', 
+			'user'		=> $user, 
+			'pass'		=> $pass,
+			'charset'	=> $charset, 
 			'pdo_options' => [
 				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
 				\PDO::ATTR_EMULATE_PREPARES => false
@@ -53,13 +57,13 @@ function get_db_connections()
     // cargo resto de conexiones
     foreach ($bases as $base){
         $connections[$base] = [
-            'host'		=> '127.0.0.1',
-			'port'		=> 3306,
-			'driver' 	=> 'mysql',
+            'host'		=> $host,
+			'port'		=> $port,
+			'driver' 	=> $driver,
 			'db_name' 	=> $base,
-			'user'		=> 'boctulus', 
-			'pass'		=> 'gogogo#*$U&_441@#',
-			'charset'	=> 'utf8', 
+			'user'		=> $user, 
+			'pass'		=> $pass,
+			'charset'	=> $charset, 
 			'pdo_options' => [
 				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
 				\PDO::ATTR_EMULATE_PREPARES => false
