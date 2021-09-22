@@ -11,6 +11,9 @@ app/security
 -- Si Ud. tiene una tabla usuarios prosiga con el paso siguiente y sino corra las siguiente migraciones que le creará una tabla "users" con todas las capacidades del framework:
 
     php com migrations migrate --file=0000_00_00_00000000_migrations.php
+
+y luego
+
     php com migrations migrate --file=users/0000_00_00_00000001_users.php
 
 -- Configurar config/config.php 
@@ -20,6 +23,30 @@ app/security
     - Declarar cual será la tabla de usuarios (de la DB principal). Ej: 
 
         'users_table' =>  'tbl_usuario_empresa'
+
+    - Para una carga dinámica de las bases de datos definidas para el sistema multitenant en el config/config.php se puede incluir un script con cualquier nombre que tocaría configurar:
+
+    <?php
+
+        require_once 'constants.php';
+        require_once HELPERS_PATH. 'etc.php';
+        require_once HELPERS_PATH. 'db_dynamic_load.php';  // <----
+
+    Vale aclarar que si bien el archivo puede ser un "helper" y este tipo de archivos son autocargados cuando se está en el ámbito del config.php esta carga automática de los helpers no está disponible.
+
+    En el config.php se pueden usar variables de entorno pero no desde archivos incluidos desde el config.php como es el caso de nuestro archivo 'db_dynamic_load.php' cuyo nombre recuerden puede ser cualquiera.
+
+    En el archivo incluido es necesario incluir información como las credenciales para autenticarnos ante el motor de base de datos elegido así como puertos:
+
+        $driver = 'mysql';
+        $host   = '127.0.0.1';
+        $port   = 3306;
+        $dbname = 'mi_db';
+        $user = 'mi_usuario';
+        $pass = 'mi_password';
+        $charset = 'utf8';
+
+    Podrían usarse credenciales distintas e incluso motores de bases de datos diferentes para la base de datos principal y las bases de datos de la multitenencia.
 
 -- Parado en el root del proyecto:
 

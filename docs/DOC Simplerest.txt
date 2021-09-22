@@ -35,6 +35,7 @@ Algunas características:
 │   ├── models                    # Models directory
 │   ├── views                     # Views directory
 │   ├── libs                      
+|   ├── helpers                   # helpers
 │   ├── locale                    # i18n translations
 │   └── core                      # Core directory
 |
@@ -77,6 +78,49 @@ Es posible hacer funcionar el framework con Nginx y en cuanto a PostgreSql está
 Hay varios archivos por configurar y hay que correr un script de instalación.
 
 Vea archivo adjunto sobre Instalación para más información.
+
+
+# Archivo config.php
+
+Hay varios archivos de configuración del framework en /config del cual el config.php es el principal.
+
+
+Importante:
+
+En el config.php se pueden usar variables de entorno pero no desde archivos incluidos desde el config.php
+
+Si se intentara hacer uso de clases que requieren directa o indirectamente del archivo config.php se crearía una "referencia circular" que agotará la memoria. Así por ejemplo si Ud. requiriera usar el modelo para acceder a la DB, debería hacer algo como:
+
+	// No hacer uso de las variables de entorno con env()
+
+	$dbname = 'nombre_db';
+    $user = 'boctulus';
+    $pass = 'xxxxxxxxxxxxxxx';
+    $dsn  =  "mysql:dbname=$dbname;host=127.0.0.1";
+
+	// Crear la conexión manualmente 
+	
+    try {
+        $conn = new \PDO($dsn, $user, $pass);
+    } catch (PDOException $e) {
+        throw new \Exception('DB connection fails: ' . $e->getMessage());
+    }
+
+	// Especificarle al modelo que cree en automático la conexión ni que utilice el archivo config.php 
+
+    $m = (new Model(false, null, false))
+
+	// Usar la conexión previamente creada de forma "manual"
+
+    ->setConn($conn);
+
+	// Hacer uso normal de la clase Model
+    
+    $rows = $m->table('mi_tabla')
+    ->get();
+
+
+	En realidad en este caso también habría que controlar que no se creen demasiadas conexiones a la base de datos manejando una variable estática para almacenar la conexion.
 
 
 # Endpoints que comienzan o no con /api
@@ -3089,7 +3133,6 @@ Las bases de datos admitidas para un usuario en particular para el caso de auten
 	]
   }
 
-
 Cuando un usuario se loguea obtiene las conexiones a las DB(s) que ese usuario puede utilizar como un arreglo llamado “db_access” y estas son devueltas en la respuesta para que esa información pueda incluirse via parámetro ?tenantid=  en cada request para acceder a esas DB(s)
 
 El arreglo “db_access” se arma via hook en el AuthController que es extendido por MyAuthController y es donde se define el método getDbAccess aunque también podría definirse en un Trait.  Ver trait DbAccess
@@ -3189,6 +3232,38 @@ Es posible formatear el JSON de la respuesta con opciones dentro del config.php
 
 	'include_enity_name' => true,
 	'nest_sub_resources' => false,
+
+
+# Librerías
+
+	Se pueden crear cuantas librerías se requiera. Ëstas deben ser clases y usar namespaces correctamente por lo cual se sugiere crearlas via comando make:
+
+		php com make lib mi_libreria
+
+	o ...
+
+		php com make lib folder/mi_libreria
+
+	y si fuera necesario forzar la creación del archivo use -f o --foce
+
+		php com make lib folder/mi_libreria -f
+
+
+# Helpers
+
+	Un helper es un conjunto de funciones por fuera del ámbito de una clase y su propósito es hacer más fácil la utilización de funcionalidades de uso recurrente.
+
+	Para crear un helper:
+
+		php com make helper mi_helper
+
+	o ...
+
+		php com make helper folder/mi_helper
+
+	Los helpers tienen su "autoload" por lo cual cualquier archivo helper será cargado automáticamente y por lo mismo no debe abusarse de esta característica para no degradar la performance.
+
+	El autoload de helpers está disponible en controladores, modelos y vistas pero no el config.php ni el index.php 
 
 
 # Service Providers
