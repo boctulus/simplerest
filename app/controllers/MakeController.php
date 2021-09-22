@@ -81,6 +81,7 @@ class MakeController extends Controller
     const API_TEMPLATE = self::TEMPLATES . 'ApiRestfulController.php';
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; 
     const HELPER_TEMPLATE = self::TEMPLATES . 'Helper.php'; 
+    const LIBS_TEMPLATE = self::TEMPLATES . 'Lib.php';
 
     protected $class_name;
     protected $ctr_name;
@@ -135,6 +136,10 @@ class MakeController extends Controller
         make model super_awesome  [--force | -f]
 
         make controller SuperAwesome  [--force | -f]
+        make controller folder/SuperAwesome  [--force | -f]
+
+        make console SuperAwesome  [--force | -f]
+        make console folder/SuperAwesome  [--force | -f]
 
         make api SuperAwesome   [--force | -f]
         make api super_awesome  [--force | -f]
@@ -301,10 +306,12 @@ class MakeController extends Controller
         }            
     }
 
-    function controller($name, ...$opt) {
+    /*
+        File generation
+    */
+    function generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt) {
         $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
-        $namespace = 'simplerest\\controllers';
-
+        
         $sub_path = '';
         if (strpos($name, DIRECTORY_SEPARATOR) !== false){
             $exp = explode(DIRECTORY_SEPARATOR, $name);
@@ -315,104 +322,48 @@ class MakeController extends Controller
         }
 
         $this->setup($name);    
-    
-        $filename = $this->camel_case . 'Controller'.'.php';
-        $dest_path = CONTROLLERS_PATH . $sub_path . $filename;
 
-        if (in_array($dest_path, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
+        if (!file_exists($dest_path . $sub_path)){
+            Files::mkdir_ignore($dest_path . $sub_path);
         }
     
-        if (in_array($filename, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
+        $filename = $this->camel_case . $subfix.'.php';
+        $dest_path = $dest_path . $sub_path . $filename;
+
+        $this->fileProtection($filename, $dest_path, $opt);
         
-        $data = file_get_contents(self::CONTROLLER_TEMPLATE);
-        $data = str_replace('__NAME__', $this->camel_case . 'Controller', $data);
+        $data = file_get_contents($template_path);
+        $data = str_replace('__NAME__', $this->camel_case . $subfix, $data);
         $data = str_replace('__NAMESPACE', $namespace, $data);
 
-        $ok = (bool) file_put_contents($dest_path, $data);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
-        } else {
-            print_r("$dest_path was generated\r\n");
-        } 
+        $this->write($dest_path, $data);
+    }
+
+    function controller($name, ...$opt) {
+        $namespace = 'simplerest\\controllers';
+        $dest_path = CONTROLLERS_PATH;
+        $template_path = self::CONTROLLER_TEMPLATE;
+        $subfix = 'Controller';  // Ej: 'Controller'
+
+        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function console($name, ...$opt) {
-        $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
         $namespace = 'simplerest\\controllers';
+        $dest_path = CONTROLLERS_PATH;
+        $template_path = self::CONSOLE_TEMPLATE;
+        $subfix = 'Controller';  // Ej: 'Controller'
 
-        $sub_path = '';
-        if (strpos($name, DIRECTORY_SEPARATOR) !== false){
-            $exp = explode(DIRECTORY_SEPARATOR, $name);
-            $sub = implode(DIRECTORY_SEPARATOR, array_slice($exp, 0, count($exp)-1));
-            $sub_path = $sub . DIRECTORY_SEPARATOR;
-            $name = $exp[count($exp)-1];
-            $namespace .= "\\$sub";
-        }
+        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+    }
 
-        $this->setup($name);    
-    
-        $filename = $this->camel_case . 'Controller'.'.php';
-        $dest_path = CONTROLLERS_PATH . $sub_path . $filename;
+    function lib($name, ...$opt) {
+        $namespace = 'simplerest\\libs';
+        $dest_path = LIBS_PATH;
+        $template_path = self::LIBS_TEMPLATE;
+        $subfix = '';  // Ej: 'Controller'
 
-        if (in_array($dest_path, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
-    
-        if (in_array($filename, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
-        
-        $data = file_get_contents(self::CONSOLE_TEMPLATE);
-        $data = str_replace('__NAME__', $this->camel_case . 'Controller', $data);
-        $data = str_replace('__NAMESPACE', $namespace, $data);
-
-        $ok = (bool) file_put_contents($dest_path, $data);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
-        } else {
-            print_r("$dest_path was generated\r\n");
-        } 
+        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function api($name, ...$opt) { 
@@ -439,43 +390,13 @@ class MakeController extends Controller
 
         $dest_path = API_PATH . $filename;
 
-        if (in_array($dest_path, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
-    
-        if (in_array($filename, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
+        $this->fileProtection($filename, $dest_path, $opt);
 
         $data = file_get_contents(self::API_TEMPLATE);
         $data = str_replace('__NAME__', $this->camel_case, $data);
         $data = str_replace('__SOFT_DELETE__', 'true', $data); // debe depender del schema
 
-        $ok = (bool) file_put_contents($dest_path, $data);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
-        } else {
-            echo "[ Done ] '$dest_path' was generated\r\n";
-        } 
+        $this->write($dest_path, $data);
     }
 
     protected function get_pdo_const(string $sql_type){
@@ -502,6 +423,44 @@ class MakeController extends Controller
 
         // el resto (default)
         return 'STR'; 
+    }
+
+    function fileProtection(string $filename, string $dest_path, Array $opt){
+        if (in_array($dest_path, $this->excluded_files)){
+            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
+            return; 
+        } elseif (file_exists($dest_path)){
+            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
+                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
+                return;
+            } elseif (!is_writable($dest_path)){
+                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
+                return;
+            }
+        }
+    
+        if (in_array($filename, $this->excluded_files)){
+            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
+            return; 
+        } elseif (file_exists($dest_path)){
+            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
+                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
+                return;
+            } elseif (!is_writable($dest_path)){
+                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
+                return;
+            }
+        }
+    }
+
+    function write($dest_path, $file){
+        $ok = (bool) file_put_contents($dest_path, $file);
+        
+        if (!$ok) {
+            throw new \Exception("Failed trying to write $dest_path");
+        } else {
+            print_r("$dest_path was generated\r\n");
+        } 
     }
 
     function schema($name, ...$opt) 
@@ -550,32 +509,7 @@ class MakeController extends Controller
             return;
         }
         
-
-        if (in_array($dest_path, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
-    
-        if (in_array($filename, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
+        $this->fileProtection($filename, $dest_path, $opt);
 
         try {
             $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}");
@@ -689,14 +623,7 @@ class MakeController extends Controller
         Strings::replace('__RULES__', $rules, $file);
         Strings::replace('__RELATIONS__', $relations, $file);
         
-
-        $ok = (bool) file_put_contents($dest_path, $file);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
-        } else {
-            echo "[ Done ] '$dest_path' was generated\r\n";
-        } 
+        $this->write($dest_path, $file);
     }
 
     function getUuid(){
@@ -750,31 +677,7 @@ class MakeController extends Controller
         // destination        
         $dest_path = MODELS_PATH . $filename;
 
-        if (in_array($dest_path, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
-    
-        if (in_array($filename, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
+        $this->fileProtection($filename, $dest_path, $opt);
 
         $file = file_get_contents(self::MODEL_TEMPLATE);
         $file = str_replace('__NAME__', $this->camel_case.'Model', $file);
@@ -805,13 +708,7 @@ class MakeController extends Controller
         Strings::replace('### TRAITS',  implode("\r\n\t", $traits), $file); 
         Strings::replace('### PROPERTIES', implode("\r\n\t", $proterties), $file); 
 
-        $ok = (bool) file_put_contents($dest_path, $file);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
-        } else {
-           echo "[ Done ] '$dest_path' was generated\r\n";
-        } 
+        $this->write($dest_path, $file);
     }
 
     function migration($name, ...$opt) 
@@ -880,85 +777,25 @@ class MakeController extends Controller
         $filename = $this->camel_case . 'ServiceProvider'.'.php';
         $dest_path = self::SERVICE_PROVIDERS_PATH . $filename;
 
-        if (in_array($dest_path, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
+        $this->fileProtection($filename, $dest_path, $opt);
 
-        if (in_array($filename, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
-
-        $data = file_get_contents(self::SERVICE_PROVIDER_TEMPLATE);
-        $data = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $data);
+        $file = file_get_contents(self::SERVICE_PROVIDER_TEMPLATE);
+        $file = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $file);
         
-        $ok = (bool) file_put_contents($dest_path, $data);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
-        } else {
-            print_r("$dest_path was generated\r\n");
-        } 
+        $this->write($dest_path, $file);
     }
 
     function helper($name, ...$opt) 
     {
         $filename = $name.'.php';
-
         $dest_path = HELPERS_PATH . $filename;
 
         $file = file_get_contents(self::HELPER_TEMPLATE);
 
-        if (in_array($dest_path, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
-    
-        if (in_array($filename, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
-            } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
-            }
-        }
-
-        $ok = (bool) file_put_contents($dest_path, $file);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
-        } else {
-            print_r("$dest_path was generated\r\n");
-        } 
+        $this->fileProtection($filename, $dest_path, $opt);
+        $this->write($dest_path, $file);
     }
+
+    
 
 }
