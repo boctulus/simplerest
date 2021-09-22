@@ -84,8 +84,18 @@ Vea archivo adjunto sobre Instalación para más información.
 
 Hay varios archivos de configuración del framework en /config del cual el config.php es el principal.
 
+El config.php es cargado via constructor en controladors y modelos siempre y cuando se extienda dicho constructor y está disponible como $this->config
 
-Importante:
+Además, se puede cargar la configuración de varias formas:
+
+	- Con el helper config()
+
+	- Desde la clase Factory como Factory::config()
+
+Incluir el archivo config.php directamente no es recomendado porque no estará cacheado y degradará la performance.
+
+
+Conceptos avanzados:
 
 En el config.php se pueden usar variables de entorno pero no desde archivos incluidos desde el config.php
 
@@ -123,7 +133,9 @@ Si se intentara hacer uso de clases que requieren directa o indirectamente del a
 	En realidad en este caso también habría que controlar que no se creen demasiadas conexiones a la base de datos manejando una variable estática para almacenar la conexion.
 
 
-# Endpoints que comienzan o no con /api
+# Configuración de endpoints
+
+Endpoints pueden o no comienzar con /api
 
 Las urls comienzan *sin* /api si en /config/config.php 
 
@@ -132,6 +144,28 @@ Las urls comienzan *sin* /api si en /config/config.php
 <-- remover el /api puede dar lugar a colisiones con controladores. Inclusive no funcionarán los resource controllers. 
 
 OJO ! afecta al DownloadController
+
+
+# El comando "make"
+
+Este comando sirve para crear cualquier archivo importante para el framework ya sea helpers, librerías, modelos, esquemas, controladores, controladores para uso en la consola, serivice providers, migraciones, etc.
+
+El uso básico del comando make puede aprenderse simplemente ejecutando:
+
+	php com make
+
+Crear nuevos comandos es bastante sencillo y la clase Make se puede extender. Observe la estrucura básica:
+
+Ej:
+
+	function controller($name, ...$opt) {
+        $namespace = 'simplerest\\controllers';
+        $dest_path = CONTROLLERS_PATH;
+        $template_path = self::CONTROLLER_TEMPLATE;
+        $subfix = 'Controller';  // Ej: 'Controller' o incluso '' (caso helpers)
+
+        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+    }
 
 
 # Creación de usuarios
