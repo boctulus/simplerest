@@ -41,6 +41,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addRole('admin', 50) 
     ->addInherit('registered')
     //->addSpecialPermissions(['read_all', 'write_all'])
+    ->addResourcePermissions('tbl_contacto', ['read'])
     
    
     ->addRole('supervisor', 100)  

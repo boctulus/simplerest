@@ -3208,7 +3208,7 @@ Para que la separación de recursos por usuario dentro del ámbito de las tablas
 El campo 'belongs_to' es de manejo automático del framework y se saca provecho definiendo permisos como "read" y "read_all" para las tablas que lo implementan.
 
 
-# Sub-recursos 
+# Sub-recursos en las APIs
 
 Se implementa parcialmente el concepto de HATEOAS permitiendo definir relaciones con otras entidades (que deben tener su correlato en llaves foráneas) en endpoints.
 
@@ -3266,6 +3266,8 @@ Es posible formatear el JSON de la respuesta con opciones dentro del config.php
 
 	'include_enity_name' => true,
 	'nest_sub_resources' => false,
+
+(!) Es importante notar que la propiedad $connect_to es parte de la API y no del Modelo.
 
 
 # Librerías
