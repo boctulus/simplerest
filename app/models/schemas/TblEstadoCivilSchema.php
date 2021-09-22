@@ -35,8 +35,8 @@ class TblEstadoCivilSchema implements ISchema
 					['tbl_estado.est_intId','tbl_estado_civil.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['usu_intIdCreadors.usu_intId','tbl_estado_civil.usu_intIdCreador'],
-					['usu_intIdCreadorss.usu_intId','tbl_estado_civil.usu_intIdActualizador']
+					['usu_intIdActualizadors.usu_intId','tbl_estado_civil.usu_intIdActualizador'],
+					['usu_intIdActualizadorss.usu_intId','tbl_estado_civil.usu_intIdCreador']
 				]
 			]
 		];
