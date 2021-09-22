@@ -489,7 +489,6 @@ abstract class ApiController extends ResourceController implements IApi
 
                     $addons = [];
 
-                    
                     if (!empty(static::$connect_to)){
                         $tenantid = Factory::request()->getTenantId();
                         if ($tenantid !== null){
@@ -503,8 +502,8 @@ abstract class ApiController extends ResourceController implements IApi
                         $_id = $rows[0][$this->instance->getSchema()['id_name']];  
 
                         foreach (static::$connect_to as $tb){
-                            $schema = get_schema_name($tb)::get();
-                           
+                            $schema = get_schema_name($tb)::get(); 
+                            
                             $rs = $schema['relationships'];
 
                             $rx = $rs[$this->model_table] ?? null;
