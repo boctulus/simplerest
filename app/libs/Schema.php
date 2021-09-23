@@ -100,7 +100,7 @@ class Schema
             foreach ($rs as $k => $r){
                 if (isset($repeted[$tb]) && in_array($r['to'], $repeted[$tb])){
                     list($tb0, $fk0) = explode('.', $r['from']);
-                    
+
                     if (Strings::endsWith('_id', $fk0)){
                         $key = substr($fk0, 0, strlen($fk0) -3);                        
                     }
@@ -108,25 +108,14 @@ class Schema
                     if (!isset($key) && Strings::startsWith('id_', $fk0)){
                         $key = substr($fk0, 3);  
                     } 
-
-					/*
-                    if (!isset($key)){
-                        $msg = "Invalid convention for FK in table \"$table\" for \"$fk0\". Please name as xxxxx_id\r\n";
-						Files::logger($msg, 'errores.txt');
-						
-						throw new \Exception($msg);
-                    }    
-					*/
-
-					if (!isset($key)){
-						$key = $fk0;
-					}
-                    
-                    $key = $key . 's';  // pluralizo
-                    
+                                       
                     list($tb1, $fk1) = explode('.', $r['to']);
-                    $to = "$key.$fk1";
-                    
+                           
+					if (!isset($key)){
+						$alias = '__' . $fk0 . ".$fk1";				
+						$to = "$tb1|$alias";
+					}
+
                     unset($relationships[$tb][$k]);
 
                     $relationships[$tb][] = [

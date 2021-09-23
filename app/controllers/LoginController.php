@@ -3,10 +3,10 @@
 namespace simplerest\controllers;
 
 use simplerest\libs\Debug;
-use simplerest\core\Request;
+use simplerest\core\Controller;
 use simplerest\libs\DB;
 
-class LoginController extends MyController
+class LoginController extends Controller
 {
 	/*
 		Nombres de los campos en la tabla "users"
