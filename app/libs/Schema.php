@@ -110,7 +110,8 @@ class Schema
                     } 
                                        
                     list($tb1, $fk1) = explode('.', $r['to']);
-                           
+                     
+					// introduzo un alias cuando hay más de 1 relación entre dos tablas
 					if (!isset($key)){
 						$alias = '__' . $fk0 . ".$fk1";				
 						$to = "$tb1|$alias";
