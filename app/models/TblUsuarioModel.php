@@ -8,9 +8,6 @@ use simplerest\models\schemas\TblUsuarioSchema;
 
 class TblUsuarioModel extends Model
 { 
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

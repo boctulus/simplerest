@@ -80,12 +80,14 @@ class MyAuthController extends AuthController {
             $db_id = DB::table('tbl_base_datos')
             ->fill(['usu_intIdActualizador'])
             ->create([
-                'dba_varNombre'    => 'db-' . $uid,
+                'dba_varNombre'    => 'db_' . $uid,
                 'usu_intIdCreador' => $uid,
                 'usu_intIdActualizador' => $uid,
                 'dba_dtimFechaCreacion' => $at,
                 'dba_dtimFechaActualizacion' => $at
             ]); 
+
+            // **
         }
 
         /*
@@ -95,7 +97,6 @@ class MyAuthController extends AuthController {
             si hay pendiente crear alguna DB en 'tbl_base_datos'
         */
 
-        /* 
         $tenant = request()->getTenantId();
         DB::setConnection($tenant);
 
@@ -105,7 +106,7 @@ class MyAuthController extends AuthController {
             [
                 'usu_varNroIdentificacion' => $data['use_varUsuario'], // ???
                 'usu_varEmail' => $data['use_varEmail'],
-                'usu_varPassword' => $data['use_decPassword'],
+                //'usu_varPassword' => $data['use_decPassword'],
                 'est_intIdEstado' => $data['est_intIdEstado']
                 // ..
             ]
@@ -131,8 +132,7 @@ class MyAuthController extends AuthController {
         ->create([
             'bas_intIdBasedatos' => $db_id,
             'usu_intIdUsuario'   => $uid
-        ]);
-        */      
+        ]);     
     }
 
     function onRemembered($data, $link)
