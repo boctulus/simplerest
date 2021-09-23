@@ -51,6 +51,10 @@ class DB
 	}
 	
 	public static function setConnection($id){
+		if ($id === null){
+			throw new \InvalidArgumentException("Connection identifier can not be NULL");
+		}
+
 		static::$current_id_conn = $id;
 	}
 
