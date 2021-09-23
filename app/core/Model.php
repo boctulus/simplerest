@@ -569,6 +569,10 @@ class Model {
 				// Puede haber más de una relación entre dos tablas
 				$tb_alias = explode('|', $on1);
                          
+				if (count($tb_alias) >2){
+					throw new \Exception("An Schema has a problem with a relationship");
+				}
+
 				if (count($tb_alias) == 2){
 					$_alias  = $tb_alias[1];
 					$on1     = $tb_alias[1];
@@ -584,7 +588,10 @@ class Model {
 
 				$tb_alias = explode('|', $on2);
 
-				
+				if (count($tb_alias) >2){
+					throw new \Exception("An Schema has a problem with a relationship");
+				}
+
                 // Puede haber más de una relación entre dos tablas                    
 				if (count($tb_alias) == 2){
 					$_alias  = $tb_alias[1];
