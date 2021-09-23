@@ -7,10 +7,7 @@ use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblEstadoCivilSchema;
 
 class TblEstadoCivilModel extends Model
-{ 
-	
-	
-
+{
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

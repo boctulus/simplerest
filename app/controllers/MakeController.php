@@ -187,7 +187,7 @@ class MakeController extends Controller
         */
     }
 
-    function setup(string $name) {
+    protected function setup(string $name) {
         static $prev_name;
 
         $name = str_replace('-', '_', $name);
@@ -425,7 +425,7 @@ class MakeController extends Controller
         return 'STR'; 
     }
 
-    function fileProtection(string $filename, string $dest_path, Array $opt){
+    protected function fileProtection(string $filename, string $dest_path, Array $opt){
         if (in_array($dest_path, $this->excluded_files)){
             echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
             return; 
@@ -453,7 +453,7 @@ class MakeController extends Controller
         }
     }
 
-    function write($dest_path, $file){
+    protected function write($dest_path, $file){
         $ok = (bool) file_put_contents($dest_path, $file);
         
         if (!$ok) {
@@ -626,7 +626,7 @@ class MakeController extends Controller
         $this->write($dest_path, $file);
     }
 
-    function getUuid(){
+    protected function getUuid(){
         try {
             $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}");
         } catch (\Exception $e) {
@@ -760,14 +760,7 @@ class MakeController extends Controller
         $up_rep .= "";        
         Strings::replace('### UP', $up_rep, $file);
 
-
-        $ok = (bool) file_put_contents($dest_path, $file);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
-        } else {
-           echo "[ Done ] '$dest_path' was generated\r\n";
-        } 
+        $this->write($dest_path, $file);
     }    
 
 

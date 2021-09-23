@@ -5,6 +5,8 @@
 TblUsuarioModel.php
 TblUsuarioEmpresaModel.php
 FilesModel.php
+TblUsuarioEmpresaModel.php
+
 
 # Controllers
 UsersController.php
