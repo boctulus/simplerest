@@ -3395,6 +3395,13 @@ La vista puede requerir de datos y éstos son proporcionados por el controlador 
 		'apellido' => 'Bozzolo'
 	]);
 
+O bien se puede utilizar el helper view()
+
+	view('mi_archivo_vista.php', [
+		'nombre' => 'Pablo',
+		'apellido' => 'Bozzolo'
+	]);
+
 Y ya dentro de la vista, se crearan las variables $nombre y $apellido así:
 
 <!-- Vista mi_archivo_vista.php -->
@@ -3404,10 +3411,78 @@ Y ya dentro de la vista, se crearan las variables $nombre y $apellido así:
 	var_dump($apellido);  // Bozzolo
 ?>
 
-Por supuesto que pueden pasarse arrays y que las vistas pueden contener HTML, PHP, CSS y JavaScript.
+Por supuesto que pueden pasarse arrays. Ej:
 
+	view('agenda.php', [
+			'citas' => [
+				[ 'name' => 'Visitar al cliente X', 'datetime' => '21-Set 15:00:00' ],
+				[ 'name' => 'Completar proyecto Z', 'date' => '23-Set 00:00:00' ]
+			],
+	]);
+
+Si se pasa "title" entonces 
+
+Las vistas pueden contener HTML, PHP, CSS y JavaScript. Para los assets se cuenta con el helper assets()
+
+Ej:
+
+	<?= assets('img/logo.png') ?>" style="height: 100px;" />
+
+Los assets se encuentran dentro de la carpeta public/assets y dentro la estructura es libre o sea puede organizarse de muchas formas:
+
+	a)
+
+	public/assets/
+					css
+					images
+					js
+
+	b)
+
+	public/assets/
+					módulo/
+							css
+							images
+							js
 
 # Templates
+
+Por defecto se carga el template "app_layout.php" pero se pueden usar cuantos templates se desee y éste es especificado como tercer parámetro del método view()
+
+# Vistas parciales
+
+Se pueden incluir "secciones" por medio del helper section()
+
+Ej:
+
+	<!DOCTYPE html>
+	<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title><?= $title ?? ''; ?></title>
+
+		<base href="<?php echo $base_url; ?>">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">   
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<?php
+			if (!isset($hidenav) || !$hidenav){
+				section('navbar.php'); 
+			}            
+		?>
+		
+		<div class="container">
+			<main>
+			<?php echo $content; ?>
+			</main>
+		</div>
+	</body>
+	</html>
 
 
 # NGINX web server
