@@ -3420,7 +3420,21 @@ Por supuesto que pueden pasarse arrays. Ej:
 			],
 	]);
 
-Si se pasa "title" entonces 
+Por defecto la variable $title en la vista deriva del nombre del controlador (ej: para el HomeController será "Home") pero se puede pasar el "title" a la vista:
+
+	view('agenda.php', [
+			'citas' => [
+				[ 'name' => 'Visitar al cliente X', 'datetime' => '21-Set 15:00:00' ],
+				[ 'name' => 'Completar proyecto Z', 'date' => '23-Set 00:00:00' ]
+			],
+			'title' => 'Agenda de citas'
+	]);
+
+Lógicamente el template debe manejar la varible $title para que se vea reflejado en el navegador:
+
+	<head>
+		<title><?= $title ?? ''; ?></title>
+	</head>
 
 Las vistas pueden contener HTML, PHP, CSS y JavaScript. Para los assets se cuenta con el helper assets()
 
@@ -3451,7 +3465,7 @@ Por defecto se carga el template "app_layout.php" pero se pueden usar cuantos te
 
 # Vistas parciales
 
-Se pueden incluir "secciones" por medio del helper section()
+Se pueden incluir "secciones" por medio del helper section() y éstas pueden mostrarse de forma condicional:
 
 Ej:
 

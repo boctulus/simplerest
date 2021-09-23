@@ -14,12 +14,23 @@ class GoogleController extends Controller
 {
     protected $client;
 
+    protected $__email;
+    protected $__username;
+    protected $__password;
+
     function __construct()
     {
         parent::__construct();
 
+        $this->u_class = get_user_model_name();    
+           
+        $this->__email      = $this->u_class::$email;
+        $this->__username   = $this->u_class::$username;
+        $this->__password   = $this->u_class::$password;
+		$this->__id 		= get_name_id($this->config['users_table']);
+
         $client = new \Google_Client();
-        $client->setApplicationName('App Name');
+        $client->setApplicationName(env('APP_NAME'));
         $client->setClientId($this->config['google_auth']['client_id']);
         $client->setClientSecret($this->config['google_auth']['client_secret']);
         $client->setRedirectUri($this->config['google_auth']['callback_url']);
@@ -123,26 +134,16 @@ class GoogleController extends Controller
 
         try 
         {        
-            $conn = $this->getConnection();	
-            $u = (new UsersModel($conn))->assoc();
+            $u = (new $this->u_class())->assoc();
 
-            $rows = $u->where(['email', $payload['email']])->get();
+            $row = $u->where([$this->__email, $payload['email']])->first();
 
-            if (count($rows) == 1){
-                // Email already exists
-                $uid = $rows[0]['id'];
+            // Email already exists
+            if (!empty($row)){
                 
-                $ur = (new UserRolesModel($conn))->assoc();
-                $rows = $ur->where(['belongs_to', $uid])->get(['role_id']);
-
-                $roles = [];
-                if (count($rows) > 0){         
-                    $r = new RolesModel();           
-                    foreach ($rows as $row){
-                        $roles[] = $r->get_role_name($row['role_id']);
-                    }
-                }
-                    
+                $uid = $row[$this->__id];
+                $roles = DB::table('user_roles')->where(['user_id' => $uid]);
+                           
                 $_permissions = DB::table('user_tb_permissions')->assoc()->select(['tb', 'can_create as c', 'can_show as r', 'can_update as u', 'can_delete as d', 'can_list as l'])->where(['user_id' => $uid])->get();
 
                 $perms = [];
@@ -151,42 +152,43 @@ class GoogleController extends Controller
                     $perms[$tb] = $p['la'] * 64 + $p['ra'] * 32 +  $p['l'] * 16 + $p['r'] * 8 + $p['c'] * 4 + $p['u'] * 2 + $p['d'];
                 }
                 
-                $active = $rows[0]['active'];
+                $active = $row['active'];
 
             } else {
+                // Faltaría ver como se acomoda si la tabla "users" no tiene equivalente a firstname y lastname
 
-                $data['email'] = $payload['email'];
-                $data['firstname'] = $payload['given_name'] ?? NULL;
-                $data['lastname'] = $payload['family_name'] ?? NULL;
+                $data[$this->__email]     = $payload['email'];
+                $data['firstname']        = $payload['given_name'] ?? NULL;
+                $data['lastname']         = $payload['family_name'] ?? NULL;
 
                 ///
                 preg_match('/[^@]+/', $payload['email'], $matches);
                 $username = substr($matches[0], 0, 12);
         
-                $existe = DB::table($this->users_table)->where(['username', $username])->exists();
+                $existe = DB::table($this->users_table)->where([$this->__username, $username])->exists();
                 
                 if ($existe){
                     $_username = $username;
                     $append = 1;
                     while($existe){
                         $_username = $username . $append;
-                        $existe = DB::table($this->users_table)->where(['username', $_username])->exists();
+                        $existe = DB::table($this->users_table)->where([$this->__username, $_username])->exists();
                         $append++;
                     }
                     $username = $_username;
                 }         
         
-                $data['username'] = $username;
+                $data[$this->__username] = $username;
                 ///
                 
                 $uid = $u->create($data);
                 if (empty($uid))
                     return ['error' => 'Error in user registration!', 'code' => 500];
     
-                if ($u->inSchema(['belongs_to'])){
+                if ($u->inSchema([$u->belongsTo()])){
                     DB::table($this->users_table)
-                    ->where(['id', $uid])
-                    ->update(['belongs_to' => $uid]);
+                    ->where([$this->__id, $uid])
+                    ->update([$u->belongsTo() => $uid]);
                 }
 
                 /*

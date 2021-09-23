@@ -95,7 +95,7 @@ class MyAuthController extends AuthController {
             si hay pendiente crear alguna DB en 'tbl_base_datos'
         */
 
-        /*
+        /* 
         $tenant = request()->getTenantId();
         DB::setConnection($tenant);
 
@@ -110,6 +110,7 @@ class MyAuthController extends AuthController {
                 // ..
             ]
         );
+
 
         DB::setConnection('main');
 
@@ -131,7 +132,7 @@ class MyAuthController extends AuthController {
             'bas_intIdBasedatos' => $db_id,
             'usu_intIdUsuario'   => $uid
         ]);
-        */
+        */      
     }
 
     function onRemembered($data, $link)
