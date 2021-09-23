@@ -76,11 +76,14 @@ class MyAuthController extends AuthController {
 
         $at = datetime();
 
+        $tenant = null;
         if (in_array('admin', $roles)){
+            $tenant = 'db_' . $uid;
+
             $db_id = DB::table('tbl_base_datos')
             ->fill(['usu_intIdActualizador'])
             ->create([
-                'dba_varNombre'    => 'db_' . $uid,
+                'dba_varNombre'    => $tenant,
                 'usu_intIdCreador' => $uid,
                 'usu_intIdActualizador' => $uid,
                 'dba_dtimFechaCreacion' => $at,
@@ -97,8 +100,12 @@ class MyAuthController extends AuthController {
             si hay pendiente crear alguna DB en 'tbl_base_datos'
         */
 
-        $tenant = request()->getTenantId();
+        if ($tenant === null){
+            $tenant = request()->getTenantId();
+        }
+        
         DB::setConnection($tenant);
+        //dd(DB::getCurrentConnectionId(), 'CONN ID');
 
         $idtbu = DB::table('tbl_usuario')
         ->fill(['est_intIdEstado'])
