@@ -7,9 +7,9 @@ use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\RolesSchema;
 
 class RolesModel extends Model
- { 
-	### TRAITS
-	### PROPERTIES
+{ 
+	
+	
 
 	protected $hidden   = [];
 	protected $not_fillable = [];

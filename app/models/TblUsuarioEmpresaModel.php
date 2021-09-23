@@ -9,7 +9,7 @@ use simplerest\models\schemas\main\TblUsuarioEmpresaSchema;
 class TblUsuarioEmpresaModel extends Model
 { 
 	protected $hidden    	= ['use_decPassword'];
-	protected $not_fillable = ['est_intIdEstado' /* ,'est_intIdConfirmEmail' */];
+	protected $not_fillable = ['est_intIdEstado'];
 
 	protected $createdAt 	= 'use_dtimFechaCreacion';
 	protected $updatedAt 	= 'use_dtimFechaActualizacion';
@@ -24,18 +24,18 @@ class TblUsuarioEmpresaModel extends Model
 	public static $username	= 'use_varUsuario';
 	public static $email	= 'use_varEmail';
 	public static $password = 'use_decPassword';
-	public static $confirmed_email = 'est_intIdConfirmEmail'; //
+	public static $confirmed_email;
 
 
-    function __construct(bool $connect = false){
+	function __construct(bool $connect = false){
 		$this->registerInputMutator(self::$password, function($pass){ 
 			return password_hash($pass, PASSWORD_DEFAULT); 
 		}, function($op, $dato){
 			return ($dato !== null);
 		});
 
-		//$this->registerOutputMutator('use_decPassword', function($pass){ return '******'; } );
-        parent::__construct($connect, new TblUsuarioEmpresaSchema());
+		//$this->registerOutputMutator('password', function($pass){ return '******'; } );
+		parent::__construct($connect, new TblUsuarioEmpresaSchema());
 	}
 	
 	/*
@@ -46,4 +46,3 @@ class TblUsuarioEmpresaModel extends Model
 	}
 	*/
 }
-

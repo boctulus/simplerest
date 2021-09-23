@@ -13,12 +13,12 @@ class HomeController extends MyController
 
 	# /home/show
 	function show(){
-		$this->view('test_x_dsi.php', [
+		view('test_x_dsi.php', [
 			'pruebas' => [
 				[ 'name' => 'Como se sirven las vistas', 'date' => '22-Set' ],
 				[ 'name' => 'Maestro detalle con HATEOAS', 'date' => '22-Set' ]
 			],
-			'title' => 'DSI - pruebas' /* ... */
+			'title' => 'DSI - pruebas'
 		]);
 	}
 }

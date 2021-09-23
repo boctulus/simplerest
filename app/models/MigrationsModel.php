@@ -8,6 +8,9 @@ use simplerest\models\schemas\main\MigrationsSchema;
 
 class MigrationsModel extends Model
 { 
+	
+	
+
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

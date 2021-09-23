@@ -7,6 +7,9 @@ use simplerest\controllers\MyApiController;
 class TblEstadoCivil extends MyApiController
 { 
     static protected $soft_delete = true;
+    static protected $connect_to = [
+        'tbl_usuario'
+    ];
 
     function __construct()
     {       
