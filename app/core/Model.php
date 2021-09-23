@@ -544,10 +544,11 @@ class Model {
 
 			$rel = $this->schema['relationships'];
 
-			if (!isset($rel[$table])){				
+			if (!isset($rel[$table])){	
 				if (preg_match('/([a-zA-Z][a-zA-Z0-9]+) as ([a-zA-Z][a-zA-Z0-9]+)/', $table, $matches)){
 					$tb = $matches[1];
 					$fk = $matches[2];
+
 				} else {
 					throw new \Exception("Undefined relationship \$rel" . '["' . $table . '"]');
 				}
@@ -564,12 +565,45 @@ class Model {
 
 				$on1 = $rel[$table][0][0];
 				$on2 = $rel[$table][0][1];
+
+				// Puede haber más de una relación entre dos tablas
+				$tb_alias = explode('|', $on1);
+                         
+				if (count($tb_alias) == 2){
+					$_alias  = $tb_alias[1];
+					$on1     = $tb_alias[1];
+
+					$fa = explode('.', $_alias);
+					if (count($fa) != 2){
+						throw new \Exception("alias.FK was expected but not found");
+					}
+
+					$alias = $fa[0];					
+					$table = "$table as $alias";
+				} 
+
+				$tb_alias = explode('|', $on2);
+
+				
+                // Puede haber más de una relación entre dos tablas                    
+				if (count($tb_alias) == 2){
+					$_alias  = $tb_alias[1];
+					$on2     = $tb_alias[1];
+
+					$fa = explode('.', $_alias);
+					if (count($fa) != 2){
+						throw new \Exception("alias.FK was expected but not found");
+					}
+
+					$alias = $fa[0];					
+					$table = "$table as $alias";
+				}
 			} else {
+				
 				$found = false;
 				foreach ($rel[$tb] as $r){
 					if (Strings::startsWith($fk, $r[0])){
 						$found = true;
-						//dd($r);
 						[$on1, $on2] = $r;
 						break;
 					}
