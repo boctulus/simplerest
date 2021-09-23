@@ -7,9 +7,9 @@ use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\FolderOtherPermissionsSchema;
 
 class FolderOtherPermissionsModel extends Model
- { 
-	### TRAITS
-	### PROPERTIES
+{ 
+	
+	
 
 	protected $hidden   = [];
 	protected $not_fillable = [];

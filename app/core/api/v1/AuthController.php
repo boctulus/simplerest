@@ -1281,10 +1281,14 @@ class AuthController extends Controller implements IAuth
                 throw new \Exception("Role $role is invalid");
             }
             
-            // lo ideal es validar los roles y obtener los ids para luego hacer un "INSERT in bulk"
-            $ur_id = DB::table('user_roles')
-            ->where(['id' => $uid])
-            ->create(['user_id' => $uid, 'role_id' => $role_id]);
+            try {
+                // lo ideal es validar los roles y obtener los ids para luego hacer un "INSERT in bulk"
+                $ur_id = DB::table('user_roles')
+                ->where(['id' => $uid])
+                ->create(['user_id' => $uid, 'role_id' => $role_id]);
+            } catch (\Exception $e){
+                Files::logger($e->getMessage());
+            }            
 
             if (empty($ur_id))
                 throw new \Exception("Error registrating user role $role");             

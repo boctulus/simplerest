@@ -8,6 +8,9 @@ use simplerest\models\schemas\main\CollectionsSchema;
 
 class CollectionsModel extends Model
 { 
+	
+	
+
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

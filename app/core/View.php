@@ -9,7 +9,7 @@ class View
 {
     use ExceptionHandler;
 
-    function __construct(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php', string $footer = null)
+    function __construct(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php')
     {
 		$this->config = config();
 
