@@ -115,9 +115,6 @@ class MakeControllerBase extends Controller
                     $this->excluded_files[$ix] = APP_PATH . $this->excluded_files[$ix];    
                 }                 
             }
-
-            //dd($this->excluded_files);
-            //exit; ///
         }
 
         parent::__construct();
