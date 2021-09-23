@@ -2,7 +2,7 @@
 
 require_once 'constants.php';
 require_once HELPERS_PATH. 'etc.php';
-require_once HELPERS_PATH. 'db_dynamic_load.php'; // agregado
+require_once HELPERS_PATH. 'db.php';   // added !
 
 // puede afectar el punto decimal al formar sentencias SQL !!!
 // setlocale(LC_ALL, 'es_AR.UTF-8');

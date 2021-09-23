@@ -1,27 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
-<?php
-    use simplerest\libs\Url;
-    use simplerest\libs\Factory;
-    use simplerest\libs\Strings;
-
-    $base_url = Url::getBaseUrl(Url::currentUrl()) . config()['BASE_URL'];
-    
-    if (!Strings::endsWith('/', $base_url)){
-        $base_url .= "/";
-    }
-?>    
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title><?= $title ?? ''; ?></title>
 
-    <base href="<?php echo $base_url; ?>">
+    <base href="<?= base_url(); ?>">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="<?= assets('css/toastr.css') ?>" rel="stylesheet"/>
     <link href="<?= assets('css/core.css"') ?>" rel="stylesheet"/>
     
     <!--
@@ -29,15 +17,13 @@
         para pegarle a los endpoints
     -->
     <script>
-        let $__email    = '<?php echo $__email ?? null;    ?>'; 
+        let $__email    = '<?php echo $__email    ?? null; ?>'; 
         let $__username = '<?php echo $__username ?? null; ?>';
         let $__password = '<?php echo $__password ?? null; ?>';
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>	
-    <script src="<?= assets('js/toastr.min.js') ?>"></script> <!-- flash notifications -->	
-    <script src="<?= assets('js/bootbox.min.js') ?>"></script><!-- confirmation boxes -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="<?= assets('js/helpers.js') ?>"></script>
     <script src="<?= assets('js/login.js') ?>"></script>
     <script src="<?= assets('js/jqtable.js') ?>"></script>
@@ -52,7 +38,7 @@
     
     <div class="container">
         <main>
-           <?php echo $content; ?>
+           <?= $content; ?>
         </main>
     </div>
 </body>
