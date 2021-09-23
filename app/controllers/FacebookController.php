@@ -15,9 +15,18 @@ class FacebookController extends Controller
 {
     protected $client;
 
+    protected $__email;
+    protected $__username;
+    protected $__password;
+
     function __construct()
     {
         parent::__construct();
+
+        $this->u_class           = get_user_model_name();               
+        $this->__email           = $this->u_class::$email;
+        $this->__username        = $this->u_class::$username;
+        $this->__password        = $this->u_class::$password;
 
         if (!session_id()) {
             session_start();
@@ -89,26 +98,14 @@ class FacebookController extends Controller
             try 
             {        
                 $conn = $this->getConnection();	
-                $u = (new UsersModel($conn))->assoc();
-    
-                // exits	
-                $rows = $u->where(['email', $email])->get(['id']);
+                $u = new $this->u_class();
 
-                if (count($rows)>0){
-                    
-                    // Email already exists
-                    $uid = $rows[0]['id'];
-    
-                    $ur = (new UserRolesModel($conn))->assoc();
-                    $rows = $ur->where(['belongs_to', $uid])->get(['role_id']);
-    
-                    $roles = [];
-                    if (count($rows) > 0){         
-                        $r = new RolesModel();           
-                        foreach ($rows as $row){
-                            $roles[] = $r->get_role_name($row['role_id']);
-                        }
-                    }
+                $user = $u->where(['email', $email])->first();
+                $uid  = $user[$this->__id];
+
+                if (!empty($uid))
+                { 
+                    $roles = DB::table('user_roles')->where(['user_id' => $uid]);
 
                     $_permissions = DB::table('user_tb_permissions')->assoc()->select(['tb', 'can_create as c', 'can_show as r', 'can_update as u', 'can_delete as d', 'can_list as l'])->where(['user_id' => $uid])->get();
 
@@ -118,7 +115,7 @@ class FacebookController extends Controller
                         $perms[$tb] = $p['la'] * 64 + $p['ra'] * 32 +  $p['l'] * 16 + $p['r'] * 8 + $p['c'] * 4 + $p['u'] * 2 + $p['d'];
                     }
 
-                    $active = $rows[0]['active'];
+                    $active = $user['active'];
 
                 }else{
                     $data['email'] = $email;

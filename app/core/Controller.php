@@ -12,6 +12,7 @@ abstract class Controller
 
     protected $callable = [];
     protected $users_table;
+    protected $_title;
     
     function __construct() {
         $this->config = config();
@@ -34,6 +35,18 @@ abstract class Controller
     function addCallable(string $method){
         $this->callable = array_unique(array_merge($this->callable, [$method]));
     }
+
+    function view(string $view_path, array $vars_to_be_passed = null, $layout = 'app_layout.php'){
+        $_ctrl = explode('\\',get_class($this));
+        $ctrl  = $_ctrl[count($_ctrl)-1];
+        $_title = substr($ctrl,0,strlen($ctrl)-10);     
+        
+        if(!isset($vars_to_be_passed['title'])){
+            $vars_to_be_passed['title'] = $_title;
+        }
+
+        view($view_path, $vars_to_be_passed, $layout);
+   }
 
 
 }

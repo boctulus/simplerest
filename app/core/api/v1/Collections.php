@@ -15,11 +15,11 @@ use simplerest\libs\Url;
 
 class Collections extends MyApiController
 {   
+    // El ACL sabe cual es el listado de tablas de acceso restringido
     protected $forbidden_tables = [
         'folder_other_permissions',
         'folder_permissions',
         'folders',
-        'users',
         'roles',
         'user_roles',
         'sp_permissions',
@@ -29,6 +29,8 @@ class Collections extends MyApiController
 
     function __construct()
     {
+        $this->forbidden_tables[] = $this->users_table;
+
         if (Factory::request()->authMethod() !== NULL){
             $this->callable = ['get', 'post', 'put', 'patch', 'delete'];
 

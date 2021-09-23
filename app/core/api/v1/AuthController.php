@@ -133,7 +133,7 @@ class AuthController extends Controller implements IAuth
             ->first();
 
             if (!$row)
-                throw new Exception("Incorrect username / email or password");
+                Factory::response()->sendError('Incorrect username / email or password', 401);
 
             $hash = $row[$this->__password];
 

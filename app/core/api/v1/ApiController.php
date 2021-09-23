@@ -498,6 +498,7 @@ abstract class ApiController extends ResourceController implements IApi
                         $d2m = false;
 
                         // detalle a maestro
+                        // las relaciones están en el detalle
                         
                         $_id = $rows[0][$this->instance->getSchema()['id_name']];  
 
@@ -511,17 +512,26 @@ abstract class ApiController extends ResourceController implements IApi
                                 continue;
                             }                         
 
-                            $d2m = true;
-
                             foreach($rx as $r){
                                 list($tb, $field) = explode('.', $r[1]);
-                                $addons[$tb] = DB::table($tb)->where([$field => $_id])->get();
+
+                                // Puede haber más de una relación entre dos tablas
+                                $tb_alias = explode('|', $tb);
+                                    
+                                $alias = $tb;
+                                if (count($tb_alias) == 2){
+                                    $tb0   = $tb_alias[0];
+                                    $alias = $tb_alias[1];
+                                } 
+
+                                $addons[$alias] = DB::table($tb)->where([$field => $_id])->get();
                             }
                         }
 
                         // maestro a detalle 
+                        // (relaciones que están en el maestro)
                         
-                        if (!$d2m){
+                        //if (!$d2m){
                             $schema = $this->instance->getSchema();
                             $rs = $schema['relationships'];
 
@@ -536,12 +546,21 @@ abstract class ApiController extends ResourceController implements IApi
                                     list($tb0, $field0) = explode('.', $r[0]);
                                     list($tb1, $field1) = explode('.', $r[1]);
 
+                                    // Puede haber más de una relación entre dos tablas
+                                    $tb_alias = explode('|', $tb0);
+                                    
+                                    $alias = $tb0;
+                                    if (count($tb_alias) == 2){
+                                        $tb0   = $tb_alias[0];
+                                        $alias = $tb_alias[1];
+                                    } 
+
                                     $_id = $rows[0][$field1];  
 
-                                    $addons[$tb0] = DB::table($tb0)->where([$field0 => $_id])->get();
+                                    $addons[$alias] = DB::table($tb0)->where([$field0 => $_id])->get();
                                 }
                             }
-                        }
+                        //}
                         
                     }
                     
