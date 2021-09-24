@@ -28,6 +28,11 @@
             require_once $path;
         }
     }   
+            
+    // i18n
+    $req  = request(); 
+    $lang = $req->shiftQuery('lang') ?? $req->header('Accept-Language');
+    setLang($lang); 
 
     foreach ($config['providers'] as $provider){
         $p = new $provider();

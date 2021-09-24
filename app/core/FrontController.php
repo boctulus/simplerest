@@ -152,11 +152,6 @@ class FrontController
                 //dd($method, 'METHOD:');
             }
         }
-        
-        
-        // i18n
-        $lang = $req->shiftQuery('lang') ?? $req->header('Accept-Language');
-        setLang($lang); 
 
 
         if (!class_exists($class_name))
