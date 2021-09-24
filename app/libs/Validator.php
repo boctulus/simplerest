@@ -296,8 +296,8 @@ class Validator implements IValidator
 				
 				if (isset($rule['type']) && !$avoid_type_check)
 					if (!get_class()::isType($dato, $rule['type'])){
-						$err =  (isset($msg[$field]['type'])) ? $msg[$field]['type'] : "It's not a valid {$rule['type']}";
-						$push_error($field,['data'=>$dato, 'error'=>'type', 'error_detail' => _($err)],$errores);
+						$err =  (isset($msg[$field]['type'])) ? $msg[$field]['type'] : "It's not a valid %s";
+						$push_error($field,['data'=>$dato, 'error'=>'type', 'error_detail' => sprintf(_($err), $rule['type'])],$errores);
 					}						
 					
 						
@@ -347,11 +347,11 @@ class Validator implements IValidator
 					if(in_array($rule['type'],['time','date'])){
 							
 						$t0 = strtotime($dato);
-		
+
 						if(isset($rule['min'])){ 
 							if($t0<strtotime($rule['min'])){
 								$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  'Minimum is '.$rule['min'];
-								$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => _($msg)],$errores);
+								$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errores);
 							}
 								
 						}
@@ -359,7 +359,7 @@ class Validator implements IValidator
 						if(isset($rule['max'])){ 
 							if($t0>strtotime($rule['max'])){
 								$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'Maximum is '.$rule['max'];
-								$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => _($msg)],$errores);
+								$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errores);
 							}
 								
 						}

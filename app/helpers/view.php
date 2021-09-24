@@ -13,5 +13,6 @@ function assets($resource){
 }
 
 function section($view){
+    global $ctrl;
     include VIEWS_PATH . $view;
 }
