@@ -6,6 +6,8 @@ use simplerest\libs\DB;
 use simplerest\libs\Factory;
 use simplerest\traits\ExceptionHandler;
 
+use function GuzzleHttp\Psr7\copy_to_stream;
+
 abstract class Controller
 {
     use ExceptionHandler;
@@ -37,6 +39,8 @@ abstract class Controller
     }
 
     function view(string $view_path, array $vars_to_be_passed = null, $layout = 'app_layout.php'){
+        global $ctrl;
+
         $_ctrl = explode('\\',get_class($this));
         $ctrl  = $_ctrl[count($_ctrl)-1];
         $_title = substr($ctrl,0,strlen($ctrl)-10);     
@@ -44,6 +48,8 @@ abstract class Controller
         if(!isset($vars_to_be_passed['title'])){
             $vars_to_be_passed['title'] = $_title;
         }
+
+        $ctrl  = strtolower(substr($ctrl, 0, -strlen('Controller')));
 
         view($view_path, $vars_to_be_passed, $layout);
    }

@@ -8,7 +8,7 @@ Algunas características:
 - Arquitectura MVC 
 - APIs funcionan out--of-the-box o sea sin escribir nada de código ***
 - Autenticación via web tokens al estilo OAuth 2 y API Keys
-- ACL centralizado con sistema de roles y de permisos personalizados que decoran los roles
+- ACL centralizado con sistema de roles y de permisos granulares + permisos personalizados que decoran los roles
 - Posibilidad de "compartir" recursos via "folders"
 - Impersonate
 - Papelera de reciclaje
@@ -736,14 +736,16 @@ El método create() acepta un array asociativo de campos con sus valores y hace 
 
 # Obtención de registros
 
+Todos los registros (menos los marcados como borrados)
+
 	$rows = DB::table('products')
 	->get();
 
 Para filtrar usar where()
 
 	$rows = DB::table('products')
-	->where(['size' => '2L']);
-
+	->where(['size' => '2L'])
+	->get();
 
 Comparar dos campos en el WHERE
 
@@ -837,7 +839,7 @@ Si se desea que al momento de borrar el campo se elimine de forma definitiva use
 	->delete();  
 
 
-Joins
+# Joins
 
 Un INNER JOIN se hace de la siguiente manera:
 
@@ -3498,6 +3500,29 @@ Ej:
 	</body>
 	</html>
 
+
+En el template y en las vistas está disponible la variable $ctrl que alamcena el nombre del controlador actual tal y como aparece en la url. Ej: /home o /home/algo vale "home"
+
+
+# Internacionalización
+
+Para las traducciones se utiliza i18n y estas se alojan en el directorio app\locale y las mismas deben ser compiladas. Para Windows existe un .bat de ejemplo que realiza el proceso: compile_i18n.bat
+
+(*) La función de traducción es _() y esta se ha utilizado en la clase Validator y está pendiente de ser utilizada para el resto de clases provistas por SimpleRest.
+
+Si se pasa como parámetro por GET el lenguaje elegido como ?lang= o bien mediante el header "Accept-Language" los mensajes serán traducidos.
+
+Los países están codificados en dos dígitos según la ISO-3166.
+
+Ej:  
+
+	/api/v1/mi_tabla?tenantid=db_xyz&lang=es_CO
+
+También es posible hacer referencia solo al lenguaje y no al país:
+
+Ej:  
+	/api/v1/mi_tabla?tenantid=db_xyz&lang=es
+ 
 
 # NGINX web server
 

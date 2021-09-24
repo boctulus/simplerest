@@ -8,9 +8,6 @@ use simplerest\models\schemas\TblEstadoSchema;
 
 class TblEstadoModel extends Model
 { 
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

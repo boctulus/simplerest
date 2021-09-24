@@ -1082,7 +1082,7 @@ abstract class ApiController extends ResourceController implements IApi
 
             $validado = (new Validator)->validate($this->instance->getRules(), $data);
             if ($validado !== true){
-                Factory::response()->sendError('Data validation error', 400, $validado);
+                Factory::response()->sendError(_('Data validation error'), 400, $validado);
             }  
 
             if (!empty($this->folder)) {
@@ -1236,7 +1236,7 @@ abstract class ApiController extends ResourceController implements IApi
             
             $validado = (new Validator())->setRequired($put_mode)->validate($this->instance->getRules(), $data);
             if ($validado !== true){
-                Factory::response()->sendError('Data validation error', 400, $validado);
+                Factory::response()->sendError(_('Data validation error'), 400, $validado);
             }
 
             if (!empty($this->folder)) {
