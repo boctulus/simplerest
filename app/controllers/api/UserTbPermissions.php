@@ -45,7 +45,7 @@ class UserTbPermissions extends MyApiController
 
             $validado = (new Validator)->validate($instance->getRules(), $data);
             if ($validado !== true){
-                Factory::response()->sendError('Data validation error', 400, $validado);
+                Factory::response()->sendError(_('Data validation error'), 400, $validado);
             }  
 
             DB::transaction(function() use($data, $instance){                
