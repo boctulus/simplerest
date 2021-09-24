@@ -3508,9 +3508,9 @@ En el template y en las vistas está disponible la variable $ctrl que alamcena e
 
 Para las traducciones se utiliza i18n y estas se alojan en el directorio app\locale y las mismas deben ser compiladas. Para Windows existe un .bat de ejemplo que realiza el proceso: compile_i18n.bat
 
-(*) La función de traducción es _() y esta se ha utilizado en la clase Validator y está pendiente de ser utilizada para el resto de clases provistas por SimpleRest.
+La función de traducción es _() y esta se ha utilizado en la clase Validator y está pendiente de ser utilizada para el resto de clases provistas por SimpleRest.
 
-Si se pasa como parámetro por GET el lenguaje elegido como ?lang= o bien mediante el header "Accept-Language" los mensajes serán traducidos.
+El cambio de lenguaje lo maneja automáticamente SimpleRest ya sea via el parámetro GET "lang" (tiene prioridad o bien mediante el header "Accept-Language". Internamente se utliza la función helper setLang()
 
 Los países están codificados en dos dígitos según la ISO-3166.
 
