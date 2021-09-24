@@ -143,14 +143,18 @@ class Collections extends MyApiController
                         $data[$k] = NULL;
                 }
 
-                // Table must have 'belongs_to' 
                 if (!$sp) {
-                    $instance->where(['belongs_to' => $this->uid]);
+                    // Table must have 'belongs_to' 
+                    if (!$instance->inSchema([$instance->belongsTo()])){
+                        Factory::response()->sendError(_("Collections are not available to this resource")); 
+                    }
+                    
+                    $instance->where([$instance->belongsTo() => $this->uid]);
                 }
 
                 $validado = (new Validator())->setRequired($put_mode)->validate($instance->getRules(), $data);
                 if ($validado !== true){
-                    Factory::response()->sendError('Data validation error', 400, $validado);
+                    Factory::response()->sendError(_('Data validation error'), 400, $validado);
                 }   
                 
                 if ($instance->inSchema(['updated_by'])){

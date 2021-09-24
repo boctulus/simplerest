@@ -154,20 +154,13 @@ class FrontController
         }
         
         
-        /*
-            Considerar usar Accept-Language en los headers en su lugar.
-
-            Accept-Language is the opening bid, offering a set of options; Content-Language is the resolution.
-        */
-
         // i18n
-        $lang = $req->shiftQuery('lang');
-        
-        if ($lang != NULL)
-            setlocale(LC_ALL, "$lang.UTF-8");
+        $lang = $req->shiftQuery('lang') ?? $req->header('Accept-Language');
+        setLang($lang); 
+
 
         if (!class_exists($class_name))
-            Response::getInstance()->sendError("Class not found", 404, "Internal error - controller class $class_name not found");  
+            Response::getInstance()->sendError(_("Class not found"), 404, "Internal error - controller class $class_name not found");  
 
         if (!method_exists($class_name, $method)){
             if (php_sapi_name() != 'cli' || $method != self::DEFAULT_ACTION){
