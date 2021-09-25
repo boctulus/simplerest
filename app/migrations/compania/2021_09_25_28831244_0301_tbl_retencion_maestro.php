@@ -23,7 +23,7 @@ class TblRetencion implements IMigration
   ret_bolEstado TINYINT(4) NOT NULL DEFAULT 1,
   ret_varCodigoSiesa VARCHAR(10) NOT NULL,
   ret_varCuentaArbo VARCHAR(50) NOT NULL,
-  ret_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  ret_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   ret_dtimFechaActualizacion DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

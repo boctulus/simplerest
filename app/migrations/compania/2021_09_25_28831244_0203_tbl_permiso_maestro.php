@@ -19,7 +19,7 @@ class TblPermiso implements IMigration
   per_intId INT(11) NOT NULL AUTO_INCREMENT,
   per_varNombre VARCHAR(50) NOT NULL,
   per_varDescripcion VARCHAR(100) NOT NULL,
-  per_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  per_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   per_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,

@@ -20,7 +20,7 @@ class TblEstado implements IMigration
   est_varNombre VARCHAR(20) NOT NULL,
   est_varIcono VARCHAR(100) NOT NULL,
   est_varColor VARCHAR(100) NOT NULL,
-  est_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  est_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   est_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (est_intId)
 )

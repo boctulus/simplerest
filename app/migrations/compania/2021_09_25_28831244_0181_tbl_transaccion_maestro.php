@@ -20,7 +20,7 @@ class TblTransaccion implements IMigration
   tra_varTransaccion VARCHAR(25) NOT NULL,
   tra_bolEstado TINYINT(1) NOT NULL,
   tra_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
-  tra_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  tra_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,
   PRIMARY KEY (tra_intId)

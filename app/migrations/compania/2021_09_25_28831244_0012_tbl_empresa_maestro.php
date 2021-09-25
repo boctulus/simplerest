@@ -29,7 +29,7 @@ class TblEmpresa implements IMigration
   emp_bolAplicarLey5902000 tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   emp_bolAportaParafiscales16072012 tinyint(4) NOT NULL DEFAULT 0,
   emp_bolAplicaDecreto5582000 tinyint(4) NOT NULL DEFAULT 0,
-  emp_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  emp_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   emp_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   arl_intIdArl int(11) DEFAULT NULL,
   opp_intIdOperador int(11) DEFAULT NULL,

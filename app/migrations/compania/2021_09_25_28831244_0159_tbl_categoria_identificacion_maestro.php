@@ -19,7 +19,7 @@ class TblCategoriaIdentificacion implements IMigration
   cid_intId INT(11) NOT NULL AUTO_INCREMENT,
   cid_varCategoriaDocumento VARCHAR(100) NOT NULL,
   cid_varSiglas VARCHAR(3) NOT NULL,
-  cid_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  cid_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   cid_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,

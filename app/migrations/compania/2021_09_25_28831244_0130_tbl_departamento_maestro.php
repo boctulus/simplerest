@@ -19,7 +19,7 @@ class TblDepartamento implements IMigration
   dep_intId int(11) NOT NULL AUTO_INCREMENT,
   dep_varCodigoDepartamento varchar(50) NOT NULL,
   dep_varDepartamento varchar(100) NOT NULL,
-  dep_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  dep_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   dep_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   pai_intIdPais int(11) NOT NULL,

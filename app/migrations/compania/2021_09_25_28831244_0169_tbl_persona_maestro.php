@@ -30,7 +30,7 @@ class TblPersona implements IMigration
   per_varTelefono VARCHAR(15) DEFAULT NULL,
   per_varEmail VARCHAR(100) NOT NULL,
   per_datFechaNacimiento DATE NOT NULL,
-  per_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  per_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   per_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   tpr_intIdTipoPersona INT(11) NOT NULL DEFAULT 0,
   pai_intIdPais INT(11) NOT NULL,

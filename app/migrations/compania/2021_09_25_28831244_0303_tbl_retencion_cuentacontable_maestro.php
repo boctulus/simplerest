@@ -19,7 +19,7 @@ class TblRetencionCuentacontable implements IMigration
   rec_intId INT(11) NOT NULL AUTO_INCREMENT,
   rec_intIdRetencion INT(11) NOT NULL,
   rec_intIdCuentaContable INT(11) NOT NULL,
-  rec_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  rec_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   rec_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,
