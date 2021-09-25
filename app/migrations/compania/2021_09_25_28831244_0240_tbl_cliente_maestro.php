@@ -21,7 +21,7 @@ class TblCliente implements IMigration
   cli_decCupoCredito DECIMAL(18, 2) NOT NULL,
   cli_bolBloqueadoMora TINYINT(1) NOT NULL,
   cli_datFechaBloqueado DATE NOT NULL,
-  cli_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  cli_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   cli_dtimFechaActualizacion DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   dpa_intIdDiasPago INT(11) NOT NULL,

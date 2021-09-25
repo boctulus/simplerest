@@ -19,7 +19,7 @@ class TblPension implements IMigration
   pen_intId int(11) NOT NULL AUTO_INCREMENT,
   pen_varCodigo varchar(100) NOT NULL,
   pen_varNombre varchar(100) NOT NULL,
-  pen_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  pen_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   pen_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

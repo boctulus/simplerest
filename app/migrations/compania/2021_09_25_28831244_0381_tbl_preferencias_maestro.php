@@ -23,7 +23,7 @@ class TblPreferencias implements IMigration
   tpf_bitUso BIGINT(20) NOT NULL DEFAULT 0,
   tpf_varParametro VARCHAR(50) NOT NULL,
   tpf_varTipoDato VARCHAR(50) NOT NULL,
-  tpf_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  tpf_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   tpf_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   doc_intIdDocumento INT(11) NOT NULL DEFAULT 38,
   men_idId INT(11) NOT NULL DEFAULT 44,

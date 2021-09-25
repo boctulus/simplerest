@@ -33,27 +33,40 @@ class MigrationsController extends Controller
     */
     function migrate(...$opt) {
         $filenames = [];
+
+        $file_opt  = false;
+        $to_db     = null;
     
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
 
-        if (count ($opt) >=1 && Strings::startsWith('--file=', $opt[0])){
-            $_f = substr($opt[0], 7);
-                        
-            if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
-                $fr = explode(DIRECTORY_SEPARATOR, $_f);
+        foreach ($opt as $o){
+            if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $to_db = $matches[1];
+            }
 
-                $_f = $fr[count($fr)-1];
+            if ( Strings::startsWith('--file=', $o)){
+                $file_opt = true;
 
-                unset($fr[count($fr)-1]);
-                $path = implode(DIRECTORY_SEPARATOR, $fr) . DIRECTORY_SEPARATOR;
+                $_f = substr($opt[0], 7);
+                            
+                if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
+                    $fr = explode(DIRECTORY_SEPARATOR, $_f);
 
-                if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
-                    $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
-                }
+                    $_f = $fr[count($fr)-1];
+
+                    unset($fr[count($fr)-1]);
+                    $path = implode(DIRECTORY_SEPARATOR, $fr) . DIRECTORY_SEPARATOR;
+
+                    if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
+                        $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
+                    }
+                } 
+                
+                $filenames = [ $_f ];
             } 
-            
-            $filenames = [ $_f ];
-        } else {
+        }
+        
+        if (!$file_opt){
             foreach (new \DirectoryIterator(MIGRATIONS_PATH) as $fileInfo) {
                 if($fileInfo->isDot()  || $fileInfo->isDir()) continue;
                 $filenames[] = $fileInfo->getFilename();
@@ -67,9 +80,6 @@ class MigrationsController extends Controller
                 continue;
             }
 
-
-            //$class_name = Strings::snakeToCamel(substr(substr($filename,20),0,-4));
-
             $st = get_declared_classes();
 
             $full_path = str_replace('//', '/', $path . $filename);
@@ -82,8 +92,12 @@ class MigrationsController extends Controller
             }
 
             echo "Migrating '$filename'\r\n";
-            
+
             if (!in_array('--simulate', $opt)){
+                if (!empty($to_db)){
+                    DB::setConnection($to_db);
+                }
+
                 (new $class_name())->up();
             } else {
                 continue;
@@ -91,6 +105,11 @@ class MigrationsController extends Controller
             
             echo "Migrated  '$filename' --ok\r\n";
             
+            /*
+                Main connection restore
+            */
+            DB::setConnection('main');
+
             DB::table('migrations')->create([
                 'filename' => $filename
             ]);

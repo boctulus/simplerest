@@ -19,7 +19,7 @@ class TblCategoriaLicenciaConduccion implements IMigration
   clc_intId int(11) NOT NULL AUTO_INCREMENT,
   clc_varNombre varchar(50) NOT NULL,
   clc_varDescripcion varchar(250) NOT NULL,
-  clc_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  clc_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   clc_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

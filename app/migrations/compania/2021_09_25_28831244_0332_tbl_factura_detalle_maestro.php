@@ -32,7 +32,7 @@ class TblFacturaDetalle implements IMigration
   fde_decValorReteIva DECIMAL(18, 2) NOT NULL,
   fde_decPorcentajeReteIca DECIMAL(18, 2) NOT NULL,
   fde_decValorReteIca DECIMAL(18, 2) NOT NULL,
-  fde_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  fde_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   fde_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   fac_intNroDocumento VARCHAR(20) NOT NULL,
   fde_varDescripcion LONGTEXT NOT NULL,

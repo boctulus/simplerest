@@ -25,7 +25,7 @@ class TblConsecutivo implements IMigration
   cse_dateFechaFinal DATE NOT NULL,
   cse_varVigencia VARCHAR(2) NOT NULL,
   cse_bolEstado TINYINT(1) NOT NULL,
-  cse_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  cse_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   cse_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   doc_intIdDocumento INT(11) NOT NULL,
   res_intIdResolucion INT(11) NOT NULL,

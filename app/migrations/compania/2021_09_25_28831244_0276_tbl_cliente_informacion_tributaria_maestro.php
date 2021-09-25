@@ -20,7 +20,7 @@ class TblClienteInformacionTributaria implements IMigration
   tic_intGranContribuyente INT(50) NOT NULL,
   tic_intllevarContabilidad INT(250) NOT NULL,
   tic_intCalcularIca INT(11) NOT NULL,
-  tic_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  tic_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   tic_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   sub_intIdSubcuentacontable INT(11) DEFAULT NULL,
   cli_intIdCliente INT(11) DEFAULT NULL,

@@ -20,7 +20,7 @@ class TblIva implements IMigration
   iva_varIVA VARCHAR(50) NOT NULL,
   iva_intTope INT(11) NOT NULL,
   iva_decPorcentaje DECIMAL(18, 2) NOT NULL,
-  iva_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  iva_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   iva_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,

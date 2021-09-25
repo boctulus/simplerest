@@ -3079,6 +3079,14 @@ Ej:
 	$ php com migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
 
 
+# Especificar hacia que base de datos iran las migraciones
+
+En el archivo de migración suele incluirse una referencia la conexion a DB a usar pero es posible omitir especificarla y luego correr la migración sobre la base de datos que se requiera pasando el nombre de la conexión a la base de datos con el parámetro --to=
+
+Ej:
+	php com migrations migrate --file=compania/2021_09_25_28831244_0001_tbl_estado_maestro.php --to=db_flor |less
+
+
 # Crear migraciones programáticamente
 
 Es posible crear migraciones de forma "programática" instanciando la clase MakeController o MakeControllerBase haciendo uso de la opción  --from_script=  para especificar el cuerpo del script.
@@ -3101,12 +3109,17 @@ Ej:
         $mgr->migration("$name", "--dir=$folder", "--from_script=\"$script\"")
 
 
-Se creará la migración y se leerá algo como:
+También puede ser necesario forzar el nombre de la clase de php dentro del archivo de migración para lo cual se dispone de la opción --class_name=
 
-	/home/www/simplerest/app/migrations/company/2021_09_25_28825444_tbl_preferencia-maestro.php was generated
+Ej:
+
+	mgr = new MakeControllerBase();
+	// ...
+
+	$mgr->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name={$row['scr_varNombre']}")
 
 
-Otra opción (más general) de crear un archivo de migración programáticamente sería leyendo el "molde" de una migración que se encuentra en /core/templates/Migration.php y haciendo un reemplazo de substring tal y como lo hace el comando make en MakeControllerBase:
+Otra opción para crear un archivo de migración programáticamente sería leyendo el "molde" de una migración que se encuentra en /core/templates/Migration.php y haciendo un reemplazo de substring tal y como lo hace el comando make en MakeControllerBase:
 
 	Strings::replace('### UP', $up_rep, $file);
 

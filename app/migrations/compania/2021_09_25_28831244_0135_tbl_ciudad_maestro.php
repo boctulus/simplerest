@@ -20,7 +20,7 @@ class TblCiudad implements IMigration
   ciu_varCodigo varchar(5) NOT NULL,
   ciu_varCiudad varchar(100) NOT NULL,
   ciu_varIndicativoTelefono varchar(3) NOT NULL,
-  ciu_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ciu_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   ciu_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   pai_intIdPais int(11) NOT NULL,

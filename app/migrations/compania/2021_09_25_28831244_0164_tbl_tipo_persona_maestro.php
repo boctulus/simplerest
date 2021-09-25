@@ -18,7 +18,7 @@ class TblTipoPersona implements IMigration
         Model::query("CREATE TABLE tbl_tipo_persona (
   tpr_intId INT(11) NOT NULL AUTO_INCREMENT,
   tpr_varNombre VARCHAR(100) NOT NULL,
-  tpr_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  tpr_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   tpr_dtimFechaActualizacion DATETIME DEFAULT '0000-00-00 00:00:00',
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,

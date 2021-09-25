@@ -1,0 +1,62 @@
+<?php
+
+namespace simplerest\controllers;
+
+use phpseclib3\Crypt\EC\Curves\nistk233;
+use simplerest\core\Controller;
+use simplerest\core\Request;
+use simplerest\core\Response;
+use simplerest\libs\Factory;
+use simplerest\libs\DB;
+use simplerest\libs\Schema;
+use simplerest\core\MakeControllerBase;
+
+class TestController extends Controller
+{
+    function __construct()
+    {
+        parent::__construct();        
+    }
+
+    function rels(){
+        DB::getConnection('db_flor');
+
+        $rels = Schema::getAllRelations('tbl_estado_civil', true);
+        dd($rels);
+    }
+
+    function autojoins(){
+        DB::getConnection('db_flor');
+
+        $rows = DB::table('tbl_estado_civil')
+        ->join('tbl_usuario')
+        ->join('tbl_estado')
+        ->get();
+
+        dd($rows);
+    }
+
+    function x(){
+        dd(assets("jota.jpg"));
+    }
+
+    function gen_scripts(){
+        $mgr = new MakeControllerBase();
+
+        $rows = DB::table('tbl_scritp_tablas')
+        ->orderBy(['scr_intOrden' => 'ASC'])
+        ->get();
+
+        foreach ($rows as $row){
+            $orden = str_pad($row['scr_intOrden'], 4, "0", STR_PAD_LEFT);
+            $name  = strtolower("$orden-{$row['scr_varNombre']}-{$row['scr_varModulo']}");
+            $script = $row['scr_lonScritp'];
+
+            $folder = "compania";
+
+            $mgr->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name={$row['scr_varNombre']}");
+        }
+    }
+    
+}
+

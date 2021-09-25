@@ -17,7 +17,7 @@ class TblProveedorInformacionTributaria implements IMigration
     {
         Model::query("CREATE TABLE tbl_proveedor_informacion_tributaria (
   tip_intId INT(11) NOT NULL AUTO_INCREMENT,
-  tip_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  tip_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   tip_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   sub_intIdSubCuentaContable INT(11) DEFAULT NULL,
   prv_intIdProveedor INT(11) DEFAULT NULL,

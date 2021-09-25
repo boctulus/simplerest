@@ -19,7 +19,7 @@ class TblOperadorPila implements IMigration
   opp_intId int(11) NOT NULL AUTO_INCREMENT,
   opp_varCodigo varchar(50) NOT NULL,
   opp_varDescripcion varchar(300) NOT NULL,
-  opp_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  opp_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   opp_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

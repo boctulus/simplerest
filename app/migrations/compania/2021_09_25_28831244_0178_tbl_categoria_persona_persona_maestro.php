@@ -19,7 +19,7 @@ class TblCategoriaPersonaPersona implements IMigration
   cpp_intId INT(11) NOT NULL AUTO_INCREMENT,
   per_intIdPersona INT(11) NOT NULL,
   cap_intIdCategoriaPersona INT(11) NOT NULL,
-  cat_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  cat_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (cpp_intId)
 )
 ENGINE = INNODB,
