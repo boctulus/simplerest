@@ -3062,7 +3062,10 @@ Para volver para atrás migraciones con "migrations rollback"
 
 Por defecto se ejecutan todas las migraciones pendientes (registradas en la tabla `migrations`) en órden cronológico (que en realidad es órden alfabético para los nombres de los archivos). 
 
-Es posible especificar el archivo concreto de migración a ejecutar:
+
+# Especificar archivo de migración 
+
+Es posible dar el archivo concreto de migración a ejecutar:
 
 	$ php com migrations migrate --file=2021_09_13_27908784_user_roles.php
 
@@ -3071,6 +3074,18 @@ En el dado caso solo se ejecutará esa transacción.
 Si en --file se incluye una ruta se ejecutará desde esa ruta (absoluta o relativa). Ej:
 
 	$ php com migrations migrate --file=users/0000_00_00_00000001_users.php
+
+
+# Especificar el directorio de las migraciones
+
+Se puede brindar el directorio (de momento relativo a la carpeta migraciones) desde el cual se correrán todas las migraciones con el parámetro --dir=
+
+Ej:
+
+	php com migrations migrate --dir=compania_new --to=db_flor
+
+
+# Simular migraciones
 
 Las migraciones se pueden "simular" agregando el parámetro --simulate
 
