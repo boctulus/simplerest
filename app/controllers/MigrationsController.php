@@ -67,9 +67,15 @@ class MigrationsController extends Controller
                 continue;
             }
 
-            $class_name = Strings::snakeToCamel(substr(substr($filename,20),0,-4));
-                        
-            require_once $path . $filename;
+
+            //$class_name = Strings::snakeToCamel(substr(substr($filename,20),0,-4));
+
+            $st = get_declared_classes();
+
+            $full_path = str_replace('//', '/', $path . $filename);
+            require_once $full_path;
+            
+            $class_name = array_values(array_diff_key(get_declared_classes(),$st))[0];
 
             if (!class_exists($class_name)){
                 throw new \Exception ("Class '$class_name' does not exists in $filename");
