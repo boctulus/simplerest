@@ -2996,6 +2996,10 @@ Los archivos de migraciones son creados con el comando "make migrate" o "migrati
 o
 	$ php com make migration create_cables
 
+Es posible especificar el directorio donde se quiere crear la migración con la opción --dir=
+
+	$ php com make migration create_cables --dir=mi_folder
+
 Los archivos creados por "make migration" implementan la interface IMigration y en si poseen dos métodos que pueden considerarse "hooks": up y down
 
 	public function up()
@@ -3073,6 +3077,38 @@ Las migraciones se pueden "simular" agregando el parámetro --simulate
 Ej:
 
 	$ php com migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
+
+
+# Crear migraciones programáticamente
+
+Es posible crear migraciones de forma "programática" instanciando la clase MakeController o MakeControllerBase haciendo uso de la opción  --from_script=  para especificar el cuerpo del script.
+
+La única restricción en caso de querer usarse "make migration" con la opción --from_script= es que el script no puede contener comillas dobles. 
+
+Ej:
+
+		$mgr = new MakeControllerBase();
+
+        $script = "
+        ALTER TABLE tbl_preferencias 
+            ADD CONSTRAINT FK_tpf_IdEstado FOREIGN KEY (est_intIdEstado)
+                REFERENCES tbl_estado(est_intId);";
+
+        $name   = "tbl_preferencias-maestro";
+
+        $folder = "company";
+
+        $mgr->migration("$name", "--dir=$folder", "--from_script=\"$script\"")
+
+
+Se creará la migración y se leerá algo como:
+
+	/home/www/simplerest/app/migrations/company/2021_09_25_28825444_tbl_preferencia-maestro.php was generated
+
+
+Otra opción (más general) de crear un archivo de migración programáticamente sería leyendo el "molde" de una migración que se encuentra en /core/templates/Migration.php y haciendo un reemplazo de substring tal y como lo hace el comando make en MakeControllerBase:
+
+	Strings::replace('### UP', $up_rep, $file);
 
 
 # Multitenant

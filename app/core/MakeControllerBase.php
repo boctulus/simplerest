@@ -717,15 +717,15 @@ class MakeControllerBase extends Controller
         $secs = time() - 1603750000;
         $filename = $date . '_'. $secs . '_' . $this->snake_case . '.php'; 
 
-        // destination
-        $dest_path = MIGRATIONS_PATH . $filename;
-
         $file = file_get_contents(self::MIGRATION_TEMPLATE);
-        $file = str_replace('__NAME__', $this->camel_case, $file);
 
+        $path    = MIGRATIONS_PATH;
         $to_db   = null;
         $tb_name = null;
         $from_db = null;
+        $script  = null;
+        $dir     = null;
+
 
         $up_rep = '';
         foreach ($opt as $o){
@@ -740,7 +740,46 @@ class MakeControllerBase extends Controller
             if (preg_match('/^--table[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
                 $tb_name = $matches[1];
             }
+
+            /*  
+                This option forces class name
+            */
+            if (preg_match('/^--class_name[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $class_name = Strings::snakeToCamel($matches[1]);
+                $file = str_replace('__NAME__', $class_name, $file); 
+            } 
+
+            if (preg_match('/^--dir[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $dir= $matches[1];
+            }
+
+            /*
+                The only condition to work is the script should be enclosed with double mark quotes ("")
+                and it should not contain any double mark inside
+            */
+            if (preg_match('/^--from_script[=|:]"([^"]+)"/', $o, $matches)){
+                $script = $matches[1];
+            }
         }
+
+        $file = str_replace('__NAME__', $this->camel_case, $file); 
+
+        if (!empty($dir)){
+            $path .= "$dir/";
+            Files::mkdir_ignore($path);
+        }
+
+        if (!empty($script)){
+            if (!Strings::contains('"', $script)){
+                $up_rep .= "Model::query(\"$script\");";
+            } else {
+                $up_rep .= "Model::query(\"
+                <<<'SQL_QUERY'
+                $script
+                SQL_QUERY;
+                \");";
+            }            
+        } 
 
         if (!empty($to_db)){
             $up_rep .= "config()['db_connection_default'] = '$to_db';\r\n\r\n";
@@ -756,6 +795,9 @@ class MakeControllerBase extends Controller
         
         $up_rep .= "";        
         Strings::replace('### UP', $up_rep, $file);
+
+        // destination
+        $dest_path = $path . $filename;
 
         $this->write($dest_path, $file);
     }    
