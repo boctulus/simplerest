@@ -16,7 +16,7 @@ class TblPermiso implements IMigration
     public function up()
     {
         Model::query("INSERT INTO tbl_permiso(per_intId, per_varNombre, per_varDescripcion, per_dtimFechaCreacion, per_dtimFechaActualizacion, est_intIdEstado, usu_intIdCreador, usu_intIdActualizador) VALUES
-(1, 'Agregar', 'Agregar', '2021-09-06 03:15:09', '0000-00-00 00:00:00', 1, 1, 1);");
+(1, 'Agregar', 'Agregar', '2021-09-06 03:15:09', NULL, 1, 1, 1);");
     }
 }
 

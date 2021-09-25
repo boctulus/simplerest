@@ -35,6 +35,7 @@ class MigrationsController extends Controller
         $filenames = [];
 
         $file_opt  = false;
+        $dir_opt   = false;
         $to_db     = null;
     
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
@@ -47,7 +48,7 @@ class MigrationsController extends Controller
             if ( Strings::startsWith('--file=', $o)){
                 $file_opt = true;
 
-                $_f = substr($opt[0], 7);
+                $_f = substr($o, 7);
                             
                 if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
                     $fr = explode(DIRECTORY_SEPARATOR, $_f);
@@ -64,10 +65,24 @@ class MigrationsController extends Controller
                 
                 $filenames = [ $_f ];
             } 
+
+            /*
+                Debería aceptar rutas absolutas (con /) para manejarse dentro de Service Providers
+            */
+            if (Strings::startsWith('--dir=', $o)){
+                $dir_opt = true;
+                $_dir    = substr($o, 6);
+
+                $path = MIGRATIONS_PATH . $_dir;
+
+                if (!file_exists($path)){
+                    throw new \Exception("Directory $path does not exists");
+                }
+            }
         }
-        
+
         if (!$file_opt){
-            foreach (new \DirectoryIterator(MIGRATIONS_PATH) as $fileInfo) {
+            foreach (new \DirectoryIterator($path) as $fileInfo) {
                 if($fileInfo->isDot()  || $fileInfo->isDir()) continue;
                 $filenames[] = $fileInfo->getFilename();
             }   
@@ -82,7 +97,7 @@ class MigrationsController extends Controller
 
             $st = get_declared_classes();
 
-            $full_path = str_replace('//', '/', $path . $filename);
+            $full_path = str_replace('//', '/', $path . '/'. $filename);
             require_once $full_path;
             
             $class_name = array_values(array_diff_key(get_declared_classes(),$st))[0];
