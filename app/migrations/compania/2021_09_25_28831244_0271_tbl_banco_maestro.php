@@ -19,7 +19,7 @@ class TblBanco implements IMigration
   ban_intId INT(11) NOT NULL AUTO_INCREMENT,
   ban_varCodigo VARCHAR(4) NOT NULL,
   ban_varDescripcion VARCHAR(50) NOT NULL,
-  ban_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  ban_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   ban_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,

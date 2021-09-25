@@ -21,7 +21,7 @@ class TblCuentaContable implements IMigration
   cue_varNombreCuenta varchar(50) NOT NULL,
   cue_tinCuentaBalance tinyint(4) NOT NULL DEFAULT 0,
   cue_tinCuentaResultado tinyint(4) NOT NULL DEFAULT 0,
-  cue_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  cue_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   cue_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   ccc_intIdCategoriaCuentaContable int(11) NOT NULL DEFAULT 0,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,

@@ -18,7 +18,7 @@ class TblGenero implements IMigration
         Model::query("CREATE TABLE tbl_genero (
   gen_intId int(11) NOT NULL AUTO_INCREMENT,
   gen_varGenero varchar(50) NOT NULL,
-  gen_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  gen_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   gen_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

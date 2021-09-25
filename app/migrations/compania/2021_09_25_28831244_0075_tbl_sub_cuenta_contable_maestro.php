@@ -28,7 +28,7 @@ class TblSubCuentaContable implements IMigration
   sub_decMontobase decimal(10, 2) DEFAULT 0.00,
   sub_tinCuentaBalance tinyint(4) NOT NULL DEFAULT 0,
   sub_tinCuentaResultado tinyint(4) NOT NULL DEFAULT 0,
-  sub_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  sub_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   sub_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   mon_intIdMoneda int(11) NOT NULL,
   ccc_intIdCategoriaCuentaContable int(11) NOT NULL,

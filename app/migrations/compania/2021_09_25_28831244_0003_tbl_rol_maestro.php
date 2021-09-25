@@ -19,7 +19,7 @@ class TblRol implements IMigration
   rol_intId int(11) NOT NULL AUTO_INCREMENT,
   rol_varNombre varchar(50) NOT NULL,
   rol_varDescripcion varchar(100) NOT NULL,
-  rol_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  rol_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   rol_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado_rol int(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (rol_intId)

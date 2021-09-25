@@ -19,7 +19,7 @@ class TblCategoriaDocumento implements IMigration
   cdo_intId int(11) NOT NULL AUTO_INCREMENT,
   cdo_varCategoriaDocumento varchar(50) NOT NULL,
   cdo_varSiglas varchar(3) NOT NULL,
-  cdo_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  cdo_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   cdo_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) DEFAULT NULL,

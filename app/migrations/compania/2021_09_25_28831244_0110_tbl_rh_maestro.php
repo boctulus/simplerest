@@ -19,7 +19,7 @@ class TblRh implements IMigration
   trh_intId int(11) NOT NULL AUTO_INCREMENT,
   trh_varCodigo varchar(30) NOT NULL,
   trh_varDescripcion varchar(250) NOT NULL,
-  trh_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  trh_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   trh_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) DEFAULT NULL,
   usu_intIdCreador int(11) NOT NULL,

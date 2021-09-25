@@ -17,7 +17,7 @@ class TblRolPermiso implements IMigration
     {
         Model::query("CREATE TABLE tbl_rol_permiso (
   rpe_intId INT(11) NOT NULL AUTO_INCREMENT,
-  rpe_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  rpe_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   rpe_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   rol_intIdRol INT(11) NOT NULL,

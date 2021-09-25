@@ -19,7 +19,7 @@ class TblBodega implements IMigration
   bod_intId INT(11) NOT NULL AUTO_INCREMENT,
   bod_varCodigoBodega VARCHAR(50) NOT NULL,
   bod_varNombreBodega VARCHAR(100) NOT NULL,
-  bod_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  bod_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   bod_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,

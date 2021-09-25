@@ -18,7 +18,7 @@ class TblDiasPago implements IMigration
         Model::query("CREATE TABLE tbl_dias_pago (
   dpa_intId INT(11) NOT NULL AUTO_INCREMENT,
   dpa_intDiasPago INT(11) NOT NULL,
-  dpa_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  dpa_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   dpa_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,

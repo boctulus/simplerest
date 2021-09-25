@@ -20,7 +20,7 @@ class TblTipoContrato implements IMigration
   tic_varNombre varchar(100) NOT NULL,
   tic_varDescripcion longtext NOT NULL,
   tic_varCodigoDian varchar(20) NOT NULL,
-  tic_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  tic_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   tic_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

@@ -19,7 +19,7 @@ class TblCategoriaProducto implements IMigration
   cap_intId INT(11) NOT NULL AUTO_INCREMENT,
   cap_varSiglaCategoriaProducto VARCHAR(50) NOT NULL,
   cap_varDescripcionCategoria VARCHAR(50) NOT NULL,
-  cap_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  cap_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   cap_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

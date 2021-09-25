@@ -19,7 +19,7 @@ class TblEps implements IMigration
   eps_intId int(11) NOT NULL AUTO_INCREMENT,
   eps_varCodigo varchar(100) NOT NULL,
   eps_varNombre varchar(100) NOT NULL,
-  eps_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  eps_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   eps_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

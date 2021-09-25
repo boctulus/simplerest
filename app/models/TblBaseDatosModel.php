@@ -17,7 +17,13 @@ class TblBaseDatosModel extends Model
 
 	function onCreated(array &$data, $last_inserted_id)
 	{
-		// ejecutar el SP que crea la DB
+		/*
+			Ejecutar el SP que crea la DB o ...
+		*/
+
+		$db_name = $data['dba_varNombre'];
+
+		Model::query("CREATE DATABASE $db_name;");
 	}
 }
 

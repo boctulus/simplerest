@@ -17,7 +17,7 @@ class TblUsuarioEmpresa implements IMigration
     {
         Model::query("CREATE TABLE tbl_usuario_empresa (
   uem_intId int(11) NOT NULL AUTO_INCREMENT,
-  uem_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  uem_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   uem_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   usu_intIdUsuario int(11) NOT NULL,
   emp_intIdempresa int(11) NOT NULL,

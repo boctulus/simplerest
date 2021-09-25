@@ -100,7 +100,6 @@ class MyAuthController extends AuthController {
             si hay pendiente crear alguna DB en 'tbl_base_datos'
         */
 
-        /*
         if ($tenant === null){
             $tenant = request()->getTenantId();
         }
@@ -141,7 +140,6 @@ class MyAuthController extends AuthController {
             'bas_intIdBasedatos' => $db_id,
             'usu_intIdUsuario'   => $uid
         ]);    
-        */ 
     }
 
     function onRemembered($data, $link)

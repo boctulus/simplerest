@@ -18,7 +18,7 @@ class TblProveedor implements IMigration
         Model::query("CREATE TABLE tbl_proveedor (
   prv_intId INT(11) NOT NULL AUTO_INCREMENT,
   pro_intCuentaBancaria VARCHAR(15) NOT NULL,
-  prv_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  prv_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   prv_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   dpa_intIdDiasPago INT(11) NOT NULL,
   ban_intIdBanco INT(11) NOT NULL,

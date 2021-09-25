@@ -19,7 +19,7 @@ class TblIvaCuentacontable implements IMigration
   ivc_intId INT(11) NOT NULL AUTO_INCREMENT,
   ivc_intIdIva INT(11) NOT NULL,
   ivc_intIdCuentaContable INT(11) NOT NULL,
-  ivc_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  ivc_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   ivc_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

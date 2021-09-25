@@ -25,7 +25,7 @@ class TblProducto implements IMigration
   pro_intStockMinimo INT(11) NOT NULL,
   pro_intSaldo INT(11) NOT NULL,
   pro_intStockMaximo INT(11) NOT NULL,
-  pro_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  pro_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   pro_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   sub_intIdCuentaContableCompra INT(11) NOT NULL,

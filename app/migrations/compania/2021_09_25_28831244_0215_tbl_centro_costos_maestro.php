@@ -19,7 +19,7 @@ class TblCentroCostos implements IMigration
   cco_intId INT(11) NOT NULL AUTO_INCREMENT,
   cco_varCodigo VARCHAR(20) NOT NULL,
   cco_varCentroCostos VARCHAR(100) NOT NULL,
-  cco_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  cco_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   cco_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,
