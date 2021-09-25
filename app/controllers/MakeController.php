@@ -10,6 +10,13 @@ use simplerest\libs\Strings;
 
 class MakeController extends MakeControllerBase
 {
-    const TEMPLATES = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR;
+    function __construct()
+    {
+        parent::__construct();
+    }
+    
+    /*
+        Here you can add your own commands for "make"
+    */
 
 }
