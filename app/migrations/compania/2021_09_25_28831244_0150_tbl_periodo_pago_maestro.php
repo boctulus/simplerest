@@ -18,7 +18,7 @@ class TblPeriodoPago implements IMigration
         Model::query("CREATE TABLE tbl_periodo_pago (
   pep_intId int(11) NOT NULL AUTO_INCREMENT,
   pep_varNombre varchar(50) NOT NULL,
-  pep_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  pep_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   pep_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

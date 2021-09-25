@@ -19,7 +19,7 @@ class TblCuentaBancaria implements IMigration
   cba_intId INT(11) NOT NULL AUTO_INCREMENT,
   cba_varDescripcion VARCHAR(100) NOT NULL,
   cba_varNumeroCuenta VARCHAR(11) NOT NULL,
-  cba_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  cba_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   cba_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado_cba INT(11) NOT NULL DEFAULT 1,
   ban_intIdBanco INT(11) NOT NULL,

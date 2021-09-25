@@ -55,6 +55,12 @@ class DB
 			throw new \InvalidArgumentException("Connection identifier can not be NULL");
 		}
 
+		$config = config();
+
+		if (!isset($config['db_connections'][$id])){
+			throw new \InvalidArgumentException("Unregistered connection identifier for '$id'");
+		}
+
 		static::$current_id_conn = $id;
 	}
 

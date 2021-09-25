@@ -23,7 +23,7 @@ class TblContacto implements IMigration
   con_varDireccion VARCHAR(250) DEFAULT NULL,
   con_varTelefono VARCHAR(10) DEFAULT NULL,
   con_varExtension VARCHAR(5) DEFAULT NULL,
-  con_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  con_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   con_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 0,
   emp_intIdEmpresa INT(11) NOT NULL,

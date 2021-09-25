@@ -19,7 +19,7 @@ class TblArl implements IMigration
   arl_intId int(11) NOT NULL AUTO_INCREMENT,
   arl_varCodigo varchar(100) NOT NULL,
   arl_varNombre varchar(100) NOT NULL,
-  arl_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  arl_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   arl_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

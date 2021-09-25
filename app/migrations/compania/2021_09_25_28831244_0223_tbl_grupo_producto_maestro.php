@@ -19,7 +19,7 @@ class TblGrupoProducto implements IMigration
   grp_intId INT(11) NOT NULL AUTO_INCREMENT,
   grp_varSiglaGrupoProducto VARCHAR(50) NOT NULL,
   grp_varDescripcionGrupo VARCHAR(50) NOT NULL,
-  grp_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  grp_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   grp_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   grp_intConsecutivoGrupoProducto INT(11) NOT NULL DEFAULT 0,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,

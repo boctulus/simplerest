@@ -19,7 +19,7 @@ class TblEstratoEconomico implements IMigration
   tec_intId int(11) NOT NULL AUTO_INCREMENT,
   tec_varCodigo varchar(20) NOT NULL,
   tec_varDescripcion varchar(250) NOT NULL,
-  tec_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  tec_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   tec_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdestado int(11) DEFAULT NULL,
   usu_intIdCreador int(11) NOT NULL,

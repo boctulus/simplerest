@@ -18,7 +18,7 @@ class TblTipoCuentaBancaria implements IMigration
         Model::query("CREATE TABLE tbl_tipo_cuenta_bancaria (
   tcb_intId int(11) NOT NULL AUTO_INCREMENT,
   tcb_varDescripcion varchar(50) NOT NULL,
-  tcb_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  tcb_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   tcb_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

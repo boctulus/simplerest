@@ -20,7 +20,7 @@ class TblRetencionIca implements IMigration
   ric_varReteIca VARCHAR(50) NOT NULL,
   ric_intTope INT(11) NOT NULL,
   ric_intPorcentaje DECIMAL(10, 2) NOT NULL,
-  ric_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
+  ric_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   ric_dtimFechaActualizacion DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   est_intIdCidEstado INT(11) NOT NULL DEFAULT 1,
   sub_intIdSubCuentaContable INT(11) DEFAULT NULL,

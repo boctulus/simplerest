@@ -19,7 +19,7 @@ class TblCargo implements IMigration
   car_intId int(11) NOT NULL AUTO_INCREMENT,
   car_varNombre varchar(50) NOT NULL,
   car_varDescripcion varchar(100) NOT NULL,
-  car_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  car_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
   car_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   emp_intIdEmpresa int(11) DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
