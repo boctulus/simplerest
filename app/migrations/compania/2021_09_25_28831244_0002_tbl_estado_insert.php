@@ -16,13 +16,13 @@ class TblEstado implements IMigration
     public function up()
     {
         Model::query("INSERT INTO tbl_estado 
-(
-   est_varNombre, est_varIcono, est_varColor
-)
-VALUES
-(
-  'Activo', 'NA', 'Rojo'
-);");
+        (
+        est_varNombre, est_varIcono, est_varColor
+        )
+        VALUES
+        (
+        'Activo', 'NA', 'Rojo'
+        );");
     }
 }
 

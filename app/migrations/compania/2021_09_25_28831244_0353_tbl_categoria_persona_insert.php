@@ -18,10 +18,10 @@ class TblCategoriaPersona implements IMigration
         Model::query("INSERT INTO tbl_categoria_persona(cap_intId, cap_varCategoriaPersona, cap_dtimFechaCreacion, cap_dtimFechaActualizacion, est_intIdEstado, usu_intIdCreador, usu_intIdActualizador) VALUES
 (1, 'Empleado', '2021-05-20 11:40:29', '2021-06-30 09:38:58', 1, 1, 1),
 (2, 'Tercero', '2021-05-20 11:40:58', '2021-07-21 21:44:46', 1, 1, 1),
-(3, 'Visitante', '2021-06-25 15:21:04', '0000-00-00 00:00:00', 1, 1, 1),
-(4, 'Cliente', '2021-08-04 16:48:49', '0000-00-00 00:00:00', 1, 1, 1),
-(5, 'Proveedor', '2021-08-04 16:48:58', '0000-00-00 00:00:00', 1, 1, 1),
-(6, 'Interesado', '2021-08-04 16:49:09', '0000-00-00 00:00:00', 1, 1, 1);");
+(3, 'Visitante', '2021-06-25 15:21:04', NULL, 1, 1, 1),
+(4, 'Cliente', '2021-08-04 16:48:49', NULL, 1, 1, 1),
+(5, 'Proveedor', '2021-08-04 16:48:58', NULL, 1, 1, 1),
+(6, 'Interesado', '2021-08-04 16:49:09', NULL, 1, 1, 1);");
     }
 }
 

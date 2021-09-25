@@ -19,7 +19,7 @@ class TblTipoPersona implements IMigration
   tpr_intId INT(11) NOT NULL AUTO_INCREMENT,
   tpr_varNombre VARCHAR(100) NOT NULL,
   tpr_dtimFechaCreacion DATETIME NULL DEFAULT NULL,
-  tpr_dtimFechaActualizacion DATETIME DEFAULT '0000-00-00 00:00:00',
+  tpr_dtimFechaActualizacion DATETIME DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,
