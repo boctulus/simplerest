@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblUnidadmedidaSchema;
 
-class TblUnidadmedidaModel extends Model
+class TblUnidadmedidaModel extends MyModel
 { 
 	
 	

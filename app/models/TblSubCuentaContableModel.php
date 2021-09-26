@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblSubCuentaContableSchema;
 
-class TblSubCuentaContableModel extends Model
+class TblSubCuentaContableModel extends MyModel
 { 
 	
 	

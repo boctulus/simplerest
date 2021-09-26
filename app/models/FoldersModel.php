@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\FoldersSchema;
 
-class FoldersModel extends Model
+class FoldersModel extends MyModel
 { 
 	
 	

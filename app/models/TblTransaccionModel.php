@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblTransaccionSchema;
 
-class TblTransaccionModel extends Model
+class TblTransaccionModel extends MyModel
 { 
 	
 	

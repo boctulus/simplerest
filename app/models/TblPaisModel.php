@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblPaisSchema;
 
-class TblPaisModel extends Model
+class TblPaisModel extends MyModel
 { 
 	
 	

@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblTipoContratoSchema;
 
-class TblTipoContratoModel extends Model
+class TblTipoContratoModel extends MyModel
 { 
 	
 	

@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblBancoSchema;
 
-class TblBancoModel extends Model
+class TblBancoModel extends MyModel
 { 
 	
 	

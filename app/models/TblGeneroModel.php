@@ -2,11 +2,10 @@
 
 namespace simplerest\models;
 
-use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblGeneroSchema;
 
-class TblGeneroModel extends Model
+class TblGeneroModel extends MyModel
 { 
 	protected $hidden   = [];
 	protected $not_fillable = [];

@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblClienteSchema;
 
-class TblClienteModel extends Model
+class TblClienteModel extends MyModel
 { 
 	
 	

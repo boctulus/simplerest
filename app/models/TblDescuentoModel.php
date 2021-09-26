@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblDescuentoSchema;
 
-class TblDescuentoModel extends Model
+class TblDescuentoModel extends MyModel
 { 
 	
 	

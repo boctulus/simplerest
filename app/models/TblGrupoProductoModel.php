@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblGrupoProductoSchema;
 
-class TblGrupoProductoModel extends Model
+class TblGrupoProductoModel extends MyModel
 { 
 	
 	
