@@ -13,7 +13,7 @@ class UserTbPermissions implements IMigration
     */
     public function up()
     {
-        config()['db_connection_default'] = 'main';
+        get_default_connection();
 
         $sc = (new Schema('user_tb_permissions'))
 
