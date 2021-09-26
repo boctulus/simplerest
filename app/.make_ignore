@@ -1,14 +1,19 @@
-# Files to be ignored by Make
+;
+; Files to be ignored by Make
+;
 
+; Models
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-# Models
-TblUsuarioModel.php
 TblUsuarioEmpresaModel.php
+#TblUsuarioModel.php
 FilesModel.php
 TblUsuarioEmpresaModel.php
 
 
-# Controllers
+; Controllers
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
 UsersController.php
 MyController.php
 MyApiController.php
@@ -19,7 +24,9 @@ FacebookController.php
 WebhooksModel.php
 
 
-# Apis 
+; Apis 
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
 controllers/api/Me.php
 controllers/api/Roles.php
 controllers/api/UserRoles.php
@@ -27,4 +34,5 @@ controllers/api/UserSpPermissions.php
 controllers/api/UserTbPermissions.php
 controllers/api/Migrations.php
 
-# Schemas
+; Schemas
+;;;;;;;;;;;;;;;;;;;;;;;;;

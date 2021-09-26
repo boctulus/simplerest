@@ -8,9 +8,6 @@ use simplerest\models\schemas\main\ApiKeysSchema;
 
 class ApiKeysModel extends Model
 { 
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

@@ -1051,6 +1051,21 @@ abstract class ApiController extends ResourceController implements IApi
             if ($this->instance->inSchema([$this->instance->createdBy()])){
                 $data[$this->instance->createdBy()] = $this->impersonated_by != null ? $this->impersonated_by : $this->uid;
             }  
+
+            /*
+                SI (	
+                    $updatedBy está en el schema &&
+                    $updatedBy NO es nullable (&&
+                    $updatedBy NO tiene valor por defecto)
+                ) =>
+
+                Actualizar con el valor del $uid del usuario
+            */
+            if ($this->instance->inSchema([$this->instance->updatedBy()])){
+                if (!in_array($this->instance->updatedBy(), $this->instance->getNullables())){
+                    $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : $this->uid;
+                }
+            }
     
             if (!$this->acl->hasSpecialPermission('transfer', $this->roles)){    
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
