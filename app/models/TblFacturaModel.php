@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblFacturaSchema;
 
-class TblFacturaModel extends Model
+class TblFacturaModel extends MyModel
 { 
 	
 	

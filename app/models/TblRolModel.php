@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblRolSchema;
 
-class TblRolModel extends Model
+class TblRolModel extends MyModel
 { 
 	
 	

@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblEstratoEconomicoSchema;
 
-class TblEstratoEconomicoModel extends Model
+class TblEstratoEconomicoModel extends MyModel
 { 
 	
 	

@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblDocumentoSchema;
 
-class TblDocumentoModel extends Model
+class TblDocumentoModel extends MyModel
 { 
 	
 	

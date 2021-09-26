@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\EmailNotificationsSchema;
 
-class EmailNotificationsModel extends Model
+class EmailNotificationsModel extends MyModel
 { 
 	
 	

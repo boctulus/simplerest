@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblCategoriaPersonaSchema;
 
-class TblCategoriaPersonaModel extends Model
+class TblCategoriaPersonaModel extends MyModel
 { 
 	
 	

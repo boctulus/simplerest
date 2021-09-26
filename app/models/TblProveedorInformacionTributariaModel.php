@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblProveedorInformacionTributariaSchema;
 
-class TblProveedorInformacionTributariaModel extends Model
+class TblProveedorInformacionTributariaModel extends MyModel
 { 
 	
 	

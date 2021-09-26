@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\TblUsuariosXBaseDatosSchema;
 
-class TblUsuariosXBaseDatosModel extends Model
+class TblUsuariosXBaseDatosModel extends MyModel
 { 
 	
 	
