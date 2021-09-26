@@ -104,7 +104,7 @@ class MakeControllerBase extends Controller
                     continue;
                 } 
 
-                if (Strings::contains('#', $f)){
+                if (Strings::startsWith('#', $f) || Strings::startsWith(';', $f)){
                     unset($this->excluded_files[$ix]);
                     continue;
                 }
@@ -122,7 +122,7 @@ class MakeControllerBase extends Controller
     
     function help(){
         echo <<<STR
-        Commmands:
+        MAKE COMMAND HELP
                         
         make helper my_cool_helper
 
@@ -168,6 +168,8 @@ class MakeControllerBase extends Controller
         make any all -s -f --from:main                        
 
         STR;
+
+        print_r(PHP_EOL);
     }
 
     // Rutear "make -h" y "make --help" a "make index -h" y "make index --help" respectivamente
@@ -327,13 +329,13 @@ class MakeControllerBase extends Controller
         $filename = $this->camel_case . $subfix.'.php';
         $dest_path = $dest_path . $sub_path . $filename;
 
-        $this->fileProtection($filename, $dest_path, $opt);
+        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
         
         $data = file_get_contents($template_path);
         $data = str_replace('__NAME__', $this->camel_case . $subfix, $data);
         $data = str_replace('__NAMESPACE', $namespace, $data);
 
-        $this->write($dest_path, $data);
+        $this->write($dest_path, $data, $protected);
     }
 
     function controller($name, ...$opt) {
@@ -387,13 +389,13 @@ class MakeControllerBase extends Controller
 
         $dest_path = API_PATH . $filename;
 
-        $this->fileProtection($filename, $dest_path, $opt);
+        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
 
         $data = file_get_contents(self::API_TEMPLATE);
         $data = str_replace('__NAME__', $this->camel_case, $data);
         $data = str_replace('__SOFT_DELETE__', 'true', $data); // debe depender del schema
 
-        $this->write($dest_path, $data);
+        $this->write($dest_path, $data, $protected);
     }
 
     protected function get_pdo_const(string $sql_type){
@@ -422,35 +424,44 @@ class MakeControllerBase extends Controller
         return 'STR'; 
     }
 
-    protected function fileProtection(string $filename, string $dest_path, Array $opt){
+    /*
+        Return if file is protected and not should be overwrited
+    */
+    protected function hasFileProtection(string $filename, string $dest_path, Array $opt) : bool {
         if (in_array($dest_path, $this->excluded_files)){
             echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
+            return true; 
         } elseif (file_exists($dest_path)){
             if (!in_array('-f', $opt) && !in_array('--force', $opt)){
                 echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
+                return true;
             } elseif (!is_writable($dest_path)){
                 echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
+                return true;
             }
         }
     
         if (in_array($filename, $this->excluded_files)){
             echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
-            return; 
+            return true; 
         } elseif (file_exists($dest_path)){
             if (!in_array('-f', $opt) && !in_array('--force', $opt)){
                 echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
-                return;
+                return true;;
             } elseif (!is_writable($dest_path)){
                 echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 
-    protected function write($dest_path, $file){
+    protected function write(string $dest_path, string $file, bool $protected){
+        if ($protected){
+            return;
+        }
+
         $ok = (bool) file_put_contents($dest_path, $file);
         
         if (!$ok) {
@@ -502,11 +513,11 @@ class MakeControllerBase extends Controller
         } 
 
         if (!Schema::hasTable($name)){
-            echo "Tabla '$name' no encontrada. Recuerde el nombre es sensible al case\r\n";
+            echo "Table '$name' not found. It's case sensitive\r\n";
             return;
         }
         
-        $this->fileProtection($filename, $dest_path, $opt);
+        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
 
         try {
             $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}");
@@ -527,12 +538,14 @@ class MakeControllerBase extends Controller
 
         foreach ($fields as $field){
             $field_names[] = $field['Field'];
-            if ($field['Null']  == 'YES') { $nullables[] = $field['Field']; }
+
+            if ($field['Null']  == 'YES' || $field['Default'] !== NULL) { 
+                $nullables[] = $field['Field']; 
+            }
             
             if ($field['Key'] == 'PRI'){ 
                 if ($id_name != NULL){
                     $msg = "A table should have simple Primary Key by convention for table \"$name\"";
-                    
                     Files::logger($msg);      
                 }
                 
@@ -620,7 +633,7 @@ class MakeControllerBase extends Controller
         Strings::replace('__RULES__', $rules, $file);
         Strings::replace('__RELATIONS__', $relations, $file);
         
-        $this->write($dest_path, $file);
+        $this->write($dest_path, $file, $protected);
     }
 
     protected function getUuid(){
@@ -674,7 +687,7 @@ class MakeControllerBase extends Controller
         // destination        
         $dest_path = MODELS_PATH . $filename;
 
-        $this->fileProtection($filename, $dest_path, $opt);
+        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
 
         $file = file_get_contents(self::MODEL_TEMPLATE);
         $file = str_replace('__NAME__', $this->camel_case.'Model', $file);
@@ -705,7 +718,7 @@ class MakeControllerBase extends Controller
         Strings::replace('### TRAITS',  implode("\r\n\t", $traits), $file); 
         Strings::replace('### PROPERTIES', implode("\r\n\t", $proterties), $file); 
 
-        $this->write($dest_path, $file);
+        $this->write($dest_path, $file, $protected);
     }
 
     function migration($name, ...$opt) 
@@ -799,7 +812,7 @@ class MakeControllerBase extends Controller
         // destination
         $dest_path = $path . $filename;
 
-        $this->write($dest_path, $file);
+        $this->write($dest_path, $file, false);
     }    
 
 
@@ -809,12 +822,12 @@ class MakeControllerBase extends Controller
         $filename = $this->camel_case . 'ServiceProvider'.'.php';
         $dest_path = self::SERVICE_PROVIDERS_PATH . $filename;
 
-        $this->fileProtection($filename, $dest_path, $opt);
+        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
 
         $file = file_get_contents(self::SERVICE_PROVIDER_TEMPLATE);
         $file = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $file);
         
-        $this->write($dest_path, $file);
+        $this->write($dest_path, $file, $protected);
     }
 
     function helper($name, ...$opt) 
@@ -824,8 +837,8 @@ class MakeControllerBase extends Controller
 
         $file = file_get_contents(self::HELPER_TEMPLATE);
 
-        $this->fileProtection($filename, $dest_path, $opt);
-        $this->write($dest_path, $file);
+        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
+        $this->write($dest_path, $file, $protected);
     }
 
     

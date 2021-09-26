@@ -2944,7 +2944,16 @@ Para generar modelos, controladores y apis se utiliza el comando make de la sigu
                             [-c | --controller ] 
                             [-a | --api ] 
                             [-f | --force]
-Ejemplo:
+
+
+# Ayuda 
+
+El comando "make" tiene una ayuda que es invocada cuando no se pasan parámetros:
+
+	$ php com make
+
+
+Ejemplos:
     
     php com make any baz -s -m -a -f
 
@@ -2952,21 +2961,37 @@ Lo anterior es equivalente a:
 
 	php com make any baz -samf
 
-<-- solo existen (hasta ahora) los atajos -sam y -samf 
+Solo existen (hasta ahora) los atajos -sam y -samf pero Ud. puede hacer las combinaciones que quiera con "any"
 
-Para controladores es posible especificar una ruta interior a apps\controllers:
+	php com make any baz -s -m -a -f
+	php com make any baz -s -m
+	php com make any baz -m -s
+	php com make any baz -a -f
+	php com make any baz -a -s
+	...
 
-	php index.php make controller sub1\a\cosas
+# Especificar la ruta de un controlador 
 
-<-- el index.php está en la carpeta public
+Para controladores es posible especificar una ruta interior a apps\controllers
 
+Ej:
+
+	php index.php make controller sub1\a\this
+
+El comando anterior creará ThisController dentro de pps\controller\sub1\a\
+
+
+# Especificar la conexión de base de datos para un Modelo
 
 Para generar schemas o models de una DB que no es la default se debe especificar la conexión. Ej:
 
 	php com make schema cotizaciones --from:db3
 	php com make model cotizaciones --from:db3
 
-Es posible ignorar controladores, api resful controllers, modelos y schemas colocándo sus nombres en el siguiente archivo en /apps:
+
+# No sobre-escribir archivos
+
+Es posible ignorar archivos para evitar sean sobre-escritos colocando el nombre del controlador, api resful controller, modelo o esquema en el siguiente archivo en /apps:
 
 	.make_ignore
 
@@ -3040,6 +3065,9 @@ public function up()
 	// ..
 }
 
+
+# Ejecutar migraciones
+
 Para ejecutar las migraciones pendiente es con "migrations migrate"
 
 	$ php com migrations migrate
@@ -3049,7 +3077,9 @@ Para ejecutar las migraciones pendiente es con "migrations migrate"
 	Migrating '2020_10_28_161757_create_cable_categories.php'
 	Migrated  '2020_10_28_161757_create_cable_categories.php' --ok
 
-Para volver para atrás migraciones con "migrations rollback"	
+# Volver para atrás 
+
+Para volver para atrás migraciones es con el comando "migrations rollback" pero debe existir el método down() y éste debe habere sido escrito de forma tal que revierta el cambio en la base de datos (es responsabilidad del usuario por ahora)
 
 	$ php com migrations rollback [--step==N | --all]
 
@@ -3137,6 +3167,13 @@ Ej:
 Otra opción para crear un archivo de migración programáticamente sería leyendo el "molde" de una migración que se encuentra en /core/templates/Migration.php y haciendo un reemplazo de substring tal y como lo hace el comando make en MakeControllerBase:
 
 	Strings::replace('### UP', $up_rep, $file);
+
+
+# Ayuda 
+
+El comando "migrations" tiene una ayuda que es invocada cuando no se pasan parámetros:
+
+	$ php com migrations
 
 
 # Multitenant

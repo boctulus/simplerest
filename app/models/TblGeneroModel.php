@@ -8,9 +8,6 @@ use simplerest\models\schemas\TblGeneroSchema;
 
 class TblGeneroModel extends Model
 { 
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
