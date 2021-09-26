@@ -37,7 +37,7 @@ class MigrationsController extends Controller
         $file_opt  = false;
         $dir_opt   = false;
         $to_db     = null;
-    
+        
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
 
         foreach ($opt as $o){
@@ -80,7 +80,7 @@ class MigrationsController extends Controller
                 }
             }
         }
-
+        
         if (!$file_opt){
             foreach (new \DirectoryIterator($path) as $fileInfo) {
                 if($fileInfo->isDot()  || $fileInfo->isDir()) continue;
@@ -89,7 +89,7 @@ class MigrationsController extends Controller
     
             asort($filenames);    
         }
-
+        
         foreach ($filenames as $filename) {
             if (Schema::hasTable('migrations') && (new MigrationsModel(true))->where(['filename' => $filename])->exists()){
                 continue;
@@ -123,14 +123,14 @@ class MigrationsController extends Controller
             /*
                 Main connection restore
             */
-            DB::setConnection('main');
+            get_default_connection();
 
             DB::table('migrations')->create([
                 'filename' => $filename
             ]);
         }         
     }
-
+    
     /*
         Regresa migraciones (por defecto solo una)
 

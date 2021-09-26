@@ -183,6 +183,20 @@ class Schema
         return $relations;
     }
 
+	/*
+    	Given a table name gets a filename including full path for a posible migration file 
+	*/
+	static function generateMigrationFileName($tb_name){
+			
+		// 2020_10_28_141833_yyy
+		$date = date("Y_m_d");
+		$secs = time() - 1603750000;
+		$filename = $date . '_'. $secs . '_' . Strings::camelToSnake($tb_name) . '.php'; 
+
+		// destination
+		return MIGRATIONS_PATH . $filename;
+	}
+
 	static function getTables(string $conn_id = null) {	
 		$config = config();
 		
