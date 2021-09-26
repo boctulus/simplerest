@@ -269,5 +269,46 @@ class MigrationsController extends Controller
         $this->reset();
         $this->migrate();
     }
+
+    function index(...$opt){
+        if (!isset($opt[0])){
+            $this->help();
+            return;
+        }
+    }
+
+    function help(){
+        echo <<<STR
+        MIGRATIONS COMMAND HELP
+                        
+        Examples:
+
+        migrations make my_table
+        migrations make my_table --dir=my_folder  
+        
+        migrations make my_table --table=my_table   ??????????
+        migrations make my_table --to=db_connection
+        migrations make my_table --from=db_connection   ******************** qué pasó con esto?
+        migrations make my_table --from=db_connection --to=db_connection
+
+        migrations migrate
+        migrations rollback [--step==N | --all]
+
+        migrations migrate --file=2021_09_13_27908784_user_roles.php
+        migrations migrate --dir=compania_new --to=db_flor
+
+        migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
+        migrations migrate --dir=compania_new --to=db_flor --simulate
+
+        Advanced
+
+        migrations migrate --file=my_custom_file_migration.php --class_name=my_class
+        migrations migrate --file=my_custom_file_migration.php --class_name=MyClass
+
+        STR;
+        
+        print_r(PHP_EOL);
+    }
+
 }
 
