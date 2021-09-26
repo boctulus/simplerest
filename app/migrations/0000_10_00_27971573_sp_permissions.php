@@ -15,7 +15,7 @@ class SpPermissions implements IMigration
     */
     public function up()
     {
-        config()['db_connection_default'] = 'main';
+        DB::getDefaultConnection();
 
         DB::transaction(function(){
 

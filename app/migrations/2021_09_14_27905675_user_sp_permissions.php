@@ -13,7 +13,7 @@ class UserSpPermissions implements IMigration
     */
     public function up()
     {
-        config()['db_connection_default'] = 'main';
+        get_default_connection();
 
         $sc = (new Schema('user_sp_permissions'))
 

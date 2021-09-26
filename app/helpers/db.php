@@ -80,6 +80,10 @@ function get_db_connections()
     return $connections;
 }
 
+function get_default_connection(){
+    return DB::getDefaultConnection();
+}
+
 function get_user_model_name(){
     return '\\simplerest\\models\\' . Strings::snakeToCamel(config()['users_table']). 'Model';
 }
@@ -130,20 +134,6 @@ function get_name_id(string $table_name, $tenant_id = null){
     }
 
     return $class::get()['id_name'];
-}
-
-/*
-    Devuelve un path que puede usarse para crear inyectar una migración "manualmente"
-*/
-function generateMigrationFileName($tb_name){
-        
-    // 2020_10_28_141833_yyy
-    $date = date("Y_m_d");
-    $secs = time() - 1603750000;
-    $filename = $date . '_'. $secs . '_' . Strings::camelToSnake($tb_name) . '.php'; 
-
-    // destination
-    return MIGRATIONS_PATH . $filename;
 }
 
 /*
