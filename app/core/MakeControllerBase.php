@@ -742,6 +742,10 @@ class MakeControllerBase extends Controller
 
         $up_rep = '';
         foreach ($opt as $o){
+            if (is_array($o)){
+                $o = $o[0];
+            }
+
             if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
                 $to_db = $matches[1];
             }
@@ -750,12 +754,15 @@ class MakeControllerBase extends Controller
                 $from_db = $matches[1];
             }
 
+            /*
+                Makes a reference to the specified table schema
+            */
             if (preg_match('/^--table[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
                 $tb_name = $matches[1];
             }
 
             /*  
-                This option forces class name
+                This option forces php class name
             */
             if (preg_match('/^--class_name[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
                 $class_name = Strings::snakeToCamel($matches[1]);
