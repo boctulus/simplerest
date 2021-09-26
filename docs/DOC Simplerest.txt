@@ -3069,9 +3069,10 @@ Puede que exista un escenario donde se prefiera no hacer el seteo de la conexió
 
 Al momento de crear la migración (con "make migration") hay parámetros que se pueden pasar:
 
---to=  (conexión a la db)
+--to=   (conexión a la db)
 --from= (conexión a la db)
 --table= 
+--class_name=
 
 Si se especifica --to=  entonces se agregará automáticamente el seteo a la conexión en el método up()
 
@@ -3081,7 +3082,6 @@ public function up()
 
 	// ..
 }
-
 
 # Ejecutar migraciones
 
