@@ -15,7 +15,7 @@ class Webhooks implements IMigration
     */
     public function up()
     {
-        config()['db_connection_default'] = 'main';
+        get_default_connection();
 
         DB::transaction(function(){
 
