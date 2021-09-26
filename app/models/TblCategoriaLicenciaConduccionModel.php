@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblCategoriaLicenciaConduccionSchema;
 
-class TblCategoriaLicenciaConduccionModel extends Model
+class TblCategoriaLicenciaConduccionModel extends MyModel
 { 
 	
 	

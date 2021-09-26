@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblEstadoCivilSchema;
 
-class TblEstadoCivilModel extends Model
+class TblEstadoCivilModel extends MyModel
 {
 	protected $hidden   = [];
 	protected $not_fillable = [];

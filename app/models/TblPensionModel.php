@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblPensionSchema;
 
-class TblPensionModel extends Model
+class TblPensionModel extends MyModel
 { 
 	
 	

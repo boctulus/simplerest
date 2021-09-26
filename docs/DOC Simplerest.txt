@@ -647,6 +647,23 @@ Cada modelo es definido en una clase en /app/models que extiende a Model y donde
 
 Un modelo extendiende a la clase Model que les provee toda la funcionalidad y acepta un schema. Tanto modelos como schemas pueden ser generados por el comando "make".
 
+La clase "base" para el modelo es Model pero se sugiere extender a MyModel a fin de poder aplicar campos automáticos y hooks de forma general o sea que apliquen a todos los modelos.
+
+Ej:
+
+	class MyModel extends Model 
+	{
+		protected $createdBy = 'usu_intIdCreador';
+		protected $updatedBy = 'usu_intIdActualizador';
+		protected $createdAt = 'gen_dtimFechaActualizacion';
+		
+		function __construct(bool $connect = false, $schema = null, bool $load_config = true){
+			parent::__construct($connect, $schema, $load_config);
+		}
+	}
+
+En el ejemplo previo se especifica que para todos los modelos (salvo que en el propio modelo se explicite lo contrario) los campos automáticos que allí se listan (hay más) tienen los nombres mencionados.
+
 Hay básicamente 3 formas de usar un Model:
 
 a) Instanciando directamente Model en cuyo caso *no* dispondríamos de un schema a menos que se lo inyectemos:

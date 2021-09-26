@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\ApiKeysSchema;
 
-class ApiKeysModel extends Model
+class ApiKeysModel extends MyModel
 { 
 	protected $hidden   = [];
 	protected $not_fillable = [];

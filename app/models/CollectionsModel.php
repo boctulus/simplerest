@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\CollectionsSchema;
 
-class CollectionsModel extends Model
+class CollectionsModel extends MyModel
 { 
 	
 	

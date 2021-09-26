@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\FilesSchema;
 
-class FilesModel extends Model
+class FilesModel extends MyModel
 { 
 	
 	

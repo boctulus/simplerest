@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\RolesSchema;
 
-class RolesModel extends Model
+class RolesModel extends MyModel
 { 
 	
 	
