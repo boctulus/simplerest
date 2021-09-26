@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblLlaveImpuestoSchema;
 
-class TblLlaveImpuestoModel extends Model
+class TblLlaveImpuestoModel extends MyModel
 { 
 	
 	

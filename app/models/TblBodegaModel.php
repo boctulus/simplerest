@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblBodegaSchema;
 
-class TblBodegaModel extends Model
+class TblBodegaModel extends MyModel
 { 
 	
 	

@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblCentroCostosSchema;
 
-class TblCentroCostosModel extends Model
+class TblCentroCostosModel extends MyModel
 { 
 	
 	

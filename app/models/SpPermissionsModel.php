@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\SpPermissionsSchema;
 
-class SpPermissionsModel extends Model
+class SpPermissionsModel extends MyModel
 { 
 	
 	

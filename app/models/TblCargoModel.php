@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblCargoSchema;
 
-class TblCargoModel extends Model
+class TblCargoModel extends MyModel
 { 
 	
 	

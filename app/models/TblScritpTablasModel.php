@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\TblScritpTablasSchema;
 
-class TblScritpTablasModel extends Model
+class TblScritpTablasModel extends MyModel
 { 
 	
 	

@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblDiasPagoSchema;
 
-class TblDiasPagoModel extends Model
+class TblDiasPagoModel extends MyModel
 { 
 	
 	

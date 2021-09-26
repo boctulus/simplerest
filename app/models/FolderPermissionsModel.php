@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\FolderPermissionsSchema;
 
-class FolderPermissionsModel extends Model
+class FolderPermissionsModel extends MyModel
 { 
 	
 	

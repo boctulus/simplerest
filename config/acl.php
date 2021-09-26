@@ -31,6 +31,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('tbl_categoria_persona', ['read'])
     ->addResourcePermissions('tbl_estado', ['read', 'write'])
     ->addResourcePermissions('tbl_genero', ['read', 'write'])
+    ->addResourcePermissions('tbl_empresa', ['read'])
     // ...
     ->setAsRegistered('registered')
     

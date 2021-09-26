@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblCategoriaDocumentoSchema;
 
-class TblCategoriaDocumentoModel extends Model
+class TblCategoriaDocumentoModel extends MyModel
 { 
 	
 	

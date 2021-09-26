@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblIvaSchema;
 
-class TblIvaModel extends Model
+class TblIvaModel extends MyModel
 { 
 	
 	

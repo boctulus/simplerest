@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblConsecutivoSchema;
 
-class TblConsecutivoModel extends Model
+class TblConsecutivoModel extends MyModel
 { 
 	
 	

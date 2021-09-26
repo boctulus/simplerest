@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblContactoSchema;
 
-class TblContactoModel extends Model
+class TblContactoModel extends MyModel
 { 
 	protected $hidden   = [];
 	protected $not_fillable = [];

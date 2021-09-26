@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\TblUsuarioSchema;
 
-class TblUsuarioModel extends Model
+class TblUsuarioModel extends MyModel
 { 
 	protected $hidden   = [];
 	protected $not_fillable = [];
