@@ -69,6 +69,10 @@ class Files {
 		}		
 	}
 	
+	static function makeDirPath($path) {
+		return file_exists($path) || mkdir($path, 0777, true);
+	}
+	
     // @author Federkun
     static function mkdir_ignore($dir){
 		if (!is_dir($dir)) {

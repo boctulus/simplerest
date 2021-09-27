@@ -18,11 +18,11 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     $acl = new Acl();
 
     $acl
-    ->addRole('guest', 1)
+    ->addRole('guest', -1)
     // ...
     //->setAsGuest('guest')
 
-    ->addRole('registered', 2)
+    ->addRole('registered', 1)
     ->addInherit('guest')
     ->addResourcePermissions('tbl_scritp_tablas', ['read'])
     ->addResourcePermissions('products', ['read_all'])
