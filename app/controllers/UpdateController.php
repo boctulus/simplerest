@@ -49,6 +49,11 @@ class UpdateController extends ConsoleController
         return $ok;
     }
 
+    /*
+        Ojo! proteger archivo
+
+        /app/helpers/db_dynamic_load.php
+    */
     function setup(){
         $this->ori = '/home/www/simplerest';
         $this->dst = '/home/www/html/dsi_legion_simple_rest';
@@ -90,6 +95,8 @@ class UpdateController extends ConsoleController
             file_put_contents($to. DIRECTORY_SEPARATOR . $filename, $file);
         }  
         
+        echo "\r\n";
+
         $this->copy_new_files([
             'app/models/MyModel.php'
         ]);
