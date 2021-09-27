@@ -23,7 +23,7 @@ abstract class Controller
             set_exception_handler([$this, 'exception_handler']);
         }
 
-        $this->users_table = $this->config['users_table'];
+        $this->users_table = get_users_table();
     }
 
     protected function getConnection() {

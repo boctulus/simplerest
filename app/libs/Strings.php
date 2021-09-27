@@ -6,6 +6,34 @@ use simplerest\libs\Debug;
 
 class Strings 
 {
+	/*
+		Returns $s1 - $s2
+	*/
+	static function substract(string $s1, string $s2){
+		$s2_len = strlen($s2);
+		$s1_len = strlen($s1);
+
+		if ($s2_len > $s1_len){
+			return;
+		}
+
+		if (!self::startsWith($s2, $s1)){
+			return;
+		}
+
+		return substr($s1, $s2_len);
+	}
+
+	static function trimFromLastOcurrence(string $substr, string $str){
+		$pos = strrpos($str, $substr);
+
+		if ($pos === false){
+			return $str;
+		}
+
+		return substr($str, 0, $pos);
+	}
+
 	static function match(string $str, $pattern, callable $fn = NULL){
 		if (preg_match($pattern, $str, $matches)){
 			if ($fn != NULL)
@@ -13,6 +41,18 @@ class Strings
 			
 			return $matches[1];
 		}
+	}
+
+	static function matchOrFail(string $str, string $pattern, string $error_msg = null) { 
+		if (preg_match($pattern, $str, $matches)){			
+			return $matches[1];
+		}
+
+		if (empty($error_msg)){
+			$error_msg = "String $str does not match with $pattern";
+		}
+
+		throw new \Exception($error_msg);
 	}
 
 	/*

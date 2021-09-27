@@ -2,7 +2,6 @@
 
 namespace simplerest\models;
 
-use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
 ### IMPORTS
 

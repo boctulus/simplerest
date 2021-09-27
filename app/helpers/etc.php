@@ -14,3 +14,5 @@ if (!function_exists('env')){
 function config(){
     return include CONFIG_PATH . '/config.php';
 }
+
+
