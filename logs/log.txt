@@ -122,3 +122,5 @@
 2021-09-23 22:34:34	A table should have simple Primary Key by convention for table "tbl_retencion_cuentacontable"
 2021-09-23 22:34:34	A table should have simple Primary Key by convention for table "tbl_retencion_cuentacontable"
 2021-09-23 22:34:34	A table should have simple Primary Key by convention for table "tbl_sub_cuenta_contable"
+2021-09-27 15:58:06	remember-me http://simplerest.lan/login/change_pass_by_link/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMjc3MjY4NiwiZXhwIjoxNjMzMzc3NDg2LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoxMjIsImRiX2FjY2VzcyI6W119.vBSomZnE4RF0ART5QJva_sVLcjk_za_GHhC42sBo6hM/1633377486
+2021-09-27 16:02:53	remember-me http://simplerest.lan/login/change_pass_by_link/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMjc3Mjk3MiwiZXhwIjoxNjMzMzc3NzcyLCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoxMjIsImRiX2FjY2VzcyI6W119.gjgBWSEM0yIQ5hBr-LJmNel1XWyJPxh516Qdb0kAwaM/1633377772

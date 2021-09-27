@@ -7,7 +7,7 @@ use simplerest\core\Controller;
 use simplerest\core\Request;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
-use simplerest\libs\Utils;
+use simplerest\libs\Strings;
 use simplerest\libs\Debug;
 use simplerest\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
@@ -968,7 +968,7 @@ class AuthController extends Controller implements IAuth
 
             $token = $this->gen_jwt_rememberme($uid);
             
-            $url = $base_url .'login/change_pass_by_link/' . $token . '/' . $exp; 	
+            $url = $base_url . (!Strings::endsWith(DIRECTORY_SEPARATOR, $base_url) ? '/' : '') .'login/change_pass_by_link/' . $token . '/' . $exp; 	
 
 		} catch (\Exception $e){
 			Factory::response()->sendError($e->getMessage(), 500);
