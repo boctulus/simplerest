@@ -20,6 +20,8 @@ use simplerest\libs\Strings;
 
 class UpdateController extends ConsoleController
 {
+    protected $ori, $dst;
+
     function __construct()
     {
         parent::__construct();     
@@ -47,10 +49,9 @@ class UpdateController extends ConsoleController
         return $ok;
     }
 
-    function setup()
-    {
-        $ori = '/home/www/simplerest';
-        $dst = '/home/www/html/dsi_legion_simple_rest';
+    function setup(){
+        $this->ori = '/home/www/simplerest';
+        $this->dst = '/home/www/html/dsi_legion_simple_rest';
 
         $str_files = <<<'FILES'
         app/core
@@ -68,10 +69,36 @@ class UpdateController extends ConsoleController
         #app/controllers/MyAuthController.php
         packages
         docs
-        app/models/MyModel.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);
+
+        $this->copy_new_files($files);
+
+        $to = $this->dst . '/app/models';
+        foreach (new \DirectoryIterator($to) as $fileInfo) {
+            if($fileInfo->isDot()  || $fileInfo->isDir()) continue;
+
+            $filename  = $fileInfo->getFilename();
+            $full_path = $fileInfo->current()->getPathname();
+
+            $file = file_get_contents($full_path);
+
+            $file = str_replace('extends Model', 'extends MyModel', $file);
+
+            print_r("Updating $filename\r\n");
+            file_put_contents($to. DIRECTORY_SEPARATOR . $filename, $file);
+        }  
+        
+        $this->copy_new_files([
+            'app/models/MyModel.php'
+        ]);
+    }
+
+    function copy_new_files(Array $files)
+    {
+        $ori = $this->ori;
+        $dst = $this->dst;
 
         foreach ($files as $_file){
             $file = trim($_file);
