@@ -9,6 +9,7 @@ TblUsuarioEmpresaModel.php
 #TblUsuarioModel.php
 FilesModel.php
 TblUsuarioEmpresaModel.php
+EmailNotificationsModel.php
 
 
 ; Controllers
