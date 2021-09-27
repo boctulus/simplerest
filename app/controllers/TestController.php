@@ -57,6 +57,19 @@ class TestController extends Controller
             $mgr->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name={$row['scr_varNombre']}");
         }
     }
+
+    function dir(){
+        $path = '/home/www/simplerest/app/migrations';
+
+        $dir  = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($dir, \RecursiveIteratorIterator::SELF_FIRST);
+
+        echo "[$path]\n";
+        foreach ($files as $file) {
+            $indent = str_repeat('   ', $files->getDepth());
+            echo $indent, " ├ $file\n";
+        }
+    }
     
 }
 
