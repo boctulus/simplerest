@@ -50,6 +50,7 @@ abstract class Controller
         }
 
         $ctrl  = strtolower(substr($ctrl, 0, -strlen('Controller')));
+        $vars_to_be_passed['ctrl'] = $ctrl; //
 
         view($view_path, $vars_to_be_passed, $layout);
    }
