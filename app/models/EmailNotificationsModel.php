@@ -8,7 +8,7 @@ use simplerest\models\schemas\main\EmailNotificationsSchema;
 
 class EmailNotificationsModel extends MyModel
 { 
-	protected $createdAt = 'created_at';	
+	protected $createdAt = 'created_at';	// 
 
 	protected $hidden   = [];
 	protected $not_fillable = [];
