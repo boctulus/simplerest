@@ -46,6 +46,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addInherit('registered')
     //->addSpecialPermissions(['read_all', 'write_all'])
     ->addResourcePermissions('tbl_contacto', ['read'])
+    ->addResourcePermissions('tbl_usuario_empresa', ['read', 'write'])
     
    
     ->addRole('supervisor', 100)  
