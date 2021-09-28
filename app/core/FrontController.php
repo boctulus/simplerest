@@ -19,9 +19,10 @@ class FrontController
         global $argv;
         global $api_version;
 
-        $config = config();
+        $config      = config();
+        $middlewares = include CONFIG_PATH . 'middlewares.php';
         
-        Response::getInstance();    
+        $res = Response::getInstance();    
         $sub = (int) $config['REMOVE_API_SLUG'];
 
         if (php_sapi_name() != 'cli'){
@@ -32,8 +33,9 @@ class FrontController
                 $path = substr($path, strlen($config['BASE_URL']));
             }   
     
-            if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) )
-                Response::getInstance()->sendError('Malformed url', 400); 
+            if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) ){
+                $res->sendError('Malformed url', 400); 
+            }
     
             $_params = explode('/', $path);
     
@@ -73,11 +75,13 @@ class FrontController
             $api_version = $_params[1 - $sub]; 
 
         } elseif ($_params[0] === 'api' || $config['REMOVE_API_SLUG']) {
-            if (!isset($_params[1 - $sub]))
-                Response::getInstance()->sendError('API version is missing');
+            if (!isset($_params[1 - $sub])){
+                $res->sendError('API version is missing');
+            }
 
-            if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $_params[1 - $sub], $matches) )
-                Response::getInstance()->sendError("Incorrect format for API version");
+            if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $_params[1 - $sub], $matches) ){
+                $res->sendError("Incorrect format for API version");
+            }
 
             $api_version = $_params[1 - $sub]; 
             $controller = $_params[2 - $sub] ?? NULL;  
@@ -154,18 +158,18 @@ class FrontController
         }
 
 
-        if (!class_exists($class_name))
-            Response::getInstance()->sendError(_("Class not found"), 404, "Internal error - controller class $class_name not found");  
+        if (!class_exists($class_name)){
+            $res->sendError(_("Class not found"), 404, "Internal error - controller class $class_name not found"); 
+        } 
 
         if (!method_exists($class_name, $method)){
             if (php_sapi_name() != 'cli' || $method != self::DEFAULT_ACTION){
-                Response::getInstance()->sendError("Internal error - method $method was not found in $class_name", 500); 
+                $res->sendError("Internal error - method $method was not found in $class_name", 500); 
             } else {
                 $dont_exec = true;
             }
         }
-            
-                
+                   
         $controller_obj = new $class_name();
 
         if (isset($dont_exec)){
@@ -175,13 +179,44 @@ class FrontController
         // Only for API Rest
         if ($_params[0] === 'api' && !$is_auth){
             if (!in_array($method, $controller_obj->getCallable())){
-                Response::getInstance()->sendError("Not authorized for $controller:$method", 403);
+                $res->sendError("Not authorized for $controller:$method", 403);
+            }
+        }
+        
+        $data = call_user_func_array([$controller_obj, $method], $params);
+        
+        // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
+        if (!empty($data)){
+            $res->setData($data);  
+        }
+        
+        /*
+            Middlewares
+        */
+
+        //dd($class_name, 'Controller');
+
+        foreach($middlewares as $injectable => $mid){
+            $_i = explode('@', $injectable);
+
+            $_class_name  = $_i[0];
+            $_method      = $_i[1] ??  'index';
+
+            if ($class_name == $_class_name && $method == $_method){
+                //dd(['class' => $_class_name, 'method' => $_method], "MID $mid");
+
+                if (!class_exists($mid)){
+                    $res->sendError(_("Middleware '$mid' not found"), 404, "Internal error - controller class $class_name not found");                     
+                }                    
+
+                $mid_obj = new $mid();
+                $mid_obj->handle();
             }
         }
 
-        $data = call_user_func_array([$controller_obj, $method], $params);
-        Response::getInstance()->send($data);
-        
+        //////////////////////////////////////
+
+        $res->flush();
         exit;
     }
 }

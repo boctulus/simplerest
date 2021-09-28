@@ -10,6 +10,7 @@ TblUsuarioEmpresaModel.php
 FilesModel.php
 TblUsuarioEmpresaModel.php
 EmailNotificationsModel.php
+UserRolesModel.php
 
 
 ; Controllers
