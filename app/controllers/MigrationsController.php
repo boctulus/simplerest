@@ -37,10 +37,12 @@ class MigrationsController extends Controller
         $file_opt  = false;
         $dir_opt   = false;
         $to_db     = null;
+        $steps     = PHP_INT_MAX;
         
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
 
-        foreach ($opt as $o){
+        foreach ($opt as $o)
+        {
             if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
                 $to_db = $matches[1];
             }
@@ -66,6 +68,10 @@ class MigrationsController extends Controller
                 $filenames = [ $_f ];
             } 
 
+            if (Strings::startsWith('--step=', $o)){
+                $steps = Strings::slice($o, '/^--step=([0-9]+)$/');
+            }
+
             /*
                 Debería aceptar rutas absolutas (con /) para manejarse dentro de Service Providers
             */
@@ -87,10 +93,14 @@ class MigrationsController extends Controller
                 $filenames[] = $fileInfo->getFilename();
             }   
     
-            asort($filenames);    
+            sort($filenames);    
         }
         
-        foreach ($filenames as $filename) {
+        $cnt = min($steps, count($filenames));
+
+        for ($i=0; $i<$cnt; $i++) {
+            $filename = $filenames[$i];
+
             if (Schema::hasTable('migrations') && (new MigrationsModel(true))->where(['filename' => $filename])->exists()){
                 continue;
             }
