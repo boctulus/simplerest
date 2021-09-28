@@ -7,14 +7,15 @@ use simplerest\libs\DB;
 
 class Response
 {
-    static protected $headers = [];
+    static protected $data;
+    static protected $is_encoded;
+    static protected $headers = []; 
     static protected $http_code = NULL;
     static protected $http_code_msg = '';
     static protected $instance = NULL;
     static protected $version = '2';
     static protected $config;
     static protected $pretty;
-    static protected $quit = true;
     static protected $paginator;
     static protected $as_object = false;
     static protected $fake_status_codes = false; // send 200 instead
@@ -31,8 +32,7 @@ class Response
         DB::closeAllConnections();
     }    
 
-    static function getInstance(){
-        
+    static function getInstance(){        
         if(static::$instance == NULL){
             static::$instance = new static();
         }
@@ -91,11 +91,6 @@ class Response
         return static::getInstance();
     }
 
-    function setQuit(bool $state){
-        static::$quit = $state;
-        return static::getInstance();
-    }
-
     function encode($data){        
         $options = static::$pretty ? static::$options | JSON_PRETTY_PRINT : static::$pretty;
             
@@ -140,8 +135,7 @@ class Response
                     $arr['paginator'] = static::$paginator;
             }
 
-            $data = $this->encode($arr);
-            header('Content-type:application/json;charset=utf-8');
+            self::$is_encoded = true;            
         }            
 
         //if (Factory::request()->gzip() && strlen($data) > 1000){
@@ -150,21 +144,18 @@ class Response
         //}else
         //    echo $data. "\n";
 
-        echo $data;    
-
-        if (static::$quit)
-            exit;  	
+        static::$instance->setData( $arr );
+        return static::$instance;   	
     }
 
     function sendCode(int $http_code){
-        echo json_encode(['status_code' => $http_code]);
+        static::$instance->setData( json_encode(['status_code' => $http_code]) );
           
         if (!static::$fake_status_codes){    
             http_response_code($http_code);
-        }    
-
-        if (static::$quit)
-            exit; 
+        }   
+        
+        return static::$instance; 
     }
  
 
@@ -172,34 +163,31 @@ class Response
         if (!headers_sent()) {
             http_response_code(200);
         }
-        exit;
+        
+        return static::$instance; 
     }
 
     // send as JSON
     function sendJson($data, int $http_code = NULL){
         $http_code = $http_code != NULL ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
         
+        self::$is_encoded = true; 
+
         if (!headers_sent()) {
             header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
             header('Content-type:application/json;charset=utf-8');
         }
 
-        $res =  $this->encode([ 
-                                'data' => $data, 
-                                'status_code' => $http_code,
-                                'error' => '', 
-                                'error_detail' => ''
-        ]). "\n"; 
-        
-        if (Factory::request()->gzip() && strlen($res) > 1000){
-            $this->addHeader('Content-Encoding: gzip');
-            $this->zip($res);    
-        }
-        else
-            echo $res;
+        $res = [ 
+            'data' => $data, 
+            'status_code' => $http_code,
+            'error' => '', 
+            'error_detail' => ''
+        ];
+    
+        static::$instance->setData($res);
 
-        if (static::$quit)
-            exit; 
+        return static::$instance; 
     }
 
    
@@ -213,6 +201,8 @@ class Response
      * @return void
      */
     function sendError(string $msg_error, int $http_code = NULL, $error_detail= NULL){
+        self::$is_encoded = true;
+
         if (!headers_sent()) {
             if ($http_code == NULL)
                 if (static::$http_code != NULL)
@@ -225,22 +215,32 @@ class Response
                 header('Content-type:application/json;charset=utf-8');
         }    
         
-        $res =  $this->encode([ 
-                                'status_code' => $http_code,
-                                'error' => $msg_error,
-                                'error_detail' => $error_detail
-        ], $http_code) . "\n";
-        
-        if (Factory::request()->gzip() && strlen($res) > 1000){
-            $this->addHeader('Content-Encoding: gzip');
-            $this->zip($res);    
+        $res =  [ 
+            'status_code' => $http_code,
+            'error' => $msg_error,
+            'error_detail' => $error_detail
+        ];
+            
+        static::$instance->setData($res);  
+        static::$instance->flush();
+    }
+
+    function setData($data){
+        static::$data = $data;
+        return static::$instance; 
+    }
+
+    function getData(){ 
+        return static::$data; 
+    }
+
+    function flush(){
+        if (self::$is_encoded){
+            static::$data = $this->encode(static::$data);
+            header('Content-type:application/json;charset=utf-8');
         }
-        else
-            echo $res;
-        
-        if (static::$quit){
-            exit;
-        }
-             
+
+        echo static::$data; 
+        exit;
     }
 }

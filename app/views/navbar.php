@@ -82,6 +82,4 @@
 			<!-- /.container-fluid -->
 		  </nav>
 		</div>
-</div>	
-
-<?= $ctrl; ?>
+</div>

@@ -124,3 +124,14 @@
 2021-09-23 22:34:34	A table should have simple Primary Key by convention for table "tbl_sub_cuenta_contable"
 2021-09-27 15:58:06	remember-me http://simplerest.lan/login/change_pass_by_link/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMjc3MjY4NiwiZXhwIjoxNjMzMzc3NDg2LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoxMjIsImRiX2FjY2VzcyI6W119.vBSomZnE4RF0ART5QJva_sVLcjk_za_GHhC42sBo6hM/1633377486
 2021-09-27 16:02:53	remember-me http://simplerest.lan/login/change_pass_by_link/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMjc3Mjk3MiwiZXhwIjoxNjMzMzc3NzcyLCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoxMjIsImRiX2FjY2VzcyI6W119.gjgBWSEM0yIQ5hBr-LJmNel1XWyJPxh516Qdb0kAwaM/1633377772
+2021-09-28 13:31:04	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:32:55	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:32:57	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:33:11	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:33:28	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:34:20	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:34:22	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:34:45	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:35:45	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:36:23	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-09-28 13:37:39	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value

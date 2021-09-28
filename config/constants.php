@@ -55,6 +55,9 @@ if (!defined('HELPERS_PATH'))
 if (!defined('LOCALE_PATH'))
     define('LOCALE_PATH', APP_PATH . 'locale' . DIRECTORY_SEPARATOR);  
 
+if (!defined('MIDDLEWARES_PATH'))
+    define('MIDDLEWARES_PATH', APP_PATH . 'middlewares' . DIRECTORY_SEPARATOR); 
+
 
 if (!defined('PUBLIC_PATH'))
     define('PUBLIC_PATH', ROOT_PATH . 'public' . DIRECTORY_SEPARATOR); 
