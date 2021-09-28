@@ -123,7 +123,7 @@ class Response
                     $arr['paginator'] = static::$paginator;
             }
 
-            $arr = array_merge($arr,[
+            $data = array_merge($arr,[
                     'data' => $data, 
                     'status_code' => $http_code,
                     'error' => '', 
@@ -132,7 +132,7 @@ class Response
 
             if (static::$config['paginator']['position'] == 'BOTTOM'){
                 if (static::$paginator != NULL)
-                    $arr['paginator'] = static::$paginator;
+                    $data['paginator'] = static::$paginator;
             }
 
             self::$is_encoded = true;            
@@ -144,7 +144,7 @@ class Response
         //}else
         //    echo $data. "\n";
 
-        static::$instance->setData( $arr );
+        static::$instance->setData( $data );
         return static::$instance;   	
     }
 
