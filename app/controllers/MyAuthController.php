@@ -102,8 +102,13 @@ class MyAuthController extends AuthController {
 
         if ($tenant === null){
             $tenant = request()->getTenantId();
+
+            if ($tenant === null){
+                response()->sendError("Undefined tenant", 500);
+            }
         }
         
+        /*
         DB::setConnection($tenant);
         //dd(DB::getCurrentConnectionId(), 'CONN ID');
 
@@ -111,6 +116,7 @@ class MyAuthController extends AuthController {
         ->fill(['est_intIdEstado'])
         ->create(
             [
+                'usu_intId' => $uid,
                 'usu_varNroIdentificacion' => $data['use_varUsuario'], // ???
                 'usu_varEmail' => $data['use_varEmail'],
                 //'usu_varPassword' => $data['use_decPassword'],
@@ -122,24 +128,24 @@ class MyAuthController extends AuthController {
 
         DB::setConnection('main');
 
-        if (in_array('usuario', $roles)){
-            //
-            //    Debo macthear con las conexiones de la DB
-            //
-            $db_id = DB::table('tbl_base_datos')
-            ->where(['dba_varNombre' => $tenant])
-            ->value('dba_intId');
-            
-            if ($db_id === null){
-                throw new \Exception("Invalid database selection");
-            }        
-        }
+        //
+        //    Debo macthear con las conexiones de la DB
+        //
+        $db_id = DB::table('tbl_base_datos')
+        ->where(['dba_varNombre' => $tenant])
+        ->value('dba_intId');
+        
+        if ($db_id === null){
+            throw new \Exception("Invalid database selection");
+        }        
+        
 
         $dbuid = DB::table('tbl_usuarios_x_base_datos')
         ->create([
             'bas_intIdBasedatos' => $db_id,
             'usu_intIdUsuario'   => $uid
         ]);    
+        */
     }
 
     function onRemembered($data, $link)

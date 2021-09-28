@@ -18,6 +18,10 @@ class TestController extends Controller
         parent::__construct();        
     }
 
+    function index(){
+        return "Hello my friend";
+    }
+
     function rels(){
         DB::getConnection('db_flor');
 
@@ -40,6 +44,22 @@ class TestController extends Controller
         dd(assets("jota.jpg"));
     }
 
+    function dir(){
+        $path = '/home/www/simplerest/app/migrations';
+
+        $dir  = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($dir, \RecursiveIteratorIterator::SELF_FIRST);
+
+        echo "[$path]\n";
+        foreach ($files as $file) {
+            $indent = str_repeat('   ', $files->getDepth());
+            echo $indent, " ├ $file\n";
+        }
+    }
+
+    /*
+        Genera migraciones a partir de la tabla 'tbl_scritp_tablas'
+    */
     function gen_scripts(){
         $mgr = new MakeControllerBase();
 
@@ -58,17 +78,8 @@ class TestController extends Controller
         }
     }
 
-    function dir(){
-        $path = '/home/www/simplerest/app/migrations';
-
-        $dir  = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
-        $files = new \RecursiveIteratorIterator($dir, \RecursiveIteratorIterator::SELF_FIRST);
-
-        echo "[$path]\n";
-        foreach ($files as $file) {
-            $indent = str_repeat('   ', $files->getDepth());
-            echo $indent, " ├ $file\n";
-        }
+    function mid(){
+        return "Hello World!";        
     }
     
 }

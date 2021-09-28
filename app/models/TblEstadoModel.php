@@ -11,6 +11,9 @@ class TblEstadoModel extends MyModel
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
+	protected $createdAt = "est_dtimFechaCreacion";
+	protected $updatedAt = "est_dtimFechaActualizacion";
+
     function __construct(bool $connect = false){
         parent::__construct($connect, new TblEstadoSchema());
 	}	
