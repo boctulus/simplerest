@@ -25,6 +25,6 @@ class InyectarSaludo extends Middleware
             }
         }
 
-        //return $next($this->req, $this->res);
+        $next($this->req, $this->res);
     }
 }
