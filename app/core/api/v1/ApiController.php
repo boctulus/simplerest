@@ -1246,8 +1246,7 @@ abstract class ApiController extends ResourceController implements IApi
             foreach ($data as $k => $v){
                 if (strtoupper($v) == 'NULL' && $this->instance->isNullable($k)) 
                     $data[$k] = NULL;
-            }
-            
+            }            
             
             $validado = (new Validator())->setRequired($put_mode)->validate($this->instance->getRules(), $data);
             if ($validado !== true){
@@ -1273,8 +1272,9 @@ abstract class ApiController extends ResourceController implements IApi
                 $affected = $this->instance->where([$id_name => $id])->update($data);
                 //var_dump($this->instance->dd2());
             } catch (\Exception $e){
-                $affected = $this->instance->where([$id_name => $id])->dontExec()->update($data);
+                //$affected = $this->instance->where([$id_name => $id])->dontExec()->update($data);
                 //dd($this->instance->dd2());
+                response()->sendError($e->getMessage());
             }
 
             if ($affected !== false) {
@@ -1284,7 +1284,7 @@ abstract class ApiController extends ResourceController implements IApi
                 $this->onPut($id, $data, $affected);
                 $this->webhook('update', $data, $id);
                 
-                Factory::response()->send("OK");
+                Factory::response()->send($data);
             } else {
                 Factory::response()->sendError("Error in PATCH",404);
             }	

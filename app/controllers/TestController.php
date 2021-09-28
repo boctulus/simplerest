@@ -81,6 +81,15 @@ class TestController extends Controller
     function mid(){
         return "Hello World!";        
     }
+
+    function update(){
+        $data = [ "est_varColor" => "rojo" ];
+
+        DB::setConnection('db_flor');
+
+        $affected = DB::table('tbl_estado')->where(["est_intId" => 1])->update($data);
+        dd($affected);
+    }
     
 }
 
