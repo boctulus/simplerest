@@ -635,13 +635,23 @@ Los middlewares constituyen una capa intermedia que permiten interceptar una res
 
 SimpleRest implementa Middlewares para el FrontController de la siguiente manera:
 
+Supongamos que se tiene un Controlador llamado TestController con un método que genera una respuesta y queremos alterarla *sin* tocar el código del método:
+
+	class TestController {
+		// ...
+
+		function mid(){
+			return "Hello World!";        
+		}
+	}
+
 1) Se debe crear un Middleware que tendrá una estructura parecida a:
 
-<?php
+	<?php
 
-namespace simplerest\middlewares;
+	namespace simplerest\middlewares;
 
-use simplerest\core\Middleware;
+	use simplerest\core\Middleware;
 
 	class InyectarSaludo extends Middleware
 	{   
@@ -658,10 +668,18 @@ use simplerest\core\Middleware;
 					$this->res->setData(preg_replace('/Hello (.*)/', "Hello happy $1", $data,1));
 				}
 			}
-
-			//return $next($this->req, $this->res);
 		}
 	}
+
+2) Se registra el Middleware en config/middlewares.php
+
+	return [
+		// ...
+		'simplerest\controllers\TestController@mid' => InyectarSaludo::class,
+		// ...
+	];
+
+Ahora la respuesta del método mid() de TestController será interceptada y modificada.
 
 
 # El Schema
