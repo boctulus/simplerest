@@ -1280,7 +1280,7 @@ class AuthController extends Controller implements IAuth
             if ($role_id == null){
                 throw new \Exception("Role $role is invalid");
             }
-            
+
             try {
                 // lo ideal es validar los roles y obtener los ids para luego hacer un "INSERT in bulk"
                 $ur_id = DB::table('user_roles')
