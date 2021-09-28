@@ -9,6 +9,7 @@ use simplerest\core\Response;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
 use simplerest\libs\Schema;
+use simplerest\libs\Strings;
 use simplerest\core\MakeControllerBase;
 
 class TestController extends Controller
@@ -74,7 +75,9 @@ class TestController extends Controller
 
             $folder = "compania";
 
-            $mgr->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name={$row['scr_varNombre']}");
+            $class_name = Strings::snakeToCamel("{$row['scr_varNombre']}_{$row['scr_varModulo']}_{$row['scr_intOrden']}");
+
+            $mgr->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name=$class_name");
         }
     }
 
