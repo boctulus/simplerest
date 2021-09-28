@@ -535,7 +535,10 @@ Ej:
 Más
 https://swagger.io/docs/specification/authentication/api-keys/
 
+
 ### Controlador
+
+Los controladores son clases cuyos métodos ejecutan acciones al ser invocados desde el FrontController o el Router.
 
 Para demostrar como ejecutar un controlador desde la linea de comandos ejemplificaremos con un simple controlador ubicado en la carpeta controllers:
 
@@ -553,9 +556,9 @@ Para demostrar como ejecutar un controlador desde la linea de comandos ejemplifi
 
 	}
 
-En la terminal nos cambiamos al directorio "public" y ejecutamos: 
+La acción será ejecutada con: 
 
-	php index.php dumb add 1 6
+	php com dumb add 1 6
 
 Hay soporte para sub-directorios o sub-sub-(sub)-directorios 
 
@@ -620,9 +623,45 @@ class DumbAuthController extends ResourceController
     }       
 }
 
-Api Controller:
+
+# Api Controller:
 
 Un ApiController es un tipo de ResourceController que sirve para procesar un endpoint y por tanto sus métodos son los verbos correspondientes: get, post, put, patch, delete, head
+
+
+# Middlewares
+
+Los middlewares constituyen una capa intermedia que permiten interceptar una respuesta y alterarla o modificar el flujo del programa proveyendo un punto donde se pueden hacer chequeos de seguridad por ejemplo.
+
+SimpleRest implementa Middlewares para el FrontController de la siguiente manera:
+
+1) Se debe crear un Middleware que tendrá una estructura parecida a:
+
+<?php
+
+namespace simplerest\middlewares;
+
+use simplerest\core\Middleware;
+
+	class InyectarSaludo extends Middleware
+	{   
+		function __construct()
+		{
+			parent::__construct();
+		}
+
+		function handle(?callable $next = null){
+			$data = $this->res->getData();
+
+			if (is_string($data)){
+				if (Strings::startsWith('Hello ', $data)){
+					$this->res->setData(preg_replace('/Hello (.*)/', "Hello happy $1", $data,1));
+				}
+			}
+
+			//return $next($this->req, $this->res);
+		}
+	}
 
 
 # El Schema
