@@ -760,11 +760,11 @@ class MakeControllerBase extends Controller
             if (preg_match('/^--table[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
                 $tb_name = $matches[1];
             }
-
+            
             /*  
                 This option forces php class name
             */
-            if (preg_match('/^--class_name[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--class_name[=|:]([a-z][a-z0-9_]+)$/i', $o, $matches)){
                 $class_name = Strings::snakeToCamel($matches[1]);
                 $file = str_replace('__NAME__', $class_name, $file); 
             } 
