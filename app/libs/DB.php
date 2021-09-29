@@ -51,11 +51,15 @@ class DB
 	}
 	
 	public static function setConnection($id){
+		global $refresh_conn; // debería llamarse $dont_refresh_conn
+
+		$refresh_conn = false;
+
 		if ($id === null){
 			throw new \InvalidArgumentException("Connection identifier can not be NULL");
 		}
 
-		$config = config();
+		$config = include CONFIG_PATH . 'config.php';
 
 		if (!isset($config['db_connections'][$id])){
 			throw new \InvalidArgumentException("Unregistered connection identifier for '$id'");

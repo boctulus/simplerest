@@ -16,13 +16,13 @@ class TblCargoInsert20 implements IMigration
     public function up()
     {
         Model::query("INSERT INTO tbl_cargo 
-(
-   car_varNombre, car_varDescripcion,  emp_intIdEmpresa,  usu_intIdCreador, usu_intIdActualizador
-)
-VALUES
-(
-  'NA', 'NO APLICA', 1, 1, 1
-);");
+        (
+        car_varNombre, car_varDescripcion,  emp_intIdEmpresa,  usu_intIdCreador, usu_intIdActualizador
+        )
+        VALUES
+        (
+        'NA', 'NO APLICA', 1, 1, 1
+        );");
     }
 }
 

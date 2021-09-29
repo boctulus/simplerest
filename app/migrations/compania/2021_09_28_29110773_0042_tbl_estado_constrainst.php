@@ -16,8 +16,8 @@ class TblEstadoConstrainst42 implements IMigration
     public function up()
     {
         Model::query("ALTER TABLE tbl_estado
- ADD CONSTRAINT FK_est_IdActualizador FOREIGN KEY (usu_intIdActualizador)
-REFERENCES tbl_usuario (usu_intId);");
+        ADD CONSTRAINT FK_est_IdActualizador FOREIGN KEY (usu_intIdActualizador)
+        REFERENCES tbl_usuario (usu_intId);");
     }
 }
 

@@ -30,8 +30,8 @@ ENGINE = INNODB,
 AUTO_INCREMENT = 1,
 CHARACTER SET utf8,
 COLLATE utf8_general_ci,
-COMMENT = ' * DescripciÃƒÂ³n: 
- * Author: http://www.divergente.net.co");
+COMMENT = ' * Descripcion: 
+ * Author: http://www.divergente.net.co';");
     }
 }
 

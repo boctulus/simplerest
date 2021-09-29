@@ -3,7 +3,9 @@
 namespace simplerest\models;
 
 use simplerest\core\Model;
-use simplerest\libs\ValidationRules;
+use simplerest\libs\DB;
+use simplerest\core\MakeControllerBase;
+use simplerest\controllers\MigrationsController;
 use simplerest\models\schemas\main\TblBaseDatosSchema;
 
 class TblBaseDatosModel extends MyModel
@@ -15,15 +17,38 @@ class TblBaseDatosModel extends MyModel
         parent::__construct($connect, new TblBaseDatosSchema());
 	}	
 
-	function onCreated(array &$data, $last_inserted_id)
+	// está deshabilitado (notar el "__" delante)
+	function __onCreated(array &$data, $last_inserted_id)
 	{
 		/*
-			Ejecutar el SP que crea la DB o ...
+			Creo la DB
 		*/
 
-		$db_name = $data['dba_varNombre'];
+		DB::getDefaultConnection();
 
-		Model::query("CREATE DATABASE $db_name;");
+		$db_name = $data['dba_varNombre'];
+		
+		$ok = Model::query("CREATE DATABASE $db_name;");
+		
+
+		/*
+			Creo las tablas
+		*/
+
+		$mgr = new MigrationsController();
+
+        $folder = 'compania'; 
+        $tenant = $db_name;
+
+        $mgr->migrate("--dir=$folder", "--to=$tenant");
+
+		/*
+			Creo schemas y modelos
+		*/
+
+		$mk = new MakeControllerBase();
+		$mk->any("all", "-s", "-m", "--from:$tenant");
+
 	}
 }
 

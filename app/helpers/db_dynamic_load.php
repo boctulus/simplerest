@@ -11,12 +11,14 @@ include_once __DIR__ . '/debug.php';
     Example about how to get database connections dinamically
 */
 
-function get_db_connections()
+function get_db_connections(bool $refresh = false)
 {
     static $connections = [];
 
     if (!empty($connections)){
-        return $connections;
+        if ($refresh){
+            return $connections;
+        }        
     }
 
     /*
@@ -30,6 +32,7 @@ function get_db_connections()
     $user = 'boctulus';
     $pass = 'gogogo#*$U&_441@#';
     $charset = 'utf8';
+
     
     $dsn  =  "$driver:dbname=$dbname;port=$port;host=$host";
 
