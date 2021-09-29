@@ -28,8 +28,8 @@ class TblGeneroMaestro54 implements IMigration
 ENGINE = INNODB,
 CHARACTER SET utf8,
 COLLATE utf8_general_ci,
-COMMENT = ' * DescripciÃƒÂ³n: Tabla Genero..
- * Author: http://www.divergente.net.co");
+COMMENT = ' * Descripcion: Tabla Genero..
+ * Author: http://www.divergente.net.co';");
     }
 }
 

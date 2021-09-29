@@ -31,8 +31,8 @@ AUTO_INCREMENT = 41,
 AVG_ROW_LENGTH = 1489,
 CHARACTER SET utf8,
 COLLATE utf8_general_ci,
-COMMENT = ' * DescripciÃƒÂ³n: Tabla tbl_eps
- * Author: http://www.divergente.net.co");
+COMMENT = ' * Descripcion: Tabla tbl_eps
+ * Author: http://www.divergente.net.co';");
     }
 }
 

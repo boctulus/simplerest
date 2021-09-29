@@ -32,8 +32,8 @@ AUTO_INCREMENT = 1,
 AVG_ROW_LENGTH = 4096,
 CHARACTER SET utf8,
 COLLATE utf8_general_ci,
-COMMENT = ' * DescripciÃƒÂ³n: Tabla para registrar los diferentes Cargos.
- * Author: http://www.divergente.net.co");
+COMMENT = ' * Descripcion: Tabla para registrar los diferentes Cargos.
+ * Author: http://www.divergente.net.co';");
     }
 }
 
