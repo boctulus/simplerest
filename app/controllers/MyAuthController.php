@@ -91,10 +91,23 @@ class MyAuthController extends AuthController {
             ]); 
 
             // **
+
+            //
+            // Creo la DB
+            //
+            $conn = DB::getDefaultConnection();
+
+            $sql = 'CALL sp_ejecucion_script(?)';
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(1, $data['use_varEmail'], \PDO::PARAM_STR, 60);
+            $res = $stmt->execute();
+
         }
 
         /*
-            Ahora debo crear la DB, proceso que puede demorar
+            SINO creé la DB antes => la debeo crear la DB, colgado
+            del evento onCreated() en TblBaseDatos
 
             Podría crear una tarea programada para esto que revise
             si hay pendiente crear alguna DB en 'tbl_base_datos'
@@ -107,8 +120,7 @@ class MyAuthController extends AuthController {
                 response()->sendError("Undefined tenant", 500);
             }
         }
-        
-        /*
+      
         DB::setConnection($tenant);
         //dd(DB::getCurrentConnectionId(), 'CONN ID');
 
@@ -126,7 +138,7 @@ class MyAuthController extends AuthController {
         );
 
 
-        DB::setConnection('main');
+        DB::getDefaultConnection();
 
         //
         //    Debo macthear con las conexiones de la DB
@@ -138,14 +150,13 @@ class MyAuthController extends AuthController {
         if ($db_id === null){
             throw new \Exception("Invalid database selection");
         }        
-        
 
+        
         $dbuid = DB::table('tbl_usuarios_x_base_datos')
         ->create([
             'bas_intIdBasedatos' => $db_id,
             'usu_intIdUsuario'   => $uid
         ]);    
-        */
     }
 
     function onRemembered($data, $link)

@@ -2,7 +2,6 @@
 
 namespace simplerest\controllers;
 
-use phpseclib3\Crypt\EC\Curves\nistk233;
 use simplerest\core\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
@@ -62,7 +61,7 @@ class TestController extends Controller
         Genera migraciones a partir de la tabla 'tbl_scritp_tablas'
     */
     function gen_scripts(){
-        $mgr = new MakeControllerBase();
+        $mk = new MakeControllerBase();
 
         $rows = DB::table('tbl_scritp_tablas')
         ->orderBy(['scr_intOrden' => 'ASC'])
@@ -77,7 +76,7 @@ class TestController extends Controller
 
             $class_name = Strings::snakeToCamel("{$row['scr_varNombre']}_{$row['scr_varModulo']}_{$row['scr_intOrden']}");
 
-            $mgr->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name=$class_name");
+            $mk->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name=$class_name");
         }
     }
 
@@ -93,6 +92,21 @@ class TestController extends Controller
         $affected = DB::table('tbl_estado')->where(["est_intId" => 1])->update($data);
         dd($affected);
     }
+
+    function migrate(){
+        $mgr = new MigrationsController();
+
+        $folder = 'compania';
+        $tenant = 'db_153';
+
+        $mgr->migrate("--dir=$folder", "--to=$tenant");
+    }
     
+    function mk(){
+        $tenant = "db_154";
+
+        $mk = new MakeControllerBase();
+		$mk->any("all", "-s", "-m", "--from:$tenant");        
+    }
 }
 

@@ -23,6 +23,7 @@ class Migrations implements IMigration
             Model::query("
             CREATE TABLE `migrations` (
                 `id` int(11) NOT NULL,
+                `db` varchar(50) DEFAULT NULL,
                 `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
                 `created_at` DATETIME NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -38,6 +38,7 @@ class MigrationsController extends Controller
         $dir_opt   = false;
         $to_db     = null;
         $steps     = PHP_INT_MAX;
+        $skip      = 0;
         
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
 
@@ -47,7 +48,7 @@ class MigrationsController extends Controller
                 $to_db = $matches[1];
             }
 
-            if ( Strings::startsWith('--file=', $o)){
+            if (Strings::startsWith('--file=', $o)){
                 $file_opt = true;
 
                 $_f = substr($o, 7);
@@ -64,12 +65,17 @@ class MigrationsController extends Controller
                         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
                     }
                 } 
-                
+
+                $path = str_replace('//', '/', $path);
                 $filenames = [ $_f ];
             } 
 
             if (Strings::startsWith('--step=', $o)){
                 $steps = Strings::slice($o, '/^--step=([0-9]+)$/');
+            }
+
+            if (Strings::startsWith('--skip=', $o)){
+                $skip = Strings::slice($o, '/^--skip=([0-9]+)$/');
             }
 
             /*
@@ -98,10 +104,28 @@ class MigrationsController extends Controller
         
         $cnt = min($steps, count($filenames));
 
-        for ($i=0; $i<$cnt; $i++) {
-            $filename = $filenames[$i];
+        $ix = 0;
+        $skipped = 0;
+        foreach ($filenames as $filename)
+        {
+            if (Schema::hasTable('migrations') && (new MigrationsModel(true))
+            ->where([
+                'filename' => $filename
+            ])
+            ->when($to_db != null, function ($q) use ($to_db) {
+                $q->where(['db', $to_db]);
+            })
+            ->exists()){
+            
+                continue;
+            }
 
-            if (Schema::hasTable('migrations') && (new MigrationsModel(true))->where(['filename' => $filename])->exists()){
+            if ($ix >= $cnt){
+                break;
+            }
+
+            if (!empty($skip) && $skipped<$skip){
+                $skipped++;
                 continue;
             }
 
@@ -135,9 +159,17 @@ class MigrationsController extends Controller
             */
             get_default_connection();
 
-            DB::table('migrations')->create([
+            $data = [
                 'filename' => $filename
-            ]);
+            ];
+
+            if ($to_db != null){
+                $data['db'] = $to_db;
+            }
+
+            DB::table('migrations')->create($data);
+
+            $ix++;
         }         
     }
     
@@ -292,8 +324,8 @@ class MigrationsController extends Controller
         MIGRATIONS COMMAND HELP
 
         migrations make my_table [ --dir= | --file= ] [ --from= ] [ --to= ]  
-        migrations migrate  [ --simulate ]
-        migrations rollback [--step==N | --all] 
+        migrations migrate [ --step= ] [ --skip= ] [ --simulate ]
+        migrations rollback [ --step==N | --all] 
 
         Examples:
 
@@ -310,6 +342,9 @@ class MigrationsController extends Controller
 
         migrations migrate --file=2021_09_13_27908784_user_roles.php
         migrations migrate --dir=compania_new --to=db_flor
+
+        php com migrations migrate --dir=compania --to=db_153 --step=2
+        php com migrations migrate --dir=compania --to=db_153 --skip=1
 
         migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
         migrations migrate --dir=compania_new --to=db_flor --simulate

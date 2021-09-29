@@ -29,7 +29,7 @@ ENGINE = INNODB,
 CHARACTER SET utf8,
 COLLATE utf8_general_ci,
 COMMENT = ' * Descripcion: Tabla tbl_tipo_cuenta_bancaria 
- * Author: http://www.divergente.net.co");
+ * Author: http://www.divergente.net.co';");
     }
 }
 

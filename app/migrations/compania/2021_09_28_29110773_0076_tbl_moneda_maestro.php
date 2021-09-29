@@ -30,7 +30,7 @@ ENGINE = INNODB,
 CHARACTER SET utf8,
 COLLATE utf8_general_ci,
 COMMENT = ' * DescripciÃƒÆ’Ã‚Â³n: Tabla para registrar el tipo de moneda.
- * Author: http://www.divergente.net.co");
+ * Author: http://www.divergente.net.co';");
     }
 }
 
