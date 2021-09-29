@@ -3151,6 +3151,26 @@ Para ejecutar las migraciones pendiente es con "migrations migrate"
 	Migrating '2020_10_28_161757_create_cable_categories.php'
 	Migrated  '2020_10_28_161757_create_cable_categories.php' --ok
 
+
+# Ejecutar migraciones por pasos
+
+Es posible ejecutar migraciones, una a una o solo unas pocas por ejemplo para debuguearlas con --step=
+
+Ej:
+
+	$ php com migrations migrate --dir=compania --to=db_153 -step=1
+
+# Saltar migraciones
+
+Puede haber un caso excepcional en que necesitemos saltearnos una migración o varias y para ello contamos con --skip=
+
+Ej:
+
+	$ php com migrations migrate --dir=compania --to=db_153 --skip=1
+
+En principio, --step= y --skip= serían combinables.
+
+
 # Volver para atrás 
 
 Para volver para atrás migraciones es con el comando "migrations rollback" pero debe existir el método down() y éste debe habere sido escrito de forma tal que revierta el cambio en la base de datos (es responsabilidad del usuario por ahora)
@@ -3243,6 +3263,38 @@ Otra opción para crear un archivo de migración programáticamente sería leyen
 	Strings::replace('### UP', $up_rep, $file);
 
 
+En teoría sería posible,.....
+
+	/*
+		Creo la DB
+	*/
+
+	DB::getDefaultConnection();
+
+	$db_name = $data['dba_varNombre'];
+	
+	$ok = Model::query("CREATE DATABASE $db_name;");
+	
+
+	/*
+		Creo las tablas
+	*/
+
+	$mgr = new MigrationsController();
+
+	$folder = 'compania'; 
+	$tenant = $db_name;
+
+	$mgr->migrate("--dir=$folder", "--to=$tenant");
+
+	/*
+		Creo schemas y modelos
+	*/
+
+	$mk = new MakeControllerBase();
+	$mk->any("all", "-s", "-m", "--from:$tenant");
+
+
 # Ayuda 
 
 El comando "migrations" tiene una ayuda que es invocada cuando no se pasan parámetros:
@@ -3333,20 +3385,20 @@ o
 Las bases de datos admitidas para un usuario en particular para el caso de autenticación via tokens JWT estaá incluida en el payload como "db_access"
 
   {
-    “sub”: “1234567890”,
-    “name”: “<user-name>”,
-    “iat”: 1516239022,
-    “userid”: “<user-id>”,
-    “db_access”: [
+    "sub": "1234567890",
+    "name": "<user-name>",
+    "iat": 1516239022,
+    "userid": "<user-id>",
+    "db_access": [
 		"<db-connection1>",
 		"<db-connection1>",
 		..
 	]
   }
 
-Cuando un usuario se loguea obtiene las conexiones a las DB(s) que ese usuario puede utilizar como un arreglo llamado “db_access” y estas son devueltas en la respuesta para que esa información pueda incluirse via parámetro ?tenantid=  en cada request para acceder a esas DB(s)
+Cuando un usuario se loguea obtiene las conexiones a las DB(s) que ese usuario puede utilizar como un arreglo llamado "db_access" y estas son devueltas en la respuesta para que esa información pueda incluirse via parámetro ?tenantid=  en cada request para acceder a esas DB(s)
 
-El arreglo “db_access” se arma via hook en el AuthController que es extendido por MyAuthController y es donde se define el método getDbAccess aunque también podría definirse en un Trait.  Ver trait DbAccess
+El arreglo "db_access" se arma via hook en el AuthController que es extendido por MyAuthController y es donde se define el método getDbAccess aunque también podría definirse en un Trait.  Ver trait DbAccess
 
 	function getDbAccess($user_id) : Array {}
 

@@ -29,8 +29,8 @@ class TblDescuentoMaestro211 implements IMigration
 ENGINE = INNODB,
 CHARACTER SET utf8,
 COLLATE utf8_general_ci,
-COMMENT = ' * DescripciÃƒÂ³n: Tabla para registrar los diferentes descuentos de los alidos.
- * Author: http://www.divergente.net.co");
+COMMENT = ' * Descripcion: Tabla para registrar los diferentes descuentos de los alidos.
+ * Author: http://www.divergente.net.co';");
     }
 }
 
