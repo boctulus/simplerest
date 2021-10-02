@@ -21,7 +21,7 @@ class TblCiudadMaestro135 implements IMigration
   ciu_varCiudad varchar(100) NOT NULL,
   ciu_varIndicativoTelefono varchar(3) NOT NULL,
   ciu_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  ciu_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  ciu_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   pai_intIdPais int(11) NOT NULL,
   dep_intIdDepartamento int(11) NOT NULL,

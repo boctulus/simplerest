@@ -20,7 +20,7 @@ class TblRetencionCuentacontableMaestro303 implements IMigration
   rec_intIdRetencion INT(11) NOT NULL,
   rec_intIdCuentaContable INT(11) NOT NULL,
   rec_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  rec_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  rec_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,
   PRIMARY KEY (rec_intId, rec_intIdRetencion, rec_intIdCuentaContable)

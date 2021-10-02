@@ -20,7 +20,7 @@ class TblMonedaMaestro76 implements IMigration
   mon_varCodigoMoneda varchar(50) NOT NULL,
   mon_varDescripcion varchar(100) NOT NULL,
   mon_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  mon_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  mon_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,

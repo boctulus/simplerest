@@ -20,7 +20,7 @@ class TblCategoriaIdentificacionMaestro159 implements IMigration
   cid_varCategoriaDocumento VARCHAR(100) NOT NULL,
   cid_varSiglas VARCHAR(3) NOT NULL,
   cid_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  cid_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  cid_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

@@ -29,7 +29,7 @@ class TblSubCuentaContableMaestro75 implements IMigration
   sub_tinCuentaBalance tinyint(4) NOT NULL DEFAULT 0,
   sub_tinCuentaResultado tinyint(4) NOT NULL DEFAULT 0,
   sub_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  sub_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  sub_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   mon_intIdMoneda int(11) NOT NULL,
   ccc_intIdCategoriaCuentaContable int(11) NOT NULL,
   cue_intIdCuentaContable int(11) NOT NULL,

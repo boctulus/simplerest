@@ -20,7 +20,7 @@ class TblPensionMaestro70 implements IMigration
   pen_varCodigo varchar(100) NOT NULL,
   pen_varNombre varchar(100) NOT NULL,
   pen_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  pen_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  pen_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,

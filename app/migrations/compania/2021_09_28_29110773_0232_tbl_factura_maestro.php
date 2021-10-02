@@ -36,7 +36,7 @@ class TblFacturaMaestro232 implements IMigration
   fac_decPorceIca DECIMAL(10, 2) NOT NULL,
   fac_intTopeReteIca INT(11) NOT NULL,
   fac_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  fac_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  fac_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   fac_varNota LONGTEXT DEFAULT NULL,
   fac_bolPagado TINYINT(4) DEFAULT 0,
   cen_intIdCentrocostos INT(11) NOT NULL,

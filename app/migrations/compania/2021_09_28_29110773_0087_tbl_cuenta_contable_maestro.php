@@ -22,7 +22,7 @@ class TblCuentaContableMaestro87 implements IMigration
   cue_tinCuentaBalance tinyint(4) NOT NULL DEFAULT 0,
   cue_tinCuentaResultado tinyint(4) NOT NULL DEFAULT 0,
   cue_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  cue_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  cue_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   ccc_intIdCategoriaCuentaContable int(11) NOT NULL DEFAULT 0,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   gru_intId int(11) NOT NULL DEFAULT 0,

@@ -30,7 +30,7 @@ class TblEmpresaMaestro12 implements IMigration
   emp_bolAportaParafiscales16072012 tinyint(4) NOT NULL DEFAULT 0,
   emp_bolAplicaDecreto5582000 tinyint(4) NOT NULL DEFAULT 0,
   emp_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  emp_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  emp_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   arl_intIdArl int(11) DEFAULT NULL,
   opp_intIdOperador int(11) DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,

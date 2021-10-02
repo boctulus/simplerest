@@ -15,6 +15,8 @@ abstract class Controller
     protected $callable = [];
     protected $users_table;
     protected $_title;
+
+    protected static $_printable = true;
     
     function __construct() {
         $this->config = config();
@@ -53,7 +55,28 @@ abstract class Controller
         $vars_to_be_passed['ctrl'] = $ctrl; //
 
         view($view_path, $vars_to_be_passed, $layout);
-   }
+    }
 
+    static function pprint($v){
+        if (self::$_printable){
+            if (is_array($v)){
+                print_r($v);
+            } else {
+                echo $v;
+            }
+        }
+    }
+
+    static function setPrintable(bool $printable){
+        self::$_printable = $printable;
+    }
+
+    static function hideResponse(){
+        self::setPrintable(false);
+    }
+
+    static function showResponse(){
+        self::setPrintable(true);
+    }
 
 }

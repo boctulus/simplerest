@@ -33,7 +33,7 @@ class TblFacturaDetalleMaestro332 implements IMigration
   fde_decPorcentajeReteIca DECIMAL(18, 2) NOT NULL,
   fde_decValorReteIca DECIMAL(18, 2) NOT NULL,
   fde_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  fde_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  fde_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   fac_intNroDocumento VARCHAR(20) NOT NULL,
   fde_varDescripcion LONGTEXT NOT NULL,
   fac_intIdFactura INT(11) NOT NULL,

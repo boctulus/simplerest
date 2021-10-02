@@ -19,7 +19,7 @@ class TblProveedorMaestro284 implements IMigration
   prv_intId INT(11) NOT NULL AUTO_INCREMENT,
   pro_intCuentaBancaria VARCHAR(15) NOT NULL,
   prv_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  prv_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  prv_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   dpa_intIdDiasPago INT(11) NOT NULL,
   ban_intIdBanco INT(11) NOT NULL,
   ccb_intIdCategoriaCuentaBancaria INT(11) NOT NULL,

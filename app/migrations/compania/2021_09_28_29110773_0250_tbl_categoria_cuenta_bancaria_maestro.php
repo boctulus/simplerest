@@ -19,7 +19,7 @@ class TblCategoriaCuentaBancariaMaestro250 implements IMigration
   ccb_intId INT(11) NOT NULL AUTO_INCREMENT,
   ccb_varCategoriaCuentaBancaria VARCHAR(50) NOT NULL,
   ccb_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  ccb_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  ccb_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

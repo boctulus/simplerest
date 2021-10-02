@@ -21,7 +21,7 @@ class TblDocumentoMaestro185 implements IMigration
   doc_varDescripcion VARCHAR(150) NOT NULL,
   doc_bolEstado TINYINT(1) NOT NULL,
   doc_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  doc_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  doc_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   tra_intIdTransaccion INT(11) NOT NULL,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

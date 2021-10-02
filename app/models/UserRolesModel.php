@@ -16,6 +16,11 @@ class UserRolesModel extends MyModel
 	protected $updatedAt = 'updated_at';
 	protected $updatedBy = 'updated_by';
 
+	protected $connect_to= [
+		'roles',
+		// 'tbl_usuario_empresa'
+	];
+
     function __construct(bool $connect = false){
         parent::__construct($connect, new UserRolesSchema());
 	}	

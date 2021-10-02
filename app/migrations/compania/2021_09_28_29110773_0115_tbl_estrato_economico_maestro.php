@@ -20,7 +20,7 @@ class TblEstratoEconomicoMaestro115 implements IMigration
   tec_varCodigo varchar(20) NOT NULL,
   tec_varDescripcion varchar(250) NOT NULL,
   tec_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  tec_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  tec_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdestado int(11) DEFAULT NULL,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,

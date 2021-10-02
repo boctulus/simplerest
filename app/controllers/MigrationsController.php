@@ -140,7 +140,7 @@ class MigrationsController extends Controller
                 throw new \Exception ("Class '$class_name' does not exists in $filename");
             }
 
-            echo "Migrating '$filename'\r\n";
+            self::pprint("Migrating '$filename'\r\n");
 
             if (!in_array('--simulate', $opt)){
                 if (!empty($to_db)){
@@ -152,7 +152,7 @@ class MigrationsController extends Controller
                 continue;
             }
             
-            echo "Migrated  '$filename' --ok\r\n";
+            self::pprint("Migrated  '$filename' --ok\r\n");
             
             /*
                 Main connection restore
@@ -208,9 +208,9 @@ class MigrationsController extends Controller
                 throw new \Exception ("Class '$class_name' does not exists in $filename");
             }
 
-            echo "Rolling back '$filename'\r\n";
+            self::pprint("Rolling back '$filename'\r\n");
             (new $class_name())->down();
-            echo "Rolled back  '$filename' --ok\r\n";
+            self::pprint("Rolled back  '$filename' --ok\r\n");
         }
     }
 
@@ -259,7 +259,7 @@ class MigrationsController extends Controller
         }
 
         if (!$force){
-            echo "fresh: this method is destructive. Every table for '$conn_id' will be dropped. Please use option --force if you want to procede.\r\n";
+            self::pprint("fresh: this method is destructive. Every table for '$conn_id' will be dropped. Please use option --force if you want to procede.\r\n");
             exit;
         }
 
@@ -276,10 +276,10 @@ class MigrationsController extends Controller
         
         try{
             foreach($tables as $table) {
-                echo "Dropping table '$table'\r\n";
+                self::pprint("Dropping table '$table'\r\n");
                 $st = $conn->prepare("DROP TABLE IF EXISTS `$table`;");
                 $res = $st->execute();
-                echo "Dropped table  '$table' --ok\r\n";
+                self::pprint("Dropped table  '$table' --ok\r\n");
             }
 
             $this->migrate();

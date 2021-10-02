@@ -68,6 +68,11 @@ class MyAuthController extends AuthController {
             }
         }
 
+        
+        if (in_array('superadmin', $roles)){
+            return;
+        }
+
         /*
             Registro el usuario como futuro propierario de una base de datos
 

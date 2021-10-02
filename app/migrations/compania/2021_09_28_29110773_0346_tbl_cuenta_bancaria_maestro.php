@@ -20,7 +20,7 @@ class TblCuentaBancariaMaestro346 implements IMigration
   cba_varDescripcion VARCHAR(100) NOT NULL,
   cba_varNumeroCuenta VARCHAR(11) NOT NULL,
   cba_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  cba_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  cba_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado_cba INT(11) NOT NULL DEFAULT 1,
   ban_intIdBanco INT(11) NOT NULL,
   ccb_intIdCategoriaCuentaBancaria INT(11) NOT NULL,

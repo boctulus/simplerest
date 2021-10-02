@@ -97,13 +97,17 @@ class TestController extends Controller
         $mgr = new MigrationsController();
 
         $folder = 'compania';
-        $tenant = 'db_153';
+        $tenant = 'db_100';
+
+        MigrationsController::hideResponse();
 
         $mgr->migrate("--dir=$folder", "--to=$tenant");
     }
     
     function mk(){
-        $tenant = "db_154";
+        $tenant = "db_100";
+        
+        MakeController::hideResponse();
 
         $mk = new MakeControllerBase();
 		$mk->any("all", "-s", "-m", "--from:$tenant");        

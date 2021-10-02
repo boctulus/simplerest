@@ -19,7 +19,7 @@ class TblEstudiosMaestro105 implements IMigration
   esd_intId int(11) NOT NULL AUTO_INCREMENT,
   esd_varNombre varchar(100) NOT NULL,
   esd_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  esd_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  esd_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,

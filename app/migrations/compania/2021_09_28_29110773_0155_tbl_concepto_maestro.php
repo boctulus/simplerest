@@ -20,7 +20,7 @@ class TblConceptoMaestro155 implements IMigration
   cct_varNombre varchar(50) NOT NULL,
   cct_varDescripcion varchar(250) NOT NULL,
   cct_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  cct_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  cct_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,

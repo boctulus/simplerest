@@ -20,7 +20,7 @@ class TblRhMaestro110 implements IMigration
   trh_varCodigo varchar(30) NOT NULL,
   trh_varDescripcion varchar(250) NOT NULL,
   trh_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  trh_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  trh_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) DEFAULT NULL,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,
