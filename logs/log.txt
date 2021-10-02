@@ -135,3 +135,13 @@
 2021-09-28 13:35:45	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
 2021-09-28 13:36:23	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
 2021-09-28 13:37:39	SQLSTATE[HY000]: General error: 1364 Field 'created_at' doesn't have a default value
+2021-10-02 10:40:27	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:41:36	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:41:40	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:41:46	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:41:50	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:46:51	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:47:00	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:51:39	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:51:57	A table should have simple Primary Key by convention for table "facturas2"
+2021-10-02 10:52:21	A table should have simple Primary Key by convention for table "facturas2"
