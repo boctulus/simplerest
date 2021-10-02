@@ -18,7 +18,7 @@ class TblBaseDatosModel extends MyModel
 	}	
 
 	// está deshabilitado (notar el "__" delante)
-	function __onCreated(array &$data, $last_inserted_id)
+	function onCreated(array &$data, $last_inserted_id)
 	{
 		/*
 			Creo la DB
