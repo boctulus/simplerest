@@ -15,23 +15,23 @@ use simplerest\libs\Schema;
     Class generator
 
     Commands:
-
+    
     make schema SuperAwesome [--force | -f]
     make schema super_awesome  [--force | -f]
-
+    
     make model SuperAwesomeModel  [--force | -f]
     make model SuperAwesome [--force | -f]
     make model super_awesome  [--force | -f]
-
+    
     make controller SuperAwesome  [--force | -f]
-
+    
     make api SuperAwesome  [--force | -f]
     make api super_awesome  [--force | -f]
-
+    
     make api all --from:dsi [--force | -f]
-
+    
     <-- "from:" is required in this case.
-
+    
     make any SuperAwesome  [-s | --schema ] 
                            [-m | --model] 
                            [-c | --controller ] 
@@ -39,7 +39,7 @@ use simplerest\libs\Schema;
                            [-p | --provider | --service ]
           
                            [--force | -f]
-
+    
     make any all           [-s | --schema ] 
                            [-m | --model] 
                            [-c | --controller ] 
@@ -47,24 +47,24 @@ use simplerest\libs\Schema;
                            [-p | --provider | --service ]
           
                            [--force | -f]
-
+    
     More examples:
     
     make any baz -s -m -a -f
     make any tbl_contacto -sam --from:dsi
     make any all -sam --from:dsi
     make any all -samf --from:dsi
-
-    Note:
-
-    To execute a command like
     
+    Note:
+    
+    To execute a command like
+        
     make schema SuperAwesome [--force | -f]
-
+    
     ... call 'php' interpreter + 'com' controller first. 
-
+    
     php com make schema SuperAwesome [--force | -f]
-
+    
 */
 class MakeControllerBase extends Controller
 {
@@ -155,18 +155,18 @@ class MakeControllerBase extends Controller
 
                                 -sam  = -s -a -m
                                 -samf = -s -a -m -f
-
+        
         make migration rename_some_column
         make migration another_table_change --table=foo
-
+        
         Examples:
-
+        
         make any baz -s -m -a -f
         make any tbl_contacto -sam --from:dsi
         make any all -sam  --from:dsi
         make any all -samf --from:dsi
         make any all -s -f --from:main                        
-
+        
         STR;
 
         print_r(PHP_EOL);

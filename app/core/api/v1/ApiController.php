@@ -557,9 +557,14 @@ abstract class ApiController extends ResourceController implements IApi
                                             $alias = $tb_alias[1];
                                         } 
 
-                                        $_id = $rows[0][$field1];  
+                                        if (isset($rows[0][$field1])){
+                                            $_id = $rows[0][$field1];  
 
-                                        $addons[$alias] = DB::table($tb0)->where([$field0 => $_id])->get();
+                                            $addons[$alias] = DB::table($tb0)->where([$field0 => $_id])->get();
+                                        } else {
+                                            $addons[$alias] = [];
+                                        }
+                                        
                                     }
                                 }
                             //}
@@ -1038,7 +1043,12 @@ abstract class ApiController extends ResourceController implements IApi
                                         $alias = $tb_alias[1];
                                     } 
 
-                                    $addons[$k][$alias] = DB::table($tb)->where([$field => $_id])->get();
+                                    if (isset($addons[$k][$alias])){
+                                        $addons[$k][$alias] = DB::table($tb)->where([$field => $_id])->get();
+                                    } else {
+                                        $addons[$k][$alias] = [];
+                                    }
+                                    
                                 }
                             }
 
@@ -1070,9 +1080,12 @@ abstract class ApiController extends ResourceController implements IApi
                                         $alias = $tb_alias[1];
                                     } 
 
-                                    $_id = $rows[$k][$field1];  
-            
-                                    $addons[$k][$alias] = DB::table($tb0)->where([$field0 => $_id])->first();
+                                    if (isset($rows[$k][$field1])){
+                                        $_id = $rows[$k][$field1];
+                                        $addons[$k][$alias] = DB::table($tb0)->where([$field0 => $_id])->first();
+                                    } else {
+                                        $addons[$k][$alias] = [];
+                                    }
                                 }
                             }
                         }
