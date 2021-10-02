@@ -971,6 +971,14 @@ abstract class ApiController extends ResourceController implements IApi
                     if ($page +1 <= $page_count){
                         $query['page'] = ($page +1);
 
+                        if (isset($_GET['tenantid'])){
+                            $query['tenantid'] = $_GET['tenantid'];
+                        }
+
+                        if (isset($_GET['_related'])){
+                            $query['_related'] = $_GET['_related'];
+                        }
+
                         $api_slug = $this->config['REMOVE_API_SLUG'] ? '' : '/api' ;
                         $next =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . $api_slug . '/' . $api_version . '/'. $this->model_table . '?' . $query = str_replace(['%5B', '%5D', '%2C'], ['[', ']', ','], http_build_query($query));
                     }else{
@@ -1017,16 +1025,21 @@ abstract class ApiController extends ResourceController implements IApi
                         // detalle a maestro
                         // las relaciones están en el detalle
 
-                        foreach ($rows as $k => $row){
+                        $id_name = $this->instance->getSchema()['id_name'];
+                        static $rx = [];
 
-                            $_id = $rows[$k][$this->instance->getSchema()['id_name']];  
+                        foreach ($rows as $k => $row){
+                            $_id = $rows[$k][$id_name];  
                             
                             foreach (static::$connect_to as $tb){
-                                $schema = get_schema_name($tb)::get(); 
+                                if (!isset($rx[$this->model_table])){
+                                    $schema = get_schema_name($tb)::get(); 
                                 
-                                $rs = $schema['relationships'];
+                                    $rs = $schema['relationships'];
 
-                                $rx = $rs[$this->model_table] ?? null;
+                                    $rx = $rs[$this->model_table] ?? null;
+                                } 
+                                
                                 if ($rx === null){
                                     continue;
                                 }                         
