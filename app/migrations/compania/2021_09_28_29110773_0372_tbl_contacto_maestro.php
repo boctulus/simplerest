@@ -24,7 +24,7 @@ class TblContactoMaestro372 implements IMigration
   con_varTelefono VARCHAR(10) DEFAULT NULL,
   con_varExtension VARCHAR(5) DEFAULT NULL,
   con_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  con_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  con_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 0,
   emp_intIdEmpresa INT(11) NOT NULL,
   car_intIdcargo INT(11) NOT NULL,

@@ -20,7 +20,7 @@ class TblCargoMaestro17 implements IMigration
   car_varNombre varchar(50) NOT NULL,
   car_varDescripcion varchar(100) NOT NULL,
   car_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  car_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  car_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   emp_intIdEmpresa int(11) DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,

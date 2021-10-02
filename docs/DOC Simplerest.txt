@@ -3457,7 +3457,7 @@ Por ejemplo si se quisiera que se hiciera un "JOIN" entre productos y sus catego
 		}        
 	} 
 
-Y la salida será algo como:
+Al especifica el parámetro "_related=1", la salida será algo como:
 
 	{
 		"data": {

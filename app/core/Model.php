@@ -191,14 +191,17 @@ class Model {
 
 		$this->unfill($this->not_fillable);
 
-		// debería ser innecesario pues debería provenir del propio schema !
-
 		$this->schema['nullable'][] = $this->locked;		
 		$this->schema['nullable'][] = $this->createdAt;
 		$this->schema['nullable'][] = $this->updatedAt;
 		$this->schema['nullable'][] = $this->deletedAt;
 		$this->schema['nullable'][] = $this->createdBy;
-		//$this->schema['nullable'][] = $this->updatedBy;
+		/*
+			No incluir:
+
+			$this->schema['nullable'][] = $this->updatedBy;
+
+		*/
 		$this->schema['nullable'][] = $this->deletedBy;
 		$this->schema['nullable'][] = $this->belongsTo;	
 

@@ -20,7 +20,7 @@ class TblGrupoProductoMaestro223 implements IMigration
   grp_varSiglaGrupoProducto VARCHAR(50) NOT NULL,
   grp_varDescripcionGrupo VARCHAR(50) NOT NULL,
   grp_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  grp_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  grp_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   grp_intConsecutivoGrupoProducto INT(11) NOT NULL DEFAULT 0,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   cap_intIdCategoriaProducto INT(11) DEFAULT NULL,

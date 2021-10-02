@@ -20,7 +20,7 @@ return [
 	# For a sub-foder in /var/www/html just set as
 	# BASE_URL' => /folder'
 	#
-	'BASE_URL' => '/clon_simplerest',   
+	'BASE_URL' => '/',   
 
 	'ROUTER' => true,
 	'FRONT_CONTROLLER' => true,
@@ -135,7 +135,7 @@ return [
 	'paginator' => [
 					'max_limit' => 50,
 					'default_limit' => 10,
-					'position' => 'TOP'
+					'position' => 'BOTTOM'
 	],
 
 	'pretty' => false,
@@ -172,7 +172,7 @@ return [
 	/* 
 		Any role listed bellow if it is asked then will be auto-aproved.
 	*/
-	'auto_approval_roles' => ['admin', 'usuario'],
+	'auto_approval_roles' => ['admin', 'usuario', 'superadmin'],
 
 	/*
 		If you need email confirmation then pre_activated should be false

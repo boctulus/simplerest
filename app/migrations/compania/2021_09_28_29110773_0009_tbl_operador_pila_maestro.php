@@ -20,7 +20,7 @@ class TblOperadorPilaMaestro9 implements IMigration
   opp_varCodigo varchar(50) NOT NULL,
   opp_varDescripcion varchar(300) NOT NULL,
   opp_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  opp_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  opp_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,

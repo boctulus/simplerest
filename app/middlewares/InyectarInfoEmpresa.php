@@ -24,11 +24,15 @@ class InyectarInfoEmpresa extends Middleware
             foreach ($data['data']["db_access"] as $tenant){
                 DB::setConnection($tenant);
 
-                $info_empresas[$tenant] = DB::table('tbl_empresa')
-                ->value("emp_varRazonSocial");
+                // Obtener info sobre empresas requiere de la tabla 'tbl_empresa'
+                if (Schema::hasTable('tbl_empresa')){
+                    $info_empresas[$tenant] = DB::table('tbl_empresa')
+                    ->value("emp_varRazonSocial");
+                }
+                
             }
 
-            $data['data']['info_empresas'] = $info_empresas;
+            $data['data']['info_empresas'][] = $info_empresas;
             $this->res->setData($data);
         }
 

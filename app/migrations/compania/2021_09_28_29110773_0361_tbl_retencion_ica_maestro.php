@@ -21,7 +21,7 @@ class TblRetencionIcaMaestro361 implements IMigration
   ric_intTope INT(11) NOT NULL,
   ric_intPorcentaje DECIMAL(10, 2) NOT NULL,
   ric_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  ric_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  ric_dtimFechaActualizacion DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   est_intIdCidEstado INT(11) NOT NULL DEFAULT 1,
   sub_intIdSubCuentaContable INT(11) DEFAULT NULL,
   usu_intIdCreador INT(11) NOT NULL,

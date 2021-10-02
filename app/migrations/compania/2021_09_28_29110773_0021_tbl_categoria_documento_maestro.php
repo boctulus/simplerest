@@ -20,7 +20,7 @@ class TblCategoriaDocumentoMaestro21 implements IMigration
   cdo_varCategoriaDocumento varchar(50) NOT NULL,
   cdo_varSiglas varchar(3) NOT NULL,
   cdo_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  cdo_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  cdo_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) DEFAULT NULL,
   usu_intIdActualizador int(11) DEFAULT NULL,

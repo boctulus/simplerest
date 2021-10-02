@@ -123,7 +123,7 @@ class MakeControllerBase extends Controller
     function help(){
         echo <<<STR
         MAKE COMMAND HELP
-                        
+          
         make helper my_cool_helper
 
         make schema super_awesome  [--force | -f]
@@ -131,7 +131,7 @@ class MakeControllerBase extends Controller
         make model SuperAwesomeModel  [--force | -f]
         make model SuperAwesome [--force | -f]
         make model super_awesome  [--force | -f]
-
+        
         make controller SuperAwesome  [--force | -f]
         make controller folder/SuperAwesome  [--force | -f]
 
@@ -144,7 +144,7 @@ class MakeControllerBase extends Controller
         make api all --from:dsi [--force | -f]
 
         <-- "from:" is required in this case.]
-         
+                 
         make any SuperAwesome   [--schema | -s] 
                                 [--model | -m] 
                                 [--controller | -c]
@@ -152,7 +152,7 @@ class MakeControllerBase extends Controller
                                 [--api | -a] 
                                 [--provider | --service | -p]
                                 [--force | -f]
-                                
+
                                 -sam  = -s -a -m
                                 -samf = -s -a -m -f
 
@@ -250,7 +250,7 @@ class MakeControllerBase extends Controller
     */
     function any($name, ...$opt){ 
         if (count($opt) == 0){
-            echo "Nothing to do. Please specify action using options.\r\nUse 'make help' for help.\r\n";
+            self::pprint("Nothing to do. Please specify action using options.\r\nUse 'make help' for help.\r\n");
             exit;
         }
 
@@ -429,27 +429,27 @@ class MakeControllerBase extends Controller
     */
     protected function hasFileProtection(string $filename, string $dest_path, Array $opt) : bool {
         if (in_array($dest_path, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
+            self::pprint("[ Skipping ] '$dest_path'. File was ignored\r\n"); 
             return true; 
         } elseif (file_exists($dest_path)){
             if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
+                self::pprint("[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n");
                 return true;
             } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
+                self::pprint("[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n");
                 return true;
             }
         }
     
         if (in_array($filename, $this->excluded_files)){
-            echo "[ Skipping ] '$dest_path'. File was ignored\r\n"; 
+            self::pprint("[ Skipping ] '$dest_path'. File was ignored\r\n"); 
             return true; 
         } elseif (file_exists($dest_path)){
             if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                echo "[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n";
+                self::pprint("[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n");
                 return true;;
             } elseif (!is_writable($dest_path)){
-                echo "[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n";
+                self::pprint("[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n");
                 return true;
             }
         }
@@ -467,7 +467,7 @@ class MakeControllerBase extends Controller
         if (!$ok) {
             throw new \Exception("Failed trying to write $dest_path");
         } else {
-            print_r("$dest_path was generated\r\n");
+            self::pprint("$dest_path was generated\r\n");
         } 
     }
 
@@ -513,7 +513,7 @@ class MakeControllerBase extends Controller
         } 
 
         if (!Schema::hasTable($name)){
-            echo "Table '$name' not found. It's case sensitive\r\n";
+            self::pprint("Table '$name' not found. It's case sensitive\r\n");
             return;
         }
         
@@ -522,8 +522,8 @@ class MakeControllerBase extends Controller
         try {
             $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}");
         } catch (\Exception $e) {
-            echo '[ SQL Error ] '. DB::getLog(). "\r\n";
-            echo $e->getMessage().  "\r\n";
+            self::pprint('[ SQL Error ] '. DB::getLog(). "\r\n");
+            self::pprint($e->getMessage().  "\r\n");
         }
         
         $id_name =  NULL;
@@ -640,8 +640,8 @@ class MakeControllerBase extends Controller
         try {
             $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}");
         } catch (\Exception $e) {
-            echo '[ SQL Error ] '. DB::getLog(). "\r\n";
-            echo $e->getMessage().  "\r\n";
+            self::pprint('[ SQL Error ] '. DB::getLog(). "\r\n");
+            self::pprint($e->getMessage().  "\r\n");
             throw $e;
         }
         

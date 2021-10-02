@@ -26,7 +26,7 @@ class TblConsecutivoMaestro194 implements IMigration
   cse_varVigencia VARCHAR(2) NOT NULL,
   cse_bolEstado TINYINT(1) NOT NULL,
   cse_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  cse_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  cse_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   doc_intIdDocumento INT(11) NOT NULL,
   res_intIdResolucion INT(11) NOT NULL,
   usu_intIdCreador INT(11) NOT NULL,

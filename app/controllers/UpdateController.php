@@ -74,11 +74,15 @@ class UpdateController extends ConsoleController
         #app/controllers/MyAuthController.php
         packages
         docs
+        config/middlewares.php
+        app/core/Controller.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);
 
-        $this->copy_new_files($files);
+        $this->copy_new_files($files, [
+            'db_dynamic_load.php'
+        ]);
 
         $to = $this->dst . '/app/models';
         foreach (new \DirectoryIterator($to) as $fileInfo) {
@@ -102,7 +106,11 @@ class UpdateController extends ConsoleController
         ]);
     }
 
-    function copy_new_files(Array $files)
+    /*
+        @param  files a copiar
+        @except files a excluir (de momento sin ruta)
+    */
+    function copy_new_files(Array $files, Array $except = [])
     {
         $ori = $this->ori;
         $dst = $this->dst;
@@ -115,7 +123,6 @@ class UpdateController extends ConsoleController
             }
             
             $ori_path = trim($ori . DIRECTORY_SEPARATOR . $_file);
-
     
 
             if (is_dir($ori_path)){
@@ -127,6 +134,11 @@ class UpdateController extends ConsoleController
                 foreach ($it as $file) {
                     $file      = $file->getFilename();
                     $full_path = $it->current()->getPathname();
+        
+                    if (in_array($file, $except)){
+                        dd("Skiping $file");
+                        continue;
+                    }
 
                     $indent = str_repeat('   ', $it->getDepth());
                     //echo $indent, " ├ $file\n";

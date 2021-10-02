@@ -24,7 +24,7 @@ class TblPreferenciasMaestro381 implements IMigration
   tpf_varParametro VARCHAR(50) NOT NULL,
   tpf_varTipoDato VARCHAR(50) NOT NULL,
   tpf_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  tpf_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  tpf_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   doc_intIdDocumento INT(11) NOT NULL DEFAULT 38,
   men_idId INT(11) NOT NULL DEFAULT 44,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
