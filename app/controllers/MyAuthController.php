@@ -97,17 +97,6 @@ class MyAuthController extends AuthController {
 
             // **
 
-            //
-            // Creo la DB
-            //
-            $conn = DB::getDefaultConnection();
-
-            $sql = 'CALL sp_ejecucion_script(?)';
-            $stmt = $conn->prepare($sql);
-
-            $stmt->bindParam(1, $data['use_varEmail'], \PDO::PARAM_STR, 60);
-            $res = $stmt->execute();
-
         }
 
         /*
