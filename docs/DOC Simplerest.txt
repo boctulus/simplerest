@@ -3496,7 +3496,43 @@ Es posible formatear el JSON de la respuesta con opciones dentro del config.php
 	'include_enity_name' => true,
 	'nest_sub_resources' => false,
 
-(!) Es importante notar que la propiedad $connect_to es parte de la API y no del Modelo.
+
+Notar que Ud. no debe suprimir el campo con el que se arme la relación entre las tablas. Ej:
+
+	http://simplerest.lan/api/v1/products?tenantid=az&fields=id,name,cost,category&_related=true
+
+
+    "data": {
+        "products": [
+            {
+                "id": 100,
+                "name": "Vodka",
+                "cost": 201,
+                "category": 3,
+                "product_categories": {
+                    "id_catego": 3,
+                    "name_catego": "miscelaneos"
+                }
+            },
+            {
+                "id": 197,
+                "name": "Guanabanas",
+                "cost": 51,
+                "category": 2,
+                "product_categories": {
+                    "id_catego": 2,
+                    "name_catego": "frutas"
+                }
+            },
+
+Pero si Ud. suprimiera "category" fallará:
+
+	http://simplerest.lan/api/v1/products?tenantid=az&fields=id,name,cost&_related=true
+
+<-- con "fields" especifico campos pero omito category"
+
+
+(!) Es importante notar que la propiedad $connect_to es parte de la API y no del Modelo y es obligatorio pasar el parámetro "_related=1" (con guión bajo delante) para habilitar los sub-recursos tanto para el listar como para el ver un recurso individual
 
 
 # Librerías
