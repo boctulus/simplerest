@@ -535,6 +535,8 @@ class MakeControllerBase extends Controller
         $nullables = [];
         //$not_fillable = [];
         $rules = [];
+        $pri_components = [];
+        $autoinc = null;
 
         foreach ($fields as $field){
             $field_names[] = $field['Field'];
@@ -545,15 +547,17 @@ class MakeControllerBase extends Controller
             
             if ($field['Key'] == 'PRI'){ 
                 if ($id_name != NULL){
-                    $msg = "A table should have simple Primary Key by convention for table \"$name\"";
-                    Files::logger($msg);      
+                    //$msg = "A table should have simple Primary Key by convention for table \"$name\"";
+                    //Files::logger($msg);      
                 }
                 
                 $id_name = $field['Field'];
+                $pri_components[] = $field['Field'];
             }
             if ($field['Extra'] == 'auto_increment') { 
                 //$not_fillable[] = $field['Field'];
                 $nullables[] = $field['Field']; 
+                $autoinc     = $field['Field'];
             }
             $types[$field['Field']] = $this->get_pdo_const($field['Type']);
             $types_raw[$field['Field']] = $field['Type'];
@@ -575,6 +579,17 @@ class MakeControllerBase extends Controller
             throw new \Exception("No Primary Key found!");
         }
         */
+
+        if (count($pri_components) >1){
+            // busco si hay un AUTOINC
+            if (!empty($autoinc)){
+                $id_name = $autoinc; 
+            } else {
+                $msg = "A table should have simple Primary Key by convention for table \"$name\"";
+                Files::logger($msg);  
+                dd($msg, 'WARNING'); 
+            }
+        }
 
         $nullables = array_unique($nullables);
 

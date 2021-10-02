@@ -839,7 +839,7 @@ abstract class ApiController extends ResourceController implements IApi
                     $_get[] = [$this->instance->belongsTo(), $f_rows[0][$this->instance->belongsTo()]];
                 }
                 
-                if ($id == null){
+                if ($id === null){
                     $validation = (new Validator())->setRequired(false)->ignoreFields($ignored)->validate($this->instance->getRules(),$data);
                     
                     if ($validation !== true){
