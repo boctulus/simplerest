@@ -26,7 +26,7 @@ class TblProductoMaestro315 implements IMigration
   pro_intSaldo INT(11) NOT NULL,
   pro_intStockMaximo INT(11) NOT NULL,
   pro_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  pro_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  pro_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   sub_intIdCuentaContableCompra INT(11) NOT NULL,
   sub_intIdCuentaContableVenta INT(11) NOT NULL,

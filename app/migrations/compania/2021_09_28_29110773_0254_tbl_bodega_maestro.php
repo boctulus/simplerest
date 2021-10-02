@@ -20,7 +20,7 @@ class TblBodegaMaestro254 implements IMigration
   bod_varCodigoBodega VARCHAR(50) NOT NULL,
   bod_varNombreBodega VARCHAR(100) NOT NULL,
   bod_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  bod_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  bod_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

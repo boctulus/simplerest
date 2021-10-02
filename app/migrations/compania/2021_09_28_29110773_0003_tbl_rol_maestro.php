@@ -20,7 +20,7 @@ class TblRolMaestro3 implements IMigration
         rol_varNombre varchar(50) NOT NULL,
         rol_varDescripcion varchar(100) NOT NULL,
         rol_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-        rol_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+        rol_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
         est_intIdEstado_rol int(11) NOT NULL DEFAULT 1,
         PRIMARY KEY (rol_intId)
         )

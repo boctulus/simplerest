@@ -5,7 +5,7 @@ namespace simplerest\libs;
 use simplerest\libs\Debug;
 
 class Strings 
-{
+{	
 	/*
 		Returns $s1 - $s2
 	*/

@@ -20,7 +20,7 @@ class TblDescuentoMaestro211 implements IMigration
   des_varDescuento VARCHAR(100) NOT NULL,
   des_decDescuento DECIMAL(18, 2) NOT NULL,
   des_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  des_timFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  des_timFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

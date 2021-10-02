@@ -24,7 +24,7 @@ class TblRetencionMaestro301 implements IMigration
   ret_varCodigoSiesa VARCHAR(10) NOT NULL,
   ret_varCuentaArbo VARCHAR(50) NOT NULL,
   ret_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  ret_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  ret_dtimFechaActualizacion DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,
   sub_intIdCuentaContable INT(11) DEFAULT NULL,

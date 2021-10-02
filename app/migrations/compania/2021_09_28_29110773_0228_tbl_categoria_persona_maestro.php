@@ -19,7 +19,7 @@ class TblCategoriaPersonaMaestro228 implements IMigration
   cap_intId INT(11) NOT NULL AUTO_INCREMENT,
   cap_varCategoriaPersona VARCHAR(100) NOT NULL,
   cap_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  cap_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  cap_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

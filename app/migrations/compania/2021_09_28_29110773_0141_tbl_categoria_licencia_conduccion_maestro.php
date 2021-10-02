@@ -20,7 +20,7 @@ class TblCategoriaLicenciaConduccionMaestro141 implements IMigration
   clc_varNombre varchar(50) NOT NULL,
   clc_varDescripcion varchar(250) NOT NULL,
   clc_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  clc_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  clc_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,

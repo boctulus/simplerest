@@ -62,7 +62,22 @@ function get_db_connections(bool $refresh = false)
 				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
 				\PDO::ATTR_EMULATE_PREPARES => false
 			]
-		]
+        ],
+
+        //  Para pruebas locales de Pablo
+        'az' => [
+            'host'		=> $host,
+            'port'		=> $port,
+            'driver' 	=> $driver,
+            'db_name' 	=> 'az',
+            'user'		=> $user, 
+            'pass'		=> $pass,
+            'charset'	=> $charset, 
+            'pdo_options' => [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_EMULATE_PREPARES => false
+            ]
+        ]    
     ];
 
     if (!empty($bases)){
