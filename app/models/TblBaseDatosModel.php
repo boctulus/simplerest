@@ -40,13 +40,19 @@ class TblBaseDatosModel extends MyModel
         $folder = 'compania'; 
         $tenant = $db_name;
 
+		MigrationsController::hideResponse();
+
         $mgr->migrate("--dir=$folder", "--to=$tenant");
 
+		
 		/*
 			Creo schemas y modelos
 		*/
 
 		$mk = new MakeControllerBase();
+
+		MakeControllerBase::hideResponse();
+
 		$mk->any("all", "-s", "-m", "--from:$tenant");
 
 	}

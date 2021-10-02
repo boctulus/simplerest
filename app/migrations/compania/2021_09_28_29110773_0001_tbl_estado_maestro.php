@@ -21,7 +21,7 @@ class TblEstadoMaestro1 implements IMigration
         est_varIcono VARCHAR(100) NOT NULL,
         est_varColor VARCHAR(100) NOT NULL,
         est_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-        est_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        est_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
         PRIMARY KEY (est_intId)
         )
         ENGINE = INNODB,

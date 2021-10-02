@@ -281,7 +281,8 @@ abstract class ApiController extends ResourceController implements IApi
     function get($id = null) {
         global $api_version;
 
-        $_get   = Factory::request()->getQuery();  
+        $_related = Factory::request()->shiftQuery('_related');
+        $_get     = Factory::request()->getQuery();  
 
         $this->id     = $id;
         $this->folder = Arrays::shift($_get,'folder');
@@ -487,104 +488,108 @@ abstract class ApiController extends ResourceController implements IApi
                          HATEOAS
                     */
 
-                    $addons = [];
+                    if (!empty($_related)){
+                        $addons = [];
 
-                    if (!empty(static::$connect_to)){
-                        $tenantid = Factory::request()->getTenantId();
-                        if ($tenantid !== null){
-                            DB::setConnection($tenantid);
-                        }  
-                        
-                        $d2m = false;
-
-                        // detalle a maestro
-                        // las relaciones están en el detalle
-                        
-                        $_id = $rows[0][$this->instance->getSchema()['id_name']];  
-
-                        foreach (static::$connect_to as $tb){
-                            $schema = get_schema_name($tb)::get(); 
+                        if (!empty(static::$connect_to)){
+                            $tenantid = Factory::request()->getTenantId();
+                            if ($tenantid !== null){
+                                DB::setConnection($tenantid);
+                            }  
                             
-                            $rs = $schema['relationships'];
+                            $d2m = false;
 
-                            $rx = $rs[$this->model_table] ?? null;
-                            if ($rx === null){
-                                continue;
-                            }                         
+                            // detalle a maestro
+                            // las relaciones están en el detalle
+                            
+                            $_id = $rows[0][$this->instance->getSchema()['id_name']];  
 
-                            foreach($rx as $r){
-                                list($tb, $field) = explode('.', $r[1]);
+                            foreach (static::$connect_to as $tb){
+                                $schema = get_schema_name($tb)::get(); 
+                                
+                                $rs = $schema['relationships'];
 
-                                // Puede haber más de una relación entre dos tablas
-                                $tb_alias = explode('|', $tb);
-                                    
-                                $alias = $tb;
-                                if (count($tb_alias) == 2){
-                                    $tb0   = $tb_alias[0];
-                                    $alias = $tb_alias[1];
-                                } 
-
-                                $addons[$alias] = DB::table($tb)->where([$field => $_id])->get();
-                            }
-                        }
-
-                        // maestro a detalle 
-                        // (relaciones que están en el maestro)
-                        
-                        //if (!$d2m){
-                            $schema = $this->instance->getSchema();
-                            $rs = $schema['relationships'];
-
-                            foreach (static::$connect_to as $tb){                                
-                                $rx = $rs[$tb] ?? null;
-
+                                $rx = $rs[$this->model_table] ?? null;
                                 if ($rx === null){
                                     continue;
                                 }                         
 
                                 foreach($rx as $r){
-                                    list($tb0, $field0) = explode('.', $r[0]);
-                                    list($tb1, $field1) = explode('.', $r[1]);
+                                    list($tb, $field) = explode('.', $r[1]);
 
                                     // Puede haber más de una relación entre dos tablas
-                                    $tb_alias = explode('|', $tb0);
-                                    
-                                    $alias = $tb0;
+                                    $tb_alias = explode('|', $tb);
+                                        
+                                    $alias = $tb;
                                     if (count($tb_alias) == 2){
                                         $tb0   = $tb_alias[0];
                                         $alias = $tb_alias[1];
                                     } 
 
-                                    $_id = $rows[0][$field1];  
-
-                                    $addons[$alias] = DB::table($tb0)->where([$field0 => $_id])->get();
+                                    $addons[$alias] = DB::table($tb)->where([$field => $_id])->get();
                                 }
                             }
-                        //}
+
+                            // maestro a detalle 
+                            // (relaciones que están en el maestro)
+                            
+                            //if (!$d2m){
+                                $schema = $this->instance->getSchema();
+                                $rs = $schema['relationships'];
+
+                                foreach (static::$connect_to as $tb){                                
+                                    $rx = $rs[$tb] ?? null;
+
+                                    if ($rx === null){
+                                        continue;
+                                    }                         
+
+                                    foreach($rx as $r){
+                                        list($tb0, $field0) = explode('.', $r[0]);
+                                        list($tb1, $field1) = explode('.', $r[1]);
+
+                                        // Puede haber más de una relación entre dos tablas
+                                        $tb_alias = explode('|', $tb0);
+                                        
+                                        $alias = $tb0;
+                                        if (count($tb_alias) == 2){
+                                            $tb0   = $tb_alias[0];
+                                            $alias = $tb_alias[1];
+                                        } 
+
+                                        $_id = $rows[0][$field1];  
+
+                                        $addons[$alias] = DB::table($tb0)->where([$field0 => $_id])->get();
+                                    }
+                                }
+                            //}
+                            
+                        }
                         
-                    }
+                        if ($this->config['include_enity_name']){
+                            if ($this->config['nest_sub_resources']){
+                                $res = array_merge($rows[0], $addons);
                     
-                    if ($this->config['include_enity_name']){
-                        if ($this->config['nest_sub_resources']){
-                            $res = array_merge($rows[0], $addons);
-                
-                            if ($this->config['include_enity_name']){
-                                $res = [$this->model_table => $res];
+                                if ($this->config['include_enity_name']){
+                                    $res = [$this->model_table => $res];
+                                }
+                            } else {
+                                if ($this->config['include_enity_name']){
+                                    $res = [$this->model_table => $rows[0]];
+                                }
+                    
+                                $res = array_merge($res, $addons);
                             }
                         } else {
-                            if ($this->config['include_enity_name']){
-                                $res = [$this->model_table => $rows[0]];
-                            }
-                
-                            $res = array_merge($res, $addons);
+                            if ($this->config['nest_sub_resources']){
+                                $res = array_merge($rows[0], $addons);
+
+                            } else {                            
+                                $res = [$rows[0], $addons];
+                            }                       
                         }
                     } else {
-                        if ($this->config['nest_sub_resources']){
-                            $res = array_merge($rows[0], $addons);
-
-                        } else {                            
-                            $res = [$rows[0], $addons];
-                        }                       
+                        $res = $rows[0];
                     }
 
                     Factory::response()->send($res);
@@ -988,11 +993,113 @@ abstract class ApiController extends ResourceController implements IApi
                 $this->onGot($id, $total);
                 $this->webhook('list', $rows);
                 
-                if ($this->config['include_enity_name']){
-                    $rows = [$this->model_table => $rows];
+               
+                /*
+                        HATEOAS
+                */
+                
+                if (!empty($_related)){
+                    $addons = [];
+
+                    if (!empty(static::$connect_to)){
+                        $tenantid = Factory::request()->getTenantId();
+                        if ($tenantid !== null){
+                            DB::setConnection($tenantid);
+                        }  
+                        
+                        $d2m = false;
+
+                        // detalle a maestro
+                        // las relaciones están en el detalle
+
+                        foreach ($rows as $k => $row){
+
+                            $_id = $rows[$k][$this->instance->getSchema()['id_name']];  
+                            
+                            foreach (static::$connect_to as $tb){
+                                $schema = get_schema_name($tb)::get(); 
+                                
+                                $rs = $schema['relationships'];
+
+                                $rx = $rs[$this->model_table] ?? null;
+                                if ($rx === null){
+                                    continue;
+                                }                         
+
+                                foreach($rx as $r){
+                                    list($tb, $field) = explode('.', $r[1]);
+
+                                    // Puede haber más de una relación entre dos tablas
+                                    $tb_alias = explode('|', $tb);
+                                        
+                                    $alias = $tb;
+                                    if (count($tb_alias) == 2){
+                                        $tb0   = $tb_alias[0];
+                                        $alias = $tb_alias[1];
+                                    } 
+
+                                    $addons[$k][$alias] = DB::table($tb)->where([$field => $_id])->get();
+                                }
+                            }
+
+  
+                            // maestro a detalle 
+                            // (relaciones que están en el maestro)
+                            
+                            
+                            $schema = $this->instance->getSchema();
+                            $rs = $schema['relationships'];
+
+                            foreach (static::$connect_to as $tb){                                
+                                $rx = $rs[$tb] ?? null;
+
+                                if ($rx === null){
+                                    continue;
+                                }                         
+
+                                foreach($rx as $r){
+                                    list($tb0, $field0) = explode('.', $r[0]);
+                                    list($tb1, $field1) = explode('.', $r[1]);
+
+                                    // Puede haber más de una relación entre dos tablas
+                                    $tb_alias = explode('|', $tb0);
+                                    
+                                    $alias = $tb0;
+                                    if (count($tb_alias) == 2){
+                                        $tb0   = $tb_alias[0];
+                                        $alias = $tb_alias[1];
+                                    } 
+
+                                    $_id = $rows[$k][$field1];  
+            
+                                    $addons[$k][$alias] = DB::table($tb0)->where([$field0 => $_id])->first();
+                                }
+                            }
+                        }
+                        
+                    }
+                    
+                    $res = [];
+
+                    foreach ($rows as $k => $row){
+                        $res[$k] = $row;
+
+                        foreach ($addons[$k] as $name => $addon){
+                            $res[$k][$name] = $addon;
+                        } 
+                    }
+
+                } else {
+                    $res = $rows;
                 }
 
-                $res->send($rows);
+
+                if ($this->config['include_enity_name']){
+                    $res = [$this->model_table => $res];
+                }
+
+                Factory::response()->send($res);
+
             }
 
         

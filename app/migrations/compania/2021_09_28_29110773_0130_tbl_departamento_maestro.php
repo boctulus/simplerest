@@ -20,7 +20,7 @@ class TblDepartamentoMaestro130 implements IMigration
   dep_varCodigoDepartamento varchar(50) NOT NULL,
   dep_varDepartamento varchar(100) NOT NULL,
   dep_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  dep_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  dep_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   pai_intIdPais int(11) NOT NULL,
   usu_intIdCreador int(11) NOT NULL,

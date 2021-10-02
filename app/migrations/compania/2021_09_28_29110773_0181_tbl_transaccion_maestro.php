@@ -19,7 +19,7 @@ class TblTransaccionMaestro181 implements IMigration
   tra_intId INT(11) NOT NULL AUTO_INCREMENT,
   tra_varTransaccion VARCHAR(25) NOT NULL,
   tra_bolEstado TINYINT(1) NOT NULL,
-  tra_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  tra_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   tra_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

@@ -20,7 +20,7 @@ class TblCentroCostosMaestro215 implements IMigration
   cco_varCodigo VARCHAR(20) NOT NULL,
   cco_varCentroCostos VARCHAR(100) NOT NULL,
   cco_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  cco_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  cco_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   usu_intIdCreador INT(11) NOT NULL,
   usu_intIdActualizador INT(11) NOT NULL,

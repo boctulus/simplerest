@@ -21,7 +21,7 @@ class TblPaisMaestro125 implements IMigration
   pai_varPais varchar(100) NOT NULL,
   pai_varCodigoPaisCelular varchar(3) NOT NULL,
   pai_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  pai_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  pai_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   pai_intIdMoneda int(11) NOT NULL,
   usu_intIdCreador int(11) NOT NULL,

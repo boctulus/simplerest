@@ -21,7 +21,7 @@ class TblClienteInformacionTributariaMaestro276 implements IMigration
   tic_intllevarContabilidad INT(250) NOT NULL,
   tic_intCalcularIca INT(11) NOT NULL,
   tic_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  tic_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  tic_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   sub_intIdSubcuentacontable INT(11) DEFAULT NULL,
   cli_intIdCliente INT(11) DEFAULT NULL,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,

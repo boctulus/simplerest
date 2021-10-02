@@ -31,7 +31,7 @@ class TblPersonaMaestro169 implements IMigration
   per_varEmail VARCHAR(100) NOT NULL,
   per_datFechaNacimiento DATE NOT NULL,
   per_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  per_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  per_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   tpr_intIdTipoPersona INT(11) NOT NULL DEFAULT 0,
   pai_intIdPais INT(11) NOT NULL,
   ciu_intIdCiudad INT(11) NOT NULL,

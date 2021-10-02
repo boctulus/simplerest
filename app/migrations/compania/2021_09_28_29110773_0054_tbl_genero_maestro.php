@@ -19,7 +19,7 @@ class TblGeneroMaestro54 implements IMigration
   gen_intId int(11) NOT NULL AUTO_INCREMENT,
   gen_varGenero varchar(50) NOT NULL,
   gen_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  gen_dtimFechaActualizacion datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  gen_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
   est_intIdEstado int(11) NOT NULL DEFAULT 1,
   usu_intIdCreador int(11) NOT NULL,
   usu_intIdActualizador int(11) NOT NULL,

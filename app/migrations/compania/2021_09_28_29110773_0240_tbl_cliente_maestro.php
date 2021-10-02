@@ -22,7 +22,7 @@ class TblClienteMaestro240 implements IMigration
   cli_bolBloqueadoMora TINYINT(1) NOT NULL,
   cli_datFechaBloqueado DATE NOT NULL,
   cli_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-  cli_dtimFechaActualizacion DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  cli_dtimFechaActualizacion DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   est_intIdEstado INT(11) NOT NULL DEFAULT 1,
   dpa_intIdDiasPago INT(11) NOT NULL,
   des_intIdDescuento INT(11) NOT NULL,
