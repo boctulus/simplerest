@@ -158,6 +158,8 @@ class MakeControllerBase extends Controller
         
         make migration rename_some_column
         make migration another_table_change --table=foo
+
+        make constants
         
         Examples:
         
@@ -863,6 +865,41 @@ class MakeControllerBase extends Controller
         $this->write($dest_path, $file, $protected);
     }
 
+    function constants(){
+        include CONFIG_PATH . '/messages.php';
+
+        $lines = explode(PHP_EOL, $_messages);
+
+        file_put_contents(CONFIG_PATH . '/msg_const.php', '<?php'. "\r\n\r\n");
+
+        foreach ($lines as $line){
+            $line = trim($line);
+
+            if (empty($line)){
+                continue;
+            }
+
+            preg_match('/([0-9]+)[ \t]+([A-Z_]+)[ \t]+"(.*)"/',$line, $matches);
+
+            $code = $matches[1];
+            $name = $matches[2];
+            $text = $matches[3];
+
+            $const = "define('$name', [
+                'code' => '$code',
+                'text' => \"$text\"
+            ]);";
+
+            $ok = file_put_contents(CONFIG_PATH . '/msg_const.php', $const . PHP_EOL, FILE_APPEND);
+
+            if (!$ok){
+                echo "Failed to write compiled constants\r\n";
+                exit;
+            }
+        }
+
+        echo "Constants have been compiled!\r\n";
+    }
     
 
 }
