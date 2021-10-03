@@ -3,12 +3,7 @@
 namespace simplerest\core;
 
 use simplerest\libs\Url;
-use simplerest\libs\Arrays;
-use simplerest\libs\Debug;
-
-use simplerest\libs\Files;
-use simplerest\libs\Time;
-use simplerest\libs\Factory;
+use simplerest\libs\Msg;
 
 class FrontController
 {
@@ -76,11 +71,11 @@ class FrontController
 
         } elseif ($_params[0] === 'api' || $config['REMOVE_API_SLUG']) {
             if (!isset($_params[1 - $sub])){
-                $res->sendError('API version is missing');
+                $res->sendError(Msg::MISSING_API_VERSION['text']);
             }
 
             if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $_params[1 - $sub], $matches) ){
-                $res->sendError("Incorrect format for API version");
+                $res->sendError(Msg::INVALID_FORMAT_API_VERSION['text']);
             }
 
             $api_version = $_params[1 - $sub]; 
@@ -159,7 +154,7 @@ class FrontController
 
 
         if (!class_exists($class_name)){
-            $res->sendError(_("Class not found"), 404, "Internal error - controller class $class_name not found"); 
+            $res->sendError(Msg::CLASS_NOT_FOUND, 404, "Internal error - controller class $class_name not found"); 
         } 
 
         if (!method_exists($class_name, $method)){
