@@ -282,7 +282,11 @@ abstract class ApiController extends ResourceController implements IApi
         global $api_version;
 
         $_related = Factory::request()->shiftQuery('_related');
+        $include  = Factory::request()->shiftQuery('include');
         $_get     = Factory::request()->getQuery();  
+
+        $include  = explode(',', $include);
+
 
         $this->id     = $id;
         $this->folder = Arrays::shift($_get,'folder');
@@ -488,10 +492,14 @@ abstract class ApiController extends ResourceController implements IApi
                          HATEOAS
                     */
 
-                    if (!empty($_related)){
+                    if (!empty($_related) || !empty($include)){
                         $addons = [];
 
                         if (!empty(static::$connect_to)){
+                            if (!empty($include) && !empty($include[0])){
+                                static::$connect_to = array_intersect(static::$connect_to, $include);
+                            }
+
                             $tenantid = Factory::request()->getTenantId();
                             if ($tenantid !== null){
                                 DB::setConnection($tenantid);
@@ -1011,10 +1019,14 @@ abstract class ApiController extends ResourceController implements IApi
                         HATEOAS
                 */
                 
-                if (!empty($_related)){
+                if (!empty($_related) || !empty($include)){
                     $addons = [];
 
                     if (!empty(static::$connect_to)){
+                        if (!empty($include) && !empty($include[0])){
+                            static::$connect_to = array_intersect(static::$connect_to, $include);
+                        }
+
                         $tenantid = Factory::request()->getTenantId();
                         if ($tenantid !== null){
                             DB::setConnection($tenantid);
