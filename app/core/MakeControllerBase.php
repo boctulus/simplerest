@@ -82,6 +82,8 @@ class MakeControllerBase extends Controller
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; 
     const HELPER_TEMPLATE = self::TEMPLATES . 'Helper.php'; 
     const LIBS_TEMPLATE = self::TEMPLATES . 'Lib.php';
+    const MSG_CONST_TEMPLATE = self::TEMPLATES . 'Msg.php';
+    
 
     protected $class_name;
     protected $ctr_name;
@@ -865,13 +867,12 @@ class MakeControllerBase extends Controller
         $this->write($dest_path, $file, $protected);
     }
 
-    function constants(){
-        include CONFIG_PATH . '/messages.php';
+    function constants(...$opt){
+        include_once CONFIG_PATH . '/messages.php';
 
         $lines = explode(PHP_EOL, $_messages);
 
-        file_put_contents(CONFIG_PATH . '/msg_const.php', '<?php'. "\r\n\r\n");
-
+        $consts = '';
         foreach ($lines as $line){
             $line = trim($line);
 
@@ -879,26 +880,31 @@ class MakeControllerBase extends Controller
                 continue;
             }
 
-            preg_match('/([0-9]+)[ \t]+([A-Z_]+)[ \t]+"(.*)"/',$line, $matches);
+            preg_match('/([A-Z_]+)[ \t]+([A-Z_]+)[ \t]+"(.*)"/',$line, $matches);
 
-            $code = $matches[1];
-            $name = $matches[2];
+            $type = $matches[1];
+            $code = $matches[2];
             $text = $matches[3];
 
-            $const = "define('$name', [
+            $name = $code;
+
+            $consts .= "\r\n\t" . "const $name = [
+                'type' => '$type',
                 'code' => '$code',
                 'text' => \"$text\"
-            ]);";
+            ];" . "\r\n";
 
-            $ok = file_put_contents(CONFIG_PATH . '/msg_const.php', $const . PHP_EOL, FILE_APPEND);
-
-            if (!$ok){
-                echo "Failed to write compiled constants\r\n";
-                exit;
-            }
         }
 
-        echo "Constants have been compiled!\r\n";
+        $filename  = 'Msg.php';
+        $dest_path = LIBS_PATH . $filename;
+
+        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
+
+        $data = file_get_contents(self::MSG_CONST_TEMPLATE);
+        $data = str_replace('# __CONSTANTS', $consts, $data);
+
+        $this->write($dest_path, $data, $protected);;
     }
     
 

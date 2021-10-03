@@ -46,8 +46,9 @@ abstract class ApiController extends ResourceController implements IApi
     {  
         parent::__construct($auth);
 
-        $this->tenantid = Factory::request()->getTenantId();
+        $res = response()->encoded();
 
+        $this->tenantid = Factory::request()->getTenantId();
         if ($this->tenantid !== null){           
             $this->conn = DB::getConnection($this->tenantid);
         }
@@ -61,7 +62,7 @@ abstract class ApiController extends ResourceController implements IApi
                 $this->model_name = $matchs[1] . 'Model';
                 $this->model_table = Strings::camelToSnake($matchs[1]);
             } else {
-                Factory::response()->sendError("ApiController with undefined Model", 500);
+                $res->sendError("ApiController with undefined Model", 500);
             }  
         }
         

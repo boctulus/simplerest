@@ -5,10 +5,14 @@
 */
 
 $_messages = <<<MSG
-0001	INVALID_CLASS			"Invalid class"
-1000	VALIDATION_ERROR		"Validation error"
-1001	NOT_BETWEEN				"%s should be less than %s or gretter than %s"
-1002	INVALID_DATA_TYPE 		"It's not a valid %s"
+GENERAL	    INVALID_CLASS			    "Invalid class"
+GENERAL     CLASS_NOT_FOUND             "Class not found"
+VALIDATION	VALIDATION_ERROR		    "Validation error"
+VALIDATION	NOT_BETWEEN				    "%s should be less than %s or gretter than %s"
+VALIDATION	INVALID_DATA_TYPE 		    "It's not a valid %s"
+API         MISSING_API_VERSION         "API version is missing"
+API         INVALID_FORMAT_API_VERSION  "Invalid format for API version"
+
 MSG;
 
 

@@ -34,7 +34,8 @@ class AuthController extends Controller implements IAuth
         header('Access-Control-Allow-Headers: Origin,Content-Type,X-Auth-Token,AccountKey,X-requested-with,Authorization,Accept, Client-Security-Token,Host,Date,Cookie,Cookie2'); 
         header('Access-Control-Allow-Methods: POST,OPTIONS'); 
         header('Access-Control-Allow-Origin: *');
-        header('Content-Type: application/json; charset=UTF-8');
+        
+        Factory::response()->encoded();
 
         parent::__construct();
 

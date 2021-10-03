@@ -52,6 +52,11 @@ class Request  implements \ArrayAccess, Arrayable
         return static::$headers[strtolower($key)] ?? NULL;
     }
 
+    // alias
+    function getHeader(string $key){
+        return $this->header($key);
+    }
+
     function getAuth(){
         return static::$headers['authorization'] ?? NULL;
     }
