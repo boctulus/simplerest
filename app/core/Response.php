@@ -4,6 +4,7 @@ namespace simplerest\core;
 
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
+use simplerest\libs\Strings;
 
 class Response
 {
@@ -91,13 +92,19 @@ class Response
         return static::getInstance();
     }
 
-    function encode($data){        
+    protected function encode($data){       
         $options = static::$pretty ? static::$options | JSON_PRETTY_PRINT : static::$pretty;
             
         return json_encode($data, $options);  
     }
 
+    function encoded(){
+        self::$is_encoded = true;
+        return static::getInstance();
+    }
+
     function setPaginator(array $p){
+        self::$is_encoded = true; 
         static::$paginator = $p;
         return static::getInstance();
     }
@@ -126,16 +133,13 @@ class Response
             $data = array_merge($arr,[
                     'data' => $data, 
                     'status_code' => $http_code,
-                    'error' => '', 
-                    'error_detail' => '' 
+                    'error' => []
             ]);
 
-            if (static::$config['paginator']['position'] == 'BOTTOM'){
+            if (static::$config['paginator']['position'] == 'BOTTOM'){                
                 if (static::$paginator != NULL)
                     $data['paginator'] = static::$paginator;
-            }
-
-            self::$is_encoded = true;            
+            }          
         }            
 
         //if (Factory::request()->gzip() && strlen($data) > 1000){
@@ -175,16 +179,14 @@ class Response
 
         if (!headers_sent()) {
             header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
-            header('Content-type:application/json;charset=utf-8');
         }
 
         $res = [ 
             'data' => $data, 
             'status_code' => $http_code,
-            'error' => '', 
-            'error_detail' => ''
+            'error' => []
         ];
-    
+
         static::$instance->setData($res);
 
         return static::$instance; 
@@ -194,14 +196,17 @@ class Response
     /**
      * sendError
      *
-     * @param  string $msg_error
-     * @param  int $http_code
-     * @param  string $error_detail
      *
      * @return void
      */
-    function sendError(string $msg_error, int $http_code = NULL, $error_detail= NULL){
-        self::$is_encoded = true;
+    function sendError($error = NULL, int $http_code = NULL, $detail = NULL){
+        if (is_string($error)){
+            $message = $error;
+        } elseif (is_array($error)){
+            $type    = $error['type'] ?? null;
+            $message = $error['text'] ?? null;
+            $code    = $error['code'];
+        }
 
         if (!headers_sent()) {
             if ($http_code == NULL)
@@ -212,14 +217,21 @@ class Response
     
             if ($http_code != NULL && !static::$fake_status_codes)
                 header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
-                header('Content-type:application/json;charset=utf-8');
         }    
         
-        $res =  [ 
-            'status_code' => $http_code,
-            'error' => $msg_error,
-            'error_detail' => $error_detail
+
+        $res['status'] = $http_code;
+
+        /*
+            https://www.baeldung.com/rest-api-error-handling-best-practices
+        */
+        $res['error'] = [ 
+            'type'    => $type ?? null,
+            'code'    => $code ?? null,
+            'message' => $message,
+            'detail'  => $detail
         ];
+
             
         static::$instance->setData($res);  
         static::$instance->flush();
@@ -238,9 +250,33 @@ class Response
         if (self::$is_encoded){
             static::$data = $this->encode(static::$data);
             header('Content-type:application/json;charset=utf-8');
+        } else {
+            $accept = request()->header('Accept');
+
+            if (Strings::startsWith('application/json', $accept)){
+                self::$is_encoded = true;
+
+                static::$data = $this->encode(static::$data);
+                header('Content-type:application/json;charset=utf-8');
+            }
         }
 
-        echo static::$data; 
+        if (is_array(static::$data) && !self::$is_encoded){
+            if (php_sapi_name() != 'cli'){
+                // deberia cargar una vista que muestre el error en vez de usar dd()
+                dd(static::$data);
+            } else {
+                $message = static::$data['error']['message'];
+                $type = static::$data['error']['type'] ?? '--';
+                $code = static::$data['error']['code'] ?? '--';
+
+                echo "--| Error: \"$message\". Type: $type. Code: $code" . PHP_EOL. PHP_EOL;
+            }
+            
+        } else {
+            echo static::$data; 
+        }
+        
         exit;
     }
 }
