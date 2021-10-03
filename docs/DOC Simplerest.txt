@@ -686,6 +686,8 @@ Ahora la respuesta del método mid() de TestController será interceptada y modi
 
 Todas las tablas deben tener un único id inclusive si son "tablas intermedias" (conocidas también como "tablas puente") y se especifica en la propiedad $id_name.
 
+Se recomienda que las tablas tengas claves primarias simples pero si son compuestas entonces es requisito que uno de los campos sea AUTOINCREMENTAL. A futuro se prevee que se acepte que uno de los campos de una PRIMARY KEY compuesta pueda ser un UUID en vez de AUTOINCREMENTAL. 
+
 
 # Modelo
 
@@ -3490,6 +3492,17 @@ Al especifica el parámetro "_related=1", la salida será algo como:
 		"error": "",
 		"error_detail": ""
 	}
+
+
+Además es posible "filtrar" cuales de todas las relaciones especificadas en el ApiController correspondiente en la propiedad $connect_to se quiere traer con include=
+
+Ejemplos:
+
+	http://simplerest.lan/api/v1/products?tenantid=az&include=product_categories
+	http://simplerest.lan/api/v1/products/145?tenantid=az&_related=true&include=users
+
+Si se especifica el parámetro "include" se asume que se quiere traer las relaciones como si "_related=1"
+
 
 Es posible formatear el JSON de la respuesta con opciones dentro del config.php 
 
