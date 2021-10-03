@@ -113,6 +113,10 @@ class TestController extends Controller
 		$mk->any("all", "-s", "-m", "--from:$tenant");        
     }
 
+    function error(){
+        response()->sendError("Todo mal", 400);
+    }
+
     
 }
 
