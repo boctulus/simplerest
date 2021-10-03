@@ -3,15 +3,18 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\ProductsSchema;
+use simplerest\models\schemas\UsersSchema;
 
-class ProductsModel extends MyModel
+class UsersModel extends MyModel
 { 
+	
+	
+
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new ProductsSchema());
+        parent::__construct($connect, new UsersSchema());
 	}	
 }
 
