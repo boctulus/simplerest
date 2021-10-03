@@ -3021,6 +3021,8 @@ Para generar modelos, controladores y apis se utiliza el comando make de la sigu
                             [-a | --api ] 
                             [-f | --force]
 
+	php com make constants
+
 
 # Ayuda 
 
@@ -3799,6 +3801,11 @@ También es posible hacer referencia solo al lenguaje y no al país:
 Ej:  
 	/api/v1/mi_tabla?tenantid=db_xyz&lang=es
  
+
+Los textos a ser traducidos se encuentran config/messages.php y son compilados a config/msg_const.php mediante el comando:
+
+	php com make constants
+
 
 # NGINX web server
 
