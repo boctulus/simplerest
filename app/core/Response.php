@@ -136,6 +136,8 @@ class Response
                     'error' => []
             ]);
 
+            static::$http_code = $http_code; //
+
             if (static::$config['paginator']['position'] == 'BOTTOM'){                
                 if (static::$paginator != NULL)
                     $data['paginator'] = static::$paginator;
@@ -158,6 +160,8 @@ class Response
         if (!static::$fake_status_codes){    
             http_response_code($http_code);
         }   
+
+        static::$http_code = $http_code; //
         
         return static::$instance; 
     }
@@ -186,6 +190,8 @@ class Response
             'status_code' => $http_code,
             'error' => []
         ];
+
+        static::$http_code = $http_code; //
 
         static::$instance->setData($res);
 
@@ -219,7 +225,7 @@ class Response
                 header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
         }    
         
-
+        static::$http_code = $http_code; //
         $res['status'] = $http_code;
 
         /*
@@ -263,8 +269,14 @@ class Response
 
         if (is_array(static::$data) && !self::$is_encoded){
             if (php_sapi_name() != 'cli'){
-                // deberia cargar una vista que muestre el error en vez de usar dd()
-                dd(static::$data);
+                view('error.php', [
+                    'status'   => static::$http_code,
+                    'type'     => static::$data['error']['type'],
+                    'code'     => static::$data['error']['code'],
+                    'message'  => static::$data['error']['message'],
+                    'detail'   => static::$data['error']['detail']
+                ], 'app_layout_basic.php');
+
             } else {
                 $message = static::$data['error']['message'];
                 $type = static::$data['error']['type'] ?? '--';
