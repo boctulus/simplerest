@@ -29,7 +29,7 @@ class FrontController
             }   
     
             if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) ){
-                $res->sendError('Malformed url', 400); 
+                $res->sendError(Msg::MALFORMED_URL, 400); 
             }
     
             $_params = explode('/', $path);
@@ -69,16 +69,21 @@ class FrontController
 
             $api_version = $_params[1 - $sub]; 
 
+            if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $api_version, $matches) ){
+                $res->sendError(Msg::INVALID_FORMAT_API_VERSION['text']);
+            }
+
         } elseif ($_params[0] === 'api' || $config['REMOVE_API_SLUG']) {
             if (!isset($_params[1 - $sub])){
                 $res->sendError(Msg::MISSING_API_VERSION['text']);
             }
 
-            if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $_params[1 - $sub], $matches) ){
+            $api_version = $_params[1 - $sub]; 
+
+            if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $api_version, $matches) ){
                 $res->sendError(Msg::INVALID_FORMAT_API_VERSION['text']);
             }
 
-            $api_version = $_params[1 - $sub]; 
             $controller = $_params[2 - $sub] ?? NULL;  
                 
             // CamelCase to came_case
@@ -92,17 +97,7 @@ class FrontController
 
             $class_name = $namespace . ucfirst($controller); //
             
-            $asked_method = NULL;
-            if ($config['method_override']['by_url']){
-                $asked_method  =  $req->shiftQuery('_method');
-            }
-
-            if ($asked_method == NULL && $config['method_override']['by_header']){
-                $asked_method  =  $req->header('X-HTTP-Method-Override'); 
-            }
-
-            $method = $asked_method != NULL ? strtolower($asked_method) : strtolower($_SERVER['REQUEST_METHOD']);
-
+            $method = strtolower($req->getRequestMethod());
             $params = array_slice($_params,3 - $sub,2);  // *
             
 

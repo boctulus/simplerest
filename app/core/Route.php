@@ -5,7 +5,7 @@ namespace simplerest\core;
 use simplerest\libs\Url;
 use simplerest\libs\Strings;
 use simplerest\libs\Factory;
-use simplerest\libs\Debug;
+use simplerest\libs\Msg;
 
 class Route 
 {
@@ -30,6 +30,8 @@ class Route
         $config = config();
 
         if (php_sapi_name() != 'cli'){
+            $res = Response::getInstance();
+    
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $path = preg_replace('/(.*)\/index.php/', '/', $path);
     
@@ -37,8 +39,14 @@ class Route
                 $path = substr($path, strlen($config['BASE_URL']));
             }   
     
-            if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) )
-                Response::getInstance()->sendError('Malformed url', 400); 
+            if (Strings::contains('/api/', $path) || in_array(strtolower(request()->getRequestMethod()),['post', 'put', 'patch'] )){
+                $res->encoded();
+            }
+
+            if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) ){
+                $res->sendError(Msg::MALFORMED_URL, 400); 
+            }
+                
     
             $_params = explode('/', $path);
     

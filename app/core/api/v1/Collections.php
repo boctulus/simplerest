@@ -48,10 +48,10 @@ class Collections extends MyApiController
             Factory::response()->sendError('Invalid JSON',400);
         
         if (empty($data['entity']))
-            Factory::response()->sendError('entity is required', 400);    
+            Factory::response()->sendError('Parameter entity is required', 400);    
 
         if (empty($data['refs']))
-            Factory::response()->sendError('refs is required', 400);        
+            Factory::response()->sendError('Parameter refs is required', 400);        
 
         $entity = $data['entity'];
         $refs   = $data['refs'];
@@ -94,7 +94,7 @@ class Collections extends MyApiController
     protected function modify($id = NULL, bool $put_mode = false)
     {
         if ($id == null)
-            Factory::response()->code(400)->sendError("Lacks id in request");
+            Factory::response()->code(400)->sendError("Missing id");
 
         $data = Factory::request()->getBody(false);
 

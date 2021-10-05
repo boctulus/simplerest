@@ -37,7 +37,7 @@ class Files extends MyApiController
         $failures = $uploader->getErrors();     
 
         if (count($files) == 0){
-            Factory::response()->sendError('No files or file upload failed', 400);
+            Factory::response()->sendError('No files', 400);
         }        
         
         $instance = DB::table('files')->fill(['filename_as_stored']);
@@ -88,7 +88,7 @@ class Files extends MyApiController
      */
     function delete($id = NULL) {
         if($id == NULL)
-            Factory::response()->sendError("Lacks id in request", 400);
+            Factory::response()->sendError("Missing id", 400);
 
         $data = Factory::request()->getBody();        
 
@@ -150,7 +150,7 @@ class Files extends MyApiController
             //    Factory::response()->sendError("File not found",404);
 
         } catch (\Exception $e) {
-            Factory::response()->sendError("Error during DELETE for id=$id with message: {$e->getMessage()}");
+            Factory::response()->sendError("DELETE error for id=$id", 500, $e->getMessage());
         }
 
     } // 

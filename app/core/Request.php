@@ -182,7 +182,22 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     function getRequestMethod(){
-        return $_SERVER['REQUEST_METHOD'] ?? NULL;
+        $config = config();
+
+        $asked_method = NULL;
+        if ($config['method_override']['by_url']){
+            $asked_method  =  $this->shiftQuery('_method');
+        }
+
+        if ($asked_method == NULL && $config['method_override']['by_header']){
+            $asked_method  =  $this->header('X-HTTP-Method-Override'); 
+        }
+
+        if ($asked_method == NULL){
+            $asked_method = $_SERVER['REQUEST_METHOD'] ?? NULL;
+        }
+        
+        return $asked_method;
     }
 
     static function ip(){
