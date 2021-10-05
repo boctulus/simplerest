@@ -541,6 +541,7 @@ class MakeControllerBase extends Controller
         $rules = [];
         $pri_components = [];
         $autoinc = null;
+        $unsigned = [];
 
         foreach ($fields as $field){
             $field_names[] = $field['Field'];
@@ -558,11 +559,17 @@ class MakeControllerBase extends Controller
                 $id_name = $field['Field'];
                 $pri_components[] = $field['Field'];
             }
+
             if ($field['Extra'] == 'auto_increment') { 
                 //$not_fillable[] = $field['Field'];
                 $nullables[] = $field['Field']; 
                 $autoinc     = $field['Field'];
             }
+            
+            if (Strings::containsWord('unsigned', $field['Type'])) { 
+                $unsigned[] = $field['Field']; 
+            }
+            
             $types[$field['Field']] = $this->get_pdo_const($field['Type']);
             $types_raw[$field['Field']] = $field['Type'];
          
@@ -609,6 +616,18 @@ class MakeControllerBase extends Controller
             if (preg_match('/^varchar\(([0-9]+)\)$/', $types_raw[$f], $matches)){
                 $len = $matches[1];
                 $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
+                continue;
+            } 
+
+            if (in_array($f, $unsigned)){
+                $_rules [] = "\t\t\t\t'$f' => ['min' => 0]";
+                continue;
+            } 
+
+            if (strtolower($types_raw[$f]) == 'datetime'){
+                //$_rules[] = "\t\t\t\t'$f' => ['max' => 19]";
+                $_rules[] = "\t\t\t\t'$f' => ['type' => 'datetime']";
+                continue;
             }
         }
 
@@ -880,13 +899,16 @@ class MakeControllerBase extends Controller
                 continue;
             }
 
-            preg_match('/([A-Z_]+)[ \t]+([A-Z_]+)[ \t]+"(.*)"/',$line, $matches);
+            if (!preg_match('/([A-Z_>]+)[ \t]+([A-Z_]+)[ \t]+["\'](.*)["\']/',$line, $matches)){
+                echo "Unable to compile $line\r\n";
+                continue;
+            }
 
             $type = $matches[1];
             $code = $matches[2];
             $text = $matches[3];
 
-            $name = $code;
+            $name = $code;  
 
             $consts .= "\r\n\t" . "const $name = [
                 'type' => '$type',

@@ -27,7 +27,9 @@ class TblGeneroSchema implements ISchema
 			'nullable'		=> ['gen_intId', 'gen_dtimFechaCreacion', 'gen_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'gen_varGenero' => ['max' => 50]
+				'gen_varGenero' => ['max' => 50],
+				'gen_dtimFechaCreacion' => ['type' => 'datetime'],
+				'gen_dtimFechaActualizacion' => ['type' => 'datetime']
 			],
 
 			'relationships' => [
