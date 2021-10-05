@@ -291,7 +291,7 @@ class Validator implements IValidator
 					}					
 				}
 
-				if (isset($rule['type']) && in_array($rule['type'],['number','int','float','decimal']) && trim($dato)=='')
+				if (isset($rule['type']) && in_array($rule['type'],['number','int','float','double']) && trim($dato)=='')
 					$avoid_type_check = true;
 				
 				if (isset($rule['type']) && !$avoid_type_check)
@@ -322,7 +322,7 @@ class Validator implements IValidator
 							}
 					}	
 					
-					if(in_array($rule['type'],['number','int','float','decimal'])){
+					if(in_array($rule['type'],['number','int','float','double'])){
 							
 							if(isset($rule['min'])){ 
 								$rule['min'] = (float) $rule['min']; // cast
