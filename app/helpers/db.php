@@ -12,7 +12,7 @@ function get_users_table(){
     $users_table = config()['users_table'] ?? null;
 
     if (empty($users_table)){
-        response()->sendError("Lacks users_table reference in config file", 500);
+        response()->sendError("users_table in config file is required", 500);
     }
 
     return $users_table;
