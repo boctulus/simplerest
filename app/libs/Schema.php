@@ -216,6 +216,52 @@ class Schema
 		'COLUMN');
 	}
 
+	/*
+		https://arjunphp.com/how-to-get-mysql-table-comments/
+	*/
+	static function getTableComment( string $table, string $conn_id = null) {	
+		$config = config();
+		
+		if ($conn_id != null){
+			if (!isset($config['db_connections'][$conn_id])){
+				throw new \Exception("Connection Id '$conn_id' not defined");
+			}			
+		} else {
+			$conn_id = $config['db_connection_default'];
+		}
+
+		$db_name = DB::getCurrentDB();
+
+		return DB::select("SELECT table_comment 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE table_schema='$db_name' 
+        AND table_name='$table';")[0];
+	}
+
+	/*
+		SELECT a.COLUMN_NAME, a.COLUMN_COMMENT
+		FROM information_schema.COLUMNS a 
+		WHERE a.TABLE_NAME = 'facturas' AND  COLUMN_NAME = 'correo';
+	*/
+	static function getColumnComment(string $table, string $field, string $conn_id = null) {	
+		$config = config();
+		
+		if ($conn_id != null){
+			if (!isset($config['db_connections'][$conn_id])){
+				throw new \Exception("Connection Id '$conn_id' not defined");
+			}			
+		} else {
+			$conn_id = $config['db_connection_default'];
+		}
+
+		$db_name = DB::getCurrentDB();
+
+		return DB::select("SELECT a.COLUMN_NAME, a.COLUMN_COMMENT
+		FROM information_schema.COLUMNS a 
+		WHERE a.TABLE_NAME = '$table' AND  COLUMN_NAME = '$field';")[0];
+	}
+
+
 	static function FKcheck(bool $status){
 		$conn = DB::getConnection();   
 

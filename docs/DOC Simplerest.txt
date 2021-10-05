@@ -1860,7 +1860,7 @@ alpha
 notnum
 email
 date
-sql_datetime
+datetime (compatible con DATETIME de SQL)
 time
 array
 regex:/expresión/

@@ -542,12 +542,21 @@ class MakeControllerBase extends Controller
         $pri_components = [];
         $autoinc = null;
         $unsigned = [];
+        $tiny = [];
+        $emails = [];
 
         foreach ($fields as $field){
             $field_names[] = $field['Field'];
 
+            $field_name = $field['Field'];
+            $comment = Schema::getColumnComment($name, $field_name)['COLUMN_COMMENT'];
+
+            if ($comment == 'email' || $comment == 'e-mail'){
+                $emails[] = $field_name;
+            }
+
             if ($field['Null']  == 'YES' || $field['Default'] !== NULL) { 
-                $nullables[] = $field['Field']; 
+                $nullables[] = $field_name;
             }
             
             if ($field['Key'] == 'PRI'){ 
@@ -557,19 +566,23 @@ class MakeControllerBase extends Controller
                 }
                 
                 $id_name = $field['Field'];
-                $pri_components[] = $field['Field'];
+                $pri_components[] = $field_name;;
             }
 
             if ($field['Extra'] == 'auto_increment') { 
                 //$not_fillable[] = $field['Field'];
-                $nullables[] = $field['Field']; 
-                $autoinc     = $field['Field'];
+                $nullables[] = $field_name;
+                $autoinc     = $field_name;
             }
             
             if (Strings::containsWord('unsigned', $field['Type'])) { 
-                $unsigned[] = $field['Field']; 
+                $unsigned[] = $field_name;
             }
-            
+
+            if (Strings::startsWith('tinyint', $field['Type'])) { 
+                $tiny[] = $field_name; 
+            }
+
             $types[$field['Field']] = $this->get_pdo_const($field['Type']);
             $types_raw[$field['Field']] = $field['Type'];
          
@@ -613,8 +626,29 @@ class MakeControllerBase extends Controller
         foreach ($types as $f => $type){
             $_attr_types[] = "\t\t\t\t'$f' => '$type'";
 
-            if (preg_match('/^varchar\(([0-9]+)\)$/', $types_raw[$f], $matches)){
-                $len = $matches[1];
+            if (in_array($f, $emails)){
+                $_rules[] = "\t\t\t\t'$f' => ['type' => 'email']";
+                continue;
+            } 
+
+            if (preg_match('/^(varchar)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
+                $len = $matches[2];
+                $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
+                continue;
+            } 
+
+            /*
+              https://www.php.net/manual/en/language.types.type-juggling.php
+            */
+
+            if (preg_match('/^(|varbinary)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
+                $len = $matches[2];
+                $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
+                continue;
+            } 
+
+            if (preg_match('/^(binary)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
+                $len = $matches[2];
                 $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
                 continue;
             } 
@@ -624,11 +658,22 @@ class MakeControllerBase extends Controller
                 continue;
             } 
 
+            if (in_array($f, $tiny)){
+                $_rules[] = "\t\t\t\t'$f' => ['type' => 'bool']";
+                continue;
+            } 
+
             if (strtolower($types_raw[$f]) == 'datetime'){
-                //$_rules[] = "\t\t\t\t'$f' => ['max' => 19]";
                 $_rules[] = "\t\t\t\t'$f' => ['type' => 'datetime']";
                 continue;
             }
+
+            /*
+                Para blobs
+
+                https://www.virendrachandak.com/techtalk/how-to-get-size-of-blob-in-mysql/
+            */
+
         }
 
         $attr_types = "[\r\n". implode(",\r\n", $_attr_types). "\r\n\t\t\t]";
