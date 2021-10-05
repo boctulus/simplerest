@@ -747,7 +747,7 @@ abstract class ApiController extends ResourceController implements IApi
                                         }                                         
                                     break;
                                     case 'notBetween':
-                                        throw new \Exception("Operator 'notBetween' is not implemented");  
+                                        throw new \Exception("Operator notBetween is not implemented");  
                                     break;
                                     default:
                                         // 'eq', 'gt', ...
@@ -765,7 +765,7 @@ abstract class ApiController extends ResourceController implements IApi
                                         }
 
                                         if (!$found)
-                                            Factory::response()->sendError("Invalid operator '$op'", 400);
+                                            Factory::response()->sendError("Unknown operator '$op'", 400);
                                     break;
                                 }
                             }
@@ -1123,6 +1123,10 @@ abstract class ApiController extends ResourceController implements IApi
                     foreach ($rows as $k => $row){
                         $res[$k] = $row;
 
+                        if (empty($addons)){
+                            continue;
+                        }
+
                         foreach ($addons[$k] as $name => $addon){
                             $res[$k][$name] = $addon;
                         } 
@@ -1284,7 +1288,7 @@ abstract class ApiController extends ResourceController implements IApi
     protected function modify($id = NULL, bool $put_mode = false)
     {
         if ($id == null)
-            Factory::response()->sendError("Lacks id in request",400);
+            Factory::response()->sendError("Missing id",400);
 
         $data = Factory::request()->getBody(false);
 
@@ -1479,7 +1483,7 @@ abstract class ApiController extends ResourceController implements IApi
      */
     function delete($id = NULL) {
         if($id == NULL)
-            Factory::response()->sendError("Lacks id in request", 400);
+            Factory::response()->sendError("Missing id", 400);
 
         $data = Factory::request()->getBody(false);        
 
@@ -1513,7 +1517,7 @@ abstract class ApiController extends ResourceController implements IApi
             if ($this->folder !== null)
             {
                 if (empty(static::$folder_field))
-                    Factory::response()->sendError("'folder_field' is undefined", 403);
+                    Factory::response()->sendError("Undefined folder field", 403);
 
                 // event hook    
                 $this->onDeletingFolderBeforeCheck($id, $this->folder);

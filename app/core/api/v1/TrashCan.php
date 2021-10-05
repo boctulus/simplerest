@@ -43,7 +43,7 @@ class TrashCan extends MyApiController
         }
         
         if (!class_exists($this->model))
-            Factory::response()->sendError("Entity $entity does not exists", 400);
+            Factory::response()->sendError("Entity $entity not found", 400);
 
         $this->instance = (new $this->model())->assoc();  
         

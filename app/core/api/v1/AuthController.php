@@ -118,9 +118,9 @@ class AuthController extends Controller implements IAuth
         $password = $data[$this->__password] ?? null;         
         
         if (empty($email) && empty($username) ){
-            Factory::response()->sendError('email or username are required',400);
+            Factory::response()->sendError('Email or username are required',400);
         }else if (empty($password)){
-            Factory::response()->sendError('password is required',400);
+            Factory::response()->sendError('Password is required',400);
         }
 
         $this->onLogin($data);
@@ -476,7 +476,7 @@ class AuthController extends Controller implements IAuth
 
                     if ($active == 0 || (string) $active === "0") {
                         Factory::response()
-                        ->sendError('Non authorized', 403, 'Deactivated account !');
+                        ->sendError('Unauthorized', 403, 'Deactivated account !');
                     }
                 }
 
@@ -708,11 +708,11 @@ class AuthController extends Controller implements IAuth
                 }    
 
                 if ($payload->active === false) {
-                    Factory::response()->sendError('Non authorized', 403, 'Deactivated account');
+                    Factory::response()->sendError('Unauthorized', 403, 'Deactivated account');
                 } 
                                                   
                 if ($payload->exp < time())
-                    Factory::response()->sendError('Token expired',401);
+                    Factory::response()->sendError('Expired token',401);
 
                 //print_r($payload->roles);
                 //fexit; 
@@ -1119,7 +1119,7 @@ class AuthController extends Controller implements IAuth
                 Factory::response()->sendError('Unauthorized!',401);                     
 
             if (empty($payload->uid)){
-                Factory::response()->sendError('uid is needed',400);
+                Factory::response()->sendError('uid is required',400);
             }
 
             $ok = DB::table($this->users_table)

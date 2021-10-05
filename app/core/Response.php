@@ -252,6 +252,13 @@ class Response
         return static::$data; 
     }
 
+    /*
+        Este método podría reducirse practicamente a generar distintos
+        tipos de excepciones que serían capturadas por un Handler.php
+
+        https://stackoverflow.com/a/30832286/980631
+        https://tutsforweb.com/how-to-create-custom-404-page-laravel/
+    */
     function flush(){
         if (self::$is_encoded){
             static::$data = $this->encode(static::$data);

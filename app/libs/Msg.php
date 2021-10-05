@@ -17,6 +17,24 @@ class Msg
                 'text' => "Class not found"
             ];
 
+	const MALFORMED_URL = [
+                'type' => 'HTTP',
+                'code' => 'MALFORMED_URL',
+                'text' => "Malformed url"
+            ];
+
+	const MISSING_API_VERSION = [
+                'type' => 'HTTP>API',
+                'code' => 'MISSING_API_VERSION',
+                'text' => "API version is missing"
+            ];
+
+	const INVALID_FORMAT_API_VERSION = [
+                'type' => 'HTTP>API',
+                'code' => 'INVALID_FORMAT_API_VERSION',
+                'text' => "Invalid format for API version"
+            ];
+
 	const VALIDATION_ERROR = [
                 'type' => 'VALIDATION',
                 'code' => 'VALIDATION_ERROR',
@@ -33,18 +51,6 @@ class Msg
                 'type' => 'VALIDATION',
                 'code' => 'INVALID_DATA_TYPE',
                 'text' => "It's not a valid %s"
-            ];
-
-	const MISSING_API_VERSION = [
-                'type' => 'API',
-                'code' => 'MISSING_API_VERSION',
-                'text' => "API version is missing"
-            ];
-
-	const INVALID_FORMAT_API_VERSION = [
-                'type' => 'API',
-                'code' => 'INVALID_FORMAT_API_VERSION',
-                'text' => "Invalid format for API version"
             ];
  
 
