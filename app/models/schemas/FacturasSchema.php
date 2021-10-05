@@ -64,12 +64,22 @@ class FacturasSchema implements ISchema
 			'nullable'		=> ['aaa', 'lastname', 'password_char', 'carma', 'active', 'vencimiento', 'ts', 'nuevo_campito', 'deleted_at'],
 
 			'rules' 		=> [
+				'edad' => ['min' => 0],
 				'firstname' => ['max' => 60],
 				'lastname' => ['max' => 50],
 				'username' => ['max' => 50],
 				'password' => ['max' => 128],
+				'texto_vb' => ['max' => 300],
+				'bb' => ['max' => 255],
+				'code' => ['min' => 0],
+				'ubig' => ['min' => 0],
+				'tiny' => ['type' => 'bool'],
+				'active' => ['type' => 'bool'],
 				'nuevo_campito' => ['max' => 50],
-				'correo' => ['max' => 60]
+				'deleted_at' => ['type' => 'datetime'],
+				'created_at' => ['type' => 'datetime'],
+				'updated_at' => ['type' => 'datetime'],
+				'correo' => ['type' => 'email']
 			],
 
 			'relationships' => [
