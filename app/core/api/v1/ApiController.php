@@ -282,8 +282,16 @@ abstract class ApiController extends ResourceController implements IApi
     function get($id = null) {
         global $api_version;
 
+        $_schema  = Factory::request()->shiftQuery('_schema');
+
+        if (!empty($_schema)){
+            $schema = get_schema_name($this->model_table);
+            $res = $schema::get();
+            return $res;
+        }
+
         $_related = Factory::request()->shiftQuery('_related');
-        $include  = Factory::request()->shiftQuery('include');
+        $include  = Factory::request()->shiftQuery('include');        
         $_get     = Factory::request()->getQuery();  
 
         $include  = explode(',', $include);
