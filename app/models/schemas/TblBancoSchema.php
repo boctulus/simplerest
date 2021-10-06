@@ -12,7 +12,7 @@ class TblBancoSchema implements ISchema
 		return [
 			'table_name'	=> 'tbl_banco',
 
-			'id_name'		=> 'ban_varCodigo',
+			'id_name'		=> 'ban_intId',
 
 			'attr_types'	=> [
 				'ban_intId' => 'INT',
@@ -26,11 +26,18 @@ class TblBancoSchema implements ISchema
 				'sub_intIdCuentaCxC' => 'INT'
 			],
 
-			'nullable'		=> ['ban_intId'],
+			'nullable'		=> ['ban_intId', 'ban_dtimFechaCreacion', 'ban_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'ban_varCodigo' => ['max' => 4],
-				'ban_varDescripcion' => ['max' => 50]
+				'ban_intId' => ['type' => 'int'],
+				'ban_varCodigo' => ['type' => 'str', 'max' => 4, 'required' => true],
+				'ban_varDescripcion' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'ban_dtimFechaCreacion' => ['type' => 'datetime'],
+				'ban_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true],
+				'sub_intIdCuentaCxC' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

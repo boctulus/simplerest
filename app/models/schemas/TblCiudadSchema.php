@@ -12,7 +12,7 @@ class TblCiudadSchema implements ISchema
 		return [
 			'table_name'	=> 'tbl_ciudad',
 
-			'id_name'		=> 'ciu_varCodigo',
+			'id_name'		=> 'ciu_intId',
 
 			'attr_types'	=> [
 				'ciu_intId' => 'INT',
@@ -28,12 +28,20 @@ class TblCiudadSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['ciu_intId'],
+			'nullable'		=> ['ciu_intId', 'ciu_dtimFechaCreacion', 'ciu_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'ciu_varCodigo' => ['max' => 5],
-				'ciu_varCiudad' => ['max' => 100],
-				'ciu_varIndicativoTelefono' => ['max' => 3]
+				'ciu_intId' => ['type' => 'int'],
+				'ciu_varCodigo' => ['type' => 'str', 'max' => 5, 'required' => true],
+				'ciu_varCiudad' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'ciu_varIndicativoTelefono' => ['type' => 'str', 'max' => 3, 'required' => true],
+				'ciu_dtimFechaCreacion' => ['type' => 'datetime'],
+				'ciu_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'pai_intIdPais' => ['type' => 'int', 'required' => true],
+				'dep_intIdDepartamento' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -47,14 +55,14 @@ class TblCiudadSchema implements ISchema
 					['tbl_pais.pai_intId','tbl_ciudad.pai_intIdPais']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_ciudad.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_ciudad.usu_intIdCreador']
-				],
-				'tbl_persona' => [
-					['tbl_persona.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_ciudad.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_ciudad.usu_intIdActualizador']
 				],
 				'tbl_contacto' => [
 					['tbl_contacto.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
+				],
+				'tbl_persona' => [
+					['tbl_persona.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
 				]
 			]
 		];

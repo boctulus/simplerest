@@ -25,11 +25,17 @@ class TblCategoriaIdentificacionSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cid_intId'],
+			'nullable'		=> ['cid_intId', 'cid_dtimFechaCreacion', 'cid_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'cid_varCategoriaDocumento' => ['max' => 100],
-				'cid_varSiglas' => ['max' => 3]
+				'cid_intId' => ['type' => 'int'],
+				'cid_varCategoriaDocumento' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'cid_varSiglas' => ['type' => 'str', 'max' => 3, 'required' => true],
+				'cid_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cid_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

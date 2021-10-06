@@ -12,7 +12,7 @@ class TblFacturaSchema implements ISchema
 		return [
 			'table_name'	=> 'tbl_factura',
 
-			'id_name'		=> 'fac_varNroDocumento',
+			'id_name'		=> 'fac_intId',
 
 			'attr_types'	=> [
 				'fac_intId' => 'INT',
@@ -46,10 +46,38 @@ class TblFacturaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['fac_intId'],
+			'nullable'		=> ['fac_intId', 'fac_bolEstado', 'fac_dtimFechaCreacion', 'fac_dtimFechaActualizacion', 'fac_bolPagado'],
 
 			'rules' 		=> [
-				'fac_varNroDocumento' => ['max' => 20]
+				'fac_decCantidadTotal' => ['type' => 'str', 'required' => true],
+				'fac_decBruto' => ['type' => 'str', 'required' => true],
+				'fac_decDescuento' => ['type' => 'str', 'required' => true],
+				'fac_decIva' => ['type' => 'str', 'required' => true],
+				'fac_decIca' => ['type' => 'str', 'required' => true],
+				'fac_decRetencion' => ['type' => 'str', 'required' => true],
+				'fac_decReteIva' => ['type' => 'str', 'required' => true],
+				'fac_decNeto' => ['type' => 'str', 'required' => true],
+				'fac_decPorceRetefuente' => ['type' => 'str', 'required' => true],
+				'fac_decPorceReteiva' => ['type' => 'str', 'required' => true],
+				'fac_decPorceIca' => ['type' => 'str', 'required' => true],
+				'fac_intId' => ['type' => 'int'],
+				'fac_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'fac_dateFecha' => ['type' => 'date', 'required' => true],
+				'fac_bolEstado' => ['type' => 'bool'],
+				'fac_dateFechaVencimiento' => ['type' => 'date', 'required' => true],
+				'fac_intTopeRetefuente' => ['type' => 'int', 'required' => true],
+				'fac_intTopeReteiva' => ['type' => 'int', 'required' => true],
+				'fac_intTopeReteIca' => ['type' => 'int', 'required' => true],
+				'fac_dtimFechaCreacion' => ['type' => 'datetime'],
+				'fac_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'fac_varNota' => ['type' => 'str', 'required' => true],
+				'fac_bolPagado' => ['type' => 'bool'],
+				'cen_intIdCentrocostos' => ['type' => 'int', 'required' => true],
+				'doc_intDocumento' => ['type' => 'int', 'required' => true],
+				'cse_intIdConsecutivo' => ['type' => 'int', 'required' => true],
+				'per_intIdPersona' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -66,8 +94,8 @@ class TblFacturaSchema implements ISchema
 					['tbl_persona.per_intId','tbl_factura.per_intIdPersona']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_factura.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_factura.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_factura.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_factura.usu_intIdActualizador']
 				],
 				'tbl_factura_detalle' => [
 					['tbl_factura_detalle.fac_intIdFactura','tbl_factura.fac_intId']

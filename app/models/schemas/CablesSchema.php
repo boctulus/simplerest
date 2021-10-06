@@ -24,9 +24,10 @@ class CablesSchema implements ISchema
 			'nullable'		=> ['id', 'autogenerado'],
 
 			'rules' 		=> [
-				'id' => ['min' => 0],
-				'nombre' => ['max' => 40],
-				'autogenerado' => ['max' => 255]
+				'id' => ['type' => 'int', 'min' => 0],
+				'nombre' => ['type' => 'str', 'max' => 40, 'required' => true],
+				'calibre' => ['type' => 'int', 'required' => true],
+				'autogenerado' => ['type' => 'str', 'max' => 255]
 			],
 
 			'relationships' => [

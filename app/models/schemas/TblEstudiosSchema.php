@@ -24,10 +24,16 @@ class TblEstudiosSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['esd_intId'],
+			'nullable'		=> ['esd_intId', 'esd_dtimFechaCreacion', 'esd_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'esd_varNombre' => ['max' => 100]
+				'esd_intId' => ['type' => 'int'],
+				'esd_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'esd_dtimFechaCreacion' => ['type' => 'datetime'],
+				'esd_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

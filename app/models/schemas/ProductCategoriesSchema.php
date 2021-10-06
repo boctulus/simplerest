@@ -22,7 +22,8 @@ class ProductCategoriesSchema implements ISchema
 			'nullable'		=> ['id_catego'],
 
 			'rules' 		=> [
-				'name_catego' => ['max' => 80]
+				'id_catego' => ['type' => 'int'],
+				'name_catego' => ['type' => 'str', 'max' => 80, 'required' => true]
 			],
 
 			'relationships' => [

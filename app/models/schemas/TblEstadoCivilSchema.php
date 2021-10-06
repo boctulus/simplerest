@@ -24,10 +24,16 @@ class TblEstadoCivilSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['esc_intId'],
+			'nullable'		=> ['esc_intId', 'esc_dtimFechaCreacion', 'esc_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'esc_varNombre' => ['max' => 100]
+				'esc_intId' => ['type' => 'int'],
+				'esc_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'esc_dtimFechaCreacion' => ['type' => 'datetime'],
+				'esc_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

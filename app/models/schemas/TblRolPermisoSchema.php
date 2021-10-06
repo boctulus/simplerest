@@ -25,10 +25,17 @@ class TblRolPermisoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['rpe_intId'],
+			'nullable'		=> ['rpe_intId', 'rpe_dtimFechaCreacion', 'rpe_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-
+				'rpe_intId' => ['type' => 'int'],
+				'rpe_dtimFechaCreacion' => ['type' => 'datetime'],
+				'rpe_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'rol_intIdRol' => ['type' => 'int', 'required' => true],
+				'per_intIdPermiso' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

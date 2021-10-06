@@ -25,10 +25,17 @@ class TblDescuentoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['des_intId'],
+			'nullable'		=> ['des_intId', 'des_dtimFechaCreacion', 'des_timFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'des_varDescuento' => ['max' => 100]
+				'des_decDescuento' => ['type' => 'str', 'required' => true],
+				'des_intId' => ['type' => 'int'],
+				'des_varDescuento' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'des_dtimFechaCreacion' => ['type' => 'datetime'],
+				'des_timFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

@@ -28,11 +28,20 @@ class TblCuentaBancariaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cba_intId'],
+			'nullable'		=> ['cba_intId', 'cba_dtimFechaCreacion', 'cba_dtimFechaActualizacion', 'est_intIdEstado_cba'],
 
 			'rules' 		=> [
-				'cba_varDescripcion' => ['max' => 100],
-				'cba_varNumeroCuenta' => ['max' => 11]
+				'cba_intId' => ['type' => 'int'],
+				'cba_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'cba_varNumeroCuenta' => ['type' => 'str', 'max' => 11, 'required' => true],
+				'cba_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cba_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado_cba' => ['type' => 'int'],
+				'ban_intIdBanco' => ['type' => 'int', 'required' => true],
+				'ccb_intIdCategoriaCuentaBancaria' => ['type' => 'int', 'required' => true],
+				'emp_intIdEmpresa' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

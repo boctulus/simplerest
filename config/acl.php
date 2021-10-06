@@ -19,8 +19,9 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     $acl
     ->addRole('guest', -1)
-    ->addResourcePermissions('products', ['read'])
+    ->addResourcePermissions('products', ['read', 'write'])
     ->addResourcePermissions('testx', ['read', 'write'])
+    ->addResourcePermissions('facturas', ['read', 'write'])
     // ...
     //->setAsGuest('guest')
 

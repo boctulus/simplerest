@@ -21,7 +21,7 @@ class TestxSchema implements ISchema
 			'nullable'		=> [],
 
 			'rules' 		=> [
-				'deci' => ['type' => 'decimal(5,2)']
+				'deci' => ['type' => 'decimal(5,2)', 'required' => true]
 			],
 
 			'relationships' => [

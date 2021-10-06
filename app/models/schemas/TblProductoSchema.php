@@ -38,11 +38,30 @@ class TblProductoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['pro_intId'],
+			'nullable'		=> ['pro_intId', 'pro_dtimFechaCreacion', 'pro_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'pro_varCodigoProducto' => ['max' => 50],
-				'pro_varNombreProducto' => ['max' => 50]
+				'pro_intId' => ['type' => 'int'],
+				'pro_varCodigoProducto' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'pro_varNombreProducto' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'pro_intCodigoBarras' => ['type' => 'int', 'required' => true],
+				'pro_intCostoCompra' => ['type' => 'int', 'required' => true],
+				'pro_intPrecioVenta' => ['type' => 'int', 'required' => true],
+				'pro_intStockMinimo' => ['type' => 'int', 'required' => true],
+				'pro_intSaldo' => ['type' => 'int', 'required' => true],
+				'pro_intStockMaximo' => ['type' => 'int', 'required' => true],
+				'pro_dtimFechaCreacion' => ['type' => 'datetime'],
+				'pro_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'sub_intIdCuentaContableCompra' => ['type' => 'int', 'required' => true],
+				'sub_intIdCuentaContableVenta' => ['type' => 'int', 'required' => true],
+				'mon_intIdMoneda' => ['type' => 'int', 'required' => true],
+				'iva_intIdIva' => ['type' => 'int', 'required' => true],
+				'unm_intIdUnidadMedida' => ['type' => 'int', 'required' => true],
+				'cap_intIdCategoriaProducto' => ['type' => 'int', 'required' => true],
+				'grp_intIdGrupoProducto' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

@@ -29,12 +29,21 @@ class TblRetencionSchema implements ISchema
 				'sub_intIdCuentaContable' => 'INT'
 			],
 
-			'nullable'		=> ['ret_intId', 'sub_intIdCuentaContable'],
+			'nullable'		=> ['ret_intId', 'ret_bolEstado', 'ret_dtimFechaCreacion', 'ret_dtimFechaActualizacion', 'sub_intIdCuentaContable'],
 
 			'rules' 		=> [
-				'ret_varRetencion' => ['max' => 50],
-				'ret_varCodigoSiesa' => ['max' => 10],
-				'ret_varCuentaArbo' => ['max' => 50]
+				'ret_decPorcentaje' => ['type' => 'str', 'required' => true],
+				'ret_intId' => ['type' => 'int'],
+				'ret_varRetencion' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'ret_intTope' => ['type' => 'int', 'required' => true],
+				'ret_bolEstado' => ['type' => 'bool'],
+				'ret_varCodigoSiesa' => ['type' => 'str', 'max' => 10, 'required' => true],
+				'ret_varCuentaArbo' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'ret_dtimFechaCreacion' => ['type' => 'datetime'],
+				'ret_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true],
+				'sub_intIdCuentaContable' => ['type' => 'int']
 			],
 
 			'relationships' => [

@@ -24,10 +24,16 @@ class TblUnidadmedidaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['unm_intId'],
+			'nullable'		=> ['unm_intId', 'unm_dtimFechaCreacion', 'unm_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'unm_varUnidadMedida' => ['max' => 50]
+				'unm_intId' => ['type' => 'int'],
+				'unm_varUnidadMedida' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'unm_dtimFechaCreacion' => ['type' => 'datetime'],
+				'unm_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

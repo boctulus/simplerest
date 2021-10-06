@@ -31,13 +31,23 @@ class TblPreferenciasSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['tpf_intId'],
+			'nullable'		=> ['tpf_intId', 'tpf_bitUso', 'tpf_dtimFechaCreacion', 'tpf_dtimFechaActualizacion', 'doc_intIdDocumento', 'men_idId', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'tpf_varCodigo' => ['max' => 50],
-				'tpf_varNombre' => ['max' => 250],
-				'tpf_varParametro' => ['max' => 50],
-				'tpf_varTipoDato' => ['max' => 50]
+				'tpf_intId' => ['type' => 'int'],
+				'tpf_varCodigo' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'tpf_varNombre' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'tpf_lonDescripcion' => ['type' => 'str', 'required' => true],
+				'tpf_bitUso' => ['type' => 'int'],
+				'tpf_varParametro' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'tpf_varTipoDato' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'tpf_dtimFechaCreacion' => ['type' => 'datetime'],
+				'tpf_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'doc_intIdDocumento' => ['type' => 'int'],
+				'men_idId' => ['type' => 'int'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
