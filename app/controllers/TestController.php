@@ -118,8 +118,8 @@ class TestController extends Controller
         response()->sendError("Todo mal", 400);
     }
 
-    function validate($num){
-        dd(Validator::isType($num, 'decimal(5,2)'));
+    function validate($str){
+        dd(Validator::isType($str, 'date'));
     }
 
     

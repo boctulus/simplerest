@@ -550,41 +550,39 @@ abstract class ApiController extends ResourceController implements IApi
                             // maestro a detalle 
                             // (relaciones que están en el maestro)
                             
-                            //if (!$d2m){
-                                $schema = $this->instance->getSchema();
-                                $rs = $schema['relationships'];
+                            $schema = $this->instance->getSchema();
+                            $rs = $schema['relationships'];
 
-                                foreach (static::$connect_to as $tb){                                
-                                    $rx = $rs[$tb] ?? null;
+                            foreach (static::$connect_to as $tb){                                
+                                $rx = $rs[$tb] ?? null;
 
-                                    if ($rx === null){
-                                        continue;
-                                    }                         
+                                if ($rx === null){
+                                    continue;
+                                }                         
 
-                                    foreach($rx as $r){
-                                        list($tb0, $field0) = explode('.', $r[0]);
-                                        list($tb1, $field1) = explode('.', $r[1]);
+                                foreach($rx as $r){
+                                    list($tb0, $field0) = explode('.', $r[0]);
+                                    list($tb1, $field1) = explode('.', $r[1]);
 
-                                        // Puede haber más de una relación entre dos tablas
-                                        $tb_alias = explode('|', $tb0);
-                                        
-                                        $alias = $tb0;
-                                        if (count($tb_alias) == 2){
-                                            $tb0   = $tb_alias[0];
-                                            $alias = $tb_alias[1];
-                                        } 
+                                    // Puede haber más de una relación entre dos tablas
+                                    $tb_alias = explode('|', $tb0);
+                                    
+                                    $alias = $tb0;
+                                    if (count($tb_alias) == 2){
+                                        $tb0   = $tb_alias[0];
+                                        $alias = $tb_alias[1];
+                                    } 
 
-                                        if (isset($rows[0][$field1])){
-                                            $_id = $rows[0][$field1];  
+                                    if (isset($rows[0][$field1])){
+                                        $_id = $rows[0][$field1];  
 
-                                            $addons[$alias] = DB::table($tb0)->where([$field0 => $_id])->get();
-                                        } else {
-                                            $addons[$alias] = [];
-                                        }
-                                        
+                                        $addons[$alias] = DB::table($tb0)->where([$field0 => $_id])->get();
+                                    } else {
+                                        $addons[$alias] = [];
                                     }
+                                    
                                 }
-                            //}
+                            }
                             
                         }
                         
