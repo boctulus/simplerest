@@ -2112,6 +2112,8 @@ class Model {
 
 	/*
 		@return mixed false | integer 
+
+		Si la data es un array de arrays, intenta un INSERT MULTIPLE
 	*/
 	function create(array $data, $ignore_duplicates = false)
 	{
