@@ -25,11 +25,17 @@ class TblMotivoRetiroSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['mtr_intId'],
+			'nullable'		=> ['mtr_intId', 'mtr_dtimFechaCreacion', 'mtr_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'mtr_varNombre' => ['max' => 50],
-				'mtr_varDescripcion' => ['max' => 250]
+				'mtr_intId' => ['type' => 'int'],
+				'mtr_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'mtr_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'mtr_dtimFechaCreacion' => ['type' => 'datetime'],
+				'mtr_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

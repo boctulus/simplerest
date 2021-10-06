@@ -25,11 +25,17 @@ class TblCategoriaProductoSchema implements ISchema
 				'est_intIdEstado_cap' => 'INT'
 			],
 
-			'nullable'		=> ['cap_intId', 'est_intIdEstado_cap'],
+			'nullable'		=> ['cap_intId', 'cap_dtimFechaCreacion', 'cap_dtimFechaActualizacion', 'est_intIdEstado_cap'],
 
 			'rules' 		=> [
-				'cap_varSiglaCategoriaProducto' => ['max' => 50],
-				'cap_varDescripcionCategoria' => ['max' => 50]
+				'cap_intId' => ['type' => 'int'],
+				'cap_varSiglaCategoriaProducto' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'cap_varDescripcionCategoria' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'cap_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cap_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true],
+				'est_intIdEstado_cap' => ['type' => 'int']
 			],
 
 			'relationships' => [
@@ -40,11 +46,11 @@ class TblCategoriaProductoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_categoria_producto.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_categoria_producto.usu_intIdCreador']
 				],
-				'tbl_grupo_producto' => [
-					['tbl_grupo_producto.cap_intIdCategoriaProducto','tbl_categoria_producto.cap_intId']
-				],
 				'tbl_producto' => [
 					['tbl_producto.cap_intIdCategoriaProducto','tbl_categoria_producto.cap_intId']
+				],
+				'tbl_grupo_producto' => [
+					['tbl_grupo_producto.cap_intIdCategoriaProducto','tbl_categoria_producto.cap_intId']
 				]
 			]
 		];

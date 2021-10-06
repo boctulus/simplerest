@@ -26,10 +26,18 @@ class TblLlaveImpuestoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['lla_intId'],
+			'nullable'		=> ['lla_intId', 'lla_dtimFechaCreacion', 'lla_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'rules' 		=> [
-				'lla_varNombreLLave' => ['max' => 50]
+				'lla_intId' => ['type' => 'int'],
+				'lla_varNombreLLave' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'lla_dtimFechaCreacion' => ['type' => 'datetime'],
+				'lla_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'ret_intIdRetencionCuentacontable' => ['type' => 'int', 'required' => true],
+				'iva_intIdIvaCuentaContable' => ['type' => 'int', 'required' => true],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'relationships' => [

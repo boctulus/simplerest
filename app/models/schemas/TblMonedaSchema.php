@@ -25,11 +25,17 @@ class TblMonedaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['mon_intId'],
+			'nullable'		=> ['mon_intId', 'mon_dtimFechaCreacion', 'mon_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'mon_varCodigoMoneda' => ['max' => 50],
-				'mon_varDescripcion' => ['max' => 100]
+				'mon_intId' => ['type' => 'int'],
+				'mon_varCodigoMoneda' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'mon_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'mon_dtimFechaCreacion' => ['type' => 'datetime'],
+				'mon_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

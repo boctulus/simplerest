@@ -12,7 +12,7 @@ class TblCentroCostosSchema implements ISchema
 		return [
 			'table_name'	=> 'tbl_centro_costos',
 
-			'id_name'		=> 'cco_varCodigo',
+			'id_name'		=> 'cco_intId',
 
 			'attr_types'	=> [
 				'cco_intId' => 'INT',
@@ -25,11 +25,17 @@ class TblCentroCostosSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cco_intId'],
+			'nullable'		=> ['cco_intId', 'cco_dtimFechaCreacion', 'cco_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'cco_varCodigo' => ['max' => 20],
-				'cco_varCentroCostos' => ['max' => 100]
+				'cco_intId' => ['type' => 'int'],
+				'cco_varCodigo' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'cco_varCentroCostos' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'cco_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cco_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

@@ -24,10 +24,16 @@ class TblTipoCuentaBancariaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['tcb_intId'],
+			'nullable'		=> ['tcb_intId', 'tcb_dtimFechaCreacion', 'tcb_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'tcb_varDescripcion' => ['max' => 50]
+				'tcb_intId' => ['type' => 'int'],
+				'tcb_varDescripcion' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'tcb_dtimFechaCreacion' => ['type' => 'datetime'],
+				'tcb_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

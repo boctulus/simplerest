@@ -25,11 +25,17 @@ class TblEstratoEconomicoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['tec_intId', 'est_intIdestado'],
+			'nullable'		=> ['tec_intId', 'tec_dtimFechaCreacion', 'tec_dtimFechaActualizacion', 'est_intIdestado'],
 
 			'rules' 		=> [
-				'tec_varCodigo' => ['max' => 20],
-				'tec_varDescripcion' => ['max' => 250]
+				'tec_intId' => ['type' => 'int'],
+				'tec_varCodigo' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'tec_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'tec_dtimFechaCreacion' => ['type' => 'datetime'],
+				'tec_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdestado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

@@ -418,12 +418,6 @@ class MakeControllerBase extends Controller
             return 'BOOL';
         } 
 
-        // chequear
-        if (Strings::startsWith('timestamp', $sql_type) || 
-        Strings::startsWith('year', $sql_type)){
-            return 'INT';
-        } 
-
         // el resto (default)
         return 'STR'; 
     }
@@ -595,9 +589,8 @@ class MakeControllerBase extends Controller
             }
 
             if (Strings::startsWith('decimal(', $type)){
-                $decimal[] = $field_name;
                 $nums = substr($type, strlen('decimal('), -1);  
-                $_rules_[$field_name] = ['type' => 'decimal($nums)'];            
+                $_rules_[$field_name]['type'] = "decimal($nums)";            
             }
             
 
@@ -639,6 +632,15 @@ class MakeControllerBase extends Controller
             return "'$x'"; 
         };
 
+        if ($uuid){
+            if (!empty($id_name)){
+                $nullables[] = $id_name;
+            }
+                
+            //Strings::replace('### IMPORTS', 'use simplerest\traits\Uuids;', $file); 
+            //Strings::replace('### TRAITS', "use Uuids;", $file);        
+        }
+
         $_attr_types = [];
 
         foreach ($types as $f => $type){
@@ -646,8 +648,15 @@ class MakeControllerBase extends Controller
 
             $_rules[$f] = [];
 
+            if (isset($_rules_[$f])){
+                $_rules[$f] = $_rules_[$f];
+            }
+
             $type = strtolower($type);
-            $_rules[$f]['type'] = $type;
+
+            if (!isset($_rules[$f]['type'])){
+                $_rules[$f]['type'] = $type;
+            }
 
             // emails
             if (in_array($f, $emails)){
@@ -657,11 +666,6 @@ class MakeControllerBase extends Controller
             // duble
             if (in_array($f, $double)){
                 $_rules[$f]['type'] = 'double';
-            }
-
-            // etc
-            if (isset($_rules_[$f])){
-                $_rules[$f] = $_rules_[$f];
             }
 
             // varchars
@@ -711,15 +715,20 @@ class MakeControllerBase extends Controller
                 $_rules[$f]['type'] =  'time';  
             }
 
+
             /*
                 Para blobs
 
                 https://www.virendrachandak.com/techtalk/how-to-get-size-of-blob-in-mysql/
             */
 
+            if (!in_array($f, $nullables)){
+                $_rules[$f]['required'] = 'true';
+            }
+
             $tmp = [];  
             foreach ($_rules[$f] as $k => $v){
-                $vv = ($k == 'max' || $k == 'min') ?  $v : "'$v'";
+                $vv = ($k == 'max' || $k == 'min' || $k == 'required') ?  $v : "'$v'";
                 $tmp[] = "'$k'" . ' => ' . $vv;
             }
 
@@ -729,14 +738,6 @@ class MakeControllerBase extends Controller
         $attr_types = "[\r\n". implode(",\r\n", $_attr_types). "\r\n\t\t\t]";
         $rules  = "[\r\n". implode(",\r\n", $_rules). "\r\n\t\t\t]";
 
-        if ($uuid){
-            if (!empty($id_name)){
-                $nullables[] = $id_name;
-            }
-                
-            //Strings::replace('### IMPORTS', 'use simplerest\traits\Uuids;', $file); 
-            //Strings::replace('### TRAITS', "use Uuids;", $file);        
-        }
 
 
         /*

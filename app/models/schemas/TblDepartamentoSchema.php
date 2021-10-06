@@ -26,11 +26,18 @@ class TblDepartamentoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['dep_intId'],
+			'nullable'		=> ['dep_intId', 'dep_dtimFechaCreacion', 'dep_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'dep_varCodigoDepartamento' => ['max' => 50],
-				'dep_varDepartamento' => ['max' => 100]
+				'dep_intId' => ['type' => 'int'],
+				'dep_varCodigoDepartamento' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'dep_varDepartamento' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'dep_dtimFechaCreacion' => ['type' => 'datetime'],
+				'dep_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'pai_intIdPais' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

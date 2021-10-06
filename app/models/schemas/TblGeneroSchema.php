@@ -27,9 +27,13 @@ class TblGeneroSchema implements ISchema
 			'nullable'		=> ['gen_intId', 'gen_dtimFechaCreacion', 'gen_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'gen_varGenero' => ['max' => 50],
+				'gen_intId' => ['type' => 'int'],
+				'gen_varGenero' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'gen_dtimFechaCreacion' => ['type' => 'datetime'],
-				'gen_dtimFechaActualizacion' => ['type' => 'datetime']
+				'gen_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -37,8 +41,8 @@ class TblGeneroSchema implements ISchema
 					['tbl_estado.est_intId','tbl_genero.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_genero.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_genero.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_genero.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_genero.usu_intIdActualizador']
 				],
 				'tbl_persona' => [
 					['tbl_persona.gen_intIdGenero','tbl_genero.gen_intId']

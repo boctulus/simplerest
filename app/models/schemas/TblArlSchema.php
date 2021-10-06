@@ -25,11 +25,17 @@ class TblArlSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['arl_intId'],
+			'nullable'		=> ['arl_intId', 'arl_dtimFechaCreacion', 'arl_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'arl_varCodigo' => ['max' => 100],
-				'arl_varNombre' => ['max' => 100]
+				'arl_intId' => ['type' => 'int'],
+				'arl_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'arl_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'arl_dtimFechaCreacion' => ['type' => 'datetime'],
+				'arl_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

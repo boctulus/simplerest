@@ -283,11 +283,18 @@ abstract class ApiController extends ResourceController implements IApi
         global $api_version;
 
         $_schema  = Factory::request()->shiftQuery('_schema');
+        $_rules   = Factory::request()->shiftQuery('_rules');
 
         if (!empty($_schema)){
             $schema = get_schema_name($this->model_table);
             $res = $schema::get();
             return $res;
+        }
+
+        if (!empty($_rules)){
+            $schema = get_schema_name($this->model_table);
+            $res = $schema::get();
+            return [ 'rules' => $res['rules'] ];
         }
 
         $_related = Factory::request()->shiftQuery('_related');
