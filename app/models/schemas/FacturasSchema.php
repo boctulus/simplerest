@@ -78,6 +78,8 @@ class FacturasSchema implements ISchema
 				'doble_p' => ['type' => 'double'],
 				'num_real' => ['type' => 'double'],
 				'active' => ['type' => 'bool'],
+				'hora' => ['type' => 'time'],
+				'fecha' => ['type' => 'date'],
 				'nuevo_campito' => ['max' => 50],
 				'deleted_at' => ['type' => 'datetime'],
 				'created_at' => ['type' => 'datetime'],

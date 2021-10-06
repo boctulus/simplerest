@@ -384,12 +384,11 @@ class Validator implements IValidator
 		return $validated;
 	}
 	
-	/*
-	private static function isValidDate($date, $format = 'd-m-Y') {
+	// ok
+	private static function isValidDate($date, $format = 'Y-m-d') {
 		$dateObj = \DateTime::createFromFormat($format, $date);
 		return $dateObj && $dateObj->format($format) == $date;
 	}
-	*/
 }
 
 
