@@ -597,7 +597,7 @@ class MakeControllerBase extends Controller
             if (Strings::startsWith('decimal(', $type)){
                 $decimal[] = $field_name;
                 $nums = substr($type, strlen('decimal('), -1);  
-                $_rules_[$field_name] =  "\t\t\t\t'$field_name' => ['type' => 'decimal($nums)']";            
+                $_rules_[$field_name] = ['type' => 'decimal($nums)'];            
             }
             
 
@@ -644,28 +644,30 @@ class MakeControllerBase extends Controller
         foreach ($types as $f => $type){
             $_attr_types[] = "\t\t\t\t'$f' => '$type'";
 
+            $_rules[$f] = [];
+
+            $type = strtolower($type);
+            $_rules[$f]['type'] = $type;
+
             // emails
             if (in_array($f, $emails)){
-                $_rules[] = "\t\t\t\t'$f' => ['type' => 'email']";
-                continue;
+                $_rules[$f]['type'] = 'email';
             } 
 
             // duble
             if (in_array($f, $double)){
-                $_rules[] = "\t\t\t\t'$f' => ['type' => 'double']";
-                continue;
+                $_rules[$f]['type'] = 'double';
             }
 
             // etc
             if (isset($_rules_[$f])){
-                $_rules[] = $_rules_[$f];
+                $_rules[$f] = $_rules_[$f];
             }
 
             // varchars
             if (preg_match('/^(varchar)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
                 $len = $matches[2];
-                $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
-                continue;
+                $_rules[$f]['max'] = $len;
             } 
 
             /*
@@ -675,45 +677,38 @@ class MakeControllerBase extends Controller
             // varbinary
             if (preg_match('/^(|varbinary)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
                 $len = $matches[2];
-                $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
-                continue;
+                $_rules [$f] = ['max' => $len];
             }  
 
             // binary
             if (preg_match('/^(binary)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
                 $len = $matches[2];
-                $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
-                continue;
+                $_rules[$f]['max'] = $len;
             } 
 
             // unsigned
             if (in_array($f, $unsigned)){
-                $_rules [] = "\t\t\t\t'$f' => ['min' => 0]";
-                continue;
+                $_rules[$f]['min'] = 0;
             } 
 
             // bool
             if (in_array($f, $tinyint)){
-                $_rules[] = "\t\t\t\t'$f' => ['type' => 'bool']";
-                continue;
+                $_rules[$f]['type'] = 'bool';
             } 
 
             // datetime
             if (strtolower($types_raw[$f]) == 'datetime'){
-                $_rules[] = "\t\t\t\t'$f' => ['type' => 'datetime']";
-                continue;
+                $_rules[$f]['type'] = 'datetime';
             }
 
             // date
             if (strtolower($types_raw[$f]) == 'date'){
-                $_rules[] = "\t\t\t\t'$f' => ['type' => 'date']";
-                continue;
+                $_rules[$f]['type'] =  'date';
             }
 
             // time
             if (strtolower($types_raw[$f]) == 'time'){
-                $_rules[] = "\t\t\t\t'$f' => ['type' => 'time']";
-                continue;
+                $_rules[$f]['type'] =  'time';  
             }
 
             /*
@@ -722,6 +717,13 @@ class MakeControllerBase extends Controller
                 https://www.virendrachandak.com/techtalk/how-to-get-size-of-blob-in-mysql/
             */
 
+            $tmp = [];  
+            foreach ($_rules[$f] as $k => $v){
+                $vv = ($k == 'max' || $k == 'min') ?  $v : "'$v'";
+                $tmp[] = "'$k'" . ' => ' . $vv;
+            }
+
+            $_rules[$f] = "\t\t\t\t'$f' => " . '[' . implode(', ', $tmp) . ']';
         }
 
         $attr_types = "[\r\n". implode(",\r\n", $_attr_types). "\r\n\t\t\t]";
