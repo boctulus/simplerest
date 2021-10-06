@@ -25,11 +25,17 @@ class TblBodegaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['bod_intId'],
+			'nullable'		=> ['bod_intId', 'bod_dtimFechaCreacion', 'bod_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'bod_varCodigoBodega' => ['max' => 50],
-				'bod_varNombreBodega' => ['max' => 100]
+				'bod_intId' => ['type' => 'int'],
+				'bod_varCodigoBodega' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'bod_varNombreBodega' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'bod_dtimFechaCreacion' => ['type' => 'datetime'],
+				'bod_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -37,8 +43,8 @@ class TblBodegaSchema implements ISchema
 					['tbl_estado.est_intId','tbl_bodega.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_bodega.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_bodega.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_bodega.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_bodega.usu_intIdCreador']
 				],
 				'tbl_factura_detalle' => [
 					['tbl_factura_detalle.fde_intIdBodega','tbl_bodega.bod_intId']

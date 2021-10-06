@@ -25,11 +25,17 @@ class TblRhSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['trh_intId', 'est_intIdEstado'],
+			'nullable'		=> ['trh_intId', 'trh_dtimFechaCreacion', 'trh_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'trh_varCodigo' => ['max' => 30],
-				'trh_varDescripcion' => ['max' => 250]
+				'trh_intId' => ['type' => 'int'],
+				'trh_varCodigo' => ['type' => 'str', 'max' => 30, 'required' => true],
+				'trh_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'trh_dtimFechaCreacion' => ['type' => 'datetime'],
+				'trh_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

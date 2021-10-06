@@ -30,41 +30,46 @@ class UsersSchema implements ISchema
 			'nullable'		=> ['id', 'active', 'locked', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
 
 			'rules' 		=> [
-				'username' => ['max' => 15],
-				'email' => ['max' => 60],
-				'firstname' => ['max' => 50],
-				'lastname' => ['max' => 80],
-				'password' => ['max' => 60]
+				'id' => ['type' => 'int'],
+				'username' => ['type' => 'str', 'max' => 15, 'required' => true],
+				'active' => ['type' => 'bool'],
+				'locked' => ['type' => 'bool'],
+				'email' => ['type' => 'str', 'max' => 60, 'required' => true],
+				'confirmed_email' => ['type' => 'bool'],
+				'firstname' => ['type' => 'str', 'max' => 50],
+				'lastname' => ['type' => 'str', 'max' => 80],
+				'password' => ['type' => 'str', 'max' => 60],
+				'deleted_at' => ['type' => 'datetime']
 			],
 
 			'relationships' => [
-				'facturas4' => [
-					['facturas4.user_id','users.id']
-				],
-				'user_tb_permissions' => [
-					['user_tb_permissions.user_id','users.id']
-				],
-				'folder_permissions' => [
-					['folder_permissions.belongs_to','users.id']
-				],
-				'books' => [
-					['books.author_id','users.id'],
-					['books.editor_id','users.id']
-				],
-				'user_roles' => [
-					['user_roles.user_id','users.id']
-				],
-				'files' => [
-					['files.belongs_to','users.id']
-				],
 				'user_sp_permissions' => [
 					['user_sp_permissions.user_id','users.id']
 				],
 				'folder_other_permissions' => [
 					['folder_other_permissions.belongs_to','users.id']
 				],
-				'collections' => [
-					['collections.belongs_to','users.id']
+				'books' => [
+					['books.author_id','users.id'],
+					['books.editor_id','users.id']
+				],
+				'folders' => [
+					['folders.belongs_to','users.id']
+				],
+				'products' => [
+					['products.belongs_to','users.id']
+				],
+				'facturas4' => [
+					['facturas4.user_id','users.id']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','users.id']
+				],
+				'user_roles' => [
+					['user_roles.user_id','users.id']
+				],
+				'folder_permissions' => [
+					['folder_permissions.belongs_to','users.id']
 				],
 				'boletas' => [
 					['boletas.user_id','users.id']
@@ -72,11 +77,11 @@ class UsersSchema implements ISchema
 				'facturas' => [
 					['facturas.user_id','users.id']
 				],
-				'folders' => [
-					['folders.belongs_to','users.id']
+				'collections' => [
+					['collections.belongs_to','users.id']
 				],
-				'products' => [
-					['products.belongs_to','users.id']
+				'files' => [
+					['files.belongs_to','users.id']
 				],
 				'api_keys' => [
 					['api_keys.user_id','users.id']

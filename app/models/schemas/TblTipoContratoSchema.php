@@ -26,11 +26,18 @@ class TblTipoContratoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['tic_intId'],
+			'nullable'		=> ['tic_intId', 'tic_dtimFechaCreacion', 'tic_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'tic_varNombre' => ['max' => 100],
-				'tic_varCodigoDian' => ['max' => 20]
+				'tic_intId' => ['type' => 'int'],
+				'tic_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'tic_varDescripcion' => ['type' => 'str', 'required' => true],
+				'tic_varCodigoDian' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'tic_dtimFechaCreacion' => ['type' => 'datetime'],
+				'tic_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

@@ -25,11 +25,17 @@ class TblCategoriaDocumentoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cdo_intId', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['cdo_intId', 'cdo_dtimFechaCreacion', 'cdo_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'rules' 		=> [
-				'cdo_varCategoriaDocumento' => ['max' => 50],
-				'cdo_varSiglas' => ['max' => 3]
+				'cdo_intId' => ['type' => 'int'],
+				'cdo_varCategoriaDocumento' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'cdo_varSiglas' => ['type' => 'str', 'max' => 3, 'required' => true],
+				'cdo_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cdo_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'relationships' => [
@@ -37,8 +43,8 @@ class TblCategoriaDocumentoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_categoria_documento.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_categoria_documento.usu_intIdCreador'],
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_categoria_documento.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_categoria_documento.usu_intIdCreador'],
 					['tbl_usuario.cdo_intIdCategoriaDocumento','tbl_categoria_documento.cdo_intId']
 				]
 			]

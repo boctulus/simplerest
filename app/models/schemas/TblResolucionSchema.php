@@ -24,10 +24,16 @@ class TblResolucionSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['res_intId'],
+			'nullable'		=> ['res_intId', 'res_varResolucion', 'res_dtimFechaCreacion', 'res_dtimFechaActualizacion'],
 
 			'rules' 		=> [
-				'res_varResolucion' => ['max' => 100]
+				'res_intId' => ['type' => 'int'],
+				'res_varResolucion' => ['type' => 'str', 'max' => 100],
+				'res_bolEstado' => ['type' => 'bool', 'required' => true],
+				'res_dtimFechaCreacion' => ['type' => 'datetime'],
+				'res_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

@@ -27,11 +27,19 @@ class TblGrupoProductoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['grp_intId', 'cap_intIdCategoriaProducto'],
+			'nullable'		=> ['grp_intId', 'grp_dtimFechaCreacion', 'grp_dtimFechaActualizacion', 'grp_intConsecutivoGrupoProducto', 'est_intIdEstado', 'cap_intIdCategoriaProducto'],
 
 			'rules' 		=> [
-				'grp_varSiglaGrupoProducto' => ['max' => 50],
-				'grp_varDescripcionGrupo' => ['max' => 50]
+				'grp_intId' => ['type' => 'int'],
+				'grp_varSiglaGrupoProducto' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'grp_varDescripcionGrupo' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'grp_dtimFechaCreacion' => ['type' => 'datetime'],
+				'grp_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'grp_intConsecutivoGrupoProducto' => ['type' => 'int'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'cap_intIdCategoriaProducto' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

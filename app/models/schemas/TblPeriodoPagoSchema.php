@@ -24,10 +24,16 @@ class TblPeriodoPagoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['pep_intId'],
+			'nullable'		=> ['pep_intId', 'pep_dtimFechaCreacion', 'pep_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'pep_varNombre' => ['max' => 50]
+				'pep_intId' => ['type' => 'int'],
+				'pep_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'pep_dtimFechaCreacion' => ['type' => 'datetime'],
+				'pep_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

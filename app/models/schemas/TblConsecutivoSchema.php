@@ -32,11 +32,24 @@ class TblConsecutivoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cse_intId', 'cse_varPrefijo'],
+			'nullable'		=> ['cse_intId', 'cse_intConsecutivo', 'cse_varPrefijo', 'cse_dtimFechaCreacion', 'cse_dtimFechaActualizacion'],
 
 			'rules' 		=> [
-				'cse_varPrefijo' => ['max' => 4],
-				'cse_varVigencia' => ['max' => 2]
+				'cse_intId' => ['type' => 'int'],
+				'cse_intConsecutivo' => ['type' => 'int'],
+				'cse_varPrefijo' => ['type' => 'str', 'max' => 4],
+				'cse_intDesde' => ['type' => 'int', 'required' => true],
+				'cse_intHasta' => ['type' => 'int', 'required' => true],
+				'cse_dateFechaInicial' => ['type' => 'date', 'required' => true],
+				'cse_dateFechaFinal' => ['type' => 'date', 'required' => true],
+				'cse_varVigencia' => ['type' => 'str', 'max' => 2, 'required' => true],
+				'cse_bolEstado' => ['type' => 'bool', 'required' => true],
+				'cse_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cse_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
+				'res_intIdResolucion' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -47,8 +60,8 @@ class TblConsecutivoSchema implements ISchema
 					['tbl_resolucion.res_intId','tbl_consecutivo.res_intIdResolucion']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_consecutivo.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_consecutivo.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_consecutivo.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_consecutivo.usu_intIdCreador']
 				],
 				'tbl_factura' => [
 					['tbl_factura.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']

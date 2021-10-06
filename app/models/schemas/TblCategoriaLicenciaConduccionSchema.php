@@ -25,11 +25,17 @@ class TblCategoriaLicenciaConduccionSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['clc_intId'],
+			'nullable'		=> ['clc_intId', 'clc_dtimFechaCreacion', 'clc_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'clc_varNombre' => ['max' => 50],
-				'clc_varDescripcion' => ['max' => 250]
+				'clc_intId' => ['type' => 'int'],
+				'clc_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'clc_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'clc_dtimFechaCreacion' => ['type' => 'datetime'],
+				'clc_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

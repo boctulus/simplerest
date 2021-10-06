@@ -25,21 +25,21 @@ class TblEpsSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['eps_intId'],
+			'nullable'		=> ['eps_intId', 'eps_dtimFechaCreacion', 'eps_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'eps_varCodigo' => ['max' => 100],
-				'eps_varNombre' => ['max' => 100]
+				'eps_intId' => ['type' => 'int'],
+				'eps_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'eps_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'eps_dtimFechaCreacion' => ['type' => 'datetime'],
+				'eps_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
-				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_eps.est_intIdEstado']
-				],
-				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_eps.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_eps.usu_intIdCreador']
-				]
+				
 			]
 		];
 	}	

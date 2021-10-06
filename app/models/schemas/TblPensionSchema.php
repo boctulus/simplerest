@@ -25,11 +25,17 @@ class TblPensionSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['pen_intId'],
+			'nullable'		=> ['pen_intId', 'pen_dtimFechaCreacion', 'pen_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'pen_varCodigo' => ['max' => 100],
-				'pen_varNombre' => ['max' => 100]
+				'pen_intId' => ['type' => 'int'],
+				'pen_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'pen_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'pen_dtimFechaCreacion' => ['type' => 'datetime'],
+				'pen_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

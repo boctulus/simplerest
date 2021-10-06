@@ -25,10 +25,17 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['tip_intId', 'sub_intIdSubCuentaContable', 'prv_intIdProveedor'],
+			'nullable'		=> ['tip_intId', 'tip_dtimFechaCreacion', 'tip_dtimFechaActualizacion', 'sub_intIdSubCuentaContable', 'prv_intIdProveedor', 'est_intIdEstado'],
 
 			'rules' 		=> [
-
+				'tip_intId' => ['type' => 'int'],
+				'tip_dtimFechaCreacion' => ['type' => 'datetime'],
+				'tip_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'sub_intIdSubCuentaContable' => ['type' => 'int'],
+				'prv_intIdProveedor' => ['type' => 'int'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

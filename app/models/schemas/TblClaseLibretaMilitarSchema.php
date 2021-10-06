@@ -24,10 +24,16 @@ class TblClaseLibretaMilitarSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['clm_intId'],
+			'nullable'		=> ['clm_intId', 'clm_dtimFechaCreacion', 'clm_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'clm_varNombre' => ['max' => 50]
+				'clm_intId' => ['type' => 'int'],
+				'clm_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'clm_dtimFechaCreacion' => ['type' => 'datetime'],
+				'clm_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

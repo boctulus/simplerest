@@ -28,10 +28,20 @@ class TblClienteInformacionTributariaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['tic_intId', 'sub_intIdSubcuentacontable', 'cli_intIdCliente'],
+			'nullable'		=> ['tic_intId', 'tic_dtimFechaCreacion', 'tic_dtimFechaActualizacion', 'sub_intIdSubcuentacontable', 'cli_intIdCliente', 'est_intIdEstado'],
 
 			'rules' 		=> [
-
+				'tic_intId' => ['type' => 'int'],
+				'tic_intGranContribuyente' => ['type' => 'int', 'required' => true],
+				'tic_intllevarContabilidad' => ['type' => 'int', 'required' => true],
+				'tic_intCalcularIca' => ['type' => 'int', 'required' => true],
+				'tic_dtimFechaCreacion' => ['type' => 'datetime'],
+				'tic_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'sub_intIdSubcuentacontable' => ['type' => 'int'],
+				'cli_intIdCliente' => ['type' => 'int'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -46,8 +56,8 @@ class TblClienteInformacionTributariaSchema implements ISchema
 					['tbl_sub_cuenta_contable.sub_intId','tbl_cliente_informacion_tributaria.sub_intIdSubcuentacontable']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cliente_informacion_tributaria.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cliente_informacion_tributaria.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cliente_informacion_tributaria.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cliente_informacion_tributaria.usu_intIdActualizador']
 				]
 			]
 		];

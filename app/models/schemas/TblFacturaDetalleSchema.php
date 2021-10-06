@@ -43,10 +43,35 @@ class TblFacturaDetalleSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['fde_intId'],
+			'nullable'		=> ['fde_intId', 'fde_bolEstado', 'fde_dtimFechaCreacion', 'fde_dtimFechaActualizacion'],
 
 			'rules' 		=> [
-				'fac_intNroDocumento' => ['max' => 20]
+				'fde_decValor' => ['type' => 'str', 'required' => true],
+				'fde_decCantidad' => ['type' => 'str', 'required' => true],
+				'fde_decValorTotal' => ['type' => 'str', 'required' => true],
+				'fde_decPorcentajeIva' => ['type' => 'str', 'required' => true],
+				'fde_decValorIva' => ['type' => 'str', 'required' => true],
+				'fde_decPorcentajeDescuento' => ['type' => 'str', 'required' => true],
+				'fde_decValorDescuento' => ['type' => 'str', 'required' => true],
+				'fde_decPorcentajeRetefuente' => ['type' => 'str', 'required' => true],
+				'fde_decValorRetefuente' => ['type' => 'str', 'required' => true],
+				'fde_decPorcentajeReteIva' => ['type' => 'str', 'required' => true],
+				'fde_decValorReteIva' => ['type' => 'str', 'required' => true],
+				'fde_decPorcentajeReteIca' => ['type' => 'str', 'required' => true],
+				'fde_decValorReteIca' => ['type' => 'str', 'required' => true],
+				'fde_intId' => ['type' => 'int'],
+				'fde_dateFecha' => ['type' => 'date', 'required' => true],
+				'fde_bolEstado' => ['type' => 'bool'],
+				'fde_dtimFechaCreacion' => ['type' => 'datetime'],
+				'fde_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'fac_intNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'fde_varDescripcion' => ['type' => 'str', 'required' => true],
+				'fac_intIdFactura' => ['type' => 'int', 'required' => true],
+				'pro_intIdProducto' => ['type' => 'int', 'required' => true],
+				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
+				'fde_intIdBodega' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -63,8 +88,8 @@ class TblFacturaDetalleSchema implements ISchema
 					['tbl_producto.pro_intId','tbl_factura_detalle.pro_intIdProducto']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_factura_detalle.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_factura_detalle.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_factura_detalle.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_factura_detalle.usu_intIdActualizador']
 				]
 			]
 		];
