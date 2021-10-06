@@ -27,7 +27,9 @@ class ProductCategoriesSchema implements ISchema
 			],
 
 			'relationships' => [
-				
+				'products' => [
+					['products.category','product_categories.id_catego']
+				]
 			]
 		];
 	}	

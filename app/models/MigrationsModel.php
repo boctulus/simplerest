@@ -2,9 +2,8 @@
 
 namespace simplerest\models;
 
-use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\MigrationsSchema;
+use simplerest\models\schemas\MigrationsSchema;
 
 class MigrationsModel extends MyModel
 { 

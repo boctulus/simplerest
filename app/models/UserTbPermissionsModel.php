@@ -2,9 +2,8 @@
 
 namespace simplerest\models;
 
-use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\UserTbPermissionsSchema;
+use simplerest\models\schemas\UserTbPermissionsSchema;
 
 class UserTbPermissionsModel extends MyModel
 { 

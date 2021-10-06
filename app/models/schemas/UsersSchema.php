@@ -43,33 +43,21 @@ class UsersSchema implements ISchema
 			],
 
 			'relationships' => [
+				'files' => [
+					['files.belongs_to','users.id']
+				],
+				'books' => [
+					['books.author_id','users.id'],
+					['books.editor_id','users.id']
+				],
 				'user_sp_permissions' => [
 					['user_sp_permissions.user_id','users.id']
 				],
 				'folder_other_permissions' => [
 					['folder_other_permissions.belongs_to','users.id']
 				],
-				'books' => [
-					['books.author_id','users.id'],
-					['books.editor_id','users.id']
-				],
 				'folders' => [
 					['folders.belongs_to','users.id']
-				],
-				'products' => [
-					['products.belongs_to','users.id']
-				],
-				'facturas4' => [
-					['facturas4.user_id','users.id']
-				],
-				'user_tb_permissions' => [
-					['user_tb_permissions.user_id','users.id']
-				],
-				'user_roles' => [
-					['user_roles.user_id','users.id']
-				],
-				'folder_permissions' => [
-					['folder_permissions.belongs_to','users.id']
 				],
 				'boletas' => [
 					['boletas.user_id','users.id']
@@ -80,11 +68,23 @@ class UsersSchema implements ISchema
 				'collections' => [
 					['collections.belongs_to','users.id']
 				],
-				'files' => [
-					['files.belongs_to','users.id']
+				'products' => [
+					['products.belongs_to','users.id']
+				],
+				'facturas4' => [
+					['facturas4.user_id','users.id']
 				],
 				'api_keys' => [
 					['api_keys.user_id','users.id']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','users.id']
+				],
+				'folder_permissions' => [
+					['folder_permissions.belongs_to','users.id']
+				],
+				'user_roles' => [
+					['user_roles.user_id','users.id']
 				]
 			]
 		];

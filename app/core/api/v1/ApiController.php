@@ -497,7 +497,7 @@ abstract class ApiController extends ResourceController implements IApi
 
                 $rows = $this->instance->where($_get)->get($fields); 
                 if (empty($rows))
-                    Factory::response()->sendError('Not found', 404, $id != null ? "Registry with id=$id in table '{$this->model_table}' was not found" : '');
+                    Factory::response()->sendError('Not found', 404, $id != null ? "Register with id=$id in table '{$this->model_table}' was not found" : '');
                 else{
                     // event hook
                     $this->onGot($id, 1);
@@ -1272,6 +1272,102 @@ abstract class ApiController extends ResourceController implements IApi
             $this->onPostingAfterCheck($id, $data);
 
             try {
+                /*
+                    HATEOAS
+
+                */
+
+                if (!empty(static::$connect_to)){
+                    foreach ($data as $key => $dato){
+                        // Si hay relaciones con otras tablas,....
+                        if (is_array($dato)){
+                            $related_table = $key;
+
+                            if (!in_array($related_table, static::$connect_to)){
+                                response()->sendError("Table $related_table is not connected to ". $this->model_table);
+                            }
+
+                            /*
+                                Si se recibe un solo campo y esta es una FK,....
+                                O sea.. relación de a 1:1 
+                            */
+                            if (count($dato) == 1){
+                                $column_name  = array_keys($dato)[0];
+                                $column_value = array_values($dato)[0];
+
+                                // Caso: tabla detalle le apunta al maestro (1 a muchos)
+                                if (get_primary_key($this->model_table) == $column_name){
+                                    /* 
+                                        Solo faltaría relacionar con $related_table > $column_name 
+
+                                        pero... a qué campo? solo se podría si hubiera una sola relación
+                                        con esa tabla y sino tendría que decir a través de que campo
+                                    */
+
+                                    $schema = $this->instance->getSchema();
+                                    $rs = $schema['relationships'];
+
+
+                                    foreach (static::$connect_to as $tb){                                
+                                        $rx = $rs[$tb] ?? null;
+
+                                        if ($rx === null){
+                                            continue;
+                                        }     
+
+                                        // determino el campo de la relación el que tiene la única FK hacia la tb relacionada
+                                        if ($tb == $related_table){
+                                            if (count($rx) == 1){
+                                                list($tb1, $field1) = explode('.', $rx[0][1]);
+                                            }
+                                        }
+                                    }   
+
+                                    if (isset($field1)){
+                                        $fk = $field1;
+                                        $data[$fk] = $column_value; 
+                                    }
+                                }
+                            } else {
+                                // Podría ser una relación de 1:N o N:M
+
+                                foreach ($dato as $k => $d){
+                                    if (is_array($d)){
+                                        //dd($d);
+
+                                        foreach ($d as $key => $f){
+
+                                            // Estaríamos hablando de una relación de N:M
+                                            if ($key == get_primary_key($related_table)){
+                                                dd("Estaríamos hablando de una relación de N:M");
+                                            } else {
+                                                // Estaríamos hablando de una relación de 1:N
+                                                // ---> toca incluir la FK apuntando a ... $this->model_table
+
+                                                dd($f, "$related_table > $key");
+
+                                                dd($dato, 'DATO');
+
+                                                /*
+                                                $rel_id = DB::table($related_table)
+                                                ->create($dato);
+
+                                                dd($rel_id, "ID para $related_table");
+                                                */
+                                            }
+                                        }
+                                    }
+                                }
+                            }                        
+                            // finalmente destruyo las tablas anidadas dentro de $data
+                            unset($data[$key]);
+                        }                        
+                    }
+                }
+
+                //dd($data);  
+                exit; ////
+
                 $last_inserted_id = $this->instance->create($data);
             } catch (\PDOException $e){
                 // solo para debug !
