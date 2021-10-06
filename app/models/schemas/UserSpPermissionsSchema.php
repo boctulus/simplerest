@@ -35,11 +35,11 @@ class UserSpPermissionsSchema implements ISchema
 			],
 
 			'relationships' => [
-				'users' => [
-					['users.id','user_sp_permissions.user_id']
-				],
 				'sp_permissions' => [
 					['sp_permissions.id','user_sp_permissions.sp_permission_id']
+				],
+				'users' => [
+					['users.id','user_sp_permissions.user_id']
 				]
 			]
 		];

@@ -3550,6 +3550,181 @@ Pero si Ud. suprimiera "category" fallará:
 (!) Es importante notar que la propiedad $connect_to es parte de la API y no del Modelo y es obligatorio pasar el parámetro "_related=1" (con guión bajo delante) para habilitar los sub-recursos tanto para el listar como para el ver un recurso individual
 
 
+# Creación de recursos con sub-recursos
+
+POST
+
+{
+    "data": {
+        "products": {
+            "name": "Juguito Fruticon",
+            "description": "XXXXXXXXX",
+            "size": "1L",
+            "cost": 351
+        },
+        "product_categories": [
+            {
+                "id_catego": 1
+            },
+            {
+                "id_catego": 3
+            }
+        ]
+    }
+}
+
+
+POST
+
+{
+    "data": {
+        "products": {
+            "name": "Juguito Fruticon",
+            "description": "XXXXXXXXX",
+            "size": "1L",
+            "cost": 351
+        },
+        "product_categories": [
+            {
+                "id_catego": 1
+            },
+            {
+                "name_catego": "saludable"
+            },
+            {
+                "name_catego": "en_promo"
+            }
+        ]
+    }
+}
+
+<-- si existe el registro relacionado que lo relacione y sino que lo cree y lo relacione.
+
+Para no meter todo dentro "data" la forma sería anidar recursos:
+
+
+{
+    "products": {
+        "name": "Juguito Fruticon",
+        "description": "XXXXXXXXX",
+        "size": "1L",
+        "cost": 351,
+
+        "product_categories": [
+            {
+                "id_catego": 1
+            },
+            {
+                "id_catego": 3
+            }
+        ]
+    }    
+}
+
+E inclusive podría no incluirse el nombre de la entidad principal quedando simplificado a:
+
+{
+    "name": "Juguito Fruticon",
+    "description": "XXXXXXXXX",
+    "size": "1L",
+    "cost": 351,
+
+    "product_categories": [
+        {
+            "id_catego": 1
+        },
+        {
+            "id_catego": 3
+        }
+    ]
+}    
+
+Por supuesto podría haber más relaciones, por ejemplo con un usuario:
+
+{
+    "name": "Juguito Fruticon",
+    "description": "XXXXXXXXX",
+    "size": "1L",
+    "cost": 351,
+
+    "users": {
+        "id": 1
+    },
+
+    "product_categories": [
+        {
+            "id_catego": 1           	 <-- solo tiene sentido pasar el ID si es una relación de muchos a muchos
+        },
+        {
+            "id_catego": 3
+        },
+		{
+			"name_catego": "saludable"  <-- puede ser una relación de 1 a muchos o muchos a muchos
+		},
+		{
+			"name_catego": "en_promo"
+		}
+	]
+}   
+
+La relación puede hacerse no solo por el nombre de la tabla relacionada sino por el campo que es FK, lo cual tiene la ventaja de poder manejar más de una relación entre dos tablas:
+
+
+{
+    "name": "Juguito Fruticon",
+    "description": "XXXXXXXXX",
+    "size": "1L",
+    "cost": 351,
+
+    "belongs_to": {							<---    FK
+        "id": 1
+    },
+
+    "category": [							<---	FK
+        {
+            "id_catego": 1
+        },
+        {
+            "id_catego": 3
+        },
+		{
+			"name_catego": "saludable"
+		},
+		{
+			"name_catego": "en_promo"
+		}
+	]
+}   
+
+Aclarando dudas,......
+
+Si existe una única relación entre una tabla y otra "users" via la FK "belongs_to" entonces:
+
+{
+    "name": "Juguito Fruticon",
+    "description": "XXXXXXXXX",
+    "size": "1L",
+    "cost": 351,
+
+    "users": {
+        "id": 2
+    }
+}    
+
+Es equivalente a ....	
+
+{
+    "name": "Juguito Fruticon",
+    "description": "XXXXXXXXX",
+    "size": "1L",
+    "cost": 351,
+
+    "belongs_to": 2
+}    
+
+
+
+
 # Schema y las reglas de validación via endpoint
 
 Pasando los parámetros _schema=true o _rules=true en cualquier endpoint se obtienen el schema completo y las reglas de validación en particular respectivamente.

@@ -42,6 +42,11 @@ function get_schema_name($table_name, $tenant_id = null){
     return '\\simplerest\\models\\schemas\\' . $extra . Strings::snakeToCamel($table_name). 'Schema';
 }
 
+function get_primary_key($table_name, $tenant_id = null){
+    $schema = get_schema_name($table_name, $tenant_id)::get();
+    return $schema['id_name'] ?? null;
+}
+
 function inSchema(array $props, string $table_name){
     $class = get_schema_name($table_name);
 

@@ -2,9 +2,8 @@
 
 namespace simplerest\models;
 
-use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\FolderPermissionsSchema;
+use simplerest\models\schemas\FolderPermissionsSchema;
 
 class FolderPermissionsModel extends MyModel
 { 

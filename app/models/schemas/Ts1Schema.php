@@ -21,7 +21,7 @@ class Ts1Schema implements ISchema
 			'nullable'		=> ['ts1'],
 
 			'rules' 		=> [
-				'ts1' => ['type' => 'str']
+				'ts1' => ['type' => 'timestamp']
 			],
 
 			'relationships' => [

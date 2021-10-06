@@ -2109,6 +2109,7 @@ class Model {
 		return $count;	
 	}
 
+
 	/*
 		@return mixed false | integer 
 	*/
@@ -2117,9 +2118,21 @@ class Model {
 		if ($this->conn == null)
 			throw new SqlException('No connection');
 
-		if (!Arrays::is_assoc($data))
-			throw new \InvalidArgumentException('Array of data should be associative');
-	
+		if (!Arrays::is_assoc($data)){
+			foreach ($data as $dato){
+				if (is_array($dato)){					
+					$last_id = $this->create($dato, $ignore_duplicates);
+				} else {
+					throw new \InvalidArgumentException('Array of data should be associative');
+				}
+			}
+		}
+		
+		// control de recursión para INSERT múltiple
+		if (isset($data[0]) && is_array($data[0])){
+			return $last_id ?? null;
+		}
+
 		$this->data = $data;	
 		
 		$data = $this->applyInputMutator($data, 'CREATE');
@@ -2221,10 +2234,6 @@ class Model {
 		return $this->last_inserted_id;		
 	}
 	
-
-	function insert(Array $data){
-		return $this->create($data);
-	}
 	
 	/*
 		 to be called inside onUpdating() event hook

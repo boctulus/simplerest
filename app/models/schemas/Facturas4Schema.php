@@ -102,7 +102,7 @@ class Facturas4Schema implements ISchema
 				'birth_year' => ['type' => 'str', 'required' => true],
 				'fecha' => ['type' => 'date', 'required' => true],
 				'vencimiento' => ['type' => 'datetime'],
-				'ts' => ['type' => 'str'],
+				'ts' => ['type' => 'timestamp'],
 				'deleted_at' => ['type' => 'datetime', 'required' => true],
 				'created_at' => ['type' => 'datetime', 'required' => true],
 				'updated_at' => ['type' => 'datetime', 'required' => true],
