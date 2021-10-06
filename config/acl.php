@@ -22,6 +22,8 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('products', ['read', 'write'])
     ->addResourcePermissions('testx', ['read', 'write'])
     ->addResourcePermissions('facturas', ['read', 'write'])
+    ->addResourcePermissions('tbl_estado_civil', ['read', 'write'])
+    ->addSpecialPermissions(['fill_all'])
     // ...
     //->setAsGuest('guest')
 

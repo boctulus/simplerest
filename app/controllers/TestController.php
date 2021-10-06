@@ -122,6 +122,54 @@ class TestController extends Controller
         dd(Validator::isType($str, 'date'));
     }
 
+    function get_pri(){
+        return get_primary_key('products', 'az');
+    }
+
+    function insert(){
+        DB::getConnection('az');
+
+        $data = array (
+            'name' => 'bbb',
+            'comment' => 'positivo',
+            'product_id' => 100
+        );
+
+        $id = DB::table('product_tags')
+        ->create($data);
+
+        dd($id);
+    }
+
+    function insert_mul(){
+        DB::getConnection('az');
+
+        $data = [
+            array (
+                'name' => 'N1',
+                'comment' => 'P1',
+                'product_id' => 100
+            ),
+
+            array (
+                'name' => 'N2',
+                'comment' => 'P2',
+                'product_id' => 103
+            ),
+
+            array (
+                'name' => 'N3',
+                'comment' => 'P3',
+                'product_id' => 105
+            )
+        ];
+
+        $id = DB::table('product_tags')
+        ->create($data);
+
+        dd($id);
+    }
+
     
 }
 

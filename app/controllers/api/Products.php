@@ -9,7 +9,8 @@ class Products extends MyApiController
     static protected $soft_delete = true;
     static protected $connect_to = [
         'product_categories',
-        'users'
+        'users',
+        'product_tags'
     ];
 
     function __construct()

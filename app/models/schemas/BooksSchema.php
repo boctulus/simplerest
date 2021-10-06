@@ -32,8 +32,8 @@ class BooksSchema implements ISchema
 
 			'relationships' => [
 				'users' => [
-					['users.id','books.editor_id'],
-					['users.id','books.author_id']
+					['users.id','books.author_id'],
+					['users.id','books.editor_id']
 				],
 				'book_reviews' => [
 					['book_reviews.book_id','books.id']
