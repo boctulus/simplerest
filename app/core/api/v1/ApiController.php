@@ -1348,6 +1348,20 @@ abstract class ApiController extends ResourceController implements IApi
                                             // Estaríamos hablando de una relación de N:M
                                             if ($key == get_primary_key($related_table)){
                                                 dd("Estaríamos hablando de una relación de N:M");
+
+                                                /*
+                                                    Necesito obtener la tabla puente que se relaciona con ($this->model_table, related_table)
+
+                                                    Se propone generar un archivo pivot-schemas.txt dentro de /schemas y /schemas/main con la siguiente estructura:
+                                                    
+                                                    tabla1  tabla-pivote    tabla2
+                                                    tabla1  tabla-pivote    tabla2
+                                                    tabla1  tabla-pivote    tabla2
+                                                    tabla1  tabla-pivote    tabla2
+
+                                                    y una función helper que la lea:  getPivotTable($tb1, $tb2)
+                                                */     
+
                                             } else {
                                                 // Estaríamos hablando de una relación de 1:N
                                         
