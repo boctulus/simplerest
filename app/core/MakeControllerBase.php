@@ -700,6 +700,11 @@ class MakeControllerBase extends Controller
                 $_rules[$f]['type'] = 'bool';
             } 
 
+            // timestamp
+            if (strtolower($types_raw[$f]) == 'timestamp'){
+                $_rules[$f]['type'] = 'timestamp';
+            }
+
             // datetime
             if (strtolower($types_raw[$f]) == 'datetime'){
                 $_rules[$f]['type'] = 'datetime';
