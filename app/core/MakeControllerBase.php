@@ -538,17 +538,25 @@ class MakeControllerBase extends Controller
 
         $nullables = [];
         //$not_fillable = [];
-        $rules = [];
+        $rules   = [];
+        $_rules  = [];
+        $_rules_ = [];
         $pri_components = [];
         $autoinc = null;
         $unsigned = [];
-        $tiny = [];
-        $emails = [];
+        $tinyint = [];
+        $emails  = [];
+        $double  = [];
+        $decimal = [];
 
-        foreach ($fields as $field){
-            $field_names[] = $field['Field'];
+        foreach ($fields as $ix => $field){
+            //dd($field, $ix);
 
-            $field_name = $field['Field'];
+            $field_name    = $field['Field'];
+            $type          = $field['Type'];
+
+            $field_names[] = $field_name;
+
             $comment = Schema::getColumnComment($name, $field_name)['COLUMN_COMMENT'];
 
             if ($comment == 'email' || $comment == 'e-mail'){
@@ -575,12 +583,22 @@ class MakeControllerBase extends Controller
                 $autoinc     = $field_name;
             }
             
-            if (Strings::containsWord('unsigned', $field['Type'])) { 
+            if (Strings::containsWord('unsigned', $type)) { 
                 $unsigned[] = $field_name;
             }
 
-            if (Strings::startsWith('tinyint', $field['Type'])) { 
-                $tiny[] = $field_name; 
+            if (Strings::startsWith('tinyint', $type)) { 
+                $tinyint[] = $field_name; 
+            }
+
+            if ($type == 'double'){
+                $double[] = $field_name;
+            }
+
+            if (Strings::startsWith('decimal(', $type)){
+                $decimal[] = $field_name;
+                $nums = substr($type, strlen('decimal('), -1);  
+                $_rules_[$field_name] =  "\t\t\t\t'$field_name' => ['type' => 'decimal($nums)']";            
             }
 
             $types[$field['Field']] = $this->get_pdo_const($field['Type']);
@@ -622,15 +640,28 @@ class MakeControllerBase extends Controller
         };
 
         $_attr_types = [];
-        $_rules  = [];
+
         foreach ($types as $f => $type){
             $_attr_types[] = "\t\t\t\t'$f' => '$type'";
 
+            // emails
             if (in_array($f, $emails)){
                 $_rules[] = "\t\t\t\t'$f' => ['type' => 'email']";
                 continue;
             } 
 
+            // duble
+            if (in_array($f, $double)){
+                $_rules[] = "\t\t\t\t'$f' => ['type' => 'double']";
+                continue;
+            }
+
+            // etc
+            if (isset($_rules_[$f])){
+                $_rules[] = $_rules_[$f];
+            }
+
+            // varchars
             if (preg_match('/^(varchar)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
                 $len = $matches[2];
                 $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
@@ -641,28 +672,33 @@ class MakeControllerBase extends Controller
               https://www.php.net/manual/en/language.types.type-juggling.php
             */
 
+            // varbinary
             if (preg_match('/^(|varbinary)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
                 $len = $matches[2];
                 $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
                 continue;
-            } 
+            }  
 
+            // binary
             if (preg_match('/^(binary)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
                 $len = $matches[2];
                 $_rules [] = "\t\t\t\t'$f' => ['max' => $len]";
                 continue;
             } 
 
+            // unsigned
             if (in_array($f, $unsigned)){
                 $_rules [] = "\t\t\t\t'$f' => ['min' => 0]";
                 continue;
             } 
 
-            if (in_array($f, $tiny)){
+            // bool
+            if (in_array($f, $tinyint)){
                 $_rules[] = "\t\t\t\t'$f' => ['type' => 'bool']";
                 continue;
             } 
 
+            // datetime
             if (strtolower($types_raw[$f]) == 'datetime'){
                 $_rules[] = "\t\t\t\t'$f' => ['type' => 'datetime']";
                 continue;

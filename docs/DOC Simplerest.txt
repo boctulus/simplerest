@@ -1855,6 +1855,7 @@ bool
 int
 float
 number
+decimal(n,m)
 string
 alpha
 notnum

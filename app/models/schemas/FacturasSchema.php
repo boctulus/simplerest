@@ -58,7 +58,8 @@ class FacturasSchema implements ISchema
 				'created_at' => 'STR',
 				'updated_at' => 'STR',
 				'correo' => 'STR',
-				'user_id' => 'INT'
+				'user_id' => 'INT',
+				'sale_price_dec' => 'STR'
 			],
 
 			'nullable'		=> ['aaa', 'lastname', 'password_char', 'carma', 'active', 'vencimiento', 'ts', 'nuevo_campito', 'deleted_at'],
@@ -74,12 +75,15 @@ class FacturasSchema implements ISchema
 				'code' => ['min' => 0],
 				'ubig' => ['min' => 0],
 				'tiny' => ['type' => 'bool'],
+				'doble_p' => ['type' => 'double'],
+				'num_real' => ['type' => 'double'],
 				'active' => ['type' => 'bool'],
 				'nuevo_campito' => ['max' => 50],
 				'deleted_at' => ['type' => 'datetime'],
 				'created_at' => ['type' => 'datetime'],
 				'updated_at' => ['type' => 'datetime'],
-				'correo' => ['type' => 'email']
+				'correo' => ['type' => 'email'],
+				'sale_price_dec' => ['type' => 'decimal(5,2)']
 			],
 
 			'relationships' => [
