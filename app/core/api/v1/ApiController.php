@@ -1278,10 +1278,18 @@ abstract class ApiController extends ResourceController implements IApi
                 */
 
                 if (!empty(static::$connect_to)){
+                    DB::beginTransaction();
+
+                    $dependents = [];
+
+                    $unset = [];
                     foreach ($data as $key => $dato){
+
                         // Si hay relaciones con otras tablas,....
                         if (is_array($dato)){
                             $related_table = $key;
+
+                            $unset[] = $related_table;
 
                             if (!in_array($related_table, static::$connect_to)){
                                 response()->sendError("Table $related_table is not connected to ". $this->model_table);
@@ -1342,35 +1350,63 @@ abstract class ApiController extends ResourceController implements IApi
                                                 dd("Estaríamos hablando de una relación de N:M");
                                             } else {
                                                 // Estaríamos hablando de una relación de 1:N
+                                        
                                                 // ---> toca incluir la FK apuntando a ... $this->model_table
 
-                                                dd($f, "$related_table > $key");
+                                                $schema = get_schema_name($related_table)::get();
+                                                $rs = $schema['relationships'];
 
-                                                dd($dato, 'DATO');
+                                                $rr = $rs[$this->model_table];
+                                                list($_, $fk) = explode('.', $rr[0][1]);
 
-                                                /*
-                                                $rel_id = DB::table($related_table)
-                                                ->create($dato);
+                                                foreach ($dato as $k => $_dato){
+                                                    $dato[$k] = array_merge($_dato, [$fk => '$id_main']);
+                                                }
 
-                                                dd($rel_id, "ID para $related_table");
-                                                */
+                                                $dependents[$related_table] = $dato;
+                                                
                                             }
                                         }
                                     }
                                 }
                             }                        
-                            // finalmente destruyo las tablas anidadas dentro de $data
-                            unset($data[$key]);
+                            
                         }                        
                     }
                 }
 
-                //dd($data);  
-                exit; ////
+                // finalmente destruyo las tablas anidadas dentro de $data
+                foreach ($unset as $t){
+                    unset($data[$t]);
+                }
 
-                $last_inserted_id = $this->instance->create($data);
+                // Debería acá comenzar transacción
+
+                $last_inserted_id = DB::table($this->model_table)
+                ->create($data);
+
+                // Tablas dependientes
+
+                foreach ($dependents as $related_table => $data){
+                    foreach ($data as $ix => $dato){
+                        foreach ($dato as $field => $val){
+                            if ($val == '$id_main'){
+                                $data[$ix][$field] = $last_inserted_id;
+                            }
+                        }
+                    }
+
+                    $rel_id = DB::table($related_table)
+                    ->create($data);
+
+                    //dd($rel_id, "ID para $related_table");
+                }
+                
+                DB::commit();             
             } catch (\PDOException $e){
-                // solo para debug !
+                DB::rollback();
+
+                // solo debug:
                 Factory::response()->sendError("Error: creation of resource fails: ". $e->getMessage(), 500, $this->instance->dd2());
             }
 
