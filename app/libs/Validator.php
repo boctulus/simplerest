@@ -141,6 +141,15 @@ class Validator implements IValidator
 			}	
 		}
 
+		if (substr($tipo,0,8) == 'decimal('){
+			$regex = substr($tipo,6);
+			$nums  = substr($tipo, strlen('decimal('), -1);
+			list($tot,$dec) = explode(',', $nums);
+
+			$f = explode('.',$dato);
+			return (strlen($dato) <= ($tot+1) && strlen($f[1]) == $dec);	
+		}
+
 		if (static::$rules == []){
 			static::loadRules();
 		}
@@ -375,11 +384,12 @@ class Validator implements IValidator
 		return $validated;
 	}
 	
-	
+	/*
 	private static function isValidDate($date, $format = 'd-m-Y') {
 		$dateObj = \DateTime::createFromFormat($format, $date);
 		return $dateObj && $dateObj->format($format) == $date;
 	}
+	*/
 }
 
 
