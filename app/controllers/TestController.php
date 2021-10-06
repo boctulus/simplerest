@@ -10,6 +10,7 @@ use simplerest\libs\DB;
 use simplerest\libs\Schema;
 use simplerest\libs\Strings;
 use simplerest\core\MakeControllerBase;
+use simplerest\libs\Validator;
 
 class TestController extends Controller
 {
@@ -115,6 +116,10 @@ class TestController extends Controller
 
     function error(){
         response()->sendError("Todo mal", 400);
+    }
+
+    function validate($num){
+        dd(Validator::isType($num, 'decimal(5,2)'));
     }
 
     
