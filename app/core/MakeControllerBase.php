@@ -537,7 +537,6 @@ class MakeControllerBase extends Controller
         $types_raw = [];
 
         $nullables = [];
-        //$not_fillable = [];
         $rules   = [];
         $_rules  = [];
         $_rules_ = [];
@@ -600,6 +599,7 @@ class MakeControllerBase extends Controller
                 $nums = substr($type, strlen('decimal('), -1);  
                 $_rules_[$field_name] =  "\t\t\t\t'$field_name' => ['type' => 'decimal($nums)']";            
             }
+            
 
             $types[$field['Field']] = $this->get_pdo_const($field['Type']);
             $types_raw[$field['Field']] = $field['Type'];
@@ -701,6 +701,18 @@ class MakeControllerBase extends Controller
             // datetime
             if (strtolower($types_raw[$f]) == 'datetime'){
                 $_rules[] = "\t\t\t\t'$f' => ['type' => 'datetime']";
+                continue;
+            }
+
+            // date
+            if (strtolower($types_raw[$f]) == 'date'){
+                $_rules[] = "\t\t\t\t'$f' => ['type' => 'date']";
+                continue;
+            }
+
+            // time
+            if (strtolower($types_raw[$f]) == 'time'){
+                $_rules[] = "\t\t\t\t'$f' => ['type' => 'time']";
                 continue;
             }
 
