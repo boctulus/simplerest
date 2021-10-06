@@ -106,6 +106,9 @@ class Validator implements IValidator
 			'datetime' => function($dato) {
 				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$dato)== 1;
 			},
+			'timestamp' => function($dato) {
+				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$dato)== 1;
+			},
 			'array' => function($dato) {
 				return is_array($dato);
 			}
