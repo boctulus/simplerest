@@ -7,6 +7,9 @@ use simplerest\models\schemas\ProductsSchema;
 
 class ProductsModel extends MyModel
 { 
+	
+	
+
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

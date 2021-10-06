@@ -2,9 +2,8 @@
 
 namespace simplerest\models;
 
-use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\FoldersSchema;
+use simplerest\models\schemas\FoldersSchema;
 
 class FoldersModel extends MyModel
 { 

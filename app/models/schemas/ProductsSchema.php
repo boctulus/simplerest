@@ -64,8 +64,8 @@ class ProductsSchema implements ISchema
 				'product_comments' => [
 					['product_comments.product_id','products.id']
 				],
-				'products_product_categories' => [
-					['products_product_categories.product_id','products.id']
+				'product_tags' => [
+					['product_tags.product_id','products.id']
 				]
 			]
 		];
