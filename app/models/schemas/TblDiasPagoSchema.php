@@ -24,10 +24,16 @@ class TblDiasPagoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['dpa_intId'],
+			'nullable'		=> ['dpa_intId', 'dpa_dtimFechaCreacion', 'dpa_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-
+				'dpa_intId' => ['type' => 'int'],
+				'dpa_intDiasPago' => ['type' => 'int', 'required' => true],
+				'dpa_dtimFechaCreacion' => ['type' => 'datetime'],
+				'dpa_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

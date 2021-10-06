@@ -30,10 +30,22 @@ class TblClienteSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cli_intId', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['cli_intId', 'cli_dtimFechaCreacion', 'cli_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'rules' 		=> [
-
+				'cli_decCupoCredito' => ['type' => 'str', 'required' => true],
+				'cli_intId' => ['type' => 'int'],
+				'cli_intDiasGracia' => ['type' => 'int', 'required' => true],
+				'cli_bolBloqueadoMora' => ['type' => 'bool', 'required' => true],
+				'cli_datFechaBloqueado' => ['type' => 'date', 'required' => true],
+				'cli_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cli_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'dpa_intIdDiasPago' => ['type' => 'int', 'required' => true],
+				'des_intIdDescuento' => ['type' => 'int', 'required' => true],
+				'ali_intIdPersona' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'relationships' => [

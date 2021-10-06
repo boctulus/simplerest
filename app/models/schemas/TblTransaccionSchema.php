@@ -24,10 +24,16 @@ class TblTransaccionSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['tra_intId'],
+			'nullable'		=> ['tra_intId', 'tra_dtimFechaActualizacion', 'tra_dtimFechaCreacion'],
 
 			'rules' 		=> [
-				'tra_varTransaccion' => ['max' => 25]
+				'tra_intId' => ['type' => 'int'],
+				'tra_varTransaccion' => ['type' => 'str', 'max' => 25, 'required' => true],
+				'tra_bolEstado' => ['type' => 'bool', 'required' => true],
+				'tra_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'tra_dtimFechaCreacion' => ['type' => 'datetime'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

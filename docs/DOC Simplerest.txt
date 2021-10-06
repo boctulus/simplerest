@@ -3547,8 +3547,78 @@ Pero si Ud. suprimiera "category" fallará:
 
 <-- con "fields" especifico campos pero omito category"
 
-
 (!) Es importante notar que la propiedad $connect_to es parte de la API y no del Modelo y es obligatorio pasar el parámetro "_related=1" (con guión bajo delante) para habilitar los sub-recursos tanto para el listar como para el ver un recurso individual
+
+
+# Schema y las reglas de validación via endpoint
+
+Pasando los parámetros _schema=true o _rules=true en cualquier endpoint se obtienen el schema completo y las reglas de validación en particular respectivamente.
+
+Ej: 
+
+	http://simplerest.lan/api/v1/products?tenantid=az&_rules=1
+
+Rta:
+
+	{
+		"rules": {
+			"id": {
+				"type": "int"
+			},
+			"name": {
+				"type": "str",
+				"max": 50,
+				"required": true
+			},
+			"description": {
+				"type": "str",
+				"max": 240
+			},
+			"size": {
+				"type": "str",
+				"max": 30,
+				"required": true
+			},
+			"cost": {
+				"type": "int",
+				"required": true
+			},
+			"created_at": {
+				"type": "datetime"
+			},
+			"created_by": {
+				"type": "int"
+			},
+			"updated_at": {
+				"type": "datetime"
+			},
+			"updated_by": {
+				"type": "int"
+			},
+			"deleted_at": {
+				"type": "datetime"
+			},
+			"deleted_by": {
+				"type": "int"
+			},
+			"active": {
+				"type": "bool"
+			},
+			"locked": {
+				"type": "bool"
+			},
+			"workspace": {
+				"type": "str",
+				"max": 40
+			},
+			"belongs_to": {
+				"type": "int"
+			},
+			"category": {
+				"type": "int"
+			}
+		}
+	}
 
 
 # Librerías

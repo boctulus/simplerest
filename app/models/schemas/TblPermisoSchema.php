@@ -25,11 +25,17 @@ class TblPermisoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['per_intId'],
+			'nullable'		=> ['per_intId', 'per_dtimFechaCreacion', 'per_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'per_varNombre' => ['max' => 50],
-				'per_varDescripcion' => ['max' => 100]
+				'per_intId' => ['type' => 'int'],
+				'per_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'per_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'per_dtimFechaCreacion' => ['type' => 'datetime'],
+				'per_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -37,8 +43,8 @@ class TblPermisoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_permiso.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_permiso.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_permiso.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_permiso.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_permiso.usu_intIdActualizador']
 				],
 				'tbl_rol_permiso' => [
 					['tbl_rol_permiso.per_intIdPermiso','tbl_permiso.per_intId']

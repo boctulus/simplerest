@@ -33,15 +33,25 @@ class TblContactoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['con_intId', 'con_varDireccion', 'con_varTelefono', 'con_varExtension'],
+			'nullable'		=> ['con_intId', 'con_varDireccion', 'con_varTelefono', 'con_varExtension', 'con_dtimFechaCreacion', 'con_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'con_varNombreContacto' => ['max' => 250],
-				'con_varEmail' => ['max' => 100],
-				'con_varCelular' => ['max' => 15],
-				'con_varDireccion' => ['max' => 250],
-				'con_varTelefono' => ['max' => 10],
-				'con_varExtension' => ['max' => 5]
+				'con_intId' => ['type' => 'int'],
+				'con_varNombreContacto' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'con_varEmail' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'con_varCelular' => ['type' => 'str', 'max' => 15, 'required' => true],
+				'con_varDireccion' => ['type' => 'str', 'max' => 250],
+				'con_varTelefono' => ['type' => 'str', 'max' => 10],
+				'con_varExtension' => ['type' => 'str', 'max' => 5],
+				'con_dtimFechaCreacion' => ['type' => 'datetime'],
+				'con_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'emp_intIdEmpresa' => ['type' => 'int', 'required' => true],
+				'car_intIdcargo' => ['type' => 'int', 'required' => true],
+				'ciu_intIdCiudad' => ['type' => 'int', 'required' => true],
+				'pai_intIdPais' => ['type' => 'int', 'required' => true],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
@@ -61,8 +71,8 @@ class TblContactoSchema implements ISchema
 					['tbl_pais.pai_intId','tbl_contacto.pai_intIdPais']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contacto.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contacto.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contacto.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contacto.usu_intIdActualizador']
 				]
 			]
 		];

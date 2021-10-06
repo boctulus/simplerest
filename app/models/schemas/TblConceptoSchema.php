@@ -25,11 +25,17 @@ class TblConceptoSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cct_intId'],
+			'nullable'		=> ['cct_intId', 'cct_dtimFechaCreacion', 'cct_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'cct_varNombre' => ['max' => 50],
-				'cct_varDescripcion' => ['max' => 250]
+				'cct_intId' => ['type' => 'int'],
+				'cct_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'cct_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'cct_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cct_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

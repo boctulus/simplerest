@@ -24,10 +24,16 @@ class TblCategoriaCuentaBancariaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['ccb_intId'],
+			'nullable'		=> ['ccb_intId', 'ccb_dtimFechaCreacion', 'ccb_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'ccb_varCategoriaCuentaBancaria' => ['max' => 50]
+				'ccb_intId' => ['type' => 'int'],
+				'ccb_varCategoriaCuentaBancaria' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'ccb_dtimFechaCreacion' => ['type' => 'datetime'],
+				'ccb_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

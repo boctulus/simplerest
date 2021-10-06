@@ -27,10 +27,19 @@ class TblIvaSchema implements ISchema
 				'sub_intIdCuentaContable' => 'INT'
 			],
 
-			'nullable'		=> ['iva_intId'],
+			'nullable'		=> ['iva_intId', 'iva_dtimFechaCreacion', 'iva_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'iva_varIVA' => ['max' => 50]
+				'iva_decPorcentaje' => ['type' => 'str', 'required' => true],
+				'iva_intId' => ['type' => 'int'],
+				'iva_varIVA' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'iva_intTope' => ['type' => 'int', 'required' => true],
+				'iva_dtimFechaCreacion' => ['type' => 'datetime'],
+				'iva_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true],
+				'sub_intIdCuentaContable' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [

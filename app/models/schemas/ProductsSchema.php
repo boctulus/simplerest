@@ -36,10 +36,22 @@ class ProductsSchema implements ISchema
 			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'locked', 'workspace', 'belongs_to', 'category'],
 
 			'rules' 		=> [
-				'name' => ['max' => 50],
-				'description' => ['max' => 240],
-				'size' => ['max' => 30],
-				'workspace' => ['max' => 40]
+				'id' => ['type' => 'int'],
+				'name' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'description' => ['type' => 'str', 'max' => 240],
+				'size' => ['type' => 'str', 'max' => 30, 'required' => true],
+				'cost' => ['type' => 'int', 'required' => true],
+				'created_at' => ['type' => 'datetime'],
+				'created_by' => ['type' => 'int'],
+				'updated_at' => ['type' => 'datetime'],
+				'updated_by' => ['type' => 'int'],
+				'deleted_at' => ['type' => 'datetime'],
+				'deleted_by' => ['type' => 'int'],
+				'active' => ['type' => 'bool'],
+				'locked' => ['type' => 'bool'],
+				'workspace' => ['type' => 'str', 'max' => 40],
+				'belongs_to' => ['type' => 'int'],
+				'category' => ['type' => 'int']
 			],
 
 			'relationships' => [

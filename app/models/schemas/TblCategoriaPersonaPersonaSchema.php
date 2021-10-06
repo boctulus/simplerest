@@ -21,10 +21,13 @@ class TblCategoriaPersonaPersonaSchema implements ISchema
 				'cat_dtimFechaCreacion' => 'STR'
 			],
 
-			'nullable'		=> ['cpp_intId'],
+			'nullable'		=> ['cpp_intId', 'cat_dtimFechaCreacion'],
 
 			'rules' 		=> [
-
+				'cpp_intId' => ['type' => 'int'],
+				'per_intIdPersona' => ['type' => 'int', 'required' => true],
+				'cap_intIdCategoriaPersona' => ['type' => 'int', 'required' => true],
+				'cat_dtimFechaCreacion' => ['type' => 'datetime']
 			],
 
 			'relationships' => [

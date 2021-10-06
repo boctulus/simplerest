@@ -12,7 +12,7 @@ class TblCuentaContableSchema implements ISchema
 		return [
 			'table_name'	=> 'tbl_cuenta_contable',
 
-			'id_name'		=> 'cue_varNumeroCuenta',
+			'id_name'		=> 'cue_intId',
 
 			'attr_types'	=> [
 				'cue_intId' => 'INT',
@@ -29,11 +29,21 @@ class TblCuentaContableSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cue_intId'],
+			'nullable'		=> ['cue_intId', 'cue_tinCuentaBalance', 'cue_tinCuentaResultado', 'cue_dtimFechaCreacion', 'cue_dtimFechaActualizacion', 'ccc_intIdCategoriaCuentaContable', 'est_intIdEstado', 'gru_intId', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'rules' 		=> [
-				'cue_varNumeroCuenta' => ['max' => 4],
-				'cue_varNombreCuenta' => ['max' => 50]
+				'cue_intId' => ['type' => 'int'],
+				'cue_varNumeroCuenta' => ['type' => 'str', 'max' => 4, 'required' => true],
+				'cue_varNombreCuenta' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'cue_tinCuentaBalance' => ['type' => 'bool'],
+				'cue_tinCuentaResultado' => ['type' => 'bool'],
+				'cue_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cue_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'ccc_intIdCategoriaCuentaContable' => ['type' => 'int'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'gru_intId' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'relationships' => [

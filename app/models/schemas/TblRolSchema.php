@@ -25,11 +25,17 @@ class TblRolSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['rol_intId'],
+			'nullable'		=> ['rol_intId', 'rol_dtimFechaCreacion', 'rol_dtimFechaActualizacion', 'est_intIdEstado_rol', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'rules' 		=> [
-				'rol_varNombre' => ['max' => 50],
-				'rol_varDescripcion' => ['max' => 100]
+				'rol_intId' => ['type' => 'int'],
+				'rol_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'rol_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'rol_dtimFechaCreacion' => ['type' => 'datetime'],
+				'rol_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado_rol' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'relationships' => [

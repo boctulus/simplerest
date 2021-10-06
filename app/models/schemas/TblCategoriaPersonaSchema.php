@@ -24,10 +24,16 @@ class TblCategoriaPersonaSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'nullable'		=> ['cap_intId'],
+			'nullable'		=> ['cap_intId', 'cap_dtimFechaCreacion', 'cap_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'rules' 		=> [
-				'cap_varCategoriaPersona' => ['max' => 100]
+				'cap_intId' => ['type' => 'int'],
+				'cap_varCategoriaPersona' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'cap_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cap_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
 			'relationships' => [
