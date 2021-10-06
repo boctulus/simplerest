@@ -3635,7 +3635,6 @@ POST
 
 Para no meter todo dentro "data" la forma sería anidar recursos:
 
-
 {
     "products": {
         "name": "Juguito Fruticon",
