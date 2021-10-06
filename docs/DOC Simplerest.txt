@@ -803,11 +803,44 @@ Ej:
 
 El método create() acepta un array asociativo de campos con sus valores y hace el INSERT
 
-	$m = DB::table('super_cool_table'
+	$last_id = DB::table('super_cool_table'
 	->create([
 		'name' => 'SUPER',
 		'age' => 22,
 	]);
+
+
+# Insert múltiple
+
+Se pueden insertar varios registros de forma simultánea y se devolverá también el ID del último registro insertando.
+
+Ej:
+
+	// En caso de haber varias DB(s), selecciono la conexión donde está
+	DB::getConnection('az');
+
+	$data = [
+		array (
+			'name' => 'N1',
+			'comment' => 'P1',
+			'product_id' => 100
+		),
+
+		array (
+			'name' => 'N2',
+			'comment' => 'P2',
+			'product_id' => 103
+		),
+
+		array (
+			'name' => 'N3',
+			'comment' => 'P3',
+			'product_id' => 105
+		)
+	];
+
+	$last_id = DB::table('product_tags')
+	->create($data);
 
 
 # Obtención de registros
