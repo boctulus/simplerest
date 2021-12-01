@@ -30,7 +30,7 @@ class PrepareUpdateController extends ConsoleController
         $dst = '/home/feli/Desktop/UPDATE';
         //$dst = '/home/www/html/simplerest-clone';
 
-        //$default_conn_dir = get_default_connection_id();
+        Files::delTree($dst);
 
         $str_files = <<<'FILES'
         config/constants.php
@@ -59,21 +59,21 @@ class PrepareUpdateController extends ConsoleController
         app/core/Controller.php
         ;app/views/MyView.php
         packages
-        ;app/migrations/2021_11_19_33615227_user_sp_permissions.php
-        ;app/migrations/2021_11_19_33615377_user_tb_permissions.php
-        ;app/migrations/2021_11_20_33704817_files.php
         app/controllers/UpdateController.php     
         public/app.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);
 
-        Files::copy($ori, $dst, $files, [
+        $except =  [
             'db_dynamic_load.php',
             'PrepareUpdateController.php',
-            '*.zip',
             'docs/dev'
-        ]);
+        ];
+
+        $except = array_merge($except, Files::recursiveGlob(ROOT_PATH . '*.zip'));
+
+        Files::copy($ori, $dst, $files, $except);
     }
 
    
