@@ -6,7 +6,7 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class UserSpPermissions implements IMigration
+class UserSpPermissionsDateTimeChanged implements IMigration
 {
     /**
 	* Run migration.
