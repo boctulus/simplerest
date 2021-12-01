@@ -646,6 +646,16 @@ class Strings
        	return preg_replace('#/+#','/',$path);
 	}
 
+	static function removeTrailingSlash(string $path){
+
+
+	}
+
+	static function addTrailingSlash(string $path){
+
+		
+	}
+
 }
 
 
