@@ -642,18 +642,28 @@ class Strings
 		return $ok;
 	}
         
-	static function removeDuplicateSlashes(string $path){
+	static function removeUnnecessarySlashes(string $path): string{
        	return preg_replace('#/+#','/',$path);
 	}
 
-	static function removeTrailingSlash(string $path){
+	static function removeTrailingSlash(string $path): string{
+		$path = realpath($path);
 
+		if (Strings::endsWith('\\', $path) || Strings::endsWith('/', $path)){
+			return substr($path, 0, strlen($path)-1);
+		}
 
+		return $path;
 	}
 
-	static function addTrailingSlash(string $path){
+	static function addTrailingSlash(string $path): string{
+		$path = realpath($path);
 
-		
+		if (!Strings::endsWith('\\', $path) && !Strings::endsWith('/', $path)){
+			return $path . DIRECTORY_SEPARATOR;
+		}
+
+		return $path;		
 	}
 
 }

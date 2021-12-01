@@ -315,7 +315,7 @@ class DumbController extends Controller
     }
 
     function schema(){
-        $m = (new \simplerest\models\az\ProductsModel());
+        $m = (new ProductsModel());
         dd($m->getSchema());
     }
 
@@ -351,7 +351,7 @@ class DumbController extends Controller
     }
 
     function get_bar2(){
-        $m = (new \simplerest\models\az\BarModel())
+        $m = (new BarModel())
         ->connect()
         // ->assoc()
         ->where(['uuid', '0fefc2b1-f0d3-47aa-a875-5dbca85855f9']);
@@ -5474,8 +5474,9 @@ class DumbController extends Controller
         dd(get_schema_path());
     }
 
-    function test_remove_innecesary_slashes(){
-        dd(Strings::removeDuplicateSlashes('/home/www/simplerest/docs//DOC Simplerest.txt'));
+    function test_remove_unnecesary_slashes(){
+        dd(Strings::removeUnnecessarySlashes('/home/www/simplerest/docs//DOC Simplerest.txt'));
+        dd(Strings::removeUnnecessarySlashes('c:\windows\\system32'));
     }
 
     function test_glob(){
@@ -5512,7 +5513,7 @@ class DumbController extends Controller
     }
 
     function test_slash_string_fns(){
-        dd(Strings::removeDuplicateSlashes('c:\\\\windows'));
+        dd(Strings::removeUnnecessarySlashes('c:\\windows'));
         dd(Strings::removeTrailingSlash('/home/www/simplerest/'));
         dd(Strings::removeTrailingSlash('/home/www/simplerest'));
         dd(Strings::addTrailingSlash('/home/www/simplerest'));
