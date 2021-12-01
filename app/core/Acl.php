@@ -325,7 +325,7 @@ abstract class Acl implements IAcl
         return false;
     }
 
-    public function hasResourcePermission(string $perm, string $resource, Array $role_names = []){
+    public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = []){
         if (empty($role_names)){
             $role_names = $role_names = static::$current_user_roles;
         }
