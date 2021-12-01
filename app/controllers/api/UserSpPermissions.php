@@ -11,15 +11,12 @@ use simplerest\libs\Debug;
 
 class UserSpPermissions extends MyApiController
 {    
+	static protected $connect_to = [
+		'sp_permissions'
+	];
+
     function __construct()
     {
-
-        // Falta limitar acceso !!!
-        $this->callable = ['post', 'put', 'get', 'put', 'patch'];
-
-        $this->is_listable = true;
-        $this->is_retrievable = true;
-                
         parent::__construct();
     }
 

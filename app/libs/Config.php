@@ -2,47 +2,29 @@
 
 namespace simplerest\libs;
 
-class Config implements \ArrayAccess
+class Config
 {
-    protected $data;
-    
-    function __construct() { 
-        $this->data = include CONFIG_PATH . 'config.php';
+    static protected $data = [];
+
+    static protected function setup()
+    {   
+        static::$data = include CONFIG_PATH . 'config.php';
     }
 
-   function get(string $key = null){
-        if ($key == null){
-            return $this->data;
-        } else {
-            return $this->data[$key];
+    static function get(?string $property = null)
+    {
+        if (empty(static::$data)) {
+            static::setup();
         }
-    }
 
-    function set(string $key, $val){
-        $this->data[$key] = $val;
-    }
-
-    /* ArrayAccess interface */
-
-    public function offsetSet($offset, $value) {
-        if (is_null($offset)) {
-            $this->data[] = $value;
-        } else {
-            $this->data[$offset] = $value;
+        if ($property === null) {
+            return static::$data;
         }
+
+        return static::$data[$property];
     }
 
-    public function offsetExists($offset) {
-        return isset($this->data[$offset]);
+    static function set(string $property, $value){
+        static::$data[$property] = $value;
     }
-
-    public function offsetUnset($offset) {
-        unset($this->data[$offset]);
-    }
-
-    public function offsetGet($offset) {
-        return isset($this->data[$offset]) ? $this->data[$offset] : null;
-    }
-
-    
 }

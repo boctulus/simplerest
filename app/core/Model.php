@@ -2,13 +2,14 @@
 
 namespace simplerest\core;
 
+use PDO;
 use simplerest\libs\DB;
 use simplerest\libs\Arrays;
 use simplerest\libs\Strings;
 use simplerest\libs\Validator;
 use simplerest\libs\ValidationRules;
 use simplerest\libs\Factory;
-use simplerest\libs\Debug;
+use simplerest\libs\Files;
 use simplerest\core\interfaces\IValidator;
 use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\exceptions\SqlException;
@@ -20,7 +21,7 @@ class Model {
 	use ExceptionHandler;
 
 	// for internal use
-	protected $table_alias = '';
+	protected $table_alias = [];
 	protected $table_name;
 
 	// Schema
@@ -56,6 +57,8 @@ class Model {
 	protected $union_q;
 	protected $union_vals = [];
 	protected $union_type;
+	protected $join_raw = [];
+	protected $aggregate_field_alias;
 	protected $randomize = false;
 	protected $distinct  = false;
 	protected $to_merge_bindings = [];
@@ -70,10 +73,14 @@ class Model {
 	protected $transformer;
 	protected $controller;
 	protected $exec = true;
+	protected $bind = true;
+	protected $strict_mode_having = false;
+	protected $should_qualify = false; //
+	protected $semicolon_ending = false;
 	protected $fetch_mode;
 	protected $soft_delete;
 	protected $last_inserted_id;
-	protected $paginator = true;
+	protected $paginator = true;	
 	protected $fetch_mode_default = \PDO::FETCH_ASSOC;
 	protected $last_operation;
 	protected $data = []; 
@@ -87,7 +94,10 @@ class Model {
 	protected $locked    = 'locked';
 	protected $belongsTo = 'belongs_to';
 
+	static protected $sql_formatter_callback;
+	protected $sql_formatter_status;
 	
+
 	function createdAt(){
 		return $this->createdBy;
 	}
@@ -120,14 +130,44 @@ class Model {
 		return $this->belongsTo;
 	}
 
+	function setSqlFormatter(callable $fn){
+		static::$sql_formatter_callback = $fn;
+	}
 
-	function __construct(bool $connect = false, $schema = null, bool $load_config = true){
+	function sqlFormaterOff(){
+		$this->sql_formatter_status = false;
+
+		return $this;
+	}
+
+	function sqlFormaterOn(){
+		$this->sql_formatter_status = true;
+
+		return $this;
+	}
+
+	static function sqlFormatter(string $query, ...$options) : string {
+		if (!empty(static::$sql_formatter_callback) && is_callable(static::$sql_formatter_callback)){
+			$fn = static::$sql_formatter_callback;
+
+			return $fn($query, ...$options);
+		}			
+
+		return $query;
+	} 
+
+	function __construct(bool $connect = false, $schema = null, bool $load_config = true)
+	{
+		static::$sql_formatter_callback = function(string $sql, bool $highlight = false){
+			return \SqlFormatter::format($sql, $highlight);
+		};
+
 		if ($connect){
 			$this->connect();
 		}
 
 		if ($schema != null){
-			$this->schema = $schema->get();
+			$this->schema = $schema::get(); //
 			$this->table_name = $this->schema['table_name'];
 		}
 
@@ -140,24 +180,9 @@ class Model {
 		}
 		
 		
-		/////////////// ***
-		/*
-		if (empty($this->table_name)){
-			$class_name = get_class($this);
-			$class_name = substr($class_name, strrpos($class_name, '\\')+1);
-			$str = Strings::camelToSnake($class_name);
-			$this->table_name = strtolower(substr($str, 0, strlen($str)-6));
-		}
-		*/
-	
-
-		//dd($this->table_name, 'table_name:');  // mode <-- por "model" recortado!!
-		
 		if ($this->schema == null){
 			return;
 		}	
-
-		//dd($this->schema, 'SCHEMA:');
 
 		$this->attributes = array_keys($this->schema['attr_types']);
 
@@ -165,17 +190,7 @@ class Model {
 			throw new \Exception("An attribute is invalid");
 		}
 		
-		/*
-		if ($this->schema['id_name'] == NULL){
-			if ($this->inSchema(['id'])){
-				$this->schema['id_name'] = 'id';
-			} else {
-				throw new \Exception("Undefined table identifier for '".$this->table_name. "' Use 'id' or \$id_name to specify another field name");
-			}
-		}			
-		*/
 
-	
 		if ($this->fillable == NULL){
 			$this->fillable = $this->attributes;
 			$this->unfill([
@@ -251,9 +266,49 @@ class Model {
 		$this->boot();
 	}
 
+	/*	
+		Returns table or its alias if exists for the referenced table
+	*/
+	function getTableAlias(){
+		if (isset($this->table_alias[$this->table_name])){
+			$tb_name = $this->table_alias[$this->table_name];
+		} else {
+			$tb_name = $this->table_name;
+		}
+
+		return $tb_name;
+	}
+
+	protected function getFullyQualifiedField(string $field){
+		if (!$this->should_qualify){
+			return $field;
+		}
+
+		if (!Strings::contains('.', $field)){
+			$tb_name = $this->getTableAlias();
+	
+			return "{$tb_name}.$field";
+		} else {
+			return $field;
+		}
+	}
+
+	protected function unqualifyField(string $field){
+		if (Strings::contains('.', $field)){
+			$_f = explode('.', $field);
+			return $_f[1];
+		}
+
+		return $field;
+	} 
 
 	function addRules(ValidationRules $vr){
 		$this->schema['rules'] = array_merge($this->schema['rules'], $vr->getRules());
+	}
+
+	function noValidation(){
+		$this->validator = [];
+		return $this;
 	}
 
 	/*
@@ -274,7 +329,6 @@ class Model {
 		$this->paginator = $status;
 		return $this;
 	}
-
 
 	function registerInputMutator(string $field, callable $fn, ?callable $apply_if_fn){
 		$this->input_mutators[$field] = [$fn, $apply_if_fn];
@@ -392,9 +446,17 @@ class Model {
 		return $this;
 	}
 
-	function setTableAlias($tb_alias){
-		$this->table_alias = $tb_alias;
+	function setTableAlias(string $tb_alias, ?string $table = null){
+		if ($table === null){
+			$table = $this->table_name;
+		}
+
+		$this->table_alias[$table] = $tb_alias;
 		return $this;
+	}
+
+	function alias(string $tb_alias, ?string $table = null){
+		return $this->setTableAlias($tb_alias, $table);
 	}
 
 	// debe remover cualquier condición que involucre a $this->deletedAt en el WHERE !!!!
@@ -413,7 +475,6 @@ class Model {
 		$this->soft_delete = $status;
 		return $this;
 	}
-	
 
 	/*
 		Don't execute the query
@@ -423,10 +484,38 @@ class Model {
 		return $this;
 	}
 
+	/*
+		Don't bind params
+	*/
+	function dontBind(){
+		$this->bind = false;
+		return $this;
+	}
+
+	function doBind(){
+		$this->bind = true;
+		return $this;
+	}
+
+	function setStrictModeHaving(bool $state){
+		$this->strict_mode_having = $state;
+		return $this;
+	}
+
+	function dontQualify(){
+		$this->should_qualify = false;
+		return $this;
+	}
+
+	function doQualify(){
+		$this->should_qualify = true;
+		return $this;
+	}
+
 	// set table and alias
 	function table(string $table, $table_alias = null){
-		$this->table_name = $table;
-		$this->table_alias = $table_alias;
+		$this->table_name          = $table;
+		$this->table_alias[$table] = $table_alias;
 		return $this;		
 	}
 
@@ -445,7 +534,7 @@ class Model {
 			$tb_name = DB::schema() . '.' . $tb_name;
 		}
 
-		$from = $this->table_alias != null ? $tb_name. ' as '.$this->table_alias : $tb_name.' ';  
+		$from = isset($this->table_alias[$this->table_name]) ? ($tb_name. ' as '.$this->table_alias[$this->table_name]) : $tb_name.' ';  
 		return $from;
 	}
 
@@ -535,7 +624,34 @@ class Model {
 	}
 
 	// INNER | LEFT | RIGTH JOIN
-	function join($table, $on1 = null, $op = '=', $on2 = null, string $type = 'INNER JOIN') {
+	function join($table, $on1 = null, $op = '=', $on2 = null, string $type = 'INNER JOIN')
+	{
+		$_table     = null;
+		$this_alias = null;
+
+		if (preg_match('/([a-z0-9_]+) as ([a-z0-9_]+)/i', $table, $matches)){
+			$_table     = $matches[0];
+			$table      = $matches[1];
+			$this_alias = $matches[2];
+		}
+
+		$on_replace = function(string &$on) use ($this_alias, $table)
+		{	
+			$_on = explode('.', $on);
+			
+			if (isset($this->table_alias[$this->table_name])){
+				if ($_on[0] ==  $this->table_name){
+					$on = $this->table_alias[$this->table_name] . '.' . $_on[1];
+				}
+			}
+
+			if (!is_null($this_alias)){
+				if ($_on[0] ==  $table){
+					$on = $this_alias . '.' . $_on[1];
+				}
+			}
+		};
+
 		// try auto-join
 		if ($on1 == null && $on2 == null){
 			if ($this->schema == NULL){
@@ -546,87 +662,130 @@ class Model {
 				throw new \Exception("Undefined relationships for table '{$this->table_name}'"); 
 			}
 
-			$rel = $this->schema['relationships'];
+			$rel   = $this->schema['relationships'];
+			$pivot = get_pivot([$this->table_name, $table], DB::getCurrentConnectionId());
 
-			if (!isset($rel[$table])){	
-				if (preg_match('/([a-zA-Z][a-zA-Z0-9]+) as ([a-zA-Z][a-zA-Z0-9]+)/', $table, $matches)){
-					$tb = $matches[1];
-					$fk = $matches[2];
+			// Si la relación no existe => podría ser N:M o no existir
+			if (!isset($rel[$table])){
+				// **
+				// Podría ser una relación N:M si hay pivote o...  1:1, 1:N
+
+				if (!is_null($pivot)){
+					// Relación N:M
+
+					$bridge = $pivot['bridge'];
+					$rels   = $pivot['relationships'];
+
+					$keys = array_keys($rels);
+
+					if ($keys[0] == $table){
+						$rels = array_reverse($rels);
+					}
+
+					foreach ($rels as $tb => $rel){
+						if ($tb == $table){
+							if (!is_null($_table)){
+								$t = $_table;
+							} else {
+								$t = $table;
+							}
+						} else {
+							$t = $bridge;
+						}
+
+						$on1 = $rel[0][0];
+						$on2 = $rel[0][1];
+
+						$on_replace($on1);
+						$on_replace($on2);
+
+						$this->join($t, $on1, '=', $on2, $type);							
+					}
+
+					return $this;
 
 				} else {
-					throw new \Exception("Undefined relationship \$rel" . '["' . $table . '"]');
+					// NUNCA DEBERÍA LLEGAR ACÁ PORQUE O ES N:M o NADA
+
+					// // OK, no es N:M
+					// $s = get_schema_name($table)::get();
+
+					// if (!isset($s['relationships']) || !isset($s['relationships'][$this->table_name])){
+					// 	throw new \Exception("Undefined relationship between '{$this->table_name}' and '$table'");
+					// }
+
+					// $sr = $s['relationships'][$this->table_name];
+					// list($on1, $on2) = $sr[0];
+
+					// $on_replace($on1);
+					// $on_replace($on2);
+
+					// if (!is_null($_table)){
+					// 	$table = $_table;
+					// }
+
+					// $this->joins[] = [$table, $on1, $op, $on2, $type];
+					// return $this;
+				}   
+						
+			} // else...
+
+		
+			$relx  = $this->schema['expanded_relationships'];
+			$relxs = $relx[$table];
+
+			//dd($rels, 'RELS'); ///
+
+			if (count($relxs) >= 2){
+				//dd("Relación multiple entre las mismas dos tablas"); //
+
+				foreach ($relxs as $r){
+					if(!isset($r[0]['alias'])){
+						$alias = '__' . $r[0][1];
+					} else {
+						$alias = $r[0]['alias'];
+					}					
+
+					$on1 = "{$alias}.{$r[0][1]}"; 
+					$on2 = "{$r[1][0]}.{$r[1][1]}";
+					
+					$ori_tb_name = $table;
+					$_table = "$ori_tb_name as $alias";
+					
+					// dd([
+					// 	'table' => $_table,
+					// 	'on1' => $on1,
+					// 	'on2' => $on2,
+					// 	'alias' => $alias
+					// ]);
+
+					$this->joins[] = [$_table, $on1, $op, $on2, $type];
 				}
 
-				if (!isset($rel[$tb])){
-					throw new \Exception("There is no explicit relationship between '{$this->table_name}' and '$tb'");
-				}				
-			}	
-			
-			if (!isset($fk)){
-				if (count($rel[$table][0]) != 2){
-					throw new \Exception("Unexpected number of arguments for relationship between {$this->table_name} and $table");
-				}
+				
+				return $this;
 
+			} else {
 				$on1 = $rel[$table][0][0];
 				$on2 = $rel[$table][0][1];
-
-				// Puede haber más de una relación entre dos tablas
-				$tb_alias = explode('|', $on1);
-                         
-				if (count($tb_alias) >2){
-					throw new \Exception("An Schema has a problem with a relationship");
-				}
-
-				if (count($tb_alias) == 2){
-					$_alias  = $tb_alias[1];
-					$on1     = $tb_alias[1];
-
-					$fa = explode('.', $_alias);
-					if (count($fa) != 2){
-						throw new \Exception("alias.FK was expected but not found");
-					}
-
-					$alias = $fa[0];					
-					$table = "$table as $alias";
-				} 
-
-				$tb_alias = explode('|', $on2);
-
-				if (count($tb_alias) >2){
-					throw new \Exception("An Schema has a problem with a relationship");
-				}
-
-                // Puede haber más de una relación entre dos tablas                    
-				if (count($tb_alias) == 2){
-					$_alias  = $tb_alias[1];
-					$on2     = $tb_alias[1];
-
-					$fa = explode('.', $_alias);
-					if (count($fa) != 2){
-						throw new \Exception("alias.FK was expected but not found");
-					}
-
-					$alias = $fa[0];					
-					$table = "$table as $alias";
-				}
-			} else {
-				
-				$found = false;
-				foreach ($rel[$tb] as $r){
-					if (Strings::startsWith($fk, $r[0])){
-						$found = true;
-						[$on1, $on2] = $r;
-						break;
-					}
-				}
-
-				if (!$found){
-					throw new \Exception("FK '$fk' in '$tb' not found!");
-				}
-			}			
+			}
+					
 		}
 
+
+		if (!is_null($_table)){
+			$table = $_table;
+		}
+
+		$on_replace($on1);
+		$on_replace($on2);
+
 		$this->joins[] = [$table, $on1, $op, $on2, $type];
+		return $this;
+	}
+
+	function joinRaw(string $str){
+		$this->join_raw[] = $str;
 		return $this;
 	}
 
@@ -640,13 +799,19 @@ class Model {
 		return $this;
 	}
 
+	/*
+		FULL (OUTER) JOIN puede ser emulado en MySQL
+
+		https://stackoverflow.com/questions/7978663/mysql-full-join/36001694
+	*/
+
 	function crossJoin($table) {
-		$this->join($table, null, null, null, 'CROSS JOIN');
+		$this->joins[] = [$table, null, null, null, 'CROSS JOIN'];
 		return $this;
 	}
 
 	function naturalJoin($table) {
-		$this->join($table, null, null, null, 'NATURAL JOIN');
+		$this->joins[] = [$table, null, null, null, 'NATURAL JOIN'];;
 		return $this;
 	}
 	
@@ -724,10 +889,19 @@ class Model {
 		if (substr_count($q, '?') != count((array) $vals))
 			throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
 		
-		$this->select_raw_q = $q;
+		if (empty($this->select_raw_q)){
+			$this->select_raw_q = $q;
 
-		if ($vals != null)
-			$this->select_raw_vals = $vals;
+			if ($vals != null){
+				$this->select_raw_vals = $vals;
+			}
+		} else {
+			$this->select_raw_q = "{$this->select_raw_q}, $q";
+
+			if ($vals != null){
+				$this->select_raw_vals = array_merge($this->select_raw_vals, $vals);
+			}
+		}
 
 		return $this;
 	}
@@ -780,19 +954,6 @@ class Model {
 		return $this->whereNotRegEx($field, $value);
 	}
 
-
-	function havingRaw(string $q, array $vals = null){
-		if (substr_count($q, '?') != count($vals))
-			throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
-		
-		$this->having_raw_q = $q;
-
-		if ($vals != null)
-			$this->having_raw_vals = $vals;
-			
-		return $this;
-	}
-
 	function distinct(array $fields = null){
 		if ($fields !=  null)
 			$this->fields = $fields;
@@ -822,6 +983,10 @@ class Model {
 
 	function toSql(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, bool $existance = false, $aggregate_func = null, $aggregate_field = null, $aggregate_field_alias = NULL)
 	{		
+		$this->aggregate_field_alias = $aggregate_field_alias;
+
+		// dd($this->table_name, "TABLE NAME ======================>");
+
 		if (!empty($fields))
 			$fields = array_merge($this->fields, $fields);
 		else
@@ -861,10 +1026,13 @@ class Model {
 					$remove[] = $this->deletedAt;
 
 				if (!empty($fields)){
-					$fields = array_diff($fields, $remove);
-				}else{
-					if (empty($aggregate_func))
-						$fields = array_diff($this->getAttr(), $remove);
+					//dd($fields, '$fields +');
+					//dd($aggregate_func, '$aggregate_func');
+					if (!empty($aggregate_func)){
+					 	$fields = array_diff($this->getAttr(), $remove);
+					} else {
+						$fields = array_diff($fields, $remove);
+					}
 				}
 			} 		
 
@@ -874,12 +1042,18 @@ class Model {
 				$limit  = $limit  ?? $this->limit  ?? null;
 				$offset = $offset ?? $this->offset ?? 0; 
 				
-				if($limit>0 || $order!=NULL){
+				if($limit>0 || $order!=NULL){					
 					try {
+						$qualified_order = [];
+						foreach ($order as $of => $o){
+							$fq = $this->getFullyQualifiedField($of);
+							$qualified_order[$fq] = $o;
+						}
+
 						$paginator = new Paginator();
 						$paginator->setLimit($limit);
 						$paginator->setOffset($offset);
-						$paginator->setOrders($order);
+						$paginator->setOrders($qualified_order);
 						$paginator->setAttr($this->attributes);
 						$paginator->compile();
 
@@ -894,55 +1068,63 @@ class Model {
 			} else {
 				$paginator = null;	
 			}	
+		}		
+	
+		$imp = function(array $fields){
+			if (!$this->should_qualify){
+				return implode(',', $fields);
+			}
 
-		}			
+			$ta = $this->getTableAlias();
 
+			$arr = array_map(function($f) use ($ta) {
+				return "$ta.$f";
+			}, $fields);
 
-		//dd($fields, 'FIELDS:');
-
+			return implode(',', $arr);
+		};
+	
 		if (!$existance){
+			if (!empty($fields)){
+				$_f_imp = $imp($fields);
+				$_f     = $_f_imp. ',';
+			}else
+				$_f = '';
+				
 			if ($aggregate_func != null){
 				if (strtoupper($aggregate_func) == 'COUNT'){					
 					if ($aggregate_field == null)
 						$aggregate_field = '*';
-
-					//dd($fields, 'FIELDS:');
-					//dd([$aggregate_field], 'AGGREGATE FIELD:');
-
-					if (!empty($fields))
-						$_f = implode(", ", $fields). ',';
-					else
-						$_f = '';
 
 					if ($this->distinct)
 						$q  = "SELECT $_f $aggregate_func(DISTINCT $aggregate_field)" . (!empty($aggregate_field_alias) ? " as $aggregate_field_alias" : '');
 					else
 						$q  = "SELECT $_f $aggregate_func($aggregate_field)" . (!empty($aggregate_field_alias) ? " as $aggregate_field_alias" : '');
 				}else{
-					if (!empty($fields))
-						$_f = implode(", ", $fields). ',';
-					else
-						$_f = '';
-
 					$q  = "SELECT $_f $aggregate_func($aggregate_field)" . (!empty($aggregate_field_alias) ? " as $aggregate_field_alias" : '');
 				}
 					
 			}else{
-				$q = 'SELECT ';
-
-				//dd($fields);
+				$sq = 'SELECT ';
 				
 				// SELECT RAW
 				if (!empty($this->select_raw_q)){
 					$distinct = ($this->distinct == true) ? 'DISTINCT' : '';
-					$other_fields = !empty($fields) ? ', '.implode(", ", $fields) : '';
-					$q  .= $distinct .' '.$this->select_raw_q. $other_fields;
+
+					// $other_fields = !empty($fields) ? ', '.$_f_imp : '';
+					// $q  .= $distinct .' '.$this->select_raw_q. $other_fields;
+				
+					$other_fields = !empty($fields) ? $_f_imp : '';
+					$q  = $other_fields;
+					$q .= (!empty(trim($q)) ? ',' : '') . $this->select_raw_q;
+
+					$q = "$sq $distinct $q";
 				}else {
 					if (empty($fields))
-						$q  .= '*';
+						$q  = $sq . '*';
 					else {
 						$distinct = ($this->distinct == true) ? 'DISTINCT' : '';
-						$q  .= $distinct.' '.implode(", ", $fields);
+						$q  = $sq . $distinct.' '.$_f_imp;
 					}
 				}					
 			}
@@ -957,9 +1139,6 @@ class Model {
 		$vars   = array_merge($this->w_vars, $this->h_vars); 
 		////////////////////////
 
-
-		//dd($vars, 'VARS:');
-		//dd($values, 'VALS:');
 
 		// Validación
 		if (!empty($this->validator)){
@@ -978,6 +1157,8 @@ class Model {
 				$joins .= " $j[4] $j[0] ON $j[1]$j[2]$j[3] ";
 			}
 		}
+
+		$joins .= ' ' . implode(' ', $this->join_raw);
 
 		$q  .= $joins;
 		
@@ -1002,8 +1183,9 @@ class Model {
 
 			$q  .= ' WHERE ' . $where_section;
 		}
-						
-		$group = (!empty($this->group)) ? 'GROUP BY '.implode(',', $this->group) : '';
+					
+
+		$group = (!empty($this->group)) ? 'GROUP BY '.  $imp($this->group) : '';
 		$q  .= " $group";
 
 	
@@ -1067,20 +1249,25 @@ class Model {
 		if ($existance)
 			$q .= ')';
 
-		
-		/*
-		$q = rtrim($q);
-		$q = String::rTrim('AND', $q);
-		$q = String::rTrim('OR',  $q);
-		*/
 
-		//dd($q, 'Query:');
-		//dd($vars, 'Vars:');
-		//dd($values, 'Vals:');
-		//var_dump($q);
-		//exit;
-		//var_export($vars);
-		//var_export($values);
+		if (isset($this->table_alias[$this->table_name])){
+			$tb_name = $this->table_alias[$this->table_name];
+		} else {
+			$tb_name = $this->table_name;
+		}
+
+		$q = preg_replace_callback('/ \.([a-z0-9_]+)/', function($matches) use ($tb_name) {
+			return ' '.$tb_name .'.'.  $matches[1]; 
+		}, $q);
+
+		$q = preg_replace_callback('/\(\.([a-z0-9_]+)/', function($matches) use ($tb_name){
+			return '(' . $tb_name .'.'.  $matches[1]; 
+		}, $q);
+
+
+		$q = str_replace('WHERE AND', 'WHERE', $q);
+		$q = str_replace('AND AND'  , 'AND',  $q);
+		
 		
 		$this->last_bindings = $this->getBindings();
 		$this->last_pre_compiled_query = $q;
@@ -1089,11 +1276,9 @@ class Model {
 		return $q;	
 	}
 
-	function whereFormedQuery(){
-		$where = '';
-		
-		if (!empty($this->where_raw_q))
-			$where = $this->where_raw_q.' ';
+	function whereFormedQuery()
+	{	
+		$where = $this->where_raw_q.' ';
 
 		if (!empty($this->where)){
 			$implode = '';
@@ -1110,20 +1295,25 @@ class Model {
 			$where = trim($where);
 
 			if (!empty($where)){
-				$where = "($where) AND ". $implode. ' '; // <-------------
+				$op = $this->where_group_op[0] ?? 'AND';
+				$where = "($where) $op ". $implode. ' '; // <-------------
 			}else{
 				$where = "$implode ";
 			}
-		}			
-
+		} 	
+		
 		$where = trim($where);
 		
 		if ($this->inSchema([$this->deletedAt])){
 			if (!$this->show_deleted){
+
+				$tb_name   = $this->getTableAlias();
+				$deletedAt = $this->should_qualify ? "{$tb_name}.{$this->deletedAt}" : $this->deletedAt;
+				
 				if (empty($where))
-					$where = "{$this->deletedAt} IS NULL";
+					$where = "$deletedAt IS NULL";
 				else
-					$where =  ($where[0]=='(' && $where[strlen($where)-1] ==')' ? $where :   "($where)" ) . " AND {$this->deletedAt} IS NULL";
+					$where =  ($where[0]=='(' && $where[strlen($where)-1] ==')' ? $where :   "($where)" ) . " AND $deletedAt IS NULL";
 
 			}
 		}
@@ -1158,9 +1348,18 @@ class Model {
 			}
 		}		
 
+		// acá viene la magia
+		$having = preg_replace_callback('/([a-z]+)\(([a-z0-9_]+)\)/i', function($matches){
+			$fn    = $matches[1];
+			$field = $matches[2];
+		
+			$field = $this->getFullyQualifiedField($field);
+			
+			return "$fn($field)";
+		}, $having);
+
 		return trim($having);
 	}
-
 
 	function getBindings()
 	{	
@@ -1205,6 +1404,10 @@ class Model {
 	*/
 	protected function bind(string $q)
 	{
+		if (!$this->bind){
+			return;
+		}
+
 		if ($this->conn == null){
 			$this->connect();
 		}
@@ -1243,6 +1446,10 @@ class Model {
 
 		///////////////////////////////////////////
 
+
+		if (!$this->exec){
+			return; //
+		}
 		
 		$st = $this->conn->prepare($q);			
 	
@@ -1290,6 +1497,10 @@ class Model {
 		return $this->last_pre_compiled_query;
 	}
 
+	function getLastBindingParamters(){
+		return $this->last_bindings;
+	}
+
 	private function _dd($pre_compiled_sql, $bindings){		
 		foreach($bindings as $ix => $val){			
 			if(is_null($val)){
@@ -1308,11 +1519,23 @@ class Model {
 		}
 
 		$sql = Arrays::str_replace_array('?', $bindings, $pre_compiled_sql);
-		return trim(preg_replace('!\s+!', ' ', $sql)).';';
+		$sql = trim(preg_replace('!\s+!', ' ', $sql));
+
+		if ($this->semicolon_ending){
+			$sql .= ';';
+		}
+
+		if ($this->sql_formatter_status){
+			$sql = static::sqlFormatter($sql);
+		}		
+
+		return $sql;
 	}
 
 	// Debug query
-	function dd(){
+	function dd(bool $sql_formater = false){
+		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formater;
+
 		if ($this->last_operation == 'create'){
 			return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
 		}
@@ -1321,13 +1544,10 @@ class Model {
 	}
 
 	// Debug last query
-	function dd2(){		
-		return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
-	}
+	function getLog(bool $sql_formater = false){		
+		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formater;
 
-	// Debug last query
-	function getLog(){
-		return $this->dd2();
+		return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
 	}
 
 	function getWhere(){
@@ -1389,7 +1609,7 @@ class Model {
 	function value($field){
 		$this->onReading();
 
-		$q = $this->toSql([$field], NULL, 1);
+		$q = $this->toSql([$field]);
 		$st = $this->bind($q);
 
 		$count = null;
@@ -1607,7 +1827,7 @@ class Model {
 	}
 
 
-	function when($precondition = null, callable $closure = null, callable $closure2 = null){
+	function when($precondition = null, ?callable $closure = null, ?callable $closure2 = null){
 		if (!empty($precondition)){			
 			call_user_func($closure, $this);	
 		} elseif ($closure2 != null){
@@ -1617,8 +1837,11 @@ class Model {
 		return $this;	
 	}
 
-	protected function _where($conditions = null, $group_op = 'AND', $conjunction = null)
+	protected function _where(?Array $conditions = null, string $group_op = 'AND', $conjunction = null)
 	{
+		//dd($group_op, 'group_op');
+		//dd($conjunction, 'conjuntion');
+
 		if (empty($conditions)){
 			return;
 		}
@@ -1638,20 +1861,23 @@ class Model {
 			if(is_array($conditions[Arrays::array_key_first($conditions)])){
 
 				foreach ($conditions as $ix => $cond) {
-					if ($cond[0] == null)
+					$unqualified_field = $this->unqualifyField($cond[0]);
+					$field = $this->getFullyQualifiedField($cond[0]);
+
+					if ($field == null)
 						throw new SqlException("Field can not be NULL");
 
 					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN']) ))
 					{						
-						if($this->schema['attr_types'][$cond[0]] == 'STR')	//
+						if($this->schema['attr_types'][$unqualified_field] == 'STR')	//
 							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);   
 						
 						$in_val = implode(', ', $cond[1]);
 						
 						$op = isset($cond[2]) ? $cond[2] : 'IN';
-						$_where[] = "$cond[0] $op ($in_val) ";	
+						$_where[] = "$field $op ($in_val) ";	
 					}else{
-						$vars[]   = $cond[0];
+						$vars[]   = $field;
 						$this->w_vals[] = $cond[1];
 
 						if ($cond[1] === NULL && (empty($cond[2]) || $cond[2]=='='))
@@ -1688,13 +1914,6 @@ class Model {
 		$this->where_group_op[] = $group_op;	
 
 		$this->where[] = ' ' .$ws_str;
-		////////////////////////////////////////////
-
-		//dd($this->where, '$this->where');
-		//dd($this->where_group_op, 'OPERATORS');
-		//exit;
-		//dd($this->w_vars, 'WHERE VARS');	
-		//dd($this->w_vals, 'WHERE VALS');	
 
 		return;
 	}
@@ -1716,6 +1935,9 @@ class Model {
 		if (!in_array($op, ['=', '>', '<', '<=', '>=', '!='])){
 			throw new \InvalidArgumentException("Invalid operator '$op'");
 		}	
+
+		$field1 = $this->getFullyQualifiedField($field1);
+		$field2 = $this->getFullyQualifiedField($field2);
 
 		$this->where_raw_q = "{$field1}{$op}{$field2}";
 		return $this;
@@ -1759,26 +1981,26 @@ class Model {
 	}
 
 	function find($id){
-		return $this->where([$this->schema['id_name'] => $id]);
+		return $this->where([$this->getFullyQualifiedField($this->schema['id_name']) => $id]);
 	}
 
 	function whereNull(string $field){
-		$this->where([$field, NULL]);
+		$this->where([$this->getFullyQualifiedField($field), NULL]);
 		return $this;
 	}
 
 	function whereNotNull(string $field){
-		$this->where([$field, NULL, 'IS NOT']);
+		$this->where([$this->getFullyQualifiedField($field), NULL, 'IS NOT']);
 		return $this;
 	}
 
 	function whereIn(string $field, array $vals){
-		$this->where([$field, $vals, 'IN']);
+		$this->where([$this->getFullyQualifiedField($field), $vals, 'IN']);
 		return $this;
 	}
 
 	function whereNotIn(string $field, array $vals){
-		$this->where([$field, $vals, 'NOT IN']);
+		$this->where([$this->getFullyQualifiedField($field), $vals, 'NOT IN']);
 		return $this;
 	}
 
@@ -1789,8 +2011,8 @@ class Model {
 		$min = min($vals[0],$vals[1]);
 		$max = max($vals[0],$vals[1]);
 
-		$this->where([$field, $min, '>=']);
-		$this->where([$field, $max, '<=']);
+		$this->where([$this->getFullyQualifiedField($field), $min, '>=']);
+		$this->where([$this->getFullyQualifiedField($field), $max, '<=']);
 		return $this;
 	}
 
@@ -1802,14 +2024,14 @@ class Model {
 		$max = max($vals[0],$vals[1]);
 
 		$this->where([
-						[$field, $min, '<'],
-						[$field, $max, '>']
+						[$this->getFullyQualifiedField($field), $min, '<'],
+						[$this->getFullyQualifiedField($field), $max, '>']
 		], 'OR');
 		return $this;
 	}
 
 	function oldest(){
-		$this->orderBy([$this->createdAt => 'ASC']);
+		$this->orderBy([$this->getFullyQualifiedField($this->createdAt) => 'ASC']);
 		return $this;
 	}
 
@@ -1819,7 +2041,7 @@ class Model {
 	}
 
 	function newest(){
-		$this->orderBy([$this->createdAt => 'DESC']);
+		$this->orderBy([$this->getFullyQualifiedField($this->createdAt) => 'DESC']);
 		return $this;
 	}
 	
@@ -1831,24 +2053,27 @@ class Model {
 
 		if ((count($conditions) == 3 || count($conditions) == 2) && !is_array($conditions[1]))
 			$conditions = [$conditions];
-	
-		//dd($conditions, 'COND:');
+
+		// dd($conditions, 'CONDITIONS');
 
 		$_having = [];
-		foreach ((array) $conditions as $cond) {		
-		
+		foreach ((array) $conditions as $cond)
+		{	
 			if (Arrays::is_assoc($cond)){
-				//dd($cond, 'COND PRE-CAMBIO');
 				$cond[0] = Arrays::array_key_first($cond);
 				$cond[1] = $cond[$cond[0]];
-
-				//dd([$cond[0], $cond[1]], 'COND POST-CAMBIO');
 			}
 			
+			if (in_array($cond[0], $this->getAttr())){
+				$dom = $this->getFullyQualifiedField($cond[0]);
+			} else {
+				$dom = $cond[0];
+			}			
+
 			$op = $cond[2] ?? '=';	
 			
-			$_having[] = "$cond[0] $op ?";
-			$this->h_vars[] = $cond[0];
+			$_having[] = "$dom $op ?";
+			$this->h_vars[] = $dom;
 			$this->h_vals[] = $cond[1];
 		}
 
@@ -1864,32 +2089,83 @@ class Model {
 		$this->having[] = ' ' .$ws_str;
 		////////////////////////////////////////////
 
-		//dd($this->having, 'HAVING:');
-		//dd($this->h_vars, 'VARS');
-		//dd($this->h_vals, 'VALUES');
+		// dd($this->having, 'HAVING:');
+		// dd($this->h_vars, 'VARS');
+		// dd($this->h_vals, 'VALUES');
 
 		return $this;
 	}
 
-	function having(array $conditions, $conjunction = 'AND'){
+	function havingRaw(string $q, array $vals = null, $conjunction = 'AND'){
+		if (substr_count($q, '?') != count($vals))
+			throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
+		
+		$this->having_raw_q = $q;
+
+		if ($vals != null)
+			$this->having_raw_vals = $vals;
+
+
+		////////////////////////////////////////////
+		// group
+
+		// No está implementado
+		////////////////////////////////////////////
+
+		// dd($this->having, 'HAVING:');
+		// dd($this->h_vars, 'VARS');
+		// dd($this->h_vals, 'VALUES');
+			
+		return $this;
+	}
+
+	function having(array $conditions, $conjunction = 'AND')
+	{	
+		if (Arrays::is_assoc($conditions)){
+            $conditions = Arrays::nonassoc($conditions);
+        }
+
+		if (!is_array($conditions[0])){
+			if (Strings::contains('(', $conditions[0])){
+				$op = $conditions[2] ?? '=';
+
+				$q = "{$conditions[0]} {$op} ?";
+				$v = $conditions[1];
+
+				if ($this->strict_mode_having){
+					throw new \Exception("Use havingRaw() instead for {$q}");
+				}
+
+				$this->havingRaw($q, [$v]);
+				return $this;
+			}
+		} 
+	
 		$this->_having($conditions, 'AND', $conjunction);
 		return $this;
 	}
 
 	/*
-		No admite eventos
+		No admite eventos. Depredicada.
+
+		El uso de esta función deberá ser reemplazado por DB::select()
 	*/
-	static function query(string $raw_sql, $fetch_mode = null){
+	static function query(string $raw_sql, $fetch_mode = \PDO::FETCH_ASSOC){
 		$conn = DB::getConnection();
 
-
 		$query = $conn->query($raw_sql);
+		DB::setRawSql($raw_sql);
 
 		if ($fetch_mode !== null){
+			if (is_string($fetch_mode)){
+				$fetch_mode = constant("\PDO::FETCH_{$fetch_mode}");
+			}
+
 			$query->setFetchMode($fetch_mode);
 		}
 
 		$output = $query->fetchAll();
+
 		return $output;
 	}
 
@@ -1923,9 +2199,6 @@ class Model {
 		$vars   = array_keys($data);
 		$vals = array_values($data);
 
-		
-		//var_dump($data); ///
-		//exit;
 
 		if(!empty($this->fillable) && is_array($this->fillable)){
 			foreach($vars as $var){
@@ -1998,14 +2271,12 @@ class Model {
 
 		///////////////////////////////////////////
 
+		if ($this->semicolon_ending){
+			$q .= ';';
+		}
 	
 		$st = $this->conn->prepare($q);
 
-
-		//var_export($q);
-		//var_export($vars);
-		//var_export($vals);
-		//exit;
 
 		foreach($vals as $ix => $val){		
 			if (is_array($val)){
@@ -2025,7 +2296,6 @@ class Model {
 				$type = \PDO::PARAM_STR;	
 
 			$st->bindValue($ix+1, $val, $type);
-			//echo "Bind: ".($ix+1)." - $val ($type)\n";
 		}
 
 		$this->last_bindings = $vals;
@@ -2051,7 +2321,7 @@ class Model {
 	 * @param  array $data (aditional fields in case of soft-delete)
 	 * @return mixed
 	 */
-	function delete(array $data = [])
+	function delete(bool $soft_delete = true, array $data = [])
 	{
 		if ($this->conn == null)
 			throw new SqlException('No conection');
@@ -2066,7 +2336,7 @@ class Model {
 
 		$this->onDeleting();
 
-		if ($this->soft_delete){
+		if ($this->soft_delete && $soft_delete){
 			if (isset($this->config)){
 				$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
 			} else {
@@ -2090,10 +2360,11 @@ class Model {
 		$where = implode(' AND ', $this->where);
 
 		$q = "DELETE FROM ". $this->from() . " WHERE " . $where;
-		//dd($q);
-		//exit;     ///////////////////
-
 		
+		if ($this->semicolon_ending){
+			$q .= ';';
+		}
+
 		$st = $this->bind($q);
 	 
 		$this->last_bindings = $this->getBindings();
@@ -2109,6 +2380,204 @@ class Model {
 		return $count;	
 	}
 
+
+	function insert(array $data, bool $at_once = false, bool $ignore_duplicates = true){
+		if (!Arrays::is_assoc($data)){
+			if (is_array($data[0])){	
+				// if ($at_once){
+				// 	return $this->insertMultiple($data);
+				// } 
+		
+				DB::beginTransaction();
+				try {
+					$ret = $this->create($data, $ignore_duplicates);
+					DB::commit();
+				} catch (\Exception $e){
+					response()->sendError("Error inserting data", 500, $this->from() . '-' .$e->getMessage());
+					DB::rollback();
+				}
+				
+				return $ret; 
+			} else {
+				throw new \InvalidArgumentException('Array of data should be associative');
+			}
+		} else {
+			DB::beginTransaction();
+			try {
+				$ret = $this->create($data, $ignore_duplicates);
+				DB::commit();
+
+				return $ret;
+			} catch (\Exception $e){
+				response()->sendError("Error inserting data", 500, $this->from() . '-' .$e->getMessage());
+				DB::rollback();
+			}
+		}
+	}
+
+	/*
+		Insert múltiple en un solo STATEMENT
+
+		Por corregir ***
+	*/
+	// function insertMultiple(array $data_arr, bool $hooks = true, bool $mutators = true)
+	// {
+	// 	if ($this->conn == null)
+	// 		throw new SqlException('No connection');
+
+	// 	$vals = [];		
+	// 	$vars = array_keys($data_arr[0]);
+
+	// 	$has_created_at =  $this->inSchema([$this->createdAt]) && !isset($vars[$this->createdAt]);
+	// 	if ($has_created_at){
+	// 		$at = datetime();
+	// 	}
+		
+	// 	foreach ($data_arr as $ix => $data){
+	// 		$this->data = $data;	
+			
+	// 		$data_arr[$ix] = $mutators ? $this->applyInputMutator($data, 'CREATE') : $data;
+			
+	// 		if (empty($vars)){
+	// 			$vars = array_keys($data);
+	// 		} else {
+	// 			$vars = array_unique(array_merge($vars, array_keys($data)));
+	// 		}
+
+	// 		$vals[$ix] = array_values($data_arr[$ix]);
+
+	// 		// Validación
+	// 		if (!empty($this->validator)){
+	// 			if(!empty($this->fillable) && is_array($this->fillable)){
+	// 				foreach($vars as $var){
+	// 					if (!in_array($var,$this->fillable))
+	// 						throw new \InvalidArgumentException("`{$this->table_name}`.`$var` is no fillable");
+	// 				}
+	// 			}
+
+	// 			$validado = $this->validator->validate($this->getRules(), $data);
+	// 			if ($validado !== true){
+	// 				throw new InvalidValidationException(json_encode($validado));
+	// 			} 
+	// 		}
+
+	// 		// Event hook
+	// 		if ($hooks){
+	// 			$this->onCreating($data);
+
+	// 			// Hook onCreating() can change $data
+	// 			$vars = array_keys($data);
+	// 			$vals = array_values($data);
+	// 		}
+
+	// 		if ($has_created_at){
+	// 			$vals[$ix][] = $at;
+	// 		}
+	// 	}		
+	
+	// 	if ($has_created_at){
+	// 		$vars[] = $this->createdAt;
+	// 	}
+
+	// 	$cnt = count($data_arr);
+	// 	for ($i=0; $i<$cnt; $i++){
+	// 		$sr = [];
+	// 		foreach ($vars as $ix => $var){
+	// 			$key = ":{$var}_{$i}_k_{$ix}";
+	// 			$symbols[] = $key;
+	// 			$sr[] = $key;
+	// 		}
+	// 		$str_vals[] = '('. implode(', ',$sr) . ')';
+	// 	}
+
+	// 	if (!isset($str_vars)){
+	// 		$str_vars = implode(',', $vars);
+	// 	}
+
+	// 	/*
+	// 		INSERT INTO `product_tags` (`id_tag`, `name`, `comment`, `product_id`) 
+			
+	// 		VALUES 
+	// 		(NULL, 'N99', 'C99', '137'), 
+	// 		(NULL, 'N100', 'C100', '138')
+	// 	*/	
+
+	// 	$q = "INSERT INTO " . $this->from() . " ($str_vars) VALUES ". implode(',', $str_vals);
+	// 	$st = $this->conn->prepare($q);
+		
+	// 	for ($i=0; $i<$cnt; $i++){
+	// 		$cnt_vals = count($vals[$i]);
+	// 		for ($ix=0; $ix<$cnt_vals; $ix++){	
+	// 			$val = $vals[$i][$ix];	
+
+	// 			if(is_null($val)){
+	// 				$type = \PDO::PARAM_NULL;
+	// 			}elseif(isset($vars[$ix]) && $this->schema != NULL && isset($this->schema['attr_types'][$vars[$ix]])){
+	// 				$const = $this->schema['attr_types'][$vars[$ix]];
+	// 				$type = constant("PDO::PARAM_{$const}");
+	// 			}elseif(is_int($val))
+	// 				$type = \PDO::PARAM_INT;
+	// 			elseif(is_bool($val))
+	// 				$type = \PDO::PARAM_BOOL;
+	// 			elseif(is_string($val))
+	// 				$type = \PDO::PARAM_STR;	
+
+	// 			$param = ":{$vars[$ix]}_{$i}_k_{$ix}";
+	// 			$variable =  $val;
+			
+	// 			dd([$param,  $variable, $type]);
+	// 			$st->bindParam($param, $variable, $type);
+	// 		}
+	// 	}
+
+	// 	//dd($q);
+
+	// 	$this->last_bindings = $vals;
+	// 	$this->last_pre_compiled_query = $q;
+	// 	$this->last_operation = 'create';
+
+	// 	if (!$this->exec){
+	// 		// Ejecuto igual el hook a fines de poder ver la query con dd()
+
+	// 		if ($hooks){
+	// 			$this->onCreated($data, null);
+	// 		}
+			
+	// 		return NULL;
+	// 	}	
+
+	// 	$result = $st->execute();
+		
+	// 	if (!isset($result)){
+	// 		return;
+	// 	}
+
+	// 	/*
+	// 		If you insert multiple rows using a single INSERT statement, LAST_INSERT_ID() returns the value generated 
+	// 		for the first inserted row only. 
+	// 		The reason for this is to make it possible to reproduce easily the same INSERT statement against some other server.
+	// 	*/
+
+	// 	if ($result){
+	// 		// sin schema no hay forma de saber la PRI Key. Intento con 'id' 
+	// 		$id_name = ($this->schema != NULL) ? $this->schema['id_name'] : 'id';		
+
+	// 		if (isset($data[$id_name])){
+	// 			$this->last_inserted_id =	$data[$id_name];
+	// 		} else {
+	// 			$this->last_inserted_id = $this->conn->lastInsertId();
+	// 		}
+
+	// 		if ($hooks){
+	// 			$this->onCreated($data, $this->last_inserted_id);
+	// 		}
+	// 	}else {
+	// 		$this->last_inserted_id = false;	
+	// 	}
+
+	// 	return $this->last_inserted_id;		
+	// }
+		
 
 	/*
 		@return mixed false | integer 
@@ -2141,15 +2610,15 @@ class Model {
 		$vars = array_keys($data);
 		$vals = array_values($data);
 
-		if(!empty($this->fillable) && is_array($this->fillable)){
-			foreach($vars as $var){
-				if (!in_array($var,$this->fillable))
-					throw new \InvalidArgumentException("$var is no fillable");
-			}
-		}
-
 		// Validación
 		if (!empty($this->validator)){
+			if(!empty($this->fillable) && is_array($this->fillable)){
+				foreach($vars as $var){
+					if (!in_array($var,$this->fillable))
+						throw new \InvalidArgumentException("`{$this->table_name}`.`$var` is no fillable");
+				}
+			}
+			
 			$validado = $this->validator->validate($this->getRules(), $data);
 			if ($validado !== true){
 				throw new InvalidValidationException(json_encode($validado));
@@ -2159,19 +2628,30 @@ class Model {
 		// Event hook
 		$this->onCreating($data);
 
-		$str_vars = implode(', ',$vars);
-
-		$symbols = array_map(function($v){ return '?';}, $vars);
-		$str_vals = implode(', ',$symbols);
-
-		if ($this->inSchema([$this->createdAt])){
+		// Hook onCreating() can change $data
+		$vars = array_keys($data);
+		$vals = array_values($data);
+	
+		if ($this->inSchema([$this->createdAt]) && !isset($vars[$this->createdAt])){
 			$at = datetime();
 
-			$str_vars .= ", {$this->createdAt}";
-			$str_vals .= ", '$at'";
+			$vars[] = $this->createdAt;
+			$vals[] = $at;
 		}
+		
+		$symbols  = array_map(function(string $e){
+			return ':'.$e;
+		}, $vars);
+
+		$str_vars = implode(', ',$vars);
+		$str_vals = implode(', ',$symbols);
 
 		$q = "INSERT INTO " . $this->from() . " ($str_vars) VALUES ($str_vals)";
+
+		if ($this->semicolon_ending){
+			$q .= ';';
+		}
+
 		$st = $this->conn->prepare($q);
 
 		foreach($vals as $ix => $val){			
@@ -2188,8 +2668,9 @@ class Model {
 				$type = \PDO::PARAM_STR;	
 
 			//dd($type, "TYPE for $val");	
+			//dd([$vals[$ix], $symbols[$ix], $type]);
 
-			$st->bindValue($ix+1, $val, $type);
+			$st->bindParam($symbols[$ix], $vals[$ix], $type);
 		}
 
 		$this->last_bindings = $vals;

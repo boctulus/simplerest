@@ -1,7 +1,7 @@
 <?php
 
 use simplerest\libs\Strings;
-use simplerest\libs\DB;
+use simplerest\libs\Config;
 use simplerest\core\Model;
 use simplerest\libs\Factory;
 
@@ -12,7 +12,7 @@ if (!function_exists('env')){
 }
 
 function config(){
-    return include CONFIG_PATH . '/config.php';
+    return Config::get();
 }
 
 

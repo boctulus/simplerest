@@ -8,18 +8,18 @@
 
     require __DIR__.'/../vendor/autoload.php';
 
-    $config = include __DIR__ . '/../config/config.php';
+    if (class_exists('Dotenv\\Dotenv')){
+        $class  = Dotenv\Dotenv::class;
+        $dotenv = $class::createImmutable(__DIR__ . '/..');
+        $dotenv->load();
+    }
 
-    $dotenv = Dotenv\Dotenv::createImmutable(ROOT_PATH);
-    $dotenv->load();
-
-
-    /* prevent XSS. */
+    /* Prevent XSS. */
     $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
     $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-
-    foreach (new \DirectoryIterator(HELPERS_PATH) as $fileInfo) {
+    /* Helpers */
+    foreach (new \DirectoryIterator(__DIR__ . '/../app/helpers') as $fileInfo) {
         if($fileInfo->isDot()) continue;
         
         $path = $fileInfo->getPathName();
@@ -27,7 +27,9 @@
         if(pathinfo($path, PATHINFO_EXTENSION) == 'php'){
             require_once $path;
         }
-    }   
+    }
+    
+    $config = include __DIR__ . '/../config/config.php';
             
     // i18n
     $req  = request(); 

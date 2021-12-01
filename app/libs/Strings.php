@@ -7,6 +7,46 @@ use simplerest\libs\Debug;
 class Strings 
 {	
 	/*
+		Apply tabs to some string
+	*/
+	static function tabulate(string $str, int $tabs, ?int $first = null, ?int $last = null){
+		$lines = explode(PHP_EOL, $str);
+
+		$cnt = count($lines);
+        foreach($lines as $ix => $line){
+			if ($first !== null && $ix == 0){
+				if ($first > 0){
+					$lines[$ix] = str_repeat("\t", $first) . $line;
+				}  else {
+					$lines[$ix] = substr($line, abs($first));
+				}
+				continue;
+			} 
+
+			if ($last !== null && $ix == $cnt-1){
+				if ($last < 0){
+					$lines[$ix] = substr($line, abs($last));
+				}  else {
+					$lines[$ix] = str_repeat("\t", $last) . $line;
+				}
+
+				continue;
+			}
+
+			if ($tabs < 0){
+				$lines[$ix] = substr($line, abs($tabs));
+			}  else {
+				$lines[$ix] = str_repeat("\t",$tabs) . $line;
+			}
+        }
+
+        $str = implode(PHP_EOL, $lines);
+
+		return $str;
+	}
+
+
+	/*
 		Returns $s1 - $s2
 	*/
 	static function substract(string $s1, string $s2){
@@ -24,6 +64,11 @@ class Strings
 		return substr($s1, $s2_len);
 	}
 
+	// alias
+	static function diff(string $s1, string $s2){
+		return static::substract($s1, $s2);
+	}
+
 	static function trimFromLastOcurrence(string $substr, string $str){
 		$pos = strrpos($str, $substr);
 
@@ -34,12 +79,19 @@ class Strings
 		return substr($str, 0, $pos);
 	}
 
-	static function match(string $str, $pattern, callable $fn = NULL){
+	/*
+		Returns NULL if fails
+	*/
+	static function match(string $str, $pattern, callable $fn = NULL, int $result_position = 1){
 		if (preg_match($pattern, $str, $matches)){
+			if (!isset($matches[$result_position])){
+				return;
+			}
+
 			if ($fn != NULL)
-				$matches[1] = call_user_func($fn, $matches[1]);
+				$matches[$result_position] = call_user_func($fn, $matches[$result_position]);
 			
-			return $matches[1];
+			return $matches[$result_position];
 		}
 	}
 
@@ -53,6 +105,16 @@ class Strings
 		}
 
 		throw new \Exception($error_msg);
+	}
+
+	static function ifMatch(string $str, $pattern, callable $fn_success, callable $fn_fail = NULL){
+		if (preg_match($pattern, $str, $matches)){
+			return call_user_func($fn_success, $matches);
+		} else if (is_callable($fn_fail)){
+			return call_user_func($fn_fail, $matches);
+		} else {
+			return $matches;
+		}
 	}
 
 	/*
@@ -151,6 +213,11 @@ class Strings
         return substr($text, -strlen($substr))===$substr;
     }
 
+	/*
+		Acomodar al órden de parámetros de PHP 8 con str_contains() 
+
+		y corregir dependencias claro.
+	*/
 	static function contains($substr, $text, $case_sensitive = true)
 	{
 		if (!$case_sensitive){
@@ -158,7 +225,7 @@ class Strings
 			$substr = strtolower($substr);
 		}
 
-		return (strpos($text, $substr) !== false);
+		return ($substr !== '' &&  mb_strpos($text, $substr) !== false);
 	}
 
 	static function containsAny(Array $substr, $text, $case_sensitive = true)
@@ -299,20 +366,50 @@ class Strings
 		@param int indice final
 		@return string el substr() de inicio a fin	
 	*/
-	static function middle($str,$ini,$fin=0){ // OK
-		// si se le pasa 0,0 devuelve el primer caracter  
-		// no es recomendable evitar el tercer parametro si se piensa que inicio puede ser cero
-		
-		if (($ini === 0) and ($fin === 0)){
-			return ($str[0]);
-		}else{  
-			if ($fin === 0){
-				$fin = strlen($str);
-			} 	
-			return substr ($str,$ini,$fin-$ini+1);
-		}  
+	static function middle(string $str, int $ini, ?int $end = null) : string {
+		if ($end == 0){
+			return substr($str, $ini);
+		} else {
+			$len = $end - $ini;
+			return substr($str, $ini, $len);
+		}
 	}
 
+	static function left(string $str, $to_pos){
+		return Strings::middle($str, 0, $to_pos);        
+	}
+
+	static function right(string $str, $from_pos){
+		return Strings::middle($str, $from_pos, 0);        
+	}
+
+	/*
+		Parse php class from file
+	*/
+	static function getClassName(string $file, bool $fully_qualified = true){
+		$pre_append = '';
+			
+		if ($fully_qualified){
+			$namespace = Strings::match($file, '/namespace[ ]{1,}([^;]+)/');
+			$namespace = trim($namespace);
+
+			if (!empty($namespace)){
+				$pre_append = "$namespace\\";
+			}
+		}	
+		
+		$class_name = $pre_append . Strings::matchOrFail($file, '/class ([a-z][a-z0-9_]+)/i');
+
+		return $class_name;
+	}
+
+	/*
+		Parse php class given the filename
+	*/
+	static function getClassNameByFileName(string $filename, bool $fully_qualified = true){
+		$file = file_get_contents($filename);
+		return self::getClassName($file, $fully_qualified);
+	}
 
     /**
 	 * Scretet_key generator
@@ -545,6 +642,31 @@ class Strings
 		return $ok;
 	}
         
+	static function removeDuplicateSlashes(string $path){
+		$path = trim($path);
+		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+	}
+
+	static function addTrailingSlash(string $path){
+		$path = trim($path);
+
+		if (!static::endsWith('/', $path) && !static::endsWith('\\', $path)){
+			return $path . DIRECTORY_SEPARATOR;
+		}
+
+		return $path;
+	}
+
+	static function removeTrailingSlash(string $path){
+		$path = trim($path);
+
+		if (static::endsWith('/', $path) || static::endsWith('\\', $path)){
+			return substr($path, 0, strlen($path)-1);
+		}
+		
+		return $path;
+	}
+
 }
 
 

@@ -9,6 +9,9 @@ Route::get('hello', function(){
 	return "Hellooooo";
 });
 
+Route::get('api/v1/cool',  'DumbAuthController@super_cool_action');
+
+
 /*
 	See routes.php.example
 */

@@ -6,10 +6,13 @@ use Exception;
 use simplerest\libs\Factory;
 use simplerest\core\Controller;
 use simplerest\libs\DB;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
 use simplerest\models\UsersModel;
 use simplerest\models\UserRolesModel;
 use simplerest\models\RolesModel;
 use simplerest\libs\Debug;
+use simplerest\libs\Strings;
 
 class FacebookController extends Controller
 {
@@ -23,10 +26,10 @@ class FacebookController extends Controller
     {
         parent::__construct();
 
-        $this->u_class           = get_user_model_name();               
-        $this->__email           = $this->u_class::$email;
-        $this->__username        = $this->u_class::$username;
-        $this->__password        = $this->u_class::$password;
+        $this->u_class    = get_user_model_name();               
+        $this->__email    = $this->u_class::$email;
+        $this->__username = $this->u_class::$username;
+        $this->__password = $this->u_class::$password;
 
         if (!session_id()) {
             session_start();
@@ -67,10 +70,10 @@ class FacebookController extends Controller
 		
 		try {
 			$access_token = $helper->getAccessToken();
-		} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		} catch(FacebookResponseException $e) {
 			// When Graph returns an error
 			Factory::response()->SendError('Graph returned an error: ' . $e->getMessage(), 400);
-		} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		} catch(FacebookSDKException $e) {
 			// When validation fails or other local issues
 			Factory::response()->SendError('Facebook SDK returned an error: ' . $e->getMessage(), 400);
 			exit;
@@ -82,10 +85,11 @@ class FacebookController extends Controller
 			
 			//print_r($obj->getGraphUser());
 
-            $fb_id = $me->getId();
-            $email = $me->getEmail();
-            $firstname  = $me->getFirstName();
-            $lastname = $me->getLastName();
+            $fb_id     = $me->getId();
+            $username  = $me->getName();
+            $email     = $me->getEmail();
+            $firstname = $me->getFirstName();
+            $lastname  = $me->getLastName();
 
             /*
 			var_dump($email);
@@ -107,7 +111,13 @@ class FacebookController extends Controller
                 { 
                     $roles = DB::table('user_roles')->where(['user_id' => $uid]);
 
-                    $_permissions = DB::table('user_tb_permissions')->assoc()->select(['tb', 'can_create as c', 'can_show as r', 'can_update as u', 'can_delete as d', 'can_list as l'])->where(['user_id' => $uid])->get();
+                    $_permissions = DB::table('user_tb_permissions')
+                    ->assoc()
+                    ->select([
+                        'tb', 'can_create as c', 'can_show as r', 'can_update as u', 'can_delete as d', 'can_list as l'
+                        ])
+                    ->where(['user_id' => $uid])
+                    ->get();
 
                     $perms = [];
                     foreach ($_permissions as $p){
@@ -118,23 +128,31 @@ class FacebookController extends Controller
                     $active = $user['active'];
 
                 }else{
-                    $data['email'] = $email;
+                    $data['email']     = $email;
                     $data['firstname'] = $firstname ?? NULL;
-                    $data['lastname'] = $lastname ?? NULL;
-                    
-                    ///
-                    preg_match('/[^@]+/', $payload['email'], $matches);
-                    $username = substr($matches[0], 0, 12);
+                    $data['lastname']  = $lastname ?? NULL;
             
-                    $existe = DB::table($this->users_table)->where(['username', $username])->exists();
+                    $exists = DB::table($this->users_table)
+                    ->where(['username', $username])
+                    ->exists();
+
+                    if ($exists){
+                        $username = Strings::match($email, '/[^@]+/');
+                    }
+
+                    $exists = DB::table($this->users_table)
+                    ->where(['username', $username])
+                    ->exists();
+
+                    // quizás deba validar la longitud contra el schema de UsersModel
                     
-                    if ($existe){
+                    if ($exists){
                         $_username = $username;
                         $append = 1;
 
-                        while($existe){
+                        while($exists){
                             $_username = $username . $append;
-                            $existe = DB::table($this->users_table)->where(['username', $_username])->exists();
+                            $exists = DB::table($this->users_table)->where(['username', $_username])->exists();
                             $append++;
                         }
 
@@ -146,7 +164,7 @@ class FacebookController extends Controller
                 
                     $uid = $u->create($data);
                     if (empty($uid))
-                        throw new Exception('Error in user registration!');
+                        throw new \Exception('Error in user registration!');
         
                     if ($u->inSchema(['belongs_to'])){
                         DB::table($this->users_table)

@@ -43,14 +43,4 @@ class Factory {
 
         return $instance;
 	}
-
-	static function config(){
-		static $instance;
-
-		if ($instance == null){
-			$instance = new Config();
-		}
-
-        return $instance;
-	}
 }

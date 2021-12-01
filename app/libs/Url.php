@@ -99,20 +99,62 @@ class Url {
     }
 
     /*
-        @author     Pablo Bozzolo   boctulus@gmail.com
+        @author  Pablo Bozzolo  <boctulus@gmail.com>
     */
-    static function consume_api(string $url, string $http_verb, Array $body = null, Array $headers = null, Array $options = null, $decode = true)
-    {   
-        $data = json_encode($body);
-    
-        $headers = array_merge(
-            [
-                'Content-Type' => 'application/json'
-            ], 
-            ($headers ?? [])
-        );
-    
+    static function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true)
+    {  
+        if ($headers === null){
+            $headers = [];
+        }
+
+        if ($options === null){
+            $options = [];
+        }
+
+        $keys = array_keys($headers);
+
+        $content_type_found = false;
+        foreach ($keys as $key){
+            if (strtolower($key) == 'content-type'){
+                $content_type_found = $key;
+                break;
+            }
+        }
+
+        $accept_found = false;
+        foreach ($keys as $key){
+            if (strtolower($key) == 'accept'){
+                $accept_found = $key;
+                break;
+            }
+        }
+
+        if (!$content_type_found){
+            $headers = array_merge(
+                [
+                    'Content-Type' => 'application/json'
+                ], 
+                ($headers ?? [])
+            );
+        } 
+        
+        
+        if ($accept_found) { 
+            if (Strings::startsWith('text/plain', $headers[$accept_found]) || 
+                Strings::startsWith('text/html', $headers[$accept_found])){
+                $decode = false;
+            }
+        }
+   
+        if (/* $headers[$content_type_found] == 'application/json' || */ is_array($body)){
+            $data = json_encode($body);
+        } else {
+            $data = $body;
+        }
+
         $curl = curl_init();
+
+        $http_verb = strtoupper($http_verb); 
     
         if ($http_verb != 'GET' && !empty($data)){
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
@@ -137,9 +179,12 @@ class Url {
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_verb);
-        curl_setopt($curl, CURLOPT_FAILONERROR, true );
-    
-    
+   
+        // https://stackoverflow.com/a/6364044/980631
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($curl, CURLOPT_HTTP200ALIASES, (array)400);    
+
+
         $response  = curl_exec($curl);
         $err_msg   = curl_error($curl);	
         $http_code = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);

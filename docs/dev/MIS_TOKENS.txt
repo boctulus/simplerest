@@ -1,0 +1,67 @@
+ROL DSI:
+
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzNzE3Njc5MCwiZXhwIjoxNjQ2MTc2NzkwLCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoiMTU3Iiwicm9sZXMiOlsiZHNpIl0sInBlcm1pc3Npb25zIjpbXSwiYWN0aXZlIjp0cnVlLCJkYl9hY2Nlc3MiOltdfQ.pTQUhMt7E_iayVvqjrzthb5oFn597gde6oL4oSjJur0
+
+
+ROL SUPERVISOR:
+
+{
+  "data": {
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzNDc4MzAwNywiZXhwIjoxNjQzNzgzMDA3LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJpbnNvbW5pYVwvMjAyMS41LjMiLCJ1aWQiOjExOSwicm9sZXMiOlsic3VwZXJ2aXNvciJdLCJwZXJtaXNzaW9ucyI6eyJ0YiI6W10sInNwIjpbXX0sImFjdGl2ZSI6MSwiZGJfYWNjZXNzIjpbImRiX2Zsb3IiLCJheiJdfQ.yDR56qcEjpdRsTsLSgH64YSyN9WdpjULwfD6p3KyzhU",
+    "token_type": "bearer",
+    "expires_in": 9000000,
+    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzNDc4MzAwNywiZXhwIjoxOTUwMTQzMDA3LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJpbnNvbW5pYVwvMjAyMS41LjMiLCJ1aWQiOjExOX0.tD5Y1Tb1GR2b9C30rDaNzjDylXszV-_kWbT7lxlAJDg",
+    "roles": [
+      "supervisor"
+    ],
+    "uid": 119,
+    "db_access": [
+      "db_flor",
+      "az"
+    ],
+    "info_empresas": [
+      {
+        "db_flor": "DSI"
+      }
+    ]
+  },
+  "status_code": 200,
+  "error": []
+}
+
+
+ROL ADMIN:
+
+
+{
+    "data": {
+        "uid": "159",
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzNzE5ODE5NSwiZXhwIjoxNjQ2MTk4MTk1LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoiMTU5Iiwicm9sZXMiOlsiYWRtaW4iXSwicGVybWlzc2lvbnMiOltdLCJhY3RpdmUiOnRydWUsImRiX2FjY2VzcyI6W119.F_CHSX0OB0VuFFOuDc950hRTHuVNzgOfpRtl1NbAaHo",
+        "token_type": "bearer",
+        "expires_in": 9000000,
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzNzE5ODE5NSwiZXhwIjoxOTUyNTU4MTk1LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoiMTU5In0.mcBFMJdNPtVARuDBqw6UvIpA4QtT0sK1POQ327QVaMY",
+        "roles": [
+            "admin"
+        ],
+        "db_access": []
+    },
+    "status_code": 200,
+    "error": []
+}
+
+
+{
+    "data": {
+        "uid": "160",
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzNzE5ODc3OSwiZXhwIjoxNjQ2MTk4Nzc5LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoiMTYwIiwicm9sZXMiOlsiYWRtaW4iXSwicGVybWlzc2lvbnMiOltdLCJhY3RpdmUiOnRydWUsImRiX2FjY2VzcyI6W119.eeUvdPyYsY2A6zVd1tTie1fRtx5ARoTEzth_Wp6BRxA",
+        "token_type": "bearer",
+        "expires_in": 9000000,
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzNzE5ODc3OSwiZXhwIjoxOTUyNTU4Nzc5LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOC40IiwidWlkIjoiMTYwIn0.SvELebtiAMAvI3Q81hfmuZl0-9TSk3eeAFo6xumNYeg",
+        "roles": [
+            "admin"
+        ],
+        "db_access": []
+    },
+    "status_code": 200,
+    "error": []
+}

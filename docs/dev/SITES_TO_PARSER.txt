@@ -1,0 +1,19 @@
+SITIOS Y APIS CON INFO DE NIÑOS PERDIDOS
+=======================================
+
+
+# Ecuador
+
+http://www.desaparecidosecuador.gob.ec/desaparecidos
+
+API: no
+
+
+# Alertas Amarillas de Interpol
+
+https://www.interpol.int/es/Como-trabajamos/Notificaciones/Ver-las-notificaciones-amarillas
+
+API:
+
+https://ws-public.interpol.int/notices/v1/yellow?&nationality=AR&ageMax=18
+

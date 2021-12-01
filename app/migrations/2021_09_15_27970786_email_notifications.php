@@ -20,7 +20,7 @@ class EmailNotifications implements IMigration
         DB::transaction(function(){
 
             Model::query("
-            CREATE TABLE `email_notifications` (
+            CREATE TABLE IF NOT EXISTS `email_notifications` (
                 `id` int(11) NOT NULL,
                 `from_addr` varchar(320) DEFAULT NULL,
                 `from_name` varchar(80) DEFAULT NULL,

@@ -61,7 +61,7 @@ class TrashCan extends MyApiController
     }
 
     function get($id = null) {
-        if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('read_all_trashcan', $this->roles)){
+        if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('read_all_trashcan')){
             Factory::response()->sendError("Forbidden", 403);
         }
 
@@ -81,7 +81,7 @@ class TrashCan extends MyApiController
 
     function modify($id = NULL, bool $put_mode = false)
     {
-        if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('write_all_trashcan', $this->roles)){
+        if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('write_all_trashcan')){
             Factory::response()->sendError("Forbidden", 403);
         }
 
@@ -111,7 +111,7 @@ class TrashCan extends MyApiController
 
 
     function delete($id = NULL) {
-        if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('write_all_trashcan', $this->roles)){
+        if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('write_all_trashcan')){
             Factory::response()->sendError("Forbidden", 403);
         }
 

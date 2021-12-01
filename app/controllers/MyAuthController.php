@@ -96,7 +96,6 @@ class MyAuthController extends AuthController {
             ]); 
 
             // **
-
         }
 
         /*
@@ -119,14 +118,14 @@ class MyAuthController extends AuthController {
         //dd(DB::getCurrentConnectionId(), 'CONN ID');
 
         $idtbu = DB::table('tbl_usuario')
-        ->fill(['est_intIdEstado'])
+        ->fill(['usu_bolEstadoUsuario'])
         ->create(
             [
                 'usu_intId' => $uid,
                 'usu_varNroIdentificacion' => $data['use_varUsuario'], // ???
                 'usu_varEmail' => $data['use_varEmail'],
                 //'usu_varPassword' => $data['use_decPassword'],
-                'est_intIdEstado' => $data['est_intIdEstado']
+                'usu_bolEstadoUsuario' => $data['est_intIdEstado']
                 // ..
             ]
         );

@@ -20,7 +20,7 @@ return [
 	# For a sub-foder in /var/www/html just set as
 	# BASE_URL' => /folder'
 	#
-	'BASE_URL' => '/',   
+	'BASE_URL' => '/simplerest-clone',   
 
 	'ROUTER' => true,
 	'FRONT_CONTROLLER' => true,
@@ -44,7 +44,7 @@ return [
 			'host'		=> env('DB_HOST', '127.0.0.1'),
 			'port'		=> env('DB_PORT'),
 			'driver' 	=> env('DB_CONNECTION'),
-			'db_name' 	=> env('DB_DATABASE'),
+			'db_name' 	=> env('DB_NAME'),
 			'user'		=> env('DB_USERNAME'), 
 			'pass'		=> env('DB_PASSWORD'),
 			'charset'	=> 'utf8',
@@ -115,7 +115,15 @@ return [
 		]
 	] */ , 	
 
-	'db_connection_default' => 'main', 
+	'db_connection_default' => 'main',
+
+    'tentant_groups' => [
+        'legion' => [
+            'db_[0-9]+',
+            'db_legion',
+            'db_flor'
+		]
+    ], 
 	
 	'DateTimeZone' => 'America/Bogota',
 
@@ -143,8 +151,10 @@ return [
 	/*
 		Restrictions can be aplied
 	*/
-	'restrict_by_ip'	=> true,
+	'restrict_by_ip'	=> false,
 	'restrict_by_user_agent' => false,
+	// solo deshabilitar en pruebas
+	'restrict_by_tenant' => false,      
 
 	'access_token' => [
 		'secret_key' 		=> env('TOKENS_ACCSS_SECRET_KEY'),
@@ -172,7 +182,7 @@ return [
 	/* 
 		Any role listed bellow if it is asked then will be auto-aproved.
 	*/
-	'auto_approval_roles' => ['admin', 'usuario', 'superadmin'],
+	'auto_approval_roles' => ['admin', 'usuario', 'supervisor'],
 
 	/*
 		If you need email confirmation then pre_activated should be false
