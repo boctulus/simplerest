@@ -50,7 +50,7 @@ class TblProveedorSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['ban_intIdBanco', 'ccb_intIdCategoriaCuentaBancaria', 'dpa_intIdDiasPago', 'est_intIdEstado', 'per_intIdPersona', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['ban_intIdBanco', 'ccb_intIdCategoriaCuentaBancaria', 'dpa_intIdDiasPago', 'est_intIdEstado', 'per_intIdPersona', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_banco' => [
@@ -69,8 +69,8 @@ class TblProveedorSchema implements ISchema
 					['tbl_persona.per_intId','tbl_proveedor.per_intIdPersona']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_proveedor.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_proveedor.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_proveedor.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_proveedor.usu_intIdActualizador']
 				],
 				'tbl_proveedor_informacion_tributaria' => [
 					['tbl_proveedor_informacion_tributaria.prv_intIdProveedor','tbl_proveedor.prv_intId']
@@ -166,12 +166,12 @@ class TblProveedorSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_proveedor',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -180,12 +180,12 @@ class TblProveedorSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_proveedor',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -224,8 +224,8 @@ class TblProveedorSchema implements ISchema
 					['tbl_persona.per_intId','tbl_proveedor.per_intIdPersona']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_proveedor.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_proveedor.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_proveedor.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_proveedor.usu_intIdActualizador']
 				]
 			],
 
@@ -318,12 +318,12 @@ class TblProveedorSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_proveedor',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -332,12 +332,12 @@ class TblProveedorSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_proveedor',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

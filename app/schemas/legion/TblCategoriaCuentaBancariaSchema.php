@@ -52,11 +52,11 @@ class TblCategoriaCuentaBancariaSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_categoria_cuenta_bancaria.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_categoria_cuenta_bancaria.usu_intIdCreador']
 				],
-				'tbl_cuenta_bancaria' => [
-					['tbl_cuenta_bancaria.ccb_intIdCategoriaCuentaBancaria','tbl_categoria_cuenta_bancaria.ccb_intId']
-				],
 				'tbl_proveedor' => [
 					['tbl_proveedor.ccb_intIdCategoriaCuentaBancaria','tbl_categoria_cuenta_bancaria.ccb_intId']
+				],
+				'tbl_cuenta_bancaria' => [
+					['tbl_cuenta_bancaria.ccb_intIdCategoriaCuentaBancaria','tbl_categoria_cuenta_bancaria.ccb_intId']
 				]
 			],
 
@@ -108,13 +108,13 @@ class TblCategoriaCuentaBancariaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cuenta_bancaria' => 
+				  'tbl_proveedor' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cuenta_bancaria',
+				        0 => 'tbl_proveedor',
 				        1 => 'ccb_intIdCategoriaCuentaBancaria',
 				      ),
 				      1 => 
@@ -124,13 +124,13 @@ class TblCategoriaCuentaBancariaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_proveedor' => 
+				  'tbl_cuenta_bancaria' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_proveedor',
+				        0 => 'tbl_cuenta_bancaria',
 				        1 => 'ccb_intIdCategoriaCuentaBancaria',
 				      ),
 				      1 => 

@@ -44,15 +44,15 @@ class TblRolSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado_rol', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado_rol', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_rol.est_intIdEstado_rol']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rol.usu_intIdCreador'],
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rol.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rol.usu_intIdCreador'],
 					['tbl_usuario.rol_intIdRol','tbl_rol.rol_intId']
 				],
 				'tbl_rol_permiso' => [
@@ -85,12 +85,12 @@ class TblRolSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_rol',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				    1 => 
@@ -99,12 +99,12 @@ class TblRolSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_rol',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    2 => 
@@ -144,8 +144,8 @@ class TblRolSchema implements ISchema
 					['tbl_estado.est_intId','tbl_rol.est_intIdEstado_rol']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rol.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rol.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rol.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rol.usu_intIdCreador']
 				]
 			],
 
@@ -174,12 +174,12 @@ class TblRolSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_rol',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				    1 => 
@@ -188,12 +188,12 @@ class TblRolSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_rol',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				  ),

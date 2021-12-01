@@ -5585,14 +5585,35 @@ class DumbController extends Controller
     }
 
     /*
-        Seguir testeando pero con CUIDADO !!!!!!!!!
+        OJO !!! es una prueba peligrosa !
     */
     function test_copy_with_backup(){
+        $ori = '/home/www/simplerest/some_update';
+        $dst = '/home/www/simplerest';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+
+        Files::setBackupDirectory(ROOT_PATH . 'backups');
+
+        Files::copy($ori, $dst, [
+            'app'
+        ], 
+        [
+            // except nothing
+        ]);
+
+    }
+
+    /*
+        $dst no está dentro de ROOT_PATH
+    */  
+    function test_copy_with_backup2(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
         // Antes de iniciar la prueba limpio el directorio destino
-        Files::delTree($dst);  /// OJO !!!
+        Files::delTree($dst);
 
         Files::setBackupDirectory(ROOT_PATH . 'backups');
 

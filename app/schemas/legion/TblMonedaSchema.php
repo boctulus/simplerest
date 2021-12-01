@@ -57,11 +57,11 @@ class TblMonedaSchema implements ISchema
 				'tbl_pais' => [
 					['tbl_pais.pai_intIdMoneda','tbl_moneda.mon_intId']
 				],
-				'tbl_sub_cuenta_contable' => [
-					['tbl_sub_cuenta_contable.mon_intIdMoneda','tbl_moneda.mon_intId']
-				],
 				'tbl_producto' => [
 					['tbl_producto.mon_intIdMoneda','tbl_moneda.mon_intId']
+				],
+				'tbl_sub_cuenta_contable' => [
+					['tbl_sub_cuenta_contable.mon_intIdMoneda','tbl_moneda.mon_intId']
 				]
 			],
 
@@ -129,13 +129,13 @@ class TblMonedaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_sub_cuenta_contable' => 
+				  'tbl_producto' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_sub_cuenta_contable',
+				        0 => 'tbl_producto',
 				        1 => 'mon_intIdMoneda',
 				      ),
 				      1 => 
@@ -145,13 +145,13 @@ class TblMonedaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_producto' => 
+				  'tbl_sub_cuenta_contable' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_producto',
+				        0 => 'tbl_sub_cuenta_contable',
 				        1 => 'mon_intIdMoneda',
 				      ),
 				      1 => 

@@ -89,24 +89,24 @@ class TblSubCuentaContableSchema implements ISchema
 				'tbl_iva_cuentacontable' => [
 					['tbl_iva_cuentacontable.ivc_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
 				],
-				'tbl_iva' => [
-					['tbl_iva.sub_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
-				],
 				'tbl_proveedor_informacion_tributaria' => [
 					['tbl_proveedor_informacion_tributaria.sub_intIdSubCuentaContable','tbl_sub_cuenta_contable.sub_intId']
-				],
-				'tbl_producto' => [
-					['tbl_producto.sub_intIdCuentaContableCompra','tbl_sub_cuenta_contable.sub_intId'],
-					['tbl_producto.sub_intIdCuentaContableVenta','tbl_sub_cuenta_contable.sub_intId']
 				],
 				'tbl_retencion_cuentacontable' => [
 					['tbl_retencion_cuentacontable.rec_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
 				],
-				'tbl_cliente_informacion_tributaria' => [
-					['tbl_cliente_informacion_tributaria.sub_intIdSubcuentacontable','tbl_sub_cuenta_contable.sub_intId']
+				'tbl_iva' => [
+					['tbl_iva.sub_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
 				],
 				'tbl_banco' => [
 					['tbl_banco.sub_intIdCuentaCxC','tbl_sub_cuenta_contable.sub_intId']
+				],
+				'tbl_cliente_informacion_tributaria' => [
+					['tbl_cliente_informacion_tributaria.sub_intIdSubcuentacontable','tbl_sub_cuenta_contable.sub_intId']
+				],
+				'tbl_producto' => [
+					['tbl_producto.sub_intIdCuentaContableCompra','tbl_sub_cuenta_contable.sub_intId'],
+					['tbl_producto.sub_intIdCuentaContableVenta','tbl_sub_cuenta_contable.sub_intId']
 				]
 			],
 
@@ -206,6 +206,38 @@ class TblSubCuentaContableSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'tbl_proveedor_informacion_tributaria' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_proveedor_informacion_tributaria',
+				        1 => 'sub_intIdSubCuentaContable',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_sub_cuenta_contable',
+				        1 => 'sub_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_retencion_cuentacontable' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_retencion_cuentacontable',
+				        1 => 'rec_intIdCuentaContable',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_sub_cuenta_contable',
+				        1 => 'sub_intId',
+				      ),
+				    ),
+				  ),
 				  'tbl_iva' => 
 				  array (
 				    0 => 
@@ -222,14 +254,30 @@ class TblSubCuentaContableSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_proveedor_informacion_tributaria' => 
+				  'tbl_banco' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
-				        1 => 'sub_intIdSubCuentaContable',
+				        0 => 'tbl_banco',
+				        1 => 'sub_intIdCuentaCxC',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_sub_cuenta_contable',
+				        1 => 'sub_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_cliente_informacion_tributaria' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_cliente_informacion_tributaria',
+				        1 => 'sub_intIdSubcuentacontable',
 				      ),
 				      1 => 
 				      array (
@@ -259,54 +307,6 @@ class TblSubCuentaContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_producto',
 				        1 => 'sub_intIdCuentaContableVenta',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_sub_cuenta_contable',
-				        1 => 'sub_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_retencion_cuentacontable' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_retencion_cuentacontable',
-				        1 => 'rec_intIdCuentaContable',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_sub_cuenta_contable',
-				        1 => 'sub_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_cliente_informacion_tributaria' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_cliente_informacion_tributaria',
-				        1 => 'sub_intIdSubcuentacontable',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_sub_cuenta_contable',
-				        1 => 'sub_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_banco' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_banco',
-				        1 => 'sub_intIdCuentaCxC',
 				      ),
 				      1 => 
 				      array (
