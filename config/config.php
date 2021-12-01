@@ -122,6 +122,9 @@ return [
             'db_[0-9]+',
             'db_legion',
             'db_flor'
+		],
+		'az' => [
+			'az'
 		]
     ], 
 	

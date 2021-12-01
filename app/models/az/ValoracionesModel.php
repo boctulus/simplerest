@@ -1,9 +1,10 @@
 <?php
 
-namespace simplerest\models;
+namespace simplerest\models\az;
 
+use simplerest\models\MyModel;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\ValoracionesSchema;
+use simplerest\schemas\az\ValoracionesSchema;
 
 class ValoracionesModel extends MyModel
 { 
@@ -11,7 +12,7 @@ class ValoracionesModel extends MyModel
 	protected $not_fillable = [];
 
 	function __construct(bool $connect = false){
-        parent::__construct($connect, new ValoracionesSchema());
+        parent::__construct($connect, ValoracionesSchema::class);
 	}	
 }
 

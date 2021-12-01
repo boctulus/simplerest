@@ -254,6 +254,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         }
 
         $model    = get_model_namespace() . $this->model_name;
+
         $instance = (new $model(true))->setFetchMode($fetch_mode);
         DB::setModelInstance($instance);
 
