@@ -25,7 +25,7 @@ interface IAcl {
 
     public function hasSpecialPermission(string $perm, Array $role_names);
 
-    public function hasResourcePermission(string $perm, Array $role_names, string $resource);
+    public function hasResourcePermission(string $perm, string $resource, Array $role_names = []);
     
     //public function isAllowed(string $op_type, Array $role_names, $resource);
 

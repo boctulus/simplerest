@@ -20,7 +20,7 @@ class Webhooks implements IMigration
         DB::transaction(function(){
 
             Model::query("
-            CREATE TABLE `webhooks` (
+            CREATE TABLE IF NOT EXISTS `webhooks` (
                 `id` int(11) NOT NULL,
                 `name` varchar(50) DEFAULT NULL,
                 `entity` varchar(50) NOT NULL,

@@ -20,32 +20,54 @@ class Migrations implements IMigration
         DB::beginTransaction();
         
         try {
-            Model::query("
-            CREATE TABLE `migrations` (
-                `id` int(11) NOT NULL,
-                `db` varchar(50) DEFAULT NULL,
-                `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-                `created_at` DATETIME NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-            ");
+            DB::disableForeignKeyConstraints();
 
-            Model::query("
-            ALTER TABLE `migrations`
-                ADD PRIMARY KEY (`id`);");
+            $driver = DB::driver();
 
-            Model::query("
-            ALTER TABLE `migrations`
-                MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");    
+            switch ($driver){
+                case 'sqlite':
+                    Model::query("
+                    CREATE TABLE IF NOT EXISTS migrations (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        db varchar(50) DEFAULT NULL,
+                        filename varchar(255) NOT NULL,
+                        created_at DATETIME NULL
+                    );");
+                    break;
 
+                case 'mysql':
+                    Model::query("
+                    CREATE TABLE IF NOT EXISTS `migrations` (
+                        `id` int(11) PRIMARY KEY NOT NULL,
+                        `db` varchar(50) DEFAULT NULL,
+                        `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                        `created_at` DATETIME NULL
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+                    ");
+
+                    Model::query("
+                    ALTER TABLE `migrations`
+                        MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");    
+
+                break;
+
+                default:
+                 throw new \InvalidArgumentException("Driver $driver is not fully supported for migrations");   
+            }
+
+            
             DB::commit(); 
     
         }catch(\Exception $e){
             try {
                 DB::rollback();
+                throw $e;
             } catch (\Exception $e){
                 dd($e->getMessage(), "Transacción error");
-                exit;
+                throw $e;
             }
+        } finally {
+            DB::enableForeignKeyConstraints();
         }	
     }
 }

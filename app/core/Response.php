@@ -9,7 +9,7 @@ use simplerest\libs\Strings;
 class Response
 {
     static protected $data;
-    static protected $is_encoded;
+    static protected $to_be_encoded;
     static protected $headers = []; 
     static protected $http_code = NULL;
     static protected $http_code_msg = '';
@@ -99,12 +99,12 @@ class Response
     }
 
     function encoded(){
-        self::$is_encoded = true;
+        self::$to_be_encoded = true;
         return static::getInstance();
     }
 
     function setPaginator(array $p){
-        self::$is_encoded = true; 
+        self::$to_be_encoded = true; 
         static::$paginator = $p;
         return static::getInstance();
     }
@@ -179,7 +179,7 @@ class Response
     function sendJson($data, int $http_code = NULL){
         $http_code = $http_code != NULL ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
         
-        self::$is_encoded = true; 
+        self::$to_be_encoded = true; 
 
         if (!headers_sent()) {
             header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
@@ -260,22 +260,24 @@ class Response
         https://tutsforweb.com/how-to-create-custom-404-page-laravel/
     */
     function flush(){
-        if (self::$is_encoded){
+        if (self::$to_be_encoded){
             static::$data = $this->encode(static::$data);
             header('Content-type:application/json;charset=utf-8');
         } else {
             $accept = request()->header('Accept');
 
             if (Strings::startsWith('application/json', $accept)){
-                self::$is_encoded = true;
+                self::$to_be_encoded = true;
 
                 static::$data = $this->encode(static::$data);
                 header('Content-type:application/json;charset=utf-8');
             }
         }
 
-        if (is_array(static::$data) && !self::$is_encoded){
-            if (php_sapi_name() != 'cli'){
+        $cli = (php_sapi_name() == 'cli');
+
+        if (isset(static::$data['error'])){            
+            if (!$cli){
                 view('error.php', [
                     'status'   => static::$http_code,
                     'type'     => static::$data['error']['type'],
@@ -288,12 +290,17 @@ class Response
                 $message = static::$data['error']['message'];
                 $type = static::$data['error']['type'] ?? '--';
                 $code = static::$data['error']['code'] ?? '--';
+                $detail = static::$data['error']['detail'] ?? '--';
 
-                echo "--| Error: \"$message\". Type: $type. Code: $code" . PHP_EOL. PHP_EOL;
+                echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -|Detail: $detail" .  PHP_EOL. PHP_EOL;
             }
             
         } else {
-            echo static::$data; 
+            if (is_array(static::$data) && !self::$to_be_encoded){
+                echo $this->encode(static::$data);
+            } else {
+                echo static::$data; 
+            }                            
         }
         
         exit;

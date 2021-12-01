@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace simplerest\core;
 
 use simplerest\libs\DB;
+use simplerest\libs\Strings;
 
 class Paginator
 {
@@ -41,7 +42,7 @@ class Paginator
                 
                 $field = filter_var($field, FILTER_SANITIZE_STRING);
 
-                if ((preg_match('/^[a-z0-9\-_]+$/i',$field) != 1)){
+                if ((preg_match('/^[a-z0-9\-_\.]+$/i',$field) != 1)){
                     throw new \InvalidArgumentException("Field '$field' is not a valid field");
                 }
 
@@ -50,10 +51,14 @@ class Paginator
                 }else
                     throw new \InvalidArgumentException("Order direction '$_order' is invalid. Order should be ASC or DESC!");   
 
-                    
-                if(!in_array($field,$this->attributes))
-                    throw new \InvalidArgumentException("property '$field' not found!");   
 
+                if (Strings::contains('.', $field)){
+                    list($tb, $_field) = explode('.', $field);
+                
+                    if(!in_array($_field, $this->attributes)){
+                        throw new \InvalidArgumentException("property '$field' not found!"); 
+                    }
+                }
                 
             }
             $query = substr($query,0,strlen($query)-2);

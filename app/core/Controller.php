@@ -3,10 +3,8 @@
 namespace simplerest\core;
 
 use simplerest\libs\DB;
-use simplerest\libs\Factory;
+use simplerest\libs\StdOut;
 use simplerest\traits\ExceptionHandler;
-
-use function GuzzleHttp\Psr7\copy_to_stream;
 
 abstract class Controller
 {
@@ -56,27 +54,4 @@ abstract class Controller
 
         view($view_path, $vars_to_be_passed, $layout);
     }
-
-    static function pprint($v){
-        if (self::$_printable){
-            if (is_array($v)){
-                print_r($v);
-            } else {
-                echo $v;
-            }
-        }
-    }
-
-    static function setPrintable(bool $printable){
-        self::$_printable = $printable;
-    }
-
-    static function hideResponse(){
-        self::setPrintable(false);
-    }
-
-    static function showResponse(){
-        self::setPrintable(true);
-    }
-
 }

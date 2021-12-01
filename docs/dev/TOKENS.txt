@@ -1,0 +1,121 @@
+{
+    "data": {
+        "uid": "512",
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTQwMjM5NSwiZXhwIjoxNjQwNDAyMzk1LCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6IjUxMiIsInJvbGVzIjpbInN1cGVyYWRtaW4iXSwicGVybWlzc2lvbnMiOltdLCJhY3RpdmUiOnRydWV9.YQRVkqoh6oGSpZbKHAil-3pLhou8DzTNyos7rrQKNq8",
+        "token_type": "bearer",
+        "expires_in": 9000000,
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTQwMjM5NSwiZXhwIjoxOTQ2NzYyMzk1LCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6IjUxMiJ9.-Arnx9nq3v8o6aJsWLDyGGelzSK20iDVObOQp1sWWl4",
+        "roles": [
+            "superadmin"
+        ]
+    },
+    "status_code": 200,
+    "error": "",
+    "error_detail": ""
+}
+
+--
+
+{
+		"username": "Juan Perez",
+		"email": "jperez@mail.com",
+		"password": "gogogo",
+        "roles": "consumidor"
+}	
+
+
+{
+    "data": {
+        "uid": "505",
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTMwMzEwOSwiZXhwIjoxNjQwMzAzMTA5LCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6IjUwNSIsInJvbGVzIjpbImNvbnN1bWlkb3IiXSwicGVybWlzc2lvbnMiOltdLCJhY3RpdmUiOnRydWV9.pVzA0UoZEY7a8CCZfAvleDVfsYzsOHjKFWOYGbHAn5c",
+        "token_type": "bearer",
+        "expires_in": 9000000,
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTMwMzEwOSwiZXhwIjoxOTQ2NjYzMTA5LCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6IjUwNSJ9.2DwCnqujWBmrswzA14BULIAD0IAUodUNHJv3TWHDnQk",
+        "roles": [
+            "consumidor"
+        ]
+    },
+    "status_code": 200,
+    "error": "",
+    "error_detail": ""
+}
+
+
+---
+
+{
+		"username": "Carolina X",
+		"email": "cx@yahoo.com",
+		"password": "gogogo",
+        "roles": "consumidor"
+}	
+
+
+{
+    "data": {
+        "uid": "508",
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTMwMzM0NSwiZXhwIjoxNjQwMzAzMzQ1LCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6IjUwOCIsInJvbGVzIjpbImNvbnN1bWlkb3IiXSwicGVybWlzc2lvbnMiOltdLCJhY3RpdmUiOnRydWV9.2lrjk3WCHqYeRgLEfywQFygTZlLrUDPjgqt5tAJ0J2o",
+        "token_type": "bearer",
+        "expires_in": 9000000,
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTMwMzM0NSwiZXhwIjoxOTQ2NjYzMzQ1LCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6IjUwOCJ9.AiU3sbacYY5DB-bqP4bH4dvhS4FMsknib_JywVyEKJg",
+        "roles": [
+            "consumidor"
+        ]
+    },
+    "status_code": 200,
+    "error": "",
+    "error_detail": ""
+}
+
+---
+
+
+{
+		"username": "Pablo Bozzolo",
+		"email": "pbz@mail.com",
+		"password": "gogogo",
+        "roles": "cliente"
+}	
+
+
+{
+    "data": {
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTMwMzI1MiwiZXhwIjoxNjQwMzAzMjUyLCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6NTA2LCJyb2xlcyI6WyJjbGllbnRlIl0sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiYWN0aXZlIjoxfQ.-a8c9IrOCZ8dHoQIVrCT2_IrjIY26u5i_mo6cGiVXc4",
+        "token_type": "bearer",
+        "expires_in": 9000000,
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTMwMzI1MiwiZXhwIjoxOTQ2NjYzMjUyLCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6NTA2fQ.3jZ8W7ZVEVTeUsJPTRIeVV2jYybkIbv6Y8v8-GxR7Sg",
+        "roles": [
+            "cliente"
+        ],
+        "uid": 506
+    },
+    "status_code": 200,
+    "error": "",
+    "error_detail": ""
+}
+
+
+----
+
+{
+		"username": "Jhon Fredy",
+		"email": "jfredy@mail.com",
+		"password": "1234",
+        "roles": "cliente"
+}	
+
+{
+    "data": {
+        "uid": "507",
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTMwMzE5MywiZXhwIjoxNjQwMzAzMTkzLCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6IjUwNyIsInJvbGVzIjpbImNsaWVudGUiXSwicGVybWlzc2lvbnMiOltdLCJhY3RpdmUiOnRydWV9.awXRbtupui_jbRTwb3GM6hQW3Tr_bgd46y3SQU8inNA",
+        "token_type": "bearer",
+        "expires_in": 9000000,
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMTMwMzE5MywiZXhwIjoxOTQ2NjYzMTkzLCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6IjUwNyJ9.Zc1qKVb1hvNl5E_IFTrruzx64HBpNxy6kVvAfMLPUEY",
+        "roles": [
+            "cliente"
+        ]
+    },
+    "status_code": 200,
+    "error": "",
+    "error_detail": ""
+}

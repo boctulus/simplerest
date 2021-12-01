@@ -5,7 +5,7 @@ namespace simplerest\core\api\v1;
 use simplerest\controllers\MyApiController; 
 use simplerest\core\interfaces\IAuth;
 use simplerest\libs\Factory;
-use simplerest\libs\Arrays;
+use simplerest\core\Acl;
 use simplerest\libs\DB;
 use simplerest\libs\Debug;
 use simplerest\libs\Url;
@@ -37,19 +37,19 @@ class MySelf extends MyApiController
     }
 
     function get($id = null){
-        $id = $this->uid;
+        $id = Acl::getCurrentUid();
         parent::get($id);
     } 
 
     function put($id = NULL)
     { 
-        $id = $this->uid;
+        $id = Acl::getCurrentUid();
         parent::put($id);
     } //
 
     function patch($id = NULL)
     { 
-        $id = $this->uid;
+        $id = Acl::getCurrentUid();
         parent::patch($id);
     } //
         
@@ -58,7 +58,7 @@ class MySelf extends MyApiController
     }
 
     function delete($id = null){
-        $id = $this->uid;
+        $id = Acl::getCurrentUid();
 
         $u = DB::table($this->model_table);
 

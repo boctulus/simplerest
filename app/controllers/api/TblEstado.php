@@ -8,7 +8,8 @@ class TblEstado extends MyApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [
-        "tbl_categoria_persona"
+        "tbl_categoria_persona",
+        'tbl_usuario'
 	];
 
     function __construct()

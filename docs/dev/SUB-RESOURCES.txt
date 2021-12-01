@@ -1,0 +1,291 @@
+SUB-RESOURCES
+
+/api/v1/users
+
+{
+    "data": [
+        {
+            "id": 1,
+            "username": "super",
+            "email": "boctu.l.us@gmail.com"
+        },
+        {
+            "id": 4,
+            "username": "pbozzolo",
+            "email": "pbozzolo@gmail.com"
+        },
+        {
+            "id": 5,
+            "username": "pepe",
+            "email": "pepe@gmail.com"
+        },
+        {
+            "id": 9,
+            "username": "dios",
+            "email": "dios@gmail.com"
+        },
+        {
+            "id": 11,
+            "username": "diosdado",
+            "email": "diosdado@gmail.com"
+        }
+    ],
+    "status_code": 200,
+    "error": "",
+    "error_detail": "",
+    "paginator": {
+        "total": 206,
+        "count": 5,
+        "currentPage": 1,
+        "totalPages": 42,
+        "pageSize": "5",
+        "nextUrl": "http://az.lan/api/v1/users?fields=id,username,email&pageSize=5&page=2"
+    }
+}
+
+/api/v1/user_roles
+
+{
+    "data": [
+        {
+            "id": 18,
+            "user_id": 1,
+            "role_id": 3
+        },
+        {
+            "id": 2,
+            "user_id": 1,
+            "role_id": 100
+        },
+        {
+            "id": 9,
+            "user_id": 4,
+            "role_id": 2
+        },
+        {
+            "id": 17,
+            "user_id": 4,
+            "role_id": 3
+        },
+        {
+            "id": 3,
+            "user_id": 4,
+            "role_id": 100
+        },
+        {
+            "id": 180,
+            "user_id": 5,
+            "role_id": 2
+        },
+        {
+            "id": 1,
+            "user_id": 5,
+            "role_id": 3
+        },
+        {
+            "id": 5,
+            "user_id": 9,
+            "role_id": 100
+        },
+        {
+            "id": 6,
+            "user_id": 11,
+            "role_id": 100
+        },
+        {
+            "id": 7,
+            "user_id": 13,
+            "role_id": 100
+        }
+    ],
+    "status_code": 200,
+    "error": "",
+    "error_detail": "",
+    "paginator": {
+        "total": 121,
+        "count": 10,
+        "currentPage": 1,
+        "totalPages": 13,
+        "pageSize": 10,
+        "nextUrl": "http://az.lan/api/v1/user_roles?fields=id,user_id,role_id&pageSize=10&page=2"
+    }
+}
+
+
+/api/v1/users <-- ahora incluyendo user_roles
+
+{
+    "data": [
+        {
+            "id": 1,
+            "username": "super",
+            "email": "boctu.l.us@gmail.com",
+            "user_roles":  {
+            	{
+		            "id": 18,
+		            "user_id": 1,
+		            "role_id": 3
+		        },
+		        {
+		            "id": 2,
+		            "user_id": 1,
+		            "role_id": 100
+		        }            
+        },
+        {
+            "id": 4,
+            "username": "pbozzolo",
+            "email": "pbozzolo@gmail.com",
+            "user_roles":  {
+		         {
+		            "id": 9,
+		            "user_id": 4,
+		            "role_id": 2
+		        },
+		        {
+		            "id": 17,
+		            "user_id": 4,
+		            "role_id": 3
+		        },
+		        {
+		            "id": 3,
+		            "user_id": 4,
+		            "role_id": 100
+		        }
+            }
+        },
+
+
+<-- se puede lograr con "complejidad O(1)" si hago un
+
+SELECT {campos} FROM user_roles WHERE user_roles.user_id IN({id de users de la consulta "principal"})
+
+
+Nota: no hago un JOIN
+
+
+
+[ Api Restful ] [ Sub-recursos ] 
+
+Digamos que tengo las tablas `users` y `books` (relación 1 a muchos) y que un usuario puede ser "author" o "editor" de un libro con lo que no existe una relación via FK entre esas dos tablas sino varias:
+
+
+[ users ]    [ books   ]
+
+id              id
+name          	name
+...             author_id *
+                editor_id *
+
+
+Cuando muestre los los books y de forma anidada los users.... 
+
+/books
+
+{
+	{
+		"id": 5
+		"name": "El Origen de las Especies"
+		"users.author":  {		<------------ notación "dot"
+			"id": 101,
+			"name": "Darwin"
+		},
+		"users.editor": {		<------------ notación "dot"
+			"id": 22,        
+			"name": "Planeta S.A."
+		}
+	},
+	{
+		"id": 7
+		"name": "..........
+		"users.author":  {		<------------ notación "dot"
+			"id": ...,
+			"name": ".."
+		},
+		"users.editor": {		<------------ notación "dot"
+			"id": ...,        
+			"name": "..."
+		}
+	}
+}
+
+	
+
+Así puedo diferenciar entre authores y editores de un libro !!!
+
+/books/5/users.editor
+
+{
+	"id": 22,        
+	"name": "Planeta S.A."	
+}
+
+<-- lo anterior debe ser equivalente a:
+
+/users/22
+
+{
+	"id": 22,        
+	"name": "Planeta S.A."	
+}
+
+
+Ahora veamos que pasa con una tabla intermedia (rel. N:M)
+
+
+[ users ]		[ book_users ]    		[ books   ]
+
+id              book_id *	   ----		id
+name   ----   	user_id	*				name
+...             user_type				...
+               	... 						
+
+
+Supongamos que el libro con id=5 fue editado por "Planeta S.A." 
+y tiene dos autores ("Darwin", "Brown")
+
+
+/books/5/users
+
+{
+	{
+		"id": 22,        
+		"name": "Planeta S.A.",	
+		"user_type": "editor"     <--- campos de la tabla intermedia
+		...
+	},
+	{
+		"id": 101,
+		"name": "Darwin",
+		"user_type": "author"
+	},
+	{
+		"id": 205,
+		"name": "Brown",
+		"user_type": "author"
+	}
+}
+
+
+Por debajo haría un par de INNER JOINs:
+
+	SELECT *.users, *.book_users -excluyendo las fk-
+	FROM users WHERE {where}
+	INNER JOIN book_users ON users.id = book_users.user_id 
+	INNER JOIN books ON book_users.book_id = books.id
+
+Quizás haciendo algún "auto-join" sin especificar los ON y asumiendo es "=" el operador
+
+	DB::table('users')
+	->join('book_users')
+	->join('books')
+	->get()
+
+Inclusive hacer un join de muchos a muchos haciendo "implícita" la tabla intermedia:
+
+	DB::table('users')
+	//->join('book_users')     <--- no haría falta (basado en convenciones o relaciones en los modelos)
+	->join('books')
+	->get()
+
+

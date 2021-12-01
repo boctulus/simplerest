@@ -7,11 +7,10 @@ use simplerest\libs\Factory;
 use simplerest\libs\DB;
 use simplerest\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\libs\Debug;
+use simplerest\core\Acl;
 
 class UserTbPermissions extends MyApiController
-{ 
-    
+{   
     //protected $model_name  = 'UserTbPermissionsModel';
     //protected $table_name = 'user_tb_permissions';
 
@@ -40,7 +39,7 @@ class UserTbPermissions extends MyApiController
             $instance->setConn($conn);
 
             if ($instance->inSchema(['created_by'])){
-                $data['created_by'] = $this->uid;
+                $data['created_by'] = Acl::getCurrentUid();
             }
 
             $validado = (new Validator)->validate($instance->getRules(), $data);
@@ -49,13 +48,15 @@ class UserTbPermissions extends MyApiController
             }  
 
             DB::transaction(function() use($data, $instance){                
-                $ok = DB::table('user_tb_permissions')->where(['tb' => $data['tb'], 'user_id' => $data['user_id']])->delete(false);
+                $ok = DB::table('user_tb_permissions')
+                ->where(['tb' => $data['tb'], 'user_id' => $data['user_id']])
+                ->delete(false);
 
-                $instance->create($data);
+                $id = $instance->create($data);
+
+                Factory::response()->send(['id' => $id], 201);
             });
-            
-            Factory::response()->send(['id' => $instance->id], 201);
-           
+        
 
         } catch (InvalidValidationException $e) { 
             Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));

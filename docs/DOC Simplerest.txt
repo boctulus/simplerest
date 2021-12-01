@@ -16,12 +16,25 @@ Algunas características:
 - Versionado
 - Internacionalización
 - Query Builder
+- UUIDs
 - Migrations (en progreso)
 - Multitenant support
 - Service Providers
 - Validator y auto-validaciones en los modelos
 - WebHooks
 - Sub-recursos
+- Utilidad para consumo de APIs
+- Perfilador del código (tiempos de ejecución)
+
+Cómo "índice" para buscar documentación puede buscar por las características enumeradas previamente más las siguientes referencias:
+
+- Requerimientos
+- Instalación
+- Variables de entorno
+- Componentes del core
+- La clase DB
+- Procedimientos almacenados
+- El helper db
 
 
 (*) A pesar de ser un framework orientado a API Rest es posible servir vistas aunque no posee un motor de plantillas. Es posible que esta característica sea removida en futuras versiones.
@@ -80,7 +93,7 @@ Hay varios archivos por configurar y hay que correr un script de instalación.
 Vea archivo adjunto sobre Instalación para más información.
 
 
-# Archivo config.php
+### Archivo config.php
 
 Hay varios archivos de configuración del framework en /config del cual el config.php es el principal.
 
@@ -90,23 +103,77 @@ Además, se puede cargar la configuración de varias formas:
 
 	- Con el helper config()
 
-	- Desde la clase Factory como Factory::config()
+	- Desde la clase Factory como config()
 
 Incluir el archivo config.php directamente no es recomendado porque no estará cacheado y degradará la performance.
 
 
-Conceptos avanzados:
+# Configuración de "tenant groups"
 
-En el config.php se pueden usar variables de entorno pero no desde archivos incluidos desde el config.php
+Si se tienen varias bases de datos se deben configurar los "tentant_groups" en el archivo config.php
 
-Si se intentara hacer uso de clases que requieren directa o indirectamente del archivo config.php se crearía una "referencia circular" que agotará la memoria. Así por ejemplo si Ud. requiriera usar el modelo para acceder a la DB, debería hacer algo como:
+La implementación de "tenant groups" permite en principio separar schemas y modelos de distintas bases de datos y agrupar los que se se supone son de bases de datos con igual estructura.
 
-	// No hacer uso de las variables de entorno con env()
+Ej:
 
-	$dbname = 'nombre_db';
-    $user = 'boctulus';
-    $pass = 'xxxxxxxxxxxxxxx';
-    $dsn  =  "mysql:dbname=$dbname;host=127.0.0.1";
+	'tentant_groups' => [
+		'legion' => [
+		  'db_[0-9]+',
+		  'db_legion',
+		  'db_flor'
+		],
+		'az' => [
+		  'az'
+		],
+	],
+
+Es recomendado definir grupos de multitenencia aunque se tenga bases de datos que no constituyan "clusters" para que los schemas queden organizados en carpetas distintas dentro de app/models/schemas y no se mezclen.
+
+Además, si llegaran a existir dos tablas en dos bases de datos distintas con el mismo nombre no habrá problemas.
+
+Se pueden definir varios patrones de nombres para un mismo grupo que en si son expresiones regulares de PHP. El órden en que se definan puede alterar el resultado de la clasificación de haber superposición de patrones.
+
+Ej:
+
+Lo siguiente define dos grupos
+
+	'tentant_groups' => [
+		'db_az' => [
+			'db_az'
+		],
+		'legion' => [
+			'db_[a-z0-9]+',
+			'db_legion',
+			'db_flor'
+		]		
+	],
+
+Pero... lo siguiente define dos pero clasificará todo en el primero pues la primera expresión regular contiene a "db_az"  
+
+	'tentant_groups' => [
+		'legion' => [
+			'db_[a-z0-9]+',
+			'db_legion',
+			'db_flor'
+		],
+		'db_az' => [
+			'db_az'
+		],
+	],
+
+
+# Variables de entorno
+
+Se ofrece la clase Env con la finalidad de poder acceder a variables de entorno (del archivo .env) como alternativa al paquete Dotenv
+
+Ej:
+
+	// Usando Env::get()
+
+	$dbname = Env::get('DB_NAME);
+    $user   = Env::get('DB_USERNAME');
+    $pass   = Env::get('DB_PASSWORD');
+    $dsn    = "mysql:dbname=$dbname;host=127.0.0.1";
 
 	// Crear la conexión manualmente 
 	
@@ -115,22 +182,6 @@ Si se intentara hacer uso de clases que requieren directa o indirectamente del a
     } catch (PDOException $e) {
         throw new \Exception('DB connection fails: ' . $e->getMessage());
     }
-
-	// Especificarle al modelo que cree en automático la conexión ni que utilice el archivo config.php 
-
-    $m = (new Model(false, null, false))
-
-	// Usar la conexión previamente creada de forma "manual"
-
-    ->setConn($conn);
-
-	// Hacer uso normal de la clase Model
-    
-    $rows = $m->table('mi_tabla')
-    ->get();
-
-
-	En realidad en este caso también habría que controlar que no se creen demasiadas conexiones a la base de datos manejando una variable estática para almacenar la conexion.
 
 
 # Configuración de endpoints
@@ -492,25 +543,25 @@ Para usar la utilería Config debe hacerse a través de Factory para acceder a l
 
 # Obtener instancia única:
 
-	Factory::config()
+	config()
 
 
 # Introducir y leer datos (de forma no-persistente)
 
 Se puede escribir mediante el método set() y leer con get() o bien acceder como array ya que se implementa la interfaz ArrayAccess:
 
-	Factory::config()['xxx'] = 'zzz';
-    dd(Factory::config()['xxx']);  // 'zzz'
+	config()['xxx'] = 'zzz';
+    dd(config()['xxx']);  // 'zzz'
 
 o
 	
-	Factory::config()->set('xxx','zzz');
-	dd(Factory::config()->get('xxx'));  // 'zzz' 
+	config()->set('xxx','zzz');
+	dd(config()->get('xxx'));  // 'zzz' 
 
 o
 
-	Factory::config()->set('xxx','zzz');
-	dd(Factory::config()['xxx']);  // 'zzz'   
+	config()->set('xxx','zzz');
+	dd(config()['xxx']);  // 'zzz'   
 
 
 ### Autenticación
@@ -742,7 +793,8 @@ a) Instanciando directamente Model en cuyo caso *no* dispondríamos de un schema
 	Desventaja:
 
 	- Verboso
-	- En principio no se dispone del Schema sin lo cual no es posible hacer validaciones contra el mismo. 
+	- En principio no se dispone del Schema sin lo cual no es posible hacer validaciones contra el mismo.
+	- No funcionan de forma automática los campos UUID
 
 b) Instanciando una clase Model derivada
 
@@ -774,6 +826,7 @@ c) Usando la clase DB para obtener la instancia
 	Desventajas:
 
 	- Obtiene una conexión a la base de datos aún antes de hacer cualquier tipo de validación.
+	- Es un poco más lenta 
 
 Es de destacar que podría darse el caso de que sea Ud. necesite acceder a la base de datos desde el archivo config.php pero si se hiciera DB::table('xxx') se generaría una referencia circular porque se incluiría nuevamente el archivo config.php
 
@@ -812,7 +865,7 @@ El método create() acepta un array asociativo de campos con sus valores y hace 
 
 # Insert múltiple
 
-Se pueden insertar varios registros de forma simultánea y se devolverá también el ID del último registro insertando.
+Se puede enviar a  insertar varios registros de forma simultánea y se devolverá también el ID del último registro insertando si se hace de la siguiente forma:
 
 Ej:
 
@@ -842,6 +895,45 @@ Ej:
 	$last_id = DB::table('product_tags')
 	->create($data);
 
+Cabe aclarar que el con el método create() se hace un INSERT INTO detrás de otro y no se envian juntas las rows la base de datos.  
+
+Si se desea enviar todas las rows de una vez a la DB se puede hacer con insert()
+
+Ej:
+
+	$data = [
+		array (
+			'name' => 'N1',
+			'comment' => 'P1',
+			'product_id' => 100
+		),
+
+		array (
+			'name' => 'N2',
+			'comment' => 'P2',
+			'product_id' => 103
+		),
+
+		array (
+			'name' => 'N3',
+			'comment' => 'P3',
+			'product_id' => 105
+		),
+
+		array (
+			'name' => 'N4',
+			'comment' => '',
+			'product_id' => 105
+		)
+	];
+
+	/*
+		id del primer registro insertado en bloque
+	*/
+
+	$id = DB::table('product_tags')
+	->insert($data);
+
 
 # Obtención de registros
 
@@ -856,12 +948,58 @@ Para filtrar usar where()
 	->where(['size' => '2L'])
 	->get();
 
-Comparar dos campos en el WHERE
+También es válido usar el método where() con un array (campo, valor)
+
+	$rows = DB::table('products')
+	->where(['size', '2L'])
+	->get();
+
+Si bien el método where() admite userse de dos ambas dos formas no es aconsejable combinarlas:
+
+	// ok
+	$rows = DB::table('products')
+	->where(['size', '2L'])
+	->where(['cost', 100])
+	->get();
+
+	// ok
+	$rows = DB::table('products')
+	->where(['size' => '2L'])
+	->where(['cost' => 100])
+	->get();
+
+	// No se recomienda (!)
+	$rows = DB::table('products')
+	->where(['size' => '2L'])
+	->where(['cost', 100])
+	->get();
+
+La última forma es funcional pero podría fallar en algún caso.
+
+
+# Comparar dos campos en el WHERE
 
 	$m = (DB::table('users'))
 	->whereColumn('firstname', 'lastname', '=');  
 
 	dd($m->get()); 
+
+
+# Forma básica de debugueo de queries
+
+Siempre que se use el método DB::table() será posible debuguear la última query de la siguiente manera:
+
+    dd(DB::getLog());
+
+Ejemplo:
+
+	$rows = (DB::table('users'))
+	->whereColumn('firstname', 'lastname', '=')
+	->get();  
+
+	dd(DB::getLog()));
+
+Hay otras formas de debugueo de consultas que se pueden encontrar más adelante en este manual.
 
 
 # Ocultar y des-ocultar campos
@@ -921,7 +1059,7 @@ Igualmente hay métodos para programáticamente hacer rellenables o no-rellenabl
     
 
 
-Borrado "suave"
+# Borrado "suave"
 
 Si una tabla y su schema dispone de un campo "deleted_at" de tipo DATETIME, al hacer un delete() el registro no es borrado fisicamente sino solo se oculta de los resultados:
 
@@ -958,40 +1096,37 @@ El operador puede ser =, >, <, >= o <=
 
 Ej:
 
-	$m = DB::table('products')
-    ->join('products_product_categories', 'products.id', '=',  'products_product_categories.product_id')
-    ->join('product_comments', 'products.id', '=', 'product_comments.product_id');
+	$m = DB::table('users')
+	->join('user_sp_permissions', 'users.id', '=',  'user_sp_permissions.user_id')
+	->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
 
-    dd($m->get());  
+	->select(['sp_permissions.name as perm', 'username', 'active']);
+
+	dd($m->get()); 
+	dd($m->dd()); 
      
 
 Los joins pueden simplificarse como auto-joins de haber un schema para el modelo:
 
-	$m = DB::table('products')
-    ->join('products_product_categories')
-    ->join('product_comments');
+	$m = DB::table('users')
+	//->join('user_sp_permissions');
+	->join('sp_permissions');
 
-    dd($m->get()); 
+	$m->select(['sp_permissions.name as perm', 'username', 'active']);
 
-En el caso de que se desee unir a una tabla con otra mediante más de una FK se haría así:
+	dd($m->get()); 
+	dd($m->dd()); 
 
-	$m = DB::table('books')
-	->join('book_reviews', 'book_reviews.book_id', '=',  'books.id')
-	->join('users as authors', 'authors.id', '=', 'books.author_id')
-	->join('users as editors', 'editors.id', '=', 'books.editor_id');
+Es importante notar que *no* debe hacerse el JOIN() *explícito* con la tabla puente y la table relacionada
+por esta porque en tal caso la relación con la tabla puente quedaría duplicada. Si se incluyera 
+se generaría para el caso de MySQL un error como
 
+	SQLSTATE[42000]: Syntax error or access violation: 1066 Not unique table/alias: 'user_sp_permissions'
 
-Y escrito como auto-joins:
-
-	$m = DB::table('books')
-    ->join('book_reviews')
-    ->join('users as authors')
-    ->join('users as editors');
-
-    dd($m->get()); 
+Si hay una tabla puente, la relación debe hacerse con la table del otro lado del puente y no incluir a la tabla puente en cuestión.
 
 
-Left y Right joins
+# Left y Right joins
 
 Ej:
 
@@ -1004,7 +1139,7 @@ Ej:
 	->leftJoin("countries", "countries.id", "=", "users.country_id")
 	->get();
 
-Cross y natural joins
+# Cross y natural joins
 
 	$rows = DB::table('users')
     ->crossJoin('products')
@@ -1020,7 +1155,227 @@ Cross y natural joins
     ->get();
 
 
-Grupos
+# Alias (as)
+
+Es posible declarar alias tanto para la table principal como para las tablas a ser unidas por join.
+
+Ej1)
+
+	DB::getConnection('az');
+
+	$rows = DB::table('users', 'u')
+	->join('products')
+	->join('roles')
+	->unhideAll()
+	->showDeleted()
+	//->dontExec()
+	->get();
+	
+	dd($rows);
+	dd(DB::getLog());  
+
+Ej2)
+
+	DB::getConnection('az');
+
+	$rows = DB::table('users', 'u')
+	->join('products as p')
+	->join('roles as r')
+	->unhideAll()
+	->showDeleted()
+	//->dontExec()
+	->get();
+	
+	dd($rows);
+	dd(DB::getLog());   
+
+El SQL generado en este caso sería algo como:
+
+	SELECT * FROM users as u 
+	INNER JOIN products as p ON u.id=p.belongs_to 
+	INNER JOIN user_roles ON u.id=user_roles.user_id 
+	INNER JOIN roles as r ON r.id=user_roles.role_id;
+
+Cabe notar que no es posible especificar el alias para la tabla puente del ejemplo (`user_role`)
+
+Tampoco es posible explicitar el "alias" (con 'as') cuando haya se haga un join hacia una tabla desde la cual existe más una relación con la primera. 
+
+Ej:
+
+	$rows = DB::table('users', 'u')
+    ->join('products as p')
+	->get();
+
+Posible salida:
+
+	SELECT * 
+	FROM users as u 
+	INNER JOIN products as p ON p.belongs_to = u.id 
+
+En el caso anterior no habría problema si products tiene dos FKs (`belongs_to` y `deleted_by`) para users pero el "problema" se presenta si la relación se hace al revés:
+
+	$rows = DB::table('products', 'p')
+    ->join('users as u')
+	->get();
+
+Posible salida:
+
+	SELECT * 
+	FROM products as p 
+	INNER JOIN users as __belongs_to ON __belongs_to.id = p.belongs_to 
+	INNER JOIN users as __deleted_by ON __deleted_by.id = p.deleted_by
+
+
+El "problema" es que cuando hay más de una relación entre dos tablas se necesita un alias por cada relación y con "as" solo es posible especificar una por lo cual la ambiguedad la resuelve automáticamente el framework.
+
+
+### Referencia de métodos de la clase Model
+
+La clase Model responsable del Query Builder tiene una gran cantidad de métodos que proveen las distintas funcionalidades.
+
+
+# selectRaw
+
+Por lo general cuando se desea usar un alias a un campo es necesario hacer algo como
+
+	$vals = DB::table('products')
+	->setFetchMode('COLUMN')
+	->selectRaw('cost * 1.05 as cost_after_inc')->get();
+
+O lo mismo pero con parámetros 
+
+	$vals = DB::table('products')
+	->setFetchMode('COLUMN')
+	->selectRaw('cost * ? as cost_after_inc', [1.05])->get();
+
+# havingRaw
+
+En general las funciones raw permiten corregir situaciones donde es muy difícil expresar con el query builder exactamente lo que queremos o bien este falla en construir algo con la sintáxis correcta para el motor de base de datos que estamos utilizando.
+
+Ej:
+
+	$rows = DB::table('products')
+	->showDeleted()
+	->groupBy(['name'])
+	->having(['c', 3, '>'])
+	->select(['name'])
+	->selectRaw('COUNT(*) as c')
+	->get();
+
+Podría ser traducido a SQL como:
+
+	SELECT 
+	COUNT(*) as c, 
+	name 
+	FROM 
+	products 
+	GROUP BY 
+	name 
+	HAVING 
+	products.c > 3;
+
+Lo cual no es totalmente válido y en MySQL genera el error:
+
+	Uncaught PDOException: SQLSTATE[42S22]: 
+	Column not found: 1054 Unknown column 'products.c' in 'having clause'
+
+La solución en este caso viene de la mano de havingRaw()
+
+	$rows = DB::table('products')
+	->showDeleted()
+	->groupBy(['name'])
+	->select(['name'])
+	->selectRaw('COUNT(*) as c')
+	->havingRaw('c > ?', [3])
+	->get();
+
+Generando esta vez un SQL correcto:
+
+	SELECT 
+	COUNT(*) as c, 
+	name 
+	FROM 
+	products 
+	GROUP BY 
+	name 
+	HAVING 
+	c > 3;
+
+
+Hay situaciones que son para usar havingRaw() pero el Query Builder hace la conversión internamente de having() a havingRaw() aunque tiene un costo en rendimiento y se pierde cierto control de la Query formada.
+
+Ej:
+
+	DB::table('products')
+	->select(['size'])
+	->selectRaw('AVG(cost)')
+	->groupBy(['size'])
+	->having(['AVG(cost)', 150, '>='])
+	->get();
+
+En este caso el primer parámetro no es un campo sino que hay una función aplicada sobre un campo e internamente se ejecutará como:
+
+	DB::table('products')
+	->select(['size'])
+	->selectRaw('AVG(cost)')
+	->groupBy(['size'])
+	->havingRaw('AVG(cost) >= ?', [150])
+	->get();
+
+Es posible forzar el uso de havingRaw() cuando sea necesario con setStrictModeHaving(true)
+
+Ej:
+
+	DB::table('products')		
+	->setStrictModeHaving(true)
+	->select(['size'])
+	->selectRaw('AVG(cost)')
+	->groupBy(['size'])
+	->having(['AVG(cost)', 150, '>='])
+	->get();
+
+Ya con el modo estricto activado se generará una excepción:
+
+	PHP Fatal error:  Uncaught Exception: Use havingRaw() instead for AVG(cost) >= ?
+
+
+# when
+
+El método when() simplifica la creación de queries condicionales y generalmente se usa en conjunto con where() o sus variantes.
+
+Veamos un snipet extraido del propio core del framework escrito sin when() y luego con when() 
+
+-- sin when()
+
+	$m = DB::table('migrations');
+
+	if ($to_db == '__NULL__'){
+		$m->whereNull('db');
+	} else {
+		$m->where(['db' => $to_db]);
+	}
+			
+	$filenames = $m->orderBy(['created_at' => 'DESC'])
+	->pluck('filename');
+
+El método when() tiene tres parámetos: la condición y dos callbacks de los cuales el primero se aplica si la condición es verdadera y la segunda si es falsa.
+
+-- con when()
+
+	$filenames = DB::table('migrations')
+	->when($to_db == '__NULL__', 
+		function($q){
+			$q->whereNull('db');
+		},
+		function($q) use($to_db){
+			$q->where(['db' => $to_db]);
+		}
+	)
+	->orderBy(['created_at' => 'DESC'])
+	->pluck('filename');
+
+
+# Grupos
 
 Para colocar paréntesis en el WHERE del SQL resultante usando el Query Builder existen los "grupos" implementados con el método group()
 
@@ -1163,6 +1518,221 @@ Ej:
 	})
 	->orderBy(['size' => 'DESC'])
 	->get(['cost', 'size', 'belongs_to']); 
+
+
+# Restricciones que aplican para having() y havingRaw()
+
+Puede -según sea el caso- que having() y havingRaw() no sean combinables en la misma query y que de ser necesario el uso de havingRaw() entonces todo lo que corresponda a HAVING deba realizarse con *unico* havingRaw().
+
+
+# Qualificación de campos
+
+Por defecto todos los campos son auto-qualificados como tabla.campo o si hay un alias para la tabla como alias.campo en la query construida. Esto obviamente tiene cierto impacto de performance pero es el comportamiento por defecto dado que evita posibles colisiones de nombres cuando hay JOINs.
+
+Puede desactivarse la auto-qualificación con el método dontQualify()
+
+Ej:
+
+	$m = DB::table('products')
+	->groupBy(['cost', 'size'])
+	->having(['cost', 100])
+	->select(['cost', 'size']);
+
+	dd($m->dd());  
+
+Produce:
+
+	SELECT 
+	products.cost, 
+	products.size 
+	FROM 
+	products 
+	WHERE 
+	products.deleted_at IS NULL 
+	GROUP BY 
+	products.cost, 
+	products.size 
+	HAVING 
+	products.cost = 100;
+
+Mientras que,
+
+	$m = DB::table('products')
+	->dontQualify()
+	->groupBy(['cost', 'size'])
+	->having(['cost', 100])
+	->select(['cost', 'size']);
+
+	dd($m->dd());  
+
+Produce:
+
+	SELECT 
+	products.cost, 
+	products.size 
+	FROM 
+	products 
+	WHERE 
+	products.deleted_at IS NULL 
+	GROUP BY 
+	products.cost, 
+	products.size 
+	HAVING 
+	products.cost = 100
+
+Para cambiar el flag en sentido contrario se puede utilizar el método doQualify()
+
+
+### La clase DB
+
+La clase DB es una librería clave cuyo rol principal es manejar las conexiones de base de datos y ofrecer información sobre las mismas. Posee además un mini Query Builder para consultas "raw".
+
+
+# Obtención de información de drivers
+
+Método DB::driver()							devuelve driver de la conexión actual
+Método DB::driverVersion(bool $numeric)		devuelve la versión del driver			
+Método DB::isMariaDB()						devuelve si es MariaDB
+
+Ej:
+
+	dd(DB::driver(), 'Driver');
+	dd(DB::driverVersion(), 'Driver version');
+	dd(DB::driverVersion(true), 'Driver version (num)');
+	dd(DB::isMariaDB(), 'Is MariaDB');
+
+El resultado será algo como:
+
+	--[ Driver ]-- 
+	mysql
+
+	--[ Driver version ]-- 
+	5.7.35-0ubuntu0.18.04.2
+
+	--[ Driver version (num) ]-- 
+	5.7.35
+
+	--[ Is MariaDB ]-- 
+	false
+
+
+### Ejecución de "consultas crudas"
+
+Las consultas puramente crudas son aquellas que son un simple string en SQL que pueden contener los "?" para los parámetros en caso de que las consultas o sentencias sean preparadas. 
+
+# select
+
+Se dispone del método DB::select()()
+
+Ej:
+
+	$res = DB::select('SELECT * FROM products');
+
+O pasando parámetros:
+
+	$res = DB::select('SELECT * FROM products WHERE cost > ? AND size = ?', [550, '1 mm']);
+
+Un ejemplo completo donde se genera una query cruda y luego se ejecuta:
+
+	$m = DB::table('products')
+	->dontBind()    
+	->dontExec()    
+	->select(['size', 'cost'])
+	->groupBy(['size'])        
+	->having(['cost', null, '>='])
+	->having(['size' => null]);
+
+	$sql = $m->toSql();
+
+	dd(DB::select($sql, [5, '1L']));
+	dd($sql, 'pre-compiled SQL');
+	dd(DB::getLog(), 'Excecuted SQL');
+
+# insert
+
+Para la inserción de registros de forma "cruda" existe el método DB::insert()
+
+Ej:
+
+	$id = DB::insert('insert into baz (id_baz, name, cost) values (?, ?, ?)', [100, 'cool thing', '16.25']);
+    dd(DB::getLog(), 'Excecuted SQL');
+
+Ej:
+
+	$id = DB::insert('insert ignore into `baz2` (id_baz2, name, cost) values (?, ?, ?)', [5000, 'cool thing', '16.25']);
+	dd(DB::getLog(), 'Excecuted SQL');
+
+La función intenta encontrar la PRIMARY KEY de la tabla para así devolver el 'id' y a tal fin revisa si existe un archivo de schema creado y sino lo encuentra intenta con 'id' como nombre para la PRIMARY KEY.
+
+
+# update
+
+Para la actualización en crudo de datos se dispone del método DB::update()
+
+Ej:
+
+	$affected_rows = DB::update('update `baz2` SET name = ?, cost = ? WHERE id_baz2 = ?', ['something', '99.99', 5000]);
+
+
+# delete
+
+Similarmente se dispone del método DB::delete()
+
+Ej:
+
+	$affected_rows = DB::delete('DELETE FROM `baz2` WHERE id_baz2 = ?', [5000]);
+
+
+# statement
+
+Finalmente existe un método genérico para ejecutar "raw" statements o sea, comandos SQL que no son de tipo consulta o sea distintos de select.
+
+Ej:
+
+	$affected_rows = DB::statement('DELETE FROM `baz2` WHERE id_baz2 = ?', [5000]);
+
+
+Nota: 
+
+Las funciones "raw" de la clase DB admiten un parámetro para el tenant_id y en caso de tener que cambiar la conexión al finalizar la conexión original es restaurada.
+
+Ej:
+
+	dd(DB::getCurrentConnectionId());
+
+	$res = DB::select('SELECT * FROM my_table', [], null, 'conn_2');
+
+	dd(DB::getCurrentConnectionId());
+
+
+# Procedimientos almacenados
+
+Para la ejecución de procedimientos almacenados se puede sacar ventaja de los métodos "raw" de la clase DB, en particular:
+
+DB::statement()         para ejecución de sentencias que no devuelven resultado
+DB::select()            para la ejecución de sentencias que devuelven resultado
+
+En los siguientes ejemplos se usará la keyword "CALL" presente en MySQL pero se entiende que deba usarse la equivalente según el RDBMS donde en SQLSRV por ejemplo es "EXEC".
+
+Ej:
+
+    DB::statement("CALL insertEvent('?')", ['2012.01.01 12:12:12']);
+
+Y para el caso de un DB::select()
+
+Ej:
+
+    $price = DB::select('CALL productpricing()');
+
+O si contuviera algún parámetro como por ejemplo el id de categoría:
+
+Ej:
+
+    $price = DB::select('CALL productpricing(?)', [34]);
+
+Además es posible especificar el "modo" en el que se traen los resultados ("ASSOC", "NUM", ...) que se corresponden a los de PDO:
+
+Finalmente tanto DB::statement() como DB::select() permiten pasar el id de la conexión en el último parámetro
 
 
 # Transacciones
@@ -1318,7 +1888,7 @@ Resultado:
 
 El problema del método dd() es que no funciona si en su lugar hay una función get() parametrizada -en vez de usar select()- o bien una función agregativa comon min(), max(), count(), sum() y avg() 
 
-Otra función de debug más general es DB::getLog()
+Otra función de debug, disponible cuando se usa DB::table() es DB::getLog()
 
 Ejemplo:
 
@@ -1328,7 +1898,39 @@ Ejemplo:
 
 	dd(DB::getLog());
 
-Otra función de debug que puede utilizarse es getLastPrecompiledQuery() y devuelve el último query antes de ser bindeado con los parámetros.
+
+Nota:
+
+Para que DB::getLog() arroje la query estaba debe haber sido "armada" algo que sucede cuando se "compila" al ejecutar funciones como get(), first(), pluck() .... o dd()
+
+	$m = DB::table('products')
+	->where(['size', ['0.5L', '3L'], 'NOT IN']);
+
+	// Nada
+	dd(DB::getLog());
+
+Sin embargo lo siguiente *SI* devuelve la query:
+
+	$m = DB::table('products')
+	->where(['size', ['0.5L', '3L'], 'NOT IN']);
+
+	$m->dd();
+	dd(DB::getLog());
+    
+Lo siguiente también sirve:
+
+	DB::table('products')
+	->where(['size', ['0.5L', '3L'], 'NOT IN'])
+	->dontExec()
+	->dontBind()
+	->get();
+
+	dd(DB::getLog());
+	
+
+# Obtención de la query pre-compilada
+
+Una función de debug que puede utilizarse es getLastPrecompiledQuery(), la cual devuelve el último query antes de ser bindeado con los parámetros -aunque per se no evita el binding-.
 
 Ejemplo:
 
@@ -1347,21 +1949,46 @@ Ejemplo:
 
 	dd($m2->getLastPrecompiledQuery());
 
-En cualquier caso es posible realizar un debug sin ejecutar la consulta con el método dontExec()
+En cualquier caso es posible realizar un debug *sin* ejecutar la consulta con el método dontExec() y mediante el método dontBind() evitar el "bindeo" de parámetros. Esto podría ser útil para armar una sub-query.
 
 Ejemplo:
 
 	$res = DB::table('products')
-		->dontExec()
-		->groupBy(['size'])
-		->having(['AVG(cost)', 150, '>='])
-		->select(['size'])
-		->selectRaw('AVG(cost)')
-		->get();
-		
-	dd(DB::getLog()); 
+	->dontBind()   // <--- here 
+	->dontExec()   // <--- here 
+	->groupBy(['size'])
+	->having(['AVG(cost)', 150, '>='])
+	->select(['size'])
+	->selectRaw('AVG(cost)')
+	->get();
+
+	dd(DB::getLog());
+
+También podemos evitar se cree una conexión a la base de datos pasando false como tercer parámetro a DB::table() y finalmente si nuestro interés es obtener la consulta pre-compilada o sea armada pero aún con los parámetros sin bindear podemos llamar a toSql().
+
+Ej:
+
+	$m = DB::table('products', null, false)
+	->where(['belongs_to', null])
+	->group(function($q){
+		$q->where(['size', null])
+		->orWhere([
+			['cost', null, '<='],
+			['cost', null, '>=']
+		]);
+	})
+	->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [null, null])
+	->orderBy(['cost' => 'ASC']);
+
+	$sql = $m
+	->dontBind()
+	->toSql();
 	
-Como si fueran pocas funciones de debug existe el método getLog()
+	dd($sql);
+
+Si desea realizar pruebas de performance remítase en la documentación a Time::exec()
+
+Como si fueran pocas funciones de debug existe el método Model::getLog()
 
 	$model = new \simplerest\core\Model($conn);
 	$res = $model->create(['name' => 'Jhon', 'age' => 32]);
@@ -1399,23 +2026,177 @@ Si la query falla entonces solo simule que se ejecuta usando el método dontExec
 		}
 	}
 
-Y por supuesto que puede Introducir un "break point" con un exit en caso de no usar un debuger como XDEBUG:
 
-	class XXXXXModel extends Model
-	{ 
-		// ...
+En el caso particular de los INSERTs es posible que Model::dd() no reemplace los parámetros y los deje como "preparados" obtieniendo algo como:
 
-		function onCreating(array &$data)
-		{
-			$this->dontExec();
-		}
+    INSERT INTO my_table (
+      column1, column2
+    ) 
+    VALUES (
+        :column1, :column2
+    )
 
-		function onCreated(array &$data, $last_inserted_id)
-		{
-			dd($this->dd());
-			exit; // (*)
-		}
+Entonces se puede obtener por separado los parámetros recibidos para el binding con Model::getLastBindingParamters()
+
+Ej:
+
+    function onCreating(array &$data)
+    {
+        $this->dontExec();  
+    }
+
+    function onCreated(array &$data, $last_inserted_id)
+    {
+        dd($this->dd(), 'SQL');
+        dd($this->getLastBindingParamters(), 'PARAMETERS');
+    }
+
+
+# Formateo de las queries
+
+Con fines de debugging se utiliza por defecto un paquete que formatea las queries SQL en la mayor parte de los casos aunque no es perfecto y puede querer desactivarse o parametrizarse de otra manera.
+
+En MyModel podría hacerse:
+
+	function __construct(bool $connect = false, $schema = null, bool $load_config = true){
+        parent::__construct($connect, $schema, $load_config);
+
+		static::$sql_formatter_callback = function(string $sql){
+      		return MySqlFormatter($sql);
+    	};
+    }
+
+O bien
+
+	function __construct(bool $connect = false, $schema = null, bool $load_config = true){
+        parent::__construct($connect, $schema, $load_config);
+	
+		$this->setSqlFormatter(function(string $sql){
+			return MySqlFormatter($sql);
+		});
 	}
+
+Donde si simplemente quisiera anularse por completo el sql formater bien podría hacerse:
+
+	function __construct(bool $connect = false, $schema = null, bool $load_config = true){
+        parent::__construct($connect, $schema, $load_config);
+
+		static::$sql_formatter_callback = null;
+    }	
+
+
+Además es posible activar o des-activar el formateo de queries con los métodos Model::sqlFormaterOn(), Model::sqlFormaterOff() o bien pasándole un boolean a dd()
+
+Producen el mismo resultado:
+
+	echo $m->sqlFormaterOn()->dd();
+	echo $m->dd(true);
+
+
+Algunos ejemplos:
+
+ 	/*
+        Sql formater habilitado via Model::sqlFormaterOn()
+    */
+
+	$m = DB::table('products')
+	->showDeleted()
+	->groupBy(['cost', 'size', 'belongs_to'])
+	->having(['cost', 100, '>='])
+	->or(function($q){
+		$q->havingRaw('SUM(cost) > ?', [500])
+		->having(['size' => '1L']);
+	})
+	->select(['cost', 'size', 'belongs_to']);
+
+	dd(
+		$m
+		->sqlFormaterOn()   /* habilito */
+		->dd()
+	);
+
+
+    /*
+        Sql formater des-habilitado (por defecto)
+    */
+   
+	$m = DB::table('products')
+	->showDeleted()
+	->groupBy(['cost', 'size', 'belongs_to'])
+	->having(['cost', 100, '>='])
+	->or(function($q){
+		$q->havingRaw('SUM(cost) > ?', [500])
+		->having(['size' => '1L']);
+	})
+	->select(['cost', 'size', 'belongs_to']);
+
+	dd($m->dd());
+    
+
+    /*
+        Sql formater habilitado via Model::dd()
+    */
+
+	$m = DB::table('products')
+	->showDeleted()
+	->groupBy(['cost', 'size', 'belongs_to'])
+	->having(['cost', 100, '>='])
+	->or(function($q){
+		$q->havingRaw('SUM(cost) > ?', [500])
+		->having(['size' => '1L']);
+	})
+	->select(['cost', 'size', 'belongs_to']);
+
+	dd(
+		$m
+		->dd(true)
+	);
+
+
+Como Model::sqlFormatter() es un método público y convenientemente estático fácilmente se puede usar fuera del ámbito de la clase. El método es parametrizable y los parámetros pasan directamente al formateador.
+    
+
+    /*
+        Sql formateador es aplicado en un segundo paso
+        y se parametriza para colorizar 
+    */
+
+	$m = DB::table('products')
+	->showDeleted()
+	->groupBy(['cost', 'size', 'belongs_to'])
+	->having(['cost', 100, '>='])
+	->or(function($q){
+		$q->havingRaw('SUM(cost) > ?', [500])
+		->having(['size' => '1L']);
+	})
+	->select(['cost', 'size', 'belongs_to']);
+
+	dd(
+		Model::sqlFormatter($m->dd(), true)
+	);
+    
+
+Se provee de la función helper sql_formater() que es un atajo de Model::sqlFormatter()
+
+
+    /*
+        Sql formateador es aplicado en un segundo paso
+        y se parametriza para colorizar pero usando el helper sql_formater 
+    */
+
+	$m = DB::table('products')
+	->showDeleted()
+	->groupBy(['cost', 'size', 'belongs_to'])
+	->having(['cost', 100, '>='])
+	->or(function($q){
+		$q->havingRaw('SUM(cost) > ?', [500])
+		->having(['size' => '1L']);
+	})
+	->select(['cost', 'size', 'belongs_to']);
+
+	dd(
+		sql_formater($m->dd(), true)
+	);    
 
 
 #### Campos manejados por el framework
@@ -1641,24 +2422,6 @@ Por último tenemos los campos ocultos:
 	protected $hidden   = [	'password' ];
 
 
-# Hooks sobre el módulo de autenticación
-
-La clase AuthController provee varios hooks que pueden usarse en MyAuthController
-
-	function onRegister($data){ }
-    function onRegistered($data, $uid, $is_active, $roles){ }
-    function onRemember($data){}
-    function onRemembered($data, $link_url){}
-    function onLogin($data){}
-    function onLogged($data, $uid, $active, $roles, $perms){}
-    function onImpersonated($data, $uid, $active, $roles, $perms, $impersonated_by){}	
-    function onChecked($uid, $active, $roles, $perms, $auth_method){}
-    function onConfirmedEmail($uid, $roles, $perms){}
-    function onChangedPassword($uid, $roles, $perms){}
-
-    function getDbAccess($uid) : Array { return []; }
-
-
 # Hooks sobre el modelo
 
 Se definen varios event hooks sobre el modelo que se disparan ante una operación CRUD
@@ -1696,7 +2459,7 @@ class MaestroModel extends Model
 	}
 }
 
-Desde cualquier hook del modelo es posible acceder a propiedades útiles como $w_vars y $w_vals -entre otras- con las que es posible reconstruir el where.
+Desde cualquier hook del modelo es posible acceder a propiedades (si son públicas) útiles como $w_vars y $w_vals -entre otras- con las que es posible reconstruir el where.
 
 A futuro podrían incluirse los eventos onRestoring() y onRestored() para cuando existe un soft-delete
 
@@ -1719,6 +2482,99 @@ Al igual que los modelos, las APIs que extienden a ApiController también tienen
 
 
 Existen otros hooks en en ApiController relacionados con el acceso a folders.
+
+Uso prácticos de los hooks sobre APIs:
+
+Ej:
+
+	Podríamos querer recibir cierto parámetro por GET o via body y evitar que tener problemas con las valicaciones que hace el framework en particular del ApiController.
+
+	Si el parámetro viene via Body podríamos leer el valor de forma destructiva en el constructor de la clase ApiController derivada con shiftBodyParam() así:
+
+	class Products extends MyApiController
+	{ 
+		static protected $soft_delete = true;
+		static protected $connect_to = [
+			'product_categories',
+			'users',
+			'product_tags',
+			'valoraciones',
+			'digital_products'
+		];
+
+		function __construct()
+		{       
+			parent::__construct();
+
+			global $my_param;
+			$my_param = request()->shiftBodyParam('my_param');
+		}        
+	} 
+
+Ahora tenemos el parámetro recibido como variable "global" y podremos usarlo en un hook de la misma API como onPost()
+
+Ej:
+
+	protected function onPost($data, $id){
+		// acá está disponible $my_param
+	
+		DB::statement("EXEC sp_zyz()", [$id, $my_param]);
+	}
+
+Una derivación del ejemplo anterior es cuando necesitamos recibir el valor en el modelo ya sea de la entidad de la API o de un sub-recurso. Entonces podríamos dejar disponible el valor recibido usando la variable superglobal $GLOBALS o bien mediante alguna variable o propiedad estática.
+
+Ej:
+
+class Products extends MyApiController
+	{ 
+		static protected $soft_delete = true;
+		static protected $connect_to = [
+			'product_categories',
+			'users',
+			'product_tags',
+			'valoraciones',
+			'digital_products'
+		];
+
+		function __construct()
+		{       
+			parent::__construct();
+			$GLOBALS['my_param'] = request()->shiftBodyParam('my_param');
+		}        
+	} 
+
+y en el modelo:
+
+	protected function onCreated(Array $data, ?int $count) {
+
+		// acá está disponible $GLOBALS['my_param]
+	
+		DB::statement("EXEC sp_zyz()", [$id, $GLOBALS['my_param']]);
+	}
+
+De igual forma si el parámetro viniera por GET entonces puede leerse de forma destructiva con Request::shiftQuery()
+
+Ej:
+
+	$my_param = request()->shiftQuery('my_param');
+
+
+# Hooks sobre el módulo de autenticación
+
+La clase AuthController provee varios hooks que pueden usarse en MyAuthController
+
+	function onRegister($data){ }
+    function onRegistered($data, $uid, $is_active, $roles){ }
+    function onRemember($data){}
+    function onRemembered($data, $link_url){}
+    function onLogin($data){}
+    function onLogged($data, $uid, $active, $roles, $perms){}
+    function onImpersonated($data, $uid, $active, $roles, $perms, $impersonated_by){}	
+    function onChecked($uid, $active, $roles, $perms, $auth_method){}
+    function onConfirmedEmail($uid, $roles, $perms){}
+    function onChangedPassword($uid, $roles, $perms){}
+
+    function getDbAccess($uid) : Array { return []; }
 
 
 # Webhooks
@@ -1770,8 +2626,6 @@ y
 	categoria=7,8,22
 
 Del mismo modo, 'contains', 'notContains' y 'containsWord', 'notContainsWord' aceptan varios valores delimitados por coma. El operador implícito es un OR.
-
-
 
 
 ### Validaciones
@@ -1969,11 +2823,110 @@ Es posible utiliza una sintaxis mucho más amigable importando la librería Vali
 	);
 
 
-# ACL
+### El helper db
+
+El helper db (.php) ofrece una cantidad de funciones interesantes relacionadas con base de datos:
+
+
+# User table & model helpers
+
+get_users_table()
+
+	Returns the table for users which is specified in config.php
+
+get_user_model_name()
+
+	Gets namespace-qualified model name corresponding to the users table specified in config.php
+
+
+# Model helpers
+
+table()				
+
+	Similar to DB::table() but it does not load the schema for the model so there are no validations.
+
+get_model_name()
+
+	Gets namespace-qualified model name for a given table
+
+
+# Schema helpers
+
+get_schema_name()
+
+	Gets namespace-qualified schema name for a given table
+
+get_schema()
+
+	Returns the schema for a given table. Result is cached.
+
+in_schema()
+
+	Returns if the given array of properties are in some schema.
+
+get_pivot()	
+
+	Returns an array for a pivot table given two tables in the pivot one.
+
+get_primary_key()
+
+	Returns the primary key for a given table name. If the primary key is compound then it returns the AUTOINCREMENT column. 
+
+
+# Relationship analysis helpers
+
+get_rels()
+
+	Returns array with relations for a pair of given tables of an specified type of relation ('1:1', '1:n' or 'n:m'). If the asked relation is not the right one then result can be false or an empty array. Specifically returns false when there is no direct relationship between the tables (case n:m) and it asks if the relationship is 1:1 or 1:n
+
+    If the relation is found, then the returned array has a different structure depending on whether it is a relation n: m or 1:1/1:n. 
+
+get_rel_type()
+
+	Get the type of relationship between two tables.
+
+is_1_1()
+
+	Returns if the relation between two given tables is 1:1
+
+is_1_n()
+
+	Returns if the relation between two given tables is 1:n
+
+is_n_m()
+
+	Returns if the relation between two given tables is n:m
+
+is_mul_rel()
+
+	Returns if the relation between two given tables can gives multiple rows or not. If rel type is 1:1 or FK is on $t1 (left side) => false
+
+
+### ACL
 
 La implementación del ACL incluye "roles" y permisos individuales (llamados también "scopes") para cada usuario sobre cada tabla expuesta a través de la API.
 
-Se está implentando un ACL centralizado que se configurará en /config/acl.php y si bien es muy flexible una forma es la siguiente:
+# Declaración de roles y sus permisos
+
+Se implentó un ACL centralizado que se configurará en /config/acl.php y requiere ajustar permisos de lectura y escritura sobre el directorio app/security. 
+
+Los siguientes métodos proveen la funcionalidad de declaración:
+
+addRole(string $role_name, $role_id = null)
+addRoles(Array $roles)
+addInherit(string $role_name, $to_role = null
+addResourcePermissions()
+addSpecialPermissions(Array $sp_permissions, $to_role = null)
+setAsGuest()
+setAsRegistered(string $name)
+
+Nota:
+
+Los métodos setAsGuest() y setAsRegistered() se utilizan para definir qué rol tendrá la funcionalidad de "guest" y la de usuario registrado respectivamente. En el caso de setAsGuest() es opcional si el nombre del rol se dejara como "guest".
+
+La estrucuración en la declaración de roles y permisos es muy flexible.
+
+Ej:
 
 	$acl = new Acl();
 
@@ -1997,10 +2950,10 @@ Se está implentando un ACL centralizado que se configurará en /config/acl.php 
 Y equivale a:
 
 	$acl->addRoles([
-					'guest' => -1,
-					'vendedor' => 1,
-					'admin' => 100,
-					'superadmin' => 500
+		'guest' => -1,
+		'vendedor' => 1,
+		'admin' => 100,
+		'superadmin' => 500
 	])	
 
 	->addResourcePermissions('products', ['read'], 'guest')	
@@ -2015,7 +2968,7 @@ Y equivale a:
 
 	->addInherit('admin', 'superadmin')
 	->addSpecialPermissions(['lock', 'fill_all']);
-
+	
 
 Cabe notar que los addInherit() deben ir *siempre* antes de los permisos que se quieran agregar al rol heredado. 
 
@@ -2025,7 +2978,7 @@ El rol de 'guest' debe estar definido con ese nombre o con otro. En caso de que 
 
 Además de setear el nombre alternativo es su responsabilidad crear el rol correspondiente con el método addRole()
 
-El Acl genera algo como:
+El Acl genera una representación interna similar a:
 
 	array(4) {
 	["guest"]=>
@@ -2124,9 +3077,9 @@ Los "resource permissions" se aplican sobre las tablas especificadas mientras qu
 
 Además sobre "resource permissions" existen ciertos permisos "especiales" -no confundir con "special permissions"- que habilitan a leer registros que no le pertenecen al tenedor del rol:  
 
-show_all	- lee los registros propios y ajenos sobre ese recurso
-list_all	- lista los registros propios y ajenos sobre ese recurso
-read_all	- lista y lee los registros propios y ajenos sobre ese recurso
+    show_all	- lee los registros propios y ajenos sobre ese recurso
+    list_all	- lista los registros propios y ajenos sobre ese recurso
+    read_all	- lista y lee los registros propios y ajenos sobre ese recurso
 
 Estos permisos típicamente se deberían dar a un "guest" para que pueda por ejemplo leer todas las entradas de un blog o las publicaciones de un sitio de ventas. Si por el contrario a un "guest" se le diera un permiso "read" -en vez de "read_all"- entonces podría darse el caso contradictorio de que un "guest" pueda ver las publicaciones de un vendedor y ese mismo vendedor solo pueda ver las suyas propias y no las de otros vendedores.
 
@@ -2134,10 +3087,10 @@ Por lo anterior se aconseja no dar un permiso "read" a un "guest" sino en todo c
 
 Estos permisos especiales sobre "resource permissions" pueden tener otros usos interesantes como permitirle a un supervisor ver todos los registros de los usuarios y publicaciones de una tienda:
 
-->addRole('supervisor', 502)  
-->addInherit('registered')
-->addResourcePermissions('users', ['read_all'])  // <--
-->addResourcePermissions('products', ['read_all'])  // <--
+    ->addRole('supervisor', 502)  
+    ->addInherit('registered')
+    ->addResourcePermissions('users', ['read_all'])  // <--
+    ->addResourcePermissions('products', ['read_all'])  // <--
 
 
 ### Permisos
@@ -2174,34 +3127,123 @@ Ejemplos:
 Como colorario es posible tener muchos roles con caracteristicas de un admin o superadmin.
 
 
-### Permisos individuales
+### Permisos a nivel de usuario
 
 Los roles son permisos que se asignan masivamente (por igual) a todos los usuarios que poseen ese rol. Los roles se puden "sumar" obteniendo la suma de los permisos de cada rol.
 
 Si se desea que un usuario particular tenga permisos distintos para una entidad particular que sean distintos de los del rol al que pertenece se pueden especificar "permisos indivuduales" creando un registro para ese usuario y esa tabla referida en la tabla "permissions". Solo puede haber una entrada en "permissions" para cada par (usuario, tabla).
 
-Los cambios en los permisos individuales al igual que los roles solo se aplican cuando el usuario "inicia sessión" o sea.. cuando obtiene los tokens y también cuando los tokens son renovados.
-
+Los cambios en los permisos a nivel de usuario al igual que los roles solo se aplican cuando el usuario "inicia sessión" o sea.. cuando obtiene los tokens y también cuando los tokens son renovados.
 
 Hay distintas tablas y por tanto distintos endpoints para manejar distintos aspectos de los permisos:
 
-tabla permisions: 
-- show, list, create, update, delete 
-- Son permisos dados por un Admin sobre las tablas para usuarios específicos.
+    tabla permisions: 
+        - show, list, create, update, delete 
+        - Son permisos dados por un Admin sobre las tablas para usuarios específicos.
 
-tabla folder_permissions:
-- read, write
-- Son dados por los usuarios a ciertos usuarios sobre cierto folder de cierta tabla/
+    tabla folder_permissions:
+        - read, write
+        - Son dados por los usuarios a ciertos usuarios sobre cierto folder de cierta tabla/
 
-folder_other_permissions:
-- read, write
-- Son dados por los usuarios a otros usuarios (sin especificar su id)
-- Puede especificarse el otorgamiento de permisos a usuarios no-registrados (guest)
-
-Los permisos son leídos al momento de "loguearse" o bien cuando se renuevan las credenciales y por tanto los cambios de permisos solo tienen efecto cuando se renueva el access_token y no antes. 
+    folder_other_permissions:
+        - read, write
+        - Son dados por los usuarios a otros usuarios (sin especificar su id)
+        - Puede especificarse el otorgamiento de permisos a usuarios no-registrados (guest)
 
 
-Como podría presentarse la información sobre roles y permisos a un administrador:
+# Como agregar / cambiar permisos a nivel de usuario 
+
+Los permisos que "decoran" al o los roles que pueda poseer un usuario se pueden ser para un recurso (tabla) en particular ("resource permissions") o "especiales" (típicamente de roles tipo-admin)
+
+Los permisos sobre recursos se pueden agregar o cambiar desde el endpoint
+
+	/api/{version}/user_tb_permissions
+
+Al listar se vería algo como:
+
+	"data": {
+        "user_tb_permissions": [
+            {
+                "id": 1,
+                "tb": "my_table1",
+                "can_list_all": null,
+                "can_show_all": null,
+                "can_list": 1,
+                "can_show": null,
+                "can_create": null,
+                "can_update": null,
+                "can_delete": null,
+                "user_id": 119,
+                "created_by": 119,
+                "created_at": "2021-11-19 17:49:40",
+                "updated_by": null,
+                "updated_at": null
+            },
+			{
+				"id": 5,
+                // ...
+			},
+			// ..
+        ]
+    },
+
+Para definir permisos sobre una tabla sería como en el siguiente ejemplo.  
+
+Ej:
+
+	{
+		"tb": "table_xyz",
+		"user_id": 119,
+		"can_list": true
+	}
+
+Cabe destacar que siempre habrá un solo registro por tabla y que los permisos no se agregan individualmente sino todos los que se deseen setear a la vez y si se repitiera el proceso se sobre-escribiría lo que antes había.
+
+Ej:
+
+Si ahora se hiciera un POST nuevamente sobre /api/{version}/user_tb_permissions	
+
+	{
+		"tb": "table_xyz",
+		"user_id": 119,
+		"can_update": true,
+		"can_show": true
+	}
+
+El resultado sería que para el "user_id" = 119 y la tabla "table_xyz" se tendrán solamente los permisos reciéntemente definidos para esa tabla y usuario.
+
+
+Para conocer todos los campos (con distintos tipos de permisos) que se pueden enviar:
+
+	GET /api/{version}/user_tb_permissions?_rules=1
+
+
+Los permisos "especiales" se trabajan sobre el endpoint
+
+	/api/{version}/user_sp_permissions
+
+Básicamente debe enviar:
+
+	user_id
+	sp_permission_id
+
+Ej:
+
+	POST /api/v1/user_sp_permissions
+
+	{
+		"user_id": 119,
+		"sp_permission_id": 8
+	}
+
+Donde para conocer el "sp_permission_id" puede consultar el endpoint:
+
+	/api/v1/sp_permissions
+
+
+# Posible FrontEnd para los roles y permisos
+
+A un Administrador se le odría presentarse la información sobre roles y permisos así:
 
 Para un usuario:
 
@@ -2283,13 +3325,116 @@ equivale a
 	foo.read
 
 
-* Los permisos se presentan de forma simple con la notación recurso.operación
+SimpleRest *no* sigue el estándar de scopes de OAuth donde:
 
-* La granulidad de los permisos suele expresarse para operaciones genéricas como "read", "write" y pueden definirse "alias" para ciertas operaciones como "emails.send" para "emails.create"
+    - Los permisos se presentan de forma simple con la notación recurso.operación
 
-* El desarrollador no "ve" -puede listar- permisos especiales (lo que no significa que no existan) 
+    - La granulidad de los permisos suele expresarse para operaciones genéricas como "read", "write" y pueden definirse "alias" para ciertas operaciones como "emails.send" para "emails.create"
+
+    - El desarrollador no "ve" -puede listar- permisos especiales (lo que no significa que no existan) 
 
 https://www.freecodecamp.org/news/best-practices-for-building-api-keys-97c26eabfea9/
+
+
+# Métodos para indagar sobre permisos y roles
+
+El Acl provee un conjunto de métodos básicos para conocer el rol o los permisos del usuario y puede extender a partir de "paquetes" (service providers).
+
+getEveryPosibleRole()                   Devuelve todos los roles registrados en el ACL.
+roleExists($rol)                        Existe el rol?
+getRolePermissions($rol)                Devuelve todos los permisos para un determinado rol.
+getAncestry($rol)                       Roles de los ancestros de un usuario.
+isHigherRole($rol1, $rol2)              Tiene el rol$1 mayor nivel de acceso que $rol2? (2)
+
+isGuest()                               Es un visitante no registrado?
+isRegistered()                          Es un usuario que ha entregado credenciales?    
+getRoles()                              Rol o roles de usuario.
+
+hasRole($rol)                           El usuario posee ese rol? (no considera herencia)
+hasAnyRole([$rol1, ...])                El usuario posee alguno de esos roles? (no considera herencia)   
+hasRoleOrHigher($rol)                   Se tiene el rol o uno "superior" (2)
+hasAnyRoleOrHigher([$rol1, ...])        Se tiene un rol o uno "superior" (2)
+
+getTbPermissions($table = null)			Retorna permisos sobre recursos (tablas) (1)
+getSpPermissions($table = null)			Retorna permisos "especiales" (1)
+getFreshTbPermissions($table = null)	Retorna permisos sobre recursos (tablas)
+getFreshSpPermissions()					Retorna permisos "especiales"
+hasResourcePermission($perm, $tabla)    El usuario tiene permisos explícitos sobre esa tabla?
+hasSpecialPermission($permiso)          El usuario tiene ese permiso especial?
+
+
+Notas:
+
+getTbPermissions() y getSpPermissions() no ofrecen resultados necesariamente actualizados (a diferencia de acceder a los endpoints correspondientes). Si el usuario entregó credenciales via Web Tokens, estos permisos muy probablemente serán derivados del payload del web token.
+
+Para el caso del paquete boctulus\grained_acl se implementan adicionalmente getFreshTbPermissions() y getFreshSpPermissions() que garantizan resultados "frescos" porque acceden directamente a la base de datos.
+
+
+Actualmente isHigherRole() y hasRoleOrHigher() están implementados en base a el árbol genealógico de roles y no compara permisos lo cual ofrece uh resultado que puede no ser exacto y solo lo será si existe una sola rama sin derivaciones en el árbol genealógico entre los roles a comparar.
+
+Sin embargo, hasAnyRoleOrHigher() ofrece obtener el resultado más preciso a pesar de que no compara permisos sino roles ya que permite comparar no con un rol sino con varios y por ende considerar derivaciones en el árbol genealógico.
+
+Ej:
+
++
+|
+----- guest
+		|
+		|
+	registered
+		|  |
+		|  |
+		|  usuario
+		|        |
+	supervisor   |
+	    |        usuario_plus
+		|              |
+	 superadmin     moderador
+
+
+Supongamos que en un escenario en particular (ResourceController o API) necesito un rol >= {supervisor o usuario} entonces podría usar hasAnyRoleOrHigher() para chequear esta condición:
+
+	$pass = acl()->hasAnyRoleOrHigher(['supervisor', 'usuario_plus']);
+
+Sin embargo podría querer saber si el usuario tiene los mínimos permisos que otorga un rol, entonces hasAnyRoleOrHigher() no ofrecerá exactamente lo que se necesita.
+
+Entonces se *implementará* hasRolePermissionsOrHigher() y esta función podrá considerar derivaciones en el árbol genealógico.
+
+La función Acl::hasRolePermissionsOrHigher() *deberá* tener en consideración todos los tipos de permisos, ya sea sobre recursos (tablas) y los considerados permisos "especiales". También deberá considerar los permisos que "decoran" los de los roles para un usuario en particular (!)
+
+
+# Implementación de "paquetes" para el Acl
+
+Es importante resaltar que dado que la clase Acl se serializa por motivos de performance la mayor parte de las propiedades y métodos no pueden ser estáticos ya que propiedades estáticas no pueden ser serializadas y al des-serializar no estarán disponibles llevando a muchos dolores de cabeza. Igualmente por concistencia se desaconseja el uso de métodos estáticos.
+
+Al implementar un service provider para el ACL se debe cumplir de mínima con la interfaz IAcl.
+
+
+# Controladores tipo "resource"
+
+Una API se crea típicamente extendiendo la clase ApiController y esta clase a su vez extiende de otra llamada ResourceController que es la que tiene acceso a los autenticación via web tokens y por ende tiene disponible también los métodos para indagar permisos y roles.
+
+Es imporante notar que dado que el *AuthController* o sea el componente responsable de verificar que el usuario haya entregado credenciales (autenticación) y sean correctas (autorización) está versionado entonces es necesario explicitar la versión de api a fin de que encuentre la clase.
+
+Ej:
+
+    class DumbAuthController extends ResourceController
+    {
+        function __construct()
+        {
+            global $api_version;
+            $api_version = 'v1';
+
+            parent::__construct();
+
+            if (!acl()->hasAnyRole(['supervisor', 'admin'])){
+                response()->sendError('Unauthorized!!!', 401);
+            }
+        }
+
+        // ...
+
+    }
 
 
 ### Folders
@@ -2754,7 +3899,7 @@ With having
 
 Having with alias 
 
-	GET /api/v1/products?groupBy=size&fields=size&props=avg(cost) as avg&having=c>=150
+	GET /api/v1/products?groupBy=size&fields=size&props=avg(cost) as average&having=average>=150
 
 ### Pretty print 
 
@@ -2864,7 +4009,7 @@ En cambio una respuesta que contiene un error, puede o no poseer cuerpo pudiendo
 
 {
     "error": "Not found",
-    "error_detail": "Register for id=1850 does not exists"
+    "error_detail": "Register for id=1850 doesn't exist"
 }
 
 ### created_by=me, update_by=me o belongs_to=me
@@ -2992,7 +4137,7 @@ GET /api/v1/files?file_ext=jpg
 
 Borrar un archivo 
 
-	DEL /api/v1/files/241
+	DELETE /api/v1/files/{uuid}
 
 
 # Modelos y esquemas (schemas)
@@ -3008,9 +4153,8 @@ Modelos y schemas se mantienen separado en distintos archivos. El comando 'make'
 	   <------------           
 
 
-make schema foo --include-defaults
+make schema foo
 make schema all --include-defaults
-make schema * --include-defaults
 
 Se planea agregar el comando "schema-change" (por ahora no-disponible) 
 
@@ -3056,6 +4200,15 @@ Para generar modelos, controladores y apis se utiliza el comando make de la sigu
                             [-f | --force]
 
 	php com make constants
+
+	php com make pivot_scan
+
+
+Notas:
+
+- Al crear todos los esquemas con la opción "all" implícitamente se correrá el comando que crea el esquema para las tablas puente Pivots.php 
+
+- La creación de "constantes" está relacionada con los mensajes de error del sistema y su Internacionalización.
 
 
 # Ayuda 
@@ -3111,7 +4264,7 @@ Ejemplo:
 
 	models\UsersModel.php
 	models\FilesModel.php
-	models\schemas\FooSchema.php
+	\schemas\FooSchema.php
 	# models\CollectionsModel.php
 	models\ProductsModel.php
 	controllers\UsersController.php
@@ -3124,6 +4277,13 @@ Puede observarse que:
 	- Se pueden especificar solo los nombres de los archivos -sin ruta-
 	- Se pueden anular los ignore comentando la línea con una #almohadilla 
 	
+
+Nota: no se recomienda ignorar los schemas ya que si bien se puede hacer un "unignore" con la opción --unignore puede ser muy complicado de descubrir la fuente del error.
+
+Ej:
+
+	Fatal error: Uncaught Error: Class '\simplerest\\schemas\main\FilesSchema' not found
+ 
 
 # Migrations
 
@@ -3178,6 +4338,177 @@ public function up()
 	// ..
 }
 
+# Sintaxis
+
+Básicamente hay dos grandes funcionalidades que residen en la clase Schema: crear tablas y alterarlas.
+
+	Schema::create() 		realiza un CREATE TABLE
+	Schema::change()		realiza un ALTER TABLE
+
+Además Schema::alter() es un alias de Schema::change() por lo que pueden usarse indistintamente,
+
+
+Ejemplo de como hacer un "CREATE TABLE" dentro de una migración:
+
+	function up()
+	{
+		sc = (new Schema('facturas'))
+
+        ->setEngine('InnoDB')
+        ->setCharset('utf8')
+        ->setCollation('utf8_general_ci')
+
+        ->integer('id')->auto()->unsigned()->pri()
+        ->int('edad')->unsigned()
+        ->varchar('firstname')
+        ->varchar('lastname')->nullable()->charset('utf8')->collation('utf8_unicode_ci')
+        ->varchar('username')->unique()
+        ->varchar('password', 128)
+        ->char('password_char')->nullable()
+        ->varbinary('texto_vb', 300)
+
+        // BLOB and TEXT columns cannot have DEFAULT values.
+        ->text('texto')
+        ->tinytext('texto_tiny')
+        ->mediumtext('texto_md')
+        ->longtext('texto_long')
+        ->blob('codigo')
+        ->tinyblob('blob_tiny')
+        ->mediumblob('blob_md')
+        ->longblob('blob_long')
+        ->binary('bb', 255)
+        ->json('json_str')
+
+        
+        ->int('karma')->default(100)
+        ->int('code')->zeroFill()
+        ->bigint('big_num')
+        ->bigint('ubig')->unsigned()
+        ->mediumint('medium')
+        ->smallint('small')
+        ->tinyint('tiny')
+        ->decimal('saldo')
+        ->float('flotante')
+        ->double('doble_p')
+        ->real('num_real')
+
+        ->bit('some_bits', 3)->index()
+        ->boolean('active')->default(1)
+        ->boolean('paused')->default(true)
+
+        ->set('flavors', ['strawberry', 'vanilla'])
+        ->enum('role', ['admin', 'normal'])
+
+        ->time('hora')
+        ->year('birth_year')
+        ->date('fecha')
+        ->datetime('vencimiento')->nullable()->after('num_real') /* no está funcionando el AFTER */
+        ->timestamp('ts')->currentTimestamp()->comment('some comment') // solo un first
+
+        ->softDeletes() // agrega DATETIME deleted_at 
+        ->datetimes()  // agrega DATETIME(s) no-nullables created_at y deleted_at
+
+        ->varchar('correo')->unique()
+
+        ->int('user_id')->index()
+        ->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
+        ->foreign('user_id')->references('id')->on('users')->constraint('fk_uid')->onDelete('cascade')->onUpdate('restrict')
+    
+        $res = $sc->create();	
+	}
+	
+Es posible debuguear el SCHEMA a ser creado:
+
+	 dd($sc->getSchema(), 'SCHEMA');
+
+
+Ejemplo de un "ALTER TABLE" dentro de una migración:
+	
+	function up(){
+		$sc = new Schema('tbl_producto');
+	
+		$res = $sc
+		->foreign('unm_intIdUnidadMedida')
+		->references('unm_intId')
+		->on('tbl_unidadmedida')
+		->onDelete('cascade')
+		->onUpdate('restrict')
+		->change();
+	}
+
+
+Si se deseara "debuguear" y conocer el SQL resultante se puede usar el método dd() sobre la instancia del Schema
+	
+	$sc = new Schema('tbl_producto');
+	
+	$res = $sc
+	->foreign('unm_intIdUnidadMedida')
+	->references('unm_intId')
+	->on('tbl_unidadmedida')
+	->onDelete('cascade')
+	->onUpdate('restrict')
+	->change();
+
+	/*
+		Debugging
+	*/
+	dd($sc->dd());
+
+
+# Transacciones dentro de migraciones
+
+Cada migración debe ejecutarse en su totalidad pues debe poder revertirse con lo cual no puede quedar en un estado "intermedio" o parcial de operaciones.
+
+Por tanto, si se va a efectuar más de una operación sobre la base de datos, deben usarse transacciones.
+
+Ej:
+
+	DB::transaction(function(){
+		$table = ('tbl_estado');
+		$nom = 'est';
+
+		$sc = (new Schema($table))
+
+		->setEngine('InnoDB')
+		->setCharset('utf8')
+		->setCollation('utf8_general_ci')
+
+		->integer($nom.'_intId')->auto()->pri()
+		->varchar($nom.'_varNombre', 100)->comment('hashed')
+		->varchar($nom.'_varIcono', 150)->comment('hashed')
+		->varchar($nom.'_varColor', 150)->comment('hashed')
+		->datetime($nom.'_dtimFechaCreacion')->default('current_timestamp')
+		->datetime($nom.'_dtimFechaActualizacion')->default('current_timestamp');
+
+		$res = $sc->create();
+
+		table($table)
+		->insert([
+			array('est_varNombre'=>'Activo', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA'),             
+			array('est_varNombre'=>'Inactivo', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA'),              
+			array('est_varNombre'=>'Rechazado', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA'),                 
+			array('est_varNombre'=>'Pendiente', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA'),                 
+			array('est_varNombre'=>'Terminado', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA'),                 
+			array('est_varNombre'=>'En Proceso', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA'),                  
+			array('est_varNombre'=>'Anulado', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA'),                   
+			array('est_varNombre'=>'Revision', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA'),                   
+			array('est_varNombre'=>'Aprobado', 'est_varIcono'=> 'NA', 'est_varColor'=> 'NA')
+		]); 
+	});
+
+
+# Ejecutar sentencias SQL en "raw" 
+
+Ej:
+
+	DB::statement("ALTER TABLE tbl_bodega ADD CONSTRAINT FK_bod_idActualizador FOREIGN KEY (usu_intIdActualizador)  REFERENCES tbl_usuario (usu_intId);");
+
+
+# CREATE TABLE IF NOT EXISTS
+
+Al momento de llamar al método Schema::create() es posible pasar un boolean que indica si la tabla debe crearse solo si existe y también existe el alias Schema::createIfNotExists()  
+
+
 # Ejecutar migraciones
 
 Para ejecutar las migraciones pendiente es con "migrations migrate"
@@ -3197,6 +4528,7 @@ Es posible ejecutar migraciones, una a una o solo unas pocas por ejemplo para de
 Ej:
 
 	$ php com migrations migrate --dir=compania --to=db_153 -step=1
+
 
 # Saltar migraciones
 
@@ -3245,6 +4577,22 @@ Se puede brindar el directorio (de momento relativo a la carpeta migraciones) de
 Ej:
 
 	php com migrations migrate --dir=compania_new --to=db_flor
+
+
+Es posible combinar --dir= con --file=
+
+Ej:
+
+	php com migrations migrate --dir=compania --file=2021_09_28_29110773_0001_tbl_estado_maestro.php --to=db_189 
+
+
+# Reintentar o forzar migraciones
+
+Si por alguna razón la migración hubiera sido anotada en la tabla "migrations", esta no volverá a correr pero es posible "re-intentar" que la corra con la opción --retry o --force
+
+Ej:
+
+	php com migrations migrate --dir=compania --file=2021_09_28_29110773_0001_tbl_estado_maestro.php --to=db_189 --retry
 
 
 # Simular migraciones
@@ -3311,7 +4659,7 @@ En teoría sería posible,.....
 
 	$db_name = $data['dba_varNombre'];
 	
-	$ok = Model::query("CREATE DATABASE $db_name;");
+	$ok = Model::statement("CREATE DATABASE $db_name;");
 	
 
 	/*
@@ -3330,7 +4678,7 @@ En teoría sería posible,.....
 	*/
 
 	$mk = new MakeControllerBase();
-	$mk->any("all", "-s", "-m", "--from:$tenant");
+	$mk->any("all", "-s", "-m", "-f", "--from:$tenant");
 
 
 # Ayuda 
@@ -3361,7 +4709,7 @@ Otra forma de seleccionar una base de datos es cambiar la conexión por defecto:
 
 Ej:
 
-	Factory::config()['db_connection_default'] = 'db2';
+	config()['db_connection_default'] = 'db2';
 
 	$m = (new Model(true))
 		->table('cables');
@@ -3370,7 +4718,7 @@ Ej:
 
 o
 
-	Factory::config()['db_connection_default'] = 'db2';
+	config()['db_connection_default'] = 'db2';
 
 	$m = (new CablesModel())
 	->connect();
@@ -3381,7 +4729,7 @@ o
 
 o 
 
-	Factory::config()['db_connection_default'] = 'db2';
+	config()['db_connection_default'] = 'db2';
 
 	$m = DB::table('cables');
 	dd($m->get());
@@ -3389,7 +4737,7 @@ o
 
 Ej. con migraciones:
 
-	Factory::config()['db_connection_default'] = 'db2';
+	config()['db_connection_default'] = 'db2';
 
 	$sc = new Schema('cables');
 
@@ -3405,9 +4753,43 @@ Para generar el archivo de migración anterior (las primeras dos líneas) se pue
 	php com make migration creacion_tabla_cables_bla_bla --to=db2 --table=cables
 
 
-Especificamente sobre migraciones, al trabajar con múltiples bases de datos hay que tener en cuenta que el método fresh() que comienza haciendo DROP TABLEs sobre la DB por seleccionada por defecto por lo que si queremos correr migraciones sobre la DB_B pero tenemos seleccionada la DB_A, comenzará eliminando todas las tablas de DB_A pero podemos especificar el id de conexión al que se conectará y sobre el cual hará los DROP TABLEs:
+# fresh
+
+Con "fresh" podemos hacer un "borrón y cuenta nueva" para migraciones sobre una base de datos en particular:
 
 	php com migrations fresh --from=db_b --force
+
+Cabe notar que comienza haciendo un DROP TABLE sobre cada tabla en la base de datos (esté o no en la tabla de migraciones) por lo cual este comando usado de este modo debe usarse con precaución.
+
+También es posible hacer un "fresh" sobre una migración en particular:
+
+	php com migrations fresh --file=2021_09_14_27910581_files.php --to:main --force
+
+equivale a hacer:
+
+	php com migrations rollback --file=2021_09_14_27910581_files.php --to:main
+	php com migrations migrate --file=2021_09_14_27910581_files.php
+
+También es posible hacer un "fresh" sobre migraciones en un directorio. 
+
+Ej:
+
+	php com migrations fresh --file=2021_09_14_27910581_files.php --to:main --force
+
+En principio --file y --dir son combinables de igual forma que con "migrate"
+
+
+# redo
+
+El comando "migrations fresh" cuando se combina con --file y/o --dir produce el mismo efecto que "migrations redo".
+
+Ej:
+
+	php com migrations redo  --file=2021_09_14_27910581_files.php --to:main
+y
+	php com migrations fresh --file=2021_09_14_27910581_files.php --to:main
+
+son equivalentes
 
 
 # Tenancy a nivel de API Rest
@@ -3473,6 +4855,8 @@ Además del multitenant via DB se pueden tener varios usuarios compartiendo tabl
 Para que la separación de recursos por usuario dentro del ámbito de las tablas de una misma base de datos sea posible es necesario que esté definido el campo 'belongs_to' o equivalente via la propiedad $belongsTo en el modelo de la tabla correspondiente y esté presente en la tabla como tal.  
 
 El campo 'belongs_to' es de manejo automático del framework y se saca provecho definiendo permisos como "read" y "read_all" para las tablas que lo implementan.
+
+Ver sección de configuración de "tentant groups"
 
 
 # Sub-recursos en las APIs
@@ -3580,7 +4964,24 @@ Pero si Ud. suprimiera "category" fallará:
 
 <-- con "fields" especifico campos pero omito category"
 
-(!) Es importante notar que la propiedad $connect_to es parte de la API y no del Modelo y es obligatorio pasar el parámetro "_related=1" (con guión bajo delante) para habilitar los sub-recursos tanto para el listar como para el ver un recurso individual
+Nota: Es importante notar que la propiedad $connect_to es parte de la API y no del Modelo y es obligatorio pasar el parámetro "_related=1" (con guión bajo delante) para habilitar los sub-recursos tanto para el listar como para el ver un recurso individual
+
+
+# Select de campos con HATEOAS
+
+Siempre es posible aplicar filtros y seleccionar que campos se van a mostrar pero el "id" del recurso principal no puede omitirse si se desea traer sub-recursos ya que con él se arman las relaciones.
+
+Ej:
+
+	/api/v1/products?tenantid=az&fields=id,cost
+
+<-- válido
+
+Pero,...
+
+	/api/v1/products?tenantid=az&fields=cost
+
+<-- no traerá subrecursos relacionados
 
 
 # Creación de recursos con sub-recursos
@@ -3671,6 +5072,8 @@ E inclusive podría no incluirse el nombre de la entidad principal quedando simp
     ]
 }    
 
+<-- forma elegida y actualmente la única soportada.
+
 Por supuesto podría haber más relaciones, por ejemplo con un usuario:
 
 {
@@ -3699,8 +5102,7 @@ Por supuesto podría haber más relaciones, por ejemplo con un usuario:
 	]
 }   
 
-La relación puede hacerse no solo por el nombre de la tabla relacionada sino por el campo que es FK, lo cual tiene la ventaja de poder manejar más de una relación entre dos tablas:
-
+La relación *debería* poder hacerse no solo por el nombre de la tabla relacionada sino por el campo que es FK, lo cual tiene la ventaja de poder manejar más de una relación entre dos tablas:
 
 {
     "name": "Juguito Fruticon",
@@ -3755,6 +5157,112 @@ Es equivalente a ....
 }    
 
 
+# Relación de muchos a muchos (M:N)
+
+Si se desea que el framework maneje de forma automática la relación con una tabla, ésta debe agregarse al array $connect_to en la API, sea ésta una tabla directamente relacionada o bien esté del otro lado de una "tabla puente" (referida aquí de forma indistinta como "pivot").
+
+Supongamos que "tbl_categoria_persona" es una tabla relacionada a través de "tbl_categoria_persona_persona", entonces:
+
+Ej:
+
+	class TblPersona extends MyApiController
+	{ 
+		static protected $soft_delete = true;
+		static protected $connect_to = [
+			"tbl_estado",
+			//  ...
+			"tbl_categoria_persona" 
+		];	
+	} 
+
+Y se puede enviar un JSON como:
+
+	{
+		"per_varIdentificacion" : "1152472014",
+		"per_varDV" : "0",
+		"per_varRazonSocial" : "xyz",
+		// ..
+
+		"tbl_categoria_persona": [
+			{
+				"cap_intId": "10",
+				"tbl_categoria_persona_persona.nota": "Esto es una nota"
+			},
+			{
+				"cap_intId": "14"
+			} 
+		]
+	}
+
+Como puede apreciarse es posible enviar campos propios de la tabla puente si están debidamente cualificados con notación tabla.camp
+
+Veamos otro caso:
+
+Supongamos que existe una relación N:M entre "products" y "tags". Pues bien podría enviarse el ID de cada tag dentro de products:
+
+	{
+		"name": "Juguito Fruticon!!",
+		"description": "XXXXXXXXX",
+		"size": "1L",
+		"cost": 351,
+
+		"tags": [
+			{ 
+				"id_tag": 1
+			},
+			{ 
+				"id_tag": 4
+			}
+		]
+	}    
+  
+También es posible aunque algo menos performante enviar los campos de los de la tabla relacionada así:
+
+	{
+		"name": "Juguito Fruticon!!",
+		"description": "XXXXXXXXX",
+		"size": "1L",
+		"cost": 351,
+
+		"tags": [
+			{ 
+				"texto": "saludable"
+			},
+			{ 
+				"texto": "en promoción"
+			}
+		]
+	}   
+
+La única condición para esta última forma es que el conjunto de valores que enviemos determine unívocamente un registro porque sino no se sabría a cual enlazar desde la tabla puente. Caso contrario vería un mensaje de error como el siguiente:
+
+	{
+		"status": 400,
+		"error": {
+			"type": null,
+			"code": null,
+			"message": "There are more than one rows in tags matching with sent data",
+			"detail": null
+		}
+	}
+
+
+Notas:  
+
+1) No es necesario agregar la tabla puente al array $connect_to en ningún caso.
+
+2) Si crearan una tabla puente deberán correr el comando:
+
+	php com make pivot_scan --from:una_db_del_tenant
+
+o....
+
+	php com make schema all --from:una_db_del_tenan -f
+
+
+# Endpoints para tablas puente
+
+También es posible generar endpoints para tablas puente e incluir las relaciones hacia las tablas inmediatamente relacionadas con $connect_to en la api. 
 
 
 # Schema y las reglas de validación via endpoint
@@ -3826,6 +5334,13 @@ Rta:
 			}
 		}
 	}
+
+
+# UUIDs
+
+El framework reconoce a un campo como tipo "uuid" cuando el nombre es justamente "uuid" o "guid" de tipo compatible con un string y tiene el atributo de PRIMARY KEY. 
+
+Cuando las condiciones mencionadas se cumple, se incluye de forma automática el trait para manejo de Uuids y el framework se encarga de gestionar esta funcionalidad.
 
 
 # Librerías
@@ -4021,6 +5536,7 @@ Los assets se encuentran dentro de la carpeta public/assets y dentro la estructu
 
 Por defecto se carga el template "app_layout.php" pero se pueden usar cuantos templates se desee y éste es especificado como tercer parámetro del método view()
 
+
 # Vistas parciales
 
 Se pueden incluir "secciones" por medio del helper section() y éstas pueden mostrarse de forma condicional:
@@ -4060,6 +5576,38 @@ Ej:
 En el template y en las vistas está disponible la variable $ctrl que alamcena el nombre del controlador actual tal y como aparece en la url. Ej: /home o /home/algo vale "home"
 
 
+# Pasaje de variables hacia sub-vistas
+
+Las variables pueden pasar del controlador a las vistas y el mismo truco puede usarse para pasar nuevamente variables desde por ejemplo el layout a una "section" así o de una vista a una subvista (section) o de una section a otra (sub-section)
+
+	<?php
+		section('navbar.php', [
+			'my_var' => $my_var
+		]);
+    ?>
+
+
+# Hookear la clase View
+
+La clase View es extendida convenientemente como MyView a fin de poder agregar funcionalidad sin tener que tocar la clase View directamente que es parte del Core y sería sobreescrita al actualizar SimpleRest.
+
+Ej:
+
+	class MyView extends View 
+	{
+		function __construct(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php')
+		{
+			/*
+				Agregado
+			*/
+			
+			$vars_to_be_passed['my_var'] = 'Hello World!';
+
+			parent::__construct($view_path, $vars_to_be_passed, $layout);
+		}
+	}
+
+
 # Internacionalización
 
 Para las traducciones se utiliza i18n y estas se alojan en el directorio app\locale y las mismas deben ser compiladas. Para Windows existe un .bat de ejemplo que realiza el proceso: compile_i18n.bat
@@ -4093,3 +5641,296 @@ Agregar en el bloque lo siguiente:
 		rewrite ^([^.]*[^/])$ $1/ permanent;
 		try_files $uri $uri/ /index.php?q=$uri&$args;
 	}
+
+
+# Consumo de APIs
+
+El framework provee la función Url::consume_api() para el consumo de APIs. 
+
+    consume_api(string $url, 
+                string $http_verb, 
+                $body = null, 
+                ?Array $headers = null, 
+                ?Array $options = null, 
+                $decode = true)
+
+
+En caso de éxito responde con algo como:
+
+    Array
+    (
+        [data] => Array
+            (
+                [userId] => 1
+                [title] => Some title
+                [body] => Other long description
+                [id] => 101
+            )
+
+        [http_code] => 201
+        [error] => 
+    )
+
+En caso de fallo (http status code 3xx o 4xx o 5xx) algo como:
+
+    Array
+    (
+        [data] => Array
+            (
+                [error] => Un error cualquiera
+            )
+
+        [http_code] => 400
+        [error] => 
+    )
+
+
+Ej:
+
+# Leer un recurso
+
+	use simplerest\libs\Url;
+
+	// ...
+
+	$res = Url::consume_api('https://jsonplaceholder.typicode.com/albums', 'GET');
+	dd($res);
+
+Y bien podría haber una lógica de control de errores:
+
+	if ($res['http_code'] != 200){
+        // notificar error
+		return;
+	} else {
+        $data   = $res['data'];
+        
+        //...   
+    }
+
+Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON pero se puede des-activar ese comportamiento de dos formas:
+
+1) Pasando un Accept de tipo 'text/plain' o ...
+
+	$res = Url::consume_api('http://xxxxxxxxxxxxx', 'GET', null, [
+		'Accept' => 'text/plain'
+	]);
+
+2) Pasando como 6to parámetro false 
+
+	$res = Url::consume_api('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
+  
+
+# Crear un recurso
+
+	$data = '{
+		"userId": 1,
+		"title": "Some title",
+		"body": "Some long description"
+  	}';
+
+	$res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+	dd($res);  
+
+Ej:
+
+# Body como array
+
+	$data = [
+            "userId" => 1,
+            "title" => "Some title",
+            "body" => "Other long description"
+	];
+
+	$res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+	dd($res);  
+
+Ej: 
+
+# Enviar un archivo
+
+	$xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
+
+	$response = Url::consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
+		"Content-type" => "text/xml"
+	]);
+
+donde get_xml.php puede ser algo como:
+
+	<?php
+
+	try {
+		$postData = file_get_contents('php://input');
+		$data = @file_put_contents("file.xml", $postData);
+
+		if ($data == false){
+			throw new Exception("Error trying to write file", 1);
+		}
+
+		echo json_encode(['data' => $data ]);
+	} catch (\Exception $e) {
+		echo json_encode(['error' => $e->getMessage()]);
+	}
+
+
+Todos los verbos http (GET, POST, PUT, PATCH,...) son soportados
+
+
+# Autorización 
+
+Web tokens pueden ser enviados a la función consume_api() via el array de headers.
+
+Ej:
+
+    $response = Url::consume_api('http://xxxxxxxxx:8080/api/some_resource', 'GET', null, [
+        "Authorization" => "Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx"
+    ]);
+
+
+# Encodeo base 64
+
+Lo imporante es no solo encodear sino pasar el Content-type correcto.
+
+Ej:
+
+    $encoded = base64_encode($file);
+
+    $response = Url::consume_api('http://xxxxxxxxx:8080/api/some_resource', 'POST', $encoded, [
+        "Content-type"  => "text/plain"
+    ]);
+
+
+### Componentes del core del framework
+
+# Base de datos
+
+Se consideran componentes del core de SimpleRest cualquier archivo dentro de /app/core y también las librerías y helpers que vienen con el framework ya que muy probablemente son dependencias del mismo.
+
+Específicamente respecto de lo que es manejo de base de datos se pueden enumerar 4 clases y el helper db.php 
+
+Model (.php)		Query Builder
+Paginator (.php)	Paginador
+DB (.php)			Administración de conexiones
+Schema (.php)		Escritura y lectura sobre RDBMS 
+db (.php) 			Helpers para bases de datos
+
+Relación:
+
+db -----> DB <------> Model --> Paginator
+
+Schema es usado por las clases MakeControllerBase (comandos "make") y MigrationsController (migraciones).
+No hay dependencias entre Schema y Model porque la segunda solo crea comandos pero no los ejecuta.
+
+Actualmente Model soporta MySQL / MariaDB / SQLite y Postgres pero Schema es más limitada y se planea extender su funcionalidad para cubrir más RDBMS mediante traits. 
+
+
+# Http
+
+Relacionado con el tema de peticiones http podemos enumerar las siguientes clases y helpers:
+
+Response 			Manejo de respuestas http		
+Request				Procesamiento de peticiones http
+FrontController		Front controller
+Route				Enrutador
+Url					Librería
+ApiController 		Creación de APIs Restful
+
+Hay más clases relacionadas pero se mencionaron las principales.
+
+
+# Validaciones
+
+Validator
+ValidationRules
+
+
+# Archivos
+
+Files				Utilidades para el manejo de archivos
+MultipleUploader	Manejador de uploads
+
+
+# Seguridad
+
+Acl
+FoldersAclExtension
+
+
+# Debugging
+
+Debug				
+
+
+# Manejo de errores
+
+ExceptionHandler 	Trait 
+
+
+# Manejo de cadenas
+
+Strings 			Librería
+
+
+# Envio de correos
+
+Mails				Librería
+
+
+### Dumping 
+
+Para imprimir en pantalla o en la terminal de forma sencilla cualquier tipo de dato el framework provee las clases Debug, StdOud y el helper dd()
+
+El helper dd() solo es un atajo para Debug::dd()
+
+	dd($val, $msg = null, bool $additional_carriage_return = false)
+
+Ej:
+
+	dd([4,5, 7], "My Array");
+	dd('hola!', null);
+	dd(677.55, null);
+	dd(true, 'My bool');
+
+Salida:
+
+	--[ My Array ]-- 
+	Array
+	(
+		[0] => 4
+		[1] => 5
+		[2] => 7
+	)
+
+	hola!
+
+	677.55
+	--[ My bool ]-- 
+	true
+
+
+La clase StdOut está pensanda para simplificar el uso de la clase Debug en aplicaciones de consola (aunque su uso no es exclusivo) y permite "encender" o "apagar" la salida fácilmente sin necesidad de retener el buffer.
+
+	static function hideResponse()
+	static function showResponse()
+	static function pprint($v, bool $additional_carriage_return = false))
+
+
+### Perfilador del código
+
+Para el perfilado de tiempos de ejecución SimpleRest provee la librería Time.
+
+Lo primero es elegir el intervalo de medición (NANO, MICRO o MILI segundos). Se puede especificar cuántas intereaciones de van a realizar y suprimir la salida estándar con Time::noOutput().
+
+Ej:
+
+	Time::setUnit('MILI');
+	Time::noOutput();
+
+	$conn = DB::getConnection();
+
+	$t = Time::exec(function() use ($conn){         
+		$sql = "INSERT INTO `baz2` (`name`, `cost`) VALUES ('hhh', '789')";
+		$conn->exec($sql);
+	}, 1);  
+	
+	dd("Time: $t ms");  
+

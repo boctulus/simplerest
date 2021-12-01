@@ -6,6 +6,9 @@ if (!defined('ROOT_PATH'))
 if (!defined('CONFIG_PATH'))
 	define('CONFIG_PATH', ROOT_PATH  . 'config' . DIRECTORY_SEPARATOR);
 
+if (!defined('DOCS_PATH'))
+	define('DOCS_PATH', ROOT_PATH  . 'docs' . DIRECTORY_SEPARATOR);
+
 if (!defined('UPLOADS_PATH'))
     define('UPLOADS_PATH', ROOT_PATH . 'uploads'. DIRECTORY_SEPARATOR); 
 
@@ -27,6 +30,10 @@ if (!defined('CORE_PATH'))
     
 if (!defined('MODELS_PATH'))
     define('MODELS_PATH', APP_PATH . 'models'. DIRECTORY_SEPARATOR);   
+
+if (!defined('SCHEMA_PATH')){
+    define('SCHEMA_PATH', APP_PATH . 'schemas' . DIRECTORY_SEPARATOR);
+}
 
 if (!defined('MIGRATIONS_PATH'))
     define('MIGRATIONS_PATH', APP_PATH . 'migrations'. DIRECTORY_SEPARATOR);   

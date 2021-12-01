@@ -4,7 +4,7 @@ namespace simplerest\core\api\v1;
 
 use simplerest\controllers\MyApiController;
 use simplerest\libs\Factory;
-use simplerest\libs\Arrays;
+use simplerest\core\Acl;
 use simplerest\libs\Strings;
 use simplerest\libs\DB;
 use simplerest\libs\Debug;
@@ -70,13 +70,13 @@ class Collections extends MyApiController
             $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
 
             if (!class_exists($model))
-                Factory::response()->sendError("Entity $entity does not exists", 400);
+                Factory::response()->sendError("Entity $entity doesn't exist", 400);
             
                       
             $id = DB::table('collections')->create([
                 'entity' => $table_name,
                 'refs' => json_encode($refs),
-                'belongs_to' => $this->uid
+                'belongs_to' => Acl::getCurrentUid()
             ]);
 
             if ($id !== false){
@@ -114,12 +114,12 @@ class Collections extends MyApiController
                 $row  = DB::table('collections')->where(['id', $id])->first();
             
                 if (!$row){
-                    Factory::response()->code(404)->sendError("Collection for id=$id does not exists");
+                    Factory::response()->code(404)->sendError("Collection for id=$id doesn't exist");
                 }
             
-                $sp = Factory::acl()->hasSpecialPermission('write_all_collections', $this->roles);
+                $sp = Factory::acl()->hasSpecialPermission('write_all_collections');
 
-                if (!$sp && $row['belongs_to'] != $this->uid){
+                if (!$sp && $row['belongs_to'] != Acl::getCurrentUid()){
                     Factory::response()->sendError('Forbidden', 403, 'You are not the owner');
                 }         
                                
@@ -132,7 +132,7 @@ class Collections extends MyApiController
                 $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
 
                 if (!class_exists($model))
-                    Factory::response()->sendError("Entity $entity does not exists", 400);     
+                    Factory::response()->sendError("Entity $entity doesn't exist", 400);     
                 
                 $instance = (new $model(true));      
 
@@ -149,7 +149,7 @@ class Collections extends MyApiController
                         Factory::response()->sendError(_("Collections are not available to this resource")); 
                     }
                     
-                    $instance->where([$instance->belongsTo() => $this->uid]);
+                    $instance->where([$instance->belongsTo() => Acl::getCurrentUid()]);
                 }
 
                 $validado = (new Validator())->setRequired($put_mode)->validate($instance->getRules(), $data);
@@ -158,7 +158,7 @@ class Collections extends MyApiController
                 }   
                 
                 if ($instance->inSchema(['updated_by'])){
-                    $data['updated_by'] = $this->uid;
+                    $data['updated_by'] = Acl::getCurrentUid();
                 }                
 
                 $refs = json_decode($row['refs']);
@@ -198,12 +198,12 @@ class Collections extends MyApiController
             $row  = DB::table('collections')->where(['id', $id])->first();
             
             if (!$row){
-                Factory::response()->code(404)->sendError("Collection for id=$id does not exists");
+                Factory::response()->code(404)->sendError("Collection for id=$id doesn't exist");
             }
             
-            $sp = Factory::acl()->hasSpecialPermission('write_all_collections', $this->roles);
+            $sp = Factory::acl()->hasSpecialPermission('write_all_collections');
 
-            if (!$sp && $row['belongs_to'] != $this->uid){
+            if (!$sp && $row['belongs_to'] != Acl::getCurrentUid()){
                 Factory::response()->sendError('Forbidden', 403, 'You are not the owner');
             }         
 
@@ -216,13 +216,13 @@ class Collections extends MyApiController
             $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
 
             if (!class_exists($model))
-                Factory::response()->sendError("Entity $entity does not exists", 400);
+                Factory::response()->sendError("Entity $entity doesn't exist", 400);
                  
             $instance = (new $model(true));     
 
             // Table must have 'belongs_to' 
             if (!$sp) {
-                $instance->where(['belongs_to' => $this->uid]);
+                $instance->where(['belongs_to' => Acl::getCurrentUid()]);
             }    
             
             $refs = json_decode($row['refs']);

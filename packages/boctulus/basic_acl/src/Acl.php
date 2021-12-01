@@ -17,7 +17,6 @@ class Acl extends \simplerest\core\Acl
 
 
     public function __construct() { 
-        $this->config = config();
         $this->setup();
     }
 
@@ -30,26 +29,6 @@ class Acl extends \simplerest\core\Acl
             $this->role_ids[]   = $rr['id'];
         }
     }
-    
-    // Not in interfaces neither needed 
-
-    public function hasRole(string $role){
-        return in_array($role, $this->roles);
-    }
-
-    public function hasAnyRole(array $authorized_roles){
-        $authorized = false;
-        foreach ((array) $this->roles as $role)
-            if (in_array($role, $authorized_roles))
-                $authorized = true;
-
-        return $authorized;        
-    }
-
-    public function getSpPermissions(){
-        return $this->sp_permissions;
-    }
-
 
 }
 

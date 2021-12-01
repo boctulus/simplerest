@@ -144,7 +144,13 @@ class GoogleController extends Controller
                 $uid = $row[$this->__id];
                 $roles = DB::table('user_roles')->where(['user_id' => $uid]);
                            
-                $_permissions = DB::table('user_tb_permissions')->assoc()->select(['tb', 'can_create as c', 'can_show as r', 'can_update as u', 'can_delete as d', 'can_list as l'])->where(['user_id' => $uid])->get();
+                $_permissions = DB::table('user_tb_permissions')
+                ->assoc()
+                ->select([
+                    'tb', 'can_create as c', 'can_show as r', 'can_update as u', 'can_delete as d', 'can_list as l'
+                ])
+                ->where(['user_id' => $uid])
+                ->get();
 
                 $perms = [];
                 foreach ($_permissions as $p){
