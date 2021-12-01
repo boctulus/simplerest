@@ -5584,12 +5584,15 @@ class DumbController extends Controller
         ]);
     }
 
+    /*
+        Seguir testeando pero con CUIDADO !!!!!!!!!
+    */
     function test_copy_with_backup(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
         // Antes de iniciar la prueba limpio el directorio destino
-        Files::delTree($dst);
+        Files::delTree($dst);  /// OJO !!!
 
         Files::setBackupDirectory(ROOT_PATH . 'backups');
 
