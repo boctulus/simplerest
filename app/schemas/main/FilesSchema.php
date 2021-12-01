@@ -51,20 +51,20 @@ class FilesSchema implements ISchema
 			'fks' 			=> ['belongs_to'],
 
 			'relationships' => [
-				'users' => [
-					['users.id','files.belongs_to']
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','files.belongs_to']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
+				  'tbl_usuario_empresa' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'users',
-				        1 => 'id',
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
 				      ),
 				      1 => 
 				      array (
@@ -76,20 +76,20 @@ class FilesSchema implements ISchema
 				),
 
 			'relationships_from' => [
-				'users' => [
-					['users.id','files.belongs_to']
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','files.belongs_to']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
+				  'tbl_usuario_empresa' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'users',
-				        1 => 'id',
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
 				      ),
 				      1 => 
 				      array (

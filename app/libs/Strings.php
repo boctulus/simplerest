@@ -643,28 +643,7 @@ class Strings
 	}
         
 	static function removeDuplicateSlashes(string $path){
-		$path = trim($path);
-		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
-	}
-
-	static function addTrailingSlash(string $path){
-		$path = trim($path);
-
-		if (!static::endsWith('/', $path) && !static::endsWith('\\', $path)){
-			return $path . DIRECTORY_SEPARATOR;
-		}
-
-		return $path;
-	}
-
-	static function removeTrailingSlash(string $path){
-		$path = trim($path);
-
-		if (static::endsWith('/', $path) || static::endsWith('\\', $path)){
-			return substr($path, 0, strlen($path)-1);
-		}
-		
-		return $path;
+       	return preg_replace('#/+#','/',$path);
 	}
 
 }

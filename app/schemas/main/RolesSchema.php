@@ -25,7 +25,7 @@ class RolesSchema implements ISchema
 
 			'nullable'		=> ['id'],
 
-			'uniques'		=> ['name'],
+			'uniques'		=> [],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int'],
