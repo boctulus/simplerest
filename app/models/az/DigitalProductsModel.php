@@ -1,7 +1,8 @@
 <?php
 
-namespace simplerest\models;
+namespace simplerest\models\az;
 
+use simplerest\models\MyModel;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\az\DigitalProductsSchema;
 

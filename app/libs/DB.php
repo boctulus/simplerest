@@ -411,10 +411,6 @@ class DB
 		// Usar un wrapper y chequear el tipo
 		if (!Strings::contains(' FROM ', $from))
 		{
-			// $names = explode('_', $from);
-			// $names = array_map(function($str){ return ucfirst($str); }, $names);
-			// $model_instance = Strings::camelToSnake($from);	
-
 			$model_instance = Strings::camelToSnake($from);
 
 			$class = get_model_name($from);
