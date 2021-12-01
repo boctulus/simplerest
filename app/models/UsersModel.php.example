@@ -1,21 +1,21 @@
 <?php
 
-namespace simplerest\models\main;
+namespace simplerest\models;
 
+use simplerest\core\Model;
+use simplerest\libs\ValidationRules;
 
-use simplerest\models\MyModel;
-use simplerest\schemas\main\UsersSchema;
+/*
+	La ruta depende del nombre de la conexión por defecto o sea será algo como:
 
-class UsersModel extends MyModel
-{
+	simplerest\models\schemas\{nombre_conexion_default}\UsersSchema
+*/
+use simplerest\models\schemas\legion\main\UsersSchema;  
+
+class UsersModel extends Model
+ { 	
 	protected $hidden   = [	'password' ];
 	protected $not_fillable = ['confirmed_email', 'active'];
-
-	static public $email    = 'email';
-	static public $username = 'username';
-	static public $password = 'password';
-	static public $confirmed_email = 'confirmed_email';
-	static public $active = 'active';
 
     function __construct(bool $connect = false){		
 		$this->registerInputMutator('password', function($pass){ 
