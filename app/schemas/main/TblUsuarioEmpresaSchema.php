@@ -55,9 +55,6 @@ class TblUsuarioEmpresaSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				'folder_other_permissions' => [
-					['folder_other_permissions.belongs_to','tbl_usuario_empresa.use_intId']
-				],
 				'user_sp_permissions' => [
 					['user_sp_permissions.user_id','tbl_usuario_empresa.use_intId']
 				],
@@ -74,66 +71,21 @@ class TblUsuarioEmpresaSchema implements ISchema
 				'folders' => [
 					['folders.belongs_to','tbl_usuario_empresa.use_intId']
 				],
-				'user_tb_permissions' => [
-					['user_tb_permissions.user_id','tbl_usuario_empresa.use_intId']
-				],
 				'files' => [
 					['files.belongs_to','tbl_usuario_empresa.use_intId']
 				],
 				'user_roles' => [
 					['user_roles.user_id','tbl_usuario_empresa.use_intId']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','tbl_usuario_empresa.use_intId']
+				],
+				'folder_other_permissions' => [
+					['folder_other_permissions.belongs_to','tbl_usuario_empresa.use_intId']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'folder_other_permissions' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'folder_other_permissions',
-				        1 => 'belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				    ),
-				  ),
-				  'user_sp_permissions' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'user_sp_permissions',
-				        1 => 'user_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				    ),
-				  ),
-				  'api_keys' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'api_keys',
-				        1 => 'user_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				    ),
-				  ),
 				  'folder_permissions' => 
 				  array (
 				    0 => 
@@ -195,22 +147,6 @@ class TblUsuarioEmpresaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'user_tb_permissions' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'user_tb_permissions',
-				        1 => 'user_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				    ),
-				  ),
 				  'files' => 
 				  array (
 				    0 => 
@@ -234,6 +170,70 @@ class TblUsuarioEmpresaSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'user_roles',
+				        1 => 'user_id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				      ),
+				    ),
+				  ),
+				  'folder_other_permissions' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'folder_other_permissions',
+				        1 => 'belongs_to',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				      ),
+				    ),
+				  ),
+				  'user_sp_permissions' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'user_sp_permissions',
+				        1 => 'user_id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				      ),
+				    ),
+				  ),
+				  'api_keys' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'api_keys',
+				        1 => 'user_id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				      ),
+				    ),
+				  ),
+				  'user_tb_permissions' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'user_tb_permissions',
 				        1 => 'user_id',
 				      ),
 				      1 => 

@@ -18,7 +18,9 @@ class UserRolesSchema implements ISchema
 				'id' => 'INT',
 				'user_id' => 'INT',
 				'role_id' => 'INT',
+				'created_by' => 'INT',
 				'created_at' => 'STR',
+				'updated_by' => 'INT',
 				'updated_at' => 'STR'
 			],
 
@@ -26,7 +28,7 @@ class UserRolesSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'created_by', 'updated_by', 'updated_at'],
 
 			'uniques'		=> [],
 
@@ -34,38 +36,24 @@ class UserRolesSchema implements ISchema
 				'id' => ['type' => 'int'],
 				'user_id' => ['type' => 'int', 'required' => true],
 				'role_id' => ['type' => 'int', 'required' => true],
-				'created_at' => ['type' => 'datetime'],
+				'created_by' => ['type' => 'int'],
+				'created_at' => ['type' => 'datetime', 'required' => true],
+				'updated_by' => ['type' => 'int'],
 				'updated_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> ['user_id', 'role_id'],
+			'fks' 			=> ['role_id', 'user_id'],
 
 			'relationships' => [
-				'users' => [
-					['users.id','user_roles.user_id']
-				],
 				'roles' => [
 					['roles.id','user_roles.role_id']
+				],
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','user_roles.user_id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
 				  'roles' => 
 				  array (
 				    0 => 
@@ -79,37 +67,37 @@ class UserRolesSchema implements ISchema
 				      array (
 				        0 => 'user_roles',
 				        1 => 'role_id',
+				      ),
+				    ),
+				  ),
+				  'tbl_usuario_empresa' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'user_roles',
+				        1 => 'user_id',
 				      ),
 				    ),
 				  ),
 				),
 
 			'relationships_from' => [
-				'users' => [
-					['users.id','user_roles.user_id']
-				],
 				'roles' => [
 					['roles.id','user_roles.role_id']
+				],
+				'tbl_usuario_empresa' => [
+					['tbl_usuario_empresa.use_intId','user_roles.user_id']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
 				  'roles' => 
 				  array (
 				    0 => 
@@ -123,6 +111,22 @@ class UserRolesSchema implements ISchema
 				      array (
 				        0 => 'user_roles',
 				        1 => 'role_id',
+				      ),
+				    ),
+				  ),
+				  'tbl_usuario_empresa' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'user_roles',
+				        1 => 'user_id',
 				      ),
 				    ),
 				  ),

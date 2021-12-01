@@ -42,7 +42,7 @@ class FolderPermissionsSchema implements ISchema
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 
-			'fks' 			=> ['belongs_to', 'access_to'],
+			'fks' 			=> ['access_to', 'belongs_to'],
 
 			'relationships' => [
 				'tbl_usuario_empresa' => [
@@ -60,20 +60,6 @@ class FolderPermissionsSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario_empresa',
 				        1 => 'use_intId',
-				        'alias' => '__belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folder_permissions',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
 				        'alias' => '__access_to',
 				      ),
 				      1 => 
@@ -82,13 +68,27 @@ class FolderPermissionsSchema implements ISchema
 				        1 => 'access_to',
 				      ),
 				    ),
+				    1 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				        'alias' => '__belongs_to',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'folder_permissions',
+				        1 => 'belongs_to',
+				      ),
+				    ),
 				  ),
 				),
 
 			'relationships_from' => [
 				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa|__belongs_to.use_intId','folder_permissions.belongs_to'],
-					['tbl_usuario_empresa|__access_to.use_intId','folder_permissions.access_to']
+					['tbl_usuario_empresa|__access_to.use_intId','folder_permissions.access_to'],
+					['tbl_usuario_empresa|__belongs_to.use_intId','folder_permissions.belongs_to']
 				]
 			],
 
