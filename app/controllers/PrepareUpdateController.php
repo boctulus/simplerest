@@ -30,6 +30,7 @@ class PrepareUpdateController extends ConsoleController
         $dst = '/home/feli/Desktop/UPDATE';
         //$dst = '/home/www/html/simplerest-clone';
 
+        // Solo para pruebas !!!!
         Files::delTree($dst);
 
         $str_files = <<<'FILES'
@@ -61,6 +62,7 @@ class PrepareUpdateController extends ConsoleController
         packages
         app/controllers/UpdateController.php     
         public/app.php
+        *.txt
         FILES;
 
         $files = explode(PHP_EOL, $str_files);
@@ -68,10 +70,9 @@ class PrepareUpdateController extends ConsoleController
         $except =  [
             'db_dynamic_load.php',
             'PrepareUpdateController.php',
-            'docs/dev'
+            'docs/dev',
+            'glob:*.zip'
         ];
-
-        $except = array_merge($except, Files::recursiveGlob(ROOT_PATH . '*.zip'));
 
         Files::copy($ori, $dst, $files, $except);
     }
