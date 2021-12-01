@@ -75,8 +75,8 @@ $pivot_fks = array (
     'tbl_estado' => 'est_intIdEstado_rol',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdCreador',
-      1 => 'usu_intIdActualizador',
+      0 => 'usu_intIdActualizador',
+      1 => 'usu_intIdCreador',
     ),
   ),
   'tbl_cuenta_contable' => 
@@ -485,13 +485,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_rol.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_rol.usu_intIdActualizador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_rol.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_rol.usu_intIdCreador',
       ),
     ),
   ),

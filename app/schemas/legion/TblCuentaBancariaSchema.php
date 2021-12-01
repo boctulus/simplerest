@@ -66,8 +66,8 @@ class TblCuentaBancariaSchema implements ISchema
 					['tbl_estado.est_intId','tbl_cuenta_bancaria.est_intIdEstado_cba']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cuenta_bancaria.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cuenta_bancaria.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cuenta_bancaria.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cuenta_bancaria.usu_intIdCreador']
 				]
 			],
 

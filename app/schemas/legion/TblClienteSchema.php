@@ -70,8 +70,8 @@ class TblClienteSchema implements ISchema
 					['tbl_persona.per_intId','tbl_cliente.ali_intIdPersona']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cliente.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cliente.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cliente.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cliente.usu_intIdActualizador']
 				],
 				'tbl_cliente_informacion_tributaria' => [
 					['tbl_cliente_informacion_tributaria.cli_intIdCliente','tbl_cliente.cli_intId'],
@@ -298,12 +298,12 @@ class TblClienteSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_cliente',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -312,12 +312,12 @@ class TblClienteSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_cliente',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

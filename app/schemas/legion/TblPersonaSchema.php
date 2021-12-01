@@ -101,11 +101,11 @@ class TblPersonaSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_persona.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_persona.usu_intIdCreador']
 				],
-				'tbl_cliente' => [
-					['tbl_cliente.ali_intIdPersona','tbl_persona.per_intId']
-				],
 				'tbl_proveedor' => [
 					['tbl_proveedor.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_cliente' => [
+					['tbl_cliente.ali_intIdPersona','tbl_persona.per_intId']
 				],
 				'tbl_factura' => [
 					['tbl_factura.per_intIdPersona','tbl_persona.per_intId']
@@ -243,38 +243,6 @@ class TblPersonaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cliente' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_cliente',
-				        1 => 'ali_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_proveedor' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_proveedor',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_factura' => 
 				  array (
 				    0 => 
@@ -299,6 +267,38 @@ class TblPersonaSchema implements ISchema
 				      array (
 				        0 => 'tbl_categoria_persona_persona',
 				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_proveedor' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_proveedor',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_cliente' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_cliente',
+				        1 => 'ali_intIdPersona',
 				      ),
 				      1 => 
 				      array (

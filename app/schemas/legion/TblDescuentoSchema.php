@@ -51,8 +51,8 @@ class TblDescuentoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_descuento.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_descuento.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_descuento.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_descuento.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_descuento.usu_intIdCreador']
 				],
 				'tbl_cliente' => [
 					['tbl_cliente.des_intIdDescuento','tbl_descuento.des_intId']

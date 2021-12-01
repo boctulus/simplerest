@@ -594,7 +594,7 @@ class MakeControllerBase extends Controller
         $folder = '';
 
         if (!isset($from_db) && DB::getCurrentConnectionId() == null){
-            $folder = DB::getDefaultConnectionId();
+            $folder = $from_db = DB::getDefaultConnectionId();
         } else {
             $db_conn_id = DB::getCurrentConnectionId();
             $from_db    = $db_conn_id;
