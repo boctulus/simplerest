@@ -71,7 +71,7 @@ class Files
 		}
 
 		foreach ($files as $ix => $f){
-			$files[$ix] = Strings::removeDuplicateSlashes($f);
+			$files[$ix] = Strings::removeUnnecessarySlashes($f);
 		}
 
 		return $files;
