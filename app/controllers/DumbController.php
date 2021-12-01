@@ -5556,19 +5556,50 @@ class DumbController extends Controller
         'app/controllers');        
     }
 
-    function test_copy(){
+    function test_copy0(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+        
         Files::copy($ori, $dst, [
-            'docs'
+            'docs',
+            '/home/www/simplerest/vendor/psr/http-client/src/ClientInterface.php'
         ], 
         [
             'docs/dev',
             '/home/www/simplerest/docs/dev/TODO Supra.txt',
             'docs/INSTALACION.txt'
         ]);
+    }
 
+    /*
+        Revisar !!!!
+
+        Al especificar una ruta absoluta de directorio lo copia sin crear la estructura.
+    */
+    function test_copy01(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+        
+        Files::copy($ori, $dst, [
+            'docs',
+            '/home/www/simplerest/vendor/psr/http-client/src/'
+        ], 
+        [
+            'docs/dev',
+            '/home/www/simplerest/docs/dev/TODO Supra.txt',
+            'docs/INSTALACION.txt'
+        ]);
+    }
+
+    function test_copy(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
 
         $str_files = <<<'FILES'
         app/libs
@@ -5581,7 +5612,25 @@ class DumbController extends Controller
         Files::copy($ori, $dst, $files, [
             'app/libs/db_dynamic_load.php',
             'app/controllers/PrepareUpdateController.php',
-            //'*.zip'            
+            'glob:*.zip'            
+        ]);
+    }
+
+    function test_copy2(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        $str_files = <<<'FILES'
+        app/libs
+        glob:*.txt
+        FILES;
+
+        $files = explode(PHP_EOL, $str_files);
+
+        Files::copy($ori, $dst, $files, [
+            'app/libs/db_dynamic_load.php',
+            'app/controllers/PrepareUpdateController.php',
+            'glob:*.zip'            
         ]);
     }
 
