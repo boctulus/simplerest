@@ -8,8 +8,8 @@ use simplerest\core\Request;
 use simplerest\libs\Factory;;
 use simplerest\libs\DB;
 use simplerest\core\Model;
-use simplerest\models\BarModel;
-use simplerest\models\ProductsModel;
+use simplerest\models\az\BarModel;
+use simplerest\models\az\ProductsModel;
 use simplerest\libs\Mails;
 use simplerest\libs\Strings;
 use simplerest\libs\Hardware;
@@ -3263,7 +3263,7 @@ class DumbController extends Controller
         DB::setConnection('db2');       
         $conn = DB::getConnection();
 
-        $m = new \simplerest\models\az\ProductsModel($conn);
+        $m = new ProductsModel($conn);
     }
 
     /*
