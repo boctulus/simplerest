@@ -5,7 +5,7 @@
     "license": "Commercial.",
     "authors": [
         {
-            "name": "boctulus",
+            "name": "Pablo Gabriel Bozzolo <boctulus>",
             "email": "boctulus@gmail.com"
         }
     ],
@@ -16,7 +16,8 @@
         "facebook/graph-sdk": "^5.7",
         "phpmailer/phpmailer": "^6.1",
         "symfony/polyfill-uuid": "^1.18",
-        "vlucas/phpdotenv": "^5.2"
+        "vlucas/phpdotenv": "^5.2",
+        "jdorn/sql-formatter": "^1.2"
     },
     "autoload": {
         "psr-4": {

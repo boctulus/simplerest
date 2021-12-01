@@ -5,9 +5,10 @@
 ; Models
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+FilesModel.php
+ApiKeysModel.php
 TblUsuarioEmpresaModel.php
 #TblUsuarioModel.php
-FilesModel.php
 TblUsuarioEmpresaModel.php
 EmailNotificationsModel.php
 UserRolesModel.php
@@ -35,6 +36,6 @@ controllers/api/UserRoles.php
 controllers/api/UserSpPermissions.php
 controllers/api/UserTbPermissions.php
 controllers/api/Migrations.php
+controllers/api/Files.php
+controllers/api/Hello.php
 
-; Schemas
-;;;;;;;;;;;;;;;;;;;;;;;;;

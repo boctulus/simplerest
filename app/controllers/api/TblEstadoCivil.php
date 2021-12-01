@@ -15,5 +15,5 @@ class TblEstadoCivil extends MyApiController
     function __construct()
     {       
         parent::__construct();
-    }        
+    }       
 } 

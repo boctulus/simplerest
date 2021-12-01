@@ -1,11 +1,10 @@
 <?php
 
-use simplerest\core\View;
-use simplerest\libs\Factory;
+use simplerest\views\MyView; //
 use simplerest\libs\Strings;
 
 function view(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php', string $footer = null){
-    return (new View($view_path, $vars_to_be_passed, $layout, $footer)); 
+    return (new MyView($view_path, $vars_to_be_passed, $layout, $footer)); 
 }
 
 function assets($resource){
@@ -19,7 +18,12 @@ function assets($resource){
     return http_protocol() . '://' . $_SERVER['HTTP_HOST']. $public. '/assets/'.$resource;
 }
 
-function section($view){
+function section($view, Array $variables = []){
     global $ctrl;
+
+    if (!empty($variables)){
+        extract($variables);
+    }
+
     include VIEWS_PATH . $view;
 }

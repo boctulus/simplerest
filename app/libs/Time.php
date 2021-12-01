@@ -3,10 +3,18 @@
 namespace simplerest\libs;
 
 class Time {
-    static $unit;   
+    static $unit = 'MILI';   
     static $capture_buffer = false;
 
+    static $NANO  = 1000000000;
+    static $MICRO = 1000000;
+    static $MILI  = 1000;
+
     static function setUnit($u){
+        if (!in_array($u, ['NANO', 'MICRO', 'MILI'])){
+            throw new \InvalidArgumentException("Unit should be one of 'NANO', 'MICRO', 'MILI'");
+        }
+
         static::$unit = $u;
     }
 
@@ -15,7 +23,7 @@ class Time {
         static::$capture_buffer = true;
     }
 
-	static function exec(callable $callback, int $iterations = 100000){
+	static function exec(callable $callback, int $iterations = 1){
         $start = microtime(true);
     
         for ($i=0; $i<$iterations; $i++){
@@ -25,15 +33,15 @@ class Time {
         $t = (microtime(true) - $start) / $iterations;
         
         if (static::$unit == 'MILI'){
-            $t = $t * 1000;
+            $t = $t * static::$MILI;
         }
 
         if (static::$unit == 'MICRO'){
-           $t = $t * 1000000;
+           $t = $t * static::$MICRO;
         }
 
         if (static::$unit == 'NANO'){
-            $t = $t * 1000000000;
+            $t = $t * static::$NANO;
         }
 
         if (static::$capture_buffer){

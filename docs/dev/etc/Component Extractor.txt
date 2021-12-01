@@ -1,0 +1,22 @@
+Snippet
+
+
+("elemento").hover(
+function(e)
+{
+e.stopPropagation();
+e.preventDefault();
+      $(this).addClass("sele");
+    console.log('hover on:'+$(this).attr("class"));
+ //   eborder =   console.log($(this).css("border"));
+ if(insertCode===true){
+        $(this).append('<div style="padding:20px;">test</div>');
+         insertCode=false;
+        }
+//    $(this).css("border","1px solid yellow");
+
+},function()
+{
+console.log('Hoverout');
+ $(this).removeClass("sele");
+}

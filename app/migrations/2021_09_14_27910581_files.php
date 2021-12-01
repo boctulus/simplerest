@@ -21,7 +21,7 @@ class Files implements IMigration
         ->setCharset('utf8')
         ->setCollation('utf8_general_ci')
 
-        ->varchar('uuid', 36)->pri()
+        ->varchar('uuid', 36)->pri()   // no está siendo aplicado el pri() 
         ->varchar('filename', 255)
         ->varchar('file_ext', 30)
         ->varchar('filename_as_stored', 60)
@@ -39,7 +39,12 @@ class Files implements IMigration
         ->foreign('belongs_to')->references($users_pri)->on($users_table)->onDelete('cascade');
 
         $res = $sc->create();
+    }
 
+    public function down(){ 
+        get_default_connection();
+
+        Schema::dropIfExists('files');
     }
 }
 

@@ -2,11 +2,12 @@
 
 namespace simplerest\models;
 
-use simplerest\libs\ValidationRules;
+
+use simplerest\models\MyModel;
 ### IMPORTS
 
 class __NAME__ extends MyModel
-{ 
+{
 	### TRAITS
 	### PROPERTIES
 
@@ -14,7 +15,7 @@ class __NAME__ extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new __SCHEMA_CLASS__());
+        parent::__construct($connect, __SCHEMA_CLASS__::class);
 	}	
 }
 
