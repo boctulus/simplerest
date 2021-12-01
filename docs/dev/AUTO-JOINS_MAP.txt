@@ -1,0 +1,26 @@
+SELECT * FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` 
+WHERE `REFERENCED_TABLE_NAME` IS NOT NULL AND TABLE_SCHEMA = 'az' AND REFERENCED_TABLE_SCHEMA = 'az'
+
+$output = $st->fetchAll($this->getFetchMode());
+
+Debo llegar a ..
+
+// ok
+'relationships' => [
+	'book_reviews' => [
+		['book_reviews.book_id',  'books.id']
+	],
+	'users' => [
+		['authors.id', 'books.author_id'],
+		['editors.id', 'books.editor_id'],
+	]
+]
+	
+
+
+TABLE_SCHEMA.TABLE_NAME.COLUMN_NAME 			REFERENCED_TABLE_SCHEMA.REFERENCED_TABLE_NAME.REFERENCED_COLUMN_NAME
+--------------------------------------------------------------------------------------------------------------------
+
+az.book_reviews.book_id 				->		az.books.id
+az.books.author_id 						-> 		az.users.id
+az.books.editor_id						->		az.users.id

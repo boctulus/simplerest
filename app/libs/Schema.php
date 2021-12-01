@@ -46,19 +46,44 @@ class Schema
 		$this->fromDB();
 	}
 
-	// Válido para MySQL, en un solo sentido
-	static function getRelations(string $table = null, string $db = null)
+	// Válido para MySQL, en un solo sentido: presentes en / hacia la tabla
+	static function getFKs(string $table = null, bool $not_table = false, string $db = null)
 	{
 		if ($db == null){
 			DB::getConnection();
         	$db  = DB::database();
 		}		
+		
+        $sql = "SELECT COLUMN_NAME FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` 
+        WHERE `REFERENCED_TABLE_NAME` IS NOT NULL AND TABLE_SCHEMA = '$db' AND REFERENCED_TABLE_SCHEMA = '$db' ";
 
+		if (!empty($table)){
+			$op = $not_table ? '!=' : '=';
+			$sql .= "AND TABLE_NAME $op '$table' ";
+		}
+
+		$sql .= "ORDER BY `REFERENCED_COLUMN_NAME`;";
+
+        $cols = Model::query($sql);
+		$fks  = array_column($cols, 'COLUMN_NAME');
+
+		return $fks;
+	}
+
+	// Válido para MySQL, en un solo sentido
+	static function getRelations(string $table = null, bool $not_table = false, string $db = null)
+	{
+		if ($db == null){
+			DB::getConnection();
+        	$db  = DB::database();
+		}		
+		
         $sql = "SELECT * FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` 
         WHERE `REFERENCED_TABLE_NAME` IS NOT NULL AND TABLE_SCHEMA = '$db' AND REFERENCED_TABLE_SCHEMA = '$db' ";
 
 		if (!empty($table)){
-			$sql .= "AND TABLE_NAME = '$table' ";
+			$op = $not_table ? '!=' : '=';
+			$sql .= "AND TABLE_NAME $op '$table' ";
 		}
 
 		$sql .= "ORDER BY `REFERENCED_COLUMN_NAME`;";
@@ -79,24 +104,40 @@ class Schema
             ];
         }
 
+		$repeted = [];
+
+		if (!empty($table)){
+			foreach ($relationships as $tb => $rs){
+				$tos = array_column($rs, 'to');
+				
+				if (count($tos) >1){
+
+					$prev = null;				
+					foreach ($tos as $to){
+						if ($to == $prev){
+							if (!isset($repeted[$tb])){
+								$repeted[$tb] = [];
+							}
+
+							if (!in_array($to, $repeted[$tb])){
+								$repeted[$tb][] = $to;
+							}
+						} 
+
+						$prev = $to;
+					}
+				}            
+			}
+		}
+
         foreach ($relationships as $tb => $rs){
-            $tos = array_column($rs, 'to');
-            //$tos = sort($tos);
+			$rep = $repeted[$tb] ?? [];
+			$cnt_rep = count($rep);
+			
+			// if ($cnt_rep >0){
+			// 	dd($rep, "REPEATED for $tb"); //
+			// }			
 
-            $prev = null;
-            $repeted = [];
-            foreach ($tos as $to){
-                if ($to == $prev){
-                    if (!isset($repeted[$tb]) || !in_array($to, $repeted[$tb])){
-                        $repeted[$tb][] = $to;
-                    }
-                }
-
-                $prev = $to;
-            }
-        }
-
-        foreach ($relationships as $tb => $rs){
             foreach ($rs as $k => $r){
                 if (isset($repeted[$tb]) && in_array($r['to'], $repeted[$tb])){
                     list($tb0, $fk0) = explode('.', $r['from']);
@@ -110,23 +151,25 @@ class Schema
                     } 
                                        
                     list($tb1, $fk1) = explode('.', $r['to']);
-                     
+
 					// introduzo un alias cuando hay más de 1 relación entre dos tablas
-					if (!isset($key)){
+					if ($cnt_rep >0){
 						$alias = '__' . $fk0 . ".$fk1";				
 						$to = "$tb1|$alias";
 					}
 
                     unset($relationships[$tb][$k]);
 
-                    $relationships[$tb][] = [
+					$r = [
                         'to'   => $to, 
                         'from' => $r['from'] 
                     ];
+
+                    $relationships[$tb][] = $r;
                 }
             }      
         }
-        
+     
 		return $relationships;
 	}
 
@@ -134,7 +177,7 @@ class Schema
 		Obtiene relaciones con otras tablas de forma bi-direccional
 		(desde y hacia esa tabla)
 	*/
-	static function getAllRelations(string $table, bool $compact = false){
+	static function getAllRelations(string $table, bool $compact = false, bool $include_inverse_relations = true){
         $relations = [];
 
         $relations = Schema::getRelations($table);
@@ -158,30 +201,85 @@ class Schema
             $relations[$tb] = $arr;
         }
 
-        $more_rels = Schema::getRelations();
+		// *
+		if ($include_inverse_relations){
+			$more_rels = Schema::getRelations();
 
-        foreach ($more_rels as $tb => $rels){
+			foreach ($more_rels as $tb => $rels){
+				foreach ($rels as $rel){
+					list($tb1, $fk1) = explode('.', $rel['to']);
 
-            foreach ($rels as $rel){
-                list($tb1, $fk1) = explode('.', $rel['to']);
+					if ($tb1 == $table){
+						list($tb0, $fk0) = explode('.', $rel['from']);
+						
+						if ($compact){
+							$cell = "['{$rel['from']}','{$rel['to']}']"; 
+						} else {
+							$cell = [$rel['from'],$rel['to']]; 
+						}
 
-                if ($tb1 == $table){
-                    list($tb0, $fk0) = explode('.', $rel['from']);
-                    
-					if ($compact){
-						$cell = "['{$rel['from']}','{$rel['to']}']"; 
-					} else {
-						$cell = [$rel['from'],$rel['to']]; 
+						$relations[$tb0][] = $cell; 
 					}
+				}
+				
+			}
+		}
 
-                    $relations[$tb0][] = $cell; 
-                }
-            }
-            
-        }
+		if (!$compact){
+			$_rels = [];
+
+			foreach ($relations as $tb => $rels){
+
+				if (count($rels) == 1){
+					$r = $rels[0];
+
+					$_r0 = explode('.', $r[0]);
+					$_r1 = explode('.', $r[1]);
+
+					$r = [
+						$_r0,
+						$_r1	
+					];
+
+					$_rels[$tb][] = $r;
+
+				} else {
+					foreach($rels as $r){
+						$_r0 = explode('.', $r[0]);
+						$_r1 = explode('.', $r[1]);
+
+						if (Strings::contains('|', $_r0[0])){
+							list($_, $alias) = explode('|', $_r0[0]);
+
+							if ($_ != $tb){
+								throw new \Exception("Unexpected error");
+							}
+
+							$_r0 = [
+									$_, 
+									$_r0[1],
+									'alias' => $alias
+							];
+						}
+						
+
+						$r = [
+							$_r0,
+							$_r1	
+						];
+
+						$_rels[$tb][] = $r;
+
+					}
+				}				
+			}
+
+			$relations = $_rels;
+		}
 
         return $relations;
     }
+
 
 	/*
     	Given a table name gets a filename including full path for a posible migration file 
@@ -197,6 +295,14 @@ class Schema
 		return MIGRATIONS_PATH . $filename;
 	}
 
+	static function getDatabases(string $conn_id = null){
+		if ($conn_id != null){
+			DB::getConnection($conn_id);
+		}
+
+		return DB::select('SHOW DATABASES', null, 'COLUMN');
+	}
+
 	static function getTables(string $conn_id = null) {	
 		$config = config();
 		
@@ -204,16 +310,15 @@ class Schema
 			if (!isset($config['db_connections'][$conn_id])){
 				throw new \Exception("Connection Id '$conn_id' not defined");
 			}			
-		} else {
-			$conn_id = $config['db_connection_default'];
 		}
 
+		DB::getConnection($conn_id);
+		
 		$db_name = DB::getCurrentDB();
 
 		return DB::select("SELECT TABLE_NAME 
 		FROM information_schema.tables
-		WHERE table_schema = '$db_name';", 
-		'COLUMN');
+		WHERE table_schema = '$db_name'", [], 'COLUMN');
 	}
 
 	/*
@@ -238,11 +343,7 @@ class Schema
         AND table_name='$table';")[0];
 	}
 
-	/*
-		SELECT a.COLUMN_NAME, a.COLUMN_COMMENT
-		FROM information_schema.COLUMNS a 
-		WHERE a.TABLE_NAME = 'facturas' AND  COLUMN_NAME = 'correo';
-	*/
+	// -- ok
 	static function getColumnComment(string $table, string $field, string $conn_id = null) {	
 		$config = config();
 		
@@ -265,7 +366,16 @@ class Schema
 	static function FKcheck(bool $status){
 		$conn = DB::getConnection();   
 
-		$st = $conn->prepare("SET FOREIGN_KEY_CHECKS=" . ((int) $status) .";");
+		switch (DB::driver()){
+			case 'mysql':
+				$cmd = "SET FOREIGN_KEY_CHECKS=" . ((int) $status) .";";
+				break;
+			case 'sqlite':
+				$cmd = "PRAGMA foreign_keys = " . ($status ? 'ON' : 'OFF')  . ";";
+				break;
+		}
+
+		$st = $conn->prepare($cmd);
 		$res = $st->execute();
 	}
 
@@ -278,18 +388,25 @@ class Schema
 	}
 
 	static function hasTable(string $tb_name, string $db_name = null)
-	{
-		if ($db_name == null){
-			$res = DB::select("SHOW TABLES LIKE '$tb_name';");
-		}else {
-			$res = DB::select("SELECT * 
-			FROM information_schema.tables
-			WHERE table_schema = '$db_name' 
-				AND table_name = '$tb_name'
-			LIMIT 1;");
-		}
+	{	
+		switch (DB::driver()){
+			case 'sqlite':
+				$res = Model::query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='$tb_name';");	
+				return (!empty($res));
 
-		return (!empty($res));	
+			case 'mysql':
+				if ($db_name == null){
+					$res = DB::select("SHOW TABLES LIKE '$tb_name';");
+				}else {
+					$res = DB::select("SELECT * 
+					FROM information_schema.tables
+					WHERE table_schema = '$db_name' 
+						AND table_name = '$tb_name'
+					LIMIT 1;");
+				}
+		
+				return (!empty($res));	
+		}
 	} 
 
 	static function hasColumn(string $table, string $column){
@@ -835,6 +952,7 @@ class Schema
 			throw new \InvalidArgumentException("Invalid index $type");
 		
 		$this->indices[$this->current_field] = $type;
+		//dd($this->indices);
 	}
 	
 	function primary(){
@@ -933,10 +1051,12 @@ class Schema
 		}
 	} 
 
-	function createTable(){
-		if ($this->tableExists()){
-			throw new \Exception("Table {$this->tb_name} already exists");
-		}
+	function createTable(bool $ignore_if_exists = false){
+		if (!$ignore_if_exists){
+			if ($this->tableExists()){
+				throw new \Exception("Table {$this->tb_name} already exists");
+			}
+		}		
 
 		if (empty($this->fields)){
 			throw new \Exception("No fields!");
@@ -967,8 +1087,9 @@ class Schema
 		}
 		
 		$cmd = substr($cmd,0,strlen($cmd)-2);
-		
-		$cmd = "CREATE TABLE `{$this->tb_name}` (\n$cmd\n) ENGINE={$this->engine} DEFAULT CHARSET={$this->charset};";
+
+		$if_not = $ignore_if_exists ? 'IF NOT EXISTS' : '';		
+		$cmd = "CREATE TABLE $if_not `{$this->tb_name}` (\n$cmd\n) ENGINE={$this->engine} DEFAULT CHARSET={$this->charset};";
 		
 		$this->commands[] = $cmd;
 		
@@ -1011,18 +1132,21 @@ class Schema
 		//$this->commands[] = 'COMMIT;';		
 		$this->query = implode("\r\n",$this->commands)."\n";
 
-		$conn = DB::getConnection();   
-	  
-		$rollback = function() use ($conn){
-			$st = $conn->prepare("DROP TABLE IF EXISTS `{$this->tb_name}`;");
-			$res = $st->execute();
-		};
-
 		try {
+
+			$conn = DB::getConnection();   
+	  
+			$rollback = function() use ($conn){
+				$st = $conn->prepare("DROP TABLE IF EXISTS `{$this->tb_name}`;");
+				$res = $st->execute();
+			};
+
 			foreach($this->commands as $change){     
 				$st = $conn->prepare($change);
 				$res = $st->execute();
 			}
+
+			DB::commit();
 
 		} catch (\PDOException $e) {
 			dd($change, 'SQL with error');
@@ -1041,10 +1165,15 @@ class Schema
 	}
 
 	// alias
-	function create(){
-		return $this->createTable();
+	function create(bool $if_not_exists = false){
+		return $this->createTable($if_not_exists);
 	}
 	
+	// alias
+	function createIfNotExists(){
+		return $this->createTable(true);
+	}
+
 	function dropTable(){
 		$this->commands[] = "DROP TABLE `{$this->tb_name}`;";
 		return $this;
@@ -1203,7 +1332,7 @@ class Schema
 		$cnt = count($lines)-1;
 		for ($i=1; $i<$cnt; $i++){
 			$str = $lines[$i];
-			
+
 			if ($lines[$i][0] == '`')
 			{
 				$field 		= NULL;
@@ -1277,29 +1406,33 @@ class Schema
 				// $this->prev_schema['fields'][$field]['first'] = ...
 
 			}else{
-				// son índices de algún tipo
-				//dd($str);
+				// Son índices de algún tipo
+				//dd($str, 'STR');
 				
-				$primary = Strings::slice($str, '/PRIMARY KEY \(`([a-zA-Z0-9_]+)`\)/');				
+				// PRIMARY KEY (`id`),
+				$primary = Strings::slice($str, '/PRIMARY KEY \(`([a-zA-Z0-9_]+)`\)/');	
 				$unique  = Strings::sliceAll($str, '/UNIQUE KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');
-				$index   = Strings::sliceAll($str, '/KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');
+				$indexs  = Strings::sliceAll($str, '/KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');
 				
-				/*
-				dd($primary);
-				dd($unique);
-				dd($index);
-				echo "-----------\n";
-				*/	
 				
-				/*
+				// dd($primary);
+				// dd($unique);
+				// dd($index);
+				// echo "-----------\n";
+
+				
 				if ($primary != NULL){
-					$this->prev_schema['indices'][$field] = 'PRIMARY';
+					$this->prev_schema['indices'][$primary] = 'PRIMARY';
 				} elseif ($unique != NULL){
-					$this->prev_schema['indices'][$field] = 'UNIQUE';
-				}if ($index != NULL){
-					$this->prev_schema['indices'][$field] = 'INDEX';
+					foreach ($unique as $u){
+						$this->prev_schema['indices'][$u] = 'UNIQUE';	
+					}
+				}if ($indexs != NULL){
+					foreach ($indexs as $index){
+						$this->prev_schema['indices'][$index] = 'INDEX';
+					}
 				}
-				*/
+				
 			}
 		}
 		
@@ -1311,21 +1444,14 @@ class Schema
 	
 	function change()
 	{	
+		// dd($this->indices, 'INDICES');
+		// dd($this->prev_schema['indices'], 'PREVIOUS INDICES');
+
 		foreach ($this->fields as $name => $field)
 		{
 			if (isset($this->prev_schema['fields'][$name])){
 				$this->fields[$name] = array_merge($this->prev_schema['fields'][$name], $this->fields[$name]);
 			} 		
-
-			/*
-			if ($name == 'vencimiento'){
-				dd($this->prev_schema['fields'][$name]['nullable']);
-				dd($this->fields[$name]);
-				exit;
-			}
-			*/
-			
-			$this->indices[$name] = $this->prev_schema['indices'][$name] ?? NULL;
 			
 			$field = $this->fields[$name];
 
@@ -1396,6 +1522,8 @@ class Schema
 		
 		}
 
+		//dd($this->indices, 'INDICES');
+
 		foreach ($this->indices as $name => $type){			
 			switch($type){
 				case "INDEX":
@@ -1424,6 +1552,8 @@ class Schema
 		
 		DB::beginTransaction();
 		try{
+			//dd($this->commands, 'SQL STATEMENTS');
+
 			foreach($this->commands as $change){     
 				$st = $conn->prepare($change);
 				$res = $st->execute();
@@ -1433,14 +1563,22 @@ class Schema
 		} catch (\PDOException $e) {
 			DB::rollback();
 			dd($change, 'SQL');
-			dd($e->getMessage(), "PDO error");		
+			dd($e->getMessage(), "PDO error");
+			throw $e;		
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
         } catch (\Throwable $e) {
-            DB::rollback();            
+            DB::rollback();     
+			throw $e;       
         }     
 	}	
+
+
+	// alias
+	function alter(){
+		$this->change();
+	}
 	
 	// reflexion
 	
@@ -1458,5 +1596,9 @@ class Schema
 	function getCurrentSchema(){
 		return $this->prev_schema;
 	}
+
+	
+
+
 }
 

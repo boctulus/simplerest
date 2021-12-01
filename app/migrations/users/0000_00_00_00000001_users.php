@@ -18,8 +18,10 @@ class Users implements IMigration
         get_default_connection();
 
         try {
+            DB::disableForeignKeyConstraints();
+
             Model::query("
-            CREATE TABLE `users` (
+            CREATE TABLE IF NOT EXISTS `users` (
                 `id` int(11) NOT NULL,
                 `firstname` varchar(50) DEFAULT NULL,
                 `lastname` varchar(80) DEFAULT NULL,
@@ -61,13 +63,16 @@ class Users implements IMigration
                 ADD CONSTRAINT `users_ibfk_4` FOREIGN KEY (`deleted_by`) REFERENCES `users` (`id`);"
             );
 
+            DB::enableForeignKeyConstraints();
             DB::commit(); 
     
         }catch(\Exception $e){
             try {
                 DB::rollback();
+                throw $e;
             } catch (\Exception $e){
                 dd($e->getMessage(), "Transacción error");
+                throw $e;
                 exit;
             }
         }	

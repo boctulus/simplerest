@@ -2,14 +2,15 @@
 
 namespace simplerest\core\api\v1;
 
+use PDO;
 use simplerest\libs\DB;
 use simplerest\libs\Url;
 use simplerest\libs\Debug;
 use simplerest\libs\Arrays;
 use simplerest\libs\Factory;
 use simplerest\libs\Strings;
-use simplerest\libs\Files;  
-use simplerest\core\Request;  
+use simplerest\libs\Time;  
+use simplerest\core\Acl;  
 use simplerest\libs\Validator;
 use simplerest\core\interfaces\IApi;
 use simplerest\core\interfaces\IAuth;
@@ -17,8 +18,9 @@ use simplerest\core\FoldersAclExtension;
 use simplerest\core\exceptions\SqlException;
 use simplerest\core\api\v1\ResourceController;
 use simplerest\core\exceptions\InvalidValidationException;
+use simplerest\core\interfaces\ISubResources;
 
-abstract class ApiController extends ResourceController implements IApi
+abstract class ApiController extends ResourceController implements IApi, ISubResources
 {
     static protected $folder_field;
     static protected $soft_delete = true;
@@ -58,34 +60,30 @@ abstract class ApiController extends ResourceController implements IApi
         }else {
             if ($this->model_table != null){            
                 $this->model_name = implode(array_map('ucfirst',explode('_', $this->model_table))) . 'Model';
-            } elseif (preg_match('/([A-Z][a-z0-9_]+[A-Z]*[a-z0-9_]*[A-Z]*[a-z0-9_]*[A-Z]*[a-z0-9_]*)/', get_called_class(), $matchs)){
+            } elseif (preg_match('/([A-Z][a-z0-9_]*[A-Z]*[a-z0-9_]*[A-Z]*[a-z0-9_]*[A-Z]*[a-z0-9_]*)/', get_called_class(), $matchs)){
                 $this->model_name = $matchs[1] . 'Model';
                 $this->model_table = Strings::camelToSnake($matchs[1]);
             } else {
                 $res->sendError("ApiController with undefined Model", 500);
             }  
         }
-        
-        $perms = $this->acl->getTbPermissions($this->model_table);
-        
-        //dd($perms, 'perms'); /////
-        //dd($this->acl->hasSpecialPermission('read_all', $this->roles));
+    
 
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
-                if ($this->acl->hasSpecialPermission('read_all', $this->roles)){
+                if ($this->acl->hasSpecialPermission('read_all')){
                     $this->addCallable('get');
                     $this->is_listable    = true;
                     $this->is_retrievable = true;
                 } else {
-                    if ($this->acl->hasResourcePermission('show', $this->roles, $this->model_table) || 
-                        $this->acl->hasResourcePermission('show_all', $this->roles, $this->model_table)){
+                    if ($this->acl->hasResourcePermission('show', $this->model_table) || 
+                        $this->acl->hasResourcePermission('show_all', $this->model_table)){
                         $this->addCallable('get');
                         $this->is_retrievable = true;
                     }
 
-                    if ($this->acl->hasResourcePermission('list', $this->roles, $this->model_table) ||
-                        $this->acl->hasResourcePermission('list_all', $this->roles, $this->model_table)){
+                    if ($this->acl->hasResourcePermission('list', $this->model_table) ||
+                        $this->acl->hasResourcePermission('list_all', $this->model_table)){
                         $this->addCallable('get');
                         $this->is_listable    = true;
                     }
@@ -93,45 +91,50 @@ abstract class ApiController extends ResourceController implements IApi
             break;
             
             case 'POST':
-                if ($this->acl->hasSpecialPermission('write_all', $this->roles)){
+                if ($this->acl->hasSpecialPermission('write_all')){
                     $this->addCallable('post');
                 } else {
-                    if ($this->acl->hasResourcePermission('create', $this->roles, $this->model_table)){
+                    if ($this->acl->hasResourcePermission('create', $this->model_table)){
                         $this->addCallable('post');
                     }
                 }  
             break;    
 
             case 'PUT':
-                if ($this->acl->hasSpecialPermission('write_all', $this->roles)){
+                if ($this->acl->hasSpecialPermission('write_all')){
                     $this->addCallable('put');
                 } else {
-                    if ($this->acl->hasResourcePermission('update', $this->roles, $this->model_table)){
+                    if ($this->acl->hasResourcePermission('update', $this->model_table)){
                         $this->addCallable('put');
                     }
                 }  
             break;
 
             case 'PATCH':
-                if ($this->acl->hasSpecialPermission('write_all', $this->roles)){
+                if ($this->acl->hasSpecialPermission('write_all')){
                     $this->addCallable('patch');
                 } else {
-                    if ($this->acl->hasResourcePermission('update', $this->roles, $this->model_table)){
+                    if ($this->acl->hasResourcePermission('update', $this->model_table)){
                         $this->addCallable('patch');
                     }
                 }  
             break;    
 
             case 'DELETE':
-                if ($this->acl->hasSpecialPermission('write_all', $this->roles)){
+                if ($this->acl->hasSpecialPermission('write_all')){
                     $this->addCallable('delete');
                 } else {
-                    if ($this->acl->hasResourcePermission('delete', $this->roles, $this->model_table)){
+                    if ($this->acl->hasResourcePermission('delete', $this->model_table)){
                         $this->addCallable('delete');
                     }
                 }  
             break;
         } 
+
+        $perms = $this->acl->getTbPermissions($this->model_table, false);
+        
+        //dd($perms, 'perms'); /////
+        //dd($this->acl->hasSpecialPermission('read_all'));
                     
         
         if ($perms !== NULL)
@@ -150,15 +153,15 @@ abstract class ApiController extends ResourceController implements IApi
 
                 case 'GET': 
                     // sería más eficiente chequear read_all directamente si existe.
-                    // usar isAllowed()
+                    // usar isri()
 
-                    if ($this->acl->hasResourcePermission('list_all', $this->roles, $this->model_table)){
+                    if ($this->acl->hasResourcePermission('list_all', $this->model_table)){
                         $this->is_listable    = true;
                     } else {
                         $this->is_listable     = (($perms & 16) AND 1) || (($perms & 64) AND 1);
                     }
 
-                    if ($this->acl->hasResourcePermission('show_all', $this->roles, $this->model_table)){
+                    if ($this->acl->hasResourcePermission('show_all', $this->model_table)){
                         $this->is_retrievable    = true;
                     } else {
                         $this->is_retrievable  = (($perms & 8 ) AND 1) || (($perms & 32) AND 1);
@@ -199,13 +202,12 @@ abstract class ApiController extends ResourceController implements IApi
         $this->impersonated_by = $this->auth->impersonated_by ?? null;
 
     
-        //dd($this->uid ?? NULL, 'uid');
-        //dd($perms, 'permissions');
-        //dd($this->roles, 'roles');    
-        //dd($this->is_listable, 'is_listable?');
-        //dd($this->is_retrievable, 'is_retrievable?');
-        //dd($this->callable, 'callables');
-        //dd($this->impersonated_by, 'impersonated_by);
+        // dd(Acl::getCurrentUid(), 'uid');
+        // dd($perms, 'permissions');
+        // dd($this->is_listable, 'is_listable?');
+        // dd($this->is_retrievable, 'is_retrievable?');
+        // dd($this->callable, 'callables');
+        // dd($this->impersonated_by, 'impersonated_by');
         //exit;
         
         /*
@@ -217,33 +219,6 @@ abstract class ApiController extends ResourceController implements IApi
         $this->callable = array_merge($this->callable,['head','options']);
         
         //var_export($this->callable);
-    }
-    
-    /**
-     * setheaders
-     * mover a Response *
-     *
-     * @param  mixed $headers
-     *
-     * @return void
-     */
-    private function setheaders(array $headers = []) {
-        header('Access-Control-Allow-Credentials: True');
-        header('Access-Control-Allow-Headers: Origin,Content-Type,X-Auth-Token,AccountKey,X-requested-with,Authorization,Accept, Client-Security-Token,Host,Date,Cookie,Cookie2'); 
-        header('Access-Control-Allow-Methods: GET,POST,PUT,PATCH,POST,DELETE,OPTIONS'); 
-        header('Access-Control-Allow-Origin: *');
-        header('Content-Type: application/json; charset=UTF-8');
-
-        /*
-        $headers = array_merge($this->default_headers, $headers);     
-
-        foreach ($headers as $k => $val){
-            if (empty($val))
-                continue;
-            
-            header("${k}:$val");
-        }
-        */
     }
     
     /**
@@ -270,8 +245,25 @@ abstract class ApiController extends ResourceController implements IApi
     function options() {
         
     }
- 
   
+    protected function getModelInstance($fetch_mode = 'ASSOC', bool $reuse = false){
+        static $instance;
+
+        if ($reuse && !empty($instance)){
+            return $instance;
+        }
+
+        $model    = get_model_namespace() . $this->model_name;
+        $instance = (new $model(true))->setFetchMode($fetch_mode);
+        DB::setModelInstance($instance);
+
+        return $instance;
+    }
+
+    static function getConnectable(){
+        return static::$connect_to;
+    }
+
     /**
      * get
      *
@@ -319,17 +311,16 @@ abstract class ApiController extends ResourceController implements IApi
             Factory::response()->sendError('Unauthorized', 401, "You are not allowed to retrieve");  
 
         try {            
-            $model    = 'simplerest\\models\\' . $this->model_name;
-            $this->instance = (new $model(true))->assoc(); 
+            $this->instance = $this->getModelInstance();
                         
             $data    = []; 
             
             // event hook
             $this->onGettingAfterCheck($id);
 
-            if ($this->ask_for_deleted && !$this->acl->hasSpecialPermission('read_all_trashcan', $this->roles)){
+            if ($this->ask_for_deleted && !$this->acl->hasSpecialPermission('read_all_trashcan')){
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
-                    $_get[$this->instance->belongsTo()] = $this->uid;
+                    $_get[$this->instance->belongsTo()] = Acl::getCurrentUid();
                 }
             } 
 
@@ -347,17 +338,17 @@ abstract class ApiController extends ResourceController implements IApi
                 foreach ($fs as $f){
                     if (isset($_get[$f])){
                         if ($_get[$f] == 'me')
-                            $_get[$f] = $this->uid;
+                            $_get[$f] = Acl::getCurrentUid();
                         elseif (is_array($_get[$f])){
                             foreach ($_get[$f] as $op => $idx){                            
                                 if ($idx == 'me'){
-                                    $_get[$f][$op] = $this->uid;
+                                    $_get[$f][$op] = Acl::getCurrentUid();
                                 }else{      
                                     $p = explode(',',$idx);
                                     if (count($p)>1){
                                     foreach ($p as $ix => $idy){
                                         if ($idy == 'me')
-                                            $p[$ix] = $this->uid;
+                                            $p[$ix] = Acl::getCurrentUid();
                                         }
                                     }
                                     $_get[$f][$op] = implode(',',$p);
@@ -368,7 +359,7 @@ abstract class ApiController extends ResourceController implements IApi
                             if (count($p)>1){
                             foreach ($p as $ix => $idx){
                                 if ($idx == 'me')
-                                    $p[$ix] = $this->uid;
+                                    $p[$ix] = Acl::getCurrentUid();
                                 }
                             }
                             $_get[$f] = implode(',',$p);
@@ -380,7 +371,7 @@ abstract class ApiController extends ResourceController implements IApi
                 //exit; ////
 
                 if (isset($_get[$this->instance->createdBy()]) && $_get[$this->instance->createdBy()] == 'me')
-                    $_get[$this->instance->createdBy()] = $this->uid;
+                    $_get[$this->instance->createdBy()] = Acl::getCurrentUid();
 
                 foreach ($_get as $f => $v){
                     if (!is_array($v) && strpos($v, ',')=== false)
@@ -402,16 +393,18 @@ abstract class ApiController extends ResourceController implements IApi
             $attributes = $this->instance->getAttr();
             
             foreach ((array) $fields as $field){
-                if (!in_array($field,$attributes))
+                if (!in_array($field,$attributes)){
                     Factory::response()->sendError("Unknown field '$field'", 400);
+                }
             }
 
             $exclude = Arrays::shift($_get,'exclude');
             $exclude = $exclude != NULL ? explode(',',$exclude) : NULL;
 
             foreach ((array) $exclude as $field){
-                if (!in_array($field,$attributes))
+                if (!in_array($field,$attributes)){
                     Factory::response()->sendError("Unknown field '$field' in exclude", 400);
+                }
             }
 
             $ignored = [];
@@ -441,7 +434,7 @@ abstract class ApiController extends ResourceController implements IApi
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->model_table)
                     Factory::response()->sendError('Folder not found', 404);  
         
-                $this->folder_access = $this->acl->hasSpecialPermission('read_all_folders', $this->roles) || $f_rows[0]['belongs_to'] == $this->uid  || FoldersAclExtension::hasFolderPermission($this->folder, 'r');   
+                $this->folder_access = $this->acl->hasSpecialPermission('read_all_folders') || $f_rows[0]['belongs_to'] == Acl::getCurrentUid()  || FoldersAclExtension::hasFolderPermission($this->folder, 'r');   
 
                 if (!$this->folder_access)
                     Factory::response()->sendError("Forbidden", 403, "You don't have permission for the folder $this->folder");
@@ -465,9 +458,10 @@ abstract class ApiController extends ResourceController implements IApi
                                                 
                     } else {
                         // avoid guests can see everything with just 'read' permission
-                        if ($owned && !$this->acl->hasSpecialPermission('read_all', $this->roles) && !$this->acl->hasResourcePermission('show_all', $this->roles, $this->model_table))
+                        if ($owned && !$this->acl->hasSpecialPermission('read_all') && 
+                            !$this->acl->hasResourcePermission('show_all', $this->model_table))
                         {                              
-                            $_get[] = [$this->instance->belongsTo(), $this->uid];
+                            $_get[] = [$this->instance->belongsTo(), Acl::getCurrentUid()];
                         }                            
                     }
                        
@@ -485,8 +479,8 @@ abstract class ApiController extends ResourceController implements IApi
                 // avoid guests can see everything with just 'read' permission
                 if ($this->acl->isGuest()){
                     if ($owned){             
-                        if (!$this->acl->hasSpecialPermission('read_all', $this->roles) && 
-                            (!$this->acl->hasResourcePermission('show_all', $this->roles, $this->model_table))
+                        if (!$this->acl->hasSpecialPermission('read_all') && 
+                            (!$this->acl->hasResourcePermission('show_all', $this->model_table))
                         ){
                             $_get[] = [$this->instance->belongsTo(), NULL, 'IS'];
                         }
@@ -507,114 +501,10 @@ abstract class ApiController extends ResourceController implements IApi
                     /*
                          HATEOAS
                     */
-
-                    if (!empty($_related) || !empty($include)){
-                        $addons = [];
-
-                        if (!empty(static::$connect_to)){
-                            if (!empty($include) && !empty($include[0])){
-                                static::$connect_to = array_intersect(static::$connect_to, $include);
-                            }
-
-                            $tenantid = Factory::request()->getTenantId();
-                            if ($tenantid !== null){
-                                DB::setConnection($tenantid);
-                            }  
-                            
-                            $d2m = false;
-
-                            // detalle a maestro
-                            // las relaciones están en el detalle
-                            
-                            $_id = $rows[0][$this->instance->getSchema()['id_name']];  
-
-                            foreach (static::$connect_to as $tb){
-                                $schema = get_schema_name($tb)::get(); 
-                                
-                                $rs = $schema['relationships'];
-
-                                $rx = $rs[$this->model_table] ?? null;
-                                if ($rx === null){
-                                    continue;
-                                }                         
-
-                                foreach($rx as $r){
-                                    list($tb, $field) = explode('.', $r[1]);
-
-                                    // Puede haber más de una relación entre dos tablas
-                                    $tb_alias = explode('|', $tb);
-                                        
-                                    $alias = $tb;
-                                    if (count($tb_alias) == 2){
-                                        $tb0   = $tb_alias[0];
-                                        $alias = $tb_alias[1];
-                                    } 
-
-                                    $addons[$alias] = DB::table($tb)->where([$field => $_id])->get();
-                                }
-                            }
-
-                            // maestro a detalle 
-                            // (relaciones que están en el maestro)
-                            
-                            $schema = $this->instance->getSchema();
-                            $rs = $schema['relationships'];
-
-                            foreach (static::$connect_to as $tb){                                
-                                $rx = $rs[$tb] ?? null;
-
-                                if ($rx === null){
-                                    continue;
-                                }                         
-
-                                foreach($rx as $r){
-                                    list($tb0, $field0) = explode('.', $r[0]);
-                                    list($tb1, $field1) = explode('.', $r[1]);
-
-                                    // Puede haber más de una relación entre dos tablas
-                                    $tb_alias = explode('|', $tb0);
-                                    
-                                    $alias = $tb0;
-                                    if (count($tb_alias) == 2){
-                                        $tb0   = $tb_alias[0];
-                                        $alias = $tb_alias[1];
-                                    } 
-
-                                    if (isset($rows[0][$field1])){
-                                        $_id = $rows[0][$field1];  
-
-                                        $addons[$alias] = DB::table($tb0)->where([$field0 => $_id])->get();
-                                    } else {
-                                        $addons[$alias] = [];
-                                    }
-                                    
-                                }
-                            }
-                            
-                        }
-                        
-                        if ($this->config['include_enity_name']){
-                            if ($this->config['nest_sub_resources']){
-                                $res = array_merge($rows[0], $addons);
-                    
-                                if ($this->config['include_enity_name']){
-                                    $res = [$this->model_table => $res];
-                                }
-                            } else {
-                                if ($this->config['include_enity_name']){
-                                    $res = [$this->model_table => $rows[0]];
-                                }
-                    
-                                $res = array_merge($res, $addons);
-                            }
-                        } else {
-                            if ($this->config['nest_sub_resources']){
-                                $res = array_merge($rows[0], $addons);
-
-                            } else {                            
-                                $res = [$rows[0], $addons];
-                            }                       
-                        }
+                    if (!empty($_related) || !empty($include))
+                    {
+                        $res = $this->getSubResources($this->model_table, static::$connect_to, $this->instance, $this->tenantid);
+                        $res = $res[0];
                     } else {
                         $res = $rows[0];
                     }
@@ -827,8 +717,8 @@ abstract class ApiController extends ResourceController implements IApi
                 // avoid guests can see everything with just 'read' permission
                 if ($this->acl->isGuest()){
                     if ($owned){             
-                        if (!$this->acl->hasSpecialPermission('read_all', $this->roles) && 
-                            (!$this->acl->hasResourcePermission('list_all', $this->roles, $this->model_table))
+                        if (!$this->acl->hasSpecialPermission('read_all') && 
+                            (!$this->acl->hasResourcePermission('list_all', $this->model_table))
                         ){
                             $_get[] = [$this->instance->belongsTo(), NULL, 'IS'];
                         }
@@ -838,17 +728,18 @@ abstract class ApiController extends ResourceController implements IApi
                                 
                 // Si se pide algo que involucra un campo no está en el attr_types lanzar error
                 foreach ($_get as $arr){
-                    if (!in_array($arr[0],$attributes))
+                    if (!in_array($arr[0],$attributes)){
                         Factory::response()->sendError("Unknown field '$arr[0]'", 400);
+                    }
                 }
                 
 
                 if (empty($this->folder)){
                     // root, sin especificar folder ni id (lista)   // *             
                     if (!$this->acl->isGuest() && $owned && 
-                        !$this->acl->hasSpecialPermission('read_all', $this->roles) &&
-                        !$this->acl->hasResourcePermission('list_all', $this->roles, $this->model_table) ){
-                        $_get[] = [$this->instance->belongsTo(), $this->uid];     
+                        !$this->acl->hasSpecialPermission('read_all') &&
+                        !$this->acl->hasResourcePermission('list_all', $this->model_table) ){
+                        $_get[] = [$this->instance->belongsTo(), Acl::getCurrentUid()];     
                     }       
                 }else{
                     // folder, sin id
@@ -880,7 +771,7 @@ abstract class ApiController extends ResourceController implements IApi
                     $pretty = true;   
 
                 //dd($_get); ////
-                //var_export($_SERVER["QUERY_STRING"]);
+                //exit;
 
                 $query = Factory::request()->getQuery();
                 
@@ -958,21 +849,31 @@ abstract class ApiController extends ResourceController implements IApi
 
                 if (isset($ag_fn)){
                     $rows = $this->instance->$ag_fn($ag_ff, $ag_alias);
-                }else                               
-                    $rows = $this->instance->get();
+                }else {
+                    /*
+                        HATEOAS
+                    */
+
+                    $_related = ($_related != "0" && $_related != "false");
+                    $id_name  = $this->instance->getSchema()['id_name'];
+                    
+                    if ( ($_related || !empty($include[0])) && (empty($fields) || in_array($id_name, $fields) ))
+                    {   
+                        if (!empty($include) && !empty($include[0])){
+                            static::$connect_to = array_intersect(static::$connect_to, $include);
+                        }
+
+                        $rows = $this->getSubResources($this->model_table, static::$connect_to, $this->instance, $this->tenantid);
+                    } else {
+                        $rows = $this->instance->get();
+                    }
+                }                             
+                    
                 
                 //dd($this->instance->dd(), 'SQL');
                 //dd($rows);
                 
-                if ($rows === false){
-                    $db = DB::getCurrentDB();   
-                    //Factory::response()->sendError("Something goes wrong with $db.{$this->model_table}");
-                }
-
-                if ($this->config['include_enity_name']){
-                    $res = [$this->model_table => $rows];
-                }
-
+                
                 $res = Factory::response()->setPretty($pretty);
 
                 /*
@@ -983,7 +884,7 @@ abstract class ApiController extends ResourceController implements IApi
 
                 //  pagino solo sino hay funciones agregativas
                 if (!isset($ag_fn)){
-                    $total = (int) (new $model(true))->where($_get)->setFetchMode('COLUMN')->count();
+                    $total = (int) ($this->getModelInstance('COLUMN'))->where($_get)->count();
                     
                     $page_count = ceil($total / $limit);
 
@@ -1028,130 +929,17 @@ abstract class ApiController extends ResourceController implements IApi
                 $this->onGot($id, $total);
                 $this->webhook('list', $rows);
                 
-               
+                
                 /*
                         HATEOAS
                 */
+
+                // if (!empty($props)){    
+                //     $res = $rows;
+                // }
                 
-                if (!empty($_related) || !empty($include)){
-                    $addons = [];
-
-                    if (!empty(static::$connect_to)){
-                        if (!empty($include) && !empty($include[0])){
-                            static::$connect_to = array_intersect(static::$connect_to, $include);
-                        }
-
-                        $tenantid = Factory::request()->getTenantId();
-                        if ($tenantid !== null){
-                            DB::setConnection($tenantid);
-                        }  
-                        
-                        $d2m = false;
-
-                        // detalle a maestro
-                        // las relaciones están en el detalle
-
-                        $id_name = $this->instance->getSchema()['id_name'];
-                        static $rx = [];
-
-                        foreach ($rows as $k => $row){
-                            $_id = $rows[$k][$id_name];  
-                            
-                            foreach (static::$connect_to as $tb){
-                                if (!isset($rx[$this->model_table])){
-                                    $schema = get_schema_name($tb)::get(); 
-                                
-                                    $rs = $schema['relationships'];
-
-                                    $rx = $rs[$this->model_table] ?? null;
-                                } 
-                                
-                                if ($rx === null){
-                                    continue;
-                                }                         
-
-                                foreach($rx as $r){
-                                    list($tb, $field) = explode('.', $r[1]);
-
-                                    // Puede haber más de una relación entre dos tablas
-                                    $tb_alias = explode('|', $tb);
-                                        
-                                    $alias = $tb;
-                                    if (count($tb_alias) == 2){
-                                        $tb0   = $tb_alias[0];
-                                        $alias = $tb_alias[1];
-                                    } 
-
-                                    if (isset($addons[$k][$alias])){
-                                        $addons[$k][$alias] = DB::table($tb)->where([$field => $_id])->get();
-                                    } else {
-                                        $addons[$k][$alias] = [];
-                                    }
-                                    
-                                }
-                            }
-
-  
-                            // maestro a detalle 
-                            // (relaciones que están en el maestro)
-                            
-                            
-                            $schema = $this->instance->getSchema();
-                            $rs = $schema['relationships'];
-
-                            foreach (static::$connect_to as $tb){                                
-                                $rx = $rs[$tb] ?? null;
-
-                                if ($rx === null){
-                                    continue;
-                                }                         
-
-                                foreach($rx as $r){
-                                    list($tb0, $field0) = explode('.', $r[0]);
-                                    list($tb1, $field1) = explode('.', $r[1]);
-
-                                    // Puede haber más de una relación entre dos tablas
-                                    $tb_alias = explode('|', $tb0);
-                                    
-                                    $alias = $tb0;
-                                    if (count($tb_alias) == 2){
-                                        $tb0   = $tb_alias[0];
-                                        $alias = $tb_alias[1];
-                                    } 
-
-                                    if (isset($rows[$k][$field1])){
-                                        $_id = $rows[$k][$field1];
-                                        $addons[$k][$alias] = DB::table($tb0)->where([$field0 => $_id])->first();
-                                    } else {
-                                        $addons[$k][$alias] = [];
-                                    }
-                                }
-                            }
-                        }
-                        
-                    }
-                    
-                    $res = [];
-
-                    foreach ($rows as $k => $row){
-                        $res[$k] = $row;
-
-                        if (empty($addons)){
-                            continue;
-                        }
-
-                        foreach ($addons[$k] as $name => $addon){
-                            $res[$k][$name] = $addon;
-                        } 
-                    }
-
-                } else {
-                    $res = $rows;
-                }
-
-
                 if ($this->config['include_enity_name']){
-                    $res = [$this->model_table => $res];
+                    $res = [$this->model_table => $rows];
                 }
 
                 Factory::response()->send($res);
@@ -1181,9 +969,8 @@ abstract class ApiController extends ResourceController implements IApi
 
         if (empty($data))
             Factory::response()->sendError('Invalid JSON',400);
-        
-        $model    = '\\simplerest\\models\\'.$this->model_name;
-        $this->instance = (new $model())->assoc();
+
+        $this->instance = $this->getModelInstance();
 
         $id = $data[$this->instance->getIdName()] ?? null;
         $this->folder = $this->folder = $data['folder'] ?? null;
@@ -1194,17 +981,10 @@ abstract class ApiController extends ResourceController implements IApi
             // event hook             
             $this->onPostingBeforeCheck($id, $data);
            
-            if (!$this->acl->hasSpecialPermission('fill_all', $this->roles)){
-                $unfill = [ 
-                            $this->instance->deletedAt(),
-                            $this->instance->deletedBy(),
-                            $this->instance->updatedAt(),
-                            $this->instance->deletedBy()
-                ];    
-
+            if (!$this->acl->hasSpecialPermission('fill_all')){            
                 if ($this->instance->inSchema([$this->instance->createdBy()])){
                     if (isset($data[$this->instance->createdBy()])){
-                        Factory::response()->sendError("'{$this->instance->createdBy()}' is not fillable", 400);
+                        Factory::response()->sendError("'{$this->instance->createdBy()}' is not fillable!", 400);
                     }
                 }  
             }else{
@@ -1212,7 +992,7 @@ abstract class ApiController extends ResourceController implements IApi
             }
 
             if ($this->instance->inSchema([$this->instance->createdBy()])){
-                $data[$this->instance->createdBy()] = $this->impersonated_by != null ? $this->impersonated_by : $this->uid;
+                $data[$this->instance->createdBy()] = $this->impersonated_by != null ? $this->impersonated_by : Acl::getCurrentUid();
             }  
 
             /*
@@ -1226,13 +1006,13 @@ abstract class ApiController extends ResourceController implements IApi
             */
             if ($this->instance->inSchema([$this->instance->updatedBy()])){
                 if (!in_array($this->instance->updatedBy(), $this->instance->getNullables())){
-                    $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : $this->uid;
+                    $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : Acl::getCurrentUid();
                 }
             }
     
-            if (!$this->acl->hasSpecialPermission('transfer', $this->roles)){    
+            if (!$this->acl->hasSpecialPermission('transfer')){    
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
-                    $data[$this->instance->belongsTo()] = $this->uid;
+                    $data[$this->instance->belongsTo()] = Acl::getCurrentUid();
                 }
             }   
             
@@ -1250,7 +1030,7 @@ abstract class ApiController extends ResourceController implements IApi
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->model_table)
                     Factory::response()->sendError('Folder not found', 404); 
         
-                if ($f_rows[0][$this->instance->belongsTo()] != $this->uid  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
+                if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
                     Factory::response()->sendError("Forbidden", 403, "You have not permission for the folder $this->folder");
 
                 unset($data['folder']);    
@@ -1278,9 +1058,11 @@ abstract class ApiController extends ResourceController implements IApi
                 */
 
                 if (!empty(static::$connect_to)){
-                    DB::beginTransaction();
+                    DB::beginTransaction(); ///
 
                     $dependents = [];
+                    $pivot_tables = [];
+                    $pivot_table_data = [];
 
                     $unset = [];
                     foreach ($data as $key => $dato){
@@ -1292,14 +1074,15 @@ abstract class ApiController extends ResourceController implements IApi
                             $unset[] = $related_table;
 
                             if (!in_array($related_table, static::$connect_to)){
-                                response()->sendError("Table $related_table is not connected to ". $this->model_table);
+                                response()->sendError("Table $related_table is not connected to ". $this->model_table, 400);
                             }
 
                             /*
                                 Si se recibe un solo campo y esta es una FK,....
                                 O sea.. relación de a 1:1 
                             */
-                            if (count($dato) == 1){
+
+                            if (!is_array($dato)){
                                 $column_name  = array_keys($dato)[0];
                                 $column_value = array_values($dato)[0];
 
@@ -1341,46 +1124,145 @@ abstract class ApiController extends ResourceController implements IApi
 
                                 foreach ($dato as $k => $d){
                                     if (is_array($d)){
-                                        //dd($d);
 
-                                        foreach ($d as $key => $f){
+                                        $tb_rel_pri_key = get_primary_key($related_table);
+                                        $keys = array_keys($d);
 
-                                            // Estaríamos hablando de una relación de N:M
-                                            if ($key == get_primary_key($related_table)){
-                                                dd("Estaríamos hablando de una relación de N:M");
+                                        /*
+                                            Determino si es posible sea una relación N:M
+                                        */
+                                        $rel_n_m = false;
+                                        
+                                        if (!isset($pivot[$this->model_table .'.'. $related_table])){
+                                            $pivot[$this->model_table .'.'. $related_table] = get_pivot([$this->model_table, $related_table]);
+                                        }
+
+                                        $pivot = get_pivot([$this->model_table, $related_table]);
+
+                                        if (!is_null($pivot)){
+                                            $rel_n_m = true;
+                                        }                                    
+
+                                        // Estaríamos hablando de una relación de N:M
+                                        if ($rel_n_m)
+                                        {
+
+                                            if (!in_array($tb_rel_pri_key, $keys) ){
+                                                //response()->sendError("PRIMARY KEY is needed for related table behind a bridge one", 400);
 
                                                 /*
-                                                    Necesito obtener la tabla puente que se relaciona con ($this->model_table, related_table)
+                                                    Verifico si existe UN (1) registro en la tabla relacionada que cumpla las condiciones
+                                                */
 
-                                                    Se propone generar un archivo pivot-schemas.txt dentro de /schemas y /schemas/main con la siguiente estructura:
-                                                    
-                                                    tabla1  tabla-pivote    tabla2
-                                                    tabla1  tabla-pivote    tabla2
-                                                    tabla1  tabla-pivote    tabla2
-                                                    tabla1  tabla-pivote    tabla2
+                                                $rel_ids = DB::table($related_table)
+                                                ->where($d)
+                                                ->pluck($tb_rel_pri_key);
 
-                                                    y una función helper que la lea:  getPivotTable($tb1, $tb2)
-                                                */     
-
-                                            } else {
-                                                // Estaríamos hablando de una relación de 1:N
-                                        
-                                                // ---> toca incluir la FK apuntando a ... $this->model_table
-
-                                                $schema = get_schema_name($related_table)::get();
-                                                $rs = $schema['relationships'];
-
-                                                $rr = $rs[$this->model_table];
-                                                list($_, $fk) = explode('.', $rr[0][1]);
-
-                                                foreach ($dato as $k => $_dato){
-                                                    $dato[$k] = array_merge($_dato, [$fk => '$id_main']);
+                                                if (empty($rel_ids)){
+                                                    $cnt_rel = 0; 
+                                                } else {
+                                                    $cnt_rel = count($rel_ids);
+                                                }
+                
+                                                if ($cnt_rel == 0){
+                                                    response()->sendError("Row not found in $related_table", 400);
+                                                }
+                                                
+                                                if ($cnt_rel > 1){
+                                                    response()->sendError("There are more than one rows in $related_table matching with sent data", 400);
                                                 }
 
-                                                $dependents[$related_table] = $dato;
-                                                
+                                                $rel_tb_id = $rel_ids[0];                                                
                                             }
+
+
+                                            if (!isset($rel_tb_id)){
+                                                foreach ($d as $key => $rel_tb_val)
+                                                {
+                                                    if ($key == $tb_rel_pri_key){
+                                                        // Existe el registro?
+                                                        if (!isset($related_table_exists[$related_table])){
+                                                            $related_table_exists[$related_table] = DB::table($related_table)
+                                                            ->find($rel_tb_val)
+                                                            ->exists();
+                                                        }
+    
+                                                        if (!$related_table_exists[$related_table]){
+                                                            response()->sendError("Not found", 404, "`$related_table`.`$key` = $rel_tb_val doesn't exist");
+                                                        }
+                                                    }
+                                                }
+                                            }                                            
+
+                                            $bridge  = $pivot['bridge'];
+                                            
+                                            /*
+                                                Ojo: los puede que no sea un FK en cada caso sino un array
+                                                (esto no es contemplado de momento)
+                                            */
+                                            $fk_this = $pivot['fks'][$this->model_table]; //
+                                            $fk_rel  = $pivot['fks'][$related_table]; //
+
+                                            if (isset($rel_tb_id)){
+                                                $rel_tb_val = $rel_tb_id;
+
+                                                $dependents[$related_table][] = [
+                                                    $fk_this => '$id_main',
+                                                    $fk_rel =>  $rel_tb_val
+                                                ];
+
+                                            } else {
+
+                                                /*
+                                                    $d es el array asociativo de cada registro en una tabla relacionada (por una puente)
+                                                */
+                                                foreach ($d as $key => $rel_tb_val)
+                                                {
+                                                    if (Strings::startsWith($bridge . '.', $key)){
+                                                        $bridge_field = substr($key, strlen($bridge)+1);
+                                                        //dd($rel_tb_val, $bridge_field);
+
+                                                        $pivot_table_data[] = [$bridge_field, $rel_tb_val];
+                                                        continue;                                                    
+                                                    } 
+
+                                                    $dependents[$related_table][] = [
+                                                        $fk_this => '$id_main',
+                                                        $fk_rel =>  $rel_tb_val
+                                                    ];
+                                                }  
+
+                                            }
+
+                                            
+                                            if (!isset($pivot_tables[$related_table])){
+                                                $pivot_tables[$related_table] = $bridge;
+                                            }
+
+                                        } else {
+                                            // Estaríamos hablando de una relación de 1:N
+                                    
+                                            // ---> toca incluir la FK apuntando a ... $this->model_table
+
+                                            $schema = get_schema_name($related_table)::get();
+                                            $rs = $schema['relationships'];
+
+                                            $rr = $rs[$this->model_table] ?? null;
+
+                                            if (is_null($rr)){
+                                                response()->sendError("Something is wrong trying to link to {$related_table}");
+                                            }
+
+                                            list($_, $fk) = explode('.', $rr[0][1]);
+
+                                            foreach ($dato as $k => $_dato){
+                                                $dato[$k] = array_merge($_dato, [$fk => '$id_main']);
+                                            }
+
+                                            $dependents[$related_table] = $dato;
+                                            
                                         }
+                                       
                                     }
                                 }
                             }                        
@@ -1390,9 +1272,12 @@ abstract class ApiController extends ResourceController implements IApi
                 }
 
                 // finalmente destruyo las tablas anidadas dentro de $data
-                foreach ($unset as $t){
-                    unset($data[$t]);
+                if (isset($unset)){
+                    foreach ($unset as $t){
+                        unset($data[$t]);
+                    }
                 }
+                
 
                 // Debería acá comenzar transacción
 
@@ -1401,27 +1286,92 @@ abstract class ApiController extends ResourceController implements IApi
 
                 // Tablas dependientes
 
-                foreach ($dependents as $related_table => $data){
-                    foreach ($data as $ix => $dato){
-                        foreach ($dato as $field => $val){
-                            if ($val == '$id_main'){
-                                $data[$ix][$field] = $last_inserted_id;
+                if (isset($dependents)){
+
+                    foreach ($dependents as $related_table => $data)
+                    {
+                        $rel_tb_model      = get_model_name($related_table);
+                        $rel_tb_instance   = new $rel_tb_model();
+
+                        $rel_tb_created_by = $rel_tb_instance->createdBy();
+                        $rel_tb_updated_by = $rel_tb_instance->updatedBy();
+
+                        if (!isset($pivot_tables[$related_table])){
+                            $rel_tb_has_created_by = inSchema([$rel_tb_created_by], $related_table);
+                            $rel_tb_has_updated_by = inSchema([$rel_tb_updated_by], $related_table);
+                        } else {
+                            $bridge = $pivot_tables[$related_table];
+
+                            $rel_tb_has_created_by = inSchema([$rel_tb_created_by], $bridge);
+                            $rel_tb_has_updated_by = inSchema([$rel_tb_updated_by], $bridge);
+                        }
+                        
+                        $rel_tb_updated_by_in_nullables = in_array($rel_tb_updated_by, $rel_tb_instance->getNullables());
+
+                        foreach ($data as $ix => $dato)
+                        {
+                            if ($rel_tb_has_created_by){
+                                $data[$ix][$rel_tb_created_by] = $this->impersonated_by != null ? $this->impersonated_by : Acl::getCurrentUid();
+                            }  
+                
+                            /*
+                                SI (	
+                                    $updatedBy está en el schema &&
+                                    $updatedBy NO es nullable (&&
+                                    $updatedBy NO tiene valor por defecto)
+                                ) =>
+                
+                                Actualizar con el valor del $uid del usuario
+                            */
+                            if ($rel_tb_has_updated_by){
+                                if (!$rel_tb_updated_by_in_nullables){
+                                    $data[$ix][$rel_tb_updated_by] = $this->impersonated_by != null ? $this->impersonated_by : Acl::getCurrentUid();
+                                }
+                            }
+
+                            //dd($dato, 'DATO');
+
+                            foreach ($dato as $field => $val){
+                                if ($val == '$id_main'){
+                                    $data[$ix][$field] = $last_inserted_id;
+                                }
                             }
                         }
+
+
+                        if (!isset($pivot_tables[$related_table])){
+                            $rel_id = DB::table($related_table)
+                            ->insert($data);
+                        } else {
+                            // Está pivoteada por una tabla puente
+                            $bridge = $pivot_tables[$related_table];
+
+                            if (isset($pivot_table_data)){
+                                $cnt_data = count($data);
+                                for ($ij=0; $ij<$cnt_data; $ij++){
+                                    if (!isset($pivot_table_data[$ij])){
+                                        continue;
+                                    }
+                                    $data[$ij][$pivot_table_data[$ij][0]] = $pivot_table_data[$ij][1];
+                                }
+                            }
+
+                            $rel_id = DB::table($bridge)
+                            ->insert($data);
+                        }
+
                     }
-
-                    $rel_id = DB::table($related_table)
-                    ->create($data);
-
-                    //dd($rel_id, "ID para $related_table");
                 }
-                
+                    
                 DB::commit();             
             } catch (\PDOException $e){
                 DB::rollback();
 
                 // solo debug:
-                Factory::response()->sendError("Error: creation of resource fails: ". $e->getMessage(), 500, $this->instance->dd2());
+                $db = DB::getCurrentDB();
+                $tb = DB::getTableName();
+                Factory::response()->sendError("Error: creation on `{$db}`.`{$tb}` of resource fails: ". $e->getMessage(), 500, 
+                        $this->instance->getLog());
             }
 
             if ($last_inserted_id !==false){
@@ -1430,7 +1380,10 @@ abstract class ApiController extends ResourceController implements IApi
                 $this->onPost($last_inserted_id, $data);
                 $this->webhook('create', $data, $last_inserted_id);
 
-                Factory::response()->send([$this->instance->getKeyName() => $last_inserted_id], 201);
+                Factory::response()->send([
+                    $this->model_table => $data,
+                    $this->instance->getKeyName() => $last_inserted_id
+                ], 201);
             }	
             else
                 Factory::response()->sendError("Error: creation of resource fails!");
@@ -1457,14 +1410,12 @@ abstract class ApiController extends ResourceController implements IApi
         $this->id = $id;    
         $this->folder = $this->folder = $data['folder'] ?? null;
         
-        try {
-            $model    = 'simplerest\\models\\'.$this->model_name; 
-            
+        try {                       
             // event hook
             $this->onPuttingBeforeCheck($id, $data);
 
-			if (!$this->acl->hasSpecialPermission('lock', $this->roles)){
-                $instance0 = (new $model(true))->assoc();
+			if (!$this->acl->hasSpecialPermission('lock')){
+                $instance0 = $this->getModelInstance();
                 $row = $instance0->where([$instance0->getIdName(), $id])->first();
 
                 if (isset($row['locked']) && $row['locked'] == 1)
@@ -1472,12 +1423,11 @@ abstract class ApiController extends ResourceController implements IApi
             }
 
             // Creo una instancia
-            $this->instance = (new $model(true))
-            ->assoc();
+            $this->instance = $this->getModelInstance();
             
             $id_name = $this->instance->getIdName();
 
-            if (!$this->acl->hasSpecialPermission('fill_all', $this->roles)){
+            if (!$this->acl->hasSpecialPermission('fill_all')){
                 $unfill = [ 
                             $this->instance->deletedAt(),
                             $this->instance->deletedBy(),
@@ -1496,7 +1446,7 @@ abstract class ApiController extends ResourceController implements IApi
             }
 
             if ($this->instance->inSchema([$this->instance->updatedBy()])){
-                $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : $this->uid;
+                $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : Acl::getCurrentUid();
             }  
 
             $owned = $this->instance->inSchema([$this->instance->belongsTo()]);            
@@ -1515,17 +1465,16 @@ abstract class ApiController extends ResourceController implements IApi
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->model_table)
                     Factory::response()->sendError('Folder not found', 404); 
         
-                if ($f_rows[0][$this->instance->belongsTo()] != $this->uid  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$this->acl->hasSpecialPermission('write_all_folders', $this->roles))
+                if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$this->acl->hasSpecialPermission('write_all_folders'))
                     Factory::response()->sendError("You have not permission for the folder $this->folder", 403);
 
                 $this->folder_name = $f_rows[0]['name'];
 
                 // Creo otra nueva instancia
-                $instance2 = (new $model(true))
-                ->assoc();
+                $instance2 = $this->getModelInstance();
 
                 if (count($instance2->where([$id_name => $id, static::$folder_field => $this->folder_name])->get()) == 0)
-                    Factory::response()->code(404)->sendError("Register for id=$id does not exists");
+                    Factory::response()->code(404)->sendError("Register for id=$id doesn't exist");
 
                 unset($data['folder']);    
                 $data[static::$folder_field] = $f_rows[0]['name'];
@@ -1533,8 +1482,7 @@ abstract class ApiController extends ResourceController implements IApi
                 
             } else {
 
-                $this->instance2 = (new $model(true))
-                ->assoc(); 
+                $this->instance2 = $this->getModelInstance(); 
 
                 // event hook    
                 $this->onPuttingBeforeCheck2($id, $data);
@@ -1542,16 +1490,16 @@ abstract class ApiController extends ResourceController implements IApi
                 $rows = $this->instance2->where([$id_name => $id])->get();
 
                 if (count($rows) == 0){
-                    Factory::response()->code(404)->sendError("Register for id=$id does not exists!");
+                    Factory::response()->code(404)->sendError("Register for id=$id doesn't exist!");
                 }
 
-                if  ($owned && !$this->acl->hasSpecialPermission('write_all', $this->roles) && $rows[0][$this->instance->belongsTo()] != $this->uid){
+                if  ($owned && !$this->acl->hasSpecialPermission('write_all') && $rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()){
                     Factory::response()->sendError('Forbidden', 403, 'You are not the owner!');
                 } 
                     
             }        
 
-            // This is not 100$ right but....
+            // This is not 100% right but....
             foreach ($data as $k => $v){
                 if (strtoupper($v) == 'NULL' && $this->instance->isNullable($k)) 
                     $data[$k] = NULL;
@@ -1570,19 +1518,19 @@ abstract class ApiController extends ResourceController implements IApi
             // event hook
             $this->onPuttingAfterCheck($id, $data);
 
-            if (!$owned && $this->show_deleted && !$this->acl->hasSpecialPermission('write_all_trashcan', $this->roles)){
+            if (!$owned && $this->show_deleted && !$this->acl->hasSpecialPermission('write_all_trashcan')){
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
-                    $data[$this->instance->belongsTo()] = $this->uid;
+                    $data[$this->instance->belongsTo()] = Acl::getCurrentUid();
                 } 
             } 
                         
 
             try {
                 $affected = $this->instance->where([$id_name => $id])->update($data);
-                //var_dump($this->instance->dd2());
+                //var_dump($this->instance->getLog());
             } catch (\Exception $e){
                 //$affected = $this->instance->where([$id_name => $id])->dontExec()->update($data);
-                //dd($this->instance->dd2());
+                //dd($this->instance->getLog());
                 response()->sendError($e->getMessage());
             }
 
@@ -1650,9 +1598,7 @@ abstract class ApiController extends ResourceController implements IApi
         $this->folder = $this->folder = $data['folder'] ?? null;
 
         try {
-            $model    = 'simplerest\\models\\'.$this->model_name;
-            
-            $this->instance = (new $model(true));
+            $this->instance = $this->getModelInstance();
 
             $this->instance
             ->assoc()
@@ -1670,7 +1616,7 @@ abstract class ApiController extends ResourceController implements IApi
             //dd($this->instance->getLastPrecompiledQuery(), 'SQL');
             
             if (count($rows) == 0){
-                Factory::response()->code(404)->sendError("Register for $id_name=$id does not exists");
+                Factory::response()->code(404)->sendError("Register for $id_name=$id doesn't exist");
             }
 
             if ($this->folder !== null)
@@ -1687,30 +1633,29 @@ abstract class ApiController extends ResourceController implements IApi
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->model_table)
                     Factory::response()->sendError('Folder not found', 404); 
         
-                if ($f_rows[0][$this->instance->belongsTo()] != $this->uid  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
+                if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
                     Factory::response()->sendError("You have not permission for the folder $this->folder", 403);
 
                 $this->folder_name = $f_rows[0]['name'];
 
                 // Creo otra nueva instancia
-                $instance2 = (new $model(true))
-                ->assoc();
+                $instance2 = $this->getModelInstance();
 
                 if (count($instance2->where([$id_name => $id, static::$folder_field => $this->folder_name])->get()) == 0)
-                    Factory::response()->code(404)->sendError("Register for $id_name=$id does not exists");
+                    Factory::response()->code(404)->sendError("Register for $id_name=$id doesn't exist");
 
                 unset($data['folder']);    
                 $data[static::$folder_field] = $f_rows[0]['name'];
                 $data['belongs_to'] = $f_rows[0][$this->instance->belongsTo()];    
             } else {
-                if ($owned && !$this->acl->hasSpecialPermission('write_all', $this->roles) && $rows[0]['belongs_to'] != $this->uid){
+                if ($owned && !$this->acl->hasSpecialPermission('write_all') && $rows[0]['belongs_to'] != Acl::getCurrentUid()){
                     Factory::response()->sendError('Forbidden', 403, 'You are not the owner');
                 }
             }  
 
             $extra = [];
 
-            if ($this->acl->hasSpecialPermission('lock', $this->roles)){
+            if ($this->acl->hasSpecialPermission('lock')){
                 if ($this->instance->inSchema([$this->instance->locked()])){
                     $extra = array_merge($extra, [$this->instance->locked() => 1]);
                 }   
@@ -1724,7 +1669,7 @@ abstract class ApiController extends ResourceController implements IApi
             $soft_del_has_author = $this->instance->inSchema([$this->instance->deletedBy()]);
             
             if ($soft_is_supported && $soft_del_has_author){
-                $extra = array_merge($extra, [$this->instance->deletedBy() => $this->impersonated_by != null ? $this->impersonated_by : $this->uid]);
+                $extra = array_merge($extra, [$this->instance->deletedBy() => $this->impersonated_by != null ? $this->impersonated_by : Acl::getCurrentUid()]);
             }               
        
             if (!empty($this->folder)) {
@@ -1783,11 +1728,11 @@ abstract class ApiController extends ResourceController implements IApi
     protected function onPostingBeforeCheck($id, Array &$data){ }
     protected function onPuttingBeforeCheck2($id, Array &$data){ }  ///
     protected function onPostingAfterCheck($id, Array &$data){ }
-    protected function onPost($id, Array $data){ }
+    protected function onPost($id, Array &$data){ }
 
     protected function onPuttingBeforeCheck($id, Array &$data){ }
     protected function onPuttingAfterCheck($id, Array &$data){ }
-    protected function onPut($id, Array $data, ?int $affected){ }
+    protected function onPut($id, Array &$data, ?int $affected){ }
 
 
     /*
@@ -1810,7 +1755,7 @@ abstract class ApiController extends ResourceController implements IApi
             'entity' => $this->model_table,
             'id' => $id,
             'data' => $data,
-            'user_id' => $this->uid,
+            'user_id' => Acl::getCurrentUid(),
             'at' => date("Y-m-d H:i:s", time())
         ];
 

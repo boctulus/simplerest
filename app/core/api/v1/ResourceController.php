@@ -3,7 +3,7 @@
 namespace simplerest\core\api\v1;
 
 use simplerest\libs\Debug;
-use simplerest\core\Request;
+use simplerest\core\Acl;
 use simplerest\libs\Factory;
 use simplerest\core\Controller;
 use simplerest\libs\DB;
@@ -13,17 +13,12 @@ abstract class ResourceController extends Controller
 {
     protected $acl;
     protected $auth;
-    protected $uid;
-    protected $roles = [];
-    protected $permissions = [];
-
 
     protected $headers = [
         'Access-Control-Allow-Headers' => 'Authorization,Content-Type', 
         'Access-Control-Allow-Origin' => '*',
         'Access-Control-Allow-Methods' => 'GET,POST,DELETE,PUT,PATCH,HEAD,OPTIONS',
-        'Access-Control-Allow-Credentials' => 'true',
-        'Content-Type' => 'application/json; charset=UTF-8'
+        'Access-Control-Allow-Credentials' => 'true'
     ];
 
     function __construct(object $auth = null)
@@ -39,17 +34,11 @@ abstract class ResourceController extends Controller
         $auth = $auth ?? Factory::auth();
         $this->auth = ($auth)->check();
         
-        $this->uid          = $this->auth['uid']; 
-        $this->roles        = $this->auth['roles'];
-        $this->permissions  = $this->auth['permissions'];   
-        
+        Acl::setCurrentUid($this->auth['uid']); 
+        Acl::setCurrentRoles($this->auth['roles']);
+        Acl::setCurrentPermissions($this->auth['permissions']);   
 
         $this->acl = Factory::acl();
-
-        //dd($this->uid, 'uid');
-        //dd($this->acl->getRoleName(), 'possible roles');  ///// 
-        //dd($this->roles, 'active roles');
-        //dd($this->permissions, 'permissions');
 
         parent::__construct();
     }

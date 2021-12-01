@@ -1,0 +1,10 @@
+array (
+  'query' => 'INSERT INTO tbl_estado_civil  (esc_varNombre, est_intIdEstado, usu_intIdCreador, usu_intIdActualizador) VALUES (:esc_varNombre, :est_intIdEstado, :usu_intIdCreador, :usu_intIdActualizador)',
+  'vals' => 
+  array (
+    0 => 'Solterisimo',
+    1 => 1,
+    2 => '138',
+    3 => '138',
+  ),
+)

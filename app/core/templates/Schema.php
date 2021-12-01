@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\models\schemas;
+namespace simplerest\schemas;
 
 use simplerest\core\interfaces\ISchema;
 
@@ -16,13 +16,29 @@ class __NAME__ implements ISchema
 
 			'attr_types'	=> __ATTR_TYPES__,
 
+			'primary'		=> __PRIMARY__,
+
+			'autoincrement' => __AUTOINCREMENT__,
+
 			'nullable'		=> __NULLABLES__,
+
+			'uniques'		=> __UNIQUES__,
 
 			'rules' 		=> __RULES__,
 
+			'fks' 			=> __FKS__,
+
 			'relationships' => [
 				__RELATIONS__
-			]
+			],
+
+			'expanded_relationships' => __EXPANDED_RELATIONS__,
+
+			'relationships_from' => [
+				__RELATIONS_FROM__
+			],
+
+			'expanded_relationships_from' => __EXPANDED_RELATIONS_FROM__
 		];
 	}	
 }

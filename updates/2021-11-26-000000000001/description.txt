@@ -1,0 +1,34 @@
+UPDATE DESCRIPTION
+==================
+
+- Se comienza la automatización de actualizaciones (updates) de SimpleRest
+
+- Se crean "tenant groups" que permiten organizar en distintas carpetas modelos y schemas de distintas bases de datos y agrupar los que se se supone son de bases de datos con igual estructura. Esto permite que dos bases de datos puedan tener ocasionalmente tablas con el mismo nombre y distinta estructura.
+
+Ej:
+
+	'tentant_groups' => [
+		'legion' => [
+		  'db_[0-9]+',
+		  'db_legion',
+		  'db_flor'
+		],
+		'az' => [
+		  'az'
+		],
+	],
+
+
+- Se resuelve problema por el que era necesario hardcodear credenciales en el helper db_dynamic_load.php
+
+- Se vuelve opcional el paquete DotEnv para manejo de variables de entorno. Se provee de la clase Env.
+
+- Se agregan nuevas funcionalidades para manejo de archivos en la librería Files
+
+- Se mejora el funcionamiento de la case Debug.
+
+- Se crea la librería StdOut para controlar el flujo hacia la salida estandar.
+
+- Se hace algo más eficiente la inspección de la base de datos favoreciendo la performance de HATEOAS.
+
+- Se agrega la opción --unignore en el comando "make" para poder sobrescribir archivos aún cuando estén ignorados via .make_ignore (usar con precaución porque es la última guarda)

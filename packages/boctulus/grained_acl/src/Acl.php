@@ -7,7 +7,9 @@ use simplerest\libs\Factory;
 
 class Acl extends \simplerest\core\Acl
 {
-    protected $roles = [];
+    // Every possible role
+    protected $roles = [];  
+
     protected $role_perms = [];
     protected $role_ids   = [];
     protected $role_names = [];
@@ -17,7 +19,6 @@ class Acl extends \simplerest\core\Acl
 
 
     public function __construct() { 
-        $this->config = config();
         $this->setup();
     }
 
@@ -86,24 +87,21 @@ class Acl extends \simplerest\core\Acl
         return $this;
     }
 
-    
-    // Not in interfaces neither needed 
+    public function getFreshTbPermissions(string $table = null, bool $unpacked = true){
+        $rows = DB::table("user_tb_permissions")
+        ->when(!is_null($table), function($o) use($table){
+            $o->where(['tb' => $table]);
+        })
+        ->get();
 
-    public function hasRole(string $role){
-        return in_array($role, $this->roles);
+        return $rows;        
     }
 
-    public function hasAnyRole(array $authorized_roles){
-        $authorized = false;
-        foreach ((array) $this->roles as $role)
-            if (in_array($role, $authorized_roles))
-                $authorized = true;
+    public function getFreshSpPermissions(){
+        $rows = DB::table("user_sp_permissions")
+        ->get();
 
-        return $authorized;        
-    }
-
-    public function getSpPermissions(){
-        return $this->sp_permissions;
+        return $rows;        
     }
 
 }

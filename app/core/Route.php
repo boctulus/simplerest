@@ -188,6 +188,8 @@ class Route
                     Response::getInstance()->send($data);
                 }
 
+                response()->flush();
+
                 exit;
             }
             

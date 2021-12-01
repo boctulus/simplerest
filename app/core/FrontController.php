@@ -4,6 +4,8 @@ namespace simplerest\core;
 
 use simplerest\libs\Url;
 use simplerest\libs\Msg;
+use simplerest\libs\Strings;
+
 
 class FrontController
 {
@@ -44,10 +46,10 @@ class FrontController
             return; // *
         }
 
+
         $req = Request::getInstance(); 
 
         $is_auth = ((!$config['REMOVE_API_SLUG'] && isset($_params[2]) && $_params[2] === 'auth') || ($config['REMOVE_API_SLUG'] && $_params[1] == 'auth'));
-
         $sub = (int) $config['REMOVE_API_SLUG'];
 
         if ($is_auth){
@@ -64,8 +66,8 @@ class FrontController
             $class_name = 'MyAuth';
             $class_name = "${namespace}${class_name}Controller";
 
-            //dd($class_name, 'CLASS_NAME:');
-            //dd($method, 'METHOD:');
+            // dd($class_name, 'CLASS_NAME:');
+            // dd($method, 'METHOD:');
 
             $api_version = $_params[1 - $sub]; 
 
@@ -110,25 +112,29 @@ class FrontController
 
             if (empty($_params) || $_params[0]==''){
                 $class_file = substr($config['DEFAULT_CONTROLLER'],0, strlen($config['DEFAULT_CONTROLLER'])-10);
-                $class_name = ucfirst($class_file);
+                $class_name = Strings::snakeToCamel($class_file);
                 $class_name = "${namespace}${class_name}Controller";
                 $method = self::DEFAULT_ACTION;  
-                $params = [];      
+                $params = []; 
             }else{
                 // Hipótesis
                 $ix = 0;
                 $folder = '';
                 $controller = $_params[$ix];
 
-                $class_file =  CONTROLLERS_PATH.ucfirst($controller).'Controller.php';
+                $class_file =  CONTROLLERS_PATH.Strings::snakeToCamel($controller).'Controller.php';
                 $cnt  = count($_params) -1;
                 while (!file_exists($class_file) && ($ix < $cnt)){
                     $ix++;
                     $folder = implode(DIRECTORY_SEPARATOR, array_slice($_params,0,$ix)). DIRECTORY_SEPARATOR;
                     //dd($folder, 'NAMESPACE:');
+
+                    if (is_numeric($_params[$ix])){
+                        break;
+                    }
+
                     $controller = $_params[$ix];
-                    $class_file =  CONTROLLERS_PATH. $folder. ucfirst($controller).'Controller.php';
-                    //dd($class_file, "Probando ...");
+                    $class_file =  CONTROLLERS_PATH. $folder. Strings::snakeToCamel($controller).'Controller.php';;
                 }
 
                 //dd($class_file, "Probando ...");
@@ -139,13 +145,16 @@ class FrontController
 
                 $method = !empty($action) ? $action : self::DEFAULT_ACTION;
         
-                $class_name = ucfirst($controller);
+                $class_name = Strings::snakeToCamel($controller);
                 $class_name = "${namespace}${folder}${class_name}Controller";
 
                 //dd($class_name, 'CLASS_NAME:');
                 //dd($method, 'METHOD:');
             }
         }
+
+        
+        $class_name = str_replace('/', "\\", $class_name);
 
 
         if (!class_exists($class_name)){
@@ -154,7 +163,7 @@ class FrontController
 
         if (!method_exists($class_name, $method)){
             if (php_sapi_name() != 'cli' || $method != self::DEFAULT_ACTION){
-                $res->sendError("Internal error - method $method was not found in $class_name", 500); 
+                $res->sendError("Internal error - method $method was not found in $class_name", 404); 
             } else {
                 $dont_exec = true;
             }
@@ -174,7 +183,7 @@ class FrontController
         }
         
         $data = call_user_func_array([$controller_obj, $method], $params);
-        
+
         // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
         if (!empty($data)){
             $res->setData($data);  

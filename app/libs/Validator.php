@@ -150,7 +150,7 @@ class Validator implements IValidator
 			list($tot,$dec) = explode(',', $nums);
 
 			$f = explode('.',$dato);
-			return (strlen($dato) <= ($tot+1) && strlen($f[1]) == $dec);	
+			return (strlen($dato) <= ($tot+1) && strlen($f[1] ?? '') <= $dec);	
 		}
 
 		if (static::$rules == []){

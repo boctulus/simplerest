@@ -1,0 +1,50 @@
+Fallos a investigar
+-------------------
+
+0)
+
+GET
+http://elgrove.co/api/v1/XXXX
+
+Respuesta:
+
+<br />
+<b>Notice</b>: Undefined variable: _class_name in <b>C:\xampp\htdocs\elgrove_php\app\core\FrontController.php</b> on
+line <b>137</b><br />
+{"status_code":404,"error":"Class not found","error_detail":"Internal error - controller class  (Controller) not found"}
+
+
+
+1)
+
+POST 
+http://elgrove.co/api/v1/bills
+
+Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTU4NDU0MjY1NiwiZXhwIjoxNjc0NTQyNjU2LCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6MSwicm9sZXMiOlsiYWRtaW4iXSwiY29uZmlybWVkX2VtYWlsIjoiMCIsInBlcm1pc3Npb25zIjpbXX0.P96OJN3IkTkTS23J_SFpB-CjJNxTi7YaxoGHHN_5u24
+
+{
+	"billable_id": 2,
+	"detail": "BLA BLA",
+	"period": "2020",
+	"amount": "100",
+	"file_id": 60
+}
+
+Respuesta:
+
+{
+    "status_code": 500,
+    "error": "SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`elgrove`.`bills`, CONSTRAINT `bills_ibfk_1` FOREIGN KEY (`belongs_to`) REFERENCES `users` (`id`))",
+    "error_detail": null
+}
+
+En cambio todo OK con el siguiente token:
+
+
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTU4NTc2MDMwMSwiZXhwIjoxNTk0NzYwMzAxLCJpcCI6IjEyNy4wLjAuMSIsInVpZCI6MzMyLCJyb2xlcyI6WyJhZG1pbiJdLCJjb25maXJtZWRfZW1haWwiOm51bGwsInBlcm1pc3Npb25zIjpbXX0.IKpmHy35VPfJUVJsPvuX-fgVJDWlwszoAwasBuiH45Y
+
+
+2) Si el endpoint no existe .......
+
+Access to XMLHttpRequest at 'http://elgrove.co/api/v1/XXXXXXXXXXX' from origin 'http://192.168.0.49:8000' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+

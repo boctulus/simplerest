@@ -8,7 +8,7 @@ use simplerest\core\Request;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
 use simplerest\libs\Strings;
-use simplerest\libs\Debug;
+use simplerest\core\Acl;
 use simplerest\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\libs\Files;
@@ -26,16 +26,12 @@ class AuthController extends Controller implements IAuth
     protected $__confirmed_email;
     protected $__active;
 
-    public $uid;
-
     function __construct()
     { 
         header('Access-Control-Allow-Credentials: True');
         header('Access-Control-Allow-Headers: Origin,Content-Type,X-Auth-Token,AccountKey,X-requested-with,Authorization,Accept, Client-Security-Token,Host,Date,Cookie,Cookie2'); 
         header('Access-Control-Allow-Methods: POST,OPTIONS'); 
         header('Access-Control-Allow-Origin: *');
-        
-        Factory::response()->encoded();
 
         parent::__construct();
 
@@ -166,6 +162,7 @@ class AuthController extends Controller implements IAuth
             $perms     = $this->fetchPermissions($uid);
             $db_access = $this->getDbAccess($uid);
        
+            Acl::setCurrentRoles($roles); //
 
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 
@@ -527,7 +524,7 @@ class AuthController extends Controller implements IAuth
             Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
         try {
-            DB::beginTransaction();
+            //DB::beginTransaction();
             
             $data  = Factory::request()->getBody(false);
 
@@ -624,8 +621,9 @@ class AuthController extends Controller implements IAuth
             }     
             
             $is_active = $this->config['pre_activated'] ? true : null;
-
             $db_access = $this->getDbAccess($uid);
+
+            Acl::setCurrentRoles($roles); //
 
             // Hook
             $this->onRegistered($data, $uid, $is_active, $roles);
@@ -652,14 +650,14 @@ class AuthController extends Controller implements IAuth
                 'db_access' => $db_access
             ];    
 
-            DB::commit();    
+            //DB::commit();    
             Factory::response()->send($res);
 
         } catch (InvalidValidationException $e) { 
-            DB::rollback();
+            //DB::rollback();
             Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
         }catch(\Exception $e){
-            DB::rollback();
+            //DB::rollback();
             Factory::response()->sendError($e->getMessage());
         }	
             
@@ -774,6 +772,8 @@ class AuthController extends Controller implements IAuth
                 $active = true;
                 $perms  = $this->fetchPermissions($uid);
                 
+                Acl::setCurrentRoles($ret['roles']); //
+
                 $ret = [
                     'uid'           => $uid,
                     'roles'         => $roles,
@@ -783,16 +783,6 @@ class AuthController extends Controller implements IAuth
             break;
             case 'JWT':
                 $ret = $this->jwtPayload();
-
-                $tenantid = Factory::request()->getTenantId();
-
-                if ($tenantid !== null){
-                    $db_access = $ret['db_access'] ?? [];
-                    
-                    if (!in_array($tenantid, $db_access)){
-                        Factory::response()->sendError("Forbidden", 403, "No db access");
-                    }
-                }
 
                 if (DB::table($this->users_table)->inSchema([$this->role_field])){
                     $ret['roles'] = [ Factory::acl()->getRoleName($ret['roles']) ]; 
@@ -805,10 +795,32 @@ class AuthController extends Controller implements IAuth
                     }
                 } 
 
+                Acl::setCurrentRoles($ret['roles']); //
+
+                $tenantid = Factory::request()->getTenantId();
+
+                if ($tenantid !== null){
+                    $db_access = $ret['db_access'] ?? [];   
+                   
+                    if (config()['restrict_by_tenant']){
+                        if (!in_array($tenantid, $db_access)){
+                            //dd($ret['roles']);
+                            //dd(acl()->getRolePermissions());
+
+                            // Si tiene el permiso especial "read_all" le doy acceso a cualquier DB !
+                            if (!acl()->hasSpecialPermission('read_all', $ret['roles'])){
+                                Factory::response()->sendError("Forbidden", 403, "No db access");
+                            }
+                        }
+                    }
+                }
+
             break;
             default:
                 $perms = []; 
                 $roles = [Factory::acl()->getGuest()];
+
+                Acl::setCurrentRoles($roles); //
 
                 $ret = [
                     'uid' => null,
@@ -818,10 +830,10 @@ class AuthController extends Controller implements IAuth
                 ];
         }
 
-        $this->uid = $ret['uid'];
+        Acl::setCurrentUid($ret['uid']) ;
 
         // Hook
-        $this->onChecked($this->uid, $active, $roles, $perms, $auth_method);
+        $this->onChecked($ret['uid'], $active, $roles, $perms, $auth_method);
 
         return $ret;
     }
@@ -903,6 +915,8 @@ class AuthController extends Controller implements IAuth
         $roles = $payload->roles ?? [];
         $perms = $payload->permissions ?? [];
         $db_access = $this->getDbAccess($uid);
+
+        Acl::setCurrentRoles($roles); //
 
         $access  = $this->gen_jwt([ 'uid' => $uid,   
                                     'roles' => $roles, 
@@ -1059,6 +1073,9 @@ class AuthController extends Controller implements IAuth
                                                 'uid' => $uid
                     ], 'refresh_token');
 
+
+                    Acl::setCurrentRoles($roles); //
+
                     ///////////
                     Factory::response()->send([ 
                                     'uid' => $uid,
@@ -1162,6 +1179,8 @@ class AuthController extends Controller implements IAuth
             $roles     = $this->fetchRoles($uid); 
             $perms     = $this->fetchPermissions($uid);
             $db_access = $this->getDbAccess($uid);
+
+            Acl::setCurrentRoles($roles); //
 
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 

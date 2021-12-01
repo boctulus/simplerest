@@ -1,0 +1,39 @@
+Historias de usuario
+
+Como Usuario (sin necesidad de estar "logueado") quiero poder pedir abrir *tickets* de soporte por fallas en la plataforma => en cualquier caso se generará un "número" de reclamo y se se dará una url donde chequear el estado del mismo 
+Como Usuario registrado necesito poder cerrar los ticketes de soporte. 
+Como Usuario registrado necesito poder dar calificar el soporte recibido.
+
+Como Comprador quiero encontrar una *app* para mi negocio => listado, buscador y filtros con ordenamiento
+Como Comprador quiero leer los *reviews* de la app realizadas por otros compradores y el puntaje promedio
+Como Comprador quiero ver el perfil del vendedor (otras publicaciones, reputación, antiguedad)
+Como Comprador quiero poder pagar la *app* en linea
+Como Comprador quiero poder hacer *preguntas* al vendedor para evacuar dudas
+Como Comprador quiero poder hacer *reclamos* a un vendedor.
+Como Comprador quiero poder escalar un reclamo si el vendedor no me da respuesta satisfactoria en un plazo estipulado.
+Como Comprador quiero tener seguridad de que el vendedor está verificado para evitar estafas
+Como Comprador quiero tener seguridad de que se me reembolsará el dinero si no me es útil => NET 30 
+Como Comprador quiero poder pagar por un medio de pago conveniente
+Como Comprador quiero saber si un producto (app) cambió de precio desde que lo agregué al *carrito*
+Como Comprador quiero obtener todos los datos de contacto del vendedor
+Como Comprador quiero recibir una notificación inmediata en la aplicación, al correo y opcionalente a un WhatsApp cuando haya una venta.
+Como Vendedor quiero poder actualizar mi perfil (correo electrónico -que deberá volver a verificarse-, números de teléfono, dirección)
+
+Como Vendedor quiero poder publicar una *app* ya sea web o de escritorio 
+Como Vendedor quiero poder recibir el *pago* por un *medio* de pago conveniente
+Como Vendedor quiero poder ver mis *ventas* y el saldo por cobrar así como en que fecha será.
+Como Vendedor quiero poder ver *preguntas* de los usuarios.
+Como Vendedor quiero poder actualizar mi *perfil* (correo electrónico -que deberá volver a verificarse-, números de teléfono, dirección, foto, etc). No podrá editarse el nombre ni el nombre de la empresa. 
+
+Como Soporte necesito poder ver los los *ticketes* -de forma predeterminada los "abiertos" y con prioridad los que no tiene respuesta de soporte y son más antiguos-
+Como Soporte necesito poder *escalar* un caso complejo siendo entonces notificado un Administrador o Supervisor.
+
+Como Supervisor necesito poder ver y resolver todos los ticketes con prioridad los que se hayan escalado a un supervisor.
+Como Supervisor podría necesitar ver el rendimiento (cantidad y calificaciones) del personal de Soporte.
+
+Como Administrador quiero poder ver que *búsquedas* se han hecho ordenadas por frecuencia, fecha o país
+Como Administrador quiero poder ver que tienen los usuarios en sus *carritos*
+Como Administrador quiero poder ver las *ventas* por país, vendedor, publicación, categoría o tags
+
+
+

@@ -1,4 +1,8 @@
-<h1>Home Page</h1>
+<div>
+    <?= section('home/carousel.php') ?>
+</div>
 
-<br/>
-<p>Seas bienvenido !</p>
+
+<div class="mt-5">
+    <?= section('home/productos.php') ?>
+</div>
