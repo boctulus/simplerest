@@ -190,6 +190,18 @@ class Files
 
 		if (empty($files)){
 			$files = [];
+		} else {
+			/*
+				Glob included files
+			*/
+			$glob_includes = [];
+			foreach ($files as $ix => $f){
+				if (Strings::startsWith('glob:', $f)){
+					$glob_includes = array_merge($glob_includes, Files::recursiveGlob(ROOT_PATH . substr($f, 5)));
+					unset($files[$ix]);
+				}
+			}
+			$files = array_merge($files, $glob_includes);
 		}
 
 		if (empty($except)){
@@ -198,6 +210,18 @@ class Files
 
 		$except_dirs = [];
 		if (is_array($except)){
+			/*
+				Glob ignored files
+			*/
+			$glob_excepts = [];
+			foreach ($except as $ix => $e){
+				if (Strings::startsWith('glob:', $e)){
+					$glob_excepts = array_merge($glob_excepts, Files::recursiveGlob(ROOT_PATH . substr($e, 5)));
+					unset($except[$ix]);
+				}
+			}
+			$except = array_merge($except, $glob_excepts);
+
 			foreach ($except as $ix => $e){
 				if (!Files::isAbsolutePath($e)){
 					$except[$ix] = Files::getAbsolutePath($ori . '/'. $e);
@@ -210,21 +234,38 @@ class Files
 		}
 
         foreach ($files as $_file){
-            $file = DIRECTORY_SEPARATOR. trim($_file);
+			$_file = trim($_file);
+
+			if (!self::isAbsolutePath($_file)){
+				$file = DIRECTORY_SEPARATOR. $_file;
+			} else {
+				$file = $_file;
+			}            
 
             if (Strings::startsWith('#', $_file) || Strings::startsWith(';', $_file)){
                 continue;
             }
             
-            $ori_path = trim($ori . DIRECTORY_SEPARATOR . $_file);    
-            $ori_path = str_replace('//', '/', $ori_path);
 
-			if (is_file($ori_path)){				
+			if (!self::isAbsolutePath($_file)){
+				$ori_path = trim($ori . DIRECTORY_SEPARATOR . $_file);
+				$is_file = is_file($ori_path); 
+			} else {
+				$ori_path = $_file;
+				$ori_path = Strings::substract($ori_path, ROOT_PATH);
+				$is_file = is_file($ori_path);
+			}
+
+			$ori_path = Strings::removeUnnecessarySlashes($ori_path);
+
+			if ($is_file){				
 				$rel = Strings::substract($ori_path, ROOT_PATH);	
 				
 				$dir = dirname($dst . DIRECTORY_SEPARATOR . $rel);
 				static::mkDir($dir);
 			}
+
+			//dd($ori_path, 'ORI_PATH AFTER DIFF');
 
             if (is_dir($ori_path)){
                 static::mkDir($dst . $file);
@@ -253,7 +294,6 @@ class Files
 					}
 
                     $dif = Strings::substract($full_path, $ori);
-
                     $dst_path =  trim($dst . $dif);
 
 					// Creo directorios faltantes
@@ -286,7 +326,14 @@ class Files
                
             }
 
-            static::cp($ori_path, $dst . DIRECTORY_SEPARATOR . $_file);
+			if (static::isAbsolutePath($_file)){
+				$_file = Strings::diff($_file, ROOT_PATH);
+			}	
+			
+			$final_path = $dst . DIRECTORY_SEPARATOR . $_file;
+
+			static::mkDirPath($final_path);
+            static::cp($ori_path, $final_path);
         }
     }
 
@@ -402,7 +449,7 @@ class Files
 		return false;
 	}
 
-	static function logger($data, $file = 'log.txt'){		
+	static function logger($data, string $file = 'log.txt'){		
 		if (is_array($data) || is_object($data))
 			$data = json_encode($data);
 		
@@ -423,10 +470,6 @@ class Files
 		} else {
 			file_put_contents($path, var_export($object,  true) . "\n");
 		}		
-	}
-	
-	static function makeDirPath($path) {
-		return file_exists($path) || mkdir($path, 0777, true);
 	}
 	
     static function mkDir($dir, int $permissions = 0777, $recursive = true){
@@ -450,6 +493,10 @@ class Files
 		}
 
 		return $ok;
+	}
+
+	static function mkDirPath($path, int $permissions = 0777) {
+		return file_exists($path) || mkdir($path, $permissions, true);
 	}
 
 	// alias

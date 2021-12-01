@@ -5934,3 +5934,120 @@ Ej:
 	
 	dd("Time: $t ms");  
 
+
+### La clase Files: utilidades de archivos
+
+La librería Files tiene gran cantidad de funcionalidades como de borrado y copiado recursivo de archivos y directorios. Backups, etc.
+
+replace(string $filename, $search, $replace) 						similar a str_replace() pero sobre archivos
+pregReplace(string $filename, $search, $replace)					similar a preg_replace() pero sobre archivos
+isAbsolutePath(string $path)										devuelve si la ruta es absoluta
+getAbsolutePath()													retorna rota absoluta a ROOT_PATH
+recursiveGlob($pattern, $flags = 0)									similar a glob() pero recursivo
+getDir(string $path)												extrae el directorio de un path.
+setBackupDirectory(string $path)									setea un path para hacer backups
+cp(string $ori, string $dst, $simulate = false, $overwrite = true)	copia de archivos individuales con opción de backup
+copy(string $ori, string $dst, ?Array $files = null, $except = [])	copia recursiva de archivos con opción de backup (*)
+delete(string $file)												borra un archivo individual
+deleteOrFail(string $file)											borra un archivo individual y sino existe, lanza excepción
+globDelete($dir, ?string $glob_pattern = '*.*', $recursive = false)	borra archivos aplicando un patrón glob. No toca los directorios.
+delTree(string $dir, bool $include_self = false)					borra archivos y directorios recursivamante pero puede conservar el padre.
+logger($data, $file = 'log.txt')									hace un log de la data enviada. Exporta con json_encode()
+dump($object, $filename = 'dump.txt', $append = false)				similar a logger() pero exporta con var_export()
+mkDir($dir, int $permissions = 0777, $recursive = true)				make directory recusivo
+mkDirOrFail($dir, int $permissions = 0777, $recursive = true)		crea directorio o si falla genera excepción.
+
+Nota:
+
+Files::copy() permite especificar patrones glob tanto para incluir como excluir archivos pero en estos casos hacen referencia a ROOT_PATH y son recursivos (todas las ocurrencias).
+
+Algunos ejemplos:
+
+Ej:
+
+Copiar un archivo
+
+Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+'app/controllers/ShopiController.php');
+
+
+Ej:
+
+Copiar un archivo a una ruta sin especificar el nombre en el destino
+
+Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+'app/controllers');
+
+Ej:
+
+Crear un archivo y hacer un backup en caso de existir en el destino
+
+Files::setBackupDirectory(ROOT_PATH . 'backups'); // crear constante
+Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+'app/controllers/ShopiController.php');
+
+Ej:
+
+Copiar recursivamente archivos de una ruta a otra 
+
+$ori = '/home/www/simplerest';
+$dst = '/home/feli/Desktop/UPDATE';
+
+Files::copy($ori, $dst, [
+	'docs'
+	'/home/www/simplerest/docs/dev/TODO Supra.txt'
+]);
+
+Se puede especificando la ruta absoluta a un archivo como ClientInterface.php en el ejemplo.
+
+Ej:
+
+$ori = '/home/www/simplerest';
+$dst = '/home/feli/Desktop/UPDATE';
+
+Files::copy($ori, $dst, [
+	'docs',
+	'/home/www/simplerest/vendor/psr/http-client/src/ClientInterface.php'
+]);
+
+Ej:
+
+Copiar recursivamente archivos de una ruta a otra a excepción de ciertos archvos o directorios.
+
+$ori = '/home/www/simplerest';
+$dst = '/home/feli/Desktop/UPDATE';
+
+Files::copy($ori, $dst, [
+	'docs'
+], 
+[
+	'docs/dev',
+	'/home/www/simplerest/docs/dev/TODO Supra.txt',
+	'docs/INSTALACION.txt'
+]);
+
+Ej:
+
+Especificando patrones de glob copiar recursivamente archivos y directorios de una ruta a otra a excepción de ciertos archivos.
+
+$ori = '/home/www/simplerest';
+$dst = '/home/feli/Desktop/UPDATE';
+
+$str_files = <<<'FILES'
+	config/constants.php
+	app/core
+	app/controllers/UpdateController.php     
+	public/app.php
+	glob:*.txt
+FILES;
+
+$files = explode(PHP_EOL, $str_files);
+
+$except =  [
+	'db_dynamic_load.php',
+	'PrepareUpdateController.php',
+	'docs/dev',
+	'glob:*.zip'
+];
+
+Files::copy($ori, $dst, $files, $except);
