@@ -6122,4 +6122,6 @@ O mejor:
 
 Idealmente los paquetes tendrán permiso de lectura para usuarios con el rol "suscriptor" pero no hay un endpoint "updates" sino es un único endpoint para archivos "files" (limitación) y los permisos sobre folders no pueden otorgarse en base a roles (limitación) sino a determinados usuarios.
 
+<-- podría crear un FilesBase como ApiController y heredar de ahí para no duplicar la implementación.
+
 Conclusión: se dará de momento "guest access" sobre un folder en particular sobre "files" dedicado a listar y descargar los updates. 
