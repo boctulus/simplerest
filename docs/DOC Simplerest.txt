@@ -4302,7 +4302,15 @@ o
 
 Es posible especificar el directorio donde se quiere crear la migración con la opción --dir=
 
-	$ php com make migration create_cables --dir=mi_folder
+	$ php com make migration create_cables --dir=my_folder
+
+Ej:
+
+	$ php com make migration create_cables --dir=my_folder/sub
+
+Notar que en sistemas UNIX / Linux, la "\" escapa caracteres así que si se quisiera usar la el directory separator de Windows (/) tendría que entre-comillarse:
+
+	$ php com make migration create_cables --dir='my_folder\sub'
 
 Los archivos creados por "make migration" implementan la interface IMigration y en si poseen dos métodos que pueden considerarse "hooks": up y down
 
