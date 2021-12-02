@@ -107,6 +107,13 @@ Además, se puede cargar la configuración de varias formas:
 
 Incluir el archivo config.php directamente no es recomendado porque no estará cacheado y degradará la performance.
 
+Es importante notar que al hacer uso de config() se accede a una versión en caché del archivo config.php y éste helper es usado internamente por SimpleRest por lo cual lo siguiente no funcionará:
+
+	config()['db_connection_default'] = 'db_xyz';
+	DB::getDefaultConnection();
+
+De hecho si se hiciera un dd() o var_dump() de config() antes y después de intentar el cambio se verá que nada ha cambiado.
+
 
 # Configuración de "tenant groups"
 
@@ -3470,7 +3477,7 @@ Y puede visualizarse un registro en particular (ej: 124) para el que no tendría
 
 	GET /api/v1/products/124?folder=1		
 
-<-- si el folder se nos ha "compartido" por mediode permisos y no se especifica entonces el registro no se hallará devolviendo 404 (Not Found).
+<-- si el folder se nos ha "compartido" por medio de permisos y no se especifica entonces el registro no se hallará devolviendo 404 (Not Found).
 
 Un usuario con rol de administrador en principio obtendrá todos los registros para un endpoint incluidos los que pertenecen a folders privados de otros usuarios:
 
@@ -4704,12 +4711,9 @@ Ej:
 		
 	dd($m->get());
 
-
-Otra forma de seleccionar una base de datos es cambiar la conexión por defecto:
-
 Ej:
 
-	config()['db_connection_default'] = 'db2';
+	DB::getConnection('db2');
 
 	$m = (new Model(true))
 		->table('cables');
@@ -4718,7 +4722,7 @@ Ej:
 
 o
 
-	config()['db_connection_default'] = 'db2';
+	DB::getConnection('db2');
 
 	$m = (new CablesModel())
 	->connect();
@@ -4729,15 +4733,14 @@ o
 
 o 
 
-	config()['db_connection_default'] = 'db2';
+	DB::getConnection('db2');
 
 	$m = DB::table('cables');
 	dd($m->get());
 
-
 Ej. con migraciones:
 
-	config()['db_connection_default'] = 'db2';
+	DB::getConnection('db2');
 
 	$sc = new Schema('cables');
 
@@ -4751,6 +4754,33 @@ Ej. con migraciones:
 Para generar el archivo de migración anterior (las primeras dos líneas) se puede usar --to combinado con --table:
 
 	php com make migration creacion_tabla_cables_bla_bla --to=db2 --table=cables
+
+
+Nota:
+
+Es importante notar que al hacer uso de config() se accede a una versión en caché del archivo config.php y éste helper es usado internamente por SimpleRest por lo cual lo siguiente *no* funcionará:
+
+	config()['db_connection_default'] = 'db2';
+	DB::getDefaultConnection();
+
+De hecho si se hiciera un dd() o var_dump() de config() antes y después de intentar el cambio se verá que nada ha cambiado.
+
+/*
+	Incorrecto
+*/
+
+	config()['db_connection_default'] = 'db2';
+	DB::getDefaultConnection();
+
+	// no se verá reflejado cambio alguno
+	dd(DB::getCurrentConnectionId());  
+
+/*
+	Correcto
+*/
+
+	DB::setConnection('db2');
+	dd(DB::getCurrentConnectionId());
 
 
 # fresh
@@ -6051,3 +6081,45 @@ $except =  [
 ];
 
 Files::copy($ori, $dst, $files, $except);
+
+
+### Actualizaciones del framework
+
+El escenario es que el framework evoluciona, se crean nuevas librerías, funciones cambian de nombre, etc. 
+
+# Creación del update
+
+	- Se crea un nuevo paquete de actualización nombrado con la fecha-hora corriente. 
+
+	- Se introduce una descripción general del paquete que se irá actualizando.
+
+	- A medida que se introducen cambios como el renombrado de una función o archivo o un cambio de ubicación se escribe una nueva "tarea" que en si indica qué cambios hacer. En si es como una migración pero sobre código en vez de sobre la base de datos. 
+
+	Cada tarea lleva una descripción.
+
+	Cabe notar que cambio es una nueva tarea. Éstas se ejecutarán de forma secuencial de forma cronológica.
+
+	- Se copian los archivos nuevos en una ubicación especial.
+
+	- Todo el paquete (archivos + tareas + descripción) es comprimido con el nombre del paquete.
+
+	- El paquete ya comprimido es subido a un repositorio. 
+
+	El repositorio es accesible via endpoint habilitando operaciones para el usuario final como:
+
+		- listar
+		- descargar
+
+# Update
+
+El usuario mediante comandos podrá verificar cuántos updates tiene pendientes enviando las credenciales al endpoint correspondiente:
+
+	GET {url_repository}/api/v1/files?file_ext=zip&filename[startsWith]=simplerest_update&created_at[gt]={last_updated}&orderBy=created_at
+
+O mejor:
+
+	GET {url_repository}/api/v1/files?folder={folder_dado}&created_at[gt]={last_updated}&orderBy=created_at
+
+Idealmente los paquetes tendrán permiso de lectura para usuarios con el rol "suscriptor" pero no hay un endpoint "updates" sino es un único endpoint para archivos "files" (limitación) y los permisos sobre folders no pueden otorgarse en base a roles (limitación) sino a determinados usuarios.
+
+Conclusión: se dará de momento "guest access" sobre un folder en particular sobre "files" dedicado a listar y descargar los updates. 

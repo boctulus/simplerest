@@ -21,7 +21,7 @@ class Files implements IMigration
         ->setCharset('utf8')
         ->setCollation('utf8_general_ci')
 
-        ->varchar('uuid', 36)->pri()   // no está siendo aplicado el pri() 
+        ->varchar('uuid', 36)->pri()   
         ->varchar('filename', 255)
         ->varchar('file_ext', 30)
         ->varchar('filename_as_stored', 60)

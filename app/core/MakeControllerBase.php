@@ -110,7 +110,9 @@ class MakeControllerBase extends Controller
         make api all --from:dsi [--force | -f] [ --unignore | -u ]
 
         <-- "from:" is required in this case.]
-                 
+             
+        make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ]
+
         make any Something  [--schema | -s] [--force | -f] [ --unignore | -u ]
                             [--model | -m] [--force | -f] [ --unignore | -u ]
                             [--controller | -c] [--force | -f] [ --unignore | -u ]
@@ -123,6 +125,7 @@ class MakeControllerBase extends Controller
         
         make migration rename_some_column
         make migration another_table_change --table=foo
+        make migration books --table=books --class_name=BooksAddDescription --to:main
 
         make db_scan [ -- from= ]
 
@@ -136,7 +139,7 @@ class MakeControllerBase extends Controller
         make any all -samf --from:dsi
         make any all -s -f --from:main 
         make any all -s -f --from:main --unignore                       
-        
+              
         STR;
 
         print_r(PHP_EOL);
@@ -1184,10 +1187,6 @@ class MakeControllerBase extends Controller
                 $to_db = $matches[1];
             }
 
-            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
-                $from_db = $matches[1];
-            }
-
             /*
                 Makes a reference to the specified table schema
             */
@@ -1236,7 +1235,7 @@ class MakeControllerBase extends Controller
         } 
 
         if (!empty($to_db)){
-            $up_rep .= "config()['db_connection_default'] = '$to_db';\r\n\r\n";
+            $up_rep .= "DB::setConnection('$to_db');\r\n\r\n";
         }
         
         if (!empty($tb_name)){
