@@ -1,14 +1,10 @@
 # TODO
   
+- Usar como nombre automático de clase {Tabla}{DateTime} en caso de no especificar --class_name=  
+
 - Usar en cada archivo del core:
 
    declare(strict_types=1);
-
-- Terminar Files:copy() a fin de que:
-
-  * Admita patrones glob. Ej: *.zip
-  * Tenga un modo de "resguardo" en el que todos los archivos sean copiados a una ruta segura 
-  de forma que sea posible el rollback (con la misma estructura de directorio)
 
 - Automatizar actualizaciones 
 
