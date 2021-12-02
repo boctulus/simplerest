@@ -35,6 +35,8 @@ class MakeControllerBase extends Controller
     protected $class_name;
     protected $ctr_name;
     protected $api_name; 
+    protected $camel_case;
+    protected $snake_case;
     protected $excluded_files = [];
 
     function __construct()
@@ -87,6 +89,10 @@ class MakeControllerBase extends Controller
     function help(){
         echo <<<STR
         MAKE COMMAND HELP
+
+        In general, 
+
+        make {name} [options]
           
         make helper my_cool_helper [--force | -f] [ --unignore | -u ]
 
@@ -126,6 +132,7 @@ class MakeControllerBase extends Controller
         make migration rename_some_column
         make migration another_table_change --table=foo
         make migration books --table=books --class_name=BooksAddDescription --to:main
+        make migration --class_name=Filesss --table=files --to:main --dir='test\sub3'
 
         make db_scan [ -- from= ]
 
@@ -1158,26 +1165,27 @@ class MakeControllerBase extends Controller
         $this->write($dest_path, $file, $protected);
     }
 
-    function migration($name, ...$opt) 
+    function migration(...$opt) 
     {
-        $this->setup($name);
+        if (count($opt)>0 && !Strings::startsWith('-', $opt[0])){
+            $name = $opt[0];
+            unset($opt[0]);
+        }
 
-        // 2020_10_28_141833_yyy
-        $date = date("Y_m_d");
-        $secs = time() - 1603750000;
-        $filename = $date . '_'. $secs . '_' . $this->snake_case . '.php'; 
+        if (isset($name)){
+            $this->setup($name);
+        }        
 
         $file = file_get_contents(self::MIGRATION_TEMPLATE);
 
         $path    = MIGRATIONS_PATH;
         $to_db   = null;
-        $tb_name = null;
-        $from_db = null;
+        $tb_name = null;    
         $script  = null;
         $dir     = null;
 
-
         $up_rep = '';
+
         foreach ($opt as $o){
             if (is_array($o)){
                 $o = $o[0];
@@ -1202,9 +1210,15 @@ class MakeControllerBase extends Controller
                 $file = str_replace('__NAME__', $class_name, $file); 
             } 
 
-            if (preg_match('~^--dir[=|:]([a-z][a-z0-9A-Z_/]+)$~', $o, $matches)){
-                $dir= $matches[1];
+            if (Strings::startsWith('--dir=', $o)){
+                // Convert windows directory separator into *NIX
+                $o = str_replace('\\', '/', $o);
+
+                if (preg_match('~^--dir[=|:]([a-z][a-z0-9A-Z_/]+)$~', $o, $matches)){
+                    $dir= $matches[1];
+                }
             }
+            
 
             /*
                 The only condition to work is the script should be enclosed with double mark quotes ("")
@@ -1213,6 +1227,20 @@ class MakeControllerBase extends Controller
             if (preg_match('/^--from_script[=|:]"([^"]+)"/', $o, $matches)){
                 $script = $matches[1];
             }
+        }
+
+        if (!isset($name)){
+            if (isset($class_name)){
+                $this->setup($class_name);
+            } else {
+                if (!is_null($tb_name)){
+                    $this->setup($tb_name);;
+                }
+            }
+        }  
+
+        if (is_null($this->camel_case)){
+            throw new \InvalidArgumentException("No name for migration class");
         }
 
         $file = str_replace('__NAME__', $this->camel_case, $file); 
@@ -1250,6 +1278,10 @@ class MakeControllerBase extends Controller
         Strings::replace('### UP', $up_rep, $file);
 
         // destination
+        $date = date("Y_m_d");
+        $secs = time() - 1603750000;
+        $filename = $date . '_'. $secs . '_' . $this->snake_case . '.php'; 
+
         $dest_path = $path . $filename;
 
         $this->write($dest_path, $file, false);

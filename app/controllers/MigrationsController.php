@@ -554,7 +554,8 @@ class MigrationsController extends Controller
         echo <<<STR
         MIGRATIONS COMMAND HELP
 
-        migrations make {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ]  
+        migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ]         
+        make migration --class_name=Filesss --table=files --to:main --dir='test\sub3 
         migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --retry ]
         migrations rollback --to={some_db_conn} [ --dir= ] [ --file= ] [ --step=={N} | --all] [ --simulate ]
         migrations fresh [ --dir= ] [ --file= ] --to=some_db_conn [ --force ]
@@ -569,6 +570,11 @@ class MigrationsController extends Controller
         migrations make my_table --table=my_table   
         migrations make my_table --to=db_connection
         migrations make my_table --table=my_table --class_name=MyTableAddDate --to:main
+        migrations make --class_name=Files
+        migrations make --table=files
+        migrations make --class_name=Filesss --table=files
+        migrations make --class_name=Files --to:main
+        migrations make --class_name=Filesss --table=files --to:main --dir='test\sub3
 
         migrations migrate
         
