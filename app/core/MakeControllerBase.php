@@ -1202,7 +1202,7 @@ class MakeControllerBase extends Controller
                 $file = str_replace('__NAME__', $class_name, $file); 
             } 
 
-            if (preg_match('/^--dir[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('~^--dir[=|:]([a-z][a-z0-9A-Z_/]+)$~', $o, $matches)){
                 $dir= $matches[1];
             }
 
