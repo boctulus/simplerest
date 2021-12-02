@@ -5704,6 +5704,11 @@ class DumbController extends Controller
     function test_conn_ids(){
         dd(DB::getConnectionIds());
     }
+
+    function test_get_current_conn(){
+        DB::setConnection('db_flor');
+        dd(DB::getCurrentConnectionId());  
+    }
     
     function testtt(){
         $t1 = 'api_keys';
