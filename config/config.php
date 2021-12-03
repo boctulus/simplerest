@@ -20,7 +20,7 @@ return [
 	# For a sub-foder in /var/www/html just set as
 	# BASE_URL' => /folder'
 	#
-	'BASE_URL' => '/simplerest-clone',   
+	'BASE_URL' => '/',   
 
 	'ROUTER' => true,
 	'FRONT_CONTROLLER' => true,

@@ -14,6 +14,8 @@ Ahora:
 	php com migrations make --table=files
 	php com migrations make --class_name=Filesss --table=files
 
+- Ahora es posible crear migraciones en sub-sub-directorios
+
 - Se crean "tenant groups" que permiten organizar en distintas carpetas modelos y schemas de distintas bases de datos y agrupar los que se se supone son de bases de datos con igual estructura. Esto permite que dos bases de datos puedan tener ocasionalmente tablas con el mismo nombre y distinta estructura.
 
 Ej:
