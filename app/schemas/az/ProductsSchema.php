@@ -27,7 +27,7 @@ class ProductsSchema implements ISchema
 				'deleted_at' => 'STR',
 				'deleted_by' => 'INT',
 				'active' => 'INT',
-				'locked' => 'INT',
+				'is_locked' => 'INT',
 				'workspace' => 'STR',
 				'belongs_to' => 'INT',
 				'category' => 'INT',
@@ -38,7 +38,7 @@ class ProductsSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'locked', 'workspace', 'belongs_to', 'category'],
+			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to', 'category'],
 
 			'uniques'		=> [],
 
@@ -55,7 +55,7 @@ class ProductsSchema implements ISchema
 				'deleted_at' => ['type' => 'datetime'],
 				'deleted_by' => ['type' => 'int'],
 				'active' => ['type' => 'bool'],
-				'locked' => ['type' => 'bool'],
+				'is_locked' => ['type' => 'bool'],
 				'workspace' => ['type' => 'str', 'max' => 40],
 				'belongs_to' => ['type' => 'int'],
 				'category' => ['type' => 'int'],
@@ -150,22 +150,6 @@ class ProductsSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'product_comments' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'product_comments',
-				        1 => 'product_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
 				  'product_tags' => 
 				  array (
 				    0 => 
@@ -198,6 +182,22 @@ class ProductsSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'product_comments' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'product_comments',
+				        1 => 'product_id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'products',
+				        1 => 'id',
+				      ),
+				    ),
+				  ),
 				),
 
 			'relationships_from' => [
@@ -214,22 +214,6 @@ class ProductsSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'digital_products' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'digital_products',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'digital_id',
-				      ),
-				    ),
-				  ),
 				  'users' => 
 				  array (
 				    0 => 
@@ -258,6 +242,22 @@ class ProductsSchema implements ISchema
 				      array (
 				        0 => 'products',
 				        1 => 'deleted_by',
+				      ),
+				    ),
+				  ),
+				  'digital_products' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'digital_products',
+				        1 => 'id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'products',
+				        1 => 'digital_id',
 				      ),
 				    ),
 				  ),

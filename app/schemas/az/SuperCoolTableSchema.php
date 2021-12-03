@@ -21,7 +21,7 @@ class SuperCoolTableSchema implements ISchema
 				'active' => 'INT',
 				'belongs_to' => 'INT',
 				'deleted_at' => 'STR',
-				'locked' => 'INT'
+				'is_locked' => 'INT'
 			],
 
 			'primary'		=> ['id'],
@@ -39,7 +39,7 @@ class SuperCoolTableSchema implements ISchema
 				'active' => ['type' => 'bool', 'required' => true],
 				'belongs_to' => ['type' => 'int', 'required' => true],
 				'deleted_at' => ['type' => 'datetime'],
-				'locked' => ['type' => 'bool', 'required' => true]
+				'is_locked' => ['type' => 'bool', 'required' => true]
 			],
 
 			'fks' 			=> [],

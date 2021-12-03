@@ -21,7 +21,7 @@ class FilesSchema implements ISchema
 				'filename_as_stored' => 'STR',
 				'belongs_to' => 'INT',
 				'guest_access' => 'INT',
-				'locked' => 'INT',
+				'is_locked' => 'INT',
 				'broken' => 'INT',
 				'created_at' => 'STR',
 				'deleted_at' => 'STR'
@@ -31,7 +31,7 @@ class FilesSchema implements ISchema
 
 			'autoincrement' => null,
 
-			'nullable'		=> ['belongs_to', 'guest_access', 'locked', 'broken', 'deleted_at'],
+			'nullable'		=> ['belongs_to', 'guest_access', 'is_locked', 'broken', 'deleted_at'],
 
 			'uniques'		=> [],
 
@@ -42,7 +42,7 @@ class FilesSchema implements ISchema
 				'filename_as_stored' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'belongs_to' => ['type' => 'int'],
 				'guest_access' => ['type' => 'bool'],
-				'locked' => ['type' => 'bool'],
+				'is_locked' => ['type' => 'bool'],
 				'broken' => ['type' => 'bool'],
 				'created_at' => ['type' => 'datetime', 'required' => true],
 				'deleted_at' => ['type' => 'datetime']

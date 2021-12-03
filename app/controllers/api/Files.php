@@ -113,11 +113,11 @@ class Files extends MyApiController
             $extra = [];
 
             if (!$acl->hasSpecialPermission('lock')){
-                if ($instance->inSchema(['locked'])){
-                    $extra = array_merge($extra, ['locked' => 1]);
+                if ($instance->inSchema(['is_locked'])){
+                    $extra = array_merge($extra, ['is_locked' => 1]);
                 }   
             }else {
-                if (isset($row['locked']) && $row['locked'] == 1){
+                if (isset($row['is_locked']) && $row['is_locked'] == 1){
                     Factory::response()->sendError("Locked by an admin", 403);
                 }
             }

@@ -28,7 +28,7 @@ class Users implements IMigration
                 `username` varchar(15) NOT NULL,
                 `password` varchar(60) DEFAULT NULL,
                 `active` tinyint(1) DEFAULT NULL,
-                `locked` tinyint(1) NOT NULL DEFAULT '0',
+                `is_locked` tinyint(1) NOT NULL DEFAULT '0',
                 `email` varchar(60) NOT NULL,
                 `confirmed_email` tinyint(1) DEFAULT '0',
                 `belongs_to` int(11) DEFAULT NULL,
