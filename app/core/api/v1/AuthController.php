@@ -41,7 +41,7 @@ class AuthController extends Controller implements IAuth
         $this->__username        = $model::$username;
         $this->__password        = $model::$password;
         $this->__confirmed_email = $model::$confirmed_email;
-        $this->__active          = $model::$active;
+        $this->__active          = $model::$is_active;
 
         $this->__id = get_name_id($this->users_table);
     }
@@ -137,11 +137,11 @@ class AuthController extends Controller implements IAuth
             if (!password_verify($password, $hash))
                 Factory::response()->sendError('Incorrect username / email or password', 401);
 
-            $active = 1;    
+            $is_active = 1;    
             if ($u->inSchema([$this->__active])){
-                $active = $row[$this->__active]; 
+                $is_active = $row[$this->__active]; 
 
-                if ($active == null) {
+                if ($is_active == null) {
 
                     if ($row[$this->__confirmed_email] === "0") {
                         Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
@@ -150,7 +150,7 @@ class AuthController extends Controller implements IAuth
                     }
                 }
 
-                if ($active == 0 || (string) $active === "0") {
+                if ($is_active == 0 || (string) $is_active === "0") {
                     Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
                 } 
             }                
@@ -167,7 +167,7 @@ class AuthController extends Controller implements IAuth
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 
                                         'permissions' => $perms,
-                                        'active' => $active, 
+                                        'is_active' => $is_active, 
                                         'db_access' => $db_access
             ], 'access_token');
 
@@ -175,7 +175,7 @@ class AuthController extends Controller implements IAuth
             $refresh = $this->gen_jwt([ 'uid' => $uid
             ], 'refresh_token');
 
-            $this->onLogged($data, $uid, $active, $roles, $perms);
+            $this->onLogged($data, $uid, $is_active, $roles, $perms);
 
             Factory::response()->send([ 
                                         'access_token'=> $access,
@@ -255,7 +255,7 @@ class AuthController extends Controller implements IAuth
                     $uid = -1;
                     $roles = [$guest_role];
                     $perms = [];
-                    $active = null;
+                    $is_active = null;
                 } else {
 
                     if (!$acl->roleExists($impersonate_role)){
@@ -265,7 +265,7 @@ class AuthController extends Controller implements IAuth
                     $uid = $payload->uid; // sigo siendo yo (el admin)
                     $roles = [$impersonate_role]; 
                     $perms = []; // permisos inalterados (rol puro)
-                    $active = 1; // asumo está activo
+                    $is_active = 1; // asumo está activo
                 }    
             }
 
@@ -282,13 +282,13 @@ class AuthController extends Controller implements IAuth
                 if (!$row)
                     throw new Exception("User to impersonate does not exist");
 
-                $active = true;    
+                $is_active = true;    
                 if ($u->inSchema([$this->__active])){
-                    $active = $row[$this->__active];
+                    $is_active = $row[$this->__active];
 
-                    if ($active === NULL) {
+                    if ($is_active === NULL) {
                         Factory::response()->sendError('Account to be impersonated is pending for activation', 500);
-                    } elseif (((string) $active === "0")) {
+                    } elseif (((string) $is_active === "0")) {
                         Factory::response()->sendError('User account to be impersonated is deactivated', 500);
                     }  
                 }
@@ -305,7 +305,7 @@ class AuthController extends Controller implements IAuth
                                         'roles' => $roles, 
                                         'permissions' => $perms,
                                         'impersonated_by' => $impersonated_by,
-                                        'active' => $active,
+                                        'is_active' => $is_active,
                                         'db_access' => $db_access
             ], 'access_token');
 
@@ -324,7 +324,7 @@ class AuthController extends Controller implements IAuth
                 'impersonated_by' => $impersonated_by
             ];
 
-            $this->onImpersonated($data, $uid, $active, $roles, $perms, $impersonated_by);
+            $this->onImpersonated($data, $uid, $is_active, $roles, $perms, $impersonated_by);
     
             Factory::response()->send($res);      
 
@@ -381,7 +381,7 @@ class AuthController extends Controller implements IAuth
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 
                                         'permissions' => $perms,
-                                        'active' => 1,
+                                        'is_active' => 1,
                                         'db_access' => $db_access
             ], 'access_token');
 
@@ -449,7 +449,7 @@ class AuthController extends Controller implements IAuth
                 {
                     $acl   = Factory::acl();
 
-                    $active = false;
+                    $is_active = false;
                     $roles = [$acl->getGuest()];
                     $perms = [];
                 } else {
@@ -467,11 +467,11 @@ class AuthController extends Controller implements IAuth
                 if (!$row)
                     throw new \Exception("User not found");
 
-                $active = 1;    
+                $is_active = 1;    
                 if ($u->inSchema([$this->__active])){
-                    $active = $row[$this->__active]; 
+                    $is_active = $row[$this->__active]; 
 
-                    if ($active == 0 || (string) $active === "0") {
+                    if ($is_active == 0 || (string) $is_active === "0") {
                         Factory::response()
                         ->sendError('Unauthorized', 403, 'Deactivated account !');
                     }
@@ -488,7 +488,7 @@ class AuthController extends Controller implements IAuth
                                         'roles' => $roles, 
                                         'permissions' => $perms, 
                                         'impersonated_by' => $impersonated_by,
-                                        'active' => $active,
+                                        'is_active' => $is_active,
                                         'db_access' => $db_access
                                     ], 
             'access_token');
@@ -632,7 +632,7 @@ class AuthController extends Controller implements IAuth
                                         'uid' => $uid, 
                                         'roles' => $roles,
                                         'permissions' => [],
-                                        'active' => $is_active,
+                                        'is_active' => $is_active,
                                         'db_access' => $db_access
             ], 'access_token');
 
@@ -700,12 +700,15 @@ class AuthController extends Controller implements IAuth
                 if (!isset($payload->uid) || empty($payload->uid))
                     Factory::response()->sendError('Unauthorized',401,'Lacks id in web token');  
 
-                // Lacks active status
-                if (DB::table($this->users_table)->inSchema(['active']) && !isset($payload->active) && $payload->uid != -1){
-                    Factory::response()->sendError('Unauthorized', 401, 'Lacks active status. Please log in.');
+                // Lacks is_active status
+                if (DB::table($this->users_table)->inSchema(['is_active']) && !isset($payload->is_active) && $payload->uid != -1){
+                    Factory::response()->sendError('Unauthorized', 401, 'Lacks is_active status. Please log in.');
                 }    
 
-                if ($payload->active === false) {
+                // temporal:  active => is_active
+                $is_active = $payload->is_active ?? $payload->active;
+
+                if ($is_active === false) {
                     Factory::response()->sendError('Unauthorized', 403, 'Deactivated account');
                 } 
                                                   
@@ -743,7 +746,7 @@ class AuthController extends Controller implements IAuth
         if ($ret != null)
             return $ret;
 
-        $active = null;
+        $is_active = null;
         $perms  = [];
         $roles  = [];
 
@@ -769,7 +772,7 @@ class AuthController extends Controller implements IAuth
                     $roles = $this->fetchRoles($uid);
                 }
 
-                $active = true;
+                $is_active = true;
                 $perms  = $this->fetchPermissions($uid);
                 
                 Acl::setCurrentRoles($ret['roles']); //
@@ -778,7 +781,7 @@ class AuthController extends Controller implements IAuth
                     'uid'           => $uid,
                     'roles'         => $roles,
                     'permissions'   => $perms,
-                    'active'        => $active 
+                    'is_active'     => $is_active 
                 ];
             break;
             case 'JWT':
@@ -826,14 +829,14 @@ class AuthController extends Controller implements IAuth
                     'uid' => null,
                     'roles' => $roles,
                     'permissions' => $perms,
-                    'active' => $active
+                    'is_active' => $is_active
                 ];
         }
 
         Acl::setCurrentUid($ret['uid']) ;
 
         // Hook
-        $this->onChecked($ret['uid'], $active, $roles, $perms, $auth_method);
+        $this->onChecked($ret['uid'], $is_active, $roles, $perms, $auth_method);
 
         return $ret;
     }
@@ -921,7 +924,7 @@ class AuthController extends Controller implements IAuth
         $access  = $this->gen_jwt([ 'uid' => $uid,   
                                     'roles' => $roles, 
                                     'permissions' => $perms,
-                                    'active' => 1,                     // *
+                                    'is_active' => 1,                     // *
                                     'db_access' => $db_access
         ], 'access_token');
 
@@ -973,9 +976,9 @@ class AuthController extends Controller implements IAuth
             $uid = $rows[0][$this->__id];	//
             $exp = time() + $this->config['email_token']['expires_in'];	
 
-            $active = $rows[0][$this->__active];
+            $is_active = $rows[0][$this->__active];
 
-            if ((string) $active === "0") {
+            if ((string) $is_active === "0") {
                 Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
             }
 
@@ -1048,11 +1051,11 @@ class AuthController extends Controller implements IAuth
                     if (!$row)
                         throw new Exception("Uid not found");
 
-                    $active = true;    
+                    $is_active = true;    
                     if ($u->inSchema([$this->__active])){    
-                        $active = $row[$this->__active];                     
+                        $is_active = $row[$this->__active];                     
 
-                        if ($active === false) {
+                        if ($is_active === false) {
                             Factory::response()->sendError('Non authorized', 403, 'Deactivated account');
                         }
                     }    
@@ -1065,7 +1068,7 @@ class AuthController extends Controller implements IAuth
                     $access  = $this->gen_jwt([ 'uid' => $uid,
                                                 'roles' => $roles, 
                                                 'permissions' => $perms, 
-                                                'active' => $active,
+                                                'is_active' => $is_active,
                                                 'db_access' => $db_access
                     ], 'access_token');
                     
@@ -1155,11 +1158,11 @@ class AuthController extends Controller implements IAuth
             $row = $u->find($uid)->first();
 
 
-            $active = 1;    
+            $is_active = 1;    
             if ($u->inSchema([$this->__active])){
-                $active = $row[$this->__active]; 
+                $is_active = $row[$this->__active]; 
 
-                if ($active == null) {
+                if ($is_active == null) {
 
                     if ($row[$this->__confirmed_email] === "0") {
                         Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
@@ -1168,7 +1171,7 @@ class AuthController extends Controller implements IAuth
                     }
                 }
 
-                if ($active == 0 || (string) $active === "0") {
+                if ($is_active == 0 || (string) $is_active === "0") {
                     Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
                 } 
             }                
@@ -1185,7 +1188,7 @@ class AuthController extends Controller implements IAuth
             $access  = $this->gen_jwt([ 'uid' => $uid, 
                                         'roles' => $roles, 
                                         'permissions' => $perms,
-                                        'active' => $active, 
+                                        'is_active' => $is_active, 
                                         'db_access' => $db_access
             ], 'access_token');
 
@@ -1328,9 +1331,9 @@ class AuthController extends Controller implements IAuth
     function onRemember(Array $data){}
     function onRemembered(Array $data, $link_url){}
     function onLogin(Array $data){}
-    function onLogged(Array $data, $uid, $active, $roles, $perms){}
-    function onImpersonated(Array $data, $uid, $active, $roles, $perms, $impersonated_by){}	
-    function onChecked($uid, $active, $roles, $perms, $auth_method){}
+    function onLogged(Array $data, $uid, $is_active, $roles, $perms){}
+    function onImpersonated(Array $data, $uid, $is_active, $roles, $perms, $impersonated_by){}	
+    function onChecked($uid, $is_active, $roles, $perms, $auth_method){}
     function onConfirmedEmail($uid, $roles, $perms){}
     function onChangedPassword($uid, $roles, $perms){}
 

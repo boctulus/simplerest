@@ -9,13 +9,13 @@ use simplerest\schemas\main\UsersSchema;
 class UsersModel extends MyModel
 {
 	protected $hidden   = [	'password' ];
-	protected $not_fillable = ['confirmed_email', 'active'];
+	protected $not_fillable = ['confirmed_email', 'is_active'];
 
 	static public $email    = 'email';
 	static public $username = 'username';
 	static public $password = 'password';
 	static public $confirmed_email = 'confirmed_email';
-	static public $active = 'active';
+	static public $is_active = 'is_active';
 
     function __construct(bool $connect = false){		
 		$this->registerInputMutator('password', function($pass){ 
