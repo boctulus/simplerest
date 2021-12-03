@@ -45,3 +45,7 @@ Ej:
 - Se hace algo más eficiente la inspección de la base de datos favoreciendo la performance de HATEOAS.
 
 - Se agrega la opción --unignore en el comando "make" para poder sobrescribir archivos aún cuando estén ignorados via .make_ignore (usar con precaución porque es la última guarda)
+
+- Fueron revisados que campos son fillables ("rellenables"). Se afectó Model y ApiController 
+
+- Se cambió campo automático "locked" por "is_locked". Se afectó Model y ApiController 

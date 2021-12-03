@@ -91,7 +91,7 @@ class Model {
 	protected $createdBy = 'created_by';
 	protected $updatedBy = 'updated_by';
 	protected $deletedBy = 'deleted_by'; 
-	protected $is_locked    = 'is_locked';
+	protected $is_locked = 'is_locked';
 	protected $belongsTo = 'belongs_to';
 
 	static protected $sql_formatter_callback;
@@ -122,7 +122,13 @@ class Model {
 		return $this->deletedBy;
 	}
 
-	function is_locked(){
+	function isLocked(){
+		return $this->is_locked;
+	}
+
+	// alias
+
+	function locked(){
 		return $this->is_locked;
 	}
 
@@ -195,6 +201,7 @@ class Model {
 			$this->fillable = $this->attributes;
 			$this->unfill([
 							$this->is_locked, 
+							$this->belongsTo,
 							$this->createdAt,							
 							$this->updatedAt, 							
 							$this->deletedAt, 
@@ -2857,6 +2864,10 @@ class Model {
 
 	function getFillables(){
 		return $this->fillable;
+	}
+
+	function getNotFillables(){
+		return $this->not_fillable;
 	}
 
 	function setNullables(Array $arr){
