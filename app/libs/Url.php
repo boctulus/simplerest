@@ -1,5 +1,9 @@
 <?php
 
+/*
+    @author  Pablo Bozzolo  <boctulus@gmail.com>
+*/
+
 namespace simplerest\libs;
 
 class Url {
@@ -103,9 +107,6 @@ class Url {
         return  $base_url;
     }
 
-    /*
-        @author  Pablo Bozzolo  <boctulus@gmail.com>
-    */
     static function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true)
     {  
         if ($headers === null){
