@@ -417,6 +417,9 @@ class DB
 		
 			$obj = new $class($connect);
 
+			// habilito un validator
+			$obj->setValidator(new Validator());
+
 			if ($alias != null){
 				$obj->setTableAlias($alias);
 			}			
