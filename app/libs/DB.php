@@ -73,7 +73,12 @@ class DB
 		Returns driver version from current DB connection
 	*/
 	public static function driverVersion(bool $only_number = false){
-		$conn = self::$connections[static::$current_id_conn];
+		$conn = self::$connections[static::$current_id_conn] ?? null;
+	
+		if ($conn === null){
+			return false;
+		}
+		
 		$ver  = $conn->getAttribute(\PDO::ATTR_SERVER_VERSION);
 
 		if ($only_number){
