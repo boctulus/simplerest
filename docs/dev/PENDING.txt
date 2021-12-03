@@ -915,10 +915,10 @@ class DumbController extends Controller
     /*
         RAW
         
-        SELECT * FROM products WHERE 1 = 1 AND deleted_at IS NULL ORDER BY is_locked + active ASC
+        SELECT * FROM products WHERE 1 = 1 AND deleted_at IS NULL ORDER BY is_locked + is_active ASC
     */
     function order2(){
-        dd(DB::table('products')->orderByRaw('is_locked * active DESC')->get()); 
+        dd(DB::table('products')->orderByRaw('is_locked * is_active DESC')->get()); 
     }
 
     function grouping(){
@@ -1290,7 +1290,7 @@ class DumbController extends Controller
             'poder' => ['not_between' => [4,7] ],
             'edad' => ['between' => [18, 100]],
             'magia' => [ 'in' => [3,21,81] ],
-            'active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
+            'is_active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
         ];
         
         $data = [
@@ -1300,7 +1300,7 @@ class DumbController extends Controller
             'poder' => 6,
             'edad' => 101,
             'magia' => 22,
-            'active' => 3
+            'is_active' => 3
         ];
 
         $v = new Validator();
@@ -1732,7 +1732,7 @@ class DumbController extends Controller
             'poder' => ['not_between' => [4,7] ],
             'edad' => ['between' => [18, 100]],
             'magia' => [ 'in' => [3,21,81] ],
-            'active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
+            'is_active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
         ];
         
         $data = [
@@ -1742,7 +1742,7 @@ class DumbController extends Controller
             'poder' => 6,
             'edad' => 101,
             'magia' => 22,
-            'active' => 3
+            'is_active' => 3
         ];
 
         Time::setUnit('MILI');
@@ -1765,7 +1765,7 @@ class DumbController extends Controller
         MySql: show processlist;
     */
     function test_active_connnections(){
-        dd(DB::countConnections(), 'Number of active connections');
+        dd(DB::countConnections(), 'Number of is_active connections');
 
         DB::setConnection('db2');  
         dd(DB::table('users')->count(), 'Users DB2:'); 
@@ -1776,13 +1776,13 @@ class DumbController extends Controller
         DB::setConnection('db2');  
         dd(DB::table('users')->first(), 'Users DB2:');
 
-        dd(DB::countConnections(), 'Number of active connections'); // 2 y no 3 ;)
+        dd(DB::countConnections(), 'Number of is_active connections'); // 2 y no 3 ;)
 
         DB::closeConnection();
-        dd(DB::countConnections(), 'Number of active connections'); // 1
+        dd(DB::countConnections(), 'Number of is_active connections'); // 1
 
         DB::closeAllConnections();
-        dd(DB::countConnections(), 'Number of active connections'); // 0
+        dd(DB::countConnections(), 'Number of is_active connections'); // 0
     }
 
     function read_table(){
@@ -2029,7 +2029,7 @@ class DumbController extends Controller
         ->real('num_real')
 
         ->bit('some_bits', 3)
-        ->boolean('active')->default(1)
+        ->boolean('is_active')->default(1)
         ->boolean('paused')->default(true)
 
         ->set('flavors', ['strawberry', 'vanilla'])
@@ -2059,7 +2059,7 @@ class DumbController extends Controller
         $sc->index(['firstname', 'lastname']);
         $sc->unique(['username']);        
         $sc->unique(['correo']);
-        $sc->unique(['active', 'paused']);
+        $sc->unique(['is_active', 'paused']);
         //
 
         // FKs
