@@ -125,7 +125,7 @@ class FacebookController extends Controller
                         $perms[$tb] = $p['la'] * 64 + $p['ra'] * 32 +  $p['l'] * 16 + $p['r'] * 8 + $p['c'] * 4 + $p['u'] * 2 + $p['d'];
                     }
 
-                    $active = $user['active'];
+                    $is_active = $user['is_active'];
 
                 }else{
                     $data['email']     = $email;
@@ -202,7 +202,7 @@ class FacebookController extends Controller
                     }  
                     */
 
-                    $active = $this->config['pre_activated'] ? true : null;                    
+                    $is_active = $this->config['pre_activated'] ? true : null;                    
                 }  
 
                 $roles = []; //
@@ -212,7 +212,7 @@ class FacebookController extends Controller
                                             'uid' => $uid, 
                                             'roles' => $roles,
                                             'tb_permissions' => $perms,
-                                            'active' => $active
+                                            'is_active' => $is_active
                 ], 'access_token');
 
                 $refresh = $this->gen_jwt([

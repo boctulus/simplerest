@@ -26,7 +26,7 @@ class ProductsSchema implements ISchema
 				'updated_by' => 'INT',
 				'deleted_at' => 'STR',
 				'deleted_by' => 'INT',
-				'active' => 'INT',
+				'is_active' => 'INT',
 				'is_locked' => 'INT',
 				'workspace' => 'STR',
 				'belongs_to' => 'INT',
@@ -38,7 +38,7 @@ class ProductsSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to', 'category'],
+			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'is_active', 'is_locked', 'workspace', 'belongs_to', 'category'],
 
 			'uniques'		=> [],
 
@@ -54,7 +54,7 @@ class ProductsSchema implements ISchema
 				'updated_by' => ['type' => 'int'],
 				'deleted_at' => ['type' => 'datetime'],
 				'deleted_by' => ['type' => 'int'],
-				'active' => ['type' => 'bool'],
+				'is_active' => ['type' => 'bool'],
 				'is_locked' => ['type' => 'bool'],
 				'workspace' => ['type' => 'str', 'max' => 40],
 				'belongs_to' => ['type' => 'int'],

@@ -902,8 +902,8 @@ class DumbController extends Controller
         dd(DB::table('products')
         ->random()
         ->select(['id', 'name'])
-        ->addSelect('active')
-        ->where(['active', true])
+        ->addSelect('is_active')
+        ->where(['is_active', true])
         ->first());
 
         dd(DB::getLog());
@@ -914,10 +914,10 @@ class DumbController extends Controller
         $m = DB::table('products')
         ->random()
         ->select(['id', 'name'])
-        ->addSelect('active')
+        ->addSelect('is_active')
         ->addSelect('cost')
         ->selectRaw('cost * ? as cost_after_inc', [1.05])
-        ->where(['active', true]);
+        ->where(['is_active', true]);
 
         dd($m->first());
         dd($m->dd());
@@ -1370,7 +1370,7 @@ class DumbController extends Controller
         (name LIKE '%a%') AND 
         (cost > 100 AND id < 50) AND 
         (
-            active = 1 OR 
+            is_active = 1 OR 
             (cost <= 100 AND description IS NOT NULL)
         ) 
         AND belongs_to > 150;
@@ -1388,7 +1388,7 @@ class DumbController extends Controller
         ->whereRaw('name LIKE ?', ['%a%'])
         // AND
         ->group(function($q){  
-            $q->where(['active', 1])
+            $q->where(['is_active', 1])
             // OR
               ->orWhere([
                 ['cost', 100, '<='], 
@@ -1690,7 +1690,7 @@ class DumbController extends Controller
         WHERE 
         (
             (p.cost > 50 AND p.id <= 190) AND 
-            (p.active = 1 OR (name LIKE '%a%')) 
+            (p.is_active = 1 OR (name LIKE '%a%')) 
             AND p.belongs_to > 1
         ) AND p.deleted_at IS NULL;"
     */
@@ -1704,7 +1704,7 @@ class DumbController extends Controller
         ]) 
         // AND
         ->group(function($q){  
-            $q->where(['active', 1])
+            $q->where(['is_active', 1])
             // OR
             ->orWhereRaw('name LIKE ?', ['%a%']);  
         })
@@ -1968,10 +1968,10 @@ class DumbController extends Controller
     /*
         RAW
         
-        SELECT * FROM products WHERE 1 = 1 AND deleted_at IS NULL ORDER BY is_locked + active ASC
+        SELECT * FROM products WHERE 1 = 1 AND deleted_at IS NULL ORDER BY is_locked + is_active ASC
     */
     function order2(){
-        dd(DB::table('products')->orderByRaw('is_locked * active DESC')->get()); 
+        dd(DB::table('products')->orderByRaw('is_locked * is_active DESC')->get()); 
     }
 
     function grouping(){
@@ -2341,7 +2341,7 @@ class DumbController extends Controller
         ->join('user_sp_permissions', 'users.id', '=',  'user_sp_permissions.user_id')
         ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
 
-        ->select(['sp_permissions.name as perm', 'username', 'active']);
+        ->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
         dd($m->get()); 
         dd($m->dd()); 
@@ -2356,7 +2356,7 @@ class DumbController extends Controller
 
         //->showDeleted()
         //->dontExec()
-        ->select(['sp_permissions.name as perm', 'username', 'active']);
+        ->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
         dd($m->get()); 
         dd($m->dd()); 
@@ -2370,7 +2370,7 @@ class DumbController extends Controller
 
         //->showDeleted()
         //->dontExec()
-        ->select(['sp_permissions.name as perm', 'username', 'active']);
+        ->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
         dd($m->get()); 
         dd($m->dd(true)); 
@@ -2385,7 +2385,7 @@ class DumbController extends Controller
         //->join('user_sp_permissions');
         ->join('sp_permissions');
 
-        $m->select(['sp_permissions.name as perm', 'username', 'active']);
+        $m->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
         dd($m->get()); 
         dd($m->dd()); 
@@ -2790,7 +2790,7 @@ class DumbController extends Controller
             'poder' => ['not_between' => [4,7] ],
             'edad' => ['between' => [18, 100]],
             'magia' => [ 'in' => [3,21,81] ],
-            'active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
+            'is_active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
         ];
         
         $data = [
@@ -2800,7 +2800,7 @@ class DumbController extends Controller
             'poder' => 6,
             'edad' => 101,
             'magia' => 22,
-            'active' => 3
+            'is_active' => 3
         ];
 
         $v = new Validator();
@@ -3240,7 +3240,7 @@ class DumbController extends Controller
             'poder' => ['not_between' => [4,7] ],
             'edad' => ['between' => [18, 100]],
             'magia' => [ 'in' => [3,21,81] ],
-            'active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
+            'is_active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
         ];
         
         $data = [
@@ -3250,7 +3250,7 @@ class DumbController extends Controller
             'poder' => 6,
             'edad' => 101,
             'magia' => 22,
-            'active' => 3
+            'is_active' => 3
         ];
 
         Time::setUnit('MILI');
@@ -3273,7 +3273,7 @@ class DumbController extends Controller
         MySql: show processlist;
     */
     function test_active_connnections(){
-        dd(DB::countConnections(), 'Number of active connections');
+        dd(DB::countConnections(), 'Number of is_active connections');
 
         DB::setConnection('db2');  
         dd(DB::table('users')->count(), 'Users DB2:'); 
@@ -3284,13 +3284,13 @@ class DumbController extends Controller
         DB::setConnection('db2');  
         dd(DB::table('users')->first(), 'Users DB2:');
 
-        dd(DB::countConnections(), 'Number of active connections'); // 2 y no 3 ;)
+        dd(DB::countConnections(), 'Number of is_active connections'); // 2 y no 3 ;)
 
         DB::closeConnection();
-        dd(DB::countConnections(), 'Number of active connections'); // 1
+        dd(DB::countConnections(), 'Number of is_active connections'); // 1
 
         DB::closeAllConnections();
-        dd(DB::countConnections(), 'Number of active connections'); // 0
+        dd(DB::countConnections(), 'Number of is_active connections'); // 0
     }
 
     function show_databases(){
@@ -3566,7 +3566,7 @@ class DumbController extends Controller
         ->real('num_real')
 
         ->bit('some_bits', 3)->index()
-        ->boolean('active')->default(1)
+        ->boolean('is_active')->default(1)
         ->boolean('paused')->default(true)
 
         ->set('flavors', ['strawberry', 'vanilla'])

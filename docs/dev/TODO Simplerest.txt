@@ -1915,7 +1915,7 @@ a nivel de API
 
 protected $hidden = [
     'password',
-    'active' => ['guest', 'basic'] 
+    'is_active' => ['guest', 'basic'] 
 ]
 
 <-- seguramente puede hacerse con hooks sobre el modelo o con un transformer *
@@ -3185,7 +3185,7 @@ https://stackoverflow.com/questions/2208186/proper-table-naming-convention-for-a
       created_at  --ok 
       created_by --ok 
       ...
-      active 
+      is_active 
       lock
       users.id
       users.email

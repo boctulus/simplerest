@@ -158,7 +158,7 @@ class GoogleController extends Controller
                     $perms[$tb] = $p['la'] * 64 + $p['ra'] * 32 +  $p['l'] * 16 + $p['r'] * 8 + $p['c'] * 4 + $p['u'] * 2 + $p['d'];
                 }
                 
-                $active = $row['active'];
+                $is_active = $row['is_active'];
 
             } else {
                 // Faltaría ver como se acomoda si la tabla "users" no tiene equivalente a firstname y lastname
@@ -224,7 +224,7 @@ class GoogleController extends Controller
                 }   
                 */
                 
-                $active = $this->config['pre_activated'] ? true : null;
+                $is_active = $this->config['pre_activated'] ? true : null;
             }  
             
             $roles = []; //
@@ -234,7 +234,7 @@ class GoogleController extends Controller
                                         'uid' => $uid, 
                                         'roles' => $roles,
                                         'tb_permissions' => $perms,
-                                        'active' => $active
+                                        'is_active' => $is_active
             ], 'access_token');
 
             $refresh = $this->gen_jwt([

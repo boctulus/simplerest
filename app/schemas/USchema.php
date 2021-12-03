@@ -17,7 +17,7 @@ class USchema implements ISchema
 			'attr_types'	=> [
 				'id_u' => 'INT',
 				'username' => 'STR',
-				'active' => 'INT',
+				'is_active' => 'INT',
 				'is_locked' => 'INT',
 				'email' => 'STR',
 				'confirmed_email' => 'INT',
@@ -32,14 +32,14 @@ class USchema implements ISchema
 
 			'autoincrement' => 'id_u',
 
-			'nullable'		=> ['id_u', 'active', 'is_locked', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
+			'nullable'		=> ['id_u', 'is_active', 'is_locked', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
 
 			'uniques'		=> ['username', 'email', 'u_settings_id'],
 
 			'rules' 		=> [
 				'id_u' => ['type' => 'int'],
 				'username' => ['type' => 'str', 'max' => 15, 'required' => true],
-				'active' => ['type' => 'bool'],
+				'is_active' => ['type' => 'bool'],
 				'is_locked' => ['type' => 'bool'],
 				'email' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'confirmed_email' => ['type' => 'bool'],

@@ -1045,7 +1045,7 @@ Del mismo modo que como ocurre con los campos ocultos hay campos que son no-fill
 	class UsersModel extends Model
 	 { 	
 		protected $hidden   = [	'password' ];
-		protected $not_fillable = ['confirmed_email', 'active'];
+		protected $not_fillable = ['confirmed_email', 'is_active'];
 
 		// ...
 
@@ -1105,7 +1105,7 @@ Ej:
 	->join('user_sp_permissions', 'users.id', '=',  'user_sp_permissions.user_id')
 	->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
 
-	->select(['sp_permissions.name as perm', 'username', 'active']);
+	->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
 	dd($m->get()); 
 	dd($m->dd()); 
@@ -1117,7 +1117,7 @@ Los joins pueden simplificarse como auto-joins de haber un schema para el modelo
 	//->join('user_sp_permissions');
 	->join('sp_permissions');
 
-	$m->select(['sp_permissions.name as perm', 'username', 'active']);
+	$m->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
 	dd($m->get()); 
 	dd($m->dd()); 
@@ -1787,7 +1787,7 @@ Ej:
 		DB::rollback();            
 	}            
 
-Cabe notar que se olvidara colocar el DB::beginTransaction() se producirá el error "There is no active transaction".
+Cabe notar que se olvidara colocar el DB::beginTransaction() se producirá el error "There is no is_active transaction".
 
 Una forma más conveniente de realizar transacciones es usando una función anómima con transaction()
 
@@ -2210,7 +2210,7 @@ Hay una cantidad de campos (que si están presentes en la tabla y declarados en 
 
 id 				int(11)		
 name			varchar(60)				
-active			tinyint(4)
+is_active			tinyint(4)
 belongs_to		int(11)			*	
 created_at		datetime		*			
 created_by		int(11)			*	
@@ -2340,7 +2340,7 @@ Ejemplo:
 			return [
 				'id' => $user->id,
 				'username' => $user->username,
-				'active' => $user->active,
+				'is_active' => $user->is_active,
 				'email' => $user->email,
 				'confirmed_email' => $user->confirmed_email,
 				'password' => $user->password,
@@ -2573,9 +2573,9 @@ La clase AuthController provee varios hooks que pueden usarse en MyAuthControlle
     function onRemember($data){}
     function onRemembered($data, $link_url){}
     function onLogin($data){}
-    function onLogged($data, $uid, $active, $roles, $perms){}
-    function onImpersonated($data, $uid, $active, $roles, $perms, $impersonated_by){}	
-    function onChecked($uid, $active, $roles, $perms, $auth_method){}
+    function onLogged($data, $uid, $is_active, $roles, $perms){}
+    function onImpersonated($data, $uid, $is_active, $roles, $perms, $impersonated_by){}	
+    function onChecked($uid, $is_active, $roles, $perms, $auth_method){}
     function onConfirmedEmail($uid, $roles, $perms){}
     function onChangedPassword($uid, $roles, $perms){}
 
@@ -2813,7 +2813,7 @@ Ejemplo:
 		'description' 	=> ['max'=>50],
 		'size' 			=> ['max'=>20],
 		'workspace'		=> ['max'=>20],
-		'active'		=> ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
+		'is_active'		=> ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
 	];
 
 Es posible utiliza una sintaxis mucho más amigable importando la librería ValidationRules. Así en un modelo podríamos tener el constructor:
@@ -2824,7 +2824,7 @@ Es posible utiliza una sintaxis mucho más amigable importando la librería Vali
 		->field('description')->type('str')->max(50)
 		->field('size')->type('str')->max(20)
 		->field('workspace')->type('str')->max(20)
-		->field('active')->type('bool', 'Value should be 0 or 1')
+		->field('is_active')->type('bool', 'Value should be 0 or 1')
 	);
 
 
@@ -3982,7 +3982,7 @@ Desactivar cuenta
 	PATCH /api/v1/me
 
 	{
-		"active": 0
+		"is_active": 0
 	}
 
 Ahora al intentar renovar el token o loguearse, se informará que la cuenta está "pendiente de activación".
@@ -4406,7 +4406,7 @@ Ejemplo de como hacer un "CREATE TABLE" dentro de una migración:
         ->real('num_real')
 
         ->bit('some_bits', 3)->index()
-        ->boolean('active')->default(1)
+        ->boolean('is_active')->default(1)
         ->boolean('paused')->default(true)
 
         ->set('flavors', ['strawberry', 'vanilla'])
@@ -4931,7 +4931,7 @@ Al especifica el parámetro "_related=1", la salida será algo como:
 				"updated_by": null,
 				"deleted_at": null,
 				"deleted_by": null,
-				"active": 1,
+				"is_active": 1,
 				"is_locked": 1,
 				"workspace": "",
 				"belongs_to": 90,
@@ -5352,7 +5352,7 @@ Rta:
 			"deleted_by": {
 				"type": "int"
 			},
-			"active": {
+			"is_active": {
 				"type": "bool"
 			},
 			"is_locked": {
