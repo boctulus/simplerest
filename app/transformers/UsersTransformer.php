@@ -11,7 +11,7 @@ class UsersTransformer implements \simplerest\core\interfaces\ITransformer
         return [
 			'id' => $user->id,
 			'username' => $user->username,
-			'active' => $user->active,
+			'is_active' => $user->is_active,
 			'email' => $user->email,
 			'confirmed_email' => $user->confirmed_email,
 			'password' => $user->password,

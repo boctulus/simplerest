@@ -15,7 +15,7 @@ use simplerest\models\schemas\az\UsersSchema;
 class UsersModel extends Model
  { 	
 	protected $hidden   = [	'password' ];
-	protected $not_fillable = ['confirmed_email', 'active'];
+	protected $not_fillable = ['confirmed_email', 'is_active'];
 
     function __construct(bool $connect = false){		
 		$this->registerInputMutator('password', function($pass){ 

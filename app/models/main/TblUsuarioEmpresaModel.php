@@ -21,7 +21,7 @@ class TblUsuarioEmpresaModel extends MyModel
 	//protected $is_locked     = 'is_locked';
 	//protected $belongsTo  = 'belongs_to';
 
-	public static $active	= 'est_intIdEstado';
+	public static $is_active	= 'est_intIdEstado';
 	public static $username	= 'use_varUsuario';
 	public static $email	= 'use_varEmail';
 	public static $password = 'use_decPassword';
