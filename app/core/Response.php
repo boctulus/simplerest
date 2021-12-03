@@ -276,7 +276,7 @@ class Response
 
         $cli = (php_sapi_name() == 'cli');
 
-        if (isset(static::$data['error'])){            
+        if (isset(static::$data['error']) && !empty(static::$data['error'])){
             if (!$cli){
                 view('error.php', [
                     'status'   => static::$http_code,
@@ -287,7 +287,7 @@ class Response
                 ], 'app_layout_basic.php');
 
             } else {
-                $message = static::$data['error']['message'];
+                $message = static::$data['error']['message'] ?? '--';
                 $type = static::$data['error']['type'] ?? '--';
                 $code = static::$data['error']['code'] ?? '--';
                 $detail = static::$data['error']['detail'] ?? '--';

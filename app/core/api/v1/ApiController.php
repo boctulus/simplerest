@@ -766,10 +766,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $this->onGettingFolderAfterCheck($id, $this->folder);
                 }
            
-                if (strtolower($pretty) == 'false' || $pretty === 0)
-                    $pretty = false;
-                else
-                    $pretty = true;   
+                $pretty = (!empty($pretty) && !in_array($pretty, ['false', 0, 'off']));      
 
                 //dd($_get); ////
                 //exit;
@@ -873,7 +870,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 
                 //dd($this->instance->dd(), 'SQL');
                 //dd($rows);
-                
                 
                 $res = Factory::response()->setPretty($pretty);
 

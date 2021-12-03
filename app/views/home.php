@@ -1,8 +1,12 @@
-<div>
-    <?= section('home/carousel.php') ?>
-</div>
+<h1>Home Page</h1>
 
+<br/>
+<p>Seas bienvenido !</p>
 
-<div class="mt-5">
-    <?= section('home/productos.php') ?>
-</div>
+<?php
+    // section('my_section.php',
+    //     [
+    //         'my_var' => $my_var
+    //     ]
+    // );
+?>

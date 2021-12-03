@@ -88,14 +88,19 @@ class Url {
     }
 
     static function currentUrl(){
-        $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $actual_link = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         return $actual_link;
     }
 
-    static function getBaseUrl($url)
+    static function getBaseUrl(?string $url = null)
     {
+        if (is_null($url)){
+            $url = static::currentUrl();
+        }
+
         $url_info = parse_url($url);
-        return  $url_info['scheme'] . '://' . $url_info['host'];
+        $base_url = $url_info['scheme'] . '://' . $url_info['host'] . (isset($url_info['port']) ? ':'. $url_info['port'] : '');
+        return  $base_url;
     }
 
     /*
