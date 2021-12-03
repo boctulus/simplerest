@@ -4109,6 +4109,20 @@ class DumbController extends Controller
         dd($res);
     }
 
+    function test_create_user(){
+        $data = json_decode('{
+            "username": "u200",
+            "email": "u200@mail.com",
+            "password": "gogogo",
+            "created_at": "2019-02-02 10:00:00"
+        }', true);
+
+        $ok = DB::table('users')
+        ->create($data);
+
+        dd($ok);
+    }
+
     /*
         create()
     */

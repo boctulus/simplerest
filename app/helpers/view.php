@@ -14,7 +14,7 @@ function assets($resource){
         $base = substr($base, 0, -1); 
     }
         
-    $public =  $base . '/public';
+    $public =  $base /* . '/public' */ ;
     return http_protocol() . '://' . $_SERVER['HTTP_HOST']. $public. '/assets/'.$resource;
 }
 

@@ -533,9 +533,8 @@ class AuthController extends Controller implements IAuth
  
             // Hook
             $this->onRegister($data);        
-        
-            $acl = Factory::acl();
-            $u   = DB::table($this->users_table);
+            
+            $u = DB::table($this->users_table);
 
             $many_to_many = false;
 
@@ -544,6 +543,7 @@ class AuthController extends Controller implements IAuth
                 if (!empty($data[$this->role_field])) {
                     if (isset($this->config['auto_approval_roles']) && !empty($this->config['auto_approval_roles'])) {
                     
+                        $acl = acl();
                         if (!in_array($acl->getRoleName($data[$this->role_field]), $this->config['auto_approval_roles'])) {
                             throw new \Exception("Role {$data[$this->role_field]} is not auto-approved");
                         }
@@ -556,7 +556,7 @@ class AuthController extends Controller implements IAuth
 
                 $roles = [ $data[$this->role_field] ];   
             } else {
-                // una tabla 'roles' en relación muchos a muchos (debería segurarme)
+                // una tabla 'roles' en relación muchos a muchos (debería asegurarme)
                 $many_to_many = true; // debería ser pre-condición
 
                 $roles = [];    
@@ -654,7 +654,7 @@ class AuthController extends Controller implements IAuth
             Factory::response()->send($res);
 
         } catch (InvalidValidationException $e) { 
-            //DB::rollback();
+            //DB::rollback();           
             Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
         }catch(\Exception $e){
             //DB::rollback();
