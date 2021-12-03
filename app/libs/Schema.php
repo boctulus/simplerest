@@ -35,13 +35,8 @@ class Schema
 	protected $commands = [];
 	protected $query;
 
-	// mysql version
-	protected $engine_ver;
-
-
 	function __construct($tb_name){
 		$this->tables = self::getTables();
-		$this->engine_ver = (int) DB::select('SELECT VERSION() AS ver')[0]['ver'];
 		$this->tb_name = $tb_name;
 		$this->fromDB();
 	}
@@ -1206,7 +1201,7 @@ class Schema
 
 	// https://popsql.com/learn-sql/mysql/how-to-rename-a-column-in-mysql/
 	function renameColumn(string $ori, string $final){
-		if ((int) $this->engine_ver >= 8){
+		if (DB::driver() == 'mysql' && !DB::isMariaDB() && DB::driverVersion(true) >= 8){
 			$this->commands[] = "ALTER TABLE `{$this->tb_name}` RENAME COLUMN `$ori` TO `$final`;";
 		} else {
 			if (!isset($this->prev_schema['fields'][$ori])){
