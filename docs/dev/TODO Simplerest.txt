@@ -1099,7 +1099,7 @@ https://federico-razzoli.com/advice-for-mysql-mariadb-live-migrations
 https://medium.com/@gauraangkhurana/percona-pt-online-schema-change-performance-1def5866b43
 
 
-- Si un registro fue bloqueado por un admin (alguien con permiso de lock) no debería siquiera poder verse en la papelera informando: "locked by an admin"
+- Si un registro fue bloqueado por un admin (alguien con permiso de lock) no debería siquiera poder verse en la papelera informando: "is_locked by an admin"
 
   GET http://az.lan/api/v1/trashCan/160?entity=products
 

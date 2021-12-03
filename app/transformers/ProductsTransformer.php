@@ -20,7 +20,7 @@ class ProductsTransformer implements \simplerest\core\interfaces\ITransformer
 			'updated_by' => $product->updated_by,
 			'deleted_at' => $product->deleted_at,
 			'active' => $product->active ? 'true' : 'false',	
-			'locked' => $product->locked ? 'true' : 'false',			
+			'is_locked' => $product->is_locked ? 'true' : 'false',			
 			'belongs_to' => $product->belongs_to
         ];
 	}
