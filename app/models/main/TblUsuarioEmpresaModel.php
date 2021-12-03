@@ -18,7 +18,7 @@ class TblUsuarioEmpresaModel extends MyModel
 	protected $createdBy 	= 'usu_intIdCreador';
 	protected $updatedBy 	= 'usu_intIdActualizador';
 	//protected $deletedBy  = 'deleted_by'; 
-	//protected $locked     = 'locked';
+	//protected $is_locked     = 'is_locked';
 	//protected $belongsTo  = 'belongs_to';
 
 	public static $active	= 'est_intIdEstado';

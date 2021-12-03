@@ -2218,7 +2218,7 @@ updated_at		datetime		*
 updated_by		int(11)			*	
 deleted_at 		datetime		*
 deleted_by		tinyint(4)		*
-locked			tinyint(4)		*
+is_locked			tinyint(4)		*
 
 belongs_to		apunta directamente al user_id de quien crea el registro. Si el usuario tiene el permiso especial 'transfer' puede cambiar ese valor y hacer que apunte a otro usuario. Un caso especial son los registros creados dentro de un 'folder'.
 
@@ -2228,10 +2228,10 @@ deleted_by		apunta indefectiblemente al user_id que hizo un borrado suave un reg
 created_at 		apunta indefectiblemente a la fecha-hora en que se creó un registro.
 updated_at 		apunta indefectiblemente a la fecha-hora en que se modificó por última vez un registro.
 deleted_at 		apunta indefectiblemente a la fecha-hora en que se creó un registro.
-locked 			cuando un registro es mofificado por un usuario con permiso de 'lock' automáticamente se guarda un 1.
+is_locked 			cuando un registro es mofificado por un usuario con permiso de 'lock' automáticamente se guarda un 1.
 
 
-Los campos created_by, update_at y deleted_at son rellenados por Model pero al modelo no le compete si hay un sistema de autenticación y que usuario está haciendo el query así que los campos created_by, update_by, deleted_by y belongs_to son manejados a nivel de la API por ApiController al igual que el campo locked.
+Los campos created_by, update_at y deleted_at son rellenados por Model pero al modelo no le compete si hay un sistema de autenticación y que usuario está haciendo el query así que los campos created_by, update_by, deleted_by y belongs_to son manejados a nivel de la API por ApiController al igual que el campo is_locked.
 
 Nota: no olvides que los campos que necesites deben estar en las tablas y en el schema del modelo correspondiente. 
 
@@ -3718,7 +3718,7 @@ Cuando un registro es borrado por el Admin éste es bloqueado para el usuario pr
 
 Implementación:
 
-Una entidad correspondiente a un endpoint si contiene un campo 'locked' de tipo "bool" (TINYINT para Mysql) entonces queda habilitada para el mecanismo de "bloqueo".
+Una entidad correspondiente a un endpoint si contiene un campo 'is_locked' de tipo "bool" (TINYINT para Mysql) entonces queda habilitada para el mecanismo de "bloqueo".
 
 
 ### Seguridad 
@@ -4002,7 +4002,7 @@ Una respuesta exitosa a un GET presenta un campo 'data' en la respuesta:
         "created_at": "2019-11-03 23:55:18",
         "updated_at": null,
         "deleted_at": null,
-        "locked": "0",
+        "is_locked": "0",
         "workspace": null,
         "belongs_to": "132"
     },
@@ -4111,7 +4111,7 @@ GET /api/v1/files?file_ext=jpg
             "filename_as_stored": "90-5f5bb828cb06c3.52751786.jpg",
             "belongs_to": "90",
             "guest_access": "0",
-            "locked": "0",
+            "is_locked": "0",
             "created_at": "2020-09-11 14:47:20",
             "deleted_at": null
         },
@@ -4122,7 +4122,7 @@ GET /api/v1/files?file_ext=jpg
             "filename_as_stored": "90-5f5bb828e85fe4.62412332.jpg",
             "belongs_to": "90",
             "guest_access": "0",
-            "locked": "0",
+            "is_locked": "0",
             "created_at": "2020-09-11 14:47:21",
             "deleted_at": null
         }
@@ -4932,7 +4932,7 @@ Al especifica el parámetro "_related=1", la salida será algo como:
 				"deleted_at": null,
 				"deleted_by": null,
 				"active": 1,
-				"locked": 1,
+				"is_locked": 1,
 				"workspace": "",
 				"belongs_to": 90,
 				"category": 3
@@ -5355,7 +5355,7 @@ Rta:
 			"active": {
 				"type": "bool"
 			},
-			"locked": {
+			"is_locked": {
 				"type": "bool"
 			},
 			"workspace": {

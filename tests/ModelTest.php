@@ -225,7 +225,7 @@ class ModelTest extends TestCase
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->selectRaw('cost * ? as cost_after_inc', [1.05])->distinct()->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, description, size, cost, created_by, updated_by, deleted_by, active, locked, workspace, belongs_to FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, description, size, cost, created_by, updated_by, deleted_by, active, is_locked, workspace, belongs_to FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')
@@ -285,12 +285,12 @@ class ModelTest extends TestCase
     DB::table('products')
     ->where([ 
       ['name', ['Vodka', 'Wisky', 'Tekila','CocaCola']], // IN 
-      ['locked', 0],
+      ['is_locked', 0],
       ['belongs_to', 90]
     ])
     ->whereNotNull('description')
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE ((name IN ('Vodka', 'Wisky', 'Tekila', 'CocaCola') AND locked = 0 AND belongs_to = 90) AND description IS NOT NULL) AND deleted_at IS NULL;");
+    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE ((name IN ('Vodka', 'Wisky', 'Tekila', 'CocaCola') AND is_locked = 0 AND belongs_to = 90) AND description IS NOT NULL) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->where([ 
@@ -461,7 +461,7 @@ class ModelTest extends TestCase
         ->get();
 
     // Debería chequear solo la parte del WHERE
-    $this->assertEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE email = 'nano@g.c' OR username = 'nano';");
+    $this->assertEquals(DB::getLog(), "SELECT id, username, active, is_locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE email = 'nano@g.c' OR username = 'nano';");
 
     //  
     $rows = DB::table($this->users_table)
@@ -471,7 +471,7 @@ class ModelTest extends TestCase
         ->get();
 
     // Debería chequear solo la parte del WHERE
-    $this->assertEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
+    $this->assertEquals(DB::getLog(), "SELECT id, username, active, is_locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
   
     /*
 
@@ -523,8 +523,8 @@ class ModelTest extends TestCase
     $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
 
     // 
-    DB::table('products')->orderByRaw('locked * active DESC')->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY locked * active DESC;");
+    DB::table('products')->orderByRaw('is_locked * active DESC')->get();
+    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY is_locked * active DESC;");
 
     // 
     DB::table('products')->where([ 

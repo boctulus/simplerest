@@ -1421,7 +1421,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $instance0 = $this->getModelInstance();
                 $row = $instance0->where([$instance0->getIdName(), $id])->first();
 
-                if (isset($row['locked']) && $row['locked'] == 1)
+                if (isset($row['is_locked']) && $row['is_locked'] == 1)
                     Factory::response()->sendError("Forbidden", 403, "Locked by Admin");
             }
 
@@ -1666,11 +1666,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $extra = [];
 
             if ($this->acl->hasSpecialPermission('lock')){
-                if ($this->instance->inSchema([$this->instance->locked()])){
-                    $extra = array_merge($extra, [$this->instance->locked() => 1]);
+                if ($this->instance->inSchema([$this->instance->is_locked()])){
+                    $extra = array_merge($extra, [$this->instance->is_locked() => 1]);
                 }   
             }else {
-                if (isset($rows[0][$this->instance->locked()]) && $rows[0][$this->instance->locked()] == 1){
+                if (isset($rows[0][$this->instance->is_locked()]) && $rows[0][$this->instance->is_locked()] == 1){
                     Factory::response()->sendError("Locked by Admin", 403);
                 }
             }
