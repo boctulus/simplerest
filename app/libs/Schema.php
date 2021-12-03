@@ -1193,7 +1193,7 @@ class Schema
 
 
 	// RENAME TABLE `az`.`xxx` TO `az`.`xxy`;
-	function renameTable(string $final){
+	function renameTableTo(string $final){
 		$this->commands[] = "RENAME TABLE `{$this->tb_name}` TO `$final`;";
 		return $this;
 	}	
