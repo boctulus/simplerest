@@ -74,6 +74,9 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addInherit('registered')
     ->addResourcePermissions('tbl_usuario_empresa', ['read_all']) 
     ->addResourcePermissions('tbl_factura', ['read', 'write'])
+    ->addSpecialPermissions([
+        'fill_all', 
+    ])
 
  
     ->addRole('dsi', 500)
