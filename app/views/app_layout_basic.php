@@ -8,27 +8,18 @@
 
     <base href="<?= base_url(); ?>">
 
-    <script src="<?= assets('js/bootstrap/bootstrap.bundle.min.js') ?>"></script>
-
-    <link href="<?= assets('styles/bootstrap/bootstrap.min.css') ?>" rel="stylesheet"/>
-
-    <script src="<?= assets('js/fontawesome-5.js') ?>"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="<?= assets('css/core.css"') ?>" rel="stylesheet"/>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <?php
-        if (!isset($hidenav) || !$hidenav){
-            section('navbar.php'); 
-        }            
-    ?>
-    
     <div class="container">
         <main>
            <?= $content; ?>
         </main>
-    </div>
-
-    <div class="mt-3">
-        <?= section('footer.php') ?>
     </div>
 </body>
 </html>

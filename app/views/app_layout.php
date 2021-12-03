@@ -30,12 +30,6 @@
 
 </head>
 <body>
-    <?php
-        if (!isset($hidenav) || !$hidenav){
-            section('navbar.php'); 
-        }            
-    ?>
-    
     <div class="container">
         <main>
            <?= $content; ?>
