@@ -1059,7 +1059,7 @@ class DumbController extends Controller
         $m = DB::table('products')
         ->where([ 
             ['name', ['Vodka', 'Wisky', 'Tekila','CocaCola']], // IN 
-            ['locked', 0],
+            ['is_locked', 0],
             ['belongs_to', 90]
         ])
         ->whereNotNull('description');
@@ -1968,10 +1968,10 @@ class DumbController extends Controller
     /*
         RAW
         
-        SELECT * FROM products WHERE 1 = 1 AND deleted_at IS NULL ORDER BY locked + active ASC
+        SELECT * FROM products WHERE 1 = 1 AND deleted_at IS NULL ORDER BY is_locked + active ASC
     */
     function order2(){
-        dd(DB::table('products')->orderByRaw('locked * active DESC')->get()); 
+        dd(DB::table('products')->orderByRaw('is_locked * active DESC')->get()); 
     }
 
     function grouping(){
@@ -3473,7 +3473,7 @@ class DumbController extends Controller
         $m = DB::table('products')
         ->where([ 
             ['name', ['Vodka', 'Wisky', 'Tekila','CocaCola']], // IN 
-            ['locked', 0],
+            ['is_locked', 0],
             ['belongs_to', 90]
         ])
         ->whereNotNull('description');
@@ -3494,7 +3494,7 @@ class DumbController extends Controller
         /*
         ->where([ 
             ['name', ['Vodka', 'Wisky', 'Tekila','CocaCola']], // IN 
-            ['locked', 0],
+            ['is_locked', 0],
             ['belongs_to', 90]
         ])
         */

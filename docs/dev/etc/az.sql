@@ -619,7 +619,7 @@ CREATE TABLE `files` (
   `filename_as_stored` varchar(60) NOT NULL,
   `belongs_to` int(11) DEFAULT NULL,
   `guest_access` tinyint(4) DEFAULT NULL,
-  `locked` tinyint(4) NOT NULL DEFAULT '0',
+  `is_locked` tinyint(4) NOT NULL DEFAULT '0',
   `broken` tinyint(4) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL
@@ -629,7 +629,7 @@ CREATE TABLE `files` (
 -- Dumping data for table `files`
 --
 
-INSERT INTO `files` (`id`, `filename`, `file_ext`, `filename_as_stored`, `belongs_to`, `guest_access`, `locked`, `broken`, `created_at`, `deleted_at`) VALUES
+INSERT INTO `files` (`id`, `filename`, `file_ext`, `filename_as_stored`, `belongs_to`, `guest_access`, `is_locked`, `broken`, `created_at`, `deleted_at`) VALUES
 (240, '65394374_10158090117128840_7189038881361100800_o.jpg', 'jpg', '87-5f63d609a595dc2.69295218.jpg', 90, 1, 0, NULL, '2020-09-11 14:47:20', NULL),
 (242, '79528120_1205478162980483_7100254245131124736_n.jpg', 'jpg', '87-5f63d609a595c2.69295215.jpg', 87, 0, 0, NULL, '2020-09-17 18:32:57', NULL),
 (243, '1_dF7xdJ8zEOx4z1jPkr52-Q.png', 'png', '87-5f63d609aad343.97437503.png', 87, 0, 0, NULL, '2020-09-17 18:32:57', NULL),
@@ -807,7 +807,7 @@ CREATE TABLE `products` (
   `deleted_at` datetime DEFAULT NULL,
   `deleted_by` int(11) DEFAULT NULL,
   `active` tinyint(11) DEFAULT '1',
-  `locked` tinyint(4) DEFAULT '0',
+  `is_locked` tinyint(4) DEFAULT '0',
   `workspace` varchar(40) DEFAULT NULL,
   `belongs_to` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -816,7 +816,7 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `size`, `cost`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`, `active`, `locked`, `workspace`, `belongs_to`) VALUES
+INSERT INTO `products` (`id`, `name`, `description`, `size`, `cost`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted_at`, `deleted_by`, `active`, `is_locked`, `workspace`, `belongs_to`) VALUES
 (100, 'Vodka', NULL, '2 1/4 L', 201, '2019-07-04 00:00:00', NULL, '2019-11-24 22:46:44', NULL, '2019-11-25 02:46:44', NULL, 1, 1, '', 90),
 (103, 'Juguito ric0', 'Delicious juic333333', '1 Litros', 107, '2019-09-13 00:00:00', NULL, '2020-11-20 16:29:52', 90, '2019-11-25 02:46:46', NULL, 1, 1, NULL, 90),
 (105, 'Agua mineral', 'De Córdoba', '1L', 526, '2019-03-15 00:00:00', NULL, '2019-11-24 22:46:48', NULL, '2019-11-25 02:46:48', NULL, 1, 1, 'lista publica', 90),
@@ -1115,14 +1115,14 @@ CREATE TABLE `super_cool_table` (
   `active` tinyint(4) NOT NULL,
   `belongs_to` int(11) NOT NULL,
   `deleted_at` datetime DEFAULT NULL,
-  `locked` tinyint(4) NOT NULL
+  `is_locked` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `super_cool_table`
 --
 
-INSERT INTO `super_cool_table` (`id`, `name`, `age`, `active`, `belongs_to`, `deleted_at`, `locked`) VALUES
+INSERT INTO `super_cool_table` (`id`, `name`, `age`, `active`, `belongs_to`, `deleted_at`, `is_locked`) VALUES
 (500, 'Etereo', 0, 1, 90, NULL, 0),
 (504, 'Etereo oculto II', 0, 0, 90, NULL, 0),
 (505, 'Jota jota', 0, 1, 90, NULL, 0),
@@ -1154,7 +1154,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(15) NOT NULL,
   `active` tinyint(4) DEFAULT NULL,
-  `locked` tinyint(4) NOT NULL DEFAULT '0',
+  `is_locked` tinyint(4) NOT NULL DEFAULT '0',
   `email` varchar(60) NOT NULL,
   `confirmed_email` tinyint(4) DEFAULT '0',
   `firstname` varchar(50) DEFAULT NULL,
@@ -1167,7 +1167,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `active`, `locked`, `email`, `confirmed_email`, `firstname`, `lastname`, `password`, `deleted_at`) VALUES
+INSERT INTO `users` (`id`, `username`, `active`, `is_locked`, `email`, `confirmed_email`, `firstname`, `lastname`, `password`, `deleted_at`) VALUES
 (1, 'super', 1, 0, 'boctu.l.us@gmail.com', 0, 'P', 'bzz578000', '$2y$10$/ehgjdS8p8IbRKMW4AVVOuX38p8yMIZinciIWsj79rDUfRfKH6/56', NULL),
 (4, 'pbozzolo', 1, 0, 'pbozzolo@gmail.com', 1, 'Paulinoxxxy', 'Bozzoxxxy', '$2y$10$jAKcStnGqtcOslt1Std7ceYqq3mMIh6Lis/Ug4Z6IDQV65tyyP2Xe', NULL),
 (5, 'pepe', 1, 0, 'pepe@gmail.com', 1, 'Pepe', 'Gonzalez', '$2y$10$J.KPjyFukfxcKg83TvQGaeCTrLN9XyYXTgtTDZdZ91DJTdE73VIDK', NULL),

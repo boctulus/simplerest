@@ -27,7 +27,7 @@ class Files implements IMigration
         ->varchar('filename_as_stored', 60)
         ->integer('belongs_to')->nullable()->index()
         ->bool('guest_access')->nullable()
-        ->bool('locked')->default(0)
+        ->bool('is_locked')->default(0)
         ->bool('broken')->nullable()
         ->datetime('created_at')
         ->datetime('deleted_at')->nullable();

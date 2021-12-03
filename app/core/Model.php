@@ -91,7 +91,7 @@ class Model {
 	protected $createdBy = 'created_by';
 	protected $updatedBy = 'updated_by';
 	protected $deletedBy = 'deleted_by'; 
-	protected $locked    = 'locked';
+	protected $is_locked    = 'is_locked';
 	protected $belongsTo = 'belongs_to';
 
 	static protected $sql_formatter_callback;
@@ -122,8 +122,8 @@ class Model {
 		return $this->deletedBy;
 	}
 
-	function locked(){
-		return $this->locked;
+	function is_locked(){
+		return $this->is_locked;
 	}
 
 	function belongsTo(){
@@ -194,7 +194,7 @@ class Model {
 		if ($this->fillable == NULL){
 			$this->fillable = $this->attributes;
 			$this->unfill([
-							$this->locked, 
+							$this->is_locked, 
 							$this->createdAt,							
 							$this->updatedAt, 							
 							$this->deletedAt, 
@@ -210,7 +210,7 @@ class Model {
 		// dd($this->getFillables(), 'FILLABLES');
 		// exit;
 
-		$this->schema['nullable'][] = $this->locked;		
+		$this->schema['nullable'][] = $this->is_locked;		
 		$this->schema['nullable'][] = $this->createdAt;
 		$this->schema['nullable'][] = $this->updatedAt;
 		$this->schema['nullable'][] = $this->deletedAt;
