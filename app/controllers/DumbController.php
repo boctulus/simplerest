@@ -5717,7 +5717,7 @@ class DumbController extends Controller
     }
 
     function test_get_current_conn(){
-        DB::setConnection('db_flor');
+        DB::setConnection('db_flor');        
         dd(DB::getCurrentConnectionId());  
     }
     
