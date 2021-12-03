@@ -62,7 +62,7 @@ class PrepareUpdateController extends ConsoleController
         packages
         app/controllers/UpdateController.php     
         public/app.php
-        *.txt
+        .htaccess
         FILES;
 
         $files = explode(PHP_EOL, $str_files);
