@@ -105,14 +105,12 @@ Además, se puede cargar la configuración de varias formas:
 
 	- Desde la clase Factory como config()
 
-Incluir el archivo config.php directamente no es recomendado porque no estará cacheado y degradará la performance.
+Incluir el archivo config.php directamente no es recomendado.
 
-Es importante notar que al hacer uso de config() se accede a una versión en caché del archivo config.php y éste helper es usado internamente por SimpleRest por lo cual lo siguiente no funcionará:
+Ud. puede cambiar un valor de configuración con Config::set() aunque tenga en cuenta que muchas librerías y componentes del framework pueden estar guardándose una copia de la configuración e inclusive la clase DB lo hace con lo cual lo siguiente *no* funcionará:
 
-	config()['db_connection_default'] = 'db_xyz';
-	DB::getDefaultConnection();
-
-De hecho si se hiciera un dd() o var_dump() de config() antes y después de intentar el cambio se verá que nada ha cambiado.
+	Config::set('db_connection_default') = 'db_xyz';
+	DB::getDefaultConnection(); // sin cambio
 
 
 # Configuración de "tenant groups"
@@ -6128,8 +6126,7 @@ O mejor:
 
 	GET {url_repository}/api/v1/files?folder={folder_dado}&created_at[gt]={last_updated}&orderBy=created_at
 
-Idealmente los paquetes tendrán permiso de lectura para usuarios con el rol "suscriptor" pero no hay un endpoint "updates" sino es un único endpoint para archivos "files" (limitación) y los permisos sobre folders no pueden otorgarse en base a roles (limitación) sino a determinados usuarios.
+Se recomienda:
 
-<-- podría crear un FilesBase como ApiController y heredar de ahí para no duplicar la implementación.
-
-Conclusión: se dará de momento "guest access" sobre un folder en particular sobre "files" dedicado a listar y descargar los updates. 
+- Extender la API "FilesBase"
+- Usar "api keys" como método de autenticación sobre el endpoint /api/v1/updates  

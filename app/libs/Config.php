@@ -25,6 +25,12 @@ class Config
     }
 
     static function set(string $property, $value){
+        if (empty(static::$data)) {
+            static::setup();
+        }
+
         static::$data[$property] = $value;
+
+        dd(static::$data);
     }
 }
