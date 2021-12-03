@@ -18,7 +18,7 @@ class ProductTagsModel extends MyModel
 	
 	function onCreated(array &$data, $last_inserted_id)
 	{
-		dd($GLOBALS['name_module'], 'NAME MODULE');;
+		//dd($GLOBALS['name_module'], 'NAME MODULE');;
 	}
 }
 

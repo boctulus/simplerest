@@ -978,11 +978,17 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             // event hook             
             $this->onPostingBeforeCheck($id, $data);
            
-            if (!$this->acl->hasSpecialPermission('fill_all')){            
+            if (!$this->acl->hasSpecialPermission('fill_all')){          
                 if ($this->instance->inSchema([$this->instance->createdBy()])){
                     if (isset($data[$this->instance->createdBy()])){
                         Factory::response()->sendError("'{$this->instance->createdBy()}' is not fillable!", 400);
                     }
+                }  
+
+                if ($this->instance->inSchema([$this->instance->createdAt()])){
+                    if (isset($data[$this->instance->createdAt()])){  
+                        Factory::response()->sendError("'{$this->instance->createdAt()}' is not fillable!", 400);
+                    } 
                 }  
             }else{
                 $this->instance->fillAll();
@@ -1432,11 +1438,15 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             $this->instance->createdBy()
                 ];    
 
-                if ($this->instance->inSchema([$this->instance->updatedBy()])){
-                    if (isset($data[$this->instance->updatedBy()])){
-                        Factory::response()->sendError("{$this->instance->updatedBy()} is not fillable", 400);
-                    }
-                }  
+                $this->instance->unfill($unfill);
+
+                foreach ($unfill as $uf){
+                    if ($this->instance->inSchema([$uf])){
+                        if (isset($data[$uf])){
+                            Factory::response()->sendError("$uf is not fillable", 400);
+                        }
+                    }  
+                }
 
             }else{
                 $this->instance->fillAll();                
@@ -1501,11 +1511,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (strtoupper($v) == 'NULL' && $this->instance->isNullable($k)) 
                     $data[$k] = NULL;
             }            
-            
+
             $validado = (new Validator())->setRequired($put_mode)->validate($this->instance->getRules(), $data);
             if ($validado !== true){
                 Factory::response()->sendError(_('Data validation error'), 400, $validado);
             }
+
+            // agregado dic-3
+            $this->instance->fill([$this->instance->updatedBy()]);
 
             if (!empty($this->folder)) {
                 // event hook 
