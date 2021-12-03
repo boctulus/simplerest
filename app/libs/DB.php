@@ -78,7 +78,7 @@ class DB
 		if ($conn === null){
 			return false;
 		}
-		
+
 		$ver  = $conn->getAttribute(\PDO::ATTR_SERVER_VERSION);
 
 		if ($only_number){
@@ -421,9 +421,6 @@ class DB
 			$class = get_model_name($from);
 		
 			$obj = new $class($connect);
-
-			// habilito un validator
-			$obj->setValidator(new Validator());
 
 			if ($alias != null){
 				$obj->setTableAlias($alias);
