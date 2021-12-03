@@ -2676,7 +2676,9 @@ class DumbController extends Controller
         $array = DB::table('users')->orderBy(['id'=>'DESC'])->get();
 
         echo '<pre>';
-        Factory::response()->setPretty(true)->send($array);
+        Factory::response()
+        ->setPretty(true)
+        ->send($array);
         echo '</pre>';
     }
 
@@ -3962,6 +3964,15 @@ class DumbController extends Controller
         dd($rows);
     }
 
+    function serve_assets(){
+        view('test_assets.php');
+    }
+
+    function test_base_url(){
+        dd(Url::currentUrl());
+        dd(Url::getBaseUrl());
+    }
+    
 
     function x(){
         dd(assets("jota.jpg"));
@@ -5542,7 +5553,7 @@ class DumbController extends Controller
     }
 
     function test_cp_with_backup(){
-        Files::setBackupDirectory(ROOT_PATH . 'backups'); // crear constante
+        Files::setBackupDirectory(ROOT_PATH . 'backups'); 
         Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
         'app/controllers/ShopiController.php');        
     }
@@ -5551,7 +5562,7 @@ class DumbController extends Controller
         Sin especificar archivo en destino -- ok
     */
     function test_cp_with_backup2(){
-        Files::setBackupDirectory(ROOT_PATH . 'backups'); // crear constante
+        Files::setBackupDirectory(ROOT_PATH . 'backups');
         Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
         'app/controllers');        
     }
@@ -5862,6 +5873,8 @@ class DumbController extends Controller
         }
     }
 
-  
+    function test_root_path(){
+        dd(ROOT_PATH, 'ROOT_PATH');
+    }
     
 }
