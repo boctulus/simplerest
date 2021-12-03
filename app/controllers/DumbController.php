@@ -4109,7 +4109,15 @@ class DumbController extends Controller
         dd($res);
     }
 
+    
     function test_create_user(){
+        $m = DB::table('users')
+        ->setValidator(new Validator())
+        ->fill(['password', 'created_at']);
+
+        // dd($m->getFillables(), 'FILLABLES');
+        // dd($m->getNotFillables(), 'NOT FILLABLES');
+         
         $data = json_decode('{
             "username": "u200",
             "email": "u200@mail.com",
@@ -4117,7 +4125,8 @@ class DumbController extends Controller
             "created_at": "2019-02-02 10:00:00"
         }', true);
 
-        $ok = DB::table('users')
+
+        $ok = $m
         ->create($data);
 
         dd($ok);
