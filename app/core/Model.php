@@ -99,7 +99,7 @@ class Model {
 	
 
 	function createdAt(){
-		return $this->createdBy;
+		return $this->createdAt;
 	}
 
 	function createdBy(){
@@ -206,6 +206,10 @@ class Model {
 
 		$this->unfill($this->not_fillable);
 
+		// dd($this->not_fillable, 'NOT FILLABLE');
+		// dd($this->getFillables(), 'FILLABLES');
+		// exit;
+
 		$this->schema['nullable'][] = $this->locked;		
 		$this->schema['nullable'][] = $this->createdAt;
 		$this->schema['nullable'][] = $this->updatedAt;
@@ -226,13 +230,13 @@ class Model {
 			$to_fill[] = $this->schema['id_name'];
 		}
 
-		if ($this->inSchema([$this->createdBy])){
-			$to_fill[] = $this->createdBy;
-		}
+		// if ($this->inSchema([$this->createdBy])){
+		// 	$to_fill[] = $this->createdBy;
+		// }
 
-		if ($this->inSchema([$this->updatedBy])){
-			$to_fill[] = $this->updatedBy;
-		}
+		// if ($this->inSchema([$this->updatedBy])){
+		// 	$to_fill[] = $this->updatedBy;
+		// }
 
 		$this->fill($to_fill);		
 		
@@ -610,12 +614,17 @@ class Model {
 	 * @return void
 	 */
 	function unfill(array $fields){
-		if (!empty($this->fillable) && !empty($fields)){			
-			foreach ($fields as $uf){
-				$k = array_search($uf, $this->fillable);
+		if (!empty($this->fillable) && !empty($fields)){		
+			foreach ($this->fillable as $ix => $f){
+				foreach ($fields as $to_unset){
+					if ($f == $to_unset){
+						if (!in_array($f, $this->not_fillable)){
+							$this->not_fillable[] = $f;							
+						}	
 
-				if ($k !== false){
-					unset($this->fillable[$k]);
+						unset($this->fillable[$ix]);
+						break;
+					}
 				}				
 			}
 		}
@@ -2610,6 +2619,19 @@ class Model {
 		$vars = array_keys($data);
 		$vals = array_values($data);
 
+		// Event hook
+		$this->onCreating($data);
+
+		if ($this->inSchema([$this->createdAt]) && !isset($data[$this->createdAt])){
+			$this->fill([$this->createdAt]);
+
+			$at = datetime();
+			$data[$this->createdAt] = $at;
+
+			$vars = array_keys($data);
+			$vals = array_values($data);
+		}
+
 		// Validación
 		if (!empty($this->validator)){
 			if(!empty($this->fillable) && is_array($this->fillable)){
@@ -2623,20 +2645,6 @@ class Model {
 			if ($validado !== true){
 				throw new InvalidValidationException(json_encode($validado));
 			} 
-		}
-
-		// Event hook
-		$this->onCreating($data);
-
-		// Hook onCreating() can change $data
-		$vars = array_keys($data);
-		$vals = array_values($data);
-	
-		if ($this->inSchema([$this->createdAt]) && !isset($vars[$this->createdAt])){
-			$at = datetime();
-
-			$vars[] = $this->createdAt;
-			$vals[] = $at;
 		}
 		
 		$symbols  = array_map(function(string $e){
@@ -2716,6 +2724,8 @@ class Model {
 
 		return $this->last_inserted_id;		
 	}
+	
+	
 	
 	
 	/*
