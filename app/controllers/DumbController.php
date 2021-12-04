@@ -4037,6 +4037,17 @@ class DumbController extends Controller
 
         $mgr->migrate("--dir=$folder", "--to=$tenant");
     }
+
+    function test_alter_table(){
+        DB::setConnection('az');
+
+		$sc = new Schema('boletas');        
+        $sc->field('id')->primary();
+        $sc->alter();
+
+        dd($sc->getSchema(), 'SCHEMA');
+        dd($sc->dd(), 'SQL');
+    }
     
     function mk(){
         $tenant = "db_100";
