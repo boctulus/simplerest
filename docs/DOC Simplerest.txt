@@ -4162,23 +4162,6 @@ make migration --table=books
 make schema books
 make model books
 
-Se planea extender el comando "make migration" para que simplifique el agregado o remoción de campos:
-
-make migration foo --include-defaults (*)
-make migration all --include-defaults
-make migration all --include-defaults --exclude=belongs_to
-make migration foo --remove=algun_campo
-
-Esto generá archivos de migración con las intrucciones especificadas. 
-
-* El parámetro --include-defaults crearía o agregaría los campos manejados automáticamente por el framework:
-
-created_at
-created_by
-...
-...
-..,
-	
 	
 # Make 
 
@@ -4488,6 +4471,24 @@ Si se deseara "debuguear" y conocer el SQL resultante se puede usar el método d
 	dd($sc->dd());
 
 
+# El comodín field()
+
+Hay casos donde no tiene mucho sentido dar la definición si el objetivo es borrar ya sea el campo o un atributo de éste y en tal caso es más conveniente siemplemente hacer referencia al campo con field()
+
+Ej:
+
+	$sc = new Schema('boletas');
+	$sc->varchar('lastname')->dropNullable();
+	$sc->alter();
+
+
+En vez de lo anterior, lo mejor sería hacer:
+
+	$sc = new Schema('boletas');
+	$sc->field('lastname')->dropNullable();
+	$sc->alter();
+
+
 # Transacciones dentro de migraciones
 
 Cada migración debe ejecutarse en su totalidad pues debe poder revertirse con lo cual no puede quedar en un estado "intermedio" o parcial de operaciones.
@@ -4643,6 +4644,48 @@ En el archivo de migración suele incluirse una referencia la conexion a DB a us
 
 Ej:
 	php com migrations migrate --file=compania/2021_09_25_28831244_0001_tbl_estado_maestro.php --to=db_flor |less
+
+
+# Hacer migraciones inline
+
+Se planea extender el comando "make migration" para que simplifique el agregado o remoción de campos:
+
+make migration foo --dropColumn=algun_campo
+make migration foo --renameColumn=viejo_nombre,nuevo_nombre
+make migration foo --renameTable=viejo_nombre,nuevo_nombre
+make migration foo --nullable=campo
+make migration foo --dropNullable=campo
+make migration foo --primary=campo
+make migration foo --dropPrimary=campo
+make migration foo --unsigned=campo
+make migration foo --zeroFill=campo
+make migration foo --binaryAttr=campo
+make migration foo --dropAttributes=campo
+make migration foo --addUnique=campo
+make migration foo --dropUnique=campo
+make migration foo --addSpatial=campo
+make migration foo --dropSpatial=campo
+make migration foo --dropForeign=campo
+make migration foo --addIndex=campo
+make migration foo --dropIndex=campo
+make migration foo --trucateTable=campo
+make migration foo --comment=campo
+
+make migration foo --include-defaults (*)
+make migration all --include-defaults
+make migration all --include-defaults --exclude=belongs_to
+
+* El parámetro --include-defaults crearía o agregaría los campos manejados automáticamente por el framework a excepción de los que se listen bajo --exclude=
+
+Los campos agregados con --include-default serían los definidos en MyModel que por defecto son:
+
+created_at
+created_by
+...
+...
+..,
+
+En principio no se daría soporte a --addColumn= desde la propia línea de comandos porque la definción de un campo puede incluir varios atributos y sería algo complejo hacerlo inline.
 
 
 # Crear migraciones programáticamente

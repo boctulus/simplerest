@@ -822,14 +822,45 @@ class Schema
 		return $this;
 	}
 
+	// alias de auto(false)
+	function dropAuto(){
+		return $this->auto(false);
+	}
+
+	// alias de auto(false)
+	function notAuto(){
+		return $this->auto(false);
+	}
+
+	/*
+		This function only set as nullable but don't drop default as dropNullable()
+	*/
 	function nullable(bool $value =  true){
 		$this->fields[$this->current_field]['nullable'] =  $value ? 'NULL' : 'NOT NULL';
 		return $this;
 	}
+
+	function dropNullable(){
+		return $this->dropDefault()->nullable(false);
+	}
+
+	// alias de dropNullable()
+	function notNullable(){
+		return $this->dropNullable();
+	}
 	
-	function comment($string){
+	function commentField(string $string){
 		$this->fields[$this->current_field]['comment'] =  $string;
 		return $this;
+	}
+
+	// alias
+	function comment(string $string){
+		return $this->commentField($string);
+	}
+
+	function dropCommentField(){
+		// ..
 	}
 	
 	function default($val = NULL){
@@ -859,6 +890,12 @@ class Schema
 		}
 
 		$this->fields[$this->current_field]['attr'] = $attr;
+	}
+
+	// clears any attribute {'UNSIGNED', 'UNSIGNED ZEROFILL', 'BINARY'}
+	function dropAttr(){
+		$this->fields[$this->current_field]['attr'] = NULL;
+		return $this;
 	}
 	
 	function unsigned(){
@@ -955,9 +992,9 @@ class Schema
 		return $this;
 	}
 	
+	// alias of primary()
 	function pri(){
-		$this->primary();
-		return $this;
+		return $this->primary();
 	}
 	
 	function unique(){
@@ -1259,8 +1296,8 @@ class Schema
 		
 	// implica primero remover el AUTOINCREMENT sobre el campo !
 	// ej: ALTER TABLE `super_cool_table` CHANGE `id` `id` INT(11) NOT NULL;
-	function dropPrimary(string $name){
-		if ($this->prev_schema['fields'][$name]['auto']){
+	function dropPrimary(?string $field_name = null){
+		if ($field_name != null && $this->prev_schema['fields'][$field_name]['auto']){
 			throw new \Exception("To be able to DROP PRIMARY KEY, first remove AUTO_INCREMENT");
 		}
 
@@ -1496,8 +1533,12 @@ class Schema
 				$def .= "DEFAULT {$field['default']} ";
 			}
 			
-			if (isset($field['auto']) && $field['auto'] === false){
-				$def = str_replace('AUTO_INCREMENT', '', $def);
+			if (isset($field['auto'])){
+				if ($field['auto'] == false){
+					$def = str_replace('AUTO_INCREMENT', '', $def);
+				} else {
+					$def .= ' AUTO_INCREMENT';
+				}				
 			}
 			
 			if (isset($field['after'])){  
