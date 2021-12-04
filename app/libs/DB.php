@@ -642,7 +642,7 @@ class DB
 				return;
 			}
 
-			$table = Strings::match($raw_sql, '/insert[ ]+(ignore[ ]+)?into[ ]+[`]?([a-z_]+[a-z0-9]?)[`]? /i', null, 2);
+			$table = Strings::match($raw_sql, '/insert[ ]+(ignore[ ]+)?into[ ]+[`]?([a-z_]+[a-z0-9]?)[`]? /i', 2);
 
 			if (!empty($table)){
 				$schema = get_schema($table);
