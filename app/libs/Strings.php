@@ -210,7 +210,7 @@ class Strings
 			$patt =	Strings::getParamRegex($param_name, $arg_expr);
 		}
 
-		return Strings::match($str, $patt);		
+		return Strings::match($str, $patt, 1);		
 	}
 
 	/*
