@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace simplerest\core;
 
@@ -1161,8 +1161,30 @@ class MakeControllerBase extends Controller
         $tb_name = null;    
         $script  = null;
         $dir     = null;
+        $up_rep  = '';
 
-        $up_rep = '';
+        $dropColumn_ay = [];
+        $renameColumn_ay = [];
+        $renameTable  = null; 
+        $nullable_ay  = [];
+        $dropNullable_ay  = [];
+        $primary  = null; 
+        $dropPrimary  = null;
+        $auto  =  null;
+        $dropAuto = null;
+        $unsigned_ay  = [];
+        $zeroFill_ay  = [];
+        $binaryAttr_ay  = [];
+        $dropAttr_ay  = [];
+        $addUnique_ay  = [];
+        $dropUnique_ay  = [];
+        $addSpatial_ay = [];
+        $dropSpatial_ay  = [];
+        $dropForeign_ay  = [];
+        $addIndex_ay  = [];
+        $dropIndex_ay  = [];
+        $truncate  = null;
+        $comment_ay  = [];
 
         foreach ($opt as $o)
         {
@@ -1197,7 +1219,6 @@ class MakeControllerBase extends Controller
                     $dir= $matches[1];
                 }
             }
-            
 
             /*
                 The only condition to work is the script should be enclosed with double mark quotes ("")
@@ -1212,19 +1233,144 @@ class MakeControllerBase extends Controller
                 'removeColumn'
             ]);
 
-            $renameColumn = Strings::matchParam($o, 'renameColumn');
-            $renameTable  = Strings::matchParam($o, 'renameTable');
+            if (!empty($dropColumn)){
+                $dropColumn_ay[] =  $dropColumn;
+            }
+
+            $renameColumn = Strings::matchParam($o, 'renameColumn', '[a-z0-9A-Z_-]+\,[a-z0-9A-Z_-]+'); // from,to
+
+            if (!empty($renameColumn)){
+                $renameColumn_ay[] = $renameColumn;
+            }
+
+            $_renameTable  = Strings::matchParam($o, 'renameTable', '[a-z0-9A-Z_-]+\,[a-z0-9A-Z_-]+'); // from,to
+
+            if (!empty($_renameTable)){
+                $renameTable = $_renameTable;
+            }
+
             $nullable     = Strings::matchParam($o, 'nullable');
-            $dropNullable = Strings::matchParam($o, 'dropNullable');
-            $primary      = Strings::matchParam($o, 'primary');
-            $dropPrimary  = Strings::matchParam($o, 'dropPrimary');
+
+            if (!empty($nullable)){
+                $nullable_ay[] = $nullable;
+            }
+
+            $dropNullable = Strings::matchParam($o, ['dropNullable', 'delNullable', 'removeNullable']);
+
+            if (!empty($dropNullable)){
+                $dropNullable_ay[] = $dropNullable;
+            }
+
+            $_primary      = Strings::matchParam($o, 'primary');
+
+            if (!empty($_primary)){
+                $primary = $_primary;
+            }
+
+            $_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary', 'removePrimary']);
+
+            if (!empty($_dropPrimary)){
+                $dropPrimary = $_dropPrimary;
+            }
+
+            $_auto         = Strings::matchParam($o, ['auto', 'autoincrement', 'addAuto', 'addAutoincrement', 'setAuto']);
+            
+            if (!empty($_auto)){
+                $auto = $_auto;
+            }
+            
+            $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto']);
+            
+            if (!empty($_dropAuto)){
+                $dropAuto = $_dropAuto;
+            }
+            
             $unsigned     = Strings::matchParam($o, 'unsigned');
+
+            if (!empty($unsigned)){
+                $unsigned_ay[] = $unsigned;
+            }
+
+            $zeroFill     = Strings::matchParam($o, 'zeroFill');
+
+            if (!empty($zeroFill)){
+                $zeroFill_ay[] = $zeroFill;
+            }
+
+            $binaryAttr   = Strings::matchParam($o, ['binaryAttr', 'dropAttr', 'delAttr', 'removeAttr']);
+
+            if (!empty($binaryAttr)){
+                $binaryAttr_ay[] = $binaryAttr;
+            }
+
+            $dropAttr     = Strings::matchParam($o, ['dropAttributes', 'dropAttr', 'delAttr']);
+
+            if (!empty($dropAttr)){
+                $dropAttr_ay[] = $dropAttr;
+            }
+
+            // va a devolver una lista
+            $addUnique    = Strings::matchParam($o, ['addUnique', 'setUnique', 'unique'], '.*');
+
+            if (!empty($addUnique)){
+                $addUnique_ay[] = $addUnique;
+            }
+
+            $dropUnique   = Strings::matchParam($o, ['dropUnique', 'removeUnique', 'delUnique']);
+
+            if (!empty($dropUnique)){
+                $dropUnique_ay[] = $dropUnique;
+            }
+
+            $addSpatial   = Strings::matchParam($o, 'addSpatial');
+
+            if (!empty($addSpatial)){
+                $addSpatial_ay[] = $addSpatial;
+            }
+
+            $dropSpatial  = Strings::matchParam($o, ['dropSpatial', 'delSpatial']);
+
+            if (!empty($dropSpatial)){
+                $dropSpatial_ay[] = $dropSpatial;
+            }
+
+            $dropForeign  = Strings::matchParam($o, ['dropForeign', 'dropFK', 'delFK', 'removeFK']);
+
+            if (!empty($dropForeign)){
+                $dropForeign_ay[] = $dropForeign;
+            }
+
+            $addIndex     = Strings::matchParam($o, 'addIndex');
+
+            if (!empty($addIndex)){
+                $addIndex_ay[] = $addIndex;
+            }
+
+            $dropIndex    = Strings::matchParam($o, ['dropIndex', 'delIndex', 'removeIndex']);
+
+            if (!empty($dropIndex)){
+                $dropIndex_ay[] = $dropIndex;
+            }
+
+            $_truncate     = Strings::matchParam($o, ['truncateTable', 'truncate', 'clearTable']);
+
+            if (!empty($_truncate)){
+                $truncate = $_truncate;
+            }
+            
+            $comment      = Strings::matchParam($o, ['comment', 'commentField']);
+
+            if (!empty($comment)){
+                $comment_ay[] = $comment;
+            }
         }
 
 
-        dd($dropColumn, 'DC');
-        dd($renameColumn, 'RC');
-        exit;///
+        // d($dropColumn_ay, 'DC ');
+        // d($renameColumn_ay, 'RC');
+        // d($addUnique_ay, 'addUnique');
+        // exit; ////
+
 
         if (!isset($name)){
             if (isset($class_name)){

@@ -5426,13 +5426,16 @@ class DumbController extends Controller
             '/^--nombre[=|:]([a-z][a-z0-9A-Z_]+)$/'
         ]));
 
-        $o = '--removeColumn=algunaCol';
+        $o = '--dropColumn=toBeEarased';
         $dropColumn = Strings::matchParam($o, [
             'dropColumn',
             'removeColumn'
         ]);
 
-        dd($dropColumn);
+        d($dropColumn);
+
+        $o = '--renameColumn=aBcK,jU000w';
+        d(Strings::match($o, '/^--renameColumn[=|:]([a-z0-9A-Z_-]+\,[a-z0-9A-Z_-]+)$/'));
     }
 
     /*  
