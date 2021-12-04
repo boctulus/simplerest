@@ -5415,6 +5415,26 @@ class DumbController extends Controller
         dd($inners);
     }
 
+    function test_match(){
+        $o = '--name=xYz';
+        d(Strings::match($o, '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/'));
+
+        $o = '--namae=xYz';
+        d(Strings::match($o, [
+            '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/',
+            '/^--namae[=|:]([a-z][a-z0-9A-Z_]+)$/',
+            '/^--nombre[=|:]([a-z][a-z0-9A-Z_]+)$/'
+        ]));
+
+        $o = '--removeColumn=algunaCol';
+        $dropColumn = Strings::matchParam($o, [
+            'dropColumn',
+            'removeColumn'
+        ]);
+
+        dd($dropColumn);
+    }
+
     /*  
         Strings::middle() works ok if $end is false
     */
