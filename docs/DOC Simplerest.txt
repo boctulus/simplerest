@@ -4248,14 +4248,12 @@ Ej:
 
 El comando anterior creará ThisController dentro de pps\controller\sub1\a\
 
-
 # Especificar la conexión de base de datos para un Modelo
 
 Para generar schemas o models de una DB que no es la default se debe especificar la conexión. Ej:
 
 	php com make schema cotizaciones --from:db3
 	php com make model cotizaciones --from:db3
-
 
 # No sobre-escribir archivos
 
@@ -4308,6 +4306,29 @@ Notar que en sistemas UNIX / Linux, la "\" escapa caracteres así que si se quis
 
 	$ php com make migration create_cables --dir='my_folder\sub'
 
+
+Es opcional especificar el "name" como primer parámetro en "make migration" o "migrations make" si se especifica la tabla o la clase.
+
+Es válido:
+
+	php com make migration books [ otros parámetros ]
+	php com make migration --dir=test --name=books
+	php com make migration --class_name=Books
+	php com make migration --table=books
+	php com make migration --class_name=BooksRenameColumn --table=books
+	etc.
+
+# Directorios
+
+Es posible crear migraciones en directorios y sub-sub-directorios.
+
+Ej:
+
+	php com make migration  --dir=test/sub/sub2 --name=books
+
+
+# Estructura de los archivos de migraciones
+
 Los archivos creados por "make migration" implementan la interface IMigration y en si poseen dos métodos que pueden considerarse "hooks": up y down
 
 	public function up()
@@ -4344,10 +4365,11 @@ Si se especifica --to=  entonces se agregará automáticamente el seteo a la con
 
 public function up()
 {   
-	config()['db_connection_default'] = 'main';
+	DB::getConnection($some_conn_id);
 
 	// ..
 }
+
 
 # Sintaxis
 
@@ -4552,6 +4574,15 @@ Ej:
 En principio, --step= y --skip= serían combinables.
 
 
+# Simular migraciones
+
+Las migraciones se pueden "simular" agregando el parámetro --simulate
+
+Ej:
+
+	$ php com migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
+
+
 # Volver para atrás 
 
 Para volver para atrás migraciones es con el comando "migrations rollback" pero debe existir el método down() y éste debe habere sido escrito de forma tal que revierta el cambio en la base de datos (es responsabilidad del usuario por ahora)
@@ -4604,15 +4635,6 @@ Si por alguna razón la migración hubiera sido anotada en la tabla "migrations"
 Ej:
 
 	php com migrations migrate --dir=compania --file=2021_09_28_29110773_0001_tbl_estado_maestro.php --to=db_189 --retry
-
-
-# Simular migraciones
-
-Las migraciones se pueden "simular" agregando el parámetro --simulate
-
-Ej:
-
-	$ php com migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
 
 
 # Especificar hacia que base de datos iran las migraciones
