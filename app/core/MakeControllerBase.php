@@ -663,17 +663,13 @@ class MakeControllerBase extends Controller
     function db_scan(...$opt){
        $params = implode(' ',$opt);
 
-        echo shell_exec("php com make pivot_scan $params");
-        echo shell_exec("php com make relation_scan $params");
+        StdOut::pprint(
+            shell_exec("php com make pivot_scan $params")
+        );
 
-        // foreach ($opt as $o){
-        //     if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_-]+)$/', $o, $matches)){
-        //         $from_db = $matches[1];
-        //     }
-        // }
-    
-        // $this->pivot_scan("--from:$from_db");
-        // $this->relation_scan(...$opt);
+        StdOut::pprint(
+            shell_exec("php com make relation_scan $params")
+        );
     }
 
     function schema($name, ...$opt) 
@@ -1168,7 +1164,8 @@ class MakeControllerBase extends Controller
 
         $up_rep = '';
 
-        foreach ($opt as $o){
+        foreach ($opt as $o)
+        {
             if (is_array($o)){
                 $o = $o[0];
             }
@@ -1209,7 +1206,17 @@ class MakeControllerBase extends Controller
             if (preg_match('/^--from_script[=|:]"([^"]+)"/', $o, $matches)){
                 $script = $matches[1];
             }
+
+            $dropColumn = Strings::match($o, [
+                '/^--dropColumn[=|:]([a-z][a-z0-9A-Z_-]+)$/',
+                '/^--removeColumn[=|:]([a-z][a-z0-9A-Z_-]+)$/'
+                ]
+            );
         }
+
+
+        dd($dropColumn, 'DC');
+        exit;///
 
         if (!isset($name)){
             if (isset($class_name)){

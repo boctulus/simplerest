@@ -81,17 +81,46 @@ class Strings
 
 	/*
 		Returns NULL if fails
+
+		$pattern can be an Array
+		$result_position can be an Array 
 	*/
-	static function match(string $str, $pattern, callable $fn = NULL, int $result_position = 1){
-		if (preg_match($pattern, $str, $matches)){
-			if (!isset($matches[$result_position])){
-				return;
+	static function match(string $str, $pattern, $result_position = null){
+		if (is_array($pattern)){
+			if (is_null($result_position)){
+				$result_position = 1;
+				$is_pos_array    = false;
+			} else {
+				$is_pos_array = is_array($result_position);
+
+				if ($is_pos_array){
+					if (count($result_position) != count($pattern)){
+						throw new \InvalidArgumentException("Number of patterns should be the same as result positions");
+					}
+				} 
 			}
 
-			if ($fn != NULL)
-				$matches[$result_position] = call_user_func($fn, $matches[$result_position]);
-			
-			return $matches[$result_position];
+			foreach ($pattern as $ix => $p){
+				if (preg_match($p, $str, $matches)){
+					if (is_array($result_position)){
+						$pos = $result_position[$ix];
+					} else {
+						$pos = $result_position;
+					}
+
+					if (isset($matches[$pos])){
+						return $matches[$pos];
+					}
+				}
+			}
+		} else {
+			if (preg_match($pattern, $str, $matches)){
+				if (!isset($matches[$result_position])){
+					return;
+				}
+				
+				return $matches[$result_position];
+			}
 		}
 	}
 
