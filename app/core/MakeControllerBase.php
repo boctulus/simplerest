@@ -163,8 +163,9 @@ class MakeControllerBase extends Controller
         
         make migration rename_some_column --table=foo
         make migration --dir=test --name=books
-        make migration books --table=books --class_name=BooksAddDescription --to:main
+        make migration books --table=books --class_name=BooksAddDescription --to:main        
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3'
+        make migration --dir=test --to=az --table=boletas --class_name=BoletasDropNullable
 
         make db_scan [ -- from= ]
 
