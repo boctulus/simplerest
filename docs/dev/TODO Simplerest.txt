@@ -1,6 +1,6 @@
 # TODO
   
-- Usar como nombre automático de clase {Tabla}{DateTime} en caso de no especificar --class_name=  
+- Usar como nombre automático de clase {Tabla}{DateTime} en caso de que la clase esté en uso en otra migración => escanearlas. 
 
 - Usar en cada archivo del core:
 
@@ -80,6 +80,53 @@ Rta:
     }
   }
 
+- Seguir creando excepciones personalizadas. Ej: ModelNotFoundException (a usarse en la API)
+
+- Crear adaptadores para usar distintos Query Builders.
+
+y/o
+
+- Usar "repository pattern" en el ApiController para "intercambiar la implementación de la capa de persistencia" aún cuando siguen patrones distintos: DataMapper y ActiveRecord
+
+Ej:
+
+  namespace App\Http\Controllers;
+
+  use App\Repositories\PostRepositoryInterface;
+
+  class PostController extends Controller
+  {
+      /** @var PostRepositoryInterface */
+      private $repository;
+
+      public function __construct(PostRepositoryInterface $repository)
+      {
+          $this->repository = $repository;
+      }
+
+      /**
+       * @param $id
+       *
+       * @return mixed
+       */
+      public function show($post)
+      {
+          return $this->repository->find($post);
+      }
+  }
+
+
+Ver
+https://medium.com/@cesiztel/repository-pattern-en-laravel-f66fcc9ea492
+https://medium.com/employbl/use-the-repository-design-pattern-in-a-laravel-application-13f0b46a3dce
+
+- Sería interesante ver de implementar el patrón "Unit of Work"
+
+"A la hora de Confirmar los cambios, se podrían realizar las comprobaciones pertinentes para determinar que los datos no han sido modificados o eliminados por otro Usuario" <-- concurrencia
+
+Se encarga de gestionar las conexiones y manejar las Transacciones.
+
+Un buen caso de uso sería en cabeza-detalle <-- típico uso de Transacciones.
 
 - Comando "php com make form-control" que genere algo compatible con implemetación para front.
 
@@ -248,6 +295,8 @@ GET http://simplerest.lan/a`pi/v1/auth/register?_rules=1
 "En caso de que hayas subido tus tablas(migraciones) a la DB, pero se te olvido llenarlas con datos de prueba los cuales definiste en sus factories, con este comando borrarás tus tablas y las volverás a subir pero con datos"
 
 - Usar librería Faker
+
+https://styde.net/generar-registros-con-model-factories-en-laravel/
 
 - Filtro WHERE hacia tablas relacionadas en el ApiController. Ej:
 
@@ -1816,9 +1865,10 @@ https://stackoverflow.com/questions/5258977/are-http-headers-case-sensitive
 - Leer sobre Eager Loading y el "n+1 problem" 
 
   Lazy-Loading -> lento
-  Eager Loading -> rápido
+  Eager Loading -> rápido *
 
-Es posible hacer uso de "Eager Loading" con un QueryBuilder ?
+  (*) rápido en el sentido de que hace menos peticiones al motor pero consume más memoria.
+
 
 "Eager loading is the process whereby a query for one type of entity also loads related entities as part of the query. Eager loading is achieved by the use of the Include method."
 
@@ -1834,6 +1884,8 @@ $posts = Post::with('author')->limit(100)->get();
 
 
 Más
+https://medium.com/@sdkcodes/laravel-eloquent-eager-loading-9596b15e8b5d
+https://stackoverflow.com/questions/30231862/laravel-eloquent-has-with-wherehas-what-do-they-mean
 https://laravel-news.com/eloquent-eager-loading
 
 

@@ -86,6 +86,38 @@ class MakeControllerBase extends Controller
         */
     }
 
+    protected function setup(string $name) {
+        $name = str_replace('-', '_', $name);
+
+        $name = ucfirst($name);    
+        $name_lo = strtolower($name);
+
+        if (Strings::endsWith('model', $name_lo)){
+            $name = substr($name, 0, -5);
+        } elseif (Strings::endsWith('controller', $name_lo)){
+            $name = substr($name, 0, -10);
+        }
+
+        $name_uc = ucfirst($name);
+
+        if (strpos($name, '_') !== false) {
+            $camel_case  = Strings::snakeToCamel($name);
+            $snake_case = $name_lo;
+        } elseif ($name == $name_lo){
+            $snake_case = $name;
+            $camel_case  = ucfirst($name);
+        } elseif ($name == $name_uc) {
+            $camel_case  = $name; 
+        }
+        
+        if (!isset($snake_case)){
+            $snake_case = Strings::camelToSnake($camel_case);
+        }
+
+        $this->camel_case  = $camel_case; 
+        $this->snake_case  = $snake_case;
+    }
+
     function help(){
         echo <<<STR
         MAKE COMMAND HELP
@@ -129,8 +161,8 @@ class MakeControllerBase extends Controller
                             -sam  = -s -a -m
                             -samf = -s -a -m -f
         
-        make migration rename_some_column
-        make migration another_table_change --table=foo
+        make migration rename_some_column --table=foo
+        make migration --dir=test --name=books
         make migration books --table=books --class_name=BooksAddDescription --to:main
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3'
 
@@ -153,64 +185,6 @@ class MakeControllerBase extends Controller
     }
 
 
-    protected function setup(string $name) {
-        $name = str_replace('-', '_', $name);
-
-        $name = ucfirst($name);    
-        $name_lo = strtolower($name);
-
-        if (Strings::endsWith('model', $name_lo)){
-            $name = substr($name, 0, -5);
-        } elseif (Strings::endsWith('controller', $name_lo)){
-            $name = substr($name, 0, -10);
-        }
-
-        $name_uc = ucfirst($name);
-
-        if (strpos($name, '_') !== false) {
-            $camel_case  = Strings::snakeToCamel($name);
-            $snake_case = $name_lo;
-        } elseif ($name == $name_lo){
-            $snake_case = $name;
-            $camel_case  = ucfirst($name);
-        } elseif ($name == $name_uc) {
-            $camel_case  = $name; 
-        }
-        
-        if (!isset($snake_case)){
-            $snake_case = Strings::camelToSnake($camel_case);
-        }
-
-        $this->camel_case  = $camel_case; 
-        $this->snake_case  = $snake_case;
-    }
-
-    /*
-        make any SuperAwesome   [-s | --schema ] 
-                                [-m | --model] 
-                                [-c | --controller ] 
-                                [-a | --api ] 
-                                [--force | -f]
-
-                                -sam  = -s -a -m
-                                -samf = -s -a -m -f
-
-        make any  all           options    
-
-        Ej:
-
-        make any tbl_contacto -sam --from:dsi
-
-        make any all          -sam --from:dsi
-
-
-        Remember to call "php com" before "com"
-
-        Ej:
-
-        php com make any all -samf --from:dsi
-
-    */
     function any($name, ...$opt){ 
         if (count($opt) == 0){
             StdOut::pprint("Nothing to do. Please specify action using options.\r\nUse 'make help' for help.\r\n");
@@ -1170,6 +1144,13 @@ class MakeControllerBase extends Controller
         if (count($opt)>0 && !Strings::startsWith('-', $opt[0])){
             $name = $opt[0];
             unset($opt[0]);
+        }
+
+        foreach ($opt as $o){
+            $name = Strings::match($o, '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/');
+            if ($name){
+                break;
+            }
         }
 
         if (isset($name)){
