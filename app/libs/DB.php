@@ -20,100 +20,9 @@ class DB
 	protected static $config;
 
 	protected function __construct() { }
-	
-	public static function getAllConnectionIds(){
-		return array_keys(config()['db_connections']);
-	}
 
-	// alias
-	public static function getConnectionIds(){
-		return static::getAllConnectionIds();
-	}
-
-	public static function getCurrentConnectionId(bool $auto_connect = false){
-		if ($auto_connect && !static::$current_id_conn){
-			DB::getConnection();
-		}
-
-		return static::$current_id_conn;
-	}
-
-	public static function getCurrent(){
-		if (static::$current_id_conn === null){
-			return null;
-		}
-
-		return config()['db_connections'][static::$current_id_conn];
-	}
-
-	public static function database(){
-		$current = self::getCurrent();
-
-		if ($current === null){
-			return null;
-		}
-		
-		return self::getCurrent()['db_name'];
-	}
-
-	// alias
-	public static function getCurrentDB(){
-		return self::database();
-	}
-
-	public static function getTableName(){
-		return static::$tb_name;
-	}
-
-	public static function driver(){
-		return self::getCurrent()['driver'] ?? NULL;
-	}
-
-	/*
-		Returns driver version from current DB connection
-	*/
-	public static function driverVersion(bool $only_number = false){
-		$conn = self::$connections[static::$current_id_conn] ?? null;
-	
-		if ($conn === null){
-			return false;
-		}
-
-		$ver  = $conn->getAttribute(\PDO::ATTR_SERVER_VERSION);
-
-		if ($only_number){
-			return Strings::match($ver, '/^([^-]+)/');
-		}
-
-		return $ver;
-	}
-
-	public static function isMariaDB(){
-		static $it_is;
-
-		$conn_id = self::getCurrentConnectionId();
-
-		if (isset($it_is[$conn_id])){
-			return $it_is[$conn_id];
-		}
-
-		$ver = self::driverVersion();
-
-		$it_is = [];
-		$it_is[$conn_id] = Strings::contains('MariaDB', $ver);
-
-		return $it_is[$conn_id];
-	}
-
-	public static function schema(){
-		return self::getCurrent()['schema'] ?? NULL;
-	}
-	
-	public static function setConnection(string $id){
-		global $refresh_conn; // debería llamarse $dont_refresh_conn
-
-		$refresh_conn = false;
-
+	public static function setConnection(string $id)
+	{
 		if ($id === null){
 			throw new \InvalidArgumentException("Connection identifier can not be NULL");
 		}
@@ -279,6 +188,95 @@ class DB
 		return count(static::$connections ?? []);
 	}
 
+	
+	public static function getAllConnectionIds(){
+		return array_keys(config()['db_connections']);
+	}
+
+	// alias
+	public static function getConnectionIds(){
+		return static::getAllConnectionIds();
+	}
+
+	public static function getCurrentConnectionId(bool $auto_connect = false){
+		if ($auto_connect && !static::$current_id_conn){
+			DB::getConnection();
+		}
+
+		return static::$current_id_conn;
+	}
+
+	public static function getCurrent(){
+		if (static::$current_id_conn === null){
+			return null;
+		}
+
+		return config()['db_connections'][static::$current_id_conn];
+	}
+
+	public static function database(){
+		$current = self::getCurrent();
+
+		if ($current === null){
+			return null;
+		}
+		
+		return self::getCurrent()['db_name'];
+	}
+
+	// alias
+	public static function getCurrentDB(){
+		return self::database();
+	}
+
+	public static function getTableName(){
+		return static::$tb_name;
+	}
+
+	public static function driver(){
+		return self::getCurrent()['driver'] ?? NULL;
+	}
+
+	/*
+		Returns driver version from current DB connection
+	*/
+	public static function driverVersion(bool $only_number = false){
+		$conn = self::$connections[static::$current_id_conn] ?? null;
+	
+		if ($conn === null){
+			return false;
+		}
+
+		$ver  = $conn->getAttribute(\PDO::ATTR_SERVER_VERSION);
+
+		if ($only_number){
+			return Strings::match($ver, '/^([^-]+)/');
+		}
+
+		return $ver;
+	}
+
+	public static function isMariaDB(){
+		static $it_is;
+
+		$conn_id = self::getCurrentConnectionId();
+
+		if (isset($it_is[$conn_id])){
+			return $it_is[$conn_id];
+		}
+
+		$ver = self::driverVersion();
+
+		$it_is = [];
+		$it_is[$conn_id] = Strings::contains('MariaDB', $ver);
+
+		return $it_is[$conn_id];
+	}
+
+	public static function schema(){
+		return self::getCurrent()['schema'] ?? NULL;
+	}
+	
 	static function getTenantGroupNames() : Array {
 		$config = config();
 		if (!isset($config['tentant_groups'])){
