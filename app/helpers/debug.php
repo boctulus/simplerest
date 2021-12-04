@@ -1,10 +1,14 @@
 <?php
 
-use simplerest\libs\Debug;
+use simplerest\libs\VarDump;
 
-function dd(...$opt){
-    return Debug::dd(...$opt);	
+function dd($val, $msg = null, bool $additional_carriage_return = false){
+    return VarDump::dd($val, $msg, $additional_carriage_return);	
 }		
+
+function d($val, $msg = null){
+    return VarDump::dd($val, $msg, true);	
+}
 
 function here(){
     dd('HERE !');

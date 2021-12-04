@@ -114,11 +114,15 @@ class Strings
 				}
 			}
 		} else {
+			if (is_null($result_position)){
+				$result_position = 1;
+			}			
+
 			if (preg_match($pattern, $str, $matches)){
 				if (!isset($matches[$result_position])){
 					return;
 				}
-				
+
 				return $matches[$result_position];
 			}
 		}
@@ -187,6 +191,27 @@ class Strings
             return array_slice($matches, 1);
         }
     }
+
+	static function getParamRegex(string $param_name, string $arg_expr = '[a-z0-9A-Z_-]+'){
+		return '/^--'.$param_name.'[=|:]('.$arg_expr.')$/';
+	}
+
+	/*
+		$param_name can be string | Array
+	*/
+	static function matchParam(string $str, $param_name, string $arg_expr = '[a-z0-9A-Z_-]+'){
+
+		if (is_array($param_name)){
+			$patt = [];
+			foreach ($param_name as $p){
+				$patt[] = Strings::getParamRegex($p, $arg_expr);
+			}	
+		} else {
+			$patt =	Strings::getParamRegex($param_name, $arg_expr);
+		}
+
+		return Strings::match($str, $patt);		
+	}
 
 	/*
 		CamelCase to snake_case
