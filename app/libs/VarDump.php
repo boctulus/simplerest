@@ -4,7 +4,7 @@ namespace simplerest\libs;
 
 use simplerest\libs\Url; 
 
-class Debug
+class VarDump
 {
 	protected static function pre(callable $fn, ...$args){
 		echo '<pre>';

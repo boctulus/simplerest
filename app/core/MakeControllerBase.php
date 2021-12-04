@@ -1207,15 +1207,23 @@ class MakeControllerBase extends Controller
                 $script = $matches[1];
             }
 
-            $dropColumn = Strings::match($o, [
-                '/^--dropColumn[=|:]([a-z][a-z0-9A-Z_-]+)$/',
-                '/^--removeColumn[=|:]([a-z][a-z0-9A-Z_-]+)$/'
-                ]
-            );
+            $dropColumn = Strings::matchParam($o, [
+                'dropColumn',
+                'removeColumn'
+            ]);
+
+            $renameColumn = Strings::matchParam($o, 'renameColumn');
+            $renameTable  = Strings::matchParam($o, 'renameTable');
+            $nullable     = Strings::matchParam($o, 'nullable');
+            $dropNullable = Strings::matchParam($o, 'dropNullable');
+            $primary      = Strings::matchParam($o, 'primary');
+            $dropPrimary  = Strings::matchParam($o, 'dropPrimary');
+            $unsigned     = Strings::matchParam($o, 'unsigned');
         }
 
 
         dd($dropColumn, 'DC');
+        dd($renameColumn, 'RC');
         exit;///
 
         if (!isset($name)){
