@@ -4147,7 +4147,7 @@ Borrar un archivo
 
 # Modelos y esquemas (schemas)
 
-Modelos y schemas se mantienen separado en distintos archivos. El comando 'make' crea modelos y schemas mientras que el comando 'migrate' impactará en la DB reflejando cambios en los schema.
+Modelos y schemas se mantienen separado en distintos archivos. El comando 'make' crea modelos y schemas mientras que el comando 'migrate' impacta en la DB reflejando cambios en los schema.
 
  
    								   Api Rest   
@@ -4158,22 +4158,20 @@ Modelos y schemas se mantienen separado en distintos archivos. El comando 'make'
 	   <------------           
 
 
-make schema foo
-make schema all --include-defaults
+make migration --table=books
+make schema books
+make model books
 
-Se planea agregar el comando "schema-change" (por ahora no-disponible) 
+Se planea extender el comando "make migration" para que simplifique el agregado o remoción de campos:
 
-make schema-change foo --include-defaults
-make schema-change all --include-defaults
-make schema-change * --include-defaults
-make schema-change * --include-defaults --exclude=belongs_to
-make schema-change foo --remove=algun_campo
+make migration foo --include-defaults (*)
+make migration all --include-defaults
+make migration all --include-defaults --exclude=belongs_to
+make migration foo --remove=algun_campo
 
-<-- estos últimos alteran los schema y generan archivos de migración
+Esto generá archivos de migración con las intrucciones especificadas. 
 
-make schema xxxx
-
-El parámetro --include-defaults crearía o agregaría los campos manejados automáticamente por el framework:
+* El parámetro --include-defaults crearía o agregaría los campos manejados automáticamente por el framework:
 
 created_at
 created_by

@@ -6,15 +6,18 @@ UPDATE DESCRIPTION
 - Se vuelve *opcional* especificar el "name" como primer parámetro en "make migration" o "migrations make" si se especifica la tabla o la clase:
 
 Antes:
-	php com migrations make files [ otros parámetros ]
+	php com make migration books [ otros parámetros ]
 
 Ahora:
 
-	php com migrations make --class_name=Files
-	php com migrations make --table=files
-	php com migrations make --class_name=Filesss --table=files
+	php com make migration --dir=test --name=books
+	php com make migration --class_name=Books
+	php com make migration --table=books
+	php com make migration --class_name=BooksRenameColumn --table=books
 
-- Ahora es posible crear migraciones en sub-sub-directorios
+- Ahora es posible crear migraciones en sub-sub-directorios:
+
+	php com make migration  --dir=test/sub/sub2 --name=books
 
 - Se crean "tenant groups" que permiten organizar en distintas carpetas modelos y schemas de distintas bases de datos y agrupar los que se se supone son de bases de datos con igual estructura. Esto permite que dos bases de datos puedan tener ocasionalmente tablas con el mismo nombre y distinta estructura.
 
