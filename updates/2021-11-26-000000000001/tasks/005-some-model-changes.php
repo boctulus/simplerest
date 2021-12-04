@@ -7,7 +7,8 @@
 
     $paths = Files::recursiveGlob(MODELS_PATH . '/*.php');
 
-    foreach ($paths as $path){
+    foreach ($paths as $path)
+    {
         if (Strings::endsWith('MyModel.php', $path)){
             continue;
         }
