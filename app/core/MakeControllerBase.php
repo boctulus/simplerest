@@ -1228,9 +1228,14 @@ class MakeControllerBase extends Controller
                 $script = $matches[1];
             }
 
+            /*
+                Schema changes
+            */
+
             $dropColumn = Strings::matchParam($o, [
                 'dropColumn',
-                'removeColumn'
+                'removeColumn',
+                'delColumn'
             ]);
 
             if (!empty($dropColumn)){
@@ -1243,13 +1248,13 @@ class MakeControllerBase extends Controller
                 $renameColumn_ay[] = $renameColumn;
             }
 
-            $_renameTable  = Strings::matchParam($o, 'renameTable', '[a-z0-9A-Z_-]+\,[a-z0-9A-Z_-]+'); // from,to
+            $_renameTable  = Strings::matchParam($o, 'renameTable');
 
             if (!empty($_renameTable)){
                 $renameTable = $_renameTable;
             }
 
-            $nullable     = Strings::matchParam($o, 'nullable');
+            $nullable     = Strings::matchParam($o, ['nullable', 'setNullable']);
 
             if (!empty($nullable)){
                 $nullable_ay[] = $nullable;
@@ -1261,13 +1266,13 @@ class MakeControllerBase extends Controller
                 $dropNullable_ay[] = $dropNullable;
             }
 
-            $_primary      = Strings::matchParam($o, 'primary');
+            $_primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPrimary', 'setPri'], '.*');
 
             if (!empty($_primary)){
                 $primary = $_primary;
             }
 
-            $_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary', 'removePrimary']);
+            $_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary', 'removePrimary'], null);
 
             if (!empty($_dropPrimary)){
                 $dropPrimary = $_dropPrimary;
@@ -1316,7 +1321,7 @@ class MakeControllerBase extends Controller
                 $addUnique_ay[] = $addUnique;
             }
 
-            $dropUnique   = Strings::matchParam($o, ['dropUnique', 'removeUnique', 'delUnique']);
+            $dropUnique   = Strings::matchParam($o, ['dropUnique', 'removeUnique', 'delUnique'], '.*');
 
             if (!empty($dropUnique)){
                 $dropUnique_ay[] = $dropUnique;
@@ -1365,11 +1370,16 @@ class MakeControllerBase extends Controller
             }
         }
 
-
-        // d($dropColumn_ay, 'DC ');
-        // d($renameColumn_ay, 'RC');
-        // d($addUnique_ay, 'addUnique');
-        // exit; ////
+        d($renameTable, 'renameTable');
+        d($dropColumn_ay, 'DC ');
+        d($renameColumn_ay, 'RC');
+        d($addUnique_ay, 'addUnique');
+        d($dropUnique_ay, 'dropUnique');
+        d($nullable_ay, 'nullable');
+        d($dropNullable_ay, 'not nullable');
+        d($primary, 'PRI');
+        d($dropPrimary, 'Drop Primary');
+        exit; ////
 
 
         if (!isset($name)){
