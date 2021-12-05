@@ -250,7 +250,7 @@ class DB
 		$ver  = $conn->getAttribute(\PDO::ATTR_SERVER_VERSION);
 
 		if ($only_number){
-			return Strings::match($ver, '/^([^-]+)/');
+			return Strings::matchOrFail($ver, '/^([^-]+)/');
 		}
 
 		return $ver;

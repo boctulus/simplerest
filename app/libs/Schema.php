@@ -34,6 +34,7 @@ class Schema
 	protected $prev_schema;
 	protected $commands = [];
 	protected $query;
+	protected $exec = true;
 
 	function __construct($tb_name){
 		$this->tables = self::getTables();
@@ -411,7 +412,7 @@ class Schema
 		return !empty($res);
 	} 
 
-	static function rename(string $ori, string $final){
+	static function renameTable(string $ori, string $final){
 		$conn = DB::getConnection();   
 
 		$st = $conn->prepare("RENAME TABLE `$ori` TO `$final`;");
@@ -1329,8 +1330,8 @@ class Schema
 	}
 
 
-	function dropForeign(string $name){
-		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP FOREIGN KEY `$name`";
+	function dropForeign(string $constraint_name){
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP FOREIGN KEY `$constraint_name`";
 		return $this;
 	}
 
@@ -1590,11 +1591,13 @@ class Schema
 		try{
 			//dd($this->commands, 'SQL STATEMENTS');
 
-			foreach($this->commands as $change){     
-				$st = $conn->prepare($change);
-				$res = $st->execute();
+			if ($this->exec){
+				foreach($this->commands as $change){     
+					$st = $conn->prepare($change);
+					$res = $st->execute();
+				}
 			}
-
+			
 			DB::commit();
 		} catch (\PDOException $e) {
 			DB::rollback();
@@ -1610,6 +1613,10 @@ class Schema
         }     
 	}	
 
+
+	function dontExec(){
+		$this->exec = false;
+	}
 
 	// alias
 	function alter(){
