@@ -80,7 +80,7 @@ class Strings
 	}
 
 	/*
-		Returns NULL if fails
+		Returns false if fails
 
 		$pattern can be an Array
 		$result_position can be an Array 
@@ -120,12 +120,14 @@ class Strings
 
 			if (preg_match($pattern, $str, $matches)){
 				if (!isset($matches[$result_position])){
-					return;
+					return false;
 				}
 
 				return $matches[$result_position];
 			}
 		}
+
+		return false;
 	}
 
 	static function matchOrFail(string $str, string $pattern, string $error_msg = null) { 
@@ -223,7 +225,7 @@ class Strings
 	/*
 		CamelCase to snake_case
 	*/
-	static function camelToSnake($name){
+	static function camelToSnake(string $name){
 		$len = strlen($name);
 
 		if ($len== 0)
@@ -249,7 +251,7 @@ class Strings
 	/*
 		snake_case to CamelCase
 	*/
-	static function snakeToCamel($name){
+	static function snakeToCamel(string $name){
         return implode('',array_map('ucfirst',explode('_',$name)));
     }
 
@@ -264,7 +266,7 @@ class Strings
         return (substr($text, 0, $length) === $substr);
     }
 
-    static function endsWith($substr, $text, $case_sensitive = true)
+    static function endsWith(string $substr, string $text, bool $case_sensitive = true)
 	{
 		if (!$case_sensitive){
 			$text = strtolower($text);
@@ -279,7 +281,7 @@ class Strings
 
 		y corregir dependencias claro.
 	*/
-	static function contains($substr, $text, $case_sensitive = true)
+	static function contains(string $substr, string $text, bool $case_sensitive = true)
 	{
 		if (!$case_sensitive){
 			$text = strtolower($text);
@@ -307,7 +309,7 @@ class Strings
 		Thanks https://medium.com/@shiba1014/regex-word-boundaries-with-unicode-207794f6e7ed
 		Thanks https://www.phpliveregex.com/
 	*/
-	static function containsWord($word, $text, $case_sensitive = true) {
+	static function containsWord(string $word, string $text, bool $case_sensitive = true) {
 		$mod = $case_sensitive ? 'i' : '';
 		
 		if (preg_match('/(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/'.$mod, $text)) return true;
@@ -316,7 +318,7 @@ class Strings
 	/*
 		Verifica si *todas* las palabras se hallan en el texto. 
 	*/
-	static function containsWords(Array $words, $text, $case_sensitive = true) {
+	static function containsWords(Array $words, string $text, bool $case_sensitive = true) {
 		$mod = $case_sensitive ? 'i' : '';
 
 		foreach($words as $word){
@@ -330,7 +332,7 @@ class Strings
 	/*
 		Verifica si al menos una palabra es encontrada en el texto
 	*/
-	static function containsAnyWord(Array $words, $text, $case_sensitive = true) {
+	static function containsAnyWord(Array $words, string $text, bool $case_sensitive = true) {
 		foreach($words as $word){
 			if (self::containsWord($word, $text, $case_sensitive)){
 				return true;
@@ -339,17 +341,16 @@ class Strings
 		return false;	
 	}
 
-	// type is not compared
-	static function equal($s1, $s2, $case_sensitive = true){
-		if ($case_sensitive == false){
+	static function equal(string $s1, string $s2, bool $case_sensitive = true){
+		if ($case_sensitive === false){
 			$s1 = strtolower($s1);
 			$s2 = strtolower($s2);
 		}
 		
-		return ($s1 == $s2);
+		return ($s1 === $s2);
 	}
 
-	static function rTrim($needle, $haystack)
+	static function rTrim(string $needle, string $haystack)
     {
         if (substr($haystack, -strlen($needle)) === $needle){
 			return substr($haystack, 0, - strlen($needle));
@@ -447,11 +448,11 @@ class Strings
 	/*
 		Parse php class from file
 	*/
-	static function getClassName(string $file, bool $fully_qualified = true){
+	static function getClassName(string $file_str, bool $fully_qualified = true){
 		$pre_append = '';
 			
 		if ($fully_qualified){
-			$namespace = Strings::match($file, '/namespace[ ]{1,}([^;]+)/');
+			$namespace = Strings::match($file_str, '/namespace[ ]{1,}([^;]+)/');
 			$namespace = trim($namespace);
 
 			if (!empty($namespace)){
@@ -459,7 +460,7 @@ class Strings
 			}
 		}	
 		
-		$class_name = $pre_append . Strings::matchOrFail($file, '/class ([a-z][a-z0-9_]+)/i');
+		$class_name = $pre_append . Strings::matchOrFail($file_str, '/class ([a-z][a-z0-9_]+)/i');
 
 		return $class_name;
 	}

@@ -4041,12 +4041,19 @@ class DumbController extends Controller
     function test_alter_table(){
         DB::setConnection('az');
 
-		$sc = new Schema('boletas');        
-        $sc->field('id')->primary();
+		//$sc = new Schema('boletas');        
+        //$sc->field('id')->primary();
+        
+        $sc = new Schema('eee');
+		$sc->renameTableTo('bar')
+        ->field('ts')
+        ->renameColumnTo('times');
+        
+        $sc->dontExec();
         $sc->alter();
 
-        dd($sc->getSchema(), 'SCHEMA');
-        dd($sc->dd(), 'SQL');
+        d($sc->getSchema(), 'SCHEMA');
+        d($sc->dd(), 'SQL');
     }
     
     function mk(){
@@ -5422,7 +5429,7 @@ class DumbController extends Controller
         $o = '--namae=xYz';
         d(Strings::match($o, [
             '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/',
-            '/^--namae[=|:]([a-z][a-z0-9A-Z_]+)$/',
+            '/^--namae[=|:]([a-z][a-z0-9A-Z_]+)$/', 
             '/^--nombre[=|:]([a-z][a-z0-9A-Z_]+)$/'
         ]));
 

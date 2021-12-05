@@ -1144,13 +1144,12 @@ class MakeControllerBase extends Controller
         }
 
         foreach ($opt as $o){
-            $name = Strings::match($o, '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/');
-            if ($name){
-                break;
+            if (preg_match('/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $name = $matches[1];
             }
         }
 
-        if (isset($name)){
+        if (isset($name) && $name !== false){
             $this->setup($name);
         }        
 
@@ -1184,12 +1183,19 @@ class MakeControllerBase extends Controller
         $addIndex_ay  = [];
         $dropIndex_ay  = [];
         $truncate  = null;
-        $comment_ay  = [];
 
         foreach ($opt as $o)
         {
             if (is_array($o)){
                 $o = $o[0];
+            }
+
+            if (preg_match('/^--cat$/', $o, $matches)){
+                $cat = true;
+            }
+
+            if (preg_match('/^--dont$/', $o, $matches)){
+                $dont = true;
             }
 
             if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
@@ -1211,7 +1217,7 @@ class MakeControllerBase extends Controller
                 $file = str_replace('__NAME__', $class_name, $file); 
             } 
 
-            if (Strings::startsWith('--dir=', $o)){
+            if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o)){
                 // Convert windows directory separator into *NIX
                 $o = str_replace('\\', '/', $o);
 
@@ -1227,7 +1233,26 @@ class MakeControllerBase extends Controller
             if (preg_match('/^--from_script[=|:]"([^"]+)"/', $o, $matches)){
                 $script = $matches[1];
             }
+        }
 
+
+        if (!isset($name)){
+            if (isset($class_name)){
+                $this->setup($class_name);
+            } else {
+                if (!is_null($tb_name)){
+                    $this->setup($tb_name);;
+                }
+            }
+        }  
+
+        if (is_null($this->camel_case)){
+            throw new \InvalidArgumentException("No name for migration class");
+        }
+
+
+        foreach ($opt as $o)
+        {
             /*
                 Schema changes
             */
@@ -1254,7 +1279,7 @@ class MakeControllerBase extends Controller
                 $renameTable = $_renameTable;
             }
 
-            $nullable     = Strings::matchParam($o, ['nullable', 'setNullable']);
+            $nullable     = Strings::matchParam($o, ['nullable']);
 
             if (!empty($nullable)){
                 $nullable_ay[] = $nullable;
@@ -1266,7 +1291,7 @@ class MakeControllerBase extends Controller
                 $dropNullable_ay[] = $dropNullable;
             }
 
-            $_primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPrimary', 'setPri'], '.*');
+            $_primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri'], '.*');
 
             if (!empty($_primary)){
                 $primary = $_primary;
@@ -1284,7 +1309,7 @@ class MakeControllerBase extends Controller
                 $auto = $_auto;
             }
             
-            $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto']);
+            $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto'], null);
             
             if (!empty($_dropAuto)){
                 $dropAuto = $_dropAuto;
@@ -1302,13 +1327,13 @@ class MakeControllerBase extends Controller
                 $zeroFill_ay[] = $zeroFill;
             }
 
-            $binaryAttr   = Strings::matchParam($o, ['binaryAttr', 'dropAttr', 'delAttr', 'removeAttr']);
+            $binaryAttr   = Strings::matchParam($o, ['binaryAttr', 'binary']);
 
             if (!empty($binaryAttr)){
                 $binaryAttr_ay[] = $binaryAttr;
             }
 
-            $dropAttr     = Strings::matchParam($o, ['dropAttributes', 'dropAttr', 'delAttr']);
+            $dropAttr     = Strings::matchParam($o, ['dropAttributes', 'dropAttr', 'dropAttr', 'delAttr', 'removeAttr']);
 
             if (!empty($dropAttr)){
                 $dropAttr_ay[] = $dropAttr;
@@ -1345,7 +1370,7 @@ class MakeControllerBase extends Controller
                 $dropForeign_ay[] = $dropForeign;
             }
 
-            $addIndex     = Strings::matchParam($o, 'addIndex');
+            $addIndex     = Strings::matchParam($o, ['index', 'addIndex']);
 
             if (!empty($addIndex)){
                 $addIndex_ay[] = $addIndex;
@@ -1357,44 +1382,35 @@ class MakeControllerBase extends Controller
                 $dropIndex_ay[] = $dropIndex;
             }
 
-            $_truncate     = Strings::matchParam($o, ['truncateTable', 'truncate', 'clearTable']);
+            $_truncate     = Strings::matchParam($o, ['truncateTable', 'truncate', 'clearTable'], null);
 
             if (!empty($_truncate)){
                 $truncate = $_truncate;
             }
-            
-            $comment      = Strings::matchParam($o, ['comment', 'commentField']);
-
-            if (!empty($comment)){
-                $comment_ay[] = $comment;
-            }
         }
 
-        d($renameTable, 'renameTable');
-        d($dropColumn_ay, 'DC ');
-        d($renameColumn_ay, 'RC');
-        d($addUnique_ay, 'addUnique');
-        d($dropUnique_ay, 'dropUnique');
-        d($nullable_ay, 'nullable');
-        d($dropNullable_ay, 'not nullable');
-        d($primary, 'PRI');
-        d($dropPrimary, 'Drop Primary');
-        exit; ////
+        // d($renameTable, 'renameTable');
+        // d($truncate, 'truncate');
 
+        // d($dropColumn_ay, 'DC ');
+        // d($renameColumn_ay, 'RC');
+        // d($nullable_ay, 'nullable');
+        // d($dropNullable_ay, 'not nullable');
+        // d($primary, 'PRI');
+        // d($dropPrimary, 'Drop Primary');
+        // d($auto, 'AUTO');
+        // d($dropAuto, 'DROP AUTO');
+        // d($unsigned_ay, 'UNSIGNED');
+        // d($zeroFill_ay, 'ZeroFill');
+        // d($binaryAttr_ay, 'Binary atr');
+        // d($dropAttr_ay, 'Drop attr');
+        // d($addUnique_ay, 'Add Unique');
+        // d($dropUnique_ay, 'dropUnique');
+        // d($addSpatial_ay, 'add spatial');
+        // d($dropForeign_ay, 'Drop FK');
+        // d($addIndex_ay, 'add Index');
+        // d($dropIndex_ay, 'drop Index');
 
-        if (!isset($name)){
-            if (isset($class_name)){
-                $this->setup($class_name);
-            } else {
-                if (!is_null($tb_name)){
-                    $this->setup($tb_name);;
-                }
-            }
-        }  
-
-        if (is_null($this->camel_case)){
-            throw new \InvalidArgumentException("No name for migration class");
-        }
 
         $file = str_replace('__NAME__', $this->camel_case, $file); 
 
@@ -1426,8 +1442,17 @@ class MakeControllerBase extends Controller
 
             $up_rep .= "\$sc = new Schema('$tb_name');\r\n";
         }
+
+        /////////////////////////////////////////////////////
+
+        if (!empty($renameTable)){
+            $up_rep .= "\$sc->renameTableTo('$renameTable');\r\n";
+        }
+
+        /////////////////////////////////////////////////////
         
-        $up_rep .= "";        
+        
+        $up_rep = Strings::tabulate($up_rep, 2, 0);
         Strings::replace('### UP', $up_rep, $file);
 
         // destination
@@ -1437,7 +1462,13 @@ class MakeControllerBase extends Controller
 
         $dest_path = $path . $filename;
 
-        $this->write($dest_path, $file, false);
+        if (isset($cat)){
+            StdOut::pprint($file);
+        }
+
+        if (!isset($dont)){
+            $this->write($dest_path, $file, false);
+        }
     }    
 
 
