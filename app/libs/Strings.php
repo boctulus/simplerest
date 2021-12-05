@@ -192,14 +192,15 @@ class Strings
         }
     }
 
-	static function getParamRegex(string $param_name, string $arg_expr = '[a-z0-9A-Z_-]+'){
-		return '/^--'.$param_name.'[=|:]('.$arg_expr.')$/';
+	static function getParamRegex(string $param_name, ?string $arg_expr = '[a-z0-9A-Z_-]+'){
+		$equals = !is_null($arg_expr) ? '[=|:]' : '';		
+		return '/^--'.$param_name. $equals . '('.$arg_expr.')$/';
 	}
 
 	/*
 		$param_name can be string | Array
 	*/
-	static function matchParam(string $str, $param_name, string $arg_expr = '[a-z0-9A-Z_-]+'){
+	static function matchParam(string $str, $param_name, ?string $arg_expr = '[a-z0-9A-Z_-]+'){
 
 		if (is_array($param_name)){
 			$patt = [];
@@ -210,7 +211,13 @@ class Strings
 			$patt =	Strings::getParamRegex($param_name, $arg_expr);
 		}
 
-		return Strings::match($str, $patt, 1);		
+		$res = Strings::match($str, $patt, 1);
+
+		if ($arg_expr === null){
+			return ($res !== false); 
+		}
+
+		return $res;		
 	}
 
 	/*
