@@ -137,8 +137,13 @@ class FacebookController extends Controller
                     ->exists();
 
                     if ($exists){
-                        $username = Strings::match($email, '/[^@]+/');
+                        $_username = Strings::match($email, '/[^@]+/');
+
+                        if (!$_username){
+                            $username = $_username;
+                        }
                     }
+
 
                     $exists = DB::table($this->users_table)
                     ->where(['username', $username])
