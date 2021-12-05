@@ -5974,13 +5974,93 @@ Strings 			Librería
 Mails				Librería
 
 
-### Dumping 
+### Strings
 
-Para imprimir en pantalla o en la terminal de forma sencilla cualquier tipo de dato el framework provee las clases Debug, StdOud y el helper dd()
+La clase Strings provee una batería de métodos para manejo conveniente de cadena de caracteres.
 
-El helper dd() solo es un atajo para Debug::dd()
+	tabulate(string $str, int $tabs, ?int $first = null, ?int $last = null)
+	diff(string $s1, string $s2)
+	rTrim(string $needle, string $haystack)
+	trimFromLastOcurrence(string $substr, string $str)
+	match(string $str, $pattern, $result_position = null)
+	matchOrFail(string $str, string $pattern, string $error_msg = null)
+	slice(string &$str, string $pattern, callable $output_fn = NULL)
+	sliceAll(string &$str, string $pattern)
+	matchParam(string $str, $param_name, ?string $arg_expr = '[a-z0-9A-Z_-]+')
+	camelToSnake(string $name)
+	snakeToCamel(string $name)
+	endsWith(string $substr, string $text, bool $case_sensitive = true)
+	contains(string $substr, string $text, bool $case_sensitive = true)
+	containsAny(Array $substr, $text, $case_sensitive = true)
+	containsWord(string $word, string $text, bool $case_sensitive = true)
+	containsWords(Array $words, string $text, bool $case_sensitive = true)
+	containsAnyWord(Array $words, string $text, bool $case_sensitive = true)
+	equal($s1, $s2, $case_sensitive = true)
+	replace($search, $replace, &$subject, $count = NULL, $case_sensitive = true)
+	replaceNth(string $search, string $replace, string $subject, int $occurrence)
+	replaceMultipleSpaces($str)
+	stringTochars($s)
+	replaceFirst($from, $to, $subject)   ---revisar
+	replaceLast($search, $replace, $subject) --revisar
+	middle(string $str, int $ini, ?int $end = null) : string
+	left(string $str, $to_pos)
+	right(string $str, $from_pos)
+	getClassName(string $file_str, bool $fully_qualified = true)
+	getClassNameByFileName(string $filename, bool $fully_qualified = true)
+	filter(Array $reg, Array $conditions)
+	removeUnnecessarySlashes(string $path): string
+	removeTrailingSlash(string $path): string
+	addTrailingSlash(string $path): string
+
+
+Strings::match() verifica si el string cumple con el patrón o alguno de los patrones proporcionados.
+
+Ej:
+
+	$o = '--name=xYz';
+	d(Strings::match($o, '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/'));
+
+Ej:
+
+Se pueden evaluar varios patrones y ver si alguno cumple.
+
+	$o = '--nama=xYz';
+	d(Strings::match($o, [
+		'/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/',
+		'/^--namae[=|:]([a-z][a-z0-9A-Z_]+)$/',
+		'/^--nombre[=|:]([a-z][a-z0-9A-Z_]+)$/'
+	]));
+
+
+Strings::matchParam() parsea parámetros del tipo --nombre_param={valor}
+
+Ej:
+
+Un parámetro $o tiene el patrón --renameTable={algo} ?
+
+	$_renameTable  = Strings::matchParam($o, 'renameTable');
+
+Ej:
+
+El parámetro $o tiene un parámetro --pri= o --primary= donde el argumento puede ser cualquier cosa (.*) ?
+
+	$_primary  = Strings::matchParam($o, ['pri', 'primary'], '.*');
+
+Ej:
+
+El parámetro *no* lleva argumento y puede ser --dropPrimary o --delPrimary 
+
+	$_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary'], null);
+
+
+### Variable dumping 
+
+Para imprimir en pantalla o en la terminal de forma sencilla cualquier tipo de dato el framework provee las clases VarDump, StdOud y el helper dd()
+
+El helper dd() y d() son solo atajos para VarDump::dd()
 
 	dd($val, $msg = null, bool $additional_carriage_return = false)
+	d($val, $msg = null);
 
 Ej:
 
