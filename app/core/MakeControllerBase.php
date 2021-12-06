@@ -1261,7 +1261,7 @@ class MakeControllerBase extends Controller
                 'dropColumn',
                 'removeColumn',
                 'delColumn'
-            ]);
+            ], '.*');
 
             if (!empty($dropColumn)){
                 $dropColumn_ay[] =  $dropColumn;
@@ -1279,13 +1279,13 @@ class MakeControllerBase extends Controller
                 $renameTable = $_renameTable;
             }
 
-            $nullable     = Strings::matchParam($o, ['nullable']);
+            $nullable     = Strings::matchParam($o, ['nullable'], '.*');
 
             if (!empty($nullable)){
                 $nullable_ay[] = $nullable;
             }
 
-            $dropNullable = Strings::matchParam($o, ['dropNullable', 'delNullable', 'removeNullable']);
+            $dropNullable = Strings::matchParam($o, ['dropNullable', 'delNullable', 'removeNullable'], '.*');
 
             if (!empty($dropNullable)){
                 $dropNullable_ay[] = $dropNullable;
@@ -1346,7 +1346,7 @@ class MakeControllerBase extends Controller
                 $addUnique_ay[] = $addUnique;
             }
 
-            $dropUnique   = Strings::matchParam($o, ['dropUnique', 'removeUnique', 'delUnique'], '.*');
+            $dropUnique   = Strings::matchParam($o, ['dropUnique', 'removeUnique', 'delUnique']);
 
             if (!empty($dropUnique)){
                 $dropUnique_ay[] = $dropUnique;
@@ -1427,7 +1427,11 @@ class MakeControllerBase extends Controller
         }
 
         foreach ($dropColumn_ay as $dc){
-            $up_rep .= "\$sc->dropColumn('$dc');\r\n";
+            $_fs = explode(',', $dc);
+
+            foreach ($_fs as $f){
+                $up_rep .= "\$sc->dropColumn('$f');\r\n";
+            }
         }
 
         foreach ($renameColumn_ay as $rc){
@@ -1436,15 +1440,27 @@ class MakeControllerBase extends Controller
         }
 
         foreach ($nullable_ay as $nl){
-            $up_rep .= "\$sc->field('$nl')->nullable();\r\n";
+            $_fs = explode(',', $nl);
+
+            foreach ($_fs as $f){
+                $up_rep .= "\$sc->field('$nl')->nullable();\r\n";
+            }            
         }
 
         foreach ($dropNullable_ay as $nl){
-            $up_rep .= "\$sc->field('$nl')->dropNullable();\r\n";
+            $_fs = explode(',', $nl);
+
+            foreach ($_fs as $f){
+                $up_rep .= "\$sc->field('$f')->dropNullable();\r\n";
+            }
         }
 
         foreach ($primary_ay as $pr){
-            $up_rep .= "\$sc->field('$pr')->primary();\r\n";
+            $_pr = explode(',', $pr);
+
+            foreach ($_pr as $f){
+                $up_rep .= "\$sc->field('$f')->primary();\r\n";
+            }
         }
 
         if (!empty($dropPrimary)){
