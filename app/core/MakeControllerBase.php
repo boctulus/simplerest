@@ -1167,7 +1167,7 @@ class MakeControllerBase extends Controller
         $renameTable  = null; 
         $nullable_ay  = [];
         $dropNullable_ay  = [];
-        $primary  = null; 
+        $primary_ay = [];
         $dropPrimary  = null;
         $auto  =  null;
         $dropAuto = null;
@@ -1194,7 +1194,7 @@ class MakeControllerBase extends Controller
                 $cat = true;
             }
 
-            if (preg_match('/^--dont$/', $o, $matches)){
+            if (preg_match('/^--no-save$/', $o, $matches) || preg_match('/^--dont$/', $o, $matches)){
                 $dont = true;
             }
 
@@ -1291,10 +1291,10 @@ class MakeControllerBase extends Controller
                 $dropNullable_ay[] = $dropNullable;
             }
 
-            $_primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri'], '.*');
+            $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri'], '.*');
 
-            if (!empty($_primary)){
-                $primary = $_primary;
+            if (!empty($primary)){
+                $primary_ay[] = $primary;
             }
 
             $_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary', 'removePrimary'], null);
@@ -1352,11 +1352,11 @@ class MakeControllerBase extends Controller
                 $dropUnique_ay[] = $dropUnique;
             }
 
-            $addSpatial   = Strings::matchParam($o, 'addSpatial');
+            // $addSpatial   = Strings::matchParam($o, 'addSpatial');
 
-            if (!empty($addSpatial)){
-                $addSpatial_ay[] = $addSpatial;
-            }
+            // if (!empty($addSpatial)){
+            //     $addSpatial_ay[] = $addSpatial;
+            // }
 
             $dropSpatial  = Strings::matchParam($o, ['dropSpatial', 'delSpatial']);
 
@@ -1370,7 +1370,7 @@ class MakeControllerBase extends Controller
                 $dropForeign_ay[] = $dropForeign;
             }
 
-            $addIndex     = Strings::matchParam($o, ['index', 'addIndex']);
+            $addIndex     = Strings::matchParam($o, ['index', 'addIndex'], '.*');
 
             if (!empty($addIndex)){
                 $addIndex_ay[] = $addIndex;
@@ -1388,29 +1388,6 @@ class MakeControllerBase extends Controller
                 $truncate = $_truncate;
             }
         }
-
-        // d($renameTable, 'renameTable');
-        // d($truncate, 'truncate');
-
-        // d($dropColumn_ay, 'DC ');
-        // d($renameColumn_ay, 'RC');
-        // d($nullable_ay, 'nullable');
-        // d($dropNullable_ay, 'not nullable');
-        // d($primary, 'PRI');
-        // d($dropPrimary, 'Drop Primary');
-        // d($auto, 'AUTO');
-        // d($dropAuto, 'DROP AUTO');
-        // d($unsigned_ay, 'UNSIGNED');
-        // d($zeroFill_ay, 'ZeroFill');
-        // d($binaryAttr_ay, 'Binary atr');
-        // d($dropAttr_ay, 'Drop attr');
-        // d($addUnique_ay, 'Add Unique');
-        // d($dropUnique_ay, 'dropUnique');
-        // d($addSpatial_ay, 'add spatial');
-        // d($dropForeign_ay, 'Drop FK');
-        // d($addIndex_ay, 'add Index');
-        // d($dropIndex_ay, 'drop Index');
-
 
         $file = str_replace('__NAME__', $this->camel_case, $file); 
 
@@ -1436,10 +1413,6 @@ class MakeControllerBase extends Controller
         }
         
         if (!empty($tb_name)){
-            if (!empty($up_rep)){
-                $up_rep .= "\t\t";
-            }
-
             $up_rep .= "\$sc = new Schema('$tb_name');\r\n";
         }
 
@@ -1469,6 +1442,72 @@ class MakeControllerBase extends Controller
         foreach ($dropNullable_ay as $nl){
             $up_rep .= "\$sc->field('$nl')->dropNullable();\r\n";
         }
+
+        foreach ($primary_ay as $pr){
+            $up_rep .= "\$sc->field('$pr')->primary();\r\n";
+        }
+
+        if (!empty($dropPrimary)){
+            $up_rep .= "\$sc->dropPrimary();\r\n";
+        }
+
+        if (!empty($auto)){
+            $up_rep .= "\$sc->field('$auto')->addAuto();\r\n";
+        }
+
+        if (!empty($dropAuto)){
+            $up_rep .= "\$sc->dropAuto();\r\n";
+        }
+
+        foreach ($unsigned_ay as $ns){
+            $up_rep .= "\$sc->field('$ns')->unsigned();\r\n";
+        }
+
+        foreach ($zeroFill_ay as $zf){
+            $up_rep .= "\$sc->field('$zf')->zeroFill();\r\n";
+        }
+
+        foreach ($binaryAttr_ay as $bt){
+            $up_rep .= "\$sc->field('$bt')->binaryAttr();\r\n";
+        }
+
+        foreach ($dropAttr_ay as $da){
+            $up_rep .= "\$sc->field('$da')->dropAttr();\r\n";
+        }
+
+        foreach ($addUnique_ay as $uq){
+            $uq_ay = explode(',', $uq);
+            $uq_ay = Strings::enclose($uq_ay, "'");
+            $uq    = implode(',', $uq_ay);
+
+            $up_rep .= "\$sc->unique($uq);\r\n";
+        }
+
+        foreach ($dropUnique_ay as $uq){
+            $up_rep .= "\$sc->dropUnique('$uq');\r\n";
+        }
+
+        foreach ($dropSpatial_ay as $sp){
+            $up_rep .= "\$sc->dropSpatial('$sp');\r\n";
+        }
+
+        foreach ($dropIndex_ay as $index){
+            $up_rep .= "\$sc->dropIndex('$index');\r\n";
+        }
+
+        foreach ($addIndex_ay as $index){
+            $index_ay = explode(',', $index);
+            $index_ay = Strings::enclose($index_ay, "'");
+            $index    = implode(',', $index_ay);
+
+            $up_rep .= "\$sc->addIndex($index);\r\n";
+        }
+
+        foreach ($dropForeign_ay as $fk){
+            $up_rep .= "\$sc->dropFK('$fk');\r\n";
+        }
+
+        $up_rep .= "\$sc->alter();\r\n";
 
         /////////////////////////////////////////////////////
         
