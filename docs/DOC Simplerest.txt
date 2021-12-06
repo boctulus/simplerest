@@ -4330,7 +4330,7 @@ Es importante notar que la migración se ejecutará sobre la conexión de base d
 
 	public function up()
     {   
-        config()['db_connection_default'] = 'main';
+        DB::getConection('some_conn_id');
 
 		// ..
 	}
@@ -4340,15 +4340,15 @@ Puede que exista un escenario donde se prefiera no hacer el seteo de la conexió
 Al momento de crear la migración (con "make migration") hay parámetros que se pueden pasar:
 
 --to=   (conexión a la db)
---from= (conexión a la db)
 --table= 
 --class_name=
+etc
 
-Si se especifica --to=  entonces se agregará automáticamente el seteo a la conexión en el método up()
+Si se especifica --to={some_conn_id}  entonces se agregará automáticamente el seteo a la conexión en el método up()
 
 public function up()
 {   
-	DB::getConnection($some_conn_id);
+	DB::getConnection({some_conn_id});
 
 	// ..
 }
@@ -4364,7 +4364,9 @@ Básicamente hay dos grandes funcionalidades que residen en la clase Schema: cre
 Además Schema::alter() es un alias de Schema::change() por lo que pueden usarse indistintamente,
 
 
-Ejemplo de como hacer un "CREATE TABLE" dentro de una migración:
+Ej:
+
+Un "CREATE TABLE" dentro de una migración:
 
 	function up()
 	{
@@ -4435,10 +4437,13 @@ Ejemplo de como hacer un "CREATE TABLE" dentro de una migración:
 	
 Es posible debuguear el SCHEMA a ser creado:
 
-	 dd($sc->getSchema(), 'SCHEMA');
+	d($sc->getSchema(), 'SCHEMA');
+    d($sc->dd(true), 'SQL');
 
 
-Ejemplo de un "ALTER TABLE" dentro de una migración:
+Ej:
+
+Un "ALTER TABLE" dentro de una migración:
 	
 	function up(){
 		$sc = new Schema('tbl_producto');
@@ -4453,22 +4458,42 @@ Ejemplo de un "ALTER TABLE" dentro de una migración:
 	}
 
 
+# Debugging de Schema
+
 Si se deseara "debuguear" y conocer el SQL resultante se puede usar el método dd() sobre la instancia del Schema
 	
-	$sc = new Schema('tbl_producto');
-	
-	$res = $sc
-	->foreign('unm_intIdUnidadMedida')
-	->references('unm_intId')
-	->on('tbl_unidadmedida')
-	->onDelete('cascade')
-	->onUpdate('restrict')
-	->change();
+Ej:
+
+	$sc = new Schema('boletas');
+
+	$sc->field('f1')->primary();
+	$sc->field('f2')->primary();
+	$sc->alter();
 
 	/*
 		Debugging
 	*/
-	dd($sc->dd());
+
+	d($sc->getSchema(), 'SCHEMA');
+	d($sc->dd(true), 'SQL');
+
+Es posible *evitar* que se ejecute la migración llamando previamente a dontExec() 
+
+Ej:
+
+	$sc = new Schema('boletas');
+
+	$sc->field('f1')->primary();
+	$sc->field('f2')->primary();
+	$sc->dontExec();  // <--- before alter() or create()
+	$sc->alter();
+
+	/*
+		Debugging
+	*/
+
+	d($sc->getSchema(), 'SCHEMA');
+	d($sc->dd(true), 'SQL');
 
 
 # El comodín field()
@@ -4487,6 +4512,20 @@ En vez de lo anterior, lo mejor sería hacer:
 	$sc = new Schema('boletas');
 	$sc->field('lastname')->dropNullable();
 	$sc->alter();
+
+Un ejemplo más completo de los casos útiles para field() sería:
+
+	$sc = new Schema('bar');
+	$sc->field('c1')->unsigned()->primary()->auto();
+	$sc->field('c2')->primary();
+	$sc->field('c3')->nullable();
+	$sc->field('c4')->dropNullable();
+	$sc->field('c5')->zeroFill();
+	$sc->field('c6')->binaryAttr();
+	$sc->field('c7')->dropAttr();
+	$sc->alter();
+
+En ningún caso era necesario definir el campo para alterarlo.
 
 
 # Transacciones dentro de migraciones
@@ -4687,6 +4726,20 @@ created_by
 
 En principio no se daría soporte a --addColumn= desde la propia línea de comandos porque la definción de un campo puede incluir varios atributos y sería algo complejo hacerlo inline.
 
+
+# Debugging de migraciones inline
+
+La idea de las migraciones inline es evitar tener que buscar el archivo de migraciones, abrirlo y modificarlo pero sería cuestión de confiar en la migración generada.
+
+Ej:
+
+	php com make migration --table=bar --dir=some_dir --dropColumn=abc --renameColumn=xxx,zzz --nullable=ppp --dropNullable=kkk
+
+Es posible sin embargo, debuguear el archivo generado de migración con los siguientes parámetros:
+
+	--cat					muestra por pantalla (en la terminal) el archivo generado 
+	--no-save | --dont		no escribe el archivo
+	
 
 # Crear migraciones programáticamente
 
@@ -6062,6 +6115,8 @@ El helper dd() y d() son solo atajos para VarDump::dd()
 	dd($val, $msg = null, bool $additional_carriage_return = false)
 	d($val, $msg = null);
 
+Mientras que dd() por defecto no agrega retornos de carro adicionales, d() si lo hace.
+
 Ej:
 
 	dd([4,5, 7], "My Array");
@@ -6132,7 +6187,7 @@ deleteOrFail(string $file)											borra un archivo individual y sino existe, 
 globDelete($dir, ?string $glob_pattern = '*.*', $recursive = false)	borra archivos aplicando un patrón glob. No toca los directorios.
 delTree(string $dir, bool $include_self = false)					borra archivos y directorios recursivamante pero puede conservar el padre.
 logger($data, $file = 'log.txt')									hace un log de la data enviada. Exporta con json_encode()
-dump($object, $filename = 'dump.txt', $append = false)				similar a logger() pero exporta con var_export()
+dump($object, $filename = 'dump.txt', $append = false)				similar a logger() pero exporta con var_export
 mkDir($dir, int $permissions = 0777, $recursive = true)				make directory recusivo
 mkDirOrFail($dir, int $permissions = 0777, $recursive = true)		crea directorio o si falla genera excepción.
 

@@ -4076,9 +4076,6 @@ class DumbController extends Controller
 
     function test_alter_table2(){
         DB::setConnection('az');
-
-		//$sc = new Schema('boletas');        
-        //$sc->field('id')->primary();
         
         $sc = new Schema('boletas');
 
@@ -4099,11 +4096,21 @@ class DumbController extends Controller
         
         $sc->dropPrimary();
 
-        $sc->dontExec();
+        //$sc->dontExec();
         $sc->alter();
 
         d($sc->getSchema(), 'SCHEMA');
         d($sc->dd(true), 'SQL');
+    }
+
+    function test_alter_table4(){
+        $sc = new Schema('boletas');
+        $sc
+        ->dontExec()
+        ->dropAuto()
+        ->alter();
+
+        dd($sc->dd(), 'SQL');
     }
 
     function get_auto_field(){
