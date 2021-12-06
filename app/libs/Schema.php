@@ -1055,9 +1055,9 @@ class Schema
 		$action = strtoupper($action);
 		
 		if (!in_array($action, ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL'])){
-			throw new \InvalidArgumentException("Action for ON DELETE / ON CASCADE should be ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL']");
+			throw new \InvalidArgumentException("Invalid action '$action'. Action for ON DELETE / ON CASCADE should be ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL']");
 		}
-		
+
 		$this->fks[$this->current_field]['on_update'] = $action;
 		return $this;
 	}
@@ -1071,6 +1071,8 @@ class Schema
 	// INDICES >>>
 	
 	protected function setIndex(string $type){
+		$type = strtoupper($type);
+
 		if (!in_array($type, ['PRIMARY', 'UNIQUE', 'INDEX', 'FULLTEXT', 'SPATIAL']))
 			throw new \InvalidArgumentException("Invalid index $type");
 		
