@@ -4038,22 +4038,77 @@ class DumbController extends Controller
         $mgr->migrate("--dir=$folder", "--to=$tenant");
     }
 
+    function get_pks(){
+        d(Schema::getPKs('boletas'));
+    }
+
+    function get_db(){
+        d(Schema::getCurrentDatabase());    
+    }
+
+    function get_autoinc(){
+        d(Schema::getAutoIncrement('book_reviews'));
+        d(Schema::getAutoIncrement('bar'));
+        d(Schema::hasAutoIncrement('bar'));
+    }
+
     function test_alter_table(){
         DB::setConnection('az');
 
 		//$sc = new Schema('boletas');        
         //$sc->field('id')->primary();
         
-        $sc = new Schema('eee');
-		$sc->renameTableTo('bar')
+        $sc = new Schema('bar');
+		$sc
         ->field('ts')
-        ->renameColumnTo('times');
+        ->renameColumnTo('times2');
+
+        $sc->field('f1')->primary();
+        $sc->field('f2')->primary();
+        $sc->field('f3')->primary();
         
         $sc->dontExec();
         $sc->alter();
 
         d($sc->getSchema(), 'SCHEMA');
         d($sc->dd(), 'SQL');
+    }
+
+    function test_alter_table2(){
+        DB::setConnection('az');
+
+		//$sc = new Schema('boletas');        
+        //$sc->field('id')->primary();
+        
+        $sc = new Schema('boletas');
+
+        $sc->field('f1')->primary();
+        $sc->field('f2')->primary();
+
+        $sc->dontExec();
+        $sc->alter();
+
+        d($sc->getSchema(), 'SCHEMA');
+        d($sc->dd(true), 'SQL');
+    }
+    
+    function test_alter_table3(){
+        DB::setConnection('az');
+
+		$sc = new Schema('boletas');        
+        
+        $sc->dropPrimary();
+
+        $sc->dontExec();
+        $sc->alter();
+
+        d($sc->getSchema(), 'SCHEMA');
+        d($sc->dd(true), 'SQL');
+    }
+
+    function get_auto_field(){
+        d(Schema::getAutoIncrementField('book_reviews'));
+        d(Schema::getAutoIncrementField('bar'));
     }
     
     function mk(){
