@@ -4593,6 +4593,18 @@ Para ejecutar las migraciones pendiente es con "migrations migrate"
 	Migrating '2020_10_28_161757_create_cable_categories.php'
 	Migrated  '2020_10_28_161757_create_cable_categories.php' --ok
 
+Es posible especificar el archivo concreto y/o directorio para un "migrations migrate" y un "migrations rollback"
+
+Ej:
+	php com migrations migrate --dir=test --file=2021_12_06_35047920_boletas.php --to:my_db_conn
+
+o
+
+	php com migrations migrate --file=test/2021_12_06_35047920_boletas.php --to:my_db_conn
+
+
+Los parámetros --dir= y --file= se pueden usar separados, juntos o puede haber casos donde no sean necesarios (ej: sino hay directorio o se quiere ejecutar todo el directorio completo). 
+
 
 # Ejecutar migraciones por pasos
 
@@ -4601,7 +4613,6 @@ Es posible ejecutar migraciones, una a una o solo unas pocas por ejemplo para de
 Ej:
 
 	$ php com migrations migrate --dir=compania --to=db_153 -step=1
-
 
 # Saltar migraciones
 
@@ -4685,9 +4696,9 @@ Ej:
 	php com migrations migrate --file=compania/2021_09_25_28831244_0001_tbl_estado_maestro.php --to=db_flor |less
 
 
-# Hacer migraciones inline
+# Hacer migraciones "inline"
 
-Se planea extender el comando "make migration" para que simplifique el agregado o remoción de campos:
+Se extendió el comando "make migration" para que simplificar el agregado o remoción de campos:
 
 make migration foo --dropColumn=algun_campo
 make migration foo --renameColumn=viejo_nombre,nuevo_nombre
@@ -4710,6 +4721,10 @@ make migration foo --dropIndex=campo
 make migration foo --trucateTable=campo
 make migration foo --comment=campo
 
+En principio no se daría soporte a --addColumn= desde la propia línea de comandos porque la definción de un campo puede incluir varios atributos y sería algo complejo hacerlo inline.
+
+Además,...
+
 make migration foo --include-defaults (*)
 make migration all --include-defaults
 make migration all --include-defaults --exclude=belongs_to
@@ -4724,8 +4739,34 @@ created_by
 ...
 ..,
 
-En principio no se daría soporte a --addColumn= desde la propia línea de comandos porque la definción de un campo puede incluir varios atributos y sería algo complejo hacerlo inline.
 
+Otra opción es implementar .defaults.php en migrations como constante con --include-defaults algo como:
+
+	///foreign --- references Tabla tbl_estado
+    ->foreign('est_intIdEstado')
+    ->references('est_intId')
+    ->on('tbl_estado')    
+    ///foreign --- references Tabla tbl_usuario usu_intIdCreador
+    ->foreign('usu_intIdCreador')
+    ->references('usu_intId')
+    ->on('tbl_usuario')
+   ///foreign --- references Tabla tbl_usuario usu_intIdActualizador
+   ->foreign('usu_intIdActualizador')
+   ->references('usu_intId')
+   ->on('tbl_usuario');
+
+
+Adicional podría estar la opción --include-model-defaults que crearia / agregaría todos los campos presentes en MyModel.php 
+
+Se planea extender las migraciones inline a la creación de tablas con la siguiente sintaxis:
+
+	--field={nombre},clave:valor,clave:valor,....
+
+Ej:
+
+	--field=id,primary,auto,attr:unsigned
+	--field=lastname,varchar:60,collation:latin1_general_ci
+	etc
 
 # Debugging de migraciones inline
 

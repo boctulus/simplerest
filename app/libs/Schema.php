@@ -9,7 +9,9 @@ use simplerest\libs\Debug;
 use simplerest\libs\Factory;
 
 /*
-	Migrations
+	Schema Builder
+	
+	@author Pablo Bozzolo <boctulus@gmail.com>
 
 	The following can be useful :P
 	https://hoelz.ro/ref/mysql-alter-table-alter-change-modify-column
@@ -1003,19 +1005,39 @@ class Schema
 		return $this;
 	}
 
-	// alias
+	// alias for foreign
 	function fk(string $field_name){
 		return $this->foreign($field_name);
 	}
 	
+	// alias for foreign
+	function fromField(string $field_name){
+		return $this->foreign($field_name);
+	}
+
 	function references(string $field_name){
 		$this->fks[$this->current_field]['references'] = $field_name;
 		return $this;
+	}
+
+	// alias for references()
+	function toField(string $field_name){
+		return $this->references($field_name);
 	}
 	
 	function on(string $table){
 		$this->fks[$this->current_field]['on'] = $table;
 		return $this;
+	}
+
+	// alias for on()
+	function onTable(string $table){
+		return $this->on($table);
+	}
+
+	// alias for on()
+	function toTable(string $table){
+		return $this->on($table);
 	}
 		
 	function onDelete(string $action){
