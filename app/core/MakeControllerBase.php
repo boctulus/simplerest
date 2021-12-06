@@ -1265,7 +1265,7 @@ class MakeControllerBase extends Controller
             */
 
 
-            $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri'], '.*');
+            $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri', 'setPrimary'], '.*');
 
             if (!empty($primary)){
                 $primary_ay[] = $primary;
@@ -1283,7 +1283,7 @@ class MakeControllerBase extends Controller
                 $auto = $_auto;
             }
             
-            $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto'], null);
+            $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto', 'notAuto', 'noAuto'], null);
             
             if (!empty($_dropAuto)){
                 $dropAuto = $_dropAuto;
@@ -1341,7 +1341,7 @@ class MakeControllerBase extends Controller
                 $nullable_ay[] = $nullable;
             }
 
-            $dropNullable = Strings::matchParam($o, ['dropNullable', 'delNullable', 'removeNullable'], '.*');
+            $dropNullable = Strings::matchParam($o, ['dropNullable', 'delNullable', 'removeNullable', 'notNullable', 'noNullable'], '.*');
 
             if (!empty($dropNullable)){
                 $dropNullable_ay[] = $dropNullable;
@@ -1367,13 +1367,13 @@ class MakeControllerBase extends Controller
             //     $addSpatial_ay[] = $addSpatial;
             // }
 
-            $dropSpatial  = Strings::matchParam($o, ['dropSpatial', 'delSpatial']);
+            $dropSpatial  = Strings::matchParam($o, ['dropSpatial', 'delSpatial', 'removeSpatial']);
 
             if (!empty($dropSpatial)){
                 $dropSpatial_ay[] = $dropSpatial;
             }
 
-            $dropForeign  = Strings::matchParam($o, ['dropForeign', 'dropFK', 'delFK', 'removeFK']);
+            $dropForeign  = Strings::matchParam($o, ['dropForeign', 'dropFK', 'delFK', 'removeFK', 'dropFk', 'delFk', 'removeFk']);
 
             if (!empty($dropForeign)){
                 $dropForeign_ay[] = $dropForeign;
