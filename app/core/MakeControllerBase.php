@@ -1458,11 +1458,47 @@ class MakeControllerBase extends Controller
             }
 
             if (preg_match('/^--(onDelete)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
-                $onDelete = $matches[2];
+                $onDelete = strtoupper($matches[2]);
+
+                switch ($onDelete){
+                    case 'NOACTION':
+                        $onDelete = 'NO ACTION';
+                        break;
+                    case 'SETNULL':
+                        $onDelete = 'SET NULL';
+                        break;
+                    case 'RESTRICT':
+                        break;
+                    case 'CASCADE':
+                        break;
+                    default:
+                        StdOut::pprint("\r\nInvalid action '$onDelete' for ON DELETE");
+                        exit;
+                }
             }
 
             if (preg_match('/^--(onUpdate)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
-                $onUpdate = $matches[2];
+                $onUpdate = strtoupper($matches[2]);
+
+                switch ($onUpdate){
+                    case 'NO ACTION':
+                        break;
+                    case 'SET NULL':
+                        break;    
+                    case 'NOACTION':
+                        $onUpdate = 'NO ACTION';
+                        break;
+                    case 'SETNULL':
+                        $onUpdate = 'SET NULL';
+                        break;
+                    case 'RESTRICT':
+                        break;
+                    case 'CASCADE':
+                        break;
+                    default:
+                        StdOut::pprint("\r\nInvalid action '$onUpdate' for ON UPDATE");
+                        exit;
+                }
             }
         }
 
