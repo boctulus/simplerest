@@ -4723,6 +4723,21 @@ make migration foo --comment=campo
 
 En principio no se daría soporte a --addColumn= desde la propia línea de comandos porque la definción de un campo puede incluir varios atributos y sería algo complejo hacerlo inline.
 
+
+Para construcción de claves foráneas:
+        
+	--fromField=
+	--toField=
+	--toTable=
+	--constraint=
+	--onDelete={cascade|restrict|setNull|noAction}
+	--onUpdate={cascade|restrict|setNull|noAction}
+
+Ej:
+
+	make migration foo --fromField=user_id --toField=id --toTable=users --onDelete=cascade --onUpdate=setNull
+
+
 Además,...
 
 make migration foo --include-defaults (*)
