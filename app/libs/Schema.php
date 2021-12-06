@@ -1041,11 +1041,23 @@ class Schema
 	}
 		
 	function onDelete(string $action){
+		$action = strtoupper($action);
+		
+		if (!in_array($action, ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL'])){
+			throw new \InvalidArgumentException("Action for ON DELETE / ON CASCADE should be ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL']");
+		}
+
 		$this->fks[$this->current_field]['on_delete'] = $action;
 		return $this;
 	}
 	
 	function onUpdate(string $action){
+		$action = strtoupper($action);
+		
+		if (!in_array($action, ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL'])){
+			throw new \InvalidArgumentException("Action for ON DELETE / ON CASCADE should be ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL']");
+		}
+		
 		$this->fks[$this->current_field]['on_update'] = $action;
 		return $this;
 	}
