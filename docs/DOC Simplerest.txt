@@ -5998,7 +5998,7 @@ La clase Strings provee una batería de métodos para manejo conveniente de cade
 	equal($s1, $s2, $case_sensitive = true)
 	replace($search, $replace, &$subject, $count = NULL, $case_sensitive = true)
 	replaceNth(string $search, string $replace, string $subject, int $occurrence)
-	replaceMultipleSpaces($str)
+	removeMultipleSpaces($str)
 	stringTochars($s)
 	replaceFirst($from, $to, $subject)   ---revisar
 	replaceLast($search, $replace, $subject) --revisar
