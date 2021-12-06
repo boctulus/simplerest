@@ -42,7 +42,6 @@ class PrepareUpdateController extends ConsoleController
         app/libs
         app/locale
         app/traits
-        app/controllers/MakeController.php
         app/controllers/MigrationsController.php
         ;app/controllers/MyController.php
         ;app/controllers/MyApiController.php

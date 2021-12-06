@@ -178,8 +178,48 @@ class MakeControllerBase extends Controller
         make any all -sam  --from:dsi
         make any all -samf --from:dsi
         make any all -s -f --from:main 
-        make any all -s -f --from:main --unignore                       
-              
+        make any all -s -f --from:main --unignore  
+        
+        Inline migrations
+        
+        make migration foo --dropColumn=algun_campo
+        make migration foo --renameColumn=viejo_nombre,nuevo_nombre
+        make migration foo --renameTable=viejo_nombre,nuevo_nombre
+        make migration foo --nullable=campo
+        make migration foo --dropNullable=campo
+        make migration foo --primary=campo
+        make migration foo --dropPrimary=campo
+        make migration foo --unsigned=campo
+        make migration foo --zeroFill=campo
+        make migration foo --binaryAttr=campo
+        make migration foo --dropAttributes=campo
+        make migration foo --addUnique=campo
+        make migration foo --dropUnique=campo
+        make migration foo --addSpatial=campo
+        make migration foo --dropSpatial=campo
+        make migration foo --dropForeign=campo
+        make migration foo --addIndex=campo
+        make migration foo --dropIndex=campo
+        make migration foo --trucateTable=campo
+        make migration foo --comment=campo
+        
+        Ex:
+
+        php com make migration --dir=test --table=my_table --dropPrimary --unique=some_field,another_field
+
+        For Foreign key construction:
+        
+        --fromField=
+        --toField=
+        --toTable=
+        --constraint=
+        --onDelete={cascade|restrict|setNull|noAction}
+        --onUpdate={cascade|restrict|setNull|noAction}
+
+        Ex:
+
+        make migration foo --fromField=user_id --toField=id --toTable=users --onDelete=cascade --onUpdate=setNull
+
         STR;
 
         print_r(PHP_EOL);
@@ -1190,11 +1230,11 @@ class MakeControllerBase extends Controller
                 $o = $o[0];
             }
 
-            if (preg_match('/^--cat$/', $o, $matches)){
+            if (preg_match('/^--(cat|show|display|print)$/', $o)){
                 $cat = true;
             }
 
-            if (preg_match('/^--no-save$/', $o, $matches) || preg_match('/^--dont$/', $o, $matches)){
+            if (preg_match('/^--(no-save|nosave|dont)$/', $o)){
                 $dont = true;
             }
 
@@ -1205,15 +1245,15 @@ class MakeControllerBase extends Controller
             /*
                 Makes a reference to the specified table schema
             */
-            if (preg_match('/^--table[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
-                $tb_name = $matches[1];
+            if (preg_match('/^--(table|tb)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $tb_name = $matches[2];
             }
             
             /*  
                 This option forces php class name
             */
-            if (preg_match('/^--class_name[=|:]([a-z][a-z0-9_]+)$/i', $o, $matches)){
-                $class_name = Strings::snakeToCamel($matches[1]);
+            if (preg_match('/^--(class_name|class)[=|:]([a-z][a-z0-9_]+)$/i', $o, $matches)){
+                $class_name = Strings::snakeToCamel($matches[2]);
                 $file = str_replace('__NAME__', $class_name, $file); 
             } 
 
@@ -1221,8 +1261,8 @@ class MakeControllerBase extends Controller
                 // Convert windows directory separator into *NIX
                 $o = str_replace('\\', '/', $o);
 
-                if (preg_match('~^--dir[=|:]([a-z][a-z0-9A-Z_/]+)$~', $o, $matches)){
-                    $dir= $matches[1];
+                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z][a-z0-9A-Z_/]+)$~', $o, $matches)){
+                    $dir= $matches[2];
                 }
             }
 
@@ -1396,6 +1436,34 @@ class MakeControllerBase extends Controller
             if (!empty($_truncate)){
                 $truncate = $_truncate;
             }
+
+            /*
+                FKs 
+            */
+
+            if (preg_match('/^--(foreign|fk|fromField)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $fromField = $matches[2];
+            }
+
+            if (preg_match('/^--(references|reference|toField)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $toField = $matches[2];
+            }
+
+            if (preg_match('/^--(constraint)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $constraint = $matches[2];
+            }
+
+            if (preg_match('/^--(on|onTable|toTable)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $toTable = $matches[2];
+            }
+
+            if (preg_match('/^--(onDelete)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $onDelete = $matches[2];
+            }
+
+            if (preg_match('/^--(onUpdate)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $onUpdate = $matches[2];
+            }
         }
 
         $file = str_replace('__NAME__', $this->camel_case, $file); 
@@ -1452,7 +1520,7 @@ class MakeControllerBase extends Controller
             $_fs = explode(',', $nl);
 
             foreach ($_fs as $f){
-                $up_rep .= "\$sc->field('$nl')->nullable();\r\n";
+                $up_rep .= "\$sc->field('$f')->nullable();\r\n";
             }            
         }
 
@@ -1528,9 +1596,28 @@ class MakeControllerBase extends Controller
             $up_rep .= "\$sc->addIndex($index);\r\n";
         }
 
-        foreach ($dropForeign_ay as $fk){
-            $up_rep .= "\$sc->dropFK('$fk');\r\n";
+        foreach ($dropForeign_ay as $fk_constraint){
+            $up_rep .= "\$sc->dropFK('$fk_constraint');\r\n";
         }
+
+        if (isset($fromField) && isset($toField) && isset($toTable)){
+            $up_rep .= "\$sc->foreign('$fromField')->references('$toField')->on('$toTable')";
+            
+            if (isset($constraint)){
+                $up_rep .= "->constraint('$constraint')";
+            }
+
+            if (isset($onDelete)){
+                $up_rep .= "->onDelete('$onDelete')";
+            }
+
+            if (isset($onUpdate)){
+                $up_rep .= "->onUpdate('$onUpdate')";
+            }
+
+            $up_rep .= ";\r\n";
+        }
+
 
         $up_rep .= "\$sc->alter();\r\n";
 

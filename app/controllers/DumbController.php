@@ -6002,5 +6002,32 @@ class DumbController extends Controller
     function test_root_path(){
         dd(ROOT_PATH, 'ROOT_PATH');
     }
+
+    function prepare_default(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        // Solo para pruebas !!!!
+        Files::delTree($dst);
+
+        $str_files = <<<'FILES'
+        config/constants.php
+        app/libs
+        app/core/MakeControllerBase.php
+        app/controllers/MigrationsController.php
+        docs
+        FILES;
+
+        $files = explode(PHP_EOL, $str_files);
+
+        $except =  [
+            'db_dynamic_load.php',
+            'PrepareUpdateController.php',
+            'docs/dev',
+            'glob:*.zip'
+        ];
+
+        Files::copy($ori, $dst, $files, $except);
+    }
     
 }

@@ -15,8 +15,8 @@ use simplerest\libs\StdOut;
 
 class MigrationsController extends Controller
 {
-    function make($name, ...$opt) {
-        return (new MakeController)->migration($name, $opt);
+    function make(...$opt) {
+        return (new MakeController)->migration(...$opt);
     }
     
     /*
@@ -599,11 +599,32 @@ class MigrationsController extends Controller
 
         migrations redo --file=2021_09_14_27910581_files.php --to:main
 
+        Inline migrations
+        
+        make migration foo --dropColumn=algun_campo
+        make migration foo --renameColumn=viejo_nombre,nuevo_nombre
+        make migration foo --renameTable=viejo_nombre,nuevo_nombre
+        make migration foo --nullable=campo
+        make migration foo --dropNullable=campo
+        make migration foo --primary=campo
+        make migration foo --dropPrimary=campo
+        make migration foo --unsigned=campo
+        make migration foo --zeroFill=campo
+        make migration foo --binaryAttr=campo
+        make migration foo --dropAttributes=campo
+        make migration foo --addUnique=campo
+        make migration foo --dropUnique=campo
+        make migration foo --addSpatial=campo
+        make migration foo --dropSpatial=campo
+        make migration foo --dropForeign=campo
+        make migration foo --addIndex=campo
+        make migration foo --dropIndex=campo
+        make migration foo --trucateTable=campo
+        make migration foo --comment=campo
 
-        Advanced
+        Ex:
 
-        migrations migrate --file=my_custom_file_migration.php --class_name=my_class
-        migrations migrate --file=my_custom_file_migration.php --class_name=MyClass
+        php com make migration --dir=test --table=my_table --dropPrimary --unique=some_field,another_field
 
         STR;
         
