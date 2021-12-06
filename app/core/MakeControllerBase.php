@@ -1250,12 +1250,68 @@ class MakeControllerBase extends Controller
             throw new \InvalidArgumentException("No name for migration class");
         }
 
+        if (empty($tb_name) && isset($name)){
+            $tb_name = $name;
+        }
+
+        if (empty($tb_name) && isset($class_name)){
+            $tb_name = Strings::camelToSnake($class_name);
+        }
 
         foreach ($opt as $o)
         {
             /*
                 Schema changes
             */
+
+
+            $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri'], '.*');
+
+            if (!empty($primary)){
+                $primary_ay[] = $primary;
+            }
+
+            $_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary', 'removePrimary'], null);
+
+            if (!empty($_dropPrimary)){
+                $dropPrimary = $_dropPrimary;
+            }
+
+            $_auto         = Strings::matchParam($o, ['auto', 'autoincrement', 'addAuto', 'addAutoincrement', 'setAuto']);
+            
+            if (!empty($_auto)){
+                $auto = $_auto;
+            }
+            
+            $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto'], null);
+            
+            if (!empty($_dropAuto)){
+                $dropAuto = $_dropAuto;
+            }
+
+            $unsigned     = Strings::matchParam($o, 'unsigned');
+
+            if (!empty($unsigned)){
+                $unsigned_ay[] = $unsigned;
+            }
+
+            $zeroFill     = Strings::matchParam($o, 'zeroFill');
+
+            if (!empty($zeroFill)){
+                $zeroFill_ay[] = $zeroFill;
+            }
+
+            $binaryAttr   = Strings::matchParam($o, ['binaryAttr', 'binary']);
+
+            if (!empty($binaryAttr)){
+                $binaryAttr_ay[] = $binaryAttr;
+            }
+
+            $dropAttr     = Strings::matchParam($o, ['dropAttributes', 'dropAttr', 'dropAttr', 'delAttr', 'removeAttr']);
+
+            if (!empty($dropAttr)){
+                $dropAttr_ay[] = $dropAttr;
+            }
 
             $dropColumn = Strings::matchParam($o, [
                 'dropColumn',
@@ -1290,54 +1346,7 @@ class MakeControllerBase extends Controller
             if (!empty($dropNullable)){
                 $dropNullable_ay[] = $dropNullable;
             }
-
-            $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri'], '.*');
-
-            if (!empty($primary)){
-                $primary_ay[] = $primary;
-            }
-
-            $_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary', 'removePrimary'], null);
-
-            if (!empty($_dropPrimary)){
-                $dropPrimary = $_dropPrimary;
-            }
-
-            $_auto         = Strings::matchParam($o, ['auto', 'autoincrement', 'addAuto', 'addAutoincrement', 'setAuto']);
             
-            if (!empty($_auto)){
-                $auto = $_auto;
-            }
-            
-            $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto'], null);
-            
-            if (!empty($_dropAuto)){
-                $dropAuto = $_dropAuto;
-            }
-            
-            $unsigned     = Strings::matchParam($o, 'unsigned');
-
-            if (!empty($unsigned)){
-                $unsigned_ay[] = $unsigned;
-            }
-
-            $zeroFill     = Strings::matchParam($o, 'zeroFill');
-
-            if (!empty($zeroFill)){
-                $zeroFill_ay[] = $zeroFill;
-            }
-
-            $binaryAttr   = Strings::matchParam($o, ['binaryAttr', 'binary']);
-
-            if (!empty($binaryAttr)){
-                $binaryAttr_ay[] = $binaryAttr;
-            }
-
-            $dropAttr     = Strings::matchParam($o, ['dropAttributes', 'dropAttr', 'dropAttr', 'delAttr', 'removeAttr']);
-
-            if (!empty($dropAttr)){
-                $dropAttr_ay[] = $dropAttr;
-            }
 
             // va a devolver una lista
             $addUnique    = Strings::matchParam($o, ['addUnique', 'setUnique', 'unique'], '.*');
@@ -1527,6 +1536,8 @@ class MakeControllerBase extends Controller
 
         /////////////////////////////////////////////////////
         
+        $up_before    = $up_rep;
+        $file_before  = $file; 
         
         $up_rep = Strings::tabulate($up_rep, 2, 0);
         Strings::replace('### UP', $up_rep, $file);
@@ -1539,7 +1550,9 @@ class MakeControllerBase extends Controller
         $dest_path = $path . $filename;
 
         if (isset($cat)){
-            StdOut::pprint($file);
+            $up_rep = Strings::tabulate($up_before, 1, 0);
+            $_file  = str_replace('### UP', $up_rep, $file_before);
+            StdOut::pprint(PHP_EOL . $_file);
         }
 
         if (!isset($dont)){
