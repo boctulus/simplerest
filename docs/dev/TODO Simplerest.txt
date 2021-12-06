@@ -154,6 +154,9 @@ Se encarga de gestionar las conexiones y manejar las Transacciones.
 
 Un buen caso de uso sería en cabeza-detalle <-- típico uso de Transacciones.
 
+
+- En "make migrations" (y make en general) si un parámetro no es procesado porque no es corregido debe lanzar un error !!!! 
+
 - Comando "php com make form-control" que genere algo compatible con implemetación para front.
 
 field_name=
