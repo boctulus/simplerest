@@ -69,6 +69,10 @@ class Strings
 		return static::substract($s1, $s2);
 	}
 
+	static function trimArray(Array $strings){
+		return array_map('trim', $strings);
+	}
+
 	static function trimFromLastOcurrence(string $substr, string $str){
 		$pos = strrpos($str, $substr);
 
@@ -220,6 +224,12 @@ class Strings
 		}
 
 		return $res;		
+	}
+
+	static function backticks(Array $a){
+		return array_map(function($e){
+			return "`$e`";
+		}, $a);
 	}
 
 	/*
@@ -383,7 +393,7 @@ class Strings
 		return preg_replace("/^((?:(?:.*?$search){".--$occurrence."}.*?))$search/", "$1$replace", $subject);
 	}
    
-	static function replaceMultipleSpaces($str){
+	static function removeMultipleSpaces($str){
 		return preg_replace('!\s+!', ' ', $str);
 	}
 

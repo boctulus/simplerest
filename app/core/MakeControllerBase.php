@@ -1449,6 +1449,27 @@ class MakeControllerBase extends Controller
             $up_rep .= "\$sc->renameTableTo('$renameTable');\r\n";
         }
 
+        if (!empty($truncate)){
+            $up_rep .= "\$sc->truncateTable('$tb_name');\r\n";
+        }
+
+        foreach ($dropColumn_ay as $dc){
+            $up_rep .= "\$sc->dropColumn('$dc');\r\n";
+        }
+
+        foreach ($renameColumn_ay as $rc){
+            list($from, $to) = explode(',', $rc);
+            $up_rep .= "\$sc->renameColumn('$from', '$to');\r\n";
+        }
+
+        foreach ($nullable_ay as $nl){
+            $up_rep .= "\$sc->field('$nl')->nullable();\r\n";
+        }
+
+        foreach ($dropNullable_ay as $nl){
+            $up_rep .= "\$sc->field('$nl')->dropNullable();\r\n";
+        }
+
         /////////////////////////////////////////////////////
         
         
