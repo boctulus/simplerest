@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\MyModel;
+use simplerest\models\MyModel;	
 use simplerest\models\schemas\legion\TblEmpresaSchema;
 
 class TblEmpresaModel extends MyModel
