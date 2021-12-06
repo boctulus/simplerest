@@ -42,8 +42,59 @@ class Schema
 		$this->fromDB();
 	}
 
+	/*	
+		It works in MySQL y Oracle
+
+		If db connection was made by DB class, then it's faster to use DB::database() instead
+	*/
+	static function getCurrentDatabase(){
+		return DB::select("SELECT DATABASE() FROM DUAL;", null, 'COLUMN')[0];
+	}
+
+	// alias of getCurrentDatabase()
+	static function getSelectedDatabase(){
+		return static::getCurrentDatabase();
+	}
+
+	static function getPKs(string $table){
+		$rows = DB::select("SHOW INDEXES FROM `$table` WHERE Key_name = 'PRIMARY'");
+		return array_column($rows, 'Column_name');
+	}
+
+	static function hasPK(string $table){
+		return (!empty(static::getPKs($table)));
+	}
+
+	// returns auto_increment value (offset)
+	static function getAutoIncrement(string $table, ?string $database = null){
+		if ($database === null){
+			$database = DB::database();
+
+			if ($database === null){
+				throw new \Exception("There is no active database connection");
+			}
+		}
+
+		return DB::select("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = '$table';", null, 'COLUMN')[0];
+	}
+
+	// returns if the there is autoincrement for the given table
+	static function hasAutoIncrement(string $table, ?string $database = null){
+		return static::getAutoIncrement($table, $database) !== null;
+	}
+
+	static function getAutoIncrementField(string $table){
+		$row = DB::select("SHOW COLUMNS FROM `$table` WHERE EXTRA LIKE '%auto_increment%';", null, 'ASSOC');
+
+		if (empty($row)){
+			return false;
+		}
+
+		return $row[0]['Field'];
+	}
+
 	// Válido para MySQL, en un solo sentido: presentes en / hacia la tabla
-	static function getFKs(string $table = null, bool $not_table = false, string $db = null)
+	static function getFKs(string $table = null, bool $not_table = false, ?string $db = null)
 	{
 		if ($db == null){
 			DB::getConnection();
@@ -1165,14 +1216,18 @@ class Schema
 		//$this->commands[] = 'COMMIT;';		
 		$this->query = implode("\r\n",$this->commands)."\n";
 
-		try {
+		if (!$this->exec){
+			return;
+		}
 
-			$conn = DB::getConnection();   
-	  
-			$rollback = function() use ($conn){
-				$st = $conn->prepare("DROP TABLE IF EXISTS `{$this->tb_name}`;");
-				$res = $st->execute();
-			};
+		$conn = DB::getConnection();  
+			
+		DB::beginTransaction();
+		try {
+			// $rollback = function() use ($conn){
+			// 	$st = $conn->prepare("DROP TABLE IF EXISTS `{$this->tb_name}`;");
+			// 	$res = $st->execute();
+			// };
 
 			foreach($this->commands as $change){     
 				$st = $conn->prepare($change);
@@ -1182,15 +1237,15 @@ class Schema
 			DB::commit();
 
 		} catch (\PDOException $e) {
-			dd($change, 'SQL with error');
-			dd($e->getMessage(), "PDO error");
-			$rollback();
+			d($change, 'SQL with error');
+			d($e->getMessage(), "PDO error");
+			DB::rollback();
 			throw $e;		
-        } catch (\Exception $e) {
-			$rollback();
+        } catch (\Exception $e) {;
+			DB::rollback();
             throw $e;
         } catch (\Throwable $e) {
-            $rollback();
+			DB::rollback();
             throw $e;   
         }     
 
@@ -1227,7 +1282,7 @@ class Schema
 
 	// RENAME TABLE `az`.`xxx` TO `az`.`xxy`;
 	function renameTableTo(string $final){
-		$this->commands[] = "RENAME TABLE `{$this->tb_name}` TO `$final`;";
+		$this->commands[] = "RENAME TABLE `{$this->field}` TO `$final`;";
 		return $this;
 	}	
 
@@ -1260,10 +1315,8 @@ class Schema
 		return $this;
 	}
 	
-	// alias
 	function renameColumnTo(string $final){		
-		$this->commands[] = "ALTER TABLE `{$this->tb_name}` RENAME COLUMN `{$this->current_field}` TO `$final`;";
-		return $this;
+		return $this->renameColumn($this->current_field, $final);
 	}
 
 
@@ -1291,15 +1344,57 @@ class Schema
 
 
 	function addPrimary(string $column){
-		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD PRIMARY KEY(`$column`);";
+		$pks = static::getPKs($this->tb_name);
+
+		foreach ($this->commands as $ix => $command){
+			if (preg_match('/ ADD PRIMARY KEY\(([^)]+)\)/', $command, $matches)){
+				$new_pk = $matches[1];
+				unset($this->commands[$ix]);
+			}
+		}
+
+		$cols = '';
+		if (!empty($pks) || isset($new_pk)){
+			$cols = implode(',', Strings::backticks($pks));
+	
+			if (isset($new_pk)){
+				if (!empty($cols)){
+					$cols .= ', ';	
+				}
+
+				$cols .= $new_pk;
+			}
+
+			if (!empty($cols)){
+				$cols .= ', ';	
+			}
+
+			$cols .= "`$column`";
+
+			// Kill duplicates
+			$cols_ay = explode(',', $cols);			
+			$cols_ay = Strings::trimArray($cols_ay);
+			$cols_ay = array_unique($cols_ay, SORT_REGULAR);
+			$cols = implode(',', $cols_ay);
+
+			$drop_old_pk = !empty($pks) ? 'DROP PRIMARY KEY,' : '';
+
+			$this->commands[] = "ALTER TABLE `{$this->tb_name}` $drop_old_pk ADD PRIMARY KEY($cols);";
+		} else {
+			$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD PRIMARY KEY(`$column`);";
+		}
+		
 		return $this;	
 	}
 		
 	// implica primero remover el AUTOINCREMENT sobre el campo !
 	// ej: ALTER TABLE `super_cool_table` CHANGE `id` `id` INT(11) NOT NULL;
-	function dropPrimary(?string $field_name = null){
-		if ($field_name != null && $this->prev_schema['fields'][$field_name]['auto']){
-			throw new \Exception("To be able to DROP PRIMARY KEY, first remove AUTO_INCREMENT");
+	function dropPrimary(){
+		$auto = static::getAutoIncrementField($this->tb_name);
+
+		if (!empty($auto)){
+			$this->current_field = $auto;
+			$this->notAuto();
 		}
 
 		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP PRIMARY KEY;";
@@ -1408,7 +1503,6 @@ class Schema
 					
 				//if (strlen($str)>1)
 				//	throw new \Exception("Parsing error!");				
-			
 				
 				/*
 				dd($field, 'FIELD ***');
@@ -1471,8 +1565,8 @@ class Schema
 		
 	}
 
-	function dd(){
-		return $this->query;
+	function dd(bool $sql_formater = false){
+		return Model::sqlFormatter(Strings::removeMultipleSpaces($this->query), $sql_formater);
 	}
 	
 	function change()
@@ -1584,19 +1678,24 @@ class Schema
 
 		$this->query = implode("\r\n",$this->commands);
 	
-		$conn = DB::getConnection();   
+		if (!$this->exec){
+			return;
+		}
 
+		$conn = DB::getConnection();   
 		
 		DB::beginTransaction();
 		try{
 			//dd($this->commands, 'SQL STATEMENTS');
+			
+			foreach($this->commands as $change){
+				DB::statement($change);
 
-			if ($this->exec){
-				foreach($this->commands as $change){     
-					$st = $conn->prepare($change);
-					$res = $st->execute();
-				}
-			}
+				// if (preg_match('/RENAME TABLE `([a-zA-Z0-9_-]+)` TO `([a-zA-Z0-9_-]+)`;/', $change, $matches)){
+				// 	$this->tb_name = $matches[2];
+				// 	d($this->tb_name, 'TO'); ///
+				// }
+			}		
 			
 			DB::commit();
 		} catch (\PDOException $e) {
