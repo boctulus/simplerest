@@ -1,5 +1,27 @@
 # TODO
 
+- Implementar en "make migration"
+    
+  --fk= | --foreign= 
+  --references=  | --reference= | --toField=
+  --on=  | --onTable | --toTable=
+  --onDelete={cascade|restrict|setNull|noAction} 
+  --onUpdate={...}
+  --constraint=
+
+  ->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
+  ->foreign('user_id')->references('id')->on('users')->constraint('fk_uid')->onDelete('cascade')->onUpdate('restrict')
+
+
+
+  --dd | -- toSQL | --getLog
+
+
+  --to={tenant_id}  con --run
+  o
+  --run={tenant_id}
+
+
 - Usar en cada archivo del core:
 
    declare(strict_types=1);  
@@ -281,7 +303,7 @@ Debe haber un comando que setee la configuración para la "demo"
 
   protected $enabled = false;
 
-Si está des-habiliitada será ignorada pero dejará un mensaje cuando se corran migraciones.
+Si está des-habil=iitada será ignorada pero dejará un mensaje cuando se corran migraciones.
 
 - Implementar Events !!!!
 
@@ -294,6 +316,25 @@ Si está des-habiliitada será ignorada pero dejará un mensaje cuando se corran
   Al iniciar una migración individual se ejecutará el *evento* MigrationStarted() y cuando se termine de disparar el evento MigrationEnded()
 
 https://laravel.com/docs/8.x/migrations#events
+- Implementar .defaults.php en migrations que permite agregar como constante con --include-defaults algo como:
+
+  ///foreign --- references Tabla tbl_estado
+    ->foreign('est_intIdEstado')
+    ->references('est_intId')
+    ->on('tbl_estado')    
+    ///foreign --- references Tabla tbl_usuario usu_intIdCreador
+    ->foreign('usu_intIdCreador')
+    ->references('usu_intId')
+    ->on('tbl_usuario')
+   ///foreign --- references Tabla tbl_usuario usu_intIdActualizador
+   ->foreign('usu_intIdActualizador')
+   ->references('usu_intId')
+   ->on('tbl_usuario');
+
+
+También podría estar la opción --include-model-defaults que crearia / agregaría todos los campos presentes en MyModel.php 
+
+
 
 - Permitir conocer la estructura de la tabla users también en
 
