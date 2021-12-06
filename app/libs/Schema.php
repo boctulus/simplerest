@@ -874,14 +874,19 @@ class Schema
 		return $this;
 	}
 
-	// alias de auto(false)
+	function addAuto(){
+		$this->fields[$this->current_field]['auto'] =  true;
+		return $this;	
+	}
+
 	function dropAuto(){
+		$this->current_field = static::getAutoIncrementField($this->tb_name);
 		return $this->auto(false);
 	}
 
 	// alias de auto(false)
 	function notAuto(){
-		return $this->auto(false);
+		return $this->dropAuto();
 	}
 
 	/*
@@ -1319,9 +1324,17 @@ class Schema
 		return $this->renameColumn($this->current_field, $final);
 	}
 
+	/*	
+		@param string|Array
+	*/
+	function addIndex($column){
+		if (is_array($column)){
+			$cols = implode(',', Strings::backticks($column));
+		} else {
+			$cols = "`$column`";
+		}
 
-	function addIndex(string $column){
-		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD INDEX(`$column`);";
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD INDEX($cols);";
 		return $this;
 	}
 
@@ -1393,26 +1406,46 @@ class Schema
 		$auto = static::getAutoIncrementField($this->tb_name);
 
 		if (!empty($auto)){
-			$this->current_field = $auto;
-			$this->notAuto();
+			$sc = new Schema($this->tb_name);
+			$sc
+			->dontExec()
+			->dropAuto()
+			->alter();
+	
+			$this->commands[] = $sc->dd();
 		}
 
 		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP PRIMARY KEY;";
 		return $this;
 	}
 
+	/*
+		Permite crear definir UNIQUEs de uno o varios campos
 
-	function addUnique(string $column){
-		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD UNIQUE(`$column`);";
+		@param string|Array
+	*/
+	function addUnique($column){
+		if (is_array($column)){
+			$cols = implode(',', Strings::backticks($column));
+		} else {
+			$cols = "`$column`";
+		}
+		
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD UNIQUE($cols);";
+		
+		return $this;
+	}
+
+	// setea el campo actual como UNIQUE (de forma solitaria)
+	function setUnique(){		
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD UNIQUE(`{$this->current_field}`);";
 		return $this;
 	}
 		
-	function dropUnique(string $name){
-		$this->commands[] = $this->dropIndex($name);
+	function dropUnique(string $constraint_name){
+		$this->commands[] = $this->dropIndex($constraint_name);
 		return $this;
 	}
-
-
 
 	function addSpatial(string $column){
 		$this->commands[] = "ALTER TABLE ADD SPATIAL INDEX(`$column`);";
@@ -1420,10 +1453,9 @@ class Schema
 	}
 		
 	function dropSpatial(string $name){
-		$this->commands[] = $this->dropIndex($name);
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP `$name`;";
 		return $this;
-	}
-
+	}	
 
 	function dropForeign(string $constraint_name){
 		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP FOREIGN KEY `$constraint_name`";
@@ -1690,11 +1722,6 @@ class Schema
 			
 			foreach($this->commands as $change){
 				DB::statement($change);
-
-				// if (preg_match('/RENAME TABLE `([a-zA-Z0-9_-]+)` TO `([a-zA-Z0-9_-]+)`;/', $change, $matches)){
-				// 	$this->tb_name = $matches[2];
-				// 	d($this->tb_name, 'TO'); ///
-				// }
 			}		
 			
 			DB::commit();
@@ -1715,6 +1742,7 @@ class Schema
 
 	function dontExec(){
 		$this->exec = false;
+		return $this;
 	}
 
 	// alias
@@ -1738,9 +1766,6 @@ class Schema
 	function getCurrentSchema(){
 		return $this->prev_schema;
 	}
-
-	
-
 
 }
 
