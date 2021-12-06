@@ -226,10 +226,14 @@ class Strings
 		return $res;		
 	}
 
-	static function backticks(Array $a){
-		return array_map(function($e){
-			return "`$e`";
+	static function enclose(Array $a, string $thing){
+		return array_map(function($e) use ($thing){
+			return "{$thing}$e{$thing}";
 		}, $a);
+	}
+	
+	static function backticks(Array $a){
+		return static::enclose($a, '`');
 	}
 
 	/*
