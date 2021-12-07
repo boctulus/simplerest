@@ -1054,8 +1054,8 @@ class Schema
 	function onUpdate(string $action){
 		$action = strtoupper($action);
 		
-		if (!in_array($action, ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL'])){
-			throw new \InvalidArgumentException("Invalid action '$action'. Action for ON DELETE / ON CASCADE should be ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL']");
+		if (!in_array($action, ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL', 'SET DEFAULT'])){
+			throw new \InvalidArgumentException("Invalid action '$action'. Action for ON DELETE / ON CASCADE should be ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL', 'SET DEFAULT']");
 		}
 
 		$this->fks[$this->current_field]['on_update'] = $action;
