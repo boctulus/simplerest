@@ -95,6 +95,13 @@ Nuevos parámetros disponibles -generalmente combinables- son:
 	--cat
 	--no-save
 
+	--fk= | --foreign= 
+	--references=  | --reference= | --toField=
+	--on=  | --onTable | --toTable=
+	--onDelete={cascade|restrict|setNull|noAction|setDefault} 
+	--onUpdate={cascade|restrict|setNull|noAction|setDefault}
+	--constraint=
+
 Ej:
 
 	php com make migration --name=nombre_tabla --pri=campo9,campo10 --auto=campo9 --dropColumn=campo1 --renameColumn=campo2,campo2b --removeColumn=campo3 --addUnique=campo2,campo3,campo5 --removeUnique=campo8 --renameTable=nuevo_nombre_tabla --nullable=campo4 --nullable=campo7 --dropNullable=campo8 -unsigned=campo5 --zeroFill=campo5 --nullable=campo15 --dropNullable=campo20,campo21 --dropColumn=campo18,campo30 --cat --no-save
