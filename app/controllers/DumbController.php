@@ -5657,178 +5657,6 @@ class DumbController extends Controller
         dd(Strings::addTrailingSlash('/home/www/simplerest/'));
     }
 
-    function test_cp(){
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
-        'app/controllers/ShopiController.php');        
-    }
-
-    /*
-        Not file in destiny
-    */
-    function test_cp2(){
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
-        'app/controllers');        
-    }
-
-    /*
-        Not file in destiny and trailing slash
-    */
-    function test_cp3(){
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
-        'app/controllers/');        
-    }
-
-    function test_cp_with_backup(){
-        Files::setBackupDirectory(ROOT_PATH . 'backups'); 
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
-        'app/controllers/ShopiController.php');        
-    }
-
-    /*
-        Sin especificar archivo en destino -- ok
-    */
-    function test_cp_with_backup2(){
-        Files::setBackupDirectory(ROOT_PATH . 'backups');
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
-        'app/controllers');        
-    }
-
-    function test_copy0(){
-        $ori = '/home/www/simplerest';
-        $dst = '/home/feli/Desktop/UPDATE';
-
-        // Antes de iniciar la prueba limpio el directorio destino
-        Files::delTree($dst);
-        
-        Files::copy($ori, $dst, [
-            'docs',
-            '/home/www/simplerest/vendor/psr/http-client/src/ClientInterface.php'
-        ], 
-        [
-            'docs/dev',
-            '/home/www/simplerest/docs/dev/TODO Supra.txt',
-            'docs/INSTALACION.txt'
-        ]);
-    }
-
-    /*
-        Revisar !!!!
-
-        Al especificar una ruta absoluta de directorio lo copia sin crear la estructura.
-    */
-    function test_copy01(){
-        $ori = '/home/www/simplerest';
-        $dst = '/home/feli/Desktop/UPDATE';
-
-        // Antes de iniciar la prueba limpio el directorio destino
-        Files::delTree($dst);
-        
-        Files::copy($ori, $dst, [
-            'docs',
-            '/home/www/simplerest/vendor/psr/http-client/src/'
-        ], 
-        [
-            'docs/dev',
-            '/home/www/simplerest/docs/dev/TODO Supra.txt',
-            'docs/INSTALACION.txt'
-        ]);
-    }
-
-    function test_copy(){
-        $ori = '/home/www/simplerest';
-        $dst = '/home/feli/Desktop/UPDATE';
-
-        $str_files = <<<'FILES'
-        app/libs
-        config/constants.php
-        app/controllers
-        FILES;
-
-        $files = explode(PHP_EOL, $str_files);
-
-        Files::copy($ori, $dst, $files, [
-            'app/libs/db_dynamic_load.php',
-            'app/controllers/PrepareUpdateController.php',
-            'glob:*.zip'            
-        ]);
-    }
-
-    function test_copy2(){
-        $ori = '/home/www/simplerest';
-        $dst = '/home/feli/Desktop/UPDATE';
-
-        $str_files = <<<'FILES'
-        app/libs
-        glob:*.txt
-        FILES;
-
-        $files = explode(PHP_EOL, $str_files);
-
-        Files::copy($ori, $dst, $files, [
-            'app/libs/db_dynamic_load.php',
-            'app/controllers/PrepareUpdateController.php',
-            'glob:*.zip'            
-        ]);
-    }
-
-    /*
-        OJO !!! es una prueba peligrosa !
-    */
-    function test_copy_with_backup(){
-        $ori = '/home/www/simplerest/some_update';
-        $dst = '/home/www/simplerest';
-
-        // Antes de iniciar la prueba limpio el directorio destino
-        Files::delTree($dst);
-
-        Files::setBackupDirectory(ROOT_PATH . 'backups');
-
-        Files::copy($ori, $dst, [
-            'app'
-        ], 
-        [
-            // except nothing
-        ]);
-
-    }
-
-    /*
-        $dst no está dentro de ROOT_PATH
-    */  
-    function test_copy_with_backup2(){
-        $ori = '/home/www/simplerest';
-        $dst = '/home/feli/Desktop/UPDATE';
-
-        // Antes de iniciar la prueba limpio el directorio destino
-        Files::delTree($dst);
-
-        Files::setBackupDirectory(ROOT_PATH . 'backups');
-
-        Files::copy($ori, $dst, [
-            'docs'
-        ], 
-        [
-            'docs/dev',
-            '/home/www/simplerest/docs/dev/TODO Supra.txt',
-            'docs/INSTALACION.txt'
-        ]);
-
-
-        $str_files = <<<'FILES'
-        app/libs
-        config/constants.php
-        app/controllers
-        FILES;
-
-        $files = explode(PHP_EOL, $str_files);
-
-        Files::copy($ori, $dst, $files, [
-            'app/libs/db_dynamic_load.php',
-            'app/controllers/PrepareUpdateController.php',
-            //'*.zip'            
-        ]);
-    }
-
 
     function grouped_dbs(){
         dd(DB::getGroupedDatabases());
@@ -5973,6 +5801,211 @@ class DumbController extends Controller
         dd(DB::getUngroupedDatabases());
     }
 
+    function test_del(){
+        dd(Files::delete('app/controllers/ShopiController.php'));
+        //Files::deleteOrFail('app/controllers/ShopiController.php');
+    }
+
+    function test_cp(){
+        Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
+        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        'app/controllers/ShopiController.php');        
+    }
+
+    /*
+        Not file in destiny
+    */
+    function test_cp2(){
+        Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
+        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        'app/controllers');        
+    }
+
+    /*
+        Not file in destiny and trailing slash
+    */
+    function test_cp3(){
+        Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
+        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        'app/controllers/');        
+    }
+
+    function test_cp_with_backup(){
+        Files::setBackupDirectory(ROOT_PATH . 'backups'); 
+        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        'app/controllers/ShopiController.php');        
+    }
+
+    /*
+        Sin especificar archivo en destino -- ok
+    */
+    function test_cp_with_backup2(){
+        Files::setBackupDirectory(ROOT_PATH . 'backups');
+        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        'app/controllers');        
+    }
+
+    function test_copy0(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+        
+        Files::copy($ori, $dst, [
+            'docs',
+            '/home/www/simplerest/vendor/psr/http-client/src/ClientInterface.php',
+            'config/config.php'
+            //'/home/www/simplerest/config/config.php'
+        ], 
+        [
+            'docs/dev',
+            #'/home/www/simplerest/docs/dev/TODO Supra.txt',
+            'docs/INSTALACION.txt'
+        ]);
+    }
+
+    function test_copy01a(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+        
+        Files::copy($ori, $dst, [
+            'docs',
+            'vendor/psr/http-client/src/'
+        ], 
+        [
+            'docs/dev',
+            '/home/www/simplerest/docs/dev/TODO Supra.txt',
+            'docs/INSTALACION.txt'
+        ]);
+    }
+
+    /*
+        Con un directorio de ruta absoluta en $files
+    */
+    function test_copy01b(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+        
+        Files::copy($ori, $dst, [
+            'docs',
+            '/home/www/simplerest/vendor/psr/http-client/src/'
+        ], 
+        [
+            'docs/dev',
+            '/home/www/simplerest/docs/dev/TODO Supra.txt',
+            'docs/INSTALACION.txt'
+        ]);
+    }
+
+    function test_copy(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+
+        $str_files = <<<'FILES'
+        app/libs
+        config/constants.php
+        app/controllers
+        FILES;
+
+        $files = explode(PHP_EOL, $str_files);
+
+        Files::copy($ori, $dst, $files, [
+            'app/libs/db_dynamic_load.php',
+            'app/controllers/PrepareUpdateController.php',
+            'glob:*.zip'            
+        ]);
+    }
+
+    function test_copy2(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+
+        $str_files = <<<'FILES'
+        app/libs
+        glob:*.txt
+        FILES;
+
+        $files = explode(PHP_EOL, $str_files);
+
+        Files::copy($ori, $dst, $files, [
+            'app/libs/db_dynamic_load.php',
+            'app/controllers/PrepareUpdateController.php',
+            'glob:*.zip'            
+        ]);
+    }
+
+    /*
+        OJO !!! es una prueba peligrosa !
+    */
+    function test_copy_with_backup(){
+        $ori = '/home/www/simplerest/updates/2021-11-26-000000000001';
+        $dst = '/home/www/simplerest_bk';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+
+        Files::setBackupDirectory(ROOT_PATH . 'backups');
+
+        Files::copy($ori, $dst, [
+            'app'
+        ], 
+        [
+            // except nothing
+        ]);
+
+    }
+
+    /*
+        $dst no está dentro de ROOT_PATH
+    */  
+    function test_copy_with_backup2(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        // Antes de iniciar la prueba limpio el directorio destino
+        Files::delTree($dst);
+
+        Files::setBackupDirectory(ROOT_PATH . 'backups');
+
+        Files::copy($ori, $dst, [
+            'docs'
+        ], 
+        [
+            'docs/dev',
+            '/home/www/simplerest/docs/dev/TODO Supra.txt',
+            'docs/INSTALACION.txt'
+        ]);
+
+
+        $str_files = <<<'FILES'
+        app/libs
+        config/constants.php
+        app/controllers
+        FILES;
+
+        $files = explode(PHP_EOL, $str_files);
+
+        Files::copy($ori, $dst, $files, [
+            'app/libs/db_dynamic_load.php',
+            'app/controllers/PrepareUpdateController.php',
+            //'*.zip'            
+        ]);
+    }
+
+
     /*
         Debo agregar si no existe como primer use
 
@@ -5999,10 +6032,9 @@ class DumbController extends Controller
         }
     }
 
-    function test_root_path(){
-        dd(ROOT_PATH, 'ROOT_PATH');
-    }
-
+    /*
+        Está haciendo cualquier cosa !!!!!!!!! revisar
+    */
     function prepare_default(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
@@ -6011,11 +6043,11 @@ class DumbController extends Controller
         Files::delTree($dst);
 
         $str_files = <<<'FILES'
-        config/constants.php
         app/libs
         app/core/MakeControllerBase.php
         app/controllers/MigrationsController.php
         docs
+        config
         FILES;
 
         $files = explode(PHP_EOL, $str_files);

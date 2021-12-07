@@ -44,7 +44,7 @@ class Files
 	/*
 		Returns absolute path relative to root path
 	*/
-	static function getAbsolutePath(string $path){
+	static function getAbsolutePath(string $path, string $relative_to =  ROOT_PATH){
 		if (static::isAbsolutePath($path)){
 			return $path;
 		}
@@ -60,7 +60,16 @@ class Files
 		}
 		
 
-		return ROOT_PATH . ltrim(ltrim($path, '/'), '\\');
+		return $relative_to . ltrim(ltrim($path, '/'), '\\');
+	}
+
+	static function getRelativePath(string $abs_path, string $relative_to){
+		$path = Strings::diff($abs_path, $relative_to); 
+		if ($path[0] = '/' || $path[0] == '\\'){
+			$path = substr($path, 1);
+		}
+
+		return $path;
 	}
 
 	// https://stackoverflow.com/a/17161106/980631
@@ -92,6 +101,8 @@ class Files
 
 	static function setBackupDirectory(string $path){
 		static::$backup_path = $path;
+
+		static::mkDir(static::$backup_path);
 	}
 
 	/*
@@ -199,6 +210,10 @@ class Files
 				if (Strings::startsWith('glob:', $f)){
 					$glob_includes = array_merge($glob_includes, Files::recursiveGlob(ROOT_PATH . substr($f, 5)));
 					unset($files[$ix]);
+				} else {
+					if (static::isAbsolutePath($f) && is_dir($f)){
+						$files[$ix] = static::getRelativePath($f, $ori);
+					}
 				}
 			}
 			$files = array_merge($files, $glob_includes);
@@ -246,11 +261,15 @@ class Files
                 continue;
             }
             
-
+			/*
+				$ori_path es o se hace relativo
+			*/
 			if (!self::isAbsolutePath($_file)){
 				$ori_path = trim($ori . DIRECTORY_SEPARATOR . $_file);
+				// $ori_path_abs = static::getAbsolutePath($ori_path);
 				$is_file = is_file($ori_path); 
 			} else {
+				// $ori_path_abs = $_file;
 				$ori_path = $_file;
 				$ori_path = Strings::substract($ori_path, ROOT_PATH);
 				$is_file = is_file($ori_path);
@@ -258,11 +277,13 @@ class Files
 
 			$ori_path = Strings::removeUnnecessarySlashes($ori_path);
 
-			if ($is_file){				
-				$rel = Strings::substract($ori_path, ROOT_PATH);	
-				
-				$dir = dirname($dst . DIRECTORY_SEPARATOR . $rel);
-				static::mkDir($dir);
+			if ($is_file){	
+				$_dir = static::getDir($ori_path);
+
+				$rel = Strings::substract($_dir, ROOT_PATH);	
+				$_dir_dst = Strings::addTrailingSlash($dst) . $rel;
+			
+				static::mkDir($_dir_dst);
 			}
 
 			//dd($ori_path, 'ORI_PATH AFTER DIFF');
@@ -328,11 +349,14 @@ class Files
 
 			if (static::isAbsolutePath($_file)){
 				$_file = Strings::diff($_file, ROOT_PATH);
-			}	
+			}
 			
 			$final_path = $dst . DIRECTORY_SEPARATOR . $_file;
 
-			static::mkDirPath($final_path);
+			// d($_file, '$_file');
+			// d($final_path, '$final_path');
+
+			//static::mkDirPath($final_path);
             static::cp($ori_path, $final_path);
         }
     }
@@ -344,7 +368,7 @@ class Files
 	*/
 	static function delete(string $file){
 		$file = realpath($file);		
-		return unlink($file);
+		return @unlink($file);
 	}
 
 	/*
