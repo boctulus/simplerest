@@ -196,7 +196,8 @@ class Files
     */
     static function copy(string $ori, string $dst, ?Array $files = null, ?Array $except = null)
     {
-		$ori = trim($ori);
+		$ori_with_trailing_slash = Strings::addTrailingSlash($ori);
+		$ori = Strings::removeTrailingSlash(trim($ori));
         $dst = trim($dst);
 
 		if (empty($files)){
@@ -208,7 +209,7 @@ class Files
 			$glob_includes = [];
 			foreach ($files as $ix => $f){
 				if (Strings::startsWith('glob:', $f)){
-					$glob_includes = array_merge($glob_includes, Files::recursiveGlob(ROOT_PATH . substr($f, 5)));
+					$glob_includes = array_merge($glob_includes, Files::recursiveGlob($ori_with_trailing_slash . substr($f, 5)));
 					unset($files[$ix]);
 				} else {
 					if (static::isAbsolutePath($f) && is_dir($f)){
@@ -231,7 +232,7 @@ class Files
 			$glob_excepts = [];
 			foreach ($except as $ix => $e){
 				if (Strings::startsWith('glob:', $e)){
-					$glob_excepts = array_merge($glob_excepts, Files::recursiveGlob(ROOT_PATH . substr($e, 5)));
+					$glob_excepts = array_merge($glob_excepts, Files::recursiveGlob($ori_with_trailing_slash . substr($e, 5)));
 					unset($except[$ix]);
 				}
 			}
@@ -271,7 +272,7 @@ class Files
 			} else {
 				// $ori_path_abs = $_file;
 				$ori_path = $_file;
-				$ori_path = Strings::substract($ori_path, ROOT_PATH);
+				$ori_path = Strings::substract($ori_path, $ori_with_trailing_slash);
 				$is_file = is_file($ori_path);
 			}
 
@@ -280,7 +281,7 @@ class Files
 			if ($is_file){	
 				$_dir = static::getDir($ori_path);
 
-				$rel = Strings::substract($_dir, ROOT_PATH);	
+				$rel = Strings::substract($_dir, $ori_with_trailing_slash);	
 				$_dir_dst = Strings::addTrailingSlash($dst) . $rel;
 			
 				static::mkDir($_dir_dst);
@@ -348,7 +349,7 @@ class Files
             }
 
 			if (static::isAbsolutePath($_file)){
-				$_file = Strings::diff($_file, ROOT_PATH);
+				$_file = Strings::diff($_file, $ori_with_trailing_slash);
 			}
 			
 			$final_path = $dst . DIRECTORY_SEPARATOR . $_file;
@@ -448,6 +449,10 @@ class Files
 
 
 	static function delTree(string $dir, bool $include_self = false) {
+		if (!is_dir($dir)){
+			throw new \InvalidArgumentException("Invalid directory '$dir'");
+		}
+
 		if (!$include_self){
 			return Files::globDelete($dir, '{*,.*,*.*}', true, true);
 		}
