@@ -1184,7 +1184,7 @@ class MakeControllerBase extends Controller
         }
 
         foreach ($opt as $o){
-            if (preg_match('/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--name[=|:]([a-zA-Z0-9_-]+)$/', $o, $matches)){
                 $name = $matches[1];
             }
         }
@@ -1238,21 +1238,21 @@ class MakeControllerBase extends Controller
                 $dont = true;
             }
 
-            if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--to[=|:]([a-zA-Z0-9_-]+)$/', $o, $matches)){
                 $to_db = $matches[1];
             }
 
             /*
                 Makes a reference to the specified table schema
             */
-            if (preg_match('/^--(table|tb)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(table|tb)[=|:]([a-zA-Z0-9_-]+)$/', $o, $matches)){
                 $tb_name = $matches[2];
             }
             
             /*  
                 This option forces php class name
             */
-            if (preg_match('/^--(class_name|class)[=|:]([a-z][a-z0-9_]+)$/i', $o, $matches)){
+            if (preg_match('/^--(class_name|class)[=|:]([a-zA-Z0-9_]+)$/', $o, $matches)){
                 $class_name = Strings::snakeToCamel($matches[2]);
                 $file = str_replace('__NAME__', $class_name, $file); 
             } 
@@ -1441,64 +1441,68 @@ class MakeControllerBase extends Controller
                 FKs 
             */
 
-            if (preg_match('/^--(foreign|fk|fromField)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(foreign|fk|fromField)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
                 $fromField = $matches[2];
             }
 
-            if (preg_match('/^--(references|reference|toField)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(references|reference|toField)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
                 $toField = $matches[2];
             }
 
-            if (preg_match('/^--(constraint)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(constraint)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
                 $constraint = $matches[2];
             }
 
-            if (preg_match('/^--(on|onTable|toTable)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(on|onTable|toTable)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
                 $toTable = $matches[2];
             }
 
-            if (preg_match('/^--(onDelete)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
-                $onDelete = strtoupper($matches[2]);
-
-                switch ($onDelete){
-                    case 'NOACTION':
-                        $onDelete = 'NO ACTION';
-                        break;
-                    case 'SETNULL':
-                        $onDelete = 'SET NULL';
-                        break;
-                    case 'RESTRICT':
-                        break;
-                    case 'CASCADE':
-                        break;
-                    default:
-                        StdOut::pprint("\r\nInvalid action '$onDelete' for ON DELETE");
-                        exit;
-                }
+            if (preg_match('/^--(onDelete)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
+                $onDelete = $matches[2];
             }
 
-            if (preg_match('/^--(onUpdate)[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
-                $onUpdate = strtoupper($matches[2]);
+            if (preg_match('/^--(onUpdate)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
+                $onUpdate = $matches[2];
+            }
 
-                switch ($onUpdate){
+            $check_action = function (string $onRestriction){
+                $onRestriction = strtoupper($onRestriction);
+
+                switch ($onRestriction){
                     case 'NO ACTION':
                         break;
                     case 'SET NULL':
                         break;    
-                    case 'NOACTION':
-                        $onUpdate = 'NO ACTION';
-                        break;
-                    case 'SETNULL':
-                        $onUpdate = 'SET NULL';
+                    case 'SET DEFAULT':
                         break;
                     case 'RESTRICT':
                         break;
                     case 'CASCADE':
                         break;
+                    case 'NOACTION':
+                        $onRestriction = 'NO ACTION';
+                        break;
+                    case 'SETNULL':
+                        $onRestriction = 'SET NULL';
+                        break;
+                    case 'SETDEFAULT':
+                        $onRestriction = 'SET DEFAULT';
+                        break;                    
                     default:
-                        StdOut::pprint("\r\nInvalid action '$onUpdate' for ON UPDATE");
+                        StdOut::pprint("\r\nInvalid action '$onRestriction' for ON UPDATE / ON DELETE");
                         exit;
                 }
+
+                return $onRestriction;
+            };
+
+
+            if (isset($onDelete)){
+                $onDelete = $check_action($onDelete);
+            }
+            
+            if (isset($onUpdate)){
+                $onUpdate = $check_action($onUpdate);
             }
         }
 
