@@ -384,14 +384,9 @@ class Strings
 	/**
 	* String replace nth occurrence
 	* 
-	* @param	type $search  		Search string
-	* @param	type $replace	 	Replace string
-	* @param	type $subject	 	Source string
-	* @param	type $occurrence 	Nth occurrence
-	* @return	type 				Replaced string
 	* @author	filipkappa
 	*/
-	static function replaceNth(string $search, string $replace, string $subject, int $occurrence)
+	static function replaceNth(string $search, string $replace, string $subject, ?int $occurrence)
 	{
 		$search = preg_quote($search);
 		return preg_replace("/^((?:(?:.*?$search){".--$occurrence."}.*?))$search/", "$1$replace", $subject);

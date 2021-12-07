@@ -7,12 +7,6 @@ require_once HELPERS_PATH. 'db_dynamic_load.php'; // * !
 // puede afectar el punto decimal al formar sentencias SQL !!!
 // setlocale(LC_ALL, 'es_AR.UTF-8');
 
-global $refresh_con;
-
-if (!isset($refresh_conn)){
-	$refresh_conn = true;
-}
-
 return [
 	'APP_URL' => env('APP_URL'),
 
@@ -37,7 +31,7 @@ return [
 		de forma dinámica
 	*/
 
-	'db_connections' => get_db_connections($refresh_conn)
+	'db_connections' => get_db_connections()
 	/*
 	[
 		'main' => [
