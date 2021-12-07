@@ -5948,14 +5948,11 @@ class DumbController extends Controller
     }
 
     /*
-        OJO !!! es una prueba peligrosa !
+        OJO !!! prodría ser una prueba peligrosa !
     */
     function test_copy_with_backup(){
-        $ori = '/home/www/simplerest/updates/2021-11-26-000000000001';
+        $ori = '/home/www/simplerest/updates/2021-11-26-000000000001/files';
         $dst = '/home/www/simplerest_bk';
-
-        // Antes de iniciar la prueba limpio el directorio destino
-        Files::delTree($dst);
 
         Files::setBackupDirectory(ROOT_PATH . 'backups');
 
@@ -5973,10 +5970,7 @@ class DumbController extends Controller
     */  
     function test_copy_with_backup2(){
         $ori = '/home/www/simplerest';
-        $dst = '/home/feli/Desktop/UPDATE';
-
-        // Antes de iniciar la prueba limpio el directorio destino
-        Files::delTree($dst);
+        $dst = '/home/feli/Desktop/UPDATE';;
 
         Files::setBackupDirectory(ROOT_PATH . 'backups');
 
