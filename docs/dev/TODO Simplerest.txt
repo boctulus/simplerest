@@ -5,7 +5,7 @@
   --fk= | --foreign= 
   --references=  | --reference= | --toField=
   --on=  | --onTable | --toTable=
-  --onDelete={cascade|restrict|setNull|noAction} 
+  --onDelete={cascade|restrict|setNull|noAction|setDefault} 
   --onUpdate={...}
   --constraint=
 
