@@ -4354,7 +4354,7 @@ public function up()
 }
 
 
-# Sintaxis
+# Schema Builder - sintaxis
 
 Básicamente hay dos grandes funcionalidades que residen en la clase Schema: crear tablas y alterarlas.
 
@@ -4435,11 +4435,40 @@ Un "CREATE TABLE" dentro de una migración:
         $res = $sc->create();	
 	}
 	
+
+De Laravel se hereda la sintaxis 
+
+	->foreign()
+	->references()
+	->on()
+	->constraint()
+	->onDelete()
+	->onUpdate()
+
+Sin embargo a muchos les puede resultar confusa así que se han creado alias y de hecho se recomienda la siguiente sintaxis:
+
+	->fromField()
+	->toField()
+	->onTable() 
+	->constraint()
+	->onDelete()
+	->onUpdate()
+o
+	->fromField()
+	->toField()
+	->toTable() 
+	->constraint()
+	->onDelete()
+	->onUpdate()
+
+El uso de constraint() es opcional como así también onDelete() y onUpdate()
+
 Es posible debuguear el SCHEMA a ser creado:
 
 	d($sc->getSchema(), 'SCHEMA');
     d($sc->dd(true), 'SQL');
 
+El método Schema::getSchema() devuelve la representación interna.
 
 Ej:
 
@@ -4726,12 +4755,15 @@ En principio no se daría soporte a --addColumn= desde la propia línea de coman
 
 Para construcción de claves foráneas:
         
-	--fromField=
-	--toField=
-	--toTable=
+	--fromField | --fk= | --foreign= 
+	--toField= | --references=  | --reference=
+	--toTable= | --onTable | --on=
+	--onDelete={cascade|restrict|setNull|noAction|setDefault} 
+	--onUpdate={cascade|restrict|setNull|noAction|setDefault}
 	--constraint=
-	--onDelete={cascade|restrict|setNull|noAction}
-	--onUpdate={cascade|restrict|setNull|noAction}
+
+
+En si, --fromField=, --fk= y --foreign= son alias como sucede en los demás casos.
 
 Ej:
 
