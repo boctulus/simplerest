@@ -1,62 +1,5 @@
 # TODO
 
-- Implementar en "make migration"
-    
-  --fk= | --foreign= 
-  --references=  | --reference= | --toField=
-  --on=  | --onTable | --toTable=
-  --onDelete={cascade|restrict|setNull|noAction|setDefault} 
-  --onUpdate={...}
-  --constraint=
-
-  ->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
-  ->foreign('user_id')->references('id')->on('users')->constraint('fk_uid')->onDelete('cascade')->onUpdate('restrict')
-
-
-
-  --dd | -- toSQL | --getLog
-
-
-  --to={tenant_id}  con --run
-  o
-  --run={tenant_id}
-
-
-- Usar en cada archivo del core:
-
-   declare(strict_types=1);  
-
-- Documentar correctamente toda función con @param y @return (ver PHPdoc)
-
-- RoadMap para Migrar a PHP 8.0 
-  
-  * Habilitar tipos estrictos en cada archivo
-
-  * Verificar el correcto funcionamiento de *cada* pieza del Core actual en 7.4 incluyendo folders, collections, papelera,...
-
-  * Verificar que cada comparación (if y case) e implícitas del tipo return ($a == $b) sea compatible con PHP 8+
-
-  * Prestar particular atención a:
-
-    Strings::filter()
-    La clase Validator
-    La clase ApiController
-
-  * Empezar a correr en modo "dev" el fw en PHP 8.1
-
-  * Luego de testearlo lo suficiente: hacer chequeo que asegure la versión de PHP sea 8.0+ en el punto de entrada (app.php)
-
-https://www.php.net/releases/8.0/en.php
-https://victorroblesweb.es/2021/02/09/php-8-novedades-y-mejoras/
-
-- Usar como nombre automático de clase {Tabla}{DateTime} en caso de que la clase esté en uso en otra migración => escanearlas. 
-
-- Usar ajustes recomenados para OPCache
-
-https://www.php.net/manual/en/opcache.installation.php
-https://kinsta.com/es/blog/puntos-de-referencia-php/
-
-
 - Automatizar actualizaciones 
 
   * Separar la "lógica" de los archivos a descargar. El updater no se puede romper.
@@ -105,6 +48,57 @@ https://kinsta.com/es/blog/puntos-de-referencia-php/
   * Backup de archivos antes de sobre-escribirlos => rollback
   * Posibilidad de rollback al estilo migrations
   * Notificaciones push SSE
+
+
+
+- Implementar en "make migration"
+    
+  --dd | -- toSQL | --getLog
+
+<-- para conocer el SQL resultante de la migración.
+
+y
+
+  --to={tenant_id}  con --run
+  o
+  --run={tenant_id}
+
+<-- para ejecutar directamente la migración al momento de la creación.
+
+
+- Usar en cada archivo del core:
+
+   declare(strict_types=1);  
+
+- Documentar correctamente toda función con @param y @return (ver PHPdoc)
+
+- RoadMap para Migrar a PHP 8.0 
+  
+  * Habilitar tipos estrictos en cada archivo
+
+  * Verificar el correcto funcionamiento de *cada* pieza del Core actual en 7.4 incluyendo folders, collections, papelera,...
+
+  * Verificar que cada comparación (if y case) e implícitas del tipo return ($a == $b) sea compatible con PHP 8+
+
+  * Prestar particular atención a:
+
+    Strings::filter()
+    La clase Validator
+    La clase ApiController
+
+  * Empezar a correr en modo "dev" el fw en PHP 8.1
+
+  * Luego de testearlo lo suficiente: hacer chequeo que asegure la versión de PHP sea 8.0+ en el punto de entrada (app.php)
+
+https://www.php.net/releases/8.0/en.php
+https://victorroblesweb.es/2021/02/09/php-8-novedades-y-mejoras/
+
+- Usar como nombre automático de clase {Tabla}{DateTime} en caso de que la clase esté en uso en otra migración => escanearlas. 
+
+- Usar ajustes recomenados para OPCache
+
+https://www.php.net/manual/en/opcache.installation.php
+https://kinsta.com/es/blog/puntos-de-referencia-php/
 
 
 - Solucionar problemas con colecciones:
