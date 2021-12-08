@@ -5908,6 +5908,27 @@ class DumbController extends Controller
         ]);
     }
 
+    /*
+        Con un directorio de ruta absoluta en $files
+        y backup
+    */
+    function test_copy01c(){
+        $ori = '/home/www/simplerest';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        Files::setBackupDirectory();
+        
+        Files::copy($ori, $dst, [
+            'docs',
+            '/home/www/simplerest/vendor/psr/http-client/src/'    
+        ], 
+        [
+            'docs/dev',
+            '/home/www/simplerest/docs/dev/TODO Supra.txt',
+            'docs/INSTALACION.txt'
+        ]);
+    }
+
     function test_copy(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
