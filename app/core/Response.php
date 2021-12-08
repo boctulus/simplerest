@@ -205,7 +205,7 @@ class Response
      *
      * @return void
      */
-    function sendError($error = null, ?int $http_code = null, ?string $detail = null, ?string $location = null){
+    function sendError($error = null, ?int $http_code = null, $detail = null, ?string $location = null){
         if (is_string($error)){
             $message = $error;
         } elseif (is_array($error)){

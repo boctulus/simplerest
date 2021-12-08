@@ -62,6 +62,7 @@ class PrepareUpdateController extends ConsoleController
         app/controllers/UpdateController.php     
         public/app.php
         .htaccess
+        app/traits/ExceptionHandler.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);
