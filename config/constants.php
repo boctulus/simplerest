@@ -50,6 +50,9 @@ if (!defined('VIEWS_PATH'))
 if (!defined('CONTROLLERS_PATH'))
     define('CONTROLLERS_PATH', APP_PATH . 'controllers' . DIRECTORY_SEPARATOR);    
 
+if (!defined('SECURITY_PATH'))
+    define('SECURITY_PATH', APP_PATH . 'security'. DIRECTORY_SEPARATOR);
+
 if (!defined('API_PATH'))
     define('API_PATH', CONTROLLERS_PATH  . 'api' . DIRECTORY_SEPARATOR); 
 
