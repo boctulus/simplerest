@@ -40,7 +40,7 @@ class Files extends MyApiController
             Factory::response()->sendError('No files or file upload failed', 400);
         }        
         
-        $instance = DB::table('files')->fill(['filename_as_stored']);
+        $instance = DB::table($this->table_name)->fill(['filename_as_stored']);
 
         $uploaded = [];
         foreach ($files as list($filename_ori, $filename_as_stored)){           
@@ -64,7 +64,7 @@ class Files extends MyApiController
             $uploaded[] = [ 
                             'filename' => $filename_ori,
                             'uuid' => $id,
-                            'link' => '/download/get/' . $id
+                            'link' => base_url() . 'get' . DIRECTORY_SEPARATOR . $id
             ];
         }
   
@@ -93,7 +93,7 @@ class Files extends MyApiController
         $data = Factory::request()->getBody();        
 
         try {    
-            $instance = DB::table('files')
+            $instance = DB::table($this->table_name)
             ->setFetchMode('ASSOC')
             ->fill(['deleted_at']); 
 

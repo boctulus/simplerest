@@ -171,9 +171,7 @@ class Validator implements IValidator
 		@return mixed
 
 	*/
-	function validate(array $rules, array $data){
-		//var_export(['rules' => $rules, 'data' => $data]);
-
+	function validate(?array $rules = null, array $data){
 		// i18n
         bindtextdomain('validator', LOCALE_PATH);
 		textdomain('validator');
