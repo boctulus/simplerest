@@ -501,11 +501,21 @@ class Files
 		}		
 	}
 	
-    static function mkDir($dir, int $permissions = 0777, $recursive = true){
+    static function mkDir($dir, int $permissions = 0777, bool $recursive = true,  bool $check_ups = true){
 		$ok = null;
 
 		if (!is_dir($dir)) {
 			$ok = @mkdir($dir, $permissions, $recursive);
+		}
+
+		if ($check_ups){
+			if (!is_dir($dir)){
+				throw new \Exception("Permission error. Creation fails for '$dir'");
+			}
+			
+			if (!is_writable($dir)){
+				throw new \Exception("Directory '$dir' is not writable");
+			}
 		}
 
 		return $ok;
@@ -521,11 +531,15 @@ class Files
 			}
 		}
 
-		return $ok;
-	}
+		if (!is_dir($dir)){
+			throw new \Exception("Permission error. Creation fails for '$dir'");
+		}
+		
+		if (!is_writable($dir)){
+			throw new \Exception("Directory '$dir' is not writable");
+		}
 
-	static function mkDirPath($path, int $permissions = 0777) {
-		return file_exists($path) || mkdir($path, $permissions, true);
+		return $ok;
 	}
 
 	// alias
