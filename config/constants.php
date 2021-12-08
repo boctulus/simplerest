@@ -21,9 +21,11 @@ if (!defined('LOGS_PATH'))
 if (!defined('VENDOR_PATH'))
     define('VENDOR_PATH', ROOT_PATH . 'vendor'. DIRECTORY_SEPARATOR); 
 
-
 if (!defined('APP_PATH'))
-    define('APP_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR);
+    define('APP_PATH', ROOT_PATH . 'app' . DIRECTORY_SEPARATOR);
+
+if (!defined('BACKUP_PATH'))
+	define('BACKUP_PATH', ROOT_PATH  . 'backup' . DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_PATH'))
     define('CORE_PATH', APP_PATH . 'core'. DIRECTORY_SEPARATOR);

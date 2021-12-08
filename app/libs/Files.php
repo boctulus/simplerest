@@ -99,7 +99,7 @@ class Files
 		return dirname($path);
 	}
 
-	static function setBackupDirectory(string $path){
+	static function setBackupDirectory(? string $path = BACKUP_PATH){
 		static::$backup_path = $path;
 
 		static::mkDir(static::$backup_path);
