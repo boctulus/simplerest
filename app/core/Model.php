@@ -2242,7 +2242,7 @@ class Model {
 
 		if ($set_updated_at && $this->inSchema([$this->updatedAt])){
 			if (isset($this->config)){
-				$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
+				$d = new \DateTime('', new \DateTimeZone($this->config['DateTimeZone'])); // *
 			} else {
 				$d = new \DateTime();
 			}
@@ -2354,11 +2354,11 @@ class Model {
 
 		if ($this->soft_delete && $soft_delete){
 			if (isset($this->config)){
-				$d = new \DateTime(NULL, new \DateTimeZone($this->config['DateTimeZone']));
+				$d = new \DateTime('', new \DateTimeZone($this->config['DateTimeZone']));
 			} else {
 				$d = new \DateTime();
 			}
-			;
+			
 			$at = $d->format('Y-m-d G:i:s');
 
 			$to_fill = [];

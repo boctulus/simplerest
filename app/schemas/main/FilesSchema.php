@@ -24,14 +24,16 @@ class FilesSchema implements ISchema
 				'is_locked' => 'INT',
 				'broken' => 'INT',
 				'created_at' => 'STR',
-				'deleted_at' => 'STR'
+				'deleted_at' => 'STR',
+				'description' => 'STR',
+				'workspace' => 'STR'
 			],
 
 			'primary'		=> ['uuid'],
 
 			'autoincrement' => null,
 
-			'nullable'		=> ['belongs_to', 'guest_access', 'is_locked', 'broken', 'deleted_at'],
+			'nullable'		=> ['belongs_to', 'guest_access', 'is_locked', 'broken', 'deleted_at', 'description', 'workspace'],
 
 			'uniques'		=> [],
 
@@ -45,7 +47,9 @@ class FilesSchema implements ISchema
 				'is_locked' => ['type' => 'bool'],
 				'broken' => ['type' => 'bool'],
 				'created_at' => ['type' => 'datetime', 'required' => true],
-				'deleted_at' => ['type' => 'datetime']
+				'deleted_at' => ['type' => 'datetime'],
+				'description' => ['type' => 'str', 'max' => 60],
+				'workspace' => ['type' => 'str', 'max' => 40]
 			],
 
 			'fks' 			=> ['belongs_to'],
