@@ -44,25 +44,17 @@ trait ExceptionHandler
      */
     function exception_handler($e) {
         DB::closeAllConnections();
+       
+        if (config()['debug']){
 
-        $error_location = $this->config['debug'] ? 'Error on line number '.$e->getLine().' in file - '.$e->getFile() : '';
-
-        $backtrace = debug_backtrace();
+            $backtrace = var_export(debug_backtrace(), true) . PHP_EOL . PHP_EOL;
+            $error_location = 'Error on line number '.$e->getLine().' in file - '.$e->getFile();
         
-        if (php_sapi_name() == 'cli'){
-            dd($error_location, 'ERROR LOCATION');
-            dd($e->getMessage(), 'ERR MSG');
-            dd($backtrace, 'BACKTRACE');
+            Factory::response()->sendError($e->getMessage(), 500, $backtrace, $error_location);
         } else {
-            if (config()['debug']){
-                Factory::response()->sendError($e->getMessage(), 500, [
-                    'location'=> $error_location,
-                    'back_trace' => $backtrace
-                ]);
-            } else {
-                Factory::response()->sendError($e->getMessage(), 500);
-            }
-        }   
+            Factory::response()->sendError($e->getMessage(), 500);
+        }
+        
     }
     
 }

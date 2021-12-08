@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\models;
+namespace simplerest\models\main;
 
-use simplerest\core\Model;
+use simplerest\models\MyModel;
 use simplerest\libs\ValidationRules;
 use simplerest\models\schemas\main\FilesSchema;
-use simplerest\traits\Uuids; // falta al generar
+use simplerest\traits\Uuids; 
 
 class FilesModel extends MyModel
 { 
-	use Uuids; // falta al generar
+	use Uuids; 
 
 	protected $hidden   = [];
 	protected $not_fillable = [];
@@ -17,7 +17,7 @@ class FilesModel extends MyModel
 	protected $createdAt = 'created_at';
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new FilesSchema());
+        parent::__construct($connect, FilesSchema::class);
 	}	
 }
 

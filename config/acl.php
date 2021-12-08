@@ -1,11 +1,23 @@
 <?php
 
 use boctulus\grained_acl\Acl;
-use simplerest\libs\Debug;
+use simplerest\libs\Files;
 
 
 $acl_cache = false;
-$acl_file = '../app/security/acl.cache';
+
+$acl_dir  = APP_PATH . 'security/';
+$acl_file = $acl_dir . 'acl.cache';
+
+Files::mkDir($acl_dir);
+		
+if (!is_dir($acl_dir)){
+    throw new \Exception("Permission error. Creation fails for '$acl_dir'");
+}
+
+if (!is_writable($acl_dir)){
+    throw new \Exception("Directory '$acl_dir' is not writable");
+}
 
 // Check whether ACL data already exist
 if (!$acl_cache || is_file($acl_file) !== true) {

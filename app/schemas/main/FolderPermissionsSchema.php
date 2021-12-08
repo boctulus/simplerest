@@ -46,8 +46,8 @@ class FolderPermissionsSchema implements ISchema
 
 			'relationships' => [
 				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa|__belongs_to.use_intId','folder_permissions.belongs_to'],
-					['tbl_usuario_empresa|__access_to.use_intId','folder_permissions.access_to']
+					['tbl_usuario_empresa|__access_to.use_intId','folder_permissions.access_to'],
+					['tbl_usuario_empresa|__belongs_to.use_intId','folder_permissions.belongs_to']
 				]
 			],
 
@@ -101,12 +101,12 @@ class FolderPermissionsSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario_empresa',
 				        1 => 'use_intId',
-				        'alias' => '__belongs_to',
+				        'alias' => '__access_to',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'folder_permissions',
-				        1 => 'belongs_to',
+				        1 => 'access_to',
 				      ),
 				    ),
 				    1 => 
@@ -115,12 +115,12 @@ class FolderPermissionsSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario_empresa',
 				        1 => 'use_intId',
-				        'alias' => '__access_to',
+				        'alias' => '__belongs_to',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'folder_permissions',
-				        1 => 'access_to',
+				        1 => 'belongs_to',
 				      ),
 				    ),
 				  ),

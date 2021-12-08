@@ -505,7 +505,7 @@ class Files
 		$ok = null;
 
 		if (!is_dir($dir)) {
-			$ok = mkdir($dir, $permissions, $recursive);
+			$ok = @mkdir($dir, $permissions, $recursive);
 		}
 
 		return $ok;

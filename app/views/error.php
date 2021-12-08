@@ -6,6 +6,7 @@
 
 <div style="margin-top: 30px; font-size:150%;">
     Error type: <?= $type ?><br/>
+    Location: <?= $location ?? '' ?><br/>
     Code: <?= $code ?><br/>
     Message: <?= $message ?? '' ?><br/>
     Detail: <?= $detail ?? '' ?>

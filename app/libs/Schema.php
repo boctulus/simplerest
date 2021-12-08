@@ -1339,7 +1339,7 @@ class Schema
 			$this->commands[] = "ALTER TABLE `{$this->tb_name}` RENAME COLUMN `$ori` TO `$final`;";
 		} else {
 			if (!isset($this->prev_schema['fields'][$ori])){
-				throw new \InvalidArgumentException("Column '$ori' does not exist in `{$this->tb_name}`");
+				throw new \InvalidArgumentException("Schema error. Column '$ori' does not exist in `{$this->tb_name}`");
 			}
 
 			$datatype = $this->prev_schema['fields'][$ori]['type'];
