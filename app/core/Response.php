@@ -205,7 +205,7 @@ class Response
      *
      * @return void
      */
-    function sendError($error = NULL, int $http_code = NULL, $detail = NULL){
+    function sendError($error = null, ?int $http_code = null, ?string $detail = null, ?string $location = null){
         if (is_string($error)){
             $message = $error;
         } elseif (is_array($error)){
@@ -214,16 +214,18 @@ class Response
             $code    = $error['code'];
         }
 
-        if (!headers_sent()) {
-            if ($http_code == NULL)
-                if (static::$http_code != NULL)
-                    $http_code = static::$http_code;
-                else
-                    $http_code = 500;
-    
-            if ($http_code != NULL && !static::$fake_status_codes)
-                header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
-        }    
+        if (!is_cli()){
+            if (!headers_sent()) {
+                if ($http_code == NULL)
+                    if (static::$http_code != NULL)
+                        $http_code = static::$http_code;
+                    else
+                        $http_code = 500;
+        
+                if ($http_code != NULL && !static::$fake_status_codes)
+                    header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
+            }   
+        }
         
         static::$http_code = $http_code; //
         $res['status'] = $http_code;
@@ -279,11 +281,12 @@ class Response
         if (isset(static::$data['error']) && !empty(static::$data['error'])){
             if (!$cli){
                 view('error.php', [
-                    'status'   => static::$http_code,
-                    'type'     => static::$data['error']['type'],
-                    'code'     => static::$data['error']['code'],
-                    'message'  => static::$data['error']['message'],
-                    'detail'   => static::$data['error']['detail']
+                    'status'    => static::$http_code,
+                    'type'      => static::$data['error']['type'],
+                    'code'      => static::$data['error']['code'],
+                    'location'  => static::$data['error']['location'] ?? '',
+                    'message'   => static::$data['error']['message'] ?? '',
+                    'detail'    => static::$data['error']['detail'] ?? '',
                 ], 'app_layout_basic.php');
 
             } else {
@@ -291,8 +294,9 @@ class Response
                 $type = static::$data['error']['type'] ?? '--';
                 $code = static::$data['error']['code'] ?? '--';
                 $detail = static::$data['error']['detail'] ?? '--';
+                $location = static::$data['error']['location'] ?? '--';
 
-                echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -|Detail: $detail" .  PHP_EOL. PHP_EOL;
+                echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;
             }
             
         } else {
