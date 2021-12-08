@@ -44,6 +44,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('tbl_tipo_documento', ['read_all'])
     ->addResourcePermissions('sp_permissions', ['read'])
     ->addResourcePermissions('user_sp_permissions', ['read', 'write'])
+    ->addResourcePermissions('updates', ['read'])
     
     // ...
     ->setAsRegistered('registered')

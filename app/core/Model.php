@@ -452,7 +452,7 @@ class Model {
 		}
 	}
 
-	function setValidator(IValidator $validator){
+	function setValidator(?IValidator $validator = null){
 		$this->validator = $validator;
 		return $this;
 	}
@@ -528,6 +528,11 @@ class Model {
 		$this->table_name          = $table;
 		$this->table_alias[$table] = $table_alias;
 		return $this;		
+	}
+
+	// alias for table();
+	function setTable(string $table, $table_alias = null){
+		return $this->table($table, $table_alias);		
 	}
 
 	protected function from(){
@@ -2847,7 +2852,7 @@ class Model {
 	}
 
 	function getIdName(){
-		return $this->schema['id_name'];
+		return $this->schema['id_name'] ?? null; // *
 	}
 
 	function getNotHidden(){

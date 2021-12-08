@@ -4196,6 +4196,8 @@ Notas:
 
 - La creación de "constantes" está relacionada con los mensajes de error del sistema y su Internacionalización.
 
+- Para la creación de modelos se añadió --no-check y --no-verify que evitan corroborar que exista una tabla en la base de datos que se corresponda con el nombre del modelo. Esto podría ser útil para cambiar el tipo de DataSource
+
 
 # Ayuda 
 
@@ -4237,6 +4239,7 @@ Para generar schemas o models de una DB que no es la default se debe especificar
 
 	php com make schema cotizaciones --from:db3
 	php com make model cotizaciones --from:db3
+
 
 # No sobre-escribir archivos
 
@@ -6494,6 +6497,20 @@ $except =  [
 Files::copy($ori, $dst, $files, $except);
 
 
+# Notas sobre modelos y apis
+
+Al crear una "API", se genera una clase que hereda de ApiController y ésta por defecto está asociada a un modelo y una tabla en particular.
+
+Es posible al momento de crear el archivo del modelo evitar que corrobore la existencia de la tabla subyacente para hacer un cambio de DataSource. De momento el ApiController si requiere de schemas aunque siempre es posible crear un ApiController "desde cero".
+
+Lo interesante es que la clase para la API generada tiene dos propiedades públicas: 
+
+	public $model_name;
+    public $table_name
+
+Si se modifica $model_name a por ejemplo "OtroModel" entonces los permisos sobre recursos del ACL -definidos en acl.php- aplicarán para la tabla "otro".
+
+
 ### Actualizaciones del framework
 
 El escenario es que el framework evoluciona, se crean nuevas librerías, funciones cambian de nombre, etc. 
@@ -6525,9 +6542,8 @@ El escenario es que el framework evoluciona, se crean nuevas librerías, funcion
 
 El usuario mediante comandos podrá verificar cuántos updates tiene pendientes enviando las credenciales al endpoint correspondiente:
 
-	GET {url_repository}/api/v1/files?folder={folder_dado}&created_at[gt]={last_updated}&orderBy=created_at
+	GET {url_repository}/api/v1/updates?folder={folder_dado}&created_at[gt]={last_updated}&orderBy=created_at
 
-<-- chequear el funcionamiento de Files !!!
 
 Se recomienda:
 

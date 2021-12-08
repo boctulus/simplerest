@@ -132,9 +132,9 @@ class MakeControllerBase extends Controller
 
         make schema super_awesome [--force | -f] [ --unignore | -u ]
 
-        make model SuperAwesomeModel  [--force | -f] [ --unignore | -u ]
-        make model SuperAwesome [--force | -f] [ --unignore | -u ]
-        make model super_awesome  [--force | -f] [ --unignore | -u ]
+        make model SuperAwesomeModel  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ]
+        make model SuperAwesome [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ]
+        make model super_awesome  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ]
         
         make controller SuperAwesome  [--force | -f] [ --unignore | -u ]
         make controller folder/SuperAwesome  [--force | -f] [ --unignore | -u ]
@@ -296,9 +296,7 @@ class MakeControllerBase extends Controller
         $unignore = false;
 
         foreach ($opt as $o){ 
-            if (preg_match('/^--even-ignored$/', $o, $matches) ||               
-                preg_match('/^--unignore$/', $o, $matches) ||
-                preg_match('/^-u$/', $o, $matches)){
+            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
                 $unignore = true;
             }
         }
@@ -366,9 +364,7 @@ class MakeControllerBase extends Controller
                 DB::getConnection($from_db);
             }
 
-            if (preg_match('/^--even-ignored$/', $o, $matches) ||               
-                preg_match('/^--unignore$/', $o, $matches) ||
-                preg_match('/^-u$/', $o, $matches)){
+            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
                 $unignore = true;
             }
         }
@@ -722,9 +718,7 @@ class MakeControllerBase extends Controller
                 DB::getConnection($from_db);
             }
 
-            if (preg_match('/^--even-ignored$/', $o, $matches) ||               
-                preg_match('/^--unignore$/', $o, $matches) ||
-                preg_match('/^-u$/', $o, $matches)){
+            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
                 $unignore = true;
             }
         }
@@ -1087,6 +1081,7 @@ class MakeControllerBase extends Controller
 
     function model($name, ...$opt) { 
         $unignore = false;
+        $no_check = false;
 
         foreach ($opt as $o){            
             if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
@@ -1094,21 +1089,25 @@ class MakeControllerBase extends Controller
                 DB::getConnection($from_db);
             }
 
-            if (preg_match('/^--even-ignored$/', $o, $matches) ||               
-                preg_match('/^--unignore$/', $o, $matches) ||
-                preg_match('/^-u$/', $o, $matches)){
+            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
                 $unignore = true;
+            }
+
+            if (preg_match('/^--no-(check|verify)$/', $o)){
+                $no_check = true;
             }
         }
 
-        if ($name == 'all'){
-            $tables = Schema::getTables();
-            
-            foreach ($tables as $table){
-                $this->model($table, ...$opt);
+        if ($no_check === false){
+            if ($name == 'all'){
+                $tables = Schema::getTables();
+                
+                foreach ($tables as $table){
+                    $this->model($table, ...$opt);
+                }
+    
+                return;
             }
-
-            return;
         }
 
         $this->setup($name);  
@@ -1116,8 +1115,7 @@ class MakeControllerBase extends Controller
         $filename = $this->camel_case . 'Model'.'.php';
 
         $file = file_get_contents(self::MODEL_TEMPLATE);
-        $file = str_replace('__NAME__', $this->camel_case.'Model', $file);
-       
+        $file = str_replace('__NAME__', $this->camel_case.'Model', $file);       
 
         $imports = [];
         $traits  = [];
@@ -1128,7 +1126,7 @@ class MakeControllerBase extends Controller
 
         DB::getConnection();
         $current = DB::getCurrentConnectionId(true);
-
+        
         $folder = '';
         if ($current == config()['db_connection_default']){
             $file = str_replace('namespace simplerest\models', 'namespace simplerest\models' . "\\$current", $file);
@@ -1157,16 +1155,20 @@ class MakeControllerBase extends Controller
             $folder = "$current\\";
         }
 
-        $imports[] = "use simplerest\schemas\\$folder{$this->camel_case}Schema;";
-       
-        Strings::replace('__SCHEMA_CLASS__', "{$this->camel_case}Schema", $file); 
+        if ($no_check === false){
+            $imports[] = "use simplerest\schemas\\$folder{$this->camel_case}Schema;";
+        
+            Strings::replace('__SCHEMA_CLASS__', "{$this->camel_case}Schema", $file); 
 
 
-        $uuid = $this->getUuid();
-        if ($uuid){
+            $uuid = $this->getUuid();
+            if ($uuid){
 
-            $imports[] = 'use simplerest\traits\Uuids;';
-            $traits[] = 'use Uuids;';      
+                $imports[] = 'use simplerest\traits\Uuids;';
+                $traits[] = 'use Uuids;';      
+            }
+        } else {
+            Strings::replace('parent::__construct($connect, __SCHEMA_CLASS__::class);', 'parent::__construct();', $file);
         }
 
         Strings::replace('### IMPORTS', implode("\r\n", $imports), $file); 
@@ -1694,9 +1696,7 @@ class MakeControllerBase extends Controller
         $unignore = false;
 
         foreach ($opt as $o){ 
-            if (preg_match('/^--even-ignored$/', $o, $matches) ||               
-                preg_match('/^--unignore$/', $o, $matches) ||
-                preg_match('/^-u$/', $o, $matches)){
+            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
                 $unignore = true;
             }
         }
@@ -1717,9 +1717,7 @@ class MakeControllerBase extends Controller
         $unignore = false;
 
         foreach ($opt as $o){ 
-            if (preg_match('/^--even-ignored$/', $o, $matches) ||               
-                preg_match('/^--unignore$/', $o, $matches) ||
-                preg_match('/^-u$/', $o, $matches)){
+            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
                 $unignore = true;
             }
         }

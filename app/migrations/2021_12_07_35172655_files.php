@@ -6,7 +6,7 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class File implements IMigration
+class Files implements IMigration
 {
     /**
 	* Run migration.

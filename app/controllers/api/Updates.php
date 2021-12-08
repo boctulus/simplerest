@@ -10,10 +10,10 @@ global $api_version;
 
 if ($api_version == 'v1'){
     class Updates extends \simplerest\core\api\v1\Files { 
-        public $table_name = 'files';
+        public $model_name = 'UpdatesModel';
 
     }
-    
+
     return;
 };
 
