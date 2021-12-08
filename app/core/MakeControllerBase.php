@@ -315,7 +315,7 @@ class MakeControllerBase extends Controller
         $this->setup($name);    
 
         if (!file_exists($dest_path . $sub_path)){
-            Files::mkdir_ignore($dest_path . $sub_path);
+            Files::mkDir($dest_path . $sub_path);
         }
     
         $filename = $this->camel_case . $subfix.'.php';
@@ -765,7 +765,7 @@ class MakeControllerBase extends Controller
         if ($current == config()['db_connection_default']){
             $file = str_replace('namespace simplerest\schemas', 'namespace simplerest\schemas' . "\\$current", $file);
 
-            Files::mkdir_ignore(SCHEMA_PATH . $current);
+            Files::mkDir(SCHEMA_PATH . $current);
             $dest_path = SCHEMA_PATH . "$current/". $filename;
 
         }  else {
@@ -775,7 +775,7 @@ class MakeControllerBase extends Controller
                 $current = $group;
                 
                 $file = str_replace('namespace simplerest\schemas', 'namespace simplerest\schemas' . "\\$current", $file);
-                Files::mkdir_ignore(SCHEMA_PATH . $current);
+                Files::mkDir(SCHEMA_PATH . $current);
                 $dest_path = SCHEMA_PATH . "$current/". $filename;;
             } else {
                 $dest_path = SCHEMA_PATH . $filename;
@@ -1133,7 +1133,7 @@ class MakeControllerBase extends Controller
         if ($current == config()['db_connection_default']){
             $file = str_replace('namespace simplerest\models', 'namespace simplerest\models' . "\\$current", $file);
 
-            Files::mkdir_ignore(MODELS_PATH . $current);
+            Files::mkDir(MODELS_PATH . $current);
             $dest_path = MODELS_PATH . "$current/". $filename;
 
         }  else {
@@ -1143,7 +1143,7 @@ class MakeControllerBase extends Controller
                 $current = $group;
                 
                 $file = str_replace('namespace simplerest\models', 'namespace simplerest\models' . "\\$current", $file);
-                Files::mkdir_ignore(MODELS_PATH . $current);
+                Files::mkDir(MODELS_PATH . $current);
                 $dest_path = MODELS_PATH . "$current/". $filename;
             } else {
                 $dest_path = MODELS_PATH . $filename;
@@ -1510,7 +1510,7 @@ class MakeControllerBase extends Controller
 
         if (!empty($dir)){
             $path .= "$dir/";
-            Files::mkdir_ignore($path);
+            Files::mkDir($path);
         }
 
         if (!empty($script)){

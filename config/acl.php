@@ -1,23 +1,10 @@
 <?php
 
 use boctulus\grained_acl\Acl;
-use simplerest\libs\Files;
 
-
+// debería leerse de archivo
 $acl_cache = false;
-
-$acl_dir  = APP_PATH . 'security/';
-$acl_file = $acl_dir . 'acl.cache';
-
-Files::mkDir($acl_dir);
-		
-if (!is_dir($acl_dir)){
-    throw new \Exception("Permission error. Creation fails for '$acl_dir'");
-}
-
-if (!is_writable($acl_dir)){
-    throw new \Exception("Directory '$acl_dir' is not writable");
-}
+$acl_file  = config()['acl_file'];
 
 // Check whether ACL data already exist
 if (!$acl_cache || is_file($acl_file) !== true) {
@@ -57,6 +44,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('tbl_tipo_documento', ['read_all'])
     ->addResourcePermissions('sp_permissions', ['read'])
     ->addResourcePermissions('user_sp_permissions', ['read', 'write'])
+    
     // ...
     ->setAsRegistered('registered')
     
@@ -113,10 +101,6 @@ if (!$acl_cache || is_file($acl_file) !== true) {
         'grant'
     ]);
 
-
-    if (!is_writable($acl_file)){
-        throw new \Exception("$acl_file is not writable. Check permissions");   
-    }
 
     // Store serialized list into plain file
     file_put_contents(

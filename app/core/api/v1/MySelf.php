@@ -18,7 +18,7 @@ class MySelf extends MyApiController
     function __construct() 
     { 
         $this->config = config();
-        $this->model_table = $this->config['users_table'];
+        $this->table_name = $this->config['users_table'];
 
         parent::__construct();
 
@@ -60,7 +60,7 @@ class MySelf extends MyApiController
     function delete($id = null){
         $id = Acl::getCurrentUid();
 
-        $u = DB::table($this->model_table);
+        $u = DB::table($this->table_name);
 
         if ($u->inSchema([$this->is_active])){
             Factory::response()->send("Account deactivation not implemented", 501);

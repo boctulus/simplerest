@@ -29,7 +29,7 @@ class TrashCan extends MyApiController
         $entity = Strings::snakeToCamel($entity);
 
         $this->model_name = ucfirst($entity) . 'Model';
-        $this->model_table = strtolower($entity);
+        $this->table_name = strtolower($entity);
 
         $this->model    = 'simplerest\\models\\'. $this->model_name;
         $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);

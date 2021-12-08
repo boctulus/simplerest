@@ -3,6 +3,7 @@
 namespace simplerest\core;
 
 use simplerest\core\interfaces\IAcl;
+use simplerest\libs\Files;
 
 abstract class Acl implements IAcl
 {
@@ -39,6 +40,13 @@ abstract class Acl implements IAcl
             'lock',
             'transfer'
         ]; 
+
+        if (!is_dir(SECURITY_PATH)){
+            Files::mkDirOrFail(SECURITY_PATH);
+        }
+    
+        Files::writableOrFail(SECURITY_PATH);
+        Files::writableOrFail(SECURITY_PATH . config()['acl_file']);
     }
 
     static function setCurrentUid($uid){

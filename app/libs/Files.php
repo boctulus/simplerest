@@ -501,21 +501,11 @@ class Files
 		}		
 	}
 	
-    static function mkDir($dir, int $permissions = 0777, bool $recursive = true,  bool $check_ups = true){
+    static function mkDir($dir, int $permissions = 0777, bool $recursive = true){
 		$ok = null;
 
 		if (!is_dir($dir)) {
 			$ok = @mkdir($dir, $permissions, $recursive);
-		}
-
-		if ($check_ups){
-			if (!is_dir($dir)){
-				throw new \Exception("Permission error. Creation fails for '$dir'");
-			}
-			
-			if (!is_writable($dir)){
-				throw new \Exception("Directory '$dir' is not writable");
-			}
 		}
 
 		return $ok;
@@ -525,27 +515,22 @@ class Files
 		$ok = null;
 
 		if (!is_dir($dir)) {
-			$ok = mkdir($dir, $permissions, $recursive);
+			$ok = @mkdir($dir, $permissions, $recursive);
 			if ($ok !== true){
 				throw new \Exception("Failed trying to create $dir");
 			}
 		}
 
-		if (!is_dir($dir)){
-			throw new \Exception("Permission error. Creation fails for '$dir'");
-		}
-		
-		if (!is_writable($dir)){
-			throw new \Exception("Directory '$dir' is not writable");
-		}
-
 		return $ok;
 	}
 
-	// alias
-	static function mkdir_ignore($dir, int $permissions = 0777, $recursive = true){
-		return static::mkDir($dir, $permissions, $recursive);
+	static function writableOrFail(string $path, string $error = "Permission error. Path '%s' is not writable"){
+		if (!is_writable($path)){
+			$msg = sprintf($error, $path);
+			throw new \Exception($msg);
+		}
 	}
+
 
 	// http://25labs.com/alternative-for-file_get_contents-using-curl/
 	static function file_get_contents_curl($url, $retries=5)

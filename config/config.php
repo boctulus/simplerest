@@ -151,7 +151,9 @@ return [
 	'restrict_by_ip'	=> false,
 	'restrict_by_user_agent' => false,
 	// solo deshabilitar en pruebas
-	'restrict_by_tenant' => false,      
+	'restrict_by_tenant' => false,     
+	
+	'acl_file' => SECURITY_PATH . 'acl.cache',
 
 	'access_token' => [
 		'secret_key' 		=> env('TOKENS_ACCSS_SECRET_KEY'),
