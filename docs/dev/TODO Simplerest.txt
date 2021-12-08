@@ -1,7 +1,11 @@
 # TODO
 
 - Revisar Files:copy()  -- ok
+
 - Extender api/Files
+
+<-- ????
+
 - Probar Solución Binaria en un container de NGINX con la configuración de Alberto (PK)
 - Reparar Folders, Trash Can,... 
 
@@ -1828,13 +1832,6 @@ Algo interesante es que cuando se piden más registros por página del límite u
     }
 }
 
-
-- Corregir JSON en /v1/files
-
-"failures": [
-            "",
-            ""
-]
 
 <-- no está vacio ! debería incluir nombre_archivo : error  
 

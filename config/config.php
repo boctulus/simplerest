@@ -181,7 +181,7 @@ return [
 	/* 
 		Any role listed bellow if it is asked then will be auto-aproved.
 	*/
-	'auto_approval_roles' => ['admin', 'usuario', 'supervisor'],
+	'auto_approval_roles' => ['admin', 'usuario', 'supervisor', 'superadmin'],
 
 	/*
 		If you need email confirmation then pre_activated should be false

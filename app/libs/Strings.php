@@ -712,6 +712,10 @@ class Strings
 
 		return $ok;
 	}
+
+	static function replaceSlashes(string $path){
+		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+	}
         
 	static function removeUnnecessarySlashes(string $path): string{
        	return preg_replace('#/+#','/',$path);

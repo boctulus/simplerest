@@ -1,3 +1,22 @@
+
+{
+  "data": {
+    "uid": "162",
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzOTAwNTMxMSwiZXhwIjoxNjQ4MDA1MzExLCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJpbnNvbW5pYVwvMjAyMS41LjMiLCJ1aWQiOiIxNjIiLCJyb2xlcyI6WyJzdXBlcmFkbWluIl0sInBlcm1pc3Npb25zIjpbXSwiaXNfYWN0aXZlIjp0cnVlLCJkYl9hY2Nlc3MiOltdfQ.jxJ03CqEpMUuwWYXqrNo_5fvNlCvuq5swDUBDHWaTHg",
+    "token_type": "bearer",
+    "expires_in": 9000000,
+    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzOTAwNTMxMSwiZXhwIjoxOTU0MzY1MzExLCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJpbnNvbW5pYVwvMjAyMS41LjMiLCJ1aWQiOiIxNjIifQ.fiaGYvoIpWHKR8zn4Oth46OaOOCC1Qgt1NlxM6OOX2k",
+    "roles": [
+      "superadmin"
+    ],
+    "db_access": []
+  },
+  "status_code": 200,
+  "error": []
+}
+
+---
+
 {
     "data": {
         "uid": "512",
