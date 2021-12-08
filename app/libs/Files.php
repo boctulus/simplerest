@@ -511,13 +511,13 @@ class Files
 		return $ok;
 	}
 
-	static function mkDirOrFail($dir, int $permissions = 0777, $recursive = true){
+	static function mkDirOrFail($dir, int $permissions = 0777, $recursive = true, string $error = "Failed trying to create %s"){
 		$ok = null;
 
 		if (!is_dir($dir)) {
 			$ok = @mkdir($dir, $permissions, $recursive);
 			if ($ok !== true){
-				throw new \Exception("Failed trying to create $dir");
+				throw new \Exception(sprintf($error, $dir));
 			}
 		}
 
@@ -526,8 +526,7 @@ class Files
 
 	static function writableOrFail(string $path, string $error = "Permission error. Path '%s' is not writable"){
 		if (!is_writable($path)){
-			$msg = sprintf($error, $path);
-			throw new \Exception($msg);
+			throw new \Exception(sprintf($error, $path));
 		}
 	}
 
