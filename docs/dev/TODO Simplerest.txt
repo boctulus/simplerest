@@ -1,5 +1,10 @@
 # TODO
 
+- Revisar Files:copy()  -- ok
+- Extender api/Files
+- Probar Solución Binaria en un container de NGINX con la configuración de Alberto (PK)
+- Reparar Folders, Trash Can,... 
+
 - Automatizar actualizaciones 
 
   * Separar la "lógica" de los archivos a descargar. El updater no se puede romper.

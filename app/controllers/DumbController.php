@@ -6026,9 +6026,7 @@ class DumbController extends Controller
         }
     }
 
-    /*
-        Está haciendo cualquier cosa !!!!!!!!! revisar
-    */
+
     function prepare_default(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
@@ -6041,7 +6039,7 @@ class DumbController extends Controller
         app/core/MakeControllerBase.php
         app/controllers/MigrationsController.php
         docs
-        config
+        config/constants.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);

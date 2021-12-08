@@ -10,7 +10,7 @@ use simplerest\core\Acl;
 
 class Files extends MyApiController
 { 
-    static protected $soft_delete = true;
+    static protected $soft_delete = false;
 
     function __construct()
     {   
@@ -143,7 +143,7 @@ class Files extends MyApiController
                 }
             }
 
-            if($instance->setSoftDelete(true)->delete($extra)){
+            if($instance->setSoftDelete(true)->delete($soft_delete, $extra)){
                 Factory::response()->sendJson("OK");
             }	
             //else

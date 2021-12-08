@@ -6,7 +6,7 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class FilesAddFolder implements IMigration
+class File implements IMigration
 {
     /**
 	* Run migration.
@@ -16,10 +16,21 @@ class FilesAddFolder implements IMigration
     public function up()
     {
         DB::setConnection('main');
-
+		
 		$sc = new Schema('files');
-        $sc->varchar('workspace', 40)->nullable();
-        $sc->alter();
+		$sc->renameColumn('locked', 'is_locked');
+		$sc->alter();
+		
+    }
+
+    public function down()
+    {
+        DB::setConnection('main');
+		
+		$sc = new Schema('files');
+		$sc->renameColumn('is_locked', 'locked');
+		$sc->alter();
+		
     }
 }
 

@@ -5,7 +5,7 @@ namespace simplerest\core;
 use simplerest\libs\Factory;
 use simplerest\core\interfaces\Arrayable;
 
-class Request  implements \ArrayAccess, Arrayable
+class Request  /* implements \ArrayAccess, Arrayable */
 {
     static protected $query_arr;
     static protected $raw;
@@ -161,25 +161,25 @@ class Request  implements \ArrayAccess, Arrayable
 
     /*  ArrayAccess       */
 
-    function offsetSet($offset, $value) {
-        if (is_null($offset)) {
-            static::$params[] = $value;
-        } else {
-            static::$params[$offset] = $value;
-        }
-    }
+    // function offsetSet($offset, $value) {
+    //     if (is_null($offset)) {
+    //         static::$params[] = $value;
+    //     } else {
+    //         static::$params[$offset] = $value;
+    //     }
+    // }
 
-    function offsetExists($offset) {
-        return isset(static::$params[$offset]);
-    }
+    // function offsetExists($offset) {
+    //     return isset(static::$params[$offset]);
+    // }
 
-    function offsetUnset($offset) {
-        unset(static::$params[$offset]);
-    }
+    // function offsetUnset($offset) {
+    //     unset(static::$params[$offset]);
+    // }
 
-    function offsetGet($offset) {
-        return isset(static::$params[$offset]) ? static::$params[$offset] : null;
-    }
+    // function offsetGet($offset) {
+    //     return isset(static::$params[$offset]) ? static::$params[$offset] : null;
+    // }
 
     function getRequestMethod(){
         $config = config();
