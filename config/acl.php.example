@@ -5,7 +5,7 @@ use simplerest\libs\Debug;
 
 
 $acl_cache = false;
-$acl_file = '../app/security/acl.cache';
+$acl_file  = config()['acl_file'];
 
 // Check whether ACL data already exist
 if (!$acl_cache || is_file($acl_file) !== true) {
@@ -70,11 +70,6 @@ if (!$acl_cache || is_file($acl_file) !== true) {
         'grant'
     ]);
 
-                        
-
-    if (!is_writable($acl_file)){
-        throw new \Exception("$acl_file is not writable. Check permissions");   
-    }
 
     // Store serialized list into plain file
     file_put_contents(

@@ -92,15 +92,8 @@ class MultipleUploader
 		$this->filenames  = [];	
 		$this->erroneous = [];
 			
-		Files::mkdir_ignore($this->location);
-		
-		if (!is_dir($this->location)){
-			throw new \Exception("It was not possible to create {$this->location}");
-		}
-
-		if (!is_writable($this->location)){
-			throw new \Exception("Directory {$this->location} is not writable");
-		}
+		Files::mkDirOrFail($this->location);
+		Files::writableOrFail($this->location);
 		
 		$key_0 = Arrays::array_key_first($_FILES);
 		$file0 = $_FILES[$key_0]; 

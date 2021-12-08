@@ -3367,7 +3367,7 @@ class DumbController extends Controller
         //Time::noOutput();
 
         $this->model_name  = null;
-        $this->model_table = 'users';
+        $this->table_name = 'users';
 
         $t = Time::exec(function(){ 
             
@@ -5633,7 +5633,11 @@ class DumbController extends Controller
     }
 
     function test_mkdir_ignore(){
-        dd(Files::mkdir_ignore('/home/feli/Desktop/UPDATE/config'));
+        dd(Files::mkDir('/home/feli/Desktop/UPDATE/config'));
+    }
+
+    function test_writable(){
+        Files::writableOrFail(APP_PATH . 'some_dir');
     }
 
     function test_hardware_id(){
@@ -5895,7 +5899,7 @@ class DumbController extends Controller
         
         Files::copy($ori, $dst, [
             'docs',
-            '/home/www/simplerest/vendor/psr/http-client/src/'
+            '/home/www/simplerest/vendor/psr/http-client/src/'     /// <--- si podría backupearlo si seteo el backup ???
         ], 
         [
             'docs/dev',

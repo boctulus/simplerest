@@ -3726,7 +3726,7 @@ Una entidad correspondiente a un endpoint si contiene un campo 'is_locked' de ti
 Es muy importante tener buen criterio al momento de entregar permisos ya que es potencialmente posible lograr escalarlos manipulando las tablas de permisos, etc.
 
 
-# La API
+# APIs Restful
 
 Por cada entidad (normalmente una tabla en la DB) existe un único endpoint de la forma /api/{version}/nombre_entidad sobre el que se puede hacer un get, post, put, patch y delete donde v1 es la versión de la API pero podría ser otra.
 
@@ -4354,7 +4354,7 @@ public function up()
 }
 
 
-# Schema Builder - sintaxis
+# Schema Builder 
 
 Básicamente hay dos grandes funcionalidades que residen en la clase Schema: crear tablas y alterarlas.
 
@@ -6525,13 +6525,10 @@ El escenario es que el framework evoluciona, se crean nuevas librerías, funcion
 
 El usuario mediante comandos podrá verificar cuántos updates tiene pendientes enviando las credenciales al endpoint correspondiente:
 
-	GET {url_repository}/api/v1/files?file_ext=zip&filename[startsWith]=simplerest_update&created_at[gt]={last_updated}&orderBy=created_at
-
-O mejor:
-
 	GET {url_repository}/api/v1/files?folder={folder_dado}&created_at[gt]={last_updated}&orderBy=created_at
+
+<-- chequear el funcionamiento de Files !!!
 
 Se recomienda:
 
-- Extender la API "FilesBase"
 - Usar "api keys" como método de autenticación sobre el endpoint /api/v1/updates  

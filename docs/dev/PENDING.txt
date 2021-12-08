@@ -1845,7 +1845,7 @@ class DumbController extends Controller
         //Time::noOutput();
 
         $this->model_name  = null;
-        $this->model_table = 'users';
+        $this->table_name = 'users';
 
         $t = Time::exec(function(){ 
             
