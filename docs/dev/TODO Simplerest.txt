@@ -3278,21 +3278,6 @@ Algo interesante es que cuando se piden más registros por página del límite u
 }
 
 
-- Corregir JSON en /v1/files
-
-"failures": [
-            "",
-            ""
-]
-
-<-- no está vacio ! debería incluir nombre_archivo : error  
-
-
-- Adotar (sin forzar) convención para tablas pivote
-
-https://stackoverflow.com/questions/2208186/proper-table-naming-convention-for-a-many-to-many-intersect-table
-
-
 [ COMPATIBILIDAD ]
 
 - Asegurar compatibilidad con:
@@ -3307,23 +3292,23 @@ https://stackoverflow.com/questions/2208186/proper-table-naming-convention-for-a
       created_by --ok 
       ...
       is_active 
-      lock
-      users.id
+      is_locked
+      users.id 
       users.email
       users.username
       users.password
 
-    - Tabla `users` podría tener otro nombre.
+    - Tabla `users` podría tener otro nombre.  -- ok
 
     - Tabla `users` (con el nombre que sea) podría estar en una DB distinta al resto de las tablas.
 
-  - MariaDB / MySQL
+  - MariaDB / MySQL -- ok
 
-  - Nginx / Apache
+  - Nginx / Apache -- ok
 
-  - PHP versiones 5.6, 7.0, 7.1, 7.2, 7.3 (branches)
+  - PHP versiones 
 
-- Preparar contenedor docker con Nginx. Desventaja: requiere Docker. 
+- Preparar contenedor docker con Nginx.
 
 
 [ VERSIONADO ]

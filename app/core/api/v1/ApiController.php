@@ -22,6 +22,9 @@ use simplerest\core\interfaces\ISubResources;
 
 abstract class ApiController extends ResourceController implements IApi, ISubResources
 {
+    public $model_name;
+    public $table_name;
+
     static protected $folder_field;
     static protected $soft_delete = true;
     static protected $connect_to = [];
@@ -32,8 +35,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected $config;
     protected $impersonated_by;
     protected $conn;
-    protected $model_name;
-    protected $model_table;
     protected $instance; // main
     protected $tenantid;
 
@@ -56,13 +57,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         }
 
         if ($this->model_name != null){
-            $this->model_table = Strings::camelToSnake(Strings::rTrim('Model', $this->model_name));
+            $this->table_name = Strings::camelToSnake(Strings::rTrim('Model', $this->model_name));
         }else {
-            if ($this->model_table != null){            
-                $this->model_name = implode(array_map('ucfirst',explode('_', $this->model_table))) . 'Model';
+            if ($this->table_name != null){            
+                $this->model_name = implode(array_map('ucfirst',explode('_', $this->table_name))) . 'Model';
             } elseif (preg_match('/([A-Z][a-z0-9_]*[A-Z]*[a-z0-9_]*[A-Z]*[a-z0-9_]*[A-Z]*[a-z0-9_]*)/', get_called_class(), $matchs)){
                 $this->model_name = $matchs[1] . 'Model';
-                $this->model_table = Strings::camelToSnake($matchs[1]);
+                $this->table_name = Strings::camelToSnake($matchs[1]);
             } else {
                 $res->sendError("ApiController with undefined Model", 500);
             }  
@@ -76,14 +77,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $this->is_listable    = true;
                     $this->is_retrievable = true;
                 } else {
-                    if ($this->acl->hasResourcePermission('show', $this->model_table) || 
-                        $this->acl->hasResourcePermission('show_all', $this->model_table)){
+                    if ($this->acl->hasResourcePermission('show', $this->table_name) || 
+                        $this->acl->hasResourcePermission('show_all', $this->table_name)){
                         $this->addCallable('get');
                         $this->is_retrievable = true;
                     }
 
-                    if ($this->acl->hasResourcePermission('list', $this->model_table) ||
-                        $this->acl->hasResourcePermission('list_all', $this->model_table)){
+                    if ($this->acl->hasResourcePermission('list', $this->table_name) ||
+                        $this->acl->hasResourcePermission('list_all', $this->table_name)){
                         $this->addCallable('get');
                         $this->is_listable    = true;
                     }
@@ -94,7 +95,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($this->acl->hasSpecialPermission('write_all')){
                     $this->addCallable('post');
                 } else {
-                    if ($this->acl->hasResourcePermission('create', $this->model_table)){
+                    if ($this->acl->hasResourcePermission('create', $this->table_name)){
                         $this->addCallable('post');
                     }
                 }  
@@ -104,7 +105,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($this->acl->hasSpecialPermission('write_all')){
                     $this->addCallable('put');
                 } else {
-                    if ($this->acl->hasResourcePermission('update', $this->model_table)){
+                    if ($this->acl->hasResourcePermission('update', $this->table_name)){
                         $this->addCallable('put');
                     }
                 }  
@@ -114,7 +115,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($this->acl->hasSpecialPermission('write_all')){
                     $this->addCallable('patch');
                 } else {
-                    if ($this->acl->hasResourcePermission('update', $this->model_table)){
+                    if ($this->acl->hasResourcePermission('update', $this->table_name)){
                         $this->addCallable('patch');
                     }
                 }  
@@ -124,14 +125,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($this->acl->hasSpecialPermission('write_all')){
                     $this->addCallable('delete');
                 } else {
-                    if ($this->acl->hasResourcePermission('delete', $this->model_table)){
+                    if ($this->acl->hasResourcePermission('delete', $this->table_name)){
                         $this->addCallable('delete');
                     }
                 }  
             break;
         } 
 
-        $perms = $this->acl->getTbPermissions($this->model_table, false);
+        $perms = $this->acl->getTbPermissions($this->table_name, false);
         
         //dd($perms, 'perms'); /////
         //dd($this->acl->hasSpecialPermission('read_all'));
@@ -155,13 +156,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     // sería más eficiente chequear read_all directamente si existe.
                     // usar isri()
 
-                    if ($this->acl->hasResourcePermission('list_all', $this->model_table)){
+                    if ($this->acl->hasResourcePermission('list_all', $this->table_name)){
                         $this->is_listable    = true;
                     } else {
                         $this->is_listable     = (($perms & 16) AND 1) || (($perms & 64) AND 1);
                     }
 
-                    if ($this->acl->hasResourcePermission('show_all', $this->model_table)){
+                    if ($this->acl->hasResourcePermission('show_all', $this->table_name)){
                         $this->is_retrievable    = true;
                     } else {
                         $this->is_retrievable  = (($perms & 8 ) AND 1) || (($perms & 32) AND 1);
@@ -279,13 +280,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         $_rules   = Factory::request()->shiftQuery('_rules');
 
         if (!empty($_schema)){
-            $schema = get_schema_name($this->model_table);
+            $schema = get_schema_name($this->table_name);
             $res = $schema::get();
             return $res;
         }
 
         if (!empty($_rules)){
-            $schema = get_schema_name($this->model_table);
+            $schema = get_schema_name($this->table_name);
             $res = $schema::get();
             return [ 'rules' => $res['rules'] ];
         }
@@ -432,7 +433,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $f = DB::table('folders')->assoc();
                 $f_rows = $f->where(['id' => $this->folder])->get();
         
-                if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->model_table)
+                if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     Factory::response()->sendError('Folder not found', 404);  
         
                 $this->folder_access = $this->acl->hasSpecialPermission('read_all_folders') || $f_rows[0]['belongs_to'] == Acl::getCurrentUid()  || FoldersAclExtension::hasFolderPermission($this->folder, 'r');   
@@ -460,7 +461,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     } else {
                         // avoid guests can see everything with just 'read' permission
                         if ($owned && !$this->acl->hasSpecialPermission('read_all') && 
-                            !$this->acl->hasResourcePermission('show_all', $this->model_table))
+                            !$this->acl->hasResourcePermission('show_all', $this->table_name))
                         {                              
                             $_get[] = [$this->instance->belongsTo(), Acl::getCurrentUid()];
                         }                            
@@ -481,7 +482,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($this->acl->isGuest()){
                     if ($owned){             
                         if (!$this->acl->hasSpecialPermission('read_all') && 
-                            (!$this->acl->hasResourcePermission('show_all', $this->model_table))
+                            (!$this->acl->hasResourcePermission('show_all', $this->table_name))
                         ){
                             $_get[] = [$this->instance->belongsTo(), NULL, 'IS'];
                         }
@@ -492,7 +493,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 $rows = $this->instance->where($_get)->get($fields); 
                 if (empty($rows))
-                    Factory::response()->sendError('Not found', 404, $id != null ? "Register with id=$id in table '{$this->model_table}' was not found" : '');
+                    Factory::response()->sendError('Not found', 404, $id != null ? "Register with id=$id in table '{$this->table_name}' was not found" : '');
                 else{
                     // event hook
                     $this->onGot($id, 1);
@@ -504,7 +505,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     */
                     if (!empty($_related) || !empty($include))
                     {
-                        $res = $this->getSubResources($this->model_table, static::$connect_to, $this->instance, $this->tenantid);
+                        $res = $this->getSubResources($this->table_name, static::$connect_to, $this->instance, $this->tenantid);
                         $res = $res[0];
                     } else {
                         $res = $rows[0];
@@ -719,7 +720,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($this->acl->isGuest()){
                     if ($owned){             
                         if (!$this->acl->hasSpecialPermission('read_all') && 
-                            (!$this->acl->hasResourcePermission('list_all', $this->model_table))
+                            (!$this->acl->hasResourcePermission('list_all', $this->table_name))
                         ){
                             $_get[] = [$this->instance->belongsTo(), NULL, 'IS'];
                         }
@@ -739,7 +740,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     // root, sin especificar folder ni id (lista)   // *             
                     if (!$this->acl->isGuest() && $owned && 
                         !$this->acl->hasSpecialPermission('read_all') &&
-                        !$this->acl->hasResourcePermission('list_all', $this->model_table) ){
+                        !$this->acl->hasResourcePermission('list_all', $this->table_name) ){
                         $_get[] = [$this->instance->belongsTo(), Acl::getCurrentUid()];     
                     }       
                 }else{
@@ -861,7 +862,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             static::$connect_to = array_intersect(static::$connect_to, $include);
                         }
 
-                        $rows = $this->getSubResources($this->model_table, static::$connect_to, $this->instance, $this->tenantid);
+                        $rows = $this->getSubResources($this->table_name, static::$connect_to, $this->instance, $this->tenantid);
                     } else {
                         $rows = $this->instance->get();
                     }
@@ -900,7 +901,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         }
 
                         $api_slug = $this->config['REMOVE_API_SLUG'] ? '' : '/api' ;
-                        $next =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . $api_slug . '/' . $api_version . '/'. $this->model_table . '?' . $query = str_replace(['%5B', '%5D', '%2C'], ['[', ']', ','], http_build_query($query));
+                        $next =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . $api_slug . '/' . $api_version . '/'. $this->table_name . '?' . $query = str_replace(['%5B', '%5D', '%2C'], ['[', ']', ','], http_build_query($query));
                     }else{
                         $next = 'null';
                     }        
@@ -936,7 +937,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 // }
                 
                 if ($this->config['include_enity_name']){
-                    $res = [$this->model_table => $rows];
+                    $res = [$this->table_name => $rows];
                 }
 
                 Factory::response()->send($res);
@@ -1030,7 +1031,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $f = DB::table('folders');
                 $f_rows = $f->where(['id' => $this->folder])->get();
                       
-                if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->model_table)
+                if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     Factory::response()->sendError('Folder not found', 404); 
         
                 if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
@@ -1077,7 +1078,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             $unset[] = $related_table;
 
                             if (!in_array($related_table, static::$connect_to)){
-                                response()->sendError("Table $related_table is not connected to ". $this->model_table, 400);
+                                response()->sendError("Table $related_table is not connected to ". $this->table_name, 400);
                             }
 
                             /*
@@ -1090,7 +1091,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 $column_value = array_values($dato)[0];
 
                                 // Caso: tabla detalle le apunta al maestro (1 a muchos)
-                                if (get_primary_key($this->model_table) == $column_name){
+                                if (get_primary_key($this->table_name) == $column_name){
                                     /* 
                                         Solo faltaría relacionar con $related_table > $column_name 
 
@@ -1136,11 +1137,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         */
                                         $rel_n_m = false;
                                         
-                                        if (!isset($pivot[$this->model_table .'.'. $related_table])){
-                                            $pivot[$this->model_table .'.'. $related_table] = get_pivot([$this->model_table, $related_table]);
+                                        if (!isset($pivot[$this->table_name .'.'. $related_table])){
+                                            $pivot[$this->table_name .'.'. $related_table] = get_pivot([$this->table_name, $related_table]);
                                         }
 
-                                        $pivot = get_pivot([$this->model_table, $related_table]);
+                                        $pivot = get_pivot([$this->table_name, $related_table]);
 
                                         if (!is_null($pivot)){
                                             $rel_n_m = true;
@@ -1203,7 +1204,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                                 Ojo: los puede que no sea un FK en cada caso sino un array
                                                 (esto no es contemplado de momento)
                                             */
-                                            $fk_this = $pivot['fks'][$this->model_table]; //
+                                            $fk_this = $pivot['fks'][$this->table_name]; //
                                             $fk_rel  = $pivot['fks'][$related_table]; //
 
                                             if (isset($rel_tb_id)){
@@ -1245,12 +1246,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         } else {
                                             // Estaríamos hablando de una relación de 1:N
                                     
-                                            // ---> toca incluir la FK apuntando a ... $this->model_table
+                                            // ---> toca incluir la FK apuntando a ... $this->table_name
 
                                             $schema = get_schema_name($related_table)::get();
                                             $rs = $schema['relationships'];
 
-                                            $rr = $rs[$this->model_table] ?? null;
+                                            $rr = $rs[$this->table_name] ?? null;
 
                                             if (is_null($rr)){
                                                 response()->sendError("Something is wrong trying to link to {$related_table}");
@@ -1284,7 +1285,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 // Debería acá comenzar transacción
 
-                $last_inserted_id = DB::table($this->model_table)
+                $last_inserted_id = DB::table($this->table_name)
                 ->create($data);
 
                 // Tablas dependientes
@@ -1384,7 +1385,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $this->webhook('create', $data, $last_inserted_id);
 
                 Factory::response()->send([
-                    $this->model_table => $data,
+                    $this->table_name => $data,
                     $this->instance->getKeyName() => $last_inserted_id
                 ], 201);
             }	
@@ -1469,7 +1470,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $f = DB::table('folders')->assoc();
                 $f_rows = $f->where(['id' => $this->folder])->get();
                       
-                if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->model_table)
+                if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     Factory::response()->sendError('Folder not found', 404); 
         
                 if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$this->acl->hasSpecialPermission('write_all_folders'))
@@ -1640,7 +1641,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $f = DB::table('folders')->assoc();
                 $f_rows = $f->where([$id_name => $this->folder])->get();
                       
-                if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->model_table)
+                if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     Factory::response()->sendError('Folder not found', 404); 
         
                 if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
@@ -1756,13 +1757,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         DB::getDefaultConnection();
 
         $webhooks = DB::table('webhooks')
-        ->where(['op' => $op, 'entity' => $this->model_table])
+        ->where(['op' => $op, 'entity' => $this->table_name])
         ->get();
 
         $body = [       
             'webhook_id' => null,     
             'event_type' => $op,
-            'entity' => $this->model_table,
+            'entity' => $this->table_name,
             'id' => $id,
             'data' => $data,
             'user_id' => Acl::getCurrentUid(),
@@ -1791,7 +1792,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             
                             if ($old_data === null){
                                 //dd('RETRIVE');
-                                $old_data = DB::table($this->model_table)
+                                $old_data = DB::table($this->table_name)
                                 ->assoc()->find($id)->showDeleted()->first();
                                 $body['data'] = array_merge($old_data, $body['data']);
                             }
@@ -1805,7 +1806,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 if ($old_data === null){
                     //dd('RETRIVE');
-                    $old_data = DB::table($this->model_table)
+                    $old_data = DB::table($this->table_name)
                     ->assoc()->find($id)->showDeleted()->first();
                     $body['data'] = array_merge($old_data, $body['data']);
                 }
