@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblBodegaSchema;
+use simplerest\schemas\legion\TblBodegaSchema;
 
 class TblBodegaModel extends MyModel
 { 
@@ -12,7 +12,7 @@ class TblBodegaModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblBodegaSchema());
+        parent::__construct($connect, TblBodegaSchema::class);
 	}	
 }
 

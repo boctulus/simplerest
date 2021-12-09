@@ -12,7 +12,7 @@ class Facturas4Schema implements ISchema
 		return [
 			'table_name'	=> 'facturas4',
 
-			'id_name'		=> 'id',
+			'id_name'		=> 'edad',
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -45,7 +45,7 @@ class Facturas4Schema implements ISchema
 				'doble_p' => 'STR',
 				'num_real' => 'STR',
 				'some_bits' => 'BOOL',
-				'is_active' => 'INT',
+				'active' => 'INT',
 				'paused' => 'INT',
 				'flavors' => 'STR',
 				'role' => 'STR',
@@ -61,16 +61,16 @@ class Facturas4Schema implements ISchema
 				'user_id' => 'INT'
 			],
 
-			'primary'		=> ['id'],
+			'primary'		=> ['id', 'edad'],
 
-			'autoincrement' => 'id',
+			'autoincrement' => null,
 
-			'nullable'		=> ['id', 'lastname', 'password_char', 'karma', 'is_active', 'paused', 'vencimiento', 'ts'],
+			'nullable'		=> ['lastname', 'password_char', 'karma', 'active', 'paused', 'vencimiento', 'ts'],
 
 			'uniques'		=> ['username', 'correo'],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0],
+				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'edad' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'firstname' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'lastname' => ['type' => 'str', 'max' => 60],
@@ -100,7 +100,7 @@ class Facturas4Schema implements ISchema
 				'doble_p' => ['type' => 'double', 'required' => true],
 				'num_real' => ['type' => 'double', 'required' => true],
 				'some_bits' => ['type' => 'bool', 'required' => true],
-				'is_active' => ['type' => 'bool'],
+				'active' => ['type' => 'bool'],
 				'paused' => ['type' => 'bool'],
 				'flavors' => ['type' => 'str', 'required' => true],
 				'role' => ['type' => 'str', 'required' => true],

@@ -756,7 +756,7 @@ Cada modelo es definido en una clase en /app/models que extiende a Model y donde
 		protected $not_fillable = [];
 
 		function __construct(bool $connect = false){
-			parent::__construct($connect, new BazSchema());
+			parent::__construct($connect, BazSchema::class);
 		}	
 	}
 

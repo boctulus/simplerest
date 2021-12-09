@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\BoletasSchema;
+use simplerest\schemas\az\BoletasSchema;
 
 class BoletasModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class BoletasModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new BoletasSchema());
+        parent::__construct($connect, BoletasSchema::class);
 	}	
 }
 

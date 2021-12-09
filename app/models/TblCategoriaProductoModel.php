@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblCategoriaProductoSchema;
+use simplerest\schemas\legion\TblCategoriaProductoSchema;
 
 class TblCategoriaProductoModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblCategoriaProductoModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblCategoriaProductoSchema());
+        parent::__construct($connect, TblCategoriaProductoSchema::class);
 	}	
 }
 

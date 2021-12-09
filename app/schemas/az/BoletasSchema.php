@@ -12,7 +12,7 @@ class BoletasSchema implements ISchema
 		return [
 			'table_name'	=> 'boletas',
 
-			'id_name'		=> 'id',
+			'id_name'		=> 'karma',
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -45,7 +45,7 @@ class BoletasSchema implements ISchema
 				'doble_p' => 'STR',
 				'num_real' => 'STR',
 				'some_bits' => 'BOOL',
-				'is_active' => 'INT',
+				'active' => 'INT',
 				'paused' => 'INT',
 				'flavors' => 'STR',
 				'role' => 'STR',
@@ -61,21 +61,21 @@ class BoletasSchema implements ISchema
 				'user_id' => 'INT'
 			],
 
-			'primary'		=> ['id'],
+			'primary'		=> ['id', 'karma'],
 
 			'autoincrement' => null,
 
-			'nullable'		=> ['lastname', 'password_char', 'karma', 'is_active', 'paused', 'vencimiento', 'ts'],
+			'nullable'		=> ['lastname', 'password', 'password_char', 'karma', 'active', 'paused', 'vencimiento', 'ts'],
 
 			'uniques'		=> ['username', 'correo'],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'required' => true],
-				'edad' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'edad' => ['type' => 'int', 'required' => true],
 				'firstname' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'lastname' => ['type' => 'str', 'max' => 60],
 				'username' => ['type' => 'str', 'max' => 60, 'required' => true],
-				'password' => ['type' => 'str', 'max' => 128, 'required' => true],
+				'password' => ['type' => 'str', 'max' => 128],
 				'password_char' => ['type' => 'str'],
 				'texto_vb' => ['max' => 300, 'required' => true],
 				'texto' => ['type' => 'str', 'required' => true],
@@ -100,7 +100,7 @@ class BoletasSchema implements ISchema
 				'doble_p' => ['type' => 'double', 'required' => true],
 				'num_real' => ['type' => 'double', 'required' => true],
 				'some_bits' => ['type' => 'bool', 'required' => true],
-				'is_active' => ['type' => 'bool'],
+				'active' => ['type' => 'bool'],
 				'paused' => ['type' => 'bool'],
 				'flavors' => ['type' => 'str', 'required' => true],
 				'role' => ['type' => 'str', 'required' => true],

@@ -8,9 +8,9 @@ use simplerest\libs\ValidationRules;
 /*
 	La ruta depende del nombre de la conexión por defecto o sea será algo como:
 
-	simplerest\models\schemas\{nombre_conexion_default}\UsersSchema
+	simplerest\schemas\{nombre_conexion_default}\UsersSchema
 */
-use simplerest\models\schemas\az\UsersSchema;  
+use simplerest\schemas\az\UsersSchema;  
 
 class UsersModel extends Model
  { 	
@@ -25,7 +25,7 @@ class UsersModel extends Model
 		});
 
 		//$this->registerOutputMutator('password', function($pass){ return '******'; } );
-        parent::__construct($connect, new UsersSchema());
+        parent::__construct($connect, UsersSchema::class);
 	}
 	
 	// Hooks

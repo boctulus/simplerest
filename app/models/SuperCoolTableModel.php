@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\SuperCoolTableSchema;
+use simplerest\schemas\az\SuperCoolTableSchema;
 
 class SuperCoolTableModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class SuperCoolTableModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new SuperCoolTableSchema());
+        parent::__construct($connect, SuperCoolTableSchema::class);
 	}	
 }
 

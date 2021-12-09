@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\SpPermissionsSchema;
+use simplerest\schemas\main\SpPermissionsSchema;
 
 class SpPermissionsModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class SpPermissionsModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new SpPermissionsSchema());
+        parent::__construct($connect, SpPermissionsSchema::class);
 	}	
 }
 

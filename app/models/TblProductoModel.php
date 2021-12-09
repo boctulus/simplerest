@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblProductoSchema;
+use simplerest\schemas\legion\TblProductoSchema;
 
 class TblProductoModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TblProductoModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblProductoSchema());
+        parent::__construct($connect, TblProductoSchema::class);
 	}	
 }
 

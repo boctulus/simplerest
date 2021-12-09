@@ -45,7 +45,7 @@ class FacturasSchema implements ISchema
 				'doble_p' => 'STR',
 				'num_real' => 'STR',
 				'some_bits' => 'BOOL',
-				'is_active' => 'INT',
+				'active' => 'INT',
 				'flavors' => 'STR',
 				'role' => 'STR',
 				'hora' => 'STR',
@@ -66,7 +66,7 @@ class FacturasSchema implements ISchema
 
 			'autoincrement' => null,
 
-			'nullable'		=> ['aaa', 'lastname', 'password_char', 'carma', 'is_active', 'vencimiento', 'ts', 'nuevo_campito', 'deleted_at'],
+			'nullable'		=> ['aaa', 'lastname', 'password_char', 'carma', 'active', 'vencimiento', 'ts', 'nuevo_campito', 'deleted_at'],
 
 			'uniques'		=> ['username', 'correo'],
 
@@ -101,7 +101,7 @@ class FacturasSchema implements ISchema
 				'doble_p' => ['type' => 'double', 'required' => true],
 				'num_real' => ['type' => 'double', 'required' => true],
 				'some_bits' => ['type' => 'bool', 'required' => true],
-				'is_active' => ['type' => 'bool'],
+				'active' => ['type' => 'bool'],
 				'flavors' => ['type' => 'str', 'required' => true],
 				'role' => ['type' => 'str', 'required' => true],
 				'hora' => ['type' => 'time', 'required' => true],

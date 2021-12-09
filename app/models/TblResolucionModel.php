@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblResolucionSchema;
+use simplerest\schemas\legion\TblResolucionSchema;
 
 class TblResolucionModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblResolucionModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblResolucionSchema());
+        parent::__construct($connect, TblResolucionSchema::class);
 	}	
 }
 

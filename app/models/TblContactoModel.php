@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblContactoSchema;
+use simplerest\schemas\legion\TblContactoSchema;
 
 class TblContactoModel extends MyModel
 { 
@@ -12,7 +12,7 @@ class TblContactoModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblContactoSchema());
+        parent::__construct($connect, TblContactoSchema::class);
 	}	
 }
 

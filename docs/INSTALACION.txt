@@ -89,7 +89,7 @@ php com install
                 });
 
                 //$this->registerOutputMutator('password', function($pass){ return '******'; } );
-                parent::__construct($connect, new TblUsuarioEmpresaSchema());
+                parent::__construct($connect, TblUsuarioEmpresaSchema::class);
             }
             
             /*
