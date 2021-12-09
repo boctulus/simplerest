@@ -756,7 +756,7 @@ Cada modelo es definido en una clase en /app/models que extiende a Model y donde
 		protected $not_fillable = [];
 
 		function __construct(bool $connect = false){
-			parent::__construct($connect, new BazSchema());
+			parent::__construct($connect, BazSchema::class);
 		}	
 	}
 
@@ -2618,7 +2618,7 @@ El callback apunta a donde es procesador el request (también un POST ya que lle
         $body = Factory::request()->getBody(false);
         Files::logger($body);
     
-Notar que no se puede hacer un "vardump()" ya que el procesamiento ocurre en background.
+Notar que no tendría sentido hacer un volcado hacia la salida estándar ya que el procesamiento ocurre en background.
 
 Los operadores implementados son los mismos que para el ApiController más alguno adicional:
 
@@ -6542,7 +6542,13 @@ El escenario es que el framework evoluciona, se crean nuevas librerías, funcion
 
 El usuario mediante comandos podrá verificar cuántos updates tiene pendientes enviando las credenciales al endpoint correspondiente:
 
-	GET {url_repository}/api/v1/updates?folder={folder_dado}&created_at[gt]={last_updated}&orderBy=created_at
+	GET {url_repository}/api/v1/updates?created_at[gt]={last_updated}&orderBy=created_at
+
+Podría usar un folder pero tendría que dar permiso a cada usuario.
+
+Voy a usar un permiso "read_all" para usuarios con el rol "update_subscriber".
+
+También podría dejar que se suscriban via WebHooks a /api/v1/updates
 
 
 Se recomienda:

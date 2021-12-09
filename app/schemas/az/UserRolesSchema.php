@@ -94,22 +94,6 @@ class UserRolesSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'roles' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'roles',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'role_id',
-				      ),
-				    ),
-				  ),
 				  'users' => 
 				  array (
 				    0 => 
@@ -123,6 +107,22 @@ class UserRolesSchema implements ISchema
 				      array (
 				        0 => 'user_roles',
 				        1 => 'user_id',
+				      ),
+				    ),
+				  ),
+				  'roles' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'roles',
+				        1 => 'id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'user_roles',
+				        1 => 'role_id',
 				      ),
 				    ),
 				  ),

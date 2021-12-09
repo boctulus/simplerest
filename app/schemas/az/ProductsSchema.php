@@ -38,7 +38,7 @@ class ProductsSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'is_active', 'is_locked', 'workspace', 'belongs_to', 'category'],
+			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'is_active', 'is_locked', 'workspace', 'belongs_to', 'category', 'digital_id'],
 
 			'uniques'		=> [],
 
@@ -59,7 +59,7 @@ class ProductsSchema implements ISchema
 				'workspace' => ['type' => 'str', 'max' => 40],
 				'belongs_to' => ['type' => 'int'],
 				'category' => ['type' => 'int'],
-				'digital_id' => ['type' => 'int', 'required' => true]
+				'digital_id' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['belongs_to', 'deleted_by', 'digital_id', 'category'],
@@ -75,14 +75,14 @@ class ProductsSchema implements ISchema
 				'product_categories' => [
 					['product_categories.id_catego','products.category']
 				],
-				'product_comments' => [
-					['product_comments.product_id','products.id']
-				],
 				'product_tags' => [
 					['product_tags.product_id','products.id']
 				],
 				'product_valoraciones' => [
 					['product_valoraciones.product_id','products.id']
+				],
+				'product_comments' => [
+					['product_comments.product_id','products.id']
 				]
 			],
 

@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\USchema;
+use simplerest\schemas\az\USchema;
 
 class UModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class UModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new USchema());
+        parent::__construct($connect, USchema::class);
 	}	
 }
 

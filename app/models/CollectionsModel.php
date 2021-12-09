@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\CollectionsSchema;
+use simplerest\schemas\main\CollectionsSchema;
 
 class CollectionsModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class CollectionsModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new CollectionsSchema());
+        parent::__construct($connect, CollectionsSchema::class);
 	}	
 }
 

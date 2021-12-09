@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblArlSchema;
+use simplerest\schemas\legion\TblArlSchema;
 
 class TblArlModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblArlModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblArlSchema());
+        parent::__construct($connect, TblArlSchema::class);
 	}	
 }
 

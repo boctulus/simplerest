@@ -4,7 +4,7 @@ namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\ProductsSchema;
+use simplerest\schemas\az\ProductsSchema;
 
 class ProductsModel extends MyModel
 { 	
@@ -17,7 +17,7 @@ class ProductsModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new ProductsSchema());
+        parent::__construct($connect, ProductsSchema::class);
 	}	
 }
 

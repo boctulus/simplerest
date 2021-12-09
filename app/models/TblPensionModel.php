@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblPensionSchema;
+use simplerest\schemas\legion\TblPensionSchema;
 
 class TblPensionModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblPensionModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblPensionSchema());
+        parent::__construct($connect, TblPensionSchema::class);
 	}	
 }
 

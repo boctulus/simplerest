@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblUsuarioSchema;
+use simplerest\schemas\legion\TblUsuarioSchema;
 
 class TblUsuarioModel extends MyModel
 { 
@@ -12,7 +12,7 @@ class TblUsuarioModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblUsuarioSchema());
+        parent::__construct($connect, TblUsuarioSchema::class);
 	}	
 }
 

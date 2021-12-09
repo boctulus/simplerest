@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblPaisSchema;
+use simplerest\schemas\legion\TblPaisSchema;
 
 class TblPaisModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblPaisModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblPaisSchema());
+        parent::__construct($connect, TblPaisSchema::class);
 	}	
 }
 

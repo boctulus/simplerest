@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\FolderOtherPermissionsSchema;
+use simplerest\schemas\main\FolderOtherPermissionsSchema;
 
 class FolderOtherPermissionsModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class FolderOtherPermissionsModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new FolderOtherPermissionsSchema());
+        parent::__construct($connect, FolderOtherPermissionsSchema::class);
 	}	
 }
 

@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblFacturaDetalleSchema;
+use simplerest\schemas\legion\TblFacturaDetalleSchema;
 
 class TblFacturaDetalleModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class TblFacturaDetalleModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblFacturaDetalleSchema());
+        parent::__construct($connect, TblFacturaDetalleSchema::class);
 	}
 	
 	function onCreating(array &$data)

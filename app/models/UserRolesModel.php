@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\UserRolesSchema;
+use simplerest\schemas\main\UserRolesSchema;
 
 class UserRolesModel extends MyModel
 { 
@@ -22,7 +22,7 @@ class UserRolesModel extends MyModel
 	];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new UserRolesSchema());
+        parent::__construct($connect, UserRolesSchema::class);
 	}	
 }
 

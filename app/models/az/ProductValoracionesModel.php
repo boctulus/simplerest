@@ -4,7 +4,7 @@ namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\ProductValoracionesSchema;
+use simplerest\schemas\az\ProductValoracionesSchema;
 
 class ProductValoracionesModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class ProductValoracionesModel extends MyModel
 	protected $updatedAt = 'updated_at';
 
 	function __construct(bool $connect = false){
-        parent::__construct($connect, new ProductValoracionesSchema());
+        parent::__construct($connect, ProductValoracionesSchema::class);
 	}	
 }
 

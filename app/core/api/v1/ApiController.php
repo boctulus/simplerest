@@ -755,10 +755,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
                 
                 if ($id === null){
-                    $validation = (new Validator())
-                    ->setRequired(false)
-                    ->ignoreFields($ignored)
-                    ->validate($this->instance->getRules(),$data);
+                    $validation = (new Validator())->setRequired(false)->ignoreFields($ignored)->validate($this->instance->getRules(),$data);
                     
                     if ($validation !== true){
                         throw new InvalidValidationException(json_encode($validation));
@@ -1002,6 +999,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $data[$this->instance->createdBy()] = $this->impersonated_by != null ? $this->impersonated_by : Acl::getCurrentUid();
             }  
 
+            if (!isset($data[$this->instance->createdAt()]) && $this->instance->inSchema([$this->instance->createdAt()])){
+                $data[$this->instance->createdAt()] = at();
+            }
+
             /*
                 SI (	
                     $updatedBy está en el schema &&
@@ -1047,7 +1048,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             $validado = (new Validator)->validate($this->instance->getRules(), $data);
             if ($validado !== true){
-                Factory::response()->sendError(_('Data validation error'), 400, $validado);
+                Factory::response()->sendError(_('Data validation   error'), 400, $validado);
             }  
 
             if (!empty($this->folder)) {
