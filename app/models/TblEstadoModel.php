@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblEstadoSchema;
+use simplerest\schemas\legion\TblEstadoSchema;
 
 class TblEstadoModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblEstadoModel extends MyModel
 	protected $updatedAt = "est_dtimFechaActualizacion";
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblEstadoSchema());
+        parent::__construct($connect, TblEstadoSchema::class);
 	}	
 }
 

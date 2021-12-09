@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TeachersSchema;
+use simplerest\schemas\legion\TeachersSchema;
 
 class TeachersModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TeachersModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TeachersSchema());
+        parent::__construct($connect, TeachersSchema::class);
 	}	
 }
 

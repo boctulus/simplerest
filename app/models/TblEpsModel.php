@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblEpsSchema;
+use simplerest\schemas\legion\TblEpsSchema;
 
 class TblEpsModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblEpsModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblEpsSchema());
+        parent::__construct($connect, TblEpsSchema::class);
 	}	
 }
 

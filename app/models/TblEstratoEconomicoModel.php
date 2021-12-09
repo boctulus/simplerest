@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblEstratoEconomicoSchema;
+use simplerest\schemas\legion\TblEstratoEconomicoSchema;
 
 class TblEstratoEconomicoModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblEstratoEconomicoModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblEstratoEconomicoSchema());
+        parent::__construct($connect, TblEstratoEconomicoSchema::class);
 	}	
 }
 

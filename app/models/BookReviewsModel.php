@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\BookReviewsSchema;
+use simplerest\schemas\az\BookReviewsSchema;
 
 class BookReviewsModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class BookReviewsModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new BookReviewsSchema());
+        parent::__construct($connect, BookReviewsSchema::class);
 	}	
 }
 

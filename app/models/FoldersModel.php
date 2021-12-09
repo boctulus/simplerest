@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\FoldersSchema;
+use simplerest\schemas\main\FoldersSchema;
 
 class FoldersModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class FoldersModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new FoldersSchema());
+        parent::__construct($connect, FoldersSchema::class);
 	}	
 }
 

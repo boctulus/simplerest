@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblReteivaSchema;
+use simplerest\schemas\legion\TblReteivaSchema;
 
 class TblReteivaModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TblReteivaModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblReteivaSchema());
+        parent::__construct($connect, TblReteivaSchema::class);
 	}	
 }
 

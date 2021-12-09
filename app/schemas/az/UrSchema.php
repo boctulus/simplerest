@@ -17,8 +17,8 @@ class UrSchema implements ISchema
 			'attr_types'	=> [
 				'id_ur' => 'INT',
 				'username' => 'STR',
-				'is_active' => 'INT',
-				'is_locked' => 'INT',
+				'active' => 'INT',
+				'locked' => 'INT',
 				'email' => 'STR',
 				'confirmed_email' => 'INT',
 				'firstname' => 'STR',
@@ -31,15 +31,15 @@ class UrSchema implements ISchema
 
 			'autoincrement' => null,
 
-			'nullable'		=> ['is_active', 'is_locked', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
+			'nullable'		=> ['active', 'locked', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'id_ur' => ['type' => 'int', 'required' => true],
 				'username' => ['type' => 'str', 'max' => 15, 'required' => true],
-				'is_active' => ['type' => 'bool'],
-				'is_locked' => ['type' => 'bool'],
+				'active' => ['type' => 'bool'],
+				'locked' => ['type' => 'bool'],
 				'email' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'confirmed_email' => ['type' => 'bool'],
 				'firstname' => ['type' => 'str', 'max' => 50],

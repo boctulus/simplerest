@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblGeneroSchema;
+use simplerest\schemas\legion\TblGeneroSchema;
 
 class TblGeneroModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class TblGeneroModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblGeneroSchema());
+        parent::__construct($connect, TblGeneroSchema::class);
 	}	
 
 	function onCreating(array &$data)

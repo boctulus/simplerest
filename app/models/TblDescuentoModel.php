@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblDescuentoSchema;
+use simplerest\schemas\legion\TblDescuentoSchema;
 
 class TblDescuentoModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblDescuentoModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblDescuentoSchema());
+        parent::__construct($connect, TblDescuentoSchema::class);
 	}	
 }
 

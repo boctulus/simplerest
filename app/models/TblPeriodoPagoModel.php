@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblPeriodoPagoSchema;
+use simplerest\schemas\legion\TblPeriodoPagoSchema;
 
 class TblPeriodoPagoModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblPeriodoPagoModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblPeriodoPagoSchema());
+        parent::__construct($connect, TblPeriodoPagoSchema::class);
 	}	
 }
 

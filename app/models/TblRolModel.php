@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblRolSchema;
+use simplerest\schemas\legion\TblRolSchema;
 
 class TblRolModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblRolModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblRolSchema());
+        parent::__construct($connect, TblRolSchema::class);
 	}	
 }
 

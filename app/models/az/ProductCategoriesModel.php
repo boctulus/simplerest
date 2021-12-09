@@ -4,7 +4,7 @@ namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\ProductCategoriesSchema;
+use simplerest\schemas\az\ProductCategoriesSchema;
 
 class ProductCategoriesModel extends MyModel
 { 
@@ -12,7 +12,7 @@ class ProductCategoriesModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new ProductCategoriesSchema());
+        parent::__construct($connect, ProductCategoriesSchema::class);
 	}	
 }
 

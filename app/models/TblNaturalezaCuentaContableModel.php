@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblNaturalezaCuentaContableSchema;
+use simplerest\schemas\legion\TblNaturalezaCuentaContableSchema;
 
 class TblNaturalezaCuentaContableModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TblNaturalezaCuentaContableModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblNaturalezaCuentaContableSchema());
+        parent::__construct($connect, TblNaturalezaCuentaContableSchema::class);
 	}	
 }
 

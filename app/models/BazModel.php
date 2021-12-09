@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\BazSchema;
+use simplerest\schemas\az\BazSchema;
 
 class BazModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class BazModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new BazSchema());
+        parent::__construct($connect, BazSchema::class);
 	}	
 }
 

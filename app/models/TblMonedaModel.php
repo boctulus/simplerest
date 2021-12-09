@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblMonedaSchema;
+use simplerest\schemas\legion\TblMonedaSchema;
 
 class TblMonedaModel extends MyModel
 { 
@@ -12,7 +12,7 @@ class TblMonedaModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblMonedaSchema());
+        parent::__construct($connect, TblMonedaSchema::class);
 	}	
 }
 

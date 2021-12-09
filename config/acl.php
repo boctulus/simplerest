@@ -44,7 +44,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('tbl_tipo_documento', ['read_all'])
     ->addResourcePermissions('sp_permissions', ['read'])
     ->addResourcePermissions('user_sp_permissions', ['read', 'write'])
-    ->addResourcePermissions('updates', ['read'])
+    ->addResourcePermissions('updates', ['read_all'])  // *
     
     // ...
     ->setAsRegistered('registered')
@@ -70,11 +70,17 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('tbl_usuario_empresa', ['read', 'write'])
     ->addResourcePermissions('tbl_factura', ['read', 'write'])    
 
+
+    ->addRole('update_subscriber', 75) 
+    ->addInherit('registered')
+    ->addResourcePermissions('webhooks', ['read'])  
+
    
     ->addRole('supervisor', 100)  
     ->addInherit('registered')
     ->addResourcePermissions('tbl_usuario_empresa', ['read_all']) 
     ->addResourcePermissions('tbl_factura', ['read', 'write'])
+    ->addResourcePermissions('webhooks', ['read', 'write'])
     // ->addSpecialPermissions([
     //     'fill_all', 
     // ])

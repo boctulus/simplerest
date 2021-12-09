@@ -3660,7 +3660,7 @@ Claramente lo siguiente debe dejarse de hacer:
       protected $not_fillable = [];
 
         function __construct(bool $connect = false){
-            parent::__construct($connect, new BooksSchema());   <--- no más
+            parent::__construct($connect, BooksSchema::class);   <--- no más
       }	
     }
 

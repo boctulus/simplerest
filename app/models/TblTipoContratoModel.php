@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblTipoContratoSchema;
+use simplerest\schemas\legion\TblTipoContratoSchema;
 
 class TblTipoContratoModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblTipoContratoModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblTipoContratoSchema());
+        parent::__construct($connect, TblTipoContratoSchema::class);
 	}	
 }
 
