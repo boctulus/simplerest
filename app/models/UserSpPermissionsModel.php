@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\UserSpPermissionsSchema;
+use simplerest\schemas\main\UserSpPermissionsSchema;
 
 class UserSpPermissionsModel extends MyModel
 { 
@@ -16,7 +16,7 @@ class UserSpPermissionsModel extends MyModel
 	protected $updatedBy = 'updated_by';
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new UserSpPermissionsSchema());
+        parent::__construct($connect, UserSpPermissionsSchema::class);
 	}	
 }
 

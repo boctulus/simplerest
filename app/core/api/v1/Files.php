@@ -66,6 +66,8 @@ class Files extends MyApiController
                             'uuid' => $id,
                             'link' => base_url() . 'get' . DIRECTORY_SEPARATOR . $id
             ];
+
+            $this->webhook('create', $data, $id);
         }
   
         Factory::response()->send([
@@ -144,6 +146,7 @@ class Files extends MyApiController
             }
 
             if($instance->setSoftDelete(true)->delete($soft_delete, $extra)){
+                $this->webhook('delete', [ ], $id);                
                 Factory::response()->sendJson("OK");
             }	
             //else

@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblFacturaSchema;
+use simplerest\schemas\legion\TblFacturaSchema;
 
 class TblFacturaModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TblFacturaModel extends MyModel
 	protected $createdBy = 'usu_intIdCreador';
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblFacturaSchema());
+        parent::__construct($connect, TblFacturaSchema::class);
 	}	
 }
 

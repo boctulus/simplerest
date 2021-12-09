@@ -314,25 +314,25 @@ class DumbController extends Controller
         dd(DB::getLog());
     }
 
-    function schema(){
-        $m = (new ProductsModel());
-        dd($m->getSchema());
-    }
+    // function schema(){
+    //     $m = (new ProductsModel());
+    //     dd($m->getSchema::class);
+    // }
 
-    function use_model(){
-        $m = (new Model(true))
-            ->table('products')  // <---------------- 
-            ->select(['id', 'name', 'size'])
-            ->where(['cost', 150, '>='])
-            ->where(['id', 100, '<']);
+    // function use_model(){
+    //     $m = (new Model(true))
+    //         ->table('products')  // <---------------- 
+    //         ->select(['id', 'name', 'size'])
+    //         ->where(['cost', 150, '>='])
+    //         ->where(['id', 100, '<']);
 
-        dd($m->get());
+    //     dd($m->get());
 
-        // No hay Schema
-        dd($m->getSchema());
+    //     // No hay Schema
+    //     dd($m->getSchema::class);
 
-        dd($m->dd());
-    }
+    //     dd($m->dd());
+    // }
 
     function get_bar0(){
         $m = (new Model(true))
@@ -360,38 +360,38 @@ class DumbController extends Controller
     }
     
 
+    // /*
+    //     Se utiliza un modelo *sin* schema y sobre el cual no es posible hacer validaciones
+    // */
+    // function create_s(){
+    //     $m = (new Model(true))
+    //     ->table('super_cool_table');
+
+    //     // No hay schema ?
+    //     dd($m->getSchema::class);
+        
+    //     dd($m->create([
+    //         'name' => 'SUPER',
+	// 		'age' => 22,
+    //     ]));
+    // }
+
     /*
         Se utiliza un modelo *sin* schema y sobre el cual no es posible hacer validaciones
     */
-    function create_s(){
-        $m = (new Model(true))
-        ->table('super_cool_table');
+    // function create_baz0(){
+    //     $m = (new Model(true))
+    //     ->table('baz');
 
-        // No hay schema ?
-        dd($m->getSchema());
+    //     // No hay Schema
+    //     dd($m->getSchema::class);
         
-        dd($m->create([
-            'name' => 'SUPER',
-			'age' => 22,
-        ]));
-    }
-
-    /*
-        Se utiliza un modelo *sin* schema y sobre el cual no es posible hacer validaciones
-    */
-    function create_baz0(){
-        $m = (new Model(true))
-        ->table('baz');
-
-        // No hay Schema
-        dd($m->getSchema());
-        
-        dd($m->create([
-            'id_baz' => 1800,
-            'name' => 'BAZ',
-			'cost' => '100',
-        ]));
-    }
+    //     dd($m->create([
+    //         'id_baz' => 1800,
+    //         'name' => 'BAZ',
+	// 		'cost' => '100',
+    //     ]));
+    // }
 
 
     /*
@@ -399,35 +399,35 @@ class DumbController extends Controller
 
         Tampoco funcionarán automáticamente los campos UUID
     */
-    function create_bar(){
-        $m = (new Model(true))
-        ->table('bar');
+    // function create_bar(){
+    //     $m = (new Model(true))
+    //     ->table('bar');
 
-        // No hay Schema
-        dd($m->getSchema());
+    //     // No hay Schema
+    //     dd($m->getSchema::class);
         
-        //$m->dontExec();
+    //     //$m->dontExec();
 
-        dd($m->create([
-            'name' => 'jkq',
-			'price' => '77.67',
-        ]));
+    //     dd($m->create([
+    //         'name' => 'jkq',
+	// 		'price' => '77.67',
+    //     ]));
 
-        //dd($m->dd());
-    }
+    //     //dd($m->dd());
+    // }
 
-    function create_bar1(){
-        $m = DB::table('bar');
-        $m->setValidator(new Validator());
+    // function create_bar1(){
+    //     $m = DB::table('bar');
+    //     $m->setValidator(new Validator());
 
-        // SI hay schema
-        dd($m->getSchema());
+    //     // SI hay schema
+    //     dd($m->getSchema::class);
         
-        dd($m->create([
-            'name' => 'gggggggggg',
-			'price' => '100',
-        ]));
-    }
+    //     dd($m->create([
+    //         'name' => 'gggggggggg',
+	// 		'price' => '100',
+    //     ]));
+    // }
 
     function create_bar2(){
         $m = DB::table('bar');
@@ -5835,7 +5835,7 @@ class DumbController extends Controller
     }
 
     function test_cp_with_backup(){
-        Files::setBackupDirectory(ROOT_PATH . 'backups'); 
+        Files::setBackupDirectory(ROOT_PATH . 'backup'); 
         Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
         'app/controllers/ShopiController.php');        
     }
@@ -5844,7 +5844,7 @@ class DumbController extends Controller
         Sin especificar archivo en destino -- ok
     */
     function test_cp_with_backup2(){
-        Files::setBackupDirectory(ROOT_PATH . 'backups');
+        Files::setBackupDirectory(ROOT_PATH . 'backup');
         Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
         'app/controllers');        
     }
@@ -5899,7 +5899,7 @@ class DumbController extends Controller
         
         Files::copy($ori, $dst, [
             'docs',
-            '/home/www/simplerest/vendor/psr/http-client/src/'     /// <--- si podría backupearlo si seteo el backup ???
+            '/home/www/simplerest/vendor/psr/http-client/src/'     
         ], 
         [
             'docs/dev',
@@ -5979,7 +5979,7 @@ class DumbController extends Controller
         $ori = '/home/www/simplerest/updates/2021-11-26-000000000001/files';
         $dst = '/home/www/simplerest_bk';
 
-        Files::setBackupDirectory(ROOT_PATH . 'backups');
+        Files::setBackupDirectory(ROOT_PATH . 'backup');
 
         Files::copy($ori, $dst, [
             'app'
@@ -5997,7 +5997,7 @@ class DumbController extends Controller
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';;
 
-        Files::setBackupDirectory(ROOT_PATH . 'backups');
+        Files::setBackupDirectory(ROOT_PATH . 'backup');
 
         Files::copy($ori, $dst, [
             'docs'
@@ -6077,6 +6077,10 @@ class DumbController extends Controller
         ];
 
         Files::copy($ori, $dst, $files, $except);
+    }
+
+    function at(){
+        d(at());
     }
     
 }

@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblClienteInformacionTributariaSchema;
+use simplerest\schemas\legion\TblClienteInformacionTributariaSchema;
 
 class TblClienteInformacionTributariaModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblClienteInformacionTributariaModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblClienteInformacionTributariaSchema());
+        parent::__construct($connect, TblClienteInformacionTributariaSchema::class);
 	}	
 }
 

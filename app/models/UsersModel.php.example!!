@@ -25,7 +25,7 @@ class UsersModel extends MyModel
 		});
 
 		//$this->registerOutputMutator('password', function($pass){ return '******'; } );
-        parent::__construct($connect, new UsersSchema());
+        parent::__construct($connect, UsersSchema::class);
 	}
 	
 	// Hooks

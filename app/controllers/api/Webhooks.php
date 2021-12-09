@@ -7,9 +7,6 @@ use simplerest\controllers\MyApiController;
 class Webhooks extends MyApiController
 { 
     static protected $soft_delete = true;
-    static protected $connect_to = [
-		
-	];
 
     function __construct()
     {       

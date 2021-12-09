@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\Facturas2Schema;
+use simplerest\schemas\az\Facturas2Schema;
 
 class Facturas2Model extends MyModel
 { 
@@ -11,7 +11,7 @@ class Facturas2Model extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new Facturas2Schema());
+        parent::__construct($connect, Facturas2Schema::class);
 	}	
 }
 

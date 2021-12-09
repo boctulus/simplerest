@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\MigrationsSchema;
+use simplerest\schemas\main\MigrationsSchema;
 
 class MigrationsModel extends MyModel
 { 
@@ -12,7 +12,7 @@ class MigrationsModel extends MyModel
 	protected $createdAt = 'created_at';
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new MigrationsSchema());
+        parent::__construct($connect, MigrationsSchema::class);
 	}	
 }
 

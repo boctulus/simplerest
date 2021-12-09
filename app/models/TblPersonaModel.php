@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblPersonaSchema;
+use simplerest\schemas\legion\TblPersonaSchema;
 
 class TblPersonaModel extends MyModel
 { 
@@ -12,7 +12,7 @@ class TblPersonaModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblPersonaSchema());
+        parent::__construct($connect, TblPersonaSchema::class);
 		// $this->fillable[] = 'tbl_categoria_persona_persona';
 	}	
 

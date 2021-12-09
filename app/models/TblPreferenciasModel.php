@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblPreferenciasSchema;
+use simplerest\schemas\legion\TblPreferenciasSchema;
 
 class TblPreferenciasModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblPreferenciasModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblPreferenciasSchema());
+        parent::__construct($connect, TblPreferenciasSchema::class);
 	}	
 }
 

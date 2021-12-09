@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblCategoriaCuentaBancariaSchema;
+use simplerest\schemas\legion\TblCategoriaCuentaBancariaSchema;
 
 class TblCategoriaCuentaBancariaModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblCategoriaCuentaBancariaModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblCategoriaCuentaBancariaSchema());
+        parent::__construct($connect, TblCategoriaCuentaBancariaSchema::class);
 	}	
 }
 

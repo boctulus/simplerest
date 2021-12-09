@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblCategoriaPersonaPersonaSchema;
+use simplerest\schemas\legion\TblCategoriaPersonaPersonaSchema;
 
 class TblCategoriaPersonaPersonaModel extends MyModel
 { 
@@ -17,7 +17,7 @@ class TblCategoriaPersonaPersonaModel extends MyModel
 	protected $updatedBy = null;
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblCategoriaPersonaPersonaSchema());
+        parent::__construct($connect, TblCategoriaPersonaPersonaSchema::class);
 	}	
 }
 

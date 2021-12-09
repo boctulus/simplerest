@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblReteIcaSchema;
+use simplerest\schemas\legion\TblReteIcaSchema;
 
 class TblReteIcaModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TblReteIcaModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblReteIcaSchema());
+        parent::__construct($connect, TblReteIcaSchema::class);
 	}	
 }
 

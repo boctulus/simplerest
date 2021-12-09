@@ -7,7 +7,7 @@ use simplerest\libs\DB;
 use simplerest\core\MakeControllerBase;
 use simplerest\controllers\MigrationsController;
 use simplerest\libs\StdOut;
-use simplerest\models\schemas\main\TblBaseDatosSchema;
+use simplerest\schemas\main\TblBaseDatosSchema;
 
 
 class TblBaseDatosModel extends MyModel
@@ -16,7 +16,7 @@ class TblBaseDatosModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblBaseDatosSchema());
+        parent::__construct($connect, TblBaseDatosSchema::class);
 	}	
 
 	// está deshabilitado (notar el "__" delante)

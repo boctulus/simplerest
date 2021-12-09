@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblEspecialidadSchema;
+use simplerest\schemas\legion\TblEspecialidadSchema;
 
 class TblEspecialidadModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TblEspecialidadModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblEspecialidadSchema());
+        parent::__construct($connect, TblEspecialidadSchema::class);
 	}	
 }
 

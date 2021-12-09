@@ -5,7 +5,7 @@ namespace simplerest\models\main;
 use simplerest\models\MyModel;	
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\main\TblUsuarioEmpresaSchema;
+use simplerest\schemas\main\TblUsuarioEmpresaSchema;
 
 class TblUsuarioEmpresaModel extends MyModel
 { 
@@ -36,7 +36,7 @@ class TblUsuarioEmpresaModel extends MyModel
 		});
 
 		//$this->registerOutputMutator('password', function($pass){ return '******'; } );
-		parent::__construct($connect, new TblUsuarioEmpresaSchema());
+		parent::__construct($connect, TblUsuarioEmpresaSchema::class);
 	}
 	
 	/*

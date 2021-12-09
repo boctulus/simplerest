@@ -4,7 +4,7 @@ namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\FooSchema;
+use simplerest\schemas\az\FooSchema;
 
 class FooModel extends MyModel
 { 
@@ -12,7 +12,7 @@ class FooModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new FooSchema());
+        parent::__construct($connect, FooSchema::class);
 	}	
 }
 

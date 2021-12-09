@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblCargoSchema;
+use simplerest\schemas\legion\TblCargoSchema;
 
 class TblCargoModel extends MyModel
 { 
@@ -15,7 +15,7 @@ class TblCargoModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblCargoSchema());
+        parent::__construct($connect, TblCargoSchema::class);
 	}	
 }
 

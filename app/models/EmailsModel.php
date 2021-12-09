@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\az\EmailsSchema;
+use simplerest\schemas\az\EmailsSchema;
 
 class EmailsModel extends MyModel
 { 
@@ -11,7 +11,7 @@ class EmailsModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new EmailsSchema());
+        parent::__construct($connect, EmailsSchema::class);
 	}	
 }
 

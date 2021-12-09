@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblCotizaciondetalleSchema;
+use simplerest\schemas\legion\TblCotizaciondetalleSchema;
 
 class TblCotizaciondetalleModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TblCotizaciondetalleModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblCotizaciondetalleSchema());
+        parent::__construct($connect, TblCotizaciondetalleSchema::class);
 	}	
 }
 

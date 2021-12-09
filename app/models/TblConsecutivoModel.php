@@ -4,7 +4,7 @@ namespace simplerest\models;
 
 use simplerest\core\Model;
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TblConsecutivoSchema;
+use simplerest\schemas\legion\TblConsecutivoSchema;
 
 class TblConsecutivoModel extends MyModel
 {	
@@ -14,7 +14,7 @@ class TblConsecutivoModel extends MyModel
 	protected $createdBy = 'usu_intIdCreador';
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TblConsecutivoSchema());
+        parent::__construct($connect, TblConsecutivoSchema::class);
 	}	
 }
 

@@ -3,7 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\libs\ValidationRules;
-use simplerest\models\schemas\legion\TestxSchema;
+use simplerest\schemas\legion\TestxSchema;
 
 class TestxModel extends MyModel
 { 
@@ -14,7 +14,7 @@ class TestxModel extends MyModel
 	protected $not_fillable = [];
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, new TestxSchema());
+        parent::__construct($connect, TestxSchema::class);
 	}	
 }
 
