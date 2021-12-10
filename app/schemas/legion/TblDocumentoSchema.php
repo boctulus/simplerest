@@ -56,8 +56,8 @@ class TblDocumentoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_documento.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_documento.usu_intIdCreador']
 				],
-				'tbl_consecutivo' => [
-					['tbl_consecutivo.doc_intIdDocumento','tbl_documento.doc_intId']
+				'tbl_factura_detalle' => [
+					['tbl_factura_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
 				'tbl_preferencias' => [
 					['tbl_preferencias.doc_intIdDocumento','tbl_documento.doc_intId']
@@ -65,8 +65,8 @@ class TblDocumentoSchema implements ISchema
 				'tbl_factura' => [
 					['tbl_factura.doc_intDocumento','tbl_documento.doc_intId']
 				],
-				'tbl_factura_detalle' => [
-					['tbl_factura_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+				'tbl_consecutivo' => [
+					['tbl_consecutivo.doc_intIdDocumento','tbl_documento.doc_intId']
 				]
 			],
 
@@ -118,22 +118,6 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_consecutivo' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_consecutivo',
-				        1 => 'doc_intIdDocumento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_preferencias' => 
 				  array (
 				    0 => 
@@ -173,6 +157,22 @@ class TblDocumentoSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_factura_detalle',
+				        1 => 'doc_intIdDocumento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_documento',
+				        1 => 'doc_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_consecutivo' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_consecutivo',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 

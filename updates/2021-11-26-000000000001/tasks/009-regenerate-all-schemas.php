@@ -14,12 +14,19 @@
 
 	$re_gen_schemas = function($tenant_id) use ($mk){
 	    $mk->any("all", "-s", "-f", "--unignore", "--from:$tenant_id");
-	    $mk->pivot_scan("--from:$tenant_id");
+	    $mk->db_scan("--from:$tenant_id");
 	};
 
 
-	$conn_ids = DB::getConnectionIds();
+	$db_representants = [
+		'legion' => 'db_flor'
+	];
 
-	foreach ($conn_ids as $cid){
-	    $re_gen_schemas($cid);
+	$tenants = DB::getAllTenantRepresentants($db_representants);
+
+	foreach ($tenants as $db_conn_id){
+		dd("Regenerating schemas for $db_conn_id");
+		$re_gen_schemas($db_conn_id);
 	}
+	
+		

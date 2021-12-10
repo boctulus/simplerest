@@ -59,6 +59,12 @@ class TblUsuarioEmpresaSchema implements ISchema
 					['folder_permissions.belongs_to','tbl_usuario_empresa.use_intId'],
 					['folder_permissions.access_to','tbl_usuario_empresa.use_intId']
 				],
+				'user_sp_permissions' => [
+					['user_sp_permissions.user_id','tbl_usuario_empresa.use_intId']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','tbl_usuario_empresa.use_intId']
+				],
 				'collections' => [
 					['collections.belongs_to','tbl_usuario_empresa.use_intId']
 				],
@@ -68,17 +74,14 @@ class TblUsuarioEmpresaSchema implements ISchema
 				'files' => [
 					['files.belongs_to','tbl_usuario_empresa.use_intId']
 				],
-				'user_roles' => [
-					['user_roles.user_id','tbl_usuario_empresa.use_intId']
+				'updates' => [
+					['updates.belongs_to','tbl_usuario_empresa.use_intId']
 				],
 				'folder_other_permissions' => [
 					['folder_other_permissions.belongs_to','tbl_usuario_empresa.use_intId']
 				],
-				'user_tb_permissions' => [
-					['user_tb_permissions.user_id','tbl_usuario_empresa.use_intId']
-				],
-				'user_sp_permissions' => [
-					['user_sp_permissions.user_id','tbl_usuario_empresa.use_intId']
+				'user_roles' => [
+					['user_roles.user_id','tbl_usuario_empresa.use_intId']
 				],
 				'api_keys' => [
 					['api_keys.user_id','tbl_usuario_empresa.use_intId']
@@ -86,6 +89,22 @@ class TblUsuarioEmpresaSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
+				  'user_tb_permissions' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'user_tb_permissions',
+				        1 => 'user_id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				      ),
+				    ),
+				  ),
 				  'folder_permissions' => 
 				  array (
 				    0 => 
@@ -107,6 +126,22 @@ class TblUsuarioEmpresaSchema implements ISchema
 				      array (
 				        0 => 'folder_permissions',
 				        1 => 'access_to',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_usuario_empresa',
+				        1 => 'use_intId',
+				      ),
+				    ),
+				  ),
+				  'user_sp_permissions' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'user_sp_permissions',
+				        1 => 'user_id',
 				      ),
 				      1 => 
 				      array (
@@ -163,14 +198,14 @@ class TblUsuarioEmpresaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'user_roles' => 
+				  'updates' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
+				        0 => 'updates',
+				        1 => 'belongs_to',
 				      ),
 				      1 => 
 				      array (
@@ -195,29 +230,13 @@ class TblUsuarioEmpresaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'user_tb_permissions' => 
+				  'user_roles' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'user_tb_permissions',
-				        1 => 'user_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				    ),
-				  ),
-				  'user_sp_permissions' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'user_sp_permissions',
+				        0 => 'user_roles',
 				        1 => 'user_id',
 				      ),
 				      1 => 
