@@ -1,13 +1,58 @@
 # TODO
 
+- PRIORIDADES ABSOLUTAS:
+
+  * UPDATE para V2 ++++++++++++++++ (para el lunes 13?)
+
+  * WHERE con otras tablas ++ (para el miércoles 15?)
+
+- [ BUG ] Estaría dando error al correr las migraciones EN EL CONTEXTO de la creación de un usuario tipo "admin" 
+
+
+    POST http://localhost/dsi_legion_simple_rest/api/v1/auth/register
+
+    {
+        "use_varUsuario": "Andres",
+        "use_varEmail": "Andres@hotmail.com",
+        "use_decPassword": "gogogo",
+        "roles": "admin"
+    }
+
+Error:
+
+  Migrating'2021_09_28_29110773_0001_tbl_estado_maestro.php
+
+  {
+    "status_code": 500,
+    "error": {
+      "type": null,
+      "code": null,
+      "message": "Unregistered connection identifier for 'db_227'",
+      "detail": null
+    }
+  }
+
+<-- el error (considerando los archivos en el UPDATE) tiene que estar en la clase Config o en la DB
+
+
+- Al ejecutar una migración (migrate / rollback) correr inmediatamente y de forma automática:
+
+  php com schema {table_name} --from:{tenant_id}
+  php com make pivot_scan --from:{tenant_id}
+
+
+<-- la forma fácil es "hookeando" los métodos up() y down()
+
+
 - Revisar Files:copy()  -- ok
+- Extender api/Files -- ok
+- WebHooks -- ok
 
-- Extender api/Files
-
-<-- ????
+- Revisar funcionamiento de API KEYs <-----------------  !!! !!!!!!!!!!!!!!!!!!!!!!!!  
 
 - Probar Solución Binaria en un container de NGINX con la configuración de Alberto (PK)
 - Reparar Folders, Trash Can,... 
+
 
 - Automatizar actualizaciones 
 
@@ -59,6 +104,12 @@
   * Notificaciones push SSE
 
 
+- Implementar "Swagger-UI"
+
+https://medium.com/@tatianaensslin/how-to-add-swagger-ui-to-php-server-code-f1610c01dc03
+https://styde.net/como-documentar-una-api-en-laravel-usando-swagger/
+https://dataedo.com/blog/how-to-document-rest-api-project-written-in-php-using-swagger-and-dataedo
+
 
 - Implementar en "make migration"
     
@@ -80,6 +131,7 @@ y
    declare(strict_types=1);  
 
 - Documentar correctamente toda función con @param y @return (ver PHPdoc)
+
 
 - RoadMap para Migrar a PHP 8.0 
   
@@ -131,6 +183,59 @@ Rta:
     }
   }
 
+- Crear OFUSCADOR de código y aplicar al Core de SimpleRest:
+
+  - Uso intensivo de variables-variables
+  - Router a funciones ofuscadas también ofuscado.
+  - Si una sola función y/o la longitud / hash del archivo cambia => nada debe funcionar => error al azar.
+  - Renombrar cada variable, función, namespace y clase por un string largo y repetitivo de cadenas resbaladizas:
+
+    $public zzzzhjjbpc0pbc0poc;
+    $public zzzzhjjpbc0pbcop0c;
+    ...
+
+Usar caracteres muy parecidos gráficamente en determinadas posiciones: p/b, 0,o, j/i, ...4/A
+
+  - Usar variaciones de los mismos IF.
+
+  Ej:
+
+    if (a && b){ ... }
+
+    if (a){
+      if (b){
+        ....
+      }
+    }
+
+    if (a){
+      if (b){
+        ....
+      }
+    }
+
+    if (!a){
+      
+    } else {
+      if (b){
+        ....
+      }
+    }
+
+    if (!a){
+      
+    } else if (b){
+        ....
+      }
+    }
+
+    etc
+
+  - Introducir código señuelo que no hace nada para evitar el match conociendo el original.
+
+  - Minimizar el código eliminado espacios, saltos de línea, etc.
+
+
 - Seguir creando excepciones personalizadas. Ej: ModelNotFoundException (a usarse en la API)
 
 - Crear adaptadores para usar distintos Query Builders.
@@ -181,6 +286,11 @@ Un buen caso de uso sería en cabeza-detalle <-- típico uso de Transacciones.
 
 
 - En "make migrations" (y make en general) si un parámetro no es procesado porque no es corregido debe lanzar un error !!!! 
+
+- Hacer "async" el upload de archivos de forma opcional:
+
+  https://stackoverflow.com/questions/33305921/best-practice-for-restfull-web-services-and-file-download
+  
 
 - Comando "php com make form-control" que genere algo compatible con implemetación para front.
 
@@ -889,15 +999,6 @@ Ej:
 <-- actualmente no puede enviarse eso en el body por las razones antes expuestas. 
 
 
-- Mejorar las reglas de validación generadas en el Schema:
-
-  { 
-    "name": "xxxy.00",
-    "price": "AAA"    <--- DECIMAL
-  }
-
-<-- no es culpa de Validator sino del SCHEMA que brinda poca información.
-
 - Investigar a Hasura -un generador de GraphQL y API Rest Open Source- como competencia.
 
 https://hasura.io/docs/latest/graphql/core/databases/postgres/queries/aggregation-queries.html
@@ -960,6 +1061,12 @@ podría ser también,...
   //..
   ->addScope('products.read_all')
   ->addScope('emails.create')
+
+y con addScopes() ....
+
+  //..
+  ->addScope(['products.read_all', 'products.write')
+  ...
 
 
 - Permitir definir "alias" para los scopes:
@@ -1063,6 +1170,7 @@ https://github.com/leocavalcante/kafka-phplayground
   dropForeignByColumnName() 
   dropFKByColumnName() --alias--
 
+
 - Poder especificar la DB además de la tabla en Schema así:
 
   new Schema('db.table')
@@ -1074,7 +1182,7 @@ https://github.com/leocavalcante/kafka-phplayground
 
 https://laravel.com/docs/8.x/migrations#squashing-migrations
 
-- Sería genial poder hacer Squashing Migrations sobre toda una carpeta o sub-carpeta (módulo) y luego poder generar un Store Procedure basado en "migración aplastada" (unificada)
+- Sería genial poder hacer Squashing Migrations sobre toda una carpeta o sub-carpeta (módulo) y luego poder generar un Store Procedure basado en "migración aplastada" (unificada). Se podría llamar "combianación o unificación"
 
  
 - Anonymous Migrations  
@@ -1555,7 +1663,6 @@ Ej para 'products'
     
 - Insertar el rol "registered" con un hook o Midleware en cada cuenta registrada / creada para que nadie tenga en principio menos permisos que un "guest".  
 
-- Inconcistencia: un rol "puro" tiene id y por tanto al filtrar por id puede tener menos visibilidad que un Guest !
 
 - Al momento de "instalarse" mostrar una pantalla de presentación con la adevertencia de que debug=true, mediante comando poder crear un superadmin y servir un panel de admnistración de usuarios, roles y permisos como sucede con Django Rest framework 
 
@@ -1591,6 +1698,18 @@ https://scoutapm.com/blog/php-advanced-exceptions-tutorial
 https://phil.tech/2016/why-care-about-php-middleware/
 http://esbenp.github.io/2015/07/31/implementing-before-after-middleware/
 https://www.sourcefuse.com/blog/rest-api-best-practices/
+
+
+- Desacoplar los distintos tipos (métodos) de Authorization !!!!!!  
+
+  - No Auth
+  - API Key
+  - Bearer Token
+  - Basic Auth
+  - Digest Auth
+  ...
+  - OAuth 1.0
+  - OAuth 2.0
 
 
 - Corregir:
