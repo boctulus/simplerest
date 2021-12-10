@@ -1,5 +1,8 @@
 <?php
 
+    use simplerest\libs\Files;
+    use simplerest\libs\Strings;
+
         /*
             Cambio DB_DATABASE por DB_NAME 
             como variable de entorno
