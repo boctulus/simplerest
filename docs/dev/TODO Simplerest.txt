@@ -1,10 +1,28 @@
 # TODO
 
-- PRIORIDADES ABSOLUTAS:
+
+[ SUB-RESOURCES ]
 
   * UPDATE para V2 ++++++++++++++++ (para el lunes 13?)
 
   * WHERE con otras tablas ++ (para el miércoles 15?)
+
+  * Permitir traer sub-sub-resources.  Ej:
+
+    tbl_factura > 
+                  tbl_factura_detalle 
+                                      > tbl_bodega
+
+                                      > tbl_producto
+
+
+<-- en V2 implementar con sub-(sub-)-consultas
+
+
+- Detectar referencias circulares entre tablas.
+
+- Dar soporte para referencias circulares.
+
 
 - [ BUG ] Estaría dando error al correr las migraciones EN EL CONTEXTO de la creación de un usuario tipo "admin" 
 
@@ -321,26 +339,6 @@ Se debe generar un .js similar -conseguir la versión más actualizada- a:
 /home/www/html/dsi_legion_simple_rest/public/assets/js/empresanomina/index.js
 
 <-- es uno por cada módulo
-
-
-[ SUB-RESOURCES ]
-
-
-- Permitir traer sub-sub-resources.  Ej:
-
-  tbl_factura > 
-                tbl_factura_detalle 
-                                    > tbl_bodega
-
-                                    > tbl_producto
-
-
-<-- en V2 implementar con sub-(sub-)-consultas
-
-
-- Detectar referencias circulares entre tablas.
-
-- Dar soporte para referencias circulares.
 
 
 -  Corregir o al menos meditar sobre si "read_all" debería dar acceso de lectura a otras DBs de otros tenants o si debería haber un "permiso especial" nuevo en el ACL para leer / escribir sobre otros tenants (!)

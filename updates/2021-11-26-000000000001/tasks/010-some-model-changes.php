@@ -15,7 +15,7 @@
     foreach ($paths as $path)
     {
         if (Strings::endsWith('MyModel.php', $path)){
-            //continue;
+            continue;
         }
 
         $file = file_get_contents($path);
@@ -24,4 +24,7 @@
         Strings::replace('public static $locked;', 'public static $is_locked;', $file);
 
         $ok = file_put_contents($path, $file);
+        if (!$ok){
+            d("$file was changed");
+        }
     }

@@ -57,6 +57,9 @@ class UsersSchema implements ISchema
 				'collections' => [
 					['collections.belongs_to','users.id']
 				],
+				'user_roles' => [
+					['user_roles.user_id','users.id']
+				],
 				'facturas' => [
 					['facturas.user_id','users.id']
 				],
@@ -66,9 +69,6 @@ class UsersSchema implements ISchema
 				'products' => [
 					['products.belongs_to','users.id'],
 					['products.deleted_by','users.id']
-				],
-				'user_roles' => [
-					['user_roles.user_id','users.id']
 				],
 				'books' => [
 					['books.author_id','users.id'],
@@ -104,6 +104,22 @@ class UsersSchema implements ISchema
 				      array (
 				        0 => 'collections',
 				        1 => 'belongs_to',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'users',
+				        1 => 'id',
+				      ),
+				    ),
+				  ),
+				  'user_roles' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'user_roles',
+				        1 => 'user_id',
 				      ),
 				      1 => 
 				      array (
@@ -165,22 +181,6 @@ class UsersSchema implements ISchema
 				      array (
 				        0 => 'products',
 				        1 => 'deleted_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				  'user_roles' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
 				      ),
 				      1 => 
 				      array (

@@ -4533,6 +4533,13 @@ class DumbController extends Controller
         dd($bases);
     }
 
+    function get_tables(){
+        DB::getConnection('db_flor');
+
+        $tables = Schema::getTables();
+        d($tables, 'TABLES');
+    }
+
     function drop_all_tables(string $db_conn_id){
         dd("DROPPING ALL TABLES FROM `$db_conn_id`");
 
@@ -6081,6 +6088,25 @@ class DumbController extends Controller
 
     function at(){
         d(at());
+    }
+
+    function run_update_task(){
+        /*
+            Debe existir persistencia en algún lado SQLIte, archivo de texto,....
+            ... donde guardar QUE tareas ya fueron ejecutadas para evitar
+            correrlas dos veces !
+
+            Deben correr como las migraciones!
+        */
+
+        $update_path = ROOT_PATH . 'updates/2021-11-26-000000000001/tasks/';
+
+        // include $update_path . '005-some-model-changes.php';
+        // include $update_path . '006-move-models.php';
+        // include $update_path . '007-change-model-namespaces.php';
+        // include $update_path . '008-delete-all-schemas.php';
+        include $update_path . '009-regenerate-all-schemas.php';
+        // include $update_path . '010-some-model-changes.php';
     }
     
 }

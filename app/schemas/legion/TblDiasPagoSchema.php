@@ -52,11 +52,11 @@ class TblDiasPagoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_dias_pago.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_dias_pago.usu_intIdCreador']
 				],
-				'tbl_cliente' => [
-					['tbl_cliente.dpa_intIdDiasPago','tbl_dias_pago.dpa_intId']
-				],
 				'tbl_proveedor' => [
 					['tbl_proveedor.dpa_intIdDiasPago','tbl_dias_pago.dpa_intId']
+				],
+				'tbl_cliente' => [
+					['tbl_cliente.dpa_intIdDiasPago','tbl_dias_pago.dpa_intId']
 				]
 			],
 
