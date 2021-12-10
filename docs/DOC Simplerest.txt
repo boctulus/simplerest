@@ -5701,6 +5701,35 @@ o....
 También es posible generar endpoints para tablas puente e incluir las relaciones hacia las tablas inmediatamente relacionadas con $connect_to en la api. 
 
 
+# Update de sub-recursos
+
+Una forma general sería enviar algo como:
+
+	PATCH api/v1/products/145?tenantid=az
+
+	{
+    	"valoraciones": [
+            {
+                "id_val": 1
+            },
+            {
+                "id_val": 3
+            },
+            {
+                "id_val": 5
+            }
+		]
+	}
+
+Esto permitiría enviar varios campos en caso de tratarse de una PRIMARY KEY compuesta sin un campo AUTOINCREMENT o UUID.
+
+Sin embargo, cuando la PRIMARY KEY sea "simple" o exista un campo AUTOINCREMENT o un UUID podria enviarse un array:
+
+	{
+    	"valoraciones": [ 1,3,5 ]
+	}
+
+
 # Schema y las reglas de validación via endpoint
 
 Pasando los parámetros _schema=true o _rules=true en cualquier endpoint se obtienen el schema completo y las reglas de validación en particular respectivamente.
