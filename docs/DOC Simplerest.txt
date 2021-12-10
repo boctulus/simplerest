@@ -4145,6 +4145,80 @@ Borrar un archivo
 	DELETE /api/v1/files/{uuid}
 
 
+# Extender a Files
+
+Files es un tipo de ApiController -versionado- y se puede "extender" fácilmente: 
+
+	<?php
+
+	namespace simplerest\controllers\api;
+
+	global $api_version;
+
+	/*
+		Agregue según se vayan creando versiones
+	*/
+
+	if ($api_version == 'v1'){
+		class Files extends \simplerest\core\api\v1\Files { }
+		return;
+	};
+
+Se puede crear así una "API" para otro tipo de archivos como por ejemplo "updates" sin tener que duplicar toda la funcionalidad.
+
+
+# Descarga de archivos
+
+Se provee de un endpoint "download" que extiende el ResourceController "Download".
+
+	GET /download/get/{id}
+
+Crear un endpoint especializado en la descarga de otro tipo de archivos (de otra tabla distinta a "files" por ejemplo) es muy fácil:
+
+	<?php
+
+	namespace simplerest\controllers;
+
+	// Estoy usando siempre la misma versión de las APIs
+	use simplerest\core\api\v1\Download;
+
+	class DownloadController extends Download
+	{
+		function updates($id){
+			$this->table_name = 'updates';
+			return $this->get($id);
+		}
+	}
+
+También podríamos querer usar un "alias" para "get" específicamente para la descarga de archivos de una tabla "files".
+
+	<?php
+
+	namespace simplerest\controllers;
+
+	// Estoy usando siempre la misma versión de las APIs
+	use simplerest\core\api\v1\Download;
+
+	class DownloadController extends Download
+	{
+		function files  ($id){
+			return $this->get($id);  
+		}
+
+		function updates($id){
+			$this->table_name = 'updates';
+			return $this->get($id);
+		}
+	}
+
+En este caso no se especifica la propiedad $table_name por la simple razón de que por defecto "Download" hace referencia a esa tabla.
+
+Los acceso quedarían así:
+
+	{url_base}/download/files/{id}
+	{url_base}/download/updates/{id}
+
+
 # Modelos y esquemas (schemas)
 
 Modelos y schemas se mantienen separado en distintos archivos. El comando 'make' crea modelos y schemas mientras que el comando 'migrate' impacta en la DB reflejando cambios en los schema.
