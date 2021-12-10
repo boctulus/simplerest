@@ -233,6 +233,32 @@ class DB
 		return static::$tb_name;
 	}
 
+	/*
+		Returns a tenant for each individual or cluster of databases
+
+		It's possible to override tentant representants giving $db_representants array
+	*/
+	public static function getAllTenantRepresentants(Array $db_representants = []){
+		$grouped = DB::getDatabasesGroupedByTenantGroup(true);
+		
+		$db_conn_ids = [];
+		foreach ($grouped as $group_name => $db_name){
+			// elijo la conexión a una DB cualquiera de cada grupo como representativa
+			// o la que me especifiquen
+			$db_conn_id = $db_name[0];
+	
+			if (isset($db_representants) && !empty($db_representants)){
+				if (isset($db_representants[$group_name])){
+					$db_conn_id = $db_representants[$group_name];
+				}
+			} 
+	
+			$db_conn_ids[] = $db_conn_id;
+		}
+
+		return $db_conn_ids;
+	}
+
 	public static function driver(){
 		return self::getCurrent()['driver'] ?? NULL;
 	}

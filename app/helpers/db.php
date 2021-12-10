@@ -317,6 +317,11 @@ function is_mul_rel_cached(string $t1, string $t2, ?string $relation_str = null 
     }
 
     $path = SCHEMA_PATH . $folder . 'Relations.php';
+
+    if (!file_exists($path)){
+        throw new \Exception("Please run 'php com make relation_scan --from:$tenant_id' or re-build all schemas. Detail: $path is not updated. Multiplicity for $t1~$t2 not found");
+    }
+
     $r = include $path;
 
     if (!isset($r['multiplicity']["$t1~$t2"])){

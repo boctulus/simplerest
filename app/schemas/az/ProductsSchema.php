@@ -75,14 +75,14 @@ class ProductsSchema implements ISchema
 				'product_categories' => [
 					['product_categories.id_catego','products.category']
 				],
+				'product_comments' => [
+					['product_comments.product_id','products.id']
+				],
 				'product_tags' => [
 					['product_tags.product_id','products.id']
 				],
 				'product_valoraciones' => [
 					['product_valoraciones.product_id','products.id']
-				],
-				'product_comments' => [
-					['product_comments.product_id','products.id']
 				]
 			],
 
@@ -150,6 +150,22 @@ class ProductsSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'product_comments' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'product_comments',
+				        1 => 'product_id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'products',
+				        1 => 'id',
+				      ),
+				    ),
+				  ),
 				  'product_tags' => 
 				  array (
 				    0 => 
@@ -173,22 +189,6 @@ class ProductsSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'product_valoraciones',
-				        1 => 'product_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				  'product_comments' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'product_comments',
 				        1 => 'product_id',
 				      ),
 				      1 => 
