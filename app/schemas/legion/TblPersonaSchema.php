@@ -107,11 +107,11 @@ class TblPersonaSchema implements ISchema
 				'tbl_cliente' => [
 					['tbl_cliente.ali_intIdPersona','tbl_persona.per_intId']
 				],
-				'tbl_factura' => [
-					['tbl_factura.per_intIdPersona','tbl_persona.per_intId']
-				],
 				'tbl_categoria_persona_persona' => [
 					['tbl_categoria_persona_persona.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_factura' => [
+					['tbl_factura.per_intIdPersona','tbl_persona.per_intId']
 				]
 			],
 
@@ -243,38 +243,6 @@ class TblPersonaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_factura' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_factura',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_categoria_persona_persona' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_categoria_persona_persona',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_proveedor' => 
 				  array (
 				    0 => 
@@ -299,6 +267,38 @@ class TblPersonaSchema implements ISchema
 				      array (
 				        0 => 'tbl_cliente',
 				        1 => 'ali_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_categoria_persona_persona' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_categoria_persona_persona',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_factura' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_factura',
+				        1 => 'per_intIdPersona',
 				      ),
 				      1 => 
 				      array (

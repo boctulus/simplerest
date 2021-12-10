@@ -5,8 +5,9 @@
     use simplerest\libs\DB;
 
 	/*
-        Borrar todos los schemas
+        Borrar todos los schemas de la vieja ubicación (dentro de models)
 
     */
 
-    $ok = Files::delTree(SCHEMA_PATH, true);
+    $ok = Files::delTree(MODELS_PATH . 'schemas', true);
+    d($ok, 'Schema directory cleared');

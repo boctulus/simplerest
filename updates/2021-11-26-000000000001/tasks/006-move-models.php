@@ -57,5 +57,6 @@
             }
 
             $ok = rename($ori_path, $dst_path);
+            d($ok, "Move $ori_path > $dst_path done");
         }
     }

@@ -1,7 +1,8 @@
 <?php
 
-namespace simplerest\models;
+namespace simplerest\models\main;
 
+use simplerest\models\MyModel;
 use simplerest\libs\ValidationRules;
 use simplerest\schemas\main\ApiKeysSchema;
 use simplerest\traits\Uuids;

@@ -466,13 +466,13 @@ class Files
 			foreach ($objects as $object) { 
 				if ($object != "." && $object != "..") { 
 					if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object))
-						static::delTree($dir. DIRECTORY_SEPARATOR .$object);
+						static::delTree($dir. DIRECTORY_SEPARATOR .$object, $include_self);
 					else
 
 					unlink($dir. DIRECTORY_SEPARATOR .$object); 
 				} 
 			}
-			return rmdir($dir); 
+			return @rmdir($dir); // *
 		} 
 
 		return false;

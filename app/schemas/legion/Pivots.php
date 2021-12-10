@@ -2,12 +2,22 @@
 
 $pivots = array (
   'tbl_estado,tbl_usuario' => 'tbl_bodega',
+  'tbl_estado,tbl_estado,tbl_usuario,tbl_usuario' => 'tbl_unidad_medida',
   'tbl_categoria_persona,tbl_persona' => 'tbl_categoria_persona_persona',
   'tbl_transaccion,tbl_usuario' => 'tbl_documento',
 );
 
 $pivot_fks = array (
   'tbl_motivo_retiro' => 
+  array (
+    'tbl_estado' => 'est_intIdEstado',
+    'tbl_usuario' => 
+    array (
+      0 => 'usu_intIdActualizador',
+      1 => 'usu_intIdCreador',
+    ),
+  ),
+  'tbl_unidad_medida' => 
   array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
@@ -80,15 +90,6 @@ $pivot_fks = array (
     ),
   ),
   'tbl_cuenta_contable' => 
-  array (
-    'tbl_estado' => 'est_intIdEstado',
-    'tbl_usuario' => 
-    array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
-    ),
-  ),
-  'tbl_unidadmedida' => 
   array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
@@ -327,6 +328,30 @@ $relationships = array (
       ),
     ),
   ),
+  'tbl_unidad_medida' => 
+  array (
+    'tbl_estado' => 
+    array (
+      0 => 
+      array (
+        0 => 'tbl_estado.est_intId',
+        1 => 'tbl_unidad_medida.est_intIdEstado',
+      ),
+    ),
+    'tbl_usuario' => 
+    array (
+      0 => 
+      array (
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_unidad_medida.usu_intIdActualizador',
+      ),
+      1 => 
+      array (
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_unidad_medida.usu_intIdCreador',
+      ),
+    ),
+  ),
   'tbl_rh' => 
   array (
     'tbl_estado' => 
@@ -516,30 +541,6 @@ $relationships = array (
       array (
         0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
         1 => 'tbl_cuenta_contable.usu_intIdCreador',
-      ),
-    ),
-  ),
-  'tbl_unidadmedida' => 
-  array (
-    'tbl_estado' => 
-    array (
-      0 => 
-      array (
-        0 => 'tbl_estado.est_intId',
-        1 => 'tbl_unidadmedida.est_intIdEstado',
-      ),
-    ),
-    'tbl_usuario' => 
-    array (
-      0 => 
-      array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_unidadmedida.usu_intIdActualizador',
-      ),
-      1 => 
-      array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_unidadmedida.usu_intIdCreador',
       ),
     ),
   ),

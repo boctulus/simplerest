@@ -61,17 +61,17 @@ class TblPaisSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_pais.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_pais.usu_intIdCreador']
 				],
-				'tbl_contacto' => [
-					['tbl_contacto.pai_intIdPais','tbl_pais.pai_intId']
-				],
 				'tbl_ciudad' => [
 					['tbl_ciudad.pai_intIdPais','tbl_pais.pai_intId']
+				],
+				'tbl_persona' => [
+					['tbl_persona.pai_intIdPais','tbl_pais.pai_intId']
 				],
 				'tbl_departamento' => [
 					['tbl_departamento.pai_intIdPais','tbl_pais.pai_intId']
 				],
-				'tbl_persona' => [
-					['tbl_persona.pai_intIdPais','tbl_pais.pai_intId']
+				'tbl_contacto' => [
+					['tbl_contacto.pai_intIdPais','tbl_pais.pai_intId']
 				]
 			],
 
@@ -139,22 +139,6 @@ class TblPaisSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_contacto' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_contacto',
-				        1 => 'pai_intIdPais',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_pais',
-				        1 => 'pai_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_departamento' => 
 				  array (
 				    0 => 
@@ -178,6 +162,22 @@ class TblPaisSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_persona',
+				        1 => 'pai_intIdPais',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_contacto' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_contacto',
 				        1 => 'pai_intIdPais',
 				      ),
 				      1 => 

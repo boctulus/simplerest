@@ -42,4 +42,5 @@
         }
 
         $ok = file_put_contents($path, $file);
+        d($ok, 'done');
     }
