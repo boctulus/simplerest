@@ -1,5 +1,8 @@
 <?php
 
+    use simplerest\libs\Files;
+    use simplerest\libs\Strings;
+
 	/*
          Modificar el config.php agregando la nueva sección para tenant groups
     */

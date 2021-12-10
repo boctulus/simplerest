@@ -1,5 +1,10 @@
 <?php
 
+    use simplerest\libs\Files;
+    use simplerest\libs\Strings;
+    use simplerest\libs\DB;
+    use simplerest\libs\Schema;
+
 	/*
         Muevo modelos a su nueva ubicación
     */

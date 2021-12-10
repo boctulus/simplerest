@@ -1,5 +1,9 @@
 <?php
 
+    use simplerest\libs\Files;
+    use simplerest\libs\Strings;
+    use simplerest\libs\DB;
+
 	$paths = Files::recursiveGlob(MODELS_PATH . '/*.php');
 
     foreach ($paths as $path){
