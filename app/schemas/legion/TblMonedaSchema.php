@@ -54,14 +54,14 @@ class TblMonedaSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_moneda.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_moneda.usu_intIdCreador']
 				],
+				'tbl_pais' => [
+					['tbl_pais.pai_intIdMoneda','tbl_moneda.mon_intId']
+				],
 				'tbl_producto' => [
 					['tbl_producto.mon_intIdMoneda','tbl_moneda.mon_intId']
 				],
 				'tbl_sub_cuenta_contable' => [
 					['tbl_sub_cuenta_contable.mon_intIdMoneda','tbl_moneda.mon_intId']
-				],
-				'tbl_pais' => [
-					['tbl_pais.pai_intIdMoneda','tbl_moneda.mon_intId']
 				]
 			],
 
@@ -113,22 +113,6 @@ class TblMonedaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_producto' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_producto',
-				        1 => 'mon_intIdMoneda',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_moneda',
-				        1 => 'mon_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_pais' => 
 				  array (
 				    0 => 
@@ -137,6 +121,22 @@ class TblMonedaSchema implements ISchema
 				      array (
 				        0 => 'tbl_pais',
 				        1 => 'pai_intIdMoneda',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_moneda',
+				        1 => 'mon_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_producto' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'mon_intIdMoneda',
 				      ),
 				      1 => 
 				      array (

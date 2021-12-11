@@ -59,11 +59,11 @@ class TblBancoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_banco.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_banco.usu_intIdCreador']
 				],
-				'tbl_cuenta_bancaria' => [
-					['tbl_cuenta_bancaria.ban_intIdBanco','tbl_banco.ban_intId']
-				],
 				'tbl_proveedor' => [
 					['tbl_proveedor.ban_intIdBanco','tbl_banco.ban_intId']
+				],
+				'tbl_cuenta_bancaria' => [
+					['tbl_cuenta_bancaria.ban_intIdBanco','tbl_banco.ban_intId']
 				]
 			],
 
@@ -131,13 +131,13 @@ class TblBancoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cuenta_bancaria' => 
+				  'tbl_proveedor' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cuenta_bancaria',
+				        0 => 'tbl_proveedor',
 				        1 => 'ban_intIdBanco',
 				      ),
 				      1 => 
@@ -147,13 +147,13 @@ class TblBancoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_proveedor' => 
+				  'tbl_cuenta_bancaria' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_proveedor',
+				        0 => 'tbl_cuenta_bancaria',
 				        1 => 'ban_intIdBanco',
 				      ),
 				      1 => 

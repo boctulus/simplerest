@@ -50,7 +50,7 @@ class TblCuentaBancariaSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['ban_intIdBanco', 'ccb_intIdCategoriaCuentaBancaria', 'emp_intIdEmpresa', 'est_intIdEstado_cba', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['ban_intIdBanco', 'ccb_intIdCategoriaCuentaBancaria', 'emp_intIdEmpresa', 'est_intIdEstado_cba', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_banco' => [
@@ -66,8 +66,8 @@ class TblCuentaBancariaSchema implements ISchema
 					['tbl_estado.est_intId','tbl_cuenta_bancaria.est_intIdEstado_cba']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cuenta_bancaria.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cuenta_bancaria.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cuenta_bancaria.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cuenta_bancaria.usu_intIdActualizador']
 				]
 			],
 
@@ -144,12 +144,12 @@ class TblCuentaBancariaSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_cuenta_bancaria',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -158,12 +158,12 @@ class TblCuentaBancariaSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_cuenta_bancaria',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -183,8 +183,8 @@ class TblCuentaBancariaSchema implements ISchema
 					['tbl_estado.est_intId','tbl_cuenta_bancaria.est_intIdEstado_cba']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cuenta_bancaria.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cuenta_bancaria.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_cuenta_bancaria.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cuenta_bancaria.usu_intIdActualizador']
 				]
 			],
 
@@ -261,12 +261,12 @@ class TblCuentaBancariaSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_cuenta_bancaria',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -275,12 +275,12 @@ class TblCuentaBancariaSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_cuenta_bancaria',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
