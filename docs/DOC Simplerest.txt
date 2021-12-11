@@ -5780,6 +5780,22 @@ Ej:
 	}
 
 
+Por supuesto pueden actualizarse campos que son propios de la entidad en cuestión.
+
+Ej:
+
+	PATCH /api/v1/products/145?tenantid=az
+
+	{
+		"description": "xyz", 
+		"cost": 200,  
+		"size": "1.15L",
+
+		"valoraciones": [1,3,5],
+		"product_categories": 3,
+		"product_tags": [293]
+	}
+
 
 # Schema y las reglas de validación via endpoint
 
