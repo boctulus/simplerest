@@ -1593,12 +1593,82 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                     //d($ok, $m->getLog());
                                 }
-
                             }
 
                         break;
                         
                         case 'n:m':
+                            $pivot_ay = get_pivot([$this->table_name, $tb]);
+                            $bridge = $pivot_ay['bridge'] ?? null;
+
+                            if ($bridge === null){
+                                throw new \Exception("Bridge table not found for $this->table_name and $tb");
+                            }
+
+                            $fks_bridge = $pivot_ay['fks'];
+
+                            // d($bridge, 'BRIDGE');
+                            // d($fks_bridge, 'FK BRIDGE');
+                            
+                            $pri_table = $fks_bridge[$this->table_name];
+                            $fk_tb = $fks_bridge[$tb];
+                        
+                  
+                            // Ids a de la otra tabla actualmente apuntados por la puente
+                            $prev = DB::table($bridge)->where([$pri_table => $id])->pluck($fk_tb) ?? [];
+                
+                            //d($prev, 'PREV');
+                  
+                            if (!$append_mode){
+                                // borro registros previos
+
+                                $diff = array_diff($prev, $dati);
+                                // d($diff, 'diff');
+                                
+                                if (!empty($diff)){
+                                    $m = DB::table($bridge);
+
+                                    $ok = $m->whereIn($fk_tb, $diff)
+                                    //->dontExec()
+                                    ->delete();
+
+                                    //d($ok, $m->getLog());
+                                }
+                            }
+
+                            // apppend mode
+                            if (isset($diff)){                                
+                                $dati = array_diff($dati, $prev);
+                            } else {
+                                // d($dati, 'VALS');
+                                $intersect = array_intersect($dati, $prev);
+                                // d($intersect, 'INTERSECT');
+                                
+                                $dati = array_diff($dati, $intersect);
+                                // d("Substracting ...");
+                                // d($dati, 'DATI');
+                            }
+
+                            // d($prev, 'PREV');
+                            // d($dati, 'TO INSERT');
+
+
+                            // exit; /////////
+
+
+                            $ins = [];
+                            foreach ($dati as $dato){
+                                $ins[] = [
+                                  $pri_table => $id,
+                                  $fk_tb => $dato
+                                ];
+                            }
+
+                            if (!empty($ins)){
+                                $m = DB::table($bridge);
+                                $m->insert($ins);
+                            }
+                  
                         break;
                     }
                 }
