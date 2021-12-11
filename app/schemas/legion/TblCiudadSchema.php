@@ -66,11 +66,11 @@ class TblCiudadSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_ciudad.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_ciudad.usu_intIdCreador']
 				],
-				'tbl_contacto' => [
-					['tbl_contacto.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
-				],
 				'tbl_persona' => [
 					['tbl_persona.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
+				],
+				'tbl_contacto' => [
+					['tbl_contacto.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
 				]
 			],
 
@@ -154,13 +154,13 @@ class TblCiudadSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_contacto' => 
+				  'tbl_persona' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_contacto',
+				        0 => 'tbl_persona',
 				        1 => 'ciu_intIdCiudad',
 				      ),
 				      1 => 
@@ -170,13 +170,13 @@ class TblCiudadSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_persona' => 
+				  'tbl_contacto' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_persona',
+				        0 => 'tbl_contacto',
 				        1 => 'ciu_intIdCiudad',
 				      ),
 				      1 => 

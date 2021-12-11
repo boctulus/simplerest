@@ -60,7 +60,7 @@ class TblContactoSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['car_intIdcargo', 'ciu_intIdCiudad', 'emp_intIdEmpresa', 'est_intIdEstado', 'pai_intIdPais', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['car_intIdcargo', 'ciu_intIdCiudad', 'emp_intIdEmpresa', 'est_intIdEstado', 'pai_intIdPais', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_cargo' => [
@@ -79,8 +79,8 @@ class TblContactoSchema implements ISchema
 					['tbl_pais.pai_intId','tbl_contacto.pai_intIdPais']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contacto.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contacto.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contacto.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contacto.usu_intIdActualizador']
 				]
 			],
 
@@ -173,12 +173,12 @@ class TblContactoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contacto',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -187,12 +187,12 @@ class TblContactoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contacto',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -215,8 +215,8 @@ class TblContactoSchema implements ISchema
 					['tbl_pais.pai_intId','tbl_contacto.pai_intIdPais']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contacto.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contacto.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contacto.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contacto.usu_intIdActualizador']
 				]
 			],
 
@@ -309,12 +309,12 @@ class TblContactoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contacto',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -323,12 +323,12 @@ class TblContactoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contacto',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

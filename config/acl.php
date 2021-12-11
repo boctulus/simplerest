@@ -45,6 +45,8 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('sp_permissions', ['read'])
     ->addResourcePermissions('user_sp_permissions', ['read', 'write'])
     ->addResourcePermissions('updates', ['read_all'])  // *
+    ->addResourcePermissions('tbl_sub_cuenta_contable', ['read', 'write'])
+    
     
     // ...
     ->setAsRegistered('registered')

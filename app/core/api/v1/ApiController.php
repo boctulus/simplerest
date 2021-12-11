@@ -1408,13 +1408,18 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected function modify($id = NULL, bool $put_mode = false)
     {
         if ($id == null)
-            Factory::response()->sendError("Missing id",400);
+            response()->sendError("Missing id",400);
 
-        $data = Factory::request()->getBody(false);
+        $data = request()->getBody(false);
 
         if (empty($data))
-            Factory::response()->sendError('Invalid JSON',400);
+            response()->sendError('Invalid JSON',400);
         
+        $append_mode = request()->shiftQuery('_append', false);
+        if ($append_mode === 'false' || $append_mode === 0){
+            $append_mode = false;
+        }
+
         $this->id = $id;    
         $this->folder = $this->folder = $data['folder'] ?? null;
         
@@ -1509,13 +1514,102 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     Factory::response()->sendError('Forbidden', 403, 'You are not the owner!');
                 } 
                     
-            }        
+            }                 
 
-            // This is not 100% right but....
-            foreach ($data as $k => $v){
-                if (strtoupper($v) == 'NULL' && $this->instance->isNullable($k)) 
+            /* 
+                HATEOAS 
+            */
+            if (!empty(static::$connect_to)){                
+              
+                // Me quedo solo con los subrecursos
+                $sub_res = array_filter($data, function($v, $k){
+                    if (is_array($k)){
+                        return;
+                    }
+                    
+                    if (in_array($k, static::$connect_to)){
+                        return $v;
+                    };
+                }, ARRAY_FILTER_USE_BOTH);
+
+                foreach ($sub_res as $tb => $dati){
+                    unset($data[$tb]);
+
+                    $rel_type = get_rel_type($this->table_name, $tb);
+                    //d($rel_type, 'table '. $tb);
+
+                    switch ($rel_type){
+                        case '1:1':
+                        case 'n:1':
+                            $fks = get_fks($this->table_name, $tb);
+
+                            // En principio solo voy a permitir actualizar cuando haya una sola relación
+                            // entre las dos tablas porque sino requeriría de un "alias" para referirme a c/u
+                            // aunque siguiendo la convención podría ser __{nombre_constraint}
+
+                            if (count($fks)>1){
+                                response()->sendError("At this moment it's possible to update tables with only one relationship. Detail: {$this->table_name
+                                } -> $tb");
+                            }
+
+                        $fk = $fks[0];
+                            $data[$fk] = $dati;
+                        break;
+
+                        case '1:n':
+                            $fks = get_fks($tb, $this->table_name);
+
+                            if (count($fks)>1){
+                                response()->sendError("At this moment it's possible to update tables with only one relationship. Detail: $tb -> {$this->table_name
+                                }");
+                            }
+
+                            $fk = $fks[0];
+
+                            if (!$append_mode){
+                                $prev = DB::table($tb)->where([$fk => $id])->pluck(get_primary_key($tb));
+                            }
+
+                            foreach ($dati as $dato){
+                                $m  = DB::table($tb);
+                                $ok = $m->find($dato)
+                                //->dontExec()
+                                ->update([$fk => $id]);
+                                
+                                //d($ok, $m->getLog());
+                            }
+
+                            if (!$append_mode){
+                                // borro registros previos
+
+                                $diff = array_diff($prev, $dati);
+                                
+                                if (!empty($diff)){
+                                    $m = DB::table($tb);
+
+                                    $ok = $m->whereIn(get_primary_key($tb), $diff)
+                                    //->dontExec()
+                                    ->delete();
+
+                                    //d($ok, $m->getLog());
+                                }
+
+                            }
+
+                        break;
+                        
+                        case 'n:m':
+                        break;
+                    }
+                }
+            }
+
+             // This is not 100% right but....
+             foreach ($data as $k => $v){
+                if (strtoupper($v) == 'NULL' && $this->instance->isNullable($k)){
                     $data[$k] = NULL;
-            }            
+                } 
+            }   
 
             $validado = (new Validator())->setRequired($put_mode)->validate($this->instance->getRules(), $data);
             if ($validado !== true){
