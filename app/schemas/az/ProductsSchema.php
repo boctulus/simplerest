@@ -214,6 +214,22 @@ class ProductsSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
+				  'digital_products' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'digital_products',
+				        1 => 'id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'products',
+				        1 => 'digital_id',
+				      ),
+				    ),
+				  ),
 				  'users' => 
 				  array (
 				    0 => 
@@ -242,22 +258,6 @@ class ProductsSchema implements ISchema
 				      array (
 				        0 => 'products',
 				        1 => 'deleted_by',
-				      ),
-				    ),
-				  ),
-				  'digital_products' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'digital_products',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'digital_id',
 				      ),
 				    ),
 				  ),

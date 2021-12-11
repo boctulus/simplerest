@@ -101,17 +101,17 @@ class TblPersonaSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_persona.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_persona.usu_intIdCreador']
 				],
-				'tbl_proveedor' => [
-					['tbl_proveedor.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_cliente' => [
-					['tbl_cliente.ali_intIdPersona','tbl_persona.per_intId']
+				'tbl_factura' => [
+					['tbl_factura.per_intIdPersona','tbl_persona.per_intId']
 				],
 				'tbl_categoria_persona_persona' => [
 					['tbl_categoria_persona_persona.per_intIdPersona','tbl_persona.per_intId']
 				],
-				'tbl_factura' => [
-					['tbl_factura.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_cliente' => [
+					['tbl_cliente.ali_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_proveedor' => [
+					['tbl_proveedor.per_intIdPersona','tbl_persona.per_intId']
 				]
 			],
 
@@ -243,13 +243,29 @@ class TblPersonaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_proveedor' => 
+				  'tbl_categoria_persona_persona' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_proveedor',
+				        0 => 'tbl_categoria_persona_persona',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_factura' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_factura',
 				        1 => 'per_intIdPersona',
 				      ),
 				      1 => 
@@ -275,29 +291,13 @@ class TblPersonaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_categoria_persona_persona' => 
+				  'tbl_proveedor' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_categoria_persona_persona',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_factura' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_factura',
+				        0 => 'tbl_proveedor',
 				        1 => 'per_intIdPersona',
 				      ),
 				      1 => 

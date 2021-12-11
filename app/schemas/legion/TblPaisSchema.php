@@ -61,17 +61,17 @@ class TblPaisSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_pais.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_pais.usu_intIdCreador']
 				],
-				'tbl_ciudad' => [
-					['tbl_ciudad.pai_intIdPais','tbl_pais.pai_intId']
-				],
 				'tbl_persona' => [
 					['tbl_persona.pai_intIdPais','tbl_pais.pai_intId']
+				],
+				'tbl_contacto' => [
+					['tbl_contacto.pai_intIdPais','tbl_pais.pai_intId']
 				],
 				'tbl_departamento' => [
 					['tbl_departamento.pai_intIdPais','tbl_pais.pai_intId']
 				],
-				'tbl_contacto' => [
-					['tbl_contacto.pai_intIdPais','tbl_pais.pai_intId']
+				'tbl_ciudad' => [
+					['tbl_ciudad.pai_intIdPais','tbl_pais.pai_intId']
 				]
 			],
 
