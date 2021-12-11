@@ -385,6 +385,9 @@ Se debe generar un .js similar -conseguir la versión más actualizada- a:
 <-- es uno por cada módulo
 
 
+- Terminar de "mergear" la lib Schemas.  Hay mucha varible que carga funcionalidades sin uso!
+
+
 -  Corregir o al menos meditar sobre si "read_all" debería dar acceso de lectura a otras DBs de otros tenants o si debería haber un "permiso especial" nuevo en el ACL para leer / escribir sobre otros tenants (!)
 
 

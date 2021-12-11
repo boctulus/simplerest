@@ -38,7 +38,7 @@ class Schema
 	protected $query;
 	protected $exec = true;
 
-	function __construct($tb_name){
+	function __construct(string $tb_name){
 		$this->tables = self::getTables();
 		$this->tb_name = $tb_name;
 		$this->fromDB();
