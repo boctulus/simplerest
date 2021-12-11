@@ -1,5 +1,7 @@
 # TODO
 
+- Los schemas deben poder sobre-escribirse sin ningún tipo de cuidado. 
+Para eso están! nada de --force o --unignore
 
 [ SUB-RESOURCES ]
 

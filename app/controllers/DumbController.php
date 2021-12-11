@@ -6090,6 +6090,19 @@ class DumbController extends Controller
         d(at());
     }
 
+    function test_get_fk(){
+        $t1 = 'products';
+        $t2 = 'product_categories';
+
+        d(get_fks($t1, $t2), "FKs $t1 ->  $t2");
+
+
+        $t1 = 'tbl_genero';
+        $t2 = 'tbl_usuario';
+
+        d(get_fks($t1, $t2, 'db_flor'), "FKs $t1 ->  $t2");
+    }
+
     function run_update_task(){
         /*
             Debe existir persistencia en algún lado SQLIte, archivo de texto,....
@@ -6104,7 +6117,7 @@ class DumbController extends Controller
         // include $update_path . '005-some-model-changes.php';
         // include $update_path . '006-move-models.php';
         // include $update_path . '007-change-model-namespaces.php';
-        // include $update_path . '008-delete-all-schemas.php';
+        //include $update_path . '008-delete-all-schemas.php';
         include $update_path . '009-regenerate-all-schemas.php';
         // include $update_path . '010-some-model-changes.php';
     }

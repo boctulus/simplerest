@@ -84,11 +84,11 @@ class TblEmpresaSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_empresa.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_empresa.usu_intIdCreador']
 				],
-				'tbl_cuenta_bancaria' => [
-					['tbl_cuenta_bancaria.emp_intIdEmpresa','tbl_empresa.emp_intId']
-				],
 				'tbl_contacto' => [
 					['tbl_contacto.emp_intIdEmpresa','tbl_empresa.emp_intId']
+				],
+				'tbl_cuenta_bancaria' => [
+					['tbl_cuenta_bancaria.emp_intIdEmpresa','tbl_empresa.emp_intId']
 				]
 			],
 
@@ -172,13 +172,13 @@ class TblEmpresaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cuenta_bancaria' => 
+				  'tbl_contacto' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cuenta_bancaria',
+				        0 => 'tbl_contacto',
 				        1 => 'emp_intIdEmpresa',
 				      ),
 				      1 => 
@@ -188,13 +188,13 @@ class TblEmpresaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_contacto' => 
+				  'tbl_cuenta_bancaria' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_contacto',
+				        0 => 'tbl_cuenta_bancaria',
 				        1 => 'emp_intIdEmpresa',
 				      ),
 				      1 => 

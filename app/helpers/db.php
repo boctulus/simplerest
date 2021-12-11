@@ -707,9 +707,31 @@ function get_rels(string $t1, string $t2, string $type, ?string $tenant_id = nul
         if (!empty($current_id_conn)){
             DB::setConnection($current_id_conn);
         }
-    }
-    
+    }    
 }
+
+/*
+    Returns FK(s) on $t1 pointing to $t2
+
+    If there is more than one relationship between tables, then can be more than one FK.
+*/
+function get_fks(string $t1, string $t2, ?string $tenant_id = null){    
+    $sc  = get_schema($t1, $tenant_id);
+    $fks = $sc['fks'];
+
+    if (empty($fks)){
+        return [];
+    }
+
+    $rels = $sc['expanded_relationships_from'][$t2];
+    $fks_t2 = array_column(array_column($rels, 1),1); 
+
+    // d($rels, 'RELS');
+    // d($fks_t2, 'FKs');
+
+    return $fks_t2;
+}
+
 
 function sql_formater(string $sql, ...$options){
     return Model::sqlFormatter($sql, ...$options);
