@@ -4463,7 +4463,6 @@ Básicamente hay dos grandes funcionalidades que residen en la clase Schema: cre
 
 Además Schema::alter() es un alias de Schema::change() por lo que pueden usarse indistintamente,
 
-
 Ej:
 
 Un "CREATE TABLE" dentro de una migración:
@@ -4709,6 +4708,21 @@ Ej:
 # CREATE TABLE IF NOT EXISTS
 
 Al momento de llamar al método Schema::create() es posible pasar un boolean que indica si la tabla debe crearse solo si existe y también existe el alias Schema::createIfNotExists()  
+
+
+# El método fromDB()
+
+La clase Schema al momento de instanciarse ejecuta un método fromDB() pero con qué objetivo? 
+
+	function __construct(string $tb_name){
+		$this->tables = self::getTables();
+		$this->tb_name = $tb_name;
+		$this->fromDB();
+	}
+
+El método fromDB() analiza y almacena el schema al momento de la instanciación a fin de tenerlo como punto de partida para poder ejecutar comandos del tipo ALTER TABLE que en algunos casos requiere conocer el estado previo. 
+
+Es posible utilizar el método para compactar migraciones o correrlas en reversa sin el método down().
 
 
 # Ejecutar migraciones
