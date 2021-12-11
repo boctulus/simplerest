@@ -2672,6 +2672,8 @@ class Model {
 			$q .= ';';
 		}
 
+		//d($q, 'Query');
+
 		$st = $this->conn->prepare($q);
 
 		foreach($vals as $ix => $val){			

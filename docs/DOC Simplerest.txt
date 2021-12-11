@@ -5724,9 +5724,9 @@ o....
 También es posible generar endpoints para tablas puente e incluir las relaciones hacia las tablas inmediatamente relacionadas con $connect_to en la api. 
 
 
-# Update de sub-recursos
+# Actualizar sub-recursos
 
-Una forma general sería enviar algo como:
+Una forma general de hacer un UPDATE de sub-recursos sería enviar algo como:  <por implementar>
 
 	PATCH api/v1/products/145?tenantid=az
 
@@ -5752,7 +5752,6 @@ Una forma general sería enviar algo como:
                 "id_tag": 293
             }
         ],
-
 	}
 
 Esto permitiría enviar varios campos en caso de tratarse de una PRIMARY KEY compuesta sin un campo AUTOINCREMENT o UUID.
@@ -5765,7 +5764,7 @@ Sin embargo, cuando la PRIMARY KEY sea "simple" o exista un campo AUTOINCREMENT 
 		"product_tags": [293]
 	}
 
-<-- único formato utilizado de momento.
+<-- único formato utilizado de momento (!)
 
 El comportamiento por defecto es *reemplazar* los registros en caso de relaciones "a muchos" pero este comportamiento se puede cambiar para agregar registros sin borrar los previos concatenando en la url el parámetro "_append=true"
 
@@ -5795,6 +5794,39 @@ Ej:
 		"product_categories": 3,
 		"product_tags": [293]
 	}
+
+
+# Actualizar Sub-recursos *sin* especificar sus IDs  <por implementar>
+
+Es teóricamente posible actualizar sub-recursos haciendo una búsqueda de que registros cumplen con ciertas condiciones. Volviendo al primer ejemplo.
+
+En vez de......
+
+	PATCH api/v1/products/145?tenantid=az
+
+	{
+    	"valoraciones": [
+            {
+                "texto": "bueno"
+            },
+            {
+                "texto": "regular"
+            }
+		],
+
+		"product_categories": {
+            "name_catego": "bebidas"
+		},
+
+		"product_tags": [
+            {  
+                "name": "xxx",
+				"comment": "."
+            }
+        ],
+	}
+
+Cuando se especifique más de un campo podría hacerse un "AND" de condiciones el "WHERE" a fin de identificar el registro o registros.
 
 
 # Schema y las reglas de validación via endpoint

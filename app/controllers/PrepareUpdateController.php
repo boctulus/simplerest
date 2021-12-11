@@ -27,7 +27,8 @@ class PrepareUpdateController extends ConsoleController
 
     function setup(){
         $ori = '/home/www/simplerest';
-        $dst = '/home/feli/Desktop/UPDATE';
+        $dst = 'updates';
+        //$dst = '/home/feli/Desktop/UPDATE';
         //$dst = '/home/www/html/simplerest-clone';
 
         // Solo para pruebas !!!!
@@ -36,6 +37,7 @@ class PrepareUpdateController extends ConsoleController
         $str_files = <<<'FILES'
         config/constants.php
         app/core
+        app/core/Controller.php
         app/exceptions
         app/helpers
         app/interfaces
@@ -47,6 +49,9 @@ class PrepareUpdateController extends ConsoleController
         ;app/controllers/MyApiController.php
         ;app/controllers/MyAuthController.php
         app/controllers/api/UserSpPermissions.php
+        app/controllers/DownloadController.php
+        app/controllers/apis/Files.php
+        app/controllers/apis/Me.php
         app/models/main/CollectionsModel.php
         app/models/main/FolderOtherPermissionsModel.php
         app/models/main/FolderPermissionsModel.php
@@ -56,7 +61,6 @@ class PrepareUpdateController extends ConsoleController
         app/models/main/UserTbPermissionsModel.php
         app/models/main/UserSpPermissionsModel.php
         docs
-        app/core/Controller.php
         ;app/views/MyView.php
         packages
         app/controllers/UpdateController.php     

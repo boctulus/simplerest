@@ -1,11 +1,11 @@
 # TODO
 
-- Los schemas deben poder sobre-escribirse sin ningún tipo de cuidado. 
-Para eso están! nada de --force o --unignore
-
 [ SUB-RESOURCES ]
 
-  * UPDATE para V2 ++++++++++++++++ (para el lunes 13?)
+  * UPDATE para V2 ++++++++++++++++ (para el lunes 13?)  -- ok ~
+
+
+  <-- Seguir con UPDATE. Ver posible fallo reportado por JOSE !!!!!!!!!!!!!!!!!!!
 
   * WHERE con otras tablas ++ (para el miércoles 15?)
 
@@ -20,10 +20,7 @@ Para eso están! nada de --force o --unignore
 
 <-- en V2 implementar con sub-(sub-)-consultas
 
-
-- Detectar referencias circulares entre tablas.
-
-- Dar soporte para referencias circulares.
+------x---------
 
 
 - [ BUG ] Estaría dando error al correr las migraciones EN EL CONTEXTO de la creación de un usuario tipo "admin" 
@@ -53,6 +50,51 @@ Error:
   }
 
 <-- el error (considerando los archivos en el UPDATE) tiene que estar en la clase Config o en la DB
+
+----x-----
+
+- Los schemas deben poder sobre-escribirse sin ningún tipo de cuidado. 
+Para eso están! nada de --force o --unignore
+
+
+[ MAILER ]
+
+- Revisar qué está pasando con el envio de correos:
+
+  Auth method requested: UNSPECIFIED
+  Auth methods available on the server: LOGIN,PLAIN,XOAUTH2,PLAIN-CLIENTTOKEN,OAUTHBEARER,XOAUTH
+
+
+- Posibilitar enviar *correos* con *templates*  +++++++
+
+  Mails::sendMail()  
+
+    implementando $mail->addAttachment()
+
+----x---
+
+- Permitir "generar log de cada query ejecutada via modelos". Entonces existirían los métodos:
+
+    Model::enableLogs()
+    Model::disableLogs()
+    Model::getLogN(int $n, bool $formater)
+
+<-- ver cómo lo resuelve Laravel. Plantearse si el nombre de getLog() no debería dejarse para esta funcionalidad.
+
+
+
+- Caché para peticiones HTTP:
+
+  PHP HTTP Cache plugin and the PHP Cache Array adapter
+
+https://github.com/florianv/swap/blob/master/doc/readme.md
+
+
+- Detectar referencias circulares entre tablas.
+
+- Dar soporte para referencias circulares.
+
+
 
 
 - Al ejecutar una migración (migrate / rollback) correr inmediatamente y de forma automática:
