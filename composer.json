@@ -17,7 +17,11 @@
         "phpmailer/phpmailer": "^6.1",
         "symfony/polyfill-uuid": "^1.18",
         "vlucas/phpdotenv": "^5.2",
-        "jdorn/sql-formatter": "^1.2"
+        "jdorn/sql-formatter": "^1.2",
+        "php-http/curl-client": "^2.2",
+        "nyholm/psr7": "^1.4",
+        "php-http/message": "^1.12",
+        "florianv/swap": "^4.3"
     },
     "autoload": {
         "psr-4": {
