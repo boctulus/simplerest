@@ -27,12 +27,12 @@ class PrepareUpdateController extends ConsoleController
 
     function setup(){
         $ori = '/home/www/simplerest';
-        $dst = 'updates';
+        $dst = 'updates/2021-11-26-000000000001/files';
         //$dst = '/home/feli/Desktop/UPDATE';
         //$dst = '/home/www/html/simplerest-clone';
 
         // Solo para pruebas !!!!
-        Files::delTree($dst);
+        ////Files::delTree($dst);
 
         $str_files = <<<'FILES'
         config/constants.php
@@ -50,8 +50,8 @@ class PrepareUpdateController extends ConsoleController
         ;app/controllers/MyAuthController.php
         app/controllers/api/UserSpPermissions.php
         app/controllers/DownloadController.php
-        app/controllers/apis/Files.php
-        app/controllers/apis/Me.php
+        app/controllers/api/Files.php
+        app/controllers/api/Me.php
         app/models/main/CollectionsModel.php
         app/models/main/FolderOtherPermissionsModel.php
         app/models/main/FolderPermissionsModel.php
