@@ -21,8 +21,13 @@ class UpdateTaskMakePrimary implements IMigration
     {
 		$sc = new Schema('update_tasks');
 		$sc->field('uuid')->primary();
-		$sc->alter();
-		
+		$sc->alter();		
+    }
+
+    function down(){
+        $sc = new Schema('update_tasks');
+		$sc->field('uuid')->dropPrimary();
+		$sc->alter();		
     }
 }
 
