@@ -4720,7 +4720,7 @@ La clase Schema al momento de instanciarse ejecuta un método fromDB() pero con 
 		$this->fromDB();
 	}
 
-El método fromDB() analiza y almacena el schema al momento de la instanciación a fin de tenerlo como punto de partida para poder ejecutar comandos del tipo ALTER TABLE que en algunos casos requiere conocer el estado previo. 
+El método fromDB() analiza y almacena el schema al momento de la instanciación a fin de tenerlo como punto de partida para poder ejecutar comandos del tipo ALTER TABLE que en algunos casos requiere conocer el estado previo: la definición del campo se está agregando o alternado?
 
 Es posible utilizar el método para compactar migraciones o correrlas en reversa sin el método down().
 

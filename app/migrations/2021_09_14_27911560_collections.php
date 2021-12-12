@@ -31,7 +31,12 @@ class Collections implements IMigration
         ->foreign('belongs_to')->references($users_pri)->on($users_table)->onDelete('cascade');
 
         $res = $sc->create();
+    }
 
+
+    function down(){
+        $sc = new Schema('collections');
+        $sc->dropTableIfExists()->alter();
     }
 }
 

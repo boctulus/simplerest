@@ -21,11 +21,11 @@ class UserSpPermissionsDateTimeChanged implements IMigration
         $sc->alter();
     }
 
-    // public function down(){
-    //     $sc = new Schema('user_sp_permissions');
+    public function down(){
+        $sc = new Schema('user_sp_permissions');
 
-    //     $sc->datetime('created_at')->notNullable();
-    //     $sc->alter();
-    // }
+        $sc->datetime('created_at')->notNullable();
+        $sc->alter();
+    }
 }
 

@@ -332,6 +332,11 @@ class MigrationsController extends Controller
             $full_path = $path . '/'. ( isset($_dir) ? $_dir . '/' : '' ). $filename;
             $full_path = preg_replace('#/+#','/',$full_path);
            
+            if (!file_exists($full_path)){
+                StdOut::pprint("File '$full_path' doesn't exist");
+                exit;   
+            }
+
             require_once $full_path;
             
             $class_name = Strings::getClassNameByFileName($full_path);
