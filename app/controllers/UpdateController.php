@@ -24,7 +24,7 @@ class UpdateController extends ConsoleController
     // }
 
     /*
-        Verificar NO esté corriendo en mi PC para evitar un desastre
+        Verificar NO esté corriendo en mi PC para evitar un de  stre
     */
     protected function check(){
         $id = Hardware::UniqueMachineID();
@@ -35,13 +35,15 @@ class UpdateController extends ConsoleController
         }
     }     
 
-    protected function run_tasks(){
+    // protected
+    function run_tasks(){
         /*
-            Debe existir persistencia en algún lado SQLIte, archivo de texto,....
-            ... donde guardar QUE tareas ya fueron ejecutadas para evitar
-            correrlas dos veces !
+            Debe existir persistencia en algún lado 
 
-            Deben correr como las migraciones!
+            - Deben correr como las migraciones,... PERO....
+            - La base de datos tiene que estar CONTENIDA en el código fuente => 
+
+            Crear un archivo de texto por cada task ejecutada (emulando registros en 'migrations')
         */
 
         $update_path = static::$update_path . 'tasks/';
@@ -50,8 +52,8 @@ class UpdateController extends ConsoleController
         // include $update_path . '005-some-model-changes.php';
         // include $update_path . '006-move-models.php';
         // include $update_path . '007-change-model-namespaces.php';
-        //include $update_path . '008-delete-all-schemas.php';
-        //include $update_path . '009-regenerate-all-schemas.php';
+        // include $update_path . '008-delete-all-schemas.php';
+        // include $update_path . '009-regenerate-all-schemas.php';
         // include $update_path . '010-some-model-changes.php';
     }
 

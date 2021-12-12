@@ -17,14 +17,14 @@ use simplerest\libs\DB;
 class UpdateController extends ConsoleController
 {
     // This PATH will be AUTO-GENERATED
-    protected $update_path = ROOT_PATH . 'updates/2021-11-26-000000000001/';
+    static public $update_path = ROOT_PATH . 'updates/2021-11-26-000000000001/';
 
     // function make($name, ...$opt) {
     //     return (new MakeController)->update($name, $opt);
     // }
 
     /*
-        Verificar NO esté corriendo en mi PC para evitar un desastre
+        Verificar NO esté corriendo en mi PC para evitar un de  stre
     */
     protected function check(){
         $id = Hardware::UniqueMachineID();
@@ -35,7 +35,8 @@ class UpdateController extends ConsoleController
         }
     }     
 
-    protected function run_tasks(){
+    // protected
+    function run_tasks(){
         /*
             Debe existir persistencia en algún lado SQLIte, archivo de texto,....
             ... donde guardar QUE tareas ya fueron ejecutadas para evitar
@@ -44,21 +45,25 @@ class UpdateController extends ConsoleController
             Deben correr como las migraciones!
         */
 
-        $update_path = $this->update_path . 'tasks/';
+        $update_path = static::$update_path . 'tasks/';
 
+        include $update_path . '000-migrations.php';
         // include $update_path . '005-some-model-changes.php';
         // include $update_path . '006-move-models.php';
         // include $update_path . '007-change-model-namespaces.php';
-        //include $update_path . '008-delete-all-schemas.php';
-        //include $update_path . '009-regenerate-all-schemas.php';
+        // include $update_path . '008-delete-all-schemas.php';
+        // include $update_path . '009-regenerate-all-schemas.php';
         // include $update_path . '010-some-model-changes.php';
     }
 
     function install(...$opt){
         $this->check();
         
-        // first update relative path is hardcoded
-        $ori =  $this->update_path . 'files';
+        /*
+            Copy files 
+        */
+
+        $ori =  static::$update_path . 'files';
         $dst = ROOT_PATH;
 
         $except =  [
@@ -68,6 +73,12 @@ class UpdateController extends ConsoleController
         ];
 
         Files::copy($ori, $dst, null, $except);
+
+        /*
+            Run tasks
+        */
+
+        $this->run_tasks();
     }
 
     function rollback(...$opt){

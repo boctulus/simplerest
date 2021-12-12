@@ -15,4 +15,5 @@
     //StdOut::hideResponse();
 
     // Debo correr solo las migraciones que están dentro del update
-    $mgr->migrate("--to=$tenant", "--dir=" . UpdateController::$update_path);
+    $dir = UpdateController::$update_path . 'files/app/migrations/';
+    $mgr->migrate("--to=$tenant", "--dir=" . $dir);
