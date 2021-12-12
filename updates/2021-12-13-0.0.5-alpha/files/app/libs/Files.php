@@ -196,6 +196,8 @@ class Files
     */
     static function copy(string $ori, string $dst, ?Array $files = null, ?Array $except = null)
     {
+		$dst = Strings::removeTrailingSlash($dst);
+
 		$ori_with_trailing_slash = Strings::addTrailingSlash($ori);
 		$ori = Strings::removeTrailingSlash(trim($ori));
         $dst = trim($dst);

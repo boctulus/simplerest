@@ -27,7 +27,9 @@ class PrepareUpdateController extends ConsoleController
 
     function setup(){
         $ori = '/home/www/simplerest';
-        $dst = 'updates/2021-11-26-000000000001/files';   // <--- debe generarse y cambiar !!!
+        $dst = 'updates/2021-12-13-0.0.5-alpha/';   // <--- debe generarse y cambiar !!!
+
+        Files::copy($dst, ROOT_PATH, ['version.txt']); 
 
         $str_files = <<<'FILES'
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -101,7 +103,7 @@ class PrepareUpdateController extends ConsoleController
             'glob:*.zip'
         ];
 
-        Files::copy($ori, $dst, $files, $except);
+        Files::copy($ori, $dst . 'files', $files, $except);
     }
 
    
