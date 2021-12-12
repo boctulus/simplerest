@@ -18,12 +18,18 @@ Ej:
 		],
 	],
 
-
-- Desde ahora podrá ejecutar migraciones (migrate y rollback) con rutas absolutas mediante --file= 
-
+	
 - Ahora es posible crear migraciones en sub-sub-directorios:
 
 	php com make migration  --dir=test/sub/sub2 --name=books
+
+- Desde ahora podrá ejecutar migraciones (migrate y rollback) con rutas absolutas mediante --file= y --dir=
+
+Ej:
+
+	php com migrations migrate --dir=/home/my_user/desktop/my_migrations
+o 
+	php com migrations migrate --file=/home/my_user/desktop/my_migrations/some_migration.php
 
 - Se vuelve *opcional* especificar el "name" como primer parámetro en "make migration" o "migrations make" si se especifica la tabla o la clase:
 
