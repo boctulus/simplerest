@@ -6,7 +6,7 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class Prueba implements IMigration
+class TblProveedorConstrainst288 implements IMigration
 {
     /**
 	* Run migration.
@@ -15,13 +15,10 @@ class Prueba implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('update_tasks');
-
-        $sc
-        ->varchar('uuid', 36)->primary();
-
-        $sc->alter();
-		
+        Model::query("ALTER TABLE tbl_proveedor 
+  ADD CONSTRAINT FK_prv_idEstadoPersona FOREIGN KEY (est_intIdEstado)
+    REFERENCES tbl_estado(est_intId) ON DELETE NO ACTION ON UPDATE NO ACTION;
+");
     }
 }
 
