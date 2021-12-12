@@ -157,20 +157,12 @@ Ej:
 	}
 
 
-- Se resuelve problema por el que era necesario hardcodear credenciales en el helper db_dynamic_load.php y ahora pueden residir en archivo .env
+- No es más necesario hardcodear credenciales en el helper db_dynamic_load.php y ahora pueden residir en archivo .env
 
 - Se vuelve opcional el paquete DotEnv para manejo de variables de entorno. Se provee de la clase Env.
 
 - Se agregan nuevas funcionalidades para manejo de archivos en la librería Files
 
-- Se mejora el funcionamiento de la case Debug.
-
-- Se crea la librería StdOut para controlar el flujo hacia la salida estandar.
-
-- Se hace algo más eficiente la inspección de la base de datos favoreciendo la performance de HATEOAS.
+- Se hace algo más eficiente la inspección de la base de datos.
 
 - Se agrega la opción --unignore en el comando "make" para poder sobrescribir archivos aún cuando estén ignorados via .make_ignore (usar con precaución porque es la última guarda)
-
-- Fueron revisados que campos son fillables ("rellenables"). Se afectó Model y ApiController 
-
-- Se cambió campo automático "locked" por "is_locked". Se afectó Model y ApiController 
