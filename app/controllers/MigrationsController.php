@@ -10,7 +10,7 @@ use simplerest\libs\Schema;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
 use simplerest\libs\Strings;
-use simplerest\libs\Debug;
+use simplerest\libs\Files;
 use simplerest\libs\StdOut;
 
 class MigrationsController extends Controller
@@ -55,19 +55,24 @@ class MigrationsController extends Controller
                 $file_opt = true;
 
                 $_f = substr($o, 7);
-                            
-                if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
-                    $fr = explode(DIRECTORY_SEPARATOR, $_f);
 
-                    $_f = $fr[count($fr)-1];
+                if (Files::isAbsolutePath($_f)){
+                    $path = Files::getDir($_f);
+                    $_f = basename($_f);
+                } else {
+                    if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
+                        $fr = explode(DIRECTORY_SEPARATOR, $_f);
 
-                    unset($fr[count($fr)-1]);
-                    $path = implode(DIRECTORY_SEPARATOR, $fr) . DIRECTORY_SEPARATOR;
+                        $_f = $fr[count($fr)-1];
 
-                    if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
-                        $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
-                    }
-                } 
+                        unset($fr[count($fr)-1]);
+                        $path = implode(DIRECTORY_SEPARATOR, $fr) . DIRECTORY_SEPARATOR;
+
+                        if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
+                            $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
+                        }
+                    } 
+                }
 
                 $path = str_replace('//', '/', $path);
                 $filenames = [ $_f ];
@@ -95,7 +100,7 @@ class MigrationsController extends Controller
                 }
             }
         }
-        
+
         if (!$file_opt){
             foreach (new \DirectoryIterator($path) as $fileInfo) {
                 if($fileInfo->isDot()  || $fileInfo->isDir()) continue;
@@ -169,6 +174,12 @@ class MigrationsController extends Controller
             }
 
             $full_path = str_replace('//', '/', $path . '/'. $filename);
+
+            if (!file_exists($full_path)){
+                StdOut::pprint("Path $full_path does not exist !!!");
+                exit;
+            }
+
             require_once $full_path;
 
             $class_name = Strings::getClassNameByFileName($full_path);
@@ -209,8 +220,12 @@ class MigrationsController extends Controller
 
             $main = config()['db_connection_default'];
 
-            if ($to_db != null && $to_db != $main){
-                $data['db'] = $to_db;
+            if ($to_db == 'default'){
+                $to_db = $main;
+            } else {
+                if ($to_db != null && $to_db != $main){
+                    $data['db'] = $to_db;
+                }
             }
 
             //dd($data, 'DATA');
@@ -250,7 +265,7 @@ class MigrationsController extends Controller
 
                     $main = config()['db_connection_default'];
 
-                    if ($to_db == $main){
+                    if ($to_db == $main || $to_db == 'default'){
                         $to_db = '__NULL__';
                     }
                 }
@@ -271,18 +286,23 @@ class MigrationsController extends Controller
     
                     $_f = substr($o, 7); 
                                 
-                    if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
-                        $fr = explode(DIRECTORY_SEPARATOR, $_f);
-    
-                        $_f = $fr[count($fr)-1];
-    
-                        unset($fr[count($fr)-1]);
-                        $path = implode(DIRECTORY_SEPARATOR, $fr) . DIRECTORY_SEPARATOR;
-    
-                        if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
-                            $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
-                        }
-                    } 
+                    if (Files::isAbsolutePath($_f)){
+                        $path = Files::getDir($_f);
+                        $_f = basename($_f);
+                    } else {
+                        if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
+                            $fr = explode(DIRECTORY_SEPARATOR, $_f);
+        
+                            $_f = $fr[count($fr)-1];
+        
+                            unset($fr[count($fr)-1]);
+                            $path = implode(DIRECTORY_SEPARATOR, $fr) . DIRECTORY_SEPARATOR;
+        
+                            if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
+                                $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
+                            }
+                        } 
+                    }
     
                     $path = str_replace('//', '/', $path);
                     $filenames = [ $_f ];
@@ -587,8 +607,10 @@ class MigrationsController extends Controller
         migrations rollback --to=db_195 --dir=compania --simulate
         migrations rollback --to=main --step=2
         migrations rollback --file=2021_09_14_27910581_files.php --to:main
+        migrations rollback --file=/some/absolute/path/2021_09_14_27910581_files.php --to:main
 
         migrations migrate --file=2021_09_13_27908784_user_roles.php
+        migrations migrate --file=/some/absolute/path/2021_09_13_27908784_user_roles.php
         migrations migrate --dir=compania_new --to=db_flor
 
         migrations migrate --dir=compania --to=db_153 --step=2

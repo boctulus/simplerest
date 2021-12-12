@@ -58,34 +58,53 @@ class UpdateController extends ConsoleController
         $this->check();
         
         /*
-            First: copy files
+            Copy files (except for new migrations)
         */
+
         $ori =  $this->update_path . 'files';
         $dst = ROOT_PATH;
 
         $except =  [
             'db_dynamic_load.php',
             'docs/dev',
-            'glob:*.zip'
+            'glob:*.zip',
+            'app/migrations'
         ];
 
         Files::copy($ori, $dst, null, $except);
 
         /*
-            Run migrations
+            Directory for update migrations
+        */
 
-            Debería correr solo las migraciones que están dentro del update y 
-            estas deberían moverse a migrations/update
-            ejecutarse y...
-            volver a ser movidas al root de migrations
+        Files::mkDirOrFail(MIGRATIONS_PATH . '__updates');
+
+        $ori = $this->update_path . 'files/app/migrations';
+        $dst = MIGRATIONS_PATH . '__updates';
+
+        Files::copy($ori, $dst);
+
+        /*
+            Run new migrations
         */
 
         $mgr = new MigrationsController();
 
-        $tenant = 'main';
-        //StdOut::hideResponse();
+        $tenant = get_default_connection_id();
 
-        $mgr->migrate("--to=$tenant");
+        $mgr->migrate("--to=$tenant", "--dir=". '__updates');
+
+        /*
+            Move migrations to default dir.
+        */
+
+        // ....
+
+        /*
+            Run tasks
+        */
+
+        $this->run_tasks();
     }
 
     function rollback(...$opt){

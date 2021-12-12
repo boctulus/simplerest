@@ -18,6 +18,9 @@ Ej:
 		],
 	],
 
+
+- Desde ahora podrá ejecutar migraciones (migrate y rollback) con rutas absolutas mediante --file= 
+
 - Ahora es posible crear migraciones en sub-sub-directorios:
 
 	php com make migration  --dir=test/sub/sub2 --name=books
