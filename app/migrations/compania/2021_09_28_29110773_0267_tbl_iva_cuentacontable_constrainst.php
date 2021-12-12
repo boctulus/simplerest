@@ -6,7 +6,7 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class Zzz implements IMigration
+class TblIvaCuentacontableConstrainst267 implements IMigration
 {
     /**
 	* Run migration.
@@ -15,9 +15,9 @@ class Zzz implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('zzz');
-		$sc->alter();
-		
+        Model::query("ALTER TABLE tbl_iva_cuentacontable 
+  ADD CONSTRAINT FK_ivc_intIdActualizador FOREIGN KEY (usu_intIdActualizador)
+    REFERENCES tbl_usuario(usu_intId);");
     }
 }
 

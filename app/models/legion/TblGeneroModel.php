@@ -22,8 +22,8 @@ class TblGeneroModel extends MyModel
 
 	function onCreated(array &$data, $last_inserted_id)
 	{
-		dd($this->dd(true), 'SQL');
-		dd($this->getLastBindingParamters(), 'PARAMETERS');
+		// dd($this->dd(true), 'SQL');
+		// dd($this->getLastBindingParamters(), 'PARAMETERS');
 	}
 }
 

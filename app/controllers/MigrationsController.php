@@ -93,9 +93,13 @@ class MigrationsController extends Controller
                 $dir_opt = true;
                 $_dir    = substr($o, 6);
 
-                $path = MIGRATIONS_PATH . $_dir;
+                if (Files::isAbsolutePath($_dir)){
+                    $path = $_dir;
+                } else {
+                    $path = MIGRATIONS_PATH . $_dir;
+                }                
 
-                if (!file_exists($path)){
+                if (!is_dir($path)){
                     throw new \Exception("Directory $path doesn't exist");
                 }
             }
@@ -147,21 +151,27 @@ class MigrationsController extends Controller
         foreach ($filenames as $filename)
         { 
             if (!$retry){
-                if (table('migrations')
+                $m = table('migrations');
+
+                if ($m
                 ->where([
                     'filename' => $filename
                 ])
                 ->when($to_db != null, function ($q) use ($to_db) {
 
                     $q->group(function($q) use ($to_db){
-                        $q->whereNull('db', $to_db)
+                        $q
+                        //->whereNull('db', $to_db)
                         ->where(['db', $to_db]);
                     });
 
                 })
                 ->exists()){
+                    //d('SKIPING');
                     continue;
                 }
+
+                //d($m->getLog(), 'SQL');
             }
 
             if ($ix >= $cnt){
@@ -218,7 +228,7 @@ class MigrationsController extends Controller
                 'filename' => $filename
             ];
 
-            $main = config()['db_connection_default'];
+            $main = get_default_connection_id();
 
             if ($to_db == 'default'){
                 $to_db = $main;
@@ -274,7 +284,11 @@ class MigrationsController extends Controller
                     $dir_opt = true;
                     $_dir    = substr($o, 6);
     
-                    $path = MIGRATIONS_PATH . $_dir;
+                    if (Files::isAbsolutePath($_dir)){
+                        $path = $_dir;
+                    } else {
+                        $path = MIGRATIONS_PATH . $_dir;
+                    }                
     
                     if (!file_exists($path)){
                         throw new \Exception("Directory $path doesn't exist");
@@ -612,6 +626,7 @@ class MigrationsController extends Controller
         migrations migrate --file=2021_09_13_27908784_user_roles.php
         migrations migrate --file=/some/absolute/path/2021_09_13_27908784_user_roles.php
         migrations migrate --dir=compania_new --to=db_flor
+        migrations migrate --dir=/some/absolute/path --to=db_flor
 
         migrations migrate --dir=compania --to=db_153 --step=2
         migrations migrate --dir=compania --to=db_153 --skip=1
