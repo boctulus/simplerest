@@ -46,6 +46,7 @@ class UpdateController extends ConsoleController
 
         $update_path = static::$update_path . 'tasks/';
 
+        include $update_path . '000-migrations.php';
         // include $update_path . '005-some-model-changes.php';
         // include $update_path . '006-move-models.php';
         // include $update_path . '007-change-model-namespaces.php';
