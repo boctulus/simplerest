@@ -1220,6 +1220,9 @@ class Schema
 		
 		// Indices
 		
+		/*
+			Ver en versión con "pending changes" 
+		*/
 		if (count($this->indices) >0)
 		{			
 			$cmd = '';		
@@ -1238,6 +1241,9 @@ class Schema
 					case 'SPATIAL':
 						$cmd .= "ADD SPATIAL KEY `$nombre` (`$nombre`),\n";
 					break;
+					case 'FULLTEXT':
+						$cmd .= "ADD FULLTEXT KEY `$nombre` (`$nombre`),\n";  // sin probar
+						break;
 					
 					default:
 						throw new \Exception("Invalid index type");
@@ -1862,9 +1868,9 @@ class Schema
 					$def .= " ";	
 			}
 			
-			if (isset($field['attr'])){
-				$def .= "{$field['attr']} ";
-			}
+			// if (isset($field['attr'])){
+			// 	$def .= "{$field['attr']} ";
+			// }
 			
 			if (in_array($field['type'], ['CHAR', 'VARCHAR', 'TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'JSON', 'SET', 'ENUM'])){
 				$def .= "$charset $collation ";	

@@ -6,6 +6,10 @@ use simplerest\libs\Schema;
 
 class Roles implements IMigration
 {
+    function __construct(){
+        get_default_connection();
+    }
+    
     /**
 	* Run migration.
     *
@@ -13,8 +17,6 @@ class Roles implements IMigration
     */
     public function up()
     {
-        get_default_connection();
-
         $sc = (new Schema('roles'))
 
         ->setEngine('InnoDB')

@@ -6,7 +6,7 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class Files implements IMigration
+class UpdateTasks implements IMigration
 {
     function __construct(){
         get_default_connection();
@@ -19,16 +19,18 @@ class Files implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('files');
+        $sc = new Schema('update_tasks');
+        $sc
+        ->varchar('uuid', 36)->pri()  /* no está creando la PRI KEY */
+        ->varchar('filename', 50)
+        ->datetime('created_at');
 
-        $sc->varchar('uuid')->primary();
-        $sc->alter();
+		$sc->create();		
     }
 
-    public function down(){
-        $sc = new Schema('files');
-
-        $sc->dropPrimary('uuid')
+    function down(){
+        $sc = new Schema('update_tasks');
+        $sc->dropTableIfExists()
         ->alter();
     }
 }

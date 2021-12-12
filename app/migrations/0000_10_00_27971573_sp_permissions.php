@@ -8,6 +8,10 @@ use simplerest\libs\DB;
 
 class SpPermissions implements IMigration
 {
+    function __construct(){
+        get_default_connection();
+    }
+
     /**
 	* Run migration.
     *
@@ -15,8 +19,6 @@ class SpPermissions implements IMigration
     */
     public function up()
     {
-        DB::getDefaultConnection();
-
         DB::transaction(function(){
 
             Model::query("

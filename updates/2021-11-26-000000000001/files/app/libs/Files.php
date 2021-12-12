@@ -203,6 +203,15 @@ class Files
 		if (empty($files)){
 			$files = [];
 		} else {
+			foreach ($files as $ix => $f){
+				$f = trim($f);
+				$f = str_replace(["\r\n", "\r", "\n"], '', $f);
+
+				if (empty($f)){
+					unset($files[$ix]);
+				}
+			}
+
 			/*
 				Glob included files
 			*/
