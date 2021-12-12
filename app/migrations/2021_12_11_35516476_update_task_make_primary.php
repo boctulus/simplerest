@@ -6,8 +6,12 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class MyTable implements IMigration
+class UpdateTaskMakePrimary implements IMigration
 {
+    function __construct(){
+        get_default_connection();
+    }
+
     /**
 	* Run migration.
     *
@@ -15,9 +19,8 @@ class MyTable implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('my_tb');
-		$sc->dropPrimary();
-		$sc->unique('campo8','campo_otro');
+		$sc = new Schema('update_tasks');
+		$sc->field('uuid')->primary();
 		$sc->alter();
 		
     }

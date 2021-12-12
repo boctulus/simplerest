@@ -38,7 +38,7 @@ class Schema
 	protected $query;
 	protected $exec = true;
 
-	function __construct($tb_name){
+	function __construct(string $tb_name){
 		$this->tables = self::getTables();
 		$this->tb_name = $tb_name;
 		$this->fromDB();
@@ -1220,6 +1220,9 @@ class Schema
 		
 		// Indices
 		
+		/*
+			Ver en versión con "pending changes" 
+		*/
 		if (count($this->indices) >0)
 		{			
 			$cmd = '';		
@@ -1238,6 +1241,9 @@ class Schema
 					case 'SPATIAL':
 						$cmd .= "ADD SPATIAL KEY `$nombre` (`$nombre`),\n";
 					break;
+					case 'FULLTEXT':
+						$cmd .= "ADD FULLTEXT KEY `$nombre` (`$nombre`),\n";  // sin probar
+						break;
 					
 					default:
 						throw new \Exception("Invalid index type");
@@ -1493,6 +1499,11 @@ class Schema
 		return $this;
 	}	
 
+	function addFullText(string $column){
+		$this->commands[] = "ALTER TABLE ADD FULLTEXT INDEX(`$column`);";
+		return $this;
+	}
+
 	function dropForeign(string $constraint_name){
 		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP FOREIGN KEY `$constraint_name`";
 		return $this;
@@ -1553,6 +1564,9 @@ class Schema
 					$len = Strings::slice($str, '/\(([0-9,]+)\)/');					
 				}
 
+				$to_lo = function($s){ return strtolower($s); };
+				$to_up = function($s){ return strtoupper($s); };
+
 
 				$charset    = Strings::slice($str, '/CHARACTER SET ([a-z0-9_]+)/');
 				$collation  = Strings::slice($str, '/COLLATE ([a-z0-9_]+)/');
@@ -1565,9 +1579,27 @@ class Schema
 				//dd($nullable, "NULLABLE($field)");
 
 
-				
-				// [CONSTRAINT [symbol]] CHECK (expr) [[NOT] ENFORCED]	
-				$check   = Strings::sliceAll($str, '/CHECK \((.*)\) (ENFORCED|NOT ENFORCED)/');
+				/*
+					 Attributes
+				*/
+				$unsigned = Strings::slice($str, '/(unsigned)/i', $to_lo) == 'unsigned';
+				$zerofill = Strings::slice($str, '/(zerofill)/i', $to_lo) == 'zerofill';
+				$binary   = Strings::slice($str, '/(binary)/i'  , $to_lo) == 'binary';
+	
+				$attr = [];
+
+				if ($unsigned != null){
+					$attr[] = 'unsigned'; 
+				}
+
+				if ($zerofill != null){
+					$attr[] = 'zerofill';
+				}
+
+				if ($binary != null){
+					$attr[] = 'binary';
+				}
+
 					
 				//if (strlen($str)>1)
 				//	throw new \Exception("Parsing error!");				
@@ -1590,7 +1622,7 @@ class Schema
 
 				$this->prev_schema['fields'][$field]['type'] = strtoupper($type);
 				$this->prev_schema['fields'][$field]['auto'] = $auto; 
-				//$this->prev_schema['fields'][$field]['attr'] = ...
+				$this->prev_schema['fields'][$field]['attr'] = $attr;  // recién integrado 11-dic-2021
 				$this->prev_schema['fields'][$field]['len'] = $len;
 				$this->prev_schema['fields'][$field]['array'] = $array;
 				$this->prev_schema['fields'][$field]['nullable'] = $nullable;
@@ -1604,16 +1636,141 @@ class Schema
 				// Son índices de algún tipo
 				//dd($str, 'STR');
 				
-				// PRIMARY KEY (`id`),
-				$primary = Strings::slice($str, '/PRIMARY KEY \(`([a-zA-Z0-9_]+)`\)/');	
-				$unique  = Strings::sliceAll($str, '/UNIQUE KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');
-				$indexs  = Strings::sliceAll($str, '/KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');
+				$constraint = Strings::slice($str, '/CONSTRAINT `([a-zA-Z0-9_]+)` /', function($s){
+					return ($s != null) ? $s : 'DEFAULT';
+				});
+
+				/*
+
+					PRI KEY Simple:
+						PRIMARY KEY (`id`),
+
+					PRI KEY Compuesta:
+						PRIMARY KEY (`id`,`co`) USING BTREE
+
+					PRI KEY Con nombre: 
+						CONSTRAINT `pk_id` PRIMARY KEY (`id`,`co`) USING BTREE
+
+					
+					https://stackoverflow.com/a/3303836/980631
+
+				*/
+				$primary = Strings::slice($str, '/PRIMARY KEY \(`([a-zA-Z0-9_]+)`\)/');	// revisar
+
+				/*
+			
+					Compuesto:
+						UNIQUE KEY `correo` (`correo`,`hora`) USING BTREE,
+
+				*/
+				$unique  = Strings::sliceAll($str, '/UNIQUE KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');  // revisar				
+				
+				/*
+					Indices
+				*/
+		
+				$spatial  = Strings::sliceAll($str, '/SPATIAL KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
+
+				$fulltext = Strings::sliceAll($str, '/FULLTEXT KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
+		
+				/*
+					IDEM
+
+					https://dev.mysql.com/doc/refman/8.0/en/create-index.html
+				*/
+				$indexs  = Strings::sliceAll($str, '/KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/'); // revisar
+
+				$ix_type 			= Strings::slice($str, '/USING (BTREE|HASH)/');
+				$algorithm_option	= Strings::slice($str, '/ALGORITHM[ ]?[=]?[ ]?(DEFAULT|INPLACE|COPY)/');
+				$lock_option		= Strings::slice($str, '/LOCK[ ]?[=]?[ ]?(DEFAULT|NONE|SHARED|EXCLUSIVE)/');
 				
 				
-				// dd($primary);
-				// dd($unique);
-				// dd($index);
-				// echo "-----------\n";
+				/*
+					CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+
+					--[ CONSTRAINT ]-- 
+					'facturas_ibfk_1'
+
+
+					--[ FK ]-- 
+					'user_id'
+
+
+					--[ REFERENCES ]-- 
+					array (
+					0 => 'users',
+					1 => 'id',
+					)
+
+					--[ ON UPDATE ]-- 
+					NULL
+
+					--[ ON DELETE ]-- 
+					'CASCADE'
+
+				*/
+
+				$fk            = Strings::slice($str, '/FOREIGN KEY \(`([a-zA-Z0-9_]+)`\)/');
+				$fk_ref        = Strings::sliceAll($str, '/REFERENCES `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');
+				$fk_on_update  = Strings::slice($str, '/ON UPDATE (RESTRICT|NO ACTION|CASCADE|SET NULL)/');
+				$fk_on_delete  = Strings::slice($str, '/ON DELETE (RESTRICT|NO ACTION|CASCADE|SET NULL)/');
+
+				/*
+				if ($fk != null){
+					dd($fk, 'FK');
+					dd($fk_ref, 'REFERENCES');
+					dd($fk_on_update, 'ON UPDATE');
+					dd($fk_on_delete, 'ON DELETE'); 
+				}
+				*/
+
+				// [CONSTRAINT [symbol]] CHECK (expr) [[NOT] ENFORCED]	
+			$check   = Strings::sliceAll($str, '/CHECK \((.*)\) (ENFORCED|NOT ENFORCED)/');
+			
+			/*
+					Sin probar (req. MySQL 8.0+)
+
+					array(1) {
+						["checks"]=>
+						array(1) {
+							["post_content_check"]=>
+							array(1) {
+							[0]=>
+							array(2) {
+								[0]=>
+								string(94) " CASE WHEN DTYPE = 'Post' THEN CASE WHEN content IS NOT NULL THEN 1 ELSE 0 END ELSE 1 END = 1 "
+								[1]=>
+								string(12) "NOT ENFORCED"
+							}
+							}
+						}
+					}
+
+					https://stackoverflow.com/questions/7522026/how-do-i-add-a-custom-check-constraint-on-a-mysql-table
+				*/	
+				if ($check != null){
+					$prev_schema['checks'] [$constraint] [] = $check;   
+				} else {	
+					$check   = Strings::slice($str, '/CHECK \((.*)\)/');
+				
+					if ($check != null){
+						$prev_schema['checks'] [$constraint] [] = [$check]; 
+					}	
+				}			
+
+				$fn_rl = function($str){
+					return str_replace('`', '', $str);
+				};
+
+
+				/*
+				dd($constraint, 'CONSTRAINT', function($val){
+					return ($val != null);
+				});
+				*/
+				
+
+				//dd($str, "RESIDUO DE STR for {$lines[$i]}");					
 
 				
 				if ($primary != NULL){
@@ -1627,7 +1784,50 @@ class Schema
 						$this->prev_schema['indices'][$index] = 'INDEX';
 					}
 				}
+
+				// Probar en lugar del bloque anterior:
 				
+				// if ($primary != NULL){	
+				// 	$tmp = explode(',',$primary);
+				// 	$this->prev_schema['indices']['PRIMARY'] [$constraint ] = [
+				// 		'fields' =>	array_map($fn_rl, $tmp)
+				// 	];
+				// } elseif ($unique != NULL){
+				// 	$tmp = explode(',',$unique[1]);
+				// 	$this->prev_schema['indices']['UNIQUE']  [$unique[0]  ] = [
+				// 		'fields' => array_map($fn_rl, $tmp),
+				// 		'index_type' => $ix_type,
+				// 		'algorithm_option' => $algorithm_option,
+				// 		'lock_option' => $lock_option
+				// 	];
+				// } elseif ($spatial != NULL){
+				// 	$tmp = explode(',',$spatial[1]);
+				// 	$this->prev_schema['indices']['SPATIAL'] [$spatial[0] ] = [
+				// 		'fields' => array_map($fn_rl, $tmp),
+				// 		'index_type' => $ix_type,
+				// 		'algorithm_option' => $algorithm_option,
+				// 		'lock_option' => $lock_option
+				// 	];	
+				// } elseif ($fulltext != NULL){
+				// 	$tmp = explode(',',$fulltext[1]);
+				// 	$this->prev_schema['indices']['FULLTEXT'][$fulltext[0]] = [
+				// 		'fields' => array_map($fn_rl, $tmp),
+				// 		'index_type' => $ix_type,
+				// 		'algorithm_option' => $algorithm_option,
+				// 		'lock_option' => $lock_option
+				// 	];	
+				// } elseif ($index != NULL){
+				// 	$tmp = explode(',',$index[1]);
+				// 	$this->prev_schema['indices']['INDEX']   [$index[0]   ] = array_map($fn_rl, $tmp);
+				// } elseif ($fk != null){	
+				// 	$this->fks[$fk]['references'] = $fk_ref[1];	
+				// 	$this->fks[$fk]['on'] = $fk_ref[0];
+				// 	$this->fks[$fk]['on_delete'] = 	$fk_on_delete ?? 'NO ACTION';
+				// 	$this->fks[$fk]['on_update'] = 	$fk_on_update ?? 'NO ACTION';		
+				// }
+
+				
+
 			}
 		}
 		
@@ -1668,9 +1868,9 @@ class Schema
 					$def .= " ";	
 			}
 			
-			if (isset($field['attr'])){
-				$def .= "{$field['attr']} ";
-			}
+			// if (isset($field['attr'])){
+			// 	$def .= "{$field['attr']} ";
+			// }
 			
 			if (in_array($field['type'], ['CHAR', 'VARCHAR', 'TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'JSON', 'SET', 'ENUM'])){
 				$def .= "$charset $collation ";	
@@ -1736,6 +1936,9 @@ class Schema
 				break;
 				case "SPATIAL": 
 					$this->addSpatial($name);
+				break;
+				case "FULLTEXT": 
+					$this->addFullText($name);
 				break;
 			}
 		}
