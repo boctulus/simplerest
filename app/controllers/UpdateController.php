@@ -17,14 +17,14 @@ use simplerest\libs\DB;
 class UpdateController extends ConsoleController
 {
     // This PATH will be AUTO-GENERATED
-    static public $update_path = ROOT_PATH . 'updates/2021-11-26-000000000001/';
+    static public $update_path = ROOT_PATH . 'updates/2021-12-13-0.0.5-alpha/';
 
     // function make($name, ...$opt) {
     //     return (new MakeController)->update($name, $opt);
     // }
 
     /*
-        Verificar NO esté corriendo en mi PC para evitar un de  stre
+        Verificar NO esté corriendo en mi PC para evitar un desastre
     */
     protected function check(){
         $id = Hardware::UniqueMachineID();
@@ -36,7 +36,7 @@ class UpdateController extends ConsoleController
     }     
 
     // protected
-    function run_tasks(){
+    function run_batches(){
         /*
             Debe existir persistencia en algún lado 
 
@@ -46,7 +46,7 @@ class UpdateController extends ConsoleController
             Crear un archivo de texto por cada task ejecutada (emulando registros en 'migrations')
         */
 
-        $update_path = static::$update_path . 'tasks/';
+        $update_path = static::$update_path . 'batches/';
 
         include $update_path . '000-migrations.php';
         // include $update_path . '005-some-model-changes.php';
@@ -76,10 +76,10 @@ class UpdateController extends ConsoleController
         Files::copy($ori, $dst, null, $except);
 
         /*
-            Run tasks
+            Run batches
         */
 
-        $this->run_tasks();
+        $this->run_batches();
     }
 
     function rollback(...$opt){

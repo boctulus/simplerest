@@ -17,14 +17,14 @@ use simplerest\libs\DB;
 class UpdateController extends ConsoleController
 {
     // This PATH will be AUTO-GENERATED
-    static public $update_path = ROOT_PATH . 'updates/2021-11-26-000000000001/';
+    static public $update_path = ROOT_PATH . 'updates/2021-12-13-0.0.5-alpha/';
 
     // function make($name, ...$opt) {
     //     return (new MakeController)->update($name, $opt);
     // }
 
     /*
-        Verificar NO esté corriendo en mi PC para evitar un de  stre
+        Verificar NO esté corriendo en mi PC para evitar un desastre
     */
     protected function check(){
         $id = Hardware::UniqueMachineID();
@@ -38,11 +38,12 @@ class UpdateController extends ConsoleController
     // protected
     function run_tasks(){
         /*
-            Debe existir persistencia en algún lado SQLIte, archivo de texto,....
-            ... donde guardar QUE tareas ya fueron ejecutadas para evitar
-            correrlas dos veces !
+            Debe existir persistencia en algún lado 
 
-            Deben correr como las migraciones!
+            - Deben correr como las migraciones,... PERO....
+            - La base de datos tiene que estar CONTENIDA en el código fuente => 
+
+            Crear un archivo de texto por cada task ejecutada (emulando registros en 'migrations')
         */
 
         $update_path = static::$update_path . 'tasks/';
