@@ -6,7 +6,7 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class MyTb implements IMigration
+class Prueba implements IMigration
 {
     /**
 	* Run migration.
@@ -15,10 +15,12 @@ class MyTb implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('my_tb');
-		$sc->dropPrimary();
-		$sc->unique('campo8','campo_otro');
-		$sc->alter();
+        $sc = new Schema('update_tasks');
+
+        $sc
+        ->varchar('uuid', 36)->primary();
+
+        $sc->alter();
 		
     }
 }

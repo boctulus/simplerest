@@ -21,11 +21,11 @@ class UserTbPermissions implements IMigration
         $sc->alter();
     }
 
-    // public function down(){
-    //     $sc = new Schema('user_tb_permissions');
+    public function down(){
+        $sc = new Schema('user_tb_permissions');
 
-    //     $sc->datetime('created_at')->notNullable();
-    //     $sc->alter();
-    // }
+        $sc->datetime('created_at')->notNullable();
+        $sc->alter();
+    }
 }
 

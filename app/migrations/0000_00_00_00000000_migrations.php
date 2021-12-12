@@ -8,6 +8,10 @@ use simplerest\libs\DB;
 
 class Migrations implements IMigration
 {
+    function __construct(){
+        get_default_connection();
+    }
+    
     /**
 	* Run migration.
     *
@@ -15,8 +19,6 @@ class Migrations implements IMigration
     */
     public function up()
     {
-        get_default_connection();
-
         DB::beginTransaction();
         
         try {
@@ -63,7 +65,7 @@ class Migrations implements IMigration
                 DB::rollback();
                 throw $e;
             } catch (\Exception $e){
-                dd($e->getMessage(), "Transacción error");
+                d($e->getMessage(), "Transaction error");
                 throw $e;
             }
         } finally {
