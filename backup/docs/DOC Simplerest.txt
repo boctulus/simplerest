@@ -6408,7 +6408,7 @@ Ej:
 
 Copiar un archivo
 
-Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+Files::cp('updates/2021-12-13-0.0.5-alpha/files/app/controllers/ShopiController.php',
 'app/controllers/ShopiController.php');
 
 
@@ -6416,7 +6416,7 @@ Ej:
 
 Copiar un archivo a una ruta sin especificar el nombre en el destino
 
-Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+Files::cp('updates/2021-12-13-0.0.5-alpha/files/app/controllers/ShopiController.php',
 'app/controllers');
 
 Ej:
@@ -6424,7 +6424,7 @@ Ej:
 Crear un archivo y hacer un backup en caso de existir en el destino
 
 Files::setBackupDirectory(ROOT_PATH . 'backup'); 
-Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+Files::cp('updates/2021-12-13-0.0.5-alpha/files/app/controllers/ShopiController.php',
 'app/controllers/ShopiController.php');
 
 Ej:

@@ -27,6 +27,9 @@ if (!defined('APP_PATH'))
 if (!defined('BACKUP_PATH'))
 	define('BACKUP_PATH', ROOT_PATH  . 'backup' . DIRECTORY_SEPARATOR);
 
+if (!defined('UPDATE_PATH'))
+	define('UPDATE_PATH', ROOT_PATH  . 'updates' . DIRECTORY_SEPARATOR);
+
 if (!defined('CORE_PATH'))
     define('CORE_PATH', APP_PATH . 'core'. DIRECTORY_SEPARATOR);
     
