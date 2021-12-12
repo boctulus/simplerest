@@ -5834,7 +5834,7 @@ class DumbController extends Controller
 
     function test_cp(){
         Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        Files::cp('updates/2021-12-13-0.0.5-alpha/files/app/controllers/ShopiController.php',
         'app/controllers/ShopiController.php');        
     }
 
@@ -5843,7 +5843,7 @@ class DumbController extends Controller
     */
     function test_cp2(){
         Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        Files::cp('updates/2021-12-13-0.0.5-alpha/files/app/controllers/ShopiController.php',
         'app/controllers');        
     }
 
@@ -5852,13 +5852,13 @@ class DumbController extends Controller
     */
     function test_cp3(){
         Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        Files::cp('updates/2021-12-13-0.0.5-alpha/files/app/controllers/ShopiController.php',
         'app/controllers/');        
     }
 
     function test_cp_with_backup(){
         Files::setBackupDirectory(ROOT_PATH . 'backup'); 
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        Files::cp('updates/2021-12-13-0.0.5-alpha/files/app/controllers/ShopiController.php',
         'app/controllers/ShopiController.php');        
     }
 
@@ -5867,7 +5867,7 @@ class DumbController extends Controller
     */
     function test_cp_with_backup2(){
         Files::setBackupDirectory(ROOT_PATH . 'backup');
-        Files::cp('updates/2021-11-26-000000000001/files/app/controllers/ShopiController.php',
+        Files::cp('updates/2021-12-13-0.0.5-alpha/files/app/controllers/ShopiController.php',
         'app/controllers');        
     }
 
@@ -5998,7 +5998,7 @@ class DumbController extends Controller
         OJO !!! prodría ser una prueba peligrosa !
     */
     function test_copy_with_backup(){
-        $ori = '/home/www/simplerest/updates/2021-11-26-000000000001/files';
+        $ori = '/home/www/simplerest/updates/2021-12-13-0.0.5-alpha/files';
         $dst = '/home/www/simplerest_bk';
 
         Files::setBackupDirectory(ROOT_PATH . 'backup');
@@ -6127,7 +6127,7 @@ class DumbController extends Controller
             Deben correr como las migraciones!
         */
 
-        $update_path = ROOT_PATH . 'updates/2021-11-26-000000000001/tasks/';
+        $update_path = ROOT_PATH . 'updates/2021-12-13-0.0.5-alpha/tasks/';
 
         // include $update_path . '005-some-model-changes.php';
         // include $update_path . '006-move-models.php';

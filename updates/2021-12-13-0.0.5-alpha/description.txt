@@ -3,6 +3,22 @@ UPDATE DESCRIPTION
 
 - Se comienza la automatización de actualizaciones (updates) de SimpleRest
 
+- Actualización de sub-recursos (HATEOAS)
+
+Ej:
+
+	PATCH /api/v1/products/145?tenantid=az
+
+	{
+		"description": "xyz", 
+		"cost": 200,  
+		"size": "1.15L",
+
+		"valoraciones": [1,3,5],
+		"product_categories": 3,
+		"product_tags": [293]
+	}
+
 - Se crean "tenant groups" que permiten organizar en distintas carpetas modelos y schemas de distintas bases de datos y agrupar los que se se supone son de bases de datos con igual estructura. Esto permite que dos bases de datos puedan tener ocasionalmente tablas con el mismo nombre y distinta estructura.
 
 Ej:
@@ -161,7 +177,7 @@ Ej:
 
 - Se vuelve opcional el paquete DotEnv para manejo de variables de entorno. Se provee de la clase Env.
 
-- Se agregan nuevas funcionalidades para manejo de archivos en la librería Files
+- Se agregan nuevas y potentes funcionalidades para manejo de archivos en la librería Files
 
 - Se hace algo más eficiente la inspección de la base de datos.
 
