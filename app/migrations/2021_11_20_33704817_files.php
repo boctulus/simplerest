@@ -6,12 +6,12 @@ use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\libs\DB;
 
-class Files implements IMigration
+class FilesAddPri implements IMigration
 {
     function __construct(){
         get_default_connection();
     }
-    
+
     /**
 	* Run migration.
     *
