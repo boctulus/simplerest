@@ -17,7 +17,7 @@ use simplerest\libs\DB;
 class UpdateController extends ConsoleController
 {
     // This PATH will be AUTO-GENERATED
-    protected $update_path = ROOT_PATH . 'updates/2021-11-26-000000000001/';
+    static public $update_path = ROOT_PATH . 'updates/2021-11-26-000000000001/';
 
     // function make($name, ...$opt) {
     //     return (new MakeController)->update($name, $opt);
@@ -44,7 +44,7 @@ class UpdateController extends ConsoleController
             Deben correr como las migraciones!
         */
 
-        $update_path = $this->update_path . 'tasks/';
+        $update_path = static::$update_path . 'tasks/';
 
         // include $update_path . '005-some-model-changes.php';
         // include $update_path . '006-move-models.php';
@@ -58,47 +58,19 @@ class UpdateController extends ConsoleController
         $this->check();
         
         /*
-            Copy files (except for new migrations)
+            Copy files 
         */
 
-        $ori =  $this->update_path . 'files';
+        $ori =  static::$update_path . 'files';
         $dst = ROOT_PATH;
 
         $except =  [
             'db_dynamic_load.php',
             'docs/dev',
-            'glob:*.zip',
-            'app/migrations'
+            'glob:*.zip'
         ];
 
         Files::copy($ori, $dst, null, $except);
-
-        /*
-            Directory for update migrations
-        */
-
-        Files::mkDirOrFail(MIGRATIONS_PATH . '__updates');
-
-        $ori = $this->update_path . 'files/app/migrations';
-        $dst = MIGRATIONS_PATH . '__updates';
-
-        Files::copy($ori, $dst);
-
-        /*
-            Run new migrations
-        */
-
-        $mgr = new MigrationsController();
-
-        $tenant = get_default_connection_id();
-
-        $mgr->migrate("--to=$tenant", "--dir=". '__updates');
-
-        /*
-            Move migrations to default dir.
-        */
-
-        // ....
 
         /*
             Run tasks
