@@ -16,12 +16,27 @@ use simplerest\libs\DB;
 
 class UpdateController extends ConsoleController
 {
-    // This PATH will be AUTO-GENERATED
-    static public $update_path = ROOT_PATH . 'updates/2021-12-12-0.5.0-alpha/';
+    static public $update_path;
+    
+    function __construct()
+    {
+        $dirs = [];
+        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
+            if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
+            
+            $dirs[] = $fileInfo->getBasename();
+        }
 
-    // function make($name, ...$opt) {
-    //     return (new MakeController)->update($name, $opt);
-    // }
+        /*
+            La forma de ordenamiento no es del todo correcta !
+
+            1.0.1-beta < 1.0.11
+        */
+        sort($dirs);
+
+        $last_ver_dir = end($dirs);
+        static::$update_path = ROOT_PATH . 'updates/'. $last_ver_dir . '/';
+    }
 
     /*
         Verificar NO esté corriendo en mi PC para evitar un desastre
