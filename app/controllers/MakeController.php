@@ -5,6 +5,7 @@ namespace simplerest\controllers;
 use simplerest\core\MakeControllerBase;
 use simplerest\libs\DB;
 use simplerest\libs\Files;
+use simplerest\libs\StdOut;
 use simplerest\libs\Strings;
 
 
@@ -20,20 +21,92 @@ class MakeController extends MakeControllerBase
     */
 
     function update(string $version, ...$opt) {
+        Files::writableOrFail(UPDATE_PATH);
+
         $folder = substr(at(), 0, 10) . '-' . $version . DIRECTORY_SEPARATOR;
-        
+        $path   = UPDATE_PATH . $folder;
+
+        /*
+            Version validation
+        */
         if (!preg_match('/([0-9]+).([0-9]).([0-9]+)([-]?)([a-z]+)?([0-9])?/', $version)){
             throw new \InvalidArgumentException("Version '$version' has incorrect format for semantic versioning");
         }
 
-        $path = UPDATE_PATH . $folder;
+        $dirs = [];
+        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
+            if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
+            
+            $dirs[] = $fileInfo->getBasename();
+        }
+
+        /*
+            La forma de ordenamiento no es del todo correcta !
+
+            1.0.1-beta < 1.0.11
+        */
+        sort($dirs);
+
+        $last_ver = substr(end($dirs), 11);
+        
+        if ($folder < $last_ver){            
+            throw new \InvalidArgumentException("Version '$version' can not be inferior to ". $last_ver);
+        }
 
         Files::mkDirOrFail($path);
         Files::mkDirOrFail($path . 'files');
         Files::mkDirOrFail($path . 'batches');
 
         file_put_contents($path  . 'version.txt', $version);
-        file_put_contents($path  . 'description.txt', PHP_EOL);
+
+        if (!file_exists($path  . 'description.txt')){
+            file_put_contents($path  . 'description.txt', file_get_contents(CORE_PATH . 'templates/description.txt'));
+        }
     }
 
+
+    function batch(string $name, ...$opt) {
+        if (strlen($name)<5){
+            throw new \InvalidArgumentException("Batch name is too short. Please use 5 or more chars");
+        }
+
+        $name = str_replace(' ', '_', $name);
+
+        $dirs = [];
+        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
+            if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
+            
+            $dirs[] = $fileInfo->getBasename();
+        }
+
+        /*
+            La forma de ordenamiento no es del todo correcta !
+
+            1.0.1-beta < 1.0.11
+        */
+        sort($dirs);
+
+        $folder   = end($dirs);
+        $path     = UPDATE_PATH . $folder . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR;
+
+        $last_ver = substr($folder, 11);
+       
+        $date = date("Ymd");
+        $secs = time() - 1603750000;
+        $filename = $date . '-'. $secs . '-' . $name . '.php';
+
+        if (file_exists($path . $filename)){
+            throw new \InvalidArgumentException("File $filename already exists in $path");
+        }
+
+        $ok = file_put_contents($path . $filename, file_get_contents(TEMPLATES_PATH . 'UpdateBatch.php'));
+
+        Files::writableOrFail($path);
+        
+        if ($ok){
+            StdOut::pprint('File ' . $path . $filename . ' was created');
+        } else {
+            StdOut::pprint('Error trying to write file ' . $path . $filename);
+        }        
+    }
 }

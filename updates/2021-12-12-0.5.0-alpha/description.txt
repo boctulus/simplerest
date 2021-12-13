@@ -1,0 +1,186 @@
+UPDATE DESCRIPTION
+==================
+
+- Se comienza la automatización de actualizaciones (updates) de SimpleRest
+
+- Actualización de sub-recursos (HATEOAS)
+
+Ej:
+
+	PATCH /api/v1/products/145?tenantid=az
+
+	{
+		"description": "xyz", 
+		"cost": 200,  
+		"size": "1.15L",
+
+		"valoraciones": [1,3,5],
+		"product_categories": 3,
+		"product_tags": [293]
+	}
+
+- Se crean "tenant groups" que permiten organizar en distintas carpetas modelos y schemas de distintas bases de datos y agrupar los que se se supone son de bases de datos con igual estructura. Esto permite que dos bases de datos puedan tener ocasionalmente tablas con el mismo nombre y distinta estructura.
+
+Ej:
+
+	'tentant_groups' => [
+		'legion' => [
+		  'db_[0-9]+',
+		  'db_legion',
+		  'db_flor'
+		],
+		'az' => [
+		  'az'
+		],
+	],
+
+	
+- Ahora es posible crear migraciones en sub-sub-directorios:
+
+	php com make migration  --dir=test/sub/sub2 --name=books
+
+- Desde ahora podrá ejecutar migraciones (migrate y rollback) con rutas absolutas mediante --file= y --dir=
+
+Ej:
+
+	php com migrations migrate --dir=/home/my_user/desktop/my_migrations
+o 
+	php com migrations migrate --file=/home/my_user/desktop/my_migrations/some_migration.php
+
+- Se vuelve *opcional* especificar el "name" como primer parámetro en "make migration" o "migrations make" si se especifica la tabla o la clase:
+
+Antes:
+	php com make migration books [ otros parámetros ]
+
+Ahora:
+
+	php com make migration --dir=test --name=books
+	php com make migration --class_name=Books
+	php com make migration --table=books
+	php com make migration --class_name=BooksRenameColumn --table=books
+
+- Se habilita la creación de "migraciones inline" para simplificar la creación de migraciones en principio de ALTER TABLEs.
+
+Ej:
+
+	php com make migration --dir=test --table=bar --addPrimary=id 
+
+genera:
+
+	<?php
+
+	use simplerest\core\interfaces\IMigration;
+	use simplerest\libs\Factory;
+	use simplerest\libs\Schema;
+	use simplerest\core\Model;
+	use simplerest\libs\DB;
+
+	class Bar implements IMigration
+	{
+		/**
+		* Run migration.
+		*
+		* @return void
+		*/
+		public function up()
+		{
+			$sc = new Schema('bar');
+			$sc->field('id')->primary();
+			$sc->alter();			
+		}
+	}
+
+Para saber se está qué generando se proveen dos parámetros adicionales:  --cat y --no-save 
+
+	--cat		muestra por pantalla (terminal) el archivo a generar
+	--no-save	evita guardarlo (útil para debugging)
+
+Nuevos parámetros disponibles -generalmente combinables- son:
+
+	--dropColumn=
+	--renameColumn=	
+	--nullable=
+	--dropNullable=
+	--primary=
+	--dropPrimary=
+	--auto=
+	--dropAuto
+	--unsigned=
+	--zeroFill=
+	--binary=
+	--dropAttr=
+	--addUnique=
+	--dropUnique=
+	--dropSpatial=
+	--addIndex=
+	--dropIndex=
+	--dropForeign=
+	--renameTable=
+	--truncate	
+	--cat
+	--no-save
+
+	--fk= | --foreign= 
+	--references=  | --reference= | --toField=
+	--on=  | --onTable | --toTable=
+	--onDelete={cascade|restrict|setNull|noAction|setDefault} 
+	--onUpdate={cascade|restrict|setNull|noAction|setDefault}
+	--constraint=
+
+Ej:
+
+	php com make migration --name=nombre_tabla --pri=campo9,campo10 --auto=campo9 --dropColumn=campo1 --renameColumn=campo2,campo2b --removeColumn=campo3 --addUnique=campo2,campo3,campo5 --removeUnique=campo8 --renameTable=nuevo_nombre_tabla --nullable=campo4 --nullable=campo7 --dropNullable=campo8 -unsigned=campo5 --zeroFill=campo5 --nullable=campo15 --dropNullable=campo20,campo21 --dropColumn=campo18,campo30 --cat --no-save
+
+"genera":
+
+	<?php
+
+	use simplerest\core\interfaces\IMigration;
+	use simplerest\libs\Factory;
+	use simplerest\libs\Schema;
+	use simplerest\core\Model;
+	use simplerest\libs\DB;
+
+	class NombreTabla implements IMigration
+	{
+		/**
+		* Run migration.
+		*
+		* @return void
+		*/
+		public function up()
+		{
+			$sc->renameTableTo('nuevo_nombre_tabla');
+			$sc->dropColumn('campo1');
+			$sc->dropColumn('campo3');
+			$sc->dropColumn('campo18');
+			$sc->dropColumn('campo30');
+			$sc->renameColumn('campo2', 'campo2b');
+			$sc->field('campo4')->nullable();
+			$sc->field('campo7')->nullable();
+			$sc->field('campo15')->nullable();
+			$sc->field('campo8')->dropNullable();
+			$sc->field('campo20')->dropNullable();
+			$sc->field('campo21')->dropNullable();
+			$sc->field('campo9')->primary();
+			$sc->field('campo10')->primary();
+			$sc->field('campo9')->addAuto();
+			$sc->field('campo5')->zeroFill();
+			$sc->unique('campo2','campo3','campo5');
+			$sc->dropUnique('campo8');
+			$sc->alter();			
+		}
+	}
+
+
+- No es más necesario hardcodear credenciales en el helper db_dynamic_load.php y ahora pueden residir en archivo .env
+
+- Se vuelve opcional el paquete DotEnv para manejo de variables de entorno. Se provee de la clase Env.
+
+- Se agregan nuevas y potentes funcionalidades para manejo de archivos en la librería Files
+
+- Se hace algo más eficiente la inspección de la base de datos.
+
+- Se agrega la opción --unignore en el comando "make" para poder sobrescribir archivos aún cuando estén ignorados via .make_ignore (usar con precaución porque es la última guarda)
+
+
