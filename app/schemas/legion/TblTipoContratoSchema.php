@@ -17,7 +17,7 @@ class TblTipoContratoSchema implements ISchema
 			'attr_types'	=> [
 				'tic_intId' => 'INT',
 				'tic_varNombre' => 'STR',
-				'tic_varDescripcion' => 'STR',
+				'tic_lonDescripcion' => 'STR',
 				'tic_varCodigoDian' => 'STR',
 				'tic_dtimFechaCreacion' => 'STR',
 				'tic_dtimFechaActualizacion' => 'STR',
@@ -30,20 +30,20 @@ class TblTipoContratoSchema implements ISchema
 
 			'autoincrement' => 'tic_intId',
 
-			'nullable'		=> ['tic_intId', 'tic_dtimFechaCreacion', 'tic_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['tic_intId', 'tic_dtimFechaCreacion', 'tic_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'tic_intId' => ['type' => 'int'],
 				'tic_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
-				'tic_varDescripcion' => ['type' => 'str', 'required' => true],
+				'tic_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'tic_varCodigoDian' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'tic_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tic_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],

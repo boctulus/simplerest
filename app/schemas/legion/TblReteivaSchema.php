@@ -6,74 +6,80 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class TblIvaCuentacontableSchema implements ISchema
+class TblReteivaSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'tbl_iva_cuentacontable',
+			'table_name'	=> 'tbl_reteiva',
 
-			'id_name'		=> 'ivc_intId',
+			'id_name'		=> 'riv_intId',
 
 			'attr_types'	=> [
-				'ivc_intId' => 'INT',
-				'ivc_intIdIva' => 'INT',
-				'ivc_intIdCuentaContable' => 'INT',
-				'ivc_dtimFechaCreacion' => 'STR',
-				'ivc_dtimFechaActualizacion' => 'STR',
+				'riv_intId' => 'INT',
+				'riv_varReteIva' => 'STR',
+				'riv_intTope' => 'INT',
+				'riv_decPorcentaje' => 'STR',
+				'riv_dtimFechaCreacion' => 'STR',
+				'riv_dtimFechaActualizacion' => 'STR',
+				'est_intIdEstado' => 'INT',
+				'sub_intIdsubcuentacontable' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'primary'		=> ['ivc_intId', 'ivc_intIdIva', 'ivc_intIdCuentaContable'],
+			'primary'		=> ['riv_intId'],
 
-			'autoincrement' => 'ivc_intId',
+			'autoincrement' => 'riv_intId',
 
-			'nullable'		=> ['ivc_intId', 'ivc_dtimFechaCreacion', 'ivc_dtimFechaActualizacion'],
+			'nullable'		=> ['riv_intId', 'riv_dtimFechaCreacion', 'riv_dtimFechaActualizacion', 'est_intIdEstado', 'sub_intIdsubcuentacontable'],
 
-			'uniques'		=> [],
+			'uniques'		=> ['riv_varReteIva'],
 
 			'rules' 		=> [
-				'ivc_intId' => ['type' => 'int'],
-				'ivc_intIdIva' => ['type' => 'int', 'required' => true],
-				'ivc_intIdCuentaContable' => ['type' => 'int', 'required' => true],
-				'ivc_dtimFechaCreacion' => ['type' => 'datetime'],
-				'ivc_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'riv_intId' => ['type' => 'int'],
+				'riv_varReteIva' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'riv_intTope' => ['type' => 'int', 'required' => true],
+				'riv_decPorcentaje' => ['type' => 'decimal(10,2)', 'required' => true],
+				'riv_dtimFechaCreacion' => ['type' => 'datetime'],
+				'riv_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'sub_intIdsubcuentacontable' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['ivc_intIdIva', 'ivc_intIdCuentaContable', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'sub_intIdsubcuentacontable', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
-				'tbl_iva' => [
-					['tbl_iva.iva_intId','tbl_iva_cuentacontable.ivc_intIdIva']
+				'tbl_estado' => [
+					['tbl_estado.est_intId','tbl_reteiva.est_intIdEstado']
 				],
 				'tbl_sub_cuenta_contable' => [
-					['tbl_sub_cuenta_contable.sub_intId','tbl_iva_cuentacontable.ivc_intIdCuentaContable']
+					['tbl_sub_cuenta_contable.sub_intId','tbl_reteiva.sub_intIdsubcuentacontable']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_iva_cuentacontable.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_iva_cuentacontable.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_reteiva.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_reteiva.usu_intIdCreador']
 				],
-				'tbl_llave_impuesto' => [
-					['tbl_llave_impuesto.iva_intIdIvaCuentaContable','tbl_iva_cuentacontable.ivc_intId']
+				'tbl_cliente_reteiva_cuentacontable' => [
+					['tbl_cliente_reteiva_cuentacontable.ric_intIdReteiva','tbl_reteiva.riv_intId']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'tbl_iva' => 
+				  'tbl_estado' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_iva',
-				        1 => 'iva_intId',
+				        0 => 'tbl_estado',
+				        1 => 'est_intId',
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
-				        1 => 'ivc_intIdIva',
+				        0 => 'tbl_reteiva',
+				        1 => 'est_intIdEstado',
 				      ),
 				    ),
 				  ),
@@ -88,8 +94,8 @@ class TblIvaCuentacontableSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
-				        1 => 'ivc_intIdCuentaContable',
+				        0 => 'tbl_reteiva',
+				        1 => 'sub_intIdsubcuentacontable',
 				      ),
 				    ),
 				  ),
@@ -105,7 +111,7 @@ class TblIvaCuentacontableSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
+				        0 => 'tbl_reteiva',
 				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
@@ -119,56 +125,56 @@ class TblIvaCuentacontableSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
+				        0 => 'tbl_reteiva',
 				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				  ),
-				  'tbl_llave_impuesto' => 
+				  'tbl_cliente_reteiva_cuentacontable' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_llave_impuesto',
-				        1 => 'iva_intIdIvaCuentaContable',
+				        0 => 'tbl_cliente_reteiva_cuentacontable',
+				        1 => 'ric_intIdReteiva',
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
-				        1 => 'ivc_intId',
+				        0 => 'tbl_reteiva',
+				        1 => 'riv_intId',
 				      ),
 				    ),
 				  ),
 				),
 
 			'relationships_from' => [
-				'tbl_iva' => [
-					['tbl_iva.iva_intId','tbl_iva_cuentacontable.ivc_intIdIva']
+				'tbl_estado' => [
+					['tbl_estado.est_intId','tbl_reteiva.est_intIdEstado']
 				],
 				'tbl_sub_cuenta_contable' => [
-					['tbl_sub_cuenta_contable.sub_intId','tbl_iva_cuentacontable.ivc_intIdCuentaContable']
+					['tbl_sub_cuenta_contable.sub_intId','tbl_reteiva.sub_intIdsubcuentacontable']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_iva_cuentacontable.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_iva_cuentacontable.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_reteiva.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_reteiva.usu_intIdCreador']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'tbl_iva' => 
+				  'tbl_estado' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_iva',
-				        1 => 'iva_intId',
+				        0 => 'tbl_estado',
+				        1 => 'est_intId',
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
-				        1 => 'ivc_intIdIva',
+				        0 => 'tbl_reteiva',
+				        1 => 'est_intIdEstado',
 				      ),
 				    ),
 				  ),
@@ -183,8 +189,8 @@ class TblIvaCuentacontableSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
-				        1 => 'ivc_intIdCuentaContable',
+				        0 => 'tbl_reteiva',
+				        1 => 'sub_intIdsubcuentacontable',
 				      ),
 				    ),
 				  ),
@@ -200,7 +206,7 @@ class TblIvaCuentacontableSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
+				        0 => 'tbl_reteiva',
 				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
@@ -214,7 +220,7 @@ class TblIvaCuentacontableSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
+				        0 => 'tbl_reteiva',
 				        1 => 'usu_intIdCreador',
 				      ),
 				    ),

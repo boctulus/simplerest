@@ -38,25 +38,32 @@ class TblFacturaSchema implements ISchema
 				'fac_dtimFechaActualizacion' => 'STR',
 				'fac_varNota' => 'STR',
 				'fac_bolPagado' => 'INT',
+				'fac_bolEnviadoDian' => 'INT',
+				'fac_bolNotaCredito' => 'INT',
+				'fac_bolNotaDebito' => 'INT',
+				'fac_lonCUFEDian' => 'STR',
+				'fac_dateFechaEmision' => 'STR',
+				'tmp_intIdMedioPago' => 'INT',
+				'tdp_intIdFormaPago' => 'INT',
 				'cen_intIdCentrocostos' => 'INT',
-				'doc_intDocumento' => 'INT',
+				'doc_intIdDocumento' => 'INT',
 				'cse_intIdConsecutivo' => 'INT',
 				'per_intIdPersona' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'primary'		=> ['fac_intId', 'fac_varNroDocumento'],
+			'primary'		=> ['fac_intId'],
 
 			'autoincrement' => 'fac_intId',
 
-			'nullable'		=> ['fac_intId', 'fac_bolEstado', 'fac_dtimFechaCreacion', 'fac_dtimFechaActualizacion', 'fac_bolPagado'],
+			'nullable'		=> ['fac_intId', 'fac_varNroDocumento', 'fac_bolEstado', 'fac_dtimFechaCreacion', 'fac_dtimFechaActualizacion', 'fac_bolPagado', 'fac_bolEnviadoDian', 'fac_bolNotaCredito', 'fac_bolNotaDebito', 'fac_lonCUFEDian', 'fac_dateFechaEmision', 'tmp_intIdMedioPago', 'tdp_intIdFormaPago'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'fac_intId' => ['type' => 'int'],
-				'fac_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'fac_varNroDocumento' => ['type' => 'str', 'max' => 20],
 				'fac_decCantidadTotal' => ['type' => 'decimal(18,2)', 'required' => true],
 				'fac_decBruto' => ['type' => 'decimal(18,2)', 'required' => true],
 				'fac_decDescuento' => ['type' => 'decimal(18,2)', 'required' => true],
@@ -78,15 +85,22 @@ class TblFacturaSchema implements ISchema
 				'fac_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'fac_varNota' => ['type' => 'str', 'required' => true],
 				'fac_bolPagado' => ['type' => 'bool'],
+				'fac_bolEnviadoDian' => ['type' => 'bool'],
+				'fac_bolNotaCredito' => ['type' => 'bool'],
+				'fac_bolNotaDebito' => ['type' => 'bool'],
+				'fac_lonCUFEDian' => ['type' => 'str'],
+				'fac_dateFechaEmision' => ['type' => 'datetime'],
+				'tmp_intIdMedioPago' => ['type' => 'int'],
+				'tdp_intIdFormaPago' => ['type' => 'int'],
 				'cen_intIdCentrocostos' => ['type' => 'int', 'required' => true],
-				'doc_intDocumento' => ['type' => 'int', 'required' => true],
+				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
 				'cse_intIdConsecutivo' => ['type' => 'int', 'required' => true],
 				'per_intIdPersona' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['cen_intIdCentrocostos', 'cse_intIdConsecutivo', 'doc_intDocumento', 'per_intIdPersona', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['cen_intIdCentrocostos', 'cse_intIdConsecutivo', 'doc_intIdDocumento', 'tdp_intIdFormaPago', 'per_intIdPersona', 'tmp_intIdMedioPago', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_centro_costos' => [
@@ -96,14 +110,23 @@ class TblFacturaSchema implements ISchema
 					['tbl_consecutivo.cse_intId','tbl_factura.cse_intIdConsecutivo']
 				],
 				'tbl_documento' => [
-					['tbl_documento.doc_intId','tbl_factura.doc_intDocumento']
+					['tbl_documento.doc_intId','tbl_factura.doc_intIdDocumento']
+				],
+				'tbl_forma_de_pago' => [
+					['tbl_forma_de_pago.fdp_intId','tbl_factura.tdp_intIdFormaPago']
 				],
 				'tbl_persona' => [
 					['tbl_persona.per_intId','tbl_factura.per_intIdPersona']
 				],
+				'tbl_medio_pago' => [
+					['tbl_medio_pago.tmp_intId','tbl_factura.tmp_intIdMedioPago']
+				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_factura.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_factura.usu_intIdCreador']
+				],
+				'tbl_nota_credito' => [
+					['tbl_nota_credito.fac_intIdFactura','tbl_factura.fac_intId']
 				],
 				'tbl_factura_detalle' => [
 					['tbl_factura_detalle.fac_intIdFactura','tbl_factura.fac_intId']
@@ -155,7 +178,23 @@ class TblFacturaSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_factura',
-				        1 => 'doc_intDocumento',
+				        1 => 'doc_intIdDocumento',
+				      ),
+				    ),
+				  ),
+				  'tbl_forma_de_pago' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_forma_de_pago',
+				        1 => 'fdp_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_factura',
+				        1 => 'tdp_intIdFormaPago',
 				      ),
 				    ),
 				  ),
@@ -172,6 +211,22 @@ class TblFacturaSchema implements ISchema
 				      array (
 				        0 => 'tbl_factura',
 				        1 => 'per_intIdPersona',
+				      ),
+				    ),
+				  ),
+				  'tbl_medio_pago' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_medio_pago',
+				        1 => 'tmp_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_factura',
+				        1 => 'tmp_intIdMedioPago',
 				      ),
 				    ),
 				  ),
@@ -206,6 +261,22 @@ class TblFacturaSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'tbl_nota_credito' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_nota_credito',
+				        1 => 'fac_intIdFactura',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_factura',
+				        1 => 'fac_intId',
+				      ),
+				    ),
+				  ),
 				  'tbl_factura_detalle' => 
 				  array (
 				    0 => 
@@ -232,10 +303,16 @@ class TblFacturaSchema implements ISchema
 					['tbl_consecutivo.cse_intId','tbl_factura.cse_intIdConsecutivo']
 				],
 				'tbl_documento' => [
-					['tbl_documento.doc_intId','tbl_factura.doc_intDocumento']
+					['tbl_documento.doc_intId','tbl_factura.doc_intIdDocumento']
+				],
+				'tbl_forma_de_pago' => [
+					['tbl_forma_de_pago.fdp_intId','tbl_factura.tdp_intIdFormaPago']
 				],
 				'tbl_persona' => [
 					['tbl_persona.per_intId','tbl_factura.per_intIdPersona']
+				],
+				'tbl_medio_pago' => [
+					['tbl_medio_pago.tmp_intId','tbl_factura.tmp_intIdMedioPago']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_factura.usu_intIdActualizador'],
@@ -288,7 +365,23 @@ class TblFacturaSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_factura',
-				        1 => 'doc_intDocumento',
+				        1 => 'doc_intIdDocumento',
+				      ),
+				    ),
+				  ),
+				  'tbl_forma_de_pago' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_forma_de_pago',
+				        1 => 'fdp_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_factura',
+				        1 => 'tdp_intIdFormaPago',
 				      ),
 				    ),
 				  ),
@@ -305,6 +398,22 @@ class TblFacturaSchema implements ISchema
 				      array (
 				        0 => 'tbl_factura',
 				        1 => 'per_intIdPersona',
+				      ),
+				    ),
+				  ),
+				  'tbl_medio_pago' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_medio_pago',
+				        1 => 'tmp_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_factura',
+				        1 => 'tmp_intIdMedioPago',
 				      ),
 				    ),
 				  ),

@@ -17,7 +17,8 @@ class TblOperadorPilaSchema implements ISchema
 			'attr_types'	=> [
 				'opp_intId' => 'INT',
 				'opp_varCodigo' => 'STR',
-				'opp_varDescripcion' => 'STR',
+				'opp_varNombre' => 'STR',
+				'opp_lonDescripcion' => 'STR',
 				'opp_dtimFechaCreacion' => 'STR',
 				'opp_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -29,22 +30,23 @@ class TblOperadorPilaSchema implements ISchema
 
 			'autoincrement' => 'opp_intId',
 
-			'nullable'		=> ['opp_intId', 'opp_dtimFechaCreacion', 'opp_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['opp_intId', 'opp_dtimFechaCreacion', 'opp_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'opp_intId' => ['type' => 'int'],
 				'opp_varCodigo' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'opp_varDescripcion' => ['type' => 'str', 'max' => 300, 'required' => true],
+				'opp_varNombre' => ['type' => 'str', 'max' => 150, 'required' => true],
+				'opp_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'opp_dtimFechaCreacion' => ['type' => 'datetime'],
 				'opp_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_estado' => [
@@ -53,6 +55,9 @@ class TblOperadorPilaSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_operador_pila.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_operador_pila.usu_intIdCreador']
+				],
+				'tbl_empresa_nomina' => [
+					['tbl_empresa_nomina.opp_intIdOperador','tbl_operador_pila.opp_intId']
 				],
 				'tbl_empresa' => [
 					['tbl_empresa.opp_intIdOperador','tbl_operador_pila.opp_intId']
@@ -104,6 +109,22 @@ class TblOperadorPilaSchema implements ISchema
 				      array (
 				        0 => 'tbl_operador_pila',
 				        1 => 'usu_intIdCreador',
+				      ),
+				    ),
+				  ),
+				  'tbl_empresa_nomina' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empresa_nomina',
+				        1 => 'opp_intIdOperador',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_operador_pila',
+				        1 => 'opp_intId',
 				      ),
 				    ),
 				  ),

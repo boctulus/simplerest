@@ -6,59 +6,63 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class TblProveedorInformacionTributariaSchema implements ISchema
+class TblReteIcaSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'tbl_proveedor_informacion_tributaria',
+			'table_name'	=> 'tbl_rete_ica',
 
-			'id_name'		=> 'tip_intId',
+			'id_name'		=> 'ric_intId',
 
 			'attr_types'	=> [
-				'tip_intId' => 'INT',
-				'tip_dtimFechaCreacion' => 'STR',
-				'tip_dtimFechaActualizacion' => 'STR',
+				'ric_intId' => 'INT',
+				'ric_varReteica' => 'STR',
+				'ric_intTope' => 'INT',
+				'ric_decPorcentaje' => 'STR',
+				'ric_dtimFechaCreacion' => 'STR',
+				'ric_dtimFechaActualizacion' => 'STR',
 				'sub_intIdSubCuentaContable' => 'INT',
-				'prv_intIdProveedor' => 'INT',
 				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'primary'		=> ['tip_intId'],
+			'primary'		=> ['ric_intId'],
 
-			'autoincrement' => 'tip_intId',
+			'autoincrement' => 'ric_intId',
 
-			'nullable'		=> ['tip_intId', 'tip_dtimFechaCreacion', 'tip_dtimFechaActualizacion', 'sub_intIdSubCuentaContable', 'prv_intIdProveedor', 'est_intIdEstado'],
+			'nullable'		=> ['ric_intId', 'ric_dtimFechaCreacion', 'ric_dtimFechaActualizacion', 'sub_intIdSubCuentaContable', 'est_intIdEstado'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'tip_intId' => ['type' => 'int'],
-				'tip_dtimFechaCreacion' => ['type' => 'datetime'],
-				'tip_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'ric_intId' => ['type' => 'int'],
+				'ric_varReteica' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'ric_intTope' => ['type' => 'int', 'required' => true],
+				'ric_decPorcentaje' => ['type' => 'decimal(18,2)', 'required' => true],
+				'ric_dtimFechaCreacion' => ['type' => 'datetime'],
+				'ric_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'sub_intIdSubCuentaContable' => ['type' => 'int'],
-				'prv_intIdProveedor' => ['type' => 'int'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'prv_intIdProveedor', 'sub_intIdSubCuentaContable', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'sub_intIdSubCuentaContable', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_proveedor_informacion_tributaria.est_intIdEstado']
-				],
-				'tbl_proveedor' => [
-					['tbl_proveedor.prv_intId','tbl_proveedor_informacion_tributaria.prv_intIdProveedor']
+					['tbl_estado.est_intId','tbl_rete_ica.est_intIdEstado']
 				],
 				'tbl_sub_cuenta_contable' => [
-					['tbl_sub_cuenta_contable.sub_intId','tbl_proveedor_informacion_tributaria.sub_intIdSubCuentaContable']
+					['tbl_sub_cuenta_contable.sub_intId','tbl_rete_ica.sub_intIdSubCuentaContable']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_proveedor_informacion_tributaria.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_proveedor_informacion_tributaria.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rete_ica.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rete_ica.usu_intIdCreador']
+				],
+				'tbl_ciudad' => [
+					['tbl_ciudad.ica_intIdICA','tbl_rete_ica.ric_intId']
 				]
 			],
 
@@ -74,24 +78,8 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_rete_ica',
 				        1 => 'est_intIdEstado',
-				      ),
-				    ),
-				  ),
-				  'tbl_proveedor' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_proveedor',
-				        1 => 'prv_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
-				        1 => 'prv_intIdProveedor',
 				      ),
 				    ),
 				  ),
@@ -106,7 +94,7 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_rete_ica',
 				        1 => 'sub_intIdSubCuentaContable',
 				      ),
 				    ),
@@ -123,7 +111,7 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_rete_ica',
 				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
@@ -137,8 +125,24 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_rete_ica',
 				        1 => 'usu_intIdCreador',
+				      ),
+				    ),
+				  ),
+				  'tbl_ciudad' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_ciudad',
+				        1 => 'ica_intIdICA',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_rete_ica',
+				        1 => 'ric_intId',
 				      ),
 				    ),
 				  ),
@@ -146,17 +150,14 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_proveedor_informacion_tributaria.est_intIdEstado']
-				],
-				'tbl_proveedor' => [
-					['tbl_proveedor.prv_intId','tbl_proveedor_informacion_tributaria.prv_intIdProveedor']
+					['tbl_estado.est_intId','tbl_rete_ica.est_intIdEstado']
 				],
 				'tbl_sub_cuenta_contable' => [
-					['tbl_sub_cuenta_contable.sub_intId','tbl_proveedor_informacion_tributaria.sub_intIdSubCuentaContable']
+					['tbl_sub_cuenta_contable.sub_intId','tbl_rete_ica.sub_intIdSubCuentaContable']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_proveedor_informacion_tributaria.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_proveedor_informacion_tributaria.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rete_ica.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rete_ica.usu_intIdCreador']
 				]
 			],
 
@@ -172,24 +173,8 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_rete_ica',
 				        1 => 'est_intIdEstado',
-				      ),
-				    ),
-				  ),
-				  'tbl_proveedor' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_proveedor',
-				        1 => 'prv_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
-				        1 => 'prv_intIdProveedor',
 				      ),
 				    ),
 				  ),
@@ -204,7 +189,7 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_rete_ica',
 				        1 => 'sub_intIdSubCuentaContable',
 				      ),
 				    ),
@@ -221,7 +206,7 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_rete_ica',
 				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
@@ -235,7 +220,7 @@ class TblProveedorInformacionTributariaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_rete_ica',
 				        1 => 'usu_intIdCreador',
 				      ),
 				    ),

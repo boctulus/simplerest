@@ -6,54 +6,60 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class TblUnidadmedidaSchema implements ISchema
+class TblFormaDePagoSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'tbl_unidadmedida',
+			'table_name'	=> 'tbl_forma_de_pago',
 
-			'id_name'		=> 'unm_intId',
+			'id_name'		=> 'fdp_intId',
 
 			'attr_types'	=> [
-				'unm_intId' => 'INT',
-				'unm_varUnidadMedida' => 'STR',
-				'unm_dtimFechaCreacion' => 'STR',
-				'unm_dtimFechaActualizacion' => 'STR',
+				'fdp_intId' => 'INT',
+				'fdp_varCodigo' => 'STR',
+				'fdp_varNombre' => 'STR',
+				'fdp_lonDescripcion' => 'STR',
+				'fdp_varCodigoDian' => 'STR',
+				'fdp_dtimFechaCreacion' => 'STR',
+				'fdp_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'primary'		=> ['unm_intId'],
+			'primary'		=> ['fdp_intId'],
 
-			'autoincrement' => 'unm_intId',
+			'autoincrement' => 'fdp_intId',
 
-			'nullable'		=> ['unm_intId', 'unm_dtimFechaCreacion', 'unm_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['fdp_intId', 'fdp_dtimFechaCreacion', 'fdp_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'unm_intId' => ['type' => 'int'],
-				'unm_varUnidadMedida' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'unm_dtimFechaCreacion' => ['type' => 'datetime'],
-				'unm_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'fdp_intId' => ['type' => 'int'],
+				'fdp_varCodigo' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'fdp_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'fdp_lonDescripcion' => ['type' => 'str', 'required' => true],
+				'fdp_varCodigoDian' => ['type' => 'str', 'max' => 1, 'required' => true],
+				'fdp_dtimFechaCreacion' => ['type' => 'datetime'],
+				'fdp_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
-				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_unidadmedida.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_forma_de_pago.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_unidadmedida.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_unidadmedida.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_forma_de_pago.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_forma_de_pago.usu_intIdCreador']
 				],
-				'tbl_producto' => [
-					['tbl_producto.unm_intIdUnidadMedida','tbl_unidadmedida.unm_intId']
+				'tbl_factura' => [
+					['tbl_factura.tdp_intIdFormaPago','tbl_forma_de_pago.fdp_intId']
 				]
 			],
 
@@ -69,7 +75,7 @@ class TblUnidadmedidaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
+				        0 => 'tbl_forma_de_pago',
 				        1 => 'est_intIdEstado',
 				      ),
 				    ),
@@ -86,7 +92,7 @@ class TblUnidadmedidaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
+				        0 => 'tbl_forma_de_pago',
 				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
@@ -100,24 +106,24 @@ class TblUnidadmedidaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
+				        0 => 'tbl_forma_de_pago',
 				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				  ),
-				  'tbl_producto' => 
+				  'tbl_factura' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_producto',
-				        1 => 'unm_intIdUnidadMedida',
+				        0 => 'tbl_factura',
+				        1 => 'tdp_intIdFormaPago',
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
-				        1 => 'unm_intId',
+				        0 => 'tbl_forma_de_pago',
+				        1 => 'fdp_intId',
 				      ),
 				    ),
 				  ),
@@ -125,11 +131,11 @@ class TblUnidadmedidaSchema implements ISchema
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_unidadmedida.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_forma_de_pago.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_unidadmedida.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_unidadmedida.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_forma_de_pago.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_forma_de_pago.usu_intIdCreador']
 				]
 			],
 
@@ -145,7 +151,7 @@ class TblUnidadmedidaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
+				        0 => 'tbl_forma_de_pago',
 				        1 => 'est_intIdEstado',
 				      ),
 				    ),
@@ -162,7 +168,7 @@ class TblUnidadmedidaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
+				        0 => 'tbl_forma_de_pago',
 				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
@@ -176,7 +182,7 @@ class TblUnidadmedidaSchema implements ISchema
 				      ),
 				      1 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
+				        0 => 'tbl_forma_de_pago',
 				        1 => 'usu_intIdCreador',
 				      ),
 				    ),

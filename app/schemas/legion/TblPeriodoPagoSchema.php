@@ -16,7 +16,9 @@ class TblPeriodoPagoSchema implements ISchema
 
 			'attr_types'	=> [
 				'pep_intId' => 'INT',
+				'pep_varCodigo' => 'STR',
 				'pep_varNombre' => 'STR',
+				'pep_lonDescripcion' => 'STR',
 				'pep_dtimFechaCreacion' => 'STR',
 				'pep_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -28,18 +30,20 @@ class TblPeriodoPagoSchema implements ISchema
 
 			'autoincrement' => 'pep_intId',
 
-			'nullable'		=> ['pep_intId', 'pep_dtimFechaCreacion', 'pep_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['pep_intId', 'pep_varCodigo', 'pep_lonDescripcion', 'pep_dtimFechaCreacion', 'pep_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'pep_intId' => ['type' => 'int'],
-				'pep_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'pep_varCodigo' => ['type' => 'str', 'max' => 100],
+				'pep_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'pep_lonDescripcion' => ['type' => 'str'],
 				'pep_dtimFechaCreacion' => ['type' => 'datetime'],
 				'pep_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],

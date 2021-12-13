@@ -44,7 +44,7 @@ class TblPermisoSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
@@ -53,9 +53,6 @@ class TblPermisoSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_permiso.usu_intIdCreador'],
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_permiso.usu_intIdActualizador']
-				],
-				'tbl_rol_permiso' => [
-					['tbl_rol_permiso.per_intIdPermiso','tbl_permiso.per_intId']
 				]
 			],
 
@@ -104,22 +101,6 @@ class TblPermisoSchema implements ISchema
 				      array (
 				        0 => 'tbl_permiso',
 				        1 => 'usu_intIdActualizador',
-				      ),
-				    ),
-				  ),
-				  'tbl_rol_permiso' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_rol_permiso',
-				        1 => 'per_intIdPermiso',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_permiso',
-				        1 => 'per_intId',
 				      ),
 				    ),
 				  ),

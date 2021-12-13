@@ -17,7 +17,8 @@ class TblRhSchema implements ISchema
 			'attr_types'	=> [
 				'trh_intId' => 'INT',
 				'trh_varCodigo' => 'STR',
-				'trh_varDescripcion' => 'STR',
+				'trh_varNombre' => 'STR',
+				'trh_lonDescripcion' => 'STR',
 				'trh_dtimFechaCreacion' => 'STR',
 				'trh_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -29,19 +30,20 @@ class TblRhSchema implements ISchema
 
 			'autoincrement' => 'trh_intId',
 
-			'nullable'		=> ['trh_intId', 'trh_dtimFechaCreacion', 'trh_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['trh_intId', 'trh_varCodigo', 'trh_varNombre', 'trh_dtimFechaCreacion', 'trh_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'trh_intId' => ['type' => 'int'],
-				'trh_varCodigo' => ['type' => 'str', 'max' => 30, 'required' => true],
-				'trh_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'trh_varCodigo' => ['type' => 'str', 'max' => 30],
+				'trh_varNombre' => ['type' => 'str', 'max' => 100],
+				'trh_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'trh_dtimFechaCreacion' => ['type' => 'datetime'],
 				'trh_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -53,6 +55,9 @@ class TblRhSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rh.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rh.usu_intIdCreador']
+				],
+				'tbl_empleado_datos_personales' => [
+					['tbl_empleado_datos_personales.trh_intIdRH','tbl_rh.trh_intId']
 				]
 			],
 
@@ -101,6 +106,22 @@ class TblRhSchema implements ISchema
 				      array (
 				        0 => 'tbl_rh',
 				        1 => 'usu_intIdCreador',
+				      ),
+				    ),
+				  ),
+				  'tbl_empleado_datos_personales' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empleado_datos_personales',
+				        1 => 'trh_intIdRH',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_rh',
+				        1 => 'trh_intId',
 				      ),
 				    ),
 				  ),

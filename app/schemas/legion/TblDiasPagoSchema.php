@@ -52,11 +52,11 @@ class TblDiasPagoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_dias_pago.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_dias_pago.usu_intIdCreador']
 				],
-				'tbl_cliente' => [
-					['tbl_cliente.dpa_intIdDiasPago','tbl_dias_pago.dpa_intId']
-				],
 				'tbl_proveedor' => [
 					['tbl_proveedor.dpa_intIdDiasPago','tbl_dias_pago.dpa_intId']
+				],
+				'tbl_cliente' => [
+					['tbl_cliente.dpa_intIdDiasPago','tbl_dias_pago.dpa_intId']
 				]
 			],
 
@@ -108,13 +108,13 @@ class TblDiasPagoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cliente' => 
+				  'tbl_proveedor' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cliente',
+				        0 => 'tbl_proveedor',
 				        1 => 'dpa_intIdDiasPago',
 				      ),
 				      1 => 
@@ -124,13 +124,13 @@ class TblDiasPagoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_proveedor' => 
+				  'tbl_cliente' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_proveedor',
+				        0 => 'tbl_cliente',
 				        1 => 'dpa_intIdDiasPago',
 				      ),
 				      1 => 

@@ -38,13 +38,13 @@ class TblSubCuentaContableSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'primary'		=> ['sub_intId', 'sub_varCodigoCuenta'],
+			'primary'		=> ['sub_intId'],
 
 			'autoincrement' => 'sub_intId',
 
 			'nullable'		=> ['sub_intId', 'sub_intPorcentajeBase', 'sub_decMontobase', 'sub_tinCuentaBalance', 'sub_tinCuentaResultado', 'sub_dtimFechaCreacion', 'sub_dtimFechaActualizacion', 'est_intIdEstado'],
 
-			'uniques'		=> [],
+			'uniques'		=> ['sub_varCodigoCuenta'],
 
 			'rules' 		=> [
 				'sub_intId' => ['type' => 'int'],
@@ -86,27 +86,37 @@ class TblSubCuentaContableSchema implements ISchema
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_sub_cuenta_contable.usu_intIdCreador'],
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_sub_cuenta_contable.usu_intIdActualizador']
 				],
-				'tbl_cliente_informacion_tributaria' => [
-					['tbl_cliente_informacion_tributaria.sub_intIdSubcuentacontable','tbl_sub_cuenta_contable.sub_intId']
+				'tbl_informacion_tributaria' => [
+					['tbl_informacion_tributaria.sub_intIdcxp_subcuentacontable','tbl_sub_cuenta_contable.sub_intId'],
+					['tbl_informacion_tributaria.sub_intIdcxc_subcuentacontable','tbl_sub_cuenta_contable.sub_intId']
+				],
+				'tbl_banco' => [
+					['tbl_banco.sub_intIdCuentaCxC','tbl_sub_cuenta_contable.sub_intId']
 				],
 				'tbl_producto' => [
 					['tbl_producto.sub_intIdCuentaContableCompra','tbl_sub_cuenta_contable.sub_intId'],
 					['tbl_producto.sub_intIdCuentaContableVenta','tbl_sub_cuenta_contable.sub_intId']
 				],
-				'tbl_banco' => [
-					['tbl_banco.sub_intIdCuentaCxC','tbl_sub_cuenta_contable.sub_intId']
+				'tbl_cliente_retencion_cuentacontable' => [
+					['tbl_cliente_retencion_cuentacontable.rcl_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
 				],
-				'tbl_proveedor_informacion_tributaria' => [
-					['tbl_proveedor_informacion_tributaria.sub_intIdSubCuentaContable','tbl_sub_cuenta_contable.sub_intId']
+				'tbl_rete_ica' => [
+					['tbl_rete_ica.sub_intIdSubCuentaContable','tbl_sub_cuenta_contable.sub_intId']
 				],
-				'tbl_retencion_cuentacontable' => [
-					['tbl_retencion_cuentacontable.rec_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
+				'tbl_reteiva' => [
+					['tbl_reteiva.sub_intIdsubcuentacontable','tbl_sub_cuenta_contable.sub_intId']
 				],
-				'tbl_iva_cuentacontable' => [
-					['tbl_iva_cuentacontable.ivc_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
+				'tbl_cliente_reteiva_cuentacontable' => [
+					['tbl_cliente_reteiva_cuentacontable.ric_intIdCuentacontable','tbl_sub_cuenta_contable.sub_intId']
+				],
+				'tbl_retencion' => [
+					['tbl_retencion.sub_intIdsubcuentacontable','tbl_sub_cuenta_contable.sub_intId']
 				],
 				'tbl_iva' => [
 					['tbl_iva.sub_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
+				],
+				'tbl_comprobante_contable_detalle' => [
+					['tbl_comprobante_contable_detalle.sub_intIdCuentaContable','tbl_sub_cuenta_contable.sub_intId']
 				]
 			],
 
@@ -190,14 +200,27 @@ class TblSubCuentaContableSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cliente_informacion_tributaria' => 
+				  'tbl_informacion_tributaria' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cliente_informacion_tributaria',
-				        1 => 'sub_intIdSubcuentacontable',
+				        0 => 'tbl_informacion_tributaria',
+				        1 => 'sub_intIdcxp_subcuentacontable',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_sub_cuenta_contable',
+				        1 => 'sub_intId',
+				      ),
+				    ),
+				    1 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_informacion_tributaria',
+				        1 => 'sub_intIdcxc_subcuentacontable',
 				      ),
 				      1 => 
 				      array (
@@ -251,13 +274,29 @@ class TblSubCuentaContableSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_proveedor_informacion_tributaria' => 
+				  'tbl_cliente_retencion_cuentacontable' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
+				        0 => 'tbl_cliente_retencion_cuentacontable',
+				        1 => 'rcl_intIdCuentaContable',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_sub_cuenta_contable',
+				        1 => 'sub_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_rete_ica' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_rete_ica',
 				        1 => 'sub_intIdSubCuentaContable',
 				      ),
 				      1 => 
@@ -267,14 +306,14 @@ class TblSubCuentaContableSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_retencion_cuentacontable' => 
+				  'tbl_reteiva' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_retencion_cuentacontable',
-				        1 => 'rec_intIdCuentaContable',
+				        0 => 'tbl_reteiva',
+				        1 => 'sub_intIdsubcuentacontable',
 				      ),
 				      1 => 
 				      array (
@@ -283,14 +322,30 @@ class TblSubCuentaContableSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_iva_cuentacontable' => 
+				  'tbl_cliente_reteiva_cuentacontable' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_iva_cuentacontable',
-				        1 => 'ivc_intIdCuentaContable',
+				        0 => 'tbl_cliente_reteiva_cuentacontable',
+				        1 => 'ric_intIdCuentacontable',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_sub_cuenta_contable',
+				        1 => 'sub_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_retencion' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_retencion',
+				        1 => 'sub_intIdsubcuentacontable',
 				      ),
 				      1 => 
 				      array (
@@ -306,6 +361,22 @@ class TblSubCuentaContableSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_iva',
+				        1 => 'sub_intIdCuentaContable',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_sub_cuenta_contable',
+				        1 => 'sub_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_comprobante_contable_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_comprobante_contable_detalle',
 				        1 => 'sub_intIdCuentaContable',
 				      ),
 				      1 => 

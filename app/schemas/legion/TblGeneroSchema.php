@@ -16,30 +16,34 @@ class TblGeneroSchema implements ISchema
 
 			'attr_types'	=> [
 				'gen_intId' => 'INT',
-				'gen_varGenero' => 'STR',
+				'gen_varCodigo' => 'STR',
+				'gen_varNombre' => 'STR',
+				'gen_lonDescripcion' => 'STR',
 				'gen_dtimFechaCreacion' => 'STR',
+				'gen_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
-				'usu_intIdActualizador' => 'INT',
-				'gen_dtimFechaActualizacion' => 'STR'
+				'usu_intIdActualizador' => 'INT'
 			],
 
 			'primary'		=> ['gen_intId'],
 
 			'autoincrement' => 'gen_intId',
 
-			'nullable'		=> ['gen_intId', 'gen_dtimFechaCreacion', 'est_intIdEstado', 'gen_dtimFechaActualizacion'],
+			'nullable'		=> ['gen_intId', 'gen_varCodigo', 'gen_lonDescripcion', 'gen_dtimFechaCreacion', 'gen_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
-			'uniques'		=> ['gen_varGenero'],
+			'uniques'		=> [],
 
 			'rules' 		=> [
 				'gen_intId' => ['type' => 'int'],
-				'gen_varGenero' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'gen_varCodigo' => ['type' => 'str', 'max' => 100],
+				'gen_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'gen_lonDescripcion' => ['type' => 'str'],
 				'gen_dtimFechaCreacion' => ['type' => 'datetime'],
+				'gen_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true],
-				'gen_dtimFechaActualizacion' => ['type' => 'datetime']
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
