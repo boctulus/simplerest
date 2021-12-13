@@ -106,8 +106,6 @@ class PrepareUpdateController extends ConsoleController
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         app/migrations/2021_11_20_33704817_files.php
         app/migrations/2021_12_07_35172655_files.php
-        app/migrations/2021_12_11_35513040_update_tasks.php
-        app/migrations/2021_12_11_35516476_update_task_make_primary.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);

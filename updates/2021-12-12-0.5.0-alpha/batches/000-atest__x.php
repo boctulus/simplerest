@@ -9,11 +9,13 @@ use simplerest\controllers\MigrationsController;
     Run batches
 */
 
-class __NAME__ implements IUpdateBatch
+class TestXUpdateBatch implements IUpdateBatch
 {
     function run() : ?bool{
         // ...
         
+    	d('OK');
+
         return true;
     }
 }
