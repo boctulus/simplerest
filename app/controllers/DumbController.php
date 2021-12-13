@@ -6118,24 +6118,6 @@ class DumbController extends Controller
         d(get_fks($t1, $t2, 'db_flor'), "FKs $t1 ->  $t2");
     }
 
-    function run_update_task(){
-        /*
-            Debe existir persistencia en algún lado SQLIte, archivo de texto,....
-            ... donde guardar QUE tareas ya fueron ejecutadas para evitar
-            correrlas dos veces !
-
-            Deben correr como las migraciones!
-        */
-
-        $update_path = ROOT_PATH . 'updates/2021-12-12-0.5.0-alpha/batches/';
-
-        // include $update_path . '005-some-model-changes.php';
-        // include $update_path . '006-move-models.php';
-        // include $update_path . '007-change-model-namespaces.php';
-        //include $update_path . '008-delete-all-schemas.php';
-        include $update_path . '009-regenerate-all-schemas.php';
-        // include $update_path . '010-some-model-changes.php';
-    }
 
     /*
         Dolar TRM - 
@@ -6208,6 +6190,20 @@ class DumbController extends Controller
 
         // Get the EUR/USD rate 15 days ago
         $rate = $swap->historical('EUR/USD', (new \DateTime())->modify('-15 days'));
+    }
+
+    function test_zip(){
+        $ori = '/home/www/html/pruebas/drag';
+        $dst = '/home/feli/Desktop/UPDATE/drag.zip';
+
+        // para pruebas
+        Files::delete($dst);
+
+
+        Files::zip($ori, $dst, [
+            'file_to_be_ignored.txt',
+            'jquery-ui-1.12.1.custom'
+        ]);
     }
 
 
