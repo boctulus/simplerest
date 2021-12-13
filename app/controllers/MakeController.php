@@ -80,6 +80,7 @@ class MakeController extends MakeControllerBase
         Files::mkDirOrFail($path);
         Files::mkDirOrFail($path . 'files');
         Files::mkDirOrFail($path . 'batches');
+        Files::mkDirOrFail($path . 'completed');
 
         file_put_contents($path  . 'version.txt', $version);
 
