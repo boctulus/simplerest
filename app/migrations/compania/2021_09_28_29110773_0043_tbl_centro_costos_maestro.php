@@ -17,8 +17,9 @@ class TblCentroCostosMaestro215 implements IMigration
     {
         Model::query("CREATE TABLE tbl_centro_costos (
         cco_intId INT(11) NOT NULL AUTO_INCREMENT,
-        cco_varCodigo VARCHAR(20) NOT NULL,
+        cco_varCodigo VARCHAR(100) NOT NULL,
         cco_varCentroCostos VARCHAR(100) NOT NULL,
+        cco_lonDescripcion LONGTEXT NOT NULL,
         cco_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
         cco_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
         est_intIdEstado INT(11) NOT NULL DEFAULT 1,
@@ -39,4 +40,3 @@ class TblCentroCostosMaestro215 implements IMigration
 
     }
 }
-

@@ -20,7 +20,7 @@ class TblResolucionMaestro190 implements IMigration
         res_varNombreResolucion VARCHAR(100) NOT NULL ,
         res_intVigencia INT NOT NULL,
         res_datFechaInicial DATE NOT NULL,
-        res_datFechaFinal INT NOT NULL,
+        res_datFechaFinal DATE NOT NULL,
         res_lonDescripcionResolucion LONGTEXT NOT NULL,
         res_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
         res_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,

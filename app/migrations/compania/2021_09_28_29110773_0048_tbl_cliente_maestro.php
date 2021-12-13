@@ -26,7 +26,7 @@ class TblClienteMaestro240 implements IMigration
         est_intIdEstado INT(11) NOT NULL DEFAULT 1,
         dpa_intIdDiasPago INT(11) NOT NULL,
         des_intIdDescuento INT(11) NOT NULL,
-        ali_intIdPersona INT(11) NOT NULL,
+        per_intIdPersona INT(11) NOT NULL,
         usu_intIdCreador INT(11) DEFAULT NULL,
         usu_intIdActualizador INT(11) DEFAULT NULL,
         PRIMARY KEY (cli_intId)
@@ -36,13 +36,10 @@ class TblClienteMaestro240 implements IMigration
         COLLATE utf8_general_ci;");
 
         Model::query("ALTER TABLE tbl_cliente 
-        ADD UNIQUE INDEX ali_intIdPersona(ali_intIdPersona);");
+        ADD UNIQUE INDEX per_intIdPersona(per_intIdPersona);");
 
         Model::query("ALTER TABLE tbl_cliente 
         ADD INDEX FK_cli_DiasPago(dpa_intIdDiasPago);");
-
-        Model::query("ALTER TABLE tbl_cliente 
-        ADD INDEX FK_cli_idAliado(ali_intIdPersona);");
 
         Model::query("ALTER TABLE tbl_cliente 
         ADD CONSTRAINT FK_cli_Descuento FOREIGN KEY (des_intIdDescuento)
@@ -53,7 +50,7 @@ class TblClienteMaestro240 implements IMigration
         REFERENCES tbl_estado(est_intId);");
 
         Model::query("ALTER TABLE tbl_cliente 
-        ADD CONSTRAINT FK_cli_idPersona FOREIGN KEY (ali_intIdPersona)
+        ADD CONSTRAINT FK_cli_idPersona FOREIGN KEY (per_intIdPersona)
         REFERENCES tbl_persona(per_intId);");
 
         Model::query("ALTER TABLE tbl_cliente 

@@ -28,7 +28,7 @@ class TblGeneroMaestro54 implements IMigration
         ->integer($nom.'_intId')->auto()->pri()
         ->varchar($nom.'_varCodigo', 100)->comment('hashed')->nullable()
         ->varchar($nom.'_varNombre', 100)->comment('hashed')
-        ->longtext($nom.'_varDescripcion')->comment('hashed')->nullable()
+        ->longtext($nom.'_lonDescripcion')->comment('hashed')->nullable()
         ->datetime($nom.'_dtimFechaCreacion')->default('current_timestamp')
         ->datetime($nom.'_dtimFechaActualizacion')->default('current_timestamp')
         ->integer('est_intIdEstado')->default('1')
@@ -48,7 +48,7 @@ class TblGeneroMaestro54 implements IMigration
             array(
                 $nom.'_varCodigo'=>'00001'
                 ,$nom.'_varNombre'=>'Masculino'
-                ,$nom.'_varDescripcion'=>'Masculino'
+                ,$nom.'_lonDescripcion'=>'Masculino'
                 ,'usu_intIdCreador'=>'1'
             )
         ); 
@@ -57,7 +57,7 @@ class TblGeneroMaestro54 implements IMigration
             array(
                 $nom.'_varCodigo'=>'00002'
                 ,$nom.'_varNombre'=>'Femenino'
-                ,$nom.'_varDescripcion'=>'Femenino'
+                ,$nom.'_lonDescripcion'=>'Femenino'
                 ,'usu_intIdCreador'=>'1'
             )
         ); 

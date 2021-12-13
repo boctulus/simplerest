@@ -27,7 +27,9 @@ class TblEstadoCivilMaestro100 implements IMigration
         ->setCollation('utf8_general_ci')
 
         ->integer($nom.'_intId')->auto()->pri()
-        ->varchar($nom.'_varNombre')->comment('hashed')
+        ->varchar($nom.'_varCodigo',100)->comment('hashed')->nullable()
+        ->varchar($nom.'_varNombre',100)->comment('hashed')
+        ->longtext($nom.'_lonDescripcion')->comment('hashed')->nullable()
         ->datetime($nom.'_dtimFechaCreacion')->default('current_timestamp')
         ->datetime($nom.'_dtimFechaActualizacion')->default("'0000-00-00'")
         ->integer('est_intEstado')->default('1')
