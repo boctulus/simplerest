@@ -47,18 +47,18 @@ class TblSubCuentaContableMaestro75 implements IMigration
         ->integer('ccc_intIdCategoriaCuentaContable')
         ->integer('cue_intIdCuentaContable')
         ->integer('nat_intIdNaturalezaCuentaContable')
-        ->integer('est_intEstado')->default('1')
+        ->integer('est_intIdEstado')->default('1')
         ->integer('usu_intIdCreador')
         ->integer('usu_intIdActualizador')->nullable();
 
         $users_table = 'tbl_estado';
         $users_pri   = 'est_intId';
 
-        $sc->foreign('est_intEstado')->references($users_pri)->on($users_table);
+        $sc->foreign('est_intIdEstado')->references($users_pri)->on($users_table);
         $sc->foreign('usu_intIdCreador')->references('usu_intId')->on('tbl_usuario');
         $sc->foreign('usu_intIdActualizador')->references('usu_intId')->on('tbl_usuario');
 
-        $res = $sc->create(true);
+        $res = $sc->create();
 
 
     }

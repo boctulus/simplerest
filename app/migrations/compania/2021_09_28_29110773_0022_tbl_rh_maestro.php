@@ -17,7 +17,7 @@ class TblRhMaestro110 implements IMigration
     {
         Model::query("CREATE TABLE tbl_rh (
         trh_intId int(11) NOT NULL AUTO_INCREMENT,
-        trh_varCodigo varchar(30) NOT NULL,
+        trh_varCodigo varchar(30)  NULL,
         trh_varDescripcion varchar(250) NOT NULL,
         trh_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
         trh_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
