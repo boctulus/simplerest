@@ -18,6 +18,7 @@ class TblTipoDocumentoSchema implements ISchema
 				'tid_intId' => 'INT',
 				'tid_varTipoDocumento' => 'STR',
 				'tid_varSiglas' => 'STR',
+				'tip_varCodigoDian' => 'STR',
 				'tid_dtimFechaCreacion' => 'STR',
 				'tid_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -37,6 +38,7 @@ class TblTipoDocumentoSchema implements ISchema
 				'tid_intId' => ['type' => 'int'],
 				'tid_varTipoDocumento' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'tid_varSiglas' => ['type' => 'str', 'max' => 3, 'required' => true],
+				'tip_varCodigoDian' => ['type' => 'str', 'max' => 2, 'required' => true],
 				'tid_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tid_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
@@ -51,9 +53,15 @@ class TblTipoDocumentoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_tipo_documento.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_tipo_documento.usu_intIdCreador'],
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_tipo_documento.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_tipo_documento.usu_intIdCreador'],
 					['tbl_usuario.cdo_intIdTipoDocumento','tbl_tipo_documento.tid_intId']
+				],
+				'tbl_empresa_nomina' => [
+					['tbl_empresa_nomina.tip_intIdTipoDocumento','tbl_tipo_documento.tid_intId']
+				],
+				'tbl_persona' => [
+					['tbl_persona.tid_intIdTipoDocumento','tbl_tipo_documento.tid_intId']
 				]
 			],
 
@@ -82,12 +90,12 @@ class TblTipoDocumentoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_tipo_documento',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				    1 => 
@@ -96,12 +104,12 @@ class TblTipoDocumentoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_tipo_documento',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    2 => 
@@ -118,6 +126,38 @@ class TblTipoDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'tbl_empresa_nomina' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empresa_nomina',
+				        1 => 'tip_intIdTipoDocumento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_tipo_documento',
+				        1 => 'tid_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_persona' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'tid_intIdTipoDocumento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_tipo_documento',
+				        1 => 'tid_intId',
+				      ),
+				    ),
+				  ),
 				),
 
 			'relationships_from' => [
@@ -125,8 +165,8 @@ class TblTipoDocumentoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_tipo_documento.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_tipo_documento.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_tipo_documento.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_tipo_documento.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_tipo_documento.usu_intIdCreador']
 				]
 			],
 
@@ -155,12 +195,12 @@ class TblTipoDocumentoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_tipo_documento',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				    1 => 
@@ -169,12 +209,12 @@ class TblTipoDocumentoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_tipo_documento',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				  ),

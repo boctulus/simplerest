@@ -44,7 +44,7 @@ class TblRolSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado_rol', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado_rol', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_estado' => [
@@ -54,9 +54,6 @@ class TblRolSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rol.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rol.usu_intIdCreador'],
 					['tbl_usuario.rol_intIdRol','tbl_rol.rol_intId']
-				],
-				'tbl_rol_permiso' => [
-					['tbl_rol_permiso.rol_intIdRol','tbl_rol.rol_intId']
 				]
 			],
 
@@ -112,22 +109,6 @@ class TblRolSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_usuario',
-				        1 => 'rol_intIdRol',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_rol',
-				        1 => 'rol_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_rol_permiso' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_rol_permiso',
 				        1 => 'rol_intIdRol',
 				      ),
 				      1 => 

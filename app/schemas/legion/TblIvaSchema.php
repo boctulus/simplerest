@@ -61,9 +61,6 @@ class TblIvaSchema implements ISchema
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_iva.usu_intIdCreador'],
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_iva.usu_intIdActualizador']
 				],
-				'tbl_iva_cuentacontable' => [
-					['tbl_iva_cuentacontable.ivc_intIdIva','tbl_iva.iva_intId']
-				],
 				'tbl_producto' => [
 					['tbl_producto.iva_intIdIva','tbl_iva.iva_intId']
 				]
@@ -130,22 +127,6 @@ class TblIvaSchema implements ISchema
 				      array (
 				        0 => 'tbl_iva',
 				        1 => 'usu_intIdActualizador',
-				      ),
-				    ),
-				  ),
-				  'tbl_iva_cuentacontable' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_iva_cuentacontable',
-				        1 => 'ivc_intIdIva',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_iva',
-				        1 => 'iva_intId',
 				      ),
 				    ),
 				  ),

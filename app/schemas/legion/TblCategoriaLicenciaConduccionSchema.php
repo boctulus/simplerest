@@ -16,8 +16,9 @@ class TblCategoriaLicenciaConduccionSchema implements ISchema
 
 			'attr_types'	=> [
 				'clc_intId' => 'INT',
+				'clc_varCodigo' => 'STR',
 				'clc_varNombre' => 'STR',
-				'clc_varDescripcion' => 'STR',
+				'clc_lonDescripcion' => 'STR',
 				'clc_dtimFechaCreacion' => 'STR',
 				'clc_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -29,19 +30,20 @@ class TblCategoriaLicenciaConduccionSchema implements ISchema
 
 			'autoincrement' => 'clc_intId',
 
-			'nullable'		=> ['clc_intId', 'clc_dtimFechaCreacion', 'clc_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['clc_intId', 'clc_varCodigo', 'clc_lonDescripcion', 'clc_dtimFechaCreacion', 'clc_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'clc_intId' => ['type' => 'int'],
-				'clc_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'clc_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'clc_varCodigo' => ['type' => 'str', 'max' => 100],
+				'clc_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'clc_lonDescripcion' => ['type' => 'str'],
 				'clc_dtimFechaCreacion' => ['type' => 'datetime'],
 				'clc_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -53,6 +55,9 @@ class TblCategoriaLicenciaConduccionSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_categoria_licencia_conduccion.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_categoria_licencia_conduccion.usu_intIdCreador']
+				],
+				'tbl_empleado_datos_personales' => [
+					['tbl_empleado_datos_personales.clc_intIdCategoriaLicencia','tbl_categoria_licencia_conduccion.clc_intId']
 				]
 			],
 
@@ -101,6 +106,22 @@ class TblCategoriaLicenciaConduccionSchema implements ISchema
 				      array (
 				        0 => 'tbl_categoria_licencia_conduccion',
 				        1 => 'usu_intIdCreador',
+				      ),
+				    ),
+				  ),
+				  'tbl_empleado_datos_personales' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empleado_datos_personales',
+				        1 => 'clc_intIdCategoriaLicencia',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_categoria_licencia_conduccion',
+				        1 => 'clc_intId',
 				      ),
 				    ),
 				  ),

@@ -16,7 +16,9 @@ class TblClaseLibretaMilitarSchema implements ISchema
 
 			'attr_types'	=> [
 				'clm_intId' => 'INT',
+				'clm_varCodigo' => 'STR',
 				'clm_varNombre' => 'STR',
+				'clm_lonDescripcion' => 'STR',
 				'clm_dtimFechaCreacion' => 'STR',
 				'clm_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -28,18 +30,20 @@ class TblClaseLibretaMilitarSchema implements ISchema
 
 			'autoincrement' => 'clm_intId',
 
-			'nullable'		=> ['clm_intId', 'clm_dtimFechaCreacion', 'clm_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['clm_intId', 'clm_varCodigo', 'clm_lonDescripcion', 'clm_dtimFechaCreacion', 'clm_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'clm_intId' => ['type' => 'int'],
-				'clm_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'clm_varCodigo' => ['type' => 'str', 'max' => 100],
+				'clm_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'clm_lonDescripcion' => ['type' => 'str'],
 				'clm_dtimFechaCreacion' => ['type' => 'datetime'],
 				'clm_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -51,6 +55,9 @@ class TblClaseLibretaMilitarSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_clase_libreta_militar.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_clase_libreta_militar.usu_intIdCreador']
+				],
+				'tbl_empleado_datos_personales' => [
+					['tbl_empleado_datos_personales.clm_intIdClaseLibretaMilitar','tbl_clase_libreta_militar.clm_intId']
 				]
 			],
 
@@ -99,6 +106,22 @@ class TblClaseLibretaMilitarSchema implements ISchema
 				      array (
 				        0 => 'tbl_clase_libreta_militar',
 				        1 => 'usu_intIdCreador',
+				      ),
+				    ),
+				  ),
+				  'tbl_empleado_datos_personales' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empleado_datos_personales',
+				        1 => 'clm_intIdClaseLibretaMilitar',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_clase_libreta_militar',
+				        1 => 'clm_intId',
 				      ),
 				    ),
 				  ),

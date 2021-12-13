@@ -18,7 +18,6 @@ class TblCategoriaPersonaPersonaSchema implements ISchema
 				'cpp_intId' => 'INT',
 				'per_intIdPersona' => 'INT',
 				'cap_intIdCategoriaPersona' => 'INT',
-				'nota' => 'STR',
 				'cat_dtimFechaCreacion' => 'STR'
 			],
 
@@ -26,7 +25,7 @@ class TblCategoriaPersonaPersonaSchema implements ISchema
 
 			'autoincrement' => 'cpp_intId',
 
-			'nullable'		=> ['cpp_intId', 'nota', 'cat_dtimFechaCreacion'],
+			'nullable'		=> ['cpp_intId', 'cat_dtimFechaCreacion'],
 
 			'uniques'		=> [],
 
@@ -34,7 +33,6 @@ class TblCategoriaPersonaPersonaSchema implements ISchema
 				'cpp_intId' => ['type' => 'int'],
 				'per_intIdPersona' => ['type' => 'int', 'required' => true],
 				'cap_intIdCategoriaPersona' => ['type' => 'int', 'required' => true],
-				'nota' => ['type' => 'str', 'max' => 255],
 				'cat_dtimFechaCreacion' => ['type' => 'datetime']
 			],
 

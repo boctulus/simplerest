@@ -16,7 +16,9 @@ class TblEstadoCivilSchema implements ISchema
 
 			'attr_types'	=> [
 				'esc_intId' => 'INT',
+				'esc_varCodigo' => 'STR',
 				'esc_varNombre' => 'STR',
+				'esc_lonDescripcion' => 'STR',
 				'esc_dtimFechaCreacion' => 'STR',
 				'esc_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -28,18 +30,20 @@ class TblEstadoCivilSchema implements ISchema
 
 			'autoincrement' => 'esc_intId',
 
-			'nullable'		=> ['esc_intId', 'esc_dtimFechaCreacion', 'esc_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['esc_intId', 'esc_varCodigo', 'esc_lonDescripcion', 'esc_dtimFechaCreacion', 'esc_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'esc_intId' => ['type' => 'int'],
+				'esc_varCodigo' => ['type' => 'str', 'max' => 100],
 				'esc_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'esc_lonDescripcion' => ['type' => 'str'],
 				'esc_dtimFechaCreacion' => ['type' => 'datetime'],
 				'esc_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -51,6 +55,9 @@ class TblEstadoCivilSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_estado_civil.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_estado_civil.usu_intIdCreador']
+				],
+				'tbl_empleado_datos_personales' => [
+					['tbl_empleado_datos_personales.esc_intIdEstadoCivil','tbl_estado_civil.esc_intId']
 				]
 			],
 
@@ -99,6 +106,22 @@ class TblEstadoCivilSchema implements ISchema
 				      array (
 				        0 => 'tbl_estado_civil',
 				        1 => 'usu_intIdCreador',
+				      ),
+				    ),
+				  ),
+				  'tbl_empleado_datos_personales' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empleado_datos_personales',
+				        1 => 'esc_intIdEstadoCivil',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_estado_civil',
+				        1 => 'esc_intId',
 				      ),
 				    ),
 				  ),

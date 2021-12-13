@@ -22,41 +22,47 @@ class TblCuentaContableSchema implements ISchema
 				'cue_tinCuentaResultado' => 'INT',
 				'cue_dtimFechaCreacion' => 'STR',
 				'cue_dtimFechaActualizacion' => 'STR',
+				'gru_intIdGrupoCategoriaCuentaContable' => 'INT',
 				'ccc_intIdCategoriaCuentaContable' => 'INT',
 				'est_intIdEstado' => 'INT',
-				'gru_intId' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'primary'		=> ['cue_intId', 'cue_varNumeroCuenta'],
+			'primary'		=> ['cue_intId'],
 
 			'autoincrement' => 'cue_intId',
 
-			'nullable'		=> ['cue_intId', 'cue_tinCuentaBalance', 'cue_tinCuentaResultado', 'cue_dtimFechaCreacion', 'cue_dtimFechaActualizacion', 'ccc_intIdCategoriaCuentaContable', 'est_intIdEstado', 'gru_intId', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['cue_intId', 'cue_tinCuentaBalance', 'cue_tinCuentaResultado', 'cue_dtimFechaCreacion', 'cue_dtimFechaActualizacion', 'gru_intIdGrupoCategoriaCuentaContable', 'ccc_intIdCategoriaCuentaContable', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
-			'uniques'		=> [],
+			'uniques'		=> ['cue_varNumeroCuenta'],
 
 			'rules' 		=> [
 				'cue_intId' => ['type' => 'int'],
-				'cue_varNumeroCuenta' => ['type' => 'str', 'max' => 4, 'required' => true],
+				'cue_varNumeroCuenta' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'cue_varNombreCuenta' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'cue_tinCuentaBalance' => ['type' => 'bool'],
 				'cue_tinCuentaResultado' => ['type' => 'bool'],
 				'cue_dtimFechaCreacion' => ['type' => 'datetime'],
 				'cue_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'gru_intIdGrupoCategoriaCuentaContable' => ['type' => 'int'],
 				'ccc_intIdCategoriaCuentaContable' => ['type' => 'int'],
 				'est_intIdEstado' => ['type' => 'int'],
-				'gru_intId' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int'],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['ccc_intIdCategoriaCuentaContable', 'est_intIdEstado', 'gru_intIdGrupoCategoriaCuentaContable', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
+				'tbl_categoria_cuenta_contable' => [
+					['tbl_categoria_cuenta_contable.ccc_intId','tbl_cuenta_contable.ccc_intIdCategoriaCuentaContable']
+				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_cuenta_contable.est_intIdEstado']
+				],
+				'tbl_grupo_cuenta_contable' => [
+					['tbl_grupo_cuenta_contable.gru_intId','tbl_cuenta_contable.gru_intIdGrupoCategoriaCuentaContable']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cuenta_contable.usu_intIdActualizador'],
@@ -68,6 +74,22 @@ class TblCuentaContableSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
+				  'tbl_categoria_cuenta_contable' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_categoria_cuenta_contable',
+				        1 => 'ccc_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_cuenta_contable',
+				        1 => 'ccc_intIdCategoriaCuentaContable',
+				      ),
+				    ),
+				  ),
 				  'tbl_estado' => 
 				  array (
 				    0 => 
@@ -81,6 +103,22 @@ class TblCuentaContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_cuenta_contable',
 				        1 => 'est_intIdEstado',
+				      ),
+				    ),
+				  ),
+				  'tbl_grupo_cuenta_contable' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_grupo_cuenta_contable',
+				        1 => 'gru_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_cuenta_contable',
+				        1 => 'gru_intIdGrupoCategoriaCuentaContable',
 				      ),
 				    ),
 				  ),
@@ -134,8 +172,14 @@ class TblCuentaContableSchema implements ISchema
 				),
 
 			'relationships_from' => [
+				'tbl_categoria_cuenta_contable' => [
+					['tbl_categoria_cuenta_contable.ccc_intId','tbl_cuenta_contable.ccc_intIdCategoriaCuentaContable']
+				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_cuenta_contable.est_intIdEstado']
+				],
+				'tbl_grupo_cuenta_contable' => [
+					['tbl_grupo_cuenta_contable.gru_intId','tbl_cuenta_contable.gru_intIdGrupoCategoriaCuentaContable']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cuenta_contable.usu_intIdActualizador'],
@@ -144,6 +188,22 @@ class TblCuentaContableSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
+				  'tbl_categoria_cuenta_contable' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_categoria_cuenta_contable',
+				        1 => 'ccc_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_cuenta_contable',
+				        1 => 'ccc_intIdCategoriaCuentaContable',
+				      ),
+				    ),
+				  ),
 				  'tbl_estado' => 
 				  array (
 				    0 => 
@@ -157,6 +217,22 @@ class TblCuentaContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_cuenta_contable',
 				        1 => 'est_intIdEstado',
+				      ),
+				    ),
+				  ),
+				  'tbl_grupo_cuenta_contable' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_grupo_cuenta_contable',
+				        1 => 'gru_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_cuenta_contable',
+				        1 => 'gru_intIdGrupoCategoriaCuentaContable',
 				      ),
 				    ),
 				  ),
