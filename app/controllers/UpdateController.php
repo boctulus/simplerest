@@ -67,9 +67,16 @@ class UpdateController extends ConsoleController
 
         $update_path = static::$update_path . 'batches/';
 
+        Files::mkDir(static::$update_path . 'completed/');
+
         $files = glob($update_path . '*.php');
-        
         foreach ($files as $file){
+            $completed_path = static::$update_path . 'completed/' . basename($file);
+
+            if (file_exists($completed_path)){
+                continue;
+            }
+
             $class_name = Strings::getClassNameByFileName($file);
 
             require_once $file;
@@ -78,11 +85,17 @@ class UpdateController extends ConsoleController
                 throw new \Exception ("Class '$class_name' doesn't exist in $file");
             } 
 
-            StdOut::pprint("Executing batch $file");
+            StdOut::pprint("~~~ Executing batch $file", true);
 
             $update = new $class_name();
-            $update->run();
-            exit;
+            $ok = $update->run();
+
+            if (!$ok){
+                StdOut::pprint("Batch $file exited with error", true);
+                exit;
+            }
+
+            file_put_contents($completed_path, "Completed at ".at());
         }
     }
 

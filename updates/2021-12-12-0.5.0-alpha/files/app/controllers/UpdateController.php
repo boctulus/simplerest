@@ -16,12 +16,31 @@ use simplerest\libs\DB;
 
 class UpdateController extends ConsoleController
 {
-    // This PATH will be AUTO-GENERATED
-    static public $update_path = ROOT_PATH . 'updates/2021-12-12-0.5.0-alpha/';
+    static public $update_path;
+    
+    function __construct()
+    {
+        $dirs = [];
+        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
+            if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
+            
+            $dirs[] = $fileInfo->getBasename();
+        }
 
-    // function make($name, ...$opt) {
-    //     return (new MakeController)->update($name, $opt);
-    // }
+        /*
+            La forma de ordenamiento no es del todo correcta !
+
+            1.0.1-beta < 1.0.11
+
+            porque ...
+
+            1.0.1-beta = 1.0.1.1 
+        */
+        sort($dirs);
+
+        $last_ver_dir = end($dirs);
+        static::$update_path = ROOT_PATH . 'updates/'. $last_ver_dir . '/';
+    }
 
     /*
         Verificar NO esté corriendo en mi PC para evitar un desastre
@@ -38,23 +57,46 @@ class UpdateController extends ConsoleController
     // protected
     function run_batches(){
         /*
-            Debe existir persistencia en algún lado 
+            Debe existir *persistencia* en algún lado 
 
             - Deben correr como las migraciones,... PERO....
             - La base de datos tiene que estar CONTENIDA en el código fuente => 
 
-            Crear un archivo de texto por cada task ejecutada (emulando registros en 'migrations')
+            Crear un archivo de texto por cada batch ejecutado (emulando registros en 'migrations')
         */
 
         $update_path = static::$update_path . 'batches/';
 
-        include $update_path . '000-migrations.php';
-        // include $update_path . '005-some-model-changes.php';
-        // include $update_path . '006-move-models.php';
-        // include $update_path . '007-change-model-namespaces.php';
-        // include $update_path . '008-delete-all-schemas.php';
-        // include $update_path . '009-regenerate-all-schemas.php';
-        // include $update_path . '010-some-model-changes.php';
+        Files::mkDir(static::$update_path . 'completed/');
+
+        $files = glob($update_path . '*.php');
+        foreach ($files as $file){
+            $completed_path = static::$update_path . 'completed/' . basename($file);
+
+            if (file_exists($completed_path)){
+                continue;
+            }
+
+            $class_name = Strings::getClassNameByFileName($file);
+
+            require_once $file;
+
+            if (!class_exists($class_name)){
+                throw new \Exception ("Class '$class_name' doesn't exist in $file");
+            } 
+
+            StdOut::pprint("~~~ Executing batch $file", true);
+
+            $update = new $class_name();
+            $ok = $update->run();
+
+            if (!$ok){
+                StdOut::pprint("Batch $file exited with error", true);
+                exit;
+            }
+
+            file_put_contents($completed_path, "Completed at ".at());
+        }
     }
 
     function install(...$opt){
