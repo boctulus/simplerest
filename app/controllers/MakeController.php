@@ -35,6 +35,14 @@ class MakeController extends MakeControllerBase
         1.2.0-rc.3 = 1.2.2.3
 
         https://en.wikipedia.org/wiki/Software_versioning
+
+
+        Además,.....
+
+            --prepare | -p
+
+        => invocaría a PrepareUpdateController
+
     */
     function update(string $version, ...$opt) {
         Files::writableOrFail(UPDATE_PATH);
@@ -45,7 +53,7 @@ class MakeController extends MakeControllerBase
         /*
             Version validation
         */
-        if (!preg_match('/([0-9]+).([0-9]).([0-9]+)([-]?)([a-z]+)?([0-9])?/', $version)){
+        if (!preg_match('/([0-9]+).([0-9]+).([0-9]+)([-]?)([a-z]+)?([0-9])?/', $version)){
             throw new \InvalidArgumentException("Version '$version' has incorrect format for semantic versioning");
         }
 
