@@ -1,13 +1,19 @@
 <?php
 
-    use simplerest\libs\Files;
-    use simplerest\libs\Strings;
-    use simplerest\libs\DB;
-    use simplerest\controllers\MakeController;
+use simplerest\libs\Files;
+use simplerest\libs\Strings;
+use simplerest\core\interfaces\IUpdateBatch;
+use simplerest\controllers\MigrationsController;
 
-	/*
-	   Here some description
-	*/
+/*
+    Run batches
+*/
 
-	
-
+class __NAME__ implements IUpdateBatch
+{
+    function run() : ?bool{
+        // ...
+        
+        return true;
+    }
+}
