@@ -16,10 +16,15 @@ class TblResolucionSchema implements ISchema
 
 			'attr_types'	=> [
 				'res_intId' => 'INT',
-				'res_varResolucion' => 'STR',
-				'res_bolEstado' => 'INT',
+				'res_varCodigoResolucion' => 'STR',
+				'res_varNombreResolucion' => 'STR',
+				'res_intVigencia' => 'INT',
+				'res_datFechaInicial' => 'STR',
+				'res_datFechaFinal' => 'STR',
+				'res_lonDescripcionResolucion' => 'STR',
 				'res_dtimFechaCreacion' => 'STR',
 				'res_dtimFechaActualizacion' => 'STR',
+				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -28,23 +33,31 @@ class TblResolucionSchema implements ISchema
 
 			'autoincrement' => 'res_intId',
 
-			'nullable'		=> ['res_intId', 'res_varResolucion', 'res_dtimFechaCreacion', 'res_dtimFechaActualizacion'],
+			'nullable'		=> ['res_intId', 'res_dtimFechaCreacion', 'res_dtimFechaActualizacion', 'est_intIdEstado'],
 
-			'uniques'		=> ['res_varResolucion'],
+			'uniques'		=> [],
 
 			'rules' 		=> [
 				'res_intId' => ['type' => 'int'],
-				'res_varResolucion' => ['type' => 'str', 'max' => 100],
-				'res_bolEstado' => ['type' => 'bool', 'required' => true],
+				'res_varCodigoResolucion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'res_varNombreResolucion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'res_intVigencia' => ['type' => 'int', 'required' => true],
+				'res_datFechaInicial' => ['type' => 'date', 'required' => true],
+				'res_datFechaFinal' => ['type' => 'date', 'required' => true],
+				'res_lonDescripcionResolucion' => ['type' => 'str', 'required' => true],
 				'res_dtimFechaCreacion' => ['type' => 'datetime'],
 				'res_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
+				'tbl_estado' => [
+					['tbl_estado.est_intId','tbl_resolucion.est_intIdEstado']
+				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_resolucion.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_resolucion.usu_intIdCreador']
@@ -55,6 +68,22 @@ class TblResolucionSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
+				  'tbl_estado' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_estado',
+				        1 => 'est_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_resolucion',
+				        1 => 'est_intIdEstado',
+				      ),
+				    ),
+				  ),
 				  'tbl_usuario' => 
 				  array (
 				    0 => 
@@ -105,6 +134,9 @@ class TblResolucionSchema implements ISchema
 				),
 
 			'relationships_from' => [
+				'tbl_estado' => [
+					['tbl_estado.est_intId','tbl_resolucion.est_intIdEstado']
+				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_resolucion.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_resolucion.usu_intIdCreador']
@@ -112,6 +144,22 @@ class TblResolucionSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
+				  'tbl_estado' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_estado',
+				        1 => 'est_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_resolucion',
+				        1 => 'est_intIdEstado',
+				      ),
+				    ),
+				  ),
 				  'tbl_usuario' => 
 				  array (
 				    0 => 

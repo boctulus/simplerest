@@ -20,6 +20,7 @@ class TblEmpresaSchema implements ISchema
 				'emp_varNit' => 'STR',
 				'emp_varEmail' => 'STR',
 				'emp_varCelular' => 'STR',
+				'emp_varDireccion' => 'STR',
 				'emp_varTipoCuenta' => 'STR',
 				'emp_varNumeroCuenta' => 'STR',
 				'emp_varPila' => 'STR',
@@ -30,6 +31,10 @@ class TblEmpresaSchema implements ISchema
 				'emp_bolAplicaDecreto5582000' => 'INT',
 				'emp_dtimFechaCreacion' => 'STR',
 				'emp_dtimFechaActualizacion' => 'STR',
+				'emp_lonLogo' => 'STR',
+				'pai_intIdPais' => 'INT',
+				'ciu_intIdCiudad' => 'INT',
+				'dep_intIdDepartamento' => 'INT',
 				'arl_intIdArl' => 'INT',
 				'opp_intIdOperador' => 'INT',
 				'est_intIdEstado' => 'INT',
@@ -41,7 +46,7 @@ class TblEmpresaSchema implements ISchema
 
 			'autoincrement' => 'emp_intId',
 
-			'nullable'		=> ['emp_intId', 'emp_intAnoConstitucion', 'emp_bolAplicarLey14292020', 'emp_bolAplicarLey5902000', 'emp_bolAportaParafiscales16072012', 'emp_bolAplicaDecreto5582000', 'emp_dtimFechaCreacion', 'emp_dtimFechaActualizacion', 'arl_intIdArl', 'opp_intIdOperador', 'est_intIdEstado'],
+			'nullable'		=> ['emp_intId', 'emp_intAnoConstitucion', 'emp_bolAplicarLey14292020', 'emp_bolAplicarLey5902000', 'emp_bolAportaParafiscales16072012', 'emp_bolAplicaDecreto5582000', 'emp_dtimFechaCreacion', 'emp_dtimFechaActualizacion', 'pai_intIdPais', 'ciu_intIdCiudad', 'dep_intIdDepartamento', 'arl_intIdArl', 'opp_intIdOperador', 'est_intIdEstado'],
 
 			'uniques'		=> [],
 
@@ -51,6 +56,7 @@ class TblEmpresaSchema implements ISchema
 				'emp_varNit' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'emp_varEmail' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'emp_varCelular' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'emp_varDireccion' => ['type' => 'str', 'max' => 300, 'required' => true],
 				'emp_varTipoCuenta' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'emp_varNumeroCuenta' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'emp_varPila' => ['type' => 'str', 'max' => 350, 'required' => true],
@@ -61,6 +67,10 @@ class TblEmpresaSchema implements ISchema
 				'emp_bolAplicaDecreto5582000' => ['type' => 'bool'],
 				'emp_dtimFechaCreacion' => ['type' => 'datetime'],
 				'emp_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'emp_lonLogo' => ['type' => 'str', 'required' => true],
+				'pai_intIdPais' => ['type' => 'int'],
+				'ciu_intIdCiudad' => ['type' => 'int'],
+				'dep_intIdDepartamento' => ['type' => 'int'],
 				'arl_intIdArl' => ['type' => 'int'],
 				'opp_intIdOperador' => ['type' => 'int'],
 				'est_intIdEstado' => ['type' => 'int'],
@@ -68,11 +78,17 @@ class TblEmpresaSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['arl_intIdArl', 'est_intIdEstado', 'opp_intIdOperador', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['arl_intIdArl', 'ciu_intIdCiudad', 'dep_intIdDepartamento', 'est_intIdEstado', 'opp_intIdOperador', 'pai_intIdPais', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_arl' => [
 					['tbl_arl.arl_intId','tbl_empresa.arl_intIdArl']
+				],
+				'tbl_ciudad' => [
+					['tbl_ciudad.ciu_intId','tbl_empresa.ciu_intIdCiudad']
+				],
+				'tbl_departamento' => [
+					['tbl_departamento.dep_intId','tbl_empresa.dep_intIdDepartamento']
 				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_empresa.est_intIdEstado']
@@ -80,9 +96,12 @@ class TblEmpresaSchema implements ISchema
 				'tbl_operador_pila' => [
 					['tbl_operador_pila.opp_intId','tbl_empresa.opp_intIdOperador']
 				],
+				'tbl_pais' => [
+					['tbl_pais.pai_intId','tbl_empresa.pai_intIdPais']
+				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_empresa.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_empresa.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_empresa.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_empresa.usu_intIdActualizador']
 				],
 				'tbl_contacto' => [
 					['tbl_contacto.emp_intIdEmpresa','tbl_empresa.emp_intId']
@@ -106,6 +125,38 @@ class TblEmpresaSchema implements ISchema
 				      array (
 				        0 => 'tbl_empresa',
 				        1 => 'arl_intIdArl',
+				      ),
+				    ),
+				  ),
+				  'tbl_ciudad' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_ciudad',
+				        1 => 'ciu_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_empresa',
+				        1 => 'ciu_intIdCiudad',
+				      ),
+				    ),
+				  ),
+				  'tbl_departamento' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_departamento',
+				        1 => 'dep_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_empresa',
+				        1 => 'dep_intIdDepartamento',
 				      ),
 				    ),
 				  ),
@@ -141,23 +192,25 @@ class TblEmpresaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_usuario' => 
+				  'tbl_pais' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_empresa',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'pai_intIdPais',
 				      ),
 				    ),
-				    1 => 
+				  ),
+				  'tbl_usuario' => 
+				  array (
+				    0 => 
 				    array (
 				      0 => 
 				      array (
@@ -169,6 +222,20 @@ class TblEmpresaSchema implements ISchema
 				      array (
 				        0 => 'tbl_empresa',
 				        1 => 'usu_intIdCreador',
+				      ),
+				    ),
+				    1 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_usuario',
+				        1 => 'usu_intId',
+				        'alias' => '__usu_intIdActualizador',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_empresa',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -210,15 +277,24 @@ class TblEmpresaSchema implements ISchema
 				'tbl_arl' => [
 					['tbl_arl.arl_intId','tbl_empresa.arl_intIdArl']
 				],
+				'tbl_ciudad' => [
+					['tbl_ciudad.ciu_intId','tbl_empresa.ciu_intIdCiudad']
+				],
+				'tbl_departamento' => [
+					['tbl_departamento.dep_intId','tbl_empresa.dep_intIdDepartamento']
+				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_empresa.est_intIdEstado']
 				],
 				'tbl_operador_pila' => [
 					['tbl_operador_pila.opp_intId','tbl_empresa.opp_intIdOperador']
 				],
+				'tbl_pais' => [
+					['tbl_pais.pai_intId','tbl_empresa.pai_intIdPais']
+				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_empresa.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_empresa.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_empresa.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_empresa.usu_intIdActualizador']
 				]
 			],
 
@@ -236,6 +312,38 @@ class TblEmpresaSchema implements ISchema
 				      array (
 				        0 => 'tbl_empresa',
 				        1 => 'arl_intIdArl',
+				      ),
+				    ),
+				  ),
+				  'tbl_ciudad' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_ciudad',
+				        1 => 'ciu_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_empresa',
+				        1 => 'ciu_intIdCiudad',
+				      ),
+				    ),
+				  ),
+				  'tbl_departamento' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_departamento',
+				        1 => 'dep_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_empresa',
+				        1 => 'dep_intIdDepartamento',
 				      ),
 				    ),
 				  ),
@@ -271,23 +379,25 @@ class TblEmpresaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_usuario' => 
+				  'tbl_pais' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_empresa',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'pai_intIdPais',
 				      ),
 				    ),
-				    1 => 
+				  ),
+				  'tbl_usuario' => 
+				  array (
+				    0 => 
 				    array (
 				      0 => 
 				      array (
@@ -299,6 +409,20 @@ class TblEmpresaSchema implements ISchema
 				      array (
 				        0 => 'tbl_empresa',
 				        1 => 'usu_intIdCreador',
+				      ),
+				    ),
+				    1 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_usuario',
+				        1 => 'usu_intId',
+				        'alias' => '__usu_intIdActualizador',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_empresa',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

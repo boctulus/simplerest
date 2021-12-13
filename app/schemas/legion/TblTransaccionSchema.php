@@ -17,9 +17,9 @@ class TblTransaccionSchema implements ISchema
 			'attr_types'	=> [
 				'tra_intId' => 'INT',
 				'tra_varTransaccion' => 'STR',
-				'tra_bolEstado' => 'INT',
 				'tra_dtimFechaActualizacion' => 'STR',
 				'tra_dtimFechaCreacion' => 'STR',
+				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -28,23 +28,26 @@ class TblTransaccionSchema implements ISchema
 
 			'autoincrement' => 'tra_intId',
 
-			'nullable'		=> ['tra_intId', 'tra_dtimFechaActualizacion', 'tra_dtimFechaCreacion'],
+			'nullable'		=> ['tra_intId', 'tra_dtimFechaActualizacion', 'tra_dtimFechaCreacion', 'est_intIdEstado'],
 
 			'uniques'		=> ['tra_varTransaccion'],
 
 			'rules' 		=> [
 				'tra_intId' => ['type' => 'int'],
 				'tra_varTransaccion' => ['type' => 'str', 'max' => 25, 'required' => true],
-				'tra_bolEstado' => ['type' => 'bool', 'required' => true],
 				'tra_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'tra_dtimFechaCreacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
+				'tbl_estado' => [
+					['tbl_estado.est_intId','tbl_transaccion.est_intIdEstado']
+				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_transaccion.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_transaccion.usu_intIdCreador']
@@ -55,6 +58,22 @@ class TblTransaccionSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
+				  'tbl_estado' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_estado',
+				        1 => 'est_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_transaccion',
+				        1 => 'est_intIdEstado',
+				      ),
+				    ),
+				  ),
 				  'tbl_usuario' => 
 				  array (
 				    0 => 
@@ -105,6 +124,9 @@ class TblTransaccionSchema implements ISchema
 				),
 
 			'relationships_from' => [
+				'tbl_estado' => [
+					['tbl_estado.est_intId','tbl_transaccion.est_intIdEstado']
+				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_transaccion.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_transaccion.usu_intIdCreador']
@@ -112,6 +134,22 @@ class TblTransaccionSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
+				  'tbl_estado' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_estado',
+				        1 => 'est_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_transaccion',
+				        1 => 'est_intIdEstado',
+				      ),
+				    ),
+				  ),
 				  'tbl_usuario' => 
 				  array (
 				    0 => 

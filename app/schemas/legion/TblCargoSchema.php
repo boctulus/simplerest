@@ -16,10 +16,12 @@ class TblCargoSchema implements ISchema
 
 			'attr_types'	=> [
 				'car_intId' => 'INT',
+				'car_varCodigo' => 'STR',
 				'car_varNombre' => 'STR',
-				'car_varDescripcion' => 'STR',
+				'car_lonDescripcion' => 'STR',
 				'car_dtimFechaCreacion' => 'STR',
 				'car_dtimFechaActualizacion' => 'STR',
+				'emn_intIdEmpresa' => 'INT',
 				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
@@ -29,24 +31,29 @@ class TblCargoSchema implements ISchema
 
 			'autoincrement' => 'car_intId',
 
-			'nullable'		=> ['car_intId', 'car_dtimFechaCreacion', 'car_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['car_intId', 'car_dtimFechaCreacion', 'car_dtimFechaActualizacion', 'emn_intIdEmpresa', 'est_intIdEstado'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'car_intId' => ['type' => 'int'],
+				'car_varCodigo' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'car_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'car_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'car_lonDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'car_dtimFechaCreacion' => ['type' => 'datetime'],
 				'car_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'emn_intIdEmpresa' => ['type' => 'int'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['emn_intIdEmpresa', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
+				'tbl_empresa_nomina' => [
+					['tbl_empresa_nomina.emn_intId','tbl_cargo.emn_intIdEmpresa']
+				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_cargo.est_intIdEstado']
 				],
@@ -61,6 +68,22 @@ class TblCargoSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
+				  'tbl_empresa_nomina' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empresa_nomina',
+				        1 => 'emn_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_cargo',
+				        1 => 'emn_intIdEmpresa',
+				      ),
+				    ),
+				  ),
 				  'tbl_estado' => 
 				  array (
 				    0 => 
@@ -140,6 +163,9 @@ class TblCargoSchema implements ISchema
 				),
 
 			'relationships_from' => [
+				'tbl_empresa_nomina' => [
+					['tbl_empresa_nomina.emn_intId','tbl_cargo.emn_intIdEmpresa']
+				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_cargo.est_intIdEstado']
 				],
@@ -150,6 +176,22 @@ class TblCargoSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
+				  'tbl_empresa_nomina' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empresa_nomina',
+				        1 => 'emn_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_cargo',
+				        1 => 'emn_intIdEmpresa',
+				      ),
+				    ),
+				  ),
 				  'tbl_estado' => 
 				  array (
 				    0 => 

@@ -16,9 +16,13 @@ class TblTipoPersonaSchema implements ISchema
 
 			'attr_types'	=> [
 				'tpr_intId' => 'INT',
+				'tpr_varCodigo' => 'STR',
 				'tpr_varNombre' => 'STR',
+				'tpr_lonDescripcion' => 'STR',
+				'tpr_varCodigoDian' => 'STR',
 				'tpr_dtimFechaCreacion' => 'STR',
 				'tpr_dtimFechaActualizacion' => 'STR',
+				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -27,22 +31,29 @@ class TblTipoPersonaSchema implements ISchema
 
 			'autoincrement' => 'tpr_intId',
 
-			'nullable'		=> ['tpr_intId', 'tpr_dtimFechaCreacion', 'tpr_dtimFechaActualizacion'],
+			'nullable'		=> ['tpr_intId', 'tpr_dtimFechaCreacion', 'tpr_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'tpr_intId' => ['type' => 'int'],
+				'tpr_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'tpr_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'tpr_lonDescripcion' => ['type' => 'str', 'required' => true],
+				'tpr_varCodigoDian' => ['type' => 'str', 'max' => 2, 'required' => true],
 				'tpr_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tpr_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
+				'tbl_estado' => [
+					['tbl_estado.est_intId','tbl_tipo_persona.est_intIdEstado']
+				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_tipo_persona.usu_intIdCreador'],
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_tipo_persona.usu_intIdActualizador']
@@ -53,6 +64,22 @@ class TblTipoPersonaSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
+				  'tbl_estado' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_estado',
+				        1 => 'est_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_tipo_persona',
+				        1 => 'est_intIdEstado',
+				      ),
+				    ),
+				  ),
 				  'tbl_usuario' => 
 				  array (
 				    0 => 
@@ -103,6 +130,9 @@ class TblTipoPersonaSchema implements ISchema
 				),
 
 			'relationships_from' => [
+				'tbl_estado' => [
+					['tbl_estado.est_intId','tbl_tipo_persona.est_intIdEstado']
+				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_tipo_persona.usu_intIdCreador'],
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_tipo_persona.usu_intIdActualizador']
@@ -110,6 +140,22 @@ class TblTipoPersonaSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
+				  'tbl_estado' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_estado',
+				        1 => 'est_intId',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_tipo_persona',
+				        1 => 'est_intIdEstado',
+				      ),
+				    ),
+				  ),
 				  'tbl_usuario' => 
 				  array (
 				    0 => 

@@ -1,6 +1,12 @@
 ROLES REMOTOS (SERVIDOR DE DSI)
 ==============================
 
+ROL ???  <generado por Jhonatan>
+
+
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTYzMjU4NTg0OSwiZXhwIjoxNjQxNTg1ODQ5LCJpcCI6Ijo6MSIsInVzZXJfYWdlbnQiOiJNb3ppbGxhXC81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXRcLzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZVwvOTMuMC40NTc3LjgyIFNhZmFyaVwvNTM3LjM2IiwidWlkIjo1MCwicm9sZXMiOlsiZHNpIl0sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOlsiZGJfbGVnaW9uIl19.1cU36WptvKoqwwYK34lvjhmwqN5uIzrrZ95Sp1egcAE
+
+
 ROL SUPERVISOR
 
 {

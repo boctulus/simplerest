@@ -17,10 +17,11 @@ class TblEstratoEconomicoSchema implements ISchema
 			'attr_types'	=> [
 				'tec_intId' => 'INT',
 				'tec_varCodigo' => 'STR',
-				'tec_varDescripcion' => 'STR',
+				'tec_varNombre' => 'STR',
+				'tec_lonDescripcion' => 'STR',
 				'tec_dtimFechaCreacion' => 'STR',
 				'tec_dtimFechaActualizacion' => 'STR',
-				'est_intIdestado' => 'INT',
+				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -29,26 +30,27 @@ class TblEstratoEconomicoSchema implements ISchema
 
 			'autoincrement' => 'tec_intId',
 
-			'nullable'		=> ['tec_intId', 'tec_dtimFechaCreacion', 'tec_dtimFechaActualizacion', 'est_intIdestado'],
+			'nullable'		=> ['tec_intId', 'tec_varCodigo', 'tec_lonDescripcion', 'tec_dtimFechaCreacion', 'tec_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'tec_intId' => ['type' => 'int'],
-				'tec_varCodigo' => ['type' => 'str', 'max' => 20, 'required' => true],
-				'tec_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'tec_varCodigo' => ['type' => 'str', 'max' => 20],
+				'tec_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'tec_lonDescripcion' => ['type' => 'str'],
 				'tec_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tec_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdestado' => ['type' => 'int'],
+				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdestado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_estrato_economico.est_intIdestado']
+					['tbl_estado.est_intId','tbl_estrato_economico.est_intIdEstado']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_estrato_economico.usu_intIdActualizador'],
@@ -69,7 +71,7 @@ class TblEstratoEconomicoSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_estrato_economico',
-				        1 => 'est_intIdestado',
+				        1 => 'est_intIdEstado',
 				      ),
 				    ),
 				  ),
@@ -108,7 +110,7 @@ class TblEstratoEconomicoSchema implements ISchema
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_estrato_economico.est_intIdestado']
+					['tbl_estado.est_intId','tbl_estrato_economico.est_intIdEstado']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_estrato_economico.usu_intIdActualizador'],
@@ -129,7 +131,7 @@ class TblEstratoEconomicoSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_estrato_economico',
-				        1 => 'est_intIdestado',
+				        1 => 'est_intIdEstado',
 				      ),
 				    ),
 				  ),
