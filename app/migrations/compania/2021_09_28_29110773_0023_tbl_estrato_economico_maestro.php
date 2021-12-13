@@ -17,8 +17,9 @@ class TblEstratoEconomicoMaestro115 implements IMigration
     {
         Model::query("CREATE TABLE tbl_estrato_economico (
         tec_intId int(11) NOT NULL AUTO_INCREMENT,
-        tec_varCodigo varchar(20) NOT NULL,
-        tec_varDescripcion varchar(250) NOT NULL,
+        tec_varCodigo varchar(100)  NULL,
+        tec_varNombre varchar(100) NOT NULL,
+        tec_lonDescripcion longtext  NULL,
         tec_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
         tec_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
         est_intIdestado int(11) DEFAULT 1,
@@ -37,7 +38,7 @@ class TblEstratoEconomicoMaestro115 implements IMigration
         Model::query("ALTER TABLE tbl_estrato_economico ADD CONSTRAINT FK_tec_idCreador FOREIGN KEY (usu_intIdCreador)  REFERENCES tbl_usuario (usu_intId);");
 
 
-        Model::query("INSERT INTO tbl_estrato_economico (tec_varCodigo, tec_varDescripcion,  usu_intIdCreador,
+        Model::query("INSERT INTO tbl_estrato_economico (tec_varCodigo, tec_varNombre,  usu_intIdCreador,
         usu_intIdActualizador )
         VALUES ('UNO', 'BAJO-BAJO', 1,1),
         ('DOS', 'BAJO', 1,1),

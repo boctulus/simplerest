@@ -17,8 +17,10 @@ class TblClaseLibretaMilitarMaestro120 implements IMigration
     {
         Model::query("CREATE TABLE tbl_clase_libreta_militar (
         clm_intId int(11) NOT NULL AUTO_INCREMENT,
-        clm_varNombre varchar(50) NOT NULL,
-        clm_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+        clm_varCodigo varchar(100)  NULL,
+        clm_varNombre varchar(100) NOT NULL,
+        clm_lonDescripcion LONGTEXT  NULL,
+        clm_dtimFechaCreacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
         clm_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
         est_intIdEstado int(11) NOT NULL DEFAULT 1,
         usu_intIdCreador int(11) NOT NULL,

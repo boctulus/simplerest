@@ -25,7 +25,7 @@ class TblFacturaMaestro232 implements IMigration
         fac_decIca DECIMAL(18, 2) NOT NULL,
         fac_decRetencion DECIMAL(18, 2) NOT NULL,
         fac_decReteIva DECIMAL(18, 2) NOT NULL,
-        fac_dateFecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        fac_dateFecha DATE NOT NULL DEFAULT current_timestamp(),
         fac_decNeto DECIMAL(18, 2) NOT NULL,
         fac_bolEstado TINYINT(1) NOT NULL DEFAULT 1,
         fac_dateFechaVencimiento DATE NOT NULL,
@@ -35,7 +35,7 @@ class TblFacturaMaestro232 implements IMigration
         fac_intTopeReteiva INT(11) NOT NULL,
         fac_decPorceIca DECIMAL(10, 2) NOT NULL,
         fac_intTopeReteIca INT(11) NOT NULL,
-        fac_dtimFechaCreacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        fac_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
         fac_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
         fac_varNota LONGTEXT DEFAULT NULL,
         fac_bolPagado TINYINT(4) DEFAULT 0,
@@ -71,7 +71,7 @@ class TblFacturaMaestro232 implements IMigration
         REFERENCES tbl_documento(doc_intId);");
 
         Model::query("ALTER TABLE tbl_factura 
-        ADD CONSTRAINT FK_fac1_centro_costos FOREIGN KEY (cen_intIdCentrocostos)
+        ADD CONSTRAINT FK_fac_centro_costos FOREIGN KEY (cen_intIdCentrocostos)
         REFERENCES tbl_centro_costos(cco_intId);");
 
         Model::query("ALTER TABLE tbl_factura 

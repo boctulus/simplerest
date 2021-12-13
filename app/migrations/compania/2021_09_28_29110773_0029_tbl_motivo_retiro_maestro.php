@@ -17,13 +17,14 @@ class TblMotivoRetiroMaestro146 implements IMigration
     {
         Model::query("CREATE TABLE tbl_motivo_retiro (
         mtr_intId int(11) NOT NULL AUTO_INCREMENT,
-        mtr_varNombre varchar(50) NOT NULL,
-        mtr_varDescripcion varchar(250) NOT NULL,
+        mtr_varCodigo varchar(100)  NULL,
+        mtr_varNombre varchar(100)  NOT NULL,
+        mtr_lonDescripcion LONGTEXT  NULL,
         mtr_dtimFechaCreacion datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-        mtr_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
+        mtr_dtimFechaActualizacion DATETIME  NOT NULL DEFAULT '0000-00-00 00:00:00',
         est_intIdEstado int(11) NOT NULL DEFAULT 1,
         usu_intIdCreador int(11) NOT NULL,
-        usu_intIdActualizador int(11) NOT NULL,
+        usu_intIdActualizador int(11)  NULL,
         PRIMARY KEY (mtr_intId)
         )
         ENGINE = INNODB,
