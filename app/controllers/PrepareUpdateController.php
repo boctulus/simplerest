@@ -82,6 +82,7 @@ class PrepareUpdateController extends ConsoleController
         // app/models/main/SpPermissionsModel.php
         // app/models/main/UserTbPermissionsModel.php
         // app/models/main/UserSpPermissionsModel.php
+        // app/models/main/EmailNotificationsModel.php
         
         // ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         // ;; VIEWS
