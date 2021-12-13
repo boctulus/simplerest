@@ -17,8 +17,6 @@ use simplerest\libs\Strings;
 */
 class PrepareUpdateController extends ConsoleController
 {
-    protected $ori, $dst;
-
     function __construct()
     {
         parent::__construct();     
@@ -26,8 +24,26 @@ class PrepareUpdateController extends ConsoleController
     }
 
     function setup(){
+        $dirs = [];
+        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
+            if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
+            
+            $dirs[] = $fileInfo->getBasename();
+        }
+
+        /*
+            La forma de ordenamiento no es del todo correcta !
+
+            1.0.1-beta < 1.0.11
+        */
+        sort($dirs);
+
+        $last_update_dir = end($dirs); 
+        $last_ver        = substr($last_update_dir, 11);
+        
+        
         $ori = '/home/www/simplerest';
-        $dst = 'updates/2021-12-12-0.5.0-alpha/';   // <--- debe generarse y cambiar !!!
+        $dst = "updates/$last_update_dir/";  
 
         Files::copy($dst, ROOT_PATH, ['version.txt']); 
 
