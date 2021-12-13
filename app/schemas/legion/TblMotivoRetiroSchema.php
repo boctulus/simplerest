@@ -16,8 +16,9 @@ class TblMotivoRetiroSchema implements ISchema
 
 			'attr_types'	=> [
 				'mtr_intId' => 'INT',
+				'mtr_varCodigo' => 'STR',
 				'mtr_varNombre' => 'STR',
-				'mtr_varDescripcion' => 'STR',
+				'mtr_lonDescripcion' => 'STR',
 				'mtr_dtimFechaCreacion' => 'STR',
 				'mtr_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -29,19 +30,20 @@ class TblMotivoRetiroSchema implements ISchema
 
 			'autoincrement' => 'mtr_intId',
 
-			'nullable'		=> ['mtr_intId', 'mtr_dtimFechaCreacion', 'mtr_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['mtr_intId', 'mtr_varCodigo', 'mtr_lonDescripcion', 'mtr_dtimFechaCreacion', 'mtr_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'mtr_intId' => ['type' => 'int'],
-				'mtr_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'mtr_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
+				'mtr_varCodigo' => ['type' => 'str', 'max' => 100],
+				'mtr_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'mtr_lonDescripcion' => ['type' => 'str'],
 				'mtr_dtimFechaCreacion' => ['type' => 'datetime'],
 				'mtr_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],

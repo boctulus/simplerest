@@ -16,7 +16,7 @@ class TblProveedorSchema implements ISchema
 
 			'attr_types'	=> [
 				'prv_intId' => 'INT',
-				'pro_intCuentaBancaria' => 'STR',
+				'prv_varCuentaBancaria' => 'STR',
 				'prv_dtimFechaCreacion' => 'STR',
 				'prv_dtimFechaActualizacion' => 'STR',
 				'dpa_intIdDiasPago' => 'INT',
@@ -32,19 +32,19 @@ class TblProveedorSchema implements ISchema
 
 			'autoincrement' => 'prv_intId',
 
-			'nullable'		=> ['prv_intId', 'prv_dtimFechaCreacion', 'prv_dtimFechaActualizacion', 'per_intIdPersona', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['prv_intId', 'prv_dtimFechaCreacion', 'prv_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
-			'uniques'		=> [],
+			'uniques'		=> ['per_intIdPersona'],
 
 			'rules' 		=> [
 				'prv_intId' => ['type' => 'int'],
-				'pro_intCuentaBancaria' => ['type' => 'str', 'max' => 15, 'required' => true],
+				'prv_varCuentaBancaria' => ['type' => 'str', 'max' => 15, 'required' => true],
 				'prv_dtimFechaCreacion' => ['type' => 'datetime'],
 				'prv_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'dpa_intIdDiasPago' => ['type' => 'int', 'required' => true],
 				'ban_intIdBanco' => ['type' => 'int', 'required' => true],
 				'ccb_intIdCategoriaCuentaBancaria' => ['type' => 'int', 'required' => true],
-				'per_intIdPersona' => ['type' => 'int'],
+				'per_intIdPersona' => ['type' => 'int', 'required' => true],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int'],
 				'usu_intIdActualizador' => ['type' => 'int']
@@ -71,9 +71,6 @@ class TblProveedorSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_proveedor.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_proveedor.usu_intIdCreador']
-				],
-				'tbl_proveedor_informacion_tributaria' => [
-					['tbl_proveedor_informacion_tributaria.prv_intIdProveedor','tbl_proveedor.prv_intId']
 				]
 			],
 
@@ -186,22 +183,6 @@ class TblProveedorSchema implements ISchema
 				      array (
 				        0 => 'tbl_proveedor',
 				        1 => 'usu_intIdCreador',
-				      ),
-				    ),
-				  ),
-				  'tbl_proveedor_informacion_tributaria' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_proveedor_informacion_tributaria',
-				        1 => 'prv_intIdProveedor',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_proveedor',
-				        1 => 'prv_intId',
 				      ),
 				    ),
 				  ),

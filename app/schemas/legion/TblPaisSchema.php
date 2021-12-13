@@ -27,11 +27,11 @@ class TblPaisSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'primary'		=> ['pai_intId', 'pai_varCodigo'],
+			'primary'		=> ['pai_intId'],
 
 			'autoincrement' => 'pai_intId',
 
-			'nullable'		=> ['pai_intId', 'pai_dtimFechaCreacion', 'pai_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['pai_intId', 'pai_dtimFechaCreacion', 'pai_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -45,7 +45,7 @@ class TblPaisSchema implements ISchema
 				'est_intIdEstado' => ['type' => 'int'],
 				'pai_intIdMoneda' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'pai_intIdMoneda', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -61,17 +61,24 @@ class TblPaisSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_pais.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_pais.usu_intIdCreador']
 				],
-				'tbl_persona' => [
-					['tbl_persona.pai_intIdPais','tbl_pais.pai_intId']
+				'tbl_empleado_datos_generales' => [
+					['tbl_empleado_datos_generales.pai_intIdPais','tbl_pais.pai_intId'],
+					['tbl_empleado_datos_generales.pai_intIdPaisExpCedula','tbl_pais.pai_intId']
 				],
 				'tbl_contacto' => [
 					['tbl_contacto.pai_intIdPais','tbl_pais.pai_intId']
 				],
-				'tbl_departamento' => [
-					['tbl_departamento.pai_intIdPais','tbl_pais.pai_intId']
+				'tbl_persona' => [
+					['tbl_persona.pai_intIdPaisNacimiento','tbl_pais.pai_intId']
+				],
+				'tbl_empresa' => [
+					['tbl_empresa.pai_intIdPais','tbl_pais.pai_intId']
 				],
 				'tbl_ciudad' => [
 					['tbl_ciudad.pai_intIdPais','tbl_pais.pai_intId']
+				],
+				'tbl_departamento' => [
+					['tbl_departamento.pai_intIdPais','tbl_pais.pai_intId']
 				]
 			],
 
@@ -139,13 +146,13 @@ class TblPaisSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_departamento' => 
+				  'tbl_empleado_datos_generales' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_departamento',
+				        0 => 'tbl_empleado_datos_generales',
 				        1 => 'pai_intIdPais',
 				      ),
 				      1 => 
@@ -154,15 +161,12 @@ class TblPaisSchema implements ISchema
 				        1 => 'pai_intId',
 				      ),
 				    ),
-				  ),
-				  'tbl_persona' => 
-				  array (
-				    0 => 
+				    1 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_persona',
-				        1 => 'pai_intIdPais',
+				        0 => 'tbl_empleado_datos_generales',
+				        1 => 'pai_intIdPaisExpCedula',
 				      ),
 				      1 => 
 				      array (
@@ -187,6 +191,38 @@ class TblPaisSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'tbl_persona' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'pai_intIdPaisNacimiento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_empresa' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empresa',
+				        1 => 'pai_intIdPais',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
+				      ),
+				    ),
+				  ),
 				  'tbl_ciudad' => 
 				  array (
 				    0 => 
@@ -194,6 +230,22 @@ class TblPaisSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_ciudad',
+				        1 => 'pai_intIdPais',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_departamento' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_departamento',
 				        1 => 'pai_intIdPais',
 				      ),
 				      1 => 

@@ -61,6 +61,16 @@ class TblDepartamentoSchema implements ISchema
 				],
 				'tbl_ciudad' => [
 					['tbl_ciudad.dep_intIdDepartamento','tbl_departamento.dep_intId']
+				],
+				'tbl_empresa' => [
+					['tbl_empresa.dep_intIdDepartamento','tbl_departamento.dep_intId']
+				],
+				'tbl_empleado_datos_generales' => [
+					['tbl_empleado_datos_generales.dep_intIdDepartaExpCedula','tbl_departamento.dep_intId'],
+					['tbl_empleado_datos_generales.dep_intIdDepartamento','tbl_departamento.dep_intId']
+				],
+				'tbl_persona' => [
+					['tbl_persona.dep_intIdDepartamentoNacimiento','tbl_departamento.dep_intId']
 				]
 			],
 
@@ -136,6 +146,67 @@ class TblDepartamentoSchema implements ISchema
 				      array (
 				        0 => 'tbl_ciudad',
 				        1 => 'dep_intIdDepartamento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_departamento',
+				        1 => 'dep_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_empresa' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empresa',
+				        1 => 'dep_intIdDepartamento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_departamento',
+				        1 => 'dep_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_empleado_datos_generales' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empleado_datos_generales',
+				        1 => 'dep_intIdDepartaExpCedula',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_departamento',
+				        1 => 'dep_intId',
+				      ),
+				    ),
+				    1 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empleado_datos_generales',
+				        1 => 'dep_intIdDepartamento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_departamento',
+				        1 => 'dep_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_persona' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'dep_intIdDepartamentoNacimiento',
 				      ),
 				      1 => 
 				      array (

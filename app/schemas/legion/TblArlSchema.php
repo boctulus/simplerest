@@ -18,6 +18,7 @@ class TblArlSchema implements ISchema
 				'arl_intId' => 'INT',
 				'arl_varCodigo' => 'STR',
 				'arl_varNombre' => 'STR',
+				'arl_lonDescripcion' => 'STR',
 				'arl_dtimFechaCreacion' => 'STR',
 				'arl_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -29,19 +30,20 @@ class TblArlSchema implements ISchema
 
 			'autoincrement' => 'arl_intId',
 
-			'nullable'		=> ['arl_intId', 'arl_dtimFechaCreacion', 'arl_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['arl_intId', 'arl_varCodigo', 'arl_lonDescripcion', 'arl_dtimFechaCreacion', 'arl_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'arl_intId' => ['type' => 'int'],
-				'arl_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'arl_varCodigo' => ['type' => 'str', 'max' => 100],
 				'arl_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'arl_lonDescripcion' => ['type' => 'str'],
 				'arl_dtimFechaCreacion' => ['type' => 'datetime'],
 				'arl_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -56,6 +58,9 @@ class TblArlSchema implements ISchema
 				],
 				'tbl_empresa' => [
 					['tbl_empresa.arl_intIdArl','tbl_arl.arl_intId']
+				],
+				'tbl_empresa_nomina' => [
+					['tbl_empresa_nomina.arl_intIdArl','tbl_arl.arl_intId']
 				]
 			],
 
@@ -114,6 +119,22 @@ class TblArlSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_empresa',
+				        1 => 'arl_intIdArl',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_arl',
+				        1 => 'arl_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_empresa_nomina' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empresa_nomina',
 				        1 => 'arl_intIdArl',
 				      ),
 				      1 => 

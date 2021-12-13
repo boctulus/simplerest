@@ -42,7 +42,7 @@ class TblProductoSchema implements ISchema
 
 			'autoincrement' => 'pro_intId',
 
-			'nullable'		=> ['pro_intId', 'pro_dtimFechaCreacion', 'pro_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['pro_intId', 'pro_intSaldo', 'pro_dtimFechaCreacion', 'pro_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'uniques'		=> ['pro_varCodigoProducto'],
 
@@ -54,7 +54,7 @@ class TblProductoSchema implements ISchema
 				'pro_intCostoCompra' => ['type' => 'int', 'required' => true],
 				'pro_intPrecioVenta' => ['type' => 'int', 'required' => true],
 				'pro_intStockMinimo' => ['type' => 'int', 'required' => true],
-				'pro_intSaldo' => ['type' => 'int', 'required' => true],
+				'pro_intSaldo' => ['type' => 'int'],
 				'pro_intStockMaximo' => ['type' => 'int', 'required' => true],
 				'pro_dtimFechaCreacion' => ['type' => 'datetime'],
 				'pro_dtimFechaActualizacion' => ['type' => 'datetime'],
@@ -70,7 +70,7 @@ class TblProductoSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['cap_intIdCategoriaProducto', 'est_intIdEstado', 'grp_intIdGrupoProducto', 'iva_intIdIva', 'mon_intIdMoneda', 'sub_intIdCuentaContableCompra', 'sub_intIdCuentaContableVenta', 'unm_intIdUnidadMedida', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['cap_intIdCategoriaProducto', 'est_intIdEstado', 'grp_intIdGrupoProducto', 'iva_intIdIva', 'mon_intIdMoneda', 'sub_intIdCuentaContableVenta', 'sub_intIdCuentaContableCompra', 'unm_intIdUnidadMedida', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_categoria_producto' => [
@@ -92,15 +92,39 @@ class TblProductoSchema implements ISchema
 					['tbl_sub_cuenta_contable|__sub_intIdCuentaContableCompra.sub_intId','tbl_producto.sub_intIdCuentaContableCompra'],
 					['tbl_sub_cuenta_contable|__sub_intIdCuentaContableVenta.sub_intId','tbl_producto.sub_intIdCuentaContableVenta']
 				],
-				'tbl_unidadmedida' => [
-					['tbl_unidadmedida.unm_intId','tbl_producto.unm_intIdUnidadMedida']
+				'tbl_unidad_medida' => [
+					['tbl_unidad_medida.unm_intId','tbl_producto.unm_intIdUnidadMedida']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_producto.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_producto.usu_intIdCreador']
 				],
+				'tbl_mvto_inventario_detalle' => [
+					['tbl_mvto_inventario_detalle.pro_intIdProducto','tbl_producto.pro_intId']
+				],
+				'tbl_nota_credito_detalle' => [
+					['tbl_nota_credito_detalle.pro_intIdProducto','tbl_producto.pro_intId']
+				],
+				'tbl_compras_detalle' => [
+					['tbl_compras_detalle.pro_intIdProducto','tbl_producto.pro_intId']
+				],
 				'tbl_factura_detalle' => [
 					['tbl_factura_detalle.pro_intIdProducto','tbl_producto.pro_intId']
+				],
+				'tbl_contrato_detalle' => [
+					['tbl_contrato_detalle.pro_intIdProducto','tbl_producto.pro_intId']
+				],
+				'tbl_nota_debito_detalle' => [
+					['tbl_nota_debito_detalle.pro_intIdProducto','tbl_producto.pro_intId']
+				],
+				'tbl_cotizacion_detalle' => [
+					['tbl_cotizacion_detalle.pro_intIdProducto','tbl_producto.pro_intId']
+				],
+				'tbl_orden_compra_detalle' => [
+					['tbl_orden_compra_detalle.pro_intIdProducto','tbl_producto.pro_intId']
+				],
+				'tbl_pedido_detalle' => [
+					['tbl_pedido_detalle.pro_intIdProducto','tbl_producto.pro_intId']
 				]
 			],
 
@@ -216,13 +240,13 @@ class TblProductoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_unidadmedida' => 
+				  'tbl_unidad_medida' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
+				        0 => 'tbl_unidad_medida',
 				        1 => 'unm_intId',
 				      ),
 				      1 => 
@@ -263,6 +287,54 @@ class TblProductoSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'tbl_mvto_inventario_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_mvto_inventario_detalle',
+				        1 => 'pro_intIdProducto',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'pro_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_nota_credito_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_nota_credito_detalle',
+				        1 => 'pro_intIdProducto',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'pro_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_compras_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_compras_detalle',
+				        1 => 'pro_intIdProducto',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'pro_intId',
+				      ),
+				    ),
+				  ),
 				  'tbl_factura_detalle' => 
 				  array (
 				    0 => 
@@ -270,6 +342,86 @@ class TblProductoSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_factura_detalle',
+				        1 => 'pro_intIdProducto',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'pro_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_contrato_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_contrato_detalle',
+				        1 => 'pro_intIdProducto',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'pro_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_nota_debito_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_nota_debito_detalle',
+				        1 => 'pro_intIdProducto',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'pro_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_cotizacion_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_cotizacion_detalle',
+				        1 => 'pro_intIdProducto',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'pro_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_orden_compra_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_orden_compra_detalle',
+				        1 => 'pro_intIdProducto',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_producto',
+				        1 => 'pro_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_pedido_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_pedido_detalle',
 				        1 => 'pro_intIdProducto',
 				      ),
 				      1 => 
@@ -301,8 +453,8 @@ class TblProductoSchema implements ISchema
 					['tbl_sub_cuenta_contable|__sub_intIdCuentaContableCompra.sub_intId','tbl_producto.sub_intIdCuentaContableCompra'],
 					['tbl_sub_cuenta_contable|__sub_intIdCuentaContableVenta.sub_intId','tbl_producto.sub_intIdCuentaContableVenta']
 				],
-				'tbl_unidadmedida' => [
-					['tbl_unidadmedida.unm_intId','tbl_producto.unm_intIdUnidadMedida']
+				'tbl_unidad_medida' => [
+					['tbl_unidad_medida.unm_intId','tbl_producto.unm_intIdUnidadMedida']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_producto.usu_intIdActualizador'],
@@ -422,13 +574,13 @@ class TblProductoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_unidadmedida' => 
+				  'tbl_unidad_medida' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_unidadmedida',
+				        0 => 'tbl_unidad_medida',
 				        1 => 'unm_intId',
 				      ),
 				      1 => 

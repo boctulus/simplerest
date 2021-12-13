@@ -42,7 +42,7 @@ class TblCategoriaCuentaBancariaSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_estado' => [
@@ -54,9 +54,6 @@ class TblCategoriaCuentaBancariaSchema implements ISchema
 				],
 				'tbl_proveedor' => [
 					['tbl_proveedor.ccb_intIdCategoriaCuentaBancaria','tbl_categoria_cuenta_bancaria.ccb_intId']
-				],
-				'tbl_cuenta_bancaria' => [
-					['tbl_cuenta_bancaria.ccb_intIdCategoriaCuentaBancaria','tbl_categoria_cuenta_bancaria.ccb_intId']
 				]
 			],
 
@@ -115,22 +112,6 @@ class TblCategoriaCuentaBancariaSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_proveedor',
-				        1 => 'ccb_intIdCategoriaCuentaBancaria',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_categoria_cuenta_bancaria',
-				        1 => 'ccb_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_cuenta_bancaria' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_cuenta_bancaria',
 				        1 => 'ccb_intIdCategoriaCuentaBancaria',
 				      ),
 				      1 => 
