@@ -27,7 +27,7 @@ class PrepareUpdateController extends ConsoleController
 
     function setup(){
         $ori = '/home/www/simplerest';
-        $dst = 'updates/2021-12-13-0.0.5-alpha/';   // <--- debe generarse y cambiar !!!
+        $dst = 'updates/2021-12-12-0.5.0-alpha/';   // <--- debe generarse y cambiar !!!
 
         Files::copy($dst, ROOT_PATH, ['version.txt']); 
 
