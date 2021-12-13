@@ -30,14 +30,14 @@ class TblMonedaMaestro76 implements IMigration
         ->longtext($nom.'_lonDescripcion')->comment('hashed')->nullable()
         ->datetime($nom.'_dtimFechaCreacion')->default('current_timestamp')
         ->datetime($nom.'_dtimFechaActualizacion')->default("'0000-00-00'")
-        ->integer('est_intEstado')->default('1')
+        ->integer('est_intIdEstado')->default('1')
         ->integer('usu_intIdCreador')
         ->integer('usu_intIdActualizador')->nullable();
 
         $users_table = 'tbl_estado';
         $users_pri   = 'est_intId';
 
-        $sc->foreign('est_intEstado')->references($users_pri)->on($users_table);
+        $sc->foreign('est_intIdEstado')->references($users_pri)->on($users_table);
         $sc->foreign('usu_intIdCreador')->references('usu_intId')->on('tbl_usuario');
         $sc->foreign('usu_intIdActualizador')->references('usu_intId')->on('tbl_usuario');
 

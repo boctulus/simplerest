@@ -29,12 +29,14 @@ class TblPersonaMaestro169 implements IMigration
         per_varCelular VARCHAR(15) NOT NULL,
         per_varTelefono VARCHAR(15) DEFAULT NULL,
         per_varEmail VARCHAR(100) NOT NULL,
+        per_varMatriculaMercantil VARCHAR(100) NULL,
         per_datFechaNacimiento DATE NOT NULL,
         per_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
         per_dtimFechaActualizacion DATETIME NULL DEFAULT NULL,
         tpr_intIdTipoPersona INT(11) NOT NULL,
-        pai_intIdPais INT(11) NOT NULL,
-        ciu_intIdCiudad INT(11) NOT NULL,
+        pai_intIdPaisNacimiento INT(11) NOT NULL,
+        ciu_intIdCiudadNacimiento INT(11) NOT NULL,
+        dep_intIdDepartamentoNacimiento INT(11) NOT NULL,
         gen_intIdGenero INT(11) NOT NULL  ,
         tid_intIdTipoDocumento INT(11) NOT NULL,
         est_intIdEstado INT(11) NOT NULL DEFAULT 1,
@@ -56,8 +58,13 @@ class TblPersonaMaestro169 implements IMigration
         REFERENCES tbl_tipo_documento(tid_intId);");
 
         Model::query("ALTER TABLE tbl_persona 
-        ADD CONSTRAINT FK_per_idCiudad FOREIGN KEY (ciu_intIdCiudad)
+        ADD CONSTRAINT FK_per_idCiudad FOREIGN KEY (ciu_intIdCiudadNacimiento)
         REFERENCES tbl_ciudad(ciu_intId);
+        ");
+
+        Model::query("ALTER TABLE tbl_persona 
+        ADD CONSTRAINT FK_per_idDepartamento FOREIGN KEY (dep_intIdDepartamentoNacimiento)
+        REFERENCES tbl_departamento(dep_intId);
         ");
 
         Model::query("ALTER TABLE tbl_persona 
@@ -75,7 +82,7 @@ class TblPersonaMaestro169 implements IMigration
         REFERENCES tbl_genero(gen_intId);");
 
         Model::query("ALTER TABLE tbl_persona 
-        ADD CONSTRAINT FK_per_idPais FOREIGN KEY (pai_intIdPais)
+        ADD CONSTRAINT FK_per_idPais FOREIGN KEY (pai_intIdPaisNacimiento)
         REFERENCES tbl_pais(pai_intId);");
 
         Model::query("ALTER TABLE tbl_persona 

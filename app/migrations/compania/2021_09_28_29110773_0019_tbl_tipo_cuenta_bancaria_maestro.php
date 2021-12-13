@@ -27,7 +27,9 @@ class TblTipoCuentaBancariaMaestro95 implements IMigration
         ->setCollation('utf8_general_ci')
 
         ->integer($nom.'_intId')->auto()->pri()
-        ->longtext($nom.'_lonDescripcion')->comment('hashed')
+        ->varchar($nom.'_varCodigo' , 100)->comment('hashed')->nullable()
+        ->varchar($nom.'_varNombre' , 100)->comment('hashed')
+        ->longtext($nom.'_lonDescripcion')->comment('hashed')->nullable()
         ->datetime($nom.'_dtimFechaCreacion')->default('current_timestamp')
         ->datetime($nom.'_dtimFechaActualizacion')->default("'0000-00-00'")
         ->integer('est_intEstado')->default('1')
@@ -45,21 +47,21 @@ class TblTipoCuentaBancariaMaestro95 implements IMigration
 
         DB::table($table)->insert(
             array(
-                $nom.'_lonDescripcion'=>'CORRIENTE'
+                $nom.'_varNombre'=>'CORRIENTE'
                 ,'usu_intIdCreador'=>'1'
             )
         ); 
 
         DB::table($table)->insert(
             array(
-                $nom.'_lonDescripcion'=>'AHORROS'
+                $nom.'_varNombre'=>'AHORROS'
                 ,'usu_intIdCreador'=>'1'
             )
         ); 
 
         DB::table($table)->insert(
             array(
-                $nom.'_lonDescripcion'=>'NEQUI'
+                $nom.'_varNombre'=>'NEQUI'
                 ,'usu_intIdCreador'=>'1'
             )
         ); 

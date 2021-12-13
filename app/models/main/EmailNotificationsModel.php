@@ -20,6 +20,9 @@ class EmailNotificationsModel extends MyModel
         parent::__construct($connect, EmailNotificationsSchema::class);
 	}	
 
+	/*
+		Si lo hago acá será síncrono (mala idea)
+	*/
 	function onCreated(array &$data, $last_inserted_id)
 	{
 		// podría ser un CASE

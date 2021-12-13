@@ -17,7 +17,10 @@ class TblTipoPersonaMaestro164 implements IMigration
     {
         Model::query("CREATE TABLE tbl_tipo_persona (
         tpr_intId INT(11) NOT NULL AUTO_INCREMENT,
+        tpr_varCodigo VARCHAR(100) NOT NULL,
         tpr_varNombre VARCHAR(100) NOT NULL,
+        tpr_lonDescripcion LONGTEXT NOT NULL,
+        tpr_varCodigoDian VARCHAR(2) NOT NULL,
         tpr_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
         tpr_dtimFechaActualizacion DATETIME DEFAULT '0000-00-00 00:00:00',
         est_intIdEstado INT(11) NOT NULL DEFAULT 1,
@@ -36,14 +39,14 @@ class TblTipoPersonaMaestro164 implements IMigration
 
         Model::query("INSERT INTO tbl_tipo_persona 
         (
-          tpr_varNombre,usu_intIdCreador,usu_intIdActualizador
+          tpr_varCodigo,tpr_varNombre,tpr_lonDescripcion,tpr_varCodigoDian,usu_intIdCreador,usu_intIdActualizador
         )
         VALUES 
         (
-          'NATURAL',1,1
+          'NATURAL','Persona Natural','Persona Natural','2',1,1
         ),
         (
-          'JURIDICA',1,1
+          'JURIDICA','Persona Juridica','Persona Juridica','1',1,1
         );");
     }
 }
