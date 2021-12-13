@@ -95,6 +95,7 @@ class MakeController extends MakeControllerBase
         }
 
         $name = str_replace(' ', '_', $name);
+        $name = str_replace('-', '_', $name);
 
         $dirs = [];
         foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
@@ -112,13 +113,17 @@ class MakeController extends MakeControllerBase
        
         $date = date("Ymd");
         $secs = time() - 1603750000;
-        $filename = $date . '-'. $secs . '-' . $name . '.php';
+        $filename = $date . '-'. $secs . '-' . Strings::camelToSnake($name) . '.php';
 
         if (file_exists($path . $filename)){
             throw new \InvalidArgumentException("File $filename already exists in $path");
         }
 
-        $ok = file_put_contents($path . $filename, file_get_contents(TEMPLATES_PATH . 'UpdateBatch.php'));
+        $batch = file_get_contents(TEMPLATES_PATH . 'UpdateBatch.php');
+        Strings::replace('__NAME__', Strings::snakeToCamel($name) . 'UpdateBatch', $batch);
+        
+
+        $ok = file_put_contents($path . $filename, $batch);
 
         Files::writableOrFail($path);
         

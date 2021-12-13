@@ -31,6 +31,10 @@ class UpdateController extends ConsoleController
             La forma de ordenamiento no es del todo correcta !
 
             1.0.1-beta < 1.0.11
+
+            porque ...
+
+            1.0.1-beta = 1.0.1.1 
         */
         sort($dirs);
 
@@ -53,23 +57,33 @@ class UpdateController extends ConsoleController
     // protected
     function run_batches(){
         /*
-            Debe existir persistencia en algún lado 
+            Debe existir *persistencia* en algún lado 
 
             - Deben correr como las migraciones,... PERO....
             - La base de datos tiene que estar CONTENIDA en el código fuente => 
 
-            Crear un archivo de texto por cada task ejecutada (emulando registros en 'migrations')
+            Crear un archivo de texto por cada batch ejecutado (emulando registros en 'migrations')
         */
 
         $update_path = static::$update_path . 'batches/';
 
-        include $update_path . '000-migrations.php';
-        // include $update_path . '005-some-model-changes.php';
-        // include $update_path . '006-move-models.php';
-        // include $update_path . '007-change-model-namespaces.php';
-        // include $update_path . '008-delete-all-schemas.php';
-        // include $update_path . '009-regenerate-all-schemas.php';
-        // include $update_path . '010-some-model-changes.php';
+        $files = glob($update_path . '*.php');
+        
+        foreach ($files as $file){
+            $class_name = Strings::getClassNameByFileName($file);
+
+            require_once $file;
+
+            if (!class_exists($class_name)){
+                throw new \Exception ("Class '$class_name' doesn't exist in $file");
+            } 
+
+            StdOut::pprint("Executing batch $file");
+
+            $update = new $class_name();
+            $update->run();
+            exit;
+        }
     }
 
     function install(...$opt){
