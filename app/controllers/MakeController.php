@@ -20,6 +20,22 @@ class MakeController extends MakeControllerBase
         Here you can add your own commands for "make"
     */
 
+
+    /*
+        Podría poder especificar:
+
+            --next-major | -x
+            --next-minor | -y
+            --next-patch | -z
+
+        Tener en cuenta que:
+
+        1.2.0-a.1  = 1.2.0.1
+        1.2.0-b.2  = 1.2.1.2
+        1.2.0-rc.3 = 1.2.2.3
+
+        https://en.wikipedia.org/wiki/Software_versioning
+    */
     function update(string $version, ...$opt) {
         Files::writableOrFail(UPDATE_PATH);
 
@@ -79,11 +95,6 @@ class MakeController extends MakeControllerBase
             $dirs[] = $fileInfo->getBasename();
         }
 
-        /*
-            La forma de ordenamiento no es del todo correcta !
-
-            1.0.1-beta < 1.0.11
-        */
         sort($dirs);
 
         $folder   = end($dirs);
