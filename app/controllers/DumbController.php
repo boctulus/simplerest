@@ -6198,8 +6198,18 @@ class DumbController extends Controller
 
            Files::zip($ori, $dst, [
             'file_to_be_ignored.txt',
-            'jquery-ui-1.12.1.custom'
+            "$ori/jquery-ui-1.12.1.custom"
         ]);
+    }
+
+    function mkdir(){
+        $tmp_dst = '/tmp/simplerest';
+        
+        if (is_dir($tmp_dst)){
+            Files::delTree($tmp_dst, true); 
+        }
+
+        mkdir($tmp_dst);
     }
 
 
