@@ -6708,6 +6708,15 @@ Ej:
 
 Especificando patrones de glob copiar recursivamente archivos y directorios de una ruta a otra a excepción de ciertos archivos.
 
+Ej:
+	
+	$ori = '/home/www/simplerest';
+	$dst = '/home/feli/Desktop/UPDATE';
+
+	Files::copy($ori, $dst, ['glob:*.txt']);
+
+Ej:
+
 	$ori = '/home/www/simplerest';
 	$dst = '/home/feli/Desktop/UPDATE';
 

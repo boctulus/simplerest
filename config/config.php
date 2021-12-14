@@ -1,6 +1,6 @@
 <?php
 
-require_once 'constants.php';
+require_once __DIR__ . '/constants.php';
 require_once HELPERS_PATH. 'etc.php';
 require_once HELPERS_PATH. 'db_dynamic_load.php'; // * !
 

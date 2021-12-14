@@ -5738,9 +5738,11 @@ o....
 También es posible generar endpoints para tablas puente e incluir las relaciones hacia las tablas inmediatamente relacionadas con $connect_to en la api. 
 
 
-# Actualizar sub-recursos
+# Actualizar con sub-recursos
 
-Una forma general de hacer un UPDATE de sub-recursos sería enviar algo como:  <por implementar>
+En esta versión es posible únicamente actualizar *las relaciones* de la entidad con sus sub-recursos (tablas relacionadas) pero no datos de los sub-recursos (ver más adelante).
+
+Una forma general de hacer un UPDATE que actualice relaciones con sub-recursos sería enviar algo como:  <por implementar>
 
 	PATCH api/v1/products/145?tenantid=az
 
@@ -5810,37 +5812,53 @@ Ej:
 	}
 
 
-# Actualizar Sub-recursos *sin* especificar sus IDs  <por implementar>
+# Generalización de las posibilidades de un PATCH 
 
-Es teóricamente posible actualizar sub-recursos haciendo una búsqueda de que registros cumplen con ciertas condiciones. Volviendo al primer ejemplo.
+Habría 3 casos en general:
 
-En vez de......
+a) Recibir solo el ID de un registro. En este caso se crearía la relación con ese registro. 
 
 	PATCH api/v1/products/145?tenantid=az
 
 	{
     	"valoraciones": [
             {
-                "texto": "bueno"
-            },
-            {
-                "texto": "regular"
+				"id_val": 3
             }
-		],
-
-		"product_categories": {
-            "name_catego": "bebidas"
-		},
-
-		"product_tags": [
-            {  
-                "name": "xxx",
-				"comment": "."
-            }
-        ],
+		]
 	}
 
-Cuando se especifique más de un campo podría hacerse un "AND" de condiciones el "WHERE" a fin de identificar el registro o registros.
+b) Recibir solo campos distintos del "id". Aquí se asociarían los registros en caso de exisitir o en caso contrario se crearían y asociarían.
+
+	PATCH api/v1/products/145?tenantid=az
+
+	{
+    	"valoraciones": [
+            {
+				"texto": "supremo"   // <-- podría no existir
+            },
+			{
+				"texto": "regular"
+            }
+		]
+	}
+
+c) En caso de recibir el "ID" del registro + otros campos SI el registro del sub-recurso con ese ID existe pero no con esa combinación de valores de campos => se procedería a "editar" el registro del subrecurso. Ej:
+
+	PATCH api/v1/products/145?tenantid=az
+
+	{
+    	"valoraciones": [
+            {
+				"id_val": 5
+				"texto": "supremo"   // <-- acá el valor era otro. Se editará
+            },
+			{
+				"texto": "regular"
+            }
+		]
+	}
+
 
 
 # Schema y las reglas de validación via endpoint

@@ -32,7 +32,7 @@ class Update
         return $last_ver_dir;
     }
 
-    // compress last update
+    // compress an update
     static function compress(?string $update_dir = null){
         if (is_null($update_dir)){
             $update_dir = Update::getLastVersionDirectory();
@@ -43,7 +43,6 @@ class Update
         }
         
         $update_dir = UPDATE_PATH . $update_dir . DIRECTORY_SEPARATOR;
-
 
         $tmp_dst = '/tmp/simplerest/';
         
