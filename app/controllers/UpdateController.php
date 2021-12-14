@@ -68,7 +68,7 @@ class UpdateController extends ConsoleController
             $ok = $update->run();
 
             if (!$ok){
-                StdOut::pprint("Batch $file exited with error", true);
+                StdOut::pprint("[ Error ] Batch $file exited with error", true);
                 exit;
             }
 

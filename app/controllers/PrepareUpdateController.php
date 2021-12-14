@@ -91,7 +91,7 @@ class PrepareUpdateController extends ConsoleController
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; MIGRATIONS
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        app/migrations/2021_11_20_33704817_files.php
+        ;app/migrations/2021_11_20_33704817_files.php
         ;app/migrations/2021_12_07_35172655_files.php   // <-- quedó pendiente
         FILES;
 
