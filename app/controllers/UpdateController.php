@@ -36,6 +36,10 @@ class UpdateController extends ConsoleController
         }
     }     
 
+    function index(){
+        print_r("Do you mean 'php com update install' ?". PHP_EOL. PHP_EOL);
+    }
+
     // protected
     function run_batches(){
         $update_path = static::$update_path . 'batches/';
