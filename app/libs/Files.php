@@ -542,6 +542,11 @@ class Files
 		return $ok;
 	}
 
+	// alias
+	static function mkdir_ignore($dir, int $permissions = 0777, bool $recursive = true){
+		return static::mkDir($dir, $permissions, $recursive);
+	}
+	
 	static function mkDirOrFail($dir, int $permissions = 0777, $recursive = true, string $error = "Failed trying to create %s"){
 		$ok = null;
 
