@@ -2,9 +2,10 @@
 
     use simplerest\libs\Files;
     use simplerest\libs\Strings;
+    use simplerest\libs\Config;
     use simplerest\core\interfaces\IUpdateBatch;
 
-	/*
+    /*
          Modificar el config.php agregando la nueva sección para tenant groups
     */
 
@@ -20,7 +21,24 @@
                 ]
             ],";
 
+            Config::set('tentant_groups', [
+                'legion' => [
+                    'db_[0-9]+',
+                    'db_legion',
+                    'db_flor'
+                ]
+            ]);
+
+            
+            //d(config(), 'NEW CFG');
+            //throw new Exception("Bla", 1);
+            
+
             $path = CONFIG_PATH . 'config.php';
+
+            if (!file_exists($path)){
+                throw new Exception("File '$path' not found", 1);                
+            }
 
             $file = file_get_contents($path);
 
