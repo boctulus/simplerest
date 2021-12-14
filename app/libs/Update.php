@@ -32,7 +32,7 @@ class Update
         return $last_ver_dir;
     }
 
-    // compress last update
+    // compress an update
     static function compress(?string $update_dir = null){
         if (is_null($update_dir)){
             $update_dir = Update::getLastVersionDirectory();
@@ -44,7 +44,24 @@ class Update
         
         $update_dir = UPDATE_PATH . $update_dir . DIRECTORY_SEPARATOR;
 
-        Files::zip($update_dir, UPDATE_PATH . basename($update_dir) . '.zip', [
+        $tmp_dst = '/tmp/simplerest/';
+        
+        if (is_dir($tmp_dst)){
+            Files::delTree($tmp_dst, false); 
+        } else {
+            mkdir($tmp_dst);
+        }
+
+        if (is_dir($tmp_dst . 'updates')){
+            Files::delTree($tmp_dst . 'updates', false); 
+        } else {
+            mkdir($tmp_dst . 'updates');
+        }
+
+        Files::copy(UPDATE_PATH, $tmp_dst . 'updates', [ basename($update_dir) ]);
+        Files::copy(ROOT_PATH, $tmp_dst, ['app/controllers/UpdateController.php']);
+
+        Files::zip($tmp_dst, UPDATE_PATH . 'update-' . basename($update_dir) . '.zip', [
             "completed"
         ]);
     }
