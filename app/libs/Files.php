@@ -223,7 +223,15 @@ class Files
 		$glob_includes = [];
 		foreach ($files as $ix => $f){
 			if (Strings::startsWith('glob:', $f)){
-				$glob_includes = array_merge($glob_includes, Files::recursiveGlob($ori_with_trailing_slash . substr($f, 5)));
+				$patt = substr($f, 5);
+				$rec  = static::recursiveGlob($ori_with_trailing_slash . $patt);
+				
+				// glob includes son tomados como relativos
+				foreach ($rec as $j => $rf){
+					$rec[$j]  = static::getRelativePath($rf, $ori);
+				}
+				
+				$glob_includes = array_merge($glob_includes, $rec);
 				unset($files[$ix]);
 			} 
 			
@@ -236,6 +244,9 @@ class Files
 			static::mkDirOrFail($dst_dir);
 		}
 
+
+		//d($glob_includes, '$glob_includes');
+		//exit;
 
 		$files = array_merge($files, $glob_includes);
 		
