@@ -1340,12 +1340,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             //dd($dato, 'DATO');
 
                             foreach ($dato as $field => $val){
-                                if ($val == '$id_main'){
+                                if ($val === '$' . 'id_main'){
                                     $data[$ix][$field] = $last_inserted_id;
                                 }
                             }
                         }
 
+                        #exit; //////
 
                         if (!isset($pivot_tables[$related_table])){
                             $rel_id = DB::table($related_table)
