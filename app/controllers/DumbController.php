@@ -5891,7 +5891,30 @@ class DumbController extends Controller
         ]);
     }
 
-    function test_copy01a(){
+    function test_copy01a0(){
+        $ori = '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files';
+        $dst = '/home/www/html/erp/';
+
+        Files::copy($ori, $dst, [
+            'config/constants.php',
+            'app/controllers/api/Me.php'
+        ]);
+    }
+
+    /*
+        Está fallando en crear directorio si faltara
+    */
+    function test_copy01a1(){
+        $ori = '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files';
+        $dst = '/home/www/html/erp/';
+
+        Files::copy($ori, $dst, [
+            '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files/config/constants.php',
+            '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files/app/controllers/api/Me.php'
+        ]);
+    }
+
+    function test_copy01b(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
@@ -5912,7 +5935,7 @@ class DumbController extends Controller
     /*
         Con un directorio de ruta absoluta en $files
     */
-    function test_copy01b(){
+    function test_copy01c(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
@@ -5934,7 +5957,7 @@ class DumbController extends Controller
         Con un directorio de ruta absoluta en $files
         y backup
     */
-    function test_copy01c(){
+    function test_copy01d(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
@@ -6211,6 +6234,5 @@ class DumbController extends Controller
 
         mkdir($tmp_dst);
     }
-
 
 }

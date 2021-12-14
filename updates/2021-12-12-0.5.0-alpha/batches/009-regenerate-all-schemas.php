@@ -24,7 +24,7 @@
 
 
 			$db_representants = [
-				'legion' => 'db_flor'
+				'legion' => 'db_legion' // or 'db_flor', etc
 			];
 
 			$tenants = DB::getAllTenantRepresentants($db_representants);

@@ -205,33 +205,40 @@ class Files
         $dst = trim($dst);
 
 		if (empty($files)){
-			$files = [];
-		} else {
-			foreach ($files as $ix => $f){
-				$f = trim($f);
-				$f = str_replace(["\r\n", "\r", "\n"], '', $f);
+			$files = ['glob:*'];
+		}	
+		
+		foreach ($files as $ix => $f){
+			$f = trim($f);
+			$f = str_replace(["\r\n", "\r", "\n"], '', $f);
 
-				if (empty($f)){
-					unset($files[$ix]);
-				}
+			if (empty($f)){
+				unset($files[$ix]);
 			}
-
-			/*
-				Glob included files
-			*/
-			$glob_includes = [];
-			foreach ($files as $ix => $f){
-				if (Strings::startsWith('glob:', $f)){
-					$glob_includes = array_merge($glob_includes, Files::recursiveGlob($ori_with_trailing_slash . substr($f, 5)));
-					unset($files[$ix]);
-				} else {
-					if (static::isAbsolutePath($f) && is_dir($f)){
-						$files[$ix] = static::getRelativePath($f, $ori);
-					}
-				}
-			}
-			$files = array_merge($files, $glob_includes);
 		}
+
+		/*
+			Glob included files
+		*/
+		$glob_includes = [];
+		foreach ($files as $ix => $f){
+			if (Strings::startsWith('glob:', $f)){
+				$glob_includes = array_merge($glob_includes, Files::recursiveGlob($ori_with_trailing_slash . substr($f, 5)));
+				unset($files[$ix]);
+			} 
+			
+			if (static::isAbsolutePath($f) && is_dir($f)){
+				$files[$ix] = static::getRelativePath($f, $ori);
+			}
+
+			// Creo directorio para destino sino existiera 
+			$dst_dir = $dst . Strings::diff(static::getDir($f), $ori);
+			static::mkDirOrFail($dst_dir);
+		}
+
+
+		$files = array_merge($files, $glob_includes);
+		
 
 		if (empty($except)){
 			$except = [];
@@ -261,7 +268,7 @@ class Files
 				}
 			}
 		}
-
+	
         foreach ($files as $_file){
 			$_file = trim($_file);
 
