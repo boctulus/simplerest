@@ -106,7 +106,7 @@ class PrepareUpdateController extends ConsoleController
 
         // Files::copy($ori, $dst . 'files', $files, $except);
 
-        Update::zip($last_update_dir);
+        Update::compress($last_update_dir);
     }
    
 

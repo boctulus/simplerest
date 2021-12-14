@@ -6196,11 +6196,7 @@ class DumbController extends Controller
         $ori = '/home/www/html/pruebas/drag';
         $dst = '/home/feli/Desktop/UPDATE/drag.zip';
 
-        // para pruebas
-        Files::delete($dst);
-
-
-        Files::zip($ori, $dst, [
+           Files::zip($ori, $dst, [
             'file_to_be_ignored.txt',
             'jquery-ui-1.12.1.custom'
         ]);

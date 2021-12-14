@@ -548,7 +548,7 @@ class Files
 
 		Modified by @boctulus
 	*/
-	static function zip(string $source, string $destination, Array $except = [])
+	static function zip(string $source, string $destination, ?Array $except = [])
 	{
 		if (!extension_loaded('zip') || !file_exists($source)) {
 			return false;
@@ -559,6 +559,10 @@ class Files
 			return false;
 		}
 	
+		if (is_null($except)){
+			$except = [];
+		}
+
 		$source = str_replace('\\', '/', realpath($source));
 	
 		if (is_dir($source) === true)
@@ -567,10 +571,10 @@ class Files
 			foreach ($except as $ix => $file){
 				if (!static::isAbsolutePath($file)){
 					$except[$ix] = Files::getAbsolutePath($file, $source);
+				}
 
-					if (is_dir($except[$ix])){
-						$new_excluded = array_merge($new_excluded, static::recursiveGlob($except[$ix] . '/*'));	
-					}
+				if (is_dir($except[$ix])){
+					$new_excluded = array_merge($new_excluded, static::recursiveGlob($except[$ix] . '/*'));	
 				}
 			}
 

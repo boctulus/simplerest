@@ -204,7 +204,16 @@ return [
 				'SMTPAuth' 		=> env('MAIL_AUTH'),
 				'SMTPDebug' 	=> 4,
 				'CharSet' 		=> 'UTF-8',
-				'Debugutput' 	=> 'html'
+				'Debugutput' 	=> 'html',
+
+				// Opciones de Fredy
+				'SMTPOptions'   => [
+					'ssl' => [
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+						'allow_self_signed' => true
+					]
+				]
 			]
 		],
 
