@@ -15,13 +15,12 @@ class ModelsNamespaceChangeUpdateBatch implements IUpdateBatch
         $paths = Files::recursiveGlob(MODELS_PATH . '/*.php');
 
         foreach ($paths as $path){
-            if (Strings::endsWith('MyModel.php', $path)){
+            if (Strings::endsWith('MyModel.php', $path) || Strings::contains('schemas', $path)){
                 continue;
             }
 
             $stripped_path  = Strings::diff($path, MODELS_PATH);
             $folder = Strings::match($stripped_path, '~([a-z0-9_]+)/~');
-
 
 
             if (!empty($folder)){
@@ -34,12 +33,8 @@ class ModelsNamespaceChangeUpdateBatch implements IUpdateBatch
 
                 $file  = str_replace('namespac'. 'e simplerest\models;', 'namespac'. "e simplerest\models\\$folder;", $file);
                 
-                $file  = str_replace('use simplerest\\models\schemas\\',  'use simplerest\\schemas\\', $file);
-                $file  = str_replace('use simplerest\\schemas\\'.$schema_name. ';', 'use simplerest\\schemas\\'.$folder . '\\'. $schema_name. ';', $file);    
-
-                // d($file);
-                // exit;
-
+                $file  = str_replace('use '.'simplerest\\models\schemas\\',  'use '.'simplerest\\schemas\\', $file);
+                $file  = str_replace('use '.'simplerest\\schemas\\'.$schema_name. ';', 'use '.'simplerest\\schemas\\'.$folder . '\\'. $schema_name. ';', $file);    
             
                 $bytes = file_put_contents($path, $file);
 
