@@ -19,18 +19,16 @@ class FilesRenameLocked implements IMigration
     */
     public function up()
     {	
-		$sc = new Schema('files');
-		$sc->renameColumn('locked', 'is_locked');
-		$sc->alter();
-		
+      $sc = new Schema('files');
+      $sc->renameColumn('locked', 'is_locked');
+      $sc->alter();		
     }
 
     public function down()
     {		
-		$sc = new Schema('files');
-		$sc->renameColumn('is_locked', 'locked');
-		$sc->alter();
-		
+      $sc = new Schema('files');
+      $sc->renameColumn('is_locked', 'locked');
+      $sc->alter();
     }
 }
 

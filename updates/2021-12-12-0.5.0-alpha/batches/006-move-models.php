@@ -15,7 +15,7 @@
         function run() : bool
         {   
             $db_representants = [
-                'legion' => 'db_flor'
+                'legion' => 'db_legion'
             ];
     
             /* 

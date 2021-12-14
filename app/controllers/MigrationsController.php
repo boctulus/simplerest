@@ -87,7 +87,7 @@ class MigrationsController extends Controller
             }
 
             /*
-                Debería aceptar rutas absolutas (con /) para manejarse dentro de Service Providers
+                Ahora acepto rutas absolutas -útiles para manejarse dentro de Service Providers-
             */
             if (Strings::startsWith('--dir=', $o)){
                 $dir_opt = true;
