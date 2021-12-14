@@ -38,15 +38,6 @@ class UpdateController extends ConsoleController
 
     // protected
     function run_batches(){
-        /*
-            Debe existir *persistencia* en algún lado 
-
-            - Deben correr como las migraciones,... PERO....
-            - La base de datos tiene que estar CONTENIDA en el código fuente => 
-
-            Crear un archivo de texto por cada batch ejecutado (emulando registros en 'migrations')
-        */
-
         $update_path = static::$update_path . 'batches/';
 
         Files::mkDir(static::$update_path . 'completed/');

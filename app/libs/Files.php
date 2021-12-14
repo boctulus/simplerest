@@ -548,14 +548,14 @@ class Files
 
 		Modified by @boctulus
 	*/
-	static function zip(string $source, string $destination, ?Array $except = [])
+	static function zip(string $ori, string $dst, ?Array $except = null, bool $overwrite = true)
 	{
-		if (!extension_loaded('zip') || !file_exists($source)) {
+		if (!extension_loaded('zip') || !file_exists($ori)) {
 			return false;
 		}
 	
 		$zip = new \ZipArchive();
-		if (!$zip->open($destination, \ZIPARCHIVE::CREATE)) {
+		if (!$zip->open($dst, $overwrite && file_exists($dst) ? \ZipArchive::OVERWRITE : \ZipArchive::CREATE)) {
 			return false;
 		}
 	
@@ -563,14 +563,14 @@ class Files
 			$except = [];
 		}
 
-		$source = str_replace('\\', '/', realpath($source));
+		$ori = str_replace('\\', '/', realpath($ori));
 	
-		if (is_dir($source) === true)
+		if (is_dir($ori) === true)
 		{
 			$new_excluded = [];
 			foreach ($except as $ix => $file){
 				if (!static::isAbsolutePath($file)){
-					$except[$ix] = Files::getAbsolutePath($file, $source);
+					$except[$ix] = Files::getAbsolutePath($file, $ori);
 				}
 
 				if (is_dir($except[$ix])){
@@ -580,7 +580,7 @@ class Files
 
 			$except = array_merge(array_values($except), array_values($new_excluded));
 
-			$files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source), \RecursiveIteratorIterator::SELF_FIRST);
+			$files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($ori), \RecursiveIteratorIterator::SELF_FIRST);
 	
 			foreach ($files as $file)
 			{
@@ -592,23 +592,23 @@ class Files
 	
 				$file = realpath($file);
 	
-				if (in_array($file, $except)){
+				if (!empty($except) && in_array($file, $except)){
 					continue;
 				}
 
-				if (is_dir($file) === true)
+				if (is_dir($file) === true && !in_array($file, $except))
 				{
-					$zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
+					$zip->addEmptyDir(str_replace($ori . '/', '', $file . '/'));
 				}
 				else if (is_file($file) === true)
 				{
-					$zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
+					$zip->addFromString(str_replace($ori . '/', '', $file), file_get_contents($file));
 				}
 			}
 		}
-		else if (is_file($source) === true)
+		else if (is_file($ori) === true)
 		{
-			$zip->addFromString(basename($source), file_get_contents($source));
+			$zip->addFromString(basename($ori), file_get_contents($ori));
 		}
 	
 		return $zip->close();
