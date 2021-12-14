@@ -60,6 +60,12 @@ Error:
 Para eso están! nada de --force o --unignore
 
 
+- Es posible agregar soporte para GraphQL con una librería de PHP
+
+https://webonyx.github.io/graphql-php/
+https://api-platform.com/docs/distribution/
+
+
 [ MAILER ]
 
 - Revisar qué está pasando con el envio de correos:
