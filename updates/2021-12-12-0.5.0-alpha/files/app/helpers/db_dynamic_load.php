@@ -21,20 +21,20 @@ function get_db_connections()
         Settings
     */
 
-    // $driver = env('DB_CONNECTION_REMOTE');
-    // $host   = env('DB_HOST_REMOTE');;
-    // $port   = env('DB_PORT_REMOTE');
-    // $dbname = env('DB_NAME_REMOTE');
-    // $user   = env('DB_USERNAME_REMOTE');
-    // $pass   = env('DB_PASSWORD_REMOTE');   
+    $driver = env('DB_CONNECTION_REMOTE');
+    $host   = env('DB_HOST_REMOTE');;
+    $port   = env('DB_PORT_REMOTE');
+    $dbname = env('DB_NAME_REMOTE');
+    $user   = env('DB_USERNAME_REMOTE');
+    $pass   = env('DB_PASSWORD_REMOTE');   
     
 
-    $driver = env('DB_CONNECTION');
-    $host   = env('DB_HOST');;
-    $port   = env('DB_PORT');
-    $dbname = env('DB_NAME');
-    $user   = env('DB_USERNAME');
-    $pass   = env('DB_PASSWORD');
+    // $driver = env('DB_CONNECTION');
+    // $host   = env('DB_HOST');;
+    // $port   = env('DB_PORT');
+    // $dbname = env('DB_NAME');
+    // $user   = env('DB_USERNAME');
+    // $pass   = env('DB_PASSWORD');
 
     $charset = 'utf8';
     

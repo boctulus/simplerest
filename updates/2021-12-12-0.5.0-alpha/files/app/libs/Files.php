@@ -45,6 +45,8 @@ class Files
 		Returns absolute path relative to root path
 	*/
 	static function getAbsolutePath(string $path, string $relative_to =  ROOT_PATH){
+		$relative_to = Strings::addTrailingSlash($relative_to);
+
 		if (static::isAbsolutePath($path)){
 			return $path;
 		}
@@ -539,6 +541,77 @@ class Files
 		if (!is_writable($path)){
 			throw new \Exception(sprintf($error, $path));
 		}
+	}
+
+	/*
+		https://stackoverflow.com/a/1334949/980631
+
+		Modified by @boctulus
+	*/
+	static function zip(string $source, string $destination, ?Array $except = [])
+	{
+		if (!extension_loaded('zip') || !file_exists($source)) {
+			return false;
+		}
+	
+		$zip = new \ZipArchive();
+		if (!$zip->open($destination, \ZIPARCHIVE::CREATE)) {
+			return false;
+		}
+	
+		if (is_null($except)){
+			$except = [];
+		}
+
+		$source = str_replace('\\', '/', realpath($source));
+	
+		if (is_dir($source) === true)
+		{
+			$new_excluded = [];
+			foreach ($except as $ix => $file){
+				if (!static::isAbsolutePath($file)){
+					$except[$ix] = Files::getAbsolutePath($file, $source);
+				}
+
+				if (is_dir($except[$ix])){
+					$new_excluded = array_merge($new_excluded, static::recursiveGlob($except[$ix] . '/*'));	
+				}
+			}
+
+			$except = array_merge(array_values($except), array_values($new_excluded));
+
+			$files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source), \RecursiveIteratorIterator::SELF_FIRST);
+	
+			foreach ($files as $file)
+			{
+				$file = str_replace('\\', '/', $file);
+	
+				// Ignore "." and ".." folders
+				if( in_array(substr($file, strrpos($file, '/')+1), array('.', '..')) )
+					continue;
+	
+				$file = realpath($file);
+	
+				if (in_array($file, $except)){
+					continue;
+				}
+
+				if (is_dir($file) === true)
+				{
+					$zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
+				}
+				else if (is_file($file) === true)
+				{
+					$zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
+				}
+			}
+		}
+		else if (is_file($source) === true)
+		{
+			$zip->addFromString(basename($source), file_get_contents($source));
+		}
+	
+		return $zip->close();
 	}
 
 
