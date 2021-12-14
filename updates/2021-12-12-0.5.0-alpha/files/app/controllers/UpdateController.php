@@ -7,7 +7,7 @@ use simplerest\libs\Hardware;
 use simplerest\libs\StdOut;
 use simplerest\libs\Files;
 use simplerest\libs\Strings;
-use simplerest\libs\Schema;
+use simplerest\libs\Update;
 use simplerest\libs\DB;
 
 /*
@@ -20,25 +20,7 @@ class UpdateController extends ConsoleController
     
     function __construct()
     {
-        $dirs = [];
-        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
-            if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
-            
-            $dirs[] = $fileInfo->getBasename();
-        }
-
-        /*
-            La forma de ordenamiento no es del todo correcta !
-
-            1.0.1-beta < 1.0.11
-
-            porque ...
-
-            1.0.1-beta = 1.0.1.1 
-        */
-        sort($dirs);
-
-        $last_ver_dir = end($dirs);
+        $last_ver_dir = Update::getLastVersionDirectory();
         static::$update_path = ROOT_PATH . 'updates/'. $last_ver_dir . '/';
     }
 
