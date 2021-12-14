@@ -5901,9 +5901,7 @@ class DumbController extends Controller
         ]);
     }
 
-    /*
-        Está fallando en crear directorio si faltara
-    */
+
     function test_copy01a1(){
         $ori = '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files';
         $dst = '/home/www/html/erp/';
@@ -5912,6 +5910,13 @@ class DumbController extends Controller
             '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files/config/constants.php',
             '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files/app/controllers/api/Me.php'
         ]);
+    }
+
+    function test_copy01a2(){
+        $ori = '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files';
+        $dst = '/home/www/html/erp/';
+
+        Files::copy($ori, $dst);
     }
 
     function test_copy01b(){
