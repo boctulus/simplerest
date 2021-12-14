@@ -6616,16 +6616,16 @@ logger($data, $file = 'log.txt')									hace un log de la data enviada. Exporta
 dump($object, $filename = 'dump.txt', $append = false)				similar a logger() pero exporta con var_export
 mkDir($dir, int $permissions = 0777, $recursive = true)				make directory recusivo
 mkDirOrFail($dir, int $permissions = 0777, $recursive = true)		crea directorio o si falla genera excepción.
+zip(string $source, string $destination, ?Array $except = null)		zipea un archivo o directorio. Acepta ignorados
 
 Nota:
 
 Files::copy() permite especificar patrones glob tanto para incluir como excluir archivos pero en estos casos hacen referencia a ROOT_PATH y son recursivos (todas las ocurrencias).
 
-Algunos ejemplos:
+
+### Copiar archivos
 
 Ej:
-
-Copiar un archivo
 
 Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
 'app/controllers/ShopiController.php');
@@ -6635,82 +6635,97 @@ Ej:
 
 Copiar un archivo a una ruta sin especificar el nombre en el destino
 
-Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
-'app/controllers');
+	Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
+	'app/controllers');
 
 Ej:
 
 Crear un archivo y hacer un backup en caso de existir en el destino
 
-Files::setBackupDirectory(ROOT_PATH . 'backup'); 
-Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
-'app/controllers/ShopiController.php');
+	Files::setBackupDirectory(ROOT_PATH . 'backup'); 
+	Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
+	'app/controllers/ShopiController.php');
 
 Ej:
 
 Copiar recursivamente archivos de una ruta a otra 
 
-$ori = '/home/www/simplerest';
-$dst = '/home/feli/Desktop/UPDATE';
+	$ori = '/home/www/simplerest';
+	$dst = '/home/feli/Desktop/UPDATE';
 
-Files::copy($ori, $dst, [
-	'docs'
-	'/home/www/simplerest/docs/dev/TODO Supra.txt'
-]);
+	Files::copy($ori, $dst, [
+		'docs'
+		'/home/www/simplerest/docs/dev/TODO Supra.txt'
+	]);
 
 Se puede especificando la ruta absoluta a un archivo como ClientInterface.php en el ejemplo.
 
 Ej:
 
-$ori = '/home/www/simplerest';
-$dst = '/home/feli/Desktop/UPDATE';
+	$ori = '/home/www/simplerest';
+	$dst = '/home/feli/Desktop/UPDATE';
 
-Files::copy($ori, $dst, [
-	'docs',
-	'/home/www/simplerest/vendor/psr/http-client/src/ClientInterface.php'
-]);
+	Files::copy($ori, $dst, [
+		'docs',
+		'/home/www/simplerest/vendor/psr/http-client/src/ClientInterface.php'
+	]);
 
 Ej:
 
 Copiar recursivamente archivos de una ruta a otra a excepción de ciertos archvos o directorios.
 
-$ori = '/home/www/simplerest';
-$dst = '/home/feli/Desktop/UPDATE';
+	$ori = '/home/www/simplerest';
+	$dst = '/home/feli/Desktop/UPDATE';
 
-Files::copy($ori, $dst, [
-	'docs'
-], 
-[
-	'docs/dev',
-	'/home/www/simplerest/docs/dev/TODO Supra.txt',
-	'docs/INSTALACION.txt'
-]);
+	Files::copy($ori, $dst, [
+		'docs'
+	], 
+	[
+		'docs/dev',
+		'/home/www/simplerest/docs/dev/TODO Supra.txt',
+		'docs/INSTALACION.txt'
+	]);
 
 Ej:
 
 Especificando patrones de glob copiar recursivamente archivos y directorios de una ruta a otra a excepción de ciertos archivos.
 
-$ori = '/home/www/simplerest';
-$dst = '/home/feli/Desktop/UPDATE';
+	$ori = '/home/www/simplerest';
+	$dst = '/home/feli/Desktop/UPDATE';
 
-$str_files = <<<'FILES'
-	config/constants.php
-	app/core
-	app/controllers/UpdateController.php     
-	public/app.php
-	glob:*.txt
-FILES;
+	$str_files = <<<'FILES'
+		config/constants.php
+		app/core
+		app/controllers/UpdateController.php     
+		public/app.php
+		glob:*.txt
+	FILES;
 
-$files = explode(PHP_EOL, $str_files);
+	$files = explode(PHP_EOL, $str_files);
 
-$except =  [
-	'db_dynamic_load.php',
-	'PrepareUpdateController.php',
-	'docs/dev',
-	'glob:*.zip'
-];
+	$except =  [
+		'db_dynamic_load.php',
+		'PrepareUpdateController.php',
+		'docs/dev',
+		'glob:*.zip'
+	];
 
-Files::copy($ori, $dst, $files, $except);
+	Files::copy($ori, $dst, $files, $except);
+
+
+### Compresión de archivos a ZIP
+
+Zipea archivos de una carpeta de forma recursiva y admite especificar archivos y carpetas que serán ignorados.
+
+Ej:
+
+	$ori = '/home/www/html/pruebas/drag';	
+	$dst = '/home/feli/Desktop/UPDATE/drag.zip';
+
+		Files::zip($ori, $dst, [
+		'file_to_be_ignored.txt',
+		'jquery-ui-1.12.1.custom'
+	]);
 
 
 # Notas sobre modelos y apis

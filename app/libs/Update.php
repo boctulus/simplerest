@@ -33,18 +33,20 @@ class Update
     }
 
     // compress last update
-    static function zip(?string $last_update_dir = null){
-        if (is_null($last_update_dir)){
-            $last_update_dir = Update::getLastVersionDirectory();
+    static function compress(?string $update_dir = null){
+        if (is_null($update_dir)){
+            $update_dir = Update::getLastVersionDirectory();
 
-            if (!Files::isAbsolutePath($last_update_dir)){
-                $last_update_dir = UPDATE_PATH . $last_update_dir;
+            if (!Files::isAbsolutePath($update_dir)){
+                $update_dir = UPDATE_PATH . $update_dir;
             }
         }
         
-        $last_update_dir = UPDATE_PATH . $last_update_dir . DIRECTORY_SEPARATOR;
+        $update_dir = UPDATE_PATH . $update_dir . DIRECTORY_SEPARATOR;
 
-        d($last_update_dir);
+        Files::zip($update_dir, UPDATE_PATH . 'update.zip', [
+            "completed"
+        ]);
     }
 }
 
