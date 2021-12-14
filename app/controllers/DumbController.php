@@ -4996,6 +4996,15 @@ class DumbController extends Controller
     }
 
     function which_rel(){
+        $tenant_id = 'db_legion';
+
+        $t1 = 'tbl_arl';
+        $t2 = 'tbl_empresa_nomina';
+
+        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+
+        exit; //
+
         $tenant_id = 'az';
 
         $t1 = 'products';
