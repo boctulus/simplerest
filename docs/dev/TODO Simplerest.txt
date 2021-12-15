@@ -1,13 +1,21 @@
 # TODO
 
+- Permitir *crear* tablas con comandos "make"
+
+- Resolver tema del correo => sendMail() con plantillas
+
+- Poder hacer "update get" y "update list"
+
+  =>  1) Revisar tema de API KEYs
+
+      2) Correr UPDATE sobre "Solución Binaria"
+
+
 [ SUB-RESOURCES ]
 
-  * UPDATE para V2 ++++++++++++++++ (para el lunes 13?)  -- ok ~
+  * UPDATE para V2  -- continuar con generalización       +++
 
-
-  <-- Seguir con UPDATE. Ver posible fallo reportado por JOSE !!!!!!!!!!!!!!!!!!!
-
-  * WHERE con otras tablas ++ (para el miércoles 15?)
+  * WHERE con otras tablas ++ (para el miércoles 15?)     +++
 
   * Permitir traer sub-sub-resources.  Ej:
 
@@ -164,6 +172,9 @@ https://github.com/florianv/swap/blob/master/doc/readme.md
 
   => copia archivos en /tmp/simplerest-update/{version} y crea zip en app/updates/{update_dir}
 
+
+  php com update list
+  php com update get
   php com update description [ --version= ] [ --task= ]
   php com update version [ -- current ] [ --next ] [ --pendings ]
   php com update is_updated
