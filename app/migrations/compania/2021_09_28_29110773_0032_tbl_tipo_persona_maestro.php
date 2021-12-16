@@ -22,7 +22,7 @@ class TblTipoPersonaMaestro164 implements IMigration
         tpr_lonDescripcion LONGTEXT NOT NULL,
         tpr_varCodigoDian VARCHAR(2) NOT NULL,
         tpr_dtimFechaCreacion DATETIME NOT NULL DEFAULT current_timestamp(),
-        tpr_dtimFechaActualizacion DATETIME DEFAULT '0000-00-00 00:00:00',
+        tpr_dtimFechaActualizacion DATETIME DEFAULT '1000-01-01 00:00:00',
         est_intIdEstado INT(11) NOT NULL DEFAULT 1,
         usu_intIdCreador INT(11) NOT NULL,
         usu_intIdActualizador INT(11)  NULL,

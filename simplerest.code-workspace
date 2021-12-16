@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true,
+		"search.exclude": {
+			"**/updates": true,
+			"**/updates/*.php": true
+		}
+	}
+}

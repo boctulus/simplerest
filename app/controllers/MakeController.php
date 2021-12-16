@@ -20,13 +20,16 @@ class MakeController extends MakeControllerBase
         Here you can add your own commands for "make"
     */
 
-
     /*
         Podría poder especificar:
 
-            --next-major | -x
-            --next-minor | -y
-            --next-patch | -z
+            --major | -x
+            --minor | -y
+            --patch | -z
+
+            --next-major | -nx
+            --next-minor | -ny
+            --next-patch | -nz
 
         Tener en cuenta que:
 
@@ -51,7 +54,10 @@ class MakeController extends MakeControllerBase
         $path   = UPDATE_PATH . $folder;
 
         /*
-            Version validation
+            Version validation  
+
+            Usar expresiones publicadas aquí: <--------
+            https://semver.org/lang/es/
         */
         if (!preg_match('/([0-9]+).([0-9]+).([0-9]+)([-]?)([a-z]+)?([0-9])?/', $version)){
             throw new \InvalidArgumentException("Version '$version' has incorrect format for semantic versioning");

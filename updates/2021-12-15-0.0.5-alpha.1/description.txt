@@ -1,0 +1,33 @@
+UPDATE DESCRIPTION
+==================
+
+[!] Incluir en parche:
+
+app/helpers/db_dynamic_load.php
+app/libs/Config.php
+app/models/main/TblBaseDatosModel.php   <--- no incluir sino modificar !
+
+
+TODO
+----
+
+1) En migraciones pasar de 
+
+	Model::query("INSERT INTO | Model::query("CREATE TABLE
+a
+	DB::statement("INSERT INTO | Model::query("CREATE TABLE
+
+
+y
+
+	{campo} DATE NOT NULL DEFAULT current_timestamp(),
+a
+	{campo} DATE NOT NULL DEFAULT '1000-01-01',
+
+
+y
+
+	'0000-00-00 00:00:00'
+a
+
+	'1000-01-01 00:00:00'

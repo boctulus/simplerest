@@ -22,7 +22,7 @@ class TblEmpleadoDatosPersonales implements IMigration
             `epd_intNumeroLibretaMilitar` int(11) NULL  , 
             `epd_varMotivoNoPrestoServicio` varchar(350) COLLATE armscii8_general_ci NULL  , 
             `epd_intNumeroLicencia` int(11) NULL  , 
-            `epd_dtimFechaCreacion` date NOT NULL  DEFAULT current_timestamp(), 
+            `epd_dtimFechaCreacion` date NOT NULL  DEFAULT '1000-01-01 00:00:00', 
             `epd_dtimFechaActualizacion` date NULL  , 
             `esc_intIdEstadoCivil` int(11) NULL  , 
             `per_intIdPersona` int(11) NULL  , 

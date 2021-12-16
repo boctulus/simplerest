@@ -43,7 +43,12 @@ class MigrationsController extends Controller
 
         foreach ($opt as $o)
         {
-            if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--to[=|:](.*)$/', $o, $matches)){
+                $match = $matches[1];
+                if (!preg_match('/^([a-z0-9_-]+)$/i', $match, $matches)){
+                    throw new \InvalidArgumentException("Invalid indentifier '{$match}' for tenant id");
+                }    
+
                 $to_db = $matches[1];
             }
 
@@ -183,12 +188,12 @@ class MigrationsController extends Controller
                 continue;
             }
 
-            $full_path = str_replace('//', '/', $path . '/'. $filename);
+            $full_path = str_replace('//', '/', $path . '/'. trim($filename));
 
-            if (!file_exists($full_path)){
-                StdOut::pprint("Path $full_path does not exist !!!");
-                exit;
-            }
+            // if (!file_exists($full_path)){
+            //     StdOut::pprint("Path '$full_path' does not exist !");
+            //     exit;
+            // }
 
             require_once $full_path;
 

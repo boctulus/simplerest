@@ -20,7 +20,7 @@ class TblClaseCuentaContable implements IMigration
             `cla_intCodigo` int(11) NOT NULL  , 
             `cla_varNombre` varchar(50) COLLATE utf8mb3_general_ci NOT NULL  , 
             `cla_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `cla_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `cla_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `nat_intId` int(11) NOT NULL  DEFAULT 0 , 
             `usu_intIdCreador` int(11) NOT NULL  DEFAULT 1, 
             `usu_intIdActualizador` int(11) NOT NULL  DEFAULT 1, 
@@ -38,15 +38,15 @@ class TblClaseCuentaContable implements IMigration
         ");
 
         Model::query("INSERT INTO `tbl_clase_cuenta_contable` (`cla_intId`, `cla_intCodigo`, `cla_varNombre`, `cla_dtimFechaCreacion`, `cla_dtimFechaActualizacion`, `nat_intId`, `usu_intIdCreador`, `usu_intIdActualizador`) VALUES
-        (1, 1, 'Activo', '2020-07-16 17:22:30', '0000-00-00 00:00:00', 2, 1, 1),
-        (2, 2, 'Pasivo', '2020-07-16 17:22:48', '0000-00-00 00:00:00', 2, 1, 1),
-        (3, 3, 'Patrimonio', '2020-07-16 17:24:17', '0000-00-00 00:00:00', 1, 1, 1),
-        (4, 4, 'Ingresos', '2020-07-16 17:24:42', '0000-00-00 00:00:00', 1, 1, 1),
-        (5, 5, 'Gastos', '2020-07-16 17:25:17', '0000-00-00 00:00:00', 2, 1, 1),
-        (6, 6, 'Costos de Ventas', '2021-02-02 11:51:29', '0000-00-00 00:00:00', 2, 1, 1),
-        (7, 7, 'Costos de Produción o de Operacion', '2021-02-02 11:51:52', '0000-00-00 00:00:00', 2, 1, 1),
-        (8, 8, 'Cuentas de Orden Deudoras', '2021-10-19 16:52:16', '0000-00-00 00:00:00', 2, 1, 1),
-        (9, 9, 'Cuentas de orden Acreedoras', '2021-10-19 16:53:06', '0000-00-00 00:00:00', 1, 1, 1);");
+        (1, 1, 'Activo', '2020-07-16 17:22:30', '1000-01-01 00:00:00', 2, 1, 1),
+        (2, 2, 'Pasivo', '2020-07-16 17:22:48', '1000-01-01 00:00:00', 2, 1, 1),
+        (3, 3, 'Patrimonio', '2020-07-16 17:24:17', '1000-01-01 00:00:00', 1, 1, 1),
+        (4, 4, 'Ingresos', '2020-07-16 17:24:42', '1000-01-01 00:00:00', 1, 1, 1),
+        (5, 5, 'Gastos', '2020-07-16 17:25:17', '1000-01-01 00:00:00', 2, 1, 1),
+        (6, 6, 'Costos de Ventas', '2021-02-02 11:51:29', '1000-01-01 00:00:00', 2, 1, 1),
+        (7, 7, 'Costos de Produción o de Operacion', '2021-02-02 11:51:52', '1000-01-01 00:00:00', 2, 1, 1),
+        (8, 8, 'Cuentas de Orden Deudoras', '2021-10-19 16:52:16', '1000-01-01 00:00:00', 2, 1, 1),
+        (9, 9, 'Cuentas de orden Acreedoras', '2021-10-19 16:53:06', '1000-01-01 00:00:00', 1, 1, 1);");
     }
 }
 

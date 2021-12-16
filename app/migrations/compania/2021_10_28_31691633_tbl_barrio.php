@@ -21,7 +21,7 @@ class TblBarrio implements IMigration
             `bar_varNombre` varchar(150) COLLATE utf8mb3_general_ci NOT NULL  , 
             `bar_lonDescripcion` longtext COLLATE utf8mb3_general_ci NOT NULL  , 
             `bar_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `bar_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `bar_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `ciu_intIdciudad` int(11) NULL  , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdCreador` int(11) NOT NULL  , 

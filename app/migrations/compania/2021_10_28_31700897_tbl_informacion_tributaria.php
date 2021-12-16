@@ -21,7 +21,7 @@ class TblInformacionTributaria implements IMigration
             `tft_bolLLevarContabilidad` tinyint(4) NOT NULL  DEFAULT 0 , 
             `tft_bolCalculaIca` tinyint(4) NOT NULL  DEFAULT 0 , 
             `tft_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `tft_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `tft_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `per_intIdpersona` int(11) NULL  , 
             `sub_intIdcxp_subcuentacontable` int(11) NULL  , 
             `sub_intIdcxc_subcuentacontable` int(11) NULL  , 

@@ -15,15 +15,20 @@ class TblConceptoNomina implements IMigration
     */
     public function up()
     {
+        /*
+            Se corrige
+            
+            Syntax error or access violation: 1101 BLOB, TEXT, GEOMETRY or JSON column 'cpn_lonDescripcion' can't have a default value
+        */
         Model::query("CREATE TABLE `tbl_concepto_nomina`(
             `cpn_intId` int(11) NOT NULL  auto_increment , 
             `cpn_varCodigo` varchar(100) COLLATE armscii8_general_ci  NULL  DEFAULT '' , 
             `cpn_varNombre` varchar(100) COLLATE armscii8_general_ci NOT NULL  DEFAULT '' , 
-            `cpn_lonDescripcion` LONGTEXT COLLATE armscii8_general_ci  NULL  DEFAULT '' , 
+            `cpn_lonDescripcion` LONGTEXT COLLATE armscii8_general_ci  NULL, 
             `cpn_varFormula` varchar(100) COLLATE armscii8_general_ci NOT NULL  DEFAULT '' , 
             `cpn_varTipoDeConcepto` varchar(20) COLLATE armscii8_general_ci NOT NULL  DEFAULT '' , 
             `cpn_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `cpn_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `cpn_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdCreador` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdActualizador` int(11) NULL  DEFAULT 1 , 

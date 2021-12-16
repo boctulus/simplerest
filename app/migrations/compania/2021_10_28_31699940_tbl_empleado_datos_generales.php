@@ -29,7 +29,7 @@ class TblEmpleadoDatosGenerales implements IMigration
             `edg_intMovil` int(11) NULL  , 
             `edg_varEmail` varchar(250) COLLATE armscii8_general_ci NULL  , 
             `edg_lonNota` longtext COLLATE armscii8_general_ci NULL  , 
-            `epg_dtimFechaCreacion` date NOT NULL  DEFAULT current_timestamp() , 
+            `epg_dtimFechaCreacion` date NOT NULL  DEFAULT '1000-01-01' , 
             `epg_dtimFechaActualizacion` date NULL  , 
             `pai_intIdPaisExpCedula` int(11) NULL  , 
             `per_intIdPersona` int(11) NULL  , 
