@@ -22,7 +22,7 @@ class TblFrecuencia implements IMigration
             `fre_lonDescripcion` longtext COLLATE utf8mb3_general_ci NOT NULL  , 
             `fre_intPeriodicidad` int(11) NOT NULL  , 
             `fre_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `fre_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `fre_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdCreador` int(11) NOT NULL  , 
             `usu_intIdActualizador` int(11) NOT NULL  , 

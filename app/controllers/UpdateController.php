@@ -101,12 +101,19 @@ class UpdateController extends ConsoleController
         $this->run_batches();
     }
 
-    function rollback(...$opt){
-        $this->check();
-
+    function list(){
+        
         // ...
     }
 
+    function is_updated(){
+        
+    }
+
+    function get(){
+        
+        // ...
+    }
 
     function description(...$opt){
 
@@ -115,11 +122,5 @@ class UpdateController extends ConsoleController
     function version(...$opt){
         
     }
-
-    function is_updated(){
-        
-    }
-
-   
 }
 

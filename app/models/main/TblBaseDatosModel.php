@@ -3,7 +3,7 @@
 namespace simplerest\models\main;
 
 use simplerest\models\MyModel;
-use simplerest\core\Model;
+use simplerest\libs\Config;
 use simplerest\libs\DB;
 use simplerest\core\MakeControllerBase;
 use simplerest\controllers\MigrationsController;
@@ -20,7 +20,7 @@ class TblBaseDatosModel extends MyModel
         parent::__construct($connect, TblBaseDatosSchema::class);
 	}	
 
-	// está deshabilitado (notar el "__" delante)
+	// chequear no esté deshabilitado (con un "__" delante)
 	function onCreated(array &$data, $last_inserted_id)
 	{
 		/*
@@ -31,21 +31,38 @@ class TblBaseDatosModel extends MyModel
 
 		$db_name = $data['dba_varNombre'];
 		
-		$ok = Model::query("CREATE DATABASE $db_name;");
+		$ok = DB::statement("CREATE DATABASE `$db_name`;");
 		
+		if (!$ok){
+			throw new \Exception("Error trying to create $db_name");
+		}
+
+		$bases = $this->pluck('dba_varNombre');
+
+		/*
+			Nuevo !!!!!!!!!!
+		*/
+
+		Config::set('db_connections', get_db_connections());
+		get_db_connections(true);
+
 
 		/*
 			Creo las tablas
 		*/
 
-		$mgr = MigrationsController::class;
-
-        $folder = 'compania'; 
-        $tenant = $db_name;
-
+		$mgr   = MigrationsController::class;
+		$mgr_o = new $mgr();
+				
 		StdOut::hideResponse();
 
-        $mgr->migrate("--dir=$folder", "--to=$tenant");
+		$tenant = $db_name;
+		
+		$folder = 'usuario';
+		$mgr_o->migrate("--dir=$folder", "--to=$tenant");
+
+        $folder = 'compania'; 
+        $mgr_o->migrate("--dir=$folder", "--to=$tenant");
 
 		
 		/*
@@ -53,10 +70,11 @@ class TblBaseDatosModel extends MyModel
 		*/
 
 		$mk = MakeControllerBase::class;
+		$mk_o = new $mk();
 
 		StdOut::hideResponse();
 
-		$mk->any("all", "-s", "-m", "--from:$tenant");
+		$mk_o->any("all", "-s", "-m", "--from:$tenant");
 
 	}
 }

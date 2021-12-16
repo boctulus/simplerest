@@ -21,7 +21,7 @@ class TblUbicacion implements IMigration
             `ubi_varNombre` varchar(100) COLLATE utf8mb3_general_ci NOT NULL  , 
             `ubi_lonDescripcion` longtext COLLATE utf8mb3_general_ci NOT NULL  , 
             `ubi_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `ubi_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `ubi_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdCreador` int(11) NOT NULL  , 
             `usu_intIdActualizador` int(11) NOT NULL  , 

@@ -518,14 +518,12 @@ class AuthController extends Controller implements IAuth
     */
     function register()
     {
-        global $api_version;
-
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
+        //DB::beginTransaction();
+
         try {
-            //DB::beginTransaction();
-            
             $data  = Factory::request()->getBody(false);
 
             if ($data == null)
@@ -591,10 +589,10 @@ class AuthController extends Controller implements IAuth
                 // se hace en el modelo pero es más rápido hacer chequeos acá
 
                 if (empty($data[$this->__email]))
-                    throw new Exception("Email is empty");
+                    throw new \Exception("Email is empty");
                     
                 if (!filter_var($data[$this->__email], FILTER_VALIDATE_EMAIL))
-                    throw new Exception("Invalid email");  
+                    throw new \Exception("Invalid email");  
 
                 if (DB::table($this->users_table)->where([$this->__email, $data[$this->__email]])->exists())
                     Factory::response()->sendError('Email already exists');    
@@ -607,6 +605,10 @@ class AuthController extends Controller implements IAuth
                 $u->fill([$this->__active]);      
                 $data[$this->__active] = $this->config['pre_activated'] ?? false;
             }
+
+            /*
+                Creo "usuario"
+            */
 
             $uid = $u
             ->setValidator(new Validator())

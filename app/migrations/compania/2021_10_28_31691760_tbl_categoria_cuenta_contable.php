@@ -19,7 +19,7 @@ class TblCategoriaCuentaContable implements IMigration
             `ccc_intId` int(11) NOT NULL  auto_increment , 
             `ccc_varCategoriaCuentaContable` varchar(50) COLLATE utf8mb3_general_ci NOT NULL  , 
             `ccc_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp(), 
-            `ccc_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `ccc_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdCreador` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdActualizador` int(11) NOT NULL  DEFAULT 1 , 

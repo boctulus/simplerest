@@ -19,7 +19,7 @@ class TblNaturalezaCuentaContable implements IMigration
             `ncc_intId` int(11) NOT NULL  auto_increment , 
             `ncc_varNaturalezaCuenta` varchar(50) COLLATE utf8mb3_general_ci NOT NULL  , 
             `ncc_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `ncc_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `ncc_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdCreador` int(11) NOT NULL DEFAULT 1, 
             `usu_intIdActualizador` int(11) NOT NULL DEFAULT 1, 

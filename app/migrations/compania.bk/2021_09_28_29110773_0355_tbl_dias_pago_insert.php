@@ -16,9 +16,9 @@ class TblDiasPagoInsert355 implements IMigration
     public function up()
     {
         Model::query("INSERT INTO tbl_dias_pago(dpa_intId, dpa_intDiasPago, dpa_dtimFechaCreacion, dpa_dtimFechaActualizacion, est_intIdEstado, usu_intIdCreador, usu_intIdActualizador) VALUES
-(1, 30, '2021-09-06 10:53:05', '0000-00-00 00:00:00', 1, 1, 1),
-(2, 60, '2021-09-06 10:53:05', '0000-00-00 00:00:00', 1, 1, 1),
-(3, 90, '2021-09-06 10:53:05', '0000-00-00 00:00:00', 1, 1, 1);");
+(1, 30, '2021-09-06 10:53:05', '1000-01-01 00:00:00', 1, 1, 1),
+(2, 60, '2021-09-06 10:53:05', '1000-01-01 00:00:00', 1, 1, 1),
+(3, 90, '2021-09-06 10:53:05', '1000-01-01 00:00:00', 1, 1, 1);");
     }
 }
 

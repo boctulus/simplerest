@@ -28,7 +28,7 @@ class TblOrdenCompraDetalle implements IMigration
             `oco_varNumeroDocumento` varchar(20) COLLATE utf8mb3_general_ci NOT NULL  , 
             `ocd_varNota` varchar(250) COLLATE utf8mb3_general_ci NOT NULL  , 
             `ocd_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `ocd_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `ocd_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `ocd_dateFechaEntrega` date NOT NULL  , 
             `ocd_decIva` decimal(18,2) NOT NULL  , 
             `ocd_decPorceIVA` decimal(10,2) NOT NULL  , 
