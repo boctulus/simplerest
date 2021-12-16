@@ -21,7 +21,7 @@ class TblAreas implements IMigration
             `are_varNombre` varchar(100) COLLATE utf8mb3_general_ci NOT NULL  , 
             `are_lonDescripcion` LONGTEXT COLLATE utf8mb3_general_ci  NULL  , 
             `are_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `are_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `are_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `emn_intIdEmpresaNomina` int(11) NULL  , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdCreador` int(11) NOT NULL  , 

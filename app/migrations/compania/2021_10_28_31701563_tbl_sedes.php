@@ -21,7 +21,7 @@ class TblSedes implements IMigration
             `sed_varNombre` varchar(100) COLLATE utf8mb3_general_ci NOT NULL  , 
             `sed_lonDescripcion` Longtext COLLATE utf8mb3_general_ci  NULL  , 
             `sed_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `sed_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `sed_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `emn_intIdEmpresa` int(11) NULL  , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `usu_intIdCreador` int(11) NOT NULL  , 

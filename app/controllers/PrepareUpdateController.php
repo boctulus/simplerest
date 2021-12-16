@@ -10,6 +10,7 @@ use simplerest\core\Response;
 use simplerest\libs\Factory;
 use simplerest\libs\DB;
 use simplerest\libs\Files;
+use simplerest\libs\StdOut;
 use simplerest\libs\Update;
 
 /*
@@ -17,6 +18,9 @@ use simplerest\libs\Update;
 */
 class PrepareUpdateController extends ConsoleController
 {
+    protected $last_update_dir;
+    protected $version;
+
     function __construct()
     {
         parent::__construct();     
@@ -24,12 +28,17 @@ class PrepareUpdateController extends ConsoleController
     }
 
     function setup(){
-        $last_update_dir = Update::getLastVersionDirectory();
-        $last_ver        = substr($last_update_dir, 11);
-        
-        
+        $this->last_update_dir = Update::getLastVersionDirectory();
+        $this->version         = substr($this->last_update_dir, 11);
+    }
+
+    function index(){
+        StdOut::pprint("Do you need help? You can copy or zip");
+    }
+
+    function copy(){
         $ori = '/home/www/simplerest';
-        $dst = "updates/$last_update_dir/";  
+        $dst = "updates/{$this->last_update_dir}/";  
 
         Files::copy($dst, ROOT_PATH, ['version.txt']); 
 
@@ -40,50 +49,34 @@ class PrepareUpdateController extends ConsoleController
         
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CORE 
-        app/core
-        app/core/Controller.php
-
+        ;app/core
+        
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; VARIOS
-        app/exceptions
-        app/helpers
-        app/interfaces
-        app/libs
-        app/locale
-        app/traits
-        app/traits/ExceptionHandler.php
-        packages
-        docs
-        public/app.php
-        .htaccess
+        ;app/exceptions
+        ;app/helpers
+        ;app/interfaces
+        ;app/libs
+        ;app/locale
+        ;app/traits
+        ;packages
+        ;docs
+        ;.htaccess
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CONTROLLERS
-        app/controllers/UpdateController.php   
-        app/controllers/MigrationsController.php
+        ;app/controllers/UpdateController.php   
+        ;app/controllers/MigrationsController.php
         ;app/controllers/MyController.php
-        ;app/controllers/MyApiController.php
-        ;app/controllers/MyAuthController.php
-        app/controllers/api/UserSpPermissions.php
-        app/controllers/DownloadController.php
         
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; APIS
-        app/controllers/api/Files.php
-        app/controllers/api/Me.php
+        ;app/controllers/api/Files.php
         
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; MODELS
-        app/models/main/CollectionsModel.php
-        app/models/main/FolderOtherPermissionsModel.php
-        app/models/main/FolderPermissionsModel.php
-        app/models/main/FoldersModel.php
-        app/models/main/RolesModel.php
-        app/models/main/SpPermissionsModel.php
-        app/models/main/UserTbPermissionsModel.php
-        app/models/main/UserSpPermissionsModel.php
-        app/models/main/EmailNotificationsModel.php
-        
+        app/models/main/TblBaseDatosModel.php
+
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; VIEWS
         ;app/views/MyView.php    
@@ -93,6 +86,7 @@ class PrepareUpdateController extends ConsoleController
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;app/migrations/2021_11_20_33704817_files.php
         ;app/migrations/2021_12_07_35172655_files.php   // <-- quedó pendiente
+        app/migrations/compania/2021_10_28_31693371_tbl_concepto_nomina.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);
@@ -105,10 +99,11 @@ class PrepareUpdateController extends ConsoleController
         ];
 
         Files::copy($ori, $dst . 'files', $files, $except);
-
-        Update::compress($last_update_dir);
     }
-   
+
+    function zip(){
+        Update::compress($this->last_update_dir);
+    }
 
 }
 

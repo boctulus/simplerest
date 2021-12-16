@@ -20,7 +20,7 @@ class TblClienteRetencionCuentaContable implements IMigration
             `rcl_intIdRetencion` int(11) NOT NULL  DEFAULT 0 , 
             `rcl_intIdCuentaContable` int(11) NOT NULL  DEFAULT 0 , 
             `rcl_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `rcl_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `rcl_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `cli_intIdCliente` int(11) NOT NULL  DEFAULT 0 , 
             `usu_intIdCreador` int(11) NOT NULL  DEFAULT 0 , 
             `usu_intIdActualizador` int(11) NOT NULL  DEFAULT 0 , 

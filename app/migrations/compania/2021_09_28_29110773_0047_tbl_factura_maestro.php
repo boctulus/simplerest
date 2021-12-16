@@ -25,7 +25,7 @@ class TblFacturaMaestro232 implements IMigration
         fac_decIca DECIMAL(18, 2) NOT NULL,
         fac_decRetencion DECIMAL(18, 2) NOT NULL,
         fac_decReteIva DECIMAL(18, 2) NOT NULL,
-        fac_dateFecha DATE NOT NULL DEFAULT current_timestamp(),
+        fac_dateFecha DATE NOT NULL DEFAULT '1000-01-01',
         fac_decNeto DECIMAL(18, 2) NOT NULL,
         fac_bolEstado TINYINT(1) NOT NULL DEFAULT 1,
         fac_dateFechaVencimiento DATE NOT NULL,

@@ -27,7 +27,7 @@ class TblCotizacionDetalle implements IMigration
             `cde_decPorcentajeDescuento` decimal(18,2) NOT NULL  , 
             `cde_decValorDescuento` decimal(18,2) NOT NULL  , 
             `cde_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `cde_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `cde_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `cot_intNroDocumento` varchar(20) COLLATE utf8mb3_general_ci NULL  , 
             `cde_varDescripcion` longtext COLLATE utf8mb3_general_ci NOT NULL  , 
             `cot_intIdCotizacion` int(11) NOT NULL  , 

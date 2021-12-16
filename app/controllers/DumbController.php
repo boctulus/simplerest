@@ -6249,4 +6249,90 @@ class DumbController extends Controller
         mkdir($tmp_dst);
     }
 
+    function gt2(){
+        DB::getConnection('db_flor');
+        $tables = Schema::getTables();
+
+        dd($tables, 'TABLES');
+    }
+
+    function test_sql_mode(){
+        $dsn = "mysql:host=127.0.0.1;dbname=db_168;port=3306";
+        $username = "boctulus";
+        $password = 'gogogo#*$U&_441@#';
+
+        $pdo_opt = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET SESSION sql_mode="TRADITIONAL"'
+        ];
+
+        d($pdo_opt, 'PDO OPTIONS');
+
+        $conn = new \PDO(
+            $dsn, 
+            $username, 
+            $password, 
+            $pdo_opt
+       );
+
+       $sql = "INSERT INTO tbl_categoria_persona(cap_intId, cap_varCategoriaPersona, cap_dtimFechaCreacion, cap_dtimFechaActualizacion, est_intIdEstado, usu_intIdCreador, usu_intIdActualizador) VALUES
+        (1, 'Empleado', '2021-05-20 11:40:29', '2021-06-30 09:38:58', 1, 1, 1),
+        (2, 'Tercero', '2021-05-20 11:40:58', '2021-07-21 21:44:46', 1, 1, 1),
+        (3, 'Visitante', '2021-06-25 15:21:04', '1000-01-01 00:00:00', 1, 1, 1),
+        (4, 'Cliente', '2021-08-04 16:48:49', '1000-01-01 00:00:00', 1, 1, 1),
+        (5, 'Proveedor', '2021-08-04 16:48:58', '1000-01-01 00:00:00', 1, 1, 1),
+        (6, 'Interesado', '2021-08-04 16:49:09', '1000-01-01 00:00:00', 1, 1, 1);";
+
+        $stmt= $conn->prepare($sql);
+        $res = $stmt->execute();
+
+        d($res, 'RES');
+    }
+
+    function test_file_exits(){
+        $full_path = '/home/www/simplerest/app/migrations/compania/2021_09_28_29110773_0010_tbl_genero_maestro.php';
+
+        var_dump(file_exists($full_path), 'EXISTE?');
+
+        if (!file_exists($full_path)){
+            StdOut::pprint("Path '$full_path' does not exist !");
+            exit;
+        }
+    }
+
+    // from Yii
+    function generateRandomString($length = 10) {
+        $bytes = random_bytes($length);
+        return substr(strtr(base64_encode($bytes), '+/', '-_'), 0, $length);
+    }
+
+    function test_dynamic_db_creation()
+    {   
+        $db_name = 'db_'. $this->generateRandomString();
+		
+        /*
+            Voy a registrar la base de datos para su creación
+        */
+
+        $tenant = $db_name;
+        $uid = 4;
+        $at = at();
+
+        DB::getDefaultConnection();
+
+        $db_id = DB::table('tbl_base_datos')
+        ->fill(['usu_intIdActualizador'])
+        ->create([
+            'dba_varNombre'    => $tenant,
+            'usu_intIdCreador' => $uid,
+            'usu_intIdActualizador' => $uid,
+            'dba_dtimFechaCreacion' => $at,
+            'dba_dtimFechaActualizacion' => $at
+        ]); 
+
+
+		// here(); 
+        // exit; ///
+		// DB::getConnection($db_name);
+    }
 }

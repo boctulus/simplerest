@@ -17,7 +17,7 @@ class DB
 	protected static $values = [];
 	protected static $tb_name;
 	protected static $inited_transaction = false; 
-	protected static $config;
+
 
 	protected function __construct() { }
 
@@ -34,10 +34,8 @@ class DB
 		static::$current_id_conn = $id;
 	}
 
-    public static function getConnection(string $conn_id = null) {
-		$config = config();
-		
-		$cc = count($config['db_connections']);
+    public static function getConnection(string $conn_id = null) {	
+		$cc = count(config()['db_connections']);
 		
 		if ($cc == 0){
 			throw new \Exception('No database');
@@ -48,9 +46,9 @@ class DB
 		} else {
 			if (static::$current_id_conn == null){
 				if ($cc == 1){
-					static::$current_id_conn = array_keys($config['db_connections'])[0];
-				} elseif (!empty($config['db_connection_default'])) {
-					static::$current_id_conn = $config['db_connection_default'];
+					static::$current_id_conn = array_keys(config()['db_connections'])[0];
+				} elseif (!empty(config()['db_connection_default'])) {
+					static::$current_id_conn = config()['db_connection_default'];
 				} else {	
 					throw new \InvalidArgumentException('No database selected');
 				}	
@@ -61,18 +59,18 @@ class DB
 			return self::$connections[static::$current_id_conn];
 
 		
-		if (!isset($config['db_connections'][static::$current_id_conn])){
+		if (!isset(config()['db_connections'][static::$current_id_conn])){
 			throw new \InvalidArgumentException('Invalid database selected for '.static::$current_id_conn);
 		}	
 		
-		$host    = $config['db_connections'][static::$current_id_conn]['host'] ?? 'localhost';
-		$driver  = $config['db_connections'][static::$current_id_conn]['driver'];	
-		$port    = $config['db_connections'][static::$current_id_conn]['port'] ?? NULL;
-        $db_name = $config['db_connections'][static::$current_id_conn]['db_name'];
-		$user    = $config['db_connections'][static::$current_id_conn]['user'] ?? 'root';
-		$pass    = $config['db_connections'][static::$current_id_conn]['pass'] ?? '';
-		$pdo_opt = $config['db_connections'][static::$current_id_conn]['pdo_options'] ?? NULL;
-		$charset = $config['db_connections'][static::$current_id_conn]['charset'] ?? NULL;
+		$host    = config()['db_connections'][static::$current_id_conn]['host'] ?? 'localhost';
+		$driver  = config()['db_connections'][static::$current_id_conn]['driver'];	
+		$port    = config()['db_connections'][static::$current_id_conn]['port'] ?? NULL;
+        $db_name = config()['db_connections'][static::$current_id_conn]['db_name'];
+		$user    = config()['db_connections'][static::$current_id_conn]['user'] ?? 'root';
+		$pass    = config()['db_connections'][static::$current_id_conn]['pass'] ?? '';
+		$pdo_opt = config()['db_connections'][static::$current_id_conn]['pdo_options'] ?? NULL;
+		$charset = config()['db_connections'][static::$current_id_conn]['charset'] ?? NULL;
 
 		/*
 			Aliases
@@ -89,34 +87,50 @@ class DB
 		if ($driver == 'sqlsrv'){
 			$driver = 'mssql';
 		}
-		
+
 		// faltaría dar soporte a ODBC
 		// es algo como odbc:$dsn
 
 		try {
 			switch ($driver) {
 				case 'mysql':
-					self::$connections[static::$current_id_conn] = new \PDO("$driver:host=$host;dbname=$db_name;port=$port", $user, $pass, $pdo_opt);				
+					self::$connections[static::$current_id_conn] = new \PDO(
+						"$driver:host=$host;dbname=$db_name;port=$port",  /* DSN */
+						$user, 
+						$pass, 
+						$pdo_opt);				
 					break;
 				case 'sqlite':
 					$db_file = Strings::contains(DIRECTORY_SEPARATOR, $db_name) ?  $db_name : STORAGE_PATH . $db_name;
 	
-					self::$connections[static::$current_id_conn] = new \PDO("sqlite:$db_file", null, null, $pdo_opt);
+					self::$connections[static::$current_id_conn] = new \PDO(
+						"sqlite:$db_file", /* DSN */
+						null, 
+						null, 
+						$pdo_opt);
 					break;
 
 				case 'pgsql':
-					self::$connections[static::$current_id_conn] = new \PDO("pgsql:host=$host;dbname=$db_name;port=$port", $user, $pass, $pdo_opt);
+					self::$connections[static::$current_id_conn] = new \PDO(
+						"pgsql:host=$host;dbname=$db_name;port=$port", /* DSN */
+						$user, 
+						$pass, 
+						$pdo_opt);
 					break;	
 				
 				case 'mssql':
-					self::$connections[static::$current_id_conn] = new \PDO("sqlsrv:Server=$host,$port;Database=$db_name", $user, $pass);
+					self::$connections[static::$current_id_conn] = new \PDO(
+						"sqlsrv:Server=$host,$port;Database=$db_name", /* DSN */
+						$user, 
+						$pass,
+						$pdo_opt);
 					break;
 
 				default:
 					throw new \Exception("Driver '$driver' not supported / tested.");
 			}
 
-			$conn = self::$connections[static::$current_id_conn];
+			$conn = &self::$connections[static::$current_id_conn];
 
 			if ($charset != null){
 				switch (DB::driver()){
@@ -304,12 +318,11 @@ class DB
 	}
 	
 	static function getTenantGroupNames() : Array {
-		$config = config();
-		if (!isset($config['tentant_groups'])){
+		if (!isset(config()['tentant_groups'])){
 			throw new \Exception("File config.php is outdated. Lacks 'tentant_groups' section");
 		}
 
-		return array_keys($config['tentant_groups']);
+		return array_keys(config()['tentant_groups']);
 	}
 
 	static function getTenantGroupName(string $tenant_id) : ?string {
@@ -323,12 +336,11 @@ class DB
 			return $gns[$tenant_id];
 		}
 
-		$config = config();
-		if (!isset($config['tentant_groups'])){
+		if (!isset(config()['tentant_groups'])){
 			throw new \Exception("File config.php is outdated. Lacks 'tentant_groups' section");
 		}
 
-        foreach ($config['tentant_groups'] as $group_name => $tg){
+        foreach (config()['tentant_groups'] as $group_name => $tg){
             foreach ($tg as $conn_pattern){
                 if (preg_match("/$conn_pattern/", $tenant_id)){
                     $gns[$tenant_id] = $group_name;
@@ -463,11 +475,43 @@ class DB
 		return $st;
 	}
 
+	/*
+		Resolver problema de anidamiento !!
+
+		Ej:
+
+		Solicitud de inicio de transacción para => main
+		Inicio de transacción para => main
+
+		Solicitud de inicio de transacción para => db_185
+		;Inicio de transacción para => db_185              -nunca ocurre !!!-
+
+			=>
+
+		--[ PDO error ]-- 
+		There is no active transaction	
+		
+		El rollback() fallará ya que no puede hacer rollback de la más interna ya que nunca se hizo el beginTransaction()
+		dado que... ya había comenzado uno y la bandera no lo dejará iniciar.
+
+		Termina pasando esto:
+
+		beginTransaction()	- main
+		;beginTransaction() - db_xxx   -nunca ocurre-
+		rollback() 			- db_xxx   <------------------- There is no active transaction
+
+
+	*/
 	public static function beginTransaction(){
+		#dd("Solicitud de inicio de transacción para => ". static::getCurrentConnectionId());
+
 		if (static::$inited_transaction){
 			// don't start it again!
 			return;
 		}
+
+		#d("Inicio de transacción para => ". static::getCurrentConnectionId());
+
 
 		/* 
 		  Not much to it! Forcing PDO to throw exceptions instead errors is the key to being able to use the try / catch which simplifies the logic needed to perform the rollback.
