@@ -2,9 +2,7 @@
 
 namespace simplerest\libs;
 
-use PDO;
 use simplerest\core\Model;
-use simplerest\libs\Factory;
 use simplerest\libs\Strings;
 use simplerest\libs\Schema;
 

@@ -44,9 +44,14 @@ class PrepareUpdateController extends ConsoleController
 
         $str_files = <<<'FILES'
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; CONFIG
-        config/constants.php
+        ;; DOC
+        docs
         
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; CONFIG
+        ;config/constants.php
+        ;app/libs/Config.php
+
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CORE 
         ;app/core
@@ -60,8 +65,8 @@ class PrepareUpdateController extends ConsoleController
         ;app/locale
         ;app/traits
         ;packages
-        ;docs
         ;.htaccess
+        ;app/helpers/db_dynamic_load.php
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CONTROLLERS
@@ -75,7 +80,7 @@ class PrepareUpdateController extends ConsoleController
         
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; MODELS
-        app/models/main/TblBaseDatosModel.php
+        ;app/models/main/TblBaseDatosModel.php
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; VIEWS
@@ -86,7 +91,7 @@ class PrepareUpdateController extends ConsoleController
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;app/migrations/2021_11_20_33704817_files.php
         ;app/migrations/2021_12_07_35172655_files.php   // <-- quedó pendiente
-        app/migrations/compania/2021_10_28_31693371_tbl_concepto_nomina.php
+        ;app/migrations/compania/2021_10_28_31693371_tbl_concepto_nomina.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);

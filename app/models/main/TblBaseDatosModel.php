@@ -31,16 +31,15 @@ class TblBaseDatosModel extends MyModel
 
 		$db_name = $data['dba_varNombre'];
 		
-		$ok = DB::statement("CREATE DATABASE `$db_name`;");
+		/* usar backticks */
+		$ok = DB::statement("CREATE DATABASE `$db_name`;");  
 		
 		if (!$ok){
 			throw new \Exception("Error trying to create $db_name");
 		}
 
-		$bases = $this->pluck('dba_varNombre');
-
 		/*
-			Nuevo !!!!!!!!!!
+			Ahora debo *registrar* las conexiones (que incluyen a la nueva DB en el config)
 		*/
 
 		Config::set('db_connections', get_db_connections(true));
