@@ -21,7 +21,7 @@ class TblEstratoEconomicoSchema implements ISchema
 				'tec_lonDescripcion' => 'STR',
 				'tec_dtimFechaCreacion' => 'STR',
 				'tec_dtimFechaActualizacion' => 'STR',
-				'est_intIdEstado' => 'INT',
+				'est_intIdestado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -30,18 +30,18 @@ class TblEstratoEconomicoSchema implements ISchema
 
 			'autoincrement' => 'tec_intId',
 
-			'nullable'		=> ['tec_intId', 'tec_varCodigo', 'tec_lonDescripcion', 'tec_dtimFechaCreacion', 'tec_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['tec_intId', 'tec_varCodigo', 'tec_lonDescripcion', 'tec_dtimFechaCreacion', 'tec_dtimFechaActualizacion', 'est_intIdestado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'tec_intId' => ['type' => 'int'],
-				'tec_varCodigo' => ['type' => 'str', 'max' => 20],
+				'tec_varCodigo' => ['type' => 'str', 'max' => 100],
 				'tec_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'tec_lonDescripcion' => ['type' => 'str'],
 				'tec_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tec_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdEstado' => ['type' => 'int'],
+				'est_intIdestado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],

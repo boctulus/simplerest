@@ -30,23 +30,23 @@ class TblBodegaSchema implements ISchema
 
 			'autoincrement' => 'bod_intId',
 
-			'nullable'		=> ['bod_intId', 'bod_dtimFechaCreacion', 'bod_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['bod_intId', 'bod_dtimFechaCreacion', 'bod_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'bod_intId' => ['type' => 'int'],
 				'bod_varCodigo' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'bod_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'bod_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'bod_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'bod_dtimFechaCreacion' => ['type' => 'datetime'],
 				'bod_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
@@ -56,20 +56,20 @@ class TblBodegaSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_bodega.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_bodega.usu_intIdCreador']
 				],
-				'tbl_pedido_detalle' => [
-					['tbl_pedido_detalle.fde_intIdBodega','tbl_bodega.bod_intId']
-				],
-				'tbl_orden_compra_detalle' => [
-					['tbl_orden_compra_detalle.bod_intIdBodega','tbl_bodega.bod_intId']
+				'tbl_mvto_inventario_detalle' => [
+					['tbl_mvto_inventario_detalle.bod_intIdBodega','tbl_bodega.bod_intId']
 				],
 				'tbl_factura_detalle' => [
 					['tbl_factura_detalle.fde_intIdBodega','tbl_bodega.bod_intId']
 				],
-				'tbl_mvto_inventario_detalle' => [
-					['tbl_mvto_inventario_detalle.bod_intIdBodega','tbl_bodega.bod_intId']
-				],
 				'tbl_compras_detalle' => [
 					['tbl_compras_detalle.bod_intIdBodega','tbl_bodega.bod_intId']
+				],
+				'tbl_orden_compra_detalle' => [
+					['tbl_orden_compra_detalle.bod_intIdBodega','tbl_bodega.bod_intId']
+				],
+				'tbl_pedido_detalle' => [
+					['tbl_pedido_detalle.fde_intIdBodega','tbl_bodega.bod_intId']
 				]
 			],
 
@@ -121,14 +121,30 @@ class TblBodegaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_pedido_detalle' => 
+				  'tbl_mvto_inventario_detalle' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_pedido_detalle',
-				        1 => 'fde_intIdBodega',
+				        0 => 'tbl_mvto_inventario_detalle',
+				        1 => 'bod_intIdBodega',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_bodega',
+				        1 => 'bod_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_compras_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_compras_detalle',
+				        1 => 'bod_intIdBodega',
 				      ),
 				      1 => 
 				      array (
@@ -169,30 +185,14 @@ class TblBodegaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_mvto_inventario_detalle' => 
+				  'tbl_pedido_detalle' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_mvto_inventario_detalle',
-				        1 => 'bod_intIdBodega',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_bodega',
-				        1 => 'bod_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_compras_detalle' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_compras_detalle',
-				        1 => 'bod_intIdBodega',
+				        0 => 'tbl_pedido_detalle',
+				        1 => 'fde_intIdBodega',
 				      ),
 				      1 => 
 				      array (

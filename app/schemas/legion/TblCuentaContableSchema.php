@@ -33,26 +33,26 @@ class TblCuentaContableSchema implements ISchema
 
 			'autoincrement' => 'cue_intId',
 
-			'nullable'		=> ['cue_intId', 'cue_tinCuentaBalance', 'cue_tinCuentaResultado', 'cue_dtimFechaCreacion', 'cue_dtimFechaActualizacion', 'gru_intIdGrupoCategoriaCuentaContable', 'ccc_intIdCategoriaCuentaContable', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['cue_intId', 'cue_dtimFechaCreacion', 'cue_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> ['cue_varNumeroCuenta'],
 
 			'rules' 		=> [
 				'cue_intId' => ['type' => 'int'],
-				'cue_varNumeroCuenta' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'cue_varNumeroCuenta' => ['type' => 'str', 'max' => 4, 'required' => true],
 				'cue_varNombreCuenta' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'cue_tinCuentaBalance' => ['type' => 'bool'],
-				'cue_tinCuentaResultado' => ['type' => 'bool'],
+				'cue_tinCuentaBalance' => ['type' => 'bool', 'required' => true],
+				'cue_tinCuentaResultado' => ['type' => 'bool', 'required' => true],
 				'cue_dtimFechaCreacion' => ['type' => 'datetime'],
 				'cue_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'gru_intIdGrupoCategoriaCuentaContable' => ['type' => 'int'],
-				'ccc_intIdCategoriaCuentaContable' => ['type' => 'int'],
+				'gru_intIdGrupoCategoriaCuentaContable' => ['type' => 'int', 'required' => true],
+				'ccc_intIdCategoriaCuentaContable' => ['type' => 'int', 'required' => true],
 				'est_intIdEstado' => ['type' => 'int'],
-				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['ccc_intIdCategoriaCuentaContable', 'est_intIdEstado', 'gru_intIdGrupoCategoriaCuentaContable', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['ccc_intIdCategoriaCuentaContable', 'est_intIdEstado', 'gru_intIdGrupoCategoriaCuentaContable', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_categoria_cuenta_contable' => [

@@ -36,94 +36,20 @@ class TblCategoriaPersonaPersonaSchema implements ISchema
 				'cat_dtimFechaCreacion' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> ['cap_intIdCategoriaPersona', 'per_intIdPersona'],
+			'fks' 			=> [],
 
 			'relationships' => [
-				'tbl_categoria_persona' => [
-					['tbl_categoria_persona.cap_intId','tbl_categoria_persona_persona.cap_intIdCategoriaPersona']
-				],
-				'tbl_persona' => [
-					['tbl_persona.per_intId','tbl_categoria_persona_persona.per_intIdPersona']
-				]
+				
 			],
 
 			'expanded_relationships' => array (
-				  'tbl_categoria_persona' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_categoria_persona',
-				        1 => 'cap_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_categoria_persona_persona',
-				        1 => 'cap_intIdCategoriaPersona',
-				      ),
-				    ),
-				  ),
-				  'tbl_persona' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_categoria_persona_persona',
-				        1 => 'per_intIdPersona',
-				      ),
-				    ),
-				  ),
 				),
 
 			'relationships_from' => [
-				'tbl_categoria_persona' => [
-					['tbl_categoria_persona.cap_intId','tbl_categoria_persona_persona.cap_intIdCategoriaPersona']
-				],
-				'tbl_persona' => [
-					['tbl_persona.per_intId','tbl_categoria_persona_persona.per_intIdPersona']
-				]
+				
 			],
 
 			'expanded_relationships_from' => array (
-				  'tbl_categoria_persona' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_categoria_persona',
-				        1 => 'cap_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_categoria_persona_persona',
-				        1 => 'cap_intIdCategoriaPersona',
-				      ),
-				    ),
-				  ),
-				  'tbl_persona' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_categoria_persona_persona',
-				        1 => 'per_intIdPersona',
-				      ),
-				    ),
-				  ),
 				)
 		];
 	}	

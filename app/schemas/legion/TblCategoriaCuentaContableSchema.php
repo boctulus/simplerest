@@ -42,7 +42,7 @@ class TblCategoriaCuentaContableSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [

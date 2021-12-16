@@ -16,27 +16,28 @@ class TblNotaCreditoSchema implements ISchema
 
 			'attr_types'	=> [
 				'nct_intId' => 'INT',
-				'nct_varNroDocumento' => 'STR',
+				'nct_varNumeroDocumento' => 'STR',
 				'nct_decCantidadTotal' => 'STR',
 				'nct_decBruto' => 'STR',
 				'nct_decDescuento' => 'STR',
+				'nct_decValor' => 'STR',
 				'nct_decIva' => 'STR',
 				'nct_decIca' => 'STR',
 				'nct_decRetencion' => 'STR',
 				'nct_decReteIva' => 'STR',
-				'nct_dateFecha' => 'STR',
-				'nct_decNeto' => 'STR',
-				'nct_decPorceRetefuente' => 'STR',
+				'nct_datFecha' => 'STR',
+				'nct_datNeto' => 'STR',
+				'nct_datPorceRetefuente' => 'STR',
 				'nct_intTopeRetefuente' => 'INT',
 				'nct_decPorceReteiva' => 'STR',
 				'nct_intTopeReteiva' => 'INT',
 				'nct_decPorceIca' => 'STR',
 				'nct_intTopeReteIca' => 'INT',
-				'nct_dtimFechaCreacion' => 'STR',
-				'nct_dtimFechaActualizacion' => 'STR',
-				'nct_varNota' => 'STR',
+				'nct_lonNota' => 'STR',
 				'nct_bolCruzado' => 'INT',
 				'nct_bolEnviadoDian' => 'INT',
+				'nct_dtimFechaCreacion' => 'STR',
+				'nct_dtimFechaActualizacion' => 'STR',
 				'fac_varNroDocumento' => 'STR',
 				'fac_intIdFactura' => 'INT',
 				'cen_intIdCentrocostos' => 'INT',
@@ -51,33 +52,34 @@ class TblNotaCreditoSchema implements ISchema
 
 			'autoincrement' => 'nct_intId',
 
-			'nullable'		=> ['nct_intId', 'nct_varNroDocumento', 'nct_dateFecha', 'nct_dtimFechaCreacion', 'nct_dtimFechaActualizacion', 'nct_varNota', 'nct_bolCruzado', 'nct_bolEnviadoDian', 'usu_intIdActualizador'],
+			'nullable'		=> ['nct_intId', 'nct_dtimFechaCreacion', 'nct_dtimFechaActualizacion', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'nct_intId' => ['type' => 'int'],
-				'nct_varNroDocumento' => ['type' => 'str', 'max' => 20],
+				'nct_varNumeroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'nct_decCantidadTotal' => ['type' => 'decimal(18,2)', 'required' => true],
 				'nct_decBruto' => ['type' => 'decimal(18,2)', 'required' => true],
 				'nct_decDescuento' => ['type' => 'decimal(18,2)', 'required' => true],
+				'nct_decValor' => ['type' => 'decimal(18,2)', 'required' => true],
 				'nct_decIva' => ['type' => 'decimal(18,2)', 'required' => true],
 				'nct_decIca' => ['type' => 'decimal(18,2)', 'required' => true],
 				'nct_decRetencion' => ['type' => 'decimal(18,2)', 'required' => true],
 				'nct_decReteIva' => ['type' => 'decimal(18,2)', 'required' => true],
-				'nct_dateFecha' => ['type' => 'date'],
-				'nct_decNeto' => ['type' => 'decimal(18,2)', 'required' => true],
-				'nct_decPorceRetefuente' => ['type' => 'decimal(10,2)', 'required' => true],
+				'nct_datFecha' => ['type' => 'date', 'required' => true],
+				'nct_datNeto' => ['type' => 'decimal(18,2)', 'required' => true],
+				'nct_datPorceRetefuente' => ['type' => 'decimal(18,2)', 'required' => true],
 				'nct_intTopeRetefuente' => ['type' => 'int', 'required' => true],
-				'nct_decPorceReteiva' => ['type' => 'decimal(10,2)', 'required' => true],
+				'nct_decPorceReteiva' => ['type' => 'decimal(15,4)', 'required' => true],
 				'nct_intTopeReteiva' => ['type' => 'int', 'required' => true],
-				'nct_decPorceIca' => ['type' => 'decimal(10,2)', 'required' => true],
+				'nct_decPorceIca' => ['type' => 'decimal(15,4)', 'required' => true],
 				'nct_intTopeReteIca' => ['type' => 'int', 'required' => true],
+				'nct_lonNota' => ['type' => 'str', 'required' => true],
+				'nct_bolCruzado' => ['type' => 'bool', 'required' => true],
+				'nct_bolEnviadoDian' => ['type' => 'bool', 'required' => true],
 				'nct_dtimFechaCreacion' => ['type' => 'datetime'],
 				'nct_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'nct_varNota' => ['type' => 'str', 'max' => 250],
-				'nct_bolCruzado' => ['type' => 'bool'],
-				'nct_bolEnviadoDian' => ['type' => 'bool'],
 				'fac_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'fac_intIdFactura' => ['type' => 'int', 'required' => true],
 				'cen_intIdCentrocostos' => ['type' => 'int', 'required' => true],
@@ -107,8 +109,8 @@ class TblNotaCreditoSchema implements ISchema
 					['tbl_persona.per_intId','tbl_nota_credito.per_intIdPersona']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_nota_credito.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_nota_credito.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_nota_credito.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_nota_credito.usu_intIdActualizador']
 				],
 				'tbl_nota_debito' => [
 					['tbl_nota_debito.nct_intIdNotaCredito','tbl_nota_credito.nct_intId']
@@ -207,12 +209,12 @@ class TblNotaCreditoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_credito',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -221,12 +223,12 @@ class TblNotaCreditoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_credito',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -281,8 +283,8 @@ class TblNotaCreditoSchema implements ISchema
 					['tbl_persona.per_intId','tbl_nota_credito.per_intIdPersona']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_nota_credito.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_nota_credito.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_nota_credito.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_nota_credito.usu_intIdActualizador']
 				]
 			],
 
@@ -375,12 +377,12 @@ class TblNotaCreditoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_credito',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -389,12 +391,12 @@ class TblNotaCreditoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_credito',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

@@ -16,13 +16,13 @@ class TblReteIcaSchema implements ISchema
 
 			'attr_types'	=> [
 				'ric_intId' => 'INT',
-				'ric_varReteica' => 'STR',
+				'ric_varReteIca' => 'STR',
 				'ric_intTope' => 'INT',
-				'ric_decPorcentaje' => 'STR',
+				'ric_intPorcentaje' => 'STR',
 				'ric_dtimFechaCreacion' => 'STR',
 				'ric_dtimFechaActualizacion' => 'STR',
+				'est_intIdCidEstado' => 'INT',
 				'sub_intIdSubCuentaContable' => 'INT',
-				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -31,28 +31,28 @@ class TblReteIcaSchema implements ISchema
 
 			'autoincrement' => 'ric_intId',
 
-			'nullable'		=> ['ric_intId', 'ric_dtimFechaCreacion', 'ric_dtimFechaActualizacion', 'sub_intIdSubCuentaContable', 'est_intIdEstado'],
+			'nullable'		=> ['ric_intId', 'ric_dtimFechaCreacion', 'ric_dtimFechaActualizacion', 'est_intIdCidEstado', 'sub_intIdSubCuentaContable', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'ric_intId' => ['type' => 'int'],
-				'ric_varReteica' => ['type' => 'str', 'max' => 50, 'required' => true],
+				'ric_varReteIca' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'ric_intTope' => ['type' => 'int', 'required' => true],
-				'ric_decPorcentaje' => ['type' => 'decimal(18,2)', 'required' => true],
+				'ric_intPorcentaje' => ['type' => 'decimal(10,2)', 'required' => true],
 				'ric_dtimFechaCreacion' => ['type' => 'datetime'],
 				'ric_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdCidEstado' => ['type' => 'int'],
 				'sub_intIdSubCuentaContable' => ['type' => 'int'],
-				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'sub_intIdSubCuentaContable', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdCidEstado', 'sub_intIdSubCuentaContable', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_rete_ica.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_rete_ica.est_intIdCidEstado']
 				],
 				'tbl_sub_cuenta_contable' => [
 					['tbl_sub_cuenta_contable.sub_intId','tbl_rete_ica.sub_intIdSubCuentaContable']
@@ -79,7 +79,7 @@ class TblReteIcaSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_rete_ica',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intIdCidEstado',
 				      ),
 				    ),
 				  ),
@@ -150,7 +150,7 @@ class TblReteIcaSchema implements ISchema
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_rete_ica.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_rete_ica.est_intIdCidEstado']
 				],
 				'tbl_sub_cuenta_contable' => [
 					['tbl_sub_cuenta_contable.sub_intId','tbl_rete_ica.sub_intIdSubCuentaContable']
@@ -174,7 +174,7 @@ class TblReteIcaSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_rete_ica',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intIdCidEstado',
 				      ),
 				    ),
 				  ),

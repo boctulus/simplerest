@@ -17,6 +17,8 @@ class TblEmpleadoInformacionPagoSchema implements ISchema
 			'attr_types'	=> [
 				'eip_intId' => 'INT',
 				'eip_intNumeroCuenta' => 'INT',
+				'eip_dtimFechaCreacion' => 'STR',
+				'eip_dtimFechaActualizacion' => 'STR',
 				'ban_intId' => 'INT',
 				'tcb_intIdTipoCuenta' => 'INT',
 				'per_intIdPersona' => 'INT',
@@ -29,13 +31,15 @@ class TblEmpleadoInformacionPagoSchema implements ISchema
 
 			'autoincrement' => 'eip_intId',
 
-			'nullable'		=> ['eip_intId', 'eip_intNumeroCuenta', 'ban_intId', 'tcb_intIdTipoCuenta', 'per_intIdPersona', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['eip_intId', 'eip_intNumeroCuenta', 'eip_dtimFechaCreacion', 'eip_dtimFechaActualizacion', 'ban_intId', 'tcb_intIdTipoCuenta', 'per_intIdPersona', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'eip_intId' => ['type' => 'int'],
 				'eip_intNumeroCuenta' => ['type' => 'int'],
+				'eip_dtimFechaCreacion' => ['type' => 'date'],
+				'eip_dtimFechaActualizacion' => ['type' => 'date'],
 				'ban_intId' => ['type' => 'int'],
 				'tcb_intIdTipoCuenta' => ['type' => 'int'],
 				'per_intIdPersona' => ['type' => 'int'],

@@ -35,17 +35,17 @@ class TblCotizacionSchema implements ISchema
 				'usu_intIdActualizador' => 'INT'
 			],
 
-			'primary'		=> ['cot_intId'],
+			'primary'		=> ['cot_intId', 'cot_varNumeroDocumento'],
 
 			'autoincrement' => 'cot_intId',
 
-			'nullable'		=> ['cot_intId', 'cot_varNumeroDocumento', 'cot_bolEstado', 'cot_dtimFechaCreacion', 'cot_dtimFechaActualizacion'],
+			'nullable'		=> ['cot_intId', 'cot_bolEstado', 'cot_dtimFechaCreacion', 'cot_dtimFechaActualizacion'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'cot_intId' => ['type' => 'int'],
-				'cot_varNumeroDocumento' => ['type' => 'str', 'max' => 20],
+				'cot_varNumeroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'cot_decCantidadTotal' => ['type' => 'decimal(18,2)', 'required' => true],
 				'cot_decBruto' => ['type' => 'decimal(18,2)', 'required' => true],
 				'cot_decDescuento' => ['type' => 'decimal(18,2)', 'required' => true],
@@ -64,7 +64,7 @@ class TblCotizacionSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['cse_intIdConsecutivo', 'doc_intIdDocumento', 'per_intIdPersona', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['cse_intIdConsecutivo', 'doc_intIdDocumento', 'per_intIdPersona', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_consecutivo' => [

@@ -16,23 +16,22 @@ class TblComprasDetalleSchema implements ISchema
 
 			'attr_types'	=> [
 				'cmd_intId' => 'INT',
-				'cmd_varNumeroDocumento' => 'STR',
-				'cmd_dateFecha' => 'STR',
+				'cmd_varNroDocumento' => 'STR',
+				'cmd_datFecha' => 'STR',
 				'cmd_decCantidad' => 'STR',
 				'cmd_decValor' => 'STR',
 				'cmd_decIva' => 'STR',
-				'cmd_decPorceIVA' => 'STR',
+				'cmd_decPorceIva' => 'STR',
 				'cmd_decPorcentajeDescuento' => 'STR',
 				'cmd_decValorTotal' => 'STR',
-				'cmd_bolEstado' => 'INT',
-				'cmd_varNota' => 'STR',
+				'cmd_lonNota' => 'STR',
 				'oco_varNumeroOC' => 'STR',
 				'oco_intIdOC' => 'INT',
 				'doc_intDocumentoOC' => 'INT',
 				'cmd_dtimFechaCreacion' => 'STR',
 				'cmd_dtimFechaActualizacion' => 'STR',
-				'pro_intIdProducto' => 'INT',
 				'com_intIdCompras' => 'INT',
+				'pro_intIdProducto' => 'INT',
 				'per_intIdPersona' => 'INT',
 				'doc_intIdDocumento' => 'INT',
 				'bod_intIdBodega' => 'INT',
@@ -45,29 +44,28 @@ class TblComprasDetalleSchema implements ISchema
 
 			'autoincrement' => 'cmd_intId',
 
-			'nullable'		=> ['cmd_intId', 'cmd_bolEstado', 'cmd_dtimFechaCreacion', 'cmd_dtimFechaActualizacion', 'pro_intIdProducto', 'usu_intIdActualizador'],
+			'nullable'		=> ['cmd_intId', 'cmd_dtimFechaCreacion', 'cmd_dtimFechaActualizacion', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'cmd_intId' => ['type' => 'int'],
-				'cmd_varNumeroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
-				'cmd_dateFecha' => ['type' => 'date', 'required' => true],
+				'cmd_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'cmd_datFecha' => ['type' => 'date', 'required' => true],
 				'cmd_decCantidad' => ['type' => 'decimal(18,2)', 'required' => true],
-				'cmd_decValor' => ['type' => 'decimal(18,2)', 'required' => true],
+				'cmd_decValor' => ['type' => 'decimal(18,4)', 'required' => true],
 				'cmd_decIva' => ['type' => 'decimal(18,2)', 'required' => true],
-				'cmd_decPorceIVA' => ['type' => 'decimal(18,2)', 'required' => true],
+				'cmd_decPorceIva' => ['type' => 'decimal(18,2)', 'required' => true],
 				'cmd_decPorcentajeDescuento' => ['type' => 'decimal(18,2)', 'required' => true],
 				'cmd_decValorTotal' => ['type' => 'decimal(18,2)', 'required' => true],
-				'cmd_bolEstado' => ['type' => 'bool'],
-				'cmd_varNota' => ['type' => 'str', 'required' => true],
+				'cmd_lonNota' => ['type' => 'str', 'required' => true],
 				'oco_varNumeroOC' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'oco_intIdOC' => ['type' => 'int', 'required' => true],
 				'doc_intDocumentoOC' => ['type' => 'int', 'required' => true],
 				'cmd_dtimFechaCreacion' => ['type' => 'datetime'],
 				'cmd_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'pro_intIdProducto' => ['type' => 'int'],
 				'com_intIdCompras' => ['type' => 'int', 'required' => true],
+				'pro_intIdProducto' => ['type' => 'int', 'required' => true],
 				'per_intIdPersona' => ['type' => 'int', 'required' => true],
 				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
 				'bod_intIdBodega' => ['type' => 'int', 'required' => true],
@@ -76,7 +74,7 @@ class TblComprasDetalleSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['bod_intIdBodega', 'cen_intIdCentrocostos', 'com_intIdCompras', 'doc_intIdDocumento', 'per_intIdPersona', 'pro_intIdProducto', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['bod_intIdBodega', 'cen_intIdCentrocostos', 'com_intIdCompras', 'doc_intIdDocumento', 'per_intIdPersona', 'pro_intIdProducto', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_bodega' => [
@@ -98,8 +96,8 @@ class TblComprasDetalleSchema implements ISchema
 					['tbl_producto.pro_intId','tbl_compras_detalle.pro_intIdProducto']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_compras_detalle.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_compras_detalle.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_compras_detalle.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_compras_detalle.usu_intIdActualizador']
 				]
 			],
 
@@ -208,12 +206,12 @@ class TblComprasDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_compras_detalle',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -222,12 +220,12 @@ class TblComprasDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_compras_detalle',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -253,8 +251,8 @@ class TblComprasDetalleSchema implements ISchema
 					['tbl_producto.pro_intId','tbl_compras_detalle.pro_intIdProducto']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_compras_detalle.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_compras_detalle.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_compras_detalle.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_compras_detalle.usu_intIdActualizador']
 				]
 			],
 
@@ -363,12 +361,12 @@ class TblComprasDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_compras_detalle',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -377,12 +375,12 @@ class TblComprasDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_compras_detalle',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

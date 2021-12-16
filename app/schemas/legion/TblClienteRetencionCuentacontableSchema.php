@@ -44,7 +44,7 @@ class TblClienteRetencionCuentacontableSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['cli_intIdCliente', 'rcl_intIdRetencion', 'rcl_intIdCuentaContable', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['cli_intIdCliente', 'rcl_intIdRetencion', 'rcl_intIdCuentaContable', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_cliente' => [

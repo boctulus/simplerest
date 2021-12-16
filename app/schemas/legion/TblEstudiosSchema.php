@@ -18,10 +18,10 @@ class TblEstudiosSchema implements ISchema
 				'esd_intId' => 'INT',
 				'esd_varCodigo' => 'STR',
 				'esd_varNombre' => 'STR',
-				'esd_lonDescripcion' => 'STR',
+				'esd-lonDescripcion' => 'STR',
 				'esd_dtimFechaCreacion' => 'STR',
 				'esd_dtimFechaActualizacion' => 'STR',
-				'est_intIdEstado' => 'INT',
+				'est_intEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -30,7 +30,7 @@ class TblEstudiosSchema implements ISchema
 
 			'autoincrement' => 'esd_intId',
 
-			'nullable'		=> ['esd_intId', 'esd_varCodigo', 'esd_lonDescripcion', 'esd_dtimFechaCreacion', 'esd_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['esd_intId', 'esd_varCodigo', 'esd-lonDescripcion', 'esd_dtimFechaCreacion', 'esd_dtimFechaActualizacion', 'est_intEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -38,23 +38,23 @@ class TblEstudiosSchema implements ISchema
 				'esd_intId' => ['type' => 'int'],
 				'esd_varCodigo' => ['type' => 'str', 'max' => 100],
 				'esd_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
-				'esd_lonDescripcion' => ['type' => 'str'],
+				'esd-lonDescripcion' => ['type' => 'str'],
 				'esd_dtimFechaCreacion' => ['type' => 'datetime'],
 				'esd_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdEstado' => ['type' => 'int'],
+				'est_intEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_estudios.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_estudios.est_intEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_estudios.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_estudios.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_estudios.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_estudios.usu_intIdActualizador']
 				],
 				'tbl_empleado_datos_personales' => [
 					['tbl_empleado_datos_personales.esd_intIdEstudios','tbl_estudios.esd_intId']
@@ -74,7 +74,7 @@ class TblEstudiosSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_estudios',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),
@@ -86,12 +86,12 @@ class TblEstudiosSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_estudios',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -100,12 +100,12 @@ class TblEstudiosSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_estudios',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -129,11 +129,11 @@ class TblEstudiosSchema implements ISchema
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_estudios.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_estudios.est_intEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_estudios.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_estudios.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_estudios.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_estudios.usu_intIdActualizador']
 				]
 			],
 
@@ -150,7 +150,7 @@ class TblEstudiosSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_estudios',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),
@@ -162,12 +162,12 @@ class TblEstudiosSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_estudios',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -176,12 +176,12 @@ class TblEstudiosSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_estudios',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

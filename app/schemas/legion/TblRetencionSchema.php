@@ -21,19 +21,19 @@ class TblRetencionSchema implements ISchema
 				'ret_decPorcentaje' => 'STR',
 				'ret_dtimFechaCreacion' => 'STR',
 				'ret_dtimFechaActualizacion' => 'STR',
-				'sub_intIdsubcuentacontable' => 'INT',
 				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
-				'usu_intIdActualizador' => 'INT'
+				'usu_intIdActualizador' => 'INT',
+				'sub_intIdCuentaContable' => 'INT'
 			],
 
 			'primary'		=> ['ret_intId'],
 
 			'autoincrement' => 'ret_intId',
 
-			'nullable'		=> ['ret_intId', 'ret_dtimFechaCreacion', 'ret_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['ret_intId', 'ret_dtimFechaCreacion', 'ret_dtimFechaActualizacion', 'est_intIdEstado', 'sub_intIdCuentaContable'],
 
-			'uniques'		=> ['ret_varRetencion'],
+			'uniques'		=> [],
 
 			'rules' 		=> [
 				'ret_intId' => ['type' => 'int'],
@@ -42,20 +42,20 @@ class TblRetencionSchema implements ISchema
 				'ret_decPorcentaje' => ['type' => 'decimal(10,2)', 'required' => true],
 				'ret_dtimFechaCreacion' => ['type' => 'datetime'],
 				'ret_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'sub_intIdsubcuentacontable' => ['type' => 'int', 'required' => true],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true],
+				'sub_intIdCuentaContable' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'sub_intIdsubcuentacontable', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'sub_intIdCuentaContable', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_retencion.est_intIdEstado']
 				],
 				'tbl_sub_cuenta_contable' => [
-					['tbl_sub_cuenta_contable.sub_intId','tbl_retencion.sub_intIdsubcuentacontable']
+					['tbl_sub_cuenta_contable.sub_intId','tbl_retencion.sub_intIdCuentaContable']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_retencion.usu_intIdActualizador'],
@@ -95,7 +95,7 @@ class TblRetencionSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_retencion',
-				        1 => 'sub_intIdsubcuentacontable',
+				        1 => 'sub_intIdCuentaContable',
 				      ),
 				    ),
 				  ),
@@ -153,7 +153,7 @@ class TblRetencionSchema implements ISchema
 					['tbl_estado.est_intId','tbl_retencion.est_intIdEstado']
 				],
 				'tbl_sub_cuenta_contable' => [
-					['tbl_sub_cuenta_contable.sub_intId','tbl_retencion.sub_intIdsubcuentacontable']
+					['tbl_sub_cuenta_contable.sub_intId','tbl_retencion.sub_intIdCuentaContable']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_retencion.usu_intIdActualizador'],
@@ -190,7 +190,7 @@ class TblRetencionSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_retencion',
-				        1 => 'sub_intIdsubcuentacontable',
+				        1 => 'sub_intIdCuentaContable',
 				      ),
 				    ),
 				  ),
