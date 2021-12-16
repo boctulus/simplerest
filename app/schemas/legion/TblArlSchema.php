@@ -21,7 +21,7 @@ class TblArlSchema implements ISchema
 				'arl_lonDescripcion' => 'STR',
 				'arl_dtimFechaCreacion' => 'STR',
 				'arl_dtimFechaActualizacion' => 'STR',
-				'est_intIdEstado' => 'INT',
+				'est_intEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -30,7 +30,7 @@ class TblArlSchema implements ISchema
 
 			'autoincrement' => 'arl_intId',
 
-			'nullable'		=> ['arl_intId', 'arl_varCodigo', 'arl_lonDescripcion', 'arl_dtimFechaCreacion', 'arl_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['arl_intId', 'arl_varCodigo', 'arl_lonDescripcion', 'arl_dtimFechaCreacion', 'arl_dtimFechaActualizacion', 'est_intEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -41,26 +41,26 @@ class TblArlSchema implements ISchema
 				'arl_lonDescripcion' => ['type' => 'str'],
 				'arl_dtimFechaCreacion' => ['type' => 'datetime'],
 				'arl_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdEstado' => ['type' => 'int'],
+				'est_intEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_arl.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_arl.est_intEstado']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_arl.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_arl.usu_intIdCreador']
 				],
-				'tbl_empresa' => [
-					['tbl_empresa.arl_intIdArl','tbl_arl.arl_intId']
-				],
 				'tbl_empresa_nomina' => [
 					['tbl_empresa_nomina.arl_intIdArl','tbl_arl.arl_intId']
+				],
+				'tbl_empresa' => [
+					['tbl_empresa.arl_intIdArl','tbl_arl.arl_intId']
 				]
 			],
 
@@ -77,7 +77,7 @@ class TblArlSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_arl',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),
@@ -148,7 +148,7 @@ class TblArlSchema implements ISchema
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_arl.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_arl.est_intEstado']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_arl.usu_intIdActualizador'],
@@ -169,7 +169,7 @@ class TblArlSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_arl',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),

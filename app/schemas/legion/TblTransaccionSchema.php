@@ -28,7 +28,7 @@ class TblTransaccionSchema implements ISchema
 
 			'autoincrement' => 'tra_intId',
 
-			'nullable'		=> ['tra_intId', 'tra_dtimFechaActualizacion', 'tra_dtimFechaCreacion', 'est_intIdEstado'],
+			'nullable'		=> ['tra_intId', 'tra_dtimFechaActualizacion', 'tra_dtimFechaCreacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> ['tra_varTransaccion'],
 
@@ -39,7 +39,7 @@ class TblTransaccionSchema implements ISchema
 				'tra_dtimFechaCreacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],

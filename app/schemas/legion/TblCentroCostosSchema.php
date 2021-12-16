@@ -30,15 +30,15 @@ class TblCentroCostosSchema implements ISchema
 
 			'autoincrement' => 'cco_intId',
 
-			'nullable'		=> ['cco_intId', 'cco_varCodigo', 'cco_lonDescripcion', 'cco_dtimFechaCreacion', 'cco_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['cco_intId', 'cco_dtimFechaCreacion', 'cco_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> ['cco_varCodigo'],
 
 			'rules' 		=> [
 				'cco_intId' => ['type' => 'int'],
-				'cco_varCodigo' => ['type' => 'str', 'max' => 100],
+				'cco_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'cco_varCentroCostos' => ['type' => 'str', 'max' => 100, 'required' => true],
-				'cco_lonDescripcion' => ['type' => 'str'],
+				'cco_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'cco_dtimFechaCreacion' => ['type' => 'datetime'],
 				'cco_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
@@ -46,7 +46,7 @@ class TblCentroCostosSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
@@ -56,29 +56,29 @@ class TblCentroCostosSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_centro_costos.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_centro_costos.usu_intIdCreador']
 				],
-				'tbl_factura' => [
-					['tbl_factura.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
-				],
 				'tbl_orden_compra' => [
 					['tbl_orden_compra.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
 				],
-				'tbl_nota_credito' => [
-					['tbl_nota_credito.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
-				],
-				'tbl_nota_debito' => [
-					['tbl_nota_debito.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
-				],
-				'tbl_pedido' => [
-					['tbl_pedido.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
+				'tbl_factura' => [
+					['tbl_factura.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
 				],
 				'tbl_compras_detalle' => [
 					['tbl_compras_detalle.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
 				],
-				'tbl_contrato' => [
-					['tbl_contrato.cco_intIdCentroCostos','tbl_centro_costos.cco_intId']
+				'tbl_nota_credito' => [
+					['tbl_nota_credito.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
 				],
 				'tbl_mvto_inventario' => [
 					['tbl_mvto_inventario.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
+				],
+				'tbl_pedido' => [
+					['tbl_pedido.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
+				],
+				'tbl_contrato' => [
+					['tbl_contrato.cco_intIdCentroCostos','tbl_centro_costos.cco_intId']
+				],
+				'tbl_nota_debito' => [
+					['tbl_nota_debito.cen_intIdCentrocostos','tbl_centro_costos.cco_intId']
 				]
 			],
 
@@ -130,13 +130,13 @@ class TblCentroCostosSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_factura' => 
+				  'tbl_pedido' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_factura',
+				        0 => 'tbl_pedido',
 				        1 => 'cen_intIdCentrocostos',
 				      ),
 				      1 => 
@@ -162,6 +162,22 @@ class TblCentroCostosSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'tbl_compras_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_compras_detalle',
+				        1 => 'cen_intIdCentrocostos',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_centro_costos',
+				        1 => 'cco_intId',
+				      ),
+				    ),
+				  ),
 				  'tbl_nota_credito' => 
 				  array (
 				    0 => 
@@ -178,13 +194,13 @@ class TblCentroCostosSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_nota_debito' => 
+				  'tbl_mvto_inventario' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_nota_debito',
+				        0 => 'tbl_mvto_inventario',
 				        1 => 'cen_intIdCentrocostos',
 				      ),
 				      1 => 
@@ -194,29 +210,13 @@ class TblCentroCostosSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_pedido' => 
+				  'tbl_factura' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_pedido',
-				        1 => 'cen_intIdCentrocostos',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_centro_costos',
-				        1 => 'cco_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_compras_detalle' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_compras_detalle',
+				        0 => 'tbl_factura',
 				        1 => 'cen_intIdCentrocostos',
 				      ),
 				      1 => 
@@ -242,13 +242,13 @@ class TblCentroCostosSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_mvto_inventario' => 
+				  'tbl_nota_debito' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_mvto_inventario',
+				        0 => 'tbl_nota_debito',
 				        1 => 'cen_intIdCentrocostos',
 				      ),
 				      1 => 

@@ -47,7 +47,7 @@ class TblPersonaSchema implements ISchema
 
 			'autoincrement' => 'per_intId',
 
-			'nullable'		=> ['per_intId', 'per_varRazonSocial', 'per_varNombre', 'per_varNombre2', 'per_varApellido', 'per_varApellido2', 'per_varTelefono', 'per_varMatriculaMercantil', 'per_dtimFechaCreacion', 'per_dtimFechaActualizacion', 'pai_intIdPaisNacimiento', 'ciu_intIdCiudadNacimiento', 'est_intIdEstado'],
+			'nullable'		=> ['per_intId', 'per_varRazonSocial', 'per_varNombre', 'per_varNombre2', 'per_varApellido', 'per_varApellido2', 'per_varTelefono', 'per_varMatriculaMercantil', 'per_dtimFechaCreacion', 'per_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -70,14 +70,14 @@ class TblPersonaSchema implements ISchema
 				'per_dtimFechaCreacion' => ['type' => 'datetime'],
 				'per_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'tpr_intIdTipoPersona' => ['type' => 'int', 'required' => true],
-				'pai_intIdPaisNacimiento' => ['type' => 'int'],
-				'ciu_intIdCiudadNacimiento' => ['type' => 'int'],
+				'pai_intIdPaisNacimiento' => ['type' => 'int', 'required' => true],
+				'ciu_intIdCiudadNacimiento' => ['type' => 'int', 'required' => true],
 				'dep_intIdDepartamentoNacimiento' => ['type' => 'int', 'required' => true],
 				'gen_intIdGenero' => ['type' => 'int', 'required' => true],
 				'tid_intIdTipoDocumento' => ['type' => 'int', 'required' => true],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['ciu_intIdCiudadNacimiento', 'dep_intIdDepartamentoNacimiento', 'est_intIdEstado', 'gen_intIdGenero', 'pai_intIdPaisNacimiento', 'tid_intIdTipoDocumento', 'tpr_intIdTipoPersona', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -108,44 +108,29 @@ class TblPersonaSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_persona.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_persona.usu_intIdCreador']
 				],
-				'tbl_empleado_informacion_pago' => [
-					['tbl_empleado_informacion_pago.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_empleado_datos_generales' => [
+					['tbl_empleado_datos_generales.per_intIdPersona','tbl_persona.per_intId']
 				],
-				'tbl_nota_credito_detalle' => [
-					['tbl_nota_credito_detalle.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_nota_debito' => [
+					['tbl_nota_debito.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_contrato_empleado' => [
+					['tbl_contrato_empleado.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_empresa_nomina' => [
+					['tbl_empresa_nomina.per_intIdOperador','tbl_persona.per_intId']
+				],
+				'tbl_nota_debito_detalle' => [
+					['tbl_nota_debito_detalle.per_intIdPersona','tbl_persona.per_intId']
 				],
 				'tbl_cotizacion' => [
 					['tbl_cotizacion.per_intIdPersona','tbl_persona.per_intId']
 				],
-				'tbl_orden_compra_detalle' => [
-					['tbl_orden_compra_detalle.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_factura' => [
+					['tbl_factura.per_intIdPersona','tbl_persona.per_intId']
 				],
-				'tbl_empleado_datos_personales' => [
-					['tbl_empleado_datos_personales.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_compras_detalle' => [
-					['tbl_compras_detalle.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_categoria_persona_persona' => [
-					['tbl_categoria_persona_persona.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_proveedor' => [
-					['tbl_proveedor.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_mvto_inventario_detalle' => [
-					['tbl_mvto_inventario_detalle.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_compras' => [
-					['tbl_compras.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_empleado_datos_generales' => [
-					['tbl_empleado_datos_generales.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_mvto_inventario' => [
-					['tbl_mvto_inventario.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_contrato_empleado' => [
-					['tbl_contrato_empleado.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_nota_credito_detalle' => [
+					['tbl_nota_credito_detalle.per_intIdPersona','tbl_persona.per_intId']
 				],
 				'tbl_orden_compra' => [
 					['tbl_orden_compra.per_intIdPersona','tbl_persona.per_intId']
@@ -153,23 +138,38 @@ class TblPersonaSchema implements ISchema
 				'tbl_informacion_tributaria' => [
 					['tbl_informacion_tributaria.per_intIdpersona','tbl_persona.per_intId']
 				],
-				'tbl_cliente' => [
-					['tbl_cliente.per_intIdPersona','tbl_persona.per_intId']
-				],
-				'tbl_pedido' => [
-					['tbl_pedido.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_mvto_inventario' => [
+					['tbl_mvto_inventario.per_intIdPersona','tbl_persona.per_intId']
 				],
 				'tbl_nota_credito' => [
 					['tbl_nota_credito.per_intIdPersona','tbl_persona.per_intId']
 				],
-				'tbl_nota_debito_detalle' => [
-					['tbl_nota_debito_detalle.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_empleado_informacion_pago' => [
+					['tbl_empleado_informacion_pago.per_intIdPersona','tbl_persona.per_intId']
 				],
-				'tbl_factura' => [
-					['tbl_factura.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_mvto_inventario_detalle' => [
+					['tbl_mvto_inventario_detalle.per_intIdPersona','tbl_persona.per_intId']
 				],
-				'tbl_nota_debito' => [
-					['tbl_nota_debito.per_intIdPersona','tbl_persona.per_intId']
+				'tbl_empleado_datos_personales' => [
+					['tbl_empleado_datos_personales.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_cliente' => [
+					['tbl_cliente.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_proveedor' => [
+					['tbl_proveedor.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_compras_detalle' => [
+					['tbl_compras_detalle.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_orden_compra_detalle' => [
+					['tbl_orden_compra_detalle.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_pedido' => [
+					['tbl_pedido.per_intIdPersona','tbl_persona.per_intId']
+				],
+				'tbl_compras' => [
+					['tbl_compras.per_intIdPersona','tbl_persona.per_intId']
 				]
 			],
 
@@ -317,70 +317,6 @@ class TblPersonaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_empleado_informacion_pago' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empleado_informacion_pago',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_nota_credito_detalle' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_nota_credito_detalle',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_cotizacion' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_cotizacion',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_orden_compra_detalle' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_orden_compra_detalle',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_empleado_datos_personales' => 
 				  array (
 				    0 => 
@@ -397,205 +333,13 @@ class TblPersonaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_compras_detalle' => 
+				  'tbl_nota_debito' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_compras_detalle',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_categoria_persona_persona' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_categoria_persona_persona',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_proveedor' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_proveedor',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_mvto_inventario_detalle' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_mvto_inventario_detalle',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_compras' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_compras',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_empleado_datos_generales' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empleado_datos_generales',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_mvto_inventario' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_mvto_inventario',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_contrato_empleado' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_contrato_empleado',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_orden_compra' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_orden_compra',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_informacion_tributaria' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_informacion_tributaria',
-				        1 => 'per_intIdpersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_cliente' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_cliente',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_pedido' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_pedido',
-				        1 => 'per_intIdPersona',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'per_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_nota_credito' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_nota_credito',
+				        0 => 'tbl_nota_debito',
 				        1 => 'per_intIdPersona',
 				      ),
 				      1 => 
@@ -621,6 +365,70 @@ class TblPersonaSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'tbl_pedido' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_pedido',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_contrato_empleado' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_contrato_empleado',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_orden_compra_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_orden_compra_detalle',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_nota_credito_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_nota_credito_detalle',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
 				  'tbl_factura' => 
 				  array (
 				    0 => 
@@ -637,13 +445,205 @@ class TblPersonaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_nota_debito' => 
+				  'tbl_informacion_tributaria' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_nota_debito',
+				        0 => 'tbl_informacion_tributaria',
+				        1 => 'per_intIdpersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_mvto_inventario' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_mvto_inventario',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_nota_credito' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_nota_credito',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_mvto_inventario_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_mvto_inventario_detalle',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_cotizacion' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_cotizacion',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_empresa_nomina' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empresa_nomina',
+				        1 => 'per_intIdOperador',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_compras_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_compras_detalle',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_proveedor' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_proveedor',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_empleado_datos_generales' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empleado_datos_generales',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_compras' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_compras',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_cliente' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_cliente',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_empleado_informacion_pago' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_empleado_informacion_pago',
+				        1 => 'per_intIdPersona',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'per_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_orden_compra' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_orden_compra',
 				        1 => 'per_intIdPersona',
 				      ),
 				      1 => 

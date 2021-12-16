@@ -31,7 +31,7 @@ class TblGrupoProductoSchema implements ISchema
 
 			'autoincrement' => 'grp_intId',
 
-			'nullable'		=> ['grp_intId', 'grp_dtimFechaCreacion', 'grp_dtimFechaActualizacion', 'grp_intConsecutivoGrupoProducto', 'est_intIdEstado', 'cap_intIdCategoriaProducto'],
+			'nullable'		=> ['grp_intId', 'grp_dtimFechaCreacion', 'grp_dtimFechaActualizacion', 'grp_intConsecutivoGrupoProducto', 'est_intIdEstado', 'cap_intIdCategoriaProducto', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -45,7 +45,7 @@ class TblGrupoProductoSchema implements ISchema
 				'est_intIdEstado' => ['type' => 'int'],
 				'cap_intIdCategoriaProducto' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['cap_intIdCategoriaProducto', 'est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],

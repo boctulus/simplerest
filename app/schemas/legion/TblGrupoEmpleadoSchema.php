@@ -30,19 +30,19 @@ class TblGrupoEmpleadoSchema implements ISchema
 
 			'autoincrement' => 'tge_intId',
 
-			'nullable'		=> ['tge_intId', 'tge_varCodigo', 'tge_varNombre', 'tge_lonDescripcion', 'tge_dtimFechaCreacion', 'tge_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['tge_intId', 'tge_dtimFechaCreacion', 'tge_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'tge_intId' => ['type' => 'int'],
-				'tge_varCodigo' => ['type' => 'str', 'max' => 100],
-				'tge_varNombre' => ['type' => 'str', 'max' => 100],
-				'tge_lonDescripcion' => ['type' => 'str'],
+				'tge_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'tge_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'tge_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'tge_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tge_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
-				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
@@ -53,8 +53,8 @@ class TblGrupoEmpleadoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_grupo_empleado.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_grupo_empleado.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_grupo_empleado.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_grupo_empleado.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_grupo_empleado.usu_intIdActualizador']
 				]
 			],
 
@@ -83,12 +83,12 @@ class TblGrupoEmpleadoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_grupo_empleado',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -97,12 +97,12 @@ class TblGrupoEmpleadoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_grupo_empleado',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -113,8 +113,8 @@ class TblGrupoEmpleadoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_grupo_empleado.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_grupo_empleado.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_grupo_empleado.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_grupo_empleado.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_grupo_empleado.usu_intIdActualizador']
 				]
 			],
 
@@ -143,12 +143,12 @@ class TblGrupoEmpleadoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_grupo_empleado',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -157,12 +157,12 @@ class TblGrupoEmpleadoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_grupo_empleado',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

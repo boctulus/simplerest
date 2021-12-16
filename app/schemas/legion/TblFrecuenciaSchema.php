@@ -48,7 +48,7 @@ class TblFrecuenciaSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
@@ -57,9 +57,6 @@ class TblFrecuenciaSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_frecuencia.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_frecuencia.usu_intIdCreador']
-				],
-				'tbl_empresa_nomina' => [
-					['tbl_empresa_nomina.fre_intIdFrecuencia','tbl_frecuencia.fre_intId']
 				]
 			],
 
@@ -108,22 +105,6 @@ class TblFrecuenciaSchema implements ISchema
 				      array (
 				        0 => 'tbl_frecuencia',
 				        1 => 'usu_intIdCreador',
-				      ),
-				    ),
-				  ),
-				  'tbl_empresa_nomina' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empresa_nomina',
-				        1 => 'fre_intIdFrecuencia',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_frecuencia',
-				        1 => 'fre_intId',
 				      ),
 				    ),
 				  ),

@@ -4,7 +4,6 @@ $pivots = array (
   'tbl_estado,tbl_usuario' => 'tbl_frecuencia',
   'tbl_naturaleza_cuenta_contable,tbl_usuario' => 'tbl_clase_cuenta_contable',
   'tbl_clase_cuenta_contable,tbl_usuario' => 'tbl_grupo_cuenta_contable',
-  'tbl_categoria_persona,tbl_persona' => 'tbl_categoria_persona_persona',
 );
 
 $pivot_fks = array (
@@ -13,8 +12,8 @@ $pivot_fks = array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_motivo_retiro' => 
@@ -31,8 +30,8 @@ $pivot_fks = array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdCreador',
-      1 => 'usu_intIdActualizador',
+      0 => 'usu_intIdActualizador',
+      1 => 'usu_intIdCreador',
     ),
   ),
   'tbl_unidad_medida' => 
@@ -58,13 +57,13 @@ $pivot_fks = array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_operador_pila' => 
   array (
-    'tbl_estado' => 'est_intIdEstado',
+    'tbl_estado' => 'est_intEstado',
     'tbl_usuario' => 
     array (
       0 => 'usu_intIdActualizador',
@@ -73,11 +72,11 @@ $pivot_fks = array (
   ),
   'tbl_tipo_contrato' => 
   array (
-    'tbl_estado' => 'est_intIdEstado',
+    'tbl_estado' => 'est_intEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_estrato_economico' => 
@@ -91,11 +90,11 @@ $pivot_fks = array (
   ),
   'tbl_eps' => 
   array (
-    'tbl_estado' => 'est_intIdEstado',
+    'tbl_estado' => 'est_intEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_forma_de_pago' => 
@@ -103,8 +102,8 @@ $pivot_fks = array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_resolucion' => 
@@ -143,15 +142,6 @@ $pivot_fks = array (
       1 => 'usu_intIdCreador',
     ),
   ),
-  'tbl_rol' => 
-  array (
-    'tbl_estado' => 'est_intIdEstado_rol',
-    'tbl_usuario' => 
-    array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
-    ),
-  ),
   'tbl_ubicacion' => 
   array (
     'tbl_estado' => 'est_intIdEstado',
@@ -172,11 +162,11 @@ $pivot_fks = array (
   ),
   'tbl_estudios' => 
   array (
-    'tbl_estado' => 'est_intIdEstado',
+    'tbl_estado' => 'est_intEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_clase_cuenta_contable' => 
@@ -202,8 +192,8 @@ $pivot_fks = array (
     'tbl_clase_cuenta_contable' => 'cla_intIdClase',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdCreador',
-      1 => 'usu_intIdActualizador',
+      0 => 'usu_intIdActualizador',
+      1 => 'usu_intIdCreador',
     ),
   ),
   'tbl_descuento' => 
@@ -211,8 +201,8 @@ $pivot_fks = array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdCreador',
-      1 => 'usu_intIdActualizador',
+      0 => 'usu_intIdActualizador',
+      1 => 'usu_intIdCreador',
     ),
   ),
   'tbl_categoria_producto' => 
@@ -223,11 +213,6 @@ $pivot_fks = array (
       0 => 'usu_intIdActualizador',
       1 => 'usu_intIdCreador',
     ),
-  ),
-  'tbl_categoria_persona_persona' => 
-  array (
-    'tbl_categoria_persona' => 'cap_intIdCategoriaPersona',
-    'tbl_persona' => 'per_intIdPersona',
   ),
   'tbl_concepto' => 
   array (
@@ -240,7 +225,7 @@ $pivot_fks = array (
   ),
   'tbl_arl' => 
   array (
-    'tbl_estado' => 'est_intIdEstado',
+    'tbl_estado' => 'est_intEstado',
     'tbl_usuario' => 
     array (
       0 => 'usu_intIdActualizador',
@@ -249,11 +234,11 @@ $pivot_fks = array (
   ),
   'tbl_pension' => 
   array (
-    'tbl_estado' => 'est_intIdEstado',
+    'tbl_estado' => 'est_intEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_naturaleza_cuenta_contable' => 
@@ -294,11 +279,11 @@ $pivot_fks = array (
   ),
   'tbl_tipo_cuenta_bancaria' => 
   array (
-    'tbl_estado' => 'est_intIdEstado',
+    'tbl_estado' => 'est_intEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_dias_pago' => 
@@ -315,8 +300,8 @@ $pivot_fks = array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_permiso' => 
@@ -324,11 +309,20 @@ $pivot_fks = array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdCreador',
-      1 => 'usu_intIdActualizador',
+      0 => 'usu_intIdActualizador',
+      1 => 'usu_intIdCreador',
     ),
   ),
   'tbl_categoria_cuenta_bancaria' => 
+  array (
+    'tbl_estado' => 'est_intIdEstado',
+    'tbl_usuario' => 
+    array (
+      0 => 'usu_intIdActualizador',
+      1 => 'usu_intIdCreador',
+    ),
+  ),
+  'tbl_categoria_persona' => 
   array (
     'tbl_estado' => 'est_intIdEstado',
     'tbl_usuario' => 
@@ -348,11 +342,11 @@ $pivot_fks = array (
   ),
   'tbl_estado_civil' => 
   array (
-    'tbl_estado' => 'est_intIdEstado',
+    'tbl_estado' => 'est_intEstado',
     'tbl_usuario' => 
     array (
-      0 => 'usu_intIdActualizador',
-      1 => 'usu_intIdCreador',
+      0 => 'usu_intIdCreador',
+      1 => 'usu_intIdActualizador',
     ),
   ),
   'tbl_medio_pago' => 
@@ -399,13 +393,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_grupo_empleado.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_grupo_empleado.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_grupo_empleado.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_grupo_empleado.usu_intIdActualizador',
       ),
     ),
   ),
@@ -447,13 +441,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_tipo_persona.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_tipo_persona.usu_intIdActualizador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_tipo_persona.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_tipo_persona.usu_intIdCreador',
       ),
     ),
   ),
@@ -519,13 +513,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_genero.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_genero.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_genero.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_genero.usu_intIdActualizador',
       ),
     ),
   ),
@@ -536,7 +530,7 @@ $relationships = array (
       0 => 
       array (
         0 => 'tbl_estado.est_intId',
-        1 => 'tbl_operador_pila.est_intIdEstado',
+        1 => 'tbl_operador_pila.est_intEstado',
       ),
     ),
     'tbl_usuario' => 
@@ -560,20 +554,20 @@ $relationships = array (
       0 => 
       array (
         0 => 'tbl_estado.est_intId',
-        1 => 'tbl_tipo_contrato.est_intIdEstado',
+        1 => 'tbl_tipo_contrato.est_intEstado',
       ),
     ),
     'tbl_usuario' => 
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_tipo_contrato.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_tipo_contrato.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_tipo_contrato.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_tipo_contrato.usu_intIdActualizador',
       ),
     ),
   ),
@@ -608,20 +602,20 @@ $relationships = array (
       0 => 
       array (
         0 => 'tbl_estado.est_intId',
-        1 => 'tbl_eps.est_intIdEstado',
+        1 => 'tbl_eps.est_intEstado',
       ),
     ),
     'tbl_usuario' => 
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_eps.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_eps.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_eps.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_eps.usu_intIdActualizador',
       ),
     ),
   ),
@@ -639,13 +633,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_forma_de_pago.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_forma_de_pago.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_forma_de_pago.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_forma_de_pago.usu_intIdActualizador',
       ),
     ),
   ),
@@ -745,30 +739,6 @@ $relationships = array (
       ),
     ),
   ),
-  'tbl_rol' => 
-  array (
-    'tbl_estado' => 
-    array (
-      0 => 
-      array (
-        0 => 'tbl_estado.est_intId',
-        1 => 'tbl_rol.est_intIdEstado_rol',
-      ),
-    ),
-    'tbl_usuario' => 
-    array (
-      0 => 
-      array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_rol.usu_intIdActualizador',
-      ),
-      1 => 
-      array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_rol.usu_intIdCreador',
-      ),
-    ),
-  ),
   'tbl_ubicacion' => 
   array (
     'tbl_estado' => 
@@ -824,20 +794,20 @@ $relationships = array (
       0 => 
       array (
         0 => 'tbl_estado.est_intId',
-        1 => 'tbl_estudios.est_intIdEstado',
+        1 => 'tbl_estudios.est_intEstado',
       ),
     ),
     'tbl_usuario' => 
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_estudios.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_estudios.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_estudios.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_estudios.usu_intIdActualizador',
       ),
     ),
   ),
@@ -903,13 +873,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_grupo_cuenta_contable.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_grupo_cuenta_contable.usu_intIdActualizador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_grupo_cuenta_contable.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_grupo_cuenta_contable.usu_intIdCreador',
       ),
     ),
   ),
@@ -927,13 +897,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_descuento.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_descuento.usu_intIdActualizador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_descuento.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_descuento.usu_intIdCreador',
       ),
     ),
   ),
@@ -958,25 +928,6 @@ $relationships = array (
       array (
         0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
         1 => 'tbl_categoria_producto.usu_intIdCreador',
-      ),
-    ),
-  ),
-  'tbl_categoria_persona_persona' => 
-  array (
-    'tbl_categoria_persona' => 
-    array (
-      0 => 
-      array (
-        0 => 'tbl_categoria_persona.cap_intId',
-        1 => 'tbl_categoria_persona_persona.cap_intIdCategoriaPersona',
-      ),
-    ),
-    'tbl_persona' => 
-    array (
-      0 => 
-      array (
-        0 => 'tbl_persona.per_intId',
-        1 => 'tbl_categoria_persona_persona.per_intIdPersona',
       ),
     ),
   ),
@@ -1011,7 +962,7 @@ $relationships = array (
       0 => 
       array (
         0 => 'tbl_estado.est_intId',
-        1 => 'tbl_arl.est_intIdEstado',
+        1 => 'tbl_arl.est_intEstado',
       ),
     ),
     'tbl_usuario' => 
@@ -1035,20 +986,20 @@ $relationships = array (
       0 => 
       array (
         0 => 'tbl_estado.est_intId',
-        1 => 'tbl_pension.est_intIdEstado',
+        1 => 'tbl_pension.est_intEstado',
       ),
     ),
     'tbl_usuario' => 
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_pension.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_pension.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_pension.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_pension.usu_intIdActualizador',
       ),
     ),
   ),
@@ -1155,20 +1106,20 @@ $relationships = array (
       0 => 
       array (
         0 => 'tbl_estado.est_intId',
-        1 => 'tbl_tipo_cuenta_bancaria.est_intIdEstado',
+        1 => 'tbl_tipo_cuenta_bancaria.est_intEstado',
       ),
     ),
     'tbl_usuario' => 
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_tipo_cuenta_bancaria.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_tipo_cuenta_bancaria.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_tipo_cuenta_bancaria.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_tipo_cuenta_bancaria.usu_intIdActualizador',
       ),
     ),
   ),
@@ -1210,13 +1161,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_moneda.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_moneda.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_moneda.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_moneda.usu_intIdActualizador',
       ),
     ),
   ),
@@ -1234,13 +1185,13 @@ $relationships = array (
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_permiso.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_permiso.usu_intIdActualizador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_permiso.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_permiso.usu_intIdCreador',
       ),
     ),
   ),
@@ -1265,6 +1216,30 @@ $relationships = array (
       array (
         0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
         1 => 'tbl_categoria_cuenta_bancaria.usu_intIdCreador',
+      ),
+    ),
+  ),
+  'tbl_categoria_persona' => 
+  array (
+    'tbl_estado' => 
+    array (
+      0 => 
+      array (
+        0 => 'tbl_estado.est_intId',
+        1 => 'tbl_categoria_persona.est_intIdEstado',
+      ),
+    ),
+    'tbl_usuario' => 
+    array (
+      0 => 
+      array (
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_categoria_persona.usu_intIdActualizador',
+      ),
+      1 => 
+      array (
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_categoria_persona.usu_intIdCreador',
       ),
     ),
   ),
@@ -1299,20 +1274,20 @@ $relationships = array (
       0 => 
       array (
         0 => 'tbl_estado.est_intId',
-        1 => 'tbl_estado_civil.est_intIdEstado',
+        1 => 'tbl_estado_civil.est_intEstado',
       ),
     ),
     'tbl_usuario' => 
     array (
       0 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
-        1 => 'tbl_estado_civil.usu_intIdActualizador',
+        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
+        1 => 'tbl_estado_civil.usu_intIdCreador',
       ),
       1 => 
       array (
-        0 => 'tbl_usuario|__usu_intIdCreador.usu_intId',
-        1 => 'tbl_estado_civil.usu_intIdCreador',
+        0 => 'tbl_usuario|__usu_intIdActualizador.usu_intId',
+        1 => 'tbl_estado_civil.usu_intIdActualizador',
       ),
     ),
   ),

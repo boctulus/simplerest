@@ -17,7 +17,7 @@ class TblNovedadesNominaSchema implements ISchema
 			'attr_types'	=> [
 				'nvn_intId' => 'INT',
 				'nvn_varCodigo' => 'STR',
-				'nvn_varNombre' => 'STR',
+				'nvn_Nombre' => 'STR',
 				'nvn_lonDescripcion' => 'STR',
 				'nvn_datFecha' => 'STR',
 				'nvn_decCantidad' => 'STR',
@@ -34,18 +34,18 @@ class TblNovedadesNominaSchema implements ISchema
 
 			'autoincrement' => 'nvn_intId',
 
-			'nullable'		=> ['nvn_intId', 'nvn_varCodigo', 'nvn_varNombre', 'nvn_datFecha', 'nvn_decCantidad', 'nvn_decValor', 'nvn_dtimFechaCreacion', 'nvn_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['nvn_intId', 'nvn_dtimFechaCreacion', 'nvn_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'nvn_intId' => ['type' => 'int'],
-				'nvn_varCodigo' => ['type' => 'str', 'max' => 100],
-				'nvn_varNombre' => ['type' => 'str', 'max' => 100],
+				'nvn_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'nvn_Nombre' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'nvn_lonDescripcion' => ['type' => 'str', 'required' => true],
-				'nvn_datFecha' => ['type' => 'date'],
-				'nvn_decCantidad' => ['type' => 'decimal(18,2)'],
-				'nvn_decValor' => ['type' => 'decimal(18,2)'],
+				'nvn_datFecha' => ['type' => 'date', 'required' => true],
+				'nvn_decCantidad' => ['type' => 'decimal(18,2)', 'required' => true],
+				'nvn_decValor' => ['type' => 'decimal(18,2)', 'required' => true],
 				'nvn_dtimFechaCreacion' => ['type' => 'datetime'],
 				'nvn_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'tce_intIdContrato' => ['type' => 'int', 'required' => true],

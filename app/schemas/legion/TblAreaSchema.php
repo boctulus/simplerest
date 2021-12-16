@@ -31,7 +31,7 @@ class TblAreaSchema implements ISchema
 
 			'autoincrement' => 'are_intId',
 
-			'nullable'		=> ['are_intId', 'are_varCodigo', 'are_lonDescripcion', 'are_dtimFechaCreacion', 'are_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['are_intId', 'are_varCodigo', 'are_lonDescripcion', 'are_dtimFechaCreacion', 'are_dtimFechaActualizacion', 'emn_intIdEmpresaNomina', 'est_intIdEstado'],
 
 			'uniques'		=> [],
 
@@ -42,13 +42,13 @@ class TblAreaSchema implements ISchema
 				'are_lonDescripcion' => ['type' => 'str'],
 				'are_dtimFechaCreacion' => ['type' => 'datetime'],
 				'are_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'emn_intIdEmpresaNomina' => ['type' => 'int', 'required' => true],
+				'emn_intIdEmpresaNomina' => ['type' => 'int'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int']
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['emn_intIdEmpresaNomina', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['emn_intIdEmpresaNomina', 'est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_empresa_nomina' => [

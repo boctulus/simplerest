@@ -19,7 +19,6 @@ class TblMedioPagoSchema implements ISchema
 				'tmp_varCodigo' => 'STR',
 				'tmp_varNombre' => 'STR',
 				'tmp_lonDescripcion' => 'STR',
-				'tmp_varCodigoDian' => 'STR',
 				'tmp_dtimFechaCreacion' => 'STR',
 				'tmp_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -31,7 +30,7 @@ class TblMedioPagoSchema implements ISchema
 
 			'autoincrement' => 'tmp_intId',
 
-			'nullable'		=> ['tmp_intId', 'tmp_varCodigoDian', 'tmp_dtimFechaCreacion', 'tmp_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['tmp_intId', 'tmp_dtimFechaCreacion', 'tmp_dtimFechaActualizacion', 'est_intIdEstado'],
 
 			'uniques'		=> [],
 
@@ -40,7 +39,6 @@ class TblMedioPagoSchema implements ISchema
 				'tmp_varCodigo' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'tmp_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'tmp_lonDescripcion' => ['type' => 'str', 'required' => true],
-				'tmp_varCodigoDian' => ['type' => 'str', 'max' => 5],
 				'tmp_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tmp_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
@@ -48,7 +46,7 @@ class TblMedioPagoSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
@@ -57,12 +55,6 @@ class TblMedioPagoSchema implements ISchema
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_medio_pago.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_medio_pago.usu_intIdCreador']
-				],
-				'tbl_factura' => [
-					['tbl_factura.tmp_intIdMedioPago','tbl_medio_pago.tmp_intId']
-				],
-				'tbl_empresa_nomina' => [
-					['tbl_empresa_nomina.tmp_intIdMedioPago','tbl_medio_pago.tmp_intId']
 				]
 			],
 
@@ -111,38 +103,6 @@ class TblMedioPagoSchema implements ISchema
 				      array (
 				        0 => 'tbl_medio_pago',
 				        1 => 'usu_intIdCreador',
-				      ),
-				    ),
-				  ),
-				  'tbl_factura' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_factura',
-				        1 => 'tmp_intIdMedioPago',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_medio_pago',
-				        1 => 'tmp_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_empresa_nomina' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empresa_nomina',
-				        1 => 'tmp_intIdMedioPago',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_medio_pago',
-				        1 => 'tmp_intId',
 				      ),
 				    ),
 				  ),

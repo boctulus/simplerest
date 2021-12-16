@@ -16,18 +16,17 @@ class TblNotaDebitoDetalleSchema implements ISchema
 
 			'attr_types'	=> [
 				'ndt_intId' => 'INT',
-				'ndt_dateFecha' => 'STR',
+				'ndt_datFecha' => 'STR',
 				'ndt_decValor' => 'STR',
-				'ndt_bolEstado' => 'INT',
 				'ndt_decCantidad' => 'STR',
 				'ndt_decValorTotal' => 'STR',
 				'ndt_decPorcentajeIva' => 'STR',
 				'ndt_decValorIva' => 'STR',
+				'ndt_lonDescripcion' => 'STR',
+				'ndt_varNroDocumento' => 'STR',
 				'ndt_dtimFechaCreacion' => 'STR',
 				'ndt_dtimFechaActualizacion' => 'STR',
-				'ndt_intNroDocumento' => 'STR',
-				'ndt_varDescripcion' => 'STR',
-				'ndt_intIdNotadebito' => 'INT',
+				'nbt_intIdNotadebito' => 'INT',
 				'per_intIdPersona' => 'INT',
 				'pro_intIdProducto' => 'INT',
 				'doc_intIdDocumento' => 'INT',
@@ -39,24 +38,23 @@ class TblNotaDebitoDetalleSchema implements ISchema
 
 			'autoincrement' => 'ndt_intId',
 
-			'nullable'		=> ['ndt_intId', 'ndt_decValor', 'ndt_bolEstado', 'ndt_decCantidad', 'ndt_decValorTotal', 'ndt_decPorcentajeIva', 'ndt_decValorIva', 'ndt_dtimFechaCreacion', 'ndt_dtimFechaActualizacion', 'ndt_varDescripcion', 'usu_intIdActualizador'],
+			'nullable'		=> ['ndt_intId', 'ndt_dtimFechaCreacion', 'ndt_dtimFechaActualizacion', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'ndt_intId' => ['type' => 'int'],
-				'ndt_dateFecha' => ['type' => 'date', 'required' => true],
-				'ndt_decValor' => ['type' => 'decimal(18,2)'],
-				'ndt_bolEstado' => ['type' => 'bool'],
-				'ndt_decCantidad' => ['type' => 'decimal(18,2)'],
-				'ndt_decValorTotal' => ['type' => 'decimal(18,2)'],
-				'ndt_decPorcentajeIva' => ['type' => 'decimal(18,2)'],
-				'ndt_decValorIva' => ['type' => 'decimal(18,2)'],
+				'ndt_datFecha' => ['type' => 'date', 'required' => true],
+				'ndt_decValor' => ['type' => 'decimal(18,2)', 'required' => true],
+				'ndt_decCantidad' => ['type' => 'decimal(18,2)', 'required' => true],
+				'ndt_decValorTotal' => ['type' => 'decimal(18,2)', 'required' => true],
+				'ndt_decPorcentajeIva' => ['type' => 'decimal(18,2)', 'required' => true],
+				'ndt_decValorIva' => ['type' => 'decimal(18,2)', 'required' => true],
+				'ndt_lonDescripcion' => ['type' => 'str', 'required' => true],
+				'ndt_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'ndt_dtimFechaCreacion' => ['type' => 'datetime'],
 				'ndt_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'ndt_intNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
-				'ndt_varDescripcion' => ['type' => 'str', 'max' => 100],
-				'ndt_intIdNotadebito' => ['type' => 'int', 'required' => true],
+				'nbt_intIdNotadebito' => ['type' => 'int', 'required' => true],
 				'per_intIdPersona' => ['type' => 'int', 'required' => true],
 				'pro_intIdProducto' => ['type' => 'int', 'required' => true],
 				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
@@ -64,14 +62,14 @@ class TblNotaDebitoDetalleSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['doc_intIdDocumento', 'ndt_intIdNotadebito', 'per_intIdPersona', 'pro_intIdProducto', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['doc_intIdDocumento', 'nbt_intIdNotadebito', 'per_intIdPersona', 'pro_intIdProducto', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_documento' => [
 					['tbl_documento.doc_intId','tbl_nota_debito_detalle.doc_intIdDocumento']
 				],
 				'tbl_nota_debito' => [
-					['tbl_nota_debito.nbt_intId','tbl_nota_debito_detalle.ndt_intIdNotadebito']
+					['tbl_nota_debito.nbt_intId','tbl_nota_debito_detalle.nbt_intIdNotadebito']
 				],
 				'tbl_persona' => [
 					['tbl_persona.per_intId','tbl_nota_debito_detalle.per_intIdPersona']
@@ -114,7 +112,7 @@ class TblNotaDebitoDetalleSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_debito_detalle',
-				        1 => 'ndt_intIdNotadebito',
+				        1 => 'nbt_intIdNotadebito',
 				      ),
 				    ),
 				  ),
@@ -188,7 +186,7 @@ class TblNotaDebitoDetalleSchema implements ISchema
 					['tbl_documento.doc_intId','tbl_nota_debito_detalle.doc_intIdDocumento']
 				],
 				'tbl_nota_debito' => [
-					['tbl_nota_debito.nbt_intId','tbl_nota_debito_detalle.ndt_intIdNotadebito']
+					['tbl_nota_debito.nbt_intId','tbl_nota_debito_detalle.nbt_intIdNotadebito']
 				],
 				'tbl_persona' => [
 					['tbl_persona.per_intId','tbl_nota_debito_detalle.per_intIdPersona']
@@ -231,7 +229,7 @@ class TblNotaDebitoDetalleSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_debito_detalle',
-				        1 => 'ndt_intIdNotadebito',
+				        1 => 'nbt_intIdNotadebito',
 				      ),
 				    ),
 				  ),

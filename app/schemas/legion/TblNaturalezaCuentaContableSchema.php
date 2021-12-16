@@ -28,7 +28,7 @@ class TblNaturalezaCuentaContableSchema implements ISchema
 
 			'autoincrement' => 'ncc_intId',
 
-			'nullable'		=> ['ncc_intId', 'ncc_dtimFechaCreacion', 'ncc_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['ncc_intId', 'ncc_dtimFechaCreacion', 'ncc_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -38,11 +38,11 @@ class TblNaturalezaCuentaContableSchema implements ISchema
 				'ncc_dtimFechaCreacion' => ['type' => 'datetime'],
 				'ncc_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
-				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [

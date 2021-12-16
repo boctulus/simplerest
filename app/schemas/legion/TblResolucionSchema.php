@@ -16,7 +16,6 @@ class TblResolucionSchema implements ISchema
 
 			'attr_types'	=> [
 				'res_intId' => 'INT',
-				'res_varCodigoResolucion' => 'STR',
 				'res_varNombreResolucion' => 'STR',
 				'res_intVigencia' => 'INT',
 				'res_datFechaInicial' => 'STR',
@@ -33,13 +32,12 @@ class TblResolucionSchema implements ISchema
 
 			'autoincrement' => 'res_intId',
 
-			'nullable'		=> ['res_intId', 'res_dtimFechaCreacion', 'res_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['res_intId', 'res_dtimFechaCreacion', 'res_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
-			'uniques'		=> [],
+			'uniques'		=> ['res_varNombreResolucion'],
 
 			'rules' 		=> [
 				'res_intId' => ['type' => 'int'],
-				'res_varCodigoResolucion' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'res_varNombreResolucion' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'res_intVigencia' => ['type' => 'int', 'required' => true],
 				'res_datFechaInicial' => ['type' => 'date', 'required' => true],
@@ -49,10 +47,10 @@ class TblResolucionSchema implements ISchema
 				'res_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [

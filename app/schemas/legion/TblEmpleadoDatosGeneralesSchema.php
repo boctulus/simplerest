@@ -78,7 +78,7 @@ class TblEmpleadoDatosGeneralesSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['ciu_intIdCiudadExpCedula', 'ciu_intIdCiudad', 'dep_intIdDepartaExpCedula', 'dep_intIdDepartamento', 'est_intIdEstado', 'pai_intIdPaisExpCedula', 'pai_intIdPais', 'per_intIdPersona', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['ciu_intIdCiudadExpCedula', 'ciu_intIdCiudad', 'dep_intIdDepartamento', 'dep_intIdDepartaExpCedula', 'est_intIdEstado', 'pai_intIdPais', 'pai_intIdPaisExpCedula', 'per_intIdPersona', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_ciudad' => [
@@ -86,8 +86,8 @@ class TblEmpleadoDatosGeneralesSchema implements ISchema
 					['tbl_ciudad|__ciu_intIdCiudad.ciu_intId','tbl_empleado_datos_generales.ciu_intIdCiudad']
 				],
 				'tbl_departamento' => [
-					['tbl_departamento|__dep_intIdDepartaExpCedula.dep_intId','tbl_empleado_datos_generales.dep_intIdDepartaExpCedula'],
-					['tbl_departamento|__dep_intIdDepartamento.dep_intId','tbl_empleado_datos_generales.dep_intIdDepartamento']
+					['tbl_departamento|__dep_intIdDepartamento.dep_intId','tbl_empleado_datos_generales.dep_intIdDepartamento'],
+					['tbl_departamento|__dep_intIdDepartaExpCedula.dep_intId','tbl_empleado_datos_generales.dep_intIdDepartaExpCedula']
 				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_empleado_datos_generales.est_intIdEstado']
@@ -145,12 +145,12 @@ class TblEmpleadoDatosGeneralesSchema implements ISchema
 				      array (
 				        0 => 'tbl_departamento',
 				        1 => 'dep_intId',
-				        'alias' => '__dep_intIdDepartaExpCedula',
+				        'alias' => '__dep_intIdDepartamento',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_empleado_datos_generales',
-				        1 => 'dep_intIdDepartaExpCedula',
+				        1 => 'dep_intIdDepartamento',
 				      ),
 				    ),
 				    1 => 
@@ -159,12 +159,12 @@ class TblEmpleadoDatosGeneralesSchema implements ISchema
 				      array (
 				        0 => 'tbl_departamento',
 				        1 => 'dep_intId',
-				        'alias' => '__dep_intIdDepartamento',
+				        'alias' => '__dep_intIdDepartaExpCedula',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_empleado_datos_generales',
-				        1 => 'dep_intIdDepartamento',
+				        1 => 'dep_intIdDepartaExpCedula',
 				      ),
 				    ),
 				  ),
@@ -270,8 +270,8 @@ class TblEmpleadoDatosGeneralesSchema implements ISchema
 					['tbl_ciudad|__ciu_intIdCiudad.ciu_intId','tbl_empleado_datos_generales.ciu_intIdCiudad']
 				],
 				'tbl_departamento' => [
-					['tbl_departamento|__dep_intIdDepartaExpCedula.dep_intId','tbl_empleado_datos_generales.dep_intIdDepartaExpCedula'],
-					['tbl_departamento|__dep_intIdDepartamento.dep_intId','tbl_empleado_datos_generales.dep_intIdDepartamento']
+					['tbl_departamento|__dep_intIdDepartamento.dep_intId','tbl_empleado_datos_generales.dep_intIdDepartamento'],
+					['tbl_departamento|__dep_intIdDepartaExpCedula.dep_intId','tbl_empleado_datos_generales.dep_intIdDepartaExpCedula']
 				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_empleado_datos_generales.est_intIdEstado']
@@ -329,12 +329,12 @@ class TblEmpleadoDatosGeneralesSchema implements ISchema
 				      array (
 				        0 => 'tbl_departamento',
 				        1 => 'dep_intId',
-				        'alias' => '__dep_intIdDepartaExpCedula',
+				        'alias' => '__dep_intIdDepartamento',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_empleado_datos_generales',
-				        1 => 'dep_intIdDepartaExpCedula',
+				        1 => 'dep_intIdDepartamento',
 				      ),
 				    ),
 				    1 => 
@@ -343,12 +343,12 @@ class TblEmpleadoDatosGeneralesSchema implements ISchema
 				      array (
 				        0 => 'tbl_departamento',
 				        1 => 'dep_intId',
-				        'alias' => '__dep_intIdDepartamento',
+				        'alias' => '__dep_intIdDepartaExpCedula',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_empleado_datos_generales',
-				        1 => 'dep_intIdDepartamento',
+				        1 => 'dep_intIdDepartaExpCedula',
 				      ),
 				    ),
 				  ),

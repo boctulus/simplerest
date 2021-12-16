@@ -33,7 +33,7 @@ class TblConsecutivoSchema implements ISchema
 
 			'autoincrement' => 'cse_intId',
 
-			'nullable'		=> ['cse_intId', 'cse_intConsecutivo', 'cse_varPrefijo', 'cse_dtimFechaCreacion', 'cse_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['cse_intId', 'cse_intConsecutivo', 'cse_varPrefijo', 'cse_dtimFechaCreacion', 'cse_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -49,10 +49,10 @@ class TblConsecutivoSchema implements ISchema
 				'res_intIdResolucion' => ['type' => 'int', 'required' => true],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['doc_intIdDocumento', 'est_intIdEstado', 'res_intIdResolucion', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['doc_intIdDocumento', 'est_intIdEstado', 'res_intIdResolucion', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_documento' => [
@@ -68,17 +68,20 @@ class TblConsecutivoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_consecutivo.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_consecutivo.usu_intIdCreador']
 				],
-				'tbl_contrato' => [
-					['tbl_contrato.cse_intidConsecutivo','tbl_consecutivo.cse_intId']
+				'tbl_cotizacion' => [
+					['tbl_cotizacion.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
 				],
 				'tbl_mvto_inventario' => [
 					['tbl_mvto_inventario.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
 				],
-				'tbl_compras' => [
-					['tbl_compras.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
+				'tbl_nota_debito' => [
+					['tbl_nota_debito.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
 				],
 				'tbl_orden_compra' => [
 					['tbl_orden_compra.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
+				],
+				'tbl_contrato' => [
+					['tbl_contrato.cse_intidConsecutivo','tbl_consecutivo.cse_intId']
 				],
 				'tbl_nota_credito' => [
 					['tbl_nota_credito.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
@@ -86,11 +89,8 @@ class TblConsecutivoSchema implements ISchema
 				'tbl_factura' => [
 					['tbl_factura.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
 				],
-				'tbl_nota_debito' => [
-					['tbl_nota_debito.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
-				],
-				'tbl_cotizacion' => [
-					['tbl_cotizacion.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
+				'tbl_compras' => [
+					['tbl_compras.cse_intIdConsecutivo','tbl_consecutivo.cse_intId']
 				]
 			],
 
@@ -174,22 +174,6 @@ class TblConsecutivoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_contrato' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_contrato',
-				        1 => 'cse_intidConsecutivo',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_consecutivo',
-				        1 => 'cse_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_mvto_inventario' => 
 				  array (
 				    0 => 
@@ -206,14 +190,30 @@ class TblConsecutivoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_compras' => 
+				  'tbl_nota_debito' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_compras',
+				        0 => 'tbl_nota_debito',
 				        1 => 'cse_intIdConsecutivo',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_consecutivo',
+				        1 => 'cse_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_contrato' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_contrato',
+				        1 => 'cse_intidConsecutivo',
 				      ),
 				      1 => 
 				      array (
@@ -229,22 +229,6 @@ class TblConsecutivoSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_orden_compra',
-				        1 => 'cse_intIdConsecutivo',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_consecutivo',
-				        1 => 'cse_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_nota_credito' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_nota_credito',
 				        1 => 'cse_intIdConsecutivo',
 				      ),
 				      1 => 
@@ -270,13 +254,29 @@ class TblConsecutivoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_nota_debito' => 
+				  'tbl_nota_credito' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_nota_debito',
+				        0 => 'tbl_nota_credito',
+				        1 => 'cse_intIdConsecutivo',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_consecutivo',
+				        1 => 'cse_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_compras' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_compras',
 				        1 => 'cse_intIdConsecutivo',
 				      ),
 				      1 => 

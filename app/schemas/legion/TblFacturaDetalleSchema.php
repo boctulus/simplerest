@@ -47,7 +47,7 @@ class TblFacturaDetalleSchema implements ISchema
 
 			'autoincrement' => 'fde_intId',
 
-			'nullable'		=> ['fde_intId', 'fde_bolEstado', 'fde_dtimFechaCreacion', 'fde_dtimFechaActualizacion', 'fac_intNroDocumento'],
+			'nullable'		=> ['fde_intId', 'fde_bolEstado', 'fde_dtimFechaCreacion', 'fde_dtimFechaActualizacion', 'fde_intIdBodega'],
 
 			'uniques'		=> [],
 
@@ -70,17 +70,17 @@ class TblFacturaDetalleSchema implements ISchema
 				'fde_decValorReteIca' => ['type' => 'decimal(18,2)', 'required' => true],
 				'fde_dtimFechaCreacion' => ['type' => 'datetime'],
 				'fde_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'fac_intNroDocumento' => ['type' => 'str', 'max' => 20],
+				'fac_intNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'fde_varDescripcion' => ['type' => 'str', 'required' => true],
 				'fac_intIdFactura' => ['type' => 'int', 'required' => true],
 				'pro_intIdProducto' => ['type' => 'int', 'required' => true],
 				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
-				'fde_intIdBodega' => ['type' => 'int', 'required' => true],
+				'fde_intIdBodega' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['fde_intIdBodega', 'doc_intIdDocumento', 'fac_intIdFactura', 'pro_intIdProducto', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['fde_intIdBodega', 'doc_intIdDocumento', 'fac_intIdFactura', 'pro_intIdProducto', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_bodega' => [
