@@ -50,36 +50,6 @@ PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access
 
 ------x---------
 
-
-- [ BUG ] Estaría dando error al correr las migraciones EN EL CONTEXTO de la creación de un usuario tipo "admin" 
-
-
-    POST http://localhost/dsi_legion_simple_rest/api/v1/auth/register
-
-    {
-        "use_varUsuario": "Andres",
-        "use_varEmail": "Andres@hotmail.com",
-        "use_decPassword": "gogogo",
-        "roles": "admin"
-    }
-
-Error:
-
-  Migrating'2021_09_28_29110773_0001_tbl_estado_maestro.php
-
-  {
-    "status_code": 500,
-    "error": {
-      "type": null,
-      "code": null,
-      "message": "Unregistered connection identifier for 'db_227'",
-      "detail": null
-    }
-  }
-
-<-- el error (considerando los archivos en el UPDATE) tiene que estar en la clase Config o en la DB
-
-
 - No está *creando* tablas con PRIMARY KEY cuando esta es un 'uuid' (varchar) aunque si si es integer o inclusive con uuid pero con change()
 
 ----x-----
@@ -118,6 +88,8 @@ https://api-platform.com/docs/distribution/
 
 <-- ver cómo lo resuelve Laravel. Plantearse si el nombre de getLog() no debería dejarse para esta funcionalidad.
 
+
+- Habilitar "nested transactions" de SQL !!!! 
 
 
 - Caché para peticiones HTTP:
