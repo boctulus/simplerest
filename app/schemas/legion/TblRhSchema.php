@@ -17,8 +17,7 @@ class TblRhSchema implements ISchema
 			'attr_types'	=> [
 				'trh_intId' => 'INT',
 				'trh_varCodigo' => 'STR',
-				'trh_varNombre' => 'STR',
-				'trh_lonDescripcion' => 'STR',
+				'trh_varDescripcion' => 'STR',
 				'trh_dtimFechaCreacion' => 'STR',
 				'trh_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -30,15 +29,14 @@ class TblRhSchema implements ISchema
 
 			'autoincrement' => 'trh_intId',
 
-			'nullable'		=> ['trh_intId', 'trh_varCodigo', 'trh_varNombre', 'trh_dtimFechaCreacion', 'trh_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['trh_intId', 'trh_varCodigo', 'trh_dtimFechaCreacion', 'trh_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'trh_intId' => ['type' => 'int'],
 				'trh_varCodigo' => ['type' => 'str', 'max' => 30],
-				'trh_varNombre' => ['type' => 'str', 'max' => 100],
-				'trh_lonDescripcion' => ['type' => 'str', 'required' => true],
+				'trh_varDescripcion' => ['type' => 'str', 'max' => 250, 'required' => true],
 				'trh_dtimFechaCreacion' => ['type' => 'datetime'],
 				'trh_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],

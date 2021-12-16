@@ -20,39 +20,33 @@ class TblRolSchema implements ISchema
 				'rol_varDescripcion' => 'STR',
 				'rol_dtimFechaCreacion' => 'STR',
 				'rol_dtimFechaActualizacion' => 'STR',
-				'est_intIdEstado_rol' => 'INT',
-				'usu_intIdCreador' => 'INT',
-				'usu_intIdActualizador' => 'INT'
+				'est_intEstado' => 'INT'
 			],
 
 			'primary'		=> ['rol_intId'],
 
 			'autoincrement' => 'rol_intId',
 
-			'nullable'		=> ['rol_intId', 'rol_dtimFechaCreacion', 'rol_dtimFechaActualizacion', 'est_intIdEstado_rol', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['rol_intId', 'rol_dtimFechaCreacion', 'rol_dtimFechaActualizacion', 'est_intEstado'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'rol_intId' => ['type' => 'int'],
-				'rol_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'rol_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'rol_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'rol_varDescripcion' => ['type' => 'str', 'required' => true],
 				'rol_dtimFechaCreacion' => ['type' => 'datetime'],
 				'rol_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdEstado_rol' => ['type' => 'int'],
-				'usu_intIdCreador' => ['type' => 'int'],
-				'usu_intIdActualizador' => ['type' => 'int']
+				'est_intEstado' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado_rol', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intEstado'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_rol.est_intIdEstado_rol']
+					['tbl_estado.est_intId','tbl_rol.est_intEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rol.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rol.usu_intIdCreador'],
 					['tbl_usuario.rol_intIdRol','tbl_rol.rol_intId']
 				]
 			],
@@ -70,41 +64,13 @@ class TblRolSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_rol',
-				        1 => 'est_intIdEstado_rol',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),
 				  'tbl_usuario' => 
 				  array (
 				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_rol',
-				        1 => 'usu_intIdActualizador',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_rol',
-				        1 => 'usu_intIdCreador',
-				      ),
-				    ),
-				    2 => 
 				    array (
 				      0 => 
 				      array (
@@ -122,11 +88,7 @@ class TblRolSchema implements ISchema
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_rol.est_intIdEstado_rol']
-				],
-				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_rol.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_rol.usu_intIdCreador']
+					['tbl_estado.est_intId','tbl_rol.est_intEstado']
 				]
 			],
 
@@ -143,38 +105,7 @@ class TblRolSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_rol',
-				        1 => 'est_intIdEstado_rol',
-				      ),
-				    ),
-				  ),
-				  'tbl_usuario' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_rol',
-				        1 => 'usu_intIdActualizador',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_rol',
-				        1 => 'usu_intIdCreador',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),

@@ -33,20 +33,20 @@ class TblContratoEmpleadoSchema implements ISchema
 
 			'autoincrement' => 'tce_intId',
 
-			'nullable'		=> ['tce_intId', 'tce_varCodigo', 'tce_lonDescripcion', 'tce_datFechaInicio', 'tce_datFechaFin', 'tce_dtimFechaCreacion', 'tce_dtimFechaActualizacion', 'per_intIdPersona', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['tce_intId', 'tce_dtimFechaCreacion', 'tce_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'tce_intId' => ['type' => 'int'],
-				'tce_varCodigo' => ['type' => 'str', 'max' => 100],
+				'tce_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'tce_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
-				'tce_lonDescripcion' => ['type' => 'str'],
-				'tce_datFechaInicio' => ['type' => 'date'],
-				'tce_datFechaFin' => ['type' => 'date'],
+				'tce_lonDescripcion' => ['type' => 'str', 'required' => true],
+				'tce_datFechaInicio' => ['type' => 'date', 'required' => true],
+				'tce_datFechaFin' => ['type' => 'date', 'required' => true],
 				'tce_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tce_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'per_intIdPersona' => ['type' => 'int'],
+				'per_intIdPersona' => ['type' => 'int', 'required' => true],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
@@ -62,8 +62,8 @@ class TblContratoEmpleadoSchema implements ISchema
 					['tbl_persona.per_intId','tbl_contrato_empleado.per_intIdPersona']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contrato_empleado.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contrato_empleado.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contrato_empleado.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contrato_empleado.usu_intIdActualizador']
 				],
 				'tbl_novedades_nomina' => [
 					['tbl_novedades_nomina.tce_intIdContrato','tbl_contrato_empleado.tce_intId']
@@ -111,12 +111,12 @@ class TblContratoEmpleadoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contrato_empleado',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -125,12 +125,12 @@ class TblContratoEmpleadoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contrato_empleado',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -160,8 +160,8 @@ class TblContratoEmpleadoSchema implements ISchema
 					['tbl_persona.per_intId','tbl_contrato_empleado.per_intIdPersona']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contrato_empleado.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contrato_empleado.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contrato_empleado.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contrato_empleado.usu_intIdActualizador']
 				]
 			],
 
@@ -206,12 +206,12 @@ class TblContratoEmpleadoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contrato_empleado',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -220,12 +220,12 @@ class TblContratoEmpleadoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contrato_empleado',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

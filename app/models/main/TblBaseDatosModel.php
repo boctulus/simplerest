@@ -43,9 +43,7 @@ class TblBaseDatosModel extends MyModel
 			Nuevo !!!!!!!!!!
 		*/
 
-		Config::set('db_connections', get_db_connections());
-		get_db_connections(true);
-
+		Config::set('db_connections', get_db_connections(true));
 
 		/*
 			Creo las tablas

@@ -32,9 +32,9 @@ class TblProveedorSchema implements ISchema
 
 			'autoincrement' => 'prv_intId',
 
-			'nullable'		=> ['prv_intId', 'prv_dtimFechaCreacion', 'prv_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['prv_intId', 'prv_dtimFechaCreacion', 'prv_dtimFechaActualizacion', 'per_intIdPersona', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
-			'uniques'		=> ['per_intIdPersona'],
+			'uniques'		=> [],
 
 			'rules' 		=> [
 				'prv_intId' => ['type' => 'int'],
@@ -44,7 +44,7 @@ class TblProveedorSchema implements ISchema
 				'dpa_intIdDiasPago' => ['type' => 'int', 'required' => true],
 				'ban_intIdBanco' => ['type' => 'int', 'required' => true],
 				'ccb_intIdCategoriaCuentaBancaria' => ['type' => 'int', 'required' => true],
-				'per_intIdPersona' => ['type' => 'int', 'required' => true],
+				'per_intIdPersona' => ['type' => 'int'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int'],
 				'usu_intIdActualizador' => ['type' => 'int']

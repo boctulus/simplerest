@@ -48,7 +48,7 @@ class TblReteivaSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'sub_intIdsubcuentacontable', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'sub_intIdsubcuentacontable', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [

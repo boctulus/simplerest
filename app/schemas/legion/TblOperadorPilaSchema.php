@@ -21,7 +21,7 @@ class TblOperadorPilaSchema implements ISchema
 				'opp_lonDescripcion' => 'STR',
 				'opp_dtimFechaCreacion' => 'STR',
 				'opp_dtimFechaActualizacion' => 'STR',
-				'est_intIdEstado' => 'INT',
+				'est_intEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -30,34 +30,31 @@ class TblOperadorPilaSchema implements ISchema
 
 			'autoincrement' => 'opp_intId',
 
-			'nullable'		=> ['opp_intId', 'opp_dtimFechaCreacion', 'opp_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['opp_intId', 'opp_dtimFechaCreacion', 'opp_dtimFechaActualizacion', 'est_intEstado'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'opp_intId' => ['type' => 'int'],
-				'opp_varCodigo' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'opp_varNombre' => ['type' => 'str', 'max' => 150, 'required' => true],
+				'opp_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'opp_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'opp_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'opp_dtimFechaCreacion' => ['type' => 'datetime'],
 				'opp_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdEstado' => ['type' => 'int'],
+				'est_intEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int']
+				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_operador_pila.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_operador_pila.est_intEstado']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_operador_pila.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_operador_pila.usu_intIdCreador']
-				],
-				'tbl_empresa_nomina' => [
-					['tbl_empresa_nomina.opp_intIdOperador','tbl_operador_pila.opp_intId']
 				],
 				'tbl_empresa' => [
 					['tbl_empresa.opp_intIdOperador','tbl_operador_pila.opp_intId']
@@ -77,7 +74,7 @@ class TblOperadorPilaSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_operador_pila',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),
@@ -112,22 +109,6 @@ class TblOperadorPilaSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_empresa_nomina' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empresa_nomina',
-				        1 => 'opp_intIdOperador',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_operador_pila',
-				        1 => 'opp_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_empresa' => 
 				  array (
 				    0 => 
@@ -148,7 +129,7 @@ class TblOperadorPilaSchema implements ISchema
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_operador_pila.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_operador_pila.est_intEstado']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_operador_pila.usu_intIdActualizador'],
@@ -169,7 +150,7 @@ class TblOperadorPilaSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_operador_pila',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),

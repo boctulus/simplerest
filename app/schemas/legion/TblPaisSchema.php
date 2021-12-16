@@ -33,7 +33,7 @@ class TblPaisSchema implements ISchema
 
 			'nullable'		=> ['pai_intId', 'pai_dtimFechaCreacion', 'pai_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
-			'uniques'		=> [],
+			'uniques'		=> ['pai_varCodigo'],
 
 			'rules' 		=> [
 				'pai_intId' => ['type' => 'int'],
@@ -61,9 +61,11 @@ class TblPaisSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_pais.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_pais.usu_intIdCreador']
 				],
-				'tbl_empleado_datos_generales' => [
-					['tbl_empleado_datos_generales.pai_intIdPais','tbl_pais.pai_intId'],
-					['tbl_empleado_datos_generales.pai_intIdPaisExpCedula','tbl_pais.pai_intId']
+				'tbl_departamento' => [
+					['tbl_departamento.pai_intIdPais','tbl_pais.pai_intId']
+				],
+				'tbl_ciudad' => [
+					['tbl_ciudad.pai_intIdPais','tbl_pais.pai_intId']
 				],
 				'tbl_contacto' => [
 					['tbl_contacto.pai_intIdPais','tbl_pais.pai_intId']
@@ -71,14 +73,9 @@ class TblPaisSchema implements ISchema
 				'tbl_persona' => [
 					['tbl_persona.pai_intIdPaisNacimiento','tbl_pais.pai_intId']
 				],
-				'tbl_empresa' => [
-					['tbl_empresa.pai_intIdPais','tbl_pais.pai_intId']
-				],
-				'tbl_ciudad' => [
-					['tbl_ciudad.pai_intIdPais','tbl_pais.pai_intId']
-				],
-				'tbl_departamento' => [
-					['tbl_departamento.pai_intIdPais','tbl_pais.pai_intId']
+				'tbl_empleado_datos_generales' => [
+					['tbl_empleado_datos_generales.pai_intIdPais','tbl_pais.pai_intId'],
+					['tbl_empleado_datos_generales.pai_intIdPaisExpCedula','tbl_pais.pai_intId']
 				]
 			],
 
@@ -146,6 +143,38 @@ class TblPaisSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'tbl_persona' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'pai_intIdPaisNacimiento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_ciudad' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_ciudad',
+				        1 => 'pai_intIdPais',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
+				      ),
+				    ),
+				  ),
 				  'tbl_empleado_datos_generales' => 
 				  array (
 				    0 => 
@@ -175,70 +204,6 @@ class TblPaisSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_contacto' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_contacto',
-				        1 => 'pai_intIdPais',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_pais',
-				        1 => 'pai_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_persona' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'pai_intIdPaisNacimiento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_pais',
-				        1 => 'pai_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empresa',
-				        1 => 'pai_intIdPais',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_pais',
-				        1 => 'pai_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_ciudad' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_ciudad',
-				        1 => 'pai_intIdPais',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_pais',
-				        1 => 'pai_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_departamento' => 
 				  array (
 				    0 => 
@@ -246,6 +211,22 @@ class TblPaisSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_departamento',
+				        1 => 'pai_intIdPais',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_pais',
+				        1 => 'pai_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_contacto' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_contacto',
 				        1 => 'pai_intIdPais',
 				      ),
 				      1 => 

@@ -16,16 +16,16 @@ class TblNotaCreditoDetalleSchema implements ISchema
 
 			'attr_types'	=> [
 				'ncd_intId' => 'INT',
-				'ncd_dateFecha' => 'STR',
+				'ncd_datFecha' => 'STR',
 				'ncd_decValor' => 'STR',
 				'ncd_decCantidad' => 'STR',
 				'ncd_decValorTotal' => 'STR',
 				'ncd_decPorcentajeIva' => 'STR',
 				'ncd_decValorIva' => 'STR',
+				'ncd_lonDescripcion' => 'STR',
 				'ncd_dtimFechaCreacion' => 'STR',
 				'ncd_dtimFechaActualizacion' => 'STR',
-				'nct_intNroDocumento' => 'STR',
-				'ncd_varDescripcion' => 'STR',
+				'nct_varNroDocumento' => 'STR',
 				'nct_intIdNotaCredito' => 'INT',
 				'per_intIdPersona' => 'INT',
 				'pro_intIdProducto' => 'INT',
@@ -38,28 +38,28 @@ class TblNotaCreditoDetalleSchema implements ISchema
 
 			'autoincrement' => 'ncd_intId',
 
-			'nullable'		=> ['ncd_intId', 'ncd_dtimFechaCreacion', 'ncd_dtimFechaActualizacion'],
+			'nullable'		=> ['ncd_intId', 'ncd_dtimFechaCreacion', 'ncd_dtimFechaActualizacion', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'ncd_intId' => ['type' => 'int'],
-				'ncd_dateFecha' => ['type' => 'date', 'required' => true],
+				'ncd_datFecha' => ['type' => 'date', 'required' => true],
 				'ncd_decValor' => ['type' => 'decimal(18,2)', 'required' => true],
 				'ncd_decCantidad' => ['type' => 'decimal(18,2)', 'required' => true],
 				'ncd_decValorTotal' => ['type' => 'decimal(18,2)', 'required' => true],
 				'ncd_decPorcentajeIva' => ['type' => 'decimal(18,2)', 'required' => true],
 				'ncd_decValorIva' => ['type' => 'decimal(18,2)', 'required' => true],
+				'ncd_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'ncd_dtimFechaCreacion' => ['type' => 'datetime'],
 				'ncd_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'nct_intNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
-				'ncd_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'nct_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'nct_intIdNotaCredito' => ['type' => 'int', 'required' => true],
 				'per_intIdPersona' => ['type' => 'int', 'required' => true],
 				'pro_intIdProducto' => ['type' => 'int', 'required' => true],
 				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['doc_intIdDocumento', 'nct_intIdNotaCredito', 'per_intIdPersona', 'pro_intIdProducto', 'usu_intIdCreador', 'usu_intIdActualizador'],
@@ -78,8 +78,8 @@ class TblNotaCreditoDetalleSchema implements ISchema
 					['tbl_producto.pro_intId','tbl_nota_credito_detalle.pro_intIdProducto']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_nota_credito_detalle.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_nota_credito_detalle.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_nota_credito_detalle.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_nota_credito_detalle.usu_intIdActualizador']
 				]
 			],
 
@@ -156,12 +156,12 @@ class TblNotaCreditoDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_credito_detalle',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -170,12 +170,12 @@ class TblNotaCreditoDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_credito_detalle',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -195,8 +195,8 @@ class TblNotaCreditoDetalleSchema implements ISchema
 					['tbl_producto.pro_intId','tbl_nota_credito_detalle.pro_intIdProducto']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_nota_credito_detalle.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_nota_credito_detalle.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_nota_credito_detalle.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_nota_credito_detalle.usu_intIdActualizador']
 				]
 			],
 
@@ -273,12 +273,12 @@ class TblNotaCreditoDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_credito_detalle',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -287,12 +287,12 @@ class TblNotaCreditoDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_nota_credito_detalle',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

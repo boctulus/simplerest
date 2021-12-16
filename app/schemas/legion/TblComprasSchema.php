@@ -16,7 +16,7 @@ class TblComprasSchema implements ISchema
 
 			'attr_types'	=> [
 				'com_intId' => 'INT',
-				'com_varNumeroDocumento' => 'STR',
+				'com_varNroDocumento' => 'STR',
 				'com_decCantidadTotal' => 'STR',
 				'com_decBruto' => 'STR',
 				'com_decDescuento' => 'STR',
@@ -24,10 +24,9 @@ class TblComprasSchema implements ISchema
 				'com_decIca' => 'STR',
 				'com_decRetencion' => 'STR',
 				'com_decReteIva' => 'STR',
-				'com_dateFecha' => 'STR',
-				'com_decNeto' => 'STR',
-				'com_bolEstado' => 'INT',
-				'com_dateFechaVencimiento' => 'STR',
+				'com_datFecha' => 'STR',
+				'com_decValorNeto' => 'STR',
+				'com_datFechaVencimiento' => 'STR',
 				'com_decPorceRetefuente' => 'STR',
 				'com_intTopeRetefuente' => 'INT',
 				'com_decPorceReteiva' => 'STR',
@@ -36,10 +35,10 @@ class TblComprasSchema implements ISchema
 				'com_intTopeReteIca' => 'INT',
 				'com_dtimFechaCreacion' => 'STR',
 				'com_dtimFechaActualizacion' => 'STR',
-				'com_varNota' => 'STR',
+				'com_lonNota' => 'STR',
 				'com_varFacturaProveedor' => 'STR',
-				'est_intidEstado' => 'INT',
-				'doc_intDocumento' => 'INT',
+				'est_intIdEstado' => 'INT',
+				'doc_intIdDocumento' => 'INT',
 				'cse_intIdConsecutivo' => 'INT',
 				'per_intIdPersona' => 'INT',
 				'usu_intIdCreador' => 'INT',
@@ -50,53 +49,52 @@ class TblComprasSchema implements ISchema
 
 			'autoincrement' => 'com_intId',
 
-			'nullable'		=> ['com_intId', 'com_dateFecha', 'com_decNeto', 'com_bolEstado', 'com_dtimFechaCreacion', 'com_dtimFechaActualizacion', 'com_varNota', 'com_varFacturaProveedor', 'est_intidEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['com_intId', 'com_dtimFechaCreacion', 'com_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'com_intId' => ['type' => 'int'],
-				'com_varNumeroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'com_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'com_decCantidadTotal' => ['type' => 'decimal(18,2)', 'required' => true],
 				'com_decBruto' => ['type' => 'decimal(18,2)', 'required' => true],
-				'com_decDescuento' => ['type' => 'decimal(18,2)', 'required' => true],
+				'com_decDescuento' => ['type' => 'decimal(18,4)', 'required' => true],
 				'com_decIva' => ['type' => 'decimal(18,2)', 'required' => true],
 				'com_decIca' => ['type' => 'decimal(18,2)', 'required' => true],
 				'com_decRetencion' => ['type' => 'decimal(18,2)', 'required' => true],
 				'com_decReteIva' => ['type' => 'decimal(18,2)', 'required' => true],
-				'com_dateFecha' => ['type' => 'date'],
-				'com_decNeto' => ['type' => 'decimal(18,2)'],
-				'com_bolEstado' => ['type' => 'bool'],
-				'com_dateFechaVencimiento' => ['type' => 'date', 'required' => true],
-				'com_decPorceRetefuente' => ['type' => 'decimal(10,2)', 'required' => true],
+				'com_datFecha' => ['type' => 'date', 'required' => true],
+				'com_decValorNeto' => ['type' => 'decimal(18,2)', 'required' => true],
+				'com_datFechaVencimiento' => ['type' => 'date', 'required' => true],
+				'com_decPorceRetefuente' => ['type' => 'decimal(18,2)', 'required' => true],
 				'com_intTopeRetefuente' => ['type' => 'int', 'required' => true],
-				'com_decPorceReteiva' => ['type' => 'decimal(10,2)', 'required' => true],
+				'com_decPorceReteiva' => ['type' => 'decimal(18,2)', 'required' => true],
 				'com_intTopeReteiva' => ['type' => 'int', 'required' => true],
-				'com_decPorceIca' => ['type' => 'decimal(10,2)', 'required' => true],
+				'com_decPorceIca' => ['type' => 'decimal(18,2)', 'required' => true],
 				'com_intTopeReteIca' => ['type' => 'int', 'required' => true],
 				'com_dtimFechaCreacion' => ['type' => 'datetime'],
 				'com_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'com_varNota' => ['type' => 'str'],
-				'com_varFacturaProveedor' => ['type' => 'str', 'max' => 100],
-				'est_intidEstado' => ['type' => 'int'],
-				'doc_intDocumento' => ['type' => 'int', 'required' => true],
+				'com_lonNota' => ['type' => 'str', 'required' => true],
+				'com_varFacturaProveedor' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'est_intIdEstado' => ['type' => 'int'],
+				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
 				'cse_intIdConsecutivo' => ['type' => 'int', 'required' => true],
 				'per_intIdPersona' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['cse_intIdConsecutivo', 'doc_intDocumento', 'est_intidEstado', 'per_intIdPersona', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['cse_intIdConsecutivo', 'doc_intIdDocumento', 'est_intIdEstado', 'per_intIdPersona', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_consecutivo' => [
 					['tbl_consecutivo.cse_intId','tbl_compras.cse_intIdConsecutivo']
 				],
 				'tbl_documento' => [
-					['tbl_documento.doc_intId','tbl_compras.doc_intDocumento']
+					['tbl_documento.doc_intId','tbl_compras.doc_intIdDocumento']
 				],
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_compras.est_intidEstado']
+					['tbl_estado.est_intId','tbl_compras.est_intIdEstado']
 				],
 				'tbl_persona' => [
 					['tbl_persona.per_intId','tbl_compras.per_intIdPersona']
@@ -139,7 +137,7 @@ class TblComprasSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_compras',
-				        1 => 'doc_intDocumento',
+				        1 => 'doc_intIdDocumento',
 				      ),
 				    ),
 				  ),
@@ -155,7 +153,7 @@ class TblComprasSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_compras',
-				        1 => 'est_intidEstado',
+				        1 => 'est_intIdEstado',
 				      ),
 				    ),
 				  ),
@@ -229,10 +227,10 @@ class TblComprasSchema implements ISchema
 					['tbl_consecutivo.cse_intId','tbl_compras.cse_intIdConsecutivo']
 				],
 				'tbl_documento' => [
-					['tbl_documento.doc_intId','tbl_compras.doc_intDocumento']
+					['tbl_documento.doc_intId','tbl_compras.doc_intIdDocumento']
 				],
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_compras.est_intidEstado']
+					['tbl_estado.est_intId','tbl_compras.est_intIdEstado']
 				],
 				'tbl_persona' => [
 					['tbl_persona.per_intId','tbl_compras.per_intIdPersona']
@@ -272,7 +270,7 @@ class TblComprasSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_compras',
-				        1 => 'doc_intDocumento',
+				        1 => 'doc_intIdDocumento',
 				      ),
 				    ),
 				  ),
@@ -288,7 +286,7 @@ class TblComprasSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_compras',
-				        1 => 'est_intidEstado',
+				        1 => 'est_intIdEstado',
 				      ),
 				    ),
 				  ),

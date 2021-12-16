@@ -22,18 +22,18 @@ class TblCiudadSchema implements ISchema
 				'ciu_dtimFechaCreacion' => 'STR',
 				'ciu_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
-				'ica_intIdICA' => 'INT',
 				'pai_intIdPais' => 'INT',
 				'dep_intIdDepartamento' => 'INT',
 				'usu_intIdCreador' => 'INT',
-				'usu_intIdActualizador' => 'INT'
+				'usu_intIdActualizador' => 'INT',
+				'ica_intIdICA' => 'INT'
 			],
 
 			'primary'		=> ['ciu_intId'],
 
 			'autoincrement' => 'ciu_intId',
 
-			'nullable'		=> ['ciu_intId', 'ciu_dtimFechaCreacion', 'ciu_dtimFechaActualizacion', 'est_intIdEstado', 'ica_intIdICA', 'pai_intIdPais'],
+			'nullable'		=> ['ciu_intId', 'ciu_dtimFechaCreacion', 'ciu_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador', 'ica_intIdICA'],
 
 			'uniques'		=> ['ciu_varCodigo'],
 
@@ -45,14 +45,14 @@ class TblCiudadSchema implements ISchema
 				'ciu_dtimFechaCreacion' => ['type' => 'datetime'],
 				'ciu_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
-				'ica_intIdICA' => ['type' => 'int'],
-				'pai_intIdPais' => ['type' => 'int'],
+				'pai_intIdPais' => ['type' => 'int', 'required' => true],
 				'dep_intIdDepartamento' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int'],
+				'ica_intIdICA' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['dep_intIdDepartamento', 'est_intIdEstado', 'pai_intIdPais', 'ica_intIdICA', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['dep_intIdDepartamento', 'est_intIdEstado', 'pai_intIdPais', 'ica_intIdICA', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_departamento' => [
@@ -68,24 +68,21 @@ class TblCiudadSchema implements ISchema
 					['tbl_rete_ica.ric_intId','tbl_ciudad.ica_intIdICA']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_ciudad.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_ciudad.usu_intIdActualizador']
-				],
-				'tbl_barrio' => [
-					['tbl_barrio.ciu_intIdciudad','tbl_ciudad.ciu_intId']
-				],
-				'tbl_empresa' => [
-					['tbl_empresa.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
-				],
-				'tbl_empleado_datos_generales' => [
-					['tbl_empleado_datos_generales.ciu_intIdCiudadExpCedula','tbl_ciudad.ciu_intId'],
-					['tbl_empleado_datos_generales.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_ciudad.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_ciudad.usu_intIdCreador']
 				],
 				'tbl_persona' => [
 					['tbl_persona.ciu_intIdCiudadNacimiento','tbl_ciudad.ciu_intId']
 				],
 				'tbl_contacto' => [
 					['tbl_contacto.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
+				],
+				'tbl_barrio' => [
+					['tbl_barrio.ciu_intIdciudad','tbl_ciudad.ciu_intId']
+				],
+				'tbl_empleado_datos_generales' => [
+					['tbl_empleado_datos_generales.ciu_intIdCiudadExpCedula','tbl_ciudad.ciu_intId'],
+					['tbl_empleado_datos_generales.ciu_intIdCiudad','tbl_ciudad.ciu_intId']
 				]
 			],
 
@@ -162,12 +159,12 @@ class TblCiudadSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_ciudad',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				    1 => 
@@ -176,12 +173,12 @@ class TblCiudadSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_ciudad',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				  ),
@@ -193,22 +190,6 @@ class TblCiudadSchema implements ISchema
 				      array (
 				        0 => 'tbl_barrio',
 				        1 => 'ciu_intIdciudad',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_ciudad',
-				        1 => 'ciu_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empresa',
-				        1 => 'ciu_intIdCiudad',
 				      ),
 				      1 => 
 				      array (
@@ -246,22 +227,6 @@ class TblCiudadSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_persona' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_persona',
-				        1 => 'ciu_intIdCiudadNacimiento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_ciudad',
-				        1 => 'ciu_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_contacto' => 
 				  array (
 				    0 => 
@@ -270,6 +235,22 @@ class TblCiudadSchema implements ISchema
 				      array (
 				        0 => 'tbl_contacto',
 				        1 => 'ciu_intIdCiudad',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_ciudad',
+				        1 => 'ciu_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_persona' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_persona',
+				        1 => 'ciu_intIdCiudadNacimiento',
 				      ),
 				      1 => 
 				      array (
@@ -294,8 +275,8 @@ class TblCiudadSchema implements ISchema
 					['tbl_rete_ica.ric_intId','tbl_ciudad.ica_intIdICA']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_ciudad.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_ciudad.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_ciudad.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_ciudad.usu_intIdCreador']
 				]
 			],
 
@@ -372,12 +353,12 @@ class TblCiudadSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_ciudad',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				    1 => 
@@ -386,12 +367,12 @@ class TblCiudadSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_ciudad',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				  ),

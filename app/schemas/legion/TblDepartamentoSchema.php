@@ -30,7 +30,7 @@ class TblDepartamentoSchema implements ISchema
 
 			'autoincrement' => 'dep_intId',
 
-			'nullable'		=> ['dep_intId', 'dep_dtimFechaCreacion', 'dep_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['dep_intId', 'dep_dtimFechaCreacion', 'dep_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -43,7 +43,7 @@ class TblDepartamentoSchema implements ISchema
 				'est_intIdEstado' => ['type' => 'int'],
 				'pai_intIdPais' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'pai_intIdPais', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -59,18 +59,15 @@ class TblDepartamentoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_departamento.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_departamento.usu_intIdCreador']
 				],
-				'tbl_ciudad' => [
-					['tbl_ciudad.dep_intIdDepartamento','tbl_departamento.dep_intId']
-				],
-				'tbl_empresa' => [
-					['tbl_empresa.dep_intIdDepartamento','tbl_departamento.dep_intId']
-				],
 				'tbl_empleado_datos_generales' => [
-					['tbl_empleado_datos_generales.dep_intIdDepartaExpCedula','tbl_departamento.dep_intId'],
-					['tbl_empleado_datos_generales.dep_intIdDepartamento','tbl_departamento.dep_intId']
+					['tbl_empleado_datos_generales.dep_intIdDepartamento','tbl_departamento.dep_intId'],
+					['tbl_empleado_datos_generales.dep_intIdDepartaExpCedula','tbl_departamento.dep_intId']
 				],
 				'tbl_persona' => [
 					['tbl_persona.dep_intIdDepartamentoNacimiento','tbl_departamento.dep_intId']
+				],
+				'tbl_ciudad' => [
+					['tbl_ciudad.dep_intIdDepartamento','tbl_departamento.dep_intId']
 				]
 			],
 
@@ -138,38 +135,6 @@ class TblDepartamentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_ciudad' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_ciudad',
-				        1 => 'dep_intIdDepartamento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_departamento',
-				        1 => 'dep_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empresa',
-				        1 => 'dep_intIdDepartamento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_departamento',
-				        1 => 'dep_intId',
-				      ),
-				    ),
-				  ),
 				  'tbl_empleado_datos_generales' => 
 				  array (
 				    0 => 
@@ -177,7 +142,7 @@ class TblDepartamentoSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_empleado_datos_generales',
-				        1 => 'dep_intIdDepartaExpCedula',
+				        1 => 'dep_intIdDepartamento',
 				      ),
 				      1 => 
 				      array (
@@ -190,7 +155,7 @@ class TblDepartamentoSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_empleado_datos_generales',
-				        1 => 'dep_intIdDepartamento',
+				        1 => 'dep_intIdDepartaExpCedula',
 				      ),
 				      1 => 
 				      array (
@@ -207,6 +172,22 @@ class TblDepartamentoSchema implements ISchema
 				      array (
 				        0 => 'tbl_persona',
 				        1 => 'dep_intIdDepartamentoNacimiento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_departamento',
+				        1 => 'dep_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_ciudad' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_ciudad',
+				        1 => 'dep_intIdDepartamento',
 				      ),
 				      1 => 
 				      array (

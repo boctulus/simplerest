@@ -25,13 +25,13 @@ class TblContratoSchema implements ISchema
 				'ctr_intTiempoRenovacion' => 'INT',
 				'ctr_intNumeroProductos' => 'INT',
 				'ctr_decValorMensual' => 'STR',
-				'ctr_varNota' => 'STR',
+				'ctr_lonNota' => 'STR',
 				'ctr_dtimFechaCreacion' => 'STR',
 				'ctr_dtimFechaActualizacion' => 'STR',
-				'est_intIdEstado' => 'INT',
 				'cco_intIdCentroCostos' => 'INT',
 				'doc_intIdDocumento' => 'INT',
 				'cse_intidConsecutivo' => 'INT',
+				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -40,7 +40,7 @@ class TblContratoSchema implements ISchema
 
 			'autoincrement' => 'ctr_intId',
 
-			'nullable'		=> ['ctr_intId', 'ctr_dtimFechaCreacion', 'ctr_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['ctr_intId', 'ctr_dtimFechaCreacion', 'ctr_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -55,15 +55,15 @@ class TblContratoSchema implements ISchema
 				'ctr_intTiempoRenovacion' => ['type' => 'int', 'required' => true],
 				'ctr_intNumeroProductos' => ['type' => 'int', 'required' => true],
 				'ctr_decValorMensual' => ['type' => 'decimal(18,2)', 'required' => true],
-				'ctr_varNota' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'ctr_lonNota' => ['type' => 'str', 'required' => true],
 				'ctr_dtimFechaCreacion' => ['type' => 'datetime'],
 				'ctr_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdEstado' => ['type' => 'int'],
 				'cco_intIdCentroCostos' => ['type' => 'int', 'required' => true],
 				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
 				'cse_intidConsecutivo' => ['type' => 'int', 'required' => true],
+				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['cco_intIdCentroCostos', 'cse_intidConsecutivo', 'doc_intIdDocumento', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
@@ -82,8 +82,8 @@ class TblContratoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_contrato.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contrato.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contrato.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contrato.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contrato.usu_intIdActualizador']
 				],
 				'tbl_contrato_detalle' => [
 					['tbl_contrato_detalle.ctr_intIdContrato','tbl_contrato.ctr_intId']
@@ -163,12 +163,12 @@ class TblContratoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contrato',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -177,12 +177,12 @@ class TblContratoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contrato',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -218,8 +218,8 @@ class TblContratoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_contrato.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contrato.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contrato.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_contrato.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_contrato.usu_intIdActualizador']
 				]
 			],
 
@@ -296,12 +296,12 @@ class TblContratoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contrato',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -310,12 +310,12 @@ class TblContratoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_contrato',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

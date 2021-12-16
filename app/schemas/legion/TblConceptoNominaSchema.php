@@ -32,25 +32,25 @@ class TblConceptoNominaSchema implements ISchema
 
 			'autoincrement' => 'cpn_intId',
 
-			'nullable'		=> ['cpn_intId', 'cpn_varCodigo', 'cpn_lonDescripcion', 'cpn_varTipoDeConcepto', 'cpn_dtimFechaCreacion', 'cpn_dtimFechaActualizacion', 'usu_intIdActualizador'],
+			'nullable'		=> ['cpn_intId', 'cpn_varCodigo', 'cpn_varNombre', 'cpn_lonDescripcion', 'cpn_varFormula', 'cpn_varTipoDeConcepto', 'cpn_dtimFechaCreacion', 'cpn_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'cpn_intId' => ['type' => 'int'],
 				'cpn_varCodigo' => ['type' => 'str', 'max' => 100],
-				'cpn_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'cpn_varNombre' => ['type' => 'str', 'max' => 100],
 				'cpn_lonDescripcion' => ['type' => 'str'],
-				'cpn_varFormula' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'cpn_varFormula' => ['type' => 'str', 'max' => 100],
 				'cpn_varTipoDeConcepto' => ['type' => 'str', 'max' => 20],
-				'cpn_dtimFechaCreacion' => ['type' => 'date'],
-				'cpn_dtimFechaActualizacion' => ['type' => 'date'],
-				'est_intIdEstado' => ['type' => 'int', 'required' => true],
-				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
+				'cpn_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cpn_dtimFechaActualizacion' => ['type' => 'datetime'],
+				'est_intIdEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int'],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [

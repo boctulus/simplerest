@@ -62,7 +62,7 @@ class TblEmpleadoDatosPersonalesSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['clc_intIdCategoriaLicencia', 'clm_intIdClaseLibretaMilitar', 'esc_intIdEstadoCivil', 'esd_intIdEstudios', 'est_intIdEstado', 'per_intIdPersona', 'trh_intIdRH', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['clc_intIdCategoriaLicencia', 'clm_intIdClaseLibretaMilitar', 'esc_intIdEstadoCivil', 'esd_intIdEstudios', 'est_intIdEstado', 'per_intIdPersona', 'trh_intIdRH', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_categoria_licencia_conduccion' => [

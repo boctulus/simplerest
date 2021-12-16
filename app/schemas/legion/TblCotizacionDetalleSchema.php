@@ -66,7 +66,7 @@ class TblCotizacionDetalleSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['cot_intIdCotizacion', 'doc_intIdDocumento', 'pro_intIdProducto', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['cot_intIdCotizacion', 'doc_intIdDocumento', 'pro_intIdProducto', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_cotizacion' => [
