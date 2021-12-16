@@ -3,8 +3,9 @@ UPDATE DESCRIPTION
 
 [!] Incluir en parche:
 
-app/helpers/db_dynamic_load.php
 app/libs/Config.php
+app/libs/DB.php
+app/helpers/db_dynamic_load.php  <--- no incluir sino modificar !
 app/models/main/TblBaseDatosModel.php   <--- no incluir sino modificar !
 
 

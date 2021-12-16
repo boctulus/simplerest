@@ -3,7 +3,7 @@
 namespace simplerest\models\main;
 
 use simplerest\models\MyModel;
-use simplerest\core\Model;
+use simplerest\libs\Config;
 use simplerest\libs\DB;
 use simplerest\core\MakeControllerBase;
 use simplerest\controllers\MigrationsController;
@@ -20,7 +20,7 @@ class TblBaseDatosModel extends MyModel
         parent::__construct($connect, TblBaseDatosSchema::class);
 	}	
 
-	// está deshabilitado (notar el "__" delante)
+	// chequear no esté deshabilitado (con un "__" delante)
 	function onCreated(array &$data, $last_inserted_id)
 	{
 		/*
@@ -31,7 +31,18 @@ class TblBaseDatosModel extends MyModel
 
 		$db_name = $data['dba_varNombre'];
 		
-		$ok = Model::query("CREATE DATABASE $db_name;");
+		/* usar backticks */
+		$ok = DB::statement("CREATE DATABASE `$db_name`;");  
+		
+		if (!$ok){
+			throw new \Exception("Error trying to create $db_name");
+		}		
+
+		/*
+			Ahora debo *registrar* las conexiones (que incluyen a la nueva DB en el config)
+		*/
+
+		Config::set('db_connections', get_db_connections(true));
 		
 
 		/*
@@ -40,11 +51,11 @@ class TblBaseDatosModel extends MyModel
 
 		$mgr   = MigrationsController::class;
 		$mgr_o = new $mgr();
-
-        $folder = 'compania'; 
-        $tenant = $db_name;
-
+				
 		StdOut::hideResponse();
+
+        $folder = 'usuario'; 
+        $tenant = $db_name;
 
         $mgr_o->migrate("--dir=$folder", "--to=$tenant");
 
