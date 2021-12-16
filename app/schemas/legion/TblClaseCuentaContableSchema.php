@@ -29,7 +29,7 @@ class TblClaseCuentaContableSchema implements ISchema
 
 			'autoincrement' => 'cla_intId',
 
-			'nullable'		=> ['cla_intId', 'cla_dtimFechaCreacion', 'cla_dtimFechaActualizacion', 'nat_intId'],
+			'nullable'		=> ['cla_intId', 'cla_dtimFechaCreacion', 'cla_dtimFechaActualizacion', 'nat_intId', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -40,8 +40,8 @@ class TblClaseCuentaContableSchema implements ISchema
 				'cla_dtimFechaCreacion' => ['type' => 'datetime'],
 				'cla_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'nat_intId' => ['type' => 'int'],
-				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['nat_intId', 'usu_intIdActualizador', 'usu_intIdCreador'],

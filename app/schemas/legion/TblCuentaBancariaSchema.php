@@ -16,11 +16,11 @@ class TblCuentaBancariaSchema implements ISchema
 
 			'attr_types'	=> [
 				'cba_intId' => 'INT',
-				'cba_lonDescripcion' => 'STR',
+				'cba_varDescripcion' => 'STR',
 				'cba_varNumeroCuenta' => 'STR',
 				'cba_dtimFechaCreacion' => 'STR',
 				'cba_dtimFechaActualizacion' => 'STR',
-				'est_intIdEstado' => 'INT',
+				'est_intIdEstado_cba' => 'INT',
 				'ban_intIdBanco' => 'INT',
 				'tcb_intIdTipoCuentaBancaria' => 'INT',
 				'emp_intIdEmpresa' => 'INT',
@@ -32,25 +32,25 @@ class TblCuentaBancariaSchema implements ISchema
 
 			'autoincrement' => 'cba_intId',
 
-			'nullable'		=> ['cba_intId', 'cba_dtimFechaCreacion', 'cba_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['cba_intId', 'cba_dtimFechaCreacion', 'cba_dtimFechaActualizacion', 'est_intIdEstado_cba', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'cba_intId' => ['type' => 'int'],
-				'cba_lonDescripcion' => ['type' => 'str', 'required' => true],
+				'cba_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'cba_varNumeroCuenta' => ['type' => 'str', 'max' => 11, 'required' => true],
 				'cba_dtimFechaCreacion' => ['type' => 'datetime'],
 				'cba_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdEstado' => ['type' => 'int'],
+				'est_intIdEstado_cba' => ['type' => 'int'],
 				'ban_intIdBanco' => ['type' => 'int', 'required' => true],
 				'tcb_intIdTipoCuentaBancaria' => ['type' => 'int', 'required' => true],
 				'emp_intIdEmpresa' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['ban_intIdBanco', 'emp_intIdEmpresa', 'est_intIdEstado', 'tcb_intIdTipoCuentaBancaria', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['ban_intIdBanco', 'emp_intIdEmpresa', 'est_intIdEstado_cba', 'tcb_intIdTipoCuentaBancaria', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_banco' => [
@@ -60,7 +60,7 @@ class TblCuentaBancariaSchema implements ISchema
 					['tbl_empresa.emp_intId','tbl_cuenta_bancaria.emp_intIdEmpresa']
 				],
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_cuenta_bancaria.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_cuenta_bancaria.est_intIdEstado_cba']
 				],
 				'tbl_tipo_cuenta_bancaria' => [
 					['tbl_tipo_cuenta_bancaria.tcb_intId','tbl_cuenta_bancaria.tcb_intIdTipoCuentaBancaria']
@@ -116,7 +116,7 @@ class TblCuentaBancariaSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_cuenta_bancaria',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intIdEstado_cba',
 				      ),
 				    ),
 				  ),
@@ -177,7 +177,7 @@ class TblCuentaBancariaSchema implements ISchema
 					['tbl_empresa.emp_intId','tbl_cuenta_bancaria.emp_intIdEmpresa']
 				],
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_cuenta_bancaria.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_cuenta_bancaria.est_intIdEstado_cba']
 				],
 				'tbl_tipo_cuenta_bancaria' => [
 					['tbl_tipo_cuenta_bancaria.tcb_intId','tbl_cuenta_bancaria.tcb_intIdTipoCuentaBancaria']
@@ -233,7 +233,7 @@ class TblCuentaBancariaSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_cuenta_bancaria',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intIdEstado_cba',
 				      ),
 				    ),
 				  ),

@@ -16,17 +16,16 @@ class TblComprobanteContableSchema implements ISchema
 
 			'attr_types'	=> [
 				'cmp_intId' => 'INT',
-				'cmp_varNroDcoumento' => 'STR',
-				'cmp_intIdDocumento' => 'INT',
-				'cmp_dtmFechaMovimiento' => 'STR',
-				'cmp_dtmFechaCreacion' => 'STR',
-				'cmp_dtmFechaActualizacion' => 'STR',
+				'cmp_varNroDocumento' => 'STR',
+				'cmp_datFechaMovimiento' => 'STR',
 				'cmp_decTotalCuentaCredito' => 'STR',
 				'cmp_decTotalCuentaDebito' => 'STR',
 				'cmp_decTotalDiferencia' => 'STR',
-				'cmp_varNota' => 'STR',
-				'doc_intIdDocumento' => 'INT',
+				'cmp_lonNota' => 'STR',
+				'cmp_dtimFechaCreacion' => 'STR',
+				'cmp_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
+				'doc_intIdDocumento' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -35,28 +34,27 @@ class TblComprobanteContableSchema implements ISchema
 
 			'autoincrement' => 'cmp_intId',
 
-			'nullable'		=> ['cmp_intId', 'cmp_varNroDcoumento', 'cmp_intIdDocumento', 'cmp_dtmFechaCreacion', 'cmp_dtmFechaActualizacion', 'cmp_decTotalCuentaCredito', 'cmp_decTotalCuentaDebito', 'cmp_decTotalDiferencia', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['cmp_intId', 'cmp_dtimFechaCreacion', 'cmp_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'cmp_intId' => ['type' => 'int'],
-				'cmp_varNroDcoumento' => ['type' => 'str', 'max' => 20],
-				'cmp_intIdDocumento' => ['type' => 'int'],
-				'cmp_dtmFechaMovimiento' => ['type' => 'date', 'required' => true],
-				'cmp_dtmFechaCreacion' => ['type' => 'datetime'],
-				'cmp_dtmFechaActualizacion' => ['type' => 'datetime'],
-				'cmp_decTotalCuentaCredito' => ['type' => 'decimal(10,0)'],
-				'cmp_decTotalCuentaDebito' => ['type' => 'decimal(10,0)'],
-				'cmp_decTotalDiferencia' => ['type' => 'decimal(10,0)'],
-				'cmp_varNota' => ['type' => 'str', 'max' => 250, 'required' => true],
-				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
+				'cmp_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'cmp_datFechaMovimiento' => ['type' => 'date', 'required' => true],
+				'cmp_decTotalCuentaCredito' => ['type' => 'decimal(18,2)', 'required' => true],
+				'cmp_decTotalCuentaDebito' => ['type' => 'decimal(18,2)', 'required' => true],
+				'cmp_decTotalDiferencia' => ['type' => 'decimal(18,2)', 'required' => true],
+				'cmp_lonNota' => ['type' => 'str', 'required' => true],
+				'cmp_dtimFechaCreacion' => ['type' => 'datetime'],
+				'cmp_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
+				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['doc_intIdDocumento', 'est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['doc_intIdDocumento', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_documento' => [
@@ -66,8 +64,8 @@ class TblComprobanteContableSchema implements ISchema
 					['tbl_estado.est_intId','tbl_comprobante_contable.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_comprobante_contable.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_comprobante_contable.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_comprobante_contable.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_comprobante_contable.usu_intIdActualizador']
 				],
 				'tbl_comprobante_contable_detalle' => [
 					['tbl_comprobante_contable_detalle.cmp_intIdComprobanteContable','tbl_comprobante_contable.cmp_intId']
@@ -115,12 +113,12 @@ class TblComprobanteContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_comprobante_contable',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -129,12 +127,12 @@ class TblComprobanteContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_comprobante_contable',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -164,8 +162,8 @@ class TblComprobanteContableSchema implements ISchema
 					['tbl_estado.est_intId','tbl_comprobante_contable.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_comprobante_contable.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_comprobante_contable.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_comprobante_contable.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_comprobante_contable.usu_intIdActualizador']
 				]
 			],
 
@@ -210,12 +208,12 @@ class TblComprobanteContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_comprobante_contable',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -224,12 +222,12 @@ class TblComprobanteContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_comprobante_contable',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

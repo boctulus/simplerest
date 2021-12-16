@@ -44,15 +44,15 @@ class TblGrupoCuentaContableSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['cla_intIdClase', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['cla_intIdClase', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_clase_cuenta_contable' => [
 					['tbl_clase_cuenta_contable.cla_intId','tbl_grupo_cuenta_contable.cla_intIdClase']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_grupo_cuenta_contable.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_grupo_cuenta_contable.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_grupo_cuenta_contable.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_grupo_cuenta_contable.usu_intIdCreador']
 				],
 				'tbl_cuenta_contable' => [
 					['tbl_cuenta_contable.gru_intIdGrupoCategoriaCuentaContable','tbl_grupo_cuenta_contable.gru_intId']
@@ -84,12 +84,12 @@ class TblGrupoCuentaContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_grupo_cuenta_contable',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				    1 => 
@@ -98,12 +98,12 @@ class TblGrupoCuentaContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_grupo_cuenta_contable',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				  ),
@@ -130,8 +130,8 @@ class TblGrupoCuentaContableSchema implements ISchema
 					['tbl_clase_cuenta_contable.cla_intId','tbl_grupo_cuenta_contable.cla_intIdClase']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_grupo_cuenta_contable.usu_intIdCreador'],
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_grupo_cuenta_contable.usu_intIdActualizador']
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_grupo_cuenta_contable.usu_intIdActualizador'],
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_grupo_cuenta_contable.usu_intIdCreador']
 				]
 			],
 
@@ -160,12 +160,12 @@ class TblGrupoCuentaContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_grupo_cuenta_contable',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				    1 => 
@@ -174,12 +174,12 @@ class TblGrupoCuentaContableSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_grupo_cuenta_contable',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				  ),

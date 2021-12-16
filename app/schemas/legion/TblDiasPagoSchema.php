@@ -28,7 +28,7 @@ class TblDiasPagoSchema implements ISchema
 
 			'autoincrement' => 'dpa_intId',
 
-			'nullable'		=> ['dpa_intId', 'dpa_dtimFechaCreacion', 'dpa_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['dpa_intId', 'dpa_dtimFechaCreacion', 'dpa_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -39,7 +39,7 @@ class TblDiasPagoSchema implements ISchema
 				'dpa_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],

@@ -22,7 +22,7 @@ class TblCargoSchema implements ISchema
 				'car_dtimFechaCreacion' => 'STR',
 				'car_dtimFechaActualizacion' => 'STR',
 				'emn_intIdEmpresa' => 'INT',
-				'est_intIdEstado' => 'INT',
+				'est_intEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -31,31 +31,31 @@ class TblCargoSchema implements ISchema
 
 			'autoincrement' => 'car_intId',
 
-			'nullable'		=> ['car_intId', 'car_dtimFechaCreacion', 'car_dtimFechaActualizacion', 'emn_intIdEmpresa', 'est_intIdEstado'],
+			'nullable'		=> ['car_intId', 'car_dtimFechaCreacion', 'car_dtimFechaActualizacion', 'emn_intIdEmpresa', 'est_intEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'car_intId' => ['type' => 'int'],
-				'car_varCodigo' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'car_varNombre' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'car_lonDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'car_varCodigo' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'car_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
+				'car_lonDescripcion' => ['type' => 'str', 'required' => true],
 				'car_dtimFechaCreacion' => ['type' => 'datetime'],
 				'car_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'emn_intIdEmpresa' => ['type' => 'int'],
-				'est_intIdEstado' => ['type' => 'int'],
-				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'est_intEstado' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['emn_intIdEmpresa', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['emn_intIdEmpresa', 'est_intEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_empresa_nomina' => [
 					['tbl_empresa_nomina.emn_intId','tbl_cargo.emn_intIdEmpresa']
 				],
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_cargo.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_cargo.est_intEstado']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cargo.usu_intIdActualizador'],
@@ -96,7 +96,7 @@ class TblCargoSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_cargo',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),
@@ -167,7 +167,7 @@ class TblCargoSchema implements ISchema
 					['tbl_empresa_nomina.emn_intId','tbl_cargo.emn_intIdEmpresa']
 				],
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_cargo.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_cargo.est_intEstado']
 				],
 				'tbl_usuario' => [
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_cargo.usu_intIdActualizador'],
@@ -204,7 +204,7 @@ class TblCargoSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_cargo',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),

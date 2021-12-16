@@ -18,22 +18,21 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 				'mvd_intId' => 'INT',
 				'mvd_varNumeroDocumento' => 'STR',
 				'mvd_varDescripcion' => 'STR',
-				'mvd_dateFecha' => 'STR',
+				'mvd_datFecha' => 'STR',
 				'mvd_decCantidad' => 'STR',
 				'mvd_decValor' => 'STR',
 				'mvd_decIva' => 'STR',
 				'mvd_decPorceIVA' => 'STR',
 				'mvd_decPorcentajeDescuento' => 'STR',
 				'mvd_decValorTotal' => 'STR',
-				'mvd_varNota' => 'STR',
+				'mvd_lonNota' => 'STR',
 				'mvd_dtimFechaCreacion' => 'STR',
 				'mvd_dtimFechaActualizacion' => 'STR',
 				'bod_intIdBodega' => 'INT',
 				'pro_intIdProducto' => 'INT',
-				'est_intIdEstado' => 'INT',
 				'mvi_intIdMvtoInventario' => 'INT',
 				'per_intIdPersona' => 'INT',
-				'doc_intIdDocumento' => 'INT',
+				'est_intIdEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -42,42 +41,38 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 
 			'autoincrement' => 'mvd_intId',
 
-			'nullable'		=> ['mvd_intId', 'mvd_varNumeroDocumento', 'mvd_dtimFechaCreacion', 'mvd_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['mvd_intId', 'mvd_dtimFechaCreacion', 'mvd_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'mvd_intId' => ['type' => 'int'],
-				'mvd_varNumeroDocumento' => ['type' => 'str', 'max' => 20],
+				'mvd_varNumeroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'mvd_varDescripcion' => ['type' => 'str', 'max' => 100, 'required' => true],
-				'mvd_dateFecha' => ['type' => 'date', 'required' => true],
+				'mvd_datFecha' => ['type' => 'date', 'required' => true],
 				'mvd_decCantidad' => ['type' => 'decimal(18,2)', 'required' => true],
 				'mvd_decValor' => ['type' => 'decimal(18,2)', 'required' => true],
 				'mvd_decIva' => ['type' => 'decimal(18,2)', 'required' => true],
 				'mvd_decPorceIVA' => ['type' => 'decimal(18,2)', 'required' => true],
 				'mvd_decPorcentajeDescuento' => ['type' => 'decimal(18,2)', 'required' => true],
 				'mvd_decValorTotal' => ['type' => 'decimal(18,2)', 'required' => true],
-				'mvd_varNota' => ['type' => 'str', 'max' => 255, 'required' => true],
+				'mvd_lonNota' => ['type' => 'str', 'required' => true],
 				'mvd_dtimFechaCreacion' => ['type' => 'datetime'],
 				'mvd_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'bod_intIdBodega' => ['type' => 'int', 'required' => true],
 				'pro_intIdProducto' => ['type' => 'int', 'required' => true],
-				'est_intIdEstado' => ['type' => 'int'],
 				'mvi_intIdMvtoInventario' => ['type' => 'int', 'required' => true],
 				'per_intIdPersona' => ['type' => 'int', 'required' => true],
-				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
+				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['bod_intIdBodega', 'doc_intIdDocumento', 'est_intIdEstado', 'mvi_intIdMvtoInventario', 'per_intIdPersona', 'pro_intIdProducto', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['bod_intIdBodega', 'est_intIdEstado', 'mvi_intIdMvtoInventario', 'per_intIdPersona', 'pro_intIdProducto', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_bodega' => [
 					['tbl_bodega.bod_intId','tbl_mvto_inventario_detalle.bod_intIdBodega']
-				],
-				'tbl_documento' => [
-					['tbl_documento.doc_intId','tbl_mvto_inventario_detalle.doc_intIdDocumento']
 				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_mvto_inventario_detalle.est_intIdEstado']
@@ -92,8 +87,8 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 					['tbl_producto.pro_intId','tbl_mvto_inventario_detalle.pro_intIdProducto']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_mvto_inventario_detalle.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_mvto_inventario_detalle.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_mvto_inventario_detalle.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_mvto_inventario_detalle.usu_intIdActualizador']
 				]
 			],
 
@@ -114,22 +109,6 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_documento' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_mvto_inventario_detalle',
-				        1 => 'doc_intIdDocumento',
-				      ),
-				    ),
-				  ),
 				  'tbl_estado' => 
 				  array (
 				    0 => 
@@ -202,20 +181,6 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_mvto_inventario_detalle',
-				        1 => 'usu_intIdActualizador',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
 				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
@@ -224,15 +189,26 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
+				    1 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_usuario',
+				        1 => 'usu_intId',
+				        'alias' => '__usu_intIdActualizador',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_mvto_inventario_detalle',
+				        1 => 'usu_intIdActualizador',
+				      ),
+				    ),
 				  ),
 				),
 
 			'relationships_from' => [
 				'tbl_bodega' => [
 					['tbl_bodega.bod_intId','tbl_mvto_inventario_detalle.bod_intIdBodega']
-				],
-				'tbl_documento' => [
-					['tbl_documento.doc_intId','tbl_mvto_inventario_detalle.doc_intIdDocumento']
 				],
 				'tbl_estado' => [
 					['tbl_estado.est_intId','tbl_mvto_inventario_detalle.est_intIdEstado']
@@ -247,8 +223,8 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 					['tbl_producto.pro_intId','tbl_mvto_inventario_detalle.pro_intIdProducto']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_mvto_inventario_detalle.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_mvto_inventario_detalle.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_mvto_inventario_detalle.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_mvto_inventario_detalle.usu_intIdActualizador']
 				]
 			],
 
@@ -269,22 +245,6 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_documento' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_mvto_inventario_detalle',
-				        1 => 'doc_intIdDocumento',
-				      ),
-				    ),
-				  ),
 				  'tbl_estado' => 
 				  array (
 				    0 => 
@@ -357,12 +317,12 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_mvto_inventario_detalle',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -371,12 +331,12 @@ class TblMvtoInventarioDetalleSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_mvto_inventario_detalle',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

@@ -21,7 +21,7 @@ class TblEpsSchema implements ISchema
 				'eps_lonDescripcion' => 'STR',
 				'eps_dtimFechaCreacion' => 'STR',
 				'eps_dtimFechaActualizacion' => 'STR',
-				'est_intIdEstado' => 'INT',
+				'est_intEstado' => 'INT',
 				'usu_intIdCreador' => 'INT',
 				'usu_intIdActualizador' => 'INT'
 			],
@@ -30,7 +30,7 @@ class TblEpsSchema implements ISchema
 
 			'autoincrement' => 'eps_intId',
 
-			'nullable'		=> ['eps_intId', 'eps_varCodigo', 'eps_lonDescripcion', 'eps_dtimFechaCreacion', 'eps_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['eps_intId', 'eps_varCodigo', 'eps_lonDescripcion', 'eps_dtimFechaCreacion', 'eps_dtimFechaActualizacion', 'est_intEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -41,20 +41,20 @@ class TblEpsSchema implements ISchema
 				'eps_lonDescripcion' => ['type' => 'str'],
 				'eps_dtimFechaCreacion' => ['type' => 'datetime'],
 				'eps_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'est_intIdEstado' => ['type' => 'int'],
+				'est_intEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'relationships' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_eps.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_eps.est_intEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_eps.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_eps.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_eps.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_eps.usu_intIdActualizador']
 				]
 			],
 
@@ -71,27 +71,13 @@ class TblEpsSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_eps',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),
 				  'tbl_usuario' => 
 				  array (
 				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_eps',
-				        1 => 'usu_intIdActualizador',
-				      ),
-				    ),
-				    1 => 
 				    array (
 				      0 => 
 				      array (
@@ -105,16 +91,30 @@ class TblEpsSchema implements ISchema
 				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
+				    1 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_usuario',
+				        1 => 'usu_intId',
+				        'alias' => '__usu_intIdActualizador',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_eps',
+				        1 => 'usu_intIdActualizador',
+				      ),
+				    ),
 				  ),
 				),
 
 			'relationships_from' => [
 				'tbl_estado' => [
-					['tbl_estado.est_intId','tbl_eps.est_intIdEstado']
+					['tbl_estado.est_intId','tbl_eps.est_intEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_eps.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_eps.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_eps.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_eps.usu_intIdActualizador']
 				]
 			],
 
@@ -131,7 +131,7 @@ class TblEpsSchema implements ISchema
 				      1 => 
 				      array (
 				        0 => 'tbl_eps',
-				        1 => 'est_intIdEstado',
+				        1 => 'est_intEstado',
 				      ),
 				    ),
 				  ),
@@ -143,12 +143,12 @@ class TblEpsSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_eps',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -157,12 +157,12 @@ class TblEpsSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_eps',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

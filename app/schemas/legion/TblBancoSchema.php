@@ -33,11 +33,11 @@ class TblBancoSchema implements ISchema
 
 			'nullable'		=> ['ban_intId', 'ban_varCodigo', 'ban_lonDescripcion', 'ban_dtimFechaCreacion', 'ban_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
-			'uniques'		=> ['ban_varCodigo'],
+			'uniques'		=> [],
 
 			'rules' 		=> [
 				'ban_intId' => ['type' => 'int'],
-				'ban_varCodigo' => ['type' => 'str', 'max' => 4],
+				'ban_varCodigo' => ['type' => 'str', 'max' => 100],
 				'ban_varNombre' => ['type' => 'str', 'max' => 100, 'required' => true],
 				'ban_lonDescripcion' => ['type' => 'str'],
 				'ban_dtimFechaCreacion' => ['type' => 'datetime'],
@@ -61,17 +61,14 @@ class TblBancoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_banco.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_banco.usu_intIdCreador']
 				],
-				'tbl_proveedor' => [
-					['tbl_proveedor.ban_intIdBanco','tbl_banco.ban_intId']
-				],
-				'tbl_empresa_nomina' => [
-					['tbl_empresa_nomina.ban_intIdBanco','tbl_banco.ban_intId']
-				],
 				'tbl_empleado_informacion_pago' => [
 					['tbl_empleado_informacion_pago.ban_intId','tbl_banco.ban_intId']
 				],
 				'tbl_cuenta_bancaria' => [
 					['tbl_cuenta_bancaria.ban_intIdBanco','tbl_banco.ban_intId']
+				],
+				'tbl_proveedor' => [
+					['tbl_proveedor.ban_intIdBanco','tbl_banco.ban_intId']
 				]
 			],
 
@@ -139,29 +136,13 @@ class TblBancoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_proveedor' => 
+				  'tbl_cuenta_bancaria' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_proveedor',
-				        1 => 'ban_intIdBanco',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_banco',
-				        1 => 'ban_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_empresa_nomina' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_empresa_nomina',
+				        0 => 'tbl_cuenta_bancaria',
 				        1 => 'ban_intIdBanco',
 				      ),
 				      1 => 
@@ -187,13 +168,13 @@ class TblBancoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cuenta_bancaria' => 
+				  'tbl_proveedor' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cuenta_bancaria',
+				        0 => 'tbl_proveedor',
 				        1 => 'ban_intIdBanco',
 				      ),
 				      1 => 

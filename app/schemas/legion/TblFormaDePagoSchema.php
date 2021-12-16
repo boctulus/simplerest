@@ -31,7 +31,7 @@ class TblFormaDePagoSchema implements ISchema
 
 			'autoincrement' => 'fdp_intId',
 
-			'nullable'		=> ['fdp_intId', 'fdp_dtimFechaCreacion', 'fdp_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'nullable'		=> ['fdp_intId', 'fdp_dtimFechaCreacion', 'fdp_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -44,7 +44,7 @@ class TblFormaDePagoSchema implements ISchema
 				'fdp_dtimFechaCreacion' => ['type' => 'datetime'],
 				'fdp_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
-				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
@@ -55,11 +55,8 @@ class TblFormaDePagoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_forma_de_pago.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_forma_de_pago.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_forma_de_pago.usu_intIdCreador']
-				],
-				'tbl_factura' => [
-					['tbl_factura.tdp_intIdFormaPago','tbl_forma_de_pago.fdp_intId']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_forma_de_pago.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_forma_de_pago.usu_intIdActualizador']
 				]
 			],
 
@@ -88,20 +85,6 @@ class TblFormaDePagoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_forma_de_pago',
-				        1 => 'usu_intIdActualizador',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario',
-				        1 => 'usu_intId',
 				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
@@ -110,20 +93,18 @@ class TblFormaDePagoSchema implements ISchema
 				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
-				  ),
-				  'tbl_factura' => 
-				  array (
-				    0 => 
+				    1 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_factura',
-				        1 => 'tdp_intIdFormaPago',
+				        0 => 'tbl_usuario',
+				        1 => 'usu_intId',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_forma_de_pago',
-				        1 => 'fdp_intId',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),
@@ -134,8 +115,8 @@ class TblFormaDePagoSchema implements ISchema
 					['tbl_estado.est_intId','tbl_forma_de_pago.est_intIdEstado']
 				],
 				'tbl_usuario' => [
-					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_forma_de_pago.usu_intIdActualizador'],
-					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_forma_de_pago.usu_intIdCreador']
+					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_forma_de_pago.usu_intIdCreador'],
+					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_forma_de_pago.usu_intIdActualizador']
 				]
 			],
 
@@ -164,12 +145,12 @@ class TblFormaDePagoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdActualizador',
+				        'alias' => '__usu_intIdCreador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_forma_de_pago',
-				        1 => 'usu_intIdActualizador',
+				        1 => 'usu_intIdCreador',
 				      ),
 				    ),
 				    1 => 
@@ -178,12 +159,12 @@ class TblFormaDePagoSchema implements ISchema
 				      array (
 				        0 => 'tbl_usuario',
 				        1 => 'usu_intId',
-				        'alias' => '__usu_intIdCreador',
+				        'alias' => '__usu_intIdActualizador',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'tbl_forma_de_pago',
-				        1 => 'usu_intIdCreador',
+				        1 => 'usu_intIdActualizador',
 				      ),
 				    ),
 				  ),

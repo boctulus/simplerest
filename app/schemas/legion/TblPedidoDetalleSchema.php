@@ -50,13 +50,13 @@ class TblPedidoDetalleSchema implements ISchema
 
 			'autoincrement' => 'dtp_intId',
 
-			'nullable'		=> ['dtp_intId', 'dtp_varNroDocumento', 'dtp_dtimFechaCreacion', 'dtp_dtimFechaActualizacion', 'doc_intIdDocumento', 'est_intEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['dtp_intId', 'dtp_dtimFechaCreacion', 'dtp_dtimFechaActualizacion', 'est_intEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'dtp_intId' => ['type' => 'int'],
-				'dtp_varNroDocumento' => ['type' => 'str', 'max' => 20],
+				'dtp_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'dtp_decCantidad' => ['type' => 'decimal(18,4)', 'required' => true],
 				'dtp_decPrecioUnitario' => ['type' => 'decimal(18,4)', 'required' => true],
 				'dtp_decValor' => ['type' => 'decimal(18,4)', 'required' => true],
@@ -80,7 +80,7 @@ class TblPedidoDetalleSchema implements ISchema
 				'ecp_intIdPedido' => ['type' => 'int', 'required' => true],
 				'pro_intIdProducto' => ['type' => 'int', 'required' => true],
 				'fde_intIdBodega' => ['type' => 'int', 'required' => true],
-				'doc_intIdDocumento' => ['type' => 'int'],
+				'doc_intIdDocumento' => ['type' => 'int', 'required' => true],
 				'est_intEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
 				'usu_intIdActualizador' => ['type' => 'int']

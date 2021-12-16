@@ -34,7 +34,7 @@ class TblClienteSchema implements ISchema
 
 			'autoincrement' => 'cli_intId',
 
-			'nullable'		=> ['cli_intId', 'cli_dtimFechaCreacion', 'cli_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['cli_intId', 'cli_dtimFechaCreacion', 'cli_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
 
 			'uniques'		=> ['per_intIdPersona'],
 
@@ -50,11 +50,11 @@ class TblClienteSchema implements ISchema
 				'dpa_intIdDiasPago' => ['type' => 'int', 'required' => true],
 				'des_intIdDescuento' => ['type' => 'int', 'required' => true],
 				'per_intIdPersona' => ['type' => 'int', 'required' => true],
-				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdCreador' => ['type' => 'int'],
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['des_intIdDescuento', 'dpa_intIdDiasPago', 'est_intIdEstado', 'per_intIdPersona', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['des_intIdDescuento', 'dpa_intIdDiasPago', 'est_intIdEstado', 'per_intIdPersona', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_descuento' => [
@@ -177,13 +177,13 @@ class TblClienteSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cliente_retencion_cuentacontable' => 
+				  'tbl_cliente_reteiva_cuentacontable' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cliente_retencion_cuentacontable',
+				        0 => 'tbl_cliente_reteiva_cuentacontable',
 				        1 => 'cli_intIdCliente',
 				      ),
 				      1 => 
@@ -193,13 +193,13 @@ class TblClienteSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cliente_reteiva_cuentacontable' => 
+				  'tbl_cliente_retencion_cuentacontable' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cliente_reteiva_cuentacontable',
+				        0 => 'tbl_cliente_retencion_cuentacontable',
 				        1 => 'cli_intIdCliente',
 				      ),
 				      1 => 

@@ -19,7 +19,7 @@ class TblPedidoSchema implements ISchema
 				'ecp_varNroDocumento' => 'STR',
 				'ecp_decCantidadTotal' => 'STR',
 				'ecp_decDescuento' => 'STR',
-				'ecp_decValorbruto' => 'STR',
+				'ecp_decValorBruto' => 'STR',
 				'ecp_decIva' => 'STR',
 				'ecp_decRetefuente' => 'STR',
 				'ecp_decReteIca' => 'STR',
@@ -42,16 +42,16 @@ class TblPedidoSchema implements ISchema
 
 			'autoincrement' => 'ecp_intId',
 
-			'nullable'		=> ['ecp_intId', 'ecp_varNroDocumento', 'ecp_dtimFechaCreacion', 'ecp_dtimFechaActualizacion', 'est_intEstado', 'usu_intIdActualizador'],
+			'nullable'		=> ['ecp_intId', 'ecp_dtimFechaCreacion', 'ecp_dtimFechaActualizacion', 'est_intEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'ecp_intId' => ['type' => 'int'],
-				'ecp_varNroDocumento' => ['type' => 'str', 'max' => 20],
-				'ecp_decCantidadTotal' => ['type' => 'decimal(18,4)', 'required' => true],
+				'ecp_varNroDocumento' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'ecp_decCantidadTotal' => ['type' => 'decimal(18,2)', 'required' => true],
 				'ecp_decDescuento' => ['type' => 'decimal(18,4)', 'required' => true],
-				'ecp_decValorbruto' => ['type' => 'decimal(18,4)', 'required' => true],
+				'ecp_decValorBruto' => ['type' => 'decimal(18,4)', 'required' => true],
 				'ecp_decIva' => ['type' => 'decimal(18,4)', 'required' => true],
 				'ecp_decRetefuente' => ['type' => 'decimal(18,4)', 'required' => true],
 				'ecp_decReteIca' => ['type' => 'decimal(18,4)', 'required' => true],

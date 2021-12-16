@@ -33,7 +33,7 @@ class TblInformacionTributariaSchema implements ISchema
 
 			'autoincrement' => 'tft_intId',
 
-			'nullable'		=> ['tft_intId', 'tft_bolGrancontribuyente', 'tft_bolLLevarContabilidad', 'tft_bolCalculaIca', 'tft_dtimFechaCreacion', 'tft_dtimFechaActualizacion', 'sub_intIdcxp_subcuentacontable', 'sub_intIdcxc_subcuentacontable', 'est_intIdEstado'],
+			'nullable'		=> ['tft_intId', 'tft_bolGrancontribuyente', 'tft_bolLLevarContabilidad', 'tft_bolCalculaIca', 'tft_dtimFechaCreacion', 'tft_dtimFechaActualizacion', 'per_intIdpersona', 'sub_intIdcxp_subcuentacontable', 'sub_intIdcxc_subcuentacontable', 'est_intIdEstado'],
 
 			'uniques'		=> ['per_intIdpersona'],
 
@@ -44,7 +44,7 @@ class TblInformacionTributariaSchema implements ISchema
 				'tft_bolCalculaIca' => ['type' => 'bool'],
 				'tft_dtimFechaCreacion' => ['type' => 'datetime'],
 				'tft_dtimFechaActualizacion' => ['type' => 'datetime'],
-				'per_intIdpersona' => ['type' => 'int', 'required' => true],
+				'per_intIdpersona' => ['type' => 'int'],
 				'sub_intIdcxp_subcuentacontable' => ['type' => 'int'],
 				'sub_intIdcxc_subcuentacontable' => ['type' => 'int'],
 				'est_intIdEstado' => ['type' => 'int'],
@@ -52,7 +52,7 @@ class TblInformacionTributariaSchema implements ISchema
 				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
 			],
 
-			'fks' 			=> ['est_intIdEstado', 'per_intIdpersona', 'sub_intIdcxp_subcuentacontable', 'sub_intIdcxc_subcuentacontable', 'usu_intIdActualizador', 'usu_intIdCreador'],
+			'fks' 			=> ['est_intIdEstado', 'per_intIdpersona', 'sub_intIdcxc_subcuentacontable', 'sub_intIdcxp_subcuentacontable', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_estado' => [

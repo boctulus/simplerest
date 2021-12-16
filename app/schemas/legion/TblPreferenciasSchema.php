@@ -35,7 +35,7 @@ class TblPreferenciasSchema implements ISchema
 
 			'autoincrement' => 'tpf_intId',
 
-			'nullable'		=> ['tpf_intId', 'tpf_bitUso', 'tpf_dtimFechaCreacion', 'tpf_dtimFechaActualizacion', 'doc_intIdDocumento', 'men_idId', 'est_intIdEstado'],
+			'nullable'		=> ['tpf_intId', 'tpf_bitUso', 'tpf_dtimFechaCreacion', 'tpf_dtimFechaActualizacion', 'doc_intIdDocumento', 'men_idId', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> [],
 
@@ -53,10 +53,10 @@ class TblPreferenciasSchema implements ISchema
 				'men_idId' => ['type' => 'int'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['doc_intIdDocumento', 'est_intIdEstado', 'usu_intIdCreador', 'usu_intIdActualizador'],
+			'fks' 			=> ['doc_intIdDocumento', 'est_intIdEstado', 'usu_intIdActualizador', 'usu_intIdCreador'],
 
 			'relationships' => [
 				'tbl_documento' => [

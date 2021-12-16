@@ -17,7 +17,7 @@ class TblDocumentoSchema implements ISchema
 			'attr_types'	=> [
 				'doc_intId' => 'INT',
 				'doc_varDocumento' => 'STR',
-				'doc_lonDescripcion' => 'STR',
+				'doc_varDescripcion' => 'STR',
 				'doc_dtimFechaCreacion' => 'STR',
 				'doc_dtimFechaActualizacion' => 'STR',
 				'est_intIdEstado' => 'INT',
@@ -30,20 +30,20 @@ class TblDocumentoSchema implements ISchema
 
 			'autoincrement' => 'doc_intId',
 
-			'nullable'		=> ['doc_intId', 'doc_dtimFechaCreacion', 'doc_dtimFechaActualizacion', 'est_intIdEstado'],
+			'nullable'		=> ['doc_intId', 'doc_dtimFechaCreacion', 'doc_dtimFechaActualizacion', 'est_intIdEstado', 'usu_intIdActualizador'],
 
 			'uniques'		=> ['doc_varDocumento'],
 
 			'rules' 		=> [
 				'doc_intId' => ['type' => 'int'],
 				'doc_varDocumento' => ['type' => 'str', 'max' => 4, 'required' => true],
-				'doc_lonDescripcion' => ['type' => 'str', 'required' => true],
+				'doc_varDescripcion' => ['type' => 'str', 'max' => 150, 'required' => true],
 				'doc_dtimFechaCreacion' => ['type' => 'datetime'],
 				'doc_dtimFechaActualizacion' => ['type' => 'datetime'],
 				'est_intIdEstado' => ['type' => 'int'],
 				'tra_intIdTransaccion' => ['type' => 'int', 'required' => true],
 				'usu_intIdCreador' => ['type' => 'int', 'required' => true],
-				'usu_intIdActualizador' => ['type' => 'int', 'required' => true]
+				'usu_intIdActualizador' => ['type' => 'int']
 			],
 
 			'fks' 			=> ['est_intIdEstado', 'tra_intIdTransaccion', 'usu_intIdActualizador', 'usu_intIdCreador'],
@@ -59,68 +59,65 @@ class TblDocumentoSchema implements ISchema
 					['tbl_usuario|__usu_intIdActualizador.usu_intId','tbl_documento.usu_intIdActualizador'],
 					['tbl_usuario|__usu_intIdCreador.usu_intId','tbl_documento.usu_intIdCreador']
 				],
+				'tbl_factura' => [
+					['tbl_factura.doc_intDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_orden_compra' => [
+					['tbl_orden_compra.doc_intDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_contrato' => [
+					['tbl_contrato.doc_intIdDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_cotizacion' => [
+					['tbl_cotizacion.doc_intIdDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_nota_debito_detalle' => [
+					['tbl_nota_debito_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_pedido_detalle' => [
+					['tbl_pedido_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_preferencias' => [
+					['tbl_preferencias.doc_intIdDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_mvto_inventario' => [
+					['tbl_mvto_inventario.doc_intIdDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_nota_credito_detalle' => [
+					['tbl_nota_credito_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+				],
+				'tbl_orden_compra_detalle' => [
+					['tbl_orden_compra_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+				],
 				'tbl_comprobante_contable' => [
 					['tbl_comprobante_contable.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
 				'tbl_compras_detalle' => [
 					['tbl_compras_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
-				'tbl_consecutivo' => [
-					['tbl_consecutivo.doc_intIdDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_pedido_detalle' => [
-					['tbl_pedido_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_nota_debito_detalle' => [
-					['tbl_nota_debito_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_preferencias' => [
-					['tbl_preferencias.doc_intIdDocumento','tbl_documento.doc_intId']
-				],
 				'tbl_compras' => [
-					['tbl_compras.doc_intDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_contrato' => [
-					['tbl_contrato.doc_intIdDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_mvto_inventario' => [
-					['tbl_mvto_inventario.doc_intDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_orden_compra' => [
-					['tbl_orden_compra.doc_intDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_pedido' => [
-					['tbl_pedido.doc_intIdDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_cotizacion_detalle' => [
-					['tbl_cotizacion_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_comprobante_contable_detalle' => [
-					['tbl_comprobante_contable_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+					['tbl_compras.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
 				'tbl_nota_credito' => [
 					['tbl_nota_credito.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
-				'tbl_orden_compra_detalle' => [
-					['tbl_orden_compra_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+				'tbl_factura_detalle' => [
+					['tbl_factura_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
-				'tbl_factura' => [
-					['tbl_factura.doc_intIdDocumento','tbl_documento.doc_intId']
+				'tbl_cotizacion_detalle' => [
+					['tbl_cotizacion_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
-				'tbl_cotizacion' => [
-					['tbl_cotizacion.doc_intIdDocumento','tbl_documento.doc_intId']
+				'tbl_consecutivo' => [
+					['tbl_consecutivo.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
-				'tbl_mvto_inventario_detalle' => [
-					['tbl_mvto_inventario_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+				'tbl_comprobante_contable_detalle' => [
+					['tbl_comprobante_contable_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
 				'tbl_nota_debito' => [
 					['tbl_nota_debito.doc_intIdDocumento','tbl_documento.doc_intId']
 				],
-				'tbl_factura_detalle' => [
-					['tbl_factura_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
-				],
-				'tbl_nota_credito_detalle' => [
-					['tbl_nota_credito_detalle.doc_intIdDocumento','tbl_documento.doc_intId']
+				'tbl_pedido' => [
+					['tbl_pedido.doc_intIdDocumento','tbl_documento.doc_intId']
 				]
 			],
 
@@ -188,62 +185,14 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_comprobante_contable' => 
+				  'tbl_factura' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_comprobante_contable',
-				        1 => 'doc_intIdDocumento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_compras_detalle' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_compras_detalle',
-				        1 => 'doc_intIdDocumento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_consecutivo' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_consecutivo',
-				        1 => 'doc_intIdDocumento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_pedido_detalle' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_pedido_detalle',
-				        1 => 'doc_intIdDocumento',
+				        0 => 'tbl_factura',
+				        1 => 'doc_intDocumento',
 				      ),
 				      1 => 
 				      array (
@@ -259,6 +208,22 @@ class TblDocumentoSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_nota_debito_detalle',
+				        1 => 'doc_intIdDocumento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_documento',
+				        1 => 'doc_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_contrato' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_contrato',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -284,14 +249,14 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_compras' => 
+				  'tbl_cotizacion' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_compras',
-				        1 => 'doc_intDocumento',
+				        0 => 'tbl_cotizacion',
+				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
 				      array (
@@ -300,13 +265,13 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_contrato' => 
+				  'tbl_consecutivo' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_contrato',
+				        0 => 'tbl_consecutivo',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -323,38 +288,6 @@ class TblDocumentoSchema implements ISchema
 				      0 => 
 				      array (
 				        0 => 'tbl_mvto_inventario',
-				        1 => 'doc_intDocumento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_orden_compra' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_orden_compra',
-				        1 => 'doc_intDocumento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_pedido' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_pedido',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -364,13 +297,13 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cotizacion_detalle' => 
+				  'tbl_nota_credito_detalle' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cotizacion_detalle',
+				        0 => 'tbl_nota_credito_detalle',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -396,13 +329,13 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_nota_credito' => 
+				  'tbl_cotizacion_detalle' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_nota_credito',
+				        0 => 'tbl_cotizacion_detalle',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -412,13 +345,13 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_orden_compra_detalle' => 
+				  'tbl_compras_detalle' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_orden_compra_detalle',
+				        0 => 'tbl_compras_detalle',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -428,13 +361,13 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_factura' => 
+				  'tbl_pedido' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_factura',
+				        0 => 'tbl_pedido',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -444,13 +377,13 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_cotizacion' => 
+				  'tbl_pedido_detalle' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_cotizacion',
+				        0 => 'tbl_pedido_detalle',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -460,29 +393,13 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_mvto_inventario_detalle' => 
+				  'tbl_compras' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_mvto_inventario_detalle',
-				        1 => 'doc_intIdDocumento',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'tbl_documento',
-				        1 => 'doc_intId',
-				      ),
-				    ),
-				  ),
-				  'tbl_nota_debito' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_nota_debito',
+				        0 => 'tbl_compras',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
@@ -508,13 +425,77 @@ class TblDocumentoSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'tbl_nota_credito_detalle' => 
+				  'tbl_orden_compra' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'tbl_nota_credito_detalle',
+				        0 => 'tbl_orden_compra',
+				        1 => 'doc_intDocumento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_documento',
+				        1 => 'doc_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_nota_credito' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_nota_credito',
+				        1 => 'doc_intIdDocumento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_documento',
+				        1 => 'doc_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_comprobante_contable' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_comprobante_contable',
+				        1 => 'doc_intIdDocumento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_documento',
+				        1 => 'doc_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_orden_compra_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_orden_compra_detalle',
+				        1 => 'doc_intIdDocumento',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'tbl_documento',
+				        1 => 'doc_intId',
+				      ),
+				    ),
+				  ),
+				  'tbl_nota_debito' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'tbl_nota_debito',
 				        1 => 'doc_intIdDocumento',
 				      ),
 				      1 => 
