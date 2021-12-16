@@ -1,0 +1,35 @@
+- Problema de permisos <solución>
+==================================
+
+Apparently, the files read/written by PHP are under the auspices of the apache User and Group, as specified in /etc/httpd/conf/httpd.conf
+
+  User apache
+  Group apache 
+
+En mi instalación,.... hay algo en:
+
+  /etc/apache2/apache2.con
+
+Y porque...
+
+  ps aux|grep apache
+
+  root     27361  0.0  0.1 500824 26988 ?        Ss   13:26   0:00 /usr/sbin/apache2 -k start
+  www-data 27367  0.0  0.1 505660 29284 ?        S    13:26   0:00 /usr/sbin/apache2 -k start
+  www-data 27368  0.0  0.1 505236 26500 ?        S    13:26   0:00 /usr/sbin/apache2 -k start
+  www-data 27369  0.0  0.1 505656 28936 ?        S    13:26   0:00 /usr/sbin/apache2 -k start
+  www-data 27372  0.0  0.0 503152 15548 ?        S    13:26   0:00 /usr/sbin/apache2 -k start
+  www-data 27373  0.0  0.0 503152 15548 ?        S    13:26   0:00 /usr/sbin/apache2 -k start
+  www-data 27510  0.0  0.0 503152 15548 ?        S    13:28   0:00 /usr/sbin/apache2 -k start
+  feli     30246  0.0  0.0  16948   992 pts/2    S+   14:05   0:00 grep --color=auto apache
+
+entonces...
+
+  sudo chgrp -R www-data /home/www
+  sudo find /home/www -type d -exec chmod g+rx {} +
+  sudo find /home/www -type f -exec chmod g+r {} +
+
+
+Fuente:
+https://askubuntu.com/questions/767504/permissions-problems-with-var-www-html-and-my-own-home-directory-for-a-website
+https://fedingo.com/how-to-fix-errno-13-permission-denied-error-in-apache/

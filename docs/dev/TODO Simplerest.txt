@@ -1,5 +1,18 @@
 # TODO
 
+- Al crear un nuevo "update" ... zipear anteriores para que no estorben en VSC.
+
+------ Pasar detalle de cobros a Esteban 
+
++ monto, fecha
++ fecha esperada de cobro 
++ fecha, débito
+
+Con la salvedad obvia de que se asume un flujo de caja "0" o "negativo"/.
+
+
+- Aegurarse que corran los updates en secuencia y no solo el último !!!!!
+
 - Permitir *crear* tablas con comandos "make"
 
 - Resolver tema del correo => sendMail() con plantillas
@@ -10,12 +23,19 @@
 
       2) Correr UPDATE sobre "Solución Binaria"
 
+- [ SQL MODE ]
+
+php com migrations migrate --dir=compania --to=db_168  
+Migrating '2021_09_28_29110773_0047_tbl_factura_maestro.php'
+
+PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1067 Invalid default value for 'fac_dateFecha'
+
 
 [ SUB-RESOURCES ]
 
   * UPDATE para V2  -- continuar con generalización       +++
 
-  * WHERE con otras tablas ++ (para el miércoles 15?)     +++
+  * WHERE con otras tablas ++ (para el miércoles 15?)     +++++
 
   * Permitir traer sub-sub-resources.  Ej:
 
@@ -1943,7 +1963,7 @@ Ante un fallo regresa información de la excepción:
             "error": "error-exception",
             "exception": {
                 "class": "Zend\\View\\Exception\\RuntimeException",
-                "file": "/var/www/sites/app-api.dev.claroshop-services.io/vendor/zendframework/zend-view/src/Renderer/PhpRenderer.php",
+                "file": "/home/www/sites/app-api.dev.claroshop-services.io/vendor/zendframework/zend-view/src/Renderer/PhpRenderer.php",
                 "line": 498,
                 "message": "Zend\\View\\Renderer\\PhpRenderer::render: Unable to render template \"api-manager/v1/product/update\"; resolver could not resolve to a file"... Zend\\Mvc\\Application->run()\n#10 {main}"
             }
@@ -3385,7 +3405,7 @@ Ante un fallo regresa información de la excepción:
             "error": "error-exception",
             "exception": {
                 "class": "Zend\\View\\Exception\\RuntimeException",
-                "file": "/var/www/sites/app-api.dev.claroshop-services.io/vendor/zendframework/zend-view/src/Renderer/PhpRenderer.php",
+                "file": "/home/www/sites/app-api.dev.claroshop-services.io/vendor/zendframework/zend-view/src/Renderer/PhpRenderer.php",
                 "line": 498,
                 "message": "Zend\\View\\Renderer\\PhpRenderer::render: Unable to render template \"api-manager/v1/product/update\"; resolver could not resolve to a file"... Zend\\Mvc\\Application->run()\n#10 {main}"
             }

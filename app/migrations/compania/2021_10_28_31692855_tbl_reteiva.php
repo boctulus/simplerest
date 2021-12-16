@@ -21,7 +21,7 @@ class TblReteiva implements IMigration
             `riv_intTope` int(11) NOT NULL  , 
             `riv_decPorcentaje` decimal(10,2) NOT NULL  , 
             `riv_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `riv_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' on update current_timestamp() , 
+            `riv_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' on update current_timestamp() , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
             `sub_intIdsubcuentacontable` int(11) NULL  , 
             `usu_intIdCreador` int(11) NOT NULL  , 

@@ -30,7 +30,5 @@ class Config
         }
 
         static::$data[$property] = $value;
-
-        dd(static::$data);
     }
 }

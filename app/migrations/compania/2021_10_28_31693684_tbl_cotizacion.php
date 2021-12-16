@@ -27,7 +27,7 @@ class TblCotizacion implements IMigration
             `cot_bolEstado` tinyint(4) NOT NULL  DEFAULT 1 , 
             `cot_dateFechaVencimiento` date NOT NULL  , 
             `cot_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `cot_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `cot_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `cot_varNota` longtext COLLATE utf8mb3_general_ci NOT NULL  , 
             `doc_intIdDocumento` int(11) NOT NULL  , 
             `cse_intIdConsecutivo` int(11) NOT NULL  , 

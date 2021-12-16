@@ -18,7 +18,7 @@ class TblEmpleadoInformacionPagos implements IMigration
         Model::query("CREATE TABLE `tbl_empleado_informacion_pago`(
             `eip_intId` int(11) NOT NULL  auto_increment , 
             `eip_intNumeroCuenta` int(11) NULL  DEFAULT 0 , 
-            `eip_dtimFechaCreacion` date NOT NULL  DEFAULT current_timestamp(), 
+            `eip_dtimFechaCreacion` date NOT NULL  DEFAULT '1000-01-01 00:00:00', 
             `eip_dtimFechaActualizacion` date NULL  ,
             `ban_intId` int(11) NULL  DEFAULT 0 , 
             `tcb_intIdTipoCuenta` int(11) NULL  , 

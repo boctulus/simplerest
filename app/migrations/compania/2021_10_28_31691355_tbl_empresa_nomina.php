@@ -30,7 +30,7 @@ class TblEmpresaNomina implements IMigration
             `emn_tinAporteParas16072012` tinyint(4) NOT NULL  DEFAULT 0 , 
             `emn_tinDecreto5582020` tinyint(4) NOT NULL  DEFAULT 0 , 
             `emn_dtimFechaCreacion` datetime NOT NULL  DEFAULT current_timestamp() , 
-            `emn_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '0000-00-00 00:00:00' , 
+            `emn_dtimFechaActualizacion` datetime NOT NULL  DEFAULT '1000-01-01 00:00:00' , 
             `arl_intIdArl` int(11) NULL  , 
             `per_intIdOperador` int(11) NULL  , 
             `est_intIdEstado` int(11) NOT NULL  DEFAULT 1 , 
