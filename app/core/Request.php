@@ -5,7 +5,7 @@ namespace simplerest\core;
 use simplerest\libs\Factory;
 use simplerest\core\interfaces\Arrayable;
 
-class Request  /* implements \ArrayAccess, Arrayable */
+class Request  implements /*\ArrayAccess,*/ Arrayable
 {
     static protected $query_arr;
     static protected $raw;
@@ -132,6 +132,10 @@ class Request  /* implements \ArrayAccess, Arrayable */
 
     function getParam($index){
         return static::$params[$index];
+    } 
+
+    function getParams(){
+        return static::$params;
     } 
 
     function getBody($as_obj = true)

@@ -59,7 +59,7 @@ class Update
         }
 
         Files::copy(UPDATE_PATH, $tmp_dst . 'updates', [ basename($update_dir) ]);
-        Files::copy(ROOT_PATH, $tmp_dst, ['app/controllers/UpdateController.php']);
+        //Files::copy(ROOT_PATH, $tmp_dst, ['app/controllers/UpdateController.php']);
 
         Files::zip($tmp_dst, UPDATE_PATH . 'update-' . basename($update_dir) . '.zip', [
             "completed"
