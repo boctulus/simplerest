@@ -1,6 +1,17 @@
 # TODO
 
+- Revisar porque dejo crear la "0.0.5-alpha.1" si es inferior a la "0.5.0-alpha" !!!!!
+
 - Al crear un nuevo "update" ... zipear anteriores para que no estorben en VSC.
+
+- El primer paso del "install" (o el último del "get") debe ser descomprimir en carpeta si ésta no existe.
+
+- El copiado de archivos dentro del update deber considerado un "batch" más (para evitar repitencias)
+
+- Update ejecutado *por completo* NO debe volver a correr (podría "forzarse")
+
+- Los updates deben correr de forma *secuencial*
+
 
 ------ Pasar detalle de cobros a Esteban 
 
