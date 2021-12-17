@@ -3,17 +3,16 @@
 use simplerest\libs\Env;
 use simplerest\core\Model;
 
-include_once __DIR__ . '/debug.php';
 
 /*
     Example about how to get database connections dinamically
 */
 
-function get_db_connections()
+function get_db_connections(bool $avoid_cache = false)
 {
     static $connections = [];
 
-    if (!empty($connections)){
+    if ($avoid_cache === false && !empty($connections)){
         return $connections;
     }
 
