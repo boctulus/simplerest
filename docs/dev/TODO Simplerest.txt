@@ -1,6 +1,16 @@
 # TODO
 
-- Revisar porque dejo crear la "0.0.5-alpha.1" si es inferior a la "0.5.0-alpha" !!!!!
+Para la versión 0.6.0 incluir:
+
+  app/core/MigrationsControllerBase.php
+  app/controllers/MigrationsController.php
+
+
+- Comando "update status" debe devolver:
+  
+   - la versión actual 
+   - si hay updates pendientes (por instalar o por descargar)
+   - si el último update corrió con éxito o no y por donde quedó en todo caso.
 
 - Al crear un nuevo "update" ... zipear anteriores para que no estorben en VSC.
 
@@ -9,18 +19,6 @@
 - El copiado de archivos dentro del update deber considerado un "batch" más (para evitar repitencias)
 
 - Update ejecutado *por completo* NO debe volver a correr (podría "forzarse")
-
-- Los updates deben correr de forma *secuencial*
-
-
------- Pasar detalle de cobros a Esteban 
-
-+ monto, fecha
-+ fecha esperada de cobro 
-+ fecha, débito
-
-Con la salvedad obvia de que se asume un flujo de caja "0" o "negativo"/.
-
 
 - Aegurarse que corran los updates en secuencia y no solo el último !!!!!
 
@@ -33,13 +31,6 @@ Con la salvedad obvia de que se asume un flujo de caja "0" o "negativo"/.
   =>  1) Revisar tema de API KEYs
 
       2) Correr UPDATE sobre "Solución Binaria"
-
-- [ SQL MODE ]
-
-php com migrations migrate --dir=compania --to=db_168  
-Migrating '2021_09_28_29110773_0047_tbl_factura_maestro.php'
-
-PHP Fatal error:  Uncaught PDOException: SQLSTATE[42000]: Syntax error or access violation: 1067 Invalid default value for 'fac_dateFecha'
 
 
 [ SUB-RESOURCES ]

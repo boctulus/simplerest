@@ -28,6 +28,7 @@ use simplerest\controllers\api\TblPersona;
 use simplerest\libs\Config;
 use simplerest\libs\StdOut;
 use simplerest\libs\Env;
+use simplerest\libs\Update;
 
 class DumbController extends Controller
 {
@@ -6334,5 +6335,9 @@ class DumbController extends Controller
 		// here(); 
         // exit; ///
 		// DB::getConnection($db_name);
+    }
+
+    function test_last_update_dir(){
+        d(Update::getLastVersionInDirectories());
     }
 }
