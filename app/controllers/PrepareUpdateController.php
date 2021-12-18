@@ -63,10 +63,8 @@ class PrepareUpdateController extends ConsoleController
         ;app/interfaces
         ;app/libs
         ;app/locale
-        ;app/traits
         ;packages
         ;.htaccess
-        ;app/helpers/db_dynamic_load.php
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CONTROLLERS

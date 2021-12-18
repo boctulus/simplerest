@@ -8,28 +8,52 @@ use simplerest\libs\Factory;
 
 class Update
 {
-    static function getLastVersionDirectory(){
-        $dirs = [];
+    static function getVersion(string $version) : Array {
+        $regex = '/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/';
+
+        if (!preg_match($regex, $version, $matches)){
+            throw new \InvalidArgumentException("Version '$version' has incorrect format for semantic versioning");
+        }
+
+        $arr = [
+            'major' => $matches['major'],
+            'minor' => $matches['minor'],
+            'patch' => $matches['patch'],
+            'pre'   => $matches['prerelease'] ?? null
+        ];
+
+        return $arr;
+    }
+
+    static function getLastVersionDirectory(){        
+        $last_ver = [
+            'major' => null,
+            'minor' => null,
+            'patch' => null,
+            'pre'   => null
+        ];
+
+        $last_ver_dir = null;
+
         foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
             if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
             
-            $dirs[] = $fileInfo->getBasename();
+            $dir = $fileInfo->getBasename();
+            $ver = substr($dir, 11);
+            
+            $current = static::getVersion($ver);
+
+            if ($current > $last_ver){
+                $last_ver     = $current; 
+                $last_ver_dir = $dir;
+            }
         }
 
-        /*
-            La forma de ordenamiento no es del todo correcta !
-
-            1.0.1-beta < 1.0.11
-
-            porque ...
-
-            1.0.1-beta = 1.0.1.1 
-        */
-
-        sort($dirs);
-        $last_ver_dir = end($dirs);
-
         return $last_ver_dir;
+    }
+
+    static function getLastVersionInDirectories(){      
+        return substr(static::getLastVersionDirectory(), 11);
     }
 
     // compress an update

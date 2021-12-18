@@ -21,10 +21,11 @@ Algunas características:
 - Multitenant support
 - Service Providers
 - Validator y auto-validaciones en los modelos
-- WebHooks
+- WebHooks y Server Sent Events
 - Sub-recursos
 - Utilidad para consumo de APIs
 - Perfilador del código (tiempos de ejecución)
+- Extensión del framework (sumar nuevas funcionalidades)
 
 Cómo "índice" para buscar documentación puede buscar por las características enumeradas previamente más las siguientes referencias:
 
@@ -2582,7 +2583,14 @@ La clase AuthController provee varios hooks que pueden usarse en MyAuthControlle
     function getDbAccess($uid) : Array { return []; }
 
 
-# Webhooks
+# Comunicación "realtime" via eventos 
+
+SimpleRest implementa comunicación en tiempo real via dos mecanismos:
+
+	Server -> Front:  via Server-Sent Events (SSE) via librería SSE.
+	Server -> Server: via WebHooks
+
+### Webhooks
 
 Las APIs reversas o webhooks son un mecanismo que evita tener que andar preguntando a un endpoint si un registro fue creado o actualizado. SimpleRest permite crearlos de forma muy sencilla.
 
@@ -6796,7 +6804,7 @@ El escenario es que el framework evoluciona, se crean nuevas librerías, funcion
 		- listar
 		- descargar
 
-# Update
+# Update <implementando>
 
 El usuario mediante comandos podrá verificar cuántos updates tiene pendientes enviando las credenciales al endpoint correspondiente:
 
@@ -6812,3 +6820,27 @@ También podría dejar que se suscriban via WebHooks a /api/v1/updates
 Se recomienda:
 
 - Usar "api keys" como método de autenticación sobre el endpoint /api/v1/updates  
+
+
+# Extensión del framework
+
+Al día de hoy es posible sumar nuevas funcionalidades via:
+
+- librerías
+- helpers
+- traits
+- middlewares
+- service providers
+- extendiendo controlador base (MyController)
+- extendiendo modelo base (MyModel)
+- extendiendo vista base (MyView)
+- extendiendo el ACL (via service provider)
+- extendiendo Make (Controller)
+- extendiendo Migrations (Controller)
+- extendiendo Api (MyApiController)
+- hookeando apis
+- hookeando modelos
+- hookeando la clase Auth (Controller)
+// ...
+
+En particular extendiendo MakeController o MigrationsController es posible crear nuevos comandos.
