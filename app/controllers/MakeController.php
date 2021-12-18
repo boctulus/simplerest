@@ -7,6 +7,7 @@ use simplerest\libs\DB;
 use simplerest\libs\Files;
 use simplerest\libs\StdOut;
 use simplerest\libs\Strings;
+use simplerest\libs\Update;
 
 
 class MakeController extends MakeControllerBase
@@ -53,34 +54,24 @@ class MakeController extends MakeControllerBase
         $folder = substr(at(), 0, 10) . '-' . $version . DIRECTORY_SEPARATOR;
         $path   = UPDATE_PATH . $folder;
 
-        /*
-            Version validation  
-
-            Usar expresiones publicadas aquí: <--------
-            https://semver.org/lang/es/
-        */
-        if (!preg_match('/([0-9]+).([0-9]+).([0-9]+)([-]?)([a-z]+)?([0-9])?/', $version)){
-            throw new \InvalidArgumentException("Version '$version' has incorrect format for semantic versioning");
-        }
-
-        $dirs = [];
-        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
-            if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
-            
-            $dirs[] = $fileInfo->getBasename();
-        }
+        $new_ver = Update::getVersion($version);
 
         /*
-            La forma de ordenamiento no es del todo correcta !
-
-            1.0.1-beta < 1.0.11
+            Previous
         */
-        sort($dirs);
+       
+        $ver_str = file_get_contents(ROOT_PATH . 'version.txt');
+        $cur_ver = Update::getVersion($ver_str);
 
-        $last_ver = substr(end($dirs), 11);
-        
-        if ($folder < $last_ver){            
-            throw new \InvalidArgumentException("Version '$version' can not be inferior to ". $last_ver);
+        if ($new_ver <= $cur_ver){            
+            StdOut::pprint("Version '$version' should be superior to ". $ver_str);
+            exit(1);
+        }
+
+
+        if (is_dir($path)){
+            StdOut::pprint("Scaffolding for update version '$version' already exists");
+            exit(1);
         }
 
         Files::mkDirOrFail($path);
@@ -98,38 +89,29 @@ class MakeController extends MakeControllerBase
 
     function batch(string $name, ...$opt) {
         if (strlen($name)<5){
-            throw new \InvalidArgumentException("Batch name is too short. Please use 5 or more chars");
+            StdOut::pprint("Batch name is too short. Please use 5 or more chars");
+            exit(1);
         }
 
         $name = str_replace(' ', '_', $name);
         $name = str_replace('-', '_', $name);
 
-        $dirs = [];
-        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
-            if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
-            
-            $dirs[] = $fileInfo->getBasename();
-        }
-
-        sort($dirs);
-
-        $folder   = end($dirs);
+    
+        $folder   = Update::getLastVersionDirectory();
         $path     = UPDATE_PATH . $folder . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR;
 
-        $last_ver = substr($folder, 11);
-       
         $date = date("Ymd");
         $secs = time() - 1603750000;
         $filename = $date . '-'. $secs . '-' . Strings::camelToSnake($name) . '.php';
 
         if (file_exists($path . $filename)){
-            throw new \InvalidArgumentException("File $filename already exists in $path");
+            StdOut::pprint("File $filename already exists in $path");
+            exit(1);
         }
 
         $batch = file_get_contents(TEMPLATES_PATH . 'UpdateBatch.php');
         Strings::replace('__NAME__', Strings::snakeToCamel($name) . 'UpdateBatch', $batch);
         
-
         $ok = file_put_contents($path . $filename, $batch);
 
         Files::writableOrFail($path);
@@ -138,6 +120,8 @@ class MakeController extends MakeControllerBase
             StdOut::pprint('File ' . $path . $filename . ' was created');
         } else {
             StdOut::pprint('Error trying to write file ' . $path . $filename);
+            exit(1);
         }        
     }
 }
+

@@ -58,8 +58,8 @@ class TblBaseDatosModel extends MyModel
 		$folder = 'usuario';
 		$mgr_o->migrate("--dir=$folder", "--to=$tenant");
 
-        $folder = 'compania'; 
-        $mgr_o->migrate("--dir=$folder", "--to=$tenant");
+        // $folder = 'compania'; 
+        // $mgr_o->migrate("--dir=$folder", "--to=$tenant");
 
 		
 		/*

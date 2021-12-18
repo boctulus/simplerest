@@ -87,7 +87,7 @@ class UpdateController extends ConsoleController
         $dst = ROOT_PATH;
 
         $except =  [
-            'db_dynamic_load.php',
+            '/app/helpers/db_dynamic_load.php',
             'docs/dev',
             'glob:*.zip'
         ];
@@ -120,6 +120,10 @@ class UpdateController extends ConsoleController
     }
 
     function version(...$opt){
+        
+    }
+
+    function status(){
         
     }
 }
