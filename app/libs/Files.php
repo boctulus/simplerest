@@ -7,7 +7,7 @@ use simplerest\libs\SortedIterator;
 
 class Files 
 {
-	static $backup_path;
+	static protected $backup_path;
 
 	static function replace(string $filename, $search, $replace){
 		$file  = file_get_contents($filename);
@@ -244,10 +244,6 @@ class Files
 			static::mkDirOrFail($dst_dir);
 		}
 
-
-		//d($glob_includes, '$glob_includes');
-		//exit;
-
 		$files = array_merge($files, $glob_includes);
 		
 
@@ -318,8 +314,6 @@ class Files
 				static::mkDir($_dir_dst);
 			}
 
-			//dd($ori_path, 'ORI_PATH AFTER DIFF');
-
             if (is_dir($ori_path)){
                 static::mkDir($dst . $file);
 
@@ -385,10 +379,6 @@ class Files
 			
 			$final_path = $dst . DIRECTORY_SEPARATOR . $_file;
 
-			// d($_file, '$_file');
-			// d($final_path, '$final_path');
-
-			//static::mkDirPath($final_path);
             static::cp($ori_path, $final_path);
         }
     }
