@@ -4,33 +4,21 @@ Para la versión 0.6.0 incluir:
 
   app/core/MigrationsControllerBase.php
   app/controllers/MigrationsController.php
-
-
-[ UPDATE COMMAND ]
-
-- Al crear un nuevo "update" ... zipear anteriores para que no estorben en VSC.
-
-- El primer paso del "install" (o el último del "get") debe ser descomprimir en carpeta si ésta no existe.
-
-- El copiado de archivos dentro del update deber considerado un "batch" más (para evitar repitencias)
-
-- Update ejecutado *por completo* NO debe volver a correr (podría "forzarse")
-
-
-- Resolver tema del correo => sendMail() con plantillas
-
-- Poder hacer "update get" y "update list"
-
-  =>  1) Revisar tema de API KEYs
-
-      2) Correr UPDATE sobre "Solución Binaria"
+  app/libs
 
 
 [ SUB-RESOURCES ]
 
-  * UPDATE para V2  -- continuar con generalización       +++
+  * WHERE con otras tablas +++++
 
-  * WHERE con otras tablas ++ (para el miércoles 15?)     +++++
+  Ej:
+
+    GET /api/v1/tbl_cuenta_contable?tenantid=db_legion
+
+      &tbl_grupo_cuenta_contable.cla_intIdClase=1
+
+
+  * UPDATE para V2  -- continuar con generalización       +++
 
   * Permitir traer sub-sub-resources.  Ej:
 
@@ -42,6 +30,38 @@ Para la versión 0.6.0 incluir:
 
 
 <-- en V2 implementar con sub-(sub-)-consultas
+
+
+[ UPDATE COMMAND ]
+
+- Al crear un nuevo "update" ... zipear anteriores para que no estorben en VSC.
+
+- El primer paso del "install" (o el último del "get") debe ser descomprimir en carpeta si ésta no existe.
+
+- Update ejecutado *por completo* NO debe volver a correr (podría "forzarse")
+
+- Poder hacer "update get" y "update list"
+
+  =>  1) Revisar tema de API KEYs
+
+      2) Correr UPDATE sobre "Solución Binaria"
+
+
+[ MAILER ]
+
+- Revisar qué está pasando con el envio de correos:
+
+  Auth method requested: UNSPECIFIED
+  Auth methods available on the server: LOGIN,PLAIN,XOAUTH2,PLAIN-CLIENTTOKEN,OAUTHBEARER,XOAUTH
+
+- Posibilitar enviar *correos* con *templates*  +++++++
+
+  Mails::sendMail()  
+
+    implementando $mail->addAttachment()
+
+- Resolver tema del correo => sendMail() con plantillas
+
 
 ------x---------
 
@@ -64,20 +84,6 @@ Para eso están! nada de --force o --unignore
 https://webonyx.github.io/graphql-php/
 https://api-platform.com/docs/distribution/
 
-
-[ MAILER ]
-
-- Revisar qué está pasando con el envio de correos:
-
-  Auth method requested: UNSPECIFIED
-  Auth methods available on the server: LOGIN,PLAIN,XOAUTH2,PLAIN-CLIENTTOKEN,OAUTHBEARER,XOAUTH
-
-
-- Posibilitar enviar *correos* con *templates*  +++++++
-
-  Mails::sendMail()  
-
-    implementando $mail->addAttachment()
 
 ----x---
 
