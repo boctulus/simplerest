@@ -24,9 +24,6 @@ class UpdateController extends ConsoleController
         static::$update_path = ROOT_PATH . 'updates/'. $last_ver_dir . '/';
     }
 
-    /*
-        Verificar NO esté corriendo en mi PC para evitar un desastre
-    */
     protected function check(){
         $id = Hardware::UniqueMachineID();
 
@@ -37,11 +34,10 @@ class UpdateController extends ConsoleController
     }     
 
     function index(){
-        print_r("Do you mean 'php com update install' ?". PHP_EOL. PHP_EOL);
+        $this->help();
     }
 
-    // protected
-    function run_batches(){
+    protected function run_batches(){
         $update_path = static::$update_path . 'batches/';
 
         Files::mkDir(static::$update_path . 'completed/');
@@ -76,19 +72,35 @@ class UpdateController extends ConsoleController
         }
     }
 
-    function install(...$opt){
-        $this->check();
-        
+    function install(...$opt){        
+        $o = $opt[0] ?? null;
+
+        if (preg_match('/^(--force|force)$/', $o)){
+            $force = true;
+        }
+
         /*
             Copy files 
         */
 
-        // Si el copiado fue exitoso...... debe anotarse como completed !
-        
-        $ori =  static::$update_path . 'files';
+        $ori =  static::$update_path . 'files/';
         $dst = ROOT_PATH;
 
-        Files::copy($ori, $dst);
+        $files  = glob($ori . '*.php');
+
+        //
+        // Si el copiado fue exitoso...... debe anotarse como completed !
+        //
+
+        $intial_cp_path = static::$update_path . 'completed/initial_file_copy.batch';
+
+        if (count($files) > 0 && (!file_exists($intial_cp_path) || isset($force))){
+            // enable backup
+            Files::setBackupDirectory();
+
+            Files::copy($ori, $dst);
+            file_put_contents($intial_cp_path, '');
+        }
 
         /*
             Run batches
@@ -96,6 +108,10 @@ class UpdateController extends ConsoleController
 
         $this->run_batches();
 
+        // disable backup
+        Files::setBackupDirectory();
+
+        StdOut::hideResponse();
         Files::cp(static::$update_path . 'version.txt', $dst);
     }
 
@@ -111,7 +127,11 @@ class UpdateController extends ConsoleController
         
     }
 
-    function get(){
+    /*
+        get 
+        get [ --install | -i ]
+    */
+    function get(...$opt){
         
         // ...
     }
@@ -176,6 +196,21 @@ class UpdateController extends ConsoleController
             }
             
         }
+    }
+
+
+    function help(){
+        echo <<<STR
+        UPDATE COMMAND HELP
+
+        update install
+        update version
+        update status
+        update description [ --version={name} ]
+        
+        STR;
+
+        print_r(PHP_EOL);
     }
 }
 

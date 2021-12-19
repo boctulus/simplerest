@@ -1,3 +1,11 @@
 UPDATE DESCRIPTION
 ==================
 
+- Query sobre otros sub-recursos en APIs Restful <implementando>
+
+- Nuevos comandos "update"
+
+	update version
+	update status
+	update description [ --version={name} ]
+	update help
