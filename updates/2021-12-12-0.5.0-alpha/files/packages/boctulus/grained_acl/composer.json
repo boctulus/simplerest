@@ -1,0 +1,12 @@
+{
+    "name": "boctulus/grained_acl",
+    "description": "Full equiped ACL for SimpleRest",
+    "license": "Commercial",
+    "authors": [
+        {
+            "name": "boctulus",
+            "email": "boctulus@gmail.com"
+        }
+    ],
+    "require": {}
+}
