@@ -25,7 +25,7 @@ class Update
         return $arr;
     }
 
-    static function getLastVersionDirectory(){        
+    static function getLastVersionDirectory() : string {        
         $last_ver = [
             'major' => null,
             'minor' => null,
@@ -52,8 +52,13 @@ class Update
         return $last_ver_dir;
     }
 
-    static function getLastVersionInDirectories(){      
+    static function getLastVersionInDirectories() : string {      
         return substr(static::getLastVersionDirectory(), 11);
+    }
+
+    static function getLastInstalledVersion() : string {
+        $cur_ver = file_get_contents(ROOT_PATH . 'version.txt');
+        return $cur_ver;
     }
 
     // compress an update
