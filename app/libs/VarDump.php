@@ -66,7 +66,11 @@ class VarDump
 		}	
 
 		if (!empty($msg)){
-			echo "--[ $msg ]-- ". (!$pre ? $br : '');
+			$cfg = config();
+			$ini = $cfg['var_dump_separators']['start'] ?? '--| ';
+			$end = $cfg['var_dump_separators']['end']   ?? '';
+
+			echo "{$ini}$msg{$end}". (!$pre ? $br : '');
 		}
 			
 		$fn($v);			

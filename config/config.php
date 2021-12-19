@@ -242,5 +242,10 @@ return [
 		//boctulus\basic_acl\BasicAclServiceProvider::class
 		// ...
 	],
+
+	'var_dump_separators' => [
+		'start' => '--| ',
+		'end'   => ''
+	]
 	
 ];
