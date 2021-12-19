@@ -1,0 +1,10 @@
+{
+    "name": "felipe/calculator",
+    "authors": [
+        {
+            "name": "boctulus",
+            "email": "boctulus@gmail.com"
+        }
+    ],
+    "require": {}
+}

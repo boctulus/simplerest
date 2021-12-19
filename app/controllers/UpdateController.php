@@ -83,22 +83,20 @@ class UpdateController extends ConsoleController
             Copy files 
         */
 
+        // Si el copiado fue exitoso...... debe anotarse como completed !
+        
         $ori =  static::$update_path . 'files';
         $dst = ROOT_PATH;
 
-        $except =  [
-            '/app/helpers/db_dynamic_load.php',
-            'docs/dev',
-            'glob:*.zip'
-        ];
-
-        Files::copy($ori, $dst, null, $except);
+        Files::copy($ori, $dst);
 
         /*
             Run batches
         */
 
         $this->run_batches();
+
+        Files::cp(static::$update_path . 'version.txt', $dst);
     }
 
     function list(){
@@ -106,6 +104,9 @@ class UpdateController extends ConsoleController
         // ...
     }
 
+    /*
+        Debe hacer un "list" y comparar con "repo" remoto
+    */
     function is_updated(){
         
     }
@@ -115,16 +116,66 @@ class UpdateController extends ConsoleController
         // ...
     }
 
+    /*
+        Podría traerse la descripción de repos remotos si no estuviera instalado.
+    */
     function description(...$opt){
+        $o = $opt[0] ?? '--current';
 
+        if (preg_match('/^(--current|current)$/', $o)){
+            $desc = file_get_contents(static::$update_path . 'description.txt');
+        }
+
+        if (preg_match('/^(--version|version)[:|=](.*)$/', $o, $matches)){
+            $version = $matches[2];
+
+
+            foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
+                if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
+                
+                $dir = $fileInfo->getBasename();
+                $ver = substr($dir, 11);
+
+                if ($ver == $version){
+                    $desc = file_get_contents(UPDATE_PATH . $dir . '/' . 'description.txt');
+                }
+            }    
+        }
+
+        if (!isset($desc)){
+            d("There is no description available");
+            exit;
+        }
+
+        d($desc);
     }
 
-    function version(...$opt){
-        
+    function version(){
+        $cur_ver = Update::getLastInstalledVersion();
+        d($cur_ver, "Current version");
     }
 
     function status(){
-        
+        $cur_ver         = Update::getLastInstalledVersion();
+        $last_ver_in_dir = Update::getLastVersionInDirectories();
+
+        d($cur_ver, "Current version");
+
+        if ($last_ver_in_dir > $cur_ver){
+            $batches_path   = static::$update_path . 'batches/';
+            $completed_path = static::$update_path . 'completed/';
+
+            $batches           = glob($batches_path   . '*.php');
+            $batches_completed = glob($completed_path . '*.php');
+
+            if (count($batches) != 0 && count($batches_completed) < count($batches)){
+                StdOut::pprint("There are pending batches for update $last_ver_in_dir");
+                exit(1);
+            } else {
+                d($last_ver_in_dir, "Pending to install");
+            }
+            
+        }
     }
 }
 
