@@ -733,7 +733,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 */
                 
                 $joins = [];
-                foreach ($_get as $arr){
+                foreach ($_get as $k => $arr){
                     $f = $arr[0];
                     if (!in_array($f,$attributes)){
                         if (preg_match('/([a-z0-9_-]+)\.([a-z0-9_-]+)/i', $f, $matches)){
@@ -744,7 +744,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 response()->sendError("Entity '$_tb' is not available as subresource", 400);
                             }
 
-                            // Faltaría chequear que el campo SI exista en la tabla del sub-recurso
+                            // Chequep que el campo SI exista en la tabla del sub-recurso
                             $sub_sc = get_schema($_tb);
                             $sub_at = array_keys($sub_sc['attr_types']);
 
@@ -752,19 +752,26 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 response()->sendError("Entity '$_tb' does not have a field named '$_f'", 400);
                             }
 
-                            $this->instance->doQualify();
-                            $joins[] = "$_tb as $_tb}";
+                            /*
+                                Cuando hago el JOIN le pongo un nombre al alias que es "__{tabla}__"
+                            */
 
-                            foreach ($joins as $join){
-                                $this->instance->join($join);
-                            }
+                            $this->instance->doQualify();
+                            $joins[] = "$_tb as __{$_tb}__";
+
+                            $_get[$k][0] ="__{$_tb}__.$_f";
                         } else {
                             // Si se pide algo que involucra un campo no está en el attr_types lanzar error
                             response()->sendError("Unknown field '$arr[0]'", 400);
                         }
                     }
                 }
-                
+
+                if (!empty($joins)){
+                    foreach ($joins as $join){
+                        $this->instance->join($join);
+                    }
+                }
 
                 if (empty($this->folder)){
                     // root, sin especificar folder ni id (lista)   // *             
@@ -915,7 +922,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (!isset($ag_fn))
                 {
                     $total = (int) (
-                        $this->getModelInstance('COLUMN'))     
+                        DB::table($this->table_name)
+                        ->column()
+
                         // Query a sub-recursos                   
                         ->when(!empty($joins), function($q) use ($joins) {
                             $q->doQualify();
@@ -924,7 +933,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }
                         })
                         ->where($_get)
-                        ->count();
+                        ->count());
     
                     $page_count = ceil($total / $limit);
 
