@@ -440,6 +440,11 @@ class Model {
 		return $this;
 	}
 
+	function column(){
+		$this->fetch_mode = \PDO::FETCH_COLUMN;
+		return $this;
+	}
+
 	protected function getFetchMode($mode_wished = null){
 		if ($this->fetch_mode == NULL){
 			if ($mode_wished != NULL) {
@@ -727,32 +732,17 @@ class Model {
 
 				} else {
 					// NUNCA DEBERÍA LLEGAR ACÁ PORQUE O ES N:M o NADA
-
-					// // OK, no es N:M
-					// $s = get_schema_name($table)::get();
-
-					// if (!isset($s['relationships']) || !isset($s['relationships'][$this->table_name])){
-					// 	throw new \Exception("Undefined relationship between '{$this->table_name}' and '$table'");
-					// }
-
-					// $sr = $s['relationships'][$this->table_name];
-					// list($on1, $on2) = $sr[0];
-
-					// $on_replace($on1);
-					// $on_replace($on2);
-
-					// if (!is_null($_table)){
-					// 	$table = $_table;
-					// }
-
-					// $this->joins[] = [$table, $on1, $op, $on2, $type];
-					// return $this;
 				}   
 						
 			} // else...
 
 		
 			$relx  = $this->schema['expanded_relationships'];
+
+			if (!isset($relx[$table])){
+				throw new \Exception("Table '$table' is not 'present' in {$this->table_name}'s schema as if it had a relationship with it");
+			}
+
 			$relxs = $relx[$table];
 
 			//dd($rels, 'RELS'); ///
@@ -792,7 +782,6 @@ class Model {
 			}
 					
 		}
-
 
 		if (!is_null($_table)){
 			$table = $_table;
@@ -1745,9 +1734,9 @@ class Model {
 		$q = $this->toSql(null, null, null, null, false, 'COUNT', $field, $alias);
 		$st = $this->bind($q);
 
-		//dd($q, 'Q');
-		//dd($this->table_raw_q, 'RAW Q');
-		//exit;
+		// dd($q, 'Q');
+		// dd($this->table_raw_q, 'RAW Q');
+		// exit;
 
 		if (empty($this->group)){
 			if ($this->exec && $st->execute()){

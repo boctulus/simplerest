@@ -15,16 +15,15 @@ Para la versión 0.6.0 incluir:
 
     GET /api/v1/tbl_cuenta_contable?tenantid=db_legion
 
-      &tbl_grupo_cuenta_contable.cla_intIdClase=1
+    &tbl_grupo_cuenta_contable.cla_intIdClase=1
 
 
   * UPDATE para V2  -- continuar con generalización       +++
 
   * Permitir traer sub-sub-resources.  Ej:
 
-    tbl_factura > 
-                  tbl_factura_detalle 
-                                      > tbl_bodega
+    tbl_factura >   //
+
 
                                       > tbl_producto
 

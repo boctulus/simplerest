@@ -37,7 +37,7 @@ class UpdateController extends ConsoleController
         $this->help();
     }
 
-    protected function run_batches(){
+    protected function run_batches(...$opt){
         $update_path = static::$update_path . 'batches/';
 
         Files::mkDir(static::$update_path . 'completed/');
@@ -75,6 +75,10 @@ class UpdateController extends ConsoleController
     function install(...$opt){        
         $o = $opt[0] ?? null;
 
+        /*
+            De momento solo aplico "force" al copiado inicial.
+            La idea es poder aplicarlo también a cada batch cuando se especifique.
+        */
         if (preg_match('/^(--force|force)$/', $o)){
             $force = true;
         }
@@ -106,7 +110,7 @@ class UpdateController extends ConsoleController
             Run batches
         */
 
-        $this->run_batches();
+        $this->run_batches(...$opt);
 
         // disable backup
         Files::setBackupDirectory();

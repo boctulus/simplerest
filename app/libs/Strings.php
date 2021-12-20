@@ -740,7 +740,6 @@ class Strings
 
 		return $path;		
 	}
-
 }
 
 
