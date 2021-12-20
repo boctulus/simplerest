@@ -728,17 +728,40 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }   
 
 
-                // Solo para prueba puntual ********
-
-                $this->instance->doQualify();
-                $this->instance->join('product_categories as pc');
-
-                // ********************************
-                                
-                // Si se pide algo que involucra un campo no está en el attr_types lanzar error
+                /*
+                    Query a sub-recursos
+                */
+                
+                $joins = [];
                 foreach ($_get as $arr){
-                    if (!in_array($arr[0],$attributes)){
-                        //Factory::response()->sendError("Unknown field '$arr[0]'", 400);
+                    $f = $arr[0];
+                    if (!in_array($f,$attributes)){
+                        if (preg_match('/([a-z0-9_-]+)\.([a-z0-9_-]+)/i', $f, $matches)){
+                            $_tb = $matches[1];
+                            $_f  = $matches[2];
+
+                            if (empty(static::$connect_to) || !in_array($_tb, static::$connect_to)){
+                                response()->sendError("Entity '$_tb' is not available as subresource", 400);
+                            }
+
+                            // Faltaría chequear que el campo SI exista en la tabla del sub-recurso
+                            $sub_sc = get_schema($_tb);
+                            $sub_at = array_keys($sub_sc['attr_types']);
+
+                            if (!in_array($_f, $sub_at)){
+                                response()->sendError("Entity '$_tb' does not have a field named '$_f'", 400);
+                            }
+
+                            $this->instance->doQualify();
+                            $joins[] = "$_tb as $_tb}";
+
+                            foreach ($joins as $join){
+                                $this->instance->join($join);
+                            }
+                        } else {
+                            // Si se pide algo que involucra un campo no está en el attr_types lanzar error
+                            response()->sendError("Unknown field '$arr[0]'", 400);
+                        }
                     }
                 }
                 
@@ -889,18 +912,20 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $total = null;
 
                 //  pagino solo sino hay funciones agregativas
-                if (!isset($ag_fn)){
-                  
-                    $m = $this->getModelInstance('COLUMN');
-                    $m
-                    ->where($_get)
-                    ->join('product_categories as pc');
-                    
+                if (!isset($ag_fn))
+                {
                     $total = (int) (
-                        $m
-                        ->count()
-                    );          
-
+                        $this->getModelInstance('COLUMN'))     
+                        // Query a sub-recursos                   
+                        ->when(!empty($joins), function($q) use ($joins) {
+                            $q->doQualify();
+                            foreach ($joins as $join){
+                                $q->join($join);
+                            }
+                        })
+                        ->where($_get)
+                        ->count();
+    
                     $page_count = ceil($total / $limit);
 
                     if ($page == NULL)
