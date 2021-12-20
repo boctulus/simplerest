@@ -150,8 +150,7 @@ class DB
 						break;
 				}
 
-				$conn->exec($cmd);
-	
+				$conn->exec($cmd);	
 			}	
 
 			//dd("CONNECTION MADE TO $db_name"); //

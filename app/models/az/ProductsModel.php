@@ -19,5 +19,16 @@ class ProductsModel extends MyModel
     function __construct(bool $connect = false){
         parent::__construct($connect, ProductsSchema::class);
 	}	
+
+	// function onReading()
+	// {
+	// 	$this->dontExec();
+	// }
+
+	// function onRead(int $count)
+	// {
+	// 	d($this->dd());
+	// 	exit;
+	// }
 }
 

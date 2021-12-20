@@ -4,6 +4,7 @@ namespace simplerest\core;
 
 use simplerest\libs\Factory;
 use simplerest\core\interfaces\Arrayable;
+use simplerest\libs\Url;
 
 class Request  implements /*\ArrayAccess,*/ Arrayable
 {
@@ -19,9 +20,10 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     static function getInstance(){
         if(static::$instance == NULL){
             if (php_sapi_name() != 'cli'){
-                if (isset($_SERVER['QUERY_STRING']))
-					parse_str($_SERVER['QUERY_STRING'], static::$query_arr);
-				
+                if (isset($_SERVER['QUERY_STRING'])){
+					static::$query_arr = url::queryString();
+				}
+
                 static::$raw  = file_get_contents("php://input");
                 static::$body = json_decode(static::$raw, true);
                 static::$headers = apache_request_headers();
