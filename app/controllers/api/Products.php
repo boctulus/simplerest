@@ -19,5 +19,5 @@ class Products extends MyApiController
     {       
         parent::__construct();
         $GLOBALS['name_module'] = request()->shiftBodyParam('name_module');
-    }        
+    }       
 } 

@@ -1994,6 +1994,27 @@ Ej:
 
 Si desea realizar pruebas de performance remítase en la documentación a Time::exec()
 
+
+# Parámetros para binding
+
+Los parámetros a ser bindeados pueden recuperarse también con getLastBindingParamters()
+
+Ej:
+
+	$m = DB::table('products');
+
+	$m->where(['size', ['0.5L', '3L'], 'NOT IN'])
+	->dontExec()
+	->dontBind()
+	->get();
+	
+	$q = $m->toSQL();
+	$params = $m->getLastBindingParamters();
+
+	d($q);
+	d($params);
+	
+
 Como si fueran pocas funciones de debug existe el método Model::getLog()
 
 	$model = new \simplerest\core\Model($conn);
@@ -2184,7 +2205,6 @@ Como Model::sqlFormatter() es un método público y convenientemente estático f
 
 Se provee de la función helper sql_formater() que es un atajo de Model::sqlFormatter()
 
-
     /*
         Sql formateador es aplicado en un segundo paso
         y se parametriza para colorizar pero usando el helper sql_formater 
@@ -2211,7 +2231,7 @@ Hay una cantidad de campos (que si están presentes en la tabla y declarados en 
 
 id 				int(11)		
 name			varchar(60)				
-is_active			tinyint(4)
+is_active		tinyint(4)
 belongs_to		int(11)			*	
 created_at		datetime		*			
 created_by		int(11)			*	
@@ -2219,7 +2239,7 @@ updated_at		datetime		*
 updated_by		int(11)			*	
 deleted_at 		datetime		*
 deleted_by		tinyint(4)		*
-is_locked			tinyint(4)		*
+is_locked		tinyint(4)		*
 
 belongs_to		apunta directamente al user_id de quien crea el registro. Si el usuario tiene el permiso especial 'transfer' puede cambiar ese valor y hacer que apunte a otro usuario. Un caso especial son los registros creados dentro de un 'folder'.
 
@@ -5342,7 +5362,7 @@ Ver sección de configuración de "tentant groups"
 
 # Sub-recursos en las APIs
 
-Se implementa parcialmente el concepto de HATEOAS permitiendo definir relaciones con otras entidades (que deben tener su correlato en llaves foráneas) en endpoints.
+Se implementan subrecursos permitiendo definir relaciones con otras entidades (que deben tener su correlato en llaves foráneas) en endpoints.
 
 Por ejemplo si se quisiera que se hiciera un "JOIN" entre productos y sus categorías:
 
@@ -5360,7 +5380,7 @@ Por ejemplo si se quisiera que se hiciera un "JOIN" entre productos y sus catego
 		}        
 	} 
 
-Al especifica el parámetro "_related=1", la salida será algo como:
+Con el parámetro "_related=1" (por defecto), la salida será algo como:
 
 	{
 		"data": {

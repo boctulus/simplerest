@@ -293,7 +293,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         $_related = Factory::request()->shiftQuery('_related');
         $include  = Factory::request()->shiftQuery('include');        
-        $_get     = Factory::request()->getQuery();  
+        $_get     = Factory::request()->getQuery();
 
         $include  = explode(',', $include);
 
@@ -514,7 +514,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     Factory::response()->send($res);
                 }
             }else{    
-                // "list
+                // "list    
                 
                 $props    = Arrays::shift($_get,'props');
                 $group_by = Arrays::shift($_get,'groupBy');
@@ -564,7 +564,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 // event hook
                 $this->onGettingAfterCheck2($id);
                 
-                //var_export($_get);
+                #var_export($_get);
 
                 // Importante:
                 $_get = Arrays::nonassoc($_get);
@@ -727,11 +727,18 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     }
                 }   
 
+
+                // Solo para prueba puntual ********
+
+                $this->instance->doQualify();
+                $this->instance->join('product_categories as pc');
+
+                // ********************************
                                 
                 // Si se pide algo que involucra un campo no está en el attr_types lanzar error
                 foreach ($_get as $arr){
                     if (!in_array($arr[0],$attributes)){
-                        Factory::response()->sendError("Unknown field '$arr[0]'", 400);
+                        //Factory::response()->sendError("Unknown field '$arr[0]'", 400);
                     }
                 }
                 
@@ -864,6 +871,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                         $rows = $this->getSubResources($this->table_name, static::$connect_to, $this->instance, $this->tenantid);
                     } else {
+                        //
                         $rows = $this->instance->get();
                     }
                 }                             
@@ -882,8 +890,17 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 //  pagino solo sino hay funciones agregativas
                 if (!isset($ag_fn)){
-                    $total = (int) ($this->getModelInstance('COLUMN'))->where($_get)->count();
+                  
+                    $m = $this->getModelInstance('COLUMN');
+                    $m
+                    ->where($_get)
+                    ->join('product_categories as pc');
                     
+                    $total = (int) (
+                        $m
+                        ->count()
+                    );          
+
                     $page_count = ceil($total / $limit);
 
                     if ($page == NULL)
@@ -917,6 +934,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                     $res->setPaginator($pg);
                 }
+                
                                
                 // event hooks
                 if ($this->folder){
@@ -940,19 +958,19 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $res = [$this->table_name => $rows];
                 }
 
-                Factory::response()->send($res);
+                response()->send($res);
 
             }
-
         
         } catch (InvalidValidationException $e) { 
-            Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
+            response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
         } catch (SqlException $e) { 
-            Factory::response()->sendError('SQL Exception', 500, json_decode($e->getMessage())); 
+            response()->sendError('SQL Exception', 500, json_decode($e->getMessage())); 
         } catch (\PDOException $e) {    
-            Factory::response()->sendError('PDO Exception', 500, $e->getMessage(). ' - '. $this->instance->getLog()); 
+            $db = DB::getCurrentDB();
+            response()->sendError('PDO Exception', 500, $e->getMessage(). ' - '. $this->instance->getLog() . " - database: '{$db}' - table: '{$this->instance->getTableName()}'"); 
         } catch (\Exception $e) {   
-            Factory::response()->sendError($e->getMessage());
+            response()->sendError($e->getMessage());
         }	    
     } // 
 
