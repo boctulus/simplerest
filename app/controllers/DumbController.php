@@ -821,10 +821,11 @@ class DumbController extends Controller
     }
 
     function count3(){
-        $uid = 415;
+        $uid = 90;
 
         $count = (int) DB::table('user_roles')
-		->where(['user_id' => $uid])->setFetchMode('COLUMN')
+		->where(['user_id' => $uid])
+        ->setFetchMode('COLUMN')
 		->count();
 		
         dd($count);
@@ -2278,10 +2279,31 @@ class DumbController extends Controller
     function j_auto(){
         $m = DB::table('products')
         ->join('product_categories')
-        ->join('product_comments');
+        ->leftJoin('product_comments');
 
         dd($m->get()); 
-        dd($m->dd()); 
+        dd($m->dd(true)); 
+    }
+
+    /*
+        Auto-join with alias (as)
+    */
+    function j_auto1(){
+        $m = DB::table('products')
+        ->join('product_categories as pc');
+
+        dd($m->get()); 
+        dd($m->dd(true)); 
+    }
+
+    function j_auto1b(){
+        $m = DB::table('products')
+        ->dontExec()
+        ->join('product_categories as product_categories')
+        ->where(['product_categories.name_catego' => 'frutas']);
+ 
+        dd(DB::select($m->dd())); 
+        dd($m->dd(true));       
     }
 
     function j1(){
@@ -6340,4 +6362,40 @@ class DumbController extends Controller
     function test_last_update_dir(){
         d(Update::getLastVersionInDirectories());
     }
+
+    function test_100(){
+        $q = "SELECT * FROM products INNER JOIN product_categories as pc ON pc.id_catego=products.category WHERE (pc.name_catego = 'frutas') AND products.deleted_at IS NULL LIMIT 10";
+
+        d(DB::select($q));
+    }
+
+    function test_101(){
+        $q = "SELECT * FROM products INNER JOIN product_categories as pc ON pc.id_catego=products.category WHERE (pc.name_catego = ?)
+        AND products.deleted_at IS NULL LIMIT ?";
+
+        d(DB::select($q, ['frutas', 10]));
+    }
+
+    function test_102(){
+        $conds = [
+              'pc.name_catego',
+              'frutas',
+        ];
+
+        $m = DB::table('products');
+        $m
+        ->where($conds)
+        ->join('product_categories as pc');
+
+        d($m->dd(true));
+        
+        $total = (int) (
+            $m
+            ->column()
+            ->count()
+        );
+
+        d($total, 'total');
+    }
+   
 }
