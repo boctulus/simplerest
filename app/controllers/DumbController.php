@@ -6397,5 +6397,38 @@ class DumbController extends Controller
 
         d($total, 'total');
     }
-   
+
+    function test_update_cmp(){
+        $v1 = '0.5.0';
+        $v2 = '0.6.0';
+        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+
+        $v1 = '0.5.0';
+        $v2 = '0.4.0';
+        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+
+        $v1 = '0.5.0-alpha';
+        $v2 = '0.4.0';
+        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+
+        $v1 = '0.5.0';
+        $v2 = '0.4.0-alpha';
+        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+
+        $v1 = '0.5.0-alpha';
+        $v2 = '0.4.0-alpha';
+        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+
+        $v1 = '0.5.0-alpha';
+        $v2 = '0.4.0-beta';
+        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+
+        $v1 = '0.5.0-alpha';
+        $v2 = '0.5.0-beta';
+        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+
+        $v1 = '0.5.0-beta';
+        $v2 = '0.5.0-alpha';
+        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+    }
 }
