@@ -1,7 +1,19 @@
 UPDATE DESCRIPTION
 ==================
 
-- Query sobre otros sub-recursos en APIs Restful <implementando>
+- Query sobre otros sub-recursos en APIs Restful 
+
+Ej:
+
+	/api/v1/products?valoraciones.texto=bueno
+	&product_categories.name_catego=frutas
+
+Inclusive soporta operadores
+
+Ej:
+
+	/api/v1/products?valoraciones.texto=bueno
+	&product_categories.name_catego[startsWith]=f
 
 - Nuevos comandos "update"
 
@@ -9,3 +21,7 @@ UPDATE DESCRIPTION
 	update status
 	update description [ --version={name} ]
 	update help
+
+
+Nota: queda *pendiente* para la siguiente actualización más opciones a la hora de hacer un PATCH sobre sub-recursos.
+

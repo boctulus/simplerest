@@ -54,21 +54,21 @@ class PrepareUpdateController extends ConsoleController
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CORE 
-        ;app/core
+        app/core
         
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; VARIOS
         ;app/exceptions
         ;app/helpers
         ;app/interfaces
-        ;app/libs
+        app/libs
         ;app/locale
         ;packages
         ;.htaccess
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CONTROLLERS
-        ;app/controllers/UpdateController.php   
+        app/controllers/UpdateController.php   
         ;app/controllers/MigrationsController.php
         ;app/controllers/MyController.php
         
@@ -95,10 +95,12 @@ class PrepareUpdateController extends ConsoleController
         $files = explode(PHP_EOL, $str_files);
 
         $except =  [
+            'initial_file_copy.batch',
             'db_dynamic_load.php',
             'PrepareUpdateController.php',
             'docs/dev',
-            'glob:*.zip'
+            'glob:*.zip',
+            'Mails.php'
         ];
 
         Files::copy($ori, $dst . 'files', $files, $except);
