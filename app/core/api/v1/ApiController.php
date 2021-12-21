@@ -1590,6 +1590,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                     $rel_type = get_rel_type($this->table_name, $tb);
                     //d($rel_type, 'table '. $tb);
+                    //d($dati);
 
                     switch ($rel_type){
                         case '1:1':
@@ -1605,7 +1606,33 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 } -> $tb");
                             }
 
-                        $fk = $fks[0];
+                            d($dati, 'dati'); 
+                            
+                            if (is_array($dati)){
+                                $keys = array_keys($dati);
+
+                                $fks = get_fks($this->table_name, $tb);                                
+
+                                // asumo una sola FK de momento entre dos tablas --- es falso !
+                                $_fk = $fks[0];
+                                
+                                if (in_array($_fk, $keys)){
+                                    // me están enviando la pri key (casos A y C)
+
+                                    if (count($keys) === 1){
+                                        // caso A
+                                        $fk   = $_fk; 
+                                        $dati = $dati[$fk];
+                                    } else {
+                                        // caso C
+                                    }
+                                }
+
+                            } else {
+                                // Si es un escalar:
+                                $fk = $fks[0];
+                            }
+                            
                             $data[$fk] = $dati;
                         break;
 

@@ -5790,6 +5790,16 @@ Una forma general de hacer un UPDATE que actualice relaciones con sub-recursos s
 	PATCH api/v1/products/145?tenantid=az
 
 	{
+		"product_categories": {
+            "id_catego": 3
+		},
+
+		"product_tags": [
+            {  
+                "id_tag": 293
+            }
+        ],
+
     	"valoraciones": [
             {
                 "id_val": 1
@@ -5800,17 +5810,7 @@ Una forma general de hacer un UPDATE que actualice relaciones con sub-recursos s
             {
                 "id_val": 5
             }
-		],
-
-		"product_categories": {
-            "id_catego": 3
-		},
-
-		"product_tags": [
-            {  
-                "id_tag": 293
-            }
-        ],
+		]
 	}
 
 Esto permitiría enviar varios campos en caso de tratarse de una PRIMARY KEY compuesta sin un campo AUTOINCREMENT o UUID.
