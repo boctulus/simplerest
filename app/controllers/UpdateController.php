@@ -24,15 +24,6 @@ class UpdateController extends ConsoleController
         static::$update_path = ROOT_PATH . 'updates/'. $last_ver_dir . '/';
     }
 
-    protected function check(){
-        $id = Hardware::UniqueMachineID();
-
-        if (ROOT_PATH == '/home/www/simplerest/' && $id == 'd57b457667c91f55e9dee697950e5d04'){
-            StdOut::pprint("Running at Home. Aborting (..)");
-            exit;
-        }
-    }     
-
     function index(){
         $this->help();
     }
@@ -99,7 +90,7 @@ class UpdateController extends ConsoleController
         $intial_cp_path = static::$update_path . 'completed/initial_file_copy.batch';
 
         if (count($files) > 0 && (!file_exists($intial_cp_path) || isset($force))){
-            // enable backup
+            // enable backup --- si está funcionando ???
             Files::setBackupDirectory();
 
             Files::copy($ori, $dst);

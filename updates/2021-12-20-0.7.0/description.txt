@@ -1,0 +1,5 @@
+UPDATE DESCRIPTION
+==================
+
+- Generalización del "UPDATE sobre sub-recursos" para permitir editar campos de estos y no solo las relaciones.
+
