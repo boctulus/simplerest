@@ -6431,4 +6431,13 @@ class DumbController extends Controller
         $v2 = '0.5.0-alpha';
         d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
     }
+
+    function test_103(){
+        d(DB::table('products')
+        ->join("product_categories")
+        ->join("product_tags")
+        ->join("valoraciones")
+        ->find(145)->first()    
+        );
+    }
 }
