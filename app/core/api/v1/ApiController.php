@@ -729,7 +729,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
 
                 /*
-                    Query a sub-recursos
+                    Query a sub-recursos (parte I)
                 */
                 
                 $joins = [];
@@ -744,7 +744,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 response()->sendError("Entity '$_tb' is not available as subresource", 400);
                             }
 
-                            // Chequep que el campo SI exista en la tabla del sub-recurso
+                            // Chequeo que el campo SI exista en la tabla del sub-recurso
                             $sub_sc = get_schema($_tb);
                             $sub_at = array_keys($sub_sc['attr_types']);
 
@@ -925,7 +925,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         DB::table($this->table_name)
                         ->column()
 
-                        // Query a sub-recursos                   
+                        // Query a sub-recursos (parte II)                
                         ->when(!empty($joins), function($q) use ($joins) {
                             $q->doQualify();
                             foreach ($joins as $join){

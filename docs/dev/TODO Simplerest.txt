@@ -9,16 +9,8 @@ Para la versión 0.6.0 incluir:
 
 [ SUB-RESOURCES ]
 
-  * WHERE con otras tablas +++++
-
-  Ej:
-
-    GET /api/v1/tbl_cuenta_contable?tenantid=db_legion
-
-    &tbl_grupo_cuenta_contable.cla_intIdClase=1
-
-
   * UPDATE para V2  -- continuar con generalización       +++
+
 
   * Permitir traer sub-sub-resources.  Ej:
 
@@ -119,11 +111,6 @@ https://github.com/florianv/swap/blob/master/doc/readme.md
 
 
 <-- la forma fácil es "hookeando" los métodos up() y down()
-
-
-- Revisar Files:copy()  -- ok
-- Extender api/Files -- ok
-- WebHooks -- ok
 
 - Revisar funcionamiento de API KEYs <-----------------  !!! !!!!!!!!!!!!!!!!!!!!!!!!  
 
