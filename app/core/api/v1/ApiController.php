@@ -1589,42 +1589,65 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     unset($data[$tb]);
 
                     $rel_type = get_rel_type($this->table_name, $tb);
-                    //d($rel_type, 'table '. $tb);
-                    //d($dati);
+                    // d($rel_type, 'table '. $tb);
+                    //d($dati, 'DATI');
 
                     switch ($rel_type){
                         case '1:1':
                         case 'n:1':
                             $fks = get_fks($this->table_name, $tb);
 
-                            // En principio solo voy a permitir actualizar cuando haya una sola relación
-                            // entre las dos tablas porque sino requeriría de un "alias" para referirme a c/u
-                            // aunque siguiendo la convención podría ser __{nombre_constraint}
-
-                            if (count($fks)>1){
-                                response()->sendError("At this moment it's possible to update tables with only one relationship. Detail: {$this->table_name
-                                } -> $tb");
-                            }
-
-                            d($dati, 'dati'); 
-                            
+                            // d($dati, 'dati');   
                             if (is_array($dati)){
                                 $keys = array_keys($dati);
 
                                 $fks = get_fks($this->table_name, $tb);                                
 
-                                // asumo una sola FK de momento entre dos tablas --- es falso !
-                                $_fk = $fks[0];
-                                
-                                if (in_array($_fk, $keys)){
-                                    // me están enviando la pri key (casos A y C)
+                                /*
+                                    Asumo una sola FK de momento entre dos tablas --- es falso !
 
-                                    if (count($keys) === 1){
-                                        // caso A
-                                        $fk   = $_fk; 
-                                        $dati = $dati[$fk];
-                                    } else {
-                                        // caso C
+                                    El nombre de la FK en tales casos podría darse de la siguiente manera:  
+
+                                        "users": [
+                                            {
+                                                "created_by": 173
+                                            }
+                                        ]
+                                
+                                    y también claro,    
+                                    
+                                        "users": [
+                                            {
+                                                "created_by": 173,
+                                                "belongs_to": 142
+                                            }
+                                        ]
+                                */
+
+                                //d($fks, 'fks');
+
+                                // Si no es asociativo..... me quedo con el array interno
+                                if (isset($dati[0])){
+                                    $dati = $dati[0];
+                                }
+
+                                //d($dati, 'dati'); 
+                      
+                                foreach ($fks as $_fk){
+                                                       
+                                    if (in_array($_fk, $keys, true)){
+                                        // me están enviando la pri key (casos A y C)
+
+                                        // d($_fk, '$_fk');
+                                        // d($keys, 'keys');
+
+                                        if (count($keys) === 1){
+                                            // caso A
+                                            $fk   = $_fk; 
+                                            $dati = $dati[$fk];
+                                        } else {
+                                            // caso C
+                                        }
                                     }
                                 }
 
@@ -1754,8 +1777,28 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
             }
 
-             // This is not 100% right but....
-             foreach ($data as $k => $v){
+            /*
+                 Si hubiera un array de arrays.... acomodo:   
+
+                 "users": [
+                    {
+                        "created_by": 173,
+                        "belongs_to": 142
+                    }
+                ],
+            */            
+            foreach ($data as $k => $v){                
+                if (is_array($v)){
+                    foreach ($v as $h => $vi){
+                        $data[$h] = $vi;
+                    }
+
+                    unset($data[$k]);
+                } 
+            }   
+
+            // This is not 100% right but....
+            foreach ($data as $k => $v){
                 if (strtoupper($v) == 'NULL' && $this->instance->isNullable($k)){
                     $data[$k] = NULL;
                 } 
@@ -1782,7 +1825,16 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $data[$this->instance->belongsTo()] = Acl::getCurrentUid();
                 } 
             } 
-                        
+                     
+            if (!$this->acl->hasSpecialPermission('fill_all')){
+                $spp = $this->instance->getAutoFields();
+
+                foreach ($spp as $sp){
+                    if (isset($data[$sp])){
+                        unset($data[$sp]); 
+                    }
+                }
+            }
 
             try {
                 $affected = $this->instance->where([$id_name => $id])->update($data);

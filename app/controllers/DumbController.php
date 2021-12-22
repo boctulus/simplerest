@@ -4691,6 +4691,7 @@ class DumbController extends Controller
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
+        exit;///////
 
         
         $t1 = 'u';
@@ -6430,6 +6431,11 @@ class DumbController extends Controller
         $v1 = '0.5.0-beta';
         $v2 = '0.5.0-alpha';
         d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+    }
+
+    function get_random_user(){
+        DB::getDefaultConnection();
+        d(DB::table(get_users_table())->random()->first());
     }
 
     function test_103(){
