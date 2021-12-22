@@ -1,12 +1,5 @@
 # TODO
 
-Para la versión 0.6.0 incluir:
-
-  app/core/MigrationsControllerBase.php
-  app/controllers/MigrationsController.php
-  app/libs
-
-
 [ SUB-RESOURCES ]
 
   * UPDATE para V2  -- continuar con generalización       +++
@@ -15,12 +8,64 @@ Para la versión 0.6.0 incluir:
   * Permitir traer sub-sub-resources.  Ej:
 
     tbl_factura >   //
-
-
                                       > tbl_producto
 
 
 <-- en V2 implementar con sub-(sub-)-consultas
+
+----
+
+- CORREGIR nextUrl en APIs dentro de carpeta
+
+- Función de búsqueda a nivel de Modelo que cree un "score" de resultados. Algo así:
+
+  SELECT *, (
+
+          IF(`col` LIKE '%word%', weight, 0) +
+          IF(`col` LIKE '%word%', weight, 0) +
+          ....
+
+  ) as score FROM `products` WHERE (
+
+          `col` LIKE '%word%' OR
+          `col` LIKE '%word%' OR
+          ...
+  )
+
+  ORDER BY score DESC;
+  
+
+Ej:
+
+  SELECT *, (
+
+          IF(`name` LIKE '%gu%', 1, 0) +
+          IF(`name` LIKE '%z%', 1, 0) 
+
+  ) as score FROM `products` WHERE (
+
+          `name` LIKE '%gu%' OR
+          `name` LIKE '%!%'
+  )
+
+  ORDER BY score DESC;
+
+
+  O sea cada palabra podría tener un peso específico que podría ajustar una red neuronal (perceptrón simple).  
+
+  Se podrían seleccionar los primeros N resultados con score más alto.
+
+  Tocaría excluir artículos y otras palabras sin valor.
+
+- Implementar CRUD desde consola (INSERT - READ / LIST - EDIT - DELETE) 
+
+Ej:
+
+  php com crud {table} --list [ --take={n} ] [ --skip={m} ]
+  php com crud {table} --search='word word word ...' [ --take={n} ] [ --skip={m} ]
+  php com crud {table} --find={id} 
+  php com crud {table} --find={id} --delete
+  php com crud {table} --find={id} --edit --field={campo} --value={valor}
 
 
 [ UPDATE COMMAND ]
@@ -101,8 +146,17 @@ https://github.com/florianv/swap/blob/master/doc/readme.md
 
 - Dar soporte para referencias circulares.
 
+- Habilitar poder correr "cronJobs" desde el propio framework como en Laravel via Kernel.php
 
+  $schedule->command('some:command')->daily()->runInBackground();
 
+Ver
+
+  https://laravel.com/docs/6.x/queues#queueing-closures
+
+  https://laracasts.com/discuss/channels/laravel/how-to-call-artisan-comand-from-controller-and-run-it-in-background  
+
+- Poder crear una migración a partir de un CSV / XLS (determinar tipo de campos y atributos de acuerdo de los datos)
 
 - Al ejecutar una migración (migrate / rollback) correr inmediatamente y de forma automática:
 
