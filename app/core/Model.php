@@ -136,6 +136,19 @@ class Model {
 		return $this->belongsTo;
 	}
 
+	function getAutoFields(){
+		return [
+			$this->instance->createdBy(),
+			$this->instance->createdAt(),
+			$this->instance->updatedBy(),
+			$this->instance->updatedAt(),
+			$this->instance->deletedBy(),
+			$this->instance->deletedAt(),
+			$this->instance->belongsTo(),
+			$this->instance->isLocked()
+		];
+	}
+
 	function setSqlFormatter(callable $fn){
 		static::$sql_formatter_callback = $fn;
 	}
@@ -2200,10 +2213,6 @@ class Model {
 		if (!Arrays::is_assoc($data)){
 			throw new SqlException('Array of data should be associative');
 		}
-			
-		if (isset($data[$this->createdBy]))
-			unset($data[$this->createdBy]);
-	
 
 		$data = $this->applyInputMutator($data, 'UPDATE');
 		$vars   = array_keys($data);
