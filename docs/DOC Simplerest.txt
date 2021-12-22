@@ -5903,6 +5903,33 @@ c) En caso de recibir el "ID" del registro + otros campos SI el registro del sub
 	}
 
 
+ACTUALIZACIÓN AL 22-DIC-2021 ****
+
+Ya es posible hacer esto:
+
+	PATCH /api/v1/products/145?tenantid=az&_append=false
+
+	{
+    "description": "xyz", 
+    "cost": 200,  
+    "size": "1.15L",
+    
+    "product_categories": {
+        "category": 1
+	},
+
+    "users": [
+        {
+            "created_by": 173,
+            "belongs_to": 142
+        }
+    ],
+
+    "product_tags": [110, 111, 115],
+    "valoraciones": [3, 2]
+}
+
+
 
 # Schema y las reglas de validación via endpoint
 
