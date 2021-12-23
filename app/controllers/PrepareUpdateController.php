@@ -46,44 +46,18 @@ class PrepareUpdateController extends ConsoleController
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; DOC
         docs
-        
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; CONFIG
-        ;config/constants.php
-        ;app/libs/Config.php
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CORE 
         app/core
+        ;app/core/api/v1/ApiController.php
+        ;app/core/Model.php
         
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; VARIOS
-        ;app/exceptions
-        ;app/helpers
-        ;app/interfaces
-        app/libs
-        ;app/locale
-        ;packages
-        ;.htaccess
-
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; CONTROLLERS
-        app/controllers/UpdateController.php   
-        ;app/controllers/MigrationsController.php
-        ;app/controllers/MyController.php
-        
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; APIS
-        ;app/controllers/api/Files.php
-        
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; MODELS
-        ;app/models/main/TblBaseDatosModel.php
-
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; VIEWS
-        ;app/views/MyView.php    
-          
+        app/helpers/db.php
+        app/libs/Strings.php        
+       
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; MIGRATIONS
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
