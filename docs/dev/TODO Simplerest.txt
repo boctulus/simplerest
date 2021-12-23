@@ -15,9 +15,25 @@
 
 ----
 
+- No permitir crear un nuevo update de la misma versión!!! días después deja
+
+  Ej:
+
+    xxxx-xx-xx-0.7.0
+    xxxx-xx-yy-0.7.0
+
+- Cuando un get() first() etc de un Model falle...... devolver null o array() pero NO false !
+
+  Crear  modo de compatibilidad.
+
 - CORREGIR nextUrl en APIs dentro de carpeta
 
-- Función de búsqueda a nivel de Modelo que cree un "score" de resultados. Algo así:
+- Implementar FULL TEXT SEARCH !!!
+
+https://stackoverflow.com/a/54822215/980631
+https://github.com/ProVisionBG/searchable
+
+Yo hice mi propio protipo de fn de búsqueda a nivel de Modelo que cree un "score" de resultados. Algo así:
 
   SELECT *, (
 
@@ -33,7 +49,7 @@
   )
 
   ORDER BY score DESC;
-  
+
 
 Ej:
 

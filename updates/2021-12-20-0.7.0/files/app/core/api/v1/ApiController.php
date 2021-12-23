@@ -1663,7 +1663,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         case '1:n':
                             $fks = get_fks($tb, $this->table_name);
 
-                            d($dati, 'dati (case 1:n)');
+                            //d($dati, 'dati');
                             // d($fks, 'FKs');
                                            
                             // Limitación a remover
@@ -1673,7 +1673,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                             if (is_array($dati[0])){
                                 $pri_rel = get_primary_key($tb);
-                                //d($pri_rel);
+                                d($pri_rel);
 
                                 $keys = [];
                                 foreach ($dati as $ix => $dato){
@@ -1683,16 +1683,18 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     if (in_array($pri_rel, $keys, true)){
                                         if (count($keys) === 1){
                                             // caso A
-                                            d("caso A (1:n)");                                           
+                                            d("caso A");
+                                           
                                             $fk   = $fks[0]; 
+                                            d($fk, 'fk');
                                            
                                         } else {
                                             // caso C
-                                            d("caso C (1:n)");
+                                            d("caso C");
                                         }
                                     } else {
                                         // caso B
-                                        d("caso B (1:n)");
+                                        d("caso B");
                                     }
                                     
                                 }
@@ -1705,14 +1707,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }   
                   
 
-                            $prev = [];
                             if (!$append_mode){
                                 $prev = DB::table($tb)->where([$fk => $id])->pluck(get_primary_key($tb));
-
-                                if (empty($prev)){
+                                
+                                if ($prev === false){
                                     $prev = [];
                                 }
-                            }                            
+                            }
 
                             foreach ($dati as $dato){
                                 $m  = DB::table($tb);
@@ -1730,27 +1731,17 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                 // d($prev, 'prev');
                                 // d($dati, 'dati');
-
-                                if (is_array($dati[0])){
-                                    $dati_id_col = array_column($dati, 'id_tag');
-                                    //d($dati_id_col, 'dati_fk_col');
-
-                                    $diff_left = array_diff($prev, $dati_id_col);
-                                } else {
-                                    $diff_left = array_diff($prev, $dati);
-                                }
-                            
+                                $diff = array_diff($prev, array_column($dati, 'id_tag'));
+                                d($diff, 'diff');
                                 
-                                d($diff_left, 'diff left');
-
-                                if (!empty($diff_left)){
+                                if (!empty($diff)){
                                     $m = DB::table($tb);
 
-                                    $ok = $m->whereIn(get_primary_key($tb), $diff_left)
+                                    $ok = $m->whereIn(get_primary_key($tb), $diff)
                                     //->dontExec()
                                     ->delete();
 
-                                    d($ok, $m->getLog());
+                                    //d($ok, $m->getLog());
                                 }
                             }   
 
@@ -1782,7 +1773,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             // d($bridge, 'BRIDGE');
                             // d($fks, 'FKS');
 
-                            //d($fk_tb, 'fk_tb');
+                            d($fk_tb, 'fk_tb');
                             // d($dati, 'dati');
 
                             foreach ($fks as $_fk){     
@@ -1793,7 +1784,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         $keys = array_keys($dato);         
                                         
                                         // d($keys, 'keys');
-                                        d($dato, 'dato');
+                                        // d($dato, 'dato');
 
                                         if (in_array($fk_tb, $keys, true)){                        
                                             if (count($keys) === 1){
@@ -1814,53 +1805,27 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         
                                     }
 
-                                    $ins = [];
-                                    foreach ($dati as $ix => $dato){
-                                        $ins[$ix] = [
-                                            $pri_table => $id,
-                                            $fk_tb => $dato[$fk_tb]
-                                        ];
-                                    }
-
-
                                     //exit; ////////    
 
                                 } else {
                                     // Es un escalar (o literal)
-
-                                    $ins = [];
-                                    foreach ($dati as $dato){
-                                        $ins[] = [
-                                        $pri_table => $id,
-                                        $fk_tb => $dato
-                                        ];
-                                    }
-                                    
+                                    //$fk = $fks[0];
                                 }   
                             }    
 
-                            //exit; ///////                        
+                            exit; ///////
+                        
                   
                             // Ids a de la otra tabla actualmente apuntados por la puente
                             $prev = DB::table($bridge)->where([$pri_table => $id])->pluck($fk_tb) ?? [];
                 
                             //d($prev, 'PREV');
                   
-                            $diff = [];
-                            if ($append_mode == false){
+                            if (!$append_mode){
                                 // borro registros previos
 
-                                //d($append_mode, 'APPEND MODE');
-                                //d($dati, 'DATI');
-
-                                if (isset($dati[0]) && is_array($dati[0])){
-                                    $dati_fk_ids = array_column($dati, $fk_tb);
-                                    $diff = array_diff($prev,  $dati_fk_ids);     
-                                } else {
-                                    $diff = array_diff($prev, $dati);       
-                                }
-
-                                //d($diff, 'DIFF----');    
+                                $diff = array_diff($prev, $dati);
+                                // d($diff, 'diff');
                                 
                                 if (!empty($diff)){
                                     $m = DB::table($bridge);
@@ -1869,60 +1834,37 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     //->dontExec()
                                     ->delete();
 
-                                    // d($ok, $m->getLog());
-                                    // exit;
+                                    //d($ok, $m->getLog());
                                 }
                             }
-                        
-            
+
                             // apppend mode
-                            if (!empty($diff)){   
-                                //d($diff, 'diff');
-
-
+                            if (isset($diff)){                                
+                                $dati = array_diff($dati, $prev);
+                            } else {
                                 // d($dati, 'VALS');
-                                // d($prev, 'PREV');
-                 
-                                if (empty($prev)){
-                                    $intersect = [];
-                                } else {
-                                    // d($dati, 'DATI ~~~');
-                                    // d($prev, 'PREV ~~~');
-
-                                    
-                                    if (isset($dati[0]) && is_array($dati[0])){
-                                        $dati_fk_ids = array_column($dati, $fk_tb);
-                                        $intersect   = array_intersect($dati_fk_ids, $prev);
-
-                                        // d($intersect, 'INTERSECT');
-                                        // d($dati, 'dati');
-
-                                        // array_diff
-                                        foreach ($dati as $j => $dato){
-                                            if (!in_array($dato[$fk_tb], $intersect)){
-                                                unset($dati[$j]);
-                                            }
-                                        }
-            
-                                    } else {
-                                        $intersect = array_intersect($dati, $prev);
-                                        
-                                        //d($intersect, 'INTERSECT');
-                                        //d($dati, 'dati');
-
-                                        $dati = array_diff($dati, $intersect);
-                                    }
-                                    
-
-                                }
+                                $intersect = array_intersect($dati, $prev);
+                                // d($intersect, 'INTERSECT');
                                 
-                                //d($dati, 'DATI');
+                                $dati = array_diff($dati, $intersect);
+                                // d("Substracting ...");
+                                // d($dati, 'DATI');
                             }
 
                             // d($prev, 'PREV');
                             // d($dati, 'TO INSERT');
-                            // d($ins, 'ins');
 
+
+                            // exit; /////////
+
+
+                            $ins = [];
+                            foreach ($dati as $dato){
+                                $ins[] = [
+                                  $pri_table => $id,
+                                  $fk_tb => $dato
+                                ];
+                            }
 
                             if (!empty($ins)){
                                 $m = DB::table($bridge);

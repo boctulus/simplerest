@@ -3,7 +3,7 @@
 use simplerest\controllers\MakeController;
 use simplerest\libs\Strings;
 use simplerest\libs\DB;
-use simplerest\libs\StdOut;
+use simplerest\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\MakeControllerBase;
 
@@ -286,7 +286,7 @@ function is_mul_rel(string $t1, string $t2, ?string $relation_str = null ,?strin
             return false;  
 
         default:
-            StdOut::pprint("[ Warning ] Unknow or ambiguous relationship for $tenant_id:$t1~$t2 !!!");
+            throw new \Exception("Unknow or ambiguous relationship for $tenant_id:$t1~$t2");
     }
 }
 
