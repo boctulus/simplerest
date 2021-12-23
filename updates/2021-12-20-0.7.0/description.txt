@@ -3,3 +3,9 @@ UPDATE DESCRIPTION
 
 - Generalización del "UPDATE sobre sub-recursos" para permitir editar campos de estos y no solo las relaciones.
 
+Incluir:
+
+app/core/api/v1/ApiController.php
+app/helpers/db.php
+app/libs/Strings.php
+app/core/Model.php

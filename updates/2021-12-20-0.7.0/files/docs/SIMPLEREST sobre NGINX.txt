@@ -1,0 +1,76 @@
+SIMPLEREST sobre NGINX
+======================
+
+Imágen de Docker: tiredofit/nginx-php-fpm
+
+y el comando:
+
+docker run -d -e TIMEZONE=America/Mexico_City -e USER_NGINX=$UID -e GROUP_NGINX=$GID -e AUTHENTICATION_TYPE=NONE -e PHP_MEMORY_LIMIT=32M -e STAGE=DEVELOP -e PHP_TIMEOUT=300 -e UPLOAD_MAX_SIZE=100M -e APC_SHM_SIZE=128M -e PHP_ENABLE_BZ2=TRUE -p 20001:80 -v /home/pulketo/apache1/solucionbinaria/html:/www/html -v /home/pulketo/default.conf:/etc/nginx/conf.d/default.conf tiredofit/nginx-php-fpm
+
+
+Agregar locations en la configuracion de NGINX.
+
+server {
+	### Don't Touch This
+	listen 80;
+	root /www/html;
+
+	### Populate your custom directives here
+	index  index.php index.html index.htm;
+
+#	location / {
+#		try_files $uri $uri/ /index.php?$args;
+#	}
+
+	location / {
+		try_files $uri $uri/ @public;
+	}
+	location @public {
+		rewrite ^ /public$request_uri last;
+	}
+	location /public {
+		try_files $uri $uri/ @rewrite;
+	}
+	location @rewrite {
+		rewrite ^/(.*)$ /public/index.php?url=$1 last;
+	}
+
+	### Populate your custom directives here
+	location ~ \.php(/|$) {
+		include /etc/nginx/nginx.conf.d/php-fpm.conf;
+		fastcgi_split_path_info ^(.+?\.php)(/.+)$;
+		fastcgi_param PATH_INFO $fastcgi_path_info;
+		fastcgi_index index.php;
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	}
+
+	# Deny access to any files with a .php extension in the uploads directory
+	location ~* /(?:uploads|files)/.*\.php$ {
+	deny all;
+	}
+
+
+	### Don't edit past here
+	include /etc/nginx/nginx.conf.d/site_optimization.conf;
+	include /etc/nginx/nginx.conf.d/exploit_protection.conf;
+}
+
+
+Me dijo que la parte importante es:
+
+location / {
+		try_files $uri $uri/ @public;
+	}
+	location @public {
+		rewrite ^ /public$request_uri last;
+	}
+	location /public {
+		try_files $uri $uri/ @rewrite;
+	}
+	location @rewrite {
+		rewrite ^/(.*)$ /public/index.php?url=$1 last;
+	}
+
+
+"esa es la que yo le coloqué para alcanzar el public por default"
