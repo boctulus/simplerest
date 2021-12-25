@@ -6525,14 +6525,13 @@ class DumbController extends Controller
     }
 
     function test_105(){
+        $m = DB::table('product_valoraciones');
 
-        // $m = DB::table('product_valoraciones');
-
-        // $m
-        // ->whereRaw("product_id = ?", [100])
-        // ->delete();            
+        $m
+        ->whereRaw("product_id = ?", [145])
+        ->delete();            
     
-        // d($m->getLog());
+        d($m->getLog());
 
         d(DB::table('product_valoraciones')
         ->where(['product_id', 145])
