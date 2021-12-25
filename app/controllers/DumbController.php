@@ -6532,6 +6532,7 @@ class DumbController extends Controller
         ->delete();            
     
         d($m->getLog());
+        exit;
 
         d(DB::table('product_valoraciones')
         ->where(['product_id', 145])

@@ -1477,7 +1477,8 @@ class Model {
 		try {
 			$st = $this->conn->prepare($q);			
 		} catch (\Exception $e){
-			throw new SqlException("Query '$q' - ". $e->getMessage());
+			$vals_str = implode(',', $vals);
+			throw new SqlException("Query '$q' - and vals = [$vals_str] | ". $e->getMessage());
 		}
 		
 		foreach($vals as $ix => $val)
@@ -2264,7 +2265,11 @@ class Model {
 			$set .= ", {$this->updatedAt} = '$at'";
 		}
 
-		$where = implode(' AND ', $this->where);
+		if (!empty($this->where)){
+			$where = implode(' AND ', $this->where);
+		} else {
+			$where = '';
+		}
 
 		$q = "UPDATE ".$this->from() .
 				" SET $set WHERE " . $where;		
@@ -2389,7 +2394,11 @@ class Model {
 			return $ret;
 		}		
 
-		$where = implode(' AND ', $this->where);
+		$where = '';	
+		if (!empty($this->where)){
+			$where = implode(' AND ', $this->where);
+		}		
+	
 		$where = trim($where);
 		
 		if (empty($where) && empty($this->where_raw_q)){
@@ -2397,7 +2406,11 @@ class Model {
 		}
 
 		if (!empty($this->where_raw_q)){
-			$where = $this->where_raw_q . " AND $where";
+			if (!empty($where)){
+				$where = $this->where_raw_q . " AND $where";
+			} else {
+				$where = $this->where_raw_q;
+			}			
 		}
 
 		$q = "DELETE FROM ". $this->from() . " WHERE " . $where;
