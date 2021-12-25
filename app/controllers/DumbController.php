@@ -1734,8 +1734,7 @@ class DumbController extends Controller
 
     function where_raw_where_in()
     {
-        $m = (new Model())
-        ->table('products')
+        $m = DB::table('products')
 
         ->group(function($q){  // <-- group *
            $q->whereIn('cost', [100, 200])
@@ -1748,6 +1747,64 @@ class DumbController extends Controller
         
        dd($m->get()); 
        dd($m->dd());
+    }  
+
+
+    function where_raw_where_in2a()
+    {
+        $m = DB::table('products');
+        $m->where([
+            ['id', 150, '<='],
+            ['size', 'grande']
+        ]);
+
+        $m
+        ->dontExec()
+        ->delete(); 
+
+        $sql = $m->getLog();
+        d($sql, 'SQL');
+
+        d(DB::statement($sql), 'AFFECTED ROWS');
+    }  
+
+
+    function where_raw_where_in2b()
+    {
+        $m = DB::table('products');
+        $m->whereIn('cost', [100, 200]);
+        
+        $m
+        //->dontExec()
+        ->delete(); 
+
+        $sql = $m->getLog();
+        d($sql, 'SQL');
+
+        d(DB::statement($sql), 'AFFECTED ROWS');
+    }  
+
+    function where_raw_where_in2()
+    {
+        $m = DB::table('products')
+
+        ->group(function($q){  // <-- group *
+           $q->whereIn('cost', [100, 200])
+            // OR
+             ->orWhere([
+                ['id', 150, '<='],
+                ['size', 'grande']
+            ]);  
+        });
+        
+        dd($m
+        ->dontExec()
+        ->delete()); 
+
+        $sql = $m->dd();
+        dd($sql);
+
+        d(DB::statement($sql));
     }  
 
     function when(){
@@ -6476,8 +6533,6 @@ class DumbController extends Controller
         // ->delete();            
     
         // d($m->getLog());
-
-
 
         d(DB::table('product_valoraciones')
         ->where(['product_id', 145])

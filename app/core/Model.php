@@ -285,7 +285,7 @@ class Model {
 				$this->schema['rules'][$field]['required'] = true;
 			}
 		}
-		
+
 		// event handler
 		$this->boot();
 	}
@@ -1473,9 +1473,13 @@ class Model {
 		if (!$this->exec){
 			return; //
 		}
+
+		try {
+			$st = $this->conn->prepare($q);			
+		} catch (\Exception $e){
+			throw new SqlException("Query '$q' - ". $e->getMessage());
+		}
 		
-		$st = $this->conn->prepare($q);			
-	
 		foreach($vals as $ix => $val)
 		{				
 			if(is_null($val)){
@@ -1891,9 +1895,14 @@ class Model {
 						throw new SqlException("Field can not be NULL");
 
 					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN']) ))
-					{						
-						if($this->schema['attr_types'][$unqualified_field] == 'STR')	//
-							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);   
+					{	
+						
+						// SE ESTÁN PERDIENDO LOS SCHEMAS EN ALGÚN LADO!!!
+						// d($this->schema, 'SCHEMAAAAAAAAAAAaaa');
+
+						if ((!isset($this->schema['attr_types']) || $this->schema['attr_types'][$unqualified_field] == 'STR' )){
+							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);  
+						}
 						
 						$in_val = implode(', ', $cond[1]);
 						
@@ -2373,13 +2382,17 @@ class Model {
 			$data =  array_merge($data, [$this->deletedAt => $at]);
 
 			$this->fill($to_fill);
-			return $this->update($data, false);
+			
+			$ret = $this->update($data, false);
+			$this->last_operation = 'delete';
+
+			return $ret;
 		}		
 
 		$where = implode(' AND ', $this->where);
-		$where = empty($where);
+		$where = trim($where);
 		
-		if (empty($where)){
+		if (empty($where) && empty($this->where_raw_q)){
 			throw new \Exception("DELETE statement requieres WHERE condition");
 		}
 
