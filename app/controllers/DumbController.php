@@ -6538,24 +6538,23 @@ class DumbController extends Controller
         );
     }
 
-    function test_undelete(){
-    
+    function test_undelete(){    
         $row = DB::table('products')
         ->find(145)
         ->first();
         d($row);
 
-        $m = DB::table('products');
+        // $m = DB::table('products');
 
-        $row = $m
-        ->find(145)
-        ->undelete();
+        // $row = $m
+        // ->find(145)
+        // ->undelete();
 
-        d($m->getLog());
+        // d($m->getLog());
 
-        $row = $m = DB::table('products')
-        ->find(145)
-        ->first();
-        d($row);
+        // $row = $m = DB::table('products')
+        // ->find(145)
+        // ->first();
+        // d($row);
     }
 }
