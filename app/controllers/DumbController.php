@@ -50,6 +50,17 @@ class DumbController extends Controller
         dd(Url::has_ssl('simplerest.pulque.ro'));
     }
 
+    function test_delete(){
+        $m = DB::table('product_valoraciones');
+
+        $m
+        ->whereRaw("product_id = ?", [100])
+        ->dontExec()
+        ->delete();            
+    
+        d($m->getLog());
+    }
+
     // ok
     function test504(){
         $vals = DB::table('products')
@@ -6457,6 +6468,17 @@ class DumbController extends Controller
     }
 
     function test_105(){
+
+        // $m = DB::table('product_valoraciones');
+
+        // $m
+        // ->whereRaw("product_id = ?", [100])
+        // ->delete();            
+    
+        // d($m->getLog());
+
+
+
         d(DB::table('product_valoraciones')
         ->where(['product_id', 145])
         ->get()
