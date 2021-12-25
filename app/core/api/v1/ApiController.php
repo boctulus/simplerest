@@ -1798,18 +1798,18 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         if (in_array($fk_tb, $keys, true)){                        
                                             if (count($keys) === 1){
                                                 // caso A
-                                                d("caso A");
+                                                d("caso A  (n:m)");
                                             
                                                 // $fk   = $fks[0]; 
                                                 // d($fk, 'fk');
                                             
                                             } else {
                                                 // caso C
-                                                d("caso C");
+                                                d("caso C  (n:m)");
                                             }
                                         } else {
                                             // caso B
-                                            d("caso B");
+                                            d("caso B  (n:m)");
                                         }
                                         
                                     }
@@ -1846,8 +1846,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 
                             //d($prev, 'PREV');
                   
-                            $diff = [];
+                            $diff_left  = [];  // a borrar
+                            $diff_right = [];  // a insertar
+
                             if ($append_mode == false){
+                                d("APPEND MODE FALSE");
                                 // borro registros previos
 
                                 //d($append_mode, 'APPEND MODE');
@@ -1855,37 +1858,49 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                 if (isset($dati[0]) && is_array($dati[0])){
                                     $dati_fk_ids = array_column($dati, $fk_tb);
-                                    $diff = array_diff($prev,  $dati_fk_ids);     
+                                    $diff_left   = array_diff(array_values($prev),  array_values($dati_fk_ids)); 
+                                    $diff_right  = array_diff(array_values($dati_fk_ids), array_values($prev)); 
+                                    
+                                    d($prev, 'prev');
+                                    d($dati_fk_ids, 'dati fk ids');
                                 } else {
-                                    $diff = array_diff($prev, $dati);       
+                                    $diff_left  = array_diff(array_values($prev), array_values($dati)); 
+                                    $diff_right = array_diff(array_values($dati), array_values($prev));
+                                    
+                                    d($prev, 'prev');
+                                    d($dati, 'dati');
                                 }
 
-                                //d($diff, 'DIFF----');    
-                                
-                                if (!empty($diff)){
+                                d($diff_left,  'LEFT DIFF----');    
+                                d($diff_right, 'RIGHT DIFF----');    
+
+                                /*
+                                    Si la diferencia es vacio, no tiene que borrar nada previo
+                                */
+                                if (!empty($diff_left)){
                                     $m = DB::table($bridge);
 
-                                    $ok = $m->whereIn($fk_tb, $diff)
+                                    $ok = $m->whereIn($fk_tb, $diff_left)
                                     //->dontExec()
                                     ->delete();
 
-                                    // d($ok, $m->getLog());
+                                    d($ok, $m->getLog());
                                     // exit;
                                 }
                             }
                         
+                            $intersect = [];
             
                             // apppend mode
-                            if (!empty($diff)){   
-                                //d($diff, 'diff');
-
+                            if (!empty($diff_left)){   
+                                here();
+                                //d($diff_left, 'diff');
 
                                 // d($dati, 'VALS');
                                 // d($prev, 'PREV');
                  
-                                if (empty($prev)){
-                                    $intersect = [];
-                                } else {
+                                if (!empty($prev))
+                                {
                                     // d($dati, 'DATI ~~~');
                                     // d($prev, 'PREV ~~~');
 
@@ -1923,6 +1938,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             // d($dati, 'TO INSERT');
                             // d($ins, 'ins');
 
+                            d($intersect, 'INTERSECT');
 
                             if (!empty($ins)){
                                 $m = DB::table($bridge);
