@@ -2484,7 +2484,11 @@ class Model {
 					$ret = $this->create($data, $ignore_duplicates);
 					DB::commit();
 				} catch (\Exception $e){
-					response()->sendError("Error inserting data", 500, $this->from() . '-' .$e->getMessage());
+					//
+					// Si el modo NO es DEBUG => NO! incluir la sentencia SQL  (revisar en todos lados)
+					//
+					$val_str = implode(',', $this->getLastBindingParamters());
+					response()->sendError("Error inserting data", 500, $this->from() . '-' .$e->getMessage() . '- SQL: '. $this->getLog() . " - values : [$val_str]");
 					DB::rollback();
 				}
 				
