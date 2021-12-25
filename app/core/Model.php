@@ -494,6 +494,11 @@ class Model {
 		return $this;
 	}
 
+	// alias de showDeleted()
+	function deleted($state = true){
+		return $this->showDeleted($state);
+	}
+
 	function setSoftDelete(bool $status) {
 		if (!$this->inSchema([$this->deletedAt])){
 			if ($status){
@@ -2376,7 +2381,7 @@ class Model {
 				$d = new \DateTime();
 			}
 			
-			$at = $d->format('Y-m-d G:i:s');
+			$at = at();
 
 			$to_fill = [];
 			if (!empty($data)){
@@ -2434,6 +2439,38 @@ class Model {
 		return $count;	
 	}
 
+	function undelete(){
+		$where = '';	
+		if (!empty($this->where)){
+			$where = implode(' AND ', $this->where);
+		}		
+	
+		$where = trim($where);
+		
+		if (empty($where) && empty($this->where_raw_q)){
+			throw new \Exception("UNDELETE statement requieres WHERE condition");
+		}
+
+		if (!$this->soft_delete){
+			throw new \Exception("Undelete is not available");
+		}	
+
+		if (isset($this->config)){
+			$d = new \DateTime('', new \DateTimeZone($this->config['DateTimeZone']));
+		} else {
+			$d = new \DateTime();
+		}
+		
+		$at = at();
+
+		$this->fill([$this->deletedAt]);
+
+		$ret = $this->update([
+			$this->deletedAt() => NULL
+		], false);
+
+		return $ret;
+	}	
 
 	function insert(array $data, bool $at_once = false, bool $ignore_duplicates = true){
 		if (!Arrays::is_assoc($data)){
