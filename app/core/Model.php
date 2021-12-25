@@ -2374,9 +2374,18 @@ class Model {
 
 			$this->fill($to_fill);
 			return $this->update($data, false);
-		}
+		}		
 
 		$where = implode(' AND ', $this->where);
+		$where = empty($where);
+		
+		if (empty($where)){
+			throw new \Exception("DELETE statement requieres WHERE condition");
+		}
+
+		if (!empty($this->where_raw_q)){
+			$where = $this->where_raw_q . " AND $where";
+		}
 
 		$q = "DELETE FROM ". $this->from() . " WHERE " . $where;
 		

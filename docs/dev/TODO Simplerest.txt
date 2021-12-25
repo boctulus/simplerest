@@ -229,11 +229,24 @@ y
 <-- para ejecutar directamente la migración al momento de la creación.
 
 
+- Implementar algo como "Flash data" de Laravel para guardar datos temporalmente hasta el siguiente request. Podría usarse para OAuth
+
+https://laravel.com/docs/8.x/session?fbclid=IwAR032HI1Zt5vNo6fG0ikE4hq-kYb2Z_QCcuna_7nFh8k6XR5ZSc5ztlY_L8#flash-data
+
 - Usar en cada archivo del core:
 
    declare(strict_types=1);  
 
 - Documentar correctamente toda función con @param y @return (ver PHPdoc)
+
+
+- Habilitar WebSockets para APIs => crear una   WebSocket API
+
+" I also would not recommend to use PHP for a WS-API (even though there is a solution like Ratchet). Use a language/runtime that was developed for event-based use cases like this (e.g. nodeJS)."
+
+Más
+https://stackoverflow.com/questions/68972613/is-it-possible-to-call-http-api-by-websocket
+https://stackoverflow.com/questions/33424636/how-to-combine-websockets-and-http-to-create-a-rest-api-that-keeps-data-up-to-da
 
 
 - RoadMap para Migrar a PHP 8.0 
