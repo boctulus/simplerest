@@ -1814,19 +1814,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         
                                     }
 
-                                    $ins = [];
-                                    foreach ($dati as $ix => $dato){
-                                        $ins[$ix] = [
-                                            $pri_table => $id,
-                                            $fk_tb => $dato[$fk_tb]
-                                        ];
-                                    }
-
-
-                                    //exit; ////////    
-
+            
                                 } else {
                                     // Es un escalar (o literal)
+
+                                    d('ESCALAR!!!');
 
                                     $ins = [];
                                     foreach ($dati as $dato){
@@ -1839,43 +1831,27 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 }   
                             }    
 
-                            //exit; ///////                        
-                  
                             // Ids a de la otra tabla actualmente apuntados por la puente
                             $prev = DB::table($bridge)->where([$pri_table => $id])->pluck($fk_tb) ?? [];
                 
-                            //d($prev, 'PREV');
                   
                             $diff_left  = [];  // a borrar
                             $diff_right = [];  // a insertar
 
+        
+                            if (isset($dati[0]) && is_array($dati[0])){
+                                $dati_fk_ids = array_column($dati, $fk_tb);
+                                $diff_left   = array_diff(array_values($prev),  array_values($dati_fk_ids)); 
+                                $diff_right  = array_diff(array_values($dati_fk_ids), array_values($prev)); 
+                            } else {
+                                $diff_left  = array_diff(array_values($prev), array_values($dati)); 
+                                $diff_right = array_diff(array_values($dati), array_values($prev));
+                            }
+
+
                             if ($append_mode == false){
-                                d("APPEND MODE FALSE");
-                                // borro registros previos
-
-                                //d($append_mode, 'APPEND MODE');
-                                //d($dati, 'DATI');
-
-                                if (isset($dati[0]) && is_array($dati[0])){
-                                    $dati_fk_ids = array_column($dati, $fk_tb);
-                                    $diff_left   = array_diff(array_values($prev),  array_values($dati_fk_ids)); 
-                                    $diff_right  = array_diff(array_values($dati_fk_ids), array_values($prev)); 
-                                    
-                                    d($prev, 'prev');
-                                    d($dati_fk_ids, 'dati fk ids');
-                                } else {
-                                    $diff_left  = array_diff(array_values($prev), array_values($dati)); 
-                                    $diff_right = array_diff(array_values($dati), array_values($prev));
-                                    
-                                    d($prev, 'prev');
-                                    d($dati, 'dati');
-                                }
-
-                                d($diff_left,  'LEFT DIFF----');    
-                                d($diff_right, 'RIGHT DIFF----');    
-
                                 /*
-                                    Si la diferencia es vacio, no tiene que borrar nada previo
+                                    si hay algo que borrar
                                 */
                                 if (!empty($diff_left)){
                                     $m = DB::table($bridge);
@@ -1888,61 +1864,31 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     // exit;
                                 }
                             }
-                        
-                            $intersect = [];
             
-                            // apppend mode
-                            if (!empty($diff_left)){   
-                                here();
-                                //d($diff_left, 'diff');
-
-                                // d($dati, 'VALS');
-                                // d($prev, 'PREV');
-                 
-                                if (!empty($prev))
+                            // si hay algo que insertar
+                            if (!empty($diff_right))
+                            {                                   
+                                if (isset($dati[0]) && is_array($dati[0]))
                                 {
-                                    // d($dati, 'DATI ~~~');
-                                    // d($prev, 'PREV ~~~');
+                                    foreach ($dati as $j => $dato){
+                                        if (in_array($dato[$fk_tb], $diff_right)){
+                                            $r = $dati[$j];
+                                            $r[$pri_table] = $id;
 
-                                    
-                                    if (isset($dati[0]) && is_array($dati[0])){
-                                        $dati_fk_ids = array_column($dati, $fk_tb);
-                                        $intersect   = array_intersect($dati_fk_ids, $prev);
-
-                                        // d($intersect, 'INTERSECT');
-                                        // d($dati, 'dati');
-
-                                        // array_diff
-                                        foreach ($dati as $j => $dato){
-                                            if (!in_array($dato[$fk_tb], $intersect)){
-                                                unset($dati[$j]);
-                                            }
+                                            $ins[] = $r; 
                                         }
-            
-                                    } else {
-                                        $intersect = array_intersect($dati, $prev);
-                                        
-                                        //d($intersect, 'INTERSECT');
-                                        //d($dati, 'dati');
-
-                                        $dati = array_diff($dati, $intersect);
                                     }
-                                    
-
-                                }
-                                
-                                //d($dati, 'DATI');
+                                } 
                             }
-
-                            // d($prev, 'PREV');
-                            // d($dati, 'TO INSERT');
-                            // d($ins, 'ins');
-
-                            d($intersect, 'INTERSECT');
+                            
+                            //d($ins ?? null, 'ins');
+                            
 
                             if (!empty($ins)){
                                 $m = DB::table($bridge);
                                 $m->insert($ins);
+                            } else {
+                                // message => "No change"
                             }
                   
                         break;
