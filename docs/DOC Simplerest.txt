@@ -5934,7 +5934,7 @@ Ya es posible hacer esto:
 }
 
 
-Implementando para relaciones muchos a muchos (N:M)
+Y para relaciones muchos a muchos (N:M),...
 
 PATCH /v1/products/145?tenantid=az
 
@@ -5951,6 +5951,12 @@ Ej:
 	}
 
 En este caso "valoraciones" es la tabla del otro lado del puente y "valoracion_id" es la FK que apunta hacia la tabla "valoraciones" 
+
+Notas: 
+
+Si "_append=true" entonces no hay "eliminación" de registros que ya no hagan falta dado que es un modo en que solo "agrega" nuevos cuando hacen falta y existen.
+
+Cuando la relación es "a uno" o sea 1:1 o n:1, no aplica el parámetro "_append" (true o false da lo mismo)
 
 
 # Schema y las reglas de validación via endpoint
