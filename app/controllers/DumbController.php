@@ -6506,38 +6506,6 @@ class DumbController extends Controller
         d(DB::table(get_users_table())->random()->first());
     }
 
-    function test_103(){
-        d(DB::table('products')
-        //->join("product_categories")
-        ->join("product_tags")
-        //->join("valoraciones")
-        ->find(145)->first()    
-        );
-    }
-
-    function test_104(){
-        d(DB::table('products')
-        ->leftJoin("product_categories")
-        ->leftJoin("product_tags")
-        ->leftJoin("valoraciones")
-        ->find(145)->first()    
-        );
-    }
-
-    function test_105(){
-        $m = DB::table('product_valoraciones');
-
-        $m
-        ->whereRaw("product_id = ?", [145])
-        ->dontExec()
-        ->delete();            
-
-        d(DB::table('product_valoraciones')
-        ->where(['product_id', 145])
-        ->get()
-        );
-    }
-
     function test_undelete(){    
         $row = DB::table('products')
         ->find(145)
@@ -6557,4 +6525,36 @@ class DumbController extends Controller
         // ->first();
         // d($row);
     }
+
+    function test_103(){
+        d(DB::table('products')
+        //->join("product_categories")
+        ->join("product_tags")
+        //->join("valoraciones")
+        ->find(145)->first()    
+        );
+    }
+
+    function test_104(){
+        d(DB::table('products')
+        ->leftJoin("product_categories")
+        ->leftJoin("product_tags")
+        ->leftJoin("valoraciones")
+        ->find(145)->first()    
+        );
+    }
+
+    function test_105(){
+        // $m = DB::table('product_valoraciones');
+        // $m
+        // ->whereRaw("product_id = ?", [145])
+        // ->delete();            
+
+        d(DB::table('product_valoraciones')
+        ->where(['product_id', 145])
+        ->get()
+        );
+    }
+
+    
 }
