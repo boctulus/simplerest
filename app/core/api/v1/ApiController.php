@@ -1837,14 +1837,21 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                   
                             $diff_left  = [];  // a borrar
                             $diff_right = [];  // a insertar
-
         
                             if (isset($dati[0]) && is_array($dati[0])){
                                 $dati_fk_ids = array_column($dati, $fk_tb);
-                                $diff_left   = array_diff(array_values($prev),  array_values($dati_fk_ids)); 
+
+                                if ($append_mode == false){
+                                    $diff_left   = array_diff(array_values($prev),  array_values($dati_fk_ids)); 
+                                }
+                                
                                 $diff_right  = array_diff(array_values($dati_fk_ids), array_values($prev)); 
                             } else {
-                                $diff_left  = array_diff(array_values($prev), array_values($dati)); 
+
+                                if ($append_mode == false){
+                                    $diff_left  = array_diff(array_values($prev), array_values($dati)); 
+                                }
+                                
                                 $diff_right = array_diff(array_values($dati), array_values($prev));
                             }
 
@@ -1857,11 +1864,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     $m = DB::table($bridge);
 
                                     $ok = $m->whereIn($fk_tb, $diff_left)
-                                    //->dontExec()
                                     ->delete();
 
-                                    d($ok, $m->getLog());
-                                    // exit;
+                                    //d($ok, $m->getLog());
                                 }
                             }
             
@@ -1880,9 +1885,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     }
                                 } 
                             }
-                            
-                            //d($ins ?? null, 'ins');
-                            
+
+                            //d($ins ?? null, 'ins');                            
 
                             if (!empty($ins)){
                                 $m = DB::table($bridge);
