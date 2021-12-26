@@ -6,7 +6,7 @@
 
 
   * Permitir traer sub-sub-resources.  Ej:
-
+s
     tbl_factura >   //
                                       > tbl_producto
 
@@ -301,9 +301,26 @@ Rta:
 
 - Crear OFUSCADOR de código y aplicar al Core de SimpleRest:
 
+  - Introducir "caballo de troya" que envie de forma cifrada:
+
+    - IP del servidor
+
+    - Dominio del servidor
+    
+    - Una vez al día a las 4 AM reportes de cantidad de usuarios, facturas,.. promedio de las facturas, etc. Usar algo como solucionbinaria/api/v1/updates?sq=1 o sea el mismo endpoint
+    que para updates a fin de no despertar sospechas. Inclusive el parámetro extra podría ser por header.
+
+    - Debe corroborar que estén más o menos las mismas tablas que conozco del ERP
+    para evitar un uso indebido en otro proyecto y no es así generar un error al azar
+    que haga que me contacten. Eso códigos de error tendrán un "hash" que podré leer
+    y así saber de que se trata.
+
   - Uso intensivo de variables-variables
+
   - Router a funciones ofuscadas también ofuscado.
+  
   - Si una sola función y/o la longitud / hash del archivo cambia => nada debe funcionar => error al azar.
+  
   - Renombrar cada variable, función, namespace y clase por un string largo y repetitivo de cadenas resbaladizas:
 
     $public zzzzhjjbpc0pbc0poc;
