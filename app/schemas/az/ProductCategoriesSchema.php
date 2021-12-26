@@ -16,20 +16,22 @@ class ProductCategoriesSchema implements ISchema
 
 			'attr_types'	=> [
 				'id_catego' => 'INT',
-				'name_catego' => 'STR'
+				'name_catego' => 'STR',
+				'otro_campo' => 'STR'
 			],
 
 			'primary'		=> ['id_catego'],
 
 			'autoincrement' => 'id_catego',
 
-			'nullable'		=> ['id_catego'],
+			'nullable'		=> ['id_catego', 'otro_campo'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'id_catego' => ['type' => 'int'],
-				'name_catego' => ['type' => 'str', 'max' => 80, 'required' => true]
+				'name_catego' => ['type' => 'str', 'max' => 80, 'required' => true],
+				'otro_campo' => ['type' => 'str', 'max' => 30]
 			],
 
 			'fks' 			=> [],
