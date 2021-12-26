@@ -5859,16 +5859,34 @@ Ej:
 
 Habría 3 casos en general:
 
-a) Recibir solo el ID de un registro. En este caso se crearía la relación con ese registro. 
+a) Recibir solo el ID de un registro. En este caso se haría la relación con ese registro. 
 
 	PATCH api/v1/products/145?tenantid=az
 
 	{
-    	"valoraciones": [
-            {
-				"id_val": 3
-            }
-		]
+		"description": "xyzz", 
+		"cost": 200,  
+		"size": "1.15L",
+		
+		"product_categories": {        
+			"id_catego": 3
+		},
+
+		 "product_tags": [
+			{ "id_tag": 124 }, 
+
+			{ "id_tag": 127 }
+		],
+
+		"valoraciones": [
+			{
+				"valoracion_id": 1
+			},
+			{
+				"valoracion_id": 4
+
+			}
+    	]
 	}
 
 b) Recibir solo campos distintos del "id". Aquí se asociarían los registros en caso de exisitir o en caso contrario se crearían y asociarían.

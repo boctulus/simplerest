@@ -299,7 +299,21 @@ Rta:
     }
   }
 
-- Crear OFUSCADOR de código y aplicar al Core de SimpleRest:
+- Crear o usar OFUSCADOR de código y aplicar al Core de SimpleRest:
+
+  https://github.com/naneau/php-obfuscator  <-- probar. No es reversible por UnPHP
+
+  - Es vital introducir cambios disruptivos. Podrían ser:
+
+    - Mover librerías, helpers,..... a /core => cambio de namespaces
+
+    - Cambiar los archivos Pivots.php de lo que hay ahora a ...
+
+      return [
+        'pivots' => ...,
+        'pivots_fk' => ...,
+        'relationships' => ....
+      ]
 
   - Introducir "caballo de troya" que envie de forma cifrada:
 
@@ -314,6 +328,10 @@ Rta:
     para evitar un uso indebido en otro proyecto y no es así generar un error al azar
     que haga que me contacten. Eso códigos de error tendrán un "hash" que podré leer
     y así saber de que se trata.
+
+  - Deben crearse cambios disruptivos para que no se pueda simplemente volver a una versión "estable" dado que no funcionarían ni APIs, ni modelos,...etc
+
+  - Deben ser varios updates a fin de complicar más las cosas.
 
   - Uso intensivo de variables-variables
 
