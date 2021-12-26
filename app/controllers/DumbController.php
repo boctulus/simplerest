@@ -6528,19 +6528,17 @@ class DumbController extends Controller
 
     function test_103(){
         d(DB::table('products')
-        //->join("product_categories")
-        ->join("product_tags")
+        ->leftJoin("product_categories")
+        ->leftJoin("product_tags")
         //->join("valoraciones")
         ->find(145)->first()    
         );
     }
 
     function test_104(){
-        d(DB::table('products')
-        ->leftJoin("product_categories")
-        ->leftJoin("product_tags")
-        ->leftJoin("valoraciones")
-        ->find(145)->first()    
+        d(DB::table("product_tags")
+        ->where(['product_id', 145])
+        ->get()
         );
     }
 

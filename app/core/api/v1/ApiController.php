@@ -1597,7 +1597,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         case 'n:1':
                             $fks = get_fks($this->table_name, $tb);
 
-                            // d($dati, 'dati');   
+                            //d($dati, 'dati');   
                             if (is_array($dati)){
                                 $keys = array_keys($dati);
 
@@ -1637,23 +1637,51 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     if (in_array($_fk, $keys, true)){
                                         // me están enviando la pri key (casos A y C)
 
-                                        // d($_fk, '$_fk');
-                                        // d($keys, 'keys');
-
                                         if (count($keys) === 1){
-                                            // caso A
+                                            d("Caso A (a uno)");
+
+                                            // caso A -- ok (listo)
                                             $fk   = $_fk; 
                                             $dati = $dati[$fk];
+
+                                            here(); 
                                         } else {
+                                            d("Caso C (a uno)");
                                             // caso C
                                         }
                                     } else {
-                                        // caso B
+                                        if (in_array($tb, static::$connect_to)){
+                                            d($keys, 'keys');
+                                            d($_fk, '_fk');
+                                            // d($tb, 'tb');
+
+                                            $pri_rel = get_primary_key($tb);
+                                            d($pri_rel, 'pri rel');
+                                        
+                                            if (in_array($pri_rel, $keys, true)){
+                                                if (count($keys) === 1){
+                                                    // caso A -- ok 
+                                                    d("caso A (a uno)"); 
+
+                                                    $fk   = $_fk; 
+                                                    $dati = $dati[$pri_rel];
+                                                } else {
+                                                    d("caso C (a uno)"); 
+                                                }
+                                            } else {
+                                                d("Caso B (a uno)");
+                                            }
+                                        } else {
+                                            //d("caso B ?? (a uno)");
+                                        }
+
+                                        //exit;
                                     }
                                 }
 
                             } else {
                                 // Si es un escalar:
+                                d("Escalar (a uno)");
                                 $fk = $fks[0];
                             }
                             
@@ -1682,10 +1710,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                     if (in_array($pri_rel, $keys, true)){
                                         if (count($keys) === 1){
-                                            // caso A
-                                            d("caso A (1:n)");                                           
+                                            // caso A  --ok (listo)
+                                            d("caso A (1:n)");    
+
                                             $fk   = $fks[0]; 
-                                           
                                         } else {
                                             // caso C
                                             d("caso C (1:n)");
@@ -1723,7 +1751,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 //d($ok, $m->getLog());
                             }
 
-                            d($append_mode, 'append mode');
+                            //d($append_mode, 'append mode');
 
                             if ($append_mode == false){
                                 // borro registros previos
@@ -1738,10 +1766,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     $diff_left = array_diff($prev, $dati_id_col);
                                 } else {
                                     $diff_left = array_diff($prev, $dati);
-                                }
-                            
+                                }                           
                                 
-                                d($diff_left, 'diff left');
+                                //d($diff_left, 'diff left');
 
                                 if (!empty($diff_left)){
                                     $m = DB::table($tb);
@@ -1793,11 +1820,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         $keys = array_keys($dato);         
                                         
                                         // d($keys, 'keys');
-                                        d($dato, 'dato');
+                                        // d($dato, 'dato');
 
                                         if (in_array($fk_tb, $keys, true)){                        
                                             if (count($keys) === 1){
-                                                // caso A
+                                                // caso A --- nada más que hacer (ok)
                                                 d("caso A  (n:m)");
                                             
                                                 // $fk   = $fks[0]; 
@@ -1816,18 +1843,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             
                                 } else {
-                                    // Es un escalar (o literal)
-
-                                    d('ESCALAR!!!');
-
-                                    $ins = [];
-                                    foreach ($dati as $dato){
-                                        $ins[] = [
-                                        $pri_table => $id,
-                                        $fk_tb => $dato
-                                        ];
-                                    }
-                                    
+                                    // Es un escalar (o literal)                     
                                 }   
                             }    
 
@@ -1847,12 +1863,19 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 
                                 $diff_right  = array_diff(array_values($dati_fk_ids), array_values($prev)); 
                             } else {
+                                // ESCALAR
 
+                                // here();
                                 if ($append_mode == false){
                                     $diff_left  = array_diff(array_values($prev), array_values($dati)); 
                                 }
                                 
+                                // d($dati, 'DATI');
+                                // d($prev, 'PREV');
+
                                 $diff_right = array_diff(array_values($dati), array_values($prev));
+
+                                // d($diff_right, 'RIGHT');
                             }
 
 
@@ -1870,6 +1893,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 }
                             }
             
+                            $ins = [];
+
                             // si hay algo que insertar
                             if (!empty($diff_right))
                             {                                   
@@ -1883,7 +1908,17 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                             $ins[] = $r; 
                                         }
                                     }
-                                } 
+                                } else {                                   
+                                    // si los IDs vienen en un array como datos simples, ...
+                                    foreach ($dati as $j => $dato){
+                                        if (in_array($dato, $diff_right)){
+                                            $ins[] = [
+                                                $pri_table => $id,
+                                                $fk_tb => $dato
+                                            ];
+                                        }
+                                    }
+                                }
                             }
 
                             //d($ins ?? null, 'ins');                            
