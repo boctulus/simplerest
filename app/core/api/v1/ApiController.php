@@ -1633,48 +1633,45 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                 //d($dati, 'dati'); 
                       
-                                foreach ($fks as $_fk){                                                       
-                                    if (in_array($_fk, $keys, true)){
-                                        // me están enviando la pri key (casos A y C)
+                                $pri_rel = get_primary_key($tb);
+                                d($pri_rel, 'pri rel');
 
-                                        if (count($keys) === 1){
-                                            d("Caso A (a uno)");
+                                foreach ($fks as $_fk){                                     
+                                    // Array de objetos,...
+                                    if (in_array($tb, static::$connect_to)){
+                                        // d($keys, 'keys');
+                                        // d($_fk, '_fk');
+                                        // d($tb, 'tb');
+                                    
+                                        if (in_array($pri_rel, $keys, true)){
+                                            if (count($keys) === 1){
+                                                // caso A -- ok 
+                                                d("caso A (a uno)"); 
 
-                                            // caso A -- ok (listo)
-                                            $fk   = $_fk; 
-                                            $dati = $dati[$fk];
-                                        
-                                        } else {
-                                            d("Caso C (a uno)");
-                                            // caso C
-                                        }
-                                    } else {
-                                        if (in_array($tb, static::$connect_to)){
-                                            // d($keys, 'keys');
-                                            // d($_fk, '_fk');
-                                            // d($tb, 'tb');
-
-                                            $pri_rel = get_primary_key($tb);
-                                            d($pri_rel, 'pri rel');
-                                        
-                                            if (in_array($pri_rel, $keys, true)){
-                                                if (count($keys) === 1){
-                                                    // caso A -- ok 
-                                                    d("caso A (a uno)"); 
-
-                                                    $fk   = $_fk; 
-                                                    $dati = $dati[$pri_rel];
-                                                } else {
-                                                    d("caso C (a uno)"); 
-                                                }
+                                                $fk   = $_fk; 
+                                                $dati = $dati[$pri_rel];
                                             } else {
-                                                d("Caso B (a uno)");
+                                                d("caso C (a uno)"); 
                                             }
                                         } else {
-                                            //d("caso B ?? (a uno)");
+                                            d("Caso B (a uno)");
                                         }
 
-                                        //exit;
+                                    } else {
+                                        // me están enviando la FK (casos A1 y C1)
+                                        if (in_array($_fk, $keys, true)){
+                                            if (count($keys) === 1){
+                                                d("Caso A (a uno)");
+
+                                                // caso A -- ok (listo)
+                                                $fk   = $_fk; 
+                                                $dati = $dati[$fk];
+                                            
+                                            } else {
+                                                d("Caso C (a uno)");
+                                                // caso C
+                                            }
+                                        }
                                     }
                                 }
 
