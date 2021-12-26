@@ -6530,7 +6530,7 @@ class DumbController extends Controller
         d(DB::table('products')
         ->leftJoin("product_categories")
         ->leftJoin("product_tags")
-        //->join("valoraciones")
+        ->leftJoin("valoraciones")
         ->find(145)->first()    
         );
     }
