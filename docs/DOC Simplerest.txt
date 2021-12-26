@@ -5902,6 +5902,8 @@ c) En caso de recibir el "ID" del registro + otros campos SI el registro del sub
 		]
 	}
 
+<-- y sino existe => 404 al sub-recurso
+
 
 ACTUALIZACIÓN AL 22-DIC-2021 ****
 

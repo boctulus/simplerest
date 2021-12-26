@@ -1643,16 +1643,15 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                             // caso A -- ok (listo)
                                             $fk   = $_fk; 
                                             $dati = $dati[$fk];
-
-                                            here(); 
+                                        
                                         } else {
                                             d("Caso C (a uno)");
                                             // caso C
                                         }
                                     } else {
                                         if (in_array($tb, static::$connect_to)){
-                                            d($keys, 'keys');
-                                            d($_fk, '_fk');
+                                            // d($keys, 'keys');
+                                            // d($_fk, '_fk');
                                             // d($tb, 'tb');
 
                                             $pri_rel = get_primary_key($tb);
