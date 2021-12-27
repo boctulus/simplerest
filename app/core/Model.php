@@ -2237,7 +2237,7 @@ class Model {
 		if(!empty($this->fillable) && is_array($this->fillable)){
 			foreach($vars as $var){
 				if (!in_array($var,$this->fillable))
-					throw new SqlException("update: $var is not fillable");
+					throw new SqlException("Update: $var is not fillable");
 			}
 		}
 
