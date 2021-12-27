@@ -1586,7 +1586,15 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }, ARRAY_FILTER_USE_BOTH);
 
                 foreach ($sub_res as $tb => $dati){
-                    unset($data[$tb]);
+                    $ori_data  = $dati;
+                    $pri_rel   = get_primary_key($tb);
+
+                    if (isset($ori_data[$pri_rel])){
+                        $id_tb_rel = $ori_data[$pri_rel];
+                        unset($ori_data[$pri_rel]); // me quedo con el resto de campos
+                    }
+
+                    unset($data[$tb]); // me quedo solo con datos de la tabla                   
 
                     $rel_type = get_rel_type($this->table_name, $tb);
                     // d($rel_type, 'table '. $tb);
@@ -1632,48 +1640,37 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 }
 
                                 //d($dati, 'dati'); 
-                      
-                                $pri_rel = get_primary_key($tb);
-                                d($pri_rel, 'pri rel');
+                                //d($pri_rel, 'pri rel');
 
+                                /*
+                                    De momento si existiera más de una relación entre dos tablas,
+                                    se aplicará la actualización siguiendo *ambas* FKs <ojo>
+                                */
                                 foreach ($fks as $_fk){                                     
                                     // Array de objetos,...
                                     if (in_array($tb, static::$connect_to)){
-                                        // d($keys, 'keys');
-                                        // d($_fk, '_fk');
-                                        // d($tb, 'tb');
-                                    
-                                        if (in_array($pri_rel, $keys, true)){
-                                            if (count($keys) === 1){
-                                                // caso A -- ok 
-                                                d("caso A (a uno)"); 
 
-                                                $fk   = $_fk; 
-                                                $dati = $dati[$pri_rel];
-                                            } else {
-                                                d("caso C (a uno)"); 
-                                            }
-                                        } else {
-                                            d("Caso B (a uno)");
+                                        if (in_array($pri_rel, $keys, true)){                                            
+                                            $fk   = $_fk; 
+                                            $dati = $dati[$pri_rel];
                                         }
 
                                     } else {
-                                        // me están enviando la FK (casos A1 y C1)
+                                        // me están enviando la FK
                                         if (in_array($_fk, $keys, true)){
-                                            if (count($keys) === 1){
-                                                d("Caso A (a uno)");
-
-                                                // caso A -- ok (listo)
-                                                $fk   = $_fk; 
-                                                $dati = $dati[$fk];
-                                            
-                                            } else {
-                                                d("Caso C (a uno)");
-                                                // caso C
-                                            }
+                                            $fk   = $_fk; 
+                                            $dati = $dati[$fk];
                                         }
                                     }
-                                }
+
+                                    // hay más campos que la PRI KEY
+                                    if (count($keys) > 1){ 
+                                        $affected = DB::table($tb)
+                                        ->find($id_tb_rel)
+                                        ->update($ori_data);
+                                    }
+
+                                } //
 
                             } else {
                                 // Si es un escalar:
@@ -1927,7 +1924,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }
                   
                         break;
-                    }
+                    } // end case
                 }
             }
 
