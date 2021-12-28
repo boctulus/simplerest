@@ -1833,7 +1833,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             if (count($fks_bridge)>2){
                                 response()->sendError("At this moment it's possible to update bridge tables with only one relationship to each side. Detail: $tb -> {$this->table_name}");
                             }
-                            
+                                                
+                            // IDs de sub-recursos a ignorar en el delete
+                            $idr = [];
 
                             $pri_table = $fks_bridge[$this->table_name];
                             $fk_tb = $fks_bridge[$tb];
@@ -1861,10 +1863,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         if (in_array($fk_tb, $keys, true)){                        
                                             if (count($keys) === 1){
                                                 // caso A --- nada más que hacer (ok)
-                                                d("caso A  (n:m)");
-                                            
-                                                // $fk   = $fks[0]; 
-                                                // d($fk, 'fk');
+                                                d("caso A  (n:m)");                                            
                                             
                                             } else {
                                                 // caso C
@@ -1873,6 +1872,43 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         } else {
                                             // caso B
                                             d("caso B  (n:m)");
+
+                                            //d($dati, 'dati');
+                                            //d($dato, 'dato');
+
+                                            $pri_sub = get_primary_key($tb);
+
+                                            // Chequeo si existe el sub-recurso
+                                            $id_sub  = DB::table($tb)
+                                            ->where($dato) 
+                                            ->value($pri_sub);
+
+                                            //d($id_sub, 'id_sub');
+
+                                            if (empty($id_sub)){
+                                                // lo creo
+                                                $id_sub = DB::table($tb)
+                                                ->create($dato);
+                                            }
+
+                                            // lo asocio => creo registro puente
+
+                                            $arr = [    
+                                                $pri_table => $id,                                            
+                                                $fk_tb  => $id_sub 
+                                            ];
+                                    
+                                            $mbr = DB::table($bridge);
+
+                                            $idb = $mbr
+                                            ->create($arr);
+
+                                            // d($mbr->dd());
+                                            // d($arr);
+
+                                            // d($ok, 'puente creado?');
+                                            
+                                            $idr[] = $id_sub;
                                         }
                                         
                                     }
@@ -1923,6 +1959,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     $m = DB::table($bridge);
 
                                     $ok = $m->whereIn($fk_tb, $diff_left)
+                                    ->when(!empty($idr), function($q) use ($fk_tb, $idr){
+                                        $q->whereNotIn($fk_tb, $idr);
+                                    })
                                     ->delete();
 
                                     //d($ok, $m->getLog());
@@ -1937,7 +1976,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 if (isset($dati[0]) && is_array($dati[0]))
                                 {
                                     foreach ($dati as $j => $dato){
-                                        if (in_array($dato[$fk_tb], $diff_right)){
+                                        if (isset($dato[$fk_tb]) && in_array($dato[$fk_tb], $diff_right)){
                                             $r = $dati[$j];
                                             $r[$pri_table] = $id;
 
