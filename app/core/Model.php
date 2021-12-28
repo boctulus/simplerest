@@ -2279,6 +2279,7 @@ class Model {
 		$q = "UPDATE ".$this->from() .
 				" SET $set WHERE " . $where;		
 
+		//d($q, 'Update statement');
 
 		$vals = array_merge($vals, $this->w_vals);
 		$vars = array_merge($vars, $this->w_vars);		

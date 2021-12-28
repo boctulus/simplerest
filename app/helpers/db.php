@@ -353,9 +353,20 @@ function inSchema(array $props, string $table_name, ?string $tenant_id = null){
 }
 
 function get_primary_key(string $table_name, $tenant_id = null){
-    $sc = get_schema($table_name, $tenant_id);
+    static $keys = [];
 
-    return $sc['id_name'];
+    if (is_null($tenant_id)){
+        $tenant_id = DB::getCurrentConnectionId(true);
+    } 
+
+    if (isset($keys[$tenant_id][$table_name])){
+        return $keys[$tenant_id][$table_name];
+    }
+
+    $sc  = get_schema($table_name, $tenant_id);
+    $keys[$tenant_id][$table_name] = $sc['id_name'];
+
+    return $keys[$tenant_id][$table_name];
 }
 
 // alias

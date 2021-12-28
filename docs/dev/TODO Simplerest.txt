@@ -28,6 +28,8 @@ s
 
 - CORREGIR nextUrl en APIs dentro de carpeta
 
+- Implementar Cronjobs pero en PHP.  <-- asegurar que solo una instancia esté corriendo al mismo tiempo.
+
 - Implementar FULL TEXT SEARCH !!!
 
 https://stackoverflow.com/a/54822215/980631
