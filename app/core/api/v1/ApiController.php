@@ -1565,8 +1565,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 if  ($owned && !$this->acl->hasSpecialPermission('write_all') && $rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()){
                     Factory::response()->sendError('Forbidden', 403, 'You are not the owner!');
-                } 
-                    
+                }   
             }                 
 
             /* 
@@ -1641,11 +1640,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                 //d($dati, 'dati'); 
                                 //d($pri_rel, 'pri rel');
-
-                                /*
-                                    De momento si existiera más de una relación entre dos tablas,
-                                    se aplicará la actualización siguiendo *ambas* FKs <ojo>
-                                */
+                            
                                 foreach ($fks as $_fk){                                     
                                     // Array de objetos,...
                                     if (in_array($tb, static::$connect_to)){
@@ -1674,7 +1669,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                             } else {
                                 // Si es un escalar:
-                                d("Escalar (a uno)");
+                                //d("Escalar (a uno)");
                                 $fk = $fks[0];
                             }
                             
@@ -1692,6 +1687,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 response()->sendError("At this moment it's possible to update tables with only one relationship. Detail: $tb -> {$this->table_name}");
                             }
 
+                            $idr = null;
+
                             if (is_array($dati[0])){
                                 $pri_rel = get_primary_key($tb);
                                 //d($pri_rel);
@@ -1701,12 +1698,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     $keys = array_keys($dato);         
                                     //d($keys, 'keys');
 
+                                    $fk   = $fks[0]; 
+
                                     if (in_array($pri_rel, $keys, true)){
                                         if (count($keys) === 1){
                                             // caso A  --ok (listo)
-                                            d("caso A (1:n)");    
-
-                                            $fk   = $fks[0]; 
+                                            d("caso A (1:n)");
                                         } else {
                                             // caso C
                                             d("caso C (1:n)");
@@ -1714,6 +1711,27 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     } else {
                                         // caso B
                                         d("caso B (1:n)");
+
+                                        /*
+                                            Registro del subrecurso que apunta a "este"
+                                        */
+                                        $_dato = $dato;
+                                        $_dato[$fk] = $id;
+
+                                        $idr = DB::table($tb)
+                                        ->where($_dato)
+                                        ->value($pri_rel);
+
+                                        // Si no existen subrecursos asociados
+                                        if (empty($idr)){
+                                            //... creo uno y lo asocio
+                                            $idr = DB::table($tb)
+                                            ->create($_dato);
+
+                                            //d($idr, 'ID sub creado');
+                                        }
+                                        
+                                        unset($dati[$ix]);
                                     }
                                     
                                 }
@@ -1728,7 +1746,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                             $prev = [];
                             if (!$append_mode){
-                                $prev = DB::table($tb)->where([$fk => $id])->pluck(get_primary_key($tb));
+                                $prev = DB::table($tb)
+                                ->where([$fk => $id])
+                                ->pluck(get_primary_key($tb));
 
                                 if (empty($prev)){
                                     $prev = [];
@@ -1742,37 +1762,31 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 ->update([$fk => $id]);
                                 
                                 //d($ok, $m->getLog());
-                            }
-
-                            //d($append_mode, 'append mode');
+                            }                            
 
                             if ($append_mode == false){
-                                // borro registros previos
-
-                                // d($prev, 'prev');
-                                // d($dati, 'dati');
-
                                 if (is_array($dati[0])){
                                     $dati_id_col = array_column($dati, 'id_tag');
-                                    //d($dati_id_col, 'dati_fk_col');
-
                                     $diff_left = array_diff($prev, $dati_id_col);
                                 } else {
                                     $diff_left = array_diff($prev, $dati);
-                                }                           
-                                
-                                //d($diff_left, 'diff left');
+                                } 
 
                                 if (!empty($diff_left)){
                                     $m = DB::table($tb);
 
-                                    $ok = $m->whereIn(get_primary_key($tb), $diff_left)
+                                    $ok = $m
+                                    ->whereIn(get_primary_key($tb), $diff_left)
+                                    ->when(!empty($idr), function($q) use ($pri_rel, $idr){
+                                        $q->where([$pri_rel, $idr, '!=']);
+                                    })
                                     //->dontExec()
                                     ->delete();
 
-                                    d($ok, $m->getLog());
+                                    //d($ok, $m->getLog());
                                 }
                             }   
+                            
 
                         break;
                         
@@ -1914,7 +1928,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 }
                             }
 
-                            //d($ins ?? null, 'ins');                            
+                            //d($ins ?? null, 'ins');  
 
                             if (!empty($ins)){
                                 $m = DB::table($bridge);
