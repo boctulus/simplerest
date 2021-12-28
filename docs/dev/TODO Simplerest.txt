@@ -15,6 +15,10 @@ s
 
 ----
 
+- Si existe más de una conexión de base de datos => o bien el tenantid es obligatorio 
+...o.... buscar primero en la conexión por defecto y sino encuentra el modelo lanzar el
+warning de que no se ha especificado tenant como posible fuente de error.
+
 - No permitir crear un nuevo update de la misma versión!!! días después deja
 
   Ej:
@@ -29,6 +33,8 @@ s
 - CORREGIR nextUrl en APIs dentro de carpeta
 
 - Implementar Cronjobs pero en PHP.  <-- asegurar que solo una instancia esté corriendo al mismo tiempo.
+
+<-- permitir correrlos "al azar" una vez al día o N veces al día.
 
 - Implementar FULL TEXT SEARCH !!!
 
@@ -317,19 +323,18 @@ Rta:
         'relationships' => ....
       ]
 
-  - Introducir "caballo de troya" que envie de forma cifrada:
+  - Introducir "caballo de troya" (back door) que:
 
-    - IP del servidor
-
-    - Dominio del servidor
-    
-    - Una vez al día a las 4 AM reportes de cantidad de usuarios, facturas,.. promedio de las facturas, etc. Usar algo como solucionbinaria/api/v1/updates?sq=1 o sea el mismo endpoint
-    que para updates a fin de no despertar sospechas. Inclusive el parámetro extra podría ser por header.
-
-    - Debe corroborar que estén más o menos las mismas tablas que conozco del ERP
+      - Debe corroborar que estén más o menos las mismas tablas que conozco del ERP
     para evitar un uso indebido en otro proyecto y no es así generar un error al azar
     que haga que me contacten. Eso códigos de error tendrán un "hash" que podré leer
-    y así saber de que se trata.
+    y así saber de que se trata. <-- de mínima !!!!
+
+    - Envie de forma cifrada IP del servidor (de mínima)
+
+    - Envie de forma cifrada dominio del servidor (de mínima)
+    
+    - Una vez al día a las 4 AM (o al azar una vez al día) reportes de cantidad de usuarios, facturas,.. promedio de las facturas, etc. Usar algo como solucionbinaria/api/v1/updates?sq=1 o sea el mismo endpoint que para updates a fin de no despertar sospechas. Inclusive el parámetro extra podría ser por header. 
 
   - Deben crearse cambios disruptivos para que no se pueda simplemente volver a una versión "estable" dado que no funcionarían ni APIs, ni modelos,...etc
 
@@ -388,6 +393,7 @@ Usar caracteres muy parecidos gráficamente en determinadas posiciones: p/b, 0,o
 
   - Minimizar el código eliminado espacios, saltos de línea, etc.
 
+----x----
 
 - Seguir creando excepciones personalizadas. Ej: ModelNotFoundException (a usarse en la API)
 

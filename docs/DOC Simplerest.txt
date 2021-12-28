@@ -5908,7 +5908,7 @@ b) Recibir solo campos distintos del "id".
 
 Aquí el comportamiento sería:
 
-Para 1:n)
+Para 1:n) -- ok
 
 	Sino existen asociados al registro de la tabla principal => se crearía y asociaría el subrecurso.
 
@@ -5923,7 +5923,7 @@ Para n:m)
 		Se crearían en caso de no existir. Sino ser asociarían.
 
 
-c) En caso de recibir el "ID" del registro + otros campos SI el registro del sub-recurso con ese ID existe pero no con esa combinación de valores de campos => se procedería a "editar" el registro del subrecurso. Ej:
+c) En caso de recibir el "ID" del registro + otros campos 
 
 	PATCH api/v1/products/145?tenantid=az
 
@@ -5938,6 +5938,16 @@ c) En caso de recibir el "ID" del registro + otros campos SI el registro del sub
             }
 		]
 	}
+
+Idea general: SI el registro del sub-recurso con ese ID existe pero no con esa combinación de valores de campos => se procedería a "editar" el registro del subrecurso.
+
+
+En general, resumiendo los casos A, B y C:
+
+	- Solo ID (del subrecurso) => asociar
+	- Solo otros campos => buscar de asociar o crear y asociar 
+	- ID + otros campos => EDITAR  
+
 
 
 ACTUALIZACIÓN AL 22-DIC-2021 ****
@@ -6023,7 +6033,7 @@ Ej:
 
 ACTUALIZACIÓN AL 27-DIC-2022
 
-Ya es posible para relaciones 1:n, crear sub-recursos sino existen.
+Ya es posible para relaciones 1:n, crear sub-recursos sino existen en el PATCH.
 
 	{
 		"description": "xyzz", 
@@ -6040,6 +6050,49 @@ Ya es posible para relaciones 1:n, crear sub-recursos sino existen.
 			}
 		]
 	}
+
+
+ACTUALIZACIÓN AL 28-DIC-20202
+
+Para relaciones 1:n ya es posible recibir registros de sub-recursos con ID + otros campos  (caso C)
+
+Ej:
+
+	PATCH http://simplerest.lan:8082/api/v1/products/145?tenantid=az&_append=false
+
+	{
+		"description": "xyzz", 
+		"cost": 228,  
+		"size": "1.15L",
+		
+		"product_tags": [  
+			{
+				"name": "NNNMMM",
+				"comment": "bla bla"
+			},      
+			{ 
+				"id_tag": 523,         <---- nuevo 
+				"name": "N33.0",
+				"comment": "P333"
+			},
+			{ "id_tag": 128 },
+			{ "id_tag": 103 }
+		]
+	}
+
+
+Se ignora el "append mode" (se considera false) pero podría implementarse así:
+
+Para "append mode" en false:
+
+	Si no existe el subrecurso con ese ID => 404 Not found. 
+	En caso de existir el subrecurso, se *edita* reemplazando los campos por los aportados.
+
+Para "append mode" en true:
+
+	Si no existe el subrecurso con ese ID => podría crearse con ese ID.
+	En caso de existir el subrecurso, se *edita* reemplazando los campos por los aportados.
+
 
 # Schema y las reglas de validación via endpoint
 
