@@ -5891,7 +5891,7 @@ a) Recibir solo el ID de un registro. En este caso se haría la relación con es
 
 <-- ya funcional
 
-b) Recibir solo campos distintos del "id". Aquí se asociarían los registros en caso de exisitir o en caso contrario se crearían y asociarían.
+b) Recibir solo campos distintos del "id". 
 
 	PATCH api/v1/products/145?tenantid=az
 
@@ -5905,6 +5905,23 @@ b) Recibir solo campos distintos del "id". Aquí se asociarían los registros en
             }
 		]
 	}
+
+Aquí el comportamiento sería:
+
+Para 1:n)
+
+	Sino existen asociados al registro de la tabla principal => se crearía y asociaría el subrecurso.
+
+Para n:m)
+
+	_append=false (modo edición)
+
+		Se asociarían.
+
+	_append=true
+
+		Se crearían en caso de no existir. Sino ser asociarían.
+
 
 c) En caso de recibir el "ID" del registro + otros campos SI el registro del sub-recurso con ese ID existe pero no con esa combinación de valores de campos => se procedería a "editar" el registro del subrecurso. Ej:
 
@@ -5974,7 +5991,7 @@ En este caso "valoraciones" es la tabla del otro lado del puente y "valoracion_i
 
 Notas: 
 
-Si "_append=true" entonces no hay "eliminación" de registros que ya no hagan falta dado que es un modo en que solo "agrega" nuevos cuando hacen falta y existen.
+En relaciónes 1:n o n:m si "_append=false" (modo de "edición") hay "eliminación" de registros que ya no cumplan con la relación. Podrían quedar apuntado a NULL pero solo si la FK es nullable y como no siempre será el caso de momento no se implementa así.
 
 Cuando la relación es "a uno" o sea 1:1 o n:1, no aplica el parámetro "_append" (true o false da lo mismo)
 
@@ -5993,10 +6010,36 @@ Ej:
 		"product_categories": {        
 			"id_catego": 1,
 			"otro_campo": "XXX"
-		}
+		},
+
+		"users": [
+        {
+            "created_by": 1,
+            "belongs_to": 5
+        }
+    ]
 	}
 
 
+ACTUALIZACIÓN AL 27-DIC-2022
+
+Ya es posible para relaciones 1:n, crear sub-recursos sino existen.
+
+	{
+		"description": "xyzz", 
+		"cost": 200,  
+		"size": "1.15L",
+		
+		"product_tags": [
+			{ 
+				"name": "N3",
+				"comment": "P305"
+			},
+			{ 
+				"id_tag": 103
+			}
+		]
+	}
 
 # Schema y las reglas de validación via endpoint
 
