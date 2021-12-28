@@ -4501,6 +4501,21 @@ class DumbController extends Controller
         dd($id);
     }
 
+    // intento de inserción en tabla puente
+    function test_insert_bridge()
+    {
+        $data = array (
+            'product_id' => '145',
+            'valoracion_id' => '9',
+            'created_at' => at()
+        );
+
+        $mbr = DB::table('product_valoraciones');
+        $ok = $mbr->create($data);
+
+        d($ok, 'Ok?');
+    }
+
     /*
         insert()
     */
