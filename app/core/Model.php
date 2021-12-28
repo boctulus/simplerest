@@ -1902,11 +1902,9 @@ class Model {
 
 					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN']) ))
 					{	
-						
-						// SE ESTÁN PERDIENDO LOS SCHEMAS EN ALGÚN LADO!!!
-						// d($this->schema, 'SCHEMAAAAAAAAAAAaaa');
-
-						if ((!isset($this->schema['attr_types']) || $this->schema['attr_types'][$unqualified_field] == 'STR' )){
+						if ((!isset($this->schema['attr_types']) || 
+							(isset($this->schema['attr_types'][$unqualified_field]) && $this->schema['attr_types'][$unqualified_field] == 'STR')
+						)){
 							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);  
 						}
 						
@@ -2747,7 +2745,8 @@ class Model {
 			$q .= ';';
 		}
 
-		//d($q, 'Query');
+		// d($q, 'Statement');
+		// d($vals, 'vals');
 
 		$st = $this->conn->prepare($q);
 
@@ -2798,7 +2797,14 @@ class Model {
 
 		if ($result){
 			// sin schema no hay forma de saber la PRI Key. Intento con 'id' 
-			$id_name = ($this->schema != NULL) ? $this->schema['id_name'] : 'id';		
+			if ($this->schema != null && $this->schema['id_name'] != null){
+				$id_name = $this->schema['id_name'];
+			} else {
+				$id_name = 'id';
+			}
+			
+			//d($this->schema, 'Schema');
+			//d($id_name, 'id_name');
 
 			if (isset($data[$id_name])){
 				$this->last_inserted_id =	$data[$id_name];
@@ -2808,10 +2814,10 @@ class Model {
 
 			$this->onCreated($data, $this->last_inserted_id);
 		}else {
-			$this->last_inserted_id = false;	
+			$this->last_inserted_id = false;
 		}
 
-		return $this->last_inserted_id;		
+		return $this->last_inserted_id;
 	}
 	
 	
