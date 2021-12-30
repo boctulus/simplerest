@@ -301,7 +301,7 @@ trait SubResourcesV2
         ->selectRaw($sub_qs)
         ->dd();   
         
-        dd($instance->dd(true), 'SQL'); exit; /// *
+        //dd($instance->dd(true), 'SQL'); exit; /// *
     
         $rows = Model::query($sql);
 
@@ -318,5 +318,55 @@ trait SubResourcesV2
 
         //dd(sql_formater($sql)); exit;//
         return $rows;
+
+        
+        // $res = [];
+        // foreach ($rows as $ix => $row){
+        //     foreach ($row as $field => $val){
+        //         if (!preg_match('/([a-z0-9_]+)'.$sep.'([a-z0-9_]+)/i', $field, $matches)){
+        //             throw new \Exception("Unexpected error trying to parse '$field'");
+        //         }
+
+        //         $tt = $matches[1];
+        //         $ff = $matches[2];
+
+        //         // Nesting ! <---  tiene que depender del config
+        //         if ($tt == $table){
+        //             $res[$ix][$ff] = $val;
+        //         } else {
+        //             $res[$ix][$tt][$ff] = $val;
+        //         }
+        //     }
+        // }
+
+        // $config = config();
+
+        // if ($config['include_enity_name'])
+        // {
+        //     if ($config['nest_sub_resources']){
+        //         // ...
+        //     } else {
+        //         // ...
+        //     }
+        // } else {
+        //     // ...                   
+        // }
+
+
+        // if (!isset($ret[$table])){
+        //     $ret[$table] = [];
+        // }
+
+        // if (!isset($ret[$table])){
+        //     $ret[$table][$connect_str] = [];
+        // }
+
+        // if (!isset($ret[$table])){
+        //     $ret[$table][$connect_str][$tenant_id] = [];
+        // }        
+
+        // $ret[$table][$connect_str][$tenant_id] = $res;
+
+        // return $res;
     }
 }

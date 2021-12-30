@@ -6,123 +6,123 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class UserRolesSchema implements ISchema
+class FacturaDetalleSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'user_roles',
+			'table_name'	=> 'factura_detalle',
 
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'user_id' => 'INT',
-				'role_id' => 'INT',
-				'created_at' => 'STR',
-				'updated_at' => 'STR'
+				'factura_id' => 'INT',
+				'product_id' => 'INT',
+				'quantity' => 'INT',
+				'created_at' => 'STR'
 			],
 
 			'primary'		=> ['id'],
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'created_at', 'updated_at'],
+			'nullable'		=> ['id'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int'],
-				'user_id' => ['type' => 'int', 'required' => true],
-				'role_id' => ['type' => 'int', 'required' => true],
-				'created_at' => ['type' => 'datetime'],
-				'updated_at' => ['type' => 'datetime']
+				'factura_id' => ['type' => 'int', 'required' => true],
+				'product_id' => ['type' => 'int', 'required' => true],
+				'quantity' => ['type' => 'int', 'required' => true],
+				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 
-			'fks' 			=> ['user_id', 'role_id'],
+			'fks' 			=> ['factura_id', 'product_id'],
 
 			'relationships' => [
-				'users' => [
-					['users.id','user_roles.user_id']
+				'facturas' => [
+					['facturas.id','factura_detalle.factura_id']
 				],
-				'roles' => [
-					['roles.id','user_roles.role_id']
+				'products' => [
+					['products.id','factura_detalle.product_id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
+				  'facturas' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'users',
+				        0 => 'facturas',
 				        1 => 'id',
 				      ),
 				      1 => 
 				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
+				        0 => 'factura_detalle',
+				        1 => 'factura_id',
 				      ),
 				    ),
 				  ),
-				  'roles' => 
+				  'products' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'roles',
+				        0 => 'products',
 				        1 => 'id',
 				      ),
 				      1 => 
 				      array (
-				        0 => 'user_roles',
-				        1 => 'role_id',
+				        0 => 'factura_detalle',
+				        1 => 'product_id',
 				      ),
 				    ),
 				  ),
 				),
 
 			'relationships_from' => [
-				'users' => [
-					['users.id','user_roles.user_id']
+				'facturas' => [
+					['facturas.id','factura_detalle.factura_id']
 				],
-				'roles' => [
-					['roles.id','user_roles.role_id']
+				'products' => [
+					['products.id','factura_detalle.product_id']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
+				  'facturas' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'users',
+				        0 => 'facturas',
 				        1 => 'id',
 				      ),
 				      1 => 
 				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
+				        0 => 'factura_detalle',
+				        1 => 'factura_id',
 				      ),
 				    ),
 				  ),
-				  'roles' => 
+				  'products' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'roles',
+				        0 => 'products',
 				        1 => 'id',
 				      ),
 				      1 => 
 				      array (
-				        0 => 'user_roles',
-				        1 => 'role_id',
+				        0 => 'factura_detalle',
+				        1 => 'product_id',
 				      ),
 				    ),
 				  ),

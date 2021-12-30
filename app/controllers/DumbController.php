@@ -6569,5 +6569,11 @@ class DumbController extends Controller
         );
     }
 
+
+    function test_q(){
+        $sql = file_get_contents(ETC_PATH . 'test.sql');
+        d(DB::select($sql));
+    }
+
     
 }

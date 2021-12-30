@@ -3,6 +3,7 @@
 $pivots = array (
   'comments,products' => 'product_comments',
   'roles,users' => 'user_roles',
+  'facturas,products' => 'factura_detalle',
   'products,valoraciones' => 'product_valoraciones',
 );
 
@@ -16,6 +17,11 @@ $pivot_fks = array (
   array (
     'users' => 'user_id',
     'roles' => 'role_id',
+  ),
+  'factura_detalle' => 
+  array (
+    'facturas' => 'factura_id',
+    'products' => 'product_id',
   ),
   'product_valoraciones' => 
   array (
@@ -60,6 +66,25 @@ $relationships = array (
       array (
         0 => 'roles.id',
         1 => 'user_roles.role_id',
+      ),
+    ),
+  ),
+  'factura_detalle' => 
+  array (
+    'facturas' => 
+    array (
+      0 => 
+      array (
+        0 => 'facturas.id',
+        1 => 'factura_detalle.factura_id',
+      ),
+    ),
+    'products' => 
+    array (
+      0 => 
+      array (
+        0 => 'products.id',
+        1 => 'factura_detalle.product_id',
       ),
     ),
   ),

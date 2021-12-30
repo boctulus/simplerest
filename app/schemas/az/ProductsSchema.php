@@ -62,12 +62,12 @@ class ProductsSchema implements ISchema
 				'digital_id' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['belongs_to', 'deleted_by', 'digital_id', 'category'],
+			'fks' 			=> ['deleted_by', 'digital_id', 'belongs_to', 'category'],
 
 			'relationships' => [
 				'users' => [
-					['users|__belongs_to.id','products.belongs_to'],
-					['users|__deleted_by.id','products.deleted_by']
+					['users|__deleted_by.id','products.deleted_by'],
+					['users|__belongs_to.id','products.belongs_to']
 				],
 				'digital_products' => [
 					['digital_products.id','products.digital_id']
@@ -83,6 +83,9 @@ class ProductsSchema implements ISchema
 				],
 				'product_valoraciones' => [
 					['product_valoraciones.product_id','products.id']
+				],
+				'factura_detalle' => [
+					['factura_detalle.product_id','products.id']
 				]
 			],
 
@@ -95,12 +98,12 @@ class ProductsSchema implements ISchema
 				      array (
 				        0 => 'users',
 				        1 => 'id',
-				        'alias' => '__belongs_to',
+				        'alias' => '__deleted_by',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'products',
-				        1 => 'belongs_to',
+				        1 => 'deleted_by',
 				      ),
 				    ),
 				    1 => 
@@ -109,12 +112,12 @@ class ProductsSchema implements ISchema
 				      array (
 				        0 => 'users',
 				        1 => 'id',
-				        'alias' => '__deleted_by',
+				        'alias' => '__belongs_to',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'products',
-				        1 => 'deleted_by',
+				        1 => 'belongs_to',
 				      ),
 				    ),
 				  ),
@@ -198,12 +201,28 @@ class ProductsSchema implements ISchema
 				      ),
 				    ),
 				  ),
+				  'factura_detalle' => 
+				  array (
+				    0 => 
+				    array (
+				      0 => 
+				      array (
+				        0 => 'factura_detalle',
+				        1 => 'product_id',
+				      ),
+				      1 => 
+				      array (
+				        0 => 'products',
+				        1 => 'id',
+				      ),
+				    ),
+				  ),
 				),
 
 			'relationships_from' => [
 				'users' => [
-					['users|__belongs_to.id','products.belongs_to'],
-					['users|__deleted_by.id','products.deleted_by']
+					['users|__deleted_by.id','products.deleted_by'],
+					['users|__belongs_to.id','products.belongs_to']
 				],
 				'digital_products' => [
 					['digital_products.id','products.digital_id']
@@ -214,25 +233,23 @@ class ProductsSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'digital_products' => 
+				  'users' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'digital_products',
+				        0 => 'users',
 				        1 => 'id',
+				        'alias' => '__deleted_by',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'products',
-				        1 => 'digital_id',
+				        1 => 'deleted_by',
 				      ),
 				    ),
-				  ),
-				  'users' => 
-				  array (
-				    0 => 
+				    1 => 
 				    array (
 				      0 => 
 				      array (
@@ -246,18 +263,20 @@ class ProductsSchema implements ISchema
 				        1 => 'belongs_to',
 				      ),
 				    ),
-				    1 => 
+				  ),
+				  'digital_products' => 
+				  array (
+				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'users',
+				        0 => 'digital_products',
 				        1 => 'id',
-				        'alias' => '__deleted_by',
 				      ),
 				      1 => 
 				      array (
 				        0 => 'products',
-				        1 => 'deleted_by',
+				        1 => 'digital_id',
 				      ),
 				    ),
 				  ),
