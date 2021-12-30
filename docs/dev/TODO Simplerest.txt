@@ -7,13 +7,41 @@
 
   * Permitir traer sub-sub-resources.  Ej:
 
-    tbl_factura >  
+    tbl_comprobante_contable >  
 
-                      tbl_factura_detalle 
+                      tbl_comprobante_contable_detalle 
+
                                               > tbl_producto
 
 
 <-- en V2 implementar con sub-(sub-)-consultas
+
+La idea es definir usar el $connect_to del sub-sub-recurso ya que se 
+invocaría a la api de éste *sin* ejecutar el SQL el cual se incorporará
+como sub-sub-consulta.
+
+Cuando se arma el JSON_OBJECT, la "segunda parte" puede ser un SELECT.
+
+    JSON_OBJECT( 
+
+          'id', __factura_detalle.id, 
+          'factura_id', __factura_detalle.factura_id, 
+          'product_id', __factura_detalle.product_id, 
+          'quantity', __factura_detalle.quantity, 
+          'created_at', __factura_detalle.created_at,
+
+          'products', (SELECT                     <-------- acá!
+               JSON_ARRAYAGG( JSON_OBJECT(
+               'prod_id', products.id,
+               'prod_created_at', products.created_at
+               )
+          )           
+
+
+Ver etc/test.sql
+
+Prueba de concepto en:
+Dumb::test_q()
 
 ----
 
