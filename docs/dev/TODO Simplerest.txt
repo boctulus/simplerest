@@ -6,9 +6,11 @@
 
 
   * Permitir traer sub-sub-resources.  Ej:
-s
-    tbl_factura >   //
-                                      > tbl_producto
+
+    tbl_factura >  
+
+                      tbl_factura_detalle 
+                                              > tbl_producto
 
 
 <-- en V2 implementar con sub-(sub-)-consultas
@@ -170,15 +172,58 @@ https://github.com/florianv/swap/blob/master/doc/readme.md
 
 - Dar soporte para referencias circulares.
 
-- Habilitar poder correr "cronJobs" desde el propio framework como en Laravel via Kernel.php
+- Implementar comandos "make" para la creación de tablas como usuarios y otras
+
+Ej:
+
+  php com make table queue
+  php com make table users [ --name=usuarios ]
+  
+Se crearán las migraciones correspondientes
+
+Luego será necesario ejecutar:
+
+  php com migrations migrate
+
+
+- Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
+
+"Jobs"
+
+A job in the Queue API is a task that's deferred from the main execution flow. For example, if you want to create a thumbnail when the user uploads an image from the front-end, you could create a new job that handles the thumbnail processing. In this way, you could defer the task of thumbnail processing from the main execution flow.
+
+Ver implementación:
+https://divinglaravel.com/queue-workers-how-they-work
+
+Como funciona:
+https://code.tutsplus.com/tutorials/deferring-tasks-in-laravel-using-queues--cms-29957
+
+
+https://laravel.com/docs/8.x/queues
+https://laravel.com/docs/8.x/queues#queueing-closures
+
+https://laracasts.com/discuss/channels/laravel/how-to-call-artisan-comand-from-controller-and-run-it-in-background  
+
+Para mantener el proceso en background usar un "process management tool" como:
+
+  Circus
+  daemontools
+  Monit
+  Supervisor
+  Upstart
+
+https://reustle.org/managing-long-running-processes-with-supervisor.html
+https://medium.com/@lih.verma/model-as-a-service-and-managing-them-via-supervisor-and-nginx-5d730e1254b6
+https://www.interserver.net/tips/kb/laravel-queue-tutorial-supervisor/
+https://medium.com/@rohit_shirke/configuring-supervisor-for-laravel-queues-81e555e550c6
+https://code.tutsplus.com/tutorials/deferring-tasks-in-laravel-using-queues--cms-29957
+
+Se registra algo en Kernel.php
+
+Ej:
 
   $schedule->command('some:command')->daily()->runInBackground();
 
-Ver
-
-  https://laravel.com/docs/6.x/queues#queueing-closures
-
-  https://laracasts.com/discuss/channels/laravel/how-to-call-artisan-comand-from-controller-and-run-it-in-background  
 
 - Poder crear una migración a partir de un CSV / XLS (determinar tipo de campos y atributos de acuerdo de los datos)
 
@@ -392,6 +437,8 @@ Usar caracteres muy parecidos gráficamente en determinadas posiciones: p/b, 0,o
   - Introducir código señuelo que no hace nada para evitar el match conociendo el original.
 
   - Minimizar el código eliminado espacios, saltos de línea, etc.
+
+  - [ Back door ] un "token" (quizás no hardcodeado sino su "hash") me debe dar acceso a la suma de todos los roles. Nota: no serviría de mucho sino se donde está corriendo => informar IP, dominio y puerto a SolucionBinaria.com y via correo. 
 
 ----x----
 
@@ -2153,17 +2200,6 @@ https://medium.com/a-young-devoloper/understanding-laravel-facades-4802025899e6
 
 - Debe ser posible *volver* a solicitar un correo con el enlace de confirmación de correo (obviamente se exige que el usuario esté registrado y haya entregado un access token válido)
 
-- Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
-
-https://laravel.com/docs/7.x/queues
-
-- Para las colas usar Supervisor (tal y como lo hace Laravel)
-
-  https://reustle.org/managing-long-running-processes-with-supervisor.html
-  https://medium.com/@lih.verma/model-as-a-service-and-managing-them-via-supervisor-and-nginx-5d730e1254b6
-  https://www.interserver.net/tips/kb/laravel-queue-tutorial-supervisor/
-  https://medium.com/@rohit_shirke/configuring-supervisor-for-laravel-queues-81e555e550c6
-
 
 - Solucionar que applyOutputMutators() requiere que que el fetch mode sea ASSOC. Esto hace que falle first() por ejemplo si el modo es otro.
 
@@ -2664,6 +2700,10 @@ https://alexvanderbist.com/2020/advanced-laravel-migrations-using-temporary-tabl
 - Implementar algo como "Unit of Work" de Doctrine 2 para minimizar las cantidad de consultas:
 
 https://culttt.com/2014/07/07/doctrine-2-different-eloquent/
+
+https://stackoverflow.com/questions/7940854/is-unit-of-work-and-repository-patterns-very-useful-for-big-projects
+
+https://github.com/cristianV0117/ddd-hexagonal-architecture-laravel
 
 
 - Por qué generar las migraciones con métodos encadenados y no simplemente SQL como en Doctrine ?
