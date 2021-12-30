@@ -1100,7 +1100,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             $validado = (new Validator)->validate($this->instance->getRules(), $data);
             if ($validado !== true){
-                Factory::response()->sendError(_('Data validation error'), 400, $validado);
+                Factory::response()->sendError(_('Data validation werror'), 400, $validado);
             }  
 
             if (!empty($this->folder)) {
@@ -1850,6 +1850,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             //d($fk_tb, 'fk_tb');
                             // d($dati, 'dati');
 
+                            // En modo "edición" borro cualquier registro relacionado previamente
+                            if ($append_mode == false){
+                                $ok = DB::table($bridge)->where([$pri_table => $id])
+                                ->delete();
+                            }
+
                             foreach ($fks as $_fk){     
                                 if (is_array($dati[0])){
                                     $keys = [];
@@ -1883,7 +1889,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                             ->where($dato) 
                                             ->value($pri_sub);
 
-                                            //d($id_sub, 'id_sub');
+                                            d($id_sub, 'id_sub');
 
                                             if (empty($id_sub)){
                                                 // lo creo
@@ -1900,11 +1906,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     
                                             $mbr = DB::table($bridge);
 
-                                            $idb = $mbr
-                                            ->create($arr);
+                                            // solo creo el registro en la tabla puente sino existe
+                                            if (!DB::table($bridge)->where($arr)->exists()){                                                
+                                                $idb = $mbr
+                                                ->create($arr);
 
-                                            // d($mbr->dd());
-                                            // d($arr);
+                                                // d($mbr->dd());
+                                                // d($arr);
+                                            }
 
                                             // d($ok, 'puente creado?');
                                             
@@ -1937,21 +1946,15 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             } else {
                                 // ESCALAR
 
-                                // here();
                                 if ($append_mode == false){
                                     $diff_left  = array_diff(array_values($prev), array_values($dati)); 
                                 }
-                                
-                                // d($dati, 'DATI');
-                                // d($prev, 'PREV');
 
                                 $diff_right = array_diff(array_values($dati), array_values($prev));
-
-                                // d($diff_right, 'RIGHT');
                             }
 
 
-                            if ($append_mode == false){
+                            if (!$append_mode){
                                 /*
                                     si hay algo que borrar
                                 */
@@ -1966,9 +1969,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                     //d($ok, $m->getLog());
                                 }
-                            }
+                            }   
             
                             $ins = [];
+
 
                             // si hay algo que insertar
                             if (!empty($diff_right))
