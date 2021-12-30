@@ -21,6 +21,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('products', ['read', 'write'])
     ->addResourcePermissions('testx', ['read', 'write'])
     ->addResourcePermissions('facturas', ['read', 'write'])
+    ->addResourcePermissions('factura_detalle', ['read', 'write'])
     ->addResourcePermissions('tbl_estado_civil', ['read', 'write'])
     ->addResourcePermissions('tbl_factura_detalle', ['read', 'write'])
     // ...

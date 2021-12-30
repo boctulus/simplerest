@@ -51,16 +51,13 @@ class UsersSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				'books' => [
-					['books.editor_id','users.id'],
-					['books.author_id','users.id']
-				],
-				'facturas4' => [
-					['facturas4.user_id','users.id']
-				],
 				'products' => [
-					['products.belongs_to','users.id'],
-					['products.deleted_by','users.id']
+					['products.deleted_by','users.id'],
+					['products.belongs_to','users.id']
+				],
+				'books' => [
+					['books.author_id','users.id'],
+					['books.editor_id','users.id']
 				],
 				'collections' => [
 					['collections.belongs_to','users.id']
@@ -73,29 +70,10 @@ class UsersSchema implements ISchema
 				],
 				'files' => [
 					['files.belongs_to','users.id']
-				],
-				'facturas' => [
-					['facturas.user_id','users.id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'facturas' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'facturas',
-				        1 => 'user_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
 				  'products' => 
 				  array (
 				    0 => 
@@ -154,30 +132,14 @@ class UsersSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'files' => 
+				  'collections' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'files',
+				        0 => 'collections',
 				        1 => 'belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				  'user_roles' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
 				      ),
 				      1 => 
 				      array (
@@ -202,14 +164,14 @@ class UsersSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'collections' => 
+				  'user_roles' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'collections',
-				        1 => 'belongs_to',
+				        0 => 'user_roles',
+				        1 => 'user_id',
 				      ),
 				      1 => 
 				      array (
@@ -218,14 +180,14 @@ class UsersSchema implements ISchema
 				      ),
 				    ),
 				  ),
-				  'facturas4' => 
+				  'files' => 
 				  array (
 				    0 => 
 				    array (
 				      0 => 
 				      array (
-				        0 => 'facturas4',
-				        1 => 'user_id',
+				        0 => 'files',
+				        1 => 'belongs_to',
 				      ),
 				      1 => 
 				      array (

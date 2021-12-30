@@ -4,11 +4,11 @@ namespace simplerest\controllers\api;
 
 use simplerest\controllers\MyApiController; 
 
-class Facturas2 extends MyApiController
+class FacturaDetalle extends MyApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [
-		
+		'products'
 	];
 
     function __construct()
