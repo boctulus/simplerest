@@ -301,7 +301,7 @@ trait SubResourcesV2
         ->selectRaw($sub_qs)
         ->dd();   
         
-        dd($instance->dd(true), 'SQL'); exit; /// *
+        //dd($instance->dd(true), 'SQL'); exit; /// *
     
         $rows = Model::query($sql);
 

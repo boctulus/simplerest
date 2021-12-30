@@ -5989,13 +5989,27 @@ Ej:
 	{
 		"valoraciones": [
 			{
-				"valoracion_id": 5
+				"id_val": 5  <-- PK de la tabla del sub-recurso ("valoraciones")
 			},
 			{
-				"valoracion_id": 3
+				"id_val": 3
 			}
 		]
 	}
+
+También es válido lo siguiente:
+
+	{
+		"valoraciones": [
+			{
+				"id_val": 5   <-- PK de la tabla del sub-recurso ("valoraciones")
+			},
+			{
+				"valoracion_id": 3   <-- FK en la tabla puente
+			},       
+		]
+	}
+
 
 En este caso "valoraciones" es la tabla del otro lado del puente y "valoracion_id" es la FK que apunta hacia la tabla "valoraciones" 
 
