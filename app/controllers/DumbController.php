@@ -2859,6 +2859,21 @@ class DumbController extends Controller
         dd($count);
     }
 
+    function test_find_or_fail(){
+        d(
+            DB::table('products')
+            ->findOrFail(1000)
+            ->first()
+        );
+    }
+
+    function test_update_or_fail(){
+        d(
+            DB::table('products')
+            ->find(1000)
+            ->updateOrFail(['description' => 'abc'])
+        );
+    }
    
     /*
         Habilitar:
