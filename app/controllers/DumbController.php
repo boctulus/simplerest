@@ -6564,6 +6564,7 @@ class DumbController extends Controller
         // ->delete();            
 
         d(DB::table('product_valoraciones')
+        ->join('valoraciones')
         ->where(['product_id', 145])
         ->get()
         );

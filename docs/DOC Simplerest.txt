@@ -6108,6 +6108,33 @@ Para "append mode" en true:
 	En caso de existir el subrecurso, se *edita* reemplazando los campos por los aportados.
 
 
+ACTUALIZACIÓN AL 30 de DICIEMBRE de 2021
+
+Ya funcionan los PATCH con ID + otros campos
+
+Ej:
+
+	/api/v1/products/145?tenantid=az&_append=true
+
+	{
+		"valoraciones": [
+			{
+				"id_val": 1,
+				"texto": "maluco"
+			},
+			{
+				"valoracion_id": 2,
+				"texto": "regularcito!"
+			}       
+		]
+	}
+
+
+Notas:
+
+- Puede entregarse la PK del subrecurso o bien la FK hacia el mismo.
+
+
 # Schema y las reglas de validación via endpoint
 
 Pasando los parámetros _schema=true o _rules=true en cualquier endpoint se obtienen el schema completo y las reglas de validación en particular respectivamente.
