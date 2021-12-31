@@ -756,7 +756,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 Cuando hago el JOIN le pongo un nombre al alias que es "__{tabla}__"
                             */
 
-                            $this->instance->doQualify();
+                            $this->instance->qualify();
                             $joins[] = "$_tb as __{$_tb}__";
 
                             $_get[$k][0] ="__{$_tb}__.$_f";
@@ -927,7 +927,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                         // Query a sub-recursos (parte II)                
                         ->when(!empty($joins), function($q) use ($joins) {
-                            $q->doQualify();
+                            $q->qualify();
                             foreach ($joins as $join){
                                 $q->join($join);
                             }

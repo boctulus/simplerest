@@ -2500,7 +2500,7 @@ class DumbController extends Controller
         $rows = DB::table('products', 'p')
         ->join('users as u')
         ->unhideAll()
-        ->doQualify()
+        ->qualify()
         //->showDeleted()
         //->dontExec()
         ->get();
@@ -2515,7 +2515,7 @@ class DumbController extends Controller
         ->join('products as p')
         ->join('roles as r')
         ->unhideAll()
-        ->doQualify()
+        ->qualify()
         //->showDeleted()
         //->dontExec()
         ->get();

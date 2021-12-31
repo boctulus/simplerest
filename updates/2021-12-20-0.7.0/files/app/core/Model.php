@@ -536,7 +536,7 @@ class Model {
 		return $this;
 	}
 
-	function doQualify(){
+	function qualify(){
 		$this->should_qualify = true;
 		return $this;
 	}
