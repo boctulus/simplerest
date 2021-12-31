@@ -167,6 +167,8 @@ sobre una tabla y ejecute todos los udpates.
 
 b) updateOrFail() también usando SP haría la verificación si el registro existe y sino fallaría devolviendo 0 (cero).
 
+c) deleteOrFail()
+
 ------
 
 - Implementar "macros" para el Query Builder como en Laravel
@@ -2349,7 +2351,7 @@ NO debebería poder restaurar el registro.***
 https://github.com/DamianGonzalez27/Ivy/blob/master/Packages/Charger.php
 
 
-- Revisar implementación de first() y hacer findOrFail() y firstOrFail()
+- Implementar firstOrFail()
 
 Más
 https://stackoverflow.com/a/33027466/980631
@@ -2438,8 +2440,6 @@ Más
 https://nordicapis.com/everything-you-need-to-know-about-api-pagination/
 https://www.moesif.com/blog/technical/api-design/REST-API-Design-Filtering-Sorting-and-Pagination/#
 
-
-- Ante una excepción del modelo imprimir la consulta SQL
 
 - Generar fallos intencionalmente en las URLs para ver si se puede mejorar el reporte de errores (hacerlos más comprensibles)
 
