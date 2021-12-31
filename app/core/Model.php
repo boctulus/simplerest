@@ -2020,6 +2020,16 @@ class Model {
 		return $this->where([$this->getFullyQualifiedField($this->schema['id_name']) => $id]);
 	}
 
+	function findOrFail($id){
+		$this->find($id);
+
+		if (!$this->exists()){
+			throw new \Exception("Resource for `{$this->table_name}` and id=$id doesn't exist");
+		}   
+
+		return $this;
+	}
+
 	function whereNull(string $field){
 		$this->where([$this->getFullyQualifiedField($field), NULL]);
 		return $this;
@@ -2350,6 +2360,15 @@ class Model {
 			$count = false;
 			
 		return $count;
+	}
+
+	function updateOrFail(array $data, $set_updated_at = true)
+	{
+		if (!$this->exists()){
+			throw new \Exception("Resource does not exist");
+		}                     
+
+		return $this->update($data, $set_updated_at);
 	}
 
 	/**

@@ -1679,7 +1679,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         case '1:n':
                             $fks = get_fks($tb, $this->table_name);
 
-                            d($dati, 'dati (case 1:n)');
+                            //d($dati, 'dati (case 1:n)');
                             // d($fks, 'FKs');
                                            
                             // Limitación a remover
@@ -1704,10 +1704,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     if (in_array($pri_rel, $keys, true)){
                                         if (count($keys) === 1){
                                             // caso A  --ok (listo)
-                                            d("caso A (1:n)");
+                                            //d("caso A (1:n)");
                                         } else {
                                             // caso C -- ok (listo)
-                                            d("caso C (1:n)");
+                                            //d("caso C (1:n)");
 
                                             //d($dato);
                                             $id_tb_rel = $dato[$pri_rel];
@@ -1735,7 +1735,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         }
                                     } else {
                                         // caso B -- ok (listo)
-                                        d("caso B (1:n)");
+                                        //d("caso B (1:n)");
 
                                         /*
                                             Registro del subrecurso que apunta a "este"
@@ -1885,11 +1885,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         if (in_array($f_rel, $keys, true)){                        
                                             if (count($keys) === 1){
                                                 // caso A --- nada más que hacer (ok)
-                                                d("caso A  (n:m)");                                            
+                                                //d("caso A  (n:m)");                                            
                                             
                                             } else {
                                                 // caso C 
-                                                d("caso C  (n:m)");
+                                                //d("caso C  (n:m)");
 
                                                 $_dato = [];
                                                 foreach ($dato as $f => $v){
@@ -1917,7 +1917,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                             }
                                         } else {
                                             // caso B
-                                            d("caso B  (n:m)");
+                                            //d("caso B  (n:m)");
 
                                             //d($dati, 'dati');
                                             //d($dato, 'dato');
@@ -1929,7 +1929,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                             ->where($dato) 
                                             ->value($pri_sub);
 
-                                            d($id_sub, 'id_sub');
+                                            //d($id_sub, 'id_sub');
 
                                             if (empty($id_sub)){
                                                 // lo creo
@@ -2053,7 +2053,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                             // d($diff_left,  '$diff_left');
                             // d($diff_right, '$diff_right');
-                            d($ins ?? null, 'ins');                      
+                            //d($ins ?? null, 'ins');                      
 
                             if (!empty($ins)){
                                 $m = DB::table($bridge);

@@ -2,9 +2,6 @@
 
 [ SUB-RESOURCES ]
 
-  * UPDATE para V2  -- continuar con generalización       +++
-
-
   * Permitir traer sub-sub-resources.  Ej:
 
     tbl_comprobante_contable >  
@@ -12,7 +9,6 @@
                       tbl_comprobante_contable_detalle 
 
                                               > tbl_producto
-
 
 <-- en V2 implementar con sub-(sub-)-consultas
 
@@ -160,6 +156,39 @@ Ej:
 
 - Resolver tema del correo => sendMail() con plantillas
 
+----------------
+
+- Implementar en Model varias funciones que por debajo usen o puedan usar STORE PROCEDURES:
+
+a) bulkUpdate() para actualizaciones masivas.
+
+Funcionaría registrando previamente un STORE PROCEDURE que reciba un JSON de updates
+sobre una tabla y ejecute todos los udpates.
+
+b) updateOrFail() también usando SP haría la verificación si el registro existe y sino fallaría devolviendo 0 (cero).
+
+------
+
+- Implementar "macros" para el Query Builder como en Laravel
+
+Ej:
+
+  DB::query()->macro('firstOrFail', function () {
+    if ($record = $this->first()) {
+        return $record;
+    }
+
+      throw new Exception('No records found');
+  });
+
+Entonces,...
+
+  $item = DB::table('table')->where('slug', $slug)->firstOrFail();
+
+
+Más
+https://stackoverflow.com/a/33103687
+https://github.com/signifly/laravel-builder-macros
 
 ------x---------
 
