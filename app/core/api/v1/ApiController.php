@@ -1856,24 +1856,64 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 ->delete();
                             }
 
+                            $sc_rel     = get_schema($tb);
+                            $fields_rel = array_keys($sc_rel['attr_types']); 
+
                             foreach ($fks as $_fk){     
                                 if (is_array($dati[0])){
                                     $keys = [];
 
                                     foreach ($dati as $ix => $dato){
-                                        $keys = array_keys($dato);         
-                                        
                                         // d($keys, 'keys');
                                         // d($dato, 'dato');
+                                        // d($fk_tb, '$fk_tb');
+                                        // d($pri_rel, '$pri_rel');
 
-                                        if (in_array($fk_tb, $keys, true)){                        
+                                        $id_rel = null;
+                                        $f_rel  = null;
+                                        foreach ($dato as $f => $d){
+                                            if ($f == $pri_rel || $f == $fk_tb){
+                                                $id_rel = $d;
+                                                $f_rel  = $f;
+                                            }
+                                        }
+
+                                        //d($id_rel, $f_rel);
+                                       
+                                        $keys = array_keys($dato);
+
+                                        if (in_array($f_rel, $keys, true)){                        
                                             if (count($keys) === 1){
                                                 // caso A --- nada más que hacer (ok)
                                                 d("caso A  (n:m)");                                            
                                             
                                             } else {
-                                                // caso C
+                                                // caso C 
                                                 d("caso C  (n:m)");
+
+                                                $_dato = [];
+                                                foreach ($dato as $f => $v){
+                                                    if (in_array($f, $fields_rel)){
+                                                        $_dato[$f] = $dato[$f];
+                                                    }
+                                                }
+
+                                                if (!empty($_dato)){
+                                                    $exists = DB::table($tb)
+                                                    ->find($id_rel)
+                                                    ->exists();
+
+                                                    if (!$exists){
+                                                        response()
+                                                        ->sendError("Subresource for '$tb' with id={$id_rel} does not exist", 404);
+                                                    }                                
+
+                                                    $affected = DB::table($tb)
+                                                    ->find($id_rel)
+                                                    ->update($_dato);
+                                                }
+                                               
+                                                //d($_dato, '_dato');
                                             }
                                         } else {
                                             // caso B
@@ -1935,7 +1975,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             $diff_left  = [];  // a borrar
                             $diff_right = [];  // a insertar
         
-                            if (isset($dati[0]) && is_array($dati[0])){
+                            $k = array_key_first($dati);
+
+                            if (is_int($k) && isset($dati[$k]) && is_array($dati[$k])){
                                 $dati_fk_ids = array_column($dati, $fk_tb);
 
                                 if ($append_mode == false){
@@ -2000,7 +2042,18 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 }
                             }
 
-                            //d($ins ?? null, 'ins');  
+                            // Elimino campos del subrecurso que vienen mezclados con los de la tabla puente
+                            foreach ($ins as $k => $reg){
+                                foreach ($reg as $f => $v){
+                                    if (in_array($f, $fields_rel)){
+                                        unset($ins[$k][$f]);
+                                    }
+                                }
+                            }
+
+                            // d($diff_left,  '$diff_left');
+                            // d($diff_right, '$diff_right');
+                            d($ins ?? null, 'ins');                      
 
                             if (!empty($ins)){
                                 $m = DB::table($bridge);

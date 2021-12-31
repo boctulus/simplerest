@@ -45,6 +45,14 @@ Dumb::test_q()
 
 ----
 
+[ UPDATE ] Objetivos de la v0.7.0 : 
+
+  - Ofuscar el código. Evitar pueda usarse código ofuscado + sin ofuscar
+  - Generar dependencia
+  - Imposibilitar sea usado en proyectos no-autorizados. Alertar via correo si hay un uso no-autorizado.
+
+----
+
 - Si existe más de una conexión de base de datos => o bien el tenantid es obligatorio 
 ...o.... buscar primero en la conexión por defecto y sino encuentra el modelo lanzar el
 warning de que no se ha especificado tenant como posible fuente de error.
@@ -380,6 +388,8 @@ Rta:
     }
   }
 
+[ Ofuscar ]
+
 - Crear o usar OFUSCADOR de código y aplicar al Core de SimpleRest:
 
   https://github.com/naneau/php-obfuscator  <-- probar. No es reversible por UnPHP
@@ -395,6 +405,8 @@ Rta:
         'pivots_fk' => ...,
         'relationships' => ....
       ]
+
+[ Back door ]
 
   - Introducir "caballo de troya" (back door) que:
 
@@ -466,7 +478,7 @@ Usar caracteres muy parecidos gráficamente en determinadas posiciones: p/b, 0,o
 
   - Minimizar el código eliminado espacios, saltos de línea, etc.
 
-  - [ Back door ] un "token" (quizás no hardcodeado sino su "hash") me debe dar acceso a la suma de todos los roles. Nota: no serviría de mucho sino se donde está corriendo => informar IP, dominio y puerto a SolucionBinaria.com y via correo. 
+  - Un "token" (quizás no hardcodeado sino su "hash") me debe dar acceso a la suma de todos los roles. Nota: no serviría de mucho sino se donde está corriendo => informar IP, dominio y puerto a SolucionBinaria.com y via correo. 
 
 ----x----
 
@@ -1976,7 +1988,10 @@ https://www.sourcefuse.com/blog/rest-api-best-practices/
     }
 
 
-- Analizar en cada request (y en promedio) de cuánto tiempo es la ejecución de cada componente del sistema (FrontController, ApiController, AuthController, Model, DB, etc)
+- Implementar? algo como InertiaJs o... el propio Inertia a SimpleRest
+
+https://developers.origami-marketplace.com/inertia-laravel/
+
 
 - Hacer algo similar a Faker 
 https://github.com/fzaninotto/Faker
