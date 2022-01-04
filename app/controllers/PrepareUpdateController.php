@@ -74,7 +74,8 @@ class PrepareUpdateController extends ConsoleController
             'PrepareUpdateController.php',
             'docs/dev',
             'glob:*.zip',
-            'Mails.php'
+            'Mails.php',
+            'PASARELAS DE PAGO.txt'
         ];
 
         Files::copy($ori, $dst . 'files', $files, $except);

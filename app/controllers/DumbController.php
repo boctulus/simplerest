@@ -29,14 +29,23 @@ use simplerest\libs\Config;
 use simplerest\libs\StdOut;
 use simplerest\libs\Env;
 use simplerest\libs\Update;
+use simplerest\core\Container;
 
 class DumbController extends Controller
 {
     function __construct()
     {
         parent::__construct();
-
         DB::getConnection('az');
+
+        Container::bind('request', function(){
+            return new Request();
+        });
+    }
+
+    function test_di(){
+        $req = Container::make('request');
+        dd($req->getParams(), 'req');
     }
 
     function test_dd(){
@@ -6590,6 +6599,7 @@ class DumbController extends Controller
         $sql = file_get_contents(ETC_PATH . 'test.sql');
         d(DB::select($sql));
     }
+
 
     
 }
