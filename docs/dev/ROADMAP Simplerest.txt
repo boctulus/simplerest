@@ -3,15 +3,15 @@ Urgente:
 
 .env                                    -- OK
 Terminar Query Builder                  -- OK
-Terminar migraciones
+Terminar migraciones                    -- OK
 Plantilla para envio de correos
-Preubas en NGINX
+Pruebas en Nginx                        ~~
 
 - pre-Alpha
 
     .env                                -- OK
     Seeders
-    Response re-escrito
+    Response re-escrito                 ~~
     ApiController pullido con una sola instancia y 5 métodos separados
     Folders normalizados y funcionando correctamente
 
@@ -19,7 +19,6 @@ Preubas en NGINX
 
     Middlewares                         -- OK parcial
     Wheres anidados                     -- OK
-    Plantilla para envio de correos
     X-Rate-Limit-Limit, X-Rate-Limit-Remaining y X-Rate-Limit-Reset    
 
 - Beta 1 .. 2
@@ -33,7 +32,7 @@ Preubas en NGINX
 
 - 1.0
 
-    Hateoas                             -- parcial
+    SubRecursos                         ~~
     JsonAPI
     Soporte para SQLite, Postgres       -- OK
 

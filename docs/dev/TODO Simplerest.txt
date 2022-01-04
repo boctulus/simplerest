@@ -158,6 +158,242 @@ Ej:
 
 ----------------
 
+- Implementar un "service container" (IoC Container) inyecte las dependencias en los constructores y otros métodos de clase.
+
+Ej:
+
+  class ProcessPodcastHandler
+  {
+      protected $processor;
+
+      public function __construct(AudioProcessor $processor)   <--------- acá
+      {
+          $this->processor = $processor;
+      }
+
+      public function handle(ProcessPodcast $command)
+      {
+          $this->processor->process($command->podcast);
+      }
+  }
+
+Inclusive debe funcionar con rutas:
+
+  class SimpleClass
+  {
+      public function sayHi()
+      {
+          return 'Hi!';
+      }
+  }
+
+  Route::get('say-hi-3', function(SimpleClass $simpleClass)
+  {
+      return $simpleClass->sayHi();
+  });
+
+
+The Laravel service container is a powerful tool for managing class dependencies and performing dependency injection. 
+
+Dependency injection means this: class dependencies are "injected" into the class via the constructor or, in some cases, "setter" methods.
+
+
+# Cuándo se auto-inyectan las dependencias?
+
+Laravel supports automatic dependency injection in the constructor of the class limited to controllers, event listeners, middleware and to the handle method of the queued jobs. 
+
+For automatic dependency injection, the dependencies have to be type hinted.
+
+Se inyectan cuando fueron registradas en el contenedor.
+
+Ej:  <la clase Application de Laravel>
+
+  <?php
+
+  /*
+      The IoC container !
+  */
+  $app = new Illuminate\Foundation\Application(
+      $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+  );
+
+  $app->singleton(
+      Illuminate\Contracts\Http\Kernel::class,
+      App\Http\Kernel::class
+  );
+
+  $app->singleton(
+      Illuminate\Contracts\Console\Kernel::class,
+      App\Console\Kernel::class
+  );
+
+  $app->singleton(
+      Illuminate\Contracts\Debug\ExceptionHandler::class,
+      App\Exceptions\Handler::class
+  );
+
+  return $app;
+
+
+También se pueden auto-injectar cuando son muy simples. Ej:
+
+  class Ingredient1
+  {
+      public function __construct() {}
+  }
+
+  class Ingredient2
+  {
+      public function __construct() {}
+  }
+
+  class Cake1
+  {
+      private $ingredient1;
+      private $ingredient2;
+
+      public function __construct(Ingredient1 $ingredient1, Ingredient2 $ingredient2)
+      {
+          $this->ingredient1 = $ingredient1;
+          $this->ingredient2 = $ingredient2;
+      }
+
+      public function get()
+      {
+          return 'Cake 1 is ready.';
+      }
+  }
+
+  Route::get('get-cake-1', function(Cake1 $cake1) {
+      return $cake1->get();
+  });
+
+
+Pero si hay un parámetro dentro de la clase que se necesita para instanciarla.... aún se puede hacer si se registra con “app()->bind()” especificando ese valor por defecto:
+
+  app()->bind(Cake2::class, function() {
+      $ingredient1 = new Ingredient1();
+      $ingredient2 = new Ingredient2();
+
+      return new Cake2($ingredient1, $ingredient2, 5);
+  });
+
+
+Nota: Container::singleton() y Container::bind() son básicamente lo mismo pero el primero hace que se devuelva siempre la misma instancia y con bind() no pasa eso.  https://stackoverflow.com/a/25229856/980631
+
+
+En Laravel el service container posee dos métodos: bind() y make()
+
+  bind()    se usa para bindear clases concretas con sus interfaces.
+  make()    se usa para resolver las dependencias.
+
+resolve() es un helper que es equivalente a llamar a app()->make()
+
+  Ej:
+
+  $mathService = app()->make('MathService');
+
+  // or
+
+  $mathService = resolve('MathService');
+
+
+Luego de llamar a make() o a resolve() ....
+
+  $sum = $mathService->doAddition([40, 20, 10]);
+  $product = $mathService->doMultiplication([4, 2, 3]);
+
+  print_r($sum);
+  print_r($product);
+
+  // Result: Sum => 70, Product => 24
+
+
+Automatic Dependency Injection
+
+There is no need to bind classes into the container if they do not depend on any interfaces. The container does not need to be instructed on how to build these objects since it can automatically resolve these objects using reflection.
+
+Ej:
+
+  <?php
+
+  function index(MathService $mathService)
+  {
+      $sum = $mathService->doAddition([40, 20, 10]);
+      $product = $mathService->doMultiplication([4, 2, 3]);
+  }
+
+
+# How can we implement binding in our application? We can implement binding in our AppServiceProvider
+
+  app/Providers/AppServiceProvider.php
+
+  namespace App\Providers;
+
+  use App\SocialProvider;
+  use App\TwitterSocialProvider;
+  use Illuminate\Support\ServiceProvider;
+
+  class AppServiceProvider extends ServiceProvider
+  {
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+     public function boot()
+    {
+
+    }
+
+     /**
+     * Register any application services.
+     *
+     * @return void
+     */
+     public function register()
+     {
+        $this->app->bind(
+          MyClassInterface::class,
+          MyClass::class
+        );
+    }
+  }
+
+
+Más
+
+https://stackoverflow.com/questions/37038830/what-is-the-concept-of-service-container-in-laravel/48239728
+https://dev.to/patelparixit07/laravel-service-container-3gaj!
+https://www.linkedin.com/pulse/what-laravel-service-container-how-use-isaac-souza/?trk=read_related_article-card_title
+
+https://medium.com/@digitaldaswani/what-is-service-container-in-laravel-d0dff465f4e0
+https://stackoverflow.com/questions/53748423/are-laravel-automatic-injection-for-only-controller-functions
+https://stackoverflow.com/questions/59947963/where-exactly-automate-injection-works-in-laravel
+https://gradualcode.com/laravels-ioc-container-and-dependency-injection-decoded/
+
+https://patrick-assoa-adou.medium.com/writing-a-simple-dependency-injection-container-in-php-lessons-learned-17d3af3626ea
+
+
+- Mejorar los errores informando (en modo debug) númeero de línea de la excepción y demás. Usar constantes:
+
+__FILE__, __DIR__, __LINE__, __NAMESPACE__, __CLASS__, __TRAIT__, __METHOD__ y __FUNCTION__
+
+
+- Investigar como el paquete "Yajra" de Laravel simplifica el uso de DataTables
+
+https://github.com/yajra/laravel-datatables
+
+
+- Implementar "buses" de comunicación.  
+
+Estos permiten desacople entre emisor y receptor y que la comunicación sea asíncrona.
+
+https://barryvanveen.nl/articles/59-different-kinds-of-service-bus-command-bus-service-bus-and-query-bus
+https://barryvanveen.nl/articles/49-what-is-a-command-bus-and-why-should-you-use-it
+
+---
+
 - Implementar en Model varias funciones que por debajo usen o puedan usar STORE PROCEDURES:
 
 a) bulkUpdate() para actualizaciones masivas.
