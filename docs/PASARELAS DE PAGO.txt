@@ -1,0 +1,7 @@
+PASARELAS DE PAGO
+=================
+
+Usar OmniPay
+
+https://github.com/thephpleague/omnipay
+https://startutorial.com/view/a-quick-guide-on-integration-omnipay-on-php-projects
