@@ -2457,7 +2457,16 @@ class Model {
 		return $count;	
 	}
 
-	function undelete(){
+	function forceDelete(){
+		$this->delete(false);
+	}
+
+	protected function checkUndeletePreconditions() : bool
+	{
+		if (!$this->soft_delete){
+			throw new \Exception("Undelete is not available");
+		}	
+
 		$where = '';	
 		if (!empty($this->where)){
 			$where = implode(' AND ', $this->where);
@@ -2466,13 +2475,38 @@ class Model {
 		$where = trim($where);
 		
 		if (empty($where) && empty($this->where_raw_q)){
-			throw new \Exception("UNDELETE statement requieres WHERE condition");
+			throw new \Exception("Lacks WHERE condition");
 		}
 
-		if (!$this->soft_delete){
-			throw new \Exception("Undelete is not available");
-		}	
+		return true;
+	}
 
+	/*
+		Devuelve si la row fue borrada
+	*/
+	function trashed() : bool
+	{
+		$this->checkUndeletePreconditions();
+
+		$this->deleted();
+		$this->whereNotNull($this->deletedAt());
+		return $this->exists();
+	}
+
+	// alias
+	function is_trashed() : bool
+	{
+		return $this->trashed();
+	}
+
+
+	/*
+		Si el undelete está disponible intenta restaurar sin chequear si la row fue previamente borrada
+	*/
+	function undelete()
+	{
+		$this->checkUndeletePreconditions();
+		
 		if (isset($this->config)){
 			$d = new \DateTime('', new \DateTimeZone($this->config['DateTimeZone']));
 		} else {
@@ -2489,6 +2523,11 @@ class Model {
 
 		return $ret;
 	}	
+
+	// alias for delete()
+	function restore(){
+		return $this->undelete();
+	}
 
 	function insert(array $data, bool $at_once = false, bool $ignore_duplicates = true){
 		if (!Arrays::is_assoc($data)){
@@ -2908,6 +2947,10 @@ class Model {
 		return $this->schema;
 	}
 
+	function hasSchema(){
+		return !empty($this->schema);
+	}
+
 	/*
 		'''Reflection'''
 	*/
@@ -2955,6 +2998,11 @@ class Model {
 
 	function getIdName(){
 		return $this->schema['id_name'] ?? null; // *
+	}
+
+	// alias for getIdName()
+	function id(){
+		return $this->getIdName();
 	}
 
 	function getNotHidden(){
