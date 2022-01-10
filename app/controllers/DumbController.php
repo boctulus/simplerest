@@ -6541,24 +6541,92 @@ class DumbController extends Controller
         d(DB::table(get_users_table())->random()->first());
     }
 
-    function test_undelete(){    
+    function test_390(){
+        d(DB::table('super_cool_table')->id());
+    }
+
+    /*
+        Obtengo el último registro creado
+    */
+    function test_400(){
+        $m = DB::table('products');
+        
+        $row = $m
+        ->deleted()
+        ->orderBy([$m->createdAt() => 'DESC'])
+        ->first();
+
+        d($row);
+        d($m->dd());
+    }
+
+    function test_existance(){
+        $is = DB::table('products')
+        ->find(145)
+        ->exists();
+
+        if ($is){
+            $row = DB::table('products')
+            ->find(145)
+            ->first();
+
+            d($row, "La row existe");
+            return;
+        }
+
+        d("Row fue borrada.");
+    }
+
+    function test_delete1(){
         $row = DB::table('products')
+        ->find(145)
+        ->delete();
+    }
+
+    function test_trashed(){
+        $m = DB::table('products');
+        
+        d($m
+        ->find(145)
+        ->trashed());
+
+        d($m->dd());
+    }
+
+    function test_undelete(){    
+        $is = DB::table('products')
+        ->find(145)
+        ->exists();
+
+        if ($is){
+            $row = DB::table('products')
+            ->find(145)
+            ->first();
+
+            d($row, "La row existe");
+            return;
+        }
+
+        d("Row fue borrada. Intento restaurar");
+
+        $m = DB::table('products');
+
+        $row = $m
+        ->find(145)
+        ->undelete();
+
+        d($m->getLog());
+
+        $row = $m = DB::table('products')
         ->find(145)
         ->first();
         d($row);
+    }
 
-        // $m = DB::table('products');
-
-        // $row = $m
-        // ->find(145)
-        // ->undelete();
-
-        // d($m->getLog());
-
-        // $row = $m = DB::table('products')
-        // ->find(145)
-        // ->first();
-        // d($row);
+    function test_force_del(){
+        $m = DB::table('products');
+        $m->find(5510)
+        ->forceDelete();
     }
 
     function test_103(){
@@ -6600,6 +6668,9 @@ class DumbController extends Controller
         dd("xxx");
     }
 
+    function test_refl(){
+        d(Reflector::getConstructor(\simplerest\libs\Foo2::class));
+    }
 
     function test_container(){
         Container::bind('foo', function(){
@@ -6641,9 +6712,16 @@ class DumbController extends Controller
         print_r($o);
     }
 
+    /*
+        Esto podría funcionar con el Router
 
-    function test_refl(){
-        d(Reflector::getConstructor(\simplerest\libs\Foo2::class));
+        Route::get('/user/{id}', DumbController::class);
+
+        Eso habilitaria: /dumb/6 
+    */
+    function __invoke(int $id)
+    {
+        d($id);
     }
     
 }

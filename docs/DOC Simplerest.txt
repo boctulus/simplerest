@@ -15,7 +15,7 @@ Algunas características:
 - Colecciones para acciones masivas
 - Versionado
 - Internacionalización
-- Query Builder
+- Query Builder y la clase Model
 - UUIDs
 - Migrations (en progreso)
 - Multitenant support
@@ -747,7 +747,7 @@ Todas las tablas deben tener un único id inclusive si son "tablas intermedias" 
 Se recomienda que las tablas tengas claves primarias simples pero si son compuestas entonces es requisito que uno de los campos sea AUTOINCREMENTAL. A futuro se prevee que se acepte que uno de los campos de una PRIMARY KEY compuesta pueda ser un UUID en vez de AUTOINCREMENTAL. 
 
 
-# Modelo
+# Modelo y Query Builder
 
 Cada modelo es definido en una clase en /app/models que extiende a Model y donde se define el schema y algunas propiedades de los campos. Ejemplo:
 	
@@ -857,6 +857,11 @@ Ej:
     
     $rows = $m->table('mi_tabla')
     ->get();
+
+
+# El Query Builder
+
+SimpleRest viene con un constructor de consultas ("queries") y sentencias ("statements") basado en métodos encadenados. 
 
 
 # Inserción de registros
@@ -1065,8 +1070,26 @@ Igualmente hay métodos para programáticamente hacer rellenables o no-rellenabl
     ]);
     
 
+# Borrado de registros
 
-# Borrado "suave"
+Para eliminar un registro, establezca una condición y llame al método delete()
+
+Ej:
+
+	DB::table('products')
+	->find(145)
+	->delete();
+
+Lo anterior equivaldría (asumiendo que el id se llama 'id') a lo siguiente:
+
+	B::table('products')
+	->where['id' => 145]
+	->delete();
+
+También la condición podría estar dada por un whereRaw()
+
+
+# Borrado "suave" o soft-delete
 
 Si una tabla y su schema dispone de un campo "deleted_at" de tipo DATETIME, al hacer un delete() el registro no es borrado fisicamente sino solo se oculta de los resultados:
 
@@ -1076,7 +1099,7 @@ Si una tabla y su schema dispone de un campo "deleted_at" de tipo DATETIME, al h
 
 	// SELECT * FROM products WHERE id = $id AND deleted_at IS NULL
 
-En caso de querer des-ocultar registros borrados para que sean visualizados en una consulta usar showDeleted()
+En caso de querer des-ocultar registros borrados para que sean visualizados en una consulta usar showDeleted() o deleted()
 
 	DB::table('products')
 	->where(['id' => $id])
@@ -1091,6 +1114,54 @@ Si se desea que al momento de borrar el campo se elimine de forma definitiva use
 	->find($id)
 	->setSoftDelete(false)
 	->delete();  
+
+Por defecto SimpleRest solo muestra registros que no estén borrados ya sea físicamente o virtualmente con "borrado suave" por concistencia.
+
+Nota: el campo de tipo DATETIME requerido para borrar registros no tiene porque llamarse "deteled_at" y ese nombre puede setearse en el modelo mediante el atributo $deletedAt.
+
+
+# Chequear si un registro fue borrado "suavemente"
+
+El método trashed() devuelve un boolean indicando si el registro fue borrado con softdelete o no pero fallará arrojando excepción si el softdelete no está habilitado.
+
+	$trashed = DB::table('products')
+	->find(145)
+	->trashed());
+
+
+# Restaurar un registro fue borrado "suavemente"
+
+El método undelete() restaura un registro borrado con softdelete pero fallará arrojando excepción si el softdelete no está habilitado. 
+
+Este método no chequea si realmente el registro fue borrado aunque sino existe tampoco generará excepción. En caso de querer verficar previamente si el registro fue borrado utilice trashed()
+
+
+# Borrar un registro de forma definitiva 
+
+El método forceDelete() borra un registro de forma definitiva haya o no sido previamente borrado suavemente.
+
+Ej:
+
+	DB::table('products');
+	->find(5510)
+	->forceDelete();
+
+O..
+
+	DB::table('products');
+	->where($some_condition)
+	->forceDelete();
+
+
+# Obtener el nombre del Id de la tabla
+
+SimpleRest considera 'id' al nombre de la PRIMARY KEY (si es simple), del campo AUTOINCREMENT o bien del campo UUID de la tabla. Esto permite compatibilidad con diseños donde las tablas tienen claves primarias compuestas siempre que exista un campo que pueda representar unívocamente a cada registro.
+
+Utilice el método id() para obtener el nombre del id correspondiente.
+
+Ej:
+
+	$id_name = DB::table('super_cool_table')->id();
 
 
 # Joins
