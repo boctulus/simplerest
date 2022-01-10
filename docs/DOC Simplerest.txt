@@ -1091,7 +1091,18 @@ También la condición podría estar dada por un whereRaw()
 
 # Borrado "suave" o soft-delete
 
-Si una tabla y su schema dispone de un campo "deleted_at" de tipo DATETIME, al hacer un delete() el registro no es borrado fisicamente sino solo se oculta de los resultados:
+Métodos relacionados:
+
+	withTrashed(bool $soft_delete)	borra un registro. Hay parámetros adicionales.
+	trashed()       				devuelve si el registro fue borrado suavemente.
+    undelete()      				restaura el registro si fue borrado suavemente.
+    forceDelete()   				borra un registro definitvamente.
+    withTrashed()   				incorpora a la selección registros borrados suavemente.
+    onlyTrashed()   				selecciona solo registros borrados suavemente.
+
+Si una tabla y su schema dispone de un campo "deleted_at" de tipo DATETIME, al hacer un delete() el registro no es borrado fisicamente sino solo se oculta de los resultados.
+
+Ej:
 
 	DB::table('products')
 	->where(['id' => $id])
@@ -1099,25 +1110,51 @@ Si una tabla y su schema dispone de un campo "deleted_at" de tipo DATETIME, al h
 
 	// SELECT * FROM products WHERE id = $id AND deleted_at IS NULL
 
-En caso de querer des-ocultar registros borrados para que sean visualizados en una consulta usar showDeleted() o deleted()
+En caso de querer des-ocultar registros borrados para que sean visualizados en una consulta usar deleted() o withTrashed()
 
 	DB::table('products')
 	->where(['id' => $id])
-	->showDeleted()
+	->deleted()
 	->get());
 
 	// SELECT * FROM products WHERE id = $id 
 
-Si se desea que al momento de borrar el campo se elimine de forma definitiva user ->setSoftDelete(false)
+Por el contrario si desea mostrar solo registros que fueron borrados de forma suave use withTrashed()
+
+Ej:
+
+	DB::table('products')
+	->where(['id' => $id])
+	->withTrashed()
+	->get());
+
+
+# Borrar un registro de forma definitiva 
+
+Si se desea que al momento de borrar el campo se elimine de forma definitiva puede usar setSoftDelete(false)
 
 	$u = DB::table('users')
 	->find($id)
 	->setSoftDelete(false)
 	->delete();  
 
-Por defecto SimpleRest solo muestra registros que no estén borrados ya sea físicamente o virtualmente con "borrado suave" por concistencia.
+Por defecto SimpleRest solo selecciona registros que no estén borrados ya sea físicamente o virtualmente con "borrado suave" por concistencia.
 
 Nota: el campo de tipo DATETIME requerido para borrar registros no tiene porque llamarse "deteled_at" y ese nombre puede setearse en el modelo mediante el atributo $deletedAt.
+
+También puede ocupar el método forceDelete() que borra un registro de forma definitiva haya o no sido previamente borrado suavemente.
+
+Ej:
+
+	DB::table('products');
+	->find(5510)
+	->forceDelete();
+
+O..
+
+	DB::table('products');
+	->where($some_condition)
+	->forceDelete();
 
 
 # Chequear si un registro fue borrado "suavemente"
@@ -1135,22 +1172,6 @@ El método undelete() restaura un registro borrado con softdelete pero fallará 
 
 Este método no chequea si realmente el registro fue borrado aunque sino existe tampoco generará excepción. En caso de querer verficar previamente si el registro fue borrado utilice trashed()
 
-
-# Borrar un registro de forma definitiva 
-
-El método forceDelete() borra un registro de forma definitiva haya o no sido previamente borrado suavemente.
-
-Ej:
-
-	DB::table('products');
-	->find(5510)
-	->forceDelete();
-
-O..
-
-	DB::table('products');
-	->where($some_condition)
-	->forceDelete();
 
 
 # Obtener el nombre del Id de la tabla
@@ -1223,13 +1244,13 @@ Ej:
     ->crossJoin('products')
     ->where(['users.id', 90])
     ->unhideAll()
-    ->showDeleted()
+    ->deleted()
     ->get();
 
 	$rows = (new Model())->table('employee')
     ->naturalJoin('department')
     ->unhideAll()
-    ->showDeleted()
+    ->deleted()
     ->get();
 
 
@@ -1245,7 +1266,7 @@ Ej1)
 	->join('products')
 	->join('roles')
 	->unhideAll()
-	->showDeleted()
+	->deleted()
 	//->dontExec()
 	->get();
 	
@@ -1260,7 +1281,7 @@ Ej2)
 	->join('products as p')
 	->join('roles as r')
 	->unhideAll()
-	->showDeleted()
+	->deleted()
 	//->dontExec()
 	->get();
 	
@@ -1333,7 +1354,7 @@ En general las funciones raw permiten corregir situaciones donde es muy difícil
 Ej:
 
 	$rows = DB::table('products')
-	->showDeleted()
+	->deleted()
 	->groupBy(['name'])
 	->having(['c', 3, '>'])
 	->select(['name'])
@@ -1360,7 +1381,7 @@ Lo cual no es totalmente válido y en MySQL genera el error:
 La solución en este caso viene de la mano de havingRaw()
 
 	$rows = DB::table('products')
-	->showDeleted()
+	->deleted()
 	->groupBy(['name'])
 	->select(['name'])
 	->selectRaw('COUNT(*) as c')
@@ -1586,7 +1607,7 @@ Los grupos / conectores aplican también a having() y havingRaw()
 
 Ej:
 
-	DB::table('products')->showDeleted()
+	DB::table('products')->deleted()
 
 	->groupBy(['cost', 'size', 'belongs_to'])
 	->having(['cost', 100, '>='])
@@ -2012,11 +2033,11 @@ Una función de debug que puede utilizarse es getLastPrecompiledQuery(), la cual
 
 Ejemplo:
 
-	$uno = DB::table('products')->showDeleted()
+	$uno = DB::table('products')->deleted()
 	->select(['id', 'name', 'description', 'belongs_to'])
 	->where(['belongs_to', 90]);
 
-	$m2  = DB::table('products')->showDeleted();
+	$m2  = DB::table('products')->deleted();
 	$dos = $m2
 	->select(['id', 'name', 'description', 'belongs_to'])
 	->where(['belongs_to', 4])
@@ -2199,7 +2220,7 @@ Algunos ejemplos:
     */
 
 	$m = DB::table('products')
-	->showDeleted()
+	->deleted()
 	->groupBy(['cost', 'size', 'belongs_to'])
 	->having(['cost', 100, '>='])
 	->or(function($q){
@@ -2220,7 +2241,7 @@ Algunos ejemplos:
     */
    
 	$m = DB::table('products')
-	->showDeleted()
+	->deleted()
 	->groupBy(['cost', 'size', 'belongs_to'])
 	->having(['cost', 100, '>='])
 	->or(function($q){
@@ -2237,7 +2258,7 @@ Algunos ejemplos:
     */
 
 	$m = DB::table('products')
-	->showDeleted()
+	->deleted()
 	->groupBy(['cost', 'size', 'belongs_to'])
 	->having(['cost', 100, '>='])
 	->or(function($q){
@@ -2261,7 +2282,7 @@ Como Model::sqlFormatter() es un método público y convenientemente estático f
     */
 
 	$m = DB::table('products')
-	->showDeleted()
+	->deleted()
 	->groupBy(['cost', 'size', 'belongs_to'])
 	->having(['cost', 100, '>='])
 	->or(function($q){
@@ -2283,7 +2304,7 @@ Se provee de la función helper sql_formater() que es un atajo de Model::sqlForm
     */
 
 	$m = DB::table('products')
-	->showDeleted()
+	->deleted()
 	->groupBy(['cost', 'size', 'belongs_to'])
 	->having(['cost', 100, '>='])
 	->or(function($q){

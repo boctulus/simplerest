@@ -2383,7 +2383,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             if ($old_data === null){
                                 //dd('RETRIVE');
                                 $old_data = DB::table($this->table_name)
-                                ->assoc()->find($id)->showDeleted()->first();
+                                ->assoc()->find($id)->deleted()->first();
                                 $body['data'] = array_merge($old_data, $body['data']);
                             }
                             
@@ -2397,7 +2397,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($old_data === null){
                     //dd('RETRIVE');
                     $old_data = DB::table($this->table_name)
-                    ->assoc()->find($id)->showDeleted()->first();
+                    ->assoc()->find($id)->deleted()->first();
                     $body['data'] = array_merge($old_data, $body['data']);
                 }
 
