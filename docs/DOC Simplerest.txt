@@ -26,6 +26,7 @@ Algunas características:
 - Utilidad para consumo de APIs
 - Perfilador del código (tiempos de ejecución)
 - Extensión del framework (sumar nuevas funcionalidades)
+- Contenedor de dependencias inversas (IoC)
 
 Cómo "índice" para buscar documentación puede buscar por las características enumeradas previamente más las siguientes referencias:
 
@@ -7110,3 +7111,66 @@ Al día de hoy es posible sumar nuevas funcionalidades via:
 // ...
 
 En particular extendiendo MakeController o MigrationsController es posible crear nuevos comandos.
+
+
+# Contenedor de dependencias inversas (IoC)
+
+El framework implementa un sencillo contenedor de dependencias inversas inspirado en el contenedor de Laravel mediante la clase Container.
+
+Para "enlazar" la creación de una clase con una referencia o key se utiliza el método bind()
+
+	Container::bind('foo', function(){
+		return new Foo();
+	});
+
+A posteriori se podrá crear la instancia simplemente llamando a make() con la referencia o key asociada previamente con bind.
+
+	$foo = Container::make('foo');
+	print_r($foo->bar());
+
+	foo = Container::make('foo');
+	print_r($foo->bar());
+
+Cabe notar que con cada llamada a make() en el ejemplo previo se creará una nueva instancia de Foo.
+
+El código completo sería:
+
+	Container::bind('foo', function(){
+		return new Foo();
+	});
+
+	$foo = Container::make('foo');
+	print_r($foo->bar());
+
+	$foo = Container::make('foo');
+	print_r($foo->bar());
+
+También es posible bindear simplemente un string que hace referencia a la clase y su namespace en caso de tenerlo.
+
+Ej:
+
+	Container::bind('foo', Foo::class);	
+
+	$foo = Container::make('foo');
+	print_r($foo->bar());
+
+	$foo = Container::make('foo');
+	print_r($foo->bar());
+
+El contenedor permite crear instancias únicas de las clases mediante el método singleton()
+
+	Container::singleton('foo', Foo::class);
+
+	$foo = Container::make('foo');
+	print_r($foo->bar());
+	
+	$foo = Container::make('foo');
+	print_r($foo->bar());
+
+En caso de que nuestra clase tenga parámetros y se los querramos pasar o sean requeridos podemos hacerlo usando el segundo parámetro de make() o makeWith()
+
+	Container::bind('car', \simplerest\libs\Car::class);
+
+	$o = Container::makeWith('car', ['color' => 'blue', 'max_speed' => 200]);
+	print_r($o->run());
+	print_r($o);

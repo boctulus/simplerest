@@ -56,7 +56,8 @@ class PrepareUpdateController extends ConsoleController
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; VARIOS
         app/helpers/db.php
-        app/libs/Strings.php        
+        app/libs/Strings.php   
+        app/libs/VarDump.php    
        
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; MIGRATIONS
