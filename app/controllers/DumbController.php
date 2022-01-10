@@ -124,7 +124,7 @@ class DumbController extends Controller
     */
     function alias(){
         $rows = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         ->groupBy(['name'])
         ->having(['c', 3, '>'])
         ->select(['name'])
@@ -141,7 +141,7 @@ class DumbController extends Controller
     */
     function alias2(){
         $rows = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         ->groupBy(['name'])
         ->select(['name'])
         ->selectRaw('COUNT(*) as c')
@@ -701,7 +701,7 @@ class DumbController extends Controller
 
     function get_product($id){       
         // Include deleted items
-        dd(DB::table('products')->find($id)->showDeleted()->dd());
+        dd(DB::table('products')->find($id)->deleted()->dd());
     }
     
     function exists(){
@@ -1047,7 +1047,7 @@ class DumbController extends Controller
         SELECT size, COUNT(*) FROM products GROUP BY size
     */
     function select_group_count(){
-        dd(DB::table('products')->showDeleted()
+        dd(DB::table('products')->deleted()
         ->groupBy(['size'])
         ->select(['size'])
         ->count());
@@ -1059,7 +1059,7 @@ class DumbController extends Controller
         SELECT size, AVG(cost) FROM products GROUP BY size
     */
     function select_group_avg(){
-        dd(DB::table('products')->showDeleted()
+        dd(DB::table('products')->deleted()
         ->groupBy(['size'])
         ->select(['size'])
         ->avg('cost'));  
@@ -1068,7 +1068,7 @@ class DumbController extends Controller
     }
 
     function filter_products1(){
-        dd(DB::table('products')->showDeleted()->where([ 
+        dd(DB::table('products')->deleted()->where([ 
             ['size', '2L']
         ])->get());
     }
@@ -1210,7 +1210,7 @@ class DumbController extends Controller
         SELECT  name, cost, id FROM products WHERE belongs_to = '90' AND (cost >= 100 AND cost < 500) AND description IS NOT NULL
     */
     function where14(){
-        dd(DB::table('products')->showDeleted()
+        dd(DB::table('products')->deleted()
         ->select(['name', 'cost', 'id'])
         ->where(['belongs_to', 90])
         ->where([ 
@@ -1231,7 +1231,7 @@ class DumbController extends Controller
        (cost <= 550 AND cost >= 100)
     */
     function or_where(){
-        $q = DB::table('products')->showDeleted()
+        $q = DB::table('products')->deleted()
         ->select(['name', 'cost', 'id'])
         ->where(['belongs_to', 90])
         ->orWhere(['name', ['CocaCola', 'PesiLoca']])
@@ -1246,7 +1246,7 @@ class DumbController extends Controller
     
     // A OR (B AND C)
     function or_where2(){
-        $q = DB::table('products')->showDeleted()
+        $q = DB::table('products')->deleted()
         ->select(['name', 'cost', 'id', 'description'])
         ->whereNotNull('description')
         ->orWhere([ 
@@ -1270,7 +1270,7 @@ class DumbController extends Controller
         description IS NOT NULL
     */
     function where_or(){
-        $q = DB::table('products')->showDeleted()
+        $q = DB::table('products')->deleted()
         ->select(['name', 'cost', 'id'])
         ->where(['belongs_to', 90])
         ->where([                           // <--- whereOr() === where([], 'OR')
@@ -1295,7 +1295,7 @@ class DumbController extends Controller
         description IS NOT NULL
     */
     function where_or1(){
-        $q = DB::table('products')->showDeleted()
+        $q = DB::table('products')->deleted()
         ->select(['name', 'cost', 'id'])
         ->where(['belongs_to', 90])
         ->whereOr([ 
@@ -1577,7 +1577,7 @@ class DumbController extends Controller
         ->or(function($q){
             $q->where(['cost', 100, '<=']);
         })     
-        ->showDeleted()        
+        ->deleted()        
         ->dontExec();
 
         //dd($m->get());
@@ -1595,7 +1595,7 @@ class DumbController extends Controller
                 ->orWhere(['id', 90]);
             });
         })     
-        ->showDeleted()        
+        ->deleted()        
         ->dontExec();
 
         //dd($m->get());
@@ -1608,7 +1608,7 @@ class DumbController extends Controller
         ->whereRegEx('name', 'a$')  // <--- impone un 'AND' y no debería
         ->orWhere(['description', NULL, 'IS NOT'])
         
-        ->showDeleted()        
+        ->deleted()        
         ->dontExec();
 
         //dd($m->get());
@@ -1624,7 +1624,7 @@ class DumbController extends Controller
         
         ->orWhere(['description', NULL, 'IS NOT'])
         
-        ->showDeleted()        
+        ->deleted()        
         ->dontExec();
 
         //dd($m->get());
@@ -1643,7 +1643,7 @@ class DumbController extends Controller
         })   
         
         
-        ->showDeleted()        
+        ->deleted()        
         ->dontExec();
 
         //dd($m->get());
@@ -1661,7 +1661,7 @@ class DumbController extends Controller
         ->or(function($q){
             $q->where(['cost', 100, '<=']);
         })     
-        ->showDeleted()        
+        ->deleted()        
         ->dontExec();
 
         //dd($m->get());
@@ -1990,7 +1990,7 @@ class DumbController extends Controller
         SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname IS NOT NULL);
     */
     function where_raw2(){
-        dd(DB::table('products')->showDeleted()
+        dd(DB::table('products')->deleted()
         ->whereRaw('EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?  )', ['AB'])
         ->get());
     }
@@ -2018,7 +2018,7 @@ class DumbController extends Controller
         SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname IS NOT NULL);
     */
     function where_exists(){
-        $m = DB::table('products')->showDeleted()
+        $m = DB::table('products')->deleted()
         ->whereExists('(SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?)', ['AB']);
 
         dd($m->get());
@@ -2166,7 +2166,7 @@ class DumbController extends Controller
 		SELECT COUNT(name) as c, name FROM products GROUP BY name HAVING c >= 3
 	*/
 	function havingx(){  
-        dd(DB::table('products')->showDeleted()
+        dd(DB::table('products')->deleted()
 			//->dontExec()
             ->groupBy(['name'])
             ->having(['c', 3, '>='])
@@ -2221,7 +2221,7 @@ class DumbController extends Controller
 
 	// SELECT cost, size FROM products GROUP BY cost,size HAVING cost = 100
 	function having1b(){        
-        dd(DB::table('products')->showDeleted()
+        dd(DB::table('products')->deleted()
             ->groupBy(['cost', 'size'])
             ->having(['cost', 100])
             ->get(['cost', 'size']));
@@ -2230,7 +2230,7 @@ class DumbController extends Controller
     }   
 
     function having1c(){        
-        dd(DB::table('products')->showDeleted()
+        dd(DB::table('products')->deleted()
             ->groupBy(['cost', 'size'])
             ->having(['cost', 100, '>='])
             ->get(['cost', 'size']));
@@ -2450,7 +2450,7 @@ class DumbController extends Controller
         ->join('user_sp_permissions', 'u.id', '=',  'user_sp_permissions.user_id')
         ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
 
-        //->showDeleted()
+        //->deleted()
         //->dontExec()
         ->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
@@ -2464,7 +2464,7 @@ class DumbController extends Controller
         ->join('user_sp_permissions', 'u.id', '=',  'user_sp_permissions.user_id')
         ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
 
-        //->showDeleted()
+        //->deleted()
         //->dontExec()
         ->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
@@ -2492,7 +2492,7 @@ class DumbController extends Controller
         ->join('products')
         ->join('roles')
         ->unhideAll()
-        ->showDeleted()
+        ->deleted()
         //->dontExec()
         ->get();
         
@@ -2506,7 +2506,7 @@ class DumbController extends Controller
         ->join('users as u')
         ->unhideAll()
         ->qualify()
-        //->showDeleted()
+        //->deleted()
         //->dontExec()
         ->get();
         
@@ -2521,7 +2521,7 @@ class DumbController extends Controller
         ->join('roles as r')
         ->unhideAll()
         ->qualify()
-        //->showDeleted()
+        //->deleted()
         //->dontExec()
         ->get();
         
@@ -2536,7 +2536,7 @@ class DumbController extends Controller
         ->join('products')
         ->join('roles')
         ->unhideAll()
-        ->showDeleted()
+        ->deleted()
         //->dontExec()
         ->get();
         
@@ -2550,7 +2550,7 @@ class DumbController extends Controller
         $rows = DB::table('roles')
         ->join('users')
         ->unhideAll()
-        ->showDeleted()
+        ->deleted()
         //->dontExec()
         ->get();
         
@@ -2655,7 +2655,7 @@ class DumbController extends Controller
         ->crossJoin('products')
         ->where(['users.id', 90])
         ->unhideAll()
-        ->showDeleted()
+        ->deleted()
         //->dontExec()
         ->get();
 
@@ -2667,7 +2667,7 @@ class DumbController extends Controller
         $m = (new Model())->table('employee')
         ->naturalJoin('department')
         ->unhideAll()
-        ->showDeleted()
+        ->deleted()
         ->dontExec();
         
         dd($m->dd());    
@@ -2679,7 +2679,7 @@ class DumbController extends Controller
         ->crossJoin('products')
         ->crossJoin('roles')
         ->unhideAll()
-        ->showDeleted()
+        ->deleted()
         ->dontExec()->get();
         
         dd(DB::getLog());    
@@ -2690,7 +2690,7 @@ class DumbController extends Controller
         $rows = DB::table('users')->crossJoin('products')->crossJoin('roles')
         ->where(['users.id', 90])
         ->unhideAll()
-        ->showDeleted()
+        ->deleted()
         //->dontExec()
         ->get();
         
@@ -2704,7 +2704,7 @@ class DumbController extends Controller
         $rows = DB::table('users')->crossJoin('products')->crossJoin('roles')
         ->join('user_sp_permissions', 'users.id', '=', 'user_sp_permissions.user_id')
         ->unhideAll()
-        ->showDeleted()
+        ->deleted()
         //->dontExec()
         ->get();
         
@@ -2954,7 +2954,7 @@ class DumbController extends Controller
 
     */
     function sub(){
-        $st = DB::table('products')->showDeleted()
+        $st = DB::table('products')->deleted()
         ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
         ->whereRaw('belongs_to IN (SELECT id FROM users WHERE password IS NULL)')
         ->get();
@@ -2974,7 +2974,7 @@ class DumbController extends Controller
         ->select(['id'])
         ->whereRaw('password IS NULL');
 
-        $st = DB::table('products')->showDeleted()
+        $st = DB::table('products')->deleted()
         ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
         ->whereRaw("belongs_to IN ({$sub->toSql()})")
         ->get();
@@ -2989,12 +2989,12 @@ class DumbController extends Controller
         SELECT id, name, size, cost, belongs_to FROM products WHERE (belongs_to IN (SELECT id FROM users WHERE (confirmed_email = 1) AND password < 100)) AND size = \'1L\';
     */
     function sub3(){
-        $sub = DB::table('users')->showDeleted()
+        $sub = DB::table('users')->deleted()
         ->select(['id'])
         ->whereRaw('confirmed_email = 1')
         ->where(['password', 100, '<']);
 
-        $res = DB::table('products')->showDeleted()
+        $res = DB::table('products')->deleted()
         ->mergeBindings($sub)
         ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
         ->where(['size', '1L'])
@@ -3010,14 +3010,14 @@ class DumbController extends Controller
 
     */
     function sub3b(){
-        $sub = DB::table('users')->showDeleted()
+        $sub = DB::table('users')->deleted()
         ->selectRaw('users.id')
         ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
         ->whereRaw('confirmed_email = 1')
         ->where(['password', 100, '<'])
         ->where(['role_id', 2]);
 
-        $res = DB::table('products')->showDeleted()
+        $res = DB::table('products')->deleted()
         ->mergeBindings($sub)
         ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
         ->where(['size', '1L'])
@@ -3030,14 +3030,14 @@ class DumbController extends Controller
     }
 
     function sub3c(){
-        $sub = DB::table('users')->showDeleted()
+        $sub = DB::table('users')->deleted()
         ->selectRaw('users.id')
         ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
         ->whereRaw('confirmed_email = 1')
         ->where(['password', 100, '<'])
         ->where(['role_id', 3]);
 
-        $res = DB::table('products')->showDeleted()
+        $res = DB::table('products')->deleted()
         ->mergeBindings($sub)
         ->select(['size'])
         ->whereRaw("belongs_to IN ({$sub->toSql()})")
@@ -3104,7 +3104,7 @@ class DumbController extends Controller
 
 
     function sub4b(){
-        $sub = DB::table('products')->showDeleted()
+        $sub = DB::table('products')->deleted()
         ->select(['size'])
         ->groupBy(['size']);
 
@@ -3118,7 +3118,7 @@ class DumbController extends Controller
         SELECT  COUNT(*) FROM (SELECT  size FROM products WHERE belongs_to = 90 GROUP BY size ) as sub WHERE 1 = 1
     */
     function sub4c(){
-        $sub = DB::table('products')->showDeleted()
+        $sub = DB::table('products')->deleted()
         ->select(['size'])
         ->where(['belongs_to', 90])
         ->groupBy(['size']);
@@ -3139,7 +3139,7 @@ class DumbController extends Controller
         SELECT  COUNT(*) FROM (SELECT  size FROM products WHERE belongs_to = 90 GROUP BY size ) as sub WHERE 1 = 1
     */
     function sub4d(){
-        $sub = DB::table('products')->showDeleted()
+        $sub = DB::table('products')->deleted()
         ->select(['size'])
         ->where(['belongs_to', 90])
         ->groupBy(['size']);
@@ -3155,7 +3155,7 @@ class DumbController extends Controller
         Subconsulta (rudimentaria) en el SELECT
     */
     function sub5(){
-        $m = DB::table('products')->showDeleted()
+        $m = DB::table('products')->deleted()
         ->select(['name', 'cost'])
         ->selectRaw('cost - (SELECT MAX(cost) FROM products) as diferencia')
         ->where(['belongs_to', 90]);
@@ -3174,11 +3174,11 @@ class DumbController extends Controller
         SELECT id, name, description, belongs_to FROM products WHERE belongs_to = 90 UNION SELECT id, name, description, belongs_to FROM products WHERE belongs_to = 4 ORDER by id ASC LIMIT 5;
     */
     function union(){
-        $uno = DB::table('products')->showDeleted()
+        $uno = DB::table('products')->deleted()
         ->select(['id', 'name', 'description', 'belongs_to'])
         ->where(['belongs_to', 90]);
 
-        $dos = DB::table('products')->showDeleted()
+        $dos = DB::table('products')->deleted()
         ->select(['id', 'name', 'description', 'belongs_to'])
         ->where(['belongs_to', 4])
         ->union($uno)
@@ -3190,11 +3190,11 @@ class DumbController extends Controller
     }
 
     function union2(){
-        $uno = DB::table('products')->showDeleted()
+        $uno = DB::table('products')->deleted()
         ->select(['id', 'name', 'description', 'belongs_to'])
         ->where(['belongs_to', 90]);
 
-        $m2  = DB::table('products')->showDeleted();
+        $m2  = DB::table('products')->deleted();
         $dos = $m2
         ->select(['id', 'name', 'description', 'belongs_to'])
         ->where(['belongs_to', 4])
@@ -3213,13 +3213,13 @@ class DumbController extends Controller
     */
     function union_all(){
         $uno = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         //->dontQualify()
         ->select(['id', 'name', 'description', 'belongs_to'])
         ->where(['belongs_to', 90]);
 
         $dos = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         //->dontQualify()
         ->select(['id', 'name', 'description', 'belongs_to'])
         ->where(['cost', 200, '>='])
@@ -3609,7 +3609,7 @@ class DumbController extends Controller
             ['belongs_to', 90]
         ])
         */
-        ->showDeleted()
+        ->deleted()
         //->whereNotNull('description');
         ->where(['description', NULL]);
 
@@ -5308,7 +5308,7 @@ class DumbController extends Controller
 
     function exx(){
         $m = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         //->dontQualify()
         ->groupBy(['cost', 'size', 'belongs_to'])
         ->having(['cost', 100, '>='])
@@ -5528,7 +5528,7 @@ class DumbController extends Controller
     */
     function test_sql_formater001(){
         $m = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         ->groupBy(['cost', 'size', 'belongs_to'])
         ->having(['cost', 100, '>='])
         ->or(function($q){
@@ -5550,7 +5550,7 @@ class DumbController extends Controller
     */
     function test_sql_formater002(){
         $m = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         ->groupBy(['cost', 'size', 'belongs_to'])
         ->having(['cost', 100, '>='])
         ->or(function($q){
@@ -5568,7 +5568,7 @@ class DumbController extends Controller
     */
     function test_sql_formater003(){
         $m = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         ->groupBy(['cost', 'size', 'belongs_to'])
         ->having(['cost', 100, '>='])
         ->or(function($q){
@@ -5590,7 +5590,7 @@ class DumbController extends Controller
     */
     function test_sql_formater004(){
         $m = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         ->groupBy(['cost', 'size', 'belongs_to'])
         ->having(['cost', 100, '>='])
         ->or(function($q){
@@ -5611,7 +5611,7 @@ class DumbController extends Controller
     */
     function test_sql_formater005(){
         $m = DB::table('products')
-        ->showDeleted()
+        ->deleted()
         ->groupBy(['cost', 'size', 'belongs_to'])
         ->having(['cost', 100, '>='])
         ->or(function($q){
@@ -6627,6 +6627,27 @@ class DumbController extends Controller
         $m = DB::table('products');
         $m->find(5510)
         ->forceDelete();
+    }
+
+    function get_products_no_filter(){
+        $m = DB::table('products');
+        $cnt = $m->count();
+
+        d($cnt, 'regs');
+    }
+
+    function get_products_with_trashed(){
+        $m = DB::table('products');
+        $cnt = $m->withTrashed()->count();
+
+        d($cnt, 'regs');
+    }
+
+    function get_products_only_trashed(){
+        $m = DB::table('products');
+        $cnt = $m->onlyTrashed()->count();
+
+        d($cnt, 'regs');
     }
 
     function test_103(){
