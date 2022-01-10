@@ -3,13 +3,14 @@ UPDATE DESCRIPTION
 
 - Generalización del "UPDATE sobre sub-recursos" que permite editar campos de estos y no solo las relaciones.
 
-- Contenedor de dependencias inversas -experimental-.
+- Contenedor de dependencias inversas experimental.
 
-- Ahora a nivel de modelo: undelete()
+- Ahora a nivel de modelo: undelete() + métodos relacionados.
 
-Ej:
+    trashed()       devuelve si el registro fue borrado suavemente.
+    undelete()      restaura el registro si fue borrado suavemente.
+    forceDelete()   borra un registro definitvamente.
+    withTrashed()   incorpora a la selección registros borrados suavemente
+    onlyTrashed()   selecciona solo registros borrados suavemente
 
-	DB::table('products')
-    ->find(145)
-    ->undelete();
 

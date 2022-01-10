@@ -158,6 +158,18 @@ Ej:
 
 ----------------
 
+- Eventualmente implementar en el Modelo:
+
+  Poda de registros borrados suavemente:
+  https://laravel.com/docs/8.x/eloquent#pruning-models
+
+  Scopes
+  https://laravel.com/docs/8.x/eloquent#local-scopes
+
+  Comparación de registros
+  https://laravel.com/docs/8.x/eloquent#comparing-models
+
+
 [ Front ]
 
 - Hacer pruebas con librería HTMX
