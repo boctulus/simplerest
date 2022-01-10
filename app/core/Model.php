@@ -488,28 +488,6 @@ class Model {
 		return $this->setTableAlias($tb_alias, $table);
 	}
 
-	// debe remover cualquier condición que involucre a $this->deletedAt en el WHERE !!!!
-	function showDeleted($state = true){
-		$this->show_deleted = $state;
-		return $this;
-	}
-
-	// alias de showDeleted()
-	function deleted($state = true){
-		return $this->showDeleted($state);
-	}
-
-	function setSoftDelete(bool $status) {
-		if (!$this->inSchema([$this->deletedAt])){
-			if ($status){
-				throw new SqlException("There is no $this->deletedAt for table '".$this->from()."' in the attr_types");
-			}
-		} 
-		
-		$this->soft_delete = $status;
-		return $this;
-	}
-
 	/*
 		Don't execute the query
 	*/
@@ -2371,6 +2349,17 @@ class Model {
 		return $this->update($data, $set_updated_at);
 	}
 
+	function setSoftDelete(bool $status) {
+		if (!$this->inSchema([$this->deletedAt])){
+			if ($status){
+				throw new SqlException("There is no $this->deletedAt for table '".$this->from()."' in the attr_types");
+			}
+		} 
+		
+		$this->soft_delete = $status;
+		return $this;
+	}
+
 	/**
 	 * delete
 	 *
@@ -2481,15 +2470,30 @@ class Model {
 		return true;
 	}
 
+	// debe remover cualquier condición que involucre a $this->deletedAt en el WHERE !!!!
+	function deleted($state = true){
+		$this->show_deleted = $state;
+		return $this;
+	}
+
+	// alias de deleted()
+	function withTrashed(){
+		return $this->deleted(true);
+	}
+
+	function onlyTrashed(){
+		$this->deleted();
+		$this->whereNotNull($this->deletedAt());
+		return $this;
+	}
+
 	/*
 		Devuelve si la row fue borrada
 	*/
 	function trashed() : bool
 	{
 		$this->checkUndeletePreconditions();
-
-		$this->deleted();
-		$this->whereNotNull($this->deletedAt());
+		$this->onlyTrashed();
 		return $this->exists();
 	}
 
