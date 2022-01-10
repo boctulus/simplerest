@@ -1,11 +1,15 @@
 UPDATE DESCRIPTION
 ==================
 
-- Generalización del "UPDATE sobre sub-recursos" para permitir editar campos de estos y no solo las relaciones.
+- Generalización del "UPDATE sobre sub-recursos" que permite editar campos de estos y no solo las relaciones.
 
-Incluir:
+- Contenedor de dependencias inversas -experimental-.
 
-app/core/api/v1/ApiController.php
-app/helpers/db.php
-app/libs/Strings.php
-app/core/Model.php
+- Ahora a nivel de modelo: undelete()
+
+Ej:
+
+	DB::table('products')
+    ->find(145)
+    ->undelete();
+

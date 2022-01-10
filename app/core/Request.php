@@ -15,7 +15,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     static protected $headers;
     static protected $instance = NULL;
 
-    //protected function __construct() { }
+    protected function __construct() { }
 
     static function getInstance(){
         if(static::$instance == NULL){
