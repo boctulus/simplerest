@@ -12,10 +12,10 @@ class SuperCoolTableSchema implements ISchema
 		return [
 			'table_name'	=> 'super_cool_table',
 
-			'id_name'		=> 'id',
+			'id_name'		=> 'id_cool',
 
 			'attr_types'	=> [
-				'id' => 'INT',
+				'id_cool' => 'INT',
 				'name' => 'STR',
 				'age' => 'INT',
 				'active' => 'INT',
@@ -24,16 +24,16 @@ class SuperCoolTableSchema implements ISchema
 				'locked' => 'INT'
 			],
 
-			'primary'		=> ['id'],
+			'primary'		=> ['id_cool'],
 
-			'autoincrement' => 'id',
+			'autoincrement' => null,
 
-			'nullable'		=> ['id', 'deleted_at'],
+			'nullable'		=> ['deleted_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int'],
+				'id_cool' => ['type' => 'int', 'required' => true],
 				'name' => ['type' => 'str', 'max' => 45, 'required' => true],
 				'age' => ['type' => 'int', 'required' => true],
 				'active' => ['type' => 'bool', 'required' => true],
