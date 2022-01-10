@@ -1,0 +1,11 @@
+--2022-01-09 12:55:09--  https://img.youtube.com/vi/sKdi8YufrN0/maxresdefault.jpg
+Resolving img.youtube.com (img.youtube.com)... 172.217.173.206, 172.217.173.46, 172.217.30.206, ...
+Connecting to img.youtube.com (img.youtube.com)|172.217.173.206|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 98064 (96K) [image/jpeg]
+Saving to: ‘/home/feli/Downloads/trx/sKdi8YufrN0.jpg’
+
+/home/feli/Downloads/trx/sKdi8YufrN0.jpg         0%[                                                                                                   ]       0  --.-KB/s               /home/feli/Downloads/trx/sKdi8YufrN0.jpg       100%[==================================================================================================>]  95,77K  --.-KB/s    in 0,03s   
+
+2022-01-09 12:55:09 (3,11 MB/s) - ‘/home/feli/Downloads/trx/sKdi8YufrN0.jpg’ saved [98064/98064]
+
