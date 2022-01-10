@@ -1,0 +1,4 @@
+Librería de NodeJs para armar un chatbot que inclusive funciona desde la terminal.
+
+https://docs.wwebjs.dev/
+https://github.com/pedroslopez/whatsapp-web.js
