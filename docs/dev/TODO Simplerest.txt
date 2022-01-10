@@ -158,10 +158,18 @@ Ej:
 
 ----------------
 
+[ Front ]
+
+- Hacer pruebas con librería HTMX
+
+https://htmx.org/
+
+
 - Terminar*** la implementación un "inverse of control container" (IoC Container) inyecte las dependencias en los constructores y otros métodos de clase.
 
   -> debe ser recursivo
   -> debe aceptar interfaces
+  -> inyectar las dependencias usando el contenedor en FrontController y Router. En Laravel también se puede 'type-hint' cualquier dependencia en "listeners" (de eventos) 
 
 Ej:
 

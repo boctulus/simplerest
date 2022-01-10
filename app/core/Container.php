@@ -13,6 +13,7 @@ use simplerest\libs\Reflector;
 class Container 
 {
     static protected $bindings = [];
+    static protected $class_contracts = [];
 
     /*
         $key podría ser algo como 'foo' o  'Bloom\Security\ChannelAuthInterface'
@@ -57,6 +58,10 @@ class Container
                         }
                     }
 
+                    /*
+                        En PHP 8.0 hacer esto no tendría sentido porque se pueden pasar
+                        parámetros nombrados => el órden no importa.
+                    */
                     foreach ($param_names as $p_name){
                         if (isset($params[$p_name])){
                             $params_to_pass[] = $params[$p_name];
@@ -92,6 +97,17 @@ class Container
 
     static public function makeWith(string $key, Array $params){
         return static::make($key, $params);
+    }
+
+    /*
+        WHEN some class NEEDS an interface then GIVE some implementation instance instead
+
+        ->when()
+        ->needs()
+        ->give()
+    */
+    static public function useContract(string $concrete, string $interface, string $implementation){
+
     }
     
 }
