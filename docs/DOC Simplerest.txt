@@ -7113,39 +7113,11 @@ Al día de hoy es posible sumar nuevas funcionalidades via:
 En particular extendiendo MakeController o MigrationsController es posible crear nuevos comandos.
 
 
-# Contenedor de dependencias inversas (IoC)
+# Contenedor de dependencias inversas (IoC)  <experimental>
 
-El framework implementa un sencillo contenedor de dependencias inversas inspirado en el contenedor de Laravel mediante la clase Container.
+El framework implementa un sencillo contenedor de dependencias inversas mediante la clase Container.
 
-Para "enlazar" la creación de una clase con una referencia o key se utiliza el método bind()
-
-	Container::bind('foo', function(){
-		return new Foo();
-	});
-
-A posteriori se podrá crear la instancia simplemente llamando a make() con la referencia o key asociada previamente con bind.
-
-	$foo = Container::make('foo');
-	print_r($foo->bar());
-
-	foo = Container::make('foo');
-	print_r($foo->bar());
-
-Cabe notar que con cada llamada a make() en el ejemplo previo se creará una nueva instancia de Foo.
-
-El código completo sería:
-
-	Container::bind('foo', function(){
-		return new Foo();
-	});
-
-	$foo = Container::make('foo');
-	print_r($foo->bar());
-
-	$foo = Container::make('foo');
-	print_r($foo->bar());
-
-También es posible bindear simplemente un string que hace referencia a la clase y su namespace en caso de tenerlo.
+En su forma más simple se puede bindear un string que hace referencia a la clase y su namespace en caso de tenerlo.
 
 Ej:
 
@@ -7156,6 +7128,61 @@ Ej:
 
 	$foo = Container::make('foo');
 	print_r($foo->bar());
+
+
+Para "enlazar" la referencia a una factory para clase:
+
+	Container::bind('foo', function(){
+		return new Foo();
+	});
+
+La ventaja de esta última forma es que si hubiere parámetros por defecto que se quisieran enviar es muy sencillo.
+
+Ej:
+
+	Supongamos que tenemos una clase Cake
+
+	/*
+		Example class
+		@author Isaac Souza
+	*/
+	class Cake
+	{
+		private $ingredient1;
+		private $ingredient2;
+		private $cook_time; // minutes
+
+		public function __construct(Ingredient1 $ingredient1, Ingredient2 $ingredient2, $cook_time)
+		{
+			$this->cook_timey  = $cook_time;
+			$this->ingredient1 = $ingredient1;
+			$this->ingredient2 = $ingredient2;
+		}
+
+		public function get()
+		{
+			return 'Cake 2 is ready.';
+		}
+	}
+
+Entonces.. necesitamos especificar el tiempo de cocción para poder instanciar el pastel:
+
+	Container::bind(Cake::class, function() {
+      $ingredient1 = new Ingredient1();
+      $ingredient2 = new Ingredient2();
+
+      return new Cake($ingredient1, $ingredient2, 25);
+  });
+
+A posteriori se podrá crear la instancia simplemente llamando a make() con la referencia o key asociada previamente con bind.
+
+	$cake = Container::make(Cake::class);
+	print_r($cake->get());
+
+	$cake = Container::make(Cake::class);
+	print_r($cake->get());
+
+Cabe notar que con cada llamada a make() en el ejemplo previo se creará una nueva instancia de Cake.
 
 El contenedor permite crear instancias únicas de las clases mediante el método singleton()
 
