@@ -158,7 +158,10 @@ Ej:
 
 ----------------
 
-- Implementar un "inverse of control container" (IoC Container) inyecte las dependencias en los constructores y otros métodos de clase.
+- Terminar*** la implementación un "inverse of control container" (IoC Container) inyecte las dependencias en los constructores y otros métodos de clase.
+
+  -> debe ser recursivo
+  -> debe aceptar interfaces
 
 Ej:
 
