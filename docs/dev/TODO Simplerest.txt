@@ -53,6 +53,12 @@ Dumb::test_q()
 
   where id = xxx
 
+En Laravel se recupera el registro antes de borrarlo pero esto implica una operación más sobre la base de datos que puede ser costosa! Aunque.... la solución puede venir en "mutear" eventos (o hooks)
+
+https://laravel.com/docs/8.x/eloquent#muting-events
+
+Sin embargo, suena más eficiente por defecto mutear el onDeleting() y onDeleted() y en todo caso poder des-mutearlos.
+
 - Si existe más de una conexión de base de datos => o bien el tenantid es obligatorio 
 ...o.... buscar primero en la conexión por defecto y sino encuentra el modelo lanzar el
 warning de que no se ha especificado tenant como posible fuente de error.
@@ -180,6 +186,10 @@ Ej:
 
 https://htmx.org/
 
+
+- Sobre el Ioc leer:
+
+https://stackoverflow.com/a/49349349/980631 !
 
 - Terminar*** la implementación un "inverse of control container" (IoC Container) inyecte las dependencias en los constructores y otros métodos de clase.
 

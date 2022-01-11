@@ -33,6 +33,9 @@ if (!defined('UPDATE_PATH'))
 if (!defined('CORE_PATH'))
     define('CORE_PATH', APP_PATH . 'core'. DIRECTORY_SEPARATOR);
 
+if (!defined('CORE_INTERFACE_PATH'))
+	define('CORE_INTERFACE_PATH', CORE_PATH  . 'interfaces' . DIRECTORY_SEPARATOR);    
+
 if (!defined('TEMPLATES_PATH'))
 	define('TEMPLATES_PATH', CORE_PATH  . 'templates' . DIRECTORY_SEPARATOR);
     

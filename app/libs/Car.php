@@ -2,11 +2,10 @@
 
 namespace simplerest\libs;
 
-use simplerest\core\Model;
-use simplerest\libs\DB;
-use simplerest\libs\Factory;
+use simplerest\core\interfaces\Vehicle;
 
-class Car
+
+class Car implements Vehicle
 {
     protected int $max_speed;
     protected string $color;
@@ -18,6 +17,10 @@ class Car
 
     function run(){
         d("Running to reach {$this->max_speed} km/h");
+    }
+
+    function stop(){
+        d("Going to zero");
     }
 }
 

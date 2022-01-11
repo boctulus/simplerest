@@ -31,7 +31,8 @@ class MakeControllerBase extends Controller
     const HELPER_TEMPLATE = self::TEMPLATES . 'Helper.php'; 
     const LIBS_TEMPLATE = self::TEMPLATES . 'Lib.php';
     const MSG_CONST_TEMPLATE = self::TEMPLATES . 'Msg.php';
-    
+    const INTERFACE_TEMPLATE = self::TEMPLATES . 'Interface.php';
+
     protected $class_name;
     protected $ctr_name;
     protected $api_name; 
@@ -290,7 +291,7 @@ class MakeControllerBase extends Controller
     /*
         File generation
     */
-    function generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt) {        
+    function generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt) {        
         $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
 
         $unignore = false;
@@ -316,7 +317,7 @@ class MakeControllerBase extends Controller
             Files::mkDir($dest_path . $sub_path);
         }
     
-        $filename = $this->camel_case . $subfix.'.php';
+        $filename = $prefix . $this->camel_case . $subfix.'.php';
         $dest_path = $dest_path . $sub_path . $filename;
 
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
@@ -334,7 +335,7 @@ class MakeControllerBase extends Controller
         $template_path = self::CONTROLLER_TEMPLATE;
         $subfix = 'Controller';  // Ej: 'Controller'
 
-        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function console($name, ...$opt) {
@@ -343,7 +344,7 @@ class MakeControllerBase extends Controller
         $template_path = self::CONSOLE_TEMPLATE;
         $subfix = 'Controller';  // Ej: 'Controller'
 
-        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function lib($name, ...$opt) {
@@ -352,7 +353,20 @@ class MakeControllerBase extends Controller
         $template_path = self::LIBS_TEMPLATE;
         $subfix = '';  // Ej: 'Controller'
 
-        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
+    }
+
+    /*
+        Las nuevas interfaces deben creaese *fuera* del core
+    */
+    function interface  ($name, ...$opt) {
+        $namespace = 'simplerest\\core\\interfaces';
+        $dest_path = CORE_INTERFACE_PATH;
+        $template_path = self::INTERFACE_TEMPLATE;
+        $prefix = 'I';
+        $subfix = '';  // Ej: 'Controller'
+
+        $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function api($name, ...$opt) { 
