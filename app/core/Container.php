@@ -14,6 +14,7 @@ class Container
 {
     static protected $bindings = [];
     static protected $class_contracts = [];
+    static protected $contracts = [];
 
     /*
         $key podría ser algo como 'foo' o  'Bloom\Security\ChannelAuthInterface'
@@ -105,9 +106,15 @@ class Container
         ->when()
         ->needs()
         ->give()
-    */
-    static public function useContract(string $concrete, string $interface, string $implementation){
 
+        https://stackoverflow.com/questions/52777570/laravel-5-how-to-use-this-app-when
+    */
+    static public function useContract(string $class, string $interface, string $implementation_class){
+        if (!isset(static::$contracts[$class])){
+            static::$contracts[$class] = [];
+        }
+
+        static::$contracts[$class][$interface] = $implementation_class;
     }
     
 }
