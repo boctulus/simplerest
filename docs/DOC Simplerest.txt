@@ -2545,17 +2545,22 @@ Por último tenemos los campos ocultos:
 
 Se definen varios event hooks sobre el modelo que se disparan ante una operación CRUD
 
-	protected function onReading() {	}
-	protected function onRead(?int $count) { }
-	
-	protected function onDeleting($soft_delete) { }
-	protected function onDeleted(?int $count) { }
+	protected function onReading() { }
+	protected function onRead(int $count) { }
 
-	protected function onCreating(Array $data) {	}
-	protected function onCreated(Array $data, ?int $count) { }
+	protected function onCreating(Array &$data) {	}
+	protected function onCreated(Array &$data, $last_inserted_id) { }
 
-	protected function onUpdating(Array $data) { }
-	protected function onUpdated(Array $data, ?int $count) { }
+	protected function onUpdating(Array &$data) { }
+	protected function onUpdated(Array &$data, ?int $count) { }
+
+	protected function onDeleting(Array &$data) { }
+	protected function onDeleted(Array &$data, ?int $count) { }
+
+	protected function onRestoring(Array &$data) { }
+	protected function onRestored(Array &$data, ?int $count) { }
+
+Como regla general los nombres de eventos que terminan en -ing se envían antes de que se conserven los cambios en el modelo, mientras que los eventos que terminan en -ed se envían después de que se conserven los cambios en el modelo.
 
 Un uso práctico de estos eventos es para des-confirmar un email cuando se ha cambiado. En este caso se hace uso de la función isDirty() que acepta como parámetro el campo que necesitamos saber si ha cambiado.
 
@@ -2579,8 +2584,6 @@ class MaestroModel extends Model
 }
 
 Desde cualquier hook del modelo es posible acceder a propiedades (si son públicas) útiles como $w_vars y $w_vals -entre otras- con las que es posible reconstruir el where.
-
-A futuro podrían incluirse los eventos onRestoring() y onRestored() para cuando existe un soft-delete
 
 
 # Hooks en APIs

@@ -20,6 +20,29 @@ class ProductsModel extends MyModel
         parent::__construct($connect, ProductsSchema::class);
 	}	
 
+	function onDeleting(&$data)
+	{
+		d($data, 'deleting');
+		// d($this->dd());
+	}
+
+	function onDeleted(array &$data, ?int $count)
+	{
+		d($count, 'deleted');
+		// d($this->dd());
+	}
+
+	function onRestoring(array &$data)
+	{
+		//d($data, 'restoring');
+		var_dump($data);
+	}
+
+	function onRestored(array &$data, ?int $count)
+	{
+		d($count, 'restored');
+	}
+
 	// function onReading()
 	// {
 	// 	$this->dontExec();

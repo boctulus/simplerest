@@ -83,6 +83,7 @@ class Model {
 	protected $paginator = true;	
 	protected $fetch_mode_default = \PDO::FETCH_ASSOC;
 	protected $last_operation;
+	protected $current_operation;
 	protected $data = []; 
 
 	protected $createdAt = 'created_at';
@@ -2236,7 +2237,16 @@ class Model {
 		}
 	
 		$this->data = $data;
-		$this->onUpdating($data);
+
+		switch ($this->current_operation){
+			case 'restore':
+				$this->onRestoring($data);
+				break;
+			case 'delete':
+				$this->onDeleting($data);
+			default:
+				$this->onUpdating($data);
+		}		
 		
 		$set = '';
 		foreach($vars as $ix => $var){
@@ -2325,7 +2335,7 @@ class Model {
 
 		$this->last_bindings = $vals;
 		$this->last_pre_compiled_query = $q;
-		$this->last_operation = 'update';
+		$this->last_operation = ($this->current_operation !== null) ? $this->current_operation : 'update';
 	 
 		if (!$this->exec){
 			return 0;
@@ -2333,7 +2343,18 @@ class Model {
 
 		if($st->execute()) {
 			$count = $st->rowCount();
-			$this->onUpdated($data, $count);
+
+			switch ($this->current_operation){
+				case 'restore':
+					$this->onRestored($data, $count);
+					break;
+				case 'delete':
+					$this->onDeleted($data, $count);
+					break;
+				default:
+					$this->onUpdated($data, $count);
+			}	
+		
 		} else 
 			$count = false;
 			
@@ -2379,15 +2400,7 @@ class Model {
 			} 
 		}
 
-		$this->onDeleting();
-
 		if ($this->soft_delete && $soft_delete){
-			if (isset($this->config)){
-				$d = new \DateTime('', new \DateTimeZone($this->config['DateTimeZone']));
-			} else {
-				$d = new \DateTime();
-			}
-			
 			$at = at();
 
 			$to_fill = [];
@@ -2400,11 +2413,14 @@ class Model {
 
 			$this->fill($to_fill);
 			
+			$this->current_operation = 'delete';
 			$ret = $this->update($data, false);
-			$this->last_operation = 'delete';
+			$this->last_operation    = 'delete';
 
 			return $ret;
 		}		
+
+		$this->onDeleting($data);
 
 		$where = '';	
 		if (!empty($this->where)){
@@ -2439,7 +2455,7 @@ class Model {
 
 		if($this->exec && $st->execute()) {
 			$count = $st->rowCount();
-			$this->onDeleted($count);
+			$this->onDeleted($data, $count);
 		} else 
 			$count = false;	
 		
@@ -2509,6 +2525,7 @@ class Model {
 	*/
 	function undelete()
 	{
+		$this->current_operation = 'restore';
 		$this->checkUndeletePreconditions();
 		
 		if (isset($this->config)){
@@ -2525,6 +2542,7 @@ class Model {
 			$this->deletedAt() => NULL
 		], false);
 
+		$this->current_operation = null;
 		return $ret;
 	}	
 
@@ -2936,15 +2954,18 @@ class Model {
 
 	protected function onReading() { }
 	protected function onRead(int $count) { }
-	
-	protected function onDeleting() { }
-	protected function onDeleted(?int $count) { }
 
 	protected function onCreating(Array &$data) {	}
 	protected function onCreated(Array &$data, $last_inserted_id) { }
 
 	protected function onUpdating(Array &$data) { }
 	protected function onUpdated(Array &$data, ?int $count) { }
+
+	protected function onDeleting(Array &$data) { }
+	protected function onDeleted(Array &$data, ?int $count) { }
+
+	protected function onRestoring(Array &$data) { }
+	protected function onRestored(Array &$data, ?int $count) { }
 
 
 	function getSchema(){
