@@ -49,6 +49,10 @@ Dumb::test_q()
 
 ----
 
+- Terminar onDeleting() y onDeleted() "parseando" los where y where_raw en búsqueda de alguna condición que referencie concretamente un id e incluirla en $data:
+
+  where id = xxx
+
 - Si existe más de una conexión de base de datos => o bien el tenantid es obligatorio 
 ...o.... buscar primero en la conexión por defecto y sino encuentra el modelo lanzar el
 warning de que no se ha especificado tenant como posible fuente de error.
@@ -2727,7 +2731,7 @@ https://restdb.io/docs/querying-with-the-api
   Associations (has one, has many, belongs to, many to many, polymorphism, single-table inheritance)
   Hooks (before/after create/save/update/delete/find)
   Eager loading with Preload, Joins
-  Transactions, Nested Transactions, Save Point, RollbackTo to Saved Point
+  Transactions, Nested Transactions, Save Point, RollbackTo to Saved Point  <---- implementar !
   Context, Prepared Statment Mode, DryRun Mode
   Batch Insert, FindInBatches, Find/Create with Map, CRUD with SQL Expr and Context Valuer
   SQL Builder, Upsert, Locking, Optimizer/Index/Comment Hints, Named Argument, SubQuery
