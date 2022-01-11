@@ -5,12 +5,17 @@ UPDATE DESCRIPTION
 
 - Contenedor de dependencias inversas experimental.
 
-- Ahora a nivel de modelo: undelete() + métodos relacionados.
+- Ahora a nivel de modelo se introdujeron más funcionalidades relacionadas con Soft Delete.
 
-    trashed()       devuelve si el registro fue borrado suavemente.
-    undelete()      restaura el registro si fue borrado suavemente.
-    forceDelete()   borra un registro definitvamente.
-    withTrashed()   incorpora a la selección registros borrados suavemente
-    onlyTrashed()   selecciona solo registros borrados suavemente
+    withTrashed(bool $soft_delete)	borra un registro. Hay parámetros adicionales.
+	trashed()       				devuelve si el registro fue borrado suavemente.
+    undelete()      				restaura el registro si fue borrado suavemente.
+    forceDelete()   				borra un registro definitvamente.
+    withTrashed()   				incorpora a la selección registros borrados suavemente.
+    onlyTrashed()   				selecciona solo registros borrados suavemente.vemente
 
+- Nuevos eventos sobre el modelo:
+
+    onRestoring()
+    onRestored()
 
