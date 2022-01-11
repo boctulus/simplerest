@@ -6689,6 +6689,18 @@ class DumbController extends Controller
         dd("xxx");
     }
 
+     /*
+        Esto podría funcionar con el Router
+
+        Route::get('/user/{id}', DumbController::class);
+
+        Eso habilitaria: /dumb/6 
+    */
+    function __invoke(int $id)
+    {
+        d($id);
+    }
+
     function test_refl(){
         d(Reflector::getConstructor(\simplerest\libs\Foo2::class));
     }
@@ -6734,15 +6746,14 @@ class DumbController extends Controller
     }
 
     /*
-        Esto podría funcionar con el Router
+        Haciendo uso de Container::useContract(), intentar replicar:
 
-        Route::get('/user/{id}', DumbController::class);
-
-        Eso habilitaria: /dumb/6 
+        https://stackoverflow.com/a/52778193/980631
     */
-    function __invoke(int $id)
-    {
-        d($id);
+    function test_container5(){
+        
+        // ....
     }
-    
+
+   
 }
