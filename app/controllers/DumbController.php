@@ -55,17 +55,6 @@ class DumbController extends Controller
         dd(Url::has_ssl('simplerest.pulque.ro'));
     }
 
-    function test_delete(){
-        $m = DB::table('product_valoraciones');
-
-        $m
-        ->whereRaw("product_id = ?", [100])
-        ->dontExec()
-        ->delete();            
-    
-        d($m->getLog());
-    }
-
     // ok
     function test504(){
         $vals = DB::table('products')
@@ -5476,10 +5465,6 @@ class DumbController extends Controller
         dd(DB::update('update `baz2` SET name = ?, cost = ? WHERE id_baz2 = ?', ['cool thing!!!!!!', '99.00', 5003]));
     }
 
-    function test_delete_raw(){
-        dd(DB::delete('DELETE FROM `baz2` WHERE id_baz2 = ?', [5000]));
-    }
-
     function test_statement(){
         DB::getConnection('db_flor');
 
@@ -6577,9 +6562,24 @@ class DumbController extends Controller
         d("Row fue borrada.");
     }
 
+    function test_delete(){
+        $m = DB::table('product_valoraciones');
+
+        $m
+        ->whereRaw("product_id = ?", [100])
+        ->dontExec()
+        ->delete();            
+    
+        d($m->getLog());
+    }
+    
+    function test_delete_raw(){
+        dd(DB::delete('DELETE FROM `baz2` WHERE id_baz2 = ?', [5000]));
+    }
+    
     function test_delete1(){
         $row = DB::table('products')
-        ->find(145)
+        ->findOrFail(145)
         ->delete();
     }
 
@@ -6625,7 +6625,7 @@ class DumbController extends Controller
 
     function test_force_del(){
         $m = DB::table('products');
-        $m->find(5510)
+        $m->find(5512)
         ->forceDelete();
     }
 
