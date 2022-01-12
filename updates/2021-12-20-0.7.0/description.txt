@@ -19,3 +19,8 @@ UPDATE DESCRIPTION
     onRestoring()
     onRestored()
 
+- Nuevas opciones en comandos "make"
+
+    Ahora es posible borrar una interface / lib / helper / etc con el mismo comando con que se creó. Ej:
+
+    php com make interface gol --remove

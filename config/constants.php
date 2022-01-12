@@ -10,7 +10,7 @@ if (!defined('DOCS_PATH'))
 	define('DOCS_PATH', ROOT_PATH  . 'docs' . DIRECTORY_SEPARATOR);
 
 if (!defined('UPLOADS_PATH'))
-    define('UPLOADS_PATH', ROOT_PATH . 'uploads'. DIRECTORY_SEPARATOR); 
+    define('UPLOADS_PATH', ROOT_PATH . 'uploads'. DIRECTORY_SEPARATOR);
 
 if (!defined('STORAGE_PATH'))
     define('STORAGE_PATH', ROOT_PATH . 'storage'. DIRECTORY_SEPARATOR);     
@@ -33,8 +33,19 @@ if (!defined('UPDATE_PATH'))
 if (!defined('CORE_PATH'))
     define('CORE_PATH', APP_PATH . 'core'. DIRECTORY_SEPARATOR);
 
+
 if (!defined('CORE_INTERFACE_PATH'))
 	define('CORE_INTERFACE_PATH', CORE_PATH  . 'interfaces' . DIRECTORY_SEPARATOR);    
+
+if (!defined('CORE_TRAIT_PATH'))
+	define('CORE_TRAIT_PATH', CORE_PATH  . 'traits' . DIRECTORY_SEPARATOR);
+
+if (!defined('CORE_LIBS_PATH'))
+    define('CORE_LIBS_PATH', CORE_PATH  . 'libs' . DIRECTORY_SEPARATOR);
+
+if (!defined('CORE_HELPERS_PATH'))
+    define('CORE_HELPERS_PATH', CORE_PATH  . 'helpers' . DIRECTORY_SEPARATOR);
+
 
 if (!defined('TEMPLATES_PATH'))
 	define('TEMPLATES_PATH', CORE_PATH  . 'templates' . DIRECTORY_SEPARATOR);
@@ -67,8 +78,14 @@ if (!defined('SECURITY_PATH'))
 if (!defined('API_PATH'))
     define('API_PATH', CONTROLLERS_PATH  . 'api' . DIRECTORY_SEPARATOR); 
 
+if (!defined('INTERFACE_PATH'))
+	define('INTERFACE_PATH', APP_PATH  . 'interfaces' . DIRECTORY_SEPARATOR); 
+
 if (!defined('LIBS_PATH'))
     define('LIBS_PATH', APP_PATH . 'libs' . DIRECTORY_SEPARATOR);   
+
+if (!defined('TRAIT_PATH'))
+    define('TRAIT_PATH', APP_PATH . 'traits' . DIRECTORY_SEPARATOR); 
 
 if (!defined('HELPERS_PATH'))
     define('HELPERS_PATH', APP_PATH . 'helpers' . DIRECTORY_SEPARATOR);  
