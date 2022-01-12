@@ -39,3 +39,6 @@ controllers/api/Migrations.php
 controllers/api/Files.php
 controllers/api/Hello.php
 
+; Others
+interfaces/IGol.php
+

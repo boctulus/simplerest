@@ -4486,7 +4486,7 @@ Puede observarse que:
 	- Se pueden anular los ignore comentando la línea con una #almohadilla 
 	
 
-Nota: no se recomienda ignorar los schemas ya que si bien se puede hacer un "unignore" con la opción --unignore puede ser muy complicado de descubrir la fuente del error.
+Nota: no se recomienda ignorar los schemas ya que si bien se puede hacer un "unignore" con la opción --unignore o --retry puede ser muy complicado de descubrir la fuente del error.
 
 Ej:
 
