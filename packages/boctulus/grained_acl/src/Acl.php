@@ -2,8 +2,8 @@
 
 namespace boctulus\grained_acl;
 
-use simplerest\libs\DB;
-use simplerest\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
 
 class Acl extends \simplerest\core\Acl
 {

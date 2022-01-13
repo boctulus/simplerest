@@ -2,8 +2,8 @@
 
 namespace simplerest\core;
 
-use simplerest\traits\ExceptionHandler;
-use simplerest\libs\Factory;
+use simplerest\core\traits\ExceptionHandler;
+use simplerest\core\libs\Factory;
 
 class View
 {

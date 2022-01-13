@@ -3,16 +3,16 @@
 namespace simplerest\controllers;
 
 use Exception;
-use simplerest\libs\Factory;
+use simplerest\core\libs\Factory;
 use simplerest\core\Controller;
-use simplerest\libs\DB;
+use simplerest\core\libs\DB;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use simplerest\models\UsersModel;
 use simplerest\models\UserRolesModel;
 use simplerest\models\RolesModel;
 use simplerest\libs\Debug;
-use simplerest\libs\Strings;
+use simplerest\core\libs\Strings;
 
 class FacebookController extends Controller
 {

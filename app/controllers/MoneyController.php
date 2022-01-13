@@ -3,7 +3,7 @@
 namespace simplerest\controllers;
 
 use simplerest\controllers\MyController;
-use simplerest\libs\Url;
+use simplerest\core\libs\Url;
 
 class MoneyController extends MyController
 {

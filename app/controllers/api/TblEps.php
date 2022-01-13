@@ -3,7 +3,7 @@
 namespace simplerest\controllers\api;
 
 use simplerest\controllers\MyApiController; 
-use simplerest\libs\DB;
+use simplerest\core\libs\DB;
 
 class TblEps extends MyApiController
 { 

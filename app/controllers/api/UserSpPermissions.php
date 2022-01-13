@@ -3,9 +3,9 @@
 namespace simplerest\controllers\api;
 
 use simplerest\controllers\MyApiController; 
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
-use simplerest\libs\Validator;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\libs\Debug;
 

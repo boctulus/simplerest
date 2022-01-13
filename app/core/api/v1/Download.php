@@ -4,8 +4,8 @@ namespace simplerest\core\api\v1;
 
 use simplerest\core\Acl;
 use simplerest\core\api\v1\ResourceController;
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
 
 
 class Download extends ResourceController

@@ -1,0 +1,16 @@
+
+- Comentar en el config.php las líneas:
+
+	#require_once HELPERS_PATH. 'etc.php';
+	#require_once HELPERS_PATH. 'db_dynamic_load.php'; // * !
+
+- Ajustar namespaces:
+
+	simplerest\libs\*       ->  
+	simplerest\core\libs\*
+
+	simplerest\traits\*
+	simplerest\core\traits\*
+
+
+

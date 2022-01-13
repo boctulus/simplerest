@@ -3,7 +3,7 @@
 namespace simplerest\models\legion;
 
 use simplerest\core\Model;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\models\MyModel;	
 use simplerest\schemas\legion\TblEmpresaSchema;
 

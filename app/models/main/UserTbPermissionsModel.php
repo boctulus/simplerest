@@ -3,7 +3,7 @@
 namespace simplerest\models\main;
 
 use simplerest\models\MyModel;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\schemas\main\UserTbPermissionsSchema;
 
 class UserTbPermissionsModel extends MyModel

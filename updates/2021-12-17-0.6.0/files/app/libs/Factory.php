@@ -2,7 +2,7 @@
 
 namespace simplerest\libs;
 
-use simplerest\libs\Config;
+use simplerest\core\libs\Config;
 use simplerest\controllers\MyAuthController;
 
 class Factory {
@@ -28,7 +28,7 @@ class Factory {
 		static $instance;
 
 		if ($instance == null){
-			$instance = new \simplerest\libs\Validator();
+			$instance = new \simplerest\core\libs\Validator();
 		}
 
         return $instance;

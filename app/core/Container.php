@@ -8,7 +8,7 @@ namespace simplerest\core;
     @author Bozzolo Pablo <boctulus>
 */
 
-use simplerest\libs\Reflector;
+use simplerest\core\libs\Reflector;
 
 class Container 
 {

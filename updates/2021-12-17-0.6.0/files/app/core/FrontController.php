@@ -2,9 +2,9 @@
 
 namespace simplerest\core;
 
-use simplerest\libs\Url;
-use simplerest\libs\Msg;
-use simplerest\libs\Strings;
+use simplerest\core\libs\Url;
+use simplerest\core\libs\Msg;
+use simplerest\core\libs\Strings;
 
 
 class FrontController

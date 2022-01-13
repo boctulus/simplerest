@@ -3,7 +3,7 @@
 namespace simplerest\controllers\api;
 
 use simplerest\controllers\MyApiController; 
-use simplerest\libs\Factory;
+use simplerest\core\libs\Factory;
 
 class Roles extends MyApiController
 {

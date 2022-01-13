@@ -3,10 +3,10 @@
 namespace simplerest\libs;
 
 use simplerest\core\Model;
-use simplerest\libs\DB;
-use simplerest\libs\Strings;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
 use simplerest\libs\Debug;
-use simplerest\libs\Factory;
+use simplerest\core\libs\Factory;
 
 /*
 	Schema Builder

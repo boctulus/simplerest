@@ -3,9 +3,9 @@
 namespace simplerest\models\main;
 
 use simplerest\models\MyModel;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\schemas\main\FilesSchema;
-use simplerest\traits\Uuids; 
+use simplerest\core\traits\Uuids; 
 
 class FilesModel extends MyModel
 { 

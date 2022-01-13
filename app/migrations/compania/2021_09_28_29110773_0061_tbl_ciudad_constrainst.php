@@ -1,10 +1,10 @@
 <?php
 
 use simplerest\core\interfaces\IMigration;
-use simplerest\libs\Factory;
-use simplerest\libs\Schema;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Schema;
 use simplerest\core\Model;
-use simplerest\libs\DB;
+use simplerest\core\libs\DB;
 
 class TblCiudadConstrainst367 implements IMigration
 {

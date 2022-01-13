@@ -3,10 +3,10 @@
 namespace simplerest\controllers;
 
 use simplerest\core\interfaces\IApi;
-use simplerest\libs\Strings;
+use simplerest\core\libs\Strings;
 
-use simplerest\traits\SubResourcesV1;
-use simplerest\traits\SubResourcesV2;
+use simplerest\core\traits\SubResourcesV1;
+use simplerest\core\traits\SubResourcesV2;
 use simplerest\traits\SubResourcesV3;
 
 global $api_version;

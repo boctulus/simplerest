@@ -2,9 +2,9 @@
 
 namespace simplerest\core;
 
-use simplerest\libs\DB;
-use simplerest\libs\StdOut;
-use simplerest\traits\ExceptionHandler;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\StdOut;
+use simplerest\core\traits\ExceptionHandler;
 
 abstract class Controller
 {

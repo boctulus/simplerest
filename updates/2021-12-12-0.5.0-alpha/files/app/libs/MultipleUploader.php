@@ -29,8 +29,8 @@ namespace simplerest\libs;
         }
 */
 
-use simplerest\libs\Arrays;
-use simplerest\libs\Files;
+use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Files;
 use simplerest\libs\Debug;
 
 class MultipleUploader
