@@ -208,7 +208,7 @@ OJO ! afecta al DownloadController
 
 Este comando sirve para crear cualquier archivo importante para el framework ya sea helpers, librerías, modelos, esquemas, controladores, controladores para uso en la consola, serivice providers, migraciones, etc.
 
-El uso básico del comando make puede aprenderse simplemente ejecutando:
+El uso básico del comando make puede aprenderse simplemente invocando la ayuda ejecutando:
 
 	php com make
 
@@ -220,10 +220,33 @@ Ej:
         $namespace = 'simplerest\\controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::CONTROLLER_TEMPLATE;
-        $subfix = 'Controller';  // Ej: 'Controller' o incluso '' (caso helpers)
+        $prefix = '';
+        $subfix = 'Controller';  
 
-        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
+
+Con "make" puede por ejemplo generar un archivo de controlador:
+
+	make controller my_controller
+
+Es posible "proteger" los archivos de ser sobreescritos por accidente incluyéndo la ruta relativa en el archivo ".make_ignore". En caso de querer en un caso puntual anular la protección puede usar la opción --unignore o bien --retry.
+
+	make controller my_controller --retry
+
+Con la opción --remove puede eliminar el archivo creado:
+
+	make controller my_controller --remove
+
+Si desea que el archivo se cree con la declaración de tipado estricto utilice --strict
+
+	make controller my_controller --strict
+
+Los controladores en particular pueden crearse en una carpeta o sub-carpeta dentro de app/controllers
+
+Ej:
+
+	make controller folder/my_controller
 
 
 # Creación de usuarios
