@@ -2,7 +2,6 @@
 
 namespace simplerest\core;
 
-use simplerest\controllers\MakeController;
 use simplerest\core\Controller;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\StdOut;
@@ -127,33 +126,34 @@ class MakeControllerBase extends Controller
         In general, 
 
         make {name} [options]
+
+        Most common options are:
+
+        --force 
+        --unignore | --retry
+        --remove
+        --strict
           
-        make helper my_helper [--force | -f] [ --unignore | -u ] [ --remove ]
+        make helper my_helper [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make lib my_lib [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make interface [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make schema my_table [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make model my_table  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --strict ] [ --remove ]
 
-        make lib my_lib [--force | -f] [ --unignore | -u ] [ --remove ]
+        make controller my_controller  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make controller folder/my_controller  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
-        make interface [--force | -f] [ --unignore | -u ] [ --remove ]
+        make console my_console_ctrl  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make console folder/my_console_ctrl  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
-        make schema super_awesome [--force | -f] [ --unignore | -u ] [ --remove ]
+        make api my_table   [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make api my_table  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
-        make model SuperAwesomeModel  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --remove ]
-        make model SuperAwesome [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --remove ]
-        make model super_awesome  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --remove ]
-        
-        make controller SuperAwesome  [--force | -f] [ --unignore | -u ] [ --remove ]
-        make controller folder/SuperAwesome  [--force | -f] [ --unignore | -u ] [ --remove ]
-
-        make console SuperAwesome  [--force | -f] [ --unignore | -u ] [ --remove ]
-        make console folder/SuperAwesome  [--force | -f] [ --unignore | -u ] [ --remove ]
-
-        make api SuperAwesome   [--force | -f] [ --unignore | -u ] [ --remove ]
-        make api super_awesome  [--force | -f] [ --unignore | -u ] [ --remove ]
-
-        make api all --from:dsi [--force | -f] [ --unignore | -u ] [ --remove ]
+        make api all --from:some_conn_id [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
         <-- "from:" is required in this case.]
              
-        make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --remove ]
+        make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --strict ] [ --remove ]
 
         make any Something  [--schema | -s] [--force | -f] [ --unignore | -u ]
                             [--model | -m] [--force | -f] [ --unignore | -u ]
@@ -182,9 +182,9 @@ class MakeControllerBase extends Controller
         make interface pluggable 
         make interface pluggable --remove
         make any baz -s -m -a -f
-        make any tbl_contacto -sam --from:dsi
-        make any all -sam  --from:dsi
-        make any all -samf --from:dsi
+        make any tbl_contacto -sam --from:some_conn_id
+        make any all -sam  --from:some_conn_id
+        make any all -samf --from:some_conn_id
         make any all -s -f --from:main 
         make any all -s -f --from:main --unignore  
 
@@ -305,6 +305,7 @@ class MakeControllerBase extends Controller
         $unignore = false;
         $remove   = false;
         $force    = false;
+        $strict   = false;
 
         foreach ($opt as $o){ 
             if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
@@ -317,6 +318,10 @@ class MakeControllerBase extends Controller
 
             if (preg_match('/^(--force|-f)$/', $o)){
                 $force = true;
+            }
+
+            if (preg_match('/^(--strict)$/', $o)){
+                $strict = true;
             }
         }
         
@@ -354,6 +359,10 @@ class MakeControllerBase extends Controller
         $data = str_replace('__NAME__', $this->camel_case . $subfix, $data);
         $data = str_replace('__NAMESPACE', $namespace, $data);
 
+        if ($strict){
+            $data = str_replace('<?php', '<?php declare(strict_types=1);' , $data);
+        }
+
         $this->write($dest_path, $data, $protected);
     }
 
@@ -361,18 +370,20 @@ class MakeControllerBase extends Controller
         $namespace = 'simplerest\\controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::CONTROLLER_TEMPLATE;
-        $subfix = 'Controller';  // Ej: 'Controller'
+        $prefix = '';
+        $subfix = 'Controller';  
 
-        $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function console($name, ...$opt) {
         $namespace = 'simplerest\\controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::CONSOLE_TEMPLATE;
-        $subfix = 'Controller';  // Ej: 'Controller'
+        $prefix = '';
+        $subfix = 'Controller';  
 
-        $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function lib($name, ...$opt) {
