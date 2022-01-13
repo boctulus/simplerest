@@ -3,7 +3,7 @@
 namespace simplerest\models\legion;
 
 use simplerest\models\MyModel;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\schemas\legion\TblFrecuenciaSchema;
 
 class TblFrecuenciaModel extends MyModel

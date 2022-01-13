@@ -4,9 +4,9 @@ namespace simplerest\libs;
 
 use PDO;
 use simplerest\core\Model;
-use simplerest\libs\Factory;
-use simplerest\libs\Strings;
-use simplerest\libs\Schema;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Schema;
 
 class DB 
 {

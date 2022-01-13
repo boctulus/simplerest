@@ -3,7 +3,7 @@
 namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\schemas\legion\TeachersSchema;
 
 class TeachersModel extends MyModel

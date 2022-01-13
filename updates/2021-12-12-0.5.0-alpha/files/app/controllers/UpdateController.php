@@ -3,12 +3,12 @@
 namespace simplerest\controllers;
 
 use simplerest\core\ConsoleController;
-use simplerest\libs\Hardware;
-use simplerest\libs\StdOut;
-use simplerest\libs\Files;
-use simplerest\libs\Strings;
+use simplerest\core\libs\Hardware;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Strings;
 use simplerest\libs\Update;
-use simplerest\libs\DB;
+use simplerest\core\libs\DB;
 
 /*
     Update commands

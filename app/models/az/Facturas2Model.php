@@ -3,7 +3,7 @@
 namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\schemas\az\Facturas2Schema;
 
 class Facturas2Model extends MyModel

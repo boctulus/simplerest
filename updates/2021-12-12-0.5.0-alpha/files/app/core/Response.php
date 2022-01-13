@@ -2,9 +2,9 @@
 
 namespace simplerest\core;
 
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
-use simplerest\libs\Strings;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
 
 class Response
 {

@@ -3,7 +3,7 @@
 namespace simplerest\libs;
 
 use PDO;
-use simplerest\libs\SortedIterator;
+use simplerest\core\libs\SortedIterator;
 
 class Files 
 {

@@ -3,8 +3,8 @@
 namespace simplerest\libs;
 
 use simplerest\core\Model;
-use simplerest\libs\DB;
-use simplerest\libs\Url;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Url;
 
 class StdOut
 {

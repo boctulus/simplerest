@@ -5,8 +5,8 @@ namespace devdojo\calculator;
 use simplerest\core\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
 
 class CalculatorController extends Controller
 {

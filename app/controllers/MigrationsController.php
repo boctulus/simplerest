@@ -4,11 +4,11 @@ namespace simplerest\controllers;
 
 use Migrations;
 use simplerest\core\MigrationsControllerBase;
-use simplerest\libs\Schema;
-use simplerest\libs\DB;
-use simplerest\libs\Strings;
-use simplerest\libs\Files;
-use simplerest\libs\StdOut;
+use simplerest\core\libs\Schema;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\StdOut;
 
 class MigrationsController extends MigrationsControllerBase
 {

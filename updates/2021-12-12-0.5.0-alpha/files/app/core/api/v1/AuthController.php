@@ -5,13 +5,13 @@ namespace simplerest\core\api\v1;
 use Exception;
 use simplerest\core\Controller;
 use simplerest\core\Request;
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
-use simplerest\libs\Strings;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
 use simplerest\core\Acl;
-use simplerest\libs\Validator;
+use simplerest\core\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\libs\Files;
+use simplerest\core\libs\Files;
 
 use simplerest\core\interfaces\IAuth;
 use simplerest\core\interfaces\IDbAccess;

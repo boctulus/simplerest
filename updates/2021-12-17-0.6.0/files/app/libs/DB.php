@@ -3,8 +3,8 @@
 namespace simplerest\libs;
 
 use simplerest\core\Model;
-use simplerest\libs\Strings;
-use simplerest\libs\Schema;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Schema;
 
 class DB 
 {
