@@ -4,7 +4,7 @@ namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
 use simplerest\core\Model;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 
 /*
 	La ruta depende del nombre de la conexión por defecto o sea será algo como:

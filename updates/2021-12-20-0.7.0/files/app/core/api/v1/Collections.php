@@ -3,14 +3,14 @@
 namespace simplerest\core\api\v1;
 
 use simplerest\controllers\MyApiController;
-use simplerest\libs\Factory;
+use simplerest\core\libs\Factory;
 use simplerest\core\Acl;
-use simplerest\libs\Strings;
-use simplerest\libs\DB;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\DB;
 use simplerest\libs\Debug;
-use simplerest\libs\Validator;
+use simplerest\core\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\libs\Url;
+use simplerest\core\libs\Url;
 
 
 class Collections extends MyApiController

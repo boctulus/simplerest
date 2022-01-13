@@ -19,16 +19,20 @@
     $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
     /* Helpers */
-    foreach (new \DirectoryIterator(__DIR__ . '/../app/helpers') as $fileInfo) {
-        if($fileInfo->isDot()) continue;
-        
-        $path = $fileInfo->getPathName();
+    $helper_dirs = [__DIR__ . '/../app/core/helpers', __DIR__ . '/../app/helpers'];
 
-        if(pathinfo($path, PATHINFO_EXTENSION) == 'php'){
-            require_once $path;
-        }
+    foreach ($helper_dirs as $dir){
+        foreach (new \DirectoryIterator($dir) as $fileInfo) {
+            if($fileInfo->isDot()) continue;
+            
+            $path = $fileInfo->getPathName();
+
+            if(pathinfo($path, PATHINFO_EXTENSION) == 'php'){
+                require_once $path;
+            }
+        }    
     }
-    
+        
     $config = include __DIR__ . '/../config/config.php';
             
     // i18n

@@ -4,11 +4,11 @@ namespace simplerest\core;
 
 use Migrations;
 use simplerest\controllers\MakeController;
-use simplerest\libs\StdOut;
-use simplerest\libs\DB;
-use simplerest\libs\Files;
-use simplerest\libs\Strings;
-use simplerest\libs\Schema;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Schema;
 
 /*
     Migration commands

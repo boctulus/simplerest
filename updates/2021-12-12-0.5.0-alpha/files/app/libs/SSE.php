@@ -2,7 +2,7 @@
 
 namespace simplerest\libs;
 
-use simplerest\libs\Url; 
+use simplerest\core\libs\Url; 
 
 /*
 	Author: boctulus

@@ -7,10 +7,10 @@ namespace simplerest\controllers;
 use simplerest\core\ConsoleController;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
-use simplerest\libs\Files;
-use simplerest\libs\StdOut;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\StdOut;
 use simplerest\libs\Update;
 
 /*
@@ -50,14 +50,10 @@ class PrepareUpdateController extends ConsoleController
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; CORE 
         app/core
-        ;app/core/api/v1/ApiController.php
-        ;app/core/Model.php
         
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; VARIOS
-        app/helpers/db.php
-        app/libs/Strings.php   
-        app/libs/VarDump.php    
+        ;; VARIOS   
+        public/app.php
        
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; MIGRATIONS

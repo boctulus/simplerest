@@ -4,9 +4,9 @@ namespace simplerest\core\api\v1;
 
 use simplerest\libs\Debug;
 use simplerest\core\Acl;
-use simplerest\libs\Factory;
+use simplerest\core\libs\Factory;
 use simplerest\core\Controller;
-use simplerest\libs\DB;
+use simplerest\core\libs\DB;
 
 
 abstract class ResourceController extends Controller

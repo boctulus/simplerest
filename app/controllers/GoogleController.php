@@ -4,7 +4,7 @@ namespace simplerest\controllers;
 
 use Exception;
 use simplerest\core\Controller;
-use simplerest\libs\DB;
+use simplerest\core\libs\DB;
 use simplerest\models\UsersModel;
 use simplerest\models\UserRolesModel;
 use simplerest\models\RolesModel;

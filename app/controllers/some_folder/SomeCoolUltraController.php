@@ -5,8 +5,8 @@ namespace simplerest\controllers\some_folder;
 use simplerest\core\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
 
 class SomeCoolUltraController extends Controller
 {

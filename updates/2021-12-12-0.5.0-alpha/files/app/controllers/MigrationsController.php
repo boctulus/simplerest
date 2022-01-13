@@ -6,12 +6,12 @@ use Migrations;
 use simplerest\core\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\libs\Schema;
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
-use simplerest\libs\Strings;
-use simplerest\libs\Files;
-use simplerest\libs\StdOut;
+use simplerest\core\libs\Schema;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\StdOut;
 
 class MigrationsController extends Controller
 {

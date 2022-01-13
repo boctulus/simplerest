@@ -3,11 +3,11 @@
 namespace simplerest\models\main;
 
 use simplerest\models\MyModel;
-use simplerest\libs\Config;
-use simplerest\libs\DB;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\DB;
 use simplerest\core\MakeControllerBase;
 use simplerest\controllers\MigrationsController;
-use simplerest\libs\StdOut;
+use simplerest\core\libs\StdOut;
 use simplerest\schemas\main\TblBaseDatosSchema;
 
 

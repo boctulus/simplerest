@@ -1,9 +1,9 @@
 <?php
 
-    use simplerest\libs\Files;
-    use simplerest\libs\Strings;
-    use simplerest\libs\DB;
-    use simplerest\libs\StdOut;
+    use simplerest\core\libs\Files;
+    use simplerest\core\libs\Strings;
+    use simplerest\core\libs\DB;
+    use simplerest\core\libs\StdOut;
     use simplerest\core\interfaces\IUpdateBatch;
 
 	/*

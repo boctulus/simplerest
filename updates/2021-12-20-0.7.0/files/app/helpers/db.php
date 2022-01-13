@@ -1,9 +1,9 @@
 <?php
 
 use simplerest\controllers\MakeController;
-use simplerest\libs\Strings;
-use simplerest\libs\DB;
-use simplerest\libs\Schema;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\MakeControllerBase;
 
@@ -381,7 +381,7 @@ function get_pivot(Array $tables, ?string $tenant_id = null){
     $dir = get_schema_path(null, $tenant_id);
     
     if (!file_exists($dir . 'Pivots.php')){
-        \simplerest\libs\StdOut::hideResponse();
+        \simplerest\core\libs\StdOut::hideResponse();
 
         $mk = new MakeControllerBase();
 
@@ -391,7 +391,7 @@ function get_pivot(Array $tables, ?string $tenant_id = null){
             $mk->pivot_scan();
         }
 
-        \simplerest\libs\StdOut::showResponse();
+        \simplerest\core\libs\StdOut::showResponse();
     }
 
     include $dir . 'Pivots.php';

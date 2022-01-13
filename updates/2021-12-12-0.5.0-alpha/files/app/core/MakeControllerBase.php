@@ -5,12 +5,12 @@ namespace simplerest\core;
 use simplerest\controllers\MakeController;
 use simplerest\core\Controller;
 use simplerest\core\Request;
-use simplerest\libs\Factory;
-use simplerest\libs\StdOut;
-use simplerest\libs\DB;
-use simplerest\libs\Files;
-use simplerest\libs\Strings;
-use simplerest\libs\Schema;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Schema;
 
 /*
     Class builder
@@ -1164,7 +1164,7 @@ class MakeControllerBase extends Controller
             $uuid = $this->getUuid();
             if ($uuid){
 
-                $imports[] = 'use simplerest\traits\Uuids;';
+                $imports[] = 'use simplerest\core\traits\Uuids;';
                 $traits[] = 'use Uuids;';      
             }
         } else {

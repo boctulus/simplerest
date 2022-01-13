@@ -3,9 +3,9 @@
 namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\schemas\az\BarSchema;
-use simplerest\traits\Uuids;
+use simplerest\core\traits\Uuids;
 
 class BarModel extends MyModel
 { 

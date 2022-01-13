@@ -3,11 +3,11 @@
 namespace simplerest\middlewares;
 
 use simplerest\core\Middleware;
-use simplerest\libs\Factory;
-use simplerest\libs\Schema;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Schema;
 use simplerest\core\Model;
-use simplerest\libs\DB;
-use simplerest\libs\Strings;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
 
 class InyectarSaludo extends Middleware
 {   

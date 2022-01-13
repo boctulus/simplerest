@@ -3,9 +3,9 @@
 namespace simplerest\core\api\v1;
 
 use simplerest\controllers\MyApiController; 
-use simplerest\libs\MultipleUploader;
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
+use simplerest\core\libs\MultipleUploader;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
 use simplerest\core\Acl;
 
 class Files extends MyApiController

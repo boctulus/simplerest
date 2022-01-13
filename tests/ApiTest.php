@@ -6,8 +6,8 @@ require_once __DIR__ . '../../vendor/autoload.php';
 require_once __DIR__ . '../../public/app.php';
 
 use PHPUnit\Framework\TestCase;
-use simplerest\libs\DB;
-use simplerest\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
 use simplerest\libs\Debug;
 
 $config = include __DIR__ . '../../config/config.php';

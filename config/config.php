@@ -1,8 +1,6 @@
 <?php
 
 require_once __DIR__ . '/constants.php';
-require_once HELPERS_PATH. 'etc.php';
-require_once HELPERS_PATH. 'db_dynamic_load.php'; // * !
 
 // puede afectar el punto decimal al formar sentencias SQL !!!
 // setlocale(LC_ALL, 'es_AR.UTF-8');

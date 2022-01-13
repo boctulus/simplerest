@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\libs\Env;
+use simplerest\core\libs\Env;
 use simplerest\core\Model;
 
 include_once __DIR__ . '/debug.php';
