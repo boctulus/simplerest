@@ -1,7 +1,7 @@
 <?php
 
-    use simplerest\libs\Files;
-    use simplerest\libs\Strings;
+    use simplerest\core\libs\Files;
+    use simplerest\core\libs\Strings;
     use simplerest\core\interfaces\IUpdateBatch;
 
     /*
@@ -10,7 +10,7 @@
 
         por 
 
-        \simplerest\libs\StdOut::hideResponse();
+        \simplerest\core\libs\StdOut::hideResponse();
     */
 
     class UseOfStdOutBatch implements IUpdateBatch
@@ -37,10 +37,10 @@
                 }
 
                 Strings::replace('MakeControllerBase::hideResponse();', 
-                                '\simplerest\libs\StdOut::hideResponse();', $file);
+                                '\simplerest\core\libs\StdOut::hideResponse();', $file);
 
                 Strings::replace('MigrationsController::hideResponse();', 
-                                '\simplerest\libs\StdOut::hideResponse();', $file);
+                                '\simplerest\core\libs\StdOut::hideResponse();', $file);
 
                 file_put_contents($path, $file);
             }

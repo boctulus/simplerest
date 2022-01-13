@@ -5,9 +5,9 @@ namespace simplerest\models\main;
 
 use simplerest\models\MyModel;
 use simplerest\schemas\main\EmailNotificationsSchema;
-use simplerest\libs\Mails;
-use simplerest\libs\DB;
-use simplerest\libs\Files;
+use simplerest\core\libs\Mails;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Files;
 
 class EmailNotificationsModel extends MyModel
 {

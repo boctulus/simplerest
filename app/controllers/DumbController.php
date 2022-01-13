@@ -2,36 +2,34 @@
 
 namespace simplerest\controllers;
 
-use PDO;
-use Reflection;
-use simplerest\core\Controller;
-use simplerest\core\Request;
-use simplerest\libs\Factory;;
-use simplerest\libs\DB;
-use simplerest\core\Model;
 use simplerest\models\az\BarModel;
 use simplerest\models\az\ProductsModel;
-use simplerest\libs\Mails;
-use simplerest\libs\Strings;
-use simplerest\libs\Hardware;
-use simplerest\libs\Validator;
+use simplerest\core\Controller;
+use simplerest\core\Model;
+use simplerest\core\Request;
+use simplerest\core\Route;
+use simplerest\core\MakeControllerBase;
+use simplerest\core\libs\Factory;;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Mails;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Hardware;
+use simplerest\core\libs\Validator;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use simplerest\libs\Files;
-use simplerest\libs\Time;
-use simplerest\libs\Url;
-use simplerest\libs\Schema;
-use simplerest\core\Route;
-use simplerest\core\MakeControllerBase;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Time;
+use simplerest\core\libs\Url;
+use simplerest\core\libs\Schema;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\Env;
+use simplerest\core\libs\Update;
 use simplerest\controllers\api\Products;
 use simplerest\controllers\api\TblPersona;
-use simplerest\libs\Config;
-use simplerest\libs\StdOut;
-use simplerest\libs\Env;
-use simplerest\libs\Update;
 
-use simplerest\libs\Reflector;
+use simplerest\core\libs\Reflector;
 use simplerest\libs\Foo;
 use simplerest\core\Container;
 

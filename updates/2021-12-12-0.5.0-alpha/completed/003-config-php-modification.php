@@ -1,8 +1,8 @@
 <?php
 
-    use simplerest\libs\Files;
-    use simplerest\libs\Strings;
-    use simplerest\libs\Config;
+    use simplerest\core\libs\Files;
+    use simplerest\core\libs\Strings;
+    use simplerest\core\libs\Config;
     use simplerest\core\interfaces\IUpdateBatch;
 
     /*

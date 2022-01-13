@@ -2,10 +2,10 @@
 
 namespace simplerest\traits;
 
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
 use simplerest\libs\Debug;
-use simplerest\libs\Url; 
+use simplerest\core\libs\Url; 
 
 trait ExceptionHandler
 {

@@ -2,9 +2,9 @@
 
 namespace simplerest\core;
 
-use simplerest\libs\Factory;
+use simplerest\core\libs\Factory;
 use simplerest\core\interfaces\Arrayable;
-use simplerest\libs\Url;
+use simplerest\core\libs\Url;
 
 class Request  implements /*\ArrayAccess,*/ Arrayable
 {

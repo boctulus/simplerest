@@ -1,8 +1,8 @@
 <?php
 
 use simplerest\core\interfaces\IMigration;
-use simplerest\libs\Factory;
-use simplerest\libs\Schema;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Schema;
 
 class Collections implements IMigration
 {

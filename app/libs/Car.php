@@ -2,7 +2,7 @@
 
 namespace simplerest\libs;
 
-use simplerest\core\interfaces\Vehicle;
+use simplerest\interfaces\Vehicle;
 
 
 class Car implements Vehicle

@@ -3,7 +3,7 @@
 namespace simplerest\models\az;
 
 use simplerest\models\MyModel;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\schemas\main\CollectionsSchema;
 
 class CollectionsModel extends MyModel

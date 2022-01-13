@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace simplerest\core;
 
-use simplerest\libs\DB;
-use simplerest\libs\Strings;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
 
 class Paginator
 {

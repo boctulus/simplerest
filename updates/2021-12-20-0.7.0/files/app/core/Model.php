@@ -3,18 +3,18 @@
 namespace simplerest\core;
 
 use PDO;
-use simplerest\libs\DB;
-use simplerest\libs\Arrays;
-use simplerest\libs\Strings;
-use simplerest\libs\Validator;
-use simplerest\libs\ValidationRules;
-use simplerest\libs\Factory;
-use simplerest\libs\Files;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Validator;
+use simplerest\core\libs\ValidationRules;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Files;
 use simplerest\core\interfaces\IValidator;
 use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\exceptions\SqlException;
 use simplerest\core\interfaces\ITransformer;
-use simplerest\traits\ExceptionHandler;
+use simplerest\core\traits\ExceptionHandler;
 
 
 class Model {

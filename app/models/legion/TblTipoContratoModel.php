@@ -4,7 +4,7 @@ namespace simplerest\models\legion;
 
 use simplerest\models\MyModel;
 use simplerest\core\Model;
-use simplerest\libs\ValidationRules;
+use simplerest\core\libs\ValidationRules;
 use simplerest\schemas\legion\TblTipoContratoSchema;
 
 class TblTipoContratoModel extends MyModel

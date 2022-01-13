@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\libs\Env;
+use simplerest\core\libs\Env;
 use simplerest\core\Model;
 
 

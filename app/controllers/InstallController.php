@@ -4,8 +4,8 @@ namespace simplerest\controllers;
 
 use simplerest\core\ConsoleController;
 use simplerest\core\Model;
-use simplerest\libs\Schema;
-use simplerest\libs\DB;
+use simplerest\core\libs\Schema;
+use simplerest\core\libs\DB;
 
 class InstallController extends ConsoleController
 {

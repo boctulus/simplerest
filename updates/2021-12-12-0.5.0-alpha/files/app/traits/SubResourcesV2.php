@@ -2,10 +2,10 @@
 
 namespace simplerest\traits;
 
-use simplerest\libs\Factory;
-use simplerest\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
 use simplerest\core\Model;
-use simplerest\libs\Strings;
+use simplerest\core\libs\Strings;
 
 
 trait SubResourcesV2

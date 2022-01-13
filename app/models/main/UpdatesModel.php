@@ -4,7 +4,7 @@ namespace simplerest\models\main;
 
 use simplerest\models\MyModel;
 use simplerest\schemas\main\UpdatesSchema;
-use simplerest\traits\Uuids;
+use simplerest\core\traits\Uuids;
 
 class UpdatesModel extends MyModel
 {

@@ -2,10 +2,10 @@
 
 namespace simplerest\core;
 
-use simplerest\libs\Url;
-use simplerest\libs\Strings;
-use simplerest\libs\Factory;
-use simplerest\libs\Msg;
+use simplerest\core\libs\Url;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Msg;
 
 class Route 
 {

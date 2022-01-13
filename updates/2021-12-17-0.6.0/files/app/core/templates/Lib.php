@@ -3,8 +3,8 @@
 namespace __NAMESPACE;
 
 use simplerest\core\Model;
-use simplerest\libs\DB;
-use simplerest\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
 
 class __NAME__
 {
