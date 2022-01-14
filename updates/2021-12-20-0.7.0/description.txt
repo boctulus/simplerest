@@ -21,6 +21,10 @@ UPDATE DESCRIPTION
 
 - Nuevas opciones en comandos "make"
 
-    Ahora es posible borrar una interface / lib / helper / etc con el mismo comando con que se creó. Ej:
+    . Ahora es posible borrar una interface / lib / helper / etc con el mismo comando con que se creó. Ej:
 
-    php com make interface gol --remove
+    php com make controller my_controller --remove
+
+    . Si desea que el archivo se cree con la declaración de tipado estricto utilice --strict
+
+	php com make controller my_controller --strict

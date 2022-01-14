@@ -119,6 +119,22 @@ function get_db_connections(bool $avoid_cache = false)
                 #\PDO::ATTR_AUTOCOMMIT => false
             ]
         ],
+
+        //  Docker de Pablo (otro)
+        'db_docker_php81_mysql' => [
+            'host'		=> '127.0.0.1',
+            'port'		=> 43307,
+            'driver' 	=> 'mysql',
+            'db_name' 	=> 'db_test',
+            'user'		=> 'boctulus', 
+            'pass'		=> 'gogogo2k',
+            'charset'	=> 'utf8', 
+            'pdo_options' => [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_EMULATE_PREPARES => false,
+                #\PDO::ATTR_AUTOCOMMIT => false
+            ]
+        ],
         
         // 
         'hogar' => [
