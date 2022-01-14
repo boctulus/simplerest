@@ -6753,5 +6753,9 @@ class DumbController extends Controller
         // ....
     }
 
+
+    function test_5055(){
+        DB::getConnection('db_docker_php81_mysql');
+    }
    
 }

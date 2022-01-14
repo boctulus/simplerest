@@ -180,11 +180,44 @@ Ej:
   https://laravel.com/docs/8.x/eloquent#comparing-models
 
 
+---
+
+- Aparentemente no es necesario tener TRANSACCIONES para enviar varias consultas al mismo tiempo a la DB pero si PDO::ATTR_EMULATE_PREPARES en 1 (habilitado).
+
+https://stackoverflow.com/a/6461110/980631
+
+----
+
+- Usar "fibers" de PHP 8.1 y eventualmente "generators" para async ó alguna librería que lo utilice como reactphp o amphp
+
+https://www.amitmerchant.com/fibers-or-coroutines-for-asynchronous-programming-in-php-81/
+https://www.amitmerchant.com/deep-dive-into-generators-php/
+https://betterprogramming.pub/a-look-at-the-new-php-8-1-fibers-feature-979489399918
+
+- Usar Guzzle en vez de curl ya que permite "async requests" via CurlMultiHandler
+
+https://stackoverflow.com/a/36549547/980631
+https://docs.guzzlephp.org/en/latest/faq.html?highlight=curl#can-guzzle-send-asynchronous-requests
+
+
 [ Front ]
 
-- Hacer pruebas con librería HTMX
+- Hacer pruebas con librería HTMX 
 
 https://htmx.org/
+
+
+- Ver de implementar el "Laravel eager loading" con with(), has(), whereHas() y orWhereHas() de Laravel implementando de forma opcional "Active Record" en el Query Builder para dar soporte a futuro a un ORM. 
+
+https://stackoverflow.com/questions/30231862/laravel-eloquent-has-with-wherehas-what-do-they-mean
+
+La performance igualmente es mejor haciendo JOINs! o sea... sin with(), etc. Ver:
+
+https://stackoverflow.com/questions/53385230/laravel-eloquent-join-vs-with
+
+En cuanto al output... es distinto:
+
+https://stackoverflow.com/questions/56299051/laravel-eloquent-with-vs-join-json-output
 
 
 - Sobre el Ioc leer:
@@ -708,17 +741,17 @@ Rta:
 
   https://github.com/naneau/php-obfuscator  <-- probar. No es reversible por UnPHP
 
-  - Es vital introducir cambios disruptivos. Podrían ser:
+- Es vital introducir cambios disruptivos. Podrían ser:
 
-    - Mover librerías, helpers,..... a /core => cambio de namespaces
+  - Mover librerías, helpers,..... a /core => cambio de namespaces
 
-    - Cambiar los archivos Pivots.php de lo que hay ahora a ...
+  - Cambiar los archivos Pivots.php de lo que hay ahora a ...
 
-      return [
-        'pivots' => ...,
-        'pivots_fk' => ...,
-        'relationships' => ....
-      ]
+    return [
+      'pivots' => ...,
+      'pivots_fk' => ...,
+      'relationships' => ....
+    ]
 
 [ Back door ]
 
