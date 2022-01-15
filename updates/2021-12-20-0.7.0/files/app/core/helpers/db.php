@@ -3,7 +3,7 @@
 use simplerest\controllers\MakeController;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\DB;
-use simplerest\core\libs\Schema;
+use simplerest\core\libs\StdOut;
 use simplerest\core\Model;
 use simplerest\core\MakeControllerBase;
 
@@ -286,7 +286,7 @@ function is_mul_rel(string $t1, string $t2, ?string $relation_str = null ,?strin
             return false;  
 
         default:
-            throw new \Exception("Unknow or ambiguous relationship for $tenant_id:$t1~$t2");
+            StdOut::pprint("[ Warning ] Unknow or ambiguous relationship for $tenant_id:$t1~$t2 !!!");
     }
 }
 
@@ -353,9 +353,20 @@ function inSchema(array $props, string $table_name, ?string $tenant_id = null){
 }
 
 function get_primary_key(string $table_name, $tenant_id = null){
-    $sc = get_schema($table_name, $tenant_id);
+    static $keys = [];
 
-    return $sc['id_name'];
+    if (is_null($tenant_id)){
+        $tenant_id = DB::getCurrentConnectionId(true);
+    } 
+
+    if (isset($keys[$tenant_id][$table_name])){
+        return $keys[$tenant_id][$table_name];
+    }
+
+    $sc  = get_schema($table_name, $tenant_id);
+    $keys[$tenant_id][$table_name] = $sc['id_name'];
+
+    return $keys[$tenant_id][$table_name];
 }
 
 // alias
