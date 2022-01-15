@@ -92,7 +92,13 @@ class Files
 		Extract directory from some path
 	*/
 	static function getDir(string $path){
-		$path = realpath($path);
+		$_path = realpath($path);
+
+		if ($_path === false){
+			return '';
+		}
+
+		$path = $_path;
 
 		if (is_dir($path)){
 			return $path;
@@ -240,8 +246,10 @@ class Files
 			}
 
 			// Creo directorio para destino sino existiera 
-			$dst_dir = $dst . Strings::diff(static::getDir($f), $ori);
-			static::mkDirOrFail($dst_dir);
+			#if (!Strings::startsWith('glob:', $f)){
+				$dst_dir = $dst . Strings::diff(static::getDir($f), $ori);
+				static::mkDirOrFail($dst_dir);
+			#}
 		}
 
 		$files = array_merge($files, $glob_includes);

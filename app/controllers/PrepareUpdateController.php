@@ -5,13 +5,9 @@ declare(strict_types=1);
 namespace simplerest\controllers;
 
 use simplerest\core\ConsoleController;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\StdOut;
-use simplerest\libs\Update;
+use simplerest\core\libs\Update;
 
 /*
     Arma el update para su distribución
@@ -33,7 +29,7 @@ class PrepareUpdateController extends ConsoleController
     }
 
     function index(){
-        StdOut::pprint("Do you need help? You can copy or zip");
+        StdOut::pprint("Do you need help? You can copy | zip");
     }
 
     function copy(){
@@ -54,6 +50,7 @@ class PrepareUpdateController extends ConsoleController
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; VARIOS   
         public/app.php
+        config/constants.php
        
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; MIGRATIONS
@@ -67,15 +64,63 @@ class PrepareUpdateController extends ConsoleController
 
         $except =  [
             'initial_file_copy.batch',
-            'db_dynamic_load.php',
             'PrepareUpdateController.php',
             'docs/dev',
             'glob:*.zip',
-            'Mails.php',
-            'PASARELAS DE PAGO.txt'
+            'PASARELAS DE PAGO.txt',
+            'yakpro-po'
         ];
 
         Files::copy($ori, $dst . 'files', $files, $except);
+        $this->encode();
+    }
+
+    // ofusca core
+    function encode(){
+        $ori = '/home/www/simplerest';
+        $dst = "/tmp";  
+
+        Files::delTree($dst);
+
+        $str_except_files = <<<'FILES'
+        app/core/ServiceProvider.php
+        app/core/View.php
+        app/core/Request.php
+        app/core/Response.php
+        app/core/Middleware.php
+        app/core/Controller.php
+        app/core/ConsoleController.php
+        app/core/Acl.php
+        app/core/interfaces
+        app/core/exceptions
+        app/core/helpers
+        app/core/templates
+        FILES;
+
+        $exclude = explode(PHP_EOL, $str_except_files);
+
+        Files::copy($ori, $dst, ['app/core'], $exclude);
+
+
+        Files::delTree('./tmp');
+
+        // llamar al ofuscador
+        $ori = '/tmp/app/core';
+        $dst = '/tmp/yakpro';
+        $cmd = "php yakpro-po/yakpro-po.php $ori -o ./tmp";
+
+        $ret = shell_exec($cmd);
+        d($ret);
+
+        // ahora copio los archivos ofuscados en el destino
+        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
+        $dst = "updates/{$this->last_update_dir}/";  
+        Files::copy($ori, $dst . 'files/app/core');
+
+
+        $ori = '/home/www/simplerest/';
+        $dst = "updates/{$this->last_update_dir}/";  
+        Files::copy($ori, $dst . 'files', $exclude);
     }
 
     function zip(){
