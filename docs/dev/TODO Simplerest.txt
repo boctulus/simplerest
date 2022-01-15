@@ -737,9 +737,20 @@ Rta:
 
 [ Ofuscar ]
 
+- Ofuscadores que *si* funcionan:
+
+  https://github.com/pk-fr/yakpro-po
+
+Muy interesante -probar-
+
+  https://github.com/avid0/Alom
+
+
 - Crear o usar OFUSCADOR de código y aplicar al Core de SimpleRest:
 
-  https://github.com/naneau/php-obfuscator  <-- probar. No es reversible por UnPHP
+  De crearlo, usar el parser de PHP:
+
+  https://github.com/nikic/PHP-Parser
 
 - Es vital introducir cambios disruptivos. Podrían ser:
 
