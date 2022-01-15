@@ -6,6 +6,8 @@ abstract class ServiceProvider
 {
     /**
      * Bootstrap the application services.
+     * 
+     * Inicializa cualquier lógica que requieran los servicios registrados.
      *
      * @return void
      */

@@ -1,0 +1,8 @@
+<?php
+/*   __________________________________________________
+    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
+    |              on 2022-01-15 18:30:56              |
+    |    GitHub: https://github.com/pk-fr/yakpro-po    |
+    |__________________________________________________|
+*/
+ declare (strict_types=1); namespace simplerest\core\libs; use PHPMailer\PHPMailer\PHPMailer; class Mails { static function sendMail(string $Pc0LS, string $TOs3v, $HGSMJ, $M0995, $Fea8Q = null) { goto V_YUE; MzicG: $ZchVe->isSMTP(); goto qmLrl; v12bQ: $ZchVe->msgHTML($M0995); goto uVYXe; qmLrl: $oie5w = $VqSck["\x65\x6d\141\x69\x6c"]["\155\x61\x69\x6c\145\x72\137\x64\x65\146\141\x75\x6c\164"]; goto gzpB8; ak3Wl: return $ZchVe->ErrorInfo; goto P0Pxj; Vfhub: vMqOo: goto upJPx; P0Pxj: zfhwm: goto Ws8Xr; UVugK: $ZchVe->Subject = $HGSMJ; goto v12bQ; d0TsS: $ZchVe->AltBody = $Fea8Q; goto vPh_A; vPh_A: qwJhs: goto d4R8z; d4R8z: if (!$ZchVe->send()) { goto knPS3; } goto JIQ86; Hy1wA: knPS3: goto ak3Wl; JIQ86: return true; goto i9L3u; x29e8: $ZchVe->addAddress($Pc0LS, $TOs3v); goto UVugK; i9L3u: goto zfhwm; goto Hy1wA; upJPx: $ZchVe->setFrom($VqSck["\145\155\141\151\154"]["\x66\x72\157\x6d"]["\x61\144\x64\x72\x65\x73\163"], $VqSck["\145\155\141\x69\x6c"]["\146\x72\157\155"]["\x6e\x61\155\145"]); goto x29e8; gzpB8: foreach ($VqSck["\145\155\x61\151\x6c"]["\155\x61\x69\x6c\x65\x72\163"][$oie5w] as $gK9hD => $uujmj) { $ZchVe->{$gK9hD} = $uujmj; LZBsy: } goto Vfhub; WYm8f: $ZchVe = new PHPMailer(); goto MzicG; uVYXe: if (is_null($Fea8Q)) { goto qwJhs; } goto d0TsS; V_YUE: $VqSck = config(); goto WYm8f; Ws8Xr: } }

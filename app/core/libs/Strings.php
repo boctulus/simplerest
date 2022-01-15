@@ -739,6 +739,12 @@ class Strings
 		return $ok;
 	}
 
+	static function realPathNoCoercive(string $path){
+		$_path = realpath($path);
+
+		return $_path === false ? $path : $_path;
+	}
+
 	static function replaceSlashes(string $path){
 		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
 	}
@@ -748,7 +754,7 @@ class Strings
 	}
 
 	static function removeTrailingSlash(string $path): string{
-		$path = realpath($path);
+		$path = static::realPathNoCoercive($path);
 
 		if (Strings::endsWith('\\', $path) || Strings::endsWith('/', $path)){
 			return substr($path, 0, strlen($path)-1);
@@ -758,7 +764,7 @@ class Strings
 	}
 
 	static function addTrailingSlash(string $path): string{
-		$path = realpath($path);
+		$path = static::realPathNoCoercive($path);
 
 		if (!Strings::endsWith('\\', $path) && !Strings::endsWith('/', $path)){
 			return $path . DIRECTORY_SEPARATOR;
