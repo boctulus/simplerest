@@ -1,8 +1,73 @@
 <?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
+
+namespace simplerest\core;
+
+use simplerest\core\Model;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\libs\Debug;
+
+// mover a ServiceProvider
+
+/*
+    Debe encapsular todas las referencias a las tablas:
+
+    folders
+    folder_permissions
+    folder_other_permissions
+
 */
- namespace simplerest\core; use simplerest\core\Model; use simplerest\core\libs\DB; use simplerest\core\libs\Factory; use simplerest\libs\Debug; class FoldersAclExtension { public function __construct() { } public static function hasFolderPermission(int $IYYL1, string $lBsxL) { goto YiTRZ; e9WzH: if (!($lBsxL == "\x72" && $FQLp_ || $lBsxL == "\x77" && $Q2hDc)) { goto jTkk8; } goto cZXka; de294: throw new \InvalidArgumentException("\111\x6e\x76\x61\x6c\x69\x64\40\157\160\x65\x72\x61\164\151\157\156\40\x27{$lBsxL}\47\x2e\x20\111\164\x20\163\150\157\x75\154\x64\40\x62\x65\40\x27\162\x27\x20\x6f\x72\x20\47\x77\x27\56"); goto jFcP3; zHGPi: if (!$evN1J) { goto KTnnD; } goto iO8ea; hpM5q: $FQLp_ = $FQLp_ && $ReDgq[0][$rlHfW]; goto kNtES; t5RW7: $FQLp_ = $ReDgq[0]["\162"] ?? null; goto ZLTZ5; lkbUY: $ReDgq = $Ysa4E->where([["\146\x6f\x6c\x64\x65\162\137\151\x64", $IYYL1], ["\x61\x63\x63\145\163\x73\x5f\164\157", Factory::auth()->uid]])->get(); goto t5RW7; XQqKj: if (!($lBsxL == "\162" && $FQLp_ || $lBsxL == "\x77" && $Q2hDc)) { goto g8p5H; } goto OWAJU; nJN_x: g8p5H: goto w7t47; LTz1S: KTnnD: goto e9WzH; OWAJU: return true; goto nJN_x; hDh5D: $evN1J = Factory::acl()->isGuest(); goto zHGPi; YiTRZ: if (!($lBsxL != "\162" && $lBsxL != "\x77")) { goto lD5Gf; } goto de294; ZLTZ5: $Q2hDc = $ReDgq[0]["\x77"] ?? null; goto XQqKj; kNtES: $Q2hDc = $Q2hDc && $ReDgq[0][$rlHfW]; goto LTz1S; k01YI: $Q2hDc = $ReDgq[0]["\167"] ?? null; goto hDh5D; jFcP3: lD5Gf: goto Xsgyt; Xsgyt: $Q17er = DB::table("\x66\x6f\154\x64\145\x72\137\157\164\150\145\x72\137\160\145\x72\x6d\x69\163\x73\x69\157\156\163")->assoc(); goto TuW0o; TuW0o: $ReDgq = $Q17er->where(["\x66\157\x6c\x64\145\x72\x5f\x69\x64", $IYYL1])->get(); goto R0H5J; iO8ea: $rlHfW = $evN1J; goto hpM5q; hsdLj: jTkk8: goto tZN0i; R0H5J: $FQLp_ = $ReDgq[0]["\x72"] ?? null; goto k01YI; w7t47: return false; goto Bg5Dn; cZXka: return true; goto hsdLj; tZN0i: $Ysa4E = DB::table("\x66\157\x6c\144\x65\x72\137\160\145\x72\155\151\x73\163\151\157\x6e\163")->assoc(); goto lkbUY; Bg5Dn: } }
+class FoldersAclExtension 
+{   
+    public function __construct() { }
+
+    /**
+     * hasFolderPermission
+     *
+     * @param  int    $folder
+     * @param  string $operation
+     *
+     * @return bool
+     */
+    static public function hasFolderPermission(int $folder, string $operation)
+    {
+        if ($operation != 'r' && $operation != 'w')
+            throw new \InvalidArgumentException("Invalid operation '$operation'. It should be 'r' or 'w'.");
+
+        $o = DB::table('folder_other_permissions')->assoc();
+
+        $rows = $o->where(['folder_id', $folder])->get();
+
+        $r = $rows[0]['r'] ?? null;
+        $w = $rows[0]['w'] ?? null;
+
+        $guest = Factory::acl()->isGuest();
+
+        if ($guest){
+            $guest_role = $guest;
+            $r = $r && $rows[0][$guest_role];
+            $w = $w && $rows[0][$guest_role];
+        }
+
+        if (($operation == 'r' && $r) || ($operation == 'w' && $w)) {
+            return true;
+        }
+        
+        $g = DB::table('folder_permissions')->assoc();
+        $rows = $g->where([
+                                    ['folder_id', $folder], 
+                                    ['access_to', Factory::auth()->uid]
+        ])->get();
+
+        $r = $rows[0]['r'] ?? null;
+        $w = $rows[0]['w'] ?? null;
+
+        if (($operation == 'r' && $r) || ($operation == 'w' && $w)) {
+            return true;
+        }
+
+        return false;
+    } 
+
+}
+

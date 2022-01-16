@@ -12,5 +12,10 @@
 	simplerest\traits\*
 	simplerest\core\traits\*
 
+	use simplerest\core\Controller;
+	use simplerest\core\controllers\Controller;
 
+	use simplerest\core\ConsoleController;
+	use simplerest\core\controllers\ConsoleController;
 
+- Eliminar archivos de Core de viejas ubicaciones que ya serían basura.

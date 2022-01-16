@@ -1,19 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace simplerest\controllers;
+namespace simplerest\core\controllers;
 
 use Migrations;
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Files;
+use simplerest\controllers\MakeController;
 use simplerest\core\libs\StdOut;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Schema;
 
-class MigrationsController extends Controller
+/*
+    Migration commands
+*/
+class MigrationsControllerBase extends Controller
 {
     function make(...$opt) {
         return (new MakeController)->migration(...$opt);
@@ -43,7 +43,12 @@ class MigrationsController extends Controller
 
         foreach ($opt as $o)
         {
-            if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--to[=|:](.*)$/', $o, $matches)){
+                $match = $matches[1];
+                if (!preg_match('/^([a-z0-9_-]+)$/i', $match, $matches)){
+                    throw new \InvalidArgumentException("Invalid indentifier '{$match}' for tenant id");
+                }    
+
                 $to_db = $matches[1];
             }
 
@@ -87,7 +92,7 @@ class MigrationsController extends Controller
             }
 
             /*
-                Debería aceptar rutas absolutas (con /) para manejarse dentro de Service Providers
+                Ahora acepto rutas absolutas -útiles para manejarse dentro de Service Providers-
             */
             if (Strings::startsWith('--dir=', $o)){
                 $dir_opt = true;
@@ -183,12 +188,12 @@ class MigrationsController extends Controller
                 continue;
             }
 
-            $full_path = str_replace('//', '/', $path . '/'. $filename);
+            $full_path = str_replace('//', '/', $path . '/'. trim($filename));
 
-            if (!file_exists($full_path)){
-                StdOut::pprint("Path $full_path does not exist !!!");
-                exit;
-            }
+            // if (!file_exists($full_path)){
+            //     StdOut::pprint("Path '$full_path' does not exist !");
+            //     exit;
+            // }
 
             require_once $full_path;
 
@@ -535,7 +540,7 @@ class MigrationsController extends Controller
         }
 
         try{
-            Schema::FKcheck(0);
+            Schema::FKcheck(false);
 
             $table = '';
             foreach($tables as $table) {
@@ -551,7 +556,7 @@ class MigrationsController extends Controller
                 }
             }
 
-            Schema::FKcheck(1);      
+            Schema::FKcheck(true);      
 
             $this->clear("--to=$to_db");     
 
@@ -562,7 +567,7 @@ class MigrationsController extends Controller
         } catch (\Exception $e) {   
             dd($e->getMessage(), "MSG");
             throw $e;
-        }	             
+        }                
     }
 
     /*
@@ -589,6 +594,10 @@ class MigrationsController extends Controller
         }
     }
 
+    /*
+        Sería ideal que cada comando tuviera su propia sección de ayuda y este comando "concatenara"
+        esas secciones.
+    */
     function help(){
         echo <<<STR
         MIGRATIONS COMMAND HELP
@@ -671,7 +680,5 @@ class MigrationsController extends Controller
         STR;
         
         print_r(PHP_EOL);
-    }
-
+    }    
 }
-

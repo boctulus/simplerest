@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\MakeControllerBase;
+use simplerest\core\controllers\MakeControllerBase;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\StdOut;

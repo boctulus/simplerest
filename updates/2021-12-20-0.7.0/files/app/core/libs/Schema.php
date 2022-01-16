@@ -1,8 +1,2010 @@
-<?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:55              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
+<?php declare(strict_types=1);
+
+namespace simplerest\core\libs;
+
+use simplerest\core\Model;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
+use simplerest\libs\Debug;
+use simplerest\core\libs\Factory;
+
+/*
+	Schema Builder
+	
+	@author Pablo Bozzolo <boctulus@gmail.com>
+
+	The following can be useful :P
+	https://hoelz.ro/ref/mysql-alter-table-alter-change-modify-column
+	https://mariadb.com/kb/en/auto_increment/
 */
- declare (strict_types=1); namespace simplerest\core\libs; use simplerest\core\Model; use simplerest\core\libs\DB; use simplerest\core\libs\Strings; use simplerest\libs\Debug; use simplerest\core\libs\Factory; class Schema { protected $tables; protected $tb_name; protected $engine = "\111\156\156\157\104\102"; protected $charset = "\165\x74\x66\x38"; protected $collation; protected $raw_lines = []; protected $fields = []; protected $current_field; protected $indices = []; protected $fks = []; protected $prev_schema; protected $commands = []; protected $query; protected $exec = true; function __construct(string $fYZev) { goto EUSP7; MsMUy: $this->fromDB(); goto uPu26; EUSP7: $this->tables = self::getTables(); goto NiqVK; NiqVK: $this->tb_name = $fYZev; goto MsMUy; uPu26: } static function getCurrentDatabase() { return DB::select("\123\105\x4c\x45\x43\124\x20\104\101\x54\101\102\x41\123\x45\x28\x29\x20\106\122\x4f\x4d\40\x44\x55\x41\114\73", null, "\x43\x4f\x4c\x55\x4d\116")[0]; } static function getSelectedDatabase() { return static::getCurrentDatabase(); } static function getPKs(string $J2AHP) { $ReDgq = DB::select("\123\110\x4f\x57\x20\x49\116\104\x45\x58\x45\x53\x20\106\122\117\x4d\x20\140{$J2AHP}\x60\40\x57\110\105\122\105\40\113\145\x79\x5f\156\141\x6d\145\40\75\40\x27\x50\x52\111\115\101\x52\131\x27"); return array_column($ReDgq, "\103\157\x6c\165\x6d\156\x5f\156\141\x6d\145"); } static function hasPK(string $J2AHP) { return !empty(static::getPKs($J2AHP)); } static function getAutoIncrement(string $J2AHP, ?string $nOzin = null) { goto pOLV6; KEhH9: zHQ31: goto V7zlC; n4tfU: $nOzin = DB::database(); goto ZfWh_; V7zlC: l_VQf: goto RNp0f; RNp0f: return DB::select("\x53\105\x4c\105\103\x54\40\x41\x55\124\117\137\x49\116\103\x52\105\115\105\x4e\124\40\x46\122\117\115\x20\x49\x4e\106\x4f\x52\x4d\101\x54\111\x4f\116\137\123\x43\x48\x45\x4d\x41\x2e\x54\101\x42\114\x45\123\40\127\110\105\122\105\40\x54\x41\102\x4c\105\137\123\103\x48\105\x4d\101\x20\75\40\47{$nOzin}\x27\40\101\x4e\x44\x20\x54\x41\102\x4c\105\x5f\116\101\115\x45\40\75\40\x27{$J2AHP}\47\73", null, "\103\x4f\x4c\125\115\116")[0]; goto ivm4k; ZO00e: throw new \Exception("\x54\x68\x65\162\145\x20\x69\163\40\x6e\x6f\40\141\143\164\x69\166\x65\40\x64\x61\164\x61\x62\x61\163\x65\40\x63\x6f\x6e\x6e\145\x63\x74\x69\x6f\x6e"); goto KEhH9; pOLV6: if (!($nOzin === null)) { goto l_VQf; } goto n4tfU; ZfWh_: if (!($nOzin === null)) { goto zHQ31; } goto ZO00e; ivm4k: } static function hasAutoIncrement(string $J2AHP, ?string $nOzin = null) { return static::getAutoIncrement($J2AHP, $nOzin) !== null; } static function getAutoIncrementField(string $J2AHP) { goto CT_CY; cMYkz: IWgON: goto HTEPV; CT_CY: $tMe4v = DB::select("\x53\x48\117\127\40\103\x4f\x4c\x55\x4d\116\x53\40\x46\122\117\x4d\40\140{$J2AHP}\140\40\x57\x48\x45\122\105\40\105\130\x54\122\x41\x20\114\x49\113\105\40\x27\45\141\x75\x74\157\x5f\x69\156\x63\x72\x65\155\x65\156\x74\x25\47\73", null, "\101\123\123\117\x43"); goto DP8ZA; DP8ZA: if (!empty($tMe4v)) { goto IWgON; } goto axIbH; axIbH: return false; goto cMYkz; HTEPV: return $tMe4v[0]["\106\x69\145\x6c\144"]; goto WO_P8; WO_P8: } static function getFKs(string $J2AHP = null, bool $ATSs5 = false, ?string $rUdfW = null) { goto XnrEz; XnrEz: if (!($rUdfW == null)) { goto mWf_n; } goto nO10E; TYwg4: $MrHHt = $ATSs5 ? "\41\75" : "\75"; goto ffb2Y; nO10E: DB::getConnection(); goto YJyIx; srei5: MdjvC: goto dzdne; bhDaP: if (empty($J2AHP)) { goto MdjvC; } goto TYwg4; ffb2Y: $sKfOj .= "\101\x4e\104\x20\x54\101\102\x4c\x45\x5f\116\x41\115\x45\40{$MrHHt}\x20\x27{$J2AHP}\47\x20"; goto srei5; dzdne: $sKfOj .= "\x4f\x52\104\105\x52\40\102\x59\x20\140\122\x45\106\x45\x52\105\x4e\x43\105\x44\137\x43\x4f\x4c\125\115\x4e\137\x4e\101\115\x45\x60\73"; goto PJ12i; l33yU: $sKfOj = "\123\105\114\105\x43\124\x20\x43\x4f\x4c\125\115\116\x5f\x4e\101\115\x45\x20\x46\122\x4f\115\x20\x60\111\116\106\117\122\x4d\101\124\111\117\x4e\137\x53\x43\x48\x45\x4d\101\140\56\x60\x4b\105\x59\x5f\103\117\x4c\125\x4d\116\x5f\x55\x53\101\x47\105\x60\x20\xa\40\40\x20\40\40\x20\x20\x20\x57\110\105\122\105\40\140\x52\105\106\x45\122\105\116\103\x45\104\x5f\124\x41\102\114\x45\137\x4e\x41\115\x45\x60\x20\x49\123\x20\x4e\x4f\124\40\x4e\x55\114\114\x20\x41\116\104\40\x54\101\x42\114\105\137\x53\103\x48\x45\115\101\40\75\40\47{$rUdfW}\47\40\101\x4e\x44\x20\122\105\x46\105\x52\x45\116\x43\105\104\137\124\101\x42\114\105\137\x53\x43\110\105\115\x41\40\x3d\40\47{$rUdfW}\x27\x20"; goto bhDaP; Ji_7b: mWf_n: goto l33yU; PZPCQ: $aC4Ry = array_column($ylm2I, "\103\117\114\125\115\116\137\116\101\115\x45"); goto RwM7k; YJyIx: $rUdfW = DB::database(); goto Ji_7b; RwM7k: return $aC4Ry; goto wG2Qd; PJ12i: $ylm2I = Model::query($sKfOj); goto PZPCQ; wG2Qd: } static function getRelations(string $J2AHP = null, bool $ATSs5 = false, string $rUdfW = null) { goto cS7a2; Ue10j: if (empty($J2AHP)) { goto ZP9ai; } goto EP3_W; CFtwa: $XFohC = []; goto dTYIe; plohj: return $F5V5U; goto wtKFx; cZvRq: $rUdfW = DB::database(); goto lDh0y; cS7a2: if (!($rUdfW == null)) { goto aEm4W; } goto uExfT; jzYJI: U9agx: goto hTBrF; Me1pF: $F5V5U = []; goto PFYgE; qecql: $sKfOj = "\x53\x45\x4c\x45\x43\124\40\x2a\40\106\x52\117\x4d\40\140\111\116\x46\117\x52\115\x41\x54\x49\x4f\116\x5f\123\x43\x48\x45\x4d\x41\x60\56\x60\113\x45\x59\137\x43\117\114\x55\115\116\x5f\125\123\x41\x47\x45\140\x20\xa\x20\40\40\40\x20\x20\40\x20\x57\110\x45\122\x45\40\140\x52\x45\x46\105\122\x45\x4e\x43\105\x44\137\x54\101\x42\114\x45\137\x4e\101\x4d\x45\x60\40\111\123\x20\116\117\x54\x20\116\125\114\114\x20\101\116\104\x20\124\101\102\x4c\105\137\x53\x43\110\x45\x4d\x41\40\x3d\x20\47{$rUdfW}\47\x20\x41\116\x44\40\x52\105\x46\x45\122\x45\116\103\105\104\137\124\101\102\x4c\x45\137\123\x43\110\105\x4d\x41\x20\x3d\40\x27{$rUdfW}\47\40"; goto Ue10j; WPixf: $sKfOj .= "\x4f\122\x44\x45\x52\x20\102\x59\40\x60\122\105\106\x45\122\105\116\103\x45\x44\x5f\103\117\114\x55\x4d\116\x5f\116\x41\115\105\140\73"; goto cCVLY; dTYIe: if (empty($J2AHP)) { goto U9agx; } goto C_cHb; cCVLY: $YStSF = Model::query($sKfOj); goto Me1pF; J2uBF: MhTle: goto plohj; DN0Ec: eKON8: goto CFtwa; PFYgE: foreach ($YStSF as $FJWzz) { goto T3t5Q; OxU2K: lWn8L: goto ueBY9; E9sfr: $Q2sSk = $FJWzz["\124\101\102\x4c\105\137\116\101\115\105"] . "\56" . $FJWzz["\x43\117\x4c\x55\115\x4e\137\116\x41\115\x45"]; goto Ip2je; uQZtX: $F5V5U[$Ing_V][] = ["\x74\x6f" => $g3RC7, "\146\x72\x6f\155" => $Q2sSk]; goto OxU2K; Ip2je: $g3RC7 = $FJWzz["\x52\x45\106\105\122\x45\116\x43\105\104\137\124\x41\102\114\x45\x5f\116\x41\115\x45"] . "\x2e" . $FJWzz["\122\105\x46\105\x52\x45\116\103\105\104\137\x43\x4f\x4c\125\115\x4e\x5f\116\101\115\105"]; goto uQZtX; T3t5Q: $Ing_V = $FJWzz["\x52\105\106\x45\122\105\x4e\103\105\104\x5f\x54\x41\x42\114\105\137\116\101\x4d\105"]; goto E9sfr; ueBY9: } goto DN0Ec; D1YNi: FOIeY: goto jzYJI; lDh0y: aEm4W: goto qecql; wRali: ZP9ai: goto WPixf; uExfT: DB::getConnection(); goto cZvRq; hTBrF: foreach ($F5V5U as $UV7E3 => $IWYww) { goto GWw5M; QMPGE: QTZ2r: goto Rkqpy; wkXRk: $sbIKf = count($Inlmv); goto DR3w0; gdCry: YUh55: goto QMPGE; DR3w0: foreach ($IWYww as $gK9hD => $FQLp_) { goto BEEOC; h9Ova: $g3RC7 = "{$fCWmQ}\x7c{$w3qho}"; goto oZQMK; oZQMK: J_iYH: goto VJzLS; XN35b: diLua: goto YdNcv; dMVMt: if (!($sbIKf > 0)) { goto J_iYH; } goto TTHOc; GBI32: zMfxG: goto H31Zj; Syr2h: $JT4F5 = substr($KN4Wg, 0, strlen($KN4Wg) - 3); goto GBI32; M8yqt: hp60l: goto MPjvP; BEEOC: if (!(isset($XFohC[$UV7E3]) && in_array($FQLp_["\164\x6f"], $XFohC[$UV7E3]))) { goto v0IEf; } goto q1Ole; q1Ole: list($lEERE, $KN4Wg) = explode("\56", $FQLp_["\x66\x72\157\155"]); goto Xyfkq; YdNcv: list($fCWmQ, $kGhPZ) = explode("\x2e", $FQLp_["\164\x6f"]); goto dMVMt; VJzLS: unset($F5V5U[$UV7E3][$gK9hD]); goto T7h0e; TTHOc: $w3qho = "\137\137" . $KN4Wg . "\x2e{$kGhPZ}"; goto h9Ova; HA8GJ: $F5V5U[$UV7E3][] = $FQLp_; goto UsS1w; UsS1w: v0IEf: goto M8yqt; T7h0e: $FQLp_ = ["\164\157" => $g3RC7, "\x66\x72\157\x6d" => $FQLp_["\146\162\x6f\155"]]; goto HA8GJ; H31Zj: if (!(!isset($JT4F5) && Strings::startsWith("\x69\x64\137", $KN4Wg))) { goto diLua; } goto LUAPP; Xyfkq: if (!Strings::endsWith("\137\151\x64", $KN4Wg)) { goto zMfxG; } goto Syr2h; LUAPP: $JT4F5 = substr($KN4Wg, 3); goto XN35b; MPjvP: } goto gdCry; GWw5M: $Inlmv = $XFohC[$UV7E3] ?? []; goto wkXRk; Rkqpy: } goto J2uBF; C_cHb: foreach ($F5V5U as $UV7E3 => $IWYww) { goto TGQH9; DtFeC: if (!(count($iSl2k) > 1)) { goto NrG5I; } goto jwBZF; BO8v1: nlaBd: goto TMjqZ; TGQH9: $iSl2k = array_column($IWYww, "\164\157"); goto DtFeC; G6oEz: NrG5I: goto BO8v1; hlsIo: foreach ($iSl2k as $g3RC7) { goto utYfM; utYfM: if (!($g3RC7 == $rzOHs)) { goto yIkDj; } goto k4Sup; C28Sr: yIkDj: goto mA5Vk; uR0aM: $XFohC[$UV7E3][] = $g3RC7; goto KNUCt; KNUCt: yWiUC: goto C28Sr; q_PRA: JelR5: goto hq48P; dYf8I: if (in_array($g3RC7, $XFohC[$UV7E3])) { goto yWiUC; } goto uR0aM; Nb__R: n41Pm: goto dYf8I; mA5Vk: $rzOHs = $g3RC7; goto q_PRA; dlDtV: $XFohC[$UV7E3] = []; goto Nb__R; k4Sup: if (isset($XFohC[$UV7E3])) { goto n41Pm; } goto dlDtV; hq48P: } goto kxGgG; jwBZF: $rzOHs = null; goto hlsIo; kxGgG: NiIpm: goto G6oEz; TMjqZ: } goto D1YNi; ZGk76: $sKfOj .= "\x41\x4e\x44\40\x54\101\x42\114\105\137\116\101\115\105\x20{$MrHHt}\40\x27{$J2AHP}\x27\40"; goto wRali; EP3_W: $MrHHt = $ATSs5 ? "\41\x3d" : "\75"; goto ZGk76; wtKFx: } static function getAllRelations(string $J2AHP, bool $hk6UK = false, bool $q6x7Z = true) { goto Csq3R; PEiDw: if (!($Q7QpD === null)) { goto PynLf; } goto BN51J; PdmsN: if (!$q6x7Z) { goto EHlKP; } goto DC420; Csq3R: $Q7QpD = []; goto LfmOE; Ljp83: jvpmZ: goto R3fXh; M3ljp: if ($hk6UK) { goto gBV51; } goto tHuTm; b69vo: gBV51: goto Dex1n; R3fXh: $Q7QpD = $jsARq; goto b69vo; ldchX: PynLf: goto ao2fa; DC420: $u5MpJ = Schema::getRelations(); goto pKkZy; ao2fa: foreach ($Q7QpD as $UV7E3 => $YStSF) { goto mQy_f; IEibI: foreach ($YStSF as $FJWzz) { goto RTr97; ybKYq: $Pa2Ka = "\133\47{$FJWzz["\164\157"]}\x27\54\x27{$FJWzz["\146\162\x6f\155"]}\47\x5d"; goto J7Ahw; L5m8R: kCGg_: goto Gidi3; J7Ahw: jidJq: goto t6KAM; RTr97: if ($hk6UK) { goto m0vF1; } goto wLDop; wLDop: $Pa2Ka = [$FJWzz["\164\x6f"], $FJWzz["\x66\x72\157\x6d"]]; goto Hq3Xa; X7DxT: m0vF1: goto ybKYq; Hq3Xa: goto jidJq; goto X7DxT; t6KAM: $QV1pg[] = $Pa2Ka; goto L5m8R; Gidi3: } goto dV23a; rfYyi: $Q7QpD[$UV7E3] = $QV1pg; goto is9O0; is9O0: wcFv9: goto ojdPG; dV23a: BCEko: goto rfYyi; mQy_f: $QV1pg = []; goto IEibI; ojdPG: } goto SRF_I; LfmOE: $Q7QpD = Schema::getRelations($J2AHP); goto PEiDw; BN51J: return; goto ldchX; tHuTm: $jsARq = []; goto Io1Dc; Dex1n: return $Q7QpD; goto MyakP; I3Ezv: EHlKP: goto M3ljp; SRF_I: nb1SB: goto PdmsN; pKkZy: foreach ($u5MpJ as $UV7E3 => $YStSF) { goto i1tKS; i1tKS: foreach ($YStSF as $FJWzz) { goto VAQ5P; Dl4Ga: qt5j3: goto UROWc; UROWc: $Q7QpD[$lEERE][] = $Pa2Ka; goto icX07; pn37T: if ($hk6UK) { goto EI4sU; } goto LscZG; FS3GX: $Pa2Ka = "\x5b\x27{$FJWzz["\146\x72\x6f\155"]}\47\54\x27{$FJWzz["\x74\x6f"]}\x27\135"; goto Dl4Ga; qiFbq: ZFbC0: goto rBqHn; VAQ5P: list($fCWmQ, $kGhPZ) = explode("\56", $FJWzz["\164\157"]); goto sq7Ki; i1S8x: EI4sU: goto FS3GX; Qe9MY: list($lEERE, $KN4Wg) = explode("\56", $FJWzz["\146\162\x6f\155"]); goto pn37T; icX07: ORua6: goto qiFbq; rDJBb: goto qt5j3; goto i1S8x; LscZG: $Pa2Ka = [$FJWzz["\146\x72\157\x6d"], $FJWzz["\x74\157"]]; goto rDJBb; sq7Ki: if (!($fCWmQ == $J2AHP)) { goto ORua6; } goto Qe9MY; rBqHn: } goto GNIqN; GNIqN: nkO3U: goto PBGML; PBGML: SODpK: goto Dawdl; Dawdl: } goto lig4t; Io1Dc: foreach ($Q7QpD as $UV7E3 => $YStSF) { goto rCatK; AA4wY: $ReYIW = explode("\x2e", $FQLp_[0]); goto n0y3u; n0y3u: $lnUVx = explode("\56", $FQLp_[1]); goto rKYB7; NW9Oh: VOCN8: goto QvUZ5; rKYB7: $FQLp_ = [$ReYIW, $lnUVx]; goto PRXZ3; zkq40: AQsPC: goto WXJ1B; gOu75: EcD7X: goto Zo4co; QvUZ5: MLrVa: goto wRyXL; rCatK: if (count($YStSF) == 1) { goto EcD7X; } goto lf0q2; Zo4co: $FQLp_ = $YStSF[0]; goto AA4wY; lf0q2: foreach ($YStSF as $FQLp_) { goto F4QUm; xlh59: $FQLp_ = [$ReYIW, $lnUVx]; goto Dy4L8; OZaSL: if (!Strings::contains("\174", $ReYIW[0])) { goto BImCQ; } goto fuTkh; XgZrb: $lnUVx = explode("\x2e", $FQLp_[1]); goto OZaSL; dncAk: pXL51: goto puKUI; puKUI: $ReYIW = [$Tqhsv, $ReYIW[1], "\141\154\151\141\x73" => $w3qho]; goto n2aum; Dy4L8: $jsARq[$UV7E3][] = $FQLp_; goto dw_U0; fuTkh: list($Tqhsv, $w3qho) = explode("\x7c", $ReYIW[0]); goto mfPU5; mfPU5: if (!($Tqhsv != $UV7E3)) { goto pXL51; } goto QXLcr; F4QUm: $ReYIW = explode("\56", $FQLp_[0]); goto XgZrb; dw_U0: S93vw: goto PtSbl; n2aum: BImCQ: goto xlh59; QXLcr: throw new \Exception("\125\x6e\145\x78\x70\145\x63\x74\x65\x64\x20\145\x72\162\x6f\x72"); goto dncAk; PtSbl: } goto zkq40; WXJ1B: goto VOCN8; goto gOu75; PRXZ3: $jsARq[$UV7E3][] = $FQLp_; goto NW9Oh; wRyXL: } goto Ljp83; lig4t: Fy8Jf: goto I3Ezv; MyakP: } static function generateMigrationFileName($fYZev) { goto cjoJI; w1Y2B: $ecQXc = $pegMI . "\x5f" . $Ja_we . "\137" . Strings::camelToSnake($fYZev) . "\56\160\x68\160"; goto E65Xt; cjoJI: $pegMI = date("\131\x5f\155\x5f\x64"); goto lkKIi; E65Xt: return MIGRATIONS_PATH . $ecQXc; goto Vwyom; lkKIi: $Ja_we = time() - 1603750000; goto w1Y2B; Vwyom: } static function getDatabases(string $Lh8I0 = null) { goto v9ieP; v9ieP: if (!($Lh8I0 != null)) { goto CN7uj; } goto X4Uw3; MIcj1: return DB::select("\x53\x48\117\x57\40\x44\x41\124\x41\102\101\123\x45\123", null, "\103\117\114\x55\115\116"); goto WWd1c; X4Uw3: DB::getConnection($Lh8I0); goto T_opS; T_opS: CN7uj: goto MIcj1; WWd1c: } static function getTables(string $Lh8I0 = null) { goto lESov; EtD_l: vsASn: goto I1a12; lESov: $VqSck = config(); goto Ii8mM; Ii8mM: if (!($Lh8I0 != null)) { goto mMN8M; } goto N8SH5; szTbw: $lAZM3 = DB::getCurrentDB(); goto retAW; retAW: return DB::select("\x53\x45\114\105\103\124\x20\124\101\x42\x4c\x45\x5f\116\x41\x4d\105\x20\12\11\11\x46\x52\117\x4d\40\x69\x6e\146\x6f\162\x6d\141\164\x69\x6f\156\x5f\x73\x63\x68\x65\155\x61\x2e\164\141\142\x6c\145\x73\12\11\x9\127\x48\105\122\x45\x20\164\141\x62\154\x65\137\x73\143\150\x65\155\x61\x20\x3d\40\x27{$lAZM3}\x27", [], "\x43\117\114\125\115\x4e"); goto bCmkO; VQKS6: DB::getConnection($Lh8I0); goto szTbw; N8SH5: if (isset($VqSck["\x64\142\x5f\143\x6f\156\156\x65\x63\164\151\157\156\x73"][$Lh8I0])) { goto vsASn; } goto YmRDx; I1a12: mMN8M: goto VQKS6; YmRDx: throw new \Exception("\103\157\x6e\156\x65\x63\164\151\157\156\40\111\144\x20\47{$Lh8I0}\x27\40\156\157\x74\40\144\x65\x66\x69\156\145\144"); goto EtD_l; bCmkO: } static function getTableComment(string $J2AHP, string $Lh8I0 = null) { goto efn9c; q7nv2: $lAZM3 = DB::getCurrentDB(); goto f814Y; MQ2XZ: goto bvdOj; goto zQCsN; sx2F1: $Lh8I0 = $VqSck["\x64\142\x5f\143\157\x6e\x6e\x65\x63\164\x69\x6f\156\x5f\144\145\146\x61\165\154\x74"]; goto MQ2XZ; FUQsS: bvdOj: goto q7nv2; lSuij: throw new \Exception("\103\x6f\x6e\156\145\143\x74\x69\x6f\156\40\111\144\x20\47{$Lh8I0}\x27\40\156\157\164\40\x64\145\146\x69\x6e\x65\x64"); goto Xd05u; f814Y: return DB::select("\x53\105\114\x45\103\x54\x20\164\x61\x62\x6c\145\x5f\x63\157\155\x6d\145\156\x74\x20\xa\x9\x9\106\122\x4f\115\40\x49\x4e\106\x4f\122\115\101\124\x49\x4f\116\x5f\123\x43\110\x45\x4d\101\x2e\124\101\x42\x4c\x45\123\40\xa\11\11\x57\110\x45\x52\105\x20\164\x61\142\154\145\137\x73\143\150\145\155\141\75\x27{$lAZM3}\x27\x20\xa\40\40\x20\x20\40\x20\40\x20\x41\x4e\x44\x20\x74\x61\142\154\145\x5f\156\141\x6d\145\x3d\47{$J2AHP}\x27\x3b")[0]; goto XnGMt; wIVm7: if (isset($VqSck["\x64\142\137\143\157\156\x6e\145\143\164\x69\x6f\x6e\x73"][$Lh8I0])) { goto ajk2l; } goto lSuij; zQCsN: Xsd4r: goto wIVm7; efn9c: $VqSck = config(); goto TDI5I; TDI5I: if ($Lh8I0 != null) { goto Xsd4r; } goto sx2F1; Xd05u: ajk2l: goto FUQsS; XnGMt: } static function getColumnComment(string $J2AHP, string $BRPp3, string $Lh8I0 = null) { goto feNyT; lMHsA: throw new \Exception("\x43\157\x6e\x6e\145\143\164\x69\x6f\156\x20\x49\144\40\47{$Lh8I0}\47\x20\156\x6f\164\40\144\x65\146\151\156\145\144"); goto bvo06; ZSItJ: $lAZM3 = DB::getCurrentDB(); goto MMfPC; cCTfU: if ($Lh8I0 != null) { goto pme_c; } goto U8IMr; feNyT: $VqSck = config(); goto cCTfU; bvo06: Ui93w: goto bpFI5; OhIX0: if (isset($VqSck["\x64\142\x5f\143\x6f\156\156\145\143\164\151\157\x6e\x73"][$Lh8I0])) { goto Ui93w; } goto lMHsA; MMfPC: return DB::select("\x53\105\114\105\103\124\40\141\x2e\103\x4f\x4c\x55\x4d\116\x5f\x4e\101\x4d\105\x2c\x20\x61\56\x43\117\114\x55\x4d\116\137\103\x4f\x4d\x4d\105\x4e\x54\xa\11\11\106\x52\117\115\40\x69\156\x66\157\162\x6d\141\164\x69\x6f\x6e\137\x73\x63\x68\145\155\141\56\103\117\x4c\x55\115\x4e\123\40\x61\x20\xa\11\11\x57\x48\105\x52\x45\x20\x61\x2e\124\x41\102\114\105\137\116\101\x4d\105\40\75\40\x27{$J2AHP}\47\40\x41\116\x44\x20\40\x43\117\114\125\115\x4e\x5f\x4e\x41\115\105\x20\x3d\x20\47{$BRPp3}\47\73")[0]; goto x4jHS; tVtty: goto xA2qN; goto j24It; U8IMr: $Lh8I0 = $VqSck["\x64\x62\137\x63\x6f\x6e\x6e\145\143\164\x69\157\156\137\144\145\146\x61\x75\154\164"]; goto tVtty; bpFI5: xA2qN: goto ZSItJ; j24It: pme_c: goto OhIX0; x4jHS: } static function FKcheck(bool $fCvjg) { goto EiAl3; lQRqE: A5XvL: goto ILlvD; CWX6p: W2Hzt: goto lQRqE; UsNAw: $QQgt2 = $XFGFd->execute(); goto JnczD; EiAl3: $GoNaw = DB::getConnection(); goto eZIix; eZIix: switch (DB::driver()) { case "\x6d\x79\x73\x71\x6c": $qUtFS = "\x53\x45\124\x20\x46\117\x52\105\x49\x47\x4e\137\x4b\105\131\137\x43\x48\x45\103\x4b\123\x3d" . (int) $fCvjg . "\73"; goto A5XvL; case "\x73\x71\154\151\164\x65": $qUtFS = "\120\x52\x41\x47\115\x41\40\x66\x6f\x72\145\x69\147\x6e\x5f\153\145\171\163\x20\75\x20" . ($fCvjg ? "\117\x4e" : "\x4f\x46\x46") . "\x3b"; goto A5XvL; } goto CWX6p; ILlvD: $XFGFd = $GoNaw->prepare($qUtFS); goto UsNAw; JnczD: } static function enableForeignKeyConstraints() { return self::FKcheck(1); } static function disableForeignKeyConstraints() { return self::FKcheck(0); } static function hasTable(string $fYZev, string $lAZM3 = null) { goto KiYi0; yrXVB: O98jt: goto HTt8a; PM8Kl: Ki7Xs: goto yrXVB; KiYi0: switch (DB::driver()) { case "\163\x71\154\x69\164\145": $QQgt2 = Model::query("\x53\x45\114\x45\x43\124\40\x31\40\106\x52\117\115\40\163\161\154\x69\x74\145\x5f\x6d\x61\x73\x74\145\162\40\x57\x48\x45\122\105\x20\164\x79\160\x65\75\47\x74\141\x62\x6c\145\47\x20\101\x4e\104\x20\156\x61\x6d\145\x3d\x27{$fYZev}\x27\73"); return !empty($QQgt2); case "\155\x79\163\161\154": goto si3vW; l8O4r: $QQgt2 = DB::select("\123\105\x4c\105\x43\x54\x20\x2a\40\xa\x9\11\11\x9\11\x46\122\x4f\x4d\x20\151\x6e\146\x6f\162\x6d\141\x74\x69\x6f\x6e\137\163\143\150\145\155\141\x2e\x74\141\142\x6c\145\x73\xa\x9\x9\11\11\x9\127\x48\x45\x52\105\x20\x74\141\x62\x6c\x65\137\x73\143\x68\145\155\x61\x20\x3d\40\47{$lAZM3}\x27\x20\12\11\11\x9\11\11\11\101\x4e\104\x20\164\x61\142\154\x65\x5f\156\x61\155\x65\x20\75\x20\47{$fYZev}\47\12\11\x9\11\11\x9\x4c\x49\x4d\111\124\x20\x31\73"); goto dUJsl; v8INh: $QQgt2 = DB::select("\123\x48\x4f\127\x20\124\101\102\114\x45\x53\40\x4c\111\113\105\x20\x27{$fYZev}\47\x3b"); goto vZYQl; vZYQl: pt4cO: goto TqMWa; si3vW: if ($lAZM3 == null) { goto kkfyH; } goto l8O4r; dUJsl: goto pt4cO; goto Eq3MY; TqMWa: return !empty($QQgt2); goto I9tOS; Eq3MY: kkfyH: goto v8INh; I9tOS: } goto PM8Kl; HTt8a: } static function hasColumn(string $J2AHP, string $wyUCM) { goto xcd_3; nBg9y: $QQgt2 = DB::select("\123\110\x4f\x57\40\103\x4f\x4c\125\115\x4e\123\x20\106\x52\117\115\40\140{$J2AHP}\140\40\x4c\111\x4b\105\x20\47{$wyUCM}\47"); goto SMugz; xcd_3: $GoNaw = DB::getConnection(); goto nBg9y; SMugz: return !empty($QQgt2); goto tnhpM; tnhpM: } static function renameTable(string $dv_ZM, string $nfmgI) { goto ng7jj; ng7jj: $GoNaw = DB::getConnection(); goto tjDFq; sLNk5: return $XFGFd->execute(); goto qiilC; tjDFq: $XFGFd = $GoNaw->prepare("\x52\x45\x4e\101\x4d\x45\40\x54\101\102\x4c\x45\x20\x60{$dv_ZM}\140\x20\x54\117\40\x60{$nfmgI}\x60\x3b"); goto sLNk5; qiilC: } static function drop(string $J2AHP) { goto Aw774; Aw774: $GoNaw = DB::getConnection(); goto qaHdp; qaHdp: $XFGFd = $GoNaw->prepare("\104\122\117\x50\40\124\x41\x42\114\x45\40\140{$J2AHP}\x60\x3b"); goto xbHXX; xbHXX: return $XFGFd->execute(); goto C9l2m; C9l2m: } static function dropIfExists(string $J2AHP) { goto qN_t2; YUQLx: $XFGFd = $GoNaw->prepare("\x44\x52\x4f\x50\x20\x54\101\x42\x4c\x45\x20\x49\106\x20\x45\x58\x49\123\x54\123\40\x60{$J2AHP}\x60\x3b"); goto ldl41; qN_t2: $GoNaw = DB::getConnection(); goto YUQLx; ldl41: return $XFGFd->execute(); goto GOxmh; GOxmh: } function tableExists() { return in_array($this->tb_name, $this->tables); } function columnExists(string $wyUCM) { return static::hasColumn($this->tb_name, $wyUCM); } function setEngine(string $K84HO) { $this->engine = $K84HO; return $this; } function setCharset(string $K84HO) { $this->chartset = $K84HO; return $this; } function setCollation(string $K84HO) { $this->collation = $K84HO; return $this; } function column(string $A5xWC) { $this->current_field = $A5xWC; return $this; } function field(string $A5xWC) { return $this->column($A5xWC); } function int(string $A5xWC, int $e4iMN = 11) { goto buyh0; VRB0z: $this->fields[$this->current_field] = []; goto RS6wS; dS41Z: pybW3: goto OkgL0; buyh0: $this->current_field = $A5xWC; goto VRB0z; H1W6L: if (!($e4iMN != NULL)) { goto pybW3; } goto roGOU; OkgL0: return $this; goto cDPEt; RS6wS: $this->fields[$this->current_field]["\164\171\x70\x65"] = "\111\x4e\124"; goto H1W6L; roGOU: $this->fields[$this->current_field]["\x6c\145\156"] = $e4iMN; goto dS41Z; cDPEt: } function integer(string $A5xWC, int $e4iMN = 11) { $this->int($A5xWC, $e4iMN); return $this; } function serial(string $A5xWC, int $e4iMN = NULL) { goto lYlqk; rGv2L: $this->fields[$this->current_field]["\164\x79\x70\x65"] = "\x53\x45\122\x49\x41\114"; goto o7pwh; o7pwh: return $this; goto rq5Zf; lYlqk: $this->current_field = $A5xWC; goto rGv2L; rq5Zf: } function bigint(string $A5xWC) { goto ongkd; X2MjJ: $this->fields[$this->current_field]["\x74\x79\160\145"] = "\102\x49\107\111\x4e\124"; goto Kv9Fg; h_rgv: $this->fields[$this->current_field] = []; goto X2MjJ; Kv9Fg: return $this; goto gG3h5; ongkd: $this->current_field = $A5xWC; goto h_rgv; gG3h5: } function mediumint(string $A5xWC) { goto yqkqu; MOi7I: $this->fields[$this->current_field]["\164\171\x70\x65"] = "\x4d\x45\x44\x49\125\x4d\x49\x4e\124"; goto qVSXG; qVSXG: return $this; goto eV7Kp; yqkqu: $this->current_field = $A5xWC; goto Kz456; Kz456: $this->fields[$this->current_field] = []; goto MOi7I; eV7Kp: } function smallint(string $A5xWC) { goto XKFGQ; UH_u4: return $this; goto RXSEc; XKFGQ: $this->current_field = $A5xWC; goto hSTO8; Nto3_: $this->fields[$this->current_field]["\164\171\160\x65"] = "\123\115\x41\114\114\111\116\124"; goto UH_u4; hSTO8: $this->fields[$this->current_field] = []; goto Nto3_; RXSEc: } function tinyint(string $A5xWC) { goto nwoXr; i4hx4: $this->fields[$this->current_field]["\164\171\x70\145"] = "\x54\111\116\x59\111\116\124"; goto WFXYj; WFXYj: return $this; goto eA1l2; zRT5H: $this->fields[$this->current_field] = []; goto i4hx4; nwoXr: $this->current_field = $A5xWC; goto zRT5H; eA1l2: } function boolean(string $A5xWC) { goto YJLpo; anAan: return $this; goto LlhRo; q8fUv: $this->fields[$this->current_field]["\x74\x79\160\x65"] = "\x42\117\x4f\x4c\x45\x41\x4e"; goto anAan; YJLpo: $this->current_field = $A5xWC; goto gumMe; gumMe: $this->fields[$this->current_field] = []; goto q8fUv; LlhRo: } function bool(string $A5xWC) { $this->boolean($A5xWC); return $this; } function bit(string $A5xWC, int $e4iMN) { goto btSL9; zbG30: return $this; goto MCWBq; osJ35: $this->fields[$this->current_field]["\154\145\156"] = $e4iMN; goto zbG30; btSL9: $this->current_field = $A5xWC; goto H_Nbg; H_Nbg: $this->fields[$this->current_field] = []; goto uCXou; uCXou: $this->fields[$this->current_field]["\164\171\160\145"] = "\x42\111\x54"; goto osJ35; MCWBq: } function decimal(string $A5xWC, int $e4iMN = 15, int $lkGcZ = 4) { goto DmQQU; bnt5V: $this->fields[$this->current_field]["\164\x79\160\x65"] = "\x44\105\x43\x49\x4d\101\x4c"; goto PxdPU; C6k1S: $this->fields[$this->current_field] = []; goto bnt5V; Pxc4J: return $this; goto XskWT; PxdPU: $this->fields[$this->current_field]["\154\145\x6e"] = [$e4iMN, $lkGcZ]; goto Pxc4J; DmQQU: $this->current_field = $A5xWC; goto C6k1S; XskWT: } function float(string $A5xWC) { goto YsXUr; U3FHe: $this->fields[$this->current_field]["\164\171\160\x65"] = "\x46\x4c\117\101\124"; goto z1YMP; YsXUr: $this->current_field = $A5xWC; goto wlSjR; z1YMP: return $this; goto OqtED; wlSjR: $this->fields[$this->current_field] = []; goto U3FHe; OqtED: } function double(string $A5xWC) { goto TArF2; eKB2x: $this->fields[$this->current_field]["\164\171\x70\x65"] = "\x44\x4f\125\x42\114\105"; goto C86PY; Lg6Jq: $this->fields[$this->current_field] = []; goto eKB2x; TArF2: $this->current_field = $A5xWC; goto Lg6Jq; C86PY: return $this; goto Ij6D0; Ij6D0: } function real(string $A5xWC) { goto fdABP; fdABP: $this->current_field = $A5xWC; goto rSx1h; iII3Y: $this->fields[$this->current_field]["\164\x79\x70\x65"] = "\x52\x45\x41\x4c"; goto eLIOU; rSx1h: $this->fields[$this->current_field] = []; goto iII3Y; eLIOU: return $this; goto R3qLN; R3qLN: } function char(string $A5xWC) { goto NEZqQ; NEZqQ: $this->current_field = $A5xWC; goto C8bes; C8bes: $this->fields[$this->current_field] = []; goto dTcR3; gU2HY: return $this; goto oGVN9; dTcR3: $this->fields[$this->current_field]["\164\171\x70\145"] = "\103\x48\101\x52"; goto gU2HY; oGVN9: } function varchar(string $A5xWC, int $e4iMN = 60) { goto TmvMx; Cuost: $this->current_field = $A5xWC; goto oynZl; v3M2M: $this->fields[$this->current_field]["\154\x65\156"] = $e4iMN; goto VveWe; fY6Fl: $this->fields[$this->current_field]["\164\171\160\145"] = "\126\101\122\x43\x48\x41\x52"; goto v3M2M; oaL9J: wu1f4: goto Cuost; VveWe: return $this; goto lmp_6; oynZl: $this->fields[$this->current_field] = []; goto fY6Fl; lfW9K: throw new \InvalidArgumentException("\x4d\x61\x78\x20\154\x65\x6e\147\164\150\x20\151\163\x20\66\x35\x35\63\65"); goto oaL9J; TmvMx: if (!($e4iMN > 65535)) { goto wu1f4; } goto lfW9K; lmp_6: } function text(string $A5xWC, int $e4iMN = NULL) { goto kK0sp; i7lfR: $this->fields[$this->current_field]["\154\x65\156"] = $e4iMN; goto iyvON; lW1sJ: $this->fields[$this->current_field] = []; goto Ru6wl; Ru6wl: $this->fields[$this->current_field]["\x74\x79\160\145"] = "\x54\x45\130\124"; goto r26dy; LZxzI: yzfUy: goto jS_Uv; XV59P: return $this; goto lMDWK; jS_Uv: $this->current_field = $A5xWC; goto lW1sJ; aUFgW: throw new \InvalidArgumentException("\x4d\x61\x78\x20\x6c\145\x6e\147\x74\x68\x20\151\163\x20\66\65\65\63\x35"); goto LZxzI; r26dy: if (!($e4iMN != NULL)) { goto Url9o; } goto i7lfR; iyvON: Url9o: goto XV59P; kK0sp: if (!($e4iMN > 65535)) { goto yzfUy; } goto aUFgW; lMDWK: } function tinytext(string $A5xWC) { goto W7mb9; BOZsR: $this->fields[$this->current_field]["\x74\171\x70\145"] = "\x54\111\116\x59\124\105\130\124"; goto zqDuC; qT4fg: $this->fields[$this->current_field] = []; goto BOZsR; W7mb9: $this->current_field = $A5xWC; goto qT4fg; zqDuC: return $this; goto W_HBm; W_HBm: } function mediumtext(string $A5xWC) { goto aNlzB; wtl4u: $this->fields[$this->current_field]["\x74\x79\160\x65"] = "\115\x45\x44\x49\x55\115\x54\105\x58\124"; goto lVFZh; aNlzB: $this->current_field = $A5xWC; goto Xb9ec; lVFZh: return $this; goto FKoqY; Xb9ec: $this->fields[$this->current_field] = []; goto wtl4u; FKoqY: } function longtext(string $A5xWC) { goto wVDfG; uUu0b: return $this; goto c3m93; wVDfG: $this->current_field = $A5xWC; goto mr2VR; KW1Ol: $this->fields[$this->current_field]["\164\171\x70\145"] = "\x4c\x4f\x4e\x47\124\x45\x58\x54"; goto uUu0b; mr2VR: $this->fields[$this->current_field] = []; goto KW1Ol; c3m93: } function varbinary(string $A5xWC, int $e4iMN = 60) { goto T9sbb; Wk6Ls: return $this; goto HnHUe; YRWMM: $this->current_field = $A5xWC; goto aBcAJ; a7xF5: $this->fields[$this->current_field]["\x6c\x65\156"] = $e4iMN; goto Wk6Ls; aBcAJ: $this->fields[$this->current_field] = []; goto TezB2; w_tSx: throw new \InvalidArgumentException("\115\141\170\x20\154\x65\156\x67\164\x68\40\151\x73\40\66\x35\65\63\x35"); goto O4hfP; TezB2: $this->fields[$this->current_field]["\x74\171\160\x65"] = "\126\x41\x52\102\x49\116\101\122\131"; goto a7xF5; T9sbb: if (!($e4iMN > 65535)) { goto tydip; } goto w_tSx; O4hfP: tydip: goto YRWMM; HnHUe: } function blob(string $A5xWC) { goto ZjL2T; B1sW4: return $this; goto ZNXKK; RlnKp: $this->fields[$this->current_field] = []; goto Zhffo; Zhffo: $this->fields[$this->current_field]["\x74\171\160\145"] = "\x42\114\117\x42"; goto B1sW4; ZjL2T: $this->current_field = $A5xWC; goto RlnKp; ZNXKK: } function binary(string $A5xWC, int $e4iMN) { goto OH9MU; FNDOX: $this->fields[$this->current_field]["\154\x65\156"] = $e4iMN; goto yWG3P; OH9MU: if (!($e4iMN > 255)) { goto QKNgr; } goto HB5yc; HB5yc: throw new \InvalidArgumentException("\115\x61\x78\x20\154\x65\156\x67\164\150\40\151\x73\40\x36\65\65\x33\x35"); goto jZYhU; tolr1: $this->current_field = $A5xWC; goto n63Q9; yWG3P: return $this; goto P5qoU; n63Q9: $this->fields[$this->current_field] = []; goto RObrx; jZYhU: QKNgr: goto tolr1; RObrx: $this->fields[$this->current_field]["\164\171\x70\x65"] = "\x42\111\116\x41\122\131"; goto FNDOX; P5qoU: } function tinyblob(string $A5xWC) { goto JU6UA; HuOPK: $this->fields[$this->current_field] = []; goto NSUiX; JU6UA: $this->current_field = $A5xWC; goto HuOPK; NSUiX: $this->fields[$this->current_field]["\164\x79\x70\145"] = "\124\111\x4e\x59\x42\114\117\102"; goto UcWI6; UcWI6: return $this; goto fN393; fN393: } function mediumblob(string $A5xWC) { goto xGXzA; pOkYb: $this->fields[$this->current_field] = []; goto OaZ3A; o3Uve: return $this; goto pc1rr; OaZ3A: $this->fields[$this->current_field]["\164\171\x70\x65"] = "\x4d\105\104\111\x55\115\x42\114\x4f\102"; goto o3Uve; xGXzA: $this->current_field = $A5xWC; goto pOkYb; pc1rr: } function longblob(string $A5xWC) { goto S_9Lf; S_9Lf: $this->current_field = $A5xWC; goto KPQX4; eISgT: $this->fields[$this->current_field]["\x74\x79\x70\x65"] = "\x4c\117\116\107\x42\114\117\102"; goto rGmFU; KPQX4: $this->fields[$this->current_field] = []; goto eISgT; rGmFU: return $this; goto BtdYf; BtdYf: } function json(string $A5xWC) { goto TaxL_; fKRQb: return $this; goto rbbuh; AWoCi: $this->fields[$this->current_field]["\164\171\160\x65"] = "\112\123\x4f\x4e"; goto fKRQb; CcJHo: $this->fields[$this->current_field] = []; goto AWoCi; TaxL_: $this->current_field = $A5xWC; goto CcJHo; rbbuh: } function set(string $A5xWC, array $F1ytw) { goto ZIOQ2; o1FOi: return $this; goto ghxai; ZIOQ2: $this->current_field = $A5xWC; goto bDIye; bDIye: $this->fields[$this->current_field] = []; goto wDU3J; wDU3J: $this->fields[$this->current_field]["\x74\x79\x70\x65"] = "\123\x45\x54"; goto zbmm2; zbmm2: $this->fields[$this->current_field]["\141\x72\162\x61\x79"] = $F1ytw; goto o1FOi; ghxai: } function enum(string $A5xWC, array $F1ytw) { goto Uvt6j; ebhtw: $this->fields[$this->current_field]["\x74\x79\x70\145"] = "\x45\x4e\125\x4d"; goto bAmbe; r83rq: return $this; goto BbLvM; fJdAd: $this->fields[$this->current_field] = []; goto ebhtw; bAmbe: $this->fields[$this->current_field]["\141\x72\162\x61\171"] = $F1ytw; goto r83rq; Uvt6j: $this->current_field = $A5xWC; goto fJdAd; BbLvM: } function time(string $A5xWC) { goto ElXpF; yQa56: return $this; goto rI9MH; CER3E: $this->fields[$this->current_field] = []; goto uBwam; uBwam: $this->fields[$this->current_field]["\164\x79\160\x65"] = "\124\111\115\x45"; goto yQa56; ElXpF: $this->current_field = $A5xWC; goto CER3E; rI9MH: } function year(string $A5xWC) { goto hXqjz; p01Ib: return $this; goto HvfzU; hXqjz: $this->current_field = $A5xWC; goto qlFSD; Y0hrw: $this->fields[$this->current_field]["\164\x79\160\x65"] = "\131\x45\101\122"; goto p01Ib; qlFSD: $this->fields[$this->current_field] = []; goto Y0hrw; HvfzU: } function date(string $A5xWC) { goto bUvBr; bQsAc: $this->fields[$this->current_field]["\x74\x79\x70\145"] = "\104\x41\124\x45"; goto zDk07; bUvBr: $this->current_field = $A5xWC; goto Xru3n; zDk07: return $this; goto TvNaK; Xru3n: $this->fields[$this->current_field] = []; goto bQsAc; TvNaK: } function datetime(string $A5xWC) { goto sS1ev; L844N: $this->fields[$this->current_field] = []; goto GCuxl; MsS4U: return $this; goto FAR01; GCuxl: $this->fields[$this->current_field]["\x74\x79\x70\x65"] = "\104\x41\x54\x45\124\x49\x4d\x45"; goto MsS4U; sS1ev: $this->current_field = $A5xWC; goto L844N; FAR01: } function timestamp(string $A5xWC) { goto ahhMZ; mSlni: return $this; goto nfTfh; MX3w7: $this->fields[$this->current_field]["\x74\171\x70\145"] = "\124\111\115\105\123\x54\x41\115\120"; goto mSlni; ahhMZ: $this->current_field = $A5xWC; goto XYbfy; XYbfy: $this->fields[$this->current_field] = []; goto MX3w7; nfTfh: } function softDeletes() { goto gqfJk; Bv_56: $this->fields[$this->current_field] = []; goto wxLcK; gqfJk: $this->current_field = "\x64\x65\x6c\x65\x74\x65\x64\137\141\x74"; goto Bv_56; wxLcK: $this->fields[$this->current_field]["\164\171\160\x65"] = "\104\101\124\x45\124\111\x4d\105"; goto Ko6TI; Ko6TI: return $this; goto Sdb5M; Sdb5M: } function datetimes() { goto vTDI3; GrF4K: $this->fields[$this->current_field] = []; goto uNFgB; Uj7NA: $this->fields[$this->current_field] = []; goto bKshU; VuGCt: return $this; goto ipsAj; QBG7C: $this->current_field = "\165\160\x64\x61\164\x65\144\x5f\x61\164"; goto Uj7NA; uNFgB: $this->fields[$this->current_field]["\164\171\x70\145"] = "\104\101\x54\105\x54\x49\x4d\105"; goto QBG7C; vTDI3: $this->current_field = "\x63\x72\145\141\164\x65\144\x5f\x61\164"; goto GrF4K; bKshU: $this->fields[$this->current_field]["\164\x79\x70\145"] = "\x44\x41\124\105\x54\x49\115\105"; goto VuGCt; ipsAj: } function point(string $A5xWC) { goto k2f5k; ngrZi: return $this; goto ZUcHP; k2f5k: $this->current_field = $A5xWC; goto YefwI; YefwI: $this->fields[$this->current_field] = []; goto vndpB; vndpB: $this->fields[$this->current_field]["\164\x79\x70\x65"] = "\x50\117\111\x4e\124"; goto ngrZi; ZUcHP: } function multipoint(string $A5xWC) { goto cb1Wr; cb1Wr: $this->current_field = $A5xWC; goto Gs1Po; Gs1Po: $this->fields[$this->current_field] = []; goto TuMNF; Bruyx: return $this; goto Hzs2F; TuMNF: $this->fields[$this->current_field]["\164\x79\x70\x65"] = "\115\x55\114\x54\x49\120\x4f\111\116\x54"; goto Bruyx; Hzs2F: } function linestring(string $A5xWC) { goto FOXvf; FOXvf: $this->current_field = $A5xWC; goto cDl1j; agkUp: $this->fields[$this->current_field]["\164\171\x70\145"] = "\114\x49\116\x45\x53\x54\122\111\x4e\x47"; goto yz4yD; cDl1j: $this->fields[$this->current_field] = []; goto agkUp; yz4yD: return $this; goto C3P8I; C3P8I: } function polygon(string $A5xWC) { goto lS7Ew; ro9FC: $this->fields[$this->current_field]["\x74\171\160\x65"] = "\x50\117\x4c\131\x47\117\116"; goto yjfDX; yjfDX: return $this; goto D6RRy; WvBqF: $this->fields[$this->current_field] = []; goto ro9FC; lS7Ew: $this->current_field = $A5xWC; goto WvBqF; D6RRy: } function multipolygon(string $A5xWC) { goto Lw0L0; vcXiY: return $this; goto QCvyN; atA5t: $this->fields[$this->current_field]["\x74\x79\x70\145"] = "\x4d\x55\114\x54\x49\120\x4f\x4c\131\x47\117\x4e"; goto vcXiY; Lw0L0: $this->current_field = $A5xWC; goto hOkO8; hOkO8: $this->fields[$this->current_field] = []; goto atA5t; QCvyN: } function geometry(string $A5xWC) { goto kGPdK; kGPdK: $this->current_field = $A5xWC; goto q_fln; LsWs9: $this->fields[$this->current_field]["\x74\x79\160\x65"] = "\107\x45\117\x4d\105\x54\122\131"; goto KuNrr; q_fln: $this->fields[$this->current_field] = []; goto LsWs9; KuNrr: return $this; goto P0PkB; P0PkB: } function geometrycollection(string $A5xWC) { goto CoCtu; l6haq: return $this; goto rMkAG; Ycqi2: $this->fields[$this->current_field]["\x74\x79\160\x65"] = "\x47\105\x4f\x4d\x45\x54\x52\131\103\117\114\114\105\103\124\x49\117\116"; goto l6haq; h0xWo: $this->fields[$this->current_field] = []; goto Ycqi2; CoCtu: $this->current_field = $A5xWC; goto h0xWo; rMkAG: } function collation(string $K84HO) { $this->fields[$this->current_field]["\x63\x6f\154\x6c\x61\164\151\157\x6e"] = $K84HO; return $this; } function collate(string $K84HO) { $this->collation($K84HO); return $this; } function charset(string $K84HO) { $this->fields[$this->current_field]["\143\150\x61\x72\x73\145\164"] = $K84HO; return $this; } function auto(bool $K84HO = true) { $this->fields[$this->current_field]["\141\x75\164\x6f"] = $K84HO; return $this; } function addAuto() { $this->fields[$this->current_field]["\141\x75\164\x6f"] = true; return $this; } function dropAuto() { $this->current_field = static::getAutoIncrementField($this->tb_name); return $this->auto(false); } function notAuto() { return $this->dropAuto(); } function nullable(bool $sKJd8 = true) { $this->fields[$this->current_field]["\x6e\x75\x6c\154\141\142\154\145"] = $sKJd8 ? "\x4e\x55\x4c\114" : "\116\x4f\124\40\x4e\125\x4c\x4c"; return $this; } function dropNullable() { return $this->dropDefault()->nullable(false); } function notNullable() { return $this->dropNullable(); } function commentField(string $T4U11) { $this->fields[$this->current_field]["\143\157\155\155\145\x6e\x74"] = $T4U11; return $this; } function comment(string $T4U11) { return $this->commentField($T4U11); } function dropCommentField() { } function default($K84HO = NULL) { goto TE3_Z; s11id: $this->fields[$this->current_field]["\144\x65\146\141\165\x6c\164"] = $K84HO; goto p8yBm; gbMSh: $K84HO = "\116\x55\114\x4c"; goto eT_Y5; CY2GU: CMNJl: goto gbMSh; eT_Y5: goto XBGxC; goto Qp0SF; QQbzK: XBGxC: goto s11id; Qp0SF: B5S2O: goto ZiKIb; ZiKIb: $K84HO = NULL; goto QQbzK; aRn8E: if ($K84HO === false) { goto B5S2O; } goto ia4ej; TE3_Z: if ($K84HO === NULL) { goto CMNJl; } goto aRn8E; ia4ej: goto XBGxC; goto CY2GU; p8yBm: return $this; goto itZlP; itZlP: } function dropDefault() { $this->fields[$this->current_field]["\144\145\x66\141\165\x6c\164"] = NULL; return $this; } function currentTimestamp() { $this->default("\143\165\x72\162\145\x6e\x74\137\164\x69\x6d\x65\163\164\141\155\x70\50\51"); return $this; } protected function setAttr($Zp0wp) { goto o8bYT; adwx0: hZnYX: goto agI4j; U0G1C: throw new \Exception("\x41\x74\164\162\x69\142\x75\x74\x65\x20\x27{$Zp0wp}\47\40\x69\x73\x20\156\x6f\164\40\166\141\154\151\x64\x2e"); goto adwx0; o8bYT: if (in_array($Zp0wp, ["\x55\116\123\x49\107\x4e\105\x44", "\x55\116\123\111\x47\x4e\x45\104\x20\x5a\x45\x52\x4f\106\x49\x4c\x4c", "\102\111\x4e\101\122\x59"])) { goto hZnYX; } goto U0G1C; agI4j: $this->fields[$this->current_field]["\141\x74\164\x72"] = $Zp0wp; goto dbePX; dbePX: } function dropAttr() { $this->fields[$this->current_field]["\x61\x74\164\162"] = NULL; return $this; } function unsigned() { $this->setAttr("\x55\x4e\123\x49\x47\x4e\105\x44"); return $this; } function zeroFill() { $this->setAttr("\x55\116\x53\x49\107\x4e\105\104\x20\x5a\x45\x52\117\x46\111\x4c\114"); return $this; } function binaryAttr() { $this->setAttr("\x42\111\x4e\x41\x52\x59"); return $this; } function onUpdateCurrent() { $this->setAttr("\x63\x75\162\x72\x65\156\x74\x5f\x74\x69\155\x65\x73\164\x61\x6d\160\x28\51"); return $this; } function after(string $BRPp3) { $this->fields[$this->current_field]["\x61\146\164\x65\x72"] = $BRPp3; return $this; } function first() { goto mTbQK; kKpJV: unset($this->fields[$this->current_field]["\x61\146\x74\145\162"]); goto UFmG8; QeimM: return $this; goto lHBju; uYQbU: $this->fields[$this->current_field]["\x66\151\x72\163\x74"] = true; goto QeimM; wVn2f: foreach ($this->fields as $gK9hD => $BRPp3) { goto fMVK_; yxLDv: FzB8r: goto xEJgg; fMVK_: if (!isset($this->fields[$gK9hD]["\146\x69\x72\163\164"])) { goto FzB8r; } goto GhkGF; GhkGF: unset($this->fields[$gK9hD]["\146\151\x72\x73\x74"]); goto yxLDv; xEJgg: xdp37: goto q3vdR; q3vdR: } goto hRCG2; mTbQK: if (!isset($this->fields[$this->current_field]["\x61\146\164\145\x72"])) { goto mg0vz; } goto kKpJV; UFmG8: mg0vz: goto wVn2f; hRCG2: hV8bY: goto uYQbU; lHBju: } function foreign(string $mUgwo) { goto BHGuO; BHGuO: $this->current_field = $mUgwo; goto f8NcT; f8NcT: $this->fks[$this->current_field] = []; goto Nk_gn; Nk_gn: return $this; goto GCkYS; GCkYS: } function fk(string $mUgwo) { return $this->foreign($mUgwo); } function fromField(string $mUgwo) { return $this->foreign($mUgwo); } function references(string $mUgwo) { $this->fks[$this->current_field]["\162\145\146\x65\162\x65\156\x63\x65\x73"] = $mUgwo; return $this; } function toField(string $mUgwo) { return $this->references($mUgwo); } function on(string $J2AHP) { $this->fks[$this->current_field]["\157\x6e"] = $J2AHP; return $this; } function onTable(string $J2AHP) { return $this->on($J2AHP); } function toTable(string $J2AHP) { return $this->on($J2AHP); } function onDelete(string $ZQEZU) { goto g0Fjh; g0Fjh: $ZQEZU = strtoupper($ZQEZU); goto fFrV7; TzmS4: $this->fks[$this->current_field]["\x6f\156\137\144\x65\154\145\x74\x65"] = $ZQEZU; goto fSaNW; fFrV7: if (in_array($ZQEZU, ["\103\x41\x53\x43\101\x44\x45", "\122\x45\123\124\122\111\103\124", "\x4e\x4f\x20\101\x43\x54\x49\x4f\116", "\123\105\124\40\116\x55\x4c\x4c"])) { goto KCZ0c; } goto uecQN; uecQN: throw new \InvalidArgumentException("\101\x63\x74\151\x6f\156\x20\146\157\162\40\117\x4e\40\x44\105\114\105\x54\x45\40\57\40\117\x4e\x20\x43\101\x53\103\x41\x44\105\40\163\150\157\165\154\x64\x20\x62\145\x20\133\x27\103\101\x53\103\x41\x44\105\47\54\40\47\122\105\x53\x54\x52\x49\103\124\x27\54\40\47\x4e\x4f\x20\101\103\124\x49\x4f\x4e\47\x2c\x20\47\123\105\x54\x20\x4e\x55\114\114\x27\x5d"); goto tQpf9; tQpf9: KCZ0c: goto TzmS4; fSaNW: return $this; goto P4bUI; P4bUI: } function onUpdate(string $ZQEZU) { goto Icfhp; o_END: $this->fks[$this->current_field]["\x6f\156\137\x75\x70\x64\141\x74\x65"] = $ZQEZU; goto ZqdrO; ZqdrO: return $this; goto uhiWJ; f8JGy: if (in_array($ZQEZU, ["\103\x41\123\103\101\x44\x45", "\122\105\123\124\122\x49\103\x54", "\116\x4f\x20\x41\103\x54\111\117\x4e", "\x53\105\x54\40\116\x55\114\x4c", "\123\105\124\x20\x44\x45\x46\101\125\114\x54"])) { goto lwiOu; } goto zpKVo; Icfhp: $ZQEZU = strtoupper($ZQEZU); goto f8JGy; EOimK: lwiOu: goto o_END; zpKVo: throw new \InvalidArgumentException("\111\x6e\166\141\154\x69\x64\x20\x61\x63\164\x69\x6f\156\x20\47{$ZQEZU}\x27\x2e\40\x41\x63\164\151\x6f\x6e\40\146\157\162\x20\117\x4e\x20\104\105\x4c\105\124\105\40\57\40\117\x4e\40\103\101\123\103\101\x44\x45\40\163\150\157\165\154\x64\40\142\145\x20\x5b\x27\x43\x41\x53\x43\101\104\x45\47\x2c\40\x27\x52\x45\123\x54\122\x49\103\x54\x27\54\x20\x27\x4e\117\40\101\x43\x54\x49\117\x4e\x27\x2c\x20\47\123\105\124\40\116\x55\114\x4c\x27\x2c\40\47\x53\x45\x54\x20\x44\105\x46\101\125\x4c\124\47\x5d"); goto EOimK; uhiWJ: } function constraint(string $teUSM) { $this->fks[$this->current_field]["\143\157\156\x73\x74\162\141\x69\156\x74"] = $teUSM; return $this; } protected function setIndex(string $jDG4E) { goto LD6F8; jHAQ5: F9TML: goto CCW6Z; EXsQF: if (in_array($jDG4E, ["\120\x52\111\x4d\101\122\x59", "\125\x4e\x49\x51\x55\x45", "\x49\x4e\104\105\130", "\106\x55\114\x4c\x54\105\x58\124", "\x53\120\x41\124\111\x41\x4c"])) { goto F9TML; } goto TTW4b; TTW4b: throw new \InvalidArgumentException("\111\156\166\141\154\x69\x64\x20\x69\156\144\x65\x78\40{$jDG4E}"); goto jHAQ5; CCW6Z: $this->indices[$this->current_field] = $jDG4E; goto EdVbj; LD6F8: $jDG4E = strtoupper($jDG4E); goto EXsQF; EdVbj: } function primary() { $this->setIndex("\x50\x52\111\x4d\101\x52\131"); return $this; } function pri() { return $this->primary(); } function unique() { $this->setIndex("\x55\x4e\x49\121\125\x45"); return $this; } function index() { $this->setIndex("\x49\x4e\104\x45\130"); return $this; } function fulltext() { $this->setIndex("\x46\125\114\x4c\124\105\130\124"); return $this; } function spatial() { $this->setIndex("\123\120\x41\124\111\x41\114"); return $this; } function getDefinition($BRPp3) { goto JzS8l; szQDq: $e4iMN = implode("\x2c", (array) $BRPp3["\x6c\145\156"]); goto TbVJE; frNgL: goto vJFu3; goto co1gD; lWD4v: shGmU: goto Wn1eS; DFSZd: if (!isset($BRPp3["\x64\x65\146\141\x75\154\x74"])) { goto dKk9z; } goto VA0n0; isJNQ: $qUtFS .= "\x20"; goto McAjI; JzS8l: $qUtFS = ''; goto t9RqB; co1gD: UMT_7: goto sdRK9; TbVJE: $qUtFS .= "\x28{$e4iMN}\x29\40"; goto iIkOq; zBfbG: $qUtFS .= "{$BRPp3["\x61\164\164\x72"]}\40"; goto f3mvJ; bkBnh: dKk9z: goto TSAa5; YdKwG: $qUtFS .= "\103\117\114\x4c\x41\124\105\40{$BRPp3["\143\x6f\154\154\141\164\151\x6f\x6e"]}\x20"; goto qrSzQ; sdRK9: $qUtFS .= "{$BRPp3["\156\165\154\154\x61\142\x6c\145"]}\x20"; goto KD6O5; VA0n0: $qUtFS .= "\104\105\106\x41\125\x4c\124\40{$BRPp3["\144\145\x66\x61\x75\154\x74"]}\40"; goto bkBnh; h2Icz: $F1ytw = implode("\x2c", array_map(function ($aU1Pp) { return "\x27{$aU1Pp}\x27"; }, $BRPp3["\141\x72\162\x61\171"])); goto CcgzZ; giJvg: pjn8E: goto Kf_g4; kekp0: if (isset($BRPp3["\x6c\145\156"])) { goto w_L6V; } goto isJNQ; Kf_g4: if (!isset($BRPp3["\x61\164\x74\162"])) { goto mwXCa; } goto zBfbG; Wn1eS: return trim($qUtFS); goto mY7yf; p4JnN: $qUtFS .= "\116\117\124\40\116\125\114\114\40"; goto frNgL; ZA3G3: XSyiS: goto fAqI9; QWjl2: w_L6V: goto szQDq; WE8LU: $qUtFS .= "\x41\125\124\x4f\x5f\x49\x4e\x43\122\105\115\x45\x4e\124\x20\x50\122\111\x4d\x41\x52\131\40\x4b\x45\x59"; goto lWD4v; t9RqB: if (in_array($BRPp3["\164\171\160\145"], ["\123\105\x54", "\105\116\x55\115"])) { goto Nu23J; } goto kekp0; iIkOq: kufGA: goto iilgv; iilgv: goto pjn8E; goto r7vCH; f3mvJ: mwXCa: goto O0mD1; Smuqs: if (isset($BRPp3["\156\165\154\154\141\142\154\x65"])) { goto UMT_7; } goto p4JnN; qrSzQ: MFUF0: goto Smuqs; O0mD1: if (!isset($BRPp3["\x63\150\x61\x72\163\145\x74"])) { goto XSyiS; } goto HmBvo; KD6O5: vJFu3: goto DFSZd; TSAa5: if (!isset($BRPp3["\141\x75\x74\157"])) { goto shGmU; } goto WE8LU; McAjI: goto kufGA; goto QWjl2; HmBvo: $qUtFS .= "\103\110\101\122\101\x43\x54\x45\122\x20\123\105\x54\x20{$BRPp3["\143\x68\x61\162\163\145\x74"]}\x20"; goto ZA3G3; fAqI9: if (!isset($BRPp3["\x63\x6f\x6c\154\141\164\x69\157\156"])) { goto MFUF0; } goto YdKwG; r7vCH: Nu23J: goto h2Icz; CcgzZ: $qUtFS .= "\50{$F1ytw}\x29\x20"; goto giJvg; mY7yf: } private function showTable() { goto PldaI; PldaI: $GoNaw = DB::getConnection(); goto S2LQk; S2LQk: $rYH0z = $GoNaw->query("\123\110\x4f\x57\40\x43\x52\105\101\124\x45\x20\x54\101\x42\114\105\40\140{$this->tb_name}\140", \PDO::FETCH_ASSOC); goto xUefk; xUefk: $QQgt2 = $rYH0z->fetch(); goto n2Bvx; n2Bvx: return $QQgt2; goto qynh_; qynh_: } private function addFKs() { foreach ($this->fks as $A5xWC => $vvme7) { goto ip7Rx; F4Rsd: $RW4C3 = !empty($vvme7["\157\x6e\137\165\x70\x64\141\x74\x65"]) ? "\x4f\116\x20\x55\120\x44\101\124\105\x20" . $vvme7["\x6f\x6e\137\165\x70\x64\x61\x74\x65"] : ''; goto UzF1f; UzF1f: $OxbUO = !empty($vvme7["\143\x6f\x6e\x73\x74\x72\x61\151\156\x74"]) ? "\103\117\x4e\x53\124\122\x41\x49\116\124\40\140" . $vvme7["\143\157\156\x73\164\162\x61\151\156\164"] . "\140" : ''; goto Y5dg0; ip7Rx: $JOsrM = !empty($vvme7["\x6f\156\x5f\144\x65\154\145\164\145"]) ? "\x4f\116\x20\104\105\114\x45\x54\105\40" . $vvme7["\157\x6e\137\x64\x65\x6c\x65\164\145"] : ''; goto F4Rsd; iABJ4: NhLyV: goto gAREE; Y5dg0: $this->commands[] = trim("\x41\x4c\124\105\x52\x20\124\x41\x42\x4c\105\x20\40\140{$this->tb_name}\140\40\101\x44\x44\x20{$OxbUO}\x20\x46\117\x52\105\x49\107\116\x20\x4b\105\x59\40\50\140{$A5xWC}\140\51\x20\x52\105\x46\105\x52\x45\x4e\103\x45\123\40\140{$vvme7["\157\x6e"]}\140\x20\50\x60{$vvme7["\162\145\x66\145\162\x65\x6e\x63\145\163"]}\x60\51\x20{$JOsrM}\40{$RW4C3}") . "\x3b"; goto iABJ4; gAREE: } eoMKs: } function createTable(bool $HNoJy = false) { goto n2V5V; lctbY: $this->commands = ["\123\x45\x54\x20\x53\x51\114\137\x4d\x4f\x44\105\x20\75\x20\x22\116\x4f\x5f\101\x55\124\117\137\126\x41\x4c\x55\105\x5f\x4f\116\137\x5a\x45\x52\x4f\x22\73", "\123\105\124\x20\x74\151\x6d\145\x5f\x7a\157\156\x65\40\x3d\40\x22\53\60\60\72\x30\x30\42\x3b"]; goto Z1ORc; HNz2g: CWALU: goto xJl18; jec5N: throw new \Exception("\116\x6f\40\x66\x69\x65\154\144\x73\41"); goto bTlQj; xTYKL: if ($this->exec) { goto hr17x; } goto z1fgi; o_3q_: $GoNaw = DB::getConnection(); goto vWjJl; MiDtT: $this->commands[] = $qUtFS; goto p0WOu; lKe2u: $this->addFKs(); goto qDFvu; DW8Lh: LWL6u: goto HNz2g; z1fgi: return; goto MbSBR; nXRL4: WXQLN: goto APNPl; dPkcF: throw new \Exception("\x50\x6c\x65\141\163\145\40\x73\160\145\143\x69\x66\171\40\164\x61\x62\154\x65\x20\x65\x6e\x67\151\156\145"); goto dFySd; AnLl6: xIOpc: goto t4Fhn; j37X9: if (!($this->engine == NULL)) { goto UDDhG; } goto dPkcF; Y9eHV: try { goto jEyYp; B7PTb: h5iJv: goto RNnuM; jEyYp: foreach ($this->commands as $dL_yS) { goto Qbz_a; v2qT2: rnEAb: goto ckGHf; FB_nj: $QQgt2 = $XFGFd->execute(); goto v2qT2; Qbz_a: $XFGFd = $GoNaw->prepare($dL_yS); goto FB_nj; ckGHf: } goto B7PTb; RNnuM: DB::commit(); goto j1P6M; j1P6M: } catch (\PDOException $aU1Pp) { goto hyn2D; Av6_a: throw $aU1Pp; goto Qgyyh; RZHpp: d($aU1Pp->getMessage(), "\x50\x44\117\x20\145\x72\162\157\x72"); goto pb0yl; pb0yl: DB::rollback(); goto Av6_a; hyn2D: d($dL_yS, "\x53\x51\x4c\40\x77\x69\164\x68\x20\145\x72\x72\x6f\162"); goto RZHpp; Qgyyh: } catch (\Exception $aU1Pp) { DB::rollback(); throw $aU1Pp; } catch (\Throwable $aU1Pp) { DB::rollback(); throw $aU1Pp; } goto FbjqO; tY02l: $qUtFS = "\x43\x52\105\101\x54\x45\x20\124\x41\102\x4c\x45\x20{$xUf3w}\x20\x60{$this->tb_name}\x60\x20\50\xa{$qUtFS}\xa\51\40\x45\x4e\107\111\x4e\105\x3d{$this->engine}\x20\104\105\x46\101\125\x4c\124\x20\x43\x48\101\122\123\105\x54\x3d{$this->charset}\x3b"; goto MiDtT; m5FTX: throw new \Exception("\124\141\x62\154\x65\40{$this->tb_name}\40\141\154\x72\145\141\x64\x79\40\145\170\151\163\164\x73"); goto DW8Lh; r8V8v: $xUf3w = $HNoJy ? "\111\x46\40\116\x4f\124\x20\105\x58\111\123\124\123" : ''; goto tY02l; dFySd: UDDhG: goto Yw1Pv; t4Fhn: $qUtFS = substr($qUtFS, 0, strlen($qUtFS) - 2); goto r8V8v; MbSBR: hr17x: goto o_3q_; ipCFM: $qUtFS = "\101\114\x54\105\122\x20\x54\101\x42\x4c\x45\40\140{$this->tb_name}\140\40\12{$qUtFS}\73"; goto QNvoM; QNvoM: $this->commands[] = $qUtFS; goto slxsZ; Z1ORc: $qUtFS = ''; goto fnZjz; fnZjz: foreach ($this->fields as $A5xWC => $BRPp3) { goto m75M3; m75M3: $qUtFS .= "\x60{$A5xWC}\140\x20{$BRPp3["\x74\171\160\145"]}\40"; goto Hfv3I; Hfv3I: $qUtFS .= $this->getDefinition($BRPp3); goto dhiAG; Bb_p1: CGF5D: goto zwrq4; dhiAG: $qUtFS .= "\54\xa"; goto Bb_p1; zwrq4: } goto AnLl6; bxamd: foreach ($this->indices as $t37OG => $cBac2) { goto CCQhX; MLXvi: vt1D7: goto COF3S; COF3S: Q5hFg: goto YDHom; CCQhX: switch ($cBac2) { case "\111\116\x44\105\130": $qUtFS .= "\x41\x44\x44\40\x49\116\104\x45\x58\40\x28\140{$t37OG}\140\x29\x2c\xa"; goto Q5hFg; case "\120\x52\x49\115\101\122\x59": goto Q5hFg; case "\x55\116\x49\x51\125\x45": $qUtFS .= "\x41\x44\x44\x20\125\116\111\x51\x55\105\40\113\105\131\x20\x60{$t37OG}\x60\x20\50\x60{$t37OG}\140\x29\54\12"; goto Q5hFg; case "\123\x50\x41\x54\x49\x41\x4c": $qUtFS .= "\101\104\x44\40\x53\120\x41\x54\x49\101\114\x20\x4b\105\131\40\x60{$t37OG}\x60\40\50\140{$t37OG}\140\51\54\xa"; goto Q5hFg; case "\106\x55\x4c\114\124\105\130\x54": $qUtFS .= "\x41\104\104\40\106\x55\x4c\114\x54\105\x58\x54\40\113\105\131\40\x60{$t37OG}\140\40\x28\x60{$t37OG}\x60\51\54\xa"; goto Q5hFg; default: throw new \Exception("\x49\x6e\x76\x61\154\x69\x64\40\x69\x6e\x64\145\170\40\164\171\x70\x65"); } goto MLXvi; YDHom: cQRXj: goto CtIH2; CtIH2: } goto nXRL4; bTlQj: DYUea: goto j37X9; vWjJl: DB::beginTransaction(); goto Y9eHV; p0WOu: if (!(count($this->indices) > 0)) { goto qqabb; } goto NKSRA; Yw1Pv: if (!($this->charset == NULL)) { goto ZCfSv; } goto kvkGT; hBg57: ZCfSv: goto lctbY; nQZU8: if (!$this->tableExists()) { goto LWL6u; } goto m5FTX; slxsZ: qqabb: goto lKe2u; kvkGT: throw new \Exception("\x50\154\x65\141\163\145\40\163\x70\145\x63\x69\146\171\x20\x63\150\141\x72\x73\x65\x74"); goto hBg57; NKSRA: $qUtFS = ''; goto bxamd; xJl18: if (!empty($this->fields)) { goto DYUea; } goto jec5N; n2V5V: if ($HNoJy) { goto CWALU; } goto nQZU8; qDFvu: $this->query = implode("\15\12", $this->commands) . "\12"; goto xTYKL; FbjqO: return true; goto yTiG4; APNPl: $qUtFS = substr($qUtFS, 0, -2); goto ipCFM; yTiG4: } function create(bool $Xt23c = false) { return $this->createTable($Xt23c); } function createIfNotExists() { return $this->createTable(true); } function dropTable() { $this->commands[] = "\104\122\x4f\x50\x20\x54\x41\x42\114\105\x20\x60{$this->tb_name}\x60\x3b"; return $this; } function dropTableIfExists() { $this->commands[] = "\x44\122\x4f\x50\40\x54\x41\x42\114\105\40\x49\x46\40\105\130\111\x53\124\x53\x20\140{$this->tb_name}\x60\x3b"; return $this; } function truncateTable(string $UV7E3) { $this->commands[] = "\x54\122\125\x4e\103\x41\x54\105\40\x60{$this->tb_name}\140\56\x60{$UV7E3}\140\x3b"; return $this; } function renameTableTo(string $nfmgI) { $this->commands[] = "\122\105\116\x41\x4d\105\40\x54\101\102\x4c\105\x20\140{$this->field}\140\x20\x54\x4f\40\x60{$nfmgI}\140\73"; return $this; } function dropColumn(string $A5xWC) { $this->commands[] = "\x41\114\124\105\x52\x20\124\101\102\114\105\40\x60{$this->tb_name}\140\x20\104\122\117\120\40\140{$A5xWC}\x60\73"; return $this; } function renameColumn(string $dv_ZM, string $nfmgI) { goto A1u0s; lweRB: return $this; goto Jjjxy; Z7DAa: goto q5vAU; goto Tn8Rm; qZ5oM: Yze8B: goto Nn26S; GaNeR: goto Yze8B; goto ou6zb; F2QPh: SEoV2: goto EipBQ; f3P9I: if (isset($this->prev_schema["\x66\151\x65\x6c\x64\163"][$dv_ZM])) { goto SEoV2; } goto G07sA; ou6zb: cTgBK: goto PPen0; tcY9E: goto Yze8B; goto j5YLS; G07sA: throw new \InvalidArgumentException("\123\143\150\x65\x6d\x61\x20\x65\162\162\x6f\x72\x2e\40\x43\157\x6c\x75\x6d\156\40\x27{$dv_ZM}\x27\40\144\x6f\x65\x73\x20\156\x6f\x74\40\x65\170\151\x73\164\40\x69\156\40\x60{$this->tb_name}\140"); goto F2QPh; C6F4p: if (isset($this->prev_schema["\146\x69\145\x6c\144\163"][$this->current_field]["\154\x65\x6e"])) { goto cTgBK; } goto tcY9E; EipBQ: $ciwO6 = $this->prev_schema["\x66\151\145\x6c\x64\x73"][$dv_ZM]["\164\171\160\145"]; goto Hs434; PPen0: $ciwO6 .= "\x28" . $this->prev_schema["\x66\x69\x65\154\x64\x73"][$this->current_field]["\154\x65\156"] . "\51"; goto qZ5oM; zsd2U: $ciwO6 .= "\50" . implode("\54", $this->fields[$this->current_field]["\141\162\x72\x61\x79"]) . "\51"; goto GaNeR; A1u0s: if (DB::driver() == "\155\171\163\161\154" && !DB::isMariaDB() && DB::driverVersion(true) >= 8) { goto JX0Lo; } goto f3P9I; j5YLS: wipQn: goto zsd2U; Hs434: if (isset($this->prev_schema["\x66\151\145\154\144\x73"][$this->current_field]["\141\x72\162\141\x79"])) { goto wipQn; } goto C6F4p; RaYyn: $this->commands[] = "\x41\114\x54\105\x52\x20\x54\101\102\114\x45\40\x60{$this->tb_name}\x60\40\122\105\x4e\101\115\x45\x20\103\x4f\x4c\x55\x4d\116\x20\140{$dv_ZM}\x60\x20\x54\x4f\40\x60{$nfmgI}\x60\x3b"; goto Z0wO9; Z0wO9: q5vAU: goto lweRB; Tn8Rm: JX0Lo: goto RaYyn; Nn26S: $this->commands[] = "\101\114\124\x45\x52\x20\x54\x41\102\114\105\x20\x60{$this->tb_name}\140\40\x43\x48\x41\116\107\105\x20\x60{$dv_ZM}\140\40\140{$nfmgI}\x60\40{$ciwO6}\73"; goto Z7DAa; Jjjxy: } function renameColumnTo(string $nfmgI) { return $this->renameColumn($this->current_field, $nfmgI); } function addIndex($wyUCM) { goto SA4T3; Ms5Bi: return $this; goto q0xoY; roCIP: $ylm2I = "\x60{$wyUCM}\x60"; goto iuJjs; BzwQW: zbaLt: goto Y0Drn; i_Z3T: AB5d9: goto lUnIQ; lUnIQ: $ylm2I = implode("\54", Strings::backticks($wyUCM)); goto BzwQW; SA4T3: if (is_array($wyUCM)) { goto AB5d9; } goto roCIP; Y0Drn: $this->commands[] = "\101\114\x54\x45\122\40\x54\101\102\x4c\x45\40\140{$this->tb_name}\x60\x20\x41\104\104\x20\x49\116\104\x45\130\50{$ylm2I}\x29\73"; goto Ms5Bi; iuJjs: goto zbaLt; goto i_Z3T; q0xoY: } function dropIndex(string $A5xWC) { $this->commands[] = "\x41\x4c\124\x45\122\40\124\x41\x42\114\x45\x20\x60{$this->tb_name}\140\x20\104\122\x4f\x50\x20\111\x4e\x44\x45\x58\x20\x60{$A5xWC}\x60\x3b"; return $this; } function renameIndex(string $dv_ZM, string $nfmgI) { $this->commands[] = "\x41\x4c\124\105\x52\40\x54\x41\x42\114\105\40\140{$this->tb_name}\140\x20\122\x45\x4e\x41\x4d\x45\40\111\x4e\x44\x45\x58\x20\140{$dv_ZM}\140\x20\124\117\x20\x60{$nfmgI}\x60\73"; return $this; } function renameIndexTo(string $nfmgI) { $this->commands[] = "\x41\114\124\105\122\40\x54\101\x42\x4c\105\x20\x60{$this->tb_name}\x60\40\122\105\x4e\x41\115\105\40\111\x4e\x44\105\x58\x20\140{$this->current_field}\x60\x20\x54\x4f\x20\x60{$nfmgI}\140\x3b"; return $this; } function addPrimary(string $wyUCM) { goto keYdU; YXqu6: XudMm: goto hUZu5; ofZ81: $ylm2I .= "\x2c\40"; goto YXqu6; tq2pQ: $ylm2I = implode("\x2c", $lpMyV); goto d1rFM; hHAOS: $ylm2I = ''; goto DXQWp; eiOVF: uhMdt: goto hHAOS; XC4jT: if (empty($ylm2I)) { goto XudMm; } goto ofZ81; d1rFM: $TVNeS = !empty($ycOC9) ? "\104\x52\117\x50\40\120\122\x49\x4d\x41\122\131\x20\113\105\131\54" : ''; goto c3ZkU; DXQWp: if (!empty($ycOC9) || isset($icuOs)) { goto PAd85; } goto UPxM5; uaW4M: $lpMyV = explode("\x2c", $ylm2I); goto sFTS1; mpHT0: HLdFT: goto lhp2w; UPxM5: $this->commands[] = "\101\114\124\x45\122\40\x54\101\102\114\105\40\x60{$this->tb_name}\140\40\x41\104\104\x20\x50\x52\111\x4d\101\122\131\x20\113\x45\x59\x28\x60{$wyUCM}\140\51\x3b"; goto l4xwx; suOXX: PAd85: goto wV3Qb; sFTS1: $lpMyV = Strings::trimArray($lpMyV); goto dNHSh; dNHSh: $lpMyV = array_unique($lpMyV, SORT_REGULAR); goto tq2pQ; WW9bK: $ylm2I .= "\x2c\40"; goto mpHT0; wV3Qb: $ylm2I = implode("\54", Strings::backticks($ycOC9)); goto Tu171; noAM3: return $this; goto K_HO_; keYdU: $ycOC9 = static::getPKs($this->tb_name); goto s6fEl; l4xwx: goto jxUQM; goto suOXX; Tu171: if (!isset($icuOs)) { goto KiuP1; } goto XC4jT; c3ZkU: $this->commands[] = "\101\x4c\124\105\x52\x20\124\101\x42\114\105\40\140{$this->tb_name}\140\x20{$TVNeS}\40\x41\x44\x44\40\120\122\111\115\x41\x52\x59\40\x4b\x45\x59\x28{$ylm2I}\51\x3b"; goto o6jov; jeP4E: KiuP1: goto Qay3D; o6jov: jxUQM: goto noAM3; hUZu5: $ylm2I .= $icuOs; goto jeP4E; Qay3D: if (empty($ylm2I)) { goto HLdFT; } goto WW9bK; s6fEl: foreach ($this->commands as $clmxu => $Qj60L) { goto w0kPu; BwOM_: KuwD5: goto YgyaP; gJmjH: $icuOs = $m4gBu[1]; goto pn_BG; w0kPu: if (!preg_match("\x2f\40\101\x44\104\40\120\122\111\x4d\x41\x52\x59\40\113\x45\x59\134\x28\x28\x5b\136\51\135\53\x29\x5c\x29\x2f", $Qj60L, $m4gBu)) { goto KuwD5; } goto gJmjH; pn_BG: unset($this->commands[$clmxu]); goto BwOM_; YgyaP: tkcYb: goto d05jA; d05jA: } goto eiOVF; lhp2w: $ylm2I .= "\140{$wyUCM}\140"; goto uaW4M; K_HO_: } function dropPrimary() { goto jlP1u; r5d2T: $E0tJU = new Schema($this->tb_name); goto rjvSt; x5RBL: if (empty($aTQby)) { goto rZAWS; } goto r5d2T; O3GOt: $this->commands[] = $E0tJU->dd(); goto fPCOf; jlP1u: $aTQby = static::getAutoIncrementField($this->tb_name); goto x5RBL; rjvSt: $E0tJU->dontExec()->dropAuto()->alter(); goto O3GOt; LynGE: $this->commands[] = "\101\x4c\x54\105\x52\40\x54\101\102\114\x45\x20\x60{$this->tb_name}\140\x20\x44\122\117\120\40\120\x52\x49\x4d\x41\122\131\40\113\105\131\73"; goto NwNLC; NwNLC: return $this; goto Hnllk; fPCOf: rZAWS: goto LynGE; Hnllk: } function addUnique($wyUCM) { goto laLwC; BTxYz: $ylm2I = "\x60{$wyUCM}\x60"; goto DLMK0; CUT51: kp860: goto MFluE; DLMK0: goto kp860; goto lXQqX; lXQqX: b6xtC: goto H46X8; MFluE: $this->commands[] = "\101\x4c\x54\x45\122\x20\x54\x41\x42\114\x45\x20\x60{$this->tb_name}\x60\x20\101\x44\104\x20\x55\116\x49\121\x55\x45\50{$ylm2I}\51\x3b"; goto UV2jk; laLwC: if (is_array($wyUCM)) { goto b6xtC; } goto BTxYz; UV2jk: return $this; goto abfIr; H46X8: $ylm2I = implode("\x2c", Strings::backticks($wyUCM)); goto CUT51; abfIr: } function setUnique() { $this->commands[] = "\101\x4c\x54\105\x52\40\124\x41\x42\x4c\x45\40\140{$this->tb_name}\x60\x20\x41\104\x44\x20\x55\x4e\111\x51\x55\105\x28\140{$this->current_field}\140\51\73"; return $this; } function dropUnique(string $teUSM) { $this->commands[] = $this->dropIndex($teUSM); return $this; } function addSpatial(string $wyUCM) { $this->commands[] = "\x41\x4c\x54\105\122\x20\124\x41\x42\x4c\x45\40\101\x44\104\x20\123\120\101\124\111\x41\114\40\x49\116\x44\x45\130\x28\140{$wyUCM}\140\x29\x3b"; return $this; } function dropSpatial(string $A5xWC) { $this->commands[] = "\x41\x4c\124\x45\x52\x20\x54\101\x42\x4c\x45\40\140{$this->tb_name}\x60\40\x44\122\x4f\x50\40\140{$A5xWC}\x60\73"; return $this; } function addFullText(string $wyUCM) { $this->commands[] = "\101\114\x54\105\122\40\124\x41\102\x4c\105\40\101\104\x44\40\x46\125\x4c\114\x54\x45\x58\124\x20\111\x4e\104\105\130\50\140{$wyUCM}\140\51\x3b"; return $this; } function dropForeign(string $teUSM) { $this->commands[] = "\101\114\124\x45\122\x20\x54\x41\102\114\105\40\140{$this->tb_name}\140\x20\x44\x52\117\120\x20\x46\x4f\122\x45\111\107\116\40\113\x45\x59\x20\140{$teUSM}\140"; return $this; } function dropFK(string $teUSM) { return $this->dropForeign($teUSM); } protected function fromDB() { goto z2IEC; AVd2k: $Lbljo = array_map(function ($DVw6Y) { return trim($DVw6Y); }, $Lbljo); goto VtE0p; gBs49: $xyXgY = Strings::slice($uocTJ, "\x2f\x55\x53\111\116\x47\x20\50\x42\x54\x52\105\x45\x7c\110\101\x53\110\x29\57"); goto K4Ny2; byMw4: $ewyVZ = function ($VSDHy) { return strtolower($VSDHy); }; goto vcTXC; oYIwc: if (!($Lhkfi == NULL)) { goto w0Eg4; } goto YiZd3; fUfwt: $a8yHb = Strings::sliceAll($uocTJ, "\57\x55\x4e\x49\121\x55\105\40\113\105\131\x20\140\x28\133\x61\x2d\172\x41\55\x5a\x30\55\71\137\x5d\x2b\x29\140\x20\x5c\x28\x60\x28\x5b\141\x2d\x7a\101\x2d\132\60\55\71\137\x5d\x2b\x29\140\134\51\x2f"); goto te1wB; D606p: abAMt: goto BReoE; lHFX3: $C7TD0 = NULL; goto e2sLs; wCry2: $Zp0wp = []; goto Sy0b1; tWRJd: $this->prev_schema["\x65\156\x67\151\156\x65"] = Strings::slice($ijqDR, "\57\x45\x4e\x47\x49\x4e\105\75\x28\x5b\141\55\172\101\x2d\132\135\x5b\x61\x2d\x7a\101\x2d\132\x30\x2d\71\137\135\x2b\51\x2f"); goto DQvVy; nU67O: $GWjs2 = Strings::slice($uocTJ, "\x2f\50\142\151\156\141\162\171\51\57\x69", $ewyVZ) == "\x62\151\x6e\141\162\171"; goto wCry2; te1wB: $Ia9BB = Strings::sliceAll($uocTJ, "\57\x53\x50\x41\x54\111\101\114\x20\113\x45\131\40\140\x28\133\x61\55\x7a\101\55\x5a\60\x2d\x39\137\x5d\x2b\x29\140\x20\x5c\x28\x28\133\x61\x2d\172\101\x2d\132\60\55\71\x5f\140\x2c\135\x2b\51\134\51\x2f"); goto ZXqN5; I3Hzf: if (!($nYDfg != null)) { goto WpGBx; } goto t6bGS; cHa3x: $this->prev_schema["\146\151\145\x6c\144\x73"][$BRPp3]["\156\165\154\x6c\x61\x62\x6c\x65"] = $C7TD0; goto tVt3G; TBuky: return; goto ffqoU; DQvVy: $this->prev_schema["\143\x68\x61\x72\x73\x65\x74"] = Strings::slice($ijqDR, "\57\x43\x48\x41\x52\123\105\x54\x3d\x28\133\141\55\172\101\55\132\135\133\x61\x2d\x7a\101\55\x5a\60\55\71\x5f\135\53\51\x2f"); goto R5pQj; q1rSE: if ($o0_ap != NULL) { goto R2KIi; } goto H_kFA; w035u: $jDG4E = Strings::slice($uocTJ, "\x2f\50\x5b\x61\x2d\x7a\137\135\x2b\x29\57\x69"); goto ZnIZo; vcTXC: $k4q44 = function ($VSDHy) { return strtoupper($VSDHy); }; goto t7P07; H43Qk: hbDqj: goto fN7jq; ffqoU: sBa08: goto LYQQg; mpan7: $this->prev_schema["\x69\156\x64\151\x63\145\x73"][$o0_ap] = "\x50\x52\x49\x4d\101\122\x59"; goto tQ3mL; CGYHy: $m0ynW = NULL; goto BvKFz; qMywo: $this->prev_schema["\x66\151\145\154\x64\163"][$BRPp3]["\x64\145\146\141\x75\154\x74"] = $hbiF5; goto HSKzY; t6bGS: $c5GKP["\143\150\145\x63\153\x73"][$OxbUO][] = [$nYDfg]; goto RdO3V; mMnj2: $BRPp3 = Strings::slice($uocTJ, "\57\x60\x28\133\x61\55\x7a\x5f\x5d\53\51\x60\x2f\x69"); goto w035u; pvZBz: if (!($GWjs2 != null)) { goto QRT99; } goto jLNFH; YiZd3: throw new \Exception("\x5b\40\x46\x61\x74\141\x6c\40\x65\162\x72\x6f\x72\40\x5d\x20\x54\141\x62\154\x65\40\144\x65\146\x69\156\151\164\151\157\x6e\40\143\157\x75\154\x64\x20\x6e\157\164\40\142\145\x20\162\145\143\157\x76\145\162\x65\144"); goto ETR9G; aC_7d: $this->prev_schema["\146\151\x65\154\x64\x73"][$BRPp3]["\141\x72\162\141\171"] = $xLdd_; goto cHa3x; QN3Pp: $vvme7 = Strings::slice($uocTJ, "\x2f\x46\117\x52\x45\x49\x47\x4e\x20\113\x45\x59\x20\134\x28\x60\x28\x5b\x61\x2d\x7a\x41\x2d\132\x30\x2d\x39\137\x5d\53\51\x60\x5c\51\57"); goto k7r5F; x2UOm: c4kQY: goto NkMX2; fN7jq: $c5GKP["\143\150\145\143\153\163"][$OxbUO][] = $nYDfg; goto eGYtb; zaSmJ: foreach ($a8yHb as $Fa1h2) { $this->prev_schema["\x69\x6e\x64\x69\x63\x65\x73"][$Fa1h2] = "\x55\x4e\x49\x51\125\x45"; qmVUP: } goto ORkhc; nUY1P: $Lbljo = explode("\xa", $Lhkfi["\103\x72\x65\x61\x74\x65\40\x54\141\142\154\x65"]); goto AVd2k; APKtI: goto n450M; goto H43Qk; eGYtb: n450M: goto eiLCg; rC7Ar: rSnmC: goto G_hFp; k7r5F: $Ntf6p = Strings::sliceAll($uocTJ, "\57\122\105\x46\105\122\105\x4e\x43\x45\123\40\x60\50\133\141\x2d\172\x41\x2d\x5a\x30\x2d\71\137\x5d\x2b\51\140\x20\x5c\x28\140\50\133\141\x2d\x7a\101\x2d\x5a\x30\55\71\137\x5d\x2b\x29\x60\x5c\x29\57"); goto IRc1o; wvpXy: $nYDfg = NULL; goto mMnj2; ff9Ot: pSd3E: goto zaSmJ; ByPvu: QCLDM: goto ALFQs; Sy0b1: if (!($qCsVt != null)) { goto abAMt; } goto UyOEe; Ek5oJ: $xLdd_ = NULL; goto Wutz2; jLNFH: $Zp0wp[] = "\x62\151\156\141\162\x79"; goto fN6Ys; ETR9G: w0Eg4: goto nUY1P; z2IEC: if (in_array($this->tb_name, $this->tables)) { goto sBa08; } goto TBuky; tQ3mL: goto cnd9f; goto ff9Ot; ABD2m: $this->prev_schema["\x66\x69\145\154\x64\163"][$BRPp3]["\154\x65\x6e"] = $e4iMN; goto aC_7d; hRsX1: R2KIi: goto mpan7; t7P07: $m0ynW = Strings::slice($uocTJ, "\x2f\x43\x48\101\x52\101\103\124\105\x52\x20\x53\x45\x54\40\x28\x5b\x61\x2d\x7a\x30\55\71\137\x5d\x2b\51\x2f"); goto wh38m; Wutz2: $e4iMN = NULL; goto CGYHy; nBJZG: $Zp0wp[] = "\x7a\145\162\157\x66\151\x6c\154"; goto UVcz6; fKbRc: hPgrr: goto rC7Ar; JpCEw: if ($jDG4E == "\x65\x6e\x75\155" || $jDG4E == "\163\145\x74") { goto vFA4a; } goto HhtsW; bFmg1: $nYDfg = Strings::slice($uocTJ, "\57\103\x48\105\103\113\x20\134\50\x28\56\52\x29\x5c\51\x2f"); goto I3Hzf; K4Ny2: $SFV5p = Strings::slice($uocTJ, "\x2f\101\114\107\x4f\x52\111\124\110\115\133\x20\135\x3f\133\x3d\135\x3f\133\40\x5d\x3f\50\x44\x45\x46\x41\x55\114\x54\174\111\116\120\114\x41\103\x45\174\103\117\x50\x59\x29\57"); goto FX9NT; ezMhC: $aTQby = Strings::slice($uocTJ, "\x2f\50\101\x55\x54\x4f\137\111\x4e\103\122\x45\115\x45\116\x54\x29\57") == "\101\125\124\x4f\x5f\x49\x4e\x43\x52\x45\x4d\x45\116\x54"; goto kjfM3; HSKzY: PN10n: goto DJ05S; G_hFp: goto PN10n; goto oeeui; ZXqN5: $gnasR = Strings::sliceAll($uocTJ, "\57\x46\125\114\x4c\124\x45\130\124\x20\113\x45\131\40\140\x28\x5b\x61\55\172\x41\x2d\132\60\55\x39\137\x5d\53\x29\x60\x20\134\x28\x28\x5b\141\55\172\101\55\x5a\x30\x2d\x39\x5f\x60\x2c\135\53\x29\x5c\51\x2f"); goto JmHUj; JxR5h: $drfw0 = count($Lbljo) - 1; goto jc7kr; BReoE: if (!($coFj4 != null)) { goto V08Th; } goto nBJZG; DJ05S: M1RmC: goto Jj4bX; ALFQs: if (!($a16VR < $drfw0)) { goto c4kQY; } goto EwSsD; Gr8Gy: $coFj4 = Strings::slice($uocTJ, "\x2f\x28\172\x65\162\157\x66\x69\x6c\154\51\x2f\x69", $ewyVZ) == "\172\145\x72\x6f\146\151\154\x6c"; goto nU67O; Jj4bX: $a16VR++; goto cqvYB; JmHUj: $UuqI7 = Strings::sliceAll($uocTJ, "\x2f\113\105\x59\40\140\x28\x5b\141\x2d\x7a\x41\55\x5a\x30\55\x39\137\135\53\51\140\x20\134\50\x60\x28\133\141\x2d\172\x41\x2d\x5a\60\x2d\71\137\135\x2b\51\x60\134\51\x2f"); goto gBs49; cEkPm: $OxbUO = Strings::slice($uocTJ, "\x2f\103\117\116\123\124\x52\x41\x49\x4e\124\40\140\50\x5b\141\x2d\172\x41\55\132\60\x2d\x39\x5f\135\x2b\51\140\x20\x2f", function ($VSDHy) { return $VSDHy != null ? $VSDHy : "\104\x45\x46\101\x55\114\x54"; }); goto nC6aq; tgG79: cnd9f: goto zR82M; BvKFz: $LNXIN = NULL; goto lHFX3; boMLd: $this->prev_schema["\x66\x69\x65\154\144\x73"][$BRPp3]["\141\164\x74\x72"] = $Zp0wp; goto ABD2m; kjfM3: $qCsVt = Strings::slice($uocTJ, "\57\50\x75\x6e\163\151\147\x6e\145\x64\51\57\151", $ewyVZ) == "\165\156\x73\x69\147\156\x65\x64"; goto Gr8Gy; hCR1u: goto qKTiw; goto PTNcG; eiLCg: $a1rzo = function ($uocTJ) { return str_replace("\140", '', $uocTJ); }; goto q1rSE; dVeDb: $jDG4E = NULL; goto Ek5oJ; IRc1o: $XqQuJ = Strings::slice($uocTJ, "\x2f\x4f\x4e\x20\125\x50\x44\x41\x54\x45\40\50\122\105\123\x54\122\x49\x43\124\174\116\x4f\40\x41\x43\x54\x49\x4f\x4e\174\x43\x41\123\103\x41\104\x45\x7c\x53\105\124\40\116\x55\x4c\114\51\57"); goto osnyb; R5pQj: $e1i00 = []; goto JxR5h; W3oib: if ($Lbljo[$a16VR][0] == "\140") { goto ckKkC; } goto cEkPm; Q6KJG: foreach ($UuqI7 as $Is7hT) { $this->prev_schema["\x69\156\x64\x69\143\145\163"][$Is7hT] = "\111\116\x44\x45\130"; PaG14: } goto fKbRc; ZnIZo: $this->raw_lines[$BRPp3] = $Lbljo[$a16VR]; goto JpCEw; zR82M: if (!($UuqI7 != NULL)) { goto rSnmC; } goto Q6KJG; osnyb: $U74MM = Strings::slice($uocTJ, "\x2f\117\x4e\x20\x44\105\x4c\105\124\x45\40\x28\x52\x45\123\124\122\111\103\124\x7c\x4e\117\40\x41\x43\x54\x49\x4f\116\x7c\103\x41\123\103\101\x44\x45\x7c\123\105\x54\x20\x4e\x55\x4c\114\x29\x2f"); goto RWM4R; UjfOT: $C7TD0 = Strings::slice($uocTJ, "\57\50\116\x4f\124\40\x4e\x55\114\x4c\x29\57") == NULL; goto ezMhC; fN6Ys: QRT99: goto vlTc5; pzR1J: $hbiF5 = Strings::slice($uocTJ, "\57\104\x45\106\x41\125\x4c\x54\x20\x28\x5b\x61\55\x7a\101\55\x5a\60\55\71\137\x5c\x28\x5c\51\135\53\x29\57"); goto UjfOT; jc7kr: $a16VR = 1; goto ByPvu; ORkhc: fXBkw: goto tgG79; wh38m: $LNXIN = Strings::slice($uocTJ, "\57\x43\117\114\x4c\101\124\105\40\50\133\141\55\x7a\x30\x2d\x39\x5f\x5d\x2b\51\x2f"); goto pzR1J; H_kFA: if ($a8yHb != NULL) { goto pSd3E; } goto n4wNG; HhtsW: $e4iMN = Strings::slice($uocTJ, "\x2f\134\50\x28\x5b\60\55\x39\x2c\135\53\51\134\x29\x2f"); goto hCR1u; e2sLs: $hbiF5 = NULL; goto oxG2D; nC6aq: $o0_ap = Strings::slice($uocTJ, "\x2f\120\x52\x49\x4d\101\x52\131\x20\x4b\105\x59\40\134\50\x60\x28\x5b\141\55\172\101\x2d\x5a\x30\x2d\71\x5f\x5d\53\x29\140\134\51\x2f"); goto fUfwt; oeeui: ckKkC: goto jLlWj; n4wNG: goto cnd9f; goto hRsX1; RdO3V: WpGBx: goto APKtI; cqvYB: goto QCLDM; goto x2UOm; UVcz6: V08Th: goto pvZBz; PTNcG: vFA4a: goto BKe1h; vlTc5: $this->prev_schema["\146\x69\x65\154\x64\x73"][$BRPp3]["\x74\x79\x70\145"] = strtoupper($jDG4E); goto oGWPa; BKe1h: $xLdd_ = Strings::slice($uocTJ, "\57\134\50\50\56\x2a\51\134\51\x2f\x69"); goto U9e9E; NNzuo: $this->prev_schema["\x66\x69\145\154\144\x73"][$BRPp3]["\143\157\x6c\x6c\141\x74\151\157\156"] = $LNXIN; goto qMywo; VtE0p: $ijqDR = $Lbljo[count($Lbljo) - 1]; goto tWRJd; FX9NT: $UO9Vh = Strings::slice($uocTJ, "\x2f\x4c\117\x43\x4b\x5b\40\135\77\133\75\x5d\77\x5b\x20\135\77\50\x44\x45\106\101\125\114\124\174\116\x4f\116\105\x7c\x53\x48\101\122\x45\x44\x7c\105\130\103\x4c\x55\123\111\x56\x45\x29\57"); goto QN3Pp; RWM4R: $nYDfg = Strings::sliceAll($uocTJ, "\57\103\110\105\103\x4b\40\134\x28\50\x2e\52\x29\134\x29\40\50\x45\116\x46\x4f\122\103\x45\x44\x7c\x4e\x4f\x54\x20\x45\116\x46\117\x52\x43\x45\x44\51\57"); goto hy16D; U9e9E: qKTiw: goto byMw4; hy16D: if ($nYDfg != null) { goto hbDqj; } goto bFmg1; jLlWj: $BRPp3 = NULL; goto dVeDb; oGWPa: $this->prev_schema["\x66\151\x65\154\144\x73"][$BRPp3]["\141\x75\164\157"] = $aTQby; goto boMLd; tVt3G: $this->prev_schema["\x66\x69\x65\x6c\144\163"][$BRPp3]["\143\150\x61\162\x73\145\164"] = $m0ynW; goto NNzuo; UyOEe: $Zp0wp[] = "\165\156\x73\x69\x67\156\145\x64"; goto D606p; LYQQg: $Lhkfi = $this->showTable(); goto oYIwc; oxG2D: $aTQby = NULL; goto wvpXy; EwSsD: $uocTJ = $Lbljo[$a16VR]; goto W3oib; NkMX2: } function dd(bool $ITauV = false) { return Model::sqlFormatter(Strings::removeMultipleSpaces($this->query), $ITauV); } function change() { goto BS4JW; yEMWh: $this->addFKs(); goto Y7QIg; pZc9Y: DB::beginTransaction(); goto IQHoA; BS4JW: foreach ($this->fields as $A5xWC => $BRPp3) { goto BBwIq; sHRPO: QKHzQ: goto Gp73Z; wMU6i: $lc9tz .= "\40\x41\125\124\x4f\137\111\x4e\x43\122\x45\x4d\x45\116\124"; goto mFcZl; qsyS_: $lc9tz .= "\x44\x45\x46\x41\x55\x4c\124\x20{$BRPp3["\x64\145\146\141\x75\x6c\x74"]}\x20"; goto ikXFj; Jvb03: if (!isset($BRPp3["\141\165\x74\x6f"])) { goto mED3I; } goto qN1Wy; iFPlG: $lc9tz .= "\x4e\125\x4c\114\40"; goto ayffZ; O7tR4: bEp9G: goto gD94E; q1XTU: $BRPp3 = $this->fields[$A5xWC]; goto EQhrB; mgjOH: goto dS0R7; goto Wgifl; I08jv: $lc9tz = str_replace("\x41\125\x54\x4f\137\x49\116\103\x52\x45\x4d\x45\x4e\x54", '', $lc9tz); goto szYDf; ARzCS: if (in_array($BRPp3["\x74\171\x70\x65"], ["\x53\105\124", "\x45\x4e\125\115"])) { goto pqNjJ; } goto E3YSR; uLCFj: $LNXIN = isset($BRPp3["\x63\x6f\x6c\x6c\141\164\151\157\156"]) ? "\103\x4f\x4c\x4c\101\124\105\40{$BRPp3["\143\x6f\x6c\x6c\x61\x74\151\157\156"]}" : ''; goto g7LJt; fGnSh: goto kZ3GX; goto myed_; E3YSR: if (isset($BRPp3["\x6c\145\x6e"])) { goto kieQa; } goto y91is; JvPXx: kxm26: goto sHRPO; Wgifl: bkwcp: goto iFPlG; g7LJt: $lc9tz = "{$this->fields[$A5xWC]["\164\171\160\x65"]}"; goto ARzCS; hAu0g: if (isset($BRPp3["\x61\x66\164\x65\x72"])) { goto V1O8p; } goto U_81q; wPiFB: kieQa: goto eyhG6; eyhG6: $e4iMN = implode("\54", (array) $BRPp3["\x6c\145\156"]); goto INRLS; e2hqY: $this->commands[] = "\x41\114\124\x45\x52\x20\124\x41\x42\x4c\x45\40\140{$this->tb_name}\x60\x20\x43\x48\x41\x4e\x47\x45\x20\x60{$A5xWC}\x60\x20\140{$A5xWC}\x60\x20{$lc9tz}\x3b"; goto JvPXx; ikXFj: nsxe5: goto Jvb03; Iuf5E: vGchu: goto e2hqY; qK7E5: KMy_d: goto oZaOZ; KnAFZ: $F1ytw = implode("\54", array_map(function ($aU1Pp) { return "\47{$aU1Pp}\x27"; }, $BRPp3["\141\x72\x72\141\x79"])); goto piHH8; y91is: $lc9tz .= "\x20"; goto XZoSN; BBwIq: if (!isset($this->prev_schema["\146\x69\145\154\x64\163"][$A5xWC])) { goto VECc9; } goto bDGbq; szYDf: eb4rx: goto pUJdi; JOGlB: throw new \Exception("\103\x6f\154\165\x6d\156\40\x60{$A5xWC}\x60\40\x63\141\156\x20\156\157\164\40\142\145\40\x6e\x6f\164\x20\x6e\x75\154\154\141\142\x6c\x65\40\x62\x75\x74\40\144\x65\x66\141\165\x6c\x74\x20\x27\x4e\x55\x4c\114\47"); goto t6Rc1; rclrI: $lc9tz .= "{$m0ynW}\40{$LNXIN}\x20"; goto qK7E5; XZoSN: goto GWvtl; goto wPiFB; AEGg3: T63FF: goto I08jv; gD94E: $lc9tz = trim(preg_replace("\x21\x5c\x73\x2b\x21", "\x20", $lc9tz)); goto UoBFu; m5ETT: kZ3GX: goto CnAnG; UoBFu: if (isset($this->prev_schema["\146\x69\145\154\x64\x73"][$A5xWC])) { goto vGchu; } goto H8wcx; KLd4F: $lc9tz .= "\101\x46\x54\105\x52\40{$BRPp3["\x61\x66\164\x65\x72"]}"; goto gb1Ki; JnixF: VECc9: goto q1XTU; Uc6h_: goto bEp9G; goto aWSbA; U_81q: if (isset($BRPp3["\x66\151\162\163\x74"])) { goto q2PFj; } goto Uc6h_; yWZNq: goto kxm26; goto Iuf5E; kkmtj: GWvtl: goto fGnSh; CJJfi: q2PFj: goto Bwa06; EQhrB: $m0ynW = isset($BRPp3["\143\x68\x61\x72\x73\x65\x74"]) ? "\x43\x48\101\x52\101\103\124\x45\x52\40\x53\x45\124\x20{$BRPp3["\143\x68\141\x72\163\145\164"]}" : ''; goto uLCFj; Bwa06: $lc9tz .= "\x46\x49\x52\123\x54\40"; goto O7tR4; mFcZl: goto eb4rx; goto AEGg3; oZaOZ: if (isset($BRPp3["\156\x75\154\x6c\x61\142\x6c\145"]) && $BRPp3["\x6e\165\154\154\141\142\x6c\145"] == "\x4e\x55\114\114") { goto bkwcp; } goto YbgFk; t6Rc1: N7Ety: goto vQmlZ; myed_: pqNjJ: goto KnAFZ; hM0Us: if (!(isset($BRPp3["\x6e\165\154\154\x61\x62\154\145"]) && !$BRPp3["\156\x75\x6c\154\141\142\x6c\145"] && isset($BRPp3["\144\x65\146\141\x75\x6c\x74"]) && $BRPp3["\144\145\146\141\165\154\x74"] == "\x4e\125\114\x4c")) { goto N7Ety; } goto JOGlB; qN1Wy: if ($BRPp3["\141\165\164\x6f"] == false) { goto T63FF; } goto wMU6i; ayffZ: dS0R7: goto hM0Us; aWSbA: V1O8p: goto KLd4F; CnAnG: if (!in_array($BRPp3["\164\x79\160\x65"], ["\103\110\101\122", "\x56\101\x52\103\x48\101\122", "\x54\x45\130\x54", "\124\x49\x4e\131\124\105\x58\124", "\115\105\x44\111\125\115\124\x45\x58\124", "\114\117\x4e\107\124\x45\x58\x54", "\x4a\x53\117\x4e", "\123\105\124", "\x45\x4e\x55\x4d"])) { goto KMy_d; } goto rclrI; piHH8: $lc9tz .= "\x28{$F1ytw}\x29\40"; goto m5ETT; YbgFk: $lc9tz .= "\x4e\x4f\124\40\x4e\x55\x4c\x4c\40"; goto mgjOH; vQmlZ: if (!isset($BRPp3["\144\x65\146\x61\x75\154\x74"])) { goto nsxe5; } goto qsyS_; INRLS: $lc9tz .= "\50{$e4iMN}\51\x20"; goto kkmtj; pUJdi: mED3I: goto hAu0g; bDGbq: $this->fields[$A5xWC] = array_merge($this->prev_schema["\x66\151\x65\154\144\163"][$A5xWC], $this->fields[$A5xWC]); goto JnixF; gb1Ki: goto bEp9G; goto CJJfi; H8wcx: $this->commands[] = "\101\114\x54\x45\122\x20\x54\x41\x42\114\x45\40\140{$this->tb_name}\140\40\x41\x44\x44\40\x60{$A5xWC}\140\x20{$lc9tz}\73"; goto yWZNq; Gp73Z: } goto swVqL; swVqL: OQZDR: goto wi25j; aTYsD: if ($this->exec) { goto j2s5A; } goto e8E1r; T2If9: hoiOH: goto yEMWh; e8E1r: return; goto GyHAq; GyHAq: j2s5A: goto fbtOE; IQHoA: try { goto Zscco; Zscco: foreach ($this->commands as $dL_yS) { DB::statement($dL_yS); Pvuni: } goto t73dh; t73dh: JRrm8: goto LoTyn; LoTyn: DB::commit(); goto wnZbm; wnZbm: } catch (\PDOException $aU1Pp) { goto pMmTq; jc1WL: dd($dL_yS, "\x53\121\x4c"); goto OuZiX; pMmTq: DB::rollback(); goto jc1WL; OuZiX: dd($aU1Pp->getMessage(), "\120\x44\x4f\40\145\162\x72\157\162"); goto ftff_; ftff_: throw $aU1Pp; goto xMR4_; xMR4_: } catch (\Exception $aU1Pp) { DB::rollback(); throw $aU1Pp; } catch (\Throwable $aU1Pp) { DB::rollback(); throw $aU1Pp; } goto gUsGR; Y7QIg: $this->query = implode("\xd\12", $this->commands); goto aTYsD; wi25j: foreach ($this->indices as $A5xWC => $jDG4E) { goto P2JYB; QuBXc: gfw53: goto rc6Yo; P2JYB: switch ($jDG4E) { case "\111\x4e\x44\105\x58": $this->addIndex($A5xWC); goto gfw53; case "\x50\x52\x49\115\101\x52\x59": $this->addPrimary($A5xWC); goto gfw53; case "\125\x4e\x49\x51\x55\x45": $this->addUnique($A5xWC); goto gfw53; case "\123\x50\x41\124\111\x41\114": $this->addSpatial($A5xWC); goto gfw53; case "\x46\125\114\x4c\x54\x45\x58\124": $this->addFullText($A5xWC); goto gfw53; } goto pD4XM; pD4XM: WULqu: goto QuBXc; rc6Yo: arIR_: goto UaYeQ; UaYeQ: } goto T2If9; fbtOE: $GoNaw = DB::getConnection(); goto pZc9Y; gUsGR: } function dontExec() { $this->exec = false; return $this; } function alter() { $this->change(); } function getSchema() { return ["\x65\156\x67\x69\x6e\145" => $this->engine, "\143\150\x61\162\163\x65\164" => $this->charset, "\143\x6f\154\x6c\141\164\151\157\x6e" => $this->collation, "\146\151\x65\154\x64\x73" => $this->fields, "\x69\156\144\x69\x63\145\163" => $this->indices, "\x66\153\163" => $this->fks]; } function getCurrentSchema() { return $this->prev_schema; } }
+
+class Schema 
+{
+	protected $tables;
+	protected $tb_name;
+
+	protected $engine = 'InnoDB';
+	protected $charset = 'utf8';
+	protected $collation;
+	
+	protected $raw_lines = [];
+	protected $fields  = [];
+	protected $current_field;
+	protected $indices = []; // 'PRIMARY', 'UNIQUE', 'INDEX', 'FULLTEXT', 'SPATIAL'
+	protected $fks = [];
+	
+	protected $prev_schema;
+	protected $commands = [];
+	protected $query;
+	protected $exec = true;
+
+	function __construct(string $tb_name){
+		$this->tables = self::getTables();
+		$this->tb_name = $tb_name;
+		$this->fromDB();
+	}
+
+	/*	
+		It works in MySQL y Oracle
+
+		If db connection was made by DB class, then it's faster to use DB::database() instead
+	*/
+	static function getCurrentDatabase(){
+		return DB::select("SELECT DATABASE() FROM DUAL;", null, 'COLUMN')[0];
+	}
+
+	// alias of getCurrentDatabase()
+	static function getSelectedDatabase(){
+		return static::getCurrentDatabase();
+	}
+
+	static function getPKs(string $table){
+		$rows = DB::select("SHOW INDEXES FROM `$table` WHERE Key_name = 'PRIMARY'");
+		return array_column($rows, 'Column_name');
+	}
+
+	static function hasPK(string $table){
+		return (!empty(static::getPKs($table)));
+	}
+
+	// returns auto_increment value (offset)
+	static function getAutoIncrement(string $table, ?string $database = null){
+		if ($database === null){
+			$database = DB::database();
+
+			if ($database === null){
+				throw new \Exception("There is no active database connection");
+			}
+		}
+
+		return DB::select("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$database' AND TABLE_NAME = '$table';", null, 'COLUMN')[0];
+	}
+
+	// returns if the there is autoincrement for the given table
+	static function hasAutoIncrement(string $table, ?string $database = null){
+		return static::getAutoIncrement($table, $database) !== null;
+	}
+
+	static function getAutoIncrementField(string $table){
+		$row = DB::select("SHOW COLUMNS FROM `$table` WHERE EXTRA LIKE '%auto_increment%';", null, 'ASSOC');
+
+		if (empty($row)){
+			return false;
+		}
+
+		return $row[0]['Field'];
+	}
+
+	// Válido para MySQL, en un solo sentido: presentes en / hacia la tabla
+	static function getFKs(string $table = null, bool $not_table = false, ?string $db = null)
+	{
+		if ($db == null){
+			DB::getConnection();
+        	$db  = DB::database();
+		}		
+		
+        $sql = "SELECT COLUMN_NAME FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` 
+        WHERE `REFERENCED_TABLE_NAME` IS NOT NULL AND TABLE_SCHEMA = '$db' AND REFERENCED_TABLE_SCHEMA = '$db' ";
+
+		if (!empty($table)){
+			$op = $not_table ? '!=' : '=';
+			$sql .= "AND TABLE_NAME $op '$table' ";
+		}
+
+		$sql .= "ORDER BY `REFERENCED_COLUMN_NAME`;";
+
+        $cols = Model::query($sql);
+		$fks  = array_column($cols, 'COLUMN_NAME');
+
+		return $fks;
+	}
+
+	// Válido para MySQL, en un solo sentido
+	static function getRelations(string $table = null, bool $not_table = false, string $db = null)
+	{
+		if ($db == null){
+			DB::getConnection();
+        	$db  = DB::database();
+		}		
+		
+        $sql = "SELECT * FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` 
+        WHERE `REFERENCED_TABLE_NAME` IS NOT NULL AND TABLE_SCHEMA = '$db' AND REFERENCED_TABLE_SCHEMA = '$db' ";
+
+		if (!empty($table)){
+			$op = $not_table ? '!=' : '=';
+			$sql .= "AND TABLE_NAME $op '$table' ";
+		}
+
+		$sql .= "ORDER BY `REFERENCED_COLUMN_NAME`;";
+
+        $rels = Model::query($sql);
+        
+        $relationships = [];
+        foreach($rels as $rel){
+            $to_tb = $rel['REFERENCED_TABLE_NAME'];
+
+            $from = $rel['TABLE_NAME'] . '.' . $rel['COLUMN_NAME']; 
+            $to   = $rel['REFERENCED_TABLE_NAME'] . '.' . $rel['REFERENCED_COLUMN_NAME']; 
+
+            // "['$to', '$from']"
+            $relationships[$to_tb][] = [
+                'to'   => $to, 
+                'from' => $from
+            ];
+        }
+
+		$repeted = [];
+
+		if (!empty($table)){
+			foreach ($relationships as $tb => $rs){
+				$tos = array_column($rs, 'to');
+				
+				if (count($tos) >1){
+
+					$prev = null;				
+					foreach ($tos as $to){
+						if ($to == $prev){
+							if (!isset($repeted[$tb])){
+								$repeted[$tb] = [];
+							}
+
+							if (!in_array($to, $repeted[$tb])){
+								$repeted[$tb][] = $to;
+							}
+						} 
+
+						$prev = $to;
+					}
+				}            
+			}
+		}
+
+        foreach ($relationships as $tb => $rs){
+			$rep = $repeted[$tb] ?? [];
+			$cnt_rep = count($rep);
+			
+			// if ($cnt_rep >0){
+			// 	dd($rep, "REPEATED for $tb"); //
+			// }			
+
+            foreach ($rs as $k => $r){
+                if (isset($repeted[$tb]) && in_array($r['to'], $repeted[$tb])){
+                    list($tb0, $fk0) = explode('.', $r['from']);
+
+                    if (Strings::endsWith('_id', $fk0)){
+                        $key = substr($fk0, 0, strlen($fk0) -3);                        
+                    }
+
+                    if (!isset($key) && Strings::startsWith('id_', $fk0)){
+                        $key = substr($fk0, 3);  
+                    } 
+                                       
+                    list($tb1, $fk1) = explode('.', $r['to']);
+
+					// introduzo un alias cuando hay más de 1 relación entre dos tablas
+					if ($cnt_rep >0){
+						$alias = '__' . $fk0 . ".$fk1";				
+						$to = "$tb1|$alias";
+					}
+
+                    unset($relationships[$tb][$k]);
+
+					$r = [
+                        'to'   => $to, 
+                        'from' => $r['from'] 
+                    ];
+
+                    $relationships[$tb][] = $r;
+                }
+            }      
+        }
+     
+		return $relationships;
+	}
+
+	/*
+		Obtiene relaciones con otras tablas de forma bi-direccional
+		(desde y hacia esa tabla)
+	*/
+	static function getAllRelations(string $table, bool $compact = false, bool $include_inverse_relations = true){
+        $relations = [];
+
+        $relations = Schema::getRelations($table);
+
+		if ($relations === null){
+			return;
+		}
+
+        foreach ($relations as $tb => $rels){
+            $arr = [];
+            foreach ($rels as $rel){
+				if ($compact){
+					$cell = "['{$rel['to']}','{$rel['from']}']"; 
+				} else {
+					$cell = [$rel['to'],$rel['from']]; 
+				}       
+				
+				$arr[] = $cell;
+            }
+
+            $relations[$tb] = $arr;
+        }
+
+		// *
+		if ($include_inverse_relations){
+			$more_rels = Schema::getRelations();
+
+			foreach ($more_rels as $tb => $rels){
+				foreach ($rels as $rel){
+					list($tb1, $fk1) = explode('.', $rel['to']);
+
+					if ($tb1 == $table){
+						list($tb0, $fk0) = explode('.', $rel['from']);
+						
+						if ($compact){
+							$cell = "['{$rel['from']}','{$rel['to']}']"; 
+						} else {
+							$cell = [$rel['from'],$rel['to']]; 
+						}
+
+						$relations[$tb0][] = $cell; 
+					}
+				}
+				
+			}
+		}
+
+		if (!$compact){
+			$_rels = [];
+
+			foreach ($relations as $tb => $rels){
+
+				if (count($rels) == 1){
+					$r = $rels[0];
+
+					$_r0 = explode('.', $r[0]);
+					$_r1 = explode('.', $r[1]);
+
+					$r = [
+						$_r0,
+						$_r1	
+					];
+
+					$_rels[$tb][] = $r;
+
+				} else {
+					foreach($rels as $r){
+						$_r0 = explode('.', $r[0]);
+						$_r1 = explode('.', $r[1]);
+
+						if (Strings::contains('|', $_r0[0])){
+							list($_, $alias) = explode('|', $_r0[0]);
+
+							if ($_ != $tb){
+								throw new \Exception("Unexpected error");
+							}
+
+							$_r0 = [
+									$_, 
+									$_r0[1],
+									'alias' => $alias
+							];
+						}
+						
+
+						$r = [
+							$_r0,
+							$_r1	
+						];
+
+						$_rels[$tb][] = $r;
+
+					}
+				}				
+			}
+
+			$relations = $_rels;
+		}
+
+        return $relations;
+    }
+
+
+	/*
+    	Given a table name gets a filename including full path for a posible migration file 
+	*/
+	static function generateMigrationFileName($tb_name){
+			
+		// 2020_10_28_141833_yyy
+		$date = date("Y_m_d");
+		$secs = time() - 1603750000;
+		$filename = $date . '_'. $secs . '_' . Strings::camelToSnake($tb_name) . '.php'; 
+
+		// destination
+		return MIGRATIONS_PATH . $filename;
+	}
+
+	static function getDatabases(string $conn_id = null){
+		if ($conn_id != null){
+			DB::getConnection($conn_id);
+		}
+
+		return DB::select('SHOW DATABASES', null, 'COLUMN');
+	}
+
+	static function getTables(string $conn_id = null) {	
+		$config = config();
+		
+		if ($conn_id != null){
+			if (!isset($config['db_connections'][$conn_id])){
+				throw new \Exception("Connection Id '$conn_id' not defined");
+			}			
+		}
+
+		DB::getConnection($conn_id);
+		
+		$db_name = DB::getCurrentDB();
+
+		return DB::select("SELECT TABLE_NAME 
+		FROM information_schema.tables
+		WHERE table_schema = '$db_name'", [], 'COLUMN');
+	}
+
+	/*
+		https://arjunphp.com/how-to-get-mysql-table-comments/
+	*/
+	static function getTableComment( string $table, string $conn_id = null) {	
+		$config = config();
+		
+		if ($conn_id != null){
+			if (!isset($config['db_connections'][$conn_id])){
+				throw new \Exception("Connection Id '$conn_id' not defined");
+			}			
+		} else {
+			$conn_id = $config['db_connection_default'];
+		}
+
+		$db_name = DB::getCurrentDB();
+
+		return DB::select("SELECT table_comment 
+		FROM INFORMATION_SCHEMA.TABLES 
+		WHERE table_schema='$db_name' 
+        AND table_name='$table';")[0];
+	}
+
+	// -- ok
+	static function getColumnComment(string $table, string $field, string $conn_id = null) {	
+		$config = config();
+		
+		if ($conn_id != null){
+			if (!isset($config['db_connections'][$conn_id])){
+				throw new \Exception("Connection Id '$conn_id' not defined");
+			}			
+		} else {
+			$conn_id = $config['db_connection_default'];
+		}
+
+		$db_name = DB::getCurrentDB();
+
+		return DB::select("SELECT a.COLUMN_NAME, a.COLUMN_COMMENT
+		FROM information_schema.COLUMNS a 
+		WHERE a.TABLE_NAME = '$table' AND  COLUMN_NAME = '$field';")[0];
+	}
+
+
+	static function FKcheck(bool $status){
+		$conn = DB::getConnection();   
+
+		switch (DB::driver()){
+			case 'mysql':
+				$cmd = "SET FOREIGN_KEY_CHECKS=" . ((int) $status) .";";
+				break;
+			case 'sqlite':
+				$cmd = "PRAGMA foreign_keys = " . ($status ? 'ON' : 'OFF')  . ";";
+				break;
+		}
+
+		$st = $conn->prepare($cmd);
+		$res = $st->execute();
+	}
+
+	static function enableForeignKeyConstraints(){
+		return self::FKcheck(1);
+	}
+
+	static function disableForeignKeyConstraints(){
+		return self::FKcheck(0);
+	}
+
+	static function hasTable(string $tb_name, string $db_name = null)
+	{	
+		switch (DB::driver()){
+			case 'sqlite':
+				$res = Model::query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='$tb_name';");	
+				return (!empty($res));
+
+			case 'mysql':
+				if ($db_name == null){
+					$res = DB::select("SHOW TABLES LIKE '$tb_name';");
+				}else {
+					$res = DB::select("SELECT * 
+					FROM information_schema.tables
+					WHERE table_schema = '$db_name' 
+						AND table_name = '$tb_name'
+					LIMIT 1;");
+				}
+		
+				return (!empty($res));	
+		}
+	} 
+
+	static function hasColumn(string $table, string $column){
+		$conn = DB::getConnection();   
+
+		$res = DB::select("SHOW COLUMNS FROM `$table` LIKE '$column'");
+		return !empty($res);
+	} 
+
+	static function renameTable(string $ori, string $final){
+		$conn = DB::getConnection();   
+
+		$st = $conn->prepare("RENAME TABLE `$ori` TO `$final`;");
+		return $st->execute();
+	}	
+
+	static function drop(string $table){
+		$conn = DB::getConnection();   
+
+		$st = $conn->prepare("DROP TABLE `{$table}`;");
+		return $st->execute();
+	}
+
+	static function dropIfExists(string $table){
+		$conn = DB::getConnection();   
+
+		$st = $conn->prepare("DROP TABLE IF EXISTS `{$table}`;");
+		return $st->execute();
+	}
+
+
+	function tableExists(){
+		return in_array($this->tb_name, $this->tables);
+	} 
+
+	function columnExists(string $column){
+		return static::hasColumn($this->tb_name, $column);
+	}
+
+	function setEngine(string $val){
+		$this->engine = $val;
+		return $this;
+	}
+
+	function setCharset(string $val){
+		$this->chartset = $val;
+		return $this;
+	}
+
+	function setCollation(string $val){
+		$this->collation = $val;
+		return $this;
+	}
+
+	function column(string $name){
+		$this->current_field = $name;
+		return $this;
+	}
+
+	function field(string $name){
+		return $this->column($name);
+	}
+	
+	// type
+	
+	function int(string $name, int $len = 11){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'INT';
+		
+		if ($len != NULL)
+			$this->fields[$this->current_field]['len'] = $len;
+		
+		return $this;		
+	}	
+	
+	function integer(string $name, int $len = 11){
+		$this->int($name, $len);
+		return $this;		
+	}	
+	
+	function serial(string $name, int $len = NULL){		
+		$this->current_field = $name;
+		//$this->bigint($name, $len)->unsigned()->auto()->unique();
+		$this->fields[$this->current_field]['type'] = 'SERIAL';
+		return $this;		
+	}	
+	
+	function bigint(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'BIGINT';
+		return $this;		
+	}	
+	
+	function mediumint(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'MEDIUMINT';
+		return $this;		
+	}	
+	
+	function smallint(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'SMALLINT';
+		return $this;		
+	}	
+	
+	function tinyint(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'TINYINT';
+		return $this;		
+	}	
+	
+	function boolean(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'BOOLEAN';
+		return $this;		
+	}	
+	
+	function bool(string $name){
+		$this->boolean($name);
+		return $this;		
+	}
+	
+	function bit(string $name, int $len){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'BIT';
+		$this->fields[$this->current_field]['len'] = $len;		
+		return $this;		
+	}
+	
+	function decimal(string $name, int $len = 15, int $len_dec = 4){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'DECIMAL';
+		$this->fields[$this->current_field]['len'] = [$len, $len_dec];		
+		return $this;		
+	}	
+	
+	function float(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'FLOAT';
+		return $this;		
+	}	
+	
+	function double(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'DOUBLE';
+		return $this;		
+	}	
+	
+	function real(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'REAL';
+		return $this;		
+	}	
+	
+	function char(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'CHAR';
+		return $this;		
+	}	
+	
+	function varchar(string $name, int $len = 60){
+		if ($len > 65535)
+			throw new \InvalidArgumentException("Max length is 65535");
+		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'VARCHAR';
+		$this->fields[$this->current_field]['len'] = $len;
+		return $this;		
+	}	
+	
+	function text(string $name, int $len = NULL){
+		if ($len > 65535)
+			throw new \InvalidArgumentException("Max length is 65535");
+		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'TEXT';
+		
+		if ($len != NULL)
+			$this->fields[$this->current_field]['len'] = $len;
+		
+		return $this;		
+	}	
+	
+	function tinytext(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'TINYTEXT';
+		return $this;		
+	}
+	
+	function mediumtext(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'MEDIUMTEXT';
+		return $this;		
+	}
+	
+	function longtext(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'LONGTEXT';
+		return $this;		
+	}
+	
+	function varbinary(string $name, int $len = 60){
+		if ($len > 65535)
+			throw new \InvalidArgumentException("Max length is 65535");
+		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'VARBINARY';
+		$this->fields[$this->current_field]['len'] = $len;
+		return $this;		
+	}
+	
+	function blob(string $name){
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'BLOB';
+		return $this;		
+	}	
+	
+	function binary(string $name, int $len){
+		if ($len > 255)
+			throw new \InvalidArgumentException("Max length is 65535");
+		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'BINARY';
+		$this->fields[$this->current_field]['len'] = $len;
+		return $this;		
+	}
+	
+	function tinyblob(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'TINYBLOB';
+		return $this;		
+	}
+	
+	function mediumblob(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'MEDIUMBLOB';
+		return $this;		
+	}
+	
+	function longblob(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'LONGBLOB';
+		return $this;		
+	}
+	
+	function json(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'JSON';
+		return $this;		
+	}
+	
+	function set(string $name, array $values){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'SET';
+		$this->fields[$this->current_field]['array'] = $values;
+		return $this;		
+	}
+	
+	function enum(string $name, array $values){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'ENUM';
+		$this->fields[$this->current_field]['array'] = $values;
+		return $this;		
+	}
+	
+	function time(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'TIME';
+		return $this;		
+	}
+	
+	function year(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'YEAR';
+		return $this;		
+	}
+	
+	function date(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'DATE';
+		return $this;		
+	}
+	
+	function datetime(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'DATETIME';
+		return $this;		
+	}
+	
+	function timestamp(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'TIMESTAMP';
+		return $this;		
+	}
+	
+	function softDeletes(){		
+		$this->current_field = 'deleted_at';
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'DATETIME';
+		return $this;		
+	}
+	
+	function datetimes(){		
+		$this->current_field = 'created_at';
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'DATETIME';
+		$this->current_field = 'updated_at';
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'DATETIME';
+		return $this;		
+	}
+	
+	function point(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'POINT';
+		return $this;		
+	}
+	
+	function multipoint(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'MULTIPOINT';
+		return $this;		
+	}
+	
+	function linestring(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'LINESTRING';
+		return $this;		
+	}
+	
+	function polygon(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'POLYGON';
+		return $this;		
+	}
+	
+	function multipolygon(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'MULTIPOLYGON';
+		return $this;		
+	}
+	
+	function geometry(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'GEOMETRY';
+		return $this;		
+	}
+	
+	function geometrycollection(string $name){		
+		$this->current_field = $name;
+		$this->fields[$this->current_field] = [];
+		$this->fields[$this->current_field]['type'] = 'GEOMETRYCOLLECTION';
+		return $this;		
+	}	
+	
+	// collation && charset 
+	
+	function collation(string $val){
+		$this->fields[$this->current_field]['collation'] = $val;
+		return $this;		
+	}
+
+	// alias
+	function collate(string $val){
+		$this->collation($val);
+		return $this;		
+	}
+	
+	function charset(string $val){
+		$this->fields[$this->current_field]['charset'] = $val;
+		return $this;		
+	}
+	
+	/* 
+		modifiers
+	*/
+	
+	// autoincrement
+	function auto(bool $val = true){
+		$this->fields[$this->current_field]['auto'] =  $val;
+		return $this;
+	}
+
+	function addAuto(){
+		$this->fields[$this->current_field]['auto'] =  true;
+		return $this;	
+	}
+
+	function dropAuto(){
+		$this->current_field = static::getAutoIncrementField($this->tb_name);
+		return $this->auto(false);
+	}
+
+	// alias de auto(false)
+	function notAuto(){
+		return $this->dropAuto();
+	}
+
+	/*
+		This function only set as nullable but don't drop default as dropNullable()
+	*/
+	function nullable(bool $value =  true){
+		$this->fields[$this->current_field]['nullable'] =  $value ? 'NULL' : 'NOT NULL';
+		return $this;
+	}
+
+	function dropNullable(){
+		return $this->dropDefault()->nullable(false);
+	}
+
+	// alias de dropNullable()
+	function notNullable(){
+		return $this->dropNullable();
+	}
+	
+	function commentField(string $string){
+		$this->fields[$this->current_field]['comment'] =  $string;
+		return $this;
+	}
+
+	// alias
+	function comment(string $string){
+		return $this->commentField($string);
+	}
+
+	function dropCommentField(){
+		// ..
+	}
+	
+	function default($val = NULL){
+		if ($val === NULL) {
+			$val = 'NULL';
+		} elseif ($val === false) {
+			$val = NULL;
+		}
+
+		$this->fields[$this->current_field]['default'] =  $val;
+		return $this;
+	}
+	
+	function dropDefault(){
+		$this->fields[$this->current_field]['default'] =  NULL;
+		return $this;
+	}
+
+	function currentTimestamp(){
+		$this->default('current_timestamp()');	
+		return $this;
+	}
+	
+	protected function setAttr($attr){
+		if (!in_array($attr, ['UNSIGNED', 'UNSIGNED ZEROFILL', 'BINARY'])){
+			throw new \Exception("Attribute '$attr' is not valid.");
+		}
+
+		$this->fields[$this->current_field]['attr'] = $attr;
+	}
+
+	// clears any attribute {'UNSIGNED', 'UNSIGNED ZEROFILL', 'BINARY'}
+	function dropAttr(){
+		$this->fields[$this->current_field]['attr'] = NULL;
+		return $this;
+	}
+	
+	function unsigned(){
+		$this->setAttr('UNSIGNED');
+		return $this;
+	}
+	
+	function zeroFill(){
+		$this->setAttr('UNSIGNED ZEROFILL');
+		return $this;
+	}
+	
+	function binaryAttr(){
+		$this->setAttr('BINARY');
+		return $this;
+	}
+	
+	// ALTER TABLE `aaa` ADD `ahora` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `fecha`;
+	function onUpdateCurrent(){
+		$this->setAttr('current_timestamp()');	
+		return $this;
+	}
+	
+	function after(string $field){
+		$this->fields[$this->current_field]['after'] =  $field;
+		return $this;
+	}
+	
+	// ALTER TABLE `aaa` ADD `inicio` INT NOT NULL FIRST;
+	function first(){
+		if (isset($this->fields[$this->current_field]['after']))
+			unset($this->fields[$this->current_field]['after']);
+		
+		foreach ($this->fields as $k => $field){
+			if (isset($this->fields[$k]['first']))
+				unset($this->fields[$k]['first']);
+		}	
+		
+		$this->fields[$this->current_field]['first'] =  true;
+		return $this;
+	}
+	
+	// FKs
+	
+	function foreign(string $field_name){
+		$this->current_field = $field_name;
+		$this->fks[$this->current_field] = [];
+		return $this;
+	}
+
+	// alias for foreign
+	function fk(string $field_name){
+		return $this->foreign($field_name);
+	}
+	
+	// alias for foreign
+	function fromField(string $field_name){
+		return $this->foreign($field_name);
+	}
+
+	function references(string $field_name){
+		$this->fks[$this->current_field]['references'] = $field_name;
+		return $this;
+	}
+
+	// alias for references()
+	function toField(string $field_name){
+		return $this->references($field_name);
+	}
+	
+	function on(string $table){
+		$this->fks[$this->current_field]['on'] = $table;
+		return $this;
+	}
+
+	// alias for on()
+	function onTable(string $table){
+		return $this->on($table);
+	}
+
+	// alias for on()
+	function toTable(string $table){
+		return $this->on($table);
+	}
+		
+	function onDelete(string $action){
+		$action = strtoupper($action);
+		
+		if (!in_array($action, ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL'])){
+			throw new \InvalidArgumentException("Action for ON DELETE / ON CASCADE should be ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL']");
+		}
+
+		$this->fks[$this->current_field]['on_delete'] = $action;
+		return $this;
+	}
+	
+	function onUpdate(string $action){
+		$action = strtoupper($action);
+		
+		if (!in_array($action, ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL', 'SET DEFAULT'])){
+			throw new \InvalidArgumentException("Invalid action '$action'. Action for ON DELETE / ON CASCADE should be ['CASCADE', 'RESTRICT', 'NO ACTION', 'SET NULL', 'SET DEFAULT']");
+		}
+
+		$this->fks[$this->current_field]['on_update'] = $action;
+		return $this;
+	}
+
+	function constraint(string $constraint_name){
+		$this->fks[$this->current_field]['constraint'] = $constraint_name;
+		return $this;
+	}
+
+	
+	// INDICES >>>
+	
+	protected function setIndex(string $type){
+		$type = strtoupper($type);
+
+		if (!in_array($type, ['PRIMARY', 'UNIQUE', 'INDEX', 'FULLTEXT', 'SPATIAL']))
+			throw new \InvalidArgumentException("Invalid index $type");
+		
+		$this->indices[$this->current_field] = $type;
+		//dd($this->indices);
+	}
+	
+	function primary(){
+		$this->setIndex('PRIMARY');
+		return $this;
+	}
+	
+	// alias of primary()
+	function pri(){
+		return $this->primary();
+	}
+	
+	function unique(){
+		$this->setIndex('UNIQUE');
+		return $this;
+	}
+	
+	function index(){
+		$this->setIndex('INDEX');
+		return $this;
+	}
+	
+	function fulltext(){
+		$this->setIndex('FULLTEXT');
+		return $this;
+	}
+	
+	function spatial(){
+		$this->setIndex('SPATIAL');
+		return $this;
+	}
+	
+	///////////////////////////////
+	
+	/*
+		`nombre_campo` tipo[(longitud)] [(array_set_enum)] [charset] [collate] [attributos] NULL|NOT_NULL [default] [AUTOINCREMENT]
+	*/
+	function getDefinition($field){
+		$cmd = '';		
+		if (in_array($field['type'], ['SET', 'ENUM'])){
+			$values = implode(',', array_map(function($e){ return "'$e'"; }, $field['array']));	
+			$cmd .= "($values) ";
+		}else{
+			if (isset($field['len'])){
+				$len = implode(',', (array) $field['len']);	
+				$cmd .= "($len) ";
+			}else
+				$cmd .= " ";	
+		}
+		
+		if (isset($field['attr'])){
+			$cmd .= "{$field['attr']} ";
+		}
+		
+		if (isset($field['charset'])){
+			$cmd .= "CHARACTER SET {$field['charset']} ";
+		}
+		
+		if (isset($field['collation'])){
+			$cmd .= "COLLATE {$field['collation']} ";
+		}
+			
+		if (isset($field['nullable'])){
+			$cmd .= "{$field['nullable']} ";
+		}else
+			$cmd .= "NOT NULL ";
+
+		if (isset($field['default'])){
+			$cmd .= "DEFAULT {$field['default']} ";
+		}
+
+		if (isset($field['auto'])){
+			$cmd .= "AUTO_INCREMENT PRIMARY KEY";
+		}
+		
+		return trim($cmd);
+	}
+
+	private function showTable(){
+		$conn = DB::getConnection();
+		
+		$stmt = $conn->query("SHOW CREATE TABLE `{$this->tb_name}`", \PDO::FETCH_ASSOC);
+		$res  = $stmt->fetch();
+		
+		return $res;
+	}
+		
+	// FOREIGN KEY (`abono_id`) REFERENCES `abonos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+	private function addFKs(){
+		foreach ($this->fks as $name => $fk){
+			$on_delete  = !empty($fk['on_delete'])  ? 'ON DELETE ' .$fk['on_delete']  : '';
+			$on_update  = !empty($fk['on_update'])  ? 'ON UPDATE ' .$fk['on_update']  : '';
+			$constraint = !empty($fk['constraint']) ? 'CONSTRAINT `'.$fk['constraint'].'`' : '';
+			
+			$this->commands[] = trim("ALTER TABLE  `{$this->tb_name}` ADD $constraint FOREIGN KEY (`$name`) REFERENCES `{$fk['on']}` (`{$fk['references']}`) $on_delete $on_update").';';
+		}
+	} 
+
+	function createTable(bool $ignore_if_exists = false){
+		if (!$ignore_if_exists){
+			if ($this->tableExists()){
+				throw new \Exception("Table {$this->tb_name} already exists");
+			}
+		}		
+
+		if (empty($this->fields)){
+			throw new \Exception("No fields!");
+		}	
+
+		if ($this->engine == NULL){
+			throw new \Exception("Please specify table engine");
+		}
+		
+		if ($this->charset == NULL){
+			throw new \Exception("Please specify charset");
+		}
+
+		$this->commands = [
+			'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";',
+			/*
+			'SET AUTOCOMMIT = 0;',
+			'START TRANSACTION;',
+			*/
+			'SET time_zone = "+00:00";'
+		];
+	
+		$cmd = '';
+		foreach ($this->fields as $name => $field){
+			$cmd .= "`$name` {$field['type']} ";			
+			$cmd .= $this->getDefinition($field);	
+			$cmd .= ",\n";
+		}
+		
+		$cmd = substr($cmd,0,strlen($cmd)-2);
+
+		$if_not = $ignore_if_exists ? 'IF NOT EXISTS' : '';		
+		$cmd = "CREATE TABLE $if_not `{$this->tb_name}` (\n$cmd\n) ENGINE={$this->engine} DEFAULT CHARSET={$this->charset};";
+		
+		$this->commands[] = $cmd;
+		
+		// Indices
+		
+		/*
+			Ver en versión con "pending changes" 
+		*/
+		if (count($this->indices) >0)
+		{			
+			$cmd = '';		
+			foreach ($this->indices as $nombre => $tipo){
+			
+				switch ($tipo){
+					case 'INDEX':
+						$cmd .= "ADD INDEX (`$nombre`),\n";
+					break;
+					case 'PRIMARY':
+						// PRIMARY can not be "ADDed"
+					break;
+					case 'UNIQUE':
+						$cmd .= "ADD UNIQUE KEY `$nombre` (`$nombre`),\n";
+					break;
+					case 'SPATIAL':
+						$cmd .= "ADD SPATIAL KEY `$nombre` (`$nombre`),\n";
+					break;
+					case 'FULLTEXT':
+						$cmd .= "ADD FULLTEXT KEY `$nombre` (`$nombre`),\n";  // sin probar
+						break;
+					
+					default:
+						throw new \Exception("Invalid index type");
+				}				
+			}
+			
+			$cmd = substr($cmd,0,-2);
+			$cmd = "ALTER TABLE `{$this->tb_name}` \n$cmd;";
+			
+			$this->commands[] = $cmd;
+		}		
+		
+		
+		// FKs		
+		$this->addFKs();
+				
+		//$this->commands[] = 'COMMIT;';		
+		$this->query = implode("\r\n",$this->commands)."\n";
+
+		if (!$this->exec){
+			return;
+		}
+
+		$conn = DB::getConnection();  
+			
+		DB::beginTransaction();
+		try {
+			// $rollback = function() use ($conn){
+			// 	$st = $conn->prepare("DROP TABLE IF EXISTS `{$this->tb_name}`;");
+			// 	$res = $st->execute();
+			// };
+
+			foreach($this->commands as $change){     
+				$st = $conn->prepare($change);
+				$res = $st->execute();
+			}
+
+			DB::commit();
+
+		} catch (\PDOException $e) {
+			d($change, 'SQL with error');
+			d($e->getMessage(), "PDO error");
+			DB::rollback();
+			throw $e;		
+        } catch (\Exception $e) {;
+			DB::rollback();
+            throw $e;
+        } catch (\Throwable $e) {
+			DB::rollback();
+            throw $e;   
+        }     
+
+		return true;
+	}
+
+	// alias
+	function create(bool $if_not_exists = false){
+		return $this->createTable($if_not_exists);
+	}
+	
+	// alias
+	function createIfNotExists(){
+		return $this->createTable(true);
+	}
+
+	function dropTable(){
+		$this->commands[] = "DROP TABLE `{$this->tb_name}`;";
+		return $this;
+	}
+
+	function dropTableIfExists(){
+		$this->commands[] = "DROP TABLE IF EXISTS `{$this->tb_name}`;";
+		return $this;
+	}
+
+
+	// TRUNCATE `az`.`xxy`
+	function truncateTable(string $tb){
+		$this->commands[] = "TRUNCATE `{$this->tb_name}`.`$tb`;";
+		return $this;
+	}
+
+
+	// RENAME TABLE `az`.`xxx` TO `az`.`xxy`;
+	function renameTableTo(string $final){
+		$this->commands[] = "RENAME TABLE `{$this->field}` TO `$final`;";
+		return $this;
+	}	
+
+
+	function dropColumn(string $name){
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP `$name`;";
+		return $this;
+	}
+
+	// https://popsql.com/learn-sql/mysql/how-to-rename-a-column-in-mysql/
+	function renameColumn(string $ori, string $final){
+		if (DB::driver() == 'mysql' && !DB::isMariaDB() && DB::driverVersion(true) >= 8){
+			$this->commands[] = "ALTER TABLE `{$this->tb_name}` RENAME COLUMN `$ori` TO `$final`;";
+		} else {
+			if (!isset($this->prev_schema['fields'][$ori])){
+				throw new \InvalidArgumentException("Schema error. Column '$ori' does not exist in `{$this->tb_name}`");
+			}
+
+			$datatype = $this->prev_schema['fields'][$ori]['type'];
+
+			if (isset($this->prev_schema['fields'][$this->current_field]['array'])){
+				$datatype .= '(' . implode(',', $this->fields[$this->current_field]['array']). ')';
+			} elseif (isset($this->prev_schema['fields'][$this->current_field]['len'])){
+				$datatype .= '(' . $this->prev_schema['fields'][$this->current_field]['len'] . ')';
+			} 
+
+			$this->commands[] = "ALTER TABLE `{$this->tb_name}` CHANGE `$ori` `$final` $datatype;";
+		}
+
+		return $this;
+	}
+	
+	function renameColumnTo(string $final){		
+		return $this->renameColumn($this->current_field, $final);
+	}
+
+	/*	
+		@param string|Array
+	*/
+	function addIndex($column){
+		if (is_array($column)){
+			$cols = implode(',', Strings::backticks($column));
+		} else {
+			$cols = "`$column`";
+		}
+
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD INDEX($cols);";
+		return $this;
+	}
+
+	function dropIndex(string $name){
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP INDEX `$name`;";
+		return $this;
+	}
+
+	// https://stackoverflow.com/questions/1463363/how-do-i-rename-an-index-in-mysql
+	function renameIndex(string $ori, string $final){
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` RENAME INDEX `$ori` TO `$final`;";
+		return $this;
+	}
+
+	// alias
+	function renameIndexTo(string $final){
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` RENAME INDEX `{$this->current_field}` TO `$final`;";
+		return $this;
+	}
+
+
+	function addPrimary(string $column){
+		$pks = static::getPKs($this->tb_name);
+
+		foreach ($this->commands as $ix => $command){
+			if (preg_match('/ ADD PRIMARY KEY\(([^)]+)\)/', $command, $matches)){
+				$new_pk = $matches[1];
+				unset($this->commands[$ix]);
+			}
+		}
+
+		$cols = '';
+		if (!empty($pks) || isset($new_pk)){
+			$cols = implode(',', Strings::backticks($pks));
+	
+			if (isset($new_pk)){
+				if (!empty($cols)){
+					$cols .= ', ';	
+				}
+
+				$cols .= $new_pk;
+			}
+
+			if (!empty($cols)){
+				$cols .= ', ';	
+			}
+
+			$cols .= "`$column`";
+
+			// Kill duplicates
+			$cols_ay = explode(',', $cols);			
+			$cols_ay = Strings::trimArray($cols_ay);
+			$cols_ay = array_unique($cols_ay, SORT_REGULAR);
+			$cols = implode(',', $cols_ay);
+
+			$drop_old_pk = !empty($pks) ? 'DROP PRIMARY KEY,' : '';
+
+			$this->commands[] = "ALTER TABLE `{$this->tb_name}` $drop_old_pk ADD PRIMARY KEY($cols);";
+		} else {
+			$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD PRIMARY KEY(`$column`);";
+		}
+		
+		return $this;	
+	}
+		
+	// implica primero remover el AUTOINCREMENT sobre el campo !
+	// ej: ALTER TABLE `super_cool_table` CHANGE `id` `id` INT(11) NOT NULL;
+	function dropPrimary(){
+		$auto = static::getAutoIncrementField($this->tb_name);
+
+		if (!empty($auto)){
+			$sc = new Schema($this->tb_name);
+			$sc
+			->dontExec()
+			->dropAuto()
+			->alter();
+	
+			$this->commands[] = $sc->dd();
+		}
+
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP PRIMARY KEY;";
+		return $this;
+	}
+
+	/*
+		Permite crear definir UNIQUEs de uno o varios campos
+
+		@param string|Array
+	*/
+	function addUnique($column){
+		if (is_array($column)){
+			$cols = implode(',', Strings::backticks($column));
+		} else {
+			$cols = "`$column`";
+		}
+		
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD UNIQUE($cols);";
+		
+		return $this;
+	}
+
+	// setea el campo actual como UNIQUE (de forma solitaria)
+	function setUnique(){		
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD UNIQUE(`{$this->current_field}`);";
+		return $this;
+	}
+		
+	function dropUnique(string $constraint_name){
+		$this->commands[] = $this->dropIndex($constraint_name);
+		return $this;
+	}
+
+	function addSpatial(string $column){
+		$this->commands[] = "ALTER TABLE ADD SPATIAL INDEX(`$column`);";
+		return $this;
+	}
+		
+	function dropSpatial(string $name){
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP `$name`;";
+		return $this;
+	}	
+
+	function addFullText(string $column){
+		$this->commands[] = "ALTER TABLE ADD FULLTEXT INDEX(`$column`);";
+		return $this;
+	}
+
+	function dropForeign(string $constraint_name){
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP FOREIGN KEY `$constraint_name`";
+		return $this;
+	}
+
+	// alias
+	function dropFK(string $constraint_name){
+		return $this->dropForeign($constraint_name);
+	}
+
+
+	// From DB 
+	//
+	protected function fromDB(){
+		if (!in_array($this->tb_name, $this->tables)){
+			return;
+		}
+
+		$table_def = $this->showTable();
+
+		if ($table_def == NULL){
+			throw new \Exception("[ Fatal error ] Table definition could not be recovered");
+		}
+
+		$lines = explode("\n", $table_def["Create Table"]);
+		$lines = array_map(function($l){ return trim($l); }, $lines);
+		
+		$last_line     = $lines[count($lines) -1];
+		$this->prev_schema['engine']  = Strings::slice($last_line, '/ENGINE=([a-zA-Z][a-zA-Z0-9_]+)/');
+		$this->prev_schema['charset'] = Strings::slice($last_line, '/CHARSET=([a-zA-Z][a-zA-Z0-9_]+)/');
+
+		$fields = [];
+		$cnt = count($lines)-1;
+		for ($i=1; $i<$cnt; $i++){
+			$str = $lines[$i];
+
+			if ($lines[$i][0] == '`')
+			{
+				$field 		= NULL;
+				$type  		= NULL;
+				$array		= NULL;				
+				$len   		= NULL;
+				$charset  	= NULL;
+				$collation 	= NULL;
+				$nullable	= NULL;
+				$default	= NULL;
+				$auto 		= NULL;
+				$check 		= NULL;
+				
+				$field      = Strings::slice($str, '/`([a-z_]+)`/i');
+				$type       = Strings::slice($str, '/([a-z_]+)/i');
+
+				$this->raw_lines[$field] = $lines[$i];
+
+				if ($type == 'enum' || $type == 'set'){
+					$array = Strings::slice($str, '/\((.*)\)/i');
+				}else{
+					$len = Strings::slice($str, '/\(([0-9,]+)\)/');					
+				}
+
+				$to_lo = function($s){ return strtolower($s); };
+				$to_up = function($s){ return strtoupper($s); };
+
+
+				$charset    = Strings::slice($str, '/CHARACTER SET ([a-z0-9_]+)/');
+				$collation  = Strings::slice($str, '/COLLATE ([a-z0-9_]+)/');
+				
+				$default    = Strings::slice($str, '/DEFAULT ([a-zA-Z0-9_\(\)]+)/');
+				//dd($default, "DEFAULT($field)");
+
+				$nullable   = Strings::slice($str, '/(NOT NULL)/') == NULL;
+				$auto       = Strings::slice($str, '/(AUTO_INCREMENT)/') == 'AUTO_INCREMENT';
+				//dd($nullable, "NULLABLE($field)");
+
+
+				/*
+					 Attributes
+				*/
+				$unsigned = Strings::slice($str, '/(unsigned)/i', $to_lo) == 'unsigned';
+				$zerofill = Strings::slice($str, '/(zerofill)/i', $to_lo) == 'zerofill';
+				$binary   = Strings::slice($str, '/(binary)/i'  , $to_lo) == 'binary';
+	
+				$attr = [];
+
+				if ($unsigned != null){
+					$attr[] = 'unsigned'; 
+				}
+
+				if ($zerofill != null){
+					$attr[] = 'zerofill';
+				}
+
+				if ($binary != null){
+					$attr[] = 'binary';
+				}
+
+					
+				//if (strlen($str)>1)
+				//	throw new \Exception("Parsing error!");				
+				
+				/*
+				dd($field, 'FIELD ***');
+				dd($lines[$i], 'LINES');
+				dd($type, 'TYPE');
+				dd($array, 'ARRAY / SET');
+				dd($len, 'LEN');
+				dd($charset, 'CHARSET');
+				dd($collation, 'COLLATION');
+				dd($nullable, 'NULLBALE');
+				dd($default, 'DEFAULT');
+				dd($auto, 'AUTO');
+				dd($check, 'CHECK');
+				echo "-----------\n";
+				*/
+								
+
+				$this->prev_schema['fields'][$field]['type'] = strtoupper($type);
+				$this->prev_schema['fields'][$field]['auto'] = $auto; 
+				$this->prev_schema['fields'][$field]['attr'] = $attr;  // recién integrado 11-dic-2021
+				$this->prev_schema['fields'][$field]['len'] = $len;
+				$this->prev_schema['fields'][$field]['array'] = $array;
+				$this->prev_schema['fields'][$field]['nullable'] = $nullable;
+				$this->prev_schema['fields'][$field]['charset'] = $charset;
+				$this->prev_schema['fields'][$field]['collation'] = $collation;
+				$this->prev_schema['fields'][$field]['default'] = $default;
+				// $this->prev_schema['fields'][$field]['after'] =  ...
+				// $this->prev_schema['fields'][$field]['first'] = ...
+
+			}else{
+				// Son índices de algún tipo
+				//dd($str, 'STR');
+				
+				$constraint = Strings::slice($str, '/CONSTRAINT `([a-zA-Z0-9_]+)` /', function($s){
+					return ($s != null) ? $s : 'DEFAULT';
+				});
+
+				/*
+
+					PRI KEY Simple:
+						PRIMARY KEY (`id`),
+
+					PRI KEY Compuesta:
+						PRIMARY KEY (`id`,`co`) USING BTREE
+
+					PRI KEY Con nombre: 
+						CONSTRAINT `pk_id` PRIMARY KEY (`id`,`co`) USING BTREE
+
+					
+					https://stackoverflow.com/a/3303836/980631
+
+				*/
+				$primary = Strings::slice($str, '/PRIMARY KEY \(`([a-zA-Z0-9_]+)`\)/');	// revisar
+
+				/*
+			
+					Compuesto:
+						UNIQUE KEY `correo` (`correo`,`hora`) USING BTREE,
+
+				*/
+				$unique  = Strings::sliceAll($str, '/UNIQUE KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');  // revisar				
+				
+				/*
+					Indices
+				*/
+		
+				$spatial  = Strings::sliceAll($str, '/SPATIAL KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
+
+				$fulltext = Strings::sliceAll($str, '/FULLTEXT KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
+		
+				/*
+					IDEM
+
+					https://dev.mysql.com/doc/refman/8.0/en/create-index.html
+				*/
+				$indexs  = Strings::sliceAll($str, '/KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/'); // revisar
+
+				$ix_type 			= Strings::slice($str, '/USING (BTREE|HASH)/');
+				$algorithm_option	= Strings::slice($str, '/ALGORITHM[ ]?[=]?[ ]?(DEFAULT|INPLACE|COPY)/');
+				$lock_option		= Strings::slice($str, '/LOCK[ ]?[=]?[ ]?(DEFAULT|NONE|SHARED|EXCLUSIVE)/');
+				
+				
+				/*
+					CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+
+					--[ CONSTRAINT ]-- 
+					'facturas_ibfk_1'
+
+
+					--[ FK ]-- 
+					'user_id'
+
+
+					--[ REFERENCES ]-- 
+					array (
+					0 => 'users',
+					1 => 'id',
+					)
+
+					--[ ON UPDATE ]-- 
+					NULL
+
+					--[ ON DELETE ]-- 
+					'CASCADE'
+
+				*/
+
+				$fk            = Strings::slice($str, '/FOREIGN KEY \(`([a-zA-Z0-9_]+)`\)/');
+				$fk_ref        = Strings::sliceAll($str, '/REFERENCES `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');
+				$fk_on_update  = Strings::slice($str, '/ON UPDATE (RESTRICT|NO ACTION|CASCADE|SET NULL)/');
+				$fk_on_delete  = Strings::slice($str, '/ON DELETE (RESTRICT|NO ACTION|CASCADE|SET NULL)/');
+
+				/*
+				if ($fk != null){
+					dd($fk, 'FK');
+					dd($fk_ref, 'REFERENCES');
+					dd($fk_on_update, 'ON UPDATE');
+					dd($fk_on_delete, 'ON DELETE'); 
+				}
+				*/
+
+				// [CONSTRAINT [symbol]] CHECK (expr) [[NOT] ENFORCED]	
+			$check   = Strings::sliceAll($str, '/CHECK \((.*)\) (ENFORCED|NOT ENFORCED)/');
+			
+			/*
+					Sin probar (req. MySQL 8.0+)
+
+					array(1) {
+						["checks"]=>
+						array(1) {
+							["post_content_check"]=>
+							array(1) {
+							[0]=>
+							array(2) {
+								[0]=>
+								string(94) " CASE WHEN DTYPE = 'Post' THEN CASE WHEN content IS NOT NULL THEN 1 ELSE 0 END ELSE 1 END = 1 "
+								[1]=>
+								string(12) "NOT ENFORCED"
+							}
+							}
+						}
+					}
+
+					https://stackoverflow.com/questions/7522026/how-do-i-add-a-custom-check-constraint-on-a-mysql-table
+				*/	
+				if ($check != null){
+					$prev_schema['checks'] [$constraint] [] = $check;   
+				} else {	
+					$check   = Strings::slice($str, '/CHECK \((.*)\)/');
+				
+					if ($check != null){
+						$prev_schema['checks'] [$constraint] [] = [$check]; 
+					}	
+				}			
+
+				$fn_rl = function($str){
+					return str_replace('`', '', $str);
+				};
+
+
+				/*
+				dd($constraint, 'CONSTRAINT', function($val){
+					return ($val != null);
+				});
+				*/
+				
+
+				//dd($str, "RESIDUO DE STR for {$lines[$i]}");					
+
+				
+				if ($primary != NULL){
+					$this->prev_schema['indices'][$primary] = 'PRIMARY';
+				} elseif ($unique != NULL){
+					foreach ($unique as $u){
+						$this->prev_schema['indices'][$u] = 'UNIQUE';	
+					}
+				}if ($indexs != NULL){
+					foreach ($indexs as $index){
+						$this->prev_schema['indices'][$index] = 'INDEX';
+					}
+				}
+
+				// Probar en lugar del bloque anterior:
+				
+				// if ($primary != NULL){	
+				// 	$tmp = explode(',',$primary);
+				// 	$this->prev_schema['indices']['PRIMARY'] [$constraint ] = [
+				// 		'fields' =>	array_map($fn_rl, $tmp)
+				// 	];
+				// } elseif ($unique != NULL){
+				// 	$tmp = explode(',',$unique[1]);
+				// 	$this->prev_schema['indices']['UNIQUE']  [$unique[0]  ] = [
+				// 		'fields' => array_map($fn_rl, $tmp),
+				// 		'index_type' => $ix_type,
+				// 		'algorithm_option' => $algorithm_option,
+				// 		'lock_option' => $lock_option
+				// 	];
+				// } elseif ($spatial != NULL){
+				// 	$tmp = explode(',',$spatial[1]);
+				// 	$this->prev_schema['indices']['SPATIAL'] [$spatial[0] ] = [
+				// 		'fields' => array_map($fn_rl, $tmp),
+				// 		'index_type' => $ix_type,
+				// 		'algorithm_option' => $algorithm_option,
+				// 		'lock_option' => $lock_option
+				// 	];	
+				// } elseif ($fulltext != NULL){
+				// 	$tmp = explode(',',$fulltext[1]);
+				// 	$this->prev_schema['indices']['FULLTEXT'][$fulltext[0]] = [
+				// 		'fields' => array_map($fn_rl, $tmp),
+				// 		'index_type' => $ix_type,
+				// 		'algorithm_option' => $algorithm_option,
+				// 		'lock_option' => $lock_option
+				// 	];	
+				// } elseif ($index != NULL){
+				// 	$tmp = explode(',',$index[1]);
+				// 	$this->prev_schema['indices']['INDEX']   [$index[0]   ] = array_map($fn_rl, $tmp);
+				// } elseif ($fk != null){	
+				// 	$this->fks[$fk]['references'] = $fk_ref[1];	
+				// 	$this->fks[$fk]['on'] = $fk_ref[0];
+				// 	$this->fks[$fk]['on_delete'] = 	$fk_on_delete ?? 'NO ACTION';
+				// 	$this->fks[$fk]['on_update'] = 	$fk_on_update ?? 'NO ACTION';		
+				// }
+
+				
+
+			}
+		}
+		
+	}
+
+	function dd(bool $sql_formater = false){
+		return Model::sqlFormatter(Strings::removeMultipleSpaces($this->query), $sql_formater);
+	}
+	
+	function change()
+	{	
+		// dd($this->indices, 'INDICES');
+		// dd($this->prev_schema['indices'], 'PREVIOUS INDICES');
+
+		foreach ($this->fields as $name => $field)
+		{
+			if (isset($this->prev_schema['fields'][$name])){
+				$this->fields[$name] = array_merge($this->prev_schema['fields'][$name], $this->fields[$name]);
+			} 		
+			
+			$field = $this->fields[$name];
+
+			//dd($this->fields[$name]);
+			//exit;
+
+			$charset   = isset($field['charset']) ? "CHARACTER SET {$field['charset']}" : '';
+			$collation = isset($field['collation']) ? "COLLATE {$field['collation']}" : '';
+			
+			$def = "{$this->fields[$name]['type']}";		
+			if (in_array($field['type'], ['SET', 'ENUM'])){
+				$values = implode(',', array_map(function($e){ return "'$e'"; }, $field['array']));	
+				$def .= "($values) ";
+			}else{
+				if (isset($field['len'])){
+					$len = implode(',', (array) $field['len']);	
+					$def .= "($len) ";
+				}else
+					$def .= " ";	
+			}
+			
+			// if (isset($field['attr'])){
+			// 	$def .= "{$field['attr']} ";
+			// }
+			
+			if (in_array($field['type'], ['CHAR', 'VARCHAR', 'TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT', 'JSON', 'SET', 'ENUM'])){
+				$def .= "$charset $collation ";	
+			}		
+			
+			if (isset($field['nullable']) && $field['nullable'] == 'NULL'){  
+				$def .= "NULL ";
+			} else {		
+				$def .= "NOT NULL ";
+			}	
+
+			/*			
+			dd($field['nullable'], "NULLABLE ($name)");
+			dd($field['default'], "DEFAULT ($name)");
+			exit;
+			*/
+
+			if (isset($field['nullable']) && !$field['nullable'] && isset($field['default']) && $field['default'] == 'NULL'){
+				throw new \Exception("Column `$name` can not be not nullable but default 'NULL'");
+			}
+				
+			if (isset($field['default'])){
+				$def .= "DEFAULT {$field['default']} ";
+			}
+			
+			if (isset($field['auto'])){
+				if ($field['auto'] == false){
+					$def = str_replace('AUTO_INCREMENT', '', $def);
+				} else {
+					$def .= ' AUTO_INCREMENT';
+				}				
+			}
+			
+			if (isset($field['after'])){  
+				$def .= "AFTER {$field['after']}";
+			} elseif (isset($field['first'])){
+				$def .= "FIRST ";
+			}
+
+			$def = trim(preg_replace('!\s+!', ' ', $def));
+			
+
+			if (isset($this->prev_schema['fields'][$name])){
+				$this->commands[] = "ALTER TABLE `{$this->tb_name}` CHANGE `$name` `$name` $def;";
+			} else {
+				$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD `$name` $def;";
+			}	
+		
+		}
+
+		//dd($this->indices, 'INDICES');
+
+		foreach ($this->indices as $name => $type){			
+			switch($type){
+				case "INDEX":
+					$this->addIndex($name);
+				break;
+				case "PRIMARY":
+					$this->addPrimary($name);
+				break;
+				case "UNIQUE": 
+					$this->addUnique($name);
+				break;
+				case "SPATIAL": 
+					$this->addSpatial($name);
+				break;
+				case "FULLTEXT": 
+					$this->addFullText($name);
+				break;
+			}
+		}
+
+		// FKs
+		$this->addFKs();
+
+
+		$this->query = implode("\r\n",$this->commands);
+	
+		if (!$this->exec){
+			return;
+		}
+
+		$conn = DB::getConnection();   
+		
+		DB::beginTransaction();
+		try{
+			//dd($this->commands, 'SQL STATEMENTS');
+			
+			foreach($this->commands as $change){
+				DB::statement($change);
+			}		
+			
+			DB::commit();
+		} catch (\PDOException $e) {
+			DB::rollback();
+			dd($change, 'SQL');
+			dd($e->getMessage(), "PDO error");
+			throw $e;		
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        } catch (\Throwable $e) {
+            DB::rollback();     
+			throw $e;       
+        }     
+	}	
+
+
+	function dontExec(){
+		$this->exec = false;
+		return $this;
+	}
+
+	// alias
+	function alter(){
+		$this->change();
+	}
+	
+	// reflexion
+	
+	function getSchema(){
+		return [
+			'engine'	=> $this->engine,
+			'charset'	=> $this->charset,
+			'collation'	=> $this->collation,
+			'fields'	=> $this->fields,
+			'indices'	=> $this->indices,
+			'fks'		=> $this->fks
+		];
+	}
+
+	function getCurrentSchema(){
+		return $this->prev_schema;
+	}
+
+}
+

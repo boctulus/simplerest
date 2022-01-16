@@ -3,7 +3,7 @@
 namespace simplerest\controllers;
 
 use Migrations;
-use simplerest\core\MigrationsControllerBase;
+use simplerest\core\controllers\MigrationsControllerBase;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;

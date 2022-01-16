@@ -1,8 +1,322 @@
-<?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
+<?php declare(strict_types=1);
+
+namespace simplerest\core\traits;
+
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\Model;
+use simplerest\core\libs\Strings;
+
+/*
+    SimpleRest
+
+    @author Bozzolo Pablo
 */
- declare (strict_types=1); namespace simplerest\core\traits; use simplerest\core\libs\Factory; use simplerest\core\libs\DB; use simplerest\core\Model; use simplerest\core\libs\Strings; trait SubResourcesV2 { static function getSubResources(string $J2AHP, array $JJF3y, ?object &$ScGji = null, ?string $XTDYW = null) { goto Pn9XI; Pn9XI: static $vgQx6; goto RM1En; RfdpO: if (!isset($vgQx6[$J2AHP][$wNdYJ][$XTDYW])) { goto Chkyi; } goto OddC6; jzKxn: $O7hc3 = function ($eMSwJ) { goto RNsTZ; xLQB1: return $sKfOj; goto aVQ52; RNsTZ: switch (DB::driver()) { case "\x6d\x79\x73\161\x6c": goto Qok04; G4thI: goto MCQk1; goto REzIA; R1s5h: $sKfOj = "\x43\x4f\116\x43\101\x54\50\x20\47\40\x5b\x27\40\x2c\107\x52\117\125\x50\137\103\117\116\x43\x41\124\x28{$eMSwJ}\x29\x2c\47\135\47\51"; goto AypWL; kqDLU: goto Qo0g4; goto bNSpx; AypWL: Qo0g4: goto G4thI; xXL7n: $sKfOj = "\112\123\x4f\116\x5f\x41\122\122\x41\x59\x41\x47\x47\50{$eMSwJ}\51"; goto kqDLU; bNSpx: LXcbi: goto R1s5h; Qok04: if (DB::isMariaDB() || DB::driverVersion(true) < "\x35\56\67\x2e\x32\62") { goto LXcbi; } goto xXL7n; REzIA: case "\x73\161\x6c\x69\164\x65": $sKfOj = "\x43\x4f\116\x43\x41\x54\x28\x20\47\x20\x5b\47\x20\x2c\x47\122\117\125\120\x5f\x43\x4f\x4e\x43\x41\x54\50{$eMSwJ}\x29\x2c\x27\135\x27\x29"; goto MCQk1; case "\160\147\163\161\x6c": goto DD_6i; KQXsL: throw new \Exception("\x55\156\163\165\160\x70\x6f\162\x74\145\x64\40\120\157\163\164\x67\x72\145\x73\x71\x6c\x20\166\x65\x72\x73\151\x6f\156\x20\x66\157\x72\40\110\x41\124\x45\x4f\101\x53"); goto vSgF4; UpNZS: goto MCQk1; goto wAIqu; DD_6i: if (DB::driverVersion(true) < "\x38\x2e\x34") { goto AUqqk; } goto wHA5f; ccb8e: AUqqk: goto KQXsL; vSgF4: rjYmY: goto UpNZS; r9pQ4: goto rjYmY; goto ccb8e; wHA5f: $sKfOj = "\x61\x72\162\141\x79\137\x74\157\137\x73\x74\162\x69\x6e\x67\x28\141\x72\x72\x61\x79\137\141\147\x67\x28{$eMSwJ}\51\x2c\x20\x27\x2c\47\x29"; goto r9pQ4; wAIqu: case "\x6f\x72\x61\x63\x6c\x65": $sKfOj = "\112\123\117\116\137\101\x52\122\101\x59\x41\107\107\x28{$eMSwJ}\51"; goto MCQk1; default: $sKfOj = "\x4a\123\117\116\x5f\101\122\122\x41\131\101\107\x47\50{$eMSwJ}\x29"; } goto hdxNH; DL3GU: MCQk1: goto xLQB1; hdxNH: BdAcR: goto DL3GU; aVQ52: }; goto yC2v7; RM1En: $wNdYJ = implode("\54", $JJF3y); goto RfdpO; nQ4ZH: $e1i00 = DB::table($UV7E3)->getNotHidden(); goto X1v53; fl3QQ: $sKfOj = $ScGji->select($e1i00)->selectRaw($AaV24)->dd(); goto m1S7h; Rq4ol: $CzRJK = function ($sKfOj, $J2AHP) { goto Yt31s; Arixw: $sKfOj = substr($sKfOj, 0, $pFhj0) . "\x41\x4e\x44" . substr($sKfOj, $pFhj0 + 5); goto Yd9bU; QLvxr: $sKfOj = str_replace("\111\x4e\116\105\122\x20\112\117\x49\x4e\40{$J2AHP}\40\117\x4e\40", "\x57\x48\x45\122\x45\40", $sKfOj); goto Y1Nk8; Yd9bU: cuaxS: goto QLvxr; Yt31s: $pFhj0 = strpos($sKfOj, "\x57\x48\x45\122\105"); goto YoSkX; Y1Nk8: return $sKfOj; goto AO7Zl; YoSkX: if (!($pFhj0 !== false)) { goto cuaxS; } goto Arixw; AO7Zl: }; goto jzKxn; yC2v7: $odgba = []; goto zp_x9; qUO86: $AaV24 = implode("\54" . PHP_EOL . PHP_EOL, $odgba); goto fl3QQ; gvDOm: if (!($XTDYW != null)) { goto ievw8; } goto m7HD7; zcqGW: return $ReDgq; goto OkoEs; KMXvi: T5zEF: goto qUO86; OddC6: return $vgQx6[$J2AHP][$wNdYJ][$XTDYW]; goto IKFIH; baE76: foreach ($JJF3y as $clmxu => $UV7E3) { goto M0HXi; AnHTh: switch ($drfw0) { case 0: case 1: goto TQSv1; Ujk0o: $sKfOj = $CzRJK($sKfOj, $J2AHP); goto ilT08; tZoR1: YNBcx: goto hPQOX; G9Qg8: goto vxdAI; goto v5CGW; L0dTm: $sKfOj = $eFvpD->dontBind()->dontExec()->dd(); goto QIZTh; MTUrp: if (is_mul_rel_cached($J2AHP, $UV7E3, null, $XTDYW)) { goto g6cHc; } goto D33jk; tMTrX: goto todN6; goto w4dbX; hPQOX: $MpX6i = implode("\x2c" . PHP_EOL, $QV1pg); goto MTUrp; QIZTh: $sKfOj = "\50{$sKfOj}\51\40\x61\x73\40{$UV7E3}"; goto Ujk0o; mbWI_: $eFvpD->selectRaw($zPP6e); goto YN0TV; w4dbX: g6cHc: goto PMsyL; Zib74: todN6: goto mbWI_; F2xGy: $QV1pg = []; goto rG_jD; D33jk: $zPP6e = "\xa\x20\x20\x20\40\40\x20\x20\40\x20\40\x20\40\40\40\x20\x20\40\40\x20\x20\x20\x20\x20\40\111\x46\x28\xa\40\x20\x20\40\40\40\40\40\40\40\40\x20\40\40\x20\40\x20\x20\40\40\x20\40\x20\x20\40\40\40\40\x43\117\x55\x4e\124\x28\137\x5f{$UV7E3}\x2e{$W5dgE}\x29\40\75\40\60\x2c\x20\47\x27\x2c\xa\x20\x20\x20\x20\40\x20\x20\x20\40\40\x20\40\40\40\x20\40\40\40\40\40\40\x20\40\x20\x20\40\40\x20\x4a\123\117\116\137\x4f\102\x4a\105\x43\x54\x28{$MpX6i}\x29\40\x29"; goto tMTrX; YN0TV: $tFUpL[] = "{$UV7E3}"; goto EQCD3; rG_jD: foreach ($u7mSp as $aBBJK) { $QV1pg[] = "\x27{$aBBJK}\x27\54\40\x5f\137{$UV7E3}\56{$aBBJK}"; Yigw4: } goto tZoR1; EQCD3: $eFvpD->join($J2AHP); goto L0dTm; PMsyL: $zPP6e = "\xa\40\x20\40\40\x20\x20\40\40\40\40\x20\40\40\x20\40\x20\x20\x20\x20\40\x20\40\40\x20\x20\x20\x20\40\x49\106\x28\xa\40\40\x20\40\x20\x20\x20\40\40\40\x20\x20\x20\40\x20\40\40\40\x20\40\40\40\x20\40\40\x20\40\x20\x20\40\40\x20\x43\x4f\125\116\124\50\x5f\x5f{$UV7E3}\56{$W5dgE}\x29\x20\x3d\x20\x30\x2c\x20\x4a\123\117\116\137\101\x52\x52\x41\131\50\51\54\xa\x20\40\x20\x20\40\40\40\x20\x20\40\40\x20\40\40\40\40\x20\x20\x20\x20\40\40\x20\40\40\x20\40\40\x20\x20\40\40{$O7hc3("\112\x53\117\x4e\137\x4f\102\112\105\x43\124\50" . $MpX6i . "\x29")}\xa\x20\x20\x20\x20\x20\x20\40\x20\x20\40\x20\x20\40\x20\40\40\40\40\40\x20\x20\x20\x20\x20\x20\40\x20\x20\51"; goto Zib74; ilT08: $odgba[] = $sKfOj; goto G9Qg8; TQSv1: $eFvpD = DB::table($UV7E3, "\x5f\x5f" . $UV7E3); goto F2xGy; v5CGW: default: goto ypcjn; tqdfg: $Wowsq = strpos($sKfOj, "\x57\x48\105\x52\105\x20", $sjgsb + 7); goto mio1M; vbxMF: $sKfOj = $eFvpD->dontBind()->dontExec()->dd(); goto Q_DGX; Xke1m: goto vxdAI; goto PdUSH; AzxSM: $zrmrp = explode("\x49\x4e\116\105\x52\40\112\117\111\116\x20", $GpfYr); goto q1zJR; Q_DGX: $sjgsb = strpos($sKfOj, "\111\x4e\116\105\122\40\112\117\x49\x4e"); goto tqdfg; q1zJR: $it6Ob = []; goto aqn5v; ZlDcd: foreach ($zrmrp as $clmxu => $YrCTg) { goto MA7SW; ok0yf: throw new \Exception("\123\x51\114\40\105\x72\162\157\162\x2e\40\123\x6f\x6d\145\x74\150\151\156\147\x20\x77\141\163\x20\x77\162\x6f\156\x67"); goto TXid1; w3lmx: $K9mVQ[] = $m4gBu[2]; goto XhSNG; MA7SW: if (!empty($YrCTg)) { goto oBDWy; } goto ThGo6; xlB9E: oBDWy: goto Omaae; TXid1: Svsnz: goto a0x0l; ThGo6: goto BCROR; goto xlB9E; XhSNG: BCROR: goto giQvF; Omaae: if (preg_match("\57\133\141\55\172\x41\55\x5a\60\x2d\71\137\x5d\53\40\141\x73\40\x28\x5b\141\55\x7a\x41\x2d\132\x30\55\x39\x5f\x5d\x2b\51\40\x4f\x4e\x20\x28\x2e\x2a\51\x2f", $YrCTg, $m4gBu)) { goto Svsnz; } goto ok0yf; a0x0l: $it6Ob[] = $m4gBu[1]; goto w3lmx; giQvF: } goto koDCM; koDCM: cHZAV: goto evOwa; evOwa: foreach ($K9mVQ as $clmxu => $vczQK) { goto Sqt1u; iFbER: $MpX6i = implode("\x2c" . PHP_EOL, $QV1pg); goto RgPZI; Sqt1u: $w3qho = $it6Ob[$clmxu]; goto sHRn7; atVUW: VfqHp: goto g02hn; FDSkS: goto CsjJe; goto atVUW; WqfmT: $eFvpD = DB::table($UV7E3, $w3qho); goto p0LaM; LXTHn: foreach ($u7mSp as $aBBJK) { $QV1pg[] = "\47{$aBBJK}\x27\x2c\x20{$w3qho}\56{$aBBJK}"; P4thY: } goto J9CKq; p0LaM: $QV1pg = []; goto LXTHn; RyurZ: qTz3F: goto FXMqD; sHRn7: $tFUpL[] = $w3qho; goto WqfmT; eG3mY: CsjJe: goto EtNkZ; jBZGt: $odgba[] = $sKfOj; goto RyurZ; J9CKq: QBuPB: goto iFbER; RgPZI: if (is_mul_rel_cached($J2AHP, $UV7E3, null, $XTDYW)) { goto VfqHp; } goto uxZwf; f82YK: $sKfOj = $eFvpD->dontBind()->dontExec()->dd(); goto LT3LX; LT3LX: if (!is_null($w3qho)) { goto m9CCg; } goto Ey1jp; mQdde: f9Uxr: goto jBZGt; uxZwf: $zPP6e = "\12\40\x20\40\40\40\x20\x20\40\x20\x20\x20\40\40\x20\x20\40\40\x20\40\x20\x20\x20\x20\40\x20\40\x20\x20\x49\106\50\12\40\x20\x20\x20\x20\40\x20\x20\x20\x20\x20\x20\x20\40\40\x20\x20\x20\x20\40\x20\40\40\x20\40\x20\40\40\40\x20\40\40\x43\117\x55\116\124\x28{$w3qho}\56{$W5dgE}\51\x20\x3d\40\60\x2c\40\x27\47\x2c\12\x20\x20\x20\x20\x20\40\x20\40\x20\40\x20\x20\40\x20\40\40\x20\x20\40\x20\x20\40\40\40\x20\x20\40\x20\x20\x20\x20\x20\112\x53\117\116\x5f\x4f\102\x4a\x45\x43\x54\x28{$MpX6i}\x29\40\51"; goto FDSkS; g02hn: $zPP6e = "\12\x20\40\x20\40\x20\x20\x20\x20\x20\40\40\40\x20\x20\40\x20\40\40\x20\x20\x20\40\x20\x20\40\x20\40\x20\x49\x46\50\12\40\40\40\40\x20\x20\40\x20\x20\40\40\x20\40\40\x20\40\x20\40\40\40\x20\40\x20\40\40\x20\40\x20\40\40\40\40\103\117\125\x4e\124\50{$w3qho}\x2e{$W5dgE}\x29\x20\75\x20\60\x2c\40\112\123\117\116\x5f\101\122\x52\101\131\50\x29\54\12\40\40\x20\x20\x20\40\40\40\40\40\40\40\x20\40\40\x20\x20\40\x20\x20\40\x20\x20\x20\40\x20\x20\40\40\40\40\x20{$O7hc3("\112\123\x4f\116\137\x4f\102\x4a\x45\x43\124\x28" . $MpX6i . "\x29")}\12\40\40\x20\x20\40\x20\40\40\40\40\40\x20\x20\40\x20\40\x20\x20\40\40\x20\40\x20\x20\x20\x20\40\40\x29"; goto eG3mY; mBtAb: goto f9Uxr; goto e_gDm; Ey1jp: $sKfOj = "\50{$sKfOj}\x29\x20\141\x73\x20{$UV7E3}"; goto mBtAb; oQc5T: $sKfOj = "\50{$sKfOj}\51\40\x61\163\x20{$w3qho}"; goto mQdde; e_gDm: m9CCg: goto oQc5T; EtNkZ: $eFvpD->selectRaw($zPP6e); goto W4Ai_; W4Ai_: $eFvpD->whereRaw($vczQK); goto f82YK; FXMqD: } goto GYCKY; GYCKY: TUFV9: goto Xke1m; mio1M: $GpfYr = trim(Strings::middle($sKfOj, $sjgsb, $Wowsq)); goto AzxSM; ypcjn: $eFvpD = DB::table($J2AHP)->join($UV7E3); goto vbxMF; aqn5v: $K9mVQ = []; goto ZlDcd; PdUSH: } goto oUPfW; oUPfW: yFSlw: goto eRzy5; eRzy5: vxdAI: goto YlGuu; OZkZ_: $W5dgE = get_primary_key($UV7E3); goto pNeL2; fUrzi: $w3qho = null; goto AnHTh; YlGuu: Y4v9l: goto h9rxG; pNeL2: $IWYww = $YStSF[$UV7E3] ?? []; goto wahKG; wahKG: $drfw0 = count($IWYww); goto fUrzi; M0HXi: $u7mSp = DB::table($UV7E3)->getNotHidden(); goto OZkZ_; h9rxG: } goto KMXvi; srYPD: foreach ($ReDgq as $clmxu => $tMe4v) { goto tAjDh; P7ai6: SzuDQ: goto CMgVh; Idk4U: AyCIk: goto P7ai6; tAjDh: foreach ($tMe4v as $BRPp3 => $vdcnq) { goto AcKXw; F1dJ_: Ot5bp: goto GXMtm; GXMtm: TmQen: goto RLzKI; xHEpP: $ReDgq[$clmxu][$BRPp3] = json_decode($vdcnq, true); goto F1dJ_; AcKXw: if (!in_array($BRPp3, $tFUpL)) { goto Ot5bp; } goto xHEpP; RLzKI: } goto Idk4U; CMgVh: } goto v9bhQ; oJs4w: $YStSF = $E0tJU["\145\170\x70\x61\x6e\x64\145\144\137\x72\145\154\x61\x74\151\x6f\156\x73\150\151\160\163"]; goto Rq4ol; ftK8j: $e1i00 = []; goto DMTNp; m7HD7: DB::getConnection($XTDYW); goto Cev0x; X1v53: $E0tJU = get_schema($UV7E3); goto oJs4w; zp_x9: $tFUpL = []; goto baE76; atDhj: GPRsq: goto ftK8j; gsfbS: $ScGji = DB::table($J2AHP); goto atDhj; v9bhQ: NokuG: goto zcqGW; Cev0x: ievw8: goto o0U2w; DMTNp: $UV7E3 = $J2AHP; goto nQ4ZH; IKFIH: Chkyi: goto gvDOm; o0U2w: if (!($ScGji == null)) { goto GPRsq; } goto gsfbS; m1S7h: $ReDgq = Model::query($sKfOj); goto srYPD; OkoEs: } }
+
+trait SubResourcesV2
+{
+    static function getSubResources(string $table, Array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
+    {
+        static $ret;
+
+        $connect_str = implode(',', $connect_to);
+        
+        if (isset($ret[$table][$connect_str][$tenant_id])){
+            return $ret[$table][$connect_str][$tenant_id];
+        }
+
+        if ($tenant_id != null){
+            DB::getConnection($tenant_id);
+        }
+
+        if ($instance == null){
+            $instance = DB::table($table);
+        }        
+
+        $fields = [];   
+      
+        $tb = $table;
+        $fields = DB::table($tb)->getNotHidden();
+
+        $sc   = get_schema($tb);
+        $rels = $sc['expanded_relationships'];
+
+        /*
+            Reemplace the INNER JOIN to the main table for WHERE
+        */
+        $fn_where_x_join = function($sql, $table){
+            $pos = strpos($sql, 'WHERE');
+
+            if ($pos !== false){
+                $sql = substr($sql, 0, $pos) . 'AND' . substr($sql, $pos +5);    
+            } 
+            
+            $sql = str_replace("INNER JOIN $table ON ", "WHERE ", $sql);
+            
+            return $sql;
+        };
+
+        /*
+            Apply JSON_ARRAYAGG() or equivalent
+
+            https://stackoverflow.com/questions/48843188/mysql-json-object-instead-of-group-concat/48844772
+        */
+        $fn_json_arrayagg = function($q){
+             switch (DB::driver()){
+                case 'mysql':
+                    if (DB::isMariaDB() || DB::driverVersion(true) < '5.7.22'){
+                        $sql = "CONCAT( ' [' ,GROUP_CONCAT($q),']')";
+                    } else {
+                        $sql = "JSON_ARRAYAGG($q)";    
+                    }
+
+                    break;
+                
+                // untested
+                case 'sqlite':
+                    $sql = "CONCAT( ' [' ,GROUP_CONCAT($q),']')";
+                    break;
+                
+                // untested
+                case 'pgsql': 
+                    // https://stackoverflow.com/questions/2560946/postgresql-group-concat-equivalent/8803563
+                    // https://stackoverflow.com/questions/6162324/is-there-a-mysql-equivalent-to-postgresql-array-to-string
+
+                    if (DB::driverVersion(true) < '8.4'){
+                        throw new \Exception("Unsupported Postgresql version for HATEOAS");
+                    } else {
+                        $sql = "array_to_string(array_agg($q), ',')";
+                    }
+                         
+                    break;
+
+                // untested    
+                case 'oracle':
+                    $sql = "JSON_ARRAYAGG($q)"; 
+                    break;
+
+                default:
+                    $sql = "JSON_ARRAYAGG($q)"; 
+            }
+
+            return $sql;
+        };
+
+        $subqueries = [];
+        $encoded    = [];
+        foreach ($connect_to as $ix => $tb){
+            $_fields = DB::table($tb)->getNotHidden();
+
+            $pri = get_primary_key($tb);
+            $rs  = $rels[$tb] ?? [];
+            $cnt = count($rs);
+
+            $alias   = null;
+            switch ($cnt)
+            {
+                // relación n:m
+                case 0:
+                    // En una relación con tabla puente no hay referencia directa desde la tabla principal
+                    // hacia la tabla objetivo justamente porque existe una tabla intermedia.
+
+                   
+                case 1:
+                    $m = DB::table($tb, '__' . $tb);
+            
+                    $arr = [];
+                    foreach ($_fields as $f){
+                        $arr[] = "'$f', __$tb.{$f}";
+                    }
+        
+                    $obj = implode(',' . PHP_EOL, $arr);
+
+                    if (is_mul_rel_cached($table, $tb, null, $tenant_id)){
+                        $sel = "
+                            IF(
+                                COUNT(__$tb.$pri) = 0, JSON_ARRAY(),
+                                {$fn_json_arrayagg( 
+                                    'JSON_OBJECT('.$obj.')' 
+                                )}
+                            )";
+                    } else {
+                        $sel = "
+                        IF(
+                            COUNT(__$tb.$pri) = 0, '',
+                            JSON_OBJECT($obj) )";
+                    }
+
+                    $m->selectRaw($sel);
+
+                    $encoded[] = "$tb";
+
+                    $m->join($table);     
+                    
+                    $sql = $m   
+                    ->dontBind()
+                    ->dontExec()     
+                    ->dd();
+    
+                    $sql = "($sql) as $tb";
+                    
+    
+                    // INNER JOIN to WHERE conversion
+                    $sql = $fn_where_x_join($sql, $table);
+    
+                    /////////////////////////////
+                    //dd(Model::query($sql), $tb);
+                    //dd(sql_formater($sql), "SubQuery for $tb");
+                    // dd('-------------------------------------'. PHP_EOL . PHP_EOL);
+                    // dd($sql, "Pre-compiled SubQuery for $tb"); //
+                    // print_r(PHP_EOL . PHP_EOL);
+    
+    
+                    $subqueries[] = $sql;
+                    break;
+
+                // $cnt > 1
+                default:
+                    /*
+                        Caso donde hay más de una relación entre dos tablas. 
+                        
+                        Ej: cuando hay un usuario creador y otro actualizador (dos FKs hacia la misma tabla)
+                    */
+
+                    // De acá la idea es quedarme con los JOINS 
+                    //
+                    $m = DB::table($table)
+                    ->join($tb);
+
+                    $sql = $m
+                    ->dontBind()
+                    ->dontExec()       
+                    ->dd();
+
+                    $ini = strpos($sql, 'INNER JOIN');
+                    $end = strpos($sql, 'WHERE ', $ini + 7);
+
+                    $inners = trim(Strings::middle($sql, $ini, $end));
+                    $in_arr = explode('INNER JOIN ', $inners);
+                    
+                    $aliases = [];
+                    $ons = [];
+                    foreach ($in_arr as $ix => $inner){
+                        if (empty($inner)){
+                            continue;
+                        }
+
+                        if (!preg_match('/[a-zA-Z0-9_]+ as ([a-zA-Z0-9_]+) ON (.*)/', $inner, $matches)){
+                            // dd($sql, 'SQL para JOINs');
+                            // dd("Trying parse $inner");
+                            throw new \Exception("SQL Error. Something was wrong");
+                        }
+
+                        $aliases[] = $matches[1];
+                        $ons[] = $matches[2];
+                    }
+
+                    // dd($ons, 'ONs');
+                    // dd($aliases, 'ALIASes');
+
+                    // Acá debería iterar los JOINs....... 
+                    foreach ($ons as $ix => $cond)
+                    {
+                        $alias     = $aliases[$ix];
+                        $encoded[] = $alias;
+                    
+                        $m = DB::table($tb, $alias);
+
+                        $arr = [];
+                        foreach ($_fields as $f){
+                            $arr[] = "'$f', {$alias}.{$f}";
+                        }
+            
+                        $obj = implode(',' . PHP_EOL, $arr);                    
+
+                        if (is_mul_rel_cached($table, $tb, null, $tenant_id)){
+                            $sel = "
+                            IF(
+                                COUNT($alias.$pri) = 0, JSON_ARRAY(),
+                                {$fn_json_arrayagg( 
+                                    'JSON_OBJECT('.$obj.')' 
+                                )}
+                            )";
+                        } else {
+                            $sel = "
+                            IF(
+                                COUNT($alias.$pri) = 0, '',
+                                JSON_OBJECT($obj) )";
+                        }
+
+                        $m->selectRaw($sel);
+                        $m->whereRaw($cond);
+
+                        $sql = $m
+                        ->dontBind()
+                        ->dontExec()       
+                        ->dd();
+        
+                        
+                        if (!is_null($alias)){
+                            $sql = "($sql) as $alias";
+                        } else {
+                            $sql = "($sql) as $tb";
+                        }
+                    
+                        /////////////////////////////
+                        //dd(Model::query($sql), $tb);
+                        //dd(sql_formater($sql), "SubQuery for $tb"); //
+                        // dd('-------------------------------------'. PHP_EOL . PHP_EOL);
+                        // dd($sql, "Pre-compiled SubQuery for $tb"); //
+                        // print_r(PHP_EOL . PHP_EOL);
+        
+
+                        $subqueries[] = $sql;
+                    }
+
+                    break;
+            }  // end switch
+
+        }
+
+
+       //exit;  //////////
+
+        /*
+            Query assembly
+        */
+
+        $sub_qs = implode(','. PHP_EOL . PHP_EOL, $subqueries);
+        //dd($sub_qs);
+
+        //exit; /////
+        ///////////
+
+
+        /*
+            Main query
+        */
+
+        $sql = $instance
+        ->select($fields)
+        ->selectRaw($sub_qs)
+        ->dd();   
+        
+        //dd($instance->dd(true), 'SQL'); exit; /// *
+    
+        $rows = Model::query($sql);
+
+        /*
+            JSON decoding
+        */
+        foreach ($rows as $ix => $row){
+            foreach ($row as $field => $dato){
+                if (in_array($field, $encoded)){
+                    $rows[$ix][$field] = json_decode($dato, true);
+                }
+            }
+        }
+
+        //dd(sql_formater($sql)); exit;//
+        return $rows;
+    }
+}

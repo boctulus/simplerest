@@ -3,7 +3,7 @@
 namespace simplerest\core;
 
 use simplerest\controllers\MakeController;
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Request;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\StdOut;

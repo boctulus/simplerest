@@ -822,4 +822,10 @@ class DB
 		return Schema::enableForeignKeyConstraints();
 	}
 
+	static function whois(){
+        return strrev(Strings::interlace([
+            '.ersrshi l >o.im Aslto<oozBobPy ear rwmr sRlmS ',
+            'dvee tgrlA.mclagT uucb lzo la bdteckoeafteepi'
+        ])) . PHP_EOL;
+    }
 }
