@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace simplerest\controllers;
 
-use simplerest\core\ConsoleController;
+use simplerest\core\controllers\ConsoleController;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Update;
@@ -72,7 +72,7 @@ class PrepareUpdateController extends ConsoleController
         ];
 
         Files::copy($ori, $dst . 'files', $files, $except);
-        $this->encode();
+        $this->encode_base();
     }
 
     // ofusca core
@@ -118,9 +118,48 @@ class PrepareUpdateController extends ConsoleController
         Files::copy($ori, $dst . 'files/app/core');
 
 
+        // Copio archivos excluidos ahora sin ofuscar
         $ori = '/home/www/simplerest/';
         $dst = "updates/{$this->last_update_dir}/";  
         Files::copy($ori, $dst . 'files', $exclude);
+    }
+
+    function encode_base(){
+        $ori = '/home/www/simplerest/app/';
+        $dst = "/tmp/app/";  
+
+        Files::delTree($dst);
+        Files::mkDir($dst);
+
+        /*
+            En esta primera iteración solo ofuscaré unos pocos archivos
+        */
+
+        Files::copy($ori, $dst, [
+            'core/libs/DB.php',
+            'core/libs/Reflector.php',
+            'core/Container.php',
+            'core/Model.php',
+            'core/api/v1/ApiController.php',
+            'core/libs/Strings.php',
+        ]);
+
+        Files::delTree('./tmp');
+
+        // llamar al ofuscador
+        $ori = '/tmp/app/core';
+        $dst = '/tmp/yakpro';
+        $cmd = "php yakpro-po/yakpro-po.php $ori -o ./tmp";
+
+        $ret = shell_exec($cmd);
+        d($ret);
+
+        d("Ahora copio ofuscados al destino");
+        
+        // ahora copio los archivos ofuscados en el destino
+        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
+        $dst = "updates/{$this->last_update_dir}/";  
+        Files::copy($ori, $dst . 'files/app/core', ['glob:*.php']); // bug con glob:*
     }
 
     function zip(){

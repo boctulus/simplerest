@@ -83,7 +83,7 @@ class Files
 
 		foreach ($files as $ix => $f){
 			$files[$ix] = Strings::removeUnnecessarySlashes($f);
-		}
+		}	
 
 		return $files;
 	}
@@ -204,6 +204,7 @@ class Files
     */
     static function copy(string $ori, string $dst, ?Array $files = null, ?Array $except = null)
     {
+		$copied = [];
 		$dst = Strings::removeTrailingSlash($dst);
 
 		$ori_with_trailing_slash = Strings::addTrailingSlash($ori);
@@ -238,6 +239,7 @@ class Files
 				}
 				
 				$glob_includes = array_merge($glob_includes, $rec);
+				
 				unset($files[$ix]);
 			} 
 			
@@ -246,10 +248,8 @@ class Files
 			}
 
 			// Creo directorio para destino sino existiera 
-			#if (!Strings::startsWith('glob:', $f)){
-				$dst_dir = $dst . Strings::diff(static::getDir($f), $ori);
-				static::mkDirOrFail($dst_dir);
-			#}
+			$dst_dir = $dst . Strings::diff(static::getDir($f), $ori);
+			static::mkDirOrFail($dst_dir);
 		}
 
 		$files = array_merge($files, $glob_includes);
@@ -374,7 +374,15 @@ class Files
                         continue;
                     }
 
-                    static::cp($full_path, $dst_path);
+					/*
+						Aplico cache que evita copiar archivos dos veces
+					*/
+					$str = "$full_path;$dst_path";
+					if (!isset($copied[$str])){
+						static::cp($full_path, $dst_path);
+						$copied[$str] = 1;
+					}
+                    
                 }
                 
                 continue;
@@ -387,7 +395,16 @@ class Files
 			
 			$final_path = $dst . DIRECTORY_SEPARATOR . $_file;
 
-            static::cp($ori_path, $final_path);
+			/*
+				Aplico cache que evita copiar archivos dos veces
+			*/
+			$str = "$ori_path;$final_path";
+			if (!isset($copied[$str])){
+				static::cp($ori_path, $final_path);
+				$copied[$str] = 1;
+			}
+
+            
         }
     }
 
@@ -477,9 +494,13 @@ class Files
 	}
 
 
-	static function delTree(string $dir, bool $include_self = false) {
+	static function delTree(string $dir, bool $include_self = false, bool $warn_if_not_exists = false) {
 		if (!is_dir($dir)){
-			throw new \InvalidArgumentException("Invalid directory '$dir'");
+			if ($warn_if_not_exists){
+				throw new \InvalidArgumentException("Invalid directory '$dir'");
+			} else {
+				return;
+			}
 		}
 
 		if (!$include_self){
@@ -505,6 +526,10 @@ class Files
 		} 
 
 		return false;
+	}
+
+	static function delTreeOrFail(string $dir, bool $include_self = false){
+		static::delTree($dir, $include_self, true);
 	}
 
 	static function logger($data, string $file = 'log.txt'){		

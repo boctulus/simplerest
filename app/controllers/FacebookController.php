@@ -4,7 +4,7 @@ namespace simplerest\controllers;
 
 use Exception;
 use simplerest\core\libs\Factory;
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\DB;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;

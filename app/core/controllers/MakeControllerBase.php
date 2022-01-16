@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core;
+namespace simplerest\core\controllers;
 
-use simplerest\core\Controller;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\DB;

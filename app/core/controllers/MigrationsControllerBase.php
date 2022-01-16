@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core;
+namespace simplerest\core\controllers;
 
 use Migrations;
 use simplerest\controllers\MakeController;

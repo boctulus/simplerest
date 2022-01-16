@@ -2,7 +2,7 @@
 
 namespace simplerest\transformers;
 
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 
 class UsersTransformer implements \simplerest\core\interfaces\ITransformer
 {

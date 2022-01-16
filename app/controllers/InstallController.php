@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\ConsoleController;
+use simplerest\core\controllers\ConsoleController;
 use simplerest\core\Model;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\DB;

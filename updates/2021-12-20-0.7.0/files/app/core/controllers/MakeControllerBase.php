@@ -1,10 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core;
+namespace simplerest\core\controllers;
 
-use simplerest\controllers\MakeController;
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\DB;
@@ -28,10 +25,13 @@ class MakeControllerBase extends Controller
     const CONSOLE_TEMPLATE = self::TEMPLATES . 'ConsoleController.php';
     const API_TEMPLATE = self::TEMPLATES . 'ApiRestfulController.php';
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; 
+    const MSG_CONST_TEMPLATE = self::TEMPLATES . 'Msg.php';
+    const INTERFACE_TEMPLATE = self::TEMPLATES . 'Interface.php';
     const HELPER_TEMPLATE = self::TEMPLATES . 'Helper.php'; 
     const LIBS_TEMPLATE = self::TEMPLATES . 'Lib.php';
-    const MSG_CONST_TEMPLATE = self::TEMPLATES . 'Msg.php';
-    
+    const TRAIT_TEMPLATE = self::TEMPLATES . 'Trait.php';
+
+
     protected $class_name;
     protected $ctr_name;
     protected $api_name; 
@@ -125,31 +125,34 @@ class MakeControllerBase extends Controller
         In general, 
 
         make {name} [options]
+
+        Most common options are:
+
+        --force 
+        --unignore | --retry
+        --remove
+        --strict
           
-        make helper my_cool_helper [--force | -f] [ --unignore | -u ]
+        make helper my_helper [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make lib my_lib [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make interface [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make schema my_table [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make model my_table  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --strict ] [ --remove ]
 
-        make lib my_lib [--force | -f] [ --unignore | -u ]
+        make controller my_controller  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make controller folder/my_controller  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
-        make schema super_awesome [--force | -f] [ --unignore | -u ]
+        make console my_console_ctrl  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make console folder/my_console_ctrl  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
-        make model SuperAwesomeModel  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ]
-        make model SuperAwesome [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ]
-        make model super_awesome  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ]
-        
-        make controller SuperAwesome  [--force | -f] [ --unignore | -u ]
-        make controller folder/SuperAwesome  [--force | -f] [ --unignore | -u ]
+        make api my_table   [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make api my_table  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
-        make console SuperAwesome  [--force | -f] [ --unignore | -u ]
-        make console folder/SuperAwesome  [--force | -f] [ --unignore | -u ]
-
-        make api SuperAwesome   [--force | -f] [ --unignore | -u ]  
-        make api super_awesome  [--force | -f] [ --unignore | -u ]
-
-        make api all --from:dsi [--force | -f] [ --unignore | -u ]
+        make api all --from:some_conn_id [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
         <-- "from:" is required in this case.]
              
-        make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ]
+        make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --strict ] [ --remove ]
 
         make any Something  [--schema | -s] [--force | -f] [ --unignore | -u ]
                             [--model | -m] [--force | -f] [ --unignore | -u ]
@@ -173,12 +176,17 @@ class MakeControllerBase extends Controller
         
         Examples:
         
+        make lib my_lib
+        make helper my_helper
+        make interface pluggable 
+        make interface pluggable --remove
         make any baz -s -m -a -f
-        make any tbl_contacto -sam --from:dsi
-        make any all -sam  --from:dsi
-        make any all -samf --from:dsi
+        make any tbl_contacto -sam --from:some_conn_id
+        make any all -sam  --from:some_conn_id
+        make any all -samf --from:some_conn_id
         make any all -s -f --from:main 
         make any all -s -f --from:main --unignore  
+
         
         Inline migrations
         
@@ -288,16 +296,31 @@ class MakeControllerBase extends Controller
     }
 
     /*
-        File generation
+        File manipulation
     */
-    function generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt) {        
+    function generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt) {        
         $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
 
         $unignore = false;
+        $remove   = false;
+        $force    = false;
+        $strict   = false;
 
         foreach ($opt as $o){ 
-            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
+            if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
                 $unignore = true;
+            }
+
+            if (preg_match('/^(--remove|--delete|--erase)$/', $o)){
+                $remove = true;
+            }
+
+            if (preg_match('/^(--force|-f)$/', $o)){
+                $force = true;
+            }
+
+            if (preg_match('/^(--strict)$/', $o)){
+                $strict = true;
             }
         }
         
@@ -313,17 +336,31 @@ class MakeControllerBase extends Controller
         $this->setup($name);    
 
         if (!file_exists($dest_path . $sub_path)){
-            Files::mkDir($dest_path . $sub_path);
+            d("[ Error ] Path does not exists");
+            return;
         }
     
-        $filename = $this->camel_case . $subfix.'.php';
+        $filename = $prefix . $this->camel_case . $subfix.'.php';
         $dest_path = $dest_path . $sub_path . $filename;
 
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
         
+        if ($remove){
+            if (!$protected || $force){
+                d("Removing ... '$dest_path'");
+                Files::deleteOrFail($dest_path);
+                d("File '$dest_path' was successfully removed.");
+                return;
+            }
+        }
+
         $data = file_get_contents($template_path);
         $data = str_replace('__NAME__', $this->camel_case . $subfix, $data);
         $data = str_replace('__NAMESPACE', $namespace, $data);
+
+        if ($strict){
+            $data = str_replace('<?php', '<?php declare(strict_types=1);' , $data);
+        }
 
         $this->write($dest_path, $data, $protected);
     }
@@ -332,27 +369,115 @@ class MakeControllerBase extends Controller
         $namespace = 'simplerest\\controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::CONTROLLER_TEMPLATE;
-        $subfix = 'Controller';  // Ej: 'Controller'
+        $prefix = '';
+        $subfix = 'Controller';  
 
-        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function console($name, ...$opt) {
         $namespace = 'simplerest\\controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::CONSOLE_TEMPLATE;
-        $subfix = 'Controller';  // Ej: 'Controller'
+        $prefix = '';
+        $subfix = 'Controller';  
 
-        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function lib($name, ...$opt) {
-        $namespace = 'simplerest\\libs';
-        $dest_path = LIBS_PATH;
+        $core = false;
+
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--core|-c)$/', $o)){
+                $core = true;
+            }
+        }
+
+        if ($core){
+            $namespace = 'simplerest\\core\\libs';
+            $dest_path = CORE_LIBS_PATH;
+        } else {
+            $namespace = 'simplerest\\libs';
+            $dest_path = LIBS_PATH;
+        }
+
         $template_path = self::LIBS_TEMPLATE;
+        $prefix = '';
         $subfix = '';  // Ej: 'Controller'
 
-        $this->generic($name, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+    }
+
+    function trait($name, ...$opt) {
+        $core = false;
+
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--core|-c)$/', $o)){
+                $core = true;
+            }
+        }
+
+        if ($core){
+            $namespace = 'simplerest\\core\\traits';
+            $dest_path = CORE_TRAIT_PATH;
+        } else {
+            $namespace = 'simplerest\\traits';
+            $dest_path = TRAIT_PATH;
+        }
+
+        $template_path = self::TRAIT_TEMPLATE;
+        $subfix = '';  // Ej: 'Controller'
+
+        $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
+    }
+
+    function interface($name, ...$opt) {
+        $core = false;
+
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--core|-c)$/', $o)){
+                $core = true;
+            }
+        }
+
+        if ($core){
+            $namespace = 'simplerest\\core\\interfaces';
+            $dest_path = CORE_INTERFACE_PATH;
+        } else {
+            $namespace = 'simplerest\\interfaces';
+            $dest_path = INTERFACE_PATH;
+        }
+
+        $template_path = self::TRAIT_TEMPLATE;
+        $prefix = 'I';
+        $subfix = '';  // Ej: 'Controller'
+
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+    }
+
+    function helper($name, ...$opt) {
+        $core = false;
+
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--core|-c)$/', $o)){
+                $core = true;
+            }
+        }
+
+        if ($core){
+            $namespace = 'simplerest\\core\\helpers';
+            $dest_path = CORE_HELPERS_PATH;
+        } else {
+            $namespace = 'simplerest\\helpers';
+            $dest_path = HELPERS_PATH;
+        }
+
+        $template_path = self::HELPER_TEMPLATE;
+        $prefix = '';
+        $subfix = '';  // Ej: 'Controller'
+
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
     function api($name, ...$opt) { 
@@ -417,32 +542,33 @@ class MakeControllerBase extends Controller
         Return if file is protected and not should be overwrited
     */
     protected function hasFileProtection(string $filename, string $dest_path, Array $opt) : bool {
-        if (in_array($dest_path, $this->excluded_files)){
+        $warn_file_existance = true;
+        $warn_ignored_file   = true;
+
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--remove|--delete|--erase)$/', $o)){
+                $warn_file_existance = false;
+                $warn_ignored_file   = false;
+            }
+        }    
+
+        if ($warn_ignored_file && in_array($dest_path, $this->excluded_files)){
             StdOut::pprint("[ Skipping ] '$dest_path'. File was ignored\r\n"); 
             return true; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
+        } 
+        
+        if (file_exists($dest_path)){
+            if ($warn_file_existance && !in_array('-f', $opt) && !in_array('--force', $opt)){
                 StdOut::pprint("[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n");
                 return true;
-            } elseif (!is_writable($dest_path)){
+            }
+            
+            if (!is_writable($dest_path)){
                 StdOut::pprint("[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n");
                 return true;
             }
         }
     
-        if (in_array($filename, $this->excluded_files)){
-            StdOut::pprint("[ Skipping ] '$dest_path'. File was ignored\r\n"); 
-            return true; 
-        } elseif (file_exists($dest_path)){
-            if (!in_array('-f', $opt) && !in_array('--force', $opt)){
-                StdOut::pprint("[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n");
-                return true;;
-            } elseif (!is_writable($dest_path)){
-                StdOut::pprint("[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n");
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -718,7 +844,7 @@ class MakeControllerBase extends Controller
                 DB::getConnection($from_db);
             }
 
-            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
+            if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
                 $unignore = true;
             }
         }
@@ -1089,7 +1215,7 @@ class MakeControllerBase extends Controller
                 DB::getConnection($from_db);
             }
 
-            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
+            if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
                 $unignore = true;
             }
 
@@ -1696,7 +1822,7 @@ class MakeControllerBase extends Controller
         $unignore = false;
 
         foreach ($opt as $o){ 
-            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
+            if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
                 $unignore = true;
             }
         }
@@ -1709,25 +1835,6 @@ class MakeControllerBase extends Controller
         $file = file_get_contents(self::SERVICE_PROVIDER_TEMPLATE);
         $file = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $file);
         
-        $this->write($dest_path, $file, $protected);
-    }
-
-    function helper($name, ...$opt) 
-    {
-        $unignore = false;
-
-        foreach ($opt as $o){ 
-            if (preg_match('/^(--even-ignored|--unignore|-u)$/', $o)){
-                $unignore = true;
-            }
-        }
-
-        $filename = $name.'.php';
-        $dest_path = HELPERS_PATH . $filename;
-
-        $file = file_get_contents(self::HELPER_TEMPLATE);
-
-        $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
         $this->write($dest_path, $file, $protected);
     }
 

@@ -1,8 +1,60 @@
-<?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- declare (strict_types=1); namespace simplerest\core\traits; use simplerest\core\libs\Factory; use simplerest\core\libs\DB; use simplerest\libs\Debug; use simplerest\core\libs\Url; trait ExceptionHandler { function generateCallTrace() { goto DETqP; V4m29: return $AJt29 . implode($tnZGE . $AJt29, $u01h1); goto HczFH; Qzy8t: $VUJVG = explode("\12", $aU1Pp->getTraceAsString()); goto iO7yA; DIAnP: $aU1Pp = new \Exception(); goto Qzy8t; pNHVn: kuN0D: goto lEOdT; GO7Oy: goto W6zC3; goto oxCMy; je5ww: $u01h1[] = $a16VR + 1 . "\x29" . substr($VUJVG[$a16VR], strpos($VUJVG[$a16VR], "\40")); goto pNHVn; YxAOf: if (!($a16VR < $oEa_9)) { goto Byj8X; } goto je5ww; lEOdT: $a16VR++; goto GO7Oy; aEtiJ: $tnZGE = $oTVni || $ycKID ? PHP_EOL : "\x3c\x62\x72\57\x3e"; goto RfwIK; oxCMy: Byj8X: goto V4m29; Vb14B: array_shift($VUJVG); goto llwYn; uqagR: $oTVni = php_sapi_name() == "\143\x6c\x69"; goto aEtiJ; Hp5b3: W6zC3: goto YxAOf; DETqP: $ycKID = Url::is_postman(); goto uqagR; llwYn: array_pop($VUJVG); goto IivfE; P_75z: $AJt29 = $oTVni ? "\x9" : ''; goto DIAnP; IivfE: $oEa_9 = count($VUJVG); goto PFDw1; iO7yA: $VUJVG = array_reverse($VUJVG); goto Vb14B; RfwIK: $f70p0 = $oTVni || $ycKID ? PHP_EOL . PHP_EOL : "\74\x70\x2f\x3e"; goto P_75z; J11xe: $a16VR = 0; goto Hp5b3; PFDw1: $u01h1 = array(); goto J11xe; HczFH: } function exception_handler($aU1Pp) { goto roDHG; yZRUC: if (config()["\x64\145\x62\x75\x67"]) { goto eR2f2; } goto P4t9v; fv_mw: zq_IU: goto IjUgm; dwrNN: Factory::response()->sendError($aU1Pp->getMessage(), 500, $cZPSv, $LclcJ); goto fv_mw; P4t9v: Factory::response()->sendError($aU1Pp->getMessage(), 500); goto M3Tjl; Ze0zG: $cZPSv = var_export(debug_backtrace(), true) . PHP_EOL . PHP_EOL; goto GSGG0; GSGG0: $LclcJ = "\x45\162\x72\157\162\40\157\x6e\40\x6c\x69\x6e\x65\40\156\x75\155\142\145\162\40" . $aU1Pp->getLine() . "\x20\151\156\40\146\x69\154\x65\x20\x2d\40" . $aU1Pp->getFile(); goto dwrNN; M3Tjl: goto zq_IU; goto Nbfc4; Nbfc4: eR2f2: goto Ze0zG; roDHG: DB::closeAllConnections(); goto yZRUC; IjUgm: } }
+<?php declare(strict_types=1);
+
+namespace simplerest\core\traits;
+
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\libs\Debug;
+use simplerest\core\libs\Url; 
+
+trait ExceptionHandler
+{
+    function generateCallTrace()
+    {
+        $postman = Url::is_postman();
+		
+		$cli  = (php_sapi_name() == 'cli');
+		$br   = ($cli || $postman) ? PHP_EOL : '<br/>';
+        $p    = ($cli || $postman) ? PHP_EOL . PHP_EOL : '<p/>';
+        $t    = ($cli) ? "\t" : '';
+
+        $e = new \Exception();
+        $trace = explode("\n", $e->getTraceAsString());
+        // reverse array to make steps line up chronologically
+        $trace = array_reverse($trace);
+        array_shift($trace); // remove {main}
+        array_pop($trace); // remove call to this method
+        $length = count($trace);
+        $result = array();
+       
+        for ($i = 0; $i < $length; $i++)
+        {
+            $result[] = ($i + 1)  . ')' . substr($trace[$i], strpos($trace[$i], ' ')); // replace '#someNum' with '$i)', set the right ordering
+        }
+       
+        return $t . implode($br . $t, $result);
+    }
+
+    /**
+     * exception_handler
+     *
+     * @param  mixed $e
+     *
+     * @return void
+     */
+    function exception_handler($e) {
+        DB::closeAllConnections();
+       
+        if (config()['debug']){
+
+            $backtrace = var_export(debug_backtrace(), true) . PHP_EOL . PHP_EOL;
+            $error_location = 'Error on line number '.$e->getLine().' in file - '.$e->getFile();
+        
+            Factory::response()->sendError($e->getMessage(), 500, $backtrace, $error_location);
+        } else {
+            Factory::response()->sendError($e->getMessage(), 500);
+        }
+        
+    }
+    
+}

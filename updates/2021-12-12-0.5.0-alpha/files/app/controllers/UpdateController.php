@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\ConsoleController;
+use simplerest\core\controllers\ConsoleController;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Files;

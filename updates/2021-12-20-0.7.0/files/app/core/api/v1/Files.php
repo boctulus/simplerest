@@ -1,8 +1,161 @@
 <?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- namespace simplerest\core\api\v1; use simplerest\controllers\MyApiController; use simplerest\core\libs\MultipleUploader; use simplerest\core\libs\Factory; use simplerest\core\libs\DB; use simplerest\core\Acl; class Files extends MyApiController { protected static $soft_delete = false; function __construct() { goto PkPg7; GLcoW: m_FaX: goto ka5EO; wGk2z: $this->conn = DB::getConnection($this->tenantid); goto GLcoW; PkPg7: parent::__construct(); goto E3WsL; E3WsL: $this->tenantid = Factory::request()->getTenantId(); goto tkwh7; tkwh7: if (!($this->tenantid !== null)) { goto m_FaX; } goto wGk2z; ka5EO: } function post() { goto Ksbki; uxeMn: Factory::response()->send(["\x75\160\154\157\x61\144\145\x64" => $lGR1B, "\146\141\x69\154\165\162\145\x73" => $DAWiA], 201); goto njvMv; ezTr4: Factory::response()->sendError("\116\157\40\146\151\x6c\x65\x73\40\157\x72\x20\x66\151\x6c\145\40\165\160\154\x6f\141\x64\40\146\x61\x69\154\x65\144", 400); goto DHKpj; L6K88: foreach ($qqnGQ as list($nwTm2, $g0HZA)) { goto WzU4i; Xet3b: $lGR1B[] = ["\x66\x69\x6c\145\x6e\x61\155\145" => $nwTm2, "\165\x75\151\144" => $GabDK, "\154\151\x6e\153" => base_url() . "\x67\x65\x74" . DIRECTORY_SEPARATOR . $GabDK]; goto R9zQO; WmySL: Qz2zS: goto PAD90; L7PfJ: MZ8ne: goto u02m6; u02m6: if (!isset($wYHZM["\142\145\154\x6f\x6e\147\163\137\164\x6f"])) { goto CRW0n; } goto PRQLu; r5a3v: CRW0n: goto WmySL; PRQLu: $OAVRZ = $wYHZM["\x62\x65\x6c\157\156\147\163\137\164\x6f"]; goto r5a3v; AsM89: $OAVRZ = !$this->acl->isGuest() ? Acl::getCurrentUid() : null; goto krMdS; yp1AO: $GabDK = $ScGji->create(["\146\151\x6c\145\156\141\155\x65" => $nwTm2, "\146\151\x6c\x65\x5f\145\x78\x74" => $P4gJM, "\146\151\x6c\145\x6e\141\x6d\x65\137\x61\163\137\163\164\x6f\162\x65\x64" => $g0HZA, "\x62\145\x6c\x6f\x6e\x67\x73\x5f\164\x6f" => $OAVRZ ?? NULL, "\147\165\145\163\164\x5f\141\143\143\145\x73\x73" => $wYHZM["\x67\165\x65\163\164\x5f\x61\143\x63\x65\x73\163"] ?? 0]); goto Xet3b; R9zQO: $this->webhook("\x63\x72\x65\141\x74\145", $wYHZM, $GabDK); goto lkQm7; lkQm7: FKpLJ: goto zoM6E; krMdS: goto Qz2zS; goto L7PfJ; WzU4i: if (Factory::acl()->hasSpecialPermission("\164\x72\x61\x6e\x73\x66\x65\162")) { goto MZ8ne; } goto AsM89; PAD90: $P4gJM = pathinfo($nwTm2, PATHINFO_EXTENSION); goto yp1AO; zoM6E: } goto k6U2o; DHKpj: YnQDS: goto WZkW4; Ksbki: $wYHZM = $_POST; goto ehC3Z; ehC3Z: $y7f5P = (new MultipleUploader())->setFileHandler(function ($VT4HT) { $ViYOW = ($VT4HT ?? "\60") . "\x2d"; return uniqid($ViYOW, true); }, Acl::getCurrentUid()); goto Dqse0; HbD2q: $DAWiA = $y7f5P->getErrors(); goto cgY0R; Dqse0: $qqnGQ = $y7f5P->doUpload()->getFileNames(); goto HbD2q; satPc: $lGR1B = []; goto L6K88; cgY0R: if (!(count($qqnGQ) == 0)) { goto YnQDS; } goto ezTr4; WZkW4: $ScGji = DB::table($this->table_name)->fill(["\x66\x69\x6c\x65\156\141\155\145\x5f\141\x73\137\163\x74\157\x72\x65\x64"]); goto satPc; k6U2o: Nfkjj: goto uxeMn; njvMv: } function put($GabDK = null) { Factory::response()->sendError("\116\x6f\164\x20\x69\155\160\x6c\145\155\145\x6e\x74\x65\144", 501); } function delete($GabDK = NULL) { goto mchgP; N1M01: $wYHZM = Factory::request()->getBody(); goto YfFF5; QjYK7: Factory::response()->sendError("\114\x61\143\153\163\40\x69\144\x20\x69\x6e\40\x72\145\x71\x75\145\163\164", 400); goto s8eUS; mchgP: if (!($GabDK == NULL)) { goto yTWFa; } goto QjYK7; YfFF5: try { goto Hfoxy; uyfpE: if (!empty($tMe4v)) { goto UzCCZ; } goto loxNt; Hhh3i: $tMe4v = $ScGji->where(["\x75\x75\151\144", $GabDK])->first(); goto uyfpE; rA_kN: $bYeGW = static::$soft_delete && $ScGji->inSchema(["\144\x65\x6c\145\164\x65\144\137\x61\164"]); goto TbBFD; BMoHi: M1r38: goto FivTq; PJv8t: Factory::response()->sendError("\114\157\143\x6b\x65\144\40\142\x79\40\x61\x6e\x20\141\x64\x6d\151\156", 403); goto bHcia; M5lws: $this->webhook("\x64\145\x6c\145\164\145", [], $GabDK); goto YfNeL; z1eMJ: if (file_exists($AMJip)) { goto rSa4Y; } goto wS_Q1; W2YEB: gO7P8: goto rryrT; shmUe: $gILQw = Factory::acl(); goto UWs2O; vy9hk: $eIqNO = []; goto eDV3x; k8pO7: if (!(isset($tMe4v["\151\x73\137\154\x6f\x63\153\x65\x64"]) && $tMe4v["\x69\163\x5f\154\x6f\x63\x6b\145\144"] == 1)) { goto v547m; } goto PJv8t; avNfu: EWBqM: goto jNWRj; qV2YB: if (!$ScGji->inSchema(["\144\145\x6c\x65\x74\145\x64\x5f\142\171"])) { goto yGUux; } goto OvLOL; P5PqA: $ZNlZO = $ScGji->inSchema(["\142\x65\x6c\x6f\156\147\x73\137\x74\157"]); goto Hhh3i; jNWRj: if (!$ScGji->inSchema(["\x69\163\137\154\x6f\x63\x6b\145\144"])) { goto gO7P8; } goto BvJyT; loxNt: Factory::response()->code(404)->sendError("\106\151\154\145\x20\x77\151\164\150\40\x69\x64\75{$GabDK}\x20\x64\157\145\163\x20\156\x6f\164\40\145\x78\151\x73\164"); goto hPiOx; BiVy6: Factory::response()->sendError("\106\x69\154\145\40\160\x65\162\x6d\151\163\x73\151\157\156\x20\145\x72\162\157\162", 500); goto Vya5I; xgxEk: yGUux: goto rA_kN; YfNeL: Factory::response()->sendJson("\x4f\x4b"); goto BMoHi; BvJyT: $eIqNO = array_merge($eIqNO, ["\151\x73\x5f\154\x6f\x63\x6b\145\x64" => 1]); goto W2YEB; h2sSp: Factory::response()->sendError("\106\x69\154\x65\40\156\x6f\164\40\146\157\165\156\x64", 404, $AMJip); goto g_ZOD; hPiOx: UzCCZ: goto shmUe; unTbY: $Smgoo = unlink($AMJip); goto yQn9n; YEICv: Factory::response()->sendError("\106\x6f\x72\x62\x69\144\144\145\156", 403, "\x59\157\x75\40\141\162\x65\40\x6e\x6f\164\x20\164\150\145\x20\157\167\x6e\145\162"); goto OjQQO; rryrT: wAF69: goto qV2YB; OvLOL: $eIqNO = array_merge($eIqNO, ["\144\145\154\x65\x74\145\x64\137\142\x79" => Acl::getCurrentUid()]); goto xgxEk; Vya5I: DLBx4: goto eCogM; nqK3b: if (!$ScGji->setSoftDelete(true)->delete($bYeGW, $eIqNO)) { goto M1r38; } goto M5lws; TbBFD: if ($bYeGW) { goto JQRCh; } goto yz3yU; eDV3x: if (!$gILQw->hasSpecialPermission("\x6c\x6f\x63\x6b")) { goto EWBqM; } goto k8pO7; g_ZOD: rSa4Y: goto unTbY; OjQQO: sV1uN: goto vy9hk; UWs2O: if (!($ZNlZO && !$gILQw->hasSpecialPermission("\167\x72\x69\164\145\137\x61\x6c\x6c") && $tMe4v["\142\145\154\157\x6e\x67\163\137\x74\x6f"] != Acl::getCurrentUid())) { goto sV1uN; } goto YEICv; bHcia: v547m: goto Q6t1a; Q6t1a: goto wAF69; goto avNfu; eCogM: JQRCh: goto nqK3b; yQn9n: if ($Smgoo) { goto DLBx4; } goto BiVy6; yz3yU: $AMJip = UPLOADS_PATH . $tMe4v["\x66\151\154\145\x6e\x61\x6d\x65\137\141\163\x5f\163\164\157\x72\x65\x64"]; goto z1eMJ; Hfoxy: $ScGji = DB::table($this->table_name)->setFetchMode("\101\123\123\x4f\103")->fill(["\144\145\x6c\145\x74\x65\x64\x5f\x61\164"]); goto P5PqA; wS_Q1: $ScGji->update(["\x62\x72\x6f\x6b\145\x6e" => 1]); goto h2sSp; FivTq: } catch (\Exception $aU1Pp) { Factory::response()->sendError("\x45\162\162\157\x72\x20\x64\165\x72\x69\156\147\40\104\105\x4c\105\x54\x45\x20\x66\157\x72\40\151\144\75{$GabDK}\x20\167\x69\x74\x68\x20\155\145\163\x73\141\147\x65\x3a\40{$aU1Pp->getMessage()}"); } goto RmvNG; s8eUS: yTWFa: goto N1M01; RmvNG: } }
+
+namespace simplerest\core\api\v1;
+
+use simplerest\controllers\MyApiController; 
+use simplerest\core\libs\MultipleUploader;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\Acl;
+
+class Files extends MyApiController
+{ 
+    static protected $soft_delete = false;
+
+    function __construct()
+    {   
+        parent::__construct();    
+        
+        $this->tenantid = Factory::request()->getTenantId();
+
+        if ($this->tenantid !== null){
+            $this->conn = DB::getConnection($this->tenantid);
+        }
+    }
+
+    function post() {
+        $data = $_POST;
+
+        $uploader = (new MultipleUploader())
+        ->setFileHandler(function($uid) {
+            $prefix = ($uid ?? '0').'-';
+            return uniqid($prefix, true);
+         }, Acl::getCurrentUid());
+
+
+        $files    = $uploader->doUpload()->getFileNames();   
+        $failures = $uploader->getErrors();     
+
+        if (count($files) == 0){
+            Factory::response()->sendError('No files or file upload failed', 400);
+        }        
+        
+        $instance = DB::table($this->table_name)->fill(['filename_as_stored']);
+
+        $uploaded = [];
+        foreach ($files as list($filename_ori, $filename_as_stored)){           
+            if (Factory::acl()->hasSpecialPermission('transfer')){ 
+                if (isset($data['belongs_to']))
+                    $belongs_to = $data['belongs_to'];    
+            } else 
+                $belongs_to = !$this->acl->isGuest() ? Acl::getCurrentUid() : null;    
+
+            $file_ext = pathinfo($filename_ori, PATHINFO_EXTENSION);
+
+            $id = $instance
+            ->create([
+                        'filename' => $filename_ori,  
+                        'file_ext' => $file_ext,
+                        'filename_as_stored' => $filename_as_stored,
+                        'belongs_to' => $belongs_to ?? NULL,
+                        'guest_access' => $data['guest_access'] ?? 0
+            ]);
+
+            $uploaded[] = [ 
+                            'filename' => $filename_ori,
+                            'uuid' => $id,
+                            'link' => base_url() . 'get' . DIRECTORY_SEPARATOR . $id
+            ];
+
+            $this->webhook('create', $data, $id);
+        }
+  
+        Factory::response()->send([
+            'uploaded' => $uploaded,
+            'failures' => $failures
+        ], 201);
+        
+    }
+
+    function put ($id = null){
+        Factory::response()->sendError('Not implemented', 501);
+    }
+
+    /**
+     * delete
+     *
+     * @param  mixed $id
+     *
+     * @return void
+     */
+    function delete($id = NULL) {
+        if($id == NULL)
+            Factory::response()->sendError("Lacks id in request", 400);
+
+        $data = Factory::request()->getBody();        
+
+        try {    
+            $instance = DB::table($this->table_name)
+            ->setFetchMode('ASSOC')
+            ->fill(['deleted_at']); 
+
+            $owned = $instance->inSchema(['belongs_to']);
+            $row   = $instance->where(['uuid', $id])->first();
+            
+            if (empty($row)){
+                Factory::response()->code(404)->sendError("File with id=$id does not exist");
+            }
+            
+            $acl = Factory::acl();
+
+            if ($owned && !$acl->hasSpecialPermission('write_all') && $row['belongs_to'] != Acl::getCurrentUid()){
+                Factory::response()->sendError('Forbidden', 403, 'You are not the owner');
+            }
+            
+            $extra = [];
+
+            if (!$acl->hasSpecialPermission('lock')){
+                if ($instance->inSchema(['is_locked'])){
+                    $extra = array_merge($extra, ['is_locked' => 1]);
+                }   
+            }else {
+                if (isset($row['is_locked']) && $row['is_locked'] == 1){
+                    Factory::response()->sendError("Locked by an admin", 403);
+                }
+            }
+
+            if ($instance->inSchema(['deleted_by'])){
+                $extra = array_merge($extra, ['deleted_by' => Acl::getCurrentUid()]);                
+            } 
+            
+            $soft_delete = static::$soft_delete && $instance->inSchema(['deleted_at']);
+
+            if (!$soft_delete) {
+                $path = UPLOADS_PATH . $row['filename_as_stored'];
+
+                if (!file_exists($path)){
+                    $instance->update(['broken' => 1]);
+                    Factory::response()->sendError("File not found",404, $path); 
+                }
+
+                $ok = unlink($path);
+
+                if (!$ok){
+                    Factory::response()->sendError("File permission error", 500);
+                }
+            }
+
+            if($instance->setSoftDelete(true)->delete($soft_delete, $extra)){
+                $this->webhook('delete', [ ], $id);                
+                Factory::response()->sendJson("OK");
+            }	
+            //else
+            //    Factory::response()->sendError("File not found",404);
+
+        } catch (\Exception $e) {
+            Factory::response()->sendError("Error during DELETE for id=$id with message: {$e->getMessage()}");
+        }
+
+    } // 
+        
+} // end class

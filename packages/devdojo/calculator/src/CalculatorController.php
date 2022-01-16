@@ -2,7 +2,7 @@
 
 namespace devdojo\calculator;
 
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
