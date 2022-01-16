@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core;
+namespace simplerest\core\controllers;
 
 use simplerest\core\libs\DB;
 use simplerest\core\libs\StdOut;

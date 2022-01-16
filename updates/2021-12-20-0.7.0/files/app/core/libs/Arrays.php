@@ -1,8 +1,95 @@
-<?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:55              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- declare (strict_types=1); namespace simplerest\core\libs; class Arrays { static function array_key_first(array $QV1pg) { goto pBfPN; UQo_w: return NULL; goto aM3c2; pBfPN: foreach ($QV1pg as $JT4F5 => $JsKtB) { return $JT4F5; b_7XA: } goto jVI1D; jVI1D: ncN9k: goto UQo_w; aM3c2: } static function shift(&$QV1pg, $JT4F5, $UvGqy = NULL) { goto Jbb8Y; Jbb8Y: $AX5rm = $QV1pg[$JT4F5] ?? $UvGqy; goto N3fXs; qs6YC: return $AX5rm; goto Tcdj8; N3fXs: unset($QV1pg[$JT4F5]); goto qs6YC; Tcdj8: } static function nonassoc(array $QV1pg) { goto OiyJz; F0qf2: foreach ($QV1pg as $JT4F5 => $K84HO) { $AX5rm[] = [$JT4F5, $K84HO]; AadkL: } goto unbqM; U_GDy: return $AX5rm; goto zdcBC; unbqM: jX3o_: goto U_GDy; OiyJz: $AX5rm = []; goto F0qf2; zdcBC: } static function is_assoc(array $QV1pg) { goto B3Yet; Oeyap: eBQIe: goto gOdav; B3Yet: foreach (array_keys($QV1pg) as $JT4F5) { goto k0lPl; T304n: tpjZ5: goto EPeDl; n5oMV: return TRUE; goto yJOLQ; k0lPl: if (is_int($JT4F5)) { goto pPx2i; } goto n5oMV; yJOLQ: pPx2i: goto T304n; EPeDl: } goto Oeyap; gOdav: return FALSE; goto E0iHd; E0iHd: } static function str_replace_array($Y735i, array $BMQtc, $HGSMJ) { goto D6AYV; tryMl: return $HGSMJ; goto C9kMm; K1j1S: InMoD: goto xUzKQ; LvsZf: if (count($BMQtc) >= $n41LR) { goto ZzeRf; } goto a25Yi; XPHW2: foreach (explode($Y735i, $HGSMJ, $n41LR) as $UBi5X) { $T4U11 .= $UBi5X . array_shift($BMQtc); zPmqA: } goto K1j1S; V49ba: goto ksXBI; goto Zmfjy; Zmfjy: ZzeRf: goto sQPOz; i6p0v: ksXBI: goto XPHW2; sQPOz: $BMQtc = array_slice($BMQtc, 0, $n41LR); goto Xn3OD; D6AYV: if (!(0 === ($n41LR = substr_count($HGSMJ, $Y735i)))) { goto Ds6OZ; } goto tryMl; a25Yi: $n41LR = count($BMQtc) + 1; goto V49ba; sKI2j: $T4U11 = ''; goto LvsZf; C9kMm: Ds6OZ: goto sKI2j; xUzKQ: return $T4U11; goto CJ0z3; Xn3OD: $n41LR += 1; goto i6p0v; CJ0z3: } }
+<?php declare(strict_types=1);
+
+namespace simplerest\core\libs;
+
+class Arrays 
+{
+    /**
+     * Gets the first key of an array
+     *
+     * @param array $array
+     * @return mixed
+     */
+    static function array_key_first(array $arr) {
+        foreach($arr as $key => $unused) {
+            return $key;
+        }
+        return NULL;
+    }
+
+    /**
+     * shift
+     *
+     * @param  array  $arr
+     * @param  string $key
+     * @param  string $default_value
+     *
+     * @return mixed
+     */
+    static function shift(&$arr, $key, $default_value = NULL)
+    {
+        $out = $arr[$key] ?? $default_value;
+        unset($arr[$key]);
+        return $out;
+    }
+
+    /**
+     * nonassoc
+     * Associative to non associative array
+     * 
+     * @param  array $arr
+     *
+     * @return array
+     */
+    static function nonassoc(array $arr){
+        $out = [];
+        foreach ($arr as $key => $val) {
+            $out[] = [$key, $val];
+        }
+        return $out;
+    }
+ 
+    static function is_assoc(array $arr)
+    {
+        foreach(array_keys($arr) as $key)
+		if (!is_int($key)) return TRUE;
+	        return FALSE;
+    }
+
+    /**
+     * A str_replace_array for PHP
+     *
+     * As described in http://php.net/str_replace this wouldnot make sense
+     * However there are chances that we need it, so often !
+     * See https://wiki.php.net/rfc/cyclic-replace
+     *
+     * @author Jitendra Adhikari | adhocore <jiten.adhikary@gmail.com>
+     *
+     * @param string $search  The search string
+     * @param array  $replace The array to replace $search in cyclic order
+     * @param string $subject The subject on which to search and replace
+     *
+     * @return string
+     */
+    static function str_replace_array($search, array $replace, $subject)
+    {
+        if (0 === $tokenc = substr_count($subject, $search)) {
+            return $subject;
+        }
+        $string  = '';
+        if (count($replace) >= $tokenc) {
+            $replace = array_slice($replace, 0, $tokenc);
+            $tokenc += 1; 
+        } else {
+            $tokenc = count($replace) + 1;
+        }
+        foreach(explode($search, $subject, $tokenc) as $part) {
+            $string .= $part.array_shift($replace);
+        }
+        return $string;
+    }
+
+
+
+}
+

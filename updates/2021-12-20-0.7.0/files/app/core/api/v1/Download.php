@@ -1,8 +1,81 @@
 <?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- namespace simplerest\core\api\v1; use simplerest\core\Acl; use simplerest\core\api\v1\ResourceController; use simplerest\core\libs\Factory; use simplerest\core\libs\DB; class Download extends ResourceController { protected static $guest_access = true; public $table_name = "\146\151\154\x65\163"; function __construct() { goto fnyud; Jn6qt: jdxgT: goto GOIZ2; uqMPD: $this->conn = DB::getConnection($this->tenantid); goto Jn6qt; k3oaX: if (!($this->tenantid !== null)) { goto jdxgT; } goto uqMPD; o61vP: $CriyX = "\x76\x31"; goto cMFfY; DGfNE: $this->tenantid = Factory::request()->getTenantId(); goto k3oaX; fnyud: global $CriyX; goto o61vP; cMFfY: parent::__construct(); goto DGfNE; GOIZ2: } function get($GabDK = null) { goto u0PRy; Hfpia: sKukL: goto Ci3bF; zKI92: readfile($X6jGx); goto yBhUs; SJRSp: header("\x43\x61\143\x68\x65\x2d\103\x6f\156\164\x72\x6f\x6c\x3a\40\x6d\x75\x73\x74\x2d\162\x65\166\x61\x6c\x69\144\141\164\145"); goto n9TV1; yOVYG: $tMe4v = DB::table($this->table_name)->select(["\x66\151\x6c\145\156\141\x6d\x65\137\141\163\137\x73\x74\x6f\x72\x65\144"])->where($VX3BO)->first(); goto OUy5P; l07bG: return; goto nqv7K; YPbPN: if (file_exists($X6jGx)) { goto jhl7D; } goto GfgD8; ENAsY: OkyKg: goto kXxzI; vD2mq: $VX3BO[] = ["\x62\145\x6c\157\156\x67\163\x5f\x74\157", Acl::getCurrentUid()]; goto lDoCK; oCvBU: $X6jGx = UPLOADS_PATH . $tMe4v["\146\x69\x6c\x65\x6e\x61\155\145\137\x61\163\x5f\163\164\x6f\x72\x65\x64"]; goto YPbPN; NuuR9: header("\x43\x6f\156\x74\145\x6e\x74\55\x44\145\x73\x63\162\x69\160\x74\151\x6f\x6e\x3a\40\106\x69\154\x65\40\x54\x72\141\x6e\163\146\145\x72"); goto N70Rv; X1b5r: if (!$ScGji->inSchema(["\147\165\x65\x73\164\x5f\x61\143\143\x65\x73\x73"])) { goto iw1lq; } goto TXguH; GfgD8: Factory::response()->sendError("\106\x69\x6c\145\40\x6e\x6f\164\x20\x66\157\x75\156\144", 404, "{$X6jGx}\x20\156\157\x74\40\146\x6f\165\156\144\x20\151\156\x20\x73\164\x6f\162\141\x67\x65"); goto qTIRB; n9TV1: header("\120\x72\141\147\155\x61\72\40\x70\165\x62\x6c\x69\x63"); goto SmOA2; N70Rv: header("\103\157\156\x74\x65\x6e\164\55\124\x79\160\145\x3a\x20\141\160\160\154\x69\x63\x61\x74\151\x6f\x6e\x2f\x6f\x63\164\x65\164\55\x73\164\x72\145\141\x6d"); goto iKrLE; jSftd: header("\105\x78\x70\x69\162\145\x73\72\x20\60"); goto SJRSp; yCU2E: Factory::response()->sendError("\x49\x6e\x63\157\x72\x72\x65\x63\164\40\166\145\x72\142\40\x28" . $_SERVER["\122\x45\121\125\105\123\x54\137\x4d\105\x54\110\x4f\104"] . "\x29\54\x20\x65\x78\x70\x65\143\x74\x69\156\147\x20\x47\x45\124", 405); goto jgi5x; KFq1g: if ($this->acl->isGuest()) { goto OkyKg; } goto vD2mq; KGLFo: Factory::response()->sendError("\106\151\x6c\x65\40\156\x6f\164\x20\146\x6f\165\x6e\x64", 404); goto NaTqO; B3X1M: if (!($GabDK == null)) { goto yWfu_; } goto l07bG; ysH5X: GUM1j: goto Hfpia; KWEgy: lF07C: goto GqRiz; kXxzI: $ScGji = DB::table($this->table_name); goto X1b5r; qTIRB: goto lF07C; goto SWYcp; yBhUs: exit; goto KWEgy; nqv7K: yWfu_: goto U2JA7; lDoCK: goto GUM1j; goto ENAsY; SWYcp: jhl7D: goto NuuR9; iKrLE: header("\x43\x6f\x6e\164\145\x6e\x74\x2d\x44\x69\x73\160\x6f\x73\151\164\151\x6f\156\72\40\x61\x74\164\x61\x63\x68\155\145\156\x74\73\x20\x66\151\154\x65\156\x61\155\145\75\42" . basename($X6jGx) . "\42"); goto jSftd; SmOA2: header("\x43\157\156\164\145\156\x74\55\114\145\x6e\147\x74\x68\x3a\x20" . filesize($X6jGx)); goto zKI92; OUy5P: if (!empty($tMe4v)) { goto Fy6YY; } goto KGLFo; jgi5x: QBkHM: goto B3X1M; vFX1m: iw1lq: goto ysH5X; U2JA7: $VX3BO = []; goto hAMt6; u0PRy: if (in_array($_SERVER["\122\x45\121\125\105\x53\x54\137\115\x45\x54\x48\117\x44"], ["\x47\105\124", "\117\120\124\111\117\116\123"])) { goto QBkHM; } goto yCU2E; hAMt6: if (Factory::acl()->hasSpecialPermission("\162\x65\141\x64\x5f\x61\x6c\154")) { goto sKukL; } goto KFq1g; Ci3bF: $VX3BO[] = ["\x75\x75\x69\x64", $GabDK]; goto yOVYG; TXguH: $VX3BO[] = ["\147\x75\145\x73\164\x5f\x61\143\x63\x65\163\163", 1]; goto vFX1m; NaTqO: Fy6YY: goto oCvBU; GqRiz: } function index($GabDK) { return $this->get($GabDK); } }
+
+namespace simplerest\core\api\v1;
+
+use simplerest\core\Acl;
+use simplerest\core\api\v1\ResourceController;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+
+
+class Download extends ResourceController
+{
+    // caso puntual donde lo conservo:
+    static protected $guest_access = true;
+
+    public $table_name = 'files';
+
+    function __construct()
+    {
+        global $api_version;
+        $api_version = 'v1';
+
+        parent::__construct();   
+        
+        $this->tenantid = Factory::request()->getTenantId();
+
+        if ($this->tenantid !== null){
+            $this->conn = DB::getConnection($this->tenantid);
+        }
+    }
+
+    function get($id = null) {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
+
+        if ($id == null)
+            return;
+
+        $_get = [];    
+        
+        if (!Factory::acl()->hasSpecialPermission('read_all')){
+            if ($this->acl->isGuest()){                
+                $instance = DB::table($this->table_name);
+                
+                if ($instance->inSchema(['guest_access'])){
+                    $_get[] = ['guest_access', 1];
+                }
+                                         
+            } else {
+                $_get[] = ['belongs_to', Acl::getCurrentUid()];
+            }
+        }
+
+        $_get[] =   ['uuid', $id];   
+
+        $row = DB::table($this->table_name)->select(['filename_as_stored'])->where($_get)->first();
+
+        if (empty($row))
+            Factory::response()->sendError('File not found', 404);
+      
+        $file = UPLOADS_PATH . $row['filename_as_stored'];
+
+        if (file_exists($file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="'.basename($file).'"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+            exit;
+        } else {
+            Factory::response()->sendError('File not found', 404, "$file not found in storage");
+        }
+    }
+
+    function index($id){
+        return $this->get($id);
+    }
+}

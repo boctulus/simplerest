@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\ConsoleController;
+use simplerest\core\controllers\ConsoleController;
 
 class Hello2Controller extends ConsoleController
 {

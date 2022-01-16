@@ -3,7 +3,7 @@
 namespace simplerest\controllers;
 
 use Exception;
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\DB;
 use simplerest\models\UsersModel;
 use simplerest\models\UserRolesModel;

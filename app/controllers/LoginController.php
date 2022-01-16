@@ -3,7 +3,7 @@
 namespace simplerest\controllers;
 
 use simplerest\libs\Debug;
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\DB;
 
 class LoginController extends Controller

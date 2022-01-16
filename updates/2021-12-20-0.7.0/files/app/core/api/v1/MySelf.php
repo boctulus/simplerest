@@ -1,8 +1,82 @@
 <?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- namespace simplerest\core\api\v1; use simplerest\controllers\MyApiController; use simplerest\core\interfaces\IAuth; use simplerest\core\libs\Factory; use simplerest\core\Acl; use simplerest\core\libs\DB; use simplerest\libs\Debug; use simplerest\core\libs\Url; use simplerest\core\libs\Strings; use simplerest\core\libs\Validator; use simplerest\core\exceptions\InvalidValidationException; class MySelf extends MyApiController { function __construct() { goto koh7a; PD1Ok: Factory::response()->sendError("\106\x6f\x72\142\151\x64\x64\x65\x6e", 403, "\131\157\165\x20\156\x65\145\x64\x20\x74\157\x20\142\x65\x20\x61\165\164\150\x65\156\164\x69\x63\141\164\145\x64"); goto NMucz; wDJ6B: $fNEzs = get_user_model_name(); goto aKA0m; koh7a: $this->config = config(); goto US31g; US31g: $this->table_name = $this->config["\165\163\x65\162\163\x5f\164\141\x62\x6c\145"]; goto nmj8s; hu32g: $this->is_retrievable = true; goto jNtFG; aKA0m: $this->is_active = $fNEzs::$is_active; goto wjcXj; nmj8s: parent::__construct(); goto wDJ6B; YzASV: Z63l7: goto YU23l; NMucz: goto nF9DE; goto YzASV; Tfbe3: if (Factory::request()->authMethod() != NULL) { goto Z63l7; } goto PD1Ok; jNtFG: nF9DE: goto jjI55; XfQwS: $this->is_listable = true; goto hu32g; wjcXj: $this->__id = get_name_id($this->config["\165\163\145\x72\x73\x5f\164\x61\x62\154\145"]); goto Tfbe3; YU23l: $this->callable = ["\147\145\164", "\x70\165\x74", "\160\141\x74\143\x68", "\144\145\154\x65\x74\x65"]; goto XfQwS; jjI55: } function get($GabDK = null) { $GabDK = Acl::getCurrentUid(); parent::get($GabDK); } function put($GabDK = NULL) { $GabDK = Acl::getCurrentUid(); parent::put($GabDK); } function patch($GabDK = NULL) { $GabDK = Acl::getCurrentUid(); parent::patch($GabDK); } function onPuttingAfterCheck($GabDK, &$wYHZM) { $this->instance->fill([$this->is_active]); } function delete($GabDK = null) { goto KYsyK; KYsyK: $GabDK = Acl::getCurrentUid(); goto qDUqR; wkSHo: if ($Smgoo) { goto niK4E; } goto CjQ95; vARqg: if (!$Fa1h2->inSchema([$this->is_active])) { goto yIeOp; } goto Kr2Dx; Kr2Dx: Factory::response()->send("\x41\143\x63\x6f\165\156\x74\x20\144\145\x61\143\x74\151\x76\141\164\151\x6f\156\40\156\x6f\x74\40\151\x6d\160\x6c\x65\x6d\x65\x6e\164\x65\x64", 501); goto zAMmU; aF5e4: goto zquaj; goto vzYlZ; qDUqR: $Fa1h2 = DB::table($this->table_name); goto vARqg; sbLY4: $Smgoo = (bool) $Fa1h2->where([[$this->__id, $GabDK], [$this->is_active, 1]])->fill([$this->is_active])->update([$this->is_active => 0]); goto wkSHo; QRqxa: Factory::response()->send("\131\157\165\x72\40\x61\143\x63\x6f\x75\x6e\164\40\167\141\x73\x20\163\x75\143\143\x65\163\146\x75\x6c\154\x79\x20\144\x69\x73\141\142\x6c\x65\144"); goto wvBWq; zAMmU: yIeOp: goto sbLY4; vzYlZ: niK4E: goto QRqxa; CjQ95: Factory::response()->send("\101\x6e\40\145\x72\162\157\x72\x20\x68\x61\x73\x20\157\143\x75\162\162\x65\144\x20\x74\x72\x79\x69\x6e\147\x20\x74\157\x20\x64\151\x73\x61\142\x6c\145\x20\171\x6f\165\x72\x20\x61\143\x63\157\165\156\164\56"); goto aF5e4; wvBWq: zquaj: goto L6Yjs; L6Yjs: } }
+
+namespace simplerest\core\api\v1;
+
+use simplerest\controllers\MyApiController; 
+use simplerest\core\interfaces\IAuth;
+use simplerest\core\libs\Factory;
+use simplerest\core\Acl;
+use simplerest\core\libs\DB;
+use simplerest\libs\Debug;
+use simplerest\core\libs\Url;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Validator;
+use simplerest\core\exceptions\InvalidValidationException;
+
+class MySelf extends MyApiController 
+{  
+    function __construct() 
+    { 
+        $this->config = config();
+        $this->table_name = $this->config['users_table'];
+
+        parent::__construct();
+
+        $model = get_user_model_name();
+        $this->is_active = $model::$is_active;
+        $this->__id   = get_name_id($this->config['users_table']);
+  
+        if (Factory::request()->authMethod() != NULL){
+                $this->callable = ['get', 'put', 'patch', 'delete'];
+
+                $this->is_listable = true;
+                $this->is_retrievable = true;
+        } else {
+            Factory::response()->sendError("Forbidden", 403, "You need to be authenticated");
+        }
+    }
+
+    function get($id = null){
+        $id = Acl::getCurrentUid();
+        parent::get($id);
+    } 
+
+    function put($id = NULL)
+    { 
+        $id = Acl::getCurrentUid();
+        parent::put($id);
+    } //
+
+    function patch($id = NULL)
+    { 
+        $id = Acl::getCurrentUid();
+        parent::patch($id);
+    } //
+        
+    function onPuttingAfterCheck($id, &$data){
+        $this->instance->fill([$this->is_active]);
+    }
+
+    function delete($id = null){
+        $id = Acl::getCurrentUid();
+
+        $u = DB::table($this->table_name);
+
+        if ($u->inSchema([$this->is_active])){
+            Factory::response()->send("Account deactivation not implemented", 501);
+        }
+
+        $ok = (bool) $u
+        ->where([[$this->__id, $id], [$this->is_active, 1]])
+        ->fill([$this->is_active])
+        ->update([$this->is_active => 0]);
+
+        if ($ok) {
+            Factory::response()->send("Your account was succesfully disabled");
+        } else {
+            Factory::response()->send("An error has ocurred trying to disable your account.");
+        }        
+    } // 
+       
+    
+}  

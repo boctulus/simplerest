@@ -3,7 +3,7 @@
 namespace simplerest\core\api\v1;
 
 use Exception;
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Request;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;

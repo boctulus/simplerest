@@ -2,7 +2,7 @@
 
 namespace simplerest\core\interfaces;
 
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 
 interface ITransformer {
     function transform(object $user, Controller $controller = NULL);

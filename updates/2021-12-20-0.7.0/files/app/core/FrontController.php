@@ -1,8 +1,222 @@
 <?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- namespace simplerest\core; use simplerest\core\libs\Url; use simplerest\core\libs\Msg; use simplerest\core\libs\Strings; class FrontController { const VJSMr = "\x69\156\x64\x65\170"; static function resolve() { goto EoD3j; sQu14: xu5Wk: goto vPhBm; UUwBO: vsONO: goto quVN2; lpGTa: $fEMn1 = $pMfYC[$clmxu]; goto bn9bS; SOlFd: array_shift($pMfYC); goto rUf1H; oqPB2: if (!($pMfYC[0] === "\x61\x70\x69" && !$RL4Re)) { goto ZUfll; } goto FdUyl; DP0Yd: $drfw0 = count($pMfYC) - 1; goto BGZSq; mETNy: qHoXc: goto zV00l; snY31: Ge_n4: goto HtgDs; WslLq: $QQgt2->sendError(Msg::w7NFD, 400); goto tmmyO; BkrNk: $CriyX = $pMfYC[1 - $KB0YN]; goto bgdzp; ZZFBp: if (preg_match("\x2f\x5e\x76\x5b\60\55\71\135\x2b\x28\134\x2e\x2b\133\x30\55\71\x5d\x2b\x29\x3f\44\x2f", $CriyX, $m4gBu)) { goto qHoXc; } goto QysND; XdfVc: $ZQEZU = $pMfYC[$clmxu + 1] ?? null; goto ar29h; mij3T: qPfF5: goto Zrlh1; SSeZf: $KB0YN = (int) $VqSck["\122\x45\115\117\126\105\137\101\x50\x49\x5f\123\114\125\x47"]; goto Jgyuh; Kje8k: $clmxu = 0; goto Gl1Qm; aHeEp: $wYHZM = call_user_func_array([$PDZvd, $D0PGi], $J9Xuc); goto lWX_0; GJj88: goto mfYaS; goto WVGeg; i2gC2: fXa1N: goto XJz9W; NBrBX: $QQgt2 = Response::getInstance(); goto SSeZf; aPLlC: buJky: goto T_bvT; hyKjc: $MwS7v = substr($VqSck["\104\105\x46\101\x55\114\x54\x5f\103\117\116\124\x52\117\114\114\x45\122"], 0, strlen($VqSck["\104\x45\106\x41\x55\114\x54\137\x43\117\x4e\124\122\x4f\x4c\114\105\122"]) - 10); goto Ga_l3; dcyMC: $cnVYX->setParams($J9Xuc); goto XBc8n; xeLjD: if (class_exists($CYAb1)) { goto gFR15; } goto kwVOb; UsdpT: $cnVYX->setParams($J9Xuc); goto HZE5b; kJvcJ: $J9Xuc = array_slice($pMfYC, 3 - $KB0YN, 2); goto VGv2h; kgzUY: $CriyX = $pMfYC[1 - $KB0YN]; goto ZZFBp; T86Y5: if (php_sapi_name() != "\143\154\x69" || $D0PGi != self::VJSMr) { goto XFd1i; } goto f05fT; zV00l: $fEMn1 = $pMfYC[2 - $KB0YN] ?? NULL; goto d1oiW; yhTkA: $RL4Re = !$VqSck["\122\x45\115\117\x56\105\137\101\120\111\x5f\x53\x4c\125\x47"] && isset($pMfYC[2]) && $pMfYC[2] === "\x61\165\x74\150" || $VqSck["\x52\105\x4d\x4f\x56\x45\137\x41\x50\111\137\x53\114\125\x47"] && $pMfYC[1] == "\141\165\x74\150"; goto VcdRo; dbt66: $ZQEZU = $pMfYC[3 - $KB0YN] ?? null; goto Vjtmc; hjKMz: if (!isset($E8j_R)) { goto fLWuZ; } goto H8M82; ar29h: $J9Xuc = array_slice($pMfYC, $clmxu + 2); goto dcyMC; iRVau: goto j41y4; goto rTGok; t0TAM: $QQgt2->sendError(Msg::jEbOT["\x74\x65\x78\164"]); goto Pj3ZA; WPjpJ: exit; goto zEqyu; w0ND7: $BCLhR = "\x73\x69\155\x70\154\x65\162\x65\163\x74\134\143\x6f\x6e\x74\162\157\x6c\154\x65\162\x73\134"; goto FmRaP; CIQv8: goto CnaLt; goto mdW3j; vVkAL: $BCLhR = "\163\x69\155\x70\154\x65\162\145\163\x74\134\143\157\156\x74\162\157\154\154\145\162\x73\x5c\x61\x70\151\134"; goto Gx5dQ; l0oJQ: $QQgt2->setData($wYHZM); goto i2gC2; VcdRo: $KB0YN = (int) $VqSck["\x52\105\115\117\x56\x45\x5f\x41\120\111\137\123\x4c\x55\x47"]; goto VVFvt; T_bvT: if (isset($pMfYC[0])) { goto xu5Wk; } goto TYsaz; H8M82: exit; goto VQMEq; C3h0F: Oi_Ph: goto hyKjc; FdUyl: if (in_array($D0PGi, $PDZvd->getCallable())) { goto v1Spc; } goto pmQ1E; ndX4B: $BCLhR = "\163\x69\155\160\154\145\162\145\163\x74\x5c\143\157\162\145\134\x61\160\x69\x5c" . $CriyX . "\134"; goto snY31; yYN6x: $VqSck = config(); goto wIslq; UQNuP: ZUfll: goto aHeEp; plGPn: goto buJky; goto cbKba; WVGeg: CnaLt: goto XdfVc; jYP6x: $pMfYC = array_slice($argv, 1); goto plGPn; Pj3ZA: aBLn1: goto kgzUY; bDR6G: $CYAb1 = "{$BCLhR}{$CYAb1}\103\x6f\156\x74\162\x6f\154\154\145\x72"; goto BkrNk; ZWsIb: $MwS7v = CONTROLLERS_PATH . $IYYL1 . Strings::snakeToCamel($fEMn1) . "\x43\x6f\156\x74\x72\x6f\154\154\145\x72\x2e\x70\150\160"; goto GJj88; Jgyuh: if (php_sapi_name() != "\143\154\151") { goto m2HZQ; } goto jYP6x; XJz9W: foreach ($cwTu2 as $bTIpA => $S5lMT) { goto HBx_3; PFYf6: G2fxg: goto WnRbJ; gT0zf: UFMfz: goto SVPh4; HYQO8: $QQgt2->sendError(_("\x4d\151\x64\144\154\x65\167\141\162\x65\40\47{$S5lMT}\x27\x20\156\x6f\x74\x20\146\157\x75\156\144"), 404, "\111\156\x74\145\162\x6e\141\x6c\x20\145\x72\x72\157\162\x20\55\40\143\157\x6e\164\x72\x6f\154\x6c\145\162\x20\x63\x6c\x61\163\163\40{$CYAb1}\x20\156\x6f\164\40\146\x6f\x75\x6e\x64"); goto PFYf6; X1UxV: $qU6zY = $NUEPK[1] ?? "\x69\156\144\145\x78"; goto h_gIs; PJgAj: $PUiby->handle(); goto gT0zf; WnRbJ: $PUiby = new $S5lMT(); goto PJgAj; HBx_3: $NUEPK = explode("\x40", $bTIpA); goto b33f5; RRVno: if (class_exists($S5lMT)) { goto G2fxg; } goto HYQO8; h_gIs: if (!($CYAb1 == $lCOxK && $D0PGi == $qU6zY)) { goto UFMfz; } goto RRVno; b33f5: $lCOxK = $NUEPK[0]; goto X1UxV; SVPh4: jc5zl: goto ThSFd; ThSFd: } goto mij3T; ujIEa: $CYAb1 = "\115\171\x41\165\x74\150"; goto bDR6G; VGv2h: $cnVYX->setParams($J9Xuc); goto UUwBO; oUE4t: mkL2l: goto lXpln; Yz0vq: hnCsu: goto QRxCW; TYsaz: return; goto sQu14; QnqWZ: $QQgt2->sendError(Msg::FClrG["\164\x65\x78\164"]); goto xjnHd; quVN2: $CYAb1 = str_replace("\57", "\134", $CYAb1); goto xeLjD; EmYmE: $J9Xuc = []; goto V38Hv; V38Hv: GMqHN: goto ma1Wi; f05fT: $E8j_R = true; goto iRVau; p1CfP: if (!($VqSck["\x42\x41\123\105\x5f\x55\122\114"] != "\x2f" && strpos($AMJip, $VqSck["\x42\x41\x53\105\x5f\x55\122\114"]) === 0)) { goto hnCsu; } goto piX4U; mdW3j: rLY1Z: goto DKfXr; Gl1Qm: $IYYL1 = ''; goto lpGTa; wIslq: $cwTu2 = (include CONFIG_PATH . "\x6d\151\144\144\154\x65\167\x61\162\145\x73\x2e\160\150\160"); goto NBrBX; d1oiW: $fEMn1 = implode('', array_map("\165\x63\146\x69\x72\163\x74", explode("\x5f", $fEMn1))); goto YmCGm; HtgDs: $CYAb1 = $BCLhR . ucfirst($fEMn1); goto YZoC3; xjnHd: SqkIk: goto l1TfH; Ku7fn: if ($pMfYC[0] === "\x61\x70\151" || $VqSck["\122\x45\x4d\117\x56\105\137\101\x50\111\x5f\x53\x4c\x55\107"]) { goto bhWaa; } goto w0ND7; bCnvF: $CYAb1 = Strings::snakeToCamel($fEMn1); goto Ahn6L; Ahn6L: $CYAb1 = "{$BCLhR}{$IYYL1}{$CYAb1}\x43\x6f\x6e\164\x72\157\154\154\x65\162"; goto n0Yzl; ixCse: $CYAb1 = "{$BCLhR}{$CYAb1}\103\157\156\164\162\157\x6c\x6c\x65\162"; goto nvMoB; YmCGm: if ($fEMn1 == "\x74\162\x61\163\150\137\x63\141\x6e" || $fEMn1 == "\164\x72\x61\x73\150\103\141\x6e" || $fEMn1 == "\x54\162\x61\x73\150\103\x61\156" || $fEMn1 == "\143\x6f\x6c\x6c\145\x63\x74\x69\157\x6e\163" || $fEMn1 == "\103\157\x6c\x6c\x65\143\164\151\x6f\x6e\x73") { goto dqaX2; } goto vVkAL; bgdzp: if (preg_match("\x2f\x5e\x76\133\60\x2d\x39\135\x2b\x28\134\56\53\x5b\60\55\x39\x5d\x2b\x29\77\44\57", $CriyX, $m4gBu)) { goto SqkIk; } goto QnqWZ; T1LN6: $pMfYC = explode("\x2f", $AMJip); goto K1Tsc; XBc8n: $D0PGi = !empty($ZQEZU) ? $ZQEZU : self::VJSMr; goto bCnvF; UpBD0: if (!(!file_exists($MwS7v) && $clmxu < $drfw0)) { goto CnaLt; } goto hVEp9; nvMoB: $D0PGi = self::VJSMr; goto EmYmE; W9ovV: J9OhZ: goto VAoIS; TLui3: $AMJip = parse_url($_SERVER["\122\x45\x51\x55\x45\x53\x54\137\125\122\x49"], PHP_URL_PATH); goto JZMxj; bn9bS: $MwS7v = CONTROLLERS_PATH . Strings::snakeToCamel($fEMn1) . "\103\x6f\x6e\x74\162\x6f\x6c\154\145\162\x2e\160\150\160"; goto DP0Yd; JZMxj: $AMJip = preg_replace("\57\x28\x2e\52\x29\134\x2f\151\x6e\x64\145\170\56\160\x68\160\x2f", "\x2f", $AMJip); goto p1CfP; VVFvt: if ($RL4Re) { goto J9OhZ; } goto Ku7fn; LaxQj: bhWaa: goto M1yYH; xBcOy: global $CriyX; goto yYN6x; QysND: $QQgt2->sendError(Msg::FClrG["\x74\145\x78\164"]); goto mETNy; l1TfH: goto vsONO; goto LaxQj; hVEp9: $clmxu++; goto bWmLb; tmmyO: hlnW1: goto T1LN6; rUf1H: O5RM6: goto aPLlC; kwVOb: $QQgt2->sendError(Msg::PVtgP, 404, "\x49\156\x74\x65\162\156\141\154\40\145\162\162\157\162\40\x2d\x20\143\157\156\x74\162\x6f\x6c\x6c\x65\x72\x20\x63\x6c\141\x73\163\x20{$CYAb1}\40\156\157\164\x20\x66\157\165\x6e\144"); goto cJMyD; n0Yzl: goto GMqHN; goto C3h0F; VQMEq: fLWuZ: goto oqPB2; FmRaP: if (empty($pMfYC) || $pMfYC[0] == '') { goto Oi_Ph; } goto Kje8k; DKfXr: $fEMn1 = $pMfYC[$clmxu]; goto ZWsIb; A5kzu: j41y4: goto oUE4t; piX4U: $AMJip = substr($AMJip, strlen($VqSck["\x42\101\x53\105\137\x55\122\x4c"])); goto Yz0vq; bWmLb: $IYYL1 = implode(DIRECTORY_SEPARATOR, array_slice($pMfYC, 0, $clmxu)) . DIRECTORY_SEPARATOR; goto lbo43; K1Tsc: if (!empty($pMfYC[0])) { goto O5RM6; } goto SOlFd; YZoC3: $D0PGi = strtolower($cnVYX->getRequestMethod()); goto kJvcJ; rTGok: XFd1i: goto Vbszn; Gx5dQ: goto Ge_n4; goto F537S; Ga_l3: $CYAb1 = Strings::snakeToCamel($MwS7v); goto ixCse; ma1Wi: goto vsONO; goto W9ovV; HZE5b: $D0PGi = !empty($ZQEZU) ? $ZQEZU : self::VJSMr; goto ujIEa; QRxCW: if (!($AMJip === false || !Url::url_check($_SERVER["\122\105\121\125\x45\x53\x54\x5f\x55\122\111"]))) { goto hlnW1; } goto WslLq; PjGxj: v1Spc: goto UQNuP; BGZSq: mfYaS: goto UpBD0; Vjtmc: $J9Xuc = array_slice($pMfYC, 4 - $KB0YN); goto UsdpT; F537S: dqaX2: goto ndX4B; pmQ1E: $QQgt2->sendError("\116\x6f\x74\40\141\x75\x74\150\157\162\151\x7a\145\x64\40\x66\x6f\x72\x20{$fEMn1}\x3a{$D0PGi}", 403); goto PjGxj; cJMyD: gFR15: goto tRhOY; vPhBm: $cnVYX = Request::getInstance(); goto yhTkA; tRhOY: if (method_exists($CYAb1, $D0PGi)) { goto mkL2l; } goto T86Y5; lXpln: $PDZvd = new $CYAb1(); goto hjKMz; cbKba: m2HZQ: goto TLui3; BR0Jt: $MwS7v = CONTROLLERS_PATH . "\x4d\x79\x41\165\164\150\x43\x6f\x6e\164\x72\157\154\x6c\x65\x72\x2e\160\150\160"; goto dbt66; lbo43: if (!is_numeric($pMfYC[$clmxu])) { goto rLY1Z; } goto CIQv8; Zrlh1: $QQgt2->flush(); goto WPjpJ; lWX_0: if (empty($wYHZM)) { goto fXa1N; } goto l0oJQ; Vbszn: $QQgt2->sendError("\111\x6e\x74\x65\x72\156\x61\154\x20\x65\162\162\x6f\x72\40\x2d\40\155\x65\164\150\x6f\144\40{$D0PGi}\40\167\141\x73\x20\156\x6f\x74\40\x66\x6f\165\156\144\40\x69\156\x20{$CYAb1}", 404); goto A5kzu; VAoIS: $BCLhR = "\163\151\x6d\x70\154\145\162\x65\163\164\134\x63\157\x6e\x74\162\157\154\154\145\x72\x73\x5c"; goto BR0Jt; M1yYH: if (isset($pMfYC[1 - $KB0YN])) { goto aBLn1; } goto t0TAM; EoD3j: global $argv; goto xBcOy; zEqyu: } }
+
+namespace simplerest\core;
+
+use simplerest\core\libs\Url;
+use simplerest\core\libs\Msg;
+use simplerest\core\libs\Strings;
+
+
+class FrontController
+{
+    const DEFAULT_ACTION = "index";
+
+    static function resolve()
+    {
+        global $argv;
+        global $api_version;
+
+        $config      = config();
+        $middlewares = include CONFIG_PATH . 'middlewares.php';
+        
+        $res = Response::getInstance();    
+        $sub = (int) $config['REMOVE_API_SLUG'];
+
+        if (php_sapi_name() != 'cli'){
+            $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $path = preg_replace('/(.*)\/index.php/', '/', $path);
+    
+            if ($config['BASE_URL'] != '/' && strpos($path, $config['BASE_URL']) === 0) {
+                $path = substr($path, strlen($config['BASE_URL']));
+            }   
+    
+            if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) ){
+                $res->sendError(Msg::MALFORMED_URL, 400); 
+            }
+    
+            $_params = explode('/', $path);
+    
+            if (empty($_params[0]))  
+                array_shift($_params);
+        }else{
+            $_params = array_slice($argv, 1);
+        }
+        
+        if (!isset($_params[0])){
+            return; // *
+        }
+
+
+        $req = Request::getInstance(); 
+
+        $is_auth = ((!$config['REMOVE_API_SLUG'] && isset($_params[2]) && $_params[2] === 'auth') || ($config['REMOVE_API_SLUG'] && $_params[1] == 'auth'));
+        $sub = (int) $config['REMOVE_API_SLUG'];
+
+        if ($is_auth){
+            $namespace = 'simplerest\\controllers\\';
+
+            $class_file =  CONTROLLERS_PATH. 'MyAuthController.php';
+        
+            $action = $_params[3 - $sub] ?? null;  
+            $params = array_slice($_params, 4 - $sub);
+            $req->setParams($params);                    
+
+            $method = !empty($action) ? $action : self::DEFAULT_ACTION;
+    
+            $class_name = 'MyAuth';
+            $class_name = "${namespace}${class_name}Controller";
+
+            // dd($class_name, 'CLASS_NAME:');
+            // dd($method, 'METHOD:');
+
+            $api_version = $_params[1 - $sub]; 
+
+            if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $api_version, $matches) ){
+                $res->sendError(Msg::INVALID_FORMAT_API_VERSION['text']);
+            }
+
+        } elseif ($_params[0] === 'api' || $config['REMOVE_API_SLUG']) {
+            if (!isset($_params[1 - $sub])){
+                $res->sendError(Msg::MISSING_API_VERSION['text']);
+            }
+
+            $api_version = $_params[1 - $sub]; 
+
+            if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $api_version, $matches) ){
+                $res->sendError(Msg::INVALID_FORMAT_API_VERSION['text']);
+            }
+
+            $controller = $_params[2 - $sub] ?? NULL;  
+                
+            // CamelCase to came_case
+            $controller = implode('',array_map('ucfirst',explode('_',$controller)));
+        
+            if ($controller == 'trash_can' || $controller == 'trashCan' || $controller == 'TrashCan' || $controller == 'collections' || $controller == 'Collections') {
+                $namespace = 'simplerest\\core\\api\\'. $api_version . '\\';
+            } else {
+                $namespace = 'simplerest\\controllers\\api\\';
+            }    
+
+            $class_name = $namespace . ucfirst($controller); //
+            
+            $method = strtolower($req->getRequestMethod());
+            $params = array_slice($_params,3 - $sub,2);  // *
+            
+
+            $req->setParams($params);  
+
+        } else {
+            //dd($_params, 'PARAMS:');
+
+            $namespace = 'simplerest\\controllers\\';
+
+            if (empty($_params) || $_params[0]==''){
+                $class_file = substr($config['DEFAULT_CONTROLLER'],0, strlen($config['DEFAULT_CONTROLLER'])-10);
+                $class_name = Strings::snakeToCamel($class_file);
+                $class_name = "${namespace}${class_name}Controller";
+                $method = self::DEFAULT_ACTION;  
+                $params = []; 
+            }else{
+                // Hipótesis
+                $ix = 0;
+                $folder = '';
+                $controller = $_params[$ix];
+
+                $class_file =  CONTROLLERS_PATH.Strings::snakeToCamel($controller).'Controller.php';
+                $cnt  = count($_params) -1;
+                while (!file_exists($class_file) && ($ix < $cnt)){
+                    $ix++;
+                    $folder = implode(DIRECTORY_SEPARATOR, array_slice($_params,0,$ix)). DIRECTORY_SEPARATOR;
+                    //dd($folder, 'NAMESPACE:');
+
+                    if (is_numeric($_params[$ix])){
+                        break;
+                    }
+
+                    $controller = $_params[$ix];
+                    $class_file =  CONTROLLERS_PATH. $folder. Strings::snakeToCamel($controller).'Controller.php';;
+                }
+
+                //dd($class_file, "Probando ...");
+                
+                $action = $_params[$ix+1] ?? null;
+                $params = array_slice($_params,$ix+2);
+                $req->setParams($params);                    
+
+                $method = !empty($action) ? $action : self::DEFAULT_ACTION;
+        
+                $class_name = Strings::snakeToCamel($controller);
+                $class_name = "${namespace}${folder}${class_name}Controller";
+
+                //dd($class_name, 'CLASS_NAME:');
+                //dd($method, 'METHOD:');
+            }
+        }
+
+        
+        $class_name = str_replace('/', "\\", $class_name);
+
+
+        if (!class_exists($class_name)){
+            $res->sendError(Msg::CLASS_NOT_FOUND, 404, "Internal error - controller class $class_name not found"); 
+        } 
+
+        if (!method_exists($class_name, $method)){
+            if (php_sapi_name() != 'cli' || $method != self::DEFAULT_ACTION){
+                $res->sendError("Internal error - method $method was not found in $class_name", 404); 
+            } else {
+                $dont_exec = true;
+            }
+        }
+                   
+        $controller_obj = new $class_name();
+
+        if (isset($dont_exec)){
+            exit;
+        }
+
+        // Only for API Rest
+        if ($_params[0] === 'api' && !$is_auth){
+            if (!in_array($method, $controller_obj->getCallable())){
+                $res->sendError("Not authorized for $controller:$method", 403);
+            }
+        }
+        
+        $data = call_user_func_array([$controller_obj, $method], $params);
+
+        // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
+        if (!empty($data)){
+            $res->setData($data);  
+        }
+        
+        /*
+            Middlewares
+        */
+
+        //dd($class_name, 'Controller');
+
+        foreach($middlewares as $injectable => $mid){
+            $_i = explode('@', $injectable);
+
+            $_class_name  = $_i[0];
+            $_method      = $_i[1] ??  'index';
+
+            if ($class_name == $_class_name && $method == $_method){
+                //dd(['class' => $_class_name, 'method' => $_method], "MID $mid");
+
+                if (!class_exists($mid)){
+                    $res->sendError(_("Middleware '$mid' not found"), 404, "Internal error - controller class $class_name not found");                     
+                }                    
+
+                $mid_obj = new $mid();
+                $mid_obj->handle();
+            }
+        }
+
+        //////////////////////////////////////
+
+        $res->flush();
+        exit;
+    }
+}
+

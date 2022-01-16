@@ -1,8 +1,102 @@
-<?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
+<?php declare(strict_types=1);
+
+namespace simplerest\core\libs;
+
+use simplerest\core\libs\Url; 
+
+/*
+	Author: boctulus
+	
+	Reference:
+	https://developer.mozilla.org/es/docs/Web/API/Server-sent_events/Using_server-sent_events
 */
- declare (strict_types=1); namespace simplerest\core\libs; use simplerest\core\libs\Url; class SSE { private $channel = "\x64\145\x66\x61\165\x6c\164"; private $interval = 1; private $debug = false; function __construct(string $cf0x2 = null) { goto Et2QC; rxopa: bL1yp: goto KP3hD; OkGQ0: xPZwY: goto oY_Ky; Et2QC: if (!(php_sapi_name() == "\x63\x6c\151")) { goto bL1yp; } goto r7Ruj; gEEKZ: header("\x43\x6f\x6e\164\x65\x6e\x74\x2d\x54\171\160\145\72\40\x74\145\x78\x74\57\145\x76\x65\x6e\164\x2d\163\x74\x72\145\141\x6d\12\12"); goto OkGQ0; KP3hD: if (!(!$this->debug && !headers_sent())) { goto xPZwY; } goto gEEKZ; r7Ruj: $this->debug = true; goto rxopa; oY_Ky: $this->setDefaultChannel($cf0x2); goto bOsha; bOsha: } function setDefaultChannel(string $A5xWC) { $this->channel = $A5xWC; return $this; } function setInterval(int $KpArM) { $this->interval = $KpArM; return $this; } function setRetry($low6f) { echo "\162\x65\x74\x72\x79\72\40{$low6f}\12"; return $this; } function sendComment() { echo "\72\40\x68\151\xa\xa"; } function send($wYHZM, string $cf0x2 = null) { goto rZAkc; MAd8n: goto lLyzg; goto mJSEQ; dOild: if ($this->debug) { goto gr0l2; } goto cCzs_; ofrIk: echo "\x65\166\145\156\164\72\40{$cf0x2}\12"; goto WoIGf; cCzs_: ob_flush(); goto pkv1Q; mJSEQ: kAQMc: goto jNnEM; eDzP7: OepCk: goto ofrIk; I2sYH: $cf0x2 = $this->channel; goto eDzP7; xzVSv: sleep($this->interval); goto kwW5C; pkv1Q: flush(); goto xzVSv; kwW5C: gr0l2: goto ViBk2; vwcTE: echo "\144\x61\164\x61\72\40" . $wYHZM; goto MAd8n; WoIGf: if (is_array($wYHZM)) { goto kAQMc; } goto vwcTE; jNnEM: echo "\x64\141\x74\141\72\40" . json_encode($wYHZM); goto qS_W1; qS_W1: lLyzg: goto wHlbl; wHlbl: echo "\12\xa"; goto dOild; rZAkc: if (!empty($cf0x2)) { goto OepCk; } goto I2sYH; ViBk2: } function sendError($wYHZM, $cf0x2 = null) { goto r5ld5; GVn3o: eykl5: goto IOUJl; lDNEC: echo "\12\12"; goto Ei5kn; od3ga: ZF79s: goto uFzjS; cxd04: ob_flush(); goto G333p; O8J0Q: echo "\x65\162\162\157\x72\x3a\x20" . json_encode($wYHZM); goto FApZP; K22Ps: echo "\x65\x72\x72\x6f\x72\72\x20" . $wYHZM; goto PbLQX; FEa7Z: if (is_array($wYHZM)) { goto xOikv; } goto K22Ps; kJSbM: $cf0x2 = $this->channel; goto GVn3o; bnrG5: sleep($this->interval); goto od3ga; G333p: flush(); goto bnrG5; Ei5kn: if ($this->debug) { goto ZF79s; } goto cxd04; fwMwQ: xOikv: goto O8J0Q; r5ld5: if (!empty($cf0x2)) { goto eykl5; } goto kJSbM; IOUJl: echo "\x65\166\x65\156\164\x3a\x20{$cf0x2}\12"; goto FEa7Z; PbLQX: goto WtKnJ; goto fwMwQ; FApZP: WtKnJ: goto lDNEC; uFzjS: } }
+
+class SSE
+{
+	private $channel  = 'default';
+	private $interval = 1;
+	private $debug    = false;
+
+	function __construct(string $channel = null){
+		if (php_sapi_name() == "cli") {
+			$this->debug = true;
+		}
+		
+		if (!$this->debug && !headers_sent()) {
+			header("Content-Type: text/event-stream\n\n");
+		}
+
+		$this->setDefaultChannel($channel);
+	}
+
+	function setDefaultChannel(string $name){
+		// validar. Solo permitidos [a-z-#] y alguno más. Ej: vendor-x#created
+		$this->channel = $name; 
+		return $this;
+	}
+
+	function setInterval(int $seconds){
+		$this->interval = $seconds;
+		return $this;
+	}
+
+	function setRetry($milliseconds){
+		echo "retry: $milliseconds\n";
+		return $this;
+	}
+
+	/*
+		Enviar periódicamente para evitar que se cierre la conexión
+	*/
+	function sendComment(){
+		echo ": hi\n\n";
+	}
+
+	function send($data, string $channel = null){
+		if (empty($channel)){
+			$channel = $this->channel;
+		}
+
+		echo "event: $channel\n";
+
+		if (is_array($data)){
+			echo 'data: ' . json_encode($data);	
+		} else {
+			echo 'data: ' . $data;
+		}
+		
+		echo "\n\n";
+
+		if (!$this->debug){
+			ob_flush();
+			flush();
+
+			sleep($this->interval);
+		}		
+	}
+
+	function sendError($data, $channel = null){
+		if (empty($channel)){
+			$channel = $this->channel;
+		}
+
+		echo "event: $channel\n";
+
+		if (is_array($data)){
+			echo 'error: ' . json_encode($data);	
+		} else {
+			echo 'error: ' . $data;
+		}
+		
+		echo "\n\n";
+
+		if(!$this->debug){
+			ob_flush();
+			flush();
+
+			sleep($this->interval);
+		}
+	}
+
+
+}

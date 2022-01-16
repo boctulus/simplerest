@@ -1,8 +1,176 @@
-<?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:55              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
+<?php declare(strict_types=1);
+
+namespace simplerest\core\libs;
+
+/*
+	- Si se excede el POST Content-Length (post_max_size) ...
+	
+		<b>Warning</b>:  POST Content-Length of .... bytes exceeds the limit of 33554432 bytes in <b>Unknown</b> on line <b>0</b><br />
+	
+	- Si el numero de archivos excede max_file_uploads ... ni llegan ... al script, solo el maximo (e.g. 20)
+	
+	- Si un archivo supera upload_max_filesize ... ese archivo se procesa con error=1, los demas se procesan... 
 */
- declare (strict_types=1); namespace simplerest\core\libs; use simplerest\core\libs\Arrays; use simplerest\core\libs\Files; use simplerest\libs\Debug; class MultipleUploader { protected $filenames = []; protected $settings = []; protected $location = UPLOADS_PATH; protected $erroneous = []; protected $renamerFn = null; protected const pzOwW = "\x2a"; public function __construct() { } public function setLocation($AMJip) { $this->location = $AMJip; return $this; } public function setFileHandler($lt4rh, ...$J9Xuc) { $this->renamer = [$lt4rh, $J9Xuc]; return $this; } public function getFileNames() { return $this->filenames; } public function getErrors() { return $this->erroneous; } public function doUpload($vdkDk = NULL) { goto LL0AN; G85UA: goto tX1kg; goto Qagbi; agzK0: $this->filenames[] = [$ecQXc, $VsCnH]; goto AbaZ9; e0GhL: $i2Gdi = $_FILES[$vdkDk]["\164\x6d\x70\x5f\156\141\155\145"]; goto TUS0o; TUS0o: $ecQXc = basename($_FILES[$vdkDk]["\x6e\x61\155\145"]); goto KXsb_; iHVe1: $GUGYY = $_FILES[$ypDYr]; goto z5jVg; ULBE_: $ypDYr = Arrays::array_key_first($_FILES); goto iHVe1; qTWyB: Li_Vj: goto EVLJz; VjtfJ: if ($vdkDk == NULL) { goto PZBJj; } goto Vppxd; W0znm: return $this; goto PpltR; Vppxd: if (!($vdkDk[strlen($vdkDk) - 1] == self::pzOwW)) { goto LxDUD; } goto E6E73; TUxgx: $this->erroneous[] = $_FILES[$vdkDk]["\x6e\141\155\x65"]; goto xcVF1; AbaZ9: move_uploaded_file($i2Gdi, $this->location . DIRECTORY_SEPARATOR . $VsCnH); goto GDAy9; Sxia7: $BZQV1 = $this->renamer[0]; goto jPISm; HA2h0: foreach ($_FILES as $ZQrwM => $X6jGx) { goto LgniP; VHJM0: PpG7f: goto hmQe0; q9yx3: move_uploaded_file($i2Gdi, $this->location . DIRECTORY_SEPARATOR . $VsCnH); goto gUsYw; DsgaP: $VsCnH = $BZQV1($yMtmD) . "\56" . pathinfo($X6jGx["\x6e\141\155\x65"], PATHINFO_EXTENSION); goto Jk_za; NwOo1: uEReG: goto iaYYg; GEpX1: goto KyKgJ; goto NwOo1; LgniP: if (!(substr($ZQrwM, 0, strlen($ZQrwM) - 1) != $zNNop)) { goto KM3OI; } goto CgLSn; iaYYg: $i2Gdi = $X6jGx["\x74\155\x70\137\x6e\141\x6d\x65"]; goto UavoR; nGK1x: if ($X6jGx["\145\x72\162\x6f\x72"] == UPLOAD_ERR_OK) { goto uEReG; } goto asrS9; Jk_za: $this->filenames[] = [$ecQXc, $VsCnH]; goto q9yx3; asrS9: $this->erroneous[] = $X6jGx["\156\x61\155\145"]; goto GEpX1; fxM3c: KM3OI: goto nGK1x; UavoR: $ecQXc = basename($X6jGx["\156\x61\x6d\145"]); goto DsgaP; gUsYw: KyKgJ: goto VHJM0; CgLSn: goto PpG7f; goto fxM3c; hmQe0: } goto Jz4rN; J_W0i: $this->erroneous = []; goto b2Jlo; GDAy9: e4oAf: goto INMJj; OGZPx: if (is_array($GUGYY["\x65\162\x72\x6f\x72"]) && isset($_FILES[$A5xWC]["\145\x72\162\157\162"]) && is_array($_FILES[$A5xWC]["\x65\162\162\x6f\162"])) { goto xQp9g; } goto uZNUv; LL0AN: if (!empty($_FILES)) { goto bnUND; } goto Imf9W; INMJj: dFfcC: goto G85UA; njdez: LVoZb: goto ZR4Oo; b2Jlo: Files::mkDirOrFail($this->location); goto o09j8; BsBUK: goto LVoZb; goto AMGzC; q09xZ: $a16VR = 0; goto Gdd4W; z5jVg: $A5xWC = $vdkDk != NULL ? $vdkDk : $ypDYr; goto OGZPx; ZR4Oo: goto dFfcC; goto n809g; l7JD4: r3789: goto njdez; EVLJz: tX1kg: goto W0znm; ysI8F: $this->filenames = []; goto J_W0i; E6E73: $zNNop = substr($vdkDk, 0, strlen($vdkDk) - 1); goto HA2h0; KXsb_: $VsCnH = $BZQV1($yMtmD) . "\56" . pathinfo($_FILES[$vdkDk]["\x6e\x61\155\x65"], PATHINFO_EXTENSION); goto agzK0; vJcj2: InQBC: goto e0GhL; zVSpR: bnUND: goto Sxia7; n809g: x05f2: goto Zouzm; uZNUv: if ($vdkDk != NULL && isset($_FILES[$vdkDk]["\145\162\162\x6f\162"])) { goto x05f2; } goto VjtfJ; BgI3N: foreach ($_FILES as $ZQrwM => $X6jGx) { goto n6jWo; RXDpM: tmCsp: goto fq919; zM7c2: $VsCnH = $BZQV1($yMtmD) . "\x2e" . pathinfo($X6jGx["\x6e\x61\x6d\145"], PATHINFO_EXTENSION); goto R3PHR; R3PHR: $this->filenames[] = [$ecQXc, $VsCnH]; goto Pcn8f; XSqk6: s6ePb: goto hSjrY; hSjrY: $i2Gdi = $X6jGx["\164\155\x70\137\156\141\x6d\x65"]; goto c_RmR; n6jWo: if ($X6jGx["\x65\162\x72\157\x72"] == UPLOAD_ERR_OK) { goto s6ePb; } goto X3iBh; Ms4PV: goto tmCsp; goto XSqk6; X3iBh: $this->erroneous[] = $X6jGx["\x6e\141\155\145"]; goto Ms4PV; c_RmR: $ecQXc = basename($X6jGx["\156\x61\155\145"]); goto zM7c2; fq919: Aniwb: goto DDsNw; Pcn8f: move_uploaded_file($i2Gdi, $this->location . DIRECTORY_SEPARATOR . $VsCnH); goto RXDpM; DDsNw: } goto l7JD4; AMGzC: PZBJj: goto BgI3N; Qagbi: xQp9g: goto q09xZ; xcVF1: goto e4oAf; goto vJcj2; Gdd4W: foreach ($_FILES[$A5xWC]["\145\x72\x72\157\162"] as $JT4F5 => $u0w4X) { goto eVOLs; I17hm: Z6wzm: goto BzGqn; JoczO: $this->erroneous[] = $_FILES[$A5xWC]["\x6e\141\x6d\x65"][$JT4F5]; goto xWYiB; Kud1a: $ecQXc = basename($_FILES[$A5xWC]["\156\141\155\145"][$JT4F5]); goto vjn8a; XH3zG: $this->filenames[$a16VR] = [$ecQXc, $VsCnH]; goto hahKc; eVOLs: if ($u0w4X == UPLOAD_ERR_OK) { goto Z6wzm; } goto JoczO; vjn8a: $VsCnH = $BZQV1($yMtmD) . "\x2e" . pathinfo($_FILES[$A5xWC]["\x6e\141\155\145"][$JT4F5], PATHINFO_EXTENSION); goto XH3zG; P2u3m: xvVag: goto Dt2SD; xWYiB: goto xvVag; goto I17hm; Dt2SD: ZSmcV: goto glK3m; BzGqn: $i2Gdi = $_FILES[$A5xWC]["\164\x6d\x70\137\x6e\x61\x6d\x65"][$JT4F5]; goto Kud1a; pgjmi: $a16VR++; goto P2u3m; hahKc: move_uploaded_file($i2Gdi, $this->location . DIRECTORY_SEPARATOR . $VsCnH); goto pgjmi; glK3m: } goto qTWyB; jPISm: $yMtmD = $this->renamer[1][0]; goto ysI8F; Zouzm: if ($_FILES[$vdkDk]["\x65\162\x72\157\162"] == UPLOAD_ERR_OK) { goto InQBC; } goto TUxgx; p1Ffq: LxDUD: goto BsBUK; Jz4rN: I8iaU: goto p1Ffq; o09j8: Files::writableOrFail($this->location); goto ULBE_; Imf9W: return $this; goto zVSpR; PpltR: } }
+
+/*
+	Uso:
+
+		$uploader = (new MultipleUploader('uploads'));
+        //debug($uploader->doUpload('file_*')->getFileNames(),'file_*');
+        debug($uploader->doUpload()->getFileNames(),'Cargados:');
+        //debug($uploader->doUpload('other_file')->getFileNames(),'other_file:');
+        //debug($uploader->doUpload()->getFileNames(),'Cargados:');
+        
+        //debug($uploader->doUpload('otro')->getFileNames(),'otro:');
+        //debug($uploader->doUpload('some_file')->getFileNames(),'some_file:');
+        
+        if($uploader->getErrors()){
+            debug($uploader->getErrors(),'Errors:');
+        }
+*/
+
+use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Files;
+use simplerest\libs\Debug;
+
+class MultipleUploader
+{
+	protected $filenames  = [];
+	protected $settings	= [];
+	protected $location = UPLOADS_PATH;
+	protected $erroneous = [];
+	protected $renamerFn = null;
+	protected const WILDCARD = '*';
+	
+	
+	public function __construct(){
+	}	
+	
+	// @param string path (sin / al final)
+	public function setLocation($path){
+		$this->location = $path;
+		return $this;
+	}	
+
+	/*
+		Renamer
+	*/
+	public function setFileHandler($fn, ...$params){
+		$this->renamer = [$fn, $params];
+		return $this;
+	}
+	
+	/* 
+		Retorna un array con el nombre original y el nombre con el que se almacenó
+	*/
+	public function getFileNames(){
+		return $this->filenames;
+	}
+	
+	/**
+	* Los archivos que presentaron error quedan aqui	
+	*/
+	public function getErrors(){
+		return $this->erroneous;
+	}
+		
+	/**
+	* 
+	* Dependiendo del caso puede tener que llamarse con el NAME del INPUT TYPE='file'
+	* y si hay varias declaraciones de archivos como arrays o algunos estan declarados
+	* como arrays y otros no, será necesario seleccionarlos con su NAME en $input_name
+	*/	
+	public function doUpload($input_name = NULL)
+	{		
+		if(empty($_FILES))
+			return $this;
+					
+		$renamer = $this->renamer[0];
+		$subfijo = $this->renamer[1][0];	
+
+		// reset	
+		$this->filenames  = [];	
+		$this->erroneous = [];
+			
+		Files::mkDirOrFail($this->location);
+		Files::writableOrFail($this->location);
+		
+		$key_0 = Arrays::array_key_first($_FILES);
+		$file0 = $_FILES[$key_0]; 
+		$name = $input_name != NULL ? $input_name : $key_0;
+
+
+		if(is_array($file0['error']) && isset($_FILES[$name]['error']) && is_array($_FILES[$name]['error'])){
+			$i = 0; 
+			foreach($_FILES[$name]['error'] as $key => $error)
+			{			
+				if ($error == UPLOAD_ERR_OK)
+				{
+					/*
+					 $tmp_name  -> "C:\xampp\tmp\phpF864.tmp"
+  					 basename($_FILES[$name]["name"][$key]) -> "hidden.jfif"
+					*/
+					
+					$tmp_name = $_FILES[$name]["tmp_name"][$key];
+					$filename = basename($_FILES[$name]["name"][$key]); 
+					$new_filename = $renamer($subfijo) . '.' . pathinfo($_FILES[$name]["name"][$key], PATHINFO_EXTENSION);
+					$this->filenames[$i] = [ $filename, $new_filename ];
+					move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR . $new_filename);
+					$i++;				
+				}else
+					$this->erroneous[] = $_FILES[$name]['name'][$key];
+			}
+		
+		}else{
+			
+			if($input_name != NULL && isset($_FILES[$input_name]['error'])){
+				if ($_FILES[$input_name]['error'] == UPLOAD_ERR_OK)
+				{
+					$tmp_name = $_FILES[$input_name]['tmp_name'];
+					$filename =  basename($_FILES[$input_name]['name']);
+					$new_filename = $renamer($subfijo) . '.' . pathinfo($_FILES[$input_name]['name'], PATHINFO_EXTENSION);
+					$this->filenames[] = [ $filename, $new_filename ];
+					move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
+				}else
+					$this->erroneous[] = $_FILES[$input_name]['name'];
+			}
+			else
+				if($input_name == NULL){
+					foreach($_FILES as $_name => $file){
+						if ($file['error'] == UPLOAD_ERR_OK)
+						{
+							$tmp_name = $file['tmp_name'];
+							$filename =  basename($file['name']);
+							$new_filename = $renamer($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+							$this->filenames[] = [ $filename, $new_filename ];
+							move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
+						}else
+							$this->erroneous[] = $file['name'];
+					}
+				}else if ($input_name[strlen($input_name)-1] == self::WILDCARD){
+					$starts_with = substr($input_name, 0, strlen($input_name)-1);
+					
+					foreach($_FILES as $_name => $file){
+						if(substr($_name, 0, strlen($_name)-1) != $starts_with)
+							continue;
+						
+						if ($file['error'] == UPLOAD_ERR_OK)
+						{
+							$tmp_name = $file['tmp_name'];
+							$filename =  basename($file['name']);
+							$new_filename = $renamer($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+							$this->filenames[] = [ $filename, $new_filename ];
+							move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
+						}else
+							$this->erroneous[] = $file['name'];
+					}
+				}
+		
+		}
+		
+		return $this;
+    }	
+
+	
+	
+}	

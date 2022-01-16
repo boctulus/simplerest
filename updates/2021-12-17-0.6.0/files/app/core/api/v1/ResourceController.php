@@ -5,7 +5,7 @@ namespace simplerest\core\api\v1;
 use simplerest\libs\Debug;
 use simplerest\core\Acl;
 use simplerest\core\libs\Factory;
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\DB;
 
 

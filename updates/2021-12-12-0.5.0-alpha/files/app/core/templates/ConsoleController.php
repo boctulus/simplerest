@@ -2,7 +2,7 @@
 
 namespace __NAMESPACE;
 
-use simplerest\core\ConsoleController;
+use simplerest\core\controllers\ConsoleController;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
