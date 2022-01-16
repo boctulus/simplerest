@@ -7152,6 +7152,17 @@ Sin embargo se puede ser más específico:
 	Files::copy($path_ori, $path_dst, ['glob:*.php']); 
 
 
+# Aplicar un callback sobre el contenido de cada archivo copiado
+
+Ej:
+
+	Files::setCallback(function(string $content){
+		return Strings::removeMultiLineComments($content);
+	});
+
+	Files::copy($ori, $dst); 
+
+
 ### Compresión de archivos a ZIP
 
 Zipea archivos de una carpeta de forma recursiva y admite especificar archivos y carpetas que serán ignorados.

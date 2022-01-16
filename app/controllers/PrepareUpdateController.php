@@ -160,7 +160,7 @@ class PrepareUpdateController extends ConsoleController
         // ahora copio los archivos ofuscados en el destino
         $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
         $dst = "updates/{$this->last_update_dir}/";  
-        Files::copy($ori, $dst . 'files/app/core', ['glob:*.php']); // bug con glob:*
+        Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
     }
 
     function zip(){
