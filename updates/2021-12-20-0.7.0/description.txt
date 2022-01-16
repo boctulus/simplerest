@@ -3,6 +3,8 @@ UPDATE DESCRIPTION
 
 - Generalización del "UPDATE sobre sub-recursos" que permite editar campos de estos y no solo las relaciones.
 
+- Optimizaciones varias.
+
 - Contenedor de dependencias inversas experimental.
 
 - Librerías, helpers y otras carpetas fueron movidas al Core para evitar sobre-escrituras accidentales de estos archivos que pudieran contener también funciones definidas por el usuario. Ahora Ud. podrá crear sus propios helpers y librerías con seguridad.
