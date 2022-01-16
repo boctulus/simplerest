@@ -1,8 +1,1343 @@
 <?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- namespace simplerest\core\api\v1; use Exception; use simplerest\core\Controller; use simplerest\core\Request; use simplerest\core\libs\Factory; use simplerest\core\libs\DB; use simplerest\core\libs\Strings; use simplerest\core\Acl; use simplerest\core\libs\Validator; use simplerest\core\exceptions\InvalidValidationException; use simplerest\core\libs\Files; use simplerest\core\interfaces\IAuth; use simplerest\core\interfaces\IDbAccess; class AuthController extends Controller implements IAuth { protected $role_field; protected $__email; protected $__username; protected $__password; protected $__confirmed_email; protected $__active; function __construct() { goto FKrxb; ojD3V: $this->__confirmed_email = $fNEzs::$confirmed_email; goto g37zP; r0d1R: $fNEzs = get_user_model_name(); goto td9sb; FKrxb: header("\101\x63\143\145\x73\163\55\103\x6f\156\x74\x72\x6f\x6c\55\x41\x6c\154\x6f\x77\55\x43\162\145\144\x65\156\164\151\x61\154\163\72\x20\124\162\x75\145"); goto sWTmI; g37zP: $this->__active = $fNEzs::$is_active; goto tGJ0A; td9sb: $this->__email = $fNEzs::$email; goto W3dax; skMUm: header("\101\x63\x63\145\163\163\55\x43\157\x6e\x74\162\157\x6c\x2d\101\154\x6c\x6f\167\x2d\x4d\x65\164\150\x6f\x64\163\72\x20\x50\117\x53\124\x2c\117\x50\124\111\x4f\116\x53"); goto jwGAW; dMcFd: parent::__construct(); goto r0d1R; sWTmI: header("\x41\143\x63\x65\163\x73\x2d\103\x6f\x6e\x74\162\157\154\x2d\x41\154\x6c\157\x77\x2d\110\x65\x61\144\145\x72\163\x3a\40\x4f\162\151\147\151\156\54\x43\x6f\x6e\164\145\x6e\164\x2d\x54\171\160\x65\x2c\130\55\x41\x75\x74\x68\x2d\124\157\153\145\156\x2c\101\143\143\x6f\165\x6e\x74\113\x65\x79\x2c\130\55\x72\x65\161\x75\x65\x73\x74\x65\x64\55\x77\151\164\x68\54\x41\165\x74\x68\157\x72\x69\x7a\141\x74\151\x6f\156\54\101\143\x63\x65\160\x74\54\x20\103\154\x69\145\156\164\x2d\123\x65\143\165\162\x69\x74\x79\x2d\124\157\x6b\x65\156\x2c\x48\x6f\163\x74\54\x44\141\164\x65\54\103\x6f\x6f\153\151\145\54\x43\157\157\153\x69\145\62"); goto skMUm; tGJ0A: $this->__id = get_name_id($this->users_table); goto wuyJ8; ZAOvJ: $this->__password = $fNEzs::$password; goto ojD3V; jwGAW: header("\x41\x63\x63\x65\163\x73\x2d\x43\x6f\156\x74\x72\x6f\x6c\55\x41\154\154\157\167\x2d\x4f\162\151\x67\x69\x6e\72\40\52"); goto dMcFd; W3dax: $this->__username = $fNEzs::$username; goto ZAOvJ; wuyJ8: } protected function gen_jwt(array $O2GIo, string $Sehag, int $q4UjY = null) { goto VRrwR; VRrwR: $CYAtb = time(); goto LHwMw; sXNdP: return \Firebase\JWT\JWT::encode($kqmQk, $this->config[$Sehag]["\x73\145\143\162\x65\164\x5f\153\x65\x79"], $this->config[$Sehag]["\x65\x6e\x63\162\171\160\164\x69\157\x6e"]); goto x8260; LHwMw: $kqmQk = ["\141\154\x67" => $this->config[$Sehag]["\145\156\x63\x72\171\160\164\151\x6f\156"], "\x74\171\x70" => "\x4a\x57\124", "\x69\x61\x74" => $CYAtb, "\x65\x78\160" => $CYAtb + ($q4UjY != null ? $q4UjY : $this->config[$Sehag]["\x65\x78\160\151\162\141\164\x69\x6f\x6e\x5f\x74\x69\155\x65"]), "\151\160" => Request::ip(), "\165\x73\x65\162\137\141\x67\x65\x6e\x74" => Request::user_agent()]; goto j8ePN; j8ePN: $kqmQk = array_merge($kqmQk, $O2GIo); goto sXNdP; x8260: } protected function gen_jwt_email_conf(string $ryBHy, array $USv7N, array $t5YFE, $VT4HT) { goto sPn0a; NVhRR: $kqmQk = ["\x61\x6c\x67" => $this->config["\145\155\141\x69\x6c\137\x74\157\x6b\x65\156"]["\x65\156\x63\x72\171\x70\164\151\157\x6e"], "\x74\x79\x70" => "\112\x57\x54", "\x69\x61\164" => $CYAtb, "\x65\x78\160" => $CYAtb + $this->config["\145\155\x61\151\x6c\137\164\157\x6b\145\156"]["\x65\x78\160\x69\162\x65\163\x5f\x69\x6e"], "\x69\x70" => Request::ip(), "\165\163\x65\162\137\141\147\145\156\164" => Request::user_agent(), "\145\155\x61\151\x6c" => $ryBHy, "\162\157\154\145\x73" => $USv7N, "\160\145\x72\155\x69\x73\163\x69\157\x6e\163" => $t5YFE, "\x64\142\137\x61\143\x63\145\x73\163" => $this->getDbAccess($VT4HT)]; goto lOtuc; lOtuc: return \Firebase\JWT\JWT::encode($kqmQk, $this->config["\x65\155\x61\x69\154\137\164\157\x6b\x65\x6e"]["\163\145\143\162\145\164\x5f\x6b\145\x79"], $this->config["\x65\155\141\x69\154\137\164\157\x6b\x65\156"]["\145\x6e\x63\x72\x79\x70\164\x69\157\x6e"]); goto KVks0; sPn0a: $CYAtb = time(); goto NVhRR; KVks0: } protected function gen_jwt_rememberme($VT4HT) { goto BBu2w; AE_uO: return \Firebase\JWT\JWT::encode($kqmQk, $this->config["\145\x6d\x61\x69\x6c\x5f\x74\x6f\153\x65\156"]["\x73\x65\x63\162\145\x74\137\153\x65\171"], $this->config["\145\x6d\x61\x69\x6c\x5f\164\157\153\145\156"]["\x65\156\x63\162\171\x70\164\151\x6f\156"]); goto bpZT7; b_Lp6: $kqmQk = ["\x61\154\147" => $this->config["\145\155\x61\151\154\137\164\157\x6b\145\156"]["\x65\156\143\162\x79\x70\164\151\x6f\x6e"], "\164\171\x70" => "\x4a\127\124", "\151\141\164" => $CYAtb, "\145\170\160" => $CYAtb + $this->config["\145\155\141\x69\x6c\x5f\x74\157\x6b\145\x6e"]["\x65\170\x70\151\x72\x65\x73\x5f\x69\156"], "\x69\x70" => Request::ip(), "\165\163\145\162\137\x61\147\x65\156\x74" => Request::user_agent(), "\165\x69\x64" => $VT4HT, "\144\x62\x5f\x61\x63\x63\x65\x73\163" => $this->getDbAccess($VT4HT)]; goto AE_uO; BBu2w: $CYAtb = time(); goto b_Lp6; bpZT7: } function login() { goto SPzi2; TzaE3: Factory::response()->sendError("\x45\155\141\151\154\x20\x6f\162\x20\x75\163\145\x72\x6e\141\x6d\x65\40\x61\x72\145\40\x72\145\161\165\151\x72\145\x64", 400); goto M5bAd; DQees: IBgAm: goto ykscc; WM66l: goto UMntI; goto IWBG_; JqIgb: if (!empty($b9OjV)) { goto JQ4fU; } goto gIe8v; ft2rr: return; goto DQees; M5bAd: UMntI: goto MU9CU; DaWvT: if (!($wYHZM == null)) { goto IBgAm; } goto ft2rr; BovgU: $wYHZM = Factory::request()->getBody(false); goto DaWvT; gXx1g: Factory::response()->sendError("\x49\156\x63\157\x72\162\x65\x63\164\40\166\x65\x72\x62\40\x28" . $_SERVER["\x52\105\121\x55\x45\123\x54\x5f\x4d\105\124\110\x4f\x44"] . "\51\54\40\145\x78\x70\145\x63\164\x69\x6e\x67\40\120\117\123\x54", 405); goto yVc2i; IWBG_: iUKp_: goto TzaE3; RNTuW: $b9OjV = $wYHZM[$this->__password] ?? null; goto BZ96b; OV4Xt: $CppvK = $wYHZM[$this->__username] ?? null; goto RNTuW; UMAA9: JQ4fU: goto WM66l; ykscc: $ryBHy = $wYHZM[$this->__email] ?? null; goto OV4Xt; yVc2i: jZcxm: goto BovgU; SPzi2: if (in_array($_SERVER["\x52\x45\x51\x55\105\123\x54\137\115\105\124\x48\x4f\x44"], ["\x50\x4f\x53\124", "\117\x50\124\x49\117\x4e\x53"])) { goto jZcxm; } goto gXx1g; gIe8v: Factory::response()->sendError("\x50\141\163\163\x77\x6f\162\x64\x20\x69\x73\40\x72\x65\x71\165\151\x72\x65\144", 400); goto UMAA9; BZ96b: if (empty($ryBHy) && empty($CppvK)) { goto iUKp_; } goto JqIgb; jkZoz: try { goto Wj2b5; PO7qU: if (!($hvCP7 == 0 || (string) $hvCP7 === "\x30")) { goto kzGF8; } goto f3PZ_; hy__G: $FhPvT = $this->gen_jwt(["\165\x69\x64" => $VT4HT], "\162\145\146\162\x65\x73\x68\x5f\164\x6f\x6b\145\x6e"); goto GSb2x; YgCPH: $USv7N = $Fa1h2->inSchema([$this->role_field]) ? $tMe4v[$this->role_field] : $this->fetchRoles($VT4HT); goto Voafp; DqlPz: Factory::response()->sendError("\x4e\x6f\156\x20\x61\x75\x74\x68\x6f\x72\151\172\x65\144", 403, "\x50\154\x65\141\x73\x65\x20\x63\157\156\x66\151\x72\x6d\x20\171\157\x75\162\40\145\55\x6d\141\151\154"); goto zy54w; YkoAJ: aJgtv: goto z1hkP; GSb2x: $this->onLogged($wYHZM, $VT4HT, $hvCP7, $USv7N, $t5YFE); goto MgDh5; YCZB_: Factory::response()->sendError("\x4e\157\156\40\141\x75\164\150\x6f\162\151\x7a\145\144", 403, "\x41\x63\143\157\165\156\164\40\160\145\156\144\x69\156\147\x20\x66\157\x72\40\x61\143\164\x69\166\141\x74\151\157\156"); goto f3fHd; QIoDt: H3l9c: goto KGYFQ; BbwcZ: $ZqvVG = $tMe4v[$this->__password]; goto OdQsA; lYagx: $eoLer = $this->gen_jwt(["\x75\x69\144" => $VT4HT, "\x72\157\154\x65\163" => $USv7N, "\160\x65\162\155\151\x73\x73\151\157\x6e\163" => $t5YFE, "\151\x73\x5f\141\x63\x74\x69\166\x65" => $hvCP7, "\x64\x62\x5f\141\143\143\145\x73\x73" => $eCjHS], "\x61\143\143\x65\x73\x73\x5f\164\x6f\x6b\x65\x6e"); goto hy__G; z1hkP: $hvCP7 = 1; goto EqYfk; JLpd0: Factory::response()->sendError("\x49\156\x63\157\x72\x72\145\x63\x74\40\165\x73\145\162\x6e\x61\x6d\x65\x20\57\40\x65\x6d\141\x69\x6c\40\157\162\40\160\x61\163\163\167\157\x72\144", 401); goto D0OUY; Hp3Dt: Acl::setCurrentRoles($USv7N); goto lYagx; j8U2H: kzGF8: goto QIoDt; BgLJL: $eCjHS = $this->getDbAccess($VT4HT); goto Hp3Dt; n8d7c: if ($tMe4v) { goto vroCv; } goto JLpd0; geWqC: c1TC0: goto PO7qU; Zgut1: Factory::response()->sendError("\x49\156\x63\157\x72\x72\x65\143\x74\40\x75\x73\x65\162\156\x61\155\x65\x20\x2f\40\x65\x6d\141\151\x6c\x20\x6f\x72\x20\160\x61\163\x73\x77\x6f\x72\x64", 401); goto YkoAJ; zy54w: gDZgJ: goto geWqC; f3PZ_: Factory::response()->sendError("\x4e\x6f\156\x20\x61\x75\164\150\157\x72\151\172\145\x64", 403, "\x44\145\x61\143\x74\x69\x76\141\x74\145\x64\40\x61\x63\143\x6f\165\156\164\x20\x21"); goto j8U2H; ba6Uk: $tMe4v = $Fa1h2->assoc()->unhide([$this->__password])->where([$this->__email => $ryBHy, $this->__username => $CppvK], "\117\x52")->setValidator((new Validator())->setRequired(false))->first(); goto n8d7c; i4ftr: $hvCP7 = $tMe4v[$this->__active]; goto VGHXv; r1Pi_: neDXp: goto DqlPz; Wj2b5: $Fa1h2 = DB::table($this->users_table); goto ba6Uk; VGHXv: if (!($hvCP7 == null)) { goto c1TC0; } goto Eongt; OdQsA: if (password_verify($b9OjV, $ZqvVG)) { goto aJgtv; } goto Zgut1; Voafp: $t5YFE = $this->fetchPermissions($VT4HT); goto BgLJL; EqYfk: if (!$Fa1h2->inSchema([$this->__active])) { goto H3l9c; } goto i4ftr; KGYFQ: $VT4HT = $tMe4v[$Fa1h2->getIdName()]; goto YgCPH; Eongt: if ($tMe4v[$this->__confirmed_email] === "\60") { goto neDXp; } goto YCZB_; D0OUY: vroCv: goto BbwcZ; f3fHd: goto gDZgJ; goto r1Pi_; MgDh5: Factory::response()->send(["\141\143\x63\x65\x73\163\137\x74\x6f\153\x65\156" => $eoLer, "\x74\157\x6b\145\x6e\x5f\x74\171\160\145" => "\142\x65\141\x72\145\x72", "\145\x78\160\x69\x72\x65\163\x5f\151\x6e" => $this->config["\x61\x63\x63\x65\x73\x73\x5f\164\x6f\153\x65\156"]["\x65\170\x70\x69\162\141\x74\x69\157\156\x5f\164\151\x6d\x65"], "\162\x65\x66\162\x65\163\x68\137\164\x6f\153\x65\156" => $FhPvT, "\162\x6f\154\x65\163" => $USv7N, "\x75\151\144" => $VT4HT, "\x64\142\137\x61\x63\143\x65\x73\x73" => $eCjHS]); goto Y2guD; Y2guD: } catch (InvalidValidationException $aU1Pp) { Factory::response()->sendError("\x56\141\154\151\144\x61\164\x69\x6f\x6e\x20\x45\162\162\157\162", 400, json_decode($aU1Pp->getMessage())); } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage()); } goto KHvKO; MU9CU: $this->onLogin($wYHZM); goto jkZoz; KHvKO: } function impersonate() { goto xC2ek; XvKRd: $TUPSy = $jZwdm["\x41\x75\164\150\x6f\x72\151\172\141\x74\x69\x6f\x6e"] ?? $jZwdm["\x61\x75\x74\x68\157\162\x69\x7a\x61\x74\151\x6f\156"] ?? null; goto XoFqf; LVDDf: return; goto oPXvt; yzD9j: try { goto wim_F; OI6T1: $gILQw = Factory::acl(); goto itnbL; dXbui: $Fa1h2 = DB::table($this->users_table); goto ukQcn; r_irZ: Factory::response()->send($QQgt2); goto lAwOz; Fl0BC: if (!empty($kqmQk->uid)) { goto MG3Cg; } goto iL88b; X6IIT: $aTadb = $wYHZM["\x72\157\154\x65"] ?? null; goto v8H7H; itnbL: $Fa1h2 = DB::table($this->users_table); goto I4U0Y; NcKr1: $kqmQk = \Firebase\JWT\JWT::decode($FhPvT, $this->config["\162\145\146\162\x65\x73\150\x5f\x74\157\153\x65\x6e"]["\x73\145\x63\x72\145\164\x5f\153\145\x79"], [$this->config["\x72\x65\146\x72\145\163\150\137\x74\157\153\145\x6e"]["\x65\x6e\143\162\x79\160\x74\151\x6f\156"]]); goto WushG; BnFJO: mDJel: goto tra0V; sLvze: $rlHfW = $gILQw->getGuest(); goto vFSJW; m33ET: $USv7N = $Fa1h2->inSchema([$this->role_field]) ? $tMe4v[$this->role_field] : $this->fetchRoles($VT4HT); goto YEw2K; SU_2k: jwD5o: goto sLvze; EyipU: $USv7N = [$gILQw->getRoleName($Fa1h2->find($kqmQk->uid)->value($this->role_field))]; goto KdLj4; CEa4C: c8Hjb: goto bySYz; ukQcn: $tMe4v = $Fa1h2->assoc()->find($VT4HT)->first(); goto hVvTA; wim_F: list($FhPvT) = sscanf($TUPSy, "\x42\145\141\162\x65\162\x20\45\163"); goto NcKr1; SAUkC: mDdPx: goto Thomu; tra0V: if (empty($RcdPe)) { goto vOZJA; } goto RWVCX; H7rBi: $USv7N = [$rlHfW]; goto uYaEB; iL88b: Factory::response()->sendError("\165\x69\144\40\x69\x73\x20\156\145\x65\x64\x65\144", 400); goto Z8A4W; d0npn: $USv7N = [$aTadb]; goto FREgc; TjqnI: VmEDk: goto JmjT3; hVvTA: if ($tMe4v) { goto VmEDk; } goto QOfS8; JJsIL: $hvCP7 = $tMe4v[$this->__active]; goto AHGPg; q3pEI: Su93N: goto SWD6Y; Os0LQ: Factory::response()->sendError("\x55\x6e\141\165\164\150\157\162\151\x7a\145\x64\41", 401, "\111\x6d\160\145\x72\163\157\x6e\x61\164\145\40\162\145\161\x75\x69\162\x65\163\x20\x65\154\x65\x76\141\164\x65\144\x20\x70\162\151\x76\x69\x6c\145\147\x65\x73"); goto SU_2k; JmjT3: $hvCP7 = true; goto C6AEo; AHGPg: if ($hvCP7 === NULL) { goto Pwn8P; } goto RVgg8; oP365: goto Su93N; goto RZIAc; BrRYH: Factory::response()->sendError("\125\156\x61\x75\x74\150\x6f\x72\x69\x7a\145\x64\x21", 401); goto TmIB_; yvS2e: $FhPvT = $this->gen_jwt(["\x75\151\144" => $VT4HT, "\151\155\x70\x65\162\x73\157\156\141\164\x65\144\137\x62\x79" => $YkWY1], "\x72\x65\146\162\x65\163\150\x5f\164\157\153\x65\x6e"); goto MpPyd; BYAKD: $hvCP7 = null; goto R6a5r; bySYz: Factory::response()->sendError("\125\163\x65\x72\x20\141\x63\143\x6f\x75\x6e\x74\x20\164\157\40\142\145\x20\x69\155\160\145\x72\163\157\156\141\164\145\x64\x20\151\163\x20\144\x65\x61\143\164\151\x76\141\x74\145\x64", 500); goto q3pEI; RVgg8: if ((string) $hvCP7 === "\x30") { goto c8Hjb; } goto oP365; oF7E1: if (!(!$gILQw->hasSpecialPermission("\x69\155\x70\x65\x72\x73\157\156\141\164\145", $USv7N) && !(isset($kqmQk->impersonated_by) && !empty($kqmQk->impersonated_by)))) { goto jwD5o; } goto Os0LQ; c9uVd: $eCjHS = $this->getDbAccess($VT4HT); goto xi_Vv; Ov3Fl: Factory::response()->sendError("\x42\141\144\40\162\x65\161\165\145\x73\164", 400, "\x52\x6f\x6c\145\x20{$aTadb}\40\151\x73\x20\x6e\x6f\164\40\x76\x61\154\151\x64"); goto SAUkC; I4U0Y: if ($Fa1h2->inSchema([$this->role_field])) { goto rsXsL; } goto ySA2F; UJt0a: rsXsL: goto EyipU; DBXKr: $VT4HT = -1; goto H7rBi; R6a5r: k5Su0: goto BnFJO; TmIB_: b2ct2: goto Fl0BC; vFSJW: $RcdPe = $wYHZM["\165\x69\x64"] ?? null; goto X6IIT; QfaH0: goto Su93N; goto CEa4C; ySA2F: $USv7N = $this->fetchRoles($kqmQk->uid); goto zSOxO; UClYB: if ($aTadb == $rlHfW) { goto EInoA; } goto Zq1UQ; mUs0C: EInoA: goto DBXKr; Zq1UQ: if ($gILQw->roleExists($aTadb)) { goto mDdPx; } goto Ov3Fl; qwQhn: $hvCP7 = 1; goto Wtbg3; X0lnl: $this->onImpersonated($wYHZM, $VT4HT, $hvCP7, $USv7N, $t5YFE, $YkWY1); goto r_irZ; Thomu: $VT4HT = $kqmQk->uid; goto d0npn; MpPyd: $QQgt2 = ["\x61\143\x63\145\163\x73\137\164\x6f\153\145\156" => $eoLer, "\x72\x65\x66\162\145\x73\x68\137\164\157\153\145\156" => $FhPvT, "\x74\x6f\153\x65\x6e\137\x74\171\x70\145" => "\x62\x65\141\x72\x65\162", "\145\170\x70\151\x72\x65\163\x5f\x69\x6e" => $this->config["\x61\x63\143\145\x73\163\137\164\157\153\145\x6e"]["\x65\170\160\151\162\141\164\x69\157\156\x5f\x74\151\155\145"], "\x72\x6f\x6c\x65\163" => $USv7N, "\x75\x69\144" => $VT4HT, "\x64\142\137\141\x63\x63\145\163\163" => $eCjHS, "\151\155\x70\x65\x72\x73\157\156\x61\x74\x65\x64\x5f\x62\x79" => $YkWY1]; goto X0lnl; YEw2K: $t5YFE = $this->fetchPermissions($VT4HT); goto ZX0QB; uYaEB: $t5YFE = []; goto BYAKD; FREgc: $t5YFE = []; goto qwQhn; ZX0QB: vOZJA: goto zfe8S; RWVCX: $VT4HT = $RcdPe; goto dXbui; QOfS8: throw new Exception("\x55\163\x65\x72\40\x74\157\40\151\155\x70\145\162\163\x6f\x6e\x61\x74\145\40\x64\157\x65\163\40\x6e\x6f\164\40\145\x78\151\x73\x74"); goto TjqnI; SWD6Y: wk8zQ: goto m33ET; WushG: if (!empty($kqmQk)) { goto b2ct2; } goto BrRYH; RZIAc: Pwn8P: goto u6CkM; KdLj4: zgS4P: goto oF7E1; xi_Vv: $eoLer = $this->gen_jwt(["\165\x69\x64" => $VT4HT, "\x72\x6f\154\x65\163" => $USv7N, "\x70\145\162\x6d\x69\163\163\x69\x6f\x6e\x73" => $t5YFE, "\151\x6d\160\x65\162\x73\157\x6e\x61\x74\145\144\137\142\x79" => $YkWY1, "\x69\163\137\x61\143\x74\x69\x76\145" => $hvCP7, "\144\142\137\141\143\x63\145\163\163" => $eCjHS], "\141\143\143\x65\163\x73\137\x74\x6f\153\x65\156"); goto yvS2e; C6AEo: if (!$Fa1h2->inSchema([$this->__active])) { goto wk8zQ; } goto JJsIL; v8H7H: if (empty($aTadb)) { goto mDJel; } goto UClYB; Z8A4W: MG3Cg: goto OI6T1; zSOxO: goto zgS4P; goto UJt0a; u6CkM: Factory::response()->sendError("\x41\143\143\x6f\x75\x6e\x74\x20\164\157\x20\142\145\40\151\155\160\145\162\163\157\156\x61\164\145\x64\x20\x69\x73\x20\160\x65\156\144\151\x6e\147\x20\x66\x6f\x72\x20\x61\x63\164\x69\x76\141\x74\151\157\x6e", 500); goto QfaH0; Wtbg3: goto k5Su0; goto mUs0C; zfe8S: $YkWY1 = $kqmQk->impersonated_by ?? $kqmQk->uid; goto c9uVd; lAwOz: } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage(), 400); } goto WhBY1; nXZ_N: qtqM7: goto yzD9j; ZqauV: $jZwdm = $znBWs->headers(); goto XvKRd; XSTgq: Factory::response()->sendError("\101\x75\164\150\157\162\x69\x7a\x61\x74\x69\157\156\x20\x6e\x6f\x74\x20\146\x6f\165\156\x64", 400); goto nXZ_N; H3_ze: $znBWs = Factory::request(); goto ZqauV; zXi7Z: Factory::response()->sendError("\111\x6e\x63\157\162\162\x65\x63\164\x20\166\145\x72\142\x20\50" . $_SERVER["\122\x45\121\125\105\123\x54\137\115\x45\x54\110\x4f\104"] . "\x29\x2c\40\x65\170\x70\x65\x63\x74\151\x6e\147\x20\120\x4f\123\x54", 405); goto flXMV; cCODc: Factory::response()->sendError("\x42\141\x64\40\x72\x65\161\165\x65\163\x74", 400, "\x4e\157\164\150\151\x6e\147\x20\164\x6f\40\x69\x6d\160\x65\x72\x73\157\x6e\x61\x74\x65"); goto usQOO; xC2ek: if (in_array($_SERVER["\122\105\x51\x55\105\x53\124\137\115\105\x54\x48\117\104"], ["\120\x4f\x53\x54", "\x4f\120\x54\x49\x4f\x4e\123"])) { goto RcSN2; } goto zXi7Z; vKxcM: $wYHZM = Factory::request()->getBody(false); goto l3p1H; oPXvt: GMpZf: goto G6H0H; flXMV: RcSN2: goto vKxcM; l3p1H: if (!($wYHZM === null)) { goto GMpZf; } goto LVDDf; XoFqf: if (!empty($TUPSy)) { goto qtqM7; } goto XSTgq; usQOO: Ivt4s: goto H3_ze; G6H0H: if (!(!isset($wYHZM["\x75\x69\x64"]) && !isset($wYHZM["\162\x6f\154\145"]))) { goto Ivt4s; } goto cCODc; WhBY1: } function stop_impersonate() { goto t3dkL; aDIRQ: $USv7N = $this->fetchRoles($VT4HT); goto IjmTR; Ir168: Factory::response()->sendError("\101\165\164\150\157\162\x69\x7a\x61\x74\151\x6f\x6e\x20\x6e\157\x74\40\x66\x6f\165\x6e\x64", 400); goto uEwFb; vFcFO: $VT4HT = $kqmQk->impersonated_by; goto aDIRQ; DH8dw: try { goto bBybF; d03GB: Factory::response()->sendError("\125\x6e\141\165\164\x68\x6f\x72\x69\x7a\145\x64\x21", 401); goto Q0V5o; bLWkM: if (!empty($kqmQk->impersonated_by)) { goto rC14G; } goto rkSAR; RVP0u: if (!empty($kqmQk)) { goto UAJqc; } goto d03GB; Q0V5o: UAJqc: goto HQlYD; S8_sc: rC14G: goto SK592; xD9MM: RZ1fn: goto bLWkM; HQlYD: if (!empty($kqmQk->uid)) { goto RZ1fn; } goto ck93O; bBybF: list($FhPvT) = sscanf($TUPSy, "\x42\x65\141\162\145\162\x20\x25\163"); goto AVWya; ck93O: Factory::response()->sendError("\165\x69\x64\40\151\x73\40\156\145\145\144\x65\144", 400); goto xD9MM; rkSAR: Factory::response()->sendError("\125\x6e\x61\165\x74\x68\157\162\x69\x7a\x65\144\41", 401, "\x54\150\x65\x72\145\40\x69\x73\x20\x6e\157\x20\x61\x64\x6d\x69\156\x20\142\145\150\x69\156\x64\x20\164\150\x69\163"); goto S8_sc; AVWya: $kqmQk = \Firebase\JWT\JWT::decode($FhPvT, $this->config["\162\x65\146\x72\145\163\150\x5f\164\157\153\145\x6e"]["\x73\x65\x63\x72\145\164\137\x6b\x65\171"], [$this->config["\162\145\x66\x72\145\x73\x68\x5f\x74\x6f\153\x65\x6e"]["\145\x6e\x63\162\171\160\x74\151\157\x6e"]]); goto RVP0u; SK592: } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage(), 400); } goto vFcFO; IjmTR: $t5YFE = $this->fetchPermissions($VT4HT); goto O7ngS; zaOXa: $TUPSy = $jZwdm["\x41\x75\164\x68\x6f\x72\151\x7a\141\x74\151\157\x6e"] ?? $jZwdm["\141\165\x74\x68\x6f\x72\x69\172\x61\164\x69\157\x6e"] ?? null; goto MA5iM; W7nYe: Factory::response()->sendError("\x49\156\143\157\x72\x72\x65\x63\164\40\x76\x65\162\x62\x20\x28" . $_SERVER["\x52\x45\121\x55\x45\x53\x54\137\x4d\105\x54\110\117\104"] . "\x29\x2c\x20\x65\x78\x70\145\x63\x74\x69\x6e\x67\40\x50\117\123\x54", 405); goto KTnr2; xAbDM: $jZwdm = $znBWs->headers(); goto zaOXa; Q2Gn7: $znBWs = Factory::request(); goto xAbDM; MA5iM: if (!empty($TUPSy)) { goto VoE0R; } goto Ir168; t3dkL: if (in_array($_SERVER["\x52\105\x51\x55\x45\x53\124\137\x4d\x45\x54\110\117\x44"], ["\120\117\x53\x54", "\x4f\x50\x54\111\117\x4e\x53"])) { goto ZLb0z; } goto W7nYe; KTnr2: ZLb0z: goto Q2Gn7; O7ngS: try { goto rcGT0; rcGT0: $eCjHS = $this->getDbAccess($VT4HT); goto eyQPN; eyQPN: $eoLer = $this->gen_jwt(["\165\x69\144" => $VT4HT, "\x72\157\x6c\x65\x73" => $USv7N, "\160\x65\x72\x6d\x69\163\163\151\x6f\156\x73" => $t5YFE, "\x69\x73\x5f\x61\x63\x74\x69\x76\x65" => 1, "\x64\x62\x5f\141\143\x63\x65\x73\x73" => $eCjHS], "\141\143\143\145\163\x73\x5f\164\157\153\145\x6e"); goto Ya2VF; Ya2VF: $FhPvT = $this->gen_jwt(["\165\151\x64" => $VT4HT], "\x72\145\x66\x72\145\x73\150\137\164\157\153\145\156"); goto XMy03; XMy03: Factory::response()->send(["\x75\x69\144" => $VT4HT, "\141\x63\143\145\x73\163\137\164\x6f\153\145\156" => $eoLer, "\164\157\x6b\145\x6e\x5f\x74\x79\x70\x65" => "\142\145\x61\x72\145\x72", "\145\x78\x70\x69\162\x65\x73\x5f\151\x6e" => $this->config["\141\x63\143\x65\x73\x73\x5f\x74\x6f\x6b\x65\156"]["\x65\170\x70\x69\x72\x61\x74\151\157\x6e\x5f\x74\151\x6d\x65"], "\x72\x65\x66\x72\145\x73\150\x5f\x74\x6f\x6b\x65\x6e" => $FhPvT, "\x72\x6f\154\145\x73" => $USv7N, "\144\142\137\x61\x63\143\145\163\x73" => $eCjHS]); goto KhnkJ; KhnkJ: } catch (InvalidValidationException $aU1Pp) { Factory::response()->sendError("\x56\141\x6c\x69\144\x61\x74\151\157\x6e\x20\105\162\x72\x6f\162", 400, json_decode($aU1Pp->getMessage())); } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage()); } goto n3SVL; uEwFb: VoE0R: goto DH8dw; n3SVL: } function token() { goto uKDPA; c36t3: $znBWs = Factory::request(); goto Lj6oz; V__VH: $TUPSy = $jZwdm["\x41\x75\164\150\157\x72\151\172\x61\164\151\157\x6e"] ?? $jZwdm["\141\x75\x74\x68\x6f\x72\151\x7a\x61\164\151\x6f\156"] ?? null; goto Cx4Z_; IW70T: GoZ70: goto c36t3; Cx4Z_: if (!empty($TUPSy)) { goto CY1Pr; } goto Xep2X; Bx0Jd: try { goto nRAYe; nF3q4: wBdtO: goto mHN6X; noxuG: if (!(!isset($kqmQk->uid) || empty($kqmQk->uid))) { goto KVN52; } goto NJJ9U; Y21bW: $QQgt2["\151\x6d\160\145\x72\x73\x6f\156\x61\x74\145\144\x5f\x62\171"] = $YkWY1; goto nF3q4; NLseU: if (!empty($kqmQk)) { goto vD5yo; } goto IkElR; BZW8c: zhZYQ: goto l7q9B; XYBLN: if ($kqmQk->uid == -1) { goto PhIgE; } goto FnqHd; RubGU: $t5YFE = []; goto KZVJb; OOB4H: $USv7N = [$gILQw->getGuest()]; goto RubGU; RNgsc: $gILQw = Factory::acl(); goto wGX_6; RGM76: if (!($hvCP7 == 0 || (string) $hvCP7 === "\x30")) { goto EQAgh; } goto oV638; nRAYe: list($FhPvT) = sscanf($TUPSy, "\x42\145\x61\162\x65\162\x20\45\163"); goto XxmIp; XxmIp: $kqmQk = \Firebase\JWT\JWT::decode($FhPvT, $this->config["\162\x65\146\x72\x65\x73\x68\137\x74\157\x6b\x65\156"]["\163\145\143\x72\145\164\x5f\153\x65\171"], [$this->config["\x72\145\x66\162\x65\x73\150\x5f\164\x6f\x6b\145\x6e"]["\x65\x6e\143\x72\171\160\164\151\x6f\156"]]); goto NLseU; otCtP: $tMe4v = $Fa1h2->assoc()->where([$Fa1h2->getIdName() => $kqmQk->uid])->first(); goto sN99n; eDpeY: $hvCP7 = 1; goto eiL2Y; oV638: Factory::response()->sendError("\x55\156\x61\x75\164\150\x6f\162\151\172\x65\x64", 403, "\x44\x65\141\143\164\x69\x76\x61\x74\x65\x64\40\x61\x63\143\157\165\156\x74\40\x21"); goto sTXQp; ntP67: $gILQw = $gILQw ?? Factory::acl(); goto dwnOW; wGX_6: $hvCP7 = false; goto OOB4H; XaQzn: if (!(isset($kqmQk->impersonated_by) && $kqmQk->impersonated_by != null)) { goto wBdtO; } goto Y21bW; Tzksu: Factory::response()->sendError("\x54\157\153\145\156\40\145\170\160\x69\x72\x65\144\54\x20\x70\x6c\x65\x61\163\145\x20\x6c\x6f\x67\40\151\156", 401); goto BZW8c; WJL3u: $eCjHS = $this->getDbAccess($VT4HT); goto Ts8UK; MvLjY: $hvCP7 = $tMe4v[$this->__active]; goto RGM76; IkElR: Factory::response()->sendError("\x55\x6e\141\165\164\150\x6f\162\151\172\145\144\x21", 401); goto F5tF1; Tp6y_: KVN52: goto Y4hu9; l7q9B: $VT4HT = $kqmQk->uid; goto v01Nc; D00DP: goto hxom9; goto qyA4z; NJJ9U: Factory::response()->sendError("\x75\151\x64\x20\151\x73\40\156\145\145\144\x65\x64", 400); goto Tp6y_; FnqHd: $DF0U3 = true; goto D00DP; eiL2Y: if (!$Fa1h2->inSchema([$this->__active])) { goto zImzy; } goto MvLjY; Y4hu9: if (!($kqmQk->exp < time())) { goto zhZYQ; } goto Tzksu; EuenN: $QQgt2 = ["\x75\151\144" => $kqmQk->uid, "\141\x63\x63\145\163\x73\137\164\x6f\x6b\x65\156" => $eoLer, "\164\x6f\153\x65\156\137\164\x79\x70\145" => "\x62\145\141\162\145\162", "\x65\x78\160\x69\x72\x65\x73\x5f\151\x6e" => $this->config["\141\x63\143\x65\x73\163\x5f\164\157\x6b\x65\156"]["\x65\x78\x70\x69\162\141\x74\x69\x6f\156\137\164\x69\155\x65"], "\x72\x6f\154\145\163" => $USv7N, "\x64\x62\x5f\141\143\x63\x65\x73\x73" => $eCjHS]; goto XaQzn; HG5WN: Kg83l: goto eDpeY; BqVki: if (!(!$YkWY1 || $DF0U3)) { goto ufFxu; } goto qYMOe; Ji0B3: ufFxu: goto WJL3u; Ts8UK: $eoLer = $this->gen_jwt(["\165\x69\144" => $kqmQk->uid, "\x72\157\x6c\x65\x73" => $USv7N, "\160\145\162\155\x69\163\x73\151\157\156\163" => $t5YFE, "\151\x6d\x70\145\162\163\x6f\156\x61\x74\x65\144\x5f\x62\171" => $YkWY1, "\x69\163\x5f\x61\x63\164\151\166\x65" => $hvCP7, "\x64\142\x5f\141\143\x63\145\163\163" => $eCjHS], "\x61\143\x63\x65\163\163\137\x74\157\x6b\x65\156"); goto EuenN; sTXQp: EQAgh: goto FpgpM; F5tF1: vD5yo: goto noxuG; dwnOW: $USv7N = $Fa1h2->inSchema([$this->role_field]) ? $tMe4v[$this->role_field] : $this->fetchRoles($VT4HT); goto XPLHE; XPLHE: $t5YFE = $this->fetchPermissions($VT4HT); goto Ji0B3; v01Nc: $YkWY1 = $kqmQk->impersonated_by ?? null; goto ibjPR; qYMOe: $Fa1h2 = DB::table($this->users_table); goto otCtP; GhyBL: throw new \Exception("\x55\163\145\162\x20\x6e\157\164\40\146\x6f\165\156\x64"); goto HG5WN; FpgpM: zImzy: goto ntP67; KZVJb: hxom9: goto xaTow; mHN6X: Factory::response()->send($QQgt2); goto tVegC; RUtWD: if (!$YkWY1) { goto zMFvE; } goto XYBLN; qyA4z: PhIgE: goto RNgsc; xaTow: zMFvE: goto BqVki; ibjPR: $DF0U3 = null; goto RUtWD; sN99n: if ($tMe4v) { goto Kg83l; } goto GhyBL; tVegC: } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage(), 400); } goto xUFh6; Lj6oz: $jZwdm = $znBWs->headers(); goto V__VH; Xep2X: Factory::response()->sendError("\101\x75\164\150\x6f\162\x69\x7a\x61\x74\x69\157\x6e\40\x6e\157\x74\x20\x66\x6f\x75\156\x64", 400); goto EPTMw; EPTMw: CY1Pr: goto Bx0Jd; uKDPA: if (in_array($_SERVER["\x52\x45\x51\125\105\123\124\x5f\115\x45\124\x48\117\x44"], ["\120\x4f\x53\124", "\117\x50\124\x49\117\116\123"])) { goto GoZ70; } goto WW0ZG; WW0ZG: Factory::response()->sendError("\111\156\143\157\x72\162\x65\x63\164\40\x76\145\162\x62\x20\50" . $_SERVER["\122\105\x51\125\x45\123\x54\x5f\115\105\124\x48\x4f\104"] . "\51\54\40\145\170\160\145\x63\x74\151\x6e\147\x20\120\x4f\123\x54", 405); goto IW70T; xUFh6: } function register() { goto NRHjU; mPq_H: try { goto xCbat; a1LsN: if (!$bCPjA) { goto Fcmqw; } goto KJHqp; U0cpA: $QQgt2 = ["\165\151\x64" => $VT4HT, "\141\143\x63\x65\163\163\137\x74\157\x6b\x65\x6e" => $eoLer, "\x74\x6f\x6b\x65\156\x5f\164\171\160\145" => "\142\x65\x61\x72\x65\162", "\145\x78\160\x69\162\145\x73\x5f\x69\156" => $this->config["\141\143\143\145\x73\x73\137\164\157\x6b\x65\156"]["\x65\x78\x70\x69\162\141\x74\x69\x6f\156\137\164\151\155\145"], "\x72\145\146\x72\x65\x73\x68\137\164\x6f\x6b\x65\156" => $FhPvT, "\x72\157\154\145\x73" => $USv7N, "\144\x62\137\141\x63\x63\145\163\163" => $eCjHS]; goto m0GVv; DSRSf: if (is_array($wYHZM["\x72\x6f\x6c\x65\163"])) { goto mxwiU; } goto fPczh; cU7cb: Fcmqw: goto g8yKF; tnpy3: goto fKWO0; goto JKKy_; SiOoa: if (filter_var($wYHZM[$this->__email], FILTER_VALIDATE_EMAIL)) { goto GlWFQ; } goto tNEjI; xCbat: $wYHZM = Factory::request()->getBody(false); goto DcEga; iuxkZ: $FhPvT = $this->gen_jwt(["\165\151\144" => $VT4HT], "\162\145\146\x72\145\163\x68\137\x74\x6f\153\x65\156"); goto U0cpA; WWLm8: tKPNC: goto t7FW8; BRG3y: yJ9ny: goto FAL6_; VF6Co: fKWO0: goto y1bTI; WKJ1I: MpOGS: goto vAi1z; IVOuq: $this->addUserRoles($USv7N, $VT4HT); goto BRG3y; gzdtN: $VT4HT = $Fa1h2->setValidator(new Validator())->create($wYHZM); goto lqtkJ; KmI7I: throw new \Exception("\x45\162\x72\157\x72\x20\x6f\x6e\40\165\163\145\162\x20\143\x72\x65\x61\x74\151\157\156"); goto DMif5; cPUyz: AXeDN: goto A_n3R; izPN0: GlWFQ: goto G5j0K; O9NKO: unset($wYHZM["\x72\157\154\145\x73"]); goto U0B3r; YZQtA: goto TRAhJ; goto Z2xqZ; FQpaf: $bCPjA = $Fa1h2->inSchema([$this->__email]); goto a1LsN; HUP1S: $wYHZM[$this->__active] = $this->config["\x70\x72\x65\x5f\x61\143\x74\x69\166\141\x74\x65\144"] ?? false; goto GqJDH; vAi1z: if (!$Fa1h2->inSchema([$this->__active])) { goto e4uMr; } goto uYnGl; TgFDM: Factory::response()->sendError("\x42\141\144\x20\162\145\161\165\x65\163\x74", 400, "\x54\x68\145\162\x65\x20\x61\162\145\40\x6d\151\163\x73\151\156\147\40\x61\164\164\162\151\x62\x75\x74\x65\163\x20\x69\x6e\x20\171\x6f\x75\x72\40\x72\x65\x71\x75\145\163\x74\72\x20" . implode("\54", $LxpnI)); goto LeSr0; U0B3r: BS9YC: goto tnpy3; KJHqp: if (!empty($wYHZM[$this->__email])) { goto OKZTk; } goto u7oRI; FAL6_: $hvCP7 = $this->config["\x70\162\x65\137\141\143\x74\x69\x76\141\x74\x65\144"] ? true : null; goto l_rZ9; VFB2E: Factory::response()->sendError("\125\x73\x65\x72\x6e\x61\155\145\x20\x61\x6c\162\145\x61\144\x79\40\x65\170\x69\x73\164\163"); goto WKJ1I; HO3Vz: $cSfLP = false; goto qiqMj; y2W7o: kEceV: goto aqkfZ; sBVaF: TRAhJ: goto dVFG0; PewnY: $Fa1h2 = DB::table($this->users_table); goto HO3Vz; A7kQ4: Acl::setCurrentRoles($USv7N); goto u0uer; e2UWf: if (empty($wYHZM["\x72\157\154\145\x73"])) { goto BS9YC; } goto nK020; G5j0K: if (!DB::table($this->users_table)->where([$this->__email, $wYHZM[$this->__email]])->exists()) { goto ycs53; } goto joOw5; DcEga: if (!($wYHZM == null)) { goto kEceV; } goto vCiIa; m0GVv: Factory::response()->send($QQgt2); goto dAn0w; lqtkJ: if (!empty($VT4HT)) { goto mtTks; } goto KmI7I; y1bTI: $LxpnI = $Fa1h2->getMissing($wYHZM); goto IDsVL; Xjbww: OKZTk: goto SiOoa; uYnGl: $Fa1h2->fill([$this->__active]); goto HUP1S; qiqMj: if ($Fa1h2->inSchema([$this->role_field])) { goto mfauL; } goto Yl8JE; JKKy_: mfauL: goto f8tor; KCNvd: $USv7N = []; goto e2UWf; Z0G4K: $gILQw = acl(); goto yqNVT; A_n3R: dLx0i: goto O9NKO; u7oRI: throw new \Exception("\105\x6d\141\151\x6c\40\x69\x73\x20\x65\155\160\x74\x79"); goto Xjbww; IDsVL: if (empty($LxpnI)) { goto JJCXR; } goto TgFDM; fPczh: $wYHZM["\162\x6f\154\145\x73"] = [$wYHZM["\x72\157\x6c\145\163"]]; goto Br8SG; aqkfZ: $this->onRegister($wYHZM); goto PewnY; Br8SG: mxwiU: goto G0Njz; u0uer: $this->onRegistered($wYHZM, $VT4HT, $hvCP7, $USv7N); goto dezJ8; bUDEC: throw new \Exception("\122\157\154\145\x20{$wYHZM[$this->role_field]}\40\151\x73\x20\x6e\x6f\164\x20\141\165\164\x6f\x2d\x61\x70\160\x72\157\166\145\144"); goto WWLm8; DMif5: mtTks: goto x72Ho; f8tor: if (!empty($wYHZM[$this->role_field])) { goto OicYO; } goto X12ZC; l_rZ9: $eCjHS = $this->getDbAccess($VT4HT); goto A7kQ4; oaciJ: if (!(isset($this->config["\x61\165\164\157\x5f\141\160\x70\x72\157\166\x61\x6c\137\162\157\154\145\163"]) && !empty($this->config["\141\x75\x74\x6f\137\141\160\160\162\157\x76\x61\154\x5f\162\157\154\145\x73"]))) { goto HoXAY; } goto Z0G4K; x72Ho: if (!($cSfLP && !empty($USv7N))) { goto yJ9ny; } goto IVOuq; dezJ8: $eoLer = $this->gen_jwt(["\165\151\x64" => $VT4HT, "\x72\157\154\x65\x73" => $USv7N, "\160\x65\162\x6d\151\163\x73\x69\157\156\163" => [], "\x69\x73\x5f\141\143\164\151\166\x65" => $hvCP7, "\144\142\137\x61\x63\143\x65\163\163" => $eCjHS], "\x61\143\143\x65\x73\163\x5f\x74\x6f\x6b\x65\x6e"); goto iuxkZ; nK020: if (!(isset($this->config["\141\165\x74\x6f\x5f\141\160\160\x72\157\166\x61\x6c\137\x72\x6f\154\x65\x73"]) && !empty($this->config["\x61\x75\164\x6f\137\141\x70\x70\162\x6f\x76\x61\154\x5f\x72\x6f\x6c\145\x73"]))) { goto dLx0i; } goto DSRSf; g8yKF: if (!DB::table($this->users_table)->where([$this->__username, $wYHZM[$this->__username]])->exists()) { goto MpOGS; } goto VFB2E; G0Njz: foreach ($wYHZM["\162\157\154\145\x73"] as $FQLp_) { goto sD4Ix; FitRx: throw new \Exception("\x52\x6f\x6c\x65\x20{$FQLp_}\x20\151\x73\x20\x6e\157\x74\x20\141\x75\164\157\55\141\160\x70\x72\157\x76\145\x64"); goto qlmyn; sD4Ix: if (in_array($FQLp_, $this->config["\x61\x75\164\157\137\x61\160\x70\x72\157\x76\141\x6c\137\x72\157\154\145\163"])) { goto lYQGA; } goto FitRx; qlmyn: lYQGA: goto oFV4a; LHgTv: I1p43: goto on7W4; oFV4a: $USv7N[] = $FQLp_; goto LHgTv; on7W4: } goto cPUyz; LeSr0: JJCXR: goto FQpaf; t7FW8: HoXAY: goto sBVaF; tNEjI: throw new \Exception("\x49\x6e\x76\x61\154\x69\x64\x20\x65\155\141\x69\154"); goto izPN0; ga_yW: ycs53: goto cU7cb; joOw5: Factory::response()->sendError("\x45\155\141\151\154\x20\141\154\162\x65\x61\144\x79\40\x65\170\x69\163\164\163"); goto ga_yW; Z2xqZ: OicYO: goto oaciJ; X12ZC: Factory::response()->sendError("\162\x6f\154\40\x69\163\x20\x72\x65\161\x75\x69\162\145\144", 400); goto YZQtA; vCiIa: Factory::response()->sendError("\x42\141\144\40\x72\x65\161\x75\145\x73\x74", 400, "\x49\156\x76\x61\x6c\x69\144\40\x4a\x53\117\x4e"); goto y2W7o; Yl8JE: $cSfLP = true; goto KCNvd; dVFG0: $USv7N = [$wYHZM[$this->role_field]]; goto VF6Co; GqJDH: e4uMr: goto gzdtN; yqNVT: if (in_array($gILQw->getRoleName($wYHZM[$this->role_field]), $this->config["\141\165\x74\157\x5f\x61\160\160\162\x6f\x76\141\x6c\x5f\162\x6f\154\145\x73"])) { goto tKPNC; } goto bUDEC; dAn0w: } catch (InvalidValidationException $aU1Pp) { Factory::response()->sendError("\126\x61\x6c\151\144\141\164\151\x6f\x6e\x20\105\162\x72\x6f\162", 400, json_decode($aU1Pp->getMessage())); } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage()); } goto JqdSH; COLnA: Factory::response()->sendError("\x49\x6e\x63\157\162\162\145\143\x74\x20\x76\145\x72\142\x20\50" . $_SERVER["\x52\105\x51\x55\105\x53\x54\137\x4d\x45\124\x48\x4f\104"] . "\51\x2c\x20\145\170\160\x65\x63\164\x69\156\147\40\120\117\123\124", 405); goto nh_bq; NRHjU: if (in_array($_SERVER["\x52\x45\121\125\x45\x53\x54\x5f\x4d\105\x54\110\117\104"], ["\120\117\x53\124", "\117\x50\124\x49\117\116\123"])) { goto Sv1sm; } goto COLnA; nh_bq: Sv1sm: goto mPq_H; JqdSH: } private function jwtPayload() { goto zEoSC; ceHRG: try { goto Fg8Kr; mAZ3m: Factory::response()->sendError("\125\x6e\x61\x75\164\x68\x6f\162\151\172\145\144", 401, "\114\x61\143\x6b\x73\40\151\x73\x5f\141\x63\164\151\x76\x65\x20\163\x74\x61\164\165\163\x2e\x20\120\x6c\x65\x61\x73\x65\x20\x6c\x6f\147\40\151\156\x2e"); goto cgEDW; Fg8Kr: $kqmQk = \Firebase\JWT\JWT::decode($sK3Aw, $this->config["\x61\x63\x63\x65\163\x73\x5f\x74\x6f\153\x65\x6e"]["\163\145\143\162\145\164\x5f\x6b\145\x79"], [$this->config["\x61\x63\143\145\163\x73\137\x74\157\153\x65\156"]["\145\156\143\x72\171\x70\164\x69\x6f\x6e"]]); goto g_t43; KfTma: if (!(!isset($kqmQk->uid) || empty($kqmQk->uid))) { goto yUI0H; } goto gxRSK; gxRSK: Factory::response()->sendError("\125\x6e\x61\165\164\150\x6f\162\151\x7a\x65\144", 401, "\114\x61\143\153\x73\40\151\x64\40\151\x6e\x20\167\145\x62\40\x74\157\153\x65\x6e"); goto nTLnb; g_t43: $VqSck = config(); goto Cn59W; tU8QT: TLYTr: goto hUDWm; cgEDW: ks0tO: goto xHxjK; Nr60L: Factory::response()->sendError("\x45\x78\x70\x69\x72\x65\x64\x20\x74\x6f\153\145\x6e", 401); goto e3vup; x28N9: oa9Pm: goto r_p5A; qZUfp: uvQfk: goto ibBmL; e3vup: JiKFY: goto tUg_Q; Cn59W: if (!empty($kqmQk)) { goto B1bQO; } goto KxveJ; xHxjK: $hvCP7 = $kqmQk->is_active ?? $kqmQk->active; goto LFD3L; GnL5x: if (!(DB::table($this->users_table)->inSchema(["\151\x73\137\141\143\164\151\166\x65"]) && !isset($kqmQk->is_active) && $kqmQk->uid != -1)) { goto ks0tO; } goto mAZ3m; KxveJ: Factory::response()->sendError("\125\156\x61\165\164\x68\157\162\x69\172\145\x64\x21", 401); goto lZ0QX; Ply4a: OXdPO: goto WLykv; JiQvp: gWaA1: goto tU8QT; hUDWm: if (!(isset($VqSck["\x72\x65\x73\164\162\x69\x63\164\137\142\171\x5f\165\163\145\162\137\x61\x67\x65\x6e\x74"]) && $VqSck["\x72\x65\163\164\162\x69\143\x74\x5f\x62\x79\137\x75\163\x65\162\137\x61\x67\145\x6e\x74"])) { goto cXB3m; } goto UZaWF; tUg_Q: return json_decode(json_encode($kqmQk), true); goto iMMO1; LFD3L: if (!($hvCP7 === false)) { goto oa9Pm; } goto tzdGb; tzdGb: Factory::response()->sendError("\125\x6e\x61\x75\x74\150\157\x72\x69\172\145\144", 403, "\104\x65\141\x63\x74\151\x76\141\164\x65\x64\40\x61\143\x63\x6f\165\x6e\164"); goto x28N9; WLykv: if (!($kqmQk->user_agent != Request::user_agent())) { goto AeHWu; } goto zjOau; XGk8O: Factory::response()->sendError("\125\156\141\x75\164\150\x6f\x72\151\172\145\144", 401, "\114\x61\x63\153\x73\40\165\x73\145\x72\40\141\147\x65\156\x74\x20\151\156\x20\x77\145\142\40\164\157\153\145\156"); goto Ply4a; QfC_b: if (!(isset($VqSck["\162\x65\163\164\162\151\x63\x74\137\x62\171\137\x69\160"]) && $VqSck["\162\x65\x73\164\x72\151\x63\164\137\x62\x79\x5f\151\x70"])) { goto TLYTr; } goto CLATu; ibBmL: if (!($kqmQk->ip != Request::ip())) { goto gWaA1; } goto JoubJ; r_p5A: if (!($kqmQk->exp < time())) { goto JiKFY; } goto Nr60L; JoubJ: Factory::response()->sendError("\125\156\141\165\x74\150\x6f\x72\x69\172\145\144\x21", 401, "\x49\120\x20\143\x68\x61\x6e\x67\145"); goto JiQvp; zjOau: Factory::response()->sendError("\125\x6e\141\x75\164\150\157\162\x69\x7a\x65\144\41", 401, "\x59\157\165\x20\x63\141\x6e\x20\157\x6e\154\171\x20\165\x73\145\x20\157\x6e\x65\40\x64\x65\x76\x69\x63\145\x20\141\x74\x20\164\151\x6d\145"); goto NO2X9; S30vQ: Factory::response()->sendError("\125\156\141\165\164\150\157\x72\x69\x7a\x65\144", 401, "\x4c\x61\x63\x6b\x73\x20\x49\x50\40\x69\x6e\x20\167\145\x62\40\164\157\x6b\x65\x6e"); goto qZUfp; lZ0QX: B1bQO: goto QfC_b; UZaWF: if (!(!isset($kqmQk->user_agent) || empty($kqmQk->ip))) { goto OXdPO; } goto XGk8O; g_6SD: cXB3m: goto KfTma; CLATu: if (!(!isset($kqmQk->ip) || empty($kqmQk->ip))) { goto uvQfk; } goto S30vQ; nTLnb: yUI0H: goto GnL5x; NO2X9: AeHWu: goto g_6SD; iMMO1: } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage(), 401); } goto ATgib; ss3ic: goto A0Xxq; goto pZ4QD; jTh2o: if (!empty($TUPSy)) { goto fI343; } goto FxJSa; pZ4QD: Ni8d_: goto ceHRG; ATgib: A0Xxq: goto RwXdO; FxJSa: return; goto lVOVH; pk3Zo: if ($sK3Aw != null) { goto Ni8d_; } goto IdvX7; zEoSC: $TUPSy = Factory::request()->getAuth(); goto jTh2o; lVOVH: fI343: goto tQt8B; IdvX7: Factory::response()->sendError("\101\165\x74\x68\157\x72\x69\x7a\141\164\x69\x6f\x6e\x20\152\167\x74\40\164\157\153\x65\156\x20\156\157\x74\x20\x66\x6f\x75\156\144", 400); goto ss3ic; tQt8B: list($sK3Aw) = sscanf($TUPSy, "\x42\145\141\162\145\162\40\45\163"); goto pk3Zo; RwXdO: } function check() { goto sydPI; zt7Hw: Acl::setCurrentUid($vgQx6["\x75\x69\x64"]); goto bwasQ; z2LD_: JzJtJ: goto UbijU; UbijU: $hvCP7 = null; goto UjNc0; X3810: switch ($dSuaM) { case "\101\120\111\137\113\105\x59": goto dN0WP; UvLer: $hvCP7 = true; goto zp42P; zp42P: $t5YFE = $this->fetchPermissions($VT4HT); goto Q2pAs; RRPE6: $USv7N = [$gILQw->getRoleName($gr0L9)]; goto qOeMJ; y1ADs: $USv7N = $this->fetchRoles($VT4HT); goto XgCCr; XgCCr: goto yedbw; goto aafwD; aafwD: w6N9L: goto WMN1u; GZXCq: if (!($VT4HT == NULL)) { goto Ugl3t; } goto lFyrj; lFyrj: Factory::response()->sendError("\111\156\x76\141\x6c\151\144\x20\x41\x50\x49\x20\x4b\145\171", 401); goto nvRnw; Q2pAs: Acl::setCurrentRoles($vgQx6["\162\157\154\x65\163"]); goto CHiBt; t8F77: $gILQw = Factory::acl(); goto GJHup; CHiBt: $vgQx6 = ["\165\151\x64" => $VT4HT, "\x72\157\x6c\x65\163" => $USv7N, "\160\145\162\155\151\163\163\151\x6f\156\x73" => $t5YFE, "\151\163\x5f\141\x63\x74\151\x76\x65" => $hvCP7]; goto Si05Z; WMN1u: $gr0L9 = $Fa1h2->where([$Fa1h2->getIdName() => $VT4HT])->value($this->role_field); goto RRPE6; dN0WP: $dM_WJ = Factory::request()->getApiKey(); goto t8F77; nvRnw: Ugl3t: goto Ce1Gh; Si05Z: goto n1RbS; goto tXufC; Ce1Gh: $Fa1h2 = DB::table($this->users_table); goto QQyoz; qOeMJ: yedbw: goto UvLer; GJHup: $VT4HT = $this->getUserIdFromApiKey($dM_WJ); goto GZXCq; QQyoz: if ($Fa1h2->inSchema([$this->role_field])) { goto w6N9L; } goto y1ADs; tXufC: case "\112\x57\x54": goto AR1Hx; mcVSW: if (in_array($YoPcY, $eCjHS)) { goto nnsq8; } goto leLZM; vkH71: CKu1W: goto udlNi; OS7BY: vz5xm: goto u0rlh; h0YxY: if (DB::table($this->users_table)->inSchema([$this->role_field])) { goto nS6Ze; } goto vps1K; leLZM: if (acl()->hasSpecialPermission("\x72\145\141\x64\137\x61\154\x6c", $vgQx6["\162\x6f\x6c\x65\x73"])) { goto Gwj_h; } goto EGtjf; EGtjf: Factory::response()->sendError("\106\x6f\162\x62\x69\x64\144\x65\156", 403, "\116\157\40\x64\142\x20\141\x63\143\x65\163\x73"); goto IzhWJ; QRfOZ: $YoPcY = Factory::request()->getTenantId(); goto zxRTu; vps1K: if (!Factory::acl()->isRegistered()) { goto CTmo5; } goto EgX8j; t_b7q: CTmo5: goto lfzn3; lfzn3: goto CKu1W; goto ovCOL; EgX8j: if (!empty($vgQx6["\x72\157\154\x65\x73"])) { goto tcORW; } goto dxWZR; igEgA: R1idx: goto OS7BY; A05O_: $eCjHS = $vgQx6["\x64\x62\137\x61\143\x63\x65\x73\163"] ?? []; goto Z7t2a; voB0F: tcORW: goto t_b7q; Z7t2a: if (!config()["\x72\145\163\164\x72\x69\143\164\137\142\171\137\x74\145\156\x61\x6e\x74"]) { goto R1idx; } goto mcVSW; udlNi: Acl::setCurrentRoles($vgQx6["\162\x6f\x6c\x65\x73"]); goto QRfOZ; zxRTu: if (!($YoPcY !== null)) { goto vz5xm; } goto A05O_; AR1Hx: $vgQx6 = $this->jwtPayload(); goto h0YxY; MIyda: $vgQx6["\x72\157\x6c\x65\163"] = [Factory::acl()->getRoleName($vgQx6["\162\x6f\x6c\x65\x73"])]; goto vkH71; UMWEv: nnsq8: goto igEgA; dxWZR: $vgQx6["\x72\157\154\x65\x73"] = [Factory::acl()->getRegistered()]; goto voB0F; IzhWJ: Gwj_h: goto UMWEv; u0rlh: goto n1RbS; goto Enp9Y; ovCOL: nS6Ze: goto MIyda; Enp9Y: default: goto n2wtt; n2wtt: $t5YFE = []; goto N2r5K; S7w5r: Acl::setCurrentRoles($USv7N); goto eN5O0; N2r5K: $USv7N = [Factory::acl()->getGuest()]; goto S7w5r; eN5O0: $vgQx6 = ["\165\151\144" => null, "\x72\x6f\x6c\145\x73" => $USv7N, "\x70\x65\x72\155\x69\x73\x73\x69\157\x6e\163" => $t5YFE, "\151\163\137\x61\143\164\x69\166\145" => $hvCP7]; goto Yv4eA; Yv4eA: } goto eGiA9; eGiA9: Hexa0: goto F2Ukt; rkgjo: return $vgQx6; goto vD2ED; bwasQ: $this->onChecked($vgQx6["\x75\151\144"], $hvCP7, $USv7N, $t5YFE, $dSuaM); goto rkgjo; Eu1Pi: $dSuaM = Factory::request()->authMethod(); goto X3810; dtC2N: return $vgQx6; goto z2LD_; UjNc0: $t5YFE = []; goto JJ33u; JJ33u: $USv7N = []; goto Eu1Pi; F2Ukt: n1RbS: goto zt7Hw; sydPI: static $vgQx6; goto p0bCN; p0bCN: if (!($vgQx6 != null)) { goto JzJtJ; } goto dtC2N; vD2ED: } function confirm_email($sK3Aw, $V54k0) { goto O4Z0S; I1vC4: try { goto WCDrC; Rl2V2: if (!(!isset($kqmQk->email) || empty($kqmQk->email))) { goto Rj9ta; } goto bj5sn; VJNzy: Factory::response()->sendError("\x4e\x6f\x6e\40\x61\165\164\x68\157\162\151\172\145\x64", 403, "\x44\x65\x61\143\164\x69\166\141\164\x65\144\40\141\x63\x63\x6f\x75\156\x74\40\41"); goto emLgo; emLgo: bCArn: goto euTa6; EBNSt: $VT4HT = $ReDgq[0][$Fa1h2->getIdName()]; goto RhhKH; OIOBf: wujRW: goto gDHmN; bPbOZ: Factory::response()->sendError("\x45\155\141\x69\154\40\143\157\x6e\146\x69\162\x6d\x61\x74\151\157\x6e\x20\151\x73\40\x6e\157\x74\40\151\x6d\160\x6c\145\x6d\x65\156\x74\x65\144", 501); goto Eu4fe; LNCKV: Drndo: goto egj8H; gDHmN: $Fa1h2 = DB::table($this->users_table); goto RA1ah; gwNBe: $ReDgq = $Fa1h2->assoc()->select([$Fa1h2->getIdName()])->when($Fa1h2->inSchema([$this->__active]), function ($eMSwJ) { $eMSwJ->addSelect($this->__active); })->where([$this->__email, $kqmQk->email])->get(); goto XI6YD; XplNg: $u0w4X = "\x55\156\141\x75\164\150\157\162\x69\x7a\145\144\41"; goto SLUoC; VcDRE: if (!((string) $ReDgq[0][$this->__active] === "\60")) { goto bCArn; } goto VJNzy; euTa6: FF0zo: goto EBNSt; IINLh: if (!($kqmQk->exp < time())) { goto wujRW; } goto sPoec; NpRyS: if (!empty($kqmQk)) { goto lbqqf; } goto XplNg; LMqlR: Rj9ta: goto IINLh; Eu4fe: BsiGL: goto gwNBe; WCDrC: $kqmQk = \Firebase\JWT\JWT::decode($sK3Aw, $this->config["\145\x6d\x61\151\x6c\137\164\157\x6b\145\156"]["\163\145\x63\x72\x65\164\x5f\x6b\145\171"], [$this->config["\x65\x6d\x61\151\154\137\x74\x6f\153\145\156"]["\x65\156\x63\162\171\x70\x74\151\x6f\156"]]); goto NpRyS; RA1ah: if ($Fa1h2->inSchema([$this->__confirmed_email])) { goto BsiGL; } goto bPbOZ; egj8H: if (!$Fa1h2->inSchema([$this->__active])) { goto FF0zo; } goto VcDRE; RhhKH: $Smgoo = $Fa1h2->fill([$this->__confirmed_email])->update([$this->__confirmed_email => 1]); goto j2i83; sPoec: $u0w4X = "\124\157\153\x65\x6e\x20\x65\170\x70\x69\162\145\144"; goto OIOBf; h_P2L: Factory::response()->sendError("\116\x6f\x74\x20\x66\157\x75\x6e\x64", 404, "\x45\x6d\141\151\154\x20\x6e\157\164\x20\146\157\x75\156\144"); goto LNCKV; XI6YD: if (!(count($ReDgq) == 0)) { goto Drndo; } goto h_P2L; bj5sn: $u0w4X = "\x65\x6d\x61\x69\x6c\x20\151\163\40\156\x65\145\x64\145\x64"; goto LMqlR; SLUoC: lbqqf: goto Rl2V2; j2i83: } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage(), 401); } goto NiILX; OomTK: airp4: goto I1vC4; aUHhp: $eoLer = $this->gen_jwt(["\165\x69\x64" => $VT4HT, "\x72\x6f\x6c\x65\x73" => $USv7N, "\160\x65\162\x6d\151\x73\x73\151\x6f\156\163" => $t5YFE, "\151\x73\137\141\x63\164\151\x76\145" => 1, "\x64\142\137\141\143\143\x65\x73\x73" => $eCjHS], "\x61\143\143\145\x73\163\x5f\164\157\x6b\x65\156"); goto j5lBR; uoyJL: e9jec: goto azHlB; tdC74: Factory::response()->sendError("\111\x6e\143\x6f\162\x72\x65\143\164\40\x76\x65\x72\142\x20\50" . $_SERVER["\122\x45\x51\x55\x45\x53\x54\137\x4d\105\x54\x48\x4f\104"] . "\51\x2c\x20\145\170\x70\145\x63\164\151\x6e\x67\40\107\x45\x54", 405); goto uoyJL; i4Sg1: Factory::response()->send(["\x75\x69\144" => $VT4HT, "\141\x63\x63\145\x73\163\x5f\164\x6f\x6b\x65\x6e" => $eoLer, "\x74\157\x6b\145\x6e\137\x74\171\x70\145" => "\142\x65\141\x72\x65\162", "\145\170\x70\151\x72\145\x73\x5f\151\156" => $this->config["\x61\143\x63\145\x73\163\137\164\157\153\x65\156"]["\145\170\160\151\x72\141\x74\x69\157\156\x5f\x74\151\x6d\145"], "\162\x65\x66\162\145\163\x68\x5f\x74\x6f\x6b\145\156" => $FhPvT, "\x72\x6f\154\x65\x73" => $USv7N, "\x64\x62\137\141\x63\x63\145\163\163" => $eCjHS]); goto oZRZ5; oEuho: $eCjHS = $this->getDbAccess($VT4HT); goto gCsuE; idK53: Factory::response()->sendError("\101\165\164\150\157\x72\151\x7a\x61\x74\x69\x6f\156\40\152\167\164\40\164\157\x6b\145\156\40\156\x6f\x74\40\x66\157\165\x6e\x64", 400); goto fWOuO; HYTme: $t5YFE = $kqmQk->permissions ?? []; goto oEuho; j5lBR: $FhPvT = $this->gen_jwt(["\165\x69\x64" => $VT4HT], "\x72\145\146\162\x65\x73\150\x5f\x74\x6f\153\145\156"); goto FyDCb; O4Z0S: if (in_array($_SERVER["\x52\105\121\125\105\x53\124\x5f\115\x45\124\110\117\x44"], ["\x47\105\x54", "\117\x50\x54\x49\x4f\x4e\123"])) { goto e9jec; } goto tdC74; azHlB: if (!((int) $V54k0 < time())) { goto I6URN; } goto DFaE_; h9L71: I6URN: goto VKykn; DFaE_: Factory::response()->sendError("\x4c\151\156\153\40\151\x73\40\157\x75\x74\x64\141\164\145\x64", 400); goto h9L71; fWOuO: goto DB8ku; goto OomTK; FyDCb: $this->onConfirmedEmail($VT4HT, $USv7N, $t5YFE); goto i4Sg1; VKykn: if ($sK3Aw != null) { goto airp4; } goto idK53; NiILX: DB8ku: goto NqVfj; gCsuE: Acl::setCurrentRoles($USv7N); goto aUHhp; NqVfj: $USv7N = $kqmQk->roles ?? []; goto HYTme; oZRZ5: } function rememberme() { goto Faxzz; PtF_M: Factory::response()->sendError("\x45\155\160\x74\x79\x20\x65\x6d\141\x69\x6c", 400); goto CPU1O; nQOiG: if (!($ryBHy == null)) { goto sz0NB; } goto PtF_M; LH6wL: $ryBHy = $wYHZM["\145\x6d\141\x69\x6c"] ?? null; goto nQOiG; afgMK: dFnWD: goto LH6wL; hPWUQ: Factory::response()->sendOK(); goto x0cWj; DzeOS: if (!($wYHZM == null)) { goto dFnWD; } goto vshjC; CPU1O: sz0NB: goto i0ZU5; Faxzz: $wYHZM = Factory::request()->getBody(false); goto DzeOS; d801Y: $this->onRemembered($wYHZM, $TTnO1); goto hPWUQ; vshjC: Factory::response()->sendError("\111\x6e\166\x61\x6c\151\144\40\x4a\123\x4f\x4e", 400); goto afgMK; i0ZU5: try { goto H7WYa; eNhZr: if (!(count($ReDgq) === 0)) { goto KkzOO; } goto dKdRG; DSX20: $TTnO1 = $b2KCw . (!Strings::endsWith(DIRECTORY_SEPARATOR, $b2KCw) ? "\x2f" : '') . "\154\157\x67\x69\x6e\57\x63\x68\x61\156\x67\145\x5f\160\141\163\x73\x5f\142\x79\137\154\x69\156\153\57" . $xJcPU . "\57" . $V54k0; goto UFn2O; J_vQM: $this->onRemember($wYHZM); goto Fo61N; ee9aj: $ReDgq = $Fa1h2->where([$this->__email, $ryBHy])->get([$this->__id, $this->__active]); goto eNhZr; dKdRG: Factory::response()->sendError("\x50\x6c\x65\141\163\x65\40\143\x68\145\143\x6b\40\x79\x6f\165\x72\40\145\55\x6d\x61\151\x6c", 400); goto yXskv; cA67a: $b2KCw = http_protocol() . "\72\57\57" . $_SERVER["\x48\124\x54\120\x5f\x48\x4f\123\x54"] . ($this->config["\102\101\123\105\137\125\x52\114"] == "\57" ? "\57" : $this->config["\x42\101\x53\x45\x5f\125\122\x4c"]); goto ioxq8; ioxq8: $xJcPU = $this->gen_jwt_rememberme($VT4HT); goto DSX20; wmcS6: $V54k0 = time() + $this->config["\145\x6d\x61\x69\x6c\x5f\164\x6f\x6b\x65\x6e"]["\x65\x78\x70\151\x72\x65\x73\x5f\x69\x6e"]; goto cBzXK; cBzXK: $hvCP7 = $ReDgq[0][$this->__active]; goto mcVDv; DlG1p: Factory::response()->sendError("\x4e\157\156\40\x61\165\x74\x68\x6f\x72\151\172\x65\x64", 403, "\x44\x65\x61\x63\x74\151\x76\141\x74\x65\x64\x20\x61\143\x63\x6f\x75\x6e\164\40\x21"); goto PJUQw; Fo61N: $VT4HT = $ReDgq[0][$this->__id]; goto wmcS6; PJUQw: aIXcj: goto cA67a; yXskv: KkzOO: goto J_vQM; mcVDv: if (!((string) $hvCP7 === "\60")) { goto aIXcj; } goto DlG1p; H7WYa: $Fa1h2 = DB::table($this->users_table)->assoc(); goto ee9aj; UFn2O: } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage(), 500); } goto d801Y; x0cWj: } function change_pass_by_link($sK3Aw = NULL, $V54k0 = NULL) { goto Lf0Wt; KmecS: Yr1c5: goto fwMec; Lf0Wt: if (in_array($_SERVER["\x52\105\121\125\105\x53\124\x5f\115\x45\124\x48\x4f\104"], ["\x47\x45\124", "\x4f\x50\x54\x49\117\116\x53"])) { goto Yr1c5; } goto wfPm7; WMBNn: Factory::response()->sendError("\x41\165\x74\150\x6f\x72\151\172\x61\164\151\x6f\x6e\40\x6a\x77\164\x20\164\157\153\145\156\40\156\157\x74\40\x66\157\165\156\x64", 400); goto VEREL; yj_Id: c2Qbv: goto jQLKo; FBZ1o: try { goto vs1FL; JBSFy: $USv7N = [$gILQw->getRoleName($gr0L9)]; goto XW5xP; vs1FL: $kqmQk = \Firebase\JWT\JWT::decode($sK3Aw, $this->config["\145\155\141\151\154\x5f\164\157\153\145\156"]["\163\x65\143\162\145\164\137\x6b\x65\171"], [$this->config["\x65\x6d\141\151\154\x5f\x74\157\x6b\x65\x6e"]["\145\156\x63\162\171\160\164\151\x6f\156"]]); goto f89MU; dexpA: Factory::response()->send(["\x75\151\x64" => $VT4HT, "\x61\x63\143\145\163\163\x5f\x74\x6f\x6b\145\156" => $eoLer, "\x72\145\146\162\x65\x73\x68\x5f\164\x6f\x6b\x65\156" => $FhPvT, "\x74\x6f\x6b\145\156\x5f\x74\x79\x70\145" => "\142\145\x61\x72\145\162", "\x65\x78\x70\151\x72\x65\163\x5f\x69\x6e" => $this->config["\141\x63\143\145\x73\163\137\164\157\153\145\x6e"]["\x65\x78\x70\x69\162\141\164\151\x6f\156\x5f\x74\x69\x6d\145"], "\162\x6f\x6c\145\x73" => $USv7N, "\x70\x65\162\x6d\x69\163\x73\151\157\156\163" => $t5YFE, "\x64\x62\137\141\143\143\x65\163\163" => $eCjHS]); goto fq3Nv; g3ciu: Factory::response()->sendError("\165\x69\144\40\x69\163\x20\x6e\x65\x65\x64\145\x64", 400); goto WLUp6; OQ4Ou: BpdGS: goto RwmWd; MoEQ1: $gILQw = Factory::acl(); goto LhzFB; WLUp6: E1QwL: goto QrcBM; Y_hSx: Factory::response()->sendError("\x54\157\153\145\156\40\145\170\x70\x69\162\145\144\54\x20\160\154\x65\x61\163\145\40\x6c\x6f\147\x20\x69\156", 401); goto mhX1f; BSXo6: UqDJf: goto vCsqo; Ewkno: $USv7N = $this->fetchRoles($VT4HT); goto aWNiW; wthZk: Factory::response()->sendError("\116\x6f\156\x20\141\x75\164\150\x6f\x72\x69\172\x65\x64", 403, "\104\x65\x61\x63\164\151\166\x61\x74\x65\x64\40\141\143\143\x6f\x75\x6e\x74"); goto OQ4Ou; BclzG: $t5YFE = $this->fetchPermissions($VT4HT); goto wIbK2; jPOC_: if (!empty($kqmQk->uid)) { goto E1QwL; } goto g3ciu; vWnJL: if ($tMe4v) { goto UqDJf; } goto NffOM; fwFbS: Factory::response()->sendError("\x55\156\141\x75\x74\x68\157\162\151\x7a\x65\144\41", 401); goto vR80L; mhX1f: wrRPi: goto slKmi; XW5xP: SE0lL: goto BclzG; Cv_11: $gr0L9 = $Fa1h2->find($VT4HT)->value($this->role_field); goto JBSFy; OArpw: if (!($hvCP7 === false)) { goto BpdGS; } goto wthZk; algu7: Acl::setCurrentRoles($USv7N); goto dexpA; kUyI_: if ($Fa1h2->inSchema([$this->role_field])) { goto GJSU9; } goto Ewkno; f89MU: if (!empty($kqmQk)) { goto Fgvh1; } goto fwFbS; LhzFB: $Fa1h2 = DB::table($this->users_table); goto kUyI_; wIbK2: $tMe4v = $Fa1h2->assoc()->where([$Fa1h2->getIdName() => $VT4HT])->first(); goto vWnJL; slKmi: $eCjHS = $this->getDbAccess($VT4HT); goto KK21V; aWNiW: goto SE0lL; goto osUJG; BTHqM: $FhPvT = $this->gen_jwt(["\165\151\x64" => $VT4HT], "\x72\145\x66\x72\145\x73\150\x5f\164\157\153\x65\156"); goto algu7; h1GBN: if (!$Fa1h2->inSchema([$this->__active])) { goto C9kHj; } goto tlFe1; osUJG: GJSU9: goto Cv_11; tlFe1: $hvCP7 = $tMe4v[$this->__active]; goto OArpw; RwmWd: C9kHj: goto oKQZx; KK21V: $eoLer = $this->gen_jwt(["\165\x69\x64" => $VT4HT, "\162\157\x6c\x65\163" => $USv7N, "\160\145\x72\x6d\151\x73\x73\x69\x6f\x6e\163" => $t5YFE, "\151\x73\137\x61\143\x74\151\166\145" => $hvCP7, "\x64\x62\137\141\143\x63\x65\x73\x73" => $eCjHS], "\x61\143\143\145\x73\x73\x5f\x74\x6f\153\x65\156"); goto BTHqM; NffOM: throw new Exception("\125\x69\x64\40\156\157\164\x20\x66\x6f\x75\x6e\144"); goto BSXo6; oKQZx: if (!($kqmQk->exp < time())) { goto wrRPi; } goto Y_hSx; QrcBM: $VT4HT = $kqmQk->uid; goto MoEQ1; vCsqo: $hvCP7 = true; goto h1GBN; vR80L: Fgvh1: goto jPOC_; fq3Nv: } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage(), 401); } goto Q1z6D; Vwj4Y: if ((int) $V54k0 < time()) { goto jKlwn; } goto UxNl4; WJCf3: goto c2Qbv; goto wDEaR; wDEaR: jKlwn: goto K4Y1U; VEREL: goto B2tiY; goto bnIEx; K4Y1U: Factory::response()->sendError("\x4c\151\156\x6b\x20\x69\163\40\157\165\164\x64\141\x74\145\144", 401); goto yj_Id; wfPm7: Factory::response()->sendError("\x49\x6e\x63\157\x72\162\145\143\164\x20\166\x65\162\142\40\50" . $_SERVER["\122\105\121\x55\105\x53\x54\137\115\x45\124\110\117\104"] . "\51\x2c\x20\x65\170\160\145\143\164\x69\156\x67\40\107\x45\x54", 405); goto KmecS; fwMec: if (!($sK3Aw == null || $V54k0 == null)) { goto FjECc; } goto hY32i; bnIEx: Yl1JR: goto FBZ1o; UxNl4: if ($sK3Aw != null) { goto Yl1JR; } goto WMBNn; Q1z6D: B2tiY: goto WJCf3; hY32i: Factory::response()->sendError("\102\x61\144\x20\x72\x65\x71\165\145\163\x74", 400, "\x54\x77\157\x20\160\141\162\141\155\x74\145\162\163\40\141\162\145\40\145\170\x70\x65\143\164\x65\x64"); goto DGeXg; DGeXg: FjECc: goto Vwj4Y; jQLKo: } function change_pass_process() { goto s7pua; EZlPe: NMiJ9: goto FiWUa; ml3gG: d9vv6: goto MqS2X; s7pua: if (in_array($_SERVER["\122\x45\121\x55\x45\x53\124\137\x4d\x45\x54\x48\117\104"], ["\120\117\x53\124", "\117\x50\124\x49\117\x4e\123"])) { goto d9vv6; } goto xL2iR; odSi3: lXBxV: goto K4sbU; fstjF: $TUPSy = $jZwdm["\101\x75\x74\150\x6f\x72\x69\x7a\x61\164\151\x6f\x6e"] ?? $jZwdm["\141\x75\164\x68\157\162\x69\172\x61\164\x69\x6f\156"] ?? null; goto PwXNc; suBEm: if (!($wYHZM == null)) { goto jgohO; } goto Ta80M; Rv8VZ: if (!(!isset($wYHZM->password) || empty($wYHZM->password))) { goto NMiJ9; } goto h3CwN; IJ4dM: jgohO: goto Rv8VZ; K4sbU: try { goto AN7Wp; exYf7: G9mZp: goto mtSZC; wQJ_r: if (!($hvCP7 == 0 || (string) $hvCP7 === "\x30")) { goto U4Q1d; } goto s1MXF; Ux30I: Factory::response()->sendError("\116\x6f\156\x20\x61\165\x74\150\157\x72\151\172\x65\144", 403, "\120\154\x65\x61\x73\145\x20\x63\x6f\x6e\x66\151\x72\155\40\x79\x6f\x75\162\40\145\x2d\x6d\x61\151\154"); goto Xyivk; xDSIj: Factory::response()->sendError("\125\156\141\165\x74\x68\157\162\151\x7a\x65\144\41", 401); goto F1J1J; MtaGZ: if (!empty($kqmQk)) { goto RH8eB; } goto xDSIj; tNAOF: $Fa1h2 = DB::table($this->users_table); goto VB4b1; xeCTS: if (!($hvCP7 == null)) { goto diwsd; } goto SSFc5; mtSZC: $VT4HT = $kqmQk->uid; goto tNAOF; NobaF: Factory::response()->send(["\141\x63\143\145\x73\163\137\164\x6f\153\145\156" => $eoLer, "\164\x6f\x6b\145\x6e\x5f\x74\x79\160\145" => "\142\x65\x61\x72\x65\162", "\145\170\160\x69\x72\x65\x73\137\151\x6e" => $this->config["\x61\x63\143\145\163\x73\x5f\164\157\x6b\145\156"]["\145\170\x70\151\162\x61\x74\151\157\x6e\x5f\x74\x69\x6d\145"], "\x72\x65\x66\x72\145\163\x68\x5f\164\x6f\153\x65\x6e" => $FhPvT, "\162\x6f\154\x65\163" => $USv7N, "\165\151\x64" => $VT4HT, "\144\x62\137\x61\143\x63\x65\163\163" => $eCjHS]); goto hYYlD; lQ7B9: Acl::setCurrentRoles($USv7N); goto IjcAE; M1ZlI: $VT4HT = $kqmQk->uid; goto Exh8i; JF1Be: if (!empty($kqmQk->uid)) { goto KbbF0; } goto ezK_O; y3yeT: Factory::response()->sendError("\x55\156\145\170\160\x65\143\164\x65\x64\40\x65\162\162\x6f\x72\x20\x74\162\171\x69\156\147\40\x74\157\x20\165\x70\144\141\164\x65\x20\160\141\x73\163\x77\157\162\x64", 500); goto exYf7; s1MXF: Factory::response()->sendError("\x4e\x6f\x6e\x20\141\165\x74\150\x6f\x72\151\x7a\x65\144", 403, "\x44\x65\x61\x63\x74\151\x76\141\x74\145\x64\40\141\143\143\157\165\x6e\164\x20\41"); goto heH58; heH58: U4Q1d: goto nCuOi; HT1HH: $this->onChangedPassword($VT4HT, $USv7N, $t5YFE); goto NobaF; Zn2gF: if ($Smgoo) { goto G9mZp; } goto y3yeT; ZcUUk: $hvCP7 = 1; goto CXHTM; ezK_O: Factory::response()->sendError("\165\151\x64\40\x69\163\40\x72\145\x71\x75\x69\162\145\x64", 400); goto KrJFW; SSFc5: if ($tMe4v[$this->__confirmed_email] === "\x30") { goto L01Ag; } goto Zx_z9; Zx_z9: Factory::response()->sendError("\x4e\x6f\x6e\40\x61\165\164\x68\x6f\162\x69\x7a\145\x64", 403, "\101\143\x63\157\x75\156\164\40\x70\x65\156\144\x69\x6e\147\x20\146\x6f\162\40\141\x63\164\x69\166\141\164\x69\x6f\156"); goto D3qht; Y9eTc: $t5YFE = $this->fetchPermissions($VT4HT); goto XNAPW; AN7Wp: list($FhPvT) = sscanf($TUPSy, "\x42\145\141\162\145\x72\x20\45\163"); goto DB2km; F1J1J: RH8eB: goto JF1Be; zYFYQ: $FhPvT = $this->gen_jwt(["\165\x69\144" => $VT4HT], "\x72\145\146\x72\145\163\x68\x5f\x74\x6f\x6b\145\156"); goto HT1HH; efOmN: diwsd: goto wQJ_r; xY04q: $hvCP7 = $tMe4v[$this->__active]; goto xeCTS; Xyivk: qS6Ej: goto efOmN; XNAPW: $eCjHS = $this->getDbAccess($VT4HT); goto lQ7B9; QR9BM: L01Ag: goto Ux30I; TMJhO: $Smgoo = DB::table($this->users_table)->find($kqmQk->uid)->update([$this->__password => $wYHZM->password]); goto Zn2gF; nCuOi: oZc8E: goto M1ZlI; VB4b1: $tMe4v = $Fa1h2->find($VT4HT)->first(); goto ZcUUk; D3qht: goto qS6Ej; goto QR9BM; Exh8i: $USv7N = $this->fetchRoles($VT4HT); goto Y9eTc; DB2km: $kqmQk = \Firebase\JWT\JWT::decode($FhPvT, $this->config["\145\x6d\x61\x69\x6c\137\164\157\x6b\x65\x6e"]["\x73\x65\143\x72\x65\x74\x5f\x6b\x65\x79"], [$this->config["\162\x65\x66\x72\145\163\x68\137\x74\x6f\x6b\x65\156"]["\145\x6e\143\162\171\160\x74\x69\x6f\156"]]); goto MtaGZ; CXHTM: if (!$Fa1h2->inSchema([$this->__active])) { goto oZc8E; } goto xY04q; IjcAE: $eoLer = $this->gen_jwt(["\165\151\x64" => $VT4HT, "\162\x6f\154\145\x73" => $USv7N, "\x70\145\162\155\151\163\x73\x69\157\156\163" => $t5YFE, "\x69\x73\137\x61\x63\x74\151\x76\x65" => $hvCP7, "\144\x62\137\x61\x63\143\145\163\163" => $eCjHS], "\141\x63\x63\145\x73\163\137\164\157\x6b\x65\156"); goto zYFYQ; KrJFW: KbbF0: goto TMJhO; hYYlD: } catch (\Exception $aU1Pp) { Factory::response()->sendError($aU1Pp->getMessage(), 401); } goto rM8hy; PwXNc: if (!empty($TUPSy)) { goto lXBxV; } goto agE_o; agE_o: Factory::response()->sendError("\101\x75\x74\x68\x6f\x72\x69\x7a\141\164\151\x6f\156\40\156\x6f\x74\40\x66\157\165\x6e\144", 400); goto odSi3; KVNgr: $jZwdm = $znBWs->headers(); goto fstjF; MqS2X: $wYHZM = Factory::request()->getBody(); goto suBEm; xL2iR: Factory::response()->sendError("\x49\x6e\x63\157\x72\x72\x65\143\x74\x20\x76\x65\162\142\x20\50" . $_SERVER["\x52\x45\121\x55\x45\123\124\137\x4d\x45\124\x48\117\104"] . "\x29\x2c\40\145\170\x70\145\x63\164\x69\156\x67\40\x50\117\x53\124", 405); goto ml3gG; Ta80M: return; goto IJ4dM; FiWUa: $znBWs = Factory::request(); goto KVNgr; h3CwN: Factory::response()->sendError("\102\x61\144\x20\162\x65\161\165\145\163\164", 400, "\x4c\141\143\x6b\x73\x20\160\141\163\163\167\157\162\x64\40\151\156\40\162\x65\161\165\x65\x73\x74"); goto EZlPe; rM8hy: } protected function getUserIdFromApiKey($dM_WJ) { $VT4HT = DB::table("\x61\x70\x69\137\153\x65\x79\163")->where(["\x76\x61\x6c\x75\x65", $dM_WJ])->value("\165\x73\145\162\x5f\x69\x64"); return $VT4HT; } protected function fetchRoles($VT4HT) : array { goto g6qej; llwC3: z6a5R: goto I2_lO; jU0fS: $gILQw = Factory::acl(); goto tk8Dw; Khf2S: if (!(count($ReDgq) != 0)) { goto qrfhr; } goto CiObf; rRV8i: return $USv7N; goto PpKFN; tk8Dw: $USv7N = []; goto Khf2S; CiObf: foreach ($ReDgq as $tMe4v) { $USv7N[] = $gILQw->getRoleName($tMe4v["\162\x6f\x6c\x65"]); uY4E1: } goto llwC3; I2_lO: qrfhr: goto rRV8i; g6qej: $ReDgq = DB::table("\x75\x73\x65\162\x5f\162\x6f\x6c\x65\163")->assoc()->where(["\165\x73\x65\x72\137\x69\x64", $VT4HT])->select(["\x72\x6f\x6c\x65\137\x69\144\x20\141\163\40\162\157\154\x65"])->get(); goto jU0fS; PpKFN: } protected function fetchTbPermissions($VT4HT) : array { goto i2DHF; dkYpH: jfxFX: goto C0eQQ; C0eQQ: return $t5YFE; goto WuqJ4; i2DHF: $IVrVu = DB::table("\165\163\x65\162\137\164\142\137\x70\x65\162\155\151\163\163\x69\157\x6e\163")->assoc()->select(["\164\x62", "\x63\x61\x6e\x5f\154\151\163\164\x5f\x61\x6c\154\x20\141\x73\x20\154\141", "\143\x61\156\137\163\150\157\167\137\x61\154\154\40\x61\163\40\x72\x61", "\x63\141\156\137\x6c\x69\163\164\x20\x61\163\40\x6c", "\143\141\x6e\137\163\150\157\x77\40\141\163\x20\x72", "\x63\141\156\137\143\x72\145\141\164\x65\x20\x61\x73\40\143", "\x63\x61\x6e\137\165\160\144\x61\164\145\x20\141\x73\40\x75", "\143\x61\x6e\137\x64\x65\x6c\145\164\145\40\141\163\x20\x64"])->where(["\165\x73\145\162\137\x69\144" => $VT4HT])->get(); goto nhh3C; nhh3C: $t5YFE = []; goto dP9yj; dP9yj: foreach ((array) $IVrVu as $f70p0) { goto jTrU1; jTrU1: $UV7E3 = $f70p0["\x74\x62"]; goto vXUJt; vXUJt: $t5YFE[$UV7E3] = $f70p0["\154\141"] * 64 + $f70p0["\x72\141"] * 32 + $f70p0["\x6c"] * 16 + $f70p0["\162"] * 8 + $f70p0["\x63"] * 4 + $f70p0["\x75"] * 2 + $f70p0["\144"]; goto GdDOP; GdDOP: P0i4N: goto loZ0e; loZ0e: } goto dkYpH; WuqJ4: } protected function fetchSpPermissions($VT4HT) : array { $t5YFE = DB::table("\x75\x73\x65\162\x5f\163\160\137\x70\x65\x72\x6d\151\x73\163\151\157\156\163")->assoc()->where(["\165\163\145\162\137\151\x64" => $VT4HT])->join("\x73\x70\x5f\x70\145\x72\x6d\151\x73\x73\x69\x6f\156\x73", "\165\x73\x65\x72\x5f\163\x70\x5f\x70\145\x72\x6d\151\163\x73\151\157\x6e\163\x2e\163\160\x5f\160\145\162\x6d\x69\163\163\151\157\156\137\x69\144", "\75", "\163\x70\137\160\x65\x72\x6d\151\x73\x73\x69\x6f\156\163\x2e\151\x64")->pluck("\156\141\155\x65"); return $t5YFE ?? []; } protected function fetchPermissions($VT4HT) : array { return ["\164\x62" => $this->fetchTbPermissions($VT4HT), "\163\160" => $this->fetchSpPermissions($VT4HT)]; } protected function addUserRoles(array $USv7N, $VT4HT) { foreach ($USv7N as $OBHCJ) { goto pLMry; J7kl2: throw new \Exception("\x45\x72\x72\x6f\x72\x20\162\145\x67\151\x73\164\162\141\x74\151\156\x67\x20\165\163\x65\x72\x20\162\157\x6c\x65\x20{$OBHCJ}"); goto vH1zd; vH1zd: i4LBs: goto UQUod; nTegS: throw new \Exception("\x52\x6f\154\145\40{$OBHCJ}\40\x69\163\x20\x69\x6e\166\141\x6c\151\144"); goto pq5LQ; pYJt2: if (!($Vqc9s == null)) { goto w2aej; } goto nTegS; QxVPD: try { $edOaS = DB::table("\165\163\145\x72\x5f\162\157\154\145\163")->where(["\151\144" => $VT4HT])->create(["\x75\x73\145\162\137\151\x64" => $VT4HT, "\x72\157\154\145\137\x69\x64" => $Vqc9s]); } catch (\Exception $aU1Pp) { Files::logger($aU1Pp->getMessage()); } goto UKXkt; UQUod: irM89: goto UgqRf; pLMry: $Vqc9s = acl()->getRoleId($OBHCJ); goto pYJt2; UKXkt: if (!empty($edOaS)) { goto i4LBs; } goto J7kl2; pq5LQ: w2aej: goto QxVPD; UgqRf: } AGdm1: } function hasDbAccess($pKWmm, string $PsB6H) { return in_array($PsB6H, $this->getDbAccess($pKWmm)); } function onRegister(array $wYHZM) { } function onRegistered(array $wYHZM, $VT4HT, $hvCP7, $USv7N) { } function onRemember(array $wYHZM) { } function onRemembered(array $wYHZM, $b8AAr) { } function onLogin(array $wYHZM) { } function onLogged(array $wYHZM, $VT4HT, $hvCP7, $USv7N, $t5YFE) { } function onImpersonated(array $wYHZM, $VT4HT, $hvCP7, $USv7N, $t5YFE, $YkWY1) { } function onChecked($VT4HT, $hvCP7, $USv7N, $t5YFE, $dSuaM) { } function onConfirmedEmail($VT4HT, $USv7N, $t5YFE) { } function onChangedPassword($VT4HT, $USv7N, $t5YFE) { } function getDbAccess($VT4HT) : array { return []; } }
+
+namespace simplerest\core\api\v1;
+
+use Exception;
+use simplerest\core\controllers\Controller;
+use simplerest\core\Request;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
+use simplerest\core\Acl;
+use simplerest\core\libs\Validator;
+use simplerest\core\exceptions\InvalidValidationException;
+use simplerest\core\libs\Files;
+
+use simplerest\core\interfaces\IAuth;
+use simplerest\core\interfaces\IDbAccess;
+
+
+class AuthController extends Controller implements IAuth
+{
+    protected $role_field;
+    protected $__email;
+    protected $__username;
+    protected $__password;
+    protected $__confirmed_email;
+    protected $__active;
+
+    function __construct()
+    { 
+        header('Access-Control-Allow-Credentials: True');
+        header('Access-Control-Allow-Headers: Origin,Content-Type,X-Auth-Token,AccountKey,X-requested-with,Authorization,Accept, Client-Security-Token,Host,Date,Cookie,Cookie2'); 
+        header('Access-Control-Allow-Methods: POST,OPTIONS'); 
+        header('Access-Control-Allow-Origin: *');
+
+        parent::__construct();
+
+        $model = get_user_model_name();    
+           
+        $this->__email           = $model::$email;
+        $this->__username        = $model::$username;
+        $this->__password        = $model::$password;
+        $this->__confirmed_email = $model::$confirmed_email;
+        $this->__active          = $model::$is_active;
+
+        $this->__id = get_name_id($this->users_table);
+    }
+       
+    protected function gen_jwt(array $props, string $token_type, int $expires_in = null){
+        $time = time();
+
+        $payload = [
+            'alg' => $this->config[$token_type]['encryption'],
+            'typ' => 'JWT',
+            'iat' => $time, 
+            'exp' => $time + ($expires_in != null ? $expires_in : $this->config[$token_type]['expiration_time']),
+            'ip'  => Request::ip(),
+            'user_agent' => Request::user_agent()
+        ];
+        
+        $payload = array_merge($payload, $props);
+
+        return \Firebase\JWT\JWT::encode($payload, $this->config[$token_type]['secret_key'],  $this->config[$token_type]['encryption']);
+    }
+
+    protected function gen_jwt_email_conf(string $email, array $roles, array $perms, $uid){
+        $time = time();
+
+        $payload = [
+            'alg' => $this->config['email_token']['encryption'],
+            'typ' => 'JWT',
+            'iat' => $time, 
+            'exp' => $time + $this->config['email_token']['expires_in'],
+            'ip'  => Request::ip(),
+            'user_agent' => Request::user_agent(),
+            'email' => $email,
+            'roles' => $roles,
+            'permissions' => $perms,
+            'db_access' => $this->getDbAccess($uid)
+         ];
+
+        return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
+    }
+
+    protected function gen_jwt_rememberme($uid){
+        $time = time();
+
+        $payload = [
+            'alg' => $this->config['email_token']['encryption'],
+            'typ' => 'JWT',
+            'iat' => $time, 
+            'exp' => $time + $this->config['email_token']['expires_in'],
+            'ip'  => Request::ip(),
+            'user_agent' => Request::user_agent(),
+            'uid' => $uid,
+            'db_access' => $this->getDbAccess($uid)
+         ];
+
+        return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
+    }
+
+    function login()
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+
+        $data  = Factory::request()->getBody(false);
+
+        if ($data == null)
+            return;
+            
+        $email    = $data[$this->__email]    ?? null;
+        $username = $data[$this->__username] ?? null;  
+        $password = $data[$this->__password] ?? null;         
+        
+        if (empty($email) && empty($username) ){
+            Factory::response()->sendError('Email or username are required',400);
+        }else if (empty($password)){
+            Factory::response()->sendError('Password is required',400);
+        }
+
+        $this->onLogin($data);
+
+        try {              
+            $u = DB::table($this->users_table);
+
+            $row = $u->assoc()->unhide([$this->__password])
+            ->where([$this->__email => $email, $this->__username => $username ], 'OR')
+            ->setValidator((new Validator())->setRequired(false))  
+            ->first();
+
+            if (!$row)
+                Factory::response()->sendError('Incorrect username / email or password', 401);
+
+            $hash = $row[$this->__password];
+
+            if (!password_verify($password, $hash))
+                Factory::response()->sendError('Incorrect username / email or password', 401);
+
+            $is_active = 1;    
+            if ($u->inSchema([$this->__active])){
+                $is_active = $row[$this->__active]; 
+
+                if ($is_active == null) {
+
+                    if ($row[$this->__confirmed_email] === "0") {
+                        Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
+                    } else {
+                        Factory::response()->sendError('Non authorized', 403, 'Account pending for activation');
+                    }
+                }
+
+                if ($is_active == 0 || (string) $is_active === "0") {
+                    Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+                } 
+            }                
+
+            // Fetch roles && permissions
+
+            $uid       = $row[$u->getIdName()];            
+            $roles     = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid); 
+            $perms     = $this->fetchPermissions($uid);
+            $db_access = $this->getDbAccess($uid);
+       
+            Acl::setCurrentRoles($roles); //
+
+            $access  = $this->gen_jwt([ 'uid' => $uid, 
+                                        'roles' => $roles, 
+                                        'permissions' => $perms,
+                                        'is_active' => $is_active, 
+                                        'db_access' => $db_access
+            ], 'access_token');
+
+            // el refresh no debe llevar ni roles ni permisos por seguridad !
+            $refresh = $this->gen_jwt([ 'uid' => $uid
+            ], 'refresh_token');
+
+            $this->onLogged($data, $uid, $is_active, $roles, $perms);
+
+            Factory::response()->send([ 
+                                        'access_token'=> $access,
+                                        'token_type' => 'bearer', 
+                                        'expires_in' => $this->config['access_token']['expiration_time'],
+                                        'refresh_token' => $refresh,   
+                                        'roles' => $roles,
+                                        'uid' => $uid,
+                                        'db_access' => $db_access
+                                        ]);
+          
+        } catch (InvalidValidationException $e) { 
+            Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
+        } catch(\Exception $e){
+            Factory::response()->sendError($e->getMessage());
+        }	
+        
+    }
+
+
+    // Recibe un refresh_token y en el body un campo "impersonate" 
+    function impersonate()
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+
+        $data  = Factory::request()->getBody(false);
+
+        if ($data === null)
+            return;
+            
+        if (!isset($data['uid']) && !isset($data['role']))
+            Factory::response()->sendError('Bad request', 400, 'Nothing to impersonate');
+
+        $request = Factory::request();
+
+        $headers = $request->headers();
+        $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+        if (empty($auth)){
+            Factory::response()->sendError('Authorization not found',400);
+        }
+
+        try 
+        {                                      
+            list($refresh) = sscanf($auth, 'Bearer %s');
+
+            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+            
+            if (empty($payload))
+                Factory::response()->sendError('Unauthorized!',401);                     
+
+            if (empty($payload->uid)){
+                Factory::response()->sendError('uid is needed',400);
+            }
+
+            $acl   = Factory::acl();
+            $u     = DB::table($this->users_table);
+
+            if ($u->inSchema([$this->role_field])){
+                $roles = [ $acl->getRoleName($u->find($payload->uid)->value($this->role_field)) ];
+            } else {
+                $roles = $this->fetchRoles($payload->uid);
+            }
+
+            if (!$acl->hasSpecialPermission("impersonate", $roles) && !(isset($payload->impersonated_by) && !empty($payload->impersonated_by)) ){
+                Factory::response()->sendError('Unauthorized!',401, 'Impersonate requires elevated privileges');
+            }    
+
+            $guest_role = $acl->getGuest();
+
+            $impersonate_user = $data['uid'] ?? null;
+            $impersonate_role = $data['role'] ?? null;
+            
+            if (!empty($impersonate_role)){
+                if ($impersonate_role == $guest_role){
+                    $uid = -1;
+                    $roles = [$guest_role];
+                    $perms = [];
+                    $is_active = null;
+                } else {
+
+                    if (!$acl->roleExists($impersonate_role)){
+                        Factory::response()->sendError("Bad request", 400, "Role $impersonate_role is not valid");
+                    }
+
+                    $uid = $payload->uid; // sigo siendo yo (el admin)
+                    $roles = [$impersonate_role]; 
+                    $perms = []; // permisos inalterados (rol puro)
+                    $is_active = 1; // asumo está activo
+                }    
+            }
+
+
+            if (!empty($impersonate_user)){ 
+                $uid = $impersonate_user;
+
+                $u = DB::table($this->users_table);
+
+                $row = $u->assoc()
+                ->find($uid) 
+                ->first();
+
+                if (!$row)
+                    throw new Exception("User to impersonate does not exist");
+
+                $is_active = true;    
+                if ($u->inSchema([$this->__active])){
+                    $is_active = $row[$this->__active];
+
+                    if ($is_active === NULL) {
+                        Factory::response()->sendError('Account to be impersonated is pending for activation', 500);
+                    } elseif (((string) $is_active === "0")) {
+                        Factory::response()->sendError('User account to be impersonated is deactivated', 500);
+                    }  
+                }
+                
+                $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid);
+                $perms = $this->fetchPermissions($uid);
+            }    
+
+            $impersonated_by = $payload->impersonated_by ?? $payload->uid;
+
+            $db_access = $this->getDbAccess($uid);
+
+            $access  = $this->gen_jwt([ 'uid' => $uid, 
+                                        'roles' => $roles, 
+                                        'permissions' => $perms,
+                                        'impersonated_by' => $impersonated_by,
+                                        'is_active' => $is_active,
+                                        'db_access' => $db_access
+            ], 'access_token');
+
+            $refresh  = $this->gen_jwt(['uid' => $uid, 
+                                        'impersonated_by' => $impersonated_by
+            ], 'refresh_token');
+
+            $res = [ 
+                'access_token'=> $access,
+                'refresh_token' => $refresh,
+                'token_type' => 'bearer', 
+                'expires_in' => $this->config['access_token']['expiration_time'],
+                'roles' => $roles,
+                'uid' => $uid,
+                'db_access' => $db_access,
+                'impersonated_by' => $impersonated_by
+            ];
+
+            $this->onImpersonated($data, $uid, $is_active, $roles, $perms, $impersonated_by);
+    
+            Factory::response()->send($res);      
+
+        } catch (\Exception $e) {
+            Factory::response()->sendError($e->getMessage(), 400);
+        }	
+                                                    
+    }
+
+    // a diferencia de token() si bien renueva el access_token no lo hace a partir de ....
+    function stop_impersonate() 
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+
+        $request = Factory::request();
+
+        $headers = $request->headers();
+        $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+        if (empty($auth)){
+            Factory::response()->sendError('Authorization not found',400);
+        }
+
+        try {                                      
+            list($refresh) = sscanf($auth, 'Bearer %s');
+
+            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+            
+            if (empty($payload))
+                Factory::response()->sendError('Unauthorized!',401);                     
+
+            if (empty($payload->uid)){
+                Factory::response()->sendError('uid is needed',400);
+            }
+
+            if (empty($payload->impersonated_by)){
+                Factory::response()->sendError('Unauthorized!', 401, 'There is no admin behind this');
+            }
+            
+        } catch (\Exception $e) {
+            Factory::response()->sendError($e->getMessage(), 400);
+        }	
+
+        $uid   = $payload->impersonated_by;        
+        $roles = $this->fetchRoles($uid);
+        $perms = $this->fetchPermissions($uid);
+
+        //////
+        
+        try {              
+            $db_access = $this->getDbAccess($uid);
+            
+            $access  = $this->gen_jwt([ 'uid' => $uid, 
+                                        'roles' => $roles, 
+                                        'permissions' => $perms,
+                                        'is_active' => 1,
+                                        'db_access' => $db_access
+            ], 'access_token');
+
+            $refresh = $this->gen_jwt([ 'uid' => $uid,
+            ], 'refresh_token');
+
+            Factory::response()->send([ 
+                                        'uid' => $uid,           
+                                        'access_token'=> $access,
+                                        'token_type' => 'bearer', 
+                                        'expires_in' => $this->config['access_token']['expiration_time'],
+                                        'refresh_token' => $refresh,   
+                                        'roles' => $roles,
+                                        'db_access' => $db_access
+                                    ]);
+          
+        } catch (InvalidValidationException $e) { 
+            Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
+        } catch(\Exception $e){
+            Factory::response()->sendError($e->getMessage());
+        }	
+    }
+
+    /*
+        Access Token renewal
+    */	
+    function token()
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+
+        $request = Factory::request();
+
+        $headers = $request->headers();
+        $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+        if (empty($auth)){
+            Factory::response()->sendError('Authorization not found',400);
+        }
+
+        try {                                      
+            // refresh token
+            list($refresh) = sscanf($auth, 'Bearer %s');
+
+            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+
+            if (empty($payload))
+                Factory::response()->sendError('Unauthorized!',401);                     
+
+            if (!isset($payload->uid) || empty($payload->uid)){
+                Factory::response()->sendError('uid is needed',400);
+            }
+
+            if ($payload->exp < time())
+                Factory::response()->sendError('Token expired, please log in',401);
+
+
+            $uid = $payload->uid;
+            $impersonated_by = $payload->impersonated_by ?? null;
+            $impersonated_by_role = null;
+
+            if ($impersonated_by) {
+                // guest
+                if ($payload->uid == -1) 
+                {
+                    $acl   = Factory::acl();
+
+                    $is_active = false;
+                    $roles = [$acl->getGuest()];
+                    $perms = [];
+                } else {
+                    $impersonated_by_role = true;
+                }
+            }     
+
+            if (!$impersonated_by || $impersonated_by_role) 
+            {
+                $u = DB::table($this->users_table);
+
+                $row = $u->assoc()
+                ->where([$u->getIdName() => $payload->uid])->first();
+
+                if (!$row)
+                    throw new \Exception("User not found");
+
+                $is_active = 1;    
+                if ($u->inSchema([$this->__active])){
+                    $is_active = $row[$this->__active]; 
+
+                    if ($is_active == 0 || (string) $is_active === "0") {
+                        Factory::response()
+                        ->sendError('Unauthorized', 403, 'Deactivated account !');
+                    }
+                }
+
+                $acl   = $acl ?? Factory::acl();
+                $roles = $u->inSchema([$this->role_field]) ? $row[$this->role_field] : $this->fetchRoles($uid); 
+                $perms = $this->fetchPermissions($uid);
+            }            
+
+            $db_access = $this->getDbAccess($uid);
+          
+            $access  = $this->gen_jwt([ 'uid' => $payload->uid,
+                                        'roles' => $roles, 
+                                        'permissions' => $perms, 
+                                        'impersonated_by' => $impersonated_by,
+                                        'is_active' => $is_active,
+                                        'db_access' => $db_access
+                                    ], 
+            'access_token');
+
+            $res = [ 
+                'uid' => $payload->uid,
+                'access_token'=> $access,
+                'token_type' => 'bearer', 
+                'expires_in' => $this->config['access_token']['expiration_time'],
+                'roles' => $roles,
+                'db_access' => $db_access
+            ];
+
+            if (isset($payload->impersonated_by) && $payload->impersonated_by != null){
+                $res['impersonated_by'] = $impersonated_by;
+            }
+
+            Factory::response()->send($res);
+            
+        } catch (\Exception $e) {
+            Factory::response()->sendError($e->getMessage(), 400);
+        }	
+    }
+
+    /*
+        Minimizar la cantidad de instancias de UsersModel !!!!!!!!!
+    */
+    function register()
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+
+        //DB::beginTransaction();
+
+        try {
+            $data  = Factory::request()->getBody(false);
+
+            if ($data == null)
+                Factory::response()->sendError('Bad request',400, 'Invalid JSON');
+ 
+            // Hook
+            $this->onRegister($data);        
+            
+            $u = DB::table($this->users_table);
+
+            $many_to_many = false;
+
+            // un campo 'rol' o similar
+            if ($u->inSchema([$this->role_field])){
+                if (!empty($data[$this->role_field])) {
+                    if (isset($this->config['auto_approval_roles']) && !empty($this->config['auto_approval_roles'])) {
+                    
+                        $acl = acl();
+                        if (!in_array($acl->getRoleName($data[$this->role_field]), $this->config['auto_approval_roles'])) {
+                            throw new \Exception("Role {$data[$this->role_field]} is not auto-approved");
+                        }
+
+                    }    
+                } else {
+                    // chequear si es requerido antes
+                    Factory::response()->sendError("rol is required", 400);
+                }  
+
+                $roles = [ $data[$this->role_field] ];   
+            } else {
+                // una tabla 'roles' en relación muchos a muchos (debería asegurarme)
+                $many_to_many = true; // debería ser pre-condición
+
+                $roles = [];    
+                if (!empty($data['roles'])) {
+                    if (isset($this->config['auto_approval_roles']) && !empty($this->config['auto_approval_roles'])) {
+    
+                        if (!is_array($data['roles'])){
+                            $data['roles'] = [ $data['roles'] ];
+                        }
+
+                        foreach ($data['roles'] as $r){
+                            if (!in_array($r, $this->config['auto_approval_roles'])) {
+                                throw new \Exception("Role $r is not auto-approved");
+                            }
+    
+                            $roles[] = $r;
+                        }                    
+                    }    
+                
+                    unset($data['roles']);
+                }        
+            }
+
+            $missing = $u->getMissing($data);
+            if (!empty($missing))
+                Factory::response()->sendError('Bad request', 400, 'There are missing attributes in your request: '.implode(',',$missing));
+
+            $email_in_schema = $u->inSchema([$this->__email]);
+
+            if ($email_in_schema)
+            {
+                // se hace en el modelo pero es más rápido hacer chequeos acá
+
+                if (empty($data[$this->__email]))
+                    throw new \Exception("Email is empty");
+                    
+                if (!filter_var($data[$this->__email], FILTER_VALIDATE_EMAIL))
+                    throw new \Exception("Invalid email");  
+
+                if (DB::table($this->users_table)->where([$this->__email, $data[$this->__email]])->exists())
+                    Factory::response()->sendError('Email already exists');    
+            }            
+
+            if (DB::table($this->users_table)->where([$this->__username , $data[$this->__username]])->exists())
+                Factory::response()->sendError('Username already exists');
+
+            if ($u->inSchema([$this->__active])){  
+                $u->fill([$this->__active]);      
+                $data[$this->__active] = $this->config['pre_activated'] ?? false;
+            }
+
+            /*
+                Creo "usuario"
+            */
+
+            $uid = $u
+            ->setValidator(new Validator())
+            ->create($data);
+
+            if (empty($uid))
+                throw new \Exception('Error on user creation');
+            
+            if ($many_to_many && !empty($roles))
+            {
+                $this->addUserRoles($roles, $uid);
+            }     
+            
+            $is_active = $this->config['pre_activated'] ? true : null;
+            $db_access = $this->getDbAccess($uid);
+
+            Acl::setCurrentRoles($roles); //
+
+            // Hook
+            $this->onRegistered($data, $uid, $is_active, $roles);
+                
+            $access  = $this->gen_jwt([
+                                        'uid' => $uid, 
+                                        'roles' => $roles,
+                                        'permissions' => [],
+                                        'is_active' => $is_active,
+                                        'db_access' => $db_access
+            ], 'access_token');
+
+            $refresh = $this->gen_jwt([
+                                        'uid' => $uid
+            ], 'refresh_token');
+
+            $res = [ 
+                'uid' => $uid,
+                'access_token'=> $access,
+                'token_type' => 'bearer', 
+                'expires_in' => $this->config['access_token']['expiration_time'],
+                'refresh_token' => $refresh,
+                'roles' => $roles,
+                'db_access' => $db_access
+            ];    
+
+            //DB::commit();    
+            Factory::response()->send($res);
+
+        } catch (InvalidValidationException $e) { 
+            //DB::rollback();           
+            Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
+        }catch(\Exception $e){
+            //DB::rollback();
+            Factory::response()->sendError($e->getMessage());
+        }	
+            
+    }
+
+    private function jwtPayload(){
+        $auth = Factory::request()->getAuth();
+
+        if (empty($auth))
+            return;
+            
+        list($jwt) = sscanf($auth, 'Bearer %s');
+
+        if($jwt != null)
+        {
+            try{
+                $payload = \Firebase\JWT\JWT::decode($jwt, $this->config['access_token']['secret_key'], [ $this->config['access_token']['encryption'] ]);
+                
+                $config = config();
+                
+                if (empty($payload))
+                    Factory::response()->sendError('Unauthorized!',401);             
+
+                if (isset($config['restrict_by_ip']) && $config['restrict_by_ip']){
+                    if (!isset($payload->ip) || empty($payload->ip))
+                        Factory::response()->sendError('Unauthorized',401,'Lacks IP in web token');
+
+                    if ($payload->ip != Request::ip())
+                        Factory::response()->sendError('Unauthorized!',401, 'IP change');
+                }        
+
+                if (isset($config['restrict_by_user_agent']) && $config['restrict_by_user_agent']){
+                    if (!isset($payload->user_agent) || empty($payload->ip))
+                        Factory::response()->sendError('Unauthorized',401,'Lacks user agent in web token');
+
+                    if ($payload->user_agent != Request::user_agent())
+                        Factory::response()->sendError('Unauthorized!',401, 'You can only use one device at time'); 
+                }    
+
+                if (!isset($payload->uid) || empty($payload->uid))
+                    Factory::response()->sendError('Unauthorized',401,'Lacks id in web token');  
+
+                // Lacks is_active status
+                if (DB::table($this->users_table)->inSchema(['is_active']) && !isset($payload->is_active) && $payload->uid != -1){
+                    Factory::response()->sendError('Unauthorized', 401, 'Lacks is_active status. Please log in.');
+                }    
+
+                // temporal:  active => is_active
+                $is_active = $payload->is_active ?? $payload->active;
+
+                if ($is_active === false) {
+                    Factory::response()->sendError('Unauthorized', 403, 'Deactivated account');
+                } 
+                                                  
+                if ($payload->exp < time())
+                    Factory::response()->sendError('Expired token',401);
+
+                //print_r($payload->roles);
+                //fexit; 
+
+                return json_decode(json_encode($payload),true);
+
+            } catch (\Exception $e) {
+                /*
+                * the token was not able to be decoded.
+                * this is likely because the signature was not able to be verified (tampered token)
+                *
+                * reach this point if token is empty or invalid
+                */
+                Factory::response()->sendError($e->getMessage(),401);
+            }	
+        }else{
+            Factory::response()->sendError('Authorization jwt token not found',400);
+        }
+
+    }
+
+    /* 
+    Authorization checkin
+    
+        @return mixed array | null
+    */
+    function check() {
+        static $ret;
+
+        if ($ret != null)
+            return $ret;
+
+        $is_active = null;
+        $perms  = [];
+        $roles  = [];
+
+        $auth_method = Factory::request()->authMethod();    
+
+        switch ($auth_method){
+            case 'API_KEY': 
+                $api_key = Factory::request()->getApiKey();
+
+                $acl = Factory::acl();
+                $uid = $this->getUserIdFromApiKey($api_key);
+
+                if ($uid == NULL){
+                    Factory::response()->sendError('Invalid API Key', 401);
+                }
+
+                $u = DB::table($this->users_table);
+
+                if ($u->inSchema([$this->role_field])){
+                    $rid   = $u->where([$u->getIdName() => $uid])->value($this->role_field);
+                    $roles = [ $acl->getRoleName($rid) ]; 
+                } else {
+                    $roles = $this->fetchRoles($uid);
+                }
+
+                $is_active = true;
+                $perms  = $this->fetchPermissions($uid);
+                
+                Acl::setCurrentRoles($ret['roles']); //
+
+                $ret = [
+                    'uid'           => $uid,
+                    'roles'         => $roles,
+                    'permissions'   => $perms,
+                    'is_active'     => $is_active 
+                ];
+            break;
+            case 'JWT':
+                $ret = $this->jwtPayload();
+
+                if (DB::table($this->users_table)->inSchema([$this->role_field])){
+                    $ret['roles'] = [ Factory::acl()->getRoleName($ret['roles']) ]; 
+                } else {
+                    if (Factory::acl()->isRegistered()){
+                        // sino preguntara sobre-escribiría roles
+                        if (empty($ret['roles'])){
+                            $ret['roles'] = [ Factory::acl()->getRegistered()];
+                        }                        
+                    }
+                } 
+
+                Acl::setCurrentRoles($ret['roles']); //
+
+                $tenantid = Factory::request()->getTenantId();
+
+                if ($tenantid !== null){
+                    $db_access = $ret['db_access'] ?? [];   
+                   
+                    if (config()['restrict_by_tenant']){
+                        if (!in_array($tenantid, $db_access)){
+                            //dd($ret['roles']);
+                            //dd(acl()->getRolePermissions());
+
+                            // Si tiene el permiso especial "read_all" le doy acceso a cualquier DB !
+                            if (!acl()->hasSpecialPermission('read_all', $ret['roles'])){
+                                Factory::response()->sendError("Forbidden", 403, "No db access");
+                            }
+                        }
+                    }
+                }
+
+            break;
+            default:
+                $perms = []; 
+                $roles = [Factory::acl()->getGuest()];
+
+                Acl::setCurrentRoles($roles); //
+
+                $ret = [
+                    'uid' => null,
+                    'roles' => $roles,
+                    'permissions' => $perms,
+                    'is_active' => $is_active
+                ];
+        }
+
+        Acl::setCurrentUid($ret['uid']) ;
+
+        // Hook
+        $this->onChecked($ret['uid'], $is_active, $roles, $perms, $auth_method);
+
+        return $ret;
+    }
+
+    
+    /*
+        Proviene de un link generado en register()
+
+        Debería haber otro método que genere el mismo enlace
+    */
+	function confirm_email($jwt, $exp)
+	{
+		if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
+
+		// Es menos costoso verificar así en principio
+		if ((int) $exp < time()) {
+            Factory::response()->sendError('Link is outdated', 400);
+        }         
+
+        if($jwt != null)
+        {
+            try {
+                $payload = \Firebase\JWT\JWT::decode($jwt, $this->config['email_token']['secret_key'], [ $this->config['email_token']['encryption'] ]);
+                
+                if (empty($payload))
+                    $error = 'Unauthorized!';                     
+
+                if (!isset($payload->email) || empty($payload->email)){
+                    $error = 'email is needed';
+                }
+
+                if ($payload->exp < time())
+                    $error = 'Token expired';
+                
+                $u = DB::table($this->users_table);
+
+                if (!$u->inSchema([$this->__confirmed_email])){
+                    Factory::response()->sendError('Email confirmation is not implemented', 501);
+                }    
+
+                $rows = $u->assoc()
+                ->select([$u->getIdName()])
+                ->when($u->inSchema([$this->__active]), function($q){
+                    $q->addSelect($this->__active);
+                })
+                ->where([$this->__email, $payload->email])
+                ->get();
+
+                if (count($rows) == 0){
+                    Factory::response()->sendError("Not found", 404, "Email not found");
+                }
+
+                if ($u->inSchema([$this->__active])){
+                    if ((string) $rows[0][$this->__active] === "0") {
+                        Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+                    }
+                }
+                
+                $uid  = $rows[0][$u->getIdName()];
+                
+                $ok = $u
+                ->fill([$this->__confirmed_email])
+                ->update([$this->__confirmed_email => 1]);
+
+            } catch (\Exception $e) {
+                /*
+                * the token was not able to be decoded.
+                * this is likely because the signature was not able to be verified (tampered token)
+                *
+                * reach this point if token is empty or invalid
+                */
+                Factory::response()->sendError($e->getMessage(),401);
+            }	
+        }else{
+            Factory::response()->sendError('Authorization jwt token not found',400);
+        }     
+
+        $roles = $payload->roles ?? [];
+        $perms = $payload->permissions ?? [];
+        $db_access = $this->getDbAccess($uid);
+
+        Acl::setCurrentRoles($roles); //
+
+        $access  = $this->gen_jwt([ 'uid' => $uid,   
+                                    'roles' => $roles, 
+                                    'permissions' => $perms,
+                                    'is_active' => 1,                     // *
+                                    'db_access' => $db_access
+        ], 'access_token');
+
+        $refresh = $this->gen_jwt(['uid' => $uid, 
+        ], 'refresh_token');
+
+        // Hook
+        $this->onConfirmedEmail($uid, $roles, $perms);
+        
+        Factory::response()->send([
+            'uid' => $uid,  
+            'access_token' => $access,
+            'token_type' => 'bearer', 
+            'expires_in' => $this->config['access_token']['expiration_time'],
+            'refresh_token' => $refresh,
+            'roles' => $roles,
+            'db_access' => $db_access 
+        ]);	
+
+    }     
+    
+    /*
+        Si el correo es válido debe generar y enviar por correo un enlance para cambiar el password
+        sino no hacer nada.
+    */
+	function rememberme(){
+		$data  = Factory::request()->getBody(false);
+
+		if ($data == null)
+			Factory::response()->sendError('Invalid JSON',400);
+
+		$email = $data['email'] ?? null;
+
+		if ($email == null)
+			Factory::response()->sendError('Empty email', 400);
+
+		try {	
+			$u = (DB::table($this->users_table))->assoc();
+			$rows = $u->where([$this->__email, $email])->get([$this->__id, $this->__active]);
+
+			if (count($rows) === 0){
+                // Email not found
+                Factory::response()->sendError('Please check your e-mail', 400); 
+            }
+
+            // Hook
+            $this->onRemember($data);
+		
+            $uid = $rows[0][$this->__id];	//
+            $exp = time() + $this->config['email_token']['expires_in'];	
+
+            $is_active = $rows[0][$this->__active];
+
+            if ((string) $is_active === "0") {
+                Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+            }
+
+            $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']);            
+
+            $token = $this->gen_jwt_rememberme($uid);
+            
+            $url = $base_url . (!Strings::endsWith(DIRECTORY_SEPARATOR, $base_url) ? '/' : '') .'login/change_pass_by_link/' . $token . '/' . $exp; 	
+
+		} catch (\Exception $e){
+			Factory::response()->sendError($e->getMessage(), 500);
+		}
+    
+        // Hook
+        $this->onRemembered($data, $url);
+
+        Factory::response()->sendOK();         
+    }
+    
+
+    /*
+        Proviene de rememberme() y da la oportunidad de cambiar el pass otorgando tokens a tal fin
+    */
+    function change_pass_by_link($jwt = NULL, $exp = NULL){
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS'])){
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
+        }    
+
+        if ($jwt == null || $exp == null){
+            Factory::response()->sendError('Bad request', 400, 'Two paramters are expected');
+        }
+
+        // Es menos costoso verificar así en principio
+        if ((int) $exp < time()) {
+            Factory::response()->sendError('Link is outdated', 401);
+        } else {
+
+            if($jwt != null)
+            {
+                try {
+                    $payload = \Firebase\JWT\JWT::decode($jwt, $this->config['email_token']['secret_key'], [ $this->config['email_token']['encryption'] ]);
+                    
+                    if (empty($payload))
+                        Factory::response()->sendError('Unauthorized!',401);                     
+
+                    if (empty($payload->uid)){
+                        Factory::response()->sendError('uid is needed',400);
+                    }
+
+                    $uid = $payload->uid; 
+
+                    $acl   = Factory::acl();                    
+
+                    $u = DB::table($this->users_table);
+
+                    if ($u->inSchema([$this->role_field])){
+                        $rid   = $u->find($uid)->value($this->role_field);
+                        $roles = [ $acl->getRoleName($rid) ]; 
+                    } else {
+                        $roles = $this->fetchRoles($uid);
+                    }
+                    
+                    $perms = $this->fetchPermissions($uid);
+
+
+                    $row = $u->assoc()
+                    ->where([$u->getIdName() => $uid]) 
+                    ->first();
+
+                    if (!$row)
+                        throw new Exception("Uid not found");
+
+                    $is_active = true;    
+                    if ($u->inSchema([$this->__active])){    
+                        $is_active = $row[$this->__active];                     
+
+                        if ($is_active === false) {
+                            Factory::response()->sendError('Non authorized', 403, 'Deactivated account');
+                        }
+                    }    
+
+                    if ($payload->exp < time())
+                        Factory::response()->sendError('Token expired, please log in',401);
+
+                    $db_access = $this->getDbAccess($uid);
+
+                    $access  = $this->gen_jwt([ 'uid' => $uid,
+                                                'roles' => $roles, 
+                                                'permissions' => $perms, 
+                                                'is_active' => $is_active,
+                                                'db_access' => $db_access
+                    ], 'access_token');
+                    
+                    $refresh  = $this->gen_jwt([ 
+                                                'uid' => $uid
+                    ], 'refresh_token');
+
+
+                    Acl::setCurrentRoles($roles); //
+
+                    ///////////
+                    Factory::response()->send([ 
+                                    'uid' => $uid,
+                                    'access_token'=> $access,
+                                    'refresh_token'=> $refresh,
+                                    'token_type' => 'bearer', 
+                                    'expires_in' => $this->config['access_token']['expiration_time'],
+                                    'roles' => $roles,
+                                    'permissions' => $perms,
+                                    'db_access' => $db_access                                            
+                    ]);
+                    
+
+                } catch (\Exception $e) {
+                    /*
+                    * the token was not able to be decoded.
+                    * this is likely because the signature was not able to be verified (tampered token)
+                    *
+                    * reach this point if token is empty or invalid
+                    */
+                    Factory::response()->sendError($e->getMessage(),401);
+                }	
+            }else{
+                Factory::response()->sendError('Authorization jwt token not found',400);
+            }     
+        }	
+
+    }   
+    
+    function change_pass_process()
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
+            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+
+        $data  = Factory::request()->getBody();
+
+        if ($data == null)
+            return;
+
+        if (!isset($data->password) || empty($data->password))
+            Factory::response()->sendError('Bad request', 400, 'Lacks password in request');
+
+        $request = Factory::request();
+
+        $headers = $request->headers();
+        $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+
+        if (empty($auth)){
+            Factory::response()->sendError('Authorization not found',400);
+        }
+
+        try {                                             
+            list($refresh) = sscanf($auth, 'Bearer %s');
+
+            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['email_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+            
+            if (empty($payload))
+                Factory::response()->sendError('Unauthorized!',401);                     
+
+            if (empty($payload->uid)){
+                Factory::response()->sendError('uid is required',400);
+            }
+
+            $ok = DB::table($this->users_table)
+            ->find($payload->uid)
+            ->update([
+                $this->__password => $data->password
+            ]);
+
+            if (!$ok){
+                Factory::response()->sendError("Unexpected error trying to update password", 500); 
+            }
+
+            $uid = $payload->uid;
+            
+            $u = DB::table($this->users_table);
+            $row = $u->find($uid)->first();
+
+
+            $is_active = 1;    
+            if ($u->inSchema([$this->__active])){
+                $is_active = $row[$this->__active]; 
+
+                if ($is_active == null) {
+
+                    if ($row[$this->__confirmed_email] === "0") {
+                        Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
+                    } else {
+                        Factory::response()->sendError('Non authorized', 403, 'Account pending for activation');
+                    }
+                }
+
+                if ($is_active == 0 || (string) $is_active === "0") {
+                    Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+                } 
+            }                
+
+            // Fetch roles && permissions
+
+            $uid       = $payload->uid;            
+            $roles     = $this->fetchRoles($uid); 
+            $perms     = $this->fetchPermissions($uid);
+            $db_access = $this->getDbAccess($uid);
+
+            Acl::setCurrentRoles($roles); //
+
+            $access  = $this->gen_jwt([ 'uid' => $uid, 
+                                        'roles' => $roles, 
+                                        'permissions' => $perms,
+                                        'is_active' => $is_active, 
+                                        'db_access' => $db_access
+            ], 'access_token');
+
+            // el refresh no debe llevar ni roles ni permisos por seguridad !
+            $refresh = $this->gen_jwt([ 'uid' => $uid
+            ], 'refresh_token');
+
+            // Hook
+            $this->onChangedPassword($uid, $roles, $perms);
+
+            Factory::response()->send([ 
+                                        'access_token'=> $access,
+                                        'token_type' => 'bearer', 
+                                        'expires_in' => $this->config['access_token']['expiration_time'],
+                                        'refresh_token' => $refresh,   
+                                        'roles' => $roles,
+                                        'uid' => $uid,
+                                        'db_access' => $db_access
+                                        ]);
+
+        } catch (\Exception $e) {
+            /*
+            * the token was not able to be decoded.
+            * this is likely because the signature was not able to be verified (tampered token)
+            *
+            * reach this point if token is empty or invalid
+            */
+            Factory::response()->sendError($e->getMessage(),401);
+        }	
+
+    }
+
+
+    /*
+    
+        Related with AuthController and ACL
+
+    */
+
+    protected function getUserIdFromApiKey($api_key){
+        $uid = DB::table('api_keys')
+        ->where(['value', $api_key])
+        ->value('user_id');
+
+        return $uid;
+    }
+
+    protected function fetchRoles($uid) : Array {
+        $rows = DB::table('user_roles')
+        ->assoc()
+        ->where(['user_id', $uid])
+        ->select(['role_id as role'])
+        ->get();	
+
+        $acl = Factory::acl();
+
+        $roles = [];
+        if (count($rows) != 0){
+            foreach ($rows as $row){
+                $roles[] = $acl->getRoleName($row['role']);
+            }
+        }
+
+        return $roles;
+    }
+
+    protected function fetchTbPermissions($uid) : Array {
+        $_permissions = DB::table('user_tb_permissions')
+        ->assoc()
+        ->select([  
+                    'tb', 
+                    'can_list_all as la',
+                    'can_show_all as ra', 
+                    'can_list as l',
+                    'can_show as r',
+                    'can_create as c',
+                    'can_update as u',
+                    'can_delete as d'])
+        ->where(['user_id' => $uid])
+        ->get();
+
+        $perms = [];
+        foreach ((array) $_permissions as $p){
+            $tb = $p['tb'];
+            $perms[$tb] =  $p['la'] * 64 + $p['ra'] * 32 +  $p['l'] * 16 + $p['r'] * 8 + $p['c'] * 4 + $p['u'] * 2 + $p['d'];
+        }
+
+        return $perms;
+    }
+
+    protected function fetchSpPermissions($uid) : Array {
+        $perms = DB::table('user_sp_permissions')
+        ->assoc()
+        ->where(['user_id' => $uid])
+        ->join('sp_permissions', 'user_sp_permissions.sp_permission_id', '=', 'sp_permissions.id')
+        ->pluck('name');
+
+        return $perms ?? [];
+    }
+
+    protected function fetchPermissions($uid) : Array { 
+        return [
+                'tb' => $this->fetchTbPermissions($uid), 
+                'sp' => $this->fetchSpPermissions($uid) 
+        ];
+    }
+
+    protected function addUserRoles(Array $roles, $uid) {
+        foreach ($roles as $role) {
+            $role_id = acl()->getRoleId($role);
+
+            if ($role_id == null){
+                throw new \Exception("Role $role is invalid");
+            }
+
+            try {
+                // lo ideal es validar los roles y obtener los ids para luego hacer un "INSERT in bulk"
+                $ur_id = DB::table('user_roles')
+                ->where(['id' => $uid])
+                ->create(['user_id' => $uid, 'role_id' => $role_id]);
+            } catch (\Exception $e){
+                Files::logger($e->getMessage());
+            }            
+
+            if (empty($ur_id))
+                throw new \Exception("Error registrating user role $role");             
+        }         
+    }
+
+    function hasDbAccess($user_id, string $db_connection){
+        return in_array($db_connection, $this->getDbAccess($user_id));
+    } 
+
+    /*
+        Event Hooks
+    */
+
+    function onRegister(Array $data){ }
+    function onRegistered(Array $data, $uid, $is_active, $roles){ }
+    function onRemember(Array $data){}
+    function onRemembered(Array $data, $link_url){}
+    function onLogin(Array $data){}
+    function onLogged(Array $data, $uid, $is_active, $roles, $perms){}
+    function onImpersonated(Array $data, $uid, $is_active, $roles, $perms, $impersonated_by){}	
+    function onChecked($uid, $is_active, $roles, $perms, $auth_method){}
+    function onConfirmedEmail($uid, $roles, $perms){}
+    function onChangedPassword($uid, $roles, $perms){}
+
+    function getDbAccess($uid) : Array { return []; }
+}

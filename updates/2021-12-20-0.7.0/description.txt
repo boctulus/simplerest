@@ -5,6 +5,8 @@ UPDATE DESCRIPTION
 
 - Contenedor de dependencias inversas experimental.
 
+- Librerías, helpers y otras carpetas fueron movidas al Core para evitar sobre-escrituras accidentales de estos archivos que pudieran contener también funciones definidas por el usuario. Ahora Ud. podrá crear sus propios helpers y librerías con seguridad.
+
 - Ahora a nivel de modelo se introdujeron más funcionalidades relacionadas con Soft Delete.
 
     withTrashed(bool $soft_delete)	borra un registro. Hay parámetros adicionales.

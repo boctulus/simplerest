@@ -1,8 +1,56 @@
-<?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:56              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- declare (strict_types=1); namespace simplerest\core\libs; class Time { static $unit = "\115\x49\x4c\111"; static $capture_buffer = false; static $NANO = 1000000000; static $MICRO = 1000000; static $MILI = 1000; static function setUnit($Fa1h2) { goto r18hU; r18hU: if (in_array($Fa1h2, ["\116\101\116\117", "\x4d\111\x43\x52\x4f", "\x4d\x49\x4c\111"])) { goto t69ZN; } goto G2ac3; J80ZB: t69ZN: goto WRXD7; WRXD7: static::$unit = $Fa1h2; goto oT0E5; G2ac3: throw new \InvalidArgumentException("\125\x6e\x69\164\40\x73\150\x6f\x75\x6c\x64\40\x62\x65\40\x6f\x6e\x65\x20\x6f\146\x20\47\116\x41\x4e\x4f\47\54\40\47\x4d\111\103\x52\x4f\x27\54\x20\x27\x4d\111\114\111\47"); goto J80ZB; oT0E5: } static function noOutput() { ob_start(); static::$capture_buffer = true; } static function exec(callable $U7oag, int $uvUcb = 1) { goto GOYSU; GOYSU: $Jx8Az = microtime(true); goto NdRhK; wGu4l: SFIOa: goto Ue9mZ; KD1r5: $a16VR++; goto ZtrNB; ZtrNB: goto nFKpp; goto y4kfp; Phw6w: ob_end_clean(); goto aJ0wg; NdRhK: $a16VR = 0; goto FBlfZ; jt34n: $AJt29 = $AJt29 * static::$MILI; goto ClQzs; fB0GI: $AJt29 = $AJt29 * static::$MICRO; goto wGu4l; jf5dy: call_user_func($U7oag); goto yVoEZ; y4kfp: AI8r6: goto tcZx6; ggEJ_: if (!($a16VR < $uvUcb)) { goto AI8r6; } goto jf5dy; uMQmR: return $AJt29; goto ggWQR; ZB762: if (!(static::$unit == "\115\x49\x43\x52\117")) { goto SFIOa; } goto fB0GI; ClQzs: PJj3q: goto ZB762; JeTNv: if (!(static::$unit == "\x4d\x49\x4c\111")) { goto PJj3q; } goto jt34n; saPhk: if (!static::$capture_buffer) { goto Mx_o8; } goto Phw6w; Ue9mZ: if (!(static::$unit == "\116\x41\x4e\117")) { goto Qv5gN; } goto Z2ucW; tcZx6: $AJt29 = (microtime(true) - $Jx8Az) / $uvUcb; goto JeTNv; aJ0wg: Mx_o8: goto uMQmR; yVoEZ: kgGDX: goto KD1r5; OQ14e: Qv5gN: goto saPhk; FBlfZ: nFKpp: goto ggEJ_; Z2ucW: $AJt29 = $AJt29 * static::$NANO; goto OQ14e; ggWQR: } }
+<?php declare(strict_types=1);
+
+namespace simplerest\core\libs;
+
+class Time {
+    static $unit = 'MILI';   
+    static $capture_buffer = false;
+
+    static $NANO  = 1000000000;
+    static $MICRO = 1000000;
+    static $MILI  = 1000;
+
+    static function setUnit($u){
+        if (!in_array($u, ['NANO', 'MICRO', 'MILI'])){
+            throw new \InvalidArgumentException("Unit should be one of 'NANO', 'MICRO', 'MILI'");
+        }
+
+        static::$unit = $u;
+    }
+
+    static function noOutput(){
+        ob_start();
+        static::$capture_buffer = true;
+    }
+
+	static function exec(callable $callback, int $iterations = 1){
+        $start = microtime(true);
+    
+        for ($i=0; $i<$iterations; $i++){
+            call_user_func($callback);	
+        }
+    
+        $t = (microtime(true) - $start) / $iterations;
+        
+        if (static::$unit == 'MILI'){
+            $t = $t * static::$MILI;
+        }
+
+        if (static::$unit == 'MICRO'){
+           $t = $t * static::$MICRO;
+        }
+
+        if (static::$unit == 'NANO'){
+            $t = $t * static::$NANO;
+        }
+
+        if (static::$capture_buffer){
+            ob_end_clean(); 
+        }
+
+        return $t;
+    }
+
+}
+
+

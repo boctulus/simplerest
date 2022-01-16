@@ -7133,6 +7133,25 @@ Ej:
 	Files::copy($ori, $dst, $files, $except);
 
 
+Advertencia
+
+Si se omite el parámetro # 3 para especificar archivos se intentará un glob:* 
+
+Ej:
+
+	Files::copy($path_ori, $path_dst); 
+
+equivale a:
+
+	Files::copy($path_ori, $path_dst, [
+		'glob:*' 
+	]);
+
+Sin embargo se puede ser más específico:
+
+	Files::copy($path_ori, $path_dst, ['glob:*.php']); 
+
+
 ### Compresión de archivos a ZIP
 
 Zipea archivos de una carpeta de forma recursiva y admite especificar archivos y carpetas que serán ignorados.

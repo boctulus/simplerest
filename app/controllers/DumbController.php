@@ -4,7 +4,7 @@ namespace simplerest\controllers;
 
 use simplerest\models\az\BarModel;
 use simplerest\models\az\ProductsModel;
-use simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Model;
 use simplerest\core\Request;
 use simplerest\core\Route;
@@ -6543,7 +6543,7 @@ class DumbController extends Controller
         d($m->dd());
     }
 
-    function test_existance(){
+    function m(){
         $is = DB::table('products')
         ->find(145)
         ->exists();
@@ -6758,4 +6758,32 @@ class DumbController extends Controller
         DB::getConnection('db_docker_php81_mysql');
     }
    
+    function test_desentrelazado(){
+        $literal = strrev("SimpleRest framework created by Pablo Bozzolo <boctulus AT gmail.com>. All rights reserved.");
+        
+        // protect spaces
+        $literal = str_replace(' ', '-', $literal);
+        
+        d(Strings::deinterlace($literal));
+    }
+
+    function test_entrelazado(){
+        $str = [
+            'SmlRs rmwr rae yPboBzoo<otlsA mi.o> l ihsrsre.',
+            'ipeetfaeokcetdb al ozl bcuu Tgalcm.Alrgt eevd'
+        ];
+
+        return Strings::interlace($str);
+    }
+
+    function test_whois(){
+        return DB::whois();
+    }
+
+    function test_666(){
+        // ahora copio los archivos ofuscados en el destino
+        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
+        $dst = "updates/2021-12-20-0.7.0/";  
+        Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
+    }
 }

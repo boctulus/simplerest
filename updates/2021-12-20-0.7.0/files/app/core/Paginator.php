@@ -1,8 +1,176 @@
 <?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-01-15 18:30:55              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
- declare (strict_types=1); namespace simplerest\core; use simplerest\core\libs\DB; use simplerest\core\libs\Strings; class Paginator { protected $orders = array(); protected $offset = 0; protected $limit = null; protected $attributes = array(); protected $query = ''; protected $binding = array(); function __construct($Nmf28 = null, array $z9v0N = null, int $xN87Y = 0, int $fsPFd = null) { goto IDnkL; Vl9bt: $this->offset = $xN87Y; goto ILDeG; ILDeG: $this->limit = $fsPFd; goto LL0xH; zl0Co: if (!($z9v0N != null && $fsPFd != null)) { goto Wmlyp; } goto QdYFI; Sa59b: Wmlyp: goto zsW2w; IDnkL: $this->order = $z9v0N; goto Vl9bt; LL0xH: $this->attributes = $Nmf28; goto zl0Co; QdYFI: $this->compile(); goto Sa59b; zsW2w: } function compile() : void { goto DwiVW; IAQXy: if (empty($this->orders)) { goto V8G9i; } goto NXGX9; fh5Ol: aiyVe: goto TBKnE; DwiVW: $P3ytl = ''; goto IAQXy; c_f2_: switch (DB::driver()) { case "\155\171\x73\161\x6c": case "\x73\161\154\x69\164\x65": goto ASaUA; SUrrP: Cv0dU: goto dFX9X; ASaUA: switch ($vd5JF) { case [true, true]: goto OenpQ; qdMuF: $this->binding[] = [1, $this->offset, \PDO::PARAM_INT]; goto BoOnf; BoOnf: $this->binding[] = [2, $this->limit, \PDO::PARAM_INT]; goto Z4Czj; Z4Czj: goto Cv0dU; goto xAwRl; OenpQ: $P3ytl .= "\x20\x4c\111\x4d\x49\x54\x20\77\x2c\40\x3f"; goto qdMuF; xAwRl: case [true, false]: goto r6gyk; r6gyk: $P3ytl .= "\x20\x4c\x49\115\111\124\40\77"; goto pX7tB; nbyFD: goto Cv0dU; goto SDtjp; pX7tB: $this->binding[] = [1, $this->limit, \PDO::PARAM_INT]; goto nbyFD; SDtjp: case [false, true]: goto K4ANM; CVhjb: goto Cv0dU; goto RU1wd; so2Q1: $this->binding[] = [1, $this->offset, \PDO::PARAM_INT]; goto CVhjb; K4ANM: $P3ytl .= "\40\114\x49\115\x49\x54\x20\x3f\x2c\x20\61\70\64\64\x36\67\x34\64\60\67\x33\67\60\71\x35\65\x31\66\x31\65"; goto so2Q1; RU1wd: } goto hUI0A; hUI0A: lXGMa: goto SUrrP; dFX9X: goto cB_VP; goto UJNrR; UJNrR: case "\160\x67\x73\161\154": goto WegMo; WegMo: switch ($vd5JF) { case [true, true]: goto AZzXS; o3xPP: $this->binding[] = [2, $this->limit, \PDO::PARAM_INT]; goto uFclu; Vj8UL: $this->binding[] = [1, $this->offset, \PDO::PARAM_INT]; goto o3xPP; AZzXS: $P3ytl .= "\x20\117\106\106\x53\105\x54\x20\x3f\40\114\x49\115\111\124\x20\77"; goto Vj8UL; uFclu: goto z6ABY; goto fXEkT; fXEkT: case [true, false]: goto GhtlE; aUXy7: goto z6ABY; goto GZaCK; GhtlE: $P3ytl .= "\40\x4c\111\x4d\111\x54\40\x3f"; goto qwXms; qwXms: $this->binding[] = [1, $this->limit, \PDO::PARAM_INT]; goto aUXy7; GZaCK: case [false, true]: goto qC5um; VVVJ0: $this->binding[] = [1, $this->offset, \PDO::PARAM_INT]; goto Pzm3M; Pzm3M: goto z6ABY; goto MBPTA; qC5um: $P3ytl .= "\40\117\106\106\x53\105\124\40\x3f"; goto VVVJ0; MBPTA: } goto GD8ja; GD8ja: h3NF6: goto CMBZi; HlBMg: goto cB_VP; goto OBG9k; CMBZi: z6ABY: goto HlBMg; OBG9k: } goto A2Oy9; A2Oy9: aNvgj: goto S658h; TBKnE: $P3ytl = substr($P3ytl, 0, strlen($P3ytl) - 2); goto rUKfG; rUKfG: V8G9i: goto CA1Qn; NXGX9: $P3ytl .= "\40\x4f\x52\104\x45\x52\40\102\131\40"; goto PV8UZ; PV8UZ: foreach ($this->orders as $BRPp3 => $GuaJm) { goto CHOKm; dwBtF: $BRPp3 = filter_var($BRPp3, FILTER_SANITIZE_STRING); goto AhDPO; AhDPO: if (!(preg_match("\57\x5e\133\141\x2d\172\x30\55\71\134\x2d\x5f\134\x2e\x5d\x2b\x24\x2f\x69", $BRPp3) != 1)) { goto gPU02; } goto mXMvd; awzyE: $P3ytl .= "{$BRPp3}\40{$z9v0N}\54\x20"; goto acvi4; E46xN: list($UV7E3, $depev) = explode("\x2e", $BRPp3); goto NyY0E; mXMvd: throw new \InvalidArgumentException("\106\151\x65\154\x64\x20\47{$BRPp3}\x27\x20\151\x73\40\156\157\164\40\141\40\166\x61\x6c\x69\144\40\x66\x69\145\x6c\144"); goto MQAnB; IV4Hf: Yj4rO: goto lrBCT; NyY0E: if (in_array($depev, $this->attributes)) { goto GHWth; } goto WY7Bq; X60T9: throw new \InvalidArgumentException("\x4f\x72\144\x65\x72\x20\x64\x69\162\145\x63\164\151\157\x6e\40\x27{$GuaJm}\x27\x20\151\x73\x20\151\x6e\166\x61\154\151\x64\56\x20\x4f\162\144\145\162\x20\x73\x68\x6f\165\x6c\144\x20\x62\145\x20\101\x53\103\x20\x6f\162\40\x44\x45\123\x43\41"); goto mpNsq; MQAnB: gPU02: goto MfREY; WY7Bq: throw new \InvalidArgumentException("\160\162\x6f\160\145\162\164\x79\x20\x27{$BRPp3}\x27\40\156\x6f\164\x20\x66\157\x75\156\144\x21"); goto GH3hM; j35xr: if (!Strings::contains("\x2e", $BRPp3)) { goto yx3GU; } goto E46xN; mpNsq: goto O29b0; goto PAEsO; MfREY: if ($z9v0N == "\x41\x53\x43" || $z9v0N == "\x44\105\x53\103") { goto KBy38; } goto X60T9; acvi4: O29b0: goto j35xr; GH3hM: GHWth: goto r8SMf; r8SMf: yx3GU: goto IV4Hf; CHOKm: $z9v0N = strtoupper($GuaJm); goto dwBtF; PAEsO: KBy38: goto awzyE; lrBCT: } goto fh5Ol; Lcf6m: IOkl8: goto yV2LI; CA1Qn: $vd5JF = [$this->limit !== null, !empty($this->offset)]; goto Bt27W; S658h: cB_VP: goto Lcf6m; Bt27W: if (!($vd5JF[0] || $vd5JF[1])) { goto IOkl8; } goto c_f2_; yV2LI: $this->query = $P3ytl; goto CoOHa; CoOHa: } function setAttr(array $Nmf28) : Paginator { $this->attributes = $Nmf28; return $this; } function setOrders($VerfU) : Paginator { $this->orders = $VerfU; return $this; } function setOffset($xN87Y) : Paginator { $this->offset = $xN87Y; return $this; } function getOffset() { return $this->offset; } function setLimit($fsPFd) : Paginator { $this->limit = $fsPFd; return $this; } function getLimit() { return $this->limit; } function getQuery() : string { return $this->query; } function getBinding() : array { return $this->binding; } }
+declare(strict_types=1);
+
+namespace simplerest\core;
+
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
+
+class Paginator
+{
+    protected $orders = [];
+    protected $offset = 0;
+    protected $limit = null;
+    protected $attributes = [];
+    protected $query = '';
+    protected $binding = [];
+
+    /** 
+     * @param array $attributes of the entity to be paginated
+     * @param array $order 
+     * @param int $offset
+     * @param int $limit
+    */
+    function __construct($attributes = null, array $order = null, int $offset = 0, int $limit = null){
+        $this->order = $order;
+        $this->offset = $offset;
+        $this->limit = $limit;
+        $this->attributes = $attributes;
+
+        if ($order!=null && $limit!=null)
+            $this->compile();
+    }
+
+    function compile():void
+    {
+        $query = '';
+        if (!empty($this->orders)){
+            $query .= ' ORDER BY ';
+            
+            foreach($this->orders as $field => $_order){
+                $order = strtoupper($_order);
+                
+                $field = filter_var($field, FILTER_SANITIZE_STRING);
+
+                if ((preg_match('/^[a-z0-9\-_\.]+$/i',$field) != 1)){
+                    throw new \InvalidArgumentException("Field '$field' is not a valid field");
+                }
+
+                if ($order == 'ASC' || $order == 'DESC'){
+                    $query .= "$field $order, ";
+                }else
+                    throw new \InvalidArgumentException("Order direction '$_order' is invalid. Order should be ASC or DESC!");   
+
+
+                if (Strings::contains('.', $field)){
+                    list($tb, $_field) = explode('.', $field);
+                
+                    if(!in_array($_field, $this->attributes)){
+                        throw new \InvalidArgumentException("property '$field' not found!"); 
+                    }
+                }
+                
+            }
+            $query = substr($query,0,strlen($query)-2);
+        }
+
+        $ol = [$this->limit !== null, !empty($this->offset)];
+        //dd($ol, 'ol');
+
+        // https://stackoverflow.com/questions/595123/is-there-an-ansi-sql-alternative-to-the-mysql-limit-keyword
+        if ($ol[0] || $ol[1]){
+            switch (DB::driver()){
+                case 'mysql':
+                case 'sqlite':
+                    switch($ol){
+                        case [true, true]:
+                            $query .= " LIMIT ?, ?";
+                            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
+                            $this->binding[] = [2 , $this->limit,  \PDO::PARAM_INT];
+                        break;
+                        case [true, false]:
+                            $query .= " LIMIT ?";
+                            $this->binding[] = [1 , $this->limit, \PDO::PARAM_INT];
+                        break;
+                        case [false, true]:
+                            // https://stackoverflow.com/questions/7018595/sql-offset-only
+                            $query .= " LIMIT ?, 18446744073709551615";
+                            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
+                        break;
+                    } 
+                    break;    
+                case 'pgsql': 
+                    switch($ol){
+                        case [true, true]:
+                            $query .= " OFFSET ? LIMIT ?";
+                            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
+                            $this->binding[] = [2 , $this->limit,  \PDO::PARAM_INT];
+                        break;
+                        case [true, false]:
+                            $query .= " LIMIT ?";
+                            $this->binding[] = [1 , $this->limit, \PDO::PARAM_INT];
+                        break;
+                        case [false, true]:
+                            $query .= " OFFSET ?";
+                            $this->binding[] = [1 , $this->offset, \PDO::PARAM_INT];
+                        break;
+                    } 
+                    break;            
+            }
+        }
+
+        $this->query = $query;
+    }
+
+    function setAttr(Array $attributes) : Paginator {
+        $this->attributes = $attributes;
+        return $this;
+    }
+
+    /**
+     * Set the value of orders
+     *
+     * @return  self
+     */ 
+    function setOrders($orders): Paginator
+    {
+        $this->orders = $orders;
+        return $this;
+    }
+
+    /**
+     * Set the value of offset
+     *
+     * @return  self
+     */ 
+    function setOffset($offset): Paginator
+    {
+        $this->offset = $offset;
+        return $this;
+    }
+
+    function getOffset(){
+        return $this->offset;
+    }
+
+    /**
+     * Set the value of limit
+     *
+     * @return  self
+     */ 
+    function setLimit($limit): Paginator
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    function getLimit() {
+        return $this->limit;
+    }
+
+     /**
+     * Get the value of query
+     */ 
+    function getQuery(): string
+    {
+        return $this->query;
+    }
+
+    /**
+     * Get the value of binding
+     */ 
+    function getBinding(): array
+    {
+        return $this->binding;
+    }
+}

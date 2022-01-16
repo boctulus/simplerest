@@ -772,6 +772,61 @@ class Strings
 
 		return $path;		
 	}
+
+	static function deinterlace(string $literal){
+        $arr = str_split($literal);
+
+        $str1 = '';
+        for ($i=0; $i<strlen($literal); $i+=2){
+            if ($i>strlen($literal)-1){
+                break;
+            }
+            $str1 .= $arr[$i];
+        }
+
+        $str2 = '';
+        for ($i=1; $i<strlen($literal); $i+=2){
+            if ($i>strlen($literal)-1){
+                break;
+            }
+            $str2 .= $arr[$i];
+        }
+        
+        return [$str1, $str2];
+    }
+
+    static function interlace(Array $str){
+        $ret = '';
+
+        if (count($str) === 0){
+            return;
+        } 
+
+        if (count($str) === 1){
+            return $str[0];
+        } 
+
+        $max_len = 0;
+        $arr = [];
+        foreach ($str as $ix => $s){
+			$ls = strlen($s);
+            if ($ls > $max_len){
+                $max_len = $ls;
+            }
+
+            $arr[] = str_split($s);
+        }
+
+        for ($i=0; $i<$max_len; $i++){
+            foreach ($arr as $a){
+                if (isset($a[$i])){
+                    $ret .= $a[$i];
+                }
+            }
+        }
+        
+        return $ret;
+    }
 }
 
 
