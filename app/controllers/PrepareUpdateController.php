@@ -137,6 +137,7 @@ class PrepareUpdateController extends ConsoleController
 
         Files::copy($ori, $dst, [
             'core/libs/DB.php',
+            'core/libs/Files.php',
             'core/libs/Reflector.php',
             'core/Container.php',
             'core/Model.php',
