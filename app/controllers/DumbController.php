@@ -6248,8 +6248,10 @@ class DumbController extends Controller
         Files::copy($ori, $dst, $files, $except);
     }
 
-    function at(){
-        d(at());
+    function test_at(){
+        for ($i=0; $i<1000000;$i++){
+            echo at(). ' ';
+        }
     }
 
     function test_get_fk(){
