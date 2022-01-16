@@ -8,6 +8,7 @@ use simplerest\core\libs\SortedIterator;
 class Files 
 {
 	static protected $backup_path;
+	static protected $callable;
 
 	static function replace(string $filename, $search, $replace){
 		$file  = file_get_contents($filename);
@@ -107,10 +108,14 @@ class Files
 		return dirname($path);
 	}
 
-	static function setBackupDirectory(? string $path = BACKUP_PATH){
+	static function setBackupDirectory(? string $path = BACKUP_PATH) : void {
 		static::$backup_path = $path;
 
 		static::mkDir(static::$backup_path);
+	}
+
+	static function setCallback(?callable $fn) : void {
+		static::$callable = $fn;
 	}
 
 	/*
@@ -178,7 +183,14 @@ class Files
 			$ok = null;
 			
 			if (!$ok){
-				$ok = @copy($ori, $dst);
+				if (static::$callable !== null){
+					$file = file_get_contents($dst);
+					$file = call_user_func(static::$callable, $file);
+
+					$ok = (bool) file_put_contents($dst, $file);
+				} else {
+					$ok = @copy($ori, $dst);
+				}
 			}
         } else {
             $ok = true;

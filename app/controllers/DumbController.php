@@ -6249,9 +6249,12 @@ class DumbController extends Controller
     }
 
     function test_at(){
-        for ($i=0; $i<1000000;$i++){
-            echo at(). ' ';
+        for ($i=0; $i<100000;$i++){
+            d(at());
         }
+
+        // esta vez debería ser un valor distinto
+        d(at(false));
     }
 
     function test_get_fk(){
@@ -6786,6 +6789,16 @@ class DumbController extends Controller
         // ahora copio los archivos ofuscados en el destino
         $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
         $dst = "updates/2021-12-20-0.7.0/";  
+
+        Files::setCallback(function(string $content){
+            return Strings::removeMultiLineComments($content);
+        });
+
         Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
+    }
+
+    function test_remove_comments(){
+        $file = file_get_contents('/home/www/simplerest/updates/2021-12-20-0.7.0/files/app/core/Container.php');
+        d(Strings::removeMultiLineComments($file));
     }
 }
