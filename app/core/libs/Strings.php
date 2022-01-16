@@ -745,15 +745,15 @@ class Strings
 		return $_path === false ? $path : $_path;
 	}
 
-	static function replaceSlashes(string $path){
+	static function replaceSlashes(string $path) : string {
 		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
 	}
         
-	static function removeUnnecessarySlashes(string $path): string{
+	static function removeUnnecessarySlashes(string $path) : string {
        	return preg_replace('#/+#','/',$path);
 	}
 
-	static function removeTrailingSlash(string $path): string{
+	static function removeTrailingSlash(string $path) : string {
 		$path = static::realPathNoCoercive($path);
 
 		if (Strings::endsWith('\\', $path) || Strings::endsWith('/', $path)){
@@ -763,7 +763,7 @@ class Strings
 		return $path;
 	}
 
-	static function addTrailingSlash(string $path): string{
+	static function addTrailingSlash(string $path) : string{
 		$path = static::realPathNoCoercive($path);
 
 		if (!Strings::endsWith('\\', $path) && !Strings::endsWith('/', $path)){
@@ -773,7 +773,10 @@ class Strings
 		return $path;		
 	}
 
-	static function deinterlace(string $literal){
+	/*
+		Desentrelaza un string en dos.
+	*/
+	static function deinterlace(string $literal) : Array {
         $arr = str_split($literal);
 
         $str1 = '';
@@ -795,11 +798,14 @@ class Strings
         return [$str1, $str2];
     }
 
-    static function interlace(Array $str){
+	/*
+		Entrelaza (hace un merge) de un arrat de strings
+	*/
+    static function interlace(Array $str) : string {
         $ret = '';
 
         if (count($str) === 0){
-            return;
+            return '';
         } 
 
         if (count($str) === 1){
@@ -827,6 +833,18 @@ class Strings
         
         return $ret;
     }
+
+	static function removeInlineComments(string $str) : string {	
+		return preg_replace('/\n\s*\n/', "\n", $str);
+	}	
+
+	static function removeMultiLineComments(string $str) : string {	
+		return preg_replace('!/\*.*?\*/!s', '', $str);	
+	}
+
+	static function removeComments(string $str) : string {
+		return static::removeInlineComments(static::removeMultiLineComments($str));
+	}
 }
 
 
