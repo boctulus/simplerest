@@ -4,12 +4,7 @@ namespace simplerest\core\libs;
 
 use simplerest\core\interfaces\IValidator;
 
-/*
-	Validador de campos de formulario
-	Ver 2.1 Beta
 
-	@author boctulus
-*/
 class Validator implements IValidator
 {
 	protected $required  = true;
@@ -117,17 +112,7 @@ class Validator implements IValidator
 		static::$rule_types = array_keys(static::$rules);
 	}
 
-	/*
-		@param string $dato
-		@param string $tipo
-		@return mixed
-		
-		Chequear si es mejor utilizar FILTER_VALIDATE_INT y FILTER_VALIDATE_FLOAT
-
-		https://www.php.net/manual/en/filter.filters.validate.php
-		
-		
-	*/
+	
 	static function isType($dato, $tipo){
 		if ($dato === NULL)
 			throw new \InvalidArgumentException('No data'); 
@@ -165,12 +150,7 @@ class Validator implements IValidator
 	}	
 
 
-	/*
-		@param array $rules
-		@param array $data
-		@return mixed
-
-	*/
+	
 	function validate(?array $rules = null, array $data){
 		// i18n
         bindtextdomain('validator', LOCALE_PATH);
@@ -183,9 +163,7 @@ class Validator implements IValidator
 		
 		$errores = [];
 		
-		/*
-			Crea array con el campo como índice
-		*/
+		
 		$push_error = function ($campo, array $error, array &$errores){
 			if(isset($errores[$campo]))
 				$errores[$campo][] = $error;
@@ -393,19 +371,12 @@ class Validator implements IValidator
 }
 
 
-/*
-	Helper
-*/
+
 
 
 // @author: vitalyart dot ru
 if (!function_exists('array_key_first')) {
-    /**
-     * Gets the first key of an array
-     *
-     * @param array $array
-     * @return mixed
-     */
+    
     function array_key_first(array $array)
     {
         if (count($array)) {

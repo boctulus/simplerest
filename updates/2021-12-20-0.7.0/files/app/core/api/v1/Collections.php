@@ -180,13 +180,7 @@ class Collections extends MyApiController
     }        
 
 
-     /**
-     * delete
-     *
-     * @param  mixed $id
-     *
-     * @return void
-     */
+     
     function delete($id = NULL) {
         if($id == NULL)
             Factory::response()->sendError("Lacks id for Collection in request", 400);
