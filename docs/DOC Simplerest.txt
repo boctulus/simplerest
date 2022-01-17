@@ -7349,3 +7349,20 @@ En caso de que nuestra clase tenga parámetros y se los querramos pasar o sean r
 	$o = Container::makeWith('car', ['color' => 'blue', 'max_speed' => 200]);
 	print_r($o->run());
 	print_r($o);
+
+
+# Correr procesos en background
+
+Puede utilizar System::runInBackground() desde la versión 0.7.0
+
+	runInBackground(string $cmd, bool $capture_output = true)
+
+Ej: 
+
+	$cmd = 'php com dumb some_work';
+	$pid = System::runInBackground($cmd, true);
+
+En el caso de Linux, devuelve el PID del proceso ejecutado en background.
+
+
+
