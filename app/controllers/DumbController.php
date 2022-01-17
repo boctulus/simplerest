@@ -29,6 +29,7 @@ use simplerest\core\libs\Update;
 use simplerest\controllers\api\Products;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\System;
+use simplerest\core\libs\Supervisor;
 
 use simplerest\core\libs\Reflector;
 use simplerest\libs\Foo;
@@ -6815,6 +6816,12 @@ class DumbController extends Controller
         $pid = System::runInBackground($cmd);
 
         d($pid, 'pid');
+    }
+
+    function test_supervisor(){
+        // debería instanciarlo desde el Container
+
+        $sup = new Supervisor();
     }
 
 }
