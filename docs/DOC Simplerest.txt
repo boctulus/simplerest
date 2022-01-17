@@ -7364,5 +7364,41 @@ Ej:
 
 En el caso de Linux, devuelve el PID del proceso ejecutado en background.
 
+# CronJobs 
+
+Se están implementando tareas programadas o "cron jobs". 
+
+El comando parar declararlos es:
+
+	php com make cron [ {name} | --name={name} ] 
+	--time={time} | --hour={hour} --minute={--minute}
+	--weekday={weekday} 
+	--monthday={monthday}
+
+Para listar los cronJobs es con la opción --list
+
+	php com make cron --list
+
+Los cron jobs se inician con "cronos --start"
+
+	php com cronos --start
+
+(*) El framework intentará hacer un "autostart". 
+
+Para remover un cronJon con --remove
+
+	php com make cron --remove {name}
+
+Para detener la ejecución de un cronJon con --stop sobre el comando "make cron" o "cronos"
+
+	php com make cron --stop {name}
+o
+
+	php com make cron --stop --name={name}
+
+o
+	php com make cron --stop --pid={pid}
+
+
 
 
