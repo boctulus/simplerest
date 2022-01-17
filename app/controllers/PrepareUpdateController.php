@@ -99,7 +99,6 @@ class PrepareUpdateController extends ConsoleController
         FILES;
 
         $exclude = explode(PHP_EOL, $str_except_files);
-
         Files::copy($ori, $dst, ['app/core'], $exclude);
 
 
@@ -145,12 +144,13 @@ class PrepareUpdateController extends ConsoleController
 
         Files::copy($ori, $dst, [
             'core/libs/DB.php',
-            'core/libs/Files.php',
-            'core/libs/Reflector.php',
-            'core/Container.php',
+            'core/libs/Files.php',            
             'core/Model.php',
             'core/api/v1/ApiController.php',
             'core/libs/Strings.php',
+            'core/libs/Reflector.php',
+            'core/Container.php',
+            'app/core/libs/System.php'
         ]);
 
         Files::delTree('./tmp');
