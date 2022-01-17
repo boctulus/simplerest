@@ -2767,6 +2767,27 @@ Ej:
 
 	d($userdata);
 
+O incluso mucho más fácil, usando el método find()
+
+	// Solo válido para un usuario autenticado
+	$uid = Acl::getCurrentUid();
+
+	DB::getDefaultConnection();
+
+	$u = get_user_model_name();
+	$m = new $u();
+
+	$uid_field = $m->getSchema()['id_name'];
+
+	/*
+		User data
+	*/
+	$userdata = ($m)
+	->find($uid)
+	->first();
+
+	d($userdata);
+
 
 # Comunicación "realtime" via eventos 
 
