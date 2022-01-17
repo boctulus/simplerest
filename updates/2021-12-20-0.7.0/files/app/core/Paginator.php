@@ -15,12 +15,7 @@ class Paginator
     protected $query = '';
     protected $binding = [];
 
-    /** 
-     * @param array $attributes of the entity to be paginated
-     * @param array $order 
-     * @param int $offset
-     * @param int $limit
-    */
+    
     function __construct($attributes = null, array $order = null, int $offset = 0, int $limit = null){
         $this->order = $order;
         $this->offset = $offset;
@@ -117,22 +112,14 @@ class Paginator
         return $this;
     }
 
-    /**
-     * Set the value of orders
-     *
-     * @return  self
-     */ 
+     
     function setOrders($orders): Paginator
     {
         $this->orders = $orders;
         return $this;
     }
 
-    /**
-     * Set the value of offset
-     *
-     * @return  self
-     */ 
+     
     function setOffset($offset): Paginator
     {
         $this->offset = $offset;
@@ -143,11 +130,7 @@ class Paginator
         return $this->offset;
     }
 
-    /**
-     * Set the value of limit
-     *
-     * @return  self
-     */ 
+     
     function setLimit($limit): Paginator
     {
         $this->limit = $limit;
@@ -158,17 +141,13 @@ class Paginator
         return $this->limit;
     }
 
-     /**
-     * Get the value of query
-     */ 
+      
     function getQuery(): string
     {
         return $this->query;
     }
 
-    /**
-     * Get the value of binding
-     */ 
+     
     function getBinding(): array
     {
         return $this->binding;

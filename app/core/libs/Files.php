@@ -185,7 +185,7 @@ class Files
 			if (!$ok){
 				if (static::$callable !== null){
 					$file = file_get_contents($dst);
-					$file = call_user_func(static::$callable, $file);
+					$file = call_user_func_array(static::$callable, [$file, $dst]);
 
 					$ok = (bool) file_put_contents($dst, $file);
 				} else {

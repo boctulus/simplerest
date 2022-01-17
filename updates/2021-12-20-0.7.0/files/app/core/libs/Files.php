@@ -41,9 +41,7 @@ class Files
 		return false;
 	}
 
-	/*
-		Returns absolute path relative to root path
-	*/
+	
 	static function getAbsolutePath(string $path, string $relative_to =  ROOT_PATH){
 		$relative_to = Strings::addTrailingSlash($relative_to);
 
@@ -77,22 +75,7 @@ class Files
 	// https://stackoverflow.com/a/17161106/980631
 	static function recursiveGlob($pattern, $flags = 0) {
 		$files = glob($pattern, $flags); 
-		foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
-			$files = array_merge($files, static::recursiveGlob($dir.'/'.basename($pattern), $flags));
-		}
-
-		foreach ($files as $ix => $f){
-			$files[$ix] = Strings::removeUnnecessarySlashes($f);
-		}
-
-		$files = array_unique($files);
-
-		return $files;
-	}
-
-	/*
-		Extract directory from some path
-	*/
+		foreach (glob(dirname($pattern).'
 	static function getDir(string $path){
 		$_path = realpath($path);
 
@@ -115,9 +98,7 @@ class Files
 		static::mkDir(static::$backup_path);
 	}
 
-	/*
-		Copy single files
-	*/
+	
 	static function cp(string $ori, string $dst, bool $simulate = false, bool $overwrite = true){
 		$ori = trim($ori);
         $dst = trim($dst);
@@ -196,14 +177,7 @@ class Files
     }
 
 	
-	/*
-		Copy recursively from one location to another.
-		
-        @param $ori source directory
-		@param $dst destination directory
-		@param $files to be copied
-        @param $except files a excluir (de momento sin ruta). It can be an array or a glob pattern
-    */
+	
     static function copy(string $ori, string $dst, ?Array $files = null, ?Array $except = null)
     {
 		$dst = Strings::removeTrailingSlash($dst);
@@ -225,9 +199,7 @@ class Files
 			}
 		}
 
-		/*
-			Glob included files
-		*/
+		
 		$glob_includes = [];
 		foreach ($files as $ix => $f){
 			if (Strings::startsWith('glob:', $f)){
@@ -263,9 +235,7 @@ class Files
 
 		$except_dirs = [];
 		if (is_array($except)){
-			/*
-				Glob ignored files
-			*/
+			
 			$glob_excepts = [];
 			foreach ($except as $ix => $e){
 				if (Strings::startsWith('glob:', $e)){
@@ -299,9 +269,7 @@ class Files
                 continue;
             }
             
-			/*
-				$ori_path es o se hace relativo
-			*/
+			
 			if (!self::isAbsolutePath($_file)){
 				$ori_path = trim($ori . DIRECTORY_SEPARATOR . $_file);
 				// $ori_path_abs = static::getAbsolutePath($ori_path);
@@ -393,21 +361,13 @@ class Files
         }
     }
 
-	/*
-		Delete a single file
-
-		@return bool
-	*/
+	
 	static function delete(string $file){
 		$file = realpath($file);		
 		return @unlink($file);
 	}
 
-	/*
-		Delete a single file (or fail)
-
-		@return bool
-	*/
+	
 	static function deleteOrFail(string $file){
 		$file = realpath($file);
 		
@@ -424,11 +384,7 @@ class Files
 		return ;
 	}
 
-	/*
-		Delete all files (but not directories) from a path matching a glob pattern
-
-		@return int counting of deleted files
-	*/
+	
 	static function globDelete(string $dir, ?string $glob_pattern = '*.*', bool $recursive = false) {
 		$dir = realpath($dir);
 
@@ -459,43 +415,7 @@ class Files
 		// Borro directorios recursivamente
 		// https://stackoverflow.com/a/27626153/980631
 		$resultant_dirs = [];
-		while($dirs = glob($dir . '/*', GLOB_ONLYDIR)) {
-			$dir .= '/*';
-			if(empty($resultant_dirs)) {
-				$resultant_dirs = $dirs;
-			} else {
-				$resultant_dirs = array_merge($resultant_dirs, $dirs);
-			}
-		}
-
-		$resultant_dirs = array_reverse($resultant_dirs);
-
-		foreach($resultant_dirs as $d){
-			dd($d);
-			rmdir($d);
-		}
-
-		return $deleted;
-	}
-
-
-	static function delTree(string $dir, bool $include_self = false, bool $warn_if_not_exists = false) {
-		if (!is_dir($dir)){
-			if ($warn_if_not_exists){
-				throw new \InvalidArgumentException("Invalid directory '$dir'");
-			} else {
-				return;
-			}
-		}
-
-		if (!$include_self){
-			return Files::globDelete($dir, '{*,.*,*.*}', true, true);
-		}
-		
-		/*
-			itay at itgoldman dot com
-			https://www.php.net/rmdir
-		*/
+		while($dirs = glob($dir . '
 		if (is_dir($dir)) { 
 			$objects = scandir($dir);
 			foreach ($objects as $object) { 
@@ -574,11 +494,7 @@ class Files
 		}
 	}
 
-	/*
-		https://stackoverflow.com/a/1334949/980631
-
-		Modified by @boctulus
-	*/
+	
 	static function zip(string $ori, string $dst, ?Array $except = null, bool $overwrite = true)
 	{
 		if (!extension_loaded('zip') || !file_exists($ori)) {

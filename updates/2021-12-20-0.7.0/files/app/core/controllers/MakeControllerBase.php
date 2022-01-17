@@ -9,9 +9,7 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Schema;
 
-/*
-    Class builder
-*/
+
 class MakeControllerBase extends Controller
 {
     const SERVICE_PROVIDERS_PATH = ROOT_PATH . 'providers' . DIRECTORY_SEPARATOR; //
@@ -79,11 +77,7 @@ class MakeControllerBase extends Controller
             return;
         }
         
-        /*
-        if ($opt[0] == '-h' || $opt[0] == '--help'){
-            $this->help();
-        }
-        */
+        
     }
 
     protected function setup(string $name) {
@@ -295,9 +289,7 @@ class MakeControllerBase extends Controller
         }            
     }
 
-    /*
-        File manipulation
-    */
+    
     function generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt) {        
         $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
 
@@ -538,9 +530,7 @@ class MakeControllerBase extends Controller
         return 'STR'; 
     }
 
-    /*
-        Return if file is protected and not should be overwrited
-    */
+    
     protected function hasFileProtection(string $filename, string $dest_path, Array $opt) : bool {
         $warn_file_existance = true;
         $warn_ignored_file   = true;
@@ -663,16 +653,12 @@ class MakeControllerBase extends Controller
 
             $relationships[$schema['table_name']] = $rels;
 
-            /*
-                Asumo que solo existe una tabla puente entre ciertas tablas
-            */
+            
             foreach ($rels as $tb => $r){
                 $pivots[$schema['table_name']][] = $tb;
             }
 
-            /*
-                Construyo $pivot_fks  
-            */
+            
             foreach ($pivots as $pv => $tbs){
                 $rels = $relationships[$pv];
                 $tbs  = array_keys($rels);
@@ -776,10 +762,7 @@ class MakeControllerBase extends Controller
             }
         }
 
-        /*
-            Repito para tablas puente con las que no hay relación directa
-            => no aparencen antes
-        */
+        
 
         if (isset($pivot_data['pivots'])){
             $pivots = $pivot_data['pivots'];
@@ -819,9 +802,7 @@ class MakeControllerBase extends Controller
         $this->relation_scan(...$opt);
     }
 
-    /*
-        Solución parche
-    */
+    
     function db_scan(...$opt){
        $params = implode(' ',$opt);
 
@@ -1053,9 +1034,7 @@ class MakeControllerBase extends Controller
                 $_rules[$f]['max'] = $len;
             } 
 
-            /*
-              https://www.php.net/manual/en/language.types.type-juggling.php
-            */
+            
 
             // varbinary
             if (preg_match('/^(|varbinary)\(([0-9]+)\)$/', $types_raw[$f], $matches)){
@@ -1100,11 +1079,7 @@ class MakeControllerBase extends Controller
             }
 
 
-            /*
-                Para blobs
-
-                https://www.virendrachandak.com/techtalk/how-to-get-size-of-blob-in-mysql/
-            */
+            
 
             if (!in_array($f, $nullables)){
                 $_rules[$f]['required'] = 'true';
@@ -1123,9 +1098,7 @@ class MakeControllerBase extends Controller
         $rules  = "[\r\n". implode(",\r\n", $_rules). "\r\n\t\t\t]";
 
 
-        /*
-            Relationships
-        */
+        
 
         $relations = '';
         $rels = Schema::getAllRelations($name, true);
@@ -1370,16 +1343,12 @@ class MakeControllerBase extends Controller
                 $to_db = $matches[1];
             }
 
-            /*
-                Makes a reference to the specified table schema
-            */
+            
             if (preg_match('/^--(table|tb)[=|:]([a-zA-Z0-9_-]+)$/', $o, $matches)){
                 $tb_name = $matches[2];
             }
             
-            /*  
-                This option forces php class name
-            */
+            
             if (preg_match('/^--(class_name|class)[=|:]([a-zA-Z0-9_]+)$/', $o, $matches)){
                 $class_name = Strings::snakeToCamel($matches[2]);
                 $file = str_replace('__NAME__', $class_name, $file); 
@@ -1394,10 +1363,7 @@ class MakeControllerBase extends Controller
                 }
             }
 
-            /*
-                The only condition to work is the script should be enclosed with double mark quotes ("")
-                and it should not contain any double mark inside
-            */
+            
             if (preg_match('/^--from_script[=|:]"([^"]+)"/', $o, $matches)){
                 $script = $matches[1];
             }
@@ -1428,9 +1394,7 @@ class MakeControllerBase extends Controller
 
         foreach ($opt as $o)
         {
-            /*
-                Schema changes
-            */
+            
 
 
             $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri', 'setPrimary'], '.*');
@@ -1565,9 +1529,7 @@ class MakeControllerBase extends Controller
                 $truncate = $_truncate;
             }
 
-            /*
-                FKs 
-            */
+            
 
             if (preg_match('/^--(foreign|fk|fromField)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
                 $fromField = $matches[2];

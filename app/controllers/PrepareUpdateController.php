@@ -8,6 +8,7 @@ use simplerest\core\controllers\ConsoleController;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Update;
+use simplerest\core\libs\Strings;
 
 /*
     Arma el update para su distribución
@@ -88,8 +89,8 @@ class PrepareUpdateController extends ConsoleController
         app/core/Request.php
         app/core/Response.php
         app/core/Middleware.php
-        app/core/Controller.php
-        app/core/ConsoleController.php
+        app/core/controllers/Controller.php
+        app/core/controllers/ConsoleController.php
         app/core/Acl.php
         app/core/interfaces
         app/core/exceptions
@@ -113,12 +114,19 @@ class PrepareUpdateController extends ConsoleController
         d($ret);
 
         // ahora copio los archivos ofuscados en el destino
+
+        // seteo callback para remover comentarios
+        Files::setCallback(function(string $content, string $path){
+            return Strings::removeMultiLineComments($content);
+        });
+
         $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
         $dst = "updates/{$this->last_update_dir}/";  
         Files::copy($ori, $dst . 'files/app/core');
 
+        Files::setCallback(null);
 
-        // Copio archivos excluidos ahora sin ofuscar
+        // Copio archivos excluidos sin ofuscar
         $ori = '/home/www/simplerest/';
         $dst = "updates/{$this->last_update_dir}/";  
         Files::copy($ori, $dst . 'files', $exclude);
@@ -154,10 +162,14 @@ class PrepareUpdateController extends ConsoleController
 
         $ret = shell_exec($cmd);
         d($ret);
-
-        d("Ahora copio ofuscados al destino");
         
         // ahora copio los archivos ofuscados en el destino
+
+        // seteo callback para remover comentarios
+        Files::setCallback(function(string $content, string $path){
+            return Strings::removeMultiLineComments($content);
+        });
+
         $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
         $dst = "updates/{$this->last_update_dir}/";  
         Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*

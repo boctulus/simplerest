@@ -241,9 +241,7 @@ class Route
         }
     }
 
-    /*
-     Register
-    */
+    
 
     public static function where($arr){
         //dd([$arr, static::$current], 'where register');

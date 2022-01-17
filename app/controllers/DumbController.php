@@ -6790,7 +6790,7 @@ class DumbController extends Controller
         $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
         $dst = "updates/2021-12-20-0.7.0/";  
 
-        Files::setCallback(function(string $content){
+        Files::setCallback(function(string $content, string $path){
             return Strings::removeMultiLineComments($content);
         });
 
