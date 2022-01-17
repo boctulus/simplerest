@@ -1,6 +1,7 @@
 <?php
 
 use simplerest\core\libs\BackgroundService;
+use simplerest\core\libs\Files;
 
 class OtherWorker extends BackgroundService 
 {
@@ -9,11 +10,11 @@ class OtherWorker extends BackgroundService
 	static protected $weekday;
 	static protected $hour;
 	static protected $minute;
-	static protected $second = 5;
+	static protected $second = 1;
 
 	function start(){
 		// your logic here
-		d('Starting ' . get_class());
+		Files::logger('Starting ' . get_class());
 	}
 
 	function stop(){
