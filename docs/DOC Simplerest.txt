@@ -534,6 +534,9 @@ Debe generar un enlace para cambiar el enlace por GET y en "modo desarrollador" 
 
 <-- en producción no tiene chiste que se lea el enlace a seguir !	
 
+Si busca el hook para colgarse del evento, este se llama onRemembered() y le pertenece a AuthController que es extendida por MyAuthController.
+
+
 # Versionado
 
 Se especifica la versión en la url y esto tiene como efecto cargar una versión distinta de la clase ApiController en /app/core/api
@@ -2720,6 +2723,49 @@ La clase AuthController provee varios hooks que pueden usarse en MyAuthControlle
     function onChangedPassword($uid, $roles, $perms){}
 
     function getDbAccess($uid) : Array { return []; }
+
+
+# Cómo recuperar datos de usuario
+
+Es posible que Ud. necesite recuperar los datos del usuario (nombre, username, etc) en el hook onRemembered() y esto puede hacerse más o menos así:
+
+	function onRemembered($data, $link)
+    {
+        $u = get_user_model_name();
+        $m = new $u();
+
+		/*
+			User data
+		*/
+        $userdata = ($m)
+        ->where([$u::$email => $data['email'] ])
+        ->first();
+
+		// ...
+	}
+
+En otros casos (no este), Ud. podría querer recuperar información del usuario en base a su UID.
+
+Ej:
+
+	// Solo válido para un usuario autenticado
+	$uid = Acl::getCurrentUid();
+
+	DB::getDefaultConnection();
+
+	$u = get_user_model_name();
+	$m = new $u();
+
+	$uid_field = $m->getSchema()['id_name'];
+
+	/*
+		User data
+	*/
+	$userdata = ($m)
+	->where([$uid_field => $uid ])
+	->first();
+
+	d($userdata);
 
 
 # Comunicación "realtime" via eventos 
