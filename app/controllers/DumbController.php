@@ -28,6 +28,7 @@ use simplerest\core\libs\Env;
 use simplerest\core\libs\Update;
 use simplerest\controllers\api\Products;
 use simplerest\controllers\api\TblPersona;
+use simplerest\core\libs\System;
 
 use simplerest\core\libs\Reflector;
 use simplerest\libs\Foo;
@@ -6801,4 +6802,19 @@ class DumbController extends Controller
         $file = file_get_contents('/home/www/simplerest/updates/2021-12-20-0.7.0/files/app/core/Container.php');
         d(Strings::removeMultiLineComments($file));
     }
+
+    function some_work(){
+        for ($i=1; $i<=4; $i++){
+            d($i);
+            sleep(1);
+        }
+    }
+
+    function test_background_task(){
+        $cmd = 'php com dumb some_work';
+        $pid = System::runBackgroundProcess($cmd);
+
+        d($pid, 'pid');
+    }
+
 }
