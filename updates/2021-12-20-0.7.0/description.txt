@@ -32,3 +32,11 @@ UPDATE DESCRIPTION
     . Si desea que el archivo se cree con la declaración de tipado estricto utilice --strict
 
 	php com make controller my_controller --strict
+
+-  Ejecución de procesos en background
+
+Ej: 
+
+    $cmd = 'php com my_controller some_work';
+    $pid = System::runInBackground($cmd);
+
