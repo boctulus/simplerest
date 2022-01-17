@@ -7,11 +7,7 @@ use simplerest\core\libs\DB;
 use simplerest\core\Model;
 use simplerest\core\libs\Strings;
 
-/*
-    SimpleRest
 
-    @author Bozzolo Pablo
-*/
 
 trait SubResourcesV2
 {
@@ -41,9 +37,7 @@ trait SubResourcesV2
         $sc   = get_schema($tb);
         $rels = $sc['expanded_relationships'];
 
-        /*
-            Reemplace the INNER JOIN to the main table for WHERE
-        */
+        
         $fn_where_x_join = function($sql, $table){
             $pos = strpos($sql, 'WHERE');
 
@@ -56,11 +50,7 @@ trait SubResourcesV2
             return $sql;
         };
 
-        /*
-            Apply JSON_ARRAYAGG() or equivalent
-
-            https://stackoverflow.com/questions/48843188/mysql-json-object-instead-of-group-concat/48844772
-        */
+        
         $fn_json_arrayagg = function($q){
              switch (DB::driver()){
                 case 'mysql':
@@ -175,11 +165,7 @@ trait SubResourcesV2
 
                 // $cnt > 1
                 default:
-                    /*
-                        Caso donde hay más de una relación entre dos tablas. 
-                        
-                        Ej: cuando hay un usuario creador y otro actualizador (dos FKs hacia la misma tabla)
-                    */
+                    
 
                     // De acá la idea es quedarme con los JOINS 
                     //
@@ -281,9 +267,7 @@ trait SubResourcesV2
 
        //exit;  //////////
 
-        /*
-            Query assembly
-        */
+        
 
         $sub_qs = implode(','. PHP_EOL . PHP_EOL, $subqueries);
         //dd($sub_qs);
@@ -292,9 +276,7 @@ trait SubResourcesV2
         ///////////
 
 
-        /*
-            Main query
-        */
+        
 
         $sql = $instance
         ->select($fields)
@@ -305,9 +287,7 @@ trait SubResourcesV2
     
         $rows = Model::query($sql);
 
-        /*
-            JSON decoding
-        */
+        
         foreach ($rows as $ix => $row){
             foreach ($row as $field => $dato){
                 if (in_array($field, $encoded)){

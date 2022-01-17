@@ -10,25 +10,14 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Schema;
 
-/*
-    Migration commands
-*/
+
 class MigrationsControllerBase extends Controller
 {
     function make(...$opt) {
         return (new MakeController)->migration(...$opt);
     }
     
-    /*
-        Migrating: 2014_10_12_000000_create_users_table
-        Migrated:  2014_10_12_000000_create_users_table
-        Migrating: 2014_10_12_100000_create_password_resets_table
-        Migrated:  2014_10_12_100000_create_password_resets_table
-        Migrating: 2020_10_28_145609_as_d_f
-        Migrated:  2020_10_28_145609_as_d_f
-
-        php com migrations migrate --file=2021_09_14_27905675_user_sp_permissions.php
-    */
+    
     function migrate(...$opt) {
         $filenames = [];
 
@@ -91,9 +80,7 @@ class MigrationsControllerBase extends Controller
                 $skip = Strings::slice($o, '/^--skip=([0-9]+)$/');
             }
 
-            /*
-                Ahora acepto rutas absolutas -útiles para manejarse dentro de Service Providers-
-            */
+            
             if (Strings::startsWith('--dir=', $o)){
                 $dir_opt = true;
                 $_dir    = substr($o, 6);
@@ -223,9 +210,7 @@ class MigrationsControllerBase extends Controller
             
             StdOut::pprint("Migrated  '$filename' --ok\r\n");
             
-            /*
-                Main connection restore
-            */
+            
 
             get_default_connection();
 
@@ -253,11 +238,7 @@ class MigrationsControllerBase extends Controller
         DB::enableForeignKeyConstraints();
     }
     
-    /*
-        Regresa migraciones (por defecto solo una)
-
-        Va borrando registros de `migrations` 
-    */
+    
     function rollback(...$opt) 
     {
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
@@ -433,9 +414,7 @@ class MigrationsControllerBase extends Controller
         DB::enableForeignKeyConstraints();
     }
 
-    /*
-        Clears migrations table
-    */
+    
     function clear(...$opt){
         foreach ($opt as $o)
         {
@@ -457,28 +436,18 @@ class MigrationsControllerBase extends Controller
         StdOut::pprint("$affected entries were cleared from migrations table for database `$to_db`\r\n");
     }
 
-    /*
-        Rollback de todas las migraciones. Equivale a "rollback --all"
-    */
+    
     function reset() {
         $this->rollback("--all");
     }
 
-    /*  
-        rollback + migrate
-    */
+    
     function redo(...$opt){
         $this->rollback(...$opt);
         $this->migrate(...$opt);
     }
 
-    /*
-        This command will drop all tables from an specific database, even those one are not affected by migrations.
-
-        At the end it clear all records in `migrations` table for the database.
-
-        It differs from Laravel equivalent because this one does not run "migrate" at the end neither has --seed to run seeders (at this moment)
-    */
+    
     function fresh(...$opt) 
     {   
         $force = false;
@@ -570,18 +539,7 @@ class MigrationsControllerBase extends Controller
         }                
     }
 
-    /*
-        Rolling back: 2014_10_12_100000_create_password_resets_table
-        Rolled back:  2014_10_12_100000_create_password_resets_table
-        Rolling back: 2014_10_12_000000_create_users_table
-        Rolled back:  2014_10_12_000000_create_users_table
-        Migrating: 2014_10_12_000000_create_users_table
-        Migrated:  2014_10_12_000000_create_users_table
-        Migrating: 2014_10_12_100000_create_password_resets_table
-        Migrated:  2014_10_12_100000_create_password_resets_table
-
-        Lo que hace exactamente es un reset() seguido un migrate()
-    */
+    
     function refresh() {
         $this->reset();
         $this->migrate();
@@ -594,10 +552,7 @@ class MigrationsControllerBase extends Controller
         }
     }
 
-    /*
-        Sería ideal que cada comando tuviera su propia sección de ayuda y este comando "concatenara"
-        esas secciones.
-    */
+    
     function help(){
         echo <<<STR
         MIGRATIONS COMMAND HELP

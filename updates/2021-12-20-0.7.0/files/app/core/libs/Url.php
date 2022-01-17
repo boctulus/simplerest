@@ -4,12 +4,7 @@ namespace simplerest\core\libs;
 
 class Url 
 {
-    /*
-		Patch for parse_str() native function
-
-		It could be more efficient and precise if I use a preg_replace_callback and
-		take note about which parameter was substituted
-	*/
+    
 	static function parseStrQuery(string $s){
 		$rep = '__DOT__';
 
@@ -57,13 +52,7 @@ class Url
         return $protocol;
     }
 
-    /**
-     * url_check - complement for parse_url
-     *
-     * @param  string $url
-     *
-     * @return bool
-     */
+    
     static function url_check(string $url){
         $sym = null;
     
@@ -178,7 +167,7 @@ class Url
             }
         }
    
-        if (/* $headers[$content_type_found] == 'application/json' || */ is_array($body)){
+        if ( is_array($body)){
             $data = json_encode($body);
         } else {
             $data = $body;

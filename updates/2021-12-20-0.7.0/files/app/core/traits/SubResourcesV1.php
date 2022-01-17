@@ -32,9 +32,7 @@ trait SubResourcesV1
         if (!empty($connect_to)){
             $d2m = false;
 
-            /*
-                Detalle a maestro
-            */
+            
 
             static $rx = [];
 
@@ -83,9 +81,7 @@ trait SubResourcesV1
            
                 
 
-                /*
-                    Maestro a detalle 
-                */
+                
 
                 foreach ($connect_to as $tb){                                
                     $rx = $rs[$tb] ?? null;

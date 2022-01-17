@@ -4,12 +4,7 @@ namespace simplerest\core\libs;
 
 use simplerest\core\libs\Url; 
 
-/*
-	Author: boctulus
-	
-	Reference:
-	https://developer.mozilla.org/es/docs/Web/API/Server-sent_events/Using_server-sent_events
-*/
+
 
 class SSE
 {
@@ -45,9 +40,7 @@ class SSE
 		return $this;
 	}
 
-	/*
-		Enviar periódicamente para evitar que se cierre la conexión
-	*/
+	
 	function sendComment(){
 		echo ": hi\n\n";
 	}

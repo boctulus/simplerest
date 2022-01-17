@@ -189,9 +189,7 @@ class FrontController
             $res->setData($data);  
         }
         
-        /*
-            Middlewares
-        */
+        
 
         //dd($class_name, 'Controller');
 

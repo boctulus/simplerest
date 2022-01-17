@@ -2,9 +2,7 @@
 
 namespace simplerest\core\libs;
 
-/*
-    https://stackoverflow.com/a/2932200/980631
-*/
+
 class SortedIterator extends \SplHeap
 {
     public function __construct(\Iterator $iterator)

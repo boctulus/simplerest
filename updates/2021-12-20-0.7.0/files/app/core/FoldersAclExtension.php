@@ -9,26 +9,12 @@ use simplerest\libs\Debug;
 
 // mover a ServiceProvider
 
-/*
-    Debe encapsular todas las referencias a las tablas:
 
-    folders
-    folder_permissions
-    folder_other_permissions
-
-*/
 class FoldersAclExtension 
 {   
     public function __construct() { }
 
-    /**
-     * hasFolderPermission
-     *
-     * @param  int    $folder
-     * @param  string $operation
-     *
-     * @return bool
-     */
+    
     static public function hasFolderPermission(int $folder, string $operation)
     {
         if ($operation != 'r' && $operation != 'w')

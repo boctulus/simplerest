@@ -35,13 +35,7 @@ trait ExceptionHandler
         return $t . implode($br . $t, $result);
     }
 
-    /**
-     * exception_handler
-     *
-     * @param  mixed $e
-     *
-     * @return void
-     */
+    
     function exception_handler($e) {
         DB::closeAllConnections();
        

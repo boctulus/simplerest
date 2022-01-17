@@ -405,9 +405,7 @@ class AuthController extends Controller implements IAuth
         }	
     }
 
-    /*
-        Access Token renewal
-    */	
+    	
     function token()
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
@@ -513,9 +511,7 @@ class AuthController extends Controller implements IAuth
         }	
     }
 
-    /*
-        Minimizar la cantidad de instancias de UsersModel !!!!!!!!!
-    */
+    
     function register()
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
@@ -606,9 +602,7 @@ class AuthController extends Controller implements IAuth
                 $data[$this->__active] = $this->config['pre_activated'] ?? false;
             }
 
-            /*
-                Creo "usuario"
-            */
+            
 
             $uid = $u
             ->setValidator(new Validator())
@@ -723,12 +717,7 @@ class AuthController extends Controller implements IAuth
                 return json_decode(json_encode($payload),true);
 
             } catch (\Exception $e) {
-                /*
-                * the token was not able to be decoded.
-                * this is likely because the signature was not able to be verified (tampered token)
-                *
-                * reach this point if token is empty or invalid
-                */
+                
                 Factory::response()->sendError($e->getMessage(),401);
             }	
         }else{
@@ -737,11 +726,7 @@ class AuthController extends Controller implements IAuth
 
     }
 
-    /* 
-    Authorization checkin
     
-        @return mixed array | null
-    */
     function check() {
         static $ret;
 
@@ -844,11 +829,7 @@ class AuthController extends Controller implements IAuth
     }
 
     
-    /*
-        Proviene de un link generado en register()
-
-        Debería haber otro método que genere el mismo enlace
-    */
+    
 	function confirm_email($jwt, $exp)
 	{
 		if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS']))
@@ -905,12 +886,7 @@ class AuthController extends Controller implements IAuth
                 ->update([$this->__confirmed_email => 1]);
 
             } catch (\Exception $e) {
-                /*
-                * the token was not able to be decoded.
-                * this is likely because the signature was not able to be verified (tampered token)
-                *
-                * reach this point if token is empty or invalid
-                */
+                
                 Factory::response()->sendError($e->getMessage(),401);
             }	
         }else{
@@ -948,10 +924,7 @@ class AuthController extends Controller implements IAuth
 
     }     
     
-    /*
-        Si el correo es válido debe generar y enviar por correo un enlance para cambiar el password
-        sino no hacer nada.
-    */
+    
 	function rememberme(){
 		$data  = Factory::request()->getBody(false);
 
@@ -1001,9 +974,7 @@ class AuthController extends Controller implements IAuth
     }
     
 
-    /*
-        Proviene de rememberme() y da la oportunidad de cambiar el pass otorgando tokens a tal fin
-    */
+    
     function change_pass_by_link($jwt = NULL, $exp = NULL){
         if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS'])){
             Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
@@ -1095,12 +1066,7 @@ class AuthController extends Controller implements IAuth
                     
 
                 } catch (\Exception $e) {
-                    /*
-                    * the token was not able to be decoded.
-                    * this is likely because the signature was not able to be verified (tampered token)
-                    *
-                    * reach this point if token is empty or invalid
-                    */
+                    
                     Factory::response()->sendError($e->getMessage(),401);
                 }	
             }else{
@@ -1212,23 +1178,14 @@ class AuthController extends Controller implements IAuth
                                         ]);
 
         } catch (\Exception $e) {
-            /*
-            * the token was not able to be decoded.
-            * this is likely because the signature was not able to be verified (tampered token)
-            *
-            * reach this point if token is empty or invalid
-            */
+            
             Factory::response()->sendError($e->getMessage(),401);
         }	
 
     }
 
 
-    /*
     
-        Related with AuthController and ACL
-
-    */
 
     protected function getUserIdFromApiKey($api_key){
         $uid = DB::table('api_keys')
@@ -1324,9 +1281,7 @@ class AuthController extends Controller implements IAuth
         return in_array($db_connection, $this->getDbAccess($user_id));
     } 
 
-    /*
-        Event Hooks
-    */
+    
 
     function onRegister(Array $data){ }
     function onRegistered(Array $data, $uid, $is_active, $roles){ }

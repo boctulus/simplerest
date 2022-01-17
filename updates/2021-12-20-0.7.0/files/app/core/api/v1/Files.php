@@ -81,13 +81,7 @@ class Files extends MyApiController
         Factory::response()->sendError('Not implemented', 501);
     }
 
-    /**
-     * delete
-     *
-     * @param  mixed $id
-     *
-     * @return void
-     */
+    
     function delete($id = NULL) {
         if($id == NULL)
             Factory::response()->sendError("Lacks id in request", 400);

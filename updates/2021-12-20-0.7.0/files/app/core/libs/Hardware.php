@@ -4,9 +4,7 @@ namespace simplerest\core\libs;;
 
 class Hardware
 {
-    /*
-        https://stackoverflow.com/a/25887332/980631
-    */
+    
     static function UniqueMachineID($salt = "") {
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $temp = sys_get_temp_dir().DIRECTORY_SEPARATOR."diskpartscript.txt";
