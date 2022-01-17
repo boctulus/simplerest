@@ -6856,7 +6856,7 @@ class DumbController extends Controller
         $uid_field = $m->getSchema()['id_name'];
 
         $userdata = ($m)
-        ->where([$uid_field => $uid ])
+        ->find($uid)
         ->first();
 
         d($userdata);
