@@ -6804,7 +6804,7 @@ class DumbController extends Controller
     }
 
     function some_work(){
-        for ($i=1; $i<=4; $i++){
+        for ($i=1; $i<=rand(1,10); $i++){
             d($i);
             sleep(1);
         }
@@ -6812,7 +6812,7 @@ class DumbController extends Controller
 
     function test_background_task(){
         $cmd = 'php com dumb some_work';
-        $pid = System::runBackgroundProcess($cmd);
+        $pid = System::runInBackground($cmd, true);
 
         d($pid, 'pid');
     }
