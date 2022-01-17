@@ -154,13 +154,27 @@ class MyAuthController extends AuthController {
 
     function onRemembered($data, $link)
     {
+        // require 'app/email_templates/recuperar_pass.php';
+
+        // // otras llamadas con $link, $username,... 
+        // $body = \RecuperarPassTemplate::render();
+
+        $body = "Para cambiar la contraseña siga el enlace:<br/><a href='$link'>$link</a>";
+
+        $u = get_user_model_name();
+        $m = new $u();
+
+        $userdata = ($m)
+        ->where([$u::$email => $data['email'] ])
+        ->first();
+
         // Queue email
         $ok = (bool) DB::table('email_notifications')
         ->create([
             'to_addr'    => $data['email'], 
             'to_name'    => '', 
             'subject'    => 'Cambio de contraseña', 
-            'body'       => "Para cambiar la contraseña siga el enlace:<br/><a href='$link'>$link</a>"
+            'body'       => $body
         ]);
 
         /*
