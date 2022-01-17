@@ -16,22 +16,7 @@ class Supervisor
         // d($this->freq);
 
         foreach ($this->classes as $ix => $class){
-            if (!class_exists($this->classes[$ix])){
-                require_once $this->filenames[$ix];
-            }    
-
-            $instance = new $this->classes[$ix]();
-
-            //System::runInBackground(
-            $this->loop($instance, $this->freq[$ix]['second']);
-        }
-    }
-
-    protected function loop(BackgroundService $task, int $every_seconds){
-        //System::runInBackground()
-        while (true){
-            $task->start();
-            sleep($every_seconds);
+            System::runInBackground("php com async loop {$this->filenames[$ix]} {$this->freq[$ix]['second']}");
         }
     }
 
@@ -49,7 +34,7 @@ class Supervisor
             } 
 
             $this->classes[]   = $class_name;
-            $this->filenames[] = $filename;
+            $this->filenames[] = basename($filename);
 
             $this->freq[] = $class_name::getFrequency();
         }   
