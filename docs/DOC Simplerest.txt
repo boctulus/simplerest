@@ -7366,7 +7366,23 @@ En el caso de Linux, devuelve el PID del proceso ejecutado en background.
 
 # CronJobs 
 
-Se están implementando tareas programadas o "cron jobs". 
+Se están incoporando tareas programadas o "cron jobs". En si cada cronJob podría considerarse un "worker service" y se implementan extendiendo la clase BackgroundService. Estos cronjobs se almacenan en /app/cronjobs
+
+	class {Name}Worker extends BackgroundService 
+	{
+		protected int $monthday;
+		protected int $weekday;
+		protected int $hour;
+		protected int $minute;
+
+		function start(){
+			// your logic here
+		}
+
+		function stop(){
+			// your logic here
+		}
+	}
 
 El comando parar declararlos es:
 
@@ -7379,7 +7395,7 @@ Para listar los cronJobs es con la opción --list
 
 	php com make cron --list
 
-Los cron jobs se inician con "cronos --start"
+Los cron jobs se inician con "cronos --start" 
 
 	php com cronos --start
 

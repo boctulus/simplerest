@@ -488,7 +488,7 @@ class Strings
 			
 		if ($fully_qualified){
 			$namespace = Strings::match($file_str, '/namespace[ ]{1,}([^;]+)/');
-			$namespace = trim($namespace);
+			$namespace = !empty($namespace) ? trim($namespace) : '';
 
 			if (!empty($namespace)){
 				$pre_append = "$namespace\\";
