@@ -8,6 +8,7 @@ use simplerest\core\controllers\Controller;
 use simplerest\core\Model;
 use simplerest\core\Request;
 use simplerest\core\Route;
+use simplerest\core\Acl;
 use simplerest\core\MakeControllerBase;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\DB;
@@ -6823,5 +6824,45 @@ class DumbController extends Controller
 
         $sup = new Supervisor();
     }
+
+    function get_userdata(){
+        //d(Acl::getCurrentUid());
+
+        $data = [];
+        $data['email'] = 'xxx@g.com';
+
+        DB::getDefaultConnection();
+
+        $u = get_user_model_name();
+        $m = new $u();
+
+        $userdata = ($m)
+        ->where([$u::$email => $data['email'] ])
+        ->first();
+
+        d($userdata);
+    }
+
+    function get_userdata2(){
+        //$uid = Acl::getCurrentUid();
+
+        $uid = 99;
+
+        DB::getDefaultConnection();
+
+        $u = get_user_model_name();
+        $m = new $u();
+
+        $uid_field = $m->getSchema()['id_name'];
+
+        $userdata = ($m)
+        ->where([$uid_field => $uid ])
+        ->first();
+
+        d($userdata);
+        d($m->dd());
+    }
+
+
 
 }
