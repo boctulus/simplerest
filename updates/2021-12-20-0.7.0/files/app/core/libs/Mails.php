@@ -6,11 +6,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class Mails {
 
-    /*
-        Gmail => habilitar:
-
-        https://myaccount.google.com/lesssecureapps
-    */
+    
     static function sendMail(string $to_email, string $to_name, $subject, $body, $alt_body = null){
 		$config = config();
 

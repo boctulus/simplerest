@@ -8,15 +8,7 @@ use simplerest\core\libs\Strings;
 use simplerest\libs\Debug;
 use simplerest\core\libs\Factory;
 
-/*
-	Schema Builder
-	
-	@author Pablo Bozzolo <boctulus@gmail.com>
 
-	The following can be useful :P
-	https://hoelz.ro/ref/mysql-alter-table-alter-change-modify-column
-	https://mariadb.com/kb/en/auto_increment/
-*/
 
 class Schema 
 {
@@ -44,11 +36,7 @@ class Schema
 		$this->fromDB();
 	}
 
-	/*	
-		It works in MySQL y Oracle
-
-		If db connection was made by DB class, then it's faster to use DB::database() instead
-	*/
+	
 	static function getCurrentDatabase(){
 		return DB::select("SELECT DATABASE() FROM DUAL;", null, 'COLUMN')[0];
 	}
@@ -222,10 +210,7 @@ class Schema
 		return $relationships;
 	}
 
-	/*
-		Obtiene relaciones con otras tablas de forma bi-direccional
-		(desde y hacia esa tabla)
-	*/
+	
 	static function getAllRelations(string $table, bool $compact = false, bool $include_inverse_relations = true){
         $relations = [];
 
@@ -330,9 +315,7 @@ class Schema
     }
 
 
-	/*
-    	Given a table name gets a filename including full path for a posible migration file 
-	*/
+	
 	static function generateMigrationFileName($tb_name){
 			
 		// 2020_10_28_141833_yyy
@@ -370,9 +353,7 @@ class Schema
 		WHERE table_schema = '$db_name'", [], 'COLUMN');
 	}
 
-	/*
-		https://arjunphp.com/how-to-get-mysql-table-comments/
-	*/
+	
 	static function getTableComment( string $table, string $conn_id = null) {	
 		$config = config();
 		
@@ -866,9 +847,7 @@ class Schema
 		return $this;		
 	}
 	
-	/* 
-		modifiers
-	*/
+	
 	
 	// autoincrement
 	function auto(bool $val = true){
@@ -891,9 +870,7 @@ class Schema
 		return $this->dropAuto();
 	}
 
-	/*
-		This function only set as nullable but don't drop default as dropNullable()
-	*/
+	
 	function nullable(bool $value =  true){
 		$this->fields[$this->current_field]['nullable'] =  $value ? 'NULL' : 'NOT NULL';
 		return $this;
@@ -1112,9 +1089,7 @@ class Schema
 	
 	///////////////////////////////
 	
-	/*
-		`nombre_campo` tipo[(longitud)] [(array_set_enum)] [charset] [collate] [attributos] NULL|NOT_NULL [default] [AUTOINCREMENT]
-	*/
+	
 	function getDefinition($field){
 		$cmd = '';		
 		if (in_array($field['type'], ['SET', 'ENUM'])){
@@ -1197,10 +1172,7 @@ class Schema
 
 		$this->commands = [
 			'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";',
-			/*
-			'SET AUTOCOMMIT = 0;',
-			'START TRANSACTION;',
-			*/
+			
 			'SET time_zone = "+00:00";'
 		];
 	
@@ -1220,9 +1192,7 @@ class Schema
 		
 		// Indices
 		
-		/*
-			Ver en versión con "pending changes" 
-		*/
+		
 		if (count($this->indices) >0)
 		{			
 			$cmd = '';		
@@ -1366,9 +1336,7 @@ class Schema
 		return $this->renameColumn($this->current_field, $final);
 	}
 
-	/*	
-		@param string|Array
-	*/
+	
 	function addIndex($column){
 		if (is_array($column)){
 			$cols = implode(',', Strings::backticks($column));
@@ -1461,11 +1429,7 @@ class Schema
 		return $this;
 	}
 
-	/*
-		Permite crear definir UNIQUEs de uno o varios campos
-
-		@param string|Array
-	*/
+	
 	function addUnique($column){
 		if (is_array($column)){
 			$cols = implode(',', Strings::backticks($column));
@@ -1579,9 +1543,7 @@ class Schema
 				//dd($nullable, "NULLABLE($field)");
 
 
-				/*
-					 Attributes
-				*/
+				
 				$unsigned = Strings::slice($str, '/(unsigned)/i', $to_lo) == 'unsigned';
 				$zerofill = Strings::slice($str, '/(zerofill)/i', $to_lo) == 'zerofill';
 				$binary   = Strings::slice($str, '/(binary)/i'  , $to_lo) == 'binary';
@@ -1604,20 +1566,7 @@ class Schema
 				//if (strlen($str)>1)
 				//	throw new \Exception("Parsing error!");				
 				
-				/*
-				dd($field, 'FIELD ***');
-				dd($lines[$i], 'LINES');
-				dd($type, 'TYPE');
-				dd($array, 'ARRAY / SET');
-				dd($len, 'LEN');
-				dd($charset, 'CHARSET');
-				dd($collation, 'COLLATION');
-				dd($nullable, 'NULLBALE');
-				dd($default, 'DEFAULT');
-				dd($auto, 'AUTO');
-				dd($check, 'CHECK');
-				echo "-----------\n";
-				*/
+				
 								
 
 				$this->prev_schema['fields'][$field]['type'] = strtoupper($type);
@@ -1640,44 +1589,19 @@ class Schema
 					return ($s != null) ? $s : 'DEFAULT';
 				});
 
-				/*
-
-					PRI KEY Simple:
-						PRIMARY KEY (`id`),
-
-					PRI KEY Compuesta:
-						PRIMARY KEY (`id`,`co`) USING BTREE
-
-					PRI KEY Con nombre: 
-						CONSTRAINT `pk_id` PRIMARY KEY (`id`,`co`) USING BTREE
-
-					
-					https://stackoverflow.com/a/3303836/980631
-
-				*/
+				
 				$primary = Strings::slice($str, '/PRIMARY KEY \(`([a-zA-Z0-9_]+)`\)/');	// revisar
 
-				/*
-			
-					Compuesto:
-						UNIQUE KEY `correo` (`correo`,`hora`) USING BTREE,
-
-				*/
+				
 				$unique  = Strings::sliceAll($str, '/UNIQUE KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');  // revisar				
 				
-				/*
-					Indices
-				*/
+				
 		
 				$spatial  = Strings::sliceAll($str, '/SPATIAL KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
 
 				$fulltext = Strings::sliceAll($str, '/FULLTEXT KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
 		
-				/*
-					IDEM
-
-					https://dev.mysql.com/doc/refman/8.0/en/create-index.html
-				*/
+				
 				$indexs  = Strings::sliceAll($str, '/KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/'); // revisar
 
 				$ix_type 			= Strings::slice($str, '/USING (BTREE|HASH)/');
@@ -1685,69 +1609,19 @@ class Schema
 				$lock_option		= Strings::slice($str, '/LOCK[ ]?[=]?[ ]?(DEFAULT|NONE|SHARED|EXCLUSIVE)/');
 				
 				
-				/*
-					CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-
-					--[ CONSTRAINT ]-- 
-					'facturas_ibfk_1'
-
-
-					--[ FK ]-- 
-					'user_id'
-
-
-					--[ REFERENCES ]-- 
-					array (
-					0 => 'users',
-					1 => 'id',
-					)
-
-					--[ ON UPDATE ]-- 
-					NULL
-
-					--[ ON DELETE ]-- 
-					'CASCADE'
-
-				*/
+				
 
 				$fk            = Strings::slice($str, '/FOREIGN KEY \(`([a-zA-Z0-9_]+)`\)/');
 				$fk_ref        = Strings::sliceAll($str, '/REFERENCES `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');
 				$fk_on_update  = Strings::slice($str, '/ON UPDATE (RESTRICT|NO ACTION|CASCADE|SET NULL)/');
 				$fk_on_delete  = Strings::slice($str, '/ON DELETE (RESTRICT|NO ACTION|CASCADE|SET NULL)/');
 
-				/*
-				if ($fk != null){
-					dd($fk, 'FK');
-					dd($fk_ref, 'REFERENCES');
-					dd($fk_on_update, 'ON UPDATE');
-					dd($fk_on_delete, 'ON DELETE'); 
-				}
-				*/
+				
 
 				// [CONSTRAINT [symbol]] CHECK (expr) [[NOT] ENFORCED]	
 			$check   = Strings::sliceAll($str, '/CHECK \((.*)\) (ENFORCED|NOT ENFORCED)/');
 			
-			/*
-					Sin probar (req. MySQL 8.0+)
-
-					array(1) {
-						["checks"]=>
-						array(1) {
-							["post_content_check"]=>
-							array(1) {
-							[0]=>
-							array(2) {
-								[0]=>
-								string(94) " CASE WHEN DTYPE = 'Post' THEN CASE WHEN content IS NOT NULL THEN 1 ELSE 0 END ELSE 1 END = 1 "
-								[1]=>
-								string(12) "NOT ENFORCED"
-							}
-							}
-						}
-					}
-
-					https://stackoverflow.com/questions/7522026/how-do-i-add-a-custom-check-constraint-on-a-mysql-table
-				*/	
+				
 				if ($check != null){
 					$prev_schema['checks'] [$constraint] [] = $check;   
 				} else {	
@@ -1763,11 +1637,7 @@ class Schema
 				};
 
 
-				/*
-				dd($constraint, 'CONSTRAINT', function($val){
-					return ($val != null);
-				});
-				*/
+				
 				
 
 				//dd($str, "RESIDUO DE STR for {$lines[$i]}");					
@@ -1882,11 +1752,7 @@ class Schema
 				$def .= "NOT NULL ";
 			}	
 
-			/*			
-			dd($field['nullable'], "NULLABLE ($name)");
-			dd($field['default'], "DEFAULT ($name)");
-			exit;
-			*/
+			
 
 			if (isset($field['nullable']) && !$field['nullable'] && isset($field['default']) && $field['default'] == 'NULL'){
 				throw new \Exception("Column `$name` can not be not nullable but default 'NULL'");

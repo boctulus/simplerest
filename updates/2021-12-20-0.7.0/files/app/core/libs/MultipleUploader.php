@@ -2,32 +2,9 @@
 
 namespace simplerest\core\libs;
 
-/*
-	- Si se excede el POST Content-Length (post_max_size) ...
-	
-		<b>Warning</b>:  POST Content-Length of .... bytes exceeds the limit of 33554432 bytes in <b>Unknown</b> on line <b>0</b><br />
-	
-	- Si el numero de archivos excede max_file_uploads ... ni llegan ... al script, solo el maximo (e.g. 20)
-	
-	- Si un archivo supera upload_max_filesize ... ese archivo se procesa con error=1, los demas se procesan... 
-*/
 
-/*
-	Uso:
 
-		$uploader = (new MultipleUploader('uploads'));
-        //debug($uploader->doUpload('file_*')->getFileNames(),'file_*');
-        debug($uploader->doUpload()->getFileNames(),'Cargados:');
-        //debug($uploader->doUpload('other_file')->getFileNames(),'other_file:');
-        //debug($uploader->doUpload()->getFileNames(),'Cargados:');
-        
-        //debug($uploader->doUpload('otro')->getFileNames(),'otro:');
-        //debug($uploader->doUpload('some_file')->getFileNames(),'some_file:');
-        
-        if($uploader->getErrors()){
-            debug($uploader->getErrors(),'Errors:');
-        }
-*/
+
 
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Files;
@@ -52,34 +29,23 @@ class MultipleUploader
 		return $this;
 	}	
 
-	/*
-		Renamer
-	*/
+	
 	public function setFileHandler($fn, ...$params){
 		$this->renamer = [$fn, $params];
 		return $this;
 	}
 	
-	/* 
-		Retorna un array con el nombre original y el nombre con el que se almacenó
-	*/
+	
 	public function getFileNames(){
 		return $this->filenames;
 	}
 	
-	/**
-	* Los archivos que presentaron error quedan aqui	
-	*/
+	
 	public function getErrors(){
 		return $this->erroneous;
 	}
 		
-	/**
-	* 
-	* Dependiendo del caso puede tener que llamarse con el NAME del INPUT TYPE='file'
-	* y si hay varias declaraciones de archivos como arrays o algunos estan declarados
-	* como arrays y otros no, será necesario seleccionarlos con su NAME en $input_name
-	*/	
+		
 	public function doUpload($input_name = NULL)
 	{		
 		if(empty($_FILES))
@@ -106,10 +72,7 @@ class MultipleUploader
 			{			
 				if ($error == UPLOAD_ERR_OK)
 				{
-					/*
-					 $tmp_name  -> "C:\xampp\tmp\phpF864.tmp"
-  					 basename($_FILES[$name]["name"][$key]) -> "hidden.jfif"
-					*/
+					
 					
 					$tmp_name = $_FILES[$name]["tmp_name"][$key];
 					$filename = basename($_FILES[$name]["name"][$key]); 

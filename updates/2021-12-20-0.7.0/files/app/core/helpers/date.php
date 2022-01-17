@@ -10,7 +10,17 @@ function datetime(){
 }
 
 // alias for datetime()
-function at(){   
+function at(bool $cached = true){
+    static $date;
+    
+    if ($cached){
+        if ($date === null){
+            $date = datetime();
+        }
+
+        return $date;
+    }
+    
     return datetime();
 }
 

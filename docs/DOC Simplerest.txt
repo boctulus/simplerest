@@ -7156,7 +7156,7 @@ Sin embargo se puede ser más específico:
 
 Ej:
 
-	Files::setCallback(function(string $content){
+	Files::setCallback(function(string $content, string $path){
 		return Strings::removeMultiLineComments($content);
 	});
 
