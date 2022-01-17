@@ -6864,6 +6864,11 @@ class DumbController extends Controller
         $sup = new Supervisor();
     }
 
+    function test_logger(){
+        Files::logger('Holaaa mundo');
+        Files::logger('R.I.P.');
+    }
+
  
 
 
