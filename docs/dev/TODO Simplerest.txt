@@ -77,9 +77,14 @@ warning de que no se ha especificado tenant como posible fuente de error.
 - CORREGIR nextUrl en APIs dentro de carpeta
 
 
-- Implementar Cronjobs pero en PHP.  <-- asegurar que solo una instancia esté corriendo al mismo tiempo.
+- Implementar Cronjobs pero en PHP.  
+
+<-- asegurar que solo una instancia esté corriendo al mismo tiempo.
 
 Permitir correrlos "al azar" una vez al día o N veces al día.
+
+
+- Procesos en background
 
 Ver
 

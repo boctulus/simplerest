@@ -11,7 +11,9 @@ class System
     /*
         https://factory.dev/pimcore-knowledge-base/how-to/execute-php-pimcore
     */
-    static function runInBackground(string $cmd, bool $capture_output = true) {
+    static function runInBackground(string $cmd, bool $capture_output = true, $ignore_user_abort = true) {
+        ignore_user_abort($ignore_user_abort);
+
         $output = 'logs/bck_output.txt';
 
         switch (PHP_OS_FAMILY) {
