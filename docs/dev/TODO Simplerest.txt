@@ -76,9 +76,25 @@ warning de que no se ha especificado tenant como posible fuente de error.
 
 - CORREGIR nextUrl en APIs dentro de carpeta
 
+
 - Implementar Cronjobs pero en PHP.  <-- asegurar que solo una instancia esté corriendo al mismo tiempo.
 
-<-- permitir correrlos "al azar" una vez al día o N veces al día.
+Permitir correrlos "al azar" una vez al día o N veces al día.
+
+Ver
+
+  https://github.com/deminy/background-processing-in-php
+
+Solución válida para PHP-FPM (solamente)
+
+  https://github.com/Crowdstar/background-processing
+
+
+Evitar que muera la ejecución si el cliente se desconecta:
+
+  ignore_user_abort(true);
+  set_time_limit(7200);  // setear tiempo máxio de ejecución
+
 
 - Implementar FULL TEXT SEARCH !!!
 
