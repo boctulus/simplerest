@@ -2768,6 +2768,45 @@ class DumbController extends Controller
         echo '</pre>';
     }
 
+    function get_userdata(){
+        //d(Acl::getCurrentUid());
+
+        $data = [];
+        $data['email'] = 'xxx@g.com';
+
+        DB::getDefaultConnection();
+
+        $u = get_user_model_name();
+        $m = new $u();
+
+        $userdata = ($m)
+        ->where([$u::$email => $data['email'] ])
+        ->first();
+
+        d($userdata);
+    }
+
+    function get_userdata2(){
+        //$uid = Acl::getCurrentUid();
+
+        $uid = 99;
+
+        DB::getDefaultConnection();
+
+        $u = get_user_model_name();
+        $m = new $u();
+
+        /*
+            User data
+        */
+        $userdata = ($m)
+        ->find($uid)
+        ->first();
+
+        d($userdata);
+        d($m->dd());
+    }
+
     function get_user($id){
         $u = DB::table('users');
         $u->unhide(['password']);
@@ -6825,45 +6864,7 @@ class DumbController extends Controller
         $sup = new Supervisor();
     }
 
-    function get_userdata(){
-        //d(Acl::getCurrentUid());
-
-        $data = [];
-        $data['email'] = 'xxx@g.com';
-
-        DB::getDefaultConnection();
-
-        $u = get_user_model_name();
-        $m = new $u();
-
-        $userdata = ($m)
-        ->where([$u::$email => $data['email'] ])
-        ->first();
-
-        d($userdata);
-    }
-
-    function get_userdata2(){
-        //$uid = Acl::getCurrentUid();
-
-        $uid = 99;
-
-        DB::getDefaultConnection();
-
-        $u = get_user_model_name();
-        $m = new $u();
-
-        /*
-            User data
-        */
-        $userdata = ($m)
-        ->find($uid)
-        ->first();
-
-        d($userdata);
-        d($m->dd());
-    }
-
+ 
 
 
 }

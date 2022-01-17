@@ -4,15 +4,15 @@ namespace simplerest\core\libs;
 
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
 
 class BackgroundService
 {
-    protected int $month;
-    protected int $monthday;
-	protected int $weekday;
-	protected int $hour;
-	protected int $minute;
+    static protected $month;
+    static protected $monthday;
+	static protected $weekday;
+	static protected $hour;
+	static protected $minute;
+    static protected $second;
 
     const SUN = 0;
     const MON = 1;
@@ -22,8 +22,18 @@ class BackgroundService
     const FRI = 5;
     const SAT = 6;
 
-    function __construct() {    
-        $this->start();
+    function __construct() {  
+    }
+
+    static function getFrequency(){
+        return [
+            'month' => static::$month,
+            'monthday' => static::$monthday,  
+            'weekday' => static::$weekday,
+            'hour' => static::$hour,
+            'minute' => static::$minute,
+            'second' => static::$second
+        ];
     }
 
 	function start(){

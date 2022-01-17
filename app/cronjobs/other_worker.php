@@ -4,11 +4,12 @@ use simplerest\core\libs\BackgroundService;
 
 class OtherWorker extends BackgroundService 
 {
-	protected int $month;
-    protected int $monthday;
-	protected int $weekday;
-	protected int $hour;
-	protected int $minute;
+	static protected $month;
+    static protected $monthday;
+	static protected $weekday;
+	static protected $hour;
+	static protected $minute;
+	static protected $second = 5;
 
 	function start(){
 		// your logic here
