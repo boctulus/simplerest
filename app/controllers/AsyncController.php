@@ -37,49 +37,37 @@ class AsyncController extends MyController
             $s = (int) datetime('s');
 
             if (($mnth !== -1)){
-                if ($mnth == $M){
-                    $diff = Date::diffInSeconds(Date::nextYearFirstDay());
-
-                    $task->start();
+                if ($mnth != $M){
+                    $diff = Date::diffInSeconds('fecha más próxima con ese mes');
                     sleep($diff);
-                    continue;
                 }
             }
 
             if (($wkdy !== -1)){
-                if ($wkdy == $w){
-                    $diff = Date::diffInSeconds(Date::nextWeek());
-
-                    $task->start();
+                if ($wkdy != $w){
+                    $diff = Date::diffInSeconds('fecha más próxima con ese día de la semana');
                     sleep($diff);
-                    continue;
                 }
             }
 
             if (($d !== -1)){
-                if ($mndy == $d){
-                    $diff = Date::diffInSeconds(Date::nextMonth());
-
-                    $task->start();
+                if ($mndy != $d){
+                    $diff = Date::diffInSeconds('fecha del más proximo monthDay'); /// completar
                     sleep($diff);
-                    continue;
                 }
             }
 
             if (($h !== -1)){
-                if ($hour == $h){
-                    $diff = Date::diffInSeconds(Date::nextHour());
-
-                    $task->start();
+                if ($hour != $h){
+                    //  nextDayBegining
+                    $diff = Date::diffInSeconds('00:00:00 del siguiente día');
                     sleep($diff);
-                    continue;
                 }
             }
 
             if (($secs !== 0) || $mins !== 0){
                 $task->start();
                 sleep($secs + ($mins *60));
-                continue;
             }
 
         } // end while
