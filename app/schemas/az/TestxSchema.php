@@ -15,19 +15,21 @@ class TestxSchema implements ISchema
 			'id_name'		=> null,
 
 			'attr_types'	=> [
-				'deci' => 'STR'
+				'deci' => 'STR',
+				'fecha' => 'STR'
 			],
 
 			'primary'		=> [],
 
 			'autoincrement' => null,
 
-			'nullable'		=> [],
+			'nullable'		=> ['fecha'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'deci' => ['type' => 'decimal(5,2)', 'required' => true]
+				'deci' => ['type' => 'decimal(5,2)', 'required' => true],
+				'fecha' => ['type' => 'date']
 			],
 
 			'fks' 			=> [],
