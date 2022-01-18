@@ -36,6 +36,13 @@ class Date
         return $date->format($format);
     }
 
+    // Next day, same hour
+    static function nextDay(string $date = '', string $format = 'Y-m-d'){
+        $date = new \DateTime($date);
+        $date->modify('+1 day');
+        return $date->format($format);
+    }
+
     /*
      salta sábados y domingos
 
@@ -52,5 +59,4 @@ class Date
         $date->modify('+1 hour');
         return $date->format($format);
     }
-
 }
