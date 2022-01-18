@@ -38,37 +38,53 @@ class AsyncController extends MyController
 
             if (($mnth !== -1)){
                 if ($mnth != $M){
-                    $diff = Date::diffInSeconds(Date::nextNthMonthFirstDay($mnth));
-                    sleep($diff);
+                    $dm = Date::diffInSeconds(Date::nextNthMonthFirstDay($mnth));
+                    d($dm, 'Diff por $mnth');
+                    //sleep($dm,);
                 }
             }
 
             if (($wkdy !== -1)){
                 if ($wkdy != $w){
-                    $diff = Date::diffInSeconds('fecha más próxima con ese día de la semana');
-                    sleep($diff);
+                    $dw = Date::diffInSeconds(Date::nextNthWeekDay($wkdy));
+                    d($dw, 'Diff por $wkdy');
+                    //sleep($dw);
                 }
             }
 
-            if (($d !== -1)){
+            if (($mndy !== -1)){
                 if ($mndy != $d){
-                    $diff = Date::diffInSeconds('fecha del más proximo monthDay'); /// completar
-                    sleep($diff);
+                    $dd = Date::diffInSeconds(Date::nextNthMonthDay($mndy));
+                    d($dd, 'Diff por $mndy');
+                    //sleep($dd);
                 }
             }
 
-            if (($h !== -1)){
+            if (($hour !== -1)){
                 if ($hour != $h){
-                    //  nextDayBegining
-                    $diff = Date::diffInSeconds('00:00:00 del siguiente día');
-                    sleep($diff);
+                    if ($hour > $h){
+                        $dh = ($hour - $h -1) * 3600;
+                    } else {
+                        $dh = (24 - $h + $hour -2) * 3600;
+                    }
+
+                    d($dh, 'Diff por $h');
+                    //sleep($dh);
                 }
             }
 
             if (($secs !== 0) || $mins !== 0){
                 $task->start();
-                sleep($secs + ($mins *60));
+
+                $ds = $secs + ($mins *60);
+
+                d($ds, 'Diff por $secs y $mins');
+                //sleep($ds);
             }
+
+            $diff = max($dm ?? 0, $dw ?? 0, $dd ?? 0, $dh ?? 0, $ds ?? 0);
+            d($diff, 'Total diff en segundos');
+            sleep($diff);
 
         } // end while
     }
