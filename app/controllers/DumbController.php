@@ -6940,9 +6940,14 @@ class DumbController extends Controller
     }
 
     function test_date3(){
-        d(Date::nextNthMonthFirstDay(12));
-        d(Date::nextNthMonthFirstDay(1));
-        d(Date::nextNthMonthFirstDay(4));
+        // d(Date::nextNthMonthFirstDay(12));
+        // d(Date::nextNthMonthFirstDay(1));
+        // d(Date::nextNthMonthFirstDay(4));
+        
+        // d(Date::nextNthWeekDay(5));
+
+        d(Date::nextNthMonthDay(5));
+        d(Date::nextNthMonthDay(18));
     }
 
 }   

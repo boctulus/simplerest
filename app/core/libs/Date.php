@@ -100,4 +100,46 @@ class Date
         $d = new \DateTime($strdate);       
         return $d->format($format);
     }
+
+    static function nextNthMonthDay(int $day, string $date = '', string $format = 'Y-m-d'){
+        $_date = new \DateTime($date);
+        $d = (int) $_date->format('j');
+        $m = (int) $_date->format('n');
+        $y = (int) $_date->format('Y');
+
+        if ($day <= $d){
+            $m++;
+            if ($m>12){
+                $m = 1;
+            }
+
+            $strdate = "$y-$m-$day";
+        } else if ($day > $d){
+            $strdate = "$y-$m-$day";
+        } 
+
+
+        $_date = new \DateTime($strdate);       
+        return $_date->format($format);
+    }
+
+
+    static function nextNthWeekDay(int $weekday, string $date = '', string $format = 'Y-m-d'){
+        $d1 = new \DateTime();
+        $w1 = (int) $d1->format('w');
+
+        if ($weekday == $w1){
+            return $d1->modify('+1 week')->format($format);
+        }
+
+        if ($weekday < $w1){
+            $diff = 7 - $w1 + $weekday;
+            return $d1->modify("+$diff days")->format($format);
+        }
+
+        if ($weekday > $w1){
+            $diff = $weekday - $w1;
+            return $d1->modify("+$diff days")->format($format);
+        }
+    }
 }
