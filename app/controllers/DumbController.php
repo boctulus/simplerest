@@ -16,6 +16,7 @@ use simplerest\core\libs\Mails;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\Validator;
+use simplerest\core\libs\Date;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
@@ -43,6 +44,11 @@ class DumbController extends Controller
     {
         parent::__construct();
         DB::getConnection('az');
+    }
+
+    function test_logger(){
+        Files::logger('Holaaa mundo');
+        Files::logger('R.I.P.');
     }
 
     function test_dd(){
@@ -6343,6 +6349,32 @@ class DumbController extends Controller
         d(at(false));
     }
 
+    function test_dates(){
+        //  mes 1-12
+        d(datetime('n'));  
+
+         // día 1-31
+        d(datetime('j')); 
+
+        // weekday (0-6)
+        d(datetime('w'));
+
+        // hour
+        d(datetime('G'));
+
+        // minutes
+        d((int) datetime('i'));
+
+        // seconds
+        d((int) datetime('s'));
+    }
+
+    function test_next_dates(){
+        d(Date::nextYearFirstDay());
+        d(Date::nextMonthFirstDay());
+        d(Date::nextWeek());
+    }
+
     function test_get_fk(){
         $t1 = 'products';
         $t2 = 'product_categories';
@@ -6904,16 +6936,7 @@ class DumbController extends Controller
 
     function test_supervisor(){
         // debería instanciarlo desde el Container
-
         $sup = new Supervisor();
     }
 
-    function test_logger(){
-        Files::logger('Holaaa mundo');
-        Files::logger('R.I.P.');
-    }
-
- 
-
-
-}
+}   

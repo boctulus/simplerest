@@ -2,9 +2,9 @@
 
 use simplerest\core\libs\Strings;
 
-function datetime(){
+function datetime(string $format = 'Y-m-d H:i:s'){
     $d = new \DateTime('', new \DateTimeZone(config()['DateTimeZone']));
-    $at = $d->format('Y-m-d H:i:s'); // ok
+    $at = $d->format($format); // ok
 
     return $at;
 }
@@ -15,13 +15,13 @@ function at(bool $cached = true){
     
     if ($cached){
         if ($date === null){
-            $date = datetime();
+            $date = datetime('Y-m-d H:i:s');
         }
 
         return $date;
     }
     
-    return datetime();
+    return datetime('Y-m-d H:i:s');
 }
 
 
