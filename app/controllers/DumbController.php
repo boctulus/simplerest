@@ -6939,4 +6939,10 @@ class DumbController extends Controller
         $sup = new Supervisor();
     }
 
+    function test_date3(){
+        d(Date::nextNthMonthFirstDay(12));
+        d(Date::nextNthMonthFirstDay(1));
+        d(Date::nextNthMonthFirstDay(4));
+    }
+
 }   

@@ -38,7 +38,7 @@ class AsyncController extends MyController
 
             if (($mnth !== -1)){
                 if ($mnth != $M){
-                    $diff = Date::diffInSeconds('fecha más próxima con ese mes');
+                    $diff = Date::diffInSeconds(Date::nextNthMonthFirstDay($mnth));
                     sleep($diff);
                 }
             }
