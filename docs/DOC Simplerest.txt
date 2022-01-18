@@ -1359,6 +1359,223 @@ El "problema" es que cuando hay más de una relación entre dos tablas se necesi
 La clase Model responsable del Query Builder tiene una gran cantidad de métodos que proveen las distintas funcionalidades.
 
 
+# where
+
+Los arrays de los where pueden ser asociativos:
+
+	$facturas = DB::table('facturas')
+	->where(['created_by' => 401])
+	->get();
+
+O no-asociativos:
+
+	$facturas = DB::table('facturas')
+	->where(['created_by', 401])
+	->get();
+
+La ventaja de los no-asociativos es que permiten especificar un operador como tercer parámetro:
+
+	DB::table('products')->where([ 
+            ['cost', 200, '>=']
+    ])->get();
+
+Pueden haber varios WHERE en cuyo caso se hace un "AND WHERE"
+
+	$rows = DB::table('products')
+	->where(['size', '2L'])
+	->where(['cost', 100, '<'])
+	->get();
+
+No se aconseja para nada mezclar arrays WHEREs con arrays asociativos y no-asociativos.
+
+
+# whereIn / whereNotIn
+
+Es posible hacer un WHERE IN( array ) y un WHERE NOT IN ( array ) con whereIn() y whereNotIn() respectivamente.
+
+	$rows = DB::table('products')
+    ->whereIn('size', ['0.5L', '3L'])
+	->get());
+
+	$rows = DB::table('products')
+    ->whereNotIn('size', ['0.5L', '3L'])
+	->get());
+
+# whereNull / whereNotNull
+
+	$rows = DB::table('products')
+	->whereNull('workspace')
+	->get();
+
+	$rows = DB::table('products')
+	->whereNotNull('workspace')
+	->get();
+
+# whereBetween / whereNotBetween
+
+	$rows = DB::table('products')
+	->select(['name', 'cost'])
+	->whereBetween('cost', [100, 250])
+	->get());
+
+	$rows = DB::table('products')
+	->select(['name', 'cost'])
+	->whereNotBetween('cost', [100, 250])
+	->get());
+
+# whereOr
+
+Se puede realizar un "WHERE OR"
+
+	$rows = DB::table('products')
+	->where(['belongs_to', 90])
+	->whereOr([ 
+		['name', ['CocaCola', 'PesiLoca']], 
+		['cost', 550, '>='],
+		['cost', 100, '<']
+	])
+	->get();
+
+# orWhere
+
+Se puede realizar un "OR WHERE"
+
+	$rows = DB::table('users')
+	->where([ 'email'=> $email ]) 
+	->orWhere(['username' => $username ])
+
+# whereDate
+
+Este tipo de where busca tanto en campos de tipo date como datetime.
+
+Ej:
+
+	$facturas = DB::table('facturas')
+	->whereDate('created_at', '2021-12-29')
+	->get();
+
+Puede especificarse un operador =, > o <
+
+Ej:
+
+	$facturas = DB::table('facturas')
+	->whereDate('created_at', '2021-12-29', '>')
+	->get();
+
+
+# group
+
+Se explica en detalle más adelante pero group() permite agrupar condiciones permitiendo crear consultas muy complejas.
+
+Ej:
+
+	$rows = DB::table('products')
+
+	->where([
+		['cost', 100, '>'], // AND
+		['id', 50, '<']
+	]) 
+
+	// AND
+	->whereRaw('name LIKE ?', ['%a%'])
+	
+	// AND
+	->group(function($q){  
+		$q->where(['is_active', 1])
+		// OR
+			->orWhere([
+			['cost', 100, '<='], 
+			['description', NULL, 'IS NOT']
+		]);  
+	})
+	
+	// AND
+	->where(['belongs_to', 150, '>'])
+
+	->select(['id', 'cost', 'size', 'description', 'belongs_to'])
+	->get();
+
+
+# not
+
+El operador not() niega todo un grupo de condiciones. Ej:
+
+	$rows = DB::table('products')
+	->where(['belongs_to', 150, '>'])
+	->not(function($q) {
+		$q->whereRegEx('name', 'a$')
+		->or(function($q){ 
+			$q->where([
+				['cost', 100, '<='],
+				['description', NULL, 'IS NOT']
+			]);
+		});             
+	})
+	->where(['size', '1L', '>='])
+	->get();
+
+
+# whereRegEx / whereNotRegEx
+
+Es posible usar expresiones regulares siempre claro que el motor de base de datos las soporte.
+
+Ej:
+	$rows = DB::table('products')
+	->whereRegEx('name', 'Coke')
+	->or(function($q){
+		$q->where(['cost', 100, '<=']);
+	})
+	->get();     
+
+	$rows = DB::table('products')
+    ->whereNotRegEx('name', 'Coke')
+	->get();
+
+# whereRaw
+
+Ej:
+
+	$rows = DB::table('products')
+	->where(['belongs_to' => 90])
+	->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L'])
+	->orderBy(['cost' => 'ASC'])
+	->get();
+
+# orWhereRaw
+
+Ej:
+
+	$rows = DB::table('products', 'p')
+	->where([
+		['cost', 50, '>'], // AND
+		['id', 190, '<=']
+	]) 
+	// AND
+	->group(function($q){  
+		$q->where(['is_active', 1])
+		// OR
+		->orWhereRaw('name LIKE ?', ['%a%']);  
+	})
+	// AND
+	->where(['belongs_to', 1, '>'])
+	
+	->select(['id', 'name', 'cost', 'size', 'description', 'belongs_to'])
+	->get();
+
+
+# whereExists
+
+Si se desea hacer un "WHERE EXISTS" utilice whereExists()
+
+Ej:
+
+	$rows = DB::table('products')
+    ->whereExists('(SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?)', ['AB']);
+
+Lo anterior generá un SQL como:
+
+	SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = 'AB');
+
 # selectRaw
 
 Por lo general cuando se desea usar un alias a un campo es necesario hacer algo como
@@ -1517,7 +1734,6 @@ Ej:
 Lo anterior en el WHERE de arma algo como
 
 	WHERE (A OR B) AND C
-
 
 Veamos otro ejemplo:
 
