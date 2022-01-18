@@ -8,7 +8,7 @@ class OtherWorker extends BackgroundService
 	static protected $month;
     static protected $monthday;
 	static protected $weekday;
-	static protected $hour;
+	static protected $hour   = 11;
 	static protected $minute;
 	static protected $second = 1;
 
