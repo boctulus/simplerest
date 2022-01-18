@@ -7678,7 +7678,7 @@ Para listar los cronJobs es con la opción --list
 
 	php com make cron --list
 
-Los cron jobs se inician con "cronos --start" 
+Los cron jobs se iniciarían con "cronos --start" 
 
 	php com cronos --start
 

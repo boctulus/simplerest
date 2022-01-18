@@ -9,14 +9,22 @@ class Supervisor
     protected Array $filenames;
     protected Array $classes;
     protected Array $freq;
+    protected Array $pids;  // usar para matar los cronos ! 
 
     function __construct() {
         $this->scan();
-        // d($this->filenames);
-        // d($this->freq);
 
         foreach ($this->classes as $ix => $class){
-            System::runInBackground("php com async loop {$this->filenames[$ix]} {$this->freq[$ix]['second']}");
+            $task = $this->filenames[$ix];
+            $mnth = $this->freq[$ix]['month']    ?? -1;
+            $mndy = $this->freq[$ix]['monthday'] ?? -1;
+            $wkdy = $this->freq[$ix]['weekday']  ?? -1;
+            $hour = $this->freq[$ix]['hour']     ?? -1;
+            $mins = $this->freq[$ix]['minute']   ??  0;
+            $secs = $this->freq[$ix]['second']   ??  0;
+
+            d("php com async loop $task $mnth $mndy $wkdy $hour $mins $secs");
+            System::runInBackground("php com async loop $task $mnth $mndy $wkdy $hour $mins $secs");
         }
     }
 
