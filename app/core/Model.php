@@ -961,6 +961,78 @@ class Model {
 		return $this->whereNotRegEx($field, $value);
 	}
 
+	/*	
+		Implementar también:
+
+		whereDay()
+		whereMonth()
+		whereYear()
+		whereTime()
+	*/
+	function whereDate(string $field, string $value, string $operator = '='){
+		if (!in_array($operator, ['=', '>', '<'])){
+			throw new \InvalidArgumentException("Invalid operator: '$operator' is invalid for date comparissions");
+		}
+
+		$len = strlen($value);
+
+		if ($this->schema !== null){
+			if (!isset($this->schema['rules'][$field])){
+				throw new \InvalidArgumentException("Unknown field '$field'");
+			}	
+		}
+
+		if ($len === 10){
+			if (!Validator::isType($value, 'date')){
+				throw new \InvalidArgumentException("Invalid type: '$value' is not a date");
+			}
+
+			switch ($this->schema['rules'][$field]['type']){
+				case 'date':
+					return $this->where([$field, $value, $operator]);
+					break;
+				case 'datetime':
+					switch ($operator){
+						case '=':
+							return $this->where([$field, $value.'%', 'LIKE']);
+						case '>':
+							$value = (new \DateTime("$value +1 day"))->format('Y-m-d H:i:s');
+							return $this->where([$field, $value, '>']);
+						case '<':
+							$value = (new \DateTime("$value -1 day"))->format('Y-m-d H:i:s');
+							return $this->where([$field, $value, '<']);							
+					}
+				default:
+					throw new \InvalidArgumentException("Filed type '$field' is not a date or datetime");
+			}
+
+		} else if ($len === 19){
+			if (!Validator::isType($value, 'datetime')){
+				throw new \InvalidArgumentException("Invalid type: '$value' is not a date");
+			}
+
+			switch ($this->schema['rules'][$field]['type']){
+				case 'date':
+					throw new \InvalidArgumentException("Presition can not exced yyyy-mm-dd");
+					break;
+				case 'datetime':
+					switch ($operator){
+						case '=':
+							return $this->where([$field, $value.'%', 'LIKE']);
+						case '>':
+							return $this->where([$field, $value, '>']);
+						case '<':
+							return $this->where([$field, $value, '<']);							
+					}
+				default:
+					throw new \InvalidArgumentException("Filed type '$field' is not a date or datetime");
+			}
+		} else {
+			throw new \InvalidArgumentException("Invalid type: '$value' is not a date or datetime");
+		}
+		
+	}
+
 	function distinct(array $fields = null){
 		if ($fields !=  null)
 			$this->fields = $fields;

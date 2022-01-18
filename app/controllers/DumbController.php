@@ -1592,10 +1592,11 @@ class DumbController extends Controller
         dd($m->dd());
     }
 
-    function or_otro_bug(){
+    // ok
+    function or_otro20(){
         $m = DB::table('products')    
 
-        ->whereRegEx('name', 'a$')  // <--- impone un 'AND' y no debería
+        ->whereRegEx('name', 'a$') 
         ->orWhere(['description', NULL, 'IS NOT'])
         
         ->deleted()        
@@ -2005,7 +2006,7 @@ class DumbController extends Controller
     /*
         WHERE EXISTS
 
-        SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname IS NOT NULL);
+        SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = 'AB')
     */
     function where_exists(){
         $m = DB::table('products')->deleted()
@@ -2013,6 +2014,49 @@ class DumbController extends Controller
 
         dd($m->get());
         dd($m->dd());
+    }
+
+
+    function test_where_date(){
+        $facturas = DB::table('facturas')
+        ->whereDate('created_at', '2021-12-29')
+        ->get();
+
+        d($facturas);
+
+        $facturas = DB::table('facturas')
+        ->whereDate('created_at', '2021-12-29 19:42:08')
+        ->get();
+
+        d($facturas);
+
+        $testx   = DB::table('testx')
+        ->whereDate('fecha', '2022-01-12')
+        ->get();
+
+        d($testx);
+
+        $testx   = DB::table('testx')
+        ->whereDate('fecha', '2022-01-12 20:10:18')
+        ->get();
+
+        d($testx);
+    }
+
+    function test_where_date2(){
+        $facturas = DB::table('facturas')
+        ->whereDate('created_at', '2021-12-29', '>')
+        ->get();
+
+        d($facturas);
+    }
+
+    function test_where_date3(){
+        $testx   = DB::table('testx')
+        ->whereDate('fecha', '2022-01-12', '>')
+        ->get();
+
+        d($testx);
     }
 
     /*
