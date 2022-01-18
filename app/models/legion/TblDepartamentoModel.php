@@ -9,9 +9,6 @@ use simplerest\schemas\legion\TblDepartamentoSchema;
 
 class TblDepartamentoModel extends MyModel
 { 
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

@@ -4,11 +4,12 @@ namespace simplerest\controllers;
 
 use simplerest\controllers\MyController;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\Date;
 use simplerest\core\libs\BackgroundService;
 
 class AsyncController extends MyController
 {
-    public function loop(string $task_filename, int $every_seconds)
+    public function loop(string $task_filename, int $mnth, int $mndy, int $wkdy, int $hour, int $mins, int $secs)
     {   
         $path = CRONOS_PATH . $task_filename;
 
@@ -26,10 +27,62 @@ class AsyncController extends MyController
             throw new \Exception ("Class '$class_name' should be instance of BackgroundService");
         }
 
-        while (true){
-            $task->start();
-            sleep($every_seconds);
-        }
+        while (true)
+        {
+            $M = (int) datetime('n');
+            $d = (int) datetime('j');
+            $w = (int) datetime('w');
+            $h = (int) datetime('G');
+            $m = (int) datetime('i');
+            $s = (int) datetime('s');
+
+            if (($mnth !== -1)){
+                if ($mnth == $M){
+                    $diff = Date::diffInSeconds(Date::nextYearFirstDay());
+
+                    $task->start();
+                    sleep($diff);
+                    continue;
+                }
+            }
+
+            if (($wkdy !== -1)){
+                if ($wkdy == $w){
+                    $diff = Date::diffInSeconds(Date::nextWeek());
+
+                    $task->start();
+                    sleep($diff);
+                    continue;
+                }
+            }
+
+            if (($d !== -1)){
+                if ($mndy == $d){
+                    $diff = Date::diffInSeconds(Date::nextMonth());
+
+                    $task->start();
+                    sleep($diff);
+                    continue;
+                }
+            }
+
+            if (($h !== -1)){
+                if ($hour == $h){
+                    $diff = Date::diffInSeconds(Date::nextHour());
+
+                    $task->start();
+                    sleep($diff);
+                    continue;
+                }
+            }
+
+            if (($secs !== 0) || $mins !== 0){
+                $task->start();
+                sleep($secs + ($mins *60));
+                continue;
+            }
+
+        } // end while
     }
 }
 
