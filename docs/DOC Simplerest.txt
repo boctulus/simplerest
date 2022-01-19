@@ -2660,13 +2660,17 @@ En el modelo donde queremos implementar el uuid, debemos declar el campo como st
 
 Recordar actualizar el Schema donde el campo uuid debe ser un string y pertenecer a los nullables.
 
-Además de los Input Mutators, tenemos también los Output Mutator que permiten aplicar una función sobre la salida de la ejecución de una query. Lógicamente un Output Mutator sobre un campo no es compatible con declarar a ese mismo campo como "hidden". 
+Output Mutators 
+
+Además de los Input Mutators, tenemos también los *Output Mutators* que permiten aplicar una función sobre la salida de la ejecución de una query. En otros lenguajes / frameworks son conocidos como "accessors".
 
 Ejemplo:
 
 	$rows = DB::table('users')
 	->registerOutputMutator('username', function($str){ return strtoupper($str); })
 	->get();
+
+Lógicamente un Output Mutator sobre un campo no es compatible con declarar a ese mismo campo como "hidden". 
 
 Los mutators de salida pueden aplicarse incluso cuando hay funciones agregativas y las cláusulas GROUP BY y HAVING. 
 
