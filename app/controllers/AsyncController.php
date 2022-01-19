@@ -72,7 +72,7 @@ class AsyncController extends MyController
                     if ($hour > $h){
                         $dh = ($hour - $h -1) * 3600 + (3600 -$s -($m * 60));
                     } else {
-                        $dh = (24 - $h + $hour -2) * 3600;
+                        $dh = (24 - $h + $hour) * 3600 + (3600 -$s -($m * 60));
                     }
                     //d($dh, 'Diff por $h');
                 }
@@ -83,7 +83,7 @@ class AsyncController extends MyController
                 //d($ds, 'Diff por $secs y $mins');
             }
 
-            $diff = max($dm ?? 0, $dw ?? 0, $dd ?? 0, $dh ?? 0, $ds ?? 0);
+            $diff = max($dm ?? 0, $dw ?? 0, $dd ?? 0, $dh ?? 0);
             //d($diff, 'Total diff en segundos')
 
             sleep($diff);
@@ -99,6 +99,8 @@ class AsyncController extends MyController
 
             if ($mins == 0  &&  $secs == 0){
                 sleep(86400);
+            } else {
+                sleep($ds);
             }
 
 
