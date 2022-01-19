@@ -16,15 +16,9 @@ class Supervisor
 
         foreach ($this->classes as $ix => $class){
             $task = $this->filenames[$ix];
-            $mnth = $this->freq[$ix]['month']    ?? -1;
-            $mndy = $this->freq[$ix]['monthday'] ?? -1;
-            $wkdy = $this->freq[$ix]['weekday']  ?? -1;
-            $hour = $this->freq[$ix]['hour']     ?? -1;
-            $mins = $this->freq[$ix]['minute']   ??  0;
-            $secs = $this->freq[$ix]['second']   ??  0;
-
-            d("php com async loop $task $mnth $mndy $wkdy $hour $mins $secs");
-            System::runInBackground("php com async loop $task $mnth $mndy $wkdy $hour $mins $secs");
+            
+            d("php com async loop $task");
+            System::runInBackground("php com async loop $task");
         }
     }
 
@@ -43,8 +37,6 @@ class Supervisor
 
             $this->classes[]   = $class_name;
             $this->filenames[] = basename($filename);
-
-            $this->freq[] = $class_name::getFrequency();
         }   
     }
 

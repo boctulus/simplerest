@@ -80,7 +80,7 @@ class Date
         return $d->format($format);
     }
 
-    static function nextNthMonthFirstDay(int $month, string $date = '', string $format = 'Y-m-d'){
+    static function nextNthMonthFirstDay(int $month, string $date = '', string $format = 'Y-m-d') : string {
         $d = new \DateTime($date);
         $y = (int) $d->format('Y');
         $m = (int) $d->format('n');
@@ -101,7 +101,7 @@ class Date
         return $d->format($format);
     }
 
-    static function nextNthMonthDay(int $day, string $date = '', string $format = 'Y-m-d'){
+    static function nextNthMonthDay(int $day, string $date = '', string $format = 'Y-m-d') : string {
         $_date = new \DateTime($date);
         $d = (int) $_date->format('j');
         $m = (int) $_date->format('n');
@@ -124,7 +124,7 @@ class Date
     }
 
 
-    static function nextNthWeekDay(int $weekday, string $date = '', string $format = 'Y-m-d'){
+    static function nextNthWeekDay(int $weekday, string $date = '', string $format = 'Y-m-d') : string {
         $d1 = new \DateTime();
         $w1 = (int) $d1->format('w');
 
