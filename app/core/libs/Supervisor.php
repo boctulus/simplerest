@@ -15,10 +15,7 @@ class Supervisor
         $this->scan();
 
         foreach ($this->classes as $ix => $class){
-            $task = $this->filenames[$ix];
-            
-            d("php com async loop $task");
-            System::runInBackground("php com async loop $task");
+            System::runInBackground("php com async loop {$this->filenames[$ix]}");
         }
     }
 
