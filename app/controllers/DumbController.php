@@ -6806,8 +6806,56 @@ class DumbController extends Controller
         d(DB::select($sql));
     }
 
-    function test_dd2(){
-        dd("xxx");
+
+
+    function test_desentrelazado(){
+        $literal = strrev("SimpleRest framework created by Pablo Bozzolo <boctulus AT gmail.com>. All rights reserved.");
+        
+        // protect spaces
+        $literal = str_replace(' ', '-', $literal);
+        
+        d(Strings::deinterlace($literal));
+    }
+
+    function test_entrelazado(){
+        $str = [
+            'SmlRs rmwr rae yPboBzoo<otlsA mi.o> l ihsrsre.',
+            'ipeetfaeokcetdb al ozl bcuu Tgalcm.Alrgt eevd'
+        ];
+
+        return Strings::interlace($str);
+    }
+
+    function test_whois(){
+        return DB::whois();
+    }
+
+    function test_666(){
+        // ahora copio los archivos ofuscados en el destino
+        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
+        $dst = "updates/2021-12-20-0.7.0/";  
+
+        Files::setCallback(function(string $content, string $path){
+            return Strings::removeMultiLineComments($content);
+        });
+
+        Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
+    }
+
+    function test_remove_comments(){
+        $file = file_get_contents('/home/www/simplerest/updates/2021-12-20-0.7.0/files/app/core/Container.php');
+        d(Strings::removeMultiLineComments($file));
+    }
+   
+    function test_date3(){
+        // d(Date::nextNthMonthFirstDay(12));
+        // d(Date::nextNthMonthFirstDay(1));
+        // d(Date::nextNthMonthFirstDay(4));
+        
+        // d(Date::nextNthWeekDay(5));
+
+        d(Date::nextNthMonthDay(5));
+        d(Date::nextNthMonthDay(18));
     }
 
      /*
@@ -6880,45 +6928,7 @@ class DumbController extends Controller
     function test_5055(){
         DB::getConnection('db_docker_php81_mysql');
     }
-   
-    function test_desentrelazado(){
-        $literal = strrev("SimpleRest framework created by Pablo Bozzolo <boctulus AT gmail.com>. All rights reserved.");
-        
-        // protect spaces
-        $literal = str_replace(' ', '-', $literal);
-        
-        d(Strings::deinterlace($literal));
-    }
 
-    function test_entrelazado(){
-        $str = [
-            'SmlRs rmwr rae yPboBzoo<otlsA mi.o> l ihsrsre.',
-            'ipeetfaeokcetdb al ozl bcuu Tgalcm.Alrgt eevd'
-        ];
-
-        return Strings::interlace($str);
-    }
-
-    function test_whois(){
-        return DB::whois();
-    }
-
-    function test_666(){
-        // ahora copio los archivos ofuscados en el destino
-        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
-        $dst = "updates/2021-12-20-0.7.0/";  
-
-        Files::setCallback(function(string $content, string $path){
-            return Strings::removeMultiLineComments($content);
-        });
-
-        Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
-    }
-
-    function test_remove_comments(){
-        $file = file_get_contents('/home/www/simplerest/updates/2021-12-20-0.7.0/files/app/core/Container.php');
-        d(Strings::removeMultiLineComments($file));
-    }
 
     function some_work(){
         for ($i=1; $i<=rand(5,10); $i++){
@@ -6939,15 +6949,5 @@ class DumbController extends Controller
         $sup = new Supervisor();
     }
 
-    function test_date3(){
-        // d(Date::nextNthMonthFirstDay(12));
-        // d(Date::nextNthMonthFirstDay(1));
-        // d(Date::nextNthMonthFirstDay(4));
-        
-        // d(Date::nextNthWeekDay(5));
-
-        d(Date::nextNthMonthDay(5));
-        d(Date::nextNthMonthDay(18));
-    }
 
 }   
