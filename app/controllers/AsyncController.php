@@ -87,6 +87,20 @@ class AsyncController extends MyController
             //d($diff, 'Total diff en segundos')
 
             sleep($diff);
+
+            /*
+                Dado que la computadora pudo haber sido puesta en "suspención" en lo que duraba
+                el sleep(), es necesario volver a comprobar que cumpla las condiciones antes de dar start. 
+            */
+            if (
+                ($mnth !== -1 && $mnth != $M) ||
+                ($wkdy !== -1 && $wkdy != $w) ||
+                ($mndy !== -1 && $mndy != $d) ||
+                ($hour !== -1 && $hour != $h)
+            ){
+                continue;
+            }
+
             $task->start();
 
             /*
