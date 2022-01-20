@@ -15,9 +15,9 @@ class TercerWorker extends BackgroundService
 	static protected $month;
     static protected $monthday;
 	static protected $weekday;
-	static protected $hour   = 19;
-	static protected $minute = 2;
-	static protected $second;
+	static protected $hour   = 22;
+	static protected $minute;
+	static protected $second = 5;
 
     // usar. Por defecto, al crear el workersh vendría en true
     static protected $is_active = true;

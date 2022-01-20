@@ -595,7 +595,11 @@ Luego será necesario ejecutar:
 
 - Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
 
-Un [worker] maneja una [cola] de [jobs]. 
+Un [worker] maneja una [cola] de [jobs]. Pero *varios* workers pueden también manejar la misma cola para acelerar el proceso.
+
+=> a lo que yo llamo supervisor sería un Worker?
+
+En Laravel la cantidad de workers se especifica con numprocs={cantidad}
 
 
 # Se ejecutan todos los jobs de forma simultánea (asíncrona) ?
