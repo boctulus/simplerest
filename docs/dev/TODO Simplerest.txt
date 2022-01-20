@@ -191,6 +191,9 @@ Ej:
 
 - Eventualmente implementar en el Modelo:
 
+  Casting 
+  https://laravel.com/docs/8.x/eloquent-mutators#attribute-casting
+
   Poda de registros borrados suavemente:
   https://laravel.com/docs/8.x/eloquent#pruning-models
 
@@ -592,9 +595,40 @@ Luego será necesario ejecutar:
 
 - Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
 
-"Jobs"
+Un [worker] maneja una [cola] de [jobs]. 
 
-A job in the Queue API is a task that's deferred from the main execution flow. For example, if you want to create a thumbnail when the user uploads an image from the front-end, you could create a new job that handles the thumbnail processing. In this way, you could defer the task of thumbnail processing from the main execution flow.
+
+# Se ejecutan todos los jobs de forma simultánea (asíncrona) ?
+
+"el proceso es en segundo plano sigue siendo síncrono, por lo cual debe de terminar el job en ejecución para ejecutar el siguiente."
+
+"si configuras más de un worker se hacen tan en simultáneo como worker tengas, pero se ejecutan según el orden que entran a la cola." => hay tantos procesos en simultáneo como colas creadas.
+
+
+Cada Worker tendría su propia cola (queue) y para tener varias colas de les debe dar un nombre:
+
+  'redis' => [
+    'driver' => 'redis',
+    'connection' => 'default',
+    'queue' => 'default',  <--------- nombre
+    'expire' => 60,
+  ],
+
+
+Cuando se tiene varias colas, cada cola puede tener una prioridad distinta.
+
+
+QUEUE_CONNECTION=sync|database|redis
+
+"sync significa que no utilizarás colas. Y tus procesos serán síncronos y en primer plano"
+
+
+# Failed Jobs
+
+Laravel captura qué jobs fallaron en su ejecución y permite definir un número de intentos (tries) para ejecuar ese job con cierto delay dentre intentos. Los intentos aplicarían de forma global y no a un job en particular.
+
+  php artisan queue:work --tries=3
+
 
 Ver implementación:
 https://divinglaravel.com/queue-workers-how-they-work
@@ -3280,6 +3314,23 @@ https://github.com/srmklive/laravel-paypal-demo
 - Crear ServiceProvider para envio de Mails 
 
 https://culttt.com/2015/10/12/sending-template-emails-through-mandrill-in-laravel/
+
+Los templares a enviar podrían ser como los de Blade:
+
+  @component('mail::message')
+  # Introduction
+
+  Thank you {{ $order->name }}.  We just shipped {{ $order->item_count }} items.
+
+  @component('mail::button', ['url' => ''])
+  Track Order #{{ $order->id }}
+  @endcomponent
+
+  Thanks,
+  {{ config('app.name') }}
+  @endcomponent
+
+<-- el punto es que deben poder recibirse variables al menos.
 
 
 - Crear un script de instalación o un procedimiento como este:
