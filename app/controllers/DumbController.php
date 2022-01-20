@@ -6937,6 +6937,15 @@ class DumbController extends Controller
         }
     }
 
+    /*
+        Si se desea ser notificado cuando el job a terminado con éxito o un fallo,
+        pueden hacerse:
+
+        command && command-after-only-if-success &
+        command || command-after-only-if-fail &
+
+        https://superuser.com/a/345455/402377
+    */
     function test_background_task(){
         $cmd = 'php com dumb some_work';
         $pid = System::runInBackground($cmd);

@@ -8,8 +8,8 @@ class OtherWorker extends BackgroundService
 	static protected $month;
     static protected $monthday;
 	static protected $weekday = 3;
-	static protected $hour    = 8;
-	static protected $minute  = 2;
+	static protected $hour    = 20;
+	static protected $minute  = 10;
 	static protected $second;
 
 	function start(){
