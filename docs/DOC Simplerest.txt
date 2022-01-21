@@ -1924,6 +1924,31 @@ Produce:
 Para cambiar el flag en sentido contrario se puede utilizar el método doQualify()
 
 
+# Update
+
+El update se realiza con el método update() que recibe como parámetro un array asociativo con los campos a modificar:
+
+Ej:
+	$affected_rows = DB::table('users')
+	->where([
+		'firstname' => 'HHH', 
+		'lastname' => 'AAA'
+	])
+	->update([
+		'firstname'=>'Nico', 
+		'lastname'=>'Buzzi'
+	]);
+    
+
+Es posible solo "tocar" la fecha de actualización de un registro sin modificar nada más con el método touch()
+
+Ej:
+
+	DB::table('products')
+	->find(145)
+	->touch();
+
+
 ### La clase DB
 
 La clase DB es una librería clave cuyo rol principal es manejar las conexiones de base de datos y ofrecer información sobre las mismas. Posee además un mini Query Builder para consultas "raw".
