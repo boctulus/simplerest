@@ -10,7 +10,7 @@ use simplerest\core\libs\Files;
     y se volvería a hacer un "scan" e iniciar todos los cronos
     incluyendo los nuevos y ya no los que se hubieran borrado / inactivado
 */
-class TercerWorker extends BackgroundService 
+class TercerJob extends BackgroundService 
 {
 	static protected $month;
     static protected $monthday;
@@ -22,12 +22,8 @@ class TercerWorker extends BackgroundService
     // usar. Por defecto, al crear el workersh vendría en true
     static protected $is_active = true;
 
-	function start(){
+	function run(){
 		// your logic here
 		Files::logger(get_class());
-	}
-
-	function stop(){
-		// your logic here
 	}
 }
