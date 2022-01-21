@@ -11,6 +11,13 @@ class SomeJob extends BackgroundService
 	static protected $hour; 
 	static protected $minute;
 	static protected $second = 1;
+	static protected $is_active = true;
+
+	/*
+		Number of retries in 24 Hs.
+	*/
+	static protected $retries = 5;
+    static protected $retry_timeframe = 2;
 
 
 	function run(){
@@ -27,7 +34,7 @@ class SomeJob extends BackgroundService
 		//exit(2);
 	}
 
-	function onError(\Exception $error, int $times){
+	function onFail(\Exception $error, int $times){
 		Files::logger(get_class() . " has failed $times times. Now with ". $error->getMessage());
 	}
 
