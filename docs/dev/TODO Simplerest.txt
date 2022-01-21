@@ -77,12 +77,61 @@ warning de que no se ha especificado tenant como posible fuente de error.
 - CORREGIR nextUrl en APIs dentro de carpeta
 
 
-- Implementar Cronjobs pero en PHP.  
+[ Cron Jobs ]
 
-<-- asegurar que solo una instancia esté corriendo al mismo tiempo.
+En Laravel se llama Task scheduling: https://laravel.com/docs/8.x/scheduling
 
-Permitir correrlos "al azar" una vez al día o N veces al día.
+- Hacer que pueda correr más de una vez por día pero a horarios específicos. Ej: 1 y 13 hs.
 
+  ->twiceDaily(1, 13);
+
+En si sería equivalente a enviar un array [1, 13] en $hour. Podría aplicar a días del mes, meses,..
+
+- Poder definir el TimeZone
+
+  ->timezone('America/New_York');
+
+- Poder condicionar la ejecución a un closure
+
+  ->when(Closure);
+
+- Preventing Task Overlaps
+
+  $schedule->command('emails:send')->withoutOverlapping();
+
+- Permitir especificar en la ruta del archivo donde se guardará la salida de cada cronJob y si el modo es APPEND.
+
+  ->sendOutputTo($filePath);
+o
+  ->appendOutputTo($filePath);
+
+
+o al correo:
+
+  ->emailOutputTo('taylor@example.com');
+
+- Task hooks
+
+  ->before(function () {
+       // The task is about to execute...
+   })
+   ->after(function () {
+       // The task has executed...
+   });
+
+y 
+
+  ->onSuccess(function () {
+       // The task succeeded...
+   })
+   ->onFailure(function () {
+       // The task failed...
+   });
+
+
+https://laravel.com/docs/8.x/scheduling#task-hooks
+
+----
 
 - Procesos en background
 
@@ -599,7 +648,7 @@ Un [worker] maneja una [cola] de [jobs]. Pero *varios* workers pueden también m
 
 => a lo que yo llamo supervisor sería un Worker?
 
-En Laravel la cantidad de workers se especifica con numprocs={cantidad}
+En Laravel la cantidad de workers se especifica con numprocs={how-to-combine-websockets-and-http-to-create-a-rest-api-that-keeps-data-up-to-da}
 
 
 # Se ejecutan todos los jobs de forma simultánea (asíncrona) ?

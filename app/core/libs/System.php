@@ -11,24 +11,22 @@ class System
     /*
         https://factory.dev/pimcore-knowledge-base/how-to/execute-php-pimcore
     */
-    static function runInBackground(string $cmd, bool $capture_output = true, $ignore_user_abort = true, int $execution_time = 0)
+    static function runInBackground(string $cmd, string $output_path = null, $ignore_user_abort = true, int $execution_time = 0)
     {
         ignore_user_abort($ignore_user_abort);
         set_time_limit($execution_time);
 
-        $output = 'logs/bck_output.txt';
-
         switch (PHP_OS_FAMILY) {
             case 'Windows':
-                if ($capture_output){
-                    pclose(popen("start /B $cmd >> $output ", "r")); 
+                if ($output_path !== null){
+                    pclose(popen("start /B $cmd >> $output_path ", "r")); 
                 } else {
                     pclose(popen("start /B $cmd", "r")); 
                 }                
                 break;
             case 'Linux':
-                if ($capture_output){
-                    $pid = (int) shell_exec("nohup nice -n 19 $cmd > $output 2>&1 & echo $!");
+                if ($output_path !== null){
+                    $pid = (int) shell_exec("nohup nice -n 19 $cmd > $output_path 2>&1 & echo $!");
                 } else {
                     $pid = (int) shell_exec("nohup nice -n 19 $cmd > /dev/null 2>&1 & echo $!");
                 }
