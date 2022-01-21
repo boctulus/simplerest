@@ -2442,6 +2442,11 @@ class Model {
 		return $this->update($data, $set_updated_at);
 	}
 
+	function touch(){
+		$this->fill([$this->updatedAt()]);
+		return $this->update([$this->updatedAt() => at()]);
+	}
+
 	function setSoftDelete(bool $status) {
 		if (!$this->inSchema([$this->deletedAt])){
 			if ($status){
