@@ -641,6 +641,9 @@ Luego será necesario ejecutar:
 
   php com migrations migrate
 
+----
+
+[ Colas ]
 
 - Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
 
