@@ -6947,7 +6947,7 @@ class DumbController extends Controller
         https://superuser.com/a/345455/402377
     */
     function test_background_task(){
-        $cmd = 'php com dumb some_work';
+        $cmd = 'php com dumb some';
         $pid = System::runInBackground($cmd);
 
         d($pid, 'pid');

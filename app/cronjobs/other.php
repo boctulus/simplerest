@@ -3,22 +3,17 @@
 use simplerest\core\libs\BackgroundService;
 use simplerest\core\libs\Files;
 
-class SomeWorker extends BackgroundService 
+class OtherJob extends BackgroundService 
 {
 	static protected $month;
     static protected $monthday;
-	static protected $weekday;
-	static protected $hour = 22; 
-	static protected $minute;
+	static protected $weekday = 3;
+	static protected $hour    = 20;
+	static protected $minute  = 10;
 	static protected $second;
 
-
-	function start(){
+	function run(){
 		// your logic here
 		Files::logger(get_class());
-	}
-
-	function stop(){
-		// your logic here
 	}
 }
