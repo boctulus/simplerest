@@ -6,12 +6,13 @@ use simplerest\controllers\MyController;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\BackgroundService;
+use simplerest\core\libs\Files;
 
 class AsyncController extends MyController
 {
-    public function loop(string $task_filename)
+    public function loop(string $job_filename)
     {   
-        $path = CRONOS_PATH . $task_filename;
+        $path = CRONOS_PATH . $job_filename;
 
         $class_name = Strings::getClassNameByFileName($path);
 
@@ -21,14 +22,14 @@ class AsyncController extends MyController
             throw new \Exception ("Class '$class_name' doesn't exist in $file");
         } 
 
-        $task = new $class_name();
-        d($class_name, 'Task name');
+        $job = new $class_name();
+        d($class_name, 'job name');
 
-        if (! $task instanceof BackgroundService){
+        if (! $job instanceof BackgroundService){
             throw new \Exception ("Class '$class_name' should be instance of BackgroundService");
         }
 
-        $freq = $task::getFrequency();
+        $freq = $job::getFrequency();
 
         $mnth = $freq['month']    ?? -1;
         $mndy = $freq['monthday'] ?? -1;
@@ -101,7 +102,7 @@ class AsyncController extends MyController
                 continue;
             }
 
-            $task->start();
+            $job->start();
 
             /*
                 Si $mins == 0  &&  $secs == 0

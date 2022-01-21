@@ -13,6 +13,7 @@ class BackgroundService
 	static protected $hour;
 	static protected $minute;
     static protected $second;
+    static protected $is_active = true;
 
     const SUN = 0;
     const MON = 1;
@@ -21,6 +22,8 @@ class BackgroundService
     const THU = 4;
     const FRI = 5;
     const SAT = 6;
+
+    protected int $fails = 0;
 
     function __construct() {  
     }
@@ -36,10 +39,23 @@ class BackgroundService
         ];
     }
 
-	function start(){
+    function start(){
+        try {
+            $this->run();
+        } catch (\Exception $e){
+            $this->fails++;
+            $this->onError($e, $this->fails);
+        }
     }
 
-	function stop(){  
+	function run(){
+    }
+
+    /*
+        @paran $error Exception object
+        @param $times int number of fails
+    */
+    function onError(\Exception $error, int $times){
     }
 }
 
