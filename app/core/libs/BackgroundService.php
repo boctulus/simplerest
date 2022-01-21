@@ -15,6 +15,12 @@ class BackgroundService
     static protected $second;
     static protected $is_active = true;
 
+    /*
+		Number of retries in 24 Hs.
+	*/
+	static protected $retries;
+    static protected $retry_timeframe = 3600 * 24;
+
     const SUN = 0;
     const MON = 1;
     const TUE = 2;
@@ -23,7 +29,7 @@ class BackgroundService
     const FRI = 5;
     const SAT = 6;
 
-    protected int $fails = 0;
+    protected $fails;
 
     function __construct() {  
     }
@@ -42,9 +48,27 @@ class BackgroundService
     function start(){
         try {
             $this->run();
+            $this->onSuccess();
         } catch (\Exception $e){
-            $this->fails++;
-            $this->onError($e, $this->fails);
+            if (static::$retries !== null){
+                /*
+                    Number of retries are in 24 Hs
+                */
+                foreach ($this->fails as $ix => $t){
+                    if ($t > time() + static::$retry_timeframe){
+                        unset($this->fails[$ix]);
+                    }
+                }
+
+                Files::logger("Fails: ". count($this->fails ?? []));
+
+                if (static::$retries === count($this->fails ?? [])){
+                    exit;
+                }
+            }
+
+            $this->fails[] = time();
+            $this->onFail($e, count($this->fails));
         }
     }
 
@@ -55,7 +79,11 @@ class BackgroundService
         @paran $error Exception object
         @param $times int number of fails
     */
-    function onError(\Exception $error, int $times){
+    function onFail(\Exception $error, int $times){
+    }
+
+    function onSuccess(){
+
     }
 }
 
