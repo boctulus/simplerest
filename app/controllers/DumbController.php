@@ -1193,7 +1193,7 @@ class DumbController extends Controller
     
     function where12(){
         dd(DB::table('products')
-        ->find(103));
+        ->find(145)->first());
     }
 
     function where13(){
@@ -2907,6 +2907,18 @@ class DumbController extends Controller
         $count = $u->where([ ['lastname', ['AAA', 'Buzzi']] ])->update(['firstname'=>'Nicos']);
         
         dd($count);
+    }
+
+    function test_touch_model(){
+        DB::table('products')
+        ->find(145)
+        ->touch();
+
+        $p = DB::table('products')
+        ->find(145)
+        ->first();
+
+        d($p);
     }
 
     function create_user($username, $email, $password, $firstname, $lastname)
@@ -6958,5 +6970,6 @@ class DumbController extends Controller
         $sup = new Supervisor();
     }
 
+    
 
 }   

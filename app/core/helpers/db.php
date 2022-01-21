@@ -21,7 +21,7 @@ function get_default_database_name(){
 }
 
 /*
-    Similar to DB::table() but no schema so no validations are performed
+    Similar to DB::table() but schema is not loaded so no validations are performed
 */
 function table(string $tb_name){
     return (new Model(true))->table($tb_name);
