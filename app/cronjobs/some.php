@@ -16,20 +16,20 @@ class SomeJob extends BackgroundService
 	/*
 		Number of retries in 24 Hs.
 	*/
-	static protected $retries = 5;
-    static protected $retry_timeframe = 2;
+	static protected $retries = 3;
+    static protected $retry_timeframe = 10;
 
 
 	function run(){
 		// your logic here
 		echo "hi ";
-		// Files::logger(get_class());
+		Files::logger(get_class());
 
-		// $num = rand(1,10);
+		$num = rand(1,10);
 
-		// if ($num >5){
+		if ($num >5){
 			throw new \Exception("Some exception");
-		// }
+		}
 
 		//exit(2);
 	}
