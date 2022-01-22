@@ -29,7 +29,7 @@ class BackgroundService
     const FRI = 5;
     const SAT = 6;
 
-    protected $fails;
+    protected $fails = [];
 
     function __construct() {  
     }
@@ -52,15 +52,13 @@ class BackgroundService
         } catch (\Exception $e){
             if (static::$retries !== null){
                 /*
-                    Number of retries are in 24 Hs
+                    Number of retries are in some timeframe
                 */
                 foreach ($this->fails as $ix => $t){
-                    if ($t > time() + static::$retry_timeframe){
+                    if ($t + static::$retry_timeframe < time() ){
                         unset($this->fails[$ix]);
                     }
                 }
-
-                Files::logger("Fails: ". count($this->fails ?? []));
 
                 if (static::$retries === count($this->fails ?? [])){
                     exit;

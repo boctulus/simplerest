@@ -1,6 +1,14 @@
-2022-01-21 11:17:27	SomeJob has failed 1 times. Now with Some exception
-2022-01-21 11:17:47	SomeJob has failed 1 times. Now with Some exception
-2022-01-21 11:17:48	SomeJob has failed 2 times. Now with Some exception
-2022-01-21 11:17:49	SomeJob has failed 3 times. Now with Some exception
-2022-01-21 11:17:50	SomeJob has failed 4 times. Now with Some exception
-2022-01-21 11:17:51	SomeJob has failed 5 times. Now with Some exception
+2022-01-21 21:33:28	SomeJob
+2022-01-21 21:33:28	Fails: 0
+2022-01-21 21:33:28	SomeJob has failed 1 times. Now with Some exception
+2022-01-21 21:33:29	SomeJob
+2022-01-21 21:33:30	SomeJob
+2022-01-21 21:33:31	SomeJob
+2022-01-21 21:33:31	Fails: 1
+2022-01-21 21:33:31	SomeJob has failed 2 times. Now with Some exception
+2022-01-21 21:33:32	SomeJob
+2022-01-21 21:33:33	SomeJob
+2022-01-21 21:33:33	Fails: 2
+2022-01-21 21:33:33	SomeJob has failed 3 times. Now with Some exception
+2022-01-21 21:33:34	SomeJob
+2022-01-21 21:33:34	Fails: 3
