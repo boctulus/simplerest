@@ -817,7 +817,48 @@ https://stackoverflow.com/questions/33424636/how-to-combine-websockets-and-http-
 https://www.php.net/releases/8.0/en.php
 https://victorroblesweb.es/2021/02/09/php-8-novedades-y-mejoras/
 
+
 - Usar como nombre automático de clase {Tabla}{DateTime} en caso de que la clase esté en uso en otra migración => escanearlas. 
+
+
+-  Mejorar Error handling
+
+Actualmente solo estoy usando un set_exception_handler() para excepciones unicamente pero hay un set_error_handler() que no estoy ocupando.
+
+Ver como funciona Monolog y ver de usarlo:
+/home/www/simplerest/vendor/monolog/monolog/src/Monolog/ErrorHandler.php
+
+Throwable vs Exception
+
+    try {
+        // Code that may throw an Exception or Error.
+    } catch (Throwable $t) {
+        // Handle exception
+    }
+
+Throwable may be used in try/catch blocks to catch both Exception and Error objects (or any possible future exception types). Remember that it is better practice to catch more specific exception classes and handle each accordingly. However, some situations warrant catching any exception (such as for logging or framework error handling). In PHP 7, these catch-all blocks should catch Throwable instead of Exception.
+
+Error
+
+Es posible capturar errores. Ej:
+
+    $var = 1;
+
+    try {
+        $var->method(); // Throws an Error object in PHP 7.
+    } catch (Error $e) {
+        // Handle error
+    }
+
+Ver
+
+https://blog.programster.org/php-error-and-exception-handling
+https://trowski.com/2015/06/24/throwable-exceptions-and-errors-in-php7/#
+https://gist.github.com/nicolas-grekas/1069975/f80a2f90326e0fe5f8f96c40240e46cc1b080aee
+https://www.geeksforgeeks.org/how-to-get-the-last-occurred-error-using-php/
+https://stackoverflow.com/questions/4410632/handle-fatal-errors-in-php-using-register-shutdown-function
+
+
 
 - Usar ajustes recomenados para OPCache
 
