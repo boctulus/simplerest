@@ -17,6 +17,7 @@ class BackgroundProcess implements IMigration
     {
         $sc = new Schema('background_process');
         $sc->int('id')->pri()->auto();
+        $sc->varchar('job_file')->index();
         $sc->int('pid', 5)->unique(); 
         $sc->datetime('created_at');
 		$sc->create();		
