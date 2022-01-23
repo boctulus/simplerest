@@ -9,16 +9,34 @@ class Supervisor
     protected Array $filenames;
     protected Array $classes;
     protected Array $freq;
-    protected Array $pids;  // usar para matar los cronos ! 
 
     function __construct() {
         $this->scan();
 
+        DB::getDefaultConnection();
+
+        DB::table('background_process')
+        ->truncate();
+
         foreach ($this->classes as $ix => $class){
             $pid = System::runInBackground("php com async loop {$this->filenames[$ix]}", 'logs/output.txt');
+            
+            // lo ideal es poder elegir el "driver" ya sea en base de datos o en memoria tipo REDIS para los PIDs
+            
+            DB::table('background_process')
+            ->insert(['pid' => $pid]);
         }
+    }
 
-        d("Quit");
+    static function stop(){
+        DB::getDefaultConnection();
+
+        $pids = DB::table('background_process')
+        ->pluck('pid');
+
+        foreach ($pids as $pid){
+            exec("kill $pid 2>&1 1>/dev/null");
+        }
     }
 
     protected function scan(){

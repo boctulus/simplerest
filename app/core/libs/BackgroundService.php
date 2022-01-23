@@ -5,7 +5,7 @@ namespace simplerest\core\libs;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
-class BackgroundService
+abstract class BackgroundService
 {
     static protected $month;
     static protected $monthday;
