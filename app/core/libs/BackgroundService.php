@@ -35,6 +35,10 @@ abstract class BackgroundService
     function __construct() {  
     }
 
+    static function canOverlap() : bool {
+        return static::$dontOverlap;
+    }
+
     static function getFrequency(){
         return [
             'month' => static::$month,
@@ -46,7 +50,8 @@ abstract class BackgroundService
         ];
     }
 
-    function start(){
+    function start()
+    {
         try {
             $this->run();
             $this->onSuccess();
