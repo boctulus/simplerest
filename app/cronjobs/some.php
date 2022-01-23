@@ -12,6 +12,7 @@ class SomeJob extends BackgroundService
 	static protected $minute;
 	static protected $second = 1;
 	static protected $is_active = true;
+	static protected $dontOverlap = true;
 
 	/*
 		Number of retries in 24 Hs.
