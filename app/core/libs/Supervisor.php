@@ -11,6 +11,8 @@ class Supervisor
     protected Array $freq;
 
     function __construct() {
+        $this->stop();
+
         $this->scan();
 
         DB::getDefaultConnection();
@@ -19,13 +21,29 @@ class Supervisor
         ->truncate();
 
         foreach ($this->classes as $ix => $class){
+            $dont_overlap = $class::canOverlap();
+
+            if ($dont_overlap && Supervisor::isRunning($this->filenames[$ix])){
+                d("Aborting for ". __FILE__);
+                return;
+            }
+
             $pid = System::runInBackground("php com async loop {$this->filenames[$ix]}", 'logs/output.txt');
             
             // lo ideal es poder elegir el "driver" ya sea en base de datos o en memoria tipo REDIS para los PIDs
             
             DB::table('background_process')
-            ->insert(['pid' => $pid]);
+            ->insert([
+                'job_file' => $this->filenames[$ix],
+                'pid' => $pid
+            ]);
         }
+    }
+
+    static function isRunning(string $job_file) : bool {
+        return DB::table('background_process')
+        ->where(['job_file' => $job_file])
+        ->exists();
     }
 
     static function stop(){
@@ -34,8 +52,18 @@ class Supervisor
         $pids = DB::table('background_process')
         ->pluck('pid');
 
+        if (empty($pids)){
+            return;
+        }
+
         foreach ($pids as $pid){
-            exec("kill $pid 2>&1 1>/dev/null");
+            $exit_code = shell_exec("kill $pid 2>/dev/null && echo $?");
+
+            if ($exit_code == 0){
+                DB::table('background_process')
+                ->where(['pid' => $pid])
+                ->delete();
+            }
         }
     }
 
