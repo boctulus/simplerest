@@ -442,14 +442,14 @@ class MakeControllerBase extends Controller
         }
 
         if ($core){
-            $namespace = 'simplerest\\core\\interfaces';
+            $namespace = 'simplerest\\core\\traits';
             $dest_path = CORE_INTERFACE_PATH;
         } else {
-            $namespace = 'simplerest\\interfaces';
+            $namespace = 'simplerest\\traits';
             $dest_path = INTERFACE_PATH;
         }
 
-        $template_path = self::TRAIT_TEMPLATE;
+        $template_path = self::INTERFACE_TEMPLATE;
         $prefix = 'I';
         $subfix = '';  // Ej: 'Controller'
 
@@ -826,11 +826,7 @@ class MakeControllerBase extends Controller
        $params = implode(' ',$opt);
 
         StdOut::pprint(
-            shell_exec("php com make pivot_scan $params")
-        );
-
-        StdOut::pprint(
-            shell_exec("php com make relation_scan $params")
+            shell_exec("php com make pivot_scan $params && php com make relation_scan $params")
         );
     }
 

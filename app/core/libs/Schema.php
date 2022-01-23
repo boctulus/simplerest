@@ -412,7 +412,8 @@ class Schema
 	}
 
 
-	static function FKcheck(bool $status){
+	// bool|int
+	static function FKcheck($status){
 		$conn = DB::getConnection();   
 
 		switch (DB::driver()){
