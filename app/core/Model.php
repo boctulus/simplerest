@@ -2628,6 +2628,11 @@ class Model {
 		return $this->undelete();
 	}
 
+	function truncate(){
+		DB::truncate($this->table_name);
+		return $this;
+	}
+
 	function insert(array $data, bool $at_once = false, bool $ignore_duplicates = true){
 		if (!Arrays::is_assoc($data)){
 			if (is_array($data[0])){	
