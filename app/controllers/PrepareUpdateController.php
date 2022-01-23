@@ -52,13 +52,15 @@ class PrepareUpdateController extends ConsoleController
         ;; VARIOS   
         public/app.php
         config/constants.php
+        app/models/main/BackgroundProcessModel.php
+        app/schemas/main/BackgroundProcessSchema.php
        
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; MIGRATIONS
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;app/migrations/2021_11_20_33704817_files.php
         ;app/migrations/2021_12_07_35172655_files.php   // <-- quedó pendiente
-        ;app/migrations/compania/2021_10_28_31693371_tbl_concepto_nomina.php
+        app/migrations/2022_01_23_39212347_background_process.php
         FILES;
 
         $files = explode(PHP_EOL, $str_files);
