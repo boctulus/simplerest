@@ -14,6 +14,7 @@ class BackgroundService
 	static protected $minute;
     static protected $second;
     static protected $is_active = true;
+    static protected $dontOverlap = false;
 
     /*
 		Number of retries in 24 Hs.
@@ -52,7 +53,9 @@ class BackgroundService
         } catch (\Exception $e){
             if (static::$retries !== null){
                 /*
-                    Number of retries are in some timeframe
+                    Number of retries are in some timeframe 
+                    =>
+                    oldest retries which are not in the timeframe are retired 
                 */
                 foreach ($this->fails as $ix => $t){
                     if ($t + static::$retry_timeframe < time() ){
