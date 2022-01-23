@@ -657,6 +657,10 @@ class DB
 		return $result;
 	}
 
+	public static function truncate(string $table, ?string $tenant_id = null){
+		DB::getConnection($tenant_id);
+		static::statement("TRUNCATE TABLE `$table`");
+	}
 
 	public static function insert(string $raw_sql, Array $vals = [], ?string $tenant_id = null)
 	{
@@ -801,6 +805,7 @@ class DB
 		
 		return $count;
 	}
+
 
 	public static function update(string $raw_sql, Array $vals = [], ?string $tenant_id = null)
 	{

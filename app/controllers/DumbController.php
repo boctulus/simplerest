@@ -6970,6 +6970,9 @@ class DumbController extends Controller
         $sup = new Supervisor();
     }
 
-    
+    function test_supervisor_stop(){
+        Supervisor::stop();
+    }
+
 
 }   
