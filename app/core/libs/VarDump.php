@@ -4,6 +4,7 @@ namespace simplerest\core\libs;
 
 use simplerest\core\libs\Url; 
 
+// Dumper
 class VarDump
 {
 	protected static function pre(callable $fn, ...$args){
@@ -26,7 +27,7 @@ class VarDump
 
 		if (Url::is_postman() || Url::is_insomnia() || $type != 'array'){
 			$pre = false;
-		}	
+		}
 		
 		$fn = function($x) use ($type, $postman, $pre){
 			$pp = function ($fn, $dato) use ($pre){
