@@ -6974,5 +6974,9 @@ class DumbController extends Controller
         Supervisor::stop();
     }
 
+    function test_is_job_running(){
+        d(Supervisor::isRunning('some.php'));
+    }
+
 
 }   
