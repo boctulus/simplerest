@@ -14,7 +14,7 @@ abstract class BackgroundService
 	static protected $minute;
     static protected $second;
     static protected $is_active = true;
-    static protected $dontOverlap = false;
+    //static protected $dontOverlap = false;
 
     /*
 		Number of retries in 24 Hs.
@@ -35,8 +35,12 @@ abstract class BackgroundService
     function __construct() {  
     }
 
-    static function canOverlap() : bool {
-        return static::$dontOverlap;
+    // static function canOverlap() : bool {
+    //     return static::$dontOverlap;
+    // }
+
+    static function isActive() : bool {
+        return static::$is_active;
     }
 
     static function getFrequency(){
