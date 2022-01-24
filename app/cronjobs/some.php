@@ -10,9 +10,8 @@ class SomeJob extends BackgroundService
 	static protected $weekday;
 	static protected $hour; 
 	static protected $minute;
-	static protected $second = 1;
+	static protected $second = 2;
 	static protected $is_active = true;
-	static protected $dontOverlap = true;
 
 	/*
 		Number of retries in 24 Hs.
@@ -28,9 +27,11 @@ class SomeJob extends BackgroundService
 
 		$num = rand(1,10);
 
-		if ($num >5){
-			throw new \Exception("Some exception");
-		}
+		// if ($num >5){
+		// 	throw new \Exception("Some exception");
+		// }
+
+		//sleep(5);
 
 		//exit(2);
 	}

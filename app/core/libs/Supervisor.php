@@ -21,11 +21,8 @@ class Supervisor
         ->truncate();
 
         foreach ($this->classes as $ix => $class){
-            $dont_overlap = $class::canOverlap();
-
-            if ($dont_overlap && Supervisor::isRunning($this->filenames[$ix])){
-                d("Aborting for ". __FILE__);
-                return;
+            if (!$class::isActive()){
+                continue;
             }
 
             $pid = System::runInBackground("php com async loop {$this->filenames[$ix]}", 'logs/output.txt');
@@ -41,6 +38,8 @@ class Supervisor
     }
 
     static function isRunning(string $job_file) : bool {
+        DB::getDefaultConnection();
+
         return DB::table('background_process')
         ->where(['job_file' => $job_file])
         ->exists();
