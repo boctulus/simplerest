@@ -5,8 +5,8 @@ namespace simplerest\controllers;
 use simplerest\controllers\MyController;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Date;
-use simplerest\core\libs\BackgroundService;
-use simplerest\core\libs\Supervisor;
+use simplerest\core\libs\CronJob;
+use simplerest\core\libs\Task;
 use simplerest\core\libs\Files;
 
 class AsyncController extends MyController
@@ -26,8 +26,8 @@ class AsyncController extends MyController
         $job = new $class_name();
         d($class_name, 'job name');
 
-        if (! $job instanceof BackgroundService){
-            throw new \Exception ("Class '$class_name' should be instance of BackgroundService");
+        if (! $job instanceof CronJob){
+            throw new \Exception ("Class '$class_name' should be instance of CronJob");
         }
 
         $freq = $job::getFrequency();
