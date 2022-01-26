@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\libs\BackgroundService;
+use simplerest\core\libs\CronJob;
 use simplerest\core\libs\Files;
 
 /*
@@ -10,7 +10,7 @@ use simplerest\core\libs\Files;
     y se volvería a hacer un "scan" e iniciar todos los cronos
     incluyendo los nuevos y ya no los que se hubieran borrado / inactivado
 */
-class TercerJob extends BackgroundService 
+class TercerJob extends CronJob
 {
 	static protected $month;
     static protected $monthday;

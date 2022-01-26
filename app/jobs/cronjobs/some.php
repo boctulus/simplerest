@@ -1,9 +1,9 @@
 <?php
 
-use simplerest\core\libs\BackgroundService;
+use simplerest\core\libs\CronJob;
 use simplerest\core\libs\Files;
 
-class SomeJob extends BackgroundService 
+class SomeJob extends CronJob
 {
 	static protected $month;
     static protected $monthday;

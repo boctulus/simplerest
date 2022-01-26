@@ -1,20 +1,12 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace simplerest\core\libs;
 
 use simplerest\core\Model;
-use simplerest\core\libs\DB;
 
 abstract class BackgroundService
 {
-    static protected $month;
-    static protected $monthday;
-	static protected $weekday;
-	static protected $hour;
-	static protected $minute;
-    static protected $second;
     static protected $is_active = true;
-    //static protected $dontOverlap = false;
 
     /*
 		Number of retries in 24 Hs.
@@ -22,36 +14,13 @@ abstract class BackgroundService
 	static protected $retries;
     static protected $retry_timeframe = 3600 * 24;
 
-    const SUN = 0;
-    const MON = 1;
-    const TUE = 2;
-    const WED = 3;
-    const THU = 4;
-    const FRI = 5;
-    const SAT = 6;
-
     protected $fails = [];
 
     function __construct() {  
     }
 
-    // static function canOverlap() : bool {
-    //     return static::$dontOverlap;
-    // }
-
     static function isActive() : bool {
         return static::$is_active;
-    }
-
-    static function getFrequency(){
-        return [
-            'month' => static::$month,
-            'monthday' => static::$monthday,  
-            'weekday' => static::$weekday,
-            'hour' => static::$hour,
-            'minute' => static::$minute,
-            'second' => static::$second
-        ];
     }
 
     function start()
