@@ -647,11 +647,36 @@ Luego será necesario ejecutar:
 
 - Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
 
-Un [worker] maneja una [cola] de [jobs]. Pero *varios* workers pueden también manejar la misma cola para acelerar el proceso.
-
-=> a lo que yo llamo supervisor sería un Worker?
+Un [worker] maneja una [cola] o "job queue" de [jobs]. Pero *varios* workers pueden también manejar la misma cola para acelerar el proceso.
 
 En Laravel la cantidad de workers se especifica con numprocs={how-to-combine-websockets-and-http-to-create-a-rest-api-that-keeps-data-up-to-da}
+
+
+Cada Task (Job) puede parametrizarse especificando:
+
+  Job queue name -> id
+  is_active (disable or enable)
+  job   priority
+  tiempo máx de ejecución.
+  resource requirements ~ nice
+
+
+BackgroundService  
+                  <---- Task
+                  <---- CronJob 
+
+
+A su vez,
+
+
+Supervisor
+                  <--- CronSupervisor
+                  <--- JobQueue
+
+
+https://docs.aws.amazon.com/batch/latest/userguide/job-queue-template.html
+
+Los Jobs se crean (como clases) y luego al momento de querer encolarlos se despachan con SomeJob::dispatch()
 
 
 # Se ejecutan todos los jobs de forma simultánea (asíncrona) ?
@@ -819,6 +844,12 @@ https://victorroblesweb.es/2021/02/09/php-8-novedades-y-mejoras/
 
 
 - Usar como nombre automático de clase {Tabla}{DateTime} en caso de que la clase esté en uso en otra migración => escanearlas. 
+
+
+- Ver Spiral Framework
+
+https://github.com/spiral/framework
+
 
 
 -  Mejorar Error handling
@@ -1201,16 +1232,13 @@ GET http://simplerest.lan/a`pi/v1/auth/register?_rules=1
 
 - Wrapper sobre el QueryBuilder a fin de poder usar otros con más soporte de motores de base de datos y debugear las queries generadas por estos a fin de evolucionar el propio. Además comparar performance.   
 
-- Corregir bug que hace que se creen 2 conexiones en vez de 1 con db_dynamic_load.php
+- Probar SubRecursos con Postgres y SQLite (con V1, V2 y V3). Posible switch automático según db driver.
 
-- Probar HATEOAS con Postgres y SQLite (con V1, V2 y V3). Posible switch automático según db driver.
-
-- Parchear SubresourcesV1 y terminar V3 
-
+- Parchear SubresourcesV1 
 
 - Implementar algo como "php artisan serve" (php built in web server)
 
-- Implementar Seeders
+- Implementar Seeders ****
 
   php com migrations fresh --seed
 
@@ -1335,13 +1363,9 @@ https://www.baeldung.com/java-dto-pattern
 
 - Crear comandos "make" para:
 
-  traits en /app
-  interfaces
-  exceptions
-  views
-  middlewares
+  exceptions [ -- core ]
+  middlewares 
 
-- En el Modelo habilitar en debug de queries con dd() al hacer un DELETE o un UPDATE 
 
 - Cambiar el Exception Handler que uso en PHP ya que:
 
@@ -1354,6 +1378,8 @@ https://www.baeldung.com/java-dto-pattern
 
 
 [ HATEOAS ]
+
+https://stackoverflow.com/questions/25172600/rest-what-exactly-is-meant-by-uniform-interface
 
 - Digamos que definimos estas operaciones:  
 
@@ -1420,7 +1446,7 @@ https://netflix.github.io/genie/docs/3.0.0/rest/
 
 - Implementar búsquedas complejas como en Magento (sino estuvieran cubiertas por HATEOAS)
 
-https://devdocs.magento.com/guides/v2.3/rest/performing-searches.html
+https://devdocs.magento.com/guides/v2.4/rest/performing-searches.html#logical-or-search
 
 
 - Proveer en el modelo un método para ejecutar raw queries como en Laravel o CI
@@ -3165,7 +3191,7 @@ https://www.php.net/manual/en/function.filter-input-array.php
 
 * "additional details embedded"
 * Overriding the HTTP method
-* Rate limiting (quotas)
+* Rate limiting (quotas)  => status code 429 si se alcanza el límite.
 * Errors
 
 - Securitizar almacenamiento de tokens -- en cookies?
@@ -3190,9 +3216,20 @@ https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api
 https://phauer.com/2015/restful-api-design-best-practices/
 https://www.paradigmadigital.com/dev/oauth-2-0-equilibrio-y-usabilidad-en-la-securizacion-de-apis/
 https://medium.com/crowdbotics/how-to-write-an-api-in-3-lines-of-code-with-django-rest-framework-59b0971edfa4
+https://hackernoon.com/designing-rest-api-with-open-api-specification-oas-v2-0-v3-0-using-swagger-11dd4ef8cea6
+
+
+- Ver de implementar OpenAPI (Swagger)
+
 https://idratherbewriting.com/learnapidoc/pubapis_openapi_tutorial_overview.html
 https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md
-https://hackernoon.com/designing-rest-api-with-open-api-specification-oas-v2-0-v3-0-using-swagger-11dd4ef8cea6
+
+
+- Revisar especificación OpenID donde además de Access Token (y Refresh Token) hay un "ID Token" que sirve para obtener información del usuario (mas no de los resources). 
+
+https://auth0.com/blog/id-token-access-token-what-is-the-difference/
+https://developer.okta.com/blog/2017/07/25/oidc-primer-part-1
+
 
 - Revisar 
 
@@ -3226,10 +3263,16 @@ jti (JWT ID): provides a unique identifier for the JWT.
 
 https://stackoverflow.com/questions/38897514/what-to-store-in-a-jwt
 
+- Faltaría agregar "Cache-Control" (header)
 
 - Leer sobre Flat-file databases
 
 https://en.wikipedia.org/wiki/Flat-file_database
+
+
+- Si se hacer un GET (all) y no hay nada para retornar (cero registros), se debe devolver 204 y no 200 (o 404)
+
+https://stackoverflow.com/questions/34312023/http-get-request-status-204-vs-404#:~:text=While%20a%20204%20seems%20better,signal%20a%20%22successful%20absence%22.
 
 
 - Evaluar usar un motor de plantillas como Twing entre otras cosas para el envio de emails

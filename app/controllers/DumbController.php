@@ -36,6 +36,8 @@ use simplerest\core\libs\Supervisor;
 use simplerest\core\libs\Reflector;
 use simplerest\libs\Foo;
 use simplerest\core\Container;
+use simplerest\core\libs\JobQueue;
+use simplerest\core\libs\Task;
 
 
 class DumbController extends Controller
@@ -6965,7 +6967,7 @@ class DumbController extends Controller
         d($pid, 'pid');
     }
 
-    function test_supervisor(){
+    function test_supervisor_start(){
         // debería instanciarlo desde el Container
         $sup = new Supervisor();
     }
@@ -6978,5 +6980,35 @@ class DumbController extends Controller
         d(Supervisor::isRunning('some.php'));
     }
 
+    /*
+        https://www.programmerall.com/article/553939151/
+    */
+    function test_queue(){
+        $queue = new \SplQueue();
+
+        //$queue->setIteratorMode(\SplDoublyLinkedList::IT_MODE_FIFO | \SplDoublyLinkedList::IT_MODE_DELETE);
+
+        $queue->enqueue('a');
+        $queue->enqueue('b');
+        $queue->enqueue('c');
+
+        // shift
+        d($queue->dequeue());
+        
+        // lista elementos
+        foreach($queue as $item) {
+            d($item);
+        }
+
+        //d($queue);
+    }
+
+    function test_queue_start(){
+        // debería instanciarlo desde el Container
+        $queue = new JobQueue();
+
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Juan', 39);
+        $queue->exec();
+    }
 
 }   
