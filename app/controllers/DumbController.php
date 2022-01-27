@@ -6844,6 +6844,16 @@ class DumbController extends Controller
         return DB::whois();
     }
 
+    function test_unserialize(){
+        $s_object = 'O:29:"simplerest\jobs\tasks\DosTask":0:{}';
+        $s_params = 'a:2:{i:0;s:4:"Juan";i:1;i:39;}';
+
+        $o = unserialize($s_object);
+        $p = unserialize($s_params);
+
+        $o->run(...$p);
+    }
+
     function test_666(){
         // ahora copio los archivos ofuscados en el destino
         $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
@@ -7003,24 +7013,19 @@ class DumbController extends Controller
         //d($queue);
     }
 
-    function test_queue_start(){
+    function test_dispatch(){
         $queue = new JobQueue();
 
         $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
         $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Juan', 39);
         $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
-
-        //$queue->exec();
     }
 
-    function test_unserialize(){
-        $s_object = 'O:29:"simplerest\jobs\tasks\DosTask":0:{}';
-        $s_params = 'a:2:{i:0;s:4:"Juan";i:1;i:39;}';
+    function test_exec(){
+        $queue = new JobQueue();
 
-        $o = unserialize($s_object);
-        $p = unserialize($s_params);
-
-        $o->run(...$p);
+        $queue->exec();
     }
+
 
 }   
