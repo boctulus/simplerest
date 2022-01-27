@@ -1686,6 +1686,17 @@ class Model {
 		return $ret;
 	}
 
+	function firstOrFail(array $fields = null, $pristine = false){
+		$ret = $this->first($fields, $pristine);
+
+		if (empty($ret)){
+			// Debería ser una Excepción personalizada
+			throw new \Exception("No rows");
+		}
+
+		return $ret;
+	}
+
 	function getOne(array $fields = null, $pristine = false){
 		return $this->first($fields, $pristine);
 	}
