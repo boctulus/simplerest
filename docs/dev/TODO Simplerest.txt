@@ -661,22 +661,16 @@ Cada Task (Job) puede parametrizarse especificando:
   resource requirements ~ nice
 
 
-BackgroundService  
-                  <---- Task
-                  <---- CronJob 
-
-
-A su vez,
-
-
-Supervisor
-                  <--- CronSupervisor
-                  <--- JobQueue
-
-
 https://docs.aws.amazon.com/batch/latest/userguide/job-queue-template.html
 
+
 Los Jobs se crean (como clases) y luego al momento de querer encolarlos se despachan con SomeJob::dispatch()
+
+Nota:
+
+En Laravel a dispatch() se le pasa un objeto de tipo Job o sea... no es que la creación de objecto ocurra dentro del dispacher. Ej:
+
+  dispatch(new ExportCSV($filter))
 
 
 # Se ejecutan todos los jobs de forma simultánea (asíncrona) ?

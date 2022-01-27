@@ -7007,7 +7007,10 @@ class DumbController extends Controller
         // debería instanciarlo desde el Container
         $queue = new JobQueue();
 
+        $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
         $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Juan', 39);
+        $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
+        
         $queue->exec();
     }
 
