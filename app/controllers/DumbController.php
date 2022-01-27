@@ -7004,14 +7004,23 @@ class DumbController extends Controller
     }
 
     function test_queue_start(){
-        // debería instanciarlo desde el Container
         $queue = new JobQueue();
 
         $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
         $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Juan', 39);
         $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
-        
-        $queue->exec();
+
+        //$queue->exec();
+    }
+
+    function test_unserialize(){
+        $s_object = 'O:29:"simplerest\jobs\tasks\DosTask":0:{}';
+        $s_params = 'a:2:{i:0;s:4:"Juan";i:1;i:39;}';
+
+        $o = unserialize($s_object);
+        $p = unserialize($s_params);
+
+        $o->run(...$p);
     }
 
 }   

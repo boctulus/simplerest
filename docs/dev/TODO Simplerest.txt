@@ -643,6 +643,29 @@ Luego será necesario ejecutar:
 
 ----
 
+- Usar donde se pueda "generators" (quizás en el trait de subrecursos) o en el API controller a fin de reducir el uso de memoria y/o conmutar tareas.
+
+  <?php
+
+  function getData() {
+      for ($i = 0; $i < 999999; $i++) {
+          yield $i;
+      }
+  }
+
+  foreach(getData() as $data) {
+      echo $data;
+  }
+
+
+Ver
+https://devdojo.com/ghost/the-utility-of-php-generators
+https://blog.kevingomez.fr/2016/01/20/use-cases-for-php-generators/    !!!!!
+https://www.npopov.com/2012/12/22/Cooperative-multitasking-using-coroutines-in-PHP.html
+
+
+----
+
 [ Colas ]
 
 - Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
