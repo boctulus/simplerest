@@ -15,6 +15,6 @@ class DosTask extends Task
 	function run(string $name, int $age){
 		// your logic here
 		Files::logger("Hello $name. Are you $age years old?");
-        sleep(3);
+        //sleep(3);
 	}
 }
