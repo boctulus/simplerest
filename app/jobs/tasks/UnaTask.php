@@ -5,7 +5,7 @@ namespace simplerest\jobs\tasks;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Files;
 
-class UnoTask extends Task
+class UnaTask extends Task
 { 
     static protected $priority = 10;
     static protected $exec_time_limit   ;
@@ -14,7 +14,7 @@ class UnoTask extends Task
 
 	function run(...$params){
 		// your logic here
-		Files::logger(get_class());
-        sleep(20);
+		Files::logger(rand(1000,7000));
+        sleep(3);
 	}
 }
