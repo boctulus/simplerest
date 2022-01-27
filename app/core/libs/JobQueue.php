@@ -41,12 +41,17 @@ class JobQueue
         ]);
     }
 
-    public function exec(){
-        $arr    = $this->job_queue->dequeue();
-        $job    = $arr['object'];
-        $params = $arr['params'];
+    /*
+        Funciona con un solo worker
+    */
+    public function exec(){        
+        while (!$this->job_queue->isEmpty()){
+            $arr    = $this->job_queue->dequeue();
+            $job    = $arr['object'];
+            $params = $arr['params'];
 
-        return $job->run(...$params);
+            $ret = $job->run(...$params);
+        }
     }
 
 }
