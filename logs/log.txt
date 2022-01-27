@@ -1,6 +1,1 @@
-2022-01-26 20:40:54	5820
-2022-01-26 20:40:55	Hello Juan. Are you 39 years old?
-2022-01-26 20:40:55	Hola Mundo
-2022-01-26 20:41:25	2884
-2022-01-26 20:41:28	Hello Juan. Are you 39 years old?
-2022-01-26 20:41:28	Hola Mundo
+2022-01-27 11:09:40	Hello Juan. Are you 39 years old?
