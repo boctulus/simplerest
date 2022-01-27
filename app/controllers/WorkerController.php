@@ -5,7 +5,7 @@ namespace simplerest\controllers;
 use simplerest\controllers\MyController;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\libs\Factory;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\DB;
 
 class WorkerController extends MyController
@@ -17,33 +17,51 @@ class WorkerController extends MyController
 
     function index()
     {
-        // dequeue
-        DB::beginTransaction();
+        while (true)
+        {
+            // dequeue
+            DB::beginTransaction();
 
-        try {
+            try {
 
-            $job_row = DB::table('jobs')
-            ->orderBy(['id' => 'ASC'])
-            ->firstOrFail();  
-            
-            $id = $job_row['id'];
+                $job_row = DB::table('jobs')
+                ->orderBy(['id' => 'ASC'])
+                ->first();  
+                
+                if (empty($job_row)){
+                    DB::rollback();
 
-            DB::table('jobs')
-            ->find($id)
-            ->delete();
-            
-            DB::commit(); 
+                    // para no pegarle continuamente a la DB
+                    sleep(1);
 
-        }catch(\Exception $e){
-            DB::rollback();
-            dd($e->getMessage(), "Error en transacción");
-        }	
+                    continue;
+                }
 
-        d($job_row);
+                $id = $job_row['id'];
 
-        $job_object = $job_row['object'];
-        $job_params = $job_row['params'];
-                   
+                DB::table('jobs')
+                ->find($id)
+                ->delete();
+                
+                DB::commit(); 
+
+            }catch(\Exception $e){
+                DB::rollback();
+                Files::logger("Worker has finished with error :" . $e->getMessage());
+            }	
+
+            //d($job_row);
+
+            $job    = unserialize($job_row['object']);
+            $params = unserialize($job_row['params']);
+
+            $job->run(...$params);
+
+            // para no pegarle continuamente a la DB
+            sleep(1);
+        }
+
+        d("Quit");
     }
 }
 
