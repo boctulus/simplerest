@@ -56,9 +56,6 @@ class WorkerController extends MyController
             $params = unserialize($job_row['params']);
 
             $job->run(...$params);
-
-            // para no pegarle continuamente a la DB
-            sleep(1);
         }
 
         d("Quit");
