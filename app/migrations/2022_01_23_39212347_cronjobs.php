@@ -6,7 +6,7 @@ use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
-class BackgroundProcess implements IMigration
+class CronJobs implements IMigration
 {
     /**
 	* Run migration.
@@ -15,7 +15,7 @@ class BackgroundProcess implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('background_process');
+        $sc = new Schema('cronjobs');
         $sc->int('id')->pri()->auto();
         $sc->varchar('job_file')->index();
         $sc->int('pid', 5)->unique(); 
