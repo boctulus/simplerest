@@ -7750,6 +7750,10 @@ Para detener los cronJobs:
 
 La cola de tareas es una forma eficiente de reducir los tiempos de respuesta de peticiones ya que la o las tareas se encolan, el script termina y en segundo plano se atenderá la cola.
 
+Un caso de uso es el envio de correos:
+	
+	$queue->dispatch(\simplerest\jobs\tasks\SendWelcomeEmail::class, $user);
+
 Estas tareas se almacenan en /app/jobs/tasks
 
 Las tareas se crean mediante el comando:
@@ -7777,6 +7781,13 @@ Luego, es posible "encolar" (despachar) las tareas a una cola que puede tener un
 	$queue = new JobQueue("q1");
 	$queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
 	$queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
+
+	/*
+		Se pueden enviar parámetros a las tareas
+	*/
+	
+	$queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Felipito', 10);
+
 
 Se pueden crear cuantas colas se necesiten diferenciándose por el nombre que llevan.
 
