@@ -31,17 +31,17 @@ class Supervisor
             
             DB::table('background_process')
             ->insert([
-                'job_file' => $this->filenames[$ix],
+                'process' => $this->filenames[$ix],
                 'pid' => $pid
             ]);
         }
     }
 
-    static function isRunning(string $job_file) : bool {
+    static function isRunning(string $process) : bool {
         DB::getDefaultConnection();
 
         return DB::table('background_process')
-        ->where(['job_file' => $job_file])
+        ->where(['process' => $process])
         ->exists();
     }
 
@@ -49,6 +49,7 @@ class Supervisor
         DB::getDefaultConnection();
 
         $pids = DB::table('background_process')
+        ->whereNot('process', 'worker')
         ->pluck('pid');
 
         if (empty($pids)){
@@ -60,6 +61,7 @@ class Supervisor
 
             if ($exit_code == 0){
                 DB::table('background_process')
+                ->whereNot('process', 'worker')
                 ->where(['pid' => $pid])
                 ->delete();
             }

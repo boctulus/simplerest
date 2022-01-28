@@ -7014,8 +7014,6 @@ class DumbController extends Controller
         d(Supervisor::isRunning('some.php'));
     }
 
-
-
     function test_dispatch(){
         $queue = new JobQueue("q1");
         $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
@@ -7024,9 +7022,9 @@ class DumbController extends Controller
 
     function test_dispatch2(){
         $queue = new JobQueue("q2");
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Juan', 39);
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Maria',21);
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Felipito', 10);
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '1 - Juan', 39);
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '2 - Maria',21);
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '3 - Felipito', 10);
     }
 
     function test_worker_factory(){
@@ -7042,6 +7040,11 @@ class DumbController extends Controller
     function test_worker_factory3(){
         $queue = new JobQueue("q1");
         $queue->workerFactory(3);
+    }
+
+    function test_worker_stop(){
+        // debería pasarle el nombre de la cola
+        JobQueue::stop();
     }
 
 }   
