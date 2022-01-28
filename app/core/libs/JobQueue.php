@@ -12,10 +12,10 @@ use simplerest\core\libs\System;
 */
 class JobQueue
 {
-    static protected $workers = 1;
+    protected $name;
 
-    function __construct() {
-        $this->job_queue = new \SplQueue();
+    function __construct(string $name = 'default') {
+        $this->name = $name;
     }
 
     public function dispatch(string $job_class, ...$params){
@@ -38,13 +38,16 @@ class JobQueue
         // enqueue
         DB::table('jobs')
         ->insert([
+            'queue'  => $this->name,
             'object' => serialize($job),
             'params' => serialize($params)
         ]);
     }
 
-    public function exec(int $workers = 1){  
-        System::runInBackground("php com worker");
+    public function workerFactory(int $workers = 1){  
+        for ($i=0; $i<$workers; $i++){
+            System::runInBackground("php com worker listen {$this->name}");
+        }
     }
 
 }
