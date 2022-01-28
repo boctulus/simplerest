@@ -1,12 +1,9 @@
-2022-01-27 22:30:13	Hello 1 - Juan. Are you 39 years old?
-2022-01-27 22:30:14	Hello 2 - Maria. Are you 21 years old?
-2022-01-27 22:30:14	Hello 3 - Felipito. Are you 10 years old?
-2022-01-27 22:30:29	Hello 1 - Juan. Are you 39 years old?
-2022-01-27 22:30:29	Hello 2 - Maria. Are you 21 years old?
-2022-01-27 22:30:29	Hello 3 - Felipito. Are you 10 years old?
-2022-01-27 22:30:30	Hello 3 - Felipito. Are you 10 years old?
-2022-01-27 22:30:30	Hello 1 - Juan. Are you 39 years old?
-2022-01-27 22:30:30	Hello 2 - Maria. Are you 21 years old?
-2022-01-27 22:30:32	Hello 1 - Juan. Are you 39 years old?
-2022-01-27 22:30:32	Hello 2 - Maria. Are you 21 years old?
-2022-01-27 22:30:32	Hello 3 - Felipito. Are you 10 years old?
+2022-01-28 07:12:16	6066
+2022-01-28 07:12:18	Hola Mundo
+2022-01-28 07:12:20	3666
+2022-01-28 07:12:21	Hola Mundo
+
+2022-01-28 07:14:53	5473
+2022-01-28 07:14:53	5310
+2022-01-28 07:14:53	Hola Mundo
+2022-01-28 07:14:53	Hola Mundo
