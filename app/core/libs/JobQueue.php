@@ -83,6 +83,14 @@ class JobQueue
                 ->delete();
             }
         }
+
+        // Borro cualquier otro proceso que haya quedado escrito en la tabla
+        
+        DB::table('background_workers')
+        ->when(!is_null($queue), function($q) use ($queue){
+            $q->where(['queue' => $queue]);
+        })
+        ->delete();
     }
 
 }
