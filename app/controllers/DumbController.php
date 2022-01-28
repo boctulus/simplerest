@@ -64,6 +64,29 @@ class DumbController extends Controller
         dd(Url::has_ssl('simplerest.pulque.ro'));
     }
 
+        /*
+        https://www.programmerall.com/article/553939151/
+    */
+    function test_queue(){
+        $queue = new \SplQueue();
+
+        //$queue->setIteratorMode(\SplDoublyLinkedList::IT_MODE_FIFO | \SplDoublyLinkedList::IT_MODE_DELETE);
+
+        $queue->enqueue('a');
+        $queue->enqueue('b');
+        $queue->enqueue('c');
+
+        // shift
+        d($queue->dequeue());
+        
+        // lista elementos
+        foreach($queue as $item) {
+            d($item);
+        }
+
+        //d($queue);
+    }
+
     // ok
     function test504(){
         $vals = DB::table('products')
@@ -112,6 +135,7 @@ class DumbController extends Controller
         $res = $sth->fetch();
         dd($res);
     }
+    
 
     /*
         Falla en POSTGRES:
@@ -6990,42 +7014,34 @@ class DumbController extends Controller
         d(Supervisor::isRunning('some.php'));
     }
 
-    /*
-        https://www.programmerall.com/article/553939151/
-    */
-    function test_queue(){
-        $queue = new \SplQueue();
 
-        //$queue->setIteratorMode(\SplDoublyLinkedList::IT_MODE_FIFO | \SplDoublyLinkedList::IT_MODE_DELETE);
-
-        $queue->enqueue('a');
-        $queue->enqueue('b');
-        $queue->enqueue('c');
-
-        // shift
-        d($queue->dequeue());
-        
-        // lista elementos
-        foreach($queue as $item) {
-            d($item);
-        }
-
-        //d($queue);
-    }
 
     function test_dispatch(){
-        $queue = new JobQueue();
-
+        $queue = new JobQueue("q1");
         $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Juan', 39);
         $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
     }
 
-    function test_exec(){
-        $queue = new JobQueue();
-
-        $queue->exec();
+    function test_dispatch2(){
+        $queue = new JobQueue("q2");
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Juan', 39);
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Maria',21);
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Felipito', 10);
     }
 
+    function test_worker_factory(){
+        $queue = new JobQueue("q2");
+        $queue->workerFactory(3);
+    }
+
+    function test_worker_factory2(){
+        $queue = new JobQueue();
+        $queue->workerFactory(3);
+    }
+
+    function test_worker_factory3(){
+        $queue = new JobQueue("q1");
+        $queue->workerFactory(3);
+    }
 
 }   

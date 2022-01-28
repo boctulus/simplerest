@@ -15,7 +15,7 @@ class WorkerController extends MyController
         parent::__construct();        
     }
 
-    function index()
+    function listen(?string $queue = null)
     {
         while (true)
         {
@@ -23,8 +23,10 @@ class WorkerController extends MyController
             DB::beginTransaction();
 
             try {
-
                 $job_row = DB::table('jobs')
+                ->when(!is_null($queue), function($q) use ($queue) {
+                    $q->where(['queue' => $queue]);
+                })
                 ->orderBy(['id' => 'ASC'])
                 ->first();  
                 
