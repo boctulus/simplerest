@@ -7019,26 +7019,26 @@ class DumbController extends Controller
         $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
     }
 
-    function test_dispatch2(){
+    function test_dispatch_q2(){
         $queue = new JobQueue("q2");
         $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '1 - Juan', 39);
         $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '2 - Maria',21);
         $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '3 - Felipito', 10);
     }
 
-    function test_worker_factory(){
+    function test_worker_factory_q2(){
         $queue = new JobQueue("q2");
-        $queue->workerFactory(3);
+        $queue->addWorkers(30);
     }
 
     function test_worker_factory2(){
         $queue = new JobQueue();
-        $queue->workerFactory(3);
+        $queue->addWorkers(3);
     }
 
     function test_worker_factory3(){
         $queue = new JobQueue("q1");
-        $queue->workerFactory(3);
+        $queue->addWorkers(50);
     }
 
     function test_worker_stop(){
