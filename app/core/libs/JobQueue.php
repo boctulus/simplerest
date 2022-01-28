@@ -44,7 +44,7 @@ class JobQueue
         ]);
     }
 
-    public function workerFactory(int $workers = 1){  
+    public function addWorkers(int $workers = 1){  
         for ($i=0; $i<$workers; $i++){
             $pid = System::runInBackground("php com worker listen {$this->name}");
 
