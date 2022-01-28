@@ -7690,7 +7690,7 @@ En el caso de Linux, devuelve el PID del proceso ejecutado en background.
 
 # CronJobs 
 
-El framework dispone de tareas programadas o "cron jobs". Estos cronjobs se almacenan en /app/cronjobs
+El framework dispone de tareas programadas o "cron jobs". Estos cronjobs se almacenan en /app/jobs/cronjobs
 
 La estructura básica de un CronJob es:
 
@@ -7743,10 +7743,14 @@ Para detener los cronJobs:
 
 	Supervisor::stop()
 
-<-- obviamente toca crear los comandos "cronjobs start" y "cronjobs stop" 
+<-- obviamente toca crear los comandos "cronjobs start" y "cronjobs stop" que llamen a Supervisor::start() y Supervisor::stop() respectivamente
 
 
 # Cola de tareas
+
+La cola de tareas es una forma eficiente de reducir los tiempos de respuesta de peticiones ya que la o las tareas se encolan, el script termina y en segundo plano se atenderá la cola.
+
+Estas tareas se almacenan en /app/jobs/tasks
 
 Las tareas se crean mediante el comando:
 
@@ -7788,8 +7792,9 @@ Para atender las colas se necesitan trabajadores (workers) y se pueden agregar u
 	/*
 		Asigno tres workers a esa cola
 	*/
-    $queue->workerFactory(3);
+    $queue->addWorkers(3);
 
 
-Cabe destacatar que cuando se crean varios workers existe actualmente la posibilidad (no deseada) de que más de un worker atienda la misma tarea con lo cual podría ejecutarse más de una vez. Este riesgo se incrementa con el número de workers. Una forma de mitigar el problema es solo crear los workers una vez que esté lista la cola.
+Cabe destacatar que cuando se crean varios workers existe actualmente la posibilidad (no deseada) de que más de un worker atienda la misma tarea con lo cual podría ejecutarse más de una vez. Este riesgo se incrementa con el número de workers. 
+
 
