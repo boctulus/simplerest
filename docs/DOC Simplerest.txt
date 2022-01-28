@@ -7806,6 +7806,17 @@ Para atender las colas se necesitan trabajadores (workers) y se pueden agregar u
     $queue->addWorkers(3);
 
 
-Cabe destacatar que cuando se crean varios workers existe actualmente la posibilidad (no deseada) de que más de un worker atienda la misma tarea con lo cual podría ejecutarse más de una vez. Este riesgo se incrementa con el número de workers. 
+La forma de detener la ejecución de tareas de una cola es mediante JobQueue::stop();
+
+Ej:
+
+	JobQueue::stop('my_queue');
+
+En caso de querer detener la ejecución de todas las colas, no envie el nombre de la cola:
+
+	JobQueue::stop()
+
+
+<-- se implementará el comando "queue stop [ name ]"
 
 
