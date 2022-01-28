@@ -7002,8 +7002,7 @@ class DumbController extends Controller
     }
 
     function test_supervisor_start(){
-        // debería instanciarlo desde el Container
-        $sup = new Supervisor();
+        Supervisor::start();
     }
 
     function test_supervisor_stop(){

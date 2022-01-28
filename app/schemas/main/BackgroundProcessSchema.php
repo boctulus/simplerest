@@ -16,7 +16,7 @@ class BackgroundProcessSchema implements ISchema
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'job_file' => 'STR',
+				'job' => 'STR',
 				'pid' => 'INT',
 				'created_at' => 'STR'
 			],
@@ -31,7 +31,7 @@ class BackgroundProcessSchema implements ISchema
 
 			'rules' 		=> [
 				'id' => ['type' => 'int'],
-				'job_file' => ['type' => 'str', 'max' => 60, 'required' => true],
+				'job' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'pid' => ['type' => 'int', 'required' => true],
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],

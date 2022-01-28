@@ -30,7 +30,8 @@ class MakeControllerBase extends Controller
     const HELPER_TEMPLATE = self::TEMPLATES . 'Helper.php'; 
     const LIBS_TEMPLATE = self::TEMPLATES . 'Lib.php';
     const TRAIT_TEMPLATE = self::TEMPLATES . 'Trait.php';
-
+    const CRONJOBS_TEMPLATE = self::TEMPLATES . 'CronJob.php';
+    const TASK_TEMPLATE = self::TEMPLATES . 'Task.php';
 
     protected $class_name;
     protected $ctr_name;
@@ -298,7 +299,7 @@ class MakeControllerBase extends Controller
     /*
         File manipulation
     */
-    function generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt) {        
+    function generic($name, $prefix, $subfix, $namespace = null, $dest_path, $template_path, ...$opt) {        
         $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
 
         $unignore = false;
@@ -356,7 +357,10 @@ class MakeControllerBase extends Controller
 
         $data = file_get_contents($template_path);
         $data = str_replace('__NAME__', $this->camel_case . $subfix, $data);
-        $data = str_replace('__NAMESPACE', $namespace, $data);
+
+        if (!is_null($namespace)){
+            $data = str_replace('__NAMESPACE', $namespace, $data);
+        }
 
         if ($strict){
             $data = str_replace('<?php', '<?php declare(strict_types=1);' , $data);
@@ -381,6 +385,26 @@ class MakeControllerBase extends Controller
         $template_path = self::CONSOLE_TEMPLATE;
         $prefix = '';
         $subfix = 'Controller';  
+
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+    }
+
+    function cronjob($name, ...$opt) {
+        $namespace = null; //
+        $dest_path = CRONOS_PATH;
+        $template_path = self::CRONJOBS_TEMPLATE;
+        $prefix = '';
+        $subfix = 'CronJob';  
+
+        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+    }
+
+    function task($name, ...$opt) {
+        $namespace = 'simplerest\\jobs\\tasks';
+        $dest_path = TASKS_PATH;
+        $template_path = self::TASK_TEMPLATE;
+        $prefix = '';
+        $subfix = 'Task';  
 
         $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
