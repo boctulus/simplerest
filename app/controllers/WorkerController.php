@@ -20,37 +20,30 @@ class WorkerController extends MyController
         while (true)
         {
             // dequeue
-            DB::beginTransaction();
+           
+            $job_row = DB::table('jobs')
+            ->when(!is_null($queue), function($q) use ($queue) {
+                $q->where(['queue' => $queue]);
+            })
+            ->orderBy(['id' => 'ASC'])
+            ->first();  
+            
+            if (empty($job_row)){
+                // para no pegarle continuamente a la DB
+                sleep(1);
 
-            try {
-                $job_row = DB::table('jobs')
-                ->when(!is_null($queue), function($q) use ($queue) {
-                    $q->where(['queue' => $queue]);
-                })
-                ->orderBy(['id' => 'ASC'])
-                ->first();  
+                continue;
+            }
+
+            $id = $job_row['id'];
+
+            $ok = (bool) DB::table('jobs')
+            ->find($id)
+            ->delete();
                 
-                if (empty($job_row)){
-                    DB::rollback();
-
-                    // para no pegarle continuamente a la DB
-                    sleep(1);
-
-                    continue;
-                }
-
-                $id = $job_row['id'];
-
-                DB::table('jobs')
-                ->find($id)
-                ->delete();
-                
-                DB::commit(); 
-
-            }catch(\Exception $e){
-                DB::rollback();
-                Files::logger("Worker has finished with error :" . $e->getMessage());
-            }	
+            if (!$ok){
+               continue; 
+            }
 
             //d($job_row);
 
