@@ -18,7 +18,7 @@ class BackgroundWorkers implements IMigration
         $sc = new Schema('background_workers');
         
         $sc->int('id')->pri()->auto();
-        $sc->varchar('queue')->nullable()->index();
+        $sc->varchar('queue')->index();
         $sc->int('pid', 5)->unique(); 
         $sc->datetime('created_at');
 		$sc->create();	

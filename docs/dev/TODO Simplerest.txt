@@ -668,6 +668,40 @@ https://www.npopov.com/2012/12/22/Cooperative-multitasking-using-coroutines-in-P
 
 [ Colas ]
 
+- Completar comandos para manejar colas
+
+  php com make cron [ {name} | --name={name} ] 
+  --time={time} | --hour={hour} --minute={--minute}
+  --weekday={weekday} 
+  --monthday={monthday}
+
+Para listar los cronJobs sería con la opción --list
+
+  php com cronjobs --list
+
+Los cron jobs se iniciarían con "cronjobs --start" 
+
+  php com cronjobs --start
+
+(*) El framework intentará hacer un "autostart". 
+
+Para remover un cronJon con --remove
+
+  php com make cron --remove {name}
+
+Para detener la ejecución de un cronJon con --stop sobre el comando "make cron" o "cronos"
+
+  php com cronjobs --stop {name}
+o
+
+  php com cronjobs --stop --name={name}
+
+o
+  php com cronjobs --stop --pid={pid}
+
+
+
+
 - Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
 
 Un [worker] maneja una [cola] o "job queue" de [jobs]. Pero *varios* workers pueden también manejar la misma cola para acelerar el proceso.
