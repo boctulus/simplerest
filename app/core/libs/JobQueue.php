@@ -59,7 +59,11 @@ class JobQueue
     }
 
     /*
-        Debo recibir el nombre de la cola y sino es null => matar solo los workers de esa cola
+        Mata de forma violenta a los workers y por ende a los jobs que está ejecutando. Sería como un "--force"
+
+        Una manera más gentil de frenar (pausar) sería mantener una tabla `queues` donde cada cola pueda
+        tener un estado (is_active) y que los workers antes de tomar un nuevo job verifiquen que la cola
+        sigue activa y sino que terminen.
     */
     static function stop(?string $queue = null){
         DB::getDefaultConnection();
@@ -85,7 +89,7 @@ class JobQueue
         }
 
         // Borro cualquier otro proceso que haya quedado escrito en la tabla
-        
+
         DB::table('background_workers')
         ->when(!is_null($queue), function($q) use ($queue){
             $q->where(['queue' => $queue]);
