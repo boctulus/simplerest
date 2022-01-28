@@ -7687,57 +7687,109 @@ Ej:
 
 En el caso de Linux, devuelve el PID del proceso ejecutado en background.
 
+
 # CronJobs 
 
-Se están incoporando tareas programadas o "cron jobs". En si cada cronJob podría considerarse un "worker service" y se implementan extendiendo la clase BackgroundService. Estos cronjobs se almacenan en /app/cronjobs
+El framework dispone de tareas programadas o "cron jobs". Estos cronjobs se almacenan en /app/cronjobs
+
+La estructura básica de un CronJob es:
 
 	class {Name}Worker extends BackgroundService 
 	{
-		protected int $monthday;
-		protected int $weekday;
-		protected int $hour;
-		protected int $minute;
+		static protected $month;
+		static protected $monthday;
+		static protected $weekday;
+		static protected $hour; 
+		static protected $minute;
+		static protected $second;
+		static protected $is_active = true;
 
-		function start(){
+		/*
+			Number of retries in 24 Hs.
+		*/
+		static protected $retries = 3;
+		static protected $retry_timeframe = 3600 * 24;
+
+
+		function run(){
 			// your logic here
 		}
+		
+		/*
+			@paran $error Exception object
+			@param $times int number of fails
+		*/
+		function onFail(\Exception $error, int $times){
+		}
 
-		function stop(){
-			// your logic here
+		function onSuccess(){
+
 		}
 	}
 
-El comando parar declararlos es:
+El comando para crear un CronJon es "make cronjob {name}"
 
-	php com make cron [ {name} | --name={name} ] 
-	--time={time} | --hour={hour} --minute={--minute}
-	--weekday={weekday} 
-	--monthday={monthday}
-
-Para listar los cronJobs es con la opción --list
-
-	php com make cron --list
-
-Los cron jobs se iniciarían con "cronos --start" 
-
-	php com cronos --start
-
-(*) El framework intentará hacer un "autostart". 
+	php com make cronjob {name}
 
 Para remover un cronJon con --remove
 
-	php com make cron --remove {name}
+	php com make cronjob {name} --remove 
 
-Para detener la ejecución de un cronJon con --stop sobre el comando "make cron" o "cronos"
+Para iniciar los cronjobs:
 
-	php com make cron --stop {name}
-o
+	Supervisor::start()
 
-	php com make cron --stop --name={name}
+Para detener los cronJobs:
 
-o
-	php com make cron --stop --pid={pid}
+	Supervisor::stop()
+
+<-- obviamente toca crear los comandos "cronjobs start" y "cronjobs stop" 
 
 
+# Cola de tareas
 
+Las tareas se crean mediante el comando:
+
+	php com make task {name}
+
+Las tareas deben extender de Task e implementar el método run() el cual puede recibir parámetros. Ej:
+
+	class DosTask extends Task
+	{ 
+		static protected $priority = 10;
+		static protected $exec_time_limit   ;
+		static protected $memory_limit;
+		static protected $dontOverlap = false;
+
+		function run(string $name, int $age){
+			// your logic here
+
+			Files::logger("Hello $name. Are you $age years old?");
+		}
+	}
+
+Luego, es posible "encolar" (despachar) las tareas a una cola que puede tener un nombre. Ej:
+
+	$queue = new JobQueue("q1");
+	$queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
+	$queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
+
+Se pueden crear cuantas colas se necesiten diferenciándose por el nombre que llevan.
+
+Las tareas (tasks) en cada cola corren de forma síncrona (una detrás de otra) donde la primera en entrar a la cola es la primera en salir (FIFO).
+
+Para atender las colas se necesitan trabajadores (workers) y se pueden agregar uno o más. A más workers más rápido irá la cola pero más recursos consumirá.
+
+	/*
+		Declaro a la cola que deseo acceder
+	*/
+	$queue = new JobQueue("q1");
+
+	/*
+		Asigno tres workers a esa cola
+	*/
+    $queue->workerFactory(3);
+
+
+Cabe destacatar que cuando se crean varios workers existe actualmente la posibilidad (no deseada) de que más de un worker atienda la misma tarea con lo cual podría ejecutarse más de una vez. Este riesgo se incrementa con el número de workers. Una forma de mitigar el problema es solo crear los workers una vez que esté lista la cola.
 

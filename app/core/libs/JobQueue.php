@@ -58,22 +58,16 @@ class JobQueue
         }
     }
 
-    static function isRunning(string $process) : bool {
-        DB::getDefaultConnection();
-
-        return DB::table('background_workers')
-        ->where(['process' => $process])
-        ->exists();
-    }
-
     /*
-        De momento detiene todos los workers
-        aunque... debería recibir el nombre de la cola y sino es null => matar solo los workers de esa cola
+        Debo recibir el nombre de la cola y sino es null => matar solo los workers de esa cola
     */
-    static function stop(){
+    static function stop(?string $queue = null){
         DB::getDefaultConnection();
 
         $pids = DB::table('background_workers')
+        ->when(!is_null($queue), function($q) use ($queue){
+            $q->where(['queue' => $queue]);
+        })
         ->pluck('pid');
 
         if (empty($pids)){

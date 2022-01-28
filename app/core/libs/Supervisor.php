@@ -6,42 +6,42 @@ use simplerest\core\libs\System;
 
 class Supervisor
 {
-    protected Array $filenames;
-    protected Array $classes;
-    protected Array $freq;
+    static protected Array $filenames;
+    static protected Array $classes;
+    static protected Array $freq;
 
-    function __construct() {
-        $this->stop();
-
-        $this->scan();
+    static function start() {
+        static::stop();
+        static::scan();
 
         DB::getDefaultConnection();
 
         DB::table('background_process')
         ->truncate();
 
-        foreach ($this->classes as $ix => $class){
+        foreach (static::$classes as $ix => $class){
             if (!$class::isActive()){
                 continue;
             }
 
-            $pid = System::runInBackground("php com async loop {$this->filenames[$ix]}", 'logs/output.txt');
+            $file = static::$filenames[$ix];
+            $pid  = System::runInBackground("php com async loop $file", 'logs/output.txt');
             
             // lo ideal es poder elegir el "driver" ya sea en base de datos o en memoria tipo REDIS para los PIDs
             
             DB::table('background_process')
             ->insert([
-                'process' => $this->filenames[$ix],
+                'job' => $file,
                 'pid' => $pid
             ]);
         }
     }
 
-    static function isRunning(string $process) : bool {
+    static function isRunning(string $job) : bool {
         DB::getDefaultConnection();
 
         return DB::table('background_process')
-        ->where(['process' => $process])
+        ->where(['job' => $job])
         ->exists();
     }
 
@@ -49,7 +49,6 @@ class Supervisor
         DB::getDefaultConnection();
 
         $pids = DB::table('background_process')
-        ->whereNot('process', 'worker')
         ->pluck('pid');
 
         if (empty($pids)){
@@ -61,14 +60,13 @@ class Supervisor
 
             if ($exit_code == 0){
                 DB::table('background_process')
-                ->whereNot('process', 'worker')
                 ->where(['pid' => $pid])
                 ->delete();
             }
         }
     }
 
-    protected function scan(){
+    static protected function scan(){
         foreach (new \FilesystemIterator(CRONOS_PATH) as $fileInfo) {
             if($fileInfo->isDir() || $fileInfo->getExtension() != 'php') continue;
 
@@ -81,8 +79,8 @@ class Supervisor
                 throw new \Exception ("Class '$class_name' doesn't exist in $file");
             } 
 
-            $this->classes[]   = $class_name;
-            $this->filenames[] = basename($filename);
+            static::$classes[]   = $class_name;
+            static::$filenames[] = basename($filename);
         }   
     }
 
