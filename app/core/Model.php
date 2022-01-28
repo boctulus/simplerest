@@ -2092,6 +2092,11 @@ class Model {
 		return $this;
 	}
 
+	function whereNot(string $field, $val){
+		$this->where([$this->getFullyQualifiedField($field), $val, '!=']);
+		return $this;
+	}
+
 	function whereNull(string $field){
 		$this->where([$this->getFullyQualifiedField($field), NULL]);
 		return $this;

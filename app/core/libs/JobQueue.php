@@ -46,7 +46,48 @@ class JobQueue
 
     public function workerFactory(int $workers = 1){  
         for ($i=0; $i<$workers; $i++){
-            System::runInBackground("php com worker listen {$this->name}");
+            $pid = System::runInBackground("php com worker listen {$this->name}");
+
+            DB::getDefaultConnection();
+            
+            DB::table('background_workers')
+            ->insert([
+                'queue' => $this->name,
+                'pid'   => $pid
+            ]);
+        }
+    }
+
+    static function isRunning(string $process) : bool {
+        DB::getDefaultConnection();
+
+        return DB::table('background_workers')
+        ->where(['process' => $process])
+        ->exists();
+    }
+
+    /*
+        De momento detiene todos los workers
+        aunque... debería recibir el nombre de la cola y sino es null => matar solo los workers de esa cola
+    */
+    static function stop(){
+        DB::getDefaultConnection();
+
+        $pids = DB::table('background_workers')
+        ->pluck('pid');
+
+        if (empty($pids)){
+            return;
+        }
+
+        foreach ($pids as $pid){
+            $exit_code = shell_exec("kill $pid 2>/dev/null && echo $?");
+
+            if ($exit_code == 0){
+                DB::table('background_workers')
+                ->where(['pid' => $pid])
+                ->delete();
+            }
         }
     }
 

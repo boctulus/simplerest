@@ -1388,6 +1388,25 @@ Pueden haber varios WHERE en cuyo caso se hace un "AND WHERE"
 
 No se aconseja para nada mezclar arrays WHEREs con arrays asociativos y no-asociativos.
 
+# whereNot
+
+Efectua un WHERE {campo} != {valor}
+
+Ej:
+
+	$pids = DB::table('background_process')
+	->whereNot('process', 'worker')
+	->pluck('pid');
+
+# whereNull / whereNotNull
+
+	$rows = DB::table('products')
+	->whereNull('workspace')
+	->get();
+
+	$rows = DB::table('products')
+	->whereNotNull('workspace')
+	->get();
 
 # whereIn / whereNotIn
 
@@ -1401,15 +1420,6 @@ Es posible hacer un WHERE IN( array ) y un WHERE NOT IN ( array ) con whereIn() 
     ->whereNotIn('size', ['0.5L', '3L'])
 	->get());
 
-# whereNull / whereNotNull
-
-	$rows = DB::table('products')
-	->whereNull('workspace')
-	->get();
-
-	$rows = DB::table('products')
-	->whereNotNull('workspace')
-	->get();
 
 # whereBetween / whereNotBetween
 
@@ -1575,6 +1585,7 @@ Ej:
 Lo anterior generá un SQL como:
 
 	SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = 'AB');
+
 
 # selectRaw
 
