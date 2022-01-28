@@ -30,8 +30,7 @@ class AsyncController extends MyController
             throw new \Exception ("Class '$class_name' should be instance of CronJob");
         }
 
-        $freq = $job::getFrequency();
-        //$dont_overlap = $class_name::canOverlap();
+        $freq = $job::getFrequency();        
 
         $mnth = $freq['month']    ?? -1;
         $mndy = $freq['monthday'] ?? -1;
@@ -103,15 +102,6 @@ class AsyncController extends MyController
             ){
                 continue;
             }
-
-            /*
-                No tiene sentido mientras haya un solo worker porque si el proceso 
-                no termina => no deja que otra instancia arranque
-            */
-            // if ($dont_overlap && Supervisor::isRunning($job_filename)){
-            //     Files::logger("Aborting for ". $job_filename);
-            //     return;
-            // }
 
             $job->start();
 
