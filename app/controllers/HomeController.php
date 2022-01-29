@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use \simplerest\core\Controller;
+use simplerest\core\controllers\Controller;
 
 class HomeController extends Controller
 {
@@ -14,14 +14,14 @@ class HomeController extends Controller
 	}
 
 	# /home/show
-	function show(){
-		view('test_x_dsi.php', [
-			'pruebas' => [
-				[ 'name' => 'Como se sirven las vistas', 'date' => '22-Set' ],
-				[ 'name' => 'Maestro detalle con HATEOAS', 'date' => '22-Set' ]
-			],
-			'title' => 'DSI - pruebas'
-		]);
-	}
+	// function show(){
+	// 	view('test_x.php', [
+	// 		'pruebas' => [
+	// 			[ 'name' => 'Como se sirven las vistas', 'date' => '22-Set' ],
+	// 			[ 'name' => 'Maestro detalle con HATEOAS', 'date' => '22-Set' ]
+	// 		],
+	// 		'title' => 'DSI - pruebas'
+	// 	]);
+	// }
 }
 	

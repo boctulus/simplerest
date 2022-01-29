@@ -1,5 +1,174 @@
 # TODO
 
+[ Front ]
+
+- Crear FormBuilder
+
+  class SongForm extends Form
+  {
+      public function buildForm()
+      {
+          $this
+              ->add('name', Field::TEXT, [
+                  'rules' => 'required|min:5'
+              ])
+              ->add('lyrics', Field::TEXTAREA, [
+                  'rules' => 'max:5000'
+              ])
+              ->add('publish', Field::CHECKBOX);
+      }
+  }
+
+- Hacer uso de las definiciones
+
+  {
+      id: "txt_descripcion",
+      name: "txt_descripcion",
+      label: "Descripción",
+      required: false,
+      type: "text",
+      size: 4,
+      placeholder: "Ingrese descripción área'",
+  },
+  {
+      id: "cbo_empresa",
+      name: "cbo_empresa",
+      label: "Empresa",
+      required: true,
+      disabled: false,
+      type: "select",
+      size: 4,
+      placeholder: "Seleccione empresa",
+  },
+
+Tipos de controles
+
+  protected static $availableFieldTypes = [
+      'text'           => 'InputType',
+      'email'          => 'InputType',
+      'url'            => 'InputType',
+      'tel'            => 'InputType',
+      'search'         => 'InputType',
+      'password'       => 'InputType',
+      'hidden'         => 'InputType',
+      'number'         => 'InputType',
+      'date'           => 'InputType',
+      'file'           => 'InputType',
+      'image'          => 'InputType',
+      'color'          => 'InputType',
+      'datetime-local' => 'InputType',
+      'month'          => 'InputType',
+      'range'          => 'InputType',
+      'time'           => 'InputType',
+      'week'           => 'InputType',
+      'select'         => 'SelectType',
+      'textarea'       => 'TextareaType',
+      'button'         => 'ButtonType',
+      'buttongroup'    => 'ButtonGroupType',
+      'submit'         => 'ButtonType',
+      'reset'          => 'ButtonType',
+      'radio'          => 'CheckableType',
+      'checkbox'       => 'CheckableType',
+      'choice'         => 'ChoiceType',
+      'form'           => 'ChildFormType',
+      'entity'         => 'EntityType',
+      'collection'     => 'CollectionType',
+      'repeated'       => 'RepeatedType',
+      'static'         => 'StaticType'
+  ];
+
+  class Field
+  {
+      // Simple fields
+      const TEXT = 'text';
+      const TEXTAREA = 'textarea';
+      const SELECT = 'select';
+      const CHOICE = 'choice';
+      const CHECKBOX = 'checkbox';
+      const RADIO = 'radio';
+      const PASSWORD = 'password';
+      const HIDDEN = 'hidden';
+      const FILE = 'file';
+      const STATIC = 'static';
+      //Date time fields
+      const DATE = 'date';
+      const DATETIME_LOCAL = 'datetime-local';
+      const MONTH = 'month';
+      const TIME = 'time';
+      const WEEK = 'week';
+      //Special Purpose fields
+      const COLOR = 'color';
+      const SEARCH = 'search';
+      const IMAGE = 'image';
+      const EMAIL = 'email';
+      const URL = 'url';
+      const TEL = 'tel';
+      const NUMBER = 'number';
+      const RANGE = 'range';
+      const ENTITY = 'entity';
+      const FORM = 'form';
+      //Buttons
+      const BUTTON_SUBMIT = 'submit';
+      const BUTTON_RESET = 'reset';
+      const BUTTON_BUTTON = 'button';
+  }
+
+
+- Para las alertas usar SweetAlert2
+
+https://sweetalert2.github.io/
+
+- Comando "php com make form-control" que genere algo compatible con implemetación para front.
+
+field_name=
+xxx
+xxx
+xxx
+xxx
+required=
+
+field_name=
+type=text
+xxx
+xxx
+xxx
+required=
+
+field_name=
+type=swith
+xxx
+xxx
+xxx
+xxx
+required=
+
+Se debe generar un .js similar -conseguir la versión más actualizada- a:
+
+/home/www/html/dsi_legion_simple_rest/public/assets/js/empresanomina/index.js
+
+<-- es uno por cada módulo
+
+
+
+- Implementar algo como la "Transients API" de WP que permite guardar claves-valor usando IN-MEMORY STORAGE (Memcached, quizás REDIS,...) y sino encuentra otra opción IN-DATABASE STORAGE.
+
+SET_TRANSIENT()
+
+  $string = "Cache me for a day!";
+  $bool_response = set_transient( 'wpshout_cache_me', $string, 86400 );
+
+
+GET_TRANSIENT()
+
+  $transient_string = get_transient( 'wpshout_cache_me' );
+
+
+<-- usar la interfaz IMemory
+
+Más
+https://wpshout.com/know-wordpress-transients-api/
+
+
 [ SUB-RESOURCES ]
 
   * Permitir traer sub-sub-resources.  Ej:
@@ -666,6 +835,12 @@ https://www.npopov.com/2012/12/22/Cooperative-multitasking-using-coroutines-in-P
 
 ----
 
+- Completar traducciones
+
+https://www.icanlocalize.com/site/es/tutoriales/como-traducir-con-gettext-po-y-archivos-pot/
+
+----
+
 [ Colas ]
 
 - Completar comandos para manejar colas
@@ -1129,37 +1304,6 @@ Un buen caso de uso sería en cabeza-detalle <-- típico uso de Transacciones.
 
   https://stackoverflow.com/questions/33305921/best-practice-for-restfull-web-services-and-file-download
   
-
-- Comando "php com make form-control" que genere algo compatible con implemetación para front.
-
-field_name=
-xxx
-xxx
-xxx
-xxx
-required=
-
-field_name=
-type=text
-xxx
-xxx
-xxx
-required=
-
-field_name=
-type=swith
-xxx
-xxx
-xxx
-xxx
-required=
-
-Se debe generar un .js similar -conseguir la versión más actualizada- a:
-
-/home/www/html/dsi_legion_simple_rest/public/assets/js/empresanomina/index.js
-
-<-- es uno por cada módulo
-
 
 - Terminar de "mergear" la lib Schemas.  Hay mucha varible que carga funcionalidades sin uso!
 
