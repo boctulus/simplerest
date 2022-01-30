@@ -15,7 +15,7 @@ class Form
     protected $method;
     protected $html;
     protected $class = '';
-    protected $pretty = true;
+    protected $pretty = false;
     protected $id_as_name = true;
 
     function __construct(?string $url = null, ?string $method = null) {
@@ -51,25 +51,29 @@ class Form
 
     public function __call($method, $args){
         $class = [
-            "text"   => "form-control",
-            "number" => "form-control",
-            "password"   => "form-control",
-            "email"  => "form-control",
-            "checkbox"   => "form-control",
-            "radio"   => "form-control",
-            "file"   => "form-control",
-            "color"   => "form-control",
-            "date"   => "form-control",
-            "time"   => "form-control",
-            "datetime_local"   => "form-control",
-            "month"   => "form-control",
-            "week"   => "form-control",
-            "image"   => "form-control",
-            "range"   => "form-control",
-            "tel"   => "form-control",
-            "url"   => "form-control",
-            "area"   => "form-control",
-            "select"   => "form-control"
+            "text"           => "form-control",
+            "number"         => "form-control",
+            "password"       => "form-control",
+            "email"          => "form-control",
+            "file"           => "form-control",
+
+            "date"           => "form-control",
+            "time"           => "form-control",
+            "datetime_local" => "form-control",
+            "month"          => "form-control",
+            "week"           => "form-control",
+            "image"          => "form-control",
+            "range"          => "form-control",
+            "tel"            => "form-control",
+            "url"            => "form-control",
+            "area"           => "form-control",
+
+            "select"         => "form-select",
+
+            "checkbox"       => "form-check-input" ,
+            "radio"          => "form-check-input" ,
+
+            "button"         => "btn btn-primary"
         ];
 
         if (isset($class[$method])){
@@ -130,6 +134,12 @@ class Form
             }   
         }
 
+        if (!empty($this->class) && isset($attributes['class'])){
+            $attributes['class'] .= ' ' . $this->class;
+        } else {
+            $attributes['class'] = ' ' . $this->class;
+        }
+
         $att_str = $this->attributes($attributes);
         $chk     = $checked ? 'checked' : '';
         return $this->add("<input type=\"checkbox\" $chk $att_str>$text</input>");
@@ -142,6 +152,12 @@ class Form
             } else {
                 $attributes['name'] = $name;
             }   
+        }
+
+        if (!empty($this->class) && isset($attributes['class'])){
+            $attributes['class'] .= ' ' . $this->class;
+        } else {
+            $attributes['class'] = ' ' . $this->class;
         }
 
         $att_str = $this->attributes($attributes);
@@ -210,6 +226,12 @@ class Form
             }   
         }
 
+        if (!empty($this->class) && isset($attributes['class'])){
+            $attributes['class'] .= ' ' . $this->class;
+        } else {
+            $attributes['class'] = ' ' . $this->class;
+        }
+
         $value = $default_value ?? '';    
         $att_str = $this->attributes($attributes);
 
@@ -236,6 +258,12 @@ class Form
             }   
         }
 
+        if (!empty($this->class) && isset($attributes['class'])){
+            $attributes['class'] .= ' ' . $this->class;
+        } else {
+            $attributes['class'] = ' ' . $this->class;
+        }
+
         $att_str = $this->attributes($attributes);
 
         // options
@@ -260,11 +288,7 @@ class Form
         return $this->add("<label for=\"$id\" $att>$placeholder</label>");
     }
 
-    function hidden(string $name, string $value, Array $attributes = []){
-        return $this->input('hidden', $name, $value, $attributes);
-    }
-
-    function button(string $name, string $value, Array $attributes = []){
+    protected function button(string $name, string $value, Array $attributes = []){
         return $this->input('button', $name, $value, $attributes);
     }
 
@@ -280,6 +304,10 @@ class Form
         return $this->input('search', $name, null, $attributes);
     }
 
+
+    function hidden(string $name, string $value, Array $attributes = []){
+        return $this->input('hidden', $name, $value, $attributes);
+    }
 
     function link_to(string $url, string $anchor, Array $attributes = []){
         if (Strings::startsWith('www.', $url)){
