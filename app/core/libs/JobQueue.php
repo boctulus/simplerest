@@ -4,12 +4,7 @@ namespace simplerest\core\libs;
 
 use simplerest\core\libs\System;
 
-/*
-    Instancias de JobQueue (y no de sus jobs) deben correrse en "segundo plano"
-    a fin de que sean los jobs en una cola sean síncronos.
 
-    El procesamiento parelelo se da a nivel de workers
-*/
 class JobQueue
 {
     protected $name;
