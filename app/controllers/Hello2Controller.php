@@ -10,9 +10,6 @@ class Hello2Controller extends ConsoleController
     function __construct(){
     }
 
-    /*
-        Enviar a una vista con el template que use Boostrap 5
-    */
     function index(){        
         $f = new Form();
 
