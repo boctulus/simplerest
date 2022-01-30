@@ -14,7 +14,8 @@ class Form
     protected $url;
     protected $method;
     protected $html;
-    protected $pretty = false;
+    protected $pretty = true;
+    protected $id_as_name = true;
 
     function __construct(?string $url = null, ?string $method = null) {
         $this->url = $url;
@@ -23,6 +24,10 @@ class Form
 
     function prety(bool $state){
         $this->pretty = $state;
+    }
+
+    function idAsName(bool $state){
+        $this->id_as_name = $state;
     }
 
     function setUrl(string $url){
@@ -45,11 +50,18 @@ class Form
 
     function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [])
     {   
-        $value    = is_null($default_value) ? '' : "value=\"$default_value\""; 
-        $the_name = is_null($name) ? '' : "name=\"$name\"";
+        if (!is_null($name)){
+            if ($this->id_as_name){
+                $attributes['id'] = $name;
+            } else {
+                $attributes['name'] = $name;
+            }   
+        }
+        
+        $value = is_null($default_value) ? '' : "value=\"$default_value\""; 
 
         $att_str = $this->attributes($attributes);
-        return $this->add("<input type=\"$type\" $the_name $value $att_str>");
+        return $this->add("<input type=\"$type\" $value $att_str>");
     }
 
     function text(string $name, ?string $default_value = null, Array $attributes = []){
@@ -69,15 +81,31 @@ class Form
     }
 
     function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
+        if (!is_null($name)){
+            if ($this->id_as_name){
+                $attributes['id'] = $name;
+            } else {
+                $attributes['name'] = $name;
+            }   
+        }
+
         $att_str = $this->attributes($attributes);
         $chk     = $checked ? 'checked' : '';
-        return $this->add("<input type=\"checkbox\" $name $chk $att_str>$text</input>");
+        return $this->add("<input type=\"checkbox\" $chk $att_str>$text</input>");
     }
 
     function radio(string $name, string $text,  bool $checked = false, Array $attributes = []){
+        if (!is_null($name)){
+            if ($this->id_as_name){
+                $attributes['id'] = $name;
+            } else {
+                $attributes['name'] = $name;
+            }   
+        }
+
         $att_str = $this->attributes($attributes);
         $chk     = $checked ? 'checked' : '';
-        return $this->add("<input type=\"radio\" $name $chk $att_str>$text</input>");
+        return $this->add("<input type=\"radio\" $chk $att_str>$text</input>");
     }
 
     function file(string $name, Array $attributes = []){
@@ -153,10 +181,18 @@ class Form
     }
 
     function area(string $name, ?string $default_value = null, Array $attributes = []){
+        if (!is_null($name)){
+            if ($this->id_as_name){
+                $attributes['id'] = $name;
+            } else {
+                $attributes['name'] = $name;
+            }   
+        }
+
         $value = $default_value ?? '';    
         $att_str = $this->attributes($attributes);
 
-        return $this->add("<textarea $name $att_str>$value</textarea>");
+        return $this->add("<textarea $att_str>$value</textarea>");
     }
 
     /*
@@ -169,16 +205,17 @@ class Form
             'Dogs' => ['spaniel' => 'Spaniel'],
         ])
     */
-    function select(string $name, ?string $default_value = null, Array $options, ?string $placeholder = null, Array $attributes = []){
-        $value    = is_null($default_value) ? '' : "value=\"$default_value\""; 
-        $the_name = is_null($name) ? '' : "name=\"$name\"";
-
-        $_att = [];
-        foreach ($attributes as $att => $val){
-            $_att[] = "$att=\"$val\"";
+    function select(string $name, ?string $default_value = null, Array $options, ?string $placeholder = null, Array $attributes = [])
+    {
+        if (!is_null($name)){
+            if ($this->id_as_name){
+                $attributes['id'] = $name;
+            } else {
+                $attributes['name'] = $name;
+            }   
         }
 
-        $att_str = implode(' ', $_att);
+        $att_str = $this->attributes($attributes);
 
         // options
         $_opt = [];
@@ -194,12 +231,12 @@ class Form
 
         $opt_str = implode(' ', $_opt);
 
-        return $this->add("<select $the_name $att_str>$opt_str</select>");
+        return $this->add("<select $att_str>$opt_str</select>");
     }
 
-    function label(string $name, string $placeholder, Array $attributes = []){
+    function label(string $id, string $placeholder, Array $attributes = []){
         $att = $this->attributes($attributes);
-        return $this->add("<label for=\"$name\" $att>$placeholder</label>");
+        return $this->add("<label for=\"$id\" $att>$placeholder</label>");
     }
 
     function link_to(string $url, string $anchor, Array $attributes = []){
@@ -237,7 +274,9 @@ class Form
         $tidy->parseString($html, $config, 'utf8');
         $tidy->cleanRepair();
 
-        return $tidy;
+        ob_start();
+        echo $tidy;
+        return ob_get_clean();
     }
 
     function render(){
