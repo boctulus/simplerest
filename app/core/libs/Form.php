@@ -14,6 +14,7 @@ class Form
     protected $url;
     protected $method;
     protected $html;
+    protected $class = '';
     protected $pretty = true;
     protected $id_as_name = true;
 
@@ -48,7 +49,39 @@ class Form
         return implode(' ', $_att);
     }
 
-    function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [])
+    public function __call($method, $args){
+        $class = [
+            "text"   => "form-control",
+            "number" => "form-control",
+            "password"   => "form-control",
+            "email"  => "form-control",
+            "checkbox"   => "form-control",
+            "radio"   => "form-control",
+            "file"   => "form-control",
+            "color"   => "form-control",
+            "date"   => "form-control",
+            "time"   => "form-control",
+            "datetime_local"   => "form-control",
+            "month"   => "form-control",
+            "week"   => "form-control",
+            "image"   => "form-control",
+            "range"   => "form-control",
+            "tel"   => "form-control",
+            "url"   => "form-control",
+            "area"   => "form-control",
+            "select"   => "form-control"
+        ];
+
+        if (isset($class[$method])){
+            $this->class = $class[$method];
+        } else {
+            $this->class = '';
+        }
+
+        return call_user_func_array(array($this, $method), $args);
+    }
+
+    protected function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
     {   
         if (!is_null($name)){
             if ($this->id_as_name){
@@ -57,30 +90,38 @@ class Form
                 $attributes['name'] = $name;
             }   
         }
-        
+
+        if (!empty($this->class) && isset($attributes['class'])){
+            $attributes['class'] .= ' ' . $this->class;
+        } else {
+            $attributes['class'] = ' ' . $this->class;
+        }
+
         $value = is_null($default_value) ? '' : "value=\"$default_value\""; 
 
         $att_str = $this->attributes($attributes);
-        return $this->add("<input type=\"$type\" $value $att_str>");
+        $p_atr   = implode(' ', $plain_attr);
+
+        return $this->add("<input type=\"$type\" $value $att_str $p_atr>");
     }
 
-    function text(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function text(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('text', $name, $default_value, $attributes);
     }
 
-    function password(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function password(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('password', $name, $default_value, $attributes);
     }
 
-    function email(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function email(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('email', $name, $default_value, $attributes);
     }
 
-    function number(string $name, string $text = null,  Array $attributes = []){
+    protected function number(string $name, string $text = null,  Array $attributes = []){
         return $this->input('number', $name, $text, $attributes);
     }
 
-    function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
+    protected function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
         if (!is_null($name)){
             if ($this->id_as_name){
                 $attributes['id'] = $name;
@@ -94,7 +135,7 @@ class Form
         return $this->add("<input type=\"checkbox\" $chk $att_str>$text</input>");
     }
 
-    function radio(string $name, string $text,  bool $checked = false, Array $attributes = []){
+    protected function radio(string $name, string $text,  bool $checked = false, Array $attributes = []){
         if (!is_null($name)){
             if ($this->id_as_name){
                 $attributes['id'] = $name;
@@ -108,11 +149,11 @@ class Form
         return $this->add("<input type=\"radio\" $chk $att_str>$text</input>");
     }
 
-    function file(string $name, Array $attributes = []){
+    protected function file(string $name, Array $attributes = []){
         return $this->input('file', $name, null, $attributes);
     }
 
-    function color(string $name, string $text, Array $attributes = []){
+    protected function color(string $name, string $text, Array $attributes = []){
         return $this->input('color', $name, $text, $attributes); 
     }
 
@@ -120,23 +161,23 @@ class Form
         return $this->input('date', $name, $default_value, $attributes); 
     }
 
-    function month(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function month(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('month', $name, $default_value, $attributes); 
     }
 
-    function time(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function time(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('time', $name, $default_value, $attributes); 
     }
 
-    function week(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function week(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('week', $name, $default_value, $attributes); 
     }
 
-    function datetime_local(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function datetime_local(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('datetime-local', $name, $default_value, $attributes); 
     }
 
-    function image(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function image(string $name, ?string $default_value = null, Array $attributes = []){
         if (!isset($attributes['src'])){
             throw new \Exception("src attribute is required");
         }
@@ -144,43 +185,23 @@ class Form
         return $this->input('image', $name, $default_value, $attributes); 
     }
 
-    function range(string $name, int $min, int $max, $default_value = null){
+    protected function range(string $name, int $min, int $max, $default_value = null){
         return $this->input('range', $name, $default_value, [
             'min' => $min,
             'max' => $max
         ]); 
     }
 
-    function tel(string $name, string $pattern, Array $attributes = []){
+    protected function tel(string $name, string $pattern, Array $attributes = []){
         $attributes = array_merge($attributes, [ 'patern' => $pattern ]);
         return $this->input('tel', $name, null, $attributes); 
     }
 
-    function url(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function url(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('url', $name, $default_value, $attributes); 
     }
 
-    function hidden(string $name, string $value, Array $attributes = []){
-        return $this->input('hidden', $name, $value, $attributes);
-    }
-
-    function button(string $name, string $value, Array $attributes = []){
-        return $this->input('button', $name, $value, $attributes);
-    }
-
-    function submit(string $name, string $value, Array $attributes = []){
-        return $this->input('submit', $name, $value, $attributes);
-    }
-
-    function reset(string $name, string $value, Array $attributes = []){
-        return $this->input('reset', $name, $value, $attributes);
-    }
-
-    function search(string $name, Array $attributes  = []){
-        return $this->input('search', $name, null, $attributes);
-    }
-
-    function area(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function area(string $name, ?string $default_value = null, Array $attributes = []){
         if (!is_null($name)){
             if ($this->id_as_name){
                 $attributes['id'] = $name;
@@ -205,7 +226,7 @@ class Form
             'Dogs' => ['spaniel' => 'Spaniel'],
         ])
     */
-    function select(string $name, ?string $default_value = null, Array $options, ?string $placeholder = null, Array $attributes = [])
+    protected function select(string $name, ?string $default_value = null, Array $options, ?string $placeholder = null, Array $attributes = [])
     {
         if (!is_null($name)){
             if ($this->id_as_name){
@@ -234,10 +255,31 @@ class Form
         return $this->add("<select $att_str>$opt_str</select>");
     }
 
-    function label(string $id, string $placeholder, Array $attributes = []){
+    protected function label(string $id, string $placeholder, Array $attributes = []){
         $att = $this->attributes($attributes);
         return $this->add("<label for=\"$id\" $att>$placeholder</label>");
     }
+
+    function hidden(string $name, string $value, Array $attributes = []){
+        return $this->input('hidden', $name, $value, $attributes);
+    }
+
+    function button(string $name, string $value, Array $attributes = []){
+        return $this->input('button', $name, $value, $attributes);
+    }
+
+    function submit(string $name, string $value, Array $attributes = []){
+        return $this->input('submit', $name, $value, $attributes);
+    }
+
+    function reset(string $name, string $value, Array $attributes = []){
+        return $this->input('reset', $name, $value, $attributes);
+    }
+
+    function search(string $name, Array $attributes  = []){
+        return $this->input('search', $name, null, $attributes);
+    }
+
 
     function link_to(string $url, string $anchor, Array $attributes = []){
         if (Strings::startsWith('www.', $url)){
