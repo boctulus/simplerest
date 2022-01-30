@@ -118,12 +118,20 @@ class Url
     }
 
     static function currentUrl(){
+        if (is_cli()){
+            return '';
+        }
+
         $actual_link = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         return $actual_link;
     }
 
     static function getBaseUrl(?string $url = null)
     {
+        if (is_cli()){
+            return '';
+        }
+        
         if (is_null($url)){
             $url = static::currentUrl();
         }

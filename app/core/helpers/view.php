@@ -8,6 +8,10 @@ function view(string $view_path, array $vars_to_be_passed  = null, string $layou
 }
 
 function assets($resource){
+    if (is_cli()){
+        return;
+    }
+
     $base  = config()['BASE_URL'];
  
     if (Strings::endsWith('/', $base)){
