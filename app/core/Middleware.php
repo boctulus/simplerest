@@ -2,7 +2,7 @@
 
 namespace simplerest\core;
 
-class Middleware 
+abstract class Middleware 
 {   
     protected $req;
     protected $res;
