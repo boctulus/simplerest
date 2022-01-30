@@ -10,8 +10,13 @@ class Hello2Controller extends ConsoleController
     function __construct(){
     }
 
+    /*
+        Enviar a una vista con el template que use Boostrap 5
+    */
     function index(){
         $f = new Form();
+
+        $f->label('nombre', 'Nombre');
 
         $f->text('nombre', null, [
             'style' => "background-color:blue"
@@ -39,7 +44,9 @@ class Hello2Controller extends ConsoleController
 
         $f->link_to("www.google.com", 'Google');
 
-        return $f->render();
+        $this->view('hello2.php', [
+            'content' => $f->render()
+        ]);
     }
 }
 
