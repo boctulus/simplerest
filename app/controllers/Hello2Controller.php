@@ -12,10 +12,13 @@ class Hello2Controller extends ConsoleController
 
     function index(){        
         $f = new Form();
-
-        $f->label('nombre', 'Nombre');
-
-        $f->text('nombre');
+        
+        $f->group(function($form){
+            $form->label('nombre', 'Nombre');
+            $form->text('nombre');
+        }, 'div', [
+            "class" => "input-group mb-3"
+        ]);
 
         $f->select('sexo', 'varon', [
             'varon' => 1,

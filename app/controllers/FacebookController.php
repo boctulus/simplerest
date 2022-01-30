@@ -8,10 +8,6 @@ use simplerest\core\controllers\Controller;
 use simplerest\core\libs\DB;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
-use simplerest\models\UsersModel;
-use simplerest\models\UserRolesModel;
-use simplerest\models\RolesModel;
-use simplerest\libs\Debug;
 use simplerest\core\libs\Strings;
 
 class FacebookController extends Controller

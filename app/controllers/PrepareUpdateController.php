@@ -116,7 +116,11 @@ class PrepareUpdateController extends ConsoleController
 
         // ahora copio los archivos ofuscados en el destino
 
-        // seteo callback para remover comentarios
+        /*
+            Seteo callback para remover comentarios
+
+            aunque innecesario porque yakpro llama a function.php-strip-whitespace()
+        */
         Files::setCallback(function(string $content, string $path){
             return Strings::removeMultiLineComments($content);
         });

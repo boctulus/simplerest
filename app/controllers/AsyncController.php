@@ -6,8 +6,6 @@ use simplerest\controllers\MyController;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\CronJob;
-use simplerest\core\libs\Task;
-use simplerest\core\libs\Files;
 
 class AsyncController extends MyController
 {
