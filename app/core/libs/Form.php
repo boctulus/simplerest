@@ -48,12 +48,7 @@ class Form
         $value    = is_null($default_value) ? '' : "value=\"$default_value\""; 
         $the_name = is_null($name) ? '' : "name=\"$name\"";
 
-        $_att = [];
-        foreach ($attributes as $att => $val){
-            $_att[] = "$att=\"$val\"";
-        }
-
-        $att_str = implode(' ', $_att);
+        $att_str = $this->attributes($attributes);
         return $this->add("<input type=\"$type\" $the_name $value $att_str>");
     }
 
@@ -69,24 +64,28 @@ class Form
         return $this->input('email', $name, $default_value, $attributes);
     }
 
-    function number(string $name, ?string $default_value = null, Array $attributes = []){
-        return $this->input('number', $name, $default_value, $attributes);
+    function number(string $name, string $text = null,  Array $attributes = []){
+        return $this->input('number', $name, $text, $attributes);
     }
 
-    function checkbox(string $name, ?string $default_value = null, Array $attributes = []){
-        return $this->input('checkbox', $name, $default_value, $attributes);
+    function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
+        $att_str = $this->attributes($attributes);
+        $chk     = $checked ? 'checked' : '';
+        return $this->add("<input type=\"checkbox\" $name $chk $att_str>$text</input>");
     }
 
-    function radio(string $name, ?string $default_value = null, Array $attributes = []){
-        return $this->input('radio', $name, $default_value, $attributes); 
+    function radio(string $name, string $text,  bool $checked = false, Array $attributes = []){
+        $att_str = $this->attributes($attributes);
+        $chk     = $checked ? 'checked' : '';
+        return $this->add("<input type=\"radio\" $name $chk $att_str>$text</input>");
     }
 
     function file(string $name, Array $attributes = []){
         return $this->input('file', $name, null, $attributes);
     }
 
-    function color(string $name, string $value = null, Array $attributes = []){
-        return $this->input('color', $name, $value, $attributes); 
+    function color(string $name, string $text, Array $attributes = []){
+        return $this->input('color', $name, $text, $attributes); 
     }
 
     function date(string $name, ?string $default_value = null, Array $attributes = []){

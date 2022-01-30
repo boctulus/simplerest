@@ -24,6 +24,11 @@ class Hello2Controller extends ConsoleController
 
         $f->range('edad', 0, 99, 10);
 
+        $f->radio("civil", "casado");
+        $f->radio("civil", "soltero");
+
+        $f->checkbox("hijos", "Hijos", true);
+
         $f->area('comment', 'bla bla');
         $f->url("Linkedin");
 
