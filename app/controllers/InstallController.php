@@ -30,6 +30,9 @@ class InstallController extends ConsoleController
 
         $res = shell_exec("php com make model all --from:main");
         dd($res);
+
+        $res = shell_exec("php com make db_scan --from:main");
+        dd($res);
     }
 
 }
