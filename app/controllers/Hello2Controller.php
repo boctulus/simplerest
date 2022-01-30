@@ -13,14 +13,12 @@ class Hello2Controller extends ConsoleController
     /*
         Enviar a una vista con el template que use Boostrap 5
     */
-    function index(){
+    function index(){        
         $f = new Form();
 
         $f->label('nombre', 'Nombre');
 
-        $f->text('nombre', null, [
-            'style' => "background-color:blue"
-        ]);
+        $f->text('nombre');
 
         $f->select('sexo', 'varon', [
             'varon' => 1,
@@ -37,7 +35,7 @@ class Hello2Controller extends ConsoleController
         $f->area('comment', 'bla bla');
         $f->url("Linkedin");
 
-        $f->color("color", "Color");
+        $f->button("comprar", "Comprar");
 
         $f->reset("limpiar", "limpiar");
         $f->submit("enviar", "enviar");
@@ -45,7 +43,7 @@ class Hello2Controller extends ConsoleController
         $f->link_to("www.google.com", 'Google');
 
         $this->view('hello2.php', [
-            'content' => $f->render()
+            'formx' => $f->render()
         ]);
     }
 }
