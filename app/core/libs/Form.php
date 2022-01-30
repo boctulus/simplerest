@@ -69,6 +69,10 @@ class Form
         return implode(' ', $_att);
     }
 
+    /*
+        Se puede buguear el control llamado no existe.
+        Fixear
+    */
     public function __call($method, $args){
         $class = [
             "text"           => "form-control",
@@ -105,7 +109,7 @@ class Form
         return call_user_func_array(array($this, $method), $args);
     }
 
-    protected function tag(string $type, ?string $name = null, Array $attributes = [], Array $plain_attr = [])
+    protected function tag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = [])
     {   
         if (!is_null($name)){
             if ($this->id_eq_name){
@@ -117,25 +121,29 @@ class Form
                 $attributes['name'] = $name;
             }   
         }
+        
+        $attributes['class'] = $attributes['class'] ?? '';
 
-        if (!empty($this->class) && isset($attributes['class'])){
+        if (!empty($this->class)){
             $attributes['class'] .= ' ' . $this->class;
-        } else {
-            $attributes['class'] = ' ' . $this->class;
-        }
+        } 
 
         $att_str = $this->attributes($attributes);
         $p_atr   = implode(' ', $plain_attr);
 
         // en principio asumo que abre y cierra
-        return "<$type $att_str $p_atr></$type>";
+        return "<$type $att_str $p_atr>$value</$type>";
+    }
+
+    function span(string $text, Array $attributes = []){
+        return $this->add($this->tag('span', null, $text, $attributes));
     }
 
     protected function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
     {  
         $plain_attr[] = is_null($default_value) ? '' : "value=\"$default_value\""; 
         $attributes['type']  = $type;
-        return $this->add($this->tag('input', $name, $attributes, $plain_attr));
+        return $this->add($this->tag('input', $name, null, $attributes, $plain_attr));
     }
 
     protected function text(string $name, ?string $default_value = null, Array $attributes = []){
@@ -379,6 +387,10 @@ class Form
         call_user_func($closure, $f);
         
         return $this->add($f->render($tag, $attributes));
+    }
+
+    function div(callable $closure, $attributes){
+        return $this->group($closure, 'div', $attributes);
     }
 
     static function beautifier(string $html){
