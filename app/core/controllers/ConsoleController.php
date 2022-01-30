@@ -6,7 +6,7 @@ class ConsoleController extends Controller
 {
     function __construct()
     {
-        if (php_sapi_name() != 'cli'){
+        if (!is_cli()){
             throw new \Exception("Only cli is allowed");
         }
 
