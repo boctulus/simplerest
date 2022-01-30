@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs;
 
+use PDO;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
@@ -15,8 +16,9 @@ class Form
     protected $method;
     protected $html;
     protected $class = '';
-    protected $pretty = false;
-    protected $id_as_name = true;
+    protected $pretty = true;
+    protected $id_as_name = false;
+    protected $id_eq_name = true;
 
     function __construct(?string $url = null, ?string $method = null) {
         $this->url = $url;
@@ -27,8 +29,26 @@ class Form
         $this->pretty = $state;
     }
 
-    function idAsName(bool $state){
+    /*
+        Use Id instead of name attribute
+    */
+    function useIdAsName(bool $state){
         $this->id_as_name = $state;
+
+        if ($this->id_as_name){
+            $this->id_eq_name = false;
+        }
+    }
+
+    /*
+        Copy name attribute into id one
+    */
+    function setIdAsName(bool $state){
+        $this->id_eq_name = $state;
+
+        if ($this->id_eq_name){
+            $this->id_as_name = false;
+        }
     }
 
     function setUrl(string $url){
@@ -88,7 +108,10 @@ class Form
     protected function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
     {   
         if (!is_null($name)){
-            if ($this->id_as_name){
+            if ($this->id_eq_name){
+                $attributes['id'] = $name;
+                $attributes['name'] = $name;
+            } else if ($this->id_as_name){
                 $attributes['id'] = $name;
             } else {
                 $attributes['name'] = $name;
@@ -127,7 +150,10 @@ class Form
 
     protected function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
         if (!is_null($name)){
-            if ($this->id_as_name){
+            if ($this->id_eq_name){
+                $attributes['id'] = $name;
+                $attributes['name'] = $name;
+            } else if ($this->id_as_name){
                 $attributes['id'] = $name;
             } else {
                 $attributes['name'] = $name;
@@ -147,7 +173,10 @@ class Form
 
     protected function radio(string $name, string $text,  bool $checked = false, Array $attributes = []){
         if (!is_null($name)){
-            if ($this->id_as_name){
+            if ($this->id_eq_name){
+                $attributes['id'] = $name;
+                $attributes['name'] = $name;
+            } else if ($this->id_as_name){
                 $attributes['id'] = $name;
             } else {
                 $attributes['name'] = $name;
@@ -219,7 +248,10 @@ class Form
 
     protected function area(string $name, ?string $default_value = null, Array $attributes = []){
         if (!is_null($name)){
-            if ($this->id_as_name){
+            if ($this->id_eq_name){
+                $attributes['id'] = $name;
+                $attributes['name'] = $name;
+            } else if ($this->id_as_name){
                 $attributes['id'] = $name;
             } else {
                 $attributes['name'] = $name;
@@ -251,7 +283,10 @@ class Form
     protected function select(string $name, ?string $default_value = null, Array $options, ?string $placeholder = null, Array $attributes = [])
     {
         if (!is_null($name)){
-            if ($this->id_as_name){
+            if ($this->id_eq_name){
+                $attributes['id'] = $name;
+                $attributes['name'] = $name;
+            } else if ($this->id_as_name){
                 $attributes['id'] = $name;
             } else {
                 $attributes['name'] = $name;
