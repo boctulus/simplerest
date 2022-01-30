@@ -105,7 +105,7 @@ class Form
         return call_user_func_array(array($this, $method), $args);
     }
 
-    protected function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
+    protected function tag(string $type, ?string $name = null, Array $attributes = [], Array $plain_attr = [])
     {   
         if (!is_null($name)){
             if ($this->id_eq_name){
@@ -124,12 +124,18 @@ class Form
             $attributes['class'] = ' ' . $this->class;
         }
 
-        $value = is_null($default_value) ? '' : "value=\"$default_value\""; 
-
         $att_str = $this->attributes($attributes);
         $p_atr   = implode(' ', $plain_attr);
 
-        return $this->add("<input type=\"$type\" $value $att_str $p_atr>");
+        // en principio asumo que abre y cierra
+        return "<$type $att_str $p_atr></$type>";
+    }
+
+    protected function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
+    {  
+        $plain_attr[] = is_null($default_value) ? '' : "value=\"$default_value\""; 
+        $attributes['type']  = $type;
+        return $this->add($this->tag('input', $name, $attributes, $plain_attr));
     }
 
     protected function text(string $name, ?string $default_value = null, Array $attributes = []){
@@ -368,6 +374,13 @@ class Form
 
     }
 
+    function group(callable $closure, string $tag = 'div', Array $attributes = []){
+        $f = new Form();
+        call_user_func($closure, $f);
+        
+        return $this->add($f->render($tag, $attributes));
+    }
+
     static function beautifier(string $html){
         $config = array(
         'indent'         => true,
@@ -384,9 +397,15 @@ class Form
         return ob_get_clean();
     }
 
-    function render(){
-        $ret = "<form>{$this->html}</form>";
-        return $this->pretty ? static::beautifier($ret) : $ret;
+    function render(string $enclosing_tag = 'form', Array $attributes = [], bool $pretty = true){
+        $ret = $this->html;
+
+        if (!empty($enclosing_tag)){
+            $att = $this->attributes($attributes);
+            $ret = "<$enclosing_tag $att>{$ret}</$enclosing_tag>";
+        }
+        
+        return ($pretty && $this->pretty) ? static::beautifier($ret) : $ret;
     }
 
 }
