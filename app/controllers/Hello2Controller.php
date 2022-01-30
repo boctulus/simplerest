@@ -2,21 +2,25 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\controllers\ConsoleController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Form;
 
-class Hello2Controller extends ConsoleController
+class Hello2Controller extends Controller
 {
     function __construct(){
+        parent::__construct();
     }
 
     function index(){        
         $f = new Form();
         
-        $f->group(function($form){
-            $form->label('nombre', 'Nombre');
+        $f->div(function($form){
+            $form->span('@', [
+                'id'    => 'basic-addon',
+                'class' => 'input-group-text'
+            ]);
             $form->text('nombre');
-        }, 'div', [
+        }, [
             "class" => "input-group mb-3"
         ]);
 
