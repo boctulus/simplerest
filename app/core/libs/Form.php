@@ -63,7 +63,7 @@ class Form extends Html
     {  
         $plain_attr[] = is_null($default_value) ? '' : "value=\"$default_value\""; 
         $attributes['type']  = $type;
-        return $this->add($this->tag('input', $name, null, $attributes, $plain_attr));
+        return $this->add($this->renderTag('input', $name, null, $attributes, $plain_attr));
     }
 
     protected function text(string $name, ?string $default_value = null, Array $attributes = []){

@@ -55,7 +55,7 @@ class Html
         return implode(' ', $_att);
     }
 
-    protected function tag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = [])
+    protected function renderTag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = [])
     {   
         if (!is_null($name)){
             if ($this->id_eq_name){
@@ -79,6 +79,10 @@ class Html
 
         // en principio asumo que abre y cierra
         return "<$type $att_str $p_atr>$value</$type>";
+    }
+
+    function tag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = []){
+        return $this->add($this->renderTag($type, $name, $value, $attributes, $plain_attr));
     }
 
     function link_to(string $url, string $anchor, Array $attributes = []){
@@ -106,12 +110,12 @@ class Html
         return ob_get_clean();
     }
 
-    function render(string $enclosing_tag = null, Array $attributes = [], bool $pretty = true) : string {
+    function render(string $enclosingrenderTag = null, Array $attributes = [], bool $pretty = true) : string {
         $ret = $this->html;
 
-        if (!empty($enclosing_tag)){
+        if (!empty($enclosingrenderTag)){
             $att = $this->attributes($attributes);
-            $ret = "<$enclosing_tag $att>{$ret}</$enclosing_tag>";
+            $ret = "<$enclosingrenderTag $att>{$ret}</$enclosingrenderTag>";
         }
         
         return ($pretty && $this->pretty) ? static::beautifier($ret) : $ret;
@@ -147,6 +151,11 @@ class Html
 
     function insert(string $html){
         return $this->add($html);
+    }
+
+    // alias for insert()
+    function string(string $text){
+        return $this->insert($text);
     }
 
     function div(callable $closure, $attributes = []){
@@ -239,20 +248,29 @@ class Html
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    /*
-        Other common tags
-    */
-
-    function br(Array $attributes = []){
-        return $this->add($this->tag('br', null, null, $attributes));
+    function _p(callable $closure, $attributes = []){
+        return $this->group($closure, 'p', $attributes);
     }
 
-    function span(string $text, Array $attributes = []){
-        return $this->add($this->tag('span', null, $text, $attributes));
+    function _span(callable $closure, $attributes = []){
+        return $this->group($closure, 'span', $attributes);
     }
+
 
     function p(string $text, Array $attributes = []){
-        return $this->add($this->tag('span', null, $text, $attributes));
+        return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
+    }
+    
+    function span(string $text, Array $attributes = []){
+        return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
+    }
+
+    function strong(string $text, Array $attributes = []){
+        return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
+    }
+
+    function em(string $text, Array $attributes = []){
+        return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
 
     function h(int $size = 3, string $text, Array $attributes = []){
@@ -260,7 +278,7 @@ class Html
             throw new \InvalidArgumentException("Incorrect size for H tag. Given $size. Expected 1 to 6");
         }
 
-        return $this->add($this->tag('h'. (string) $size, null, $text, $attributes));
+        return $this->add($this->renderTag('h'. (string) $size, null, $text, $attributes));
     }
 
     function h1(string $text, Array $attributes = []){
@@ -287,14 +305,9 @@ class Html
         return $this->h(1, $text, $attributes);
     }
 
-    function strong(string $text, Array $attributes = []){
-        return $this->add($this->tag('strong', null, $text, $attributes));
+    function br(Array $attributes = []){
+        return $this->add($this->renderTag(__FUNCTION__, null, null, $attributes));
     }
-
-    function em(string $text, Array $attributes = []){
-        return $this->add($this->tag('emphasis', null, $text, $attributes));
-    }
-
 
 }
 
