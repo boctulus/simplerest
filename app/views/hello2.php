@@ -46,7 +46,7 @@ $f->url("Linkedin");
 $f->label("comment", "Algo que desea agregar:");
 $f->area('comment', 'bla bla');
 
-$f->button("comprar", "Comprar");
+$f->inputButton("comprar", "Comprar");
 
 $f->reset("limpiar", "limpiar");
 $f->submit("enviar", "enviar");

@@ -260,12 +260,15 @@ class Html
         return $this->group($closure, 'span', $attributes);
     }
 
-
     function p(string $text, Array $attributes = []){
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
     
     function span(string $text, Array $attributes = []){
+        return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
+    }
+
+    function legend(string $text, Array $attributes = []){
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
 
