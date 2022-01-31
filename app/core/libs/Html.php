@@ -138,6 +138,12 @@ class Html
         $this->macros[$name] = $render_fn;
     }
 
+    function __call($method, $args){
+        if (isset($this->macros[$method])){
+            return $this->macros[$method]($args);
+        }
+    }
+
     function div(callable $closure, $attributes){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
