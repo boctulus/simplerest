@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\views\MyView; //
+use simplerest\views\MyView; 
 use simplerest\core\libs\Strings;
 
-function view(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php', string $footer = null){
-    return (new MyView($view_path, $vars_to_be_passed, $layout, $footer)); 
+function view(string $view_path, array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0){
+    return (new MyView($view_path, $vars_to_be_passed, $layout, $expiration_time)); 
 }
 
 function assets($resource){

@@ -52,7 +52,7 @@
     <link rel="stylesheet" href="<?= assets('css/lib/datatables-net/datatables-net.min.css') ?>">
 
     <!-- FILEPOND -->
-    <link rel="stylesheet" href="<?= assets('js/plugins/filepond/dist/filepond.css') ?>">
+    <!--link rel="stylesheet" href="... 'js/plugins/filepond/dist/filepond.css') ?>"-->
 
     <script src="<?= assets('js/helpers.js') ?>"></script>
     <script src="<?= assets('js/login.js') ?>"></script>

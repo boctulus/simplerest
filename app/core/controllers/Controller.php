@@ -38,7 +38,7 @@ abstract class Controller
         $this->callable = array_unique(array_merge($this->callable, [$method]));
     }
 
-    function view(string $view_path, array $vars_to_be_passed = null, $layout = 'app_layout.php'){
+    function view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
         global $ctrl;
 
         $_ctrl = explode('\\',get_class($this));
@@ -52,6 +52,6 @@ abstract class Controller
         $ctrl  = strtolower(substr($ctrl, 0, -strlen('Controller')));
         $vars_to_be_passed['ctrl'] = $ctrl; //
 
-        view($view_path, $vars_to_be_passed, $layout);
+        view($view_path, $vars_to_be_passed, $layout, $expiration_time);
     }
 }
