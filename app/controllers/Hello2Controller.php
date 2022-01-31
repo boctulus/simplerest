@@ -12,7 +12,13 @@ class Hello2Controller extends Controller
         parent::__construct();
     }
 
-    function index(){        
+    function index(){      
+        Html::macro('salutor', function($name, $adj)
+        {
+            return "<span/>Hello $adj $name</span>";
+        });
+
+        
         $f = new Form();
 
         $f->h(3, "Datos");
@@ -54,9 +60,12 @@ class Hello2Controller extends Controller
 
         $f->br();
 
+        $f->insert(Html::salutor("Isabel", "bella"));
+        
         $f->link_to("www.solucionbinaria.com", 'SolucionBinaria .com', [
             'class' => 'mb-3'
         ]);
+
 
         $this->view('hello2.php', [
             'formx' => $f->render()
@@ -64,14 +73,12 @@ class Hello2Controller extends Controller
     }
 
     function xy(){
-        $f = new Html();
-
-        $f->macro('salutor', function($args)
+        Html::macro('salutor', function($name, $adj)
         {
-            return "<span/>Hello {$args[0]}</span>";
+            return "<span/>Hello $adj $name</span>";
         });
 
-        d($f->salutor("Isabel"));
+        d(Html::salutor("Isabel", "bella"));
     }
 }
 

@@ -5,13 +5,14 @@ namespace simplerest\core\libs;
 
 class Html
 {
-    protected $html;
+    protected $html  = '';
     protected $class = '';
-    protected $macros = [];
     protected $pretty     = true;
     protected $id_as_name = false;
     protected $id_eq_name = true;
     
+    static protected $macros = [];
+
     function __construct() { }
 
     function prety(bool $state){
@@ -134,81 +135,85 @@ class Html
         echo Form::myField();
 
     */
-    function macro(string $name, callable $render_fn){
-        $this->macros[$name] = $render_fn;
+    static function macro(string $name, callable $render_fn){
+        static::$macros[$name] = $render_fn;
     }
 
-    function __call($method, $args){
-        if (isset($this->macros[$method])){
-            return $this->macros[$method]($args);
+    static function __callStatic($method, $args){
+        if (isset(static::$macros[$method])){
+            return static::$macros[$method](...$args);
         }
     }
 
-    function div(callable $closure, $attributes){
+    function insert(string $html){
+        return $this->add($html);
+    }
+
+    function div(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function header(callable $closure, $attributes){
+    function header(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function nav(callable $closure, $attributes){
+    function nav(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function main(callable $closure, $attributes){
+    function main(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function section(callable $closure, $attributes){
+    function section(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function article(callable $closure, $attributes){
+    function article(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function aside(callable $closure, $attributes){
+    function aside(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function details(callable $closure, $attributes){
+    function details(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function summary(callable $closure, $attributes){
+    function summary(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function mark(callable $closure, $attributes){
+    function mark(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function figure(callable $closure, $attributes){
+    function figure(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function figcaption(callable $closure, $attributes){
+    function figcaption(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function time(callable $closure, $attributes){
+    function time(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function footer(callable $closure, $attributes){
+    function footer(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function ol(callable $closure, $attributes){
+    function ol(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function ul(callable $closure, $attributes){
+    function ul(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function table(callable $closure, $attributes){
+    function table(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
@@ -218,19 +223,19 @@ class Html
         <cite><a href="http://www-cs-faculty.stanford.edu/~uno/faq.html">Donald Knuth: Notes on the van Emde Boas construction of priority deques: An instructive use of recursion, March 29th, 1977</a>
         </blockquote>
     */
-    function blockquote(callable $closure, $attributes){
+    function blockquote(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function q(callable $closure, $attributes){
+    function q(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function cite(callable $closure, $attributes){
+    function cite(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function code(callable $closure, $attributes){
+    function code(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
