@@ -3,6 +3,7 @@
 namespace simplerest\controllers;
 
 use simplerest\core\controllers\Controller;
+use simplerest\core\libs\Html;
 use simplerest\core\libs\Form;
 
 class Hello2Controller extends Controller
@@ -13,13 +14,17 @@ class Hello2Controller extends Controller
 
     function index(){        
         $f = new Form();
+
+        $f->h(3, "Datos");
         
         $f->div(function($form){
             $form->span('@', [
                 'id'    => 'basic-addon',
                 'class' => 'input-group-text'
             ]);
-            $form->text('nombre');
+            $form->text('nombre', null, [
+                "placeholder" => "Username"
+            ]);
         }, [
             "class" => "input-group mb-3"
         ]);
@@ -29,6 +34,7 @@ class Hello2Controller extends Controller
             'mujer' => 2
         ]);
 
+        $f->label("edad", "Edad");
         $f->range('edad', 0, 99, 10);
 
         $f->radio("civil", "casado");
@@ -36,19 +42,26 @@ class Hello2Controller extends Controller
 
         $f->checkbox("hijos", "Hijos", true);
 
-        $f->area('comment', 'bla bla');
         $f->url("Linkedin");
+
+        $f->label("comment", "Algo que desea agregar:");
+        $f->area('comment', 'bla bla');
 
         $f->button("comprar", "Comprar");
 
         $f->reset("limpiar", "limpiar");
         $f->submit("enviar", "enviar");
 
-        $f->link_to("www.google.com", 'Google');
+        $f->br();
+
+        $f->link_to("www.solucionbinaria.com", 'SolucionBinaria .com', [
+            'class' => 'mb-3'
+        ]);
 
         $this->view('hello2.php', [
             'formx' => $f->render()
         ]);
     }
+
 }
 
