@@ -148,6 +148,9 @@ Se debe generar un .js similar -conseguir la versión más actualizada- a:
 
 <-- es uno por cada módulo
 
+- Permitir el uso auto-validaciones en Form Helper.
+
+- Implementar cache sobre las vistas. Clase View. ***
 
 
 - Implementar algo como la "Transients API" de WP que permite guardar claves-valor usando IN-MEMORY STORAGE (Memcached, quizás REDIS,...) y sino encuentra otra opción IN-DATABASE STORAGE.
