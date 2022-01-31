@@ -42,3 +42,4 @@ Ej:
     $cmd = 'php com my_controller some_work';
     $pid = System::runInBackground($cmd);
 
+- Se implementó cache para las vistas

@@ -13,7 +13,10 @@ if (!defined('UPLOADS_PATH'))
     define('UPLOADS_PATH', ROOT_PATH . 'uploads'. DIRECTORY_SEPARATOR);
 
 if (!defined('STORAGE_PATH'))
-    define('STORAGE_PATH', ROOT_PATH . 'storage'. DIRECTORY_SEPARATOR);     
+    define('STORAGE_PATH', ROOT_PATH . 'storage'. DIRECTORY_SEPARATOR);    
+    
+if (!defined('CACHE_PATH'))
+    define('CACHE_PATH', ROOT_PATH . 'cache'. DIRECTORY_SEPARATOR);  
 
 if (!defined('LOGS_PATH'))
     define('LOGS_PATH', ROOT_PATH . 'logs'. DIRECTORY_SEPARATOR); 

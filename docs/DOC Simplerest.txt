@@ -8048,7 +8048,9 @@ Ej:
 	echo $f->render();
 
 
+# Embellecer el HTML
 
+Se puede activar / desactivar el formateo del HTML generado con el método prety()
 
 
 
