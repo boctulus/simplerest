@@ -63,5 +63,15 @@ class Hello2Controller extends Controller
         ]);
     }
 
+    function xy(){
+        $f = new Html();
+
+        $f->macro('salutor', function($args)
+        {
+            return "<span/>Hello {$args[0]}</span>";
+        });
+
+        d($f->salutor("Isabel"));
+    }
 }
 
