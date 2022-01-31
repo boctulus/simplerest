@@ -152,7 +152,7 @@ class Form extends Html
         return $this->input('week', $name, $default_value, $attributes); 
     }
 
-    protected function datetime_local(string $name, ?string $default_value = null, Array $attributes = []){
+    protected function datetimeLocal(string $name, ?string $default_value = null, Array $attributes = []){
         return $this->input('datetime-local', $name, $default_value, $attributes); 
     }
 
@@ -257,7 +257,7 @@ class Form extends Html
         return $this->add("<label for=\"$id\" $att>$placeholder</label>");
     }
 
-    protected function button(string $name, string $value, Array $attributes = []){
+    protected function inputButton(string $name, string $value, Array $attributes = []){
         return $this->input('button', $name, $value, $attributes);
     }
 
