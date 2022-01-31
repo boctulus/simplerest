@@ -22,7 +22,7 @@ class Html
     /*
         Use Id instead of name attribute
     */
-    function useIdAsName(bool $state){
+    function useIdAsName(bool $state = true){
         $this->id_as_name = $state;
 
         if ($this->id_as_name){
@@ -33,7 +33,7 @@ class Html
     /*
         Copy name attribute into id one
     */
-    function setIdAsName(bool $state){
+    function setIdAsName(bool $state = true){
         $this->id_eq_name = $state;
 
         if ($this->id_eq_name){
@@ -256,6 +256,10 @@ class Html
         return $this->group($closure, 'span', $attributes);
     }
 
+    function button(callable $closure, $attributes = []){
+        return $this->group($closure, 'span', $attributes);
+    }
+
 
     function p(string $text, Array $attributes = []){
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
@@ -309,5 +313,12 @@ class Html
         return $this->add($this->renderTag(__FUNCTION__, null, null, $attributes));
     }
 
+    function img(string $src, Array $attributes = []){
+        if (!isset($attributes['src'])){
+            throw new \Exception("src attribute is required");
+        }
+
+        return $$this->add("<img src=\"$src\">"); 
+    }
 }
 

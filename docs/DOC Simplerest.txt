@@ -7903,6 +7903,76 @@ Ej:
 		$html->string("Adios mundo cruel");
 	});
 
+Debe considerarse sin embargo que los "empty tags" son la excepción más que la regla habiendo al presente solo 14.
+
+https://developer.mozilla.org/en-US/docs/Glossary/Empty_element
+
+
+# El tag input
+
+Hay distintos tipos de <input> y cada uno tiene su alias que corrsponde al type donde por ejemplo <input type="text"> es text()
+
+Ej:
+
+	$form->text('nombre', null, [
+        "placeholder" => "Username"
+    ]);
+
+Hay un algunas de exceptiones:
+
+	type="time" 	es inputTime() 
+	type="buttpn"	es inputButton()
+	type="datetime_local" es datetimeLocal()
+
+La razón de las excepciones son colisiones de nombres como sucede con button() ya que hace referencia a <button> y por tanto no puede usarse para <input type="button">
+
+
+# Id o name
+
+Si bien los atributos "id" y "name" son imprescindibles en algunos casos, en general pueden omitirse y por esta razón se minimiza la ogligatoridad.
+
+Ej:
+
+	img(string $src, Array $attributes = [])
+
+Si se quisiera setear el id, se podría enviar en $attributes
+
+	$f->img('http://domain.com/some_image.jpg', ['id' => 'i50'])
+
+
+Para el caso de tags de formulario su uso si hace obligado pero se da la opción de que el valor enviado sea tratado como "name" o "id" en la mayoría de los casos.
+
+Ej:
+
+	$f = new Form();
+
+	$f->select('sexo', 'varon', [
+		'varon' => 1,
+		'mujer' => 2
+	]);
+
+	$f->label("edad", "Edad");
+	$f->range('edad', 0, 99, 10);
+
+	$f->radio("civil", "casado");
+	$f->radio("civil", "soltero");
+
+	$f->checkbox("hijos", "Hijos", true);
+
+Por defecto se asume que se envian como "name" pero:
+
+	/*
+		Se usará el name como id
+	*/
+	$f->useIdAsName(true);
+
+Y
+
+	/*
+		Se usará el name como name y id
+	*/
+	$f->setIdAsName(true);
+
 
 # Métodos genéricos tag() e insert()
 
