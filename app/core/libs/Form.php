@@ -273,6 +273,9 @@ class Form extends Html
         return $this->input('search', $name, null, $attributes);
     }
 
+    function fieldset(callable $closure, $attributes = []){
+        return $this->group($closure, __FUNCTION__, $attributes);
+    }
 
     function hidden(string $name, string $value, Array $attributes = []){
         return $this->input('hidden', $name, $value, $attributes);
