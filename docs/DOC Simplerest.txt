@@ -7820,3 +7820,166 @@ En caso de querer detener la ejecución de todas las colas, no envie el nombre d
 <-- se implementará el comando "queue stop [ name ]"
 
 
+# HTML & Form helper
+
+El framework provee de las clases HTML y Form para la construcción programática de HTML. La clase Form extiende a la clase HTML incluyendo controles para manejo de formularios (input, select, checkbox, etc).
+
+Ej:
+	 
+	$f = new Form();
+
+	$f->h3("Datos");
+	
+	$f->span('@', [
+		'id'    => 'basic-addon',
+		'class' => 'input-group-text'
+	]);
+	
+	$f->text('nombre', null, [
+		"placeholder" => "Username"
+	]);
+
+	$f->select('sexo', 'varon', [
+		'varon' => 1,
+		'mujer' => 2
+	]);
+
+	echo $f->render();
+
+
+# Anidamiento de etiquetas
+
+Hay varias etiquetas de HTML que permiten anidamientos y en el form helper todas están implementadas con group()
+
+Ej:
+
+	$f = new Form();
+
+	$f->div(function($form){
+		$form->span('@', [
+			'id'    => 'basic-addon',
+			'class' => 'input-group-text'
+		]);
+		$form->text('nombre', null, [
+			"placeholder" => "Username"
+		]);
+	}, [
+		"class" => "input-group mb-3"
+	]);
+
+o
+
+	$f->group(function($form){
+		$form->span('@', [
+			'id'    => 'basic-addon',
+			'class' => 'input-group-text'
+		]);
+		$form->text('nombre', null, [
+			"placeholder" => "Username"
+		]);
+	}, 'div', [
+		"class" => "input-group mb-3"
+	]);
+	
+En este caso, dentro del <div> se incluyen un <span> y un <input type="text">
+
+Por simplicidad, <span> y <tag> se implementaron de forma simple.
+
+Ej:
+
+	$f->p("Adios mundo cruel")
+
+Sin embargo es importante notar que tags de uso muy frecuente como <p> o <span> puedenn incluir otros tags por lo cual la implementación más genérica es con group() y en caso de querer solo incluir texto, será algo como:
+
+	$f->group(function($html){
+		$html->string("Adios mundo cruel");
+	}, 'p');
+
+Para tags de uso común se proveen atajos: _p, _span, etc
+
+Ej:
+
+	$f->_p(function($html){
+		$html->string("Adios mundo cruel");
+	});
+
+
+# Métodos genéricos tag() e insert()
+
+Hay muchísimos tags de HTML y si alguno no está contemplado siempre es posible usar los métodos tag() e insert() para conseguir el resultado deseado.
+
+	tag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = []);
+	insert(string $html)
+
+Ej:
+
+	$f->tag('hr');
+
+o 
+	
+	$f->insert('<hr>');
+
+y para un tag más complejo:
+
+	$f->tag('input', 'first_name', null, [
+		'type' => 'text'
+	]);
+
+o
+
+	$f->insert('<input type="text" name="first_name/>');
+
+
+Una diferencia importante es que insert() permite insertar cualquier cosa y por ende puede ser un trozo de html que incluya varias etiquetas.
+
+Ej:
+
+	$f->insert('<u>Just</u> use <a href="some_url">Google</a>');
+
+
+# Macros
+
+La clase Html y Form soportan macros, es decir se pueden definir tags propios y estos son luego renderizados al llamar a un tag con ese nombre. El método es estático.
+
+Ej:
+
+	Html::macro('salutor', function($name, $adj)
+	{
+		return "<span/>Hello $adj $name</span>";
+	});
+
+	echo Html::salutor("Isabel", "bella");
+
+Mediante el uso de insert() es posible renderizar ese custom tag donde se desee.
+
+Ej:
+
+	/*	
+		Defino el macro en algún lado
+	*/
+
+	Form::macro('salutor', function($name, $adj)
+	{
+		return "<span/>Hello $adj $name</span>";
+	});
+
+	
+	$f = new Form();
+
+	$f->h(3, "Datos");
+	
+	$f->tag('hr');
+
+	$f->label("edad", "Edad");
+	$f->range('edad', 0, 99, 10);
+
+	$f->insert(Form::salutor("Isabel", "bella"));
+	
+	echo $f->render();
+
+
+
+
+
+
+
