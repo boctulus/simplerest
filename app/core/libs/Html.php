@@ -10,6 +10,9 @@ class Html
     protected $pretty     = true;
     protected $id_as_name = false;
     protected $id_eq_name = false;
+    protected $classes = [
+
+    ];
     
     static protected $macros = [];
 
@@ -55,6 +58,10 @@ class Html
         return implode(' ', $_att);
     }
 
+    public function getClass(string $tag) : string{
+        return $this->classes[$tag] ?? '';
+    }
+
     protected function renderTag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = []) : string
     {   
         if (!is_null($name)){
@@ -67,8 +74,8 @@ class Html
                 $attributes['name'] = $name;
             }   
         }
-        
-        $attributes['class'] = $attributes['class'] ?? '';
+
+        //$attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass($type) : $this->getClass($type);
 
         if (!empty($this->class)){
             $attributes['class'] .= ' ' . $this->class;
@@ -76,6 +83,8 @@ class Html
 
         $att_str = $this->attributes($attributes);
         $p_atr   = implode(' ', $plain_attr);
+
+        //d($att_str, 'att_str');
 
         // en principio asumo que abre y cierra
         return "<$type $att_str $p_atr>$value</$type>";
