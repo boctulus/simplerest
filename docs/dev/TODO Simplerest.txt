@@ -150,6 +150,14 @@ Se debe generar un .js similar -conseguir la versión más actualizada- a:
 
 - Permitir el uso auto-validaciones en Form Helper.
 
+----
+
+- Probar de usar Smarty, Twig o Blade en algún proyecto con SimpleRest. Inclusive se pueden hacer funcionar en CodeIgniter !
+
+https://medium.com/hackeradda/codeigniter-with-blade-templating-engine-daf8d0dd51e9
+http://acmeextension.com/integrate-twig-with-codeigniter/
+  
+----
 
 - Implementar algo como la "Transients API" de WP que permite guardar claves-valor usando IN-MEMORY STORAGE (Memcached, quizás REDIS,...) y sino encuentra otra opción IN-DATABASE STORAGE.
 

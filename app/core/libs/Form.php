@@ -44,8 +44,10 @@ class Form extends Html
 
             "select"         => "form-select",
 
-            "checkbox"       => "form-check-input" ,
-            "radio"          => "form-check-input" ,
+            // "checkbox"       => "form-check-input" ,
+            // "radio"          => "form-check-input" ,
+
+            "label"         => "form-check-label",
 
             "button"         => "btn btn-primary"
         ];
@@ -81,52 +83,6 @@ class Form extends Html
 
     protected function number(string $name, string $text = null,  Array $attributes = []){
         return $this->input('number', $name, $text, $attributes);
-    }
-
-    protected function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
-        if (!is_null($name)){
-            if ($this->id_eq_name){
-                $attributes['id'] = $name;
-                $attributes['name'] = $name;
-            } else if ($this->id_as_name){
-                $attributes['id'] = $name;
-            } else {
-                $attributes['name'] = $name;
-            }   
-        }
-
-        $attributes['class'] = $attributes['class'] ?? '';
-
-        if (!empty($this->class)){
-            $attributes['class'] .= ' ' . $this->class;
-        } 
-
-        $att_str = $this->attributes($attributes);
-        $chk     = $checked ? 'checked' : '';
-        return $this->add("<input type=\"checkbox\" $chk $att_str>$text</input>");
-    }
-
-    protected function radio(string $name, string $text,  bool $checked = false, Array $attributes = []){
-        if (!is_null($name)){
-            if ($this->id_eq_name){
-                $attributes['id'] = $name;
-                $attributes['name'] = $name;
-            } else if ($this->id_as_name){
-                $attributes['id'] = $name;
-            } else {
-                $attributes['name'] = $name;
-            }   
-        }
-
-        $attributes['class'] = $attributes['class'] ?? '';
-
-        if (!empty($this->class)){
-            $attributes['class'] .= ' ' . $this->class;
-        } 
-
-        $att_str = $this->attributes($attributes);
-        $chk     = $checked ? 'checked' : '';
-        return $this->add("<input type=\"radio\" $chk $att_str>$text</input>");
     }
 
     protected function file(string $name, Array $attributes = []){
@@ -165,11 +121,10 @@ class Form extends Html
         return $this->input('image', $name, $default_value, $attributes); 
     }
 
-    protected function range(string $name, int $min, int $max, $default_value = null){
-        return $this->input('range', $name, $default_value, [
-            'min' => $min,
-            'max' => $max
-        ]); 
+    protected function range(string $name, int $min, int $max, $default_value = null, Array $attributes = []){
+        $attributes['min'] = $min;
+        $attributes['max'] = $max;
+        return $this->input('range', $name, $default_value, $attributes); 
     }
 
     protected function tel(string $name, string $pattern, Array $attributes = []){
@@ -181,28 +136,41 @@ class Form extends Html
         return $this->input('url', $name, $default_value, $attributes); 
     }
 
-    protected function area(string $name, ?string $default_value = null, Array $attributes = []){
-        if (!is_null($name)){
-            if ($this->id_eq_name){
-                $attributes['id'] = $name;
-                $attributes['name'] = $name;
-            } else if ($this->id_as_name){
-                $attributes['id'] = $name;
-            } else {
-                $attributes['name'] = $name;
-            }   
+    protected function __label(string $id, string $placeholder, Array $attributes = []){
+        $attributes['for'] = $id;
+        return $this->renderTag('label', null, $placeholder, $attributes);
+    }
+
+    protected function label(string $id, string $placeholder, Array $attributes = []){
+        return $this->add($this->__label($id, $placeholder, $attributes));
+    }
+
+    // implementación especial 
+    protected function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
+        $plain_attr = $checked ?  ['checked'] : [];
+        $attributes['type']  = __FUNCTION__;
+        return $this->add($this->renderTag('input', $name, $text, $attributes, $plain_attr));
+    }
+
+    // implementación especial 
+    protected function radio(string $name, ?string $text = null,  bool $checked = false, Array $attributes = []){
+        $plain_attr = $checked ?  ['checked'] : [];
+        $attributes['type']  = __FUNCTION__;
+
+        $value = '';
+        if (!empty($text)){
+            if (empty($attributes['id'])){
+                throw new \Exception("With radio and placeholder then id is required");
+            }
+
+            $value = $this->__label($attributes['id'], $text);
         }
 
-        $attributes['class'] = $attributes['class'] ?? '';
+        return $this->add($this->renderTag('input', $name, $value, $attributes, $plain_attr));
+    }
 
-        if (!empty($this->class)){
-            $attributes['class'] .= ' ' . $this->class;
-        } 
-
-        $value = $default_value ?? '';    
-        $att_str = $this->attributes($attributes);
-
-        return $this->add("<textarea $att_str>$value</textarea>");
+    protected function area(string $name, ?string $default_value = null, Array $attributes = []){
+        return $this->add($this->renderTag('textarea', $name, $default_value, $attributes));
     }
 
     /*
@@ -215,47 +183,33 @@ class Form extends Html
             'Dogs' => ['spaniel' => 'Spaniel'],
         ])
     */
-    protected function select(string $name, ?string $default_value = null, Array $options, ?string $placeholder = null, Array $attributes = [])
+    protected function select(string $name, Array $options, ?string $default_value = null, ?string $placeholder = null, Array $attributes = [])
     {
-        if (!is_null($name)){
-            if ($this->id_eq_name){
-                $attributes['id'] = $name;
-                $attributes['name'] = $name;
-            } else if ($this->id_as_name){
-                $attributes['id'] = $name;
-            } else {
-                $attributes['name'] = $name;
-            }   
-        }
-
-        $attributes['class'] = $attributes['class'] ?? '';
-
-        if (!empty($this->class)){
-            $attributes['class'] .= ' ' . $this->class;
-        } 
-
-        $att_str = $this->attributes($attributes);
+        $attributes['placeholder'] = $placeholder;
 
         // options
         $_opt = [];
+
+        $got_selected = false;
         foreach ($options as $opt => $val){
             if ($val == $default_value){
                 $selected = 'selected';
+                $got_selected = true;
             } else {
                 $selected = '';
             }
 
-            $_opt[] = "<option value=\"$val\" $selected\">$opt</option>";
+            $_opt[] = "<option value=\"$val\" $selected>$opt</option>";
         }
 
+        if (!empty($placeholder)){
+            $selected = !$got_selected;
+            $_opt = array_merge(["<option $selected>$placeholder</option>"], $_opt);
+        }
+    
         $opt_str = implode(' ', $_opt);
 
-        return $this->add("<select $att_str>$opt_str</select>");
-    }
-
-    protected function label(string $id, string $placeholder, Array $attributes = []){
-        $att = $this->attributes($attributes);
-        return $this->add("<label for=\"$id\" $att>$placeholder</label>");
+        return $this->add($this->renderTag(__FUNCTION__, $name, $opt_str, $attributes));
     }
 
     protected function inputButton(string $name, string $value, Array $attributes = []){
