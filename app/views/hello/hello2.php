@@ -1,11 +1,13 @@
 <?php
 
 use simplerest\core\libs\Form;
+use simplerest\libs\MyForm;
 
 Form::macro('salutor', function($name, $adj)
 {
     return "<span/>Hello $adj $name</span>";
 });
+
 
 ?>
 
@@ -13,7 +15,7 @@ Form::macro('salutor', function($name, $adj)
     <div class = "col-6 offset-3">
     <?php
 
-    $f = new Form();
+    $f = new MyForm();
 
     $f->h(3, "Datos");
 
@@ -44,7 +46,7 @@ Form::macro('salutor', function($name, $adj)
     $f->radio("civil", "casado");
     $f->radio("civil", "soltero");
 
-    $f->checkbox("hijos", "Hijos", true);
+    $f->switch("hijos", "Hijos", true);
 
     $f->url("Linkedin");
 

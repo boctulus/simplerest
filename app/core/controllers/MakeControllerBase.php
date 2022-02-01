@@ -451,7 +451,7 @@ class MakeControllerBase extends Controller
         }
 
         $template_path = self::TRAIT_TEMPLATE;
-        $subfix = '';  // Ej: 'Controller'
+        $subfix = 'Trait';  // Ej: 'Controller'
 
         $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }

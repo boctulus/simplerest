@@ -55,7 +55,7 @@ class Html
         return implode(' ', $_att);
     }
 
-    protected function renderTag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = [])
+    protected function renderTag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = []) : string
     {   
         if (!is_null($name)){
             if ($this->id_eq_name){
