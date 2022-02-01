@@ -8,10 +8,8 @@ function view(string $view_path, array $vars_to_be_passed  = null, ?string $layo
 }
 
 function assets($resource){
-    if (is_cli()){
-        return;
-    }
-
+    $protocol = is_cli() ? 'http' : http_protocol();
+    
     $base  = config()['BASE_URL'];
  
     if (Strings::endsWith('/', $base)){
@@ -20,7 +18,7 @@ function assets($resource){
         
     # $public =  $base /* . '/public' */ ;
     $public =  $base . '/public';
-    return http_protocol() . '://' . $_SERVER['HTTP_HOST']. $public. '/assets/'.$resource;
+    return $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/assets/'.$resource;
 }
 
 function section($view, Array $variables = []){

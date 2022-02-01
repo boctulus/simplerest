@@ -7873,6 +7873,8 @@ Ej:
 		'mujer' => 2
 	]);
 
+	$f->img(assets('img/personal_data.png'), ['id' => 'i1'])
+
 	echo $f->render();
 
 
