@@ -67,7 +67,7 @@ Form::macro('salutor', function($name, $adj)
 
     ->br()
 
-    ->img(assets('img/personal_data.png'), ['id' => 'i1'])
+    ->img(assets('img/personal_data.png'), ['id' => 'i1', 'class' => 'img-fluid'])
 
     ->br()
 
