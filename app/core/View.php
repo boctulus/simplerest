@@ -24,7 +24,7 @@ class View
             $layout = static::LAYOUT;
         }
 
-        $filename   = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__DIR__',  $view_path);
+        $filename   = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
         switch ($expiration_time){
             case -1:
@@ -76,7 +76,7 @@ class View
     }
 
     static function destroyCache(string $view_path) : bool {
-        $filename   = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__DIR__',  $view_path);
+        $filename   = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
         return Files::delete($filename);
     }

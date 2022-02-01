@@ -8,7 +8,6 @@ Form::macro('salutor', function($name, $adj)
     return "<span/>Hello $adj $name</span>";
 });
 
-
 ?>
 
 <div class = "row">
