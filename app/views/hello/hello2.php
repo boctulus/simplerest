@@ -17,13 +17,14 @@ Form::macro('salutor', function($name, $adj)
 
     $f = new MyForm();
 
-    $f->h(3, "Datos");
+    $f
+    ->h(3, "Datos")
 
-    $f->tag('hr');
+    ->tag('hr')
 
-    $f->p("Hola mundo cruel");
+    ->p("Hola mundo cruel")
 
-    $f->div(function($form){
+    ->div(function($form){
         $form->span('@', [
             'id'    => 'basic-addon',
             'class' => 'input-group-text'
@@ -33,37 +34,45 @@ Form::macro('salutor', function($name, $adj)
         ]);
     }, [
         "class" => "input-group mb-3"
-    ]);
+    ])
 
-    $f->select('sexo', 'varon', [
+    ->select('sexo', [
         'varon' => 1,
         'mujer' => 2
-    ]);
+    ], 1, 'Su sexo', ['class' => 'my-3'])
 
-    $f->label("edad", "Edad");
-    $f->range('edad', 0, 99, 10);
+    ->label("edad", "Edad")
+    ->range('edad', 0, 99, 10, ['class' => 'my-3'])
 
-    $f->radio("civil", "casado");
-    $f->radio("civil", "soltero");
+    ->checkGroup(function($h){
+        $h
+        ->radio("civil", "casado", false, ['id' => 'casado'])
+        ->radio("civil", "soltero", true, ['id' => 'soltero']);
+    }, ['class' => 'my-3'])
 
-    $f->switch("hijos", "Hijos", true);
 
-    $f->url("Linkedin");
+    ->switch("hijos", "Hijos", true)
 
-    $f->label("comment", "Algo que desea agregar:");
-    $f->area('comment', 'bla bla');
+    ->url("Linkedin")
 
-    $f->inputButton("comprar", "Comprar");
+    ->label("comment", "Algo que desea agregar:", ['class' => 'mt-3'])
+    ->area('comment', 'bla bla', ['class' => 'my-3'])
 
-    $f->reset("limpiar", "limpiar");
-    $f->submit("enviar", "enviar");
+    ->inputButton("comprar", "Comprar")
 
-    $f->br();
+    ->reset("limpiar", "limpiar")
+    ->submit("enviar", "enviar")
 
-    $f->insert(Form::salutor("Isabel", "bella"));
+    ->br()
 
-    $f->link_to("www.solucionbinaria.com", 'SolucionBinaria .com', [
-        'class' => 'mb-3'
+    ->img(assets('img/personal_data.png'), ['id' => 'i1'])
+
+    ->br()
+
+    ->insert(Form::salutor("Isabel", "bella"))
+
+    ->link_to("www.solucionbinaria.com", 'SolucionBinaria .com', [
+        'class' => 'mb-3 text-success'
     ]);
 
     echo $f->render();
