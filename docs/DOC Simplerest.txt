@@ -6899,6 +6899,35 @@ Las variables pueden pasar del controlador a las vistas y el mismo truco puede u
     ?>
 
 
+# Cache
+
+Es posible cachear las vistas especificando el tiempo de expiración expresado en segundos como cuarto parámetro de view() y en caso de pasar -1 no expirá nunca hasta que el archivo no sea borrado.
+
+Ej:
+
+	$this->view('login.php', null, null, -1);
+
+Para borrar la cache correspondiente a una vista se debe pasar la misma ruta que se envió a view() a View::destroyCache()
+
+Ej:
+
+	View::destroyCache('login.php');
+
+A futuro se implementará un comando para la limpieza de la cache de la siguiente manera:
+
+	php com cache clear [ --view={view_path} ]
+
+El comando podrá borrar otro tipo de caches como la del Acl.
+
+
+Hooks 
+
+	function onCacheExpired(string $view_path)
+    function onCacheWritten(string $view_path)
+
+Los hooks están presentes en la clase MyView.
+
+
 # Hookear la clase View
 
 La clase View es extendida convenientemente como MyView a fin de poder agregar funcionalidad sin tener que tocar la clase View directamente que es parte del Core y sería sobreescrita al actualizar SimpleRest.
@@ -6907,7 +6936,7 @@ Ej:
 
 	class MyView extends View 
 	{
-		function __construct(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php')
+		function __construct(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php', int $expiration_time = 0)
 		{
 			/*
 				Agregado
@@ -6915,7 +6944,7 @@ Ej:
 			
 			$vars_to_be_passed['my_var'] = 'Hello World!';
 
-			parent::__construct($view_path, $vars_to_be_passed, $layout);
+			parent::__construct($view_path, $vars_to_be_passed, $layout, $expiration_time);
 		}
 	}
 
@@ -7921,7 +7950,7 @@ Ej:
 Hay un algunas de exceptiones:
 
 	type="time" 	es inputTime() 
-	type="buttpn"	es inputButton()
+	type="button"	es inputButton()
 	type="datetime_local" es datetimeLocal()
 
 La razón de las excepciones son colisiones de nombres como sucede con button() ya que hace referencia a <button> y por tanto no puede usarse para <input type="button">

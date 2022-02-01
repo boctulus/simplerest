@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+
+<div class = "row">
+    <div class = "col-6">
+    <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title></title>
@@ -30,4 +33,5 @@
       Hello bella Isabel <a href="http://www.solucionbinaria.com" class="mb-3">SolucionBinaria .com</a>
     </form>
   </body>
-</html>
+</html>    </div>
+</div>

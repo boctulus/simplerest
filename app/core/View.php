@@ -24,13 +24,31 @@ class View
             $layout = static::LAYOUT;
         }
 
-        $filename   = CACHE_PATH . $view_path;
+        $filename   = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__DIR__',  $view_path);
 
-        $ct      = filemtime($filename);
-        $expired = time() > $ct + $expiration_time;
+        switch ($expiration_time){
+            case -1:
+                $expired = false;
+            break;
+            case -0:
+                $expired = true;
+            break;    
+            default:
+                $ct      = filemtime($filename);
+                $expired = time() > $ct + $expiration_time;                
+        }
+        
+        if ($expired && $expiration_time != 0){
+            $this->onCacheExpired($view_path);
+        }
+
         $cached  = !$expired;
 
-        $file_exists = file_exists($filename);
+        if ($expiration_time != 0){
+            $file_exists = file_exists($filename);
+        } else {
+            $expiration_time = null;
+        }
 
         if ($cached && $file_exists){
             $content = file_get_contents($filename);
@@ -44,16 +62,26 @@ class View
             ob_end_clean();
         }
 
-        if ($expired || !$file_exists){
-            file_put_contents($filename, $content);
+        if ($expiration_time != 0 && ($expired || !$file_exists)){
+            Files::writableOrFail($filename);
+
+            $bytes = @file_put_contents($filename, $content);
+
+            if ($bytes != 0){
+                $this->onCacheWritten($view_path);
+            }
         }
 
         include VIEWS_PATH . "$layout"; 
     }
 
     static function destroyCache(string $view_path) : bool {
-        $filename   = CACHE_PATH . $view_path;
+        $filename   = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__DIR__',  $view_path);
 
         return Files::delete($filename);
     }
+
+    function onCacheExpired(string $view_path){}
+
+    function onCacheWritten(string $view_path){}
 }
