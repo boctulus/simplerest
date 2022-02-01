@@ -86,6 +86,64 @@ Pagination can be done with page and pageSize
     GET /api/v1/products?page=3
     GET /api/v1/products?pageSize=20&page=2
     
+# Aggregate Functions – Average, Count, Sum, Max and Min
+
+Examples:
+
+	GET /api/v1/products?props=min(cost)
+	GET /api/v1/products?size=1L&props=avg(cost)
+
+Response is something like:
+
+{
+    "data": {
+        "AVG(cost)": "191.0714"
+    },
+    "error": "",
+    "error_detail": ""
+}
+
+Note that if the field on which you want to calculate is not specified, it is not performed and no error is throw. In the case of count() function if you don't want to specify a field you must pass * as a parameter:
+
+	GET /api/v1/products?props=count(*) as cant
+	
+
+Or with an alias
+
+	GET /api/v1/products?size=1L&props=avg(cost) as media
+
+# Grouping
+
+	GET /api/v1/products?props=count(*) as cant&groupBy=size&fields=size
+
+Example of Response:
+
+{
+    "data": [
+        {
+            "size": "",
+            "cant": "21"
+        },
+        {
+            "size": "0.5L",
+            "cant": "2"
+        },
+        ...
+    ],
+    "error": "",
+    "error_detail": ""
+}
+
+Note: when groupBy is used, you should specify the fields to be selected. 
+
+With having
+
+	GET /api/v1/products?groupBy=size&fields=size&props=avg(cost)&having=avg(cost)>=150
+
+Having with alias 
+
+	GET /api/v1/products?groupBy=size&fields=size&props=avg(cost) as average&having=average>=150
+
 ### Pretty print 
 
     GET /api/v1/products?pretty
