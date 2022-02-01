@@ -9,7 +9,7 @@ class Html
     protected $class = '';
     protected $pretty     = true;
     protected $id_as_name = false;
-    protected $id_eq_name = true;
+    protected $id_eq_name = false;
     
     static protected $macros = [];
 
@@ -90,8 +90,7 @@ class Html
             $url = "http://$url";
         }
 
-        $att = $this->attributes($attributes);
-        return $this->add("<a href=\"$url\" $att>$anchor</a>");
+        return $this->add($this->renderTag('a', null, $anchor, $attributes));
     }
 
     static function beautifier(string $html){
@@ -317,11 +316,8 @@ class Html
     }
 
     function img(string $src, Array $attributes = []){
-        if (!isset($attributes['src'])){
-            throw new \Exception("src attribute is required");
-        }
-
-        return $$this->add("<img src=\"$src\">"); 
+        $attributes['src'] = $src;
+        return $this->add($this->renderTag('img', null, null, $attributes)); 
     }
 }
 
