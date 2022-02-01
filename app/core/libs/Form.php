@@ -9,7 +9,39 @@ class Form extends Html
 {
     protected $url;
     protected $method;
-    
+    protected $classes = [
+        "text"           => "form-control",
+        "number"         => "form-control",
+        "password"       => "form-control",
+        "email"          => "form-control",
+        "file"           => "form-control",
+
+        "date"           => "form-control",
+        "time"           => "form-control",
+        "datetime_local" => "form-control",
+        "month"          => "form-control",
+        "week"           => "form-control",
+        "image"          => "form-control",
+        "range"          => "form-control",
+        "tel"            => "form-control",
+        "url"            => "form-control",
+        "area"           => "form-control",
+
+        "select"         => "form-select",
+
+        "checkbox"       => "form-check-input" ,
+        "radio"          => "form-check-input" ,
+
+        "label"          => "form-check-label",
+
+        "submit"         => "btn btn-primary",
+        "reset"          => "btn btn-primary",
+        "inputButton"    => "btn btn-primary",
+
+        "inputGroup"     => "input-group",
+        "checkGroup"     => "form-check"
+    ];
+
     function __construct(?string $url = null, ?string $method = null) {
         $this->url = $url;
         $this->method = $method;
@@ -19,143 +51,120 @@ class Form extends Html
         $this->url = $url;
     }
 
-    /*
-        Se puede buguear el control llamado no existe.
-        Fixear
-    */
-    public function __call($method, $args){
-        $class = [
-            "text"           => "form-control",
-            "number"         => "form-control",
-            "password"       => "form-control",
-            "email"          => "form-control",
-            "file"           => "form-control",
-
-            "date"           => "form-control",
-            "time"           => "form-control",
-            "datetime_local" => "form-control",
-            "month"          => "form-control",
-            "week"           => "form-control",
-            "image"          => "form-control",
-            "range"          => "form-control",
-            "tel"            => "form-control",
-            "url"            => "form-control",
-            "area"           => "form-control",
-
-            "select"         => "form-select",
-
-            // "checkbox"       => "form-check-input" ,
-            // "radio"          => "form-check-input" ,
-
-            "label"         => "form-check-label",
-
-            "button"         => "btn btn-primary"
-        ];
-
-        if (isset($class[$method])){
-            $this->class = $class[$method];
-        } else {
-            $this->class = '';
-        }
-
-        return call_user_func_array(array($this, $method), $args);
-    }
-    
-
-    protected function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
+    function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
     {  
         $plain_attr[] = is_null($default_value) ? '' : "value=\"$default_value\""; 
         $attributes['type']  = $type;
         return $this->add($this->renderTag('input', $name, null, $attributes, $plain_attr));
     }
 
-    protected function text(string $name, ?string $default_value = null, Array $attributes = []){
+    function text(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('text', $name, $default_value, $attributes);
     }
 
-    protected function password(string $name, ?string $default_value = null, Array $attributes = []){
+    function password(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('password', $name, $default_value, $attributes);
     }
 
-    protected function email(string $name, ?string $default_value = null, Array $attributes = []){
+    function email(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('email', $name, $default_value, $attributes);
     }
 
-    protected function number(string $name, string $text = null,  Array $attributes = []){
+    function number(string $name, string $text = null,  Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('number', $name, $text, $attributes);
     }
 
-    protected function file(string $name, Array $attributes = []){
+    function file(string $name, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('file', $name, null, $attributes);
     }
 
-    protected function color(string $name, string $text, Array $attributes = []){
+    function color(string $name, string $text, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('color', $name, $text, $attributes); 
     }
 
     function date(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('date', $name, $default_value, $attributes); 
     }
 
-    protected function month(string $name, ?string $default_value = null, Array $attributes = []){
+    function month(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('month', $name, $default_value, $attributes); 
     }
 
-    protected function inputTime(string $name, ?string $default_value = null, Array $attributes = []){
+    function inputTime(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('time', $name, $default_value, $attributes); 
     }
 
-    protected function week(string $name, ?string $default_value = null, Array $attributes = []){
+    function week(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('week', $name, $default_value, $attributes); 
     }
 
-    protected function datetimeLocal(string $name, ?string $default_value = null, Array $attributes = []){
+    function datetimeLocal(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('datetime-local', $name, $default_value, $attributes); 
     }
 
-    protected function image(string $name, ?string $default_value = null, Array $attributes = []){
+    function image(string $name, ?string $default_value = null, Array $attributes = []){
         if (!isset($attributes['src'])){
             throw new \Exception("src attribute is required");
         }
 
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
+
         return $this->input('image', $name, $default_value, $attributes); 
     }
 
-    protected function range(string $name, int $min, int $max, $default_value = null, Array $attributes = []){
+    function range(string $name, int $min, int $max, $default_value = null, Array $attributes = []){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         $attributes['min'] = $min;
         $attributes['max'] = $max;
         return $this->input('range', $name, $default_value, $attributes); 
     }
 
-    protected function tel(string $name, string $pattern, Array $attributes = []){
-        $attributes = array_merge($attributes, [ 'patern' => $pattern ]);
+    function tel(string $name, string $pattern, Array $attributes = []){
+        $attributes['patern'] = $pattern;
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('tel', $name, null, $attributes); 
     }
 
-    protected function url(string $name, ?string $default_value = null, Array $attributes = []){
+    function url(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('url', $name, $default_value, $attributes); 
     }
 
     protected function __label(string $id, string $placeholder, Array $attributes = []){
         $attributes['for'] = $id;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass('label') : $this->getClass('label');
         return $this->renderTag('label', null, $placeholder, $attributes);
     }
 
-    protected function label(string $id, string $placeholder, Array $attributes = []){
+    function label(string $id, string $placeholder, Array $attributes = []){;
         return $this->add($this->__label($id, $placeholder, $attributes));
     }
 
     // implementación especial 
-    protected function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
+    function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
         $plain_attr = $checked ?  ['checked'] : [];
         $attributes['type']  = __FUNCTION__;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
+
         return $this->add($this->renderTag('input', $name, $text, $attributes, $plain_attr));
     }
 
     // implementación especial 
-    protected function radio(string $name, ?string $text = null,  bool $checked = false, Array $attributes = []){
+    function radio(string $name, ?string $text = null,  bool $checked = false, Array $attributes = []){
         $plain_attr = $checked ?  ['checked'] : [];
         $attributes['type']  = __FUNCTION__;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
 
         $value = '';
         if (!empty($text)){
@@ -169,7 +178,8 @@ class Form extends Html
         return $this->add($this->renderTag('input', $name, $value, $attributes, $plain_attr));
     }
 
-    protected function area(string $name, ?string $default_value = null, Array $attributes = []){
+    function area(string $name, ?string $default_value = null, Array $attributes = []){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->add($this->renderTag('textarea', $name, $default_value, $attributes));
     }
 
@@ -183,9 +193,10 @@ class Form extends Html
             'Dogs' => ['spaniel' => 'Spaniel'],
         ])
     */
-    protected function select(string $name, Array $options, ?string $default_value = null, ?string $placeholder = null, Array $attributes = [])
+    function select(string $name, Array $options, ?string $default_value = null, ?string $placeholder = null, Array $attributes = [])
     {
         $attributes['placeholder'] = $placeholder;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
 
         // options
         $_opt = [];
@@ -212,23 +223,28 @@ class Form extends Html
         return $this->add($this->renderTag(__FUNCTION__, $name, $opt_str, $attributes));
     }
 
-    protected function inputButton(string $name, string $value, Array $attributes = []){
+    function inputButton(string $name, string $value, Array $attributes = []){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass('__FUNCTION__') : $this->getClass(__FUNCTION__);
         return $this->input('button', $name, $value, $attributes);
     }
 
     function submit(string $name, string $value, Array $attributes = []){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('submit', $name, $value, $attributes);
     }
 
     function reset(string $name, string $value, Array $attributes = []){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('reset', $name, $value, $attributes);
     }
 
     function search(string $name, Array $attributes  = []){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('search', $name, null, $attributes);
     }
 
     function fieldset(callable $closure, $attributes = []){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
