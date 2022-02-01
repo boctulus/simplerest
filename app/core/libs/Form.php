@@ -58,6 +58,7 @@ class Form extends Html
 
         return call_user_func_array(array($this, $method), $args);
     }
+    
 
     protected function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
     {  
@@ -94,11 +95,11 @@ class Form extends Html
             }   
         }
 
-        if (!empty($this->class) && isset($attributes['class'])){
+        $attributes['class'] = $attributes['class'] ?? '';
+
+        if (!empty($this->class)){
             $attributes['class'] .= ' ' . $this->class;
-        } else {
-            $attributes['class'] = ' ' . $this->class;
-        }
+        } 
 
         $att_str = $this->attributes($attributes);
         $chk     = $checked ? 'checked' : '';
@@ -117,11 +118,11 @@ class Form extends Html
             }   
         }
 
-        if (!empty($this->class) && isset($attributes['class'])){
+        $attributes['class'] = $attributes['class'] ?? '';
+
+        if (!empty($this->class)){
             $attributes['class'] .= ' ' . $this->class;
-        } else {
-            $attributes['class'] = ' ' . $this->class;
-        }
+        } 
 
         $att_str = $this->attributes($attributes);
         $chk     = $checked ? 'checked' : '';
@@ -192,11 +193,11 @@ class Form extends Html
             }   
         }
 
-        if (!empty($this->class) && isset($attributes['class'])){
+        $attributes['class'] = $attributes['class'] ?? '';
+
+        if (!empty($this->class)){
             $attributes['class'] .= ' ' . $this->class;
-        } else {
-            $attributes['class'] = ' ' . $this->class;
-        }
+        } 
 
         $value = $default_value ?? '';    
         $att_str = $this->attributes($attributes);
@@ -227,11 +228,11 @@ class Form extends Html
             }   
         }
 
-        if (!empty($this->class) && isset($attributes['class'])){
+        $attributes['class'] = $attributes['class'] ?? '';
+
+        if (!empty($this->class)){
             $attributes['class'] .= ' ' . $this->class;
-        } else {
-            $attributes['class'] = ' ' . $this->class;
-        }
+        } 
 
         $att_str = $this->attributes($attributes);
 
