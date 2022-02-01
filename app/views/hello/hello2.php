@@ -1,7 +1,7 @@
 <?php
 
 use simplerest\core\libs\Form;
-use simplerest\libs\MyForm;
+use simplerest\libs\Bt5Form;
 
 Form::macro('salutor', function($name, $adj)
 {
@@ -15,7 +15,7 @@ Form::macro('salutor', function($name, $adj)
     <div class = "col-6 offset-3">
     <?php
 
-    $f = new MyForm();
+    $f = new Bt5Form();
 
     $f
     ->h(3, "Datos")
@@ -45,9 +45,11 @@ Form::macro('salutor', function($name, $adj)
     ->range('edad', 0, 99, 10, ['class' => 'my-3'])
 
     ->checkGroup(function($h){
-        $h
-        ->radio("civil", "casado", false, ['id' => 'casado'])
-        ->radio("civil", "soltero", true, ['id' => 'soltero']);
+        $h->radio("civil", "soltero", true, ['id' => 'soltero']);
+    }, ['class' => 'my-3'])
+
+    ->checkGroup(function($h){
+        $h->radio("civil", "casado", false, ['id' => 'casado']);
     }, ['class' => 'my-3'])
 
 
