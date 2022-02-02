@@ -7058,7 +7058,13 @@ class DumbController extends Controller
     function test_tag(){
         Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-        echo tag('color')->name('my_color')->text('Color')->id('c1');
+        //echo tag('color')->name('my_color')->text('Color')->id('c1');
+        //echo tag('text')->name('bozzolo')->placeholder('Su apellido');
+
+        echo tag('select')->name('sexo')->options([
+            'varon' => 1,
+            'mujer' => 2
+        ])->default(1)->placeholder('Su sexo')->class('my-3');
     }
 
 }   
