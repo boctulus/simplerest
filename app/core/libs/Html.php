@@ -10,6 +10,39 @@ class Html
     protected $pretty     = false;
     protected $id_as_name = false;
     protected $id_eq_name = false;
+    protected $classes = [
+        "text"           => "form-control",
+        "number"         => "form-control",
+        "password"       => "form-control",
+        "email"          => "form-control",
+        "file"           => "form-control",
+        "date"           => "form-control",
+        "time"           => "form-control",
+        "datetime_local" => "form-control",
+        "month"          => "form-control",
+        "week"           => "form-control",
+        "image"          => "form-control",
+        "range"          => "form-control",
+        "tel"            => "form-control",
+        "url"            => "form-control",
+        "area"           => "form-control",
+
+        "select"         => "form-select",
+
+        "checkbox"       => "form-check-input" ,
+        "radio"          => "form-check-input" ,
+
+        "label"          => "form-label",
+
+        "submit"         => "btn btn-primary",
+        "reset"          => "btn btn-primary",
+        "inputButton"    => "btn btn-primary",
+
+        "inputGroup"     => "input-group",
+        "checkGroup"     => "form-check",
+
+        "color"          => "form-control form-control-color"
+    ];
     
     static protected $macros = [];
 
@@ -28,6 +61,8 @@ class Html
         if ($this->id_as_name){
             $this->id_eq_name = false;
         }
+
+        return $this;
     }
 
     /*
@@ -39,6 +74,8 @@ class Html
         if ($this->id_eq_name){
             $this->id_as_name = false;
         }
+
+        return $this;
     }
 
     protected function add(string $html){
@@ -132,11 +169,6 @@ class Html
         return $this->input('file', $name, null, $attributes);
     }
 
-    function color(string $name, string $text, Array $attributes = []){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('color', $name, $text, $attributes); 
-    }
-
     function date(string $name, ?string $default_value = null, Array $attributes = []){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->input('date', $name, $default_value, $attributes); 
@@ -225,6 +257,22 @@ class Html
         }
 
         return $this->add($this->renderTag('input', $name, $value, $attributes, $plain_attr));
+    }
+
+    function color(string $name, ?string $text = null, Array $attributes = []){
+        $attributes['type']  = __FUNCTION__;
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
+
+        $value = '';
+        if (!empty($text)){
+            if (empty($attributes['id'])){
+                throw new \Exception("With radio and placeholder then id is required");
+            }
+
+            $value = $this->__label($attributes['id'], $text);
+        }
+
+        return $this->add($this->renderTag('input', $name, $value, $attributes));
     }
 
     function area(string $name, ?string $default_value = null, Array $attributes = []){
@@ -375,6 +423,10 @@ class Html
     }
 
     function mark(callable $closure, $attributes = []){
+        return $this->group($closure, __FUNCTION__, $attributes);
+    }
+
+    function picture(callable $closure, $attributes = []){
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
