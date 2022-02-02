@@ -97,7 +97,7 @@ class Html
         return $this->classes[$tag] ?? '';
     }
 
-    protected function renderTag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = []) : string
+    protected function renderTag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args) : string
     {   
         if (!is_null($name)){
             if ($this->id_eq_name){
@@ -123,11 +123,14 @@ class Html
         return "<$type $att_str $p_atr>$value</$type>";
     }
 
-    function tag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = []){
+    function tag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         return $this->add($this->renderTag($type, $name, $value, $attributes, $plain_attr));
     }
 
-    function link_to(string $url, string $anchor, Array $attributes = []){
+    function link_to(string $url, string $anchor, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
+
         if (Strings::startsWith('www.', $url)){
             $url = "http://$url";
         }
@@ -136,92 +139,95 @@ class Html
     }
 
 
-    function input(string $type, ?string $name = null, ?string $default_value = null, Array $attributes = [], Array $plain_attr = [])
+    function input(string $type, ?string $name = null, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
     {  
-        $plain_attr[] = is_null($default_value) ? '' : "value=\"$default_value\""; 
+        $attributes = array_merge($attributes, $args);
+
+        $plain_attr[] = is_null($default) ? '' : "value=\"$default\""; 
         $attributes['type']  = $type;
         return $this->add($this->renderTag('input', $name, null, $attributes, $plain_attr));
     }
 
-    function text(string $name, ?string $default_value = null, Array $attributes = []){
+    function text(string $name, ?string $default = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('text', $name, $default_value, $attributes);
+        return $this->input('text', $name, $default, $attributes, ...$args);
     }
 
-    function password(string $name, ?string $default_value = null, Array $attributes = []){
+    function password(string $name, ?string $default = null, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('password', $name, $default_value, $attributes);
+        return $this->input('password', $name, $default, $attributes, ...$args);
     }
 
-    function email(string $name, ?string $default_value = null, Array $attributes = []){
+    function email(string $name, ?string $default = null, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('email', $name, $default_value, $attributes);
+        return $this->input('email', $name, $default, $attributes, ...$args);
     }
 
-    function number(string $name, string $text = null,  Array $attributes = []){
+    function number(string $name, string $text = null,  Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('number', $name, $text, $attributes);
+        return $this->input('number', $name, $text, $attributes, ...$args);
     }
 
-    function file(string $name, Array $attributes = []){
+    function file(string $name, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('file', $name, null, $attributes);
+        return $this->input('file', $name, null, $attributes, ...$args);
     }
 
-    function date(string $name, ?string $default_value = null, Array $attributes = []){
+    function date(string $name, ?string $default = null, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('date', $name, $default_value, $attributes); 
+        return $this->input('date', $name, $default, $attributes, ...$args); 
     }
 
-    function month(string $name, ?string $default_value = null, Array $attributes = []){
+    function month(string $name, ?string $default = null, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('month', $name, $default_value, $attributes); 
+        return $this->input('month', $name, $default, $attributes, ...$args); 
     }
 
-    function inputTime(string $name, ?string $default_value = null, Array $attributes = []){
+    function inputTime(string $name, ?string $default = null, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('time', $name, $default_value, $attributes); 
+        return $this->input('time', $name, $default, $attributes, ...$args); 
     }
 
-    function week(string $name, ?string $default_value = null, Array $attributes = []){
+    function week(string $name, ?string $default = null, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('week', $name, $default_value, $attributes); 
+        return $this->input('week', $name, $default, $attributes, ...$args); 
     }
 
-    function datetimeLocal(string $name, ?string $default_value = null, Array $attributes = []){
+    function datetimeLocal(string $name, ?string $default = null, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('datetime-local', $name, $default_value, $attributes); 
+        return $this->input('datetime-local', $name, $default, $attributes, ...$args); 
     }
 
-    function image(string $name, ?string $default_value = null, Array $attributes = []){
+    function image(string $name, ?string $default = null, Array $attributes = [], ...$args){
         if (!isset($attributes['src'])){
             throw new \Exception("src attribute is required");
         }
 
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
 
-        return $this->input('image', $name, $default_value, $attributes); 
+        return $this->input('image', $name, $default, $attributes, ...$args); 
     }
 
-    function range(string $name, int $min, int $max, $default_value = null, Array $attributes = []){
+    function range(string $name, int $min, int $max, $default = null, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         $attributes['min'] = $min;
         $attributes['max'] = $max;
-        return $this->input('range', $name, $default_value, $attributes); 
+        return $this->input('range', $name, $default, $attributes, ...$args); 
     }
 
-    function tel(string $name, string $pattern, Array $attributes = []){
+    function tel(string $name, string $pattern, Array $attributes = [], ...$args){
         $attributes['patern'] = $pattern;
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('tel', $name, null, $attributes); 
+        return $this->input('tel', $name, null, $attributes, ...$args); 
     }
 
-    function url(string $name, ?string $default_value = null, Array $attributes = []){
+    function url(string $name, ?string $default = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('url', $name, $default_value, $attributes); 
+        return $this->input('url', $name, $default, $attributes, ...$args); 
     }
 
-    protected function __label(string $id, string $placeholder, Array $attributes = []){
+    protected function __label(string $id, string $placeholder, Array $attributes = [], ...$args){
         $attributes['for'] = $id;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass('label') : $this->getClass('label');
         return $this->renderTag('label', null, $placeholder, $attributes);
@@ -259,12 +265,7 @@ class Html
     }
 
     function color(string $name, ?string $text = null, Array $attributes = [], ...$args){
-        /*
-            Pura magia
-        */
-        if (!empty($args)){
-            $attributes = array_merge($attributes, $args);
-        }
+        $attributes = array_merge($attributes, $args);
 
         $attributes['type']  = __FUNCTION__;
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
@@ -281,9 +282,10 @@ class Html
         return $this->add($this->renderTag('input', $name, $value, $attributes));
     }
 
-    function area(string $name, ?string $default_value = null, Array $attributes = []){
+    function area(string $name, ?string $default = null, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->add($this->renderTag('textarea', $name, $default_value, $attributes));
+        return $this->add($this->renderTag('textarea', $name, $default, $attributes));
     }
 
     /*
@@ -296,8 +298,9 @@ class Html
             'Dogs' => ['spaniel' => 'Spaniel'],
         ])
     */
-    function select(string $name, Array $options, ?string $default_value = null, ?string $placeholder = null, Array $attributes = [])
+    function select(string $name, Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args)
     {
+        $attributes = array_merge($attributes, $args);
         $attributes['placeholder'] = $placeholder;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
 
@@ -306,7 +309,7 @@ class Html
 
         $got_selected = false;
         foreach ($options as $opt => $val){
-            if ($val == $default_value){
+            if ($val == $default){
                 $selected = 'selected';
                 $got_selected = true;
             } else {
@@ -326,36 +329,38 @@ class Html
         return $this->add($this->renderTag(__FUNCTION__, $name, $opt_str, $attributes));
     }
 
-    function inputButton(string $name, string $value, Array $attributes = []){
+    function inputButton(string $name, string $value, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass('__FUNCTION__') : $this->getClass(__FUNCTION__);
-        return $this->input('button', $name, $value, $attributes);
+        return $this->input('button', $name, $value, $attributes, ...$args);
     }
 
-    function submit(string $name, string $value, Array $attributes = []){
+    function submit(string $name, string $value, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('submit', $name, $value, $attributes);
+        return $this->input('submit', $name, $value, $attributes, ...$args);
     }
 
-    function reset(string $name, string $value, Array $attributes = []){
+    function reset(string $name, string $value, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('reset', $name, $value, $attributes);
+        return $this->input('reset', $name, $value, $attributes, ...$args);
     }
 
-    function search(string $name, Array $attributes  = []){
+    function search(string $name, Array $attributes  = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('search', $name, null, $attributes);
+        return $this->input('search', $name, null, $attributes, ...$args);
     }
 
-    function fieldset(callable $closure, $attributes = []){
+    function fieldset(callable $closure, $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function hidden(string $name, string $value, Array $attributes = []){
-        return $this->input('hidden', $name, $value, $attributes);
+    function hidden(string $name, string $value, Array $attributes = [], ...$args){
+        return $this->input('hidden', $name, $value, $attributes, ...$args);
     }
 
-    function group(callable $closure, string $tag = 'div', Array $attributes = []){
+    function group(callable $closure, string $tag = 'div', Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
+
         $f = new Form();
         call_user_func($closure, $f);
         
@@ -396,72 +401,72 @@ class Html
         return $this->group($closure, __FUNCTION__, $attributes);
     }
 
-    function header(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function header(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function nav(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function nav(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function main(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function main(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function section(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function section(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function article(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function article(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function aside(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function aside(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function details(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function details(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function summary(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function summary(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function mark(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function mark(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function picture(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function picture(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function figure(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function figure(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function figcaption(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function figcaption(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function time(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function time(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function footer(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function footer(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function ol(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function ol(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function ul(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function ul(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function table(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function table(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
     /*
@@ -470,24 +475,24 @@ class Html
         <cite><a href="http://www-cs-faculty.stanford.edu/~uno/faq.html">Donald Knuth: Notes on the van Emde Boas construction of priority deques: An instructive use of recursion, March 29th, 1977</a>
         </blockquote>
     */
-    function blockquote(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function blockquote(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function q(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function q(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function cite(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function cite(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function code(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function code(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
-    function _p(callable $closure, $attributes = []){
-        return $this->group($closure, 'p', $attributes);
+    function _p(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, 'p', $attributes, ...$args);
     }
 
     function _span(callable $closure, $attributes = []){
