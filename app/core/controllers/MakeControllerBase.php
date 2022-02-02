@@ -299,7 +299,7 @@ class MakeControllerBase extends Controller
     /*
         File manipulation
     */
-    function generic($name, $prefix, $subfix, $namespace = null, $dest_path, $template_path, ...$opt) {        
+    function generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace = null, ...$opt) {        
         $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
 
         $unignore = false;
@@ -376,7 +376,7 @@ class MakeControllerBase extends Controller
         $prefix = '';
         $subfix = 'Controller';  
 
-        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function console($name, ...$opt) {
@@ -386,7 +386,7 @@ class MakeControllerBase extends Controller
         $prefix = '';
         $subfix = 'Controller';  
 
-        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function cronjob($name, ...$opt) {
@@ -396,7 +396,7 @@ class MakeControllerBase extends Controller
         $prefix = '';
         $subfix = 'CronJob';  
 
-        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function task($name, ...$opt) {
@@ -406,7 +406,7 @@ class MakeControllerBase extends Controller
         $prefix = '';
         $subfix = 'Task';  
 
-        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function lib($name, ...$opt) {
@@ -430,7 +430,7 @@ class MakeControllerBase extends Controller
         $prefix = '';
         $subfix = '';  // Ej: 'Controller'
 
-        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function trait($name, ...$opt) {
@@ -453,7 +453,7 @@ class MakeControllerBase extends Controller
         $template_path = self::TRAIT_TEMPLATE;
         $subfix = 'Trait';  // Ej: 'Controller'
 
-        $this->generic($name, '', $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, '', $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function interface($name, ...$opt) {
@@ -466,10 +466,10 @@ class MakeControllerBase extends Controller
         }
 
         if ($core){
-            $namespace = 'simplerest\\core\\traits';
+            $namespace = 'simplerest\\core\\interfaces';
             $dest_path = CORE_INTERFACE_PATH;
         } else {
-            $namespace = 'simplerest\\traits';
+            $namespace = 'simplerest\\interfaces';
             $dest_path = INTERFACE_PATH;
         }
 
@@ -477,7 +477,7 @@ class MakeControllerBase extends Controller
         $prefix = 'I';
         $subfix = '';  // Ej: 'Controller'
 
-        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($prefix . $name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function helper($name, ...$opt) {
@@ -501,7 +501,7 @@ class MakeControllerBase extends Controller
         $prefix = '';
         $subfix = '';  // Ej: 'Controller'
 
-        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function api($name, ...$opt) { 
