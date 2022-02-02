@@ -1319,6 +1319,10 @@ Un buen caso de uso sería en cabeza-detalle <-- típico uso de Transacciones.
 
 -  Corregir o al menos meditar sobre si "read_all" debería dar acceso de lectura a otras DBs de otros tenants o si debería haber un "permiso especial" nuevo en el ACL para leer / escribir sobre otros tenants (!)
 
+- Implementar ACL a nivel de vistas parciales.
+
+https://laravel.com/docs/8.x/authorization#via-blade-templates
+
 
 - Por qué no funciona ...?
 
