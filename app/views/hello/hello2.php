@@ -12,16 +12,22 @@ Form::macro('salutor', function($name, $adj)
 
 <div class = "row">
     <div class = "col-6 offset-3">
-    <?php
+    <?php   
 
     $f = new Bt5Form();
 
     $f
+    ->setIdAsName()
+
     ->h(3, "Datos")
 
     ->tag('hr')
 
     ->p("Hola mundo cruel")
+
+    // ->color('my_color', 'Color', [
+    //     'id' => 'my_color'
+    // ])
 
     ->div(function($form){
         $form->span('@', [
