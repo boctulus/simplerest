@@ -7,11 +7,7 @@ namespace simplerest\core\libs;
 */
 class Form extends Html
 {
-    function render(string $enclosing_tag = null, Array $attributes = [], bool $pretty = true) : string {
-        if (is_null($enclosing_tag)){
-            $enclosing_tag = 'form';
-        }
-
+    function render(?string $enclosing_tag = 'form', Array $attributes = [], bool $pretty = true) : string {
         return parent::render($enclosing_tag, $attributes, $pretty);
     }
 }

@@ -5,6 +5,10 @@ namespace simplerest\core\libs;
 use simplerest\core\libs\Config;
 use simplerest\controllers\MyAuthController;
 
+/*
+	Usar el Container de dependencias en vez de seguir creando factories !
+*/
+
 class Factory {
 	static function auth(){
 		static $instance;

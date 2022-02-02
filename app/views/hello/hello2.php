@@ -1,12 +1,20 @@
 <?php
 
 use simplerest\core\libs\Form;
-use simplerest\libs\Bt5Form;
+use simplerest\core\libs\Bt5Form; 
+use simplerest\core\libs\Tag;
 
 Form::macro('salutor', function($name, $adj)
 {
     return "<span/>Hello $adj $name</span>";
 });
+
+// $tag = new Tag();
+// $tag
+// ->id(8)
+// ->name('nombre');
+
+// d($tag->toArray());
 
 ?>
 

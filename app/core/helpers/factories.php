@@ -2,6 +2,9 @@
 
 use simplerest\core\libs\Factory;
 
+function tag(string $name){
+    return new simplerest\core\libs\Tag($name);
+}
 
 function acl(){
     return Factory::acl();
