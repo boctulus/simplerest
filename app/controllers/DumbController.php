@@ -7061,10 +7061,20 @@ class DumbController extends Controller
         //echo tag('color')->name('my_color')->text('Color')->id('c1');
         //echo tag('text')->name('bozzolo')->placeholder('Su apellido');
 
-        echo tag('select')->name('sexo')->options([
-            'varon' => 1,
-            'mujer' => 2
-        ])->default(1)->placeholder('Su sexo')->class('my-3');
+        // echo tag('select')->name('sexo')->options([
+        //     'varon' => 1,
+        //     'mujer' => 2
+        // ])->default(1)->placeholder('Su sexo')->class('my-3');
+
+        echo tag('div')->closure(function($form){
+            $form->span('@', [
+                'id'    => 'basic-addon',
+                'class' => 'input-group-text'
+            ]);
+            $form->text('nombre', null, [
+                "placeholder" => "Username"
+            ]); 
+        })->class("input-group mb-3");
     }
 
 }   

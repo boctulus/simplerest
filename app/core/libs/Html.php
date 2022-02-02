@@ -228,18 +228,20 @@ class Html
     }
 
     protected function __label(string $id, string $placeholder, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         $attributes['for'] = $id;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass('label') : $this->getClass('label');
         return $this->renderTag('label', null, $placeholder, $attributes);
     }
 
-    function label(string $id, string $placeholder, Array $attributes = []){;
-        return $this->add($this->__label($id, $placeholder, $attributes));
+    function label(string $id, string $placeholder, Array $attributes = [], ...$args){;
+        return $this->add($this->__label($id, $placeholder, $attributes, ...$args));
     }
 
     // implementación especial 
-    function checkbox(string $name, string $text,  bool $checked = false, Array $attributes = []){
+    function checkbox(string $name, ?string $text = null,  bool $checked = false, Array $attributes = [], ...$args){
         $plain_attr = $checked ?  ['checked'] : [];
+        $attributes = array_merge($attributes, $args);
         $attributes['type']  = __FUNCTION__;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
 
@@ -247,8 +249,9 @@ class Html
     }
 
     // implementación especial 
-    function radio(string $name, ?string $text = null,  bool $checked = false, Array $attributes = []){
+    function radio(string $name, ?string $text = null,  bool $checked = false, Array $attributes = [], ...$args){
         $plain_attr = $checked ?  ['checked'] : [];
+        $attributes = array_merge($attributes, $args);
         $attributes['type']  = __FUNCTION__;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
 
@@ -397,8 +400,8 @@ class Html
         return $this->insert($text);
     }
 
-    function div(callable $closure, $attributes = []){
-        return $this->group($closure, __FUNCTION__, $attributes);
+    function div(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
     function header(callable $closure, $attributes = [], ...$args){
@@ -495,35 +498,40 @@ class Html
         return $this->group($closure, 'p', $attributes, ...$args);
     }
 
-    function _span(callable $closure, $attributes = []){
-        return $this->group($closure, 'span', $attributes);
+    function _span(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, 'span', $attributes, ...$args);
     }
 
-    function button(callable $closure, $attributes = []){
-        return $this->group($closure, 'span', $attributes);
+    function button(callable $closure, $attributes = [], ...$args){
+        return $this->group($closure, 'span', $attributes, ...$args);
     }
 
-    function p(string $text, Array $attributes = []){
+    function p(string $text, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
     
-    function span(string $text, Array $attributes = []){
+    function span(string $text, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
 
-    function legend(string $text, Array $attributes = []){
+    function legend(string $text, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
 
-    function strong(string $text, Array $attributes = []){
+    function strong(string $text, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
 
-    function em(string $text, Array $attributes = []){
+    function em(string $text, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
 
-    function h(int $size, string $text, Array $attributes = []){
+    function h(int $size, string $text, Array $attributes = [], ...$args){
         if ($size <1 || $size > 6){
             throw new \InvalidArgumentException("Incorrect size for H tag. Given $size. Expected 1 to 6");
         }
@@ -531,35 +539,37 @@ class Html
         return $this->add($this->renderTag('h'. (string) $size, null, $text, $attributes));
     }
 
-    function h1(string $text, Array $attributes = []){
-        return $this->h(1, $text, $attributes);
+    function h1(string $text, Array $attributes = [], ...$args){
+        return $this->h(1, $text, $attributes, ...$args);
     }
 
-    function h2(string $text, Array $attributes = []){
-        return $this->h(1, $text, $attributes);
+    function h2(string $text, Array $attributes = [], ...$args){
+        return $this->h(1, $text, $attributes, ...$args);
     }
 
-    function h3(string $text, Array $attributes = []){
-        return $this->h(1, $text, $attributes);
+    function h3(string $text, Array $attributes = [], ...$args){
+        return $this->h(1, $text, $attributes, ...$args);
     }
 
-    function h4(string $text, Array $attributes = []){
-        return $this->h(1, $text, $attributes);
+    function h4(string $text, Array $attributes = [], ...$args){
+        return $this->h(1, $text, $attributes, ...$args);
     }
 
-    function h5(string $text, Array $attributes = []){
-        return $this->h(1, $text, $attributes);
+    function h5(string $text, Array $attributes = [], ...$args){
+        return $this->h(1, $text, $attributes, ...$args);
     }
 
-    function h6(string $text, Array $attributes = []){
-        return $this->h(1, $text, $attributes);
+    function h6(string $text, Array $attributes = [], ...$args){
+        return $this->h(1, $text, $attributes, ...$args);
     }
 
-    function br(Array $attributes = []){
+    function br(Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         return $this->add($this->renderTag(__FUNCTION__, null, null, $attributes));
     }
 
-    function img(string $src, Array $attributes = []){
+    function img(string $src, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
         $attributes['src'] = $src;
         return $this->add($this->renderTag('img', null, null, $attributes)); 
     }
