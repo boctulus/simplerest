@@ -39,6 +39,10 @@ use simplerest\core\Container;
 use simplerest\core\libs\JobQueue;
 use simplerest\core\libs\Task;
 
+use simplerest\core\libs\Form;
+use simplerest\core\libs\Bt5Form; 
+use simplerest\core\libs\Tag;
+
 
 class DumbController extends Controller
 {
@@ -7049,6 +7053,12 @@ class DumbController extends Controller
 
     function test_worker_stop_q1(){
         JobQueue::stop('q1');
+    }
+
+    function test_tag(){
+        Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
+
+        echo tag('color')->name('my_color')->text('Color')->id('c1');
     }
 
 }   
