@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Tag;
 
 class Html
 {
@@ -117,8 +118,6 @@ class Html
 
         $att_str = $this->attributes($attributes);
         $p_atr   = implode(' ', $plain_attr);
-
-        //d($att_str, 'att_str');
 
         // en principio asumo que abre y cierra
         return "<$type $att_str $p_atr>$value</$type>";
@@ -259,7 +258,14 @@ class Html
         return $this->add($this->renderTag('input', $name, $value, $attributes, $plain_attr));
     }
 
-    function color(string $name, ?string $text = null, Array $attributes = []){
+    function color(string $name, ?string $text = null, Array $attributes = [], ...$args){
+        /*
+            Pura magia
+        */
+        if (!empty($args)){
+            $attributes = array_merge($attributes, $args);
+        }
+
         $attributes['type']  = __FUNCTION__;
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
 
@@ -512,7 +518,7 @@ class Html
         return $this->add($this->renderTag(__FUNCTION__, null, $text, $attributes));
     }
 
-    function h(int $size = 3, string $text, Array $attributes = []){
+    function h(int $size, string $text, Array $attributes = []){
         if ($size <1 || $size > 6){
             throw new \InvalidArgumentException("Incorrect size for H tag. Given $size. Expected 1 to 6");
         }
@@ -570,7 +576,7 @@ class Html
         return ob_get_clean();
     }
 
-    function render(string $enclosingrenderTag = null, Array $attributes = [], bool $pretty = true) : string {
+    function render(?string $enclosingrenderTag = '', Array $attributes = [], bool $pretty = true) : string {
         $ret = $this->html;
 
         if (!empty($enclosingrenderTag)){

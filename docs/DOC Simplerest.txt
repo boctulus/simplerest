@@ -5,28 +5,32 @@ SimpleRest utiliza la arquitectura MVC, está orientado a API Restful y es un fr
 
 Algunas características:
 
-- Arquitectura MVC 
-- APIs funcionan out--of-the-box o sea sin escribir nada de código ***
-- Autenticación via web tokens al estilo OAuth 2 y API Keys
-- ACL centralizado con sistema de roles y de permisos granulares + permisos personalizados que decoran los roles
-- Posibilidad de "compartir" recursos via "folders"
+- MVC architecture 
+- APIs work out--of--the--box, i.e. without writing any code ***
+- Authentication via OAuth 2 style web tokens and API Keys
+- Centralized ACL with granular role and permissions system + custom permissions decorating roles
+- Possibility to "share" resources via "folders".
 - Impersonate
-- Papelera de reciclaje
-- Colecciones para acciones masivas
-- Versionado
-- Internacionalización
-- Query Builder y la clase Model
+- Recycle garbage can
+- Collections for mass actions
+- Versioning
+- Internationalization
+- Query Builder (which include autojoins among other cool features) and the Model class
 - UUIDs
-- Migrations (en progreso)
+- Migrations
 - Multitenant support
 - Service Providers
-- Validator y auto-validaciones en los modelos
-- WebHooks y Server Sent Events
-- Sub-recursos
-- Utilidad para consumo de APIs
-- Perfilador del código (tiempos de ejecución)
-- Extensión del framework (sumar nuevas funcionalidades)
-- Contenedor de dependencias inversas (IoC)
+- Validator and self-validations on models
+- WebHooks and Server Sent Events
+- Sub-resources
+- API consumption utility
+- Code profiler (execution times)
+- Framework extension (add new functionalities)
+- Reverse dependency container (IoC)
+- CronJobs
+- Job Queue Manager
+- HTML / Form Builder 
+
 
 Cómo "índice" para buscar documentación puede buscar por las características enumeradas previamente más las siguientes referencias:
 
