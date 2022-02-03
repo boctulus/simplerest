@@ -10,24 +10,24 @@ class Bt5Form extends Form
 
     function __construct() { }
 
-    function switch(string $name, string $text, bool $checked = false, Array $attributes = []){
+    function switch(string $text, bool $checked = false, Array $attributes = [], ...$args){
         return 
             
-            $this->div(function($html) use ($name, $text, $checked, $attributes){
-                $html->checkbox($name, $text, $checked, $attributes);
+            $this->div(function($html) use ($text, $checked, $attributes, $args){
+                $html->checkbox($text, $checked, $attributes, ...$args);
             },  [
                 'class' => 'form-check form-switch'
             ]);
     }
 
-    function inputGroup(callable $closure, Array $attributes = []){     
+    function inputGroup(callable $closure, Array $attributes = [], ...$args){     
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->div($closure, $attributes);
+        return $this->div($closure, $attributes, ...$args);
     }
 
-    function checkGroup(callable $closure, Array $attributes = []){
+    function checkGroup(callable $closure, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->div($closure, $attributes);
+        return $this->div($closure, $attributes, ...$args);
     }
    
 }

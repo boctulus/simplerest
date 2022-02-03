@@ -1,5 +1,5 @@
-<!-- Login -->
-
+<!-- Rememberme -->
+    
 <style type="text/css">
 	.login-form {
 		width: 340px;
@@ -20,11 +20,11 @@
 		text-align: center;
     }
     .form-control, .btn {
-        min-height: 38px;
+        min-height: 50px;
         border-radius: 2px;
+		font-size: 18px;
     }
     .login-btn {        
-        font-size: 15px;
         font-weight: bold;
     }
     .or-seperator {
@@ -40,51 +40,61 @@
         z-index: 1;
     }
     .social-btn .btn {
-        margin: 10px 0;
-        font-size: 15px;
+        margin: 12px 0;
+        font-size: 18px;
         text-align: left; 
-        line-height: 24px;       
+        line-height: 40px;       
     }
 	.social-btn .btn i {
 		float: left;
-		margin: 4px 15px  0 5px;
+		margin: 11px 15px  0 5px;
         min-width: 15px;
 	}
 	.input-group-addon .fa{
-		font-size: 18px;
+		font-size: 20px;
 	}
 </style>
 
+<div class="row vh-100 d-flex  align-items-center">
+	<div class="col-xs-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4">
+		<h1 style="font-size: 3em; padding-bottom: 0.5em;">Recuérdame</h1>
 
-<div class="row vcenter">
-	<div class="col-xs-12 col-sm-12 col-md-6 col-md-push-3">
-		<h1 style="font-size: 3em; padding-bottom: 0.5em;">Login</h1>
+		<?php
 
-		<form action="#" onsubmit="return false;">
+		use simplerest\core\libs\Bt5Form;
 
-			<div class="form-group" >		
-					
-				<div style="text-align:right; margin-bottom:1em;">
-					Tiene cuenta? <a href="login">Ingresar</a>
-				</div>
+		$f = new Bt5Form();
 
-				<div class="input-group" style="margin-bottom:1em;">
-					<span class="input-group-addon">
-					<i class="glyphicon glyphicon-envelope"></i>
-					</span>
-					<input type="email" class="form-control" id="email" placeholder="email" required="required">
-				</div>
-				
-				<div style="color:red; text-align: center;" id="remembermeError"></div>
-			
-			</div>
+		echo $f
 
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary btn-lg btn-block login-btn" onClick="rememberme()">Recuérdame</button>
-			</div>
+        ->insert('
+            <div style="text-align:right; margin-bottom:1em;">
+                Tiene cuenta? <a href="login">Ingresar</a>
+            </div>
+        ')
+        
+		->div(function($form){
+			$form->span('<i class="fas fa-envelope"></i>', [
+				'class' => 'input-group-text'
+			]);
+			$form->email(
+				id:"email",
+				placeholder:"E-mail",
+				required:"required"
+			);
+		}, [
+			"class" => "input-group mb-3"
+		])
 
-			No registrado? <a href="login/register">regístrese</a>
-		</form>		
 		
+
+		->render(action:"#", onsubmit:"return false;");
+		?>		
+
+		<div class="form-group mb-3">
+				<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
+        </div>
+
+        No registrado? <a href="login/register">regístrese</a>
 	</div>
 </div>
