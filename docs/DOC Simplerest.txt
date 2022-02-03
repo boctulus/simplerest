@@ -8088,5 +8088,69 @@ Ej:
 Se puede activar / desactivar el formateo del HTML generado con el método prety()
 
 
+# La clase Tag
 
+Es posible usar métodos encadenados para definir los atributos en vez de los parámetros de los métodos de las clases Html y derivadas (Form, Bt5Form, etc).
+
+	$form->text('nombre', null, [
+		"placeholder" => "Username"
+	]);
+
+Renderiza algo como
+
+	<input type="text" name="nombre" placeholder="Username" />
+
+Y se puede obtener el mismo string haciendo:
+
+	$input = tag('color')->name('my_color')->text('Color')->id('c1');
+
+La clase Tag implementa el método __toString() así que lo siguiente enviará a la salida estándar lo mismo: 
+
+	echo tag('color')->name('my_color')->text('Color')->id('c1');
+
+Ahora hay que forme parte del "documento" HTML que estamos construyendo y para eso usamos Form::insert()
+
+	$f->insert(
+		tag('color')->name('my_color')->text('Color')->id('c1')->render()
+	);
+
+Importante:
+
+	Para poder hacer uso de la clase Tag se debe primero "registrar" la clase del Html Builder.
+
+Ej:
+
+	Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
+
+El objetivo es poder usar distintos builders donde Bt5Form incluye las referencias a clases para Boostrap 5.
+
+Realmente cualquier tag puede ser renderizado con la ayuda de la clase Tag
+
+	echo tag('select')->name('sexo')->options([
+		'varon' => 1,
+		'mujer' => 2
+	])->default(1)->placeholder('Su sexo')->class('my-3');
+
+Inclusive los closures:
+
+	echo tag('div')->closure(function($form){
+		$form->span('@', [
+			'id'    => 'basic-addon',
+			'class' => 'input-group-text'
+		]);
+		$form->text('nombre', null, [
+			"placeholder" => "Username"
+		]); 
+	})->class("input-group mb-3");
+
+El ejemplo anterior podría hacer uso de Tag en los tags anidados también:
+
+	echo tag('div')->closure(function($form){
+		$form->insert(
+			tag('span')->text('@')->id('basic-addon')->class('input-group-text')->render()
+		);
+		$form->insert(
+			tag('text')->name('nombre')->placeholder('Username')->render()
+		);
+	})->class("input-group mb-3");
 

@@ -9,12 +9,7 @@ Form::macro('salutor', function($name, $adj)
     return "<span/>Hello $adj $name</span>";
 });
 
-// $tag = new Tag();
-// $tag
-// ->id(8)
-// ->name('nombre');
-
-// d($tag->toArray());
+Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
 ?>
 
@@ -55,7 +50,9 @@ Form::macro('salutor', function($name, $adj)
     ], 1, 'Su sexo', ['class' => 'my-3'])
 
     ->label("edad", "Edad")
-    ->range('edad', 0, 99, 10, ['class' => 'my-3'])
+    //->range('edad', 0, 99, 10, ['class' => 'my-3'])
+    //->range(name:'edad', min:0, max:99, default:10, class:'my-3')
+    ->insert(tag('range')->name('edad')->min(0)->max(99)->default(10)->render())
 
     ->checkGroup(function($h){
         $h->radio("civil", "soltero", true, ['id' => 'soltero']);
