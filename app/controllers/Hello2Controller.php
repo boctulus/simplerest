@@ -12,7 +12,7 @@ class Hello2Controller extends Controller
     }
 
     function index(){
-        $this->view('hello/hello2.php', null, null, 0);
+        $this->view('hello/hello2.php', null, null, 1);
     }
 }
 
