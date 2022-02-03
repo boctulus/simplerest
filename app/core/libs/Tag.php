@@ -2,9 +2,6 @@
 
 namespace simplerest\core\libs;
 
-use simplerest\core\interfaces\Arrayable;
-use simplerest\core\interfaces\IMyArrayAccess;
-
 class Tag
 {
     protected $name;

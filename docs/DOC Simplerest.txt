@@ -8154,8 +8154,8 @@ Nota:
 
 Puede transformarse en
 
-    $f->insert(tag('range')->name('edad')->min(0)->max(99)->default(10))
+    $f->insert(tag('range')->name('edad')->min(0)->max(99)->default(10)->class('my-3'))
 
-Inclusive como PHP 8 soporta "named arguments" es también equivalente:
+En PHP 8,
 
     $f->range(name:'edad', min:0, max:99, default:10, class:'my-3')
