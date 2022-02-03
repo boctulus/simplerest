@@ -576,11 +576,6 @@ class Files
 
 		return $ok;
 	}
-
-	// alias
-	static function mkdir_ignore($dir, int $permissions = 0777, bool $recursive = true){
-		return static::mkDir($dir, $permissions, $recursive);
-	}
 	
 	static function mkDirOrFail($dir, int $permissions = 0777, $recursive = true, string $error = "Failed trying to create %s"){
 		$ok = null;
@@ -713,6 +708,62 @@ class Files
 		}    
 
 		return $result;
+	}
+
+
+	/*
+		Para cache lo mejor sería usar PHP FAST CACHE 
+		que,.... soporta varios drivers incluso REDIS
+
+		https://www.phpfastcache.com/
+	*/
+
+
+	/*
+		https://tqdev.com/2018-locking-file-cache-php
+	*/
+	static function file_put_contents_locking(string $filename, string $string, int $flags = LOCK_EX)
+	{
+		return file_put_contents($filename, $string, $flags);
+	}
+
+	// alias
+	static function writter(string $filename, string $string, int $flags = LOCK_EX){
+		return static::file_put_contents_locking($filename,$string, $flags);
+	}
+
+	/*
+		https://tqdev.com/2018-locking-file-cache-php
+	*/
+	static function file_get_contents_locking(string $filename, int $flags = LOCK_SH)
+	{
+		$file = fopen($filename, 'rb');
+
+		if ($file === false) {
+			return false;
+		}
+		
+		$lock = flock($file, $flags);
+		
+		if (!$lock) {
+			fclose($file);
+			return false;
+		}
+		
+		$string = '';
+		while (!feof($file)) {
+			$string .= fread($file, 8192);
+		}
+		
+		flock($file, LOCK_UN);
+		fclose($file);
+		
+		return $string;
+	}
+
+	// alias
+	static function reader(string $filename, int $flags = LOCK_SH){
+		return static::file_get_contents_locking($filename, $flags);
 	}
 
 }    

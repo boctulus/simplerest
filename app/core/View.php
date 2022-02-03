@@ -34,7 +34,7 @@ class View
                 $expired = true;
             break;    
             default:
-                $ct      = filemtime($filename);
+                $ct      = @filemtime($filename);
                 $expired = time() > $ct + $expiration_time;                
         }
         
@@ -51,7 +51,7 @@ class View
         }
 
         if ($cached && $file_exists){
-            $content = file_get_contents($filename);
+            $content = Files::reader($filename);
         } else {
             if (!empty($vars_to_be_passed))
             extract($vars_to_be_passed);      
@@ -63,9 +63,9 @@ class View
         }
 
         if ($expiration_time != 0 && ($expired || !$file_exists)){
-            Files::writableOrFail($filename);
+            //Files::writableOrFail($filename);
 
-            $bytes = @file_put_contents($filename, $content);
+            $bytes = Files::writter($filename, $content);
 
             if ($bytes != 0){
                 $this->onCacheWritten($view_path);
@@ -76,7 +76,7 @@ class View
     }
 
     static function destroyCache(string $view_path) : bool {
-        $filename   = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
+        $filename = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
         return Files::delete($filename);
     }
