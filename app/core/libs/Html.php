@@ -127,7 +127,7 @@ class Html
         $attributes['type']  = $type;
         $plain_attr[] = is_null($default) ? '' : "value=\"$default\""; 
         
-        return $this->add($this->renderTag('input', null, $attributes, $plain_attr));
+        return $this->add($this->renderTag('input', null, $attributes, $plain_attr, ...$args));
     }
 
     function text(?string $default = null, Array $attributes = [], ...$args){
@@ -227,7 +227,7 @@ class Html
         $attributes['type']  = __FUNCTION__;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
 
-        return $this->add($this->renderTag('input', $text, $attributes, $plain_attr));
+        return $this->add($this->renderTag('input', $text, $attributes, $plain_attr, ...$args));
     }
 
     // implementación especial 
@@ -574,15 +574,22 @@ class Html
         return ob_get_clean();
     }
 
-    function render(?string $enclosingrenderTag = '', Array $attributes = [], bool $pretty = true) : string {
+    function render(?string $enclosingTag = '', Array $attributes = [], ...$args) : string {
         $ret = $this->html;
 
-        if (!empty($enclosingrenderTag)){
+        if (isset($attributes['class']) && isset($args['class'])){
+            $attributes['class'] .=  ' ' . $args['class'];
+            unset($args['class']);
+        }
+
+        $attributes = array_merge($attributes, $args);
+
+        if (!empty($enclosingTag)){
             $att = $this->attributes($attributes);
-            $ret = "<$enclosingrenderTag $att>{$ret}</$enclosingrenderTag>";
+            $ret = "<$enclosingTag $att>{$ret}</$enclosingTag>";
         }
         
-        return ($pretty && $this->pretty) ? static::beautifier($ret) : $ret;
+        return $this->pretty ? static::beautifier($ret) : $ret;
     }
 
 }
