@@ -8102,16 +8102,12 @@ Renderiza algo como
 
 Y se puede obtener el mismo string haciendo:
 
-	$input = tag('color')->name('my_color')->text('Color')->id('c1');
-
-La clase Tag implementa el método __toString() así que lo siguiente enviará a la salida estándar lo mismo: 
-
-	echo tag('color')->name('my_color')->text('Color')->id('c1');
+	tag('color')->name('my_color')->text('Color')->id('c1');
 
 Ahora hay que forme parte del "documento" HTML que estamos construyendo y para eso usamos Form::insert()
 
 	$f->insert(
-		tag('color')->name('my_color')->text('Color')->id('c1')->render()
+		tag('color')->name('my_color')->text('Color')->id('c1')
 	);
 
 Importante:
@@ -8122,18 +8118,16 @@ Ej:
 
 	Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-El objetivo es poder usar distintos builders donde Bt5Form incluye las referencias a clases para Boostrap 5.
-
 Realmente cualquier tag puede ser renderizado con la ayuda de la clase Tag
 
-	echo tag('select')->name('sexo')->options([
+	tag('select')->name('sexo')->options([
 		'varon' => 1,
 		'mujer' => 2
 	])->default(1)->placeholder('Su sexo')->class('my-3');
 
 Inclusive los closures:
 
-	echo tag('div')->closure(function($form){
+	tag('div')->closure(function($form){
 		$form->span('@', [
 			'id'    => 'basic-addon',
 			'class' => 'input-group-text'
@@ -8145,12 +8139,23 @@ Inclusive los closures:
 
 El ejemplo anterior podría hacer uso de Tag en los tags anidados también:
 
-	echo tag('div')->closure(function($form){
+	tag('div')->closure(function($form){
 		$form->insert(
-			tag('span')->text('@')->id('basic-addon')->class('input-group-text')->render()
+			tag('span')->text('@')->id('basic-addon')->class('input-group-text')
 		);
 		$form->insert(
-			tag('text')->name('nombre')->placeholder('Username')->render()
+			tag('text')->name('nombre')->placeholder('Username')
 		);
 	})->class("input-group mb-3");
 
+Nota:
+
+	$f->range('edad', 0, 99, 10, ['class' => 'my-3'])
+
+Puede transformarse en
+
+    $f->insert(tag('range')->name('edad')->min(0)->max(99)->default(10))
+
+Inclusive como PHP 8 soporta "named arguments" es también equivalente:
+
+    $f->range(name:'edad', min:0, max:99, default:10, class:'my-3')
