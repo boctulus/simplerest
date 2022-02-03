@@ -24,13 +24,13 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
     ->h(3, "Datos")
 
-    ->tag('hr')
+    ->tag(type:'hr', style:'color:grey')
 
     ->p("Hola mundo cruel")
 
-    // ->color('my_color', 'Color', [
-    //     'id' => 'my_color'
-    // ])
+    // ->insert(
+	// 	tag('color')->name('my_color')->text('Color')->id('c1')
+	// )
 
     ->div(function($form){
         $form->span('@', [
@@ -50,9 +50,7 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
     ], 1, 'Su sexo', ['class' => 'my-3'])
 
     ->label("edad", "Edad")
-    //->range('edad', 0, 99, 10, ['class' => 'my-3'])
-    //->range(name:'edad', min:0, max:99, default:10, class:'my-3')
-    ->insert(tag('range')->name('edad')->min(0)->max(99)->default(10)->render())
+    ->range(name:'edad', min:0, max:99, default:10, class:'my-3')
 
     ->checkGroup(function($h){
         $h->radio("civil", "soltero", true, ['id' => 'soltero']);
@@ -63,7 +61,7 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
     }, ['class' => 'my-3'])
 
 
-    ->switch("hijos", "Hijos", true)
+    ->switch(name:"hijos", text:"Hijos", checked:true)
 
     ->url("Linkedin")
 
