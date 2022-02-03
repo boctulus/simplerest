@@ -54,8 +54,8 @@
     <!-- FILEPOND -->
     <!--link rel="stylesheet" href="... 'js/plugins/filepond/dist/filepond.css') ?>"-->
 
-    <script src="<?= assets('js/helpers.js') ?>"></script>
-    <script src="<?= assets('js/login.js') ?>"></script>
+    <!--script src="< ? = assets('js/helpers.js') ?>"></script-->
+    <!--script src="< ?= assets('js/login.js') ?>"></script-->
 
     <link  rel="stylesheet" href="<?= assets('css/core.css"') ?>"/>
 

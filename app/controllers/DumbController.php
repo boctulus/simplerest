@@ -7059,7 +7059,7 @@ class DumbController extends Controller
         Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
          
-        echo tag('text')->name('bozzolo')->placeholder('Su apellido');
+       //echo tag('text')->name('bozzolo')->placeholder('Su apellido');
 
         // echo tag('select')->name('sexo')->options([
         //     'varon' => 1,
@@ -7071,19 +7071,19 @@ class DumbController extends Controller
         //         'id'    => 'basic-addon',
         //         'class' => 'input-group-text'
         //     ]);
-        //     $form->text('nombre', null, [
+        //     $form->text('nombre', [
         //         "placeholder" => "Username"
         //     ]); 
         // })->class("input-group mb-3");
 
-        // echo tag('div')->closure(function($form){
-        //     $form->insert(
-        //         tag('span')->text('@')->id('basic-addon')->class('input-group-text')
-        //     );
-        //     $form->insert(
-        //         tag('text')->name('nombre')->placeholder('Username')
-        //     );
-        // })->class("input-group mb-3");
+        echo tag('div')->closure(function($form){
+            $form->insert(
+                tag('span')->text('@')->id('basic-addon')->class('input-group-text')
+            );
+            $form->insert(
+                tag('text')->name('nombre')->placeholder('Username')
+            );
+        })->class("input-group mb-3");
     }
 
 }   

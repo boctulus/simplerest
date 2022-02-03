@@ -35,7 +35,7 @@ Form::macro('salutor', function($name, $adj)
             'id'    => 'basic-addon',
             'class' => 'input-group-text'
         ]);
-        $form->text('nombre', null, [
+        $form->text('nombre', [
             "placeholder" => "Username"
         ]);
     }, [
@@ -51,15 +51,15 @@ Form::macro('salutor', function($name, $adj)
     ->range(name:'edad', min:0, max:99, default:10, class:'my-3')
 
     ->checkGroup(function($h){
-        $h->radio("civil", "soltero", true, ['id' => 'soltero']);
+        $h->radio("soltero", true, ['id' => 'soltero']);
     }, ['class' => 'my-3'])
 
     ->checkGroup(function($h){
-        $h->radio("civil", "casado", false, ['id' => 'casado']);
+        $h->radio("casado", false, ['id' => 'casado']);
     }, ['class' => 'my-3'])
 
 
-    ->switch(name:"hijos", text:"Hijos", checked:true)
+    ->switch(id:"hijos", text:"Hijos", checked:true)
 
     ->url("Linkedin")
 
