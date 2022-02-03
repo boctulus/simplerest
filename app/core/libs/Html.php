@@ -49,8 +49,9 @@ class Html
 
     function __construct() { }
 
-    function prety(bool $state){
+    function prety(bool $state = true){
         $this->pretty = $state;
+        return $this;
     }
 
     /*
@@ -110,7 +111,13 @@ class Html
             }   
         }
 
-        //$attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass($type) : $this->getClass($type);
+        if (isset($attributes['class']) && isset($args['class'])){
+            $attributes['class'] .=  ' ' . $args['class'];
+            unset($args['class']);
+        }
+
+        $attributes = array_merge($attributes, $args);
+
 
         if (!empty($this->class)){
             $attributes['class'] .= ' ' . $this->class;
@@ -141,10 +148,9 @@ class Html
 
     function input(string $type, ?string $name = null, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
     {  
-        $attributes = array_merge($attributes, $args);
-
-        $plain_attr[] = is_null($default) ? '' : "value=\"$default\""; 
         $attributes['type']  = $type;
+        $plain_attr[] = is_null($default) ? '' : "value=\"$default\""; 
+        
         return $this->add($this->renderTag('input', $name, null, $attributes, $plain_attr));
     }
 
@@ -354,7 +360,7 @@ class Html
 
     function fieldset(callable $closure, $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->group($closure, __FUNCTION__, $attributes);
+        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
     }
 
     function hidden(string $name, string $value, Array $attributes = [], ...$args){
@@ -536,7 +542,8 @@ class Html
             throw new \InvalidArgumentException("Incorrect size for H tag. Given $size. Expected 1 to 6");
         }
 
-        return $this->add($this->renderTag('h'. (string) $size, null, $text, $attributes));
+        $attributes = array_merge($attributes, $args);
+        return $this->add($this->renderTag('h'. (string) $size, null, $text, $attributes, ...$args));
     }
 
     function h1(string $text, Array $attributes = [], ...$args){
