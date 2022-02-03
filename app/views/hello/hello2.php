@@ -42,10 +42,10 @@ Form::macro('salutor', function($name, $adj)
         "class" => "input-group mb-3"
     ])
 
-    ->select('sexo', [
+    ->select(name:'sexo', options:[
         'varon' => 1,
         'mujer' => 2
-    ], 1, 'Su sexo', ['class' => 'my-3'])
+    ], defult:1, placeholder:'Su sexo', attributes:['class' => 'my-3'])
 
     ->label("edad", "Edad")
     ->range(name:'edad', min:0, max:99, default:10, class:'my-3')
@@ -63,13 +63,13 @@ Form::macro('salutor', function($name, $adj)
 
     ->url("Linkedin")
 
-    ->label("comment", "Algo que desea agregar:", ['class' => 'mt-3'])
-    ->area('comment', 'bla bla', ['class' => 'my-3'])
+    ->label(id:"comment", placeholder:"Algo que desea agregar:", attributes:['class' => 'mt-3'])
+    ->area(id:'comment', default:'bla bla', attributes:['class' => 'my-3'])
 
-    ->inputButton("comprar", "Comprar")
+    ->inputButton(id:"comprar", value:"Comprar")
 
-    ->reset("limpiar", "limpiar")
-    ->submit("enviar", "enviar")
+    ->reset(id:"limpiar", value:"Limpiar")
+    ->submit(id:"enviar", value:"enviar")
 
     ->br()
 
