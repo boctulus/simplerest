@@ -7078,10 +7078,10 @@ class DumbController extends Controller
 
         echo tag('div')->closure(function($form){
             $form->insert(
-                tag('span')->text('@')->id('basic-addon')->class('input-group-text')->render()
+                tag('span')->text('@')->id('basic-addon')->class('input-group-text')
             );
             $form->insert(
-                tag('text')->name('nombre')->placeholder('Username')->render()
+                tag('text')->name('nombre')->placeholder('Username')
             );
         })->class("input-group mb-3");
     }
