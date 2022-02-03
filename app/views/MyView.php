@@ -18,10 +18,10 @@ class MyView extends View
     }
 
     function onCacheExpired(string $view_path){
-        d("Expired cache for $view_path");
+        //d("Expired cache for $view_path");
     }
 
     function onCacheWritten(string $view_path){
-        d("Cache file was re-generated for $view_path");
+        //d("Cache file was re-generated for $view_path");
     }
 }
