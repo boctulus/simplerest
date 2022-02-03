@@ -118,7 +118,6 @@ class Html
 
         $attributes = array_merge($attributes, $args);
 
-
         if (!empty($this->class)){
             $attributes['class'] .= ' ' . $this->class;
         } 

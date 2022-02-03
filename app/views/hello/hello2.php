@@ -9,8 +9,6 @@ Form::macro('salutor', function($name, $adj)
     return "<span/>Hello $adj $name</span>";
 });
 
-Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
-
 ?>
 
 <div class = "row">
