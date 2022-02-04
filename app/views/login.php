@@ -87,7 +87,7 @@
 			"class" => "input-group mb-3"
 		])
 
-		->div(function($form){
+		->inputGroup(function($form){
 			$form->span('<i class="fas fa-key"></i>', [
 				'class' => 'input-group-text'
 			]);
@@ -98,15 +98,17 @@
 				required:"required"
 			);
 
-			// $form->insert('
-			// <div class="input-group-append">
-			// 	<span class="input-group-text" onclick="password_show_hide();">
-			// 	<i class="fas fa-eye" id="show_eye"></i>
-			// 	<i class="fas fa-eye-slash d-none" id="hide_eye"></i>
-			// 	</span>
-			// </div>');
+			// $form->span('<i class="fas fa-key"></i>', [
+			// 	'class' => 'input-group-text'
+			// ]);
+
+			$form->insert('
+				<span class="input-group-text" onclick="password_show_hide();">
+				<i class="fas fa-eye" id="show_eye"></i>
+				<i class="fas fa-eye-slash d-none" id="hide_eye"></i>
+				</span>');
 		}, [
-			"class" => "input-group mb-3"
+			"class" => "mb-3"
 		])
 
 
