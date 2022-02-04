@@ -62,7 +62,7 @@
 		<h1 style="font-size: 3em; padding-bottom: 0.5em;">Registro</h1>
 
 		<?php
-
+ 
 		use simplerest\core\libs\Bt5Form;
 		use simplerest\core\libs\Tag;
 
