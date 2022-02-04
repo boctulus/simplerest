@@ -100,13 +100,11 @@ class Html
     }
 
     static function tag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-        return static::renderTag($type, $value, $attributes, $plain_attr);
+        return static::renderTag($type, $value, $attributes, $plain_attr, ...$args);
     }
 
     static function group(Array $content, string $tag = 'div', Array $attributes = [], ...$args){
         $content_str = implode(' ', $content);
-                
         return static::tag($tag, $content_str, $attributes, [], ...$args);
     }
 

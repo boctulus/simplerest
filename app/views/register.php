@@ -64,68 +64,66 @@
 		<?php
 
 		use simplerest\core\libs\Bt5Form;
+		use simplerest\core\libs\Tag;
 
-		$f = new Bt5Form();
+		Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-		echo $f
+		Bt5Form::setIdAsName();
 
-		->div(function($form){
-			$form->span('<i class="fas fa-user"></i>', [
+		/*
+			Si pusiera 'input-group' se rompe
+
+			Con un tag "sencillo" como <hr> va bien pero con los grupos sino existe el tag... se rompe sino existe
+		*/
+		echo tag('inputGroup')->content([
+			Bt5Form::span('<i class="fas fa-user"></i>', [
 				'class' => 'input-group-text'
-			]);
-			$form->text(
+			]),
+
+			Bt5Form::text(
 				id:"email",
 				placeholder:"E-mail",
 				required:"required"
-			);
-		}, [
-			"class" => "input-group mb-3"
-		])
+			)
+		])->class("mb-3");
 
-		->div(function($form){
-			$form->span('<i class="fas fa-user"></i>', [
+		echo tag('inputGroup')->content([
+			Bt5Form::span('<i class="fas fa-user"></i>', [
 				'class' => 'input-group-text'
-			]);
-			$form->text(
+			]),
+
+			Bt5Form::text(
 				id:"username",
 				placeholder:"Nombre de usuario",
 				required:"required"
-			);
-		}, [
-			"class" => "input-group mb-3"
-		])
-
-		->div(function($form){
-			$form->span('<i class="fas fa-key"></i>', [
+			)
+		])->class("mb-3");
+		
+		echo tag('inputGroup')->content([
+			Bt5Form::span('<i class="fas fa-key"></i>', [
 				'class' => 'input-group-text'
-			]);
+			]),
 
-			$form->password(
+			Bt5Form::password(
 				id:"password", 
 				placeholder:"Password",
 				required:"required"
-			);
-		}, [
-			"class" => "input-group mb-3"
-		])
+			)
+		])->class("mb-3");
 
-		->div(function($form){
-			$form->span('<i class="fas fa-key"></i>', [
+		echo tag('inputGroup')->content([
+			Bt5Form::span('<i class="fas fa-key"></i>', [
 				'class' => 'input-group-text'
-			]);
+			]),
 
-			$form->password(
+			Bt5Form::password(
 				id:"password_confirmation", 
 				placeholder:"Password confirmación",
 				required:"required",
 				name:"passwordconfirmation"
-			);
-		}, [
-			"class" => "input-group mb-3"
-		])
+			)
+		])->class("mb-3");
 
-
-		->render();
 		?>		
 
 		<div class="form-group mb-3">
