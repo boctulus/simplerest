@@ -19,7 +19,7 @@ Bt5Form::setIdAsName();
     <div class = "col-6 offset-3">
 
     <?php 
-    
+
     echo tag('h3')->text("Datos")->class('mb-3');
 
     echo Bt5Form::dataList(listName:'datalistOptions', id:'occupation', options:[
@@ -30,7 +30,7 @@ Bt5Form::setIdAsName();
     /*
         El tag 'hr' ni siquiera está definido en la clase Html
     */
-    echo tag('hr')->style('color:red');
+    echo tag('hr')->style('color:cyan');
 
     echo tag('p')->text("Hola mundo cruel");
 
@@ -63,7 +63,7 @@ Bt5Form::setIdAsName();
     
     echo Bt5Form::switch(id:"hijos", text:"Hijos", checked:true);
 
-    echo Bt5Form::url(default:"Linkedin", class:"mt-3");
+    echo Bt5Form::url(default:"https://www.linkedin.com/in/pablo-bozzolo/", class:"mt-3");
 
     echo Bt5Form::label(id:"comment", placeholder:"Algo que desea agregar:", class:'mt-3');
     echo Bt5Form::area(id:'comment', default:'bla bla', class:'my-3');

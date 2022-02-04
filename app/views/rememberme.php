@@ -59,40 +59,34 @@
 	<div class="col-xs-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4">
 		<h1 style="font-size: 3em; padding-bottom: 0.5em;">Recuérdame</h1>
 
+        <div style="text-align:right; margin-bottom:1em;">
+            Tiene cuenta? <a href="login">Ingresar</a>
+        </div>
+
 		<?php
 
 		use simplerest\core\libs\Bt5Form;
+		use simplerest\core\libs\Tag;
 
-		$f = new Bt5Form();
+		Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-		echo $f
-
-        ->insert('
-            <div style="text-align:right; margin-bottom:1em;">
-                Tiene cuenta? <a href="login">Ingresar</a>
-            </div>
-        ')
+		Bt5Form::setIdAsName();
         
-		->div(function($form){
-			$form->span('<i class="fas fa-envelope"></i>', [
+        echo tag('inputGroup')->content([
+            Bt5Form::span('<i class="fas fa-envelope"></i>', [
 				'class' => 'input-group-text'
-			]);
-			$form->email(
+			]),
+
+            Bt5Form::email(
 				id:"email",
 				placeholder:"E-mail",
 				required:"required"
-			);
-		}, [
-			"class" => "input-group mb-3"
-		])
-
-		
-
-		->render(action:"#", onsubmit:"return false;");
+			)
+        ])->class("input-group mb-3");		
 		?>		
 
 		<div class="form-group mb-3">
-				<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
+			<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
         </div>
 
         No registrado? <a href="login/register">regístrese</a>
