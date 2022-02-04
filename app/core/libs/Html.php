@@ -6,11 +6,9 @@ use simplerest\core\libs\Tag;
 
 class Html
 {
-    protected $html  = '';
-    protected $class = '';
-    protected $pretty     = false;
-    protected $id_eq_name = false;
-    protected $classes = [
+    static protected $pretty     = false;
+    static protected $id_eq_name = false;
+    static protected $classes = [
         "text"           => "form-control",
         "number"         => "form-control",
         "password"       => "form-control",
@@ -26,6 +24,7 @@ class Html
         "tel"            => "form-control",
         "url"            => "form-control",
         "area"           => "form-control",
+        "dataList"       => "form-control",
 
         "range"          => "form-range",
 
@@ -42,47 +41,38 @@ class Html
 
         "inputGroup"     => "input-group",
         "checkGroup"     => "form-check",
+        "formFloating"   => "form-floating",
 
         "color"          => "form-control form-control-color"
     ];
     
     static protected $macros = [];
 
-    function __construct() { }
-
-    function prety(bool $state = true){
-        $this->pretty = $state;
-        return $this;
+    static function pretty(bool $state = true){
+        static::$pretty = $state;
     }
 
     /*
         Copy name attribute into id one
     */
-    function setIdAsName(bool $state = true){
-        $this->id_eq_name = $state;
-
-        return $this;
+    static function setIdAsName(bool $state = true){
+        static::$id_eq_name = $state;
     }
 
-    protected function add(string $html){
-        $this->html .= ' '. $html;
-        return $this;
-    }
-
-    protected function attributes(Array $attributes) : string{
+    static protected function attributes(Array $atts) : string{
         $_att = [];
-        foreach ($attributes as $att => $val){
+        foreach ($atts as $att => $val){
             $_att[] = "$att=\"$val\"";
         }
 
         return implode(' ', $_att);
     }
 
-    public function getClass(string $tag) : string{
-        return $this->classes[$tag] ?? '';
+    static public function getClass(string $tag) : string{
+        return static::$classes[$tag] ?? '';
     }
 
-    protected function renderTag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args) : string
+    static protected function renderTag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args) : string
     {
         if (isset($attributes['class']) && isset($args['class'])){
             $attributes['class'] .=  ' ' . $args['class'];
@@ -91,153 +81,180 @@ class Html
 
         $attributes = array_merge($attributes, $args);
 
-        if (!empty($this->class)){
-            $attributes['class'] .= ' ' . $this->class;
-        } 
-
         $name = $attributes['name'] ?? '';
 
-        if (!empty($name) && $this->id_eq_name){
+        if (!empty($name) && static::$id_eq_name){
             $attributes['id'] = $name;
         }
 
-        $att_str = $this->attributes($attributes);
+        $att_str = static::attributes($attributes);
         $p_atr   = implode(' ', $plain_attr);
 
+        $props = trim("$att_str $p_atr");
+        $props = !empty($props) ? ' '.$props : $props;
+
         // en principio asumo que abre y cierra
-        return "<$type $att_str $p_atr>$value</$type>";
+        $ret = "<$type" . $props . ">$value</$type>";
+
+        return static::$pretty ? static::beautifier($ret) : $ret;
     }
 
-    function tag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args){
+    static function tag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return $this->add($this->renderTag($type, $value, $attributes, $plain_attr));
+        return static::renderTag($type, $value, $attributes, $plain_attr);
     }
 
-    function link_to(string $url, string $anchor, Array $attributes = [], ...$args){
+    static function group(Array $content, string $tag = 'div', Array $attributes = [], ...$args){
+        $content_str = implode(' ', $content);
+                
+        return static::tag($tag, $content_str, $attributes, [], ...$args);
+    }
+
+    static function link_to(string $href, string $anchor, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
 
-        if (Strings::startsWith('www.', $url)){
-            $url = "http://$url";
+        if (Strings::startsWith('www.', $href)){
+            $href = "http://$href";
         }
 
-        return $this->add($this->renderTag('a', $anchor, $attributes));
+        $attributes['href'] = $href;
+
+        return static::renderTag('a', $anchor, $attributes);
     }
 
-
-    function input(string $type, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
+    static function input(string $type, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
     {  
-        $attributes['type']  = $type;
+        if ($type != 'list'){
+            $attributes['type']  = $type;
+        }
+
         $plain_attr[] = is_null($default) ? '' : "value=\"$default\""; 
         
-        return $this->add($this->renderTag('input', null, $attributes, $plain_attr, ...$args));
+        return static::renderTag('input', null, $attributes, $plain_attr, ...$args);
     }
 
-    function text(?string $default = null, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('text', $default, $attributes, ...$args);
+    static function text(?string $default = null, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('text', $default, $attributes, ...$args);
     }
 
-    function password(?string $default = null, Array $attributes = [], ...$args){
+    static function password(?string $default = null, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('password', $default, $attributes, ...$args);
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('password', $default, $attributes, ...$args);
     }
 
-    function email(?string $default = null, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('email', $default, $attributes, ...$args);
+    static function email(?string $default = null, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('email', $default, $attributes, ...$args);
     }
 
-    function number(string $text = null,  Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('number', $text, $attributes, ...$args);
+    static function number(string $text = null,  Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('number', $text, $attributes, ...$args);
     }
 
-    function file(Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('file', null, $attributes, ...$args);
+    static function file(Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('file', null, $attributes, ...$args);
     }
 
-    function date(?string $default = null, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('date', $default, $attributes, ...$args); 
+    static function date(?string $default = null, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('date', $default, $attributes, ...$args); 
     }
 
-    function month(?string $default = null, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('month', $default, $attributes, ...$args); 
+    static function month(?string $default = null, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('month', $default, $attributes, ...$args); 
     }
 
-    function inputTime(?string $default = null, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('time', $default, $attributes, ...$args); 
+    static function inputTime(?string $default = null, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('time', $default, $attributes, ...$args); 
     }
 
-    function week(?string $default = null, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('week', $default, $attributes, ...$args); 
+    static function week(?string $default = null, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('week', $default, $attributes, ...$args); 
     }
 
-    function datetimeLocal(?string $default = null, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('datetime-local', $default, $attributes, ...$args); 
+    static function datetimeLocal(?string $default = null, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('datetime-local', $default, $attributes, ...$args); 
     }
 
-    function image(?string $default = null, Array $attributes = [], ...$args){
+    static function image(?string $default = null, Array $attributes = [], ...$args){
         if (!isset($attributes['src'])){
             throw new \Exception("src attribute is required");
         }
 
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        return $this->input('image', $default, $attributes, ...$args); 
+        return static::input('image', $default, $attributes, ...$args); 
     }
 
-    function range(int $min, int $max, $default = null, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
+    static function range(int $min, int $max, $default = null, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['min'] = $min;
         $attributes['max'] = $max;
-        return $this->input('range', $default, $attributes, ...$args); 
+        return static::input('range', $default, $attributes, ...$args); 
     }
 
-    function tel(string $pattern, Array $attributes = [], ...$args){
+    static function tel(string $pattern, Array $attributes = [], ...$args){
         $attributes['patern'] = $pattern;
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('tel', null, $attributes, ...$args); 
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('tel', null, $attributes, ...$args); 
     }
 
-    function url(?string $default = null, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('url', $default, $attributes, ...$args); 
+    static function url(?string $default = null, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('url', $default, $attributes, ...$args); 
     }
 
-    protected function __label(string $id, string $placeholder, Array $attributes = [], ...$args){
+    static protected function label(string $id, string $placeholder, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
         $attributes['for'] = $id;
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass('label') : $this->getClass('label');
-        return $this->renderTag('label', $placeholder, $attributes);
-    }
-
-    function label(string $id, string $placeholder, Array $attributes = [], ...$args){;
-        return $this->add($this->__label($id, $placeholder, $attributes, ...$args));
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('label') : static::getClass('label');
+        return static::renderTag('label', $placeholder, $attributes);
     }
 
     // implementación especial 
-    function checkbox(?string $text = null,  bool $checked = false, Array $attributes = [], ...$args){
+    static function checkbox(?string $text = null,  bool $checked = false, Array $attributes = [], ...$args){
         $plain_attr = $checked ?  ['checked'] : [];
-        $attributes = array_merge($attributes, $args);
         $attributes['type']  = __FUNCTION__;
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        return $this->add($this->renderTag('input', $text, $attributes, $plain_attr, ...$args));
+        return static::renderTag('input', $text, $attributes, $plain_attr, ...$args);
     }
 
     // implementación especial 
-    function radio(?string $text = null,  bool $checked = false, Array $attributes = [], ...$args){
+    static function radio(?string $text = null,  bool $checked = false, Array $attributes = [], ...$args){
         $plain_attr = $checked ?  ['checked'] : [];
-        $attributes = array_merge($attributes, $args);
         $attributes['type']  = __FUNCTION__;
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        $value = '';
+        if (!empty($text)){
+            if (isset($args['id'])){
+                $attributes['id'] = $args['id'];
+            }
+
+            if (empty($attributes['id'])){
+                throw new \Exception("With radio and placeholder then id is required");
+            }
+
+            $value = static::label($attributes['id'], $text);
+        }
+
+        return static::renderTag('input', $value, $attributes, $plain_attr, ...$args);
+    }
+
+    static function color(?string $text = null, Array $attributes = [], ...$args){
+        $attributes = array_merge($attributes, $args);
+
+        $attributes['type']  = __FUNCTION__;
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $value = '';
         if (!empty($text)){
@@ -245,34 +262,16 @@ class Html
                 throw new \Exception("With radio and placeholder then id is required");
             }
 
-            $value = $this->__label($attributes['id'], $text);
+            $value = static::label($attributes['id'], $text);
         }
 
-        return $this->add($this->renderTag('input', $value, $attributes, $plain_attr));
+        return static::renderTag('input', $value, $attributes);
     }
 
-    function color(?string $text = null, Array $attributes = [], ...$args){
+    static function area(?string $default = null, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-
-        $attributes['type']  = __FUNCTION__;
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-
-        $value = '';
-        if (!empty($text)){
-            if (empty($attributes['id'])){
-                throw new \Exception("With radio and placeholder then id is required");
-            }
-
-            $value = $this->__label($attributes['id'], $text);
-        }
-
-        return $this->add($this->renderTag('input', $value, $attributes));
-    }
-
-    function area(?string $default = null, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->add($this->renderTag('textarea', $default, $attributes));
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::renderTag('textarea', $default, $attributes);
     }
 
     /*
@@ -285,11 +284,11 @@ class Html
             'Dogs' => ['spaniel' => 'Spaniel'],
         ])
     */
-    function select(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args)
+    static function select(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args)
     {
         $attributes = array_merge($attributes, $args);
         $attributes['placeholder'] = $placeholder;
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         // options
         $_opt = [];
@@ -313,45 +312,58 @@ class Html
     
         $opt_str = implode(' ', $_opt);
 
-        return $this->add($this->renderTag(__FUNCTION__, $opt_str, $attributes));
+        return static::renderTag(__FUNCTION__, $opt_str, $attributes);
     }
 
-    function inputButton(string $value, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass('__FUNCTION__') : $this->getClass(__FUNCTION__);
-        return $this->input('button', $value, $attributes, ...$args);
-    }
-
-    function submit(string $value, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('submit', $value, $attributes, ...$args);
-    }
-
-    function reset(string $value, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('reset', $value, $attributes, ...$args);
-    }
-
-    function search(Array $attributes  = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->input('search', null, $attributes, ...$args);
-    }
-
-    function fieldset(callable $closure, $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
-    }
-
-    function hidden(string $value, Array $attributes = [], ...$args){
-        return $this->input('hidden', $value, $attributes, ...$args);
-    }
-
-    function group(callable $closure, string $tag = 'div', Array $attributes = [], ...$args){
+    static function dataList(string $listName, Array $options, ?string $placeholder = null, ?string $label = '', Array $attributes = [], ...$args)
+    {
         $attributes = array_merge($attributes, $args);
+        $attributes['placeholder'] = $placeholder;
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['list'] = $listName;
 
-        $f = new Form();
-        call_user_func($closure, $f);
-        
-        return $this->add($f->render($tag, $attributes));
+        // options
+        $_opt = [];
+        foreach ($options as $val){
+            $_opt[] = "<option value=\"$val\"/>";
+        }
+    
+        $opt_str = implode(' ', $_opt);
+
+        $datalist = static::renderTag(__FUNCTION__, $opt_str, ['id' => $listName]);
+        $label_t  = !empty($label) ? static::label($attributes['id'], $label) : '';
+        $input    = static::input('list', null, $attributes, ...$args);
+
+        return $label_t . $input . $datalist;
+    }
+
+    static function inputButton(string $value, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('__FUNCTION__') : static::getClass(__FUNCTION__);
+        return static::input('button', $value, $attributes, ...$args);
+    }
+
+    static function submit(string $value, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('submit', $value, $attributes, ...$args);
+    }
+
+    static function reset(string $value, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('reset', $value, $attributes, ...$args);
+    }
+
+    static function search(Array $attributes  = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::input('search', null, $attributes, ...$args);
+    }
+
+    static  function fieldset(Array $content, $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function hidden(string $value, Array $attributes = [], ...$args){
+        return static::input('hidden', $value, $attributes, ...$args);
     }
 
        /*
@@ -373,87 +385,80 @@ class Html
         if (isset(static::$macros[$method])){
             return static::$macros[$method](...$args);
         }
+
+        return static::renderTag($method, '', [], [], ...$args);
     }
 
-    function insert(string $html){
-        return $this->add($html);
+    static function div(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    // alias for insert()
-    function string(string $text){
-        return $this->insert($text);
+    static function header(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function div(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function nav(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function header(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function main(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function nav(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function section(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function main(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function article(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function section(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function aside(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function article(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function details(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function aside(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function summary(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function details(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    function mark(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function summary(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function picture(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function mark(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function figure(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function picture(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function figcaption(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function figure(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    function time(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function figcaption(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function footer(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function time(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function ol(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function footer(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function ul(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function ol(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
-    }
-
-    function ul(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
-    }
-
-    function table(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function table(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
     /*
@@ -462,136 +467,116 @@ class Html
         <cite><a href="http://www-cs-faculty.stanford.edu/~uno/faq.html">Donald Knuth: Notes on the van Emde Boas construction of priority deques: An instructive use of recursion, March 29th, 1977</a>
         </blockquote>
     */
-    function blockquote(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function blockquote(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function q(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function q(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function cite(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function cite(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function code(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, __FUNCTION__, $attributes, ...$args);
+    static function code(Array $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function _p(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, 'p', $attributes, ...$args);
+    static function _p(Array $content, $attributes = [], ...$args){
+        return static::group($content, 'p', $attributes, ...$args);
     }
 
-    function _span(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, 'span', $attributes, ...$args);
+    static function _span(Array $content, $attributes = [], ...$args){
+        return static::group($content, 'span', $attributes, ...$args);
     }
 
-    function button(callable $closure, $attributes = [], ...$args){
-        return $this->group($closure, 'span', $attributes, ...$args);
+    static function button(Array $content, $attributes = [], ...$args){
+        return static::group($content, 'span', $attributes, ...$args);
     }
 
-    function p(string $text, Array $attributes = [], ...$args){
+    static function p(?string $text = '', Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return $this->add($this->renderTag(__FUNCTION__, $text, $attributes));
+        return static::renderTag(__FUNCTION__, $text, $attributes);
     }
     
-    function span(string $text, Array $attributes = [], ...$args){
+    static function span(string $text, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return $this->add($this->renderTag(__FUNCTION__, $text, $attributes));
+        return static::renderTag(__FUNCTION__, $text, $attributes);
     }
 
-    function legend(string $text, Array $attributes = [], ...$args){
+    static function legend(string $text, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return $this->add($this->renderTag(__FUNCTION__, $text, $attributes));
+        return static::renderTag(__FUNCTION__, $text, $attributes);
     }
 
-    function strong(string $text, Array $attributes = [], ...$args){
+    static function strong(string $text, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return $this->add($this->renderTag(__FUNCTION__, $text, $attributes));
+        return static::renderTag(__FUNCTION__, $text, $attributes);
     }
 
-    function em(string $text, Array $attributes = [], ...$args){
+    static function em(string $text, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return $this->add($this->renderTag(__FUNCTION__, $text, $attributes));
+        return static::renderTag(__FUNCTION__, $text, $attributes);
     }
 
-    function h(int $size, string $text, Array $attributes = [], ...$args){
+    static function h(int $size, string $text, Array $attributes = [], ...$args){
         if ($size <1 || $size > 6){
             throw new \InvalidArgumentException("Incorrect size for H tag. Given $size. Expected 1 to 6");
         }
 
         $attributes = array_merge($attributes, $args);
-        return $this->add($this->renderTag('h'. (string) $size, $text, $attributes, ...$args));
+        return static::renderTag('h'. (string) $size, $text, $attributes, ...$args);
     }
 
-    function h1(string $text, Array $attributes = [], ...$args){
-        return $this->h(1, $text, $attributes, ...$args);
+    static function h1(string $text, Array $attributes = [], ...$args){
+        return static::h(1, $text, $attributes, ...$args);
     }
 
-    function h2(string $text, Array $attributes = [], ...$args){
-        return $this->h(1, $text, $attributes, ...$args);
+    static function h2(string $text, Array $attributes = [], ...$args){
+        return static::h(2, $text, $attributes, ...$args);
     }
 
-    function h3(string $text, Array $attributes = [], ...$args){
-        return $this->h(1, $text, $attributes, ...$args);
+    static function h3(string $text, Array $attributes = [], ...$args){
+        return static::h(3, $text, $attributes, ...$args);
     }
 
-    function h4(string $text, Array $attributes = [], ...$args){
-        return $this->h(1, $text, $attributes, ...$args);
+    static function h4(string $text, Array $attributes = [], ...$args){
+        return static::h(4, $text, $attributes, ...$args);
     }
 
-    function h5(string $text, Array $attributes = [], ...$args){
-        return $this->h(1, $text, $attributes, ...$args);
+    static function h5(string $text, Array $attributes = [], ...$args){
+        return static::h(5, $text, $attributes, ...$args);
     }
 
-    function h6(string $text, Array $attributes = [], ...$args){
-        return $this->h(1, $text, $attributes, ...$args);
+    static function h6(string $text, Array $attributes = [], ...$args){
+        return static::h(6, $text, $attributes, ...$args);
     }
 
-    function br(Array $attributes = [], ...$args){
+    static function br(Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return $this->add($this->renderTag(__FUNCTION__, null, $attributes));
+        return static::renderTag(__FUNCTION__, null, $attributes);
     }
 
-    function img(string $src, Array $attributes = [], ...$args){
+    static function img(string $src, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
         $attributes['src'] = $src;
-        return $this->add($this->renderTag('img', null, $attributes)); 
+        return static::renderTag('img', null, $attributes); 
     }
 
-    // NO usar..........  hace un desastre volviendo a incluid head
+    /*
+        sudo apt-get install php7.4-xml  php8.1-xml etc
+    */
     static function beautifier(string $html){
-        $config = array(
-        'indent'         => true,
-        'output-xhtml'   => true,
-        'wrap'           => 200);
-    
-        // Tidy
-        $tidy = new \tidy;
-        $tidy->parseString($html, $config, 'utf8');
-        $tidy->cleanRepair();
+        libxml_use_internal_errors(true);
 
-        ob_start();
-        echo $tidy;
-        return ob_get_clean();
-    }
+        $dom = new \DOMDocument();
 
-    function render(?string $enclosingTag = '', Array $attributes = [], ...$args) : string {
-        $ret = $this->html;
+        $dom->preserveWhiteSpace = false;
+        $dom->loadHTML($html);
+        $dom->formatOutput = true;
 
-        if (isset($attributes['class']) && isset($args['class'])){
-            $attributes['class'] .=  ' ' . $args['class'];
-            unset($args['class']);
-        }
-
-        $attributes = array_merge($attributes, $args);
-
-        if (!empty($enclosingTag)){
-            $att = $this->attributes($attributes);
-            $ret = "<$enclosingTag $att>{$ret}</$enclosingTag>";
-        }
-        
-        return $this->pretty ? static::beautifier($ret) : $ret;
+        return($dom->saveHTML());
     }
 
 }
