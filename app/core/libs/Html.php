@@ -27,6 +27,8 @@ class Html
         "url"            => "form-control",
         "area"           => "form-control",
 
+        "range"          => "form-range",
+
         "select"         => "form-select",
 
         "checkbox"       => "form-check-input" ,
