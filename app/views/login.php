@@ -62,53 +62,48 @@
 		<?php
 
 		use simplerest\core\libs\Bt5Form;
+		use simplerest\core\libs\Tag;
 
-		$f = new Bt5Form();
+		Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-		echo $f
+		Bt5Form::setIdAsName();
+	
 
-		->div(function($html){
-			$html->string('<a href="facebook/login" class="btn btn-primary w-100"><i class="fa fa-facebook"></i> Sign in with <b>Facebook</b></a>');
-			$html->string('<a href="google/login" class="btn btn-danger w-100"><i class="fa fa-google"></i> Sign in with <b>Google</b></a>');
-		}, class:"social-btn")
+		echo tag('div')->content([
+			'<a href="facebook/login" class="btn btn-primary w-100"><i class="fa fa-facebook"></i> Sign in with <b>Facebook</b></a>',
+			'<a href="google/login" class="btn btn-danger w-100"><i class="fa fa-google"></i> Sign in with <b>Google</b></a>'
+		])->class("social-btn");
 
-		->insert('<div class="or-seperator"><i>or</i></div>')
+		echo '<div class="or-seperator"><i>or</i></div>';
 
-		->div(function($form){
-			$form->span('<i class="fas fa-user"></i>', [
+		echo tag('div')->content([
+			Bt5Form::span('<i class="fas fa-user"></i>', [
 				'class' => 'input-group-text'
-			]);
-			$form->text(
+			]),
+
+			Bt5Form::text(
 				id:"email_username",
 				placeholder:"email o username",
 				required:"required"
-			);
-		}, [
-			"class" => "input-group mb-3"
-		])
+			)
+		])->class("input-group mb-3");
 
-		->inputGroup(function($form){
-			$form->span('<i class="fas fa-key"></i>', [
+		echo tag('inputGroup')->content([
+			Bt5Form::span('<i class="fas fa-key"></i>', [
 				'class' => 'input-group-text'
-			]);
+			]),
 
-			$form->password(
+			Bt5Form::password(
 				id:"password", 
 				placeholder:"Password",
 				required:"required"
-			);
+			),
 
-			$form->insert('
-				<span class="input-group-text" onclick="password_show_hide();">
-				<i class="fas fa-eye" id="show_eye"></i>
-				<i class="fas fa-eye-slash d-none" id="hide_eye"></i>
-				</span>');
-		}, [
-			"class" => "mb-3"
-		])
-
-
-		->render(action:"#", onsubmit:"return false;");
+			'<span class="input-group-text" onclick="password_show_hide();">
+			<i class="fas fa-eye" id="show_eye"></i>
+			<i class="fas fa-eye-slash d-none" id="hide_eye"></i>
+			</span>'	
+		])->class("mb-3");
 		?>		
 
 		<div style="margin-bottom:1em;">
