@@ -7058,32 +7058,80 @@ class DumbController extends Controller
     function test_tag(){
         Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
+        //echo Bt5Form::span(text:'Hi');
          
-       //echo tag('text')->name('bozzolo')->placeholder('Su apellido');
+        //echo tag('text')->name('bozzolo')->placeholder('Su apellido');
+
+        //echo tag('p');
+
+        // echo Bt5Form::group(
+        //     content:[
+        //         Bt5Form::span('@', [
+        //             'id'    => 'basic-addon',
+        //             'class' => 'input-group-text'
+        //         ]),
+        //         Bt5Form::text('nombre', [
+        //             "placeholder" => "Username"
+        //         ])
+        //     ],
+        //     tag: 'div',
+        //     class:"input-group mb-3"
+        // );
+
+        // echo Bt5Form::div(
+        //     content:[
+        //         Bt5Form::span('@', [
+        //             'id'    => 'basic-addon',
+        //             'class' => 'input-group-text'
+        //         ]),
+        //         Bt5Form::text('nombre', [
+        //             "placeholder" => "Username"
+        //         ])
+        //     ],
+        //     class:"input-group mb-3"
+        // );
+
+        //Bt5Form::pretty();
+
+        //echo Bt5Form::p();
+
+        // echo Bt5Form::div(
+        //     content:[
+        //         Bt5Form::span('@', [
+        //             'id'    => 'basic-addon',
+        //             'class' => 'input-group-text'
+        //         ]),
+
+        //         Bt5Form::div(content:[
+        //             Bt5Form::text('nombre', [
+        //                 "placeholder" => "Username"
+        //             ]),
+        //             Bt5Form::p()
+        //         ], class:'my_class')
+        //     ],
+        //     class:"input-group mb-3"
+        // );
+
 
         // echo tag('select')->name('sexo')->options([
         //     'varon' => 1,
         //     'mujer' => 2
         // ])->default(1)->placeholder('Su sexo')->class('my-3');
 
-        // echo tag('div')->closure(function($form){
-        //     $form->span('@', [
+        // echo tag('div')->content([
+        //     Bt5Form::span('@', [
         //         'id'    => 'basic-addon',
         //         'class' => 'input-group-text'
-        //     ]);
-        //     $form->text('nombre', [
+        //     ]),
+        //     Bt5Form::text('nombre', [
         //         "placeholder" => "Username"
-        //     ]); 
-        // })->class("input-group mb-3");
+        //     ])
+        // ])->class("input-group mb-3");
 
-        echo tag('div')->closure(function($form){
-            $form->insert(
-                tag('span')->text('@')->id('basic-addon')->class('input-group-text')
-            );
-            $form->insert(
-                tag('text')->name('nombre')->placeholder('Username')
-            );
-        })->class("input-group mb-3");
+        echo tag('div')->content([
+            tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+            tag('text')->name('nombre')->placeholder('Username')
+        ])->class("input-group mb-3");
     }
 
 }   

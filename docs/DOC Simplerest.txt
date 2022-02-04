@@ -7853,9 +7853,9 @@ En caso de querer detener la ejecución de todas las colas, no envie el nombre d
 <-- se implementará el comando "queue stop [ name ]"
 
 
-# HTML & Form helper
+# HTML & Form builder
 
-El framework provee de las clases HTML y Form para la construcción programática de HTML. La clase Form extiende a la clase HTML incluyendo controles para manejo de formularios (input, select, checkbox, etc).
+El framework provee de las clases HTML, Form y Bt5Form para la construcción programática de HTML. 
 
 Ej:
 	 

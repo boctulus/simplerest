@@ -98,10 +98,6 @@
 				required:"required"
 			);
 
-			// $form->span('<i class="fas fa-key"></i>', [
-			// 	'class' => 'input-group-text'
-			// ]);
-
 			$form->insert('
 				<span class="input-group-text" onclick="password_show_hide();">
 				<i class="fas fa-eye" id="show_eye"></i>

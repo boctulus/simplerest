@@ -36,10 +36,7 @@ class Tag
     }
 
     function render(){
-        $b = new (static::$builder)();
-
-        $t = $b->{$this->name}(...$this->props);
-        return $t->render(null);
+        return static::$builder::{$this->name}(...$this->props);
     }
 
     function __toString()
