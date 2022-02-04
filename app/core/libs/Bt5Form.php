@@ -8,26 +8,37 @@ class Bt5Form extends Form
 {   
     // por qué $classes no puede estar acá?
 
-    function __construct() { }
-
-    function switch(string $text, bool $checked = false, Array $attributes = [], ...$args){
+    /*
+        Atributos aplican al checkbox y no al div
+    */
+    static function switch(string $text, bool $checked = false, Array $attributes = [], ...$args){
         return 
             
-            $this->div(function($html) use ($text, $checked, $attributes, $args){
-                $html->checkbox($text, $checked, $attributes, ...$args);
-            },  [
-                'class' => 'form-check form-switch'
-            ]);
+            static::div([
+                static::checkbox($text, $checked, $attributes, ...$args)
+            ],  
+                class:'form-check form-switch'
+            );
     }
 
-    function inputGroup(callable $closure, Array $attributes = [], ...$args){     
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->div($closure, $attributes, ...$args);
+    static function inputGroup(Array $content, Array $attributes = [], ...$args){     
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
     }
 
-    function checkGroup(callable $closure, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $this->getClass(__FUNCTION__) : $this->getClass(__FUNCTION__);
-        return $this->div($closure, $attributes, ...$args);
+    static function checkGroup(Array $content, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    /*
+        Floating labels
+
+        https://getbootstrap.com/docs/5.0/forms/floating-labels/
+    */
+    static function formFloating(Array $content, Array $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
     }
    
 }
