@@ -31,7 +31,7 @@ class Tag
     }
 
     function __call($method, $args){
-        $this->props[$method] = $args[0];
+        $this->props[$method] = $args[0] ?? '';
         return $this;
     }
 
