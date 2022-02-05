@@ -7858,89 +7858,133 @@ En caso de querer detener la ejecución de todas las colas, no envie el nombre d
 El framework provee de las clases HTML, Form y Bt5Form para la construcción programática de HTML. 
 
 Ej:
-	 
-	$f = new Form();
 
-	$f->h3("Datos");
+	echo Bt5Form::p(text:"Hola mundo cruel");
+	echo Bt5Form::tag(type:'hr', style:'color:cyan');
+	echo Bt5Form::color(name:'my_color', text:'Color', id:'c1');
+
+O usando el helper tag(),
+
+    echo tag('p')->text("Hola mundo cruel");
+	echo tag('hr')->style('color:cyan');
+	echo tag('color')->name('my_color')->text('Color')->id('c1');
 	
-	$f->span('@', [
-		'id'    => 'basic-addon',
-		'class' => 'input-group-text'
-	]);
-	
-	$f->text('nombre', null, [
-		"placeholder" => "Username"
-	]);
+Se puede ver que para renderizar el tag <hr> en el primer caso se usa una sintáxis un poco distinta y esto es porque se da el caso de que no existe el método correspondiente en la clase Bt5Form o las clases de las que hereda. En estos casos siempre que el tag no deba anidar otros se puede usar Form::tag() o en este caso Bt5Form::tag()
 
-	$f->select('sexo', 'varon', [
-		'varon' => 1,
-		'mujer' => 2
-	]);
+Lo anterior renderizará algo como:
 
-	$f->img(assets('img/personal_data.png'), ['id' => 'i1'])
+	<p>Hola mundo cruel</p>
+	<hr style="color:cyan">
 
-	echo $f->render();
+	<input name="my_color" id="my_color" type="color" class="form-control form-control-color" colorpick-eyedropper-active="true">
+	<label for="c1" class="form-label">Color</label>
 
 
 # Anidamiento de etiquetas
 
-Hay varias etiquetas de HTML que permiten anidamientos y en el form helper todas están implementadas con group()
+Hay varias etiquetas de HTML que permiten anidamientos y en el form builder todas están implementadas con group()
 
 Ej:
 
-	$f = new Form();
-
-	$f->div(function($form){
-		$form->span('@', [
-			'id'    => 'basic-addon',
-			'class' => 'input-group-text'
-		]);
-		$form->text('nombre', null, [
-			"placeholder" => "Username"
-		]);
-	}, [
-		"class" => "input-group mb-3"
-	]);
+	echo Bt5Form::group(content:[
+        tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+        tag('text')->name('nombre')->placeholder("Username")
+    ],
+		tag:"div"
+        class:"input-group mb-3"
+    );
 
 o
 
-	$f->group(function($form){
-		$form->span('@', [
-			'id'    => 'basic-addon',
-			'class' => 'input-group-text'
-		]);
-		$form->text('nombre', null, [
-			"placeholder" => "Username"
-		]);
-	}, 'div', [
-		"class" => "input-group mb-3"
-	]);
-	
-En este caso, dentro del <div> se incluyen un <span> y un <input type="text">
+	echo Bt5Form::div(content:[
+        tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+        tag('text')->name('nombre')->placeholder("Username")
+    ],
+        class:"input-group mb-3"
+    );
 
-Por simplicidad, <span> y <tag> se implementaron de forma simple.
+o
+
+	echo tag('div')->content([
+        tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+        tag('text')->name('nombre')->placeholder("Username")
+    ])->class("input-group mb-3")
+
+o
+
+	echo tag('inputGroup')->content([
+        tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+        tag('text')->name('nombre')->placeholder("Username")
+    ])->class("mb-3")
+
+
+Por simplicidad, <span> y <tag> se implementaron de forma simple y no usando group()
+
+Sin embargo como <p> o <span> pueden incluir otros tags por lo cual la implementación más genérica es con group() y en caso de querer solo incluir texto, será algo como:
+
+	echo Bt5Form::group(content:[
+		"Adios mundo cruel"
+	], tag:'p');
+
+O
+	echo tag('group')->content([
+		"Adios mundo cruel"
+	], tag:'p');
+
+
+Para tags de uso común ya se proveen atajos: _p, _span, etc
+
+# Select
 
 Ej:
 
-	$f->p("Adios mundo cruel")
+	Bt5Form::select(name:'size', options:['L' => 'Large', 'S' => 'Small'], placeholder:Pick a size...']);	
 
-Sin embargo es importante notar que tags de uso muy frecuente como <p> o <span> puedenn incluir otros tags por lo cual la implementación más genérica es con group() y en caso de querer solo incluir texto, será algo como:
-
-	$f->group(function($html){
-		$html->string("Adios mundo cruel");
-	}, 'p');
-
-Para tags de uso común se proveen atajos: _p, _span, etc
+Además acepta un agrupamiento de opciones en "secciones" o "categorías".
 
 Ej:
 
-	$f->_p(function($html){
-		$html->string("Adios mundo cruel");
-	});
+	echo Bt5Form::select(name:'comidas', options:[
+        'platos' => [
+            'Pasta' => 'pasta',
+            'Pizza' => 'pizza',
+            'Asado' => 'asado' 
+        ],
+    
+        'frutas' => [
+            'Banana' => 'banana',
+            'Frutilla' => 'frutilla'
+        ]
+    ],         
+    placeholder:'Tu comida favorita',
+	class:'my-3');
 
-Debe considerarse sin embargo que los "empty tags" son la excepción más que la regla habiendo al presente solo 14.
+o
 
-https://developer.mozilla.org/en-US/docs/Glossary/Empty_element
+	echo tag('select')
+    ->name('comidas')
+    ->placeholder('Tu comida favorita') 
+    ->options([
+        'platos' => [
+            'Pasta' => 'pasta',
+            'Pizza' => 'pizza',
+            'Asado' => 'asado' 
+        ],
+
+        'frutas' => [
+            'Banana' => 'banana',
+            'Frutilla' => 'frutilla'
+        ]
+    ])->class('my-3');
+
+
+Para "select múltiple" solo agregue 
+
+	->multiple('multiple')
+
+o simplemente
+
+	->multiple()
 
 
 # El tag input
@@ -7949,102 +7993,44 @@ Hay distintos tipos de <input> y cada uno tiene su alias que corrsponde al type 
 
 Ej:
 
-	$form->text('nombre', null, [
-        "placeholder" => "Username"
-    ]);
+	Bt5Form::text(id:'usuario', placeholder:"Username");
+
+o
+
+	tag('text')->id('usuario')->placeholder('Username');
 
 Hay un algunas de exceptiones:
 
-	type="time" 	es inputTime() 
-	type="button"	es inputButton()
-	type="datetime_local" es datetimeLocal()
+	type="time" 			es inputTime() 
+	type="button"			es inputButton()
+	type="datetime_local"	es datetimeLocal()
 
 La razón de las excepciones son colisiones de nombres como sucede con button() ya que hace referencia a <button> y por tanto no puede usarse para <input type="button">
 
 
 # Id o name
 
-Si bien los atributos "id" y "name" son imprescindibles en algunos casos, en general pueden omitirse y por esta razón se minimiza la ogligatoridad.
+Se puede generar una copia del valor del atributo "name" en "id" para evitar repetir:
+
+	Bt5Form::setIdAsName();
+
+
+# Métodos genérico tag()
+
+Hay muchísimos tags de HTML y si alguno no está contemplado siempre es posible usar el métodos tag() para conseguir el resultado deseado.
 
 Ej:
 
-	img(string $src, Array $attributes = [])
-
-Si se quisiera setear el id, se podría enviar en $attributes
-
-	$f->img('http://domain.com/some_image.jpg', ['id' => 'i50'])
-
-
-Para el caso de tags de formulario su uso si hace obligado pero se da la opción de que el valor enviado sea tratado como "name" o "id" en la mayoría de los casos.
-
-Ej:
-
-	$f = new Form();
-
-	$f->select('sexo', 'varon', [
-		'varon' => 1,
-		'mujer' => 2
-	]);
-
-	$f->label("edad", "Edad");
-	$f->range('edad', 0, 99, 10);
-
-	$f->radio("civil", "casado");
-	$f->radio("civil", "soltero");
-
-	$f->checkbox("hijos", "Hijos", true);
-
-Por defecto se asume que se envian como "name" pero:
-
-	/*
-		Se usará el name como id
-	*/
-	$f->useIdAsName(true);
-
-Y
-
-	/*
-		Se usará el name como name y id
-	*/
-	$f->setIdAsName(true);
-
-
-# Métodos genéricos tag() e insert()
-
-Hay muchísimos tags de HTML y si alguno no está contemplado siempre es posible usar los métodos tag() e insert() para conseguir el resultado deseado.
-
-	tag(string $type, ?string $name = null, ?string $value = '', Array $attributes = [], Array $plain_attr = []);
-	insert(string $html)
-
-Ej:
-
-	$f->tag('hr');
-
-o 
-	
-	$f->insert('<hr>');
-
-y para un tag más complejo:
-
-	$f->tag('input', 'first_name', null, [
-		'type' => 'text'
-	]);
+	Bt5Form::tag('hr')
 
 o
 
-	$f->insert('<input type="text" name="first_name/>');
-
-
-Una diferencia importante es que insert() permite insertar cualquier cosa y por ende puede ser un trozo de html que incluya varias etiquetas.
-
-Ej:
-
-	$f->insert('<u>Just</u> use <a href="some_url">Google</a>');
+	tag('hr');
 
 
 # Macros
 
-La clase Html y Form soportan macros, es decir se pueden definir tags propios y estos son luego renderizados al llamar a un tag con ese nombre. El método es estático.
+La clase Html y Form soportan macros, es decir se pueden definir tags propios y estos son luego renderizados al llamar a un tag con ese nombre. 
 
 Ej:
 
@@ -8055,60 +8041,26 @@ Ej:
 
 	echo Html::salutor("Isabel", "bella");
 
-Mediante el uso de insert() es posible renderizar ese custom tag donde se desee.
-
-Ej:
-
-	/*	
-		Defino el macro en algún lado
-	*/
-
-	Form::macro('salutor', function($name, $adj)
-	{
-		return "<span/>Hello $adj $name</span>";
-	});
-
-	
-	$f = new Form();
-
-	$f->h(3, "Datos");
-	
-	$f->tag('hr');
-
-	$f->label("edad", "Edad");
-	$f->range('edad', 0, 99, 10);
-
-	$f->insert(Form::salutor("Isabel", "bella"));
-	
-	echo $f->render();
-
-
-# Embellecer el HTML
-
-Se puede activar / desactivar el formateo del HTML generado con el método prety()
-
 
 # La clase Tag
 
 Es posible usar métodos encadenados para definir los atributos en vez de los parámetros de los métodos de las clases Html y derivadas (Form, Bt5Form, etc).
 
-	$form->text('nombre', null, [
-		"placeholder" => "Username"
-	]);
+	echo tag('span')->text('some text')->style('color:red');
 
 Renderiza algo como
 
-	<input type="text" name="nombre" placeholder="Username" />
+	<span style="color:red">some text</span>
 
-Y se puede obtener el mismo string haciendo:
 
-	tag('color')->name('my_color')->text('Color')->id('c1');
+Lo que sigue son equivalentes:
 
-Ahora hay que forme parte del "documento" HTML que estamos construyendo y para eso usamos Form::insert()
+	Bt5Form::range('edad', 0, 99, 10, ['class' => 'my-3'])
 
-	$f->insert(
-		tag('color')->name('my_color')->text('Color')->id('c1')
-	);
+	Bt5Form:range(name:'edad', min:0, max:99, default:10, class:'my-3')
+
+    tag('range')->name('edad')->min(0)->max(99)->default(10)->class('my-3')
+
 
 Importante:
 
@@ -8118,44 +8070,96 @@ Ej:
 
 	Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-Realmente cualquier tag puede ser renderizado con la ayuda de la clase Tag
-
-	tag('select')->name('sexo')->options([
-		'varon' => 1,
-		'mujer' => 2
-	])->default(1)->placeholder('Su sexo')->class('my-3');
-
-Inclusive los closures:
-
-	tag('div')->closure(function($form){
-		$form->span('@', [
-			'id'    => 'basic-addon',
-			'class' => 'input-group-text'
-		]);
-		$form->text('nombre', null, [
-			"placeholder" => "Username"
-		]); 
-	})->class("input-group mb-3");
-
-El ejemplo anterior podría hacer uso de Tag en los tags anidados también:
-
-	tag('div')->closure(function($form){
-		$form->insert(
-			tag('span')->text('@')->id('basic-addon')->class('input-group-text')
-		);
-		$form->insert(
-			tag('text')->name('nombre')->placeholder('Username')
-		);
-	})->class("input-group mb-3");
-
 Nota:
 
-	$f->range('edad', 0, 99, 10, ['class' => 'my-3'])
+	Las distintas formas de llamar al form builder se pueden combinar.
 
-Puede transformarse en
+Ej:
 
-    $f->insert(tag('range')->name('edad')->min(0)->max(99)->default(10)->class('my-3'))
+	<?php
 
-En PHP 8,
+	use simplerest\core\libs\Bt5Form; 
+	use simplerest\core\libs\Tag;
 
-    $f->range(name:'edad', min:0, max:99, default:10, class:'my-3')
+
+	Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
+
+	Bt5Form::macro('salutor', function($name, $adj)
+	{
+		return "<span/>Hello $adj $name</span>";
+	});
+
+	Bt5Form::setIdAsName();
+
+	?>
+
+	<div class = "row mt-5">
+		<div class = "col-6 offset-3">
+
+		<?php 
+
+		echo tag('h3')->text("Datos")->class('mb-3');
+
+		echo Bt5Form::dataList(listName:'datalistOptions', id:'occupation', options:[
+			'programador',
+			'software engenierer'
+		], placeholder:'Escriba aquí', label:'Ocupación');
+
+		/*
+			El tag 'hr' ni siquiera está definido en la clase Html
+		*/
+		echo tag('hr')->style('color:cyan');
+
+		echo tag('p')->text("Hola mundo cruel");
+
+		echo tag('color')->name('my_color')->text('Color')->id('c1');
+		
+
+		echo Bt5Form::div(content:[
+			tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+			tag('text')->name('nombre')->placeholder("Username")
+		],
+			class:"input-group mb-3"
+		);
+
+		echo Bt5Form::select(name:'sexo', options:[
+			'varon' => 1,
+			'mujer' => 2
+		], default:1, placeholder:'Su sexo', attributes:['class' => 'my-3']);
+
+		echo tag('label')->name("edad")->text("Edad");
+		echo Bt5Form::range(name:'edad', min:0, max:99, default:10, class:'my-3');
+
+		echo tag('checkGroup')->content([
+			Bt5Form::radio(name:'civil', text:"soltero", checked:true, id:'soltero')
+		])->class('my-3');
+
+		echo tag('checkGroup')->content([
+			Bt5Form::radio(name:'civil', text:"casado", checked:true, id:'casado')
+		])->class('my-3');
+
+		
+		echo Bt5Form::switch(id:"hijos", text:"Hijos", checked:true);
+
+		echo Bt5Form::url(default:"https://www.linkedin.com/in/pablo-bozzolo/", class:"mt-3");
+
+		echo Bt5Form::label(id:"comment", placeholder:"Algo que desea agregar:", class:'mt-3');
+		echo Bt5Form::area(id:'comment', default:'bla bla', class:'my-3');
+
+		echo Bt5Form::inputButton(id:"comprar", value:"Comprar");
+		echo Bt5Form::reset(id:"limpiar", value:"Limpiar", class:'mx-3');
+		echo Bt5Form::submit(id:"enviar", value:"enviar");
+
+		echo Bt5Form::br();
+
+		echo tag('img')->src(assets('img/personal_data.png'))->id('i1')->class('img-fluid');
+
+		echo Bt5Form::br();
+
+		echo Bt5Form::salutor("Isabel", "bella"); 
+		echo ' ';
+		echo Bt5Form::link_to(href:"www.solucionbinaria.com", anchor:'SolucionBinaria .com', class:'mb-3 text-success');
+
+		?>
+		</div>
+	</div>
