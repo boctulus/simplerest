@@ -605,18 +605,11 @@ class Html
     }
 
     /*
-        sudo apt-get install php7.4-xml  php8.1-xml etc
+        https://github.com/vanilla/htmlawed
     */
-    static function beautifier(string $html){
-        libxml_use_internal_errors(true);
-
-        $dom = new \DOMDocument();
-
-        $dom->preserveWhiteSpace = false;
-        $dom->loadHTML($html);
-        $dom->formatOutput = true;
-
-        return($dom->saveHTML());
+    static function beautifier(string $html){  
+        $config = ['tidy'=>1];
+        return htmLawed($html, $config);;
     }
 
 }
