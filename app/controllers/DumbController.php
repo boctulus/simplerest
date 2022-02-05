@@ -40,7 +40,8 @@ use simplerest\core\libs\JobQueue;
 use simplerest\core\libs\Task;
 
 use simplerest\core\libs\Form;
-use simplerest\core\libs\Bt5Form; 
+use simplerest\core\libs\Bt5Form;
+use simplerest\core\libs\Html;
 use simplerest\core\libs\Tag;
 
 
@@ -7091,8 +7092,6 @@ class DumbController extends Controller
         //     class:"input-group mb-3"
         // );
 
-        //Bt5Form::pretty();
-
         //echo Bt5Form::p();
 
         // echo Bt5Form::div(
@@ -7128,10 +7127,12 @@ class DumbController extends Controller
         //     ])
         // ])->class("input-group mb-3");
 
-        echo tag('div')->content([
+        echo Html::beautifier(
+            tag('div')->content([
             tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
             tag('text')->name('nombre')->placeholder('Username')
-        ])->class("input-group mb-3");
+        ])->class("input-group mb-3")
+        );
     }
 
 }   
