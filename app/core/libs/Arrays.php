@@ -17,6 +17,14 @@ class Arrays
         return NULL;
     }
 
+    static function array_value_first(array $arr) {
+        foreach($arr as $val) {
+            return $val;
+        }
+        return NULL;
+    }
+
+
     /**
      * shift
      *
@@ -51,9 +59,11 @@ class Arrays
  
     static function is_assoc(array $arr)
     {
-        foreach(array_keys($arr) as $key)
-		if (!is_int($key)) return TRUE;
-	        return FALSE;
+        foreach(array_keys($arr) as $key){
+            if (!is_int($key)) return true;
+	            return false; 
+        }
+		
     }
 
     /**
