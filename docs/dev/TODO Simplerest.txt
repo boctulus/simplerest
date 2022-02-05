@@ -2,7 +2,21 @@
 
 [ Front ]
 
-- Crear FormBuilder
+- Considerar Alpine Js como alternativa a VueJs ... y como complemento para el Form Builder como se usa en Laravel.
+
+"The syntax is borrowed from Vue and Angular directive. That means it will feel familiar if you’ve worked with those before. Alpine.js is not designed to build SPAs, but rather enhance your templates with a little bit of JavaScript."
+
+"It’s like a replacement for jQuery and JavaScript, but with declarative rendering"
+
+https://lightit.io/blog/when-to-use-alpine-js/
+
+
+Es posible usar Alpine Js con Vue Js
+
+https://laracasts.com/discuss/channels/vue/alpinejs-interfieres-with-vuejs
+
+
+- FormBuilder: agregar validaciones..... o referenciar las del Schema quizás referenciando al modelo
 
   class SongForm extends Form
   {
@@ -166,7 +180,7 @@ https://softwareengineering.stackexchange.com/questions/171508/php-file-put-cont
 
 Para cache lo mejor sería usar PHP FAST CACHE que,.... soporta varios drivers incluso REDIS
 
-https://www.phpfastcache.com/  <---------
+https://www.phpfastcache.com/  <--------- 
 
 
 - Implementar algo como la "Transients API" de WP que permite guardar claves-valor usando IN-MEMORY STORAGE (Memcached, quizás REDIS,...) y sino encuentra otra opción IN-DATABASE STORAGE.
