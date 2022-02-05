@@ -14,9 +14,18 @@
         $dotenv->load();
     }
 
-    /* Prevent XSS. */
-    $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
-    $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+    /*
+        El nivel de reporte de errores debería depender de si el modo es DEBUG o no
+    */
+
+    /* 
+        Prevent XSS.
+
+        https://benhoyt.com/writings/dont-sanitize-do-escape/
+        https://stackoverflow.com/questions/69207368/constant-filter-sanitize-string-is-deprecated    
+    */
+    $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     /* Helpers */
     $helper_dirs = [__DIR__ . '/../app/core/helpers', __DIR__ . '/../app/helpers'];
