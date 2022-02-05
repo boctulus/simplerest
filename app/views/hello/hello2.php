@@ -18,9 +18,47 @@ Bt5Form::setIdAsName();
 <div class = "row mt-5">
     <div class = "col-6 offset-3">
 
+    <!-- 
+    <select class="form-select">
+    <optgroup label="Picnic">
+      <option>Mustard</option>
+      <option>Ketchup</option>
+      <option>Relish</option>
+    </optgroup>
+    <optgroup label="Camping">
+      <option>Tent</option>
+      <option>Flashlight</option>
+      <option>Toilet Paper</option>
+    </optgroup>
+  </select> -->
+
     <?php 
 
     echo tag('h3')->text("Datos")->class('mb-3');
+
+    echo tag('select')
+    ->name('comidas')
+    ->placeholder('Tu comida favorita') 
+    ->options([
+        'platos' => [
+            'Pasta' => 'pasta',
+            'Pizza' => 'pizza',
+            'Asado' => 'asado' 
+        ],
+
+        'frutas' => [
+            'Banana' => 'banana',
+            'Frutilla' => 'frutilla'
+        ]
+    ])
+    ->multiple()
+    ->class('my-3');
+
+    echo Bt5Form::select(name:'sexo', options:[
+        'varon' => 1,
+        'mujer' => 2
+    ], default:1, placeholder:'Su sexo', attributes:['class' => 'my-3']);
+
 
     echo Bt5Form::dataList(listName:'datalistOptions', id:'occupation', options:[
         'programador',
@@ -34,7 +72,7 @@ Bt5Form::setIdAsName();
 
     echo tag('p')->text("Hola mundo cruel");
 
-	//echo tag('color')->name('my_color')->text('Color')->id('c1');
+	echo tag('color')->name('my_color')->text('Color')->id('c1');
 	
 
     echo Bt5Form::div(content:[
@@ -44,10 +82,7 @@ Bt5Form::setIdAsName();
         class:"input-group mb-3"
     );
 
-    echo Bt5Form::select(name:'sexo', options:[
-        'varon' => 1,
-        'mujer' => 2
-    ], default:1, placeholder:'Su sexo', attributes:['class' => 'my-3']);
+    //
 
     echo tag('label')->name("edad")->text("Edad");
     echo Bt5Form::range(name:'edad', min:0, max:99, default:10, class:'my-3');

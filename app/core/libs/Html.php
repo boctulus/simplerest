@@ -273,14 +273,26 @@ class Html
     }
 
     /*
-        Form::select('size', ['L' => 'Large', 'S' => 'Small'], null, ['placeholder' => 'Pick a size...']);
+        Form::select(name:'size', options:['L' => 'Large', 'S' => 'Small'], placeholder:Pick a size...']);
 
-        Debe aceptar un agrupamiento de opciones en "secciones" o "categorías"
+        Además acepta un agrupamiento de opciones en "secciones" o "categorías"
 
-        Form::select('animal',[
-            'Cats' => ['leopard' => 'Leopard'],
-            'Dogs' => ['spaniel' => 'Spaniel'],
-        ])
+        Form::select(name:'comidas', options:[
+        'platos' => [
+            'Pasta' => 'pasta',
+            'Pizza' => 'pizza',
+            'Asado' => 'asado' 
+        ],
+
+        'frutas' => [
+            'Banana' => 'banana',
+            'Frutilla' => 'frutilla'
+        ],         
+        placeholder:'Escoja su comida favoria');
+
+
+        Ver
+        http://paulrose.com/bootstrap-select-sass/
     */
     static function select(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args)
     {
@@ -288,28 +300,58 @@ class Html
         $attributes['placeholder'] = $placeholder;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        // options
-        $_opt = [];
+        $a2 = is_array(Arrays::array_value_first($options));
 
+        // options
         $got_selected = false;
-        foreach ($options as $opt => $val){
-            if ($val == $default){
-                $selected = 'selected';
-                $got_selected = true;
-            } else {
-                $selected = '';
+
+        if ($a2){
+            $groups = '';
+            foreach ($options as $grp){
+                $_opt  = [];
+                foreach ($grp as $opt => $val){
+                    if ($val == $default){
+                        $selected = 'selected';
+                        $got_selected = true;
+                    } else {
+                        $selected = '';
+                    }
+    
+                    $_opt[] = "<option value=\"$val\" $selected>$opt</option>";
+                }
+    
+                if (!empty($placeholder)){
+                    $selected = !$got_selected;
+                    $_opt = array_merge(['<option hidden="hidden" selected="selected">'.$placeholder.'</option>'], $_opt);
+                }
+            
+                $opt_str = implode(' ', $_opt);
+                $groups .= static::renderTag('optgroup', $opt_str, ['label' => $opt]);
             }
 
-            $_opt[] = "<option value=\"$val\" $selected>$opt</option>";
+            $opt_str = $groups;
+        } else {     
+            $_opt  = [];       
+            foreach ($options as $opt => $val){
+                if ($val == $default){
+                    $selected = 'selected';
+                    $got_selected = true;
+                } else {
+                    $selected = '';
+                }
+
+                $_opt[] = "<option value=\"$val\" $selected>$opt</option>";
+            }
+
+            if (!empty($placeholder)){
+                $selected = !$got_selected;
+                $_opt = array_merge(["<option $selected>$placeholder</option>"], $_opt);
+            }
+        
+            $opt_str = implode(' ', $_opt);
         }
 
-        if (!empty($placeholder)){
-            $selected = !$got_selected;
-            $_opt = array_merge(["<option $selected>$placeholder</option>"], $_opt);
-        }
-    
-        $opt_str = implode(' ', $_opt);
-
+       
         return static::renderTag(__FUNCTION__, $opt_str, $attributes);
     }
 
