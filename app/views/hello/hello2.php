@@ -16,13 +16,24 @@ Bt5Form::setIdAsName();
 ?>
 
 <div class = "row mt-5">
-    <div class = "col-6 offset-3">
+    <div class = "col-6 offset-3">  
 
     <?php 
 
     echo tag('h3')->text("Datos")->class('mb-3');
 
-    echo tag('alert')->content('Some content')->danger();
+    echo tag('badge')->content('barato')->class('mb-3 rounded-pill')->success();
+
+    echo tag('button')->content([
+        'Inbox', 
+        tag('badge')->content('99+')->danger()->class('position-absolute top-0 start-100 translate-middle rounded-pill')
+    ])
+    ->class('rounded position-relative')
+    ->primary();
+
+    echo tag('alert')->content('OK !')->success();
+    echo Bt5Form::alert(content:'Some content', attributes:['warning', 'dismissible']);
+    echo tag('alert')->content(tag('alertLink')->href('#')->anchor('A danger content'))->danger()->dismissible(true)    ;
 
     echo tag('select')
     ->name('comidas')
