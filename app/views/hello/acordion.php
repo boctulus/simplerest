@@ -31,7 +31,10 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
                 'title' => "Accordion Item #3",
                 'body' =>  'Placeholder 3'
             ]
-        ]);
+        ])
+        ->id('accordionExample')
+        ->always_open(true)
+        ->attributes(['class' => 'accordion-flush']);
 
     ?>
     </div>

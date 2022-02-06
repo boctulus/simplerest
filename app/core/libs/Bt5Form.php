@@ -22,6 +22,11 @@ class Bt5Form extends Form
     }
 
     static function accordion(Array $items, bool $always_open = false, Array $attributes = [], ...$args){
+        if (isset($args['id'])) {
+            $attributes['id'] = $args['id'];
+            unset($args['id']);
+        }
+
         $elems = [];
         foreach ($items as $arr){
             $elems[] = 
@@ -38,7 +43,7 @@ class Bt5Form extends Form
                         data_bs_target:"#{$arr['id']}",
                         aria_expanded:"false",
                         aria_controls:$arr['id'],
-                        content:[ $arr['title'] ]
+                        content:$arr['title'] 
                     )
                 ) 
                 .
@@ -46,12 +51,13 @@ class Bt5Form extends Form
                         id:$arr['id'],
                         class:"accordion-collapse collapse", 
                         aria_labelledby:'heading-'.$arr['id'],
-                        data_bs_parent:"#accordionFlushExample",
+                        data_bs_parent:!$always_open ? "#{$attributes['id']}" : null,
                         content:
                             static::div(
                                 class:"accordion-body",
-                                content:[ $arr['body'] ]
-                            )
+                                content:$arr['body']
+                            ),
+                        attributes:$attributes
                 )
                 )
             ;
@@ -59,7 +65,8 @@ class Bt5Form extends Form
         
         return tag('div')
         ->content($elems)
-        ->class("accordion accordion-flush");
+        ->class("accordion accordion-flush")
+        ->attributes($attributes);
     }
 
     static function inputGroup(Array $content, Array $attributes = [], ...$args){     
