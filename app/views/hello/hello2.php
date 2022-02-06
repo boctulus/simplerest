@@ -45,7 +45,6 @@ Bt5Form::setIdAsName();
         'mujer' => 2
     ], default:1, placeholder:'Su sexo', attributes:['class' => 'my-3']);
 
-
     echo Bt5Form::dataList(listName:'datalistOptions', id:'occupation', options:[
         'programador',
         'software engenierer'

@@ -7882,7 +7882,7 @@ Lo anterior renderizará algo como:
 
 # Anidamiento de etiquetas
 
-Hay varias etiquetas de HTML que permiten anidamientos y en el form builder todas están implementadas con group()
+Como cada etiqueta renderiza a un string, siempre podrá anidarlas pero además si utiliza Form::group() o los tags que lo implementan como Form:div y Form:picture entre otros, podrá enviar un Array en vez de un string. 
 
 Ej:
 
@@ -7890,6 +7890,16 @@ Ej:
         tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
         tag('text')->name('nombre')->placeholder("Username")
     ],
+		tag:"div"
+        class:"input-group mb-3"
+    );
+
+o
+
+	echo Bt5Form::group(content:
+        tag('span')->text('@')->id('basic-addon')->class('input-group-text') .
+        tag('text')->name('nombre')->placeholder("Username")
+    ,
 		tag:"div"
         class:"input-group mb-3"
     );
@@ -7917,27 +7927,17 @@ o
         tag('text')->name('nombre')->placeholder("Username")
     ])->class("mb-3")
 
+o
 
-Por simplicidad, <span> y <tag> se implementaron de forma simple y no usando group()
-
-Sin embargo como <p> o <span> pueden incluir otros tags por lo cual la implementación más genérica es con group() y en caso de querer solo incluir texto, será algo como:
-
-	echo Bt5Form::group(content:[
-		"Adios mundo cruel"
-	], tag:'p');
-
-O
-	echo tag('group')->content([
-		"Adios mundo cruel"
-	], tag:'p');
-
-
-Para tags de uso común ya se proveen atajos: _p, _span, etc
+	echo tag('inputGroup')->content(
+        tag('span')->text('@')->id('basic-addon')->class('input-group-text') .
+        tag('text')->name('nombre')->placeholder("Username")
+    )->class("mb-3")
 
 
 # Atributos válidos
 
-Si un atributo en su nombre contiene un guión medio al momento de referenciarlo sino es dentro de $attributes entonces tednrá que hacerlo reemplazando los guiones medios (-) por guiones bajos (_).
+Si un atributo en su nombre contiene un guión medio al momento de referenciarlo sino es dentro de $attributes entonces tendrá que hacerlo reemplazando los guiones medios (-) por guiones bajos (_).
 
 Ej:
 
@@ -7955,7 +7955,18 @@ Ej:
 
 Ej:
 
-	Bt5Form::select(name:'size', options:['L' => 'Large', 'S' => 'Small'], placeholder:Pick a size...']);	
+	echo Bt5Form::select(name:'size', options:[
+		'L' => 'Large', 
+		'S' => 'Small'
+	], placeholder:'Pick a size...', default:'Large');	
+
+o
+
+	tag('select')->name('size')->options([
+		'L' => 'Large', 
+		'S' => 'Small'
+	])->placeholder('Pick a size...')->default('Large');
+
 
 Además acepta un agrupamiento de opciones en "secciones" o "categorías".
 
