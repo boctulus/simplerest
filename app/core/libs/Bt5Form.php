@@ -87,14 +87,51 @@ class Bt5Form extends Form
         $kargs = array_keys($args);
 
         $attributes['class'] = $attributes['class'] ?? '';
-        if (in_array('primary', $kargs)){
-            $attributes['class'] .= " alert-primary";
-        }
+        while (true){            
+            if (in_array('primary', $kargs)){
+                $attributes['class'] .= " alert-primary";
+                break;
+            }
 
-        if (in_array('secondary', $kargs)){
-            $attributes['class'] .= " alert-secondary";
-        }
+            if (in_array('secondary', $kargs)){
+                $attributes['class'] .= " alert-secondary";
+                break;
+            }
 
+            if (in_array('success', $kargs)){
+                $attributes['class'] .= " alert-success";
+                break;
+            }
+
+            if (in_array('danger', $kargs)){
+                $attributes['class'] .= " alert-danger";
+                break;
+            }
+
+            if (in_array('warning', $kargs)){
+                $attributes['class'] .= " alert-warning";
+                break;
+            }
+
+            if (in_array('info', $kargs)){
+                $attributes['class'] .= " alert-info";
+                break;
+            }
+
+            if (in_array('light', $kargs)){
+                $attributes['class'] .= " alert-light";
+                break;
+            }
+
+            if (in_array('dark', $kargs)){
+                $attributes['class'] .= " alert-dark";
+                break;
+            }
+
+
+            break;
+        }
+        
         // ...
 
         return static::div($content, $attributes, ...$args);
