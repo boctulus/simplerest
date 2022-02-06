@@ -69,15 +69,37 @@ class Bt5Form extends Form
         ->attributes($attributes);
     }
 
-    static function inputGroup(Array $content, Array $attributes = [], ...$args){     
+    static function inputGroup(mixed $content, Array $attributes = [], ...$args){     
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function checkGroup(Array $content, Array $attributes = [], ...$args){
+    static function checkGroup(mixed $content, Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
+
+
+    static function alert(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['role']  = "alert";
+
+        $kargs = array_keys($args);
+
+        $attributes['class'] = $attributes['class'] ?? '';
+        if (in_array('primary', $kargs)){
+            $attributes['class'] .= " alert-primary";
+        }
+
+        if (in_array('secondary', $kargs)){
+            $attributes['class'] .= " alert-secondary";
+        }
+
+        // ...
+
+        return static::div($content, $attributes, ...$args);
+    }
+
 
     /*
         Floating labels
