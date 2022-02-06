@@ -7059,11 +7059,11 @@ class DumbController extends Controller
     function test_tag(){
         Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-        //echo Bt5Form::span(text:'Hi');
+        // echo Bt5Form::span(text:'Hi');
          
-        //echo tag('text')->name('bozzolo')->placeholder('Su apellido');
+        // echo tag('text')->name('bozzolo')->placeholder('Su apellido');
 
-        //echo tag('p');
+        // echo tag('p');
 
         // echo Bt5Form::group(
         //     content:[
@@ -7080,19 +7080,19 @@ class DumbController extends Controller
         // );
 
         // echo Bt5Form::div(
-        //     content:[
+        //     content:
         //         Bt5Form::span('@', [
         //             'id'    => 'basic-addon',
         //             'class' => 'input-group-text'
-        //         ]),
+        //         ]) .
         //         Bt5Form::text('nombre', [
         //             "placeholder" => "Username"
         //         ])
-        //     ],
+        //     ,
         //     class:"input-group mb-3"
         // );
 
-        //echo Bt5Form::p();
+        // echo Bt5Form::p();
 
         // echo Bt5Form::div(
         //     content:[
@@ -7134,7 +7134,12 @@ class DumbController extends Controller
         // ])->class("input-group mb-3")
         // );
 
-        echo tag('color')->name('my_color')->text('Color')->id('c1');
+        // echo tag('color')->name('my_color')->text('Color')->id('c1');
+
+        echo Bt5Form::select(name:'size', options:[
+            'L' => 'Large', 
+            'S' => 'Small'
+        ], placeholder:'Pick a size...', default:'Large');	
     }
 
 }   
