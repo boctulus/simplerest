@@ -23,10 +23,9 @@ class Bt5Form extends Form
 
     static function accordion(Array $items, bool $always_open = false, Array $attributes = [], ...$args){
         $elems = [];
-
         foreach ($items as $arr){
             $elems[] = 
-                static::div(class:"accordion-item", content:[
+                static::div(class:"accordion-item", content:
                     static::h2(class:"accordion-header", 
                     id:'heading-'.$arr['id'], 
 
@@ -43,19 +42,18 @@ class Bt5Form extends Form
                     )
                 ) 
                 .
-                    static::div(
-                                id:$arr['id'],
-                                class:"accordion-collapse collapse", 
-                                aria_labelledby:'heading-'.$arr['id'],
-                                data_bs_parent:"#accordionFlushExample",
-                                content:[
-                                    static::div(
-                                        class:"accordion-body",
-                                        content:[ $arr['body'] ]
-                                    )
-                                ]
-                    )
-                ])
+                static::div(
+                        id:$arr['id'],
+                        class:"accordion-collapse collapse", 
+                        aria_labelledby:'heading-'.$arr['id'],
+                        data_bs_parent:"#accordionFlushExample",
+                        content:
+                            static::div(
+                                class:"accordion-body",
+                                content:[ $arr['body'] ]
+                            )
+                )
+                )
             ;
         }
         

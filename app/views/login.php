@@ -69,24 +69,24 @@
 		Bt5Form::setIdAsName();
 	
 
-		echo tag('div')->content([
-			'<a href="facebook/login" class="btn btn-primary w-100"><i class="fa fa-facebook"></i> Sign in with <b>Facebook</b></a>',
-			'<a href="google/login" class="btn btn-danger w-100"><i class="fa fa-google"></i> Sign in with <b>Google</b></a>'
-		])->class("social-btn");
+		echo tag('div')->content('
+			<a href="facebook/login" class="btn btn-primary w-100"><i class="fa fa-facebook"></i> Sign in with <b>Facebook</b></a>
+			<a href="google/login" class="btn btn-danger w-100"><i class="fa fa-google"></i> Sign in with <b>Google</b></a>'
+		)->class("social-btn");
 
 		echo '<div class="or-seperator"><i>or</i></div>';
 
-		echo tag('div')->content([
+		echo tag('div')->content(
 			Bt5Form::span('<i class="fas fa-user"></i>', [
 				'class' => 'input-group-text'
-			]),
+			]) .
 
 			Bt5Form::text(
 				id:"email_username",
 				placeholder:"email o username",
 				required:"required"
 			)
-		])->class("input-group mb-3");
+		)->class("input-group mb-3");
 
 		echo tag('inputGroup')->content([
 			Bt5Form::span('<i class="fas fa-key"></i>', [

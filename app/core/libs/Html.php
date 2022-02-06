@@ -59,7 +59,11 @@ class Html
         static::$id_eq_name = $state;
     }
 
-    static protected function attributes(Array $atts) : string{
+    static protected function attributes(?Array $atts = []) : string{
+        if (empty($atts)){
+            return '';
+        }
+        
         $_att = [];
         foreach ($atts as $att => $val){
             if (is_array($val)){
@@ -76,7 +80,7 @@ class Html
         return static::$classes[$tag] ?? '';
     }
 
-    static protected function tag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args) : string
+    static protected function tag(string $type, ?string $value = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
     {
         if (isset($attributes['class']) && isset($args['class'])){
             $attributes['class'] .=  ' ' . $args['class'];
@@ -100,7 +104,7 @@ class Html
         }
 
         $att_str = static::attributes($attributes);
-        $p_atr   = implode(' ', $plain_attr);
+        $p_atr   = is_array($plain_attr) ? implode(' ', $plain_attr) : '';
 
         $props = trim("$att_str $p_atr");
         $props = !empty($props) ? ' '.$props : $props;
@@ -111,21 +115,19 @@ class Html
         return static::$pretty ? static::beautifier($ret) : $ret;
     }
 
-    static function group(Array $content, string $tag = 'div', Array $attributes = [], ...$args){
-        $content_str = implode(' ', $content);
+    static function group(mixed $content, string $tag = 'div', Array $attributes = [], ...$args){
+        $content_str = is_array($content) ? implode(' ', $content) : $content;
         return static::tag($tag, $content_str, $attributes, [], ...$args);
     }
 
     static function link_to(string $href, string $anchor, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-
         if (Strings::startsWith('www.', $href)){
             $href = "http://$href";
         }
 
         $attributes['href'] = $href;
 
-        return static::tag('a', $anchor, $attributes);
+        return static::tag('a', $anchor, $attributes, null, ...$args);
     }
 
     static function input(string $type, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
@@ -145,7 +147,6 @@ class Html
     }
 
     static function password(?string $default = null, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::input('password', $default, $attributes, ...$args);
     }
@@ -219,10 +220,9 @@ class Html
     }
 
     static protected function label(string $id, string $placeholder, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
         $attributes['for'] = $id;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('label') : static::getClass('label');
-        return static::tag('label', $placeholder, $attributes);
+        return static::tag('label', $placeholder, $attributes, ...$args);
     }
 
     // implementación especial 
@@ -405,7 +405,7 @@ class Html
         return static::input('search', null, $attributes, ...$args);
     }
 
-    static  function fieldset(Array $content, $attributes = [], ...$args){
+    static  function fieldset(mixed $content, $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
@@ -437,75 +437,75 @@ class Html
         return static::tag($method, '', [], [], ...$args);
     }
 
-    static function div(Array $content, $attributes = [], ...$args){
+    static function div(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function header(Array $content, $attributes = [], ...$args){
+    static function header(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function nav(Array $content, $attributes = [], ...$args){
+    static function nav(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function main(Array $content, $attributes = [], ...$args){
+    static function main(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function section(Array $content, $attributes = [], ...$args){
+    static function section(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function article(Array $content, $attributes = [], ...$args){
+    static function article(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function aside(Array $content, $attributes = [], ...$args){
+    static function aside(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function details(Array $content, $attributes = [], ...$args){
+    static function details(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function summary(Array $content, $attributes = [], ...$args){
+    static function summary(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function mark(Array $content, $attributes = [], ...$args){
+    function mark(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function picture(Array $content, $attributes = [], ...$args){
+    static function picture(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function figure(Array $content, $attributes = [], ...$args){
+    static function figure(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function figcaption(Array $content, $attributes = [], ...$args){
+    static function figcaption(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    function time(Array $content, $attributes = [], ...$args){
+    function time(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function footer(Array $content, $attributes = [], ...$args){
+    static function footer(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function ol(Array $content, $attributes = [], ...$args){
+    static function ol(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function ul(Array $content, $attributes = [], ...$args){
+    static function ul(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function table(Array $content, $attributes = [], ...$args){
+    static function table(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
@@ -515,65 +515,48 @@ class Html
         <cite><a href="http://www-cs-faculty.stanford.edu/~uno/faq.html">Donald Knuth: Notes on the van Emde Boas construction of priority deques: An instructive use of recursion, March 29th, 1977</a>
         </blockquote>
     */
-    static function blockquote(Array $content, $attributes = [], ...$args){
+    static function blockquote(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function q(Array $content, $attributes = [], ...$args){
+    static function q(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function cite(Array $content, $attributes = [], ...$args){
+    static function cite(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function code(Array $content, $attributes = [], ...$args){
+    static function code(mixed $content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function _p(Array $content, $attributes = [], ...$args){
-        return static::group($content, 'p', $attributes, ...$args);
-    }
-
-    static function _span(Array $content, $attributes = [], ...$args){
-        return static::group($content, __FUNCTION__, $attributes, ...$args);
-    }
-
-    static function button(Array $content, $attributes = [], ...$args){
+    static function button(mixed $content, $attributes = [], ...$args){
         $attributes['type']="button";
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
-
-    static function p(?string $text = '', Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-        return static::tag(__FUNCTION__, $text, $attributes);
-    }
     
     static function span(string $text, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-        return static::tag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
     }
 
     static function legend(string $text, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-        return static::tag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
     }
 
     static function strong(string $text, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-        return static::tag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
     }
 
     static function em(string $text, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-        return static::tag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
     }
 
     static function h(int $size, string $text, Array $attributes = [], ...$args){
         if ($size <1 || $size > 6){
             throw new \InvalidArgumentException("Incorrect size for H tag. Given $size. Expected 1 to 6");
         }
-        
+
         return static::tag('h'. (string) $size, $text, $attributes, ...$args);
     }
 
@@ -602,14 +585,12 @@ class Html
     }
 
     static function br(Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-        return static::tag(__FUNCTION__, null, $attributes);
+        return static::tag(__FUNCTION__, null, $attributes, null, ...$args);
     }
 
     static function img(string $src, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
         $attributes['src'] = $src;
-        return static::tag('img', null, $attributes); 
+        return static::tag('img', null, $attributes, [], ...$args); 
     }
 
     /*
