@@ -8205,6 +8205,36 @@ Que es lo mismo que:
 
 	echo tag('button')->content(Notifications')->class('primary');
 
+Colores y otras clases sobre botones 
+
+	echo tag('inputButton')->id("comprar")->value('Comprar')->danger()->class('rounded-pill');
+    echo tag('reset')->id("limpiar")->value("Limpiar")->warning()->class('mx-3');
+    echo tag('submit')->id("enviar")->value("Enviar")->success();
+
+Botones sin background (outline) 
+
+Es cuestión de llamar a Form::outline() 
+
+Ej:
+	echo tag('button')->content('Botón rojo')->danger()->class('rounded-pill')->outline()
+
+Nota: solo funciona con <button> y no <input type="button">
+
+Tamaño de botones
+
+Llamando a Form::small() o Form::large() se obtienen botones más grande o pequeños.
+
+Ej:
+	echo tag('inputButton')->value('Un botón')->info()->class('rounded-pill');
+    echo tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large();
+    echo tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small();
+
+Deshabilitar botones
+
+Solo agregue una llamada a Form::disabled()
+
+	echo tag('submit')->id("enviar")->value("Enviar")->success()->disabled()
+
 
 # Componentes de Boostrap
 
@@ -8342,3 +8372,30 @@ Ej:
     ])
     ->class('rounded position-relative')
     ->primary();
+
+
+# Breadcrumbs
+
+Un breadcrumb renderiza un elemento de navegación como:
+
+	Home > Library > Data
+
+Ej:
+
+	echo tag('breadcrumb')->content([
+	[
+		[   
+			'href' => '#', 
+			'anchor' => 'Home'
+		],
+		
+		[
+			'href' => '#library',
+			'anchor' => 'Library'
+		],
+
+		[
+			'anchor' => 'Data'
+		],
+	]
+]);
