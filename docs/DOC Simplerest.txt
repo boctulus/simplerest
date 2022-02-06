@@ -7934,6 +7934,23 @@ O
 
 Para tags de uso común ya se proveen atajos: _p, _span, etc
 
+
+# Atributos válidos
+
+Si un atributo en su nombre contiene un guión medio al momento de referenciarlo sino es dentro de $attributes entonces tednrá que hacerlo reemplazando los guiones medios (-) por guiones bajos (_).
+
+Ej:
+
+	text:static::button(
+		class:"accordion-button collapsed",
+		data_bs_toggle:"collapse",
+		data_bs_target:"#{$arr['id']}",
+		aria_expanded:"false",
+		aria_controls:$arr['id'],
+		content:[ $arr['title'] ]
+	)
+
+
 # Select
 
 Ej:
@@ -8163,3 +8180,28 @@ Ej:
 		?>
 		</div>
 	</div>
+
+
+# Componentes de Boostrap
+
+## Acordión
+
+Ej:
+
+ 	echo tag('accordion')->items([
+		[
+			'id' => "flush-collapseOne",
+			'title' => "Accordion Item #1",
+			'body' => 'Placeholder content for this accordion, which is intended to ....'
+		],
+		[
+			'id' => "flush-collapseTwo",
+			'title' => "Accordion Item #2",
+			'body' => 'Placeholder 2'
+		],
+		[
+			'id' => "flush-collapseThree",
+			'title' => "Accordion Item #3",
+			'body' =>  'Placeholder 3'
+		]
+	]);
