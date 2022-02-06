@@ -80,60 +80,39 @@ class Bt5Form extends Form
     }
 
 
-    static function alert(mixed $content, Array $attributes = [], ...$args){
+    static function alert(string $content, bool $dismissible = false, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['role']  = "alert";
-
-        $kargs = array_keys($args);
-
-        $attributes['class'] = $attributes['class'] ?? '';
-        while (true){            
-            if (in_array('primary', $kargs)){
-                $attributes['class'] .= " alert-primary";
-                break;
-            }
-
-            if (in_array('secondary', $kargs)){
-                $attributes['class'] .= " alert-secondary";
-                break;
-            }
-
-            if (in_array('success', $kargs)){
-                $attributes['class'] .= " alert-success";
-                break;
-            }
-
-            if (in_array('danger', $kargs)){
-                $attributes['class'] .= " alert-danger";
-                break;
-            }
-
-            if (in_array('warning', $kargs)){
-                $attributes['class'] .= " alert-warning";
-                break;
-            }
-
-            if (in_array('info', $kargs)){
-                $attributes['class'] .= " alert-info";
-                break;
-            }
-
-            if (in_array('light', $kargs)){
-                $attributes['class'] .= " alert-light";
-                break;
-            }
-
-            if (in_array('dark', $kargs)){
-                $attributes['class'] .= " alert-dark";
-                break;
-            }
-
-
-            break;
-        }
         
-        // ...
+        if ($dismissible || in_array('dismissible', $attributes)){
+            $attributes['class'] .= " alert-dismissible fade show";
+            $content .= '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        }
 
+        $kargs = array_merge(array_keys($args), array_keys($attributes));
+ 
+        foreach ($kargs as $k){
+            if (in_array($k, static::$colors)){
+                $attributes['class'] .= " alert-$k"; 
+                break;
+            }           
+        }
+            
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function badge(string $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+    
+        $kargs = array_merge(array_keys($args), array_keys($attributes));
+ 
+        foreach ($kargs as $k){
+            if (in_array($k, static::$colors)){
+                $attributes['class'] .= " bg-$k"; 
+                break;
+            }           
+        }
+            
         return static::div($content, $attributes, ...$args);
     }
 
@@ -148,5 +127,10 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
    
+    static function alertLink(string $href, string $anchor, $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::link($href, $anchor, $attributes, ...$args);
+    }
+
 }
 

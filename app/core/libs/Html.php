@@ -8,6 +8,16 @@ class Html
 {
     static protected $pretty     = false;
     static protected $id_eq_name = false;
+    static protected $colors = [
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'warning',
+        'info',
+        'light',
+        'dark'
+    ];
     static protected $classes = [
         "text"           => "form-control",
         "number"         => "form-control",
@@ -45,7 +55,11 @@ class Html
 
         "color"          => "form-control form-control-color",
 
-        "alert"          => "alert alert-primary"
+        "alert"          => "alert alert-primary",
+
+        "alertLink"      => "alert-link",
+
+        "badge"          => "badge"
     ];
     
     static protected $macros = [];
@@ -122,7 +136,7 @@ class Html
         return static::tag($tag, $content_str, $attributes, [], ...$args);
     }
 
-    static function link_to(string $href, string $anchor, Array $attributes = [], ...$args){
+    static function link(string $href, string $anchor, Array $attributes = [], ...$args){
         if (Strings::startsWith('www.', $href)){
             $href = "http://$href";
         }
@@ -130,6 +144,11 @@ class Html
         $attributes['href'] = $href;
 
         return static::tag('a', $anchor, $attributes, null, ...$args);
+    }
+
+    // alias
+    static function link_to(string $href, string $anchor, Array $attributes = [], ...$args){
+        return static::link($href, $anchor, $attributes, ...$args);
     }
 
     static function input(string $type, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
@@ -310,7 +329,6 @@ class Html
     {
         $attributes['placeholder'] = $placeholder;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-
 
         if (isset($attributes['selected'])) {
             $default = $attributes['selected'];
@@ -552,6 +570,17 @@ class Html
 
     static function button(mixed $content, $attributes = [], ...$args){
         $attributes['type']="button";
+        $attributes['class'] = $attributes['class'] ?? '';
+
+        $kargs = array_merge(array_keys($args), array_keys($attributes));
+ 
+        foreach ($kargs as $k){
+            if (in_array($k, static::$colors)){
+                $attributes['class'] .= " btn-$k"; 
+                break;
+            }           
+        }
+
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
     
