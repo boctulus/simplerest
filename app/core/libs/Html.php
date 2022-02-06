@@ -257,10 +257,13 @@ class Html
     }
 
     static function color(?string $text = null, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
-
         $attributes['type']  = __FUNCTION__;
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (isset($args['id'])) {
+            $attributes['id'] = $args['id'];
+            unset($args['id']);
+        }
 
         $value = '';
         if (!empty($text)){
@@ -268,16 +271,15 @@ class Html
                 throw new \Exception("With radio and placeholder then id is required");
             }
 
-            $value = static::label($attributes['id'], $text);
+            $value = static::label($attributes['id'], $text, ...$args);
         }
 
-        return static::tag('input', $value, $attributes);
+        return static::tag('input', $value, $attributes, ...$args);
     }
 
     static function area(?string $default = null, Array $attributes = [], ...$args){
-        $attributes = array_merge($attributes, $args);
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::tag('textarea', $default, $attributes);
+        return static::tag('textarea', $default, $attributes, ...$args);
     }
 
     /*
@@ -304,7 +306,6 @@ class Html
     */
     static function select(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args)
     {
-        $attributes = array_merge($attributes, $args);
         $attributes['placeholder'] = $placeholder;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
@@ -360,15 +361,19 @@ class Html
         }
 
        
-        return static::tag(__FUNCTION__, $opt_str, $attributes);
+        return static::tag(__FUNCTION__, $opt_str, $attributes, ...$args);
     }
 
     static function dataList(string $listName, Array $options, ?string $placeholder = null, ?string $label = '', Array $attributes = [], ...$args)
     {
-        $attributes = array_merge($attributes, $args);
         $attributes['placeholder'] = $placeholder;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['list'] = $listName;
+
+        if (isset($args['id'])) {
+            $attributes['id'] = $args['id'];
+            unset($args['id']);
+        }
 
         // options
         $_opt = [];
