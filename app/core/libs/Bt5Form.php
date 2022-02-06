@@ -116,6 +116,32 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
+    static function breadcrumb(Array $content, Array $attributes = [], ...$args){
+        $attributes['aria-label'] = "breadcrumb";   
+    
+        $lis = [];
+        $n = count($content);
+
+        for ($i=0; $i<$n-2; $i++){
+            if (!isset($e['anchor'])){
+                throw new \Exception("[ breadcrumb ] element withour anchor / text");   
+            }
+
+            $anchor = $e['anchor'];
+            $href   = $e['href'] ?? null;
+
+            $active = ($i == $n-2);
+
+            $inside = !empty($href) ? "<a href=\"$href\">$anchor</a>" : $anchor;
+            $lis[]  = "<li class=\"breadcrumb-item $active\">$inside</li>";
+
+            $e = next($content);
+        }
+
+        return static::group(static::group($lis, 'ol', ['class' => "breadcrumb"]), 'nav', $attributes, ...$args);
+    }
+
+
 
     /*
         Floating labels
@@ -131,6 +157,7 @@ class Bt5Form extends Form
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::link($href, $anchor, $attributes, ...$args);
     }
+
 
 }
 

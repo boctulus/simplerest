@@ -18,7 +18,33 @@ Bt5Form::setIdAsName();
 <div class = "row mt-5">
     <div class = "col-6 offset-3">  
 
+    <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Library</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Data</li>
+    </ol>
+    </nav>
+
     <?php 
+
+    echo tag('breadcrumb')->content([
+        [
+            [   
+                'href' => '#', 
+                'anchor' => 'Home'
+            ],
+            
+            [
+                'href' => '#library',
+                'anchor' => 'Library'
+            ],
+
+            [
+                'anchor' => 'Data'
+            ],
+        ]
+    ]);
 
     echo tag('h3')->text("Datos")->class('mb-3');
 
@@ -30,6 +56,14 @@ Bt5Form::setIdAsName();
     ])
     ->class('rounded position-relative')
     ->primary();
+
+    echo tag('button')->content('Botón rojo')->danger()->class('rounded-pill mx-3')->outline();
+
+    echo tag('inputButton')->value('Un botón')->info()->class('rounded-pill');
+    echo tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large();
+    echo tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small();
+
+    echo tag('br');
 
     echo tag('alert')->content('OK !')->success();
     echo Bt5Form::alert(content:'Some content', attributes:['warning', 'dismissible']);
@@ -101,9 +135,9 @@ Bt5Form::setIdAsName();
     echo Bt5Form::label(id:"comment", placeholder:"Algo que desea agregar:", class:'mt-3');
     echo Bt5Form::area(id:'comment', default:'bla bla', class:'my-3');
 
-    echo Bt5Form::inputButton(id:"comprar", value:"Comprar");
-    echo Bt5Form::reset(id:"limpiar", value:"Limpiar", class:'mx-3');
-    echo Bt5Form::submit(id:"enviar", value:"enviar");
+    echo tag('inputButton')->id("comprar")->value('Comprar')->danger()->class('rounded-pill');
+    echo tag('reset')->id("limpiar")->value("Limpiar")->warning()->class('mx-3');
+    echo tag('submit')->id("enviar")->value("Enviar")->success()->disabled();
 
     echo Bt5Form::br();
 
