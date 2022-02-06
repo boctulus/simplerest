@@ -22,7 +22,7 @@ Bt5Form::setIdAsName();
 
     echo tag('h3')->text("Datos")->class('mb-3');
 
-    echo tag('alert')->content('Some content')->secondary();
+    echo tag('alert')->content('Some content')->danger();
 
     echo tag('select')
     ->name('comidas')
