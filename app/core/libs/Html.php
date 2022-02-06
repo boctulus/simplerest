@@ -422,19 +422,37 @@ class Html
         return $label_t . $input . $datalist;
     }
 
-    static function inputButton(string $value, Array $attributes = [], ...$args){
+    static function inputButton(string $value, Array $attributes = [], string $type = 'button', ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('__FUNCTION__') : static::getClass(__FUNCTION__);
-        return static::input('button', $value, $attributes, ...$args);
-    }
+            
+        $kargs = array_merge(array_keys($args), array_keys($attributes));
+ 
+        if (in_array('large', $kargs)){
+            $attributes['class'] .= ' btn-lg';
+        } else if (in_array('small', $kargs)){
+            $attributes['class'] .= ' btn-sm';
+        }
+
+        if (in_array('disabled', $kargs)){
+            $attributes['class'] .= ' disabled';
+        }
+
+        foreach ($kargs as $k){
+            if (in_array($k, static::$colors)){
+                $attributes['class'] .= " btn-$k"; 
+                break;
+            }           
+        }
+        
+        return static::input($type, $value, $attributes, ...$args);
+    } 
 
     static function submit(string $value, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::input('submit', $value, $attributes, ...$args);
+        return static::inputButton($value, $attributes, __FUNCTION__, ...$args);
     }
 
     static function reset(string $value, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::input('reset', $value, $attributes, ...$args);
+        return static::inputButton($value, $attributes, __FUNCTION__, ...$args);
     }
 
     static function search(Array $attributes  = [], ...$args){
@@ -572,11 +590,13 @@ class Html
         $attributes['type']="button";
         $attributes['class'] = $attributes['class'] ?? '';
 
+        $outline = (array_key_exists('outline', $attributes) || array_key_exists('outline', $args)) ? 'outline-' : '';
+            
         $kargs = array_merge(array_keys($args), array_keys($attributes));
  
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
-                $attributes['class'] .= " btn-$k"; 
+                $attributes['class'] .= " btn-{$outline}$k"; 
                 break;
             }           
         }
