@@ -62,6 +62,10 @@ class Html
     static protected function attributes(Array $atts) : string{
         $_att = [];
         foreach ($atts as $att => $val){
+            if (is_array($val)){
+                throw new \InvalidArgumentException();
+            }
+
             $_att[] = "$att=\"$val\"";
         }
 
@@ -72,11 +76,19 @@ class Html
         return static::$classes[$tag] ?? '';
     }
 
-    static protected function renderTag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args) : string
+    static protected function tag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args) : string
     {
         if (isset($attributes['class']) && isset($args['class'])){
             $attributes['class'] .=  ' ' . $args['class'];
             unset($args['class']);
+        }
+
+        foreach ($args as $k => $v){
+            if (strpos($k, '_') !== false){
+                unset($args[$k]);
+                $k = str_replace('_', '-', $k);                
+                $args[$k] = $v;
+            }
         }
 
         $attributes = array_merge($attributes, $args);
@@ -99,10 +111,6 @@ class Html
         return static::$pretty ? static::beautifier($ret) : $ret;
     }
 
-    static function tag(string $type, ?string $value = '', Array $attributes = [], Array $plain_attr = [], ...$args){
-        return static::renderTag($type, $value, $attributes, $plain_attr, ...$args);
-    }
-
     static function group(Array $content, string $tag = 'div', Array $attributes = [], ...$args){
         $content_str = implode(' ', $content);
         return static::tag($tag, $content_str, $attributes, [], ...$args);
@@ -117,7 +125,7 @@ class Html
 
         $attributes['href'] = $href;
 
-        return static::renderTag('a', $anchor, $attributes);
+        return static::tag('a', $anchor, $attributes);
     }
 
     static function input(string $type, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
@@ -128,7 +136,7 @@ class Html
 
         $plain_attr[] = is_null($default) ? '' : "value=\"$default\""; 
         
-        return static::renderTag('input', null, $attributes, $plain_attr, ...$args);
+        return static::tag('input', null, $attributes, $plain_attr, ...$args);
     }
 
     static function text(?string $default = null, Array $attributes = [], ...$args){
@@ -214,7 +222,7 @@ class Html
         $attributes = array_merge($attributes, $args);
         $attributes['for'] = $id;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('label') : static::getClass('label');
-        return static::renderTag('label', $placeholder, $attributes);
+        return static::tag('label', $placeholder, $attributes);
     }
 
     // implementación especial 
@@ -223,7 +231,7 @@ class Html
         $attributes['type']  = __FUNCTION__;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        return static::renderTag('input', $text, $attributes, $plain_attr, ...$args);
+        return static::tag('input', $text, $attributes, $plain_attr, ...$args);
     }
 
     // implementación especial 
@@ -245,7 +253,7 @@ class Html
             $value = static::label($attributes['id'], $text);
         }
 
-        return static::renderTag('input', $value, $attributes, $plain_attr, ...$args);
+        return static::tag('input', $value, $attributes, $plain_attr, ...$args);
     }
 
     static function color(?string $text = null, Array $attributes = [], ...$args){
@@ -263,13 +271,13 @@ class Html
             $value = static::label($attributes['id'], $text);
         }
 
-        return static::renderTag('input', $value, $attributes);
+        return static::tag('input', $value, $attributes);
     }
 
     static function area(?string $default = null, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::renderTag('textarea', $default, $attributes);
+        return static::tag('textarea', $default, $attributes);
     }
 
     /*
@@ -326,7 +334,7 @@ class Html
                 }
             
                 $opt_str = implode(' ', $_opt);
-                $groups .= static::renderTag('optgroup', $opt_str, ['label' => $opt]);
+                $groups .= static::tag('optgroup', $opt_str, ['label' => $opt]);
             }
 
             $opt_str = $groups;
@@ -352,7 +360,7 @@ class Html
         }
 
        
-        return static::renderTag(__FUNCTION__, $opt_str, $attributes);
+        return static::tag(__FUNCTION__, $opt_str, $attributes);
     }
 
     static function dataList(string $listName, Array $options, ?string $placeholder = null, ?string $label = '', Array $attributes = [], ...$args)
@@ -370,7 +378,7 @@ class Html
     
         $opt_str = implode(' ', $_opt);
 
-        $datalist = static::renderTag(__FUNCTION__, $opt_str, ['id' => $listName]);
+        $datalist = static::tag(__FUNCTION__, $opt_str, ['id' => $listName]);
         $label_t  = !empty($label) ? static::label($attributes['id'], $label) : '';
         $input    = static::input('list', null, $attributes, ...$args);
 
@@ -426,7 +434,7 @@ class Html
             return static::$macros[$method](...$args);
         }
 
-        return static::renderTag($method, '', [], [], ...$args);
+        return static::tag($method, '', [], [], ...$args);
     }
 
     static function div(Array $content, $attributes = [], ...$args){
@@ -528,52 +536,52 @@ class Html
     }
 
     static function _span(Array $content, $attributes = [], ...$args){
-        return static::group($content, 'span', $attributes, ...$args);
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
     static function button(Array $content, $attributes = [], ...$args){
-        return static::group($content, 'span', $attributes, ...$args);
+        $attributes['type']="button";
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
     static function p(?string $text = '', Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return static::renderTag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes);
     }
     
     static function span(string $text, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return static::renderTag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes);
     }
 
     static function legend(string $text, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return static::renderTag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes);
     }
 
     static function strong(string $text, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return static::renderTag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes);
     }
 
     static function em(string $text, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return static::renderTag(__FUNCTION__, $text, $attributes);
+        return static::tag(__FUNCTION__, $text, $attributes);
     }
 
     static function h(int $size, string $text, Array $attributes = [], ...$args){
         if ($size <1 || $size > 6){
             throw new \InvalidArgumentException("Incorrect size for H tag. Given $size. Expected 1 to 6");
         }
-
-        $attributes = array_merge($attributes, $args);
-        return static::renderTag('h'. (string) $size, $text, $attributes, ...$args);
+        
+        return static::tag('h'. (string) $size, $text, $attributes, ...$args);
     }
 
     static function h1(string $text, Array $attributes = [], ...$args){
         return static::h(1, $text, $attributes, ...$args);
     }
 
-    static function h2(string $text, Array $attributes = [], ...$args){
+    static function h2(string $text, Array $attributes = [], ...$args){        
         return static::h(2, $text, $attributes, ...$args);
     }
 
@@ -595,13 +603,13 @@ class Html
 
     static function br(Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
-        return static::renderTag(__FUNCTION__, null, $attributes);
+        return static::tag(__FUNCTION__, null, $attributes);
     }
 
     static function img(string $src, Array $attributes = [], ...$args){
         $attributes = array_merge($attributes, $args);
         $attributes['src'] = $src;
-        return static::renderTag('img', null, $attributes); 
+        return static::tag('img', null, $attributes); 
     }
 
     /*
