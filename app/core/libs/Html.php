@@ -43,7 +43,9 @@ class Html
         "checkGroup"     => "form-check",
         "formFloating"   => "form-floating",
 
-        "color"          => "form-control form-control-color"
+        "color"          => "form-control form-control-color",
+
+        "alert"          => "alert alert-primary"
     ];
     
     static protected $macros = [];
