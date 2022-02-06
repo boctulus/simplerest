@@ -309,6 +309,18 @@ class Html
         $attributes['placeholder'] = $placeholder;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
+
+        if (isset($attributes['selected'])) {
+            $default = $attributes['selected'];
+            unset($attributes['selected']);
+        } else {
+            if (isset($args['selected'])) {
+                $default = $args['selected'];
+                unset($args['selected']);
+            }
+        }
+
+
         $a2 = is_array(Arrays::array_value_first($options));
 
         // options
