@@ -8193,6 +8193,19 @@ Ej:
 	</div>
 
 
+# Buttons
+
+A un botón se le puede setear el color muy fácil mediante métodos Form::{color}()
+
+Ej:
+
+	echo tag('button')->content(Notifications')->primary();
+
+Que es lo mismo que:
+
+	echo tag('button')->content(Notifications')->class('primary');
+
+
 # Componentes de Boostrap
 
 ## Acordión
@@ -8255,3 +8268,77 @@ Ej:
 	])
 	->id('accordionExample')
 	->attributes(['class' => 'accordion-flush']);
+
+
+# Alerts
+
+A Simple alert. 
+
+Ej:
+
+    echo tag('alert')->content('Some content')->warning();
+
+An alert with some link. 
+
+Ej:
+
+    echo tag('alert')->content(
+		tag('alertLink')->href('#')->anchor('A danger content')
+	)->danger();
+
+Dismissable alerts
+
+Just add ->dismissible(true) to become the alert dismissable.
+
+Ej:
+
+	echo tag('alert')->content('Some content')->warning()->dismissible(true);
+o
+	echo Bt5Form::alert(content:'Some content', attributes:['warning', 'dismissible']);
+
+
+# Badges
+
+Ej:
+
+	echo tag('badge')->content('barato')->success();
+	echo tag('badge')->content('casi agotado')->warning();
+	echo tag('badge')->content('agotado')->danger();
+
+Modificar el tamaño
+
+Ej:
+
+	echo tag('h3')->text(
+        tag('badge')->content('barato')->success()
+    );
+
+Bages como pílodoras
+
+Es solo de aplicar la clase rounded-pill.
+
+Ej:
+	echo tag('badge')->content('barato')->class('rounded-pill')->success();
+
+
+A los botones es posible aplicarles badges
+
+Ej:
+
+	echo tag('button')->content([
+        'Notifications', 
+        tag('badge')->content('4')->secondary()
+    ])
+    ->class('rounded')
+    ->primary();
+
+Posicionando el badge 
+
+Ej:
+
+	echo tag('button')->content([
+        'Inbox', 
+        tag('badge')->content('99+')->danger()->class('position-absolute top-0 start-100 translate-middle rounded-pill')
+    ])
+    ->class('rounded position-relative')
+    ->primary();
