@@ -7127,12 +7127,12 @@ class DumbController extends Controller
         //     ])
         // ])->class("input-group mb-3");
 
-        echo Html::beautifier(
-            tag('div')->content([
-            tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
-            tag('text')->name('nombre')->placeholder('Username')
-        ])->class("input-group mb-3")
-        );
+        // echo Html::beautifier(
+        //     tag('div')->content([
+        //     tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+        //     tag('text')->name('nombre')->placeholder('Username')
+        // ])->class("input-group mb-3")
+        // );
     }
 
 }   
