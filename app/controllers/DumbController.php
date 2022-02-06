@@ -7133,6 +7133,8 @@ class DumbController extends Controller
         //     tag('text')->name('nombre')->placeholder('Username')
         // ])->class("input-group mb-3")
         // );
+
+        echo tag('color')->name('my_color')->text('Color')->id('c1');
     }
 
 }   
