@@ -14,5 +14,9 @@ class Hello2Controller extends Controller
     function index(){
         $this->view('hello/hello2.php', null, null, 0);
     }
+
+    function acordion(){
+        $this->view('hello/acordion.php');
+    }
 }
 

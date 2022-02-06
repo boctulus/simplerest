@@ -21,6 +21,49 @@ class Bt5Form extends Form
             );
     }
 
+    static function accordion(Array $items, bool $always_open = false, Array $attributes = [], ...$args){
+        $elems = [];
+
+        foreach ($items as $arr){
+            $elems[] = 
+                static::div(class:"accordion-item", content:[
+                    static::h2(class:"accordion-header", 
+                    id:'heading-'.$arr['id'], 
+
+                    /*
+                        Content debería poder no ser un array sino un string
+                    */
+                    text:static::button(
+                        class:"accordion-button collapsed",
+                        data_bs_toggle:"collapse",
+                        data_bs_target:"#{$arr['id']}",
+                        aria_expanded:"false",
+                        aria_controls:$arr['id'],
+                        content:[ $arr['title'] ]
+                    )
+                ) 
+                .
+                    static::div(
+                                id:$arr['id'],
+                                class:"accordion-collapse collapse", 
+                                aria_labelledby:'heading-'.$arr['id'],
+                                data_bs_parent:"#accordionFlushExample",
+                                content:[
+                                    static::div(
+                                        class:"accordion-body",
+                                        content:[ $arr['body'] ]
+                                    )
+                                ]
+                    )
+                ])
+            ;
+        }
+        
+        return tag('div')
+        ->content($elems)
+        ->class("accordion accordion-flush");
+    }
+
     static function inputGroup(Array $content, Array $attributes = [], ...$args){     
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
