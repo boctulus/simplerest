@@ -18,20 +18,6 @@ Bt5Form::setIdAsName();
 <div class = "row mt-5">
     <div class = "col-6 offset-3">
 
-    <!-- 
-    <select class="form-select">
-    <optgroup label="Picnic">
-      <option>Mustard</option>
-      <option>Ketchup</option>
-      <option>Relish</option>
-    </optgroup>
-    <optgroup label="Camping">
-      <option>Tent</option>
-      <option>Flashlight</option>
-      <option>Toilet Paper</option>
-    </optgroup>
-  </select> -->
-
     <?php 
 
     echo tag('h3')->text("Datos")->class('mb-3');
