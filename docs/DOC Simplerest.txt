@@ -8236,9 +8236,47 @@ Solo agregue una llamada a Form::disabled()
 	echo tag('submit')->id("enviar")->value("Enviar")->success()->disabled()
 
 
-# Componentes de Boostrap
+# Button groups and button toolbars
 
-## Acordión
+Con buttonGroup() se puede "agrupar" botones.
+
+Ej:
+
+	echo tag('buttonGroup')->content(
+		tag('button')->content('Botón rojo')->danger()->class('rounded-pill')->outline() .
+		tag('button')->content('Botón verde')->success()->class('rounded-pill')->outline()
+	)->aria_label("Basic example")->class('mx-3');
+
+Con buttonToolbar() se grupan conjuntos de botones o sea es un wrapper sobre varios "button groups". También puede agrupar de forma mezclada "button groups" con "input groups".
+
+Ej:
+
+	echo tag('buttonToolbar')->content([
+        tag('buttonGroup')->content(
+            tag('button')->content('Botón rojo')->danger()->class('rounded-pill')->outline() .
+            tag('button')->content('Botón verde')->success()->class('rounded-pill')->outline()
+        )->aria_label("Basic example")->class('mx-3'),
+    
+        tag('buttonGroup')->content(
+            tag('button')->content('Botón azul')->info()->class('rounded-pill')->outline() .
+            tag('button')->content('Botón amarillo')->warning()->class('rounded-pill')->outline()
+        )->aria_label("Another group")->class('mx-3')
+    ]);
+	
+
+Tamaño de botones en "button groups"
+
+Se puede aplicar large() o small() a los grupos.
+
+Ej:
+
+	echo tag('buttonGroup')->content(
+        tag('button')->content('E')->danger()->class('rounded-pill')->outline() .
+        tag('button')->content('F')->success()->class('rounded-pill')->outline()
+    )->aria_label("Basic example")->class('mx-3')->large();
+
+
+# Acordión
 
 Ej:
 
@@ -8383,19 +8421,17 @@ Un breadcrumb renderiza un elemento de navegación como:
 Ej:
 
 	echo tag('breadcrumb')->content([
-	[
-		[   
-			'href' => '#', 
-			'anchor' => 'Home'
-		],
-		
-		[
-			'href' => '#library',
-			'anchor' => 'Library'
-		],
+        [   
+            'href' => '#', 
+            'anchor' => 'Home'
+        ],
+        
+        [
+            'href' => '#library',
+            'anchor' => 'Library'
+        ],
 
-		[
-			'anchor' => 'Data'
-		],
-	]
-]);
+        [
+            'anchor' => 'Data'
+        ]
+    ]);

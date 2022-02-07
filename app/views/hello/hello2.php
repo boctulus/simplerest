@@ -17,32 +17,24 @@ Bt5Form::setIdAsName();
 
 <div class = "row mt-5">
     <div class = "col-6 offset-3">  
+   
+   <?php 
 
-    <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Library</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Data</li>
-    </ol>
-    </nav>
-
-    <?php 
+    echo tag('br');
 
     echo tag('breadcrumb')->content([
+        [   
+            'href' => '#', 
+            'anchor' => 'Home'
+        ],
+        
         [
-            [   
-                'href' => '#', 
-                'anchor' => 'Home'
-            ],
-            
-            [
-                'href' => '#library',
-                'anchor' => 'Library'
-            ],
+            'href' => '#library',
+            'anchor' => 'Library'
+        ],
 
-            [
-                'anchor' => 'Data'
-            ],
+        [
+            'anchor' => 'Data'
         ]
     ]);
 
@@ -57,7 +49,35 @@ Bt5Form::setIdAsName();
     ->class('rounded position-relative')
     ->primary();
 
-    echo tag('button')->content('Botón rojo')->danger()->class('rounded-pill mx-3')->outline();
+    echo tag('buttonToolbar')->content([
+        tag('buttonGroup')->content(
+            tag('button')->content('Botón rojo')->danger()->class('rounded-pill')->outline() .
+            tag('button')->content('Botón verde')->success()->class('rounded-pill')->outline()
+        )->aria_label("Basic example")->class('mx-3'),
+
+        tag('buttonGroup')->content(
+            tag('button')->content('Botón azul')->info()->class('rounded-pill')->outline() .
+            tag('button')->content('Botón amarillo')->warning()->class('rounded-pill')->outline()
+        )->aria_label("Another group")->class('mx-3')
+    ]);
+
+    echo tag('buttonGroup')->content(
+        tag('button')->content('A')->danger()->class('rounded-pill')->outline() .
+        tag('button')->content('B')->success()->class('rounded-pill')->outline()
+    )->aria_label("Basic example")->class('mx-3')->small();
+
+    echo tag('buttonGroup')->content(
+        tag('button')->content('C')->danger()->class('rounded-pill')->outline() .
+        tag('button')->content('D')->success()->class('rounded-pill')->outline()
+    )->aria_label("Basic example")->class('mx-3');
+
+    echo tag('buttonGroup')->content(
+        tag('button')->content('E')->danger()->class('rounded-pill')->outline() .
+        tag('button')->content('F')->success()->class('rounded-pill')->outline()
+    )->aria_label("Basic example")->class('mx-3')->large();
+
+    echo '<br/>';
+
 
     echo tag('inputButton')->value('Un botón')->info()->class('rounded-pill');
     echo tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large();
@@ -135,9 +155,12 @@ Bt5Form::setIdAsName();
     echo Bt5Form::label(id:"comment", placeholder:"Algo que desea agregar:", class:'mt-3');
     echo Bt5Form::area(id:'comment', default:'bla bla', class:'my-3');
 
-    echo tag('inputButton')->id("comprar")->value('Comprar')->danger()->class('rounded-pill');
-    echo tag('reset')->id("limpiar")->value("Limpiar")->warning()->class('mx-3');
-    echo tag('submit')->id("enviar")->value("Enviar")->success()->disabled();
+
+    echo tag('buttonGroup')->content(
+        tag('inputButton')->id("comprar")->value('Comprar')->danger()->class('rounded-pill') .
+        tag('reset')->id("limpiar")->value("Limpiar")->warning() .
+        tag('submit')->id("enviar")->value("Enviar")->success()->disabled()
+    )->aria_label("Basic example");
 
     echo Bt5Form::br();
 
