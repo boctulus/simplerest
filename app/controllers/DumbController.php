@@ -7136,10 +7136,12 @@ class DumbController extends Controller
 
         // echo tag('color')->name('my_color')->text('Color')->id('c1');
 
-        echo Bt5Form::select(name:'size', options:[
-            'L' => 'Large', 
-            'S' => 'Small'
-        ], placeholder:'Pick a size...', default:'Large');	
+        // echo Bt5Form::select(name:'size', options:[
+        //     'L' => 'Large', 
+        //     'S' => 'Small'
+        // ], placeholder:'Pick a size...', default:'Large');
+
+        echo tag('button')->content('Botón rojo')->danger()->class('rounded-pill mx-3')->outline();
     }
 
 }   

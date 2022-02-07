@@ -44,6 +44,7 @@ class Html
         "radio"          => "form-check-input" ,
 
         "label"          => "form-label",
+        "button"         => "btn",
 
         "submit"         => "btn btn-primary",
         "reset"          => "btn btn-primary",
@@ -51,6 +52,9 @@ class Html
 
         "inputGroup"     => "input-group",
         "checkGroup"     => "form-check",
+        "buttonGroup"    => "btn-group",
+        "buttonToolbar"  => "btn-toolbar",
+ 
         "formFloating"   => "form-floating",
 
         "color"          => "form-control form-control-color",
@@ -440,6 +444,7 @@ class Html
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
                 $attributes['class'] .= " btn-$k"; 
+                unset($args[$k]);
                 break;
             }           
         }
@@ -588,18 +593,30 @@ class Html
 
     static function button(mixed $content, $attributes = [], ...$args){
         $attributes['type']="button";
-        $attributes['class'] = $attributes['class'] ?? '';
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('__FUNCTION__') : static::getClass(__FUNCTION__);
 
         $outline = (array_key_exists('outline', $attributes) || array_key_exists('outline', $args)) ? 'outline-' : '';
             
+        $outline = '';
+        if (array_key_exists('outline', $attributes)){
+            $outline = 'outline-';
+        } else if (array_key_exists('outline', $args)){
+            $outline = 'outline-';
+            unset($args['outline']);
+        }
+
         $kargs = array_merge(array_keys($args), array_keys($attributes));
  
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
                 $attributes['class'] .= " btn-{$outline}$k"; 
+                unset($args[$k]);
                 break;
             }           
         }
+
+        // d($attributes);
+        // d($args);
 
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
