@@ -70,12 +70,35 @@ class Bt5Form extends Form
     }
 
     static function inputGroup(mixed $content, Array $attributes = [], ...$args){     
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
     static function checkGroup(mixed $content, Array $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function buttonGroup(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['role']  = "group";
+
+        $kargs = array_merge(array_keys($args), array_keys($attributes));
+ 
+        if (in_array('large', $kargs)){
+            $attributes['class'] .= ' btn-group-lg';
+            unset($args['large']);
+        } else if (in_array('small', $kargs)){
+            $attributes['class'] .= ' btn-group-sm';
+            unset($args['small']);
+        }
+        
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function buttonToolbar(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['role']  = "toolbar";
         return static::div($content, $attributes, ...$args);
     }
 
@@ -122,21 +145,23 @@ class Bt5Form extends Form
         $lis = [];
         $n = count($content);
 
-        for ($i=0; $i<$n-2; $i++){
+        $e = $content[0];
+        for ($i=0; $i<$n; $i++){
             if (!isset($e['anchor'])){
-                throw new \Exception("[ breadcrumb ] element withour anchor / text");   
+                throw new \Exception("[ breadcrumb ] element without anchor / text");   
             }
 
             $anchor = $e['anchor'];
             $href   = $e['href'] ?? null;
 
-            $active = ($i == $n-2);
+            $active = ($i == $n);
 
             $inside = !empty($href) ? "<a href=\"$href\">$anchor</a>" : $anchor;
             $lis[]  = "<li class=\"breadcrumb-item $active\">$inside</li>";
 
             $e = next($content);
         }
+
 
         return static::group(static::group($lis, 'ol', ['class' => "breadcrumb"]), 'nav', $attributes, ...$args);
     }
