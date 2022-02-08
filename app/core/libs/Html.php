@@ -60,6 +60,8 @@ class Html
 
         "badge"          => "badge",
 
+        "blockquoteFooter" => "blockquote-footer",
+
         "card"           => "card",
         "cardBody"       => "card-body",
         "cardLink"       => "card-link",
@@ -145,9 +147,8 @@ class Html
                 unset($args['class']);
             }
         } 
-        
-        $attributes = array_merge($attributes, $args);
 
+        $attributes = array_merge($attributes, $args);
 
         $name = $attributes['name'] ?? '';
 
@@ -169,7 +170,7 @@ class Html
 
     static function group(mixed $content, string $tag = 'div', Array $attributes = [], ...$args){
         $content_str = is_array($content) ? implode(' ', $content) : $content;
-        return static::tag($tag, $content_str, $attributes, [], ...$args);
+        return static::tag($tag, $content_str, $attributes, ...$args);
     }
 
     static function link(string $href, string $anchor, Array $attributes = [], ...$args){
