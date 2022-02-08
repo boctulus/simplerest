@@ -8108,17 +8108,6 @@ Ej:
 
 	use simplerest\core\libs\Bt5Form; 
 	use simplerest\core\libs\Tag;
-
-
-	Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
-
-	Bt5Form::macro('salutor', function($name, $adj)
-	{
-		return "<span/>Hello $adj $name</span>";
-	});
-
-	Bt5Form::setIdAsName();
-
 	?>
 
 	<div class = "row mt-5">
@@ -8140,57 +8129,21 @@ Ej:
 
 		echo tag('p')->text("Hola mundo cruel");
 
-		echo tag('color')->name('my_color')->text('Color')->id('c1');
-		
-
-		echo Bt5Form::div(content:[
-			tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
-			tag('text')->name('nombre')->placeholder("Username")
-		],
-			class:"input-group mb-3"
-		);
-
-		echo Bt5Form::select(name:'sexo', options:[
-			'varon' => 1,
-			'mujer' => 2
-		], default:1, placeholder:'Su sexo', attributes:['class' => 'my-3']);
-
-		echo tag('label')->name("edad")->text("Edad");
-		echo Bt5Form::range(name:'edad', min:0, max:99, default:10, class:'my-3');
-
-		echo tag('checkGroup')->content([
-			Bt5Form::radio(name:'civil', text:"soltero", checked:true, id:'soltero')
-		])->class('my-3');
-
-		echo tag('checkGroup')->content([
-			Bt5Form::radio(name:'civil', text:"casado", checked:true, id:'casado')
-		])->class('my-3');
-
-		
-		echo Bt5Form::switch(id:"hijos", text:"Hijos", checked:true);
-
-		echo Bt5Form::url(default:"https://www.linkedin.com/in/pablo-bozzolo/", class:"mt-3");
-
-		echo Bt5Form::label(id:"comment", placeholder:"Algo que desea agregar:", class:'mt-3');
-		echo Bt5Form::area(id:'comment', default:'bla bla', class:'my-3');
-
-		echo Bt5Form::inputButton(id:"comprar", value:"Comprar");
-		echo Bt5Form::reset(id:"limpiar", value:"Limpiar", class:'mx-3');
-		echo Bt5Form::submit(id:"enviar", value:"enviar");
-
-		echo Bt5Form::br();
-
-		echo tag('img')->src(assets('img/personal_data.png'))->id('i1')->class('img-fluid');
-
-		echo Bt5Form::br();
-
-		echo Bt5Form::salutor("Isabel", "bella"); 
-		echo ' ';
-		echo Bt5Form::link_to(href:"www.solucionbinaria.com", anchor:'SolucionBinaria .com', class:'mb-3 text-success');
-
 		?>
 		</div>
 	</div>
+
+
+# Text utilities
+
+Silenciar un texto (aclarar el color de la fuente) es tan simple como llamar a textMuted() sobre un p(), div(), span(), etc.
+
+Ej:
+
+	echo tag('p')->text('Some paragraph')->class('mt-3')->textMuted();
+    echo tag('div')->content('Some content')->class('mt-3')->textMuted();
+
+En general se puede aplicar cualquier clase de css sobre si se define en $classes y tal es el caso para textMuted a la que se le aplica para Boostrap 5 la clase "text-muted".
 
 
 # Buttons
@@ -8274,6 +8227,18 @@ Ej:
         tag('button')->content('E')->danger()->class('rounded-pill')->outline() .
         tag('button')->content('F')->success()->class('rounded-pill')->outline()
     )->aria_label("Basic example")->class('mx-3')->large();
+
+
+Botones agrupados en vertical
+
+Aplique Form::vertical() al button group para lograr el alineamiento vertical.
+
+Ej:
+
+	echo tag('buttonGroup')->content(
+        tag('button')->content('E')->danger()->class('rounded-pill')->outline() .
+        tag('button')->content('F')->success()->class('rounded-pill')->outline()
+    )->aria_label("Basic example")->class('mx-3')->large()->vertical();
 
 
 # Acordión
