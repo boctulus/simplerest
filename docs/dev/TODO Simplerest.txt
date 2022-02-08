@@ -251,6 +251,42 @@ Dumb::test_q()
 
 ----
 
+- Leer PHP THE RIGHT WAY ! => en particulae sobre caching
+
+https://phptherightway.com/
+
+- Implementar algo como "Laravel Telescope" a fin de poder tener organizada toda la información de depuración (dumps, excepciones, requests, etc.)
+
+https://styde.net/introduccion-a-laravel-telescope/
+https://github.com/laravel/telescope
+
+
+[ Model ]
+
+- FirstOr, FirstOrCreate, updateOrCreate
+
+  $newUser = \App\UserInfo::updateOrCreate([
+      //Add unique field combo to match here
+      //For example, perhaps you only want one entry per user:
+      'user_id'   => Auth::user()->id,
+  ],[
+      'about'     => $request->get('about'),
+      'sec_email' => $request->get('sec_email'),
+      'gender'    => $request->get("gender"),
+      'country'   => $request->get('country'),
+      'dob'       => $request->get('dob'),
+      'address'   => $request->get('address'),
+      'mobile'    => $request->get('cell_no')
+  ]);
+
+
+<-- you should specify a second parameter. The first indicates the conditions for a match and second is used to specify which fields to update.
+
+https://laravel-news.com/firstornew-firstorcreate-firstor-updateorcreate
+https://stackoverflow.com/questions/30686880/laravel-firstornew-how-to-check-if-its-first-or-new
+https://stackoverflow.com/questions/36543477/in-laravel-is-there-a-way-to-find-out-whether-firstorcreate-created-or-if-it
+https://stackoverflow.com/a/42696141
+
 - Terminar onDeleting() y onDeleted() "parseando" los where y where_raw en búsqueda de alguna condición que referencie concretamente un id e incluirla en $data:
 
   where id = xxx

@@ -2,12 +2,14 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\controllers\api\M;
 use simplerest\core\libs\Tag;
 
 class Html
 {
     static protected $pretty     = false;
     static protected $id_eq_name = false;
+    static protected $class;
     static protected $colors = [
         'primary',
         'secondary',
@@ -35,24 +37,18 @@ class Html
         "url"            => "form-control",
         "area"           => "form-control",
         "dataList"       => "form-control",
-
         "range"          => "form-range",
-
         "select"         => "form-select",
-
-        "checkbox"       => "form-check-input" ,
-        "radio"          => "form-check-input" ,
-
+        "checkbox"       => "form-check-input",
+        "radio"          => "form-check-input",
         "label"          => "form-label",
         "button"         => "btn",
-
         "submit"         => "btn btn-primary",
         "reset"          => "btn btn-primary",
         "inputButton"    => "btn btn-primary",
 
         "inputGroup"     => "input-group",
         "checkGroup"     => "form-check",
-        "buttonGroup"    => "btn-group",
         "buttonToolbar"  => "btn-toolbar",
  
         "formFloating"   => "form-floating",
@@ -60,13 +56,40 @@ class Html
         "color"          => "form-control form-control-color",
 
         "alert"          => "alert alert-primary",
-
         "alertLink"      => "alert-link",
 
-        "badge"          => "badge"
+        "badge"          => "badge",
+
+        "card"           => "card",
+        "cardBody"       => "card-body",
+        "cardLink"       => "card-link",
+        "cardText"       => "card-text",
+        "cardTitle"      => "card-title",
+        "cardSubtitle"   => "card-subtitle",
+        "cardImg"        => "card-img",
+        "cardImageTop"   => "card-img-top",
+        "cardImgBottom"  => "card-img-bottom",
+        "cardImgOverlay" => "card-img-overlay",
+        "cardListGroup"  => "list-group list-group-flush",
+        "cardListGroupItem" => "list-group-item",
+        "cardHeader"     => "card-header",
+        "cardHeaderTabs" => "card-header-tabs",
+        "cardFooter"     => "card-footer",
+
+        "navItem"        => "nav-item",
+        "navLink"        => "nav-link",
+
+        "textMuted"      => "text-muted"
     ];
     
     static protected $macros = [];
+
+    static protected function shiftClass(){
+        $class = static::$class;
+        static::$class = '';
+
+        return $class;
+    }
 
     static function pretty(bool $state = true){
         static::$pretty = $state;
@@ -102,20 +125,29 @@ class Html
 
     static protected function tag(string $type, ?string $value = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
     {
-        if (isset($attributes['class']) && isset($args['class'])){
-            $attributes['class'] .=  ' ' . $args['class'];
-            unset($args['class']);
-        }
-
         foreach ($args as $k => $v){
+            // ajuste para data-* props
             if (strpos($k, '_') !== false){
                 unset($args[$k]);
                 $k = str_replace('_', '-', $k);                
                 $args[$k] = $v;
             }
-        }
 
+            if (isset(static::$classes[$k])){
+                $attributes['class'] = !isset($attributes['class']) ? static::$classes[$k] : $attributes['class'] . ' '.static::$classes[$k];
+                unset($args[$k]);
+            }
+        }   
+
+        if (isset($attributes['class'])){
+            if (isset($args['class'])){
+                $attributes['class'] .=  ' ' . $args['class'];
+                unset($args['class']);
+            }
+        } 
+        
         $attributes = array_merge($attributes, $args);
+
 
         $name = $attributes['name'] ?? '';
 
@@ -620,6 +652,14 @@ class Html
 
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
+
+    static function p(string $text, Array $attributes = [], ...$args){
+        return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
+    }
+
+    static function li(string $text, Array $attributes = [], ...$args){
+        return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
+    }
     
     static function span(string $text, Array $attributes = [], ...$args){
         return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
@@ -675,7 +715,7 @@ class Html
 
     static function img(string $src, Array $attributes = [], ...$args){
         $attributes['src'] = $src;
-        return static::tag('img', null, $attributes, [], ...$args); 
+        return static::tag('img', null, $attributes, null, ...$args); 
     }
 
     /*
