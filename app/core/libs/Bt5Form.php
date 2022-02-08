@@ -92,7 +92,14 @@ class Bt5Form extends Form
             $attributes['class'] .= ' btn-group-sm';
             unset($args['small']);
         }
-        
+
+        if (in_array('vertical', $kargs)){
+            $attributes['class'] .= ' btn-group-vertical';
+            unset($args['vertical']);
+        } else {
+            $attributes['class'] .= " btn-group";
+        }
+
         return static::div($content, $attributes, ...$args);
     }
 
@@ -101,7 +108,6 @@ class Bt5Form extends Form
         $attributes['role']  = "toolbar";
         return static::div($content, $attributes, ...$args);
     }
-
 
     static function alert(string $content, bool $dismissible = false, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
@@ -167,7 +173,6 @@ class Bt5Form extends Form
     }
 
 
-
     /*
         Floating labels
 
@@ -183,6 +188,109 @@ class Bt5Form extends Form
         return static::link($href, $anchor, $attributes, ...$args);
     }
 
+    /* Cards Begin */
+
+    static function card(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function cardBody(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function cardLink(string $href, string $anchor, $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::link($href, $anchor, $attributes, ...$args);
+    }
+
+    static function cardText(string $text, $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::p($text, $attributes, ...$args);
+    }
+
+    static function cardTitle(string $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::h5($text, $attributes, ...$args);
+    }
+
+    static function cardSubtitle(string $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::h6($text, $attributes, ...$args);
+    }
+
+    static function cardImg(string $src, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::img($src, $attributes, null, ...$args); 
+    }
+
+    static function cardImageTop(string $src, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::img($src, $attributes, null, ...$args); 
+    }
+
+    static function cardImgBottom(string $src, Array $attributes = [], ...$args){
+        return static::img($src, $attributes, null, ...$args); 
+    }
+
+    static function cardImgOverlay(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function cardListGroup(mixed $content, $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::ul($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function cardListGroupItem(string $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::li($text, $attributes, ...$args);
+    }
+
+    static function cardHeader(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function cardHeaderTabs(mixed $content, $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::ul($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function cardFooter(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    // Seguir por "Card styles" 
+    // https://getbootstrap.com/docs/5.0/components/card/#image-overlays
+
+
+    /* Cards End */
+
+    /*
+        It should be contained in a blockquote
+    */
+    static function blockquoteFooter(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::footer($content, $attributes, ...$args);
+    }
+
+    /* Navigation Begin */
+
+    static function navItem(string $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::li($text, $attributes, ...$args);
+    }
+
+    static function navLink(string $href, string $anchor, $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::link($href, $anchor, $attributes, ...$args);
+    }
+
+    /* Navigation End */
 
 }
 

@@ -7063,7 +7063,8 @@ class DumbController extends Controller
          
         // echo tag('text')->name('bozzolo')->placeholder('Su apellido');
 
-        // echo tag('p');
+        // echo tag('p')->text('Some paragraph')->class('mt-3')->textMuted();
+        // echo tag('div')->content('Some content')->class('mt-3')->textMuted();
 
         // echo Bt5Form::group(
         //     content:[
@@ -7141,7 +7142,14 @@ class DumbController extends Controller
         //     'S' => 'Small'
         // ], placeholder:'Pick a size...', default:'Large');
 
-        echo tag('button')->content('Botón rojo')->danger()->class('rounded-pill mx-3')->outline();
+        //echo tag('button')->content('Botón rojo')->danger()->class('rounded-pill mx-3')->outline();
+
+        // echo tag('card')->content(
+        //     tag('cardBody')->content(
+        //         tag('cardTitle')->text('Some title') .
+        //         tag('cardSubtitle')->text('Some subtitle')->textMuted()
+        //     )
+        // )->class('mb-4');
     }
 
 }   
