@@ -37,13 +37,14 @@ Bt5Form::setIdAsName();
         ]
     ]);
 
-    echo tag('h3')->text("Datos");
+    echo tag('h3')->text("Datos")->class('mb-3');
 
     echo tag('card')->content(
         tag('cardHeader')->content('Quote') .
         tag('cardBody')->content(
-            tag('blockquote')->content(tag('p')->text('A well-known quote, contained in a blockquote element.') .
-            '<footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>'
+            tag('blockquote')->content(tag('p')->text(
+                'A well-known quote, contained in a blockquote element.') .
+                tag('blockquoteFooter')->content('Someone famous in '. tag('cite')->title("Source Title")->content('Source Title'))
             )->class('mb-0')
         )
     )->class('mb-4');
