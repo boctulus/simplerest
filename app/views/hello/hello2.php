@@ -17,10 +17,9 @@ Bt5Form::setIdAsName();
 
 <div class = "row mt-5">
     <div class = "col-6 offset-3">  
-   
+
    <?php 
 
-    echo tag('br');
 
     echo tag('breadcrumb')->content([
         [   
@@ -38,9 +37,26 @@ Bt5Form::setIdAsName();
         ]
     ]);
 
-    echo tag('h3')->text("Datos")->class('mb-3');
+    echo tag('h3')->text("Datos");
 
-    echo tag('badge')->content('barato')->class('mb-3 rounded-pill')->success();
+    echo tag('card')->content(
+        tag('cardHeader')->content('Quote') .
+        tag('cardBody')->content(
+            tag('blockquote')->content(tag('p')->text('A well-known quote, contained in a blockquote element.') .
+            '<footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>'
+            )->class('mb-0')
+        )
+    )->class('mb-4');
+
+
+    echo tag('card')->content(
+        tag('cardBody')->content(
+            tag('cardTitle')->text('Some title') .
+            tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
+        )
+    )->class('mb-4');
+
+    echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->success();
 
     echo tag('button')->content([
         'Inbox', 
@@ -59,7 +75,7 @@ Bt5Form::setIdAsName();
             tag('button')->content('Botón azul')->info()->class('rounded-pill')->outline() .
             tag('button')->content('Botón amarillo')->warning()->class('rounded-pill')->outline()
         )->aria_label("Another group")->class('mx-3')
-    ]);
+    ])->class('my-3');
 
     echo tag('buttonGroup')->content(
         tag('button')->content('A')->danger()->class('rounded-pill')->outline() .
@@ -74,7 +90,7 @@ Bt5Form::setIdAsName();
     echo tag('buttonGroup')->content(
         tag('button')->content('E')->danger()->class('rounded-pill')->outline() .
         tag('button')->content('F')->success()->class('rounded-pill')->outline()
-    )->aria_label("Basic example")->class('mx-3')->large();
+    )->aria_label("Basic example")->class('mx-3')->large()->vertical();
 
     echo '<br/>';
 
@@ -164,7 +180,7 @@ Bt5Form::setIdAsName();
 
     echo Bt5Form::br();
 
-    echo tag('img')->src(assets('img/personal_data.png'))->id('i1')->class('img-fluid');
+    echo tag('img')->src(assets('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");
 
     echo Bt5Form::br();
 
