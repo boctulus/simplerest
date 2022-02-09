@@ -292,5 +292,60 @@ class Bt5Form extends Form
 
     /* Navigation End */
 
+    /* Carousel Begin */
+
+    static function carousel(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['data-bs-ride'] = "carousel";
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function carouselInner(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function carouselItem(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function carouselIndicators(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function carouselCaption(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function carouselControlPrev(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['data-bs-slide'] = "prev";
+        return static::button($content, $attributes, ...$args);
+    }
+
+    static function carouselControlNext(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['data-bs-slide'] = "next";
+        return static::button($content, $attributes, ...$args);
+    }
+
+    static function carouselControlPrevIcon(mixed $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['aria-hidden']="true";
+        return static::span($text, $attributes, ...$args);
+    }
+
+    static function carouselControlNextIcon(mixed $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['aria-hidden']="true";
+        return static::span($text, $attributes, ...$args);
+    }
+
+
+    /* Carousel End */
+
 }
 

@@ -16,6 +16,11 @@ Es posible usar Alpine Js con Vue Js
 https://laracasts.com/discuss/channels/vue/alpinejs-interfieres-with-vuejs
 
 
+- "Widgets" que podrían implementarse con el FormBuilder y a diferencia de las macros, serán clases y no funciones.
+
+Ver
+https://github.com/arrilot/laravel-widgets
+
 - FormBuilder: agregar validaciones..... o referenciar las del Schema quizás referenciando al modelo
 
   class SongForm extends Form
@@ -54,78 +59,6 @@ https://laracasts.com/discuss/channels/vue/alpinejs-interfieres-with-vuejs
       size: 4,
       placeholder: "Seleccione empresa",
   },
-
-Tipos de controles
-
-  protected static $availableFieldTypes = [
-      'text'           => 'InputType',
-      'email'          => 'InputType',
-      'url'            => 'InputType',
-      'tel'            => 'InputType',
-      'search'         => 'InputType',
-      'password'       => 'InputType',
-      'hidden'         => 'InputType',
-      'number'         => 'InputType',
-      'date'           => 'InputType',
-      'file'           => 'InputType',
-      'image'          => 'InputType',
-      'color'          => 'InputType',
-      'datetime-local' => 'InputType',
-      'month'          => 'InputType',
-      'range'          => 'InputType',
-      'time'           => 'InputType',
-      'week'           => 'InputType',
-      'select'         => 'SelectType',
-      'textarea'       => 'TextareaType',
-      'button'         => 'ButtonType',
-      'buttongroup'    => 'ButtonGroupType',
-      'submit'         => 'ButtonType',
-      'reset'          => 'ButtonType',
-      'radio'          => 'CheckableType',
-      'checkbox'       => 'CheckableType',
-      'choice'         => 'ChoiceType',
-      'form'           => 'ChildFormType',
-      'entity'         => 'EntityType',
-      'collection'     => 'CollectionType',
-      'repeated'       => 'RepeatedType',
-      'static'         => 'StaticType'
-  ];
-
-  class Field
-  {
-      // Simple fields
-      const TEXT = 'text';
-      const TEXTAREA = 'textarea';
-      const SELECT = 'select';
-      const CHOICE = 'choice';
-      const CHECKBOX = 'checkbox';
-      const RADIO = 'radio';
-      const PASSWORD = 'password';
-      const HIDDEN = 'hidden';
-      const FILE = 'file';
-      const STATIC = 'static';
-      //Date time fields
-      const DATE = 'date';
-      const DATETIME_LOCAL = 'datetime-local';
-      const MONTH = 'month';
-      const TIME = 'time';
-      const WEEK = 'week';
-      //Special Purpose fields
-      const COLOR = 'color';
-      const SEARCH = 'search';
-      const IMAGE = 'image';
-      const EMAIL = 'email';
-      const URL = 'url';
-      const TEL = 'tel';
-      const NUMBER = 'number';
-      const RANGE = 'range';
-      const ENTITY = 'entity';
-      const FORM = 'form';
-      //Buttons
-      const BUTTON_SUBMIT = 'submit';
-      const BUTTON_RESET = 'reset';
-      const BUTTON_BUTTON = 'button';
-  }
 
 
 - Para las alertas usar SweetAlert2
@@ -202,6 +135,14 @@ Más
 https://wpshout.com/know-wordpress-transients-api/
 
 
+- Para evitar tener que registrar manualmente Services desde Laravel 5.5 se implementó un "auto discovery" de paques. Hacer lo mismo.
+
+https://laravel-news.com/package-auto-discovery
+https://medium.com/sureshvel/laravel-5-5-custom-packages-with-autodiscover-the-providers-5772c60d847e
+
+--
+
+
 [ SUB-RESOURCES ]
 
   * Permitir traer sub-sub-resources.  Ej:
@@ -260,8 +201,55 @@ https://phptherightway.com/
 https://styde.net/introduccion-a-laravel-telescope/
 https://github.com/laravel/telescope
 
+--
+
+[ Validaciones ]
+
+- Poder separar (de forma opcional) los mensajes personalizados para cada validación.
+
+Ahora:
+
+  protected $rules = [
+    'id       => ['type' => 'int', 'required' => true]
+        'name'      => ['min'=>3, 'max'=>40],
+    'description'   => ['max'=>50],
+    'size'      => ['max'=>20],
+    'workspace'   => ['max'=>20],
+    'is_active'   => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
+  ];
+
+En CI4:
+
+    protected $validationMessages = [
+        'email'        => [
+            'is_unique' => 'Sorry. That email has already been taken. Please choose another.',
+        ],
+    ];
+
+
+- Poder definir condiciones en las cuales no aplica una regla de validación específica. Podría recibir una función anónima que defina esas reglas de excepción.
+
+Ver "Validation Placeholders"
+https://codeigniter.com/user_guide/models/model.html#validation-placeholders
+
+--
 
 [ Model ]
+
+- Cambiar a:
+
+$fillable      -> solo un filtro que no generará excepción. La idea es proteger contra ataques (SQL injections) de actualización masiva.
+
+$not_fillable  -> not-fillable (lista negra)
+
+$allowed       -> array de campos que no generarán excepción si están presentes al crear / editar
+
+$not_allowed   -> si se intentara crear o actualizar un registro not_allowed se generará excepción.
+
+
+<-- ver implicancias como tener que redefinir lo que hace fill()
+
+Más
 
 - FirstOr, FirstOrCreate, updateOrCreate
 
@@ -300,6 +288,30 @@ Sin embargo, suena más eficiente por defecto mutear el onDeleting() y onDeleted
 - Si existe más de una conexión de base de datos => o bien el tenantid es obligatorio 
 ...o.... buscar primero en la conexión por defecto y sino encuentra el modelo lanzar el
 warning de que no se ha especificado tenant como posible fuente de error.
+
+
+- Poder trabajar con cursores....... en CI4 es con chunk()
+
+  $userModel->chunk(100, function ($data) {
+      // do something.
+      // $data is a single row of data.
+  });
+
+Ver en Laravel
+
+- Sería interesante poder definir auto-casting como hace CI4 ... ver en Laravel
+
+  class User extends Entity
+  {
+      protected $casts = [
+          'is_banned'          => 'boolean',
+          'is_banned_nullable' => '?boolean',
+      ];
+  }
+
+https://codeigniter.com/user_guide/models/entities.html#property-casting
+
+----
 
 - No permitir crear un nuevo update de la misma versión!!! días después deja
 
