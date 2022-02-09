@@ -7150,6 +7150,20 @@ class DumbController extends Controller
         //         tag('cardSubtitle')->text('Some subtitle')->textMuted()
         //     )
         // )->class('mb-4');
+
+        echo tag('carousel')->content(
+            tag('carouselInner')->content([
+                tag('carouselItem')->content(
+                    tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/elgrove.png')
+                ),
+                tag('carouselItem')->content(
+                    tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/drivingcars-cl2.png')
+                ),
+                tag('carouselItem')->content(
+                    tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/acrilicosxtchile-cl.png')
+                ),
+            ])
+        );
     }
 
 }   
