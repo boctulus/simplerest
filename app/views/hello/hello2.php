@@ -38,7 +38,10 @@ Bt5Form::setIdAsName();
 
         echo tag('h3')->text("Datos")->class('mb-3');
 
+        /* Carrousel */
+
         echo tag('carousel')->content(
+            // with Indicators
             tag('carouselIndicators')->content([
                 tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("0")->aria_current("true")
                 ->content()->active(),
@@ -52,6 +55,7 @@ Bt5Form::setIdAsName();
                 tag('carouselItem')->content(
                     tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/elgrove.png') 
                     .
+                    // withCaptions
                     tag('carouselCaption')->content(
                     'h5>First slide label</h5>
                     <p>Some representative placeholder content for the first slide.</p>'
@@ -75,6 +79,7 @@ Bt5Form::setIdAsName();
                 ),
             ]) .
 
+            // with Controls
             tag('carouselControlPrev')->content(
                 tag('carouselControlPrevIcon')->text() .
                 tag('span')->hidden()->text('Previous')
@@ -84,6 +89,7 @@ Bt5Form::setIdAsName();
                 tag('carouselControlNextIcon')->text() .
                 tag('span')->hidden()->text('Next')
             )->data_bs_target("#carouselExampleControls")
+
         )->id("carouselExampleControls");
 
 

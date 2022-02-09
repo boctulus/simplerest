@@ -8525,3 +8525,9 @@ Ej:
 			tag('span')->hidden()->text('Next')
 		)->data_bs_target("#carouselExampleControls")
 	)->id("carouselExampleControls");
+
+Se pueden crear sub-componentes que reducirían mucho el boilerplate:
+
+	withControls
+	withIndicators
+	withCaptions
