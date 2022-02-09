@@ -62,6 +62,8 @@ class Html
 
         "blockquoteFooter" => "blockquote-footer",
 
+        /* Cards Begin */
+
         "card"           => "card",
         "cardBody"       => "card-body",
         "cardLink"       => "card-link",
@@ -78,10 +80,36 @@ class Html
         "cardHeaderTabs" => "card-header-tabs",
         "cardFooter"     => "card-footer",
 
+        /* Cards End */
+
         "navItem"        => "nav-item",
         "navLink"        => "nav-link",
 
-        "textMuted"      => "text-muted"
+        /* Carousel Begin */
+
+        "carousel"       => "carousel slide",
+        "carouselFade"   => "carousel-fade",
+        "carouselDark"   => "carousel-dark",
+        "carouselInner"  => "carousel-inner",
+        "carouselItem"   => "carousel-item", 
+        "carouselControlPrev" => "carousel-control-prev",
+        "carouselControlPrevIcon" => "carousel-control-prev-icon",
+        "carouselControlNext" => "carousel-control-next",
+        "carouselControlNextIcon" => "carousel-control-next-icon",
+        "carouselIndicators" => "carousel-indicators",
+        "carouselCaption" => "carousel-caption", 
+              
+        /* Carousel End */
+
+
+        /*
+            Utilities
+        */
+
+        "textMuted"      => "text-muted",
+        "hidden"         => "visually-hidden",
+        "active"         => "active"
+        
     ];
     
     static protected $macros = [];
@@ -112,7 +140,7 @@ class Html
         $_att = [];
         foreach ($atts as $att => $val){
             if (is_array($val)){
-                throw new \InvalidArgumentException();
+                throw new \InvalidArgumentException(json_encode($atts));
             }
 
             $_att[] = "$att=\"$val\"";
@@ -647,9 +675,6 @@ class Html
                 break;
             }           
         }
-
-        // d($attributes);
-        // d($args);
 
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
