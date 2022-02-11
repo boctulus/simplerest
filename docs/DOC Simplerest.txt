@@ -6,7 +6,9 @@ SimpleRest utiliza la arquitectura MVC, está orientado a API Restful y es un fr
 Algunas características:
 
 - MVC architecture 
-- APIs work out--of--the--box, i.e. without writing any code ***
+- Router
+- Middlewares
+- APIs work out-of-the-box, i.e. without writing any code ***
 - Authentication via OAuth 2 style web tokens and API Keys
 - Centralized ACL with granular role and permissions system + custom permissions decorating roles
 - Possibility to "share" resources via "folders".
@@ -20,16 +22,17 @@ Algunas características:
 - Migrations
 - Multitenant support
 - Service Providers
-- Validator and self-validations on models
+- Validator and auto-validations on models
 - WebHooks and Server Sent Events
 - Sub-resources
 - API consumption utility
 - Code profiler (execution times)
-- Framework extension (add new functionalities)
 - Reverse dependency container (IoC)
 - CronJobs
 - Job Queue Manager
+- View Templates
 - HTML / Form Builder 
+- Cache
 
 
 Cómo "índice" para buscar documentación puede buscar por las características enumeradas previamente más las siguientes referencias:
@@ -5614,7 +5617,7 @@ El comando "migrations" tiene una ayuda que es invocada cuando no se pasan pará
 
 # Multitenant
 
-El framework tiene implementación de multitenencia a dos niveles: tablas y bases de datos. 
+El framework tiene implementación de multitenencia a varios niveles: tablas, bases de datos y "grupos" de bases de datos.
 
 El método DB::getConnection() permite especificar opcionalmente el identificador de la conexión a base de datos a la que nos queremos conectar y la clase Model acepta una conexión así que es posible hacer lo siguiente:
 
@@ -5916,6 +5919,8 @@ Nota: Es importante notar que la propiedad $connect_to es parte de la API y no d
 
 # Query hacia sub-recursos
 
+Para referenciar campos en otras tablas (en la misma base de datos) se usa la notatación {tabla}.{campo}
+
 Ej:
 
 	/api/v1/products?valoraciones.texto=bueno
@@ -5998,6 +6003,8 @@ POST
 
 Para no meter todo dentro "data" la forma sería anidar recursos:
 
+POST
+
 {
     "products": {
         "name": "Juguito Fruticon",
@@ -6018,6 +6025,8 @@ Para no meter todo dentro "data" la forma sería anidar recursos:
 
 E inclusive podría no incluirse el nombre de la entidad principal quedando simplificado a:
 
+POST
+
 {
     "name": "Juguito Fruticon",
     "description": "XXXXXXXXX",
@@ -6037,6 +6046,8 @@ E inclusive podría no incluirse el nombre de la entidad principal quedando simp
 <-- forma elegida y actualmente la única soportada.
 
 Por supuesto podría haber más relaciones, por ejemplo con un usuario:
+
+POST
 
 {
     "name": "Juguito Fruticon",
@@ -6065,6 +6076,8 @@ Por supuesto podría haber más relaciones, por ejemplo con un usuario:
 }   
 
 La relación *debería* poder hacerse no solo por el nombre de la tabla relacionada sino por el campo que es FK, lo cual tiene la ventaja de poder manejar más de una relación entre dos tablas:
+
+POST
 
 {
     "name": "Juguito Fruticon",
@@ -6096,6 +6109,8 @@ Aclarando dudas,......
 
 Si existe una única relación entre una tabla y otra "users" via la FK "belongs_to" entonces:
 
+POST
+
 {
     "name": "Juguito Fruticon",
     "description": "XXXXXXXXX",
@@ -6108,6 +6123,8 @@ Si existe una única relación entre una tabla y otra "users" via la FK "belongs
 }    
 
 Es equivalente a ....	
+
+POST
 
 {
     "name": "Juguito Fruticon",
@@ -6139,6 +6156,8 @@ Ej:
 
 Y se puede enviar un JSON como:
 
+POST
+
 	{
 		"per_varIdentificacion" : "1152472014",
 		"per_varDV" : "0",
@@ -6156,11 +6175,13 @@ Y se puede enviar un JSON como:
 		]
 	}
 
-Como puede apreciarse es posible enviar campos propios de la tabla puente si están debidamente cualificados con notación tabla.camp
+Como puede verse es posible enviar campos de la tabla puente si están debidamente cualificados con notación tabla.campo
 
 Veamos otro caso:
 
 Supongamos que existe una relación N:M entre "products" y "tags". Pues bien podría enviarse el ID de cada tag dentro de products:
+
+POST
 
 	{
 		"name": "Juguito Fruticon!!",
@@ -6188,10 +6209,12 @@ También es posible aunque algo menos performante enviar los campos de los de la
 
 		"tags": [
 			{ 
-				"texto": "saludable"
+				"texto": "saludable",
+                // ...
 			},
 			{ 
-				"texto": "en promoción"
+				"texto": "en promoción",
+                // ...
 			}
 		]
 	}   
@@ -6445,6 +6468,8 @@ Ej:
 
 También es válido lo siguiente:
 
+PATCH /v1/products/145?tenantid=az
+
 	{
 		"valoraciones": [
 			{
@@ -6472,6 +6497,8 @@ Casos (b) y (c) ya funcionales para relaciones '1:1' y 'n:1'  (al 26-dic)
 
 Ej:
 
+PATCH
+
 	{
 		"description": "xyzz", 
 		"cost": 200,  
@@ -6493,7 +6520,9 @@ Ej:
 
 ACTUALIZACIÓN AL 27-DIC-2022
 
-Ya es posible para relaciones 1:n, crear sub-recursos sino existen en el PATCH.
+Ya es posible para relaciones 1:n, crear sub-recursos sino existen.
+
+PATCH
 
 	{
 		"description": "xyzz", 
@@ -6560,7 +6589,7 @@ Ya funcionan los PATCH con ID + otros campos
 
 Ej:
 
-	/api/v1/products/145?tenantid=az&_append=true
+    PATCH /api/v1/products/145?tenantid=az&_append=true
 
 	{
 		"valoraciones": [
@@ -6587,7 +6616,7 @@ Pasando los parámetros _schema=true o _rules=true en cualquier endpoint se obti
 
 Ej: 
 
-	http://simplerest.lan/api/v1/products?tenantid=az&_rules=1
+	GET http://simplerest.lan/api/v1/products?tenantid=az&_rules=1
 
 Rta:
 
@@ -6661,7 +6690,7 @@ Cuando las condiciones mencionadas se cumple, se incluye de forma automática el
 
 # Librerías
 
-	Se pueden crear cuantas librerías se requiera. Ëstas deben ser clases y usar namespaces correctamente por lo cual se sugiere crearlas via comando make:
+	Se pueden crear cuantas librerías se requiera. Éstas deben ser clases y usar namespaces correctamente por lo cual se sugiere crearlas via comando make:
 
 		php com make lib mi_libreria
 
@@ -6763,7 +6792,7 @@ https://devdojo.com/devdojo/how-to-create-a-laravel-package
 
 # Como servir vistas en el FrontEnd
 
-Si bien SimpleRest es un framework RAD orientado a crear APIs, implementa la arquitectura Modelo-Vista-Controlador (MVC) y por ende es capaz de servie vistas.
+Si bien SimpleRest es un framework RAD se pensó para crear APIs, implementa la arquitectura Modelo-Vista-Controlador (MVC) y por ende es capaz de servie vistas.
 
 Las vistas son servidas desde los controladores así que como priemr paso necesita es tener un controlador o crearlo:
 
@@ -6992,13 +7021,15 @@ Agregar en el bloque lo siguiente:
 
 El framework provee la función Url::consume_api() para el consumo de APIs. 
 
-    consume_api(string $url, 
-                string $http_verb, 
-                $body = null, 
-                ?Array $headers = null, 
-                ?Array $options = null, 
-                $decode = true)
+    consume_api(
 
+        string $url, 
+        string $http_verb, 
+        $body = null, 
+        ?Array $headers = null, 
+        ?Array $options = null, 
+        $decode = true
+    )
 
 En caso de éxito responde con algo como:
 
@@ -7064,7 +7095,6 @@ Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON p
 
 	$res = Url::consume_api('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
   
-
 # Crear un recurso
 
 	$data = '{
@@ -7133,7 +7163,7 @@ Ej:
 
 # Encodeo base 64
 
-Lo imporante es no solo encodear sino pasar el Content-type correcto.
+En caso de "encodear" el body del request se debe usar el Content-type correcto.
 
 Ej:
 
@@ -7200,9 +7230,9 @@ Acl
 FoldersAclExtension
 
 
-# Debugging
+# Dumping de variables
 
-Debug				
+VarDump				
 
 
 # Manejo de errores

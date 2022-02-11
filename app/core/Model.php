@@ -936,6 +936,11 @@ class Model {
 		return $this;
 	}
 
+	/*
+		Revisar contra:
+
+		https://laravel.com/docs/9.x/queries#where-exists-clauses
+	*/
 	function whereExists(string $q, array $vals = null){
 		$this->whereRaw("EXISTS $q", $vals);
 		return $this;
@@ -2070,12 +2075,15 @@ class Model {
 		return $this;
 	}
 
+	/*
+		Es un error usar or() ya que depende de group() que afecta solo a los WHERE
+	*/
 	function orHavingRaw(string $q, array $vals = null){
-		$this->or(function($x) use ($q, $vals){
-			$x->HavingRaw($q, $vals);
-		});
+		// $this->or(function($x) use ($q, $vals){
+		// 	$x->HavingRaw($q, $vals);
+		// });
 
-		return $this;
+		// return $this;
 	}
 
 	function find($id){
