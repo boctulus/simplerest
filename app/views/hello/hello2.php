@@ -53,11 +53,10 @@ Bt5Form::setIdAsName();
 
             tag('carouselInner')->content([
                 tag('carouselItem')->content(
-                    tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/elgrove.png') 
-                    .
+                    tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/elgrove.png') .
                     // withCaptions
                     tag('carouselCaption')->content(
-                    'h5>First slide label</h5>
+                    '<h5>First slide label</h5>
                     <p>Some representative placeholder content for the first slide.</p>'
                     )->class("d-none d-md-block")
                 )->active(),
