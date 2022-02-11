@@ -203,6 +203,12 @@ https://github.com/laravel/telescope
 
 --
 
+- "Importar" la librería CLI de CodeIgniter :)
+
+https://codeigniter.com/user_guide/cli/cli_library.html
+
+--
+
 [ Validaciones ]
 
 - Poder separar (de forma opcional) los mensajes personalizados para cada validación.
@@ -236,20 +242,58 @@ https://codeigniter.com/user_guide/models/model.html#validation-placeholders
 
 [ Model ]
 
-- Cambiar a:
+- Usar comillado simple y no backticks !
 
-$fillable      -> solo un filtro que no generará excepción. La idea es proteger contra ataques (SQL injections) de actualización masiva.
-
-$not_fillable  -> not-fillable (lista negra)
-
-$allowed       -> array de campos que no generarán excepción si están presentes al crear / editar
-
-$not_allowed   -> si se intentara crear o actualizar un registro not_allowed se generará excepción.
+"Backticks also work but they're only supported for MySQL syntax compatibility."
 
 
-<-- ver implicancias como tener que redefinir lo que hace fill()
+- Implementar de CI4: <no están en Laravel>
+
+  like(), 
+  orLike(), 
+  notLike(), 
+  orNotLike(), 
+
+  havingIn(), 
+  orHavingIn(), 
+  havingNotIn(),
+  orHavingNotIn(),
+  havingLike(),
+  orHavingLike(),
+  notHavingLike(),
+  orNotHavingLike()
+
+  ignore()
 
 Más
+https://codeigniter.com/user_guide/database/query_builder.html#id9
+
+Faltaría también: <Laravel>
+
+  havingBetween()
+
+Ej:
+
+  $report = DB::table('orders')
+  ->selectRaw('count(id) as number_of_orders, customer_id')
+  ->groupBy('customer_id')
+  ->havingBetween('number_of_orders', [5, 15])
+  ->get();
+
+
+  upsert()
+
+  "The upsert method will insert records that do not exist and update the records that already exist with new values that you may specify. The method's first argument consists of the values to insert or update, while the second argument lists the column(s) that uniquely identify records within the associated table. The method's third and final argument is an array of columns that should be updated if a matching record already exists in the database"
+
+Ej:
+
+  DB::table('flights')->upsert([
+    ['departure' => 'Oakland', 'destination' => 'San Diego', 'price' => 99],
+    ['departure' => 'Chicago', 'destination' => 'New York', 'price' => 150]
+  ], ['departure', 'destination'], ['price']);
+
+  In the example above, Laravel will attempt to insert two records. If a record already exists with the same departure and destination column values, Laravel will update that record's price column.
+
 
 - FirstOr, FirstOrCreate, updateOrCreate
 
@@ -297,7 +341,13 @@ warning de que no se ha especificado tenant como posible fuente de error.
       // $data is a single row of data.
   });
 
-Ver en Laravel
+En Laravel:
+
+  DB::table('users')->orderBy('id')->chunk(100, function ($users) {
+      foreach ($users as $user) {
+          //
+      }
+  });
 
 - Sería interesante poder definir auto-casting como hace CI4 ... ver en Laravel
 
@@ -310,6 +360,37 @@ Ver en Laravel
   }
 
 https://codeigniter.com/user_guide/models/entities.html#property-casting
+
+- Falta soporte para JSON !
+
+  $users = DB::table('users')
+  ->where('preferences->dining->meal', 'salad')
+  ->get();
+
+o
+
+  $users = DB::table('users')
+  ->whereJsonContains('options->languages', 'en')
+  ->get();
+
+
+https://laravel.com/docs/9.x/queries#json-where-clauses
+
+
+- Cambiar a:
+
+$fillable      -> solo un filtro que no generará excepción. La idea es proteger contra ataques (SQL injections) de actualización masiva.
+
+$not_fillable  -> not-fillable (lista negra)
+
+$allowed       -> array de campos que no generarán excepción si están presentes al crear / editar
+
+$not_allowed   -> si se intentara crear o actualizar un registro not_allowed se generará excepción.
+
+
+<-- ver implicancias como tener que redefinir lo que hace fill()
+
+
 
 ----
 
