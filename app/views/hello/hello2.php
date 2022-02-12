@@ -91,6 +91,9 @@ Bt5Form::setIdAsName();
 
         )->id("carouselExampleControls");
 
+        // Cards
+
+        echo '<br/>';
 
         echo tag('card')->content(
             tag('cardHeader')->content('Quote') .
