@@ -225,7 +225,7 @@ class Bt5Form extends Form
         return static::img($src, $attributes, null, ...$args); 
     }
 
-    static function cardImageTop(string $src, Array $attributes = [], ...$args){
+    static function cardImgTop(string $src, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::img($src, $attributes, null, ...$args); 
     }
@@ -308,6 +308,33 @@ class Bt5Form extends Form
             unset($attributes['fade']);
         }
 
+        if (array_key_exists('withIndicators', $args)){
+            $content = tag('carouselIndicators')->content([
+                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("0")->aria_current("true")
+                ->content()->active(),
+                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("1")->aria_current("true")
+                ->content(),
+                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("2")->aria_current("true")
+                ->content()
+            ]).$content;
+
+            unset($attributes['withIndicators']);
+        }
+
+        if (array_key_exists('withControls', $args)){
+            $content .= tag('carouselControlPrev')->content(
+                tag('carouselControlPrevIcon')->text() .
+                tag('span')->hidden()->text('Previous')
+            )->data_bs_target("#carouselExampleControls") .
+
+            tag('carouselControlNext')->content(
+                tag('carouselControlNextIcon')->text() .
+                tag('span')->hidden()->text('Next')
+            )->data_bs_target("#carouselExampleControls");
+
+            unset($attributes['withControls']);
+        }
+
         return static::div($content, $attributes, ...$args);
     }
 
@@ -316,11 +343,16 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
-    static function carouselItem(mixed $content, Array $attributes = [], int $interval = -1, ...$args){
+    static function carouselItem(mixed $content, Array $attributes = [], int $interval = -1, mixed $caption = null, ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         if ($interval > 0){
             $attributes['data-bs-interval'] = $interval;
+        }
+
+        if (!empty($caption)){
+            $content .= tag('carouselCaption')->content($caption
+            )->class("d-none d-md-block");
         }
 
         return static::div($content, $attributes, ...$args);
@@ -358,6 +390,11 @@ class Bt5Form extends Form
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['aria-hidden']="true";
         return static::span($text, $attributes, ...$args);
+    }
+
+    static function carouselImg(string $src, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::img($src, $attributes, null, ...$args); 
     }
 
 
