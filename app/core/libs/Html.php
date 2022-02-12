@@ -71,7 +71,7 @@ class Html
         "cardTitle"      => "card-title",
         "cardSubtitle"   => "card-subtitle",
         "cardImg"        => "card-img",
-        "cardImageTop"   => "card-img-top",
+        "cardImgTop"   => "card-img-top",
         "cardImgBottom"  => "card-img-bottom",
         "cardImgOverlay" => "card-img-overlay",
         "cardListGroup"  => "list-group list-group-flush",
@@ -98,6 +98,7 @@ class Html
         "carouselControlNextIcon" => "carousel-control-next-icon",
         "carouselIndicators" => "carousel-indicators",
         "carouselCaption" => "carousel-caption", 
+        "carouselImg"   => "d-block w-100",
               
         /* Carousel End */
 
