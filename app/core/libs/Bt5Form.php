@@ -297,6 +297,17 @@ class Bt5Form extends Form
     static function carousel(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['data-bs-ride'] = "carousel";
+
+        if (array_key_exists('dark', $args)){
+            static::addClass(static::$classes["carouselDark"], $attributes['class']);
+            unset($attributes['dark']);
+        }
+
+        if (array_key_exists('fade', $args)){
+            static::addClass(static::$classes["carouselFade"], $attributes['class']);
+            unset($attributes['fade']);
+        }
+
         return static::div($content, $attributes, ...$args);
     }
 
@@ -305,8 +316,13 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
-    static function carouselItem(mixed $content, Array $attributes = [], ...$args){
+    static function carouselItem(mixed $content, Array $attributes = [], int $interval = -1, ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if ($interval > 0){
+            $attributes['data-bs-interval'] = $interval;
+        }
+
         return static::div($content, $attributes, ...$args);
     }
 

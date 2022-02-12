@@ -7164,6 +7164,20 @@ class DumbController extends Controller
         //         ),
         //     ])
         // );
+
+        // var_dump(Bt5Form::addClass("hide", "class1 class2"));
+        // var_dump(Bt5Form::addClass("hide", "class1 hide class2"));
+        // var_dump(Bt5Form::addClass("hide", "class1 class2 hide"));
+        // var_dump(Bt5Form::addClass("hide", "class1 class3"));
+        // var_dump(Bt5Form::addClass("hide", "hide class1 class3"));
+        // var_dump(Bt5Form::addClass("hide", ""));
+
+        // d('');
+
+        // var_dump(Bt5Form::removeClass("hide", "class1 class2"));
+        // var_dump(Bt5Form::removeClass("hide", "hide class1 class2"));
+        // var_dump(Bt5Form::removeClass("hide", "class1 hide class3"));
+        // var_dump(Bt5Form::removeClass("hide", "class1 class4 hide"));
     }
 
 }   

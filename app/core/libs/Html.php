@@ -125,6 +125,36 @@ class Html
         static::$pretty = $state;
     }
 
+    static function addClass(string $new_class, string &$to){
+        if (empty($to)){
+            return $new_class;
+        }
+
+        if (strpos($to, $new_class) === false){
+            $to .= " $new_class";
+        }        
+
+        return $to;
+    }
+
+    static function removeClass(string $class, string &$to){
+        $pos = strpos($to, $class);
+
+        if ($pos !== false){
+            if ($pos === 0){
+                return substr($to, strlen($class)+1);
+            }
+
+            if ($pos + strlen($class) == strlen($to)){     
+                return substr($to, 0, $pos-1);
+            } else {
+                return substr($to, 0, $pos) . substr($to, $pos + strlen($class)+1);
+            }
+        }   
+        
+        return $to;
+    }
+
     /*
         Copy name attribute into id one
     */
