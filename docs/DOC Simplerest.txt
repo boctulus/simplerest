@@ -8556,6 +8556,26 @@ Ej:
 		)->data_bs_target("#carouselExampleControls")
 	)->id("carouselExampleControls");
 
+
+Cabe notar que el primer item debe contener la clase "active" y por eso en el ejemplo se llamó a active()
+
+Para transacción con efecto "fade" llamando a carouselFade() o fade() y para tema obscuro es con carouselDark() o dark()
+
+Ej:
+
+	echo tag('carousel')->content(
+				// Items
+	)->id("carouselExampleControls")->dark()->fade();
+
+Para especificar el tiempo en milisegundos para cada transición es con interval()
+
+	tag('carouselItem')->content(
+		// ...
+	)->interval(1500),
+
+
+
+
 Se pueden crear sub-componentes que reducirían mucho el boilerplate:
 
 	withControls
