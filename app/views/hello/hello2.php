@@ -41,55 +41,23 @@ Bt5Form::setIdAsName();
         /* Carrousel */
 
         echo tag('carousel')->content(
-            // with Indicators
-            tag('carouselIndicators')->content([
-                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("0")->aria_current("true")
-                ->content()->active(),
-                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("1")->aria_current("true")
-                ->content(),
-                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("2")->aria_current("true")
-                ->content(),
-            ]) .
-
             tag('carouselInner')->content([
                 tag('carouselItem')->content(
-                    tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/elgrove.png') .
-                    // withCaptions
-                    tag('carouselCaption')->content(
+                    tag('carouselImg')->src('https://solucionbinaria.com/assets/images/porfolio/elgrove.png')
+                )->active()->caption(
                     '<h5>First slide label</h5>
                     <p>Some representative placeholder content for the first slide.</p>'
-                    )->class("d-none d-md-block")
-                )->active(),
-
-                tag('carouselItem')->content(
-                    tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/drivingcars-cl2.png') .
-                    tag('carouselCaption')->content(
-                        '<h5>Second slide label</h5>
-                        <p>Some representative placeholder content for the second slide.</p>'
-                    )->class("d-none d-md-block")
                 ),
 
                 tag('carouselItem')->content(
-                    tag('img')->class("d-block w-100")->src('https://solucionbinaria.com/assets/images/porfolio/acrilicosxtchile-cl.png') .
-                    tag('carouselCaption')->content(
-                        '<h5>Third slide label</h5>
-                        <p>Some representative placeholder content for the third slide.</p>'
-                    )->class("d-none d-md-block")
+                    tag('carouselImg')->src('https://solucionbinaria.com/assets/images/porfolio/drivingcars-cl2.png')
                 ),
-            ]) .
 
-            // with Controls
-            tag('carouselControlPrev')->content(
-                tag('carouselControlPrevIcon')->text() .
-                tag('span')->hidden()->text('Previous')
-            )->data_bs_target("#carouselExampleControls") .
-
-            tag('carouselControlNext')->content(
-                tag('carouselControlNextIcon')->text() .
-                tag('span')->hidden()->text('Next')
-            )->data_bs_target("#carouselExampleControls")
-
-        )->id("carouselExampleControls");
+                tag('carouselItem')->content(
+                    tag('carouselImg')->src('https://solucionbinaria.com/assets/images/porfolio/acrilicosxtchile-cl.png')
+                ),
+            ])
+        )->id("carouselExampleControls")->withIndicators()->withControls();
 
         // Cards
 
