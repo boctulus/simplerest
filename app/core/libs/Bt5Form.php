@@ -86,18 +86,18 @@ class Bt5Form extends Form
         $kargs = array_merge(array_keys($args), array_keys($attributes));
  
         if (in_array('large', $kargs)){
-            $attributes['class'] .= ' btn-group-lg';
+            static::addClass('btn-group-lg', $attributes['class']);
             unset($args['large']);
         } else if (in_array('small', $kargs)){
-            $attributes['class'] .= ' btn-group-sm';
+            static::addClass('btn-group-sm', $attributes['class']);
             unset($args['small']);
         }
 
         if (in_array('vertical', $kargs)){
-            $attributes['class'] .= ' btn-group-vertical';
+            static::addClass('btn-group-vertical', $attributes['class']);
             unset($args['vertical']);
         } else {
-            $attributes['class'] .= " btn-group";
+            static::addClass('btn-group', $attributes['class']);
         }
 
         return static::div($content, $attributes, ...$args);
@@ -137,7 +137,7 @@ class Bt5Form extends Form
  
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
-                $attributes['class'] .= " bg-$k"; 
+                static::addClass("bg-$k", $attributes['class']);
                 break;
             }           
         }
@@ -405,7 +405,7 @@ class Bt5Form extends Form
         $attributes['aria-label'] = "Close";
 
         if (array_key_exists('white', $args)){
-            $attributes['class'] .= ' btn-close-white';
+            static::addClass("btn-close-white", $attributes['class']);
         }
 
         return static::basicButton($content, $attributes, ...$args);

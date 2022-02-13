@@ -78,9 +78,7 @@ Bt5Form::setIdAsName();
             )
         )->id('exampleModal');
 
-        echo '<br/>';
-        
-        echo tag('openButton')->target("exampleModal")->content('Launch demo modal');
+        echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 
         // Cards
 
@@ -196,7 +194,7 @@ Bt5Form::setIdAsName();
         echo Bt5Form::div(
             content: [
                 tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
-                tag('text')->name('nombre')->placeholder("Username")
+                tag('inputText')->name('nombre')->placeholder("Username")
             ],
             class: "input-group mb-3"
         );
