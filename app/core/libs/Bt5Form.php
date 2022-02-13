@@ -420,6 +420,8 @@ class Bt5Form extends Form
             $content = 'Close';
         }
 
+        $attributes['data-bs-dismiss'] = 'modal';
+
         static::addClass('btn-secondary', $attributes['class']);
 
         return static::button($content, $attributes, ...$args);
