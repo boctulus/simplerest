@@ -7261,7 +7261,10 @@ class DumbController extends Controller
 
     //echo tag('button')->text('Save changes');
     // d('');
-    echo tag('basicButton')->class('btn-danger')->class('btn-success')->text('Save changes');
+    //echo tag('basicButton')->class('btn-danger')->class('btn-success')->text('Save changes');
+
+    echo tag('button')->class('btn-danger')->success()->text('Save changes');         
+
     // d('');
 
     // echo tag('closeModal');
