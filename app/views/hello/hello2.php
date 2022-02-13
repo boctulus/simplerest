@@ -60,7 +60,7 @@ Bt5Form::setIdAsName();
 
         // Modal
 
-        echo tag('modal')->class('fade')->content(
+        echo tag('modal')->content(
             tag('modalDialog')->content(
                 tag('modalContent')->content(
                     tag('modalHeader')->content(
@@ -143,9 +143,11 @@ Bt5Form::setIdAsName();
         echo '<br/>';
 
 
-        echo tag('inputButton')->value('Un botón')->info()->class('rounded-pill');
-        echo tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large();
-        echo tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small();
+        echo tag('buttonGroup')->content([
+            tag('inputButton')->value('Un botón')->info()->class('rounded-pill'),
+            tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large(),
+            tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small()
+        ])->class('my-3');
 
         echo tag('br');
 
