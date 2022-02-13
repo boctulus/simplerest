@@ -135,6 +135,24 @@ class Html
         static::$pretty = $state;
     }
 
+    static function removeColors(array|string &$to) : void{
+        if (is_array($to)){
+            foreach ($to as $ix => $row){
+                foreach (static::$colors as $c){
+                    static::removeClass("btn-$c", $to[$ix]);
+                    static::removeClass("btn-outline-$c", $to[$ix]);
+                }    
+            }
+
+            return;
+        }
+
+        foreach (static::$colors as $c){
+            static::removeClass("btn-$c", $to);
+            static::removeClass("btn-outline-$c", $to);
+        }     
+    }
+
     static function addColor(string $color, string &$to, bool $outline = false){
         if (strlen($color) > 4 && substr($color, 0, 4) == 'btn-'){
             $_color = substr($color, 4);
@@ -156,10 +174,7 @@ class Html
 
         /* remuevo colores previos */
 
-        foreach (static::$colors as $c){
-            static::removeClass("btn-$c", $to);
-            static::removeClass("btn-outline-$c", $to);
-        }     
+        static::removeColors($to);  
         
         /* 
             si el color a aplicar, no existe => lo aplico
@@ -795,14 +810,13 @@ class Html
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $outline = array_key_exists('outline', $attributes) || array_key_exists('outline', $args);
-        
-        $kargs = array_merge(array_keys($args), array_keys($attributes));
 
         $color_applied = false;
-        foreach ($kargs as $k){
+        foreach ($args as $k => $val){
             if (in_array($k, static::$colors)){
                 static::addColor("btn-$k", $attributes['class'], $outline); 
                 $color_applied = true;
+                unset($args[$k]);
                 break;
             }           
         }
@@ -814,10 +828,14 @@ class Html
         if ($content === null){
             if (isset($args['text'])){
                 $content = $args['text'];
+                unset($args['text']);
             } elseif (isset($args['value'])){
                 $content = $args['value'];
+                unset($args['value']);
             }
         }
+
+        static::removeColors($args);
 
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
