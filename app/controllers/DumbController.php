@@ -7277,23 +7277,23 @@ class DumbController extends Controller
     //     class: "input-group mb-3"
     // );
 
-    echo tag('modal')->content(
-        tag('modalDialog')->content(
-            tag('modalContent')->content(
-                tag('modalHeader')->content(
-                    tag('modalTitle')->text('Modal title') . 
-                    tag('closeButton')->dataBsDismiss('modal')
-                ) .
-                tag('modalBody')->content(
-                    tag('p')->text('Modal body text goes here.')
-                ) . 
-                tag('modalFooter')->content(
-                    tag('closeModal') .
-                    tag('button')->text('Save changes')
-                ) 
-            ) 
-        )->large()
-    )->id('exampleModal');
+    // echo tag('modal')->content(
+    //     tag('modalDialog')->content(
+    //         tag('modalContent')->content(
+    //             tag('modalHeader')->content(
+    //                 tag('modalTitle')->text('Modal title') . 
+    //                 tag('closeButton')->dataBsDismiss('modal')
+    //             ) .
+    //             tag('modalBody')->content(
+    //                 tag('p')->text('Modal body text goes here.')
+    //             ) . 
+    //             tag('modalFooter')->content(
+    //                 tag('closeModal') .
+    //                 tag('button')->text('Save changes')
+    //             ) 
+    //         ) 
+    //     )->large()
+    // )->id('exampleModal');
 
     //echo tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip();
 
