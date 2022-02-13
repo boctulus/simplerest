@@ -413,6 +413,19 @@ class Bt5Form extends Form
 
     /* Modal Begin */
 
+    static function modal(mixed $content,  bool $static = false, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        $attributes['tabindex'] = "-1";
+
+        if ($static){
+            $attributes['data-bs-backdrop'] = "static"; 
+            $attributes['data-bs-keyboard'] = "false";
+        }
+
+        return static::div($content, $attributes, ...$args);
+    }
+
     static function closeModal(mixed $content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
@@ -421,7 +434,6 @@ class Bt5Form extends Form
         }
 
         $attributes['data-bs-dismiss'] = 'modal';
-
         static::addClass('btn-secondary', $attributes['class']);
 
         return static::button($content, $attributes, ...$args);
@@ -436,15 +448,6 @@ class Bt5Form extends Form
         $attributes['data-bs-target'] = ($target[0] != '#' && $target[0] != '.' ? "#$target" : $target);
 
         return static::button($content, $attributes, ...$args);
-    }
-
-
-    static function modal(mixed $content, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-
-        $attributes['tabindex'] = "-1";
-
-        return static::div($content, $attributes, ...$args);
     }
 
     static function modalDialog(mixed $content, Array $attributes = [], ...$args){
