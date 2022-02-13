@@ -7059,7 +7059,7 @@ class DumbController extends Controller
     function test_tag(){
         Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-        Form::pretty();
+        //Form::pretty();
 
         // echo Bt5Form::span(text:'Hi');
          
@@ -7167,8 +7167,50 @@ class DumbController extends Controller
         //     ])
         // );
 
-        // var_dump(Bt5Form::addClass("hide", "class1 class2"));
-        // var_dump(Bt5Form::addClass("hide", "class1 hide class2"));
+
+        // $class = "class1 class2";
+        // Bt5Form::addClass("hide", $class);
+        // var_dump($class);
+
+        //$class = "class1 btn-secondary class2";
+        // Bt5Form::addColor("primary", $class);
+        // var_dump($class);
+
+
+        // $class = "btn-secondary btn";
+        // Bt5Form::addColor("primary", $class);
+        // var_dump($class);
+
+
+        // $class = "class1 btn-secondary class2";
+        // Bt5Form::addColor("primary", $class, true);
+        // var_dump($class);
+
+        // $class = "class2";
+        // Bt5Form::addColor("primary", $class, true);
+        // var_dump($class);
+
+        // $class = "";
+        // Bt5Form::addColor("primary", $class, true);
+        // var_dump($class);
+
+
+        // $class = "class1 hide class2";
+        // Bt5Form::addClass("hide", $class);
+        // var_dump($class);
+
+        // $class = "class1 hide class2";
+        // Bt5Form::addClasses("hide otra", $class);
+        // var_dump($class);
+     
+        // $class = "class1 hide class2";
+        // Bt5Form::addClasses(["hide", "otra"], $class);
+        // var_dump($class);
+
+        // $class = "";
+        // Bt5Form::addClasses(["hide", "otra"], $class);
+        // var_dump($class);
+     
         // var_dump(Bt5Form::addClass("hide", "class1 class2 hide"));
         // var_dump(Bt5Form::addClass("hide", "class1 class3"));
         // var_dump(Bt5Form::addClass("hide", "hide class1 class3"));
@@ -7191,11 +7233,41 @@ class DumbController extends Controller
         //             tag('modalBody')->content(
         //                 tag('p')->text('Modal body text goes here.')
         //             ) 
+        //         ) .
+
+        //         tag('modalFooter')->content(
+        //             tag('closeModal') .
+        //             tag('button')->text('Save changes')
         //         )
         //     )
-        // )->tabindex(-1);
+        // )->id('exampleModal');
 
-        echo tag('button')->class('btn btn-primary')->dataBsToogle('modal')->dataBsTarget("#exampleModal")->content('Launch demo modal');
+        //echo tag('closeButton')->dataBsDismiss('modal')->content('');
+
+        //echo tag('button')->class('btn btn-primary')->dataBsToogle('modal')->dataBsTarget("#exampleModal")->content('Launch demo modal');
+
+       //echo tag('button')->success()->text('Save changes');
+
+       //echo tag('closeModal');
+    //    d('--');
+    //    echo '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
+
+
+    d(Form::hasColor("class1 btn-success class2", "success"));
+    d(Form::hasColor("class1 btn-success class2", "btn-success")); 
+    d(Form::hasColor("class1 btn-success class2", "danger")); 
+    d(Form::hasColor("class1 btn-success class2"));
+    d(Form::hasColor("class1 class2"));        
+
+
+
+    //echo tag('button')->text('Save changes');
+    // d('');
+    // //echo tag('basicButton')->class('btn-success')->text('Save changes');
+    // d('');
+
+    echo tag('closeModal');
+
     }
 
 }   

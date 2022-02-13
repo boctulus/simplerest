@@ -13,7 +13,7 @@ class VarDump
 		echo '</pre>';
 	}
 
-	protected static function export($v, $msg = null, bool $additional_carriage_return = false) 
+	protected static function export(mixed $v = null, $msg = null, bool $additional_carriage_return = false) 
 	{	
 		$type = gettype($v);
 
@@ -105,7 +105,7 @@ class VarDump
 	}	
 
 	// acá podría retener el buffer y hacer algun ajuste
-	static public function dd($val, $msg = null, bool $additional_carriage_return = false)
+	static public function dd(mixed $val = null, $msg = null, bool $additional_carriage_return = false)
 	{
 		self::export($val, $msg, $additional_carriage_return);
 	}

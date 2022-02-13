@@ -21,7 +21,7 @@ class Html
         'dark'
     ];
     static protected $classes = [
-        "text"           => "form-control",
+        "inputText"      => "form-control",
         "number"         => "form-control",
         "password"       => "form-control",
         "email"          => "form-control",
@@ -135,6 +135,59 @@ class Html
         static::$pretty = $state;
     }
 
+    static function addColor(string $color, string &$to, bool $outline = false){
+        if (strlen($color) > 4 && substr($color, 0, 4) == 'btn-'){
+            $_color = substr($color, 4);
+
+            if (in_array($_color, static::$colors)){
+                $color = $_color;
+            }
+        }
+
+        $outline_prefix = '';
+        if ($outline){
+            $outline_prefix = 'outline-';
+        }
+
+        if (empty($to)){
+            $to = "btn-{$outline_prefix}{$color}";
+            return;
+        }
+
+        /* remuevo colores previos */
+
+        foreach (static::$colors as $c){
+            static::removeClass("btn-$c", $to);
+            static::removeClass("btn-outline-$c", $to);
+        }     
+        
+        /* 
+            si el color a aplicar, no existe => lo aplico
+        */
+
+        if (strpos($to, $color) === false){
+            $to .= " btn-{$outline_prefix}{$color}";
+        }    
+    }
+
+    static function hasColor(string $str, ?string $color = null) : bool{
+        if (strlen($color) > 4 && substr($color, 0, 4) != 'btn-'){
+            $color = "btn-$color";
+        }    
+
+        if ($color !== null){
+            return Strings::containsWord($color, $str);
+        }
+
+        foreach (static::$colors as $c){
+            if (Strings::containsWord("btn-$c", $str)){
+                return true;
+            }
+        }
+        
+        return false;        
+    }
+
     static function addClass(string $new_class, string &$to){
         if (empty($to)){
             $to = $new_class;
@@ -146,7 +199,33 @@ class Html
         }      
     }
 
-    static function removeClass(string $class, string &$to){
+    static function addClasses(mixed $new, string &$to){
+        if (empty($to)){
+            if (is_array($new)){
+                $new = implode(' ', $new);
+            }
+
+            $to = $new;
+            return;
+        }
+
+        if (is_string($new)){
+            $new = explode(' ', $new);
+        }
+
+        foreach ($new as $new_c){
+            if (strpos($to, $new_c) === false){
+                $to .= " $new_c";
+            }  
+        }
+    }
+    
+
+    static function removeClass(?string $class = null, string &$to){
+        if (empty($class)){
+            return;
+        }
+
         $pos = strpos($to, $class);
 
         if ($pos !== false){
@@ -265,7 +344,7 @@ class Html
         return static::tag('input', null, $attributes, $plain_attr, ...$args);
     }
 
-    static function text(?string $default = null, Array $attributes = [], ...$args){
+    static function inputText(?string $default = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::input('text', $default, $attributes, ...$args);
     }
@@ -526,7 +605,7 @@ class Html
     }
 
     static function inputButton(string $value, Array $attributes = [], string $type = 'button', ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('__FUNCTION__') : static::getClass(__FUNCTION__);
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
             
         $kargs = array_merge(array_keys($args), array_keys($attributes));
  
@@ -537,15 +616,21 @@ class Html
         }
 
         if (in_array('disabled', $kargs)){
-            $attributes['class'] .= ' disabled';
+            static::addClass('disabled', $attributes['class']);
         }
 
+        $color_applied = false;
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
-                $attributes['class'] .= " btn-$k"; 
+                static::addClass("btn-$k", $attributes['class']); 
+                $color_applied = true;
                 unset($args[$k]);
                 break;
-            }           
+            }          
+        }
+        
+        if (!$color_applied){
+            static::addClass("btn-primary", $attributes['class']); 
         }
         
         return static::input($type, $value, $attributes, ...$args);
@@ -690,9 +775,24 @@ class Html
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
+    static function basicButton(mixed $content = null, $attributes = [], ...$args){
+        $attributes['type']="button";
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if ($content === null){
+            if (isset($args['text'])){
+                $content = $args['text'];
+            } elseif (isset($args['value'])){
+                $content = $args['value'];
+            }
+        }
+
+        return static::group($content,'button', $attributes, ...$args);
+    }
+
     static function button(mixed $content = null, $attributes = [], ...$args){
         $attributes['type']="button";
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('__FUNCTION__') : static::getClass(__FUNCTION__);
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $outline = (array_key_exists('outline', $attributes) || array_key_exists('outline', $args)) ? 'outline-' : '';
             
@@ -705,13 +805,27 @@ class Html
         }
 
         $kargs = array_merge(array_keys($args), array_keys($attributes));
- 
+
+        $color_applied = false;
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
-                $attributes['class'] .= " btn-{$outline}$k"; 
+                static::addClass("btn-{$outline}$k", $attributes['class']); 
+                $color_applied = true;
                 unset($args[$k]);
                 break;
             }           
+        }
+
+        if (!$color_applied && !static::hasColor($attributes['class'])){
+            static::addColor("btn-primary", $attributes['class']); /// to fix
+        } 
+
+        if ($content === null){
+            if (isset($args['text'])){
+                $content = $args['text'];
+            } elseif (isset($args['value'])){
+                $content = $args['value'];
+            }
         }
 
         return static::group($content, __FUNCTION__, $attributes, ...$args);
