@@ -7059,6 +7059,8 @@ class DumbController extends Controller
     function test_tag(){
         Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
+        Form::pretty();
+
         // echo Bt5Form::span(text:'Hi');
          
         // echo tag('text')->name('bozzolo')->placeholder('Su apellido');
@@ -7178,6 +7180,22 @@ class DumbController extends Controller
         // var_dump(Bt5Form::removeClass("hide", "hide class1 class2"));
         // var_dump(Bt5Form::removeClass("hide", "class1 hide class3"));
         // var_dump(Bt5Form::removeClass("hide", "class1 class4 hide"));
+
+        // echo tag('modal')->class('fade')->content(
+        //     tag('modalDialog')->content(
+        //         tag('modalContent')->content(
+        //             tag('modalHeader')->content(
+        //                 tag('modalTitle')->text('Modal title') . 
+        //                 tag('closeButton')->dataBsDismiss('modal')
+        //             ) .
+        //             tag('modalBody')->content(
+        //                 tag('p')->text('Modal body text goes here.')
+        //             ) 
+        //         )
+        //     )
+        // )->tabindex(-1);
+
+        echo tag('button')->class('btn btn-primary')->dataBsToogle('modal')->dataBsTarget("#exampleModal")->content('Launch demo modal');
     }
 
 }   
