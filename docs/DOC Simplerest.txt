@@ -7939,7 +7939,7 @@ Ej:
 
 	echo Bt5Form::group(content:[
         tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
-        tag('text')->name('nombre')->placeholder("Username")
+        tag('inputText')->name('nombre')->placeholder("Username")
     ],
 		tag:"div"
         class:"input-group mb-3"
@@ -7949,7 +7949,7 @@ o
 
 	echo Bt5Form::group(content:
         tag('span')->text('@')->id('basic-addon')->class('input-group-text') .
-        tag('text')->name('nombre')->placeholder("Username")
+        tag('inputText')->name('nombre')->placeholder("Username")
     ,
 		tag:"div"
         class:"input-group mb-3"
@@ -7959,7 +7959,7 @@ o
 
 	echo Bt5Form::div(content:[
         tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
-        tag('text')->name('nombre')->placeholder("Username")
+        tag('inputText')->name('nombre')->placeholder("Username")
     ],
         class:"input-group mb-3"
     );
@@ -7968,21 +7968,21 @@ o
 
 	echo tag('div')->content([
         tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
-        tag('text')->name('nombre')->placeholder("Username")
+        tag('inputText')->name('nombre')->placeholder("Username")
     ])->class("input-group mb-3")
 
 o
 
 	echo tag('inputGroup')->content([
         tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
-        tag('text')->name('nombre')->placeholder("Username")
+        tag('inputText')->name('nombre')->placeholder("Username")
     ])->class("mb-3")
 
 o
 
 	echo tag('inputGroup')->content(
         tag('span')->text('@')->id('basic-addon')->class('input-group-text') .
-        tag('text')->name('nombre')->placeholder("Username")
+        tag('inputText')->name('nombre')->placeholder("Username")
     )->class("mb-3")
 
 
@@ -8068,23 +8068,26 @@ o simplemente
 
 # El tag input
 
-Hay distintos tipos de <input> y cada uno tiene su alias que corrsponde al type donde por ejemplo <input type="text"> es text()
+Hay distintos tipos de <input> y cada uno tiene su alias que corresponde al type donde por ejemplo <input type="password"> es password()
 
 Ej:
 
-	Bt5Form::text(id:'usuario', placeholder:"Username");
+	Bt5Form::password(id:'pass', placeholder:"Contraseña");
 
 o
 
-	tag('text')->id('usuario')->placeholder('Username');
+	tag('password')->id('pass')->placeholder('Contraseña');
 
 Hay un algunas de exceptiones:
 
-	type="time" 			es inputTime() 
+	type="text"				es inputText()
 	type="button"			es inputButton()
+	type="time" 			es inputTime() 
 	type="datetime_local"	es datetimeLocal()
 
 La razón de las excepciones son colisiones de nombres como sucede con button() ya que hace referencia a <button> y por tanto no puede usarse para <input type="button">
+
+Igualmente "text" puede hacer referencia a un atributo de otra etiqueta así que <input type="text"> es inputText().
 
 
 # Id o name
@@ -8183,6 +8186,17 @@ Ej:
 		?>
 		</div>
 	</div>
+
+
+# Atributos data-*
+
+Los atributos data-* en caso de usarse como métodos encadenados con la clase Tag deben pasarse a camelCase.
+
+Ej:
+
+	tag('closeButton')->dataBsDismiss('modal')
+
+Donde "dataBsDismiss" hace referencia al atributo data-bs-dismiss renderizando dataBsDismiss('modal') en data-bs-dismiss="modal"
 
 
 # Text utilities
@@ -8620,3 +8634,6 @@ El primer ejemplo podría reducirse a algo como:
 			)->caption(...),
 		])
 	)->id("carouselExampleControls")->withIndicators()->withControls();
+
+# Ventanas modales
+
