@@ -40,7 +40,7 @@ class Bt5Form extends Form
                     text:static::button(
                         class:"accordion-button collapsed",
                         data_bs_toggle:"collapse",
-                        data_bs_target:"#{$arr['id']}",
+                        dataBsTarget:"#{$arr['id']}",
                         aria_expanded:"false",
                         aria_controls:$arr['id'],
                         content:$arr['title'] 
@@ -310,11 +310,11 @@ class Bt5Form extends Form
 
         if (array_key_exists('withIndicators', $args)){
             $content = tag('carouselIndicators')->content([
-                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("0")->aria_current("true")
+                tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("0")->aria_current("true")
                 ->content()->active(),
-                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("1")->aria_current("true")
+                tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("1")->aria_current("true")
                 ->content(),
-                tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("2")->aria_current("true")
+                tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("2")->aria_current("true")
                 ->content()
             ]).$content;
 
@@ -325,12 +325,12 @@ class Bt5Form extends Form
             $content .= tag('carouselControlPrev')->content(
                 tag('carouselControlPrevIcon')->text() .
                 tag('span')->hidden()->text('Previous')
-            )->data_bs_target("#carouselExampleControls") .
+            )->dataBsTarget("#carouselExampleControls") .
 
             tag('carouselControlNext')->content(
                 tag('carouselControlNextIcon')->text() .
                 tag('span')->hidden()->text('Next')
-            )->data_bs_target("#carouselExampleControls");
+            )->dataBsTarget("#carouselExampleControls");
 
             unset($attributes['withControls']);
         }
@@ -397,8 +397,80 @@ class Bt5Form extends Form
         return static::img($src, $attributes, null, ...$args); 
     }
 
-
     /* Carousel End */
+
+    /* Modal Begin */
+
+    static function closeButton(mixed $content = null, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['aria-label'] = "close";
+
+        if (array_key_exists('disabled', $args)){
+            $attributes['class'] .= ' disabled';
+        }
+
+        if (array_key_exists('white', $args)){
+            $attributes['class'] .= ' btn-close-white';
+        }
+
+        return static::button($content, $attributes, ...$args);
+    }
+
+    static function openButton(mixed $content, string $target, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        
+        static::addClass('btn btn-primary', $attributes['class']);
+
+        $attributes['data-bs-toggle'] = "modal";
+        $attributes['data-bs-target'] = ($target[0] != '#' && $target[0] != '.' ? "#$target" : $target);
+
+        return static::button($content, $attributes, ...$args);
+    }
+
+
+    static function modal(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function modalDialog(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function modalContent(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function modalHeader(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function modalBody(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function modalFooter(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function modalTitle(string $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::h5($text, $attributes, ...$args);
+    }
+    
+
+    /* Modal End */
 
 }
 

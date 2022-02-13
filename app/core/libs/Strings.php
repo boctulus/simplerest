@@ -261,23 +261,23 @@ class Strings
 	/*
 		CamelCase to snake_case
 	*/
-	static function camelToSnake(string $name){
+	static function camelToSnake(string $name, string $char = '_'){
 		$len = strlen($name);
 
 		if ($len== 0)
 			return NULL;
 
-			$conv = strtolower($name[0]);
-			for ($i=1; $i<$len; $i++){
-				$ord = ord($name[$i]);
-				if ($ord >=65 && $ord <= 90){
-					$conv .= '_' . strtolower($name[$i]);		
-				} else {
-					$conv .= $name[$i];	
-				}					
-			}		
+		$conv = strtolower($name[0]);
+		for ($i=1; $i<$len; $i++){
+			$ord = ord($name[$i]);
+			if ($ord >=65 && $ord <= 90){
+				$conv .= $char . strtolower($name[$i]);		
+			} else {
+				$conv .= $name[$i];	
+			}					
+		}		
 	
-		if ($name[$len-1] == '_'){
+		if ($name[$len-1] == $char){
 			$name = substr($name, 0, -1);
 		}
 	
