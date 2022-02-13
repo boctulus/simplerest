@@ -8681,3 +8681,12 @@ Ej:
 		)->scrollable()
 	)->id('exampleModal');
 
+
+Ancho del modal
+
+En teoría es posible cambiar el ancho con small(), large() y extraLarge() sobre el tag('modalDialog')
+
+
+Pantalla completa
+
+Llamar a fullscreen() sobre tag('modalDialog')

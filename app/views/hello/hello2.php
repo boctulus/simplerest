@@ -84,7 +84,7 @@ Bt5Form::setIdAsName();
             //->extraLarge()
             //->center()   
             //->scrollable()
-            ->fullscreen()
+            //->fullscreen()
         )->id('exampleModal');
 
         echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
