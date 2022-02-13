@@ -349,10 +349,14 @@ class Strings
 		Thanks https://medium.com/@shiba1014/regex-word-boundaries-with-unicode-207794f6e7ed
 		Thanks https://www.phpliveregex.com/
 	*/
-	static function containsWord(string $word, string $text, bool $case_sensitive = true) {
+	static function containsWord(string $word, string $text, bool $case_sensitive = true) : bool {
 		$mod = $case_sensitive ? 'i' : '';
 		
-		if (preg_match('/(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/'.$mod, $text)) return true;
+		if (preg_match('/(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/'.$mod, $text)){
+			return true;
+		} 
+
+		return false;
 	}
 	
 	/*

@@ -114,7 +114,7 @@ class Bt5Form extends Form
         $attributes['role']  = "alert";
         
         if ($dismissible || in_array('dismissible', $attributes)){
-            $attributes['class'] .= " alert-dismissible fade show";
+            static::addClasses('alert-dismissible fade show', $attributes['class']);
             $content .= '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
         }
 
@@ -399,19 +399,28 @@ class Bt5Form extends Form
 
     /* Carousel End */
 
-    /* Modal Begin */
-
     static function closeButton(mixed $content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        $attributes['aria-label'] = "close";
 
-        if (array_key_exists('disabled', $args)){
-            $attributes['class'] .= ' disabled';
-        }
+        $attributes['aria-label'] = "Close";
 
         if (array_key_exists('white', $args)){
             $attributes['class'] .= ' btn-close-white';
         }
+
+        return static::basicButton($content, $attributes, ...$args);
+    }
+
+    /* Modal Begin */
+
+    static function closeModal(mixed $content = null, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (empty($content)){
+            $content = 'Close';
+        }
+
+        static::addClass('btn-secondary', $attributes['class']);
 
         return static::button($content, $attributes, ...$args);
     }
@@ -419,7 +428,7 @@ class Bt5Form extends Form
     static function openButton(mixed $content, string $target, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
-        static::addClass('btn btn-primary', $attributes['class']);
+        static::addClass('btn-primary', $attributes['class']);
 
         $attributes['data-bs-toggle'] = "modal";
         $attributes['data-bs-target'] = ($target[0] != '#' && $target[0] != '.' ? "#$target" : $target);
@@ -430,6 +439,8 @@ class Bt5Form extends Form
 
     static function modal(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        $attributes['tabindex'] = "-1";
 
         return static::div($content, $attributes, ...$args);
     }

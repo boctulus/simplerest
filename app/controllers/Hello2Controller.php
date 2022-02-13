@@ -18,5 +18,9 @@ class Hello2Controller extends Controller
     function acordion(){
         $this->view('hello/acordion.php');
     }
+
+    function test(){
+        $this->view('hello/test.php');
+    }
 }
 
