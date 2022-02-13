@@ -58,6 +58,8 @@ Bt5Form::setIdAsName();
             ])
         )->id("carouselExampleControls")->withControls()->withIndicators();
 
+        // Modal
+
         echo tag('modal')->class('fade')->content(
             tag('modalDialog')->content(
                 tag('modalContent')->content(
@@ -67,15 +69,14 @@ Bt5Form::setIdAsName();
                     ) .
                     tag('modalBody')->content(
                         tag('p')->text('Modal body text goes here.')
+                    ) . 
+                    tag('modalFooter')->content(
+                        tag('closeModal') .
+                        tag('button')->text('Save changes')
                     ) 
-                ) .
-
-                tag('modalFooter')->content(
-                    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>'
-                )
+                ) 
             )
-        )->id('exampleModal')->tabindex(-1);
+        )->id('exampleModal');
 
         echo '<br/>';
         
