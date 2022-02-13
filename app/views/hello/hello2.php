@@ -37,6 +37,8 @@ Bt5Form::setIdAsName();
 
         echo tag('h3')->text("Datos")->class('mb-3');
 
+        //echo tag('link')->href('#')->anchor('The Link')->title('Hey!')->tooltip();
+
         /* Carrousel */
 
         echo tag('carousel')->content(
@@ -56,7 +58,9 @@ Bt5Form::setIdAsName();
                     tag('carouselImg')->src(assets('img/slide-3.jpeg'))
                 ),
             ])
-        )->id("carouselExampleControls")->withControls()->withIndicators();
+        )->id("carouselExampleControls")->withControls()->withIndicators()
+        // -->dark()
+        ;
 
         // Modal
 
@@ -68,7 +72,8 @@ Bt5Form::setIdAsName();
                         tag('closeButton')->dataBsDismiss('modal')
                     ) .
                     tag('modalBody')->content(
-                        tag('p')->text('Modal body text goes here.')
+                        tag('p')->text('Modal body text goes here.') . 
+                        tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip()
                     ) . 
                     tag('modalFooter')->content(
                         tag('closeModal') .
@@ -76,7 +81,11 @@ Bt5Form::setIdAsName();
                     ) 
                 ) 
             )
-        )->id('exampleModal')->static();
+            //->extraLarge()
+            //->center()   
+            //->scrollable()
+            ->fullscreen()
+        )->id('exampleModal');
 
         echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 

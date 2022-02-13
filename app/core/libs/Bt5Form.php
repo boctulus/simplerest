@@ -188,6 +188,17 @@ class Bt5Form extends Form
         return static::link($href, $anchor, $attributes, ...$args);
     }
 
+    static function link(string $href, string $anchor, Array $attributes = [], ...$args){       
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        // title es requerido (sin probar)
+        if (array_key_exists('tooltip', $args)){
+            $attributes['data-bs-toggle'] = "tooltip";
+        }
+
+        return parent::link($href, $anchor, $attributes, ...$args);
+    }
+
     /* Cards Begin */
 
     static function card(mixed $content, Array $attributes = [], ...$args){
@@ -451,8 +462,45 @@ class Bt5Form extends Form
         return static::button($content, $attributes, ...$args);
     }
 
-    static function modalDialog(mixed $content, Array $attributes = [], ...$args){
+    static function modalDialog(mixed $content, Array $attributes = [], bool $scrollable = false, bool $center = false, ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if ($scrollable || array_key_exists('scrollable', $args)){
+            static::addClass("modal-dialog-scrollable", $attributes['class']);
+            unset($attributes['scrollable']);
+        }
+
+        if (array_key_exists('center', $args)){
+            static::addClass("modal-dialog-centered", $attributes['class']);
+            unset($args['center']);
+        }
+
+        /*
+            No está funcionando el cambio de size
+        */
+
+        if (array_key_exists('small', $args)){
+            static::addClass('modal-sm', $attributes['class']);
+            unset($args['small']);
+        }
+
+        if (array_key_exists('large', $args)){
+            static::addClass('modal-lg', $attributes['class']);
+            unset($args['large']);
+        }
+
+        if (array_key_exists('extraLarge', $args)){
+            static::addClass('modal-xl', $attributes['class']);
+            unset($args['extraLarge']);
+        }
+
+        // Full screen
+
+        if (array_key_exists('fullscreen', $args)){
+            static::addClass('modal-fullscreen', $attributes['class']);
+            unset($args['fullscreen']);
+        }
+
 
         return static::div($content, $attributes, ...$args);
     }
