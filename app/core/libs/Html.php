@@ -308,7 +308,7 @@ class Html
         $props = !empty($props) ? ' '.$props : $props;
 
         // en principio asumo que abre y cierra
-        $ret = "<$type" . $props . ">$value</$type>";
+        $ret = "<$type{$props}>$value</$type>";
 
         return static::$pretty ? static::beautifier($ret) : $ret;
     }
@@ -610,9 +610,9 @@ class Html
         $kargs = array_merge(array_keys($args), array_keys($attributes));
  
         if (in_array('large', $kargs)){
-            $attributes['class'] .= ' btn-lg';
+            static::addClass('btn-lg', $attributes['class']);
         } else if (in_array('small', $kargs)){
-            $attributes['class'] .= ' btn-sm';
+            static::addClass('btn-sm', $attributes['class']);
         }
 
         if (in_array('disabled', $kargs)){
@@ -622,7 +622,7 @@ class Html
         $color_applied = false;
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
-                static::addClass("btn-$k", $attributes['class']); 
+                static::addColor("btn-$k", $attributes['class']); 
                 $color_applied = true;
                 unset($args[$k]);
                 break;
@@ -630,7 +630,7 @@ class Html
         }
         
         if (!$color_applied){
-            static::addClass("btn-primary", $attributes['class']); 
+            static::addColor("btn-primary", $attributes['class']); 
         }
         
         return static::input($type, $value, $attributes, ...$args);
@@ -794,30 +794,21 @@ class Html
         $attributes['type']="button";
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        $outline = (array_key_exists('outline', $attributes) || array_key_exists('outline', $args)) ? 'outline-' : '';
-            
-        $outline = '';
-        if (array_key_exists('outline', $attributes)){
-            $outline = 'outline-';
-        } else if (array_key_exists('outline', $args)){
-            $outline = 'outline-';
-            unset($args['outline']);
-        }
-
+        $outline = array_key_exists('outline', $attributes) || array_key_exists('outline', $args);
+        
         $kargs = array_merge(array_keys($args), array_keys($attributes));
 
         $color_applied = false;
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
-                static::addClass("btn-{$outline}$k", $attributes['class']); 
+                static::addColor("btn-$k", $attributes['class'], $outline); 
                 $color_applied = true;
-                unset($args[$k]);
                 break;
             }           
         }
 
         if (!$color_applied && !static::hasColor($attributes['class'])){
-            static::addColor("btn-primary", $attributes['class']); /// to fix
+            static::addColor("btn-primary", $attributes['class']); 
         } 
 
         if ($content === null){
