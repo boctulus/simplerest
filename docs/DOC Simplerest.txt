@@ -8635,5 +8635,49 @@ El primer ejemplo podría reducirse a algo como:
 		])
 	)->id("carouselExampleControls")->withIndicators()->withControls();
 
+
 # Ventanas modales
+
+La estructura de un modal es más o menos la siguiente:
+
+	echo tag('modal')->content(
+		tag('modalDialog')->content(
+			tag('modalContent')->content(
+				tag('modalHeader')->content(
+					tag('modalTitle')->text('Modal title') . 
+					tag('closeButton')->dataBsDismiss('modal')
+				) .
+				tag('modalBody')->content(
+					tag('p')->text('Modal body text goes here.')
+				) . 
+				tag('modalFooter')->content(
+					tag('closeModal') .
+					tag('button')->text('Save changes')
+				) 
+			) 
+		)
+	)->id('exampleModal');
+
+
+Static
+
+Para que la ventana modal no se cierre al hacer click fuera de ella se puede usar static()
+
+Ej:
+
+	echo tag('modal')->content(
+		// ...
+	)->id('exampleModal')->static();
+
+Scrollable 
+
+Cuando son textos largos se puede aplicar scrollable()
+
+Ej:
+
+ 	echo tag('modal')->content(
+		tag('modalDialog')->content(
+			//  ....
+		)->scrollable()
+	)->id('exampleModal');
 

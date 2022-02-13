@@ -118,7 +118,8 @@ class Html
 
         "textMuted"      => "text-muted",
         "hidden"         => "visually-hidden",
-        "active"         => "active"
+        "active"         => "active",
+        "tooltip"        => "tooltip-test"
         
     ];
     
