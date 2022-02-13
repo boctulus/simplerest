@@ -7059,7 +7059,7 @@ class DumbController extends Controller
     function test_tag(){
         Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-        //Form::pretty();
+        Form::pretty();
 
         // echo Bt5Form::span(text:'Hi');
          
