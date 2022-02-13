@@ -19,7 +19,6 @@ Bt5Form::setIdAsName();
 
         <?php
 
-
         echo tag('breadcrumb')->content([
             [
                 'href' => '#',
@@ -43,21 +42,44 @@ Bt5Form::setIdAsName();
         echo tag('carousel')->content(
             tag('carouselInner')->content([
                 tag('carouselItem')->content(
-                    tag('carouselImg')->src('https://solucionbinaria.com/assets/images/porfolio/elgrove.png')
+                    tag('carouselImg')->src(assets('img/slide-1.jpeg'))
                 )->active()->caption(
                     '<h5>First slide label</h5>
                     <p>Some representative placeholder content for the first slide.</p>'
                 ),
 
                 tag('carouselItem')->content(
-                    tag('carouselImg')->src('https://solucionbinaria.com/assets/images/porfolio/drivingcars-cl2.png')
+                    tag('carouselImg')->src(assets('img/slide-2.jpeg'))
                 ),
 
                 tag('carouselItem')->content(
-                    tag('carouselImg')->src('https://solucionbinaria.com/assets/images/porfolio/acrilicosxtchile-cl.png')
+                    tag('carouselImg')->src(assets('img/slide-3.jpeg'))
                 ),
             ])
-        )->id("carouselExampleControls")->withIndicators()->withControls();
+        )->id("carouselExampleControls")->withControls()->withIndicators();
+
+        echo tag('modal')->class('fade')->content(
+            tag('modalDialog')->content(
+                tag('modalContent')->content(
+                    tag('modalHeader')->content(
+                        tag('modalTitle')->text('Modal title') . 
+                        tag('closeButton')->dataBsDismiss('modal')
+                    ) .
+                    tag('modalBody')->content(
+                        tag('p')->text('Modal body text goes here.')
+                    ) 
+                ) .
+
+                tag('modalFooter')->content(
+                    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>'
+                )
+            )
+        )->id('exampleModal')->tabindex(-1);
+
+        echo '<br/>';
+        
+        echo tag('openButton')->target("exampleModal")->content('Launch demo modal');
 
         // Cards
 

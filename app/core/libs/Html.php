@@ -103,6 +103,15 @@ class Html
         /* Carousel End */
 
 
+        "closeButton"    => "btn-close",
+        "modal"          => "modal",
+        "modalDialog"    => "modal-dialog",
+        "modalContent"   => "modal-content",
+        "modalHeader"    => "modal-header",
+        "modalTitle"     => "modal-title",
+        "modalBody"      => "modal-body",
+        "modalFooter"    => "modal-footer",
+
         /*
             Utilities
         */
@@ -128,14 +137,13 @@ class Html
 
     static function addClass(string $new_class, string &$to){
         if (empty($to)){
-            return $new_class;
+            $to = $new_class;
+            return;
         }
 
         if (strpos($to, $new_class) === false){
             $to .= " $new_class";
-        }        
-
-        return $to;
+        }      
     }
 
     static function removeClass(string $class, string &$to){
@@ -143,17 +151,16 @@ class Html
 
         if ($pos !== false){
             if ($pos === 0){
-                return substr($to, strlen($class)+1);
+                $to = substr($to, strlen($class)+1);
+                return;
             }
 
             if ($pos + strlen($class) == strlen($to)){     
-                return substr($to, 0, $pos-1);
+                $to = substr($to, 0, $pos-1);
             } else {
-                return substr($to, 0, $pos) . substr($to, $pos + strlen($class)+1);
+                $to = substr($to, 0, $pos) . substr($to, $pos + strlen($class)+1);
             }
         }   
-        
-        return $to;
     }
 
     /*
@@ -187,11 +194,11 @@ class Html
     static protected function tag(string $type, ?string $value = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
     {
         foreach ($args as $k => $v){
-            // ajuste para data-* props
-            if (strpos($k, '_') !== false){
-                unset($args[$k]);
-                $k = str_replace('_', '-', $k);                
-                $args[$k] = $v;
+            // data-* in camelCase
+            if (strlen($k) > 4 && (substr($k, 0, 4) == 'data') && ctype_upper($k[4])){
+               unset($args[$k]);
+               $k = Strings::camelToSnake($k, '-');
+               $args[$k] = $v;
             }
 
             if (isset(static::$classes[$k])){
@@ -683,7 +690,7 @@ class Html
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function button(mixed $content, $attributes = [], ...$args){
+    static function button(mixed $content = null, $attributes = [], ...$args){
         $attributes['type']="button";
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('__FUNCTION__') : static::getClass(__FUNCTION__);
 

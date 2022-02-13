@@ -7995,7 +7995,7 @@ Ej:
 	text:static::button(
 		class:"accordion-button collapsed",
 		data_bs_toggle:"collapse",
-		data_bs_target:"#{$arr['id']}",
+		dataBsTarget:"#{$arr['id']}",
 		aria_expanded:"false",
 		aria_controls:$arr['id'],
 		content:[ $arr['title'] ]
@@ -8510,11 +8510,11 @@ Ej:
 
 	echo tag('carousel')->content(
 		tag('carouselIndicators')->content([
-			tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("0")->aria_current("true")
+			tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("0")->aria_current("true")
 			->content()->active(),
-			tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("1")->aria_current("true")
+			tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("1")->aria_current("true")
 			->content(),
-			tag('button')->data_bs_target("#carouselExampleIndicators")->data_bs_slide_to("2")->aria_current("true")
+			tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("2")->aria_current("true")
 			->content(),
 		]) .
 
@@ -8548,12 +8548,12 @@ Ej:
 		tag('carouselControlPrev')->content(
 			tag('carouselControlPrevIcon')->text() .
 			tag('span')->hidden()->text('Previous')
-		)->data_bs_target("#carouselExampleControls") .
+		)->dataBsTarget("#carouselExampleControls") .
 
 		tag('carouselControlNext')->content(
 			tag('carouselControlNextIcon')->text() .
 			tag('span')->hidden()->text('Next')
-		)->data_bs_target("#carouselExampleControls")
+		)->dataBsTarget("#carouselExampleControls")
 	)->id("carouselExampleControls");
 
 
