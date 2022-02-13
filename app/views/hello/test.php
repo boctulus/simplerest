@@ -15,7 +15,7 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
         <?php
 
-        echo tag('modal')->class('fade')->content(
+        echo tag('modal')->content(
             tag('modalDialog')->content(
                 tag('modalContent')->content(
                     tag('modalHeader')->content(

@@ -7263,11 +7263,11 @@ class DumbController extends Controller
     // d('');
     //echo tag('basicButton')->class('btn-danger')->class('btn-success')->text('Save changes');
 
-    echo tag('button')->class('btn-danger')->success()->text('Save changes');         
+    //echo tag('button')->class('btn-danger')->success()->text('Save changes');         
 
     // d('');
 
-    // echo tag('closeModal');
+    echo tag('closeModal');
 
     // echo Bt5Form::div(
     //     content: [
