@@ -153,7 +153,7 @@ class Html
         }     
     }
 
-    static function addColor(string $color, string &$to, bool $outline = false){
+    static function addColor(string $color, string &$to, bool $outline = false) : void{
         if (strlen($color) > 4 && substr($color, 0, 4) == 'btn-'){
             $_color = substr($color, 4);
 
