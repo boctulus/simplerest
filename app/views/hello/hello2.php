@@ -76,7 +76,7 @@ Bt5Form::setIdAsName();
                     ) 
                 ) 
             )
-        )->id('exampleModal');
+        )->id('exampleModal')->static();
 
         echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 
