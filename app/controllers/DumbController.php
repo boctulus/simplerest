@@ -7253,20 +7253,26 @@ class DumbController extends Controller
     //    echo '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
 
 
-    d(Form::hasColor("class1 btn-success class2", "success"));
-    d(Form::hasColor("class1 btn-success class2", "btn-success")); 
-    d(Form::hasColor("class1 btn-success class2", "danger")); 
-    d(Form::hasColor("class1 btn-success class2"));
-    d(Form::hasColor("class1 class2"));        
-
-
+    // d(Form::hasColor("class1 btn-success class2", "success"));
+    // d(Form::hasColor("class1 btn-success class2", "btn-success")); 
+    // d(Form::hasColor("class1 btn-success class2", "danger")); 
+    // d(Form::hasColor("class1 btn-success class2"));
+    // d(Form::hasColor("class1 class2"));        
 
     //echo tag('button')->text('Save changes');
     // d('');
-    // //echo tag('basicButton')->class('btn-success')->text('Save changes');
+    echo tag('basicButton')->class('btn-danger')->class('btn-success')->text('Save changes');
     // d('');
 
-    echo tag('closeModal');
+    // echo tag('closeModal');
+
+    // echo Bt5Form::div(
+    //     content: [
+    //         tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+    //         tag('inputText')->name('nombre')->placeholder("Username")
+    //     ],
+    //     class: "input-group mb-3"
+    // );
 
     }
 
