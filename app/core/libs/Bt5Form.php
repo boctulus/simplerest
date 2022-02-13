@@ -413,18 +413,19 @@ class Bt5Form extends Form
 
     /* Modal Begin */
 
-    static function modal(mixed $content,  bool $static = false, Array $attributes = [], ...$args){
+    static function modal(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $attributes['tabindex'] = "-1";
 
-        if ($static){
+        if (array_key_exists('static', $args)){
             $attributes['data-bs-backdrop'] = "static"; 
             $attributes['data-bs-keyboard'] = "false";
         }
 
         return static::div($content, $attributes, ...$args);
     }
+
 
     static function closeModal(mixed $content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
