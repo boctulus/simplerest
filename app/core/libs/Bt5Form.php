@@ -28,7 +28,7 @@ class Bt5Form extends Form
         }
 
         $elems = [];
-        foreach ($items as $arr){
+        foreach ($items as $ix => $arr){
             $elems[] = 
                 static::div(class:"accordion-item", content:
                     static::h2(class:"accordion-header", 
@@ -37,8 +37,8 @@ class Bt5Form extends Form
                     /*
                         Content debería poder no ser un array sino un string
                     */
-                    text:static::button(
-                        class:"accordion-button collapsed",
+                    text:static::basicButton(
+                        class:"accordion-button" . ($ix != 0 ? ' collapsed' : ''),
                         data_bs_toggle:"collapse",
                         dataBsTarget:"#{$arr['id']}",
                         aria_expanded:"false",
@@ -49,7 +49,7 @@ class Bt5Form extends Form
                 .
                 static::div(
                         id:$arr['id'],
-                        class:"accordion-collapse collapse", 
+                        class:"accordion-collapse collapse" . ($ix == 0 ? ' show' : ''), 
                         aria_labelledby:'heading-'.$arr['id'],
                         data_bs_parent:!$always_open ? "#{$attributes['id']}" : null,
                         content:
@@ -65,7 +65,7 @@ class Bt5Form extends Form
         
         return tag('div')
         ->content($elems)
-        ->class("accordion accordion-flush")
+        ->class("accordion")
         ->attributes($attributes);
     }
 
