@@ -8527,7 +8527,7 @@ Ej:
 	echo tag('carousel')->content(
 		tag('carouselItem')->content(
 			tag('carouselImg')->src(assets('img/slide-1.jpeg'))
-		)->active()->caption(
+		)->caption(
 			'<h5>First slide label</h5>
 			<p>Some representative placeholder content for the first slide.</p>'
 		),
@@ -8547,8 +8547,6 @@ Componentes opcionales:
 	withControls			-- permiten navegar hacia adelante y atrás
 	withIndicators			-- están en el "footer" del componente e indican el "avance" 
 
-
-Cabe notar que el primer item debe contener la clase "active" y por eso en el ejemplo se llamó a active()
 
 Para transacción con efecto "fade" llamando a carouselFade() o fade() y para tema obscuro es con carouselDark() o dark()
 
