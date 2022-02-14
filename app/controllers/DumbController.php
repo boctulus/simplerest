@@ -7311,27 +7311,45 @@ class DumbController extends Controller
 
     //echo tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip();
 
-    echo tag('accordion')->items([
-        [
-            'id' => "flush-collapseOne",
-            'title' => "Accordion Item #1",
-            'body' => 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first items accordion body.'
-        ],
-        [
-            'id' => "flush-collapseTwo",
-            'title' => "Accordion Item #2",
-            'body' => 'Placeholder 2'
-        ],
-        [
-            'id' => "flush-collapseThree",
-            'title' => "Accordion Item #3",
-            'body' =>  'Placeholder 3'
-        ]
-    ])
-    ->id('accordionExample')
-    ->always_open(true)
-    ->attributes(['class' => 'accordion-flush']);
+    // echo tag('accordion')->items([
+    //     [
+    //         'id' => "flush-collapseOne",
+    //         'title' => "Accordion Item #1",
+    //         'body' => 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first items accordion body.'
+    //     ],
+    //     [
+    //         'id' => "flush-collapseTwo",
+    //         'title' => "Accordion Item #2",
+    //         'body' => 'Placeholder 2'
+    //     ],
+    //     [
+    //         'id' => "flush-collapseThree",
+    //         'title' => "Accordion Item #3",
+    //         'body' =>  'Placeholder 3'
+    //     ]
+    // ])
+    // ->id('accordionExample')
+    // ->always_open(true)
+    // ->attributes(['class' => 'accordion-flush']);
 
+    echo tag('carousel')->content(
+        tag('carouselItem')->content(
+            tag('carouselImg')->src(assets('img/slide-1.jpeg'))
+        )->active()->caption(
+            '<h5>First slide label</h5>
+            <p>Some representative placeholder content for the first slide.</p>'
+        ),
+
+        tag('carouselItem')->content(
+            tag('carouselImg')->src(assets('img/slide-2.jpeg'))
+        ),
+
+        tag('carouselItem')->content(
+            tag('carouselImg')->src(assets('img/slide-3.jpeg'))
+        ),
+    )->id("carouselExampleControls")->withControls()->withIndicators()
+    // -->dark()
+    ;
 
     }
 
