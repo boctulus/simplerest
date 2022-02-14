@@ -370,6 +370,10 @@ class Bt5Form extends Form
             unset($attributes['withControls']);
         }
 
+        if (is_array($content)){
+            $content[0] = ($content[0])->active();
+        }
+
         $content = [
             $indicators ?? '',
             static::carouselInner($content),

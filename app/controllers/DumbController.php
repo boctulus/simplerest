@@ -7335,7 +7335,7 @@ class DumbController extends Controller
     echo tag('carousel')->content(
         tag('carouselItem')->content(
             tag('carouselImg')->src(assets('img/slide-1.jpeg'))
-        )->active()->caption(
+        )->caption(
             '<h5>First slide label</h5>
             <p>Some representative placeholder content for the first slide.</p>'
         ),

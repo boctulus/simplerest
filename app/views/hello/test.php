@@ -14,13 +14,24 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
     <div class="col-6 offset-3">
 
     <?php
-         echo 
-                tag('blockquote')->content(
-                    tag('p')->text(
-                        'A well-known quote, contained in a blockquote element.'
-                    ) .
-                        tag('blockquoteFooter')->content('Someone famous in ' . tag('cite')->title("Source Title")->content('Source Title'))
-                )->class('mb-0');
+         echo tag('carousel')->content([
+            tag('carouselItem')->content(
+                tag('carouselImg')->src(assets('img/slide-1.jpeg'))
+            )->caption(
+                '<h5>First slide label</h5>
+                <p>Some representative placeholder content for the first slide.</p>'
+            ),
+
+            tag('carouselItem')->content(
+                tag('carouselImg')->src(assets('img/slide-2.jpeg'))
+            ),
+
+            tag('carouselItem')->content(
+                tag('carouselImg')->src(assets('img/slide-3.jpeg'))
+            )
+        ])->id("carouselExampleControls")->withControls()->withIndicators()
+        // ->dark()
+        ;
     ?>
 
 
