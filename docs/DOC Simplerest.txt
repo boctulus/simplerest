@@ -8508,67 +8508,32 @@ Ej:
 
 # Carousels
 
-Los carruseles son de los componentes más complejos y con los métodos "base" es una ardua tarea poder crear un uno.
+Los carruseles son de los componentes más complejos y con los métodos "base" es una ardua tarea poder crear un uno. Es por esto que se ha eliminado el boilerplate y la creación es algo trivial.
 
-	carousel(mixed $content, Array $attributes = [], ...$args)
-	carouselInner(mixed $content, Array $attributes = [], ...$args)	
-	carouselItem(mixed $content, Array $attributes = [], ...$args)
-	carouselIndicators(mixed $content, Array $attributes = [], ...$args)	
-	carouselCaption(mixed $content, Array $attributes = [], ...$args)	
-	carouselControlPrev(mixed $content, Array $attributes = [], ...$args)	
-	carouselControlNext(mixed $content, Array $attributes = [], ...$args)	
-	carouselControlPrevIcon(mixed $text, Array $attributes = [], ...$args)	
-	carouselControlNextIcon(mixed $text, Array $attributes = [], ...$args)
-       
 Ej:
 
 	echo tag('carousel')->content(
-		tag('carouselIndicators')->content([
-			tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("0")->aria_current("true")
-			->content()->active(),
-			tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("1")->aria_current("true")
-			->content(),
-			tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("2")->aria_current("true")
-			->content(),
-		]) .
+		tag('carouselItem')->content(
+			tag('carouselImg')->src(assets('img/slide-1.jpeg'))
+		)->active()->caption(
+			'<h5>First slide label</h5>
+			<p>Some representative placeholder content for the first slide.</p>'
+		),
 
-		tag('carouselInner')->content([
-			tag('carouselItem')->content(
-				tag('img')->class("d-block w-100")->src('...') 
-				.
-				tag('carouselCaption')->content(
-				'h5>First slide label</h5>
-				<p>Some representative placeholder content for the first slide.</p>'
-				)->class("d-none d-md-block")
-			)->active(),
+		tag('carouselItem')->content(
+			tag('carouselImg')->src(assets('img/slide-2.jpeg'))
+		),
 
-			tag('carouselItem')->content(
-				tag('img')->class("d-block w-100")->src('...') .
-				tag('carouselCaption')->content(
-					'<h5>Second slide label</h5>
-					<p>Some representative placeholder content for the second slide.</p>'
-				)->class("d-none d-md-block")
-			),
+		tag('carouselItem')->content(
+			tag('carouselImg')->src(assets('img/slide-3.jpeg'))
+		),
+	)->id("carouselExampleControls")->withControls()->withIndicators();
 
-			tag('carouselItem')->content(
-				tag('img')->class("d-block w-100")->src('...') .
-				tag('carouselCaption')->content(
-					'<h5>Third slide label</h5>
-					<p>Some representative placeholder content for the third slide.</p>'
-				)->class("d-none d-md-block")
-			),
-		]) .
 
-		tag('carouselControlPrev')->content(
-			tag('carouselControlPrevIcon')->text() .
-			tag('span')->hidden()->text('Previous')
-		)->dataBsTarget("#carouselExampleControls") .
+Componentes opcionales:
 
-		tag('carouselControlNext')->content(
-			tag('carouselControlNextIcon')->text() .
-			tag('span')->hidden()->text('Next')
-		)->dataBsTarget("#carouselExampleControls")
-	)->id("carouselExampleControls");
+	withControls			-- permiten navegar hacia adelante y atrás
+	withIndicators			-- están en el "footer" del componente e indican el "avance" 
 
 
 Cabe notar que el primer item debe contener la clase "active" y por eso en el ejemplo se llamó a active()
@@ -8578,7 +8543,7 @@ Para transacción con efecto "fade" llamando a carouselFade() o fade() y para te
 Ej:
 
 	echo tag('carousel')->content(
-				// Items
+		// Items
 	)->id("carouselExampleControls")->dark()->fade();
 
 Para especificar el tiempo en milisegundos para cada transición es con interval()
@@ -8606,35 +8571,7 @@ Ej:
 		'<h5>Second slide label</h5>
 		<p>Some representative placeholder content for the second slide.</p>'
 	),
-
-
-Se pueden crear sub-componentes que reducirían mucho el boilerplate:
-
-	withControls
-	withIndicators
-
-El primer ejemplo podría reducirse a algo como:
-
-	echo tag('carousel')->content(
-		tag('carouselInner')->content([
-			tag('carouselItem')->content(
-				tag('carouselImg')->src('...')
-			)
-			->caption(
-				'<h5>First slide label</h5>
-				<p>Some representative placeholder content for the first slide.</p>'
-			)->active(),
-
-			tag('carouselItem')->content(
-				tag('carouselImg')->src('...')
-			)->caption(...),
-
-			tag('carouselItem')->content(
-				tag('carouselImg')->src('...')
-			)->caption(...),
-		])
-	)->id("carouselExampleControls")->withIndicators()->withControls();
-
+	
 
 # Ventanas modales
 
