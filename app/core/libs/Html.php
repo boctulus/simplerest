@@ -289,6 +289,13 @@ class Html
     static protected function tag(string $type, ?string $value = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
     {
         foreach ($args as $k => $v){
+            // ajuste para data-* props
+            if (strpos($k, '_') !== false){
+                unset($args[$k]);
+                $k = str_replace('_', '-', $k);                
+                $args[$k] = $v;
+            }
+            
             // data-* in camelCase
             if (strlen($k) > 4 && (substr($k, 0, 4) == 'data') && ctype_upper($k[4])){
                unset($args[$k]);
