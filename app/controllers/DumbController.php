@@ -7295,6 +7295,20 @@ class DumbController extends Controller
     //     )->large()
     // )->id('exampleModal');
 
+    echo tag('modal')
+    ->header(
+        tag('modalTitle')->text('Modal title') . 
+        tag('closeButton')->dataBsDismiss('modal')
+    )
+    ->body(
+        tag('p')->text('Modal body text goes here!')
+    )
+    ->footer(
+        tag('closeModal') .
+        tag('button')->text('Save changes')
+    )
+    ->id('exampleModal');
+
     //echo tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip();
 
     }
