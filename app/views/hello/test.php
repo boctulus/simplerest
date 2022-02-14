@@ -14,8 +14,13 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
     <div class="col-6 offset-3">
 
     <?php
-    
-
+         echo 
+                tag('blockquote')->content(
+                    tag('p')->text(
+                        'A well-known quote, contained in a blockquote element.'
+                    ) .
+                        tag('blockquoteFooter')->content('Someone famous in ' . tag('cite')->title("Source Title")->content('Source Title'))
+                )->class('mb-0');
     ?>
 
 

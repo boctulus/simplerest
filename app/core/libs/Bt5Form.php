@@ -201,8 +201,32 @@ class Bt5Form extends Form
 
     /* Cards Begin */
 
-    static function card(mixed $content, Array $attributes = [], ...$args){
+    static function card(mixed $content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        
+        if (empty($content)){           
+            if (array_key_exists('header', $args)){
+                $header = static::cardHeader($args['header']);
+                unset($args['header']);
+            }
+
+            if (array_key_exists('body', $args)){
+                $body = static::cardBody($args['body']);
+                unset($args['body']);
+            }
+
+            if (array_key_exists('footer', $args)){
+                $footer = static::cardFooter($args['footer']);
+                unset($args['footer']);
+            }
+
+            $content = [
+                    $header ?? '',
+                    $body ?? '',
+                    $footer ?? ''
+            ];
+        }        
+        
         return static::div($content, $attributes, ...$args);
     }
 
