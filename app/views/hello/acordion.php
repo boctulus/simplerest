@@ -34,7 +34,8 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
         ])
         ->id('accordionExample')
         ->always_open(true)
-        ->attributes(['class' => 'accordion-flush']);
+        ->attributes(['class' => 'accordion-flush'])
+        ;
 
     ?>
     </div>
