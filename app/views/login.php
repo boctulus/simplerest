@@ -81,7 +81,7 @@
 				'class' => 'input-group-text'
 			]) .
 
-			Bt5Form::text(
+			Bt5Form::inputText(
 				id:"email_username",
 				placeholder:"email o username",
 				required:"required"

@@ -7074,7 +7074,7 @@ class DumbController extends Controller
         //             'id'    => 'basic-addon',
         //             'class' => 'input-group-text'
         //         ]),
-        //         Bt5Form::text('nombre', [
+        //         Bt5Form::inputText('nombre', [
         //             "placeholder" => "Username"
         //         ])
         //     ],
@@ -7088,7 +7088,7 @@ class DumbController extends Controller
         //             'id'    => 'basic-addon',
         //             'class' => 'input-group-text'
         //         ]) .
-        //         Bt5Form::text('nombre', [
+        //         Bt5Form::inputText('nombre', [
         //             "placeholder" => "Username"
         //         ])
         //     ,
@@ -7105,7 +7105,7 @@ class DumbController extends Controller
         //         ]),
 
         //         Bt5Form::div(content:[
-        //             Bt5Form::text('nombre', [
+        //             Bt5Form::inputText('nombre', [
         //                 "placeholder" => "Username"
         //             ]),
         //             Bt5Form::p()
@@ -7125,7 +7125,7 @@ class DumbController extends Controller
         //         'id'    => 'basic-addon',
         //         'class' => 'input-group-text'
         //     ]),
-        //     Bt5Form::text('nombre', [
+        //     Bt5Form::inputText('nombre', [
         //         "placeholder" => "Username"
         //     ])
         // ])->class("input-group mb-3");
@@ -7332,24 +7332,26 @@ class DumbController extends Controller
     // ->always_open(true)
     // ->attributes(['class' => 'accordion-flush']);
 
-    echo tag('carousel')->content(
-        tag('carouselItem')->content(
-            tag('carouselImg')->src(assets('img/slide-1.jpeg'))
-        )->caption(
-            '<h5>First slide label</h5>
-            <p>Some representative placeholder content for the first slide.</p>'
-        ),
+    // echo tag('carousel')->content(
+    //     tag('carouselItem')->content(
+    //         tag('carouselImg')->src(assets('img/slide-1.jpeg'))
+    //     )->caption(
+    //         '<h5>First slide label</h5>
+    //         <p>Some representative placeholder content for the first slide.</p>'
+    //     ),
 
-        tag('carouselItem')->content(
-            tag('carouselImg')->src(assets('img/slide-2.jpeg'))
-        ),
+    //     tag('carouselItem')->content(
+    //         tag('carouselImg')->src(assets('img/slide-2.jpeg'))
+    //     ),
 
-        tag('carouselItem')->content(
-            tag('carouselImg')->src(assets('img/slide-3.jpeg'))
-        ),
-    )->id("carouselExampleControls")->withControls()->withIndicators()
-    // -->dark()
-    ;
+    //     tag('carouselItem')->content(
+    //         tag('carouselImg')->src(assets('img/slide-3.jpeg'))
+    //     ),
+    // )->id("carouselExampleControls")->withControls()->withIndicators()
+    // // -->dark()
+    // ;
+
+    echo tag('collapseButton')->target("#collapseExample")->content('Button with data-bs-target');
 
     }
 

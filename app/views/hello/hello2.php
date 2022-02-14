@@ -39,12 +39,33 @@ Bt5Form::setIdAsName();
 
         //echo tag('link')->href('#')->anchor('The Link')->title('Hey!')->tooltip();
 
+        echo tag('dropdown')->content(
+            tag('dropdownButton')->id('dropdownMenuButton1') .
+            tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+                tag('dropdownItem')->href('#')->anchor('Action') .
+                tag('dropdownItem')->href('#')->anchor('Another action') .
+                tag('dropdownItem')->href('#')->anchor('Something else here')
+            )
+        );
+
+        /* Collapse */
+
+        echo tag('p')->text(
+            tag('collapseLink')->href("#collapseExample")->anchor('Link with href')->class('me-1') .            
+            tag('collapseButton')->dataBsTarget("#collapseExample")->content('Button with data-bs-target')
+        );
+
+        echo tag('collapse')->id("collapseExample")->content(
+            tag('cardBody')->content('Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.')
+        );
+
+
         /* Carrousel */
 
         echo tag('carousel')->content([
             tag('carouselItem')->content(
                 tag('carouselImg')->src(assets('img/slide-1.jpeg'))
-            )->active()->caption(
+            )->caption(
                 '<h5>First slide label</h5>
                 <p>Some representative placeholder content for the first slide.</p>'
             ),
@@ -101,12 +122,12 @@ Bt5Form::setIdAsName();
         ->class('mb-4');
 
 
-        echo tag('card')->content(
-            tag('cardBody')->content(
+        echo tag('card')
+        ->body(
                 tag('cardTitle')->text('Some title') .
                 tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
-            )
-        )->class('mb-4');
+        )
+        ->class('mb-4');
 
         echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->success();
 
@@ -114,8 +135,8 @@ Bt5Form::setIdAsName();
             'Inbox',
             tag('badge')->content('99+')->danger()->class('position-absolute top-0 start-100 translate-middle rounded-pill')
         ])
-            ->class('rounded position-relative')
-            ->primary();
+        ->class('rounded position-relative')
+        ->primary();
 
         echo tag('buttonToolbar')->content([
             tag('buttonGroup')->content(
@@ -160,22 +181,22 @@ Bt5Form::setIdAsName();
         echo tag('alert')->content(tag('alertLink')->href('#')->anchor('A danger content'))->danger()->dismissible(true);
 
         echo tag('select')
-            ->name('comidas')
-            ->placeholder('Tu comida favorita')
-            ->options([
-                'platos' => [
-                    'Pasta' => 'pasta',
-                    'Pizza' => 'pizza',
-                    'Asado' => 'asado'
-                ],
+        ->name('comidas')
+        ->placeholder('Tu comida favorita')
+        ->options([
+            'platos' => [
+                'Pasta' => 'pasta',
+                'Pizza' => 'pizza',
+                'Asado' => 'asado'
+            ],
 
-                'frutas' => [
-                    'Banana' => 'banana',
-                    'Frutilla' => 'frutilla'
-                ]
-            ])
-            ->multiple()
-            ->class('my-3');
+            'frutas' => [
+                'Banana' => 'banana',
+                'Frutilla' => 'frutilla'
+            ]
+        ])
+        ->multiple()
+        ->class('my-3');
 
         echo Bt5Form::select(name: 'sexo', options: [
             'varon' => 1,
