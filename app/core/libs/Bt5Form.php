@@ -40,7 +40,7 @@ class Bt5Form extends Form
                     text:static::basicButton(
                         class:"accordion-button" . ($ix != 0 ? ' collapsed' : ''),
                         data_bs_toggle:"collapse",
-                        dataBsTarget:"#{$arr['id']}",
+                        data_bs_target:"#{$arr['id']}",
                         aria_expanded:"false",
                         aria_controls:$arr['id'],
                         content:$arr['title'] 
@@ -320,20 +320,20 @@ class Bt5Form extends Form
         }
 
         if (array_key_exists('withIndicators', $args)){
-            $content = tag('carouselIndicators')->content([
+            $indicators = tag('carouselIndicators')->content([
                 tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("0")->aria_current("true")
                 ->content()->active(),
                 tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("1")->aria_current("true")
                 ->content(),
                 tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("2")->aria_current("true")
                 ->content()
-            ]).$content;
+            ]);
 
             unset($attributes['withIndicators']);
         }
 
         if (array_key_exists('withControls', $args)){
-            $content .= tag('carouselControlPrev')->content(
+            $controls = tag('carouselControlPrev')->content(
                 tag('carouselControlPrevIcon')->text() .
                 tag('span')->hidden()->text('Previous')
             )->dataBsTarget("#carouselExampleControls") .
@@ -345,6 +345,12 @@ class Bt5Form extends Form
 
             unset($attributes['withControls']);
         }
+
+        $content = [
+            $indicators ?? '',
+            static::carouselInner($content),
+            $controls ?? ''
+        ];
 
         return static::div($content, $attributes, ...$args);
     }

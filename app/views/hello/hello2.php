@@ -41,25 +41,23 @@ Bt5Form::setIdAsName();
 
         /* Carrousel */
 
-        echo tag('carousel')->content(
-            tag('carouselInner')->content([
-                tag('carouselItem')->content(
-                    tag('carouselImg')->src(assets('img/slide-1.jpeg'))
-                )->active()->caption(
-                    '<h5>First slide label</h5>
-                    <p>Some representative placeholder content for the first slide.</p>'
-                ),
+        echo tag('carousel')->content([
+            tag('carouselItem')->content(
+                tag('carouselImg')->src(assets('img/slide-1.jpeg'))
+            )->active()->caption(
+                '<h5>First slide label</h5>
+                <p>Some representative placeholder content for the first slide.</p>'
+            ),
 
-                tag('carouselItem')->content(
-                    tag('carouselImg')->src(assets('img/slide-2.jpeg'))
-                ),
+            tag('carouselItem')->content(
+                tag('carouselImg')->src(assets('img/slide-2.jpeg'))
+            ),
 
-                tag('carouselItem')->content(
-                    tag('carouselImg')->src(assets('img/slide-3.jpeg'))
-                ),
-            ])
-        )->id("carouselExampleControls")->withControls()->withIndicators()
-        // -->dark()
+            tag('carouselItem')->content(
+                tag('carouselImg')->src(assets('img/slide-3.jpeg'))
+            )
+        ])->id("carouselExampleControls")->withControls()->withIndicators()
+        // ->dark()
         ;
 
         // Modal
