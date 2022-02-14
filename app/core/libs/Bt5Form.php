@@ -199,6 +199,71 @@ class Bt5Form extends Form
         return parent::link($href, $anchor, $attributes, ...$args);
     }
 
+
+    /* Collapse Begin */
+
+    static function collapseLink(string $href, string $anchor, $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. 'btn btn-primary' : 'btn btn-primary';
+        
+        $attributes['data-bs-toggle'] = "collapse";
+        $attributes['role'] = "button";    
+
+        return static::link($href, $anchor, $attributes, ...$args);
+    }
+
+    static function collapseButton(mixed $content, Array $attributes = [], $target = null, ...$args){        
+        $attributes['data-bs-toggle'] = "collapse";
+
+        if (!is_null($target)){
+            $attributes['data-bs-target'] = ($target[0] != '#' && $target[0] != '.' ? "#$target" : $target);
+        }
+
+        return static::button($content, $attributes, ...$args);
+    }
+
+    static function collapse(mixed $content, Array $attributes = [], bool $multiple = false, ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+       
+        if ($multiple || isset($args['multiple'])){
+            static::addClass('multi-collapse', $attributes['class']);
+            unset($args['multiple']);
+        }
+       
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function collapseBody(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    /* Collapse End   */
+
+
+    /* Dropdown Begin*/
+
+    static function dropdown(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function dropdownButton(mixed $content, Array $attributes = [], $target = null, ...$args){        
+        $attributes['data-bs-toggle'] = "dropdown";
+        return static::button($content, $attributes, ...$args);
+    }
+
+    static function dropdownMenu(mixed $content, string $ariaLabel, $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        $attributes['aria-labelledby'] = $ariaLabel;
+
+        return static::ul($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    /* Dropdown End */
+
+    
+
     /* Cards Begin */
 
     static function card(mixed $content = null, Array $attributes = [], ...$args){
@@ -326,6 +391,7 @@ class Bt5Form extends Form
     }
 
     /* Navigation End */
+
 
     /* Carousel Begin */
 

@@ -8661,3 +8661,35 @@ Ej:
 	->id('exampleModal');
 
 Como puede observarse en options() se envian las opciones para el "modelDialog" que ya no es necesario declararlo.
+
+
+# Collapse 
+
+Elementos como div pueden colapsarse mediante el "componente" de collapse de Boostrap.
+
+Los eventos para colapsar y des-colapsar se pueden asociar a "links" y "buttons".
+
+Ej:
+
+	echo tag('p')->text(
+		tag('collapseLink')->href("#collapseExample")->anchor('Link with href')->class('me-1') .            
+		tag('collapseButton')->dataBsTarget("#collapseExample")->content('Button with data-bs-target')
+	);
+
+	echo tag('collapse')->id("collapseExample")->content(
+		tag('cardBody')->content('Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.')
+	);
+
+Multiple targets
+
+"A <button> or <a> can show and hide multiple elements by referencing them with a selector in its href or data-bs-target attribute. Multiple <button> or <a> can show and hide an element if they each reference it with their href or data-bs-target attribute"
+
+Usando el método multiple() sobre collapse() se agrega la clase "multi-collapse".
+
+
+Nota dev:
+
+Al traducir a JavaScript usar los siguientes "ports" de métodos mágicos como __call, __get, __set, etc
+
+https://gist.github.com/loilo/4d385d64e2b8552dcc12a0f5126b6df8
+https://gist.github.com/adinan-cenci/ed4f23eb719e4c2820aedc5feb91032b

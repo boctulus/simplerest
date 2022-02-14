@@ -112,6 +112,20 @@ class Html
         "modalBody"      => "modal-body",
         "modalFooter"    => "modal-footer",
 
+        /* Collapse */
+
+        "collapse"       => "collapse",
+        "collapseBody"   => "card card-body",
+
+
+        /* Dropdown */
+
+        "dropdown"       => "dropdown",
+        "dropdownButton" => "btn-secondary dropdown-toggle",
+        "dropdownMenu"   => "dropdown-menu",
+        "dropdownItem"   => "dropdown-item",
+        "dropdownDivider" => "dropdown-divider",
+
         /*
             Utilities
         */
@@ -295,7 +309,7 @@ class Html
                 $k = str_replace('_', '-', $k);                
                 $args[$k] = $v;
             }
-            
+
             // data-* in camelCase
             if (strlen($k) > 4 && (substr($k, 0, 4) == 'data') && ctype_upper($k[4])){
                unset($args[$k]);
