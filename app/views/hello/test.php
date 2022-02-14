@@ -15,23 +15,20 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
         <?php
 
-        echo tag('modal')->content(
-            tag('modalDialog')->content(
-                tag('modalContent')->content(
-                    tag('modalHeader')->content(
-                        tag('modalTitle')->text('Modal title') . 
-                        tag('closeButton')->dataBsDismiss('modal')
-                    ) .
-                    tag('modalBody')->content(
-                        tag('p')->text('Modal body text goes here.')
-                    ) . 
-                    tag('modalFooter')->content(
-                        tag('closeModal') .
-                        tag('button')->text('Save changes')
-                    ) 
-                ) 
-            )
-        )->id('exampleModal');
+        echo tag('modal')
+        ->header(
+            tag('modalTitle')->text('Modal title') . 
+            tag('closeButton')->dataBsDismiss('modal')
+        )
+        ->body(
+            tag('p')->text('Modal body text goes here!')
+        )
+        ->footer(
+            tag('closeModal') .
+            tag('button')->text('Save changes')
+        )
+        ->options(['fullscreen'])
+        ->id('exampleModal');
                 
         ?>
     </div>

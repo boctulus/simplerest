@@ -8690,3 +8690,27 @@ En teoría es posible cambiar el ancho con small(), large() y extraLarge() sobre
 Pantalla completa
 
 Llamar a fullscreen() sobre tag('modalDialog')
+
+
+Forma simplificada
+
+Usando algo de "azucar sintáctico" es posible simplificar notablemente la creación de una ventana modal.
+
+Ej:
+
+	echo tag('modal')
+	->header(
+		tag('modalTitle')->text('Modal title') . 
+		tag('closeButton')->dataBsDismiss('modal')
+	)
+	->body(
+		tag('p')->text('Modal body text goes here!')
+	)
+	->footer(
+		tag('closeModal') .
+		tag('button')->text('Save changes')
+	)
+	->options(['fullscreen'])
+	->id('exampleModal');
+
+Como puede observarse en options() se envian las opciones para el "modelDialog" que ya no es necesario declararlo.

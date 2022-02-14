@@ -424,7 +424,7 @@ class Bt5Form extends Form
 
     /* Modal Begin */
 
-    static function modal(mixed $content, Array $attributes = [], ...$args){
+    static function modal(mixed $content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $attributes['tabindex'] = "-1";
@@ -432,6 +432,38 @@ class Bt5Form extends Form
         if (array_key_exists('static', $args)){
             $attributes['data-bs-backdrop'] = "static"; 
             $attributes['data-bs-keyboard'] = "false";
+        }
+
+        $options = [];
+        if (array_key_exists('options', $args)){
+            $options = $args['options'];
+            unset($args['options']);
+        }
+
+        if (empty($content)){           
+            if (array_key_exists('header', $args)){
+                $header = static::modalHeader($args['header']);
+                unset($args['header']);
+            }
+
+            if (array_key_exists('body', $args)){
+                $body = static::modalBody($args['body']);
+                unset($args['body']);
+            }
+
+            if (array_key_exists('footer', $args)){
+                $footer = static::modalFooter($args['footer']);
+                unset($args['footer']);
+            }
+
+            $content = tag('modalDialog')
+            ->content(
+                tag('modalContent')->content([
+                    $header ?? '',
+                    $body ?? '',
+                    $footer ?? ''
+                ])
+            )->attributes($options);
         }
 
         return static::div($content, $attributes, ...$args);
@@ -465,12 +497,12 @@ class Bt5Form extends Form
     static function modalDialog(mixed $content, Array $attributes = [], bool $scrollable = false, bool $center = false, ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        if ($scrollable || array_key_exists('scrollable', $args)){
+        if ($scrollable || array_key_exists('scrollable', $args) || in_array('scrollable', $attributes)){
             static::addClass("modal-dialog-scrollable", $attributes['class']);
-            unset($attributes['scrollable']);
+            unset($args['scrollable']);
         }
 
-        if (array_key_exists('center', $args)){
+        if ($center || array_key_exists('center', $args) || in_array('center', $attributes)){
             static::addClass("modal-dialog-centered", $attributes['class']);
             unset($args['center']);
         }
@@ -479,24 +511,24 @@ class Bt5Form extends Form
             No está funcionando el cambio de size
         */
 
-        if (array_key_exists('small', $args)){
+        if (array_key_exists('small', $args) || in_array('small', $attributes)){
             static::addClass('modal-sm', $attributes['class']);
             unset($args['small']);
         }
 
-        if (array_key_exists('large', $args)){
+        if (array_key_exists('large', $args) || in_array('large', $attributes)){
             static::addClass('modal-lg', $attributes['class']);
             unset($args['large']);
         }
 
-        if (array_key_exists('extraLarge', $args)){
+        if (array_key_exists('extraLarge', $args) || in_array('extraLarge', $attributes)){
             static::addClass('modal-xl', $attributes['class']);
             unset($args['extraLarge']);
         }
 
         // Full screen
 
-        if (array_key_exists('fullscreen', $args)){
+        if (array_key_exists('fullscreen', $args) || in_array('fullscreen', $attributes)){
             static::addClass('modal-fullscreen', $attributes['class']);
             unset($args['fullscreen']);
         }

@@ -64,28 +64,24 @@ Bt5Form::setIdAsName();
 
         // Modal
 
-        echo tag('modal')->content(
-            tag('modalDialog')->content(
-                tag('modalContent')->content(
-                    tag('modalHeader')->content(
-                        tag('modalTitle')->text('Modal title') . 
-                        tag('closeButton')->dataBsDismiss('modal')
-                    ) .
-                    tag('modalBody')->content(
-                        tag('p')->text('Modal body text goes here.') . 
-                        tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip()
-                    ) . 
-                    tag('modalFooter')->content(
-                        tag('closeModal') .
-                        tag('button')->text('Save changes')
-                    ) 
-                ) 
-            )
-            //->extraLarge()
-            //->center()   
-            //->scrollable()
-            //->fullscreen()
-        )->id('exampleModal');
+        echo tag('modal')
+        ->header(
+            tag('modalTitle')->text('Modal title') . 
+            tag('closeButton')->dataBsDismiss('modal')
+        )
+        ->body(
+            tag('p')->text('Modal body text goes here!')
+        )
+        ->footer(
+            tag('closeModal') .
+            tag('button')->text('Save changes')
+        )
+        ->options([
+            //'fullscreen',
+            //'center',
+            //'scrollable'
+        ])
+        ->id('exampleModal');
 
         echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 
