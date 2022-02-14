@@ -1,0 +1,56 @@
+INTEGRACIONES
+=============
+
+Hacer integraciones con:
+
+# Medios de pago
+
+- Stripe y/o
+- PayPal y/o
+- MercadoPago
+
+
+# Internacionalización
+
+- Google Translate
+
+
+# Seguridad
+
+- Google Recatcha
+
+
+# Emails / Marketing
+
+- Klaviyo
+- Mailerlite
+
+# Marketing
+
+- Hotjar
+
+
+# Advertising
+
+- Google Adwords
+
+
+# Analitics
+
+- Google analitics
+
+
+# SEO
+
+- Google Webmaster tools
+- Bing Webmaster tools
+
+
+# Otros
+
+- Google Tag Manager
+
+- Facebook Pixel
+
+- Facebook (API) 
+
