@@ -8473,15 +8473,6 @@ Se implementan varios métodos para la creación de tarjetas aunque las cards so
 
 Ej:
 
-    echo tag('card')->content(
-        tag('cardBody')->content(
-            tag('cardTitle')->text('Some title') .
-            tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
-        )
-    )->class('mb-4');
-
-Ej:
-
 	echo tag('card')->content(
         tag('cardHeader')->content('Quote') .
         tag('cardBody')->content(
@@ -8491,6 +8482,27 @@ Ej:
             )->class('mb-0')
         )
     )->class('mb-4');
+
+Tanto header como footer son opcionales.
+
+Ej:
+
+	 echo tag('card')->content(
+        tag('cardBody')->content(
+            tag('cardTitle')->text('Some title') .
+            tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
+        )
+    )->class('mb-4');
+
+Sintaxis simplificada
+
+	echo tag('card')
+	->header('Some header') 
+	->body(
+		'Some body'
+	) 
+	->footer('Some footer')
+	->class('mb-4');
 
 
 Notas:

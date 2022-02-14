@@ -87,23 +87,24 @@ Bt5Form::setIdAsName();
 
         echo '<br/>';
 
-        echo tag('card')->content(
-            tag('cardHeader')->content('Quote') .
-                tag('cardBody')->content(
-                    tag('blockquote')->content(
-                        tag('p')->text(
-                            'A well-known quote, contained in a blockquote element.'
-                        ) .
-                            tag('blockquoteFooter')->content('Someone famous in ' . tag('cite')->title("Source Title")->content('Source Title'))
-                    )->class('mb-0')
-                )
-        )->class('mb-4');
+        echo tag('card')
+        ->header('Quote') 
+        ->body(
+            tag('blockquote')->content(
+                tag('p')->text(
+                    'A well-known quote, contained in a blockquote element.'
+                ) .
+                    tag('blockquoteFooter')->content('Someone famous in ' . tag('cite')->title("Source Title")->content('Source Title'))
+            )->class('mb-0')
+        ) 
+        ->footer('Some footer')
+        ->class('mb-4');
 
 
         echo tag('card')->content(
             tag('cardBody')->content(
                 tag('cardTitle')->text('Some title') .
-                    tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
+                tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
             )
         )->class('mb-4');
 
