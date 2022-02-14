@@ -7295,21 +7295,43 @@ class DumbController extends Controller
     //     )->large()
     // )->id('exampleModal');
 
-    echo tag('modal')
-    ->header(
-        tag('modalTitle')->text('Modal title') . 
-        tag('closeButton')->dataBsDismiss('modal')
-    )
-    ->body(
-        tag('p')->text('Modal body text goes here!')
-    )
-    ->footer(
-        tag('closeModal') .
-        tag('button')->text('Save changes')
-    )
-    ->id('exampleModal');
+    // echo tag('modal')
+    // ->header(
+    //     tag('modalTitle')->text('Modal title') . 
+    //     tag('closeButton')->dataBsDismiss('modal')
+    // )
+    // ->body(
+    //     tag('p')->text('Modal body text goes here!')
+    // )
+    // ->footer(
+    //     tag('closeModal') .
+    //     tag('button')->text('Save changes')
+    // )
+    // ->id('exampleModal');
 
     //echo tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip();
+
+    echo tag('accordion')->items([
+        [
+            'id' => "flush-collapseOne",
+            'title' => "Accordion Item #1",
+            'body' => 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first items accordion body.'
+        ],
+        [
+            'id' => "flush-collapseTwo",
+            'title' => "Accordion Item #2",
+            'body' => 'Placeholder 2'
+        ],
+        [
+            'id' => "flush-collapseThree",
+            'title' => "Accordion Item #3",
+            'body' =>  'Placeholder 3'
+        ]
+    ])
+    ->id('accordionExample')
+    ->always_open(true)
+    ->attributes(['class' => 'accordion-flush']);
+
 
     }
 
