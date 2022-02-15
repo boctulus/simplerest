@@ -13,27 +13,13 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 <div class="row mt-5">
     <div class="col-6 offset-3">
 
-    <?php
-         echo tag('carousel')->content([
-            tag('carouselItem')->content(
-                tag('carouselImg')->src(assets('img/slide-1.jpeg'))
-            )->caption(
-                '<h5>First slide label</h5>
-                <p>Some representative placeholder content for the first slide.</p>'
-            ),
-
-            tag('carouselItem')->content(
-                tag('carouselImg')->src(assets('img/slide-2.jpeg'))
-            ),
-
-            tag('carouselItem')->content(
-                tag('carouselImg')->src(assets('img/slide-3.jpeg'))
-            )
-        ])->id("carouselExampleControls")->withControls()->withIndicators()
-        // ->dark()
-        ;
-    ?>
-
+    <ul class="list-group">
+        <li class="list-group-item">An item</li>
+        <li class="list-group-item">A second item</li>
+        <li class="list-group-item">A third item</li>
+        <li class="list-group-item">A fourth item</li>
+        <li class="list-group-item">And a fifth one</li>
+    </ul>
 
     </div>
 </div>
