@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs;
 
+use PDO;
 use simplerest\controllers\api\M;
 use simplerest\core\libs\Tag;
 
@@ -61,6 +62,11 @@ class Html
         "badge"          => "badge",
 
         "blockquoteFooter" => "blockquote-footer",
+
+        /* Stacked form controls */
+
+        "form-check"       => "form-check",
+        "form-check-label" => "formCheckLabel",
 
         /* Cards Begin */
 
@@ -122,10 +128,19 @@ class Html
 
         "dropdown"       => "dropdown",
         "dropdownButton" => "btn-secondary dropdown-toggle",
+        "dropdownLink"   => "btn-secondary dropdown-toggle",
         "dropdownMenu"   => "dropdown-menu",
         "dropdownItem"   => "dropdown-item",
         "dropdownDivider" => "dropdown-divider",
 
+        /* List group */
+
+        "listGroup"      => "list-group",
+        "listGroupNumbered" => "list-group list-group-numbered",
+        "listGroupItem"  => "list-group-item",
+        "listGroupItemAction"  => "list-group-item-action",
+        
+        
         /*
             Utilities
         */
@@ -200,7 +215,7 @@ class Html
         }    
     }
 
-    static function hasColor(string $str, ?string $color = null) : bool{
+    static function hasColor(string $str, string $color = '') : bool{
         if (strlen($color) > 4 && substr($color, 0, 4) != 'btn-'){
             $color = "btn-$color";
         }    
@@ -351,8 +366,11 @@ class Html
     }
 
     static function group(mixed $content, string $tag = 'div', Array $attributes = [], ...$args){
-        $content_str = is_array($content) ? implode(' ', $content) : $content;
-        return static::tag($tag, $content_str, $attributes, ...$args);
+        if (is_array($content)){
+            $content = implode(' ', $content);
+        }
+
+        return static::tag($tag, $content, $attributes, ...$args);
     }
 
     static function link(string $href, string $anchor, Array $attributes = [], ...$args){
@@ -374,6 +392,14 @@ class Html
     {  
         if ($type != 'list'){
             $attributes['type']  = $type;
+        }
+
+        if (isset($args['large'])){
+            static::addClass('form-control-lg', $attributes['class']);
+        }
+
+        if (isset($args['small'])){
+            static::addClass('form-control-sm', $attributes['class']);
         }
 
         $plain_attr[] = is_null($default) ? '' : "value=\"$default\""; 
@@ -459,10 +485,10 @@ class Html
         return static::input('url', $default, $attributes, ...$args); 
     }
 
-    static protected function label(string $id, string $placeholder, Array $attributes = [], ...$args){
-        $attributes['for'] = $id;
+    static protected function label(string $for, string $text, Array $attributes = [], ...$args){
+        $attributes['for'] = $for;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('label') : static::getClass('label');
-        return static::tag('label', $placeholder, $attributes, ...$args);
+        return static::tag('label', $text, $attributes, ...$args);
     }
 
     // implementación especial 
@@ -559,7 +585,6 @@ class Html
             }
         }
 
-
         $a2 = is_array(Arrays::array_value_first($options));
 
         // options
@@ -611,6 +636,13 @@ class Html
             $opt_str = implode(' ', $_opt);
         }
 
+        if (isset($args['large'])){
+            static::addClass('form-control-lg', $attributes['class']);
+        }
+
+        if (isset($args['small'])){
+            static::addClass('form-control-sm', $attributes['class']);
+        }
        
         return static::tag(__FUNCTION__, $opt_str, $attributes, ...$args);
     }
@@ -830,6 +862,14 @@ class Html
     static function button(mixed $content = null, $attributes = [], ...$args){
         $attributes['type']="button";
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (isset($args['large'])){
+            static::addClass('btn-lg', $attributes['class']);
+        }
+
+        if (isset($args['small'])){
+            static::addClass('btn-sm', $attributes['class']);
+        }
 
         $outline = array_key_exists('outline', $attributes) || array_key_exists('outline', $args);
 
