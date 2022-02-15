@@ -211,12 +211,12 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
    
-    static function alertLink(string $href, string $anchor, $attributes = [], ...$args){
+    static function alertLink(string $anchor, string $href, $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::link($href, $anchor, $attributes, ...$args);
+        return static::link($anchor, $href , $attributes, ...$args);
     }
 
-    static function link(string $href, string $anchor, Array $attributes = [], ...$args){       
+    static function link(string $anchor, ?string $href = null, Array $attributes = [], ...$args){       
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         // title es requerido (sin probar)
@@ -224,19 +224,19 @@ class Bt5Form extends Form
             $attributes['data-bs-toggle'] = "tooltip";
         }
 
-        return parent::link($href, $anchor, $attributes, ...$args);
+        return parent::link($anchor, $href, $attributes, ...$args);
     }
 
 
     /* Collapse Begin */
 
-    static function collapseLink(string $href, string $anchor, $attributes = [], ...$args){
+    static function collapseLink(string $anchor, string $href, $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. 'btn btn-primary' : 'btn btn-primary';
         
         $attributes['data-bs-toggle'] = "collapse";
         $attributes['role'] = "button";    
 
-        return static::link($href, $anchor, $attributes, ...$args);
+        return static::link($anchor, $href, $attributes, ...$args);
     }
 
     static function collapseButton(mixed $content, Array $attributes = [], $target = null, ...$args){        
@@ -287,13 +287,13 @@ class Bt5Form extends Form
         return static::button($content, $attributes, ...$args);
     }
 
-    static function dropdownLink(string $href, string $anchor, $attributes = [], ...$args){
+    static function dropdownLink(string $anchor, string $href, $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. 'btn btn-secondary dropdown-toggle' : 'btn btn-secondary dropdown-toggle';
 
         $attributes['data-bs-toggle'] = "dropdown";
         $attributes['role'] = "button";    
 
-        return static::link($href, $anchor, $attributes, ...$args);
+        return static::link($anchor, $href , $attributes, ...$args);
     }
 
     static function dropdownMenu(mixed $content, string $ariaLabel, $attributes = [], ...$args){
@@ -304,9 +304,9 @@ class Bt5Form extends Form
         return static::ul($content, $attributes, ...$args);
     }
 
-    static function dropdownItem(string $href, string $anchor, $attributes = [], ...$args){
+    static function dropdownItem(string $anchor, string $href, $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return '<li>' . static::link($href, $anchor, $attributes, ...$args) . '</li>';
+        return '<li>' . static::link($anchor, $href , $attributes, ...$args) . '</li>';
     }
 
     static function dropdownDivider(){
@@ -353,9 +353,9 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
-    static function cardLink(string $href, string $anchor, $attributes = [], ...$args){
+    static function cardLink(string $anchor, string $href, $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::link($href, $anchor, $attributes, ...$args);
+        return static::link($anchor, $href , $attributes, ...$args);
     }
 
     static function cardText(string $text, $attributes = [], ...$args){
@@ -438,9 +438,9 @@ class Bt5Form extends Form
         return static::li($text, $attributes, ...$args);
     }
 
-    static function navLink(string $href, string $anchor, $attributes = [], ...$args){
+    static function navLink(string $anchor, string $href, $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::link($href, $anchor, $attributes, ...$args);
+        return static::link($anchor, $href , $attributes, ...$args);
     }
 
     /* Navigation End */
