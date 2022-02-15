@@ -49,10 +49,14 @@ class Bt5Form extends Form
             );
     }
 
-    static function accordion(Array $items, bool $always_open = false, Array $attributes = [], ...$args){
+    static function accordion(Array $items, ?bool $always_open = null, Array $attributes = [], ...$args){
         if (isset($args['id'])) {
             $attributes['id'] = $args['id'];
             unset($args['id']);
+        }
+
+        if ($always_open === null){
+            $always_open = $attributes['always_open'] ?? false;
         }
 
         $elems = [];
