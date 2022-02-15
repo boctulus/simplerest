@@ -266,7 +266,7 @@ class Html
     }
     
 
-    static function removeClass(?string $class = null, string &$to){
+    static function removeClass(string $class, string &$to){
         if (empty($class)){
             return;
         }
@@ -373,19 +373,20 @@ class Html
         return static::tag($tag, $content, $attributes, ...$args);
     }
 
-    static function link(string $href, string $anchor, Array $attributes = [], ...$args){
-        if (Strings::startsWith('www.', $href)){
-            $href = "http://$href";
+    static function link(string $anchor, ?string $href = null, Array $attributes = [], ...$args){
+        if ($href !== null){
+            $attributes['href'] = $href;
+        }
+        
+        if (!isset($attributes['href'])){
+            $attributes['href'] = '#';
+        } else {
+            if (Strings::startsWith('www.', $attributes['href'])){
+                $attributes['href'] = "http://" . $attributes['href'];
+            }
         }
 
-        $attributes['href'] = $href;
-
         return static::tag('a', $anchor, $attributes, null, ...$args);
-    }
-
-    // alias
-    static function link_to(string $href, string $anchor, Array $attributes = [], ...$args){
-        return static::link($href, $anchor, $attributes, ...$args);
     }
 
     static function input(string $type, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
