@@ -7059,7 +7059,7 @@ class DumbController extends Controller
     function test_tag(){
         Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-        Form::pretty();
+        //Form::pretty();
 
         // echo Bt5Form::span(text:'Hi');
          
@@ -7351,7 +7351,29 @@ class DumbController extends Controller
     // // -->dark()
     // ;
 
-    echo tag('collapseButton')->target("#collapseExample")->content('Button with data-bs-target');
+    //echo tag('collapseButton')->target("#collapseExample")->content('Button with data-bs-target');
+    //echo tag('dropdownLink')->id('dropdownMenuButton1')->href('#')->anchor('Dropdown button');
+
+    //echo tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->danger()->large();
+
+    // echo tag('formCheck')->content(
+    //     tag('checkbox')->id("defaultCheck1").
+    //     tag('label')->for("defaultCheck1")->text('Default checkbox')
+    // )->class('my-3');
+
+    // echo tag('formCheck')->content(
+    //     tag('checkbox')->id("defaultCheck1")->disabled() .
+    //     tag('formCheckLabel')->for("defaultCheck1")->placeholder('Disabled checkbox')
+    // )->class('my-1');
+
+    //echo tag('formCheck')->content('')->type('checkbox')->id("defaultCheck1")->text('Default checkbox')->class('me-2');
+
+    echo tag('listGroup')->content([
+        tag('listGroupItem')->text('An item'),
+        tag('listGroupItem')->text('An item #2'),
+        tag('listGroupItem')->text('An item #3')
+    ])->class('mt-3');
+
 
     }
 

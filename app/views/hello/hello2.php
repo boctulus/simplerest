@@ -40,25 +40,17 @@ Bt5Form::setIdAsName();
         //echo tag('link')->href('#')->anchor('The Link')->title('Hey!')->tooltip();
 
         echo tag('dropdown')->content(
-            tag('dropdownButton')->id('dropdownMenuButton1') .
+            tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->danger() .
+
             tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
                 tag('dropdownItem')->href('#')->anchor('Action') .
                 tag('dropdownItem')->href('#')->anchor('Another action') .
+                tag('dropdownDivider') .
                 tag('dropdownItem')->href('#')->anchor('Something else here')
             )
         );
 
-        /* Collapse */
-
-        echo tag('p')->text(
-            tag('collapseLink')->href("#collapseExample")->anchor('Link with href')->class('me-1') .            
-            tag('collapseButton')->dataBsTarget("#collapseExample")->content('Button with data-bs-target')
-        );
-
-        echo tag('collapse')->id("collapseExample")->content(
-            tag('cardBody')->content('Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.')
-        );
-
+        echo '<br/>';
 
         /* Carrousel */
 
@@ -176,6 +168,21 @@ Bt5Form::setIdAsName();
 
         echo tag('br');
 
+
+        /* Collapse */
+
+        echo tag('p')->text(
+            tag('collapseLink')->href("#collapseExample")->anchor('Link with href')->class('me-1') .            
+            tag('collapseButton')->dataBsTarget("#collapseExample")->content('Button with data-bs-target')
+        );
+
+        echo tag('collapse')->id("collapseExample")->content(
+            tag('cardBody')->content('Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.')
+        );
+
+
+
+
         echo tag('alert')->content('OK !')->success();
         echo Bt5Form::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
         echo tag('alert')->content(tag('alertLink')->href('#')->anchor('A danger content'))->danger()->dismissible(true);
@@ -195,7 +202,7 @@ Bt5Form::setIdAsName();
                 'Frutilla' => 'frutilla'
             ]
         ])
-        ->multiple()
+        ->multiple()   
         ->class('my-3');
 
         echo Bt5Form::select(name: 'sexo', options: [
@@ -233,14 +240,26 @@ Bt5Form::setIdAsName();
 
         echo tag('checkGroup')->content([
             Bt5Form::radio(name: 'civil', text: "soltero", checked: true, id: 'soltero')
-        ])->class('my-3');
+        ])->class('mt-3');
 
         echo tag('checkGroup')->content([
             Bt5Form::radio(name: 'civil', text: "casado", checked: true, id: 'casado')
-        ])->class('my-3');
-
+        ])->class('mb-3');
 
         echo Bt5Form::switch(id: "hijos", text: "Hijos", checked: true);
+
+
+        // Stack de checkbox / radios
+
+        echo tag('formCheck')->content(
+            tag('checkbox')->id("defaultCheck1")->class('me-2').
+            tag('formCheckLabel')->for("defaultCheck1")->text('Default checkbox')
+        )->class('mt-3');
+    
+        echo tag('formCheck')->content(
+            tag('checkbox')->id("defaultCheck2")->class('me-2')->disabled() .
+            tag('formCheckLabel')->for("defaultCheck2")->text('Disabled checkbox')
+        );
 
         echo Bt5Form::url(default: "https://www.linkedin.com/in/pablo-bozzolo/", class: "mt-3");
 
@@ -254,16 +273,28 @@ Bt5Form::setIdAsName();
                 tag('submit')->id("enviar")->value("Enviar")->success()->disabled()
         )->aria_label("Basic example");
 
+        /*  List groups */
+
+        echo tag('listGroup')->content([
+            //tag('listGroupItem')->text('An item')->active(),
+            //Bt5Form::listGroupItem(text:'An item', active:true),
+            Bt5Form::listGroupItem('An item', ['active' => true]),
+
+            tag('listGroupItem')->text('An item #2'),
+            tag('listGroupItem')->text('An item #3')
+        ])->class('mt-3');
+
+
         echo Bt5Form::br();
 
         echo tag('img')->src(assets('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");
-
-        echo Bt5Form::br();
 
         echo Bt5Form::salutor("Isabel", "bella");
         echo ' ';
         echo Bt5Form::link_to(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
 
         ?>
+
+        <p><p>
     </div>
 </div>

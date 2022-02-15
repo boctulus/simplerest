@@ -8090,6 +8090,13 @@ La razón de las excepciones son colisiones de nombres como sucede con button() 
 Igualmente "text" puede hacer referencia a un atributo de otra etiqueta así que <input type="text"> es inputText().
 
 
+Size
+
+A los controles de tipo form-control se les puede cambiar el tamaño aplicándoles large() o size()
+
+Se verificó su funcionamiento para el caso de los <input> aunque se implemetó también para los <select>
+
+
 # Id o name
 
 Se puede generar una copia del valor del atributo "name" en "id" para evitar repetir:
@@ -8685,6 +8692,108 @@ Multiple targets
 "A <button> or <a> can show and hide multiple elements by referencing them with a selector in its href or data-bs-target attribute. Multiple <button> or <a> can show and hide an element if they each reference it with their href or data-bs-target attribute"
 
 Usando el método multiple() sobre collapse() se agrega la clase "multi-collapse".
+
+
+# Dropdown
+
+La estructura básica es la siguiente:
+
+	echo tag('dropdown')->content(
+		tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button') .
+		tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+			tag('dropdownItem')->href('#')->anchor('Action') .
+			tag('dropdownItem')->href('#')->anchor('Another action') .
+			tag('dropdownItem')->href('#')->anchor('Something else here')
+		)
+	);
+
+En vez de un button puede usarse un link:
+
+	echo tag('dropdown')->content(
+		tag('dropdownLink')->id('dropdownMenuButton1')->href('#')->anchor('Dropdown button') .
+		tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+			tag('dropdownItem')->href('#')->anchor('Action') .
+			tag('dropdownItem')->href('#')->anchor('Another action') .
+			tag('dropdownItem')->href('#')->anchor('Something else here')
+		)
+	);
+
+Variantes de los botones
+
+Ej:
+
+Se puede aplicar danger(), warning(), success() ... outline() a los botones.
+
+Ej:
+
+	echo tag('dropdown')->content(
+		tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->danger() .
+
+		tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+			tag('dropdownItem')->href('#')->anchor('Action') .
+			tag('dropdownItem')->href('#')->anchor('Another action') .
+			tag('dropdownItem')->href('#')->anchor('Something else here')
+		)
+	);
+
+Divisor 
+
+Se pueden agregar divisores entre los items del menú con dropdownDivider()
+
+	echo tag('dropdown')->content(
+		tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->danger()->outline() .
+		tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+			tag('dropdownItem')->href('#')->anchor('Action') .
+			tag('dropdownItem')->href('#')->anchor('Another action') .
+			tag('dropdownDivider') .
+			tag('dropdownItem')->href('#')->anchor('Something else here')
+		)
+	);
+
+Tamaño del botón
+
+Se ajusta con small() o large() sobre dropdown()
+
+Ej:
+
+	echo tag('dropdown')->content(
+		tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->danger()->outline()->large() .
+		tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+			tag('dropdownItem')->href('#')->anchor('Action') .
+			tag('dropdownItem')->href('#')->anchor('Another action') .
+			tag('dropdownDivider') .
+			tag('dropdownItem')->href('#')->anchor('Something else here')
+		)
+	);
+
+Disabled
+
+Para des-habilitar solo aplicar disabled() sobre el botón
+
+
+# List group
+
+Ej:
+
+	echo tag('listGroup')->content([
+		tag('listGroupItem')->text('An item'),
+		tag('listGroupItem')->text('An item #2'),
+		tag('listGroupItem')->text('An item #3')
+	])->class('mt-3');
+
+Item "activo"
+
+	echo tag('listGroup')->content([
+		tag('listGroupItem')->text('An item')->active(),
+		tag('listGroupItem')->text('An item #2'),
+		tag('listGroupItem')->text('An item #3')
+	])->class('mt-3');
+
+En caso de querer usar la clase Bt5Form en vez de Tag() sería:
+
+    Bt5Form::listGroupItem('An item', ['active' => true]),
+o
+	Bt5Form::listGroupItem(text:'An item', active:true),
 
 
 Nota dev:
