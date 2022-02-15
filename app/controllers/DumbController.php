@@ -7309,7 +7309,6 @@ class DumbController extends Controller
     // )
     // ->id('exampleModal');
 
-    //echo tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip();
 
     // echo tag('accordion')->items([
     //     [
@@ -7368,13 +7367,17 @@ class DumbController extends Controller
 
     //echo tag('formCheck')->content('')->type('checkbox')->id("defaultCheck1")->text('Default checkbox')->class('me-2');
 
-    echo tag('listGroup')->content([
-        tag('listGroupItem')->text('An item'),
-        tag('listGroupItem')->text('An item #2'),
-        tag('listGroupItem')->text('An item #3')
-    ])->class('mt-3');
+    // echo tag('listGroup')->content([
+    //     tag('listGroupItem')->text('An item'),
+    //     tag('listGroupItem')->text('An item #2'),
+    //     tag('listGroupItem')->text('An item #3')
+    // ])->class('mt-3');
+
+
+    echo tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip();
 
 
     }
+
 
 }   

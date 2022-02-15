@@ -282,7 +282,7 @@ Bt5Form::setIdAsName();
 
             tag('listGroupItem')->text('An item #2'),
             tag('listGroupItem')->text('An item #3')
-        ])->class('mt-3');
+        ])->class('mt-5');
 
 
         echo Bt5Form::br();
@@ -291,7 +291,7 @@ Bt5Form::setIdAsName();
 
         echo Bt5Form::salutor("Isabel", "bella");
         echo ' ';
-        echo Bt5Form::link_to(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
+        echo Bt5Form::link(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
 
         ?>
 
