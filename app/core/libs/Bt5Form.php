@@ -6,10 +6,38 @@ use simplerest\core\libs\Form;
 
 class Bt5Form extends Form
 {   
-    // por qué $classes no puede estar acá?
+    /* Stacked checkbox & radios */
+
+    static function formCheck(mixed $content, Array $attributes = [], ...$args){     
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function formCheckLabel(string $for, string $text = '', Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('label') : static::getClass('label');
+        return static::label($for, $text, $attributes, ...$args);
+    }
+
+    /* List group */
+
+    static function listGroup(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::ul($content, $attributes, ...$args);
+    }
+
+    static function listGroupItem(string $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if ((isset($attributes['active']) && $attributes['active']) || isset($args['active'])){
+            static::addClass('active', $attributes['class']);
+            $attributes['aria-current'] = "true";
+        }
+
+        return static::li($text, $attributes, ...$args);
+    }
 
     /*
-        Atributos aplican al checkbox y no al div
+        Nota: atributos aplican al checkbox y no al div
     */
     static function switch(string $text, bool $checked = false, Array $attributes = [], ...$args){
         return 
@@ -247,9 +275,25 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
-    static function dropdownButton(mixed $content, Array $attributes = [], $target = null, ...$args){        
+    static function dropdownButton(mixed $content, Array $attributes = [], $target = null, ...$args){  
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);      
+
+        if (isset($args['split'])){
+            static::addClass('dropdown-toggle-split', $attributes['class']);
+            unset($args['split']);
+        }
+
         $attributes['data-bs-toggle'] = "dropdown";
         return static::button($content, $attributes, ...$args);
+    }
+
+    static function dropdownLink(string $href, string $anchor, $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. 'btn btn-secondary dropdown-toggle' : 'btn btn-secondary dropdown-toggle';
+
+        $attributes['data-bs-toggle'] = "dropdown";
+        $attributes['role'] = "button";    
+
+        return static::link($href, $anchor, $attributes, ...$args);
     }
 
     static function dropdownMenu(mixed $content, string $ariaLabel, $attributes = [], ...$args){
@@ -257,7 +301,16 @@ class Bt5Form extends Form
 
         $attributes['aria-labelledby'] = $ariaLabel;
 
-        return static::ul($content, __FUNCTION__, $attributes, ...$args);
+        return static::ul($content, $attributes, ...$args);
+    }
+
+    static function dropdownItem(string $href, string $anchor, $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return '<li>' . static::link($href, $anchor, $attributes, ...$args) . '</li>';
+    }
+
+    static function dropdownDivider(){
+        return '<li><hr class="dropdown-divider"></li>';
     }
 
     /* Dropdown End */
