@@ -6,8 +6,9 @@ use simplerest\core\libs\Tag;
 
 Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 
-Bt5Form::macro('salutor', function ($name, $adj) {
-    return "<span/>Hello $adj $name</span>";
+Bt5Form::macro('salutor', function ($name, $adj, Array $att = []) {
+    $str_att = Bt5Form::attributes($att);
+    return "<span $str_att>Hello $adj $name</span>";
 });
 
 Bt5Form::setIdAsName();
@@ -276,21 +277,19 @@ Bt5Form::setIdAsName();
         /*  List groups */
 
         echo tag('listGroup')->content([
-            //tag('listGroupItem')->text('An item')->active(),
-            //Bt5Form::listGroupItem(text:'An item', active:true),
-            Bt5Form::listGroupItem('An item', ['active' => true]),
-
+            tag('listGroupItem')->text('An item')->active(),
             tag('listGroupItem')->text('An item #2'),
             tag('listGroupItem')->text('An item #3')
-        ])->class('mt-5');
+        ])->class('mt-5')->numbered();
 
 
         echo Bt5Form::br();
 
         echo tag('img')->src(assets('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");
 
-        echo Bt5Form::salutor("Isabel", "bella");
-        echo ' ';
+        echo Bt5Form::br();
+        echo Bt5Form::salutor("Isabel", "bella", ['class' => 'my-3 me-1', 'style' => 'color: red']); 
+        echo ' ~ '; 
         echo Bt5Form::link(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
 
         ?>
