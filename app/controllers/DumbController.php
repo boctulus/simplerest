@@ -7249,133 +7249,139 @@ class DumbController extends Controller
        //echo tag('button')->success()->text('Save changes');
 
        //echo tag('closeModal');
-    //    d('--');
-    //    echo '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
+        //    d('--');
+        //    echo '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
 
 
-    // d(Form::hasColor("class1 btn-success class2", "success"));
-    // d(Form::hasColor("class1 btn-success class2", "btn-success")); 
-    // d(Form::hasColor("class1 btn-success class2", "danger")); 
-    // d(Form::hasColor("class1 btn-success class2"));
-    // d(Form::hasColor("class1 class2"));        
+        // d(Form::hasColor("class1 btn-success class2", "success"));
+        // d(Form::hasColor("class1 btn-success class2", "btn-success")); 
+        // d(Form::hasColor("class1 btn-success class2", "danger")); 
+        // d(Form::hasColor("class1 btn-success class2"));
+        // d(Form::hasColor("class1 class2"));        
 
-    //echo tag('button')->text('Save changes');
-    // d('');
-    //echo tag('basicButton')->class('btn-danger')->class('btn-success')->text('Save changes');
+        //echo tag('button')->text('Save changes');
+        // d('');
+        //echo tag('basicButton')->class('btn-danger')->class('btn-success')->text('Save changes');
 
-    //echo tag('button')->class('btn-danger')->success()->text('Save changes');         
+        //echo tag('button')->class('btn-danger')->success()->text('Save changes');         
 
-    // d('');
+        // d('');
 
-    //echo tag('closeModal');
+        //echo tag('closeModal');
 
-    // echo Bt5Form::div(
-    //     content: [
-    //         tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
-    //         tag('inputText')->name('nombre')->placeholder("Username")
-    //     ],
-    //     class: "input-group mb-3"
-    // );
+        // echo Bt5Form::div(
+        //     content: [
+        //         tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
+        //         tag('inputText')->name('nombre')->placeholder("Username")
+        //     ],
+        //     class: "input-group mb-3"
+        // );
 
-    // echo tag('modal')->content(
-    //     tag('modalDialog')->content(
-    //         tag('modalContent')->content(
-    //             tag('modalHeader')->content(
-    //                 tag('modalTitle')->text('Modal title') . 
-    //                 tag('closeButton')->dataBsDismiss('modal')
-    //             ) .
-    //             tag('modalBody')->content(
-    //                 tag('p')->text('Modal body text goes here.')
-    //             ) . 
-    //             tag('modalFooter')->content(
-    //                 tag('closeModal') .
-    //                 tag('button')->text('Save changes')
-    //             ) 
-    //         ) 
-    //     )->large()
-    // )->id('exampleModal');
+        // echo tag('modal')->content(
+        //     tag('modalDialog')->content(
+        //         tag('modalContent')->content(
+        //             tag('modalHeader')->content(
+        //                 tag('modalTitle')->text('Modal title') . 
+        //                 tag('closeButton')->dataBsDismiss('modal')
+        //             ) .
+        //             tag('modalBody')->content(
+        //                 tag('p')->text('Modal body text goes here.')
+        //             ) . 
+        //             tag('modalFooter')->content(
+        //                 tag('closeModal') .
+        //                 tag('button')->text('Save changes')
+        //             ) 
+        //         ) 
+        //     )->large()
+        // )->id('exampleModal');
 
-    // echo tag('modal')
-    // ->header(
-    //     tag('modalTitle')->text('Modal title') . 
-    //     tag('closeButton')->dataBsDismiss('modal')
-    // )
-    // ->body(
-    //     tag('p')->text('Modal body text goes here!')
-    // )
-    // ->footer(
-    //     tag('closeModal') .
-    //     tag('button')->text('Save changes')
-    // )
-    // ->id('exampleModal');
-
-
-    // echo tag('accordion')->items([
-    //     [
-    //         'id' => "flush-collapseOne",
-    //         'title' => "Accordion Item #1",
-    //         'body' => 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first items accordion body.'
-    //     ],
-    //     [
-    //         'id' => "flush-collapseTwo",
-    //         'title' => "Accordion Item #2",
-    //         'body' => 'Placeholder 2'
-    //     ],
-    //     [
-    //         'id' => "flush-collapseThree",
-    //         'title' => "Accordion Item #3",
-    //         'body' =>  'Placeholder 3'
-    //     ]
-    // ])
-    // ->id('accordionExample')
-    // ->always_open(true)
-    // ->attributes(['class' => 'accordion-flush']);
-
-    // echo tag('carousel')->content(
-    //     tag('carouselItem')->content(
-    //         tag('carouselImg')->src(assets('img/slide-1.jpeg'))
-    //     )->caption(
-    //         '<h5>First slide label</h5>
-    //         <p>Some representative placeholder content for the first slide.</p>'
-    //     ),
-
-    //     tag('carouselItem')->content(
-    //         tag('carouselImg')->src(assets('img/slide-2.jpeg'))
-    //     ),
-
-    //     tag('carouselItem')->content(
-    //         tag('carouselImg')->src(assets('img/slide-3.jpeg'))
-    //     ),
-    // )->id("carouselExampleControls")->withControls()->withIndicators()
-    // // -->dark()
-    // ;
-
-    //echo tag('collapseButton')->target("#collapseExample")->content('Button with data-bs-target');
-    //echo tag('dropdownLink')->id('dropdownMenuButton1')->href('#')->anchor('Dropdown button');
-
-    //echo tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->danger()->large();
-
-    // echo tag('formCheck')->content(
-    //     tag('checkbox')->id("defaultCheck1").
-    //     tag('label')->for("defaultCheck1")->text('Default checkbox')
-    // )->class('my-3');
-
-    // echo tag('formCheck')->content(
-    //     tag('checkbox')->id("defaultCheck1")->disabled() .
-    //     tag('formCheckLabel')->for("defaultCheck1")->placeholder('Disabled checkbox')
-    // )->class('my-1');
-
-    //echo tag('formCheck')->content('')->type('checkbox')->id("defaultCheck1")->text('Default checkbox')->class('me-2');
-
-    // echo tag('listGroup')->content([
-    //     tag('listGroupItem')->text('An item'),
-    //     tag('listGroupItem')->text('An item #2'),
-    //     tag('listGroupItem')->text('An item #3')
-    // ])->class('mt-3');
+        // echo tag('modal')
+        // ->header(
+        //     tag('modalTitle')->text('Modal title') . 
+        //     tag('closeButton')->dataBsDismiss('modal')
+        // )
+        // ->body(
+        //     tag('p')->text('Modal body text goes here!')
+        // )
+        // ->footer(
+        //     tag('closeModal') .
+        //     tag('button')->text('Save changes')
+        // )
+        // ->id('exampleModal');
 
 
-    echo tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip();
+        // echo tag('accordion')->items([
+        //     [
+        //         'id' => "flush-collapseOne",
+        //         'title' => "Accordion Item #1",
+        //         'body' => 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first items accordion body.'
+        //     ],
+        //     [
+        //         'id' => "flush-collapseTwo",
+        //         'title' => "Accordion Item #2",
+        //         'body' => 'Placeholder 2'
+        //     ],
+        //     [
+        //         'id' => "flush-collapseThree",
+        //         'title' => "Accordion Item #3",
+        //         'body' =>  'Placeholder 3'
+        //     ]
+        // ])
+        // ->id('accordionExample')
+        // ->always_open(true)
+        // ->attributes(['class' => 'accordion-flush']);
 
+        // echo tag('carousel')->content(
+        //     tag('carouselItem')->content(
+        //         tag('carouselImg')->src(assets('img/slide-1.jpeg'))
+        //     )->caption(
+        //         '<h5>First slide label</h5>
+        //         <p>Some representative placeholder content for the first slide.</p>'
+        //     ),
+
+        //     tag('carouselItem')->content(
+        //         tag('carouselImg')->src(assets('img/slide-2.jpeg'))
+        //     ),
+
+        //     tag('carouselItem')->content(
+        //         tag('carouselImg')->src(assets('img/slide-3.jpeg'))
+        //     ),
+        // )->id("carouselExampleControls")->withControls()->withIndicators()
+        // // -->dark()
+        // ;
+
+        //echo tag('collapseButton')->target("#collapseExample")->content('Button with data-bs-target');
+        //echo tag('dropdownLink')->id('dropdownMenuButton1')->href('#')->anchor('Dropdown button');
+
+        //echo tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->danger()->large();
+
+        // echo tag('formCheck')->content(
+        //     tag('checkbox')->id("defaultCheck1").
+        //     tag('label')->for("defaultCheck1")->text('Default checkbox')
+        // )->class('my-3');
+
+        // echo tag('formCheck')->content(
+        //     tag('checkbox')->id("defaultCheck1")->disabled() .
+        //     tag('formCheckLabel')->for("defaultCheck1")->placeholder('Disabled checkbox')
+        // )->class('my-1');
+
+        //echo tag('formCheck')->content('')->type('checkbox')->id("defaultCheck1")->text('Default checkbox')->class('me-2');
+
+        // echo tag('listGroup')->content([
+        //     tag('listGroupItem')->text('An item'),
+        //     tag('listGroupItem')->text('An item #2'),
+        //     tag('listGroupItem')->text('An item #3')
+        // ])->class('mt-3');
+
+        // echo tag('h3')->text("Datos")->class('mb-3');
+
+        // echo tag('link')->href('#')->anchor('The Link')->title('Tool Tip!')->tooltip()->class('mt-3');
+
+        // echo Bt5Form::link('The Link', '#', ...[
+        //     'tooltip',
+        //     'title' => 'My tooltip',
+        //     'class' => 'mt-3'
+        // ]);
 
     }
 

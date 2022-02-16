@@ -294,7 +294,7 @@ class Html
         static::$id_eq_name = $state;
     }
 
-    static function attributes(?Array $atts = []) : string{
+    static protected function attributes(?Array $atts = []) : string{
         if (empty($atts)){
             return '';
         }

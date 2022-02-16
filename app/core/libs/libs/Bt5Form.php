@@ -22,17 +22,6 @@ class Bt5Form extends Form
 
     static function listGroup(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        
-        if ((isset($attributes['flush']) && $attributes['flush']) || isset($args['flush'])){
-            static::addClass('list-group-flush', $attributes['class']);
-        }
-
-        if ((isset($attributes['numbered']) && $attributes['numbered']) || isset($args['numbered'])){
-            static::addClass('list-group-numbered', $attributes['class']);
-
-            return static::ol($content, $attributes, ...$args);
-        }
-
         return static::ul($content, $attributes, ...$args);
     }
 
@@ -42,12 +31,6 @@ class Bt5Form extends Form
         if ((isset($attributes['active']) && $attributes['active']) || isset($args['active'])){
             static::addClass('active', $attributes['class']);
             $attributes['aria-current'] = "true";
-        }
-
-        if ((isset($attributes['actionable']) && $attributes['actionable']) || isset($args['actionable'])){
-            static::addClass('list-group-item list-group-item-action', $attributes['class']);
-
-            return static::button($text, $attributes, ...$args);
         }
 
         return static::li($text, $attributes, ...$args);
