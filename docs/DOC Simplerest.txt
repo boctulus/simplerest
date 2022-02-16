@@ -8830,9 +8830,90 @@ Ej:
 	])->class('mt-5')->numbered();
 
 
+Si se quisiera usar la clase Bt5Form directamente para el caso de numbered sería así:
+
+	echo Bt5Form::listGroup([
+		// Items
+	], ['class' => 'mt-5', 'numbered' => true] );
 
 
-Nota dev:
+Arreglo horizontal
+
+Se logra aplicando horizontal() sobre el listGroup.
+
+Ej:
+
+	echo tag('listGroup')->content([
+		tag('listGroupItem')->text('An item')->active(),
+		tag('listGroupItem')->text('An item #2'),
+		tag('listGroupItem')->text('An item #3')
+	])->class('mt-5')->horizontal();
+
+Colores
+
+Se pueden aplicar colores sobre cada item en principio con color($color) y también mediante $color() o sea success(), warning(), etc
+
+Ej:
+
+	echo tag('listGroup')->content([
+		tag('listGroupItem')->text('An item #1')->info(),
+		tag('listGroupItem')->text('An item #2')->warning(),
+		tag('listGroupItem')->text('An item #3')->color('success')
+	])->class('mt-5')->horizontal();
+
+
+
+
+Notas dev:
+
+Escribiendo nuevos componentes
+
+Todo componente debe en última instancia depender del método Form::tag() 
+
+Ej:
+
+	static function alert(string $content, bool $dismissible = false, Array $attributes = [], ...$args){
+       	// ..
+        return static::div($content, $attributes, ...$args);
+    }
+
+En este caso div() depende (prácticamente "hereda") de group() que a su vez lo hace de tag()
+
+Aplicando colores
+
+Hay dos estrategias para aplicar colores aunque una es muy directa y la otra no y por ello deben de performar muy distinto.
+
+	// Proceso colores por si se envian usando color($color)
+			
+	$color = $attributes['color'] ?? $args['color'] ?? null;
+
+	if ($color !== null){
+		if (!in_array($color, static::$colors)){
+			throw new \InvalidArgumentException("Invalid color for '$color'");
+		}
+
+		static::addClass(" alert-$color", $attributes['class']);
+		unset($args['color']);
+	}
+
+	$kargs = array_merge(array_keys($args), array_keys($attributes));
+
+	// Proceso colores provinientes en cualquier key => mucho más ineficiente
+
+	foreach ($kargs as $k){
+		if (in_array($k, static::$colors)){
+			static::addClass(" alert-$k", $attributes['class']); 
+			break;
+		}           
+	}
+
+
+La primera estrategia permite usar un color medianre color($color) y la segunda (mucho más ineficiente) como $color()
+
+	color('success);
+vs
+	success()
+
 
 Al traducir a JavaScript usar los siguientes "ports" de métodos mágicos como __call, __get, __set, etc
 

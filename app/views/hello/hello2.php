@@ -186,7 +186,7 @@ Bt5Form::setIdAsName();
 
         echo tag('alert')->content('OK !')->success();
         echo Bt5Form::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
-        echo tag('alert')->content(tag('alertLink')->href('#')->anchor('A danger content'))->danger()->dismissible(true);
+        echo tag('alert')->content(tag('alertLink')->href('#')->anchor('A danger content'))->color('danger')->dismissible(true);
 
         echo tag('select')
         ->name('comidas')
@@ -278,11 +278,11 @@ Bt5Form::setIdAsName();
 
         echo tag('listGroup')->content([
             tag('listGroupItem')->text('An item')->active(),
-            tag('listGroupItem')->text('An item #2'),
-            tag('listGroupItem')->text('An item #3')
-        ])->class('mt-5')->numbered();
+            tag('listGroupItem')->text('An item #2')->warning(),
+            tag('listGroupItem')->text('An item #3')->color('success')
+        ])->class('mt-5')->horizontal();
 
-
+    
         echo Bt5Form::br();
 
         echo tag('img')->src(assets('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");

@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs;
 
+use phpDocumentor\Reflection\Types\Null_;
 use simplerest\core\libs\Form;
 
 class Bt5Form extends Form
@@ -23,11 +24,15 @@ class Bt5Form extends Form
     static function listGroup(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
-        if ((isset($attributes['flush']) && $attributes['flush']) || isset($args['flush'])){
+        if ((isset($attributes['flush']) && $attributes['flush']) || (isset($args['flush']) && $args['flush']  !== false)){
             static::addClass('list-group-flush', $attributes['class']);
         }
 
-        if ((isset($attributes['numbered']) && $attributes['numbered']) || isset($args['numbered'])){
+        if ((isset($attributes['horizontal']) && $attributes['horizontal']) || (isset($args['horizontal']) && $args['horizontal']  !== false)){
+            static::addClass('list-group-horizontal', $attributes['class']);
+        }
+
+        if ((isset($attributes['numbered']) && $attributes['numbered']) || (isset($args['numbered']) && $args['numbered'] !== false)){
             static::addClass('list-group-numbered', $attributes['class']);
 
             return static::ol($content, $attributes, ...$args);
@@ -39,12 +44,36 @@ class Bt5Form extends Form
     static function listGroupItem(string $text, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        if ((isset($attributes['active']) && $attributes['active']) || isset($args['active'])){
+        if ((isset($attributes['active']) && $attributes['active']) || (isset($args['active']) && $args['active'] !== false)){
             static::addClass('active', $attributes['class']);
             $attributes['aria-current'] = "true";
         }
 
-        if ((isset($attributes['actionable']) && $attributes['actionable']) || isset($args['actionable'])){
+        // Proceso colores por si se envian usando color($color)
+        
+        $color = $attributes['color'] ?? $args['color'] ?? null;
+
+        if ($color !== null){
+            if (!in_array($color, static::$colors)){
+                throw new \InvalidArgumentException("Invalid color for '$color'");
+            }
+
+            static::addClass("list-group-item-{$color}", $attributes['class']);
+            unset($args['color']);
+        }
+
+        // Proceso colores provinientes en cualquier key => mucho más ineficiente
+
+        $kargs = array_merge(array_keys($args), array_keys($attributes));
+ 
+        foreach ($kargs as $k){
+            if (in_array($k, static::$colors)){
+                static::addClass("list-group-item-{$k}", $attributes['class']); 
+                break;
+            }           
+        }
+
+        if ((isset($attributes['actionable']) && $attributes['actionable']) || (isset($args['actionable']) && $args['actionable'] !== false)){
             static::addClass('list-group-item list-group-item-action', $attributes['class']);
 
             return static::button($text, $attributes, ...$args);
@@ -167,11 +196,26 @@ class Bt5Form extends Form
             $content .= '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
         }
 
+        // Proceso colores por si se envian usando color($color)
+                
+        $color = $attributes['color'] ?? $args['color'] ?? null;
+
+        if ($color !== null){
+            if (!in_array($color, static::$colors)){
+                throw new \InvalidArgumentException("Invalid color for '$color'");
+            }
+
+            static::addClass(" alert-$color", $attributes['class']);
+            unset($args['color']);
+        }
+
         $kargs = array_merge(array_keys($args), array_keys($attributes));
  
+        // Proceso colores provinientes en cualquier key => mucho más ineficiente
+
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){
-                $attributes['class'] .= " alert-$k"; 
+                static::addClass(" alert-$k", $attributes['class']); 
                 break;
             }           
         }
