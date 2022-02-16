@@ -8796,6 +8796,42 @@ o
 	Bt5Form::listGroupItem(text:'An item', active:true),
 
 
+Actionable
+
+Solo aplique actionable() sobre los items.
+
+	echo tag('listGroup')->content([
+		tag('listGroupItem')->text('An item #1')->active(),
+		tag('listGroupItem')->text('An item #2')->actionable(),
+		tag('listGroupItem')->text('An item #3')->actionable()
+	])->class('mt-5');
+
+
+Removoción de bordes
+
+Para hacer un "flush" solo aplique flush() al listGroup.
+
+Ej:
+
+	echo tag('listGroup')->content([
+		// ...
+	])->flush();
+
+Numerados
+
+Se puede aplicar un numerado sobre el listGroup con numbered() aunque en principio no es compatible con actionable.
+
+Ej:
+
+	echo tag('listGroup')->content([
+		tag('listGroupItem')->text('An item')->active(),
+		tag('listGroupItem')->text('An item #2'),
+		tag('listGroupItem')->text('An item #3')
+	])->class('mt-5')->numbered();
+
+
+
+
 Nota dev:
 
 Al traducir a JavaScript usar los siguientes "ports" de métodos mágicos como __call, __get, __set, etc
