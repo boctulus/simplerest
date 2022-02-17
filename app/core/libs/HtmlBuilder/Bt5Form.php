@@ -107,6 +107,21 @@ class Bt5Form extends Form
            $attributes['aria-disabled'] = "true";
         }
 
+        $type = 'link';
+
+        if (isset($args['as'])){
+            $type = $args['as'];
+        } elseif (isset($attributes['as'])){
+            isset($attributes['as']);
+        }
+
+        if ($type == 'button'){
+            $attributes['data-bs-target'] = $href;
+            $attributes['type'] = "button";
+
+            return static::button($anchor, $attributes, ...$args);
+        }
+
         return static::link($anchor, $href , $attributes, ...$args);
     }  
 

@@ -58,7 +58,7 @@ Bt5Form::setIdAsName();
                 )
             ),
     
-            tag('navLink')->anchor('Link'),        
+            tag('navLink')->anchor('Link')->as('button'),        
             tag('navLink')->anchor('Disabled')->disabled()
  
         ])->class('mb-3')
