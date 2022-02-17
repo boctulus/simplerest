@@ -22,29 +22,45 @@ Bt5Form::setIdAsName();
 
         //Nav
 
-        echo tag('nav')->content([     
-            tag('navItem')->content(        
-                tag('navLink')->anchor('Active')->active(),    
-            ),    
-            tag('navItem')->content(
-                tag('dropdown')->content(
-                    tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button') .    
-                    tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
-                        tag('dropdownItem')->href('#')->anchor('Action') .
-                        tag('dropdownItem')->href('#')->anchor('Another action') .
-                        tag('dropdownDivider') .
-                        tag('dropdownItem')->href('#')->anchor('Something else here')
-                    )
+        echo tag('nav')->content([  
+            [
+                'href' => '#',
+                'anchor' => 'Home'
+            ],
+
+            [
+                'href' => '#library',
+                'anchor' => 'Library'
+            ],
+
+            [
+                'anchor' => 'Data'
+            ]
+        ])->class('mb-3')
+        //->vertical()
+        ->justifyRight()
+        //->justify()
+        //->pills()
+        //->fill()
+        ->tabs()
+        ;     
+
+        echo tag('nav')->content([             
+            tag('navLink')->anchor('Active')->active(),    
+        
+            tag('dropdown')->content(
+                tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button') .    
+                tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+                    tag('dropdownItem')->href('#')->anchor('Action') .
+                    tag('dropdownItem')->href('#')->anchor('Another action') .
+                    tag('dropdownDivider') .
+                    tag('dropdownItem')->href('#')->anchor('Something else here')
                 )
             ),
     
-            tag('navItem')->content(
-                tag('navLink')->anchor('Link'), 
-            ),     
-            
-            tag('navItem')->content(
-                tag('navLink')->anchor('Disabled')->disabled()
-            )    
+            tag('navLink')->anchor('Link'),        
+            tag('navLink')->anchor('Disabled')->disabled()
+ 
         ])->class('mb-3')
         //->vertical()
         ->justifyRight()
