@@ -1,0 +1,136 @@
+PERFORMANNCE
+============
+
+- Usar colas y cronjobs
+
+- Usar Redis como cache donde aplique (queries, queues, ...)
+
+- Usar Store Procedures genéricos para ciertas tareas que involucra pegarle a la DB más de una vez:
+
+    a) bulkUpdate() para actualizaciones masivas.
+
+    Funcionaría registrando previamente un STORE PROCEDURE que reciba un JSON de updates
+    sobre una tabla y ejecute todos los udpates.
+
+    b) updateOrFail() también usando SP haría la verificación si el registro existe y sino fallaría devolviendo 0 (cero).
+
+    c) deleteOrFail()
+
+- Usar "Swoole"  !!!!!!!!!
+
+- Usar el módulo php-fpm de Apache o fpm de Nginx
+
+- Usar caché para el ACL <en prod>
+
+- Config Caching <en prod>
+
+- Usar una forma eficiente de paginación evitando el uso de LIMIT
+
+- Usar cache sobre rutas 
+
+- Cachear vistas y vistas parciales. Chequear uso de phpFastCache
+
+    https://www.phpfastcache.com/
+
+- Usar Memcached
+
+- Usar ajustes recomenados para OPCache
+
+https://www.php.net/manual/en/opcache.installation.php
+https://kinsta.com/es/blog/puntos-de-referencia-php/
+
+- Verificar que se cacheen las consultas HTTP idempotentes
+
+    ¿ Cuándo se activa la cache para una petición HTTP? cuando es idempotente? por qué un GET no se cachea????
+
+    <?php
+
+    header('Cache-Control: max-age=2592000, public');
+
+    sleep(1);
+    echo json_encode(['msg'=> 'Some msg']); // +1 seg desp
+
+    Será que requiero de un proxy?  
+
+    https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching
+    https://www.mnot.net/cache_docs/
+    https://www.imperva.com/learn/performance/cache-control/
+    https://developers.google.com/web/fundamentals/performance/get-started/httpcaching-6
+    https://www.ibm.com/support/knowledgecenter/SSMAMS/com.ibm.mif.doc/gp_intfrmwk/rest_api/c_rest_get_caching.html
+    https://web.dev/http-cache/
+    https://tech.ebayinc.com/engineering/caching-http-post-requests-and-responses/
+    https://developer.cdn.mozilla.net/es/docs/Web/HTTP/Caching
+
+- Caché para peticiones HTTP:
+
+  PHP HTTP Cache plugin and the PHP Cache Array adapter
+
+https://github.com/florianv/swap/blob/master/doc/readme.md
+
+- Implementar algo como la "Transients API" de WP que permite guardar claves-valor usando IN-MEMORY STORAGE (Memcached, quizás REDIS,...) y sino encuentra otra opción IN-DATABASE STORAGE.
+
+    SET_TRANSIENT()
+
+    $string = "Cache me for a day!";
+    $bool_response = set_transient( 'wpshout_cache_me', $string, 86400 );
+
+
+    GET_TRANSIENT()
+
+    $transient_string = get_transient( 'wpshout_cache_me' );
+
+
+    <-- usar la interfaz IMemory
+
+    Más
+    https://wpshout.com/know-wordpress-transients-api/
+
+- Usar CDN <en prod>
+
+- Cargar solo los helpers que realmente son necesarios <en prod>
+
+- Usar JIT Compiler <en prod>
+
+- Classmap optimization => clases en un mismo archivo para reducir el tiempo de lectura.
+
+    "You can decrease the number of files by using this Laravel Performance Optimization trick. You can declare all the files that would be included for handling requests in a single file."
+
+- Comprimir imágenes <en prod>
+
+- Assets Bundling <en prod>
+
+- Optimize Composer <en prod>
+
+    "A common mistake sometimes made by Laravel developers is to install all dependencies in production"
+
+- Composer Optimize Autoload
+
+    composer dump autoload -o
+
+
+- Minificar Js <en prod>
+
+- Usar Apache Module "mod_expires" o su equivalente para Nginx
+
+- Reducir uso de memoria usando generators y cursores sobre la DB
+
+    https://stackoverflow.com/questions/45464676/what-is-the-difference-between-laravel-cursor-and-laravel-chunk-method
+
+    https://blackdeerdev.com/laravel-chunk-vs-cursor/
+
+- Database Indexing => revisar que estén todos los índices necesarios en las tablas
+
+- Aplanar migraciones para reducir el tiempo al crear una base de datos para un cliente. 
+
+De todas formas, lo más eficiente sería levantar un contenedor pre-armado para el cliente como clon de uno estándar para esa DB.
+
+- Crear una SPA (Single Page Application) para evitar la carga completa de la página y reducir tiempos.
+
+
+Leer !!!!
+
+https://www.cloudways.com/blog/laravel-performance-optimization/
+https://www.bacancytechnology.com/blog/laravel-app-performance-optimization-tips
+https://laravel-news.com/performance-checklist
+https://www.esparkinfo.com/laravel-performance-optimization-tips.html
+https://ahmadwkhan.medium.com/top-15-tips-and-tricks-to-optimize-laravel-performance-50c2d213e24a

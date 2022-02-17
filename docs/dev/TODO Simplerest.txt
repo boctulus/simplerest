@@ -99,6 +99,24 @@ Se debe generar un .js similar -conseguir la versión más actualizada- a:
 
 ----
 
+- Implementar Facades
+
+En vez de hacer 
+
+  (new Cache())->put('hello','world', 600);
+
+permite usar la sintaxis
+
+  Cache::put('hello','world', 600);
+
+https://stackoverflow.com/questions/42223986/what-is-facades-used-in-laravel
+https://medium.com/a-young-devoloper/understanding-laravel-facades-4802025899e6
+
+Aparentemente es algo parecido a lo que hago con Tag() para simplificar el uso de Bt5Form solo que en vez de registrar el la clase.... se hace con App::make() que devuelve una instancia que permite seguir encadenando.
+
+
+  App::make('some_service')->methodName();
+
 - Probar de usar Smarty, Twig o Blade en algún proyecto con SimpleRest. Inclusive se pueden hacer funcionar en CodeIgniter !
 
 https://medium.com/hackeradda/codeigniter-with-blade-templating-engine-daf8d0dd51e9
@@ -1039,9 +1057,7 @@ o
 
 
 
-- Implementar  (colas) como en Laravel para tareas pesadas como enviar correos o procesar imágenes o elaborar reportes en cuyo caso debería devolver Accepted.
-
-Un [worker] maneja una [cola] o "job queue" de [jobs]. Pero *varios* workers pueden también manejar la misma cola para acelerar el proceso.
+- Colas (queues) 
 
 En Laravel la cantidad de workers se especifica con numprocs={how-to-combine-websockets-and-http-to-create-a-rest-api-that-keeps-data-up-to-da}
 
@@ -1131,6 +1147,9 @@ Ej:
 
   $schedule->command('some:command')->daily()->runInBackground();
 
+---
+
+[ Migrations ]
 
 - Poder crear una migración a partir de un CSV / XLS (determinar tipo de campos y atributos de acuerdo de los datos)
 
@@ -1202,11 +1221,15 @@ https://laravel.com/docs/8.x/session?fbclid=IwAR032HI1Zt5vNo6fG0ikE4hq-kYb2Z_QCc
 
 - Habilitar WebSockets para APIs => crear una   WebSocket API
 
-" I also would not recommend to use PHP for a WS-API (even though there is a solution like Ratchet). Use a language/runtime that was developed for event-based use cases like this (e.g. nodeJS)."
+"I also would not recommend to use PHP for a WS-API (even though there is a solution like Ratchet). Use a language/runtime that was developed for event-based use cases like this (e.g. nodeJS)."
 
 Más
 https://stackoverflow.com/questions/68972613/is-it-possible-to-call-http-api-by-websocket
 https://stackoverflow.com/questions/33424636/how-to-combine-websockets-and-http-to-create-a-rest-api-that-keeps-data-up-to-da
+
+
+
+
 
 
 - RoadMap para Migrar a PHP 8.0 
@@ -3107,20 +3130,6 @@ https://tech.ebayinc.com/engineering/caching-http-post-requests-and-responses/
 https://developer.cdn.mozilla.net/es/docs/Web/HTTP/Caching
 
 
-- Estudiar si implementar Facades
-
-En vez de hacer 
-
-  (new Cache())->put('hello','world', 600);
-
-permite usar la sintaxis
-
-  Cache::put('hello','world', 600);
-
-https://stackoverflow.com/questions/42223986/what-is-facades-used-in-laravel
-https://medium.com/a-young-devoloper/understanding-laravel-facades-4802025899e6
-
-
 - Implementar una forma sencilla de enviar correos, quizás como en Laravel
 
   use App\Mail\WelcomeMessage;
@@ -4794,6 +4803,26 @@ ALTER TABLE divisas MODIFY COLUMN ISO VARCHAR(10) AFTER id
 
 - Benchmarking Tool: wrk
 
+- WebSockets
+
+"For example, imagine your application is able to export a user's data to a CSV file and email it to them. However, creating this CSV file takes several minutes so you choose to create and mail the CSV within a queued job. When the CSV has been created and mailed to the user, we can use event broadcasting to dispatch a App\Events\UserDataExported event that is received by our application's JavaScript. Once the event is received, we can display a message to the user that their CSV has been emailed to them without them ever needing to refresh the page."
+
+"To assist you in building these types of features, Laravel makes it easy to "broadcast" your server-side Laravel events over a WebSocket connection. Broadcasting your Laravel events allows you to share the same event names and data between your server-side Laravel application and your client-side JavaScript application.
+
+The core concepts behind broadcasting are simple: clients connect to named channels on the frontend, while your Laravel application broadcasts events to these channels on the backend. These events can contain any additional data you wish to make available to the frontend."
+
+
+https://laravel.com/docs/8.x/broadcasting?fbclid=IwAR1QIJTakXGUm2XJQguFFPpy6LquC-KByUCnFAXoaM2NineSu9IxBx0pGqI
+
+Drivers para webstockets:
+
+En Node
+https://github.com/soketi/soketi
+
+En PHP:
+https://github.com/beyondcode/laravel-websockets
+
+
 - Para manejar concurrencia:
 
     - Usar el módulo php-fpm de Apache o fpm de Nginx
@@ -4832,7 +4861,7 @@ https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f
 
 
 
-- Implementar (sin apuro) "Contenedor de dependencias inversas" 
+- Implementar "Contenedor de dependencias inversas" 
 
   <?php
 
