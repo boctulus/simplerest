@@ -1,10 +1,11 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace simplerest\core\libs\HtmlBuilder;
 
-use PDO;
-use simplerest\controllers\api\M;
-use simplerest\core\libs\Tag;
+use simplerest\core\libs\HtmlBuilder\Tag;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Arrays;
+
 
 class Html
 {
