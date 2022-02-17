@@ -58,7 +58,15 @@ class Bt5Form extends Form
             static::addClass('nav-justified', $attributes['class']);
         } 
 
-        return static::group($content, 'ul', $attributes, ...$args);
+        $type = 'nav';
+
+        if (isset($args['as'])){
+            $type = $args['as'];
+        } elseif (isset($attributes['as'])){
+            isset($attributes['as']);
+        }
+
+        return static::group($content, $type, $attributes, ...$args);
     }
     
     static function navItem(string $content, Array $attributes = [], ...$args){
@@ -415,8 +423,13 @@ class Bt5Form extends Form
             unset($args['split']);
         }
 
+        if (isset($args['pill'])){
+            static::addClass('btn', $attributes['class']);
+            unset($args['pill']);
+        }
+
         $attributes['data-bs-toggle'] = "dropdown";
-        return static::button($content, $attributes, ...$args);
+        return static::basicButton($content, $attributes, ...$args);
     }
 
     static function dropdownLink(string $anchor, string $href, $attributes = [], ...$args){

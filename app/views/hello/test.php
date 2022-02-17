@@ -4,7 +4,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
-Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
+Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
 //Bt5Form::setIdAsName();
 
@@ -13,8 +13,7 @@ Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
 <div class="row mt-5">
     <div class="col-6 offset-3">
 
-
-        <nav class="nav nav-tabs">            
+       <nav class="nav nav-tabs">            
             <a class="nav-link active" aria-current="page" href="#">Active</a>
            
             <div class="dropdown">
