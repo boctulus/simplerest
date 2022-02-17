@@ -35,7 +35,14 @@ Bt5Form::setIdAsName();
             tag('navItem')->content(
                 tag('navLink')->anchor('Disabled')->disabled()
             )
-        ])->class('mb-3')->justifyRight();     
+        ])->class('mb-3')
+        ->vertical()
+        //->justifyRight()
+        //->justify()
+        ->pills()
+        //->fill()
+        //->tabs()
+        ;     
 
         // Breadcrumb
 

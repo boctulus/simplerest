@@ -24,11 +24,39 @@ class Bt5Form extends Form
     static function nav(mixed $content, $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        if (isset($args['justifyCenter'])){
+        if (isset($args['vertical']) || (isset($attributes['vertical']) && $attributes['vertical'] !== false)){
+            static::addClass('flex-column', $attributes['class']);
+        } 
+
+        if (isset($args['justifyCenter']) || (isset($attributes['justifyCenter']) && $attributes['justifyCenter'] !== false)){
             static::addClass('justify-content-center', $attributes['class']);
         } else if (isset($args['justifyRight'])){
             static::addClass('justify-content-end', $attributes['class']);
         }
+
+        // navs
+
+        if (isset($args['tabs']) || (isset($attributes['tabs']) && $attributes['tabs'] !== false)){
+            static::addClass('nav-tabs', $attributes['class']);
+        } 
+
+        // pills  
+
+        if (isset($args['pills']) || (isset($attributes['pills']) && $attributes['pills'] !== false)){
+            static::addClass('nav-pills', $attributes['class']);
+        } 
+
+        // fill
+
+        if (isset($args['fill']) || (isset($attributes['fill']) && $attributes['fill'] !== false)){
+            static::addClass('nav-fill', $attributes['class']);
+        } 
+
+         // justify
+
+         if (isset($args['justify']) || (isset($attributes['justify']) && $attributes['justify'] !== false)){
+            static::addClass('nav-justified', $attributes['class']);
+        } 
 
         return static::group($content, 'ul', $attributes, ...$args);
     }
