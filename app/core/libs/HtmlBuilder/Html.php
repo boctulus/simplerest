@@ -128,7 +128,7 @@ class Html
         /* Dropdown */
 
         "dropdown"       => "dropdown",
-        "dropdownButton" => "dropdown-toggle",
+        "dropdownButton" => "btn dropdown-toggle",
         "dropdownLink"   => "dropdown-toggle",
         "dropdownMenu"   => "dropdown-menu",
         "dropdownItem"   => "dropdown-item",

@@ -8961,10 +8961,64 @@ While more verbose, these utilities offer greater customization across responsiv
 https://getbootstrap.com/docs/5.0/components/navs-tabs/#working-with-flex-utilities
 
 
+Nav con Dropdowns
+
+Add dropdown menus with a little extra HTML and the dropdowns JavaScript plugin.
+
+Ej:
+
+	echo tag('nav')->content([             
+		tag('navLink')->anchor('Active')->active(),    
+
+		tag('dropdown')->content(
+			tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button') .
+
+			tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+				tag('dropdownItem')->href('#')->anchor('Action') .
+				tag('dropdownItem')->href('#')->anchor('Another action') .
+				tag('dropdownDivider') .
+				tag('dropdownItem')->href('#')->anchor('Something else here')
+			)
+		),
+
+		tag('navLink')->anchor('Link'),        
+		tag('navLink')->anchor('Disabled')->disabled()
+
+	])	
+	->justifyRight()	
+	->tabs();     
+
+O con navItems (aunque el resultado es el mismo),
+
+	echo tag('nav')->content([     
+		tag('navItem')->content(        
+			tag('navLink')->anchor('Active')->active(),    
+		),    
+		tag('navItem')->content(
+			tag('dropdown')->content(
+				tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button') .    
+				tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+					tag('dropdownItem')->href('#')->anchor('Action') .
+					tag('dropdownItem')->href('#')->anchor('Another action') .
+					tag('dropdownDivider') .
+					tag('dropdownItem')->href('#')->anchor('Something else here')
+				)
+			)
+		),
+
+		tag('navItem')->content(
+			tag('navLink')->anchor('Link'), 
+		),     
+		
+		tag('navItem')->content(
+			tag('navLink')->anchor('Disabled')->disabled()
+		)    
+	])
 
 
 
-Notas dev:
+Notas Dev:
+=========
 
 Escribiendo nuevos componentes
 

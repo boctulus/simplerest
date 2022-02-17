@@ -22,25 +22,29 @@ Bt5Form::setIdAsName();
 
         //Nav
 
-        echo tag('nav')->content([             
-            tag('navLink')->anchor('Active')->active(),    
-        
-            tag('dropdown')->content(
-                tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')
-                ->class('btn') 
-                .
-    
-                tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
-                    tag('dropdownItem')->href('#')->anchor('Action') .
-                    tag('dropdownItem')->href('#')->anchor('Another action') .
-                    tag('dropdownDivider') .
-                    tag('dropdownItem')->href('#')->anchor('Something else here')
+        echo tag('nav')->content([     
+            tag('navItem')->content(        
+                tag('navLink')->anchor('Active')->active(),    
+            ),    
+            tag('navItem')->content(
+                tag('dropdown')->content(
+                    tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button') .    
+                    tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+                        tag('dropdownItem')->href('#')->anchor('Action') .
+                        tag('dropdownItem')->href('#')->anchor('Another action') .
+                        tag('dropdownDivider') .
+                        tag('dropdownItem')->href('#')->anchor('Something else here')
+                    )
                 )
             ),
     
-            tag('navLink')->anchor('Link'),        
-            tag('navLink')->anchor('Disabled')->disabled()
- 
+            tag('navItem')->content(
+                tag('navLink')->anchor('Link'), 
+            ),     
+            
+            tag('navItem')->content(
+                tag('navLink')->anchor('Disabled')->disabled()
+            )    
         ])->class('mb-3')
         //->vertical()
         ->justifyRight()
@@ -73,9 +77,10 @@ Bt5Form::setIdAsName();
         //echo tag('link')->href('#')->anchor('The Link')->title('Hey!')->tooltip();
 
         echo tag('dropdown')->content(
-            tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->class('btn')->danger() .
+            tag('dropdownButton')->id('dropdownMenuButton2')->content('Dropdown button')
+            ->danger() .
 
-            tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+            tag('dropdownMenu')->ariaLabel('dropdownMenuButton2')->content(
                 tag('dropdownItem')->href('#')->anchor('Action') .
                 tag('dropdownItem')->href('#')->anchor('Another action') .
                 tag('dropdownDivider') .
@@ -306,13 +311,38 @@ Bt5Form::setIdAsName();
                 tag('submit')->id("enviar")->value("Enviar")->success()->disabled()
         )->aria_label("Basic example");
 
+
+        // si escribo mal el nombre del tag se rompe feo
+        echo tag('accordion')->items([
+            [
+                'id' => "flush-collapseOne",
+                'title' => "Accordion Item #1",
+                'body' => 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first items accordion body.'
+            ],
+            [
+                'id' => "flush-collapseTwo",
+                'title' => "Accordion Item #2",
+                'body' => 'Placeholder 2'
+            ],
+            [
+                'id' => "flush-collapseThree",
+                'title' => "Accordion Item #3",
+                'body' =>  'Placeholder 3'
+            ]
+        ])
+        ->id('accordionExample')
+        ->class('mt-4')
+        ->always_open(true)
+        ->attributes(['class' => 'accordion-flush'])
+        ;
+
         /*  List groups */
 
         echo tag('listGroup')->content([
             tag('listGroupItem')->text('An item')->active(),
             tag('listGroupItem')->text('An item #2')->warning(),
             tag('listGroupItem')->text('An item #3')->color('success')
-        ])->class('mt-5')->horizontal();
+        ])->class('mt-2')->horizontal();
 
     
         echo Bt5Form::br();
