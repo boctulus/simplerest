@@ -66,6 +66,25 @@ class Bt5Form extends Form
             isset($attributes['as']);
         }
 
+        if (is_array($content) && count($content) >0){
+
+            foreach ($content as $ix => $e){
+                if (is_array($e) && isset($e['anchor']))
+                {
+                    $anchor = $e['anchor'];
+                    $href   = $e['href'] ?? '#';
+
+                    $active = ($ix == 0);
+
+                    $content[$ix] = tag('navLink')->anchor($anchor)->href($href);
+                    
+                    if ($active){
+                        $content[$ix] = ($content[$ix])->active();
+                    }
+                }
+            }
+        }
+
         return static::group($content, $type, $attributes, ...$args);
     }
     
