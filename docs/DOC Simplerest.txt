@@ -9016,6 +9016,28 @@ O con navItems (aunque el resultado es el mismo),
 	])
 
 
+Simplificación
+
+En muchos casos se puede simplificar enviando un array a tag('nav') de estructura similar al que recibe breadcrumb.
+
+	echo tag('nav')->content([  
+		[
+			'href'   => '#',
+			'anchor' => 'Home'
+		],
+
+		[
+			'href' => '#library',
+			'anchor' => 'Library'
+		],
+
+		[
+			'anchor' => 'Data'
+		]
+	])
+	->justifyRight()
+	->tabs();     
+
 
 Notas Dev:
 =========

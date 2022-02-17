@@ -24,7 +24,7 @@ Bt5Form::setIdAsName();
 
         echo tag('nav')->content([  
             [
-                'href' => '#',
+                'href'   => '#',
                 'anchor' => 'Home'
             ],
 
