@@ -9038,6 +9038,14 @@ En muchos casos se puede simplificar enviando un array a tag('nav') de estructur
 	->justifyRight()
 	->tabs();     
 
+Casting 
+
+Un navLink es implementado con un el tag <a> pero se lo puede "castear" a <button> mediante as()
+
+Ej:
+
+	tag('navLink')->anchor('Click Me')->as('button')
+
 
 Notas Dev:
 =========
