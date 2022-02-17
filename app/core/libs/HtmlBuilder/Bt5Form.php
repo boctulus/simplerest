@@ -36,13 +36,17 @@ class Bt5Form extends Form
 
         // navs
 
+        $tabs = false;
         if (isset($args['tabs']) || (isset($attributes['tabs']) && $attributes['tabs'] !== false)){
+            $tabs = true;
             static::addClass('nav-tabs', $attributes['class']);
         } 
 
         // pills  
 
+        $pills = false;
         if (isset($args['pills']) || (isset($attributes['pills']) && $attributes['pills'] !== false)){
+            $pills = true;
             static::addClass('nav-pills', $attributes['class']);
         } 
 
@@ -66,8 +70,15 @@ class Bt5Form extends Form
             isset($attributes['as']);
         }
 
-        if (is_array($content) && count($content) >0){
 
+        // Role ("tablist", etc)
+        if (isset($args['role'])){
+            $attributes['role'] = $args['role'];
+        }
+
+        $role = $attributes['role'] ?? null;
+
+        if (is_array($content) && count($content) >0){
             foreach ($content as $ix => $e){
                 if (is_array($e) && isset($e['anchor']))
                 {
@@ -80,6 +91,19 @@ class Bt5Form extends Form
                     
                     if ($active){
                         $content[$ix] = ($content[$ix])->active();
+                        $content[$ix]->attributes(['aria-selected' => "true"]);
+                    } else {
+                        $content[$ix]->attributes(['aria-selected' => "false"]);
+                    }
+
+                    if ($role == 'tablist'){
+                        if ($tabs){
+                            $content[$ix]->attributes(['data-bs-toggle' => "tab"]);
+                        } elseif ($pills){
+                            $content[$ix]->attributes(['data-bs-toggle' => "pill"]);
+                        } else {
+                            throw new \Exception("Tablist require tabs or pills");
+                        }                        
                     }
                 }
             }

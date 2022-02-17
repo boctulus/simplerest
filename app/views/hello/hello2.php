@@ -20,7 +20,42 @@ Bt5Form::setIdAsName();
 
         <?php
 
-        //Nav
+        /*
+            Navs 
+
+        */
+
+        // Nav como tab-list
+        echo tag('nav')->content([  
+            [
+                'anchor' => 'Uno',
+                'href'   => '#uno'
+            ],
+
+            [
+                'anchor' => 'Dos',
+                'href' => '#dos'
+            ],
+
+            [
+                'anchor' => 'Tres',
+                'href'   => '#tres'
+            ]
+        ])->class('mb-3')
+        ->justifyRight()
+        ->tabs()
+        ->role('tablist')
+        ;     
+
+        ?>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="uno" role="tabpanel" aria-labelledby="uno">Textoooo</div>
+                <div class="tab-pane fade" id="dos" role="tabpanel" aria-labelledby="dos">otro texto</div>
+                <div class="tab-pane fade" id="tres" role="tabpanel" aria-labelledby="tres">y otro más</div>
+            </div>
+        <?php
+
+
 
         echo tag('nav')->content([  
             [
