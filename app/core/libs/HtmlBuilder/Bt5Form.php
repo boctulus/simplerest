@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace simplerest\core\libs\HtmlBuilder;
 
 use phpDocumentor\Reflection\Types\Null_;
-use simplerest\core\libs\Form;
+use simplerest\core\libs\HtmlBuilder\Form;
 
 class Bt5Form extends Form
 {   

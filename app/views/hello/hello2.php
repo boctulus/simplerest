@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\libs\Bt5Form;
-use simplerest\core\libs\Tag;
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
+use simplerest\core\libs\HtmlBuilder\Tag;
 
 
-Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
+Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
 Bt5Form::macro('salutor', function ($name, $adj, Array $att = []) {
     $str_att = Bt5Form::attributes($att);
@@ -36,8 +36,8 @@ Bt5Form::setIdAsName();
                 tag('navLink')->anchor('Disabled')->disabled()
             )
         ])->class('mb-3')
-        ->vertical()
-        //->justifyRight()
+        //->vertical()
+        ->justifyRight()
         //->justify()
         ->pills()
         //->fill()

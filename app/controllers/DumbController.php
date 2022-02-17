@@ -39,10 +39,10 @@ use simplerest\core\Container;
 use simplerest\core\libs\JobQueue;
 use simplerest\core\libs\Task;
 
-use simplerest\core\libs\Form;
-use simplerest\core\libs\Bt5Form;
-use simplerest\core\libs\Html;
-use simplerest\core\libs\Tag;
+use simplerest\core\libs\HtmlBuilder\Form;
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
+use simplerest\core\libs\HtmlBuilder\Html;
+use simplerest\core\libs\HtmlBuilder\Tag;
 
 
 class DumbController extends Controller
