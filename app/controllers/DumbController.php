@@ -7383,8 +7383,20 @@ class DumbController extends Controller
         //     'class' => 'mt-3'
         // ]);
 
-        // Mal
-        echo tag('alert')->content(tag('alertLink')->href('#')->anchor('A danger content'))->danger();     
+        echo tag('nav')->content([
+            tag('navItem')->content(
+                tag('navLink')->anchor('Active')
+            ),
+            tag('navItem')->content(
+                tag('navLink')->anchor('Link')
+            ),
+            tag('navItem')->content(
+                tag('navLink')->anchor('Link')
+            ),
+            tag('navItem')->content(
+                tag('navLink')->anchor('Active')->disabled()
+            )
+        ])->class('mb-3');     
 
     }
 

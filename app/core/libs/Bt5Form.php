@@ -19,6 +19,45 @@ class Bt5Form extends Form
         return static::label($for, $text, $attributes, ...$args);
     }
 
+    /* Nav    */
+
+    static function nav(mixed $content, $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (isset($args['justifyCenter'])){
+            static::addClass('justify-content-center', $attributes['class']);
+        } else if (isset($args['justifyRight'])){
+            static::addClass('justify-content-end', $attributes['class']);
+        }
+
+        return static::group($content, 'ul', $attributes, ...$args);
+    }
+    
+    static function navItem(string $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::li($content, $attributes, ...$args);
+    }
+
+    static function navLink(string $anchor, string $href = '#', $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (isset($args['active'])){ 
+            $attributes['aria-current'] = "page";
+         }
+
+        if (isset($args['disabled'])){
+           static::addClass('disabled', $attributes['class']);
+
+           $attributes['tabindex'] = "-1";
+           $attributes['aria-disabled'] = "true";
+        }
+
+        return static::link($anchor, $href , $attributes, ...$args);
+    }  
+
+    /* Nav    */
+
+
     /* List group */
 
     static function listGroup(mixed $content, Array $attributes = [], ...$args){
@@ -496,18 +535,7 @@ class Bt5Form extends Form
         return static::footer($content, $attributes, ...$args);
     }
 
-    /* Navigation Begin */
-
-    static function navItem(string $text, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::li($text, $attributes, ...$args);
-    }
-
-    static function navLink(string $anchor, string $href, $attributes = [], ...$args){
-        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::link($anchor, $href , $attributes, ...$args);
-    }
-
+    
     /* Navigation End */
 
 
