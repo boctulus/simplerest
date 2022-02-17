@@ -1,0 +1,14 @@
+DEPENDENCIES
+============
+
+- jQuery
+	
+	https://code.jquery.com/jquery-1.12.4.js
+
+- jQuery-ui 1.12
+
+	https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css
+	https://code.jquery.com/ui/1.12.1/jquery-ui.js
+
+
+  

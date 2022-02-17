@@ -18,5 +18,9 @@ class Hello2Controller extends Controller
     function test(){
         $this->view('hello/test.php');
     }
+
+    function filter(){
+        $this->view('excel/filter.php');
+    }
 }
 
