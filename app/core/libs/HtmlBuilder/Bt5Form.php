@@ -458,6 +458,11 @@ class Bt5Form extends Form
         return '<li><hr class="dropdown-divider"></li>';
     }
 
+    static function tabContent(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
     /* Dropdown End */
 
     

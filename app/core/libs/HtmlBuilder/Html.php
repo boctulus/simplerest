@@ -133,6 +133,8 @@ class Html
         "dropdownMenu"   => "dropdown-menu",
         "dropdownItem"   => "dropdown-item",
         "dropdownDivider" => "dropdown-divider",
+        "tabContent"     => "tab-content",
+        "tabPane"        => "tab-pane fade",
 
         /* List group */
 
