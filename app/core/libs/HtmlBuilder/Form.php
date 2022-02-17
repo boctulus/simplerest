@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace simplerest\core\libs\HtmlBuilder;
 
 /*
     Falta decorar con las clases de Boostrap 5

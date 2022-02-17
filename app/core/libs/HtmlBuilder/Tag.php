@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace simplerest\core\libs\HtmlBuilder;
 
 class Tag
 {

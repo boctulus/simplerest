@@ -3,7 +3,7 @@
 use simplerest\core\libs\Factory;
 
 function tag(string $name){
-    return new simplerest\core\libs\Tag($name);
+    return new simplerest\core\libs\HtmlBuilder\Tag($name);
 }
 
 function acl(){
