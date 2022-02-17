@@ -22,26 +22,32 @@ Bt5Form::setIdAsName();
 
         //Nav
 
-        echo tag('nav')->content([
-            tag('navItem')->content(
-                tag('navLink')->anchor('Active')->active()
+        echo tag('nav')->content([             
+            tag('navLink')->anchor('Active')->active(),    
+        
+            tag('dropdown')->content(
+                tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')
+                ->class('btn') 
+                .
+    
+                tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
+                    tag('dropdownItem')->href('#')->anchor('Action') .
+                    tag('dropdownItem')->href('#')->anchor('Another action') .
+                    tag('dropdownDivider') .
+                    tag('dropdownItem')->href('#')->anchor('Something else here')
+                )
             ),
-            tag('navItem')->content(
-                tag('navLink')->anchor('Link')
-            ),
-            tag('navItem')->content(
-                tag('navLink')->anchor('Link')
-            ),
-            tag('navItem')->content(
-                tag('navLink')->anchor('Disabled')->disabled()
-            )
+    
+            tag('navLink')->anchor('Link'),        
+            tag('navLink')->anchor('Disabled')->disabled()
+ 
         ])->class('mb-3')
         //->vertical()
         ->justifyRight()
         //->justify()
-        ->pills()
+        //->pills()
         //->fill()
-        //->tabs()
+        ->tabs()
         ;     
 
         // Breadcrumb
@@ -67,7 +73,7 @@ Bt5Form::setIdAsName();
         //echo tag('link')->href('#')->anchor('The Link')->title('Hey!')->tooltip();
 
         echo tag('dropdown')->content(
-            tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->danger() .
+            tag('dropdownButton')->id('dropdownMenuButton1')->content('Dropdown button')->class('btn')->danger() .
 
             tag('dropdownMenu')->ariaLabel('dropdownMenuButton1')->content(
                 tag('dropdownItem')->href('#')->anchor('Action') .
