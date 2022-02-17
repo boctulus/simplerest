@@ -128,8 +128,8 @@ class Html
         /* Dropdown */
 
         "dropdown"       => "dropdown",
-        "dropdownButton" => "btn-secondary dropdown-toggle",
-        "dropdownLink"   => "btn-secondary dropdown-toggle",
+        "dropdownButton" => "dropdown-toggle",
+        "dropdownLink"   => "dropdown-toggle",
         "dropdownMenu"   => "dropdown-menu",
         "dropdownItem"   => "dropdown-item",
         "dropdownDivider" => "dropdown-divider",
@@ -876,6 +876,40 @@ class Html
                 $content = $args['value'];
             }
         }
+
+        if (isset($args['large'])){
+            static::addClass('btn-lg', $attributes['class']);
+        }
+
+        if (isset($args['small'])){
+            static::addClass('btn-sm', $attributes['class']);
+        }
+
+        $color_applied = false;
+        foreach ($args as $k => $val){
+            if (in_array($k, static::$colors)){
+                static::addColor("btn-$k", $attributes['class']); 
+                $color_applied = true;
+                unset($args[$k]);
+                break;
+            }           
+        }
+
+        if (!$color_applied && !static::hasColor($attributes['class'])){
+            static::addColor("btn-primary", $attributes['class']); 
+        } 
+
+        if ($content === null){
+            if (isset($args['text'])){
+                $content = $args['text'];
+                unset($args['text']);
+            } elseif (isset($args['value'])){
+                $content = $args['value'];
+                unset($args['value']);
+            }
+        }
+
+        static::removeColors($args);
 
         return static::group($content,'button', $attributes, ...$args);
     }
