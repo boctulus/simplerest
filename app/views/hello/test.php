@@ -13,27 +13,20 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 <div class="row mt-5">
     <div class="col-6 offset-3">
 
-       <nav class="nav nav-tabs">            
-            <a class="nav-link active" aria-current="page" href="#">Active</a>
-           
-            <div class="dropdown">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Dropdown</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                    
-                    <hr class="dropdown-divider">
-                    
-                    <a class="dropdown-item" href="#">Separated link</a>
-                </div>
-            </div>
+        <nav class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
             
-            <a class="nav-link" href="#">Link</a>            
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-           
-        </nav>
+                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
 
+         
+                <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</button>
+
+        </nav>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">Textoooo</div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">otro texto</div>
+            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">y otro más</div>
+        </div>
 
     </div>
 </div>
