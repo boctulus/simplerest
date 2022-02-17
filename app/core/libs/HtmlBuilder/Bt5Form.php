@@ -218,7 +218,7 @@ class Bt5Form extends Form
         
         return tag('div')
         ->content($elems)
-        ->class("accordion")
+        ->class(($args['class'] ?? '') . " accordion")
         ->attributes($attributes);
     }
 
@@ -415,15 +415,15 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
-    static function dropdownButton(mixed $content, Array $attributes = [], $target = null, ...$args){  
+    static function dropdownButton(mixed $content, Array $attributes = [], ...$args){  
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);      
 
-        if (isset($args['split'])){
+        if (isset($args['split']) || (isset($attributes['split']) && $attributes['split'] !== false)){
             static::addClass('dropdown-toggle-split', $attributes['class']);
             unset($args['split']);
         }
 
-        if (isset($args['pill'])){
+        if (isset($args['pill']) || (isset($attributes['pill']) && $attributes['pill'] !== false)){
             static::addClass('btn', $attributes['class']);
             unset($args['pill']);
         }
