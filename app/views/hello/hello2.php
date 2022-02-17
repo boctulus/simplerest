@@ -38,6 +38,21 @@ Bt5Form::setIdAsName();
 
         echo tag('h3')->text("Datos")->class('mb-3');
 
+        echo tag('nav')->content([
+            tag('navItem')->content(
+                tag('navLink')->anchor('Active')->active()
+            ),
+            tag('navItem')->content(
+                tag('navLink')->anchor('Link')
+            ),
+            tag('navItem')->content(
+                tag('navLink')->anchor('Link')
+            ),
+            tag('navItem')->content(
+                tag('navLink')->anchor('Disabled')->disabled()
+            )
+        ])->class('mb-3')->justifyRight();     
+
         //echo tag('link')->href('#')->anchor('The Link')->title('Hey!')->tooltip();
 
         echo tag('dropdown')->content(
