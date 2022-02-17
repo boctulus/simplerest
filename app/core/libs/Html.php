@@ -140,6 +140,14 @@ class Html
         "listGroupItem"  => "list-group-item",
         "listGroupItemAction"  => "list-group-item-action",
         
+        /* Nav Begin */
+
+        "nav"             => "nav",
+        "nav-item"        => "nav-item",
+        "nav-link"        => "nav-link",
+
+        /* Nav End   */
+
         
         /*
             Utilities
@@ -317,6 +325,16 @@ class Html
 
     static protected function tag(string $type, ?string $value = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
     {
+        if (isset($args['disabled'])){
+            $plain_attr[] = 'disabled';
+            unset($args['disabled']);
+        }
+
+        if (isset($args['readonly'])){
+            $plain_attr[] = 'readonly';
+            unset($args['readonly']);
+        }
+
         foreach ($args as $k => $v){
             // ajuste para data-* props
             if (strpos($k, '_') !== false){
@@ -760,7 +778,8 @@ class Html
     }
 
     static function nav(mixed $content, $attributes = [], ...$args){
-        return static::group($content, __FUNCTION__, $attributes, ...$args);
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::group($content, 'ul', $attributes, ...$args);
     }
 
     static function main(mixed $content, $attributes = [], ...$args){
