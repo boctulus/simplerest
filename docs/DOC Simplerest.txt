@@ -9219,6 +9219,8 @@ Navbar collapsable
 
 Cuando hay varios elementos en el navbar entonces éste debe colapsarse en dispositivos con poco ancho renderizando en su lugar el ícono de hamburguesa conocido como "toggler" (elemento navbarToggler) ya que al ser clickeado se alterna entre el colapso y descolapso de elementos.
 
+Use expand() para que los elementos dentro del navbar se muestren en vez de estar colapsados.
+
 Ej:
 
 	echo tag('navbar')->content(
@@ -9325,6 +9327,81 @@ Ej:
 			])->id("navbarNavAltMarkup")
 		])
 	)->class('mb-3')->expand()
+
+
+Para que el <form> barra de búsqueda quede del lado derecho y el navbarBrand del lado izquierdo debe sacarse fuera del form. La distribución de estos elementos sería la de un flexbox.	
+
+Ej:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor(
+				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+			)->href('#'),
+
+			tag('form')->class("d-flex")->content([
+				tag('search')->placeholder("Search")->class('me-2'),
+				tag('button')->outline()->success()->value('Search')
+			])
+		])->class('mb-3')
+	)
+
+Posicionamiento
+
+Para fijar el navbar al márgen 
+
+...	superior: 			fixed-top
+...	superior flotando:  sticky-top
+...	inferior: 			fixed-bottom
+
+Ej:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor(
+				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+			)->href('#'),
+			
+			tag('navbarToggler')->target("#navbarNavAltMarkup"),
+
+			tag('navbarCollapse')->content([
+				tag('navbarNav')->content([
+					[
+						'anchor'   => 'Home'
+					],
+					[
+						'anchor'   => 'Features',
+						'href'     => '#features'
+					],
+					[
+						'anchor'   => 'Pricing',
+						'href'     => '#pricing'
+					],
+					[
+						'anchor'   => 'Disabled',
+						'class'    => 'disabled',
+						'aria-disabled' => "true"                        
+					]
+				])
+			])->id("navbarNavAltMarkup")
+		])
+	)->class('mb-3 fixed-top');
+
+
+Scrolling
+
+Es posible habilitar el scrolling vertical de los elementos colapsados:
+
+https://getbootstrap.com/docs/5.0/components/navbar/#scrolling
+
+
+Responsive behaviors
+
+Navbars can use .navbar-toggler, .navbar-collapse, and .navbar-expand{-sm|-md|-lg|-xl|-xxl} classes to determine when their content collapses behind a button. In combination with other utilities, you can easily choose when to show or hide particular elements.
+
+For navbars that never collapse, add the .navbar-expand class on the navbar. For navbars that always collapse, don’t add any .navbar-expand class.
 
 
 
