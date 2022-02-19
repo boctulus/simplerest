@@ -89,9 +89,6 @@ class Html
 
         /* Cards End */
 
-        "navItem"        => "nav-item",
-        "navLink"        => "nav-link",
-
         /* Carousel Begin */
 
         "carousel"       => "carousel slide",
@@ -145,14 +142,22 @@ class Html
         
         /* Nav Begin */
 
-        "nav"             => "nav",
-        "nav-item"        => "nav-item",
-        "nav-link"        => "nav-link",
-        
+        "nav"            => "nav",
+        "navItem"        => "nav-item",
+        "navLink"        => "nav-link",
 
         /* Nav End   */
 
+
+        /* Navbar Begin */
+
+        "navbar"         => "navbar",
+        "navbarBrand"    => "navbar-brand",
         
+
+        /* Navbar End   */
+
+
         /*
             Utilities
         */
