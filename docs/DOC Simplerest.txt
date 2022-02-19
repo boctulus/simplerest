@@ -9120,6 +9120,82 @@ Ej:
 
 Lo importante en este último caso es que tanto el array de "links" como los "panes" apuntados por los primeros conserven los mísmos índices.
 
+También puede hacerse de píldoras en vertical aplicando pills() y vertical() al nav.
+
+Ej:
+
+	// Nav como tab-list
+	echo tag('nav')->content([  
+		[
+			'anchor' => 'Uno',
+			'href'   => '#uno'
+		],
+
+		[
+			'anchor' => 'Dos',
+			'href' => '#dos'
+		],
+
+		[
+			'anchor' => 'Tres',
+			'href'   => '#tres'
+		]
+	])->class('mb-3')
+	->vertical()
+	->pills()
+	->role('tablist')
+	->panes([
+		'Textoooooooooo oo',
+		'otroooooo',
+		'y otro más'            
+	]);  
+
+
+# Navbar
+
+Hay varios sub-componentes y utilidades para armar un navbar entre ellos navbarBrand, navbarToggler,...
+
+Brand
+
+Para mostrar el logo en el navbar ya sea como texto o imágen con o sin enlace la estructura básica incluye al navbar, un contenedor y un navbarBrand.
+
+Ej:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor('Navbar')
+		])
+	);  
+
+con enlace:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor('Navbar')->href('#')
+		])
+	);  
+
+Con imágen es solo pasar la imágen dentro del anchor del navbarBrand:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor(
+				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+			)->href('#')
+		])
+	)
+
+Imágen + texto
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor(
+				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+			)->href('#') 
+		])
+	)
+
 
 Notas Dev:
 =========
