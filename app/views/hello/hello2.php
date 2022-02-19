@@ -20,9 +20,22 @@ Bt5Form::setIdAsName();
 
         <?php
 
+        /*  
+            Navbar
+        */
+
+        echo tag('navbar')->content(
+            tag('container')->fluid()->content([
+                tag('navbarBrand')->anchor(
+                    tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+                    ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+                )->href('#') 
+            ])
+        )->class('mb-3');  
+
+
         /*
             Navs 
-
         */
 
         // Nav como tab-list
@@ -59,14 +72,6 @@ Bt5Form::setIdAsName();
             'otroooooo',
             'y otro más'            
         ]);     
-
-        ?>
-            <!-- <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="uno" role="tabpanel" aria-labelledby="uno">Textoooo</div>
-                <div class="tab-pane fade" id="dos" role="tabpanel" aria-labelledby="dos">otro texto</div>
-                <div class="tab-pane fade" id="tres" role="tabpanel" aria-labelledby="tres">y otro más</div>
-            </div> -->
-        <?php
 
 
 

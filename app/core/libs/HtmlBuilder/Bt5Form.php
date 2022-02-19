@@ -182,6 +182,52 @@ class Bt5Form extends Form
 
     /* Nav    */
 
+    static function container(mixed $content, Array $attributes = [], ...$args){
+        if (isset($args['fluid']) || (isset($attributes['fluid']) && $attributes['fluid'] !== false)){
+            $attributes['class'] = "container-fluid";
+        } else {
+            $attributes['class'] = "container";
+        }
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+
+    /* Navbar   */
+
+    static function navbar(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        /*
+            Ver bien en la sección de temas porque se puede customizar mucho más
+
+            https://getbootstrap.com/docs/5.0/components/navbar/#color-schemes
+        */
+
+        $color = 'light';
+        $bg    = 'light';
+
+        if (isset($args['dark'])){
+            $color = 'dark';
+            $bg    = 'dark';
+        }
+
+        static::addClass("navbar-$color bg-$bg", $attributes['class']);
+
+        return static::nav($content, $attributes, ...$args);
+    }
+
+    static function navbarBrand(string $anchor, ?string $href = null, $attributes = [], ...$args){
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if ($href !== null){
+            return static::link($anchor, $href, $attributes, ...$args);
+        } else {
+            static::addClass('mb-0 h1', $attributes['class']);
+            return static::span($anchor, $attributes, ...$args);
+        }
+    }
+
 
     /* List group */
 
