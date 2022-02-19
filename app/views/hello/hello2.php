@@ -58,8 +58,7 @@ Bt5Form::setIdAsName();
             'Textoooooooooo oo',
             'otroooooo',
             'y otro más'            
-        ])
-        ;     
+        ]);     
 
         ?>
             <!-- <div class="tab-content" id="pills-tabContent">
