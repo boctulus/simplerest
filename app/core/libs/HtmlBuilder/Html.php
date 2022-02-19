@@ -140,22 +140,19 @@ class Html
         "listGroupItem"  => "list-group-item",
         "listGroupItemAction"  => "list-group-item-action",
         
-        /* Nav Begin */
+        /* Nav & Navbars Begin */
 
         "nav"            => "nav",
         "navItem"        => "nav-item",
         "navLink"        => "nav-link",
 
-        /* Nav End   */
-
-
-        /* Navbar Begin */
-
         "navbar"         => "navbar",
         "navbarBrand"    => "navbar-brand",
-        
+        "navbarToggler"  => "navbar-toggler",
+        "navbarCollapse" => "collapse navbar-collapse", 
+        "navbarNav"      => "navbar-nav",
 
-        /* Navbar End   */
+        /* Nav & Navbars End   */
 
 
         /*
@@ -170,6 +167,13 @@ class Html
     ];
     
     static protected $macros = [];
+
+    static protected function shift(string $key, &$var, $default_value = null){
+        $out = $var[$key] ?? $default_value;
+        unset($var[$key]);
+        
+        return $out;
+    }
 
     static protected function shiftClass(){
         $class = static::$class;

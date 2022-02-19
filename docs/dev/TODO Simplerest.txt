@@ -1,5 +1,16 @@
 # TODO
 
+- Dejar de usar utf8_general_ci y usar 
+
+  utf8mb4_unicode_ci (usada en Laravel 8)
+o
+  utf8mb4_0900_ai_ci
+
+Leer:
+
+https://stackoverflow.com/questions/54885178/whats-the-difference-between-utf8-unicode-ci-and-utf8mb4-0900-ai-ci
+
+
 [ Front ]
 
 - Considerar Alpine Js como alternativa a VueJs ... y como complemento para el Form Builder como se usa en Laravel.
@@ -1562,6 +1573,11 @@ De igual forma........ debería funcionar
 - Aplicar al registro de patentes de Colombia (prop. intelectual) con base de datos de prueba en SQLite !!!
 
 Debe haber un comando que setee la configuración para la "demo"
+
+
+- Implemntar el patrón Observer
+
+https://laravel.com/docs/9.x/eloquent#observers
 
 
 [ Migraciones ]

@@ -3762,7 +3762,7 @@ class DumbController extends Controller
 
         ->setEngine('InnoDB')
         ->setCharset('utf8')
-        ->setCollation('utf8_general_ci')
+        ->setCollation('utf8mb4_unicode_ci')
 
         ->integer('id')->auto()->unsigned()->pri()
         ->int('edad')->unsigned()
@@ -7400,39 +7400,55 @@ class DumbController extends Controller
 
         //Form::pretty();
 
-        echo tag('nav')->content([  
-        [
-            'anchor' => 'Uno',
-            'href'   => '#uno'
-        ],
+        // echo tag('nav')->content([  
+        // [
+        //     'anchor' => 'Uno',
+        //     'href'   => '#uno'
+        // ],
 
-        [
-            'anchor' => 'Dos',
-            'href' => '#dos'
-        ],
+        // [
+        //     'anchor' => 'Dos',
+        //     'href' => '#dos'
+        // ],
 
-        [
-            'anchor' => 'Tres',
-            'href'   => '#tres'
-        ],
-        // tag('dropdown')->content(
-        //     tag('dropdownButton')->id('dropdownMenuButton')->content('Dropdown button') .    
-        //     tag('dropdownMenu')->ariaLabel('dropdownMenuButton')->content(
-        //         tag('dropdownItem')->href('#')->anchor('Action 1') .
-        //         tag('dropdownItem')->href('#')->anchor('Another action') .
-        //         tag('dropdownDivider') .
-        //         tag('dropdownItem')->href('#')->anchor('Something else here')
-        //     )
-        // ),
-        ])->class('mb-3')
-        ->justifyRight()
-        ->tabs()
-        ->role('tablist')
-        ->panes([
-            'Textoooooooooo oo',
-            'otroooooo',
-            'y otro más'            
-        ]);  
+        // [
+        //     'anchor' => 'Tres',
+        //     'href'   => '#tres'
+        // ],
+        // // tag('dropdown')->content(
+        // //     tag('dropdownButton')->id('dropdownMenuButton')->content('Dropdown button') .    
+        // //     tag('dropdownMenu')->ariaLabel('dropdownMenuButton')->content(
+        // //         tag('dropdownItem')->href('#')->anchor('Action 1') .
+        // //         tag('dropdownItem')->href('#')->anchor('Another action') .
+        // //         tag('dropdownDivider') .
+        // //         tag('dropdownItem')->href('#')->anchor('Something else here')
+        // //     )
+        // // ),
+        // ])->class('mb-3')
+        // ->justifyRight()
+        // ->tabs()
+        // ->role('tablist')
+        // ->panes([
+        //     'Textoooooooooo oo',
+        //     'otroooooo',
+        //     'y otro más'            
+        // ]);  
+
+        echo tag('breadcrumb')->content([
+            [
+                'href' => '#',
+                'anchor' => 'Home'
+            ],
+
+            [
+                'href' => '#library',
+                'anchor' => 'Library'
+            ],
+
+            [
+                'anchor' => 'Data'
+            ]
+        ]);
 
     }
 
