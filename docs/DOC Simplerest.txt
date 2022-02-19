@@ -9276,6 +9276,56 @@ Ej:
 		])
 	)->expand()
 
+Se puede agregar dropDown como un elemento más al navbar.
+
+Ej:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor(
+				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+			)->href('#'),
+			
+			tag('navbarToggler')->target("#navbarNavAltMarkup"),
+
+			tag('navbarCollapse')->content([
+				tag('navbarNav')->content([
+					[
+						'anchor'   => 'Home'
+					],
+					[
+						'anchor'   => 'Features',
+						'href'     => '#features'
+					],
+					[
+						'anchor'   => 'Pricing',
+						'href'     => '#pricing'
+					],
+					[
+						'anchor'   => 'Disabled',
+						'class'    => 'disabled',
+						'aria-disabled' => "true"                        
+					],
+					
+					/*
+						Dropdown
+					*/
+					tag('dropdown')->content(
+						tag('dropdownButton')->id('dropdownMenuButton33')->content('Dropdown button') .    
+						tag('dropdownMenu')->ariaLabel('dropdownMenuButton33')->content(
+							tag('dropdownItem')->href('#')->anchor('Action') .
+							tag('dropdownItem')->href('#')->anchor('Another action') .
+							tag('dropdownDivider') .
+							tag('dropdownItem')->href('#')->anchor('Something else here')
+						)
+					),
+				])
+			])->id("navbarNavAltMarkup")
+		])
+	)->class('mb-3')->expand()
+
+
 
 Notas Dev:
 =========
