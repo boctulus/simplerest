@@ -51,6 +51,15 @@ Bt5Form::setIdAsName();
                             'class'    => 'disabled',
                             'aria-disabled' => "true"                        
                         ],
+                        tag('dropdown')->content(
+                            tag('dropdownButton')->id('dropdownMenuButton33')->content('Dropdown button') .    
+                            tag('dropdownMenu')->ariaLabel('dropdownMenuButton33')->content(
+                                tag('dropdownItem')->href('#')->anchor('Action') .
+                                tag('dropdownItem')->href('#')->anchor('Another action') .
+                                tag('dropdownDivider') .
+                                tag('dropdownItem')->href('#')->anchor('Something else here')
+                            )
+                        ),
                     ])
                 ])->id("navbarNavAltMarkup")
             ])
