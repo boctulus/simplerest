@@ -8801,7 +8801,7 @@ Actionable
 Solo aplique actionable() sobre los items.
 
 	echo tag('listGroup')->content([
-		tag('listGroupItem')->text('An item #1')->active(),
+		tag('listGroupItem')->text('An item #1')->actionable()->active(),
 		tag('listGroupItem')->text('An item #2')->actionable(),
 		tag('listGroupItem')->text('An item #3')->actionable()
 	])->class('mt-5');
@@ -9197,10 +9197,97 @@ Imágen + texto
 	)
 
 
+Tema / estilos
+
+De mínima puede cambiarse a tema oscuro aplicando dark() sobre el navbar.
+
+Ej:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor(
+				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+			)->href('#') 
+		])
+	)->class('mb-3')
+	->dark()
+
+
+Navbar collapsable
+
+Cuando hay varios elementos en el navbar entonces éste debe colapsarse en dispositivos con poco ancho renderizando en su lugar el ícono de hamburguesa conocido como "toggler" (elemento navbarToggler) ya que al ser clickeado se alterna entre el colapso y descolapso de elementos.
+
+Ej:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor(
+				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+			)->href('#'),
+			
+			tag('navbarToggler')->target("#navbarNavAltMarkup"),
+
+			tag('navbarCollapse')->content([
+				tag('navbarNav')->content([
+					tag('navLink')->anchor('Home')->active(),
+					tag('navLink')->anchor('Features')->href('#features'),
+					tag('navLink')->anchor('Pricing')->href('#pricing'),
+					tag('navLink')->anchor('Disabled')->disabled()->attributes(["tabindex" => "-1"])
+				])
+			])->id("navbarNavAltMarkup")
+		])
+	)->expand();
+
+O enviando un array más simple a navbarNav.
+
+Ej:
+
+	echo tag('navbar')->content(
+		tag('container')->fluid()->content([
+			tag('navbarBrand')->anchor(
+				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+			)->href('#'),
+			
+			tag('navbarToggler')->target("#navbarNavAltMarkup"),
+
+			tag('navbarCollapse')->content([
+				tag('navbarNav')->content([
+					[
+						'anchor'   => 'Home'
+					],
+					[
+						'anchor'   => 'Features',
+						'href'     => '#features'
+					],
+					[
+						'anchor'   => 'Pricing',
+						'href'     => '#pricing'
+					],
+					[
+						'anchor'   => 'Disabled',
+						'class'    => 'disabled',
+						'aria-disabled' => "true"                        
+					],
+				])
+			])->id("navbarNavAltMarkup")
+		])
+	)->expand()
+
+
 Notas Dev:
 =========
 
-Escribiendo nuevos componentes
+# Compatibilidad con "react-boostrap"
+
+Dado que la librería es parte del proyecto "Supra", se hará compatible con la API de react-boostrap. Esto incluirá la auto-importación de los componentes necesarios.
+
+https://react-bootstrap.github.io/components/
+
+
+# Escribiendo nuevos componentes
 
 Todo componente debe en última instancia depender del método Form::tag() 
 
