@@ -7,7 +7,11 @@ use PhpParser\Node\Expr\Cast\String_;
 use simplerest\core\libs\HtmlBuilder\Form;
 
 class Bt5Form extends Form
-{   
+{
+    static function form(mixed $content, Array $attributes = [], ...$args){  
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+    
     /* Stacked checkbox & radios */
 
     static function formCheck(mixed $content, Array $attributes = [], ...$args){     
@@ -181,6 +185,7 @@ class Bt5Form extends Form
     static function container(mixed $content, Array $attributes = [], ...$args){
         if (isset($args['fluid']) || (isset($attributes['fluid']) && $attributes['fluid'] !== false)){
             $attributes['class'] = "container-fluid";
+            unset($args['fluid']);
         } else {
             $attributes['class'] = "container";
         }
@@ -466,20 +471,21 @@ class Bt5Form extends Form
 
         // Proceso colores por si se envian usando color($color)
                 
-        $color = $attributes['color'] ?? $args['color'] ?? null;
+        $color   = $attributes['color'] ?? $args['color'] ?? null;
+        $outline = $attributes['outline'] ?? $args['outline'] ?? false;
 
         if ($color !== null){
             if (!in_array($color, static::$colors)){
                 throw new \InvalidArgumentException("Invalid color for '$color'");
             }
 
-            static::addClass(" alert-$color", $attributes['class']);
+            static::addColor("alert-$color", $attributes['class'], $outline);
             unset($args['color']);
         }
 
         $kargs = array_merge(array_keys($args), array_keys($attributes));
  
-        // Proceso colores provinientes en cualquier key => mucho más ineficiente
+        // Proceso colores provinientes en cualquier key => mucho más in-eficiente
 
         foreach ($kargs as $k){
             if (in_array($k, static::$colors)){

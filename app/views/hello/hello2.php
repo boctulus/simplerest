@@ -26,6 +26,17 @@ Bt5Form::setIdAsName();
 
         echo tag('navbar')->content(
             tag('container')->fluid()->content([
+                tag('form')->class("d-flex")->content([
+                    tag('search')->placeholder("Search"),
+                    tag('button')->outline()->success()->value('Search')
+                ])
+            ])
+        )->class('mb-3')
+        //->dark()       
+        ;
+
+        echo tag('navbar')->content(
+            tag('container')->fluid()->content([
                 tag('navbarBrand')->anchor(
                     tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
                     ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
@@ -285,28 +296,28 @@ Bt5Form::setIdAsName();
 
         echo tag('buttonToolbar')->content([
             tag('buttonGroup')->content(
-                tag('button')->content('Botón rojo')->danger()->class('rounded-pill')->outline() .
+                tag('button')->content('Botón rojo')->danger()->class('rounded-pill') .
                     tag('button')->content('Botón verde')->success()->class('rounded-pill')->outline()
             )->aria_label("Basic example")->class('mx-3'),
 
             tag('buttonGroup')->content(
-                tag('button')->content('Botón azul')->info()->class('rounded-pill')->outline() .
+                tag('button')->content('Botón azul')->info()->class('rounded-pill') .
                     tag('button')->content('Botón amarillo')->warning()->class('rounded-pill')->outline()
             )->aria_label("Another group")->class('mx-3')
         ])->class('my-3');
 
         echo tag('buttonGroup')->content(
-            tag('button')->content('A')->danger()->class('rounded-pill')->outline() .
+            tag('button')->content('A')->danger()->class('rounded-pill') .
                 tag('button')->content('B')->success()->class('rounded-pill')->outline()
         )->aria_label("Basic example")->class('mx-3')->small();
 
         echo tag('buttonGroup')->content(
-            tag('button')->content('C')->danger()->class('rounded-pill')->outline() .
+            tag('button')->content('C')->danger()->class('rounded-pill') .
                 tag('button')->content('D')->success()->class('rounded-pill')->outline()
         )->aria_label("Basic example")->class('mx-3');
 
         echo tag('buttonGroup')->content(
-            tag('button')->content('E')->danger()->class('rounded-pill')->outline() .
+            tag('button')->content('E')->danger()->class('rounded-pill') .
                 tag('button')->content('F')->success()->class('rounded-pill')->outline()
         )->aria_label("Basic example")->class('mx-3')->large()->vertical();
 
@@ -375,7 +386,7 @@ Bt5Form::setIdAsName();
 
         echo tag('p')->text("Hola mundo cruel");
 
-        echo tag('color')->name('my_color')->text('Color')->id('c1');
+        echo tag('inputColor')->name('my_color')->text('Color')->id('c1');
 
 
         echo Bt5Form::div(
