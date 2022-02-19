@@ -9051,6 +9051,9 @@ Tab list
 
 De momento a medio-implementar pero la idea es pasar el array de "links", aplicar tabs() o pills() y role('tablist') así como un array con los "textos" (html) a renderizar para cada tab.
 
+Ej:
+
+	// Nav como tab-list
 	echo tag('nav')->content([  
 		[
 			'anchor' => 'Uno',
@@ -9069,56 +9072,53 @@ De momento a medio-implementar pero la idea es pasar el array de "links", aplica
 	])->class('mb-3')
 	->justifyRight()
 	->tabs()
-	->role('tablist');     
-
-	?>
-		<div class="tab-content" id="pills-tabContent">
-			<div class="tab-pane fade show active" id="uno" role="tabpanel" aria-labelledby="uno">Textoooo</div>
-			<div class="tab-pane fade" id="dos" role="tabpanel" aria-labelledby="dos">otro texto</div>
-			<div class="tab-pane fade" id="tres" role="tabpanel" aria-labelledby="tres">y otro más</div>
-		</div>
-	<?php
+	->role('tablist')
+	->panes([
+		'Textoooooooooo oo',
+		'otroooooo',
+		'y otro más'            
+	]); 
 
 Inclusive es posible combinar "panes" con un Dropdown
 
 Ej:
 
+	// Nav como tab-list
 	echo tag('nav')->content([  
-	[
-		'anchor' => 'Uno',
-		'href'   => '#uno'
-	],
+		[
+			'anchor' => 'Uno',
+			'href'   => '#uno'
+		],
 
-	[
-		'anchor' => 'Dos',
-		'href' => '#dos'
-	],
+		[
+			'anchor' => 'Dos',
+			'href' => '#dos'
+		],
 
-	[
-		'anchor' => 'Tres',
-		'href'   => '#tres'
-	],
-	tag('dropdown')->content(
-		tag('dropdownButton')->id('dropdownMenuButton')->content('Dropdown button') .    
-		tag('dropdownMenu')->ariaLabel('dropdownMenuButton')->content(
-			tag('dropdownItem')->href('#')->anchor('Action 1') .
-			tag('dropdownItem')->href('#')->anchor('Another action') .
-			tag('dropdownDivider') .
-			tag('dropdownItem')->href('#')->anchor('Something else here')
-		)
-	),
+		[
+			'anchor' => 'Tres',
+			'href'   => '#tres'
+		],
+		tag('dropdown')->content(
+			tag('dropdownButton')->id('dropdownMenuButton')->content('Dropdown button') .    
+			tag('dropdownMenu')->ariaLabel('dropdownMenuButton')->content(
+				tag('dropdownItem')->href('#')->anchor('Action 1') .
+				tag('dropdownItem')->href('#')->anchor('Another action') .
+				tag('dropdownDivider') .
+				tag('dropdownItem')->href('#')->anchor('Something else here')
+			)
+		),
 	])->class('mb-3')
 	->justifyRight()
 	->tabs()
-	->role('tablist');     
+	->role('tablist')
+	->panes([
+		'Textoooooooooo oo',
+		'otroooooo',
+		'y otro más'            
+	]); 
 
-	?>
-		<div class="tab-content" id="pills-tabContent">
-			<div class="tab-pane fade show active" id="uno" role="tabpanel" aria-labelledby="uno">Textoooo</div>
-			<div class="tab-pane fade" id="dos" role="tabpanel" aria-labelledby="dos">otro texto</div>
-			<div class="tab-pane fade" id="tres" role="tabpanel" aria-labelledby="tres">y otro más</div>
-		</div>
-	<?php
+Lo importante en este último caso es que tanto el array de "links" como los "panes" apuntados por los primeros conserven los mísmos índices.
 
 
 Notas Dev:
