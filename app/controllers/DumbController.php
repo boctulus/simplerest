@@ -7057,7 +7057,7 @@ class DumbController extends Controller
     }
 
     function test_tag(){
-        Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
+        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
         //Form::pretty();
 
@@ -7383,20 +7383,56 @@ class DumbController extends Controller
         //     'class' => 'mt-3'
         // ]);
 
-        echo tag('nav')->content([
-            tag('navItem')->content(
-                tag('navLink')->anchor('Active')
-            ),
-            tag('navItem')->content(
-                tag('navLink')->anchor('Link')
-            ),
-            tag('navItem')->content(
-                tag('navLink')->anchor('Link')
-            ),
-            tag('navItem')->content(
-                tag('navLink')->anchor('Active')->disabled()
-            )
-        ])->class('mb-3');     
+        // echo tag('nav')->content([
+        //     tag('navItem')->content(
+        //         tag('navLink')->anchor('Active')
+        //     ),
+        //     tag('navItem')->content(
+        //         tag('navLink')->anchor('Link')
+        //     ),
+        //     tag('navItem')->content(
+        //         tag('navLink')->anchor('Link')
+        //     ),
+        //     tag('navItem')->content(
+        //         tag('navLink')->anchor('Active')->disabled()
+        //     )
+        // ])->class('mb-3');     
+
+        //Form::pretty();
+
+        echo tag('nav')->content([  
+        [
+            'anchor' => 'Uno',
+            'href'   => '#uno'
+        ],
+
+        [
+            'anchor' => 'Dos',
+            'href' => '#dos'
+        ],
+
+        [
+            'anchor' => 'Tres',
+            'href'   => '#tres'
+        ],
+        // tag('dropdown')->content(
+        //     tag('dropdownButton')->id('dropdownMenuButton')->content('Dropdown button') .    
+        //     tag('dropdownMenu')->ariaLabel('dropdownMenuButton')->content(
+        //         tag('dropdownItem')->href('#')->anchor('Action 1') .
+        //         tag('dropdownItem')->href('#')->anchor('Another action') .
+        //         tag('dropdownDivider') .
+        //         tag('dropdownItem')->href('#')->anchor('Something else here')
+        //     )
+        // ),
+        ])->class('mb-3')
+        ->justifyRight()
+        ->tabs()
+        ->role('tablist')
+        ->panes([
+            'Textoooooooooo oo',
+            'otroooooo',
+            'y otro más'            
+        ]);  
 
     }
 

@@ -40,19 +40,33 @@ Bt5Form::setIdAsName();
             [
                 'anchor' => 'Tres',
                 'href'   => '#tres'
-            ]
+            ],
+            // tag('dropdown')->content(
+            //     tag('dropdownButton')->id('dropdownMenuButton')->content('Dropdown button') .    
+            //     tag('dropdownMenu')->ariaLabel('dropdownMenuButton')->content(
+            //         tag('dropdownItem')->href('#')->anchor('Action 1') .
+            //         tag('dropdownItem')->href('#')->anchor('Another action') .
+            //         tag('dropdownDivider') .
+            //         tag('dropdownItem')->href('#')->anchor('Something else here')
+            //     )
+            // ),
         ])->class('mb-3')
         ->justifyRight()
         ->tabs()
         ->role('tablist')
+        ->panes([
+            'Textoooooooooo oo',
+            'otroooooo',
+            'y otro más'            
+        ])
         ;     
 
         ?>
-            <div class="tab-content" id="pills-tabContent">
+            <!-- <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="uno" role="tabpanel" aria-labelledby="uno">Textoooo</div>
                 <div class="tab-pane fade" id="dos" role="tabpanel" aria-labelledby="dos">otro texto</div>
                 <div class="tab-pane fade" id="tres" role="tabpanel" aria-labelledby="tres">y otro más</div>
-            </div>
+            </div> -->
         <?php
 
 
@@ -70,7 +84,7 @@ Bt5Form::setIdAsName();
 
             [
                 'anchor' => 'Data'
-            ]
+            ]            
         ])->class('mb-3')
         //->vertical()
         ->justifyRight()
