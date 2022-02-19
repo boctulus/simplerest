@@ -29,9 +29,46 @@ Bt5Form::setIdAsName();
                 tag('navbarBrand')->anchor(
                     tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
                     ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
-                )->href('#') 
+                )->href('#'),
+                
+                tag('navbarToggler')->target("#navbarNavAltMarkup"),
+
+                tag('navbarCollapse')->content([
+                    tag('navbarNav')->content([
+                        [
+                            'anchor'   => 'Home'
+                        ],
+                        [
+                            'anchor'   => 'Features',
+                            'href'     => '#features'
+                        ],
+                        [
+                            'anchor'   => 'Pricing',
+                            'href'     => '#pricing'
+                        ],
+                        [
+                            'anchor'   => 'Disabled',
+                            'class'    => 'disabled',
+                            'aria-disabled' => "true"                        
+                        ],
+                    ])
+                ])->id("navbarNavAltMarkup")
             ])
-        )->class('mb-3');  
+        )->class('mb-3')->expand()
+        //->dark()
+        ;  
+
+
+
+        // echo tag('navbar')->content(
+        //     tag('container')->fluid()->content([
+        //         tag('navbarBrand')->anchor(
+        //             tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+        //             ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+        //         )->href('#') 
+        //     ])
+        // )->class('mb-3')
+        // //->dark()       ;  
 
 
         /*
@@ -196,7 +233,7 @@ Bt5Form::setIdAsName();
         )
         ->options([
             //'fullscreen',
-            //'center',
+            //'centered',
             //'scrollable'
         ])
         ->id('exampleModal');
