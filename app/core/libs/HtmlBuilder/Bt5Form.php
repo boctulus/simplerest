@@ -78,8 +78,8 @@ class Bt5Form extends Form
             foreach ($content as $ix => $e){
                 if (is_array($e) && isset($e['anchor']))
                 {
-                    $anchor = $e['anchor'];
-                    $href   = $e['href'] ?? '#';
+                    $anchor = static::shift('anchor', $e);
+                    $href   = static::shift('href'  , $e, '#');
 
                     $active = ($ix == 0);
 
@@ -91,6 +91,8 @@ class Bt5Form extends Form
                     } else {
                         $content[$ix]->attributes(['aria-selected' => "false"]);
                     }
+
+                    $content[$ix]->attributes($e);
 
                     if ($role == 'tablist'){
                         if ($tabs){
@@ -157,13 +159,7 @@ class Bt5Form extends Form
            $attributes['aria-disabled'] = "true";
         }
 
-        $type = 'link';
-
-        if (isset($args['as'])){
-            $type = $args['as'];
-        } elseif (isset($attributes['as'])){
-            isset($attributes['as']);
-        }
+        $type = $args['as'] ?? $attributes['as'] ?? 'link';
 
         if ($type == 'button'){
             $attributes['data-bs-target'] = $href;
@@ -197,6 +193,10 @@ class Bt5Form extends Form
 
     static function navbar(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        
+        if (isset($args['expand']) || (isset($attributes['expand']) && $attributes['expand'] == false)){            
+            static::addClass("navbar-expand-lg", $attributes['class']);
+        }
 
         /*
             Ver bien en la sección de temas porque se puede customizar mucho más
@@ -226,6 +226,64 @@ class Bt5Form extends Form
             static::addClass('mb-0 h1', $attributes['class']);
             return static::span($anchor, $attributes, ...$args);
         }
+    }
+
+    /*
+        El método es casi idéntico a collapseButton
+    */
+    static function navbarToggler(mixed $content = null, ?string $target = null, Array $attributes = [], ...$args){  
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);      
+
+        $content = $content ?? '<span class="navbar-toggler-icon"></span>';
+
+        // pensar si se hace que todos los href sean target o a la inversa pero estandarizar!
+        $target = $args['target'] ?? $attributes['target'] ?? $target ?? null;
+
+        if (!empty($target)){
+            $attributes['data-bs-target'] = ($target[0] != '#' && $target[0] != '.' ? "#$target" : $target);
+        }
+
+        $attributes['aria-controls'] = "navbarNav";
+        $attributes['aria-expanded'] = "false";
+        $attributes['aria-label']    = "Toggle navigation";
+
+        $attributes['data-bs-toggle'] = "collapse";
+
+        return static::basicButton($content, $attributes, ...$args);
+    }
+
+    static function navbarCollapse(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function navbarNav(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        
+        if (is_array($content) && count($content) >0){
+            foreach ($content as $ix => $e){
+                if (is_array($e) && isset($e['anchor']))
+                {
+                    $anchor = static::shift('anchor', $e);
+                    $href   = static::shift('href'  , $e, '#');
+
+                    $content[$ix] = tag('navLink')->anchor($anchor)->href($href);
+                    
+                    // active?
+                    if ($ix == 0){
+                        $content[$ix] = ($content[$ix])->active();
+                        $content[$ix]->attributes(['aria-selected' => "true"]);
+                        $content[$ix]->attributes(['aria-current'  => "page"]);
+                    } else {
+                        $content[$ix]->attributes(['aria-selected' => "false"]);
+                    }
+
+                    $content[$ix]->attributes($e);
+                }
+            }
+        }
+        
+        return static::div($content, $attributes, ...$args);
     }
 
 
@@ -517,7 +575,9 @@ class Bt5Form extends Form
     static function collapseButton(mixed $content, Array $attributes = [], $target = null, ...$args){        
         $attributes['data-bs-toggle'] = "collapse";
 
-        if (!is_null($target)){
+        $target = $args['target'] ?? $attributes['target'] ?? $target ?? null;
+
+        if (!empty($target)){
             $attributes['data-bs-target'] = ($target[0] != '#' && $target[0] != '.' ? "#$target" : $target);
         }
 
@@ -921,7 +981,7 @@ class Bt5Form extends Form
         return static::button($content, $attributes, ...$args);
     }
 
-    static function modalDialog(mixed $content, Array $attributes = [], bool $scrollable = false, bool $center = false, ...$args){
+    static function modalDialog(mixed $content, Array $attributes = [], bool $scrollable = false, bool $centered = false, ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         if ($scrollable || array_key_exists('scrollable', $args) || in_array('scrollable', $attributes)){
@@ -929,7 +989,7 @@ class Bt5Form extends Form
             unset($args['scrollable']);
         }
 
-        if ($center || array_key_exists('center', $args) || in_array('center', $attributes)){
+        if ($centered || array_key_exists('centered', $args) || in_array('centered', $attributes)){
             static::addClass("modal-dialog-centered", $attributes['class']);
             unset($args['center']);
         }
