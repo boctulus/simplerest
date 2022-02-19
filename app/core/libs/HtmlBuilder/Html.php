@@ -39,6 +39,7 @@ class Html
         "url"            => "form-control",
         "area"           => "form-control",
         "dataList"       => "form-control",
+        "search"         => "form-control",
         "range"          => "form-range",
         "select"         => "form-select",
         "checkbox"       => "form-check-input",
@@ -55,7 +56,7 @@ class Html
  
         "formFloating"   => "form-floating",
 
-        "color"          => "form-control form-control-color",
+        "inputColor"     => "form-control form-control-color",
 
         "alert"          => "alert alert-primary",
         "alertLink"      => "alert-link",
@@ -205,8 +206,24 @@ class Html
     }
 
     static function addColor(string $color, string &$to, bool $outline = false) : void{
-        if (strlen($color) > 4 && substr($color, 0, 4) == 'btn-'){
-            $_color = substr($color, 4);
+        $prefix = '';
+
+        if (strlen($color)){
+            $pos = strpos($color, '-');
+
+            if ($pos !== false){
+                $_prefix = substr($color, 0, $pos + 1);
+
+                if (in_array($_prefix, ['btn-', 'alert-'])){
+                    $prefix = $_prefix;
+                } else {
+                    $pos = 0;
+                }
+            } else {
+                $pos = -1;
+            }
+
+            $_color = substr($color, $pos + 1);
 
             if (in_array($_color, static::$colors)){
                 $color = $_color;
@@ -219,7 +236,7 @@ class Html
         }
 
         if (empty($to)){
-            $to = "btn-{$outline_prefix}{$color}";
+            $to = "{$prefix}{$outline_prefix}{$color}";
             return;
         }
 
@@ -232,7 +249,7 @@ class Html
         */
 
         if (strpos($to, $color) === false){
-            $to .= " btn-{$outline_prefix}{$color}";
+            $to .= " {$prefix}{$outline_prefix}{$color}";
         }    
     }
 
@@ -555,8 +572,8 @@ class Html
         return static::tag('input', $value, $attributes, $plain_attr, ...$args);
     }
 
-    static function color(?string $text = null, Array $attributes = [], ...$args){
-        $attributes['type']  = __FUNCTION__;
+    static function inputColor(?string $text = null, Array $attributes = [], ...$args){
+        $attributes['type']  = 'color';
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         if (isset($args['id'])) {

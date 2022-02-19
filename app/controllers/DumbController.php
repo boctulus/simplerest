@@ -7434,22 +7434,29 @@ class DumbController extends Controller
         //     'y otro más'            
         // ]);  
 
-        echo tag('breadcrumb')->content([
-            [
-                'href' => '#',
-                'anchor' => 'Home'
-            ],
+        // echo tag('breadcrumb')->content([
+        //     [
+        //         'href' => '#',
+        //         'anchor' => 'Home'
+        //     ],
 
-            [
-                'href' => '#library',
-                'anchor' => 'Library'
-            ],
+        //     [
+        //         'href' => '#library',
+        //         'anchor' => 'Library'
+        //     ],
 
-            [
-                'anchor' => 'Data'
-            ]
-        ]);
+        //     [
+        //         'anchor' => 'Data'
+        //     ]
+        // ]);
 
+        /*
+            Debería ser equivalente a:
+
+            ->success()
+
+        */
+        echo tag('button')->color('success')->value('Search');
     }
 
 
