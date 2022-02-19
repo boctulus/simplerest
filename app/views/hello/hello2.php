@@ -26,17 +26,6 @@ Bt5Form::setIdAsName();
 
         echo tag('navbar')->content(
             tag('container')->fluid()->content([
-                tag('form')->class("d-flex")->content([
-                    tag('search')->placeholder("Search"),
-                    tag('button')->outline()->success()->value('Search')
-                ])
-            ])
-        )->class('mb-3')
-        //->dark()       
-        ;
-
-        echo tag('navbar')->content(
-            tag('container')->fluid()->content([
                 tag('navbarBrand')->anchor(
                     tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
                     ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
@@ -62,22 +51,37 @@ Bt5Form::setIdAsName();
                             'class'    => 'disabled',
                             'aria-disabled' => "true"                        
                         ],
-                        tag('dropdown')->content(
-                            tag('dropdownButton')->id('dropdownMenuButton33')->content('Dropdown button') .    
-                            tag('dropdownMenu')->ariaLabel('dropdownMenuButton33')->content(
-                                tag('dropdownItem')->href('#')->anchor('Action') .
-                                tag('dropdownItem')->href('#')->anchor('Another action') .
-                                tag('dropdownDivider') .
-                                tag('dropdownItem')->href('#')->anchor('Something else here')
-                            )
-                        ),
+                        // tag('dropdown')->content(
+                        //     tag('dropdownButton')->id('dropdownMenuButton33')->content('Dropdown button') .    
+                        //     tag('dropdownMenu')->ariaLabel('dropdownMenuButton33')->content(
+                        //         tag('dropdownItem')->href('#')->anchor('Action') .
+                        //         tag('dropdownItem')->href('#')->anchor('Another action') .
+                        //         tag('dropdownDivider') .
+                        //         tag('dropdownItem')->href('#')->anchor('Something else here')
+                        //     )
+                        // ),
                     ])
                 ])->id("navbarNavAltMarkup")
             ])
-        )->class('mb-3')->expand()
+        )->class('mb-3 fixed-top')
         //->dark()
         ;  
 
+        // echo tag('navbar')->content(
+        //     tag('container')->fluid()->content([
+        //         tag('navbarBrand')->anchor(
+        //             tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+        //             ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
+        //         )->href('#'),
+
+        //         tag('form')->class("d-flex")->content([
+        //             tag('search')->placeholder("Search")->class('me-2'),
+        //             tag('button')->outline()->success()->value('Search')
+        //         ])
+        //     ])->class('mb-3')
+        // )
+        // //->dark()       
+        // ;
 
 
         // echo tag('navbar')->content(
@@ -94,6 +98,8 @@ Bt5Form::setIdAsName();
         /*
             Navs 
         */
+
+        echo '<br/>';
 
         // Nav como tab-list
         echo tag('nav')->content([  
