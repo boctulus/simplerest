@@ -9069,8 +9069,7 @@ De momento a medio-implementar pero la idea es pasar el array de "links", aplica
 	])->class('mb-3')
 	->justifyRight()
 	->tabs()
-	->role('tablist')
-	;     
+	->role('tablist');     
 
 	?>
 		<div class="tab-content" id="pills-tabContent">
@@ -9080,8 +9079,46 @@ De momento a medio-implementar pero la idea es pasar el array de "links", aplica
 		</div>
 	<?php
 
+Inclusive es posible combinar "panes" con un Dropdown
 
+Ej:
 
+	echo tag('nav')->content([  
+	[
+		'anchor' => 'Uno',
+		'href'   => '#uno'
+	],
+
+	[
+		'anchor' => 'Dos',
+		'href' => '#dos'
+	],
+
+	[
+		'anchor' => 'Tres',
+		'href'   => '#tres'
+	],
+	tag('dropdown')->content(
+		tag('dropdownButton')->id('dropdownMenuButton')->content('Dropdown button') .    
+		tag('dropdownMenu')->ariaLabel('dropdownMenuButton')->content(
+			tag('dropdownItem')->href('#')->anchor('Action 1') .
+			tag('dropdownItem')->href('#')->anchor('Another action') .
+			tag('dropdownDivider') .
+			tag('dropdownItem')->href('#')->anchor('Something else here')
+		)
+	),
+	])->class('mb-3')
+	->justifyRight()
+	->tabs()
+	->role('tablist');     
+
+	?>
+		<div class="tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="uno" role="tabpanel" aria-labelledby="uno">Textoooo</div>
+			<div class="tab-pane fade" id="dos" role="tabpanel" aria-labelledby="dos">otro texto</div>
+			<div class="tab-pane fade" id="tres" role="tabpanel" aria-labelledby="tres">y otro más</div>
+		</div>
+	<?php
 
 
 Notas Dev:

@@ -148,6 +148,7 @@ class Html
         "nav"             => "nav",
         "nav-item"        => "nav-item",
         "nav-link"        => "nav-link",
+        
 
         /* Nav End   */
 
@@ -313,7 +314,8 @@ class Html
         $_att = [];
         foreach ($atts as $att => $val){
             if (is_array($val)){
-                throw new \InvalidArgumentException(json_encode($atts));
+                continue;
+                //throw new \InvalidArgumentException(json_encode($atts));
             }
 
             $_att[] = "$att=\"$val\"";
@@ -337,7 +339,7 @@ class Html
             $plain_attr[] = 'readonly';
             unset($args['readonly']);
         }
-
+      
         foreach ($args as $k => $v){
             // ajuste para data-* props
             if (strpos($k, '_') !== false){
@@ -1025,11 +1027,10 @@ class Html
     }
 
     /*
-        https://github.com/vanilla/htmlawed
+        No usar ni htmLawed ni tidy !!!
     */
     static function beautifier(string $html){  
-        $config = ['tidy'=>1];
-        return htmLawed($html, $config);;
+        return $html;
     }
 
 }
