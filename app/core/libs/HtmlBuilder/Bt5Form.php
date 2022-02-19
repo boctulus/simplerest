@@ -3,6 +3,7 @@
 namespace simplerest\core\libs\HtmlBuilder;
 
 use phpDocumentor\Reflection\Types\Null_;
+use PhpParser\Node\Expr\Cast\String_;
 use simplerest\core\libs\HtmlBuilder\Form;
 
 class Bt5Form extends Form
@@ -62,22 +63,17 @@ class Bt5Form extends Form
             static::addClass('nav-justified', $attributes['class']);
         } 
 
-        $type = 'nav';
-
-        if (isset($args['as'])){
-            $type = $args['as'];
-        } elseif (isset($attributes['as'])){
-            isset($attributes['as']);
-        }
-
+        $type  = $args['type'] ?? $attributes['type'] ?? 'nav';
+        $panes = $args['panes'] ?? $attributes['panes'] ?? null;
 
         // Role ("tablist", etc)
-        if (isset($args['role'])){
-            $attributes['role'] = $args['role'];
-        }
+        $role  = $args['role'] ?? $attributes['role'] ?? null;
 
-        $role = $attributes['role'] ?? null;
+        // if ($panes != null){
+        //     d($panes);
+        // }    
 
+        $pane_list = [];
         if (is_array($content) && count($content) >0){
             foreach ($content as $ix => $e){
                 if (is_array($e) && isset($e['anchor']))
@@ -103,13 +99,43 @@ class Bt5Form extends Form
                             $content[$ix]->attributes(['data-bs-toggle' => "pill"]);
                         } else {
                             throw new \Exception("Tablist require tabs or pills");
-                        }                        
+                        }    
+                        
+                        if (!empty($panes)){                            
+                            $att = [
+                                'role' => "tabpanel"
+                            ];
+    
+                            if (isset($e['id'])){
+                                $att['aria-labelledby'] = $e['id'];
+                            }
+    
+                            $att['class'] = '';
+
+                            if ($ix == 0){
+                                $att['class'] .= 'show active ';
+                            }
+
+                            if (substr($href, 0, 1) != '#'){
+                                throw new \Exception("Href '$href' should start with #");
+                            }
+
+                            $att['id'] = substr($href, 1);
+
+                            $tb = static::tabPane($panes[$ix], $att);    
+                            $pane_list[] = $tb;
+                        }
                     }
                 }
             }
         }
 
-        return static::group($content, $type, $attributes, ...$args);
+        $append = '';
+        if (!empty($pane_list)){
+            $append = static::tabContent($pane_list);
+        }
+
+        return static::group($content, $type, $attributes, ...$args) . $append;
     }
     
     static function navItem(string $content, Array $attributes = [], ...$args){
@@ -148,6 +174,11 @@ class Bt5Form extends Form
 
         return static::link($anchor, $href , $attributes, ...$args);
     }  
+
+    static function tabPane(string $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
 
     /* Nav    */
 
