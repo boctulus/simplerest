@@ -1,14 +1,23 @@
 # TODO
 
-- Dejar de usar utf8_general_ci y usar 
+- Crear mecanismo "sandbox" para funciones y métodos que no deban incluirse en los commits:
 
-  utf8mb4_unicode_ci (usada en Laravel 8)
-o
-  utf8mb4_0900_ai_ci
+  . Usar una anotación sobre la función como @sandboxed
 
-Leer:
+  . Parsear cada archivo .php antes de hacer un "git commit" y si tiene el @sandboxed => copiar el archivo a la carpeta /sandbox y a posteriori remover la función. Verificar la remoción.
 
-https://stackoverflow.com/questions/54885178/whats-the-difference-between-utf8-unicode-ci-and-utf8mb4-0900-ai-ci
+  . Commit y push
+
+  . Copiar de vuelta el archivo sanboxeado a su ubicación original aún en caso de fallo del commit o push.
+
+
+- Crear "paquetes" privados de librerias.
+
+https://medium.com/@mazraara/create-a-composer-package-and-publish-3683596dec45
+https://barryvanveen.nl/articles/55-installing-a-private-package-with-composer
+
+https://dudi.dev/create-composer-php-package
+https://blog.jgrossi.com/2013/creating-your-first-composer-packagist-package/
 
 
 [ Front ]
@@ -109,6 +118,26 @@ Se debe generar un .js similar -conseguir la versión más actualizada- a:
 - Permitir el uso auto-validaciones en Form Helper.
 
 ----
+
+- Preguntar humildemente qué problema resuelven con
+
+  DB::execSQL()
+
+<-- es una versión de DB::select() sin binding. Más eficiente en algunos casos?
+
+
+- Dejar de usar utf8_general_ci y usar 
+
+  utf8mb4_unicode_ci (usada en Laravel 8)
+o
+  utf8mb4_0900_ai_ci
+
+Leer:
+
+https://stackoverflow.com/questions/54885178/whats-the-difference-between-utf8-unicode-ci-and-utf8mb4-0900-ai-ci
+
+---
+
 
 - Implementar Facades
 

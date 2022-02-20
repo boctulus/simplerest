@@ -20,8 +20,28 @@ class Html
         'warning',
         'info',
         'light',
-        'dark'
+        'dark',
+        'body',
+        'muted',
+        'white',
+        'black-50',
+        'white-50'
     ];
+
+    static protected $bg_colors = [
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'warning',
+        'info',
+        'light',
+        'dark',
+        'body',
+        'white',
+        'transparent'
+    ];
+
     static protected $classes = [
         "inputText"      => "form-control",
         "number"         => "form-control",
@@ -155,6 +175,14 @@ class Html
 
         /* Nav & Navbars End   */
 
+        /* Offcanvas   */
+
+        "offcanvas" => "offcanvas offcanvas-start",
+        "offcanvasHeader" => "offcanvas-header",
+        "offcanvasTitle" => "offcanvas-title",
+        "offcanvasBody"  => "offcanvas-body",
+        "offcanvasCloseButton" => "btn-close text-reset",
+        
 
         /*
             Utilities

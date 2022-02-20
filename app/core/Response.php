@@ -176,8 +176,8 @@ class Response
     }
 
     // send as JSON
-    function sendJson($data, int $http_code = NULL){
-        $http_code = $http_code != NULL ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
+    function sendJson($data, int $http_code = null, ?string $error_msg = null){
+        $http_code = $http_code != null ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
         
         self::$to_be_encoded = true; 
 
@@ -188,7 +188,7 @@ class Response
         $res = [ 
             'data' => $data, 
             'status_code' => $http_code,
-            'error' => []
+            'error' => $error_msg ?? ''
         ];
 
         static::$http_code = $http_code; //
@@ -197,6 +197,7 @@ class Response
 
         return static::$instance; 
     }
+
 
    
     /**
