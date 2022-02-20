@@ -177,12 +177,12 @@ class Html
 
         /* Offcanvas   */
 
-        "offcanvas" => "offcanvas offcanvas-start",
+        "offcanvas" => "offcanvas",
         "offcanvasHeader" => "offcanvas-header",
         "offcanvasTitle" => "offcanvas-title",
         "offcanvasBody"  => "offcanvas-body",
         "offcanvasCloseButton" => "btn-close text-reset",
-        
+
 
         /*
             Utilities
