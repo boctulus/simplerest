@@ -85,7 +85,32 @@ https://github.com/florianv/swap/blob/master/doc/readme.md
     Más
     https://wpshout.com/know-wordpress-transients-api/
 
-- Usar CDN <en prod>
+- Usar CDN <en prod> y de no ser posible,... zipearlas con Nginx
+
+    server {
+
+    # file truncated
+        
+        # gzip compression settings
+        gzip on;
+        gzip_comp_level 5;
+        gzip_min_length 256;
+        gzip_proxied any;
+        gzip_vary on;
+
+    # browser cache control
+    location ~* \.(ico|css|js|gif|jpeg|jpg|png|woff|ttf|otf|svg|woff2|eot)$ {
+            expires 1d;
+            access_log off;
+            add_header Pragma public;
+            add_header Cache-Control "public, max-age=86400";
+        }
+    }
+
+    Más
+
+    https://geekflare.com/laravel-optimization/
+
 
 - Cargar solo los helpers que realmente son necesarios <en prod>
 
@@ -104,6 +129,8 @@ https://github.com/florianv/swap/blob/master/doc/readme.md
     "A common mistake sometimes made by Laravel developers is to install all dependencies in production"
 
 - Composer Optimize Autoload
+
+    composer install --optimize-autoloader --no-dev
 
     composer dump autoload -o
 
@@ -129,6 +156,7 @@ De todas formas, lo más eficiente sería levantar un contenedor pre-armado para
 
 Leer !!!!
 
+https://geekflare.com/laravel-optimization/
 https://www.cloudways.com/blog/laravel-performance-optimization/
 https://www.bacancytechnology.com/blog/laravel-app-performance-optimization-tips
 https://laravel-news.com/performance-checklist
