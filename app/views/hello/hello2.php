@@ -191,30 +191,29 @@ Bt5Form::setIdAsName();
             tag('offcanvasOpenButton')->anchor('Button with data-bs-target')->href('#offcanvasExample')
         ])->class('vstack gap-2 col-md-5 mx-auto my-3');
 
-        ?>
-            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
-                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <div>
-                    Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
-                    </div>
-                    <div class="dropdown mt-3">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-                        Dropdown button
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                    </div>
-                </div>
-            </div>
+        echo tag('offcanvas')->id("offcanvasExample")->content([
+            tag('offcanvasHeader')->content([
+                tag('offcanvasTitle')->text('Offcanvas'),
+                tag('offcanvasCloseButton')
+            ]),
 
-        <?php
+            tag('offcanvasBody')->content([
+                'Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.',
+
+                tag('dropdown')->content(
+                    tag('dropdownButton')->id('dropdownMenuButtonX')->content('Dropdown button')
+                    ->success() .
+        
+                    tag('dropdownMenu')->ariaLabel('dropdownMenuButtonX')->content(
+                        tag('dropdownItem')->href('#')->anchor('Action') .
+                        tag('dropdownItem')->href('#')->anchor('Another action') .
+                        tag('dropdownDivider') .
+                        tag('dropdownItem')->href('#')->anchor('Something else here')
+                    )
+                )->class('mt-3')
+
+            ])
+        ]);
 
 
         // Breadcrumb
