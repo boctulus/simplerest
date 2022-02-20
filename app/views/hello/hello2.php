@@ -209,7 +209,10 @@ Bt5Form::setIdAsName();
                         tag('dropdownItem')->href('#')->anchor('Something else here')
                     )
                 )->class('mt-3')
-        ]);
+        ])
+        ->pos('right')
+        ->backdrop()
+        ->scroll();
 
 
         // Breadcrumb

@@ -9481,6 +9481,56 @@ Ej:
             )
         ]);
 
+Placement
+
+There’s no default placement for offcanvas components, so you must add one of the modifier classes below;
+
+.offcanvas-start 	places offcanvas on the left of the viewport (shown above)
+.offcanvas-end 		places offcanvas on the right of the viewport
+.offcanvas-top 		places offcanvas on the top of the viewport
+.offcanvas-bottom 	places offcanvas on the bottom of the viewport
+
+En si es aplicar pos() con {'left', 'right', 'top' o 'bottom'} a offcanvas.
+
+Ej:
+
+	echo tag('div')->content([
+		tag('offcanvasLink')->anchor('Link with href')->href('#offcanvasExample')->class('btn btn-primary'),
+	])->class('vstack gap-2 col-md-5 mx-auto my-3');
+
+	echo tag('offcanvas')->id("offcanvasExample")->title('Offcanvas')->body([
+		// The body
+		)
+	])->bottom();
+
+Scroll
+
+Para habilitar el scroll del resto de la página se debe setear el atributo
+
+	data-bs-scroll="true"
+
+
+Oscurecer el fondo
+
+Para oscurecer el resto de la página (que se verá como en segundo plano) es seteando el atributo
+
+	data-bs-backdrop="true" 
+
+que se puede usar en conjunto con data-bs-scroll="true"
+
+
+Se implementaron backdrop() y scroll() para oscurecer el fondo y habilitar scroll respectivamente.
+
+Ej:
+
+		echo tag('offcanvas')->id("offcanvasExample")->title('Offcanvas')->body(
+            'Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.'
+        ])
+        ->pos('left')
+        ->backdrop()
+        ->scroll();
+
+Nota: recordar que es necesario un enlace o botón o algún evento para visibilizar el offcanvas.
 
 
 Notas Dev:
