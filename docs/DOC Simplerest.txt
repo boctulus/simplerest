@@ -9412,9 +9412,9 @@ El panel se puede desocultar con un offcanvasLink o bien un offcanvasOpenButton 
 
 La estructura básica es:
 
-	<button | link>
+	<button | link href="#id">
 
-	<offcanvas>
+	<offcanvas id="">
 		<offcanvasHeader>
 			<offcanvasTitle>
 			<offcanvasCloseButton>
@@ -9451,10 +9451,35 @@ Ej:
 					tag('dropdownDivider') .
 					tag('dropdownItem')->href('#')->anchor('Something else here')
 				)
-			)->class('mt-3')
+			)
 
 		])
 	]);
+
+
+Se puede simplificar haciendo que <offcanvas> aceptara el Title y el Body (como content) 
+
+	<offcanvas id="">
+		<offcanvasHeader>
+			<offcanvasTitle>
+			<offcanvasCloseButton>
+
+		<offcanvasBody>
+
+A ...
+
+	<offcanvas id="" title="" body="">
+
+Ej:
+
+		echo tag('div')->content([
+            tag('offcanvasLink')->anchor('Link with href')->href('#offcanvasExample')->class('btn btn-primary'),
+        ])->class('vstack gap-2 col-md-5 mx-auto my-3');
+
+        echo tag('offcanvas')->id("offcanvasExample")->title('Offcanvas')->body([
+            // The body
+            )
+        ]);
 
 
 

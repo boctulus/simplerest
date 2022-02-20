@@ -182,10 +182,34 @@ class Bt5Form extends Form
 
     /* Offcanvas    */
 
-    static function offcanvas(mixed $content, Array $attributes = [], ...$args){
+    static function offcanvas(mixed $content = null, ?string $title = null, mixed $body = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $attributes['tabindex'] = "-1"; 
+
+        if (empty($content)){
+            $body  = $body  ?? $args['body']  ?? $attributes['body']  ?? null;
+            $title = $title ?? $args['title'] ?? $attributes['title'] ?? null;
+
+            if ($title === null){
+                throw new \Exception("Title is required");
+            }
+
+            if ($body === null){
+                throw new \Exception("Body is required");
+            }
+
+            if (is_array($body)){
+                $body = implode('', $body);
+            }
+
+            $header = tag('offcanvasHeader')->content([
+                tag('offcanvasTitle')->text($title),
+                tag('offcanvasCloseButton')
+            ]);
+
+            $content = $header . tag('offcanvasBody')->content($body);
+        }
 
         return static::div($content, $attributes, ...$args);
     }
