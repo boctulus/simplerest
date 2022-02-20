@@ -4,6 +4,7 @@ namespace simplerest\core\libs\HtmlBuilder;
 
 use phpDocumentor\Reflection\Types\Null_;
 use PhpParser\Node\Expr\Cast\String_;
+use Prophecy\Exception\Call\UnexpectedCallException;
 use simplerest\core\libs\HtmlBuilder\Form;
 
 class Bt5Form extends Form
@@ -184,6 +185,34 @@ class Bt5Form extends Form
 
     static function offcanvas(mixed $content = null, ?string $title = null, mixed $body = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        $pos    = $args['pos'] ?? $attributes['pos'] ?? 'left';
+        $scroll = $args['scroll'] ?? $attributes['scroll'] ?? null;
+        $backdrop = $args['backdrop'] ?? $attributes['backdrop'] ?? null;
+
+        if ($scroll !== null){
+            $attributes['data-bs-scroll']   = "true";
+            unset($args['scroll']);
+        }
+
+        if ($backdrop !== null){
+            $attributes['data-bs-backdrop'] = "true";
+            unset($args['backdrop']);
+        }
+ 
+        $pos_classes = [
+            'left'   => 'offcanvas-start',
+            'right'  => 'offcanvas-end',
+            'top'    => 'offcanvas-top',
+            'bottom' => 'offcanvas-bottom'
+        ];
+
+        if (!array_key_exists($pos, $pos_classes)){
+            throw new \Exception("Unknown positioning class '$pos'");
+        }
+
+        static::addClass($pos_classes[$pos], $attributes['class']);
+        unset($args['pos']);
 
         $attributes['tabindex'] = "-1"; 
 
