@@ -9404,6 +9404,59 @@ Navbars can use .navbar-toggler, .navbar-collapse, and .navbar-expand{-sm|-md|-l
 For navbars that never collapse, add the .navbar-expand class on the navbar. For navbars that always collapse, don’t add any .navbar-expand class.
 
 
+# Offcanvas
+
+Son paneles laterales ocultos que se desocultan ante un evento y presentan generalmente opciones.
+
+El panel se puede desocultar con un offcanvasLink o bien un offcanvasOpenButton y se cierra con un offcanvasCloseButton.
+
+La estructura básica es:
+
+	<button | link>
+
+	<offcanvas>
+		<offcanvasHeader>
+			<offcanvasTitle>
+			<offcanvasCloseButton>
+
+		<offcanvasBody>
+
+Ej:
+
+	echo tag('div')->content([
+		tag('offcanvasLink')->anchor('Link with href')->href('#offcanvasExample')->class('btn btn-primary'),
+		tag('offcanvasOpenButton')->anchor('Button with data-bs-target')->href('#offcanvasExample')
+	])->class('vstack gap-2 col-md-5 mx-auto my-3');
+
+	echo tag('offcanvas')->id("offcanvasExample")->content([
+		tag('offcanvasHeader')->content([
+			tag('offcanvasTitle')->text('Offcanvas'),
+			tag('offcanvasCloseButton')
+		]),
+
+		tag('offcanvasBody')->content([
+			/*
+				Body example
+			*/
+			
+			'Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.',
+
+			tag('dropdown')->content(
+				tag('dropdownButton')->id('dropdownMenuButtonX')->content('Dropdown button')
+				->success() .
+	
+				tag('dropdownMenu')->ariaLabel('dropdownMenuButtonX')->content(
+					tag('dropdownItem')->href('#')->anchor('Action') .
+					tag('dropdownItem')->href('#')->anchor('Another action') .
+					tag('dropdownDivider') .
+					tag('dropdownItem')->href('#')->anchor('Something else here')
+				)
+			)->class('mt-3')
+
+		])
+	]);
+
+
 
 Notas Dev:
 =========
