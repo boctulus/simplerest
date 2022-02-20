@@ -180,6 +180,60 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
+    /* Offcanvas    */
+
+    static function offcanvas(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        $attributes['tabindex'] = "-1"; 
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function offcanvasHeader(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function offcanvasBody(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function offcanvasTitle(string $text, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::h5($text, $attributes, ...$args);
+    }
+
+    static function offcanvasLink(string $anchor, string $href = '#', ?string $as = null,  $attributes = [], ...$args){
+        $attributes['data-bs-toggle'] = "offcanvas";
+
+        $type = $as ?? $args['as'] ?? $attributes['as'] ?? 'link';
+
+        if ($type == 'button'){
+            $attributes['data-bs-target'] = $href;
+            $attributes['role'] = "button";
+            
+            return static::button($anchor, $attributes, ...$args);
+        }
+
+        return static::link($anchor, $href , $attributes, ...$args);
+    }  
+
+    static function offcanvasOpenButton(string $anchor, string $href = '#', $attributes = [], ...$args){
+        return static::offcanvasLink($anchor, $href, 'button', $attributes, ...$args);
+    }
+    
+    static function offcanvasCloseButton(mixed $content = null, Array $attributes = [], ...$args){  
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);      
+        
+        $attributes['data-bs-dismiss'] = "offcanvas";
+        $attributes['aria-label']      = "Close";
+
+        return static::basicButton($content, $attributes, ...$args);
+    }
+
+
     /* Nav    */
 
     static function container(mixed $content, Array $attributes = [], ...$args){

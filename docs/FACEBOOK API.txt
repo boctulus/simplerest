@@ -1,0 +1,10 @@
+FACEBOOK API
+============
+
+Oficialmente no se dio soporte para PHP ^8.0 así que hay varios forks => toca revisar funcionamiento.
+
+https://github.com/thephpleague/oauth2-facebook
+
+y
+
+https://github.com/janu-software/facebook-php-sdk

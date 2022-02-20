@@ -3,6 +3,11 @@ INTEGRACIONES
 
 Hacer integraciones con:
 
+# Alamcenamiento de archivos en la nube
+
+- Amazon S3 - Cloud Object Storage (buckets)
+
+
 # Medios de pago
 
 - Stripe y/o
@@ -22,8 +27,10 @@ Hacer integraciones con:
 
 # Emails / Marketing
 
+- Amazon Simple Email Service (SES)
 - Klaviyo
 - Mailerlite
+
 
 # Marketing
 
