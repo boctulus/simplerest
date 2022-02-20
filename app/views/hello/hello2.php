@@ -191,13 +191,11 @@ Bt5Form::setIdAsName();
             tag('offcanvasOpenButton')->anchor('Button with data-bs-target')->href('#offcanvasExample')
         ])->class('vstack gap-2 col-md-5 mx-auto my-3');
 
-        echo tag('offcanvas')->id("offcanvasExample")->content([
-            tag('offcanvasHeader')->content([
-                tag('offcanvasTitle')->text('Offcanvas'),
-                tag('offcanvasCloseButton')
-            ]),
+        echo tag('offcanvas')->id("offcanvasExample")->title('Offcanvas')->body([
+                /*
+                    Body example
+                */
 
-            tag('offcanvasBody')->content([
                 'Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.',
 
                 tag('dropdown')->content(
@@ -211,8 +209,6 @@ Bt5Form::setIdAsName();
                         tag('dropdownItem')->href('#')->anchor('Something else here')
                     )
                 )->class('mt-3')
-
-            ])
         ]);
 
 

@@ -10,7 +10,6 @@
 
   . Copiar de vuelta el archivo sanboxeado a su ubicación original aún en caso de fallo del commit o push.
 
-
 - Crear "paquetes" privados de librerias.
 
 https://medium.com/@mazraara/create-a-composer-package-and-publish-3683596dec45
@@ -18,6 +17,14 @@ https://barryvanveen.nl/articles/55-installing-a-private-package-with-composer
 
 https://dudi.dev/create-composer-php-package
 https://blog.jgrossi.com/2013/creating-your-first-composer-packagist-package/
+
+- Crear un router para la línea de comandos ("route console") y así poder prescindir del FrontController
+
+Ej:
+
+  Artisan::command('sql-query', function () {
+    \DB::statement('your query');
+  })->describe('Execute SQL query')
 
 
 [ Front ]
