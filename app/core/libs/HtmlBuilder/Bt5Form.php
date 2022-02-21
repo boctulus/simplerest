@@ -950,19 +950,53 @@ class Bt5Form extends Form
         return static::link($anchor, $href , $attributes, ...$args);
     }
 
-    static function cardText(string $text, $attributes = [], ...$args){
+    static function cardTitle(string $text = '', Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::p($text, $attributes, ...$args);
-    }
 
-    static function cardTitle(string $text, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
+            static::addClass('placeholder-glow', $attributes['class']);
+
+            $text = '<span class="placeholder col-6"></span>';
+
+            unset($args['placeholder']);
+        }
+
         return static::h5($text, $attributes, ...$args);
     }
 
     static function cardSubtitle(string $text, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
+            static::addClass('placeholder-glow', $attributes['class']);
+
+            $text = '<span class="placeholder col-9"></span>';
+
+            unset($args['placeholder']);
+        }
+
         return static::h6($text, $attributes, ...$args);
+    }
+
+    static function cardText(string $text = '', $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
+            static::addClass('placeholder-glow', $attributes['class']);
+
+            // podría depender de la longitud del string, tamaño de la card, etc.
+            $text = '
+                <span class="placeholder col-7"></span>
+                <span class="placeholder col-4"></span>
+                <span class="placeholder col-4"></span>
+                <span class="placeholder col-6"></span>
+                <span class="placeholder col-8"></span>
+            ';
+
+            unset($args['placeholder']);
+        }
+
+        return static::p($text, $attributes, ...$args);
     }
 
     static function cardImg(string $src, Array $attributes = [], ...$args){
