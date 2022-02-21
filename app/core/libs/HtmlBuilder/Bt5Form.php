@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs\HtmlBuilder;
 
+use PDO;
 use phpDocumentor\Reflection\Types\Null_;
 use PhpParser\Node\Expr\Cast\String_;
 use Prophecy\Exception\Call\UnexpectedCallException;
@@ -397,6 +398,129 @@ class Bt5Form extends Form
         
         return static::div($content, $attributes, ...$args);
     }
+
+    /* Paginator   */
+
+    static function paginator(Array $content, Array $attributes = [], ...$args){
+        $attributes['aria-label'] = 'Page naviation';
+
+        $prev = '';
+        $next = '';
+
+        $ul_att = [
+            'class' => 'pagination'
+        ];
+
+        if (array_key_exists('large', $args) || in_array('large', $attributes)){
+            $ul_att['class'] .= ' pagination-lg';
+            unset($args['large']);
+        }
+
+        if (array_key_exists('small', $args) || in_array('large', $attributes)){
+            $ul_att['class'] .= ' pagination-sm';
+            unset($args['small']);
+        }
+
+        if(isset($args['withPrev'])){
+            $e = $args['withPrev'];
+            
+            if (!isset($e['href'])){
+                throw new \Exception("href is required");
+            }
+
+            if (!isset($e['anchor'])){
+                throw new \Exception("anchor is required");
+            }
+
+            $href   = static::shift('href', $e);
+            $anchor = static::shift('anchor', $e);
+            
+            $active = $e['active'] ?? false;
+            
+            if ($active){
+                $att_li = ' active';
+                $inner = "<span class=\"page-link\">$anchor</span";
+            } else {
+                $att_li = '';
+                $inner = static::link(anchor:$anchor, href:$href, attributes:['class' => 'page-link']);
+            }
+
+            $prev = "<li class=\"page-item{$att_li}\">". $inner . '</li>';        
+        }
+
+        if(isset($args['withNext'])){
+            $e = $args['withNext'];
+            
+            if (!isset($e['href'])){
+                throw new \Exception("href is required");
+            }
+
+            if (!isset($e['anchor'])){
+                throw new \Exception("anchor is required");
+            }
+
+            $href   = static::shift('href', $e);
+            $anchor = static::shift('anchor', $e);
+            
+            $active = $e['active'] ?? false;
+            
+            if ($active){
+                $att_li = ' active';
+                $inner = "<span class=\"page-link\">$anchor</span";
+            } else {
+                $att_li = '';
+                $inner = static::link(anchor:$anchor, href:$href, attributes:['class' => 'page-link']);
+            }
+
+            $next = "<li class=\"page-item{$att_li}\">". $inner . '</li>';        
+        }
+
+        $options = [];
+        if (array_key_exists('options', $args)){
+            $options = $args['options'];
+            unset($args['options']);
+        }
+
+        if (count($content) >0){
+            $inc = false;
+            if (array_key_first($content) === 0){
+                $inc = true;
+            }
+
+            foreach ($content as $ix => $e){
+                if (!isset($e['href'])){
+                    throw new \Exception("href is required");
+                }
+
+                $href   = static::shift('href', $e);                
+                $anchor = static::shift('anchor', $e);
+
+                if (empty($anchor)){
+                    $anchor = $inc ? ($ix +1) : $ix;
+                }
+
+                $active = static::shift('active', $e, false);
+
+                if ($active){
+                    $att_li = ' active';
+                    $inner = "<span class=\"page-link\">$anchor</span";
+                } else {
+                    $att_li = '';
+                    $inner = static::link(anchor:$anchor, href:$href, attributes:['class' => 'page-link']);
+                }
+
+                $content[$ix] = "<li class=\"page-item{$att_li}\">". $inner . '</li>';            
+            }
+        }
+
+        
+        $content = array_merge([$prev], $content, [$next]);
+
+        $content = static::ul($content, $ul_att, ...$options);
+
+        return static::group($content, 'nav', $attributes, ...$args);
+    }
+
 
 
     /* List group */
