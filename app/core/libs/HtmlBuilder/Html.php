@@ -383,7 +383,7 @@ class Html
     }
 
     static protected function tag(string $type, ?string $value = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
-    {
+    {   
         if (isset($args['disabled'])){
             $plain_attr[] = 'disabled';
             unset($args['disabled']);
@@ -395,6 +395,12 @@ class Html
         }
       
         foreach ($args as $k => $v){
+            if (!is_array($v) && Strings::startsWith('justify', $v)){
+                static::addClass($v, $attributes['class']);
+                unset($args[$k]);
+                continue;
+            }
+           
             // ajuste para data-* props
             if (strpos($k, '_') !== false){
                 unset($args[$k]);
@@ -443,11 +449,13 @@ class Html
     }
 
     static function group(mixed $content, string $tag = 'div', Array $attributes = [], ...$args){
+        //d($args, 'args1');
+
         if (is_array($content)){
             $content = implode(' ', $content);
         }
 
-        return static::tag($tag, $content, $attributes, ...$args);
+        return static::tag($tag, $content, $attributes, null,...$args);
     }
 
     static function link(string $anchor, ?string $href = null, Array $attributes = [], ...$args){

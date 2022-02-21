@@ -9533,6 +9533,91 @@ Ej:
 Nota: recordar que es necesario un enlace o botón o algún evento para visibilizar el offcanvas.
 
 
+# Pagination
+
+Para crear un paginador es con paginator.
+
+Ej:
+
+	echo tag('paginator')->content([
+		[
+			'href'   => '#?page=1',
+			'active' => true
+		],
+		[
+			'href' => '#?page=2'
+		],
+		[
+			'href' => '#?page=3'
+		]
+	]);
+
+Sizing
+
+Se pueden aplicar small() o larg() a paginator.
+
+	echo tag('paginator')->content([
+		[
+			'href'   => '#?page=1',
+			'active' => true
+		],
+		[
+			'href' => '#?page=2'
+		],
+		[
+			'href' => '#?page=3'
+		]
+	])->class('mt-5')->large();
+
+Alignment
+
+En si el paginador es una "lista" desordenada (ul) y se pueden aplicar flexbox utilities sobre el <ul class="pagination"> mediante options() 
+
+Ej:
+
+	echo tag('paginator')->content([
+		[
+			'href'   => '#?page=1',
+			'active' => true
+		],
+		[
+			'href' => '#?page=2'
+		],
+		[
+			'href' => '#?page=3'
+		]
+	])->class('mt-5')->options(['justify-content-center']);
+
+
+Next & Previous
+
+Para renderizar los botones de atrás y adelante es aplicando withPrev() y withNext()
+
+Ej:
+
+	echo tag('paginator')->content([
+		[
+			'href'   => '#?page=1',
+			'active' => true
+		],
+		[
+			'href' => '#?page=2'
+		],
+		[
+			'href' => '#?page=3'
+		]
+	])
+	->withPrev([
+		'href'   => '#?page=1',
+		'anchor' => 'Previous',
+		'disabled' => true
+	])
+	->withNext([
+		'href'   => '#?page=4',
+		'anchor' => 'Next'
+	]);
+
+
 Notas Dev:
 =========
 
