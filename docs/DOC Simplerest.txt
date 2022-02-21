@@ -9773,6 +9773,30 @@ Ej:
 		->placeholder()
 	]);
 
+Color
+
+Se pueden aplicar los colores de background bg-*
+
+Ej:
+
+	echo tag('card')->style('width: 18rem;')->class('my-3')
+	->content(
+		tag('img')->src(assets('img/mail.png'))->class('card-img-top')
+	)
+	->body([            
+		tag('cardTitle')->text('Some title')
+		->placeholder()->color('bg-danger'),
+		
+		tag('cardSubtitle')->text('Some sub-title')
+		->placeholder()->color('bg-warning'),
+
+		tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.')
+		->placeholder()->color('bg-success'),
+		
+		tag('inputButton')->value('Go somewhere')
+		->placeholder()
+	]);
+
 
 Notas Dev:
 =========
