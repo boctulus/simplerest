@@ -902,28 +902,40 @@ class Bt5Form extends Form
     static function card(mixed $content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
-        if (empty($content)){           
-            if (array_key_exists('header', $args)){
-                $header = static::cardHeader($args['header']);
-                unset($args['header']);
-            }
+                
+        if (array_key_exists('header', $args)){
+            $header = static::cardHeader($args['header']);
+            unset($args['header']);
+        }
 
-            if (array_key_exists('body', $args)){
-                $body = static::cardBody($args['body']);
-                unset($args['body']);
-            }
+        if (array_key_exists('body', $args)){
+            $body = static::cardBody($args['body']);
+            unset($args['body']);
+        }
 
-            if (array_key_exists('footer', $args)){
-                $footer = static::cardFooter($args['footer']);
-                unset($args['footer']);
-            }
+        if (array_key_exists('footer', $args)){
+            $footer = static::cardFooter($args['footer']);
+            unset($args['footer']);
+        }
 
+        if (empty($content)){       
             $content = [
                     $header ?? '',
                     $body ?? '',
                     $footer ?? ''
             ];
-        }        
+        } else {
+            if (is_array($content)){
+                $content = implode('',$content);
+            }    
+
+            $content = [
+                $header ?? '',
+                $content,
+                $body ?? '',
+                $footer ?? ''
+            ];
+        }     
         
         return static::div($content, $attributes, ...$args);
     }
