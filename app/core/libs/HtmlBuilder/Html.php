@@ -29,17 +29,17 @@ class Html
     ];
 
     static protected $bg_colors = [
-        'primary',
-        'secondary',
-        'success',
-        'danger',
-        'warning',
-        'info',
-        'light',
-        'dark',
-        'body',
-        'white',
-        'transparent'
+        'bg-primary',
+        'bg-secondary',
+        'bg-success',
+        'bg-danger',
+        'bg-warning',
+        'bg-info',
+        'bg-light',
+        'bg-dark',
+        'bg-body',
+        'bg-white',
+        'bg-transparent'
     ];
 
     static protected $classes = [
