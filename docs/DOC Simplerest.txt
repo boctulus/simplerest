@@ -8513,6 +8513,27 @@ Sintaxis simplificada
 	->class('mb-4');
 
 
+Cards con imágenes
+
+Cuando hay una imágen dentro de una card es imprescindible setear el ancho de la tarjeta para evitar que crezca hasta el 100% del width del padre. Por ejemplo con style('width: 18rem;')
+
+En la documentación oficial de Boostrap se agrega la clase de css 'card-img-top' sobre la imágen.
+
+Notar que la imágen se coloca en el content() y no en el body.
+
+Ej:
+
+	echo tag('card')->style('width: 18rem;')->class('my-3')
+	->content(
+		tag('img')->src(assets('img/warning.svg.png'))->class('card-img-top')
+	)
+	->body([            
+		tag('cardTitle')->text('Some title'),
+		tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+		tag('inputButton')->value('Go somewhere')
+	]);
+
+
 Notas:
 
 Debería ser posible capturar la salida un "componente" a fin de que sea utilizado como template para un "widget". Notar el uso de elementos placeholders para templates {}
@@ -9722,6 +9743,13 @@ Podría incluirse más lógica como que:
 - Si hay una sola página que se deshabiliten tanto Prev como Next.
 
 - Que si se recibe como parámetro del número total de páginas y está activa la última, entonces se desabilite Next.
+
+
+# Placeholders
+
+Use loading placeholders for your components or pages to indicate something may still be loading.
+
+
 
 
 Notas Dev:
