@@ -786,6 +786,12 @@ class Html
         if (!$color_applied){
             static::addColor("btn-primary", $attributes['class']); 
         }
+
+
+        if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
+            static::addClass('disabled placeholder w-50', $attributes['class']);
+            $value = '';
+        }
         
         return static::input($type, $value, $attributes, ...$args);
     } 
