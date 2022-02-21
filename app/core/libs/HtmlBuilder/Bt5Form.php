@@ -2,11 +2,8 @@
 
 namespace simplerest\core\libs\HtmlBuilder;
 
-use PDO;
-use phpDocumentor\Reflection\Types\Null_;
-use PhpParser\Node\Expr\Cast\String_;
-use Prophecy\Exception\Call\UnexpectedCallException;
 use simplerest\core\libs\HtmlBuilder\Form;
+use simplerest\core\libs\Strings;
 
 class Bt5Form extends Form
 {
@@ -953,10 +950,17 @@ class Bt5Form extends Form
     static function cardTitle(string $text = '', Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+
+        $bg_color = '';
+        if ($color !== null && Strings::startsWith('bg-', $color) && in_array($color, static::$bg_colors)){
+            $bg_color = ' '. $color;
+        }
+
         if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
             static::addClass('placeholder-glow', $attributes['class']);
 
-            $text = '<span class="placeholder col-6"></span>';
+            $text = "<span class=\"placeholder col-6{$bg_color}\"></span>";
 
             unset($args['placeholder']);
         }
@@ -967,10 +971,17 @@ class Bt5Form extends Form
     static function cardSubtitle(string $text, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+
+        $bg_color = '';
+        if ($color !== null && Strings::startsWith('bg-', $color) && in_array($color, static::$bg_colors)){
+            $bg_color = ' '. $color;
+        }
+        
         if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
             static::addClass('placeholder-glow', $attributes['class']);
 
-            $text = '<span class="placeholder col-9"></span>';
+            $text = "<span class=\"placeholder col-9{$bg_color}\"></span>";
 
             unset($args['placeholder']);
         }
@@ -981,17 +992,24 @@ class Bt5Form extends Form
     static function cardText(string $text = '', $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+
+        $bg_color = '';
+        if ($color !== null && Strings::startsWith('bg-', $color) && in_array($color, static::$bg_colors)){
+            $bg_color = ' '. $color;
+        }
+        
         if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
             static::addClass('placeholder-glow', $attributes['class']);
 
             // podría depender de la longitud del string, tamaño de la card, etc.
-            $text = '
-                <span class="placeholder col-7"></span>
-                <span class="placeholder col-4"></span>
-                <span class="placeholder col-4"></span>
-                <span class="placeholder col-6"></span>
-                <span class="placeholder col-8"></span>
-            ';
+            $text = "
+                <span class=\"placeholder col-7{$bg_color}\"></span>
+                <span class=\"placeholder col-4{$bg_color}\"></span>
+                <span class=\"placeholder col-4{$bg_color}\"></span>
+                <span class=\"placeholder col-6{$bg_color}\"></span>
+                <span class=\"placeholder col-8{$bg_color}\"></span>
+            ";
 
             unset($args['placeholder']);
         }

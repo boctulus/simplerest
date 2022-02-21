@@ -373,13 +373,13 @@ Bt5Form::setIdAsName();
         )
         ->body([            
             tag('cardTitle')->text('Some title')
-            ->placeholder(),
+            ->placeholder()->color('bg-danger'),
             
-            // tag('cardSubtitle')->text('Some sub-title')
-            // ->placeholder(),
+            tag('cardSubtitle')->text('Some sub-title')
+            ->placeholder()->color('bg-warning'),
 
             tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.')
-            ->placeholder(),
+            ->placeholder()->color('bg-success'),
             
             tag('inputButton')->value('Go somewhere')
             ->placeholder()
