@@ -159,8 +159,6 @@ class Bt5Form extends Form
          }
 
         if (isset($args['disabled'])){
-           static::addClass('disabled', $attributes['class']);
-
            $attributes['tabindex'] = "-1";
            $attributes['aria-disabled'] = "true";
         }
@@ -495,21 +493,25 @@ class Bt5Form extends Form
                 $href   = static::shift('href', $e);                
                 $anchor = static::shift('anchor', $e);
 
+                $att_li = [
+                    'class' => 'page-item'
+                ];
+
                 if (empty($anchor)){
                     $anchor = $inc ? ($ix +1) : $ix;
                 }
 
-                $active = static::shift('active', $e, false);
+                $active = static::shift('active', $e);
 
-                if ($active){
-                    $att_li = ' active';
+                if ($active === true){
+                    $att_li['class'] .= ' active';
                     $inner = "<span class=\"page-link\">$anchor</span";
                 } else {
-                    $att_li = '';
+
                     $inner = static::link(anchor:$anchor, href:$href, attributes:['class' => 'page-link']);
                 }
-
-                $content[$ix] = "<li class=\"page-item{$att_li}\">". $inner . '</li>';            
+ 
+                $content[$ix] = static::li($inner, $att_li, ...$e);            
             }
         }
 

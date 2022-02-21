@@ -67,6 +67,9 @@ Bt5Form::setIdAsName();
         //->dark()
         ;  
 
+        /*
+            Previous | 1 | 2 | 3 | .. | 10 | Next
+        */
         echo tag('paginator')->content([
             [
                 'href'   => '#?page=1',
@@ -92,12 +95,12 @@ Bt5Form::setIdAsName();
         ->options(['justify-content-center'])
         ->withPrev([
             'href'   => '#?page=1',
-            'anchor' => 'Previous',
+            'anchor' => '&laquo;',
             'disabled' => true
         ])
         ->withNext([
             'href'   => '#?page=11',
-            'anchor' => 'Next'
+            'anchor' => '&raquo;'
         ])
         ;
 
@@ -494,6 +497,8 @@ Bt5Form::setIdAsName();
             ],
             class: "input-group mb-3"
         );
+
+        echo tag('inputText')->name('iq')->placeholder("IQ")->disabled();
 
         //
 

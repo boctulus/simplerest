@@ -386,6 +386,7 @@ class Html
     {   
         if (isset($args['disabled'])){
             $plain_attr[] = 'disabled';
+            static::addClass('disabled', $attributes['class']);
             unset($args['disabled']);
         }
 
@@ -459,6 +460,8 @@ class Html
     }
 
     static function link(string $anchor, ?string $href = null, Array $attributes = [], ...$args){
+        //d($attributes);
+
         if ($href !== null){
             $attributes['href'] = $href;
         }
@@ -768,10 +771,6 @@ class Html
             static::addClass('btn-lg', $attributes['class']);
         } else if (in_array('small', $kargs)){
             static::addClass('btn-sm', $attributes['class']);
-        }
-
-        if (in_array('disabled', $kargs)){
-            static::addClass('disabled', $attributes['class']);
         }
 
         $color_applied = false;
