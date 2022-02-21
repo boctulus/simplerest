@@ -9686,7 +9686,35 @@ El truco está en:
 
 Se especifica un anchor '..' donde normalmente va el número de página en automático y se agrega en la secuencia la página 10 que sería la #4 ya que es un array de 5 elementos comenzando por 0 pero se fuerza se vea como #10 agregándo manualmente el índice como 9.
 
+Lógica incluida
 
+Si la página activa es la primera, entonces se auto-desabilita el botón prev y no es necesario pasar 'disabled' => true
+
+Ej:
+
+	echo tag('paginator')->content([
+		[
+			'href'   => '#?page=1',
+			'active' => true              
+		],
+		[
+			'href' => '#?page=2'                
+		],
+		[
+			'href' => '#?page=3'
+		]
+	])
+	->class('mt-5')
+	->large()
+	->options(['justify-content-center'])
+	->withPrev([
+		'href'   => '#?page=1',
+		'anchor' => 'Previous'
+	])
+	->withNext([
+		'href'   => '#?page=4',
+		'anchor' => 'Next'
+	]);
 
 
 Notas Dev:
