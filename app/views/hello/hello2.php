@@ -369,7 +369,25 @@ Bt5Form::setIdAsName();
 
         echo tag('card')->style('width: 18rem;')->class('my-3')
         ->content(
-            tag('img')->src(assets('img/warning.svg.png'))->class('card-img-top')
+            tag('img')->src(assets('img/mail.png'))->class('card-img-top')
+        )
+        ->body([            
+            tag('cardTitle')->text('Some title')
+            ->placeholder(),
+            
+            // tag('cardSubtitle')->text('Some sub-title')
+            // ->placeholder(),
+
+            tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.')
+            ->placeholder(),
+            
+            tag('inputButton')->value('Go somewhere')
+            ->placeholder()
+        ]);
+
+        echo tag('card')->style('width: 18rem;')->class('my-3')
+        ->content(
+            tag('img')->src(assets('img/mail.png'))->class('card-img-top')
         )
         ->body([            
             tag('cardTitle')->text('Some title'),

@@ -8534,6 +8534,11 @@ Ej:
 	]);
 
 
+Sizing
+
+	Se pueden aplicar distintas utilidades como w-75, w-50, etc sobre la card o usando style(), ej: style('width: 18rem;')
+
+
 Notas:
 
 Debería ser posible capturar la salida un "componente" a fin de que sea utilizado como template para un "widget". Notar el uso de elementos placeholders para templates {}
@@ -9749,7 +9754,24 @@ Podría incluirse más lógica como que:
 
 Use loading placeholders for your components or pages to indicate something may still be loading.
 
+En particular se implemetó para cardTitle, cardSubtitle, cardText e inputButton.
 
+Ej:
+
+	echo tag('card')->style('width: 18rem;')->class('my-3')
+	->content(
+		tag('img')->src(assets('img/mail.png'))->class('card-img-top')
+	)
+	->body([            
+		tag('cardTitle')->text('Some title')
+		->placeholder(),
+
+		tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.')
+		->placeholder(),
+		
+		tag('inputButton')->value('Go somewhere')
+		->placeholder()
+	]);
 
 
 Notas Dev:
