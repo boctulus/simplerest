@@ -67,6 +67,69 @@ Bt5Form::setIdAsName();
         //->dark()
         ;  
 
+        echo tag('paginator')->content([
+            [
+                'href'   => '#?page=1',
+                'active' => true
+            ],
+            [
+                'href' => '#?page=2'
+            ],
+            [
+                'href' => '#?page=3'
+            ],
+            [
+                'href' => '#',
+                'anchor' => '..',
+                'disabled' => true
+            ],
+            9 => [
+                'href' => '#?page=10'
+            ]
+        ])
+        ->class('mt-5')
+        ->large()
+        ->options(['justify-content-center'])
+        ->withPrev([
+            'href'   => '#?page=1',
+            'anchor' => 'Previous',
+            'disabled' => true
+        ])
+        ->withNext([
+            'href'   => '#?page=11',
+            'anchor' => 'Next'
+        ])
+        ;
+
+
+        echo tag('paginator')->content([
+            [
+                'href'   => '#?page=1',
+                'active' => true
+            ],
+            [
+                'href' => '#?page=2'
+            ],
+            [
+                'href' => '#?page=3'
+            ]
+        ])
+        ->class('mt-5')
+        ->large()
+        ->options(['justify-content-center'])
+        ->withPrev([
+            'href'   => '#?page=1',
+            'anchor' => 'Previous',
+            'disabled' => true
+        ])
+        ->withNext([
+            'href'   => '#?page=4',
+            'anchor' => 'Next'
+        ])
+        ;
+
+
+
         // echo tag('navbar')->content(
         //     tag('container')->fluid()->content([
         //         tag('navbarBrand')->anchor(
