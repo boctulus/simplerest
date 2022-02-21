@@ -9715,6 +9715,13 @@ Ej:
 		'href'   => '#?page=4',
 		'anchor' => 'Next'
 	]);
+	
+
+Podría incluirse más lógica como que:
+
+- Si hay una sola página que se deshabiliten tanto Prev como Next.
+
+- Que si se recibe como parámetro del número total de páginas y está activa la última, entonces se desabilite Next.
 
 
 Notas Dev:

@@ -95,11 +95,13 @@ Bt5Form::setIdAsName();
         ->options(['justify-content-center'])
         ->withPrev([
             'href'   => '#?page=1',
-            'anchor' => '&laquo;'
+            'anchor' => '&laquo;',
+            //'disabled' => true
         ])
         ->withNext([
             'href'   => '#?page=11',
-            'anchor' => '&raquo;'
+            'anchor' => '&raquo;',
+            //'disabled' => true
         ])
         ;
 
@@ -110,7 +112,8 @@ Bt5Form::setIdAsName();
                 'active' => true              
             ],
             [
-                'href' => '#?page=2'                
+                'href' => '#?page=2',
+                //'active' => true             
             ],
             [
                 'href' => '#?page=3'
@@ -125,7 +128,8 @@ Bt5Form::setIdAsName();
         ])
         ->withNext([
             'href'   => '#?page=4',
-            'anchor' => 'Next'
+            'anchor' => 'Next',
+            //'disabled' => true
         ])
         ;
 
