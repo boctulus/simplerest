@@ -419,32 +419,7 @@ class Bt5Form extends Form
             unset($args['small']);
         }
 
-        if(isset($args['withPrev'])){
-            $e = $args['withPrev'];
-            
-            if (!isset($e['href'])){
-                throw new \Exception("href is required");
-            }
-
-            if (!isset($e['anchor'])){
-                throw new \Exception("anchor is required");
-            }
-
-            $href   = static::shift('href', $e);
-            $anchor = static::shift('anchor', $e);
-            
-            $active = $e['active'] ?? false;
-            
-            if ($active){
-                $att_li = ' active';
-                $inner = "<span class=\"page-link\">$anchor</span";
-            } else {
-                $att_li = '';
-                $inner = static::link(anchor:$anchor, href:$href, attributes:['class' => 'page-link']);
-            }
-
-            $prev = "<li class=\"page-item{$att_li}\">". $inner . '</li>';        
-        }
+        $active_page = null;
 
         if(isset($args['withNext'])){
             $e = $args['withNext'];
@@ -504,6 +479,8 @@ class Bt5Form extends Form
                 $active = static::shift('active', $e);
 
                 if ($active === true){
+                    $active_page = $ix;
+                    
                     $att_li['class'] .= ' active';
                     $inner = "<span class=\"page-link\">$anchor</span";
                 } else {
@@ -515,6 +492,43 @@ class Bt5Form extends Form
             }
         }
 
+        if(isset($args['withPrev'])){
+            $e = $args['withPrev'];
+            
+            if (!isset($e['href'])){
+                throw new \Exception("href is required");
+            }
+
+            if (!isset($e['anchor'])){
+                throw new \Exception("anchor is required");
+            }
+
+            $href   = static::shift('href', $e);
+            $anchor = static::shift('anchor', $e);
+            
+            $att_li = [
+                'class' => 'page-item'
+            ];
+
+            if ($active_page == 0){
+                $disabled = true;
+            } else {
+                $disabled = static::shift('disabled', $e, false);
+            }    
+            
+            if ($disabled){
+                $att_li['class'] .= ' disabled';
+            }            
+            
+            if ($active){
+                $att_li['class'] .= 'active';
+                $inner = "<span class=\"page-link\">$anchor</span";
+            } else {
+                $inner = static::link(anchor:$anchor, href:$href, attributes:['class' => 'page-link']);
+            }
+
+            $prev = static::li($inner, $att_li, ...$e);        
+        }
         
         $content = array_merge([$prev], $content, [$next]);
 
