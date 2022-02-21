@@ -73,13 +73,13 @@ Bt5Form::setIdAsName();
         echo tag('paginator')->content([
             [
                 'href'   => '#?page=1',
-                'active' => true
             ],
             [
                 'href' => '#?page=2'
             ],
             [
-                'href' => '#?page=3'
+                'href' => '#?page=3',
+                'active' => true
             ],
             [
                 'href' => '#',
@@ -95,8 +95,7 @@ Bt5Form::setIdAsName();
         ->options(['justify-content-center'])
         ->withPrev([
             'href'   => '#?page=1',
-            'anchor' => '&laquo;',
-            'disabled' => true
+            'anchor' => '&laquo;'
         ])
         ->withNext([
             'href'   => '#?page=11',
@@ -108,10 +107,10 @@ Bt5Form::setIdAsName();
         echo tag('paginator')->content([
             [
                 'href'   => '#?page=1',
-                'active' => true
+                'active' => true              
             ],
             [
-                'href' => '#?page=2'
+                'href' => '#?page=2'                
             ],
             [
                 'href' => '#?page=3'
@@ -122,8 +121,7 @@ Bt5Form::setIdAsName();
         ->options(['justify-content-center'])
         ->withPrev([
             'href'   => '#?page=1',
-            'anchor' => 'Previous',
-            'disabled' => true
+            'anchor' => 'Previous'
         ])
         ->withNext([
             'href'   => '#?page=4',
