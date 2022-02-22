@@ -9845,7 +9845,20 @@ Es importante notar que sino hay espacio el popover no se materializa aunque se 
 
 Dismiss on next click
 
-Requiere que se utilice un <link> al que se le aplicará un tabindex="0" y por ello se optó como la implementación por default. En caso de querer usar un <button> haga el casting correspondiente con as()
+Se logra aplicando dismissible()
+
+Ej:
+	echo tag('popover')
+	->content('Click to toggle popover')
+	->title('Popover title')
+	->body("And here's some amazing content. It's very engaging. Right?")
+	->as('button')
+	->class('btn-lg mt-5')->danger()->pos('top')
+	->dismissible();
+
+Casting
+
+En caso de querer usar un <button> haga el casting correspondiente con as()
 
 	echo tag('popover')
 	->content('Click to toggle popover')
