@@ -147,7 +147,7 @@ Bt5Form::setIdAsName();
             Spinners
         */
 
-        echo tag('spinner')->class('my-3')->color('danger');
+        echo tag('spinner')->class('my-3')->color('danger')->grow()->size(5);
 
 
 

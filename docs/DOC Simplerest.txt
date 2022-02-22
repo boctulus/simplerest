@@ -10020,6 +10020,27 @@ Growing spinner
 
 	echo tag('spinner')->color('danger')->grow();
 	
+Placement
+
+Solo utilice un wrapper y utilidades como flex. Ej:
+
+	<div class="d-flex justify-content-center">
+	<?php
+		echo tag('spinner')->color('danger')->grow();
+	?>
+	</div>
+
+Sizing
+
+Use size() con el tamaño expresado en rems. El valor por defecto parecer ser 2 rems.
+
+Ej:
+
+	echo tag('spinner')->class('my-3')->color('danger')->grow()->size(5);
+
+
+Completar !!!!!!!
+
 
 Notas Dev:
 =========
