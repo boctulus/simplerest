@@ -51,6 +51,20 @@ Ej:
   ->select(...)
   ->get()
 
+Este tipo de caché podría combinarse con el de "resultados":
+
+   DB:table(...)
+  ->qid('alumnos_aprobados_mate1_2015')
+  ->where(...)
+  ->select(...)
+  ->cache(true)
+  ->get()
+
+
+La cache de construcción de queries tendría sentido solo *quizás* para queries muy complejas ya que de por si hay cierta lógica en la cache del lado de PHP y también del lado de REDIS y ambas lógicas van a consumir tiempo. Además habría que ver si __call() no es menos performante y cuál sería el impacto.
+
+---
+
 
 - Crear mecanismo "sandbox" para funciones y métodos que no deban incluirse en los commits:
 
