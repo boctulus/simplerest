@@ -13,15 +13,22 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 <div class="row mt-5">
   <div class="col-4 offset-4">
 
-    <div class="progress" style="height: 5px;">
-      <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-
-    <p>
-    
-    <div class="progress" style="height: 50px;">
-      <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
+  <div id="list-example" class="list-group">
+    <a class="list-group-item list-group-item-action" href="#list-item-1">Item 1</a>
+    <a class="list-group-item list-group-item-action" href="#list-item-2">Item 2</a>
+    <a class="list-group-item list-group-item-action" href="#list-item-3">Item 3</a>
+    <a class="list-group-item list-group-item-action" href="#list-item-4">Item 4</a>
+  </div>
+  <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+    <h4 id="list-item-1">Item 1</h4>
+    <p>Texto bla bla 1</p>
+    <h4 id="list-item-2">Item 2</h4>
+    <p>Texto bla bla 2</p>
+    <h4 id="list-item-3">Item 3</h4>
+    <p>Texto bla bla 3</p>
+    <h4 id="list-item-4">Item 4</h4>
+    <p>Texto bla bla 4</p>
+  </div>
 
 
   </div>
