@@ -1155,9 +1155,18 @@ class Bt5Form extends Form
 
     static function spinner(mixed $content = 'Loading...', Array $attributes = [], ...$args){
         $attributes['role']  = "status";
-        $attributes['class'] = "spinner-border";
 
         $content = '<span class="visually-hidden">'.$content.'</span>';
+
+        // Growing
+
+        $grow = array_key_exists('grow', $args) || array_key_exists('grow', $attributes) ?? false;
+
+        if ($grow){
+            $attributes['class'] = "spinner-grow";
+        } else {
+            $attributes['class'] = "spinner-border";
+        }
 
         // Color
 
@@ -1172,7 +1181,14 @@ class Bt5Form extends Form
             unset($args['color']);
         }
 
-        // Growing
+        // Size (en rems)
+
+        $size   = $attributes['size'] ?? $args['size'] ?? null;
+        
+        if ($size){
+            $attributes['style'] = isset($attributes['style']) ? $attributes['style'] . '; ' : '';
+            $attributes['style'] .= "width: {$size}rem; height: {$size}rem;";
+        }
 
         return static::div($content, $attributes, ...$args);
     }
