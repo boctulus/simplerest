@@ -65,7 +65,13 @@ Bt5Form::setIdAsName();
             ])
         )->class('mb-3 fixed-top')
         //->dark()
-        ;  
+        ; 
+
+        echo tag('popoverButton')
+        ->content('Click to toggle popover')
+        ->title('Popover title')
+        ->body("And here's some amazing content. It's very engaging. Right?")
+        ->class('btn-lg')->danger()->pos('top');
 
         /*
             Previous | 1 | 2 | 3 | .. | 10 | Next
@@ -621,3 +627,9 @@ Bt5Form::setIdAsName();
         <p><p>
     </div>
 </div>
+
+<script>
+    var popover = new bootstrap.Popover(document.querySelector('.popovers'), {
+        container: 'body'
+    });
+</script>
