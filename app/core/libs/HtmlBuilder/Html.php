@@ -183,6 +183,11 @@ class Html
         "offcanvasBody"  => "offcanvas-body",
         "offcanvasCloseButton" => "btn-close text-reset",
 
+        /* Progress bars   */
+
+        "progress"        => "progress",
+        "progressBar"     => "progress-bar",
+
 
         /*
             Utilities
@@ -197,7 +202,7 @@ class Html
     
     static protected $macros = [];
 
-    static protected function shift(string $key, &$var, $default_value = null){
+    static protected function shift(string $key, &$var, $default_value = null) : mixed {
         $out = $var[$key] ?? $default_value;
         unset($var[$key]);
         
@@ -1026,7 +1031,7 @@ class Html
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function p(string $text, Array $attributes = [], ...$args){
+    static function p(string $text = '', Array $attributes = [], ...$args){
         return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
     }
 

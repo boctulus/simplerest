@@ -13,14 +13,15 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 <div class="row mt-5">
   <div class="col-4 offset-4">
 
-    <!-- ok -->
-    <button 
-    type="button" 
-    class="btn btn-lg btn-danger popovers" 
-    data-bs-toggle="popover" 
-    title="Popover title" 
-    data-bs-placement = "bottom"
-    data-bs-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
+    <div class="progress" style="height: 5px;">
+      <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <p>
+    
+    <div class="progress" style="height: 50px;">
+      <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
 
 
   </div>
