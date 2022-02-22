@@ -1070,12 +1070,11 @@ class Bt5Form extends Form
     
     /* Popover   */
 
-    static function popoverButton(mixed $content, Array $attributes = [], ...$args){
-        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. 'button' : 'button';
+    static function popover(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. 'btn btn-primary' : 'btn btn-primary';
         
         static::addClass('popovers', $attributes['class']);
         
-        $attributes['type'] = "button"; 
         $attributes['data-bs-toggle'] = "popover";
 
         if (isset($args['title'])){
@@ -1097,7 +1096,7 @@ class Bt5Form extends Form
 
         $attributes['data-bs-content'] = $body;
 
-        $pos    = $args['pos'] ?? $attributes['pos'] ?? 'top';
+        $pos = $args['pos'] ?? $attributes['pos'] ?? 'top';
 
         if (!in_array($pos, ['top', 'bottom', 'left', 'right'])){
             throw new \Exception("Unknown positioning class '$pos'");
@@ -1106,8 +1105,17 @@ class Bt5Form extends Form
         $attributes['data-bs-placement'] = $pos;
         unset($args['pos']);
 
+        $type = $args['as'] ?? $attributes['as'] ?? 'link';
 
-        return static::button($content, $attributes, ...$args);
+        if ($type == 'button'){
+            $attributes['type'] = "button";
+            return static::button($content, $attributes, ...$args);
+        } else {
+            $attributes['tabindex'] = "0";
+            $attributes['role'] = "button"; 
+        }
+
+        return static::link($content, null, $attributes, ...$args);
     }
 
 

@@ -67,11 +67,12 @@ Bt5Form::setIdAsName();
         //->dark()
         ; 
 
-        echo tag('popoverButton')
+        echo tag('popover')
         ->content('Click to toggle popover')
         ->title('Popover title')
         ->body("And here's some amazing content. It's very engaging. Right?")
-        ->class('btn-lg')->danger()->pos('top');
+        //->as('button')
+        ->class('btn-lg mt-5')->danger()->pos('top');
 
         /*
             Previous | 1 | 2 | 3 | .. | 10 | Next
