@@ -1109,6 +1109,22 @@ class Bt5Form extends Form
 
         $attributes['style'] = "width: {$per}%";
 
+        // Striped 
+
+        $animated = array_key_exists('animated', $args) || array_key_exists('animated', $attributes);
+
+        if ($animated){
+            static::addClass("progress-bar-striped progress-bar-animated", $attributes['class']);
+        } else {
+            $striped = array_key_exists('striped', $args) || array_key_exists('striped', $attributes);
+
+            if ($striped){
+                static::addClass("progress-bar-striped", $attributes['class']);
+            }
+        }
+
+        // Labels
+
         $withLabel = array_key_exists('withLabel', $args) || array_key_exists('withLabel', $attributes);
 
         if ($withLabel){
