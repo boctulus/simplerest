@@ -937,7 +937,7 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
-    static function cardBody(mixed $content, Array $attributes = [], ...$args){
+    static function cardBody(mixed $content = '', Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
@@ -950,12 +950,18 @@ class Bt5Form extends Form
     static function cardTitle(string $text = '', Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        $color = $args['color'] ?? $attributes['color'] ?? null;
+        $color = $args['bg'] ?? $attributes['bg'] ?? null;
 
         $bg_color = '';
-        if ($color !== null && Strings::startsWith('bg-', $color) && in_array($color, static::$bg_colors)){
-            $bg_color = ' '. $color;
-        }
+        if ($color !== null){
+            if (Strings::startsWith('bg-', $color)){
+                $color = substr($color, 3);
+            }
+
+            if(in_array("$color", static::$bg_colors)){
+                $bg_color = " bg-{$color}";
+            }    
+        } 
 
         if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
             static::addClass('placeholder-glow', $attributes['class']);
@@ -968,15 +974,21 @@ class Bt5Form extends Form
         return static::h5($text, $attributes, ...$args);
     }
 
-    static function cardSubtitle(string $text, Array $attributes = [], ...$args){
+    static function cardSubtitle(string $text = '', Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        $color = $args['color'] ?? $attributes['color'] ?? null;
+        $color = $args['bg'] ?? $attributes['bg'] ?? null;
 
         $bg_color = '';
-        if ($color !== null && Strings::startsWith('bg-', $color) && in_array($color, static::$bg_colors)){
-            $bg_color = ' '. $color;
-        }
+        if ($color !== null){
+            if (Strings::startsWith('bg-', $color)){
+                $color = substr($color, 3);
+            }
+
+            if(in_array("$color", static::$bg_colors)){
+                $bg_color = " bg-{$color}";
+            }    
+        } 
         
         if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
             static::addClass('placeholder-glow', $attributes['class']);
@@ -992,12 +1004,18 @@ class Bt5Form extends Form
     static function cardText(string $text = '', $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        $color = $args['color'] ?? $attributes['color'] ?? null;
+        $color = $args['bg'] ?? $attributes['bg'] ?? null;
 
         $bg_color = '';
-        if ($color !== null && Strings::startsWith('bg-', $color) && in_array($color, static::$bg_colors)){
-            $bg_color = ' '. $color;
-        }
+        if ($color !== null){
+            if (Strings::startsWith('bg-', $color)){
+                $color = substr($color, 3);
+            }
+
+            if(in_array("$color", static::$bg_colors)){
+                $bg_color = " bg-{$color}";
+            }    
+        } 
         
         if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){
             static::addClass('placeholder-glow', $attributes['class']);

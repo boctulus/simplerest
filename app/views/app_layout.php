@@ -9,7 +9,7 @@
     <base href="<?= base_url(); ?>">
 
     <!-- ico -->
-    <link rel="shortcut icon" href="<?= assets('img/favicon.ico') ?>" />
+    <link rel="shortcut icon" href="<?= asset('img/favicon.ico') ?>" />
 
     <!-- google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,33 +31,33 @@
     </script>
 
     <!-- TEMPLATE STARTUI -->
-    <link rel="stylesheet" href="<?= assets('css/lib/lobipanel/lobipanel.min.css') ?>">
-    <link rel="stylesheet" href="<?= assets('css/separate/vendor_css/lobipanel.min.css') ?>">
-    <link rel="stylesheet" href="<?= assets('css/lib/jqueryui/jquery-ui.min.css') ?>">
-    <link rel="stylesheet" href="<?= assets('css/separate/pages/widgets.min.css') ?>">
-    <link rel="stylesheet" href="<?= assets('css/lib/font-awesome/font-awesome.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/lib/lobipanel/lobipanel.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/separate/vendor_css/lobipanel.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/lib/jqueryui/jquery-ui.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/separate/pages/widgets.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/lib/font-awesome/font-awesome.min.css') ?>">
 
     <!-- bootstrap 5.1.3 solo css -->
-    <link rel="stylesheet" href="<?= assets('css/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/bootstrap.min.css') ?>">
 
     <!-- JavaScript Bundle with Popper -->
-    <script src="<?= assets('js/bootstrap.bundle.min.js') ?>"></script>
+    <script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
 
-    <link rel="stylesheet" href="<?= assets('css/separate/vendor_css/bootstrap-select/bootstrap-select.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/separate/vendor_css/bootstrap-select/bootstrap-select.min.css') ?>">
 
-    <link rel="stylesheet" href="<?= assets('css/separate/vendor_css/bootstrap-datetimepicker.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/separate/vendor_css/bootstrap-datetimepicker.min.css') ?>">
 
     <!-- BOOTSTRAP -->
-    <link rel="stylesheet" href="<?= assets('css/lib/datatables-net/datatables.min.css') ?>">
-    <link rel="stylesheet" href="<?= assets('css/lib/datatables-net/datatables-net.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/lib/datatables-net/datatables.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/lib/datatables-net/datatables-net.min.css') ?>">
 
     <!-- FILEPOND -->
     <!--link rel="stylesheet" href="... 'js/plugins/filepond/dist/filepond.css') ?>"-->
 
-    <!--script src="< ? = assets('js/helpers.js') ?>"></script-->
-    <!--script src="< ?= assets('js/login.js') ?>"></script-->
+    <!--script src="< ? = asset('js/helpers.js') ?>"></script-->
+    <!--script src="< ?= asset('js/login.js') ?>"></script-->
 
-    <link  rel="stylesheet" href="<?= assets('css/core.css"') ?>"/>
+    <link  rel="stylesheet" href="<?= asset('css/core.css"') ?>"/>
 
 </head>
 <body>
