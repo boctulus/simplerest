@@ -1105,6 +1105,13 @@ class Bt5Form extends Form
         $attributes['data-bs-placement'] = $pos;
         unset($args['pos']);
 
+        $dismissible =  ($args['dismissible'] ?? $attributes['dismissible'] ?? false);
+        unset($args['dismissible']);
+
+        if ($dismissible !== false){
+            $attributes['data-bs-trigger'] = "focus";
+        }        
+
         $type = $args['as'] ?? $attributes['as'] ?? 'link';
 
         if ($type == 'button'){
