@@ -1085,6 +1085,56 @@ class Bt5Form extends Form
 
     /* Cards End */
 
+    /* Progress bar */
+
+    static function progress(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function progressBar(mixed $content = null, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        
+        $attributes['role'] = "progressbar";
+        
+        $min = static::shift('min', $args) ?? static::shift('min', $attributes, 0);
+        $max = static::shift('max', $args) ?? static::shift('max', $attributes, 100);
+        $current = static::shift('current', $args) ?? static::shift('current', $attributes, 0);
+
+        $attributes['aria-valuemin'] = $min;
+        $attributes['aria-valuemax'] = $max;
+        $attributes['aria-valuenow'] = $current;
+
+        $per = round(($current / ($max - $min)) * 100);
+
+        $attributes['style'] = "width: {$per}%";
+
+        $withLabel = array_key_exists('withLabel', $args) || array_key_exists('withLabel', $attributes);
+
+        if ($withLabel){
+            $content = $per . '%';
+        }
+
+        // Colors
+
+        $color = $args['bg'] ?? $attributes['bg'] ?? null;
+
+        $bg_color = '';
+        if ($color !== null){
+            if (Strings::startsWith('bg-', $color)){
+                $color = substr($color, 3);
+            }
+
+            if(in_array("$color", static::$bg_colors)){
+                $bg_color = " bg-{$color}";
+
+                static::addClass("bg-{$bg_color}", $attributes['class']);
+            }  
+        } 
+
+        return static::div($content, $attributes, ...$args);
+    }
+
     
     /* Popover   */
 

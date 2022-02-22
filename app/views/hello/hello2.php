@@ -67,13 +67,15 @@ Bt5Form::setIdAsName();
         //->dark()
         ; 
 
+        echo tag('p')->class('mt-5');
+
         echo tag('popover')
         ->content('Click to toggle popover')
         ->title('Popover title')
         ->body("And here's some amazing content. It's very engaging. Right?")
         ->as('button')
-        ->class('btn-lg mt-5')->danger()->pos('top')
-        ->dismissible();
+        ->class('btn-lg mt-3')->danger()->pos('top')
+        ->dismissible();                   
 
         /*
             Previous | 1 | 2 | 3 | .. | 10 | Next
@@ -98,7 +100,7 @@ Bt5Form::setIdAsName();
                 'href' => '#?page=10'
             ]
         ])
-        ->class('mt-5')
+        ->class('mt-3')
         ->large()
         ->options(['justify-content-center'])
         ->withPrev([
@@ -141,6 +143,21 @@ Bt5Form::setIdAsName();
         ])
         ;
 
+        echo tag('progress')->content(
+            tag('progressBar')->current(80)
+        )->class('mt-5');
+
+        echo tag('progress')->content(
+            tag('progressBar')
+            ->min(5)
+            ->max(25)
+            ->current(15)->withLabel()
+        )->class('my-5');
+
+        echo tag('progress')->content(
+            tag('progressBar')
+            ->current(25)->withLabel()->bg('danger')
+        )->class('my-5')->style("height: 50px;");
 
 
         // echo tag('navbar')->content(
