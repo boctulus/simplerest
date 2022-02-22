@@ -151,13 +151,24 @@ Bt5Form::setIdAsName();
             tag('progressBar')
             ->min(5)
             ->max(25)
-            ->current(15)->withLabel()
+            ->current(15)->withLabel()->striped()
         )->class('my-5');
 
         echo tag('progress')->content(
             tag('progressBar')
-            ->current(25)->withLabel()->bg('danger')
+            ->current(25)->withLabel()->bg('danger')->animated()
         )->class('my-5')->style("height: 50px;");
+
+        echo tag('progress')->content([
+            tag('progressBar')
+            ->current(15)->withLabel()->bg('primary'),
+    
+            tag('progressBar')
+            ->current(30)->withLabel()->bg('success'),
+    
+            tag('progressBar')
+            ->current(25)->withLabel()->bg('info')
+        ])->class('mt-3');
 
 
         // echo tag('navbar')->content(

@@ -9941,6 +9941,49 @@ Ej:
 	)->class('my-5')->style("height: 50px;");
 
 
+Multiple bars
+
+Include multiple progress bars in a progress component if you need.
+
+	echo tag('progress')->content([
+		tag('progressBar')
+		->current(15)->withLabel()->bg('primary'),
+
+		tag('progressBar')
+		->current(30)->withLabel()->bg('success'),
+
+		tag('progressBar')
+		->current(25)->withLabel()->bg('info')
+	])->class('mt-3');
+
+Striped
+
+Se puede aplicar un gradiente de color con striped() sobre el progresBar.
+
+Ej:
+
+	echo tag('progress')->content(
+		tag('progressBar')
+		->min(5)
+		->max(25)
+		->current(15)->withLabel()->striped()
+	)->class('my-5');
+
+Animated
+
+Aplicando animated() una progresBar se hace striped y se "anima".
+
+Ej:
+
+	echo tag('progress')->content(
+		tag('progressBar')
+		->current(25)->withLabel()->bg('danger')->animated()
+	)->class('my-5')->style("height: 50px;");
+
+
+Sería ideal poder encapsular en un componente o en varios (por el tema de las progresBar múltiples).
+
+
 
 Notas Dev:
 =========
