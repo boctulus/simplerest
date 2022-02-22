@@ -148,7 +148,17 @@ Bt5Form::setIdAsName();
         */
 
         echo tag('spinner')->class('my-3')->color('danger')->grow()->size(5);
+        echo tag('p');
 
+        echo tag('spinner')->class('my-3')->as('button');
+        echo tag('p');
+        echo tag('spinner')->class('my-3')->grow()->as('button');
+
+        echo tag('p');
+
+        echo tag('spinner')->class('my-3')->as('button')->unhide();
+        echo tag('p');
+        echo tag('spinner')->class('my-3')->grow()->as('button')->unhide()->content('Cargando..');
 
 
         echo tag('progress')->content(
