@@ -10039,7 +10039,29 @@ Ej:
 	echo tag('spinner')->class('my-3')->color('danger')->grow()->size(5);
 
 
-Completar !!!!!!!
+En botones
+
+Ej:
+
+	echo tag('spinner')->class('my-3')->as('button');
+	echo tag('p');
+	echo tag('spinner')->class('my-3')->grow()->as('button');
+
+Con texto como "Loading..."
+
+Ej:
+
+	echo tag('spinner')->class('my-3')->as('button')->unhide();
+	echo tag('p');
+	echo tag('spinner')->class('my-3')->grow()->as('button')->unhide();
+
+Para cambiar el texto "Loading.." por otro solo envíelo en content()
+
+Ej:
+
+echo tag('spinner')->class('my-3')->grow()->as('button')->unhide()->content('Cargando..');
+
+
 
 
 Notas Dev:
