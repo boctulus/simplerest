@@ -247,7 +247,7 @@ class Html
             if ($pos !== false){
                 $_prefix = substr($color, 0, $pos + 1);
 
-                if (in_array($_prefix, ['btn-', 'alert-'])){
+                if (in_array($_prefix, ['btn-', 'alert-', 'text-'])){
                     $prefix = $_prefix;
                 } else {
                     $pos = 0;

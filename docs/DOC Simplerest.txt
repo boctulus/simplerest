@@ -10002,7 +10002,24 @@ To easily add scrollspy behavior to your topbar navigation, add data-bs-spy="scr
 		...
 	</body>
 
+<-- no logré funcionara. Queda pendiente ! problema: recarga la página en vez de ir al #id.
 
+# Spinners
+
+Ej:
+
+	echo tag('spinner');
+
+Colors
+
+Ej:
+
+	echo tag('spinner')->color('danger');
+
+Growing spinner
+
+	echo tag('spinner')->color('danger')->grow();
+	
 
 Notas Dev:
 =========
