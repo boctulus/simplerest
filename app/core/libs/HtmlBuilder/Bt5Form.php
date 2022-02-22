@@ -1153,19 +1153,48 @@ class Bt5Form extends Form
 
     /* Spinners  */
 
-    static function spinner(mixed $content = 'Loading...', Array $attributes = [], ...$args){
-        $attributes['role']  = "status";
-
-        $content = '<span class="visually-hidden">'.$content.'</span>';
+    static function spinner(mixed $content = 'Loading...', Array $attributes = [], ...$args)
+    {
+        $attributes['class'] = '';
+        
+        $type = $args['as'] ?? $attributes['as'] ?? 'div';
 
         // Growing
 
         $grow = array_key_exists('grow', $args) || array_key_exists('grow', $attributes) ?? false;
 
         if ($grow){
-            $attributes['class'] = "spinner-grow";
+            unset($args['grow']);
+
+            if ($type != 'button'){
+                $attributes['class'] = "spinner-grow";
+            } else {
+                $att = 'spinner-grow spinner-grow-sm';
+            }            
         } else {
-            $attributes['class'] = "spinner-border";
+            if ($type != 'button'){
+                $attributes['class'] = "spinner-border";
+            } else {
+                $att = 'spinner-border spinner-border-sm';
+            }
+        }
+
+        $unhide = array_key_exists('unhide', $args) || array_key_exists('unhide', $attributes) ?? false;
+        
+        $hidden = !$unhide ? 'visually-hidden' : '';
+        
+
+        if ($type == 'button'){
+            $attributes['type'] = "button";
+            $attributes['disabled'] = "disabled";
+            static::addClass("btn btn-primary", $attributes['class']);
+
+            $content = '<span class="'.$att.'" role="status" aria-hidden="true"></span>
+            <span class="'.$hidden.'">'.$content.'</span>';
+        } else {
+            $attributes['role']  = "status";
+
+            $content = '<span class="visually-hidden">'.$content.'</span>';
         }
 
         // Color
@@ -1190,7 +1219,7 @@ class Bt5Form extends Form
             $attributes['style'] .= "width: {$size}rem; height: {$size}rem;";
         }
 
-        return static::div($content, $attributes, ...$args);
+        return static::{$type}($content, $attributes, ...$args);
     }
 
     
