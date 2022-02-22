@@ -9882,6 +9882,66 @@ En caso de querer usar un <button> haga el casting correspondiente con as()
 De momento solo se puede cambiar el color del botón cuando se hace el casting a button. A corregir moviendo el casting al método tag.
 
 
+# Progress bars
+
+Indican el avance de un proceso, generalmente en porcentaje (%) y por ello por defecto se asume:
+
+	min = 0
+	max = 100
+
+Ej:
+
+	echo tag('progress')->content(
+		tag('progressBar')->current(80)
+	);
+
+También claro puede especificarse el rango.
+
+Ej:
+
+	echo tag('progress')->content(
+		tag('progressBar')
+		->min(5)
+		->max(25)
+		->current(15)
+	);
+
+Labels
+
+Para mostrar una label con el % de avance es con withLabel() sobre el progresBar.
+
+Ej:
+
+	echo tag('progress')->content(
+		tag('progressBar')
+		->min(5)
+		->max(25)
+		->current(15)->withLabel()
+	)
+
+Height
+
+Se logra seteando la altura en progress.
+
+	echo tag('progress')->content(
+		tag('progressBar')
+		->current(25)->withLabel()
+	)->class('my-5')->style("height: 50px");
+
+
+Background colors
+
+Aplicando bg($color) sobre el progressBar.
+
+Ej:
+
+	echo tag('progress')->content(
+		tag('progressBar')
+		->current(25)->withLabel()->bg('danger')
+	)->class('my-5')->style("height: 50px;");
+
+
+
 Notas Dev:
 =========
 
