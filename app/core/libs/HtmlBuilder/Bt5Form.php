@@ -1067,6 +1067,51 @@ class Bt5Form extends Form
 
     /* Cards End */
 
+    
+    /* Popover   */
+
+    static function popoverButton(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. 'button' : 'button';
+        
+        static::addClass('popovers', $attributes['class']);
+        
+        $attributes['type'] = "button"; 
+        $attributes['data-bs-toggle'] = "popover";
+
+        if (isset($args['title'])){
+            $attributes['title'] = $args['title'];
+            unset($args['title']);
+        }
+
+        if (!isset($attributes['title'])){
+            throw new \Exception("Title is required");
+        }
+
+        $body  = $args['body']  ?? $attributes['body'] ?? null;
+
+        if ($body === null){
+            throw new \Exception("Body is required");
+        }
+
+        unset($args['body']);
+
+        $attributes['data-bs-content'] = $body;
+
+        $pos    = $args['pos'] ?? $attributes['pos'] ?? 'top';
+
+        if (!in_array($pos, ['top', 'bottom', 'left', 'right'])){
+            throw new \Exception("Unknown positioning class '$pos'");
+        }
+
+        $attributes['data-bs-placement'] = $pos;
+        unset($args['pos']);
+
+
+        return static::button($content, $attributes, ...$args);
+    }
+
+
+
     /*
         It should be contained in a blockquote
     */

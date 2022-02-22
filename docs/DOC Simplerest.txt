@@ -9798,6 +9798,57 @@ Ej:
 	]);
 
 
+# Popover
+
+Un popover debe ser habilitado via JavaScript. La forma más sencilla es habilitar todos referenciándolos via clase css. Se utlizará la clase "popovers" para hacer esa referencia.
+
+	<button type="button" 
+	class="btn btn-lg btn-danger popovers" 
+	data-bs-toggle="popover" 
+	title="Popover title" 
+	data-bs-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
+
+O con links
+
+	<a role="button" 
+	class="btn btn-lg btn-danger" 
+	data-bs-toggle="popover" 
+	data-bs-trigger="focus" 
+	title="Dismissible popover" 
+	data-bs-content="And here's some amazing content. It's very engaging. Right?">Dismissible popover</a>
+
+El JavaScript habilitante para los popovers es:
+
+	var popover = new bootstrap.Popover(document.querySelector('.popovers'), {
+		container: 'body'
+	})
+
+Ej:
+
+	echo tag('popoverButton')
+	->content('Click to toggle popover')
+	->title('Popover title')
+	->body("And here's some amazing content. It's very engaging. Right?")
+	->class('btn-lg')->danger();
+
+Four directions
+
+Aplique pos() con top, bottom, left o right.
+
+	echo tag('popoverButton')
+	->content('Click to toggle popover')
+	->title('Popover title')
+	->body("And here's some amazing content. It's very engaging. Right?")
+	->class('btn-lg')->danger()->pos('top');
+
+Es importante notar que sino hay espacio el popover no se materializa aunque se intentará hacerlo aparecer del lado derecho (default).
+
+
+Dismiss on next click
+
+Requiere que se utilice un <link> al que se le aplicará un tabindex="0"
+
+
 Notas Dev:
 =========
 
