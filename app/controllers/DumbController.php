@@ -7458,15 +7458,17 @@ class DumbController extends Controller
         */
         //echo tag('button')->color('success')->value('Search');
 
-        echo tag('offcanvas')->id("offcanvasExample")->title('Offcanvas')->body([
-            /*
-                Body example
-            */
-            'Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.'
-        ])
-        ->backdropOff()
-        //->scroll()
-        ;
+        // echo tag('offcanvas')->id("offcanvasExample")->title('Offcanvas')->body([
+        //     /*
+        //         Body example
+        //     */
+        //     'Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.'
+        // ])
+        // ->backdropOff()
+        // //->scroll()
+        // ;
+
+        echo tag('spinner');
         
     }
 
