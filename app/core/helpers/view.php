@@ -7,7 +7,7 @@ function view(string $view_path, array $vars_to_be_passed  = null, ?string $layo
     return (new MyView($view_path, $vars_to_be_passed, $layout, $expiration_time)); 
 }
 
-function assets($resource){
+function asset($resource){
     $protocol = is_cli() ? 'http' : http_protocol();
     
     $base  = config()['BASE_URL'];

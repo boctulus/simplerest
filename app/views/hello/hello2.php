@@ -27,7 +27,7 @@ Bt5Form::setIdAsName();
         echo tag('navbar')->content(
             tag('container')->fluid()->content([
                 tag('navbarBrand')->anchor(
-                    tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+                    tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
                     ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
                 )->href('#'),
                 
@@ -63,7 +63,7 @@ Bt5Form::setIdAsName();
                     ])
                 ])->id("navbarNavAltMarkup")
             ])
-        )->class('mb-3 fixed-top')
+        )->class('mb-3 fixed-top')->expand()
         //->dark()
         ; 
 
@@ -146,7 +146,7 @@ Bt5Form::setIdAsName();
         // echo tag('navbar')->content(
         //     tag('container')->fluid()->content([
         //         tag('navbarBrand')->anchor(
-        //             tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+        //             tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
         //             ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
         //         )->href('#'),
 
@@ -163,7 +163,7 @@ Bt5Form::setIdAsName();
         // echo tag('navbar')->content(
         //     tag('container')->fluid()->content([
         //         tag('navbarBrand')->anchor(
-        //             tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+        //             tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
         //             ->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
         //         )->href('#') 
         //     ])
@@ -331,18 +331,18 @@ Bt5Form::setIdAsName();
 
         echo tag('carousel')->content([
             tag('carouselItem')->content(
-                tag('carouselImg')->src(assets('img/slide-1.jpeg'))
+                tag('carouselImg')->src(asset('img/slide-1.jpeg'))
             )->caption(
                 '<h5>First slide label</h5>
                 <p>Some representative placeholder content for the first slide.</p>'
             ),
 
             tag('carouselItem')->content(
-                tag('carouselImg')->src(assets('img/slide-2.jpeg'))
+                tag('carouselImg')->src(asset('img/slide-2.jpeg'))
             ),
 
             tag('carouselItem')->content(
-                tag('carouselImg')->src(assets('img/slide-3.jpeg'))
+                tag('carouselImg')->src(asset('img/slide-3.jpeg'))
             )
         ])->id("carouselExampleControls")->withControls()->withIndicators()
         // ->dark()
@@ -377,17 +377,17 @@ Bt5Form::setIdAsName();
 
         echo tag('card')->style('width: 18rem;')->class('my-3')
         ->content(
-            tag('img')->src(assets('img/mail.png'))->class('card-img-top')
+            tag('cardImgTop')->src(asset('img/mail.png'))
         )
         ->body([            
-            tag('cardTitle')->text('Some title')
-            ->placeholder()->color('bg-danger'),
+            tag('cardTitle')
+            ->placeholder()->bg('danger'),
             
-            tag('cardSubtitle')->text('Some sub-title')
-            ->placeholder()->color('bg-warning'),
+            tag('cardSubtitle')
+            ->placeholder()->bg('warning'),
 
-            tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.')
-            ->placeholder()->color('bg-success'),
+            tag('cardText')
+            ->placeholder()->bg('success'),
             
             tag('inputButton')->value('Go somewhere')
             ->placeholder()
@@ -395,7 +395,7 @@ Bt5Form::setIdAsName();
 
         echo tag('card')->style('width: 18rem;')->class('my-3')
         ->content(
-            tag('img')->src(assets('img/mail.png'))->class('card-img-top')
+            tag('cardImgTop')->src(asset('img/mail.png'))
         )
         ->body([            
             tag('cardTitle')->text('Some title'),
@@ -487,11 +487,18 @@ Bt5Form::setIdAsName();
         );
 
 
-
+        /*
+            Alerts
+        */
 
         echo tag('alert')->content('OK !')->success();
+
         echo Bt5Form::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
-        echo tag('alert')->content(tag('alertLink')->href('#')->anchor('A danger content'))->color('danger')->dismissible(true);
+        
+        echo tag('alert')->content(
+            tag('alertLink')->href('#')->anchor('A danger content')
+        )->color('danger')->dismissible(true);
+
 
         echo tag('select')
         ->name('comidas')
@@ -522,9 +529,9 @@ Bt5Form::setIdAsName();
         ], placeholder: 'Escriba aquí', label: 'Ocupación');
 
         /*
-        El tag 'hr' ni siquiera está definido en la clase Html
-    */
-        echo tag('hr')->style('color:cyan');
+            El tag 'hr' ni siquiera está definido en la clase Html
+        */
+        echo tag('hr')->style('color:cyan; height: 10px;');
 
         echo tag('p')->text("Hola mundo cruel");
 
@@ -617,7 +624,7 @@ Bt5Form::setIdAsName();
     
         echo Bt5Form::br();
 
-        echo tag('img')->src(assets('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");
+        echo tag('img')->src(asset('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");
 
         echo Bt5Form::br();
         echo Bt5Form::salutor("Isabel", "bella", ['class' => 'my-3 me-1', 'style' => 'color: red']); 
