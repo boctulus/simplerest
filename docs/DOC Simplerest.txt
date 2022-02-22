@@ -8131,6 +8131,17 @@ Ej:
 
 	echo Html::salutor("Isabel", "bella");
 
+Inclusive puede aceptar atributos:
+
+Ej:
+
+	Html::macro('salutor', function ($name, $adj, Array $att = []) {
+		$str_att = Bt5Form::attributes($att);
+		return "<span $str_att>Hello $adj $name</span>";
+	});
+
+	echo Bt5Form::salutor("Isabel", "bella", ['class' => 'my-3 me-1', 'style' => 'color: red']); 
+
 
 # La clase Tag
 
@@ -8517,15 +8528,13 @@ Cards con imágenes
 
 Cuando hay una imágen dentro de una card es imprescindible setear el ancho de la tarjeta para evitar que crezca hasta el 100% del width del padre. Por ejemplo con style('width: 18rem;')
 
-En la documentación oficial de Boostrap se agrega la clase de css 'card-img-top' sobre la imágen.
-
 Notar que la imágen se coloca en el content() y no en el body.
 
 Ej:
 
 	echo tag('card')->style('width: 18rem;')->class('my-3')
 	->content(
-		tag('img')->src(assets('img/warning.svg.png'))->class('card-img-top')
+		tag('cardImgTop')->src(asset('img/mail.png'))
 	)
 	->body([            
 		tag('cardTitle')->text('Some title'),
@@ -9759,39 +9768,42 @@ En particular se implemetó para cardTitle, cardSubtitle, cardText e inputButton
 Ej:
 
 	echo tag('card')->style('width: 18rem;')->class('my-3')
-	->content(
-		tag('img')->src(assets('img/mail.png'))->class('card-img-top')
-	)
-	->body([            
-		tag('cardTitle')->text('Some title')
-		->placeholder(),
+        ->content(
+            tag('cardImgTop')->src(asset('img/mail.png'))
+        )
+        ->body([            
+            tag('cardTitle')
+            ->placeholder()->color('bg-danger'),
+            
+            tag('cardSubtitle')
+            ->placeholder()->color('bg-warning'),
 
-		tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.')
-		->placeholder(),
-		
-		tag('inputButton')->value('Go somewhere')
-		->placeholder()
-	]);
+            tag('cardText')
+            ->placeholder()->color('bg-success'),
+            
+            tag('inputButton')->value('Go somewhere')
+            ->placeholder()
+        ]);
 
 Color
 
-Se pueden aplicar los colores de background bg-*
+Se pueden aplicar los colores de background bg-* con bg()
 
 Ej:
 
 	echo tag('card')->style('width: 18rem;')->class('my-3')
 	->content(
-		tag('img')->src(assets('img/mail.png'))->class('card-img-top')
+		tag('cardImgTop')->src(asset('img/mail.png'))
 	)
 	->body([            
-		tag('cardTitle')->text('Some title')
-		->placeholder()->color('bg-danger'),
+		tag('cardTitle')
+		->placeholder()->bg('danger'),
 		
-		tag('cardSubtitle')->text('Some sub-title')
-		->placeholder()->color('bg-warning'),
+		tag('cardSubtitle')
+		->placeholder()->bg('warning'),
 
-		tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.')
-		->placeholder()->color('bg-success'),
+		tag('cardText')
+		->placeholder()->bg('success'),
 		
 		tag('inputButton')->value('Go somewhere')
 		->placeholder()
