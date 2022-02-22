@@ -466,9 +466,7 @@ class Html
             $attributes['href'] = $href;
         }
         
-        if (!isset($attributes['href'])){
-            $attributes['href'] = '#';
-        } else {
+        if (isset($attributes['href'])){
             if (Strings::startsWith('www.', $attributes['href'])){
                 $attributes['href'] = "http://" . $attributes['href'];
             }
