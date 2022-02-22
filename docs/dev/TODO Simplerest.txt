@@ -1,5 +1,57 @@
 # TODO
 
+- Tener en cuenta que TypeORM por ejemplo hace *asíncronas* las queries o sea son promesas !
+
+- Cache sobre queries.  Si está activa se deben cachear los *resultados* en REDIS por ejemplo. 
+Es posible usar "IORedis's cluster" sobre varios "servidores".
+
+  DB:table(...)
+  ->where(...)
+  ->select(...)
+  ->cache(true)
+  ->get()
+
+o especificando el tiempo
+
+  DB:table(...)
+  ->where(...)
+  ->select(...)
+  ->cache(60000) // 1 minuto
+  ->get()
+
+"You can cache results selected by these QueryBuilder methods: getMany, getOne, getRawMany, getRawOne and getCount.
+
+You can also cache results selected by these Repository methods: find, findAndCount, findByIds, and count."  <-- TypeORM
+
+
+Ver
+https://orkhan.gitbook.io/typeorm/docs/caching
+
+
+Cache de queries en Laravel
+
+Ver
+https://www.amitmerchant.com/using-simple-yet-effective-caching-for-laravel-queries/
+
+Nota:
+
+Habría una forma de cachear la "construcción" de la Query como tal (cosa que no harían ni TypeORM ni Laravel) haciendo protected todos los métodos de Model y con __call($method, ...$args) interceptando cada método y al verificar que la caché está activa serían "by-paseados" y solo se devolvería la raw queries con los placeholders (?) cuando aplique.
+
+Este método exigiría:
+
+  . Asociar un identificador (qid) a cada query. 
+
+  . Compilar (y re-compilar) las queries cuando haya un cambio en su estructura.
+
+Ej:
+
+  DB:table(...)
+  ->qid('alumnos_aprobados_mate1_2015')
+  ->where(...)
+  ->select(...)
+  ->get()
+
+
 - Crear mecanismo "sandbox" para funciones y métodos que no deban incluirse en los commits:
 
   . Usar una anotación sobre la función como @sandboxed
