@@ -10,24 +10,49 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
 ?>
 
+<style>
+  #navbar-example {
+      position: relative;
+      height: 300px;
+      overflow: auto;
+  }
+</style>
+
+<nav id="navbar-example" class="navbar navbar-light bg-light px-3">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a class="nav-link active" href="#scrollspyHeading1">First</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#scrollspyHeading2">Second</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Dropdown</a>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#scrollspyHeading3">Third</a></li>
+          <li><a class="dropdown-item" href="#scrollspyHeading4">Fourth</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#scrollspyHeading5">Fifth</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
 <div class="row mt-5">
   <div class="col-4 offset-4">
 
-  <div id="list-example" class="list-group">
-    <a class="list-group-item list-group-item-action" href="#list-item-1">Item 1</a>
-    <a class="list-group-item list-group-item-action" href="#list-item-2">Item 2</a>
-    <a class="list-group-item list-group-item-action" href="#list-item-3">Item 3</a>
-    <a class="list-group-item list-group-item-action" href="#list-item-4">Item 4</a>
-  </div>
-  <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" class="scrollspy-example" tabindex="0">
-    <h4 id="list-item-1">Item 1</h4>
-    <p>Texto bla bla 1</p>
-    <h4 id="list-item-2">Item 2</h4>
-    <p>Texto bla bla 2</p>
-    <h4 id="list-item-3">Item 3</h4>
-    <p>Texto bla bla 3</p>
-    <h4 id="list-item-4">Item 4</h4>
-    <p>Texto bla bla 4</p>
+  <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+    <h4 id="scrollspyHeading1">First heading</h4>
+    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+    <h4 id="scrollspyHeading2">Second heading</h4>
+    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+    <h4 id="scrollspyHeading3">Third heading</h4>
+    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+    <h4 id="scrollspyHeading4">Fourth heading</h4>
+    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+    <h4 id="scrollspyHeading5">Fifth heading</h4>
+    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
   </div>
 
 
@@ -42,5 +67,9 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
   var popover = new bootstrap.Popover(document.querySelector('.popovers'), {
   container: 'body'
+  })
+
+  var scrollSpy = new bootstrap.ScrollSpy(document.body, {
+    target: '#navbar-example'
   })
 </script>

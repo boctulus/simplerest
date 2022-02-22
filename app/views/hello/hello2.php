@@ -143,6 +143,14 @@ Bt5Form::setIdAsName();
         ])
         ;
 
+        /*
+            Spinners
+        */
+
+        echo tag('spinner')->class('my-3')->color('danger');
+
+
+
         echo tag('progress')->content(
             tag('progressBar')->current(80)
         )->class('mt-5');

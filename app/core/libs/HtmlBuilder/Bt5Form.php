@@ -1151,6 +1151,32 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
+    /* Spinners  */
+
+    static function spinner(mixed $content = 'Loading...', Array $attributes = [], ...$args){
+        $attributes['role']  = "status";
+        $attributes['class'] = "spinner-border";
+
+        $content = '<span class="visually-hidden">'.$content.'</span>';
+
+        // Color
+
+        $color   = $attributes['color'] ?? $args['color'] ?? null;
+
+        if ($color !== null){
+            if (!in_array($color, static::$colors)){
+                throw new \InvalidArgumentException("Invalid color for '$color'");
+            }
+
+            static::addColor("text-$color", $attributes['class']);
+            unset($args['color']);
+        }
+
+        // Growing
+
+        return static::div($content, $attributes, ...$args);
+    }
+
     
     /* Popover   */
 
