@@ -10,66 +10,31 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
 ?>
 
-<style>
-  #navbar-example {
-      position: relative;
-      height: 300px;
-      overflow: auto;
-  }
-</style>
 
-<nav id="navbar-example" class="navbar navbar-light bg-light px-3">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <ul class="nav nav-pills">
-      <li class="nav-item">
-        <a class="nav-link active" href="#scrollspyHeading1">First</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#scrollspyHeading2">Second</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Dropdown</a>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#scrollspyHeading3">Third</a></li>
-          <li><a class="dropdown-item" href="#scrollspyHeading4">Fourth</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#scrollspyHeading5">Fifth</a></li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
+<div class="container mt-5">
 
-<div class="row mt-5">
-  <div class="col-4 offset-4">
+  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+    Tooltip on top
+  </button>
+  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" title="Tooltip on right">
+    Tooltip on right
+  </button>
+  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip on bottom">
+    Tooltip on bottom
+  </button>
+  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="left" title="Tooltip on left">
+    Tooltip on left
+  </button>
+   
 
-  <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0" class="scrollspy-example" tabindex="0">
-    <h4 id="scrollspyHeading1">First heading</h4>
-    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
-    <h4 id="scrollspyHeading2">Second heading</h4>
-    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
-    <h4 id="scrollspyHeading3">Third heading</h4>
-    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
-    <h4 id="scrollspyHeading4">Fourth heading</h4>
-    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
-    <h4 id="scrollspyHeading5">Fifth heading</h4>
-    <p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
-  </div>
-
-
-  </div>
 </div>
 
+
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
-    myModal.show()
-  });
 
-  var popover = new bootstrap.Popover(document.querySelector('.popovers'), {
-  container: 'body'
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
   })
 
-  var scrollSpy = new bootstrap.ScrollSpy(document.body, {
-    target: '#navbar-example'
-  })
 </script>
