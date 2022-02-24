@@ -10062,6 +10062,101 @@ Ej:
 echo tag('spinner')->class('my-3')->grow()->as('button')->unhide()->content('Cargando..');
 
 
+# Toasts
+
+Sirven para notificaciones en tiempo real (del lado del front) y por ello no tiene mucho sentido implementarlas en el backend (con PHP)
+
+Importante:
+
+- Toasts are opt-in for performance reasons, so you must initialize them yourself.
+- Toasts will automatically hide if you do not specify autohide: false.
+
+
+To encourage extensible and predictable toasts, we recommend a header and body.
+
+At a minimum, we require a single element to contain your “toasted” content and strongly encourage a dismiss button.
+
+El código HTML mínimo recomendado es el siguiente:
+
+	<!-- button to initialize toast -->
+	<button type="button" class="btn btn-primary" id="toastbtn">Initialize toast</button>
+
+	<!-- positioning ->
+	<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+
+		<!-- Toast -->
+		<div class="toast" id="toastNotice">
+			
+			<div class="toast-header">  
+			<svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+			<strong class="me-auto">Bootstrap</strong>
+			<small>11 mins ago</small>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+
+			<div class="toast-body">
+			Hello, world! This is a toast message.
+			</div>
+
+		</div>
+
+	</div>
+
+Con el builder:
+
+	echo tag('button')->id("toastbtn")->value("Abrir toast");
+
+	echo tag('div')->class("position-fixed bottom-0 end-0 p-3")->style("z-index: 11")->content(
+			tag('toast')->content([
+				tag('toastHeader')->content([
+					'<svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+					<strong class="me-auto">Bootstrap</strong>
+					<small>11 mins ago</small>',
+
+					tag('toastCloseButton')
+				]),
+				tag('toastBody')->content(
+					'Hello, world! This is a toast message.'
+				),
+			])
+	);
+
+Los toast requieren inicialización via JavaScript:
+
+	document.getElementById("toastbtn").onclick = function() {
+		var myAlert =document.querySelector('.toast');
+		var bsAlert = new bootstrap.Toast(myAlert);//inizialize it
+		bsAlert.show();//show it
+	};
+
+Notas:
+
+Las "toast" sirven para notificaciones en tiempo real (del lado del front) y por ello no tiene mucho sentido implementarlas en el backend (con PHP)
+
+Boostrap 5 tiene varias opciones más para toast de las descritas aquí.
+
+
+# Tooltips
+
+Tooltips y popovers son componentes similares siendo lo tooltips para mostrar mucho menos texto y son más simples.
+
+inicialización
+
+Los tooltips deben ser inicializados por motivos de performance:
+
+	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+		return new bootstrap.Tooltip(tooltipTriggerEl)
+	})
+
+Ej:
+
+	echo tag('tooltip')->title('Some title')->content('Tooltip on top');
+
+Positioning
+
+	echo tag('tooltip')->title('Some title')->content('Tooltip on bottom')->pos('bottom');
+
 
 
 Notas Dev:

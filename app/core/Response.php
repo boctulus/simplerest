@@ -288,7 +288,7 @@ class Response
                     'location'  => static::$data['error']['location'] ?? '',
                     'message'   => static::$data['error']['message'] ?? '',
                     'detail'    => static::$data['error']['detail'] ?? '',
-                ], 'app_layout_basic.php');
+                ], 'tpl_basic.php');
 
             } else {
                 $message = static::$data['error']['message'] ?? '--';

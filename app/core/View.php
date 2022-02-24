@@ -9,7 +9,7 @@ class View
 {
     use ExceptionHandler;
 
-    const LAYOUT = 'app_layout.php';
+    const LAYOUT = 'tpl.php';
 
 
     function __construct(string $view_path, array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0)
