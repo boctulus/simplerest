@@ -69,12 +69,36 @@ Bt5Form::setIdAsName();
 
         echo tag('p')->class('mt-5');
 
+        echo tag('tooltip')->title('Some title')->content('Tooltip on bottom')->pos('bottom')
+        ->class('me-3');
+
+        // Toasts
+        echo tag('button')->id("toastbtn")->value("Abrir toast");
+
+        echo tag('div')->content([
+            tag('toast')->content([
+                tag('toastHeader')->content([
+                    '<svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+                    <strong class="me-auto">Bootstrap</strong>
+                    <small>11 mins ago</small>',
+
+                    tag('toastCloseButton')
+                ]),
+                tag('toastBody')->content(
+                    'Hello, world! This is a toast message.'
+                ),
+
+            ])
+        ])->class("position-fixed bottom-0 end-0 p-3")->style("z-index: 11");
+
+        echo tag('p');
+
         echo tag('popover')
         ->content('Click to toggle popover')
         ->title('Popover title')
         ->body("And here's some amazing content. It's very engaging. Right?")
         ->as('button')
-        ->class('btn-lg mt-3')->danger()->pos('top')
+        ->class('btn-lg my-3')->danger()->pos('top')
         ->dismissible();                   
 
         /*
@@ -667,8 +691,8 @@ Bt5Form::setIdAsName();
             tag('listGroupItem')->text('An item #3')->color('success')
         ])->class('mt-2')->horizontal();
 
-    
         echo Bt5Form::br();
+
 
         echo tag('img')->src(asset('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");
 
@@ -687,4 +711,16 @@ Bt5Form::setIdAsName();
     var popover = new bootstrap.Popover(document.querySelector('.popovers'), {
         container: 'body'
     });
+
+    document.getElementById("toastbtn").onclick = function() {
+        var myAlert =document.querySelector('.toast');
+        var bsAlert = new bootstrap.Toast(myAlert);//inizialize it
+        bsAlert.show();//show it
+    };
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
 </script>
