@@ -516,6 +516,40 @@ class Bt5Form extends Form
         return static::group($content, 'nav', $attributes, ...$args);
     }
 
+    /* Toasts     */
+
+    static function toast(mixed $content, Array $attributes = [], ...$args){     
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        
+        $attributes['role'] = "alert";
+        $attributes['aria-live'] = "assertive";
+        $attributes['aria-atomic'] = "true";
+ 
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function toastHeader(mixed $content, Array $attributes = [], ...$args){     
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function toastBody(mixed $content, Array $attributes = [], ...$args){     
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function toastCloseButton(mixed $content = '', Array $attributes = [], $target = null, ...$args){        
+        $attributes['class'] = "btn-close";
+        $attributes['data-bs-dismiss'] = "toast";
+        $attributes['aria-label'] = 'Close';
+       
+        return static::basicButton($content, $attributes, ...$args);
+    }
+
+    static function toastContainer(mixed $content, Array $attributes = [], ...$args){     
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        return static::div($content, $attributes, ...$args);
+    }
 
 
     /* List group */
@@ -1280,6 +1314,43 @@ class Bt5Form extends Form
         return static::link($content, null, $attributes, ...$args);
     }
 
+    /* Tooltips  */
+
+    static function tooltip(mixed $content, Array $attributes = [], ...$args){
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. 'btn btn-primary' : 'btn btn-primary';
+       
+        $attributes['data-bs-toggle'] = "tooltip";
+
+        if (isset($args['title'])){
+            $attributes['title'] = $args['title'];
+            unset($args['title']);
+        }
+
+        if (!isset($attributes['title']) || empty($attributes['title'])){
+            throw new \Exception("Title is required");
+        }
+
+        $pos = $args['pos'] ?? $attributes['pos'] ?? 'top';
+
+        if (!in_array($pos, ['top', 'bottom', 'left', 'right'])){
+            throw new \Exception("Unknown positioning class '$pos'");
+        }
+
+        $attributes['data-bs-placement'] = $pos;
+        unset($args['pos']);
+
+        $type = $args['as'] ?? $attributes['as'] ?? 'link';
+
+        if ($type == 'button'){
+            $attributes['type'] = "button";
+            return static::button($content, $attributes, ...$args);
+        } else {
+            $attributes['tabindex'] = "0";
+            $attributes['role'] = "button"; 
+        }
+
+        return static::link($content, null, $attributes, ...$args);
+    }
 
 
     /*

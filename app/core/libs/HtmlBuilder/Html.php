@@ -189,6 +189,13 @@ class Html
         "progressBar"     => "progress-bar",
 
 
+        /* Toasts */
+
+        "toast"           => "toast",
+        "toastHeader"     => "toast-header",
+        "toastBody"       => "toast-body",
+        "toast-container" => "toast-container",
+
         /*
             Utilities
         */
