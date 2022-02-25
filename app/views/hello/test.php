@@ -13,28 +13,25 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
 <div class="container mt-5">
 
-  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
-    Tooltip on top
-  </button>
-  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" title="Tooltip on right">
-    Tooltip on right
-  </button>
-  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip on bottom">
-    Tooltip on bottom
-  </button>
-  <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="left" title="Tooltip on left">
-    Tooltip on left
-  </button>
+  <?php
+
+    echo tag('card')->style('width: 18rem;')
+    ->body([            
+        tag('cardTitle')->text('Some title'),
+        tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+        tag('inputButton')->value('Go somewhere')->info()->textColor('white')
+    ])
+    ->class('my-3')
+    ->bg('primary')
+    ->textColor('white')
+    ;  
+
+  ?>
    
 
 </div>
 
 
 <script>
-
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })
 
 </script>
