@@ -28,6 +28,22 @@ class Html
         'white-50'
     ];
 
+    static protected $text_colors = [
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'warning',
+        'info',
+        'light',
+        'dark',
+        'body',
+        'muted',
+        'white',
+        'black-50',
+        'white-50'
+    ];
+
     static protected $bg_colors = [
         'primary',
         'secondary',
@@ -227,12 +243,19 @@ class Html
         static::$pretty = $state;
     }
 
-    static function removeColors(array|string &$to) : void{
+    static function removeColors(string $type, array|string &$to) : void{
+        if (!in_array($type, ['btn', 'alert', 'bg', 'text'])){
+            throw new \InvalidArgumentException("Color type '$type' is incorrect");
+        }
+
         if (is_array($to)){
             foreach ($to as $ix => $row){
                 foreach (static::$colors as $c){
-                    static::removeClass("btn-$c", $to[$ix]);
-                    static::removeClass("btn-outline-$c", $to[$ix]);
+                    static::removeClass("$type-$c", $to[$ix]);
+
+                    if ($type == 'btn'){
+                        static::removeClass("btn-outline-$c", $to[$ix]);
+                    }                    
                 }    
             }
 
@@ -240,8 +263,11 @@ class Html
         }
 
         foreach (static::$colors as $c){
-            static::removeClass("btn-$c", $to);
-            static::removeClass("btn-outline-$c", $to);
+            static::removeClass("$type-$c", $to);            
+
+            if ($type == 'btn'){
+                static::removeClass("$type-outline-$c", $to);
+            }  
         }     
     }
 
@@ -254,7 +280,7 @@ class Html
             if ($pos !== false){
                 $_prefix = substr($color, 0, $pos + 1);
 
-                if (in_array($_prefix, ['btn-', 'alert-', 'text-'])){
+                if (in_array($_prefix, ['btn-', 'alert-', 'text-', 'bg-'])){
                     $prefix = $_prefix;
                 } else {
                     $pos = 0;
@@ -282,7 +308,9 @@ class Html
 
         /* remuevo colores previos */
 
-        static::removeColors($to);  
+
+        $type = substr($prefix, 0, -1);
+        static::removeColors($type, $to);  
         
         /* 
             si el color a aplicar, no existe => lo aplico
@@ -293,23 +321,46 @@ class Html
         }    
     }
 
-    static function hasColor(string $str, string $color = '') : bool{
-        if (strlen($color) > 4 && substr($color, 0, 4) != 'btn-'){
-            $color = "btn-$color";
+    static function hasColor(string $type, string $str, string $color = '') : bool{
+        $type_len = strlen($type);
+
+        if (!in_array($type, ['btn', 'alert', 'bg', 'text'])){
+            throw new \InvalidArgumentException("Color type '$type' is incorrect");
+        }
+
+        if (strlen($color) > $type_len && substr($color, 0, $type_len) != $type . '-'){
+            $color = "{$type}-$color";
         }    
 
-        if ($color !== null){
+        if (!empty($color)){
             return Strings::containsWord($color, $str);
         }
 
         foreach (static::$colors as $c){
-            if (Strings::containsWord("btn-$c", $str)){
+            if (Strings::containsWord("{$type}-$c", $str)){
                 return true;
             }
         }
         
         return false;        
     }
+
+    static function hasBtnColor(string $str, string $color = '') : bool{
+        return static::hasColor('btn', $str, $color);        
+    }
+
+    static function hasAlertColor(string $str, string $color = '') : bool{
+        return static::hasColor('alert', $str, $color);        
+    }
+
+    static function hasBgColor(string $str, string $color = '') : bool{
+        return static::hasColor('bg', $str, $color);        
+    }
+
+    static function hasTextColor(string $str, string $color = '') : bool{
+        return static::hasColor('text', $str, $color);        
+    }
+
 
     static function addClass(string $new_class, string &$to){
         if (empty($to)){
@@ -440,6 +491,23 @@ class Html
                 unset($args['class']);
             }
         } 
+
+        // Colors
+
+        $color_types = ['bg', 'text', 'alert', 'btn'];
+
+        foreach ($color_types as $ct){
+            $at    = ($ct == 'text') ? 'textColor' : $ct;
+            $color = $args[$at] ?? $attributes[$at] ?? null;
+            
+            if ($color !== null){
+                //d($color, $ct);
+
+                static::addColor("$ct-{$args[$at]}", $attributes['class']);
+                unset($args[$at]);
+            }
+        }
+
 
         $attributes = array_merge($attributes, $args);
 
@@ -976,7 +1044,7 @@ class Html
             }           
         }
 
-        if (!$color_applied && !static::hasColor($attributes['class'])){
+        if (!$color_applied && !static::hasBtnColor($attributes['class'])){
             static::addColor("btn-primary", $attributes['class']); 
         } 
 
@@ -990,7 +1058,7 @@ class Html
             }
         }
 
-        static::removeColors($args);
+        static::removeColors('btn', $args);
 
         return static::group($content,'button', $attributes, ...$args);
     }
@@ -1019,7 +1087,7 @@ class Html
             }           
         }
 
-        if (!$color_applied && !static::hasColor($attributes['class'])){
+        if (!$color_applied && !static::hasBtnColor($attributes['class'])){
             static::addColor("btn-primary", $attributes['class']); 
         } 
 
@@ -1033,7 +1101,7 @@ class Html
             }
         }
 
-        static::removeColors($args);
+        static::removeColors('btn', $args);
 
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
