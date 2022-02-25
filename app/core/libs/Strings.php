@@ -484,6 +484,23 @@ class Strings
 		return Strings::middle($str, $from_pos, 0);        
 	}
 
+	static function firstChar(string $str) : string {
+		return substr($str, 0, 1);
+	}
+
+	static function lastChar(string $str) : string {
+		return substr($str, -1);
+	}
+
+	static function exceptLastChar(string $str) : string {
+		return substr($str, 0, -1);
+	}
+
+	// alias for exceptLastChar
+	static function untilLastChar(string $str) : string {
+		return substr($str, 0, -1);
+	}
+
 	/*
 		Parse php class from file
 	*/

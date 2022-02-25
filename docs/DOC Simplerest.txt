@@ -10158,6 +10158,39 @@ Positioning
 	echo tag('tooltip')->title('Some title')->content('Tooltip on bottom')->pos('bottom');
 
 
+# Colors
+
+Para los botones y alertas en particular existen "temas" que ajustan tanto el color del texto como el background de los botones manejados por las clases btn-{color}, btn-outline-{color} y alert-{color}.
+
+Estos se aplican con los "métodos"
+
+	info()
+	success()
+	warning()
+	danger()
+	etc
+
+En general existen los "text colors" y "background colors" que se aplican respectivamente con textColor() y bg()
+
+Ej:
+
+	echo tag('card')->style('width: 18rem;')
+	->body([            
+		tag('cardTitle')->text('Some title'),
+		tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+		tag('inputButton')->value('Go somewhere')->info()->textColor('white')
+	])
+	->class('my-3')
+	->bg('primary')
+	->textColor('white');
+
+Para el caso particular de los botones donde se puede aplicar el outline es con outline() 
+
+Ej:
+
+	tag('button')->content('Botón verde')->class('rounded-pill')->success()->outline()
+
+
 
 Notas Dev:
 =========

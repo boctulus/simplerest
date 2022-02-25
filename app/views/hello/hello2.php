@@ -445,35 +445,7 @@ Bt5Form::setIdAsName();
 
         echo '<br/>';
 
-        echo tag('card')->style('width: 18rem;')->class('my-3')
-        ->content(
-            tag('cardImgTop')->src(asset('img/mail.png'))
-        )
-        ->body([            
-            tag('cardTitle')
-            ->placeholder()->bg('danger'),
-            
-            tag('cardSubtitle')
-            ->placeholder()->bg('warning'),
-
-            tag('cardText')
-            ->placeholder()->bg('success'),
-            
-            tag('inputButton')->value('Go somewhere')
-            ->placeholder()
-        ]);
-
-        echo tag('card')->style('width: 18rem;')->class('my-3')
-        ->content(
-            tag('cardImgTop')->src(asset('img/mail.png'))
-        )
-        ->body([            
-            tag('cardTitle')->text('Some title'),
-            tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
-            tag('inputButton')->value('Go somewhere')
-        ]);
-
-
+        
         echo tag('card')
         ->header('Quote') 
         ->body(
@@ -495,9 +467,49 @@ Bt5Form::setIdAsName();
         )
         ->class('mb-4');
 
-        echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->success();
+        echo tag('card')->style('width: 18rem;')
+        ->body([            
+            tag('cardTitle')->text('Some title'),
+            tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+            tag('inputButton')->value('Go somewhere')->info()->textColor('white')
+        ])
+        ->class('my-3')
+        ->bg('primary')
+        ->textColor('white');
+
+
+        echo tag('card')->style('width: 18rem;')->class('my-3')
+        ->content(
+            tag('cardImgTop')->src(asset('img/mail.png'))
+        )
+        ->body([            
+            tag('cardTitle')->text('Some title'),
+            tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+            tag('inputButton')->value('Go somewhere')
+        ]);
+
+        echo tag('card')->style('width: 18rem;')->class('my-3')
+        ->content(
+            tag('cardImgTop')->src(asset('img/mail.png'))
+        )
+        ->body([            
+            tag('cardTitle')
+            ->placeholder()->bg('danger'),
+            
+            tag('cardSubtitle')
+            ->placeholder()->bg('warning'),
+
+            tag('cardText')
+            ->placeholder()->bg('success'),
+            
+            tag('inputButton')->value('Go somewhere')
+            ->placeholder()
+        ]);
+
 
         /* Badges */    
+
+        echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->success();
 
         echo tag('button')->content([
             'Inbox',
