@@ -1230,8 +1230,8 @@ class Bt5Form extends Form
         $size   = $attributes['size'] ?? $args['size'] ?? null;
         
         if ($size){
-            $attributes['style'] = isset($attributes['style']) ? $attributes['style'] . '; ' : '';
-            $attributes['style'] .= "width: {$size}rem; height: {$size}rem;";
+            $attributes['style'] = $attributes['style'] ?? '';
+            static::addStyle("width: {$size}rem; height: {$size}rem;", $attributes['style']);
         }
 
         return static::{$type}($content, $attributes, ...$args);
