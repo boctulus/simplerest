@@ -225,6 +225,7 @@ class Html
     
     static protected $macros = [];
 
+    // mover a un helper ya que es muy general
     static protected function shift(string $key, &$var, $default_value = null) : mixed {
         $out = $var[$key] ?? $default_value;
         unset($var[$key]);
@@ -416,6 +417,19 @@ class Html
         }   
     }
 
+    static function addStyle(string $new_rule, string &$to){
+        if (empty($to)){
+            $to = $new_rule;
+            return;
+        }
+
+        if (Strings::lastChar(trim($to)) != ';'){
+            $to .= ';';
+        }      
+
+        $to .= $new_rule;
+    }
+
     /*
         Copy name attribute into id one
     */
@@ -487,10 +501,10 @@ class Html
 
         if (isset($attributes['class'])){
             if (isset($args['class'])){
-                $attributes['class'] .=  ' ' . $args['class'];
+                static::addClass($args['class'], $attributes['class']);
                 unset($args['class']);
             }
-        } 
+        }  
 
         // Colors
 
@@ -501,14 +515,38 @@ class Html
             $color = $args[$at] ?? $attributes[$at] ?? null;
             
             if ($color !== null){
-                //d($color, $ct);
+                $attributes['class'] = $attributes['class'] ?? '';
 
                 static::addColor("$ct-{$args[$at]}", $attributes['class']);
                 unset($args[$at]);
             }
         }
 
+        $opacity = $args['opacity'] ?? $attributes['opacity'] ?? null;
 
+        if ($opacity !== null){
+            if ($opacity <0 || $opacity>1){
+                throw new \OutOfRangeException("Opacity $opacity is out of range [0,1]");
+            }
+
+            $attributes['style'] = $attributes['style'] ?? '';
+            static::addStyle("--bs-text-opacity: $opacity;", $attributes['style']);
+        }
+
+        if (isset($attributes['class'])){
+            if (isset($args['class'])){
+                static::addClass($args['class'], $attributes['class']);
+                unset($args['class']);
+            } else {
+                // no hago nada.
+            }
+        } else {
+            if (isset($args['class'])){
+                $attributes['class'] = $args['class'];
+                unset($args['class']);
+            }
+        }
+        
         $attributes = array_merge($attributes, $args);
 
         $name = $attributes['name'] ?? '';
@@ -530,8 +568,6 @@ class Html
     }
 
     static function group(mixed $content, string $tag = 'div', Array $attributes = [], ...$args){
-        //d($args, 'args1');
-
         if (is_array($content)){
             $content = implode(' ', $content);
         }

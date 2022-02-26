@@ -8887,14 +8887,14 @@ Ej:
 
 Colores
 
-Se pueden aplicar colores sobre cada item en principio con color($color) y también mediante $color() o sea success(), warning(), etc
+Se pueden aplicar colores sobre cada item con color($color). No intente con $color() como success() porque NO es lo que desea.
 
 Ej:
 
 	echo tag('listGroup')->content([
-		tag('listGroupItem')->text('An item #1')->info(),
-		tag('listGroupItem')->text('An item #2')->warning(),
-		tag('listGroupItem')->text('An item #3')->color('success')
+		tag('listGroupItem')->text('An item #1')->color('info'),
+		tag('listGroupItem')->text('An item #2')->warning(),  // mal
+		tag('listGroupItem')->text('An item #3')->color('success')  // ok
 	])->class('mt-5')->horizontal();
 
 
@@ -9768,22 +9768,22 @@ En particular se implemetó para cardTitle, cardSubtitle, cardText e inputButton
 Ej:
 
 	echo tag('card')->style('width: 18rem;')->class('my-3')
-        ->content(
-            tag('cardImgTop')->src(asset('img/mail.png'))
-        )
-        ->body([            
-            tag('cardTitle')
-            ->placeholder()->color('bg-danger'),
-            
-            tag('cardSubtitle')
-            ->placeholder()->color('bg-warning'),
+	->content(
+		tag('cardImgTop')->src(asset('img/mail.png'))
+	)
+	->body([            
+		tag('cardTitle')
+		->placeholder(),
+		
+		tag('cardSubtitle')
+		->placeholder(),
 
-            tag('cardText')
-            ->placeholder()->color('bg-success'),
-            
-            tag('inputButton')->value('Go somewhere')
-            ->placeholder()
-        ]);
+		tag('cardText')
+		->placeholder(),
+		
+		tag('inputButton')->value('Go somewhere')
+		->placeholder()
+	]);
 
 Color
 
@@ -10014,11 +10014,11 @@ Colors
 
 Ej:
 
-	echo tag('spinner')->color('danger');
+	echo tag('spinner')->textColor('danger')
 
 Growing spinner
 
-	echo tag('spinner')->color('danger')->grow();
+	echo tag('spinner')->textColor('danger')->grow();
 	
 Placement
 
@@ -10026,7 +10026,7 @@ Solo utilice un wrapper y utilidades como flex. Ej:
 
 	<div class="d-flex justify-content-center">
 	<?php
-		echo tag('spinner')->color('danger')->grow();
+		echo tag('spinner')->textColor('danger')->grow();
 	?>
 	</div>
 
@@ -10189,6 +10189,44 @@ Para el caso particular de los botones donde se puede aplicar el outline es con 
 Ej:
 
 	tag('button')->content('Botón verde')->class('rounded-pill')->success()->outline()
+
+En algunos componentes se permitió el uso de color() como alternativa a $color()
+
+Ej:
+
+	echo tag('alert')->content(
+        tag('alertLink')->href('#')->anchor('A danger content')
+    )->color('danger')->dismissible(true);
+
+Equivale a,...
+
+	echo tag('alert')->content(
+        tag('alertLink')->href('#')->anchor('A danger content')
+    )->danger()->dismissible(true);
+
+
+Se está transicionando de la forma success() a bg('success') o lo que corresponda por cuestiones de eficiencia. 
+
+Sin embargo hay casos donde no se puede evitar el uso de color()
+
+Ej:
+
+	// incorrecto: bg-{$color}
+	tag('listGroupItem')->text('An item #3')->bg('success')
+
+No es lo mismo que 
+
+	// correcto: list-group-item-{$color}
+	tag('listGroupItem')->text('An item #3')->color('success')
+
+
+Opacidad
+
+La opacidad es una propiedad que tiene un rango de 0 a 1 y se aplica con opacity()
+
+Ej:
+
+	echo tag('div')->content('Some content')->textColor('primary')->opacity(0.5);
 
 
 
