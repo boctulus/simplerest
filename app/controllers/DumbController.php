@@ -7494,17 +7494,12 @@ class DumbController extends Controller
         // ->borderColor('success')
         // ;
 
-        echo tag('div')->width(100)->content('
-        Some content,...
-        <p>
-        <p>
-      ')
-      //->border()
-      ->borderWidth(5)
-      ->borderRad(3)
-      ->borderCorner('top')  // para borders redondeados
-      ->borderColor('warning')
-      ;
+        echo tag('div')->content(
+            'Width 75%'
+          )
+          ->w(75)
+          ->bg('warning')
+          ->class('p-3');
         
     }
 
