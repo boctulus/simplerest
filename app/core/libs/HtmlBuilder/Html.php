@@ -233,6 +233,10 @@ class Html
         return $out;
     }
 
+    static protected function getAtt(string $att, Array $v1, Array $v2, $default_value = null){
+        return $v1[$att] ?? $v2[$att] ?? $default_value;
+    }
+
     static protected function shiftClass(){
         $class = static::$class;
         static::$class = '';
@@ -522,6 +526,8 @@ class Html
             }
         }
 
+        // Opacity
+
         $opacity = $args['opacity'] ?? $attributes['opacity'] ?? null;
 
         if ($opacity !== null){
@@ -532,6 +538,31 @@ class Html
             $attributes['style'] = $attributes['style'] ?? '';
             static::addStyle("--bs-text-opacity: $opacity;", $attributes['style']);
         }
+
+        // Borders
+
+        $border = static::getAtt('border', $attributes, $args);
+        
+        if ($border !== null){
+            $attributes['class'] = $attributes['class'] ?? '';
+            static::addClass('border', $attributes['class']);
+            unset($args['border']);
+        }
+
+        $borderW = static::getAtt('borderWidth', $attributes, $args);
+        
+        if ($borderW !== null){
+            if ($borderW <0 || $borderW > 6){
+                throw new \OutOfRangeException("Border-width $border is out of range. It should be in range of [1,6]");
+            } 
+
+            $attributes['class'] = $attributes['class'] ?? '';
+
+            static::addClass('border', $attributes['class']);
+            static::addClass("border-{$borderW}", $attributes['class']);
+            unset($args['borderWidth']);
+        }
+
 
         if (isset($attributes['class'])){
             if (isset($args['class'])){
