@@ -7468,7 +7468,16 @@ class DumbController extends Controller
         // //->scroll()
         // ;
 
-        echo tag('spinner');
+        //echo tag('spinner');
+        
+        echo tag('div')->content('Some content')
+        ->textColor('primary')
+        ->class('my-3')
+        ;
+
+        // echo tag('span')->text('Some content')
+        // ->textColor('primary')
+        // ->class('my-3');
         
     }
 

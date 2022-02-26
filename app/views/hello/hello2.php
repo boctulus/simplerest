@@ -171,7 +171,7 @@ Bt5Form::setIdAsName();
             Spinners
         */
 
-        echo tag('spinner')->class('my-3')->color('danger')->grow()->size(5);
+        echo tag('spinner')->class('my-3')->bg('danger')->grow()->size(5);
         echo tag('p');
 
         echo tag('spinner')->class('my-3')->as('button');
@@ -509,14 +509,16 @@ Bt5Form::setIdAsName();
 
         /* Badges */    
 
-        echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->success();
+        echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->bg('success'); // ok
 
         echo tag('button')->content([
             'Inbox',
-            tag('badge')->content('99+')->danger()->class('position-absolute top-0 start-100 translate-middle rounded-pill')
+            tag('badge')->content('99+')->bg('danger')->class('position-absolute top-0 start-100 translate-middle rounded-pill')
         ])
         ->class('rounded position-relative')
         ->primary();
+
+        /* buttonToolbar */
 
         echo tag('buttonToolbar')->content([
             tag('buttonGroup')->content(
@@ -617,6 +619,9 @@ Bt5Form::setIdAsName();
 
         echo tag('p')->text("Hola mundo cruel");
 
+        echo tag('div')->content('Some content')->textColor('primary')->class('mt-3');    
+        echo tag('div')->content('Some content but with opacity of 50%')->textColor('primary')->opacity(0.5)->class('mb-3');
+
         echo tag('inputColor')->name('my_color')->text('Color')->id('c1');
 
 
@@ -699,7 +704,7 @@ Bt5Form::setIdAsName();
 
         echo tag('listGroup')->content([
             tag('listGroupItem')->text('An item')->active(),
-            tag('listGroupItem')->text('An item #2')->warning(),
+            tag('listGroupItem')->text('An item #2')->color('warning'),
             tag('listGroupItem')->text('An item #3')->color('success')
         ])->class('mt-2')->horizontal();
 

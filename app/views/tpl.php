@@ -11,7 +11,11 @@
     <!-- ico -->
     <link rel="shortcut icon" href="<?= asset('img/favicon.ico') ?>" />
 
-    <!-- google fonts -->
+    <!-- google fonts 
+
+        For download 
+        https://github.com/majodev/google-webfonts-helper
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
