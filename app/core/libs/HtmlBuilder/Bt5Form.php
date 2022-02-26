@@ -595,7 +595,7 @@ class Bt5Form extends Form
             unset($args['color']);
         }
 
-        // Proceso colores provinientes en cualquier key => mucho más ineficiente
+        // Necesario! list-group-item-{$k} != bg-{$k}
 
         $kargs = array_merge(array_keys($args), array_keys($attributes));
  
@@ -732,14 +732,13 @@ class Bt5Form extends Form
         // Proceso colores por si se envian usando color($color)
                 
         $color   = $attributes['color'] ?? $args['color'] ?? null;
-        $outline = $attributes['outline'] ?? $args['outline'] ?? false;
-
+ 
         if ($color !== null){
             if (!in_array($color, static::$colors)){
                 throw new \InvalidArgumentException("Invalid color for '$color'");
             }
 
-            static::addColor("alert-$color", $attributes['class'], $outline);
+            static::addColor("alert-$color", $attributes['class']);
             unset($args['color']);
         }
 
@@ -759,16 +758,7 @@ class Bt5Form extends Form
 
     static function badge(string $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-    
-        $kargs = array_merge(array_keys($args), array_keys($attributes));
- 
-        foreach ($kargs as $k){
-            if (in_array($k, static::$colors)){
-                static::addClass("bg-$k", $attributes['class']);
-                break;
-            }           
-        }
-            
+               
         return static::div($content, $attributes, ...$args);
     }
 
@@ -985,6 +975,7 @@ class Bt5Form extends Form
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $color = $args['bg'] ?? $attributes['bg'] ?? null;
+        unset($args['bg']);
 
         $bg_color = '';
         if ($color !== null){
@@ -1012,6 +1003,7 @@ class Bt5Form extends Form
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $color = $args['bg'] ?? $attributes['bg'] ?? null;
+        unset($args['bg']);
 
         $bg_color = '';
         if ($color !== null){
@@ -1039,6 +1031,7 @@ class Bt5Form extends Form
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $color = $args['bg'] ?? $attributes['bg'] ?? null;
+        unset($args['bg']);
 
         $bg_color = '';
         if ($color !== null){
@@ -1231,19 +1224,7 @@ class Bt5Form extends Form
             $content = '<span class="visually-hidden">'.$content.'</span>';
         }
 
-        // Color
-
-        $color   = $attributes['color'] ?? $args['color'] ?? null;
-
-        if ($color !== null){
-            if (!in_array($color, static::$colors)){
-                throw new \InvalidArgumentException("Invalid color for '$color'");
-            }
-
-            static::addColor("text-$color", $attributes['class']);
-            unset($args['color']);
-        }
-
+   
         // Size (en rems)
 
         $size   = $attributes['size'] ?? $args['size'] ?? null;
