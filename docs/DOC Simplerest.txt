@@ -10229,6 +10229,137 @@ Ej:
 	echo tag('div')->content('Some content')->textColor('primary')->opacity(0.5);
 
 
+# Borders
+
+Con border() se aplican borders sobre todos los lados.
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+		Some content,...
+		<p>
+		<p>
+	')
+	->border();
+
+Bordes sobre lados (aditivos)
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+      Some content,...
+      <p>
+      <p>
+    ')
+    ->border()
+    ->border('top bottom');
+
+Bordes sobre lados (substractivo)
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+      Some content,...
+      <p>
+      <p>
+    ')
+    ->border()
+    ->borderSub('top bottom');  // solo a los lados
+
+Border color
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+      Some content,...
+      <p>
+      <p>
+    ')
+    ->border()
+    ->borderSub('top bottom')
+	->borderColor('success');
+
+Border width
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+      Some content,...
+      <p>
+      <p>
+    ')
+    ->border('top left right')
+    ->borderColor('success')
+	->borderWidth(5);
+
+Border radius
+
+Con borderRad() se especifica la redondez de 1 a 3
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+      Some content,...
+      <p>
+      <p>
+    ')
+    ->border('top left right')
+    ->borderWidth(5)
+    ->borderColor('success')
+	->borderRad(3);
+
+Bordes como "píldora"
+
+Con borderPill() se consigue la forma de píldora.
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+      Some content,...
+      <p>
+      <p>
+    ')
+    ->borderWidth(5)
+    ->borderColor('warning')
+	->borderRad(3)
+	->borderPill();
+
+
+Bordes circulares
+
+Con bordeCircle() se consiguen borders circulares.
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+      Some content,...
+      <p>
+      <p>
+    ')
+    ->borderWidth(5)
+    ->borderColor('warning')
+	->borderRad(3)
+	->borderCircle();
+
+
+Redondear corners específicos
+
+Con borderCorner() se pueden redondear solo determinados corners y en particular el efecto es visible cuando se aplica borderPill() o borderCircle()
+
+Ej:
+
+	echo tag('div')->width(100)->content('
+      Some content,...
+      <p>
+      <p>
+    ')
+    //->border()
+    ->borderWidth(5)
+    ->borderRad(3)
+    ->borderColor('warning')
+    ->borderPill()
+	->borderCorner('left top');
+
 
 Notas Dev:
 =========

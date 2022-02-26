@@ -710,6 +710,19 @@ Bt5Form::setIdAsName();
 
         echo Bt5Form::br();
 
+        // Borders
+        echo tag('div')->width(100)->content('
+        Some content,...
+        <p>
+        <p>
+        ')
+        //->border()
+        ->borderWidth(5)
+        ->borderRad(3)
+        ->borderColor('warning')
+        ->borderPill()
+        ->borderCorner('left top')
+        ->class('mb-3');
 
         echo tag('img')->src(asset('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");
 
@@ -717,6 +730,7 @@ Bt5Form::setIdAsName();
         echo Bt5Form::salutor("Isabel", "bella", ['class' => 'my-3 me-1', 'style' => 'color: red']); 
         echo ' ~ '; 
         echo Bt5Form::link(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
+
 
         ?>
 
