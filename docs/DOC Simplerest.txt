@@ -8506,9 +8506,11 @@ Tanto header como footer son opcionales.
 
 Ej:
 
-	 echo tag('card')->content(
+	echo tag('card')->content(
+		tag('cardHeader')->content(
+			tag('cardTitle')->text('Some title')
+		)
         tag('cardBody')->content(
-            tag('cardTitle')->text('Some title') .
             tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
         )
     )->class('mb-4');
@@ -8536,8 +8538,8 @@ Ej:
 	->content(
 		tag('cardImgTop')->src(asset('img/mail.png'))
 	)
-	->body([            
-		tag('cardTitle')->text('Some title'),
+	->body([   
+		tag('cardTitle')->text('Some title'),        
 		tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
 		tag('inputButton')->value('Go somewhere')
 	]);
@@ -8547,6 +8549,54 @@ Sizing
 
 	Se pueden aplicar distintas utilidades como w-75, w-50, etc sobre la card o usando style(), ej: style('width: 18rem;')
 
+Colores 
+
+Se puede aplicar textColor() y bg() sobre el body() y por supuesto también colorear los botones.
+
+Ej:
+
+	echo tag('card')->style('width: 18rem;')
+	->header(tag('cardTitle')->text('Some title'))
+	->body([            
+		tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+		tag('inputButton')->value('Go somewhere')->info()->textColor('white')
+	])
+	->class('my-3')
+	->bg('primary')
+	->textColor('white');
+
+Card title
+
+Tanto title como subTitle pueden ir dentro o fuera del header() pero la diferencia es que dentro del header quedan "remarcados" con un border inferior y se ubicarían delante del content(). Para cards que contienen imágenes queda anti-estético que se use con header.
+
+Ej:
+
+	/*
+      Sin header
+    */
+    echo tag('card')->style('width: 18rem;')->class('my-3')
+    // ->content(
+    //   tag('cardImgTop')->src(asset('img/mail.png'))
+    // )
+    ->body([   
+      tag('cardTitle')->text('Some title'),        
+      tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+      tag('inputButton')->value('Go somewhere')
+    ]);
+
+
+    /*
+      Con header
+    */
+    echo tag('card')->style('width: 18rem;')->class('my-3')
+    // ->content(
+    //   tag('cardImgTop')->src(asset('img/mail.png'))
+    // )
+    ->header(tag('cardTitle')->text('Some title'))
+    ->body([           
+      tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+      tag('inputButton')->value('Go somewhere')
+    ]);
 
 Notas:
 
@@ -8554,12 +8604,14 @@ Debería ser posible capturar la salida un "componente" a fin de que sea utiliza
 
 Ej:
 
-	echo tag('card')->content(
+	echo tag('card')
+		->header(tag('cardTitle')->text('{{cartTitle:text}}'))
+		->content(
         tag('cardBody')->content(
-            tag('cardTitle')->text('{{cartTitle:text}}') .
             tag('cardSubtitle')->text('{{cartsubtitle:text}}')->textMuted()
         )
     );
+
 
 # Carousels
 

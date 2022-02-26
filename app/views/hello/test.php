@@ -16,20 +16,26 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
     
   <?php
 
-  echo tag('link')
-  ->href("www.solucionbinaria.com")
-  ->anchor('SolucionBinaria .com')
-  ->textColor('success')
-  ->class('mb-3');
+    echo tag('card')->style('width: 18rem;')->class('my-3')
+    // ->content(
+    //   tag('cardImgTop')->src(asset('img/mail.png'))
+    // )
+    ->body([   
+      tag('cardTitle')->text('Some title'),        
+      tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+      tag('inputButton')->value('Go somewhere')
+    ]);
 
-  echo tag('p');
-  
-  echo tag('link')
-  ->href("www.solucionbinaria.com")
-  ->anchor('SolucionBinaria .com')
-  ->color('success')
-  ->class('mb-3');
 
+      echo tag('card')->style('width: 18rem;')->class('my-3')
+    // ->content(
+    //   tag('cardImgTop')->src(asset('img/mail.png'))
+    // )
+    ->header(tag('cardTitle')->text('Some title'))
+    ->body([           
+      tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+      tag('inputButton')->value('Go somewhere')
+    ]);
 
   ?>
    
