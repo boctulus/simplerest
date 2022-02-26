@@ -7470,14 +7470,15 @@ class DumbController extends Controller
 
         //echo tag('spinner');
         
-        echo tag('div')->content('Some content')
-        ->textColor('primary')
-        ->class('my-3')
+        echo tag('div')->width(100)->content('
+        Some content,...
+        <p>
+        <p>
+        ')
+        ->border()
+        ->borderWidth(6)
+        //->class('border border-top-0 border-5 border-danger rounded-3')
         ;
-
-        // echo tag('span')->text('Some content')
-        // ->textColor('primary')
-        // ->class('my-3');
         
     }
 
