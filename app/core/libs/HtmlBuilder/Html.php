@@ -686,6 +686,43 @@ class Html
             static::addStyle("--bs-text-opacity: $opacity;", $attributes['style']);
         }
 
+
+        /*
+         Sizing
+        */
+
+        // w
+        $at = $args['w'] ?? $attributes['w'] ?? null;
+
+        if ($at !== null){
+            if (($at <0 || $at>100) && $at != 'auto') {
+                throw new \OutOfRangeException("Width $at is out of range [0, 100]%");
+            }
+
+            // otra implementación sería agregando la clase w-{porcentaje}
+
+            $attributes['style'] = $attributes['style'] ?? '';
+            static::addStyle("max-width: $at%;", $attributes['style']);
+
+            unset($args['w']);
+        }
+
+        // h
+        $at = $args['h'] ?? $attributes['h'] ?? null;
+
+        if ($at !== null){
+            if (($at <0 || $at>100) && $at != 'auto') {
+                throw new \OutOfRangeException("Height $at is out of range [0, 100]%");
+            }
+
+            $attributes['class'] = $attributes['class'] ?? '';
+            static::addClass("h-$at", $attributes['class']);
+
+            unset($args['h']);
+        }
+
+
+        
         if (isset($attributes['class'])){
             if (isset($args['class'])){
                 static::addClass($args['class'], $attributes['class']);
