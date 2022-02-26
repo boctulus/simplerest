@@ -15,16 +15,24 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
   <?php
 
-    echo tag('card')->style('width: 18rem;')
-    ->body([            
-        tag('cardTitle')->text('Some title'),
-        tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
-        tag('inputButton')->value('Go somewhere')->info()->textColor('white')
-    ])
-    ->class('my-3')
-    ->bg('primary')
-    ->textColor('white')
-    ;  
+
+    echo tag('div')->content('Some content')->textColor('primary')->class('my-3');    
+    echo tag('div')->content('Some content but with opacity of 50%')->textColor('primary')->opacity(0.5);
+
+    /* Badges */    
+
+    // //echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->danger();
+
+    // echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->color('warning');
+
+    // echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->bg('success'); // ok
+
+    // echo tag('button')->content([
+    //     'Inbox',
+    //     tag('badge')->content('99+')->bg('danger')->class('position-absolute top-0 start-100 translate-middle rounded-pill')
+    // ])
+    // ->class('rounded position-relative')
+    // ->primary();
 
   ?>
    
