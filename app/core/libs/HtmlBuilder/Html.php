@@ -249,7 +249,7 @@ class Html
     }
 
     static function removeColors(string $type, array|string &$to) : void{
-        if (!in_array($type, ['btn', 'alert', 'bg', 'text'])){
+        if (!in_array($type, ['btn', 'alert', 'bg', 'text', 'border'])){
             throw new \InvalidArgumentException("Color type '$type' is incorrect");
         }
 
@@ -277,6 +277,10 @@ class Html
     }
 
     static function addColor(string $color, string &$to, bool $outline = false) : void{
+        if (Strings::lastChar($color) == '-'){
+            return;
+        }
+
         $prefix = '';
 
         if (strlen($color)){
@@ -285,7 +289,7 @@ class Html
             if ($pos !== false){
                 $_prefix = substr($color, 0, $pos + 1);
 
-                if (in_array($_prefix, ['btn-', 'alert-', 'text-', 'bg-'])){
+                if (in_array($_prefix, ['btn-', 'alert-', 'text-', 'bg-', 'border-'])){
                     $prefix = $_prefix;
                 } else {
                     $pos = 0;
@@ -329,7 +333,7 @@ class Html
     static function hasColor(string $type, string $str, string $color = '') : bool{
         $type_len = strlen($type);
 
-        if (!in_array($type, ['btn', 'alert', 'bg', 'text'])){
+        if (!in_array($type, ['btn', 'alert', 'bg', 'text', 'border'])){
             throw new \InvalidArgumentException("Color type '$type' is incorrect");
         }
 
@@ -364,6 +368,10 @@ class Html
 
     static function hasTextColor(string $str, string $color = '') : bool{
         return static::hasColor('text', $str, $color);        
+    }
+
+    static function hasBorderColor(string $str, string $color = '') : bool{
+        return static::hasColor('border', $str, $color);        
     }
 
 
@@ -476,7 +484,8 @@ class Html
             unset($args['readonly']);
         }
       
-        foreach ($args as $k => $v){
+        foreach ($args as $k => $v)
+        {
             if (!is_array($v) && Strings::startsWith('justify', $v)){
                 static::addClass($v, $attributes['class']);
                 unset($args[$k]);
@@ -508,19 +517,157 @@ class Html
                 static::addClass($args['class'], $attributes['class']);
                 unset($args['class']);
             }
-        }  
+        }  // endforeach
+
+        // Borders
+
+        $border = static::getAtt('border', $attributes, $args);
+        
+        // Sino se llamara a border() sería null en vez de "" (string vacio)
+        if ($border !== null){
+            if ($border == ""){
+                $attributes['class'] = $attributes['class'] ?? '';
+                static::addClass('border', $attributes['class']);
+            } else {
+                $borderAdd = explode(' ', trim(Strings::removeMultipleSpaces($border)));
+            
+                foreach ($borderAdd as $ba){
+                    switch ($ba){
+                        case 'left':
+                            $ba = 'start';
+                            break;
+                        case 'right':
+                            $ba = 'end';
+                            break;
+                    }
+
+                    $attributes['class'] = $attributes['class'] ?? '';
+                    static::addClass("border-{$ba}", $attributes['class']);
+                }           
+            }
+            
+            unset($args['border']);
+        }
+
+        // border substraction
+        $borderSub = static::getAtt('borderSub', $attributes, $args);
+
+        if ($borderSub !== null){
+            $borderSub = explode(' ', trim(Strings::removeMultipleSpaces($borderSub)));
+            
+            foreach ($borderSub as $bs){
+                $attributes['class'] = $attributes['class'] ?? '';
+                static::addClass("border-{$bs}-0", $attributes['class']);
+            }
+           
+            unset($args['borderSub']);
+        }
+
+        // border-width
+        $borderW = static::getAtt('borderWidth', $attributes, $args);
+        
+        if ($borderW !== null){
+            if ($borderW <0 || $borderW > 5){
+                throw new \OutOfRangeException("Border-width $borderW is out of range. It should be in range of [1,6]");
+            } 
+
+            $attributes['class'] = $attributes['class'] ?? '';
+
+            if ($border === null){
+                static::addClass('border', $attributes['class']);
+            }
+
+            static::addClass("border-{$borderW}", $attributes['class']);
+            unset($args['borderWidth']);
+        }
+
+        // border corners que serán redondeados
+        $borderCorner = static::getAtt('borderCorner', $attributes, $args);
+
+        if ($borderCorner !== null){
+            $borderCorner = explode(' ', trim(Strings::removeMultipleSpaces($borderCorner)));
+                
+            foreach ($borderCorner as $bc){
+                // corrije bug en la librería
+                switch ($bc){
+                    case 'left':
+                        $bc = 'end';
+                        break;
+                    case 'right':
+                        $bc = 'start';
+                        break;
+                    case 'top':
+                        $bc = 'bottom';
+                        break;
+                    case 'bottom':
+                        $bc = 'top';
+                        break;
+                }
+
+                $attributes['class'] = $attributes['class'] ?? '';
+                static::addClass("rounded-{$bc}", $attributes['class']);
+            }     
+            
+            unset($args['borderCorner']);
+        }
+
+        // border-radius
+        $borderR = static::getAtt('borderRad', $attributes, $args);
+        
+        if ($borderR !== null){
+            if ($borderR <0 || $borderR > 3){
+                throw new \OutOfRangeException("Border-radius $borderR is out of range. It should be in range of [1,6]");
+            } 
+
+            $attributes['class'] = $attributes['class'] ?? '';
+
+            if ($border === null && $borderCorner === null){
+                static::addClass('border', $attributes['class']);
+            }
+
+            static::addClass('rounded', $attributes['class']);
+            static::addClass("rounded-{$borderR}", $attributes['class']);
+            unset($args['borderRad']);
+        }
+
+        // border pill
+        $borderPill = static::getAtt('borderPill', $attributes, $args);
+
+        if ($borderPill !== null){
+            static::addClass("rounded-pill", $attributes['class']);
+            unset($args['borderPill']);
+        }
+
+        // border circle
+        $borderPill = static::getAtt('borderCircle', $attributes, $args);
+
+        if ($borderPill !== null){
+            static::addClass("rounded-circle", $attributes['class']);
+            unset($args['borderCircle']);
+        }
+
 
         // Colors
 
-        $color_types = ['bg', 'text', 'alert', 'btn'];
+        $color_types = ['bg', 'text', 'alert', 'btn', 'border'];
 
-        foreach ($color_types as $ct){
-            $at    = ($ct == 'text') ? 'textColor' : $ct;
+        foreach ($color_types as $ct)
+        {
+            switch ($ct){
+                case 'text':
+                    $at = 'textColor';
+                    break;
+                case 'border':
+                    $at = 'borderColor';
+                    break;
+                default:
+                    $at = $ct;
+            }
+            
             $color = $args[$at] ?? $attributes[$at] ?? null;
             
             if ($color !== null){
                 $attributes['class'] = $attributes['class'] ?? '';
-
                 static::addColor("$ct-{$args[$at]}", $attributes['class']);
                 unset($args[$at]);
             }
@@ -538,31 +685,6 @@ class Html
             $attributes['style'] = $attributes['style'] ?? '';
             static::addStyle("--bs-text-opacity: $opacity;", $attributes['style']);
         }
-
-        // Borders
-
-        $border = static::getAtt('border', $attributes, $args);
-        
-        if ($border !== null){
-            $attributes['class'] = $attributes['class'] ?? '';
-            static::addClass('border', $attributes['class']);
-            unset($args['border']);
-        }
-
-        $borderW = static::getAtt('borderWidth', $attributes, $args);
-        
-        if ($borderW !== null){
-            if ($borderW <0 || $borderW > 6){
-                throw new \OutOfRangeException("Border-width $border is out of range. It should be in range of [1,6]");
-            } 
-
-            $attributes['class'] = $attributes['class'] ?? '';
-
-            static::addClass('border', $attributes['class']);
-            static::addClass("border-{$borderW}", $attributes['class']);
-            unset($args['borderWidth']);
-        }
-
 
         if (isset($attributes['class'])){
             if (isset($args['class'])){
