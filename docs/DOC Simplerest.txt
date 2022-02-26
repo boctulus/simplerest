@@ -10229,6 +10229,21 @@ Ej:
 	echo tag('div')->content('Some content')->textColor('primary')->opacity(0.5);
 
 
+Link colors
+
+En teoría (según la doc oficial), para los links deben aplicarse clases css link-{color} sin embargo,
+en principio producen el mismo efecto que los text-{color}
+
+Usar color() para aplicar "link colors".
+
+Ej:
+
+	echo tag('link')
+	->href("www.solucionbinaria.com")
+	->anchor('SolucionBinaria .com')
+	->color('success');
+
+
 # Borders
 
 Con border() se aplican borders sobre todos los lados.
