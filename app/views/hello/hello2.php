@@ -461,15 +461,15 @@ Bt5Form::setIdAsName();
 
 
         echo tag('card')
+        ->header(tag('cardTitle')->text('Some title'))
         ->body(
-                tag('cardTitle')->text('Some title') .
-                tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
+            tag('cardSubtitle')->text('Some subtitle')->class('mb-2')->textMuted()
         )
         ->class('mb-4');
 
         echo tag('card')->style('width: 18rem;')
+        ->header(tag('cardTitle')->text('Some title'))
         ->body([            
-            tag('cardTitle')->text('Some title'),
             tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
             tag('inputButton')->value('Go somewhere')->info()->textColor('white')
         ])
@@ -482,8 +482,8 @@ Bt5Form::setIdAsName();
         ->content(
             tag('cardImgTop')->src(asset('img/mail.png'))
         )
+        ->header(tag('cardTitle')->text('Some title'))
         ->body([            
-            tag('cardTitle')->text('Some title'),
             tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
             tag('inputButton')->value('Go somewhere')
         ]);
@@ -492,10 +492,8 @@ Bt5Form::setIdAsName();
         ->content(
             tag('cardImgTop')->src(asset('img/mail.png'))
         )
-        ->body([            
-            tag('cardTitle')
-            ->placeholder()->bg('danger'),
-            
+        ->header(tag('cardTitle')->text('Some title'))->placeholder()
+        ->body([         
             tag('cardSubtitle')
             ->placeholder()->bg('warning'),
 
