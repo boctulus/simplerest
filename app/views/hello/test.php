@@ -16,8 +16,19 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
     
   <?php
 
+  echo tag('link')
+  ->href("www.solucionbinaria.com")
+  ->anchor('SolucionBinaria .com')
+  ->textColor('success')
+  ->class('mb-3');
 
-
+  echo tag('p');
+  
+  echo tag('link')
+  ->href("www.solucionbinaria.com")
+  ->anchor('SolucionBinaria .com')
+  ->color('success')
+  ->class('mb-3');
 
 
   ?>

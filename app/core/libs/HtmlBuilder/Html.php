@@ -741,6 +741,14 @@ class Html
             }
         }
 
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+            
+        if ($color !== null){
+            $attributes['class'] = $attributes['class'] ?? '';
+            static::addColor("link-$color", $attributes['class']);
+            unset($args['color']);
+        }
+
         return static::tag('a', $anchor, $attributes, null, ...$args);
     }
 
