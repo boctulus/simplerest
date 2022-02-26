@@ -441,10 +441,67 @@ Bt5Form::setIdAsName();
 
         echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 
+        // Size
+
+        ?>
+
+        <h2 class="my-3">Size utility</h2>
+
+        <div class="w-25 p-3" style="background-color: #eee;">Width 25%</div>
+        <div class="w-50 p-3" style="background-color: #eee;">Width 50%</div>
+        <?php
+            echo tag('div')->content(
+            'Width 75%'
+            )
+            ->w(75)
+            ->bg('warning')
+            ->class('p-3');
+
+        ?>
+        <div class="w-100 p-3" style="background-color: #eee;">Width 100%</div>
+        <?php
+            echo tag('div')->content(
+            'Width auto'
+            )
+            ->w('auto')
+            ->bg('warning')
+            ->class('p-3');
+        ?>
+
+        <p></p>
+            
+        <div style="height: 100px; background-color: rgba(255,0,0,0.1);">
+            <div class="h-25 d-inline-block" style="width: 120px; background-color: rgba(0,0,255,.1)">Height 25%</div>
+            <div class="h-50 d-inline-block" style="width: 120px; background-color: rgba(0,0,255,.1)">Height 50%</div>
+
+            <?php
+            echo tag('div')->content(
+                'Height 75%'
+            )
+            ->w(75)
+            ->h(75)
+            ->bg('warning')
+            ->class('d-inline-block');
+            ?>
+
+            <div class="h-100 d-inline-block" style="width: 120px; background-color: rgba(0,0,255,.1)">Height 100%</div>
+            <?php
+            echo tag('div')->content(
+                'Height auto'
+            )
+            ->w(75)
+            ->h('auto')
+            ->bg('danger')
+            ->class('d-inline-block');
+            ?>
+        </div>
+        <?php
+
         // Cards
 
         echo '<br/>';
 
+        echo tag('h3')->text('Cards')->class('my-3');
         
         echo tag('card')
         ->header('Quote') 
@@ -507,6 +564,8 @@ Bt5Form::setIdAsName();
 
         /* Badges */    
 
+        echo tag('h3')->text('Badges')->class('my-3');
+
         echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->bg('success'); // ok
 
         echo tag('button')->content([
@@ -517,6 +576,8 @@ Bt5Form::setIdAsName();
         ->primary();
 
         /* buttonToolbar */
+
+        echo tag('h3')->text('buttonToolbar')->class('my-3');
 
         echo tag('buttonToolbar')->content([
             tag('buttonGroup')->content(
@@ -529,6 +590,8 @@ Bt5Form::setIdAsName();
                     tag('button')->content('Botón amarillo')->warning()->class('rounded-pill')->outline()
             )->aria_label("Another group")->class('mx-3')
         ])->class('my-3');
+
+        echo tag('h3')->text('buttonGroup')->class('my-3');
 
         echo tag('buttonGroup')->content(
             tag('button')->content('A')->danger()->class('rounded-pill') .
@@ -547,17 +610,16 @@ Bt5Form::setIdAsName();
 
         echo '<br/>';
 
-
         echo tag('buttonGroup')->content([
             tag('inputButton')->value('Un botón')->info()->class('rounded-pill'),
             tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large(),
             tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small()
         ])->class('my-3');
 
-        echo tag('br');
-
 
         /* Collapse */
+
+        echo tag('h3')->text('Collapse')->class('mb-3');
 
         echo tag('p')->text(
             tag('collapseLink')->href("#collapseExample")->anchor('Link with href')->class('me-1') .            
@@ -573,6 +635,8 @@ Bt5Form::setIdAsName();
             Alerts
         */
 
+        echo tag('h3')->text('Alert')->class('mb-3');
+
         echo tag('alert')->content('OK !')->success();
 
         echo Bt5Form::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
@@ -581,6 +645,10 @@ Bt5Form::setIdAsName();
             tag('alertLink')->href('#')->anchor('A danger content')
         )->color('danger')->dismissible(true);
 
+        /*
+            Select
+        */
+        echo tag('h3')->text('Select')->class('mb-3');
 
         echo tag('select')
         ->name('comidas')
@@ -605,6 +673,11 @@ Bt5Form::setIdAsName();
             'mujer' => 2
         ], default: 1, placeholder: 'Su sexo', attributes: ['class' => 'my-3']);
 
+        /*
+            DataList
+        */
+        echo tag('h3')->text('DataList')->class('mb-3');
+
         echo Bt5Form::dataList(listName: 'datalistOptions', id: 'occupation', options: [
             'programador',
             'software engenierer'
@@ -617,11 +690,16 @@ Bt5Form::setIdAsName();
 
         echo tag('p')->text("Hola mundo cruel");
 
+        echo tag('h3')->text('Opacity (text utility)')->class('mb-3');
+
         echo tag('div')->content('Some content')->textColor('primary')->class('mt-3');    
         echo tag('div')->content('Some content but with opacity of 50%')->textColor('primary')->opacity(0.5)->class('mb-3');
 
+        echo tag('h3')->text('inputColor')->class('mb-3');
+
         echo tag('inputColor')->name('my_color')->text('Color')->id('c1');
 
+        echo tag('h3')->text('inputGroup implementado con div')->class('mb-3');
 
         echo Bt5Form::div(
             content: [
@@ -631,12 +709,18 @@ Bt5Form::setIdAsName();
             class: "input-group mb-3"
         );
 
+        echo tag('h3')->text('inputText')->class('mb-3');
+
         echo tag('inputText')->name('iq')->placeholder("IQ")->disabled();
 
         //
 
+        echo tag('h3')->text('inputRange')->class('mb-3');
+
         echo tag('label')->name("edad")->text("Edad");
         echo Bt5Form::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
+
+        echo tag('h3')->text('checkGroup')->class('mb-3');
 
         echo tag('checkGroup')->content([
             Bt5Form::radio(name: 'civil', text: "soltero", checked: true, id: 'soltero')
@@ -645,6 +729,8 @@ Bt5Form::setIdAsName();
         echo tag('checkGroup')->content([
             Bt5Form::radio(name: 'civil', text: "casado", checked: true, id: 'casado')
         ])->class('mb-3');
+
+        echo tag('h3')->text('switch')->class('mb-3');
 
         echo Bt5Form::switch(id: "hijos", text: "Hijos", checked: true);
 
