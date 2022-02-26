@@ -7470,15 +7470,41 @@ class DumbController extends Controller
 
         //echo tag('spinner');
         
+        // echo tag('div')->width(100)->content('
+        // Some content,...
+        // <p>
+        // <p>
+        // ')
+        // //->border('top')
+        // ->borderRad(2)
+        // ->borderWidth(5)
+        // ->borderColor('danger')
+        // //->borderSub('top')
+        // //->class('border border-top-0 border-5 border-danger rounded-3')
+        // ;
+
+        // echo tag('div')->width(100)->content('
+        // Some content,...
+        // <p>
+        // <p>
+        // ')
+        // ->border('top left')
+        // ->borderWidth(5)
+        // ->borderRad(3)
+        // ->borderColor('success')
+        // ;
+
         echo tag('div')->width(100)->content('
         Some content,...
         <p>
         <p>
-        ')
-        ->border()
-        ->borderWidth(6)
-        //->class('border border-top-0 border-5 border-danger rounded-3')
-        ;
+      ')
+      //->border()
+      ->borderWidth(5)
+      ->borderRad(3)
+      ->borderCorner('top')  // para borders redondeados
+      ->borderColor('warning')
+      ;
         
     }
 
