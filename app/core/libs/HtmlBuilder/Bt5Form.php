@@ -10,6 +10,90 @@ class Bt5Form extends Form
     static function form(mixed $content, Array $attributes = [], ...$args){  
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
+
+    /* Tables */
+
+    static function table(mixed $content = [], $attributes = [], ...$args)
+    {   
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (empty($content)){
+            $content = [];
+
+            $rows = $args['rows'] ?? $attributes['rows'] ?? null;
+            $cols = $args['cols'] ?? $attributes['cols'] ?? null;
+
+            $header = [];
+            foreach ($rows as $r){
+                $header[] = static::th($r, attributes:['scope' =>"col" ]);
+            }
+
+            $_cols = [];
+            foreach ($cols as $c){  
+                $tds = [];      
+                foreach ($c as $ix => $val){
+                    if ($ix == 0){
+                        $t = 'th';
+                        $att = ['scope' =>"row"];
+                    } else {
+                        $t = 'td';
+                        $att = [];
+                    }
+                    
+                    $tds[] = static::$t(content:$val, attributes:$att);
+                }
+
+                $_cols[] = static::tr($tds);
+            }
+
+
+            // head options
+
+            $headOptions = $args['headOptions'] ?? $attributes['headOptions'] ?? null;
+
+            if ($headOptions != null){
+                if (isset($headOptions['class'])){
+                    $headAtt['class'] = $headAtt['class'] ?? '';
+                    static::addClass($headOptions['class'], $headClass);
+                }
+
+                if (isset($headOptions['color'])){
+                    $headAtt['class'] = $headAtt['class'] ?? '';
+                    static::addClass( "table-{$headOptions['color']}", $headAtt['class']);
+                }
+             
+                unset($args['headOptions']);
+            }
+
+            $content = [
+                static::thead($header, $headAtt),
+                static::tbody(content:$_cols)
+            ];
+
+            // color
+
+            $color = $args['color'] ?? $attributes['color'] ?? null;
+
+            if ($color !== null){
+                if (!in_array($color, static::$colors)){
+                    throw new \InvalidArgumentException("Invalid color for '$color'");
+                }
+
+                $attributes['class'] = $attributes['class'] ?? '';
+
+                static::addClass("table-{$color}", $attributes['class']);
+                unset($args['color']);
+            }
+
+            
+
+        }
+
+        //d($content);
+
+        return static::group($content, 'table', $attributes, ...$args);
+    }
+
     
     /* Stacked checkbox & radios */
 
@@ -1622,5 +1706,68 @@ class Bt5Form extends Form
 
     /* Modal End */
 
-}
+    /*
+        Milestone 
+
+        https://www.bootdey.com/snippets/view/timeline-steps#preview
+
+        requiere de CSS
+    */
+    static function milestone(mixed $content, Array $attributes = [], ...$args){
+        include_style(APP_PATH . 'widgets/milestone/milestone.css');
+
+        $attributes['class'] = 'timeline-steps aos-init aos-animate';
+        $attributes['data-aos'] = 'fade-up';
+
+        if (is_array($content)){
+            foreach ($content as $e){
+                $title    = $e['title'];
+                $subTitle = $e['subTitle'] ?? '';
+                $body     = $e['body'] ?? '';
+
+                $out[] = "
+                <div class=\"timeline-step\">
+                    <div class=\"timeline-content\" data-toggle=\"popover\" data-trigger=\"hover\" data-placement=\"top\" title=\"\" data-content=\"$body\" data-original-title=\"$title\">
+                        <div class=\"inner-circle\"></div>
+                        <p class=\"h6 mt-3 mb-1\">$title</p>
+                        <p class=\"h6 text-muted mb-0 mb-lg-0\">$subTitle</p>
+                    </div>
+                </div>";
+            }        
+        }
+            
+        return static::div($out, $attributes, ...$args);
+    }
+
+    /*
+        input search + icon
+
+        https://www.codeply.com/p/jYwDonANZl
+    */
+    static function searchTool(mixed $content = 'Search', Array $attributes = [], ...$args)
+    {
+        include_style(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        
+        $attributes['class'] = 'col-md-5 mx-auto';
+
+        $id = $args['id'] ?? $attributes['id'] ?? null;
+            
+        $id_str = ($id !== null) ? 'id="'.$id.'"' : '';
+        
+        $content = '
+            <div class="input-group">
+                <input class="form-control border-end-0 border" type="search" '.$id_str.' placeholder="'. $content .'">
+                <span class="input-group-append">
+                    <button class="btn btn-outline-secondary bg-white border-start-0 border-bottom-0 border ms-n5" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        ';
+            
+        return static::div($content, $attributes, ...$args);
+    }
+
+
+} // end class
 
