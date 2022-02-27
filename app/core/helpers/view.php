@@ -31,7 +31,7 @@ function section($view, Array $variables = []){
     include VIEWS_PATH . $view;
 }
 
-function include_style(string $path){
+function include_css(string $path){
     if (!Strings::endsWith('.css', $path)){
         throw new \InvalidArgumentException("Path '$path' should be to .css file");
     }
@@ -40,6 +40,14 @@ function include_style(string $path){
     <?php
         include $path;
     ?>
+    </style>
+    <?php
+}
+
+function css(string $css){
+    ?>
+    <style>
+    <?= $css ?>
     </style>
     <?php
 }
