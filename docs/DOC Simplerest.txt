@@ -10466,6 +10466,167 @@ You can also use utilities to set the width and height relative to the viewport.
 	<div class="vw-100">Width 100vw</div>
 	<div class="vh-100">Height 100vh</div>
 
+# Tables
+
+Las tablas se crean con tag('table') que recibe arrays de rows y cols.
+
+Ej:
+
+	echo tag('table')
+    ->rows([
+      '#',
+      'First',
+      'Last',
+      'Handle'
+    ])
+    ->cols([
+      [
+        1,
+        'Mark',
+        'Otto',
+        '@mmd'
+      ],
+      [
+        2,
+        'Lara',
+        'Cruz',
+        '@fat'
+      ],
+      [
+        3,
+        Juan',
+        'Cruz',
+        '@fat'
+      ],
+      [
+        4,
+        'Feli',
+        'Bozzolo',
+        '@facebook'
+      ]
+    ]);
+
+Colores
+
+Se aplican colores con color()
+
+Ej:
+
+	echo tag('table')
+    ->rows([
+      '#',
+      'First',
+      'Last',
+      'Handle'
+    ])
+    ->cols([
+      [
+        1,
+        'Mark',
+        'Otto',
+        '@mmd'
+      ],
+      [
+        2,
+        'Lara',
+        'Cruz',
+        '@fat'
+      ],
+      [
+        3,
+        'Juan',
+        'Cruz',
+        '@fat'
+      ],
+      [
+        4,
+        'Feli',
+        'Bozzolo',
+        '@facebook'
+      ]
+    ])
+    ->color('primary');
+
+
+Aplicar color al head
+
+Mediante headOptions() se puede pasar un array de atributos al head de la tabla.
+
+	echo tag('table')
+    ->rows([
+      '#',
+      'First',
+      'Last',
+      'Handle'
+    ])
+    ->cols([
+      [
+        1,
+        'Mark',
+        'Otto',
+        '@mmd'
+      ],
+      [
+        2,
+        'Lara',
+        'Cruz',
+        '@fat'
+      ],
+      [
+        3,
+        'Juan',
+        'Cruz',
+        '@fat'
+      ],
+      [
+        4,
+        'Feli',
+        'Bozzolo',
+        '@facebook'
+      ]
+    ])
+    ->color('light')
+    ->headOptions([
+      'color' => 'dark'
+    ]);
+
+
+~ Widgets
+
+Basados en elementos de formulario se han construido los siguientes Widgets.
+
+
+# Milestone / Timeline
+
+El siguiente componente puede usare como milestone o timeline. 
+
+Ej:
+	
+	echo tag("milestone")->content([
+		[
+		'title' => 2010,
+		'subTitle' => 'algo remoto'
+		],
+		[
+		'title' => 2011,
+		'subTitle' => 'algo hermoso'
+		],
+		[
+		'title' => 2016,
+		'subTitle' => 'algo horrible'
+		],        
+	]); 
+
+
+# Search tool
+
+Este componente consciste en un inputSeach + icon
+
+Ej:
+
+	echo tag('searchTool')->id('my_search');
+
+
 
 
 Notas Dev:
@@ -10525,6 +10686,8 @@ La primera estrategia permite usar un color medianre color($color) y la segunda 
 	color('success);
 vs
 	success()
+
+
 
 
 Al traducir a JavaScript usar los siguientes "ports" de métodos mágicos como __call, __get, __set, etc

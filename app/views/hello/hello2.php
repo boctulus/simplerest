@@ -441,6 +441,24 @@ Bt5Form::setIdAsName();
 
         echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 
+        echo tag('h3')->text("Milestone / Timeline")->class('mb-3');
+
+        echo tag("milestone")->content([
+            [
+            'title' => 2010,
+            'subTitle' => 'algo remoto'
+            ],
+            [
+            'title' => 2011,
+            'subTitle' => 'algo hermoso'
+            ],
+            [
+            'title' => 2016,
+            'subTitle' => 'algo horrible'
+            ],        
+        ]);    
+
+
         // Size
 
         ?>

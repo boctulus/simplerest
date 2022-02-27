@@ -213,14 +213,17 @@ class Html
         "toast-container" => "toast-container",
 
         /*
-            Utilities
+           Otros
         */
 
-        "textMuted"      => "text-muted",
         "hidden"         => "visually-hidden",
         "active"         => "active",
-        "tooltip"        => "tooltip-test"
+        "tooltip"        => "tooltip-test",
         
+        /* Table */
+
+        "table"          => "table",
+
     ];
     
     static protected $macros = [];
@@ -1222,10 +1225,6 @@ class Html
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function table(mixed $content, $attributes = [], ...$args){
-        return static::group($content, __FUNCTION__, $attributes, ...$args);
-    }
-
     /*
         <blockquote>
         <p>Beware of bugs in the above code; I have only proved it correct, not tried it.” </p>
@@ -1403,6 +1402,30 @@ class Html
     static function img(string $src, Array $attributes = [], ...$args){
         $attributes['src'] = $src;
         return static::tag('img', null, $attributes, null, ...$args); 
+    }
+
+    static function table(mixed $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function thead(mixed $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function tbody(mixed $content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function th(mixed $content, Array $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function tr(mixed $content, Array $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);;
+    }
+
+    static function td(mixed $content, Array $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
     /*
