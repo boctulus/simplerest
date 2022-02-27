@@ -7494,13 +7494,47 @@ class DumbController extends Controller
         // ->borderColor('success')
         // ;
 
-        echo tag('div')->content(
-            'Width 75%'
-          )
-          ->w(75)
-          ->bg('warning')
-          ->class('p-3');
-        
+        // echo tag('div')->content(
+        //     'Width 75%'
+        //   )
+        //   ->w(75)
+        //   ->bg('warning')
+        //   ->class('p-3');
+
+        echo tag('table')
+        ->rows([
+          '#',
+          'First',
+          'Last',
+          'Handle'
+        ])
+        ->cols([
+          [
+            1,
+            'Mark',
+            'Otto',
+            '@mmd'
+          ],
+          [
+            2,
+            'Lara',
+            'Cruz',
+            '@fat'
+          ],
+          [
+            3,
+            'Lara',
+            'Cruz',
+            '@fat'
+          ],
+          [  
+            4,
+            'Feli',
+            'Bozzolo',
+            '@facebook'
+          ]
+        ])->color('primary');
+    
     }
 
 
