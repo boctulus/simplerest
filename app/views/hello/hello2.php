@@ -101,6 +101,48 @@ Bt5Form::setIdAsName();
         ->class('btn-lg my-3')->danger()->pos('top')
         ->dismissible();                   
 
+         
+        echo tag('searchTool')->id('my_search')->class('my-3');
+
+        echo tag('table')
+        ->rows([
+        '#',
+        'First',
+        'Last',
+        'Handle'
+        ])
+        ->cols([
+        [
+            1,
+            'Mark',
+            'Otto',
+            '@mmd'
+        ],
+        [
+            2,
+            'Lara',
+            'Cruz',
+            '@fat'
+        ],
+        [
+            3,
+            'Juan',
+            'Cruz',
+            '@fat'
+        ],
+        [
+            4,
+            'Feli',
+            'Bozzolo',
+            '@facebook'
+        ]
+        ])
+        ->color('light')
+        ->headOptions([
+        'color' => 'dark'
+        ]);
+
+
         /*
             Previous | 1 | 2 | 3 | .. | 10 | Next
         */
@@ -125,7 +167,7 @@ Bt5Form::setIdAsName();
             ]
         ])
         ->class('mt-3')
-        ->large()
+        //->large()
         ->options(['justify-content-center'])
         ->withPrev([
             'href'   => '#?page=1',
