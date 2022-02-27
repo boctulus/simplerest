@@ -106,6 +106,8 @@ if (!defined('LOCALE_PATH'))
 if (!defined('MIDDLEWARES_PATH'))
     define('MIDDLEWARES_PATH', APP_PATH . 'middlewares' . DIRECTORY_SEPARATOR); 
 
+if (!defined('WIDGETS_PATH'))
+    define('WIDGETS_PATH', APP_PATH . 'widgets' . DIRECTORY_SEPARATOR);
 
 if (!defined('PUBLIC_PATH'))
     define('PUBLIC_PATH', ROOT_PATH . 'public' . DIRECTORY_SEPARATOR); 

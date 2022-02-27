@@ -109,27 +109,10 @@ Es posible usar Alpine Js con Vue Js
 https://laracasts.com/discuss/channels/vue/alpinejs-interfieres-with-vuejs
 
 
-- "Widgets" que podrían implementarse con el FormBuilder y a diferencia de las macros, serán clases y no funciones.
+- "Widgets" que podrían implementarse como macros.
 
 Ver
 https://github.com/arrilot/laravel-widgets
-
-- FormBuilder: agregar validaciones..... o referenciar las del Schema quizás referenciando al modelo
-
-  class SongForm extends Form
-  {
-      public function buildForm()
-      {
-          $this
-              ->add('name', Field::TEXT, [
-                  'rules' => 'required|min:5'
-              ])
-              ->add('lyrics', Field::TEXTAREA, [
-                  'rules' => 'max:5000'
-              ])
-              ->add('publish', Field::CHECKBOX);
-      }
-  }
 
 - Hacer uso de las definiciones
 

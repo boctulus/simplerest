@@ -1,3 +1,3 @@
 <h1>Test Assets</h1>
 
-<img src="<?= assets('img/avatar.png'); ?>" />
+<img src="<?= asset('img/avatar.png'); ?>" />
