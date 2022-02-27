@@ -6854,11 +6854,11 @@ Lógicamente el template debe manejar la varible $title para que se vea reflejad
 		<title><?= $title ?? ''; ?></title>
 	</head>
 
-Las vistas pueden contener HTML, PHP, CSS y JavaScript. Para los assets se cuenta con el helper assets()
+Las vistas pueden contener HTML, PHP, CSS y JavaScript. Para los assets se cuenta con el helper asset()
 
 Ej:
 
-	<?= assets('img/logo.png') ?>" style="height: 100px;" />
+	<?= asset('img/logo.png') ?>" style="height: 100px;" />
 
 Los assets se encuentran dentro de la carpeta public/assets y dentro la estructura es libre o sea puede organizarse de muchas formas:
 
@@ -6876,6 +6876,47 @@ Los assets se encuentran dentro de la carpeta public/assets y dentro la estructu
 							css
 							images
 							js
+
+
+Inclusión de css en vistas y widgets
+
+Si el css es puntual y no justificara crear un archivo .css podría usarse el helper css()
+
+	css('
+		.card-primary.card-outline {
+			border-top: 3px solid #007bff;
+		}
+	');
+
+Ej:
+
+	static function card(mixed $content = null, Array $attributes = [], ...$args){
+        css('
+            .card-primary.card-outline {
+                border-top: 3px solid #007bff;
+            }
+        ');
+
+		// ...
+	}
+
+Pero en caso de ser un css de varias líneas de código, se recomienda utilizar include_css()
+
+Ej:
+
+	static function searchTool(mixed $content = 'Search', Array $attributes = [], ...$args)
+    {
+        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+
+		// ..
+	}
+
+O en una vista:
+
+	<?php
+		include_css(WIDGETS_PATH . 'login/login.css');
+	?>
+
 
 # Templates
 
@@ -8621,18 +8662,18 @@ Ej:
 
 	echo tag('carousel')->content(
 		tag('carouselItem')->content(
-			tag('carouselImg')->src(assets('img/slide-1.jpeg'))
+			tag('carouselImg')->src(asset('img/slide-1.jpeg'))
 		)->caption(
 			'<h5>First slide label</h5>
 			<p>Some representative placeholder content for the first slide.</p>'
 		),
 
 		tag('carouselItem')->content(
-			tag('carouselImg')->src(assets('img/slide-2.jpeg'))
+			tag('carouselImg')->src(asset('img/slide-2.jpeg'))
 		),
 
 		tag('carouselItem')->content(
-			tag('carouselImg')->src(assets('img/slide-3.jpeg'))
+			tag('carouselImg')->src(asset('img/slide-3.jpeg'))
 		),
 	)->id("carouselExampleControls")->withControls()->withIndicators();
 
@@ -9268,7 +9309,7 @@ Con imágen es solo pasar la imágen dentro del anchor del navbarBrand:
 	echo tag('navbar')->content(
 		tag('container')->fluid()->content([
 			tag('navbarBrand')->anchor(
-				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
 			)->href('#')
 		])
 	)
@@ -9278,7 +9319,7 @@ Imágen + texto
 	echo tag('navbar')->content(
 		tag('container')->fluid()->content([
 			tag('navbarBrand')->anchor(
-				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
 				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
 			)->href('#') 
 		])
@@ -9294,7 +9335,7 @@ Ej:
 	echo tag('navbar')->content(
 		tag('container')->fluid()->content([
 			tag('navbarBrand')->anchor(
-				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
 				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
 			)->href('#') 
 		])
@@ -9313,7 +9354,7 @@ Ej:
 	echo tag('navbar')->content(
 		tag('container')->fluid()->content([
 			tag('navbarBrand')->anchor(
-				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
 				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
 			)->href('#'),
 			
@@ -9337,7 +9378,7 @@ Ej:
 	echo tag('navbar')->content(
 		tag('container')->fluid()->content([
 			tag('navbarBrand')->anchor(
-				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
 				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
 			)->href('#'),
 			
@@ -9373,7 +9414,7 @@ Ej:
 	echo tag('navbar')->content(
 		tag('container')->fluid()->content([
 			tag('navbarBrand')->anchor(
-				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
 				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
 			)->href('#'),
 			
@@ -9423,7 +9464,7 @@ Ej:
 	echo tag('navbar')->content(
 		tag('container')->fluid()->content([
 			tag('navbarBrand')->anchor(
-				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
 				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
 			)->href('#'),
 
@@ -9447,7 +9488,7 @@ Ej:
 	echo tag('navbar')->content(
 		tag('container')->fluid()->content([
 			tag('navbarBrand')->anchor(
-				tag('img')->src(assets('img/ai_logo.png'))->witdh(24)->height(24)
+				tag('img')->src(asset('img/ai_logo.png'))->witdh(24)->height(24)
 				->class("d-inline-block align-text-top") . '&nbsp;&nbsp; Some text'
 			)->href('#'),
 			
@@ -10593,7 +10634,7 @@ Mediante headOptions() se puede pasar un array de atributos al head de la tabla.
 
 ~ Widgets
 
-Basados en elementos de formulario se han construido los siguientes Widgets.
+Basados en elementos de formulario se han construido varios Widgets. 
 
 
 # Milestone / Timeline

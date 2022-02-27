@@ -84,12 +84,7 @@ class Bt5Form extends Form
                 static::addClass("table-{$color}", $attributes['class']);
                 unset($args['color']);
             }
-
-            
-
         }
-
-        //d($content);
 
         return static::group($content, 'table', $attributes, ...$args);
     }
@@ -1005,8 +1000,13 @@ class Bt5Form extends Form
     /* Cards Begin */
 
     static function card(mixed $content = null, Array $attributes = [], ...$args){
+        css('
+            .card-primary.card-outline {
+                border-top: 3px solid #007bff;
+            }
+        ');
+
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        
                 
         if (array_key_exists('header', $args)){
             $header = static::cardHeader($args['header']);
@@ -1714,7 +1714,7 @@ class Bt5Form extends Form
         requiere de CSS
     */
     static function milestone(mixed $content, Array $attributes = [], ...$args){
-        include_style(APP_PATH . 'widgets/milestone/milestone.css');
+        include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
         $attributes['class'] = 'timeline-steps aos-init aos-animate';
         $attributes['data-aos'] = 'fade-up';
@@ -1746,7 +1746,7 @@ class Bt5Form extends Form
     */
     static function searchTool(mixed $content = 'Search', Array $attributes = [], ...$args)
     {
-        include_style(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
         
         $attributes['class'] = 'col-md-5 mx-auto';
 

@@ -16,7 +16,7 @@
         <h1>Correo enviado</h1>
 
         <center>
-            <img src="<?= assets('img/mail.png') ?>" style="height: 100px;" />
+            <img src="<?= asset('img/mail.png') ?>" style="height: 100px;" />
         </center>
         
         <p/><p/>     
