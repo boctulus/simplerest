@@ -1,0 +1,33 @@
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+.y-scrollable {
+  height:150px;
+  overflow-y: scroll;
+}
+
+input[disabled]{
+    color: #0000;
+    outline: color #0000;
+}
+
+.list-group-item-action:focus, .list-group-item-action:hover {
+    color: #f3c205;
+    background-color: #51575c;
+    padding-right: 10px;
+    padding-left: 10px;
+    cursor: move;
+}

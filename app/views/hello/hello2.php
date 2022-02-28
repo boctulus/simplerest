@@ -485,7 +485,7 @@ Bt5Form::setIdAsName();
 
         echo tag('h3')->text("Milestone / Timeline")->class('mb-3');
 
-        echo tag("milestone")->content([
+        echo tag("h_timeline")->content([
             [
             'title' => 2010,
             'subTitle' => 'algo remoto'
