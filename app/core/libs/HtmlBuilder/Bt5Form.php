@@ -1707,13 +1707,13 @@ class Bt5Form extends Form
     /* Modal End */
 
     /*
-        Milestone 
+        h_timeline
 
         https://www.bootdey.com/snippets/view/timeline-steps#preview
 
         requiere de CSS
     */
-    static function milestone(mixed $content, Array $attributes = [], ...$args){
+    static function h_timeline(mixed $content, Array $attributes = [], ...$args){
         include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
         $attributes['class'] = 'timeline-steps aos-init aos-animate';
