@@ -1768,6 +1768,76 @@ class Bt5Form extends Form
         return static::div($content, $attributes, ...$args);
     }
 
+    /*
+        MBD image masks
+    */
+
+    static function mask(mixed $content = '', Array $attributes = [], ...$args){
+        include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+
+        $attributes['class'] = 'bg-image rounded';
+
+        $img = $args['img'] ?? $attributes['img'] ?? null;
+
+        if ($img !== null){
+            if (!isset($img['src'])){
+                throw new \Exception("src is required for images");
+            }
+
+            $src = $img['src'];
+            $content = static::img($src, $img);
+        }
+
+        $text = $args['text'] ?? $attributes['text'] ?? null;
+    
+        $inner =  ($text !== null) ? '
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <p class="text-white mb-0">' . $text . '</p>
+            </div>
+        ' : '';    
+
+        if (!empty($content)){
+           $content .= '
+           <div class="mask" style="background-color: rgba(0, 0, 0, 0.6)">'. $inner . '</div>';         
+        }
+            
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function shadow(mixed $content = '', Array $attributes = [], ...$args){     
+        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+    
+        $class = $args['class'] ?? $attributes['class'] ?? null;
+
+        // default shadow
+        if ($class === null || !Strings::contains('shadow', $class)){
+            $attributes['class'] = "shadow";
+        }
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function note(mixed $text, Array $attributes = [], ...$args){     
+        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        
+        $attributes['class'] = "note";
+
+        // color
+
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+
+        if ($color !== null){
+            if (!in_array($color, static::$colors)){
+                throw new \InvalidArgumentException("Invalid color for '$color'");
+            }
+
+            static::addClass("note-{$color}", $attributes['class']);
+            unset($args['color']);
+        }
+
+        return static::p($text, $attributes, ...$args);
+    }
+
 
 } // end class
 
