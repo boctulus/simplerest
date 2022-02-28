@@ -434,7 +434,7 @@ Bt5Form::setIdAsName();
                 tag('dropdownItem')->href('#')->anchor('Another action') .
                 tag('dropdownDivider') .
                 tag('dropdownItem')->href('#')->anchor('Something else here')
-            )
+            )->class('animated--grow-in')
         );
 
         echo '<br/>';
@@ -621,6 +621,25 @@ Bt5Form::setIdAsName();
             ->placeholder()
         ]);
 
+        /* Shadows */
+
+        echo tag('h3')->text('Shadows')->class('mt-5 mb-3');
+
+        echo tag('shadow')
+        ->content('Some content')
+        ->class("p-3");
+
+        /* Notes */
+
+        echo tag('h3')->text('Notes')->class('my-3');
+
+        echo tag('note')
+        ->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
+        elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
+        necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
+        soluta porro?')
+        ->color('secondary')->class('mb-5');
+        
 
         /* Badges */    
 
@@ -755,9 +774,11 @@ Bt5Form::setIdAsName();
         echo tag('div')->content('Some content')->textColor('primary')->class('mt-3');    
         echo tag('div')->content('Some content but with opacity of 50%')->textColor('primary')->opacity(0.5)->class('mb-3');
 
+        // Input color
         echo tag('h3')->text('inputColor')->class('mb-3');
-
-        echo tag('inputColor')->name('my_color')->text('Color')->id('c1');
+        echo tag('inputColor')->name('my_color')->text('Color')->id('c1')
+        ->value('#563d7c')
+        ;
 
         echo tag('h3')->text('inputGroup implementado con div')->class('mb-3');
 
@@ -817,8 +838,15 @@ Bt5Form::setIdAsName();
             tag('inputButton')->id("comprar")->value('Comprar')->danger()->class('rounded-pill') .
                 tag('reset')->id("limpiar")->value("Limpiar")->warning() .
                 tag('submit')->id("enviar")->value("Enviar")->success()->disabled()
-        )->aria_label("Basic example");
+        )->aria_label("Basic example")->class('mb-3');
 
+        echo tag('p');
+
+        echo tag('buttonGroup')->content(
+            tag('inputButton')->id("comprar")->value('Comprar')->danger() .
+                tag('reset')->id("limpiar")->value("Limpiar")->warning() .
+                tag('submit')->id("enviar")->value("Enviar")->success()->disabled()
+        )->aria_label("Basic example")->vertical();
 
         // si escribo mal el nombre del tag se rompe feo
         echo tag('accordion')->items([
@@ -854,21 +882,45 @@ Bt5Form::setIdAsName();
 
         echo Bt5Form::br();
 
+        echo tag('h3')->text('Borders')->class('mb-3');
+
         // Borders
+
+        echo tag('div')->width(100)->content(
+            tag('cardBody')->content(
+                tag('div')->content('Some content')->class('my-3')
+            )->border()->h('auto')
+        )
+        ->border('left')
+        ->borderWidth(5)
+        ->borderRad(3)
+        ->borderColor('info')
+        ->class('pe-3 mb-3');
+
         echo tag('div')->width(100)->content('
         Some content,...
-        <p>
-        <p>
         ')
         //->border()
         ->borderWidth(5)
         ->borderRad(3)
         ->borderColor('warning')
         ->borderPill()
-        ->borderCorner('left top')
-        ->class('mb-3');
+        ->borderCorner('left')
+        ->class('p-3 mb-3');
 
-        echo tag('img')->src(asset('img/personal_data.png'))->id('i1')->class('img-fluid')->alt("Some alternative text");
+        echo tag('img')
+        ->src(asset('img/personal_data.png'))
+        ->id('i1')
+        ->class('w-100')
+        ->alt("Some alternative text");
+
+        echo tag('mask')
+        ->img([
+          'src' => asset('img/slide-3.jpeg'), 
+          'class' => "w-100",
+          'alt' => "Louvre Museum"
+        ])
+        ->text('Puedes verme?')->style('font-size:130%;');
 
         echo Bt5Form::br();
         echo Bt5Form::salutor("Isabel", "bella", ['class' => 'my-3 me-1', 'style' => 'color: red']); 

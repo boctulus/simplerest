@@ -766,4 +766,11 @@ class Files
 		return static::file_get_contents_locking($filename, $flags);
 	}
 
+	static function touch(string $filename, int $flags = 0){
+		if (file_exists($filename)){
+			return touch($filename);
+		}
+
+		return file_put_contents($filename, '', $flags);
+	}
 }    

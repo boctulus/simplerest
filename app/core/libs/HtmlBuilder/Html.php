@@ -474,7 +474,7 @@ class Html
         return static::$classes[$tag] ?? '';
     }
 
-    static protected function tag(string $type, ?string $value = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
+    static protected function tag(string $type, ?string $val = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
     {   
         if (isset($args['disabled'])){
             $plain_attr[] = 'disabled';
@@ -689,6 +689,12 @@ class Html
             static::addStyle("--bs-text-opacity: $opacity;", $attributes['style']);
         }
 
+        $gradient = $args['gradient'] ?? $attributes['gradient'] ?? null;
+
+        if ($gradient !== null){
+            static::addClass("bg-gradient", $attributes['class']);
+            unset($args['gradient']);
+        }
 
         /*
          Sizing
@@ -755,7 +761,7 @@ class Html
         $props = !empty($props) ? ' '.$props : $props;
 
         // en principio asumo que abre y cierra
-        $ret = "<$type{$props}>$value</$type>";
+        $ret = "<$type{$props}>$val</$type>";
 
         return static::$pretty ? static::beautifier($ret) : $ret;
     }
@@ -892,6 +898,7 @@ class Html
     static protected function label(string $for, string $text, Array $attributes = [], ...$args){
         $attributes['for'] = $for;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('label') : static::getClass('label');
+
         return static::tag('label', $text, $attributes, ...$args);
     }
 
@@ -927,24 +934,24 @@ class Html
     }
 
     static function inputColor(?string $text = null, Array $attributes = [], ...$args){
-        $attributes['type']  = 'color';
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        $attributes['type']  = 'color';
 
         if (isset($args['id'])) {
             $attributes['id'] = $args['id'];
             unset($args['id']);
         }
 
-        $value = '';
+        $val = '';
         if (!empty($text)){
             if (empty($attributes['id'])){
                 throw new \Exception("With radio and placeholder then id is required");
             }
 
-            $value = static::label($attributes['id'], $text, ...$args);
+            $val = static::label($attributes['id'], $text, ...$args);
         }
 
-        return static::tag('input', $value, $attributes, ...$args);
+        return static::tag('input', $val, $attributes, ...$args);
     }
 
     static function area(?string $default = null, Array $attributes = [], ...$args){

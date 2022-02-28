@@ -152,6 +152,8 @@ class MakeControllerBase extends Controller
         make api all --from:some_conn_id [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
         <-- "from:" is required in this case.]
+
+        make widget [ --include-js | --js ]
              
         make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --strict ] [ --remove ]
 
@@ -540,6 +542,27 @@ class MakeControllerBase extends Controller
         $data = str_replace('__SOFT_DELETE__', 'true', $data); // debe depender del schema
 
         $this->write($dest_path, $data, $protected);
+    }
+
+    function widget(string $name, ...$opt) {
+        $dir = WIDGETS_PATH . $name;
+
+        $js = false;
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--js|--javascript|--include-js)$/', $o)){
+                $js = true;
+            }
+        }
+
+        if (!is_dir($dir)){
+            Files::mkDirOrFail($dir);
+        }
+
+        Files::touch("$dir/$name.css");
+
+        if ($js){
+            Files::touch("$dir/$name.js");
+        }                
     }
 
     protected function get_pdo_const(string $sql_type){
