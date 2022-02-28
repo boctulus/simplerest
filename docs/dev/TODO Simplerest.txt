@@ -1,5 +1,21 @@
 # TODO
 
+- Incorporar componentes 
+
+  De CoreUI: 
+
+    Multiple files input
+
+  https://coreui.io/demo/4.0/free/forms/form-control.html
+
+  De SB Admin 2:
+
+    Circle buttons
+    Split Buttons with Icon
+
+  https://startbootstrap.com/previews/sb-admin-2
+
+
 - Tener en cuenta que TypeORM por ejemplo hace *asíncronas* las queries o sea son promesas !
 
 - Cache sobre queries.  Si está activa se deben cachear los *resultados* en REDIS por ejemplo. 

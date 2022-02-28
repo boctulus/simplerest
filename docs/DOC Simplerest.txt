@@ -10322,6 +10322,21 @@ Ej:
 	echo tag('div')->content('Some content')->textColor('primary')->opacity(0.5);
 
 
+Gradiente de color
+
+Ej:
+
+En teoría (porque hay un bug en Boostrap 5) lo siguiente agregaría un gradiente.
+
+  echo tag('div')->class('mt-5 p-3 py-5 mb-2')
+  ->content('Gradiente?')
+  ->textColor('white')->bg('success')->gradient();
+
+En cambio en Boostrap 4 si funcionan
+
+https://startbootstrap.github.io/startbootstrap-sb-admin-2/utilities-color.html
+
+
 Link colors
 
 En teoría (según la doc oficial), para los links deben aplicarse clases css link-{color} sin embargo,
@@ -10632,6 +10647,15 @@ Mediante headOptions() se puede pasar un array de atributos al head de la tabla.
     ]);
 
 
+# Animations
+
+Parecen faltar en BT5 pero están en "MDB Pro Essential package" 
+
+Más
+https://dev.to/mdbootstrap/bootstrap-5-animations-1kf0
+
+
+
 ~ Widgets
 
 Basados en elementos de formulario se han construido varios Widgets. 
@@ -10666,6 +10690,67 @@ Este componente consciste en un inputSeach + icon
 Ej:
 
 	echo tag('searchTool')->id('my_search');
+
+
+# Masks 
+
+Son overlays sobre imágenes con posibilidad de texto superpuesto.
+
+Ej:
+
+	echo tag('mask')->content(
+		'<img src="'. asset('img/slide-1.jpeg') .'" class="w-100" alt="Louvre Museum">'
+	);   
+
+o
+
+	echo tag('mask')
+	->img([
+		'src' => asset('img/slide-3.jpeg'), 
+		'class' => "w-100",
+		'alt' => "Louvre Museum"
+	]);
+
+Para superponer texo use text()
+
+Ej:
+
+	echo tag('mask')
+	->img([
+		'src' => asset('img/slide-3.jpeg'), 
+		'class' => "w-100",
+		'alt' => "Louvre Museum"
+	])
+	->text('Puedes verme?')->style('font-size:130%;');');
+
+
+# Shadows
+
+Con el tag shadow se obtienen sombras para contenedores.
+
+	echo tag('shdow')
+    ->content('Some content')
+    ->class("p-3");
+
+Hay varias clases para sombras en shadows.css del widget "shadow"
+
+	echo tag('shadow')
+	->content('Some content')
+	->class("p-3 shadow-lg");
+
+
+# Notes
+
+Con el tag note se pueden crear notas y opcionalmente especificar color con color()
+
+Ej:
+
+	echo tag('note')
+	->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
+      elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
+      necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
+      soluta porro?')
+	->color('secondary');
 
 
 
