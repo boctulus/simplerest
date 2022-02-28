@@ -839,7 +839,13 @@ class Html
 
     static function file(Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
-        return static::input('file', null, $attributes, ...$args);
+        
+        if (isset($args['multiple']) || isset($attributes['multiple'])){
+            $plain = ['multiple'];
+            unset($args['multiple']);
+        }
+        
+        return static::input('file', null, $attributes, $plain, ...$args);
     }
 
     static function date(?string $default = null, Array $attributes = [], ...$args){
