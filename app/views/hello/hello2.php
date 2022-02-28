@@ -834,6 +834,9 @@ Bt5Form::setIdAsName();
         echo Bt5Form::area(id: 'comment', default: 'bla bla', class: 'my-3');
 
 
+        echo tag('file')->multiple()
+        ->class('mt-3 mb-5');
+
         echo tag('buttonGroup')->content(
             tag('inputButton')->id("comprar")->value('Comprar')->danger()->class('rounded-pill') .
                 tag('reset')->id("limpiar")->value("Limpiar")->warning() .

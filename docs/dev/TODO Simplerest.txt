@@ -2,11 +2,10 @@
 
 - Incorporar componentes 
 
-  De CoreUI: 
+  Algo como el "Menu Builder" de Laravel Voyager
 
-    Multiple files input
+    https://voyager.devdojo.com/academy/menu-builder/
 
-  https://coreui.io/demo/4.0/free/forms/form-control.html
 
   De SB Admin 2:
 

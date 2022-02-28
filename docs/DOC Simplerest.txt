@@ -8132,6 +8132,15 @@ La razón de las excepciones son colisiones de nombres como sucede con button() 
 Igualmente "text" puede hacer referencia a un atributo de otra etiqueta así que <input type="text"> es inputText().
 
 
+# File
+
+El input file permite subir archivos ya sea solo uno o varios.
+
+Ej:
+
+	echo tag('file')->multiple();
+
+
 Size
 
 A los controles de tipo form-control se les puede cambiar el tamaño aplicándoles large() o size()
