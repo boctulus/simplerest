@@ -18,11 +18,8 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
   <div class="col-6 offset-3">
 
     <?php
-      
-      echo tag('shadow')
-      ->content('Some content')
-      ->class("p-3 shadow-lg");
-
+        echo tag('file')->multiple();
+  
     ?>
 
   </div>
