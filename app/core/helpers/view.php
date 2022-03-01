@@ -44,6 +44,11 @@ function include_css(string $path){
     <?php
 }
 
+function include_widget_css(string $name){
+    include_css(WIDGETS_PATH . $name . '/' . $name . '.css');
+}
+
+
 function css(string $css){
     ?>
     <style>
