@@ -1459,7 +1459,7 @@ class Bt5Form extends Form
         if (array_key_exists('withIndicators', $args)){
             $btns = [];
             for ($i=0; $i<count($content); $i++){
-                $btn = tag('button')->dataBsTarget($id)->dataBsSlideTo("$i")->aria_current("true")
+                $btn = tag('basicButton')->dataBsTarget($id)->dataBsSlideTo("$i")->aria_current("true")
                 ->content();
 
                 if ($i == 0){
@@ -1556,13 +1556,13 @@ class Bt5Form extends Form
     static function carouselControlPrev(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['data-bs-slide'] = "prev";
-        return static::button($content, $attributes, ...$args);
+        return static::basicButton($content, $attributes, ...$args);
     }
 
     static function carouselControlNext(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['data-bs-slide'] = "next";
-        return static::button($content, $attributes, ...$args);
+        return static::basicButton($content, $attributes, ...$args);
     }
 
     static function carouselControlPrevIcon(mixed $text, Array $attributes = [], ...$args){
