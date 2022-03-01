@@ -1356,19 +1356,13 @@ class Html
             static::addClass('btn-sm', $attributes['class']);
         }
 
-        $color_applied = false;
         foreach ($args as $k => $val){
             if (in_array($k, static::$colors)){
                 static::addColor("btn-$k", $attributes['class']); 
-                $color_applied = true;
                 unset($args[$k]);
                 break;
             }           
         }
-
-        if (!$color_applied && !static::hasBtnColor($attributes['class'])){
-            static::addColor("btn-primary", $attributes['class']); 
-        } 
 
         if ($content === null){
             if (isset($args['text'])){
