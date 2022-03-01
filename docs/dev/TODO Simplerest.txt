@@ -1,18 +1,36 @@
 # TODO
 
+- Implementar via comando:
+
+  . JavaScript / CSS minification
+  . JavaScript / CSS hashing  
+
+  Why use hashed CSS stylesheet and Javascript file names?
+
+  > If bundle would be rebuilt, hash changes and browser knows that it needed to update cached assets !
+
+  Más
+  https://stackoverflow.com/questions/47290012/why-use-hashed-css-stylesheet-and-javascript-file-names
+
+
 - Incorporar componentes 
 
-  Algo como el "Menu Builder" de Laravel Voyager
+  . Algo como el "Menu Builder" de Laravel Voyager
 
     https://voyager.devdojo.com/academy/menu-builder/
 
-
-  De SB Admin 2:
+  . De SB Admin 2:
 
     Circle buttons
     Split Buttons with Icon
 
   https://startbootstrap.com/previews/sb-admin-2
+
+  . De Gentelella
+
+    Visitors location geo-presentation
+    Widget para pronóstico del clima
+
 
 
 - Tener en cuenta que TypeORM por ejemplo hace *asíncronas* las queries o sea son promesas !

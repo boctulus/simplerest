@@ -76,6 +76,7 @@ class Html
         "area"           => "form-control",
         "dataList"       => "form-control",
         "search"         => "form-control",
+
         "range"          => "form-range",
         "select"         => "form-select",
         "checkbox"       => "form-check-input",
@@ -333,11 +334,35 @@ class Html
         }    
     }
 
+    static function addBgColor(string $color, string &$to) : void{
+        if (Strings::lastChar($color) == '-'){
+            return;
+        }
+
+        if (empty($to)){
+            $to = "bg-{$color}";
+            return;
+        }
+
+        /* remuevo colores previos */
+
+        $type = substr('bg-', 0, -1);
+        static::removeColors($type, $to);  
+        
+        /* 
+            si el color a aplicar, no existe => lo aplico
+        */
+
+        if (strpos($to, $color) === false){
+            $to .= " bg-{$color}";
+        }    
+    }
+
     static function hasColor(string $type, string $str, string $color = '') : bool{
         $type_len = strlen($type);
 
         if (!in_array($type, ['btn', 'alert', 'bg', 'text', 'border'])){
-            throw new \InvalidArgumentException("Color type '$type' is incorrect");
+            throw new \InvalidArgumentException("Color type '$type' is incorrect. It should be ['btn', 'alert', 'bg', 'text', 'border']");
         }
 
         if (strlen($color) > $type_len && substr($color, 0, $type_len) != $type . '-'){
@@ -474,7 +499,7 @@ class Html
         return static::$classes[$tag] ?? '';
     }
 
-    static protected function tag(string $type, ?string $val = '', ?Array $attributes = null, Array|string|null $plain_attr = null, ...$args) : string
+    static protected function tag(string $type, ?string $val = '', ?Array $attributes = [], Array|string|null $plain_attr = null, ...$args) : string
     {   
         if (isset($args['disabled'])){
             $plain_attr[] = 'disabled';
@@ -486,15 +511,54 @@ class Html
             $plain_attr[] = 'readonly';
             unset($args['readonly']);
         }
-      
+
+        $justif = [
+            "center" => "center",
+            "left" => "start",
+            "right" => "end",
+
+            "smCenter" => "sm-center",
+            "smLeft" => "sm-start",
+            "smRight" => "sm-end",
+
+            "mdCenter" => "md-center",
+            "mdLeft" => "md-start",
+            "mdRight" => "md-end",
+
+            "lgCenter" => "lg-center",
+            "lgLeft" => "lg-start",
+            "lgRight" => "lg-end",
+
+            "xlCenter" => "xl-center",
+            "xlLeft" => "xl-start",
+            "xlRight" => "xl-end",
+        ];        
+
+        $args = $args + $attributes;
+
         foreach ($args as $k => $v)
         {
-            if (!is_array($v) && Strings::startsWith('justify', $v)){
-                static::addClass($v, $attributes['class']);
-                unset($args[$k]);
-                continue;
+            if (!is_array($v)){
+                if (Strings::startsWith('justify', $v)){
+                    $attributes['class'] = $attributes['class'] ?? '';                    
+                    static::addClass($v, $attributes['class']);
+
+                    unset($args[$k]);
+                    continue;
+                }
+
+                // center, left, right
+                foreach ($justif as $jn => $jv){
+                    if ($k == $jn){
+                        $attributes['class'] = $attributes['class'] ?? '';
+                        static::addClass("text-{$jv}", $attributes['class']);
+                        
+                        unset($args[$k]);
+                        continue;
+                    }
+                }    
             }
-           
+
             // ajuste para data-* props
             if (strpos($k, '_') !== false){
                 unset($args[$k]);
@@ -521,6 +585,7 @@ class Html
                 unset($args['class']);
             }
         }  // endforeach
+
 
         // Borders
 
@@ -614,6 +679,7 @@ class Html
             unset($args['borderCorner']);
         }
 
+
         // border-radius
         $borderR = static::getAtt('borderRad', $attributes, $args);
         
@@ -652,7 +718,7 @@ class Html
 
         // Colors
 
-        $color_types = ['bg', 'text', 'alert', 'btn', 'border'];
+        $color_types = ['text', 'alert', 'btn', 'border'];
 
         foreach ($color_types as $ct)
         {
@@ -667,18 +733,28 @@ class Html
                     $at = $ct;
             }
             
-            $color = $args[$at] ?? $attributes[$at] ?? null;
+            $color = $args[$at] ?? null;
             
             if ($color !== null){
                 $attributes['class'] = $attributes['class'] ?? '';
-                static::addColor("$ct-{$args[$at]}", $attributes['class']);
+
+                static::addColor("$ct-{$color}", $attributes['class']);
                 unset($args[$at]);
             }
         }
 
+        $bg = $args['bg'] ?? null;
+
+        if ($bg !== null){
+            $attributes['class'] = $attributes['class'] ?? '';
+            static::addBgColor($bg, $attributes['class']);
+            unset($args['bg']);
+        }
+
+
         // Opacity
 
-        $opacity = $args['opacity'] ?? $attributes['opacity'] ?? null;
+        $opacity = $args['opacity'] ?? null;
 
         if ($opacity !== null){
             if ($opacity <0 || $opacity>1){
@@ -689,7 +765,7 @@ class Html
             static::addStyle("--bs-text-opacity: $opacity;", $attributes['style']);
         }
 
-        $gradient = $args['gradient'] ?? $attributes['gradient'] ?? null;
+        $gradient = $args['gradient'] ?? null;
 
         if ($gradient !== null){
             static::addClass("bg-gradient", $attributes['class']);
@@ -701,7 +777,7 @@ class Html
         */
 
         // w
-        $at = $args['w'] ?? $attributes['w'] ?? null;
+        $at = $args['w'] ?? null;
 
         if ($at !== null){
             if (($at <0 || $at>100) && $at != 'auto') {
@@ -717,7 +793,7 @@ class Html
         }
 
         // h
-        $at = $args['h'] ?? $attributes['h'] ?? null;
+        $at = $args['h'] ?? null;
 
         if ($at !== null){
             if (($at <0 || $at>100) && $at != 'auto') {
@@ -729,7 +805,6 @@ class Html
 
             unset($args['h']);
         }
-
 
         
         if (isset($attributes['class'])){
@@ -840,6 +915,7 @@ class Html
     static function file(Array $attributes = [], ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
+        $plain = [];
         if (isset($args['multiple']) || isset($attributes['multiple'])){
             $plain = ['multiple'];
             unset($args['multiple']);

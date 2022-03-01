@@ -6702,6 +6702,12 @@ Cuando las condiciones mencionadas se cumple, se incluye de forma automática el
 
 		php com make lib folder/mi_libreria -f
 
+Incluso dentro de app/core
+
+Ej:
+
+	php com make lib HtmlBuilder/admin_lte --core
+
 
 # Helpers
 
@@ -8307,7 +8313,7 @@ Ej:
 
 Nota: solo funciona con <button> y no <input type="button">
 
-Tamaño de botones
+Tamaño 
 
 Llamando a Form::small() o Form::large() se obtienen botones más grande o pequeños.
 
@@ -8315,6 +8321,20 @@ Ej:
 	echo tag('inputButton')->value('Un botón')->info()->class('rounded-pill');
     echo tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large();
     echo tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small();
+
+En general cualquier control que implemente la clase form-control es suceptible de ser agrandado o achicado con large() y small()
+
+Ej:
+
+	echo tag('file')
+	->class('mt-3 mb-5');
+
+	echo tag('file')->large()
+	->class('mt-3 mb-5');
+
+	echo tag('file')->small()
+	->class('mt-3 mb-5');
+
 
 Deshabilitar botones
 
@@ -8511,6 +8531,15 @@ Ej:
     ->primary();
 
 
+# Notification buttons
+
+Un botón que muestra en su márgen superior derecho un número.
+
+Ej:
+
+	echo tag('notificationButton')->text('Inbox')->qty(101);
+
+
 # Breadcrumbs
 
 Un breadcrumb renderiza un elemento de navegación como:
@@ -8686,7 +8715,6 @@ Ej:
 		),
 	)->id("carouselExampleControls")->withControls()->withIndicators();
 
-
 Componentes opcionales:
 
 	withControls			-- permiten navegar hacia adelante y atrás
@@ -8726,6 +8754,30 @@ Ej:
 		'<h5>Second slide label</h5>
 		<p>Some representative placeholder content for the second slide.</p>'
 	),
+
+Altura de las diapositivas
+
+Use height() sobre el tag carousel para normalizar el height de las diapositivas. El valor puede tener cualquier escala pero por defecto son pixeles.
+
+Ej:
+
+	echo tag('carousel')->content([
+		tag('carouselItem')->content(
+			tag('carouselImg')->src(asset('img/slide-1.jpeg'))
+		)->caption(
+			'<h5>First slide label</h5>
+			<p>Some representative placeholder content for the first slide.</p>'
+		),
+
+		tag('carouselItem')->content(
+			tag('carouselImg')->src(asset('img/slide-2.jpeg'))
+		),
+
+		tag('carouselItem')->content(
+			tag('carouselImg')->src(asset('img/slide-3.jpeg'))
+		)
+	])->id("carouselExampleControls")->withControls()->withIndicators()
+	->height('400px');
 	
 
 # Ventanas modales
@@ -10531,6 +10583,36 @@ You can also use utilities to set the width and height relative to the viewport.
 	<div class="vw-100">Width 100vw</div>
 	<div class="vh-100">Height 100vh</div>
 
+
+# Text utilities
+
+Para justificar texto (o como si texto se tratara) use:
+
+	left()
+	center()
+	right()
+
+Ej:
+
+	echo tag('h4')
+	->text('Indigo!')
+	->bg('indigo')
+	->center();
+
+La justificación (centrado, a izquierda o a derecha) se puede aplicar con un breakpoint (solo cuando lo supere).
+
+Ej:
+
+	echo tag('h4')
+	->text('Orange!')
+	->bg('orange')
+	->lgCenter();
+
+Los breakpoints en BT5 son sm, md, lg y xl.
+
+Nota: las clases bg- para colores como "indigo" u "orange" no están disponibles con Bootstrap pero si en templates como AdminLTE. 
+
+
 # Tables
 
 Las tablas se crean con tag('table') que recibe arrays de rows y cols.
@@ -10676,7 +10758,7 @@ El siguiente componente puede usare como milestone o timeline.
 
 Ej:
 	
-	echo tag("milestone")->content([
+	echo tag("h_timeline")->content([
 		[
 		'title' => 2010,
 		'subTitle' => 'algo remoto'
@@ -10701,7 +10783,7 @@ Ej:
 	echo tag('searchTool')->id('my_search');
 
 
-# Masks 
+# Mask
 
 Son overlays sobre imágenes con posibilidad de texto superpuesto.
 
@@ -10733,7 +10815,7 @@ Ej:
 	->text('Puedes verme?')->style('font-size:130%;');');
 
 
-# Shadows
+# Shadow
 
 Con el tag shadow se obtienen sombras para contenedores.
 
@@ -10748,7 +10830,7 @@ Hay varias clases para sombras en shadows.css del widget "shadow"
 	->class("p-3 shadow-lg");
 
 
-# Notes
+# Note
 
 Con el tag note se pueden crear notas y opcionalmente especificar color con color()
 
@@ -10760,6 +10842,109 @@ Ej:
       necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
       soluta porro?')
 	->color('secondary');
+
+
+# Steps
+
+El tag step permite crear milestones minimalistas para formularios en varios pasos.
+
+Ej:
+
+	echo tag('steps')->max(4)->current(3);
+
+
+Otro componente es wizard_steps
+
+Ej:
+	echo tag('wizard_steps')
+	->content([
+		[
+		'href'        => "#s1",
+		'title'       => 'Step 1',
+		'description' => 'Step 1 description'
+		],
+		[
+		'href'        => "#s2",
+		'title'       => 'Step 2',
+		'description' => 'Step 2 description'
+		],
+		[
+		'href'        => "#s3",
+		'title'       => 'Step 3',
+		'description' => 'Step 3 description'
+		],       
+	])
+	->current(2);
+
+También pueden setearse solo algunos campos.
+
+Ej:
+
+	echo tag('wizard_steps')
+	->content([
+		[
+		'href'        => "#s1"
+		],
+		[
+		'href'        => "#s2"
+		],
+		[
+		'href'        => "#s3"
+		],    
+		[
+		'href'        => "#s4",
+		],    
+	])
+	->current(3);
+
+O incluso solo pasar la cantidad de pasos y el paso actual.
+
+Ej:
+
+	echo tag('wizard_steps')
+	->max(5)
+	->current(3);
+
+Con vertical() debería verse vertical pero parece que faltó importar CSS.
+	
+----- 
+
+ADMIN LTE
+
+Con este tema es necesario re-implementar algunos componentes y otros como el accordion no funcionan bien pero en tal caso simplemente no incluir los estilos si son componentes del frontoffice (home).
+
+# Alerts
+
+Los alerts para Admin LTE aceptan de forma opcional un "title".
+
+Ej:
+
+	echo tag('alert')
+	->content('OK')
+	->title('Perfecto!')
+	->success()
+	->dismissible(true);
+
+	echo tag('alert')
+	->content('Algo para tener en cuenta.')
+	->title('Cuidado!')
+	->warning()
+	->dismissible(true);
+
+	echo tag('alert')
+	->content('Algo salió mal.')
+	->title('Error!')
+	->danger()
+	->dismissible(true);
+
+	// Sin título
+	echo tag('alert')
+	->content('Algo salió mal.')
+	->danger()
+	->dismissible(true);
+
+	echo AdminLte::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
+
 
 
 

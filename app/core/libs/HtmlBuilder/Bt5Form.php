@@ -1473,8 +1473,24 @@ class Bt5Form extends Form
             unset($attributes['withControls']);
         }
 
-        if (is_array($content)){
-            $content[0] = ($content[0])->active();
+        $height = $args['height'] ?? $attributes['height'] ?? null;
+
+        if ($height !== null){ 
+            unset($args['height']);
+        }
+
+        if (is_array($content)){  
+            if (is_int($height)){
+                $height = "{$height}px";
+            }
+
+            foreach ($content as $ix => $e){
+                $content[$ix] = ($e)->style("height: $height;");
+            }    
+
+            if (is_object($content[0])){
+                $content[0] = ($content[0])->active();
+            }
         }
 
         $content = [
@@ -1639,7 +1655,7 @@ class Bt5Form extends Form
             unset($args['scrollable']);
         }
 
-        if ($centered || array_key_exists('centered', $args) || in_array('centered', $attributes)){
+        if ($centered || array_key_exists('center', $args) || in_array('center', $attributes)){
             static::addClass("modal-dialog-centered", $attributes['class']);
             unset($args['center']);
         }
@@ -1703,42 +1719,35 @@ class Bt5Form extends Form
         return static::h5($text, $attributes, ...$args);
     }
     
+    static function notificationButton(string $text, int $qty, Array $attributes = [], ...$args){
+        $attributes['class'] = 'rounded position-relative';
+
+        if ($qty > 99){
+            $qty = '99+';
+        }
+
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+
+        // default shadow
+        if (empty($color)){
+            $color = 'primary';
+        }
+
+        static::addColor("btn-$color", $attributes['class']);
+
+        $content = [
+            $text,
+            tag('badge')->content($qty)->bg('danger')
+            ->class('position-absolute top-0 start-100 translate-middle rounded-pill')
+        ];
+
+        return static::button($content, $attributes, ...$args);
+    }
+
 
     /* Modal End */
 
-    /*
-        h_timeline
-
-        https://www.bootdey.com/snippets/view/timeline-steps#preview
-
-        requiere de CSS
-    */
-    static function h_timeline(mixed $content, Array $attributes = [], ...$args){
-        include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
-
-        $attributes['class'] = 'timeline-steps aos-init aos-animate';
-        $attributes['data-aos'] = 'fade-up';
-
-        if (is_array($content)){
-            foreach ($content as $e){
-                $title    = $e['title'];
-                $subTitle = $e['subTitle'] ?? '';
-                $body     = $e['body'] ?? '';
-
-                $out[] = "
-                <div class=\"timeline-step\">
-                    <div class=\"timeline-content\" data-toggle=\"popover\" data-trigger=\"hover\" data-placement=\"top\" title=\"\" data-content=\"$body\" data-original-title=\"$title\">
-                        <div class=\"inner-circle\"></div>
-                        <p class=\"h6 mt-3 mb-1\">$title</p>
-                        <p class=\"h6 text-muted mb-0 mb-lg-0\">$subTitle</p>
-                    </div>
-                </div>";
-            }        
-        }
-            
-        return static::div($out, $attributes, ...$args);
-    }
-
+  
     /*
         input search + icon
 
@@ -1836,6 +1845,127 @@ class Bt5Form extends Form
         }
 
         return static::p($text, $attributes, ...$args);
+    }
+
+    // milestone minimalista
+    static function steps(int $current, int $max, Array $attributes = [], ...$args){     
+        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+    
+        $attributes['class'] = "all-steps";
+
+        $content = [];
+
+        for ($step=1; $step <= $max; $step++){
+            $span_class = "step";
+
+            if ($step == $current){
+                static::addClass("active", $span_class);
+
+                if ($current == $max){
+                    static::addClass("finish", $span_class);
+                }    
+            }
+           
+            $content[] = static::span('', ["class" => $span_class]);
+        }
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    /*
+        https://www.bootdey.com/snippets/view/timeline-steps#preview
+    */
+    static function h_timeline(mixed $content, Array $attributes = [], ...$args){
+        include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+
+        $attributes['class'] = 'timeline-steps aos-init aos-animate';
+        $attributes['data-aos'] = 'fade-up';
+
+        if (is_array($content)){
+            foreach ($content as $e){
+                $title    = $e['title'];
+                $subTitle = $e['subTitle'] ?? '';
+                $body     = $e['body'] ?? '';
+
+                $out[] = "
+                <div class=\"timeline-step\">
+                    <div class=\"timeline-content\" data-toggle=\"popover\" data-trigger=\"hover\" data-placement=\"top\" title=\"\" data-content=\"$body\" data-original-title=\"$title\">
+                        <div class=\"inner-circle\"></div>
+                        <p class=\"h6 mt-3 mb-1\">$title</p>
+                        <p class=\"h6 text-muted mb-0 mb-lg-0\">$subTitle</p>
+                    </div>
+                </div>";
+            }        
+        }
+            
+        return static::div($out, $attributes, ...$args);
+    }
+
+
+    /*
+        From Gentelella
+
+        https://colorlib.com/polygon/gentelella/form_wizards.html
+    */
+    static function wizard_steps(int $current, int $max = 0, Array $content = [], Array $attributes = [], ...$args){     
+        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+
+        $vertical = (isset($args['vertical']) || (isset($attributes['vertical']) && $attributes['vertical'] !== false));
+
+        if ($vertical){
+            $attributes['class'] = "form_wizard wizard_verticle";
+            $class_ul = "list-unstyled wizard_steps anchor";
+        } else {
+            $attributes['class'] = "form_wizard wizard_horizontal";
+            $class_ul = "wizard_steps anchor";
+        }
+
+        $li = [];
+
+        if (empty($content)){
+            if (empty($max)){
+                throw new \Exception("Max is required");
+            }
+
+            for ($step=1; $step <= $max; $step++){
+                $li_att['class']  = ($step <= $current) ? 'selected' : 'disabled';
+                $li_att['isdone'] = ($step <= $current) ? '1' : '0';
+
+                $li[] = static::li(
+                    static::link('
+                    <span class="step_no">'.$step.'</span>', null, $li_att)
+                );
+            }   
+
+        } else {
+            foreach ($content as $i => $e){
+                $step = $i+1;
+
+                $href  = $e['href'] ?? "#step{$e}";
+                $title = $e['title'] ?? '';
+                $desc  = $e['description'] ?? '';
+
+                $li_att = [
+                    'rel' => $step 
+                ];
+
+                $li_att['class']  = ($step <= $current) ? 'selected' : 'disabled';
+                $li_att['isdone'] = ($step <= $current) ? '1' : '0';
+
+                $li[] = static::li(
+                    static::link('
+                    <span class="step_no">'.$step.'</span>
+                        <span class="step_descr">
+                        '. $title .'<br>
+                        <small>'. $desc .'</small>
+                    </span>', $href, $li_att)
+                );
+            }
+        }
+     
+        $content = static::ul($li, ['class' => $class_ul]);
+
+        return static::div($content, $attributes, ...$args);
     }
 
 

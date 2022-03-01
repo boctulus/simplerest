@@ -7535,9 +7535,12 @@ class DumbController extends Controller
         //   ]
         // ])->color('primary');
     
-        echo tag('inputColor')->name('my_color')->text('Color')->id('c1')
-        ->value('#563d7c')
-        ;   
+        echo tag('h4')
+        ->text('Indigo!')
+        ->bg('indigo')
+        ->right();
+        
+        echo "\r\n\r\n\r\n";
 
     }
 
