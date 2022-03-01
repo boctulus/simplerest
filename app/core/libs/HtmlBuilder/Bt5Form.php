@@ -1442,8 +1442,6 @@ class Bt5Form extends Form
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['data-bs-ride'] = "carousel";
 
-        include_widget_css(__FUNCTION__);
-
         if (array_key_exists('dark', $args)){
             static::addClass(static::$classes["carouselDark"], $attributes['class']);
             unset($attributes['dark']);
@@ -1985,6 +1983,28 @@ class Bt5Form extends Form
         }
      
         $content = static::ul($li, ['class' => $class_ul]);
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function callout(string $content, Array $attributes = [], ...$args){
+        $attributes['class'] = 'callout';
+
+        // color
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+
+        if ($color !== null){
+            static::addClass("callout-{$color}", $attributes['class']);
+            unset($args['color']);
+        }
+
+        $title = $title ?? $args['title'] ?? $attributes['title'] ?? null;
+
+        if ($title !== null){
+            $_title = "<h5>$title</h5>";
+        }
+
+        $content = "{$_title}<p>$content</p>";
 
         return static::div($content, $attributes, ...$args);
     }

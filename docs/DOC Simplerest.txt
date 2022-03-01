@@ -6923,6 +6923,17 @@ O en una vista:
 		include_css(WIDGETS_PATH . 'login/login.css');
 	?>
 
+O usando include_widget_css() como atajo.
+
+Ej:
+
+	static function carousel(mixed $content = [], Array $attributes = [], ...$args){
+        include_widget_css(__FUNCTION__);
+
+		// ...
+	}
+
+
 
 # Templates
 
@@ -10913,7 +10924,7 @@ ADMIN LTE
 
 Con este tema es necesario re-implementar algunos componentes y otros como el accordion no funcionan bien pero en tal caso simplemente no incluir los estilos si son componentes del frontoffice (home).
 
-# Alerts
+# Alert
 
 Los alerts para Admin LTE aceptan de forma opcional un "title".
 
@@ -10946,7 +10957,24 @@ Ej:
 	echo AdminLte::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
 
 
+# Callout
 
+Son el equivalente "light" de las cards. Color y title son opcionales.
+
+Ej:
+
+	echo tag('callout')->color('danger')
+	->content('There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
+	soul, like these sweet mornings of spring which I enjoy with my whole heart.');
+
+O con title.
+
+Ej:
+
+	ho tag('callout')->color('danger')
+	->content('There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
+	soul, like these sweet mornings of spring which I enjoy with my whole heart.')
+	->title('Some title');
 
 
 Notas Dev:

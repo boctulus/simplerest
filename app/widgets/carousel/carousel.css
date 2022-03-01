@@ -1,9 +1,0 @@
-
-.carousel > button:hover, .carousel > button:focus {
-    background-color: unset !important;
-    color: unset !important;
-    border-color: inherit;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    outline: none;
-}
