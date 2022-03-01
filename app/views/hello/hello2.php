@@ -4,7 +4,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
 
 Bt5Form::macro('salutor', function ($name, $adj, Array $att = []) {
     $str_att = Bt5Form::attributes($att);
@@ -12,6 +12,7 @@ Bt5Form::macro('salutor', function ($name, $adj, Array $att = []) {
 });
 
 Bt5Form::setIdAsName();
+
 
 ?>
 
@@ -458,7 +459,8 @@ Bt5Form::setIdAsName();
             )
         ])->id("carouselExampleControls")->withControls()->withIndicators()
         // ->dark()
-        ;
+        ->height('400px');
+        
 
         // Modal
 
@@ -476,29 +478,12 @@ Bt5Form::setIdAsName();
         )
         ->options([
             //'fullscreen',
-            //'centered',
+            //'center',
             //'scrollable'
         ])
         ->id('exampleModal');
 
         echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
-
-        echo tag('h3')->text("Milestone / Timeline")->class('mb-3');
-
-        echo tag("h_timeline")->content([
-            [
-            'title' => 2010,
-            'subTitle' => 'algo remoto'
-            ],
-            [
-            'title' => 2011,
-            'subTitle' => 'algo hermoso'
-            ],
-            [
-            'title' => 2016,
-            'subTitle' => 'algo horrible'
-            ],        
-        ]);    
 
 
         // Size
@@ -621,25 +606,6 @@ Bt5Form::setIdAsName();
             ->placeholder()
         ]);
 
-        /* Shadows */
-
-        echo tag('h3')->text('Shadows')->class('mt-5 mb-3');
-
-        echo tag('shadow')
-        ->content('Some content')
-        ->class("p-3");
-
-        /* Notes */
-
-        echo tag('h3')->text('Notes')->class('my-3');
-
-        echo tag('note')
-        ->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
-        elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
-        necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
-        soluta porro?')
-        ->color('secondary')->class('mb-5');
-        
 
         /* Badges */    
 
@@ -647,12 +613,7 @@ Bt5Form::setIdAsName();
 
         echo tag('badge')->content('barato')->class('mb-3 me-3 rounded-pill')->bg('success'); // ok
 
-        echo tag('button')->content([
-            'Inbox',
-            tag('badge')->content('99+')->bg('danger')->class('position-absolute top-0 start-100 translate-middle rounded-pill')
-        ])
-        ->class('rounded position-relative')
-        ->primary();
+        echo tag('notificationButton')->text('Correos')->qty(101);
 
         /* buttonToolbar */
 
@@ -796,10 +757,13 @@ Bt5Form::setIdAsName();
 
         //
 
-        echo tag('h3')->text('inputRange')->class('mb-3');
+        echo tag('h3')->text('inputRange')->class('mt-3 mb-3');
 
         echo tag('label')->name("edad")->text("Edad");
         echo Bt5Form::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
+
+        echo tag('label')->name("exp")->text("Experiencia");
+        echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3');
 
         echo tag('h3')->text('checkGroup')->class('mb-3');
 
@@ -834,8 +798,16 @@ Bt5Form::setIdAsName();
         echo Bt5Form::area(id: 'comment', default: 'bla bla', class: 'my-3');
 
 
-        echo tag('file')->multiple()
+        echo tag('file')
+        ->multiple()
         ->class('mt-3 mb-5');
+
+        echo tag('file')->large()
+        ->class('mt-3 mb-5');
+
+        echo tag('file')->small()
+        ->class('mt-3 mb-5');
+
 
         echo tag('buttonGroup')->content(
             tag('inputButton')->id("comprar")->value('Comprar')->danger()->class('rounded-pill') .
@@ -929,6 +901,95 @@ Bt5Form::setIdAsName();
         echo Bt5Form::salutor("Isabel", "bella", ['class' => 'my-3 me-1', 'style' => 'color: red']); 
         echo ' ~ '; 
         echo Bt5Form::link(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
+
+
+        /*
+            Widgets ----
+        */
+
+        echo tag('hr');
+        echo tag('h2')->text('Widgets')->class('mb-3');
+
+        echo tag('h3')->text("Milestone / Timeline")->class('mb-3');
+
+        echo tag("h_timeline")->content([
+            [
+            'title' => 2010,
+            'subTitle' => 'algo remoto'
+            ],
+            [
+            'title' => 2011,
+            'subTitle' => 'algo hermoso'
+            ],
+            [
+            'title' => 2016,
+            'subTitle' => 'algo horrible'
+            ],        
+        ]);    
+
+        echo tag('h3')->text('Steps')->class('mb-3');
+
+        echo tag('steps')->max(4)->current(3);
+
+        echo tag('wizard_steps')
+        ->content([
+          [
+            'href'        => "#s1",
+            'title'       => 'Step 1',
+            'description' => 'Step 1 description'
+          ],
+          [
+            'href'        => "#s2",
+            'title'       => 'Step 2',
+            'description' => 'Step 2 description'
+          ],
+          [
+            'href'        => "#s3",
+            'title'       => 'Step 3',
+            'description' => 'Step 3 description'
+          ],       
+        ])
+        ->current(2);
+
+        echo tag('wizard_steps')
+        ->max(5)
+        ->current(3);
+
+        echo tag('wizard_steps')
+        ->content([
+          [
+            'href'        => "#s1"
+          ],
+          [
+            'href'        => "#s2"
+          ],
+          [
+            'href'        => "#s3"
+          ],    
+          [
+            'href'        => "#s4",
+          ],    
+        ])
+        ->current(3);
+
+        /* Notes */
+
+        echo tag('h3')->text('Notes')->class('mb-3');
+
+        echo tag('note')
+        ->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
+        elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
+        necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
+        soluta porro?')
+        ->color('secondary')->class('mb-5');
+
+        /* Shadows */
+
+        echo tag('h3')->text('Shadows')->class('mt-5 mb-3');
+
+        echo tag('shadow')
+        ->content('Some content')
+        ->class("p-3");
 
 
         ?>
