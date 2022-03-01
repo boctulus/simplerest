@@ -8315,9 +8315,17 @@ Colores y otras clases sobre botones
     echo tag('reset')->id("limpiar")->value("Limpiar")->warning()->class('mx-3');
     echo tag('submit')->id("enviar")->value("Enviar")->success();
 
-Botones sin background (outline) 
+Flat
 
-Es cuestión de llamar a Form::outline() 
+Se puede conseguir botones planos (sin bordes redondeados) aplicando flat()
+
+Ej:
+
+	echo tag('button')->content('Un botón')->large()->bg('warning')->flat();
+
+Outline
+
+Se puede conseguir botones sin background aplicando outline() 
 
 Ej:
 	echo tag('button')->content('Botón rojo')->danger()->class('rounded-pill')->outline()
@@ -8345,7 +8353,6 @@ Ej:
 
 	echo tag('file')->small()
 	->class('mt-3 mb-5');
-
 
 Deshabilitar botones
 
@@ -10512,15 +10519,11 @@ Gradiente de color
 
 Ej:
 
-En teoría (porque hay un bug en Boostrap 5) lo siguiente agregaría un gradiente.
-
   echo tag('div')->class('mt-5 p-3 py-5 mb-2')
   ->content('Gradiente?')
-  ->textColor('white')->bg('success')->gradient();
-
-En cambio en Boostrap 4 si funcionan
-
-https://startbootstrap.github.io/startbootstrap-sb-admin-2/utilities-color.html
+  ->textColor('white')
+  ->bg('success')
+  ->gradient();
 
 
 Link colors
