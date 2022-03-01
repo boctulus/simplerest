@@ -11,7 +11,7 @@ use simplerest\core\libs\Strings;
     Cards
     inputColor
     Select
-    Accordion
+    Accordion (un reemplazo)
     switch 
     checkbox
 
