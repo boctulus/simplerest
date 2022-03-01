@@ -11,16 +11,14 @@ class Hello2Controller extends Controller
         $this->view('hello/hello2.php', null, null, 0);
     }
 
-    function acordion(){
-        $this->view('hello/acordion.php');
+    function lte(){
+        $this->view('hello/hello3.php');
     }
-
+    
     function test(){
         $this->view('hello/test.php');
     }
 
-    function filter(){
-        $this->view('excel/filter.php');
-    }
+   
 }
 

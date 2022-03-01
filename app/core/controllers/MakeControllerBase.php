@@ -555,13 +555,21 @@ class MakeControllerBase extends Controller
         }
 
         if (!is_dir($dir)){
-            Files::mkDirOrFail($dir);
+            if (Files::mkDirOrFail($dir)){
+                d("$dir was created");
+            }
         }
 
-        Files::touch("$dir/$name.css");
+        $exists = file_exists("$dir/$name.css");
+
+        if (Files::touch("$dir/$name.css")){
+            d("$dir/$name.css was " . (!$exists ? 'created' : 'touched'));
+        }
 
         if ($js){
-            Files::touch("$dir/$name.js");
+            if (Files::touch("$dir/$name.js")){
+                d("$dir/$name.js was created");
+            }
         }                
     }
 
