@@ -5,6 +5,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
+//Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
 
 include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
@@ -12,7 +13,7 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 ?>
 
 <style>
-    /* .color-palette {
+  /* .color-palette {
       height: 35px;
       line-height: 35px;
       text-align: right;
@@ -53,38 +54,59 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
       display: block;
       z-index: 7;
     } */
-  </style>
+</style>
 
 <div class="row mt-5">
   <div class="col-6 offset-3">
 
-      <div class="alert alert-danger alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <h5><i class="icon fas fa-ban"></i> Alert!</h5>
-        Danger alert preview. This alert is dismissable. A wonderful serenity has taken possession of my
-        entire
-        soul, like these sweet mornings of spring which I enjoy with my whole heart.
-      </div>
-      
-    <?php
-
-        
-
-        // echo tag('alert')->content(
-        //     tag('alertLink')->href('#')->anchor('A danger content')
-        // )->color('danger')->dismissible(true);
-        
-       
-
-    ?>
+  <div id="robotcarousel" class="carousel slide" data-bs-ride="carousel">
+  
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#robotcarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#robotcarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+  </div>
+  
+  <div class="carousel-inner">
+    <div class="carousel-item">
+      <img class="d-block w-100" src="https://pixelprowess.com/i/carousel_swamp.png" alt="swamp">
+    </div>
+    <div class="carousel-item active">
+      <img class="d-block w-100" src="https://pixelprowess.com/i/carousel_flight.png" alt="flight">
+    </div>
+  </div>
+  
+  <button class="carousel-control-prev" type="button" data-bs-target="#robotcarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#robotcarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+  
+</div>
 
     
 
+    <?php
 
-      <?php
-      //echo tag('file')->multiple();
 
-      ?>
 
-    </div>
+    // echo tag('alert')->content(
+    //     tag('alertLink')->href('#')->anchor('A danger content')
+    // )->color('danger')->dismissible(true);
+
+
+
+    ?>
+
+
+
+
+    <?php
+    //echo tag('file')->multiple();
+
+    ?>
+
   </div>
+</div>
