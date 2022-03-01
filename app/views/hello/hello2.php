@@ -454,7 +454,7 @@ Bt5Form::setIdAsName();
                 tag('carouselImg')->src(asset('img/carousel_flight.png'))
             )
         ])->id("carouselExampleControls")->withControls()->withIndicators()
-        // ->dark()
+        //->dark()
         ->height('300px');
         
 

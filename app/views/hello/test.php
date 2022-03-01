@@ -5,8 +5,8 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
-//Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
+Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+//Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
 
 include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 
@@ -59,44 +59,17 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 <div class="row mt-5">
   <div class="col-6 offset-3">
 
-  <div id="robotcarousel" class="carousel slide" data-bs-ride="carousel">
-  
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#robotcarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#robotcarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-  </div>
-  
-  <div class="carousel-inner">
-    <div class="carousel-item">
-      <img class="d-block w-100" src="https://pixelprowess.com/i/carousel_swamp.png" alt="swamp">
-    </div>
-    <div class="carousel-item active">
-      <img class="d-block w-100" src="https://pixelprowess.com/i/carousel_flight.png" alt="flight">
-    </div>
-  </div>
-  
-  <button class="carousel-control-prev" type="button" data-bs-target="#robotcarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#robotcarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-  
-</div>
+  <?php
 
-    
+    echo tag('carousel')->content([
+      tag('carouselItem')->content(
+          tag('carouselImg')->src(asset('img/carousel_swamp.png'))->alt("swamp")
+      ),
 
-    <?php
-
-
-
-    // echo tag('alert')->content(
-    //     tag('alertLink')->href('#')->anchor('A danger content')
-    // )->color('danger')->dismissible(true);
-
-
+      tag('carouselItem')->content(
+          tag('carouselImg')->src(asset('img/carousel_flight.png'))->alt("flight")
+      )
+    ])->id("robotcarousel")->withControls()->withIndicators();
 
     ?>
 
