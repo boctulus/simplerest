@@ -12,7 +12,7 @@ class Hello2Controller extends Controller
     }
 
     function lte(){
-        $this->view('hello/hello3.php');
+        $this->view('hello/lte.php');
     }
     
     function test(){

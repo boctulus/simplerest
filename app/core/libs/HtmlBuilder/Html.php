@@ -1397,10 +1397,12 @@ class Html
 
         if (isset($args['large'])){
             static::addClass('btn-lg', $attributes['class']);
+            unset($args['large']);
         }
 
         if (isset($args['small'])){
             static::addClass('btn-sm', $attributes['class']);
+            unset($args['small']);
         }
 
         $outline = array_key_exists('outline', $attributes) || array_key_exists('outline', $args);
@@ -1415,9 +1417,18 @@ class Html
             }           
         }
 
-        if (!$color_applied && !static::hasBtnColor($attributes['class'])){
+        $bg = $args['bg'] ?? $attributes['bg'] ?? null;
+
+        if (!$color_applied && !static::hasBtnColor($attributes['class']) && $bg == false){
             static::addColor("btn-primary", $attributes['class']); 
         } 
+
+        $flat = array_key_exists('flat', $attributes) || array_key_exists('flat', $args);
+
+        if ($flat){
+            static::addClass('btn-flat', $attributes['class']);
+            unset($args['flat']);
+        }
 
         if ($content === null){
             if (isset($args['text'])){
