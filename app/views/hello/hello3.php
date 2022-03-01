@@ -229,9 +229,11 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
         echo tag('spinner')->class('my-3')->grow()->as('button')->unhide()->content('Cargando..');
 
 
+        echo tag('h2')->text('Progress bars')->class('mt-3');
+
         echo tag('progress')->content(
             tag('progressBar')->current(80)
-        )->class('mt-5');
+        )->class('mt-3');
 
         echo tag('progress')->content(
             tag('progressBar')
@@ -255,6 +257,16 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
             tag('progressBar')
             ->current(25)->withLabel()->bg('info')
         ])->class('mt-3');
+
+        
+        echo tag('h2')->text('Progress bars | verticales')->class('my-3');
+
+        echo tag('progress')->content(
+            tag('progressBar')
+            ->current(20)->bg('primary')->striped()
+        )
+        ->size('xs')
+        ->vertical();  
 
 
         // echo tag('navbar')->content(
@@ -703,8 +715,17 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
         ->danger()
         ->dismissible(true);
 
-
         echo AdminLte::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
+
+
+        // Callouts
+        echo tag('h2')->text('Callouts')->class('my-3');
+
+        echo tag('callout')->color('danger')
+        ->content('There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
+        soul, like these sweet mornings of spring which I enjoy with my whole heart.')
+        ->title('Some title');
+        
 
         /*
             Select
