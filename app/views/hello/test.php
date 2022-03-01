@@ -59,49 +59,19 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 <div class="row mt-5">
   <div class="col-6 offset-3">
 
-  <!-- <div class="callout callout-danger">
-    <h5>I am a danger callout!</h5>
 
-    <p>There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
-      soul,
-      like these sweet mornings of spring which I enjoy with my whole heart.</p>
-  </div> -->
-  
   <?php
-      echo tag('progress')->content(
-          tag('progressBar')->current(80)
-      )->class('mt-5');
 
-      echo tag('progress')->content(
+        // progress-xxs
+        echo tag('progress')->content(
           tag('progressBar')
-          ->min(5)
-          ->max(25)
-          ->current(15)->withLabel()->striped()
-      )->class('my-5');
-
-      echo tag('progress')->content(
-          tag('progressBar')
-          ->current(25)->withLabel()->bg('danger')->animated()
-      )->class('my-5')->style("height: 50px;");
-
-      // progress-xxs
-      echo tag('progress')->content(
-        tag('progressBar')
-        ->current(25)->bg('danger')->animated()
-      )->class('my-5')
-      ->size('sm');  
-
-
-      echo tag('progress')->content([
-          tag('progressBar')
-          ->current(15)->withLabel()->bg('primary'),
-
-          tag('progressBar')
-          ->current(30)->withLabel()->bg('success'),
-
-          tag('progressBar')
-          ->current(25)->withLabel()->bg('info')
-      ])->class('mt-3');
+          ->current(20)->bg('primary')->striped()
+        )
+        ->size('xs')
+        ->vertical();  
+        
+  
+  
 
   ?>
 

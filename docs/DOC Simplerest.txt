@@ -10154,8 +10154,18 @@ Con AdminLTE al menos,... se definen clases de css para los tamaños xxs, xs y s
 	echo tag('progress')->content(
 	tag('progressBar')
 	->current(25)->bg('danger')->animated()
-	)->class('my-5')
 	->size('xxs');  
+
+Barras de progreso verticales
+
+Aplicar vertical() 
+
+	echo tag('progress')->content(
+		tag('progressBar')
+		->current(20)->bg('primary')->striped()
+	)
+	->size('xs')
+	->vertical();  
 
 
 # Scrollspy
@@ -10981,7 +10991,7 @@ O con title.
 
 Ej:
 
-	ho tag('callout')->color('danger')
+	echo tag('callout')->color('danger')
 	->content('There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
 	soul, like these sweet mornings of spring which I enjoy with my whole heart.')
 	->title('Some title');
