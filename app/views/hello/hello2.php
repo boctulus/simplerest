@@ -4,7 +4,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
+Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
 Bt5Form::macro('salutor', function ($name, $adj, Array $att = []) {
     $str_att = Bt5Form::attributes($att);
@@ -444,22 +444,18 @@ Bt5Form::setIdAsName();
 
         echo tag('carousel')->content([
             tag('carouselItem')->content(
-                tag('carouselImg')->src(asset('img/slide-1.jpeg'))
+                tag('carouselImg')->src(asset('img/carousel_swamp.png'))
             )->caption(
                 '<h5>First slide label</h5>
                 <p>Some representative placeholder content for the first slide.</p>'
             ),
 
             tag('carouselItem')->content(
-                tag('carouselImg')->src(asset('img/slide-2.jpeg'))
-            ),
-
-            tag('carouselItem')->content(
-                tag('carouselImg')->src(asset('img/slide-3.jpeg'))
+                tag('carouselImg')->src(asset('img/carousel_flight.png'))
             )
         ])->id("carouselExampleControls")->withControls()->withIndicators()
         // ->dark()
-        ->height('400px');
+        ->height('300px');
         
 
         // Modal

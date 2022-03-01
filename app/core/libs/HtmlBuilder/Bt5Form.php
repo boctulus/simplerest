@@ -1430,11 +1430,19 @@ class Bt5Form extends Form
     /* Navigation End */
 
 
-    /* Carousel Begin */
+    /* 
+    
+        Carousel 
 
-    static function carousel(mixed $content, Array $attributes = [], ...$args){
+        Corregir el bug del "border" sobre las flechas. Comparar con
+        https://codepen.io/planetoftheweb/pen/wvgNPwL
+    
+    */
+    static function carousel(mixed $content = [], Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['data-bs-ride'] = "carousel";
+
+        include_widget_css(__FUNCTION__);
 
         if (array_key_exists('dark', $args)){
             static::addClass(static::$classes["carouselDark"], $attributes['class']);
@@ -1446,29 +1454,42 @@ class Bt5Form extends Form
             unset($attributes['fade']);
         }
 
+        $id = $args['id'] ?? $attributes['id'] ?? null;
+
         if (array_key_exists('withIndicators', $args)){
-            $indicators = tag('carouselIndicators')->content([
-                tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("0")->aria_current("true")
-                ->content()->active(),
-                tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("1")->aria_current("true")
-                ->content(),
-                tag('button')->dataBsTarget("#carouselExampleIndicators")->dataBsSlideTo("2")->aria_current("true")
-                ->content()
-            ]);
+            $btns = [];
+            for ($i=0; $i<count($content); $i++){
+                $btn = tag('button')->dataBsTarget($id)->dataBsSlideTo("$i")->aria_current("true")
+                ->content();
+
+                if ($i == 0){
+                    $btn = ($btn)->active();
+                }
+
+                $btns[] = $btn;
+            }
+
+            $indicators = tag('carouselIndicators')->content(
+                $btns
+            );
 
             unset($attributes['withIndicators']);
         }
 
         if (array_key_exists('withControls', $args)){
+            if ($id == null){
+                throw new \Exception("id is required with controls");
+            }
+
             $controls = tag('carouselControlPrev')->content(
                 tag('carouselControlPrevIcon')->text() .
                 tag('span')->hidden()->text('Previous')
-            )->dataBsTarget("#carouselExampleControls") .
+            )->dataBsTarget("#$id") .
 
             tag('carouselControlNext')->content(
                 tag('carouselControlNextIcon')->text() .
                 tag('span')->hidden()->text('Next')
-            )->dataBsTarget("#carouselExampleControls");
+            )->dataBsTarget("#$id");
 
             unset($attributes['withControls']);
         }
@@ -1485,7 +1506,7 @@ class Bt5Form extends Form
             }
 
             foreach ($content as $ix => $e){
-                $content[$ix] = ($e)->style("height: $height;");
+                $content[$ix] = ($e)->style("max-height: $height;");
             }    
 
             if (is_object($content[0])){
@@ -1755,7 +1776,7 @@ class Bt5Form extends Form
     */
     static function searchTool(mixed $content = 'Search', Array $attributes = [], ...$args)
     {
-        include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        include_widget_css(__FUNCTION__);
         
         $attributes['class'] = 'col-md-5 mx-auto';
 
@@ -1782,7 +1803,7 @@ class Bt5Form extends Form
     */
 
     static function mask(mixed $content = '', Array $attributes = [], ...$args){
-        include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        include_widget_css(__FUNCTION__);
 
         $attributes['class'] = 'bg-image rounded';
 
@@ -1876,7 +1897,7 @@ class Bt5Form extends Form
         https://www.bootdey.com/snippets/view/timeline-steps#preview
     */
     static function h_timeline(mixed $content, Array $attributes = [], ...$args){
-        include_css(APP_PATH . 'widgets/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        include_widget_css(__FUNCTION__);
 
         $attributes['class'] = 'timeline-steps aos-init aos-animate';
         $attributes['data-aos'] = 'fade-up';
@@ -1908,7 +1929,7 @@ class Bt5Form extends Form
         https://colorlib.com/polygon/gentelella/form_wizards.html
     */
     static function wizard_steps(int $current, int $max = 0, Array $content = [], Array $attributes = [], ...$args){     
-        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        include_widget_css(__FUNCTION__);
 
         $vertical = (isset($args['vertical']) || (isset($attributes['vertical']) && $attributes['vertical'] !== false));
 
