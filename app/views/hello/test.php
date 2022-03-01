@@ -5,8 +5,8 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
-//Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
+//Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
 
 include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 
@@ -59,27 +59,23 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 <div class="row mt-5">
   <div class="col-6 offset-3">
 
+  <!-- <div class="callout callout-danger">
+    <h5>I am a danger callout!</h5>
+
+    <p>There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
+      soul,
+      like these sweet mornings of spring which I enjoy with my whole heart.</p>
+  </div> -->
+  
   <?php
+    echo tag('callout')
+    ->content('There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
+      soul,
+      like these sweet mornings of spring which I enjoy with my whole heart.')
+      ->title('Some title');
 
-    echo tag('carousel')->content([
-      tag('carouselItem')->content(
-          tag('carouselImg')->src(asset('img/carousel_swamp.png'))->alt("swamp")
-      ),
+  ?>
 
-      tag('carouselItem')->content(
-          tag('carouselImg')->src(asset('img/carousel_flight.png'))->alt("flight")
-      )
-    ])->id("robotcarousel")->withControls()->withIndicators();
-
-    ?>
-
-
-
-
-    <?php
-    //echo tag('file')->multiple();
-
-    ?>
 
   </div>
 </div>
