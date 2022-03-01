@@ -688,6 +688,27 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 
         echo tag('notificationButton')->text('Correos')->qty(101);
 
+        // buttons
+
+        echo tag('h3')->text('Buttons')->class('my-3');
+
+        echo tag('buttonGroup')->content([
+            tag('inputButton')->value('Un botón')->info()->class('rounded-pill'),
+            tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large(),
+            tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small()
+        ])->class('my-3');
+
+        echo tag('buttonGroup')->content([
+            tag('button')->content('Un botón')->large()->bg('success'),
+            tag('button')->content('Un botón')->large()->bg('success')->gradient()
+        ])->class('my-3');
+
+        //echo tag('buttonGroup')->content([
+            echo tag('button')->content('Un botón')->large()->bg('danger');
+            echo tag('button')->content('Un botón')->large()->bg('warning')->flat();
+        //])->class('my-3');
+
+
         /* buttonToolbar */
 
         echo tag('h3')->text('buttonToolbar')->class('my-3');
