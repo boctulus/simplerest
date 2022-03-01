@@ -1201,7 +1201,8 @@ class Bt5Form extends Form
     static function progress(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
-        $size   = $attributes['size'] ?? $args['size'] ?? null;
+        // size
+        $size   = $args['size'] ?? $attributes['size'] ?? null;
         
         if ($size){
             if (in_array($size, ['xxs', 'xs', 'sm'])){
@@ -1210,6 +1211,15 @@ class Bt5Form extends Form
                 throw new \Exception("Invalid size '$size'.");
             }
         }
+
+        // orientation
+
+        $vertical = (isset($args['vertical']) || (isset($attributes['vertical']) && $attributes['vertical'] !== false));
+
+        if ($vertical){
+            static::addClass("vertical", $attributes['class']);
+            $content = $content->vertical();
+        }        
 
         return static::div($content, $attributes, ...$args);
     }
@@ -1229,7 +1239,15 @@ class Bt5Form extends Form
 
         $per = round(($current / ($max - $min)) * 100);
 
-        $attributes['style'] = "width: {$per}%";
+        $vertical = array_key_exists('vertical', $args) || array_key_exists('vertical', $attributes) ?? false;
+
+        $attributes['style'] = $attributes['style'] ?? '';
+
+        if ($vertical){            
+            static::addStyle("height: {$per}%", $attributes['style']);
+        } else {
+            static::addStyle("width: {$per}%", $attributes['style']);
+        }
 
         // Striped 
 
