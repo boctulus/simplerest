@@ -8582,15 +8582,22 @@ Se implementan varios métodos para la creación de tarjetas aunque las cards so
 
 Ej:
 
-	echo tag('card')->content(
-        tag('cardHeader')->content('Quote') .
-        tag('cardBody')->content(
-            tag('blockquote')->content(tag('p')->text(
-                'A well-known quote, contained in a blockquote element.') .
-                tag('blockquoteFooter')->content('Someone famous in '. tag('cite')->title("Source Title")->content('Source Title'))
+	echo tag('card')
+        ->header('Quote') 
+        ->body(
+
+            tag('blockquote')->content(
+                tag('p')->text(
+                    'A well-known quote, contained in a blockquote element.'
+                ) .
+                tag('blockquoteFooter')->content('Someone famous in ' . 
+                tag('cite')->title("Source Title")->content('Source Title'))
+
             )->class('mb-0')
-        )
-    )->class('mb-4');
+        
+        ) 
+        ->footer('Some footer')
+        ->class('mb-4');
 
 Tanto header como footer son opcionales.
 
@@ -8701,6 +8708,49 @@ Ej:
             tag('cardSubtitle')->text('{{cartsubtitle:text}}')->textMuted()
         )
     );
+
+
+# Citas
+
+Para citas use el tag blockquote
+
+Ej:
+
+	echo tag('card')
+	->header('Quote') 
+	->body(
+
+		tag('blockquote')->content(
+			tag('p')->text(
+				'A well-known quote, contained in a blockquote element.'
+			) .
+			tag('blockquoteFooter')->content('Someone famous in ' . 
+			tag('cite')->title("Source Title")->content('Source Title'))
+
+		)
+	
+	) 
+	->footer('Some footer')
+	->class('mb-4');
+
+Con AdminLTE cambie el color del marco con color()
+
+	echo tag('card')
+	->header('Quote') 
+	->body(
+
+		tag('blockquote')->content(
+			tag('p')->text(
+				'A well-known quote, contained in a blockquote element.'
+			) .
+			tag('blockquoteFooter')->content('Someone famous in ' . 
+			tag('cite')->title("Source Title")->content('Source Title'))
+
+		)->color('secondary')
+	
+	) 
+	->footer('Some footer')
+	->class('mb-4');
 
 
 # Carousels
@@ -9922,6 +9972,50 @@ Podría incluirse más lógica como que:
 - Si hay una sola página que se deshabiliten tanto Prev como Next.
 
 - Que si se recibe como parámetro del número total de páginas y está activa la última, entonces se desabilite Next.
+
+
+Paginador de meses
+
+Debe aplicarse la clase de css "pagination-month" al paginator e incluir en principio cierto html para cada mes-año.
+
+Ej:
+
+	/*
+		Previous | Ene | Feb | Mar | Next
+	*/
+	echo tag('paginator')
+	->class('pagination-month')
+	->content([
+		[
+		'href'   => '#?page=1',
+		'anchor' => '
+					<p class="page-month">Ene</p>
+					<p class="page-year">2021</p>'
+		],
+		[
+			'href'   => '#?page=2',
+			'anchor' => '
+						<p class="page-month">Feb</p>
+						<p class="page-year">2021</p>',
+			'active' => true
+		],
+		[
+		'href'   => '#?page=3',
+		'anchor' => '
+					<p class="page-month">Mar</p>
+					<p class="page-year">2021</p>'
+		],
+		// ...
+	])
+	->options(['justify-content-center'])
+	->withPrev([
+		'href'   => '#?page=1',
+		'anchor' => '&laquo;',
+	])
+	->withNext([
+		'href'   => '#?page=11',
+		'anchor' => '&raquo;',
+	]);
 
 
 # Placeholders
