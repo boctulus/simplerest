@@ -197,7 +197,7 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
                 'href' => '#?page=3'
             ]
         ])
-        ->class('mt-5')
+        ->class('mt-3')
         ->large()
         ->options(['justify-content-center'])
         ->withPrev([
@@ -208,8 +208,45 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
             'href'   => '#?page=4',
             'anchor' => 'Next',
             //'disabled' => true
+        ]);
+
+        /*
+            Previous | Ene | Feb | Mar | Next
+        */
+        echo tag('paginator')
+        ->class('pagination-month')
+        ->content([
+            [
+            'href'   => '#?page=1',
+            'anchor' => '
+                        <p class="page-month">Ene</p>
+                        <p class="page-year">2021</p>'
+            ],
+            [
+                'href'   => '#?page=2',
+                'anchor' => '
+                            <p class="page-month">Feb</p>
+                            <p class="page-year">2021</p>',
+                'active' => true
+            ],
+            [
+            'href'   => '#?page=3',
+            'anchor' => '
+                        <p class="page-month">Mar</p>
+                        <p class="page-year">2021</p>'
+            ],
+            // ...
         ])
-        ;
+        ->options(['justify-content-center'])
+        ->withPrev([
+            'href'   => '#?page=1',
+            'anchor' => '&laquo;',
+        ])
+        ->withNext([
+            'href'   => '#?page=11',
+            'anchor' => '&raquo;',
+        ]);
+        
 
         /*
             Spinners
@@ -559,21 +596,44 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 
         echo '<br/>';
 
-        echo tag('h3')->text('Cards')->class('my-3');
+        echo tag('h3')->text('Quotes')->class('my-3');
         
         echo tag('card')
         ->header('Quote') 
         ->body(
+
             tag('blockquote')->content(
                 tag('p')->text(
                     'A well-known quote, contained in a blockquote element.'
                 ) .
-                    tag('blockquoteFooter')->content('Someone famous in ' . tag('cite')->title("Source Title")->content('Source Title'))
+                tag('blockquoteFooter')->content('Someone famous in ' . 
+                tag('cite')->title("Source Title")->content('Source Title'))
+
             )->class('mb-0')
+        
         ) 
         ->footer('Some footer')
         ->class('mb-4');
 
+        echo tag('card')
+        ->header('Quote') 
+        ->body(
+
+            tag('blockquote')->content(
+                tag('p')->text(
+                    'A well-known quote, contained in a blockquote element.'
+                ) .
+                tag('blockquoteFooter')->content('Someone famous in ' . 
+                tag('cite')->title("Source Title")->content('Source Title'))
+
+            )->class('mb-0')->color('secondary')
+        
+        ) 
+        ->footer('Some footer')
+        ->class('mb-4');
+
+
+        echo tag('h3')->text('Cards')->class('my-3');
 
         echo tag('card')
         ->header(tag('cardTitle')->text('Some title'))
