@@ -1320,7 +1320,19 @@ class Html
         <cite><a href="http://www-cs-faculty.stanford.edu/~uno/faq.html">Donald Knuth: Notes on the van Emde Boas construction of priority deques: An instructive use of recursion, March 29th, 1977</a>
         </blockquote>
     */
-    static function blockquote(mixed $content, $attributes = [], ...$args){
+    static function blockquote(mixed $content, $attributes = [], ...$args)
+    {   
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+
+        // default shadow
+        if (empty($color)){
+            $color = 'primary';
+        }
+
+        static::addColor("quote-$color", $attributes['class']);
+
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 

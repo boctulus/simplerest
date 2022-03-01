@@ -60,20 +60,46 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
   <div class="col-6 offset-3">
 
 
-  <?php
+    <?php
+        /*
+            Previous | Ene | Feb | Mar | Next
+        */
+        echo tag('paginator')->content([
+          [
+            'href'   => '#?page=1',
+            'anchor' => '<p class="page-month">Ene</p>
+                        <p class="page-year">2021</p>'
+          ],
+          [
+              'href'   => '#?page=2',
+              'anchor' => '<p class="page-month">Feb</p>
+                          <p class="page-year">2021</p>',
+              'active' => true
+          ],
+          [
+            'href'   => '#?page=3',
+            'anchor' => '<p class="page-month">Mar</p>
+                        <p class="page-year">2021</p>'
+          ],
+          // ...
+      ])
+      ->class('mt-3 pagination-month')
+      //->large()
+      ->options(['justify-content-center'])
+      ->withPrev([
+          'href'   => '#?page=1',
+          'anchor' => '&laquo;',
+          //'disabled' => true
+      ])
+      ->withNext([
+          'href'   => '#?page=11',
+          'anchor' => '&raquo;',
+          //'disabled' => true
+      ])
+      ;
+          
 
-        // progress-xxs
-        echo tag('progress')->content(
-          tag('progressBar')
-          ->current(20)->bg('primary')->striped()
-        )
-        ->size('xs')
-        ->vertical();  
-        
-  
-  
-
-  ?>
+    ?>
 
 
   </div>
