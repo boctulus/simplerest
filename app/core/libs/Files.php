@@ -771,6 +771,6 @@ class Files
 			return touch($filename);
 		}
 
-		return file_put_contents($filename, '', $flags);
+		return file_put_contents($filename, '', $flags) !== false;
 	}
 }    

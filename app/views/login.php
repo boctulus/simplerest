@@ -15,6 +15,8 @@
 		Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
 		Bt5Form::setIdAsName();
+
+		//include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 	
 		echo tag('card')
 		->header(tag('cardTitle')->text('Login')->style('font-size: 300%;'))

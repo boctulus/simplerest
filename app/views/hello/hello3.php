@@ -1,18 +1,19 @@
 <?php
 
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
+use simplerest\core\libs\HtmlBuilder\AdminLte;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
 Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
 
-Bt5Form::macro('salutor', function ($name, $adj, Array $att = []) {
-    $str_att = Bt5Form::attributes($att);
+AdminLte::macro('salutor', function ($name, $adj, Array $att = []) {
+    $str_att = AdminLte::attributes($att);
     return "<span $str_att>Hello $adj $name</span>";
 });
 
-Bt5Form::setIdAsName();
+AdminLte::setIdAsName();
 
+include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 
 ?>
 
@@ -442,24 +443,24 @@ Bt5Form::setIdAsName();
 
         /* Carrousel */
 
-        echo tag('carousel')->content([
-            tag('carouselItem')->content(
-                tag('carouselImg')->src(asset('img/slide-1.jpeg'))
-            )->caption(
-                '<h5>First slide label</h5>
-                <p>Some representative placeholder content for the first slide.</p>'
-            ),
+        // echo tag('carousel')->content([
+        //     tag('carouselItem')->content(
+        //         tag('carouselImg')->src(asset('img/slide-1.jpeg'))
+        //     )->caption(
+        //         '<h5>First slide label</h5>
+        //         <p>Some representative placeholder content for the first slide.</p>'
+        //     ),
 
-            tag('carouselItem')->content(
-                tag('carouselImg')->src(asset('img/slide-2.jpeg'))
-            ),
+        //     tag('carouselItem')->content(
+        //         tag('carouselImg')->src(asset('img/slide-2.jpeg'))
+        //     ),
 
-            tag('carouselItem')->content(
-                tag('carouselImg')->src(asset('img/slide-3.jpeg'))
-            )
-        ])->id("carouselExampleControls")->withControls()->withIndicators()
-        // ->dark()
-        ->height('400px');
+        //     tag('carouselItem')->content(
+        //         tag('carouselImg')->src(asset('img/slide-3.jpeg'))
+        //     )
+        // ])->id("carouselExampleControls")->withControls()->withIndicators()
+        // // ->dark()
+        // ->height('400px');
         
 
         // Modal
@@ -677,13 +678,33 @@ Bt5Form::setIdAsName();
 
         echo tag('h3')->text('Alert')->class('mb-3');
 
-        echo tag('alert')->content('OK !')->success();
+        echo tag('alert')
+        ->content('OK')
+        ->title('Perfecto!')
+        ->success()
+        ->dismissible(true);
 
-        echo Bt5Form::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
-        
-        echo tag('alert')->content(
-            tag('alertLink')->href('#')->anchor('A danger content')
-        )->color('danger')->dismissible(true);
+        echo tag('alert')
+        ->content('Algo para tener en cuenta.')
+        ->title('Cuidado!')
+        ->warning()
+        ->dismissible(true);
+
+        echo tag('alert')
+        ->content('Algo salió mal.')
+        ->title('Error!')
+        ->danger()
+        ->dismissible(true);
+
+        // Sin título
+        echo tag('alert')
+        ->content('Algo salió mal.')
+        //->title('Error!')
+        ->danger()
+        ->dismissible(true);
+
+
+        echo AdminLte::alert(content: 'Some content', attributes: ['warning', 'dismissible']);
 
         /*
             Select
@@ -708,7 +729,7 @@ Bt5Form::setIdAsName();
         ->multiple()   
         ->class('my-3');
 
-        echo Bt5Form::select(name: 'sexo', options: [
+        echo AdminLte::select(name: 'sexo', options: [
             'varon' => 1,
             'mujer' => 2
         ], default: 1, placeholder: 'Su sexo', attributes: ['class' => 'my-3']);
@@ -718,7 +739,7 @@ Bt5Form::setIdAsName();
         */
         echo tag('h3')->text('DataList')->class('mb-3');
 
-        echo Bt5Form::dataList(listName: 'datalistOptions', id: 'occupation', options: [
+        echo AdminLte::dataList(listName: 'datalistOptions', id: 'occupation', options: [
             'programador',
             'software engenierer'
         ], placeholder: 'Escriba aquí', label: 'Ocupación');
@@ -743,7 +764,7 @@ Bt5Form::setIdAsName();
 
         echo tag('h3')->text('inputGroup implementado con div')->class('mb-3');
 
-        echo Bt5Form::div(
+        echo AdminLte::div(
             content: [
                 tag('span')->text('@')->id('basic-addon')->class('input-group-text'),
                 tag('inputText')->name('nombre')->placeholder("Username")
@@ -760,7 +781,7 @@ Bt5Form::setIdAsName();
         echo tag('h3')->text('inputRange')->class('mt-3 mb-3');
 
         echo tag('label')->name("edad")->text("Edad");
-        echo Bt5Form::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
+        echo AdminLte::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
 
         echo tag('label')->name("exp")->text("Experiencia");
         echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3');
@@ -768,16 +789,16 @@ Bt5Form::setIdAsName();
         echo tag('h3')->text('checkGroup')->class('mb-3');
 
         echo tag('checkGroup')->content([
-            Bt5Form::radio(name: 'civil', text: "soltero", checked: true, id: 'soltero')
+            AdminLte::radio(name: 'civil', text: "soltero", checked: true, id: 'soltero')
         ])->class('mt-3');
 
         echo tag('checkGroup')->content([
-            Bt5Form::radio(name: 'civil', text: "casado", checked: true, id: 'casado')
+            AdminLte::radio(name: 'civil', text: "casado", checked: true, id: 'casado')
         ])->class('mb-3');
 
         echo tag('h3')->text('switch')->class('mb-3');
 
-        echo Bt5Form::switch(id: "hijos", text: "Hijos", checked: true);
+        echo AdminLte::switch(id: "hijos", text: "Hijos", checked: true);
 
 
         // Stack de checkbox / radios
@@ -792,10 +813,10 @@ Bt5Form::setIdAsName();
             tag('formCheckLabel')->for("defaultCheck2")->text('Disabled checkbox')
         );
 
-        echo Bt5Form::url(default: "https://www.linkedin.com/in/pablo-bozzolo/", class: "mt-3");
+        echo AdminLte::url(default: "https://www.linkedin.com/in/pablo-bozzolo/", class: "mt-3");
 
-        echo Bt5Form::label(id: "comment", placeholder: "Algo que desea agregar:", class: 'mt-3');
-        echo Bt5Form::area(id: 'comment', default: 'bla bla', class: 'my-3');
+        echo AdminLte::label(id: "comment", placeholder: "Algo que desea agregar:", class: 'mt-3');
+        echo AdminLte::area(id: 'comment', default: 'bla bla', class: 'my-3');
 
 
         echo tag('file')
@@ -855,7 +876,7 @@ Bt5Form::setIdAsName();
             tag('listGroupItem')->text('An item #3')->color('success')
         ])->class('mt-2')->horizontal();
 
-        echo Bt5Form::br();
+        echo AdminLte::br();
 
         echo tag('h3')->text('Borders')->class('mb-3');
 
@@ -897,10 +918,10 @@ Bt5Form::setIdAsName();
         ])
         ->text('Puedes verme?')->style('font-size:130%;');
 
-        echo Bt5Form::br();
-        echo Bt5Form::salutor("Isabel", "bella", ['class' => 'my-3 me-1', 'style' => 'color: red']); 
+        echo AdminLte::br();
+        echo AdminLte::salutor("Isabel", "bella", ['class' => 'my-3 me-1', 'style' => 'color: red']); 
         echo ' ~ '; 
-        echo Bt5Form::link(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
+        echo AdminLte::link(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
 
 
         /*
