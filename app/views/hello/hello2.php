@@ -255,6 +255,12 @@ Bt5Form::setIdAsName();
             ->current(25)->withLabel()->bg('info')
         ])->class('mt-3');
 
+        echo tag('progress')->content(
+        tag('progressBar')
+        ->current(25)->bg('danger')->animated()
+        )->class('my-5')
+        ->size('xxs'); 
+
 
         // echo tag('navbar')->content(
         //     tag('container')->fluid()->content([

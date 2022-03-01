@@ -1200,6 +1200,17 @@ class Bt5Form extends Form
 
     static function progress(mixed $content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        $size   = $attributes['size'] ?? $args['size'] ?? null;
+        
+        if ($size){
+            if (in_array($size, ['xxs', 'xs', 'sm'])){
+                static::addClass("progress-{$size}", $attributes['class']);
+            } else { 
+                throw new \Exception("Invalid size '$size'.");
+            }
+        }
+
         return static::div($content, $attributes, ...$args);
     }
 
