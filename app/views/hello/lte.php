@@ -741,6 +741,23 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
         ->badgeColor('warning')
         ->class('mt-3'); 
 
+        
+        /* Button groups */
+
+        echo tag('buttonGroup')->content([
+            tag('button')->content('Left')->info(),
+            tag('button')->content('Middle')->info(),
+            tag('button')->content('Right')->info()
+        ])->class('my-3');
+    
+        echo tag('p');
+    
+        echo tag('buttonGroup')->content([
+            tag('button')->content('Top')->warning(),
+            tag('button')->content('Middle')->warning(),
+            tag('button')->content('Bottom')->warning()
+        ])->vertical();
+
 
         /* buttonToolbar */
 
@@ -749,7 +766,7 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
         echo tag('buttonToolbar')->content([
             tag('buttonGroup')->content(
                 tag('button')->content('Botón rojo')->danger()->class('rounded-pill') .
-                    tag('button')->content('Botón verde')->success()->class('rounded-pill')->outline()
+                tag('button')->content('Botón verde')->success()->class('rounded-pill')->outline()
             )->aria_label("Basic example")->class('mx-3'),
 
             tag('buttonGroup')->content(
