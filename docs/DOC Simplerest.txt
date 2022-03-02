@@ -8437,10 +8437,19 @@ Con buttonGroup() se puede "agrupar" botones.
 
 Ej:
 
-	echo tag('buttonGroup')->content(
-		tag('button')->content('Botón rojo')->danger()->class('rounded-pill')->outline() .
-		tag('button')->content('Botón verde')->success()->class('rounded-pill')->outline()
-	)->aria_label("Basic example")->class('mx-3');
+	echo tag('buttonGroup')->content([
+		tag('button')->content('Left')->info(),
+		tag('button')->content('Middle')->info(),
+		tag('button')->content('Right')->info()
+	])->class('my-3');
+
+y vericalmente con vertical()
+
+	echo tag('buttonGroup')->content([
+		tag('button')->content('Top')->warning(),
+		tag('button')->content('Middle')->warning(),
+		tag('button')->content('Bottom')->warning()
+	])->vertical();
 
 Con buttonToolbar() se grupan conjuntos de botones o sea es un wrapper sobre varios "button groups". También puede agrupar de forma mezclada "button groups" con "input groups".
 
