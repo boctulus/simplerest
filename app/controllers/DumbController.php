@@ -9,7 +9,7 @@ use simplerest\core\Model;
 use simplerest\core\Request;
 use simplerest\core\Route;
 use simplerest\core\Acl;
-use simplerest\core\MakeControllerBase;
+use simplerest\core\controllers\MakeControllerBase;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Mails;
@@ -4208,7 +4208,7 @@ class DumbController extends Controller
     
 
     function x(){
-        dd(assets("jota.jpg"));
+        dd(asset("jota.jpg"));
     }
 
     function dir(){
@@ -7535,12 +7535,23 @@ class DumbController extends Controller
         //   ]
         // ])->color('primary');
     
-        echo tag('h4')
-        ->text('Indigo!')
-        ->bg('indigo')
-        ->right();
+        // echo tag('h4')
+        // ->text('Indigo!')
+        // ->bg('indigo')
+        // ->right();
         
-        echo "\r\n\r\n\r\n";
+        echo tag('inputGroup')
+        ->content(
+          tag('inputText')
+        )
+        ->prepend(
+          tag('button')->danger()->content('Action')
+        );
+ 
+        
+
+
+        // echo "\r\n\r\n\r\n";
 
     }
 
