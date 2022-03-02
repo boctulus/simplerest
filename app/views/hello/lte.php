@@ -703,10 +703,23 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
             tag('button')->content('Un botón')->large()->bg('success')->gradient()
         ])->class('my-3');
 
-        //echo tag('buttonGroup')->content([
-            echo tag('button')->content('Un botón')->large()->bg('danger');
-            echo tag('button')->content('Un botón')->large()->bg('warning')->flat();
-        //])->class('my-3');
+        echo tag('button')->content('Un botón')->large()->bg('danger');
+        echo tag('button')->content('Un botón')->large()->bg('warning')->flat();
+
+        echo tag('buttonGroup')->content(
+            tag('button')->content('A')->danger()->class('rounded-pill') .
+            tag('button')->content('B')->success()->class('rounded-pill')->outline()
+        )->aria_label("Basic example")->class('mx-3')->small();
+
+        echo tag('buttonGroup')->content(
+            tag('button')->content('C')->danger()->class('rounded-pill') .
+                tag('button')->content('D')->success()->class('rounded-pill')->outline()
+        )->aria_label("Basic example")->class('mx-3');
+
+        echo tag('buttonGroup')->content(
+            tag('button')->content('E')->danger()->class('rounded-pill') .
+                tag('button')->content('F')->success()->class('rounded-pill')->outline()
+        )->aria_label("Basic example")->class('mx-3')->large();
 
         echo tag('button')
         ->content('.btn-block')
@@ -741,8 +754,70 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
         ->badgeColor('warning')
         ->class('mt-3'); 
 
+
+
+        echo '<br/>';
+
+        echo tag('buttonGroup')->content([
+            tag('inputButton')->value('Un botón')->info()->class('rounded-pill'),
+            tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large(),
+            tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small()
+        ])->class('my-3');
         
+        /* Input groups */
+
+        echo tag('h3')->text('inputGroup')->class('my-3');
+
+        echo tag('inputGroup')
+        ->content(
+          tag('inputText')
+        )
+        ->prepend(
+          tag('button')->danger()->content('Action')
+        )->class('mb-3');
+
+        echo tag('inputGroup')
+        ->content(
+          tag('inputText')
+        )
+        ->append(
+            tag('button')->info()->content('Go!')
+        )->class('mb-3');
+
+        echo tag('inputGroup')
+        ->content(
+          tag('inputText')
+        )
+        ->prepend(
+            tag('button')->danger()->content('Action')
+        )
+        ->append(
+            tag('button')->info()->content('Go!')
+        )->class('mb-3');
+
+        echo tag('inputGroup')
+        ->content(
+          tag('inputText')
+        )
+        ->prepend([
+          tag('button')->danger()->content('Action'),
+          tag('button')->warning()->content('Other action') 
+        ])
+        ->append(
+          tag('button')->info()->content('Go!')
+        )->class('mb-3');
+
+        echo tag('inputGroup')
+        ->content(
+            tag('inputText')
+        )
+        ->append(
+            tag('button')->info()->icon('search')
+        );
+
         /* Button groups */
+
+        echo tag('h3')->text('buttonGroup')->class('my-3');
 
         echo tag('buttonGroup')->content([
             tag('button')->content('Left')->info(),
@@ -775,32 +850,9 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
             )->aria_label("Another group")->class('mx-3')
         ])->class('my-3');
 
-        echo tag('h3')->text('buttonGroup')->class('my-3');
+       
 
-        echo tag('buttonGroup')->content(
-            tag('button')->content('A')->danger()->class('rounded-pill') .
-                tag('button')->content('B')->success()->class('rounded-pill')->outline()
-        )->aria_label("Basic example")->class('mx-3')->small();
-
-        echo tag('buttonGroup')->content(
-            tag('button')->content('C')->danger()->class('rounded-pill') .
-                tag('button')->content('D')->success()->class('rounded-pill')->outline()
-        )->aria_label("Basic example")->class('mx-3');
-
-        echo tag('buttonGroup')->content(
-            tag('button')->content('E')->danger()->class('rounded-pill') .
-                tag('button')->content('F')->success()->class('rounded-pill')->outline()
-        )->aria_label("Basic example")->class('mx-3')->large()->vertical();
-
-        echo '<br/>';
-
-        echo tag('buttonGroup')->content([
-            tag('inputButton')->value('Un botón')->info()->class('rounded-pill'),
-            tag('inputButton')->value('Otro botón')->warning()->class('rounded-pill')->large(),
-            tag('inputButton')->value('Peque')->info()->class('rounded-pill mx-3')->small()
-        ])->class('my-3');
-
-
+        
         /* Collapse */
 
         echo tag('h3')->text('Collapse')->class('mb-3');

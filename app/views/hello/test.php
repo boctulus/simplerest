@@ -76,8 +76,15 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
     </div>
 
     <?php
-
+      echo tag('inputGroup')
+      ->content(
+        tag('inputText')
+      )
+      ->append(
+        tag('button')->info()->icon('search')
+      );
     ?>
+
 
 
   </div>
