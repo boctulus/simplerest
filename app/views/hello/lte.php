@@ -105,6 +105,7 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 
          
         echo tag('searchTool')->id('my_search')->class('my-3');
+        
 
         echo tag('table')
         ->rows([
@@ -807,12 +808,17 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
           tag('button')->info()->content('Go!')
         )->class('mb-3');
 
+
+        include_widget_css('searchTool');
+
         echo tag('inputGroup')
         ->content(
             tag('inputText')
+            ->placeholder('Search')
         )
         ->append(
             tag('button')->info()->icon('search')
+            ->class("ms-n5")
         );
 
         /* Button groups */

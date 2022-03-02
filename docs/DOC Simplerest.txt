@@ -8495,6 +8495,7 @@ Así es muy fácil crear input con un ícono de búsqueda por ejemplo:
 	echo tag('inputGroup')
 	->content(
 		tag('inputText')
+		->placeholder('Search')
 	)
 	->append(
 		tag('button')->info()->icon('search')
