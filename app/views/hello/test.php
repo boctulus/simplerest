@@ -58,58 +58,24 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 
 <div class="row mt-5">
   <div class="col-6 offset-3">
-    
-    <!-- <a class="btn btn-app">
-      <i class="fas fa-edit"></i> Edit
-    </a>
-    <a class="btn btn-app">
-      <i class="fas fa-play"></i> Play
-    </a>
-    <a class="btn btn-app">
-      <i class="fas fa-pause"></i> Pause
-    </a>
-    <a class="btn btn-app">
-      <i class="fas fa-save"></i> Save
-    </a>
-  -->
 
-    <a class="btn btn-app">
-      <span class="badge bg-warning">3</span>
-      <i class="fas fa-bullhorn"></i> Notifications
-    </a>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <button type="button" class="btn btn-danger">Action</button>
+      </div>
+      <!-- /btn-group -->
+      <input type="text" class="form-control">
+    </div>
 
-    <!--
-    <a class="btn btn-app">
-      <span class="badge bg-success">300</span>
-      <i class="fas fa-barcode"></i> Products
-    </a>
-    <a class="btn btn-app">
-      <span class="badge bg-purple">891</span>
-      <i class="fas fa-users"></i> Users
-    </a>
-    <a class="btn btn-app">
-      <span class="badge bg-teal">67</span>
-      <i class="fas fa-inbox"></i> Orders
-    </a>
-    <a class="btn btn-app">
-      <span class="badge bg-info">12</span>
-      <i class="fas fa-envelope"></i> Inbox
-    </a>
-    <a class="btn btn-app">
-      <span class="badge bg-danger">531</span>
-      <i class="fas fa-heart"></i> Likes
-    </a> -->
+
+    <div class="input-group mb-3">
+      <input type="text" class="form-control rounded-0">
+      <span class="input-group-append">
+        <button type="button" class="btn btn-info btn-flat">Go!</button>
+      </span>
+    </div>
 
     <?php
-
-        echo tag('appButton')
-        ->content("Edit")
-        ->icon('edit')
-        ->href('#edit')
-        ->bg('danger')
-        ->badgeQty(5)
-        ->badgeColor('warning')
-        ; 
 
     ?>
 
