@@ -1450,6 +1450,9 @@ class Html
             unset($args['icon']);
         }
 
+        // if (isset($args['placeholder'])){
+        //     $attributes['placeholder'] = $args['placeholder'];
+        // }
 
         if (empty($content)){
             if (isset($args['text'])){
