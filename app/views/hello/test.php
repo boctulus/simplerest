@@ -76,12 +76,16 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
     </div>
 
     <?php
+      include_widget_css('searchTool');
+
       echo tag('inputGroup')
       ->content(
         tag('inputText')
+        ->placeholder('Search')
       )
       ->append(
         tag('button')->info()->icon('search')
+        ->class("ms-n5")
       );
     ?>
 
