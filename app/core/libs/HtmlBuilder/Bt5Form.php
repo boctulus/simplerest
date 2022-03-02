@@ -1059,17 +1059,18 @@ class Bt5Form extends Form
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $color = $args['bg'] ?? $attributes['bg'] ?? null;
-        unset($args['bg']);
-
+        
         $bg_color = '';
         if ($color !== null){
-            if (Strings::startsWith('bg-', $color)){
-                $color = substr($color, 3);
-            }
+            // if (Strings::startsWith('bg-', $color)){
+            //     $color = substr($color, 3);
+            // }
 
-            if(in_array("$color", static::$bg_colors)){
+            //if(in_array("$color", static::$bg_colors)){
                 $bg_color = " bg-{$color}";
-            }    
+            //}    
+
+            unset($args['bg']);
         } 
 
         if (array_key_exists('placeholder', $args) || in_array('placeholder', $attributes)){

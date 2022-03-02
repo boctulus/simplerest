@@ -708,6 +708,39 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
             echo tag('button')->content('Un botón')->large()->bg('warning')->flat();
         //])->class('my-3');
 
+        echo tag('button')
+        ->content('.btn-block')
+        ->block()->class('mt-3');   
+
+        echo tag('button')
+        ->content('.btn-block')
+        ->block()->outline();   
+        
+        echo tag('button')
+        ->content('.btn-block')
+        ->block()   
+        ->icon("bell");  
+
+        echo tag('button')
+        ->content('.btn-block')
+        ->block()->outline()
+        ->icon("bell");   
+        
+        echo tag('appButton')
+        ->content("Edit")
+        ->icon('edit')
+        ->href('#edit')
+        ->class('mt-3'); 
+
+        echo tag('appButton')
+        ->content("Edit")
+        ->icon('edit')
+        ->href('#edit')
+        ->bg('danger')
+        ->badgeQty(5)
+        ->badgeColor('warning')
+        ->class('mt-3'); 
+
 
         /* buttonToolbar */
 

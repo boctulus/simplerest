@@ -1391,7 +1391,7 @@ class Html
         return static::group($content,'button', $attributes, ...$args);
     }
 
-    static function button(mixed $content = null, $attributes = [], ...$args){
+    static function button(mixed $content = [], $attributes = [], ...$args){
         $attributes['type']="button";
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
@@ -1419,8 +1419,8 @@ class Html
 
         $bg = $args['bg'] ?? $attributes['bg'] ?? null;
 
-        if (!$color_applied && !static::hasBtnColor($attributes['class']) && $bg == false){
-            static::addColor("btn-primary", $attributes['class']); 
+        if (!$color_applied && !static::hasBtnColor($attributes['class']) && $bg == null){
+            static::addColor("btn-primary", $attributes['class'], $outline); 
         } 
 
         $flat = array_key_exists('flat', $attributes) || array_key_exists('flat', $args);
@@ -1430,7 +1430,28 @@ class Html
             unset($args['flat']);
         }
 
-        if ($content === null){
+        $block = array_key_exists('block', $attributes) || array_key_exists('block', $args);
+
+        if ($block){
+            static::addClass('btn-block', $attributes['class']);
+            unset($args['block']);
+        }
+
+        $icon = $args['icon'] ?? $attributes['icon'] ?? null;
+
+        if ($icon){
+            if (is_array($content)){
+                $content = implode('', $content);
+            }
+
+            $icon    = Strings::replaceFirst('fa-', '', $icon);
+            $content = "<i class=\"fa fa-{$icon}\"></i> $content";
+
+            unset($args['icon']);
+        }
+
+
+        if (empty($content)){
             if (isset($args['text'])){
                 $content = $args['text'];
                 unset($args['text']);

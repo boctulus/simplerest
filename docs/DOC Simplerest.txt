@@ -8361,6 +8361,76 @@ Solo agregue una llamada a Form::disabled()
 	echo tag('submit')->id("enviar")->value("Enviar")->success()->disabled()
 
 
+Botones de ancho completo
+
+Aplicando block() se consigue que un button ocupe todo el ancho de su parent.
+
+Ej:
+
+	echo tag('button')->content(
+		'<i class="fa fa-bell"></i> .btn-block'
+	)
+	->block(); 
+
+Botones con íconos
+
+Ej:
+
+	echo tag('button')->content(
+		'<i class="fa fa-bell"></i> .btn-block'
+	)
+	->block(); 
+
+O si son fonts de FontAwesome,...
+
+	echo tag('button')->content("btn-block")
+	->block()
+	->icon('bell'); 
+
+O con outline
+
+Ej:
+
+	echo tag('button')->content("btn-block")
+	->block()
+	->icon('bell')
+	->outline(); 
+
+
+# App buttons
+
+Admin LTE viene con App buttons (que recuerdan los íconos de Windows 3.1). Se respeta el nombre de "app buttons" que le da la plantilla aunque son links.
+
+Ej:
+
+	echo tag('appButton')
+	->content("Edit")
+	->icon('edit')
+	->href('#edit'); 
+
+Se puede setear una cantidad a ser mostrada como notificación en el márgen superior derecho como badge.
+
+Ej:
+
+	echo tag('appButton')
+	->content("Edit")
+	->icon('edit')
+	->href('#edit')
+	->badgeQty(5); 
+
+Se puede colorear tanto el "botón" como el badge. 
+
+Ej:
+
+	echo tag('appButton')
+	->content("Edit")
+	->icon('edit')
+	->href('#edit')
+	->bg('danger')
+	->badgeQty(5)
+	->badgeColor('warning'); 
+
+
 # Button groups and button toolbars
 
 Con buttonGroup() se puede "agrupar" botones.
