@@ -73,6 +73,38 @@ class AdminLte extends Bt5Form
 
         return static::div($content, $attributes, ...$args);
     }
+
+    static function appButton(string $content, string $href, $attributes = [], ...$args){
+        $_ = "btn btn-app";
+        $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. $_ : $_;
+
+        $icon = $args['icon'] ?? $attributes['icon'] ?? null;
+
+        if (!$icon){
+            throw new \Exception("icon is required");
+        }
+
+        $icon    = Strings::replaceFirst('fa-', '', $icon);
+        unset($args['icon']);
+    
+        $qty = $args['badgeQty'] ?? $attributes['badgeQty'] ?? null;
+
+        $badge = '';
+        if ($qty !== null){
+            $badge_color = $args['badgeColor'] ?? $attributes['badgeColor'] ?? 'danger';
+        
+            if ($badge_color !== null){          
+                unset($args['badgeColor']);
+            } 
+
+            $badge = tag('span')->class('badge')->text($qty)->bg($badge_color);
+            unset($args['qty']);
+        }
+
+        $anchor = $badge . "<i class=\"fas fa-{$icon}\"></i> $content</a>";
+
+        return static::link($anchor, $href , $attributes, ...$args);
+    }
    
 
 }

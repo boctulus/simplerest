@@ -13,5 +13,5 @@ function d(mixed $val = null, $msg = null){
 }
 
 function here(){
-    dd('HERE !');
+    d('HERE !');
 }

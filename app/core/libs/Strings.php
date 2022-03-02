@@ -439,10 +439,10 @@ class Strings
 	/*
 		str_replace() de solo la primera ocurrencia
 	*/
-	static function replaceFirst($from, $to, $subject)
+	static function replaceFirst($pattern, $replace, $subject)
 	{
-		$from = '/'.preg_quote($from, '/').'/';
-		return preg_replace($from, $to, $subject, 1);
+		$pattern = '/'.preg_quote($pattern, '/').'/';
+		return preg_replace($pattern, $replace, $subject, 1);
 	}
 	
 	/*
