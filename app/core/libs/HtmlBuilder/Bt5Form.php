@@ -759,8 +759,56 @@ class Bt5Form extends Form
         ->attributes($attributes);
     }
 
+    static function prepend(mixed $content, Array $attributes = [], ...$args){    
+        $_ = "input-group-prepend"; 
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_ : $_;
+        
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function append(mixed $content, Array $attributes = [], ...$args){    
+        $_ = "input-group-append"; 
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_ : $_;
+
+        return static::div($content, $attributes, ...$args);
+    }
+
     static function inputGroup(mixed $content, Array $attributes = [], ...$args){     
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+        
+        $prepend = $args['prepend'] ?? $attributes['prepend'] ?? [];
+        $append  = $args['append'] ?? $attributes['append']   ?? [];
+
+        $pre = '';
+        if (!empty($prepend)){
+            if (!is_array($prepend)){
+                $prepend = [$prepend];
+                unset($args['prepend']);
+            }
+
+            foreach ($prepend as $e){
+                $pre .= static::prepend($e);
+            }
+        }
+
+        $end = '';
+        if (!empty($append)){
+            if (!is_array($append)){
+                $append = [$append];
+                unset($args['append']);
+            }
+
+            foreach ($append as $e){
+                $end .= static::append($e);
+            }
+        }
+
+        if (is_array($content)){
+            $content = implode('', $content);
+        }
+
+        $content = $pre . $content . $end;
+        
         return static::div($content, $attributes, ...$args);
     }
 
@@ -1794,6 +1842,8 @@ class Bt5Form extends Form
     }
 
 
+
+
     /* Modal End */
 
   
@@ -1816,7 +1866,7 @@ class Bt5Form extends Form
             <div class="input-group">
                 <input class="form-control border-end-0 border" type="search" '.$id_str.' placeholder="'. $content .'">
                 <span class="input-group-append">
-                    <button class="btn btn-outline-secondary bg-white border-start-0 border-bottom-0 border ms-n5" type="button">
+                    <button class="btn btn-outline-secondary bg-white border-start-0 border ms-n5" type="button">
                         <i class="fa fa-search"></i>
                     </button>
                 </span>
