@@ -8430,6 +8430,76 @@ Ej:
 	->badgeQty(5)
 	->badgeColor('warning'); 
 
+# Input Groups
+
+Los tag input* como inputText, file (o inputFile), etc pueden contener otros elementos como botones o dropdowns tanto en el frente como en su parte final para lo que se utiliza prepend() y append() respectivamente.
+
+Ej:
+
+Deltante
+
+	echo tag('inputGroup')
+	->content(
+		tag('inputText')
+	)
+	->prepend(
+		tag('button')->danger()->content('Action')
+	)->class('mb-3');
+
+Ej:
+
+Detrás
+
+	echo tag('inputGroup')
+	->content(
+		tag('inputText')
+	)
+	->append(
+		tag('button')->info()->content('Go!')
+	)->class('mb-3');
+
+Ej:
+
+Delante y detrás
+
+	echo tag('inputGroup')
+	->content(
+		tag('inputText')
+	)
+	->prepend(
+		tag('button')->danger()->content('Action')
+	)
+	->append(
+		tag('button')->info()->content('Go!')
+	)->class('mb-3');
+
+Ej:
+
+Varios elementos delante	
+
+	echo tag('inputGroup')
+	->content(
+		tag('inputText')
+	)
+	->prepend([
+		tag('button')->danger()->content('Action'),
+		tag('button')->warning()->content('Other action') 
+	])
+	->append(
+		tag('button')->info()->content('Go!')
+	)->class('mb-3');
+
+
+Así es muy fácil crear input con un ícono de búsqueda por ejemplo:
+
+	echo tag('inputGroup')
+	->content(
+		tag('inputText')
+	)
+	->append(
+		tag('button')->info()->icon('search')
+	);
+
 
 # Button groups and button toolbars
 
