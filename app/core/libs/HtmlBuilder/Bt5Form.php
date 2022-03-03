@@ -5,6 +5,7 @@ namespace simplerest\core\libs\HtmlBuilder;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\Strings;
 
+
 class Bt5Form extends Form
 {
     static function form(mixed $content, Array $attributes = [], ...$args){  
@@ -1043,6 +1044,33 @@ class Bt5Form extends Form
 
     /* Dropdown End */
 
+    /* Split button */
+
+    static function split(mixed $content, Array $attributes = [], ...$args){
+        
+        return static::buttonGroup($content, $attributes, ...$args);
+    }
+
+    static function splitButton(mixed $content, Array $attributes = [], ...$args){  
+        $_ = "btn-default dropdown-toggle dropdown-icon";
+
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_ : $_;      
+
+        if (isset($args['split']) || (isset($attributes['split']) && $attributes['split'] !== false)){
+            static::addClass('dropdown-toggle-split', $attributes['class']);
+            unset($args['split']);
+        }
+
+        if (isset($args['pill']) || (isset($attributes['pill']) && $attributes['pill'] !== false)){
+            static::addClass('btn', $attributes['class']);
+            unset($args['pill']);
+        }
+
+        $content = '<span class="sr-only">'.$content.'</span>';
+
+        $attributes['data-bs-toggle'] = "dropdown";
+        return static::button($content, $attributes, ...$args);
+    }
     
 
     /* Cards Begin */
