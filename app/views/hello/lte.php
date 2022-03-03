@@ -999,24 +999,39 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
         echo tag('inputText')->name('iq')->placeholder("IQ")->disabled();
 
-        // input range
+        // Ion Sliders
 
-        echo tag('h3')->text('inputRange')->class('mb-3');
+        echo tag('h3')->text('Ion Sliders')->class('mb-3 mt-3');
         
-        echo tag('label')->name("edad")->text("Edad");
-        echo AdminLte::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
+		/*
+			Slider "simple"
+		*/
 
-        echo tag('label')->name("exp")->text("Experiencia");
-        echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3');
+		echo tag('ionSlider')->id('range_1')
+          ->min(0)
+          ->max(6000)
+          ->value(50) 
+          ->postfix(" &euro;")
+          ->step(10);
 
-        // sliders
+		/*
+			Slider "doble"
+		*/
 
-        echo tag('h3')->text('sliders')->class('mb-3');
+		echo tag('ionSlider')->id('range_2')
+		->min(-100)
+		->max(400)          
+		->postfix(" C")
+		->step(1)
+
+		->type('double')
+		->from(100)
+		->to(200);
 
 
         // checkGroup
         
-        echo tag('h3')->text('checkGroup')->class('mb-3');
+        echo tag('h3')->text('checkGroup')->class('mb-3 mt-3');
 
         echo tag('checkGroup')->content([
             AdminLte::radio(name: 'civil', text: "soltero", checked: true, id: 'soltero')
@@ -1248,6 +1263,12 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
         <p><p>
     </div>
 </div>
+
+
+<?php
+    include_js(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
+
+?>
 
 <script>
     var popover = new bootstrap.Popover(document.querySelector('.popovers'), {
