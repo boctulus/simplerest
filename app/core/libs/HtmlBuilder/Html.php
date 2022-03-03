@@ -840,6 +840,16 @@ class Html
         // en principio asumo que abre y cierra
         $ret = "<$type{$props}>$val</$type>";
 
+        /*
+            Insert something after tag
+        */
+
+        $after_tag = $args['after_tag'] ?? $attributes['after_tag'] ?? null;
+
+        if ($after_tag){
+            $ret .= $after_tag;
+        }
+
         return static::$pretty ? static::beautifier($ret) : $ret;
     }
 

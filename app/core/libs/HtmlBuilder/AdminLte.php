@@ -111,6 +111,129 @@ class AdminLte extends Bt5Form
         return static::link($anchor, $href , $attributes, ...$args);
     }
    
+    /*
+        Puede manejarse con Javascript
+
+        Ej:
+
+        $('#range_1').ionRangeSlider({
+            min     : 0,
+            max     : 5000,
+            from    : 1000,
+            to      : 4000,
+            type    : 'double',
+            step    : 1,
+            prefix  : '$',
+            prettify: false,
+            hasGrid : true
+        })
+
+        $('#range_5').ionRangeSlider({
+            min     : 0,
+            max     : 10,
+            type    : 'single',
+            step    : 0.1,
+            postfix : ' mm',
+            prettify: false,
+            hasGrid : true
+        })
+    */
+    static function ionSlider(mixed $default = null, Array $attributes = [], ...$args){
+        /*
+            Incluir el CSS acá genera dos problemas muy graves:
+
+            1) No puede ser cacheado y 
+
+            2) Queda repetido tantas veces como se incluya el componente! 
+
+            La solución para "producción" sería "compilar" el las vistas con lo cual los archivos css 
+            de cada componente serían incluídos una sola vez para la vista correspondiente.
+
+            En si,... include_css() debería "encolar" los archivos css para la vista corespondiente.
+        */
+
+        include_css(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/css/ion.rangeSlider.min.css');
+
+        $att = [
+        ];
+
+        // symbol == postfix
+        $postfix = $args['symbol'] ?? $attributes['symbol'] ?? $args['postfix'] ?? $attributes['postfix'] ?? null;
+
+        if ($postfix){
+            $att['data-postfix'] = $postfix;
+
+            unset($args['postfix']);
+            unset($args['symbol']);
+        }
+
+        $step = $args['step'] ?? $attributes['step'] ?? null;
+
+        if ($step){
+            $att['data-step'] = $step;
+
+            unset($args['step']);
+        }
+
+        $from = $args['from'] ?? $attributes['from'] ?? null;
+
+        if ($from){
+            $att['data-from'] = $from;
+
+            unset($args['from']);
+        }
+
+        $to = $args['to'] ?? $attributes['to'] ?? null;
+
+        if ($to){
+            $att['data-to'] = $to;
+
+            unset($args['to']);
+        }
+
+
+        $min = $args['min'] ?? $attributes['min'] ?? null;
+
+        if ($min){
+            $att['data-min'] = $min;
+
+            unset($args['min']);
+        }
+
+        $max = $args['max'] ?? $attributes['max'] ?? null;
+
+        if ($max){
+            $att['data-max'] = $max;
+
+            unset($args['max']);
+        }
+
+        $type = $args['type'] ?? $attributes['type'] ?? 'single';
+
+        if ($type != 'single' && $type != 'double'){
+            throw new \InvalidArgumentException("Type should be single or double");
+        }
+
+        $att['data-type'] = $max;
+        unset($args['type']);
+
+
+        $id = $args['id'] ?? $attributes['id'] ?? null;
+        
+        if ($id){
+            $att['after_tag'] = 
+            js("
+                $(function () {
+                    $('#$id').ionRangeSlider({})
+                });
+            ");
+        }
+
+        $attributes = $attributes + $att;
+
+        return static::inputText($default, $attributes, ...$args);
+    }
+
 
 }
 
