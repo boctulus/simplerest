@@ -13,6 +13,7 @@ class Html
     static protected $id_eq_name = false;
     static protected $class;
     static protected $colors = [
+        'default',
         'primary',
         'secondary',
         'success',
@@ -45,6 +46,7 @@ class Html
     ];
 
     static protected $bg_colors = [
+        'default',
         'primary',
         'secondary',
         'success',

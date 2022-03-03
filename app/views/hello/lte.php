@@ -13,7 +13,7 @@ AdminLte::macro('salutor', function ($name, $adj, Array $att = []) {
 
 AdminLte::setIdAsName();
 
-include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
+include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 ?>
 
@@ -488,6 +488,19 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
                 tag('dropdownItem')->href('#')->anchor('Something else here')
             )->class('animated--grow-in')
         );
+
+        echo tag('split')->content([
+            tag('button')->content('Split button')->default(),
+      
+            tag('splitButton')->id('dropdownMenuButton33')->content('Toggle Dropdown'),
+      
+            tag('dropdownMenu')->ariaLabel('dropdownMenuButton33')->content(
+              tag('dropdownItem')->href('#ln1')->anchor('Action #1') .
+                tag('dropdownItem')->href('#ln2')->anchor('Another action') .
+                tag('dropdownDivider') .
+                tag('dropdownItem')->href('#ln3')->anchor('Something else here')
+            )
+        ])->class('mt-3');
 
         echo '<br/>';
 
@@ -986,16 +999,23 @@ include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 
         echo tag('inputText')->name('iq')->placeholder("IQ")->disabled();
 
-        //
+        // input range
 
-        echo tag('h3')->text('inputRange')->class('mt-3 mb-3');
-
+        echo tag('h3')->text('inputRange')->class('mb-3');
+        
         echo tag('label')->name("edad")->text("Edad");
         echo AdminLte::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
 
         echo tag('label')->name("exp")->text("Experiencia");
         echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3');
 
+        // sliders
+
+        echo tag('h3')->text('sliders')->class('mb-3');
+
+
+        // checkGroup
+        
         echo tag('h3')->text('checkGroup')->class('mb-3');
 
         echo tag('checkGroup')->content([
