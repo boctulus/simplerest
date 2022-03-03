@@ -21,38 +21,83 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
     <div class="row mt-5">
       <div class="col-6 offset-3 mt-5">
 
-        <div class="col-sm-6">
-          <?= 
-          
-          tag('ionSlider')->id('range_1')
-          ->min(0)
-          ->max(6000)
+        
+      
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Ribbons</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                
+              <div class="row">
 
-          ->value(50) 
-          //->from(50)
-          ->postfix(" &euro;")
-          ->step(10)
-          
-          ?>
+                    <?=
 
+                      tag('ribbon')
+                      ->bg('gray')
+                      ->style('height: 100px')
+                      ->title(
+                        tag('ribbonTitle')->content('Ribbon')->bg('primary')
+                      )
+                      ->body(
+                        'Ribbon Default <br />
+                        <small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
+                      )
+
+                    ?>
+
+                    <?=
+
+                      tag('ribbon')
+                      ->bg('gray')
+                      ->style('min-height: 300px')
+                      ->class('mt-3')  
+                      ->header(
+                        tag('img')->src(asset('img/photo2.png'))->class('img-fluid py-3')
+                      )                  
+                      ->title(
+                        tag('ribbonTitle')->content('Ribbon')->bg('danger')
+                      )
+                      ->body(
+                        'Ribbon Default <br />
+                        <small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
+                      )
+
+                    ?>
+                  
+              </div>
+
+              <!-- /.card-body -->
+            </div>
+
+
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
         </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
 
-        <div class="col-sm-6">
-          <?= 
-          
-          tag('ionSlider')->id('range_2')
-          ->min(-100)
-          ->max(400)          
-          ->postfix(" C")
-          ->step(1)
 
-          ->type('double')
-          ->from(100)
-          ->to(200)
-          
-          ?>
-        </div>
-            
+
+
+
+
+
+
+
+
+
+
+
       </div>
       <!-- /.col -->
     </div>
@@ -61,19 +106,15 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 
     <?php
-    include_js(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
-    include_js(ASSETS_PATH . 'adminlte/plugins/bootstrap-slider/bootstrap-slider.min.js');
+    //include_js(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
+    //include_js(ASSETS_PATH . 'adminlte/plugins/bootstrap-slider/bootstrap-slider.min.js');
       
     ?>
 
 
   <script>
     $(function () {
-     
-
-      /* ION SLIDER */
-      //$('#range_1').ionRangeSlider({})
-      //$('#range_2').ionRangeSlider({})
+    
 
     })
   </script>
