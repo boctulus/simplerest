@@ -8311,9 +8311,21 @@ Que es lo mismo que:
 
 Colores y otras clases sobre botones 
 
+Sobre colores y derivados (como dropdownButton) se pueden aplicar:
+
+	info()
+	warning()
+	danger()
+	etc
+
+Y por compatibilidad con AdminLTE también default()
+
+Ej:
+
 	echo tag('inputButton')->id("comprar")->value('Comprar')->danger()->class('rounded-pill');
     echo tag('reset')->id("limpiar")->value("Limpiar")->warning()->class('mx-3');
     echo tag('submit')->id("enviar")->value("Enviar")->success();
+
 
 Flat
 
@@ -9177,6 +9189,28 @@ Ej:
 Disabled
 
 Para des-habilitar solo aplicar disabled() sobre el botón
+
+
+# Split buttons
+
+Son una variación de los dropdowns donde lo que cambia es el tag split por dropdown y dos botones en vez del dropdownButton.
+
+Ej:
+
+	echo tag('split')->content([
+      tag('button')->content('Split button')->default(),
+
+      tag('splitButton')->id('dropdownMenuButton33')->content('Toggle Dropdown'),
+
+      tag('dropdownMenu')->ariaLabel('dropdownMenuButton33')->content(
+        tag('dropdownItem')->href('#ln1')->anchor('Action #1') .
+          tag('dropdownItem')->href('#ln2')->anchor('Another action') .
+          tag('dropdownDivider') .
+          tag('dropdownItem')->href('#ln3')->anchor('Something else here')
+      )
+    ]);
+
+A diferencia del dropdown despliega las opciones hacia la derecha y con el color default se ve una línea divisoria en el botón.
 
 
 # List group

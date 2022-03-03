@@ -15,6 +15,11 @@ use simplerest\core\libs\Strings;
     switch 
     checkbox
 
+    En BTS cambian los data-* por data-bs-* 
+
+    Ej:
+
+    data-toggle por data-bs-toggle
 */
 
 class AdminLte extends Bt5Form
