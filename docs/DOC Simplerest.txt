@@ -11219,7 +11219,11 @@ Ej:
 
 Con vertical() debería verse vertical pero parece que faltó importar CSS.
 	
+
 ----- 
+-----
+-----
+
 
 ADMIN LTE
 
@@ -11278,8 +11282,173 @@ Ej:
 	->title('Some title');
 
 
+# Ion Sliders
+
+Estos sliders utilizan un plugin y básicamente se diferencian de un inputRange en que tienen un máximo, un mínimo y dentro de este rango el usuario puede elegir el suyo.
+
+Hay de dos tipos: "single" y "double". Por defecto son "single" siendo similares a un inputRange o sea sin sub-rango.
+
+Ej:
+
+	<div class="col-sm-6">
+		<?= tag('ionSlider')->id('range_1') ?>
+	</div>
+
+El código JavaScript mínimo es:
+
+	$('#range_1').ionRangeSlider({
+    })
+
+Sino se especificara mínimo o máximo, los valores por defecto son 10 y 100. Se pueden especificar más paramátros.
+
+Ej:
+
+	$('#range_1').ionRangeSlider({
+		min     : 0,
+		max     : 10,
+		type    : 'single',
+		step    : 0.1,
+		postfix : ' mm',
+		prettify: false,
+		hasGrid : true
+	})
+
+Para el caso de los tipo "double" se pasa también un "from" y "to".
+
+Ej:
+
+	$('#range_1').ionRangeSlider({
+		min     : 0,
+		max     : 5000,
+		from    : 1000,
+		to      : 4000,
+		type    : 'double',
+		step    : 1,
+		prefix  : '$',
+		prettify: false,
+		hasGrid : true
+	})
+
+Es posible fijar el valor de inicio ("from") con el "value" en el ionSlider (ya que hereda de un inputText) cuando es de tipo "single". Para los tipo "double" y en general sería con el "from".
+
+Ej:
+
+	<!--
+		Solo tiene sentido si es de tipo "single". Sino usar from.
+	-->
+	<div class="col-sm-6">
+		<?= tag('ionSlider')->id('range_1')->value(1400) ?>
+	</div>
+
+
+Con el código JavaScript mínimo es posible inicializar todo desde el Builder en el backend.
+
+Ej:
+
+	<?=
+		/*
+			Slider "simple"
+		*/
+
+		tag('ionSlider')->id('range_1')
+          ->min(0)
+          ->max(6000)
+          ->value(50) 
+          ->postfix(" &euro;")
+          ->step(10)
+	?>
+
+Recordemos que value() y from() para el caso de los sliders "simples" son equivalentes:
+
+	<?=
+		/*
+			Slider "simple"
+		*/
+
+		tag('ionSlider')->id('range_1')
+          ->min(0)
+          ->max(6000)
+          ->from(50) 
+          ->postfix(" &euro;")
+          ->step(10)
+	?>
+
+Para el caso de los sliders "dobles", especificaremos un sub-rango inicial con from y to.
+
+Ej:
+
+	<?= 
+		/*
+			Slider "doble"
+		*/
+          
+		tag('ionSlider')->id('range_2')
+		->min(-100)
+		->max(400)          
+		->postfix(" C")
+		->step(1)
+
+		->type('double')
+		->from(100)
+		->to(200)
+		
+    ?>
+
+Se implementó de forma muy primitiva la inclusión del código JS mínimo de inicialización del componente.
+
+Recordar que debe incluirse el JS del plugin:
+
+	<?php
+    	include_js(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
+    ?>
+
+
 Notas Dev:
 =========
+
+# CORREGIR severo problema de RENDIMIENTO relacionado con include_css()
+
+Ej:
+
+	static function ionSlider(mixed $default = null, Array $attributes = [], ...$args){
+		include_css(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/css/ion.rangeSlider.min.css');
+		
+		// ...
+
+Incluir el CSS acá genera dos problemas muy graves:
+
+		1) No puede ser cacheado y 
+
+		2) Queda repetido tantas veces como se incluya el componente! 
+
+		La solución para "producción" sería "compilar" el las vistas con lo cual los archivos css 
+		de cada componente serían incluídos una sola vez para la vista correspondiente.
+
+		En si,... include_css() debería "encolar" los archivos css para la vista corespondiente.
+
+
+# Debería existir un mecanismo para "encolar" JS a eventos como "on document ready".
+
+Ej:
+
+	enqueue_ready("        
+		$('#$id').ionRangeSlider({})
+	");
+
+Esto debería agregarlo aquí:
+
+	<!-- 
+		Antes de </body>
+	-->
+
+	<script>
+		$(function () {     
+			// ...
+
+			$('#range_2').ionRangeSlider({})
+		})
+	</script>
+
 
 # Compatibilidad con "react-boostrap"
 
