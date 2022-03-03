@@ -235,5 +235,70 @@ class AdminLte extends Bt5Form
     }
 
 
+    /*
+        Ribbon
+    */
+
+    static function ribbonTitle(mixed $content = null, Array $attributes = [], ...$args){
+        $_ = "ribbon-wrapper";
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_  : $_ ;
+
+        $att = [
+            'class' => ''
+        ];
+
+        $bg = $args['bg'] ?? $attributes['bg'] ?? null;
+
+        if ($bg){
+            static::addBgColor($bg, $att['class']);
+            unset($args['bg']);
+        }
+
+        $content = static::ribbonContent($content, $att);
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function ribbonContent(mixed $content = null, Array $attributes = [], ...$args){
+        $_ = "ribbon";
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_  : $_ ;
+        
+
+        return static::div($content, $attributes, ...$args);
+    }
+
+
+    static function ribbon(mixed $content = null, Array $attributes = [], ...$args){
+        $_ = "position-relative";
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_  : $_ ;
+        
+        if (empty($content)){
+            $title  = $args['title']  ?? $attributes['title'] ?? null;
+            $header = $args['header'] ?? $attributes['header'] ?? null;
+            $body   = $args['body']   ?? $attributes['body'] ?? null;
+            
+            if ($body != null){
+                unset($args['body']);
+            }
+
+            if ($title != null){
+                unset($args['title']);
+            }
+
+            if ($header != null){
+                unset($args['header']);
+            }
+
+            $content = [
+                $header ?? '',
+                $title  ?? '',
+                $body
+            ];
+        }
+        
+        return static::div($content, $attributes, ...$args);
+    }
+
+
 }
 
