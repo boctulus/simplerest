@@ -57,15 +57,22 @@ function include_js(string $path){
     <?php
 }
 
-function include_widget_css(string $name){
-    include_css(WIDGETS_PATH . $name . '/' . $name . '.css');
-}
-
-
 function css(string $css){
     ?>
     <style>
     <?= $css ?>
     </style>
     <?php
+}
+
+function js(string $js){
+    ?>
+    <script>
+    <?= $js ?>
+    </script>
+    <?php
+}
+
+function include_widget_css(string $name){
+    include_css(WIDGETS_PATH . $name . '/' . $name . '.css');
 }
