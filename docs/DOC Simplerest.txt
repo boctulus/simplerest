@@ -11403,6 +11403,98 @@ Recordar que debe incluirse el JS del plugin:
     ?>
 
 
+# Ribbons
+
+Admin LTE ofrece "cintas" o ribbons que se pueden aplicar a un contenedor.
+
+Código base:
+
+	<div class="position-relative bg-gray"> 
+	<!-- body -->
+	<div class="ribbon-wrapper">
+		<div class="ribbon bg-primary">
+		Ribbon
+		</div>
+	</div>
+	
+	<!-- footer -->
+	Ribbon Default <br />
+	<small>.ribbon-wrapper.ribbon-lg .ribbon</small>
+	</div>
+
+
+Se pueden agrandar: ribbon-lg, ribbon-xl
+
+  <div class="ribbon-wrapper ribbon-lg">
+    <div class="ribbon bg-info">
+      Ribbon Large
+    </div>
+  </div>
+
+El texto del ribbon también se puede agrandar: text-lg, text-xl
+
+	<div class="ribbon-wrapper ribbon-lg">
+	<div class="ribbon bg-success text-lg">
+		Ribbon
+	</div>
+	</div>
+
+Sobre imágenes
+
+	<div class="position-relative">
+	<!-- header -->
+	<img src="../../dist/img/photo1.png" alt="Photo 1" class="img-fluid">
+	
+	<!-- body -->
+	<div class="ribbon-wrapper ribbon-lg">
+		<div class="ribbon bg-success text-lg">
+		Ribbon
+		</div>
+	</div>
+	</div>
+
+
+Implementando ribbons con el builder
+
+Como punto de partida:
+
+	<?=
+
+		tag('ribbon')
+		->bg('gray')
+		->style('height: 100px')
+		->title(
+		tag('ribbonTitle')->content('Ribbon')->bg('primary')
+		)
+		->body(
+		'Ribbon Default <br />
+		<small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
+		)
+
+	?>
+
+O con imágenes
+	
+	<?=
+
+		tag('ribbon')
+		->bg('gray')
+		//->style('min-height: 300px')
+		->class('mt-3')  
+		->header(
+		tag('img')->src(asset('img/photo2.png'))->class('img-fluid py-3')
+		)                  
+		->title(
+		tag('ribbonTitle')->content('Ribbon')->bg('danger')
+		)
+		->body(
+		'Ribbon Default <br />
+		<small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
+		)
+
+	?>
+
+
 Notas Dev:
 =========
 
