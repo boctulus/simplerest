@@ -975,6 +975,14 @@ class Html
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['min'] = $min;
         $attributes['max'] = $max;
+
+        $color = $args['color'] ?? $attributes['color'] ?? null;
+
+        if ($color){
+            static::addClass("custom-range custom-range-{$color}", $attributes['class']);
+            unset($args['color']);
+        }
+
         return static::input('range', $default, $attributes, ...$args); 
     }
 
