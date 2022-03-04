@@ -324,5 +324,33 @@ class AdminLte extends Bt5Form
     }
 
 
+    static function customFile(mixed $content = null, Array $attributes = [], ...$args){    
+        $_ = "custom-file";
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_ : $_;
+
+        $id = $args['id'] ?? $attributes['id'] ?? null;
+        
+        if (empty($id)){
+            throw new \Exception("id is required for custom input file");
+        }
+
+        unset($args['id']);
+
+        $placeholder = $content ?? $args['placeholder'] ?? $attributes['placeholder'] ?? '';
+        unset($args['placeholder']);
+
+        $content = [
+            static::file([
+                'id' => $id,
+                'class' => "custom-file-input"
+            ]),
+            static::label($id, $placeholder, [
+                'class' => "custom-file-label"
+            ])
+        ];
+
+        return static::div($content, $attributes, ...$args);
+    }
+
 }
 
