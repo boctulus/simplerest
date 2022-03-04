@@ -47,7 +47,7 @@
     <!-- Tempusdominus Bootstrap 4 -->
 
     <!-- bootstrap 5.1.3 solo css -->
-    <link rel="stylesheet" href="<?= asset('css/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/bootstrap.min.css') ?>">f
     
     <!-- iCheck -->
     <link rel="stylesheet" href="<?= asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
@@ -121,6 +121,10 @@
     
     <!-- overlayScrollbars -->
     <script src="<?= asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') ?>"></script>
+
+
+
+    '
 
 </body>
 </html>
