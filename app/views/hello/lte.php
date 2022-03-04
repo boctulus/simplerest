@@ -1169,6 +1169,62 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
         echo AdminLte::link(href: "www.solucionbinaria.com", anchor: 'SolucionBinaria .com', class: 'mb-3 text-success');
 
 
+        echo tag('h3')->text('Ribbons')->class('mb-3 mt-5');
+
+        ?>
+
+        <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Ribbons</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                
+              <div class="row">
+
+                    <?=
+
+                      tag('ribbon')
+                      ->bg('gray')
+                      ->style('height: 100px')
+                      ->title(
+                        tag('ribbonTitle')->content('Ribbon')->bg('primary')
+                      )
+                      ->body(
+                        'Ribbon Default <br />
+                        <small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
+                      )
+
+                    ?>
+
+                    <?=
+
+                      tag('ribbon')
+                      ->bg('gray')
+                      ->style('min-height: 300px')
+                      ->class('mt-3')  
+                      ->header(
+                        tag('img')->src(asset('img/photo2.png'))->class('img-fluid py-3')
+                      )                  
+                      ->title(
+                        tag('ribbonTitle')->content('Ribbon')->bg('danger')->size('xl')->textSize('xl')
+                      )
+                      ->body(
+                        'Ribbon Default <br />
+                        <small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
+                      )
+
+                    ?>
+                  
+              </div>
+
+              <!-- /.card-body -->
+            </div>
+
+        <?php
+        
+
+
         /*
             Widgets ----
         */
