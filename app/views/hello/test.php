@@ -62,7 +62,7 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
                         tag('img')->src(asset('img/photo2.png'))->class('img-fluid py-3')
                       )                  
                       ->title(
-                        tag('ribbonTitle')->content('Ribbon')->bg('danger')
+                        tag('ribbonTitle')->content('Ribbon')->bg('danger')->size('xl')->textSize('xl')
                       )
                       ->body(
                         'Ribbon Default <br />
