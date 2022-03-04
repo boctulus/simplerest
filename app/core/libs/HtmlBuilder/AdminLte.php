@@ -254,7 +254,32 @@ class AdminLte extends Bt5Form
             unset($args['bg']);
         }
 
+        $size = $args['size'] ?? $attributes['size'] ?? null;
+
+        if ($size){
+            if ($size != 'lg' && $size != 'xl'){
+                throw new \InvalidArgumentException("Invalid size '$size'. It can only be lg or xl");
+            }
+
+            static::addClass("ribbon-{$size}", $attributes['class']);
+            unset($args['size']);
+        }
+
+        $textSize = $args['textSize'] ?? $attributes['textSize'] ?? null;
+
+        if ($textSize){
+            if ($textSize != 'lg' && $textSize != 'xl'){
+                throw new \InvalidArgumentException("Invalid text size '$textSize'. It can only be lg or xl");
+            }
+
+            static::addClass("text-{$textSize}", $att['class']);
+            unset($args['size']);
+        }
+
+
+
         $content = static::ribbonContent($content, $att);
+
 
         return static::div($content, $attributes, ...$args);
     }
@@ -263,7 +288,6 @@ class AdminLte extends Bt5Form
         $_ = "ribbon";
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_  : $_ ;
         
-
         return static::div($content, $attributes, ...$args);
     }
 
