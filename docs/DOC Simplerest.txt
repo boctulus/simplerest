@@ -11537,6 +11537,38 @@ Ej:
 	?>
 
 
+# Custom File
+
+Ej:
+
+	<div class="form-group">
+		<?php
+		echo tag('customFile')
+		->id('my_file')
+		->placeholder('Elija los archivos');
+		?>
+	</div>
+
+Desconozco porque *no* está funcionando aún habiendo incluido en el "footer" el plugin.
+
+    include_js(ASSETS_PATH . 'adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js'
+
+Más
+https://github.com/Johann-S/bs-custom-file-input
+
+
+# Input validation
+
+Con Admin LTE las clases para marcar un inputText como valid, invalid o con un warning son is_valid, is_invalid e is_warning respectivamente.
+
+	<?= tag('inputText')->class("is-valid")->placeholder("Enter ...")->id("id1");   ?>
+
+	<?= tag('inputText')->class("is-warning")->placeholder("Enter ...")->id("id2"); ?>
+
+	<?= tag('inputText')->class("is-invalid")->placeholder("Enter ...")->id("id3"); ?>
+
+
+
 
 Notas Dev:
 =========
