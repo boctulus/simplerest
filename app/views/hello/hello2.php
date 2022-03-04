@@ -766,7 +766,7 @@ Bt5Form::setIdAsName();
 
         //
 
-        echo tag('h3')->text('inputRange')->class('mt-3 mb-3');
+        echo tag('h3')->text('input range')->class('mt-3 mb-3');
 
         echo tag('label')->name("edad")->text("Edad");
         echo Bt5Form::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
