@@ -11456,6 +11456,8 @@ Sobre imágenes
 
 Implementando ribbons con el builder
 
+De mínima se necesita un texto para la cinta (title) y un contenido (body).
+
 Como punto de partida:
 
 	<?=
@@ -11474,6 +11476,10 @@ Como punto de partida:
 	?>
 
 O con imágenes
+
+En este caso la imágen va en el *header* habiendo header, title y body.
+
+Ej:
 	
 	<?=
 
@@ -11482,17 +11488,41 @@ O con imágenes
 		//->style('min-height: 300px')
 		->class('mt-3')  
 		->header(
-		tag('img')->src(asset('img/photo2.png'))->class('img-fluid py-3')
+			tag('img')->src(asset('img/photo2.png'))->class('img-fluid py-3')
 		)                  
 		->title(
-		tag('ribbonTitle')->content('Ribbon')->bg('danger')
+			tag('ribbonTitle')->content('Ribbon')->bg('danger')
 		)
 		->body(
-		'Ribbon Default <br />
-		<small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
+			'Ribbon Default <br />
+			<small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
 		)
 
 	?>
+
+Para alargar la cinta o ensancharla conjuntamente con el tamaño del texto use size() y textSize() respectivamente con 'lg' o 'xl' sobre el ribbonTitle.
+
+Ej:
+
+	<?=
+
+		tag('ribbon')
+		->bg('gray')
+		->style('min-height: 300px')
+		->class('mt-3')  
+		->header(
+			tag('img')->src(asset('img/photo2.png'))->class('img-fluid py-3')
+		)                  
+		->title(
+			tag('ribbonTitle')->content('Ribbon')->bg('danger')->size('xl')->textSize('xl')
+		)
+		->body(
+			'Ribbon Default <br />
+			<small>.ribbon-wrapper.ribbon-lg .ribbon</small>'
+		)
+
+	?>
+
 
 
 Notas Dev:
