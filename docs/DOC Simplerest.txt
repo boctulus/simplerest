@@ -8637,6 +8637,19 @@ Ej:
 	->attributes(['class' => 'accordion-flush']);
 
 
+# Input range
+
+	echo tag('label')->name("exp")->text("Experiencia");
+    echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3');
+
+Con Admin LTE se puede personalizar cambiando el color de la "bolita".
+
+Ej:
+
+	echo tag('label')->name("exp")->text("Experiencia");
+    echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3')->color('teal');
+
+
 # Alerts
 
 A Simple alert. 

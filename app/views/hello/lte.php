@@ -1029,6 +1029,17 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 		->to(200);
 
 
+        echo tag('h3')->text('input range')->class('mt-3 mb-3');
+
+        echo tag('label')->name("edad")->text("Edad");
+        echo AdminLte::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
+
+        echo tag('p');
+
+        echo tag('label')->name("exp")->text("Experiencia");
+        echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3')->color('teal');
+
+
         // checkGroup
         
         echo tag('h3')->text('checkGroup')->class('mb-3 mt-3');
