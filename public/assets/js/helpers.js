@@ -2,6 +2,26 @@
     Core functions
 */
 
+function parseJSON(response) {
+    return response.text().then(function(text) {
+        return text ? JSON.parse(text) : {}
+    })
+}
+
+const getIntValue = (elem, $default = null) => {
+    if ($default != null && (typeof elem == 'undefined' || elem.value == '')){
+        return $default;
+    }
+    return parseInt(elem.value);
+}
+
+const getFloatValue = (elem, $default = null) => {
+    if ($default != null && (typeof elem == 'undefined' || elem.value == '')){
+        return $default;
+    }
+    return parseFloat(elem.value);
+}
+
 function assets(filename){
     load = filename.match(/^\/\//) || filename.match(/^http:/) || filename.match(/^https:/) ? filename : 'assets/' + filename;
 
