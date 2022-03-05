@@ -934,6 +934,13 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
         */
         echo tag('h3')->text('Select')->class('mb-3');
 
+        // Select simple
+        echo AdminLte::select(name: 'sexo', options: [
+            'varon' => 1,
+            'mujer' => 2
+        ], default: 1, placeholder: 'Su sexo', attributes: ['class' => 'my-3']);
+
+        // Select con option groups
         echo tag('select')
         ->name('comidas')
         ->placeholder('Tu comida favorita')
@@ -952,11 +959,7 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
         ->multiple()   
         ->class('my-3');
 
-        echo AdminLte::select(name: 'sexo', options: [
-            'varon' => 1,
-            'mujer' => 2
-        ], default: 1, placeholder: 'Su sexo', attributes: ['class' => 'my-3']);
-
+    
         /*
             DataList
         */

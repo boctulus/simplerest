@@ -11596,8 +11596,100 @@ inicialización (requerida) del componente:
       } );
     })
 
+También funciona con select con "option groups".
+
+Ej:
+
+	echo tag('select')
+	->id('comidas')
+	->placeholder('Tu comida favorita')
+	->options([
+		'platos' => [
+			'Pasta' => 'pasta',
+			'Pizza' => 'pizza',
+			'Asado' => 'asado'
+		],
+
+		'frutas' => [
+			'Banana' => 'banana',
+			'Frutilla' => 'frutilla'
+		]
+	])
+	//->multiple()   
+	->class('my-3');
+
+
+En cualquier caso si se habilita el modo "múltiple" entonces las opciones seleccionadas se mostrarán como "tags" y podrán entonces removerse también fácilmente.
+
+Es posible elegir el color de los tags aunque no se implementó esta funcionalidad.
+
 Más
 https://select2.github.io/
+
+
+
+# Bootsrap Duallistbox
+
+Plugin que debe instalarse e inicializarse:
+
+	<script src="dist/jquery.bootstrap-duallistbox.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../src/bootstrap-duallistbox.css">
+
+Requiere también de JQuery y PopperJs.
+
+inicialización:
+
+	//Bootstrap Duallistbox
+	$("#element").bootstrapDualListbox({
+		// see next for specifications
+	});
+
+O sin parámetros y aplicándolo a cualquier en general via clase '.duallistbox'
+
+	//Bootstrap Duallistbox
+    $('.duallistbox').bootstrapDualListbox()
+
+Pero es altamente configurable.
+
+Ej:
+
+	var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox({
+      nonSelectedListLabel: 'Available Payees',
+      selectedListLabel: 'Selected Payees',
+      preserveSelectionOnMove: 'moved',
+      moveAllLabel: 'Move all',
+      removeAllLabel: 'Remove all'
+    });
+
+En si el ÚNICO requisito del componente es que sea un select *múltiple*
+
+Ej:
+
+	<?php
+
+	echo tag('select')
+      ->id('comidas_duallistbox')
+      ->placeholder('Tu comida favorita')
+      ->options([
+          'Pasta' => 'pasta',
+          'Pizza' => 'pizza',
+          'Asado' => 'asado',
+          'Banana' => 'banana',
+          'Frutilla' => 'frutilla'
+      ])
+      ->multiple()   
+      ->class('my-3');
+
+	?>
+
+	<script>    
+    	$('#comidas_duallistbox').bootstrapDualListbox()
+  	</script>
+
+
+Más
+https://github.com/istvan-ujjmeszaros/bootstrap-duallistbox
+
 
 
 
