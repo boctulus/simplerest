@@ -11568,6 +11568,37 @@ Con Admin LTE las clases para marcar un inputText como valid, invalid o con un w
 	<?= tag('inputText')->class("is-invalid")->placeholder("Enter ...")->id("id3"); ?>
 
 
+# Select2
+
+Select2 actua sobre un select normal y solo requiere incluir CSS y JS e inicializar el componente:
+
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>	
+
+Ej:
+
+	 echo tag('select')
+	->id('sexo')
+	->options([
+		'varon' => 1,
+		'mujer' => 2
+	])
+	->default(1)
+	->placeholder('Su sexo')
+	->class('my-3');
+
+
+inicialización (requerida) del componente:
+
+	$(function () {
+      $( '#sexo' ).select2( {
+          theme: 'bootstrap-5'
+      } );
+    })
+
+Más
+https://select2.github.io/
+
 
 
 Notas Dev:

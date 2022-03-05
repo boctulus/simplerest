@@ -1,5 +1,19 @@
 # TODO
 
+- En el config.php hacer algo así:
+
+  'DBDebug'  => (ENVIRONMENT !== 'production'),
+
+
+- Seguridad. Enviar los headers correctos:
+
+    public function __construct()
+    {
+      header('X-Content-Type-Options:nosniff');
+      header('X-Frame-Options:SAMEORIGIN');
+      header('X-XSS-Protection:1;mode=block');
+
+
 - Permitir inyectar otros indicators y aplicar masks sobre los slides en el Carousel !
 
   tag('carouselImg')
