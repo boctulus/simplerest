@@ -12,25 +12,42 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 ?>
 
-
 <style>
 
 </style>
 
 
-      <?php
-        echo tag('select')
-        ->id('sexo')
-        ->options([
-          'varon' => 1,
-          'mujer' => 2
-        ])
-        ->default(1)
-        ->placeholder('Su sexo')
-        ->class('my-3');
+<div class="row mt-5">
+    <div class="col-6 offset-3">
 
+    <!-- <div class="form-group">
+      <label>Multiple</label>
+      <select class="duallistbox" multiple="multiple">
+        <option selected>Alabama</option>
+        <option>Alaska</option>
+        <option>California</option>
+        <option>Delaware</option>
+        <option>Tennessee</option>
+        <option>Texas</option>
+        <option>Washington</option>
+      </select>
+    </div> -->
 
-      ?>
+    <?php
+      echo tag('select')
+      ->id('comidas_duallistbox')
+      ->placeholder('Tu comida favorita')
+      ->options([
+          'Pasta' => 'pasta',
+          'Pizza' => 'pizza',
+          'Asado' => 'asado',
+          'Banana' => 'banana',
+          'Frutilla' => 'frutilla'
+      ])
+      ->multiple()   
+      ->class('my-3');
+
+    ?>
 
 
       </div>
@@ -51,17 +68,8 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 
   <script>
-    $(function () {
-
-      $('#single-select-field' ).select2( {
-          theme: 'bootstrap-5'
-      });
-
-
-      $('#sexo' ).select2( {
-          theme: 'bootstrap-5'
-      });
-
-    })
+    
+    //Bootstrap Duallistbox
+    $('#comidas_duallistbox').bootstrapDualListbox()
   </script>
 
