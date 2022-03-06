@@ -79,10 +79,10 @@
     <!-- Select2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://www.virtuosoft.eu/code/bootstrap-duallistbox/bootstrap-duallistbox/v3.0.2/bootstrap-duallistbox.css">
+
 
     <!-- DualListbox -->
-    <script src="<?= asset('adminlte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css') ?>"></script>
+    <link rel="stylesheet" href="<?= asset('adminlte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.css') ?>"/>
 
     <!-- DualListbox -->
     <script src="<?= asset('adminlte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') ?>"></script>
