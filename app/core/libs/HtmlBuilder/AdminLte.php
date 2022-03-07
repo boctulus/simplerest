@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs\HtmlBuilder;
 
+use simplerest\controllers\api\M;
 use simplerest\core\libs\Strings;
 
 /*
@@ -350,6 +351,82 @@ class AdminLte extends Bt5Form
         ];
 
         return static::div($content, $attributes, ...$args);
+    }
+
+    static function select2(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args){
+        $attributes['class'] = $attributes['class'] ?? $args['class'] ?? '';
+        static::addClass('select2', $attributes['class']);
+
+        return static::select($options, $default, $placeholder, $attributes, ...$args);
+    }
+
+    static function duallistbox(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args){        
+        $attributes['class'] = $attributes['class'] ?? $args['class'] ?? '';
+        static::addClass('duallistbox', $attributes['class']);
+
+        return static::select($options, $default, $placeholder, $attributes, ...$args);
+    }
+
+    static function inputMask(string $icon, string $format, Array $attributes = [], ...$args){    
+        $id = $args['id'] ?? $attributes['id'] ?? null;
+        
+        if (empty($id)){
+            throw new \Exception("id is required for custom input file");
+        }
+
+        unset($args['id']);
+
+        $input_att = [
+            'id' => $id,
+            'class' => "form-control",               
+            'data-inputmask-inputformat' => $format
+        ];
+
+        if ($icon == 'fa-calendar-alt' || $format == "dd/mm/yyyy" || $format == "mm/dd/yyyy"){
+            $input_att['data-inputmask-alias'] = "datetime";
+        }
+
+        $content = [
+            static::div('<span class="input-group-text"><i class="fas '.$icon.'"></i></span>', [
+                'class' => "input-group-prepend"
+            ]),
+            static::input('text', null, 
+                $input_att
+            , ["data-mask"])
+        ];
+        
+        return static::inputGroup($content, $attributes, ...$args);
+    }
+
+    static function dateMask(?string $format = null, Array $attributes = [], ...$args){    
+        $format = $format ?? $args['format'] ?? $attributes['format'] ?? "dd/mm/yyyy";
+        unset($args['format']);
+
+        return static::inputMask('fa-calendar-alt', $format, $attributes, ...$args);
+    }
+
+    static function phoneMask(?string $format = null, Array $attributes = [], ...$args){    
+        $format = $format ?? $args['format'] ?? $attributes['format'] ?? "(999) 999-9999";
+        unset($args['format']);
+
+        $id = $args['id'] ?? $attributes['id'] ?? null;
+        
+        if (empty($id)){
+            throw new \Exception("id is required for custom input file");
+        }
+
+        unset($args['id']);
+
+        $icon = 'fa-phone';
+
+        $content = [
+            static::div('<span class="input-group-text"><i class="fas '.$icon.'"></i></span>', [
+                'class' => "input-group-prepend"
+            ]),
+            '<input type="text" class="form-control" id="'.$id.'" data-inputmask=\'"mask": "'.$format.'"\' data-mask>'
+        ];
+        
+        return static::inputGroup($content, $attributes, ...$args);
     }
 
 }
