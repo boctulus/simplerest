@@ -1084,7 +1084,7 @@ class Html
         http://paulrose.com/bootstrap-select-sass/
     */
     static function select(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args)
-    {
+    {   
         $attributes['placeholder'] = $placeholder;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
@@ -1156,7 +1156,7 @@ class Html
         if (isset($args['small'])){
             static::addClass('form-control-sm', $attributes['class']);
         }
-       
+               
         return static::tag(__FUNCTION__, $opt_str, $attributes, ...$args);
     }
 
