@@ -11621,7 +11621,34 @@ Ej:
 
 En cualquier caso si se habilita el modo "múltiple" entonces las opciones seleccionadas se mostrarán como "tags" y podrán entonces removerse también fácilmente.
 
-Es posible elegir el color de los tags aunque no se implementó esta funcionalidad.
+La forma fácil
+
+En vez de usar tag("select"), use tag("select2") que ya incorpora la clase '.select2' con lo cual se pueden inicializar todos los select2 de forma sencilla así:
+
+Ej:
+
+	echo tag('select2')
+	->id('comidas_duallistbox')
+	->placeholder('Tu comida favorita')
+	->options([
+		'Pasta' => 'pasta',
+		'Pizza' => 'pizza',
+		'Asado' => 'asado',
+		'Banana' => 'banana',
+		'Frutilla' => 'frutilla'
+	])
+	->multiple()   
+	->class('my-3');
+
+
+	$(function () {
+      $( '.select2' ).select2( {
+          theme: 'bootstrap-5'
+      } );
+    })
+
+
+PD: Es posible elegir el color de los tags aunque no se implementó esta funcionalidad.
 
 Más
 https://select2.github.io/
@@ -11686,11 +11713,62 @@ Ej:
     	$('#comidas_duallistbox').bootstrapDualListbox()
   	</script>
 
+La forma fácil
+
+En vez de usar select use el componente duallistbox que ya incorpora la clase .duallistbox
+
+Ej:
+
+	echo tag('duallistbox')
+	->id('comidas_duallistbox')
+	->placeholder('Tu comida favorita')
+	->options([
+		'Pasta' => 'pasta',
+		'Pizza' => 'pizza',
+		'Asado' => 'asado',
+		'Banana' => 'banana',
+		'Frutilla' => 'frutilla'
+	])
+	->multiple()   
+	->class('my-3');
+
+Entonces puede inicializar todos los duallistbox de una vez así:
+
+	$('.duallistbox').bootstrapDualListbox()
 
 Más
 https://github.com/istvan-ujjmeszaros/bootstrap-duallistbox
 
 
+# Input mask
+
+Requiere instalar el plugin:
+
+	<!-- InputMask -->
+    <script src="<?= asset('adminlte/plugins/moment/moment.min.js') ?>"></script>
+    <script src="<?= asset('adminlte/plugins/inputmask/jquery.inputmask.min.js') ?>"></script>
+
+Fecha 
+
+Por defecto es 'dd/mm/yyyy'
+
+	<?php
+		echo tag('inputMask')->id('mydate');
+	?>
+
+O especificando el formato:
+
+	<?php
+		echo tag('inputMask')->id('mydate')->format('mm/dd/yyyy');
+	?>
+
+Telefono
+
+	<?php
+		echo tag('phoneMask')->id('myphone')->format('(01) 999-9999');
+	?>
+
+Hay otras máscaras como para IP.
 
 
 Notas Dev:
