@@ -80,12 +80,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css" />
 
-
     <!-- DualListbox -->
     <link rel="stylesheet" href="<?= asset('adminlte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.css') ?>"/>
-
-    <!-- DualListbox -->
     <script src="<?= asset('adminlte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') ?>"></script>
+
+    <!-- InputMask -->
+    <script src="<?= asset('adminlte/plugins/moment/moment.min.js') ?>"></script>
+    <script src="<?= asset('adminlte/plugins/inputmask/jquery.inputmask.min.js') ?>"></script>
+
+    <!-- date-range-picker -->
+    <link rel="stylesheet" href="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.css') ?>"/>
+    <script src="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 
 </head>
 <body>
