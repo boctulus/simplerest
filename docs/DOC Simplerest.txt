@@ -11803,6 +11803,58 @@ Telefono
 Hay otras máscaras como para IP.
 
 
+# Date picker
+
+Presenta interferencia con el js de jQuery UI por lo cual *no* pueden usarse simultaneamente.
+
+Requisitos:
+
+	<!-- datepicker -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+	<script src="http://simplerest.lan:8082/public/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+
+Ej:
+
+	<div class="input-group date" id="reservationdatetime">
+		<input type="text" class="form-control" id="date"/>
+		<span class="input-group-append">
+		<span class="input-group-text bg-light d-block">
+			<i class="fa fa-calendar"></i>
+		</span>
+		</span>
+	</div>
+
+Y debe inicializarse:
+
+	<script>
+		$('#reservationdatetime').datepicker();
+	</script>
+
+Con el builder podría hacerse algo así:
+
+ 	echo tag('inputGroup')
+	->content(
+		tag('inputText')
+	)
+	->append(
+		tag('button')->info()->icon('calendar')
+	)->class('mb-3 date')->id("reservationdatetime");
+
+
+En este caso es posible personalizar el color del botón aplicando info(), warning(), etc.
+
+También es posible cambiar de lugar el botón con el ícono de calendario cambiando append() por prepend().
+
+	echo tag('inputGroup')
+	->content(
+		tag('inputText')
+	)
+	->prepend(
+		tag('button')->info()->icon('calendar')
+	)->class('mb-3 date')->id("reservationdatetime");
+
+
+
 Notas Dev:
 =========
 
