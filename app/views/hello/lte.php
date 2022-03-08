@@ -17,6 +17,8 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 ?>
 
+
+
 <div class="row mt-5">
     <div class="col-6 offset-3">
 
@@ -693,6 +695,27 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
             ->placeholder()
         ]);
 
+        include_widget_css('flip_card');
+
+        echo tag('card')->class('my-3 flip-card')
+        ->content([
+            tag('div')
+            ->class('flip-card-inner')
+            ->content([			
+                tag('div')->content([
+                    tag('h3')->text('Tienes un correo')->bg('primary')->class('py-2'),
+                    tag('img')->src(asset('img/mail.png'))->w(65)
+                ])
+                ->class('flip-card-front bg-transparent'),
+                
+                tag('div')->content([
+                    tag('h3')->text('Some title'),
+                    tag('cardText')->text('Some quick example text to build on the card title and make up the bulk of the cards content.'),
+                    tag('inputButton')->value('Go somewhere')
+                ]) 
+                ->class("flip-card-back py-2") 
+            ])  
+        ]);
 
         /* Badges */    
 
