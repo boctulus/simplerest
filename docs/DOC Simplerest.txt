@@ -8896,6 +8896,8 @@ Ej:
 
 Están basadas en ejemplo de w3schools.com y quizás no sean 100% responsivas. Toca ajustar el ancho de la imágen según como sea ésta y también los paddings.
 
+Toca escribir el componente que use las clases flip-card, flip-card-inner, flip-card-front y flip-card-back aunque primero debería probarse su utilidad / respinsividad.
+
 Ej:
 
 	include_widget_css('flip_card');
