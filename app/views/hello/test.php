@@ -1,3 +1,10 @@
+
+<!-- datepicker -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+<!-- https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js -->
+<script src="http://simplerest.lan:8082/public/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+
+
 <?php
 
 use simplerest\core\libs\HtmlBuilder\AdminLte;
@@ -10,33 +17,52 @@ Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
 
 include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
+
 ?>
 <style>
-  .input-group-append {
-    cursor: pointer;
-  }
+  
 </style>
 
-  <section class="container">
-    <h2 class="py-2">Datepicker in Bootstrap 5</h2>
-    <form class="row">
-      <label for="date" class="col-1 col-form-label">Date</label>
-      <div class="col-5">
-        <div class="input-group date" id="datepicker">
-          <input type="text" class="form-control" id="date"/>
-          <span class="input-group-append">
-            <span class="input-group-text bg-light d-block">
-              <i class="fa fa-calendar"></i>
-            </span>
-          </span>
-        </div>
-      </div>
-    </form>
-  </section>
+
+<div class="row">
+    <div class="col-6 mt-3 offset-3">
+
+                <div class="form-group">
+                  <label>Date range:</label>
+
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control float-right" id="reservation">
+                  </div>
+                  <!-- /.input group -->
+                </div>
+
+      <?php
+
+        // echo tag('inputGroup')
+        // ->content(
+        //   tag('inputText')
+        // )
+        // ->prepend(
+        //     tag('button')->info()->icon('calendar')
+        // )->class('mb-3 date')->id("reservationdatetime");
+
+      ?>
+  
+
+    </div>
+</div>
 
 <script>
   $(function(){
-    $('#datepicker').datepicker();
+    $('#reservationdatetime').datepicker();
+
+    //Date range picker
+    $('#reservation').daterangepicker();
   });
 </script>
 
