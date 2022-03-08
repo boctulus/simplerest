@@ -92,6 +92,8 @@
     <link rel="stylesheet" href="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.css') ?>"/>
     <script src="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 
+
+    <link rel="stylesheet" href="<?= asset('css/main.css') ?>"/>
 </head>
 <body>
     <div class="container-fluid">
@@ -102,11 +104,11 @@
     
 
     <!-- jQuery UI 1.11.4 -->
-    <script src="<?= asset('adminlte/plugins/jquery-ui/jquery-ui.min.js') ?>"></script>
+    <!--script src="< ?= asset('adminlte/plugins/jquery-ui/jquery-ui.min.js') ?>"></script-->
 
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
-        $.widget.bridge('uibutton', $.ui.button)
+        //$.widget.bridge('uibutton', $.ui.button)
     </script>
 
     <!-- ChartJS -->
