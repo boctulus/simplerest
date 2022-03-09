@@ -4,7 +4,7 @@ namespace simplerest\controllers;
 
 use simplerest\controllers\MyController;
 use simplerest\core\Request;
-use simplerest\libs\OneSignal;
+use simplerest\core\libs\OneSignal;
 
 class PushController extends MyController
 {
@@ -12,10 +12,20 @@ class PushController extends MyController
         $config = array(
             'app_id' => '9381a718-414c-4f09-b810-2288913de0a0',
             'app_rest_api_key' => 'OWQ3NTRkOWYtZGQ1ZS00ZTkwLThiMjUtNmQ0ODQzNjA2YzMw',
-            'title' => "Un título cualquiera", //TITLE
-            'body' => 'Esto es el cuerpo del mensaje', //BESKJED
-            'url' => 'http://www.solucionbinaria.com', //CONTENT URL
-            'image_url' => 'https://solucionbinaria.com/assets/images/servicios/woo2.png',
+            'title' => "Un título cualquiera", 
+            'body' => 'Esto es el cuerpo del mensaje', 
+            'url' => 'http://www.solucionbinaria.com',
+
+            /*  
+                Large Images that appear with the notification. Supported by Chrome on Windows, macOS, and Android.
+            */
+            //'image' => 'https://i.imgur.com/Og6klnb.jpg',
+
+            'icon' => 'https://i.imgur.com/Czq0VNR.png',
+            
+            /*
+                Solo en Android / Amazon se muestra el ícono en el botón
+            */
             'buttons' => [
                 [
                     "id" => "like-button-2",
@@ -30,7 +40,7 @@ class PushController extends MyController
             ]
         );
         
-        $res  = OneSignal::sendPush($config);
+        $res  = OneSignal::send($config);
         
         $data = json_decode($res, true);
 

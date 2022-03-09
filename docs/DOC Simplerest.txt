@@ -8448,7 +8448,7 @@ Los tag input* como inputText, file (o inputFile), etc pueden contener otros ele
 
 Ej:
 
-Deltante
+Delante
 
 	echo tag('inputGroup')
 	->content(
