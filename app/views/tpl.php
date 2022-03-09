@@ -91,7 +91,19 @@
     <!-- date-range-picker -->
     <link rel="stylesheet" href="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.css') ?>"/>
     <script src="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.js') ?>"></script>
+    
 
+    <!-- OneSignal push notificaciones -->
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
+    <script>
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+        OneSignal.init({
+        appId: "9381a718-414c-4f09-b810-2288913de0a0",
+        });
+    });
+    </script>
+    
 
     <link rel="stylesheet" href="<?= asset('css/main.css') ?>"/>
 </head>
@@ -140,6 +152,24 @@
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+
+    <!-- OneSignal -->
+    <script>
+        OneSignal.push(function() {
+            OneSignal.isPushNotificationsEnabled(function(isEnabled) {
+                if (isEnabled){
+                    console.log("Push notifications are enabled!");
+                } else {
+                    console.log("Push notifications are not enabled yet."); 
+                    
+                    // OneSignal.push(function() {
+                    //     OneSignal.showSlidedownPrompt();
+                    // });
+                }   
+            });
+        });
+    </script>
+    
     
     <script src="<?= asset('js/helpers.js') ?>"></script>
     <script src="<?= asset('js/boostrap_notices.js') ?>"></script>
