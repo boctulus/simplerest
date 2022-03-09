@@ -1,0 +1,88 @@
+<?php
+
+namespace simplerest\core\libs;
+
+class OneSignal
+{
+    static function send($config) {
+        if (!sizeof($config)) {  
+            return null;
+        }  
+
+        /*  
+            Segments
+
+            https://documentation.onesignal.com/docs/segmentation
+        */
+
+        $segments = $config['segments'] ?? ['All'];
+
+        $config['title'] = $config['title'] ?? '';
+        $config['body']  = $config['body'] ?? '';
+
+        $notifTitle   = html_entity_decode($config['title'],ENT_QUOTES, 'UTF-8');
+        $notifContent = html_entity_decode($config['body'],ENT_QUOTES, 'UTF-8');  
+    
+        $fields = array(
+            'app_id' => $config['app_id'],
+            'headings' => array("en" => $notifTitle),
+            'included_segments' => $segments,
+            'isAnyWeb' => true,
+            'url' => $config['url'],
+            'contents' => array("en" => $notifContent)
+        );
+    
+        $image = $config['image'] ?? null;
+    
+        if (!empty($image)) {
+            $fields['chrome_web_image'] = $image;
+        }
+
+        $icon = $config['icon'] ?? null;
+    
+        if (!empty($icon)) {
+            $fields['chrome_web_icon']  = $icon;
+            $fields['firefox_icon'] = $icon;
+        }
+
+        $badge = $config['badge'] ?? null;
+    
+        if (!empty($badge)) {
+            $fields['chrome_web_badge']  = $badge;
+        }
+
+        $buttons = $config['buttons'] ?? null;
+
+        if (!empty($buttons)){
+            $fields['web_buttons'] = $buttons;
+        }
+
+        // Addtional data
+        $extra_data = $config['extra'] ?? null;
+
+        if (!empty($extra_data)){
+            $fields['data'] = $extra_data;
+        }
+
+        // debug
+        d($fields);
+            
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json',
+                                'Authorization: Basic ' . $config['app_rest_api_key']));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    
+        $response = curl_exec($ch);
+        curl_close($ch);
+    
+        return $response;
+    } 
+    
+    
+}
+
