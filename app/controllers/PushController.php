@@ -19,7 +19,7 @@ class PushController extends MyController
             /*  
                 Large Images that appear with the notification. Supported by Chrome on Windows, macOS, and Android.
             */
-            //'image' => 'https://i.imgur.com/Og6klnb.jpg',
+            'image' => 'https://i.imgur.com/Czq0VNR.png',
 
             'icon' => 'https://i.imgur.com/Czq0VNR.png',
             
