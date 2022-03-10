@@ -35,7 +35,17 @@ class OneSignal
         $image = $config['image'] ?? null;
     
         if (!empty($image)) {
-            $fields['chrome_web_image'] = $image;
+            // Chrome
+            $fields['chrome_web_image']   = $image;
+            
+            // Android
+            $fields['big_picture']        = $image;
+
+            // Huawei
+            $fields['huawei_big_picture'] = $image;
+            
+            // iOS
+            $fields['ios_attachments'] = ['id1' => $image];
         }
 
         $icon = $config['icon'] ?? null;
