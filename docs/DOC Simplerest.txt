@@ -7065,6 +7065,22 @@ Los textos a ser traducidos se encuentran config/messages.php y son compilados a
 	php com make constants
 
 
+# Compresión la respuesta
+
+Si en header Accept-Encoding se envia gzip, se hará la compresión.
+
+Si se desea cambiar el algoritmo también puede hacerse enviando como parámetro accept_encodig. 
+
+Ej:
+
+	GET api/v1/baz?tenantid=az&accept_encodig=identity
+
+
+Solamente se está manejando gzip e identity (sin compresión).
+
+Nota: NO es necesario usar la compresión en Apache ya que se hace directamente con PHP usando gzcompress()
+
+
 # NGINX web server
 
 Agregar en el bloque lo siguiente:

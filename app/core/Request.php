@@ -13,6 +13,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     static protected $body;
     static protected $params;
     static protected $headers;
+    static protected $accept_encoding;
     static protected $instance = NULL;
 
     protected function __construct() { }
@@ -22,8 +23,13 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
             if (php_sapi_name() != 'cli'){
                 if (isset($_SERVER['QUERY_STRING'])){
 					static::$query_arr = url::queryString();
-				}
 
+                    if (isset(static::$query_arr["accept_encodig"])){
+                        static::$accept_encoding = static::$query_arr["accept_encodig"];
+                        unset(static::$query_arr["accept_encodig"]);
+                    }
+				}
+                
                 static::$raw  = file_get_contents("php://input");
                 static::$body = json_decode(static::$raw, true);
                 static::$headers = apache_request_headers();
@@ -40,7 +46,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         
         return static::$instance;
     }
-
+    
     function setParams($params){
         static::$params = $params;
         return static::getInstance();
@@ -57,6 +63,15 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     // alias
     function getHeader(string $key){
         return $this->header($key);
+    }
+
+    function shiftHeader(string $key){
+        $key = strtolower($key);
+
+        $out = static::$headers[$key] ?? null;
+        unset(static::$headers[$key]);
+
+        return $out;
     }
 
     function getAuth(){
@@ -96,12 +111,23 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         }
     }
 
+    /*  
+        https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
+    */
+    function acceptEncoding() : ?string {
+        if (static::$accept_encoding){
+            return static::$accept_encoding;
+        }
+
+        return static::shiftHeader('Accept-Encoding');
+    }
+
     function gzip(){
-        return in_array('gzip', explode(',', str_replace(' ', '',$this->header('Accept-Encoding'))));
+        return in_array('gzip', explode(',', static::acceptEncoding() ?? ''));
     }
 
     function deflate(){
-        return in_array('deflate', explode(',', str_replace(' ', '',$this->header('Accept-Encoding'))));
+        return in_array('deflate', explode(',', static::acceptEncoding() ?? ''));
     }
 
     function getQuery(string $key = null)
