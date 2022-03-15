@@ -4155,6 +4155,22 @@ class DumbController extends Controller
         dd($response, 'RES');
     }
 
+    function test_api06(){
+        $response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+            [             
+                'Content-Type: application/json',
+                'Authorization: Basic ' . 'xxxxxxxxxxxx'
+            ],  
+            
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false
+            ]
+        );
+
+        dd($response, 'RES');
+    }
+
     function parse_class(){
         $path = MIGRATIONS_PATH . '2021_09_14_27905675_user_sp_permissions.php';
         $file = file_get_contents($path);

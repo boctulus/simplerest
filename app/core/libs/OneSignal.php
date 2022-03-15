@@ -74,21 +74,23 @@ class OneSignal
             $fields['data'] = $extra_data;
         }
 
-        // debug
-        d($fields);
+        $response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', $fields, 
+            [             
+                'Content-Type: application/json',
+                'Authorization: Basic ' . $config['app_rest_api_key']
+            ],  
             
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json',
-                                'Authorization: Basic ' . $config['app_rest_api_key']));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_HEADER, FALSE);
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-    
-        $response = curl_exec($ch);
-        curl_close($ch);
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false
+            ]
+        );
+
+        // En general solo cambios variables
+        Files::dump([
+            'DATA' => $fields,
+            'RESPONSE' => $response
+        ], 'curl_log.txt', true);
     
         return $response;
     } 
