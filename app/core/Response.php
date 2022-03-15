@@ -6,6 +6,8 @@ use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 
+use function GuzzleHttp\json_decode;
+
 class Response
 {
     static protected $data;
@@ -109,12 +111,6 @@ class Response
         return static::getInstance();
     }
 
-    private function zip($data){
-        ob_start("ob_gzhandler");
-        echo $data; 
-        ob_end_flush();
-    } 
-
     function send($data, int $http_code = NULL){
         $http_code = $http_code != NULL ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
 
@@ -142,17 +138,28 @@ class Response
                 if (static::$paginator != NULL)
                     $data['paginator'] = static::$paginator;
             }          
-        }            
+        }     
 
-        //if (Factory::request()->gzip() && strlen($data) > 1000){
-        //    $this->addHeader('Content-Encoding: gzip');
-        //    $this->zip($data. "\n");
-        //}else
-        //    echo $data. "\n";
+        if (Factory::request()->gzip()){
+           $this->addHeader('Content-Encoding: gzip');
+           $this->zip(json_encode($data). "\n");
+        }else
+           json_encode($data). "\n";
 
         static::$instance->setData( $data );
         return static::$instance;   	
     }
+
+    private function zip($data){
+        //$size     = strlen($data);
+
+        $data  = gzcompress($data, 9);
+        //$data  = substr($data, 0, $size);
+
+        ob_start("ob_gzhandler");
+        echo $data; 
+        ob_end_flush();
+    } 
 
     function sendCode(int $http_code){
         static::$instance->setData( json_encode(['status_code' => $http_code]) );

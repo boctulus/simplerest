@@ -7563,13 +7563,14 @@ class DumbController extends Controller
         ->prepend(
           tag('button')->danger()->content('Action')
         );
- 
-        
-
 
         // echo "\r\n\r\n\r\n";
 
     }
 
+    function ttt(){
+        dd(Factory::request()->gzip());
+        dd(Factory::request()->acceptEncoding());
+    }
 
 }   

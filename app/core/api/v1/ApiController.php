@@ -295,8 +295,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         $include  = Factory::request()->shiftQuery('include');        
         $_get     = Factory::request()->getQuery();
 
-        $include  = explode(',', $include);
-
+        if (!empty($include)){
+            $include  = explode(',', $include);
+        }
 
         $this->id     = $id;
         $this->folder = Arrays::shift($_get,'folder');
@@ -827,7 +828,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 //////////
     
                 // MIN, MAX, SUM, COUNT, AVG
-                if (preg_match('/(min|max|sum|avg|count)\(([a-z\*]+)\)( as [a-z]+)?/i', $props, $matches)){
+                if (!empty($props) && preg_match('/(min|max|sum|avg|count)\(([a-z\*]+)\)( as [a-z]+)?/i', $props, $matches)){
                     $ag_fn = strtolower($matches[1]);
                     $ag_ff = $matches[2];
                 
@@ -848,7 +849,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }                    
 
                 // HAVING
-                if (preg_match('/([a-z]+)\(([a-z\*]+)\)([><=]+)([0-9\.]+)/i', $having, $matches)){
+                if (!empty($having) && preg_match('/([a-z]+)\(([a-z\*]+)\)([><=]+)([0-9\.]+)/i', $having, $matches)){
                     $hv_fn = strtoupper($matches[1]);
                     $hv_ff = $matches[2];
                     $hv_op = $matches[3];
@@ -856,7 +857,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                     //var_export($matches);                    
                     $this->instance->having(["$hv_fn($hv_ff)", $hv_vv, $hv_op]);
-                }elseif (preg_match('/([a-z]+)([><=]+)([0-9\.]+)/i', $having, $matches)){
+                }elseif (!empty($having) && preg_match('/([a-z]+)([><=]+)([0-9\.]+)/i', $having, $matches)){
                     $hv_fn_alias = $matches[1];
                     $hv_op = $matches[2];
                     $hv_vv = $matches[3]; 
