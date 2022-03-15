@@ -7118,7 +7118,6 @@ En caso de fallo (http status code 3xx o 4xx o 5xx) algo como:
         [error] => 
     )
 
-
 Ej:
 
 # Leer un recurso
@@ -7208,6 +7207,52 @@ donde get_xml.php puede ser algo como:
 Todos los verbos http (GET, POST, PUT, PATCH,...) son soportados
 
 
+# Headers
+
+El envio headers se puede hacer como array asociativo o un simple array de strings (no-asociativo).
+
+Ej:
+	// (no-asociativo)
+
+	$response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+		[             
+			'Content-Type: application/json',
+			'Authorization: Basic ' . 'xxxxxxxxxxxx'
+		]
+	);
+
+o
+
+Ej:
+	// (asociativo)
+
+	$response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+		[             
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Basic ' . 'xxxxxxxxxxxx'
+		]
+	);
+
+
+# Curl options
+
+Es un array asociativo de opciones para la librería curl.
+
+Ej:
+
+	$response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+		[             
+			'Content-Type: application/json',
+			'Authorization: Basic ' . 'xxxxxxxxxxxx'
+		],  
+		
+		[
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HEADER => false
+		]
+	);
+
+
 # Autorización 
 
 Web tokens pueden ser enviados a la función consume_api() via el array de headers.
@@ -7230,6 +7275,7 @@ Ej:
     $response = Url::consume_api('http://xxxxxxxxx:8080/api/some_resource', 'POST', $encoded, [
         "Content-type"  => "text/plain"
     ]);
+
 
 
 ### Componentes del core del framework

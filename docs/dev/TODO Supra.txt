@@ -1,5 +1,12 @@
 TODO de proyecto 'Supra'
 
+>>>>
+
+La *calidad* de los componentes de ciertos plugins para mostrar productos y filtros es *insuperable*. Caso "Custom Product Filter For Woocommerce and Elementor"
+
+https://www.youtube.com/watch?v=sZJsIwCVBKU&ab_channel=MrWebReviews
+
+
 - Extraer HTML y CSS y para seleccionar el bloque usar algo como:
 
 	https://bootsnipp.com/builder
@@ -13,6 +20,7 @@ TODO de proyecto 'Supra'
     - Historias de usuario
     - Diagramas UML 
 
+// ...
 
 - Crear extensión para FireFox / Chrome que:
 

@@ -8,10 +8,28 @@ use simplerest\core\libs\OneSignal;
 
 class PushController extends MyController
 {
-    function index(){
+    function index()
+    {
+    	$apps = [
+		    [
+		        'app_name' => 'Woo1',
+		        'app_id'   => '9c5b7327-7279-4032-9f14-2a4d4ca1332c',
+		        'api_key'  => 'MGVkYjlhY2ItNTgwOS00N2JkLWEwMDQtZTFiOTYzY2NkZDRh'
+		    ],
+
+		    // más apps
+		    // Ej:
+
+		    [
+		        'app_name' => 'SimpleRest',
+		        'app_id'   => '9381a718-414c-4f09-b810-2288913de0a0',
+		        'api_key'  => 'OWQ3NTRkOWYtZGQ1ZS00ZTkwLThiMjUtNmQ0ODQzNjA2YzMw'
+		    ],
+		];
+
         $config = array(
-            'app_id' => '9381a718-414c-4f09-b810-2288913de0a0',
-            'app_rest_api_key' => 'OWQ3NTRkOWYtZGQ1ZS00ZTkwLThiMjUtNmQ0ODQzNjA2YzMw',
+            'app_id' => $apps[1]['app_id'],
+            'app_rest_api_key' => $apps[1]['api_key'],
             'title' => "Un título cualquiera", 
             'body' => 'Esto es el cuerpo del mensaje', 
             'url' => 'http://www.solucionbinaria.com',
@@ -41,13 +59,11 @@ class PushController extends MyController
         );
         
         $res  = OneSignal::send($config);
-        
-        $data = json_decode($res, true);
 
-        if (isset($data['errors'])){
-            d($data['errors'], 'Errores');
+        if (isset($res['errors'])){
+            d($res['errors'], 'Errores');
         } else {
-            d($data);
+            d($res);
         }
     }
 }
