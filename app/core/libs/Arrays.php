@@ -62,8 +62,7 @@ class Arrays
         foreach(array_keys($arr) as $key){
             if (!is_int($key)) return true;
 	            return false; 
-        }
-		
+        }		
     }
 
     /**

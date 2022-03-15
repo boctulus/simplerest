@@ -145,6 +145,16 @@ class Url
     {  
         if ($headers === null){
             $headers = [];
+        } else {
+            if (!Arrays::is_assoc($headers)){
+                $_hs = [];
+                foreach ($headers as $h){                   
+                    list ($k, $v)= explode(':', $h, 2);                    
+                    $_hs[$k] = $v;
+                }
+
+                $headers = $_hs;
+            }
         }
 
         if ($options === null){

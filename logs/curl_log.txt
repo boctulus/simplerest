@@ -1,0 +1,55 @@
+array (
+  'DATA' => 
+  array (
+    'app_id' => '9381a718-414c-4f09-b810-2288913de0a0',
+    'headings' => 
+    array (
+      'en' => 'Un título cualquiera',
+    ),
+    'included_segments' => 
+    array (
+      0 => 'All',
+    ),
+    'isAnyWeb' => true,
+    'url' => 'http://www.solucionbinaria.com',
+    'contents' => 
+    array (
+      'en' => 'Esto es el cuerpo del mensaje',
+    ),
+    'chrome_web_image' => 'https://i.imgur.com/Czq0VNR.png',
+    'big_picture' => 'https://i.imgur.com/Czq0VNR.png',
+    'huawei_big_picture' => 'https://i.imgur.com/Czq0VNR.png',
+    'ios_attachments' => 
+    array (
+      'id1' => 'https://i.imgur.com/Czq0VNR.png',
+    ),
+    'chrome_web_icon' => 'https://i.imgur.com/Czq0VNR.png',
+    'firefox_icon' => 'https://i.imgur.com/Czq0VNR.png',
+    'web_buttons' => 
+    array (
+      0 => 
+      array (
+        'id' => 'like-button-2',
+        'text' => 'Like2',
+        'icon' => 'http://i.imgur.com/N8SN8ZS.png',
+        'url' => 'https://yoursite.com',
+      ),
+    ),
+    'data' => 
+    array (
+      'campo1' => 'valor1',
+      'campo2' => 'valor2',
+    ),
+  ),
+  'RESPONSE' => 
+  array (
+    'data' => 
+    array (
+      'id' => '915be04a-8fc2-46ba-a6d3-39de190aa41e',
+      'recipients' => 2,
+      'external_id' => NULL,
+    ),
+    'http_code' => 200,
+    'error' => '',
+  ),
+)
