@@ -151,10 +151,7 @@ class Response
     }
 
     private function zip($data){
-        //$size     = strlen($data);
-
         $data  = gzcompress($data, 9);
-        //$data  = substr($data, 0, $size);
 
         ob_start("ob_gzhandler");
         echo $data; 
