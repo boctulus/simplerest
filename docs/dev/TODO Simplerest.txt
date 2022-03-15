@@ -1,5 +1,29 @@
 # TODO
 
+- Al "html builder" agregar componentes de 
+
+  Elementor Pro +
+  Custom Product Filter For Woocommerce and Elementor
+
+Ver
+https://www.youtube.com/watch?v=sZJsIwCVBKU&ab_channel=MrWebReviews
+
+
+- Usar GitHub (workflow) actions
+
+Ej:
+
+Cada vez que se haga un [pull], correr automáticamente migrations!
+
+>> hacer curso:
+
+https://lab.github.com/githubtraining/devops-with-github-actions
+
+ver
+https://www.youtube.com/watch?v=cP0I9w2coGU
+https://docs.github.com/es/actions
+
+
 - En el config.php hacer algo así:
 
   'DBDebug'  => (ENVIRONMENT !== 'production'),
