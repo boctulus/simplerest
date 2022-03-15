@@ -86,14 +86,41 @@ class OneSignal
             ]
         );
 
-        // En general solo cambios variables
-        Files::dump([
-            'DATA' => $fields,
-            'RESPONSE' => $response
-        ], 'curl_log.txt', true);
+        // Files::dump([
+        //     'DATA' => $fields,
+        //     'RESPONSE' => $response
+        // ], 'curl_log.txt', true);
     
         return $response;
     } 
+
+    static function addDevice(Array $config)
+    { 
+        $fields =  array(
+            'app_id'       => $config['app_id'],
+			'device_type'  => $config['device_type']
+        );
+		
+        if (isset($config['segments'])){
+            $fields['included_segments'] = $config['segments'];
+        }
+
+        //$fields['segments'] = $fields['segments'] ?? ['All'];
+
+        $response = Url::consume_api("https://onesignal.com/api/v1/players", 'POST', $fields,
+            [             
+                'Content-Type: application/json',
+                'Authorization: Basic ' . $config['app_rest_api_key']
+            ],  
+            
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false
+            ]
+        );
+        
+       return $response;        
+    }
     
     
 }

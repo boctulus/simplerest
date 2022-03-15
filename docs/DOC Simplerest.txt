@@ -7080,6 +7080,14 @@ Solamente se está manejando gzip e identity (sin compresión).
 
 Nota: NO es necesario usar la compresión en Apache ya que se hace directamente con PHP usando gzcompress()
 
+Ver
+http://www.webcodingtech.com/php/gzip-compression.php
+https://betterexplained.com/articles/how-to-optimize-your-site-with-gzip-compression/
+
+
+Verificar que la compresión funcione!
+http://www.gidnetwork.com/tools/gzip-test.php
+
 
 # NGINX web server
 
