@@ -7577,9 +7577,9 @@ class DumbController extends Controller
         $declarado_usd = 3000;
         
         // Las dimensiones ingresan en cm
-        $dim1 = 100;
-        $dim2 = 100;
-        $dim3 = 120;
+        $dim1 = 1;
+        $dim2 = 1;
+        $dim3 = 1;
 
         // peso en kilogramos
         $peso = 21;
@@ -7631,7 +7631,7 @@ class DumbController extends Controller
 
         // considerando solo kilos
         $transporte = $peso * $kv;
-        d($transporte, 'Dólares solo por k/v');
+        d($transporte, 'Transporte (flete)');
 
         // seguro
         $seguro = ($declarado_usd + $transporte) * $sg * 0.01;
@@ -7639,18 +7639,142 @@ class DumbController extends Controller
 
         // aduana (valor CIF)
         $aduana = ($declarado_usd + $transporte + $seguro) * $ad * 0.01;
-        d($aduana);
+        d($aduana, 'Aduana');
 
         // iva
         $iva = ($declarado_usd + $transporte + $seguro + $aduana) * $iv * 0.01;
-        d($iva);
+        d($iva, 'Iva');
 
         $total_agencia = $transporte + $seguro + $aduana + $iva;
-        d($total_agencia);
+        d($total_agencia, 'Total agencia');
 
         $total_cliente = $total_agencia + $declarado_usd;
-        d($total_cliente);
+        d($total_cliente, 'Total cliente');
+    }
 
+
+    function cotiza2($declarado_usd, $peso, $dim1, $dim2, $dim3, $unidad_long){
+        // Las dimensiones ingresan en cm
+        // peso en kilogramos
+    
+        // O se capturan excepciones o se genera directamente la respuesta JSON
+
+        // Constante dólares por kilo o volúmen
+        define('KV', 9);
+
+        // Constante seguro en %
+        define('SG', 0.4);
+
+        // constante aduana en %
+        define('AD', 6);
+
+        // constante iva en %
+        define('IV', 19);
+
+        // constante aplicada a peso volumétrico
+        define('PV', 167);
+
+        // dimension máxima en cm (por lado)
+        define('MAX_DIM', 9999); 
+
+        // peso máximo (en Kg)
+        define('MAX_PESO', 9999);
+
+        // peso mínimo (en Kg)
+        define('MIN_PESO', 1);
+
+        // valor declarado minímo (en USD)
+        define('MIN_DECLARADO', 1);
+    
+        if (!in_array($unidad_long, ['cm', 'mt', 'pulg'])){
+            throw new \InvalidArgumentException("Unidad de longitud puede ser solo cm, mt o pulg");
+        }
+    
+        if ($peso > MAX_PESO){
+            throw new \Exception("El peso máximo es de ". MAX_PESO ." Kg.");
+        }
+    
+        if (max($dim1, $dim2, $dim3) > MAX_DIM){
+            throw new \Exception("Ninguna dimensión puede superar los ". MAX_DIM." cm.");
+        }
+    
+        $declarado_usd = max($declarado_usd ?? 0, MIN_DECLARADO);
+    
+        $dim1 = $dim1 ?? 0;
+        $dim2 = $dim2 ?? 0;
+        $dim3 = $dim3 ?? 0;
+    
+        switch ($unidad_long){
+            case 'mt': 
+                $dim1 *=  100;
+                $dim2 *=  100;
+                $dim3 *=  100;
+            break;
+            case 'pulg':
+                $dim1 *=  39.37;
+                $dim2 *=  39.37;
+                $dim3 *=  39.37;
+            break;	
+        }
+    
+        d($dim1, 'dim1');
+        d($dim2, 'dim2');
+        d($dim3, 'dim3');
+
+        $peso_volumetrico = $dim1 * $dim2 * $dim3 * 0.000001;
+        d($peso_volumetrico, 'Peso vol');
+    
+        $peso_volumetrico_corregido = $peso_volumetrico * PV;
+        d($peso_volumetrico_corregido, 'Peso vol corregido');
+
+        $peso_ori = $peso;
+        d($peso_ori, 'Peso original');
+
+        $peso = max($peso, $peso_volumetrico_corregido, MIN_PESO);    
+        d($peso, 'Peso considerado');
+
+        // considerando solo kilos
+        $transporte = $peso * KV;
+        d($transporte, 'Transporte (flete)');
+    
+        // seguro
+        $seguro = ($declarado_usd + $transporte) * SG * 0.01;
+        d($seguro, 'Seguro');
+    
+        // aduana (valor CIF)
+        $aduana = ($declarado_usd + $transporte + $seguro) * AD * 0.01;
+        d($aduana, 'Aduana');
+    
+        // iva
+        $iva = ($declarado_usd + $transporte + $seguro + $aduana) * IV * 0.01;
+    
+        $total_agencia = $transporte + $seguro + $aduana + $iva;
+        dd($total_agencia, 'Total agencia');
+
+        $total_cliente = $total_agencia + $declarado_usd;
+        dd($total_cliente, 'Total cliente');
+    
+        return [
+            /*
+                Recibidos ajustados por mínimos
+            */
+            'declarado_usd' => $declarado_usd, 
+            'ancho' => $dim1, 
+            'largo' => $dim2, 
+            'alto'  => $dim3,
+            'peso'  => $peso_ori,
+    
+            /*
+                Calculados
+            */
+            'peso_volumetrico' => $peso_volumetrico_corregido,
+            'transporte' => round($transporte, 2),
+            'seguro' => round($seguro, 2),
+            'aduana' => round($aduana, 2),
+            'iva' => round($iva, 2),
+            'total_agencia' => round($total_agencia, 2),
+            'total_cliente' => round($total_cliente, 2)
+        ];
     }
 
 }   
