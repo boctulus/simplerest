@@ -11165,6 +11165,60 @@ Mediante headOptions() se puede pasar un array de atributos al head de la tabla.
     ]);
 
 
+Aplicar color a una columna 
+
+Se implementó en principio para colorear una sola columna (que es el caso típico) para desctacarla aplicando colorCol($index, $color) 
+
+ 	->colorCol([
+        'pos'   => 1, 
+        'color' => 'primary'
+      ])
+
+Ej:
+
+	echo tag('table')
+      ->rows([
+      '#',
+      'First',
+      'Last',
+      'Handle'
+      ])
+      ->cols([
+      [
+          1,
+          'Mark',
+          'Otto',
+          '@mmd'
+      ],
+      [
+          2,
+          'Lara',
+          'Cruz',
+          '@fat'
+      ],
+      [
+          3,
+          'Juan',
+          'Cruz',
+          '@fat'
+      ],
+      [
+          4,
+          'Feli',
+          'Bozzolo',
+          '@facebook'
+      ]
+      ])
+      ->color('light')
+      ->headOptions([
+        'color' => 'dark'
+      ])
+      ->colorCol([
+        'pos'   => 1, 
+        'color' => 'primary'
+      ]);
+
+
 # Animations
 
 Parecen faltar en BT5 pero están en "MDB Pro Essential package" 
