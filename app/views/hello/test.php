@@ -12,8 +12,8 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
-//Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
+Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+//Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
 
 include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
@@ -26,30 +26,51 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 <div class="row">
     <div class="col-6 mt-3 offset-3">
-
-                <div class="form-group">
-                  <label>Date range:</label>
-
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="far fa-calendar-alt"></i>
-                      </span>
-                    </div>
-                    <input type="text" class="form-control float-right" id="reservation">
-                  </div>
-                  <!-- /.input group -->
-                </div>
-
+              
       <?php
 
-        // echo tag('inputGroup')
-        // ->content(
-        //   tag('inputText')
-        // )
-        // ->prepend(
-        //     tag('button')->info()->icon('calendar')
-        // )->class('mb-3 date')->id("reservationdatetime");
+      echo tag('table')
+      ->rows([
+      '#',
+      'First',
+      'Last',
+      'Handle'
+      ])
+      ->cols([
+      [
+          1,
+          'Mark',
+          'Otto',
+          '@mmd'
+      ],
+      [
+          2,
+          'Lara',
+          'Cruz',
+          '@fat'
+      ],
+      [
+          3,
+          'Juan',
+          'Cruz',
+          '@fat'
+      ],
+      [
+          4,
+          'Feli',
+          'Bozzolo',
+          '@facebook'
+      ]
+      ])
+      ->color('light')
+      ->headOptions([
+        'color' => 'dark'
+      ])
+      ->colorCol([
+        'pos'   => 1, 
+        'color' => 'primary'
+      ])
+      ;
 
       ?>
   
@@ -58,11 +79,11 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 </div>
 
 <script>
-  $(function(){
-    $('#reservationdatetime').datepicker();
+  // $(function(){
+  //   $('#reservationdatetime').datepicker();
 
-    //Date range picker
-    $('#reservation').daterangepicker();
-  });
+  //   //Date range picker
+  //   $('#reservation').daterangepicker();
+  // });
 </script>
 

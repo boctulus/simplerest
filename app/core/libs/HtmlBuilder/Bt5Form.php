@@ -24,9 +24,32 @@ class Bt5Form extends Form
             $rows = $args['rows'] ?? $attributes['rows'] ?? null;
             $cols = $args['cols'] ?? $attributes['cols'] ?? null;
 
+            // Color para columnas (en principio aplica solo a una)
+            
+            $colorCol = $args['colorCol'] ?? $attributes['colorCol'] ?? null;
+
+            if ($colorCol !== null){
+                if (!isset($colorCol['pos'])){
+                    throw new \Exception("Position parameter pos is required");
+                }
+
+                if (!isset($colorCol['color'])){
+                    throw new \Exception("Position parameter pos is required");
+                }
+
+                $col_pos_color = $colorCol['pos'];
+                $col_color     = $colorCol['color'];
+            }
+
             $header = [];
-            foreach ($rows as $r){
-                $header[] = static::th($r, attributes:['scope' =>"col" ]);
+            foreach ($rows as $ix => $r){
+                $att = ['scope' =>"row"];
+                
+                if (isset($col_pos_color) && $ix == $col_pos_color  ){
+                    $att['class'] = "table-{$col_color}";
+                }
+
+                $header[] = static::th($r, attributes:$att);
             }
 
             $_cols = [];
@@ -39,6 +62,10 @@ class Bt5Form extends Form
                     } else {
                         $t = 'td';
                         $att = [];
+                    }
+
+                    if (isset($col_pos_color) && $ix == $col_pos_color  ){
+                        $att['class'] = "table-{$col_color}";
                     }
                     
                     $tds[] = static::$t(content:$val, attributes:$att);
