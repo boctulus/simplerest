@@ -7884,6 +7884,41 @@ class DumbController extends Controller
         ];
     }
 
+
+    function show_email_template(){
+        $cols = [
+            'Item',
+            'Valor',
+            'Moneda'
+        ];
+
+        $rows = [
+            ['Valor de la compra en dólares', '$ 3000', 'USD'],
+            ['Tarifa a cobrar por kilo', '$ 400', 'USD'],
+            ['Kilos bruto', 2, 'Kg'],
+            ['Flete aéreo (Miami-Santiago)', 0, 'USD'],
+            ['Seguro (2%)',  0, 'USD'],
+            ['Valor C.I.F',  0, 'USD'],
+            ['Derechos (6%)', 0, 'USD'],
+            ['Valor neto', 0, 'USD'],
+            ['IVA', 0, 'USD'],
+            ['Valor final', 0, 'USD'],
+            ['TTL US$', 0, 'USD']
+        ];
+
+        $withs = [ 50, 30, 20 ];
+
+        $image_header = [
+            'src' => 'https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png',
+            'width' => "150",
+            'height' => "150"
+        ];
+
+        $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) - Casilla internacional | Gestión de envíos';
+
+        include ETC_PATH . 'email_template.php';
+    }
+
     /*
         Usar postdrop.io para ensayar como se verían los mails
 
@@ -7895,13 +7930,40 @@ class DumbController extends Controller
         height
         border
     */
-    function senderx(){
-        dd(Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 
-        file_get_contents(ETC_PATH . 'body.html')));     
+    function send_email_template(){
+        $cols = [
+            'Item',
+            'Valor',
+            'Moneda'
+        ];
+
+        $rows = [
+            ['Valor de la compra en dólares', '$ 3000', 'USD'],
+            ['Tarifa a cobrar por kilo', '$ 400', 'USD'],
+            ['Kilos bruto', 2, 'Kg'],
+            ['Flete aéreo (Miami-Santiago)', 0, 'USD'],
+            ['Seguro (2%)',  0, 'USD'],
+            ['Valor C.I.F',  0, 'USD'],
+            ['Derechos (6%)', 0, 'USD'],
+            ['Valor neto', 0, 'USD'],
+            ['IVA', 0, 'USD'],
+            ['Valor final', 0, 'USD'],
+            ['TTL US$', 0, 'USD']
+        ];
+
+        $withs = [ 50, 30, 20 ];
+
+        $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) - Casilla internacional | Gestión de envíos';
+
+        ob_start();
+        include ETC_PATH . 'email_template.php';
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        dd(
+            Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', $content)
+        );     
     }
 
-    function test_view(){
-        return file_get_contents(ETC_PATH . 'body.html');
-    }
 
 }   
