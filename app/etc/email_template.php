@@ -52,68 +52,79 @@
         background-color: #e6b4f6 !important;
     }
 
+    /* Figure out where the breaks happen and use that in the media query */
+    @media (max-width: 800px) {
+        .table-container {
+            font-size: 66% !important;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .table-container {
+            font-size: 40% !important;
+        }
+    }
+
+    
 </style>
 </head>
 
     <body bgcolor="#ffffff" style="margin: 0 !important; padding: 0 !important; background-color: #ffffff;">
+
         <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600">
 
+            <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="margin: auto;" >
+                <?php
+                    if (isset($image_header)){
+                        echo "<tr>
+                            <td style=\"padding: 20px 0; text-align: center\">
+                                <img src=\"{$image_header['src']}\" width=\"{$image_header['width']}\" height=\"{$image_header['height']}\" border=\"0\" style=\"height: auto;  font-family: sans-serif; ; line-height: 15px; color: #555555;\">
+                            </td>
+                        </tr>";
+                    }
+                ?>
 
-        <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="margin: auto;" class="email-container">
-            <?php
-                if (isset($image_header)){
-                    echo "<tr>
-                        <td style=\"padding: 20px 0; text-align: center\">
-                            <img src=\"{$image_header['src']}\" width=\"{$image_header['width']}\" height=\"{$image_header['height']}\" border=\"0\" style=\"height: auto;  font-family: sans-serif; font-size: 15px; line-height: 15px; color: #555555;\">
-                        </td>
-                    </tr>";
-                }
-            ?>
+                <!-- Email Header : BEGIN -->
+                
+                <!-- Email Header : END -->
 
-	        <!-- Email Header : BEGIN -->
-            
-	        <!-- Email Header : END -->
+                <!-- Hero Image, Flush : BEGIN -->
+                <!-- <tr>
+                    <td style="background-color: #ffffff;" class="darkmode-bg">
+                        <img src="https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png" width="600" height="" alt="alt_text" border="0" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 15px; color: #555555; margin: auto; display: block;" class="g-img">
+                    </td>
+                </tr> -->
+                <!-- Hero Image, Flush : END -->
+            </table>
 
-            <!-- Hero Image, Flush : BEGIN -->
-            <!-- <tr>
-                <td style="background-color: #ffffff;" class="darkmode-bg">
-                    <img src="https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png" width="600" height="" alt="alt_text" border="0" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 15px; color: #555555; margin: auto; display: block;" class="g-img">
-                </td>
-            </tr> -->
-            <!-- Hero Image, Flush : END -->
-        </table>
-
-
-            <!-- FIRST TABLE -->
-            <tr>
+             <!-- SECOND TABLE -->
+             <tr>
                 <td align="center" valign="top" width="100%" bgcolor="#ffffff" style="background-color: #ffffff;">
-                    <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="598">
+                    <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="598" class="table-container">
                         <tr>
                             <td>
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                                     <tr>
-                                        <td align="left" valign="top" bgcolor="#ffffff" style="background-color: #ffffff; margin: 0; padding: 0 0 40px 0; width: 100%;">
+                                        <td align="left" valign="top" bgcolor="#ffffff" style="background-color: #ffffff; border-top: 1px solid #828282; margin: 0; padding: 40px 0 40px 0; width: 100%;">
                                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
 
 
                                                 <tr>
-                                                    <td align="left" valign="middle" width="100%" colspan="4" style="color: #000000; font-weight: 600; font-size: 16px; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding: 40px 0 0 0;">Desglose cotización:</td>
+                                                    <td align="left" valign="middle" width="100%" colspan="4" style="color: #000000; font-weight: 600; font-size: 100%; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0;">COTIZACIÓN ENVIO</td>
                                                 </tr>
                                                 <tr>
-                                                    <td align="left" valign="middle" width="100%" colspan="4" style="color: #000000; font-weight: 400; font-size: 14px; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding: 0;"><span style="font-weight: 600;">Fecha</span>: Lunes, Marzo 4, 10:00am</td>
+                                                    <td align="left" valign="middle" width="100%" colspan="4" style="color: #000000; font-weight: 400; font-size: 90%; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding-top: 5px;"><span style="font-weight: 600;">Fecha</span>: Monday, February 1, 10:00 AM</td>
                                                 </tr>
-
-                                                <!-- spacing-->
+                                                
                                                 <tr>
-                                                    <td height="50" colspan="2"></td>
+                                                    <td height="20" colspan="2"></td>
                                                 </tr>
-
 
                                                 <!-- INFO -->
                                                 <?php
                                                     foreach ($cols as $ix => $col){
                                                         ?>
-                                                            <td align="center" valign="middle" width="<?= $withs[$ix] ?>%" style="background-color: #df78ef; border: 1px solid #d05ce3; color: #ffffff; font-weight: 600; font-size: 14px; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding: 10px 0;"><?= $col ?></td>
+                                                            <td align="center" valign="middle" width="<?= $withs[$ix] ?>%" style="background-color: #df78ef; border: 1px solid #d05ce3; color: #ffffff; font-weight: 600; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding: 10px 0;"><?= $col ?></td>
                                                         <?php
                                                     }
                                                 ?>
@@ -121,12 +132,20 @@
                                                 <!-- DATA -->
                                                 <?php
 
-                                                    foreach ($rows as $row){
-                                                        echo '<tr class="outlookRow">';                                                        
-                                                        foreach ($row as $ix => $cell){
-                                                            ?>
-                                                                <td class="row" align="center" valign="middle" width="<?= $withs[$ix] ?>%" style="border: 1px solid #d05ce3; color: #000000; font-weight: 600; font-size: 14px; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding: 10px 0;"><a href="#" style="color: #000000; text-decoration: none;"><?= $cell ?></a></td>
-                                                            <?php
+                                                    foreach ($rows as $ix => $row){
+                                                        echo "<tr class=\"outlookRow\">";                                                        
+                                                        foreach ($row as $ij => $cell){
+        
+                                                            if ($ij === 0){
+                                                                $class = "class=\"row\"";
+                                                                $fw = 600;
+                                                            } else {
+                                                                $class = '';    
+                                                                $fw = 300;
+                                                            }
+
+                                                            echo "<td $class align=\"center\" valign=\"middle\" style=\"border: 1px solid #d05ce3; color: #000000; font-weight: $fw;  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding: 10px 0;\"><a href=\"#\" style=\"color: #000000; text-decoration: none;\">{$cell}</a></td>";
+                                                        
                                                         }                                                        
                                                         echo '</tr>';
                                                     }
@@ -142,35 +161,11 @@
                     </table>
                 </td>
             </tr>
-            <!-- end first table -->
+            <!-- end second table -->
+
+
         </table>
 
-         <!-- Full Bleed Background Section : BEGIN -->
-	    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #43494e;" class="darkmode-fullbleed-bg">
-	        <tr>
-	            <td>
-	                <div align="center" style="max-width: 600px; margin: auto;" class="email-container">
-	                    <!--[if mso]>
-	                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
-	                    <tr>
-	                    <td>
-	                    <![endif]-->
-	                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-	                        <tr>
-	                            <td style="padding: 20px; text-align: left; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #ffffff;">
-	                                <p style="margin: 0;"><?= $footer ?></p>
-	                            </td>
-	                        </tr>
-	                    </table>
-	                    <!--[if mso]>
-	                    </td>
-	                    </tr>
-	                    </table>
-	                    <![endif]-->
-	                </div>
-	            </td>
-	        </tr>
-	    </table>
-	    <!-- Full Bleed Background Section : END -->
+       
     </body>
 </html>
