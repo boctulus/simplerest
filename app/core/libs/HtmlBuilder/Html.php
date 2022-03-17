@@ -1585,5 +1585,108 @@ class Html
         return $html;
     }
 
+    static function emailTable(mixed $content = [], $attributes = [], ...$args)
+    {   
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if (empty($content)){
+            $content = [];
+
+            $rows = $args['rows'] ?? $attributes['rows'] ?? null;
+            $cols = $args['cols'] ?? $attributes['cols'] ?? null;
+
+            // Color para columnas (en principio aplica solo a una)
+            
+            $colorCol = $args['colorCol'] ?? $attributes['colorCol'] ?? null;
+
+            if ($colorCol !== null){
+                if (!isset($colorCol['pos'])){
+                    throw new \Exception("Position parameter pos is required");
+                }
+
+                if (!isset($colorCol['color'])){
+                    throw new \Exception("Position parameter pos is required");
+                }
+
+                $col_pos_color = $colorCol['pos'];
+                $col_color     = $colorCol['color'];
+            }
+
+            $header = [];
+            foreach ($rows as $ix => $r){
+                $att = ['scope' =>"row"];
+                
+                if (isset($col_pos_color) && $ix == $col_pos_color  ){
+                    $att['class'] = "table-{$col_color}";
+                }
+
+                $header[] = static::th($r, attributes:$att);
+            }
+
+            $_cols = [];
+            foreach ($cols as $c){  
+                $tds = [];      
+                foreach ($c as $ix => $val){
+                    if ($ix == 0){
+                        $t = 'th';
+                        $att = ['scope' =>"row"];
+                    } else {
+                        $t = 'td';
+                        $att = [];
+                    }
+
+                    if (isset($col_pos_color) && $ix == $col_pos_color  ){
+                        $att['class'] = "table-{$col_color}";
+                    }
+                    
+                    $tds[] = static::$t(content:$val, attributes:$att);
+                }
+
+                $_cols[] = static::tr($tds);
+            }
+
+
+            // head options
+
+            $headOptions = $args['headOptions'] ?? $attributes['headOptions'] ?? null;
+
+            if ($headOptions != null){
+                if (isset($headOptions['class'])){
+                    $headAtt['class'] = $headAtt['class'] ?? '';
+                    static::addClass($headOptions['class'], $headClass);
+                }
+
+                if (isset($headOptions['color'])){
+                    $headAtt['class'] = $headAtt['class'] ?? '';
+                    static::addClass( "table-{$headOptions['color']}", $headAtt['class']);
+                }
+             
+                unset($args['headOptions']);
+            }
+
+            $content = [
+                static::thead($header, $headAtt),
+                static::tbody(content:$_cols)
+            ];
+
+            // color
+
+            $color = $args['color'] ?? $attributes['color'] ?? null;
+
+            if ($color !== null){
+                if (!in_array($color, static::$colors)){
+                    throw new \InvalidArgumentException("Invalid color for '$color'");
+                }
+
+                $attributes['class'] = $attributes['class'] ?? '';
+
+                static::addClass("table-{$color}", $attributes['class']);
+                unset($args['color']);
+            }
+        }
+
+        return static::group($content, 'table', $attributes, ...$args);
+    }
+
 }
 
