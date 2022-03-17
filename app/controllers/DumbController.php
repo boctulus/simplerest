@@ -7967,7 +7967,7 @@ class DumbController extends Controller
         $filecontents = base64_encode($filecontents);
         $image_header['src'] = "data:image/jpg;base64,".$filecontents;
 
-        $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) - Casilla internacional | Gestión de envíos';
+        $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) ~ Casilla internacional - Gestión de envíos';
 
         ob_start();
         include ETC_PATH . 'email_template.php';
