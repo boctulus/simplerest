@@ -7914,6 +7914,10 @@ class DumbController extends Controller
             'height' => "150"
         ];
 
+        $filecontents = file_get_contents($image_header['src']);
+        $filecontents = base64_encode($filecontents);
+        $image_header['src'] = "data:image/jpg;base64,".$filecontents;
+
         $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) - Casilla internacional | Gestión de envíos';
 
         include ETC_PATH . 'email_template.php';
@@ -7951,7 +7955,17 @@ class DumbController extends Controller
             ['TTL US$', 0, 'USD']
         ];
 
-        $withs = [ 50, 30, 20 ];
+        $withs = [ 60, 25, 15 ];
+
+        $image_header = [
+            'src' => 'https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png',
+            'width' => "150",
+            'height' => "150"
+        ];
+
+        $filecontents = file_get_contents($image_header['src']);
+        $filecontents = base64_encode($filecontents);
+        $image_header['src'] = "data:image/jpg;base64,".$filecontents;
 
         $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) - Casilla internacional | Gestión de envíos';
 
@@ -7960,8 +7974,9 @@ class DumbController extends Controller
         $content = ob_get_contents();
         ob_end_clean();
 
+
         dd(
-            Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', $content)
+            Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita '. rand(99,999999), $content)
         );     
     }
 
