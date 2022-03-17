@@ -165,7 +165,7 @@
         </table>
 
         <!-- Full Bleed Background Section : BEGIN -->
-	    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #43494e;" class="darkmode-fullbleed-bg">
+	    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #43494e;" class="table-container darkmode-fullbleed-bg">
 	        <tr>
 	            <td>
 	                <div align="center" style="max-width: 600px; margin: auto;" class="email-container">
@@ -176,7 +176,7 @@
 	                    <![endif]-->
 	                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 	                        <tr>
-	                            <td style="padding: 20px; text-align: left; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #ffffff;">
+	                            <td style="padding: 20px; text-align: left; font-family: sans-serif; line-height: 10px; color: #ffffff;">
 	                                <p style="margin: 0;"><?= $footer ?></p>
 	                            </td>
 	                        </tr>
