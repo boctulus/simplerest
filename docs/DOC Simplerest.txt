@@ -11044,6 +11044,8 @@ Nota: las clases bg- para colores como "indigo" u "orange" no están disponibles
 
 Las tablas se crean con tag('table') que recibe arrays de rows y cols.
 
+NOTA: rows y cols está alrevés !!! tocaría intercambiar los nombres.
+
 Ej:
 
 	echo tag('table')
