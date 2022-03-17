@@ -13,7 +13,6 @@
         "php": ">=7.4 || >=8.0",
         "byjg/jwt-session": "2.0.*",
         "google/apiclient": "^2.0",
-        "facebook/graph-sdk": "^5.7",
         "phpmailer/phpmailer": "^6.1",
         "symfony/polyfill-uuid": "^1.18",
         "vlucas/phpdotenv": "^5.2",
@@ -22,7 +21,8 @@
         "nyholm/psr7": "^1.4",
         "php-http/message": "^1.12",
         "florianv/swap": "^4.3",
-        "league/oauth2-google": "^4.0"
+        "league/oauth2-google": "^4.0",
+        "sendgrid/sendgrid": "~7"
     },
     "autoload": {
         "psr-4": {
@@ -33,6 +33,6 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "8"
+ 
     }
 }

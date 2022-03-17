@@ -3012,8 +3012,32 @@ class DumbController extends Controller
         https://www.arclab.com/en/kb/email/how-to-enable-imap-pop3-smtp-gmail-account.html
     */
     function sender(){
-        dd(Mails::sendMail('boctulus@gmail.com', 'Pablo ZZ', 'Pruebita 21', 'Hola!<p/>Esto es una más <b>prueba</b> con Google<p/>Chau'));     
+        dd(Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau'));     
     }
+
+    /*
+        https://github.com/sendgrid/sendgrid-php
+    */
+    function sendgrid(){
+        $email = new \SendGrid\Mail\Mail();
+        $email->setFrom("boctulus@gmail.com", "boctulus");
+        $email->setSubject("Probando SendGrid");
+        $email->addTo("boctulus@gmail.com", "boctulus");
+        $email->addContent("text/plain", "Probando el envio,...");
+        $email->addContent(
+            "text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
+        );
+        $sendgrid = new \SendGrid(env('SENDGRID_API_KEY'));
+        try {
+            $response = $sendgrid->send($email);
+            print $response->statusCode() . "\n";
+            print_r($response->headers());
+            print $response->body() . "\n";
+        } catch (\Exception $e) {
+            echo 'Caught exception: '. $e->getMessage() ."\n";
+        }
+    }
+
 
     function validation_test(){
         $rules = [

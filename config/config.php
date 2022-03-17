@@ -204,14 +204,14 @@ return [
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
 
-				// Opciones de Fredy
-				'SMTPOptions'   => [
-					'ssl' => [
-						'verify_peer' => false,
-						'verify_peer_name' => false,
-						'allow_self_signed' => true
-					]
-				]
+				// Extras
+				// 'SMTPOptions'   => [
+				// 	'ssl' => [
+				// 		'verify_peer' => false,
+				// 		'verify_peer_name' => false,
+				// 		'allow_self_signed' => true
+				// 	]
+				// ]
 			]
 		],
 
