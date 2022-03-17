@@ -3,6 +3,7 @@
 namespace simplerest\core\libs;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 class Mails {
 
