@@ -16,7 +16,7 @@
         Bt5Form::setIdAsName();
         
         echo tag('card')
-        ->header(tag('cardTitle')->text('Registro')->style('font-size: 300%;'))
+        ->header(tag('cardTitle')->text('Recordar contraseña')->style('font-size: 300%;'))
         ->body([
             '<div style="text-align:right; margin-bottom:1em;">
                 Tiene cuenta? <a href="login">Ingresar</a>
