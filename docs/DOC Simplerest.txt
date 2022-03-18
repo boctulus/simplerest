@@ -7099,6 +7099,47 @@ Agregar en el bloque lo siguiente:
 	}
 
 
+# Envio de correos
+
+Mediante Mails::sendMail() es posible enviar correos de forma muy sencilla.
+
+Ej:
+
+	dd(
+		Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau'
+	)); 
+
+Lógicamente es más sencillo con la sintaxis de PHP 8
+
+	dd(
+		Mails::sendMail(
+			to_email:'boctulus@gmail.com', 
+			subject:'Prueba B8',
+			body:'HEY!!!!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau'
+		)
+	);  
+
+Especificar el from (distinto al por defecto)
+
+	dd(
+		Mails::sendMail('mueblesultra@gmail.com', '', 'Prueba B3', 'HEY!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau', null, null, 'cotizacion@brimell.cl', 'Brimell', 'boctulus@gmail.com'
+	)); 
+
+Incluyendo "attachments" (archivos adjuntos)
+
+Ej:
+
+	$path = ETC_PATH . 'example.sql';
+
+	dd(
+		Mails::sendMail('mueblesultra@gmail.com', '', 'Prueba B3', 'HEY!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau', null, $path, 'cotizacion@brimell.cl', 'Brimell', 'boctulus@gmail.com'
+	));   
+
+
+
+
+
+
 # Consumo de APIs
 
 El framework provee la función Url::consume_api() para el consumo de APIs. 

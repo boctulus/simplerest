@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs;
 
+use PDO;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
@@ -12,8 +13,16 @@ class Mails {
 
         https://myaccount.google.com/lesssecureapps
     */
-    static function sendMail(string $to_email, string $to_name, $subject, $body, $alt_body = null){
+    static function sendMail(string $to_email, string $to_name = '', $subject = '', $body = '', $alt_body = null, $attachments = null, $from_email = null, $from_name = null, $cc = null, $bcc  = null){
 		$config = config();
+
+        if (empty($subject)){
+            throw new \Exception("Subject is required");
+        }
+
+        if (empty($body)){
+            throw new \Exception("Body is required");
+        }
 
 		$mail = new PHPMailer();
         $mail->isSMTP();
@@ -25,8 +34,8 @@ class Mails {
         }	
     
         $mail->setFrom(
-            $config['email']['from']['address'], 
-            $config['email']['from']['name']
+            $from_email ?? $config['email']['from']['address'], 
+            $from_name  ?? $config['email']['from']['name']
         );
 
         $mail->addAddress($to_email, $to_name);
@@ -36,9 +45,36 @@ class Mails {
 		if (!is_null($alt_body))
 			$mail->AltBody = $alt_body;
 		
-		//$mail->addAttachment('images/phpmailer_mini.png');       
-        
+        if (!empty($attachments)){
+            if (!is_array($attachments)){
+                $attachments = [ $attachments ];
+            }
 
+            foreach($attachments as $att){
+                $mail->addAttachment($att);    
+            }
+        }
+
+        if (!empty($cc)){
+            if (!is_array($cc)){
+                $cc = [ $cc ];
+            }
+
+            foreach($cc as $cc_account){
+                $mail->addCC($cc_account);
+            }
+        }
+
+        if (!empty($bcc)){
+            if (!is_array($bcc)){
+                $bcc = [ $bcc ];
+            }
+
+            foreach($bcc as $bcc_account){
+                $mail->addBCC($bcc_account);
+            }
+        }
+		
         if (!$mail->send())
         {	
             return $mail->ErrorInfo;

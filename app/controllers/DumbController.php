@@ -3001,7 +3001,6 @@ class DumbController extends Controller
     function test_update_or_fail(){
         d(
             DB::table('products')
-            ->find(1000)
             ->updateOrFail(['description' => 'abc'])
         );
     }
@@ -3017,6 +3016,23 @@ class DumbController extends Controller
     */
     function sender(){
         dd(Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau'));     
+    }
+
+    // from cotizacion@brimell.cl
+    function sender_b(){
+        $path = ETC_PATH . 'example.sql';
+
+        dd(Mails::sendMail('mueblesultra@gmail.com', '', 'Prueba B3', 'HEY!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau', null, $path, 'cotizacion@brimell.cl', 'Brimell', 'boctulus@gmail.com'));     
+    }
+
+    function sender_v8(){
+        dd(
+            Mails::sendMail(
+                to_email:'boctulus@gmail.com', 
+                subject:'Prueba B8',
+                body:'HEY!!!!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau'
+            )
+        );     
     }
 
     /*
@@ -3573,30 +3589,11 @@ class DumbController extends Controller
     }
 
     function speed(){
-        $rules = [
-            'nombre' => ['type' => 'alpha_spaces_utf8', 'min'=>3, 'max'=>40],
-            'username' => ['type' => 'alpha_dash', 'min'=> 3, 'max' => '15'],
-            'rol' => ['type' => 'int', 'not_in' => [2, 4, 5]],
-            'poder' => ['not_between' => [4,7] ],
-            'edad' => ['between' => [18, 100]],
-            'magia' => [ 'in' => [3,21,81] ],
-            'is_active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
-        ];
-        
-        $data = [
-            'nombre' => 'Juan Español',
-            'username' => 'juan_el_mejor',
-            'rol' => 5,
-            'poder' => 6,
-            'edad' => 101,
-            'magia' => 22,
-            'is_active' => 3
-        ];
-
         Time::setUnit('MILI');
-        $t1 = Time::exec(function() use($data, $rules){ 
-            Factory::validador()->validate($rules,$data);
-        }, 100); 
+        
+        $t1 = Time::exec(function(){ 
+            $ttl_res = Url::consume_api('https://mindicador.cl/api', 'GET');
+        }); 
         
         dd("Time: $t1 ms");
     }
@@ -7680,210 +7677,6 @@ class DumbController extends Controller
         dd(Factory::request()->acceptEncoding());
     }
 
-    function cotiza(){
-        $declarado_usd = 3000;
-        
-        // Las dimensiones ingresan en cm
-        $dim1 = 1;
-        $dim2 = 1;
-        $dim3 = 1;
-
-        // peso en kilogramos
-        $peso = 21;
-
-        ///////////////////////////////////
-
-        // Constante dólares por kilo o volúmen
-        $kv = 9;
-
-        // Constante seguro en %
-        $sg = 0.4;
-
-        // constante aduana en %
-        $ad = 6;
-
-        // constante iva en %
-        $iv = 19;
-
-        // constante aplicada a peso volumétrico
-        $pv = 167;
-
-        // dimension máxima en cm (por lado)
-        $max_dim  = 9999;
-
-        // peso máximo (en kg)
-        $max_peso = 9999;
-
-        //////////////////////////////////////
-
-        // O se capturan excepciones o se genera directamente la respuesta JSON
-
-        if ($peso > $max_peso){
-            throw new \Exception("El peso máximo es de $max_peso Kg.");
-        }
-
-        if (max($dim1, $dim2, $dim3) > $max_dim){
-            throw new \Exception("Ninguna dimensión puede superar los $max_dim cm.");
-        }
-
-
-        $peso_volumetrico = $dim1 * $dim2 * $dim3 * 0.000001;
-        d($peso_volumetrico, 'Peso vol');
-
-        $peso_volumetrico_corregido = $peso_volumetrico * $pv;
-        d($peso_volumetrico_corregido, 'Peso vol ajustado');
-
-        $peso = max($peso, $peso_volumetrico_corregido);
-        d($peso, 'Peso');
-
-        // considerando solo kilos
-        $transporte = $peso * $kv;
-        d($transporte, 'Transporte (flete)');
-
-        // seguro
-        $seguro = ($declarado_usd + $transporte) * $sg * 0.01;
-        d($seguro, 'Dólares seguro');
-
-        // aduana (valor CIF)
-        $aduana = ($declarado_usd + $transporte + $seguro) * $ad * 0.01;
-        d($aduana, 'Aduana');
-
-        // iva
-        $iva = ($declarado_usd + $transporte + $seguro + $aduana) * $iv * 0.01;
-        d($iva, 'Iva');
-
-        $total_agencia = $transporte + $seguro + $aduana + $iva;
-        d($total_agencia, 'Total agencia');
-
-        $total_cliente = $total_agencia + $declarado_usd;
-        d($total_cliente, 'Total cliente');
-    }
-
-
-    function cotiza2($declarado_usd, $peso, $dim1, $dim2, $dim3, $unidad_long){
-        // Las dimensiones ingresan en cm
-        // peso en kilogramos
-    
-        // O se capturan excepciones o se genera directamente la respuesta JSON
-
-        // Constante dólares por kilo o volúmen
-        define('KV', 9);
-
-        // Constante seguro en %
-        define('SG', 0.4);
-
-        // constante aduana en %
-        define('AD', 6);
-
-        // constante iva en %
-        define('IV', 19);
-
-        // constante aplicada a peso volumétrico
-        define('PV', 167);
-
-        // dimension máxima en cm (por lado)
-        define('MAX_DIM', 9999); 
-
-        // peso máximo (en Kg)
-        define('MAX_PESO', 9999);
-
-        // peso mínimo (en Kg)
-        define('MIN_PESO', 1);
-
-        // valor declarado minímo (en USD)
-        define('MIN_DECLARADO', 1);
-    
-        if (!in_array($unidad_long, ['cm', 'mt', 'pulg'])){
-            throw new \InvalidArgumentException("Unidad de longitud puede ser solo cm, mt o pulg");
-        }
-    
-        if ($peso > MAX_PESO){
-            throw new \Exception("El peso máximo es de ". MAX_PESO ." Kg.");
-        }
-    
-        if (max($dim1, $dim2, $dim3) > MAX_DIM){
-            throw new \Exception("Ninguna dimensión puede superar los ". MAX_DIM." cm.");
-        }
-    
-        $declarado_usd = max($declarado_usd ?? 0, MIN_DECLARADO);
-    
-        $dim1 = $dim1 ?? 0;
-        $dim2 = $dim2 ?? 0;
-        $dim3 = $dim3 ?? 0;
-    
-        switch ($unidad_long){
-            case 'mt': 
-                $dim1 *=  100;
-                $dim2 *=  100;
-                $dim3 *=  100;
-            break;
-            case 'pulg':
-                $dim1 *=  39.37;
-                $dim2 *=  39.37;
-                $dim3 *=  39.37;
-            break;	
-        }
-    
-        d($dim1, 'dim1');
-        d($dim2, 'dim2');
-        d($dim3, 'dim3');
-
-        $peso_volumetrico = $dim1 * $dim2 * $dim3 * 0.000001;
-        d($peso_volumetrico, 'Peso vol');
-    
-        $peso_volumetrico_corregido = $peso_volumetrico * PV;
-        d($peso_volumetrico_corregido, 'Peso vol corregido');
-
-        $peso_ori = $peso;
-        d($peso_ori, 'Peso original');
-
-        $peso = max($peso, $peso_volumetrico_corregido, MIN_PESO);    
-        d($peso, 'Peso considerado');
-
-        // considerando solo kilos
-        $transporte = $peso * KV;
-        d($transporte, 'Transporte (flete)');
-    
-        // seguro
-        $seguro = ($declarado_usd + $transporte) * SG * 0.01;
-        d($seguro, 'Seguro');
-    
-        // aduana (valor CIF)
-        $aduana = ($declarado_usd + $transporte + $seguro) * AD * 0.01;
-        d($aduana, 'Aduana');
-    
-        // iva
-        $iva = ($declarado_usd + $transporte + $seguro + $aduana) * IV * 0.01;
-    
-        $total_agencia = $transporte + $seguro + $aduana + $iva;
-        dd($total_agencia, 'Total agencia');
-
-        $total_cliente = $total_agencia + $declarado_usd;
-        dd($total_cliente, 'Total cliente');
-    
-        return [
-            /*
-                Recibidos ajustados por mínimos
-            */
-            'declarado_usd' => $declarado_usd, 
-            'ancho' => $dim1, 
-            'largo' => $dim2, 
-            'alto'  => $dim3,
-            'peso'  => $peso_ori,
-    
-            /*
-                Calculados
-            */
-            'peso_volumetrico' => $peso_volumetrico_corregido,
-            'transporte' => round($transporte, 2),
-            'seguro' => round($seguro, 2),
-            'aduana' => round($aduana, 2),
-            'iva' => round($iva, 2),
-            'total_agencia' => round($total_agencia, 2),
-            'total_cliente' => round($total_cliente, 2)
-        ];
-    }
-
 
     function show_email_template(){
         $cols = [
@@ -7907,6 +7700,13 @@ class DumbController extends Controller
         ];
 
         $withs = [ 50, 30, 20 ];
+
+        // config
+        $locale = 'es_ES.UTF-8';
+
+        $date     = new \Datetime();
+        $datetime = ucfirst(\IntlDateFormatter::formatObject($date, 'EEEE', $locale)) .', '. ucfirst(\IntlDateFormatter::formatObject($date, 'dd-MM-Y', $locale));
+
 
         $image_header = [
             'src' => 'https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png',
@@ -7956,6 +7756,12 @@ class DumbController extends Controller
         ];
 
         $withs = [ 60, 25, 15 ];
+
+        // config
+        $locale = 'es_ES.UTF-8';
+
+        $date     = new \Datetime();
+        $datetime = ucfirst(\IntlDateFormatter::formatObject($date, 'EEEE', $locale)) .', '. ucfirst(\IntlDateFormatter::formatObject($date, 'dd-MM-Y', $locale));
 
         $image_header = [
             'src' => 'https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png',

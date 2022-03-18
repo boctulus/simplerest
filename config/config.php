@@ -212,6 +212,27 @@ return [
 				// 		'allow_self_signed' => true
 				// 	]
 				// ]
+			],
+
+			'brimell' => [
+				'Host'			=> env('MAIL_HOST_2'),
+				'Port'			=> env('MAIL_PORT_2'),
+				'Username' 		=> env('MAIL_USERNAME_2'),
+				'Password' 		=> env('MAIL_PASSWORD_2'),
+				'SMTPSecure'	=> env('MAIL_ENCRYPTION_2'),
+				'SMTPAuth' 		=> env('MAIL_AUTH_2'),
+				'SMTPDebug' 	=> 4,
+				'CharSet' 		=> 'UTF-8',
+				'Debugutput' 	=> 'html',
+
+				// Extras
+				// 'SMTPOptions'   => [
+				// 	'ssl' => [
+				// 		'verify_peer' => false,
+				// 		'verify_peer_name' => false,
+				// 		'allow_self_signed' => true
+				// 	]
+				// ]
 			]
 		],
 
