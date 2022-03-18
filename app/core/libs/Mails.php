@@ -28,13 +28,13 @@ class Mails {
         $mail->isSMTP();
 
         $mailer = $config['email']['mailer_default'];
-        
+
         foreach ($config['email']['mailers'][$mailer] as $k => $prop){
 			$mail->{$k} = $prop;
         }	
     
         $mail->setFrom(
-            $from_email ?? $config['email']['from']['address'], 
+            $from_email ?? $config['email']['from']['address'] ?? $config['email']['mailers'][$mailer]['Username'], 
             $from_name  ?? $config['email']['from']['name']
         );
 
