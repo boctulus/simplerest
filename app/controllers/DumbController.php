@@ -3020,20 +3020,20 @@ class DumbController extends Controller
 
     // from cotizacion@brimell.cl
     function sender_b(){
-        $path = ETC_PATH . 'example.sql';
+        //$path = ETC_PATH . 'example.sql';
 
-        dd(Mails::sendMail('mueblesultra@gmail.com', '', 'Prueba B3', 'HEY!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau', null, $path, 'cotizacion@brimell.cl', 'Brimell', 'boctulus@gmail.com'));     
+        dd(Mails::sendMail('mueblesultra@gmail.com', '', 'Prueba B3', 'HEY!!!!!!!!!!!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau', null, null, 'cotizacion@brimell.cl', 'Brimell', 'boctulus@gmail.com'));     
     }
 
-    function sender_v8(){
-        dd(
-            Mails::sendMail(
-                to_email:'boctulus@gmail.com', 
-                subject:'Prueba B8',
-                body:'HEY!!!!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau'
-            )
-        );     
-    }
+    // function sender_v8(){
+    //     dd(
+    //         Mails::sendMail(
+    //             to_email:'boctulus@gmail.com', 
+    //             subject:'Prueba B8',
+    //             body:'HEY!!!!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau'
+    //         )
+    //     );     
+    // }
 
     /*
         https://github.com/sendgrid/sendgrid-php
