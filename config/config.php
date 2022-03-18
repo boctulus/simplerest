@@ -188,7 +188,7 @@ return [
 
 	'email' => [
 		'from'		=> [
-			'address' 		=> env('MAIL_DEFAULT_FROM_ADDR'), 
+			'address' 		=> null, 
 			'name' 			=> env('MAIL_DEFAULT_FROM_NAME')
 		],	
 
@@ -236,7 +236,7 @@ return [
 			]
 		],
 
-		'mailer_default' => 'smtp'
+		'mailer_default' => 'brimell'
 	],
 
 	'google_auth'  => [
