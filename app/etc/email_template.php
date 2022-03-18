@@ -108,12 +108,11 @@
                                         <td align="left" valign="top" bgcolor="#ffffff" style="background-color: #ffffff; border-top: 1px solid #828282; margin: 0; padding: 40px 0 40px 0; width: 100%;">
                                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
 
-
                                                 <tr>
                                                     <td align="left" valign="middle" width="100%" colspan="4" style="color: #000000; font-weight: 600; font-size: 100%; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0;">COTIZACIÓN ENVIO</td>
                                                 </tr>
                                                 <tr>
-                                                    <td align="left" valign="middle" width="100%" colspan="4" style="color: #000000; font-weight: 400; font-size: 90%; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding-top: 5px;"><span style="font-weight: 600;">Fecha</span>: Monday, February 1, 10:00 AM</td>
+                                                    <td align="left" valign="middle" width="100%" colspan="4" style="color: #000000; font-weight: 400; font-size: 90%; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding-top: 5px;"><span style="font-weight: 600;">Fecha</span>: <?= $datetime ?></td>
                                                 </tr>
                                                 
                                                 <tr>
