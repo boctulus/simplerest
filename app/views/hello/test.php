@@ -1,4 +1,3 @@
-
 <!-- datepicker -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 <!-- https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js -->
@@ -20,50 +19,95 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 ?>
 <style>
-  
+
 </style>
 
 
 <div class="row">
-    <div class="col-6 mt-3 offset-3">
-              
-  
+  <div class="col-6 mt-3 offset-3">
 
-      <?php
 
-      echo tag('table')
-      ->rows([
-        'Item',
-        'Valor',
-        'Moneda'
-      ])
-      ->cols([
-        ['Valor de la compra en dólares', '$ 3000', 'USD'],
-        ['Tarifa a cobrar por kilo', '$ 400', 'USD'],
-        ['Kilos bruto', 2, 'Kg'],
-        ['Flete aéreo (Miami-Santiago)', 0, 'USD'],
-        ['Seguro (2%)',  0, 'USD'],
-        ['Valor C.I.F',  0, 'USD'],
-        ['Derechos (6%)', 0, 'USD'],
-        ['Valor neto', 0, 'USD'],
-        ['IVA', 0, 'USD'],
-        ['Valor final', 0, 'USD'],
-        ['TTL US$', 0, 'USD']
-      ])
-      ->color('light')
-      ->headOptions([
-        'color' => 'dark'
-      ])
-      ->colorCol([
-        'pos'   => 1, 
-        'color' => 'primary'
-      ])
-      // ;
+    <table class="table table-light">
+      <thead class="table-dark">
+        <tr>
+          <th scope="row">Item</th>
+          <th scope="row" class="table-primary">Valor</th>
+          <th scope="row">Moneda</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Valor de la compra en dólares</th>
+          <td class="table-primary">$ 3000</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">Tarifa a cobrar por kilo</th>
+          <td class="table-primary">$ 400</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">Kilos bruto</th>
+          <td class="table-primary">2</td>
+          <td>Kg</td>
+        </tr>
+        <tr>
+          <th scope="row">Flete aéreo (Miami-Santiago)</th>
+          <td class="table-primary">0</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">Seguro (2%)</th>
+          <td class="table-primary">0</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">Valor C.I.F</th>
+          <td class="table-primary">0</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">Derechos (6%)</th>
+          <td class="table-primary">0</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">Valor neto</th>
+          <td class="table-primary">0</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">IVA</th>
+          <td class="table-primary">0</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">Valor final</th>
+          <td class="table-primary">0</td>
+          <td>USD</td>
+        </tr>
+        <tr>
+          <th scope="row">TTL US$</th>
+          <td class="table-primary">0</td>
+          <td>USD</td>
+        </tr>
 
-      ?>
-  
+        <tr>
+          <td style="background-color: #ffffff;"></td>
+          <td style="background-color: #ffffff;"></td>
+          <td style="background-color: #ffffff;"></td>
+        </tr>
 
-    </div>
+        <tr>
+          <td scope="row" style="font-weight: 600;">TOTAL</td>
+          <td class="table-primary">$ 3000</td>
+          <td>USD</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
 </div>
 
 <script>
@@ -74,4 +118,3 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
   //   $('#reservation').daterangepicker();
   // });
 </script>
-
