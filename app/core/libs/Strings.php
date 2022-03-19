@@ -529,6 +529,18 @@ class Strings
 		return self::getClassName($file, $fully_qualified);
 	}
 
+	static function formatNumber($x, string $locale = "it-IT"){
+		$nf = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
+	
+		if ($x > 1000000){
+			$nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+		} else {
+			$nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+		}
+	
+		return $nf->format($x); 
+	}	
+
     /**
 	 * Scretet_key generator
 	 *

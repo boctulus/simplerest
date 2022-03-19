@@ -143,7 +143,7 @@
                                                                 $fw = 300;
                                                             }
 
-                                                            echo "<td $class align=\"center\" valign=\"middle\" style=\"border: 1px solid #d05ce3; color: #000000; font-weight: $fw;  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding: 10px 0;\"><a href=\"#\" style=\"color: #000000; text-decoration: none;\">{$cell}</a></td>";
+                                                            echo "<td $class align=\"left\" valign=\"middle\" style=\"border: 1px solid #d05ce3; color: #000000; font-weight: $fw;  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; padding: 10px 0 10px 10px;\"><a href=\"#\" style=\"color: #000000; text-decoration: none;\">{$cell}</a></td>";
                                                         
                                                         }                                                        
                                                         echo '</tr>';
@@ -161,6 +161,37 @@
                 </td>
             </tr>
             <!-- end second table -->
+
+
+            <tr>
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"  class="table-container" style="margin-top: -35px; margin-bottom: 40px;">
+                    <tr>
+                        <td>
+                            <div align="center" style="max-width: 600px; margin: auto;">
+                                <!--[if mso]>
+                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
+                                <tr>
+                                <td>
+                                <![endif]-->
+                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                    <tr>
+                                        <td align="left" valign="middle" width="50%" colspan="4" style="color: #000000; font-weight: 600; font-size: 100%; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; background-color:#FFC0CB; padding: 10px 0 10px 10px">TOTAL</td>
+
+                                        <td align="left" valign="middle" width="30%" colspan="4" style="color: #000000; font-weight: 400; font-size: 100%; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; background-color:#FFC0CB; padding: 10px 0 10px 10px">$ 4000</td>   
+                                        
+                                        <td align="left" valign="middle" width="20%" colspan="4" style="color: #000000; font-weight: 400; font-size: 100%; font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.5em; margin: 0; background-color:#FFC0CB; padding: 10px 0 10px 10px">CLP</td>       
+                                    </tr>
+                                </table>
+                                <!--[if mso]>
+                                </td>
+                                </tr>
+                                </table>
+                                <![endif]-->
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </tr>
         </table>
 
         <!-- Full Bleed Background Section : BEGIN -->
