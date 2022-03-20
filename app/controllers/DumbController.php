@@ -7919,5 +7919,15 @@ class DumbController extends Controller
         exportLangDef();
     }
 
+    function test_trans(){
+        setLang('es_AR');
+        
+        // i18n
+        bindtextdomain('all', LOCALE_PATH);
+		textdomain('all');
+
+        dd(_('shipping quotation'));
+    }
+
 
 }   

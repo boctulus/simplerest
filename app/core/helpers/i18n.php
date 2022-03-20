@@ -141,5 +141,8 @@ function setLang(?string $lang){
         return;        
     }
 
+    //StdOut::pprint("Setting locale to '$selected.$encode'");
+
     setlocale(LC_ALL, "$selected.$encode");  
+    putenv("LANGUAGE=$selected.$encode");
 }
