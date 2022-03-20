@@ -4,6 +4,7 @@ namespace simplerest\core\libs;
 
 class Strings 
 {	
+	// N-ésimo segmento luego de hacer un explode por $separator
 	static function segment(string $string, string $separator,  int $position){
 		$array = explode($separator, $string);
 
@@ -14,6 +15,7 @@ class Strings
 		return false;
 	}
 
+	// N-ésimo segmento luego de hacer un explode por $separator
 	static function segmentOrFail(string $string, string $separator,  int $position){
 		$array = explode($separator, $string);
 
@@ -26,6 +28,41 @@ class Strings
 		}
 
 		return $array[$position];
+	}
+
+	// String antes de la N-ésima ocurrencia del substring
+	static function before(string $string, string $substr, $occurrence = 1){
+		$parts = explode($substr, $string, $occurrence +1);
+
+		return $parts[$occurrence -1];
+	}
+
+	// String antes de la primera ocurrencia del substring
+	static function first(string $string, string $substr){
+		$parts = explode($substr, $string, 2);
+
+		return $parts[0];
+	}
+
+	// String después de la primera ocurrencia del substring
+	static function after(string $string, string $substr){
+		$parts = explode($substr, $string, 2);
+
+		return $parts[1];
+	}
+
+	// String después de la última ocurrencia del substring
+	static function last(string $string, string $substr){
+		$parts = explode($substr, $string);
+
+		return $parts[count($parts)-1];
+	}
+
+	// String antes de la última ocurrencia del substring
+	static function beforeLast(string $string, string $substr){
+		$parts = explode($substr, $string);
+
+		return implode(array_slice($parts, 0, count($parts)-1));
 	}
 
 	/*
