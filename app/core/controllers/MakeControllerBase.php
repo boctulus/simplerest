@@ -25,7 +25,7 @@ class MakeControllerBase extends Controller
     const CONSOLE_TEMPLATE = self::TEMPLATES . 'ConsoleController.php';
     const API_TEMPLATE = self::TEMPLATES . 'ApiRestfulController.php';
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; 
-    const MSG_CONST_TEMPLATE = self::TEMPLATES . 'Msg.php';
+    const SYSTEM_CONST_TEMPLATE = self::TEMPLATES . 'SystemConstants.php';
     const INTERFACE_TEMPLATE = self::TEMPLATES . 'Interface.php';
     const HELPER_TEMPLATE = self::TEMPLATES . 'Helper.php'; 
     const LIBS_TEMPLATE = self::TEMPLATES . 'Lib.php';
@@ -175,7 +175,7 @@ class MakeControllerBase extends Controller
 
         make db_scan [ -- from= ]
 
-        make constants
+        make system_constants
         
         Examples:
         
@@ -1889,7 +1889,7 @@ class MakeControllerBase extends Controller
         $this->write($dest_path, $file, $protected);
     }
 
-    function constants(...$opt){
+    function system_constants(...$opt){
         include_once CONFIG_PATH . '/messages.php';
 
         $lines = explode(PHP_EOL, $_messages);
@@ -1921,18 +1921,40 @@ class MakeControllerBase extends Controller
 
         }
 
-        $filename  = 'Msg.php';
-        $dest_path = LIBS_PATH . $filename;
+        $filename  = 'SystemConstants.php';
+        $dest_path = CORE_LIBS_PATH . $filename;
 
         $protected = $this->hasFileProtection($filename, $dest_path, $opt);
 
-        $data = file_get_contents(self::MSG_CONST_TEMPLATE);
+        $data = file_get_contents(self::SYSTEM_CONST_TEMPLATE);
         $data = str_replace('# __CONSTANTS', $consts, $data);
 
         $this->write($dest_path, $data, $protected);;
     }
 
-    function po(){
-        exportLangDef();
+    // for translations
+    function trans(...$opt){
+        $po = null;
+        $mo = false;
+
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--po)$/', $o)){
+                $po = true;
+            }
+
+            if (preg_match('/^(--mo)$/', $o)){
+                $mo = true;
+            }
+        }
+
+        if ($po === true){
+            if ($mo === true){
+                exportLangDef(true);
+            } else {
+                exportLangDef(false);
+            }
+        } else {
+            exportLangDef();
+        }        
     }
 }
