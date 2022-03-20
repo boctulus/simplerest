@@ -7066,6 +7066,7 @@ Los textos a ser traducidos se encuentran config/messages.php y son compilados a
 
 El comando genera el archivo app/core/libs/SystemConstants.php y *debería* también generar un array para el dominio "system" que sería compilado a .po
 
+
 Conversión de arrays a archivos .po
 
 El helper exportLangDef() exporta a .po todos arrays de traducciones (de cada dominio) al subfolder LC_MESSAGES dentro de cada folder de lenguaje.
@@ -7088,6 +7089,7 @@ Para que la generación sea "silenciosa" usé previamente:
 
 	StdOut::hideResponse();
 
+
 Desde la línea de comandos:
 
 	php com make trans
@@ -7098,11 +7100,34 @@ Para solo archivos .po
 
 	php com make trans --po
 
+
 Exportar y compilar en otra ruta
 
 Ej:
 
 	php com make trans --dir='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
+
+
+Forma de uso
+
+Ej:
+	setLang('es_AR');
+	
+	// debo enlazar el "dominio"
+	bindtextdomain('all', LOCALE_PATH);
+	textdomain('all');
+
+	dd(_('shipping quotation'));
+
+O
+
+	setLang('es');
+	
+	// debo enlazar el "dominio"
+	bindtextdomain('all', LOCALE_PATH);
+	textdomain('all');
+
+	dd(_('shipping quotation'));
 
 
 # Compresión la respuesta
