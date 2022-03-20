@@ -7064,6 +7064,24 @@ Los textos a ser traducidos se encuentran config/messages.php y son compilados a
 
 	php com make constants
 
+Conversión de arrays a archivos .po
+
+El helper exportLangDef() exporta a .po todos arrays de traducciones (de cada dominio) al subfolder LC_MESSAGES dentro de cada folder de lenguaje.
+
+La salida sería algo como:
+
+	Generating /home/www/simplerest/app/locale/it_IT/LC_MESSAGES/all.po
+	Generating /home/www/simplerest/app/locale/pt_BR/LC_MESSAGES/all.po
+	Generating /home/www/simplerest/app/locale/es_AR/LC_MESSAGES/all.po
+
+Para que la generación sea "silenciosa" usé previamente:
+
+	StdOut::hideResponse();
+
+Desde la línea de comandos:
+
+	php com make po
+
 
 # Compresión la respuesta
 

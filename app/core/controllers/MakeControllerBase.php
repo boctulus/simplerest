@@ -1931,6 +1931,8 @@ class MakeControllerBase extends Controller
 
         $this->write($dest_path, $data, $protected);;
     }
-    
-    
+
+    function po(){
+        exportLangDef();
+    }
 }
