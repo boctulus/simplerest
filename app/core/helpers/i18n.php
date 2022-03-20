@@ -8,15 +8,19 @@ use simplerest\core\libs\StdOut;
     Exporta a .po todos arrays de traducciones al subfolder LC_MESSAGES dentro
     de cada folder de lenguaje.
 */
-function exportLangDef(bool $include_mo = true)
+function exportLangDef(bool $include_mo = true, string $locale_path = null)
 {   
-    foreach (new \DirectoryIterator(LOCALE_PATH) as $fileInfo) {
+    if ($locale_path === null){
+        $locale_path = LOCALE_PATH;
+    }
+
+    foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
         if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
         
         $dir = $fileInfo->getBasename();
         //d($dir);
 
-        foreach (new \DirectoryIterator(LOCALE_PATH . "/$dir") as $fileInfo) {
+        foreach (new \DirectoryIterator($locale_path . "/$dir") as $fileInfo) {
             if($fileInfo->isDot() || $fileInfo->isDir()) continue;
 
             if ($fileInfo->getExtension() != 'php'){
@@ -26,12 +30,12 @@ function exportLangDef(bool $include_mo = true)
             $def_file = $fileInfo->getBasename();
             $domain   = Strings::beforeLast($def_file, '.');
 
-            include LOCALE_PATH . "$dir/" . $def_file;
+            include $locale_path . "$dir/" . $def_file;
 
-            Files::mkdir(LOCALE_PATH . "$dir/" . "LC_MESSAGES");
+            Files::mkdir($locale_path . "$dir/" . "LC_MESSAGES");
 
-            $po_path = LOCALE_PATH . "$dir/" . "LC_MESSAGES/$domain.po";
-            $mo_path = LOCALE_PATH . "$dir/" . "LC_MESSAGES/$domain.mo";
+            $po_path = $locale_path . "$dir/" . "LC_MESSAGES/$domain.po";
+            $mo_path = $locale_path . "$dir/" . "LC_MESSAGES/$domain.mo";
 
             $fp = fopen($po_path, 'w');
             StdOut::pprint("Generating $po_path");

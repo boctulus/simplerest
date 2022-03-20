@@ -177,6 +177,11 @@ class MakeControllerBase extends Controller
 
         make system_constants
         
+        php com make trans
+        php com make trans --po --mo
+        php com make trans --po
+        php com make trans --dir='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
+        
         Examples:
         
         make lib my_lib
@@ -1440,7 +1445,7 @@ class MakeControllerBase extends Controller
                 // Convert windows directory separator into *NIX
                 $o = str_replace('\\', '/', $o);
 
-                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z][a-z0-9A-Z_/]+)$~', $o, $matches)){
+                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-Z_\-/]+)$~', $o, $matches)){
                     $dir= $matches[2];
                 }
             }
@@ -1934,8 +1939,9 @@ class MakeControllerBase extends Controller
 
     // for translations
     function trans(...$opt){
-        $po = null;
-        $mo = false;
+        $po  = null;
+        $mo  = false;
+        $dir = null;
 
         foreach ($opt as $o){ 
             if (preg_match('/^(--po)$/', $o)){
@@ -1945,16 +1951,26 @@ class MakeControllerBase extends Controller
             if (preg_match('/^(--mo)$/', $o)){
                 $mo = true;
             }
+
+            if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o)){
+                // Convert windows directory separator into *NIX
+                $o = str_replace('\\', '/', $o);
+
+                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-Z_\-/]+)$~', $o, $matches)){
+                    $dir= $matches[2] . '/';
+                }
+            }
+
         }
 
         if ($po === true){
             if ($mo === true){
-                exportLangDef(true);
+                exportLangDef(true, $dir);
             } else {
-                exportLangDef(false);
+                exportLangDef(false, $dir);
             }
         } else {
-            exportLangDef();
+            exportLangDef(true, $dir);
         }        
     }
 }

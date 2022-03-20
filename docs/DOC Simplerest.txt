@@ -7098,6 +7098,12 @@ Para solo archivos .po
 
 	php com make trans --po
 
+Exportar y compilar en otra ruta
+
+Ej:
+
+	php com make trans --dir='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
+
 
 # Compresión la respuesta
 
