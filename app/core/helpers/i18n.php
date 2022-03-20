@@ -1,7 +1,13 @@
 <?php
 
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\StdOut;
 
+/*
+    Exporta a .po todos arrays de traducciones al subfolder LC_MESSAGES dentro
+    de cada folder de lenguaje.
+*/
 function exportLangDef()
 {   
     foreach (new \DirectoryIterator(LOCALE_PATH) as $fileInfo) {
@@ -18,29 +24,35 @@ function exportLangDef()
             }
 
             $def_file = $fileInfo->getBasename();
-            $domain = Strings::beforeLast($def_file, '.');
+            $domain   = Strings::beforeLast($def_file, '.');
 
-            d($domain, 'domain');
-            exit;
+            include LOCALE_PATH . "$dir/" . $def_file;
 
-            include LOCALE_PATH . "$dir/" . $domain;
+            Files::mkdir(LOCALE_PATH . "$dir/" . "LC_MESSAGES");
 
-            $fh = fopen(LOCALE_PATH . "$dir/" . $domain . "/LC_MESSAGES/$domain.po", 'w');
+            $po_path = LOCALE_PATH . "$dir/" . "LC_MESSAGES/$domain.po";
 
-            fwrite($fh, "#\n");
-            fwrite($fh, "msgid \"\"\n");
-            fwrite($fh,  "msgstr \"\"\n");
+            $fp = fopen($po_path, 'w');
+            StdOut::pprint("Generating $po_path");
+
+            fwrite($fp, "#\n");
+            fwrite($fp, "msgid \"\"\n");
+            fwrite($fp,  "msgstr \"\"\n");
 
             foreach ($intl as $key => $value){
+                if (empty($key)){
+                    continue;
+                }
+
                 $key   = addslashes($key);
                 $value = addslashes($value);
 
-                fwrite($fh, "\n");
-                fwrite($fh, "msgid \"$key\"\n");
-                fwrite($fh, "msgstr \"$value\"\n");
+                fwrite($fp, "\n");
+                fwrite($fp, "msgid \"$key\"\n");
+                fwrite($fp, "msgstr \"$value\"\n");
             }
 
-            fclose($fh);
+            fclose($fp);
         }
     } 
 }
