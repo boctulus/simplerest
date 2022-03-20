@@ -8,7 +8,7 @@ use simplerest\core\libs\StdOut;
     Exporta a .po todos arrays de traducciones al subfolder LC_MESSAGES dentro
     de cada folder de lenguaje.
 */
-function exportLangDef()
+function exportLangDef(bool $include_mo = true)
 {   
     foreach (new \DirectoryIterator(LOCALE_PATH) as $fileInfo) {
         if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
@@ -31,13 +31,26 @@ function exportLangDef()
             Files::mkdir(LOCALE_PATH . "$dir/" . "LC_MESSAGES");
 
             $po_path = LOCALE_PATH . "$dir/" . "LC_MESSAGES/$domain.po";
+            $mo_path = LOCALE_PATH . "$dir/" . "LC_MESSAGES/$domain.mo";
 
             $fp = fopen($po_path, 'w');
             StdOut::pprint("Generating $po_path");
 
+            $header = <<<HEADER
+            msgstr\t"Project-Id-Version: SimpleRest Translations 0.0.1\\n"
+            \t"Report-Msgid-Bugs-To: boctulus@gmail.com\\n"
+            \t"POT-Creation-Date: 2010-05-28 06:18-0500\\n"
+            \t"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"
+            \t"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"
+            \t"Language-Team: LANGUAGE <boctulus@gmail.com\\n"
+            \t"MIME-Version: 1.0\\n"
+            \t"Content-Type: text/plain; charset=UTF-8\\n"
+            \t"Content-Transfer-Encoding: 8bit\\n"
+            HEADER;
+
             fwrite($fp, "#\n");
             fwrite($fp, "msgid \"\"\n");
-            fwrite($fp,  "msgstr \"\"\n");
+            fwrite($fp,  "$header\n");
 
             foreach ($intl as $key => $value){
                 if (empty($key)){
@@ -52,7 +65,15 @@ function exportLangDef()
                 fwrite($fp, "msgstr \"$value\"\n");
             }
 
-            fclose($fp);
+            fclose($fp);    
+
+            if ($include_mo){
+                StdOut::pprint("Compiling to $mo_path");
+                $exit_code = (int) shell_exec("msgfmt $po_path -o $mo_path; echo $?");
+                StdOut::pprint("Compilation to $mo_path " . ($exit_code === 0 ? '-- ok' : '-- error'));
+                StdOut::pprint('');
+            }
+            
         }
     } 
 }

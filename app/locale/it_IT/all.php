@@ -26,6 +26,6 @@ $intl = [
 	'date' => 'data',
 	'virtual PO Box' => 'casella postale virtuale',
 	'shipment management' => 'gestione delle spedizioni',
-	'send e-mail' => 'inviare all\'e-mail',
+	'send e-mail' => 'inviare all e-mail',
 	'I am aware of the restricted items' => 'sono a conoscenza degli oggetti limitati',
 ];
