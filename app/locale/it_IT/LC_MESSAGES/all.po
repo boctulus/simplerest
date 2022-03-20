@@ -1,0 +1,84 @@
+#
+msgid ""
+msgstr ""
+
+msgid "quotation"
+msgstr "preventivo"
+
+msgid "shipping quotation"
+msgstr "preventivo di spedizione"
+
+msgid "quote"
+msgstr "citare"
+
+msgid "item"
+msgstr "item"
+
+msgid "value"
+msgstr "valore"
+
+msgid "currency"
+msgstr "moneta"
+
+msgid "purchase value in dollars"
+msgstr "valore di acquisto in dollari"
+
+msgid "rate to be charged per ?"
+msgstr "tariffa da applicare per ?"
+
+msgid "gross weight"
+msgstr "gross weight"
+
+msgid "air freight (?-?)"
+msgstr "trasporto aereo (?-?)"
+
+msgid "insurance (?%)"
+msgstr "assicurazione (?%)"
+
+msgid "CIF value"
+msgstr "valore CIF"
+
+msgid "duty (?%)"
+msgstr "dazi (?%)"
+
+msgid "valore netto"
+msgstr "valor neto"
+
+msgid "VAT"
+msgstr "IVA"
+
+msgid "final value"
+msgstr "valore finale"
+
+msgid "exchange rate"
+msgstr "tasso di cambio"
+
+msgid "total"
+msgstr "totale"
+
+msgid "send details by e-mail"
+msgstr "inviare i dettagli via e-mail"
+
+msgid "e.g."
+msgstr "p.e"
+
+msgid "total amount to be paid"
+msgstr "importo totale da pagare"
+
+msgid "This value includes the transfer from our warehouse in ? to our office in ?."
+msgstr "questo valore include il trasferimento dal nostro magazzino in ? al nostro ufficio in ?."
+
+msgid "date"
+msgstr "data"
+
+msgid "virtual PO Box"
+msgstr "casella postale virtuale"
+
+msgid "shipment management"
+msgstr "gestione delle spedizioni"
+
+msgid "send e-mail"
+msgstr "inviare all\'e-mail"
+
+msgid "I am aware of the restricted items"
+msgstr "sono a conoscenza degli oggetti limitati"

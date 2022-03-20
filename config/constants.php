@@ -1,39 +1,5 @@
 <?php
 
-
-// Constante dólares por kilo o volúmen
-define('KV', 9);
-
-// Constante seguro en %
-define('SG', 0.4);
-
-// constante aduana en %
-define('AD', 6);
-
-// constante iva en %
-define('IV', 19);
-
-// constante aplicada a peso volumétrico
-define('PV', 167);
-
-// dimension máxima en cm (por lado)
-define('MAX_DIM', 999999); 
-
-// peso máximo (en Kg)
-define('MAX_PESO', 999999);
-
-// peso mínimo (en Kg)
-define('MIN_PESO', 1);
-
-// valor declarado minímo (en USD)
-define('MIN_DECLARADO', 1);
-
-define('EXP_TIME_DOLLAR', 24 *  60);
-
-// directo de la API?
-define('DOLLAR_FROM_API', true);
-
-
 if (!defined('ROOT_PATH'))
     define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR );
 

@@ -7678,234 +7678,234 @@ class DumbController extends Controller
     }
 
 
-    function show_email_template(){
-        $cols = [
-            'Item',
-            'Valor',
-            'Moneda'
-        ];
+    // function show_email_template(){
+    //     $cols = [
+    //         'Item',
+    //         'Valor',
+    //         'Moneda'
+    //     ];
 
-        $rows = [
-            ['Valor de la compra en dólares', '$ 3000', 'USD'],
-            ['Tarifa a cobrar por kilo', '$ 400', 'USD'],
-            ['Kilos bruto', 2, 'Kg'],
-            ['Flete aéreo (Miami-Santiago)', 0, 'USD'],
-            ['Seguro (2%)',  0, 'USD'],
-            ['Valor C.I.F',  0, 'USD'],
-            ['Derechos (6%)', 0, 'USD'],
-            ['Valor neto', 0, 'USD'],
-            ['IVA', 0, 'USD'],
-            ['Valor final', 0, 'USD'],
-            ['TTL US$', 0, 'USD']
-        ];
+    //     $rows = [
+    //         ['Valor de la compra en dólares', '$ 3000', 'USD'],
+    //         ['Tarifa a cobrar por kilo', '$ 400', 'USD'],
+    //         ['Kilos bruto', 2, 'Kg'],
+    //         ['Flete aéreo (Miami-Santiago)', 0, 'USD'],
+    //         ['Seguro (2%)',  0, 'USD'],
+    //         ['Valor C.I.F',  0, 'USD'],
+    //         ['Derechos (6%)', 0, 'USD'],
+    //         ['Valor neto', 0, 'USD'],
+    //         ['IVA', 0, 'USD'],
+    //         ['Valor final', 0, 'USD'],
+    //         ['TTL US$', 0, 'USD']
+    //     ];
 
-        $withs = [ 50, 30, 20 ];
+    //     $withs = [ 50, 30, 20 ];
 
-        // config
-        $locale = 'es_ES.UTF-8';
+    //     // config
+    //     $locale = 'es_ES.UTF-8';
 
-        $date     = new \Datetime();
-        $datetime = ucfirst(\IntlDateFormatter::formatObject($date, 'EEEE', $locale)) .', '. ucfirst(\IntlDateFormatter::formatObject($date, 'dd-MM-Y', $locale));
-
-
-        $image_header = [
-            'src' => 'https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png',
-            'width' => "150",
-            'height' => "150"
-        ];
-
-        $filecontents = file_get_contents($image_header['src']);
-        $filecontents = base64_encode($filecontents);
-        $image_header['src'] = "data:image/jpg;base64,".$filecontents;
-
-        $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) - Casilla internacional | Gestión de envíos';
-
-        include ETC_PATH . 'email_template.php';
-    }
-
-    /*
-        Usar postdrop.io para ensayar como se verían los mails
-
-        Las imágenes deben tener:
-
-        src
-        alt
-        width
-        height
-        border
-    */
-    function send_email_template(){
-        $cols = [
-            'Item',
-            'Valor',
-            'Moneda'
-        ];
-
-        $rows = [
-            ['Valor de la compra en dólares', '$ 3000', 'USD'],
-            ['Tarifa a cobrar por kilo', '$ 400', 'USD'],
-            ['Kilos bruto', 2, 'Kg'],
-            ['Flete aéreo (Miami-Santiago)', 0, 'USD'],
-            ['Seguro (2%)',  0, 'USD'],
-            ['Valor C.I.F',  0, 'USD'],
-            ['Derechos (6%)', 0, 'USD'],
-            ['Valor neto', 0, 'USD'],
-            ['IVA', 0, 'USD'],
-            ['Valor final', 0, 'USD'],
-            ['TTL US$', 0, 'USD']
-        ];
-
-        $withs = [ 60, 25, 15 ];
-
-        // config
-        $locale = 'es_ES.UTF-8';
-
-        $date     = new \Datetime();
-        $datetime = ucfirst(\IntlDateFormatter::formatObject($date, 'EEEE', $locale)) .', '. ucfirst(\IntlDateFormatter::formatObject($date, 'dd-MM-Y', $locale));
-
-        $image_header = [
-            'src' => 'https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png',
-            'width' => "150",
-            'height' => "150"
-        ];
-
-        $filecontents = file_get_contents($image_header['src']);
-        $filecontents = base64_encode($filecontents);
-        $image_header['src'] = "data:image/jpg;base64,".$filecontents;
-
-        $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) ~ Casilla internacional - Gestión de envíos';
-
-        ob_start();
-        include ETC_PATH . 'email_template.php';
-        $content = ob_get_contents();
-        ob_end_clean();
+    //     $date     = new \Datetime();
+    //     $datetime = ucfirst(\IntlDateFormatter::formatObject($date, 'EEEE', $locale)) .', '. ucfirst(\IntlDateFormatter::formatObject($date, 'dd-MM-Y', $locale));
 
 
-        dd(
-            Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita '. rand(99,999999), $content)
-        );     
-    }
+    //     $image_header = [
+    //         'src' => 'https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png',
+    //         'width' => "150",
+    //         'height' => "150"
+    //     ];
 
-    function cotiza($declarado_usd, $peso, $dim1, $dim2, $dim3, $unidad_long){
-        // Las dimensiones ingresan en cm
-        // peso en kilogramos
+    //     $filecontents = file_get_contents($image_header['src']);
+    //     $filecontents = base64_encode($filecontents);
+    //     $image_header['src'] = "data:image/jpg;base64,".$filecontents;
 
-        // O se capturan excepciones o se genera directamente la respuesta JSON
+    //     $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) - Casilla internacional | Gestión de envíos';
 
-        if (!in_array($unidad_long, ['cm', 'mt', 'pulg'])){
-            throw new \InvalidArgumentException("Unidad de longitud puede ser solo cm, mt o pulg");
-        }
+    //     include ETC_PATH . 'email_template.php';
+    // }
 
-        if ($peso > MAX_PESO){
-            throw new \Exception("El peso máximo es de ". MAX_PESO ." Kg.");
-        }
+    // /*
+    //     Usar postdrop.io para ensayar como se verían los mails
 
-        if (max($dim1, $dim2, $dim3) > MAX_DIM){
-            throw new \Exception("Ninguna dimensión puede superar los ". MAX_DIM." cm.");
-        }
+    //     Las imágenes deben tener:
 
-        $declarado_usd = max($declarado_usd ?? 0, MIN_DECLARADO);
+    //     src
+    //     alt
+    //     width
+    //     height
+    //     border
+    // */
+    // function send_email_template(){
+    //     $cols = [
+    //         'Item',
+    //         'Valor',
+    //         'Moneda'
+    //     ];
 
-        $dim1 = $dim1 ?? 0;
-        $dim2 = $dim2 ?? 0;
-        $dim3 = $dim3 ?? 0;
+    //     $rows = [
+    //         ['Valor de la compra en dólares', '$ 3000', 'USD'],
+    //         ['Tarifa a cobrar por kilo', '$ 400', 'USD'],
+    //         ['Kilos bruto', 2, 'Kg'],
+    //         ['Flete aéreo (Miami-Santiago)', 0, 'USD'],
+    //         ['Seguro (2%)',  0, 'USD'],
+    //         ['Valor C.I.F',  0, 'USD'],
+    //         ['Derechos (6%)', 0, 'USD'],
+    //         ['Valor neto', 0, 'USD'],
+    //         ['IVA', 0, 'USD'],
+    //         ['Valor final', 0, 'USD'],
+    //         ['TTL US$', 0, 'USD']
+    //     ];
 
-        $peso_ori = $peso;
-        //dd($peso_ori, 'Peso original');
+    //     $withs = [ 60, 25, 15 ];
 
-        $dim1_ori = $dim1;
-        $dim2_ori = $dim2;
-        $dim3_ori = $dim3;
+    //     // config
+    //     $locale = 'es_ES.UTF-8';
 
-        switch ($unidad_long){
-            case 'mt': 
-                $dim1 *=  100;
-                $dim2 *=  100;
-                $dim3 *=  100;
-            break;
-            case 'pulg':
-                $dim1 *=  100/39.37;
-                $dim2 *=  100/39.37;
-                $dim3 *=  100/39.37;
-            break;	
-        }
+    //     $date     = new \Datetime();
+    //     $datetime = ucfirst(\IntlDateFormatter::formatObject($date, 'EEEE', $locale)) .', '. ucfirst(\IntlDateFormatter::formatObject($date, 'dd-MM-Y', $locale));
 
-        // dd($dim1, 'dim1');
-        // dd($dim2, 'dim2');
-        // dd($dim3, 'dim3');
+    //     $image_header = [
+    //         'src' => 'https://brimell.cl/wp-content/uploads/2022/01/cropped-cropped-BRIMELLtransparenteV01.png',
+    //         'width' => "150",
+    //         'height' => "150"
+    //     ];
 
-        $peso_volumetrico = $dim1 * $dim2 * $dim3 * 0.000001;
-        //d($peso_volumetrico, 'Peso vol');
+    //     $filecontents = file_get_contents($image_header['src']);
+    //     $filecontents = base64_encode($filecontents);
+    //     $image_header['src'] = "data:image/jpg;base64,".$filecontents;
 
-        $peso_volumetrico_corregido = $peso_volumetrico * PV;
-        //dd($peso_volumetrico_corregido, 'Peso vol corregido');
+    //     $footer = '<a href="https://brimell.cl/" style="color:#ffffff">Brimell</a> (2022) ~ Casilla internacional - Gestión de envíos';
 
-        $peso = max($peso, $peso_volumetrico_corregido, MIN_PESO);    
-        //dd($peso, 'Peso considerado');
-
-        // considerando solo kilos
-        $transporte = $peso * KV;
-        //dd($transporte, 'Transporte (flete)');
-
-        // seguro
-        $seguro = ($declarado_usd + $transporte) * SG * 0.01;
-        //dd($seguro, 'Seguro');
-
-        // aduana (valor CIF)
-        $aduana = ($declarado_usd + $transporte + $seguro) * AD * 0.01;
-        //dd($aduana, 'Aduana');
-
-        // iva
-        $iva = ($declarado_usd + $transporte + $seguro + $aduana) * IV * 0.01;
-
-        $total_agencia_no_iva = $transporte + $seguro + $aduana; // neto
-
-        $total_agencia        = $transporte + $seguro + $aduana + $iva;
-        //dd($total_agencia, 'Total agencia');
-
-        $valor_cif_no_iva     = ($declarado_usd + $transporte + $seguro);
-
-        $valor_iva_de_cif     = $valor_cif_no_iva * IV * 0.01;
-
-        $valor_cif            = $valor_cif_no_iva + $valor_iva_de_cif;
-
-        $total_cliente = $total_agencia + $declarado_usd;
-        //dd($total_cliente, 'Total cliente');
+    //     ob_start();
+    //     include ETC_PATH . 'email_template.php';
+    //     $content = ob_get_contents();
+    //     ob_end_clean();
 
 
-        return [
-            /*
-                Recibidos ajustados por mínimos
-            */
-            'declarado_usd' => $declarado_usd, 
-            'ancho' => $dim1_ori, 
-            'largo' => $dim2_ori, 
-            'alto'  => $dim3_ori,
-            'peso'  => $peso_ori,
-            'unidad_long' => $unidad_long,
+    //     dd(
+    //         Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita '. rand(99,999999), $content)
+    //     );     
+    // }
 
-            'usd_x_kilo' => KV,
+    // function cotiza($declarado_usd, $peso, $dim1, $dim2, $dim3, $unidad_long){
+    //     // Las dimensiones ingresan en cm
+    //     // peso en kilogramos
 
-            /*
-                Calculados
-            */
-            'peso_volumetrico' => $peso_volumetrico_corregido,
-            'transporte' => round($transporte, 2),
-            'seguro' => round($seguro, 2),
-            'aduana' => round($aduana, 2),
-            'iva' => round($iva, 2),
-            'total_agencia' => round($total_agencia, 2),
-            'total_neto' => round($total_agencia_no_iva, 2),
-            'total_cliente' => round($total_cliente, 2),
-            'valor_cif_no_iva' => round($valor_cif_no_iva, 2),
-            'valor_cif' => round($valor_cif, 2)
-        ];
-    }
+    //     // O se capturan excepciones o se genera directamente la respuesta JSON
 
-    function test_cotiza(){
-        d($this->cotiza(10, 1, 50, 50, 50, 'cm'));
-        d($this->cotiza(10, 1, 19.7, 19.7, 19.7, 'pulg'));
-    }
+    //     if (!in_array($unidad_long, ['cm', 'mt', 'pulg'])){
+    //         throw new \InvalidArgumentException("Unidad de longitud puede ser solo cm, mt o pulg");
+    //     }
+
+    //     if ($peso > MAX_PESO){
+    //         throw new \Exception("El peso máximo es de ". MAX_PESO ." Kg.");
+    //     }
+
+    //     if (max($dim1, $dim2, $dim3) > MAX_DIM){
+    //         throw new \Exception("Ninguna dimensión puede superar los ". MAX_DIM." cm.");
+    //     }
+
+    //     $declarado_usd = max($declarado_usd ?? 0, MIN_DECLARADO);
+
+    //     $dim1 = $dim1 ?? 0;
+    //     $dim2 = $dim2 ?? 0;
+    //     $dim3 = $dim3 ?? 0;
+
+    //     $peso_ori = $peso;
+    //     //dd($peso_ori, 'Peso original');
+
+    //     $dim1_ori = $dim1;
+    //     $dim2_ori = $dim2;
+    //     $dim3_ori = $dim3;
+
+    //     switch ($unidad_long){
+    //         case 'mt': 
+    //             $dim1 *=  100;
+    //             $dim2 *=  100;
+    //             $dim3 *=  100;
+    //         break;
+    //         case 'pulg':
+    //             $dim1 *=  100/39.37;
+    //             $dim2 *=  100/39.37;
+    //             $dim3 *=  100/39.37;
+    //         break;	
+    //     }
+
+    //     // dd($dim1, 'dim1');
+    //     // dd($dim2, 'dim2');
+    //     // dd($dim3, 'dim3');
+
+    //     $peso_volumetrico = $dim1 * $dim2 * $dim3 * 0.000001;
+    //     //d($peso_volumetrico, 'Peso vol');
+
+    //     $peso_volumetrico_corregido = $peso_volumetrico * PV;
+    //     //dd($peso_volumetrico_corregido, 'Peso vol corregido');
+
+    //     $peso = max($peso, $peso_volumetrico_corregido, MIN_PESO);    
+    //     //dd($peso, 'Peso considerado');
+
+    //     // considerando solo kilos
+    //     $transporte = $peso * KV;
+    //     //dd($transporte, 'Transporte (flete)');
+
+    //     // seguro
+    //     $seguro = ($declarado_usd + $transporte) * SG * 0.01;
+    //     //dd($seguro, 'Seguro');
+
+    //     // aduana (valor CIF)
+    //     $aduana = ($declarado_usd + $transporte + $seguro) * AD * 0.01;
+    //     //dd($aduana, 'Aduana');
+
+    //     // iva
+    //     $iva = ($declarado_usd + $transporte + $seguro + $aduana) * IV * 0.01;
+
+    //     $total_agencia_no_iva = $transporte + $seguro + $aduana; // neto
+
+    //     $total_agencia        = $transporte + $seguro + $aduana + $iva;
+    //     //dd($total_agencia, 'Total agencia');
+
+    //     $valor_cif_no_iva     = ($declarado_usd + $transporte + $seguro);
+
+    //     $valor_iva_de_cif     = $valor_cif_no_iva * IV * 0.01;
+
+    //     $valor_cif            = $valor_cif_no_iva + $valor_iva_de_cif;
+
+    //     $total_cliente = $total_agencia + $declarado_usd;
+    //     //dd($total_cliente, 'Total cliente');
+
+
+    //     return [
+    //         /*
+    //             Recibidos ajustados por mínimos
+    //         */
+    //         'declarado_usd' => $declarado_usd, 
+    //         'ancho' => $dim1_ori, 
+    //         'largo' => $dim2_ori, 
+    //         'alto'  => $dim3_ori,
+    //         'peso'  => $peso_ori,
+    //         'unidad_long' => $unidad_long,
+
+    //         'usd_x_kilo' => KV,
+
+    //         /*
+    //             Calculados
+    //         */
+    //         'peso_volumetrico' => $peso_volumetrico_corregido,
+    //         'transporte' => round($transporte, 2),
+    //         'seguro' => round($seguro, 2),
+    //         'aduana' => round($aduana, 2),
+    //         'iva' => round($iva, 2),
+    //         'total_agencia' => round($total_agencia, 2),
+    //         'total_neto' => round($total_agencia_no_iva, 2),
+    //         'total_cliente' => round($total_cliente, 2),
+    //         'valor_cif_no_iva' => round($valor_cif_no_iva, 2),
+    //         'valor_cif' => round($valor_cif, 2)
+    //     ];
+    // }
+
+    // function test_cotiza(){
+    //     d($this->cotiza(10, 1, 50, 50, 50, 'cm'));
+    //     d($this->cotiza(10, 1, 19.7, 19.7, 19.7, 'pulg'));
+    // }
 
     /*
         Ver mejores soluciones como:
