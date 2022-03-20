@@ -7786,5 +7786,138 @@ class DumbController extends Controller
         );     
     }
 
+    function cotiza($declarado_usd, $peso, $dim1, $dim2, $dim3, $unidad_long){
+        // Las dimensiones ingresan en cm
+        // peso en kilogramos
+
+        // O se capturan excepciones o se genera directamente la respuesta JSON
+
+        if (!in_array($unidad_long, ['cm', 'mt', 'pulg'])){
+            throw new \InvalidArgumentException("Unidad de longitud puede ser solo cm, mt o pulg");
+        }
+
+        if ($peso > MAX_PESO){
+            throw new \Exception("El peso máximo es de ". MAX_PESO ." Kg.");
+        }
+
+        if (max($dim1, $dim2, $dim3) > MAX_DIM){
+            throw new \Exception("Ninguna dimensión puede superar los ". MAX_DIM." cm.");
+        }
+
+        $declarado_usd = max($declarado_usd ?? 0, MIN_DECLARADO);
+
+        $dim1 = $dim1 ?? 0;
+        $dim2 = $dim2 ?? 0;
+        $dim3 = $dim3 ?? 0;
+
+        $peso_ori = $peso;
+        //dd($peso_ori, 'Peso original');
+
+        $dim1_ori = $dim1;
+        $dim2_ori = $dim2;
+        $dim3_ori = $dim3;
+
+        switch ($unidad_long){
+            case 'mt': 
+                $dim1 *=  100;
+                $dim2 *=  100;
+                $dim3 *=  100;
+            break;
+            case 'pulg':
+                $dim1 *=  100/39.37;
+                $dim2 *=  100/39.37;
+                $dim3 *=  100/39.37;
+            break;	
+        }
+
+        // dd($dim1, 'dim1');
+        // dd($dim2, 'dim2');
+        // dd($dim3, 'dim3');
+
+        $peso_volumetrico = $dim1 * $dim2 * $dim3 * 0.000001;
+        //d($peso_volumetrico, 'Peso vol');
+
+        $peso_volumetrico_corregido = $peso_volumetrico * PV;
+        //dd($peso_volumetrico_corregido, 'Peso vol corregido');
+
+        $peso = max($peso, $peso_volumetrico_corregido, MIN_PESO);    
+        //dd($peso, 'Peso considerado');
+
+        // considerando solo kilos
+        $transporte = $peso * KV;
+        //dd($transporte, 'Transporte (flete)');
+
+        // seguro
+        $seguro = ($declarado_usd + $transporte) * SG * 0.01;
+        //dd($seguro, 'Seguro');
+
+        // aduana (valor CIF)
+        $aduana = ($declarado_usd + $transporte + $seguro) * AD * 0.01;
+        //dd($aduana, 'Aduana');
+
+        // iva
+        $iva = ($declarado_usd + $transporte + $seguro + $aduana) * IV * 0.01;
+
+        $total_agencia_no_iva = $transporte + $seguro + $aduana; // neto
+
+        $total_agencia        = $transporte + $seguro + $aduana + $iva;
+        //dd($total_agencia, 'Total agencia');
+
+        $valor_cif_no_iva     = ($declarado_usd + $transporte + $seguro);
+
+        $valor_iva_de_cif     = $valor_cif_no_iva * IV * 0.01;
+
+        $valor_cif            = $valor_cif_no_iva + $valor_iva_de_cif;
+
+        $total_cliente = $total_agencia + $declarado_usd;
+        //dd($total_cliente, 'Total cliente');
+
+
+        return [
+            /*
+                Recibidos ajustados por mínimos
+            */
+            'declarado_usd' => $declarado_usd, 
+            'ancho' => $dim1_ori, 
+            'largo' => $dim2_ori, 
+            'alto'  => $dim3_ori,
+            'peso'  => $peso_ori,
+            'unidad_long' => $unidad_long,
+
+            'usd_x_kilo' => KV,
+
+            /*
+                Calculados
+            */
+            'peso_volumetrico' => $peso_volumetrico_corregido,
+            'transporte' => round($transporte, 2),
+            'seguro' => round($seguro, 2),
+            'aduana' => round($aduana, 2),
+            'iva' => round($iva, 2),
+            'total_agencia' => round($total_agencia, 2),
+            'total_neto' => round($total_agencia_no_iva, 2),
+            'total_cliente' => round($total_cliente, 2),
+            'valor_cif_no_iva' => round($valor_cif_no_iva, 2),
+            'valor_cif' => round($valor_cif, 2)
+        ];
+    }
+
+    function test_cotiza(){
+        d($this->cotiza(10, 1, 50, 50, 50, 'cm'));
+        d($this->cotiza(10, 1, 19.7, 19.7, 19.7, 'pulg'));
+    }
+
+    /*
+        Ver mejores soluciones como:
+
+        https://github.com/php-gettext/Gettext
+
+        Más
+        https://stackoverflow.com/a/16744070/980631
+    */
+    function test_export_lang(){
+        exportLangDef();
+    }
+
 
 }   

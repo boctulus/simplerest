@@ -1,6 +1,49 @@
 <?php
 
 use simplerest\core\libs\Strings;
+
+function exportLangDef()
+{   
+    foreach (new \DirectoryIterator(LOCALE_PATH) as $fileInfo) {
+        if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
+        
+        $dir = $fileInfo->getBasename();
+        //d($dir);
+
+        foreach (new \DirectoryIterator(LOCALE_PATH . "/$dir") as $fileInfo) {
+            if($fileInfo->isDot() || $fileInfo->isDir()) continue;
+
+            if ($fileInfo->getExtension() != 'php'){
+                continue;
+            }
+
+            $def_file = $fileInfo->getBasename();
+            $domain = Strings::beforeLast($def_file, '.');
+
+            d($domain, 'domain');
+            exit;
+
+            include LOCALE_PATH . "$dir/" . $domain;
+
+            $fh = fopen(LOCALE_PATH . "$dir/" . $domain . "/LC_MESSAGES/$domain.po", 'w');
+
+            fwrite($fh, "#\n");
+            fwrite($fh, "msgid \"\"\n");
+            fwrite($fh,  "msgstr \"\"\n");
+
+            foreach ($intl as $key => $value){
+                $key   = addslashes($key);
+                $value = addslashes($value);
+
+                fwrite($fh, "\n");
+                fwrite($fh, "msgid \"$key\"\n");
+                fwrite($fh, "msgstr \"$value\"\n");
+            }
+
+            fclose($fh);
+        }
+    } 
+}
   
 /*
     https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
