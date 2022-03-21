@@ -105,8 +105,6 @@ class OneSignal
             $fields['included_segments'] = $config['segments'];
         }
 
-        //$fields['segments'] = $fields['segments'] ?? ['All'];
-
         $response = Url::consume_api("https://onesignal.com/api/v1/players", 'POST', $fields,
             [             
                 'Content-Type: application/json',
@@ -122,6 +120,7 @@ class OneSignal
        return $response;        
     }
     
+    // get overview
     static function app(Array $config) 
     {
         $response = Url::consume_api("https://onesignal.com/api/v1/apps/{$config['app_id']}", 'GET', null, 
@@ -135,21 +134,11 @@ class OneSignal
                 CURLOPT_HEADER => false
             ]
         );
-
-        // En general solo cambios variables
-        // Files::dump([
-        //     'HEADERS' => [             
-        //         'Content-Type: application/json',
-        //         'Authorization: Basic ' . $config['app_rest_api_key']
-        //     ],
-        //     'RESPONSE' => $response
-        // ], 'curl_log.txt', true);
     
         return $response;
     }
 
-
-    static function users($config){
+    static function getUsers($config, $limit = 50, $offset = 0){
         $limit  = 50;
         $offset = 0;
 
@@ -168,6 +157,25 @@ class OneSignal
         
         return $response;
     }
+
+    static function getNotifications($config, $limit = 50, $offset = 0)
+    {
+        $response = Url::consume_api("https://onesignal.com/api/v1/players?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
+            [             
+                'Content-Type: application/json',
+                'Authorization: Basic ' . $config['app_rest_api_key']
+            ],  
+            
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false
+            ]
+        );
+
+        
+        return $response;
+    }
+
 
 
     
