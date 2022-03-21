@@ -1,11 +1,15 @@
 <?php
 
+/*
+    @author Pablo Bozzolo <boctulus@gmail.com>
+*/
+
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\StdOut;
 
 /*
-    Exporta a .po todos arrays de traducciones al subfolder LC_MESSAGES dentro
+    Exporta a .po y .mo todos arrays de traducciones al subfolder LC_MESSAGES dentro
     de cada folder de lenguaje.
 */
 function exportLangDef(bool $include_mo = true, string $locale_path = null)
