@@ -7930,5 +7930,5 @@ class DumbController extends Controller
         dd(_('No data'));
     }
 
-
+    
 }   
