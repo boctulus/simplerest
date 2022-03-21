@@ -7067,11 +7067,36 @@ Los textos a ser traducidos se encuentran config/messages.php y son compilados a
 El comando genera el archivo app/core/libs/SystemConstants.php y *debería* también generar un array para el dominio "system" que sería compilado a .po
 
 
-Conversión de arrays a archivos .po
+Conversión de arrays a archivos .po y .mo
 
 El helper exportLangDef() exporta a .po todos arrays de traducciones (de cada dominio) al subfolder LC_MESSAGES dentro de cada folder de lenguaje.
 
-La salida sería algo como:
+El pre-requisito es tener los archivos de cada dominio con el nombre {dominio}.php en:
+
+	app/locale/xx_XX
+
+Ej:
+
+	<?php
+
+	# app/locale/pt_BR/import-quoter.php
+
+	$intl = [
+		'quotation' => 'cotação',
+		'shipping quotation' => 'cotação de transporte',
+		'quote' => 'citação',
+		'item' => 'item',
+		'value' => 'valor',
+		'currency' => 'moeda',
+		'purchase value in dollars' => 'valor de compra em dólares',
+		'taxa a ser cobrada por ?' => 'tarifa a cobrar por ?',
+		'gross weight' => 'peso bruto',
+		'air freight (?-?)' => 'frete aéreo (?-?)',
+		'insurance (?%)' => 'seguro (?%)',
+		// ...
+	];
+
+Al ejecutar exportLangDef() la salida sería algo como:
 
 	Generating /home/www/simplerest/app/locale/it_IT/LC_MESSAGES/all.po
 	Compiling to /home/www/simplerest/app/locale/it_IT/LC_MESSAGES/all.mo
@@ -7112,22 +7137,43 @@ Forma de uso
 
 Ej:
 	setLang('es_AR');
-	
-	// debo enlazar el "dominio"
-	bindtextdomain('all', LOCALE_PATH);
-	textdomain('all');
+        
+	// i18n
+	bindtextdomain('validator', LOCALE_PATH);
+	textdomain('validator');
 
-	dd(_('shipping quotation'));
+	// No se recibieron datos
+	dd(_('No data'));
 
 O
 
 	setLang('es');
-	
-	// debo enlazar el "dominio"
-	bindtextdomain('all', LOCALE_PATH);
-	textdomain('all');
+        
+	// i18n
+	bindtextdomain('validator', LOCALE_PATH);
+	textdomain('validator');
 
-	dd(_('shipping quotation'));
+	// No se recibieron datos
+	dd(_('No data'));
+
+
+Notas:
+
+Para que funcione setlocale() debe instalarse cada lenguaje:
+
+Ej:
+
+	sudo locale-gen de_DE.UTF-8
+        
+setlocale() puede llevar a tener problemas con MySQL y otros motores.
+
+setlocale() debería solo correrse con un PHP compilado como "mono-hilo" ya que
+"If you are running PHP on a multithreaded server API , 
+you may experience sudden changes in locale settings while a script is running, 
+though the script itself never called setlocale(). 
+This happens due to other scripts running in different threads of the same process at the same time, 
+changing the process-wide locale using setlocale(). 
+On Windows, locale information is maintained per thread as of PHP 7.0.5."
 
 
 # Compresión la respuesta

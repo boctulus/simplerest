@@ -7923,10 +7923,11 @@ class DumbController extends Controller
         setLang('es_AR');
         
         // i18n
-        bindtextdomain('all', LOCALE_PATH);
-		textdomain('all');
+        bindtextdomain('validator', LOCALE_PATH);
+		textdomain('validator');
 
-        dd(_('shipping quotation'));
+        // No se recibieron datos
+        dd(_('No data'));
     }
 
 
