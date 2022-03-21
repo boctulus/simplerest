@@ -53,3 +53,141 @@ array (
     'error' => '',
   ),
 )
+array (
+  'HEADERS' => 
+  array (
+    0 => 'Content-Type: application/json',
+    1 => 'Authorization: Basic MGVkYjlhY2ItNTgwOS00N2JkLWEwMDQtZTFiOTYzY2NkZDRh',
+  ),
+  'RESPONSE' => 
+  array (
+    'data' => 
+    array (
+      'errors' => 
+      array (
+        0 => 'app_id not found. You may be missing a Content-Type: application/json header.',
+      ),
+    ),
+    'http_code' => 400,
+    'error' => '',
+  ),
+)
+array (
+  'HEADERS' => 
+  array (
+    0 => 'Content-Type: application/json',
+    1 => 'Authorization: Basic MGVkYjlhY2ItNTgwOS00N2JkLWEwMDQtZTFiOTYzY2NkZDRh',
+  ),
+  'RESPONSE' => 
+  array (
+    'data' => 
+    array (
+      'id' => '9c5b7327-7279-4032-9f14-2a4d4ca1332c',
+      'name' => 'Woo1 local',
+      'gcm_key' => NULL,
+      'chrome_key' => NULL,
+      'chrome_web_key' => '(OneSignal Shared Google Server API Key)',
+      'chrome_web_origin' => 'http://woo1.lan',
+      'chrome_web_gcm_sender_id' => '482941778795',
+      'chrome_web_default_notification_icon' => 'https://img.onesignal.com/permanent/cef2c469-a11a-4cb2-a9be-8ce3ec90a822',
+      'chrome_web_sub_domain' => 'woo1',
+      'apns_env' => NULL,
+      'apns_certificates' => NULL,
+      'safari_apns_certificate' => 'OneSignal Provided Certificate',
+      'safari_site_origin' => 'http://woo1.lan',
+      'safari_push_id' => 'web.onesignal.auto.4bead971-106d-461b-853f-83aecbd62d40',
+      'safari_icon_16_16' => 'public/safari_packages/9c5b7327-7279-4032-9f14-2a4d4ca1332c/icons/16x16.png',
+      'safari_icon_32_32' => 'public/safari_packages/9c5b7327-7279-4032-9f14-2a4d4ca1332c/icons/16x16@2x.png',
+      'safari_icon_64_64' => 'public/safari_packages/9c5b7327-7279-4032-9f14-2a4d4ca1332c/icons/32x32@2x.png',
+      'safari_icon_128_128' => 'public/safari_packages/9c5b7327-7279-4032-9f14-2a4d4ca1332c/icons/128x128.png',
+      'safari_icon_256_256' => 'public/safari_packages/9c5b7327-7279-4032-9f14-2a4d4ca1332c/icons/128x128@2x.png',
+      'site_name' => 'Woo1',
+      'created_at' => '2022-03-09T21:30:29.949Z',
+      'updated_at' => '2022-03-09T21:32:10.388Z',
+      'players' => 2,
+      'messageable_players' => 2,
+      'basic_auth_key' => NULL,
+      'additional_data_is_root_payload' => false,
+    ),
+    'http_code' => 200,
+    'error' => '',
+  ),
+)
+array (
+  'HEADERS' => 
+  array (
+    0 => 'Content-Type: application/json',
+    1 => 'Authorization: Basic ODQ4OTE3MDAtZjgyMC00M2Y3LTg0ODUtNDg5YzNlM2Y0YWEw',
+  ),
+  'RESPONSE' => 
+  array (
+    'data' => 
+    array (
+      'id' => '5c8d34f1-14e0-44c5-ab3f-d0620ec7e252',
+      'name' => 'RAV',
+      'gcm_key' => 'AAAAXPTUT6c:APA91bHXQP9uJS74022_C44ezsQInSc77AYMxZwgCYz0KbHQ6ToXaLgVUMb4fkZgi0GrLXVwXFDIHtxrfiwSB3a-YFj9atv02qCYoDoTigl34As6hX7DJexBoTBDXKnUz_grYe1730Ga',
+      'chrome_key' => NULL,
+      'chrome_web_key' => '(OneSignal Shared Google Server API Key)',
+      'chrome_web_origin' => 'https://radioalternativo.com',
+      'chrome_web_gcm_sender_id' => '482941778795',
+      'chrome_web_default_notification_icon' => 'https://img.onesignal.com/permanent/6e76c5ff-15d4-48cc-af02-2679b79c2794',
+      'chrome_web_sub_domain' => NULL,
+      'apns_env' => 'production',
+      'apns_certificates' => '-----BEGIN CERTIFICATE-----
+MIIGSTCCBTGgAwIBAgIICj+Kr6tl2h4wDQYJKoZIhvcNAQELBQAwgZYxCzAJBgNV
+BAYTAlVTMRMwEQYDVQQKDApBcHBsZSBJbmMuMSwwKgYDVQQLDCNBcHBsZSBXb3Js
+ZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9uczFEMEIGA1UEAww7QXBwbGUgV29ybGR3
+aWRlIERldmVsb3BlciBSZWxhdGlvbnMgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkw
+HhcNMjIwMTIwMjI1NzU0WhcNMjMwMjA3MjE0ODQ3WjCBsTEnMCUGCgmSJomT8ixk
+AQEMF2NvbS5yYWRpb2FsdGVybmF0aXZvLnJhMTUwMwYDVQQDDCxBcHBsZSBQdXNo
+IFNlcnZpY2VzOiBjb20ucmFkaW9hbHRlcm5hdGl2by5yYTETMBEGA1UECwwKOUpF
+MjkzTkE4NDEtMCsGA1UECgwkVGVjbm9sb2dpYSB5IENyZWF0aXZpZGFkIFJOIFNB
+IGRlIENWMQswCQYDVQQGEwJNWDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAJM0gMfjUu+JTSJksIzAj3beezvyfIgWPElo7S0fJcz7CFhZ4noFPmPNo3cA
+HV4jDNUVu2lUTISHjuLn1QAf8kBcAlqENdpAWQkdRRWtA39GWCqPj1uekkh63yWL
+5EvUKOdxVFBalqGwSF+1M+r2dy3IqUEoUW6Z8PobEaR+QjmzeGAwnPsDsbPcL469
+ODOi/DriYMlNVKPUUB6Df61UgtYBUKi9ZXcdZy3L+Gv7VBcNNK6KgCVtaLKJ6f3K
+RwmZ2fVBxYY0U2eeV2NnaSr6/iAXNYlBgawlKuqfFzRnmPiyTlgUbvrPZSgsK6P4
+KV+BRxgi0Yg7rN3pynDb1TczMfECAwEAAaOCAnwwggJ4MAwGA1UdEwEB/wQCMAAw
+HwYDVR0jBBgwFoAUiCcXCam2GGCL7Ou69kdZxVJUo7cwggEcBgNVHSAEggETMIIB
+DzCCAQsGCSqGSIb3Y2QFATCB/TCBwwYIKwYBBQUHAgIwgbYMgbNSZWxpYW5jZSBv
+biB0aGlzIGNlcnRpZmljYXRlIGJ5IGFueSBwYXJ0eSBhc3N1bWVzIGFjY2VwdGFu
+Y2Ugb2YgdGhlIHRoZW4gYXBwbGljYWJsZSBzdGFuZGFyZCB0ZXJtcyBhbmQgY29u
+ZGl0aW9ucyBvZiB1c2UsIGNlcnRpZmljYXRlIHBvbGljeSBhbmQgY2VydGlmaWNh
+dGlvbiBwcmFjdGljZSBzdGF0ZW1lbnRzLjA1BggrBgEFBQcCARYpaHR0cDovL3d3
+dy5hcHBsZS5jb20vY2VydGlmaWNhdGVhdXRob3JpdHkwEwYDVR0lBAwwCgYIKwYB
+BQUHAwIwMAYDVR0fBCkwJzAloCOgIYYfaHR0cDovL2NybC5hcHBsZS5jb20vd3dk
+cmNhLmNybDAdBgNVHQ4EFgQUf4RQM3PQTBWeYvNaQTKsg3NURcQwDgYDVR0PAQH/
+BAQDAgeAMBAGCiqGSIb3Y2QGAwEEAgUAMBAGCiqGSIb3Y2QGAwIEAgUAMIGMBgoq
+hkiG92NkBgMGBH4wfAwXY29tLnJhZGlvYWx0ZXJuYXRpdm8ucmEwBQwDYXBwDBxj
+b20ucmFkaW9hbHRlcm5hdGl2by5yYS52b2lwMAYMBHZvaXAMJGNvbS5yYWRpb2Fs
+dGVybmF0aXZvLnJhLmNvbXBsaWNhdGlvbjAODAxjb21wbGljYXRpb24wDQYJKoZI
+hvcNAQELBQADggEBAARB9RaT5mNcxs1Lj5dkGgiehA+qfMNYNTcYIXHTSe3hl89T
+TfBcGbCQ5fsgLsh3ujWWICtpHb6YDY+5f95FM5VzMrAQcwdXUac9YTIzHK5KH5zx
+ncESNYI7/TxCQl7irNQRqEAzf4+iGY25P0QUe024I/3s8wRVe9+nEPlASK9c/nbk
+UEwvcK1MKSLzsgM+XuDXyeC/XlKqgGIMsvnaW+J232DMA6Aifepy4kFGdcHOaWtz
+Fd2erPD8dpWLt+3Xk2zkY81FLzO3BLeRaNQbM99oRS17qSqbdVZr8l7IEbmYOK5e
+SIYC5etTSvQ/gUvAihzI/21mrslO2cxJBmbuzmA=
+-----END CERTIFICATE-----
+***PRIVATE KEY REMOVED***
+',
+      'safari_apns_certificate' => 'OneSignal Provided Certificate',
+      'safari_site_origin' => 'https://radioalternativo.com',
+      'safari_push_id' => 'web.onesignal.auto.08e72fe8-7d9e-49e9-8aad-204d649fdf9c',
+      'safari_icon_16_16' => 'public/safari_packages/5c8d34f1-14e0-44c5-ab3f-d0620ec7e252/icons/16x16.png',
+      'safari_icon_32_32' => 'public/safari_packages/5c8d34f1-14e0-44c5-ab3f-d0620ec7e252/icons/16x16@2x.png',
+      'safari_icon_64_64' => 'public/safari_packages/5c8d34f1-14e0-44c5-ab3f-d0620ec7e252/icons/32x32@2x.png',
+      'safari_icon_128_128' => 'public/safari_packages/5c8d34f1-14e0-44c5-ab3f-d0620ec7e252/icons/128x128.png',
+      'safari_icon_256_256' => 'public/safari_packages/5c8d34f1-14e0-44c5-ab3f-d0620ec7e252/icons/128x128@2x.png',
+      'site_name' => 'RadioAlternativo',
+      'created_at' => '2021-07-22T15:00:49.590Z',
+      'updated_at' => '2022-03-17T04:09:44.218Z',
+      'players' => 54,
+      'messageable_players' => 20,
+      'basic_auth_key' => NULL,
+      'additional_data_is_root_payload' => false,
+    ),
+    'http_code' => 200,
+    'error' => '',
+  ),
+)

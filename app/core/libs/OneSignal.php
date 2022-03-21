@@ -122,6 +122,54 @@ class OneSignal
        return $response;        
     }
     
+    static function app(Array $config) 
+    {
+        $response = Url::consume_api("https://onesignal.com/api/v1/apps/{$config['app_id']}", 'GET', null, 
+            [             
+                'Content-Type: application/json',
+                'Authorization: Basic ' . $config['app_rest_api_key']
+            ],  
+            
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false
+            ]
+        );
+
+        // En general solo cambios variables
+        // Files::dump([
+        //     'HEADERS' => [             
+        //         'Content-Type: application/json',
+        //         'Authorization: Basic ' . $config['app_rest_api_key']
+        //     ],
+        //     'RESPONSE' => $response
+        // ], 'curl_log.txt', true);
+    
+        return $response;
+    }
+
+
+    static function users($config){
+        $limit  = 50;
+        $offset = 0;
+
+        $response = Url::consume_api("https://onesignal.com/api/v1/players?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
+            [             
+                'Content-Type: application/json',
+                'Authorization: Basic ' . $config['app_rest_api_key']
+            ],  
+            
+            [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false
+            ]
+        );
+
+        
+        return $response;
+    }
+
+
     
 }
 
