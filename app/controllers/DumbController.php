@@ -7930,5 +7930,10 @@ class DumbController extends Controller
         dd(_('No data'));
     }
 
+
+    function test_format_num(){
+        dd(Strings::formatNumber(4));
+    }
+
     
 }   

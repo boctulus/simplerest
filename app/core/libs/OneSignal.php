@@ -85,12 +85,7 @@ class OneSignal
                 CURLOPT_HEADER => false
             ]
         );
-
-        // Files::dump([
-        //     'DATA' => $fields,
-        //     'RESPONSE' => $response
-        // ], 'curl_log.txt', true);
-    
+        
         return $response;
     } 
 
@@ -160,7 +155,7 @@ class OneSignal
 
     static function getNotifications($config, $limit = 50, $offset = 0)
     {
-        $response = Url::consume_api("https://onesignal.com/api/v1/players?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
+        $response = Url::consume_api("https://onesignal.com/api/v1/notifications?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
             [             
                 'Content-Type: application/json',
                 'Authorization: Basic ' . $config['app_rest_api_key']
