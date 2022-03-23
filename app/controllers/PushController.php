@@ -222,7 +222,7 @@ class PushController extends MyController
             'app_rest_api_key' => $apps[$app]['api_key']
         );
 
-        $res  = OneSignal::getUsers($config);
+        $res  = OneSignal::getNotifications($config);
 
         if (isset($res['errors'])){
             d($res['errors'], 'Errores');
