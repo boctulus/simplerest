@@ -7935,5 +7935,16 @@ class DumbController extends Controller
         dd(Strings::formatNumber(4));
     }
 
+    function txx(){
+        $pass = "*iBxPNv\$nC##9@3zoQbDUfam<%0@\$y=";
+        $pass = urlencode($pass);
+
+        $str = '{
+            "email": "b.octulus@gmail.com",
+            "password": "'.$pass.'"
+        }';
+
+        echo $str;
+    }
     
 }   
