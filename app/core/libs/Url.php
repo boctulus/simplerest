@@ -2,8 +2,38 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\Request;
+
 class Url 
 {
+    // Body decode
+    static function bodyDecode(string $data){
+        /*
+            Sería mejor hacer un:
+
+            $content_type = $req->getHeader('content-type');
+        */
+        
+        $headers  = apache_request_headers();
+
+        if (isset($headers['Content-Type'])){
+            // Podría ser un switch-case aceptando otros MIMEs
+            if ($headers['Content-Type'] == 'application/x-www-form-urlencoded'){
+                $data = urldecode($data);
+                $data = Url::parseStrQuery($data);
+
+            } else {
+                $data = json_decode($data, true);
+
+                if ($data === null) {
+                    throw new \Exception("JSON inválido");
+                }
+            }
+        }
+
+        return $data;
+    }
+
     /*
 		Patch for parse_str() native function
 
@@ -25,6 +55,9 @@ class Url
 				$result[$k2] = $v;
 				unset($result[$k]);
 			}
+
+            // parche 2022
+            $result[$k] = str_replace($rep, '.', $result[$k]);
 		}
 
 		return $result;
