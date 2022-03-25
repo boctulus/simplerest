@@ -193,14 +193,14 @@ return [
 		],	
 
 		'mailers' => [
-			'smtp' => [
+			'google' => [
 				'Host'			=> env('MAIL_HOST'),
 				'Port'			=> env('MAIL_PORT'),
 				'Username' 		=> env('MAIL_USERNAME'),
 				'Password' 		=> env('MAIL_PASSWORD'),
 				'SMTPSecure'	=> env('MAIL_ENCRYPTION'),
 				'SMTPAuth' 		=> env('MAIL_AUTH'),
-				'SMTPDebug' 	=> 0,
+				'SMTPDebug' 	=> 3,
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
 
@@ -236,7 +236,7 @@ return [
 			]
 		],
 
-		'mailer_default' => 'brimell'
+		'mailer_default' => 'google'
 	],
 
 	'google_auth'  => [
