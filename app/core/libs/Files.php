@@ -553,7 +553,11 @@ class Files
 		return file_put_contents(LOGS_PATH . $file, $data. "\n", FILE_APPEND);
 	}
 
-	static function dump($object, $filename = 'dump.txt', $append = false){
+	static function dump($object, $filename = null, $append = false){
+		if (empty($filename)){
+			$filename = 'dump.txt';
+		}
+
 		if (!Strings::contains('/', $filename)){
 			$path = LOGS_PATH . $filename; 
 		} else {

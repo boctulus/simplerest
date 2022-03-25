@@ -200,7 +200,7 @@ return [
 				'Password' 		=> env('MAIL_PASSWORD'),
 				'SMTPSecure'	=> env('MAIL_ENCRYPTION'),
 				'SMTPAuth' 		=> env('MAIL_AUTH'),
-				'SMTPDebug' 	=> 4,
+				'SMTPDebug' 	=> 0,
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
 
@@ -221,7 +221,7 @@ return [
 				'Password' 		=> env('MAIL_PASSWORD_2'),
 				'SMTPSecure'	=> env('MAIL_ENCRYPTION_2'),
 				'SMTPAuth' 		=> env('MAIL_AUTH_2'),
-				'SMTPDebug' 	=> 4,
+				'SMTPDebug' 	=> 0,
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
 
