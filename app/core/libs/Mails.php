@@ -8,10 +8,11 @@ use PHPMailer\PHPMailer\SMTP;
 
 class Mails 
 {
-    protected static $errors  = null; 
-    protected static $status  = null; 
-    protected static $options = [];
-    protected static $silent  = false;
+    protected static $errors      = null; 
+    protected static $status      = null; 
+    protected static $options     = [];
+    protected static $silent      = false;
+    protected static $debug_level = null;
 
     static function errors(){
         return static::$errors;
@@ -26,12 +27,32 @@ class Mails
         static::$options = $options;
     }
 
-    static function silentDebug(bool $status = true){
+    static function silentDebug($level = null){
+        global $config;
+
+        $options = $config['email']['mailers'][ $config['email']['mailer_default'] ];
+
+        if (isset($options['SMTPDebug']) && $options['SMTPDebug'] != 0){
+            $default_debug_level = $options['SMTPDebug'];
+        }
+
+        $level = static::$debug_level ?? $level ?? $default_debug_level ?? 4;
+
         static::config([
-            'SMTPDebug' => $status ? 4 : 0
+            'SMTPDebug' => $level
         ]);
 
-        static::$silent = $status;
+        static::$silent = true;
+    }
+
+    /*
+        level 1 = client; will show you messages sent by the client
+        level 2  = client and server; will add server messages, it’s the recommended setting.
+        level 3 = client, server, and connection; will add information about the initial information, might be useful for discovering STARTTLS failures
+        level 4 = low-level information. 
+    */
+    static function debug(int $level = 4){
+        static::$debug_level = $level;
     }
 
     /*
@@ -56,6 +77,10 @@ class Mails
         $mailer = $config['email']['mailer_default'];
 
         $options = array_merge($config['email']['mailers'][$mailer], static::$options);
+
+        if (static::$debug_level !== null){
+            $options['SMTPDebug'] = static::$debug_level;
+        }
 
         foreach ($options as $k => $prop){
 			$mail->{$k} = $prop;

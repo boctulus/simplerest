@@ -550,7 +550,7 @@ class Files
 		
 		$data = date("Y-m-d H:i:s"). "\t" .$data;
 
-		return file_put_contents(LOGS_PATH . $file, $data. "\n", FILE_APPEND);
+		return static::writeOrFail(LOGS_PATH . $file, $data. "\n", FILE_APPEND);
 	}
 
 	static function dump($object, $filename = null, $append = false){
@@ -565,9 +565,9 @@ class Files
 		}
 
 		if ($append){
-			file_put_contents($path, var_export($object,  true) . "\n", FILE_APPEND);
+			static::writeOrFail($path, var_export($object,  true) . "\n", FILE_APPEND);
 		} else {
-			file_put_contents($path, var_export($object,  true) . "\n");
+			static::writeOrFail($path, var_export($object,  true) . "\n");
 		}		
 	}
 	
@@ -671,6 +671,29 @@ class Files
 		return $zip->close();
 	}
 
+	static function write(string $path, string $string, int $flags = 0) : bool {
+		$ok = (bool) @file_put_contents($path, $string, $flags);
+		return $ok;
+	}
+
+	/*
+		Escribe archivo o falla.
+	*/
+	static function writeOrFail(string $path, string $string, int $flags = 0){
+		if (is_dir($path)){
+			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
+		}
+
+		$dir = Strings::beforeLast($path, DIRECTORY_SEPARATOR);
+
+		static::writableOrFail($dir);
+
+		$ok = (bool) @file_put_contents($path, $string, $flags);
+
+		if (!$ok){
+			throw new \Exception("$path could not be written");
+		}
+	}
 
 	// http://25labs.com/alternative-for-file_get_contents-using-curl/
 	static function file_get_contents_curl($url, $retries=5)

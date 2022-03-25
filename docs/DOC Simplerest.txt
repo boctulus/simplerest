@@ -7260,6 +7260,14 @@ Ej:
 	d(Mails::errors(), 'Error');
 	d(Mails::status(), 'Status');
 
+Debug
+
+Para setear el "nivel de debug" lo más sencillo es usar Mails::debug($level)
+
+Ej:
+
+	Mails::debug(2);
+
 Debug silencioso
 
 Se puede enviar directamente a archivo log la salida y así capturar errores.

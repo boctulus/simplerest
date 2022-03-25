@@ -62,7 +62,7 @@ class Strings
 	static function beforeLast(string $string, string $substr){
 		$parts = explode($substr, $string);
 
-		return implode(array_slice($parts, 0, count($parts)-1));
+		return implode($substr, array_slice($parts, 0, count($parts)-1));
 	}
 
 	/*

@@ -3019,6 +3019,8 @@ class DumbController extends Controller
         //     'SMTPDebug' => 4
         // ]);
 
+        Mails::debug(2);
+
         Mails::silentDebug();
 
         Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau');    
@@ -7949,16 +7951,11 @@ class DumbController extends Controller
         dd(Strings::formatNumber(4));
     }
 
-    function txx(){
-        $pass = "*iBxPNv\$nC##9@3zoQbDUfam<%0@\$y=";
-        $pass = urlencode($pass);
+    function woe(){
+        //d(Strings::beforeLast(LOGS_PATH . 'x/logxxx.txt', DIRECTORY_SEPARATOR));
 
-        $str = '{
-            "email": "b.octulus@gmail.com",
-            "password": "'.$pass.'"
-        }';
-
-        echo $str;
+        //Files::writeOrFail(LOGS_PATH . 'logxxx.txt', 'xxx');
+        //Files::writeOrFail(LOGS_PATH , 'xxx');
     }
     
 }   
