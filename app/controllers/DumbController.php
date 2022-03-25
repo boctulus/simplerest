@@ -3015,14 +3015,28 @@ class DumbController extends Controller
         https://www.arclab.com/en/kb/email/how-to-enable-imap-pop3-smtp-gmail-account.html
     */
     function sender(){
-        dd(Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau'));     
-    }
+        // Mails::config([
+        //     'SMTPDebug' => 4
+        // ]);
+
+        Mails::silentDebug();
+
+        Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau');    
+        
+        d(Mails::errors(), 'Error');
+        d(Mails::status(), 'Status');
+    }   
 
     // from cotizacion@brimell.cl
     function sender_b(){
         //$path = ETC_PATH . 'example.sql';
 
-        dd(Mails::sendMail('mueblesultra@gmail.com', '', 'Prueba B3', 'HEY!!!!!!!!!!!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau', null, null, 'cotizacion@brimell.cl', 'Brimell', 'boctulus@gmail.com'));     
+        Mails::silentDebug();
+
+        Mails::sendMail('mueblesultra@gmail.com', '', 'Prueba B3', 'HEY!!!!!!!!!!!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau', null, null, 'cotizacion@brimell.cl', 'Brimell', 'boctulus@gmail.com'); 
+        
+        d(Mails::errors(), 'Error');
+        d(Mails::status(), 'Status');
     }
 
     // function sender_v8(){
