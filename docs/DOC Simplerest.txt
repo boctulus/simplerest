@@ -7247,8 +7247,31 @@ Ej:
 	));   
 
 
+Enviar opciones de PHP Mailer a sendMail
 
+Ej:
 
+	 Mails::config([
+	     'SMTPDebug' => 4
+	]);
+
+	Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau');    
+
+	d(Mails::errors(), 'Error');
+	d(Mails::status(), 'Status');
+
+Debug silencioso
+
+Se puede enviar directamente a archivo log la salida y así capturar errores.
+
+Ej:
+
+	Mails::silentDebug();
+
+	Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau');    
+
+	d(Mails::errors(), 'Error');
+	d(Mails::status(), 'Status');
 
 
 # Consumo de APIs
