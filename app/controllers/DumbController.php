@@ -7952,6 +7952,8 @@ class DumbController extends Controller
     }
 
     function woe(){
+        d(Files::isWritable(LOGS_PATH . 'logxxxXX.txt'));
+
         //d(Strings::beforeLast(LOGS_PATH . 'x/logxxx.txt', DIRECTORY_SEPARATOR));
 
         //Files::writeOrFail(LOGS_PATH . 'logxxx.txt', 'xxx');

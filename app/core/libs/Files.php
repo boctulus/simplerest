@@ -570,35 +570,7 @@ class Files
 			static::writeOrFail($path, var_export($object,  true) . "\n");
 		}		
 	}
-	
-    static function mkDir($dir, int $permissions = 0777, bool $recursive = true){
-		$ok = null;
 
-		if (!is_dir($dir)) {
-			$ok = @mkdir($dir, $permissions, $recursive);
-		}
-
-		return $ok;
-	}
-	
-	static function mkDirOrFail($dir, int $permissions = 0777, $recursive = true, string $error = "Failed trying to create %s"){
-		$ok = null;
-
-		if (!is_dir($dir)) {
-			$ok = @mkdir($dir, $permissions, $recursive);
-			if ($ok !== true){
-				throw new \Exception(sprintf($error, $dir));
-			}
-		}
-
-		return $ok;
-	}
-
-	static function writableOrFail(string $path, string $error = "Permission error. Path '%s' is not writable"){
-		if (!is_writable($path)){
-			throw new \Exception(sprintf($error, $path));
-		}
-	}
 
 	/*
 		https://stackoverflow.com/a/1334949/980631
@@ -669,6 +641,54 @@ class Files
 		}
 	
 		return $zip->close();
+	}
+
+	static function mkDir($dir, int $permissions = 0777, bool $recursive = true){
+		$ok = null;
+
+		if (!is_dir($dir)) {
+			$ok = @mkdir($dir, $permissions, $recursive);
+		}
+
+		return $ok;
+	}
+	
+	static function mkDirOrFail($dir, int $permissions = 0777, $recursive = true, string $error = "Failed trying to create %s"){
+		$ok = null;
+
+		if (!is_dir($dir)) {
+			$ok = @mkdir($dir, $permissions, $recursive);
+			if ($ok !== true){
+				throw new \Exception(sprintf($error, $dir));
+			}
+		}
+
+		return $ok;
+	}
+
+	/*
+		Verifica si un archivo o directorio se puede escribir
+	*/
+	static function isWritable(string $path){
+		if (is_dir($path)){
+			$dir = Strings::beforeLast($path, DIRECTORY_SEPARATOR);
+			return is_writable($dir);
+		} else {
+			if (file_exists($path)){
+				return is_writable($path);
+			} else {
+				$dir = Strings::beforeLast($path, DIRECTORY_SEPARATOR);
+				return is_writable($dir);
+			}
+		}
+
+		return is_writable($path);
+	}
+
+	static function writableOrFail(string $path, string $error = "Permission error. Path '%s' is not writable"){
+		if (!static::isWritable($path)){
+			throw new \Exception(sprintf($error, $path));
+		}
 	}
 
 	static function write(string $path, string $string, int $flags = 0) : bool {
