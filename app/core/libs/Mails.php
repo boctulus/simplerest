@@ -27,7 +27,7 @@ class Mails
     }
 
     static function silentDebug(bool $status = true){
-        Mails::config([
+        static::config([
             'SMTPDebug' => $status ? 4 : 0
         ]);
 
