@@ -5,3 +5,4 @@ true
 'SMTP connect() failed. https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting'
 'SMTP connect() failed. https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting'
 true
+true
