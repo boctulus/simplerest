@@ -168,14 +168,19 @@ class MyAuthController extends AuthController {
         ->where([$u::$email => $data['email'] ])
         ->first();
 
-        // Queue email
-        $ok = (bool) DB::table('email_notifications')
-        ->create([
+        $msg = [
             'to_addr'    => $data['email'], 
             'to_name'    => '', 
             'subject'    => 'Cambio de contraseña', 
             'body'       => $body
-        ]);
+        ];
+
+        // Queue email
+        $ok = (bool) DB::table('email_notifications')
+        ->create($msg);
+
+        // d($msg);
+        // Files::dump($msg);
 
         /*
             Posteriormente leer la tabla email_notifications y....

@@ -31,7 +31,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
 				}
                 
                 static::$raw  = file_get_contents("php://input");
-                static::$body = json_decode(static::$raw, true);
+                static::$body = Url::bodyDecode(static::$raw);
                 static::$headers = apache_request_headers();
 
                 $tmp = [];
@@ -47,6 +47,29 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         return static::$instance;
     }
     
+    protected function bodyDecode(string $data){
+        $content_type = static::getHeader('Content-Type');
+
+        if (!empty($content_type)){
+
+            // Podría ser un switch-case aceptando otros MIMEs
+            if ($content_type == 'application/x-www-form-urlencoded'){
+                $data = urldecode($data);
+                $data = Url::parseStrQuery($data);
+
+            } else {
+                $data = json_decode($data, true);
+
+                if ($data === null) {
+                    throw new \Exception("JSON inválido");
+                }
+            }
+
+        }
+
+        return $data;
+    }
+
     function setParams($params){
         static::$params = $params;
         return static::getInstance();
