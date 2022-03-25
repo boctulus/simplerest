@@ -108,15 +108,15 @@ class AuthController extends Controller implements IAuth
 
         if ($data == null)
             return;
-            
+
         $email    = $data[$this->__email]    ?? null;
         $username = $data[$this->__username] ?? null;  
         $password = $data[$this->__password] ?? null;         
         
         if (empty($email) && empty($username) ){
-            Factory::response()->sendError('Email or username are required',400);
+            Factory::response()->sendError("{$this->__username} or {$this->__password} are required",400);
         }else if (empty($password)){
-            Factory::response()->sendError('Password is required',400);
+            Factory::response()->sendError($this->__password . ' is required',400);
         }
 
         $this->onLogin($data);
@@ -958,18 +958,20 @@ class AuthController extends Controller implements IAuth
 		if ($data == null)
 			Factory::response()->sendError('Invalid JSON',400);
 
-		$email = $data['email'] ?? null;
+		$email = $data[$this->__email] ?? null;
 
 		if ($email == null)
-			Factory::response()->sendError('Empty email', 400);
+			Factory::response()->sendError($this->__email . ' is required', 400);
 
 		try {	
 			$u = (DB::table($this->users_table))->assoc();
 			$rows = $u->where([$this->__email, $email])->get([$this->__id, $this->__active]);
 
+            //dd($u->dd());
+
 			if (count($rows) === 0){
                 // Email not found
-                Factory::response()->sendError('Please check your e-mail', 400); 
+                Factory::response()->sendError('Please check your e-mail.', 400); 
             }
 
             // Hook
