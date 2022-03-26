@@ -7959,5 +7959,17 @@ class DumbController extends Controller
         //Files::writeOrFail(LOGS_PATH . 'logxxx.txt', 'xxx');
         //Files::writeOrFail(LOGS_PATH , 'xxx');
     }
+
+    function z1(){
+        $apis = Url::consume_api('http://woo1.lan/wp-json', 'GET');
+        Files::write(ETC_PATH . 'wp_apis.php',  var_export($apis, true));
+    }
+
+    function z2(){
+        include 'app/etc/wp_apis.php';
+
+        dd(array_keys($arr['data']['routes']));
+
+    }
     
 }   

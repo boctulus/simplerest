@@ -186,7 +186,7 @@ class MyAuthController extends AuthController {
             Posteriormente leer la tabla email_notifications y....
             basado en un tamplate, hacer algo como:
 
-            $mail_sent = Utils::sendMail($email, null, 'Recuperación de password', "Hola!<p/>Para re-establecer la el password siga el enlace</br>$url");
+            $mail_sent = Mails::sendMail($email, null, 'Recuperación de password', "Hola!<p/>Para re-establecer la el password siga el enlace</br>$url");
 
             o lo mismo pero usando un Service Provider
         */
