@@ -285,13 +285,17 @@ class Strings
 		return $res;		
 	}
 
-	static function enclose($target, string $thing){
+	static function enclose($target, string $delimeter, $delimeter2 = null){
+		if (empty($delimeter2)){
+			$delimeter2 = $delimeter;
+		}
+
 		if (is_array($target)) {
-			return array_map(function($e) use ($thing){
-				return "{$thing}$e{$thing}";
+			return array_map(function($e) use ($delimeter, $delimeter2){
+				return "{$delimeter}$e{$delimeter2}";
 			}, $target);
 		} else {
-			return "{$thing}$target{$thing}";
+			return "{$delimeter}$target{$delimeter2}";
 		}
 	}
 	
