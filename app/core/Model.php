@@ -1216,7 +1216,7 @@ class Model {
 			$q  = 'SELECT EXISTS (SELECT 1';
 		}	
 
-		$q  .= ' FROM '.$this->from();
+		$q  .= ' FROM '.Strings::backticks($this->from);
 
 		////////////////////////
 		$values = array_merge($this->w_vals, $this->h_vals); 
@@ -2368,7 +2368,7 @@ class Model {
 			$where = '';
 		}
 
-		$q = "UPDATE ".$this->from() .
+		$q = "UPDATE ". Strings::backticks($this->from()) .
 				" SET $set WHERE " . $where;		
 
 		//d($q, 'Update statement');
@@ -2406,8 +2406,10 @@ class Model {
 			$q .= ';';
 		}
 	
-		$st = $this->conn->prepare($q);
+		// d($vals, 'vals');
+		// d($q, 'q');
 
+		$st = $this->conn->prepare($q);
 
 		foreach($vals as $ix => $val){		
 			if (is_array($val)){
@@ -2542,7 +2544,7 @@ class Model {
 			}			
 		}
 
-		$q = "DELETE FROM ". $this->from() . " WHERE " . $where;
+		$q = "DELETE FROM ". Strings::backticks($this->from()) . " WHERE " . $where;
 		
 		if ($this->semicolon_ending){
 			$q .= ';';
