@@ -19,7 +19,7 @@ class Ssl implements IMigration
 
         $sc
         ->integer('id')->auto()->pri()
-        ->varchar('dominio', 50)
+        ->varchar('domain', 255)
         ->datetime('created_at')
         ->datetime('expires_at')
         ->datetime('updated_at')->nullable()
