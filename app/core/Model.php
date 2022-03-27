@@ -2931,8 +2931,8 @@ class Model {
 			$q .= ';';
 		}
 
-		d($q, 'Statement');
-		d($vals, 'vals');
+		// d($q, 'Statement');
+		// d($vals, 'vals');
 
 		$st = $this->conn->prepare($q);
 	
