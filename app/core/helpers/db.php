@@ -5,7 +5,7 @@ use simplerest\core\libs\Strings;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\StdOut;
 use simplerest\core\Model;
-use simplerest\core\MakeControllerBase;
+use simplerest\core\controllers\MakeControllerBase;
 
 function get_default_connection(){
     return DB::getDefaultConnection();

@@ -24,6 +24,7 @@ class DB
 	const DB2        = 'db2';
 	const ORACLE     = 'oracle';
 	const SYBASE     = 'sybase';
+	const FIREBIRD   = 'firebird';
 
 
 	public static function setConnection(string $id)
@@ -278,7 +279,13 @@ class DB
 	}
 
 	public static function driver(){
-		return self::getCurrent()['driver'] ?? NULL;
+		$drv = self::getCurrent()['driver'] ?? NULL;
+
+		if ($drv === null){
+			throw new \Exception("No db driver");
+		}
+
+		return $drv;
 	}
 
 	/*
@@ -865,6 +872,27 @@ class DB
 				return Strings::enclose($word, '"');
 			default:
 				return Strings::enclose($word, '"');
+		}
+	}
+
+	/*
+		https://www.petefreitag.com/item/466.cfm
+		https://stackoverflow.com/questions/19412/how-to-request-a-random-row-in-sql
+	*/
+	static function random(){
+		switch (DB::driver()){
+			case DB::MYSQL:
+			case DB::SQLITE:
+			case DB::INFOMIX:
+			case DB::FIREBIRD:
+				return ' ORDER BY RAND()';
+			case DB::PGSQL:
+				return ' ORDER BY RANDOM()';
+			case DB::SQLSRV:
+				// SELECT TOP 1 * FROM MyTable ORDER BY newid()
+				return ' ORDER BY newid()';
+			default: 
+				throw new \Exception("Not implemented");	
 		}
 	}
 }
