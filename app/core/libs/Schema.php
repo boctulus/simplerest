@@ -1565,8 +1565,8 @@ class Schema
 					$len = Strings::slice($str, '/\(([0-9,]+)\)/');					
 				}
 
-				$to_lo = function($s){ return strtolower($s); };
-				$to_up = function($s){ return strtoupper($s); };
+				$to_lo = function($s){ return empty($s) ? '' : strtolower($s); };
+				$to_up = function($s){ return empty($s) ? '' : strtoupper($s); };
 
 
 				$charset    = Strings::slice($str, '/CHARACTER SET ([a-z0-9_]+)/');
