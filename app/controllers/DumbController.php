@@ -7969,7 +7969,6 @@ class DumbController extends Controller
         include 'app/etc/wp_apis.php';
 
         dd(array_keys($arr['data']['routes']));
-
     }
     
 }   
