@@ -1216,7 +1216,7 @@ class Model {
 			$q  = 'SELECT EXISTS (SELECT 1';
 		}	
 
-		$q  .= ' FROM '.Strings::backticks($this->from);
+		$q  .= ' FROM ' . Strings::backticks($this->from());
 
 		////////////////////////
 		$values = array_merge($this->w_vals, $this->h_vals); 
