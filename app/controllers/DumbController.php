@@ -7951,24 +7951,27 @@ class DumbController extends Controller
         dd(Strings::formatNumber(4));
     }
 
-    function woe(){
-        d(Files::isWritable(LOGS_PATH . 'logxxxXX.txt'));
+    /*
+        @param $domain string dominio o subdominio
+        @param $expires_in int dias para expiración
+    */
+    function add_ssl(string $domain, int $expires_in){
+        $d1 = new \DateTime();
+        $d2 = $d1->modify("+$expires_in days")->format('Y-m-d H:i:s');
 
-        //d(Strings::beforeLast(LOGS_PATH . 'x/logxxx.txt', DIRECTORY_SEPARATOR));
+        DB::getDefaultConnection();
 
-        //Files::writeOrFail(LOGS_PATH . 'logxxx.txt', 'xxx');
-        //Files::writeOrFail(LOGS_PATH , 'xxx');
+        $res = DB::table('ssl')
+        ->create([
+            'domain'     => $domain,
+            'expires_at' => $d2
+        ]);
+
+        d($res);
+
+        dd(DB::getLog());
     }
 
-    function z1(){
-        $apis = Url::consume_api('http://woo1.lan/wp-json', 'GET');
-        Files::write(ETC_PATH . 'wp_apis.php',  var_export($apis, true));
-    }
-
-    function z2(){
-        include 'app/etc/wp_apis.php';
-
-        dd(array_keys($arr['data']['routes']));
-    }
+    
     
 }   

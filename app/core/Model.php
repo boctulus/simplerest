@@ -553,7 +553,7 @@ class Model {
 		}
 
 		$from = isset($this->table_alias[$this->table_name]) ? ($tb_name. ' as '.$this->table_alias[$this->table_name]) : $tb_name.' ';  
-		return $from;
+		return trim($from);
 	}
 
 		
@@ -2925,17 +2925,17 @@ class Model {
 		$str_vars = implode(', ',$vars);
 		$str_vals = implode(', ',$symbols);
 
-		$q = "INSERT INTO " . $this->from() . " ($str_vars) VALUES ($str_vals)";
+		$q = "INSERT INTO " . Strings::backticks($this->from()) . " ($str_vars) VALUES ($str_vals)";
 
 		if ($this->semicolon_ending){
 			$q .= ';';
 		}
 
-		// d($q, 'Statement');
-		// d($vals, 'vals');
+		d($q, 'Statement');
+		d($vals, 'vals');
 
 		$st = $this->conn->prepare($q);
-
+	
 		foreach($vals as $ix => $val){			
 			if(is_null($val)){
 				$type = \PDO::PARAM_NULL;
@@ -2949,8 +2949,8 @@ class Model {
 			elseif(is_string($val))
 				$type = \PDO::PARAM_STR;	
 
-			//dd($type, "TYPE for $val");	
-			//dd([$vals[$ix], $symbols[$ix], $type]);
+			// d($type, "TYPE for $val");	
+			// d([$vals[$ix], $symbols[$ix], $type]);
 
 			$st->bindParam($symbols[$ix], $vals[$ix], $type);
 		}

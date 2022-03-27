@@ -285,14 +285,18 @@ class Strings
 		return $res;		
 	}
 
-	static function enclose(Array $a, string $thing){
-		return array_map(function($e) use ($thing){
-			return "{$thing}$e{$thing}";
-		}, $a);
+	static function enclose($target, string $thing){
+		if (is_array($target)) {
+			return array_map(function($e) use ($thing){
+				return "{$thing}$e{$thing}";
+			}, $target);
+		} else {
+			return "{$thing}$target{$thing}";
+		}
 	}
 	
-	static function backticks(Array $a){
-		return static::enclose($a, '`');
+	static function backticks($target){
+		return static::enclose($target, '`');
 	}
 
 	/*
