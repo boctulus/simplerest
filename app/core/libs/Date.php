@@ -123,7 +123,6 @@ class Date
         return $_date->format($format);
     }
 
-
     static function nextNthWeekDay(int $weekday, string $date = '', string $format = 'Y-m-d') : string {
         $d1 = new \DateTime();
         $w1 = (int) $d1->format('w');
