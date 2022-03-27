@@ -959,9 +959,11 @@ class MakeControllerBase extends Controller
         } 
         
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
-        
+
+        $db = DB::database();  
+
         try {
-            $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}", [], 'ASSOC', $from_db);
+            $fields = DB::select("SHOW COLUMNS FROM $db.{$this->snake_case}", [], 'ASSOC', $from_db);
         } catch (\Exception $e) {
             StdOut::pprint('[ SQL Error ] '. DB::getLog(). "\r\n");
             StdOut::pprint($e->getMessage().  "\r\n");
@@ -1236,8 +1238,10 @@ class MakeControllerBase extends Controller
     }
 
     protected function getUuid(){
+        $db = DB::database();      
+
         try {
-            $fields = DB::select("SHOW COLUMNS FROM {$this->snake_case}");
+            $fields = DB::select("SHOW COLUMNS FROM $db.{$this->snake_case}");
         } catch (\Exception $e) {
             StdOut::pprint('[ SQL Error ] '. DB::getLog(). "\r\n");
             StdOut::pprint($e->getMessage().  "\r\n");
@@ -1341,7 +1345,6 @@ class MakeControllerBase extends Controller
             $imports[] = "use simplerest\schemas\\$folder{$this->camel_case}Schema;";
         
             Strings::replace('__SCHEMA_CLASS__', "{$this->camel_case}Schema", $file); 
-
 
             $uuid = $this->getUuid();
             if ($uuid){
