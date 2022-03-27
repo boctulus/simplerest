@@ -191,10 +191,31 @@ return [
 				// 		'allow_self_signed' => true
 				// 	]
 				// ]
+			],
+
+			'pulque' => [
+				'Host'			=> env('MAIL_HOST_3'),
+				'Port'			=> env('MAIL_PORT_3'),
+				'Username' 		=> env('MAIL_USERNAME_3'),
+				'Password' 		=> env('MAIL_PASSWORD_3'),
+				'SMTPSecure'	=> env('MAIL_ENCRYPTION_3'),
+				'SMTPAuth' 		=> env('MAIL_AUTH_3'),
+				'SMTPDebug' 	=> 0,
+				'CharSet' 		=> 'UTF-8',
+				'Debugutput' 	=> 'html',
+
+				// Extras
+				// 'SMTPOptions'   => [
+				// 	'ssl' => [
+				// 		'verify_peer' => false,
+				// 		'verify_peer_name' => false,
+				// 		'allow_self_signed' => true
+				// 	]
+				// ]
 			]
 		],
 
-		'mailer_default' => 'google'
+		'mailer_default' => 'pulque'
 	],
 
 	'google_auth'  => [

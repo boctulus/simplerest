@@ -3019,9 +3019,9 @@ class DumbController extends Controller
         //     'SMTPDebug' => 4
         // ]);
 
-        Mails::debug(2);
+        Mails::debug(4);
 
-        Mails::silentDebug();
+        //Mails::silentDebug();
 
         Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau');    
         
