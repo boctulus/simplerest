@@ -7,18 +7,15 @@ use simplerest\core\Request;
 class Url 
 {
     // Body decode
-    static function bodyDecode(string $data){
-        /*
-            Sería mejor hacer un:
-
-            $content_type = $req->getHeader('content-type');
-        */
-        
+    static function bodyDecode(string $data)
+    {
         $headers  = apache_request_headers();
+        $content_type = $headers['Content-Type'] ?? null;
 
-        if (isset($headers['Content-Type'])){
+        if (!empty($content_type)){
             // Podría ser un switch-case aceptando otros MIMEs
-            if ($headers['Content-Type'] == 'application/x-www-form-urlencoded'){
+
+            if (Strings::contains('application/x-www-form-urlencoded', $headers['Content-Type'])){
                 $data = urldecode($data);
                 $data = Url::parseStrQuery($data);
 
@@ -29,6 +26,7 @@ class Url
                     throw new \Exception("JSON inválido");
                 }
             }
+
         }
 
         return $data;

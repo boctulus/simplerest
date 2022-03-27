@@ -2,6 +2,7 @@
 
 namespace simplerest\core;
 
+use Exchanger\Exception\NonBreakingInvalidArgumentException;
 use PDO;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Arrays;
@@ -1216,7 +1217,7 @@ class Model {
 			$q  = 'SELECT EXISTS (SELECT 1';
 		}	
 
-		$q  .= ' FROM ' . Strings::backticks($this->from());
+		$q  .= ' FROM ' . DB::quote($this->from());
 
 		////////////////////////
 		$values = array_merge($this->w_vals, $this->h_vals); 
@@ -2368,7 +2369,7 @@ class Model {
 			$where = '';
 		}
 
-		$q = "UPDATE ". Strings::backticks($this->from()) .
+		$q = "UPDATE ". DB::quote($this->from()) .
 				" SET $set WHERE " . $where;		
 
 		//d($q, 'Update statement');
@@ -2544,7 +2545,7 @@ class Model {
 			}			
 		}
 
-		$q = "DELETE FROM ". Strings::backticks($this->from()) . " WHERE " . $where;
+		$q = "DELETE FROM ". DB::quote($this->from()) . " WHERE " . $where;
 		
 		if ($this->semicolon_ending){
 			$q .= ';';
@@ -2927,7 +2928,7 @@ class Model {
 		$str_vars = implode(', ',$vars);
 		$str_vals = implode(', ',$symbols);
 
-		$q = "INSERT INTO " . Strings::backticks($this->from()) . " ($str_vars) VALUES ($str_vals)";
+		$q = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_vals)";
 
 		if ($this->semicolon_ending){
 			$q .= ';';

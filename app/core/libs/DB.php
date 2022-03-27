@@ -16,8 +16,15 @@ class DB
 	protected static $tb_name;
 	protected static $inited_transaction = false; 
 
+	const INFOMIX    = 'infomix';
+	const MYSQL      = 'mysql';
+	const SQLITE     = 'sqlite';
+	const SQLSRV     = 'mssql';
+	const PGSQL      = 'pgsql';
+	const DB2        = 'db2';
+	const ORACLE     = 'oracle';
+	const SYBASE     = 'sybase';
 
-	protected function __construct() { }
 
 	public static function setConnection(string $id)
 	{
@@ -75,15 +82,15 @@ class DB
 		*/
 
 		if ($driver == 'mariadb'){
-			$driver = 'mysql';
+			$driver = DB::MYSQL;
 		}
 
 		if ($driver == 'postgres'){
-			$driver = 'pgsql';
+			$driver = DB::PGSQL;
 		}
 
-		if ($driver == 'sqlsrv'){
-			$driver = 'mssql';
+		if ($driver == 'sqlsrv' || $driver == 'mssql'){
+			$driver = DB::SQLSRV;
 		}
 
 		// faltaría dar soporte a ODBC
@@ -91,14 +98,14 @@ class DB
 
 		try {
 			switch ($driver) {
-				case 'mysql':
+				case DB::MYSQL:
 					self::$connections[static::$current_id_conn] = new \PDO(
 						"$driver:host=$host;dbname=$db_name;port=$port",  /* DSN */
 						$user, 
 						$pass, 
 						$pdo_opt);				
 					break;
-				case 'sqlite':
+				case DB::SQLITE:
 					$db_file = Strings::contains(DIRECTORY_SEPARATOR, $db_name) ?  $db_name : STORAGE_PATH . $db_name;
 	
 					self::$connections[static::$current_id_conn] = new \PDO(
@@ -108,7 +115,7 @@ class DB
 						$pdo_opt);
 					break;
 
-				case 'pgsql':
+				case DB::PGSQL:
 					self::$connections[static::$current_id_conn] = new \PDO(
 						"pgsql:host=$host;dbname=$db_name;port=$port", /* DSN */
 						$user, 
@@ -116,7 +123,7 @@ class DB
 						$pdo_opt);
 					break;	
 				
-				case 'mssql':
+				case DB::SQLSRV:
 					self::$connections[static::$current_id_conn] = new \PDO(
 						"sqlsrv:Server=$host,$port;Database=$db_name", /* DSN */
 						$user, 
@@ -132,16 +139,16 @@ class DB
 
 			if ($charset != null){
 				switch (DB::driver()){
-					case 'mysql':
-					case 'pgsql':
+					case DB::MYSQL:
+					case DB::PGSQL:
 						$charset = str_replace('-', '', $charset);
 						$cmd = "SET NAMES '$charset'";
 						break;
-					case 'sqlite':
+					case DB::SQLITE:
 						$charset = preg_replace('/UTF([0-9]{1,2})/i', "UTF-$1", $charset);
 						$cmd = "PRAGMA encoding = '$charset'";
 						break;
-					case 'sqlsrv':
+					case DB::SQLSRV:
 						// it could be unnecesary
 						// https://docs.microsoft.com/en-us/sql/connect/php/constants-microsoft-drivers-for-php-for-sql-server?view=sql-server-ver15
 						if ($charset == 'UTF8' || $charset == 'UTF-8'){
@@ -806,7 +813,6 @@ class DB
 		return $count;
 	}
 
-
 	public static function update(string $raw_sql, Array $vals = [], ?string $tenant_id = null)
 	{
 		return static::statement($raw_sql, $vals, $tenant_id);
@@ -833,4 +839,32 @@ class DB
             'dvee tgrlA.mclagT uucb lzo la bdteckoeafteepi'
         ])) . PHP_EOL;
     }
+
+	/*
+		https://stackoverflow.com/a/10574031/980631
+		https://dba.stackexchange.com/questions/23129/benefits-of-using-backtick-in-mysql-queries
+	*/
+	static function quote(string $word){
+		switch (DB::driver()){
+			case DB::MYSQL:
+				return Strings::backticks($word);
+			case DB::PGSQL:
+				return Strings::enclose($word, '"');
+			case DB::SQLSRV:
+				// SELECT [select] FROM [from] WHERE [where] = [group by];
+				return Strings::enclose($word, '[', ']');
+			case DB::SQLITE:
+				return Strings::enclose($word, '"');
+			case DB::INFOMIX:
+				return $word;
+			case DB::ORACLE:
+				return Strings::enclose($word, '"');
+			case DB::DB2:
+				return Strings::enclose($word, '"');
+			case DB::SYBASE:
+				return Strings::enclose($word, '"');
+			default:
+				return Strings::enclose($word, '"');
+		}
+	}
 }
