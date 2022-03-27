@@ -549,7 +549,7 @@ class Model {
 
 		$tb_name = $this->table_name;
 
-		if (DB::driver() == 'pgsql' && DB::schema() != null){
+		if (DB::driver() == DB::PGSQL && DB::schema() != null){
 			$tb_name = DB::schema() . '.' . $tb_name;
 		}
 
@@ -1297,17 +1297,7 @@ class Model {
 		}
 
 		if ($this->randomize){
-			switch (DB::driver()){
-				case 'mysql':
-				case 'sqlite':
-					$q .= ' ORDER BY RAND() ';
-					break;
-				case 'pgsql':
-					$q .= ' ORDER BY RANDOM() ';
-					break;
-				default: 
-					throw new \Exception("Invalid driver");	
-			}
+			$q .= DB::random();
 		} else {
 			if (!empty($this->raw_order))
 				$q .= ' ORDER BY '.implode(', ', $this->raw_order);
@@ -1518,7 +1508,7 @@ class Model {
 			/*
 				Corrección para operaciones entre enteros y floats en PGSQL
 			*/
-			} elseif(DB::driver() == 'pgsql' && is_float($val)){ 
+			} elseif(DB::driver() == DB::PGSQL && is_float($val)){ 
 				$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
 				$reps++;
 				$_vals[] = $val;
@@ -1706,7 +1696,11 @@ class Model {
 	function getOne(array $fields = null, $pristine = false){
 		return $this->first($fields, $pristine);
 	}
-	
+
+	function top(array $fields = null, $pristine = false){
+		return $this->first($fields, $pristine);
+	}
+
 	function value($field){
 		$this->onReading();
 
@@ -2390,7 +2384,7 @@ class Model {
 			/*
 				Corrección para operaciones entre enteros y floats en PGSQL
 			*/
-			} elseif(DB::driver() == 'pgsql' && is_float($val)){ 
+			} elseif(DB::driver() == DB::PGSQL && is_float($val)){ 
 				$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
 				$reps++;
 				$_vals[] = $val;
