@@ -67,16 +67,16 @@ return [
 
 	'db_connection_default' => 'main',
 
-    // 'tentant_groups' => [
-    //     'legion' => [
-    //         'db_[0-9]+',
-    //         'db_legion',
-    //         'db_flor'
-	// 	],
-	// 	'az' => [
-	// 		'az'
-	// 	]
-    // ], 
+    'tentant_groups' => [
+        // 'legion' => [
+        //     'db_[0-9]+',
+        //     'db_legion',
+        //     'db_flor'
+		// ],
+		'az' => [
+			'az'
+		]
+    ], 
 	
 	'DateTimeZone' => 'America/Bogota',
 
@@ -86,7 +86,7 @@ return [
 	/*
 		Define users's table name
 	*/
-	'users_table' =>  'tbl_usuario_empresa',
+	'users_table' =>  'users',
 
 	/*
 		Response format

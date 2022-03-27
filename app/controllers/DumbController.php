@@ -6823,7 +6823,17 @@ class DumbController extends Controller
 
     function get_random_user(){
         DB::getDefaultConnection();
-        d(DB::table(get_users_table())->random()->first());
+        d(
+            DB::table(get_users_table())
+            ->random()->dd()
+        );
+    }
+
+    function get_random_product(){
+        d(
+            DB::table('products')
+            ->random()->top()
+        );
     }
 
     function test_390(){
