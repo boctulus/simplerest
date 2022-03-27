@@ -2,7 +2,7 @@
 
 namespace simplerest\core;
 
-use simplerest\core\libs\Factory;
+use simplerest\core\libs\Strings;
 use simplerest\core\interfaces\Arrayable;
 use simplerest\core\libs\Url;
 
@@ -53,7 +53,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         if (!empty($content_type)){
 
             // Podría ser un switch-case aceptando otros MIMEs
-            if ($content_type == 'application/x-www-form-urlencoded'){
+            if (Strings::contains('application/x-www-form-urlencoded', $content_type)){
                 $data = urldecode($data);
                 $data = Url::parseStrQuery($data);
 
