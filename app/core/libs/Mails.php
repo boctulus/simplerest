@@ -13,6 +13,17 @@ class Mails
     protected static $options     = [];
     protected static $silent      = false;
     protected static $debug_level = null;
+    protected static $mailer      = null;
+
+    // change mailer
+    static function setMailer(string $name){
+        static::$mailer = $name;
+    }
+
+    static function getMailer(){
+        global $config;
+        return static::$mailer ?? $config['email']['mailer_default'];
+    }
 
     static function errors(){
         return static::$errors;
@@ -30,7 +41,7 @@ class Mails
     static function silentDebug($level = null){
         global $config;
 
-        $options = $config['email']['mailers'][ $config['email']['mailer_default'] ];
+        $options = $config['email']['mailers'][ static::getMailer() ];
 
         if (isset($options['SMTPDebug']) && $options['SMTPDebug'] != 0){
             $default_debug_level = $options['SMTPDebug'];
@@ -74,7 +85,7 @@ class Mails
 		$mail = new PHPMailer();
         $mail->isSMTP();
 
-        $mailer = $config['email']['mailer_default'];
+        $mailer = static::getMailer();
 
         $options = array_merge($config['email']['mailers'][$mailer], static::$options);
 
