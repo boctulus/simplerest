@@ -212,6 +212,27 @@ return [
 				// 		'allow_self_signed' => true
 				// 	]
 				// ]
+			],
+
+			'miguel_peru' => [
+				'Host'			=> env('MAIL_HOST_4'),
+				'Port'			=> env('MAIL_PORT_4'),
+				'Username' 		=> env('MAIL_USERNAME_4'),
+				'Password' 		=> env('MAIL_PASSWORD_4'),
+				'SMTPSecure'	=> env('MAIL_ENCRYPTION_4'),
+				'SMTPAuth' 		=> env('MAIL_AUTH_4'),
+				'SMTPDebug' 	=> 0,
+				'CharSet' 		=> 'UTF-8',
+				'Debugutput' 	=> 'html',
+
+				//Extras
+				// 'SMTPOptions'   => [
+				// 	'ssl' => [
+				// 		'verify_peer' => false,
+				// 		'verify_peer_name' => false,
+				// 		'allow_self_signed' => true
+				// 	]					
+				// ]
 			]
 		],
 
