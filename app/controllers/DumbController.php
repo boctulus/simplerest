@@ -3041,6 +3041,25 @@ class DumbController extends Controller
         d(Mails::status(), 'Status');
     }
 
+    function sender_o(){
+        Mails::config([
+            'Timeout' => 10
+        ]);
+
+        Mails::debug(4);
+
+        //Mails::silentDebug();
+
+        //dd(Mails::getMailer());
+        Mails::setMailer('miguel_peru');
+        //dd(Mails::getMailer());
+
+        Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una <b>prueba</b>');    
+        
+        d(Mails::errors(), 'Error');
+        d(Mails::status(), 'Status');
+    }  
+
     // function sender_v8(){
     //     dd(
     //         Mails::sendMail(
