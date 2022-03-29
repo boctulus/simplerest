@@ -37,8 +37,9 @@ class Obfuscator
         $ori2 = "$_dst";
         $dst2 = "$tmp/obsfuscated";
 
-        $cmd  = "php yakpro-po/yakpro-po.php $ori2 -o $dst2";
+        $cmd  = "php yakpro-po/yakpro-po.php $ori2 -o $dst2 --no-obfuscate-variable-name --no-obfuscate-function-name --no-obfuscate-class_constant-name --no-obfuscate-class-name --no-obfuscate-interface-name --no-obfuscate-trait-name --no-obfuscate-property-name --no-obfuscate-method-name --no-obfuscate-namespace-name";
 
+        #chdir(ROOT_PATH . 'yakpro-po');
         $ret  = shell_exec($cmd);
         d($ret);
 
@@ -64,9 +65,6 @@ class Obfuscator
             $content = str_replace(
                 'Php Obfuscator  2.0.13', 
                 'boctulus@gmail.com    ', $content);
-
-
-                
 
             return $content;
         });

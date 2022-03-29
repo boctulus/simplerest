@@ -8040,8 +8040,8 @@ class DumbController extends Controller
     }
 
     function test_ofuscador(){
-        $ori = '/home/www/woo1/wp-content/plugins/auth4wp';
-        $dst = '/home/feli/Desktop/@CLIENTES/AUTH-WP (MIGUEL PERU)/PLUGIN-OFUSCADO';
+        $ori = '/home/www/woo1/wp-content/plugins/auth4wp.ori';
+        $dst = '/home/www/woo1/wp-content/plugins/auth4wp';
         $excluded = <<<FILES
         assets
         locale
@@ -8049,6 +8049,7 @@ class DumbController extends Controller
         README.md
         config.php
         auth4wp.php
+        ;email_cron.php
         FILES;
 
         $ok = Obfuscator::obfuscate($ori, $dst, $excluded);
