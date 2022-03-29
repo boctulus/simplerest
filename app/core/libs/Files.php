@@ -121,7 +121,7 @@ class Files
 	/*
 		Copy single files
 	*/
-	static function cp(string $ori, string $dst, bool $simulate = false, bool $overwrite = true){
+	static function cp(string $ori, string $dst, bool $simulate = false, bool $overwrite = true, ?callable $callable = null){
 		$ori = trim($ori);
         $dst = trim($dst);
 		
@@ -180,18 +180,22 @@ class Files
         StdOut::pprint("Copying $ori > $dst");
 
         if (!$simulate){
-			$ok = null;
-			
-			if (!$ok){
-				if (static::$callable !== null){
-					$file = file_get_contents($dst);
-					$file = call_user_func_array(static::$callable, [$file, $dst]);
+			$callable = $callable ?? static::$callable;
 
-					$ok = (bool) file_put_contents($dst, $file);
-				} else {
-					$ok = @copy($ori, $dst);
-				}
+			if ($callable !== null){
+				$file = file_get_contents($ori);
+
+				// d($dst, 'DST------------');
+				// d($file, 'FILEEEEEEEEEEEE');
+				// exit; ////
+
+				$file = call_user_func_array($callable, [$file, $dst]);
+
+				$ok = (bool) file_put_contents($dst, $file);
+			} else {
+				$ok = @copy($ori, $dst);
 			}
+		
         } else {
             $ok = true;
         }       
@@ -214,7 +218,7 @@ class Files
 		@param $files to be copied
         @param $except files a excluir (de momento sin ruta). It can be an array or a glob pattern
     */
-    static function copy(string $ori, string $dst, ?Array $files = null, ?Array $except = null)
+    static function copy(string $ori, string $dst, ?Array $files = null, ?Array $except = null, ?callable $callable = null)
     {
 		$copied = [];
 		$dst = Strings::removeTrailingSlash($dst);
@@ -391,7 +395,7 @@ class Files
 					*/
 					$str = "$full_path;$dst_path";
 					if (!isset($copied[$str])){
-						static::cp($full_path, $dst_path);
+						static::cp($full_path, $dst_path, false, true, $callable);
 						$copied[$str] = 1;
 					}
                     
@@ -412,7 +416,7 @@ class Files
 			*/
 			$str = "$ori_path;$final_path";
 			if (!isset($copied[$str])){
-				static::cp($ori_path, $final_path);
+				static::cp($ori_path, $final_path, false, true, $callable);
 				$copied[$str] = 1;
 			}
 
