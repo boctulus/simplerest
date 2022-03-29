@@ -47,6 +47,7 @@ use simplerest\core\libs\HtmlBuilder\Tag;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
+use simplerest\core\libs\Obfuscator;
 
 
 class DumbController extends Controller
@@ -7048,22 +7049,7 @@ class DumbController extends Controller
         $o->run(...$p);
     }
 
-    function test_666(){
-        // ahora copio los archivos ofuscados en el destino
-        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
-        $dst = "updates/2021-12-20-0.7.0/";  
-
-        Files::setCallback(function(string $content, string $path){
-            return Strings::removeMultiLineComments($content);
-        });
-
-        Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
-    }
-
-    function test_remove_comments(){
-        $file = file_get_contents('/home/www/simplerest/updates/2021-12-20-0.7.0/files/app/core/Container.php');
-        d(Strings::removeMultiLineComments($file));
-    }
+    
    
     function test_date3(){
         // d(Date::nextNthMonthFirstDay(12));
@@ -8013,6 +7999,60 @@ class DumbController extends Controller
         ]);
 
         //dd(DB::getLog());
+    }
+
+
+    function test_666(){
+        // ahora copio los archivos ofuscados en el destino
+        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
+        $dst = "updates/xxxxxxxx/";  
+
+        Files::setCallback(function(string $content, string $path){
+            return Strings::removeMultiLineComments($content);
+        });
+
+        Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
+    }
+
+    function test_remove_comments(){
+        $file = file_get_contents('/home/www/simplerest/updates/2021-12-20-0.7.0/files/app/core/Container.php');
+        d(Strings::removeMultiLineComments($file));
+    }
+
+    function jj(){
+        Files::setCallback(function(string $content, string $path){
+            $content = str_replace(
+                'YAK Pro', 
+                'Sol.Bin', $content);
+
+            $content = str_replace(
+                'GitHub: https://github.com/pk-fr/yakpro-po', 
+                'solucionbinaria.com                       ', $content);
+
+            var_dump($content);
+
+            return $content;
+        });
+
+
+        Files::cp('/home/www/woo1/wp-content/plugins/auth4wp/ajax.php',
+        '/tmp/obsfuscated'); 
+    }
+
+    function test_ofuscador(){
+        $ori = '/home/www/woo1/wp-content/plugins/auth4wp';
+        $dst = '/home/feli/Desktop/@CLIENTES/AUTH-WP (MIGUEL PERU)/PLUGIN-OFUSCADO';
+        $excluded = <<<FILES
+        assets
+        locale
+        logs
+        README.md
+        config.php
+        auth4wp.php
+        FILES;
+
+        $ok = Obfuscator::obfuscate($ori, $dst, $excluded);
+        d($ok);
     }
     
     
