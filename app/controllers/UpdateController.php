@@ -7,7 +7,7 @@ use simplerest\core\libs\Hardware;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
-use simplerest\libs\Update;
+use simplerest\core\libs\Update;
 use simplerest\core\libs\DB;
 
 /*

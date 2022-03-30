@@ -9,6 +9,7 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Update;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\Obfuscator;
 
 /*
     Arma el update para su distribución
@@ -36,56 +37,41 @@ class PrepareUpdateController extends ConsoleController
     function copy(){
         $ori = '/home/www/simplerest';
         $dst = "updates/{$this->last_update_dir}/";  
-
-        Files::copy($dst, ROOT_PATH, ['version.txt']); 
-
-        $str_files = <<<'FILES'
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; DOC
-        docs
-
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; CORE 
-        app/core
         
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; VARIOS   
-        public/app.php
-        config/constants.php
-        app/models/main/BackgroundProcessModel.php
-        app/schemas/main/BackgroundProcessSchema.php
-       
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; MIGRATIONS
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;app/migrations/2021_11_20_33704817_files.php
-        ;app/migrations/2021_12_07_35172655_files.php   // <-- quedó pendiente
-        app/migrations/2022_01_23_39212347_background_process.php
-        FILES;
-
-        $files = explode(PHP_EOL, $str_files);
-
         $except =  [
             'initial_file_copy.batch',
             'PrepareUpdateController.php',
             'docs/dev',
             'glob:*.zip',
             'PASARELAS DE PAGO.txt',
-            'yakpro-po'
+            'yakpro-po',
+            'vendor',
+            'version.txt',
+            '.git',
+            '.gitignore',
+            'updates',
+            'public/assets',
+            '*.zip',
+            'tmp'
         ];
-
-        Files::copy($ori, $dst . 'files', $files, $except);
-        $this->encode_base();
-    }
-
-    // ofusca core
-    function encode(){
-        $ori = '/home/www/simplerest';
-        $dst = "/tmp";  
 
         Files::delTree($dst);
 
-        $str_except_files = <<<'FILES'
+        
+        /*
+            Revisar porque no está excluyendo!
+
+        */    
+        Files::copy($ori, $dst . 'files', [ 'glob:*' ], $except);
+        $this->encode();
+    }
+
+    // ofusca
+    function encode(){
+        $ori = ROOT_PATH . "updates/{$this->last_update_dir}/";
+        $dst = ROOT_PATH . "/tmp/obfuscated";  
+
+        $excluded = <<<'FILES'
         app/core/ServiceProvider.php
         app/core/View.php
         app/core/Request.php
@@ -100,86 +86,11 @@ class PrepareUpdateController extends ConsoleController
         app/core/templates
         FILES;
 
-        $exclude = explode(PHP_EOL, $str_except_files);
-        Files::copy($ori, $dst, ['app/core'], $exclude);
+        $ok = Obfuscator::obfuscate($ori, $dst, $excluded);
 
-
-        Files::delTree('./tmp');
-
-        // llamar al ofuscador
-        $ori = '/tmp/app/core';
-        $dst = '/tmp/yakpro';
-        $cmd = "php yakpro-po/yakpro-po.php $ori -o ./tmp";
-
-        $ret = shell_exec($cmd);
-        d($ret);
-
-        // ahora copio los archivos ofuscados en el destino
-
-        /*
-            Seteo callback para remover comentarios
-
-            aunque innecesario porque yakpro llama a function.php-strip-whitespace()
-        */
-        Files::setCallback(function(string $content, string $path){
-            return Strings::removeMultiLineComments($content);
-        });
-
-        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
-        $dst = "updates/{$this->last_update_dir}/";  
-        Files::copy($ori, $dst . 'files/app/core');
-
-        Files::setCallback(null);
-
-        // Copio archivos excluidos sin ofuscar
-        $ori = '/home/www/simplerest/';
-        $dst = "updates/{$this->last_update_dir}/";  
-        Files::copy($ori, $dst . 'files', $exclude);
+        Files::copy($dst, $ori);
     }
 
-    function encode_base(){
-        $ori = '/home/www/simplerest/app/';
-        $dst = "/tmp/app/";  
-
-        Files::delTree($dst);
-        Files::mkDir($dst);
-
-        /*
-            En esta primera iteración solo ofuscaré unos pocos archivos
-        */
-
-        Files::copy($ori, $dst, [
-            'core/libs/DB.php',
-            'core/libs/Files.php',            
-            'core/Model.php',
-            'core/api/v1/ApiController.php',
-            'core/libs/Strings.php',
-            'core/libs/Reflector.php',
-            'core/Container.php',
-            'app/core/libs/System.php'
-        ]);
-
-        Files::delTree('./tmp');
-
-        // llamar al ofuscador
-        $ori = '/tmp/app/core';
-        $dst = '/tmp/yakpro';
-        $cmd = "php yakpro-po/yakpro-po.php $ori -o ./tmp";
-
-        $ret = shell_exec($cmd);
-        d($ret);
-        
-        // ahora copio los archivos ofuscados en el destino
-
-        // seteo callback para remover comentarios
-        Files::setCallback(function(string $content, string $path){
-            return Strings::removeMultiLineComments($content);
-        });
-
-        $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
-        $dst = "updates/{$this->last_update_dir}/";  
-        Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
-    }
 
     function zip(){
         Update::compress($this->last_update_dir);
