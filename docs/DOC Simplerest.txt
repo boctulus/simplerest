@@ -7859,6 +7859,16 @@ Ej:
 
 	Files::copy($ori, $dst); 
 
+Otro ejemplo:
+
+	Files::setCallback(function(string $content, string $path){
+		$content = str_replace(
+			'rosas', 
+			'violetas', $content);
+
+		return $content;
+	});
+
 
 ### Compresión de archivos a ZIP
 
@@ -7887,6 +7897,26 @@ Lo interesante es que la clase para la API generada tiene dos propiedades públi
     public $table_name
 
 Si se modifica $model_name a por ejemplo "OtroModel" entonces los permisos sobre recursos del ACL -definidos en acl.php- aplicarán para la tabla "otro".
+
+
+### Ofuscación de archivos
+
+Ej:
+
+	$ori = '/home/www/woo1/wp-content/plugins/auth4wp.ori';
+	$dst = '/home/www/woo1/wp-content/plugins/auth4wp';
+
+	$excluded = <<<FILES
+	assets
+	locale
+	logs
+	README.md
+	config.php
+	auth4wp.php
+	;email_cron.php
+	FILES;
+
+	$ok = Obfuscator::obfuscate($ori, $dst, $excluded);
 
 
 ### Actualizaciones del framework
