@@ -14,6 +14,14 @@ use simplerest\core\libs\Strings;
 
 class Obfuscator
 {
+    /*
+        TODO:
+
+        - Ofuscar también los JS !!!
+
+        https://www.npmjs.com/package/javascript-obfuscator
+        
+    */
     static function obfuscate(string $ori, string $dst, $excluded)
     {   
         $tmp  = sys_get_temp_dir();
