@@ -7948,6 +7948,12 @@ El escenario es que el framework evoluciona, se crean nuevas librerías, funcion
 
 # Update <implementando>
 
+Creación de un nuevo update
+
+Ej:
+
+	php com make update 0.8.0
+
 El usuario mediante comandos podrá verificar cuántos updates tiene pendientes enviando las credenciales al endpoint correspondiente:
 
 	GET {url_repository}/api/v1/updates?created_at[gt]={last_updated}&orderBy=created_at
