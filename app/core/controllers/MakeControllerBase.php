@@ -133,6 +133,12 @@ class MakeControllerBase extends Controller
         --unignore | --retry
         --remove
         --strict
+
+        php com make update {version}
+
+        Ex:
+
+        php com make update 0.8.0
           
         make helper my_helper [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make lib my_lib [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
