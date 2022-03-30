@@ -6281,11 +6281,12 @@ class DumbController extends Controller
         'app/controllers');        
     }
 
-    function test_copy0(){
+    // OK
+    function test_copy00(){
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
-        // Antes de iniciar la prueba limpio el directorio destino
+        Files::mkDirOrFail($dst);
         Files::delTree($dst);
         
         Files::copy($ori, $dst, [
@@ -6298,6 +6299,23 @@ class DumbController extends Controller
             'docs/dev',
             #'/home/www/simplerest/docs/dev/TODO Supra.txt',
             'docs/INSTALACION.txt'
+        ]);
+    }
+
+    // OK
+    function test_copy01(){
+        $ori = '/home/www';
+        $dst = '/home/feli/Desktop/UPDATE';
+
+        Files::mkDirOrFail($dst);
+        Files::delTree($dst);
+        
+        Files::copy($ori, $dst, [
+            'simplerest'
+        ], 
+        [
+            'simplerest/docs/dev',
+            'simplerest/docs/INSTALACION.txt'
         ]);
     }
 
@@ -6333,8 +6351,9 @@ class DumbController extends Controller
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
-        // Antes de iniciar la prueba limpio el directorio destino
+        Files::mkDirOrFail($dst);
         Files::delTree($dst);
+        
         
         Files::copy($ori, $dst, [
             'docs',
@@ -8001,6 +8020,41 @@ class DumbController extends Controller
         //dd(DB::getLog());
     }
 
+    function sec(){
+        /*
+
+            woo1.lan
+
+            Array
+            (
+                'wo.a',
+                'o1ln'
+            )
+
+            import-quoter.solucionbinaria.com
+
+            Array
+            (
+                [0] => ipr-utrslcobnracm
+                [1] => motqoe.ouiniai.o
+            )
+
+            apiwp.fuentessoft.com
+
+            Array
+            (
+                [0] => aipfetsotcm
+                [1] => pw.unesf.o
+            )
+
+        */
+
+        $fglg67788 = 'import-quoter.solucionbinaria.com';
+        dd(Strings::deinterlace($fglg67788));
+
+        //$hh89_066 = ['hs', 'ot'];
+        //dd(Strings::interlace($hh89_066));        
+    }
 
     function test_666(){
         // ahora copio los archivos ofuscados en el destino
@@ -8053,40 +8107,91 @@ class DumbController extends Controller
         d($ok);
     }
     
-    function sec(){
-        /*
 
-            woo1.lan
+    function hash(){
+        
+        // $date = '2022-04-04';
+        // echo Obfuscator::encryptDecrypt('encrypt', $date);
+        // exit;
 
-            Array
-            (
-                [0] => wo.a
-                [1] => o1ln
-            )
+        $f = 'Y-m-d';
+        $d = new \DateTime('');
+        $t = $d->format($f);
 
-            import-quoter.solucionbinaria.com
+        if ($t > Obfuscator::encryptDecrypt('decrypt', 'MTFmMHc2cVBRVHlKMmZxSEVxbnBGQT09')){
+            exit;
+        }
 
-            Array
-            (
-                [0] => ipr-utrslcobnracm
-                [1] => motqoe.ouiniai.o
-            )
-
-            apiwp.fuentessoft.com
-
-            Array
-            (
-                [0] => aipfetsotcm
-                [1] => pw.unesf.o
-            )
-
-        */
-
-        $fglg67788 = 'import-quoter.solucionbinaria.com';
-        dd(Strings::deinterlace($fglg67788));
-
-        //$hh89_066 = ['hs', 'ot'];
-        //dd(Strings::interlace($hh89_066));        
+        echo 'OK';
     }
+
+
+    function ofsum()
+    {
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY0ODU5ODk0NCwiZXhwIjoxNjU3NTk4OTQ0LCJpcCI6IjE4Ni4xMDEuMTQ0LjE4IiwidXNlcl9hZ2VudCI6IlBvc3RtYW5SdW50aW1lLzcuMjkuMCIsInVpZCI6Mywicm9sZXMiOlsic3Vic2NyaWJlciJdfQ._BPlg7aSZDJ51HuRg7a9i23wXL51R6ONxBYeelU8aZw";
+
+        $domain = 'apiwp.fuentessoft.com';
+
+        ////////////////////////////////////
+
+        $str = strrev($domain) . $domain .  strrev($domain) ;
+
+        $acc = 0;
+        for($i=0; $i<strlen($str) -3; $i++){
+            $acc += ord($str[$i]) * ($i+2);
+        }
+
+        $fix = function(int $val){
+            while ($val > 90){
+                $val -= 20;
+            }
+
+            return $val;
+        };
+        
+        $s   = (string) $acc;
+
+        $ord1 = $fix(substr($s, 0, 3));
+        $ord2 = $fix(substr($s, 3, 8));
+        $ord3 = $ord2 + 1;;
+    
+        // J
+        d(chr($ord1). " ($ord1)", 'ord1');
+        
+        // O
+        d(chr($ord2). " ($ord2)", 'ord2');
+
+        // P
+        d(chr($ord3). " ($ord3)", 'ord3');
+
+        // dd(chr($ord1), 'ord1');
+        // dd(chr($ord2), 'ord2');
+
+        $c1 = chr($ord1);
+        $c2 = chr($ord2);
+        $c3 = chr($ord3);
+        $c4 = ctype_upper($c1) ? strtolower($c1) : strtoupper($c1);
+        $c5 = ctype_upper($c2) ? strtolower($c2) : strtoupper($c2);
+        $c6 = ctype_upper($c3) ? strtolower($c3) : strtoupper($c3);
+
+        $token = str_replace([
+            $c1,
+            $c2,
+            $c3,
+            $c4,
+            $c5,
+            $c6
+        ],
+        [
+            'J',
+            'O',
+            'P',
+            'j',
+            'o',
+            'p'
+        ], $token);
+
+    }
+ 
     
 }   

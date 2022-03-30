@@ -45,7 +45,7 @@ class Obfuscator
         $ori2 = "$_dst";
         $dst2 = "$tmp/obsfuscated";
 
-        $cmd  = "php yakpro-po/yakpro-po.php $ori2 -o $dst2 --no-obfuscate-variable-name --no-obfuscate-function-name --no-obfuscate-class_constant-name --no-obfuscate-class-name --no-obfuscate-interface-name --no-obfuscate-trait-name --no-obfuscate-property-name --no-obfuscate-method-name --no-obfuscate-namespace-name";
+        $cmd  = "php yakpro-po/yakpro-po.php $ori2 -o $dst2 --no-obfuscate-variable-name --no-obfuscate-function-name --no-obfuscate-class_constant-name --no-obfuscate-class-name --no-obfuscate-interface-name --no-obfuscate-trait-name --no-obfuscate-property-name --no-obfuscate-method-name --no-obfuscate-namespace-name --obfuscate-if-statement";
 
         #chdir(ROOT_PATH . 'yakpro-po');
         $ret  = shell_exec($cmd);
@@ -82,5 +82,28 @@ class Obfuscator
         d('Hecho!');
     }
 
+    // https://stackoverflow.com/a/60283328/980631
+    static function encryptDecrypt($action, $string) 
+    {
+        $output = false;
+        $encrypt_method = "AES-256-CBC";
+        $secret_key = 'dkmdkj89LLL__d.d.fd-(DD';
+        $secret_iv = 'L0#%3fllflpLOKkjkl,32k1o1l,10i';
+        
+        // hash
+        $key = hash('sha256', $secret_key);    
+        // iv - encrypt method AES-256-CBC expects 16 bytes 
+        
+        $iv = substr(hash('sha256', $secret_iv), 0, 16);
+        
+        if ( $action == 'encrypt' ) {
+            $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
+            $output = base64_encode($output);
+        } else if( $action == 'decrypt' ) {
+            $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+        }
+
+        return $output;
+    }
 }
 

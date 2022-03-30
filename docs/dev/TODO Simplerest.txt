@@ -199,6 +199,37 @@ Ej:
   })->describe('Execute SQL query')
 
 
+- Reparar Files:copy()
+
+Parece que así *no* respeta los $except
+
+  $ori = '/home/www/simplerest';
+  $dst = "updates/{$this->last_update_dir}/";  
+
+  $except =  [
+      'initial_file_copy.batch',
+      'PrepareUpdateController.php',
+      'docs/dev',
+      'glob:*.zip',
+      'PASARELAS DE PAGO.txt',
+      'yakpro-po',
+      'vendor',
+      'version.txt',
+      '.git',
+      '.gitignore',
+      'updates',
+      'public/assets',
+      '*.zip',
+      'tmp'
+  ];
+
+  /*
+      Revisar porque no está excluyendo !!
+  */    
+  Files::copy($ori, $dst . 'files', [ 'glob:*' ], $except);
+
+
+
 [ Front ]
 
 - Considerar Alpine Js como alternativa a VueJs ... y como complemento para el Form Builder como se usa en Laravel.
