@@ -8029,8 +8029,6 @@ class DumbController extends Controller
                 'GitHub: https://github.com/pk-fr/yakpro-po', 
                 'solucionbinaria.com                       ', $content);
 
-            var_dump($content);
-
             return $content;
         });
 
@@ -8040,8 +8038,8 @@ class DumbController extends Controller
     }
 
     function test_ofuscador(){
-        $ori = '/home/www/woo1/wp-content/plugins/auth4wp.ori';
-        $dst = '/home/www/woo1/wp-content/plugins/auth4wp';
+        $ori = '/home/www/woo1/wp-content/plugins/auth4wp';
+        $dst = '/home/www/woo1/wp-content/plugins/auth4wp.obfuscated';
         $excluded = <<<FILES
         assets
         locale
@@ -8049,12 +8047,46 @@ class DumbController extends Controller
         README.md
         config.php
         auth4wp.php
-        ;email_cron.php
         FILES;
 
         $ok = Obfuscator::obfuscate($ori, $dst, $excluded);
         d($ok);
     }
     
+    function sec(){
+        /*
+
+            woo1.lan
+
+            Array
+            (
+                [0] => wo.a
+                [1] => o1ln
+            )
+
+            import-quoter.solucionbinaria.com
+
+            Array
+            (
+                [0] => ipr-utrslcobnracm
+                [1] => motqoe.ouiniai.o
+            )
+
+            apiwp.fuentessoft.com
+
+            Array
+            (
+                [0] => aipfetsotcm
+                [1] => pw.unesf.o
+            )
+
+        */
+
+        $fglg67788 = 'import-quoter.solucionbinaria.com';
+        dd(Strings::deinterlace($fglg67788));
+
+        //$hh89_066 = ['hs', 'ot'];
+        //dd(Strings::interlace($hh89_066));        
+    }
     
 }   

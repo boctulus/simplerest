@@ -877,7 +877,7 @@ class Strings
     }
 
 	/*
-		Entrelaza (hace un merge) de un arrat de strings
+		Entrelaza (hace un merge) de un array de strings
 	*/
     static function interlace(Array $str) : string {
         $ret = '';
