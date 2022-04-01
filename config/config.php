@@ -233,7 +233,29 @@ return [
 				// 		'allow_self_signed' => true
 				// 	]					
 				// ]
+			],
+
+			'solbin_sblue' => [
+				'Host'			=> env('MAIL_HOST_5'),
+				'Port'			=> env('MAIL_PORT_5'),
+				'Username' 		=> env('MAIL_USERNAME_5'),
+				'Password' 		=> env('MAIL_PASSWORD_5'),
+				'SMTPSecure'	=> env('MAIL_ENCRYPTION_5'),
+				'SMTPAuth' 		=> env('MAIL_AUTH_5'),
+				'SMTPDebug' 	=> 0,
+				'CharSet' 		=> 'UTF-8',
+				'Debugutput' 	=> 'html',
+
+				//Extras
+				// 'SMTPOptions'   => [
+				// 	'ssl' => [
+				// 		'verify_peer' => false,
+				// 		'verify_peer_name' => false,
+				// 		'allow_self_signed' => true
+				// 	]					
+				// ]
 			]
+
 		],
 
 		'mailer_default' => 'pulque'

@@ -49,6 +49,10 @@ use PHPMailer\PHPMailer\SMTP;
 
 use simplerest\core\libs\Obfuscator;
 
+use GuzzleHttp;
+use simplerest\libs\SendinBlue\Client\Configuration;
+use simplerest\libs\SendinBlue\Client\Api\AccountApi;
+
 
 class DumbController extends Controller
 {
@@ -3048,14 +3052,21 @@ class DumbController extends Controller
         ]);
 
         Mails::debug(4);
-
         //Mails::silentDebug();
 
-        //dd(Mails::getMailer());
-        Mails::setMailer('miguel_peru');
-        //dd(Mails::getMailer());
+        Mails::setMailer('solbin_sblue');
 
-        Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una <b>prueba</b>');    
+        Mails::sendMail(
+            'boctulus@gmail.com', 
+            'Pablo', 
+            'Pruebita 002', 
+            'Hola!<p/>Esto es una <b>prueba</b>', 
+            null, 
+            null, 
+            null, 
+            null, 
+            'pulketo@gmail.com', 
+            'ing.mario.alberto@gmail.com');    
         
         d(Mails::errors(), 'Error');
         d(Mails::status(), 'Status');
@@ -3091,6 +3102,40 @@ class DumbController extends Controller
             print $response->body() . "\n";
         } catch (\Exception $e) {
             echo 'Caught exception: '. $e->getMessage() ."\n";
+        }
+    }
+
+
+    /*
+        smtp key name:pablo
+        smtp key value: xsmtpsib-ad670e8836116168de12e1d33c294bfc740dd51f2bdea3213c22b322d7e52aa0-HMJadEBmGqjhWCcF
+    */
+    function sendinblue(){
+        $smtp_key = 'pablo';
+        $smtp_val = 'xsmtpsib-ad670e8836116168de12e1d33c294bfc740dd51f2bdea3213c22b322d7e52aa0-HMJadEBmGqjhWCcF';
+
+
+        // Configure API key authorization: api-key
+        $config = Configuration::getDefaultConfiguration()->setApiKey('api-key', $smtp_val);
+        // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+        // $config = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('api-key', 'Bearer');
+        // Configure API key authorization: partner-key
+        $config = Configuration::getDefaultConfiguration()->setApiKey('partner-key', $smtp_val);
+        // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+        // $config = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('partner-key', 'Bearer');
+
+        $apiInstance = new AccountApi(
+            // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+            // This is optional, `GuzzleHttp\Client` will be used as default.
+            new GuzzleHttp\Client(),
+            $config
+        );
+
+        try {
+            $result = $apiInstance->getAccount();
+            print_r($result);
+        } catch (\Exception $e) {
+            echo 'Exception when calling AccountApi->getAccount: ', $e->getMessage(), PHP_EOL;
         }
     }
 
@@ -4296,6 +4341,7 @@ class DumbController extends Controller
     }
 
     function test_api06(){
+
         $response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
             [             
                 'Content-Type: application/json',
@@ -4309,6 +4355,7 @@ class DumbController extends Controller
         );
 
         dd($response, 'RES');
+        
     }
 
     function parse_class(){
