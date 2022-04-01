@@ -36,8 +36,11 @@ class PrepareUpdateController extends ConsoleController
 
     function copy(){
         $ori = '/home/www/simplerest';
-        $dst = "updates/{$this->last_update_dir}/";  
-        
+        $dst = ROOT_PATH . "updates/{$this->last_update_dir}/";  
+              
+        /*
+            Revisar porque no está excluyendo!
+        */    
         $except =  [
             'initial_file_copy.batch',
             'PrepareUpdateController.php',
@@ -57,11 +60,6 @@ class PrepareUpdateController extends ConsoleController
 
         Files::delTree($dst);
 
-        
-        /*
-            Revisar porque no está excluyendo!
-
-        */    
         Files::copy($ori, $dst . 'files', [ 'glob:*' ], $except);
         $this->encode();
     }
