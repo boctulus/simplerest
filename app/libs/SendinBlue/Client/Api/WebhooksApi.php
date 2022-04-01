@@ -92,11 +92,11 @@ class WebhooksApi
      *
      * Create a webhook
      *
-     * @param  \SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateModel
      */
     public function createWebhook($createWebhook)
     {
@@ -109,15 +109,15 @@ class WebhooksApi
      *
      * Create a webhook
      *
-     * @param  \SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createWebhookWithHttpInfo($createWebhook)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createWebhookRequest($createWebhook);
 
         try {
@@ -169,7 +169,7 @@ class WebhooksApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -177,7 +177,7 @@ class WebhooksApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -192,7 +192,7 @@ class WebhooksApi
      *
      * Create a webhook
      *
-     * @param  \SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -212,14 +212,14 @@ class WebhooksApi
      *
      * Create a webhook
      *
-     * @param  \SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createWebhookAsyncWithHttpInfo($createWebhook)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createWebhookRequest($createWebhook);
 
         return $this->client
@@ -262,7 +262,7 @@ class WebhooksApi
     /**
      * Create request for operation 'createWebhook'
      *
-     * @param  \SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateWebhook $createWebhook Values to create a webhook (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -376,7 +376,7 @@ class WebhooksApi
      *
      * @param  int $webhookId Id of the webhook (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -392,7 +392,7 @@ class WebhooksApi
      *
      * @param  int $webhookId Id of the webhook (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -436,7 +436,7 @@ class WebhooksApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -444,7 +444,7 @@ class WebhooksApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -634,9 +634,9 @@ class WebhooksApi
      *
      * @param  int $webhookId Id of the webhook (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetWebhook
+     * @return simplerest\libs\SendinBlue\Client\Model\GetWebhook
      */
     public function getWebhook($webhookId)
     {
@@ -651,13 +651,13 @@ class WebhooksApi
      *
      * @param  int $webhookId Id of the webhook (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetWebhook, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetWebhook, HTTP status code, HTTP response headers (array of strings)
      */
     public function getWebhookWithHttpInfo($webhookId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetWebhook';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetWebhook';
         $request = $this->getWebhookRequest($webhookId);
 
         try {
@@ -709,7 +709,7 @@ class WebhooksApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetWebhook',
+                        'simplerest\libs\SendinBlue\Client\Model\GetWebhook',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -717,7 +717,7 @@ class WebhooksApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -725,7 +725,7 @@ class WebhooksApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -767,7 +767,7 @@ class WebhooksApi
      */
     public function getWebhookAsyncWithHttpInfo($webhookId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetWebhook';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetWebhook';
         $request = $this->getWebhookRequest($webhookId);
 
         return $this->client
@@ -930,9 +930,9 @@ class WebhooksApi
      * @param  string $type Filter on webhook type (optional, default to transactional)
      * @param  string $sort Sort the results in the ascending/descending order of webhook creation (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetWebhooks
+     * @return simplerest\libs\SendinBlue\Client\Model\GetWebhooks
      */
     public function getWebhooks($type = 'transactional', $sort = 'desc')
     {
@@ -948,13 +948,13 @@ class WebhooksApi
      * @param  string $type Filter on webhook type (optional, default to transactional)
      * @param  string $sort Sort the results in the ascending/descending order of webhook creation (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetWebhooks, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetWebhooks, HTTP status code, HTTP response headers (array of strings)
      */
     public function getWebhooksWithHttpInfo($type = 'transactional', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetWebhooks';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetWebhooks';
         $request = $this->getWebhooksRequest($type, $sort);
 
         try {
@@ -1006,7 +1006,7 @@ class WebhooksApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetWebhooks',
+                        'simplerest\libs\SendinBlue\Client\Model\GetWebhooks',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1014,7 +1014,7 @@ class WebhooksApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1058,7 +1058,7 @@ class WebhooksApi
      */
     public function getWebhooksAsyncWithHttpInfo($type = 'transactional', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetWebhooks';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetWebhooks';
         $request = $this->getWebhooksRequest($type, $sort);
 
         return $this->client
@@ -1214,9 +1214,9 @@ class WebhooksApi
      * Update a webhook
      *
      * @param  int $webhookId Id of the webhook (required)
-     * @param  \SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1231,9 +1231,9 @@ class WebhooksApi
      * Update a webhook
      *
      * @param  int $webhookId Id of the webhook (required)
-     * @param  \SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1277,7 +1277,7 @@ class WebhooksApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1285,7 +1285,7 @@ class WebhooksApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1301,7 +1301,7 @@ class WebhooksApi
      * Update a webhook
      *
      * @param  int $webhookId Id of the webhook (required)
-     * @param  \SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1322,7 +1322,7 @@ class WebhooksApi
      * Update a webhook
      *
      * @param  int $webhookId Id of the webhook (required)
-     * @param  \SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1359,7 +1359,7 @@ class WebhooksApi
      * Create request for operation 'updateWebhook'
      *
      * @param  int $webhookId Id of the webhook (required)
-     * @param  \SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateWebhook $updateWebhook Values to update a webhook (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

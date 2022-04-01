@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SubAccountDetailsResponsePlanInfoFeatures Class Doc Comment
@@ -58,9 +58,9 @@ class SubAccountDetailsResponsePlanInfoFeatures implements ModelInterface, Array
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'inbox' => '\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesInbox',
-        'landingPage' => '\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesLandingPage',
-        'users' => '\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesUsers'
+        'inbox' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesInbox',
+        'landingPage' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesLandingPage',
+        'users' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesUsers'
     ];
 
     /**
@@ -220,7 +220,7 @@ class SubAccountDetailsResponsePlanInfoFeatures implements ModelInterface, Array
     /**
      * Gets inbox
      *
-     * @return \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesInbox
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesInbox
      */
     public function getInbox()
     {
@@ -230,7 +230,7 @@ class SubAccountDetailsResponsePlanInfoFeatures implements ModelInterface, Array
     /**
      * Sets inbox
      *
-     * @param \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesInbox $inbox inbox
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesInbox $inbox inbox
      *
      * @return $this
      */
@@ -244,7 +244,7 @@ class SubAccountDetailsResponsePlanInfoFeatures implements ModelInterface, Array
     /**
      * Gets landingPage
      *
-     * @return \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesLandingPage
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesLandingPage
      */
     public function getLandingPage()
     {
@@ -254,7 +254,7 @@ class SubAccountDetailsResponsePlanInfoFeatures implements ModelInterface, Array
     /**
      * Sets landingPage
      *
-     * @param \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesLandingPage $landingPage landingPage
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesLandingPage $landingPage landingPage
      *
      * @return $this
      */
@@ -268,7 +268,7 @@ class SubAccountDetailsResponsePlanInfoFeatures implements ModelInterface, Array
     /**
      * Gets users
      *
-     * @return \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesUsers
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesUsers
      */
     public function getUsers()
     {
@@ -278,7 +278,7 @@ class SubAccountDetailsResponsePlanInfoFeatures implements ModelInterface, Array
     /**
      * Sets users
      *
-     * @param \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesUsers $users users
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeaturesUsers $users users
      *
      * @return $this
      */

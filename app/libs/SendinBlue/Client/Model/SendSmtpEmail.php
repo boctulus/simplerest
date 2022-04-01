@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SendSmtpEmail Class Doc Comment
@@ -40,7 +40,7 @@ use \SendinBlue\Client\ObjectSerializer;
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
-class SendSmtpEmail implements ModelInterface, ArrayAccess
+class SendSmtpEmail implements ModelInterface /*, ArrayAccess */
 {
     const DISCRIMINATOR = null;
 
@@ -57,19 +57,19 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'sender' => '\SendinBlue\Client\Model\SendSmtpEmailSender',
-        'to' => '\SendinBlue\Client\Model\SendSmtpEmailTo[]',
-        'bcc' => '\SendinBlue\Client\Model\SendSmtpEmailBcc[]',
-        'cc' => '\SendinBlue\Client\Model\SendSmtpEmailCc[]',
+        'sender' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailSender',
+        'to' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailTo[]',
+        'bcc' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailBcc[]',
+        'cc' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailCc[]',
         'htmlContent' => 'string',
         'textContent' => 'string',
         'subject' => 'string',
-        'replyTo' => '\SendinBlue\Client\Model\SendSmtpEmailReplyTo',
-        'attachment' => '\SendinBlue\Client\Model\SendSmtpEmailAttachment[]',
+        'replyTo' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailReplyTo',
+        'attachment' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailAttachment[]',
         'headers' => 'object',
         'templateId' => 'int',
         'params' => 'object',
-        'messageVersions' => '\SendinBlue\Client\Model\SendSmtpEmailMessageVersions[]',
+        'messageVersions' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailMessageVersions[]',
         'tags' => 'string[]'
     ];
 
@@ -285,7 +285,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Gets sender
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailSender
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailSender
      */
     public function getSender()
     {
@@ -295,7 +295,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Sets sender
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailSender $sender sender
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailSender $sender sender
      *
      * @return $this
      */
@@ -309,7 +309,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Gets to
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailTo[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailTo[]
      */
     public function getTo()
     {
@@ -319,7 +319,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Sets to
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailTo[] $to Mandatory if messageVersions are not passed, ignored if messageVersions are passed. List of email addresses and names (optional) of the recipients. For example, [{\"name\":\"Jimmy\", \"email\":\"jimmy98@example.com\"}, {\"name\":\"Joe\", \"email\":\"joe@example.com\"}]
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailTo[] $to Mandatory if messageVersions are not passed, ignored if messageVersions are passed. List of email addresses and names (optional) of the recipients. For example, [{\"name\":\"Jimmy\", \"email\":\"jimmy98@example.com\"}, {\"name\":\"Joe\", \"email\":\"joe@example.com\"}]
      *
      * @return $this
      */
@@ -333,7 +333,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Gets bcc
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailBcc[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailBcc[]
      */
     public function getBcc()
     {
@@ -343,7 +343,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Sets bcc
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailBcc[] $bcc List of email addresses and names (optional) of the recipients in bcc
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailBcc[] $bcc List of email addresses and names (optional) of the recipients in bcc
      *
      * @return $this
      */
@@ -357,7 +357,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Gets cc
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailCc[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailCc[]
      */
     public function getCc()
     {
@@ -367,7 +367,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Sets cc
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailCc[] $cc List of email addresses and names (optional) of the recipients in cc
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailCc[] $cc List of email addresses and names (optional) of the recipients in cc
      *
      * @return $this
      */
@@ -453,7 +453,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Gets replyTo
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailReplyTo
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailReplyTo
      */
     public function getReplyTo()
     {
@@ -463,7 +463,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Sets replyTo
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailReplyTo $replyTo replyTo
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailReplyTo $replyTo replyTo
      *
      * @return $this
      */
@@ -477,7 +477,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Gets attachment
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailAttachment[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailAttachment[]
      */
     public function getAttachment()
     {
@@ -487,7 +487,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Sets attachment
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailAttachment[] $attachment Pass the absolute URL (no local file) or the base64 content of the attachment along with the attachment name (Mandatory if attachment content is passed). For example, `[{\"url\":\"https://attachment.domain.com/myAttachmentFromUrl.jpg\", \"name\":\"myAttachmentFromUrl.jpg\"}, {\"content\":\"base64 example content\", \"name\":\"myAttachmentFromBase64.jpg\"}]`. Allowed extensions for attachment file: xlsx, xls, ods, docx, docm, doc, csv, pdf, txt, gif, jpg, jpeg, png, tif, tiff, rtf, bmp, cgm, css, shtml, html, htm, zip, xml, ppt, pptx, tar, ez, ics, mobi, msg, pub, eps, odt, mp3, m4a, m4v, wma, ogg, flac, wav, aif, aifc, aiff, mp4, mov, avi, mkv, mpeg, mpg and wmv ( If 'templateId' is passed and is in New Template Language format then both attachment url and content are accepted. If template is in Old template Language format, then 'attachment' is ignored )
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailAttachment[] $attachment Pass the absolute URL (no local file) or the base64 content of the attachment along with the attachment name (Mandatory if attachment content is passed). For example, `[{\"url\":\"https://attachment.domain.com/myAttachmentFromUrl.jpg\", \"name\":\"myAttachmentFromUrl.jpg\"}, {\"content\":\"base64 example content\", \"name\":\"myAttachmentFromBase64.jpg\"}]`. Allowed extensions for attachment file: xlsx, xls, ods, docx, docm, doc, csv, pdf, txt, gif, jpg, jpeg, png, tif, tiff, rtf, bmp, cgm, css, shtml, html, htm, zip, xml, ppt, pptx, tar, ez, ics, mobi, msg, pub, eps, odt, mp3, m4a, m4v, wma, ogg, flac, wav, aif, aifc, aiff, mp4, mov, avi, mkv, mpeg, mpg and wmv ( If 'templateId' is passed and is in New Template Language format then both attachment url and content are accepted. If template is in Old template Language format, then 'attachment' is ignored )
      *
      * @return $this
      */
@@ -573,7 +573,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Gets messageVersions
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailMessageVersions[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailMessageVersions[]
      */
     public function getMessageVersions()
     {
@@ -583,7 +583,7 @@ class SendSmtpEmail implements ModelInterface, ArrayAccess
     /**
      * Sets messageVersions
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailMessageVersions[] $messageVersions You can customize and send out multiple versions of a templateId. Some global parameters such as **to(mandatory), bcc, cc, replyTo, subject** can also be customized specific to each version. The size of individual params in all the messageVersions shall not exceed 100 KB limit and that of cumulative params shall not exceed 1000 KB. This feature is currently in its beta version. You can follow this **step-by-step guide** on how to use **messageVersions** to batch send emails - https://developers.sendinblue.com/docs/batch-send-transactional-emails
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailMessageVersions[] $messageVersions You can customize and send out multiple versions of a templateId. Some global parameters such as **to(mandatory), bcc, cc, replyTo, subject** can also be customized specific to each version. The size of individual params in all the messageVersions shall not exceed 100 KB limit and that of cumulative params shall not exceed 1000 KB. This feature is currently in its beta version. You can follow this **step-by-step guide** on how to use **messageVersions** to batch send emails - https://developers.sendinblue.com/docs/batch-send-transactional-emails
      *
      * @return $this
      */

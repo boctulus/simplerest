@@ -93,9 +93,9 @@ class MasterAccountApi
      * Get the details of requested master account
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\MasterDetailsResponse
+     * @return simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponse
      */
     public function corporateMasterAccountGet()
     {
@@ -109,13 +109,13 @@ class MasterAccountApi
      * Get the details of requested master account
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\MasterDetailsResponse, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponse, HTTP status code, HTTP response headers (array of strings)
      */
     public function corporateMasterAccountGetWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\MasterDetailsResponse';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponse';
         $request = $this->corporateMasterAccountGetRequest();
 
         try {
@@ -167,7 +167,7 @@ class MasterAccountApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\MasterDetailsResponse',
+                        'simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponse',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -175,7 +175,7 @@ class MasterAccountApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -215,7 +215,7 @@ class MasterAccountApi
      */
     public function corporateMasterAccountGetAsyncWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\MasterDetailsResponse';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponse';
         $request = $this->corporateMasterAccountGetRequest();
 
         return $this->client
@@ -363,9 +363,9 @@ class MasterAccountApi
      * @param  int $offset Page number of sub-accounts listing (required)
      * @param  int $limit Number of sub-accounts to be displayed on each page (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\SubAccountsResponse
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountsResponse
      */
     public function corporateSubAccountGet($offset, $limit)
     {
@@ -381,13 +381,13 @@ class MasterAccountApi
      * @param  int $offset Page number of sub-accounts listing (required)
      * @param  int $limit Number of sub-accounts to be displayed on each page (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\SubAccountsResponse, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\SubAccountsResponse, HTTP status code, HTTP response headers (array of strings)
      */
     public function corporateSubAccountGetWithHttpInfo($offset, $limit)
     {
-        $returnType = '\SendinBlue\Client\Model\SubAccountsResponse';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\SubAccountsResponse';
         $request = $this->corporateSubAccountGetRequest($offset, $limit);
 
         try {
@@ -439,7 +439,7 @@ class MasterAccountApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\SubAccountsResponse',
+                        'simplerest\libs\SendinBlue\Client\Model\SubAccountsResponse',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -447,7 +447,7 @@ class MasterAccountApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -491,7 +491,7 @@ class MasterAccountApi
      */
     public function corporateSubAccountGetAsyncWithHttpInfo($offset, $limit)
     {
-        $returnType = '\SendinBlue\Client\Model\SubAccountsResponse';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\SubAccountsResponse';
         $request = $this->corporateSubAccountGetRequest($offset, $limit);
 
         return $this->client
@@ -660,7 +660,7 @@ class MasterAccountApi
      *
      * @param  int $id Id of the sub-account organization to be deleted (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -676,7 +676,7 @@ class MasterAccountApi
      *
      * @param  int $id Id of the sub-account organization to be deleted (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -902,9 +902,9 @@ class MasterAccountApi
      *
      * @param  int $id Id of the sub-account organization (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\SubAccountDetailsResponse
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponse
      */
     public function corporateSubAccountIdGet($id)
     {
@@ -919,13 +919,13 @@ class MasterAccountApi
      *
      * @param  int $id Id of the sub-account organization (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\SubAccountDetailsResponse, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponse, HTTP status code, HTTP response headers (array of strings)
      */
     public function corporateSubAccountIdGetWithHttpInfo($id)
     {
-        $returnType = '\SendinBlue\Client\Model\SubAccountDetailsResponse';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponse';
         $request = $this->corporateSubAccountIdGetRequest($id);
 
         try {
@@ -977,7 +977,7 @@ class MasterAccountApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\SubAccountDetailsResponse',
+                        'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponse',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1019,7 +1019,7 @@ class MasterAccountApi
      */
     public function corporateSubAccountIdGetAsyncWithHttpInfo($id)
     {
-        $returnType = '\SendinBlue\Client\Model\SubAccountDetailsResponse';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponse';
         $request = $this->corporateSubAccountIdGetRequest($id);
 
         return $this->client
@@ -1180,9 +1180,9 @@ class MasterAccountApi
      * Update sub-account plan
      *
      * @param  int $id Id of the sub-account organization (required)
-     * @param  \SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1197,9 +1197,9 @@ class MasterAccountApi
      * Update sub-account plan
      *
      * @param  int $id Id of the sub-account organization (required)
-     * @param  \SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1243,7 +1243,7 @@ class MasterAccountApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1251,7 +1251,7 @@ class MasterAccountApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1267,7 +1267,7 @@ class MasterAccountApi
      * Update sub-account plan
      *
      * @param  int $id Id of the sub-account organization (required)
-     * @param  \SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1288,7 +1288,7 @@ class MasterAccountApi
      * Update sub-account plan
      *
      * @param  int $id Id of the sub-account organization (required)
-     * @param  \SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1325,7 +1325,7 @@ class MasterAccountApi
      * Create request for operation 'corporateSubAccountIdPlanPut'
      *
      * @param  int $id Id of the sub-account organization (required)
-     * @param  \SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequest $updatePlanDetails Values to update a sub-account plan (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1451,11 +1451,11 @@ class MasterAccountApi
      *
      * Create a new sub-account under a master account.
      *
-     * @param  \SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateModel
      */
     public function corporateSubAccountPost($subAccountCreate)
     {
@@ -1468,15 +1468,15 @@ class MasterAccountApi
      *
      * Create a new sub-account under a master account.
      *
-     * @param  \SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function corporateSubAccountPostWithHttpInfo($subAccountCreate)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->corporateSubAccountPostRequest($subAccountCreate);
 
         try {
@@ -1528,7 +1528,7 @@ class MasterAccountApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1536,7 +1536,7 @@ class MasterAccountApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1551,7 +1551,7 @@ class MasterAccountApi
      *
      * Create a new sub-account under a master account.
      *
-     * @param  \SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1571,14 +1571,14 @@ class MasterAccountApi
      *
      * Create a new sub-account under a master account.
      *
-     * @param  \SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function corporateSubAccountPostAsyncWithHttpInfo($subAccountCreate)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->corporateSubAccountPostRequest($subAccountCreate);
 
         return $this->client
@@ -1621,7 +1621,7 @@ class MasterAccountApi
     /**
      * Create request for operation 'corporateSubAccountPost'
      *
-     * @param  \SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSubAccount $subAccountCreate values to create new sub-account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1733,11 +1733,11 @@ class MasterAccountApi
      *
      * Generate SSO token to access Sendinblue
      *
-     * @param  \SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSsoToken
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSsoToken
      */
     public function corporateSubAccountSsoTokenPost($ssoTokenRequest)
     {
@@ -1750,15 +1750,15 @@ class MasterAccountApi
      *
      * Generate SSO token to access Sendinblue
      *
-     * @param  \SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSsoToken, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSsoToken, HTTP status code, HTTP response headers (array of strings)
      */
     public function corporateSubAccountSsoTokenPostWithHttpInfo($ssoTokenRequest)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSsoToken';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSsoToken';
         $request = $this->corporateSubAccountSsoTokenPostRequest($ssoTokenRequest);
 
         try {
@@ -1810,7 +1810,7 @@ class MasterAccountApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSsoToken',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSsoToken',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1818,7 +1818,7 @@ class MasterAccountApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1826,7 +1826,7 @@ class MasterAccountApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1841,7 +1841,7 @@ class MasterAccountApi
      *
      * Generate SSO token to access Sendinblue
      *
-     * @param  \SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1861,14 +1861,14 @@ class MasterAccountApi
      *
      * Generate SSO token to access Sendinblue
      *
-     * @param  \SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function corporateSubAccountSsoTokenPostAsyncWithHttpInfo($ssoTokenRequest)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSsoToken';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSsoToken';
         $request = $this->corporateSubAccountSsoTokenPostRequest($ssoTokenRequest);
 
         return $this->client
@@ -1911,7 +1911,7 @@ class MasterAccountApi
     /**
      * Create request for operation 'corporateSubAccountSsoTokenPost'
      *
-     * @param  \SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SsoTokenRequest $ssoTokenRequest Values to generate SSO token for sub-account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetChildInfoApiKeys Class Doc Comment
@@ -58,8 +58,8 @@ class GetChildInfoApiKeys implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'v2' => '\SendinBlue\Client\Model\GetChildInfoApiKeysV2[]',
-        'v3' => '\SendinBlue\Client\Model\GetChildInfoApiKeysV3[]'
+        'v2' => 'simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeysV2[]',
+        'v3' => 'simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeysV3[]'
     ];
 
     /**
@@ -217,7 +217,7 @@ class GetChildInfoApiKeys implements ModelInterface, ArrayAccess
     /**
      * Gets v2
      *
-     * @return \SendinBlue\Client\Model\GetChildInfoApiKeysV2[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeysV2[]
      */
     public function getV2()
     {
@@ -227,7 +227,7 @@ class GetChildInfoApiKeys implements ModelInterface, ArrayAccess
     /**
      * Sets v2
      *
-     * @param \SendinBlue\Client\Model\GetChildInfoApiKeysV2[] $v2 v2
+     * @param simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeysV2[] $v2 v2
      *
      * @return $this
      */
@@ -241,7 +241,7 @@ class GetChildInfoApiKeys implements ModelInterface, ArrayAccess
     /**
      * Gets v3
      *
-     * @return \SendinBlue\Client\Model\GetChildInfoApiKeysV3[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeysV3[]
      */
     public function getV3()
     {
@@ -251,7 +251,7 @@ class GetChildInfoApiKeys implements ModelInterface, ArrayAccess
     /**
      * Sets v3
      *
-     * @param \SendinBlue\Client\Model\GetChildInfoApiKeysV3[] $v3 v3
+     * @param simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeysV3[] $v3 v3
      *
      * @return $this
      */

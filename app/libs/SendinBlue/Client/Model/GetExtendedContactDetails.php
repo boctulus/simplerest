@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetExtendedContactDetails Class Doc Comment
@@ -66,7 +66,7 @@ class GetExtendedContactDetails implements ModelInterface, ArrayAccess
         'listIds' => 'int[]',
         'listUnsubscribed' => 'int[]',
         'attributes' => 'object',
-        'statistics' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatistics'
+        'statistics' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatistics'
     ];
 
     /**
@@ -504,7 +504,7 @@ class GetExtendedContactDetails implements ModelInterface, ArrayAccess
     /**
      * Gets statistics
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatistics
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatistics
      */
     public function getStatistics()
     {
@@ -514,7 +514,7 @@ class GetExtendedContactDetails implements ModelInterface, ArrayAccess
     /**
      * Sets statistics
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatistics $statistics statistics
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatistics $statistics statistics
      *
      * @return $this
      */

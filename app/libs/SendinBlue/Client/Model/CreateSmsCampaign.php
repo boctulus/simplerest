@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * CreateSmsCampaign Class Doc Comment
@@ -60,7 +60,7 @@ class CreateSmsCampaign implements ModelInterface, ArrayAccess
         'name' => 'string',
         'sender' => 'string',
         'content' => 'string',
-        'recipients' => '\SendinBlue\Client\Model\CreateSmsCampaignRecipients',
+        'recipients' => 'simplerest\libs\SendinBlue\Client\Model\CreateSmsCampaignRecipients',
         'scheduledAt' => 'string',
         'unicodeEnabled' => 'bool'
     ];
@@ -326,7 +326,7 @@ class CreateSmsCampaign implements ModelInterface, ArrayAccess
     /**
      * Gets recipients
      *
-     * @return \SendinBlue\Client\Model\CreateSmsCampaignRecipients
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateSmsCampaignRecipients
      */
     public function getRecipients()
     {
@@ -336,7 +336,7 @@ class CreateSmsCampaign implements ModelInterface, ArrayAccess
     /**
      * Sets recipients
      *
-     * @param \SendinBlue\Client\Model\CreateSmsCampaignRecipients $recipients recipients
+     * @param simplerest\libs\SendinBlue\Client\Model\CreateSmsCampaignRecipients $recipients recipients
      *
      * @return $this
      */

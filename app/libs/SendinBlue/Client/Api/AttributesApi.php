@@ -94,9 +94,9 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -112,9 +112,9 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -158,7 +158,7 @@ class AttributesApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -175,7 +175,7 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -197,7 +197,7 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -235,7 +235,7 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -378,7 +378,7 @@ class AttributesApi
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -395,7 +395,7 @@ class AttributesApi
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -439,7 +439,7 @@ class AttributesApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -447,7 +447,7 @@ class AttributesApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -653,9 +653,9 @@ class AttributesApi
      * List all attributes
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetAttributes
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAttributes
      */
     public function getAttributes()
     {
@@ -669,13 +669,13 @@ class AttributesApi
      * List all attributes
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetAttributes, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetAttributes, HTTP status code, HTTP response headers (array of strings)
      */
     public function getAttributesWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetAttributes';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetAttributes';
         $request = $this->getAttributesRequest();
 
         try {
@@ -727,7 +727,7 @@ class AttributesApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetAttributes',
+                        'simplerest\libs\SendinBlue\Client\Model\GetAttributes',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -767,7 +767,7 @@ class AttributesApi
      */
     public function getAttributesAsyncWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetAttributes';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetAttributes';
         $request = $this->getAttributesRequest();
 
         return $this->client
@@ -914,9 +914,9 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -932,9 +932,9 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -978,7 +978,7 @@ class AttributesApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -986,7 +986,7 @@ class AttributesApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1003,7 +1003,7 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1025,7 +1025,7 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1063,7 +1063,7 @@ class AttributesApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

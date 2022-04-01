@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * AbTestCampaignResultStatistics Class Doc Comment
@@ -57,12 +57,12 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'openers' => '\SendinBlue\Client\Model\AbTestVersionStats',
-        'clicks' => '\SendinBlue\Client\Model\AbTestVersionStats',
-        'unsubscribed' => '\SendinBlue\Client\Model\AbTestVersionStats',
-        'hardBounces' => '\SendinBlue\Client\Model\AbTestVersionStats',
-        'softBounces' => '\SendinBlue\Client\Model\AbTestVersionStats',
-        'complaints' => '\SendinBlue\Client\Model\AbTestVersionStats'
+        'openers' => 'simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats',
+        'clicks' => 'simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats',
+        'unsubscribed' => 'simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats',
+        'hardBounces' => 'simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats',
+        'softBounces' => 'simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats',
+        'complaints' => 'simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats'
     ];
 
     /**
@@ -255,7 +255,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Gets openers
      *
-     * @return \SendinBlue\Client\Model\AbTestVersionStats
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats
      */
     public function getOpeners()
     {
@@ -265,7 +265,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Sets openers
      *
-     * @param \SendinBlue\Client\Model\AbTestVersionStats $openers openers
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats $openers openers
      *
      * @return $this
      */
@@ -279,7 +279,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Gets clicks
      *
-     * @return \SendinBlue\Client\Model\AbTestVersionStats
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats
      */
     public function getClicks()
     {
@@ -289,7 +289,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Sets clicks
      *
-     * @param \SendinBlue\Client\Model\AbTestVersionStats $clicks clicks
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats $clicks clicks
      *
      * @return $this
      */
@@ -303,7 +303,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Gets unsubscribed
      *
-     * @return \SendinBlue\Client\Model\AbTestVersionStats
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats
      */
     public function getUnsubscribed()
     {
@@ -313,7 +313,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Sets unsubscribed
      *
-     * @param \SendinBlue\Client\Model\AbTestVersionStats $unsubscribed unsubscribed
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats $unsubscribed unsubscribed
      *
      * @return $this
      */
@@ -327,7 +327,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Gets hardBounces
      *
-     * @return \SendinBlue\Client\Model\AbTestVersionStats
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats
      */
     public function getHardBounces()
     {
@@ -337,7 +337,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Sets hardBounces
      *
-     * @param \SendinBlue\Client\Model\AbTestVersionStats $hardBounces hardBounces
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats $hardBounces hardBounces
      *
      * @return $this
      */
@@ -351,7 +351,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Gets softBounces
      *
-     * @return \SendinBlue\Client\Model\AbTestVersionStats
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats
      */
     public function getSoftBounces()
     {
@@ -361,7 +361,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Sets softBounces
      *
-     * @param \SendinBlue\Client\Model\AbTestVersionStats $softBounces softBounces
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats $softBounces softBounces
      *
      * @return $this
      */
@@ -375,7 +375,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Gets complaints
      *
-     * @return \SendinBlue\Client\Model\AbTestVersionStats
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats
      */
     public function getComplaints()
     {
@@ -385,7 +385,7 @@ class AbTestCampaignResultStatistics implements ModelInterface, ArrayAccess
     /**
      * Sets complaints
      *
-     * @param \SendinBlue\Client\Model\AbTestVersionStats $complaints complaints
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestVersionStats $complaints complaints
      *
      * @return $this
      */

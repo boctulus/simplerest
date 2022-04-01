@@ -51,7 +51,11 @@ use simplerest\core\libs\Obfuscator;
 
 use GuzzleHttp;
 use simplerest\libs\SendinBlue\Client\Configuration;
+use simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail;
 use simplerest\libs\SendinBlue\Client\Api\AccountApi;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\Api\TransactionalEmailsApi;
+
 
 
 class DumbController extends Controller
@@ -3111,31 +3115,25 @@ class DumbController extends Controller
         smtp key value: xsmtpsib-ad670e8836116168de12e1d33c294bfc740dd51f2bdea3213c22b322d7e52aa0-HMJadEBmGqjhWCcF
     */
     function sendinblue(){
-        $smtp_key = 'pablo';
-        $smtp_val = 'xsmtpsib-ad670e8836116168de12e1d33c294bfc740dd51f2bdea3213c22b322d7e52aa0-HMJadEBmGqjhWCcF';
+        $api_key = 'xsmtpsib-ad670e8836116168de12e1d33c294bfc740dd51f2bdea3213c22b322d7e52aa0-HMJadEBmGqjhWCcF';
 
+        $credentials = Configuration::getDefaultConfiguration()->setApiKey('api-key', $api_key);
+        $apiInstance = new TransactionalEmailsApi(new GuzzleHttp\Client(),$credentials);
 
-        // Configure API key authorization: api-key
-        $config = Configuration::getDefaultConfiguration()->setApiKey('api-key', $smtp_val);
-        // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-        // $config = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('api-key', 'Bearer');
-        // Configure API key authorization: partner-key
-        $config = Configuration::getDefaultConfiguration()->setApiKey('partner-key', $smtp_val);
-        // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-        // $config = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('partner-key', 'Bearer');
-
-        $apiInstance = new AccountApi(
-            // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-            // This is optional, `GuzzleHttp\Client` will be used as default.
-            new GuzzleHttp\Client(),
-            $config
-        );
+        $sendSmtpEmail = new SendSmtpEmail([
+            'subject' => 'from the PHP SDK!',
+            'sender' => ['name' => 'Sendinblue', 'email' => 'noresponder@solucionbinaria.com'],
+            'replyTo' => ['name' => 'Sendinblue', 'email' => 'noresponder@solucionbinaria.com'],
+            'to' => [[ 'name' => 'PK Pulkes', 'email' => 'boctulus@gmail.com']],
+            'htmlContent' => '<html><body><h1>This is a transactional email {{params.bodyMessage}}</h1></body></html>',
+            'params' => ['bodyMessage' => 'made just for you!']
+        ]);
 
         try {
-            $result = $apiInstance->getAccount();
-            print_r($result);
+            $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
+            dd($result);
         } catch (\Exception $e) {
-            echo 'Exception when calling AccountApi->getAccount: ', $e->getMessage(), PHP_EOL;
+            echo $e->getMessage(),PHP_EOL;
         }
     }
 

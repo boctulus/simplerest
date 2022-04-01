@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * Body Class Doc Comment
@@ -67,7 +67,7 @@ class Body implements ModelInterface, ArrayAccess
         'contactsIds' => 'int[]',
         'dealsIds' => 'string[]',
         'companiesIds' => 'string[]',
-        'reminder' => '\SendinBlue\Client\Model\TaskReminder'
+        'reminder' => 'simplerest\libs\SendinBlue\Client\Model\TaskReminder'
     ];
 
     /**
@@ -516,7 +516,7 @@ class Body implements ModelInterface, ArrayAccess
     /**
      * Gets reminder
      *
-     * @return \SendinBlue\Client\Model\TaskReminder
+     * @return simplerest\libs\SendinBlue\Client\Model\TaskReminder
      */
     public function getReminder()
     {
@@ -526,7 +526,7 @@ class Body implements ModelInterface, ArrayAccess
     /**
      * Sets reminder
      *
-     * @param \SendinBlue\Client\Model\TaskReminder $reminder reminder
+     * @param simplerest\libs\SendinBlue\Client\Model\TaskReminder $reminder reminder
      *
      * @return $this
      */

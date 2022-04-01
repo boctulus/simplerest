@@ -93,9 +93,9 @@ class AccountApi
      * Get your account information, plan and credits details
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetAccount
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAccount
      */
     public function getAccount()
     {
@@ -109,13 +109,13 @@ class AccountApi
      * Get your account information, plan and credits details
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetAccount, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetAccount, HTTP status code, HTTP response headers (array of strings)
      */
     public function getAccountWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetAccount';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetAccount';
         $request = $this->getAccountRequest();
 
         try {
@@ -167,7 +167,7 @@ class AccountApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetAccount',
+                        'simplerest\libs\SendinBlue\Client\Model\GetAccount',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -207,7 +207,7 @@ class AccountApi
      */
     public function getAccountAsyncWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetAccount';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetAccount';
         $request = $this->getAccountRequest();
 
         return $this->client

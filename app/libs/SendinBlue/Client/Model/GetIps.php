@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetIps Class Doc Comment
@@ -57,7 +57,7 @@ class GetIps implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'ips' => '\SendinBlue\Client\Model\GetIp[]'
+        'ips' => 'simplerest\libs\SendinBlue\Client\Model\GetIp[]'
     ];
 
     /**
@@ -210,7 +210,7 @@ class GetIps implements ModelInterface, ArrayAccess
     /**
      * Gets ips
      *
-     * @return \SendinBlue\Client\Model\GetIp[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetIp[]
      */
     public function getIps()
     {
@@ -220,7 +220,7 @@ class GetIps implements ModelInterface, ArrayAccess
     /**
      * Sets ips
      *
-     * @param \SendinBlue\Client\Model\GetIp[] $ips Dedicated IP(s) available on your account
+     * @param simplerest\libs\SendinBlue\Client\Model\GetIp[] $ips Dedicated IP(s) available on your account
      *
      * @return $this
      */

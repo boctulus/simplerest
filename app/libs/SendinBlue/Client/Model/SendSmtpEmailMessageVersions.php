@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SendSmtpEmailMessageVersions Class Doc Comment
@@ -57,11 +57,11 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'to' => '\SendinBlue\Client\Model\SendSmtpEmailTo1[]',
+        'to' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailTo1[]',
         'params' => 'map[string,object]',
-        'bcc' => '\SendinBlue\Client\Model\SendSmtpEmailBcc[]',
-        'cc' => '\SendinBlue\Client\Model\SendSmtpEmailCc[]',
-        'replyTo' => '\SendinBlue\Client\Model\SendSmtpEmailReplyTo1',
+        'bcc' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailBcc[]',
+        'cc' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailCc[]',
+        'replyTo' => 'simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailReplyTo1',
         'subject' => 'string'
     ];
 
@@ -240,7 +240,7 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
     /**
      * Gets to
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailTo1[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailTo1[]
      */
     public function getTo()
     {
@@ -250,7 +250,7 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
     /**
      * Sets to
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailTo1[] $to List of email addresses and names (_optional_) of the recipients. For example, [{\"name\":\"Jimmy\", \"email\":\"jimmy98@example.com\"}, {\"name\":\"Joe\", \"email\":\"joe@example.com\"}]
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailTo1[] $to List of email addresses and names (_optional_) of the recipients. For example, [{\"name\":\"Jimmy\", \"email\":\"jimmy98@example.com\"}, {\"name\":\"Joe\", \"email\":\"joe@example.com\"}]
      *
      * @return $this
      */
@@ -288,7 +288,7 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
     /**
      * Gets bcc
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailBcc[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailBcc[]
      */
     public function getBcc()
     {
@@ -298,7 +298,7 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
     /**
      * Sets bcc
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailBcc[] $bcc List of email addresses and names (optional) of the recipients in bcc
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailBcc[] $bcc List of email addresses and names (optional) of the recipients in bcc
      *
      * @return $this
      */
@@ -312,7 +312,7 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
     /**
      * Gets cc
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailCc[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailCc[]
      */
     public function getCc()
     {
@@ -322,7 +322,7 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
     /**
      * Sets cc
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailCc[] $cc List of email addresses and names (optional) of the recipients in cc
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailCc[] $cc List of email addresses and names (optional) of the recipients in cc
      *
      * @return $this
      */
@@ -336,7 +336,7 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
     /**
      * Gets replyTo
      *
-     * @return \SendinBlue\Client\Model\SendSmtpEmailReplyTo1
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailReplyTo1
      */
     public function getReplyTo()
     {
@@ -346,7 +346,7 @@ class SendSmtpEmailMessageVersions implements ModelInterface, ArrayAccess
     /**
      * Sets replyTo
      *
-     * @param \SendinBlue\Client\Model\SendSmtpEmailReplyTo1 $replyTo replyTo
+     * @param simplerest\libs\SendinBlue\Client\Model\SendSmtpEmailReplyTo1 $replyTo replyTo
      *
      * @return $this
      */

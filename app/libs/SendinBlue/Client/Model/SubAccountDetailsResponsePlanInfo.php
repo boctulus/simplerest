@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SubAccountDetailsResponsePlanInfo Class Doc Comment
@@ -58,8 +58,8 @@ class SubAccountDetailsResponsePlanInfo implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'credits' => '\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCredits',
-        'features' => '\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeatures',
+        'credits' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCredits',
+        'features' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeatures',
         'planType' => 'string'
     ];
 
@@ -220,7 +220,7 @@ class SubAccountDetailsResponsePlanInfo implements ModelInterface, ArrayAccess
     /**
      * Gets credits
      *
-     * @return \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCredits
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCredits
      */
     public function getCredits()
     {
@@ -230,7 +230,7 @@ class SubAccountDetailsResponsePlanInfo implements ModelInterface, ArrayAccess
     /**
      * Sets credits
      *
-     * @param \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCredits $credits credits
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCredits $credits credits
      *
      * @return $this
      */
@@ -244,7 +244,7 @@ class SubAccountDetailsResponsePlanInfo implements ModelInterface, ArrayAccess
     /**
      * Gets features
      *
-     * @return \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeatures
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeatures
      */
     public function getFeatures()
     {
@@ -254,7 +254,7 @@ class SubAccountDetailsResponsePlanInfo implements ModelInterface, ArrayAccess
     /**
      * Sets features
      *
-     * @param \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeatures $features features
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoFeatures $features features
      *
      * @return $this
      */

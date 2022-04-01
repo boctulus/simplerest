@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * AbTestCampaignResultClickedLinks Class Doc Comment
@@ -57,8 +57,8 @@ class AbTestCampaignResultClickedLinks implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'versionA' => '\SendinBlue\Client\Model\AbTestVersionClicks',
-        'versionB' => '\SendinBlue\Client\Model\AbTestVersionClicks'
+        'versionA' => 'simplerest\libs\SendinBlue\Client\Model\AbTestVersionClicks',
+        'versionB' => 'simplerest\libs\SendinBlue\Client\Model\AbTestVersionClicks'
     ];
 
     /**
@@ -219,7 +219,7 @@ class AbTestCampaignResultClickedLinks implements ModelInterface, ArrayAccess
     /**
      * Gets versionA
      *
-     * @return \SendinBlue\Client\Model\AbTestVersionClicks
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestVersionClicks
      */
     public function getVersionA()
     {
@@ -229,7 +229,7 @@ class AbTestCampaignResultClickedLinks implements ModelInterface, ArrayAccess
     /**
      * Sets versionA
      *
-     * @param \SendinBlue\Client\Model\AbTestVersionClicks $versionA versionA
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestVersionClicks $versionA versionA
      *
      * @return $this
      */
@@ -243,7 +243,7 @@ class AbTestCampaignResultClickedLinks implements ModelInterface, ArrayAccess
     /**
      * Gets versionB
      *
-     * @return \SendinBlue\Client\Model\AbTestVersionClicks
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestVersionClicks
      */
     public function getVersionB()
     {
@@ -253,7 +253,7 @@ class AbTestCampaignResultClickedLinks implements ModelInterface, ArrayAccess
     /**
      * Sets versionB
      *
-     * @param \SendinBlue\Client\Model\AbTestVersionClicks $versionB versionB
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestVersionClicks $versionB versionB
      *
      * @return $this
      */

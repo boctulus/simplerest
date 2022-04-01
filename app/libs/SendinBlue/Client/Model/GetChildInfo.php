@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetChildInfo Class Doc Comment
@@ -61,11 +61,11 @@ class GetChildInfo implements ModelInterface, ArrayAccess
         'firstName' => 'string',
         'lastName' => 'string',
         'companyName' => 'string',
-        'credits' => '\SendinBlue\Client\Model\GetChildInfoCredits',
-        'statistics' => '\SendinBlue\Client\Model\GetChildInfoStatistics',
+        'credits' => 'simplerest\libs\SendinBlue\Client\Model\GetChildInfoCredits',
+        'statistics' => 'simplerest\libs\SendinBlue\Client\Model\GetChildInfoStatistics',
         'password' => 'string',
         'ips' => 'string[]',
-        'apiKeys' => '\SendinBlue\Client\Model\GetChildInfoApiKeys'
+        'apiKeys' => 'simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeys'
     ];
 
     /**
@@ -366,7 +366,7 @@ class GetChildInfo implements ModelInterface, ArrayAccess
     /**
      * Gets credits
      *
-     * @return \SendinBlue\Client\Model\GetChildInfoCredits
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildInfoCredits
      */
     public function getCredits()
     {
@@ -376,7 +376,7 @@ class GetChildInfo implements ModelInterface, ArrayAccess
     /**
      * Sets credits
      *
-     * @param \SendinBlue\Client\Model\GetChildInfoCredits $credits credits
+     * @param simplerest\libs\SendinBlue\Client\Model\GetChildInfoCredits $credits credits
      *
      * @return $this
      */
@@ -390,7 +390,7 @@ class GetChildInfo implements ModelInterface, ArrayAccess
     /**
      * Gets statistics
      *
-     * @return \SendinBlue\Client\Model\GetChildInfoStatistics
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildInfoStatistics
      */
     public function getStatistics()
     {
@@ -400,7 +400,7 @@ class GetChildInfo implements ModelInterface, ArrayAccess
     /**
      * Sets statistics
      *
-     * @param \SendinBlue\Client\Model\GetChildInfoStatistics $statistics statistics
+     * @param simplerest\libs\SendinBlue\Client\Model\GetChildInfoStatistics $statistics statistics
      *
      * @return $this
      */
@@ -462,7 +462,7 @@ class GetChildInfo implements ModelInterface, ArrayAccess
     /**
      * Gets apiKeys
      *
-     * @return \SendinBlue\Client\Model\GetChildInfoApiKeys
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeys
      */
     public function getApiKeys()
     {
@@ -472,7 +472,7 @@ class GetChildInfo implements ModelInterface, ArrayAccess
     /**
      * Sets apiKeys
      *
-     * @param \SendinBlue\Client\Model\GetChildInfoApiKeys $apiKeys apiKeys
+     * @param simplerest\libs\SendinBlue\Client\Model\GetChildInfoApiKeys $apiKeys apiKeys
      *
      * @return $this
      */

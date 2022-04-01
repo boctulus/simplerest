@@ -92,11 +92,11 @@ class EmailCampaignsApi
      *
      * Create an email campaign
      *
-     * @param  \SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateModel
      */
     public function createEmailCampaign($emailCampaigns)
     {
@@ -109,15 +109,15 @@ class EmailCampaignsApi
      *
      * Create an email campaign
      *
-     * @param  \SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createEmailCampaignWithHttpInfo($emailCampaigns)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createEmailCampaignRequest($emailCampaigns);
 
         try {
@@ -169,7 +169,7 @@ class EmailCampaignsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -177,7 +177,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -192,7 +192,7 @@ class EmailCampaignsApi
      *
      * Create an email campaign
      *
-     * @param  \SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -212,14 +212,14 @@ class EmailCampaignsApi
      *
      * Create an email campaign
      *
-     * @param  \SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createEmailCampaignAsyncWithHttpInfo($emailCampaigns)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createEmailCampaignRequest($emailCampaigns);
 
         return $this->client
@@ -262,7 +262,7 @@ class EmailCampaignsApi
     /**
      * Create request for operation 'createEmailCampaign'
      *
-     * @param  \SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateEmailCampaign $emailCampaigns Values to create a campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -376,7 +376,7 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId id of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -392,7 +392,7 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId id of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -436,7 +436,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -444,7 +444,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -633,11 +633,11 @@ class EmailCampaignsApi
      * Export the recipients of an email campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreatedProcessId
+     * @return simplerest\libs\SendinBlue\Client\Model\CreatedProcessId
      */
     public function emailExportRecipients($campaignId, $recipientExport = null)
     {
@@ -651,15 +651,15 @@ class EmailCampaignsApi
      * Export the recipients of an email campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreatedProcessId, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreatedProcessId, HTTP status code, HTTP response headers (array of strings)
      */
     public function emailExportRecipientsWithHttpInfo($campaignId, $recipientExport = null)
     {
-        $returnType = '\SendinBlue\Client\Model\CreatedProcessId';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId';
         $request = $this->emailExportRecipientsRequest($campaignId, $recipientExport);
 
         try {
@@ -711,7 +711,7 @@ class EmailCampaignsApi
                 case 202:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreatedProcessId',
+                        'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -719,7 +719,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -727,7 +727,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -743,7 +743,7 @@ class EmailCampaignsApi
      * Export the recipients of an email campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -764,14 +764,14 @@ class EmailCampaignsApi
      * Export the recipients of an email campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function emailExportRecipientsAsyncWithHttpInfo($campaignId, $recipientExport = null)
     {
-        $returnType = '\SendinBlue\Client\Model\CreatedProcessId';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId';
         $request = $this->emailExportRecipientsRequest($campaignId, $recipientExport);
 
         return $this->client
@@ -815,7 +815,7 @@ class EmailCampaignsApi
      * Create request for operation 'emailExportRecipients'
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\EmailExportRecipients $recipientExport Values to send for a recipient export request (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -937,9 +937,9 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId Id of the A/B test campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\AbTestCampaignResult
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResult
      */
     public function getAbTestCampaignResult($campaignId)
     {
@@ -954,13 +954,13 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId Id of the A/B test campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\AbTestCampaignResult, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResult, HTTP status code, HTTP response headers (array of strings)
      */
     public function getAbTestCampaignResultWithHttpInfo($campaignId)
     {
-        $returnType = '\SendinBlue\Client\Model\AbTestCampaignResult';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResult';
         $request = $this->getAbTestCampaignResultRequest($campaignId);
 
         try {
@@ -1012,7 +1012,7 @@ class EmailCampaignsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\AbTestCampaignResult',
+                        'simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1020,7 +1020,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1028,7 +1028,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1036,7 +1036,7 @@ class EmailCampaignsApi
                 case 405:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1078,7 +1078,7 @@ class EmailCampaignsApi
      */
     public function getAbTestCampaignResultAsyncWithHttpInfo($campaignId)
     {
-        $returnType = '\SendinBlue\Client\Model\AbTestCampaignResult';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResult';
         $request = $this->getAbTestCampaignResultRequest($campaignId);
 
         return $this->client
@@ -1240,9 +1240,9 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId Id of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetEmailCampaign
+     * @return simplerest\libs\SendinBlue\Client\Model\GetEmailCampaign
      */
     public function getEmailCampaign($campaignId)
     {
@@ -1257,13 +1257,13 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId Id of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetEmailCampaign, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetEmailCampaign, HTTP status code, HTTP response headers (array of strings)
      */
     public function getEmailCampaignWithHttpInfo($campaignId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetEmailCampaign';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetEmailCampaign';
         $request = $this->getEmailCampaignRequest($campaignId);
 
         try {
@@ -1315,7 +1315,7 @@ class EmailCampaignsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetEmailCampaign',
+                        'simplerest\libs\SendinBlue\Client\Model\GetEmailCampaign',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1323,7 +1323,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1331,7 +1331,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1373,7 +1373,7 @@ class EmailCampaignsApi
      */
     public function getEmailCampaignAsyncWithHttpInfo($campaignId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetEmailCampaign';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetEmailCampaign';
         $request = $this->getEmailCampaignRequest($campaignId);
 
         return $this->client
@@ -1541,9 +1541,9 @@ class EmailCampaignsApi
      * @param  int $offset Index of the first document in the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetEmailCampaigns
+     * @return simplerest\libs\SendinBlue\Client\Model\GetEmailCampaigns
      */
     public function getEmailCampaigns($type = null, $status = null, $startDate = null, $endDate = null, $limit = '500', $offset = '0', $sort = 'desc')
     {
@@ -1564,13 +1564,13 @@ class EmailCampaignsApi
      * @param  int $offset Index of the first document in the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetEmailCampaigns, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetEmailCampaigns, HTTP status code, HTTP response headers (array of strings)
      */
     public function getEmailCampaignsWithHttpInfo($type = null, $status = null, $startDate = null, $endDate = null, $limit = '500', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetEmailCampaigns';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetEmailCampaigns';
         $request = $this->getEmailCampaignsRequest($type, $status, $startDate, $endDate, $limit, $offset, $sort);
 
         try {
@@ -1622,7 +1622,7 @@ class EmailCampaignsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetEmailCampaigns',
+                        'simplerest\libs\SendinBlue\Client\Model\GetEmailCampaigns',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1630,7 +1630,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1684,7 +1684,7 @@ class EmailCampaignsApi
      */
     public function getEmailCampaignsAsyncWithHttpInfo($type = null, $status = null, $startDate = null, $endDate = null, $limit = '500', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetEmailCampaigns';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetEmailCampaigns';
         $request = $this->getEmailCampaignsRequest($type, $status, $startDate, $endDate, $limit, $offset, $sort);
 
         return $this->client
@@ -1870,9 +1870,9 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId Id of the campaign or template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSharedTemplateUrl
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSharedTemplateUrl
      */
     public function getSharedTemplateUrl($campaignId)
     {
@@ -1887,13 +1887,13 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId Id of the campaign or template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSharedTemplateUrl, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSharedTemplateUrl, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSharedTemplateUrlWithHttpInfo($campaignId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSharedTemplateUrl';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSharedTemplateUrl';
         $request = $this->getSharedTemplateUrlRequest($campaignId);
 
         try {
@@ -1945,7 +1945,7 @@ class EmailCampaignsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSharedTemplateUrl',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSharedTemplateUrl',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1953,7 +1953,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1961,7 +1961,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2003,7 +2003,7 @@ class EmailCampaignsApi
      */
     public function getSharedTemplateUrlAsyncWithHttpInfo($campaignId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSharedTemplateUrl';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSharedTemplateUrl';
         $request = $this->getSharedTemplateUrlRequest($campaignId);
 
         return $this->client
@@ -2165,7 +2165,7 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId Id of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2181,7 +2181,7 @@ class EmailCampaignsApi
      *
      * @param  int $campaignId Id of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2225,7 +2225,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2233,7 +2233,7 @@ class EmailCampaignsApi
                 case 402:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2241,7 +2241,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2430,9 +2430,9 @@ class EmailCampaignsApi
      * Send the report of a campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2447,9 +2447,9 @@ class EmailCampaignsApi
      * Send the report of a campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2493,7 +2493,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2501,7 +2501,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2517,7 +2517,7 @@ class EmailCampaignsApi
      * Send the report of a campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2538,7 +2538,7 @@ class EmailCampaignsApi
      * Send the report of a campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2575,7 +2575,7 @@ class EmailCampaignsApi
      * Create request for operation 'sendReport'
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2702,9 +2702,9 @@ class EmailCampaignsApi
      * Send an email campaign to your test list
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $emailTo emailTo (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $emailTo emailTo (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2719,9 +2719,9 @@ class EmailCampaignsApi
      * Send an email campaign to your test list
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $emailTo (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $emailTo (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2765,7 +2765,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\PostSendFailed',
+                        'simplerest\libs\SendinBlue\Client\Model\PostSendFailed',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2773,7 +2773,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2789,7 +2789,7 @@ class EmailCampaignsApi
      * Send an email campaign to your test list
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $emailTo (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $emailTo (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2810,7 +2810,7 @@ class EmailCampaignsApi
      * Send an email campaign to your test list
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $emailTo (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $emailTo (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2847,7 +2847,7 @@ class EmailCampaignsApi
      * Create request for operation 'sendTestEmail'
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $emailTo (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $emailTo (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2974,9 +2974,9 @@ class EmailCampaignsApi
      * Update an email campaign status
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2991,9 +2991,9 @@ class EmailCampaignsApi
      * Update an email campaign status
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -3037,7 +3037,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3045,7 +3045,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3061,7 +3061,7 @@ class EmailCampaignsApi
      * Update an email campaign status
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3082,7 +3082,7 @@ class EmailCampaignsApi
      * Update an email campaign status
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3119,7 +3119,7 @@ class EmailCampaignsApi
      * Create request for operation 'updateCampaignStatus'
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -3246,9 +3246,9 @@ class EmailCampaignsApi
      * Update an email campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -3263,9 +3263,9 @@ class EmailCampaignsApi
      * Update an email campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -3309,7 +3309,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3317,7 +3317,7 @@ class EmailCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3333,7 +3333,7 @@ class EmailCampaignsApi
      * Update an email campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3354,7 +3354,7 @@ class EmailCampaignsApi
      * Update an email campaign
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3391,7 +3391,7 @@ class EmailCampaignsApi
      * Create request for operation 'updateEmailCampaign'
      *
      * @param  int $campaignId Id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaign $emailCampaign Values to update a campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -3517,9 +3517,9 @@ class EmailCampaignsApi
      *
      * Upload an image to your account's image gallery
      *
-     * @param  \SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -3533,9 +3533,9 @@ class EmailCampaignsApi
      *
      * Upload an image to your account's image gallery
      *
-     * @param  \SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -3579,7 +3579,7 @@ class EmailCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3594,7 +3594,7 @@ class EmailCampaignsApi
      *
      * Upload an image to your account's image gallery
      *
-     * @param  \SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3614,7 +3614,7 @@ class EmailCampaignsApi
      *
      * Upload an image to your account's image gallery
      *
-     * @param  \SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3650,7 +3650,7 @@ class EmailCampaignsApi
     /**
      * Create request for operation 'uploadImageToGallery'
      *
-     * @param  \SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UploadImageToGallery $uploadImage Parameters to upload an image (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

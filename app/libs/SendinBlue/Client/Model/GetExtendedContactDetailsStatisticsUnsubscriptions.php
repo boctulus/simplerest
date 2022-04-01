@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetExtendedContactDetailsStatisticsUnsubscriptions Class Doc Comment
@@ -58,8 +58,8 @@ class GetExtendedContactDetailsStatisticsUnsubscriptions implements ModelInterfa
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'userUnsubscription' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[]',
-        'adminUnsubscription' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[]'
+        'userUnsubscription' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[]',
+        'adminUnsubscription' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[]'
     ];
 
     /**
@@ -220,7 +220,7 @@ class GetExtendedContactDetailsStatisticsUnsubscriptions implements ModelInterfa
     /**
      * Gets userUnsubscription
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[]
      */
     public function getUserUnsubscription()
     {
@@ -230,7 +230,7 @@ class GetExtendedContactDetailsStatisticsUnsubscriptions implements ModelInterfa
     /**
      * Sets userUnsubscription
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[] $userUnsubscription Contact unsubscribe via unsubscription link in a campaign
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[] $userUnsubscription Contact unsubscribe via unsubscription link in a campaign
      *
      * @return $this
      */
@@ -244,7 +244,7 @@ class GetExtendedContactDetailsStatisticsUnsubscriptions implements ModelInterfa
     /**
      * Gets adminUnsubscription
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[]
      */
     public function getAdminUnsubscription()
     {
@@ -254,7 +254,7 @@ class GetExtendedContactDetailsStatisticsUnsubscriptions implements ModelInterfa
     /**
      * Sets adminUnsubscription
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[] $adminUnsubscription Contact has been unsubscribed from the administrator
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[] $adminUnsubscription Contact has been unsubscribed from the administrator
      *
      * @return $this
      */

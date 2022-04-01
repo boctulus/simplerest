@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetExtendedContactDetailsStatisticsClicked Class Doc Comment
@@ -58,7 +58,7 @@ class GetExtendedContactDetailsStatisticsClicked implements ModelInterface, Arra
       */
     protected static $swaggerTypes = [
         'campaignId' => 'int',
-        'links' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsLinks[]'
+        'links' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsLinks[]'
     ];
 
     /**
@@ -243,7 +243,7 @@ class GetExtendedContactDetailsStatisticsClicked implements ModelInterface, Arra
     /**
      * Gets links
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsLinks[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsLinks[]
      */
     public function getLinks()
     {
@@ -253,7 +253,7 @@ class GetExtendedContactDetailsStatisticsClicked implements ModelInterface, Arra
     /**
      * Sets links
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsLinks[] $links Listing of the clicked links for the campaign
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsLinks[] $links Listing of the clicked links for the campaign
      *
      * @return $this
      */

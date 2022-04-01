@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SubAccountsResponse Class Doc Comment
@@ -58,7 +58,7 @@ class SubAccountsResponse implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'count' => 'int',
-        'subAccounts' => '\SendinBlue\Client\Model\SubAccountsResponseSubAccounts[]'
+        'subAccounts' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountsResponseSubAccounts[]'
     ];
 
     /**
@@ -237,7 +237,7 @@ class SubAccountsResponse implements ModelInterface, ArrayAccess
     /**
      * Gets subAccounts
      *
-     * @return \SendinBlue\Client\Model\SubAccountsResponseSubAccounts[]
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountsResponseSubAccounts[]
      */
     public function getSubAccounts()
     {
@@ -247,7 +247,7 @@ class SubAccountsResponse implements ModelInterface, ArrayAccess
     /**
      * Sets subAccounts
      *
-     * @param \SendinBlue\Client\Model\SubAccountsResponseSubAccounts[] $subAccounts subAccounts
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountsResponseSubAccounts[] $subAccounts subAccounts
      *
      * @return $this
      */
