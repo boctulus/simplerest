@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetReports Class Doc Comment
@@ -57,7 +57,7 @@ class GetReports implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'reports' => '\SendinBlue\Client\Model\GetReportsReports[]'
+        'reports' => 'simplerest\libs\SendinBlue\Client\Model\GetReportsReports[]'
     ];
 
     /**
@@ -207,7 +207,7 @@ class GetReports implements ModelInterface, ArrayAccess
     /**
      * Gets reports
      *
-     * @return \SendinBlue\Client\Model\GetReportsReports[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetReportsReports[]
      */
     public function getReports()
     {
@@ -217,7 +217,7 @@ class GetReports implements ModelInterface, ArrayAccess
     /**
      * Sets reports
      *
-     * @param \SendinBlue\Client\Model\GetReportsReports[] $reports reports
+     * @param simplerest\libs\SendinBlue\Client\Model\GetReportsReports[] $reports reports
      *
      * @return $this
      */

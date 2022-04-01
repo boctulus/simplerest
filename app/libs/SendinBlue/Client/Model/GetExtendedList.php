@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetExtendedList Class Doc Comment
@@ -64,7 +64,7 @@ class GetExtendedList implements ModelInterface, ArrayAccess
         'uniqueSubscribers' => 'int',
         'folderId' => 'int',
         'createdAt' => 'string',
-        'campaignStats' => '\SendinBlue\Client\Model\GetExtendedListCampaignStats[]',
+        'campaignStats' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedListCampaignStats[]',
         'dynamicList' => 'bool'
     ];
 
@@ -444,7 +444,7 @@ class GetExtendedList implements ModelInterface, ArrayAccess
     /**
      * Gets campaignStats
      *
-     * @return \SendinBlue\Client\Model\GetExtendedListCampaignStats[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedListCampaignStats[]
      */
     public function getCampaignStats()
     {
@@ -454,7 +454,7 @@ class GetExtendedList implements ModelInterface, ArrayAccess
     /**
      * Sets campaignStats
      *
-     * @param \SendinBlue\Client\Model\GetExtendedListCampaignStats[] $campaignStats campaignStats
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedListCampaignStats[] $campaignStats campaignStats
      *
      * @return $this
      */

@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * Task Class Doc Comment
@@ -58,12 +58,12 @@ class Task implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'firstContact' => '\SendinBlue\Client\Model\Contact',
+        'firstContact' => 'simplerest\libs\SendinBlue\Client\Model\Contact',
         'id' => 'string',
         'taskTypeId' => 'string',
         'name' => 'string',
         'contactsIds' => 'int[]',
-        'contacts' => '\SendinBlue\Client\Model\Contact[]',
+        'contacts' => 'simplerest\libs\SendinBlue\Client\Model\Contact[]',
         'dealsIds' => 'string[]',
         'companiesIds' => 'string[]',
         'assignToId' => 'string',
@@ -71,7 +71,7 @@ class Task implements ModelInterface, ArrayAccess
         'duration' => 'int',
         'notes' => 'string',
         'done' => 'bool',
-        'reminder' => '\SendinBlue\Client\Model\TaskReminder',
+        'reminder' => 'simplerest\libs\SendinBlue\Client\Model\TaskReminder',
         'createdAt' => '\DateTime',
         'updatedAt' => '\DateTime',
         'refs' => 'object'
@@ -313,7 +313,7 @@ class Task implements ModelInterface, ArrayAccess
     /**
      * Gets firstContact
      *
-     * @return \SendinBlue\Client\Model\Contact
+     * @return simplerest\libs\SendinBlue\Client\Model\Contact
      */
     public function getFirstContact()
     {
@@ -323,7 +323,7 @@ class Task implements ModelInterface, ArrayAccess
     /**
      * Sets firstContact
      *
-     * @param \SendinBlue\Client\Model\Contact $firstContact firstContact
+     * @param simplerest\libs\SendinBlue\Client\Model\Contact $firstContact firstContact
      *
      * @return $this
      */
@@ -433,7 +433,7 @@ class Task implements ModelInterface, ArrayAccess
     /**
      * Gets contacts
      *
-     * @return \SendinBlue\Client\Model\Contact[]
+     * @return simplerest\libs\SendinBlue\Client\Model\Contact[]
      */
     public function getContacts()
     {
@@ -443,7 +443,7 @@ class Task implements ModelInterface, ArrayAccess
     /**
      * Sets contacts
      *
-     * @param \SendinBlue\Client\Model\Contact[] $contacts Contact details for contacts linked to this task
+     * @param simplerest\libs\SendinBlue\Client\Model\Contact[] $contacts Contact details for contacts linked to this task
      *
      * @return $this
      */
@@ -625,7 +625,7 @@ class Task implements ModelInterface, ArrayAccess
     /**
      * Gets reminder
      *
-     * @return \SendinBlue\Client\Model\TaskReminder
+     * @return simplerest\libs\SendinBlue\Client\Model\TaskReminder
      */
     public function getReminder()
     {
@@ -635,7 +635,7 @@ class Task implements ModelInterface, ArrayAccess
     /**
      * Sets reminder
      *
-     * @param \SendinBlue\Client\Model\TaskReminder $reminder Task reminder date/time for a task
+     * @param simplerest\libs\SendinBlue\Client\Model\TaskReminder $reminder Task reminder date/time for a task
      *
      * @return $this
      */

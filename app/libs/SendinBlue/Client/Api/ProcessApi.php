@@ -94,9 +94,9 @@ class ProcessApi
      *
      * @param  int $processId Id of the process (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetProcess
+     * @return simplerest\libs\SendinBlue\Client\Model\GetProcess
      */
     public function getProcess($processId)
     {
@@ -111,13 +111,13 @@ class ProcessApi
      *
      * @param  int $processId Id of the process (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetProcess, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetProcess, HTTP status code, HTTP response headers (array of strings)
      */
     public function getProcessWithHttpInfo($processId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetProcess';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetProcess';
         $request = $this->getProcessRequest($processId);
 
         try {
@@ -169,7 +169,7 @@ class ProcessApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetProcess',
+                        'simplerest\libs\SendinBlue\Client\Model\GetProcess',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -177,7 +177,7 @@ class ProcessApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -185,7 +185,7 @@ class ProcessApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -227,7 +227,7 @@ class ProcessApi
      */
     public function getProcessAsyncWithHttpInfo($processId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetProcess';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetProcess';
         $request = $this->getProcessRequest($processId);
 
         return $this->client
@@ -391,9 +391,9 @@ class ProcessApi
      * @param  int $offset Beginning point in the list to retrieve from. (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetProcesses
+     * @return simplerest\libs\SendinBlue\Client\Model\GetProcesses
      */
     public function getProcesses($limit = '10', $offset = '0', $sort = 'desc')
     {
@@ -410,13 +410,13 @@ class ProcessApi
      * @param  int $offset Beginning point in the list to retrieve from. (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetProcesses, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetProcesses, HTTP status code, HTTP response headers (array of strings)
      */
     public function getProcessesWithHttpInfo($limit = '10', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetProcesses';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetProcesses';
         $request = $this->getProcessesRequest($limit, $offset, $sort);
 
         try {
@@ -468,7 +468,7 @@ class ProcessApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetProcesses',
+                        'simplerest\libs\SendinBlue\Client\Model\GetProcesses',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -476,7 +476,7 @@ class ProcessApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -522,7 +522,7 @@ class ProcessApi
      */
     public function getProcessesAsyncWithHttpInfo($limit = '10', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetProcesses';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetProcesses';
         $request = $this->getProcessesRequest($limit, $offset, $sort);
 
         return $this->client

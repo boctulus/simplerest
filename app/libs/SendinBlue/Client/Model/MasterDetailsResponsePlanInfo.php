@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * MasterDetailsResponsePlanInfo Class Doc Comment
@@ -63,7 +63,7 @@ class MasterDetailsResponsePlanInfo implements ModelInterface, ArrayAccess
         'price' => 'float',
         'planPeriod' => 'string',
         'subAccounts' => 'int',
-        'features' => '\SendinBlue\Client\Model\MasterDetailsResponsePlanInfoFeatures[]'
+        'features' => 'simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponsePlanInfoFeatures[]'
     ];
 
     /**
@@ -390,7 +390,7 @@ class MasterDetailsResponsePlanInfo implements ModelInterface, ArrayAccess
     /**
      * Gets features
      *
-     * @return \SendinBlue\Client\Model\MasterDetailsResponsePlanInfoFeatures[]
+     * @return simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponsePlanInfoFeatures[]
      */
     public function getFeatures()
     {
@@ -400,7 +400,7 @@ class MasterDetailsResponsePlanInfo implements ModelInterface, ArrayAccess
     /**
      * Sets features
      *
-     * @param \SendinBlue\Client\Model\MasterDetailsResponsePlanInfoFeatures[] $features List of provided features in the plan
+     * @param simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponsePlanInfoFeatures[] $features List of provided features in the plan
      *
      * @return $this
      */

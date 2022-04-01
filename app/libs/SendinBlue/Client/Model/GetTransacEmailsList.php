@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetTransacEmailsList Class Doc Comment
@@ -58,7 +58,7 @@ class GetTransacEmailsList implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'count' => 'int',
-        'transactionalEmails' => '\SendinBlue\Client\Model\GetTransacEmailsListTransactionalEmails[]'
+        'transactionalEmails' => 'simplerest\libs\SendinBlue\Client\Model\GetTransacEmailsListTransactionalEmails[]'
     ];
 
     /**
@@ -237,7 +237,7 @@ class GetTransacEmailsList implements ModelInterface, ArrayAccess
     /**
      * Gets transactionalEmails
      *
-     * @return \SendinBlue\Client\Model\GetTransacEmailsListTransactionalEmails[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacEmailsListTransactionalEmails[]
      */
     public function getTransactionalEmails()
     {
@@ -247,7 +247,7 @@ class GetTransacEmailsList implements ModelInterface, ArrayAccess
     /**
      * Sets transactionalEmails
      *
-     * @param \SendinBlue\Client\Model\GetTransacEmailsListTransactionalEmails[] $transactionalEmails transactionalEmails
+     * @param simplerest\libs\SendinBlue\Client\Model\GetTransacEmailsListTransactionalEmails[] $transactionalEmails transactionalEmails
      *
      * @return $this
      */

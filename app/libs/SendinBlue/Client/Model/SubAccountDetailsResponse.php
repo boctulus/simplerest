@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SubAccountDetailsResponse Class Doc Comment
@@ -60,7 +60,7 @@ class SubAccountDetailsResponse implements ModelInterface, ArrayAccess
         'name' => 'string',
         'email' => 'string',
         'companyName' => 'string',
-        'planInfo' => '\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfo'
+        'planInfo' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfo'
     ];
 
     /**
@@ -297,7 +297,7 @@ class SubAccountDetailsResponse implements ModelInterface, ArrayAccess
     /**
      * Gets planInfo
      *
-     * @return \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfo
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfo
      */
     public function getPlanInfo()
     {
@@ -307,7 +307,7 @@ class SubAccountDetailsResponse implements ModelInterface, ArrayAccess
     /**
      * Sets planInfo
      *
-     * @param \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfo $planInfo planInfo
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfo $planInfo planInfo
      *
      * @return $this
      */

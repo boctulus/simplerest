@@ -92,11 +92,11 @@ class SendersApi
      *
      * Create a new sender
      *
-     * @param  \SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateSenderModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateSenderModel
      */
     public function createSender($sender = null)
     {
@@ -109,15 +109,15 @@ class SendersApi
      *
      * Create a new sender
      *
-     * @param  \SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateSenderModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateSenderModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createSenderWithHttpInfo($sender = null)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateSenderModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateSenderModel';
         $request = $this->createSenderRequest($sender);
 
         try {
@@ -169,7 +169,7 @@ class SendersApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateSenderModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateSenderModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -177,7 +177,7 @@ class SendersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -192,7 +192,7 @@ class SendersApi
      *
      * Create a new sender
      *
-     * @param  \SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -212,14 +212,14 @@ class SendersApi
      *
      * Create a new sender
      *
-     * @param  \SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createSenderAsyncWithHttpInfo($sender = null)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateSenderModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateSenderModel';
         $request = $this->createSenderRequest($sender);
 
         return $this->client
@@ -262,7 +262,7 @@ class SendersApi
     /**
      * Create request for operation 'createSender'
      *
-     * @param  \SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSender $sender sender&#39;s name (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -370,7 +370,7 @@ class SendersApi
      *
      * @param  int $senderId Id of the sender (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -386,7 +386,7 @@ class SendersApi
      *
      * @param  int $senderId Id of the sender (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -430,7 +430,7 @@ class SendersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -438,7 +438,7 @@ class SendersApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -627,9 +627,9 @@ class SendersApi
      * Get all the dedicated IPs for your account
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetIps
+     * @return simplerest\libs\SendinBlue\Client\Model\GetIps
      */
     public function getIps()
     {
@@ -643,13 +643,13 @@ class SendersApi
      * Get all the dedicated IPs for your account
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetIps, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetIps, HTTP status code, HTTP response headers (array of strings)
      */
     public function getIpsWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetIps';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetIps';
         $request = $this->getIpsRequest();
 
         try {
@@ -701,7 +701,7 @@ class SendersApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetIps',
+                        'simplerest\libs\SendinBlue\Client\Model\GetIps',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -741,7 +741,7 @@ class SendersApi
      */
     public function getIpsAsyncWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetIps';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetIps';
         $request = $this->getIpsRequest();
 
         return $this->client
@@ -888,9 +888,9 @@ class SendersApi
      *
      * @param  int $senderId Id of the sender (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetIpsFromSender
+     * @return simplerest\libs\SendinBlue\Client\Model\GetIpsFromSender
      */
     public function getIpsFromSender($senderId)
     {
@@ -905,13 +905,13 @@ class SendersApi
      *
      * @param  int $senderId Id of the sender (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetIpsFromSender, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetIpsFromSender, HTTP status code, HTTP response headers (array of strings)
      */
     public function getIpsFromSenderWithHttpInfo($senderId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetIpsFromSender';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetIpsFromSender';
         $request = $this->getIpsFromSenderRequest($senderId);
 
         try {
@@ -963,7 +963,7 @@ class SendersApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetIpsFromSender',
+                        'simplerest\libs\SendinBlue\Client\Model\GetIpsFromSender',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -971,7 +971,7 @@ class SendersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -979,7 +979,7 @@ class SendersApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1021,7 +1021,7 @@ class SendersApi
      */
     public function getIpsFromSenderAsyncWithHttpInfo($senderId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetIpsFromSender';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetIpsFromSender';
         $request = $this->getIpsFromSenderRequest($senderId);
 
         return $this->client
@@ -1184,9 +1184,9 @@ class SendersApi
      * @param  string $ip Filter your senders for a specific ip (available for dedicated IP usage only) (optional)
      * @param  string $domain Filter your senders for a specific domain (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSendersList
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSendersList
      */
     public function getSenders($ip = null, $domain = null)
     {
@@ -1202,13 +1202,13 @@ class SendersApi
      * @param  string $ip Filter your senders for a specific ip (available for dedicated IP usage only) (optional)
      * @param  string $domain Filter your senders for a specific domain (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSendersList, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSendersList, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSendersWithHttpInfo($ip = null, $domain = null)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSendersList';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSendersList';
         $request = $this->getSendersRequest($ip, $domain);
 
         try {
@@ -1260,7 +1260,7 @@ class SendersApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSendersList',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSendersList',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1268,7 +1268,7 @@ class SendersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1312,7 +1312,7 @@ class SendersApi
      */
     public function getSendersAsyncWithHttpInfo($ip = null, $domain = null)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSendersList';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSendersList';
         $request = $this->getSendersRequest($ip, $domain);
 
         return $this->client
@@ -1468,9 +1468,9 @@ class SendersApi
      * Update a sender
      *
      * @param  int $senderId Id of the sender (required)
-     * @param  \SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1485,9 +1485,9 @@ class SendersApi
      * Update a sender
      *
      * @param  int $senderId Id of the sender (required)
-     * @param  \SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1531,7 +1531,7 @@ class SendersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1539,7 +1539,7 @@ class SendersApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1555,7 +1555,7 @@ class SendersApi
      * Update a sender
      *
      * @param  int $senderId Id of the sender (required)
-     * @param  \SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1576,7 +1576,7 @@ class SendersApi
      * Update a sender
      *
      * @param  int $senderId Id of the sender (required)
-     * @param  \SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1613,7 +1613,7 @@ class SendersApi
      * Create request for operation 'updateSender'
      *
      * @param  int $senderId Id of the sender (required)
-     * @param  \SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSender $sender sender&#39;s name (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

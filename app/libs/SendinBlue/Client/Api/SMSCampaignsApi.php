@@ -92,11 +92,11 @@ class SMSCampaignsApi
      *
      * Creates an SMS campaign
      *
-     * @param  \SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateModel
      */
     public function createSmsCampaign($createSmsCampaign)
     {
@@ -109,15 +109,15 @@ class SMSCampaignsApi
      *
      * Creates an SMS campaign
      *
-     * @param  \SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createSmsCampaignWithHttpInfo($createSmsCampaign)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createSmsCampaignRequest($createSmsCampaign);
 
         try {
@@ -169,7 +169,7 @@ class SMSCampaignsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -177,7 +177,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -192,7 +192,7 @@ class SMSCampaignsApi
      *
      * Creates an SMS campaign
      *
-     * @param  \SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -212,14 +212,14 @@ class SMSCampaignsApi
      *
      * Creates an SMS campaign
      *
-     * @param  \SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createSmsCampaignAsyncWithHttpInfo($createSmsCampaign)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createSmsCampaignRequest($createSmsCampaign);
 
         return $this->client
@@ -262,7 +262,7 @@ class SMSCampaignsApi
     /**
      * Create request for operation 'createSmsCampaign'
      *
-     * @param  \SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmsCampaign $createSmsCampaign Values to create an SMS Campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -376,7 +376,7 @@ class SMSCampaignsApi
      *
      * @param  int $campaignId id of the SMS campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -392,7 +392,7 @@ class SMSCampaignsApi
      *
      * @param  int $campaignId id of the SMS campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -436,7 +436,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -444,7 +444,7 @@ class SMSCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -634,9 +634,9 @@ class SMSCampaignsApi
      *
      * @param  int $campaignId id of the SMS campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSmsCampaign
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSmsCampaign
      */
     public function getSmsCampaign($campaignId)
     {
@@ -651,13 +651,13 @@ class SMSCampaignsApi
      *
      * @param  int $campaignId id of the SMS campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSmsCampaign, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSmsCampaign, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSmsCampaignWithHttpInfo($campaignId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmsCampaign';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmsCampaign';
         $request = $this->getSmsCampaignRequest($campaignId);
 
         try {
@@ -709,7 +709,7 @@ class SMSCampaignsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSmsCampaign',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSmsCampaign',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -717,7 +717,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -725,7 +725,7 @@ class SMSCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -767,7 +767,7 @@ class SMSCampaignsApi
      */
     public function getSmsCampaignAsyncWithHttpInfo($campaignId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmsCampaign';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmsCampaign';
         $request = $this->getSmsCampaignRequest($campaignId);
 
         return $this->client
@@ -934,9 +934,9 @@ class SMSCampaignsApi
      * @param  int $offset Beginning point in the list to retrieve from. (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSmsCampaigns
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSmsCampaigns
      */
     public function getSmsCampaigns($status = null, $startDate = null, $endDate = null, $limit = '500', $offset = '0', $sort = 'desc')
     {
@@ -956,13 +956,13 @@ class SMSCampaignsApi
      * @param  int $offset Beginning point in the list to retrieve from. (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSmsCampaigns, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSmsCampaigns, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSmsCampaignsWithHttpInfo($status = null, $startDate = null, $endDate = null, $limit = '500', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmsCampaigns';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmsCampaigns';
         $request = $this->getSmsCampaignsRequest($status, $startDate, $endDate, $limit, $offset, $sort);
 
         try {
@@ -1014,7 +1014,7 @@ class SMSCampaignsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSmsCampaigns',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSmsCampaigns',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1022,7 +1022,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1074,7 +1074,7 @@ class SMSCampaignsApi
      */
     public function getSmsCampaignsAsyncWithHttpInfo($status = null, $startDate = null, $endDate = null, $limit = '500', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmsCampaigns';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmsCampaigns';
         $request = $this->getSmsCampaignsRequest($status, $startDate, $endDate, $limit, $offset, $sort);
 
         return $this->client
@@ -1254,11 +1254,11 @@ class SMSCampaignsApi
      * Export an SMS campaign's recipients
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreatedProcessId
+     * @return simplerest\libs\SendinBlue\Client\Model\CreatedProcessId
      */
     public function requestSmsRecipientExport($campaignId, $recipientExport = null)
     {
@@ -1272,15 +1272,15 @@ class SMSCampaignsApi
      * Export an SMS campaign's recipients
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreatedProcessId, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreatedProcessId, HTTP status code, HTTP response headers (array of strings)
      */
     public function requestSmsRecipientExportWithHttpInfo($campaignId, $recipientExport = null)
     {
-        $returnType = '\SendinBlue\Client\Model\CreatedProcessId';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId';
         $request = $this->requestSmsRecipientExportRequest($campaignId, $recipientExport);
 
         try {
@@ -1332,7 +1332,7 @@ class SMSCampaignsApi
                 case 202:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreatedProcessId',
+                        'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1340,7 +1340,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1348,7 +1348,7 @@ class SMSCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1364,7 +1364,7 @@ class SMSCampaignsApi
      * Export an SMS campaign's recipients
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1385,14 +1385,14 @@ class SMSCampaignsApi
      * Export an SMS campaign's recipients
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function requestSmsRecipientExportAsyncWithHttpInfo($campaignId, $recipientExport = null)
     {
-        $returnType = '\SendinBlue\Client\Model\CreatedProcessId';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId';
         $request = $this->requestSmsRecipientExportRequest($campaignId, $recipientExport);
 
         return $this->client
@@ -1436,7 +1436,7 @@ class SMSCampaignsApi
      * Create request for operation 'requestSmsRecipientExport'
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestSmsRecipientExport $recipientExport Values to send for a recipient export request (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1558,7 +1558,7 @@ class SMSCampaignsApi
      *
      * @param  int $campaignId id of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1574,7 +1574,7 @@ class SMSCampaignsApi
      *
      * @param  int $campaignId id of the campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1618,7 +1618,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1626,7 +1626,7 @@ class SMSCampaignsApi
                 case 402:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1634,7 +1634,7 @@ class SMSCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1823,9 +1823,9 @@ class SMSCampaignsApi
      * Send an SMS campaign's report
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1840,9 +1840,9 @@ class SMSCampaignsApi
      * Send an SMS campaign's report
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1886,7 +1886,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1894,7 +1894,7 @@ class SMSCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1910,7 +1910,7 @@ class SMSCampaignsApi
      * Send an SMS campaign's report
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1931,7 +1931,7 @@ class SMSCampaignsApi
      * Send an SMS campaign's report
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1968,7 +1968,7 @@ class SMSCampaignsApi
      * Create request for operation 'sendSmsReport'
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendReport $sendReport Values for send a report (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2095,9 +2095,9 @@ class SMSCampaignsApi
      * Send a test SMS campaign
      *
      * @param  int $campaignId Id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2112,9 +2112,9 @@ class SMSCampaignsApi
      * Send a test SMS campaign
      *
      * @param  int $campaignId Id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2158,7 +2158,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\PostSendSmsTestFailed',
+                        'simplerest\libs\SendinBlue\Client\Model\PostSendSmsTestFailed',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2166,7 +2166,7 @@ class SMSCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2182,7 +2182,7 @@ class SMSCampaignsApi
      * Send a test SMS campaign
      *
      * @param  int $campaignId Id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2203,7 +2203,7 @@ class SMSCampaignsApi
      * Send a test SMS campaign
      *
      * @param  int $campaignId Id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2240,7 +2240,7 @@ class SMSCampaignsApi
      * Create request for operation 'sendTestSms'
      *
      * @param  int $campaignId Id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestSms $phoneNumber Mobile number of the recipient with the country code. This number must belong to one of your contacts in SendinBlue account and must not be blacklisted (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2367,9 +2367,9 @@ class SMSCampaignsApi
      * Update an SMS campaign
      *
      * @param  int $campaignId id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2384,9 +2384,9 @@ class SMSCampaignsApi
      * Update an SMS campaign
      *
      * @param  int $campaignId id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2430,7 +2430,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2438,7 +2438,7 @@ class SMSCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2454,7 +2454,7 @@ class SMSCampaignsApi
      * Update an SMS campaign
      *
      * @param  int $campaignId id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2475,7 +2475,7 @@ class SMSCampaignsApi
      * Update an SMS campaign
      *
      * @param  int $campaignId id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2512,7 +2512,7 @@ class SMSCampaignsApi
      * Create request for operation 'updateSmsCampaign'
      *
      * @param  int $campaignId id of the SMS campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmsCampaign $updateSmsCampaign Values to update an SMS Campaign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2639,9 +2639,9 @@ class SMSCampaignsApi
      * Update a campaign's status
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2656,9 +2656,9 @@ class SMSCampaignsApi
      * Update a campaign's status
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2702,7 +2702,7 @@ class SMSCampaignsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2710,7 +2710,7 @@ class SMSCampaignsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2726,7 +2726,7 @@ class SMSCampaignsApi
      * Update a campaign's status
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2747,7 +2747,7 @@ class SMSCampaignsApi
      * Update a campaign's status
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2784,7 +2784,7 @@ class SMSCampaignsApi
      * Create request for operation 'updateSmsCampaignStatus'
      *
      * @param  int $campaignId id of the campaign (required)
-     * @param  \SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateCampaignStatus $status Status of the campaign. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

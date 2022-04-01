@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetSmsEventReport Class Doc Comment
@@ -57,7 +57,7 @@ class GetSmsEventReport implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'events' => '\SendinBlue\Client\Model\GetSmsEventReportEvents[]'
+        'events' => 'simplerest\libs\SendinBlue\Client\Model\GetSmsEventReportEvents[]'
     ];
 
     /**
@@ -207,7 +207,7 @@ class GetSmsEventReport implements ModelInterface, ArrayAccess
     /**
      * Gets events
      *
-     * @return \SendinBlue\Client\Model\GetSmsEventReportEvents[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSmsEventReportEvents[]
      */
     public function getEvents()
     {
@@ -217,7 +217,7 @@ class GetSmsEventReport implements ModelInterface, ArrayAccess
     /**
      * Sets events
      *
-     * @param \SendinBlue\Client\Model\GetSmsEventReportEvents[] $events events
+     * @param simplerest\libs\SendinBlue\Client\Model\GetSmsEventReportEvents[] $events events
      *
      * @return $this
      */

@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SubAccountUpdatePlanRequest Class Doc Comment
@@ -58,8 +58,8 @@ class SubAccountUpdatePlanRequest implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'credits' => '\SendinBlue\Client\Model\SubAccountUpdatePlanRequestCredits',
-        'features' => '\SendinBlue\Client\Model\SubAccountUpdatePlanRequestFeatures'
+        'credits' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequestCredits',
+        'features' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequestFeatures'
     ];
 
     /**
@@ -214,7 +214,7 @@ class SubAccountUpdatePlanRequest implements ModelInterface, ArrayAccess
     /**
      * Gets credits
      *
-     * @return \SendinBlue\Client\Model\SubAccountUpdatePlanRequestCredits
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequestCredits
      */
     public function getCredits()
     {
@@ -224,7 +224,7 @@ class SubAccountUpdatePlanRequest implements ModelInterface, ArrayAccess
     /**
      * Sets credits
      *
-     * @param \SendinBlue\Client\Model\SubAccountUpdatePlanRequestCredits $credits credits
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequestCredits $credits credits
      *
      * @return $this
      */
@@ -238,7 +238,7 @@ class SubAccountUpdatePlanRequest implements ModelInterface, ArrayAccess
     /**
      * Gets features
      *
-     * @return \SendinBlue\Client\Model\SubAccountUpdatePlanRequestFeatures
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequestFeatures
      */
     public function getFeatures()
     {
@@ -248,7 +248,7 @@ class SubAccountUpdatePlanRequest implements ModelInterface, ArrayAccess
     /**
      * Sets features
      *
-     * @param \SendinBlue\Client\Model\SubAccountUpdatePlanRequestFeatures $features features
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountUpdatePlanRequestFeatures $features features
      *
      * @return $this
      */

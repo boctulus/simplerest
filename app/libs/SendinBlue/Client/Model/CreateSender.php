@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * CreateSender Class Doc Comment
@@ -59,7 +59,7 @@ class CreateSender implements ModelInterface, ArrayAccess
     protected static $swaggerTypes = [
         'name' => 'string',
         'email' => 'string',
-        'ips' => '\SendinBlue\Client\Model\CreateSenderIps[]'
+        'ips' => 'simplerest\libs\SendinBlue\Client\Model\CreateSenderIps[]'
     ];
 
     /**
@@ -273,7 +273,7 @@ class CreateSender implements ModelInterface, ArrayAccess
     /**
      * Gets ips
      *
-     * @return \SendinBlue\Client\Model\CreateSenderIps[]
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateSenderIps[]
      */
     public function getIps()
     {
@@ -283,7 +283,7 @@ class CreateSender implements ModelInterface, ArrayAccess
     /**
      * Sets ips
      *
-     * @param \SendinBlue\Client\Model\CreateSenderIps[] $ips Mandatory in case of dedicated IP, IPs to associate to the sender
+     * @param simplerest\libs\SendinBlue\Client\Model\CreateSenderIps[] $ips Mandatory in case of dedicated IP, IPs to associate to the sender
      *
      * @return $this
      */

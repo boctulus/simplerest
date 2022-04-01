@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetEmailCampaign Class Doc Comment
@@ -73,7 +73,7 @@ class GetEmailCampaign implements ModelInterface, ArrayAccess
         'testSent' => 'bool',
         'header' => 'string',
         'footer' => 'string',
-        'sender' => '\SendinBlue\Client\Model\GetExtendedCampaignOverviewSender',
+        'sender' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedCampaignOverviewSender',
         'replyTo' => 'string',
         'toField' => 'string',
         'htmlContent' => 'string',
@@ -885,7 +885,7 @@ class GetEmailCampaign implements ModelInterface, ArrayAccess
     /**
      * Gets sender
      *
-     * @return \SendinBlue\Client\Model\GetExtendedCampaignOverviewSender
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedCampaignOverviewSender
      */
     public function getSender()
     {
@@ -895,7 +895,7 @@ class GetEmailCampaign implements ModelInterface, ArrayAccess
     /**
      * Sets sender
      *
-     * @param \SendinBlue\Client\Model\GetExtendedCampaignOverviewSender $sender sender
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedCampaignOverviewSender $sender sender
      *
      * @return $this
      */

@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetTransacEmailContent Class Doc Comment
@@ -61,7 +61,7 @@ class GetTransacEmailContent implements ModelInterface, ArrayAccess
         'subject' => 'string',
         'templateId' => 'int',
         'date' => 'string',
-        'events' => '\SendinBlue\Client\Model\GetTransacEmailContentEvents[]',
+        'events' => 'simplerest\libs\SendinBlue\Client\Model\GetTransacEmailContentEvents[]',
         'body' => 'string',
         'attachmentCount' => 'int'
     ];
@@ -357,7 +357,7 @@ class GetTransacEmailContent implements ModelInterface, ArrayAccess
     /**
      * Gets events
      *
-     * @return \SendinBlue\Client\Model\GetTransacEmailContentEvents[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacEmailContentEvents[]
      */
     public function getEvents()
     {
@@ -367,7 +367,7 @@ class GetTransacEmailContent implements ModelInterface, ArrayAccess
     /**
      * Sets events
      *
-     * @param \SendinBlue\Client\Model\GetTransacEmailContentEvents[] $events Series of events which occurred on the transactional email
+     * @param simplerest\libs\SendinBlue\Client\Model\GetTransacEmailContentEvents[] $events Series of events which occurred on the transactional email
      *
      * @return $this
      */

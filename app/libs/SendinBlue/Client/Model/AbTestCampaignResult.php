@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * AbTestCampaignResult Class Doc Comment
@@ -63,8 +63,8 @@ class AbTestCampaignResult implements ModelInterface, ArrayAccess
         'openRate' => 'string',
         'clickRate' => 'string',
         'winningVersionRate' => 'string',
-        'statistics' => '\SendinBlue\Client\Model\AbTestCampaignResultStatistics',
-        'clickedLinks' => '\SendinBlue\Client\Model\AbTestCampaignResultClickedLinks'
+        'statistics' => 'simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResultStatistics',
+        'clickedLinks' => 'simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResultClickedLinks'
     ];
 
     /**
@@ -463,7 +463,7 @@ class AbTestCampaignResult implements ModelInterface, ArrayAccess
     /**
      * Gets statistics
      *
-     * @return \SendinBlue\Client\Model\AbTestCampaignResultStatistics
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResultStatistics
      */
     public function getStatistics()
     {
@@ -473,7 +473,7 @@ class AbTestCampaignResult implements ModelInterface, ArrayAccess
     /**
      * Sets statistics
      *
-     * @param \SendinBlue\Client\Model\AbTestCampaignResultStatistics $statistics statistics
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResultStatistics $statistics statistics
      *
      * @return $this
      */
@@ -487,7 +487,7 @@ class AbTestCampaignResult implements ModelInterface, ArrayAccess
     /**
      * Gets clickedLinks
      *
-     * @return \SendinBlue\Client\Model\AbTestCampaignResultClickedLinks
+     * @return simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResultClickedLinks
      */
     public function getClickedLinks()
     {
@@ -497,7 +497,7 @@ class AbTestCampaignResult implements ModelInterface, ArrayAccess
     /**
      * Sets clickedLinks
      *
-     * @param \SendinBlue\Client\Model\AbTestCampaignResultClickedLinks $clickedLinks clickedLinks
+     * @param simplerest\libs\SendinBlue\Client\Model\AbTestCampaignResultClickedLinks $clickedLinks clickedLinks
      *
      * @return $this
      */

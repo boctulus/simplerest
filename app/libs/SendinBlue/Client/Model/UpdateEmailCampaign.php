@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * UpdateEmailCampaign Class Doc Comment
@@ -58,7 +58,7 @@ class UpdateEmailCampaign implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'tag' => 'string',
-        'sender' => '\SendinBlue\Client\Model\UpdateEmailCampaignSender',
+        'sender' => 'simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaignSender',
         'name' => 'string',
         'htmlContent' => 'string',
         'htmlUrl' => 'string',
@@ -66,7 +66,7 @@ class UpdateEmailCampaign implements ModelInterface, ArrayAccess
         'subject' => 'string',
         'replyTo' => 'string',
         'toField' => 'string',
-        'recipients' => '\SendinBlue\Client\Model\UpdateEmailCampaignRecipients',
+        'recipients' => 'simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaignRecipients',
         'attachmentUrl' => 'string',
         'inlineImageActivation' => 'bool',
         'mirrorActive' => 'bool',
@@ -440,7 +440,7 @@ class UpdateEmailCampaign implements ModelInterface, ArrayAccess
     /**
      * Gets sender
      *
-     * @return \SendinBlue\Client\Model\UpdateEmailCampaignSender
+     * @return simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaignSender
      */
     public function getSender()
     {
@@ -450,7 +450,7 @@ class UpdateEmailCampaign implements ModelInterface, ArrayAccess
     /**
      * Sets sender
      *
-     * @param \SendinBlue\Client\Model\UpdateEmailCampaignSender $sender sender
+     * @param simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaignSender $sender sender
      *
      * @return $this
      */
@@ -632,7 +632,7 @@ class UpdateEmailCampaign implements ModelInterface, ArrayAccess
     /**
      * Gets recipients
      *
-     * @return \SendinBlue\Client\Model\UpdateEmailCampaignRecipients
+     * @return simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaignRecipients
      */
     public function getRecipients()
     {
@@ -642,7 +642,7 @@ class UpdateEmailCampaign implements ModelInterface, ArrayAccess
     /**
      * Sets recipients
      *
-     * @param \SendinBlue\Client\Model\UpdateEmailCampaignRecipients $recipients recipients
+     * @param simplerest\libs\SendinBlue\Client\Model\UpdateEmailCampaignRecipients $recipients recipients
      *
      * @return $this
      */

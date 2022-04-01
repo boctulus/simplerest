@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * PostContactInfo Class Doc Comment
@@ -57,7 +57,7 @@ class PostContactInfo implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'contacts' => '\SendinBlue\Client\Model\PostContactInfoContacts'
+        'contacts' => 'simplerest\libs\SendinBlue\Client\Model\PostContactInfoContacts'
     ];
 
     /**
@@ -210,7 +210,7 @@ class PostContactInfo implements ModelInterface, ArrayAccess
     /**
      * Gets contacts
      *
-     * @return \SendinBlue\Client\Model\PostContactInfoContacts
+     * @return simplerest\libs\SendinBlue\Client\Model\PostContactInfoContacts
      */
     public function getContacts()
     {
@@ -220,7 +220,7 @@ class PostContactInfo implements ModelInterface, ArrayAccess
     /**
      * Sets contacts
      *
-     * @param \SendinBlue\Client\Model\PostContactInfoContacts $contacts contacts
+     * @param simplerest\libs\SendinBlue\Client\Model\PostContactInfoContacts $contacts contacts
      *
      * @return $this
      */

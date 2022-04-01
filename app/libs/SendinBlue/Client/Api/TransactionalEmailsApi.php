@@ -92,9 +92,9 @@ class TransactionalEmailsApi
      *
      * Add a new domain to the list of blocked domains
      *
-     * @param  \SendinBlue\Client\Model\BlockDomain $blockDomain blockDomain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\BlockDomain $blockDomain blockDomain (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -108,9 +108,9 @@ class TransactionalEmailsApi
      *
      * Add a new domain to the list of blocked domains
      *
-     * @param  \SendinBlue\Client\Model\BlockDomain $blockDomain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\BlockDomain $blockDomain (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -154,7 +154,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -169,7 +169,7 @@ class TransactionalEmailsApi
      *
      * Add a new domain to the list of blocked domains
      *
-     * @param  \SendinBlue\Client\Model\BlockDomain $blockDomain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\BlockDomain $blockDomain (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -189,7 +189,7 @@ class TransactionalEmailsApi
      *
      * Add a new domain to the list of blocked domains
      *
-     * @param  \SendinBlue\Client\Model\BlockDomain $blockDomain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\BlockDomain $blockDomain (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -225,7 +225,7 @@ class TransactionalEmailsApi
     /**
      * Create request for operation 'blockNewDomain'
      *
-     * @param  \SendinBlue\Client\Model\BlockDomain $blockDomain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\BlockDomain $blockDomain (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -337,11 +337,11 @@ class TransactionalEmailsApi
      *
      * Create an email template
      *
-     * @param  \SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateModel
      */
     public function createSmtpTemplate($smtpTemplate)
     {
@@ -354,15 +354,15 @@ class TransactionalEmailsApi
      *
      * Create an email template
      *
-     * @param  \SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createSmtpTemplateWithHttpInfo($smtpTemplate)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createSmtpTemplateRequest($smtpTemplate);
 
         try {
@@ -414,7 +414,7 @@ class TransactionalEmailsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -422,7 +422,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -437,7 +437,7 @@ class TransactionalEmailsApi
      *
      * Create an email template
      *
-     * @param  \SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -457,14 +457,14 @@ class TransactionalEmailsApi
      *
      * Create an email template
      *
-     * @param  \SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createSmtpTemplateAsyncWithHttpInfo($smtpTemplate)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createSmtpTemplateRequest($smtpTemplate);
 
         return $this->client
@@ -507,7 +507,7 @@ class TransactionalEmailsApi
     /**
      * Create request for operation 'createSmtpTemplate'
      *
-     * @param  \SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -621,7 +621,7 @@ class TransactionalEmailsApi
      *
      * @param  string $domain The name of the domain to be deleted (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -637,7 +637,7 @@ class TransactionalEmailsApi
      *
      * @param  string $domain The name of the domain to be deleted (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -681,7 +681,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -869,9 +869,9 @@ class TransactionalEmailsApi
      *
      * Delete hardbounces
      *
-     * @param  \SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -885,9 +885,9 @@ class TransactionalEmailsApi
      *
      * Delete hardbounces
      *
-     * @param  \SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -931,7 +931,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -946,7 +946,7 @@ class TransactionalEmailsApi
      *
      * Delete hardbounces
      *
-     * @param  \SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -966,7 +966,7 @@ class TransactionalEmailsApi
      *
      * Delete hardbounces
      *
-     * @param  \SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1002,7 +1002,7 @@ class TransactionalEmailsApi
     /**
      * Create request for operation 'deleteHardbounces'
      *
-     * @param  \SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\DeleteHardbounces $deleteHardbounces values to delete hardbounces (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1110,7 +1110,7 @@ class TransactionalEmailsApi
      *
      * @param  int $templateId id of the template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1126,7 +1126,7 @@ class TransactionalEmailsApi
      *
      * @param  int $templateId id of the template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1170,7 +1170,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1178,7 +1178,7 @@ class TransactionalEmailsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1371,9 +1371,9 @@ class TransactionalEmailsApi
      * @param  int $days Number of days in the past including today (positive integer). Not compatible with &#39;startDate&#39; and &#39;endDate&#39; (optional)
      * @param  string $tag Tag of the emails (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetAggregatedReport
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAggregatedReport
      */
     public function getAggregatedSmtpReport($startDate = null, $endDate = null, $days = null, $tag = null)
     {
@@ -1391,13 +1391,13 @@ class TransactionalEmailsApi
      * @param  int $days Number of days in the past including today (positive integer). Not compatible with &#39;startDate&#39; and &#39;endDate&#39; (optional)
      * @param  string $tag Tag of the emails (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetAggregatedReport, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetAggregatedReport, HTTP status code, HTTP response headers (array of strings)
      */
     public function getAggregatedSmtpReportWithHttpInfo($startDate = null, $endDate = null, $days = null, $tag = null)
     {
-        $returnType = '\SendinBlue\Client\Model\GetAggregatedReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetAggregatedReport';
         $request = $this->getAggregatedSmtpReportRequest($startDate, $endDate, $days, $tag);
 
         try {
@@ -1449,7 +1449,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetAggregatedReport',
+                        'simplerest\libs\SendinBlue\Client\Model\GetAggregatedReport',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1457,7 +1457,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1505,7 +1505,7 @@ class TransactionalEmailsApi
      */
     public function getAggregatedSmtpReportAsyncWithHttpInfo($startDate = null, $endDate = null, $days = null, $tag = null)
     {
-        $returnType = '\SendinBlue\Client\Model\GetAggregatedReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetAggregatedReport';
         $request = $this->getAggregatedSmtpReportRequest($startDate, $endDate, $days, $tag);
 
         return $this->client
@@ -1671,9 +1671,9 @@ class TransactionalEmailsApi
      * Get the list of blocked domains
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetBlockedDomains
+     * @return simplerest\libs\SendinBlue\Client\Model\GetBlockedDomains
      */
     public function getBlockedDomains()
     {
@@ -1687,13 +1687,13 @@ class TransactionalEmailsApi
      * Get the list of blocked domains
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetBlockedDomains, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetBlockedDomains, HTTP status code, HTTP response headers (array of strings)
      */
     public function getBlockedDomainsWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetBlockedDomains';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetBlockedDomains';
         $request = $this->getBlockedDomainsRequest();
 
         try {
@@ -1745,7 +1745,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetBlockedDomains',
+                        'simplerest\libs\SendinBlue\Client\Model\GetBlockedDomains',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1785,7 +1785,7 @@ class TransactionalEmailsApi
      */
     public function getBlockedDomainsAsyncWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetBlockedDomains';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetBlockedDomains';
         $request = $this->getBlockedDomainsRequest();
 
         return $this->client
@@ -1942,9 +1942,9 @@ class TransactionalEmailsApi
      * @param  int $templateId Filter on a specific template id (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetEmailEventReport
+     * @return simplerest\libs\SendinBlue\Client\Model\GetEmailEventReport
      */
     public function getEmailEventReport($limit = '50', $offset = '0', $startDate = null, $endDate = null, $days = null, $email = null, $event = null, $tags = null, $messageId = null, $templateId = null, $sort = 'desc')
     {
@@ -1969,13 +1969,13 @@ class TransactionalEmailsApi
      * @param  int $templateId Filter on a specific template id (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetEmailEventReport, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetEmailEventReport, HTTP status code, HTTP response headers (array of strings)
      */
     public function getEmailEventReportWithHttpInfo($limit = '50', $offset = '0', $startDate = null, $endDate = null, $days = null, $email = null, $event = null, $tags = null, $messageId = null, $templateId = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetEmailEventReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetEmailEventReport';
         $request = $this->getEmailEventReportRequest($limit, $offset, $startDate, $endDate, $days, $email, $event, $tags, $messageId, $templateId, $sort);
 
         try {
@@ -2027,7 +2027,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetEmailEventReport',
+                        'simplerest\libs\SendinBlue\Client\Model\GetEmailEventReport',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2035,7 +2035,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2097,7 +2097,7 @@ class TransactionalEmailsApi
      */
     public function getEmailEventReportAsyncWithHttpInfo($limit = '50', $offset = '0', $startDate = null, $endDate = null, $days = null, $email = null, $event = null, $tags = null, $messageId = null, $templateId = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetEmailEventReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetEmailEventReport';
         $request = $this->getEmailEventReportRequest($limit, $offset, $startDate, $endDate, $days, $email, $event, $tags, $messageId, $templateId, $sort);
 
         return $this->client
@@ -2309,9 +2309,9 @@ class TransactionalEmailsApi
      * @param  string $tag Tag of the emails (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetReports
+     * @return simplerest\libs\SendinBlue\Client\Model\GetReports
      */
     public function getSmtpReport($limit = '10', $offset = '0', $startDate = null, $endDate = null, $days = null, $tag = null, $sort = 'desc')
     {
@@ -2332,13 +2332,13 @@ class TransactionalEmailsApi
      * @param  string $tag Tag of the emails (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetReports, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetReports, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSmtpReportWithHttpInfo($limit = '10', $offset = '0', $startDate = null, $endDate = null, $days = null, $tag = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetReports';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetReports';
         $request = $this->getSmtpReportRequest($limit, $offset, $startDate, $endDate, $days, $tag, $sort);
 
         try {
@@ -2390,7 +2390,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetReports',
+                        'simplerest\libs\SendinBlue\Client\Model\GetReports',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2398,7 +2398,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2452,7 +2452,7 @@ class TransactionalEmailsApi
      */
     public function getSmtpReportAsyncWithHttpInfo($limit = '10', $offset = '0', $startDate = null, $endDate = null, $days = null, $tag = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetReports';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetReports';
         $request = $this->getSmtpReportRequest($limit, $offset, $startDate, $endDate, $days, $tag, $sort);
 
         return $this->client
@@ -2638,9 +2638,9 @@ class TransactionalEmailsApi
      *
      * @param  int $templateId id of the template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSmtpTemplateOverview
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverview
      */
     public function getSmtpTemplate($templateId)
     {
@@ -2655,13 +2655,13 @@ class TransactionalEmailsApi
      *
      * @param  int $templateId id of the template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSmtpTemplateOverview, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverview, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSmtpTemplateWithHttpInfo($templateId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmtpTemplateOverview';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverview';
         $request = $this->getSmtpTemplateRequest($templateId);
 
         try {
@@ -2713,7 +2713,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSmtpTemplateOverview',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverview',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2721,7 +2721,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2729,7 +2729,7 @@ class TransactionalEmailsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2771,7 +2771,7 @@ class TransactionalEmailsApi
      */
     public function getSmtpTemplateAsyncWithHttpInfo($templateId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmtpTemplateOverview';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverview';
         $request = $this->getSmtpTemplateRequest($templateId);
 
         return $this->client
@@ -2936,9 +2936,9 @@ class TransactionalEmailsApi
      * @param  int $offset Index of the first document in the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSmtpTemplates
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplates
      */
     public function getSmtpTemplates($templateStatus = null, $limit = '50', $offset = '0', $sort = 'desc')
     {
@@ -2956,13 +2956,13 @@ class TransactionalEmailsApi
      * @param  int $offset Index of the first document in the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSmtpTemplates, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplates, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSmtpTemplatesWithHttpInfo($templateStatus = null, $limit = '50', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmtpTemplates';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplates';
         $request = $this->getSmtpTemplatesRequest($templateStatus, $limit, $offset, $sort);
 
         try {
@@ -3014,7 +3014,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSmtpTemplates',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplates',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3022,7 +3022,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3070,7 +3070,7 @@ class TransactionalEmailsApi
      */
     public function getSmtpTemplatesAsyncWithHttpInfo($templateStatus = null, $limit = '50', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmtpTemplates';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplates';
         $request = $this->getSmtpTemplatesRequest($templateStatus, $limit, $offset, $sort);
 
         return $this->client
@@ -3246,9 +3246,9 @@ class TransactionalEmailsApi
      * @param  string[] $senders Comma separated list of emails of the senders from which contacts are blocked or unsubscribed (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetTransacBlockedContacts
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacBlockedContacts
      */
     public function getTransacBlockedContacts($startDate = null, $endDate = null, $limit = '50', $offset = '0', $senders = null, $sort = 'desc')
     {
@@ -3268,13 +3268,13 @@ class TransactionalEmailsApi
      * @param  string[] $senders Comma separated list of emails of the senders from which contacts are blocked or unsubscribed (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetTransacBlockedContacts, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetTransacBlockedContacts, HTTP status code, HTTP response headers (array of strings)
      */
     public function getTransacBlockedContactsWithHttpInfo($startDate = null, $endDate = null, $limit = '50', $offset = '0', $senders = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacBlockedContacts';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacBlockedContacts';
         $request = $this->getTransacBlockedContactsRequest($startDate, $endDate, $limit, $offset, $senders, $sort);
 
         try {
@@ -3326,7 +3326,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetTransacBlockedContacts',
+                        'simplerest\libs\SendinBlue\Client\Model\GetTransacBlockedContacts',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3334,7 +3334,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3386,7 +3386,7 @@ class TransactionalEmailsApi
      */
     public function getTransacBlockedContactsAsyncWithHttpInfo($startDate = null, $endDate = null, $limit = '50', $offset = '0', $senders = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacBlockedContacts';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacBlockedContacts';
         $request = $this->getTransacBlockedContactsRequest($startDate, $endDate, $limit, $offset, $senders, $sort);
 
         return $this->client
@@ -3570,9 +3570,9 @@ class TransactionalEmailsApi
      *
      * @param  string $uuid Unique id of the transactional email that has been sent to a particular contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetTransacEmailContent
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacEmailContent
      */
     public function getTransacEmailContent($uuid)
     {
@@ -3587,13 +3587,13 @@ class TransactionalEmailsApi
      *
      * @param  string $uuid Unique id of the transactional email that has been sent to a particular contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetTransacEmailContent, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetTransacEmailContent, HTTP status code, HTTP response headers (array of strings)
      */
     public function getTransacEmailContentWithHttpInfo($uuid)
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacEmailContent';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacEmailContent';
         $request = $this->getTransacEmailContentRequest($uuid);
 
         try {
@@ -3645,7 +3645,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetTransacEmailContent',
+                        'simplerest\libs\SendinBlue\Client\Model\GetTransacEmailContent',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3687,7 +3687,7 @@ class TransactionalEmailsApi
      */
     public function getTransacEmailContentAsyncWithHttpInfo($uuid)
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacEmailContent';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacEmailContent';
         $request = $this->getTransacEmailContentRequest($uuid);
 
         return $this->client
@@ -3856,9 +3856,9 @@ class TransactionalEmailsApi
      * @param  int $limit Number of documents returned per page (optional, default to 500)
      * @param  int $offset Index of the first document in the page (optional, default to 0)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetTransacEmailsList
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacEmailsList
      */
     public function getTransacEmailsList($email = null, $templateId = null, $messageId = null, $startDate = null, $endDate = null, $sort = 'desc', $limit = '500', $offset = '0')
     {
@@ -3880,13 +3880,13 @@ class TransactionalEmailsApi
      * @param  int $limit Number of documents returned per page (optional, default to 500)
      * @param  int $offset Index of the first document in the page (optional, default to 0)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetTransacEmailsList, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetTransacEmailsList, HTTP status code, HTTP response headers (array of strings)
      */
     public function getTransacEmailsListWithHttpInfo($email = null, $templateId = null, $messageId = null, $startDate = null, $endDate = null, $sort = 'desc', $limit = '500', $offset = '0')
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacEmailsList';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacEmailsList';
         $request = $this->getTransacEmailsListRequest($email, $templateId, $messageId, $startDate, $endDate, $sort, $limit, $offset);
 
         try {
@@ -3938,7 +3938,7 @@ class TransactionalEmailsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetTransacEmailsList',
+                        'simplerest\libs\SendinBlue\Client\Model\GetTransacEmailsList',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3946,7 +3946,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4002,7 +4002,7 @@ class TransactionalEmailsApi
      */
     public function getTransacEmailsListAsyncWithHttpInfo($email = null, $templateId = null, $messageId = null, $startDate = null, $endDate = null, $sort = 'desc', $limit = '500', $offset = '0')
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacEmailsList';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacEmailsList';
         $request = $this->getTransacEmailsListRequest($email, $templateId, $messageId, $startDate, $endDate, $sort, $limit, $offset);
 
         return $this->client
@@ -4192,9 +4192,9 @@ class TransactionalEmailsApi
      * Send a template to your test list
      *
      * @param  int $templateId Id of the template (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $sendTestEmail sendTestEmail (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $sendTestEmail sendTestEmail (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -4209,9 +4209,9 @@ class TransactionalEmailsApi
      * Send a template to your test list
      *
      * @param  int $templateId Id of the template (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $sendTestEmail (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $sendTestEmail (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -4255,7 +4255,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\PostSendFailed',
+                        'simplerest\libs\SendinBlue\Client\Model\PostSendFailed',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4263,7 +4263,7 @@ class TransactionalEmailsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4279,7 +4279,7 @@ class TransactionalEmailsApi
      * Send a template to your test list
      *
      * @param  int $templateId Id of the template (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $sendTestEmail (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $sendTestEmail (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4300,7 +4300,7 @@ class TransactionalEmailsApi
      * Send a template to your test list
      *
      * @param  int $templateId Id of the template (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $sendTestEmail (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $sendTestEmail (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4337,7 +4337,7 @@ class TransactionalEmailsApi
      * Create request for operation 'sendTestTemplate'
      *
      * @param  int $templateId Id of the template (required)
-     * @param  \SendinBlue\Client\Model\SendTestEmail $sendTestEmail (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTestEmail $sendTestEmail (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -4463,11 +4463,11 @@ class TransactionalEmailsApi
      *
      * Send a transactional email
      *
-     * @param  \SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateSmtpEmail
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateSmtpEmail
      */
     public function sendTransacEmail($sendSmtpEmail)
     {
@@ -4480,15 +4480,15 @@ class TransactionalEmailsApi
      *
      * Send a transactional email
      *
-     * @param  \SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateSmtpEmail, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateSmtpEmail, HTTP status code, HTTP response headers (array of strings)
      */
     public function sendTransacEmailWithHttpInfo($sendSmtpEmail)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateSmtpEmail';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateSmtpEmail';
         $request = $this->sendTransacEmailRequest($sendSmtpEmail);
 
         try {
@@ -4540,7 +4540,7 @@ class TransactionalEmailsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateSmtpEmail',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateSmtpEmail',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4548,7 +4548,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4563,7 +4563,7 @@ class TransactionalEmailsApi
      *
      * Send a transactional email
      *
-     * @param  \SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4583,14 +4583,14 @@ class TransactionalEmailsApi
      *
      * Send a transactional email
      *
-     * @param  \SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function sendTransacEmailAsyncWithHttpInfo($sendSmtpEmail)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateSmtpEmail';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateSmtpEmail';
         $request = $this->sendTransacEmailRequest($sendSmtpEmail);
 
         return $this->client
@@ -4633,7 +4633,7 @@ class TransactionalEmailsApi
     /**
      * Create request for operation 'sendTransacEmail'
      *
-     * @param  \SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail $sendSmtpEmail Values to send a transactional email (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -4747,7 +4747,7 @@ class TransactionalEmailsApi
      *
      * @param  string $email contact email (urlencoded) to unblock. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -4763,7 +4763,7 @@ class TransactionalEmailsApi
      *
      * @param  string $email contact email (urlencoded) to unblock. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -4807,7 +4807,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4815,7 +4815,7 @@ class TransactionalEmailsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5005,7 +5005,7 @@ class TransactionalEmailsApi
      *
      * @param  string $messageId MessageId of the transactional log to delete (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -5021,7 +5021,7 @@ class TransactionalEmailsApi
      *
      * @param  string $messageId MessageId of the transactional log to delete (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -5065,7 +5065,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5073,7 +5073,7 @@ class TransactionalEmailsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5262,9 +5262,9 @@ class TransactionalEmailsApi
      * Update an email template
      *
      * @param  int $templateId id of the template (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -5279,9 +5279,9 @@ class TransactionalEmailsApi
      * Update an email template
      *
      * @param  int $templateId id of the template (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -5325,7 +5325,7 @@ class TransactionalEmailsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5333,7 +5333,7 @@ class TransactionalEmailsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5349,7 +5349,7 @@ class TransactionalEmailsApi
      * Update an email template
      *
      * @param  int $templateId id of the template (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -5370,7 +5370,7 @@ class TransactionalEmailsApi
      * Update an email template
      *
      * @param  int $templateId id of the template (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -5407,7 +5407,7 @@ class TransactionalEmailsApi
      * Create request for operation 'updateSmtpTemplate'
      *
      * @param  int $templateId id of the template (required)
-     * @param  \SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateSmtpTemplate $smtpTemplate values to update in transactional email template (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

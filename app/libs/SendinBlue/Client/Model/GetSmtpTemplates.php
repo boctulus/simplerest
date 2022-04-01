@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetSmtpTemplates Class Doc Comment
@@ -58,7 +58,7 @@ class GetSmtpTemplates implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'count' => 'int',
-        'templates' => '\SendinBlue\Client\Model\GetSmtpTemplateOverview[]'
+        'templates' => 'simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverview[]'
     ];
 
     /**
@@ -237,7 +237,7 @@ class GetSmtpTemplates implements ModelInterface, ArrayAccess
     /**
      * Gets templates
      *
-     * @return \SendinBlue\Client\Model\GetSmtpTemplateOverview[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverview[]
      */
     public function getTemplates()
     {
@@ -247,7 +247,7 @@ class GetSmtpTemplates implements ModelInterface, ArrayAccess
     /**
      * Sets templates
      *
-     * @param \SendinBlue\Client\Model\GetSmtpTemplateOverview[] $templates templates
+     * @param simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverview[] $templates templates
      *
      * @return $this
      */
