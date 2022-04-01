@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * UpdateSmtpTemplate Class Doc Comment
@@ -58,7 +58,7 @@ class UpdateSmtpTemplate implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'tag' => 'string',
-        'sender' => '\SendinBlue\Client\Model\UpdateSmtpTemplateSender',
+        'sender' => 'simplerest\libs\SendinBlue\Client\Model\UpdateSmtpTemplateSender',
         'templateName' => 'string',
         'htmlContent' => 'string',
         'htmlUrl' => 'string',
@@ -285,7 +285,7 @@ class UpdateSmtpTemplate implements ModelInterface, ArrayAccess
     /**
      * Gets sender
      *
-     * @return \SendinBlue\Client\Model\UpdateSmtpTemplateSender
+     * @return simplerest\libs\SendinBlue\Client\Model\UpdateSmtpTemplateSender
      */
     public function getSender()
     {
@@ -295,7 +295,7 @@ class UpdateSmtpTemplate implements ModelInterface, ArrayAccess
     /**
      * Sets sender
      *
-     * @param \SendinBlue\Client\Model\UpdateSmtpTemplateSender $sender sender
+     * @param simplerest\libs\SendinBlue\Client\Model\UpdateSmtpTemplateSender $sender sender
      *
      * @return $this
      */

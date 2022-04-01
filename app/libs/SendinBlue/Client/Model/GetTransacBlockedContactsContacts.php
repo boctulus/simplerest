@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetTransacBlockedContactsContacts Class Doc Comment
@@ -59,7 +59,7 @@ class GetTransacBlockedContactsContacts implements ModelInterface, ArrayAccess
     protected static $swaggerTypes = [
         'email' => 'string',
         'senderEmail' => 'string',
-        'reason' => '\SendinBlue\Client\Model\GetTransacBlockedContactsReason',
+        'reason' => 'simplerest\libs\SendinBlue\Client\Model\GetTransacBlockedContactsReason',
         'blockedAt' => 'string'
     ];
 
@@ -285,7 +285,7 @@ class GetTransacBlockedContactsContacts implements ModelInterface, ArrayAccess
     /**
      * Gets reason
      *
-     * @return \SendinBlue\Client\Model\GetTransacBlockedContactsReason
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacBlockedContactsReason
      */
     public function getReason()
     {
@@ -295,7 +295,7 @@ class GetTransacBlockedContactsContacts implements ModelInterface, ArrayAccess
     /**
      * Sets reason
      *
-     * @param \SendinBlue\Client\Model\GetTransacBlockedContactsReason $reason reason
+     * @param simplerest\libs\SendinBlue\Client\Model\GetTransacBlockedContactsReason $reason reason
      *
      * @return $this
      */

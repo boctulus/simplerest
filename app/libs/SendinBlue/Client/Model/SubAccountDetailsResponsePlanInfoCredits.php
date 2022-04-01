@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SubAccountDetailsResponsePlanInfoCredits Class Doc Comment
@@ -59,7 +59,7 @@ class SubAccountDetailsResponsePlanInfoCredits implements ModelInterface, ArrayA
       */
     protected static $swaggerTypes = [
         'sms' => 'int',
-        'emails' => '\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCreditsEmails'
+        'emails' => 'simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCreditsEmails'
     ];
 
     /**
@@ -238,7 +238,7 @@ class SubAccountDetailsResponsePlanInfoCredits implements ModelInterface, ArrayA
     /**
      * Gets emails
      *
-     * @return \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCreditsEmails
+     * @return simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCreditsEmails
      */
     public function getEmails()
     {
@@ -248,7 +248,7 @@ class SubAccountDetailsResponsePlanInfoCredits implements ModelInterface, ArrayA
     /**
      * Sets emails
      *
-     * @param \SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCreditsEmails $emails emails
+     * @param simplerest\libs\SendinBlue\Client\Model\SubAccountDetailsResponsePlanInfoCreditsEmails $emails emails
      *
      * @return $this
      */

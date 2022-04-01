@@ -92,11 +92,11 @@ class FoldersApi
      *
      * Create a folder
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateModel
      */
     public function createFolder($createFolder)
     {
@@ -109,15 +109,15 @@ class FoldersApi
      *
      * Create a folder
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createFolderWithHttpInfo($createFolder)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createFolderRequest($createFolder);
 
         try {
@@ -169,7 +169,7 @@ class FoldersApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -177,7 +177,7 @@ class FoldersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -192,7 +192,7 @@ class FoldersApi
      *
      * Create a folder
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -212,14 +212,14 @@ class FoldersApi
      *
      * Create a folder
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createFolderAsyncWithHttpInfo($createFolder)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createFolderRequest($createFolder);
 
         return $this->client
@@ -262,7 +262,7 @@ class FoldersApi
     /**
      * Create request for operation 'createFolder'
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -376,7 +376,7 @@ class FoldersApi
      *
      * @param  int $folderId Id of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -392,7 +392,7 @@ class FoldersApi
      *
      * @param  int $folderId Id of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -436,7 +436,7 @@ class FoldersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -444,7 +444,7 @@ class FoldersApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -634,9 +634,9 @@ class FoldersApi
      *
      * @param  int $folderId id of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetFolder
+     * @return simplerest\libs\SendinBlue\Client\Model\GetFolder
      */
     public function getFolder($folderId)
     {
@@ -651,13 +651,13 @@ class FoldersApi
      *
      * @param  int $folderId id of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetFolder, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetFolder, HTTP status code, HTTP response headers (array of strings)
      */
     public function getFolderWithHttpInfo($folderId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolder';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolder';
         $request = $this->getFolderRequest($folderId);
 
         try {
@@ -709,7 +709,7 @@ class FoldersApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetFolder',
+                        'simplerest\libs\SendinBlue\Client\Model\GetFolder',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -717,7 +717,7 @@ class FoldersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -725,7 +725,7 @@ class FoldersApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -767,7 +767,7 @@ class FoldersApi
      */
     public function getFolderAsyncWithHttpInfo($folderId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolder';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolder';
         $request = $this->getFolderRequest($folderId);
 
         return $this->client
@@ -932,9 +932,9 @@ class FoldersApi
      * @param  int $offset Index of the first document of the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetFolderLists
+     * @return simplerest\libs\SendinBlue\Client\Model\GetFolderLists
      */
     public function getFolderLists($folderId, $limit = '10', $offset = '0', $sort = 'desc')
     {
@@ -952,13 +952,13 @@ class FoldersApi
      * @param  int $offset Index of the first document of the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetFolderLists, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetFolderLists, HTTP status code, HTTP response headers (array of strings)
      */
     public function getFolderListsWithHttpInfo($folderId, $limit = '10', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolderLists';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolderLists';
         $request = $this->getFolderListsRequest($folderId, $limit, $offset, $sort);
 
         try {
@@ -1010,7 +1010,7 @@ class FoldersApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetFolderLists',
+                        'simplerest\libs\SendinBlue\Client\Model\GetFolderLists',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1018,7 +1018,7 @@ class FoldersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1026,7 +1026,7 @@ class FoldersApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1074,7 +1074,7 @@ class FoldersApi
      */
     public function getFolderListsAsyncWithHttpInfo($folderId, $limit = '10', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolderLists';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolderLists';
         $request = $this->getFolderListsRequest($folderId, $limit, $offset, $sort);
 
         return $this->client
@@ -1257,9 +1257,9 @@ class FoldersApi
      * @param  int $offset Index of the first document of the page (required)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetFolders
+     * @return simplerest\libs\SendinBlue\Client\Model\GetFolders
      */
     public function getFolders($limit, $offset, $sort = 'desc')
     {
@@ -1276,13 +1276,13 @@ class FoldersApi
      * @param  int $offset Index of the first document of the page (required)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetFolders, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetFolders, HTTP status code, HTTP response headers (array of strings)
      */
     public function getFoldersWithHttpInfo($limit, $offset, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolders';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolders';
         $request = $this->getFoldersRequest($limit, $offset, $sort);
 
         try {
@@ -1334,7 +1334,7 @@ class FoldersApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetFolders',
+                        'simplerest\libs\SendinBlue\Client\Model\GetFolders',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1342,7 +1342,7 @@ class FoldersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1388,7 +1388,7 @@ class FoldersApi
      */
     public function getFoldersAsyncWithHttpInfo($limit, $offset, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolders';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolders';
         $request = $this->getFoldersRequest($limit, $offset, $sort);
 
         return $this->client
@@ -1565,9 +1565,9 @@ class FoldersApi
      * Update a folder
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1582,9 +1582,9 @@ class FoldersApi
      * Update a folder
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1628,7 +1628,7 @@ class FoldersApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1636,7 +1636,7 @@ class FoldersApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1652,7 +1652,7 @@ class FoldersApi
      * Update a folder
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1673,7 +1673,7 @@ class FoldersApi
      * Update a folder
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1710,7 +1710,7 @@ class FoldersApi
      * Create request for operation 'updateFolder'
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

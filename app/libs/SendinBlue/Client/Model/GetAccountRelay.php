@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetAccountRelay Class Doc Comment
@@ -59,7 +59,7 @@ class GetAccountRelay implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'enabled' => 'bool',
-        'data' => '\SendinBlue\Client\Model\GetAccountRelayData'
+        'data' => 'simplerest\libs\SendinBlue\Client\Model\GetAccountRelayData'
     ];
 
     /**
@@ -244,7 +244,7 @@ class GetAccountRelay implements ModelInterface, ArrayAccess
     /**
      * Gets data
      *
-     * @return \SendinBlue\Client\Model\GetAccountRelayData
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAccountRelayData
      */
     public function getData()
     {
@@ -254,7 +254,7 @@ class GetAccountRelay implements ModelInterface, ArrayAccess
     /**
      * Sets data
      *
-     * @param \SendinBlue\Client\Model\GetAccountRelayData $data data
+     * @param simplerest\libs\SendinBlue\Client\Model\GetAccountRelayData $data data
      *
      * @return $this
      */

@@ -94,9 +94,9 @@ class CRMApi
      *
      * @param  string $id File id to get file data. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\FileData
+     * @return simplerest\libs\SendinBlue\Client\Model\FileData
      */
     public function crmFilesIdDataGet($id)
     {
@@ -111,13 +111,13 @@ class CRMApi
      *
      * @param  string $id File id to get file data. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\FileData, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\FileData, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmFilesIdDataGetWithHttpInfo($id)
     {
-        $returnType = '\SendinBlue\Client\Model\FileData';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\FileData';
         $request = $this->crmFilesIdDataGetRequest($id);
 
         try {
@@ -169,7 +169,7 @@ class CRMApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\FileData',
+                        'simplerest\libs\SendinBlue\Client\Model\FileData',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -177,7 +177,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -185,7 +185,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -227,7 +227,7 @@ class CRMApi
      */
     public function crmFilesIdDataGetAsyncWithHttpInfo($id)
     {
-        $returnType = '\SendinBlue\Client\Model\FileData';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\FileData';
         $request = $this->crmFilesIdDataGetRequest($id);
 
         return $this->client
@@ -389,7 +389,7 @@ class CRMApi
      *
      * @param  string $id File id to delete. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -405,7 +405,7 @@ class CRMApi
      *
      * @param  string $id File id to delete. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -449,7 +449,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -457,7 +457,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -647,7 +647,7 @@ class CRMApi
      *
      * @param  string $id File id to download. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -663,7 +663,7 @@ class CRMApi
      *
      * @param  string $id File id to download. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -707,7 +707,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -715,7 +715,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -906,9 +906,9 @@ class CRMApi
      * @param  \SplFileObject $file File data to create a file. (required)
      * @param  string[] $dealsIds Deal ids linked to a file (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\FileData
+     * @return simplerest\libs\SendinBlue\Client\Model\FileData
      */
     public function crmFilesPost($file, $dealsIds = null)
     {
@@ -924,13 +924,13 @@ class CRMApi
      * @param  \SplFileObject $file File data to create a file. (required)
      * @param  string[] $dealsIds Deal ids linked to a file (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\FileData, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\FileData, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmFilesPostWithHttpInfo($file, $dealsIds = null)
     {
-        $returnType = '\SendinBlue\Client\Model\FileData';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\FileData';
         $request = $this->crmFilesPostRequest($file, $dealsIds);
 
         try {
@@ -982,7 +982,7 @@ class CRMApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\FileData',
+                        'simplerest\libs\SendinBlue\Client\Model\FileData',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -990,7 +990,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1034,7 +1034,7 @@ class CRMApi
      */
     public function crmFilesPostAsyncWithHttpInfo($file, $dealsIds = null)
     {
-        $returnType = '\SendinBlue\Client\Model\FileData';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\FileData';
         $request = $this->crmFilesPostRequest($file, $dealsIds);
 
         return $this->client
@@ -1198,7 +1198,7 @@ class CRMApi
      *
      * @param  string $id Note ID to delete (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1214,7 +1214,7 @@ class CRMApi
      *
      * @param  string $id Note ID to delete (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1258,7 +1258,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1266,7 +1266,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1456,9 +1456,9 @@ class CRMApi
      *
      * @param  string $id Note ID to get (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\Note
+     * @return simplerest\libs\SendinBlue\Client\Model\Note
      */
     public function crmNotesIdGet($id)
     {
@@ -1473,13 +1473,13 @@ class CRMApi
      *
      * @param  string $id Note ID to get (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\Note, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\Note, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmNotesIdGetWithHttpInfo($id)
     {
-        $returnType = '\SendinBlue\Client\Model\Note';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Note';
         $request = $this->crmNotesIdGetRequest($id);
 
         try {
@@ -1531,7 +1531,7 @@ class CRMApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\Note',
+                        'simplerest\libs\SendinBlue\Client\Model\Note',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1539,7 +1539,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1547,7 +1547,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1589,7 +1589,7 @@ class CRMApi
      */
     public function crmNotesIdGetAsyncWithHttpInfo($id)
     {
-        $returnType = '\SendinBlue\Client\Model\Note';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Note';
         $request = $this->crmNotesIdGetRequest($id);
 
         return $this->client
@@ -1750,11 +1750,11 @@ class CRMApi
      * Update a note
      *
      * @param  string $id Note ID to update (required)
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\Note
+     * @return simplerest\libs\SendinBlue\Client\Model\Note
      */
     public function crmNotesIdPatch($id, $body)
     {
@@ -1768,15 +1768,15 @@ class CRMApi
      * Update a note
      *
      * @param  string $id Note ID to update (required)
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\Note, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\Note, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmNotesIdPatchWithHttpInfo($id, $body)
     {
-        $returnType = '\SendinBlue\Client\Model\Note';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Note';
         $request = $this->crmNotesIdPatchRequest($id, $body);
 
         try {
@@ -1828,7 +1828,7 @@ class CRMApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\Note',
+                        'simplerest\libs\SendinBlue\Client\Model\Note',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1836,7 +1836,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1844,7 +1844,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1852,7 +1852,7 @@ class CRMApi
                 case 415:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1868,7 +1868,7 @@ class CRMApi
      * Update a note
      *
      * @param  string $id Note ID to update (required)
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1889,14 +1889,14 @@ class CRMApi
      * Update a note
      *
      * @param  string $id Note ID to update (required)
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function crmNotesIdPatchAsyncWithHttpInfo($id, $body)
     {
-        $returnType = '\SendinBlue\Client\Model\Note';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Note';
         $request = $this->crmNotesIdPatchRequest($id, $body);
 
         return $this->client
@@ -1940,7 +1940,7 @@ class CRMApi
      * Create request for operation 'crmNotesIdPatch'
      *
      * @param  string $id Note ID to update (required)
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to update a note (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2066,11 +2066,11 @@ class CRMApi
      *
      * Create a note
      *
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\Note
+     * @return simplerest\libs\SendinBlue\Client\Model\Note
      */
     public function crmNotesPost($body)
     {
@@ -2083,15 +2083,15 @@ class CRMApi
      *
      * Create a note
      *
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\Note, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\Note, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmNotesPostWithHttpInfo($body)
     {
-        $returnType = '\SendinBlue\Client\Model\Note';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Note';
         $request = $this->crmNotesPostRequest($body);
 
         try {
@@ -2143,7 +2143,7 @@ class CRMApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\Note',
+                        'simplerest\libs\SendinBlue\Client\Model\Note',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2151,7 +2151,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2159,7 +2159,7 @@ class CRMApi
                 case 415:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2174,7 +2174,7 @@ class CRMApi
      *
      * Create a note
      *
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -2194,14 +2194,14 @@ class CRMApi
      *
      * Create a note
      *
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function crmNotesPostAsyncWithHttpInfo($body)
     {
-        $returnType = '\SendinBlue\Client\Model\Note';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Note';
         $request = $this->crmNotesPostRequest($body);
 
         return $this->client
@@ -2244,7 +2244,7 @@ class CRMApi
     /**
      * Create request for operation 'crmNotesPost'
      *
-     * @param  \SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\NoteData $body Note data to create a note. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2358,7 +2358,7 @@ class CRMApi
      *
      * @param  string $id id (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2374,7 +2374,7 @@ class CRMApi
      *
      * @param  string $id (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2418,7 +2418,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2426,7 +2426,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2616,9 +2616,9 @@ class CRMApi
      *
      * @param  string $id id (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\Task
+     * @return simplerest\libs\SendinBlue\Client\Model\Task
      */
     public function crmTasksIdGet($id)
     {
@@ -2633,13 +2633,13 @@ class CRMApi
      *
      * @param  string $id (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\Task, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\Task, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmTasksIdGetWithHttpInfo($id)
     {
-        $returnType = '\SendinBlue\Client\Model\Task';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Task';
         $request = $this->crmTasksIdGetRequest($id);
 
         try {
@@ -2691,7 +2691,7 @@ class CRMApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\Task',
+                        'simplerest\libs\SendinBlue\Client\Model\Task',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2699,7 +2699,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2707,7 +2707,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2749,7 +2749,7 @@ class CRMApi
      */
     public function crmTasksIdGetAsyncWithHttpInfo($id)
     {
-        $returnType = '\SendinBlue\Client\Model\Task';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Task';
         $request = $this->crmTasksIdGetRequest($id);
 
         return $this->client
@@ -2910,11 +2910,11 @@ class CRMApi
      * Update a task
      *
      * @param  string $id id (required)
-     * @param  \SendinBlue\Client\Model\Body1 $body Updated task details. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body1 $body Updated task details. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\Task
+     * @return simplerest\libs\SendinBlue\Client\Model\Task
      */
     public function crmTasksIdPatch($id, $body)
     {
@@ -2928,15 +2928,15 @@ class CRMApi
      * Update a task
      *
      * @param  string $id (required)
-     * @param  \SendinBlue\Client\Model\Body1 $body Updated task details. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body1 $body Updated task details. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\Task, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\Task, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmTasksIdPatchWithHttpInfo($id, $body)
     {
-        $returnType = '\SendinBlue\Client\Model\Task';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Task';
         $request = $this->crmTasksIdPatchRequest($id, $body);
 
         try {
@@ -2988,7 +2988,7 @@ class CRMApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\Task',
+                        'simplerest\libs\SendinBlue\Client\Model\Task',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2996,7 +2996,7 @@ class CRMApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3004,7 +3004,7 @@ class CRMApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3020,7 +3020,7 @@ class CRMApi
      * Update a task
      *
      * @param  string $id (required)
-     * @param  \SendinBlue\Client\Model\Body1 $body Updated task details. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body1 $body Updated task details. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3041,14 +3041,14 @@ class CRMApi
      * Update a task
      *
      * @param  string $id (required)
-     * @param  \SendinBlue\Client\Model\Body1 $body Updated task details. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body1 $body Updated task details. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function crmTasksIdPatchAsyncWithHttpInfo($id, $body)
     {
-        $returnType = '\SendinBlue\Client\Model\Task';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Task';
         $request = $this->crmTasksIdPatchRequest($id, $body);
 
         return $this->client
@@ -3092,7 +3092,7 @@ class CRMApi
      * Create request for operation 'crmTasksIdPatch'
      *
      * @param  string $id (required)
-     * @param  \SendinBlue\Client\Model\Body1 $body Updated task details. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body1 $body Updated task details. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -3218,11 +3218,11 @@ class CRMApi
      *
      * Create a task
      *
-     * @param  \SendinBlue\Client\Model\Body $body Task name. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body $body Task name. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\Task
+     * @return simplerest\libs\SendinBlue\Client\Model\Task
      */
     public function crmTasksPost($body)
     {
@@ -3235,15 +3235,15 @@ class CRMApi
      *
      * Create a task
      *
-     * @param  \SendinBlue\Client\Model\Body $body Task name. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body $body Task name. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\Task, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\Task, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmTasksPostWithHttpInfo($body)
     {
-        $returnType = '\SendinBlue\Client\Model\Task';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Task';
         $request = $this->crmTasksPostRequest($body);
 
         try {
@@ -3295,7 +3295,7 @@ class CRMApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\Task',
+                        'simplerest\libs\SendinBlue\Client\Model\Task',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3310,7 +3310,7 @@ class CRMApi
      *
      * Create a task
      *
-     * @param  \SendinBlue\Client\Model\Body $body Task name. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body $body Task name. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3330,14 +3330,14 @@ class CRMApi
      *
      * Create a task
      *
-     * @param  \SendinBlue\Client\Model\Body $body Task name. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body $body Task name. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function crmTasksPostAsyncWithHttpInfo($body)
     {
-        $returnType = '\SendinBlue\Client\Model\Task';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\Task';
         $request = $this->crmTasksPostRequest($body);
 
         return $this->client
@@ -3380,7 +3380,7 @@ class CRMApi
     /**
      * Create request for operation 'crmTasksPost'
      *
-     * @param  \SendinBlue\Client\Model\Body $body Task name. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\Body $body Task name. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -3493,9 +3493,9 @@ class CRMApi
      * Get all task types
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\TaskTypes
+     * @return simplerest\libs\SendinBlue\Client\Model\TaskTypes
      */
     public function crmTasktypesGet()
     {
@@ -3509,13 +3509,13 @@ class CRMApi
      * Get all task types
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\TaskTypes, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\TaskTypes, HTTP status code, HTTP response headers (array of strings)
      */
     public function crmTasktypesGetWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\TaskTypes';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\TaskTypes';
         $request = $this->crmTasktypesGetRequest();
 
         try {
@@ -3567,7 +3567,7 @@ class CRMApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\TaskTypes',
+                        'simplerest\libs\SendinBlue\Client\Model\TaskTypes',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3607,7 +3607,7 @@ class CRMApi
      */
     public function crmTasktypesGetAsyncWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\TaskTypes';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\TaskTypes';
         $request = $this->crmTasktypesGetRequest();
 
         return $this->client

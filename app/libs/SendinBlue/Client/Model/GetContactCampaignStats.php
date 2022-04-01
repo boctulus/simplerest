@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetContactCampaignStats Class Doc Comment
@@ -58,15 +58,15 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'messagesSent' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]',
-        'hardBounces' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]',
-        'softBounces' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]',
-        'complaints' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]',
-        'unsubscriptions' => '\SendinBlue\Client\Model\GetContactCampaignStatsUnsubscriptions',
-        'opened' => '\SendinBlue\Client\Model\GetContactCampaignStatsOpened[]',
-        'clicked' => '\SendinBlue\Client\Model\GetContactCampaignStatsClicked[]',
-        'transacAttributes' => '\SendinBlue\Client\Model\GetContactCampaignStatsTransacAttributes[]',
-        'delivered' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]'
+        'messagesSent' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]',
+        'hardBounces' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]',
+        'softBounces' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]',
+        'complaints' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]',
+        'unsubscriptions' => 'simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsUnsubscriptions',
+        'opened' => 'simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsOpened[]',
+        'clicked' => 'simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsClicked[]',
+        'transacAttributes' => 'simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsTransacAttributes[]',
+        'delivered' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]'
     ];
 
     /**
@@ -256,7 +256,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets messagesSent
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
      */
     public function getMessagesSent()
     {
@@ -266,7 +266,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets messagesSent
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $messagesSent messagesSent
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $messagesSent messagesSent
      *
      * @return $this
      */
@@ -280,7 +280,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets hardBounces
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
      */
     public function getHardBounces()
     {
@@ -290,7 +290,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets hardBounces
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $hardBounces hardBounces
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $hardBounces hardBounces
      *
      * @return $this
      */
@@ -304,7 +304,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets softBounces
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
      */
     public function getSoftBounces()
     {
@@ -314,7 +314,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets softBounces
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $softBounces softBounces
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $softBounces softBounces
      *
      * @return $this
      */
@@ -328,7 +328,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets complaints
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
      */
     public function getComplaints()
     {
@@ -338,7 +338,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets complaints
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $complaints complaints
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $complaints complaints
      *
      * @return $this
      */
@@ -352,7 +352,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets unsubscriptions
      *
-     * @return \SendinBlue\Client\Model\GetContactCampaignStatsUnsubscriptions
+     * @return simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsUnsubscriptions
      */
     public function getUnsubscriptions()
     {
@@ -362,7 +362,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets unsubscriptions
      *
-     * @param \SendinBlue\Client\Model\GetContactCampaignStatsUnsubscriptions $unsubscriptions unsubscriptions
+     * @param simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsUnsubscriptions $unsubscriptions unsubscriptions
      *
      * @return $this
      */
@@ -376,7 +376,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets opened
      *
-     * @return \SendinBlue\Client\Model\GetContactCampaignStatsOpened[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsOpened[]
      */
     public function getOpened()
     {
@@ -386,7 +386,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets opened
      *
-     * @param \SendinBlue\Client\Model\GetContactCampaignStatsOpened[] $opened opened
+     * @param simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsOpened[] $opened opened
      *
      * @return $this
      */
@@ -400,7 +400,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets clicked
      *
-     * @return \SendinBlue\Client\Model\GetContactCampaignStatsClicked[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsClicked[]
      */
     public function getClicked()
     {
@@ -410,7 +410,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets clicked
      *
-     * @param \SendinBlue\Client\Model\GetContactCampaignStatsClicked[] $clicked clicked
+     * @param simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsClicked[] $clicked clicked
      *
      * @return $this
      */
@@ -424,7 +424,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets transacAttributes
      *
-     * @return \SendinBlue\Client\Model\GetContactCampaignStatsTransacAttributes[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsTransacAttributes[]
      */
     public function getTransacAttributes()
     {
@@ -434,7 +434,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets transacAttributes
      *
-     * @param \SendinBlue\Client\Model\GetContactCampaignStatsTransacAttributes[] $transacAttributes transacAttributes
+     * @param simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStatsTransacAttributes[] $transacAttributes transacAttributes
      *
      * @return $this
      */
@@ -448,7 +448,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets delivered
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[]
      */
     public function getDelivered()
     {
@@ -458,7 +458,7 @@ class GetContactCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets delivered
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $delivered delivered
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsMessagesSent[] $delivered delivered
      *
      * @return $this
      */

@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * RequestContactImport Class Doc Comment
@@ -62,7 +62,7 @@ class RequestContactImport implements ModelInterface, ArrayAccess
         'jsonBody' => 'map[string,object][]',
         'listIds' => 'int[]',
         'notifyUrl' => 'string',
-        'newList' => '\SendinBlue\Client\Model\RequestContactImportNewList',
+        'newList' => 'simplerest\libs\SendinBlue\Client\Model\RequestContactImportNewList',
         'emailBlacklist' => 'bool',
         'smsBlacklist' => 'bool',
         'updateExistingContacts' => 'bool',
@@ -381,7 +381,7 @@ class RequestContactImport implements ModelInterface, ArrayAccess
     /**
      * Gets newList
      *
-     * @return \SendinBlue\Client\Model\RequestContactImportNewList
+     * @return simplerest\libs\SendinBlue\Client\Model\RequestContactImportNewList
      */
     public function getNewList()
     {
@@ -391,7 +391,7 @@ class RequestContactImport implements ModelInterface, ArrayAccess
     /**
      * Sets newList
      *
-     * @param \SendinBlue\Client\Model\RequestContactImportNewList $newList newList
+     * @param simplerest\libs\SendinBlue\Client\Model\RequestContactImportNewList $newList newList
      *
      * @return $this
      */

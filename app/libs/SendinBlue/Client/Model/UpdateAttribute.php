@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * UpdateAttribute Class Doc Comment
@@ -58,7 +58,7 @@ class UpdateAttribute implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'value' => 'string',
-        'enumeration' => '\SendinBlue\Client\Model\UpdateAttributeEnumeration[]'
+        'enumeration' => 'simplerest\libs\SendinBlue\Client\Model\UpdateAttributeEnumeration[]'
     ];
 
     /**
@@ -237,7 +237,7 @@ class UpdateAttribute implements ModelInterface, ArrayAccess
     /**
      * Gets enumeration
      *
-     * @return \SendinBlue\Client\Model\UpdateAttributeEnumeration[]
+     * @return simplerest\libs\SendinBlue\Client\Model\UpdateAttributeEnumeration[]
      */
     public function getEnumeration()
     {
@@ -247,7 +247,7 @@ class UpdateAttribute implements ModelInterface, ArrayAccess
     /**
      * Sets enumeration
      *
-     * @param \SendinBlue\Client\Model\UpdateAttributeEnumeration[] $enumeration List of the values and labels that the attribute can take. Use only if the attribute's category is \"category\". For example, [{\"value\":1, \"label\":\"male\"}, {\"value\":2, \"label\":\"female\"}]
+     * @param simplerest\libs\SendinBlue\Client\Model\UpdateAttributeEnumeration[] $enumeration List of the values and labels that the attribute can take. Use only if the attribute's category is \"category\". For example, [{\"value\":1, \"label\":\"male\"}, {\"value\":2, \"label\":\"female\"}]
      *
      * @return $this
      */

@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetAccount Class Doc Comment
@@ -61,10 +61,10 @@ class GetAccount implements ModelInterface, ArrayAccess
         'firstName' => 'string',
         'lastName' => 'string',
         'companyName' => 'string',
-        'address' => '\SendinBlue\Client\Model\GetExtendedClientAddress',
-        'plan' => '\SendinBlue\Client\Model\GetAccountPlan[]',
-        'relay' => '\SendinBlue\Client\Model\GetAccountRelay',
-        'marketingAutomation' => '\SendinBlue\Client\Model\GetAccountMarketingAutomation'
+        'address' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedClientAddress',
+        'plan' => 'simplerest\libs\SendinBlue\Client\Model\GetAccountPlan[]',
+        'relay' => 'simplerest\libs\SendinBlue\Client\Model\GetAccountRelay',
+        'marketingAutomation' => 'simplerest\libs\SendinBlue\Client\Model\GetAccountMarketingAutomation'
     ];
 
     /**
@@ -366,7 +366,7 @@ class GetAccount implements ModelInterface, ArrayAccess
     /**
      * Gets address
      *
-     * @return \SendinBlue\Client\Model\GetExtendedClientAddress
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedClientAddress
      */
     public function getAddress()
     {
@@ -376,7 +376,7 @@ class GetAccount implements ModelInterface, ArrayAccess
     /**
      * Sets address
      *
-     * @param \SendinBlue\Client\Model\GetExtendedClientAddress $address address
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedClientAddress $address address
      *
      * @return $this
      */
@@ -390,7 +390,7 @@ class GetAccount implements ModelInterface, ArrayAccess
     /**
      * Gets plan
      *
-     * @return \SendinBlue\Client\Model\GetAccountPlan[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAccountPlan[]
      */
     public function getPlan()
     {
@@ -400,7 +400,7 @@ class GetAccount implements ModelInterface, ArrayAccess
     /**
      * Sets plan
      *
-     * @param \SendinBlue\Client\Model\GetAccountPlan[] $plan Information about your plans and credits
+     * @param simplerest\libs\SendinBlue\Client\Model\GetAccountPlan[] $plan Information about your plans and credits
      *
      * @return $this
      */
@@ -414,7 +414,7 @@ class GetAccount implements ModelInterface, ArrayAccess
     /**
      * Gets relay
      *
-     * @return \SendinBlue\Client\Model\GetAccountRelay
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAccountRelay
      */
     public function getRelay()
     {
@@ -424,7 +424,7 @@ class GetAccount implements ModelInterface, ArrayAccess
     /**
      * Sets relay
      *
-     * @param \SendinBlue\Client\Model\GetAccountRelay $relay relay
+     * @param simplerest\libs\SendinBlue\Client\Model\GetAccountRelay $relay relay
      *
      * @return $this
      */
@@ -438,7 +438,7 @@ class GetAccount implements ModelInterface, ArrayAccess
     /**
      * Gets marketingAutomation
      *
-     * @return \SendinBlue\Client\Model\GetAccountMarketingAutomation
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAccountMarketingAutomation
      */
     public function getMarketingAutomation()
     {
@@ -448,7 +448,7 @@ class GetAccount implements ModelInterface, ArrayAccess
     /**
      * Sets marketingAutomation
      *
-     * @param \SendinBlue\Client\Model\GetAccountMarketingAutomation $marketingAutomation marketingAutomation
+     * @param simplerest\libs\SendinBlue\Client\Model\GetAccountMarketingAutomation $marketingAutomation marketingAutomation
      *
      * @return $this
      */

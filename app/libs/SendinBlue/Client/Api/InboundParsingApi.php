@@ -99,9 +99,9 @@ class InboundParsingApi
      * @param  int $offset Index of the first document on the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetInboundEmailEvents
+     * @return simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEvents
      */
     public function getInboundEmailEvents($sender = null, $startDate = null, $endDate = null, $limit = '100', $offset = '0', $sort = 'desc')
     {
@@ -121,13 +121,13 @@ class InboundParsingApi
      * @param  int $offset Index of the first document on the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetInboundEmailEvents, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEvents, HTTP status code, HTTP response headers (array of strings)
      */
     public function getInboundEmailEventsWithHttpInfo($sender = null, $startDate = null, $endDate = null, $limit = '100', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetInboundEmailEvents';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEvents';
         $request = $this->getInboundEmailEventsRequest($sender, $startDate, $endDate, $limit, $offset, $sort);
 
         try {
@@ -179,7 +179,7 @@ class InboundParsingApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetInboundEmailEvents',
+                        'simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEvents',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -187,7 +187,7 @@ class InboundParsingApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -239,7 +239,7 @@ class InboundParsingApi
      */
     public function getInboundEmailEventsAsyncWithHttpInfo($sender = null, $startDate = null, $endDate = null, $limit = '100', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetInboundEmailEvents';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEvents';
         $request = $this->getInboundEmailEventsRequest($sender, $startDate, $endDate, $limit, $offset, $sort);
 
         return $this->client
@@ -420,9 +420,9 @@ class InboundParsingApi
      *
      * @param  string $uuid UUID to fetch events specific to recieved email (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetInboundEmailEventsByUuid
+     * @return simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuid
      */
     public function getInboundEmailEventsByUuid($uuid)
     {
@@ -437,13 +437,13 @@ class InboundParsingApi
      *
      * @param  string $uuid UUID to fetch events specific to recieved email (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetInboundEmailEventsByUuid, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuid, HTTP status code, HTTP response headers (array of strings)
      */
     public function getInboundEmailEventsByUuidWithHttpInfo($uuid)
     {
-        $returnType = '\SendinBlue\Client\Model\GetInboundEmailEventsByUuid';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuid';
         $request = $this->getInboundEmailEventsByUuidRequest($uuid);
 
         try {
@@ -495,7 +495,7 @@ class InboundParsingApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetInboundEmailEventsByUuid',
+                        'simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuid',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -503,7 +503,7 @@ class InboundParsingApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -545,7 +545,7 @@ class InboundParsingApi
      */
     public function getInboundEmailEventsByUuidAsyncWithHttpInfo($uuid)
     {
-        $returnType = '\SendinBlue\Client\Model\GetInboundEmailEventsByUuid';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuid';
         $request = $this->getInboundEmailEventsByUuidRequest($uuid);
 
         return $this->client

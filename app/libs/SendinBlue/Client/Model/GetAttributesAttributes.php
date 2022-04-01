@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetAttributesAttributes Class Doc Comment
@@ -60,7 +60,7 @@ class GetAttributesAttributes implements ModelInterface, ArrayAccess
         'name' => 'string',
         'category' => 'string',
         'type' => 'string',
-        'enumeration' => '\SendinBlue\Client\Model\GetAttributesEnumeration[]',
+        'enumeration' => 'simplerest\libs\SendinBlue\Client\Model\GetAttributesEnumeration[]',
         'calculatedValue' => 'string'
     ];
 
@@ -385,7 +385,7 @@ class GetAttributesAttributes implements ModelInterface, ArrayAccess
     /**
      * Gets enumeration
      *
-     * @return \SendinBlue\Client\Model\GetAttributesEnumeration[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAttributesEnumeration[]
      */
     public function getEnumeration()
     {
@@ -395,7 +395,7 @@ class GetAttributesAttributes implements ModelInterface, ArrayAccess
     /**
      * Sets enumeration
      *
-     * @param \SendinBlue\Client\Model\GetAttributesEnumeration[] $enumeration Parameter only available for \"category\" type attributes.
+     * @param simplerest\libs\SendinBlue\Client\Model\GetAttributesEnumeration[] $enumeration Parameter only available for \"category\" type attributes.
      *
      * @return $this
      */

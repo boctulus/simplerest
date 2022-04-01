@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetExtendedCampaignStats Class Doc Comment
@@ -62,9 +62,9 @@ class GetExtendedCampaignStats implements ModelInterface, ArrayAccess
         'mirrorClick' => 'int',
         'remaining' => 'int',
         'linksStats' => 'object',
-        'statsByDomain' => '\SendinBlue\Client\Model\GetStatsByDomain',
-        'statsByDevice' => '\SendinBlue\Client\Model\GetStatsByDevice',
-        'statsByBrowser' => '\SendinBlue\Client\Model\GetStatsByBrowser'
+        'statsByDomain' => 'simplerest\libs\SendinBlue\Client\Model\GetStatsByDomain',
+        'statsByDevice' => 'simplerest\libs\SendinBlue\Client\Model\GetStatsByDevice',
+        'statsByBrowser' => 'simplerest\libs\SendinBlue\Client\Model\GetStatsByBrowser'
     ];
 
     /**
@@ -393,7 +393,7 @@ class GetExtendedCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets statsByDomain
      *
-     * @return \SendinBlue\Client\Model\GetStatsByDomain
+     * @return simplerest\libs\SendinBlue\Client\Model\GetStatsByDomain
      */
     public function getStatsByDomain()
     {
@@ -403,7 +403,7 @@ class GetExtendedCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets statsByDomain
      *
-     * @param \SendinBlue\Client\Model\GetStatsByDomain $statsByDomain statsByDomain
+     * @param simplerest\libs\SendinBlue\Client\Model\GetStatsByDomain $statsByDomain statsByDomain
      *
      * @return $this
      */
@@ -417,7 +417,7 @@ class GetExtendedCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets statsByDevice
      *
-     * @return \SendinBlue\Client\Model\GetStatsByDevice
+     * @return simplerest\libs\SendinBlue\Client\Model\GetStatsByDevice
      */
     public function getStatsByDevice()
     {
@@ -427,7 +427,7 @@ class GetExtendedCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets statsByDevice
      *
-     * @param \SendinBlue\Client\Model\GetStatsByDevice $statsByDevice Statistics about the campaign on the basis of various devices
+     * @param simplerest\libs\SendinBlue\Client\Model\GetStatsByDevice $statsByDevice Statistics about the campaign on the basis of various devices
      *
      * @return $this
      */
@@ -441,7 +441,7 @@ class GetExtendedCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets statsByBrowser
      *
-     * @return \SendinBlue\Client\Model\GetStatsByBrowser
+     * @return simplerest\libs\SendinBlue\Client\Model\GetStatsByBrowser
      */
     public function getStatsByBrowser()
     {
@@ -451,7 +451,7 @@ class GetExtendedCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets statsByBrowser
      *
-     * @param \SendinBlue\Client\Model\GetStatsByBrowser $statsByBrowser Statistics about the campaign on the basis of various browsers
+     * @param simplerest\libs\SendinBlue\Client\Model\GetStatsByBrowser $statsByBrowser Statistics about the campaign on the basis of various browsers
      *
      * @return $this
      */

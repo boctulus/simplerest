@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * RemainingCreditModel Class Doc Comment
@@ -57,8 +57,8 @@ class RemainingCreditModel implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'child' => '\SendinBlue\Client\Model\RemainingCreditModelChild',
-        'reseller' => '\SendinBlue\Client\Model\RemainingCreditModelReseller'
+        'child' => 'simplerest\libs\SendinBlue\Client\Model\RemainingCreditModelChild',
+        'reseller' => 'simplerest\libs\SendinBlue\Client\Model\RemainingCreditModelReseller'
     ];
 
     /**
@@ -219,7 +219,7 @@ class RemainingCreditModel implements ModelInterface, ArrayAccess
     /**
      * Gets child
      *
-     * @return \SendinBlue\Client\Model\RemainingCreditModelChild
+     * @return simplerest\libs\SendinBlue\Client\Model\RemainingCreditModelChild
      */
     public function getChild()
     {
@@ -229,7 +229,7 @@ class RemainingCreditModel implements ModelInterface, ArrayAccess
     /**
      * Sets child
      *
-     * @param \SendinBlue\Client\Model\RemainingCreditModelChild $child child
+     * @param simplerest\libs\SendinBlue\Client\Model\RemainingCreditModelChild $child child
      *
      * @return $this
      */
@@ -243,7 +243,7 @@ class RemainingCreditModel implements ModelInterface, ArrayAccess
     /**
      * Gets reseller
      *
-     * @return \SendinBlue\Client\Model\RemainingCreditModelReseller
+     * @return simplerest\libs\SendinBlue\Client\Model\RemainingCreditModelReseller
      */
     public function getReseller()
     {
@@ -253,7 +253,7 @@ class RemainingCreditModel implements ModelInterface, ArrayAccess
     /**
      * Sets reseller
      *
-     * @param \SendinBlue\Client\Model\RemainingCreditModelReseller $reseller reseller
+     * @param simplerest\libs\SendinBlue\Client\Model\RemainingCreditModelReseller $reseller reseller
      *
      * @return $this
      */

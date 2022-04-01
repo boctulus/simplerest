@@ -93,11 +93,11 @@ class ContactsApi
      * Add existing contacts to a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\PostContactInfo
+     * @return simplerest\libs\SendinBlue\Client\Model\PostContactInfo
      */
     public function addContactToList($listId, $contactEmails)
     {
@@ -111,15 +111,15 @@ class ContactsApi
      * Add existing contacts to a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\PostContactInfo, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\PostContactInfo, HTTP status code, HTTP response headers (array of strings)
      */
     public function addContactToListWithHttpInfo($listId, $contactEmails)
     {
-        $returnType = '\SendinBlue\Client\Model\PostContactInfo';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\PostContactInfo';
         $request = $this->addContactToListRequest($listId, $contactEmails);
 
         try {
@@ -171,7 +171,7 @@ class ContactsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\PostContactInfo',
+                        'simplerest\libs\SendinBlue\Client\Model\PostContactInfo',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -179,7 +179,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -187,7 +187,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -203,7 +203,7 @@ class ContactsApi
      * Add existing contacts to a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -224,14 +224,14 @@ class ContactsApi
      * Add existing contacts to a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function addContactToListAsyncWithHttpInfo($listId, $contactEmails)
     {
-        $returnType = '\SendinBlue\Client\Model\PostContactInfo';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\PostContactInfo';
         $request = $this->addContactToListRequest($listId, $contactEmails);
 
         return $this->client
@@ -275,7 +275,7 @@ class ContactsApi
      * Create request for operation 'addContactToList'
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddContactToList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -403,9 +403,9 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -421,9 +421,9 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -467,7 +467,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -484,7 +484,7 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -506,7 +506,7 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -544,7 +544,7 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the attribute (required)
-     * @param  \SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateAttribute $createAttribute Values to create an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -684,11 +684,11 @@ class ContactsApi
      *
      * Create a contact
      *
-     * @param  \SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateUpdateContactModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateUpdateContactModel
      */
     public function createContact($createContact)
     {
@@ -701,15 +701,15 @@ class ContactsApi
      *
      * Create a contact
      *
-     * @param  \SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateUpdateContactModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateUpdateContactModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createContactWithHttpInfo($createContact)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateUpdateContactModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateUpdateContactModel';
         $request = $this->createContactRequest($createContact);
 
         try {
@@ -761,7 +761,7 @@ class ContactsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateUpdateContactModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateUpdateContactModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -769,7 +769,7 @@ class ContactsApi
                 case 204:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateUpdateContactModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateUpdateContactModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -777,7 +777,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -792,7 +792,7 @@ class ContactsApi
      *
      * Create a contact
      *
-     * @param  \SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -812,14 +812,14 @@ class ContactsApi
      *
      * Create a contact
      *
-     * @param  \SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createContactAsyncWithHttpInfo($createContact)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateUpdateContactModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateUpdateContactModel';
         $request = $this->createContactRequest($createContact);
 
         return $this->client
@@ -862,7 +862,7 @@ class ContactsApi
     /**
      * Create request for operation 'createContact'
      *
-     * @param  \SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateContact $createContact Values to create a contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -974,9 +974,9 @@ class ContactsApi
      *
      * Create Contact via DOI (Double-Opt-In) Flow
      *
-     * @param  \SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -990,9 +990,9 @@ class ContactsApi
      *
      * Create Contact via DOI (Double-Opt-In) Flow
      *
-     * @param  \SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1036,7 +1036,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1051,7 +1051,7 @@ class ContactsApi
      *
      * Create Contact via DOI (Double-Opt-In) Flow
      *
-     * @param  \SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1071,7 +1071,7 @@ class ContactsApi
      *
      * Create Contact via DOI (Double-Opt-In) Flow
      *
-     * @param  \SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1107,7 +1107,7 @@ class ContactsApi
     /**
      * Create request for operation 'createDoiContact'
      *
-     * @param  \SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateDoiContact $createDoiContact Values to create the Double opt-in (DOI) contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1219,11 +1219,11 @@ class ContactsApi
      *
      * Create a folder
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateModel
      */
     public function createFolder($createFolder)
     {
@@ -1236,15 +1236,15 @@ class ContactsApi
      *
      * Create a folder
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createFolderWithHttpInfo($createFolder)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createFolderRequest($createFolder);
 
         try {
@@ -1296,7 +1296,7 @@ class ContactsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1304,7 +1304,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1319,7 +1319,7 @@ class ContactsApi
      *
      * Create a folder
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1339,14 +1339,14 @@ class ContactsApi
      *
      * Create a folder
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createFolderAsyncWithHttpInfo($createFolder)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createFolderRequest($createFolder);
 
         return $this->client
@@ -1389,7 +1389,7 @@ class ContactsApi
     /**
      * Create request for operation 'createFolder'
      *
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $createFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1501,11 +1501,11 @@ class ContactsApi
      *
      * Create a list
      *
-     * @param  \SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateModel
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateModel
      */
     public function createList($createList)
     {
@@ -1518,15 +1518,15 @@ class ContactsApi
      *
      * Create a list
      *
-     * @param  \SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function createListWithHttpInfo($createList)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createListRequest($createList);
 
         try {
@@ -1578,7 +1578,7 @@ class ContactsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateModel',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1586,7 +1586,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1601,7 +1601,7 @@ class ContactsApi
      *
      * Create a list
      *
-     * @param  \SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1621,14 +1621,14 @@ class ContactsApi
      *
      * Create a list
      *
-     * @param  \SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createListAsyncWithHttpInfo($createList)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateModel';
         $request = $this->createListRequest($createList);
 
         return $this->client
@@ -1671,7 +1671,7 @@ class ContactsApi
     /**
      * Create request for operation 'createList'
      *
-     * @param  \SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateList $createList Values to create a list (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1786,7 +1786,7 @@ class ContactsApi
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1803,7 +1803,7 @@ class ContactsApi
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1847,7 +1847,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1855,7 +1855,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2062,7 +2062,7 @@ class ContactsApi
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2078,7 +2078,7 @@ class ContactsApi
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2122,7 +2122,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2130,7 +2130,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2138,7 +2138,7 @@ class ContactsApi
                 case 405:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2328,7 +2328,7 @@ class ContactsApi
      *
      * @param  int $folderId Id of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2344,7 +2344,7 @@ class ContactsApi
      *
      * @param  int $folderId Id of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2388,7 +2388,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2396,7 +2396,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2586,7 +2586,7 @@ class ContactsApi
      *
      * @param  int $listId Id of the list (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -2602,7 +2602,7 @@ class ContactsApi
      *
      * @param  int $listId Id of the list (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -2646,7 +2646,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2654,7 +2654,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2843,9 +2843,9 @@ class ContactsApi
      * List all attributes
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetAttributes
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAttributes
      */
     public function getAttributes()
     {
@@ -2859,13 +2859,13 @@ class ContactsApi
      * List all attributes
      *
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetAttributes, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetAttributes, HTTP status code, HTTP response headers (array of strings)
      */
     public function getAttributesWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetAttributes';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetAttributes';
         $request = $this->getAttributesRequest();
 
         try {
@@ -2917,7 +2917,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetAttributes',
+                        'simplerest\libs\SendinBlue\Client\Model\GetAttributes',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2957,7 +2957,7 @@ class ContactsApi
      */
     public function getAttributesAsyncWithHttpInfo()
     {
-        $returnType = '\SendinBlue\Client\Model\GetAttributes';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetAttributes';
         $request = $this->getAttributesRequest();
 
         return $this->client
@@ -3104,9 +3104,9 @@ class ContactsApi
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact OR its SMS attribute value (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetails
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetails
      */
     public function getContactInfo($identifier)
     {
@@ -3121,13 +3121,13 @@ class ContactsApi
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact OR its SMS attribute value (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetExtendedContactDetails, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetails, HTTP status code, HTTP response headers (array of strings)
      */
     public function getContactInfoWithHttpInfo($identifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetExtendedContactDetails';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetails';
         $request = $this->getContactInfoRequest($identifier);
 
         try {
@@ -3179,7 +3179,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetExtendedContactDetails',
+                        'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetails',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3187,7 +3187,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3195,7 +3195,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3237,7 +3237,7 @@ class ContactsApi
      */
     public function getContactInfoAsyncWithHttpInfo($identifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetExtendedContactDetails';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetails';
         $request = $this->getContactInfoRequest($identifier);
 
         return $this->client
@@ -3401,9 +3401,9 @@ class ContactsApi
      * @param  string $startDate Mandatory if endDate is used. Starting date (YYYY-MM-DD) of the statistic events specific to campaigns. Must be lower than equal to endDate (optional)
      * @param  string $endDate Mandatory if startDate is used. Ending date (YYYY-MM-DD) of the statistic events specific to campaigns. Must be greater than equal to startDate. Maximum difference between startDate and endDate should not be greater than 90 days (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetContactCampaignStats
+     * @return simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStats
      */
     public function getContactStats($identifier, $startDate = null, $endDate = null)
     {
@@ -3420,13 +3420,13 @@ class ContactsApi
      * @param  string $startDate Mandatory if endDate is used. Starting date (YYYY-MM-DD) of the statistic events specific to campaigns. Must be lower than equal to endDate (optional)
      * @param  string $endDate Mandatory if startDate is used. Ending date (YYYY-MM-DD) of the statistic events specific to campaigns. Must be greater than equal to startDate. Maximum difference between startDate and endDate should not be greater than 90 days (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetContactCampaignStats, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStats, HTTP status code, HTTP response headers (array of strings)
      */
     public function getContactStatsWithHttpInfo($identifier, $startDate = null, $endDate = null)
     {
-        $returnType = '\SendinBlue\Client\Model\GetContactCampaignStats';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStats';
         $request = $this->getContactStatsRequest($identifier, $startDate, $endDate);
 
         try {
@@ -3478,7 +3478,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetContactCampaignStats',
+                        'simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStats',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3486,7 +3486,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3494,7 +3494,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3540,7 +3540,7 @@ class ContactsApi
      */
     public function getContactStatsAsyncWithHttpInfo($identifier, $startDate = null, $endDate = null)
     {
-        $returnType = '\SendinBlue\Client\Model\GetContactCampaignStats';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetContactCampaignStats';
         $request = $this->getContactStatsRequest($identifier, $startDate, $endDate);
 
         return $this->client
@@ -3715,9 +3715,9 @@ class ContactsApi
      * @param  string $modifiedSince Filter (urlencoded) the contacts modified after a given UTC date-time (YYYY-MM-DDTHH:mm:ss.SSSZ). Prefer to pass your timezone in date-time format for accurate result. (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetContacts
+     * @return simplerest\libs\SendinBlue\Client\Model\GetContacts
      */
     public function getContacts($limit = '50', $offset = '0', $modifiedSince = null, $sort = 'desc')
     {
@@ -3735,13 +3735,13 @@ class ContactsApi
      * @param  string $modifiedSince Filter (urlencoded) the contacts modified after a given UTC date-time (YYYY-MM-DDTHH:mm:ss.SSSZ). Prefer to pass your timezone in date-time format for accurate result. (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetContacts, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetContacts, HTTP status code, HTTP response headers (array of strings)
      */
     public function getContactsWithHttpInfo($limit = '50', $offset = '0', $modifiedSince = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetContacts';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetContacts';
         $request = $this->getContactsRequest($limit, $offset, $modifiedSince, $sort);
 
         try {
@@ -3793,7 +3793,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetContacts',
+                        'simplerest\libs\SendinBlue\Client\Model\GetContacts',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3801,7 +3801,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3849,7 +3849,7 @@ class ContactsApi
      */
     public function getContactsAsyncWithHttpInfo($limit = '50', $offset = '0', $modifiedSince = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetContacts';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetContacts';
         $request = $this->getContactsRequest($limit, $offset, $modifiedSince, $sort);
 
         return $this->client
@@ -4024,9 +4024,9 @@ class ContactsApi
      * @param  int $offset Index of the first document of the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetContacts
+     * @return simplerest\libs\SendinBlue\Client\Model\GetContacts
      */
     public function getContactsFromList($listId, $modifiedSince = null, $limit = '50', $offset = '0', $sort = 'desc')
     {
@@ -4045,13 +4045,13 @@ class ContactsApi
      * @param  int $offset Index of the first document of the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetContacts, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetContacts, HTTP status code, HTTP response headers (array of strings)
      */
     public function getContactsFromListWithHttpInfo($listId, $modifiedSince = null, $limit = '50', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetContacts';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetContacts';
         $request = $this->getContactsFromListRequest($listId, $modifiedSince, $limit, $offset, $sort);
 
         try {
@@ -4103,7 +4103,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetContacts',
+                        'simplerest\libs\SendinBlue\Client\Model\GetContacts',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4111,7 +4111,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4119,7 +4119,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4169,7 +4169,7 @@ class ContactsApi
      */
     public function getContactsFromListAsyncWithHttpInfo($listId, $modifiedSince = null, $limit = '50', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetContacts';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetContacts';
         $request = $this->getContactsFromListRequest($listId, $modifiedSince, $limit, $offset, $sort);
 
         return $this->client
@@ -4355,9 +4355,9 @@ class ContactsApi
      *
      * @param  int $folderId id of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetFolder
+     * @return simplerest\libs\SendinBlue\Client\Model\GetFolder
      */
     public function getFolder($folderId)
     {
@@ -4372,13 +4372,13 @@ class ContactsApi
      *
      * @param  int $folderId id of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetFolder, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetFolder, HTTP status code, HTTP response headers (array of strings)
      */
     public function getFolderWithHttpInfo($folderId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolder';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolder';
         $request = $this->getFolderRequest($folderId);
 
         try {
@@ -4430,7 +4430,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetFolder',
+                        'simplerest\libs\SendinBlue\Client\Model\GetFolder',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4438,7 +4438,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4446,7 +4446,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4488,7 +4488,7 @@ class ContactsApi
      */
     public function getFolderAsyncWithHttpInfo($folderId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolder';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolder';
         $request = $this->getFolderRequest($folderId);
 
         return $this->client
@@ -4653,9 +4653,9 @@ class ContactsApi
      * @param  int $offset Index of the first document of the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetFolderLists
+     * @return simplerest\libs\SendinBlue\Client\Model\GetFolderLists
      */
     public function getFolderLists($folderId, $limit = '10', $offset = '0', $sort = 'desc')
     {
@@ -4673,13 +4673,13 @@ class ContactsApi
      * @param  int $offset Index of the first document of the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetFolderLists, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetFolderLists, HTTP status code, HTTP response headers (array of strings)
      */
     public function getFolderListsWithHttpInfo($folderId, $limit = '10', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolderLists';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolderLists';
         $request = $this->getFolderListsRequest($folderId, $limit, $offset, $sort);
 
         try {
@@ -4731,7 +4731,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetFolderLists',
+                        'simplerest\libs\SendinBlue\Client\Model\GetFolderLists',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4739,7 +4739,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4747,7 +4747,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4795,7 +4795,7 @@ class ContactsApi
      */
     public function getFolderListsAsyncWithHttpInfo($folderId, $limit = '10', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolderLists';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolderLists';
         $request = $this->getFolderListsRequest($folderId, $limit, $offset, $sort);
 
         return $this->client
@@ -4978,9 +4978,9 @@ class ContactsApi
      * @param  int $offset Index of the first document of the page (required)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetFolders
+     * @return simplerest\libs\SendinBlue\Client\Model\GetFolders
      */
     public function getFolders($limit, $offset, $sort = 'desc')
     {
@@ -4997,13 +4997,13 @@ class ContactsApi
      * @param  int $offset Index of the first document of the page (required)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetFolders, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetFolders, HTTP status code, HTTP response headers (array of strings)
      */
     public function getFoldersWithHttpInfo($limit, $offset, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolders';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolders';
         $request = $this->getFoldersRequest($limit, $offset, $sort);
 
         try {
@@ -5055,7 +5055,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetFolders',
+                        'simplerest\libs\SendinBlue\Client\Model\GetFolders',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5063,7 +5063,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5109,7 +5109,7 @@ class ContactsApi
      */
     public function getFoldersAsyncWithHttpInfo($limit, $offset, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetFolders';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetFolders';
         $request = $this->getFoldersRequest($limit, $offset, $sort);
 
         return $this->client
@@ -5287,9 +5287,9 @@ class ContactsApi
      *
      * @param  int $listId Id of the list (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetExtendedList
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedList
      */
     public function getList($listId)
     {
@@ -5304,13 +5304,13 @@ class ContactsApi
      *
      * @param  int $listId Id of the list (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetExtendedList, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetExtendedList, HTTP status code, HTTP response headers (array of strings)
      */
     public function getListWithHttpInfo($listId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetExtendedList';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetExtendedList';
         $request = $this->getListRequest($listId);
 
         try {
@@ -5362,7 +5362,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetExtendedList',
+                        'simplerest\libs\SendinBlue\Client\Model\GetExtendedList',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5370,7 +5370,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5378,7 +5378,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5420,7 +5420,7 @@ class ContactsApi
      */
     public function getListAsyncWithHttpInfo($listId)
     {
-        $returnType = '\SendinBlue\Client\Model\GetExtendedList';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetExtendedList';
         $request = $this->getListRequest($listId);
 
         return $this->client
@@ -5584,9 +5584,9 @@ class ContactsApi
      * @param  int $offset Index of the first document of the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetLists
+     * @return simplerest\libs\SendinBlue\Client\Model\GetLists
      */
     public function getLists($limit = '10', $offset = '0', $sort = 'desc')
     {
@@ -5603,13 +5603,13 @@ class ContactsApi
      * @param  int $offset Index of the first document of the page (optional, default to 0)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetLists, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetLists, HTTP status code, HTTP response headers (array of strings)
      */
     public function getListsWithHttpInfo($limit = '10', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetLists';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetLists';
         $request = $this->getListsRequest($limit, $offset, $sort);
 
         try {
@@ -5661,7 +5661,7 @@ class ContactsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetLists',
+                        'simplerest\libs\SendinBlue\Client\Model\GetLists',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5669,7 +5669,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5715,7 +5715,7 @@ class ContactsApi
      */
     public function getListsAsyncWithHttpInfo($limit = '10', $offset = '0', $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetLists';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetLists';
         $request = $this->getListsRequest($limit, $offset, $sort);
 
         return $this->client
@@ -5879,11 +5879,11 @@ class ContactsApi
      *
      * Import contacts
      *
-     * @param  \SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreatedProcessId
+     * @return simplerest\libs\SendinBlue\Client\Model\CreatedProcessId
      */
     public function importContacts($requestContactImport)
     {
@@ -5896,15 +5896,15 @@ class ContactsApi
      *
      * Import contacts
      *
-     * @param  \SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreatedProcessId, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreatedProcessId, HTTP status code, HTTP response headers (array of strings)
      */
     public function importContactsWithHttpInfo($requestContactImport)
     {
-        $returnType = '\SendinBlue\Client\Model\CreatedProcessId';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId';
         $request = $this->importContactsRequest($requestContactImport);
 
         try {
@@ -5956,7 +5956,7 @@ class ContactsApi
                 case 202:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreatedProcessId',
+                        'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5964,7 +5964,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5979,7 +5979,7 @@ class ContactsApi
      *
      * Import contacts
      *
-     * @param  \SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -5999,14 +5999,14 @@ class ContactsApi
      *
      * Import contacts
      *
-     * @param  \SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function importContactsAsyncWithHttpInfo($requestContactImport)
     {
-        $returnType = '\SendinBlue\Client\Model\CreatedProcessId';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId';
         $request = $this->importContactsRequest($requestContactImport);
 
         return $this->client
@@ -6049,7 +6049,7 @@ class ContactsApi
     /**
      * Create request for operation 'importContacts'
      *
-     * @param  \SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactImport $requestContactImport Values to import contacts in Sendinblue. To know more about the expected format, please have a look at &#x60;&#x60;https://help.sendinblue.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns&#x60;&#x60; (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -6162,11 +6162,11 @@ class ContactsApi
      * Delete a contact from a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\PostContactInfo
+     * @return simplerest\libs\SendinBlue\Client\Model\PostContactInfo
      */
     public function removeContactFromList($listId, $contactEmails)
     {
@@ -6180,15 +6180,15 @@ class ContactsApi
      * Delete a contact from a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\PostContactInfo, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\PostContactInfo, HTTP status code, HTTP response headers (array of strings)
      */
     public function removeContactFromListWithHttpInfo($listId, $contactEmails)
     {
-        $returnType = '\SendinBlue\Client\Model\PostContactInfo';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\PostContactInfo';
         $request = $this->removeContactFromListRequest($listId, $contactEmails);
 
         try {
@@ -6240,7 +6240,7 @@ class ContactsApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\PostContactInfo',
+                        'simplerest\libs\SendinBlue\Client\Model\PostContactInfo',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6248,7 +6248,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6256,7 +6256,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6272,7 +6272,7 @@ class ContactsApi
      * Delete a contact from a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -6293,14 +6293,14 @@ class ContactsApi
      * Delete a contact from a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function removeContactFromListAsyncWithHttpInfo($listId, $contactEmails)
     {
-        $returnType = '\SendinBlue\Client\Model\PostContactInfo';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\PostContactInfo';
         $request = $this->removeContactFromListRequest($listId, $contactEmails);
 
         return $this->client
@@ -6344,7 +6344,7 @@ class ContactsApi
      * Create request for operation 'removeContactFromList'
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveContactFromList $contactEmails Emails addresses OR IDs of the contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -6470,11 +6470,11 @@ class ContactsApi
      *
      * Export contacts
      *
-     * @param  \SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreatedProcessId
+     * @return simplerest\libs\SendinBlue\Client\Model\CreatedProcessId
      */
     public function requestContactExport($requestContactExport)
     {
@@ -6487,15 +6487,15 @@ class ContactsApi
      *
      * Export contacts
      *
-     * @param  \SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreatedProcessId, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreatedProcessId, HTTP status code, HTTP response headers (array of strings)
      */
     public function requestContactExportWithHttpInfo($requestContactExport)
     {
-        $returnType = '\SendinBlue\Client\Model\CreatedProcessId';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId';
         $request = $this->requestContactExportRequest($requestContactExport);
 
         try {
@@ -6547,7 +6547,7 @@ class ContactsApi
                 case 202:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreatedProcessId',
+                        'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6555,7 +6555,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6570,7 +6570,7 @@ class ContactsApi
      *
      * Export contacts
      *
-     * @param  \SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -6590,14 +6590,14 @@ class ContactsApi
      *
      * Export contacts
      *
-     * @param  \SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function requestContactExportAsyncWithHttpInfo($requestContactExport)
     {
-        $returnType = '\SendinBlue\Client\Model\CreatedProcessId';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreatedProcessId';
         $request = $this->requestContactExportRequest($requestContactExport);
 
         return $this->client
@@ -6640,7 +6640,7 @@ class ContactsApi
     /**
      * Create request for operation 'requestContactExport'
      *
-     * @param  \SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RequestContactExport $requestContactExport Values to request a contact export (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -6754,9 +6754,9 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -6772,9 +6772,9 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -6818,7 +6818,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6826,7 +6826,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6843,7 +6843,7 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -6865,7 +6865,7 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -6903,7 +6903,7 @@ class ContactsApi
      *
      * @param  string $attributeCategory Category of the attribute (required)
      * @param  string $attributeName Name of the existing attribute (required)
-     * @param  \SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateAttribute $updateAttribute Values to update an attribute (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -7043,9 +7043,9 @@ class ContactsApi
      *
      * Update multiple contacts
      *
-     * @param  \SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -7059,9 +7059,9 @@ class ContactsApi
      *
      * Update multiple contacts
      *
-     * @param  \SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -7105,7 +7105,7 @@ class ContactsApi
                 case 207:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ComponentsSchemasUpdateBatchContactsModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ComponentsSchemasUpdateBatchContactsModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7113,7 +7113,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ComponentsSchemasErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ComponentsSchemasErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7128,7 +7128,7 @@ class ContactsApi
      *
      * Update multiple contacts
      *
-     * @param  \SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -7148,7 +7148,7 @@ class ContactsApi
      *
      * Update multiple contacts
      *
-     * @param  \SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -7184,7 +7184,7 @@ class ContactsApi
     /**
      * Create request for operation 'updateBatchContacts'
      *
-     * @param  \SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateBatchContacts $updateBatchContacts Values to update multiple contacts (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -7297,9 +7297,9 @@ class ContactsApi
      * Update a contact
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact (required)
-     * @param  \SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -7314,9 +7314,9 @@ class ContactsApi
      * Update a contact
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact (required)
-     * @param  \SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -7360,7 +7360,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7368,7 +7368,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7384,7 +7384,7 @@ class ContactsApi
      * Update a contact
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact (required)
-     * @param  \SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -7405,7 +7405,7 @@ class ContactsApi
      * Update a contact
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact (required)
-     * @param  \SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -7442,7 +7442,7 @@ class ContactsApi
      * Create request for operation 'updateContact'
      *
      * @param  string $identifier Email (urlencoded) OR ID of the contact (required)
-     * @param  \SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateContact $updateContact Values to update a contact (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -7569,9 +7569,9 @@ class ContactsApi
      * Update a folder
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -7586,9 +7586,9 @@ class ContactsApi
      * Update a folder
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -7632,7 +7632,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7640,7 +7640,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7656,7 +7656,7 @@ class ContactsApi
      * Update a folder
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -7677,7 +7677,7 @@ class ContactsApi
      * Update a folder
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -7714,7 +7714,7 @@ class ContactsApi
      * Create request for operation 'updateFolder'
      *
      * @param  int $folderId Id of the folder (required)
-     * @param  \SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateUpdateFolder $updateFolder Name of the folder (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -7841,9 +7841,9 @@ class ContactsApi
      * Update a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -7858,9 +7858,9 @@ class ContactsApi
      * Update a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -7904,7 +7904,7 @@ class ContactsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7912,7 +7912,7 @@ class ContactsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7928,7 +7928,7 @@ class ContactsApi
      * Update a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -7949,7 +7949,7 @@ class ContactsApi
      * Update a list
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -7986,7 +7986,7 @@ class ContactsApi
      * Create request for operation 'updateList'
      *
      * @param  int $listId Id of the list (required)
-     * @param  \SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateList $updateList Values to update a list (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

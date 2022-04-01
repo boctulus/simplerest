@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * MasterDetailsResponse Class Doc Comment
@@ -62,8 +62,8 @@ class MasterDetailsResponse implements ModelInterface, ArrayAccess
         'id' => 'int',
         'currencyCode' => 'string',
         'timezone' => 'string',
-        'billingInfo' => '\SendinBlue\Client\Model\MasterDetailsResponseBillingInfo',
-        'planInfo' => '\SendinBlue\Client\Model\MasterDetailsResponsePlanInfo'
+        'billingInfo' => 'simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfo',
+        'planInfo' => 'simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponsePlanInfo'
     ];
 
     /**
@@ -363,7 +363,7 @@ class MasterDetailsResponse implements ModelInterface, ArrayAccess
     /**
      * Gets billingInfo
      *
-     * @return \SendinBlue\Client\Model\MasterDetailsResponseBillingInfo
+     * @return simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfo
      */
     public function getBillingInfo()
     {
@@ -373,7 +373,7 @@ class MasterDetailsResponse implements ModelInterface, ArrayAccess
     /**
      * Sets billingInfo
      *
-     * @param \SendinBlue\Client\Model\MasterDetailsResponseBillingInfo $billingInfo billingInfo
+     * @param simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfo $billingInfo billingInfo
      *
      * @return $this
      */
@@ -387,7 +387,7 @@ class MasterDetailsResponse implements ModelInterface, ArrayAccess
     /**
      * Gets planInfo
      *
-     * @return \SendinBlue\Client\Model\MasterDetailsResponsePlanInfo
+     * @return simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponsePlanInfo
      */
     public function getPlanInfo()
     {
@@ -397,7 +397,7 @@ class MasterDetailsResponse implements ModelInterface, ArrayAccess
     /**
      * Sets planInfo
      *
-     * @param \SendinBlue\Client\Model\MasterDetailsResponsePlanInfo $planInfo planInfo
+     * @param simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponsePlanInfo $planInfo planInfo
      *
      * @return $this
      */
