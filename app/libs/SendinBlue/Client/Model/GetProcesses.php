@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetProcesses Class Doc Comment
@@ -57,7 +57,7 @@ class GetProcesses implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'processes' => '\SendinBlue\Client\Model\GetProcess[]',
+        'processes' => 'simplerest\libs\SendinBlue\Client\Model\GetProcess[]',
         'count' => 'int'
     ];
 
@@ -213,7 +213,7 @@ class GetProcesses implements ModelInterface, ArrayAccess
     /**
      * Gets processes
      *
-     * @return \SendinBlue\Client\Model\GetProcess[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetProcess[]
      */
     public function getProcesses()
     {
@@ -223,7 +223,7 @@ class GetProcesses implements ModelInterface, ArrayAccess
     /**
      * Sets processes
      *
-     * @param \SendinBlue\Client\Model\GetProcess[] $processes List of processes available on your account
+     * @param simplerest\libs\SendinBlue\Client\Model\GetProcess[] $processes List of processes available on your account
      *
      * @return $this
      */

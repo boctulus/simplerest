@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetSendersListSenders Class Doc Comment
@@ -61,7 +61,7 @@ class GetSendersListSenders implements ModelInterface, ArrayAccess
         'name' => 'string',
         'email' => 'string',
         'active' => 'bool',
-        'ips' => '\SendinBlue\Client\Model\GetSendersListIps[]'
+        'ips' => 'simplerest\libs\SendinBlue\Client\Model\GetSendersListIps[]'
     ];
 
     /**
@@ -339,7 +339,7 @@ class GetSendersListSenders implements ModelInterface, ArrayAccess
     /**
      * Gets ips
      *
-     * @return \SendinBlue\Client\Model\GetSendersListIps[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSendersListIps[]
      */
     public function getIps()
     {
@@ -349,7 +349,7 @@ class GetSendersListSenders implements ModelInterface, ArrayAccess
     /**
      * Sets ips
      *
-     * @param \SendinBlue\Client\Model\GetSendersListIps[] $ips List of dedicated IP(s) available in the account. This data is displayed only for dedicated IPs
+     * @param simplerest\libs\SendinBlue\Client\Model\GetSendersListIps[] $ips List of dedicated IP(s) available in the account. This data is displayed only for dedicated IPs
      *
      * @return $this
      */

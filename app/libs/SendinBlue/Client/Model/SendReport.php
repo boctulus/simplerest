@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * SendReport Class Doc Comment
@@ -58,7 +58,7 @@ class SendReport implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'language' => 'string',
-        'email' => '\SendinBlue\Client\Model\SendReportEmail'
+        'email' => 'simplerest\libs\SendinBlue\Client\Model\SendReportEmail'
     ];
 
     /**
@@ -280,7 +280,7 @@ class SendReport implements ModelInterface, ArrayAccess
     /**
      * Gets email
      *
-     * @return \SendinBlue\Client\Model\SendReportEmail
+     * @return simplerest\libs\SendinBlue\Client\Model\SendReportEmail
      */
     public function getEmail()
     {
@@ -290,7 +290,7 @@ class SendReport implements ModelInterface, ArrayAccess
     /**
      * Sets email
      *
-     * @param \SendinBlue\Client\Model\SendReportEmail $email email
+     * @param simplerest\libs\SendinBlue\Client\Model\SendReportEmail $email email
      *
      * @return $this
      */

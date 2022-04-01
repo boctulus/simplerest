@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetSendersList Class Doc Comment
@@ -57,7 +57,7 @@ class GetSendersList implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'senders' => '\SendinBlue\Client\Model\GetSendersListSenders[]'
+        'senders' => 'simplerest\libs\SendinBlue\Client\Model\GetSendersListSenders[]'
     ];
 
     /**
@@ -207,7 +207,7 @@ class GetSendersList implements ModelInterface, ArrayAccess
     /**
      * Gets senders
      *
-     * @return \SendinBlue\Client\Model\GetSendersListSenders[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSendersListSenders[]
      */
     public function getSenders()
     {
@@ -217,7 +217,7 @@ class GetSendersList implements ModelInterface, ArrayAccess
     /**
      * Sets senders
      *
-     * @param \SendinBlue\Client\Model\GetSendersListSenders[] $senders List of the senders available in your account
+     * @param simplerest\libs\SendinBlue\Client\Model\GetSendersListSenders[] $senders List of the senders available in your account
      *
      * @return $this
      */

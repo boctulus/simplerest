@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * UpdateBatchContacts Class Doc Comment
@@ -57,7 +57,7 @@ class UpdateBatchContacts implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'contacts' => '\SendinBlue\Client\Model\UpdateBatchContactsContacts[]'
+        'contacts' => 'simplerest\libs\SendinBlue\Client\Model\UpdateBatchContactsContacts[]'
     ];
 
     /**
@@ -207,7 +207,7 @@ class UpdateBatchContacts implements ModelInterface, ArrayAccess
     /**
      * Gets contacts
      *
-     * @return \SendinBlue\Client\Model\UpdateBatchContactsContacts[]
+     * @return simplerest\libs\SendinBlue\Client\Model\UpdateBatchContactsContacts[]
      */
     public function getContacts()
     {
@@ -217,7 +217,7 @@ class UpdateBatchContacts implements ModelInterface, ArrayAccess
     /**
      * Sets contacts
      *
-     * @param \SendinBlue\Client\Model\UpdateBatchContactsContacts[] $contacts List of contacts to be updated
+     * @param simplerest\libs\SendinBlue\Client\Model\UpdateBatchContactsContacts[] $contacts List of contacts to be updated
      *
      * @return $this
      */

@@ -93,11 +93,11 @@ class ResellerApi
      * Add Email and/or SMS credits to a specific child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\RemainingCreditModel
+     * @return simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel
      */
     public function addCredits($childIdentifier, $addCredits)
     {
@@ -111,15 +111,15 @@ class ResellerApi
      * Add Email and/or SMS credits to a specific child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\RemainingCreditModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function addCreditsWithHttpInfo($childIdentifier, $addCredits)
     {
-        $returnType = '\SendinBlue\Client\Model\RemainingCreditModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel';
         $request = $this->addCreditsRequest($childIdentifier, $addCredits);
 
         try {
@@ -171,7 +171,7 @@ class ResellerApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\RemainingCreditModel',
+                        'simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -179,7 +179,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -187,7 +187,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -195,7 +195,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -211,7 +211,7 @@ class ResellerApi
      * Add Email and/or SMS credits to a specific child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -232,14 +232,14 @@ class ResellerApi
      * Add Email and/or SMS credits to a specific child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function addCreditsAsyncWithHttpInfo($childIdentifier, $addCredits)
     {
-        $returnType = '\SendinBlue\Client\Model\RemainingCreditModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel';
         $request = $this->addCreditsRequest($childIdentifier, $addCredits);
 
         return $this->client
@@ -283,7 +283,7 @@ class ResellerApi
      * Create request for operation 'addCredits'
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddCredits $addCredits Values to post to add credit to a specific child account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -410,9 +410,9 @@ class ResellerApi
      * Associate a dedicated IP to the child
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -427,9 +427,9 @@ class ResellerApi
      * Associate a dedicated IP to the child
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -473,7 +473,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -481,7 +481,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -497,7 +497,7 @@ class ResellerApi
      * Associate a dedicated IP to the child
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -518,7 +518,7 @@ class ResellerApi
      * Associate a dedicated IP to the child
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -555,7 +555,7 @@ class ResellerApi
      * Create request for operation 'associateIpToChild'
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to associate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -682,9 +682,9 @@ class ResellerApi
      * Create a domain for a child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -699,9 +699,9 @@ class ResellerApi
      * Create a domain for a child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -745,7 +745,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -753,7 +753,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -761,7 +761,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -777,7 +777,7 @@ class ResellerApi
      * Create a domain for a child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -798,7 +798,7 @@ class ResellerApi
      * Create a domain for a child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -835,7 +835,7 @@ class ResellerApi
      * Create request for operation 'createChildDomain'
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\AddChildDomain $addChildDomain Sender domain to add for a specific child account. This will not be displayed to the parent account. (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -961,11 +961,11 @@ class ResellerApi
      *
      * Creates a reseller child
      *
-     * @param  \SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\CreateReseller
+     * @return simplerest\libs\SendinBlue\Client\Model\CreateReseller
      */
     public function createResellerChild($resellerChild = null)
     {
@@ -978,15 +978,15 @@ class ResellerApi
      *
      * Creates a reseller child
      *
-     * @param  \SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\CreateReseller, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\CreateReseller, HTTP status code, HTTP response headers (array of strings)
      */
     public function createResellerChildWithHttpInfo($resellerChild = null)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateReseller';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateReseller';
         $request = $this->createResellerChildRequest($resellerChild);
 
         try {
@@ -1038,7 +1038,7 @@ class ResellerApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\CreateReseller',
+                        'simplerest\libs\SendinBlue\Client\Model\CreateReseller',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1046,7 +1046,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1054,7 +1054,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1069,7 +1069,7 @@ class ResellerApi
      *
      * Creates a reseller child
      *
-     * @param  \SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1089,14 +1089,14 @@ class ResellerApi
      *
      * Creates a reseller child
      *
-     * @param  \SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createResellerChildAsyncWithHttpInfo($resellerChild = null)
     {
-        $returnType = '\SendinBlue\Client\Model\CreateReseller';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\CreateReseller';
         $request = $this->createResellerChildRequest($resellerChild);
 
         return $this->client
@@ -1139,7 +1139,7 @@ class ResellerApi
     /**
      * Create request for operation 'createResellerChild'
      *
-     * @param  \SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
+     * @param  simplerest\libs\SendinBlue\Client\Model\CreateChild $resellerChild reseller child to add (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -1248,7 +1248,7 @@ class ResellerApi
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      * @param  string $domainName Pass the existing domain that needs to be deleted (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1265,7 +1265,7 @@ class ResellerApi
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      * @param  string $domainName Pass the existing domain that needs to be deleted (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1309,7 +1309,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1317,7 +1317,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1325,7 +1325,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1532,7 +1532,7 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or child id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1548,7 +1548,7 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or child id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1592,7 +1592,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1600,7 +1600,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1608,7 +1608,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1797,9 +1797,9 @@ class ResellerApi
      * Dissociate a dedicated IP to the child
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -1814,9 +1814,9 @@ class ResellerApi
      * Dissociate a dedicated IP to the child
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -1860,7 +1860,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1868,7 +1868,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1884,7 +1884,7 @@ class ResellerApi
      * Dissociate a dedicated IP to the child
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1905,7 +1905,7 @@ class ResellerApi
      * Dissociate a dedicated IP to the child
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1942,7 +1942,7 @@ class ResellerApi
      * Create request for operation 'dissociateIpFromChild'
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\ManageIp $ip IP to dissociate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -2070,9 +2070,9 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetChildAccountCreationStatus
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildAccountCreationStatus
      */
     public function getChildAccountCreationStatus($childIdentifier)
     {
@@ -2087,13 +2087,13 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetChildAccountCreationStatus, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetChildAccountCreationStatus, HTTP status code, HTTP response headers (array of strings)
      */
     public function getChildAccountCreationStatusWithHttpInfo($childIdentifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetChildAccountCreationStatus';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetChildAccountCreationStatus';
         $request = $this->getChildAccountCreationStatusRequest($childIdentifier);
 
         try {
@@ -2145,7 +2145,7 @@ class ResellerApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetChildAccountCreationStatus',
+                        'simplerest\libs\SendinBlue\Client\Model\GetChildAccountCreationStatus',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2153,7 +2153,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2161,7 +2161,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2169,7 +2169,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2211,7 +2211,7 @@ class ResellerApi
      */
     public function getChildAccountCreationStatusAsyncWithHttpInfo($childIdentifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetChildAccountCreationStatus';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetChildAccountCreationStatus';
         $request = $this->getChildAccountCreationStatusRequest($childIdentifier);
 
         return $this->client
@@ -2373,9 +2373,9 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetChildDomains
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildDomains
      */
     public function getChildDomains($childIdentifier)
     {
@@ -2390,13 +2390,13 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetChildDomains, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetChildDomains, HTTP status code, HTTP response headers (array of strings)
      */
     public function getChildDomainsWithHttpInfo($childIdentifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetChildDomains';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetChildDomains';
         $request = $this->getChildDomainsRequest($childIdentifier);
 
         try {
@@ -2448,7 +2448,7 @@ class ResellerApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetChildDomains',
+                        'simplerest\libs\SendinBlue\Client\Model\GetChildDomains',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2456,7 +2456,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2464,7 +2464,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2472,7 +2472,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2514,7 +2514,7 @@ class ResellerApi
      */
     public function getChildDomainsAsyncWithHttpInfo($childIdentifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetChildDomains';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetChildDomains';
         $request = $this->getChildDomainsRequest($childIdentifier);
 
         return $this->client
@@ -2676,9 +2676,9 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetChildInfo
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildInfo
      */
     public function getChildInfo($childIdentifier)
     {
@@ -2693,13 +2693,13 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetChildInfo, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetChildInfo, HTTP status code, HTTP response headers (array of strings)
      */
     public function getChildInfoWithHttpInfo($childIdentifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetChildInfo';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetChildInfo';
         $request = $this->getChildInfoRequest($childIdentifier);
 
         try {
@@ -2751,7 +2751,7 @@ class ResellerApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetChildInfo',
+                        'simplerest\libs\SendinBlue\Client\Model\GetChildInfo',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2759,7 +2759,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2767,7 +2767,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2775,7 +2775,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2817,7 +2817,7 @@ class ResellerApi
      */
     public function getChildInfoAsyncWithHttpInfo($childIdentifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetChildInfo';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetChildInfo';
         $request = $this->getChildInfoRequest($childIdentifier);
 
         return $this->client
@@ -2980,9 +2980,9 @@ class ResellerApi
      * @param  int $limit Number of documents for child accounts information per page (optional, default to 10)
      * @param  int $offset Index of the first document in the page (optional, default to 0)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetChildrenList
+     * @return simplerest\libs\SendinBlue\Client\Model\GetChildrenList
      */
     public function getResellerChilds($limit = '10', $offset = '0')
     {
@@ -2998,13 +2998,13 @@ class ResellerApi
      * @param  int $limit Number of documents for child accounts information per page (optional, default to 10)
      * @param  int $offset Index of the first document in the page (optional, default to 0)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetChildrenList, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetChildrenList, HTTP status code, HTTP response headers (array of strings)
      */
     public function getResellerChildsWithHttpInfo($limit = '10', $offset = '0')
     {
-        $returnType = '\SendinBlue\Client\Model\GetChildrenList';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetChildrenList';
         $request = $this->getResellerChildsRequest($limit, $offset);
 
         try {
@@ -3056,7 +3056,7 @@ class ResellerApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetChildrenList',
+                        'simplerest\libs\SendinBlue\Client\Model\GetChildrenList',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3064,7 +3064,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3108,7 +3108,7 @@ class ResellerApi
      */
     public function getResellerChildsAsyncWithHttpInfo($limit = '10', $offset = '0')
     {
-        $returnType = '\SendinBlue\Client\Model\GetChildrenList';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetChildrenList';
         $request = $this->getResellerChildsRequest($limit, $offset);
 
         return $this->client
@@ -3269,9 +3269,9 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSsoToken
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSsoToken
      */
     public function getSsoToken($childIdentifier)
     {
@@ -3286,13 +3286,13 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSsoToken, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSsoToken, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSsoTokenWithHttpInfo($childIdentifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSsoToken';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSsoToken';
         $request = $this->getSsoTokenRequest($childIdentifier);
 
         try {
@@ -3344,7 +3344,7 @@ class ResellerApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSsoToken',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSsoToken',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3352,7 +3352,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3360,7 +3360,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3368,7 +3368,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3410,7 +3410,7 @@ class ResellerApi
      */
     public function getSsoTokenAsyncWithHttpInfo($childIdentifier)
     {
-        $returnType = '\SendinBlue\Client\Model\GetSsoToken';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSsoToken';
         $request = $this->getSsoTokenRequest($childIdentifier);
 
         return $this->client
@@ -3571,11 +3571,11 @@ class ResellerApi
      * Remove Email and/or SMS credits from a specific child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\RemainingCreditModel
+     * @return simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel
      */
     public function removeCredits($childIdentifier, $removeCredits)
     {
@@ -3589,15 +3589,15 @@ class ResellerApi
      * Remove Email and/or SMS credits from a specific child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\RemainingCreditModel, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel, HTTP status code, HTTP response headers (array of strings)
      */
     public function removeCreditsWithHttpInfo($childIdentifier, $removeCredits)
     {
-        $returnType = '\SendinBlue\Client\Model\RemainingCreditModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel';
         $request = $this->removeCreditsRequest($childIdentifier, $removeCredits);
 
         try {
@@ -3649,7 +3649,7 @@ class ResellerApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\RemainingCreditModel',
+                        'simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3657,7 +3657,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3665,7 +3665,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3673,7 +3673,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3689,7 +3689,7 @@ class ResellerApi
      * Remove Email and/or SMS credits from a specific child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -3710,14 +3710,14 @@ class ResellerApi
      * Remove Email and/or SMS credits from a specific child account
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function removeCreditsAsyncWithHttpInfo($childIdentifier, $removeCredits)
     {
-        $returnType = '\SendinBlue\Client\Model\RemainingCreditModel';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\RemainingCreditModel';
         $request = $this->removeCreditsRequest($childIdentifier, $removeCredits);
 
         return $this->client
@@ -3761,7 +3761,7 @@ class ResellerApi
      * Create request for operation 'removeCredits'
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\RemoveCredits $removeCredits Values to post to remove email or SMS credits from a specific child account (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -3888,9 +3888,9 @@ class ResellerApi
      * Update info of reseller's child account status based on the childIdentifier supplied
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -3905,9 +3905,9 @@ class ResellerApi
      * Update info of reseller's child account status based on the childIdentifier supplied
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -3951,7 +3951,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3959,7 +3959,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3967,7 +3967,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3983,7 +3983,7 @@ class ResellerApi
      * Update info of reseller's child account status based on the childIdentifier supplied
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4004,7 +4004,7 @@ class ResellerApi
      * Update info of reseller's child account status based on the childIdentifier supplied
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4041,7 +4041,7 @@ class ResellerApi
      * Create request for operation 'updateChildAccountStatus'
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildAccountStatus $updateChildAccountStatus values to update in child account status (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -4169,9 +4169,9 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      * @param  string $domainName Pass the existing domain that needs to be updated (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -4187,9 +4187,9 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      * @param  string $domainName Pass the existing domain that needs to be updated (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -4233,7 +4233,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4241,7 +4241,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4249,7 +4249,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4266,7 +4266,7 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      * @param  string $domainName Pass the existing domain that needs to be updated (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4288,7 +4288,7 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      * @param  string $domainName Pass the existing domain that needs to be updated (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4326,7 +4326,7 @@ class ResellerApi
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
      * @param  string $domainName Pass the existing domain that needs to be updated (required)
-     * @param  \SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChildDomain $updateChildDomain value to update for sender domain (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -4467,9 +4467,9 @@ class ResellerApi
      * Update info of reseller's child based on the child identifier supplied
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -4484,9 +4484,9 @@ class ResellerApi
      * Update info of reseller's child based on the child identifier supplied
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -4530,7 +4530,7 @@ class ResellerApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4538,7 +4538,7 @@ class ResellerApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4546,7 +4546,7 @@ class ResellerApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4562,7 +4562,7 @@ class ResellerApi
      * Update info of reseller's child based on the child identifier supplied
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4583,7 +4583,7 @@ class ResellerApi
      * Update info of reseller's child based on the child identifier supplied
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -4620,7 +4620,7 @@ class ResellerApi
      * Create request for operation 'updateResellerChild'
      *
      * @param  string $childIdentifier Either auth key or id of reseller&#39;s child (required)
-     * @param  \SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\UpdateChild $resellerChild values to update in child profile (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

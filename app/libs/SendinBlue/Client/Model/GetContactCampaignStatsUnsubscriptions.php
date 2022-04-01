@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetContactCampaignStatsUnsubscriptions Class Doc Comment
@@ -57,8 +57,8 @@ class GetContactCampaignStatsUnsubscriptions implements ModelInterface, ArrayAcc
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'userUnsubscription' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[]',
-        'adminUnsubscription' => '\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[]'
+        'userUnsubscription' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[]',
+        'adminUnsubscription' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[]'
     ];
 
     /**
@@ -219,7 +219,7 @@ class GetContactCampaignStatsUnsubscriptions implements ModelInterface, ArrayAcc
     /**
      * Gets userUnsubscription
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[]
      */
     public function getUserUnsubscription()
     {
@@ -229,7 +229,7 @@ class GetContactCampaignStatsUnsubscriptions implements ModelInterface, ArrayAcc
     /**
      * Sets userUnsubscription
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[] $userUnsubscription Contact has unsubscribed via the unsubscription link in the email
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsUserUnsubscription[] $userUnsubscription Contact has unsubscribed via the unsubscription link in the email
      *
      * @return $this
      */
@@ -243,7 +243,7 @@ class GetContactCampaignStatsUnsubscriptions implements ModelInterface, ArrayAcc
     /**
      * Gets adminUnsubscription
      *
-     * @return \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[]
      */
     public function getAdminUnsubscription()
     {
@@ -253,7 +253,7 @@ class GetContactCampaignStatsUnsubscriptions implements ModelInterface, ArrayAcc
     /**
      * Sets adminUnsubscription
      *
-     * @param \SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[] $adminUnsubscription Contact has been unsubscribed from the administrator
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedContactDetailsStatisticsUnsubscriptionsAdminUnsubscription[] $adminUnsubscription Contact has been unsubscribed from the administrator
      *
      * @return $this
      */

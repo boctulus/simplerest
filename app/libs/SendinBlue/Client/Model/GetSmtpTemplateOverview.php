@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetSmtpTemplateOverview Class Doc Comment
@@ -62,7 +62,7 @@ class GetSmtpTemplateOverview implements ModelInterface, ArrayAccess
         'subject' => 'string',
         'isActive' => 'bool',
         'testSent' => 'bool',
-        'sender' => '\SendinBlue\Client\Model\GetSmtpTemplateOverviewSender',
+        'sender' => 'simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverviewSender',
         'replyTo' => 'string',
         'toField' => 'string',
         'tag' => 'string',
@@ -435,7 +435,7 @@ class GetSmtpTemplateOverview implements ModelInterface, ArrayAccess
     /**
      * Gets sender
      *
-     * @return \SendinBlue\Client\Model\GetSmtpTemplateOverviewSender
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverviewSender
      */
     public function getSender()
     {
@@ -445,7 +445,7 @@ class GetSmtpTemplateOverview implements ModelInterface, ArrayAccess
     /**
      * Sets sender
      *
-     * @param \SendinBlue\Client\Model\GetSmtpTemplateOverviewSender $sender sender
+     * @param simplerest\libs\SendinBlue\Client\Model\GetSmtpTemplateOverviewSender $sender sender
      *
      * @return $this
      */

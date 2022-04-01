@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * MasterDetailsResponseBillingInfo Class Doc Comment
@@ -60,8 +60,8 @@ class MasterDetailsResponseBillingInfo implements ModelInterface, ArrayAccess
     protected static $swaggerTypes = [
         'email' => 'string',
         'companyName' => 'string',
-        'name' => '\SendinBlue\Client\Model\MasterDetailsResponseBillingInfoName',
-        'address' => '\SendinBlue\Client\Model\MasterDetailsResponseBillingInfoAddress'
+        'name' => 'simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfoName',
+        'address' => 'simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfoAddress'
     ];
 
     /**
@@ -274,7 +274,7 @@ class MasterDetailsResponseBillingInfo implements ModelInterface, ArrayAccess
     /**
      * Gets name
      *
-     * @return \SendinBlue\Client\Model\MasterDetailsResponseBillingInfoName
+     * @return simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfoName
      */
     public function getName()
     {
@@ -284,7 +284,7 @@ class MasterDetailsResponseBillingInfo implements ModelInterface, ArrayAccess
     /**
      * Sets name
      *
-     * @param \SendinBlue\Client\Model\MasterDetailsResponseBillingInfoName $name name
+     * @param simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfoName $name name
      *
      * @return $this
      */
@@ -298,7 +298,7 @@ class MasterDetailsResponseBillingInfo implements ModelInterface, ArrayAccess
     /**
      * Gets address
      *
-     * @return \SendinBlue\Client\Model\MasterDetailsResponseBillingInfoAddress
+     * @return simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfoAddress
      */
     public function getAddress()
     {
@@ -308,7 +308,7 @@ class MasterDetailsResponseBillingInfo implements ModelInterface, ArrayAccess
     /**
      * Sets address
      *
-     * @param \SendinBlue\Client\Model\MasterDetailsResponseBillingInfoAddress $address address
+     * @param simplerest\libs\SendinBlue\Client\Model\MasterDetailsResponseBillingInfoAddress $address address
      *
      * @return $this
      */

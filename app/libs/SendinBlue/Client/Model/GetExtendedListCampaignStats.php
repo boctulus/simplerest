@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetExtendedListCampaignStats Class Doc Comment
@@ -58,7 +58,7 @@ class GetExtendedListCampaignStats implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'campaignId' => 'int',
-        'stats' => '\SendinBlue\Client\Model\GetCampaignStats'
+        'stats' => 'simplerest\libs\SendinBlue\Client\Model\GetCampaignStats'
     ];
 
     /**
@@ -243,7 +243,7 @@ class GetExtendedListCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Gets stats
      *
-     * @return \SendinBlue\Client\Model\GetCampaignStats
+     * @return simplerest\libs\SendinBlue\Client\Model\GetCampaignStats
      */
     public function getStats()
     {
@@ -253,7 +253,7 @@ class GetExtendedListCampaignStats implements ModelInterface, ArrayAccess
     /**
      * Sets stats
      *
-     * @param \SendinBlue\Client\Model\GetCampaignStats $stats stats
+     * @param simplerest\libs\SendinBlue\Client\Model\GetCampaignStats $stats stats
      *
      * @return $this
      */

@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetExtendedClient Class Doc Comment
@@ -61,7 +61,7 @@ class GetExtendedClient implements ModelInterface, ArrayAccess
         'firstName' => 'string',
         'lastName' => 'string',
         'companyName' => 'string',
-        'address' => '\SendinBlue\Client\Model\GetExtendedClientAddress'
+        'address' => 'simplerest\libs\SendinBlue\Client\Model\GetExtendedClientAddress'
     ];
 
     /**
@@ -342,7 +342,7 @@ class GetExtendedClient implements ModelInterface, ArrayAccess
     /**
      * Gets address
      *
-     * @return \SendinBlue\Client\Model\GetExtendedClientAddress
+     * @return simplerest\libs\SendinBlue\Client\Model\GetExtendedClientAddress
      */
     public function getAddress()
     {
@@ -352,7 +352,7 @@ class GetExtendedClient implements ModelInterface, ArrayAccess
     /**
      * Sets address
      *
-     * @param \SendinBlue\Client\Model\GetExtendedClientAddress $address address
+     * @param simplerest\libs\SendinBlue\Client\Model\GetExtendedClientAddress $address address
      *
      * @return $this
      */

@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetAttributes Class Doc Comment
@@ -57,7 +57,7 @@ class GetAttributes implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'attributes' => '\SendinBlue\Client\Model\GetAttributesAttributes[]'
+        'attributes' => 'simplerest\libs\SendinBlue\Client\Model\GetAttributesAttributes[]'
     ];
 
     /**
@@ -210,7 +210,7 @@ class GetAttributes implements ModelInterface, ArrayAccess
     /**
      * Gets attributes
      *
-     * @return \SendinBlue\Client\Model\GetAttributesAttributes[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetAttributesAttributes[]
      */
     public function getAttributes()
     {
@@ -220,7 +220,7 @@ class GetAttributes implements ModelInterface, ArrayAccess
     /**
      * Sets attributes
      *
-     * @param \SendinBlue\Client\Model\GetAttributesAttributes[] $attributes Listing of available contact attributes in your account
+     * @param simplerest\libs\SendinBlue\Client\Model\GetAttributesAttributes[] $attributes Listing of available contact attributes in your account
      *
      * @return $this
      */

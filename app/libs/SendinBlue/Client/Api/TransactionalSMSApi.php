@@ -102,9 +102,9 @@ class TransactionalSMSApi
      * @param  string $tags Filter the report for specific tags passed as a serialized urlencoded array (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetSmsEventReport
+     * @return simplerest\libs\SendinBlue\Client\Model\GetSmsEventReport
      */
     public function getSmsEvents($limit = '50', $startDate = null, $endDate = null, $offset = '0', $days = null, $phoneNumber = null, $event = null, $tags = null, $sort = 'desc')
     {
@@ -127,13 +127,13 @@ class TransactionalSMSApi
      * @param  string $tags Filter the report for specific tags passed as a serialized urlencoded array (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetSmsEventReport, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetSmsEventReport, HTTP status code, HTTP response headers (array of strings)
      */
     public function getSmsEventsWithHttpInfo($limit = '50', $startDate = null, $endDate = null, $offset = '0', $days = null, $phoneNumber = null, $event = null, $tags = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmsEventReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmsEventReport';
         $request = $this->getSmsEventsRequest($limit, $startDate, $endDate, $offset, $days, $phoneNumber, $event, $tags, $sort);
 
         try {
@@ -185,7 +185,7 @@ class TransactionalSMSApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetSmsEventReport',
+                        'simplerest\libs\SendinBlue\Client\Model\GetSmsEventReport',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -193,7 +193,7 @@ class TransactionalSMSApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -251,7 +251,7 @@ class TransactionalSMSApi
      */
     public function getSmsEventsAsyncWithHttpInfo($limit = '50', $startDate = null, $endDate = null, $offset = '0', $days = null, $phoneNumber = null, $event = null, $tags = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetSmsEventReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetSmsEventReport';
         $request = $this->getSmsEventsRequest($limit, $startDate, $endDate, $offset, $days, $phoneNumber, $event, $tags, $sort);
 
         return $this->client
@@ -450,9 +450,9 @@ class TransactionalSMSApi
      * @param  int $days Number of days in the past including today (positive integer). Not compatible with startDate and endDate (optional)
      * @param  string $tag Filter on a tag (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetTransacAggregatedSmsReport
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacAggregatedSmsReport
      */
     public function getTransacAggregatedSmsReport($startDate = null, $endDate = null, $days = null, $tag = null)
     {
@@ -470,13 +470,13 @@ class TransactionalSMSApi
      * @param  int $days Number of days in the past including today (positive integer). Not compatible with startDate and endDate (optional)
      * @param  string $tag Filter on a tag (optional)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetTransacAggregatedSmsReport, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetTransacAggregatedSmsReport, HTTP status code, HTTP response headers (array of strings)
      */
     public function getTransacAggregatedSmsReportWithHttpInfo($startDate = null, $endDate = null, $days = null, $tag = null)
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacAggregatedSmsReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacAggregatedSmsReport';
         $request = $this->getTransacAggregatedSmsReportRequest($startDate, $endDate, $days, $tag);
 
         try {
@@ -528,7 +528,7 @@ class TransactionalSMSApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetTransacAggregatedSmsReport',
+                        'simplerest\libs\SendinBlue\Client\Model\GetTransacAggregatedSmsReport',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -536,7 +536,7 @@ class TransactionalSMSApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -584,7 +584,7 @@ class TransactionalSMSApi
      */
     public function getTransacAggregatedSmsReportAsyncWithHttpInfo($startDate = null, $endDate = null, $days = null, $tag = null)
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacAggregatedSmsReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacAggregatedSmsReport';
         $request = $this->getTransacAggregatedSmsReportRequest($startDate, $endDate, $days, $tag);
 
         return $this->client
@@ -755,9 +755,9 @@ class TransactionalSMSApi
      * @param  string $tag Filter on a tag (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\GetTransacSmsReport
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacSmsReport
      */
     public function getTransacSmsReport($startDate = null, $endDate = null, $days = null, $tag = null, $sort = 'desc')
     {
@@ -776,13 +776,13 @@ class TransactionalSMSApi
      * @param  string $tag Filter on a tag (optional)
      * @param  string $sort Sort the results in the ascending/descending order of record creation. Default order is **descending** if &#x60;sort&#x60; is not passed (optional, default to desc)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\GetTransacSmsReport, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\GetTransacSmsReport, HTTP status code, HTTP response headers (array of strings)
      */
     public function getTransacSmsReportWithHttpInfo($startDate = null, $endDate = null, $days = null, $tag = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacSmsReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacSmsReport';
         $request = $this->getTransacSmsReportRequest($startDate, $endDate, $days, $tag, $sort);
 
         try {
@@ -834,7 +834,7 @@ class TransactionalSMSApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\GetTransacSmsReport',
+                        'simplerest\libs\SendinBlue\Client\Model\GetTransacSmsReport',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -842,7 +842,7 @@ class TransactionalSMSApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -892,7 +892,7 @@ class TransactionalSMSApi
      */
     public function getTransacSmsReportAsyncWithHttpInfo($startDate = null, $endDate = null, $days = null, $tag = null, $sort = 'desc')
     {
-        $returnType = '\SendinBlue\Client\Model\GetTransacSmsReport';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\GetTransacSmsReport';
         $request = $this->getTransacSmsReportRequest($startDate, $endDate, $days, $tag, $sort);
 
         return $this->client
@@ -1062,11 +1062,11 @@ class TransactionalSMSApi
      *
      * Send SMS message to a mobile number
      *
-     * @param  \SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \SendinBlue\Client\Model\SendSms
+     * @return simplerest\libs\SendinBlue\Client\Model\SendSms
      */
     public function sendTransacSms($sendTransacSms)
     {
@@ -1079,15 +1079,15 @@ class TransactionalSMSApi
      *
      * Send SMS message to a mobile number
      *
-     * @param  \SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
      *
-     * @throws \SendinBlue\Client\ApiException on non-2xx response
+     * @throws simplerest\libs\SendinBlue\Client\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \SendinBlue\Client\Model\SendSms, HTTP status code, HTTP response headers (array of strings)
+     * @return array of simplerest\libs\SendinBlue\Client\Model\SendSms, HTTP status code, HTTP response headers (array of strings)
      */
     public function sendTransacSmsWithHttpInfo($sendTransacSms)
     {
-        $returnType = '\SendinBlue\Client\Model\SendSms';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\SendSms';
         $request = $this->sendTransacSmsRequest($sendTransacSms);
 
         try {
@@ -1139,7 +1139,7 @@ class TransactionalSMSApi
                 case 201:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\SendSms',
+                        'simplerest\libs\SendinBlue\Client\Model\SendSms',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1147,7 +1147,7 @@ class TransactionalSMSApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1155,7 +1155,7 @@ class TransactionalSMSApi
                 case 402:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\SendinBlue\Client\Model\ErrorModel',
+                        'simplerest\libs\SendinBlue\Client\Model\ErrorModel',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1170,7 +1170,7 @@ class TransactionalSMSApi
      *
      * Send SMS message to a mobile number
      *
-     * @param  \SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -1190,14 +1190,14 @@ class TransactionalSMSApi
      *
      * Send SMS message to a mobile number
      *
-     * @param  \SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function sendTransacSmsAsyncWithHttpInfo($sendTransacSms)
     {
-        $returnType = '\SendinBlue\Client\Model\SendSms';
+        $returnType = 'simplerest\libs\SendinBlue\Client\Model\SendSms';
         $request = $this->sendTransacSmsRequest($sendTransacSms);
 
         return $this->client
@@ -1240,7 +1240,7 @@ class TransactionalSMSApi
     /**
      * Create request for operation 'sendTransacSms'
      *
-     * @param  \SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
+     * @param  simplerest\libs\SendinBlue\Client\Model\SendTransacSms $sendTransacSms Values to send a transactional SMS (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

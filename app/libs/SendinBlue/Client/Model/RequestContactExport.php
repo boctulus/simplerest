@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * RequestContactExport Class Doc Comment
@@ -58,7 +58,7 @@ class RequestContactExport implements ModelInterface, ArrayAccess
       */
     protected static $swaggerTypes = [
         'exportAttributes' => 'string[]',
-        'customContactFilter' => '\SendinBlue\Client\Model\RequestContactExportCustomContactFilter',
+        'customContactFilter' => 'simplerest\libs\SendinBlue\Client\Model\RequestContactExportCustomContactFilter',
         'notifyUrl' => 'string'
     ];
 
@@ -246,7 +246,7 @@ class RequestContactExport implements ModelInterface, ArrayAccess
     /**
      * Gets customContactFilter
      *
-     * @return \SendinBlue\Client\Model\RequestContactExportCustomContactFilter
+     * @return simplerest\libs\SendinBlue\Client\Model\RequestContactExportCustomContactFilter
      */
     public function getCustomContactFilter()
     {
@@ -256,7 +256,7 @@ class RequestContactExport implements ModelInterface, ArrayAccess
     /**
      * Sets customContactFilter
      *
-     * @param \SendinBlue\Client\Model\RequestContactExportCustomContactFilter $customContactFilter customContactFilter
+     * @param simplerest\libs\SendinBlue\Client\Model\RequestContactExportCustomContactFilter $customContactFilter customContactFilter
      *
      * @return $this
      */

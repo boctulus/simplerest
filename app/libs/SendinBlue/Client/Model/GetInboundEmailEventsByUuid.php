@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetInboundEmailEventsByUuid Class Doc Comment
@@ -63,8 +63,8 @@ class GetInboundEmailEventsByUuid implements ModelInterface, ArrayAccess
         'sender' => 'string',
         'messageId' => 'string',
         'subject' => 'string',
-        'attachments' => '\SendinBlue\Client\Model\GetInboundEmailEventsByUuidAttachments[]',
-        'logs' => '\SendinBlue\Client\Model\GetInboundEmailEventsByUuidLogs[]'
+        'attachments' => 'simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuidAttachments[]',
+        'logs' => 'simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuidLogs[]'
     ];
 
     /**
@@ -393,7 +393,7 @@ class GetInboundEmailEventsByUuid implements ModelInterface, ArrayAccess
     /**
      * Gets attachments
      *
-     * @return \SendinBlue\Client\Model\GetInboundEmailEventsByUuidAttachments[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuidAttachments[]
      */
     public function getAttachments()
     {
@@ -403,7 +403,7 @@ class GetInboundEmailEventsByUuid implements ModelInterface, ArrayAccess
     /**
      * Sets attachments
      *
-     * @param \SendinBlue\Client\Model\GetInboundEmailEventsByUuidAttachments[] $attachments List of attachments of the email. This will be present only after the processing is done.
+     * @param simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuidAttachments[] $attachments List of attachments of the email. This will be present only after the processing is done.
      *
      * @return $this
      */
@@ -417,7 +417,7 @@ class GetInboundEmailEventsByUuid implements ModelInterface, ArrayAccess
     /**
      * Gets logs
      *
-     * @return \SendinBlue\Client\Model\GetInboundEmailEventsByUuidLogs[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuidLogs[]
      */
     public function getLogs()
     {
@@ -427,7 +427,7 @@ class GetInboundEmailEventsByUuid implements ModelInterface, ArrayAccess
     /**
      * Sets logs
      *
-     * @param \SendinBlue\Client\Model\GetInboundEmailEventsByUuidLogs[] $logs List of events/logs that describe the lifecycle of the email on SIB platform
+     * @param simplerest\libs\SendinBlue\Client\Model\GetInboundEmailEventsByUuidLogs[] $logs List of events/logs that describe the lifecycle of the email on SIB platform
      *
      * @return $this
      */

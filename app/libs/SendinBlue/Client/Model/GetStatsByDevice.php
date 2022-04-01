@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetStatsByDevice Class Doc Comment
@@ -57,10 +57,10 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'desktop' => 'map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats]',
-        'mobile' => 'map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats]',
-        'tablet' => 'map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats]',
-        'unknown' => 'map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats]'
+        'desktop' => 'map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats]',
+        'mobile' => 'map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats]',
+        'tablet' => 'map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats]',
+        'unknown' => 'map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats]'
     ];
 
     /**
@@ -225,7 +225,7 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
     /**
      * Gets desktop
      *
-     * @return map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats]
+     * @return map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats]
      */
     public function getDesktop()
     {
@@ -235,7 +235,7 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
     /**
      * Sets desktop
      *
-     * @param map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats] $desktop Statistics of the campaign on the basis of desktop devices
+     * @param map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats] $desktop Statistics of the campaign on the basis of desktop devices
      *
      * @return $this
      */
@@ -249,7 +249,7 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
     /**
      * Gets mobile
      *
-     * @return map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats]
+     * @return map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats]
      */
     public function getMobile()
     {
@@ -259,7 +259,7 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
     /**
      * Sets mobile
      *
-     * @param map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats] $mobile Statistics of the campaign on the basis of mobile devices
+     * @param map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats] $mobile Statistics of the campaign on the basis of mobile devices
      *
      * @return $this
      */
@@ -273,7 +273,7 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
     /**
      * Gets tablet
      *
-     * @return map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats]
+     * @return map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats]
      */
     public function getTablet()
     {
@@ -283,7 +283,7 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
     /**
      * Sets tablet
      *
-     * @param map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats] $tablet Statistics of the campaign on the basis of tablet devices
+     * @param map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats] $tablet Statistics of the campaign on the basis of tablet devices
      *
      * @return $this
      */
@@ -297,7 +297,7 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
     /**
      * Gets unknown
      *
-     * @return map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats]
+     * @return map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats]
      */
     public function getUnknown()
     {
@@ -307,7 +307,7 @@ class GetStatsByDevice implements ModelInterface, ArrayAccess
     /**
      * Sets unknown
      *
-     * @param map[string,\SendinBlue\Client\Model\GetDeviceBrowserStats] $unknown Statistics of the campaign on the basis of unknown devices
+     * @param map[string,simplerest\libs\SendinBlue\Client\Model\GetDeviceBrowserStats] $unknown Statistics of the campaign on the basis of unknown devices
      *
      * @return $this
      */

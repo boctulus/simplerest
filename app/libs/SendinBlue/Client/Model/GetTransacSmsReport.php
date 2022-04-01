@@ -30,7 +30,7 @@
 namespace simplerest\libs\SendinBlue\Client\Model;
 
 use \ArrayAccess;
-use \SendinBlue\Client\ObjectSerializer;
+use simplerest\libs\SendinBlue\Client\ObjectSerializer;
 
 /**
  * GetTransacSmsReport Class Doc Comment
@@ -57,7 +57,7 @@ class GetTransacSmsReport implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $swaggerTypes = [
-        'reports' => '\SendinBlue\Client\Model\GetTransacSmsReportReports[]'
+        'reports' => 'simplerest\libs\SendinBlue\Client\Model\GetTransacSmsReportReports[]'
     ];
 
     /**
@@ -207,7 +207,7 @@ class GetTransacSmsReport implements ModelInterface, ArrayAccess
     /**
      * Gets reports
      *
-     * @return \SendinBlue\Client\Model\GetTransacSmsReportReports[]
+     * @return simplerest\libs\SendinBlue\Client\Model\GetTransacSmsReportReports[]
      */
     public function getReports()
     {
@@ -217,7 +217,7 @@ class GetTransacSmsReport implements ModelInterface, ArrayAccess
     /**
      * Sets reports
      *
-     * @param \SendinBlue\Client\Model\GetTransacSmsReportReports[] $reports reports
+     * @param simplerest\libs\SendinBlue\Client\Model\GetTransacSmsReportReports[] $reports reports
      *
      * @return $this
      */
