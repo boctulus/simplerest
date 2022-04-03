@@ -4,6 +4,13 @@ namespace simplerest\core\libs;
 
 class Strings 
 {	
+	/*
+		Cada línea la convierte en un <p>párrafo</p>
+	*/
+	static function paragraph(string $str){
+		return '<p>' . implode('</p><p>', array_filter(explode("\n", $str))) . '</p>';
+	}
+
 	// N-ésimo segmento luego de hacer un explode por $separator
 	static function segment(string $string, string $separator,  int $position){
 		$array = explode($separator, $string);

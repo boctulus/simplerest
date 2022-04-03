@@ -354,7 +354,7 @@ class MakeControllerBase extends Controller
             return;
         }
     
-        $filename = $prefix . $this->camel_case . $subfix.'.php';
+        $filename  = $this->camel_case . $subfix.'.php';
         $dest_path = $dest_path . $sub_path . $filename;
 
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
