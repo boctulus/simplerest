@@ -162,7 +162,7 @@ return [
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
 
-				// Extras
+				// // Extras
 				// 'SMTPOptions'   => [
 				// 	'ssl' => [
 				// 		'verify_peer' => false,
@@ -185,13 +185,13 @@ return [
 				'Debugutput' 	=> 'html',
 
 				// Extras
-				// 'SMTPOptions'   => [
-				// 	'ssl' => [
-				// 		'verify_peer' => false,
-				// 		'verify_peer_name' => false,
-				// 		'allow_self_signed' => true
-				// 	]
-				// ]
+				'SMTPOptions'   => [
+					'ssl' => [
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+						'allow_self_signed' => true
+					]
+				]
 			],
 
 			'miguel_peru' => [
