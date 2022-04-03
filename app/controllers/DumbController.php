@@ -3029,26 +3029,22 @@ class DumbController extends Controller
         // ]);
 
         Mails::debug(4);
-
         //Mails::silentDebug();
 
-        Mails::sendMail('boctulus@gmail.com', 'Pablo', 'Pruebita 001JRB', 'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau');    
+        Mails::setMailer('google');
+
+        Mails::sendMail(
+            [
+                'email' => 'boctulus@gmail.com',
+                'name' => 'Pablo'
+            ],
+            'Pruebita 001JRBX', 
+            'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau'
+        );    
         
         d(Mails::errors(), 'Error');
         d(Mails::status(), 'Status');
     }   
-
-    // from cotizacion@brimell.cl
-    function sender_b(){
-        //$path = ETC_PATH . 'example.sql';
-
-        Mails::silentDebug();
-
-        Mails::sendMail('mueblesultra@gmail.com', '', 'Prueba B3', 'HEY!!!!!!!!!!!<p/>Esto es una más <b>prueba</b> con el SMTP de <i>Brimell</i><p/>Chau', null, null, 'cotizacion@brimell.cl', 'Brimell', 'boctulus@gmail.com'); 
-        
-        d(Mails::errors(), 'Error');
-        d(Mails::status(), 'Status');
-    }
 
     function sender_o(){
         Mails::config([
@@ -3058,19 +3054,28 @@ class DumbController extends Controller
         Mails::debug(4);
         //Mails::silentDebug();
 
-        Mails::setMailer('solbin_sblue');
+        Mails::setMailer('pulque'); ///
 
         Mails::sendMail(
-            'boctulus@gmail.com', 
-            'Pablo', 
-            'Pruebita 002', 
-            'Hola!<p/>Esto es una <b>prueba</b>', 
+            [
+                'email' => 'boctulus@gmail.com',
+                'name' => 'Pablo'
+            ],
+            'Pruebita 001JRB', 
+            'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau',
             null, 
-            null, 
-            null, 
-            null, 
-            'pulketo@gmail.com', 
-            'ing.mario.alberto@gmail.com');    
+            null,
+            [],
+            [
+                [
+                    'email' => 'pulketo@gmail.com'
+                ],
+                [
+                    'email' => 'ing.mario.alberto@gmail.com',
+                    'name'  => 'Ing. PK Pulketo'
+                ]
+            ]
+        );  
         
         d(Mails::errors(), 'Error');
         d(Mails::status(), 'Status');
@@ -3086,7 +3091,75 @@ class DumbController extends Controller
     //     );     
     // }
 
-    /*
+    function sendinblue(){
+        Mails::debug(1);
+
+        $body = <<<BODY
+        Ciao!
+
+        Ci dedichiamo allo sviluppo di plugin per diverse piattaforme di eCommerce.
+        
+        In particolare, come sviluppatore PHP ho quasi 15 anni di esperienza (WordPress, Magento, ..., CodeIgniter, Laravel) e metto a disposizione i miei repository pubblici:
+        
+        https://github.com/botulus
+        
+        Ogni giorno costruisco un'ampia varietà di plugin per WordPress / WooCommerce: sincronizzazione negozi, preventivi, sistemi di autenticazione,...
+        
+        Sto aspettando qualsiasi richiesta.
+        
+        Atte.,
+        
+        Paolo Bozzolo
+        info@solucionbinaria.com
+        BODY;
+
+        Mails::sendinblue(
+            [
+                'email' => 'boctulus@gmail.com',
+                'name' => 'Pablo'
+            ],
+            'Pruebita 001JRB XXX', 
+            Strings::paragraph($body),
+            null, 
+            null,
+            [],
+            [
+                [
+                    'email' => 'pulketo@gmail.com'
+                ],
+                [
+                    'email' => 'ing.mario.alberto@gmail.com',
+                    'name'  => 'Ing. PK Pulketo'
+                ]
+            ]
+        );  
+    }
+
+    // function sendinblue_ori(){
+    //     $api_key = "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";
+
+    //     $credentials = Configuration::getDefaultConfiguration()->setApiKey('api-key', $api_key);
+    //     $apiInstance = new TransactionalEmailsApi(new GuzzleHttp\Client(),$credentials);
+
+    //     $sendSmtpEmail = new SendSmtpEmail([
+    //         'subject' => 'from the PHP SDK!!!!!!!!!',
+    //         'sender' => ['name' => 'Sendinblue', 'email' => 'noresponder@solucionbinaria.com'],
+    //         'replyTo' => ['name' => 'Sendinblue', 'email' => 'noresponder@solucionbinaria.com'],
+    //         'to' => [[ 'name' => 'PK Pulkes', 'email' => 'boctulus@gmail.com']],
+    //         'htmlContent' => '<html><body><h1>This is a transactional email {{params.bodyMessage}}</h1></body></html>',
+    //         'params' => ['bodyMessage' => 'made just for you!']
+    //     ]);
+
+    //     try {
+    //         $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
+    //         dd($result);
+    //     } catch (\Exception $e) {
+    //         echo $e->getMessage(),PHP_EOL;
+    //     }
+    // }
+
+
+        /*
         https://github.com/sendgrid/sendgrid-php
     */
     function sendgrid(){
@@ -3109,33 +3182,6 @@ class DumbController extends Controller
         }
     }
 
-
-    /*
-        smtp key name:pablo
-        smtp key value: xsmtpsib-ad670e8836116168de12e1d33c294bfc740dd51f2bdea3213c22b322d7e52aa0-HMJadEBmGqjhWCcF
-    */
-    function sendinblue(){
-        $api_key = 'xsmtpsib-ad670e8836116168de12e1d33c294bfc740dd51f2bdea3213c22b322d7e52aa0-HMJadEBmGqjhWCcF';
-
-        $credentials = Configuration::getDefaultConfiguration()->setApiKey('api-key', $api_key);
-        $apiInstance = new TransactionalEmailsApi(new GuzzleHttp\Client(),$credentials);
-
-        $sendSmtpEmail = new SendSmtpEmail([
-            'subject' => 'from the PHP SDK!',
-            'sender' => ['name' => 'Sendinblue', 'email' => 'noresponder@solucionbinaria.com'],
-            'replyTo' => ['name' => 'Sendinblue', 'email' => 'noresponder@solucionbinaria.com'],
-            'to' => [[ 'name' => 'PK Pulkes', 'email' => 'boctulus@gmail.com']],
-            'htmlContent' => '<html><body><h1>This is a transactional email {{params.bodyMessage}}</h1></body></html>',
-            'params' => ['bodyMessage' => 'made just for you!']
-        ]);
-
-        try {
-            $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
-            dd($result);
-        } catch (\Exception $e) {
-            echo $e->getMessage(),PHP_EOL;
-        }
-    }
 
     function sender2(){
         //Create a new PHPMailer instance

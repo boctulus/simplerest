@@ -146,7 +146,7 @@ return [
 
 	'email' => [
 		'from'		=> [
-			'address' 		=> null, 
+			'address' 		=> env('MAIL_DEFAULT_FROM_ADDR'), 
 			'name' 			=> env('MAIL_DEFAULT_FROM_NAME')
 		],	
 
@@ -172,27 +172,6 @@ return [
 				// ]
 			],
 
-			'brimell' => [
-				'Host'			=> env('MAIL_HOST_2'),
-				'Port'			=> env('MAIL_PORT_2'),
-				'Username' 		=> env('MAIL_USERNAME_2'),
-				'Password' 		=> env('MAIL_PASSWORD_2'),
-				'SMTPSecure'	=> env('MAIL_ENCRYPTION_2'),
-				'SMTPAuth' 		=> env('MAIL_AUTH_2'),
-				'SMTPDebug' 	=> 0,
-				'CharSet' 		=> 'UTF-8',
-				'Debugutput' 	=> 'html',
-
-				// Extras
-				// 'SMTPOptions'   => [
-				// 	'ssl' => [
-				// 		'verify_peer' => false,
-				// 		'verify_peer_name' => false,
-				// 		'allow_self_signed' => true
-				// 	]
-				// ]
-			],
-
 			'pulque' => [
 				'Host'			=> env('MAIL_HOST_3'),
 				'Port'			=> env('MAIL_PORT_3'),
@@ -200,6 +179,7 @@ return [
 				'Password' 		=> env('MAIL_PASSWORD_3'),
 				'SMTPSecure'	=> env('MAIL_ENCRYPTION_3'),
 				'SMTPAuth' 		=> env('MAIL_AUTH_3'),
+				//'SMTPAutoTLS'   => false,
 				'SMTPDebug' 	=> 0,
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
@@ -258,8 +238,10 @@ return [
 
 		],
 
-		'mailer_default' => 'pulque'
+		'mailer_default' => 'google'
 	],
+
+	'sendinblue_api_key' => env('SENDINBLUE_API_KEY'),
 
 	'google_auth'  => [
 		'client_id' 	=> env('OAUTH_GOOGLE_CLIENT_ID'),
