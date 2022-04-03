@@ -3063,18 +3063,18 @@ class DumbController extends Controller
             ],
             'Pruebita 001JRB', 
             'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau',
-            null, 
-            null,
-            [],
-            [
-                [
-                    'email' => 'pulketo@gmail.com'
-                ],
-                [
-                    'email' => 'ing.mario.alberto@gmail.com',
-                    'name'  => 'Ing. PK Pulketo'
-                ]
-            ]
+            // null, 
+            // null,
+            // [],
+            // [
+            //     [
+            //         'email' => 'pulketo@gmail.com'
+            //     ],
+            //     [
+            //         'email' => 'ing.mario.alberto@gmail.com',
+            //         'name'  => 'Ing. PK Pulketo'
+            //     ]
+            // ]
         );  
         
         d(Mails::errors(), 'Error');
