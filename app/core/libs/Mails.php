@@ -155,11 +155,10 @@ class Mails
             $mail->addReplyTo($reply_to['email'], $reply_to['name'] ?? '');
         }
 
-        $mail->setFrom(
-            $from_email ?? $config['email']['from']['address'] ?? $config['email']['mailers'][$mailer]['Username'], 
-            $from_name  ?? $config['email']['from']['name']
-        );
+        $from['email'] = $from['email'] ?? $config['email']['from']['address'] ?? $config['email']['mailers'][$mailer]['Username'];
+        $from['mame'] = $from['mame'] ?? $config['email']['from']['name'];
 
+        
         if (!empty($from)){
             $mail->setFrom($from['email'], $from['name'] ?? '');
         }
