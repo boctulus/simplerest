@@ -7118,7 +7118,7 @@ class DumbController extends Controller
 
 
     function test_desentrelazado(){
-        $literal = strrev("SimpleRest framework created by Pablo Bozzolo <boctulus AT gmail.com>. All rights reserved.");
+        $literal = strrev("woo4.lan");
         
         // protect spaces
         $literal = str_replace(' ', '-', $literal);
@@ -8171,29 +8171,16 @@ class DumbController extends Controller
         Files::cp('/home/www/woo1/wp-content/plugins/auth4wp/ajax.php',
         '/tmp/obsfuscated'); 
     }
-
-    function test_ofuscador(){
-        $ori = '/home/www/woo1/wp-content/plugins/auth4wp';
-        $dst = '/home/www/woo1/wp-content/plugins/auth4wp.obfuscated';
-        $excluded = <<<FILES
-        assets
-        locale
-        logs
-        README.md
-        config.php
-        auth4wp.php
-        FILES;
-
-        $ok = Obfuscator::obfuscate($ori, $dst, $excluded);
-        d($ok);
-    }
     
 
     function hash(){
         
-        // $date = '2022-04-04';
-        // echo Obfuscator::encryptDecrypt('encrypt', $date);
-        // exit;
+        $date = '2022-04-15';
+        echo Obfuscator::encryptDecrypt('encrypt', $date);
+        exit;
+
+
+        ////
 
         $f = 'Y-m-d';
         $d = new \DateTime('');
@@ -8211,7 +8198,7 @@ class DumbController extends Controller
     {
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY0ODU5ODk0NCwiZXhwIjoxNjU3NTk4OTQ0LCJpcCI6IjE4Ni4xMDEuMTQ0LjE4IiwidXNlcl9hZ2VudCI6IlBvc3RtYW5SdW50aW1lLzcuMjkuMCIsInVpZCI6Mywicm9sZXMiOlsic3Vic2NyaWJlciJdfQ._BPlg7aSZDJ51HuRg7a9i23wXL51R6ONxBYeelU8aZw";
 
-        $domain = 'apiwp.fuentessoft.com';
+        $domain = 'woo4.lan';
 
         ////////////////////////////////////
 
@@ -8237,13 +8224,13 @@ class DumbController extends Controller
         $ord3 = $ord2 + 1;;
     
         // J
-        d(chr($ord1). " ($ord1)", 'ord1');
+        // d(chr($ord1). " ($ord1)", 'ord1');
         
-        // O
-        d(chr($ord2). " ($ord2)", 'ord2');
+        // // O
+        // d(chr($ord2). " ($ord2)", 'ord2');
 
-        // P
-        d(chr($ord3). " ($ord3)", 'ord3');
+        // // P
+        // d(chr($ord3). " ($ord3)", 'ord3');
 
         // dd(chr($ord1), 'ord1');
         // dd(chr($ord2), 'ord2');
@@ -8272,6 +8259,25 @@ class DumbController extends Controller
             'p'
         ], $token);
 
+
+        echo $token. "\r\n";
+
+    }
+
+
+    function obf(){
+        $ori = '/home/www/woo4/wp-content/plugins/woo-sizes';
+        $dst = '/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated';
+        $excluded = <<<FILES
+        assets
+        logs
+        README.md
+        config.php
+        woo-sizes.php
+        FILES;
+
+        $ok = Obfuscator::obfuscate($ori, $dst, $excluded);
+        d($ok);
     }
  
     
