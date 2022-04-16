@@ -8279,30 +8279,7 @@ class DumbController extends Controller
         $ok = Obfuscator::obfuscate($ori, $dst, $excluded);
         d($ok);
     }
- 
-    /*
-        Instalar la extensión de php
 
-        sudo apt install php-yaml
-
-        o versiones en específico
-
-        sudo apt install php7.4-yaml
-        sudo apt install php8.1-yaml
-    */
-    function obf(string $ori){
-        $ori = '/home/www/woo4/wp-content/plugins/woo-sizes/';
-        $yaml_file = $ori . 'obf.yaml';
-        $yaml_str  = file_get_contents($yaml_file);
-
-        if (!function_exists('yaml_parse') && !isset(get_loaded_extensions()['yaml'])){
-            throw new \Exception("Extension yaml not installed");
-        }
-
-        d(
-            yaml_parse($yaml_str)
-        );
-    }
     
 }   
 

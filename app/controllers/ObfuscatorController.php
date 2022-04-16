@@ -2,11 +2,10 @@
 
 namespace simplerest\controllers;
 
-use PhpParser\Node\Scalar\MagicConst\Dir;
 use simplerest\controllers\MyController;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
+use simplerest\core\libs\Obfuscator;
+use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
 
 class ObfuscatorController extends MyController
@@ -31,15 +30,30 @@ class ObfuscatorController extends MyController
     function fromdir(string $ori)
     {
         $yaml_file = Strings::removeTrailingSlash($ori) . DIRECTORY_SEPARATOR . 'obf.yaml';
+
+        if (!file_exists($yaml_file)){
+            throw new \Exception("File '$yaml_file' not found");
+        }
+
         $yaml_str  = file_get_contents($yaml_file);
 
         if (!function_exists('yaml_parse') && !isset(get_loaded_extensions()['yaml'])){
             throw new \Exception("Extension yaml not installed");
         }
 
-        d(
-            yaml_parse($yaml_str)
-        );
+        $arr = yaml_parse($yaml_str);
+
+        if (!isset($arr['dest'])){
+            throw new \Exception("dest in yaml is required");
+        }
+
+        $dest     =  realpath(Files::isAbsolutePath($arr['dest']) ? $arr['dest'] : $ori . DIRECTORY_SEPARATOR . $arr['dest']);
+        $excluded =  Arrays::shift($arr, 'excluded', []);
+
+        unset($arr['dest']);
+
+        $ok = Obfuscator::obfuscate($ori, $dest, $excluded);
+        d($ok);
     }
 }
 
