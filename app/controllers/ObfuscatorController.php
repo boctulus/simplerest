@@ -47,8 +47,12 @@ class ObfuscatorController extends MyController
             throw new \Exception("dest in yaml is required");
         }
 
-        $dest     =  realpath(Files::isAbsolutePath($arr['dest']) ? $arr['dest'] : $ori . DIRECTORY_SEPARATOR . $arr['dest']);
+        $dest     =  Files::getAbsolutePath(Files::isAbsolutePath($arr['dest']) ? $arr['dest'] : $ori . DIRECTORY_SEPARATOR . $arr['dest']);
         $excluded =  Arrays::shift($arr, 'excluded', []);
+
+        if ($dest === false){
+            throw new \Exception("Invalid path '$dest'");
+        }
 
         unset($arr['dest']);
 

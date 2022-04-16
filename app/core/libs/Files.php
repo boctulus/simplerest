@@ -2,7 +2,6 @@
 
 namespace simplerest\core\libs;
 
-use PDO;
 use simplerest\core\libs\SortedIterator;
 
 class Files 
@@ -25,6 +24,10 @@ class Files
 	}
 
 	static function isAbsolutePath(string $path){
+		if (Strings::contains('..', $path) || Strings::startsWith('.' . DIRECTORY_SEPARATOR , $path)|| Strings::startsWith('..' . DIRECTORY_SEPARATOR , $path)){
+			return false;
+		}
+
 		if (PHP_OS_FAMILY === "Windows") {
 			if (preg_match('~[A-Z]:'.preg_quote('\\').'~i', $path)){
 				return true;
@@ -45,25 +48,26 @@ class Files
 	/*
 		Returns absolute path relative to root path
 	*/
-	static function getAbsolutePath(string $path, string $relative_to =  ROOT_PATH){
-		$relative_to = Strings::addTrailingSlash($relative_to);
+	static function getAbsolutePath(string $path, string $relative_to =  null){
+		// sin chequear si tiene uso actualmente.
+		if ($relative_to !== null){
+			return Strings::removeTrailingSlash($relative_to) . DIRECTORY_SEPARATOR . ltrim(ltrim($path, '/'), '\\');
+		}
 
 		if (static::isAbsolutePath($path)){
 			return $path;
 		}
 
-		if (PHP_OS_FAMILY === "Windows") {
-			if (Strings::startsWith('..\\', $path)){
-				return realpath($path);
-			}
-		} else {
-			if (Strings::startsWith('..', $path) || Strings::startsWith('.', $path)){
-				return realpath($path);
-			}
+		/*
+			realpath() requiere que la ruta exista
+		*/
+		if (!file_exists($path)){
+			throw new \Exception("Path '$path' not found");
 		}
-		
 
-		return $relative_to . ltrim(ltrim($path, '/'), '\\');
+		here();
+		
+		return realpath($path);
 	}
 
 	static function getRelativePath(string $abs_path, string $relative_to){
