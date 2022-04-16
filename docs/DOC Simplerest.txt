@@ -219,7 +219,7 @@ El uso básico del comando make puede aprenderse simplemente invocando la ayuda 
 
 	php com make
 
-Crear nuevos comandos es bastante sencillo y la clase Make se puede extender. Observe la estrucura básica:
+Crear nuevos comandos es bastante sencillo y la clase Make se puede extender. Observe la estructura básica:
 
 Ej:
 
@@ -3429,7 +3429,7 @@ Nota:
 
 Los métodos setAsGuest() y setAsRegistered() se utilizan para definir qué rol tendrá la funcionalidad de "guest" y la de usuario registrado respectivamente. En el caso de setAsGuest() es opcional si el nombre del rol se dejara como "guest".
 
-La estrucuración en la declaración de roles y permisos es muy flexible.
+La estructuración en la declaración de roles y permisos es muy flexible.
 
 Ej:
 
@@ -7918,6 +7918,68 @@ Ej:
 
 	$ok = Obfuscator::obfuscate($ori, $dst, $excluded);
 
+Una forma más sencilla y poderosa de utilizar la librería Obfuscator es haciendo uso de ObfuscatorController para lo cual crearemos un archivo bash "obf" (.sh) como el siguiente:
+
+	#!/bin/bash
+
+	(_PWD=$PWD && cd /home/www/simplerest && php com obfuscator fromdir $_PWD)
+
+Entonces parados en el directorio a ofuscar llamaremosa obf:
+
+	$ obf
+
+Esto buscará localmente y leerá un archivo obf.yaml que requiere para ser interpretado de la extensión de PHP correspondiente y para el caso de Ubuntu es mediante:
+
+	sudo apt install php-yaml
+
+o versiones en específico
+
+	sudo apt install php7.4-yaml
+	sudo apt install php8.1-yaml
+
+El archivo obf.yaml tendrá que tener una estructura como la siguiente:
+
+	dest: "/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated"
+	nombre_grupo: 
+	files: 
+		- a
+		- b
+		- c
+	options: 
+		- "--no-obfuscate-variable-name"
+		- "--no-obfuscate-function-name"
+		- "--no-obfuscate-class_constant-name"
+	otro_grupo: 
+	files: 
+		- x
+		- y
+	options: 
+		- "--no-obfuscate-class_constant-name"
+	otro_mas:
+	files:
+		- w
+		- z
+	profile: aggressive
+	y_no_mas:
+	files:
+		- xyz
+	profile: auto
+	excluded:
+		- h
+		- i
+		- j
+
+Como se ve se pueden definir varios grupos de archivos a los cuales se les aplicarán determinadas opciones donde destaca "excluded" que sirve para definir archivos a ser excluidos de no pertenecer a ningún otro grupo.
+
+El campo "dest" para la ruta destino de los archivos ofuscados es obligatorio. Puede ser una ruta absoluta o relativa.
+
+Ej:
+
+	dest: "../woo-sizes.obfuscated"
+o
+	dest: "../woo-sizes.obfuscated"
+
+
 
 ### Actualizaciones del framework
 
@@ -12303,9 +12365,10 @@ vs
 	success()
 
 
-
-
 Al traducir a JavaScript usar los siguientes "ports" de métodos mágicos como __call, __get, __set, etc
 
 https://gist.github.com/loilo/4d385d64e2b8552dcc12a0f5126b6df8
 https://gist.github.com/adinan-cenci/ed4f23eb719e4c2820aedc5feb91032b
+
+
+
