@@ -126,7 +126,7 @@ class Files
         $dst = trim($dst);
 		
 		if (!is_file($ori)){
-			throw new \InvalidArgumentException("$ori is not a file as expected");
+			throw new \InvalidArgumentException("File '$ori' not found");
 		}
 
 		if (!file_exists($ori)){

@@ -41,6 +41,17 @@ class Arrays
         return $out;
     }
 
+    static function shiftOrFail(&$arr, $key, string $error_msg)
+    {
+        if (!isset($arr[$key])){
+            throw new \Exception(sprintf($error_msg, [$key]));
+        }
+
+        $out = $arr[$key];
+        unset($arr[$key]);
+        return $out;
+    }
+
     /**
      * nonassoc
      * Associative to non associative array
