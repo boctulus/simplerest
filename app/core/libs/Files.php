@@ -229,6 +229,10 @@ class Files
 		// d($except, 'except');
 		// d($callable, 'callable');
 
+		if (empty($dst)){
+			throw new \InvalidArgumentException("Destination dst can not be empty");
+		}
+
 		$to_cp  = [];
 		$copied = [];
 
@@ -374,7 +378,6 @@ class Files
 						
 					foreach ($except as $ix => $e){
 						if ($full_path == $e){
-							StdOut::pprint("Skiping $file");
                         	continue 2;
 						}
 					}
@@ -488,6 +491,23 @@ class Files
 	}
 
 	/*
+		https://stackoverflow.com/a/59912170/980631
+	*/
+	static function isDirEmpty($path) {
+		$d = scandir($path, SCANDIR_SORT_NONE ); // get dir, without sorting improve performace (see Comment below). 
+
+    	if ($d){
+
+			// avoid "count($d)", much faster on big array. 
+			// Index 2 means that there is a third element after ".." and "."
+
+			return !isset($d[2]); 
+		}
+
+    	return false; // or throw an error
+	}
+
+	/*
 		Delete all files (but not directories) from a path matching a glob pattern
 
 		@return int counting of deleted files
@@ -534,13 +554,32 @@ class Files
 		$resultant_dirs = array_reverse($resultant_dirs);
 
 		foreach($resultant_dirs as $d){
-			dd($d);
+			if (!static::isDirEmpty($d)){
+				continue;
+			}
+
 			rmdir($d);
 		}
 
 		return $deleted;
 	}
 
+	/*
+		No es recursiva
+	*/
+	static function rmDirOrFail(string $dir){
+		if (!is_dir($dir)){
+			throw new \Exception("Directory '$dir' doesn't exist");
+		}
+
+		static::writableOrFail($dir);
+
+		if (!static::isDirEmpty($dir)){
+			throw new \Exception("Directory '$dir' is not empty");
+		}
+
+		return @rmdir($dir);
+	}
 
 	static function delTree(string $dir, bool $include_self = false, bool $warn_if_not_exists = false) {
 		if (!is_dir($dir)){

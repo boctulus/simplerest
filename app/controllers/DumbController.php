@@ -8292,7 +8292,7 @@ class DumbController extends Controller
         woo-sizes.php
         FILES;
 
-        $ok = Obfuscator::obfuscate($ori, $dst, $excluded, [
+        $ok = Obfuscator::obfuscate($ori, $dst, null, $excluded, [
             "--obfuscate-function-name",
             "--obfuscate-class_constant-name",
             "--obfuscate-label-name"
