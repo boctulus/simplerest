@@ -57,31 +57,39 @@ class ObfuscatorController extends MyController
 
         unset($arr['dest']);
 
-        foreach ($arr as $group => $props){
-            dd($props, strtoupper($group));
-            dd($def_profile, strtoupper($group));
-
-            $files   = $props['files']   ?? [];  
-            $options = $props['options'] ?? [];
-            $profile = $props['profile'] ?? null;
-
-            $ok = Obfuscator::obfuscate($ori, $dest, $files, null, $options, $profile);
-            d($ok);
-
-            /*
-                Los archivos procesados en un grupo son excluidos de los siguientes
-            */
-            $excluded = array_merge($excluded, $files);
-        }
 
         /*
-            Ofusco el resto con el perfil por defecto
+            Sin grupo
         */
+
         $ok = Obfuscator::obfuscate($ori, $dest, null, $excluded, null, $def_profile);
         d($ok);
 
-        dd($def_profile, "DEFAULT");
-        dd($excluded, 'EXCLUDED');
+        /*
+            Grupos
+        */
+        foreach ($arr as $group => $props){
+            // dd(strtoupper($group) . "----------------------------------------------------\r\n");
+            // dd($props, strtoupper($group));
+            // dd($def_profile, strtoupper($group));
+
+            $files   = $props['files']   ?? [];  
+            $options = $props['options'] ?? [];
+            $profile = $props['profile'] ?? $def_profile;
+
+            $ok = Obfuscator::obfuscate($ori, $dest, $files, null, $options, $profile, false);
+            d($ok);
+
+            /*
+                Los archivos procesados en un grupo podrían ser excluidos de los siguientes
+            */
+            
+            //$excluded = array_merge($excluded, $files);
+
+            // dd("--------------------------------x-------------------------------------\r\n\r\n\r\n");
+        }
+
+    
     }
 }
 
