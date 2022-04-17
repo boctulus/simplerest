@@ -7939,35 +7939,26 @@ o versiones en específico
 
 El archivo obf.yaml tendrá que tener una estructura como la siguiente:
 
-	dest: "/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated"
-	nombre_grupo: 
+	dest: "/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated/"
+	profile: "aggressive"
+	base_datos: 
 	files: 
-		- a
-		- b
-		- c
+		- main.php
+		- libs/Products.php
+	profile: "careful"
 	options: 
-		- "--no-obfuscate-variable-name"
-		- "--no-obfuscate-function-name"
-		- "--no-obfuscate-class_constant-name"
-	otro_grupo: 
+	ajax: 
+	profile: "none"
 	files: 
-		- x
-		- y
+		- ajax.php
 	options: 
-		- "--no-obfuscate-class_constant-name"
-	otro_mas:
-	files:
-		- w
-		- z
-	profile: aggressive
-	y_no_mas:
-	files:
-		- xyz
-	profile: auto
+		- "--obfuscate-function-name"
 	excluded:
-		- h
-		- i
-		- j
+	- assets
+	- logs
+	- README.md
+	- config.php
+	- woo-sizes.php
 
 Como se ve se pueden definir varios grupos de archivos a los cuales se les aplicarán determinadas opciones donde destaca "excluded" que sirve para definir archivos a ser excluidos de no pertenecer a ningún otro grupo.
 
@@ -7975,11 +7966,16 @@ El campo "dest" para la ruta destino de los archivos ofuscados es obligatorio. P
 
 Ej:
 
-	dest: "../woo-sizes.obfuscated"
+	dest: "/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated/"
 o
 	dest: "../woo-sizes.obfuscated"
 
+Los perfiles disponibles son:
 
+	- none
+	- normal
+	- careful
+	- aggressive
 
 ### Actualizaciones del framework
 
