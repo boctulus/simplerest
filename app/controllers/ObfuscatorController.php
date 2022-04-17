@@ -65,7 +65,7 @@ class ObfuscatorController extends MyController
             $options = $props['options'] ?? [];
             $profile = $props['profile'] ?? null;
 
-            $ok = Obfuscator::obfuscate($ori, $dest, $files, $excluded, $options, $profile);
+            $ok = Obfuscator::obfuscate($ori, $dest, $files, null, $options, $profile);
             d($ok);
 
             /*
@@ -74,14 +74,14 @@ class ObfuscatorController extends MyController
             $excluded = array_merge($excluded, $files);
         }
 
-        dd($def_profile, "DEFAULT");
-        dd($excluded, 'EXCLUDED');
-
         /*
             Ofusco el resto con el perfil por defecto
         */
         $ok = Obfuscator::obfuscate($ori, $dest, null, $excluded, null, $def_profile);
         d($ok);
+
+        dd($def_profile, "DEFAULT");
+        dd($excluded, 'EXCLUDED');
     }
 }
 
