@@ -64,8 +64,6 @@ class Files
 		if (!file_exists($path)){
 			throw new \Exception("Path '$path' not found");
 		}
-
-		here();
 		
 		return realpath($path);
 	}
@@ -130,6 +128,7 @@ class Files
         $dst = trim($dst);
 		
 		if (!is_file($ori)){
+			//return;
 			throw new \InvalidArgumentException("File '$ori' not found");
 		}
 
@@ -224,7 +223,15 @@ class Files
     */
     static function copy(string $ori, string $dst, ?Array $files = null, ?Array $except = null, ?callable $callable = null)
     {
+		// d($ori, 'ori');
+		// d($dst, 'dest');
+		// d($files, 'files');
+		// d($except, 'except');
+		// d($callable, 'callable');
+
+		$to_cp  = [];
 		$copied = [];
+
 		$dst = Strings::removeTrailingSlash($dst);
 
 		$ori_with_trailing_slash = Strings::addTrailingSlash($ori);
@@ -249,7 +256,7 @@ class Files
 		*/
 		$glob_includes = [];
 		foreach ($files as $ix => $f){
-			if (Strings::startsWith('glob:', $f)){
+			if (Strings::startsWith('glob:', $f, false)){
 				$patt = substr($f, 5);
 				$rec  = static::recursiveGlob($ori_with_trailing_slash . $patt);
 				
@@ -295,13 +302,17 @@ class Files
 
 			foreach ($except as $ix => $e){
 				if (!Files::isAbsolutePath($e)){
-					$except[$ix] = Files::getAbsolutePath($ori . '/'. $e);
+					$except[$ix] = trim(Files::getAbsolutePath($ori . '/'. $e));
 				}
 
 				if (is_dir($except[$ix])){
 					$except_dirs[] = $except[$ix];
 				}
 			}
+
+			// d($except, 'except');
+			// d($except_dirs, 'except_dirs');
+			// exit;
 		}
 	
         foreach ($files as $_file){
@@ -399,14 +410,16 @@ class Files
 					*/
 					$str = "$full_path;$dst_path";
 					if (!isset($copied[$str])){
-						static::cp($full_path, $dst_path, false, true, $callable);
+						$to_cp[] = [
+							'ori_path'   => $full_path,
+							'final_path' => $dst_path
+						];
+
 						$copied[$str] = 1;
 					}
                     
                 }
-                
                 continue;
-               
             }
 
 			if (static::isAbsolutePath($_file)){
@@ -420,12 +433,27 @@ class Files
 			*/
 			$str = "$ori_path;$final_path";
 			if (!isset($copied[$str])){
-				static::cp($ori_path, $final_path, false, true, $callable);
+				$to_cp[] = [
+					'ori_path'   => $ori_path,
+					'final_path' => $final_path
+				];
+
 				$copied[$str] = 1;
+			}  
+        }
+
+		/*
+			Copio efectivamente
+		*/
+		foreach ($to_cp as $f){
+			if (in_array(trim($f['ori_path']), $except)){
+				continue;
 			}
 
-            
-        }
+			static::cp($f['ori_path'], $f['final_path'], false, true, $callable);
+		}
+
+
     }
 
 	/*
