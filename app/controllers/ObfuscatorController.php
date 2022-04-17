@@ -59,7 +59,7 @@ class ObfuscatorController extends MyController
         foreach ($arr as $group => $props){
             //dd($props, $group);
 
-            $files   = $props['files']   ?? [];
+            $files   = $props['files']   ?? [];  // debería poder pasárlo como parámetro !!!
             $options = $props['options'] ?? [];
             $profile = $props['profile'] ?? 'normal';
 
