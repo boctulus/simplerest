@@ -122,10 +122,13 @@ class Obfuscator
             }
         }
 
-        $excluded[] = 'obf.yaml';
-        $excluded[] = 'glob:*.zip';
+        // (1) ->  "$tmp/to_obsfuscate"
+        Files::copy($ori, $_dst, $files, array_merge($excluded, [
+            'obf.yaml',
+            'glob:*.zip'
+        ]));
 
-        Files::copy($ori, $_dst, $files, $excluded);
+        // limpia carpeta destino final
         Files::delTree($dst);
 
         // llamar al ofuscador
@@ -159,6 +162,7 @@ class Obfuscator
             $options_str .= '--' . ($v === false ? 'no-' : '') . "$k ";
         }
 
+        // (2)
         $cmd  = "php yakpro-po/yakpro-po.php $ori2 -o $dst2 $options_str";
 
         #chdir(ROOT_PATH . 'yakpro-po');
@@ -169,10 +173,14 @@ class Obfuscator
         dd($ret);
 
         /*
-            Ahora copio los archivos no-ofuscados en el destino
+            Ahora copio los archivos no-ofuscados
         */
 
-        Files::copy($ori, "$dst2/yakpro-po/obfuscated", $excluded);
+        // (3)
+        if (!empty($excluded)){
+            Files::copy($ori, "$dst2/yakpro-po/obfuscated", $excluded);
+        }
+
 
         /*
             Copio al destino final
@@ -189,8 +197,7 @@ class Obfuscator
 
             $content = str_replace(
                 'Php Obfuscator  2.0.13', 
-                'boctulus@gmail.com    ', $content);
-
+                'boctulus@gmail.com    ', $content);  
             return $content;
         });
 
@@ -199,6 +206,7 @@ class Obfuscator
             'glob:*.zip'
         ];
 
+        // (4)
         Files::copy("$dst2/yakpro-po/obfuscated", $dst, null, $execept);
 
         d('Hecho!');
