@@ -14,6 +14,26 @@ use simplerest\core\libs\Strings;
 
 class Obfuscator
 {
+    static function clear(string $_dst)
+    {
+        static $cleared = [];
+
+        if (in_array($_dst, $cleared)){
+            return;
+        }
+
+        $tmp  = sys_get_temp_dir();
+        $_dst = "$tmp/to_obsfuscate";
+
+        Files::mkDir  ($_dst);
+        Files::delTree($_dst);
+        Files::delTree("$tmp/obsfuscated");
+
+        StdOut::pprint("CLEARED *************************");
+
+        $cleared[] = $_dst;
+    }
+
     /*
         TODO:
 
@@ -22,7 +42,7 @@ class Obfuscator
         https://www.npmjs.com/package/javascript-obfuscator
         
     */
-    static function obfuscate(string $ori, string $dst, $files = null, $excluded =  null, $options = null, $profile = null)
+    static function obfuscate(string $ori, string $dst, $files = null, $excluded =  null, $options = null, $profile = null, $copy_excluded = true)
     {   
         $profile_options = [
             'normal' =>  [
@@ -103,10 +123,7 @@ class Obfuscator
         $tmp  = sys_get_temp_dir();
         $_dst = "$tmp/to_obsfuscate";
 
-        Files::mkDir  ($_dst);
-        Files::delTree($_dst);
-        //Files::delTree($dst);
-        Files::delTree("$tmp/obsfuscated");
+        static::clear($_dst);
 
         if ($files === null){
             $files = [];
@@ -177,9 +194,14 @@ class Obfuscator
         */
 
         // (3)
-        // Files::copy($ori, "$dst2/yakpro-po/obfuscated", $excluded);
-        
+        if ($copy_excluded){
+            Files::copy($ori, "$dst2/yakpro-po/obfuscated", $excluded);
+        }
 
+        /*
+            Debería tenerse en consideración órigen y destino por si se corriera el ofuscador en otro contexto.
+        */
+        
 
         /*
             Copio al destino final
