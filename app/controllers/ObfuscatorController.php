@@ -65,6 +65,8 @@ class ObfuscatorController extends MyController
 
             $ok = Obfuscator::obfuscate($ori, $dest, $excluded, $options);
             d($ok);
+
+            exit; ///
         }
 
 

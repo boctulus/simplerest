@@ -8293,8 +8293,9 @@ class DumbController extends Controller
         FILES;
 
         $ok = Obfuscator::obfuscate($ori, $dst, $excluded, [
-            "--no-obfuscate-function-name",
-            "--obfuscate-class_constant-name"
+            "--obfuscate-function-name",
+            "--obfuscate-class_constant-name",
+            "--obfuscate-label-name"
         ]);
         
         d($ok);
