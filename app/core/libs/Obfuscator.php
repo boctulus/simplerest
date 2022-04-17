@@ -177,9 +177,8 @@ class Obfuscator
         */
 
         // (3)
-        if (!empty($excluded)){
-            Files::copy($ori, "$dst2/yakpro-po/obfuscated", $excluded);
-        }
+        // Files::copy($ori, "$dst2/yakpro-po/obfuscated", $excluded);
+        
 
 
         /*
