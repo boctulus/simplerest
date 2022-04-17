@@ -22,7 +22,7 @@ class Obfuscator
         https://www.npmjs.com/package/javascript-obfuscator
         
     */
-    static function obfuscate(string $ori, string $dst, $excluded)
+    static function obfuscate(string $ori, string $dst, $excluded, $options = null)
     {   
         $tmp  = sys_get_temp_dir();
         $_dst = "$tmp/to_obsfuscate";
@@ -48,7 +48,42 @@ class Obfuscator
         $ori2 = "$_dst";
         $dst2 = "$tmp/obsfuscated";
 
-        $cmd  = "php yakpro-po/yakpro-po.php $ori2 -o $dst2 --no-obfuscate-variable-name --no-obfuscate-function-name --no-obfuscate-class_constant-name --no-obfuscate-class-name --no-obfuscate-interface-name --no-obfuscate-trait-name --no-obfuscate-property-name --no-obfuscate-method-name --no-obfuscate-namespace-name --obfuscate-if-statement";
+        /*
+            Default
+        */
+        $the_options = [
+            "obfuscate-variable-name" => false, 
+            "obfuscate-function-name" => false ,
+            "obfuscate-class_constant-name" => false, 
+            "obfuscate-class-name"  => false, 
+            "obfuscate-interface-name"  => false, 
+            "obfuscate-trait-name"  => false, 
+            "obfuscate-property-name" => false, 
+            "obfuscate-method-name"  => false, 
+            "obfuscate-namespace-name" => false,
+
+            "strip-indentation" => true,
+            "shuffle-statements" => true,
+            "obfuscate-if-statement" => true,
+            "obfuscate-string-literal" => true,
+            "obfuscate-loop-statement" => true,
+            "obfuscate-constant-name"  => false,
+
+            "obfuscate-label-name" => false
+        ];
+
+        foreach ($options as $o){
+            if (!preg_match('/--(no-)?([a-z\-_]+)/', $o, $matches)){
+                throw new \InvalidArgumentException("Option '$o' is invalid");
+            }
+
+            $bool = empty($matches[1]); 
+            $the_options[ $matches[2] ] = $bool;
+        }
+
+        $options_str = implode(' ', $the_options);
+
+        $cmd  = "php yakpro-po/yakpro-po.php $ori2 -o $dst2 $options_str";
 
         #chdir(ROOT_PATH . 'yakpro-po');
         $ret  = shell_exec($cmd);
