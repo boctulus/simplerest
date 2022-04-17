@@ -48,6 +48,7 @@ class Obfuscator
         $ori2 = "$_dst";
         $dst2 = "$tmp/obsfuscated";
 
+
         /*
             Default
         */
@@ -77,11 +78,16 @@ class Obfuscator
                 throw new \InvalidArgumentException("Option '$o' is invalid");
             }
 
+            //dd($matches[1]);
+
             $bool = empty($matches[1]); 
             $the_options[ $matches[2] ] = $bool;
         }
 
-        $options_str = implode(' ', $the_options);
+        $options_str = '';
+        foreach ($the_options as $k => $v){
+            $options_str .= '--' . ($v === false ? 'no-' : '') . "$k ";
+        }
 
         $cmd  = "php yakpro-po/yakpro-po.php $ori2 -o $dst2 $options_str";
 
@@ -115,9 +121,6 @@ class Obfuscator
             return $content;
         });
 
-        /*
-            Debería omitirlos :|
-        */
         $execept = [
             'obf.yaml',
             'glob:*.zip'
