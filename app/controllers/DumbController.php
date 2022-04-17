@@ -8280,6 +8280,23 @@ class DumbController extends Controller
         d($ok);
     }
 
+
+    function test_copy0x(){
+        $ori = '/tmp/obsfuscated/yakpro-po/obfuscated';
+        $dst = '/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated/';
+        $files  = null;
+        $except = Array
+        (
+            'obf.yaml',
+            'glob:*.zip'
+        );        
+
+        Files::mkDirOrFail($dst);
+        Files::delTree($dst);
+        
+        Files::copy($ori, $dst, $files, $except);
+    }
+
     
 }   
 
