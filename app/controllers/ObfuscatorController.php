@@ -56,8 +56,20 @@ class ObfuscatorController extends MyController
 
         unset($arr['dest']);
 
-        $ok = Obfuscator::obfuscate($ori, $dest, $excluded);
-        d($ok);
+        foreach ($arr as $group => $props){
+            //dd($props, $group);
+
+            $files   = $props['files']   ?? [];
+            $options = $props['options'] ?? [];
+            $profile = $props['profile'] ?? 'normal';
+
+            $ok = Obfuscator::obfuscate($ori, $dest, $excluded, $options);
+            d($ok);
+        }
+
+
+        //$ok = Obfuscator::obfuscate($ori, $dest, $excluded);
+        //d($ok);
     }
 }
 
