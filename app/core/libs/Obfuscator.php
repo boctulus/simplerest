@@ -38,6 +38,9 @@ class Obfuscator
             }
         }
 
+        $excluded[] = 'obf.yaml';
+        $excluded[] = 'glob:*.zip';
+
         Files::copy($ori, $_dst, null, $excluded);
         Files::delTree($dst);
 
@@ -49,7 +52,7 @@ class Obfuscator
 
         #chdir(ROOT_PATH . 'yakpro-po');
         $ret  = shell_exec($cmd);
-        d($ret);
+        d($ret, $cmd);
 
         /*
             Ahora copio los archivos no-ofuscados en el destino
@@ -77,7 +80,15 @@ class Obfuscator
             return $content;
         });
 
-        Files::copy("$dst2/yakpro-po/obfuscated", $dst);
+        /*
+            Debería omitirlos :|
+        */
+        $execept = [
+            'obf.yaml',
+            'glob:*.zip'
+        ];
+
+        Files::copy("$dst2/yakpro-po/obfuscated", $dst, null, $execept);
 
         d('Hecho!');
     }
