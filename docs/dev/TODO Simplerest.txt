@@ -1,6 +1,6 @@
 # TODO
 
-- Al "html builder" agregar componentes de 
+- Al "html builder" agregar eventualmente componentes de 
 
   Elementor Pro +
   Custom Product Filter For Woocommerce and Elementor
@@ -104,6 +104,11 @@ Ej:
 
   Más
   https://stackoverflow.com/questions/47290012/why-use-hashed-css-stylesheet-and-javascript-file-names
+
+
+- Permitir crear "módulos" para agrupar modelos, schemas, vistas, controladores, assets, rutas, migraciones, seeds, middlewares, traducciones,...
+
+https://nicolaswidart.com/blog/writing-modular-applications-with-laravel-moduless
 
 
 - Tener en cuenta que TypeORM por ejemplo hace *asíncronas* las queries o sea son promesas !
