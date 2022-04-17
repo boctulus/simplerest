@@ -47,8 +47,9 @@ class ObfuscatorController extends MyController
             throw new \Exception("dest in yaml is required");
         }
 
-        $dest     =  Files::getAbsolutePath(Files::isAbsolutePath($arr['dest']) ? $arr['dest'] : $ori . DIRECTORY_SEPARATOR . $arr['dest']);
-        $excluded =  Arrays::shift($arr, 'excluded', []);
+        $dest        = Files::getAbsolutePath(Files::isAbsolutePath($arr['dest']) ? $arr['dest'] : $ori . DIRECTORY_SEPARATOR . $arr['dest']);
+        $excluded    = Arrays::shift($arr, 'excluded', []);
+        $def_profile = Arrays::shift($arr, 'profile');
 
         if ($dest === false){
             throw new \Exception("Invalid path '$dest'");
@@ -57,21 +58,30 @@ class ObfuscatorController extends MyController
         unset($arr['dest']);
 
         foreach ($arr as $group => $props){
-            //dd($props, $group);
+            dd($props, strtoupper($group));
+            dd($def_profile, strtoupper($group));
 
-            $files   = $props['files']   ?? [];  // debería poder pasárlo como parámetro !!!
+            $files   = $props['files']   ?? [];  
             $options = $props['options'] ?? [];
-            $profile = $props['profile'] ?? 'normal';
+            $profile = $props['profile'] ?? null;
 
-            $ok = Obfuscator::obfuscate($ori, $dest, $excluded, $options);
+            $ok = Obfuscator::obfuscate($ori, $dest, $files, $excluded, $options, $profile);
             d($ok);
 
-            exit; ///
+            /*
+                Los archivos procesados en un grupo son excluidos de los siguientes
+            */
+            $excluded = array_merge($excluded, $files);
         }
 
+        dd($def_profile, "DEFAULT");
+        dd($excluded, 'EXCLUDED');
 
-        //$ok = Obfuscator::obfuscate($ori, $dest, $excluded);
-        //d($ok);
+        /*
+            Ofusco el resto con el perfil por defecto
+        */
+        $ok = Obfuscator::obfuscate($ori, $dest, null, $excluded, null, $def_profile);
+        d($ok);
     }
 }
 
