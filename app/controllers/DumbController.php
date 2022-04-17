@@ -6400,6 +6400,22 @@ class DumbController extends Controller
         ]);
     }
 
+    function test_copy0x(){
+        $ori = '/tmp/obsfuscated/yakpro-po/obfuscated';
+        $dst = '/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated/';
+        $files  = null;
+        $except = Array
+        (
+            'obf.yaml',
+            'glob:*.zip'
+        );        
+
+        Files::mkDirOrFail($dst);
+        Files::delTree($dst);
+        
+        Files::copy($ori, $dst, $files, $except);
+    }
+
     function test_copy01a0(){
         $ori = '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files';
         $dst = '/home/www/html/erp/';
@@ -8276,26 +8292,16 @@ class DumbController extends Controller
         woo-sizes.php
         FILES;
 
-        $ok = Obfuscator::obfuscate($ori, $dst, $excluded);
+        $ok = Obfuscator::obfuscate($ori, $dst, $excluded, [
+            "--no-obfuscate-function-name",
+            "--obfuscate-class_constant-name"
+        ]);
+        
         d($ok);
     }
 
 
-    function test_copy0x(){
-        $ori = '/tmp/obsfuscated/yakpro-po/obfuscated';
-        $dst = '/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated/';
-        $files  = null;
-        $except = Array
-        (
-            'obf.yaml',
-            'glob:*.zip'
-        );        
-
-        Files::mkDirOrFail($dst);
-        Files::delTree($dst);
-        
-        Files::copy($ori, $dst, $files, $except);
-    }
+   
 
     
 }   
