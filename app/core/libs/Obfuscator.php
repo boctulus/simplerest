@@ -86,7 +86,7 @@ class Obfuscator
                 "obfuscate-trait-name"  => true, 
                 "obfuscate-property-name" => true, 
                 "obfuscate-method-name"  => true, 
-                "obfuscate-namespace-name" => true,
+                //"obfuscate-namespace-name" => true,
                 "obfuscate-label-name" => true
             ],
 
@@ -105,7 +105,7 @@ class Obfuscator
                 "obfuscate-trait-name"  => false, 
                 "obfuscate-property-name" => false, 
                 "obfuscate-method-name"  => false, 
-                "obfuscate-namespace-name" => false,
+                //"obfuscate-namespace-name" => false,
                 "obfuscate-label-name" => false
             ]
         ];

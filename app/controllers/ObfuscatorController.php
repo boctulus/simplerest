@@ -57,21 +57,13 @@ class ObfuscatorController extends MyController
 
         unset($arr['dest']);
 
-
-        /*
-            Sin grupo
-        */
-
-        $ok = Obfuscator::obfuscate($ori, $dest, null, $excluded, null, $def_profile);
-        d($ok);
-
         /*
             Grupos
         */
         foreach ($arr as $group => $props){
-            // dd(strtoupper($group) . "----------------------------------------------------\r\n");
-            // dd($props, strtoupper($group));
-            // dd($def_profile, strtoupper($group));
+            dd(strtoupper($group) . "----------------------------------------------------\r\n");
+            dd($props, strtoupper($group));
+            dd($def_profile, strtoupper($group));
 
             $files   = $props['files']   ?? [];  
             $options = $props['options'] ?? [];
@@ -84,11 +76,16 @@ class ObfuscatorController extends MyController
                 Los archivos procesados en un grupo podrían ser excluidos de los siguientes
             */
             
-            //$excluded = array_merge($excluded, $files);
+            $excluded = array_merge($excluded, $files);
 
-            // dd("--------------------------------x-------------------------------------\r\n\r\n\r\n");
+            dd("--------------------------------x-------------------------------------\r\n\r\n\r\n");
         }
 
+        /*
+            Sin grupo
+        */
+        $ok = Obfuscator::obfuscate($ori, $dest, null, $excluded, null, $def_profile, false);
+        d($ok);
     
     }
 }
