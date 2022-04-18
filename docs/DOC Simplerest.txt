@@ -7947,12 +7947,14 @@ El archivo obf.yaml tendrá que tener una estructura como la siguiente:
 		- libs/Products.php
 	profile: "careful"
 	options: 
+		- "--obfuscate-namespace-name"
 	ajax: 
 	profile: "none"
 	files: 
 		- ajax.php
 	options: 
 		- "--obfuscate-function-name"
+		- "--obfuscate-namespace-name"
 	excluded:
 	- assets
 	- logs
