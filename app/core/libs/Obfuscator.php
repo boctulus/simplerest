@@ -115,7 +115,7 @@ class Obfuscator
         */
         $profile_options['careful'] = array_merge($profile_options['normal'], $profile_options['careful']);
         $profile_options['aggressive'] = array_merge($profile_options['normal'], $profile_options['aggressive']);
-        $profile_options['none'] = array_merge($profile_options['normal'], $profile_options['noe']);
+        $profile_options['none'] = array_merge($profile_options['normal'], $profile_options['none']);
 
 
         if (empty($profile)){
