@@ -9,6 +9,36 @@ class Files
 	static protected $backup_path;
 	static protected $callable;
 
+	/*
+		Hace un "diff" entre dos rutas de archivos
+	*/
+	static function diff(string $path1, string $path2, bool $discard_dirs = false){
+		$files_path1 = static::removePath(
+            static::deepScan($path1, $discard_dirs), $path1
+        );
+
+        $files_path2 = static::removePath(
+            static::deepScan($path2, $discard_dirs), $path2
+        );
+
+		return array_diff($files_path1, $files_path2);
+	}
+
+
+	/*
+		Remueve el path (la parte constanre) de un array de un array de entradas de directorio 
+	*/
+	static function removePath(Array $list, string $path) : Array {
+		$path_non_trailing_slash = Strings::removeTrailingSlash($path);
+
+		$len = strlen($path_non_trailing_slash) + 1;
+        foreach ($list as $ix => $f){
+            $list[$ix] = substr($f, $len);
+        }
+
+		return $list;
+	}
+
 	static function replace(string $filename, $search, $replace){
 		$file  = file_get_contents($filename);
 		$file  = str_replace($search, $replace, $file);
@@ -89,6 +119,33 @@ class Files
 		}	
 
 		return $files;
+	}
+
+	/*
+		@param $dir directorio a escanear
+		@paran $discard_dir descartar o no directorios de la lista resultante
+	*/
+	static function deepScan(string $dir, bool $discard_dirs = false) {
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST );
+
+		$ret = [];
+        foreach ( $iterator as $path ) {
+            $str = $path->__toString();
+		
+            if ($path->isDir()) {     
+				if ($discard_dirs){
+					continue;
+				}
+
+                if (Strings::endsWith(DIRECTORY_SEPARATOR . '.', $str) || Strings::endsWith(DIRECTORY_SEPARATOR . '..', $str)){
+                    continue;
+                }
+            } 
+
+			$ret[] = $path->__toString();
+        }
+
+		return $ret;
 	}
 
 	/*

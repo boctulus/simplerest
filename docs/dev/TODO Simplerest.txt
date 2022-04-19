@@ -92,7 +92,6 @@ Ej:
     Widget para pronóstico del clima
 
 
-
 - Implementar via comando:
 
   . JavaScript / CSS minification
@@ -105,6 +104,10 @@ Ej:
   Más
   https://stackoverflow.com/questions/47290012/why-use-hashed-css-stylesheet-and-javascript-file-names
 
+
+- Generar documentación del código PHP (no de la API) con dOxygen !!!!
+
+https://github.com/doxygen/doxygen
 
 - Permitir crear "módulos" para agrupar modelos, schemas, vistas, controladores, assets, rutas, migraciones, seeds, middlewares, traducciones,...
 
