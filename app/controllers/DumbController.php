@@ -8301,8 +8301,13 @@ class DumbController extends Controller
         d($ok);
     }
 
+    function scan(){
+        $dir = '/home/www/woo4/wp-content/plugins/woo-sizes';
 
-   
+        d(
+            Files::deepScan($dir, true)
+        );
+    }
 
     
 }   
