@@ -2,6 +2,7 @@
 
 namespace simplerest\controllers;
 
+use PhpParser\Node\Scalar\MagicConst\Dir;
 use simplerest\controllers\MyController;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\Arrays;
@@ -29,7 +30,8 @@ class ObfuscatorController extends MyController
     */
     function fromdir(string $ori)
     {
-        $yaml_file = Strings::removeTrailingSlash($ori) . DIRECTORY_SEPARATOR . 'obf.yaml';
+        $ori_non_trailing_slash = Strings::removeTrailingSlash($ori);
+        $yaml_file = $ori_non_trailing_slash . DIRECTORY_SEPARATOR . 'obf.yaml';
 
         if (!file_exists($yaml_file)){
             throw new \Exception("File '$yaml_file' not found");
@@ -72,21 +74,51 @@ class ObfuscatorController extends MyController
             $ok = Obfuscator::obfuscate($ori, $dest, $files, null, $options, $profile, false);
             d($ok);
 
-            /*
-                Los archivos procesados en un grupo podrían ser excluidos de los siguientes
-            */
-            
-            $excluded = array_merge($excluded, $files);
-
             dd("--------------------------------x-------------------------------------\r\n\r\n\r\n");
         }
+
+        $ori_files = Files::removePath(
+            Files::deepScan($ori, false), $ori
+        );
+
+        $dst_files = Files::removePath(
+            Files::deepScan($dest, false), $dest
+        );
+
+        // dd($ori_files);
+        // dd($dst_files);
+
+        // Elimino la carpeta .git de los resultados
+        $_excluded = array_merge($excluded, 
+            Files::removePath(
+                Files::deepScan($ori_non_trailing_slash . DIRECTORY_SEPARATOR . '.git', false), $ori)
+        );
+
+        $files = array_diff($ori_files, $dst_files, $_excluded);
 
         /*
             Sin grupo
         */
-        $ok = Obfuscator::obfuscate($ori, $dest, null, $excluded, null, $def_profile, false);
-        d($ok);
-    
+
+        $tmp  = sys_get_temp_dir();
+        $_dst = "$tmp/to_obsfuscate_no_group";
+
+        // Deltree sobre $_dst
+        Files::mkDir  ($_dst);
+        Files::delTree($_dst);
+
+        // Copio archivos a ofuscar en $_dst
+        Files::copy($ori, $_dst, $files);
+
+        // Ofusco 
+        $ok = Obfuscator::obfuscate($_dst, $dest, null, $excluded, null, $def_profile, false);
+        
+        // copio archivos excluidos de la ofuscación
+        Files::copy($ori, $dest, $excluded);
+
+        d($ok);    
+        // dd($excluded, 'EXCLUDED');
+        // dd($files, 'FILES');
     }
 }
 

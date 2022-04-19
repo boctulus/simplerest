@@ -14,11 +14,11 @@ use simplerest\core\libs\Strings;
 
 class Obfuscator
 {
+    static $cleared = [];
+
     static function clear(string $_dst)
     {
-        static $cleared = [];
-
-        if (in_array($_dst, $cleared)){
+        if (in_array($_dst, static::$cleared)){
             return;
         }
 
@@ -31,7 +31,7 @@ class Obfuscator
 
         StdOut::pprint("CLEARED *************************");
 
-        $cleared[] = $_dst;
+        static::$cleared[] = $_dst;
     }
 
     /*
