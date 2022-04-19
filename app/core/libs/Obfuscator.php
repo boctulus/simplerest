@@ -66,7 +66,7 @@ class Obfuscator
 
             'careful' => [
                 "obfuscate-function-name" => false,
-                "obfuscate-class-name"  => false, 
+                //"obfuscate-class-name"  => false, 
                 "obfuscate-property-name" => false,
                 "obfuscate-method-name"  => false, 
             ],
@@ -81,7 +81,7 @@ class Obfuscator
                 "obfuscate-variable-name" => true, 
                 "obfuscate-function-name" => true,
                 "obfuscate-class_constant-name" => true, 
-                "obfuscate-class-name"  => true, 
+                //"obfuscate-class-name"  => true, 
                 "obfuscate-interface-name"  => true, 
                 "obfuscate-trait-name"  => true, 
                 "obfuscate-property-name" => true, 
@@ -100,7 +100,7 @@ class Obfuscator
                 "obfuscate-variable-name" => false, 
                 "obfuscate-function-name" => false,
                 "obfuscate-class_constant-name" => false, 
-                "obfuscate-class-name"  => false, 
+                //"obfuscate-class-name"  => false, 
                 "obfuscate-interface-name"  => false, 
                 "obfuscate-trait-name"  => false, 
                 "obfuscate-property-name" => false, 
@@ -109,6 +109,14 @@ class Obfuscator
                 "obfuscate-label-name" => false
             ]
         ];
+
+        /*
+           Herencia de perfiles
+        */
+        $profile_options['careful'] = array_merge($profile_options['normal'], $profile_options['careful']);
+        $profile_options['aggressive'] = array_merge($profile_options['normal'], $profile_options['aggressive']);
+        $profile_options['none'] = array_merge($profile_options['normal'], $profile_options['noe']);
+
 
         if (empty($profile)){
             $profile = 'normal';
