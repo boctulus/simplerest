@@ -10,6 +10,27 @@ class Files
 	static protected $callable;
 
 	/*
+		Cachea el contenido de una url (por tiempo indefinido) y lo devuelve
+	*/
+	static function cache(string $url){
+        $path = parse_url($url, PHP_URL_PATH);
+        $str  = str_replace(['%'], ['p'], urlencode($url)) . '.html';
+        $str  = str_replace('/', '', $str);
+
+        $path = ETC_PATH . $str;
+
+        if (file_exists($path)){
+            return static::file_get_contents_locking($path);
+        }
+
+        $str = static::ile_get_contents_locking($url);
+        
+        static::file_put_contents_locking($path, $str);
+
+        return $str;
+    }
+
+	/*
 		Hace un "diff" entre dos rutas de archivos
 	*/
 	static function diff(string $path1, string $path2, bool $discard_dirs = false){

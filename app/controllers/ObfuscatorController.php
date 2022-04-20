@@ -89,10 +89,10 @@ class ObfuscatorController extends MyController
         // dd($dst_files);
 
         // Elimino la carpeta .git de los resultados
-        $_excluded = array_merge($excluded, 
-            Files::removePath(
-                Files::deepScan($ori_non_trailing_slash . DIRECTORY_SEPARATOR . '.git', false), $ori)
-        );
+        // $_excluded = array_merge($excluded, 
+        //     Files::removePath(
+        //         Files::deepScan($ori_non_trailing_slash . DIRECTORY_SEPARATOR . '.git', false), $ori)
+        // );
 
         $files = array_diff($ori_files, $dst_files, $_excluded);
 
