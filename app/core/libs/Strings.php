@@ -55,6 +55,21 @@ class Strings
 	static function after(string $string, string $substr){
 		$parts = explode($substr, $string, 2);
 
+		if (!isset($parts[1])){
+			return false;
+		}
+
+		return $parts[1];
+	}
+
+	// String después de la primera ocurrencia del substring
+	static function afterOrFail(string $string, string $substr){
+		$parts = explode($substr, $string, 2);
+
+		if (!isset($parts[1])){
+			throw new \Exception("There is nothing after '$substr' for '$string'");
+		}
+
 		return $parts[1];
 	}
 
@@ -70,6 +85,11 @@ class Strings
 		$parts = explode($substr, $string);
 
 		return implode($substr, array_slice($parts, 0, count($parts)-1));
+	}
+
+	// Segment before the last one
+	static function beforeLastSegment(string $string, string $substr){
+		return static::last(static::beforeLast($string, $substr), $substr);
 	}
 
 	/*
