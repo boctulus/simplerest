@@ -8338,7 +8338,14 @@ class DumbController extends Controller
     }
 
     function csv_debug(){
-        Files::debugCSV('/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv', ',', "\n");
+        $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
+
+        //Files::debugCSV($path, ',', "\n");
+
+        d(
+            Files::getCSV($path)
+        ); 
+
     }
     
 }   
