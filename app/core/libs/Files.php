@@ -9,6 +9,41 @@ class Files
 	static protected $backup_path;
 	static protected $callable;
 
+	static function getCSV(string $path, string $sep = ",", string $ret = "\n", $assoc = true){		
+		$file  = file_get_contents($path);
+		$lines = explode($ret, $file);
+
+		$cabecera = explode($sep, $lines[0]);
+		$ch = count($cabecera);
+
+		$rows = [];
+		$cnt = count($lines);
+		for ($i=1;$i<$cnt;$i++) {
+			if (empty(trim($lines[$i]))){
+				break;
+			}
+
+			$vals = explode($sep, $lines[$i]);
+
+			if (empty($vals)){
+				break;
+			}
+
+			if ($assoc){
+				for ($j=0;$j<$ch; $j++){
+					$rows[$i][$cabecera[$j]] = $vals[$j];
+				}
+			} else {
+				$rows[] = $vals;
+			}			
+		}
+
+		return [
+			'rows' => $rows,
+			'head' => $cabecera
+		];
+	}
+
 	static function debugCSV(string $path, string $sep = ",", string $ret = "\n"){		
 		$file  = file_get_contents($path);
 		$lines = explode($ret, $file);
@@ -37,7 +72,6 @@ class Files
 			dd('-------------------------------------------');
 			
 		}
-
 	}
 
 	/*
