@@ -9,21 +9,52 @@ class Files
 	static protected $backup_path;
 	static protected $callable;
 
+	static function debugCSV(string $path, string $sep = ",", string $ret = "\n"){		
+		$file  = file_get_contents($path);
+		$lines = explode($ret, $file);
+
+		$cabecera = explode($sep, $lines[0]);
+		$ch = count($cabecera);
+
+		dd($ch, 'CABECERA');
+
+		$cnt = count($lines);
+		for ($i=1;$i<$cnt;$i++) {
+			if (empty(trim($lines[$i]))){
+				break;
+			}
+
+			$vals = explode($sep, $lines[$i]);
+
+			if (empty($vals)){
+				break;
+			}
+
+			for ($j=0;$j<$ch; $j++){
+				dd("\t" . $vals[$j], $cabecera[$j]);
+			}
+
+			dd('-------------------------------------------');
+			
+		}
+
+	}
+
 	/*
 		Cachea el contenido de una url (por tiempo indefinido) y lo devuelve
 	*/
-	static function cache(string $url){
+	static function cache(string $url, bool $force_reload = false){
         $path = parse_url($url, PHP_URL_PATH);
         $str  = str_replace(['%'], ['p'], urlencode($url)) . '.html';
         $str  = str_replace('/', '', $str);
 
         $path = ETC_PATH . $str;
 
-        if (file_exists($path)){
+        if (file_exists($path) && $force_reload === false){
             return static::file_get_contents_locking($path);
         }
 
-        $str = static::ile_get_contents_locking($url);
+        $str = static::file_get_contents_locking($url);
         
         static::file_put_contents_locking($path, $str);
 

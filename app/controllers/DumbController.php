@@ -48,6 +48,15 @@ use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\SendinBlue;
 
+//  QR
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
+
 class DumbController extends Controller
 {
     function __construct()
@@ -8281,6 +8290,25 @@ class DumbController extends Controller
     }
 
 
+    function test_qr(){
+        $result = Builder::create()
+
+        ->writer(new PngWriter())
+        ->writerOptions([])
+        ->data('Custom QR code contents')
+        ->encoding(new Encoding('UTF-8'))
+        ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+        ->size(300)
+        ->margin(10)
+        ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
+        ->logoPath(ASSETS_PATH . 'img/logo_t.png')
+        ->labelText('This is the label')
+        ->labelFont(new NotoSans(20))
+        ->labelAlignment(new LabelAlignmentCenter())
+        ->build();
+    }
+
+
     function obf_test(){
         $ori = '/home/www/woo4/wp-content/plugins/woo-sizes';
         $dst = '/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated';
@@ -8309,6 +8337,9 @@ class DumbController extends Controller
         );
     }
 
+    function csv_debug(){
+        Files::debugCSV('/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv', ',', "\n");
+    }
     
 }   
 
