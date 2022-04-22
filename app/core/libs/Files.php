@@ -78,19 +78,18 @@ class Files
 		Cachea el contenido de una url (por tiempo indefinido) y lo devuelve
 	*/
 	static function cache(string $url, bool $force_reload = false){
-        $path = parse_url($url, PHP_URL_PATH);
-        $str  = str_replace(['%'], ['p'], urlencode($url)) . '.html';
+        $str  = str_replace(['%'], ['p'], urlencode(Url::normalize($url))) . '.html';
         $str  = str_replace('/', '', $str);
 
         $path = ETC_PATH . $str;
 
         if (file_exists($path) && $force_reload === false){
-            return static::file_get_contents_locking($path);
+            return file_get_contents($path);
         }
 
-        $str = static::file_get_contents_locking($url);
+        $str = file_get_contents($url);
         
-        static::file_put_contents_locking($path, $str);
+        file_put_contents($path, $str);
 
         return $str;
     }

@@ -980,6 +980,28 @@ Ej:
 	->insert($data);
 
 
+Para insertar con un campo tipo JSON solo envíelo como array.
+
+Ej:
+
+	$m = DB::table('medicamentos');
+        
+	$ok = $m->create([
+		'name' => 'Medicamento Z',
+		'price' => 100,
+
+		// JSON
+		'attr' => [
+			'precio_fraccion' => '4608',
+			'principio_activo' => 'Alcanfor, Benzocaina, Mentol, Triclosán',
+			'laboratorio' => 'Prater',
+			'codigo_isp' => 'F-7345/16',
+			'forma_farmaceutica' => 'Solución',
+			'req_receta' => false,
+		]
+	]);
+
+
 # Obtención de registros
 
 Todos los registros (menos los marcados como borrados)

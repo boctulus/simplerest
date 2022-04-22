@@ -485,7 +485,7 @@ class DumbController extends Controller
     //     ]));
     // }
 
-    function create_bar2(){
+    function create_bar1(){
         $m = DB::table('bar');
         
         dd($m->create([
@@ -493,6 +493,28 @@ class DumbController extends Controller
 			'price' => '100',
             'email' => 'a@b.com',
             'belongs_to' => 90
+        ]));
+    }
+
+
+    function create_bar2(){
+        $m = DB::table('bar');
+        
+        dd($m->create([
+            'name' => 'gggggggggg',
+			'price' => '100',
+            'email' => 'a@b.com',
+            'belongs_to' => 90,
+
+            // JSON
+            'attr' => [
+                'precio_fraccion' => '4608',
+                'principio_activo' => 'Alcanfor, Benzocaina, Mentol, Triclosán',
+                'laboratorio' => 'Prater',
+                'codigo_isp' => 'F-7345/16',
+                'forma_farmaceutica' => 'Solución',
+                'req_receta' => false,
+            ]
         ]));
     }
 
@@ -8337,18 +8359,81 @@ class DumbController extends Controller
         );
     }
 
+
+    function test_str_last(){
+        $url = 'https://www.easyfarma.cl/shop/dermatologia/cariamyl-sol-dermica-x-130ml/';
+
+        dd(Url::lastSlug($url), 'SLUG');
+    }
+
     function csv_debug(){
         $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
 
         //Files::debugCSV($path, ',', "\n");
 
-        d(
-            Files::getCSV($path)
-        ); 
+        $rows = Files::getCSV($path)['rows'];
 
+        usort($rows, function($a, $b){
+            return $a['Código Isp'] <=> $b['Código Isp'];
+        });
+
+        $last_code = null;
+        $last_sku  = null;
+
+        $isp_nulos  = 0;
+        $sku_nulos  = 0;
+        $isp_repetidos = 0;
+        $sku_repetidos = 0;
+        
+        foreach ($rows as $row){            
+            if (empty(trim($row['Código Isp']))){
+                $isp_nulos++;
+            }
+
+            if (empty(trim($row['SKU']))){
+                $sku_nulos++;
+            }
+
+            if ($row['Código Isp'] == $last_code){
+                if ($row['SKU'] == $last_sku){
+                    // si se imprimiera sería porque habría "productos variables" (cosa que no sucede)
+                    d($last_sku, $last_code);
+                }
+
+                d($last_code, 'CÓDIGO ISP REPETIDO');
+                $isp_repetidos++;
+            }
+
+            if ($row['SKU'] == $last_sku){
+                $sku_repetidos++;
+            }
+
+            $last_code = $row['Código Isp'];
+            $last_sku  = $row['SKU'];
+        }
+
+        dd($isp_nulos, "ISP NULOS");
+        dd($isp_repetidos, 'ISP REPETIDOS');
+        dd($isp_repetidos - $isp_nulos, 'ISP REPETIDOS NO-NULOS');
+        dd($sku_nulos, "SKU NULOS");
+        dd($sku_repetidos, "SKU REPETIDOS");
     }
+
+    function csv_debug1(){
+        $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
+
+        $rows = Files::getCSV($path)['rows'];
+
+        foreach ($rows as $row){       
+            #if ($row['Código Isp'] == 'F-13670/14'){
+                d($row);
+            #}
+        }
+    }
+
+
     
-}   
+}   // end class
 
 
 
