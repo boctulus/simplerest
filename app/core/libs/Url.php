@@ -28,8 +28,9 @@ class Url
         $p = parse_url($url);
 
         $p['path'] = rtrim($p['path'], '/');
+        $query     = isset($p['query']) ? "?{$p['query']}" : '';
 
-        return "{$p['scheme']}://{$p['host']}{$p['path']}?{$p['query']}";
+        return "{$p['scheme']}://{$p['host']}{$p['path']}?$query";
     }
 
     // Body decode
