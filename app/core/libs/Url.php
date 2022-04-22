@@ -6,6 +6,32 @@ use simplerest\core\Request;
 
 class Url 
 {
+    static function lastSlug(string $url){
+		return $slug =  Strings::last(rtrim($url, '/'), '/');
+	}
+
+     /*
+        Normaliza urls a fin de que así el "path" de la url termine o no con "/",
+        queden sin era barra antes de la parte de queries con lo cual
+        al momento de "cachear" no habrá duplicados.
+
+        Ej: 
+
+        https://www.easyfarma.cl/categoria-producto/dermatologia/proteccion-solar/?page=2
+
+        es convertido en
+
+        https://www.easyfarma.cl/categoria-producto/dermatologia/proteccion-solar?page=2
+
+    */
+    static function normalize(string $url){
+        $p = parse_url($url);
+
+        $p['path'] = rtrim($p['path'], '/');
+
+        return "{$p['scheme']}://{$p['host']}{$p['path']}?{$p['query']}";
+    }
+
     // Body decode
     static function bodyDecode(string $data)
     {
