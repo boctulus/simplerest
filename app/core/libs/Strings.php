@@ -73,9 +73,9 @@ class Strings
 		return $parts[1];
 	}
 
-	// String después de la última ocurrencia del substring
-	static function last(string $string, string $substr){
-		$parts = explode($substr, $string);
+	// String después de la última ocurrencia del substring (que podría ser empty)
+	static function last(string $str, string $substr){
+		$parts = explode($substr, $str);
 
 		return $parts[count($parts)-1];
 	}
