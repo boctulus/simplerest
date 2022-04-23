@@ -15,7 +15,8 @@ class PaypalController extends MyController
     */
 
     static protected $per   = 5.7;
-    static protected $fixed = 0.75;
+    static protected $fixed = 1;
+    static protected $round_fn = 'floor';
 
     function __construct()
     {
@@ -27,7 +28,13 @@ class PaypalController extends MyController
         @return fees 
     */
     function fee($amount){
-        return static::$fixed + ($amount * static::$per * 0.01);
+        $res = static::$fixed + ($amount * static::$per * 0.01);
+        
+        if (static::$round_fn !== null){
+            $res = call_user_func(static::$round_fn, $res);
+        }
+
+        return $res;
     }
 
     /*
@@ -44,9 +51,6 @@ class PaypalController extends MyController
     */
     function send($amount){
         return $amount - $this->fee($amount);
-    }
-
-    function index(){
     }
 }
 
