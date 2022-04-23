@@ -87,9 +87,15 @@ class Files
             return file_get_contents($path);
         }
 
-        $str = file_get_contents($url);
+        $res = Url::consume_api($url, 'GET', null, null, null, false);
+		
+		if ($res['http_code'] != 200){
+			return;
+		}
 
-		if (strlen($str) == 0){
+		$str = $res['data'];
+
+		if ($str === null || strlen($str) == 0){
 			if ($fail_if_zero_length){
 				throw new \Exception("Zero length file");
 			}
