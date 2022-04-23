@@ -65,7 +65,7 @@ class Url
 		It could be more efficient and precise if I use a preg_replace_callback and
 		take note about which parameter was substituted
 	*/
-	static function parseStrQuery(string $s){
+	static function parseStrQuery(string $s) : Array{
 		$rep = '__DOT__';
 
 		$s = str_replace('.', $rep, $s);
@@ -88,7 +88,11 @@ class Url
 		return $result;
 	}	
 
-	static function queryString(){
+	static function queryString() : Array {
+        if (!isset($_SERVER['QUERY_STRING'])){
+            return [];
+        }
+
 		return static::parseStrQuery($_SERVER['QUERY_STRING']);		
 	}	    
 
@@ -158,6 +162,24 @@ class Url
         return Strings::startsWith('insomnia', $_SERVER['HTTP_USER_AGENT']);
     }
 
+    /*
+        Usar antes de parseStrQuery()
+    */
+    static function hasQueryParam(string $url, string $param){
+        $p = parse_url($url);
+
+        if (!isset($p['query'])){
+            return null;
+        }
+
+        $query_arr = static::parseStrQuery($p['query']);
+
+        return isset($query_arr[$param]);
+    }
+
+    /*
+        funcion auxiliar para parseStrQuery()
+    */
     static function getQueryParam(string $url, string $param){
         $query = parse_url($url, PHP_URL_QUERY);
 
