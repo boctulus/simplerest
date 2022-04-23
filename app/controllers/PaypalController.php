@@ -14,8 +14,8 @@ class PaypalController extends MyController
         https://www.paypal.com/us/webapps/mpp/paypal-fees
     */
 
-    static protected $per   = 5.5;
-    static protected $fixed = 0.3;
+    static protected $per   = 5.55;
+    static protected $fixed = 0.75;
 
     function __construct()
     {
