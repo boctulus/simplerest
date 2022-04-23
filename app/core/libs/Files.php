@@ -77,7 +77,7 @@ class Files
 	/*
 		Cachea el contenido de una url (por tiempo indefinido) y lo devuelve
 	*/
-	static function cache(string $url, bool $force_reload = false){
+	static function cache(string $url, bool $force_reload = false, bool $fail_if_zero_length = false){
         $str  = str_replace(['%'], ['p'], urlencode(Url::normalize($url))) . '.html';
         $str  = str_replace('/', '', $str);
 
@@ -88,11 +88,18 @@ class Files
         }
 
         $str = file_get_contents($url);
+
+		if (strlen($str) == 0){
+			if ($fail_if_zero_length){
+				throw new \Exception("Zero length file");
+			}
+		}
         
         file_put_contents($path, $str);
 
         return $str;
     }
+
 
 	/*
 		Hace un "diff" entre dos rutas de archivos
