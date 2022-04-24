@@ -1631,29 +1631,35 @@ class Model {
 		return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
 	}
 
-	function debug(bool $as_array = false){
+	function debug(){
 		$op = $this->current_operation ?? $this->last_operation;
 
 		if ($op == 'create'){
 			$combined = array_combine($this->insert_vars, $this->getLastBindingParamters());
-			$sql = $this->getLog();
+			$sql = $this->last_pre_compiled_query;
+							
+			return preg_replace_callback('/:([a-z][a-z0-9_\-ñáéíóú]+)/', function($matches) use ($combined) {
+				$key = $matches[1];
 
-			if ($as_array){
-				return [
-					'values' => $combined,
-					'sql' => $sql
-				];
-			} else {				
-				return preg_replace_callback('/:([a-z][a-z0-9_\-ñáéíóú]+)/', function($matches) use ($combined) {
-					$key = $matches[1];
-
-					// para el debug ignoro los tipos
-					return "'$combined[$key]'";
-				}, $sql);
-			}
+				// para el debug ignoro los tipos
+				return "'$combined[$key]'";
+			}, $sql);
+		
 		} else {
 			return $this->dd();
 		}
+	}
+
+	function getLastOperation(){
+		return $this->last_operation;
+	}
+
+	function getCurrentOperation(){
+		return $this->current_operation;
+	}
+
+	function getOp(){
+		return $this->current_operation ?? $this->last_operation;
 	}
 
 	function getWhere(){
@@ -3031,9 +3037,6 @@ class Model {
 				$id_name = 'id';
 			}
 			
-			//d($this->schema, 'Schema');
-			//d($id_name, 'id_name');
-
 			if (isset($data[$id_name])){
 				$this->last_inserted_id =	$data[$id_name];
 			} else {
