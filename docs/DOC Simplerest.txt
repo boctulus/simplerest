@@ -2333,7 +2333,32 @@ Lo siguiente también sirve:
 
 	dd(DB::getLog());
 	
+El método más avanzado  para debugueo le pertenece al modelo y es debug()
 
+Ej:
+	$data = [
+		'name' => 'Acetazolamida 250 mg x 20 comp',
+		'regular_price' => '4290',
+		'status' => 'draft',
+		'stock' => 0,
+		'type' => 'simple',
+		'attributes' => [
+			'precio_promo' => 650,
+			'laboratorio' => 'Farmaquimicas'
+ 		]
+	];
+
+	/*
+		Requiere guardar la instancia del modelo
+	*/
+
+	$m = DB::table('products');
+	$m->create($data);
+
+	d(
+		$m->debug()
+	);
+	
 # Obtención de la query pre-compilada
 
 Una función de debug que puede utilizarse es getLastPrecompiledQuery(), la cual devuelve el último query antes de ser bindeado con los parámetros -aunque per se no evita el binding-.
