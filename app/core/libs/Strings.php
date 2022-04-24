@@ -5,6 +5,13 @@ namespace simplerest\core\libs;
 class Strings 
 {	
 	/*
+		Reemplazo para la función nativa explode()
+	*/
+	static function explode(string $str, string $separator = ','){
+		return Arrays::trimArray(explode($separator, rtrim(trim($str), $separator)));
+	}
+	
+	/*
 		Cada línea la convierte en un <p>párrafo</p>
 	*/
 	static function paragraph(string $str){
