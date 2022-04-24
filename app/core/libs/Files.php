@@ -9,7 +9,7 @@ class Files
 	static protected $backup_path;
 	static protected $callable;
 
-	static function getCSV(string $path, string $sep = ",", string $ret = "\n", $assoc = true){		
+	static function getCSV(string $path, string $sep = ",", string $ret = PHP_EOL, $assoc = true){		
 		$file  = file_get_contents($path);
 		$lines = explode($ret, $file);
 
@@ -17,21 +17,24 @@ class Files
 		$ch = count($cabecera);
 
 		$rows = [];
-		$cnt = count($lines);
+		$cnt  = count($lines);
 		for ($i=1;$i<$cnt;$i++) {
 			if (empty(trim($lines[$i]))){
-				break;
+				continue;
 			}
 
 			$vals = explode($sep, $lines[$i]);
 
 			if (empty($vals)){
-				break;
+				continue;
 			}
 
 			if ($assoc){
-				for ($j=0;$j<$ch; $j++){
-					$rows[$i][$cabecera[$j]] = $vals[$j];
+				for ($j=0;$j<$ch; $j++){					
+					$head_key = $cabecera[$j];
+					$val      = $vals[$j] ?? '';
+
+					$rows[$i][$head_key] = $val;
 				}
 			} else {
 				$rows[] = $vals;
