@@ -124,6 +124,17 @@ class DumbController extends Controller
         dd(DB::getLog());
     }
 
+    function test505b(){
+        $m = DB::table('products');
+
+        $vals = $m
+        ->setFetchMode('COLUMN')
+        ->selectRaw('cost * ? as cost_after_inc', [1.05])->get();
+
+        dd($vals);
+        dd($m->debug());
+    }
+
     function test506()
     {
         $con = DB::getConnection();
@@ -518,11 +529,6 @@ class DumbController extends Controller
         ]));
     }
 
-    function create_x(){
-        // DB::getConnection()
-        // $m = DB::table('products');
-    }
-
     function get_products(){
         dd(DB::table('products')->get());
     }
@@ -531,13 +537,16 @@ class DumbController extends Controller
         dd(DB::table('products')->where(['size', '2L'])->get());
     }
 
-    function create_p(){
+    function create_p()
+    {
+        $m = DB::table('products');
+        //$m->dontExec();
 
         $name = '';
         for ($i=0;$i<20;$i++)
             $name .= chr(rand(97,122));
 
-        $id = DB::table('products')->create([ 
+        $id = $m->create([ 
             'name' => $name, 
             'description' => 'Esto es una prueba 77', 
             'size' => '100L',
@@ -546,6 +555,8 @@ class DumbController extends Controller
             'digital_id' => 1
         ]);   
         
+        d($m->debug(), 'SQL');
+
         return $id;
     }
 

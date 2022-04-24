@@ -439,7 +439,6 @@ class DB
 		if (!is_null(static::$raw_sql)){
 			$sql = Arrays::str_replace_array('?', static::$values, static::$raw_sql);
 			$sql = trim(preg_replace('!\s+!', ' ', $sql)).';';
-			//$sql = static::sqlFormatter($sql);
 
 			return $sql;	
 		}
