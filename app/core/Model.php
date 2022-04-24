@@ -2439,22 +2439,27 @@ class Model {
 		$st = $this->conn->prepare($q);
 
 		foreach($vals as $ix => $val){		
-			if (is_array($val)){
-				throw new \InvalidArgumentException("Invalid value. Can not be array: ". var_export($val, true));
+			if(is_array($val)){
+				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR'){
+					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given '$val'");
+				} else {
+					$val = json_encode($val);
+					$type = \PDO::PARAM_STR;
+				}	
+			} else {
+				if(is_null($val)){
+					$type = \PDO::PARAM_NULL;
+				}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$vars[$ix]])){
+					$const = $this->schema['attr_types'][$vars[$ix]];
+					$type = constant("PDO::PARAM_{$const}");
+				}elseif(is_int($val))
+					$type = \PDO::PARAM_INT;
+				elseif(is_bool($val))
+					$type = \PDO::PARAM_BOOL;
+				elseif(is_string($val))
+					$type = \PDO::PARAM_STR;	
 			}
 			
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL;
-			}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$vars[$ix]])){
-				$const = $this->schema['attr_types'][$vars[$ix]];
-				$type = constant("PDO::PARAM_{$const}");
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL;
-			elseif(is_string($val))
-				$type = \PDO::PARAM_STR;	
-
 			$st->bindValue($ix+1, $val, $type);
 		}
 
