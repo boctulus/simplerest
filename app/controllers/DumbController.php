@@ -8369,9 +8369,6 @@ class DumbController extends Controller
     function csv_debug(){
         $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
 
-        // // Files::debugCSV($path, ',', "\n");
-        // // exit;
-
         $rows = Files::getCSV($path)['rows'];
 
         usort($rows, function($a, $b){
@@ -8380,11 +8377,13 @@ class DumbController extends Controller
 
         $last_code = null;
         $last_sku  = null;
+        $last_name = null;
 
         $isp_nulos  = 0;
         $sku_nulos  = 0;
         $isp_repetidos = 0;
         $sku_repetidos = 0;
+        $names_repetidos = [];
 
         $total = count($rows);
         dd($total, 'TOTAL');
@@ -8412,6 +8411,11 @@ class DumbController extends Controller
                 $sku_repetidos++;
             }
 
+            if ($row['Nombre'] == $last_name){
+                $names_repetidos[] = $row['Nombre'];
+            }
+
+            $last_name = $row['Nombre'];
             $last_code = $row['Código Isp'];
             $last_sku  = $row['SKU'];
         }
@@ -8421,6 +8425,7 @@ class DumbController extends Controller
         dd($isp_repetidos - $isp_nulos, 'ISP REPETIDOS NO-NULOS');
         dd($sku_nulos, "SKU NULOS");
         dd($sku_repetidos, "SKU REPETIDOS");
+        dd($names_repetidos, "NAMES REPETIDOS : " . count($names_repetidos));
     }
 
     function csv_debug1(){

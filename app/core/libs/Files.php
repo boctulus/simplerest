@@ -9,37 +9,37 @@ class Files
 	static protected $backup_path;
 	static protected $callable;
 
-	static function getCSV(string $path, string $sep = ",", string $ret = PHP_EOL, $assoc = true){		
-		$file  = file_get_contents($path);
-		$lines = explode($ret, $file);
-
-		$cabecera = explode($sep, $lines[0]);
-		$ch = count($cabecera);
-
+	static function getCSV(string $path, $assoc = true){	
 		$rows = [];
-		$cnt  = count($lines);
-		for ($i=1;$i<$cnt;$i++) {
-			if (empty(trim($lines[$i]))){
-				continue;
-			}
 
-			$vals = explode($sep, $lines[$i]);
+		ini_set('auto_detect_line_endings', 'true');
 
-			if (empty($vals)){
+		$handle = fopen($path,'r');
+
+		$cabecera = fgetcsv($handle);
+		$ch       = count($cabecera);
+		
+		$i = 0;
+		while ( ($data = fgetcsv($handle) ) !== FALSE ) {
+			if (empty($data)){
 				continue;
 			}
 
 			if ($assoc){
 				for ($j=0;$j<$ch; $j++){					
 					$head_key = $cabecera[$j];
-					$val      = $vals[$j] ?? '';
+					$val      = $data[$j] ?? '';
 
 					$rows[$i][$head_key] = $val;
 				}
 			} else {
-				$rows[] = $vals;
-			}			
+				$rows[] = $data;
+			}	
+
+			$i++;		
 		}
+		
+		ini_set('auto_detect_line_endings', 'false');
 
 		return [
 			'rows' => $rows,
@@ -47,35 +47,6 @@ class Files
 		];
 	}
 
-	static function debugCSV(string $path, string $sep = ",", string $ret = "\n"){		
-		$file  = file_get_contents($path);
-		$lines = explode($ret, $file);
-
-		$cabecera = explode($sep, $lines[0]);
-		$ch = count($cabecera);
-
-		dd($ch, 'CABECERA');
-
-		$cnt = count($lines);
-		for ($i=1;$i<$cnt;$i++) {
-			if (empty(trim($lines[$i]))){
-				break;
-			}
-
-			$vals = explode($sep, $lines[$i]);
-
-			if (empty($vals)){
-				break;
-			}
-
-			for ($j=0;$j<$ch; $j++){
-				dd("\t" . $vals[$j], $cabecera[$j]);
-			}
-
-			dd('-------------------------------------------');
-			
-		}
-	}
 
 	/*
 		Cachea el contenido de una url (por tiempo indefinido) y lo devuelve
