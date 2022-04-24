@@ -8386,7 +8386,7 @@ class DumbController extends Controller
         $names_repetidos = [];
 
         $total = count($rows);
-        dd($total, 'TOTAL');
+        d($total, 'TOTAL');
         
         foreach ($rows as $row){            
             if (empty(trim($row['Código Isp']))){
@@ -8400,10 +8400,10 @@ class DumbController extends Controller
             if ($row['Código Isp'] == $last_code){
                 if ($row['SKU'] == $last_sku){
                     // si se imprimiera sería porque habría "productos variables" (cosa que no sucede)
-                    d($last_sku, $last_code);
+                    //d($last_sku, $last_code);
                 }
 
-                d($last_code, 'CÓDIGO ISP REPETIDO');
+                //d($last_code, 'CÓDIGO ISP REPETIDO');
                 $isp_repetidos++;
             }
 
@@ -8420,12 +8420,12 @@ class DumbController extends Controller
             $last_sku  = $row['SKU'];
         }
 
-        dd($isp_nulos, "ISP NULOS");
-        dd($isp_repetidos, 'ISP REPETIDOS');
-        dd($isp_repetidos - $isp_nulos, 'ISP REPETIDOS NO-NULOS');
-        dd($sku_nulos, "SKU NULOS");
-        dd($sku_repetidos, "SKU REPETIDOS");
-        dd($names_repetidos, "NAMES REPETIDOS : " . count($names_repetidos));
+        d($isp_nulos, "ISP NULOS");
+        d($isp_repetidos, 'ISP REPETIDOS');
+        d($isp_repetidos - $isp_nulos, 'ISP REPETIDOS NO-NULOS');
+        d($sku_nulos, "SKU NULOS");
+        d($sku_repetidos, "SKU REPETIDOS");
+        d($names_repetidos, "NAMES REPETIDOS : " . count($names_repetidos));
     }
 
     function csv_debug1(){
