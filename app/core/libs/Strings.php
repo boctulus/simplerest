@@ -457,6 +457,16 @@ class Strings
 		return false;	
 	}
 
+	/*
+		Recupera todas las palabras de un texto
+
+		https://stackoverflow.com/a/10685513/980631
+	*/
+	static function getWords(string $str){
+		$n_words = preg_match_all('/([a-zA-Z]|\xC3[\x80-\x96\x98-\xB6\xB8-\xBF]|\xC5[\x92\x93\xA0\xA1\xB8\xBD\xBE]){4,}/', $str, $match_arr);
+		return $match_arr[0];
+	}
+
 	static function equal(string $s1, string $s2, bool $case_sensitive = true){
 		if ($case_sensitive === false){
 			$s1 = strtolower($s1);
