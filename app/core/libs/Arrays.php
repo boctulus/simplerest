@@ -4,6 +4,22 @@ namespace simplerest\core\libs;
 
 class Arrays 
 {
+    /*
+        Trim every element of array
+    */
+    static function trimArray(array $arr){
+        return array_map('trim', $arr);
+    }
+
+    static function rtrimArray(array $arr){
+        return array_map('rtrim', $arr);
+    }
+
+    static function ltrimArray(array $arr){
+        return array_map('rtrim', $arr);
+    }
+       
+
     /**
      * Gets the first key of an array
      *
