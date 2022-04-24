@@ -8369,7 +8369,8 @@ class DumbController extends Controller
     function csv_debug(){
         $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
 
-        //Files::debugCSV($path, ',', "\n");
+        // // Files::debugCSV($path, ',', "\n");
+        // // exit;
 
         $rows = Files::getCSV($path)['rows'];
 
@@ -8384,6 +8385,9 @@ class DumbController extends Controller
         $sku_nulos  = 0;
         $isp_repetidos = 0;
         $sku_repetidos = 0;
+
+        $total = count($rows);
+        dd($total, 'TOTAL');
         
         foreach ($rows as $row){            
             if (empty(trim($row['Código Isp']))){
