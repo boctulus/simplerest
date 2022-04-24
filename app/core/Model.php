@@ -1613,7 +1613,7 @@ class Model {
 		return $sql;
 	}
 
-	// Debug query -- depredicada en favor de debug()
+	// Debug query
 	function dd(bool $sql_formater = false){
 		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formater;
 
