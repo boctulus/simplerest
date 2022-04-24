@@ -21,10 +21,6 @@ class Files
 		
 		$i = 0;
 		while ( ($data = fgetcsv($handle) ) !== FALSE ) {
-			if (empty($data)){
-				continue;
-			}
-
 			if ($assoc){
 				for ($j=0;$j<$ch; $j++){					
 					$head_key = $cabecera[$j];
