@@ -85,6 +85,7 @@ class Model {
 	protected $fetch_mode_default = \PDO::FETCH_ASSOC;
 	protected $last_operation;
 	protected $current_operation;
+	protected $insert_vars = [];
 	protected $data = []; 
 
 	protected $createdAt = 'created_at';
@@ -179,9 +180,9 @@ class Model {
 
 	function __construct(bool $connect = false, $schema = null, bool $load_config = true)
 	{
-		static::$sql_formatter_callback = function(string $sql, bool $highlight = false){
-			return \SqlFormatter::format($sql, $highlight);
-		};
+		// static::$sql_formatter_callback = function(string $sql, bool $highlight = false){
+		// 	return \SqlFormatter::format($sql, $highlight);
+		// };
 
 		if ($connect){
 			$this->connect();
@@ -1612,7 +1613,7 @@ class Model {
 		return $sql;
 	}
 
-	// Debug query
+	// Debug query -- depredicada en favor de debug()
 	function dd(bool $sql_formater = false){
 		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formater;
 
@@ -1628,6 +1629,31 @@ class Model {
 		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formater;
 
 		return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
+	}
+
+	function debug(bool $as_array = false){
+		$op = $this->current_operation ?? $this->last_operation;
+
+		if ($op == 'create'){
+			$combined = array_combine($this->insert_vars, $this->getLastBindingParamters());
+			$sql = $this->getLog();
+
+			if ($as_array){
+				return [
+					'values' => $combined,
+					'sql' => $sql
+				];
+			} else {				
+				return preg_replace_callback('/:([a-z][a-z0-9_\-ñáéíóú]+)/', function($matches) use ($combined) {
+					$key = $matches[1];
+
+					// para el debug ignoro los tipos
+					return "'$combined[$key]'";
+				}, $sql);
+			}
+		} else {
+			return $this->dd();
+		}
 	}
 
 	function getWhere(){
@@ -2856,13 +2882,19 @@ class Model {
 	// }
 		
 
+	function getInsertVals(){
+		return $this->insert_vars;
+	}
+
 	/*
 		@return mixed false | integer 
 
 		Si la data es un array de arrays, intenta un INSERT MULTIPLE
 	*/
 	function create(array $data, $ignore_duplicates = false)
-	{
+	{	
+		$this->current_operation = 'create';
+
 		if ($this->conn == null)
 			throw new SqlException('No connection');
 
@@ -2921,6 +2953,8 @@ class Model {
 
 		$str_vars = implode(', ',$vars);
 		$str_vals = implode(', ',$symbols);
+
+		$this->insert_vars = $vars;
 
 		$q = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_vals)";
 
@@ -2982,6 +3016,8 @@ class Model {
 		} else {
 			$result = $st->execute();
 		}
+
+		$this->current_operation = null;
 	
 		if (!isset($result)){
 			return;
