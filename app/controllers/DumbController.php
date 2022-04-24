@@ -518,6 +518,11 @@ class DumbController extends Controller
         ]));
     }
 
+    function create_x(){
+        // DB::getConnection()
+        // $m = DB::table('products');
+    }
+
     function get_products(){
         dd(DB::table('products')->get());
     }
