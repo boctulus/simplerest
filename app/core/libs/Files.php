@@ -175,6 +175,14 @@ class Files
 		return $path;
 	}
 
+	static function glob(string $path, string $pattern, $flags = 0){
+		if (Strings::lastChar($path) != '/'){
+			$path .= '/';
+		}
+
+		return glob($path . $pattern, $flags);
+	}
+
 	// https://stackoverflow.com/a/17161106/980631
 	static function recursiveGlob($pattern, $flags = 0) {
 		$files = glob($pattern, $flags); 
