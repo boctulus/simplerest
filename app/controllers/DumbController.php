@@ -8387,6 +8387,9 @@ class DumbController extends Controller
 
         $rows = Files::getCSV($path)['rows'];
 
+        d($rows);
+        exit;///////
+
         usort($rows, function($a, $b){
             return $a['Código Isp'] <=> $b['Código Isp'];
         });
@@ -8456,17 +8459,170 @@ class DumbController extends Controller
         }
     }
 
+    function test_sinergia()
+    {
+        $ruc = '12345678910';
+        $razon_social = 'DEMO SAC';
 
-    function test_sssb(){
-        d(
-            Strings::parseInt('-1500')
-        );
+        $base  = 'https://demoapi.sinergia.pe';
+        $ruta1 = "$base/interfaces/interfacesventa/homologarModVenta";
+        $ruta2 = "$base/interfaces/interfacesventa/homologarCliente";
+        $ruta3 = "$base/interfaces/interfacesventa/homologarBienesServicios";
+        $ruta4 = "$base/interfaces/interfacesventa/crearBienServicio";
+        
 
-        d(
-            Strings::parseInt('1.224.000')
-        );
+        $body = '{
+            "ruc": "'.$ruc.'",
+            "tabla_ventas": [
+                {
+                  "A1_ID" : "F00300000254",
+          "A2_FECHAEMISION" : "2021-10-05",
+          "A3_HORAEMISION" : null,
+          "A4_TIPODOCUMENTO" : "01",
+          "A5_MONEDA" : "USD",
+          "A6_FECHAVENCIMIENTO" : null,
+          "A7_DOCUMENTOREFERENCIA" : null,
+          "A8_MOTIVONC" : null,
+          "A9_FECHABAJA" : null,
+          "A10_OBSERVACION" : null,
+          "A11_TIPODOCUMENTOREFERENCIA" : null,
+          "A12_WEIGHT" : 2.4,
+          "B1_RUC" : "'.$ruc.'",
+          "D1_DOCUMENTO" : "20603374097",
+          "D2_TIPODOCUMENTO" : "6",
+          "D3_DESCRIPCION" : "'.$razon_social.'",
+          "D4_LEGAL_STREET" : "Jr Los Aromos 644 Dpto 301, La Molina",
+          "D4_LEGAL_DISTRICT" : "",
+          "D4_LEGAL_PROVINCE" : "Lima",
+          "D4_LEGAL_STATE" : "Lima",
+          "D4_UBIGEO" : null,
+          "D5_DIRECCION" : "Jr Los Aromos 644 Dpto 301, La Molina, Lima",
+          "D6_URBANIZACION" : null,
+          "D7_PROVINCIA" : "Lima",
+          "D8_DEPARTAMENTO" : "Lima",
+          "D9_DISTRITO" : "La Molina",
+          "D10_PAIS" : null,
+          "D11_CORREO" : "augusto@devtechperu.com",
+          "D12_CODIGO" : null,
+          "D13_CODIGODIR" : "",
+          "G1_TOTALEXPORTA" : 0,
+          "G2_TOTALGRAVADA" : 0,
+          "G3_TOTALINAFECTA" : 0,
+          "G4_TOTALEXONERADA" : 0,
+          "G5_TOTAGRATUITA" : 0,
+          "G6_TOTALDESCUENTOS" : 0,
+          "G7_PORCENDETRA" : 0,
+          "G8_TOTALDETRA" : 0,
+          "G9_TOTALIGV" : 0,
+          "G10_TOTALSUBTOTAL" : 0,
+          "G13_TOTALGLOBALDESCU" : 0.82,
+          "G14_TOTALVENTA" : 15.58,
+          "G15_SUBTOTAL" : 0,
+          "H1_CODALMACEN" : null,
+          "H2_SUCURSAL" : null,
+        "detalle": [
+                    {
+                      "F1_ITEM" : null,
+              "F2_UNIDAD" : "NIU",
+              "F3_CANTIDAD" : 1,
+              "F4_CODIGO_PRODUCTO" : 92,
+              "F5_CODIGO_SUNAT" : "000",
+              "F7_DESCRIPCION" : "Belgium Milk Chocolate 200g",
+              "F8_PRECIO" : null,
+              "F9_PRECIOVENTA" : 6,
+              "F10_TIPOPRECIO" : null,
+              "F11_PRECIOGRATIS" : null,
+              "F12_MONTOIGV" : 0,
+              "F13_TOTAL" : 6,
+              "F14_TIPOAFECTA" : "10",
+              "F15_CODIGOSIS" : 92,
+              "F16_PORCENTAJE_DESCUENTO" : 0,
+              "F17_BIENSERVICIO" : "b",
+              "F18_IGV_TAX" : true,
+              "F18_IGV_AMOUNT" : 18,
+              "F19_ISC_TAX" : false,
+              "F19_ISC_AMOUNT" : 0
+                    },
+                    {
+          "F1_ITEM" : null,
+              "F2_UNIDAD" : "NIU",
+              "F3_CANTIDAD" : 1,
+              "F4_CODIGO_PRODUCTO" : 263,
+              "F5_CODIGO_SUNAT" : "000",
+              "F7_DESCRIPCION" : "Winters Choco Bitter Coverage x 600 gr",
+              "F8_PRECIO" : null,
+              "F9_PRECIOVENTA" : 5,
+              "F10_TIPOPRECIO" : null,
+              "F11_PRECIOGRATIS" : null,
+              "F12_MONTOIGV" : 0,
+              "F13_TOTAL" : 5,
+              "F14_TIPOAFECTA" : "10",
+              "F15_CODIGOSIS" : 263,
+              "F16_PORCENTAJE_DESCUENTO" : 0,
+              "F17_BIENSERVICIO" : "b",
+              "F18_IGV_TAX" : true,
+              "F18_IGV_AMOUNT" : 18,
+              "F19_ISC_TAX" : false,
+              "F19_ISC_AMOUNT" : 0
+                    },
+                    {
+          "F1_ITEM" : null,
+              "F2_UNIDAD" : "NIU",
+              "F3_CANTIDAD" : 1,
+              "F4_CODIGO_PRODUCTO" : 283,
+              "F5_CODIGO_SUNAT" : "000",
+              "F7_DESCRIPCION" : "MAPPLE Syrup Spitze x 800GR",
+              "F8_PRECIO" : null,
+              "F9_PRECIOVENTA" : 3,
+              "F10_TIPOPRECIO" : null,
+              "F11_PRECIOGRATIS" : null,
+              "F12_MONTOIGV" : 0,
+              "F13_TOTAL" : 3,
+              "F14_TIPOAFECTA" : "10",
+              "F15_CODIGOSIS" : 283,
+              "F16_PORCENTAJE_DESCUENTO" : 0,
+              "F17_BIENSERVICIO" : "b",
+              "F18_IGV_TAX" : true,
+              "F18_IGV_AMOUNT" : 18,
+              "F19_ISC_TAX" : false,
+              "F19_ISC_AMOUNT" : 0	
+                    },
+                    {
+                         "F1_ITEM" : null,
+              "F2_UNIDAD" : "NIU",
+              "F3_CANTIDAD" : 2,
+              "F4_CODIGO_PRODUCTO" : 319,
+              "F5_CODIGO_SUNAT" : "000",
+              "F7_DESCRIPCION" : "SPARKLING ICED TEA 330 ML",
+              "F8_PRECIO" : null,
+              "F9_PRECIOVENTA" : 1.2,
+              "F10_TIPOPRECIO" : null,
+              "F11_PRECIOGRATIS" : null,
+              "F12_MONTOIGV" : 0,
+              "F13_TOTAL" : 2.4,
+              "F14_TIPOAFECTA" : "10",
+              "F15_CODIGOSIS" : 319,
+              "F16_PORCENTAJE_DESCUENTO" : 0,
+              "F17_BIENSERVICIO" : "b",
+              "F18_IGV_TAX" : true,
+              "F18_IGV_AMOUNT" : 18,
+              "F19_ISC_TAX" : false,
+              "F19_ISC_AMOUNT" : 0	
+                    }
+                    ]
+                }
+            ]
+        }';
+
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
+
+        $response = Url::consume_api($ruta1, 'POST', $body, [
+            "Content-type"  => "Application/json",
+            "authToken" => "$token"
+        ]);
+
+        d($response, 'RES');
     }
-
 
     
 }   // end class
