@@ -25,6 +25,10 @@ class Url
 
     */
     static function normalize(string $url){
+        if (!Strings::startsWith('http', $url)){
+            throw new \InvalidArgumentException("Invalid url '$url'");
+        }
+        
         $p = parse_url($url);
 
         $p['path'] = rtrim($p['path'], '/');

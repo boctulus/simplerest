@@ -8457,6 +8457,17 @@ class DumbController extends Controller
     }
 
 
+    function test_sssb(){
+        d(
+            Strings::parseInt('-1500')
+        );
+
+        d(
+            Strings::parseInt('1.224.000')
+        );
+    }
+
+
     
 }   // end class
 
