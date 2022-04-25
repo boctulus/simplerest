@@ -30,6 +30,12 @@ class Strings
 		return (int) implode('', $pa);
 	}
 
+	static function parseIntOrFail(string $num, string $thousand_sep = '.'){
+		if (static::parseInt($num, $thousand_sep) === false){
+			throw new \Exception("String '$num' is not an Integer");
+		}
+	}
+
 	static function formatNumber($x, string $locale = "it-IT"){
 		$nf = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
 	
