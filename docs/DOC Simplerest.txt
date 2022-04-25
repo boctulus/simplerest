@@ -2333,7 +2333,7 @@ Lo siguiente también sirve:
 
 	dd(DB::getLog());
 	
-El método más avanzado  para debugueo le pertenece al modelo y es debug()
+El método más avanzado para debugueo le pertenece al modelo y es debug()
 
 Ej:
 	$data = [

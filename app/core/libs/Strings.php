@@ -5,12 +5,50 @@ namespace simplerest\core\libs;
 class Strings 
 {	
 	/*
+		Interpreta un string como un número entero con la posibilidad de que contenga separador de miles
+	*/
+	static function parseInt(string $num, string $thousand_sep = '.'){
+		$num = trim($num);
+
+		if (!preg_match('/(^[-0-9][0-9.]*$)/', $num, $matches)){
+			return false;
+		}
+
+		if (!Strings::contains($thousand_sep, $num)){
+			return (int) $num;
+		}
+
+		$pa = explode($thousand_sep, $num);
+		
+		$ct = count($pa);
+		for ($i=1; $i<$ct; $i++){
+			if (strlen($pa[$i]) != 3){
+				return false;
+			}
+		}
+
+		return (int) implode('', $pa);
+	}
+
+	static function formatNumber($x, string $locale = "it-IT"){
+		$nf = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
+	
+		if ($x > 1000000){
+			$nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
+		} else {
+			$nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
+		}
+	
+		return $nf->format($x); 
+	}	
+
+	/*
 		Reemplazo para la función nativa explode()
 	*/
 	static function explode(string $str, string $separator = ','){
 		return Arrays::trimArray(explode($separator, rtrim(trim($str), $separator)));
 	}
-	
+
 	/*
 		Cada línea la convierte en un <p>párrafo</p>
 	*/
@@ -98,6 +136,43 @@ class Strings
 	static function beforeLastSegment(string $string, string $substr){
 		return static::last(static::beforeLast($string, $substr), $substr);
 	}
+
+	/*
+		Remueve del forma eficiente un substring del inicio de una cadena
+	*/
+	static function lTrim($substr, $str){
+		$len_sb = strlen($substr);
+		$len_ss = strlen($str);
+
+		if ($len_sb > $len_ss){
+			return $str;
+		}
+
+		if (substr($str, 0, $len_sb) == $substr){
+			return substr($str, $len_sb);
+		}
+
+		return $str;
+	} 
+
+	// alias
+	static function removeBeginning($substr, $str){
+		return static::lTrim($substr, $str);
+	}
+
+	static function rTrim(string $needle, string $haystack)
+    {
+        if (substr($haystack, -strlen($needle)) === $needle){
+			return substr($haystack, 0, - strlen($needle));
+		}
+		return $haystack;
+    }
+
+	// alias
+	static function removeEnding($substr, $str){
+		return static::rTrim($substr, $str);
+	}
+
 
 	/*
 		Apply tabs to some string
@@ -483,14 +558,6 @@ class Strings
 		return ($s1 === $s2);
 	}
 
-	static function rTrim(string $needle, string $haystack)
-    {
-        if (substr($haystack, -strlen($needle)) === $needle){
-			return substr($haystack, 0, - strlen($needle));
-		}
-		return $haystack;
-    }
-
 	static function replace($search, $replace, &$subject, $count = NULL, $case_sensitive = true){
 
 		if ($case_sensitive){
@@ -546,8 +613,7 @@ class Strings
 		
 		return $subject;
 	}
-	
-	
+
 	/*
 		Hace el substr() desde el $ini hasta $fin
 		
@@ -617,18 +683,6 @@ class Strings
 		$file = file_get_contents($filename);
 		return self::getClassName($file, $fully_qualified);
 	}
-
-	static function formatNumber($x, string $locale = "it-IT"){
-		$nf = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
-	
-		if ($x > 1000000){
-			$nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 0);
-		} else {
-			$nf->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
-		}
-	
-		return $nf->format($x); 
-	}	
 
     /**
 	 * Scretet_key generator

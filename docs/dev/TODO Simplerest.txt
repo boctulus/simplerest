@@ -1,5 +1,9 @@
 # TODO
 
+- Si un campo es de tipo JSON, al hacerse un get(), first(), etc... debería hacerse en AUTOMATICO el json_decode() de ese campo.
+
+- Mover SendinBlue de dentro de "libs" a "packages" para evitar haga ruido ahí.
+
 - Al "html builder" agregar eventualmente componentes de 
 
   Elementor Pro +
@@ -103,6 +107,13 @@ Ej:
 
   Más
   https://stackoverflow.com/questions/47290012/why-use-hashed-css-stylesheet-and-javascript-file-names
+
+
+- No tiene sentido tener que hacer un first() luego de un find()  !!!!!!!!!!!
+
+Ej:
+
+  DB::table('products')->find(1356)->first()
 
 
 - Generar documentación del código PHP (no de la API) con dOxygen !!!!
@@ -2376,22 +2387,6 @@ Parece ser que simplifica "armar" un HATEOAS
 - Investigar microservicios..... 
 
 - Usar un array de keys para cada microservicio via "config.php" 
-
-
-- Dar soporte para tipo JSON. A almacenar constantes de PDO en "schemas" un JSON es decodificado como Array pero como constante de PDO será un string así que la validación no lo dejará pasar.
-
-Ej:
-
-  {
-      "conditions": {
-          "name": {
-              "contains" : "crypto",
-              "notContains" : ".es"
-          }
-      }    
-  }  
-
-<-- actualmente no puede enviarse eso en el body por las razones antes expuestas. 
 
 
 - Investigar a Hasura -un generador de GraphQL y API Rest Open Source- como competencia.
