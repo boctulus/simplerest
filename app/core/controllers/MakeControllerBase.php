@@ -1982,4 +1982,8 @@ class MakeControllerBase extends Controller
             exportLangDef(true, $dir);
         }        
     }
+
+    // function aview($name) {
+    //     Files::touch(VIEWS_PATH . $name);   
+    // }
 }
