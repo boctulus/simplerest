@@ -643,9 +643,7 @@ class MakeControllerBase extends Controller
             return;
         }
 
-        if (!is_writable($dest_path)){
-            //throw new \Exception("$dest_path is not writable");
-        }
+        Files::writableOrFail($dest_path);
 
         $ok = (bool) file_put_contents($dest_path, $file);
         
@@ -1943,7 +1941,7 @@ class MakeControllerBase extends Controller
         $data = file_get_contents(self::SYSTEM_CONST_TEMPLATE);
         $data = str_replace('# __CONSTANTS', $consts, $data);
 
-        $this->write($dest_path, $data, $protected);;
+        $this->write($dest_path, $data, $protected);
     }
 
     // for translations
@@ -1983,7 +1981,22 @@ class MakeControllerBase extends Controller
         }        
     }
 
-    // function aview($name) {
-    //     Files::touch(VIEWS_PATH . $name);   
-    // }
+    function view($name, ...$opt) {
+        $this->setup($name);
+
+        $filename  = $this->snake_case . '.php';
+        $dest_path = VIEWS_PATH . $filename;
+
+        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
+        
+        $data = <<<HTML
+        <h3>Un título</h3>
+        
+        <span>Un contenido cualquiera</span>
+        HTML;
+    
+        if (!$protected){
+            $this->write($dest_path, $data, $protected);
+        }
+    }
 }
