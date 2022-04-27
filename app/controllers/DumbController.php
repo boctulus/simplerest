@@ -11,6 +11,7 @@ use simplerest\core\Route;
 use simplerest\core\Acl;
 use simplerest\core\controllers\MakeControllerBase;
 use simplerest\core\libs\Factory;;
+
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Hardware;
@@ -65,26 +66,30 @@ class DumbController extends Controller
         DB::getConnection('az');
     }
 
-    function test_logger(){
+    function test_logger()
+    {
         Files::logger('Holaaa mundo');
         Files::logger('R.I.P.');
     }
 
-    function test_dd(){
-        dd([4,5, 7], "My Array", true);
-        dd('hola!', null,true);
+    function test_dd()
+    {
+        dd([4, 5, 7], "My Array", true);
+        dd('hola!', null, true);
         dd(677.55, 'x');
         dd(true, 'My bool');
     }
 
-    function test_ssl(){
+    function test_ssl()
+    {
         dd(Url::has_ssl('simplerest.pulque.ro'));
     }
 
-        /*
+    /*
         https://www.programmerall.com/article/553939151/
     */
-    function test_queue(){
+    function test_queue()
+    {
         $queue = new \SplQueue();
 
         //$queue->setIteratorMode(\SplDoublyLinkedList::IT_MODE_FIFO | \SplDoublyLinkedList::IT_MODE_DELETE);
@@ -95,9 +100,9 @@ class DumbController extends Controller
 
         // shift
         d($queue->dequeue());
-        
+
         // lista elementos
-        foreach($queue as $item) {
+        foreach ($queue as $item) {
             d($item);
         }
 
@@ -105,31 +110,34 @@ class DumbController extends Controller
     }
 
     // ok
-    function test504(){
+    function test504()
+    {
         $vals = DB::table('products')
-        ->setFetchMode('COLUMN')
-        ->selectRaw('cost * 1.05 as cost_after_inc')->get();
+            ->setFetchMode('COLUMN')
+            ->selectRaw('cost * 1.05 as cost_after_inc')->get();
 
         dd($vals);
         dd(DB::getLog());
     }
 
     // fails en PSQL
-    function test505(){
+    function test505()
+    {
         $vals = DB::table('products')
-        ->setFetchMode('COLUMN')
-        ->selectRaw('cost * ? as cost_after_inc', [1.05])->get();
+            ->setFetchMode('COLUMN')
+            ->selectRaw('cost * ? as cost_after_inc', [1.05])->get();
 
         dd($vals);
         dd(DB::getLog());
     }
 
-    function test505b(){
+    function test505b()
+    {
         $m = DB::table('products');
 
         $vals = $m
-        ->setFetchMode('COLUMN')
-        ->selectRaw('cost * ? as cost_after_inc', [1.05])->get();
+            ->setFetchMode('COLUMN')
+            ->selectRaw('cost * ? as cost_after_inc', [1.05])->get();
 
         dd($vals);
         dd($m->debug());
@@ -139,10 +147,10 @@ class DumbController extends Controller
     {
         $con = DB::getConnection();
         $sth = $con->prepare('SELECT cost * ? as cost_after_inc FROM products');
-        
+
         $sth->bindValue(1, 1.05, \PDO::PARAM_INT);
-        $sth->execute(); 
-       
+        $sth->execute();
+
         $res = $sth->fetch();
         dd($res);
     }
@@ -155,15 +163,15 @@ class DumbController extends Controller
 
         $con = DB::getConnection();
         $sth = $con->prepare('SELECT cost * CAST(? AS DOUBLE PRECISION) as cost_after_inc FROM products');
-        
+
         $sth->bindValue(1, 1.05, \PDO::PARAM_INT);
 
         $sth->execute(); // ok
-       
+
         $res = $sth->fetch();
         dd($res);
     }
-    
+
 
     /*
         Falla en POSTGRES:
@@ -172,15 +180,16 @@ class DumbController extends Controller
 
         Es como si en pgsql se evaluara primero el HAVING y luego el SELECT.
     */
-    function alias(){
+    function alias()
+    {
         $rows = DB::table('products')
-        ->deleted()
-        ->groupBy(['name'])
-        ->having(['c', 3, '>'])
-        ->select(['name'])
-        ->selectRaw('COUNT(*) as c')
-        ->dontExec()
-        ->get();
+            ->deleted()
+            ->groupBy(['name'])
+            ->having(['c', 3, '>'])
+            ->select(['name'])
+            ->selectRaw('COUNT(*) as c')
+            ->dontExec()
+            ->get();
 
         dd(DB::getLog());
     }
@@ -189,37 +198,42 @@ class DumbController extends Controller
     /*
         Corrige problema
     */
-    function alias2(){
+    function alias2()
+    {
         $rows = DB::table('products')
-        ->deleted()
-        ->groupBy(['name'])
-        ->select(['name'])
-        ->selectRaw('COUNT(*) as c')
-        ->havingRaw('c > ?', [3])
-        ->get();
+            ->deleted()
+            ->groupBy(['name'])
+            ->select(['name'])
+            ->selectRaw('COUNT(*) as c')
+            ->havingRaw('c > ?', [3])
+            ->get();
 
         dd($rows);
         dd(DB::getLog());
     }
 
-    function index(){
+    function index()
+    {
         return 'INDEX';
     }
 
-    function add($a, $b){
+    function add($a, $b)
+    {
         var_dump($a);  // string
 
         $res = (int) $a + (int) $b;
         return  "$a + $b = " . $res;
     }
 
-    function mul(){
+    function mul()
+    {
         $req = Request::getInstance();
         $res = (int) $req[0] * (int) $req[1];
         return "$req[0] * $req[1] = " . $res . PHP_EOL;
     }
 
-    function div(){
+    function div()
+    {
         $request = request();
         $res = $request->getParam(0) / $request->getParam(1);
 
@@ -234,18 +248,21 @@ class DumbController extends Controller
         ];
     }
 
-    function inc($val){
-        $res = (float) $val +1;
+    function inc($val)
+    {
+        $res = (float) $val + 1;
         //response()->send($res);
         return $res;
     }
 
-    function login(){
-		view('login.php');
+    function login()
+    {
+        view('login.php');
     }
-    
-    function casa_cambio(){
-        view('casa_cambio/home.htm', [], 'casa_cambio/layout.php', 'casa_cambio/app.htm' );
+
+    function casa_cambio()
+    {
+        view('casa_cambio/home.htm', [], 'casa_cambio/layout.php', 'casa_cambio/app.htm');
     }
 
     /*
@@ -353,31 +370,32 @@ class DumbController extends Controller
         $res = (int) $req[0] * (int) $req[1];
         echo "$req[0] + $req[1] = " . $res;
     }
-    */    
+    */
 
-    function where_basico(){
+    function where_basico()
+    {
         // ok
         $rows = DB::table('products')
-        ->where(['size', '2L'])
-        ->where(['cost', 100])
-        ->get();
+            ->where(['size', '2L'])
+            ->where(['cost', 100])
+            ->get();
 
         dd(DB::getLog());
 
         // ok
         $rows = DB::table('products')
-        ->where(['size' => '2L'])
-        ->where(['cost' => 100])
-        ->get();
+            ->where(['size' => '2L'])
+            ->where(['cost' => 100])
+            ->get();
 
         dd(DB::getLog());
 
         // No se recomienda (!)
         $rows = DB::table('products')
-        ->where(['size' => '2L'])
-        ->where(['cost', 100])
-        ->get();
-        
+            ->where(['size' => '2L'])
+            ->where(['cost', 100])
+            ->get();
+
         dd(DB::getLog());
     }
 
@@ -401,31 +419,34 @@ class DumbController extends Controller
     //     dd($m->dd());
     // }
 
-    function get_bar0(){
+    function get_bar0()
+    {
         $m = (new Model(true))
-            ->table('bar')  
+            ->table('bar')
             ->where(['uuid', '0fefc2b1-f0d3-47aa-a875-5dbca85855f9']);
-            
+
         dd($m->get());
     }
 
-    function get_bar1(){
+    function get_bar1()
+    {
         $m = DB::table('bar')
-         // ->assoc()
-        ->where(['uuid', '0fefc2b1-f0d3-47aa-a875-5dbca85855f9']);
-       
+            // ->assoc()
+            ->where(['uuid', '0fefc2b1-f0d3-47aa-a875-5dbca85855f9']);
+
         dd($m->get());
     }
 
-    function get_bar2(){
+    function get_bar2()
+    {
         $m = (new BarModel())
-        ->connect()
-        // ->assoc()
-        ->where(['uuid', '0fefc2b1-f0d3-47aa-a875-5dbca85855f9']);
-        
+            ->connect()
+            // ->assoc()
+            ->where(['uuid', '0fefc2b1-f0d3-47aa-a875-5dbca85855f9']);
+
         dd($m->get());
     }
-    
+
 
     // /*
     //     Se utiliza un modelo *sin* schema y sobre el cual no es posible hacer validaciones
@@ -436,10 +457,10 @@ class DumbController extends Controller
 
     //     // No hay schema ?
     //     dd($m->getSchema::class);
-        
+
     //     dd($m->create([
     //         'name' => 'SUPER',
-	// 		'age' => 22,
+    // 		'age' => 22,
     //     ]));
     // }
 
@@ -452,11 +473,11 @@ class DumbController extends Controller
 
     //     // No hay Schema
     //     dd($m->getSchema::class);
-        
+
     //     dd($m->create([
     //         'id_baz' => 1800,
     //         'name' => 'BAZ',
-	// 		'cost' => '100',
+    // 		'cost' => '100',
     //     ]));
     // }
 
@@ -472,12 +493,12 @@ class DumbController extends Controller
 
     //     // No hay Schema
     //     dd($m->getSchema::class);
-        
+
     //     //$m->dontExec();
 
     //     dd($m->create([
     //         'name' => 'jkq',
-	// 		'price' => '77.67',
+    // 		'price' => '77.67',
     //     ]));
 
     //     //dd($m->dd());
@@ -489,31 +510,33 @@ class DumbController extends Controller
 
     //     // SI hay schema
     //     dd($m->getSchema::class);
-        
+
     //     dd($m->create([
     //         'name' => 'gggggggggg',
-	// 		'price' => '100',
+    // 		'price' => '100',
     //     ]));
     // }
 
-    function create_bar1(){
+    function create_bar1()
+    {
         $m = DB::table('bar');
-        
+
         dd($m->create([
             'name' => 'gggggggggg',
-			'price' => '100',
+            'price' => '100',
             'email' => 'a@b.com',
             'belongs_to' => 90
         ]));
     }
 
 
-    function create_bar2(){
+    function create_bar2()
+    {
         $m = DB::table('bar');
-        
+
         dd($m->create([
             'name' => 'gggggggggg',
-			'price' => '100',
+            'price' => '100',
             'email' => 'a@b.com',
             'belongs_to' => 90,
 
@@ -529,11 +552,13 @@ class DumbController extends Controller
         ]));
     }
 
-    function get_products(){
+    function get_products()
+    {
         dd(DB::table('products')->get());
     }
 
-    function get_products2(){
+    function get_products2()
+    {
         dd(DB::table('products')->where(['size', '2L'])->get());
     }
 
@@ -543,108 +568,116 @@ class DumbController extends Controller
         //$m->dontExec();
 
         $name = '';
-        for ($i=0;$i<20;$i++)
-            $name .= chr(rand(97,122));
+        for ($i = 0; $i < 20; $i++)
+            $name .= chr(rand(97, 122));
 
-        $id = $m->create([ 
-            'name' => $name, 
-            'description' => 'Esto es una prueba 77', 
+        $id = $m->create([
+            'name' => $name,
+            'description' => 'Esto es una prueba 77',
             'size' => '100L',
             'cost' => 66,
             'belongs_to' => 90,
             'digital_id' => 1
-        ]);   
-        
+        ]);
+
         d($m->debug(), 'SQL');
 
         return $id;
     }
 
-    function create_baz($id = null){
+    function create_baz($id = null)
+    {
 
         $name = '';
-        for ($i=0;$i<20;$i++)
-            $name .= chr(rand(97,122));
+        for ($i = 0; $i < 20; $i++)
+            $name .= chr(rand(97, 122));
 
-        $data = [ 
+        $data = [
             'name' => $name,
             'cost' => 100
         ];
 
-        if ($id != null){
+        if ($id != null) {
             $data['id'] = $id;
         }
 
-        $id = DB::table('baz')->create($data);    
+        $id = DB::table('baz')->create($data);
 
         dd($id, 'las_inserted_id');
     }
 
-    
+
     // implementada y funcionando en register() 
-    function transaction(){
+    function transaction()
+    {
         DB::beginTransaction();
 
         try {
             $name = '';
-            for ($i=0;$i<20;$i++)
-                $name .= chr(rand(97,122));
+            for ($i = 0; $i < 20; $i++)
+                $name .= chr(rand(97, 122));
 
-            $id = DB::table('products')->create([ 
-                'name' => $name, 
-                'description' => 'bla bla bla', 
-                'size' => rand(1,5).'L',
-                'cost' => rand(0,500),
+            $id = DB::table('products')->create([
+                'name' => $name,
+                'description' => 'bla bla bla',
+                'size' => rand(1, 5) . 'L',
+                'cost' => rand(0, 500),
                 'belongs_to' => 90
-            ]);   
+            ]);
 
             //throw new \Exception("AAA"); 
 
             DB::commit();
-
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
         } catch (\Throwable $e) {
-            DB::rollback();            
-        }            
+            DB::rollback();
+        }
     }
 
     // https://fideloper.com/laravel-database-transactions
-    function transaction2(){
-        DB::transaction(function(){
+    function transaction2()
+    {
+        DB::transaction(function () {
             $name = '';
-            for ($i=0;$i<20;$i++)
-                $name .= chr(rand(97,122));
+            for ($i = 0; $i < 20; $i++)
+                $name .= chr(rand(97, 122));
 
-            $id = DB::table('products')->create([ 
-                'name' => $name, 
-                'description' => 'Esto es una prueba', 
-                'size' => rand(1,5).'L',
-                'cost' => rand(0,500),
+            $id = DB::table('products')->create([
+                'name' => $name,
+                'description' => 'Esto es una prueba',
+                'size' => rand(1, 5) . 'L',
+                'cost' => rand(0, 500),
                 'belongs_to' => 90
-            ]);   
+            ]);
 
-            throw new \Exception("AAA"); 
-        });      
+            throw new \Exception("AAA");
+        });
     }
-    
-    function output_mutator(){
+
+    function output_mutator()
+    {
         $rows = DB::table('users')
-        ->registerOutputMutator('username', function($str){ return strtoupper($str); })
-        ->get();
+            ->registerOutputMutator('username', function ($str) {
+                return strtoupper($str);
+            })
+            ->get();
 
         dd($rows);
     }
 
-    function output_mutator2(){
+    function output_mutator2()
+    {
         $rows = DB::table('products')
-        ->registerOutputMutator('size', function($str){ return strtolower($str); })
-        ->groupBy(['size'])
-        ->having(['AVG(cost)', 150, '>='])
-        ->select(['size'])
-        ->selectRaw('AVG(cost)')
-        ->get();
+            ->registerOutputMutator('size', function ($str) {
+                return strtolower($str);
+            })
+            ->groupBy(['size'])
+            ->having(['AVG(cost)', 150, '>='])
+            ->select(['size'])
+            ->selectRaw('AVG(cost)')
+            ->get();
 
         dd($rows);
         dd(DB::getLog());
@@ -656,79 +689,88 @@ class DumbController extends Controller
 
         https://laravel.com/docs/5.5/eloquent-resources
     */
-    function transform(){
+    function transform()
+    {
         //$this->is_admin = true;
 
 
         $t = new \simplerest\transformers\UsersTransformer();
 
         $rows = DB::table('users')
-        ->registerTransformer($t, $this)
-        ->get();
+            ->registerTransformer($t, $this)
+            ->get();
 
         dd($rows);
     }
 
-    function transform_and_output_mutator(){
+    function transform_and_output_mutator()
+    {
         $t = new \simplerest\transformers\UsersTransformer();
 
         $rows = DB::table('users')
-        ->registerOutputMutator('username', function($str){ return strtoupper($str); })
-        ->registerTransformer($t)
-        ->get();
+            ->registerOutputMutator('username', function ($str) {
+                return strtoupper($str);
+            })
+            ->registerTransformer($t)
+            ->get();
 
         dd($rows);
     }
 
-    function transform2(){
+    function transform2()
+    {
         $t = new \simplerest\transformers\ProductsTransformer();
 
         $rows = DB::table('products')
-        ->where(['size'=>'2L'])
-        ->registerTransformer($t)
-        ->get();
+            ->where(['size' => '2L'])
+            ->registerTransformer($t)
+            ->get();
 
         dd($rows);
     }
 
 
     // 'SELECT id, name, cost FROM products WHERE (cost = 200) AND deleted_at IS NULL LIMIT 20, 10;'
-    function g(){
+    function g()
+    {
         dd(DB::table('products')
-        ->where(['cost', 200])
-        ->limit(10)
-        ->offset(20)
-        ->get(['id', 'name', 'cost']));
-        
-        dd(DB::getLog());
-    }
-
-    function limit(){
-        dd(DB::table('products')
-        ->select(['id', 'name', 'cost'])
-        ->offset(10)
-        ->limit(5)
-        ->get());
+            ->where(['cost', 200])
+            ->limit(10)
+            ->offset(20)
+            ->get(['id', 'name', 'cost']));
 
         dd(DB::getLog());
     }
 
-    function limit0(){
+    function limit()
+    {
         dd(DB::table('products')
-        ->offset(20)
-        ->select(['id', 'name', 'cost'])
-        ->limit(10)
-        ->setPaginator(false)
-        ->get());
-        
+            ->select(['id', 'name', 'cost'])
+            ->offset(10)
+            ->limit(5)
+            ->get());
+
+        dd(DB::getLog());
+    }
+
+    function limit0()
+    {
+        dd(DB::table('products')
+            ->offset(20)
+            ->select(['id', 'name', 'cost'])
+            ->limit(10)
+            ->setPaginator(false)
+            ->get());
+
         dd(DB::getLog());
 
         dd(DB::table('products')->limit(10)->get());
         dd(DB::getLog());
     }
-    
+
     ///
-    function limite(){
+    function limite()
+    {
         DB::table('products')->offset(20)->limit(10)->get();
         dd(DB::getLog());
 
@@ -736,7 +778,8 @@ class DumbController extends Controller
         dd(DB::getLog());
     }
 
-    function distinct(){
+    function distinct()
+    {
         dd(DB::table('products')->distinct()->get(['size']));
 
         // Or
@@ -746,19 +789,23 @@ class DumbController extends Controller
         dd(DB::table('products')->select(['size'])->distinct()->get());
     }
 
-    function distinct1(){
+    function distinct1()
+    {
         dd(DB::table('products')->select(['size', 'cost'])->distinct()->get());
     }
 
-    function distinct2(){
+    function distinct2()
+    {
         dd(DB::table('users')->distinct()->get());
     }
 
-    function distinct3(){
+    function distinct3()
+    {
         dd(DB::table('products')->distinct()->get());
     }
 
-    function pluck(){
+    function pluck()
+    {
         $names = DB::table('products')->pluck('size');
 
         foreach ($names as $name) {
@@ -766,89 +813,99 @@ class DumbController extends Controller
         }
     }
 
-    function pluck2($uid) {
+    function pluck2($uid)
+    {
         $perms = DB::table('user_sp_permissions')
-        ->assoc()
-        ->where(['user_id' => $uid])
-        ->join('sp_permissions', 'user_sp_permissions.sp_permission_id', '=', 'sp_permissions.id')
-        ->pluck('name');
+            ->assoc()
+            ->where(['user_id' => $uid])
+            ->join('sp_permissions', 'user_sp_permissions.sp_permission_id', '=', 'sp_permissions.id')
+            ->pluck('name');
 
         dd($perms);
     }
 
-    function get_product($id){       
+    function get_product($id)
+    {
         // Include deleted items
         dd(DB::table('products')->find($id)->deleted()->dd());
     }
-    
-    function exists(){
-       
+
+    function exists()
+    {
+
         dd(DB::table('products')->where(['belongs_to' => 103])->exists());
         //dd(DB::getLog());
 
-        dd(DB::table('products')->where([ 
+        dd(DB::table('products')->where([
             ['cost', 200, '<'],
-            ['name', 'CocaCola'] 
+            ['name', 'CocaCola']
         ])->exists());
         //dd(DB::  getLog());
-		
+
         dd(DB::table('users')->where(['username' => 'boctulus'])->exists());
         //dd(DB::  getLog());
     }
-           
-    function first(){
-        dd(DB::table('products')->where([ 
+
+    function first()
+    {
+        dd(DB::table('products')->where([
             ['cost', 100, '>='],
             ['cost', 150, '<'],
             ['belongs_to',  90]
         ])->select(['name', 'size', 'cost'])
-        ->first()); 
+            ->first());
     }
 
-    function value(){
-		dd(DB::table('products')->where([ 
+    function value()
+    {
+        dd(DB::table('products')->where([
             ['cost', 5000, '>=']
-        ])->value('name')); 
+        ])->value('name'));
 
         dd(DB::getLog());
     }
 
-    function value1(){
-        dd(DB::table('products')->where([ 
+    function value1()
+    {
+        dd(DB::table('products')->where([
             ['cost', 200, '>='],
             ['cost', 500, '<='],
             ['belongs_to',  90]
         ])->value('name'));
-        
+
         dd(DB::getLog());
     }
 
-    function oldest(){
+    function oldest()
+    {
         // oldest first
         dd(DB::table('products')->oldest()->first());
         dd(DB::getLog());
     }
 
-    function newest(){
+    function newest()
+    {
         // newest, first result
         dd(DB::table('products')->newest()->first());
         dd(DB::getLog());
     }
 
-    function newest2(){     
-        dd(DB::table('products')->where([ 
+    function newest2()
+    {
+        dd(DB::table('products')->where([
             ['cost', 100, '>='],
             ['cost', 150, '<'],
             ['belongs_to',  90]
         ])->select(['name', 'size', 'cost', 'created_at'])
-        ->newest()
-        ->first());
+            ->newest()
+            ->first());
     }
 
 
-    
+
     // random or rand
-    function random(){
+    function random()
+    {
         //dd(DB::table('products')->random()->get(['id', 'name']), 'ALL');
         dd(DB::table('products')->random()->select(['id', 'name'])->get(), 'ALL');
 
@@ -857,114 +914,125 @@ class DumbController extends Controller
         dd(DB::table('products')->random()->select(['id', 'name'])->first(), 'FIRST');
     }
 
-    function count(){
+    function count()
+    {
         $c = DB::table('products')
-        ->where([ 'belongs_to'=> 90] )
-        ->count();
+            ->where(['belongs_to' => 90])
+            ->count();
 
         dd($c);
     }
 
-    function count1(){
+    function count1()
+    {
         $c = DB::table('products')
-        //->assoc()
-        ->where([ 'belongs_to'=> 90] )
-        ->count('*', 'count');
+            //->assoc()
+            ->where(['belongs_to' => 90])
+            ->count('*', 'count');
 
         dd($c);
         dd(DB::getLog());
     }
 
-    function count1b(){
+    function count1b()
+    {
         // SELECT COUNT(*) FROM products WHERE cost >= 100 AND size = '1L' AND belongs_to = 90 AND deleted_at IS NULL 
 
         $res =  DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->count();
-
-        dd($res);
-        dd(DB::getLog());
-    } 
-
-    // SELECT COUNT(DISTINCT( ...
-    function count2(){
-        // SELECT COUNT(DISTINCT description) FROM products WHERE cost >= 100 AND size = '1L' AND belongs_to = 90 AND deleted_at IS NULL  
-
-        $res = DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->distinct()
-        ->count('description');
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->count();
 
         dd($res);
         dd(DB::getLog());
     }
 
     // SELECT COUNT(DISTINCT( ...
-    function count2b(){
+    function count2()
+    {
+        // SELECT COUNT(DISTINCT description) FROM products WHERE cost >= 100 AND size = '1L' AND belongs_to = 90 AND deleted_at IS NULL  
+
+        $res = DB::table('products')
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->distinct()
+            ->count('description');
+
+        dd($res);
+        dd(DB::getLog());
+    }
+
+    // SELECT COUNT(DISTINCT( ...
+    function count2b()
+    {
         /*
              SELECT COUNT(DISTINCT description) FROM products WHERE cost >= 100 AND size = '1L' AND belongs_to = 90 AND deleted_at IS NULL  
         */
         $res = DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->distinct()
-        ->count('description', 'count');
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->distinct()
+            ->count('description', 'count');
 
         dd($res);
         dd(DB::getLog());
     }
 
-    function count3(){
+    function count3()
+    {
         $uid = 90;
 
         $count = (int) DB::table('user_roles')
-		->where(['user_id' => $uid])
-        ->setFetchMode('COLUMN')
-		->count();
-		
+            ->where(['user_id' => $uid])
+            ->setFetchMode('COLUMN')
+            ->count();
+
         dd($count);
         dd(DB::getLog());
     }
 
-    function avg(){
+    function avg()
+    {
         // SELECT AVG(cost) FROM products WHERE cost >= 100 AND size = '1L' AND belongs_to = 90 AND deleted_at IS NULL; 
 
         $res = DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->avg('cost', 'prom');
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->avg('cost', 'prom');
 
         dd($res);
     }
 
-    function sum(){
+    function sum()
+    {
         // SELECT SUM(cost) FROM products WHERE cost >= 100 AND size = '1L' AND belongs_to = 90 AND deleted_at IS NULL; 
 
         $res = DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->sum('cost', 'suma');
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->sum('cost', 'suma');
 
         dd($res);
         dd(DB::getLog());
     }
 
-    function min(){
+    function min()
+    {
         $res = DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->min('cost', 'minimo');
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->min('cost', 'minimo');
 
         dd($res);
     }
 
-    function max(){ 
+    function max()
+    {
         $res =  DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->max('cost', 'maximo');
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->max('cost', 'maximo');
 
         dd($res);
         dd(DB::getLog());
     }
 
     // select + max
-    function max1(){
+    function max1()
+    {
         /*
             SELECT 
             products.name, 
@@ -982,9 +1050,9 @@ class DumbController extends Controller
             AND products.deleted_at IS NULL;
         */
         $res =  DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->select(['name'])
-        ->max('cost', 'maximo');
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->select(['name'])
+            ->max('cost', 'maximo');
 
         dd($res);
         dd(DB::getLog());
@@ -993,26 +1061,28 @@ class DumbController extends Controller
     /*
         select + addSelect
     */
-    function select() {
+    function select()
+    {
         dd(DB::table('products')
-        ->random()
-        ->select(['id', 'name'])
-        ->addSelect('is_active')
-        ->where(['is_active', true])
-        ->first());
+            ->random()
+            ->select(['id', 'name'])
+            ->addSelect('is_active')
+            ->where(['is_active', true])
+            ->first());
 
         dd(DB::getLog());
     }
 
     // RAW Select
-    function select1r() {
+    function select1r()
+    {
         $m = DB::table('products')
-        ->random()
-        ->select(['id', 'name'])
-        ->addSelect('is_active')
-        ->addSelect('cost')
-        ->selectRaw('cost * ? as cost_after_inc', [1.05])
-        ->where(['is_active', true]);
+            ->random()
+            ->select(['id', 'name'])
+            ->addSelect('is_active')
+            ->addSelect('cost')
+            ->selectRaw('cost * ? as cost_after_inc', [1.05])
+            ->where(['is_active', true]);
 
         dd($m->first());
         dd($m->dd());
@@ -1027,95 +1097,103 @@ class DumbController extends Controller
         Investigar como funciona el pluck() de Larvel
         https://stackoverflow.com/a/40964361/980631
     */
-    function select2() {
+    function select2()
+    {
         $m = DB::table('products')->setFetchMode('COLUMN')
-        ->selectRaw('cost * ? as cost_after_inc', [1.05]);
+            ->selectRaw('cost * ? as cost_after_inc', [1.05]);
 
         dd($m->get());
         dd($m->dd());
     }
 
-    function select3() {
+    function select3()
+    {
         $m = DB::table('products')->setFetchMode('COLUMN')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->selectRaw('cost * ? as cost_after_inc', [1.05]);
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->selectRaw('cost * ? as cost_after_inc', [1.05]);
 
         dd($m->get());
         dd($m->dd());
     }
 
     // DISTINCT -- ok
-    function select30() {
+    function select30()
+    {
         $m = DB::table('products')
-        ->where([ ['cost', 100, '>='] ])
-        ->select(['name', 'cost'])
-        ->distinct();
+            ->where([['cost', 100, '>=']])
+            ->select(['name', 'cost'])
+            ->distinct();
 
         dd($m->get());
         dd($m->dd());;
     }
 
     // DISTINCT
-    function select3a() {
+    function select3a()
+    {
         $m = DB::table('products')
-        ->where([ ['cost', 100, '>='] ])
-        ->selectRaw('cost * ? as cost_after_inc', [1.05])
-        ->distinct();
+            ->where([['cost', 100, '>=']])
+            ->selectRaw('cost * ? as cost_after_inc', [1.05])
+            ->distinct();
 
         dd($m->get());
         dd($m->dd());
     }
 
     // DISTINCT + fetch mode = COLUMN
-    function select3b() {
+    function select3b()
+    {
         $m = DB::table('products')
-        ->setFetchMode('COLUMN')
-        ->where([ ['cost', 100, '>='] ])
-        ->selectRaw('cost * ? as cost_after_inc', [1.05])
-        ->distinct();
+            ->setFetchMode('COLUMN')
+            ->where([['cost', 100, '>=']])
+            ->selectRaw('cost * ? as cost_after_inc', [1.05])
+            ->distinct();
 
         dd($m->get());
         dd($m->dd());
     }
 
     // select + selectRaw
-    function select4() {
+    function select4()
+    {
         $rows  = DB::table('products')
-        ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->selectRaw('cost * ? as cost_after_inc', [1.05])
-        ->addSelect('name')
-        ->addSelect('cost')
-        ->get();
+            ->where([['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->selectRaw('cost * ? as cost_after_inc', [1.05])
+            ->addSelect('name')
+            ->addSelect('cost')
+            ->get();
 
         dd($rows);
-        dd(DB::getLog()); 
+        dd(DB::getLog());
     }
 
     // select + selectRaw
-    function select4b() {
+    function select4b()
+    {
         $rows  = DB::table('products')
-        ->where([ ['cost', 50, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->selectRaw('cost * ? as cost_after_inc', [1.05])
-        ->addSelect('name')
-        ->addSelect('cost')
-        ->distinct()
-        ->get();
+            ->where([['cost', 50, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->selectRaw('cost * ? as cost_after_inc', [1.05])
+            ->addSelect('name')
+            ->addSelect('cost')
+            ->distinct()
+            ->get();
 
         dd($rows);
-        dd(DB::getLog()); 
+        dd(DB::getLog());
     }
 
     // selectRaw + fetch mode = COLUMN
-    function select4c() {
+    function select4c()
+    {
         $rows  = DB::table('products')
-        ->setFetchMode('COLUMN')
-        ->where([ ['cost', 50, '>='], ['size', '1L'], ['belongs_to', 90] ])
-        ->selectRaw('cost * ? as cost_after_inc', [1.05])
-        ->distinct()
-        ->get();
+            ->setFetchMode('COLUMN')
+            ->where([['cost', 50, '>='], ['size', '1L'], ['belongs_to', 90]])
+            ->selectRaw('cost * ? as cost_after_inc', [1.05])
+            ->distinct()
+            ->get();
 
         dd($rows);
-        dd(DB::getLog()); 
+        dd(DB::getLog());
     }
 
     /*
@@ -1123,41 +1201,45 @@ class DumbController extends Controller
 
         SELECT size, COUNT(*) FROM products GROUP BY size
     */
-    function select_group_count(){
+    function select_group_count()
+    {
         dd(DB::table('products')->deleted()
-        ->groupBy(['size'])
-        ->select(['size'])
-        ->count());
+            ->groupBy(['size'])
+            ->select(['size'])
+            ->count());
 
-		dd(DB::getLog());
+        dd(DB::getLog());
     }
 
     /*
         SELECT size, AVG(cost) FROM products GROUP BY size
     */
-    function select_group_avg(){
+    function select_group_avg()
+    {
         dd(DB::table('products')->deleted()
-        ->groupBy(['size'])
-        ->select(['size'])
-        ->avg('cost'));  
-        
+            ->groupBy(['size'])
+            ->select(['size'])
+            ->avg('cost'));
+
         dd(DB::getLog());
     }
 
-    function filter_products1(){
-        dd(DB::table('products')->deleted()->where([ 
+    function filter_products1()
+    {
+        dd(DB::table('products')->deleted()->where([
             ['size', '2L']
         ])->get());
     }
-    
-    function filter_products2(){
+
+    function filter_products2()
+    {
         $m = DB::table('products')
-        ->where([ 
-            ['name', ['Vodka', 'Wisky', 'Tekila','CocaCola']], // IN 
-            ['is_locked', 0],
-            ['belongs_to', 90]
-        ])
-        ->whereNotNull('description');
+            ->where([
+                ['name', ['Vodka', 'Wisky', 'Tekila', 'CocaCola']], // IN 
+                ['is_locked', 0],
+                ['belongs_to', 90]
+            ])
+            ->whereNotNull('description');
 
         dd($m->get());
         var_dump(DB::getLog());
@@ -1165,68 +1247,76 @@ class DumbController extends Controller
     }
 
     // SELECT * FROM products WHERE name IN ('CocaCola', 'PesiLoca') OR cost IN (100, 200)  OR cost >= 550 AND deleted_at IS NULL
-    function filter_products3(){
+    function filter_products3()
+    {
 
-        dd(DB::table('products')->where([ 
-            ['name', ['CocaCola', 'PesiLoca']], 
+        dd(DB::table('products')->where([
+            ['name', ['CocaCola', 'PesiLoca']],
             ['cost', 550, '>='],
             ['cost', [100, 200]]
-        ], 'OR')->get());    
+        ], 'OR')->get());
     }
 
-    function filter_products4(){    
-        dd(DB::table('products')->where([ 
+    function filter_products4()
+    {
+        dd(DB::table('products')->where([
             ['name', ['CocaCola', 'PesiLoca', 'Wisky', 'Vodka'], 'NOT IN']
         ])->get());
     }
 
-    function filter_products5(){
+    function filter_products5()
+    {
         // implicit 'AND'
-        dd(DB::table('products')->where([ 
+        dd(DB::table('products')->where([
             ['cost', 200, '<'],
-            ['name', 'CocaCola'] 
-        ])->get());        
+            ['name', 'CocaCola']
+        ])->get());
 
         dd(DB::getLog());
     }
 
-    function filter_products6(){
-        dd(DB::table('products')->where([ 
+    function filter_products6()
+    {
+        dd(DB::table('products')->where([
             ['cost', 200, '>='],
             ['cost', 270, '<=']
-        ])->get());  
-        
+        ])->get());
+
         dd(DB::getLog());
     }
 
     // WHERE IN
-    function where1(){
+    function where1()
+    {
         dd(DB::table('products')->where(['size', ['0.5L', '3L'], 'IN'])->get());
 
         dd(DB::getLog());
     }
 
     // WHERE IN
-    function where2(){
+    function where2()
+    {
         dd(DB::table('products')->where(['size', ['0.5L', '3L']])->get());
 
         dd(DB::getLog());
     }
 
     // WHERE IN
-    function where3(){
+    function where3()
+    {
         dd(DB::table('products')
-        //->dontQualify()
-        ->whereIn('size', ['0.5L', '3L'])->get());
+            //->dontQualify()
+            ->whereIn('size', ['0.5L', '3L'])->get());
 
         dd(DB::getLog());
     }
 
     //WHERE NOT IN
-    function where4(){
+    function where4()
+    {
         $m = DB::table('products')
-        //->dontQualify()
-        ->where(['size', ['0.5L', '3L', '1L'], 'NOT IN']);
+            //->dontQualify()
+            ->where(['size', ['0.5L', '3L', '1L'], 'NOT IN']);
         $m->dd();
 
         dd($m->get());
@@ -1234,71 +1324,81 @@ class DumbController extends Controller
     }
 
     //WHERE NOT IN
-    function where5(){
+    function where5()
+    {
         dd(DB::table('products')->whereNotIn('size', ['0.5L', '3L'])->get());
     }
 
     // WHERE NULL
-    function where6(){  
-        dd(DB::table('products')->where(['workspace', null])->get());   
+    function where6()
+    {
+        dd(DB::table('products')->where(['workspace', null])->get());
     }
 
     // WHERE NULL
-    function where7(){  
+    function where7()
+    {
         dd(DB::table('products')->whereNull('workspace')->get());
     }
 
     // WHERE NOT NULL
-    function where8(){  
-        dd(DB::table('products')->where(['workspace', null, 'IS NOT'])->get());   
+    function where8()
+    {
+        dd(DB::table('products')->where(['workspace', null, 'IS NOT'])->get());
     }
 
     // WHERE NOT NULL
-    function where9(){  
+    function where9()
+    {
         dd(DB::table('products')->whereNotNull('workspace')->get());
     }
 
     // WHERE BETWEEN
-    function where10(){
+    function where10()
+    {
         dd(DB::table('products')
-        ->select(['name', 'cost'])
-        ->whereBetween('cost', [100, 250])->get());
+            ->select(['name', 'cost'])
+            ->whereBetween('cost', [100, 250])->get());
     }
 
     // WHERE BETWEEN
-    function where11(){
+    function where11()
+    {
         dd(DB::table('products')
-        ->select(['name', 'cost'])
-        ->whereNotBetween('cost', [100, 250])->get());
-    }
-    
-    function where12(){
-        dd(DB::table('products')
-        ->find(145)->first());
+            ->select(['name', 'cost'])
+            ->whereNotBetween('cost', [100, 250])->get());
     }
 
-    function where13(){
+    function where12()
+    {
         dd(DB::table('products')
-        ->where(['cost', 150])
-        ->value('name'));
+            ->find(145)->first());
+    }
+
+    function where13()
+    {
+        dd(DB::table('products')
+            ->where(['cost', 150])
+            ->value('name'));
     }
 
     /*
         SELECT  name, cost, id FROM products WHERE belongs_to = '90' AND (cost >= 100 AND cost < 500) AND description IS NOT NULL
     */
-    function where14(){
+    function where14()
+    {
         dd(DB::table('products')->deleted()
-        ->select(['name', 'cost', 'id'])
-        ->where(['belongs_to', 90])
-        ->where([ 
-            ['cost', 100, '>='],
-            ['cost', 500, '<']
-        ])
-        ->whereNotNull('description')
-        ->get());
+            ->select(['name', 'cost', 'id'])
+            ->where(['belongs_to', 90])
+            ->where([
+                ['cost', 100, '>='],
+                ['cost', 500, '<']
+            ])
+            ->whereNotNull('description')
+            ->get());
     }
 
-    
+
     /* 
         A OR B OR (C AND D)
 
@@ -1307,36 +1407,38 @@ class DumbController extends Controller
        name IN (\'CocaCola\', \'PesiLoca\') OR 
        (cost <= 550 AND cost >= 100)
     */
-    function or_where(){
+    function or_where()
+    {
         $q = DB::table('products')->deleted()
-        ->select(['name', 'cost', 'id'])
-        ->where(['belongs_to', 90])
-        ->orWhere(['name', ['CocaCola', 'PesiLoca']])
-        ->orWhere([
-            ['cost', 550, '<='],
-            ['cost', 100, '>=']
-        ]);
+            ->select(['name', 'cost', 'id'])
+            ->where(['belongs_to', 90])
+            ->orWhere(['name', ['CocaCola', 'PesiLoca']])
+            ->orWhere([
+                ['cost', 550, '<='],
+                ['cost', 100, '>=']
+            ]);
 
         dd($q->get());
         dd($q->dd());
     }
-    
+
     // A OR (B AND C)
-    function or_where2(){
+    function or_where2()
+    {
         $q = DB::table('products')->deleted()
-        ->select(['name', 'cost', 'id', 'description'])
-        ->whereNotNull('description')
-        ->orWhere([ 
-                    ['cost', 100, '>='],
-                    ['cost', 500, '<']
-        ]);
+            ->select(['name', 'cost', 'id', 'description'])
+            ->whereNotNull('description')
+            ->orWhere([
+                ['cost', 100, '>='],
+                ['cost', 500, '<']
+            ]);
 
         dd($q->get());
         dd($q->dd());
     }
 
 
-     /*
+    /*
         SELECT  name, cost, id FROM products WHERE 
         belongs_to = '90' AND 
         (
@@ -1346,22 +1448,23 @@ class DumbController extends Controller
         ) AND 
         description IS NOT NULL
     */
-    function where_or(){
+    function where_or()
+    {
         $q = DB::table('products')->deleted()
-        ->select(['name', 'cost', 'id'])
-        ->where(['belongs_to', 90])
-        ->where([                           // <--- whereOr() === where([], 'OR')
-            ['name', ['CocaCola', 'PesiLoca']], 
-            ['cost', 550, '>='],
-            ['cost', 100, '<']
-        ], 'OR')
-        ->whereNotNull('description');
+            ->select(['name', 'cost', 'id'])
+            ->where(['belongs_to', 90])
+            ->where([                           // <--- whereOr() === where([], 'OR')
+                ['name', ['CocaCola', 'PesiLoca']],
+                ['cost', 550, '>='],
+                ['cost', 100, '<']
+            ], 'OR')
+            ->whereNotNull('description');
 
         dd($q->get());
         dd($q->dd());
     }
 
-     /*
+    /*
         SELECT  name, cost, id FROM products WHERE 
         belongs_to = '90' AND 
         (
@@ -1371,61 +1474,66 @@ class DumbController extends Controller
         ) AND 
         description IS NOT NULL
     */
-    function where_or1(){
+    function where_or1()
+    {
         $q = DB::table('products')->deleted()
-        ->select(['name', 'cost', 'id'])
-        ->where(['belongs_to', 90])
-        ->whereOr([ 
-            ['name', ['CocaCola', 'PesiLoca']], 
-            ['cost', 550, '>='],
-            ['cost', 100, '<']
-        ])
-        ->whereNotNull('description');
+            ->select(['name', 'cost', 'id'])
+            ->where(['belongs_to', 90])
+            ->whereOr([
+                ['name', ['CocaCola', 'PesiLoca']],
+                ['cost', 550, '>='],
+                ['cost', 100, '<']
+            ])
+            ->whereNotNull('description');
 
         dd($q->get());
         dd($q->dd());
     }
-        
+
     /*
         SELECT  name, cost, id FROM products WHERE (belongs_to = '90' AND (name IN ('CocaCola', 'PesiLoca')  OR cost >= 550 OR cost < 100) AND description IS NOT NULL) AND deleted_at IS NULL OR  (cost >= 100 AND cost < 500)
     */
-    function where_or2(){
+    function where_or2()
+    {
         dd(DB::table('products')
-        ->select(['id', 'name', 'cost', 'description'])
-        ->where(['belongs_to', 90])
-        ->where([ 
-            ['name', ['CocaCola', 'PesiLoca']], 
-            ['cost', 550, '>='],
-            ['cost', 100, '<']
-        ], 'OR')
-        ->whereNotNull('description')
-        ->get());
+            ->select(['id', 'name', 'cost', 'description'])
+            ->where(['belongs_to', 90])
+            ->where([
+                ['name', ['CocaCola', 'PesiLoca']],
+                ['cost', 550, '>='],
+                ['cost', 100, '<']
+            ], 'OR')
+            ->whereNotNull('description')
+            ->get());
     }
 
     // SELECT * FROM users WHERE (email = 'nano@g.c' OR  username = 'nano') AND deleted_at IS NULL
-    function or_where3(){
+    function or_where3()
+    {
         $email = 'nano@g.c';
         $username = 'nano';
 
         $rows = DB::table('users')->assoc()->unhide(['password'])
-            ->where([ 'email'=> $email, 
-                      'username' => $username 
-            ], 'OR') 
-            ->setValidator((new Validator())->setRequired(false))  
+            ->where([
+                'email' => $email,
+                'username' => $username
+            ], 'OR')
+            ->setValidator((new Validator())->setRequired(false))
             ->get();
 
         dd($rows);
     }
 
     // SELECT * FROM users WHERE (email = 'nano@g.c' OR  username = 'nano') AND deleted_at IS NULL
-    function or_where3b(){
+    function or_where3b()
+    {
         $email = 'nano@g.c';
         $username = 'nano';
 
         $rows = DB::table('users')->assoc()
-            ->where([ 'email'=> $email ]) 
-            ->orWhere(['username' => $username ])
-            ->setValidator((new Validator())->setRequired(false))  
+            ->where(['email' => $email])
+            ->orWhere(['username' => $username])
+            ->setValidator((new Validator())->setRequired(false))
             ->first();
 
         dd($rows);
@@ -1473,30 +1581,30 @@ class DumbController extends Controller
     function where_adv()
     {
         $m = (new Model())
-        ->table('products')
+            ->table('products')
 
-        ->where([
-            ['cost', 100, '>'], // AND
-            ['id', 50, '<']
-        ]) 
-        // AND
-        ->whereRaw('name LIKE ?', ['%a%'])
-        // AND
-        ->group(function($q){  
-            $q->where(['is_active', 1])
-            // OR
-              ->orWhere([
-                ['cost', 100, '<='], 
-                ['description', NULL, 'IS NOT']
-            ]);  
-        })
-        // AND
-        ->where(['belongs_to', 150, '>'])
-        //->dontExec()
-        ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
+            ->where([
+                ['cost', 100, '>'], // AND
+                ['id', 50, '<']
+            ])
+            // AND
+            ->whereRaw('name LIKE ?', ['%a%'])
+            // AND
+            ->group(function ($q) {
+                $q->where(['is_active', 1])
+                    // OR
+                    ->orWhere([
+                        ['cost', 100, '<='],
+                        ['description', NULL, 'IS NOT']
+                    ]);
+            })
+            // AND
+            ->where(['belongs_to', 150, '>'])
+            //->dontExec()
+            ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
 
-       dd($m->get());  
-	   var_dump($m->dd());
+        dd($m->get());
+        var_dump($m->dd());
     }
 
     /*
@@ -1512,28 +1620,28 @@ class DumbController extends Controller
     function where_adv2()
     {
         $m = (new Model())
-        ->table('products')
+            ->table('products')
 
-        ->where([
-            ['cost', 100, '>'], // AND
-            ['id', 50, '<']
-        ]) 
-        // OR
-        ->or(function($q){  
-            $q->whereRaw('name LIKE ?', ['%a'])
-              // AND  
-              ->where([
-                ['cost', 100, '<='], 
-                ['description', NULL, 'IS NOT']
-            ]);  
-        })
-        // AND
-        ->where(['belongs_to', 150, '>'])
-        
-        ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
+            ->where([
+                ['cost', 100, '>'], // AND
+                ['id', 50, '<']
+            ])
+            // OR
+            ->or(function ($q) {
+                $q->whereRaw('name LIKE ?', ['%a'])
+                    // AND  
+                    ->where([
+                        ['cost', 100, '<='],
+                        ['description', NULL, 'IS NOT']
+                    ]);
+            })
+            // AND
+            ->where(['belongs_to', 150, '>'])
 
-       //dd($m->get()); 
-	   var_dump($m->dd());
+            ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
+
+        //dd($m->get()); 
+        var_dump($m->dd());
     }
 
     /*
@@ -1564,46 +1672,48 @@ class DumbController extends Controller
             ) 
             AND products.deleted_at IS NULL;
     */
-    function not(){
+    function not()
+    {
         $m = DB::table('products')
 
-        ->not(function($q){  // <-- group *
-            $q->where([
-                 ['cost', 100, '>'],
-                 ['id', 50, '<']
-             ]) 
-             // OR
-             ->orWhere([
-                 ['cost', 100, '<='],
-                 ['description', NULL, 'IS NOT']
-             ]);  
-         })
-         // AND
-         ->where(['belongs_to', 150, '>'])
-         
-         ->select(['id', 'cost', 'size', 'description', 'belongs_to'])
-         ->selectRaw('cost * 1.05 as cost_after_inc');
- 
-        dd($m->get()); 
+            ->not(function ($q) {  // <-- group *
+                $q->where([
+                    ['cost', 100, '>'],
+                    ['id', 50, '<']
+                ])
+                    // OR
+                    ->orWhere([
+                        ['cost', 100, '<='],
+                        ['description', NULL, 'IS NOT']
+                    ]);
+            })
+            // AND
+            ->where(['belongs_to', 150, '>'])
+
+            ->select(['id', 'cost', 'size', 'description', 'belongs_to'])
+            ->selectRaw('cost * 1.05 as cost_after_inc');
+
+        dd($m->get());
         var_dump($m->dd());
     }
 
     // ok
-    function notor(){
+    function notor()
+    {
         $m = DB::table('products')
 
-        ->where(['belongs_to', 150, '>'])
-        ->not(function($q) {
-            $q->where(['name', 'a$'])
-            ->or(function($q){
-                $q->where([
-                    ['cost', 100, '<='],
-                    ['description', NULL, 'IS NOT']
-                ]);
-            });             
-        })
-        ->dontExec()
-        ->where(['size', '1L', '>=']);
+            ->where(['belongs_to', 150, '>'])
+            ->not(function ($q) {
+                $q->where(['name', 'a$'])
+                    ->or(function ($q) {
+                        $q->where([
+                            ['cost', 100, '<='],
+                            ['description', NULL, 'IS NOT']
+                        ]);
+                    });
+            })
+            ->dontExec()
+            ->where(['size', '1L', '>=']);
 
         //dd($m->get());
         dd($m->dd());
@@ -1626,121 +1736,128 @@ class DumbController extends Controller
         deleted_at IS NULL;
 
     */
-    function notor_whereraw(){
+    function notor_whereraw()
+    {
         $m = DB::table('products')
 
-        ->where(['belongs_to', 150, '>'])
-        ->not(function($q) {
-            $q->whereRegEx('name', 'a$')
-            ->or(function($q){ 
-                $q->where([
-                    ['cost', 100, '<='],
-                    ['description', NULL, 'IS NOT']
-                ]);
-            });             
-        })
-        ->dontExec()
-        ->where(['size', '1L', '>=']);
+            ->where(['belongs_to', 150, '>'])
+            ->not(function ($q) {
+                $q->whereRegEx('name', 'a$')
+                    ->or(function ($q) {
+                        $q->where([
+                            ['cost', 100, '<='],
+                            ['description', NULL, 'IS NOT']
+                        ]);
+                    });
+            })
+            ->dontExec()
+            ->where(['size', '1L', '>=']);
 
         //dd($m->get());
         dd($m->dd());
     }
 
     // ok
-    function or_problematico(){
+    function or_problematico()
+    {
         $m = DB::table('products')
-    
-        ->whereRegEx('name', 'a$')
-        ->or(function($q){
-            $q->where(['cost', 100, '<=']);
-        })     
-        ->deleted()        
-        ->dontExec();
+
+            ->whereRegEx('name', 'a$')
+            ->or(function ($q) {
+                $q->where(['cost', 100, '<=']);
+            })
+            ->deleted()
+            ->dontExec();
 
         //dd($m->get());
         dd($m->dd());
     }
 
     // ok
-    function or__problematico_b(){
+    function or__problematico_b()
+    {
         $m = DB::table('products')
-    
-        ->whereRegEx('name', 'a$')
-        ->or(function($q){
-            $q->group(function($q){
-                $q->where(['cost', 100, '<='])
-                ->orWhere(['id', 90]);
-            });
-        })     
-        ->deleted()        
-        ->dontExec();
+
+            ->whereRegEx('name', 'a$')
+            ->or(function ($q) {
+                $q->group(function ($q) {
+                    $q->where(['cost', 100, '<='])
+                        ->orWhere(['id', 90]);
+                });
+            })
+            ->deleted()
+            ->dontExec();
 
         //dd($m->get());
         dd($m->dd());
     }
 
     // ok
-    function or_otro20(){
-        $m = DB::table('products')    
-
-        ->whereRegEx('name', 'a$') 
-        ->orWhere(['description', NULL, 'IS NOT'])
-        
-        ->deleted()        
-        ->dontExec();
-
-        //dd($m->get());
-        dd($m->dd());
-    }
-
-    function or_otro(){
-        $m = DB::table('products')    
-
-        ->group(function($q){
-            $q->whereRegEx('name', 'a$');
-        })
-        
-        ->orWhere(['description', NULL, 'IS NOT'])
-        
-        ->deleted()        
-        ->dontExec();
-
-        //dd($m->get());
-        dd($m->dd());
-    }
-
-    function or_otro2(){
+    function or_otro20()
+    {
         $m = DB::table('products')
-    
-        ->group(function($q){
-            $q->whereRegEx('name', 'a$');
-        })
 
-        ->or(function($q){
-            $q->where(['cost', 100, '<=']);
-        })   
-        
-        
-        ->deleted()        
-        ->dontExec();
+            ->whereRegEx('name', 'a$')
+            ->orWhere(['description', NULL, 'IS NOT'])
+
+            ->deleted()
+            ->dontExec();
 
         //dd($m->get());
         dd($m->dd());
     }
 
-    function test000001(){
+    function or_otro()
+    {
         $m = DB::table('products')
-    
-        ->group(function($q){
-            $q->where(['description', NULL, 'IS NOT'])
-            ->where(['id', 90]);
-        })
-        
-        ->or(function($q){
-            $q->where(['cost', 100, '<=']);
-        })     
-        ->deleted()        
-        ->dontExec();
+
+            ->group(function ($q) {
+                $q->whereRegEx('name', 'a$');
+            })
+
+            ->orWhere(['description', NULL, 'IS NOT'])
+
+            ->deleted()
+            ->dontExec();
+
+        //dd($m->get());
+        dd($m->dd());
+    }
+
+    function or_otro2()
+    {
+        $m = DB::table('products')
+
+            ->group(function ($q) {
+                $q->whereRegEx('name', 'a$');
+            })
+
+            ->or(function ($q) {
+                $q->where(['cost', 100, '<=']);
+            })
+
+
+            ->deleted()
+            ->dontExec();
+
+        //dd($m->get());
+        dd($m->dd());
+    }
+
+    function test000001()
+    {
+        $m = DB::table('products')
+
+            ->group(function ($q) {
+                $q->where(['description', NULL, 'IS NOT'])
+                    ->where(['id', 90]);
+            })
+
+            ->or(function ($q) {
+                $q->where(['cost', 100, '<=']);
+            })
+            ->deleted()
+            ->dontExec();
 
         //dd($m->get());
         dd($m->dd());
@@ -1760,25 +1877,26 @@ class DumbController extends Controller
         
         AND products.deleted_at IS NULL;
     */
-    function notor_whereraw2(){
+    function notor_whereraw2()
+    {
         $m = DB::table('products')
 
-        ->where(['belongs_to', 150, '>'])
-        ->not(function($q) {
-            $q->where([
-                ['cost', 100, '<='],
-                ['description', NULL, 'IS NOT']
-            ])
-            ->or(function($q){
-                $q->whereRegEx('name', 'a$');
-            });             
-        })
-        //->dontExec()
-        ->where(['size', '1L', '>=']);
+            ->where(['belongs_to', 150, '>'])
+            ->not(function ($q) {
+                $q->where([
+                    ['cost', 100, '<='],
+                    ['description', NULL, 'IS NOT']
+                ])
+                    ->or(function ($q) {
+                        $q->whereRegEx('name', 'a$');
+                    });
+            })
+            //->dontExec()
+            ->where(['size', '1L', '>=']);
 
         dd($m->get());
         var_dump($m->dd());
-    }   
+    }
 
 
     /*
@@ -1794,43 +1912,43 @@ class DumbController extends Controller
     {
         $m = DB::table('products', 'p')
 
-        ->where([
-            ['cost', 50, '>'], // AND
-            ['id', 190, '<=']
-        ]) 
-        // AND
-        ->group(function($q){  
-            $q->where(['is_active', 1])
-            // OR
-            ->orWhereRaw('name LIKE ?', ['%a%']);  
-        })
-        // AND
-        ->where(['belongs_to', 1, '>'])
-        
-        ->select(['id', 'name', 'cost', 'size', 'description', 'belongs_to']);
+            ->where([
+                ['cost', 50, '>'], // AND
+                ['id', 190, '<=']
+            ])
+            // AND
+            ->group(function ($q) {
+                $q->where(['is_active', 1])
+                    // OR
+                    ->orWhereRaw('name LIKE ?', ['%a%']);
+            })
+            // AND
+            ->where(['belongs_to', 1, '>'])
 
-       dd($m->get()); 
-	   
-       var_dump($m
-       ->dd());
+            ->select(['id', 'name', 'cost', 'size', 'description', 'belongs_to']);
+
+        dd($m->get());
+
+        var_dump($m
+            ->dd());
     }
 
     function where_raw_where_in()
     {
         $m = DB::table('products')
 
-        ->group(function($q){  // <-- group *
-           $q->whereIn('cost', [100, 200])
-            // OR
-             ->orWhere([
-                ['id', 150, '<='],
-                ['size', 'grande']
-            ]);  
-        });
-        
-       dd($m->get()); 
-       dd($m->dd());
-    }  
+            ->group(function ($q) {  // <-- group *
+                $q->whereIn('cost', [100, 200])
+                    // OR
+                    ->orWhere([
+                        ['id', 150, '<='],
+                        ['size', 'grande']
+                    ]);
+            });
+
+        dd($m->get());
+        dd($m->dd());
+    }
 
 
     function where_raw_where_in2a()
@@ -1842,99 +1960,103 @@ class DumbController extends Controller
         ]);
 
         $m
-        ->dontExec()
-        ->delete(); 
+            ->dontExec()
+            ->delete();
 
         $sql = $m->getLog();
         d($sql, 'SQL');
 
         d(DB::statement($sql), 'AFFECTED ROWS');
-    }  
+    }
 
 
     function where_raw_where_in2b()
     {
         $m = DB::table('products');
         $m->whereIn('cost', [100, 200]);
-        
+
         $m
-        //->dontExec()
-        ->delete(); 
+            //->dontExec()
+            ->delete();
 
         $sql = $m->getLog();
         d($sql, 'SQL');
 
         d(DB::statement($sql), 'AFFECTED ROWS');
-    }  
+    }
 
     function where_raw_where_in2()
     {
         $m = DB::table('products')
 
-        ->group(function($q){  // <-- group *
-           $q->whereIn('cost', [100, 200])
-            // OR
-             ->orWhere([
-                ['id', 150, '<='],
-                ['size', 'grande']
-            ]);  
-        });
-        
+            ->group(function ($q) {  // <-- group *
+                $q->whereIn('cost', [100, 200])
+                    // OR
+                    ->orWhere([
+                        ['id', 150, '<='],
+                        ['size', 'grande']
+                    ]);
+            });
+
         dd($m
-        ->dontExec()
-        ->delete()); 
+            ->dontExec()
+            ->delete());
 
         $sql = $m->dd();
         dd($sql);
 
         d(DB::statement($sql));
-    }  
+    }
 
-    function when(){
+    function when()
+    {
         $lastname = 'Bozzo';
 
         $m = DB::table('users')
-        ->when($lastname, function ($q) use ($lastname) {
-            $q->where(['lastname', $lastname]);
-        });
+            ->when($lastname, function ($q) use ($lastname) {
+                $q->where(['lastname', $lastname]);
+            });
 
         dd($m->get());
         dd($m->dd());
     }
 
-    function when2(){
+    function when2()
+    {
         $sortBy = ['name' => 'ASC'];
 
         $m = DB::table('products')
-        ->when($sortBy, function ($q) use ($sortBy) {
-            $q->orderBy($sortBy);
-        }, function ($q) {
-            $q->orderBy(['id' => 'DESC']);
-        });
+            ->when($sortBy, function ($q) use ($sortBy) {
+                $q->orderBy($sortBy);
+            }, function ($q) {
+                $q->orderBy(['id' => 'DESC']);
+            });
 
         dd($m->get());
         dd($m->dd());
     }
-    
 
-    function where_col(){
+
+    function where_col()
+    {
         $m = (DB::table('users'))
-        ->whereColumn('firstname', 'lastname', '=');  
+            ->whereColumn('firstname', 'lastname', '=');
 
-        dd($m->get()); 
-	    var_dump($m->dd());
+        dd($m->get());
+        var_dump($m->dd());
     }
-   
+
 
     // SELECT * FROM products WHERE ((cost < IF(size = "1L", 300, 100) AND size = '1L' ) AND belongs_to = 90) AND deleted_at IS NULL ORDER BY cost ASC
-    function where_raw(){
+    function where_raw()
+    {
         $m = DB::table('products')
-        ->where(['belongs_to' => 90])
-        ->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L'])
-        ->orderBy(['cost' => 'ASC']);
+            ->where(['belongs_to' => 90])
+            ->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L'])
+            ->orderBy(['cost' => 'ASC']);
 
-        dd($m->get()); 
-	    var_dump($m->dd());
+        dd($m->get());
+        var_dump($m->dd());
     }
 
     /*
@@ -1957,55 +2079,56 @@ class DumbController extends Controller
         ORDER BY cost ASC;
 
     */
-    function where_raw1(){
+    function where_raw1()
+    {
         $m = DB::table('products')
-        
-        ->where(['belongs_to', 90])
 
-        ->group(function($q){
-        	$q->where(['size', '1L'])
-	          ->orWhere([
-	            ['cost', 550, '<='],
-	            ['cost', 100, '>=']
-	        ]);
-        })
-        
-        // AND WHERE(...)
-        ->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L'])
-        
-        ->orderBy(['cost' => 'ASC']);
+            ->where(['belongs_to', 90])
 
-        dd($m->get()); 
-	    var_dump($m->dd());
+            ->group(function ($q) {
+                $q->where(['size', '1L'])
+                    ->orWhere([
+                        ['cost', 550, '<='],
+                        ['cost', 100, '>=']
+                    ]);
+            })
+
+            // AND WHERE(...)
+            ->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L'])
+
+            ->orderBy(['cost' => 'ASC']);
+
+        dd($m->get());
+        var_dump($m->dd());
     }
 
     function where_raw1b()
     {
         $m = (new Model())
-        ->table('products')
+            ->table('products')
 
-        ->group(function($q){  // <-- group *
-           $q->where([
-                ['cost', 100, '>'],
-                ['id', 50, '<']
-            ]) 
-            // OR
-            ->orWhere([
-                ['cost', 100, '<='],
-                ['description', NULL, 'IS NOT']
-            ]);  
-        })
-        
-        // AND
-        ->where(['belongs_to', 150, '>'])
+            ->group(function ($q) {  // <-- group *
+                $q->where([
+                    ['cost', 100, '>'],
+                    ['id', 50, '<']
+                ])
+                    // OR
+                    ->orWhere([
+                        ['cost', 100, '<='],
+                        ['description', NULL, 'IS NOT']
+                    ]);
+            })
 
-        // AND WHERE (...)
-        ->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L'])
-        
-        ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
+            // AND
+            ->where(['belongs_to', 150, '>'])
 
-       dd($m->get()); 
-	   var_dump($m->dd());
+            // AND WHERE (...)
+            ->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L'])
+
+            ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
+
+        dd($m->get());
+        var_dump($m->dd());
     }
 
     /*
@@ -2023,67 +2146,70 @@ class DumbController extends Controller
     function where_raw1c()
     {
         $m = (new Model())
-        ->table('products')
+            ->table('products')
 
-        ->group(function($q){  // <-- group *
-           $q->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L']) // falla porque no agrega luego un OR
-            // OR
-             ->orWhere([
-                ['cost', 100, '<='],
-                ['description', NULL, 'IS NOT']
-            ]);  
-        })
-        
-        // AND
-        ->where(['belongs_to', 150, '>'])        
-        
-        ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
+            ->group(function ($q) {  // <-- group *
+                $q->whereRaw('cost < IF(size = "1L", ?, 100) AND size = ?', [300, '1L']) // falla porque no agrega luego un OR
+                    // OR
+                    ->orWhere([
+                        ['cost', 100, '<='],
+                        ['description', NULL, 'IS NOT']
+                    ]);
+            })
 
-       dd($m->get()); 
-	   var_dump($m->dd());
+            // AND
+            ->where(['belongs_to', 150, '>'])
+
+            ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
+
+        dd($m->get());
+        var_dump($m->dd());
     }
 
 
     function where_raw1x()
     {
         $m = (new Model())
-        ->table('products')
+            ->table('products')
 
-        ->group(function($q){  // <-- group *
-           $q->whereRaw('cost < IF(size = "1L", ?, 100)', [300])
-            // OR
-             ->orWhere([
-                ['cost', 100, '<=']
-            ]);  
-        });
-        
-       dd($m->get()); 
-	   var_dump($m->dd());
+            ->group(function ($q) {  // <-- group *
+                $q->whereRaw('cost < IF(size = "1L", ?, 100)', [300])
+                    // OR
+                    ->orWhere([
+                        ['cost', 100, '<=']
+                    ]);
+            });
+
+        dd($m->get());
+        var_dump($m->dd());
     }
 
-    
 
-   
+
+
     /*
         SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname IS NOT NULL);
     */
-    function where_raw2(){
+    function where_raw2()
+    {
         dd(DB::table('products')->deleted()
-        ->whereRaw('EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?  )', ['AB'])
-        ->get());
+            ->whereRaw('EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?  )', ['AB'])
+            ->get());
     }
 
-    function regex(){
+    function regex()
+    {
         $m = DB::table('products')
-        ->whereRegEx('name', 'a$');
+            ->whereRegEx('name', 'a$');
 
         dd($m->get());
         dd($m->dd());
     }
 
-    function regex2(){
+    function regex2()
+    {
         $m = DB::table('products')
-        ->whereNotRegEx('name', 'a$');
+            ->whereNotRegEx('name', 'a$');
 
         dd($m->get());
         dd($m->dd());
@@ -2095,53 +2221,57 @@ class DumbController extends Controller
 
         SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = 'AB')
     */
-    function where_exists(){
+    function where_exists()
+    {
         $m = DB::table('products')->deleted()
-        ->whereExists('(SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?)', ['AB']);
+            ->whereExists('(SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?)', ['AB']);
 
         dd($m->get());
         dd($m->dd());
     }
 
 
-    function test_where_date(){
+    function test_where_date()
+    {
         $facturas = DB::table('facturas')
-        ->whereDate('created_at', '2021-12-29')
-        ->get();
+            ->whereDate('created_at', '2021-12-29')
+            ->get();
 
         d($facturas);
 
         $facturas = DB::table('facturas')
-        ->whereDate('created_at', '2021-12-29 19:42:08')
-        ->get();
+            ->whereDate('created_at', '2021-12-29 19:42:08')
+            ->get();
 
         d($facturas);
 
         $testx   = DB::table('testx')
-        ->whereDate('fecha', '2022-01-12')
-        ->get();
+            ->whereDate('fecha', '2022-01-12')
+            ->get();
 
         d($testx);
 
         $testx   = DB::table('testx')
-        ->whereDate('fecha', '2022-01-12 20:10:18')
-        ->get();
+            ->whereDate('fecha', '2022-01-12 20:10:18')
+            ->get();
 
         d($testx);
     }
 
-    function test_where_date2(){
+    function test_where_date2()
+    {
         $facturas = DB::table('facturas')
-        ->whereDate('created_at', '2021-12-29', '>')
-        ->get();
+            ->whereDate('created_at', '2021-12-29', '>')
+            ->get();
 
         d($facturas);
     }
 
-    function test_where_date3(){
+    function test_where_date3()
+    {
         $testx   = DB::table('testx')
-        ->whereDate('fecha', '2022-01-12', '>')
-        ->get();
+            ->whereDate('fecha', '2022-01-12', '>')
+            ->get();
 
         d($testx);
     }
@@ -2149,16 +2279,17 @@ class DumbController extends Controller
     /*
         SELECT * FROM products WHERE 1 = 1 AND deleted_at IS NULL ORDER BY cost ASC, id DESC LIMIT 1, 4
     */
-    function order(){    
-        dd(DB::table('products')->orderBy(['cost'=>'ASC', 'id'=>'DESC'])->take(4)->offset(1)->get());
+    function order()
+    {
+        dd(DB::table('products')->orderBy(['cost' => 'ASC', 'id' => 'DESC'])->take(4)->offset(1)->get());
 
-        dd(DB::table('products')->orderBy(['cost'=>'ASC'])->orderBy(['id'=>'DESC'])->take(4)->offset(1)->get());
+        dd(DB::table('products')->orderBy(['cost' => 'ASC'])->orderBy(['id' => 'DESC'])->take(4)->offset(1)->get());
 
-        dd(DB::table('products')->orderBy(['cost'=>'ASC'])->take(4)->offset(1)->get(null, ['id'=>'DESC']));
+        dd(DB::table('products')->orderBy(['cost' => 'ASC'])->take(4)->offset(1)->get(null, ['id' => 'DESC']));
 
-        dd(DB::table('products')->orderBy(['cost'=>'ASC'])->orderBy(['id'=>'DESC'])->take(4)->offset(1)->get());
+        dd(DB::table('products')->orderBy(['cost' => 'ASC'])->orderBy(['id' => 'DESC'])->take(4)->offset(1)->get());
 
-        dd(DB::table('products')->take(4)->offset(1)->get(null, ['cost'=>'ASC', 'id'=>'DESC']));
+        dd(DB::table('products')->take(4)->offset(1)->get(null, ['cost' => 'ASC', 'id' => 'DESC']));
     }
 
     /*
@@ -2166,31 +2297,34 @@ class DumbController extends Controller
         
         SELECT * FROM products WHERE 1 = 1 AND deleted_at IS NULL ORDER BY is_locked + is_active ASC
     */
-    function order2(){
-        dd(DB::table('products')->orderByRaw('is_locked * is_active DESC')->get()); 
+    function order2()
+    {
+        dd(DB::table('products')->orderByRaw('is_locked * is_active DESC')->get());
     }
 
-    function grouping(){
-        dd(DB::table('products')->where([ 
+    function grouping()
+    {
+        dd(DB::table('products')->where([
             ['cost', 100, '>=']
         ])->orderBy(['size' => 'DESC'])
-        ->groupBy(['size'])
-        ->select(['size'])
-        //->take(5)
-        //->offset(5)
-        ->avg('cost'));
+            ->groupBy(['size'])
+            ->select(['size'])
+            //->take(5)
+            //->offset(5)
+            ->avg('cost'));
     }
 
 
-    function where(){        
+    function where()
+    {
 
         // Ok
-        dd(DB::table('products')->where([ 
+        dd(DB::table('products')->where([
             ['cost', 200, '>='],
             ['cost', 270, '<='],
             ['belongs_to',  90]
-        ])->get());  
-        
+        ])->get());
+
 
         /*    
         // No es posible mezclar arrays asociativos y no-asociativos 
@@ -2199,33 +2333,34 @@ class DumbController extends Controller
             ['cost', 270, '<='],
             ['belongs_to' =>  90]
         ])->get());
-        */        
+        */
 
         // Ok
         dd(DB::table('products')
-        ->where([ 
+            ->where([
                 ['cost', 150, '>='],
-                ['cost', 270, '<=']            
+                ['cost', 270, '<=']
             ])
-        ->where(['belongs_to' =>  90])->get());         
+            ->where(['belongs_to' =>  90])->get());
     }
-        
-    function having(){ 
+
+    function having()
+    {
         dd(
             DB::table('products')
-            //->setStrictModeHaving(true)
-            ->select(['size'])
-            ->selectRaw('AVG(cost)')
-			//->dontExec()
-            ->groupBy(['size'])
-            ->having(['AVG(cost)', 150, '>='])
-			->get()
+                //->setStrictModeHaving(true)
+                ->select(['size'])
+                ->selectRaw('AVG(cost)')
+                //->dontExec()
+                ->groupBy(['size'])
+                ->having(['AVG(cost)', 150, '>='])
+                ->get()
         );
-			
-		dd(DB::getLog()); 
-    }  
 
-	/*
+        dd(DB::getLog());
+    }
+
+    /*
 		Array
 		(
 			[0] => stdClass Object
@@ -2247,21 +2382,22 @@ class DumbController extends Controller
         WHERE deleted_at IS NULL 
         GROUP BY name 
         HAVING c >= 3
-	*/	
-	function having0(){  
+	*/
+    function having0()
+    {
         $m = DB::table('products')
-        //->dontExec()
-        ->groupBy(['name'])
-        ->having(['c', 3, '>='])
-        ->select(['name'])
-        ->selectRaw('COUNT(name) as c');
-        
+            //->dontExec()
+            ->groupBy(['name'])
+            ->having(['c', 3, '>='])
+            ->select(['name'])
+            ->selectRaw('COUNT(name) as c');
+
         dd($m->get());
         dd($m->dd());
-		//dd(DB::getLog()); 
-    }  
-	
-	/*
+        //dd(DB::getLog()); 
+    }
+
+    /*
 		Array
 		(
 			[0] => stdClass Object
@@ -2286,17 +2422,18 @@ class DumbController extends Controller
 
 		SELECT COUNT(name) as c, name FROM products GROUP BY name HAVING c >= 3
 	*/
-	function havingx(){  
+    function havingx()
+    {
         dd(DB::table('products')->deleted()
-			//->dontExec()
+            //->dontExec()
             ->groupBy(['name'])
             ->having(['c', 3, '>='])
             ->select(['name'])
-			->selectRaw('COUNT(name) as c')
-			->get());
-			
-		dd(DB::getLog()); 
-    }  
+            ->selectRaw('COUNT(name) as c')
+            ->get());
+
+        dd(DB::getLog());
+    }
 
     /*       
         En caso de tener múltiples condiciones se debe enviar un 
@@ -2313,69 +2450,78 @@ class DumbController extends Controller
 
         En el caso de múltiples condiciones estas se concatenan implícitamente con "AND" excepto 
         se espcifique "OR" como segundo parámetro de having()    
-    */     
-	
-	/*
+    */
+
+    /*
 		SELECT cost, size FROM products WHERE deleted_at IS NULL GROUP BY cost,size HAVING cost = 100
 	*/
-    function having1(){        
+    function having1()
+    {
         $m = DB::table('products')
             //->dontQualify()
             ->groupBy(['cost', 'size'])
             ->having(['cost', 100])
             ->select(['cost', 'size']);
-		
+
         //dd($m->get());
-		dd($m->dd()); ; 
-    }    
-	
-    function having1_ta(){        
+        dd($m->dd());;
+    }
+
+    function having1_ta()
+    {
         $m = DB::table('products', 'p')
             //->dontQualify()
             ->groupBy(['cost', 'size'])
             ->having(['cost', 100])
             ->select(['cost', 'size']);
-		
-        dd($m->get());
-		dd($m->dd()); 
-    }   
 
-	// SELECT cost, size FROM products GROUP BY cost,size HAVING cost = 100
-	function having1b(){        
+        dd($m->get());
+        dd($m->dd());
+    }
+
+    // SELECT cost, size FROM products GROUP BY cost,size HAVING cost = 100
+    function having1b()
+    {
         dd(DB::table('products')->deleted()
             ->groupBy(['cost', 'size'])
             ->having(['cost', 100])
             ->get(['cost', 'size']));
-		
-		dd(DB::getLog()); 
-    }   
 
-    function having1c(){        
+        dd(DB::getLog());
+    }
+
+    function having1c()
+    {
         dd(DB::table('products')->deleted()
             ->groupBy(['cost', 'size'])
             ->having(['cost', 100, '>='])
             ->get(['cost', 'size']));
-		
-		dd(DB::getLog()); 
-    }  
-	
+
+        dd(DB::getLog());
+    }
+
     /*
         HAVING ... OR ... OR ...
 
         SELECT  cost, size, belongs_to FROM products WHERE deleted_at IS NULL GROUP BY cost,size,belongs_to HAVING belongs_to = 90 AND (cost >= 100 OR size = '1L') ORDER BY size DESC
     */
-    function having2(){
-        dd(DB::table('products')
-            ->groupBy(['cost', 'size', 'belongs_to'])
-            ->having(['belongs_to', 90])
-            ->having([  
+    function having2()
+    {
+        dd(
+            DB::table('products')
+                ->groupBy(['cost', 'size', 'belongs_to'])
+                ->having(['belongs_to', 90])
+                ->having(
+                    [
                         ['cost', 100, '>='],
-                        ['size' => '1L'] ], 
-            'OR')
-            ->orderBy(['size' => 'DESC'])
-            ->select(['cost', 'size', 'belongs_to'])
-            ->get()
-        ); 
+                        ['size' => '1L']
+                    ],
+                    'OR'
+                )
+                ->orderBy(['size' => 'DESC'])
+                ->select(['cost', 'size', 'belongs_to'])
+                ->get()
+        );
 
         dd(DB::getLog());
     }
@@ -2385,14 +2531,15 @@ class DumbController extends Controller
     
         SELECT  cost, size, belongs_to FROM products WHERE deleted_at IS NULL GROUP BY cost,size,belongs_to HAVING  belongs_to = 90 OR  cost >= 100 OR  size = '1L'  ORDER BY size DESC
     */
-    function having2b(){
+    function having2b()
+    {
         dd(DB::table('products')
             ->groupBy(['cost', 'size', 'belongs_to'])
             ->having(['belongs_to', 90])
             ->orHaving(['cost', 100, '>='])
             ->orHaving(['size' => '1L'])
             ->orderBy(['size' => 'DESC'])
-            ->get(['cost', 'size', 'belongs_to'])); 
+            ->get(['cost', 'size', 'belongs_to']));
 
         dd(DB::getLog());
     }
@@ -2400,16 +2547,19 @@ class DumbController extends Controller
     /*
         SELECT  cost, size, belongs_to FROM products WHERE deleted_at IS NULL GROUP BY cost,size,belongs_to HAVING  belongs_to = 90 OR  (cost >= 100 AND size = '1L')  ORDER BY size DESC
     */
-    function having2c(){
+    function having2c()
+    {
         dd(DB::table('products')
             ->groupBy(['cost', 'size', 'belongs_to'])
             ->having(['belongs_to', 90])
-            ->orHaving([  
-                        ['cost', 100, '>='],
-                        ['size' => '1L'] ] 
+            ->orHaving(
+                [
+                    ['cost', 100, '>='],
+                    ['size' => '1L']
+                ]
             )
             ->orderBy(['size' => 'DESC'])
-            ->get(['cost', 'size', 'belongs_to'])); 
+            ->get(['cost', 'size', 'belongs_to']));
 
         dd(DB::getLog());
     }
@@ -2417,11 +2567,12 @@ class DumbController extends Controller
     /*
         RAW HAVING
     */
-    function having3(){
+    function having3()
+    {
         dd(DB::table('products')
             ->selectRaw('SUM(cost) as total_cost')
             ->where(['size', '1L'])
-            ->groupBy(['belongs_to']) 
+            ->groupBy(['belongs_to'])
             ->havingRaw('SUM(cost) > ?', [500])
             ->limit(3)
             ->offset(1)
@@ -2440,74 +2591,81 @@ class DumbController extends Controller
         WHERE (guest = 1 AND table = \'products\' AND r = 1) 
         ORDER BY users.id DESC;
     */
-    function joins(){
+    function joins()
+    {
         $m = (new Model())->table('other_permissions', 'op')
-        ->join('folders', 'op.folder_id', '=',  'folders.id')
-        ->join('users', 'folders.belongs_to', '=', 'users.id')
-        ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
-        ->where([
-            ['guest', 1],
-            ['table', 'products'],
-            ['r', 1]
-        ])
-        ->orderByRaw('users.id DESC');
+            ->join('folders', 'op.folder_id', '=',  'folders.id')
+            ->join('users', 'folders.belongs_to', '=', 'users.id')
+            ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
+            ->where([
+                ['guest', 1],
+                ['table', 'products'],
+                ['r', 1]
+            ])
+            ->orderByRaw('users.id DESC');
 
-        dd($m->dd(true)); 
+        dd($m->dd(true));
     }
 
-    function jx(){
+    function jx()
+    {
         $m = DB::table('products')
-        ->join('product_categories');
- 
-        dd($m->dd(true)); 
-    }  
-    
-    function j(){
-        $m = DB::table('products')
-        ->join('products_product_categories', 'products.id', '=',  'products_product_categories.product_id')
-        ->join('product_comments', 'products.id', '=', 'product_comments.product_id');
- 
-        dd($m->dd(true)); 
-    }    
+            ->join('product_categories');
 
-    function j_auto(){
-        $m = DB::table('products')
-        ->join('product_categories')
-        ->leftJoin('product_comments');
+        dd($m->dd(true));
+    }
 
-        dd($m->get()); 
-        dd($m->dd(true)); 
+    function j()
+    {
+        $m = DB::table('products')
+            ->join('products_product_categories', 'products.id', '=',  'products_product_categories.product_id')
+            ->join('product_comments', 'products.id', '=', 'product_comments.product_id');
+
+        dd($m->dd(true));
+    }
+
+    function j_auto()
+    {
+        $m = DB::table('products')
+            ->join('product_categories')
+            ->leftJoin('product_comments');
+
+        dd($m->get());
+        dd($m->dd(true));
     }
 
     /*
         Auto-join with alias (as)
     */
-    function j_auto1(){
+    function j_auto1()
+    {
         $m = DB::table('products')
-        ->join('product_categories as pc');
+            ->join('product_categories as pc');
 
-        dd($m->get()); 
-        dd($m->dd(true)); 
+        dd($m->get());
+        dd($m->dd(true));
     }
 
-    function j_auto1b(){
+    function j_auto1b()
+    {
         $m = DB::table('products')
-        ->dontExec()
-        ->join('product_categories as product_categories')
-        ->where(['product_categories.name_catego' => 'frutas']);
- 
-        dd(DB::select($m->dd())); 
-        dd($m->dd(true));       
+            ->dontExec()
+            ->join('product_categories as product_categories')
+            ->where(['product_categories.name_catego' => 'frutas']);
+
+        dd(DB::select($m->dd()));
+        dd($m->dd(true));
     }
 
-    function j1(){
+    function j1()
+    {
         $m = DB::table('books')
-        ->join('book_reviews', 'book_reviews.book_id', '=',  'books.id')
-        ->join('users as authors', 'authors.id', '=', 'books.author_id')
-        ->join('users as editors', 'editors.id', '=', 'books.editor_id');
+            ->join('book_reviews', 'book_reviews.book_id', '=',  'books.id')
+            ->join('users as authors', 'authors.id', '=', 'books.author_id')
+            ->join('users as editors', 'editors.id', '=', 'books.editor_id');
 
-        dd($m->get()); 
-        dd($m->dd()); 
+        dd($m->get());
+        dd($m->dd());
 
         /*
         SELECT * FROM books 
@@ -2515,34 +2673,36 @@ class DumbController extends Controller
             INNER JOIN users as authors ON authors.id = books.author_id 
             INNER JOIN users as editors ON editors.id = books.editor_id;
         */
-    }    
+    }
 
-    function j1_auto(){
+    function j1_auto()
+    {
 
         $m = DB::table('books')
-        ->join('book_reviews')
-        ->join('users');
+            ->join('book_reviews')
+            ->join('users');
 
-        dd($m->get()); 
-        dd($m->dd(true)); 
-          
+        dd($m->get());
+        dd($m->dd(true));
+
         /*
             SELECT * FROM books 
             INNER JOIN book_reviews     ON book_reviews.book_id=books.id 
             INNER JOIN users as authors ON authors.id=books.author_id 
             INNER JOIN users as editors ON editors.id=books.editor_id;
         */
-    }    
+    }
 
-    function j1_auto2(){
+    function j1_auto2()
+    {
         DB::getConnection('db_flor');
 
         $m = DB::table('tbl_categoria_persona')
-        ->join('tbl_usuario');
+            ->join('tbl_usuario');
 
-        dd($m->get()); 
-        dd($m->dd(true)); 
-          
+        dd($m->get());
+        dd($m->dd(true));
+
         /*
             SELECT 
             * 
@@ -2551,135 +2711,144 @@ class DumbController extends Controller
             INNER JOIN tbl_usuario as __usu_intIdActualizador ON __usu_intIdActualizador.usu_intId = tbl_categoria_persona.usu_intIdActualizador 
             INNER JOIN tbl_usuario as __usu_intIdCreador ON __usu_intIdCreador.usu_intId = tbl_categoria_persona.usu_intIdCreador
         */
-    }  
+    }
 
-    function j2(){
+    function j2()
+    {
         $m = DB::table('users')
-        ->join('user_sp_permissions', 'users.id', '=',  'user_sp_permissions.user_id')
-        ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
+            ->join('user_sp_permissions', 'users.id', '=',  'user_sp_permissions.user_id')
+            ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
 
-        ->select(['sp_permissions.name as perm', 'username', 'is_active']);
+            ->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
-        dd($m->get()); 
-        dd($m->dd()); 
+        dd($m->get());
+        dd($m->dd());
     }
 
 
-    function j2a(){
+    function j2a()
+    {
         $m = DB::table('users')
-        ->alias('u')
-        ->join('user_sp_permissions', 'u.id', '=',  'user_sp_permissions.user_id')
-        ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
+            ->alias('u')
+            ->join('user_sp_permissions', 'u.id', '=',  'user_sp_permissions.user_id')
+            ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
 
-        //->deleted()
-        //->dontExec()
-        ->select(['sp_permissions.name as perm', 'username', 'is_active']);
+            //->deleted()
+            //->dontExec()
+            ->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
-        dd($m->get()); 
-        dd($m->dd()); 
+        dd($m->get());
+        dd($m->dd());
     }
 
 
-    function j2b(){
+    function j2b()
+    {
         $m = DB::table('users', 'u')
-        ->join('user_sp_permissions', 'u.id', '=',  'user_sp_permissions.user_id')
-        ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
+            ->join('user_sp_permissions', 'u.id', '=',  'user_sp_permissions.user_id')
+            ->join('sp_permissions', 'sp_permissions.id', '=', 'user_sp_permissions.id')
 
-        //->deleted()
-        //->dontExec()
-        ->select(['sp_permissions.name as perm', 'username', 'is_active']);
+            //->deleted()
+            //->dontExec()
+            ->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
-        dd($m->get()); 
-        dd($m->dd(true)); 
+        dd($m->get());
+        dd($m->dd(true));
     }
 
     /*
         Es importante notar que *no* debe hacerse el JOIN() con la tabla puente y la table relacionada
         por esta porque en tal caso la relación con la tabla puente quedaría duplicada.
     */
-    function j2_auto(){
+    function j2_auto()
+    {
         $m = DB::table('users')
-        //->join('user_sp_permissions');
-        ->join('sp_permissions');
+            //->join('user_sp_permissions');
+            ->join('sp_permissions');
 
         $m->select(['sp_permissions.name as perm', 'username', 'is_active']);
 
-        dd($m->get()); 
-        dd($m->dd()); 
+        dd($m->get());
+        dd($m->dd());
     }
 
-    function join2c(){
+    function join2c()
+    {
         $rows = DB::table('users', 'u')
-        ->join('products')
-        ->join('roles')
-        ->unhideAll()
-        ->deleted()
-        //->dontExec()
-        ->get();
-        
+            ->join('products')
+            ->join('roles')
+            ->unhideAll()
+            ->deleted()
+            //->dontExec()
+            ->get();
+
         dd($rows);
-        dd(DB::getLog());   
+        dd(DB::getLog());
     }
 
 
-    function join2d(){
+    function join2d()
+    {
         $rows = DB::table('products', 'p')
-        ->join('users as u')
-        ->unhideAll()
-        ->qualify()
-        //->deleted()
-        //->dontExec()
-        ->get();
-        
+            ->join('users as u')
+            ->unhideAll()
+            ->qualify()
+            //->deleted()
+            //->dontExec()
+            ->get();
+
         dd($rows);
-        dd(DB::getLog());   
+        dd(DB::getLog());
     }
 
 
-    function join2e(){
+    function join2e()
+    {
         $rows = DB::table('users', 'u')
-        ->join('products as p')
-        ->join('roles as r')
-        ->unhideAll()
-        ->qualify()
-        //->deleted()
-        //->dontExec()
-        ->get();
-        
+            ->join('products as p')
+            ->join('roles as r')
+            ->unhideAll()
+            ->qualify()
+            //->deleted()
+            //->dontExec()
+            ->get();
+
         dd($rows);
-        dd(DB::getLog());   
+        dd(DB::getLog());
     }
 
-    function join2(){
+    function join2()
+    {
         DB::getConnection('az');
 
         $rows = DB::table('users')
-        ->join('products')
-        ->join('roles')
-        ->unhideAll()
-        ->deleted()
-        //->dontExec()
-        ->get();
-        
+            ->join('products')
+            ->join('roles')
+            ->unhideAll()
+            ->deleted()
+            //->dontExec()
+            ->get();
+
         dd($rows);
-        dd(DB::getLog());   
+        dd(DB::getLog());
     }
 
-    function join2b(){
+    function join2b()
+    {
         DB::getConnection('az');
 
         $rows = DB::table('roles')
-        ->join('users')
-        ->unhideAll()
-        ->deleted()
-        //->dontExec()
-        ->get();
-        
+            ->join('users')
+            ->unhideAll()
+            ->deleted()
+            //->dontExec()
+            ->get();
+
         dd($rows);
-        dd(DB::getLog());    
+        dd(DB::getLog());
     }
 
-       /*
+    /*
         SELECT 
         * 
         FROM 
@@ -2688,149 +2857,159 @@ class DumbController extends Controller
 
         --ok
     */
-    function j3_auto(){
+    function j3_auto()
+    {
         DB::setConnection('db_flor');
 
         $m = DB::table('tbl_cliente')
-        ->join('tbl_cliente_informacion_tributaria');
+            ->join('tbl_cliente_informacion_tributaria');
 
         dd($m->dd(true));
     }
 
-    function j4_auto1(){
+    function j4_auto1()
+    {
         DB::getConnection('db_flor');
 
         $t1 = 'tbl_persona';
         $t2 = 'tbl_usuario';
 
         $m = DB::table($t1)
-        ->join($t2);
+            ->join($t2);
 
         $sql = $m
-        //->dontBind()
-        //->dontExec()       
-        ->dd(true);
+            //->dontBind()
+            //->dontExec()       
+            ->dd(true);
 
         dd($m->get());
         dd($sql);
     }
 
 
-    function j4_auto2(){
+    function j4_auto2()
+    {
         DB::getConnection('db_flor');
 
         $t1 = 'tbl_sub_cuenta_contable';
         $t2 = 'tbl_producto';
 
         $m = DB::table($t1)
-        ->join($t2);
+            ->join($t2);
 
         $sql = $m
-        //->dontBind()
-        //->dontExec()       
-        ->dd(true);
+            //->dontBind()
+            //->dontExec()       
+            ->dd(true);
 
         dd($m->get());
         dd($sql);
     }
 
-    function j4_auto3(){
+    function j4_auto3()
+    {
         DB::getConnection('db_flor');
 
         $t1 = 'tbl_sub_cuenta_contable';
         $t2 = 'tbl_cuenta_contable';
 
         $m = DB::table($t1)
-        ->join($t2);
+            ->join($t2);
 
         $sql = $m
-        //->dontBind()
-        //->dontExec()       
-        ->dd(true);
+            //->dontBind()
+            //->dontExec()       
+            ->dd(true);
 
         dd($m->get());
         dd($sql);
     }
 
     // 'SELECT users.id, users.name, users.email, countries.name as country_name FROM users LEFT JOIN countries ON countries.id=users.country_id WHERE deleted_at IS NULL;'
-    function leftjoin(){
+    function leftjoin()
+    {
         $users = DB::table('users')->select([
             "users.id",
             "users.name",
             "users.email",
             "countries.name as country_name"
         ])
-        ->leftJoin("countries", "countries.id", "=", "users.country_id")
-        ->dontExec()
-        ->get();
+            ->leftJoin("countries", "countries.id", "=", "users.country_id")
+            ->dontExec()
+            ->get();
 
         //dd($users);
-        dd(DB::getLog());    
+        dd(DB::getLog());
     }
 
     /*
         Se generan ambiguedades sino especifican las tablas tanto en las cláuslas SELECT como el WHERE
     */
-    function crossjoin(){
+    function crossjoin()
+    {
         $rows = DB::table('users')
-        ->crossJoin('products')
-        ->where(['users.id', 90])
-        ->unhideAll()
-        ->deleted()
-        //->dontExec()
-        ->get();
+            ->crossJoin('products')
+            ->where(['users.id', 90])
+            ->unhideAll()
+            ->deleted()
+            //->dontExec()
+            ->get();
 
-        dd($rows);        
-        dd(DB::getLog());    
+        dd($rows);
+        dd(DB::getLog());
     }
 
-    function naturaljoin(){
+    function naturaljoin()
+    {
         $m = (new Model())->table('employee')
-        ->naturalJoin('department')
-        ->unhideAll()
-        ->deleted()
-        ->dontExec();
-        
-        dd($m->dd());    
+            ->naturalJoin('department')
+            ->unhideAll()
+            ->deleted()
+            ->dontExec();
+
+        dd($m->dd());
     }
- 
+
     // SELECT COUNT(*) from users CROSS JOIN products CROSS JOIN roles;
-    function crossjoin2(){
+    function crossjoin2()
+    {
         DB::table('users')
-        ->crossJoin('products')
-        ->crossJoin('roles')
-        ->unhideAll()
-        ->deleted()
-        ->dontExec()->get();
-        
-        dd(DB::getLog());    
+            ->crossJoin('products')
+            ->crossJoin('roles')
+            ->unhideAll()
+            ->deleted()
+            ->dontExec()->get();
+
+        dd(DB::getLog());
     }
 
     // SELECT * FROM users CROSS JOIN products CROSS JOIN roles WHERE users.id = 90;'
-    function crossjoin2b(){
+    function crossjoin2b()
+    {
         $rows = DB::table('users')->crossJoin('products')->crossJoin('roles')
-        ->where(['users.id', 90])
-        ->unhideAll()
-        ->deleted()
-        //->dontExec()
-        ->get();
-        
+            ->where(['users.id', 90])
+            ->unhideAll()
+            ->deleted()
+            //->dontExec()
+            ->get();
+
         dd($rows);
-        dd(DB::getLog());    
+        dd(DB::getLog());
     }
 
 
     // SELECT COUNT(*) from users CROSS JOIN products CROSS JOIN roles INNER JOIN user_sp_permissions ON users.id = user_sp_permissions.user_id;
-    function crossjoin3(){
+    function crossjoin3()
+    {
         $rows = DB::table('users')->crossJoin('products')->crossJoin('roles')
-        ->join('user_sp_permissions', 'users.id', '=', 'user_sp_permissions.user_id')
-        ->unhideAll()
-        ->deleted()
-        //->dontExec()
-        ->get();
-        
+            ->join('user_sp_permissions', 'users.id', '=', 'user_sp_permissions.user_id')
+            ->unhideAll()
+            ->deleted()
+            //->dontExec()
+            ->get();
+
         dd($rows);
-        dd(DB::getLog());    
+        dd(DB::getLog());
     }
 
     /*
@@ -2863,10 +3042,11 @@ class DumbController extends Controller
     */
 
 
-    function get_nulls(){    
+    function get_nulls()
+    {
         // Get products where workspace IS NULL
-        dd(DB::table('products')->where(['workspace', null])->get());   
-   
+        dd(DB::table('products')->where(['workspace', null])->get());
+
         // Or
         dd(DB::table('products')->whereNull('workspace')->get());
     }
@@ -2874,32 +3054,35 @@ class DumbController extends Controller
     /*
         Debug without exec the query
     */
-    function dontExec(){
+    function dontExec()
+    {
         DB::table('products')
-        ->dontExec() 
-        ->where([ 
+            ->dontExec()
+            ->where([
                 ['cost', 150, '>='],
-                ['cost', 270, '<=']            
+                ['cost', 270, '<=']
             ])
-        ->where(['belongs_to' =>  90])->get(); 
-        
-        dd(DB::getLog()); 
+            ->where(['belongs_to' =>  90])->get();
+
+        dd(DB::getLog());
     }
 
     /*
         Pretty response 
     */
-    function get_users(){
-        $array = DB::table('users')->orderBy(['id'=>'DESC'])->get();
+    function get_users()
+    {
+        $array = DB::table('users')->orderBy(['id' => 'DESC'])->get();
 
         echo '<pre>';
         Factory::response()
-        ->setPretty(true)
-        ->send($array);
+            ->setPretty(true)
+            ->send($array);
         echo '</pre>';
     }
 
-    function get_userdata(){
+    function get_userdata()
+    {
         //d(Acl::getCurrentUid());
 
         $data = [];
@@ -2911,13 +3094,14 @@ class DumbController extends Controller
         $m = new $u();
 
         $userdata = ($m)
-        ->where([$u::$email => $data['email'] ])
-        ->first();
+            ->where([$u::$email => $data['email']])
+            ->first();
 
         d($userdata);
     }
 
-    function get_userdata2(){
+    function get_userdata2()
+    {
         //$uid = Acl::getCurrentUid();
 
         $uid = 99;
@@ -2931,92 +3115,98 @@ class DumbController extends Controller
             User data
         */
         $userdata = ($m)
-        ->find($uid)
-        ->first();
+            ->find($uid)
+            ->first();
 
         d($userdata);
         d($m->dd());
     }
 
-    function get_user($id){
+    function get_user($id)
+    {
         $u = DB::table('users');
         $u->unhide(['password']);
-        $u->hide(['id', 'username', 'confirmed_email', 'firstname','lastname', 'deleted_at', 'belongs_to']);
-        $u->where(['id'=>$id]);
+        $u->hide(['id', 'username', 'confirmed_email', 'firstname', 'lastname', 'deleted_at', 'belongs_to']);
+        $u->where(['id' => $id]);
 
         dd($u->get());
         dd($u->getLog());
     }
 
-    function del_user($id){
+    function del_user($id)
+    {
         $u = DB::table('users');
         $ok = (bool) $u->where(['id' => $id])->setSoftDelete(false)->delete();
-        
+
         dd($ok);
     }
 
- 
-    function update_user($id) {
+
+    function update_user($id)
+    {
         $u = DB::table('users');
 
-        $count = $u->where(['firstname' => 'HHH', 'lastname' => 'AAA', 'id' => 17])->update(['firstname'=>'Nico', 'lastname'=>'Buzzi', 'belongs_to' => 17]);
-        
+        $count = $u->where(['firstname' => 'HHH', 'lastname' => 'AAA', 'id' => 17])->update(['firstname' => 'Nico', 'lastname' => 'Buzzi', 'belongs_to' => 17]);
+
         dd($count);
     }
 
-    function update_user2() 
+    function update_user2()
     {
         $firstname = '';
-        for ($i=0;$i<20;$i++)
-            $firstname .= chr(rand(97,122));
+        for ($i = 0; $i < 20; $i++)
+            $firstname .= chr(rand(97, 122));
 
-        $lastname = strtoupper($firstname);    
+        $lastname = strtoupper($firstname);
 
         $u = DB::table('users');
 
-        $ok = $u->where([ [ 'email', 'nano@'], ['deleted_at', NULL] ])
-        ->update([ 
-                    'firstname' => $firstname, 
-                    'lastname' => $lastname
-        ]);
-        
+        $ok = $u->where([['email', 'nano@'], ['deleted_at', NULL]])
+            ->update([
+                'firstname' => $firstname,
+                'lastname' => $lastname
+            ]);
+
         dd($ok);
     }
 
-    function update_users() {
+    function update_users()
+    {
         $u = DB::table('users');
-        $count = $u->where([ ['lastname', ['AAA', 'Buzzi']] ])->update(['firstname'=>'Nicos']);
-        
+        $count = $u->where([['lastname', ['AAA', 'Buzzi']]])->update(['firstname' => 'Nicos']);
+
         dd($count);
     }
 
-    function test_touch_model(){
+    function test_touch_model()
+    {
         DB::table('products')
-        ->find(145)
-        ->touch();
+            ->find(145)
+            ->touch();
 
         $p = DB::table('products')
-        ->find(145)
-        ->first();
+            ->find(145)
+            ->first();
 
         d($p);
     }
 
     function create_user($username, $email, $password, $firstname, $lastname)
-     {        
-        for ($i=0;$i<20;$i++)
-            $email = chr(rand(97,122)) . $email;
-        
+    {
+        for ($i = 0; $i < 20; $i++)
+            $email = chr(rand(97, 122)) . $email;
+
         $u = DB::table('users');
         $u->fill(['email']);
         //$u->unfill(['password']);
-        $id = $u->create(['username' => $username, 'email'=>$email, 'password'=>$password, 'firstname'=>$firstname, 'lastname'=>$lastname]);
-        
+        $id = $u->create(['username' => $username, 'email' => $email, 'password' => $password, 'firstname' => $firstname, 'lastname' => $lastname]);
+
         dd($id);
         dd(DB::getLog());
     }
 
-    function fillables(){
+    function fillables()
+    {
         $m = DB::table('files');
         $affected = $m->where(['id' => 240])->update([
             "filename_as_stored" => "xxxxxxxxxxxxxxxxx.jpg"
@@ -3029,28 +3219,31 @@ class DumbController extends Controller
         dd($rows);
     }
 
-    function update_products() {
+    function update_products()
+    {
         $p = DB::table('products');
         $count = $p->where([['cost', 100, '<'], ['belongs_to', 90]])->update(['description' => 'x_x']);
-        
+
         dd($count);
     }
 
-    function test_find_or_fail(){
+    function test_find_or_fail()
+    {
         d(
             DB::table('products')
-            ->findOrFail(1000)
-            ->first()
+                ->findOrFail(1000)
+                ->first()
         );
     }
 
-    function test_update_or_fail(){
+    function test_update_or_fail()
+    {
         d(
             DB::table('products')
-            ->updateOrFail(['description' => 'abc'])
+                ->updateOrFail(['description' => 'abc'])
         );
     }
-   
+
     /*
         Habilitar:
 
@@ -3060,7 +3253,8 @@ class DumbController extends Controller
 
         https://www.arclab.com/en/kb/email/how-to-enable-imap-pop3-smtp-gmail-account.html
     */
-    function sender(){
+    function sender()
+    {
         // Mail::config([
         //     'SMTPDebug' => 4
         // ]);
@@ -3075,15 +3269,16 @@ class DumbController extends Controller
                 'email' => 'boctulus@gmail.com',
                 'name' => 'Pablo'
             ],
-            'Pruebita 001JRBX', 
+            'Pruebita 001JRBX',
             'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau'
-        );    
-        
+        );
+
         d(Mail::errors(), 'Error');
         d(Mail::status(), 'Status');
-    }   
+    }
 
-    function sender_o(){
+    function sender_o()
+    {
         Mail::config([
             'Timeout' => 10
         ]);
@@ -3098,7 +3293,7 @@ class DumbController extends Controller
                 'email' => 'boctulus@gmail.com',
                 'name' => 'Pablo'
             ],
-            'Pruebita 001JRB', 
+            'Pruebita 001JRB',
             'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau',
             // null, 
             // null,
@@ -3112,11 +3307,11 @@ class DumbController extends Controller
             //         'name'  => 'Ing. PK Pulketo'
             //     ]
             // ]
-        );  
-        
+        );
+
         d(Mail::errors(), 'Error');
         d(Mail::status(), 'Status');
-    }  
+    }
 
     // function sender_v8(){
     //     dd(
@@ -3128,7 +3323,8 @@ class DumbController extends Controller
     //     );     
     // }
 
-    function sendinblue(){
+    function sendinblue()
+    {
         Mail::debug(1);
 
         $body = <<<BODY
@@ -3155,9 +3351,9 @@ class DumbController extends Controller
                 'email' => 'boctulus@gmail.com',
                 'name' => 'Pablo'
             ],
-            'Pruebita 001JRB XXX', 
+            'Pruebita 001JRB XXX',
             Strings::paragraph($body),
-            null, 
+            null,
             null,
             [],
             [
@@ -3169,7 +3365,7 @@ class DumbController extends Controller
                     'name'  => 'Ing. PK Pulketo'
                 ]
             ]
-        );  
+        );
     }
 
     // function sendinblue_ori(){
@@ -3196,17 +3392,19 @@ class DumbController extends Controller
     // }
 
 
-        /*
+    /*
         https://github.com/sendgrid/sendgrid-php
     */
-    function sendgrid(){
+    function sendgrid()
+    {
         $email = new \SendGrid\Mail\Mail();
         $email->setFrom("boctulus@gmail.com", "boctulus");
         $email->setSubject("Probando SendGrid");
         $email->addTo("boctulus@gmail.com", "boctulus");
         $email->addContent("text/plain", "Probando el envio,...");
         $email->addContent(
-            "text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
+            "text/html",
+            "<strong>and easy to do anywhere, even with PHP</strong>"
         );
         $sendgrid = new \SendGrid(env('SENDGRID_API_KEY'));
         try {
@@ -3215,7 +3413,7 @@ class DumbController extends Controller
             print_r($response->headers());
             print $response->body() . "\n";
         } catch (\Exception $e) {
-            echo 'Caught exception: '. $e->getMessage() ."\n";
+            echo 'Caught exception: ' . $e->getMessage() . "\n";
         }
     }
 
@@ -3300,17 +3498,18 @@ class DumbController extends Controller
     // }
 
 
-    function validation_test(){
+    function validation_test()
+    {
         $rules = [
-            'nombre' => ['type' => 'alpha_spaces_utf8', 'min'=>3, 'max'=>40],
-            'username' => ['type' => 'alpha_dash', 'min'=> 3, 'max' => '15'],
+            'nombre' => ['type' => 'alpha_spaces_utf8', 'min' => 3, 'max' => 40],
+            'username' => ['type' => 'alpha_dash', 'min' => 3, 'max' => '15'],
             'rol' => ['type' => 'int', 'not_in' => [2, 4, 5]],
-            'poder' => ['not_between' => [4,7] ],
+            'poder' => ['not_between' => [4, 7]],
             'edad' => ['between' => [18, 100]],
-            'magia' => [ 'in' => [3,21,81] ],
-            'is_active' => ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
+            'magia' => ['in' => [3, 21, 81]],
+            'is_active' => ['type' => 'bool', 'messages' => ['type' => 'Value should be 0 or 1']]
         ];
-        
+
         $data = [
             'nombre' => 'Juan Español',
             'username' => 'juan_el_mejor',
@@ -3322,52 +3521,58 @@ class DumbController extends Controller
         ];
 
         $v = new Validator();
-        dd($v->validate($rules,$data));
+        dd($v->validate($rules, $data));
     }
 
-    function validacion(){
+    function validacion()
+    {
         $u = DB::table('users');
         dd($u->where(['username' => 'nano_'])->get());
     }
 
-    function validacion1(){
+    function validacion1()
+    {
         $u = DB::table('users')->setValidator(new Validator());
         $affected = $u->where(['email' => 'nano@'])->update(['firstname' => 'NA']);
     }
 
-    function validacion2(){
+    function validacion2()
+    {
         $u = DB::table('users')->setValidator(new Validator());
         $affected = $u->where(['email' => 'nano@'])->update(['firstname' => 'NA']);
     }
 
-    function validacion3(){
+    function validacion3()
+    {
         $p = DB::table('products')->setValidator(new Validator());
         $rows = $p->where(['cost' => '100X', 'belongs_to' => 90])->get();
 
         dd($rows);
     }
 
-    function validacion4(){
+    function validacion4()
+    {
         $p = DB::table('products')->setValidator(new Validator());
         $affected = $p->where(['cost' => '100X', 'belongs_to' => 90])->delete();
 
         dd($affected);
     }
-  
+
     /*
         Intento #1 de sub-consultas en el WHERE
 
         SELECT id, name, size, cost, belongs_to FROM products WHERE belongs_to IN (SELECT id FROM users WHERE password IS NULL);
 
     */
-    function sub(){
+    function sub()
+    {
         $st = DB::table('products')->deleted()
-        ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
-        ->whereRaw('belongs_to IN (SELECT id FROM users WHERE password IS NULL)')
-        ->get();
+            ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
+            ->whereRaw('belongs_to IN (SELECT id FROM users WHERE password IS NULL)')
+            ->get();
 
-        dd(DB::getLog());  
-        dd($st);         
+        dd(DB::getLog());
+        dd($st);
     }
 
     /*
@@ -3376,18 +3581,19 @@ class DumbController extends Controller
         SELECT id, name, size, cost, belongs_to FROM products WHERE belongs_to IN (SELECT id FROM users WHERE password IS NULL);
 
     */
-    function sub2(){
+    function sub2()
+    {
         $sub = DB::table('users')
-        ->select(['id'])
-        ->whereRaw('password IS NULL');
+            ->select(['id'])
+            ->whereRaw('password IS NULL');
 
         $st = DB::table('products')->deleted()
-        ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
-        ->whereRaw("belongs_to IN ({$sub->toSql()})")
-        ->get();
+            ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
+            ->whereRaw("belongs_to IN ({$sub->toSql()})")
+            ->get();
 
         dd(DB::getLog());
-        dd($st);            
+        dd($st);
     }
 
     /*
@@ -3395,64 +3601,67 @@ class DumbController extends Controller
 
         SELECT id, name, size, cost, belongs_to FROM products WHERE (belongs_to IN (SELECT id FROM users WHERE (confirmed_email = 1) AND password < 100)) AND size = \'1L\';
     */
-    function sub3(){
+    function sub3()
+    {
         $sub = DB::table('users')->deleted()
-        ->select(['id'])
-        ->whereRaw('confirmed_email = 1')
-        ->where(['password', 100, '<']);
+            ->select(['id'])
+            ->whereRaw('confirmed_email = 1')
+            ->where(['password', 100, '<']);
 
         $res = DB::table('products')->deleted()
-        ->mergeBindings($sub)
-        ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
-        ->where(['size', '1L'])
-        ->whereRaw("belongs_to IN ({$sub->toSql()})")
-        ->get();
+            ->mergeBindings($sub)
+            ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
+            ->where(['size', '1L'])
+            ->whereRaw("belongs_to IN ({$sub->toSql()})")
+            ->get();
 
-        dd($res);  
-        dd(DB::getLog());  
+        dd($res);
+        dd(DB::getLog());
     }
 
     /*
         SELECT  id, name, size, cost, belongs_to FROM products WHERE belongs_to IN (SELECT  users.id FROM users  INNER JOIN user_roles ON users.id=user_roles.user_id WHERE confirmed_email = 1  AND password < 100 AND role_id = 2  )  AND size = '1L' ORDER BY id DESC
 
     */
-    function sub3b(){
+    function sub3b()
+    {
         $sub = DB::table('users')->deleted()
-        ->selectRaw('users.id')
-        ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
-        ->whereRaw('confirmed_email = 1')
-        ->where(['password', 100, '<'])
-        ->where(['role_id', 2]);
+            ->selectRaw('users.id')
+            ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
+            ->whereRaw('confirmed_email = 1')
+            ->where(['password', 100, '<'])
+            ->where(['role_id', 2]);
 
         $res = DB::table('products')->deleted()
-        ->mergeBindings($sub)
-        ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
-        ->where(['size', '1L'])
-        ->whereRaw("belongs_to IN ({$sub->toSql()})")
-        ->orderBy(['id' => 'desc'])
-        ->get();
-  
-        dd($res);  
-        dd(DB::getLog());  
+            ->mergeBindings($sub)
+            ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
+            ->where(['size', '1L'])
+            ->whereRaw("belongs_to IN ({$sub->toSql()})")
+            ->orderBy(['id' => 'desc'])
+            ->get();
+
+        dd($res);
+        dd(DB::getLog());
     }
 
-    function sub3c(){
+    function sub3c()
+    {
         $sub = DB::table('users')->deleted()
-        ->selectRaw('users.id')
-        ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
-        ->whereRaw('confirmed_email = 1')
-        ->where(['password', 100, '<'])
-        ->where(['role_id', 3]);
+            ->selectRaw('users.id')
+            ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
+            ->whereRaw('confirmed_email = 1')
+            ->where(['password', 100, '<'])
+            ->where(['role_id', 3]);
 
         $res = DB::table('products')->deleted()
-        ->mergeBindings($sub)
-        ->select(['size'])
-        ->whereRaw("belongs_to IN ({$sub->toSql()})")
-        ->groupBy(['size'])
-        ->avg('cost');
+            ->mergeBindings($sub)
+            ->select(['size'])
+            ->whereRaw("belongs_to IN ({$sub->toSql()})")
+            ->groupBy(['size'])
+            ->avg('cost');
 
-        dd($res);   
-        dd(DB::getLog()); 
+        dd($res);
+        dd(DB::getLog());
     }
 
 
@@ -3461,83 +3670,85 @@ class DumbController extends Controller
 
     */
 
-    function sub4(){
+    function sub4()
+    {
         // SELECT COUNT(*) FROM (SELECT  name, size FROM products  GROUP BY size ) as sub 
         //
         // <-- en SQL no tiene sentido.
 
         try {
             $sub = DB::table('products')
-            ->select(['name', 'size'])
-            ->groupBy(['size']);
+                ->select(['name', 'size'])
+                ->groupBy(['size']);
 
             $m = new Model(true);
             $res = $m->fromRaw("({$sub->toSql()}) as sub")->dontExec()
-            ->count();
+                ->count();
 
             dd($sub->toSql(), 'toSql()');
             dd($m->getLastPrecompiledQuery(), 'getLastPrecompiledQuery()');
-            dd(DB::getLog(), 'getLog()');   
-            dd($res, 'count');  
-
-        } catch (\Exception $e){
+            dd(DB::getLog(), 'getLog()');
+            dd($res, 'count');
+        } catch (\Exception $e) {
             dd($e->getMessage());
             dd($m->dd());
         }
     }
 
     // SELECT  COUNT(*) FROM (SELECT  id, name, size FROM products  WHERE (cost >= ?) AND deleted_at IS NULL) as sub
-    function sub4a(){
+    function sub4a()
+    {
         try {
             $sub = DB::table('products')
-            ->select(['id', 'name', 'size'])
-            ->where(['cost', 150, '>=']);
-        
-            $m = new Model(true);    
+                ->select(['id', 'name', 'size'])
+                ->where(['cost', 150, '>=']);
+
+            $m = new Model(true);
             $res = $m->fromRaw("({$sub->toSql()}) as sub")
-            ->mergeBindings($sub)
-            ->count();
-      
+                ->mergeBindings($sub)
+                ->count();
+
             dd($sub->toSql(), 'toSql()');
             dd($m->getLastPrecompiledQuery(), 'getLastPrecompiledQuery()');
-            dd(DB::getLog(), 'getLog()');   
-            dd($res, 'count'); 
-
-        } catch (\Exception $e){
+            dd(DB::getLog(), 'getLog()');
+            dd($res, 'count');
+        } catch (\Exception $e) {
             dd($e->getMessage());
             dd($m->dd());
-        }    
+        }
     }
 
 
-    function sub4b(){
+    function sub4b()
+    {
         $sub = DB::table('products')->deleted()
-        ->select(['size'])
-        ->groupBy(['size']);
+            ->select(['size'])
+            ->groupBy(['size']);
 
         $m = new Model(true);
         $res = $m->fromRaw("({$sub->toSql()}) as sub")->count();
 
-        dd($res);    
+        dd($res);
     }
 
     /*
         SELECT  COUNT(*) FROM (SELECT  size FROM products WHERE belongs_to = 90 GROUP BY size ) as sub WHERE 1 = 1
     */
-    function sub4c(){
+    function sub4c()
+    {
         $sub = DB::table('products')->deleted()
-        ->select(['size'])
-        ->where(['belongs_to', 90])
-        ->groupBy(['size']);
+            ->select(['size'])
+            ->where(['belongs_to', 90])
+            ->groupBy(['size']);
 
         $main = new \simplerest\core\Model(true);
         $res = $main
-        ->fromRaw("({$sub->toSql()}) as sub")
-        ->mergeBindings($sub)
-        ->count();
+            ->fromRaw("({$sub->toSql()}) as sub")
+            ->mergeBindings($sub)
+            ->count();
 
-        dd($res); 
-        dd($main->getLastPrecompiledQuery());   
+        dd($res);
+        dd($main->getLastPrecompiledQuery());
     }
 
     /*
@@ -3545,34 +3756,35 @@ class DumbController extends Controller
 
         SELECT  COUNT(*) FROM (SELECT  size FROM products WHERE belongs_to = 90 GROUP BY size ) as sub WHERE 1 = 1
     */
-    function sub4d(){
+    function sub4d()
+    {
         $sub = DB::table('products')->deleted()
-        ->select(['size'])
-        ->where(['belongs_to', 90])
-        ->groupBy(['size']);
+            ->select(['size'])
+            ->where(['belongs_to', 90])
+            ->groupBy(['size']);
 
         $res = DB::table("({$sub->toSql()}) as sub")
-        ->mergeBindings($sub)
-        ->count();
+            ->mergeBindings($sub)
+            ->count();
 
-        dd($res);    
+        dd($res);
     }
-    
+
     /*
         Subconsulta (rudimentaria) en el SELECT
     */
-    function sub5(){
+    function sub5()
+    {
         $m = DB::table('products')->deleted()
-        ->select(['name', 'cost'])
-        ->selectRaw('cost - (SELECT MAX(cost) FROM products) as diferencia')
-        ->where(['belongs_to', 90]);
+            ->select(['name', 'cost'])
+            ->selectRaw('cost - (SELECT MAX(cost) FROM products) as diferencia')
+            ->where(['belongs_to', 90]);
 
         $res = $m->get();
 
         dd($res);
-        dd($m->getLastPrecompiledQuery()); 
-        dd(DB::getLog()); 
-        
+        dd($m->getLastPrecompiledQuery());
+        dd(DB::getLog());
     }
 
     /*
@@ -3580,35 +3792,37 @@ class DumbController extends Controller
 
         SELECT id, name, description, belongs_to FROM products WHERE belongs_to = 90 UNION SELECT id, name, description, belongs_to FROM products WHERE belongs_to = 4 ORDER by id ASC LIMIT 5;
     */
-    function union(){
+    function union()
+    {
         $uno = DB::table('products')->deleted()
-        ->select(['id', 'name', 'description', 'belongs_to'])
-        ->where(['belongs_to', 90]);
+            ->select(['id', 'name', 'description', 'belongs_to'])
+            ->where(['belongs_to', 90]);
 
         $dos = DB::table('products')->deleted()
-        ->select(['id', 'name', 'description', 'belongs_to'])
-        ->where(['belongs_to', 4])
-        ->union($uno)
-        ->orderBy(['id' => 'ASC'])
-        ->limit(5)
-        ->get();
+            ->select(['id', 'name', 'description', 'belongs_to'])
+            ->where(['belongs_to', 4])
+            ->union($uno)
+            ->orderBy(['id' => 'ASC'])
+            ->limit(5)
+            ->get();
 
         dd($dos);
     }
 
-    function union2(){
+    function union2()
+    {
         $uno = DB::table('products')->deleted()
-        ->select(['id', 'name', 'description', 'belongs_to'])
-        ->where(['belongs_to', 90]);
+            ->select(['id', 'name', 'description', 'belongs_to'])
+            ->where(['belongs_to', 90]);
 
         $m2  = DB::table('products')->deleted();
         $dos = $m2
-        ->select(['id', 'name', 'description', 'belongs_to'])
-        ->where(['belongs_to', 4])
-        ->where(['cost', 200, '>='])
-        ->union($uno)
-        ->orderBy(['id' => 'ASC'])
-        ->get();
+            ->select(['id', 'name', 'description', 'belongs_to'])
+            ->where(['belongs_to', 4])
+            ->where(['cost', 200, '>='])
+            ->union($uno)
+            ->orderBy(['id' => 'ASC'])
+            ->get();
 
         //dd(DB::getLog());
         //dd($m2->getLastPrecompiledQuery());
@@ -3618,46 +3832,48 @@ class DumbController extends Controller
     /*
         UNION ALL
     */
-    function union_all(){
+    function union_all()
+    {
         $uno = DB::table('products')
-        ->deleted()
-        //->dontQualify()
-        ->select(['id', 'name', 'description', 'belongs_to'])
-        ->where(['belongs_to', 90]);
+            ->deleted()
+            //->dontQualify()
+            ->select(['id', 'name', 'description', 'belongs_to'])
+            ->where(['belongs_to', 90]);
 
         $dos = DB::table('products')
-        ->deleted()
-        //->dontQualify()
-        ->select(['id', 'name', 'description', 'belongs_to'])
-        ->where(['cost', 200, '>='])
-        ->unionAll($uno)
-        //->orderBy(['id' => 'ASC'])
-        ->limit(5)
-        ;
+            ->deleted()
+            //->dontQualify()
+            ->select(['id', 'name', 'description', 'belongs_to'])
+            ->where(['cost', 200, '>='])
+            ->unionAll($uno)
+            //->orderBy(['id' => 'ASC'])
+            ->limit(5);
 
         dd($dos->get());
         dd($dos->dd());
     }
-       
-    function insert_messages() {
-        function get_words($sentence, $count = 10) {
+
+    function insert_messages()
+    {
+        function get_words($sentence, $count = 10)
+        {
             preg_match("/(?:\w+(?:\W+|$)){0,$count}/", $sentence, $matches);
             return $matches[0];
         }
 
         $m = DB::table('messages');
 
-        for ($i=0; $i<1500; $i++){
+        for ($i = 0; $i < 1500; $i++) {
 
             $name = '';
-            for ($i=0;$i<10;$i++){
-                $name .= chr(rand(97,122));
-            }   
+            for ($i = 0; $i < 10; $i++) {
+                $name .= chr(rand(97, 122));
+            }
 
             $email = '';
-            for ($i=0;$i<20;$i++){
-                $email .= chr(rand(97,122));
-            }   
+            for ($i = 0; $i < 20; $i++) {
+                $email .= chr(rand(97, 122));
+            }
 
             $email .= '@gmail.com';
 
@@ -3668,33 +3884,34 @@ class DumbController extends Controller
 
             $phone = '0000000000';
 
-            $m->create([ 
-                        'name' => $name, 
-                        'email' => $email,
-                        'phone' => $phone,
-                        'subject' => $title,
-                        'content' => $content
+            $m->create([
+                'name' => $name,
+                'email' => $email,
+                'phone' => $phone,
+                'subject' => $title,
+                'content' => $content
             ]);
-
-        }        
+        }
     }
 
     // utiliza FPM, sin probar
-    function some_test() {
-       ignore_user_abort(true);
-       fastcgi_finish_request();
+    function some_test()
+    {
+        ignore_user_abort(true);
+        fastcgi_finish_request();
 
-       echo json_encode(['data' => 'Proceso terminado']);
-       header('Connection: close');
+        echo json_encode(['data' => 'Proceso terminado']);
+        header('Connection: close');
 
-       sleep(10);
-       file_put_contents('output.txt', date('l jS \of F Y h:i:s A')."\n", FILE_APPEND);
+        sleep(10);
+        file_put_contents('output.txt', date('l jS \of F Y h:i:s A') . "\n", FILE_APPEND);
     }
 
-    function json(){
+    function json()
+    {
         $id = DB::table('collections')->create([
             'entity' => 'messages',
-            'refs' => json_encode([195,196]),
+            'refs' => json_encode([195, 196]),
             'belongs_to' => 332
         ]);
 
@@ -3702,22 +3919,25 @@ class DumbController extends Controller
     }
 
 
-    function get_env(){
+    function get_env()
+    {
         dd($_ENV['APP_NAME']);
         dd($_ENV['APP_URL']);
     }
 
 
-    function test_get(){
-        dd(DB::table('products')->first(), 'FIRST'); 
+    function test_get()
+    {
+        dd(DB::table('products')->first(), 'FIRST');
         dd(DB::getLog(), 'QUERY');
     }
 
-    function test_get_raw(){
+    function test_get_raw()
+    {
         $raw_sql = 'SELECT * FROM baz';
 
         $conn = DB::getConnection();
-        
+
         $st = $conn->prepare($raw_sql);
         $st->execute();
 
@@ -3725,43 +3945,49 @@ class DumbController extends Controller
 
         // additional casting
         $result['cost'] = (float) $result['cost'];
-        
+
         echo '<pre>';
         var_export($result);
         echo '</pre>';
     }
 
-    function get_role_permissions(){
+    function get_role_permissions()
+    {
         $acl = Factory::acl();
 
         dd($acl->hasResourcePermission('show_all', ['guest'], 'products'));
         //var_export($acl->getRolePermissions());
     }
 
-    function boom(){
+    function boom()
+    {
         throw new \Exception('BOOOOM');
     }
 
-    function ops(){
+    function ops()
+    {
         $this->boom();
     }
 
-    function hi($name = null){
+    function hi($name = null)
+    {
         return 'hi ' . $name;
     }
 
-    function speed(){
+    function speed()
+    {
         Time::setUnit('MILI');
-        
-        $t1 = Time::exec(function(){ 
+
+        $t1 = Time::exec(function () {
             $ttl_res = Url::consume_api('https://mindicador.cl/api', 'GET');
-        }); 
-        
+        });
+
         dd("Time: $t1 ms");
     }
 
-    function get_con(){
-        DB::setConnection('db2');       
+    function get_con()
+    {
+        DB::setConnection('db2');
         $conn = DB::getConnection();
 
         $m = new ProductsModel($conn);
@@ -3771,16 +3997,17 @@ class DumbController extends Controller
         MySql: show status where `variable_name` = 'Threads_connected
         MySql: show processlist;
     */
-    function test_active_connnections(){
+    function test_active_connnections()
+    {
         dd(DB::countConnections(), 'Number of is_active connections');
 
-        DB::setConnection('db2');  
-        dd(DB::table('users')->count(), 'Users DB2:'); 
+        DB::setConnection('db2');
+        dd(DB::table('users')->count(), 'Users DB2:');
 
-        DB::setConnection('db1');  
+        DB::setConnection('db1');
         dd(DB::table('users')->count(), 'Users DB1');
 
-        DB::setConnection('db2');  
+        DB::setConnection('db2');
         dd(DB::table('users')->first(), 'Users DB2:');
 
         dd(DB::countConnections(), 'Number of is_active connections'); // 2 y no 3 ;)
@@ -3792,63 +4019,74 @@ class DumbController extends Controller
         dd(DB::countConnections(), 'Number of is_active connections'); // 0
     }
 
-    function show_databases(){
+    function show_databases()
+    {
         $res = DB::select('SHOW DATABASES', null, 'COLUMN');
         dd($res);
     }
 
-    function test_db_select000(){
+    function test_db_select000()
+    {
         DB::getConnection('az');
-        
+
         $tb = 'files';
         $fields = DB::select("SHOW COLUMNS FROM $tb");
 
         dd($fields);
     }
 
-    function read_table(){
+    function read_table()
+    {
         $tb = 'products';
 
         $fields = DB::select("SHOW COLUMNS FROM $tb");
-        
+
         $field_names = [];
         $nullables = [];
 
-        foreach ($fields as $field){
+        foreach ($fields as $field) {
             $field_names[] = $field['Field'];
-            if ($field['Null']  == 'YES') { $nullables[] = $field['Field']; }
-            if ($field['Extra'] == 'auto_increment') { $not_fillable[] = $field['Field']; }
+            if ($field['Null']  == 'YES') {
+                $nullables[] = $field['Field'];
+            }
+            if ($field['Extra'] == 'auto_increment') {
+                $not_fillable[] = $field['Field'];
+            }
         }
 
         dd($field_names);
     }
 
-    function zzz(){
+    function zzz()
+    {
         $arr = ['el', 'dia', 'que', 'me', 'quieras'];
-        $arr = array_map(function($x){ return "'$x'"; }, $arr);
-        
+        $arr = array_map(function ($x) {
+            return "'$x'";
+        }, $arr);
+
         dd($arr);
-        
+
         //echo implode('-', $arr);
     }
 
-    function speed2(){
+    function speed2()
+    {
 
         Time::setUnit('MILI');
         //Time::noOutput();
-        
+
         $conn = DB::getConnection();
-        $t = Time::exec(function() use ($conn){         
+        $t = Time::exec(function () use ($conn) {
             $sql = "INSERT INTO `baz2` (`name`, `cost`) VALUES ('hhh', '789')";
             $conn->exec($sql);
-        }, 1);  
-        dd("Time: $t ms");    
+        }, 1);
+        dd("Time: $t ms");
 
         exit;
 
         $m = (new Model(true))
-        ->table('baz2');
-        $t = Time::exec(function() use ($m){             
+            ->table('baz2');
+        $t = Time::exec(function () use ($m) {
             //$m->setValidator(new Validator());
             //$m->dontExec();
 
@@ -3856,8 +4094,7 @@ class DumbController extends Controller
                 'name' => 'BAZ',
                 'cost' => '100',
             ]);
-
-        }, 1);  
+        }, 1);
         dd("Time: $t ms");
         dd($m->getLog());
 
@@ -3887,14 +4124,14 @@ class DumbController extends Controller
         Time::setUnit('MILI');
 
         $m = (new Model(true))
-            ->table('bar')  
+            ->table('bar')
             ->where(['uuid', '0fefc2b1-f0d3-47aa-a875-5dbca85855f9'])
             ->select(['uuid', 'price']);
 
         //dd($m->dd());
         //exit;     
 
-        $t = Time::exec(function() use($m) {
+        $t = Time::exec(function () use ($m) {
             $row = $m->get();
         }, 1);
 
@@ -3907,14 +4144,14 @@ class DumbController extends Controller
         Time::setUnit('MILI');
 
         $m = (new Model(true))
-            ->table('bar')  
+            ->table('bar')
             ->select(['uuid', 'price'])
             ->take(10);
 
         //dd($m->dd());
         //exit;         
 
-        $t = Time::exec(function() use($m) {
+        $t = Time::exec(function () use ($m) {
             $row = $m->get();
         }, 1);
 
@@ -3922,44 +4159,45 @@ class DumbController extends Controller
         Files::logger("Time(list) : $t ms");
     }
 
-    function get_bulk(){
+    function get_bulk()
+    {
         $t1a = [];
         $t2a = [];
 
         Time::setUnit('MILI');
 
         $m1 = (new Model(true))
-            ->table('bar')  
+            ->table('bar')
             ->select(['uuid', 'price'])
             ->take(10);
 
         $m2 = (new Model(true))
-            ->table('bar')  
+            ->table('bar')
             ->where(['uuid', '0fefc2b1-f0d3-47aa-a875-5dbca85855f9'])
-            ->select(['uuid', 'price']);    
+            ->select(['uuid', 'price']);
 
         //dd($m->dd());
         //exit;         
 
         $m3 = DB::select("SELECT AVG(price) FROM bar;");
 
-        for ($i=0; $i<4; $i++){
-            $t1a[] = Time::exec(function() use($m1) {
+        for ($i = 0; $i < 4; $i++) {
+            $t1a[] = Time::exec(function () use ($m1) {
                 $m1->get();
             }, 500);
 
-            $t2a[] = Time::exec(function() use($m2) {
+            $t2a[] = Time::exec(function () use ($m2) {
                 $m2->get();
             }, 500);
-        }    
-            
-        foreach ($t1a as $t1){
+        }
+
+        foreach ($t1a as $t1) {
             Files::logger("Time(list) : $t1 ms");
         }
 
-        foreach ($t2a as $t2){
+        foreach ($t2a as $t2) {
             Files::logger("Time(show) : $t2 ms");;
-        }    
+        }
     }
 
     /*
@@ -3968,14 +4206,15 @@ class DumbController extends Controller
         PDO::ATTR_EMULATE_PREPARES] = false
 
     */
-    function test000002(){
+    function test000002()
+    {
         $m = DB::table('products')
-        ->where([ 
-            ['name', ['Vodka', 'Wisky', 'Tekila','CocaCola']], // IN 
-            ['is_locked', 0],
-            ['belongs_to', 90]
-        ])
-        ->whereNotNull('description');
+            ->where([
+                ['name', ['Vodka', 'Wisky', 'Tekila', 'CocaCola']], // IN 
+                ['is_locked', 0],
+                ['belongs_to', 90]
+            ])
+            ->whereNotNull('description');
 
         dd($m->get());
         var_dump(DB::getLog());
@@ -3988,25 +4227,27 @@ class DumbController extends Controller
         PDO::ATTR_EMULATE_PREPARES] = false
 
     */
-    function test000003(){
+    function test000003()
+    {
         $m = DB::table('products')
-        /*
+            /*
         ->where([ 
             ['name', ['Vodka', 'Wisky', 'Tekila','CocaCola']], // IN 
             ['is_locked', 0],
             ['belongs_to', 90]
         ])
         */
-        ->deleted()
-        //->whereNotNull('description');
-        ->where(['description', NULL]);
+            ->deleted()
+            //->whereNotNull('description');
+            ->where(['description', NULL]);
 
         dd($m->first());
         var_dump(DB::getLog());
         //var_dump($m->dd());
     }
 
-    function test_config(){
+    function test_config()
+    {
         dd(Config::get('db_connection_default'));
         Config::set('db_connection_default', 'db_flor');
         dd(Config::get('db_connection_default'));
@@ -4022,76 +4263,76 @@ class DumbController extends Controller
 
     */
     function create_table()
-    {       
+    {
         //config()['db_connection_default'] = 'db2';
         $sc = (new Schema('facturas'))
 
-        ->setEngine('InnoDB')
-        ->setCharset('utf8')
-        ->setCollation('utf8mb4_unicode_ci')
+            ->setEngine('InnoDB')
+            ->setCharset('utf8')
+            ->setCollation('utf8mb4_unicode_ci')
 
-        ->integer('id')->auto()->unsigned()->pri()
-        ->int('edad')->unsigned()
-        ->varchar('firstname')
-        ->varchar('lastname')->nullable()->charset('utf8')->collation('utf8_unicode_ci')
-        ->varchar('username')->unique()
-        ->varchar('password', 128)
-        ->char('password_char')->nullable()
-        ->varbinary('texto_vb', 300)
+            ->integer('id')->auto()->unsigned()->pri()
+            ->int('edad')->unsigned()
+            ->varchar('firstname')
+            ->varchar('lastname')->nullable()->charset('utf8')->collation('utf8_unicode_ci')
+            ->varchar('username')->unique()
+            ->varchar('password', 128)
+            ->char('password_char')->nullable()
+            ->varbinary('texto_vb', 300)
 
-        // BLOB and TEXT columns cannot have DEFAULT values.
-        ->text('texto')
-        ->tinytext('texto_tiny')
-        ->mediumtext('texto_md')
-        ->longtext('texto_long')
-        ->blob('codigo')
-        ->tinyblob('blob_tiny')
-        ->mediumblob('blob_md')
-        ->longblob('blob_long')
-        ->binary('bb', 255)
-        ->json('json_str')
-
-        
-        ->int('karma')->default(100)
-        ->int('code')->zeroFill()
-        ->bigint('big_num')
-        ->bigint('ubig')->unsigned()
-        ->mediumint('medium')
-        ->smallint('small')
-        ->tinyint('tiny')
-        ->decimal('saldo')
-        ->float('flotante')
-        ->double('doble_p')
-        ->real('num_real')
-
-        ->bit('some_bits', 3)->index()
-        ->boolean('is_active')->default(1)
-        ->boolean('paused')->default(true)
-
-        ->set('flavors', ['strawberry', 'vanilla'])
-        ->enum('role', ['admin', 'normal'])
+            // BLOB and TEXT columns cannot have DEFAULT values.
+            ->text('texto')
+            ->tinytext('texto_tiny')
+            ->mediumtext('texto_md')
+            ->longtext('texto_long')
+            ->blob('codigo')
+            ->tinyblob('blob_tiny')
+            ->mediumblob('blob_md')
+            ->longblob('blob_long')
+            ->binary('bb', 255)
+            ->json('json_str')
 
 
-        /*
+            ->int('karma')->default(100)
+            ->int('code')->zeroFill()
+            ->bigint('big_num')
+            ->bigint('ubig')->unsigned()
+            ->mediumint('medium')
+            ->smallint('small')
+            ->tinyint('tiny')
+            ->decimal('saldo')
+            ->float('flotante')
+            ->double('doble_p')
+            ->real('num_real')
+
+            ->bit('some_bits', 3)->index()
+            ->boolean('is_active')->default(1)
+            ->boolean('paused')->default(true)
+
+            ->set('flavors', ['strawberry', 'vanilla'])
+            ->enum('role', ['admin', 'normal'])
+
+
+            /*
             The major difference between DATETIME and TIMESTAMP is that TIMESTAMP values are converted from the current time zone to UTC while storing, and converted back from UTC to the current time zone when accessd. The datetime data type value is unchanged.
         */
 
-        ->time('hora')
-        ->year('birth_year')
-        ->date('fecha')
-        ->datetime('vencimiento')->nullable()->after('num_real') /* no está funcionando el AFTER */
-        ->timestamp('ts')->currentTimestamp()->comment('some comment') // solo un first
+            ->time('hora')
+            ->year('birth_year')
+            ->date('fecha')
+            ->datetime('vencimiento')->nullable()->after('num_real') /* no está funcionando el AFTER */
+            ->timestamp('ts')->currentTimestamp()->comment('some comment') // solo un first
 
 
-        ->softDeletes() // agrega DATETIME deleted_at 
-        ->datetimes()  // agrega DATETIME(s) no-nullables created_at y deleted_at
+            ->softDeletes() // agrega DATETIME deleted_at 
+            ->datetimes()  // agrega DATETIME(s) no-nullables created_at y deleted_at
 
-        ->varchar('correo')->unique()
+            ->varchar('correo')->unique()
 
-        ->int('user_id')->index()
-        ->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
-        //->foreign('user_id')->references('id')->on('users')->constraint('fk_uid')->onDelete('cascade')->onUpdate('restrict')
-        
+            ->int('user_id')->index()
+            ->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
+            //->foreign('user_id')->references('id')->on('users')->constraint('fk_uid')->onDelete('cascade')->onUpdate('restrict')
+
         ;
 
         //dd($sc->getSchema(), 'SCHEMA');
@@ -4100,64 +4341,66 @@ class DumbController extends Controller
         $res = $sc->create();
         dd($res, 'Succeded?');
         //var_dump($sc->dd());
-    }    
+    }
 
     function alter_table()
-    { 
+    {
         Schema::FKcheck(false);
-        
+
         $sc = new Schema('facturas');
         //var_dump($sc->columnExists('correo'));
-       
+
         $res = $sc
 
-        
-        //->timestamp('vencimiento')
-        //->varchar('lastname', 50)->collate('utf8_esperanto_ci')
-        //->varchar('username', 50)
-        //->column('ts')->nullable()
-        //->field('deleted_at')->nullable()
-        //->column('correo')->unique()
-        // ->field('correo')->default(false)->nullable(true)
-        
 
-        //->renameColumn('karma', 'carma')
-        ->field('id')->index()
-        //->renameIndex('id', 'idx')
-        //->dropColumn('saldo')
-        //->dropIndex('correo')
-        //->dropPrimary('id')
-        //->renameTable('boletas')
-        //->dropTable()
+            //->timestamp('vencimiento')
+            //->varchar('lastname', 50)->collate('utf8_esperanto_ci')
+            //->varchar('username', 50)
+            //->column('ts')->nullable()
+            //->field('deleted_at')->nullable()
+            //->column('correo')->unique()
+            // ->field('correo')->default(false)->nullable(true)
 
-        //->field('password_char')->default(false)->nullable(false)
-        
 
-        /*
+            //->renameColumn('karma', 'carma')
+            ->field('id')->index()
+            //->renameIndex('id', 'idx')
+            //->dropColumn('saldo')
+            //->dropIndex('correo')
+            //->dropPrimary('id')
+            //->renameTable('boletas')
+            //->dropTable()
+
+            //->field('password_char')->default(false)->nullable(false)
+
+
+            /*
          creo campos nuevos
         */
-        
-        //->varchar('nuevo_campito', 50)->nullable()->after('ts')
-        //->text('aaa')->first()->nullable()
 
-        //->dropFK('facturas_ibfk_1')
-        //->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('restrict')
-                
-        //->field('id')->auto(false)
-        
+            //->varchar('nuevo_campito', 50)->nullable()->after('ts')
+            //->text('aaa')->first()->nullable()
 
-        ->change();
+            //->dropFK('facturas_ibfk_1')
+            //->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('restrict')
+
+            //->field('id')->auto(false)
+
+
+            ->change();
 
         Schema::FKcheck(true);
         dd($sc->dd());
     }
 
-    function has_table(){
+    function has_table()
+    {
         dd(Schema::hasTable('users'));
         dd((new Schema('users'))->tableExists());
     }
 
-    function xxy(){
+    function xxy()
+    {
         $str = "`lastname` varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT 'NN',
         ";
         dd($str, 'STR');
@@ -4169,7 +4412,7 @@ class DumbController extends Controller
         $collation  = Strings::slice($str, '/COLLATE ([a-z0-9_]+)/');
         dd($collation, 'COLLATION');
         dd($str, 'STR');
-        
+
         $default    = Strings::slice($str, '/DEFAULT (\'?[a-zA-Z0-9_]+\'?)/');
         dd($default, "DEFAULT");
         dd($str, 'STR');
@@ -4183,23 +4426,24 @@ class DumbController extends Controller
         dd($str, 'STR');
     }
 
-    function xxxz(){
+    function xxxz()
+    {
         $str = 'CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE';
         dd($str, 'STR');
 
-        $constraint = Strings::slice($str, '/CONSTRAINT `([a-zA-Z0-9_]+)` /', function($s){
+        $constraint = Strings::slice($str, '/CONSTRAINT `([a-zA-Z0-9_]+)` /', function ($s) {
             //var_dump($s);
-                return ($s == null) ? 'DEFAULT' : $s;
-            }); 
+            return ($s == null) ? 'DEFAULT' : $s;
+        });
 
-        dd($constraint, 'CONSTRAINT');    
+        dd($constraint, 'CONSTRAINT');
 
         //dd($constraint);
         //exit; //
         dd($str, 'STR');
 
         $primary = Strings::slice($str, '/PRIMARY KEY \(([a-zA-Z0-9_`,]+)\)/');
-        dd($str, 'STR');	
+        dd($str, 'STR');
         dd($primary, 'PRIMARY');
 
         /*
@@ -4209,8 +4453,8 @@ class DumbController extends Controller
 
         */
         $unique  = Strings::sliceAll($str, '/UNIQUE KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
-        dd($str, 'STR');	
-        dd($unique, 'UNIQUE');					
+        dd($str, 'STR');
+        dd($unique, 'UNIQUE');
 
         /*
             CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCAD
@@ -4219,7 +4463,7 @@ class DumbController extends Controller
         $fk     = Strings::slice($str, '/FOREIGN KEY \(`([a-zA-Z0-9_]+)`\)/');
         $fk_ref = Strings::slice($str, '/REFERENCES `([a-zA-Z0-9_]+)`/');
 
-        dd($str, 'STR');	
+        dd($str, 'STR');
         dd($fk, 'FK');
         dd($fk, 'REFERENCES');
 
@@ -4229,29 +4473,30 @@ class DumbController extends Controller
         $index   = Strings::sliceAll($str, '/KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
         dd($str, 'STR');
         dd($index, 'INDEX');
-
-
     }
 
-    function test_get_conn(){
+    function test_get_conn()
+    {
         DB::setConnection('db_flor');
         dd(DB::select('SELECT * FROM tbl_usuario'));
     }
 
-    function test_conn2(){
+    function test_conn2()
+    {
         config()['db_connection_default'] = 'db2';
 
         $sc = new Schema('cables');
 
         $sc
-        ->int('id')->unsigned()->auto()->pri()
-        ->varchar('nombre', 40)
-        ->float('calibre')
+            ->int('id')->unsigned()->auto()->pri()
+            ->varchar('nombre', 40)
+            ->float('calibre')
 
-        ->create();
+            ->create();
     }
 
-    function test_route(){
+    function test_route()
+    {
         /*
         Route::get('dumbo/kalc', function(){
             echo 'Hello from Kalc!';
@@ -4261,14 +4506,15 @@ class DumbController extends Controller
         Route::get('has_table', 'DumbController@has_table')
         ->name('dumbo.has_table');
         */
-    
+
         //dd(route('dumbo.has_table'), 'URL');
         //dd(route('dumbo.kalc'), 'URL');
     }
 
-    function curl(){
+    function curl()
+    {
         define('HOST', $this->config['APP_URL']);
-        define('BASE_URL', HOST .'/');
+        define('BASE_URL', HOST . '/');
 
         $url = BASE_URL . "api/v1/auth/login";
 
@@ -4277,11 +4523,11 @@ class DumbController extends Controller
             'password' => "gogogo8"
         ];
 
-        if ($credentials == []){
+        if ($credentials == []) {
             throw new \Exception("Empty credentials");
         }
 
-		$data = json_encode($credentials);
+        $data = json_encode($credentials);
 
         $com = <<<HDOC
         curl -s --location --request POST '$url' \
@@ -4295,27 +4541,31 @@ class DumbController extends Controller
         $http_code = $response['status_code'];
         $error_msg = $response['error'];
 
-       dd($data, 'data');
-       dd($http_code, 'http code');
-       dd($error_msg, 'error');
-    }       
+        dd($data, 'data');
+        dd($http_code, 'http code');
+        dd($error_msg, 'error');
+    }
 
-    function respuesta(){
+    function respuesta()
+    {
         Factory::response()->sendError('Acceso no autorizado', 401, 'Header vacio');
     }
- 
-    function test_error(){
-        Factory::response()->sendError("No encontrado", 404, "El recurso no existe");  
+
+    function test_error()
+    {
+        Factory::response()->sendError("No encontrado", 404, "El recurso no existe");
     }
 
-    function test_get_rels(){
+    function test_get_rels()
+    {
         $table = 'books';
-        
+
         $relations = Schema::getRelations($table);
         dd($relations);
     }
 
-    function testsp(){
+    function testsp()
+    {
         $data = [
             'p_nombre' => 'Florencia P.',
             'p_email' => 'flor1@gmail.com',
@@ -4335,10 +4585,10 @@ class DumbController extends Controller
         $stmt->bindParam(3, $data['p_usuario'], \PDO::PARAM_STR, 50);
         $stmt->bindParam(4, $data['p_password'], \PDO::PARAM_STR, 50);
         $stmt->bindParam(5, $data['p_basedatos'], \PDO::PARAM_STR, 20);
-   
+
         $res = $stmt->execute();
-  
-        if (!$res){
+
+        if (!$res) {
             throw new \Exception("No se pudo crear usuario {$data['p_usuario']}");
         }
 
@@ -4350,59 +4600,66 @@ class DumbController extends Controller
 
         dd($res);
     }
-   
+
 
     /*
         Basic GET, https
     */
-    function test_api00(){
+    function test_api00()
+    {
         $res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
-        dd($res);  
+        dd($res);
     }
 
     /*
         Basic GET, http
     */
-    function test_api01(){
+    function test_api01()
+    {
         $res = Url::consume_api('http://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
-        dd($res);  
+        dd($res);
     }
 
-    function test_api01a(){
+    function test_api01a()
+    {
         $res = Url::consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, [
             'Accept' => 'text/plain'
         ]);
-        dd($res);  
+        dd($res);
     }
 
-    function test_api01b(){
+    function test_api01b()
+    {
         $res = Url::consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
-        dd($res);   
+        dd($res);
     }
 
-    function test_api02(){
+    function test_api02()
+    {
         $data = '{
             "userId": 1,
             "title": "Some title",
             "body": "Some long description"
           }';
-    
+
         $res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
-        dd($res);  
+        dd($res);
     }
 
-    function test_api03(){
+    function test_api03()
+    {
         $data = [
             "userId" => 1,
             "title" => "Some title",
             "body" => "Other long description"
         ];
-    
+
         $res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
-        dd($res);  
+        dd($res);
     }
 
-    function test_api04(){
+    function test_api04()
+    {
         $xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
         $response = Url::consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
@@ -4413,7 +4670,8 @@ class DumbController extends Controller
     }
 
     // debe responderme con erro y un body de respuesta -- ok
-    function test_api05(){
+    function test_api05()
+    {
         $response = Url::consume_api('http://localhost/pruebas/get_error.php', 'POST', null, [
             "Content-type" => "text/xml"
         ]);
@@ -4421,14 +4679,18 @@ class DumbController extends Controller
         dd($response, 'RES');
     }
 
-    function test_api06(){
+    function test_api06()
+    {
 
-        $response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
-            [             
+        $response = Url::consume_api(
+            "https://onesignal.com/api/v1/notifications",
+            'POST',
+            ['x' => 'y'],
+            [
                 'Content-Type: application/json',
                 'Authorization: Basic ' . 'xxxxxxxxxxxx'
-            ],  
-            
+            ],
+
             [
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HEADER => false
@@ -4436,66 +4698,73 @@ class DumbController extends Controller
         );
 
         dd($response, 'RES');
-        
     }
 
-    function parse_class(){
+    function parse_class()
+    {
         $path = MIGRATIONS_PATH . '2021_09_14_27905675_user_sp_permissions.php';
         $file = file_get_contents($path);
 
         dd(Strings::getClassNameByFileName($file));
     }
 
-   
-    function rr(){
+
+    function rr()
+    {
         // DB::getConnection('db_flor');
         // $rels = Schema::getRelations('tbl_estado_civil');
 
         DB::getConnection('az');
-        $rels = Schema::getRelations('books');        
+        $rels = Schema::getRelations('books');
 
         dd($rels);
     }
 
-    function rels(){
+    function rels()
+    {
         // DB::getConnection('db_flor');
         // $rels = Schema::getAllRelations('tbl_estado_civil', false);
 
         // DB::getConnection('az');
         // $rels = Schema::getAllRelations('books', false);   
-        
+
         DB::getConnection('db_flor');
-        $rels = Schema::getAllRelations('tbl_sub_cuenta_contable', false);  
+        $rels = Schema::getAllRelations('tbl_sub_cuenta_contable', false);
 
         dd($rels);
     }
 
-    function autojoins(){
+    function autojoins()
+    {
         DB::getConnection('db_flor');
 
         $rows = DB::table('tbl_estado_civil')
-        ->join('tbl_usuario')
-        ->join('tbl_estado')
-        ->get();
+            ->join('tbl_usuario')
+            ->join('tbl_estado')
+            ->get();
 
         dd($rows);
     }
 
-    function serve_assets(){
+    function serve_assets()
+    {
         view('test_assets.php');
     }
 
-    function test_base_url(){
+    function test_base_url()
+    {
         dd(Url::currentUrl());
         dd(Url::getBaseUrl());
     }
-    
 
-    function x(){
+
+    function x()
+    {
         dd(asset("jota.jpg"));
     }
 
-    function dir(){
+    function dir()
+    {
         $path = '/home/www/simplerest/app/migrations';
 
         $dir  = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -4511,14 +4780,15 @@ class DumbController extends Controller
     /*
         Genera migraciones a partir de la tabla 'tbl_scritp_tablas'
     */
-    function gen_scripts(){
+    function gen_scripts()
+    {
         $mk = new MakeControllerBase();
 
         $rows = DB::table('tbl_scritp_tablas')
-        ->orderBy(['scr_intOrden' => 'ASC'])
-        ->get();
+            ->orderBy(['scr_intOrden' => 'ASC'])
+            ->get();
 
-        foreach ($rows as $row){
+        foreach ($rows as $row) {
             $orden = str_pad($row['scr_intOrden'], 4, "0", STR_PAD_LEFT);
             $name  = strtolower("$orden-{$row['scr_varNombre']}-{$row['scr_varModulo']}");
             $script = $row['scr_lonScritp'];
@@ -4531,12 +4801,14 @@ class DumbController extends Controller
         }
     }
 
-    function mid(){
-        return "Hello World!";        
+    function mid()
+    {
+        return "Hello World!";
     }
 
-    function update(){
-        $data = [ "est_varColor" => "rojo" ];
+    function update()
+    {
+        $data = ["est_varColor" => "rojo"];
 
         DB::setConnection('db_flor');
 
@@ -4544,7 +4816,8 @@ class DumbController extends Controller
         dd($affected);
     }
 
-    function migrate(){
+    function migrate()
+    {
         $mgr = new MigrationsController();
 
         $folder = 'compania';
@@ -4555,35 +4828,39 @@ class DumbController extends Controller
         $mgr->migrate("--dir=$folder", "--to=$tenant");
     }
 
-    function get_pks(){
+    function get_pks()
+    {
         d(Schema::getPKs('boletas'));
     }
 
-    function get_db(){
-        d(Schema::getCurrentDatabase());    
+    function get_db()
+    {
+        d(Schema::getCurrentDatabase());
     }
 
-    function get_autoinc(){
+    function get_autoinc()
+    {
         d(Schema::getAutoIncrement('book_reviews'));
         d(Schema::getAutoIncrement('bar'));
         d(Schema::hasAutoIncrement('bar'));
     }
 
-    function test_alter_table(){
+    function test_alter_table()
+    {
         DB::setConnection('az');
 
-		//$sc = new Schema('boletas');        
+        //$sc = new Schema('boletas');        
         //$sc->field('id')->primary();
-        
+
         $sc = new Schema('bar');
-		$sc
-        ->field('ts')
-        ->renameColumnTo('times2');
+        $sc
+            ->field('ts')
+            ->renameColumnTo('times2');
 
         $sc->field('f1')->primary();
         $sc->field('f2')->primary();
         $sc->field('f3')->primary();
-        
+
         $sc->dontExec();
         $sc->alter();
 
@@ -4591,9 +4868,10 @@ class DumbController extends Controller
         d($sc->dd(), 'SQL');
     }
 
-    function test_alter_table2(){
+    function test_alter_table2()
+    {
         DB::setConnection('az');
-        
+
         $sc = new Schema('boletas');
 
         $sc->field('f1')->primary();
@@ -4605,12 +4883,13 @@ class DumbController extends Controller
         d($sc->getSchema(), 'SCHEMA');
         d($sc->dd(true), 'SQL');
     }
-    
-    function test_alter_table3(){
+
+    function test_alter_table3()
+    {
         DB::setConnection('az');
 
-		$sc = new Schema('boletas');        
-        
+        $sc = new Schema('boletas');
+
         $sc->dropPrimary();
 
         //$sc->dontExec();
@@ -4620,54 +4899,62 @@ class DumbController extends Controller
         d($sc->dd(true), 'SQL');
     }
 
-    function test_alter_table4(){
+    function test_alter_table4()
+    {
         $sc = new Schema('boletas');
         $sc
-        ->dontExec()
-        ->dropAuto()
-        ->alter();
+            ->dontExec()
+            ->dropAuto()
+            ->alter();
 
         dd($sc->dd(), 'SQL');
     }
 
-    function get_auto_field(){
+    function get_auto_field()
+    {
         d(Schema::getAutoIncrementField('book_reviews'));
         d(Schema::getAutoIncrementField('bar'));
     }
-    
-    function mk(){
+
+    function mk()
+    {
         $tenant = "db_100";
-        
+
         StdOut::hideResponse();
 
         $mk = new MakeControllerBase();
-		$mk->any("all", "-s", "-m", "--from:$tenant");        
+        $mk->any("all", "-s", "-m", "--from:$tenant");
     }
 
-    function error(){
+    function error()
+    {
         response()->sendError("Todo mal", 400);
     }
 
-    function is_type(){ 
+    function is_type()
+    {
         dd(Validator::isType('8', 'str'));
         dd(Validator::isType(8, 'str'));
     }
 
-    function validate_data($str){
+    function validate_data($str)
+    {
         dd(Validator::isType($str, 'date'));
     }
 
-    function get_pri(){
+    function get_pri()
+    {
         return get_primary_key('products', 'az');
     }
 
-    function test_sub_res(){
+    function test_sub_res()
+    {
         DB::getConnection('az');
 
         global $api_version;
-        
+
         $api_version = 'v1';
-        
+
         $connect_to = Products::getConnectable();
         $instance   = null;
         $table = 'products';
@@ -4676,13 +4963,14 @@ class DumbController extends Controller
         dd($res);
     }
 
-    function test_sub_res2(){
+    function test_sub_res2()
+    {
         DB::getConnection('az');
 
         global $api_version;
-        
+
         $api_version = 'v1';
-        
+
         $connect_to = Products::getConnectable();
         $instance   = null;
         $table = 'products';
@@ -4691,13 +4979,14 @@ class DumbController extends Controller
         dd($res);
     }
 
-    function test_sub_res3(){
+    function test_sub_res3()
+    {
         DB::getConnection('db_flor');
 
         global $api_version;
-        
+
         $api_version = 'v1';
-        
+
         $connect_to = TblPersona::getConnectable();
         $instance   = null;
         $table = 'tbl_persona';
@@ -4706,15 +4995,16 @@ class DumbController extends Controller
         dd($res);
     }
 
-    
-    function test_create_user(){
+
+    function test_create_user()
+    {
         $m = DB::table('users')
-        ->setValidator(new Validator())
-        ->fill(['password', 'created_at']);
+            ->setValidator(new Validator())
+            ->fill(['password', 'created_at']);
 
         // dd($m->getFillables(), 'FILLABLES');
         // dd($m->getNotFillables(), 'NOT FILLABLES');
-         
+
         $data = json_decode('{
             "username": "u200",
             "email": "u200@mail.com",
@@ -4724,7 +5014,7 @@ class DumbController extends Controller
 
 
         $ok = $m
-        ->create($data);
+            ->create($data);
 
         dd($ok);
     }
@@ -4732,17 +5022,18 @@ class DumbController extends Controller
     /*
         create()
     */
-    function create000(){
+    function create000()
+    {
         DB::getConnection('az');
 
-        $data = array (
+        $data = array(
             'name' => 'bbb',
             'comment' => 'positivo',
             'product_id' => 100
         );
 
         $id = DB::table('product_tags')
-        ->create($data);
+            ->create($data);
 
         dd($id);
         dd(DB::getLog());
@@ -4753,23 +5044,24 @@ class DumbController extends Controller
 
         De momento cada INSERT se ejecuta por separado
     */
-    function create_as_insert_mul(){
+    function create_as_insert_mul()
+    {
         DB::getConnection('az');
 
         $data = [
-            array (
+            array(
                 'name' => 'N1x',
                 'comment' => 'P1x',
                 'product_id' => 100
             ),
 
-            array (
+            array(
                 'name' => 'N2x',
                 'comment' => 'P2x',
                 'product_id' => 103
             ),
 
-            array (
+            array(
                 'name' => 'N3x',
                 'comment' => 'P3x',
                 'product_id' => 105
@@ -4779,7 +5071,7 @@ class DumbController extends Controller
         $m = DB::table('product_tags');
 
         $id = $m
-        ->create($data);
+            ->create($data);
 
         dd($id);
         d($m->getLog());
@@ -4788,29 +5080,30 @@ class DumbController extends Controller
     /*
         create()
     */
-    function create_as_insert_mul2(){
+    function create_as_insert_mul2()
+    {
         DB::getConnection('az');
 
         $data = [
-            array (
+            array(
                 'name' => 'N1',
                 'comment' => 'P1',
                 'product_id' => 100
             ),
 
-            array (
+            array(
                 'name' => 'N2',
                 'comment' => 'P2',
                 'product_id' => 103
             ),
 
-            array (
+            array(
                 'name' => 'N3',
                 'comment' => 'P3',
                 'product_id' => 105
             ),
 
-            array (
+            array(
                 'name' => 'N4',
                 'comment' => '',
                 'product_id' => 105
@@ -4818,7 +5111,7 @@ class DumbController extends Controller
         ];
 
         $id = DB::table('product_tags')
-        ->create($data);
+            ->create($data);
 
         dd($id);
     }
@@ -4828,10 +5121,11 @@ class DumbController extends Controller
 
         1 row
     */
-    function insert_base(){
+    function insert_base()
+    {
         DB::getConnection('az');
 
-        $data = array (
+        $data = array(
             'name' => 'bbb',
             'comment' => 'positivoOOo',
             'product_id' => 100
@@ -4840,7 +5134,7 @@ class DumbController extends Controller
         $m = DB::table('product_tags');
 
         $id = $m
-        ->insert($data, false, false);
+            ->insert($data, false, false);
 
         dd($id);
         d($m->getLog());
@@ -4850,30 +5144,31 @@ class DumbController extends Controller
         insert()
 
         varios rows
-    */        
-    function insert_base2(){
+    */
+    function insert_base2()
+    {
         DB::getConnection('az');
 
         $data = [
-            array (
+            array(
                 'name' => 'N1',
                 'comment' => 'P1',
                 'product_id' => 100
             ),
 
-            array (
+            array(
                 'name' => 'N2',
                 //'comment' => 'P2',
                 'product_id' => 103
             ),
 
-            array (
+            array(
                 'name' => 'N3',
                 'comment' => 'P3',
                 'product_id' => 105
             ),
 
-            array (
+            array(
                 'name' => 'N4',
                 'comment' => '',
                 'product_id' => 105
@@ -4883,7 +5178,7 @@ class DumbController extends Controller
         $m = DB::table('product_tags');
 
         $id = $m
-        ->insert($data, false, false);
+            ->insert($data, false, false);
 
         dd($id);
         d($m->getLog());
@@ -4892,29 +5187,30 @@ class DumbController extends Controller
     /*
         insert()
     */
-    function insert_no_base2(){
+    function insert_no_base2()
+    {
         DB::getConnection('az');
 
         $data = [
-            array (
+            array(
                 'name' => 'N1',
                 'comment' => 'P1',
                 'product_id' => 100
             ),
 
-            array (
+            array(
                 'name' => 'N2',
                 //'comment' => 'P2',
                 'product_id' => 103
             ),
 
-            array (
+            array(
                 'name' => 'N3',
                 'comment' => 'P3',
                 'product_id' => 105
             ),
 
-            array (
+            array(
                 'name' => 'N4',
                 'comment' => '',
                 'product_id' => 105
@@ -4922,7 +5218,7 @@ class DumbController extends Controller
         ];
 
         $id = DB::table('product_tags')
-        ->insert($data, true);
+            ->insert($data, true);
 
         dd($id);
     }
@@ -4930,7 +5226,7 @@ class DumbController extends Controller
     // intento de inserción en tabla puente
     function test_insert_bridge()
     {
-        $data = array (
+        $data = array(
             'product_id' => '145',
             'valoracion_id' => '9',
             'created_at' => at()
@@ -4945,36 +5241,37 @@ class DumbController extends Controller
     /*
         insert()
     */
-    function insert_mul(){
+    function insert_mul()
+    {
         DB::getConnection('az');
 
         $m = DB::table('bar');
 
         $data = [];
-        for ($i=0; $i<5; $i++){
+        for ($i = 0; $i < 5; $i++) {
             $name = '    ';
-            for ($i=0;$i<46;$i++)
-                $name .= chr(rand(97,122));
+            for ($i = 0; $i < 46; $i++)
+                $name .= chr(rand(97, 122));
 
             $name = str_shuffle($name);
 
             $email = '@';
-            $cnt = rand(10,78);
-            for ($i=0;$i<$cnt;$i++)
-                $email .= chr(rand(97,122));    
+            $cnt = rand(10, 78);
+            for ($i = 0; $i < $cnt; $i++)
+                $email .= chr(rand(97, 122));
 
-            $email =  chr(rand(97,122)) . str_shuffle($email);
+            $email =  chr(rand(97, 122)) . str_shuffle($email);
 
             $data[] = [
                 'name' => $name,
-                'price' => rand(5,999) . '.' . rand(0,99),
+                'price' => rand(5, 999) . '.' . rand(0, 99),
                 'email' => $email,
                 'belongs_to' => 1
             ];
         }
 
         $id = $m->insert($data);
-        
+
         dd($data, 'DATA');
         dd($id, 'ID');
     }
@@ -4983,26 +5280,27 @@ class DumbController extends Controller
         Inserción de un solo row
         con insert()
     */
-    function insert_one_row(){
+    function insert_one_row()
+    {
         DB::getConnection('az');
 
         $name = '';
-        for ($i=0;$i<20;$i++){
-            $name .= chr(rand(97,122));
+        for ($i = 0; $i < 20; $i++) {
+            $name .= chr(rand(97, 122));
         }
 
         $m = DB::table('products');
 
         $id = $m
-        ->insert([ 
-            'name' => $name, 
-            'description' => 'Esto es una prueba 770', 
-            'size' => '100L',
-            'cost' => 66,
-            'belongs_to' => 90,
-            'digital_id' => 2   
-        ]);   
-        
+            ->insert([
+                'name' => $name,
+                'description' => 'Esto es una prueba 770',
+                'size' => '100L',
+                'cost' => 66,
+                'belongs_to' => 90,
+                'digital_id' => 2
+            ]);
+
         dd($id);
         dd($m->dd(true));
     }
@@ -5011,26 +5309,27 @@ class DumbController extends Controller
         Inserción de múltiples rows
         con insert()
     */
-    function insert_mul_rows(){
+    function insert_mul_rows()
+    {
         DB::getConnection('az');
 
         $data = [];
-        for ($j=0;$j<5;$j++){
+        for ($j = 0; $j < 5; $j++) {
             $name = '';
 
-            for ($i=0;$i<20;$i++){
-                $name .= chr(rand(97,122));
-            }    
+            for ($i = 0; $i < 20; $i++) {
+                $name .= chr(rand(97, 122));
+            }
 
             $desc = str_shuffle($name);
-            $cost = rand(50,150);
+            $cost = rand(50, 150);
 
             /*
                 Preparo múltiples rows a ser insertadas
             */
-            $data[] = [ 
-                'name' => $name, 
-                'description' => $desc, 
+            $data[] = [
+                'name' => $name,
+                'description' => $desc,
                 'size' => '100L',
                 'cost' => $cost,
                 'belongs_to' => 90,
@@ -5039,55 +5338,61 @@ class DumbController extends Controller
         }
 
         $id = DB::table('products')
-        ->insert($data, true); 
+            ->insert($data, true);
 
         dd($id);
     }
 
-    function get_all_rels(){
+    function get_all_rels()
+    {
         DB::getConnection('db_flor');
         $data = Schema::getAllRelations('tbl_producto');
 
         dd($data);
     }
 
-    function pivot(){
+    function pivot()
+    {
         dd(get_pivot(['products', 'comments'], 'az'));
         //dd(get_pivot(['products', 'comments']));
         dd(get_pivot(['roles', 'tbl_usuario_empresa'], 'main'));
     }
 
-    function show_dbs(){
+    function show_dbs()
+    {
         DB::getDefaultConnection();
 
         dd(DB::getConnectionConfig());
 
         $rows = DB::table('tbl_base_datos')
-        ->get();
+            ->get();
 
         dd($rows);
     }
 
-    function show_dbs2(){
+    function show_dbs2()
+    {
         $conn = DB::getDefaultConnection();
-    
+
         $m = (new Model(false, null, false))
-        ->setConn($conn);
-        
+            ->setConn($conn);
+
         $bases = $m->table('tbl_base_datos')
-        ->pluck('dba_varNombre');
+            ->pluck('dba_varNombre');
 
         dd($bases);
     }
 
-    function get_tables(){
+    function get_tables()
+    {
         DB::getConnection('db_flor');
 
         $tables = Schema::getTables();
         d($tables, 'TABLES');
     }
 
-    function drop_all_tables(string $db_conn_id){
+    function drop_all_tables(string $db_conn_id)
+    {
         dd("DROPPING ALL TABLES FROM `$db_conn_id`");
 
         DB::getConnection($db_conn_id);
@@ -5096,25 +5401,27 @@ class DumbController extends Controller
 
         DB::disableForeignKeyConstraints();
 
-        foreach ($tables as $tb){
+        foreach ($tables as $tb) {
             $ok = Schema::dropIfExists($tb);
             dd($ok, "DROP TABLE $tb");
         }
-        
+
         DB::enableForeignKeyConstraints();
     }
 
-    function drop_all_tables_last_db(){
+    function drop_all_tables_last_db()
+    {
         $conn = DB::getDefaultConnection();
-       
+
         $db = DB::table('tbl_base_datos')
-        ->orderBy(['dba_intId' => 'DESC'])
-        ->first(['dba_varNombre'])['dba_varNombre'];
+            ->orderBy(['dba_intId' => 'DESC'])
+            ->first(['dba_varNombre'])['dba_varNombre'];
 
         $this->drop_all_tables($db);
     }
 
-    function gr(){
+    function gr()
+    {
         // $tenant = 'az';
         // $tb = 'products';
 
@@ -5131,7 +5438,8 @@ class DumbController extends Controller
     }
 
 
-    function pivote(){
+    function pivote()
+    {
         $tenant_id = 'az';
 
         // $t1 = 'products';
@@ -5186,23 +5494,24 @@ class DumbController extends Controller
     }
 
 
-    function get_rels(){
+    function get_rels()
+    {
         $tenant_id = 'az';
 
         $t1 = 'products';
         $t2 = 'users';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
-        exit;///////
+        exit; ///////
 
-        
+
         $t1 = 'u';
         $t2 = 'u_settings';
         dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
@@ -5223,9 +5532,9 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'product_categories';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5233,10 +5542,10 @@ class DumbController extends Controller
 
         $t1 = 'product_categories';
         $t2 = 'products';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5247,10 +5556,10 @@ class DumbController extends Controller
         $t1 = 'product_categories';
         $t2 = 'products';
         $rel_str = 'product_categories.id_catego=products.category';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5262,10 +5571,10 @@ class DumbController extends Controller
         $t1 = 'product_categories';
         $t2 = 'products';
         $rel_str = 'products.category=product_categories.id_catego';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5277,10 +5586,10 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'product_categories';
         $rel_str = 'product_categories.id_catego=products.category';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5292,10 +5601,10 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'product_categories';
         $rel_str = 'products.category=product_categories.id_catego';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5307,9 +5616,9 @@ class DumbController extends Controller
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5319,10 +5628,10 @@ class DumbController extends Controller
 
         $t2 = 'tbl_sub_cuenta_contable';
         $t1 = 'tbl_producto';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5333,10 +5642,10 @@ class DumbController extends Controller
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
         $rel_str = 'tbl_producto.sub_intIdCuentaContableCompra=tbl_sub_cuenta_contable.sub_intId';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
@@ -5348,10 +5657,10 @@ class DumbController extends Controller
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
         $rel_str = 'tbl_sub_cuenta_contable.sub_intId=tbl_producto.sub_intIdCuentaContableCompra';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
@@ -5363,10 +5672,10 @@ class DumbController extends Controller
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
         $rel_str = 'tbl_sub_cuenta_contable.sub_intId=tbl_producto.sub_intIdCuentaContableVenta';
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
@@ -5379,10 +5688,10 @@ class DumbController extends Controller
         $t1 = 'tbl_sub_cuenta_contable';
         $t2 = 'tbl_producto';
         $rel_str = null;
-        
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2"); 
+
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
 
@@ -5394,9 +5703,9 @@ class DumbController extends Controller
         $t2 = 'valoraciones';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
@@ -5406,9 +5715,9 @@ class DumbController extends Controller
         $t2 = 'user_roles';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
@@ -5420,9 +5729,9 @@ class DumbController extends Controller
         $t2 = 'tbl_usuario';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
@@ -5432,24 +5741,24 @@ class DumbController extends Controller
         $t2 = 'tbl_unidadmedida';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
-        
+
         dd('----------------------x----------------------');
 
         $t1 = 'tbl_sub_cuenta_contable';
         $t2 = 'tbl_iva_cuentacontable';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
-        
+
         dd('----------------------x----------------------');
 
 
@@ -5457,9 +5766,9 @@ class DumbController extends Controller
         $t2 = 'tbl_producto';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
@@ -5469,16 +5778,16 @@ class DumbController extends Controller
         $t2 = 'tbl_usuario';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
         dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
 
         dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
-
     }
 
-    function is_rel(){
+    function is_rel()
+    {
         $tenant_id = 'az';
 
         // $t1 = 'u';
@@ -5488,7 +5797,7 @@ class DumbController extends Controller
         // dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?"); 
         // dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
         // dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?"); 
-     
+
 
         // $t1 = 'products';
         // $t2 = 'product_categories';
@@ -5508,10 +5817,10 @@ class DumbController extends Controller
         // dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
         // dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
 
-        dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?"); 
-        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?"); 
+        dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?");
+        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
         dd(is_n_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
-        dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?"); 
+        dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
 
         dd('------------------------------------------------------------');
 
@@ -5522,13 +5831,14 @@ class DumbController extends Controller
         $t2 = 'tbl_usuario';
 
 
-        dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?"); 
-        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?"); 
+        dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?");
+        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
         dd(is_n_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
         dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
     }
 
-    function which_rel(){
+    function which_rel()
+    {
         $tenant_id = 'db_legion';
 
         $t1 = 'tbl_arl';
@@ -5571,39 +5881,39 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'users';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");       
-       
-       
+        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+
+
         $t1 = 'users';
         $t2 = 'products';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");       
-        
+        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+
         $t1 = 'users';
         $t2 = 'book_reviews';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2"); 
+        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'book_reviews';
         $t2 = 'users';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");  
+        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'roles';
         $t2 = 'users';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2"); 
+        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'user_roles';
         $t2 = 'roles';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");  
+        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'roles';
         $t2 = 'user_roles';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2"); 
+        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'product_tags';
         $t2 = 'products';
@@ -5613,28 +5923,28 @@ class DumbController extends Controller
 
         $t1 = 'products';
         $t2 = 'product_tags';
- 
+
         dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $tenant_id = 'az';
         $t1 = 'u';
         $t2 = 'u_settings';
- 
+
         dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'u_settings';
         $t2 = 'u';
-        
+
         dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'tbl_persona';
         $t2 = 'tbl_pais';
-        
+
         dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
         $t1 = 'tbl_estado';
         $t2 = 'tbl_categoria_persona';
-        
+
         dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
         $t1 = 'tbl_sub_cuenta_contable';
@@ -5656,7 +5966,7 @@ class DumbController extends Controller
 
         $t1 = 'usr_tbl';
         $t2 = 'job_tbl';
-        
+
         dd(get_rel_type($t1, $t2, null, 'az'), "$t1~$t2");
 
 
@@ -5668,7 +5978,7 @@ class DumbController extends Controller
 
 
         // 1:n -- no estoy seguro
-        $tenant_id = 'az'; 
+        $tenant_id = 'az';
 
         $t1 = 'tbc2';
         $t2 = 'tbc1';
@@ -5681,7 +5991,7 @@ class DumbController extends Controller
 
         dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
-        
+
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
 
@@ -5691,12 +6001,12 @@ class DumbController extends Controller
 
         $t1 = 'ur';
         $t2 = 'ur_settings';
- 
+
         dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'ur_settings';
         $t2 = 'ur';
-        
+
         dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $tenant_id = 'db_flor';
@@ -5705,110 +6015,117 @@ class DumbController extends Controller
         $t2 = 'tbl_unidadmedida';
 
         $relation_str = null;
-        
+
         //dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $rel_type = get_rel_type($t1, $t2, $relation_str, $tenant_id);
     }
 
 
-    function exx(){
+    function exx()
+    {
         $m = DB::table('products')
-        ->deleted()
-        //->dontQualify()
-        ->groupBy(['cost', 'size', 'belongs_to'])
-        ->having(['cost', 100, '>='])
-        ->or(function($q){
-            $q->havingRaw('SUM(cost) > ?', [500])
-            ->having(['size' => '1L']);
-        })
-        ->orderBy(['size' => 'DESC'])
-        ->select(['cost', 'size', 'belongs_to']);
+            ->deleted()
+            //->dontQualify()
+            ->groupBy(['cost', 'size', 'belongs_to'])
+            ->having(['cost', 100, '>='])
+            ->or(function ($q) {
+                $q->havingRaw('SUM(cost) > ?', [500])
+                    ->having(['size' => '1L']);
+            })
+            ->orderBy(['size' => 'DESC'])
+            ->select(['cost', 'size', 'belongs_to']);
 
         dd($m->get());
         dd(
             $m
-            //->setPaginator(false)
-            ->sqlFormaterOn()
-            ->dd()
+                //->setPaginator(false)
+                ->sqlFormaterOn()
+                ->dd()
         );
     }
 
     // OK
-    function ex(){
+    function ex()
+    {
         $m = DB::table('products')
-        ->dontBind()   // <--- here 
-        ->dontExec()   // <--- here 
-        ->select(['size'])
-        ->selectRaw('AVG(cost)')
-        ->groupBy(['size'])
-        ->having(['AVG(cost)', null, '<']);
+            ->dontBind()   // <--- here 
+            ->dontExec()   // <--- here 
+            ->select(['size'])
+            ->selectRaw('AVG(cost)')
+            ->groupBy(['size'])
+            ->having(['AVG(cost)', null, '<']);
 
         $sql = $m->toSql();
 
         dd(DB::select($sql, [50]));
         dd($sql, 'pre-compiled SQL');
-        dd(DB::getLog(), 'excecuted SQL');    
+        dd(DB::getLog(), 'excecuted SQL');
     }
 
-    function ex1a(){
+    function ex1a()
+    {
         $m = DB::table('products')
-        ->dontBind()   // <--- here 
-        ->dontExec()   // <--- here 
-        ->select(['size', 'cost'])
-        ->groupBy(['size'])        
-        ->having(['cost', null, '>='])
-        ->having(['size' => null]);
+            ->dontBind()   // <--- here 
+            ->dontExec()   // <--- here 
+            ->select(['size', 'cost'])
+            ->groupBy(['size'])
+            ->having(['cost', null, '>='])
+            ->having(['size' => null]);
 
         $sql = $m->toSql();
 
         dd(DB::select($sql, [5, '1L']));
         dd($sql, 'pre-compiled SQL');
-        dd(DB::getLog(), 'excecuted SQL');     
+        dd(DB::getLog(), 'excecuted SQL');
     }
 
-    function ex1b(){
+    function ex1b()
+    {
         $m = DB::table('products')
-        ->dontBind()   // <--- here 
-        ->dontExec()   // <--- here 
-        ->select(['size'])
-        ->selectRaw('AVG(cost)')
-        ->groupBy(['size'])        
-        ->havingRaw('MIN(cost) = ? AND AVG(cost) > ?', [null, null]);
+            ->dontBind()   // <--- here 
+            ->dontExec()   // <--- here 
+            ->select(['size'])
+            ->selectRaw('AVG(cost)')
+            ->groupBy(['size'])
+            ->havingRaw('MIN(cost) = ? AND AVG(cost) > ?', [null, null]);
 
         $sql = $m->toSql();
 
         dd(DB::select($sql, [5, '1L']));
         dd($sql, 'pre-compiled SQL');
-        dd(DB::getLog(), 'excecuted SQL');     
+        dd(DB::getLog(), 'excecuted SQL');
     }
 
-    function ex2(){
+    function ex2()
+    {
         $m = DB::table('products')
-        ->dontBind()   // <--- here 
-        ->dontExec()   // <--- here 
-        ->select(['size'])
-        ->selectRaw('AVG(cost)')
-        ->where(['cost', null, '>'])
-        ->groupBy(['size'])
-        ->having(['AVG(cost)', null, '<']);
+            ->dontBind()   // <--- here 
+            ->dontExec()   // <--- here 
+            ->select(['size'])
+            ->selectRaw('AVG(cost)')
+            ->where(['cost', null, '>'])
+            ->groupBy(['size'])
+            ->having(['AVG(cost)', null, '<']);
 
         $sql = $m->toSql();
 
         dd(DB::select($sql, [50, 100]));
         dd($sql, 'pre-compiled SQL');
-        dd(DB::getLog(), 'excecuted SQL');  
+        dd(DB::getLog(), 'excecuted SQL');
     }
 
-    function test_raw(){
+    function test_raw()
+    {
         $res = DB::select('SELECT * FROM baz');
         dd($res);
         dd(DB::getLog());
     }
 
-    function test_raw1(){
+    function test_raw1()
+    {
         dd(DB::getCurrentConnectionId());
-        
+
         $res = DB::select('SELECT * FROM tbl_departamento', [], null, 'db_flor');
         dd($res);
         dd(DB::getLog());
@@ -5816,19 +6133,22 @@ class DumbController extends Controller
         dd(DB::getCurrentConnectionId());
     }
 
-    function test_raw2(){
+    function test_raw2()
+    {
         $res = DB::select('SELECT * FROM products WHERE cost > ? AND size = ?', [550, '1 mm']);
         dd($res);
         dd(DB::getLog());
     }
 
-    function test_raw2a(){
+    function test_raw2a()
+    {
         $res = DB::select('SELECT cost FROM products WHERE cost > ? AND size = ?', [550, '1 mm'], 'COLUMN');
         dd($res);
         dd(DB::getLog());
     }
 
-    function test_db_select(){
+    function test_db_select()
+    {
         DB::getDefaultConnection();
 
         $db_name = 'az';
@@ -5840,13 +6160,15 @@ class DumbController extends Controller
         dd($data, 'DATA');
         dd(DB::getLog());
     }
-    
-    function test_raw_insert(){
+
+    function test_raw_insert()
+    {
         dd(DB::insert('insert into `baz2` (name, cost) values (?, ?)', ['cool thing', '16.25']));
         dd(DB::getLog());
     }
 
-    function test_raw_insert1(){
+    function test_raw_insert1()
+    {
         DB::getConnection('main');
 
         dd(DB::getCurrentConnectionId());
@@ -5858,31 +6180,35 @@ class DumbController extends Controller
     }
 
     // ID repetido *sin* ignore
-    function test_raw_insert2a(){
+    function test_raw_insert2a()
+    {
         DB::getConnection('main');
 
         dd(DB::getCurrentConnectionId());
 
         try {
             dd(DB::insert('insert into `baz2` (id_baz2, name, cost) values (?, ?, ?)', [5000, 'cool thing', '16.25'], 'az'));
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             dd($e->getMessage());
             dd(DB::getLog());
         }
-        
+
         dd(DB::getCurrentConnectionId());
     }
 
-    function test_raw_insert2(){
+    function test_raw_insert2()
+    {
         dd(DB::insert('insert ignore into `baz2` (id_baz2, name, cost) values (?, ?, ?)', [5000, 'cool thing', '16.25']));
         dd(DB::getLog());
     }
 
-    function test_update_raw(){
+    function test_update_raw()
+    {
         dd(DB::update('update `baz2` SET name = ?, cost = ? WHERE id_baz2 = ?', ['cool thing!!!!!!', '99.00', 5003]));
     }
 
-    function test_statement(){
+    function test_statement()
+    {
         DB::getConnection('db_flor');
 
         $res = DB::statement("INSERT INTO product_tags (name, comment, product_id) VALUES (?, ?, ?)", ['xyz', 'bla bla', 100], 'az');
@@ -5890,19 +6216,22 @@ class DumbController extends Controller
         dd($res);
     }
 
-    function gt(){
+    function gt()
+    {
         DB::getConnection('az');
         $tables = Schema::getTables();
 
         dd($tables, 'TABLES');
     }
 
-    function test_super_query(){
+    function test_super_query()
+    {
         $sql = file_get_contents(ETC_PATH . 'example.sql');
         dd(DB::select($sql, [], null, 'db_flor'));
     }
- 
-    function get_sql_client(){
+
+    function get_sql_client()
+    {
         dd(DB::driver(), 'Driver');
         dd(DB::driverVersion(), 'Driver version');
         dd(DB::driverVersion(true), 'Driver version (num)');
@@ -5928,39 +6257,41 @@ class DumbController extends Controller
     /*
         Sql formater habilitado via Model::sqlFormaterOn()
     */
-    function test_sql_formater001(){
+    function test_sql_formater001()
+    {
         $m = DB::table('products')
-        ->deleted()
-        ->groupBy(['cost', 'size', 'belongs_to'])
-        ->having(['cost', 100, '>='])
-        ->or(function($q){
-            $q->havingRaw('SUM(cost) > ?', [500])
-            ->having(['size' => '1L']);
-        })
-        ->orderBy(['size' => 'DESC'])
-        ->select(['cost', 'size', 'belongs_to']);
+            ->deleted()
+            ->groupBy(['cost', 'size', 'belongs_to'])
+            ->having(['cost', 100, '>='])
+            ->or(function ($q) {
+                $q->havingRaw('SUM(cost) > ?', [500])
+                    ->having(['size' => '1L']);
+            })
+            ->orderBy(['size' => 'DESC'])
+            ->select(['cost', 'size', 'belongs_to']);
 
         dd(
             $m
-            ->sqlFormaterOn()   /* habilito */
-            ->dd()
+                ->sqlFormaterOn()   /* habilito */
+                ->dd()
         );
     }
 
     /*
         Sql formater des-habilitado
     */
-    function test_sql_formater002(){
+    function test_sql_formater002()
+    {
         $m = DB::table('products')
-        ->deleted()
-        ->groupBy(['cost', 'size', 'belongs_to'])
-        ->having(['cost', 100, '>='])
-        ->or(function($q){
-            $q->havingRaw('SUM(cost) > ?', [500])
-            ->having(['size' => '1L']);
-        })
-        ->orderBy(['size' => 'DESC'])
-        ->select(['cost', 'size', 'belongs_to']);
+            ->deleted()
+            ->groupBy(['cost', 'size', 'belongs_to'])
+            ->having(['cost', 100, '>='])
+            ->or(function ($q) {
+                $q->havingRaw('SUM(cost) > ?', [500])
+                    ->having(['size' => '1L']);
+            })
+            ->orderBy(['size' => 'DESC'])
+            ->select(['cost', 'size', 'belongs_to']);
 
         dd($m->dd());
     }
@@ -5968,21 +6299,22 @@ class DumbController extends Controller
     /*
         Sql formater habilitado via Model::dd()
     */
-    function test_sql_formater003(){
+    function test_sql_formater003()
+    {
         $m = DB::table('products')
-        ->deleted()
-        ->groupBy(['cost', 'size', 'belongs_to'])
-        ->having(['cost', 100, '>='])
-        ->or(function($q){
-            $q->havingRaw('SUM(cost) > ?', [500])
-            ->having(['size' => '1L']);
-        })
-        ->orderBy(['size' => 'DESC'])
-        ->select(['cost', 'size', 'belongs_to']);
+            ->deleted()
+            ->groupBy(['cost', 'size', 'belongs_to'])
+            ->having(['cost', 100, '>='])
+            ->or(function ($q) {
+                $q->havingRaw('SUM(cost) > ?', [500])
+                    ->having(['size' => '1L']);
+            })
+            ->orderBy(['size' => 'DESC'])
+            ->select(['cost', 'size', 'belongs_to']);
 
         dd(
             $m
-            ->dd(true)
+                ->dd(true)
         );
     }
 
@@ -5990,17 +6322,18 @@ class DumbController extends Controller
         Sql formateador es aplicado en un segundo paso
         y se parametriza para colorizar 
     */
-    function test_sql_formater004(){
+    function test_sql_formater004()
+    {
         $m = DB::table('products')
-        ->deleted()
-        ->groupBy(['cost', 'size', 'belongs_to'])
-        ->having(['cost', 100, '>='])
-        ->or(function($q){
-            $q->havingRaw('SUM(cost) > ?', [500])
-            ->having(['size' => '1L']);
-        })
-        ->orderBy(['size' => 'DESC'])
-        ->select(['cost', 'size', 'belongs_to']);
+            ->deleted()
+            ->groupBy(['cost', 'size', 'belongs_to'])
+            ->having(['cost', 100, '>='])
+            ->or(function ($q) {
+                $q->havingRaw('SUM(cost) > ?', [500])
+                    ->having(['size' => '1L']);
+            })
+            ->orderBy(['size' => 'DESC'])
+            ->select(['cost', 'size', 'belongs_to']);
 
         dd(
             Model::sqlFormatter($m->dd(), true)
@@ -6011,17 +6344,18 @@ class DumbController extends Controller
         Sql formateador es aplicado en un segundo paso
         y se parametriza para colorizar pero usando el helper sql_formater 
     */
-    function test_sql_formater005(){
+    function test_sql_formater005()
+    {
         $m = DB::table('products')
-        ->deleted()
-        ->groupBy(['cost', 'size', 'belongs_to'])
-        ->having(['cost', 100, '>='])
-        ->or(function($q){
-            $q->havingRaw('SUM(cost) > ?', [500])
-            ->having(['size' => '1L']);
-        })
-        ->orderBy(['size' => 'DESC'])
-        ->select(['cost', 'size', 'belongs_to']);
+            ->deleted()
+            ->groupBy(['cost', 'size', 'belongs_to'])
+            ->having(['cost', 100, '>='])
+            ->or(function ($q) {
+                $q->havingRaw('SUM(cost) > ?', [500])
+                    ->having(['size' => '1L']);
+            })
+            ->orderBy(['size' => 'DESC'])
+            ->select(['cost', 'size', 'belongs_to']);
 
         dd(
             sql_formater($m->dd(), true)
@@ -6029,7 +6363,8 @@ class DumbController extends Controller
     }
 
 
-    function test_middle(){
+    function test_middle()
+    {
         $str = 'SELECT * 
             FROM 
             tbl_categoria_persona 
@@ -6039,19 +6374,20 @@ class DumbController extends Controller
 
         $ini = strpos($str, 'INNER JOIN');
         $end = strpos($str, 'WHERE');
-        
+
         $inners = Strings::middle($str, $ini, $end);
         dd($inners);
     }
 
-    function test_match(){
+    function test_match()
+    {
         $o = '--name=xYz';
         d(Strings::match($o, '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/'));
 
         $o = '--namae=xYz';
         d(Strings::match($o, [
             '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/',
-            '/^--namae[=|:]([a-z][a-z0-9A-Z_]+)$/', 
+            '/^--namae[=|:]([a-z][a-z0-9A-Z_]+)$/',
             '/^--nombre[=|:]([a-z][a-z0-9A-Z_]+)$/'
         ]));
 
@@ -6070,7 +6406,8 @@ class DumbController extends Controller
     /*  
         Strings::middle() works ok if $end is false
     */
-    function test_middle2(){
+    function test_middle2()
+    {
         $str = 'SELECT * 
             FROM 
             tbl_categoria_persona 
@@ -6081,12 +6418,13 @@ class DumbController extends Controller
         $end = strpos($str, 'WHERE');
 
         dd($end);
-        
+
         $inners = Strings::middle($str, $ini, $end);
         dd($inners);
     }
 
-    function test_contains(){
+    function test_contains()
+    {
         $string = 'The lazy fox jumped over the fence';
 
         if (Strings::contains('lazy', $string)) {
@@ -6107,7 +6445,8 @@ class DumbController extends Controller
     }
 
 
-    function vvv(){
+    function vvv()
+    {
         $sql = 'SELECT * 
             FROM 
             tbl_categoria_persona 
@@ -6120,15 +6459,15 @@ class DumbController extends Controller
 
         $inners = trim(Strings::middle($sql, $ini, $end));
         $in_arr = explode('INNER JOIN ', $inners);
-        
+
         $aliases = [];
-        foreach ($in_arr as $ix => $inner){
-            if (empty($inner)){
+        foreach ($in_arr as $ix => $inner) {
+            if (empty($inner)) {
                 unset($in_arr[$ix]);
                 continue;
             }
 
-            if (!preg_match('/[a-zA-Z0-9_]+ as ([a-zA-Z0-9_]+) ON (.*)/', $inner, $matches)){
+            if (!preg_match('/[a-zA-Z0-9_]+ as ([a-zA-Z0-9_]+) ON (.*)/', $inner, $matches)) {
                 throw new \Exception("SQL Error. Something was wrong");
             }
 
@@ -6141,7 +6480,8 @@ class DumbController extends Controller
     }
 
     // envio de archivo encodeado en base 64
-    function test_numrot_dian(){
+    function test_numrot_dian()
+    {
         $xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
         $xml_file_encoded = base64_encode($xml_file);
@@ -6154,66 +6494,79 @@ class DumbController extends Controller
         dd($response, 'RES');
     }
 
-    function check_tenant_group(){
-        $db = 'db_200';        
+    function check_tenant_group()
+    {
+        $db = 'db_200';
         dd(DB::getTenantGroupName($db), "Group name for tenant_id = $db");
 
-        $db = 'az';        
+        $db = 'az';
         dd(DB::getTenantGroupName($db), "Group name for tenant_id = $db");
 
-        $db = 'db_flor';        
+        $db = 'db_flor';
         dd(DB::getTenantGroupName($db), "Group name for tenant_id = $db");
     }
 
-    function check_schema_path(){
+    function check_schema_path()
+    {
         dd(get_schema_path('tbl_arl', 'db_flor'));
         dd(get_schema_path('products', 'az'));
         dd(get_schema_path());
     }
 
-    function test_remove_unnecesary_slashes(){
+    function test_remove_unnecesary_slashes()
+    {
         dd(Strings::removeUnnecessarySlashes('/home/www/simplerest/docs//DOC Simplerest.txt'));
         dd(Strings::removeUnnecessarySlashes('c:\windows\\system32'));
     }
 
-    function test_glob(){
+    function test_glob()
+    {
         dd(glob('*.zip'));
     }
 
-    function test_abs_path(){
+    function test_abs_path()
+    {
         dd(Files::getAbsolutePath("docs/x.txt"));
     }
 
-    function test_is_dir(){
+    function test_is_dir()
+    {
         dd(is_dir('/home/www/simplerest/docsX/dev'));
     }
 
-    function test_rglob(){
+    function test_rglob()
+    {
         dd(Files::recursiveGlob(ROOT_PATH . '/*.php'));
     }
 
-    function test_mkdir_ignore(){
+    function test_mkdir_ignore()
+    {
         dd(Files::mkDir('/home/feli/Desktop/UPDATE/config'));
     }
 
-    function test_writable(){
+    function test_writable()
+    {
         Files::writableOrFail(APP_PATH . 'some_dir');
     }
 
-    function test_hardware_id(){
+    function test_hardware_id()
+    {
         dd(Hardware::UniqueMachineID());
     }
 
-    function test_parse_ini(){
+    function test_parse_ini()
+    {
         dd(parse_ini_file(ROOT_PATH . '.env'));
     }
 
-    function test_env(){
+    function test_env()
+    {
         dd(Env::get());
         dd(Env::get('MAIL_PORT'));
     }
 
-    function test_slash_string_fns(){
+    function test_slash_string_fns()
+    {
         dd(Strings::removeUnnecessarySlashes('c:\\windows'));
         dd(Strings::removeTrailingSlash('/home/www/simplerest/'));
         dd(Strings::removeTrailingSlash('/home/www/simplerest'));
@@ -6222,24 +6575,29 @@ class DumbController extends Controller
     }
 
 
-    function grouped_dbs(){
+    function grouped_dbs()
+    {
         dd(DB::getGroupedDatabases());
     }
 
-    function group_names(){
+    function group_names()
+    {
         dd(DB::getTenantGroupNames());
     }
 
-    function test_conn_ids(){
+    function test_conn_ids()
+    {
         dd(DB::getConnectionIds());
     }
 
-    function test_get_current_conn(){
-        DB::setConnection('db_flor');        
-        dd(DB::getCurrentConnectionId());  
+    function test_get_current_conn()
+    {
+        DB::setConnection('db_flor');
+        dd(DB::getCurrentConnectionId());
     }
-    
-    function testtt(){
+
+    function testtt()
+    {
         $t1 = 'api_keys';
         $t2 = 'users';
         $from_db = 'az';
@@ -6248,8 +6606,9 @@ class DumbController extends Controller
         dd($mul);
     }
 
-    function get_mul(){
-        $tenant_id = 'az'; 
+    function get_mul()
+    {
+        $tenant_id = 'az';
 
         $t1 = 'products';
         $t2 = 'product_categories';
@@ -6262,7 +6621,7 @@ class DumbController extends Controller
 
         //dd(is_mul_rel_cached($t1, $t2, null, $tenant_id), "$t1~$t2");  ///
         dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
-        
+
 
         $t1 = 'product_categories';
         $t2 = 'products';
@@ -6278,7 +6637,7 @@ class DumbController extends Controller
 
         $t1 = 'u_settings';
         $t2 = 'u';
-        
+
         //dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
         dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
 
@@ -6322,7 +6681,7 @@ class DumbController extends Controller
 
         $t1 = 'usr_tbl';
         $t2 = 'job_tbl';
-    
+
         dd(is_mul_rel($t1, $t2, null, 'az'), "$t1~$t2");
 
 
@@ -6333,7 +6692,7 @@ class DumbController extends Controller
 
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
-        
+
         dd(is_mul_rel($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
 
@@ -6347,123 +6706,152 @@ class DumbController extends Controller
 
         dd(is_mul_rel($t1, $t2, null, 'az'), "$t1~$t2");
         //dd(is_mul_rel_cached($t1, $t2, null, 'az'), "$t1~$t2"); 
-        
+
         $t1 = 'tbl_producto';
         $t2 = 'tbl_unidadmedida';
 
         dd(is_mul_rel($t1, $t2, null, 'db_flor'), "$t1~$t2");
     }
 
-    function test_foo(){
+    function test_foo()
+    {
         $rows = DB::table('foo')
-        ->get();
+            ->get();
 
         dd($rows);
     }
 
-    function ungrouped(){
+    function ungrouped()
+    {
         dd(DB::getUngroupedDatabases());
     }
 
-    function test_del(){
+    function test_del()
+    {
         dd(Files::delete('app/controllers/ShopiController.php'));
         //Files::deleteOrFail('app/controllers/ShopiController.php');
     }
 
-    function test_cp(){
+    function test_cp()
+    {
         Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
-        Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
-        'app/controllers/ShopiController.php');        
+        Files::cp(
+            'updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
+            'app/controllers/ShopiController.php'
+        );
     }
 
     /*
         Not file in destiny
     */
-    function test_cp2(){
+    function test_cp2()
+    {
         Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
-        Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
-        'app/controllers');        
+        Files::cp(
+            'updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
+            'app/controllers'
+        );
     }
 
     /*
         Not file in destiny and trailing slash
     */
-    function test_cp3(){
+    function test_cp3()
+    {
         Files::delete('app/controllers/ShopiController.php'); // me aseguro no exista en destino
-        Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
-        'app/controllers/');        
+        Files::cp(
+            'updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
+            'app/controllers/'
+        );
     }
 
-    function test_cp_with_backup(){
-        Files::setBackupDirectory(ROOT_PATH . 'backup'); 
-        Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
-        'app/controllers/ShopiController.php');        
+    function test_cp_with_backup()
+    {
+        Files::setBackupDirectory(ROOT_PATH . 'backup');
+        Files::cp(
+            'updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
+            'app/controllers/ShopiController.php'
+        );
     }
 
     /*
         Sin especificar archivo en destino -- ok
     */
-    function test_cp_with_backup2(){
+    function test_cp_with_backup2()
+    {
         Files::setBackupDirectory(ROOT_PATH . 'backup');
-        Files::cp('updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
-        'app/controllers');        
+        Files::cp(
+            'updates/2021-12-12-0.5.0-alpha/files/app/controllers/ShopiController.php',
+            'app/controllers'
+        );
     }
 
     // OK
-    function test_copy00(){
+    function test_copy00()
+    {
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
         Files::mkDirOrFail($dst);
         Files::delTree($dst);
-        
-        Files::copy($ori, $dst, [
-            'docs',
-            '/home/www/simplerest/vendor/psr/http-client/src/ClientInterface.php',
-            'config/config.php'
-            //'/home/www/simplerest/config/config.php'
-        ], 
-        [
-            'docs/dev',
-            #'/home/www/simplerest/docs/dev/TODO Supra.txt',
-            'docs/INSTALACION.txt'
-        ]);
+
+        Files::copy(
+            $ori,
+            $dst,
+            [
+                'docs',
+                '/home/www/simplerest/vendor/psr/http-client/src/ClientInterface.php',
+                'config/config.php'
+                //'/home/www/simplerest/config/config.php'
+            ],
+            [
+                'docs/dev',
+                #'/home/www/simplerest/docs/dev/TODO Supra.txt',
+                'docs/INSTALACION.txt'
+            ]
+        );
     }
 
     // OK
-    function test_copy01(){
+    function test_copy01()
+    {
         $ori = '/home/www';
         $dst = '/home/feli/Desktop/UPDATE';
 
         Files::mkDirOrFail($dst);
         Files::delTree($dst);
-        
-        Files::copy($ori, $dst, [
-            'simplerest'
-        ], 
-        [
-            'simplerest/docs/dev',
-            'simplerest/docs/INSTALACION.txt'
-        ]);
+
+        Files::copy(
+            $ori,
+            $dst,
+            [
+                'simplerest'
+            ],
+            [
+                'simplerest/docs/dev',
+                'simplerest/docs/INSTALACION.txt'
+            ]
+        );
     }
 
-    function test_copy0x(){
+    function test_copy0x()
+    {
         $ori = '/tmp/obsfuscated/yakpro-po/obfuscated';
         $dst = '/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated/';
         $files  = null;
-        $except = Array
-        (
+        $except = array(
             'obf.yaml',
             'glob:*.zip'
-        );        
+        );
 
         Files::mkDirOrFail($dst);
         Files::delTree($dst);
-        
+
         Files::copy($ori, $dst, $files, $except);
     }
 
-    function test_copy01a0(){
+    function test_copy01a0()
+    {
         $ori = '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files';
         $dst = '/home/www/html/erp/';
 
@@ -6474,7 +6862,8 @@ class DumbController extends Controller
     }
 
 
-    function test_copy01a1(){
+    function test_copy01a1()
+    {
         $ori = '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files';
         $dst = '/home/www/html/erp/';
 
@@ -6484,75 +6873,92 @@ class DumbController extends Controller
         ]);
     }
 
-    function test_copy01a2(){
+    function test_copy01a2()
+    {
         $ori = '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files';
         $dst = '/home/www/html/erp/';
 
         Files::copy($ori, $dst);
     }
 
-    function test_copy01b(){
+    function test_copy01b()
+    {
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
         Files::mkDirOrFail($dst);
         Files::delTree($dst);
-        
-        
-        Files::copy($ori, $dst, [
-            'docs',
-            'vendor/psr/http-client/src/'
-        ], 
-        [
-            'docs/dev',
-            '/home/www/simplerest/docs/dev/TODO Supra.txt',
-            'docs/INSTALACION.txt'
-        ]);
+
+
+        Files::copy(
+            $ori,
+            $dst,
+            [
+                'docs',
+                'vendor/psr/http-client/src/'
+            ],
+            [
+                'docs/dev',
+                '/home/www/simplerest/docs/dev/TODO Supra.txt',
+                'docs/INSTALACION.txt'
+            ]
+        );
     }
 
     /*
         Con un directorio de ruta absoluta en $files
     */
-    function test_copy01c(){
+    function test_copy01c()
+    {
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
         // Antes de iniciar la prueba limpio el directorio destino
         Files::delTree($dst);
-        
-        Files::copy($ori, $dst, [
-            'docs',
-            '/home/www/simplerest/vendor/psr/http-client/src/'     
-        ], 
-        [
-            'docs/dev',
-            '/home/www/simplerest/docs/dev/TODO Supra.txt',
-            'docs/INSTALACION.txt'
-        ]);
+
+        Files::copy(
+            $ori,
+            $dst,
+            [
+                'docs',
+                '/home/www/simplerest/vendor/psr/http-client/src/'
+            ],
+            [
+                'docs/dev',
+                '/home/www/simplerest/docs/dev/TODO Supra.txt',
+                'docs/INSTALACION.txt'
+            ]
+        );
     }
 
     /*
         Con un directorio de ruta absoluta en $files
         y backup
     */
-    function test_copy01d(){
+    function test_copy01d()
+    {
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
         Files::setBackupDirectory();
-        
-        Files::copy($ori, $dst, [
-            'docs',
-            '/home/www/simplerest/vendor/psr/http-client/src/'    
-        ], 
-        [
-            'docs/dev',
-            '/home/www/simplerest/docs/dev/TODO Supra.txt',
-            'docs/INSTALACION.txt'
-        ]);
+
+        Files::copy(
+            $ori,
+            $dst,
+            [
+                'docs',
+                '/home/www/simplerest/vendor/psr/http-client/src/'
+            ],
+            [
+                'docs/dev',
+                '/home/www/simplerest/docs/dev/TODO Supra.txt',
+                'docs/INSTALACION.txt'
+            ]
+        );
     }
 
-    function test_copy(){
+    function test_copy()
+    {
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
@@ -6570,11 +6976,12 @@ class DumbController extends Controller
         Files::copy($ori, $dst, $files, [
             'app/libs/db_dynamic_load.php',
             'app/controllers/PrepareUpdateController.php',
-            'glob:*.zip'            
+            'glob:*.zip'
         ]);
     }
 
-    function test_copy2(){
+    function test_copy2()
+    {
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
@@ -6591,45 +6998,54 @@ class DumbController extends Controller
         Files::copy($ori, $dst, $files, [
             'app/libs/db_dynamic_load.php',
             'app/controllers/PrepareUpdateController.php',
-            'glob:*.zip'            
+            'glob:*.zip'
         ]);
     }
 
     /*
         OJO !!! prodría ser una prueba peligrosa !
     */
-    function test_copy_with_backup(){
+    function test_copy_with_backup()
+    {
         $ori = '/home/www/simplerest/updates/2021-12-12-0.5.0-alpha/files';
         $dst = '/home/www/simplerest_bk';
 
         Files::setBackupDirectory(ROOT_PATH . 'backup');
 
-        Files::copy($ori, $dst, [
-            'app'
-        ], 
-        [
-            // except nothing
-        ]);
-
+        Files::copy(
+            $ori,
+            $dst,
+            [
+                'app'
+            ],
+            [
+                // except nothing
+            ]
+        );
     }
 
     /*
         $dst no está dentro de ROOT_PATH
-    */  
-    function test_copy_with_backup2(){
+    */
+    function test_copy_with_backup2()
+    {
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';;
 
         Files::setBackupDirectory(ROOT_PATH . 'backup');
 
-        Files::copy($ori, $dst, [
-            'docs'
-        ], 
-        [
-            'docs/dev',
-            '/home/www/simplerest/docs/dev/TODO Supra.txt',
-            'docs/INSTALACION.txt'
-        ]);
+        Files::copy(
+            $ori,
+            $dst,
+            [
+                'docs'
+            ],
+            [
+                'docs/dev',
+                '/home/www/simplerest/docs/dev/TODO Supra.txt',
+                'docs/INSTALACION.txt'
+            ]
+        );
 
 
         $str_files = <<<'FILES'
@@ -6653,29 +7069,31 @@ class DumbController extends Controller
 
         use simplerest\models\MyModel;
     */
-    function test_sc(){
+    function test_sc()
+    {
         $path = '/home/www/simplerest/app/models/BoletasModel.php';
         $file = file_get_contents($path);
 
-        if (!Strings::contains('use simplerest\models\MyModel;', $file)){
+        if (!Strings::contains('use simplerest\models\MyModel;', $file)) {
             $lines = explode(PHP_EOL, $file);
 
-            foreach ($lines as $ix => $line){
+            foreach ($lines as $ix => $line) {
                 $line = trim($line);
 
-                if (Strings::startsWith('use ', $line)){
-                    $lines[$ix] = 'use simplerest\models\MyModel;' . PHP_EOL . $line ;
+                if (Strings::startsWith('use ', $line)) {
+                    $lines[$ix] = 'use simplerest\models\MyModel;' . PHP_EOL . $line;
                     break;
                 }
             }
 
-            $file = implode(PHP_EOL, $lines); 
+            $file = implode(PHP_EOL, $lines);
             $ok = file_put_contents($path, $file);
         }
     }
 
 
-    function prepare_default(){
+    function prepare_default()
+    {
         $ori = '/home/www/simplerest';
         $dst = '/home/feli/Desktop/UPDATE';
 
@@ -6702,8 +7120,9 @@ class DumbController extends Controller
         Files::copy($ori, $dst, $files, $except);
     }
 
-    function test_at(){
-        for ($i=0; $i<100000;$i++){
+    function test_at()
+    {
+        for ($i = 0; $i < 100000; $i++) {
             d(at());
         }
 
@@ -6711,12 +7130,13 @@ class DumbController extends Controller
         d(at(false));
     }
 
-    function test_dates(){
+    function test_dates()
+    {
         //  mes 1-12
-        d(datetime('n'));  
+        d(datetime('n'));
 
-         // día 1-31
-        d(datetime('j')); 
+        // día 1-31
+        d(datetime('j'));
 
         // weekday (0-6)
         d(datetime('w'));
@@ -6731,13 +7151,15 @@ class DumbController extends Controller
         d((int) datetime('s'));
     }
 
-    function test_next_dates(){
+    function test_next_dates()
+    {
         d(Date::nextYearFirstDay());
         d(Date::nextMonthFirstDay());
         d(Date::nextWeek());
     }
 
-    function test_get_fk(){
+    function test_get_fk()
+    {
         $t1 = 'products';
         $t2 = 'product_categories';
 
@@ -6755,50 +7177,31 @@ class DumbController extends Controller
         Dolar TRM - 
         DataSource: API Banco de la República (de Colombia)
     */
-    function dolar(){
+    function dolar()
+    {
         $res = Url::consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
-        
-        if ($res['http_code'] != 200){
-            throw new \Exception("Error: ". $res['code'] . ' -code: '. $res['code']);
+
+        if ($res['http_code'] != 200) {
+            throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
         }
 
         $data  = $res['data'];
-        $final = $data[count($data)-1];
-        d($final[1], "DOLAR/COP (TRM) - VALOR FINAL ". date("Y-m-d H:i:s", substr($final[0], 0, 10)));
+        $final = $data[count($data) - 1];
+        d($final[1], "DOLAR/COP (TRM) - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
     }
 
-    
-    function euro(){
+
+    function euro()
+    {
         $res = Url::consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
-        
-        if ($res['http_code'] != 200){
-            throw new \Exception("Error: ". $res['code'] . ' -code: '. $res['code']);
+
+        if ($res['http_code'] != 200) {
+            throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
         }
 
         $data    = $res['data'];
-        $final  = $data[count($data)-1];
+        $final  = $data[count($data) - 1];
         $copusd = $final[1];
-        
-         // Build Swap
-        $swap = (new \Swap\Builder())
-        ->add('european_central_bank')
-        ->add('national_bank_of_romania')
-        ->add('central_bank_of_republic_turkey')
-        ->add('central_bank_of_czech_republic')
-        ->add('russian_central_bank')
-        ->add('bulgarian_national_bank')
-        ->add('webservicex')
-        ->build();
-            
-        // Get the latest EUR/USD rate
-        $rate = ($swap->latest('EUR/USD'))->getValue();
-
-        $copeur = $copusd * $rate;
-
-        d($copeur, "EUR/COP - VALOR FINAL ". date("Y-m-d H:i:s", substr($final[0], 0, 10)));
-    }
-
-    function swap(){
 
         // Build Swap
         $swap = (new \Swap\Builder())
@@ -6809,11 +7212,33 @@ class DumbController extends Controller
             ->add('russian_central_bank')
             ->add('bulgarian_national_bank')
             ->add('webservicex')
-        ->build();
-            
+            ->build();
+
+        // Get the latest EUR/USD rate
+        $rate = ($swap->latest('EUR/USD'))->getValue();
+
+        $copeur = $copusd * $rate;
+
+        d($copeur, "EUR/COP - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
+    }
+
+    function swap()
+    {
+
+        // Build Swap
+        $swap = (new \Swap\Builder())
+            ->add('european_central_bank')
+            ->add('national_bank_of_romania')
+            ->add('central_bank_of_republic_turkey')
+            ->add('central_bank_of_czech_republic')
+            ->add('russian_central_bank')
+            ->add('bulgarian_national_bank')
+            ->add('webservicex')
+            ->build();
+
         // Get the latest EUR/USD rate
         $rate = $swap->latest('EUR/USD');
-        
+
         // 1.129
         d($rate->getValue(), 'EUR/USD');
 
@@ -6824,34 +7249,38 @@ class DumbController extends Controller
         $rate = $swap->historical('EUR/USD', (new \DateTime())->modify('-15 days'));
     }
 
-    function test_zip(){
+    function test_zip()
+    {
         $ori = '/home/www/html/pruebas/drag';
         $dst = '/home/feli/Desktop/UPDATE/drag.zip';
 
-           Files::zip($ori, $dst, [
+        Files::zip($ori, $dst, [
             'file_to_be_ignored.txt',
             "$ori/jquery-ui-1.12.1.custom"
         ]);
     }
 
-    function mkdir(){
+    function mkdir()
+    {
         $tmp_dst = '/tmp/simplerest';
-        
-        if (is_dir($tmp_dst)){
-            Files::delTree($tmp_dst, true); 
+
+        if (is_dir($tmp_dst)) {
+            Files::delTree($tmp_dst, true);
         }
 
         mkdir($tmp_dst);
     }
 
-    function gt2(){
+    function gt2()
+    {
         DB::getConnection('db_flor');
         $tables = Schema::getTables();
 
         dd($tables, 'TABLES');
     }
 
-    function test_sql_mode(){
+    function test_sql_mode()
+    {
         $dsn = "mysql:host=127.0.0.1;dbname=db_168;port=3306";
         $username = "boctulus";
         $password = 'gogogo#*$U&_441@#';
@@ -6864,13 +7293,13 @@ class DumbController extends Controller
         d($pdo_opt, 'PDO OPTIONS');
 
         $conn = new \PDO(
-            $dsn, 
-            $username, 
-            $password, 
+            $dsn,
+            $username,
+            $password,
             $pdo_opt
-       );
+        );
 
-       $sql = "INSERT INTO tbl_categoria_persona(cap_intId, cap_varCategoriaPersona, cap_dtimFechaCreacion, cap_dtimFechaActualizacion, est_intIdEstado, usu_intIdCreador, usu_intIdActualizador) VALUES
+        $sql = "INSERT INTO tbl_categoria_persona(cap_intId, cap_varCategoriaPersona, cap_dtimFechaCreacion, cap_dtimFechaActualizacion, est_intIdEstado, usu_intIdCreador, usu_intIdActualizador) VALUES
         (1, 'Empleado', '2021-05-20 11:40:29', '2021-06-30 09:38:58', 1, 1, 1),
         (2, 'Tercero', '2021-05-20 11:40:58', '2021-07-21 21:44:46', 1, 1, 1),
         (3, 'Visitante', '2021-06-25 15:21:04', '1000-01-01 00:00:00', 1, 1, 1),
@@ -6878,33 +7307,35 @@ class DumbController extends Controller
         (5, 'Proveedor', '2021-08-04 16:48:58', '1000-01-01 00:00:00', 1, 1, 1),
         (6, 'Interesado', '2021-08-04 16:49:09', '1000-01-01 00:00:00', 1, 1, 1);";
 
-        $stmt= $conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $res = $stmt->execute();
 
         d($res, 'RES');
     }
 
-    function test_file_exits(){
+    function test_file_exits()
+    {
         $full_path = '/home/www/simplerest/app/migrations/compania/2021_09_28_29110773_0010_tbl_genero_maestro.php';
 
         var_dump(file_exists($full_path), 'EXISTE?');
 
-        if (!file_exists($full_path)){
+        if (!file_exists($full_path)) {
             StdOut::pprint("Path '$full_path' does not exist !");
             exit;
         }
     }
 
     // from Yii
-    function generateRandomString($length = 10) {
+    function generateRandomString($length = 10)
+    {
         $bytes = random_bytes($length);
         return substr(strtr(base64_encode($bytes), '+/', '-_'), 0, $length);
     }
 
     function test_dynamic_db_creation()
-    {   
-        $db_name = 'db_'. $this->generateRandomString();
-		
+    {
+        $db_name = 'db_' . $this->generateRandomString();
+
         /*
             Voy a registrar la base de datos para su creación
         */
@@ -6916,53 +7347,56 @@ class DumbController extends Controller
         DB::getDefaultConnection();
 
         $db_id = DB::table('tbl_base_datos')
-        ->fill(['usu_intIdActualizador'])
-        ->create([
-            'dba_varNombre'    => $tenant,
-            'usu_intIdCreador' => $uid,
-            'usu_intIdActualizador' => $uid,
-            'dba_dtimFechaCreacion' => $at,
-            'dba_dtimFechaActualizacion' => $at
-        ]); 
+            ->fill(['usu_intIdActualizador'])
+            ->create([
+                'dba_varNombre'    => $tenant,
+                'usu_intIdCreador' => $uid,
+                'usu_intIdActualizador' => $uid,
+                'dba_dtimFechaCreacion' => $at,
+                'dba_dtimFechaActualizacion' => $at
+            ]);
 
 
-		// here(); 
+        // here(); 
         // exit; ///
-		// DB::getConnection($db_name);
+        // DB::getConnection($db_name);
     }
 
-    function test_last_update_dir(){
+    function test_last_update_dir()
+    {
         d(Update::getLastVersionInDirectories());
     }
 
-    function test_100(){
+    function test_100()
+    {
         $q = "SELECT * FROM products INNER JOIN product_categories as pc ON pc.id_catego=products.category WHERE (pc.name_catego = 'frutas') AND products.deleted_at IS NULL LIMIT 10";
 
         d(DB::select($q));
     }
 
-    function test_101(){
+    function test_101()
+    {
         $q = "SELECT * FROM products INNER JOIN product_categories as pc ON pc.id_catego=products.category WHERE (pc.name_catego = ?)
         AND products.deleted_at IS NULL LIMIT ?";
 
         d(DB::select($q, ['frutas', 10]));
     }
 
-    function test_102(){
+    function test_102()
+    {
         $conds = [
-              'pc.name_catego',
-              'frutas',
+            'pc.name_catego',
+            'frutas',
         ];
 
         $m = DB::table('products');
         $m
-        ->where($conds)
-        ->join('product_categories as pc');
+            ->where($conds)
+            ->join('product_categories as pc');
 
         d($m->dd(true));
-        
-        $total = (int) (
-            $m
+
+        $total = (int) ($m
             ->column()
             ->count()
         );
@@ -6970,7 +7404,8 @@ class DumbController extends Controller
         d($total, 'total');
     }
 
-    function test_update_cmp(){
+    function test_update_cmp()
+    {
         $v1 = '0.5.0';
         $v2 = '0.6.0';
         d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
@@ -7004,49 +7439,54 @@ class DumbController extends Controller
         d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
     }
 
-    function get_random_user(){
+    function get_random_user()
+    {
         DB::getDefaultConnection();
         d(
             DB::table(get_users_table())
-            ->random()->dd()
+                ->random()->dd()
         );
     }
 
-    function get_random_product(){
+    function get_random_product()
+    {
         d(
             DB::table('products')
-            ->random()->top()
+                ->random()->top()
         );
     }
 
-    function test_390(){
+    function test_390()
+    {
         d(DB::table('super_cool_table')->id());
     }
 
     /*
         Obtengo el último registro creado
     */
-    function test_400(){
+    function test_400()
+    {
         $m = DB::table('products');
-        
+
         $row = $m
-        ->deleted()
-        ->orderBy([$m->createdAt() => 'DESC'])
-        ->first();
+            ->deleted()
+            ->orderBy([$m->createdAt() => 'DESC'])
+            ->first();
 
         d($row);
         d($m->dd());
     }
 
-    function m(){
+    function m()
+    {
         $is = DB::table('products')
-        ->find(145)
-        ->exists();
-
-        if ($is){
-            $row = DB::table('products')
             ->find(145)
-            ->first();
+            ->exists();
+
+        if ($is) {
+            $row = DB::table('products')
+                ->find(145)
+                ->first();
 
             d($row, "La row existe");
             return;
@@ -7055,46 +7495,51 @@ class DumbController extends Controller
         d("Row fue borrada.");
     }
 
-    function test_delete(){
+    function test_delete()
+    {
         $m = DB::table('product_valoraciones');
 
         $m
-        ->whereRaw("product_id = ?", [100])
-        ->dontExec()
-        ->delete();            
-    
+            ->whereRaw("product_id = ?", [100])
+            ->dontExec()
+            ->delete();
+
         d($m->getLog());
     }
-    
-    function test_delete_raw(){
+
+    function test_delete_raw()
+    {
         dd(DB::delete('DELETE FROM `baz2` WHERE id_baz2 = ?', [5000]));
     }
-    
-    function test_delete1(){
+
+    function test_delete1()
+    {
         $row = DB::table('products')
-        ->findOrFail(145)
-        ->delete();
+            ->findOrFail(145)
+            ->delete();
     }
 
-    function test_trashed(){
+    function test_trashed()
+    {
         $m = DB::table('products');
-        
+
         d($m
-        ->find(145)
-        ->trashed());
+            ->find(145)
+            ->trashed());
 
         d($m->dd());
     }
 
-    function test_undelete(){    
+    function test_undelete()
+    {
         $is = DB::table('products')
-        ->find(145)
-        ->exists();
-
-        if ($is){
-            $row = DB::table('products')
             ->find(145)
-            ->first();
+            ->exists();
+
+        if ($is) {
+            $row = DB::table('products')
+                ->find(145)
+                ->first();
 
             d($row, "La row existe");
             return;
@@ -7105,91 +7550,104 @@ class DumbController extends Controller
         $m = DB::table('products');
 
         $row = $m
-        ->find(145)
-        ->undelete();
+            ->find(145)
+            ->undelete();
 
         d($m->getLog());
 
         $row = $m = DB::table('products')
-        ->find(145)
-        ->first();
+            ->find(145)
+            ->first();
         d($row);
     }
 
-    function test_force_del(){
+    function test_force_del()
+    {
         $m = DB::table('products');
         $m->find(5512)
-        ->forceDelete();
+            ->forceDelete();
     }
 
-    function get_products_no_filter(){
+    function get_products_no_filter()
+    {
         $m = DB::table('products');
         $cnt = $m->count();
 
         d($cnt, 'regs');
     }
 
-    function get_products_with_trashed(){
+    function get_products_with_trashed()
+    {
         $m = DB::table('products');
         $cnt = $m->withTrashed()->count();
 
         d($cnt, 'regs');
     }
 
-    function get_products_only_trashed(){
+    function get_products_only_trashed()
+    {
         $m = DB::table('products');
         $cnt = $m->onlyTrashed()->count();
 
         d($cnt, 'regs');
     }
 
-    function test_103(){
-        d(DB::table('products')
-        ->leftJoin("product_categories")
-        ->leftJoin("product_tags")
-        ->leftJoin("valoraciones")
-        ->find(145)->first()    
+    function test_103()
+    {
+        d(
+            DB::table('products')
+                ->leftJoin("product_categories")
+                ->leftJoin("product_tags")
+                ->leftJoin("valoraciones")
+                ->find(145)->first()
         );
     }
 
-    function test_104(){
-        d(DB::table("product_tags")
-        ->where(['product_id', 145])
-        ->get()
+    function test_104()
+    {
+        d(
+            DB::table("product_tags")
+                ->where(['product_id', 145])
+                ->get()
         );
     }
 
-    function test_105(){
+    function test_105()
+    {
         // $m = DB::table('product_valoraciones');
         // $m
         // ->whereRaw("product_id = ?", [145])
         // ->delete();            
 
-        d(DB::table('product_valoraciones')
-        ->join('valoraciones')
-        ->where(['product_id', 145])
-        ->get()
+        d(
+            DB::table('product_valoraciones')
+                ->join('valoraciones')
+                ->where(['product_id', 145])
+                ->get()
         );
     }
 
 
-    function test_q(){
+    function test_q()
+    {
         $sql = file_get_contents(ETC_PATH . 'test.sql');
         d(DB::select($sql));
     }
 
 
 
-    function test_desentrelazado(){
+    function test_desentrelazado()
+    {
         $literal = strrev("woo4.lan");
-        
+
         // protect spaces
         $literal = str_replace(' ', '-', $literal);
-        
+
         d(Strings::deinterlace($literal));
     }
 
-    function test_entrelazado(){
+    function test_entrelazado()
+    {
         $str = [
             'SmlRs rmwr rae yPboBzoo<otlsA mi.o> l ihsrsre.',
             'ipeetfaeokcetdb al ozl bcuu Tgalcm.Alrgt eevd'
@@ -7198,11 +7656,13 @@ class DumbController extends Controller
         return Strings::interlace($str);
     }
 
-    function test_whois(){
+    function test_whois()
+    {
         return DB::whois();
     }
 
-    function test_unserialize(){
+    function test_unserialize()
+    {
         $s_object = 'O:29:"simplerest\jobs\tasks\DosTask":0:{}';
         $s_params = 'a:2:{i:0;s:4:"Juan";i:1;i:39;}';
 
@@ -7212,20 +7672,21 @@ class DumbController extends Controller
         $o->run(...$p);
     }
 
-    
-   
-    function test_date3(){
+
+
+    function test_date3()
+    {
         // d(Date::nextNthMonthFirstDay(12));
         // d(Date::nextNthMonthFirstDay(1));
         // d(Date::nextNthMonthFirstDay(4));
-        
+
         // d(Date::nextNthWeekDay(5));
 
         d(Date::nextNthMonthDay(5));
         d(Date::nextNthMonthDay(18));
     }
 
-     /*
+    /*
         Esto podría funcionar con el Router
 
         Route::get('/user/{id}', DumbController::class);
@@ -7237,12 +7698,14 @@ class DumbController extends Controller
         d($id);
     }
 
-    function test_refl(){
+    function test_refl()
+    {
         d(Reflector::getConstructor(\simplerest\libs\Foo2::class));
     }
 
-    function test_container(){
-        Container::bind('foo', function(){
+    function test_container()
+    {
+        Container::bind('foo', function () {
             return new Foo();
         });
 
@@ -7253,7 +7716,8 @@ class DumbController extends Controller
         print_r($foo->bar());
     }
 
-    function test_container2(){
+    function test_container2()
+    {
         Container::bind('foo', Foo::class);
 
         $foo = Container::make('foo');
@@ -7263,17 +7727,19 @@ class DumbController extends Controller
         print_r($foo->bar());
     }
 
-    function test_container3(){
+    function test_container3()
+    {
         Container::singleton('foo', Foo::class);
 
         $foo = Container::make('foo');
         print_r($foo->bar());
-        
+
         $foo = Container::make('foo');
         print_r($foo->bar());
     }
 
-    function test_container4(){
+    function test_container4()
+    {
         Container::bind('car', \simplerest\libs\Car::class);
 
         $o = Container::makeWith('car', ['color' => 'blue', 'max_speed' => 200]);
@@ -7286,19 +7752,22 @@ class DumbController extends Controller
 
         https://stackoverflow.com/a/52778193/980631
     */
-    function test_container5(){
-        
+    function test_container5()
+    {
+
         // ....
     }
 
 
-    function test_5055(){
+    function test_5055()
+    {
         DB::getConnection('db_docker_php81_mysql');
     }
 
 
-    function some_work(){
-        for ($i=1; $i<=rand(5,10); $i++){
+    function some_work()
+    {
+        for ($i = 1; $i <= rand(5, 10); $i++) {
             d($i);
             sleep(1);
         }
@@ -7313,26 +7782,31 @@ class DumbController extends Controller
 
         https://superuser.com/a/345455/402377
     */
-    function test_background_task(){
+    function test_background_task()
+    {
         $cmd = 'php com dumb some';
         $pid = System::runInBackground($cmd);
 
         d($pid, 'pid');
     }
 
-    function test_supervisor_start(){
+    function test_supervisor_start()
+    {
         Supervisor::start();
     }
 
-    function test_supervisor_stop(){
+    function test_supervisor_stop()
+    {
         Supervisor::stop();
     }
 
-    function test_is_job_running(){
+    function test_is_job_running()
+    {
         d(Supervisor::isRunning('some.php'));
     }
 
-    function test_dispatch_q1(){
+    function test_dispatch_q1()
+    {
         $queue = new JobQueue("q1");
         $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
         $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
@@ -7340,43 +7814,50 @@ class DumbController extends Controller
         $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
     }
 
-    function test_dispatch_q2(){
+    function test_dispatch_q2()
+    {
         $queue = new JobQueue("q2");
         $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '1 - Juan', 39);
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '2 - Maria',21);
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '2 - Maria', 21);
         $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '3 - Felipito', 10);
     }
 
-    function test_worker_factory_q2(){
+    function test_worker_factory_q2()
+    {
         $queue = new JobQueue("q2");
         $queue->addWorkers(30);
     }
 
-    function test_worker_factory2(){
+    function test_worker_factory2()
+    {
         $queue = new JobQueue();
         $queue->addWorkers(3);
     }
 
-    function test_worker_factory_q1(){
+    function test_worker_factory_q1()
+    {
         $queue = new JobQueue("q1");
         $queue->addWorkers(2);
     }
 
-    function test_worker_stop(){
+    function test_worker_stop()
+    {
         JobQueue::stop();
     }
 
-    function test_worker_stop_q1(){
+    function test_worker_stop_q1()
+    {
         JobQueue::stop('q1');
     }
 
-    function test_tag(){
+    function test_tag()
+    {
         Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
         //Form::pretty();
 
         // echo Bt5Form::span(text:'Hi');
-         
+
         // echo tag('text')->name('bozzolo')->placeholder('Su apellido');
 
         // echo tag('p')->text('Some paragraph')->class('mt-3')->textMuted();
@@ -7516,7 +7997,7 @@ class DumbController extends Controller
         // $class = "class1 hide class2";
         // Bt5Form::addClasses("hide otra", $class);
         // var_dump($class);
-     
+
         // $class = "class1 hide class2";
         // Bt5Form::addClasses(["hide", "otra"], $class);
         // var_dump($class);
@@ -7524,7 +8005,7 @@ class DumbController extends Controller
         // $class = "";
         // Bt5Form::addClasses(["hide", "otra"], $class);
         // var_dump($class);
-     
+
         // var_dump(Bt5Form::addClass("hide", "class1 class2 hide"));
         // var_dump(Bt5Form::addClass("hide", "class1 class3"));
         // var_dump(Bt5Form::addClass("hide", "hide class1 class3"));
@@ -7560,9 +8041,9 @@ class DumbController extends Controller
 
         //echo tag('button')->class('btn btn-primary')->dataBsToogle('modal')->dataBsTarget("#exampleModal")->content('Launch demo modal');
 
-       //echo tag('button')->success()->text('Save changes');
+        //echo tag('button')->success()->text('Save changes');
 
-       //echo tag('closeModal');
+        //echo tag('closeModal');
         //    d('--');
         //    echo '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
 
@@ -7783,7 +8264,7 @@ class DumbController extends Controller
         // ;
 
         //echo tag('spinner');
-        
+
         // echo tag('div')->width(100)->content('
         // Some content,...
         // <p>
@@ -7848,25 +8329,26 @@ class DumbController extends Controller
         //     '@facebook'
         //   ]
         // ])->color('primary');
-    
+
         // echo tag('h4')
         // ->text('Indigo!')
         // ->bg('indigo')
         // ->right();
-        
+
         echo tag('inputGroup')
-        ->content(
-          tag('inputText')
-        )
-        ->prepend(
-          tag('button')->danger()->content('Action')
-        );
+            ->content(
+                tag('inputText')
+            )
+            ->prepend(
+                tag('button')->danger()->content('Action')
+            );
 
         // echo "\r\n\r\n\r\n";
 
     }
 
-    function encoding(){
+    function encoding()
+    {
         dd(Factory::request()->gzip());
         dd(Factory::request()->acceptEncoding());
     }
@@ -8109,23 +8591,26 @@ class DumbController extends Controller
         Más
         https://stackoverflow.com/a/16744070/980631
     */
-    function test_export_lang(){
+    function test_export_lang()
+    {
         exportLangDef();
     }
 
-    function test_trans(){
+    function test_trans()
+    {
         setLang('es_AR');
-        
+
         // i18n
         bindtextdomain('validator', LOCALE_PATH);
-		textdomain('validator');
+        textdomain('validator');
 
         // No se recibieron datos
         dd(_('No data'));
     }
 
 
-    function test_format_num(){
+    function test_format_num()
+    {
         dd(Strings::formatNumber(4));
     }
 
@@ -8133,38 +8618,41 @@ class DumbController extends Controller
         @param $domain string dominio o subdominio
         @param $expires_in int dias para expiración
     */
-    function new(string $domain, int $expires_in){
+    function new(string $domain, int $expires_in)
+    {
         $d1 = new \DateTime();
         $d2 = $d1->modify("+$expires_in days")->format('Y-m-d H:i:s');
 
         DB::getDefaultConnection();
 
         $res = DB::table('ssl')
-        ->create([
-            'domain'     => $domain,
-            'expires_at' => $d2
-        ]);
+            ->create([
+                'domain'     => $domain,
+                'expires_at' => $d2
+            ]);
         //dd(DB::getLog());
     }
 
-    function renew(string $domain, int $expires_in){
+    function renew(string $domain, int $expires_in)
+    {
         $d1 = new \DateTime();
         $d2 = $d1->modify("+$expires_in days")->format('Y-m-d H:i:s');
 
         DB::getDefaultConnection();
 
         $res = DB::table('ssl')
-        ->where([
-            'domain' => $domain
-        ])
-        ->update([
-            'expires_at' => $d2
-        ]);
+            ->where([
+                'domain' => $domain
+            ])
+            ->update([
+                'expires_at' => $d2
+            ]);
 
         //dd(DB::getLog());
     }
 
-    function sec(){
+    function sec()
+    {
         /*
 
             woo1.lan
@@ -8200,44 +8688,54 @@ class DumbController extends Controller
         //dd(Strings::interlace($hh89_066));        
     }
 
-    function test_666(){
+    function test_666()
+    {
         // ahora copio los archivos ofuscados en el destino
         $ori = '/home/www/simplerest/tmp/yakpro-po/obfuscated';
-        $dst = "updates/xxxxxxxx/";  
+        $dst = "updates/xxxxxxxx/";
 
-        Files::setCallback(function(string $content, string $path){
+        Files::setCallback(function (string $content, string $path) {
             return Strings::removeMultiLineComments($content);
         });
 
         Files::copy($ori, $dst . 'files/app/core'); // bug con glob:*
     }
 
-    function test_remove_comments(){
+    function test_remove_comments()
+    {
         $file = file_get_contents('/home/www/simplerest/updates/2021-12-20-0.7.0/files/app/core/Container.php');
         d(Strings::removeMultiLineComments($file));
     }
 
-    function jj(){
-        Files::setCallback(function(string $content, string $path){
+    function jj()
+    {
+        Files::setCallback(function (string $content, string $path) {
             $content = str_replace(
-                'YAK Pro', 
-                'Sol.Bin', $content);
+                'YAK Pro',
+                'Sol.Bin',
+                $content
+            );
 
             $content = str_replace(
-                'GitHub: https://github.com/pk-fr/yakpro-po', 
-                'solucionbinaria.com                       ', $content);
+                'GitHub: https://github.com/pk-fr/yakpro-po',
+                'solucionbinaria.com                       ',
+                $content
+            );
 
             return $content;
         });
 
 
-        Files::cp('/home/www/woo1/wp-content/plugins/auth4wp/ajax.php',
-        '/tmp/obsfuscated'); 
+        Files::cp(
+            '/home/www/woo1/wp-content/plugins/auth4wp/ajax.php',
+            '/tmp/obsfuscated'
+        );
     }
-    
 
-    function hash(){
-        
+
+    function hash()
+    {
+
         $date = '2022-04-15';
         echo Obfuscator::encryptDecrypt('encrypt', $date);
         exit;
@@ -8249,7 +8747,7 @@ class DumbController extends Controller
         $d = new \DateTime('');
         $t = $d->format($f);
 
-        if ($t > Obfuscator::encryptDecrypt('decrypt', 'MTFmMHc2cVBRVHlKMmZxSEVxbnBGQT09')){
+        if ($t > Obfuscator::encryptDecrypt('decrypt', 'MTFmMHc2cVBRVHlKMmZxSEVxbnBGQT09')) {
             exit;
         }
 
@@ -8265,30 +8763,30 @@ class DumbController extends Controller
 
         ////////////////////////////////////
 
-        $str = strrev($domain) . $domain .  strrev($domain) ;
+        $str = strrev($domain) . $domain .  strrev($domain);
 
         $acc = 0;
-        for($i=0; $i<strlen($str) -3; $i++){
-            $acc += ord($str[$i]) * ($i+2);
+        for ($i = 0; $i < strlen($str) - 3; $i++) {
+            $acc += ord($str[$i]) * ($i + 2);
         }
 
-        $fix = function(int $val){
-            while ($val > 90){
+        $fix = function (int $val) {
+            while ($val > 90) {
                 $val -= 20;
             }
 
             return $val;
         };
-        
+
         $s   = (string) $acc;
 
         $ord1 = $fix(substr($s, 0, 3));
         $ord2 = $fix(substr($s, 3, 8));
         $ord3 = $ord2 + 1;;
-    
+
         // J
         // d(chr($ord1). " ($ord1)", 'ord1');
-        
+
         // // O
         // d(chr($ord2). " ($ord2)", 'ord2');
 
@@ -8305,49 +8803,53 @@ class DumbController extends Controller
         $c5 = ctype_upper($c2) ? strtolower($c2) : strtoupper($c2);
         $c6 = ctype_upper($c3) ? strtolower($c3) : strtoupper($c3);
 
-        $token = str_replace([
-            $c1,
-            $c2,
-            $c3,
-            $c4,
-            $c5,
-            $c6
-        ],
-        [
-            'J',
-            'O',
-            'P',
-            'j',
-            'o',
-            'p'
-        ], $token);
+        $token = str_replace(
+            [
+                $c1,
+                $c2,
+                $c3,
+                $c4,
+                $c5,
+                $c6
+            ],
+            [
+                'J',
+                'O',
+                'P',
+                'j',
+                'o',
+                'p'
+            ],
+            $token
+        );
 
 
-        echo $token. "\r\n";
-
+        echo $token . "\r\n";
     }
 
 
-    function test_qr(){
+    function test_qr()
+    {
         $result = Builder::create()
 
-        ->writer(new PngWriter())
-        ->writerOptions([])
-        ->data('Custom QR code contents')
-        ->encoding(new Encoding('UTF-8'))
-        ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
-        ->size(300)
-        ->margin(10)
-        ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
-        ->logoPath(ASSETS_PATH . 'img/logo_t.png')
-        ->labelText('This is the label')
-        ->labelFont(new NotoSans(20))
-        ->labelAlignment(new LabelAlignmentCenter())
-        ->build();
+            ->writer(new PngWriter())
+            ->writerOptions([])
+            ->data('Custom QR code contents')
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+            ->size(300)
+            ->margin(10)
+            ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
+            ->logoPath(ASSETS_PATH . 'img/logo_t.png')
+            ->labelText('This is the label')
+            ->labelFont(new NotoSans(20))
+            ->labelAlignment(new LabelAlignmentCenter())
+            ->build();
     }
 
 
-    function obf_test(){
+    function obf_test()
+    {
         $ori = '/home/www/woo4/wp-content/plugins/woo-sizes';
         $dst = '/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated';
         $excluded = <<<FILES
@@ -8363,11 +8865,12 @@ class DumbController extends Controller
             "--obfuscate-class_constant-name",
             "--obfuscate-label-name"
         ]);
-        
+
         d($ok);
     }
 
-    function scan(){
+    function scan()
+    {
         $dir = '/home/www/woo4/wp-content/plugins/woo-sizes';
 
         d(
@@ -8376,21 +8879,23 @@ class DumbController extends Controller
     }
 
 
-    function test_str_last(){
+    function test_str_last()
+    {
         $url = 'https://www.easyfarma.cl/shop/dermatologia/cariamyl-sol-dermica-x-130ml/';
 
         dd(Url::lastSlug($url), 'SLUG');
     }
 
-    function csv_debug(){
+    function csv_debug()
+    {
         $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
 
         $rows = Files::getCSV($path)['rows'];
 
         d($rows);
-        exit;///////
+        exit; ///////
 
-        usort($rows, function($a, $b){
+        usort($rows, function ($a, $b) {
             return $a['Código Isp'] <=> $b['Código Isp'];
         });
 
@@ -8406,18 +8911,18 @@ class DumbController extends Controller
 
         $total = count($rows);
         d($total, 'TOTAL');
-        
-        foreach ($rows as $row){            
-            if (empty(trim($row['Código Isp']))){
+
+        foreach ($rows as $row) {
+            if (empty(trim($row['Código Isp']))) {
                 $isp_nulos++;
             }
 
-            if (empty(trim($row['SKU']))){
+            if (empty(trim($row['SKU']))) {
                 $sku_nulos++;
             }
 
-            if ($row['Código Isp'] == $last_code){
-                if ($row['SKU'] == $last_sku){
+            if ($row['Código Isp'] == $last_code) {
+                if ($row['SKU'] == $last_sku) {
                     // si se imprimiera sería porque habría "productos variables" (cosa que no sucede)
                     //d($last_sku, $last_code);
                 }
@@ -8426,11 +8931,11 @@ class DumbController extends Controller
                 $isp_repetidos++;
             }
 
-            if ($row['SKU'] == $last_sku){
+            if ($row['SKU'] == $last_sku) {
                 $sku_repetidos++;
             }
 
-            if ($row['Nombre'] == $last_name){
+            if ($row['Nombre'] == $last_name) {
                 $names_repetidos[] = $row['Nombre'];
             }
 
@@ -8447,193 +8952,284 @@ class DumbController extends Controller
         d($names_repetidos, "NAMES REPETIDOS : " . count($names_repetidos));
     }
 
-    function csv_debug1(){
+    function csv_debug1()
+    {
         $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
 
         $rows = Files::getCSV($path)['rows'];
 
-        foreach ($rows as $row){       
+        foreach ($rows as $row) {
             #if ($row['Código Isp'] == 'F-13670/14'){
-                d($row);
+            d($row);
             #}
         }
     }
 
-    function test_sinergia()
-    {
-        $ruc = '12345678910';
-        $razon_social = 'DEMO SAC';
+    ////////////
+
+    /*
+        Rutas
 
         $base  = 'https://demoapi.sinergia.pe';
         $ruta1 = "$base/interfaces/interfacesventa/homologarModVenta";
         $ruta2 = "$base/interfaces/interfacesventa/homologarCliente";
         $ruta3 = "$base/interfaces/interfacesventa/homologarBienesServicios";
         $ruta4 = "$base/interfaces/interfacesventa/crearBienServicio";
+    */
+
+
+    /*
+        "F12_MONTOIGV":18 👉 por ejemplo este campo SIEMPRE es 18
+    */
+    function test_sinergia_registrar_bien_o_servicio()
+    {
+        $ruc = '12345678910';
+        $razon_social = 'DEMO SAC';
+
+        $base  = 'https://demoapi.sinergia.pe';
+        $ruta  = "$base/interfaces/interfacesventa/homologarBienesServicios";
+
+        /*
+            // Núm. de órden
+            "F1_ITEM":"01", 
+            
+            // Unidad de medida en SUNAT. 
+            // https://isyfac.com/centro-de-ayuda/configuracion/codigo-de-la-unidad-de-medida-sunat/
+            "F2_UNIDAD":"NIU",  
+
+            "F3_CANTIDAD":100,
+
+            // Núm. de producto que maneja por ejemplo WooCommerce
+            "F4_CODIGO_PRODUCTO":"C00001",
+              
+            ¿Cuál es el código de Detraccion SUNAT?
+
+            Código	    Definición	                                    % Tasa a aplicar
+            019	        Arrendamiento de bienes	                        10 %
+            020	        Mantenimiento y reparación de bienes muebles	12 %
+            021	        Movimiento de carga	                            10 %
+            022	        Otros servicios empresariales	                12 %
+            
+            // Entiendo que sino hay detractación, va 000
+            "F5_CODIGO_SUNAT":"000",
+
+            "F7_DESCRIPCION":"LENTES PROFANOS ZZZ",
+            "F8_PRECIO":100,
+            "F9_PRECIOVENTA":100,
+
+            "F10_TIPOPRECIO":"01",
+
+            // Si fuera gratis
+            "F11_PRECIOGRATIS":0,
+
+            El cálculo de IGV se hace aplicando el 18% en caso de tener el importe base, por ejemplo:
+            IGV =  Importe Base x 0.18
+
+            "F12_MONTOIGV":18,
+
+            // Subtotal para el ítem.  Debo sumar algo acá dentro??? algún impuesto?
+            "F13_SUBTOTAL":118,
+
+            // De nuevo relacionado con el IGV. 
+
+            G. Catálogo No. 07: Códigos de Tipo de Afectación del IGV
+            CATALOGO No. 07
+            Campo cbc:TaxExemptionReasonCode
+            Descripción Tipo de Afectación al IGV
+            Catálogo SUNAT
+            Código Descripción
+            10 Gravado - Operación Onerosa
+            11 Gravado – Retiro por premio
+            12 Gravado – Retiro por donación
+            13 Gravado – Retiro 
+
+            https://www.sunat.gob.pe/legislacion/superin/2015/anexoD-357-2015.pdf
+    
+            "F14_TIPOAFECTA":"10",
+
+            // Código de Sistema Integral de Salud. Y sino tiene? 
+            "F15_CODIGOSIS":"1",
+
+            "F16_PORCENTAJE_DESCUENTO":0,
+
+            // Bien (b) y Servicio (s)
+            "F17_BIENSERVICIO":"s"
+        */
         
+
+        // Sería el mismo JSON que para homologarModVenta
+        $body = '{
+            "ruc":"12345678910",
+            "tabla_ventas":[
+              {
+                "detalle":[
+                  {
+                  "F1_ITEM":"01",
+                  "F2_UNIDAD":"NIU",
+                  "F3_CANTIDAD":100,
+                  "F4_CODIGO_PRODUCTO":"C00001",
+                  "F5_CODIGO_SUNAT":"000",
+                  "F7_DESCRIPCION":"LENTES PROFANOS ZZZ",
+                  "F8_PRECIO":100,
+                  "F9_PRECIOVENTA":100,
+                  "F10_TIPOPRECIO":"01",
+                  "F11_PRECIOGRATIS":0,
+                  "F12_MONTOIGV":18,
+                  "F13_SUBTOTAL":118,
+                  "F14_TIPOAFECTA":"10",
+                  "F15_CODIGOSIS":"1",
+                  "F16_PORCENTAJE_DESCUENTO":0,
+                  "F17_BIENSERVICIO":"s"
+                  },
+                  {
+                  "F1_ITEM":"02",
+                  "F2_UNIDAD":"NIU",
+                  "F3_CANTIDAD":100,
+                  "F4_CODIGO_PRODUCTO":"C00002",
+                  "F5_CODIGO_SUNAT":"000",
+                  "F7_DESCRIPCION":"LENTES PROFANOS XXX",
+                  "F8_PRECIO":100,
+                  "F9_PRECIOVENTA":100,
+                  "F10_TIPOPRECIO":"01",
+                  "F11_PRECIOGRATIS":0,
+                  "F12_MONTOIGV":18,
+                  "F13_SUBTOTAL":118,
+                  "F14_TIPOAFECTA":"10",
+                  "F15_CODIGOSIS":"2",
+                  "F16_PORCENTAJE_DESCUENTO":0,
+                  "F17_BIENSERVICIO":"s"
+                  }
+                ]
+              }
+            ]
+          
+          }';
+
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
+
+        $response = Url::consume_api($ruta, 'POST', $body, [
+            "Content-type"  => "Application/json",
+            "authToken" => "$token"
+        ]);
+
+        d($response, 'RES');       
+    }
+
+    function test_sinergia_registrar_cliente()
+    {
+        $ruc = '12345678910';
+
+        $base  = 'https://demoapi.sinergia.pe';
+        $ruta  = "$base/interfaces/interfacesventa/homologarCliente";
 
         $body = '{
             "ruc": "'.$ruc.'",
             "tabla_ventas": [
+              { 
+                "D1_DOCUMENTO": "20603374097",
+                "D2_TIPODOCUMENTO": "6",
+                "D3_DESCRIPCION": "DevTechPeru EIRL (986976377)",
+                "D4_LEGAL_STREET": "Jr Los Aromos 644 Dpto 301, La Molina",
+                "D4_LEGAL_DISTRICT": "",
+                "D4_LEGAL_PROVINCE": "Lima",
+                "D4_LEGAL_STATE": "Lima",
+                "D4_UBIGEO": null,
+                "D5_DIRECCION": "Jr Los Aromos 644 Dpto 301, La Molina, Lima",
+                "D6_URBANIZACION": null,
+                "D7_PROVINCIA": "Lima",
+                "D8_DEPARTAMENTO": "Lima",
+                "D9_DISTRITO": "La Molina",
+                "D10_PAIS": null,
+                "D11_CORREO": "augusto@devtechperu.com",
+                "D12_CODIGO": null,
+                "D13_CODIGODIR": ""
+              }
+            ]
+          }';
+
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
+
+        $response = Url::consume_api($ruta, 'POST', $body, [
+            "Content-type"  => "Application/json",
+            "authToken" => "$token"
+        ]);
+
+        d($response, 'RES');       
+    }
+
+
+    /*
+        "F12_MONTOIGV":18 👉 por ejemplo este campo SIEMPRE es 18
+    */
+    function test_sinergia_registrar_venta()
+    {
+        $ruc = '12345678910';
+        $razon_social = 'DEMO SAC';
+
+        $base = 'https://demoapi.sinergia.pe';
+        $ruta = "$base/interfaces/interfacesventa/homologarModVenta";
+
+
+        $body = '{
+            "ruc": "' . $ruc . '",
+            "tabla_ventas": [
                 {
-                  "A1_ID" : "F00300000254",
-          "A2_FECHAEMISION" : "2021-10-05",
-          "A3_HORAEMISION" : null,
-          "A4_TIPODOCUMENTO" : "01",
-          "A5_MONEDA" : "USD",
-          "A6_FECHAVENCIMIENTO" : null,
-          "A7_DOCUMENTOREFERENCIA" : null,
-          "A8_MOTIVONC" : null,
-          "A9_FECHABAJA" : null,
-          "A10_OBSERVACION" : null,
-          "A11_TIPODOCUMENTOREFERENCIA" : null,
-          "A12_WEIGHT" : 2.4,
-          "B1_RUC" : "'.$ruc.'",
-          "D1_DOCUMENTO" : "20603374097",
-          "D2_TIPODOCUMENTO" : "6",
-          "D3_DESCRIPCION" : "'.$razon_social.'",
-          "D4_LEGAL_STREET" : "Jr Los Aromos 644 Dpto 301, La Molina",
-          "D4_LEGAL_DISTRICT" : "",
-          "D4_LEGAL_PROVINCE" : "Lima",
-          "D4_LEGAL_STATE" : "Lima",
-          "D4_UBIGEO" : null,
-          "D5_DIRECCION" : "Jr Los Aromos 644 Dpto 301, La Molina, Lima",
-          "D6_URBANIZACION" : null,
-          "D7_PROVINCIA" : "Lima",
-          "D8_DEPARTAMENTO" : "Lima",
-          "D9_DISTRITO" : "La Molina",
-          "D10_PAIS" : null,
-          "D11_CORREO" : "augusto@devtechperu.com",
-          "D12_CODIGO" : null,
-          "D13_CODIGODIR" : "",
-          "G1_TOTALEXPORTA" : 0,
-          "G2_TOTALGRAVADA" : 0,
-          "G3_TOTALINAFECTA" : 0,
-          "G4_TOTALEXONERADA" : 0,
-          "G5_TOTAGRATUITA" : 0,
-          "G6_TOTALDESCUENTOS" : 0,
-          "G7_PORCENDETRA" : 0,
-          "G8_TOTALDETRA" : 0,
-          "G9_TOTALIGV" : 0,
-          "G10_TOTALSUBTOTAL" : 0,
-          "G13_TOTALGLOBALDESCU" : 0.82,
-          "G14_TOTALVENTA" : 15.58,
-          "G15_SUBTOTAL" : 0,
-          "H1_CODALMACEN" : null,
-          "H2_SUCURSAL" : null,
-        "detalle": [
-                    {
-                      "F1_ITEM" : null,
-              "F2_UNIDAD" : "NIU",
-              "F3_CANTIDAD" : 1,
-              "F4_CODIGO_PRODUCTO" : 92,
-              "F5_CODIGO_SUNAT" : "000",
-              "F7_DESCRIPCION" : "Belgium Milk Chocolate 200g",
-              "F8_PRECIO" : null,
-              "F9_PRECIOVENTA" : 6,
-              "F10_TIPOPRECIO" : null,
-              "F11_PRECIOGRATIS" : null,
-              "F12_MONTOIGV" : 0,
-              "F13_TOTAL" : 6,
-              "F14_TIPOAFECTA" : "10",
-              "F15_CODIGOSIS" : 92,
-              "F16_PORCENTAJE_DESCUENTO" : 0,
-              "F17_BIENSERVICIO" : "b",
-              "F18_IGV_TAX" : true,
-              "F18_IGV_AMOUNT" : 18,
-              "F19_ISC_TAX" : false,
-              "F19_ISC_AMOUNT" : 0
-                    },
-                    {
-          "F1_ITEM" : null,
-              "F2_UNIDAD" : "NIU",
-              "F3_CANTIDAD" : 1,
-              "F4_CODIGO_PRODUCTO" : 263,
-              "F5_CODIGO_SUNAT" : "000",
-              "F7_DESCRIPCION" : "Winters Choco Bitter Coverage x 600 gr",
-              "F8_PRECIO" : null,
-              "F9_PRECIOVENTA" : 5,
-              "F10_TIPOPRECIO" : null,
-              "F11_PRECIOGRATIS" : null,
-              "F12_MONTOIGV" : 0,
-              "F13_TOTAL" : 5,
-              "F14_TIPOAFECTA" : "10",
-              "F15_CODIGOSIS" : 263,
-              "F16_PORCENTAJE_DESCUENTO" : 0,
-              "F17_BIENSERVICIO" : "b",
-              "F18_IGV_TAX" : true,
-              "F18_IGV_AMOUNT" : 18,
-              "F19_ISC_TAX" : false,
-              "F19_ISC_AMOUNT" : 0
-                    },
-                    {
-          "F1_ITEM" : null,
-              "F2_UNIDAD" : "NIU",
-              "F3_CANTIDAD" : 1,
-              "F4_CODIGO_PRODUCTO" : 283,
-              "F5_CODIGO_SUNAT" : "000",
-              "F7_DESCRIPCION" : "MAPPLE Syrup Spitze x 800GR",
-              "F8_PRECIO" : null,
-              "F9_PRECIOVENTA" : 3,
-              "F10_TIPOPRECIO" : null,
-              "F11_PRECIOGRATIS" : null,
-              "F12_MONTOIGV" : 0,
-              "F13_TOTAL" : 3,
-              "F14_TIPOAFECTA" : "10",
-              "F15_CODIGOSIS" : 283,
-              "F16_PORCENTAJE_DESCUENTO" : 0,
-              "F17_BIENSERVICIO" : "b",
-              "F18_IGV_TAX" : true,
-              "F18_IGV_AMOUNT" : 18,
-              "F19_ISC_TAX" : false,
-              "F19_ISC_AMOUNT" : 0	
-                    },
-                    {
-                         "F1_ITEM" : null,
-              "F2_UNIDAD" : "NIU",
-              "F3_CANTIDAD" : 2,
-              "F4_CODIGO_PRODUCTO" : 319,
-              "F5_CODIGO_SUNAT" : "000",
-              "F7_DESCRIPCION" : "SPARKLING ICED TEA 330 ML",
-              "F8_PRECIO" : null,
-              "F9_PRECIOVENTA" : 1.2,
-              "F10_TIPOPRECIO" : null,
-              "F11_PRECIOGRATIS" : null,
-              "F12_MONTOIGV" : 0,
-              "F13_TOTAL" : 2.4,
-              "F14_TIPOAFECTA" : "10",
-              "F15_CODIGOSIS" : 319,
-              "F16_PORCENTAJE_DESCUENTO" : 0,
-              "F17_BIENSERVICIO" : "b",
-              "F18_IGV_TAX" : true,
-              "F18_IGV_AMOUNT" : 18,
-              "F19_ISC_TAX" : false,
-              "F19_ISC_AMOUNT" : 0	
-                    }
-                    ]
+                "A1_ID" : "F00300000254",
+                "A2_FECHAEMISION" : "2021-10-05",
+                "A3_HORAEMISION" : null,
+                "A4_TIPODOCUMENTO" : "01",
+                "A5_MONEDA" : "USD",
+                "A6_FECHAVENCIMIENTO" : null,
+                "A7_DOCUMENTOREFERENCIA" : null,
+                "A8_MOTIVONC" : null,
+                "A9_FECHABAJA" : null,
+                "A10_OBSERVACION" : null,
+                "A11_TIPODOCUMENTOREFERENCIA" : null,
+                "A12_WEIGHT" : 2.4,
+                "B1_RUC" : "' . $ruc . '",
+                "D1_DOCUMENTO" : "20603374097",
+                "D2_TIPODOCUMENTO" : "6",
+                "D3_DESCRIPCION" : "' . $razon_social . '",
+                "D4_LEGAL_STREET" : "Jr Los Aromos 644 Dpto 301, La Molina",
+                "D4_LEGAL_DISTRICT" : "",
+                "D4_LEGAL_PROVINCE" : "Lima",
+                "D4_LEGAL_STATE" : "Lima",
+                "D4_UBIGEO" : null,
+                "D5_DIRECCION" : "Jr Los Aromos 644 Dpto 301, La Molina, Lima",
+                "D6_URBANIZACION" : null,
+                "D7_PROVINCIA" : "Lima",
+                "D8_DEPARTAMENTO" : "Lima",
+                "D9_DISTRITO" : "La Molina",
+                "D10_PAIS" : null,
+                "D11_CORREO" : "augusto@devtechperu.com",
+                "D12_CODIGO" : null,
+                "D13_CODIGODIR" : "",
+                "G1_TOTALEXPORTA" : 0,
+                "G2_TOTALGRAVADA" : 0,
+                "G3_TOTALINAFECTA" : 0,
+                "G4_TOTALEXONERADA" : 0,
+                "G5_TOTAGRATUITA" : 0,
+                "G6_TOTALDESCUENTOS" : 0,
+                "G7_PORCENDETRA" : 0,
+                "G8_TOTALDETRA" : 0,
+                "G9_TOTALIGV" : 0,
+                "G10_TOTALSUBTOTAL" : 0,
+                "G13_TOTALGLOBALDESCU" : 0.82,
+                "G14_TOTALVENTA" : 15.58,
+                "G15_SUBTOTAL" : 0,
+                "H1_CODALMACEN" : null,
+                "H2_SUCURSAL" : null,                
                 }
             ]
         }';
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = Url::consume_api($ruta1, 'POST', $body, [
+        $response = Url::consume_api($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
 
         d($response, 'RES');
     }
-
-    
 }   // end class
-
-
-
-
-
-
-
-
-
-
-

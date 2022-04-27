@@ -26,6 +26,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('tbl_factura_detalle', ['read', 'write'])
     ->addResourcePermissions('bar', ['read', 'write'])
     ->addResourcePermissions('baz', ['read', 'write'])
+    ->addResourcePermissions('telefonos', ['read', 'write'])
     // ...
     //->setAsGuest('guest')
 
