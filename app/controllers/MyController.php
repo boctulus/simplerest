@@ -17,8 +17,8 @@ class MyController extends Controller
         parent::__construct();        
     }
 
-    function view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
-        parent::view($view_path, $vars_to_be_passed, self::$default_templete, $expiration_time);
+    function __view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
+        parent::__view($view_path, $vars_to_be_passed, self::$default_templete, $expiration_time);
     }
 }
 
