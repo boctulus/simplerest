@@ -7031,8 +7031,39 @@ Ej:
 	</body>
 	</html>
 
-
 En el template y en las vistas está disponible la variable $ctrl que alamcena el nombre del controlador actual tal y como aparece en la url. Ej: /home o /home/algo vale "home"
+
+Dentro de una vista:
+
+	<?= $ctrl // mostrará la el controlar que la llamó ?>
+
+Nota: solo es válido si en vez de llamar al helper view() desde el controlador se llama al método __view()
+
+Ej:
+
+	class MaintenanceController extends MyController
+	{
+		function index()
+		{
+			$this->__view('maintenance.php');                  
+		}
+	}
+
+De todas formas siempre es posible hacer algo como:
+
+	class MaintenanceController extends MyController
+	{
+		function index()
+		{
+			view('maintenance.php', [
+				'ctrl' => __CLASS__
+			]);                  
+		}
+	}  
+
+De todas formas la llamada al método __view() por sobre el helper view() tiene la ventaja de que en caso de que no se enviara un "title", éste es autogenerado.
+
+	$this->__view('maintenance.php');
 
 
 # Pasaje de variables hacia sub-vistas

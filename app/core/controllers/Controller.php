@@ -38,7 +38,7 @@ abstract class Controller
         $this->callable = array_unique(array_merge($this->callable, [$method]));
     }
 
-    function view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
+    function __view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
         global $ctrl;
 
         $_ctrl = explode('\\',get_class($this));
