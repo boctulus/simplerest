@@ -38,6 +38,7 @@ class MigrationsControllerBase extends Controller
         $steps     = PHP_INT_MAX;
         $skip      = 0;
         $retry     = false;
+        $ignore    = null; 
         
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
 
@@ -54,6 +55,10 @@ class MigrationsControllerBase extends Controller
 
             if ('--retry' == $o || 'retry' == $o || '--force' == $o || 'force' == $o){
                 $retry = true;
+            }
+
+            if ('--ignore' == $o){
+                $ignore = true;
             }
 
             if (Strings::startsWith('--file=', $o)){
@@ -108,7 +113,7 @@ class MigrationsControllerBase extends Controller
                     throw new \Exception("Directory $path doesn't exist");
                 }
             }
-        }
+        } // end foreach
 
         if (!$file_opt){
             foreach (new \DirectoryIterator($path) as $fileInfo) {
@@ -117,8 +122,31 @@ class MigrationsControllerBase extends Controller
             }   
     
             sort($filenames);    
-        }
-        
+        } else {
+
+            if ($ignore){
+                $filename = $filenames[0];
+                
+                /*
+                    En todos loa casos debería agregar la DB y el directorio de la migración !
+                */
+                $ok = DB::table('migrations')
+                ->create([
+                    'filename' => $filename
+                ]);
+
+                if ($ok){
+                    StdOut::pprint("Migration file '$filename' was marked as ignored");
+                    return;
+                }
+
+                StdOut::pprint("Error trying to ignore file '$filename'd");
+
+                return;
+            }
+    
+        } 
+
         $cnt = min($steps, count($filenames));
         
         DB::disableForeignKeyConstraints();
@@ -604,7 +632,7 @@ class MigrationsControllerBase extends Controller
 
         migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ]         
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3 
-        migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --retry ]
+        migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --retry ] [ --ignore ]
         migrations rollback --to={some_db_conn} [ --dir= ] [ --file= ] [ --step=={N} | --all] [ --simulate ]
         migrations fresh [ --dir= ] [ --file= ] --to=some_db_conn [ --force ]
         migrations redo --to={some_db_conn} [ --dir= ] [ --file= ] [ --simulate ]
@@ -649,6 +677,8 @@ class MigrationsControllerBase extends Controller
         migrations fresh --dir=compania --to:db_149 --force
 
         migrations redo --file=2021_09_14_27910581_files.php --to:main
+
+        migrations migrate --from:main --file=some_migr_file.ph --ignore
 
         Inline migrations
         
