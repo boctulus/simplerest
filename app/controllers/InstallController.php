@@ -15,6 +15,10 @@ class InstallController extends ConsoleController
         $this->install();
     }
 
+    /*
+        Faltaría copiar el .env-example a .env
+        y correr el composer install
+    */
     private function install()
     {    
         Schema::disableForeignKeyConstraints();
