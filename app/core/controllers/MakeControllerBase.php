@@ -14,7 +14,7 @@ use simplerest\core\libs\Schema;
 */
 class MakeControllerBase extends Controller
 {
-    const SERVICE_PROVIDERS_PATH = ROOT_PATH . 'providers' . DIRECTORY_SEPARATOR; //
+    const SERVICE_PROVIDERS_PATH = ROOT_PATH . 'packages' . DIRECTORY_SEPARATOR; //
 
     const TEMPLATES = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR;
 
@@ -325,14 +325,6 @@ class MakeControllerBase extends Controller
                 $unignore = true;
             }
 
-            if (preg_match('/^(--remove|--delete|--erase)$/', $o)){
-                $remove = true;
-            }
-
-            if (preg_match('/^(--force|-f)$/', $o)){
-                $force = true;
-            }
-
             if (preg_match('/^(--strict)$/', $o)){
                 $strict = true;
             }
@@ -348,26 +340,18 @@ class MakeControllerBase extends Controller
         }
 
         $this->setup($name);    
-
-        if (!file_exists($dest_path . $sub_path)){
-            d("[ Error ] Path does not exists");
-            return;
-        }
     
         $filename  = $this->camel_case . $subfix.'.php';
         $dest_path = $dest_path . $sub_path . $filename;
 
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
-        
-        if ($remove){
-            if (!$protected || $force){
-                d("Removing ... '$dest_path'");
-                Files::deleteOrFail($dest_path);
-                d("File '$dest_path' was successfully removed.");
-                return;
-            }
-        }
+        $remove    = $this->forDeletion($filename, $dest_path, $opt);
 
+        if ($remove){
+            $ok = $this->write($dest_path, '', $protected, true);
+            return;
+        }
+        
         $data = file_get_contents($template_path);
         $data = str_replace('__NAME__', $this->camel_case . $subfix, $data);
 
@@ -547,6 +531,12 @@ class MakeControllerBase extends Controller
         $dest_path = API_PATH . $filename;
 
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
+        $remove    = $this->forDeletion($filename, $dest_path, $opt);
+
+        if ($remove){
+            $ok = $this->write($dest_path, '', $protected, true);
+            return;
+        }
 
         $data = file_get_contents(self::API_TEMPLATE);
         $data = str_replace('__NAME__', $this->camel_case, $data);
@@ -639,7 +629,7 @@ class MakeControllerBase extends Controller
         return false;
     }
 
-    protected function forDeletion(string $filename, string $dest_path, Array $opt) : bool { 
+    protected function forDeletion(string $filename, string $dest_path, Array $opt) : ?bool { 
         $remove = false;
     
         foreach ($opt as $o){ 
@@ -649,9 +639,9 @@ class MakeControllerBase extends Controller
             }
         }  
     
-        if (!file_exists($dest_path)){
+        if ($remove && !file_exists($dest_path)){
             StdOut::pprint("[ Error ] '$dest_path'. File '$filename' doesn't exists.\r\n");
-            return false;
+            exit; //
         }
 
         return $remove;
@@ -926,6 +916,7 @@ class MakeControllerBase extends Controller
     function schema($name, ...$opt) 
     {
         $unignore = false;
+        $remove   = null;
 
         foreach ($opt as $o){            
             if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_-]+)$/', $o, $matches)){
@@ -935,6 +926,10 @@ class MakeControllerBase extends Controller
 
             if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
                 $unignore = true;
+            }
+
+            if (preg_match('/^(--remove|--erase|--delete)$/', $o)){
+                $remove = true;
             }
         }
 
@@ -992,6 +987,12 @@ class MakeControllerBase extends Controller
         } 
         
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
+        $remove    = $this->forDeletion($filename, $dest_path, $opt);
+
+        if ($remove){
+            $ok = $this->write($dest_path, $file, $protected, true);
+            return;
+        }
 
         $db = DB::database();  
 
@@ -1368,8 +1369,13 @@ class MakeControllerBase extends Controller
         } 
         
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
+        $remove    = $this->forDeletion($filename, $dest_path, $opt);
 
-       
+        if ($remove){
+            $ok = $this->write($dest_path, '', $protected, true);
+            return;
+        }
+               
         if (!empty($current)){
             $folder = "$current\\";
         }
@@ -1396,6 +1402,7 @@ class MakeControllerBase extends Controller
         $this->write($dest_path, $file, $protected);
     }
 
+    // debería estar en otro archivo!!! de hecho solo se deberían incluir y no estar todos los comandos acá !!!
     function migration(...$opt) 
     {
         if (count($opt)>0 && !Strings::startsWith('-', $opt[0])){
@@ -1923,11 +1930,17 @@ class MakeControllerBase extends Controller
         $dest_path = self::SERVICE_PROVIDERS_PATH . $filename;
 
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
+        $remove    = $this->forDeletion($filename, $dest_path, $opt);
+
+        if ($remove){
+            $ok = $this->write($dest_path, '', $protected, true);
+            return;
+        }
 
         $file = file_get_contents(self::SERVICE_PROVIDER_TEMPLATE);
         $file = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $file);
         
-        $this->write($dest_path, $file, $protected);
+        $this->write($dest_path, $file, $protected, $remove);
     }
 
     function system_constants(...$opt){
@@ -2017,16 +2030,20 @@ class MakeControllerBase extends Controller
         $dest_path = VIEWS_PATH . $filename;
 
         $protected = $this->hasFileProtection($filename, $dest_path, $opt);
-        //$remove    = $this->forDeletion($filename, $dest_path, $opt);
+        $remove    = $this->forDeletion($filename, $dest_path, $opt);
         
-        $data = <<<HTML
-        <h3>Un título</h3>
-        
-        <span>Un contenido cualquiera</span>
-        HTML;
+        if (!$remove){
+            $data = <<<HTML
+            <h3>Un título</h3>
+            
+            <span>Un contenido cualquiera</span>
+            HTML;
+        } else {
+            $data = '';
+        }    
     
         if (!$protected){
-            $this->write($dest_path, $data, $protected /*, $remove */);
+            $this->write($dest_path, $data, $protected, $remove);
         }
     }
 }
