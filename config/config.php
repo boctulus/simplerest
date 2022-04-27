@@ -62,6 +62,21 @@ return [
 			]
 		],
 
+		'ef' => [
+			'host'		=> env('DB_HOST_2', '127.0.0.1'),
+			'port'		=> env('DB_PORT_2'),
+			'driver' 	=> env('DB_CONNECTION_2'),
+			'db_name' 	=> env('DB_NAME_2'),
+			'user'		=> env('DB_USERNAME_2'), 
+			'pass'		=> env('DB_PASSWORD_2'),
+			'charset'	=> 'utf8',
+			//'schema'	=> 'az',  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],
+
 		
 	], 	
 
@@ -75,6 +90,9 @@ return [
 		// ],
 		'az' => [
 			'az'
+		],
+		'ef' => [
+			'ef'
 		]
     ], 
 	

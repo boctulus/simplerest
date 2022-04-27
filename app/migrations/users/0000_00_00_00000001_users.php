@@ -20,7 +20,7 @@ class Users implements IMigration
         try {
             DB::disableForeignKeyConstraints();
 
-            Model::query("
+            DB::statement("
             CREATE TABLE IF NOT EXISTS `users` (
                 `id` int(11) NOT NULL,
                 `firstname` varchar(50) DEFAULT NULL,
@@ -41,7 +41,7 @@ class Users implements IMigration
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
             ");
 
-            Model::query("
+            DB::statement("
             ALTER TABLE `users`
                 ADD PRIMARY KEY (`id`),
                 ADD KEY `belongs_to` (`belongs_to`),
@@ -51,12 +51,12 @@ class Users implements IMigration
                 ADD KEY `updated_by` (`updated_by`);"
             );
 
-            Model::query("
+            DB::statement("
             ALTER TABLE `users`
                 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;"
             );   
                 
-            Model::query("ALTER TABLE `users`
+            DB::statement("ALTER TABLE `users`
                 ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`belongs_to`) REFERENCES `users` (`id`),
                 ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),
                 ADD CONSTRAINT `users_ibfk_3` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`),

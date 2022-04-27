@@ -19,7 +19,7 @@ class Webhooks implements IMigration
 
         DB::transaction(function(){
 
-            Model::query("
+            DB::statement("
             CREATE TABLE IF NOT EXISTS `webhooks` (
                 `id` int(11) NOT NULL,
                 `name` varchar(50) DEFAULT NULL,
@@ -37,11 +37,11 @@ class Webhooks implements IMigration
               ) ENGINE=InnoDB DEFAULT CHARSET=utf16;
             ");
 
-            Model::query("
+            DB::statement("
             ALTER TABLE `webhooks`
                 ADD PRIMARY KEY (`id`);");
 
-            Model::query("
+            DB::statement("
             ALTER TABLE `webhooks`
                 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
             ");

@@ -28,7 +28,7 @@ class Migrations implements IMigration
 
             switch ($driver){
                 case 'sqlite':
-                    Model::query("
+                    DB::statement("
                     CREATE TABLE IF NOT EXISTS migrations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         db varchar(50) DEFAULT NULL,
@@ -38,7 +38,7 @@ class Migrations implements IMigration
                     break;
 
                 case 'mysql':
-                    Model::query("
+                    DB::statement("
                     CREATE TABLE IF NOT EXISTS `migrations` (
                         `id` int(11) PRIMARY KEY NOT NULL,
                         `db` varchar(50) DEFAULT NULL,
@@ -47,7 +47,7 @@ class Migrations implements IMigration
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
                     ");
 
-                    Model::query("
+                    DB::statement("
                     ALTER TABLE `migrations`
                         MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");    
 

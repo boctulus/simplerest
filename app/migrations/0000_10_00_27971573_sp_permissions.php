@@ -21,14 +21,14 @@ class SpPermissions implements IMigration
     {
         DB::transaction(function(){
 
-            Model::query("
+            DB::statement("
             CREATE TABLE `sp_permissions` (
                 `id` int(11) NOT NULL,
                 `name` varchar(45) NOT NULL
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
             );
 
-            Model::query("
+            DB::statement("
             INSERT INTO `sp_permissions` (`id`, `name`) VALUES
             (1, 'read_all'),
             (2, 'read_all_folders'),
@@ -44,11 +44,11 @@ class SpPermissions implements IMigration
             (12, 'transfer');"
             );
 
-            Model::query("
+            DB::statement("
             ALTER TABLE `sp_permissions` ADD PRIMARY KEY(`id`);
             ");
 
-            Model::query("
+            DB::statement("
             ALTER TABLE `sp_permissions`
             MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");        
         });

@@ -4,7 +4,7 @@ use simplerest\core\interfaces\IMigration;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Schema;
 
-class UserSpPermissions implements IMigration
+class UserSpPermissionsCreation implements IMigration
 {
     /**
 	* Run migration.
