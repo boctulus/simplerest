@@ -615,22 +615,23 @@ class MakeControllerBase extends Controller
             if (preg_match('/^(--remove|--delete|--erase)$/', $o)){
                 $warn_file_existance = false;
                 $warn_ignored_file   = false;
+                break;
             }
         }    
 
         if ($warn_ignored_file && in_array($dest_path, $this->excluded_files)){
-            StdOut::pprint("[ Skipping ] '$dest_path'. File was ignored\r\n"); 
+            StdOut::pprint("[ Skipping ] '$dest_path'. File '$filename' was ignored\r\n"); 
             return true; 
         } 
         
         if (file_exists($dest_path)){
             if ($warn_file_existance && !in_array('-f', $opt) && !in_array('--force', $opt)){
-                StdOut::pprint("[ Skipping ] '$dest_path'. File already exists. Use -f or --force if you want to override.\r\n");
+                StdOut::pprint("[ Skipping ] '$dest_path'. File '$filename' already exists. Use -f or --force if you want to override.\r\n");
                 return true;
             }
             
             if (!is_writable($dest_path)){
-                StdOut::pprint("[ Error ] '$dest_path'. File is not writtable. Please check permissions.\r\n");
+                StdOut::pprint("[ Error ] '$dest_path'. File '$filename' is not writtable. Please check permissions.\r\n");
                 return true;
             }
         }
@@ -638,20 +639,48 @@ class MakeControllerBase extends Controller
         return false;
     }
 
-    protected function write(string $dest_path, string $file, bool $protected){
+    protected function forDeletion(string $filename, string $dest_path, Array $opt) : bool { 
+        $remove = false;
+    
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--remove|--delete|--erase)$/', $o)){
+                $remove = true;
+                break;
+            }
+        }  
+    
+        if (!file_exists($dest_path)){
+            StdOut::pprint("[ Error ] '$dest_path'. File '$filename' doesn't exists.\r\n");
+            return false;
+        }
+
+        return $remove;
+    }
+
+    protected function write(string $dest_path, string $file, bool $protected, bool $remove = false){
         if ($protected){
             return;
         }
 
         Files::writableOrFail($dest_path);
 
-        $ok = (bool) file_put_contents($dest_path, $file);
-        
-        if (!$ok) {
-            throw new \Exception("Failed trying to write $dest_path");
+        if ($remove){
+            $ok = Files::delete($dest_path);    
+
+            if (!$ok) {
+                throw new \Exception("Failed trying to delete $dest_path");
+            } else {
+                StdOut::pprint("$dest_path was deleted\r\n");
+            }
         } else {
-            StdOut::pprint("$dest_path was generated\r\n");
-        } 
+            $ok = (bool) file_put_contents($dest_path, $file);
+
+            if (!$ok) {
+                throw new \Exception("Failed trying to write $dest_path");
+            } else {
+                StdOut::pprint("$dest_path was generated\r\n");
+            }     
+        }
 
         return $ok;
     }
@@ -1988,6 +2017,7 @@ class MakeControllerBase extends Controller
         $dest_path = VIEWS_PATH . $filename;
 
         $protected = $this->hasFileProtection($filename, $dest_path, $opt);
+        //$remove    = $this->forDeletion($filename, $dest_path, $opt);
         
         $data = <<<HTML
         <h3>Un título</h3>
@@ -1996,7 +2026,7 @@ class MakeControllerBase extends Controller
         HTML;
     
         if (!$protected){
-            $this->write($dest_path, $data, $protected);
+            $this->write($dest_path, $data, $protected /*, $remove */);
         }
     }
 }
