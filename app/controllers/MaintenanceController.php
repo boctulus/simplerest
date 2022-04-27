@@ -17,7 +17,7 @@ class MaintenanceController extends MyController
 
     function index()
     {
-        view('maintenance.php');                  
+        $this->view('maintenance.php');                  
     }
 }
 

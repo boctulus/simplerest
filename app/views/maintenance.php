@@ -85,11 +85,14 @@
 <div class="hanger">
   <div class="box">
     <div class="top">
-      <p>Our apologies!</p>
+      <p>Nos disculpamos</p><!-- Our apologies! -->
     </div>
     <div class="rest">
-    <p>De momento estamos fuera de servicio<br/>Sepa disculpar. Puede volver más tarde.</p>
-    <p><em>Gracias por su paciencia.</em></p>
+      <p>De momento estamos fuera de servicio<br/>Sepa disculpar. Puede volver más tarde.</p>
+      <p><em>Gracias por su paciencia.</em></p>
+      <p>
+        <?= $ctrl ?>
+      </p>
     </div>
   </div>
 </div>
