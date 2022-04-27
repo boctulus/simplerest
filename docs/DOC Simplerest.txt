@@ -5363,6 +5363,15 @@ Ej:
 	php com migrations migrate --file=compania/2021_09_25_28831244_0001_tbl_estado_maestro.php --to=db_flor |less
 
 
+# Ignorar migración
+
+Es posible "marcar como ingnorada" una migración a fin de que no se ejecute.
+
+Ej:
+
+	php com migrations migrate --from:main --file=2022_04_24_47066614_products.php --ignore
+
+
 # Hacer migraciones "inline"
 
 Se extendió el comando "make migration" para que simplificar el agregado o remoción de campos:
