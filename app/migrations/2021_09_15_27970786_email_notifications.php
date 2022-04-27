@@ -19,7 +19,7 @@ class EmailNotifications implements IMigration
 
         DB::transaction(function(){
 
-            Model::query("
+            DB::statement("
             CREATE TABLE IF NOT EXISTS `email_notifications` (
                 `id` int(11) NOT NULL,
                 `from_addr` varchar(320) DEFAULT NULL,
@@ -39,12 +39,12 @@ class EmailNotifications implements IMigration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
             ");
 
-            Model::query("
+            DB::statement("
             ALTER TABLE `email_notifications`
                 ADD PRIMARY KEY (`id`);
             ");
 
-            Model::query("
+            DB::statement("
             ALTER TABLE `email_notifications`
             MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
             ");

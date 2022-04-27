@@ -140,10 +140,10 @@ class Response
             }          
         }     
 
-        if (Factory::request()->gzip()){
-           $this->addHeader('Content-Encoding: gzip');
-           $this->zip(json_encode($data). "\n");
-        }else
+        // if (Factory::request()->gzip()){
+        //    $this->addHeader('Content-Encoding: gzip');
+        //    $this->zip(json_encode($data). "\n");
+        // }else
            json_encode($data). "\n";
 
         static::$instance->setData( $data );
