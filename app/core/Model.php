@@ -141,14 +141,14 @@ class Model {
 
 	function getAutoFields(){
 		return [
-			$this->instance->createdBy(),
-			$this->instance->createdAt(),
-			$this->instance->updatedBy(),
-			$this->instance->updatedAt(),
-			$this->instance->deletedBy(),
-			$this->instance->deletedAt(),
-			$this->instance->belongsTo(),
-			$this->instance->isLocked()
+			$this->createdBy(),
+			$this->createdAt(),
+			$this->updatedBy(),
+			$this->updatedAt(),
+			$this->deletedBy(),
+			$this->deletedAt(),
+			$this->belongsTo(),
+			$this->isLocked()
 		];
 	}
 
