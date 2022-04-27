@@ -10,7 +10,7 @@ use simplerest\core\libs\DB;
 
 class MyController extends Controller
 {
-    static protected $default_templete = 'app_layout_basic.php';
+    static protected $default_templete = 'tpl_basic.php';
 
     function __construct()
     {
