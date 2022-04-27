@@ -145,6 +145,7 @@ class MakeControllerBase extends Controller
         make interface [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make schema my_table [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make model my_table  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --strict ] [ --remove ]
+        make view my_view  [--force | -f] [ --unignore | -u ] [ --remove ]
 
         make controller my_controller  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make controller folder/my_controller  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
@@ -2023,6 +2024,12 @@ class MakeControllerBase extends Controller
         }        
     }
 
+    /*
+        Podría haber usado generic()
+
+        Debería considerar la creación en una carpeta, creándo la ruta de no existir
+        También debería admitie rutas absolutas y no solo relativas a VIEW_PATH
+    */
     function view($name, ...$opt) {
         $this->setup($name);
 
