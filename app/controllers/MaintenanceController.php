@@ -10,14 +10,9 @@ use simplerest\core\libs\DB;
 
 class MaintenanceController extends MyController
 {
-    function __construct()
-    {
-        parent::__construct();        
-    }
-
     function index()
     {
-        $this->view('maintenance.php');                  
+        $this->__view('maintenance.php');                  
     }
 }
 
