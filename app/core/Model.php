@@ -1765,15 +1765,33 @@ class Model {
 		$this->setFetchMode('COLUMN');
 		$this->fields = [$field];
 
-		$q = $this->toSql();
+		$q  = $this->toSql();
 		$st = $this->bind($q);
 	
 		if ($this->exec && $st->execute()) {
-			$res = $this->applyTransformer($this->applyOutputMutators($st->fetchAll($this->getFetchMode())));
-			
-			//var_dump($res);
-			//exit;	
-			
+			$res = $this->applyTransformer($this->applyOutputMutators(
+				$st->fetchAll($this->getFetchMode()))
+			);
+
+			/*	
+				Si el schema tiene algo como:
+
+				'sql_data_types' => [
+					'{campo}' => 'JSON',
+					// ...
+				],
+			*/
+			if ($this->schema != NULL && isset($this->schema['sql_data_types']) && isset($this->schema['sql_data_types'][$field]) )
+			{
+				if ($this->schema['sql_data_types'][$field] == 'JSON'){
+					$res = array_map(function ($e){
+						return json_decode($e, true);
+					},
+						$res
+					);
+				}
+			}
+
 			return $res;
 		} else
 			return false;	
