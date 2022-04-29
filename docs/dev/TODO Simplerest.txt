@@ -1,6 +1,52 @@
 # TODO
 
+- Implementar "make command {nombre_comando} --method=xxxx" 
+
+en /commands/make
+
+  trait ViewCommand 
+  {
+    function view(){
+      // ....
+    }
+  } 
+  
+
+- Incluir la definición exacta del campo en el motor de base de datos en los schemas. Ej:
+
+    'sql_data_types' => [
+          '{campo}' => 'JSON',
+          // ...
+          '{otro_campo}' => 'DECIMAL(10,2)',
+    ],  
+
 - Si un campo es de tipo JSON, al hacerse un get(), first(), etc... debería hacerse en AUTOMATICO el json_decode() de ese campo.
+
+- Implementar búsquedas en JSON, poder hacer algo como:
+
+    SELECT attributes->"$.enfermedades" as name FROM products WHERE name != NULL;
+
+Ver en LARAVEL pero algo como
+
+    $rows = DB::table('products')
+    ->json_select('attributes', 'enfermedades as name')
+    ->whereNotNull('name)
+    ->get();
+
+y/o
+
+    $rows = DB::table('products')
+    ->select('attributes->enfermedades as name')
+    ->whereNotNull('name)
+    ->get();
+
+Actualmente debe hacerse con selectRaw()
+
+    $rows = DB::table('products')
+    ->selectRaw('attributes->"$.enfermedades" as name')
+    ->whereNotNull('name')
+    ->get();
+
 
 - Mover SendinBlue de dentro de "libs" a "packages" para evitar haga ruido ahí.
 
@@ -218,35 +264,6 @@ Ej:
   })->describe('Execute SQL query')
 
 
-- Reparar Files:copy()
-
-Parece que así *no* respeta los $except
-
-  $ori = '/home/www/simplerest';
-  $dst = "updates/{$this->last_update_dir}/";  
-
-  $except =  [
-      'initial_file_copy.batch',
-      'PrepareUpdateController.php',
-      'docs/dev',
-      'glob:*.zip',
-      'PASARELAS DE PAGO.txt',
-      'yakpro-po',
-      'vendor',
-      'version.txt',
-      '.git',
-      '.gitignore',
-      'updates',
-      'public/assets',
-      '*.zip',
-      'tmp'
-  ];
-
-  /*
-      Revisar porque no está excluyendo !!
-  */    
-  Files::copy($ori, $dst . 'files', [ 'glob:*' ], $except);
-
 
 
 [ Front ]
@@ -330,13 +347,6 @@ Se debe generar un .js similar -conseguir la versión más actualizada- a:
 - Permitir el uso auto-validaciones en Form Helper.
 
 ----
-
-- Preguntar humildemente qué problema resuelven con
-
-  DB::execSQL()
-
-<-- es una versión de DB::select() sin binding. Más eficiente en algunos casos?
-
 
 - Dejar de usar utf8_general_ci y usar 
 
@@ -452,13 +462,6 @@ Ver etc/test.sql
 Prueba de concepto en:
 Dumb::test_q()
 
-----
-
-[ UPDATE ] Objetivos de la v0.7.0 : 
-
-  - Ofuscar el código. Evitar pueda usarse código ofuscado + sin ofuscar
-  - Generar dependencia
-  - Imposibilitar sea usado en proyectos no-autorizados. Alertar via correo si hay un uso no-autorizado.
 
 ----
 
@@ -511,10 +514,6 @@ https://codeigniter.com/user_guide/models/model.html#validation-placeholders
 --
 
 [ Model ]
-
-- Usar comillado simple y no backticks !
-
-"Backticks also work but they're only supported for MySQL syntax compatibility."
 
 
 - Implementar de CI4: <no están en Laravel>
@@ -807,6 +806,7 @@ Ej:
   php com crud {table} --find={id} --edit --field={campo} --value={valor}
 
 
+
 [ UPDATE COMMAND ]
 
 - Al crear un nuevo "update" ... zipear anteriores para que no estorben en VSC.
@@ -823,11 +823,6 @@ Ej:
 
 
 [ MAILER ]
-
-- Revisar qué está pasando con el envio de correos:
-
-  Auth method requested: UNSPECIFIED
-  Auth methods available on the server: LOGIN,PLAIN,XOAUTH2,PLAIN-CLIENTTOKEN,OAUTHBEARER,XOAUTH
 
 - Posibilitar enviar *correos* con *templates*  +++++++
 
@@ -4864,6 +4859,7 @@ https://en.wikipedia.org/wiki/Software_release_life_cycle
 [ MODELO ]
 
 - JOINs a base de datos disntintas? JOIN db2.products ?
+
 
 Si se puede:
 
