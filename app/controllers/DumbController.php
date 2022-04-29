@@ -8608,10 +8608,25 @@ class DumbController extends Controller
         dd(_('No data'));
     }
 
+    function test_format_num(){
+        $format_number = function($num){
+			$num = (float) $num;
+			return number_format($num, 10, '.', '');
+		};
 
-    function test_format_num()
-    {
-        dd(Strings::formatNumber(4));
+        $n = '400'; 
+
+        dd(Strings::formatNumber($n, 'en-EN'));
+        //dd($format_number($n));        
+    }
+
+    function test_rr(){
+        $round = function($num){
+			$num = (float) $num;
+			return round($num, 4);
+		};
+
+        dd($round(4.9995558));
     }
 
     /*
@@ -9232,4 +9247,8 @@ class DumbController extends Controller
 
         d($response, 'RES');
     }
+
+
+
+
 }   // end class
