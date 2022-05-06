@@ -2,8 +2,16 @@
 
 use simplerest\core\libs\Strings;
 
-function datetime(string $format = 'Y-m-d H:i:s'){
-    $d = new \DateTime('', new \DateTimeZone(config()['DateTimeZone']));
+function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){
+    if ($timezone === null){    
+        $timezone = new \DateTimeZone( date_default_timezone_get() );
+    } else {
+        if (is_string($timezone)){
+            $timezone = new \DateTimeZone($timezone);
+        }
+    }
+
+    $d  = new \DateTime('', $timezone);
     $at = $d->format($format); // ok
 
     return $at;
