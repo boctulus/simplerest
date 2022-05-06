@@ -18,11 +18,13 @@ function exportLangDef(bool $include_mo = true, string $locale_path = null)
         $locale_path = LOCALE_PATH;
     }
 
+    //d($locale_path);
+
     foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
         if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
         
         $dir = $fileInfo->getBasename();
-        //d($dir);
+        //StdOut::pprint($dir);
 
         foreach (new \DirectoryIterator($locale_path . "/$dir") as $fileInfo) {
             if($fileInfo->isDot() || $fileInfo->isDir()) continue;
@@ -33,6 +35,8 @@ function exportLangDef(bool $include_mo = true, string $locale_path = null)
 
             $def_file = $fileInfo->getBasename();
             $domain   = Strings::beforeLast($def_file, '.');
+
+            //StdOut::pprint($def_file);
 
             include $locale_path . "$dir/" . $def_file;
 
