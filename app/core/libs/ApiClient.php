@@ -18,7 +18,7 @@ class ApiClient
     protected $status;
     protected $errors;
     protected $response;
-    protected $cache_enabled = false;
+    protected $expiration;
 
     function setHeaders(Array $headers){
         $this->headers = $headers;
@@ -40,8 +40,11 @@ class ApiClient
         return $this;
     }
 
-    function setCache(bool $val = true){
-        $this->cache_enabled = $val;
+    /*
+        @param $expiration_time int seconds 
+    */
+    function setCache($expiration_time = 60){
+        $this->expiration = $expiration_time;
         return $this;
     }
 
@@ -70,7 +73,7 @@ class ApiClient
         $options = $options ?? $this->options ?? null;
         $decode  = $decode  ?? $this->auto_decode;
 
-        if ($this->cache_enabled){
+        if ($this->expiration){
             $res = $this->getCache();
 
             if ($res !== null){
@@ -88,7 +91,7 @@ class ApiClient
         $this->errors   = $res['error'];
         $this->response = $res['data'];
 
-        if ($this->cache_enabled){
+        if ($this->expiration){
             $this->saveResponse($res);
         }
     }

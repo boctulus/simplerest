@@ -9306,6 +9306,12 @@ class DumbController extends Controller
         $pass = '9660ed881416fad88c5f48eddd7334c6';
 
         $client
+        /*
+            Si se le pasa una cantidad de segundos *debería* guardar por esa cantidad de tiempo
+            el archivo y pasado ese tiempo, ignorarlo y volver a generarlo
+
+            Sin resolver !!!!
+        */
         ->setCache()
         ->setHeaders([
             'Authorization: Basic '. base64_encode("$user:$pass")
