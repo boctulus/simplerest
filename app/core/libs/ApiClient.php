@@ -9,6 +9,8 @@ use simplerest\core\libs\Url;
 */
 class ApiClient
 {
+    protected $url;
+    protected $verb;
     protected $headers;
     protected $options;
     protected $body;
@@ -16,6 +18,7 @@ class ApiClient
     protected $status;
     protected $errors;
     protected $response;
+    protected $cache_enabled = false;
 
     function setHeaders(Array $headers){
         $this->headers = $headers;
@@ -37,6 +40,11 @@ class ApiClient
         return $this;
     }
 
+    function setCache(bool $val = true){
+        $this->cache_enabled = $val;
+        return $this;
+    }
+
     function getStatus(){
         return $this->status;
     }
@@ -47,24 +55,76 @@ class ApiClient
 
     function getResponse(bool $decode = true, bool $as_array = true){
         if ($decode){
-            return json_decode($this->response, $as_array);
-        }
+            $res = json_decode($this->response, $as_array);
+    
+            if (is_string($res['data'])){
+                $res['data'] = json_decode($res['data'], $as_array);
+            }
+        }    
 
-        return $this->response;
+        return $res;
     }
     
     function request(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null){
+        $this->url  = $url;
+        $this->verb = strtoupper($http_verb);
+
         $body    = $body    ?? $this->body    ?? null;
         $headers = $headers ?? $this->headers ?? null;
         $options = $options ?? $this->options ?? null;
         $decode  = $decode  ?? $this->auto_decode;
+
+        if ($this->cache_enabled){
+            $res = $this->getCache();
+
+            if ($res !== null){
+                $this->response = $res;
+                return;
+            }
+        }
 
         $res = Url::consume_api($url, $http_verb, $body, $headers, $options, false);
         $this->status   = $res['http_code'];
         $this->errors   = $res['error'];
         $this->response = $res['data'];
 
-        return $res;
+        if ($this->cache_enabled){
+            $this->saveResponse($res);
+        }
+    }
+
+    protected function getCachePath(){
+        static $path;
+
+        if (isset($path[$this->url])){
+            return $path[$this->url];
+        }
+
+        $filename = str_replace(['%'], ['p'], urlencode(Url::normalize($this->url))) . '.html';
+        $filename = str_replace('/', '', $filename);
+
+        $path[$this->url] = sys_get_temp_dir() . '/' . $filename;
+        return $path[$this->url];
+    }
+ 
+	protected function saveResponse(Array $response){
+        if ($this->verb != 'GET'){
+            return;
+        }
+
+        $path = $this->getCachePath();
+
+        file_put_contents($path, var_export($response, true));
+    }
+
+    protected function getCache(){
+        $path = $this->getCachePath();
+
+        if (file_exists($path)){
+            return file_get_contents($path);
+        }
+
+        return null;
     }
 
 }
