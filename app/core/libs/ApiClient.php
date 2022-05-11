@@ -126,8 +126,14 @@ class ApiClient
             'Authorization: Basic '. base64_encode("$username:$password")
         ]);
 
-        //d($this->headers);
-        //exit;
+        return $this;
+    }
+
+    // JWT
+    function setJWTAuth($token_jwt){
+        $this->setHeaders([
+            "Authorization: Bearer $token_jwt"
+        ]);
 
         return $this;
     }
