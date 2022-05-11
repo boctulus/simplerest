@@ -7616,6 +7616,37 @@ Ej:
 	d($client->getErrors(), 'ERRORS');
 	d($client->getResponse(), 'RES');       
 
+# Uso de cache
+
+Para el uso de cache se utiliza el método setCache() el cual no ha sido terminado. De momento si se activa la cache, es permanente.
+
+Ej:
+
+	$client = new ApiClient();
+
+	$user = 'intergrade';
+	$pass = '9660ed881416fad88c5f48eddd7334c6';
+
+	$client
+	
+	/*
+		Si se le pasa una cantidad de segundos *debería* guardar por esa cantidad de tiempo
+		el archivo y pasado ese tiempo, ignorarlo y volver a generarlo
+
+		Sin resolver !!!!
+	*/
+
+	->setCache()
+	->setHeaders([
+		'Authorization: Basic '. base64_encode("$user:$pass")
+	])
+	->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
+
+	d($client->getStatus(), 'STATUS');
+	d($client->getErrors(), 'ERRORS');
+	d($client->getResponse(true), 'RES'); 
+
+
 
 ### Componentes del core del framework
 
