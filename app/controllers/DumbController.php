@@ -9295,8 +9295,26 @@ class DumbController extends Controller
 
         d($client->getStatus(), 'STATUS');
         d($client->getErrors(), 'ERRORS');
-        d($client->getResponse(), 'RES');       
+        d($client->getResponse(), 'RES');  
+    }
 
+    function test_api_client2()
+    {        
+        $client = new ApiClient();
+
+        $user = 'intergrade';
+        $pass = '9660ed881416fad88c5f48eddd7334c6';
+
+        $client
+        ->setCache()
+        ->setHeaders([
+            'Authorization: Basic '. base64_encode("$user:$pass")
+        ])
+        ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
+
+        d($client->getStatus(), 'STATUS');
+        d($client->getErrors(), 'ERRORS');
+        d($client->getResponse(true), 'RES'); 
     }
 
 
