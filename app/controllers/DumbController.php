@@ -58,6 +58,8 @@ use Endroid\QrCode\Label\Font\NotoSans;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
 
+use simplerest\core\libs\ApiClient;
+
 class DumbController extends Controller
 {
     function __construct()
@@ -9248,6 +9250,54 @@ class DumbController extends Controller
         d($response, 'RES');
     }
 
+    function test_api_client(){
+        $ruc = '12345678910';
+
+        $base  = 'https://demoapi.sinergia.pe';
+        $ruta  = "$base/interfaces/interfacesventa/homologarCliente";
+
+        $body = '{
+            "ruc": "'.$ruc.'",
+            "tabla_ventas": [
+                { 
+                "D1_DOCUMENTO": "20603374097",
+                "D2_TIPODOCUMENTO": "6",
+                "D3_DESCRIPCION": "DevTechPeru EIRL (986976377)",
+                "D4_LEGAL_STREET": "Jr Los Aromos 644 Dpto 301, La Molina",
+                "D4_LEGAL_DISTRICT": "",
+                "D4_LEGAL_PROVINCE": "Lima",
+                "D4_LEGAL_STATE": "Lima",
+                "D4_UBIGEO": null,
+                "D5_DIRECCION": "Jr Los Aromos 644 Dpto 301, La Molina, Lima",
+                "D6_URBANIZACION": null,
+                "D7_PROVINCIA": "Lima",
+                "D8_DEPARTAMENTO": "Lima",
+                "D9_DISTRITO": "La Molina",
+                "D10_PAIS": null,
+                "D11_CORREO": "augusto@devtechperu.com",
+                "D12_CODIGO": null,
+                "D13_CODIGODIR": ""
+                }
+            ]
+            }';
+
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
+
+        $client = new ApiClient();
+
+        $client
+        ->setBody($body)
+        ->setHeaders([
+            "Content-type"  => "Application/json",
+            "authToken" => "$token"
+        ])
+        ->request($ruta, 'POST');        
+
+        d($client->getStatus(), 'STATUS');
+        d($client->getErrors(), 'ERRORS');
+        d($client->getResponse(), 'RES');       
+
+    }
 
 
 
