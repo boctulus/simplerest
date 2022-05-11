@@ -9291,7 +9291,7 @@ class DumbController extends Controller
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ])
-        ->request($ruta, 'POST');        
+        ->post($ruta);        
 
         d($client->getStatus(), 'STATUS');
         d($client->getErrors(), 'ERRORS');

@@ -7614,7 +7614,25 @@ Ej:
 
 	d($client->getStatus(), 'STATUS');
 	d($client->getErrors(), 'ERRORS');
-	d($client->getResponse(), 'RES');       
+	d($client->getResponse(), 'RES');    
+
+
+Nota:
+
+En vez de usar request($url, $verbo) se puede simplificar usando get(), post(), put(), path() y delete()
+
+Ej:
+
+	$client = new ApiClient();
+
+	$client
+	->setBody($body)
+	->setHeaders([
+		"Content-type"  => "Application/json",
+		"authToken" => "$token"
+	])
+	->post($ruta);   
+
 
 # Uso de cache
 
@@ -7633,7 +7651,9 @@ Ej:
 		Si se le pasa una cantidad de segundos *debería* guardar por esa cantidad de tiempo
 		el archivo y pasado ese tiempo, ignorarlo y volver a generarlo
 
-		Sin resolver !!!!
+		Sin resolver !!!! 
+
+		<--- en vez de guardar en disco..... usar Transientes con drivers como Memcached o REDIS
 	*/
 
 	->setCache()

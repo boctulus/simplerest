@@ -96,6 +96,32 @@ class ApiClient
         }
     }
 
+    function get(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($url, 'GET', $body, $headers, $options);
+    }
+
+    function post(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($url, 'POST', $body, $headers, $options);
+    }
+
+    function put(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($url, 'PUT', $body, $headers, $options);
+    }
+
+    function  patch(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($url, 'PATCH', $body, $headers, $options);
+    }
+
+    function delete(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($url, 'DELETE', $body, $headers, $options);
+    }
+
+    /*
+        CACHE
+
+        En vez de guardar en disco..... usar Transientes con drivers como Memcached o REDIS !
+    */
+
     protected function getCachePath(){
         static $path;
 
