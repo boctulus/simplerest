@@ -117,6 +117,23 @@ class ApiClient
     }
 
     /*
+        Authentication
+    */
+
+    // BASIC
+    function setBasicAuth($username, $password){
+        $this->setHeaders([
+            'Authorization: Basic '. base64_encode("$username:$password")
+        ]);
+
+        //d($this->headers);
+        //exit;
+
+        return $this;
+    }
+
+
+    /*
         CACHE
 
         En vez de guardar en disco..... usar Transientes con drivers como Memcached o REDIS !
