@@ -9312,10 +9312,8 @@ class DumbController extends Controller
 
             Sin resolver !!!!
         */
-        ->setCache()
-        ->setHeaders([
-            'Authorization: Basic '. base64_encode("$user:$pass")
-        ])
+        //->setCache()
+        ->setBasicAuth($user, $pass)
         ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
 
         d($client->getStatus(), 'STATUS');
