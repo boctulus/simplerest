@@ -7560,6 +7560,17 @@ Ej:
     ]);
 
 
+Para el caso de "Basic authentication"
+
+Ej:
+
+    $res = Url::consume_api($catalog_url, 'GET', null, [
+        'Authorization: Basic '. base64_encode("$user:$pass")
+    ]);
+
+
+<-- se podría simplificar con un wrapper del helper
+
 # Encodeo base 64
 
 En caso de "encodear" el body del request se debe usar el Content-type correcto.
@@ -7572,6 +7583,38 @@ Ej:
         "Content-type"  => "text/plain"
     ]);
 
+
+# La clase ApiClient
+
+ApiClient es un wrapper sobre Url::consume_api() que facilita su uso y cuyas funcionalidades se irán extendiendo (ej: manejar distintos tipos de autenticación)
+
+Ej:
+
+	/*
+		Instancio cliente
+	*/
+
+	$client = new ApiClient();
+
+	/*
+		Hago request
+	*/
+
+	$client
+	->setBody($body)
+	->setHeaders([
+		"Content-type"  => "Application/json",
+		"authToken" => "$token"
+	])
+	->request($ruta, 'POST');        
+
+	/*
+		Recojo respuesta
+	*/
+
+	d($client->getStatus(), 'STATUS');
+	d($client->getErrors(), 'ERRORS');
+	d($client->getResponse(), 'RES');       
 
 
 ### Componentes del core del framework
