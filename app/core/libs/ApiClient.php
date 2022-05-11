@@ -56,10 +56,6 @@ class ApiClient
     function getResponse(bool $decode = true, bool $as_array = true){
         if ($decode){
             $res = json_decode($this->response, $as_array);
-    
-            if (is_string($res['data'])){
-                $res['data'] = json_decode($res['data'], $as_array);
-            }
         }    
 
         return $res;
@@ -78,7 +74,11 @@ class ApiClient
             $res = $this->getCache();
 
             if ($res !== null){
-                $this->response = $res;
+                $deco = json_decode($res, true);    
+
+                $this->status   = $deco['http_code'];
+                $this->errors   = $deco['error'];
+                $this->response = $deco['data'];
                 return;
             }
         }
