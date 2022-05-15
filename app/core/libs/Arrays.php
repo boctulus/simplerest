@@ -125,7 +125,19 @@ class Arrays
         return $string;
     }
 
+    static function shuffleAssoc($my_array)
+	{
+        $keys = array_keys($my_array);
 
+        shuffle($keys);
+
+        $new = [];
+        foreach($keys as $key) {
+            $new[$key] = $my_array[$key];
+        }
+
+        return $new;
+    }
 
 }
 

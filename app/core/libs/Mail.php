@@ -7,6 +7,14 @@ use PHPMailer\PHPMailer\SMTP;
 
 use simplerest\core\interfaces\IMail;
 
+/*
+  Cambiar algunos métodos a de intancia a fin de poder usar métodos encadenados
+
+  ->to(..)
+  ->body(..)
+  ->etc
+
+*/
 class Mail extends MailBase implements IMail
 {
     protected static $mailer      = null;
@@ -22,9 +30,15 @@ class Mail extends MailBase implements IMail
         return static::$mailer ?? $config['email']['mailer_default'];
     }
 
-    // overide options
+    /*
+        Overide options
+    */
     static function config(Array $options){
-        static::$options = $options;
+        if (!isset($options['SMTPOptions'])){
+            static::$options['SMTPOptions'] = $options;
+        } else {
+            static::$options = $options;
+        }
     }
 
     static function silentDebug($level = null){
