@@ -3264,7 +3264,7 @@ class DumbController extends Controller
         Mail::debug(4);
         //Mail::silentDebug();
 
-        Mail::setMailer('google');
+        Mail::setMailer('pulque');
 
         Mail::send(
             [
@@ -9321,6 +9321,19 @@ class DumbController extends Controller
         d($client->getResponse(true), 'RES'); 
     }
 
+    function test_x3(){
+        $file = "/home/www/woo1/wp-content/plugins/tg-connector/sync.php";
+
+        if (Strings::contains('/', $file)){
+            $dir = Strings::beforeLast($file, '/');
+
+            dd(
+                $dir
+            );
+
+            chdir($dir);
+        }
+    }
 
 
 }   // end class

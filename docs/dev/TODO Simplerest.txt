@@ -1,5 +1,11 @@
 # TODO
 
+- Implementar un wrapper de DataTables similar a 
+
+https://livewire-datatables.com/
+https://github.com/MedicOneSystems/livewire-datatables
+
+
 - Implementar "make command {nombre_comando} --method=xxxx" 
 
 en /commands/make
