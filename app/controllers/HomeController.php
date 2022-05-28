@@ -10,7 +10,7 @@ class HomeController extends Controller
 	function index(){
 		// ...
 
-		$this->view('home.php');
+		$this->__view('home.php');
 	}
 
 	# /home/show
