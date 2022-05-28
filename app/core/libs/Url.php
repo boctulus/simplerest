@@ -316,7 +316,10 @@ class Url
    
         // https://stackoverflow.com/a/6364044/980631
         curl_setopt($curl, CURLOPT_FAILONERROR, false);
-        curl_setopt($curl, CURLOPT_HTTP200ALIASES, (array)400);    
+        curl_setopt($curl, CURLOPT_HTTP200ALIASES, [
+            400,
+            500
+        ]);    // actualizado el 26-may-2022
 
 
         $response  = curl_exec($curl);

@@ -65,7 +65,7 @@ class DumbController extends Controller
     function __construct()
     {
         parent::__construct();
-        DB::getConnection('az');
+        //DB::getConnection('az');
     }
 
     function test_logger()
@@ -9313,26 +9313,13 @@ class DumbController extends Controller
             Sin resolver !!!!
         */
         //->setCache()
+        ->setRetries(3)
         ->setBasicAuth($user, $pass)
-        ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
+        ->request('http://200.6.78.02/stock/v1/catalog/YX0-947', 'GET');        
 
         d($client->getStatus(), 'STATUS');
         d($client->getErrors(), 'ERRORS');
         d($client->getResponse(true), 'RES'); 
-    }
-
-    function test_x3(){
-        $file = "/home/www/woo1/wp-content/plugins/tg-connector/sync.php";
-
-        if (Strings::contains('/', $file)){
-            $dir = Strings::beforeLast($file, '/');
-
-            dd(
-                $dir
-            );
-
-            chdir($dir);
-        }
     }
 
 
