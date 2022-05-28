@@ -1,5 +1,9 @@
 # TODO
 
+- CSV a migraciones
+
+  com make migration --csv={file.csv}
+
 - Implementar un wrapper de DataTables similar a 
 
 https://livewire-datatables.com/
@@ -55,6 +59,23 @@ Actualmente debe hacerse con selectRaw()
 
 
 - Mover SendinBlue de dentro de "libs" a "packages" para evitar haga ruido ahí.
+
+- Implementar "seeders"
+
+- Terminar "service providers" + autodiscovery
+
+https://www.youtube.com/watch?v=6U5IU5QsrGI
+https://stackoverflow.com/questions/46243825/l5-5-how-to-auto-discover-package
+https://developpaper.com/interpretation-of-the-package-auto-discovery-mechanism-in-laravel/
+
+Comenzar por hacer el "discovery" => implementar
+
+  php com make discovery
+
+Luego.... para el auto-discovery ver esto:
+
+https://stackoverflow.com/a/48682790
+
 
 - Al "html builder" agregar eventualmente componentes de 
 
@@ -168,6 +189,15 @@ Ej:
   DB::table('products')->find(1356)->first()
 
 
+- Crear un router para la línea de comandos ("route console") y así poder prescindir del FrontController
+
+Ej:
+
+  Artisan::command('sql-query', function () {
+    \DB::statement('your query');
+  })->describe('Execute SQL query')
+
+
 - Generar documentación del código PHP (no de la API) con dOxygen !!!!
 
 https://github.com/doxygen/doxygen
@@ -175,6 +205,20 @@ https://github.com/doxygen/doxygen
 - Permitir crear "módulos" para agrupar modelos, schemas, vistas, controladores, assets, rutas, migraciones, seeds, middlewares, traducciones,...
 
 https://nicolaswidart.com/blog/writing-modular-applications-with-laravel-moduless
+
+Ver:
+      Modules vs. (Composer packages)
+
+"The big question is do you foresee these modules/packages being used in other projects or yours?"
+
+Si se va a re-utilizar en otros proyectos ....
+
+"If you're going to reuse I would do packages so that you can more easily setup a separate repository and keep track of versions and updates across those projects.
+
+If you're just looking to organize code specific for a project then should be fine with modules."
+
+https://www.reddit.com/r/laravel/comments/8rjzqe/why_does_no_one_use_modules/
+https://laravel.io/forum/09-06-2014-modules-vs-packages
 
 
 - Tener en cuenta que TypeORM por ejemplo hace *asíncronas* las queries o sea son promesas !
@@ -260,15 +304,6 @@ https://barryvanveen.nl/articles/55-installing-a-private-package-with-composer
 
 https://dudi.dev/create-composer-php-package
 https://blog.jgrossi.com/2013/creating-your-first-composer-packagist-package/
-
-- Crear un router para la línea de comandos ("route console") y así poder prescindir del FrontController
-
-Ej:
-
-  Artisan::command('sql-query', function () {
-    \DB::statement('your query');
-  })->describe('Execute SQL query')
-
 
 
 
@@ -496,7 +531,7 @@ Ahora:
 
   protected $rules = [
     'id       => ['type' => 'int', 'required' => true]
-        'name'      => ['min'=>3, 'max'=>40],
+    'name'      => ['min'=>3, 'max'=>40],
     'description'   => ['max'=>50],
     'size'      => ['max'=>20],
     'workspace'   => ['max'=>20],
@@ -1308,8 +1343,6 @@ o
   php com cronjobs --stop --pid={pid}
 
 
-
-
 - Colas (queues) 
 
 En Laravel la cantidad de workers se especifica con numprocs={how-to-combine-websockets-and-http-to-create-a-rest-api-that-keeps-data-up-to-da}
@@ -1402,6 +1435,9 @@ Ej:
 
 ---
 
+- Agregar soporte para "load balancers"
+
+
 [ Migrations ]
 
 - Poder crear una migración a partir de un CSV / XLS (determinar tipo de campos y atributos de acuerdo de los datos)
@@ -1479,32 +1515,6 @@ https://laravel.com/docs/8.x/session?fbclid=IwAR032HI1Zt5vNo6fG0ikE4hq-kYb2Z_QCc
 Más
 https://stackoverflow.com/questions/68972613/is-it-possible-to-call-http-api-by-websocket
 https://stackoverflow.com/questions/33424636/how-to-combine-websockets-and-http-to-create-a-rest-api-that-keeps-data-up-to-da
-
-
-
-
-
-
-- RoadMap para Migrar a PHP 8.0 
-  
-  * Habilitar tipos estrictos en cada archivo
-
-  * Verificar el correcto funcionamiento de *cada* pieza del Core actual en 7.4 incluyendo folders, collections, papelera,...
-
-  * Verificar que cada comparación (if y case) e implícitas del tipo return ($a == $b) sea compatible con PHP 8+
-
-  * Prestar particular atención a:
-
-    Strings::filter()
-    La clase Validator
-    La clase ApiController
-
-  * Empezar a correr en modo "dev" el fw en PHP 8.1
-
-  * Luego de testearlo lo suficiente: hacer chequeo que asegure la versión de PHP sea 8.0+ en el punto de entrada (app.php)
-
-https://www.php.net/releases/8.0/en.php
-https://victorroblesweb.es/2021/02/09/php-8-novedades-y-mejoras/
 
 
 - Usar como nombre automático de clase {Tabla}{DateTime} en caso de que la clase esté en uso en otra migración => escanearlas. 
