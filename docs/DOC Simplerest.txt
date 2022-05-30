@@ -7549,6 +7549,52 @@ Ej:
 	);
 
 
+Caso: deshabilitar el chequeo de certificado SSL 
+
+	// Turn off SSL
+	$options = [
+		CURLOPT_SSL_VERIFYHOST => 0,
+		CURLOPT_SSL_VERIFYPEER => 0
+	];
+
+	// Es un ejemplo: podría ser POST, GET, etc
+	$response = Url::consume_api($ruta, 'POST', $body, [
+		"Content-type"  => "Application/json",
+		"authToken" => "$token"
+	], $options);
+
+Otra posibilidad, es usando ApiClient:
+
+	$response = (new ApiClient())
+	->setHeaders(
+		[
+			"Content-type"  => "Application/json",
+			"authToken" => "$token"
+		]
+	)
+	->setBody($body)
+	->disableSSL()
+	->post($ruta)
+	->getResponse();
+
+Caso: quererar cargar el certificado SSL
+
+Usar setSSLCrt()
+
+Ej:	
+	// ruta absoluta al certificado	
+	$cert = "D:\wamp64\ca-bundle.crt"; 
+
+	$response = (new ApiClient())
+	->setHeaders($headers)
+	->setBody($body)
+	->setSSLCrt($cert)
+	->request($url, $http_verb)
+	->getResponse();
+
+	d($response, 'RES');   
+
+
 # Autorización 
 
 Web tokens pueden ser enviados a la función consume_api() via el array de headers.
