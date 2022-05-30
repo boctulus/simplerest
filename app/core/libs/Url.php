@@ -319,8 +319,7 @@ class Url
         curl_setopt($curl, CURLOPT_HTTP200ALIASES, [
             400,
             500
-        ]);    // actualizado el 26-may-2022
-
+        ]);  //
 
         $response  = curl_exec($curl);
         $err_msg   = curl_error($curl);	
@@ -328,8 +327,7 @@ class Url
     
         curl_close($curl);
     
-
-        $data = $decode ? json_decode($response, true) : $response;
+        $data = ($decode && $response !== false) ? json_decode($response, true) : $response;
     
         $ret = [
             'data'      => $data,

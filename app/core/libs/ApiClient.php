@@ -65,12 +65,18 @@ class ApiClient
         return $this->errors;
     }
 
-    function getResponse(bool $decode = true, bool $as_array = true){
-        if ($decode && $this->response != null){
-            $res = json_decode($this->response, $as_array);
+    function getResponse(bool $decode = true, bool $as_array = true){        
+        if ($decode){
+            $data = json_decode($this->response, $as_array);
         } else {
-            $res = null;
+            $data = $this->response;
         }   
+
+        $res = [
+            'data' => $data,
+            'http_code' => $this->status,
+            'errors' => $this->errors
+        ];
 
         return $res;
     }
@@ -80,13 +86,39 @@ class ApiClient
         return $this;
     }
 
+    function disableSSL(){
+        $this->options = [
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0
+        ];
+
+        return $this;
+    }
+
+    /*
+        Set SSL certification
+    */
+    function setSSLCrt($crt_path){
+        $this->setOptions([
+            CURLOPT_CAINFO => $crt_path,
+            CURLOPT_CAPATH => $crt_path,
+        ]);
+        
+        return $this;
+    }
+
     function request(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null){
         $this->url  = $url;
         $this->verb = strtoupper($http_verb);
 
+        if (!empty($this->options) && !empty($options)){
+            $options = array_merge($this->options, $options);
+        } else {
+            $options = $options ?? $this->options ?? null;
+        }
+
         $body    = $body    ?? $this->body    ?? null;
-        $headers = $headers ?? $this->headers ?? null;
-        $options = $options ?? $this->options ?? null;
+        $headers = $headers ?? $this->headers ?? null;        
         $decode  = $this->auto_decode; 
 
         if ($this->expiration){
@@ -147,9 +179,13 @@ class ApiClient
             //d($ok ? 'ok' : 'fail', 'INTENTOS: '. $retries);
         }
 
-        if ($ok && $this->expiration){
+        // dd($res, 'RES');
+
+        if ($this->expiration){
             $this->saveResponse($res);
         }
+
+        return $this;
     }
 
     function get(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
