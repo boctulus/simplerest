@@ -9124,12 +9124,255 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = Url::consume_api($ruta, 'POST', $body, [
-            "Content-type"  => "Application/json",
-            "authToken" => "$token"
-        ]);
+        // // Turn off SSL
+        // $options = [
+        //     CURLOPT_SSL_VERIFYHOST => 0,
+        //     CURLOPT_SSL_VERIFYPEER => 0
+        // ];
+
+        // $response = Url::consume_api($ruta, 'POST', $body, [
+        //     "Content-type"  => "Application/json",
+        //     "authToken" => "$token"
+        // ], $options);
+
+        $response = (new ApiClient())
+        ->setHeaders(
+            [
+                "Content-type"  => "Application/json",
+                "authToken" => "$token"
+            ]
+        )
+        ->setBody($body)
+        ->disableSSL()
+        ->post($ruta)
+        ->getResponse();
 
         d($response, 'RES');       
+    }
+
+    function test_ssl_no_check()
+    {
+        $arr = array (
+            'url' => 'https://demoapi.sinergia.pe/interfaces/interfacesventa/homologarBienesServicios',
+            'verb' => 'POST',
+            'headers' =>
+            array (
+              'Content-type' => 'Application/json',
+              'authToken' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo',
+            ),
+            'options' =>
+            array (
+              81 => 0,
+              64 => 0,
+            ),
+            'body' =>
+            array (
+              'ruc' => '12345678910',
+              'tabla_ventas' =>
+              array (
+                0 =>
+                array (
+                  'A1_ID' => NULL,
+                  'A2_FECHAEMISION' => '2022-05-30',
+                  'A3_HORAEMISION' => NULL,
+                  'A4_TIPODOCUMENTO' => '03',
+                  'A5_MONEDA' => 'USD',
+                  'A6_FECHAVENCIMIENTO' => NULL,
+                  'A7_DOCUMENTOREFERENCIA' => NULL,
+                  'A8_MOTIVONC' => NULL,
+                  'A9_FECHABAJA' => NULL,
+                  'A10_OBSERVACION' => NULL,
+                  'A11_TIPODOCUMENTOREFERENCIA' => NULL,
+                  'A12_WEIGHT' => 0.0,
+                  'B1_RUC' => '12345678910',
+                  'D1_DOCUMENTO' => '',
+                  'D2_TIPODOCUMENTO' => '1',
+                  'D3_DESCRIPCION' => 'Pablo Bozzolo',
+                  'D4_LEGAL_STREET' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
+                  'D4_LEGAL_DISTRICT' => '',
+                  'D4_LEGAL_PROVINCE' => '',
+                  'D4_LEGAL_STATE' => '',
+                  'D4_UBIGEO' => NULL,
+                  'D5_DIRECCION' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
+                  'D6_URBANIZACION' => NULL,
+                  'D7_PROVINCIA' => '',
+                  'D8_DEPARTAMENTO' => 'CO-VAC',
+                  'D9_DISTRITO' => 'Cali',
+                  'D10_PAIS' => NULL,
+                  'D11_CORREO' => 'info@solucionbinaria.com',
+                  'D12_CODIGO' => NULL,
+                  'D13_CODIGODIR' => '',
+                  'G1_TOTALEXPORTA' => 0,
+                  'G2_TOTALGRAVADA' => 0,
+                  'G3_TOTALINAFECTA' => 0,
+                  'G4_TOTALEXONERADA' => 0,
+                  'G5_TOTAGRATUITA' => 0,
+                  'G6_TOTALDESCUENTOS' => 0,
+                  'G7_PORCENDETRA' => 0,
+                  'G8_TOTALDETRA' => 0,
+                  'G9_TOTALIGV' => 0,
+                  'G10_TOTALSUBTOTAL' => 0,
+                  'G13_TOTALGLOBALDESCU' => 0,
+                  'G14_TOTALVENTA' => 0.0,
+                  'G15_SUBTOTAL' => 0,
+                  'H1_CODALMACEN' => '1',
+                  'H2_SUCURSAL' => '',
+                  'detalle' =>
+                  array (
+                    0 =>
+                    array (
+                      'F1_ITEM' => NULL,
+                      'F2_UNIDAD' => 'NIU',
+                      'F3_CANTIDAD' => 4,
+                      'F4_CODIGO_PRODUCTO' => 'HPC-113',
+                      'F5_CODIGO_SUNAT' => '000',
+                      'F7_DESCRIPCION' => 'HP 711 Magenta Ink Cartridge (29 ml)',
+                      'F8_PRECIO' => '23564',
+                      'F9_PRECIOVENTA' => '',
+                      'F10_TIPOPRECIO' => '01',
+                      'F11_PRECIOGRATIS' => 0,
+                      'F12_MONTOIGV' => 18,
+                      'F13_SUBTOTAL' => 0,
+                      'F14_TIPOAFECTA' => 10,
+                      'F15_CODIGOSIS' => 'HPC-113',
+                      'F16_PORCENTAJE_DESCUENTO' => 0,
+                      'F17_BIENSERVICIO' => 'b',
+                      'F18_IGV_TAX' => true,
+                      'F18_IGV_AMOUNT' => 18,
+                      'F19_ISC_TAX' => false,
+                      'F19_ISC_AMOUNT' => 0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        );
+
+        $response = (new ApiClient())
+        ->setHeaders($arr['headers']
+        )
+        ->setBody($arr['body'])
+        ->setOptions($arr['options'])
+        ->request($arr['url'], $arr['verb'])
+        ->getResponse();
+
+        d($response, 'RES');   
+    }
+
+    /*
+        $certificate_location = "C:\Program Files (x86)\EasyPHP-Devserver-16.1\ca-bundle.crt"; // modify this line accordingly (may need to be absolute)
+        curl_setopt($ch, CURLOPT_CAINFO, $certificate_location);
+        curl_setopt($ch, CURLOPT_CAPATH, $certificate_location);
+    */
+    function load_ssl_cert()
+    {
+        $arr = array (
+            'url' => 'https://demoapi.sinergia.pe/interfaces/interfacesventa/homologarBienesServicios',
+            'verb' => 'POST',
+            'headers' =>
+            array (
+              'Content-type' => 'Application/json',
+              'authToken' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo',
+            ),
+            'options' =>
+            array (
+              81 => 0,
+              64 => 0,
+            ),
+            'body' =>
+            array (
+              'ruc' => '12345678910',
+              'tabla_ventas' =>
+              array (
+                0 =>
+                array (
+                  'A1_ID' => NULL,
+                  'A2_FECHAEMISION' => '2022-05-30',
+                  'A3_HORAEMISION' => NULL,
+                  'A4_TIPODOCUMENTO' => '03',
+                  'A5_MONEDA' => 'USD',
+                  'A6_FECHAVENCIMIENTO' => NULL,
+                  'A7_DOCUMENTOREFERENCIA' => NULL,
+                  'A8_MOTIVONC' => NULL,
+                  'A9_FECHABAJA' => NULL,
+                  'A10_OBSERVACION' => NULL,
+                  'A11_TIPODOCUMENTOREFERENCIA' => NULL,
+                  'A12_WEIGHT' => 0.0,
+                  'B1_RUC' => '12345678910',
+                  'D1_DOCUMENTO' => '',
+                  'D2_TIPODOCUMENTO' => '1',
+                  'D3_DESCRIPCION' => 'Pablo Bozzolo',
+                  'D4_LEGAL_STREET' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
+                  'D4_LEGAL_DISTRICT' => '',
+                  'D4_LEGAL_PROVINCE' => '',
+                  'D4_LEGAL_STATE' => '',
+                  'D4_UBIGEO' => NULL,
+                  'D5_DIRECCION' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
+                  'D6_URBANIZACION' => NULL,
+                  'D7_PROVINCIA' => '',
+                  'D8_DEPARTAMENTO' => 'CO-VAC',
+                  'D9_DISTRITO' => 'Cali',
+                  'D10_PAIS' => NULL,
+                  'D11_CORREO' => 'info@solucionbinaria.com',
+                  'D12_CODIGO' => NULL,
+                  'D13_CODIGODIR' => '',
+                  'G1_TOTALEXPORTA' => 0,
+                  'G2_TOTALGRAVADA' => 0,
+                  'G3_TOTALINAFECTA' => 0,
+                  'G4_TOTALEXONERADA' => 0,
+                  'G5_TOTAGRATUITA' => 0,
+                  'G6_TOTALDESCUENTOS' => 0,
+                  'G7_PORCENDETRA' => 0,
+                  'G8_TOTALDETRA' => 0,
+                  'G9_TOTALIGV' => 0,
+                  'G10_TOTALSUBTOTAL' => 0,
+                  'G13_TOTALGLOBALDESCU' => 0,
+                  'G14_TOTALVENTA' => 0.0,
+                  'G15_SUBTOTAL' => 0,
+                  'H1_CODALMACEN' => '1',
+                  'H2_SUCURSAL' => '',
+                  'detalle' =>
+                  array (
+                    0 =>
+                    array (
+                      'F1_ITEM' => NULL,
+                      'F2_UNIDAD' => 'NIU',
+                      'F3_CANTIDAD' => 4,
+                      'F4_CODIGO_PRODUCTO' => 'HPC-113',
+                      'F5_CODIGO_SUNAT' => '000',
+                      'F7_DESCRIPCION' => 'HP 711 Magenta Ink Cartridge (29 ml)',
+                      'F8_PRECIO' => '23564',
+                      'F9_PRECIOVENTA' => '',
+                      'F10_TIPOPRECIO' => '01',
+                      'F11_PRECIOGRATIS' => 0,
+                      'F12_MONTOIGV' => 18,
+                      'F13_SUBTOTAL' => 0,
+                      'F14_TIPOAFECTA' => 10,
+                      'F15_CODIGOSIS' => 'HPC-113',
+                      'F16_PORCENTAJE_DESCUENTO' => 0,
+                      'F17_BIENSERVICIO' => 'b',
+                      'F18_IGV_TAX' => true,
+                      'F18_IGV_AMOUNT' => 18,
+                      'F19_ISC_TAX' => false,
+                      'F19_ISC_AMOUNT' => 0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        );
+
+        $cert = "D:\wamp64\ca-bundle.crt"; 
+
+        $response = (new ApiClient())
+        ->setHeaders($arr['headers']
+        )
+        ->setBody($arr['body'])
+        ->setSSLCrt($cert)
+        ->request($arr['url'], $arr['verb'])
+        ->getResponse();
+
+        d($response, 'RES');   
     }
 
     function test_sinergia_registrar_cliente()
@@ -9315,7 +9558,7 @@ class DumbController extends Controller
         //->setCache()
         ->setRetries(3)
         ->setBasicAuth($user, $pass)
-        ->request('http://200.6.78.02/stock/v1/catalog/YX0-947', 'GET');        
+        ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
 
         d($client->getStatus(), 'STATUS');
         d($client->getErrors(), 'ERRORS');
