@@ -23,6 +23,21 @@ class ApiClient
     protected $expiration;
     protected $max_retries = 1;
 
+    function setUrl($url){
+        $this->url = $url;
+        return $this;
+    }
+    
+    // alias
+    function url($url){
+        return $this->setUrl($url);
+    }
+
+    function __construct($url = null)
+    {
+        $this->setUrl($url);
+    }
+
     function setHeaders(Array $headers){
         $this->headers = $headers;
         return $this;
@@ -188,24 +203,24 @@ class ApiClient
         return $this;
     }
 
-    function get(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($url, 'GET', $body, $headers, $options);
+    function get($url = null, ?Array $headers = null, ?Array $options = null){        
+        return $this->request($this->url ?? $url, 'GET', null, $headers, $options);
     }
 
-    function post(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($url, 'POST', $body, $headers, $options);
+    function delete($url = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($this->url ?? $url, 'DELETE', null, $headers, $options);
     }
 
-    function put(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($url, 'PUT', $body, $headers, $options);
+    function post($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($this->url ?? $url, 'POST', $body, $headers, $options);
     }
 
-    function  patch(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($url, 'PATCH', $body, $headers, $options);
+    function put($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($this->url ?? $url, 'PUT', $body, $headers, $options);
     }
 
-    function delete(string $url, $body = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($url, 'DELETE', $body, $headers, $options);
+    function  patch($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($this->url ?? $url, 'PATCH', $body, $headers, $options);
     }
 
     /*
