@@ -8984,15 +8984,43 @@ class DumbController extends Controller
 
     ////////////
 
-    /*
+        /*
         Rutas
 
-        $base  = 'https://demoapi.sinergia.pe';
+        $base  = 'https://demoapi.sinergia.pe';  // la nueva ruta es https://devapi.sinergia.pe
         $ruta1 = "$base/interfaces/interfacesventa/homologarModVenta";
         $ruta2 = "$base/interfaces/interfacesventa/homologarCliente";
         $ruta3 = "$base/interfaces/interfacesventa/homologarBienesServicios";
         $ruta4 = "$base/interfaces/interfacesventa/crearBienServicio";
     */
+
+
+    /*
+    POST https://devapi.sinergia.pe/interfaces/login_check
+
+        (
+            como form-data o sea... con
+            
+            Content-Type =  multipart/form-data 
+        )
+
+        _username = admin
+        _password = 1234Admin
+    */
+    function test_sinergia_login(){
+        // $response = (new ApiClient())
+        // ->setHeaders(
+        //     [
+        //         "Content-Type"  => "multipart/form-data"
+        //     ]
+        // )
+        // ->setBody($body)
+        // ->disableSSL()
+        // ->post($ruta)
+        // ->getResponse();
+
+        // d($response, 'RES');      
+    }
 
 
     /*
