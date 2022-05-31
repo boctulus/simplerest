@@ -7737,6 +7737,68 @@ Ej:
 	d($client->getResponse(true), 'RES'); 
 
 
+# Constructor de la clase ApiClient
+
+Es posible especificar la url del endpoint de una vez al instanciar pasándola en el constructor y también cambiar la url mediante el método setUrl() o simplemente url()
+
+# Haciendo las cosas fáciles
+
+En caso de tener varios endpoints para la misma url base, es buena idea crear un artefacto como el siguiente.
+
+Ej:
+
+	/*
+		Se incluye toda la lógica que se quiera
+	*/
+	static function getClient($endpoint){
+        global $config;
+
+        $ruta         = $config['url_base_endpoints'] . $endpoint;
+        $token        = $config['token'];
+
+        $client = (new ApiClient($ruta));
+
+        $client
+        ->setHeaders(
+            [
+                "Content-type"  => "Application/json",
+                "authToken" => "$token"
+            ]
+        )
+        ->setRetries(3);
+
+        if ($config['dev_mode']){
+            $client->disableSSL();
+        }        
+        
+        return $client;
+    }
+
+Esto habilita luego tener funciones muy simples como las siguientes.
+
+Ej:
+
+	static function registrar(Array $data, $endpoint)
+    {
+        $response = static::getClient($endpoint)
+        ->setBody($data)
+        ->post()
+        ->getResponse();
+
+        return $response;
+    }
+
+    static function get_pdf(string $serie, int $correlativo){
+        $ruc_prop = static::getRuCPropietario();
+        $endpoint = "/business/invoice-{$ruc_prop}-$serie-$correlativo/pdf";
+
+        $response = static::getClient($endpoint)
+        ->get()
+        ->getResponse();
+
+        return $response;
+    }
+
 
 ### Componentes del core del framework
 
