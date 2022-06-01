@@ -7778,7 +7778,7 @@ Esto habilita luego tener funciones muy simples como las siguientes.
 
 Ej:
 
-	static function registrar(Array $data, $endpoint)
+	static function registrar($data, $endpoint)
     {
         $response = static::getClient($endpoint)
         ->setBody($data)
