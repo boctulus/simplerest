@@ -1234,6 +1234,11 @@ https://github.com/signifly/laravel-builder-macros
 Para eso están! nada de --force o --unignore
 
 
+- GRPC
+
+Grpc ya tiene soporte para PHP  !!!
+
+
 - Es posible agregar soporte para GraphQL con una librería de PHP
 
 https://webonyx.github.io/graphql-php/
