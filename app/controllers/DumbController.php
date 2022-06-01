@@ -3356,7 +3356,6 @@ class DumbController extends Controller
             'Pruebita 001JRB XXX',
             Strings::paragraph($body),
             null,
-            null,
             [],
             [
                 [
@@ -9550,7 +9549,7 @@ class DumbController extends Controller
                 "D13_CODIGODIR": ""
                 }
             ]
-            }';
+        }';
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
@@ -9593,5 +9592,90 @@ class DumbController extends Controller
         d($client->getResponse(true), 'RES'); 
     }
 
+
+    static function getClient($endpoint){
+        global $config;
+
+        $ruta         = $config['url_base_endpoints'] . $endpoint;
+        $token        = $config['token'];
+        
+        dd($ruta, 'ENDPOINT *****');
+
+        $client = (new ApiClient($ruta));
+
+        $client
+        ->setHeaders(
+            [
+                "Content-type"  => "Application/json",
+                "authToken" => "$token"
+            ]
+        )
+        ->setRetries(3);
+
+        if ($config['dev_mode']){
+            $client->disableSSL();
+        }        
+        
+        return $client;
+    }
+
+    /*
+        General: a cualquier endpoint
+    */
+    static function registrar($data, $endpoint)
+    {
+        $response = static::getClient($endpoint)
+        ->setBody($data)
+        ->post()
+        ->getResponse();
+
+        return $response;
+    }
+
+    function test_sinergia(){
+        global $config;
+
+        $config = [
+            'dev_mode' => true,       
+            'token' => "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MzkzNTU2NCwiZXhwIjoxNjU0NTQwMzY0fQ.igAEIhqDTBLBMEvHI7KePGn3HVaZ6jv_cyeToGNAya8",  // obtenida con el nuevo endpoint en Insomnia
+
+            'B1_RUC'            => '20602903312',
+            'demo_ruc'          => '20602903312',
+
+            'url_base_endpoints' => 'https://devapi.sinergia.pe',
+            'endpoint_ruta_homologar_bienes_servicios' => '/interfaces/interfacesventa/homologarBienesServicios',
+            'endpoint_ruta_homologar_ciente' => '/interfaces/interfacesventa/homologarCliente',
+            'endpoint_homologar_venta' => '/interfaces/interfacesventa/homologarModVenta',
+        ];
+
+        $body = '{
+            "ruc": "'. $config['B1_RUC'] .'",
+            "tabla_ventas": [
+                { 
+                "D1_DOCUMENTO": "20603374097",
+                "D2_TIPODOCUMENTO": "6",
+                "D3_DESCRIPCION": "DevTechPeru EIRL (986976377)",
+                "D4_LEGAL_STREET": "Jr Los Aromos 644 Dpto 301, La Molina",
+                "D4_LEGAL_DISTRICT": "",
+                "D4_LEGAL_PROVINCE": "Lima",
+                "D4_LEGAL_STATE": "Lima",
+                "D4_UBIGEO": null,
+                "D5_DIRECCION": "Jr Los Aromos 644 Dpto 301, La Molina, Lima",
+                "D6_URBANIZACION": null,
+                "D7_PROVINCIA": "Lima",
+                "D8_DEPARTAMENTO": "Lima",
+                "D9_DISTRITO": "La Molina",
+                "D10_PAIS": null,
+                "D11_CORREO": "augusto@devtechperu.com",
+                "D12_CODIGO": null,
+                "D13_CODIGODIR": ""
+                }
+            ]
+        }';
+
+        dd(
+            static::registrar($body, '/interfaces/interfacesventa/homologarCliente')
+        );
+    }
 
 }   // end class

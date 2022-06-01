@@ -13,7 +13,7 @@ use simplerest\core\interfaces\IMail;
 
 class SendinBlue extends MailBase implements IMail
 {
-    static function send(Array $to, $subject = '', $body = '', $alt_body = null, $attachments = null, Array $from = [], Array $cc = [], Array $bcc = [], Array $reply_to = []){
+    static function send(Array $to, $subject = '', $body = '', $attachments = null, Array $from = [], Array $cc = [], Array $bcc = [], Array $reply_to = [], $alt_body = null,){
         $config = config();
 
         $body = trim($body);
