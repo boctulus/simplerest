@@ -139,6 +139,21 @@ function get_schema_name($table_name, $tenant_id = null){
     return '\\simplerest\\schemas\\' . $extra . Strings::snakeToCamel($table_name). 'Schema';
 }
 
+function has_schema($table_name, $tenant_id = null){
+    if ($tenant_id == null){
+        $tenant_id = DB::getCurrentConnectionId();
+
+        if ($tenant_id == null){
+            DB::getDefaultConnection();
+            $tenant_id = DB::getCurrentConnectionId();
+        }
+    }
+
+    $class = get_schema_name($table_name, $tenant_id);
+
+    return class_exists($class);
+}
+
 function get_schema($table_name, $tenant_id = null){
     static $sc;
 

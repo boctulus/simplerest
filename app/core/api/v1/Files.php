@@ -42,6 +42,8 @@ class Files extends MyApiController
         
         $instance = DB::table($this->table_name)->fill(['filename_as_stored']);
 
+        $belongs_to = null;
+
         $uploaded = [];
         foreach ($files as list($filename_ori, $filename_as_stored)){           
             if (Factory::acl()->hasSpecialPermission('transfer')){ 
