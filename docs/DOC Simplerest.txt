@@ -8625,6 +8625,140 @@ En caso de querer detener la ejecución de todas las colas, no envie el nombre d
 <-- se implementará el comando "queue stop [ name ]"
 
 
+# Upload de archivos
+
+Con la clase MultipleUploader es muy fácil recibir archivos y de hecho el endpoint /files implementa esta clase aunque hace uso del ACL y sino lo necesitamos podemos hacer nuestra propia implementación de forma sencilla.
+
+Veamos,...
+
+Suponemos que se envian los archivos por POST como ¨form-data¨ o sea.. que el framework recibirá el header Content-Type de tipo multipart/form-data.
+
+Ej de código:
+
+	// dentro de un método de controlador
+
+	$data = $_POST;
+
+	$uploader = (new MultipleUploader())
+	->setFileHandler(function($uid) {
+		$prefix = ($uid ?? '0').'-';
+		return uniqid($prefix, true);
+		}, Acl::getCurrentUid());
+
+
+	$files    = $uploader->doUpload()->getFileNames();   
+	$failures = $uploader->getErrors();     
+
+	if (count($files) == 0){
+		Factory::response()->sendError('No files or file upload failed', 400);
+	}        
+
+	/*
+		Archivos
+	*/
+	dd($files, 'FILES');
+
+	/*
+		Otros campos enviados por POST
+	*/
+	dd($data, 'DATA');
+
+Eso significa que,... en un Controller podemos tener algo así:
+
+	function file_upload(){
+		// Podria chequear que sea un POST request
+
+        $data = $_POST;
+
+        $uploader = (new MultipleUploader())
+        ->setFileHandler(function($uid) {
+            $prefix = ($uid ?? '0').'-';
+            return uniqid($prefix, true);
+         }, Acl::getCurrentUid());
+
+
+        $files    = $uploader->doUpload()->getFileNames();   
+        $failures = $uploader->getErrors();     
+
+        if (count($files) == 0){
+            Factory::response()->sendError('No files or file upload failed', 400);
+        }        
+
+        return [
+            'data'     => $data,
+            'files'    => $files,
+            'failures' => $failures,
+            'message'  => !empty($failures) ? 'Got errors during file upload' : null
+        ];
+    }
+
+Y podría guardar los nombres de los archivos en base de datos
+
+	function file_upload(){
+        $data = $_POST;
+
+        $uploader = (new MultipleUploader())
+        ->setFileHandler(function($uid) {
+            $prefix = ($uid ?? '0').'-';
+            return uniqid($prefix, true);
+         }, Acl::getCurrentUid());
+
+
+        $files    = $uploader->doUpload()->getFileNames();   
+        $failures = $uploader->getErrors();     
+
+        if (count($files) == 0){
+            Factory::response()->sendError('No files or file upload failed', 400);
+        }        
+
+        /*
+            Almaceno los nombres de los archivos en DB
+        */
+        foreach($files as $ix => $f){
+            $ori_filename = $f['ori_name'];
+            $as_stored    = $f['as_stored'];
+
+            $id = DB::insert("INSERT INTO `my_files` (`id`, `filename`, `filename_as_stored`, `created_at`) VALUES (NULL, '$ori_filename', '$as_stored', CURRENT_TIMESTAMP);");
+
+            $files[$ix]['id'] = $id;
+        }
+        
+        return [
+            'data'     => $data,
+            'files'    => $files,
+            'failures' => $failures,
+            'message'  => !empty($failures) ? 'Got errors during file upload' : null
+        ];
+    }
+
+Y la respuesta del servidor sería por ejemplo:
+
+	{
+		"data": {
+			"order_id": "1001"
+		},
+		"files": [
+			{
+				"ori_name": "vistas_check2 (1).png",
+				"as_stored": "0-629b8641b4fae5.17744388.png",
+				"id": "10"
+			}
+		],
+		"failures": [],
+		"message": null
+	}
+
+Nota: ase asume una nueva base de datos `my_files` con la siguiente estructura:
+
+	CREATE TABLE IF NOT EXISTS `my_files` (
+		`id` int NOT NULL AUTO_INCREMENT,
+		`filename` varchar(255) NOT NULL,
+		`filename_as_stored` varchar(60) NOT NULL,
+		`created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`)
+	) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+
+
 # HTML & Form builder
 
 El framework provee de las clases HTML, Form y Bt5Form para la construcción programática de HTML. 

@@ -114,7 +114,10 @@ class MultipleUploader
 					$tmp_name = $_FILES[$name]["tmp_name"][$key];
 					$filename = basename($_FILES[$name]["name"][$key]); 
 					$new_filename = $renamer($subfijo) . '.' . pathinfo($_FILES[$name]["name"][$key], PATHINFO_EXTENSION);
-					$this->filenames[$i] = [ $filename, $new_filename ];
+					$this->filenames[$i] = [ 
+						'ori_name'  => $filename, 
+						'as_stored' => $new_filename 
+					];
 					move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR . $new_filename);
 					$i++;				
 				}else
@@ -129,7 +132,10 @@ class MultipleUploader
 					$tmp_name = $_FILES[$input_name]['tmp_name'];
 					$filename =  basename($_FILES[$input_name]['name']);
 					$new_filename = $renamer($subfijo) . '.' . pathinfo($_FILES[$input_name]['name'], PATHINFO_EXTENSION);
-					$this->filenames[] = [ $filename, $new_filename ];
+					$this->filenames[] = [ 
+						'ori_name'  => $filename, 
+						'as_stored' => $new_filename 
+					];
 					move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
 				}else
 					$this->erroneous[] = $_FILES[$input_name]['name'];
@@ -142,7 +148,10 @@ class MultipleUploader
 							$tmp_name = $file['tmp_name'];
 							$filename =  basename($file['name']);
 							$new_filename = $renamer($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-							$this->filenames[] = [ $filename, $new_filename ];
+							$this->filenames[] = [ 
+								'ori_name'  => $filename, 
+								'as_stored' => $new_filename
+							 ];
 							move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
 						}else
 							$this->erroneous[] = $file['name'];
@@ -159,7 +168,10 @@ class MultipleUploader
 							$tmp_name = $file['tmp_name'];
 							$filename =  basename($file['name']);
 							$new_filename = $renamer($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-							$this->filenames[] = [ $filename, $new_filename ];
+							$this->filenames[] = [ 
+								'ori_name'  => $filename, 
+								'as_stored' => $new_filename 
+							];
 							move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
 						}else
 							$this->erroneous[] = $file['name'];
