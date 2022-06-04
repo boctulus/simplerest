@@ -7269,11 +7269,11 @@ On Windows, locale information is maintained per thread as of PHP 7.0.5."
 
 Si en header Accept-Encoding se envia gzip, se hará la compresión.
 
-Si se desea cambiar el algoritmo también puede hacerse enviando como parámetro accept_encodig. 
+Si se desea cambiar el algoritmo también puede hacerse enviando como parámetro accept_encoding. 
 
 Ej:
 
-	GET api/v1/baz?tenantid=az&accept_encodig=identity
+	GET api/v1/baz?tenantid=az&accept_encoding=identity
 
 
 Solamente se está manejando gzip e identity (sin compresión).
