@@ -8759,6 +8759,22 @@ Nota: ase asume una nueva base de datos `my_files` con la siguiente estructura:
 	) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 
 
+El nombre que va llevar el archivo se puede determinar por un callback, ejemplo:
+
+	$order_id = $data['order_id'] ?? '';
+
+	if (empty($order_id)){
+		Factory::response()->sendError('El parametro order_id es requerido', 400);
+	}
+
+	$uploader = (new MultipleUploader())
+	->setFileHandler(function($order_id) {
+
+		return $order_id .'-'. time();
+		
+	}, $order_id);
+
+
 # HTML & Form builder
 
 El framework provee de las clases HTML, Form y Bt5Form para la construcción programática de HTML. 
