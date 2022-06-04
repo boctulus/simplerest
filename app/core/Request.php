@@ -5,6 +5,7 @@ namespace simplerest\core;
 use simplerest\core\libs\Strings;
 use simplerest\core\interfaces\Arrayable;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\Arrays;
 
 class Request  implements /*\ArrayAccess,*/ Arrayable
 {
@@ -14,6 +15,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     static protected $params;
     static protected $headers;
     static protected $accept_encoding;
+    static protected $content_type;
     static protected $instance = NULL;
 
     protected function __construct() { }
@@ -22,16 +24,61 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         if(static::$instance == NULL){
             if (php_sapi_name() != 'cli'){
                 if (isset($_SERVER['QUERY_STRING'])){
-					static::$query_arr = url::queryString();
-
-                    if (isset(static::$query_arr["accept_encodig"])){
-                        static::$accept_encoding = static::$query_arr["accept_encodig"];
-                        unset(static::$query_arr["accept_encodig"]);
-                    }
-				}
+                    static::$query_arr = url::queryString();
+                }
                 
+                /*
+                    Accept encoding
+
+                    Accept-Encoding: gzip
+                    Accept-Encoding: compress
+                    Accept-Encoding: deflate
+                    Accept-Encoding: br
+                    Accept-Encoding: identity
+                    Accept-Encoding: *
+
+                    https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
+                */
+
+                $headers = apache_request_headers();
+
+                $accept_encoding_header = $headers['Accept-Encoding'] ?? null;
+                
+                if (!empty($accept_encoding_header)){
+                    static::$accept_encoding = $accept_encoding_header;
+                } else {
+                    if (!empty(static::$query_arr["accept_encoding"])){
+                        static::$accept_encoding = Arrays::shift(static::$accept_encoding, 'accept_encoding');
+                    }
+                }                
+                
+                /*
+                    Content-Type
+
+                    Para form-data sería multipart/form-data o un derivado como
+                    'multipart/form-data; boundary=--------------------------240766805501822956475464'
+                */
+
+                $content_type_header = $headers['Content-Type'] ?? null;
+
+                if (!empty($content_type_header)){
+                    static::$content_type = $content_type_header;
+                } else {
+                    if (!empty(static::$query_arr["content_type"])){
+                        static::$content_type = Arrays::shift(static::$accept_encoding, 'content_type');
+                    }
+                }   
+
+                // Content-Type
+                $is_form_data = (bool) Strings::startsWith('multipart/form-data', static::$content_type);
+                $is_json      = (static::$content_type == 'application/json');
+
                 static::$raw  = file_get_contents("php://input");
-                static::$body = Url::bodyDecode(static::$raw);
+
+                // Si el Content-Type es para json o al menos no es para form-data (no es del todo correcto hacer esto),...
+                // pero por retrocompatibilidad... como no siempre paso el Content-Type,...
+                static::$body = ($is_json || !$is_form_data) ? Url::bodyDecode(static::$raw) : static::$raw;
+                
                 static::$headers = apache_request_headers();
 
                 $tmp = [];
