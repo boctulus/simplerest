@@ -9684,11 +9684,18 @@ class DumbController extends Controller
     function test_file_upload(){
         $data = $_POST;
 
+        $order_id = $data['order_id'] ?? '';
+
+        if (empty($order_id)){
+            Factory::response()->sendError('El parametro order_id es requerido', 400);
+        }
+
         $uploader = (new MultipleUploader())
-        ->setFileHandler(function($uid) {
-            $prefix = ($uid ?? '0').'-';
-            return uniqid($prefix, true);
-         }, Acl::getCurrentUid());
+        ->setFileHandler(function($order_id) {
+
+            return $order_id .'-'. time();
+         
+        }, $order_id);
 
 
         $files    = $uploader->doUpload()->getFileNames();   
