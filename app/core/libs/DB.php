@@ -729,7 +729,7 @@ class DB
 			$table = Strings::match($raw_sql, '/insert[ ]+(ignore[ ]+)?into[ ]+[`]?([a-z_]+[a-z0-9]?)[`]? /i', 2);
 
 			if (!empty($table)){
-				$schema = get_schema($table);
+				$schema = has_schema($table) ? get_schema($table) : null;
 			} else {
 				$schema = null;
 			}

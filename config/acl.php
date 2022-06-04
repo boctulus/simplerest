@@ -27,6 +27,8 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('bar', ['read', 'write'])
     ->addResourcePermissions('baz', ['read', 'write'])
     ->addResourcePermissions('telefonos', ['read', 'write'])
+    ->addResourcePermissions('files', ['read', 'write'])
+
     // ...
     //->setAsGuest('guest')
 

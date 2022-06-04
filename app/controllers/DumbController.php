@@ -30,6 +30,9 @@ use simplerest\core\libs\Env;
 use simplerest\core\libs\Update;
 use simplerest\controllers\api\Products;
 use simplerest\controllers\api\TblPersona;
+
+use simplerest\core\libs\MultipleUploader;
+
 use simplerest\core\libs\System;
 use simplerest\core\libs\Supervisor;
 
@@ -9676,6 +9679,43 @@ class DumbController extends Controller
         dd(
             static::registrar($body, '/interfaces/interfacesventa/homologarCliente')
         );
+    }
+
+    function test_file_upload(){
+        $data = $_POST;
+
+        $uploader = (new MultipleUploader())
+        ->setFileHandler(function($uid) {
+            $prefix = ($uid ?? '0').'-';
+            return uniqid($prefix, true);
+         }, Acl::getCurrentUid());
+
+
+        $files    = $uploader->doUpload()->getFileNames();   
+        $failures = $uploader->getErrors();     
+
+        if (count($files) == 0){
+            Factory::response()->sendError('No files or file upload failed', 400);
+        }        
+
+        /*
+            Almaceno los nombres de los archivos en DB
+        */
+        foreach($files as $ix => $f){
+            $ori_filename = $f['ori_name'];
+            $as_stored    = $f['as_stored'];
+
+            $id = DB::insert("INSERT INTO `my_files` (`id`, `filename`, `filename_as_stored`, `created_at`) VALUES (NULL, '$ori_filename', '$as_stored', CURRENT_TIMESTAMP);");
+
+            $files[$ix]['id'] = $id;
+        }
+        
+        return [
+            'data'     => $data,
+            'files'    => $files,
+            'failures' => $failures,
+            'message'  => !empty($failures) ? 'Got errors during file upload' : null
+        ];
     }
 
 
