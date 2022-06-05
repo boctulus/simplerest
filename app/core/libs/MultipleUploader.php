@@ -3,6 +3,8 @@
 namespace simplerest\core\libs;
 
 /*
+	Funciona con form-data
+
 	- Si se excede el POST Content-Length (post_max_size) ...
 	
 		<b>Warning</b>:  POST Content-Length of .... bytes exceeds the limit of 33554432 bytes in <b>Unknown</b> on line <b>0</b><br />
@@ -44,14 +46,26 @@ class MultipleUploader
 	
 	
 	public function __construct(){
+        if (!file_exists($this->location)){
+            Files::mkDirOrFail($this->location);
+        }
 	}	
 	
 	// @param string path (sin / al final)
 	public function setLocation($path){
 		$this->location = $path;
+
+        if (!file_exists($this->location)){
+            Files::mkDirOrFail($this->location);
+        }
+
 		return $this;
 	}	
 
+	public function getLocation(){
+		return $this->location;
+	}
+	
 	/*
 		Renamer
 	*/
