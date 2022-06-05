@@ -38,7 +38,6 @@ use simplerest\libs\Debug;
 class MultipleUploader
 {
 	protected $filenames  = [];
-	protected $settings	= [];
 	protected $location = UPLOADS_PATH;
 	protected $erroneous = [];
 	protected $renamerFn = null;
