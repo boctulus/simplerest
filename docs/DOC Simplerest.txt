@@ -8798,6 +8798,21 @@ Ejemplo de uso:
         ];
     }
 
+Al hacer un POST se envia como "raw" y en el body se coloca el archivo a transmitir en base64.
+
+Ej:
+
+	data:image/png;base64,iVBORw0KGgoAAAAN........
+
+La respuesta será algo como:
+
+	{
+		"files": [
+			"0-629cd23e86f7b2.39492774.png"
+		],
+		"failures": []
+	}
+
 
 # HTML & Form builder
 

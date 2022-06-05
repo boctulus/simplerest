@@ -9719,9 +9719,7 @@ class DumbController extends Controller
         ];
     }
 
-    /*
-        No enviar data:image/png;base64,
-    */
+
     function test_file_upload_base64()
     {
         $uploader = (new Base64Uploader())
