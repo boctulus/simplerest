@@ -8775,6 +8775,30 @@ El nombre que va llevar el archivo se puede determinar por un callback, ejemplo:
 	}, $order_id);
 
 
+Base64Uploader
+
+Si por alguna razón a pesar de ser menos eficiente se quisiera utilizar base64 para subir imágenes se provee la librería Base64Uploader aunque es un poco más limitada.
+
+Ejemplo de uso:
+
+	function file_upload_base64()
+    {
+        $uploader = (new Base64Uploader())
+        ->setFileHandler(function($uid) {
+            $prefix = ($uid ?? '0').'-';
+            return uniqid($prefix, true);
+        }, Acl::getCurrentUid());
+
+        $files    = $uploader->doUpload()->getFileNames();   
+        $failures = $uploader->getErrors();     
+
+        return [
+            'files'    => $files,
+            'failures' => $failures
+        ];
+    }
+
+
 # HTML & Form builder
 
 El framework provee de las clases HTML, Form y Bt5Form para la construcción programática de HTML. 
