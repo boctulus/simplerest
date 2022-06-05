@@ -75,9 +75,8 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
 
                 static::$raw  = file_get_contents("php://input");
 
-                // Si el Content-Type es para json o al menos no es para form-data (no es del todo correcto hacer esto),...
-                // pero por retrocompatibilidad... como no siempre paso el Content-Type,...
-                static::$body = ($is_json || !$is_form_data) ? Url::bodyDecode(static::$raw) : static::$raw;
+                // Si el Content-Type es para json,.... decode
+                static::$body = $is_json ? Url::bodyDecode(static::$raw) : static::$raw;
                 
                 static::$headers = apache_request_headers();
 

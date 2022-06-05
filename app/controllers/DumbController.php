@@ -32,6 +32,7 @@ use simplerest\controllers\api\Products;
 use simplerest\controllers\api\TblPersona;
 
 use simplerest\core\libs\MultipleUploader;
+use simplerest\core\libs\Base64Uploader;
 
 use simplerest\core\libs\System;
 use simplerest\core\libs\Supervisor;
@@ -9684,18 +9685,11 @@ class DumbController extends Controller
     function test_file_upload(){
         $data = $_POST;
 
-        $order_id = $data['order_id'] ?? '';
-
-        if (empty($order_id)){
-            Factory::response()->sendError('El parametro order_id es requerido', 400);
-        }
-
         $uploader = (new MultipleUploader())
-        ->setFileHandler(function($order_id) {
-
-            return 'order_id-'.$order_id .'-'. time();
-         
-        }, $order_id);
+        ->setFileHandler(function($uid) {
+            $prefix = ($uid ?? '0').'-';
+            return uniqid($prefix, true);
+        }, Acl::getCurrentUid());
 
 
         $files    = $uploader->doUpload()->getFileNames();   
@@ -9722,6 +9716,26 @@ class DumbController extends Controller
             'files'    => $files,
             'failures' => $failures,
             'message'  => !empty($failures) ? 'Got errors during file upload' : null
+        ];
+    }
+
+    /*
+        No enviar data:image/png;base64,
+    */
+    function test_file_upload_base64()
+    {
+        $uploader = (new Base64Uploader())
+        ->setFileHandler(function($uid) {
+            $prefix = ($uid ?? '0').'-';
+            return uniqid($prefix, true);
+        }, Acl::getCurrentUid());
+
+        $files    = $uploader->doUpload()->getFileNames();   
+        $failures = $uploader->getErrors();     
+
+        return [
+            'files'    => $files,
+            'failures' => $failures
         ];
     }
 
