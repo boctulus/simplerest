@@ -16,6 +16,7 @@ class ApiClient
     protected $headers;
     protected $options;
     protected $body;
+    protected $encode_body;
     protected $auto_decode;
     protected $status;
     protected $errors;
@@ -48,8 +49,9 @@ class ApiClient
         return $this;
     }
 
-    function setBody($body){
+    function setBody($body, $encoded = true){
         $this->body = $body;
+        $this->encode_body = $encoded;
         return $this;
     }
 
@@ -62,7 +64,6 @@ class ApiClient
     function decode(bool $val){
         return $this->setDecode($val);
     }
-
 
     /*
         @param $expiration_time int seconds 
@@ -168,7 +169,7 @@ class ApiClient
         */
         while (!$ok && $retries < $this->max_retries)
         {   
-            $res = Url::consume_api($url, $http_verb, $body, $headers, $options, false);
+            $res = Url::consume_api($url, $http_verb, $body, $headers, $options, false, $this->encode_body);
             $this->status   = $res['http_code'];
             $this->errors   = $res['error'];
             $this->response = $res['data'];

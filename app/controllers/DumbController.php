@@ -9597,6 +9597,29 @@ class DumbController extends Controller
     }
 
 
+    function test_api_client3()
+    {        
+        $client = new ApiClient();
+
+        $postfields = array();
+        $postfields['_username'] = 'admin';
+        $postfields['_password'] = '1234Admin';
+
+        $client
+        //->setRetries(3)
+        ->setHeaders([
+            'Content-Type' => 'multipart/form-data'
+        ])
+        ->setBody($postfields, false)
+        ->disableSSL()
+        ->request('https://devapi.sinergia.pe/login_check', 'POST');        
+
+        d($client->getStatus(), 'STATUS');
+        d($client->getErrors(), 'ERRORS');
+        d($client->getResponse(true), 'RES'); 
+    }
+
+
     static function getClient($endpoint){
         global $config;
 
