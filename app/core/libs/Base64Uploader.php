@@ -80,7 +80,7 @@ class Base64Uploader
 
 		$file = base64_decode($raw);
 
-		$new_filename = $renamer($subfijo) . '.' . $ext;
+		$new_filename = $renamer($subfijo) . (!empty($ext) ? '.'.$ext : '');
 
 		$f = $this->location. DIRECTORY_SEPARATOR. $new_filename;
 
