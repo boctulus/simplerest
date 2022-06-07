@@ -225,7 +225,7 @@ class Url
         return  $base_url;
     }
 
-    static function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true)
+    static function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
     {  
         if ($headers === null){
             $headers = [];
@@ -280,7 +280,7 @@ class Url
             }
         }
    
-        if (/* $headers[$content_type_found] == 'application/json' || */ is_array($body)){
+        if ($encode_body && is_array($body)){
             $data = json_encode($body);
         } else {
             $data = $body;
@@ -292,7 +292,10 @@ class Url
     
         if ($http_verb != 'GET' && !empty($data)){
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            $headers['Content-Length']   = strlen($data);
+
+            if ($encode_body){
+                $headers['Content-Length']   = strlen($data);
+            }
         }
     
         $h = [];

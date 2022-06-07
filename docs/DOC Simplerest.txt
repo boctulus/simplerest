@@ -7703,6 +7703,29 @@ Ej:
 	d($client->getResponse(true), 'RES'); 
 
 
+Hay casos donde se necesita enviar el body sin encodear como JSON. Para esto se puede enviar false en el segundo parametro de setBody()
+
+Ej:
+
+	$client = new ApiClient();
+
+	$postfields = array();
+	$postfields['_username'] = 'admin';
+	$postfields['_password'] = 'admin456';
+
+	$client
+	//->setRetries(3)
+	->setHeaders([
+		'Content-Type' => 'multipart/form-data'
+	])
+	->setBody($postfields, false)
+	->disableSSL()
+	->request('https://somesite.com/login_check', 'POST');        
+
+	d($client->getStatus(), 'STATUS');
+	d($client->getErrors(), 'ERRORS');
+	d($client->getResponse(true), 'RES'); 
+
 
 # Uso de cache
 
