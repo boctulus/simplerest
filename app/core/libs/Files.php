@@ -9,6 +9,53 @@ class Files
 	static protected $backup_path;
 	static protected $callable;
 
+
+	/*
+		Resutlado:
+
+		<?php 
+
+		$arr = array (
+		'x' => 'Z',
+		);
+	*/
+	static function varExport($path, $data, $variable = '$arr'){
+		if ($variable === null){
+			$bytes = file_put_contents($path, '<?php '. "\r\n\r\n" . 'return ' . var_export($data, true). ';');
+		} else {
+			$bytes = file_put_contents($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
+		}
+
+		return ($bytes > 0);
+	}
+
+	static function JSONExport($path, $data){
+		$bytes = file_put_contents($path, json_encode($data));
+		return ($bytes > 0);
+	}
+
+	/*
+		https://www.codewall.co.uk/write-php-array-to-csv-file/
+		https://fuelingphp.com/how-to-convert-associative-array-to-csv-in-php/
+	*/
+	static function arrayToCSV(string $filename, Array $array){
+		if (!Strings::endsWith('.csv', strtolower($filename))){
+			$filename .= '.csv';
+		}
+
+		$f = fopen($filename, 'a'); // Configure fopen to create, open, and write data.
+ 
+		fputcsv($f, array_keys($array[0])); // Add the keys as the column headers
+		
+		// Loop over the array and passing in the values only.
+		foreach ($array as $row)
+		{
+			fputcsv($f, $row);
+		}
+		// Close the file
+		fclose($f);
+	}
+
 	static function getCSV(string $path, $assoc = true){	
 		$rows = [];
 

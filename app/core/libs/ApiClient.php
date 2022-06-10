@@ -81,7 +81,9 @@ class ApiClient
         return $this->errors;
     }
 
-    function getResponse(bool $decode = true, bool $as_array = true){        
+    function getResponse(bool $decode = true, bool $as_array = true){       
+        // deberia $decode poder venir en null y en tal caso usar $this->auto_decode
+        
         if ($decode){
             $data = json_decode($this->response, $as_array);
         } else {
