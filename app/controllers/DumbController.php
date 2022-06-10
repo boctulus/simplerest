@@ -9760,5 +9760,41 @@ class DumbController extends Controller
         ];
     }
 
+    function fix_csv(){
+        $out = [];
+
+
+        // Files::varExport(UPLOADS_PATH . 'test.php', [
+        //     'x' => 'Z'
+        // ]);
+
+        Files::JSONExport(UPLOADS_PATH . 'test.json', [
+            'x' => 'Z'
+        ]);
+
+
+        exit;
+
+        $path = 'D:\Desktop\CSV\completo.csv';
+
+        $rows = Files::getCSV($path)['rows'];
+        
+        foreach ($rows as $ix => $row){
+            $sku         = $row['SKU'];
+            $precio      = $row['Precio'];
+            $precio_plus = $row['Precio Plus'];
+
+            if (!isset($out[$sku])){
+                $out[$sku] = [];
+            }
+           
+            $out[$sku]['precio']      = $precio;
+            $out[$sku]['precio_plus'] = $precio_plus;
+        }
+
+        dd($out);
+        dd(count($out), 'COUNT');      
+    }
+
 
 }   // end class
