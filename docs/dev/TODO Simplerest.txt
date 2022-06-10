@@ -904,11 +904,54 @@ https://www.amitmerchant.com/fibers-or-coroutines-for-asynchronous-programming-i
 https://www.amitmerchant.com/deep-dive-into-generators-php/
 https://betterprogramming.pub/a-look-at-the-new-php-8-1-fibers-feature-979489399918
 
+Ver sintaxis Async usada por AWS S3 SDK
+
+https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/getting-started_basic-usage.html
+
 - Usar Guzzle en vez de curl ya que permite "async requests" via CurlMultiHandler
 
 https://stackoverflow.com/a/36549547/980631
 https://docs.guzzlephp.org/en/latest/faq.html?highlight=curl#can-guzzle-send-asynchronous-requests
 
+Usaria Client de Guzzle en vez de ApiClient
+
+  <?php
+  
+  use GuzzleHTTP\Client;
+  require '>>/vendor/autoload.php';
+  
+  $client = new Client([
+      'base_uri'=>'http://httpbin.org',
+      'timeout' => 2.0
+  ]);
+  
+  $response = $client->request('GET', 'ip');
+  
+  echo $response->getStatusCOde(), "<br>";
+  $body = $response->getBody();
+  echo $body->getContents(), "<br>";
+  
+  echo "<pre>";
+  print_r(get_class_methods($body));
+  echo "</pre>";
+  echo "<pre>";
+  print_r(get_class_methods($response));
+  echo "</pre>";
+
+ApiClient podría hacerse aysnc .... como Guzzle pero a esta altura del partido.... quizás... no tenga sentido:
+
+https://stackoverflow.com/a/35675265/980631
+https://stackoverflow.com/questions/46015529/guzzle-async-requests-not-really-async
+
+Equivalencias con ApiClient
+
+- Uso de certificado SSL en disco
+
+  new GuzzleClient(['verify' => '/path/to/self-signed/cert.pem']);
+
+- Retries
+
+  https://github.com/guzzle/guzzle/issues/1806
 
 [ Front ]
 
@@ -1217,6 +1260,14 @@ Entonces,...
 Más
 https://stackoverflow.com/a/33103687
 https://github.com/signifly/laravel-builder-macros
+
+------x---------
+
+Usar AWS S3 storage
+
+Si la librería es de terceros..... usarla como "package"
+
+https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/getting-started_basic-usage.html
 
 ------x---------
 
