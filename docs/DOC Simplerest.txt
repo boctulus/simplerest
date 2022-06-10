@@ -1001,8 +1001,25 @@ Ej:
 		]
 	]);
 
-
 # Obtención de registros
+
+Antes que nada es posible usar la clase DB solo (si as'i se desea) para hacer la conexion la DB y hacer el resto de forma artesanal.
+
+Ej:
+
+	$q = "select .....";
+
+	$conn = DB::getConnection();
+	
+	$st = $conn->prepare($q);		
+	
+	$st->execute(); 
+	$rows = $st->fetchAll();
+	
+	dd($rows, 'ROWS');
+
+
+# Usando el m'etodo table()
 
 Todos los registros (menos los marcados como borrados)
 
