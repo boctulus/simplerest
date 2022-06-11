@@ -56,18 +56,18 @@ class Files
 		fclose($f);
 	}
 
-	static function getCSV(string $path, $assoc = true){	
+	static function getCSV(string $path, $separator = ",", $assoc = true){	
 		$rows = [];
 
 		ini_set('auto_detect_line_endings', 'true');
 
 		$handle = fopen($path,'r');
 
-		$cabecera = fgetcsv($handle);
+		$cabecera = fgetcsv($handle, null, $separator);
 		$ch       = count($cabecera);
 		
 		$i = 0;
-		while ( ($data = fgetcsv($handle) ) !== FALSE ) {
+		while ( ($data = fgetcsv($handle, null, $separator) ) !== FALSE ) {
 			if ($assoc){
 				for ($j=0;$j<$ch; $j++){					
 					$head_key = $cabecera[$j];
