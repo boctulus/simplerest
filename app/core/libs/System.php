@@ -8,6 +8,28 @@ use simplerest\core\libs\Factory;
 
 class System
 {
+    static function getOS(){
+        return defined('PHP_OS_FAMILY') ? PHP_OS_FAMILY : PHP_OS;
+    }
+
+    static function isLinux(){
+        $os = static::getOS();
+
+        return ($os == 'Linux');
+    }
+
+    static function isWindows(){
+        $os = static::getOS();
+
+        return ($os == 'Windows' || $os == 'WIN32' || $os == 'WINNT');
+    }
+
+    static function isUnix(){
+        $os = static::getOS();
+
+        return (in_array($os, ['Linux', 'BSD', 'Darwin', ' NetBSD', 'FreeBSD', 'Solaris']));
+    }
+
     /*
         https://factory.dev/pimcore-knowledge-base/how-to/execute-php-pimcore
     */
