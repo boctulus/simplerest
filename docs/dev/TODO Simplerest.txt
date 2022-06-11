@@ -3,11 +3,17 @@
 TOP PRIORITY
 ============
 
+- Soporte full de JSON. Es pre-requisito para Transients.
+
 - Transients (DB, archivos son locking, REDIS, Memcached)
 
-- Terminal Router
+- CSV a migraciones. Simplificar'a la creacion de tablas.
+
+- Terminal Router. Va a permitir anular el FrontController y simplificar.
 
 - Modularizacion
+
+- Terminar generador de front.
 
 ------------x--------------
 
@@ -1298,7 +1304,7 @@ Para eso están! nada de --force o --unignore
 
 - GRPC
 
-Grpc ya tiene soporte para PHP  !!!
+GRPc ya tiene soporte para PHP  !!!
 
 
 - Es posible agregar soporte para GraphQL con una librería de PHP
