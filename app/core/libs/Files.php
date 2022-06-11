@@ -11,7 +11,7 @@ class Files
 
 
 	/*
-		Resutlado:
+		Resultado:
 
 		<?php 
 
