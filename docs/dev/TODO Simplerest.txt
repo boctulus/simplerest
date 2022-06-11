@@ -1,5 +1,16 @@
 # TODO
 
+TOP PRIORITY
+============
+
+- Transients (DB, archivos son locking, REDIS, Memcached)
+
+- Terminal Router
+
+- Modularizacion
+
+------------x--------------
+
 - CSV a migraciones
 
   com make migration --csv={file.csv}
