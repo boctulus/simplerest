@@ -7744,6 +7744,22 @@ Ej:
 	d($client->getResponse(true), 'RES'); 
 
 
+# Seguir redirecciones
+
+Por defecto no se siguen redirecciones pero se pueden habilitar llamando al metodo redirect()
+
+Ej:
+
+	$url = 'https://www.awin1.com/cread.php?awinmid=20598&awinaffid=856219&platform=dl&ued=https%3A%2F%2Fwww.leroymerlin.es%2Ffp%2F81926166%2Fespejo-rectangular-pierre-roble-roble-152-x-52-cm';
+
+	$api = new ApiClient($url);
+
+	$res = $api
+	->disableSSL()
+	->redirect()
+	->get();
+
+
 # Uso de cache
 
 Para el uso de cache se utiliza el método setCache() el cual no ha sido terminado. De momento si se activa la cache, es permanente.
