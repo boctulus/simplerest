@@ -9786,5 +9786,19 @@ class DumbController extends Controller
         // dd(count($out), 'COUNT');      
     }
 
+    function test_follow_redirect(){
+        $url = 'https://www.awin1.com/cread.php?awinmid=20598&awinaffid=856219&platform=dl&ued=https%3A%2F%2Fwww.leroymerlin.es%2Ffp%2F81926166%2Fespejo-rectangular-pierre-roble-roble-152-x-52-cm';
+
+        $api = new ApiClient($url);
+
+        $res = $api
+        ->disableSSL()
+        ->redirect()
+        ->cache()
+        ->get();
+
+        dd($res);
+    }
+
 
 }   // end class
