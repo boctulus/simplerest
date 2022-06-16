@@ -43,10 +43,29 @@ class ApiClient
         $this->headers = $headers;
         return $this;
     }
-
     function setOptions(Array $options){
         $this->options = $options;
         return $this;
+    }
+
+    function addOptions(Array $options){
+        $this->options = array_merge($this->options, $options);
+        return $this;
+    }
+
+    // redirect
+    function followLocations($max_redirs = 10){
+        $options = [];
+
+        $this->options[CURLOPT_FOLLOWLOCATION] = ($max_redirs > 0);
+        $this->options[CURLOPT_MAXREDIRS] = $max_redirs;
+
+        return $this;
+    }
+
+    // alas
+    function redirect($max_redirs = 10){
+        return $this->followLocations($max_redirs);
     }
 
     function setBody($body, $encoded = true){
@@ -68,9 +87,13 @@ class ApiClient
     /*
         @param $expiration_time int seconds 
     */
-    function setCache($expiration_time = 60){
+    function setCache(int $expiration_time = 60){
         $this->expiration = $expiration_time;
         return $this;
+    }
+
+    function cache(int $expiration_time = 60){
+        return $this->setCache($expiration_time);
     }
 
     function getStatus(){
@@ -117,7 +140,7 @@ class ApiClient
         Set SSL certification
     */
     function setSSLCrt($crt_path){
-        $this->setOptions([
+        $this->addOptions([
             CURLOPT_CAINFO => $crt_path,
             CURLOPT_CAPATH => $crt_path,
         ]);
