@@ -5295,5 +5295,28 @@ Claramente lo siguiente debe dejarse de hacer:
 
 Para saber que esquemas hay disponibles crear un "libro de schemas" que se debe actualizar con cada "make schema".
 
-
 - Resolver incocistencia con /rememberme ya que en algún caso almacena el nombre del rol y en otros el id del rol en el payload del JWT lo que hace que se rompa el ACL 
+
+- Sobre campos tipo DATETIME debe permitirse buscar por yy-mm-dd, yy-mm y yy (no solamente la fecha incluyendo la hora)
+
+Ej:
+
+http://simplerest.lan/api/v1/products?tenantid=az&created_at[gt]=2019-03-20
+
+{
+    "status": 400,
+    "error": {
+        "type": null,
+        "code": null,
+        "message": "Validation Error",
+        "detail": {
+            "created_at": [
+                {
+                    "data": "2019-03-20",
+                    "error": "type",
+                    "error_detail": "It's not a valid datetime"
+                }
+            ]
+        }
+    }
+}

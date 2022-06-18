@@ -26,19 +26,17 @@ class ProductsSchema implements ISchema
 				'updated_by' => 'INT',
 				'deleted_at' => 'STR',
 				'deleted_by' => 'INT',
-				'is_active' => 'INT',
+				'active' => 'INT',
 				'is_locked' => 'INT',
 				'workspace' => 'STR',
-				'belongs_to' => 'INT',
-				'category' => 'INT',
-				'digital_id' => 'INT'
+				'belongs_to' => 'INT'
 			],
 
 			'primary'		=> ['id'],
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'is_active', 'is_locked', 'workspace', 'belongs_to', 'category', 'digital_id'],
+			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to'],
 
 			'uniques'		=> [],
 
@@ -54,249 +52,101 @@ class ProductsSchema implements ISchema
 				'updated_by' => ['type' => 'int'],
 				'deleted_at' => ['type' => 'datetime'],
 				'deleted_by' => ['type' => 'int'],
-				'is_active' => ['type' => 'bool'],
+				'active' => ['type' => 'bool'],
 				'is_locked' => ['type' => 'bool'],
 				'workspace' => ['type' => 'str', 'max' => 40],
-				'belongs_to' => ['type' => 'int'],
-				'category' => ['type' => 'int'],
-				'digital_id' => ['type' => 'int']
+				'belongs_to' => ['type' => 'int']
 			],
 
-			'fks' 			=> ['deleted_by', 'digital_id', 'belongs_to', 'category'],
+			'fks' 			=> ['belongs_to'],
 
 			'relationships' => [
 				'users' => [
-					['users|__deleted_by.id','products.deleted_by'],
-					['users|__belongs_to.id','products.belongs_to']
-				],
-				'digital_products' => [
-					['digital_products.id','products.digital_id']
-				],
-				'product_categories' => [
-					['product_categories.id_catego','products.category']
+					['users.id','products.belongs_to']
 				],
 				'product_comments' => [
 					['product_comments.product_id','products.id']
 				],
-				'product_tags' => [
-					['product_tags.product_id','products.id']
-				],
-				'product_valoraciones' => [
-					['product_valoraciones.product_id','products.id']
-				],
-				'factura_detalle' => [
-					['factura_detalle.product_id','products.id']
+				'products_product_categories' => [
+					['products_product_categories.product_id','products.id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__deleted_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'deleted_by',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				  'digital_products' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'digital_products',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'digital_id',
-				      ),
-				    ),
-				  ),
-				  'product_categories' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'product_categories',
-				        1 => 'id_catego',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'category',
-				      ),
-				    ),
-				  ),
-				  'product_comments' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'product_comments',
-				        1 => 'product_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				  'product_tags' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'product_tags',
-				        1 => 'product_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				  'product_valoraciones' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'product_valoraciones',
-				        1 => 'product_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				  'factura_detalle' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'factura_detalle',
-				        1 => 'product_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'products',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+  'product_comments' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'product_comments',
+        1 => 'product_id',
+      ),
+      1 => 
+      array (
+        0 => 'products',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'products_product_categories' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'products_product_categories',
+        1 => 'product_id',
+      ),
+      1 => 
+      array (
+        0 => 'products',
+        1 => 'id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				'users' => [
-					['users|__deleted_by.id','products.deleted_by'],
-					['users|__belongs_to.id','products.belongs_to']
-				],
-				'digital_products' => [
-					['digital_products.id','products.digital_id']
-				],
-				'product_categories' => [
-					['product_categories.id_catego','products.category']
+					['users.id','products.belongs_to']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__deleted_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'deleted_by',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				  'digital_products' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'digital_products',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'digital_id',
-				      ),
-				    ),
-				  ),
-				  'product_categories' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'product_categories',
-				        1 => 'id_catego',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'products',
-				        1 => 'category',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'products',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }
