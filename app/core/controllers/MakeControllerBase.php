@@ -2027,14 +2027,20 @@ class MakeControllerBase extends Controller
     /*
         Podría haber usado generic()
 
-        Debería considerar la creación en una carpeta, creándo la ruta de no existir
-        También debería admitie rutas absolutas y no solo relativas a VIEW_PATH
+        Debería admitir rutas absolutas y no solo relativas a VIEW_PATH
     */
     function view($name, ...$opt) {
         $this->setup($name);
 
         $filename  = $this->snake_case . '.php';
         $dest_path = VIEWS_PATH . $filename;
+
+        $filename  = str_replace('\\', '/', $filename);
+
+        if (Strings::contains('/', $filename)){
+            $dir = Strings::beforeLast($filename, '/');            
+            Files::mkDirOrFail(VIEWS_PATH . $dir);
+        }
 
         $protected = $this->hasFileProtection($filename, $dest_path, $opt);
         $remove    = $this->forDeletion($filename, $dest_path, $opt);
