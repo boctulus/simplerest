@@ -6,17 +6,26 @@ use simplerest\core\Request;
 
 class Url 
 {   
-    // https://stackoverflow.com/a/7555543/980631
+    /*
+        Obtiene la url final luego de redirecciones
+
+        (no siempre funciona)
+
+        https://stackoverflow.com/a/7555543/980631
+    */
     static function getFinalUrl($url) {
         stream_context_set_default(array(
             'http' => array(
                 'method' => 'HEAD'
             )
         ));
+
         $headers = get_headers($url, 1);
+        
         if ($headers !== false && isset($headers['Location'])) {
             return $headers['Location'];
         }
+        
         return false;
     }
 
