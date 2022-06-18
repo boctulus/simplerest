@@ -40,7 +40,7 @@ class LoginController extends Controller
 		/*
 			Cargo vista y paso variables
 		*/
-		$this->view('login.php', [ 
+		$this->__view('login.php', [ 
 			'title'      =>'Ingreso', 
 			'hidenav'    => true,
 			'__email'    => $this->__email,
@@ -50,7 +50,7 @@ class LoginController extends Controller
 	}
 	
 	function register(){
-		$this->view('register.php', [
+		$this->__view('register.php', [
 			'title'      =>'Registro', 
 			'hidenav'    => true,
 			'__email'    => $this->__email,
@@ -68,7 +68,7 @@ class LoginController extends Controller
 		$res = $google_ctrl->login_or_register();
 
 		if (isset($res['data'])){
-			$this->view('generic.php', [
+			$this->__view('generic.php', [
 				'title'=>'Google login', 
 				'hidenav'=> true,
 				'access_token' => $res['data']['access_token'],
@@ -76,7 +76,7 @@ class LoginController extends Controller
 				'refresh_token' => $res['data']['refresh_token']
 			]);
 		}else {
-			$this->view('generic.php', [
+			$this->__view('generic.php', [
 				'title'=>'Google login', 
 				'hidenav'=> false,
 				'error' => $res['error']
@@ -95,7 +95,7 @@ class LoginController extends Controller
 		session_destroy();
 
 		if (isset($res['data'])){
-			$this->view('generic.php', [
+			$this->__view('generic.php', [
 				'title'=>'Facebook login', 
 				'hidenav'=> true,
 				'access_token' => $res['data']['access_token'],
@@ -103,7 +103,7 @@ class LoginController extends Controller
 				'refresh_token' => $res['data']['refresh_token']
 			]);
 		}else {
-			$this->view('generic.php', [
+			$this->__view('generic.php', [
 				'title'=>'Facebook login', 
 				'hidenav'=> false,
 				'error' => $res['error']
@@ -151,7 +151,7 @@ class LoginController extends Controller
 	*/
 
 	function rememberme(){
-		$this->view('rememberme.php', [
+		$this->__view('rememberme.php', [
 			'title'=>'Recuérdame', 
 			'hidenav'=> true,
 			'__email'    => $this->__email,
@@ -162,7 +162,7 @@ class LoginController extends Controller
 
 	
 	function rememberme_mail_sent(){
-		$this->view('rememberme_mail_sent.php', [
+		$this->__view('rememberme_mail_sent.php', [
 			'title'=>'Recuérdame', 
 			'hidenav'=> true,
 			'__email'    => $this->__email,
@@ -181,7 +181,7 @@ class LoginController extends Controller
 
 		/*
 		if ($cond)			
-			$this->view('generic.php', [
+			$this->__view('generic.php', [
 				'title'=>'Confirmación de correo', 
 				'hidenav'=> true,
 				'access_token' => $access,
@@ -190,7 +190,7 @@ class LoginController extends Controller
 			]);
 	
 		} else {
-			$this->view('generic.php', [
+			$this->__view('generic.php', [
 				'title'=>'Confirmación de correo fallida', 
 				'hidenav'=> false,
 				'error' => $error
@@ -246,7 +246,7 @@ class LoginController extends Controller
 
 			$email = DB::table($this->users_table)->where([$this->__id => $payload->uid])->value($this->__email);
 
-			$this->view('update_pass.php', [
+			$this->__view('update_pass.php', [
 				'title'		 =>'Recuperación de contraseña', 
 				'hidenav'	 => true,
 				'__email'    => $this->__email,
@@ -255,7 +255,7 @@ class LoginController extends Controller
 			]);
 	
 		}else {
-			$this->view('generic.php', [
+			$this->__view('generic.php', [
 				'title'=>'Recuperación de contraseña', 
 				'hidenav'=> false,
 				'error' => $error,
