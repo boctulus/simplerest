@@ -28,7 +28,8 @@
 
 
   $(document).ready(function() {
-      $('.js-example-basic-multiple').select2();
+      $('.select2-countries').select2();
+      $('.select2-states').select2();
 
       countries_elem = document.getElementById('countries');
 
@@ -56,23 +57,18 @@
   }
 
 
-
-
 </script>
 
 <h3>Test Select2</h3>
 
+<p></p>
 
-<select class="js-example-basic-multiple" name="countries[]" id="countries" style="width:300px">
-  
+<select class="select2-countries" name="countries[]" id="countries" style="width:300px">
 </select>
 
-<!-- <select class="js-example-basic-multiple" name="states[]" style="width:300px">
-  <option value="AL">Alabama</option>
-    ...
-  <option value="TX">Texas</option>
-  <option value="TN">Teneesee</option>
-  
-  <option value="WY">Wyoming</option>
-</select> -->
+<p></p>
+
+<select class="select2-states" name="states[]" style="width:300px">
+  <option value="">Provincia / estado</option>
+</select>
 
