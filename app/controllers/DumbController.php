@@ -9800,5 +9800,51 @@ class DumbController extends Controller
         dd($res);
     }
 
+    function get_bruno_csv(){
+        $proveedores = [
+            'MAISONS DU MONDE',
+            'LEROY MERLIN',
+            'AMAZON'
+        ];
+
+        $out = [];
+
+        $path = 'D:\Desktop\SOLUCION BINARIA\PROYECTOS CLIENTES\@PROYECTOS CLIENTES\AFILIADOS - BRUNO (ES)\bruno.csv';
+
+        /*
+            [
+                [ID] => 24275
+                [Tipo] => external
+                [SKU] => 1245
+                [Nombre] => Espejo colgante de puerta beige 125 x 35 cm
+                [Precio normal] => 31;95
+                [URL de afiliado] => https://amzn.to/2LZXdJ9
+                [PROVEEDOR] => AMAZON
+        */
+        $rows = Files::getCSV($path)['rows'];
+        
+        foreach ($rows as $ix => $row){
+            if ($row['PROVEEDOR'] != $proveedores[1]){
+                continue;
+            }
+
+            $url = $row['URL de afiliado'];
+            //$url = Url::getFinalUrl($url);
+        
+            // dd($url);
+            // exit;
+
+            $q   = Url::getQueryParams($url);
+
+            if ($q['awinmid'] != 20598 || $q['awinaffid'] != 856219 || $q['platform'] != 'dl'){
+                dd($row);
+                exit;
+            }
+
+        }
+
+        dd('OK');
+    }
+
 
 }   // end class

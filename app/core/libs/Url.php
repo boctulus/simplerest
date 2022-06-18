@@ -5,7 +5,21 @@ namespace simplerest\core\libs;
 use simplerest\core\Request;
 
 class Url 
-{
+{   
+    // https://stackoverflow.com/a/7555543/980631
+    static function getFinalUrl($url) {
+        stream_context_set_default(array(
+            'http' => array(
+                'method' => 'HEAD'
+            )
+        ));
+        $headers = get_headers($url, 1);
+        if ($headers !== false && isset($headers['Location'])) {
+            return $headers['Location'];
+        }
+        return false;
+    }
+
     static function lastSlug(string $url){
 		return $slug =  Strings::last(rtrim($url, '/'), '/');
 	}
@@ -169,7 +183,11 @@ class Url
     /*
         Usar antes de parseStrQuery()
     */
-    static function hasQueryParam(string $url, string $param){
+    static function hasQueryParam(string $url, ?string $param = null){
+        if ($param === null){
+            return !empty(Strings::after($url, '?'));
+        }
+
         $p = parse_url($url);
 
         if (!isset($p['query'])){
@@ -181,10 +199,43 @@ class Url
         return isset($query_arr[$param]);
     }
 
+    static function getQueryString(string $url){
+        return Strings::after($url, '?');
+    }
+
+    /*
+        Uso:
+
+        Si se envia algo como 'http://google.com?x=3&y=4'
+
+        retorna algo como:
+
+        Array
+        (
+            [x] => 3
+            [y] => 4
+        )
+    */
+    static function getQueryParams(string $url){
+        $str = static::getQueryString($url);
+
+        if (empty($str)){
+            return [];
+        }
+
+        parse_str($str, $output);
+
+        return $output;
+    }
+
     /*
         funcion auxiliar para parseStrQuery()
     */
-    static function getQueryParam(string $url, string $param){
+    static function getQueryParam(string $url, ?string $param = null){
+        if ($param === null){
+            return static::getQueryParams($url);
+        }
+
         $query = parse_url($url, PHP_URL_QUERY);
 
         $x = null;

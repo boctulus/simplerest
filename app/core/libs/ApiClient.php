@@ -8,6 +8,11 @@ use simplerest\core\libs\Url;
     Wrapper para Url::consume_api()
 
     @author Pablo Bozzolo
+
+    Ver interesante uso de cURL aqui:
+    
+    https://stackoverflow.com/a/42375193/980631
+    https://stackoverflow.com/a/20605980/980631
 */
 class ApiClient
 {
