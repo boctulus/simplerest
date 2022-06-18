@@ -10,11 +10,6 @@ use simplerest\core\libs\DB;
 
 class SeleniumTestController extends MyController
 {
-    function __construct()
-    {
-        parent::__construct();        
-    }
-
     function index()
     {
         return '
@@ -35,6 +30,10 @@ class SeleniumTestController extends MyController
             </div>
         </div>
         ';
+    }
+
+    function action_chains(){
+        view('selenium\action_chains.php');
     }
 }
 
