@@ -6,6 +6,10 @@
 
     <title><?= $title ?? ''; ?></title>
 
+    <script>
+        const base_url  = '<?= base_url(); ?>';
+    </script>
+
     <base href="<?= base_url(); ?>">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
