@@ -3,6 +3,14 @@
 use simplerest\views\MyView; 
 use simplerest\core\libs\Strings;
 
+function meta($name, $content){
+    return "<meta name=\"$name\" content=\"$content\">";
+}
+
+function link_tag($css_file){
+    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">";
+}
+
 function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0){
     return (new MyView($view_path, $vars_to_be_passed, $layout, $expiration_time)); 
 }
@@ -30,6 +38,9 @@ function section($view, Array $variables = []){
 
     include VIEWS_PATH . $view;
 }
+
+
+// Depredicar de acá hacia abajo -->
 
 function include_css(string $path){
     if (!Strings::endsWith('.css', $path)){
