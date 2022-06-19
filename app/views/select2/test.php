@@ -1,11 +1,15 @@
 <script>
+  const arr = <?= $json ?>
 
-  function setDropdownOptionsSelect2(select_elem, options, default_option){
+  function setSelect2Options(select_elem, options, default_option){
     // clear
-    jQuery(select_elem).val(null).trigger('change');
+    jQuery(select_elem).val(null).trigger('change')
     jQuery(select_elem).val(null).empty().select2('destroy')
     jQuery(select_elem).val('').trigger('change')
     jQuery(select_elem).select2({data: {id:null, text: null}})
+
+    // agrego delante la opcion por defecto
+    options.unshift(default_option)
 
     jQuery(select_elem).select2({data: options});
   }
@@ -48,7 +52,7 @@
       states_elem    = document.getElementById('states');
 
       fill_countries()
-      setDropdownOptionsSelect2(countries_elem, country_items, {'text': 'Pais', 'value': ''});
+      setSelect2Options(countries_elem, country_items, {'id': 'NULL', 'text': 'Pais'});
 
       jQuery(countries_elem).change(function(){
         let country_name_selected = countries_elem.value;
@@ -58,13 +62,11 @@
         if (state_name_selected != null){
           state_items = [];
           fill_states(state_name_selected)
-          setDropdownOptionsSelect2(states_elem, state_items, {'text': 'Provincia o estado', 'value': ''});
+          setSelect2Options(states_elem, state_items, {'id': 'NULL', 'text': 'Provincia o estado'});
         }
 
       });
   });
-
-  const arr = <?= $json ?>
 
   const array_column = (array, column) => {
       return array.map(item => item[column]);
@@ -94,6 +96,7 @@
 <p></p>
 
 <select class="select2-countries" name="countries[]" id="countries" style="width:300px">
+  <option value="">País</option>
 </select>
 
 <p></p>
