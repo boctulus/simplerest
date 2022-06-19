@@ -7006,11 +7006,31 @@ Ej:
 		// ...
 	}
 
-
-
 # Templates
 
 Por defecto se carga el template "app_layout.php" pero se pueden usar cuantos templates se desee y éste es especificado como tercer parámetro del método view()
+
+Al template se le pueden enviar los archivos css y js a incluir así como meta-tags que se quiere se agregen dinámicamente. Todo depende de como se haya construido el template pero ¨tpl_basic.php¨ es un buen ejemplo.
+
+Ej:
+
+	view('select2/test.php', [
+		'json' => $json,
+		'head' => [
+				'css' => [
+					'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css',
+					'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css'
+				]
+			],
+		'footer' => [
+			'js' => [
+				'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js'
+			]
+		]
+	], 'tpl_basic.php');      
+
+
+Una forma alternativa sería creando los métodos addCSS($file) y addJS($file, $location = 'footer') donde para el segundo se pueda especificar donde se quiere agregar los archivos JS.
 
 
 # Vistas parciales

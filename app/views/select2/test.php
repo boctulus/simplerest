@@ -91,7 +91,7 @@
 
 </script>
 
-<h3>Test Select2</h3>
+<h3>Dropdowns dependientes</h3>
 
 <p></p>
 

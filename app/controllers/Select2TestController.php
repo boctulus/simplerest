@@ -21,9 +21,20 @@ class Select2TestController extends MyController
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
 
         // Js ofuscado con https://obfuscator.io/
-        view('select2/test_obf.php', [
-            'json' => $json
-        ]);              
+        view('select2/test.php', [
+            'json' => $json,
+            'head' => [
+                'css' => [
+                    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css',
+                    'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css'
+                ]
+                ],
+            'footer' => [
+                'js' => [
+                    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js'
+                ]
+            ]
+        ], 'tpl_basic.php');              
     }
     
 }
