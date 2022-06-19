@@ -3,10 +3,6 @@
 namespace simplerest\controllers;
 
 use simplerest\controllers\MyController;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
 
 class Select2TestController extends MyController
 {
@@ -24,7 +20,8 @@ class Select2TestController extends MyController
     {   
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
 
-        view('select2/test.php', [
+        // Js ofuscado con https://obfuscator.io/
+        view('select2/test_obf.php', [
             'json' => $json
         ]);              
     }
