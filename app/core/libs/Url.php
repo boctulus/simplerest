@@ -57,7 +57,7 @@ class Url
         $p['path'] = rtrim($p['path'], '/');
         $query     = isset($p['query']) ? "?{$p['query']}" : '';
 
-        return "{$p['scheme']}://{$p['host']}{$p['path']}?$query";
+        return "{$p['scheme']}://{$p['host']}{$p['path']}$query";
     }
 
     // Body decode
