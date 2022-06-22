@@ -186,7 +186,8 @@ class ApiClient
                 $this->status   = $res['http_code'];
                 $this->errors   = $res['error'];
                 $this->response = $res['data'];
-                return;
+
+                return $this;
             }
         }
 
