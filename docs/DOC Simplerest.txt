@@ -7032,6 +7032,10 @@ Ej:
 
 Una forma alternativa sería creando los métodos addCSS($file) y addJS($file, $location = 'footer') donde para el segundo se pueda especificar donde se quiere agregar los archivos JS.
 
+También add_css($file) y add_jS($file, $location = 'footer') podrian ser helpers  !!!!!!!!
+
+Luego al llamar a view() serian enviados dentro del array al template.
+
 
 # Vistas parciales
 
