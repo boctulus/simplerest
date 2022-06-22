@@ -8903,12 +8903,9 @@ class DumbController extends Controller
 
     function csv_debug()
     {
-        $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
+        $path = 'D:\Desktop\SOLUCION BINARIA\PROYECTOS CLIENTES\@PROYECTOS CLIENTES\RODRIGO CHILE (EN CURSO)\EASYFARMA\CSV\prod.csv';
 
         $rows = Files::getCSV($path)['rows'];
-
-        d($rows);
-        exit; ///////
 
         usort($rows, function ($a, $b) {
             return $a['Código Isp'] <=> $b['Código Isp'];
@@ -8978,6 +8975,21 @@ class DumbController extends Controller
             d($row);
             #}
         }
+    }
+
+    function csv_debug2()
+    {
+        $path = 'D:\Desktop\SOLUCION BINARIA\PROYECTOS CLIENTES\@PROYECTOS CLIENTES\RODRIGO CHILE (EN CURSO)\EASYFARMA\CSV\completo.csv';
+
+        $rows = Files::getCSV($path)['rows'];
+
+        foreach ($rows as $row) {
+            if ($row['SKU'] == 7804616661265){
+                dd($row);
+                break;
+            }
+        }
+
     }
 
     ////////////
