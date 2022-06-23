@@ -40,6 +40,14 @@ function section($view, Array $variables = []){
 }
 
 
+/*
+    Para cargar JS dinamicamente desde cualquier vista cheequear y probar:
+
+    https://stackoverflow.com/questions/13121948/dynamically-add-script-tag-with-src-that-may-include-document-write
+    https://cleverbeagle.com/blog/articles/tutorial-how-to-load-third-party-scripts-dynamically-in-javascript
+    https://stackoverflow.com/a/61996709/980631
+*/
+
 // Depredicar de acá hacia abajo -->
 
 function include_css(string $path){
