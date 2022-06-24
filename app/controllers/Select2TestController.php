@@ -71,17 +71,16 @@ class Select2TestController extends MyController
             'head' => [
                 'css' => [
                     'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css',
-                    'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css'
+                    'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css',
+                    '//cdn-images.mailchimp.com/embedcode/classic-10_7_dtp.css'
                 ],
                 'js' => [
-                    'https://twemoji.maxcdn.com/2/twemoji.min.js',
-                    asset('js/dojo/dojo.js')
+                    '//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'
                 ]
             ],
             'footer' => [
                 'js' => [
-                    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js',
-                    'https://diagnosticojournal.us8.list-manage.com/jlruc/pJ/v/V/gOBW3Jhn-J0/EGV3cLJJOX/BxRDUWU/Mlg/dVh8fUg0'
+                    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js'
                 ]
             ]
         ], 'tpl_basic.php');              

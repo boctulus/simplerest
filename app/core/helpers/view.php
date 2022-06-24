@@ -12,6 +12,10 @@ function link_tag($css_file){
 }
 
 function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0){
+    if (!Strings::endsWith('.php', $view_path)){
+        $view_path .= '.php';
+    }
+
     return (new MyView($view_path, $vars_to_be_passed, $layout, $expiration_time)); 
 }
 
