@@ -9853,5 +9853,9 @@ class DumbController extends Controller
         dd('OK');
     }
 
+    function test_csv_uploader(){
+        view('csv_uploader');
+    }
+
 
 }   // end class
