@@ -48,6 +48,18 @@ class ApiClient
         $this->headers = $headers;
         return $this;
     }
+
+    function setOption($key, $val){
+        $this->options[$key] = $val;
+        return $this;
+    }
+
+    // alias
+    function option($key, $val){
+        $this->options[$key] = $val;
+        return $this;
+    }
+
     function setOptions(Array $options){
         $this->options = $options;
         return $this;
@@ -294,6 +306,11 @@ class ApiClient
         $filename = str_replace(['%'], ['p'], urlencode(Url::normalize($this->url))) . '.php';
         $filename = str_replace('/', '', $filename);
 
+        // Evito problemas con nombres largos
+        if (strlen($filename) > 250){
+            return null;
+        }
+
         $path[$this->url] = sys_get_temp_dir() . '/' . $filename;
         return $path[$this->url];
     }
@@ -305,22 +322,116 @@ class ApiClient
 
         $path = $this->getCachePath();
 
+        if ($path === null){
+            return;
+        }
+
         file_put_contents($path, '<?php $res = ' . var_export($response, true) . ';');
     }
 
     protected function getCache(){
         $path = $this->getCachePath();
 
-        //dd($path, 'PATH CACHE');
-        //exit;
+        if ($path === null){
+            return;
+        }
 
         if (file_exists($path)){
             include $path;
             return $res;
         }
-
-        //return null;
     }
+
+    /*
+
+        Tomado de CodeIgniter ---------------------------------------->
+
+    */
+
+    public function simple_ftp_get($url, $file_path, $username = '', $password = '')
+	{
+		// If there is no ftp:// or any protocol entered, add ftp://
+		if ( ! preg_match('!^(ftp|sftp)://! i', $url))
+		{
+			$url = 'ftp://' . $url;
+		}
+
+		// Use an FTP login
+		if ($username != '')
+		{
+			$auth_string = $username;
+
+			if ($password != '')
+			{
+				$auth_string .= ':' . $password;
+			}
+
+			// Add the user auth string after the protocol
+			$url = str_replace('://', '://' . $auth_string . '@', $url);
+		}
+
+		// Add the filepath
+		$url .= $file_path;
+
+		//$this->option(CURLOPT_BINARYTRANSFER, TRUE);
+		$this->option(CURLOPT_VERBOSE, TRUE);
+
+		return $this->get();
+	}
+
+	/* =================================================================================
+	 * ADVANCED METHODS
+	 * Use these methods to build up more complex queries
+	 * ================================================================================= */
+
+	public function setCookies($params = array())
+	{
+		if (is_array($params))
+		{
+			$params = http_build_query($params, '', '&');
+		}
+
+		$this->option(CURLOPT_COOKIE, $params);
+		return $this;
+	}
+
+	public function httpHeader($header, $content = NULL)
+	{
+		$this->headers[] = $content ? $header . ': ' . $content : $header;
+		return $this;
+	}
+
+	public function httpMethod($method)
+	{
+		$this->options[CURLOPT_CUSTOMREQUEST] = strtoupper($method);
+		return $this;
+	}
+
+	public function httpLogin($username = '', $password = '', $type = 'any')
+	{
+		$this->option(CURLOPT_HTTPAUTH, constant('CURLAUTH_' . strtoupper($type)));
+		$this->option(CURLOPT_USERPWD, $username . ':' . $password);
+		return $this;
+	}
+
+	public function proxy($url = '', $port = 80)
+	{
+		$this->option(CURLOPT_HTTPPROXYTUNNEL, TRUE);
+		$this->option(CURLOPT_PROXY, $url . ':' . $port);
+		return $this;
+	}
+
+	public function proxyLogin($username = '', $password = '')
+	{
+		$this->option(CURLOPT_PROXYUSERPWD, $username . ':' . $password);
+		return $this;
+	}
+
+	public function isEnabled()
+	{
+		return function_exists('curl_init');
+	}
+
 
 }
 

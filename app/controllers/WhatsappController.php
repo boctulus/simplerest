@@ -17,7 +17,7 @@ class WhatsappController extends MyController
         return $this->link();            
     }
 
-    function link($message = null, $phone = null){
+    function link($phone = null, $message = null){
         if ($message === null){
             $message = "Hola";
         }
