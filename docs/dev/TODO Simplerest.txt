@@ -17,6 +17,31 @@ TOP PRIORITY
 
 ------------x--------------
 
+- Ensayar componente de Symfony para correr en background:
+
+  use Symfony\Component\Process\Process;
+
+  $process = new Process($cmd);
+  $process->start(function ($type, $buffer) {
+      if ('err' === $type) {
+          // Do something with error $buffer
+      } else {
+          // Do something with normal $input
+      }
+  });
+
+  // Do something else
+
+  // Wait until the process completes
+  $process->wait();
+
+
+Mas
+https://symfony.com/doc/current/components/process.html  
+https://stackoverflow.com/a/14475122/980631
+https://stackoverflow.com/a/13804094/980631
+
+
 - CSV a migraciones
 
   com make migration --csv={file.csv}
