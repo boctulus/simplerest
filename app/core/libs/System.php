@@ -32,6 +32,9 @@ class System
 
     /*
         https://factory.dev/pimcore-knowledge-base/how-to/execute-php-pimcore
+
+        Ver tambi'en
+        https://gist.github.com/damienalexandre/1300820
     */
     static function runInBackground(string $cmd, string $output_path = null, $ignore_user_abort = true, int $execution_time = 0)
     {
