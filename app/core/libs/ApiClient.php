@@ -217,6 +217,9 @@ class ApiClient
             $this->errors   = $res['error'];
             $this->response = $res['data'];
 
+            d($res['content_type'], 'CONTENT TYPE');
+            d($res['effective_url'], 'EFFECTIVE URL');
+
             /*
                 Si hay errores && el status code es 0 
                 =>

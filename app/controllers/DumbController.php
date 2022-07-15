@@ -9880,16 +9880,21 @@ class DumbController extends Controller
         }
     }
 
+    /*
+        Descarga archivo
+    */
     function download_link(){
-        $url = 'https://docs.google.com/uc?export=download&id=1Ki34FJX-iCqTErvsU_EQFrs9JwHL62KJ';
+        //$url = 'https://docs.google.com/uc?export=download&id=1Ki34FJX-iCqTErvsU_EQFrs9JwHL62KJ';
 
+        $url = 'https://docs.google.com/uc?export=download&id=1Fdtxt56oCI1-rUwLmFXkzaXzQxdMhc8v';
     
         $client = new ApiClient($url);
 
         $client->addOptions([
             [
                 CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36',
-                CURLOPT_HEADER    => true
+                CURLOPT_HEADER    => true,
+                CURLOPT_VERBOSE   => true
             ]
             ]);
 
@@ -9902,49 +9907,6 @@ class DumbController extends Controller
 
         d($data, 'DATA');
 
-        // $ch = curl_init();
-
-        // $ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36';
-
-
-        // curl_setopt($ch, CURLOPT_URL, $url); // The URL to fetch. This can also be set when initializing a session with curl_init().
-
-
-        // curl_setopt($ch, CURLOPT_HEADER, true);
-
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); // TRUE to return the transfer as a string of the return value of curl_exec() instead of outputting it out directly.
-        // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // The number of seconds to wait while trying to connect.
-        // curl_setopt($ch, CURLOPT_USERAGENT, $ua); // The contents of the "User-Agent: " header to be used in a HTTP request.
-        // curl_setopt($ch, CURLOPT_FAILONERROR, TRUE); // To fail silently if the HTTP code returned is greater than or equal to 400.
-        // curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE); // To follow any "Location: " header that the server sends as part of the HTTP header.
-        // curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE); // To automatically set the Referer: field in requests where it follows a Location: redirect.
-        // curl_setopt($ch, CURLOPT_TIMEOUT, 300); // The maximum number of seconds to allow cURL functions to execute.
-        // curl_setopt($ch, CURLOPT_MAXREDIRS, 5); // The maximum number of redirects
-
-
-        // $response = curl_exec($ch);
-
-        // curl_close($ch);
-
-        // dd($response, 'RES');
-
-       
-        // $header_body_separator = "\r\n\r\n";
-        // $header_body_separator_position = strpos($response, $header_body_separator);
-        // $separator_found = true;
-        
-        // if($header_body_separator_position === false){
-        //     // no body is present?
-        //     $header_body_separator_position = strlen($response);
-        //     $separator_found = false;
-        // }
-        
-        // $headers = substr($response,0, $header_body_separator_position);
-        // $headers = trim($headers);
-        // $headers = explode("\r\n",$headers);
-        // $body = ($separator_found ? substr($response, $header_body_separator_position + strlen($header_body_separator)) : "");
-        
-        // d(["headers"=>$headers,"body"=>$body]);
     }
      
 
