@@ -6,6 +6,11 @@ use simplerest\core\Request;
 
 class Url
 {
+    static protected $headers;
+    static protected $filename;
+    static protected $effective_url;
+    static protected $content_type;
+
     /*
         Obtiene la url final luego de redirecciones
 
@@ -427,18 +432,23 @@ class Url
         $ret = [
             'data'          => $data,
             'http_code'     => $http_code,
-            'error'         => $err_msg,
-
-            /* 
-                Extras 
-            */
-            'headers'       => $__headers,
-            'filename'      => $__filename,
-            'content_type'  => $content_type,
-            'effective_url' => $effective_url,
+            'error'         => $err_msg
         ];
 
+        static::$headers  = $__headers;
+        static::$filename = $__filename;
+        static::$content_type  = $content_type;
+        static::$effective_url = $effective_url;
+
         return $ret;
+    }
+
+    static function getFilename(){
+        return static::$filename;
+    }
+
+    static function getHeaders(){
+        return  static::$headers;
     }
 
 }
