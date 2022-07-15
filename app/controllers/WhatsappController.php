@@ -36,7 +36,7 @@ class WhatsappController extends MyController
         return $this->link($phone, $message);
     }
 
-    // El fron controller requiere explicitamentar el action del controlador. No funciona. Podria fixearse
+    // El front controller requiere explicitamentar el action del controlador. No funciona. Podria fixearse
     function __call($name, $arguments)
     {
         if (!is_numeric($name)){

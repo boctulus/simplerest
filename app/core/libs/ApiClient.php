@@ -19,7 +19,7 @@ class ApiClient
     protected $url;
     protected $verb;
     protected $headers;
-    protected $options;
+    protected $options = [];
     protected $body;
     protected $encode_body;
     protected $auto_decode;

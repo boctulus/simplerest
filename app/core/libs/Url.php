@@ -287,6 +287,11 @@ class Url
 
     static function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
     {  
+        if (!extension_loaded('curl'))
+		{
+            throw new \Exception("Extension curl no cargada");
+        }
+
         if ($headers === null){
             $headers = [];
         } else {
