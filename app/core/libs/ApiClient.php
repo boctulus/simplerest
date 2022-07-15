@@ -217,8 +217,8 @@ class ApiClient
             $this->errors   = $res['error'];
             $this->response = $res['data'];
 
-            d($res['content_type'], 'CONTENT TYPE');
-            d($res['effective_url'], 'EFFECTIVE URL');
+            $this->filename     = Url::getFilename();
+            $this->res_headers  = Url::getHeaders();
 
             /*
                 Si hay errores && el status code es 0 
@@ -292,6 +292,9 @@ class ApiClient
         return $this;
     }
 
+    function getFilename(){
+        return $this->filename;
+    }
 
     /*
         CACHE

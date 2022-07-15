@@ -9573,6 +9573,7 @@ class DumbController extends Controller
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ])
+        ->disableSSL()
         ->post($ruta);        
 
         d($client->getStatus(), 'STATUS');
@@ -9597,6 +9598,7 @@ class DumbController extends Controller
         //->setCache()
         ->setRetries(3)
         ->setBasicAuth($user, $pass)
+        ->disableSSL()
         ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
 
         d($client->getStatus(), 'STATUS');
@@ -9884,6 +9886,8 @@ class DumbController extends Controller
         Descarga archivo
     */
     function download_link(){
+        $dest_path = STORAGE_PATH;
+
         //$url = 'https://docs.google.com/uc?export=download&id=1Ki34FJX-iCqTErvsU_EQFrs9JwHL62KJ';
 
         $url = 'https://docs.google.com/uc?export=download&id=1Fdtxt56oCI1-rUwLmFXkzaXzQxdMhc8v';
@@ -9903,10 +9907,14 @@ class DumbController extends Controller
         ->followLocations()
         ->get();
 
-        $data = $client->getResponse(false);
+        $res = $client->getResponse(false);
 
-        d($data, 'DATA');
+        if (!empty($res) && isset($res['data'])){
+            $data     = $res['data'];
+            $filename = $client->getFilename();
 
+            file_put_contents($dest_path . $filename, $data);
+        }
     }
      
 
