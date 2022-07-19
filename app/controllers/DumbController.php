@@ -9913,6 +9913,10 @@ class DumbController extends Controller
             $data     = $res['data'];
             $filename = $client->getFilename();
 
+            if (empty($filename)){
+                throw new \Exception("Nombre de archivo no encontrado");
+            }
+
             file_put_contents($dest_path . $filename, $data);
         }
     }
