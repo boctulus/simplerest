@@ -49,6 +49,17 @@ class ApiClient
         return $this;
     }
 
+    /*
+        Ejecuta un callback cuano $cond es verdadero
+    */
+    function when($cond, $fn, ...$args){
+        if ($cond){
+            $fn($this, ...$args);
+        }
+        
+        return $this;
+    }
+
     function setOption($key, $val){
         $this->options[$key] = $val;
         return $this;
@@ -354,7 +365,7 @@ class ApiClient
 
     */
 
-    public function simple_ftp_get($url, $file_path, $username = '', $password = '')
+    public function simpleFtpGet($url, $file_path, $username = '', $password = '')
 	{
 		// If there is no ftp:// or any protocol entered, add ftp://
 		if ( ! preg_match('!^(ftp|sftp)://! i', $url))

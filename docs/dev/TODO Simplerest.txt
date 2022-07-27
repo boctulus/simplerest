@@ -13,9 +13,15 @@ TOP PRIORITY
 
 - Modularizacion
 
-- Terminar generador de front.
+- Terminar generador de front !
+
+- Terminar Solucion Binaria
+
+- Incorporar pasarela de pagos
 
 ------------x--------------
+
+- Incorporar "switches" incorporados en el plugin "Import quoter cl" en el Bt5Form !!
 
 - Ensayar componente de Symfony para correr en background:
 
