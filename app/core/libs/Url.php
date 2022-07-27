@@ -2,7 +2,7 @@
 
 namespace simplerest\core\libs;
 
-use simplerest\core\Request;
+use simplerest\core\libs\ApiClient;
 
 class Url
 {
@@ -435,8 +435,8 @@ class Url
             'error'         => $err_msg
         ];
 
-        static::$headers  = $__headers;
-        static::$filename = $__filename;
+        static::$headers       = $__headers;
+        static::$filename      = $__filename;
         static::$content_type  = $content_type;
         static::$effective_url = $effective_url;
 
@@ -448,7 +448,58 @@ class Url
     }
 
     static function getHeaders(){
-        return  static::$headers;
+        return static::$headers;
+    }
+
+    static function getContentType(){
+        return static::$content_type;
+    }
+
+    static function getEffectiveUrl(){
+        return static::$effective_url;
+    }
+
+    static function linkDownload(string $url, $dest_path = null, bool $disable_ssl = true, Array $options = []){
+        if (empty($dest_path)){
+            $dest_path = STORAGE_PATH;
+        }
+    
+        $client = new ApiClient($url);
+
+        $options = array_merge([
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36',
+            CURLOPT_HEADER    => true,
+            CURLOPT_VERBOSE   => true
+        ], $options);
+
+        $client->addOptions([
+            $options
+        ]);
+
+        $client
+        ->when($disable_ssl, function($questo){
+            $questo->disableSSL();
+        })
+        
+        
+        ->get();
+
+        $res = $client->getResponse(false);
+
+        if (!empty($res) && isset($res['data'])){
+            $data     = $res['data'];
+            $filename = $client->getFilename();
+
+            if (empty($filename)){
+                throw new \Exception("Nombre de archivo no encontrado");
+            }
+
+            $bytes = file_put_contents($dest_path . $filename, $data);
+
+            return ($bytes !== 0);
+        }
+
+        return false;
     }
 
 }

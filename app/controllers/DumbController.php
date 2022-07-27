@@ -4394,6 +4394,25 @@ class DumbController extends Controller
         dd($sc->dd());
     }
 
+    function debug_migration(){
+        $sc = new Schema('rBLbtSeq_sinergia_queue');
+
+        $sc
+        ->int('id', 11)->primary()->auto()
+        ->int('order_id', 11)->notNullable()->unique()
+        ->varchar('status', 20)->nullable()
+        ->datetime('datetime')->currentTimestamp()->notNullable()
+        ->dontExec()
+        ->create();
+
+        /*
+            Debugging
+        */
+
+        d($sc->getSchema(), 'SCHEMA');
+        d($sc->dd(true), 'SQL');
+    }
+
     function has_table()
     {
         dd(Schema::hasTable('users'));
@@ -8985,7 +9004,7 @@ class DumbController extends Controller
         $rows = Files::getCSV($path)['rows'];
 
         foreach ($rows as $row) {
-            if ($row['SKU'] == 7804616661265){
+            if ($row['SKU'] == 606110083669){
                 dd($row);
                 break;
             }
@@ -9886,41 +9905,27 @@ class DumbController extends Controller
         Descarga archivo
     */
     function download_link(){
-        $dest_path = STORAGE_PATH;
-
         //$url = 'https://docs.google.com/uc?export=download&id=1Ki34FJX-iCqTErvsU_EQFrs9JwHL62KJ';
-
         $url = 'https://docs.google.com/uc?export=download&id=1Fdtxt56oCI1-rUwLmFXkzaXzQxdMhc8v';
-    
-        $client = new ApiClient($url);
 
-        $client->addOptions([
-            [
-                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36',
-                CURLOPT_HEADER    => true,
-                CURLOPT_VERBOSE   => true
-            ]
-            ]);
-
-        $client
-        ->disableSSL()
-        ->followLocations()
-        ->get();
-
-        $res = $client->getResponse(false);
-
-        if (!empty($res) && isset($res['data'])){
-            $data     = $res['data'];
-            $filename = $client->getFilename();
-
-            if (empty($filename)){
-                throw new \Exception("Nombre de archivo no encontrado");
-            }
-
-            file_put_contents($dest_path . $filename, $data);
-        }
+        dd(
+            Url::linkDownload($url)
+        );
     }
      
+    function testggg(){
+        dd(
+            include 'D:\www\woo1\wp-content\plugins\plugin-theme-installer\logs\mutawp_product_export.php'
+        );
+    }
+
+    function unquote(){
+        $str = <<<STR
+        <div id="error"><p class="wpdberror"><strong>Error en la base de datos de WordPress:</strong> [You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#039;, CURRENT_TIMESTAMP)&#039; at line 1]<br /><code>INSERT INTO `wp_sinergia_boletas` (`correlativo`, `serie`, `order_id`, `datetime`) VALUES (NULL, &#039;B001&#039;   , , CURRENT_TIMESTAMP);</code></p></div>--[ CORRELATIVO BOLETA ]--
+        STR;
+
+        return html_entity_decode($str);
+    }
 
 
 }   // end class
