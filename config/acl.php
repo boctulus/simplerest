@@ -18,7 +18,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     $acl
     ->addRole('guest', -1)
-->addResourcePermissions('products', ['read_all', 'write'])
+    ->addResourcePermissions('products', ['read_all', 'write'])
     ->addResourcePermissions('testx', ['read', 'write'])
     ->addResourcePermissions('facturas', ['read', 'write'])
     ->addResourcePermissions('factura_detalle', ['read', 'write'])
@@ -28,6 +28,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('baz', ['read', 'write'])
     ->addResourcePermissions('telefonos', ['read', 'write'])
     ->addResourcePermissions('files', ['read', 'write'])
+    ->addResourcePermissions('empleado', ['read_all'])
 
     // ...
     //->setAsGuest('guest')
