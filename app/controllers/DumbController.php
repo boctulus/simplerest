@@ -9927,7 +9927,15 @@ class DumbController extends Controller
         return html_entity_decode($str);
     }
 
-    
+    function get_alltables(){
+        DB::getDefaultConnection();
+
+       $names = DB::getTableNames('mpo');
+
+       foreach ($names as $name){
+            print_r("->addResourcePermissions('$name', ['read_all', 'write'])\r\n");
+       }
+    }
 
 
 }   // end class

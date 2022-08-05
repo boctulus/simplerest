@@ -30,6 +30,31 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('files', ['read', 'write'])
     ->addResourcePermissions('empleado', ['read_all'])
 
+    // Medellin Participa: Organizaciones
+    
+    ->addResourcePermissions('certificaciones_que_emite_org_comunal', ['read_all', 'write'])
+    ->addResourcePermissions('entidad_registrante', ['read_all', 'write'])
+    ->addResourcePermissions('escala_territorial', ['read_all', 'write'])
+    ->addResourcePermissions('estado_civil', ['read_all', 'write'])
+    ->addResourcePermissions('estado_laboral', ['read_all', 'write'])
+    ->addResourcePermissions('estado_seguimiento', ['read_all', 'write'])
+    ->addResourcePermissions('genero', ['read_all', 'write'])
+    ->addResourcePermissions('grupos_poblacionales', ['read_all', 'write'])
+    ->addResourcePermissions('instrumento_planeacion', ['read_all', 'write'])
+    ->addResourcePermissions('migrations', ['read_all', 'write'])
+    ->addResourcePermissions('nivel_escolaridad', ['read_all', 'write'])
+    ->addResourcePermissions('org_comunal', ['read_all', 'write'])
+    ->addResourcePermissions('org_vincul_personal_entidad', ['read_all', 'write'])
+    ->addResourcePermissions('password_resets', ['read_all', 'write'])
+    ->addResourcePermissions('personal_access_tokens', ['read_all', 'write'])
+    ->addResourcePermissions('proyectos_de_coop', ['read_all', 'write'])
+    ->addResourcePermissions('proyectos_recur_propios', ['read_all', 'write'])
+    ->addResourcePermissions('representate_legal', ['read_all', 'write'])
+    ->addResourcePermissions('sector_actividad_org_comunal', ['read_all', 'write'])
+    ->addResourcePermissions('tipo_organismo_org_comunal', ['read_all', 'write'])
+    ->addResourcePermissions('tipo_organizacion', ['read_all', 'write'])
+    
+
     // ...
     //->setAsGuest('guest')
 
