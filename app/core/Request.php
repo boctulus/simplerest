@@ -72,13 +72,13 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
 
                 // Content-Type
                 $is_form_data = (bool) Strings::startsWith('multipart/form-data', static::$content_type);
-                $is_json      = !empty(static::$raw) && static::$content_type == 'application/json';
+                $is_json      = (static::$content_type == 'application/json');
 
                 static::$raw  = file_get_contents("php://input");
 
                 // Si el Content-Type es para json,.... decode
 
-                static::$body = $is_json ? Url::bodyDecode(static::$raw) : static::$raw;
+                static::$body = ($is_json && !empty(static::$raw)) ? Url::bodyDecode(static::$raw) : static::$raw;
                 
                 static::$headers = apache_request_headers();
 
