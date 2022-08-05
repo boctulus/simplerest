@@ -109,6 +109,10 @@ class Arrays
      */
     static function str_replace_array($search, array $replace, $subject)
     {
+        if (empty($subject)){
+            return '';
+        }
+
         if (0 === $tokenc = substr_count($subject, $search)) {
             return $subject;
         }

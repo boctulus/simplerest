@@ -1020,6 +1020,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         if (empty($data))
             Factory::response()->sendError('Invalid JSON',400);
+            
+        /*
+            Valido solamente para este tipo de API 
+        
+        */        
+        if (!is_array($data)){
+            $data = json_decode($data, true);
+        }
 
         $this->instance = $this->getModelInstance();
 
@@ -1468,6 +1476,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         if (empty($data))
             response()->sendError('Invalid JSON',400);
+
+        /*
+            Valido solamente para este tipo de API 
+        
+        */        
+        if (!is_array($data)){
+            $data = json_decode($data, true);
+        }
         
         $append_mode = request()->shiftQuery('_append', false);
         if ($append_mode === 'false' || $append_mode === 0){
