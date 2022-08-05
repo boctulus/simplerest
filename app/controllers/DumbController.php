@@ -9930,11 +9930,11 @@ class DumbController extends Controller
     function get_alltables(){
         DB::getDefaultConnection();
 
-       $names = DB::getTableNames('mpo');
+        $names = DB::getTableNames('mpo');
 
-       foreach ($names as $name){
+        foreach ($names as $name){
             print_r("->addResourcePermissions('$name', ['read_all', 'write'])\r\n");
-       }
+        }
     }
 
 

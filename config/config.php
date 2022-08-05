@@ -182,6 +182,16 @@ return [
 		'encryption' => 'HS256'
 	],
 
+	/*
+		Si se deja en NULL => es obligatorio el Content-type pero podria especificarse. 
+
+		Ej:
+
+		'default_api_content_type' => 'application/json',
+	*/
+	
+	'default_api_content_type' => 'application/json',
+
 	'method_override' => [
 		'by_url' => true,
 		'by_header' => true

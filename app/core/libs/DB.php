@@ -41,7 +41,9 @@ class DB
 	}
 
     public static function getConnection(string $conn_id = null) {	
-		$cc = count(config()['db_connections']);
+		$config = config();
+
+		$cc = count($config['db_connections']);
 		
 		if ($cc == 0){
 			throw new \Exception('No database');
@@ -52,8 +54,8 @@ class DB
 		} else {
 			if (static::$current_id_conn == null){
 				if ($cc == 1){
-					static::$current_id_conn = array_keys(config()['db_connections'])[0];
-				} elseif (!empty(config()['db_connection_default'])) {
+					static::$current_id_conn = array_keys($config['db_connections'])[0];
+				} elseif (!empty($config['db_connection_default'])) {
 					static::$current_id_conn = config()['db_connection_default'];
 				} else {	
 					throw new \InvalidArgumentException('No database selected');
@@ -65,18 +67,26 @@ class DB
 			return self::$connections[static::$current_id_conn];
 
 		
-		if (!isset(config()['db_connections'][static::$current_id_conn])){
+		if (!isset($config['db_connections'][static::$current_id_conn])){
 			throw new \InvalidArgumentException('Invalid database selected for '.static::$current_id_conn);
 		}	
 		
-		$host    = config()['db_connections'][static::$current_id_conn]['host'] ?? 'localhost';
-		$driver  = config()['db_connections'][static::$current_id_conn]['driver'];	
-		$port    = config()['db_connections'][static::$current_id_conn]['port'] ?? NULL;
-        $db_name = config()['db_connections'][static::$current_id_conn]['db_name'];
-		$user    = config()['db_connections'][static::$current_id_conn]['user'] ?? 'root';
-		$pass    = config()['db_connections'][static::$current_id_conn]['pass'] ?? '';
-		$pdo_opt = config()['db_connections'][static::$current_id_conn]['pdo_options'] ?? NULL;
-		$charset = config()['db_connections'][static::$current_id_conn]['charset'] ?? NULL;
+		if (!isset( $config['db_connections'][static::$current_id_conn]['driver'] )){
+			throw new \Exception("Driver is required");
+		}
+
+		if (!isset( $config['db_connections'][static::$current_id_conn]['db_name'] )){
+			throw new \Exception("DB Name is required");
+		}
+
+		$host    = $config['db_connections'][static::$current_id_conn]['host'] ?? 'localhost';
+		$driver  = $config['db_connections'][static::$current_id_conn]['driver'];	
+		$port    = $config['db_connections'][static::$current_id_conn]['port'] ?? NULL;
+        $db_name = $config['db_connections'][static::$current_id_conn]['db_name'];
+		$user    = $config['db_connections'][static::$current_id_conn]['user'] ?? 'root';
+		$pass    = $config['db_connections'][static::$current_id_conn]['pass'] ?? '';
+		$pdo_opt = $config['db_connections'][static::$current_id_conn]['pdo_options'] ?? NULL;
+		$charset = $config['db_connections'][static::$current_id_conn]['charset'] ?? NULL;
 
 		/*
 			Aliases
@@ -285,6 +295,7 @@ class DB
 				throw new \Exception("Method " . __METHOD__ . " not supported for ". DB::driver());
 		}
 	}
+
 
 	/*
 		Returns a tenant for each individual or cluster of databases
