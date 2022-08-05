@@ -23,6 +23,33 @@ TOP PRIORITY
 
 - Incorporar "switches" incorporados en el plugin "Import quoter cl" en el Bt5Form !!
 
+- ACL
+
+  * Es necesario poder especificar la conexion (que en definitiva apunta a la base de datos) y NO SOLO la tabla ya que dos bases de datos podrian tener la misma tabla y se podrian requerir niveles de acceso distintos.
+
+  ->addResourcePermissions('products', ['read_all', 'write'])
+
+  pero tambien:
+
+  ->addResourcePermissions('mi_conexion.products', ['read_all', 'write']) 
+
+  * Debe existir un mecanismo para otorgar permisos masivos sobre toda una base de datos (conexion). 
+  
+  Ej:
+
+  ->addResourcePermissions('mi_conexion.*', ['read_all', 'write'])
+
+  Podrian haber mas comodines o usarse expresiones regulares pero ese seria el minimo.
+  
+  Tambien serian validos:
+
+  ->addResourcePermissions('*', ['read_all', 'write'])
+
+  y 
+
+  ->addResourcePermissions('*.*', ['read_all', 'write'])
+
+
 - Ensayar componente de Symfony para correr en background:
 
   use Symfony\Component\Process\Process;
@@ -4155,13 +4182,260 @@ https://stackoverflow.com/questions/17292656/how-to-design-a-restful-api-for-bul
 The register() method should only be used for, you guessed it, registering services with the container”
 
 
-- Evaluar implementar un vendor:publish para los ServiceProviders 
+- Implementar un "vendor:publish" para los ServiceProviders !!!!!!!!!!
 
 "The vendor folder should not be under revision control as such, it will be overwritten every time you deploy your solution. You use vendor:publish to copy configurable items to your application code base such that any changes you make will not keep being lost."
 
 "vendor:publish command used to copy few configuration file in your application from vendor package file.Like you are using a package where need to create a table on database and need to store few demo data.That time your packages will keep database schema and seeding and when you run vendor:publish those schema and seeding file will copy in your application.After that you just run php artisan migrate and php artisan db:seed"
 
 https://laracasts.com/discuss/channels/laravel/why-do-we-do-a-php-artisan-vendorpublish
+
+Ejemplo practico:
+
+Al ejecutar
+
+  artisan vendor:publish
+
+Permite seleccionar un paquete. La otra opcion seria 
+
+  artisan {nombre-paquete}:publish
+
+y.... lo que hace es copiar el archivo de configuracion dentro de /config e igualmente las vistas dentro de /views/vendor/{nombre-paquete} ... etc
+
+Copying file [vendor/infyomlabs/laravel-generator/config/laravel_generator.php] to [config/laravel_generator.php] ........................... DONE
+
+Copying directory [vendor/infyomlabs/laravel-generator/views] to [resources/views/vendor/laravel-generator] ................................. DONE
+
+A su vez ... el archivo config que se copia (el nombre parece ser arbitrario o conicidir con el nombre del paquete),... contiene informacion *crucial* como:
+
+- Paths hacia los modelos, controladores, migraiciones, views, seeders,...
+
+- Namespaces correspondientes a los modelos, controladores,....
+
+- Prefijos
+
+- Opciones
+
+- Campos especiales de los modelos
+
+
+Ej:
+
+
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Paths
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'path' => [
+
+        'migration'         => database_path('migrations/'),
+
+        'model'             => app_path('Models/'),
+
+        'datatables'        => app_path('DataTables/'),
+
+        'livewire_tables'   => app_path('Http/Livewire/'),
+
+        'repository'        => app_path('Repositories/'),
+
+        'routes'            => base_path('routes/web.php'),
+
+        'api_routes'        => base_path('routes/api.php'),
+
+        'request'           => app_path('Http/Requests/'),
+
+        'api_request'       => app_path('Http/Requests/API/'),
+
+        'controller'        => app_path('Http/Controllers/'),
+
+        'api_controller'    => app_path('Http/Controllers/API/'),
+
+        'api_resource'      => app_path('Http/Resources/'),
+
+        'schema_files'      => resource_path('model_schemas/'),
+
+        'seeder'            => database_path('seeders/'),
+
+        'database_seeder'   => database_path('seeders/DatabaseSeeder.php'),
+
+        'factory'           => database_path('factories/'),
+
+        'view_provider'     => app_path('Providers/ViewServiceProvider.php'),
+
+        'tests'             => base_path('tests/'),
+
+        'repository_test'   => base_path('tests/Repositories/'),
+
+        'api_test'          => base_path('tests/APIs/'),
+
+        'views'             => resource_path('views/'),
+
+        'menu_file'         => resource_path('views/layouts/menu.blade.php'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Namespaces
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'namespace' => [
+
+        'model'             => 'App\Models',
+
+        'datatables'        => 'App\DataTables',
+
+        'livewire_tables'   => 'App\Http\Livewire',
+
+        'repository'        => 'App\Repositories',
+
+        'controller'        => 'App\Http\Controllers',
+
+        'api_controller'    => 'App\Http\Controllers\API',
+
+        'api_resource'      => 'App\Http\Resources',
+
+        'request'           => 'App\Http\Requests',
+
+        'api_request'       => 'App\Http\Requests\API',
+
+        'seeder'            => 'Database\Seeders',
+
+        'factory'           => 'Database\Factories',
+
+        'tests'             => 'Tests',
+
+        'repository_test'   => 'Tests\Repositories',
+
+        'api_test'          => 'Tests\APIs',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Templates
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'templates' => 'adminlte-templates',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Model extend class
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'model_extend_class' => 'Illuminate\Database\Eloquent\Model',
+
+    /*
+    |--------------------------------------------------------------------------
+    | API routes prefix & version
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'api_prefix'  => 'api',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Options
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'options' => [
+
+        'soft_delete' => false,
+
+        'save_schema_file' => true,
+
+        'localized' => false,
+
+        'repository_pattern' => true,
+
+        'resources' => false,
+
+        'factory' => false,
+
+        'seeder' => false,
+
+        'swagger' => false, // generate swagger for your APIs
+
+        'tests' => false, // generate test cases for your APIs
+
+        'excluded_fields' => ['id'], // Array of columns that doesn't required while creating module
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Prefixes
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'prefixes' => [
+
+        'route' => '',  // e.g. admin or admin.shipping or admin.shipping.logistics
+
+        'namespace' => '',  // e.g. Admin or Admin\Shipping or Admin\Shipping\Logistics
+
+        'view' => '',  // e.g. admin or admin/shipping or admin/shipping/logistics
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Table Types
+    |
+    | Possible Options: blade, datatables, livewire
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'tables' => 'blade',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Timestamp Fields
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'timestamps' => [
+
+        'enabled'       => true,
+
+        'created_at'    => 'created_at',
+
+        'updated_at'    => 'updated_at',
+
+        'deleted_at'    => 'deleted_at',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Specify custom doctrine mappings as per your need
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'from_table' => [
+
+        'doctrine_mappings' => [],
+    ],
+
+];
+
+
+
 
 
 - Leer sobre Packages
