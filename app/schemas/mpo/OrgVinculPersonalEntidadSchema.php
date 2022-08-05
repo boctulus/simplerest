@@ -25,14 +25,14 @@ class OrgVinculPersonalEntidadSchema implements ISchema
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['created_at', 'updated_at'],
+			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
 				'tipo_vinculo' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'cant_personas' => ['type' => 'int', 'required' => true],
 				'entidad_registrante_id' => ['type' => 'int', 'min' => 0, 'required' => true],
