@@ -43,14 +43,14 @@ class RepresentateLegalSchema implements ISchema
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['tarjeta_profesional', 'tel_fijo', 'zona', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'tarjeta_profesional', 'tel_fijo', 'zona', 'created_at', 'updated_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
 				'tipo_doc' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'nro_doc' => ['type' => 'str', 'max' => 25, 'required' => true],
 				'departamento_exp' => ['type' => 'str', 'max' => 30, 'required' => true],

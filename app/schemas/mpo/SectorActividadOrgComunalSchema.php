@@ -23,14 +23,14 @@ class SectorActividadOrgComunalSchema implements ISchema
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['created_at', 'updated_at'],
+			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
 			'uniques'		=> ['nombre'],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
 				'nombre' => ['type' => 'str', 'max' => 40, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
