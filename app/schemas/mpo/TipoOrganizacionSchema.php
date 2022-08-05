@@ -12,7 +12,7 @@ class TipoOrganizacionSchema implements ISchema
 		return [
 			'table_name'	=> 'tipo_organizacion',
 
-			'id_name'		=> null,
+			'id_name'		=> 'id',
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -21,16 +21,16 @@ class TipoOrganizacionSchema implements ISchema
 				'updated_at' => 'STR'
 			],
 
-			'primary'		=> [],
+			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['created_at', 'updated_at'],
+			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
 				'nombre' => ['type' => 'str', 'max' => 40, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']

@@ -3,6 +3,11 @@
 Full doc in /docs/DOC.txt
 
 
+### Importante note:
+
+Pass Content-Type is required. In this case should be application/json
+
+
 ## Request examples
 
 ## GET <READ>

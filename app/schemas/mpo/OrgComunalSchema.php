@@ -40,14 +40,14 @@ class OrgComunalSchema implements ISchema
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['zona', 'representante', 'institucion_avalante', 'redes', 'num_radicado_camara_com', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'zona', 'representante', 'institucion_avalante', 'redes', 'num_radicado_camara_com', 'created_at', 'updated_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
 				'nombre_org_comunal' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'fecha_aplicacion' => ['type' => 'datetime', 'required' => true],
 				'zona' => ['type' => 'str', 'max' => 30],

@@ -1101,7 +1101,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             $validado = (new Validator)->validate($this->instance->getRules(), $data);
             if ($validado !== true){
-                Factory::response()->sendError(_('Data validation werror'), 400, $validado);
+                Factory::response()->sendError(_('Data validation error'), 400, $validado);
             }  
 
             if (!empty($this->folder)) {
