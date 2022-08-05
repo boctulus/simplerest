@@ -133,7 +133,7 @@ return [
 	
 	'DateTimeZone' => 'America/Bogota',
 
-	'error_handling'   => true,
+	'error_handling'   => false,
 	'debug'   => false,  //env('APP_DEBUG', true),
 
 	/*
