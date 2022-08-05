@@ -47,14 +47,14 @@ class EntidadRegistranteSchema implements ISchema
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['portafolio_servicios', 'presencia_geografica', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'portafolio_servicios', 'presencia_geografica', 'created_at', 'updated_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
 				'num_radicado' => ['type' => 'int', 'required' => true],
 				'fecha_registro' => ['type' => 'datetime', 'required' => true],
 				'_cert_vigente_gob' => ['type' => 'bool', 'required' => true],

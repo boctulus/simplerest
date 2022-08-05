@@ -63,6 +63,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
 
                 if (!empty($content_type_header)){
                     static::$content_type = $content_type_header;
+                    
                 } else {
                     if (!empty(static::$query_arr["content_type"])){
                         static::$content_type = Arrays::shift(static::$accept_encoding, 'content_type');

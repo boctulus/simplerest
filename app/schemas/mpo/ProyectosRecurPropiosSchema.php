@@ -26,14 +26,14 @@ class ProyectosRecurPropiosSchema implements ISchema
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['created_at', 'updated_at'],
+			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
 				'anno' => ['type' => 'bool', 'required' => true],
 				'duracion' => ['type' => 'str', 'max' => 30, 'required' => true],
 				'valor' => ['type' => 'int', 'required' => true],
