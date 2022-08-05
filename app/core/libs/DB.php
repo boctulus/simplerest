@@ -252,6 +252,40 @@ class DB
 		return static::$tb_name;
 	}
 
+	public static function getTableNames($db_conn_id = null){
+		if ($db_conn_id === null){
+			$db_conn_id = static::getCurrentConnectionId();
+		} else {
+			static::getConnection($db_conn_id);
+		}
+
+		switch (DB::driver()){
+			case DB::MYSQL:
+				$db_name = static::getCurrentDB();
+
+				$sql = "SELECT table_name FROM information_schema.tables
+				WHERE table_schema = '$db_name';";
+				
+				return array_column(static::select($sql), 'TABLE_NAME');
+			// case DB::PGSQL:
+			// 	break;
+			// case DB::SQLSRV:
+			// 	break;
+			// case DB::SQLITE:
+			// 	break;
+			// case DB::INFOMIX:
+			// 	break;
+			// case DB::ORACLE:
+			// 	break;
+			// case DB::DB2:
+			// 	break;
+			// case DB::SYBASE:
+			// 	break;
+			default:
+				throw new \Exception("Method " . __METHOD__ . " not supported for ". DB::driver());
+		}
+	}
+
 	/*
 		Returns a tenant for each individual or cluster of databases
 

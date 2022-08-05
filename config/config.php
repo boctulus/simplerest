@@ -92,6 +92,20 @@ return [
 			]
 		],
 
+		'mpo' => [
+			'host'		=> env('DB_HOST_MPO', '127.0.0.1'),
+			'port'		=> env('DB_PORT_MPO'),
+			'driver' 	=> env('DB_CONNECTION_MPO'),
+			'db_name' 	=> env('DB_NAME_MPO'),
+			'user'		=> env('DB_USERNAME_MPO'), 
+			'pass'		=> env('DB_PASSWORD_MPO'),
+			'charset'	=> 'utf8',
+			//'schema'	=> 'az',  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],
 		
 	], 	
 
@@ -111,12 +125,15 @@ return [
 		],
 		'eb' => [
 			'eb'
+		],
+		'mpo' => [
+			'mpo'
 		]
     ], 
 	
 	'DateTimeZone' => 'America/Bogota',
 
-	'error_handling'   => false,
+	'error_handling'   => true,
 	'debug'   => false,  //env('APP_DEBUG', true),
 
 	/*
