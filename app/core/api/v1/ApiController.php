@@ -2300,7 +2300,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             // event hook
             $this->onDeletingAfterCheck($id);
 
-            $affected = $this->instance->delete($extra);
+            $affected = $this->instance->delete($soft_is_supported, $extra);
             
             if($affected){
                 

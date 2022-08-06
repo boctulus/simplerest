@@ -12,7 +12,7 @@ class BoletasSchema implements ISchema
 		return [
 			'table_name'	=> 'boletas',
 
-			'id_name'		=> 'karma',
+			'id_name'		=> 'id',
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -61,21 +61,21 @@ class BoletasSchema implements ISchema
 				'user_id' => 'INT'
 			],
 
-			'primary'		=> ['id', 'karma'],
+			'primary'		=> ['id'],
 
 			'autoincrement' => null,
 
-			'nullable'		=> ['lastname', 'password', 'password_char', 'karma', 'active', 'paused', 'vencimiento', 'ts'],
+			'nullable'		=> ['lastname', 'password_char', 'karma', 'active', 'paused', 'vencimiento', 'ts'],
 
 			'uniques'		=> ['username', 'correo'],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'required' => true],
-				'edad' => ['type' => 'int', 'required' => true],
+				'edad' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'firstname' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'lastname' => ['type' => 'str', 'max' => 60],
 				'username' => ['type' => 'str', 'max' => 60, 'required' => true],
-				'password' => ['type' => 'str', 'max' => 128],
+				'password' => ['type' => 'str', 'max' => 128, 'required' => true],
 				'password_char' => ['type' => 'str'],
 				'texto_vb' => ['max' => 300, 'required' => true],
 				'texto' => ['type' => 'str', 'required' => true],
@@ -125,23 +125,23 @@ class BoletasSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'boletas',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'boletas',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				'users' => [
@@ -150,23 +150,23 @@ class BoletasSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'boletas',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'boletas',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

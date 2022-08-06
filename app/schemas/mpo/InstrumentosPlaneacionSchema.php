@@ -6,38 +6,32 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class ProyectosDeCoopSchema implements ISchema
+class InstrumentosPlaneacionSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'proyectos_de_coop',
+			'table_name'	=> 'instrumentos_planeacion',
 
 			'id_name'		=> 'id',
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'anno' => 'INT',
-				'duracion' => 'STR',
-				'valor' => 'INT',
-				'entidad' => 'STR',
+				'nombre' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['created_at', 'updated_at'],
+			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
-			'uniques'		=> [],
+			'uniques'		=> ['nombre'],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
-				'anno' => ['type' => 'bool', 'required' => true],
-				'duracion' => ['type' => 'str', 'max' => 30, 'required' => true],
-				'valor' => ['type' => 'int', 'required' => true],
-				'entidad' => ['type' => 'str', 'max' => 40, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
+				'nombre' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],

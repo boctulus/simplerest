@@ -47,23 +47,23 @@ class BookReviewsSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				  'books' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'books',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'book_reviews',
-				        1 => 'book_id',
-				      ),
-				    ),
-				  ),
-				),
+  'books' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'books',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'book_reviews',
+        1 => 'book_id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				'books' => [
@@ -72,23 +72,23 @@ class BookReviewsSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'books' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'books',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'book_reviews',
-				        1 => 'book_id',
-				      ),
-				    ),
-				  ),
-				)
+  'books' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'books',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'book_reviews',
+        1 => 'book_id',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

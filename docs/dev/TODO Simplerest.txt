@@ -75,6 +75,33 @@ https://stackoverflow.com/a/14475122/980631
 https://stackoverflow.com/a/13804094/980631
 
 
+- Poder dentro de una carpeta de migraciones poder definir en un archivo config.php cosas como la conexion por defecto a ser utilizada al correr migraciones dentro de esa carpeta.
+
+Eso permitiria en vez de:
+
+  php com migrations migrate --dir=mpo --to=mpo
+
+Poder escribir 
+
+  php com migrations migrate --dir=mpo
+
+... si dentro existe un config con
+
+return [
+  'default_connection_id' => 'mpo'
+];
+
+Otra posibilidad (no excluyente) es tener eso dentro del config.php principal
+
+- Hacer un "migrations redo" con step={N} adicional al que existe con --file=
+
+Ej:
+
+  migrations redo --to:main --step=2
+
+Esto re-haria las ultimas dos migraciones ejecutadas. Por defecto el step seria 1 (--step=1)
+
+
 - CSV a migraciones
 
   com make migration --csv={file.csv}
