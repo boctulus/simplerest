@@ -532,11 +532,24 @@ class Schema
 		
 		return $this;		
 	}	
-	
+
+	// alias de int
 	function integer(string $name, int $len = 11){
 		$this->int($name, $len);
 		return $this;		
 	}	
+
+	function id(){		
+		$this->int('id');
+		$this->primary();
+		return $this;		
+	}
+
+	function increments(){
+		$this->id();
+		$this->auto();
+		return $this;
+	}
 	
 	function serial(string $name, int $len = NULL){		
 		$this->current_field = $name;
@@ -639,6 +652,11 @@ class Schema
 		$this->fields[$this->current_field]['len'] = $len;
 		return $this;		
 	}	
+
+	// alias de varchar
+	function string(string $name, int $len = 60){
+		return $this->varchar($name, $len);
+	}
 	
 	function text(string $name, int $len = NULL){
 		if ($len > 65535)
@@ -798,6 +816,11 @@ class Schema
 		$this->fields[$this->current_field] = [];
 		$this->fields[$this->current_field]['type'] = 'DATETIME';
 		return $this;		
+	}
+
+	// De momento es alias de datetimes()
+	function timestamps(){
+		return $this->datetimes();
 	}
 	
 	function point(string $name){		
@@ -1007,6 +1030,11 @@ class Schema
 	}
 
 	// alias for foreign
+	function foreignId(string $field_name){
+		return $this->foreign($field_name);
+	}
+
+	// alias for foreign
 	function fk(string $field_name){
 		return $this->foreign($field_name);
 	}
@@ -1029,6 +1057,12 @@ class Schema
 	function on(string $table){
 		$this->fks[$this->current_field]['on'] = $table;
 		return $this;
+	}
+
+	// alias for on() + references('id')
+	function constrained(string $table){
+		$this->references('id');
+		return $this->on($table);
 	}
 
 	// alias for on()

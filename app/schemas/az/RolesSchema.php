@@ -35,36 +35,18 @@ class RolesSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				'user_roles' => [
-					['user_roles.role_id','roles.id']
-				]
+				
 			],
 
 			'expanded_relationships' => array (
-				  'user_roles' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'role_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'roles',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

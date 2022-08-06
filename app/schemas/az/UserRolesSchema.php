@@ -38,95 +38,57 @@ class UserRolesSchema implements ISchema
 				'updated_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> ['user_id', 'role_id'],
+			'fks' 			=> ['user_id'],
 
 			'relationships' => [
 				'users' => [
 					['users.id','user_roles.user_id']
-				],
-				'roles' => [
-					['roles.id','user_roles.role_id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				  'roles' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'roles',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'role_id',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'user_roles',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				'users' => [
 					['users.id','user_roles.user_id']
-				],
-				'roles' => [
-					['roles.id','user_roles.role_id']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				  'roles' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'roles',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'role_id',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'user_roles',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

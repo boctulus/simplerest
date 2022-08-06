@@ -12,7 +12,7 @@ class Facturas2Schema implements ISchema
 		return [
 			'table_name'	=> 'facturas2',
 
-			'id_name'		=> 'id',
+			'id_name'		=> 'co',
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -25,14 +25,14 @@ class Facturas2Schema implements ISchema
 
 			'primary'		=> ['id', 'co'],
 
-			'autoincrement' => 'id',
+			'autoincrement' => null,
 
-			'nullable'		=> ['id', 'lastname'],
+			'nullable'		=> ['lastname'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0],
+				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'co' => ['type' => 'str', 'max' => 30, 'required' => true],
 				'edad' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'firstname' => ['type' => 'str', 'max' => 60, 'required' => true],
@@ -47,14 +47,14 @@ class Facturas2Schema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }
