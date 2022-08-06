@@ -22,14 +22,14 @@ class MigrationsSchema implements ISchema
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => 'id',
+			'autoincrement' => null,
 
-			'nullable'		=> ['id'],
+			'nullable'		=> [],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0],
+				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'migration' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'batch' => ['type' => 'int', 'required' => true]
 			],

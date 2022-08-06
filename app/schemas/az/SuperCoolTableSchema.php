@@ -12,34 +12,34 @@ class SuperCoolTableSchema implements ISchema
 		return [
 			'table_name'	=> 'super_cool_table',
 
-			'id_name'		=> 'id_cool',
+			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id_cool' => 'INT',
+				'id' => 'INT',
 				'name' => 'STR',
 				'age' => 'INT',
 				'active' => 'INT',
 				'belongs_to' => 'INT',
 				'deleted_at' => 'STR',
-				'locked' => 'INT'
+				'is_locked' => 'INT'
 			],
 
-			'primary'		=> ['id_cool'],
+			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['deleted_at'],
+			'nullable'		=> ['id', 'deleted_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id_cool' => ['type' => 'int', 'required' => true],
+				'id' => ['type' => 'int'],
 				'name' => ['type' => 'str', 'max' => 45, 'required' => true],
 				'age' => ['type' => 'int', 'required' => true],
 				'active' => ['type' => 'bool', 'required' => true],
 				'belongs_to' => ['type' => 'int', 'required' => true],
 				'deleted_at' => ['type' => 'datetime'],
-				'locked' => ['type' => 'bool', 'required' => true]
+				'is_locked' => ['type' => 'bool', 'required' => true]
 			],
 
 			'fks' 			=> [],
@@ -49,14 +49,14 @@ class SuperCoolTableSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

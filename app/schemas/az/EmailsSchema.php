@@ -16,34 +16,24 @@ class EmailsSchema implements ISchema
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'from_email' => 'STR',
-				'from_name' => 'STR',
-				'to_email' => 'STR',
-				'to_name' => 'STR',
-				'subject' => 'STR',
-				'body' => 'STR',
-				'created_at' => 'STR',
-				'sent_at' => 'STR'
+				'text' => 'STR',
+				'confirmed' => 'INT',
+				'user_id' => 'INT'
 			],
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => 'id',
+			'autoincrement' => null,
 
-			'nullable'		=> ['id', 'from_email', 'from_name', 'to_name', 'sent_at'],
+			'nullable'		=> ['confirmed'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int'],
-				'from_email' => ['type' => 'str', 'max' => 320],
-				'from_name' => ['type' => 'str', 'max' => 60],
-				'to_email' => ['type' => 'str', 'max' => 320, 'required' => true],
-				'to_name' => ['type' => 'str', 'max' => 40],
-				'subject' => ['type' => 'str', 'max' => 40, 'required' => true],
-				'body' => ['type' => 'str', 'required' => true],
-				'created_at' => ['type' => 'datetime', 'required' => true],
-				'sent_at' => ['type' => 'datetime']
+				'id' => ['type' => 'int', 'required' => true],
+				'text' => ['type' => 'str', 'max' => 60, 'required' => true],
+				'confirmed' => ['type' => 'bool'],
+				'user_id' => ['type' => 'int', 'required' => true]
 			],
 
 			'fks' 			=> [],
@@ -53,14 +43,14 @@ class EmailsSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

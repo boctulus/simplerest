@@ -39,14 +39,14 @@ class TeachersSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

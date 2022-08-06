@@ -35,18 +35,36 @@ class SpPermissionsSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				
+				'user_sp_permissions' => [
+					['user_sp_permissions.sp_permission_id','sp_permissions.id']
+				]
 			],
 
 			'expanded_relationships' => array (
-				),
+  'user_sp_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_sp_permissions',
+        1 => 'sp_permission_id',
+      ),
+      1 => 
+      array (
+        0 => 'sp_permissions',
+        1 => 'id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

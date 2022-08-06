@@ -12,7 +12,7 @@ class UsersSchema implements ISchema
 		return [
 			'table_name'	=> 'users',
 
-			'id_name'		=> 'id',
+			'id_name'		=> null,
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -25,16 +25,16 @@ class UsersSchema implements ISchema
 				'updated_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'primary'		=> [],
 
-			'autoincrement' => 'id',
+			'autoincrement' => null,
 
-			'nullable'		=> ['id', 'email_verified_at', 'remember_token', 'created_at', 'updated_at'],
+			'nullable'		=> ['email_verified_at', 'remember_token', 'created_at', 'updated_at'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0],
+				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'name' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'email' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'email_verified_at' => ['type' => 'timestamp'],

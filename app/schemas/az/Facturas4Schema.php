@@ -12,7 +12,7 @@ class Facturas4Schema implements ISchema
 		return [
 			'table_name'	=> 'facturas4',
 
-			'id_name'		=> 'edad',
+			'id_name'		=> 'id',
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -61,16 +61,16 @@ class Facturas4Schema implements ISchema
 				'user_id' => 'INT'
 			],
 
-			'primary'		=> ['id', 'edad'],
+			'primary'		=> ['id'],
 
-			'autoincrement' => null,
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['lastname', 'password_char', 'karma', 'active', 'paused', 'vencimiento', 'ts'],
+			'nullable'		=> ['id', 'lastname', 'password_char', 'karma', 'active', 'paused', 'vencimiento', 'ts'],
 
 			'uniques'		=> ['username', 'correo'],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'id' => ['type' => 'int', 'min' => 0],
 				'edad' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'firstname' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'lastname' => ['type' => 'str', 'max' => 60],
@@ -125,23 +125,23 @@ class Facturas4Schema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'facturas4',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'facturas4',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				'users' => [
@@ -150,23 +150,23 @@ class Facturas4Schema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'facturas4',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'facturas4',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }
