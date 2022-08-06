@@ -47,23 +47,23 @@ class CollectionsSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'collections',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'collections',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				'users' => [
@@ -72,23 +72,23 @@ class CollectionsSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'collections',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'collections',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

@@ -12,61 +12,59 @@ class ProductCategoriesSchema implements ISchema
 		return [
 			'table_name'	=> 'product_categories',
 
-			'id_name'		=> 'id_catego',
+			'id_name'		=> 'id',
 
 			'attr_types'	=> [
-				'id_catego' => 'INT',
-				'name_catego' => 'STR',
-				'otro_campo' => 'STR'
+				'id' => 'INT',
+				'name' => 'STR'
 			],
 
-			'primary'		=> ['id_catego'],
+			'primary'		=> ['id'],
 
-			'autoincrement' => 'id_catego',
+			'autoincrement' => 'id',
 
-			'nullable'		=> ['id_catego', 'otro_campo'],
+			'nullable'		=> ['id'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id_catego' => ['type' => 'int'],
-				'name_catego' => ['type' => 'str', 'max' => 80, 'required' => true],
-				'otro_campo' => ['type' => 'str', 'max' => 30]
+				'id' => ['type' => 'int'],
+				'name' => ['type' => 'str', 'max' => 80, 'required' => true]
 			],
 
 			'fks' 			=> [],
 
 			'relationships' => [
-				'products' => [
-					['products.category','product_categories.id_catego']
+				'products_product_categories' => [
+					['products_product_categories.product_category_id','product_categories.id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'products' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'products',
-				        1 => 'category',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'product_categories',
-				        1 => 'id_catego',
-				      ),
-				    ),
-				  ),
-				),
+  'products_product_categories' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'products_product_categories',
+        1 => 'product_category_id',
+      ),
+      1 => 
+      array (
+        0 => 'product_categories',
+        1 => 'id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

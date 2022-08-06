@@ -49,54 +49,54 @@ class BooksSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__author_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'books',
-				        1 => 'author_id',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__editor_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'books',
-				        1 => 'editor_id',
-				      ),
-				    ),
-				  ),
-				  'book_reviews' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'book_reviews',
-				        1 => 'book_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'books',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__author_id',
+      ),
+      1 => 
+      array (
+        0 => 'books',
+        1 => 'author_id',
+      ),
+    ),
+    1 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__editor_id',
+      ),
+      1 => 
+      array (
+        0 => 'books',
+        1 => 'editor_id',
+      ),
+    ),
+  ),
+  'book_reviews' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'book_reviews',
+        1 => 'book_id',
+      ),
+      1 => 
+      array (
+        0 => 'books',
+        1 => 'id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				'users' => [
@@ -106,38 +106,38 @@ class BooksSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__author_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'books',
-				        1 => 'author_id',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__editor_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'books',
-				        1 => 'editor_id',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__author_id',
+      ),
+      1 => 
+      array (
+        0 => 'books',
+        1 => 'author_id',
+      ),
+    ),
+    1 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__editor_id',
+      ),
+      1 => 
+      array (
+        0 => 'books',
+        1 => 'editor_id',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

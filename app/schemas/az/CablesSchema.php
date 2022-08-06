@@ -17,23 +17,21 @@ class CablesSchema implements ISchema
 			'attr_types'	=> [
 				'id' => 'INT',
 				'nombre' => 'STR',
-				'calibre' => 'INT',
-				'autogenerado' => 'STR'
+				'calibre' => 'STR'
 			],
 
 			'primary'		=> ['id'],
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'autogenerado'],
+			'nullable'		=> ['id'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
 				'nombre' => ['type' => 'str', 'max' => 40, 'required' => true],
-				'calibre' => ['type' => 'int', 'required' => true],
-				'autogenerado' => ['type' => 'str', 'max' => 255]
+				'calibre' => ['type' => 'str', 'required' => true]
 			],
 
 			'fks' 			=> [],
@@ -43,14 +41,14 @@ class CablesSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

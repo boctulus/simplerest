@@ -23,14 +23,14 @@ class TipoOrganizacionSchema implements ISchema
 
 			'primary'		=> ['id'],
 
-			'autoincrement' => 'id',
+			'autoincrement' => null,
 
-			'nullable'		=> ['id', 'created_at', 'updated_at'],
+			'nullable'		=> ['created_at', 'updated_at'],
 
-			'uniques'		=> [],
+			'uniques'		=> ['nombre'],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int', 'min' => 0],
+				'id' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'nombre' => ['type' => 'str', 'max' => 40, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']

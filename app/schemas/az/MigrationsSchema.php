@@ -16,24 +16,22 @@ class MigrationsSchema implements ISchema
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'db' => 'STR',
-				'filename' => 'STR',
-				'created_at' => 'STR'
+				'migration' => 'STR',
+				'batch' => 'INT'
 			],
 
 			'primary'		=> ['id'],
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'db', 'created_at'],
+			'nullable'		=> ['id'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'id' => ['type' => 'int'],
-				'db' => ['type' => 'str', 'max' => 50],
-				'filename' => ['type' => 'str', 'max' => 255, 'required' => true],
-				'created_at' => ['type' => 'datetime']
+				'id' => ['type' => 'int', 'min' => 0],
+				'migration' => ['type' => 'str', 'max' => 255, 'required' => true],
+				'batch' => ['type' => 'int', 'required' => true]
 			],
 
 			'fks' 			=> [],
@@ -43,14 +41,14 @@ class MigrationsSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

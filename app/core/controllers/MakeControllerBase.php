@@ -716,6 +716,10 @@ class MakeControllerBase extends Controller
         $relationships = [];
         $pivot_fks = [];
 
+        if (!is_dir($dir)){
+            Files::mkDirOrFail($dir);
+        }
+
         foreach (new \DirectoryIterator($dir) as $fileInfo) {
             if ($fileInfo->isDot()  || $fileInfo->isDir()) continue;
             
@@ -733,7 +737,7 @@ class MakeControllerBase extends Controller
             }
 
             $schema  = $class_name::get();
-            
+
             if (!isset($schema['relationships_from'])){
                 throw new \Exception("Undefined 'relationships_from' for $filename. Full path $full_path");
             }
@@ -1403,7 +1407,11 @@ class MakeControllerBase extends Controller
         $this->write($dest_path, $file, $protected);
     }
 
-    // debería estar en otro archivo!!! de hecho solo se deberían incluir y no estar todos los comandos acá !!!
+    /*
+        Debería estar en otro archivo!!! de hecho solo se deberían incluir y no estar todos los comandos acá !!!
+
+        Falta el --delete para borrar el archivo generado
+    */
     function migration(...$opt) 
     {
         if (count($opt)>0 && !Strings::startsWith('-', $opt[0])){
