@@ -5103,6 +5103,16 @@ o
 
 El uso de constraint() es opcional como así también onDelete() y onUpdate()
 
+Se agregó cierta compatibiidad con Laravel con la sintaxis:
+
+	$table->foreignId('PRIMARY-KEY')->constrained('TABLA');
+
+Ej:
+
+	$table->foreignId('nivel_escolaridad_id')->constrained('nivel_escolaridad');
+
+De momento pasar el nombre de la tabla a constrained() *no* es opcional.
+
 Es posible debuguear el SCHEMA a ser creado:
 
 	d($sc->getSchema(), 'SCHEMA');
