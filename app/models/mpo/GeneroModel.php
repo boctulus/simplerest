@@ -8,9 +8,6 @@ use simplerest\schemas\mpo\GeneroSchema;
 
 class GeneroModel extends MyModel
 {
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
