@@ -8,9 +8,6 @@ use simplerest\schemas\mpo\EstadoLaboralSchema;
 
 class EstadoLaboralModel extends MyModel
 {
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
