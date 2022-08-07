@@ -157,6 +157,7 @@ return [
 	/*
 		Restrictions can be aplied
 	*/
+	
 	'restrict_by_ip'	=> false,
 	'restrict_by_user_agent' => false,
 	// solo deshabilitar en pruebas
