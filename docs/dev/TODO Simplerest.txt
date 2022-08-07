@@ -3,6 +3,29 @@
 TOP PRIORITY
 ============
 
+- Investigar BUG: por que no esta creando las relaciones en OrgComunalSchema de la 
+base de datos 'organizaciones' ??? !!!! 
+
+En cambio si detecta las relaciones en ProductsSchema de 'az'. Es por las convenciones???
+
+Relations.php  -- vacio !
+Pivots.php -- vacio !
+
+Los archivos si se regeneran.... pero algo falla. Podria ser necesario volver bastante hacia atras hasta encontrar el fallo.
+
+El fallo perece ser JUSTAMENTE que no se estan generando ni relations ni pivots con contenido !!!!!!!!
+
+  php com make schema all  --from:mpo  --force
+
+Los archivos Relations.php y Pivots.php *si* que se generan con db_scan sobre 'az'
+
+  php com make db_scan --from:az
+
+o...
+
+  php com make schema all  --from:az
+
+
 - Soporte full de JSON. Es pre-requisito para Transients.
 
 - Transients (DB, archivos son locking, REDIS, Memcached)

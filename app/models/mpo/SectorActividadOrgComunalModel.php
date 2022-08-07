@@ -8,9 +8,6 @@ use simplerest\schemas\mpo\SectorActividadOrgComunalSchema;
 
 class SectorActividadOrgComunalModel extends MyModel
 {
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
