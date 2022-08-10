@@ -44,6 +44,27 @@ o...
 
 ------------x--------------
 
+- En vez de crear una migracion con el nombre de la clase ..... hacer como Laravel 9 que las crea anonimas instanciando directamente el objeto o buscar otra solucion similar a fin de evitar "colision de nombres" al hacer los includes!
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('representate_legal', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->string('tipo_doc', 20) ;
+            ...
+        }
+    }
+
+};
+          
+            
 - Incorporar "switches" incorporados en el plugin "Import quoter cl" en el Bt5Form !!
 
 - ACL

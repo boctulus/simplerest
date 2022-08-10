@@ -14,6 +14,8 @@ class __NAME__ implements ISchema
 
 			'id_name'		=> __ID__,
 
+			'fields'		=> __FIELDS__,
+
 			'attr_types'	=> __ATTR_TYPES__,
 
 			'primary'		=> __PRIMARY__,
@@ -21,6 +23,8 @@ class __NAME__ implements ISchema
 			'autoincrement' => __AUTOINCREMENT__,
 
 			'nullable'		=> __NULLABLES__,
+
+			'required'		=> __REQUIRED__,
 
 			'uniques'		=> __UNIQUES__,
 

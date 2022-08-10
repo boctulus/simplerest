@@ -9928,8 +9928,6 @@ class DumbController extends Controller
     }
 
     function get_alltables(){
-        DB::getDefaultConnection();
-
         $names = DB::getTableNames('mpo');
 
         foreach ($names as $name){

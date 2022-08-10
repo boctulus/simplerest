@@ -6,13 +6,15 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class GeneroSchema implements ISchema
+class NivelesEscolaridadSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'genero',
+			'table_name'	=> 'niveles_escolaridad',
 
 			'id_name'		=> 'id',
+
+			'fields'		=> ['id', 'nombre', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -27,11 +29,13 @@ class GeneroSchema implements ISchema
 
 			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
+			'required'		=> ['nombre'],
+
 			'uniques'		=> ['nombre'],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
-				'nombre' => ['type' => 'str', 'max' => 30, 'required' => true],
+				'nombre' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
@@ -39,10 +43,28 @@ class GeneroSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				
+				'representantes_legales' => [
+					['representantes_legales.nivel_escolaridad_id','niveles_escolaridad.id']
+				]
 			],
 
 			'expanded_relationships' => array (
+  'representantes_legales' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'representantes_legales',
+        1 => 'nivel_escolaridad_id',
+      ),
+      1 => 
+      array (
+        0 => 'niveles_escolaridad',
+        1 => 'id',
+      ),
+    ),
+  ),
 ),
 
 			'relationships_from' => [

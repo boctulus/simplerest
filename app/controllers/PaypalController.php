@@ -17,10 +17,15 @@ class PaypalController extends MyController
     static protected $per   = 5.7;
     static protected $fixed = 1;
     static protected $round_fn = 'floor';
+    static protected $paypal_me = 'paypal.me/binsolver';
 
     function __construct()
     {
         parent::__construct();        
+    }
+
+    function index(){
+        return 'https://'.static::$paypal_me;
     }
 
     /*

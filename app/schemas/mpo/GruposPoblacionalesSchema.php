@@ -14,6 +14,8 @@ class GruposPoblacionalesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'nombre', 'created_at', 'updated_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'nombre' => 'STR',
@@ -27,6 +29,8 @@ class GruposPoblacionalesSchema implements ISchema
 
 			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
+			'required'		=> ['nombre'],
+
 			'uniques'		=> ['nombre'],
 
 			'rules' 		=> [
@@ -39,10 +43,28 @@ class GruposPoblacionalesSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				
+				'entidades_registrantes' => [
+					['entidades_registrantes.grupo_poblacional_id','grupos_poblacionales.id']
+				]
 			],
 
 			'expanded_relationships' => array (
+  'entidades_registrantes' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'entidades_registrantes',
+        1 => 'grupo_poblacional_id',
+      ),
+      1 => 
+      array (
+        0 => 'grupos_poblacionales',
+        1 => 'id',
+      ),
+    ),
+  ),
 ),
 
 			'relationships_from' => [
