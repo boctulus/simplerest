@@ -7723,18 +7723,18 @@ class DumbController extends Controller
         d(Reflector::getConstructor(\simplerest\libs\Foo2::class));
     }
 
-    function test_container()
-    {
-        Container::bind('foo', function () {
-            return new Foo();
-        });
+    // function test_container()
+    // {
+    //     Container::bind('foo', function () {
+    //         return new Foo();
+    //     });
 
-        $foo = Container::make('foo');
-        print_r($foo->bar());
+    //     $foo = Container::make('foo');
+    //     print_r($foo->bar());
 
-        $foo = Container::make('foo');
-        print_r($foo->bar());
-    }
+    //     $foo = Container::make('foo');
+    //     print_r($foo->bar());
+    // }
 
     function test_container2()
     {
@@ -9933,6 +9933,11 @@ class DumbController extends Controller
         foreach ($names as $name){
             print_r("->addResourcePermissions('$name', ['read_all', 'write'])\r\n");
         }
+    }
+
+    function process_schemas(){
+        $files = Schema::getSchemaFiles('mpo');
+        dd($files, 'FILES');
     }
 
 
