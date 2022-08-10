@@ -6,11 +6,11 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class CertificacionesQueEmiteOrgComunalSchema implements ISchema
+class SubregionesSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'certificaciones_que_emite_org_comunal',
+			'table_name'	=> 'subregiones',
 
 			'id_name'		=> 'id',
 
@@ -35,7 +35,7 @@ class CertificacionesQueEmiteOrgComunalSchema implements ISchema
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
-				'nombre' => ['type' => 'str', 'max' => 60, 'required' => true],
+				'nombre' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
@@ -44,7 +44,7 @@ class CertificacionesQueEmiteOrgComunalSchema implements ISchema
 
 			'relationships' => [
 				'org_comunales' => [
-					['org_comunales.certificacion_que_emite_org_comunal_id','certificaciones_que_emite_org_comunal.id']
+					['org_comunales.subregion_id','subregiones.id']
 				]
 			],
 
@@ -56,11 +56,11 @@ class CertificacionesQueEmiteOrgComunalSchema implements ISchema
       0 => 
       array (
         0 => 'org_comunales',
-        1 => 'certificacion_que_emite_org_comunal_id',
+        1 => 'subregion_id',
       ),
       1 => 
       array (
-        0 => 'certificaciones_que_emite_org_comunal',
+        0 => 'subregiones',
         1 => 'id',
       ),
     ),

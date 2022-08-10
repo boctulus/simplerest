@@ -4878,6 +4878,9 @@ Para generar schemas o models de una DB que no es la default se debe especificar
 	php com make schema cotizaciones --from:db3
 	php com make model cotizaciones --from:db3
 
+Para el caso en que querramos generar el schema con un nombre distinto al de la tabla y siempre teniendo en cuenta que para usarlo en el modelo es necesario que esté correctamente referenciado:
+
+    php com make schema cotizacion --table=mis_cotizaciones --from:mpo
 
 # No sobre-escribir archivos
 
