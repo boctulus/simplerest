@@ -2041,5 +2041,28 @@ class Schema
 		return $this->prev_schema;
 	}
 
+	/*
+		Return array of all schema files
+	*/
+	static function getSchemaFiles($conn_id = null){
+		if ($conn_id === null){
+			$conn_id = DB::getCurrentConnectionId();
+		}
+
+		$files = Files::glob(SCHEMA_PATH . $conn_id, '*.php');
+
+        $excluded = ['Pivots.php', 'Relations.php'];
+        
+        foreach ($files as $ix => $file){
+            foreach ($excluded as $exclude){
+                if (Strings::endsWith($exclude, $file)){
+                    unset($files[$ix]);
+                }
+            }            
+        }
+
+		return $files;
+	}
+
 }
 
