@@ -3272,5 +3272,4 @@ class Model {
 	function getConn(){
 		return $this->conn;
 	}
-
 }
