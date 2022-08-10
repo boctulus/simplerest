@@ -6,19 +6,22 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class EstadoLaboralSchema implements ISchema
+class ProyectosEjecutadosCooperacionSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'estados_laborales',
+			'table_name'	=> 'proyectos_ejecutados_cooperacion',
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'nombre', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'anno', 'duracion', 'valor', 'entidad', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'nombre' => 'STR',
+				'anno' => 'INT',
+				'duracion' => 'STR',
+				'valor' => 'INT',
+				'entidad' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -29,13 +32,16 @@ class EstadoLaboralSchema implements ISchema
 
 			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
-			'required'		=> ['nombre'],
+			'required'		=> ['anno', 'duracion', 'valor', 'entidad'],
 
-			'uniques'		=> ['nombre'],
+			'uniques'		=> [],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
-				'nombre' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'anno' => ['type' => 'int', 'required' => true],
+				'duracion' => ['type' => 'str', 'max' => 30, 'required' => true],
+				'valor' => ['type' => 'int', 'required' => true],
+				'entidad' => ['type' => 'str', 'max' => 40, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
@@ -43,28 +49,10 @@ class EstadoLaboralSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				'representantes_legales' => [
-					['representantes_legales.estado_laboral_id','estados_laborales.id']
-				]
+				
 			],
 
 			'expanded_relationships' => array (
-  'representantes_legales' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'representantes_legales',
-        1 => 'estado_laboral_id',
-      ),
-      1 => 
-      array (
-        0 => 'estados_laborales',
-        1 => 'id',
-      ),
-    ),
-  ),
 ),
 
 			'relationships_from' => [

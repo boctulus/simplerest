@@ -540,7 +540,7 @@ class Schema
 	}	
 
 	function id(){		
-		$this->int('id');
+		$this->bigint('id')->unsigned();
 		$this->primary();
 		return $this;		
 	}

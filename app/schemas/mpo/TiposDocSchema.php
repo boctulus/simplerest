@@ -6,11 +6,11 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class CertificacionesQueEmiteOrgComunalSchema implements ISchema
+class TiposDocSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'certificaciones_que_emite_org_comunal',
+			'table_name'	=> 'tipos_doc',
 
 			'id_name'		=> 'id',
 
@@ -35,7 +35,7 @@ class CertificacionesQueEmiteOrgComunalSchema implements ISchema
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
-				'nombre' => ['type' => 'str', 'max' => 60, 'required' => true],
+				'nombre' => ['type' => 'str', 'max' => 40, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
@@ -43,24 +43,24 @@ class CertificacionesQueEmiteOrgComunalSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				'org_comunales' => [
-					['org_comunales.certificacion_que_emite_org_comunal_id','certificaciones_que_emite_org_comunal.id']
+				'representantes_legales' => [
+					['representantes_legales.tipo_doc_id','tipos_doc.id']
 				]
 			],
 
 			'expanded_relationships' => array (
-  'org_comunales' => 
+  'representantes_legales' => 
   array (
     0 => 
     array (
       0 => 
       array (
-        0 => 'org_comunales',
-        1 => 'certificacion_que_emite_org_comunal_id',
+        0 => 'representantes_legales',
+        1 => 'tipo_doc_id',
       ),
       1 => 
       array (
-        0 => 'certificaciones_que_emite_org_comunal',
+        0 => 'tipos_doc',
         1 => 'id',
       ),
     ),
