@@ -6,19 +6,19 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class EstadoLaboralSchema implements ISchema
+class CoberturasTerritorialesSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'estados_laborales',
+			'table_name'	=> 'coberturas_territoriales',
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'nombre', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'territorios', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
-				'nombre' => 'STR',
+				'territorios' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -29,13 +29,13 @@ class EstadoLaboralSchema implements ISchema
 
 			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
-			'required'		=> ['nombre'],
+			'required'		=> ['territorios'],
 
-			'uniques'		=> ['nombre'],
+			'uniques'		=> [],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
-				'nombre' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'territorios' => ['type' => 'str', 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
@@ -43,28 +43,10 @@ class EstadoLaboralSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				'representantes_legales' => [
-					['representantes_legales.estado_laboral_id','estados_laborales.id']
-				]
+				
 			],
 
 			'expanded_relationships' => array (
-  'representantes_legales' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'representantes_legales',
-        1 => 'estado_laboral_id',
-      ),
-      1 => 
-      array (
-        0 => 'estados_laborales',
-        1 => 'id',
-      ),
-    ),
-  ),
 ),
 
 			'relationships_from' => [

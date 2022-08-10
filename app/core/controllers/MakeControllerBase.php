@@ -159,6 +159,10 @@ class MakeControllerBase extends Controller
         make api all --from:some_conn_id [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
         <-- "from:" is required in this case.]
+        
+        make schema generos --from:mpo
+        make schema genero --table=generos --from:mpo
+        make schema all --from:mpo
 
         make widget [ --include-js | --js ]
              
@@ -922,9 +926,10 @@ class MakeControllerBase extends Controller
     {
         $unignore = false;
         $remove   = null;
+        $table    = null;
 
         foreach ($opt as $o){            
-            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_-]+)$/', $o, $matches)){
+            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $from_db = $matches[1];
                 DB::getConnection($from_db);
             }
@@ -936,13 +941,17 @@ class MakeControllerBase extends Controller
             if (preg_match('/^(--remove|--erase|--delete)$/', $o)){
                 $remove = true;
             }
+
+            if (preg_match('/^--table[=|:]([a-z][a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
+                $table = $matches[1];
+            }
         }
 
         if (!isset($from_db)){
             $from_db = get_default_connection_id();
         }
 
-        if ($name == 'all'){
+        if (empty($table) && $name == 'all'){
             $tables = Schema::getTables();
 
             foreach ($tables as $table){
@@ -954,7 +963,11 @@ class MakeControllerBase extends Controller
             return;
         }
 
-        $this->setup($name);    
+        $this->setup($name);
+
+        if (!empty($table)){
+            $name = $table;
+        }
 
         if (!Schema::hasTable($name)){
             StdOut::pprint("Table '$name' not found. It's case sensitive\r\n");
@@ -991,7 +1004,7 @@ class MakeControllerBase extends Controller
             }
         } 
         
-        $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
+        $protected = false;
         $remove    = $this->forDeletion($filename, $dest_path, $opt);
 
         if ($remove){
@@ -1001,8 +1014,10 @@ class MakeControllerBase extends Controller
 
         $db = DB::database();  
 
+        $_table = !empty($table) ? $table : $this->snake_case;
+
         try {
-            $fields = DB::select("SHOW COLUMNS FROM $db.{$this->snake_case}", [], 'ASSOC', $from_db);
+            $fields = DB::select("SHOW COLUMNS FROM $db.{$_table}", [], 'ASSOC', $from_db);
         } catch (\Exception $e) {
             StdOut::pprint('[ SQL Error ] '. DB::getLog(). "\r\n");
             StdOut::pprint($e->getMessage().  "\r\n");
@@ -1061,7 +1076,6 @@ class MakeControllerBase extends Controller
             }                
 
             if ($field['Extra'] == 'auto_increment') { 
-                //$not_fillable[] = $field['Field'];
                 $nullables[] = $field_name;
                 $autoinc     = $field_name;
             }
@@ -1219,6 +1233,8 @@ class MakeControllerBase extends Controller
         $attr_types = "[\r\n". implode(",\r\n", $_attr_types). "\r\n\t\t\t]";
         $rules  = "[\r\n". implode(",\r\n", $_rules). "\r\n\t\t\t]";
 
+        // Non-nullables
+        $required = array_diff($field_names, $nullables);
 
         /*
             Relationships
@@ -1258,13 +1274,14 @@ class MakeControllerBase extends Controller
         $expanded_relations_from = Strings::tabulate(var_export(Schema::getAllRelations($name, false, false), true), 4, 0);
         
         
-        Strings::replace('__TABLE_NAME__', "'{$this->snake_case}'", $file);  
+        Strings::replace('__TABLE_NAME__', "'$_table'", $file);  
         Strings::replace('__ID__', !empty($id_name) ? "'$id_name'" : 'null', $file);   
-        Strings::replace('__AUTOINCREMENT__', !empty($autoinc) ? "'$autoinc'" : 'null', $file);       
+        Strings::replace('__AUTOINCREMENT__', !empty($autoinc) ? "'$autoinc'" : 'null', $file);
+        Strings::replace('__FIELDS__', '[' . implode(', ', Strings::enclose($field_names, "'")) . ']' , $file);    
         Strings::replace('__ATTR_TYPES__', $attr_types, $file);
         Strings::replace('__PRIMARY__', '['. implode(', ',array_map($escf,  $pri_components)). ']',$file);
         Strings::replace('__NULLABLES__', '['. implode(', ',array_map($escf, $nullables)). ']',$file);        
-        //Strings::replace('__NOT_FILLABLE__', '['.implode(', ',array_map($escf, $not_fillable)). ']',$file);
+        Strings::replace('__REQUIRED__', '[' . implode(', ', Strings::enclose($required, "'")) . ']',$file);
         Strings::replace('__UNIQUES__', '['. implode(', ',array_map($escf,  $uniques)). ']',$file);
         Strings::replace('__RULES__', $rules, $file);
         Strings::replace('__FKS__', '['. implode(', ',array_map($escf,  $fks)). ']',$file);
@@ -1274,7 +1291,8 @@ class MakeControllerBase extends Controller
         Strings::replace('__EXPANDED_RELATIONS_FROM__', $expanded_relations_from, $file);
         
         $ok = $this->write($dest_path, $file, $protected);
-    }
+
+    } // end function
 
     protected function getUuid(){
         $db = DB::database();      

@@ -400,6 +400,9 @@ class Strings
 		return $res;		
 	}
 
+	/*
+		Wrap target with delimeter(s)
+	*/
 	static function enclose($target, string $delimeter, $delimeter2 = null){
 		if (empty($delimeter2)){
 			$delimeter2 = $delimeter;

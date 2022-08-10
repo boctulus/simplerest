@@ -14,6 +14,8 @@ class InstrumentosPlaneacionSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'nombre', 'created_at', 'updated_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'nombre' => 'STR',
@@ -27,11 +29,13 @@ class InstrumentosPlaneacionSchema implements ISchema
 
 			'nullable'		=> ['id', 'created_at', 'updated_at'],
 
+			'required'		=> ['nombre'],
+
 			'uniques'		=> ['nombre'],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
-				'nombre' => ['type' => 'str', 'max' => 20, 'required' => true],
+				'nombre' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
@@ -39,10 +43,28 @@ class InstrumentosPlaneacionSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				
+				'org_comunales' => [
+					['org_comunales.instrumento_planeacion_id','instrumentos_planeacion.id']
+				]
 			],
 
 			'expanded_relationships' => array (
+  'org_comunales' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'org_comunales',
+        1 => 'instrumento_planeacion_id',
+      ),
+      1 => 
+      array (
+        0 => 'instrumentos_planeacion',
+        1 => 'id',
+      ),
+    ),
+  ),
 ),
 
 			'relationships_from' => [
