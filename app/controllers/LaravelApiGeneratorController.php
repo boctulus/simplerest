@@ -206,8 +206,14 @@ class LaravelApiGeneratorController extends MyController
                 api.php
             */
 
-            d("Route::resource('$table_name', App\\Http\\Controllers\\$ctrl_name::class);");
+            $routes[] = "Route::resource('$table_name', App\\Http\\Controllers\\{$model_name}Controller::class);";
         }
+
+        dd("app.php | routes");
+        foreach ($routes as $route){
+            print_r($route."\r\n");
+        }
+         
     }
 }
 
