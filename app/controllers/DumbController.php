@@ -9936,8 +9936,26 @@ class DumbController extends Controller
     }
 
     function process_schemas(){
-        $files = Schema::getSchemaFiles('mpo');
-        dd($files, 'FILES');
+        $conn_id = 'mpo';
+
+        $paths = Schema::getSchemaFiles($conn_id);
+
+        foreach ($paths as $path){
+            $path       = str_replace('\\', '/', $path);
+            $filename   = Strings::last($path, '/');
+            $class_name = Strings::beforeLast($filename, '.php'); 
+
+            $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $class_name;
+            include $path;
+
+            $schema = $class_name_full::get();
+
+            $fields    = $schema['fields'];
+            $fillables = array_diff($fields, ['created_at', 'updated_at', 'deleted_at'], [ $schema['id_name'] ]);
+
+            d($fillables, 'FILLABLES');
+            //exit;
+        }
     }
 
 
