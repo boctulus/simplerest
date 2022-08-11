@@ -93,12 +93,12 @@ return [
 		],
 
 		'mpo' => [
-			'host'		=> env('DB_HOST_MPO', '127.0.0.1'),
-			'port'		=> env('DB_PORT_MPO'),
-			'driver' 	=> env('DB_CONNECTION_MPO'),
-			'db_name' 	=> env('DB_NAME_MPO'),
-			'user'		=> env('DB_USERNAME_MPO'), 
-			'pass'		=> env('DB_PASSWORD_MPO'),
+			'host'		=> env('DB_HOST_MPO_DOCKER', '127.0.0.1'),
+			'port'		=> env('DB_PORT_MPO_DOCKER'),
+			'driver' 	=> env('DB_CONNECTION_MPO_DOCKER'),
+			'db_name' 	=> env('DB_NAME_MPO_DOCKER'),
+			'user'		=> env('DB_USERNAME_MPO_DOCKER'), 
+			'pass'		=> env('DB_PASSWORD_MPO_DOCKER'),
 			'charset'	=> 'utf8',
 			//'schema'	=> 'az',  
 			'pdo_options' => [

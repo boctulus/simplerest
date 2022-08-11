@@ -144,6 +144,7 @@ en /commands/make
     }
   } 
   
+Estos comandos serian como de Artisan en el sentido de que permitirian des-agregar MakeControllerBase.
 
 - Incluir la definición exacta del campo en el motor de base de datos en los schemas. Ej:
 
@@ -180,6 +181,43 @@ Actualmente debe hacerse con selectRaw()
     ->whereNotNull('name')
     ->get();
 
+
+- Sigo sin entender qu'e ventaja tiene hacer esto:
+
+  <?php
+
+  namespace simplerest\schemas\mpo;
+
+  use simplerest\core\interfaces\ISchema;
+
+  class CertificacionesQueEmiteOrgComunalSchema implements ISchema
+  { 
+    static function get(){
+      return [
+        ...
+      ];
+  }
+
+pudiendo hacer......
+
+<?php
+
+	return [
+    ...
+  ];
+
+La primera forma implica determinar el nombre de la clase y el namespace a fin de poder llamar a get() lo cual es tiempo de ejecucion desperdiciado:
+
+  $path       = str_replace('\\', '/', $path);
+  $filename   = Strings::last($path, '/');
+  $class_name = Strings::beforeLast($filename, '.php'); 
+
+  $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $class_name;
+  include $path;
+
+  $schema = $class_name_full::get();
+
+Cambiarlo va a impactar en varias funciones y m'etodos que tocar'a revisar.
 
 - Mover SendinBlue de dentro de "libs" a "packages" para evitar haga ruido ahí.
 
