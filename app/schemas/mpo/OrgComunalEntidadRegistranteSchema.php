@@ -14,7 +14,7 @@ class OrgComunalEntidadRegistranteSchema implements ISchema
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'tipo_vinculo', 'cant_personas', 'org_comunal_id', 'entidad_registrante_id', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'tipo_vinculo', 'cant_personas', 'org_comunal_id', 'entidad_registrante_id', 'deleted_at', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -22,6 +22,7 @@ class OrgComunalEntidadRegistranteSchema implements ISchema
 				'cant_personas' => 'INT',
 				'org_comunal_id' => 'INT',
 				'entidad_registrante_id' => 'INT',
+				'deleted_at' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -30,7 +31,7 @@ class OrgComunalEntidadRegistranteSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'deleted_at', 'created_at', 'updated_at'],
 
 			'required'		=> ['tipo_vinculo', 'cant_personas', 'org_comunal_id', 'entidad_registrante_id'],
 
@@ -42,6 +43,7 @@ class OrgComunalEntidadRegistranteSchema implements ISchema
 				'cant_personas' => ['type' => 'int', 'required' => true],
 				'org_comunal_id' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'entidad_registrante_id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'deleted_at' => ['type' => 'timestamp'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],

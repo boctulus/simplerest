@@ -14,7 +14,7 @@ class EntidadesRegistrantesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'num_radicado', 'fecha_registro', '_cert_vigente_gob', 'sede_organizacion', 'actividades', 'portafolio_servicios', 'presencia_geografica', 'grupo_poblacional_id', 'mision', 'vision', 'objetivos', 'cant_miembros', 'organo_direccion', 'cant_miembros_organo_dir', '_completo_organo_dir', 'como_elige_organo_dir', 'denominacion_organo_dir', 'frec_reunion_organo_dir', 'frec_reunion_miembros', 'tiempo_formulacion', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'num_radicado', 'fecha_registro', '_cert_vigente_gob', 'sede_organizacion', 'actividades', 'portafolio_servicios', 'presencia_geografica', 'grupo_poblacional_id', 'mision', 'vision', 'objetivos', 'cant_miembros', 'organo_direccion', 'cant_miembros_organo_dir', '_completo_organo_dir', 'como_elige_organo_dir', 'denominacion_organo_dir', 'frec_reunion_organo_dir', 'frec_reunion_miembros', 'tiempo_formulacion', 'deleted_at', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -38,6 +38,7 @@ class EntidadesRegistrantesSchema implements ISchema
 				'frec_reunion_organo_dir' => 'STR',
 				'frec_reunion_miembros' => 'STR',
 				'tiempo_formulacion' => 'STR',
+				'deleted_at' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -46,7 +47,7 @@ class EntidadesRegistrantesSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'portafolio_servicios', 'presencia_geografica', 'mision', 'vision', 'objetivos', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'portafolio_servicios', 'presencia_geografica', 'mision', 'vision', 'objetivos', 'deleted_at', 'created_at', 'updated_at'],
 
 			'required'		=> ['num_radicado', 'fecha_registro', '_cert_vigente_gob', 'sede_organizacion', 'actividades', 'grupo_poblacional_id', 'cant_miembros', 'organo_direccion', 'cant_miembros_organo_dir', '_completo_organo_dir', 'como_elige_organo_dir', 'denominacion_organo_dir', 'frec_reunion_organo_dir', 'frec_reunion_miembros', 'tiempo_formulacion'],
 
@@ -74,6 +75,7 @@ class EntidadesRegistrantesSchema implements ISchema
 				'frec_reunion_organo_dir' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'frec_reunion_miembros' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'tiempo_formulacion' => ['type' => 'str', 'max' => 255, 'required' => true],
+				'deleted_at' => ['type' => 'timestamp'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],

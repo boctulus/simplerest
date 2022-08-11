@@ -14,11 +14,12 @@ class MunicipiosSchema implements ISchema
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'nombre', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'nombre', 'deleted_at', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
 				'nombre' => 'STR',
+				'deleted_at' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -27,7 +28,7 @@ class MunicipiosSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'deleted_at', 'created_at', 'updated_at'],
 
 			'required'		=> ['nombre'],
 
@@ -36,6 +37,7 @@ class MunicipiosSchema implements ISchema
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
 				'nombre' => ['type' => 'str', 'max' => 60, 'required' => true],
+				'deleted_at' => ['type' => 'timestamp'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
@@ -43,31 +45,15 @@ class MunicipiosSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				'org_comunales' => [
-					['org_comunales.municipio_id','municipios.id']
-				],
 				'representantes_legales' => [
 					['representantes_legales.municipio_exp_id','municipios.id']
+				],
+				'org_comunales' => [
+					['org_comunales.municipio_id','municipios.id']
 				]
 			],
 
 			'expanded_relationships' => array (
-  'org_comunales' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'org_comunales',
-        1 => 'municipio_id',
-      ),
-      1 => 
-      array (
-        0 => 'municipios',
-        1 => 'id',
-      ),
-    ),
-  ),
   'representantes_legales' => 
   array (
     0 => 
@@ -76,6 +62,22 @@ class MunicipiosSchema implements ISchema
       array (
         0 => 'representantes_legales',
         1 => 'municipio_exp_id',
+      ),
+      1 => 
+      array (
+        0 => 'municipios',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'org_comunales' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'org_comunales',
+        1 => 'municipio_id',
       ),
       1 => 
       array (
