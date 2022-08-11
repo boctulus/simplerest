@@ -14,7 +14,7 @@ class ProyectosEjecutadosRecurPublicosSchema implements ISchema
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'anno', 'duracion', 'valor', 'entidad', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'anno', 'duracion', 'valor', 'entidad', 'deleted_at', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -22,6 +22,7 @@ class ProyectosEjecutadosRecurPublicosSchema implements ISchema
 				'duracion' => 'STR',
 				'valor' => 'INT',
 				'entidad' => 'STR',
+				'deleted_at' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -30,7 +31,7 @@ class ProyectosEjecutadosRecurPublicosSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'deleted_at', 'created_at', 'updated_at'],
 
 			'required'		=> ['anno', 'duracion', 'valor', 'entidad'],
 
@@ -42,6 +43,7 @@ class ProyectosEjecutadosRecurPublicosSchema implements ISchema
 				'duracion' => ['type' => 'str', 'max' => 30, 'required' => true],
 				'valor' => ['type' => 'int', 'required' => true],
 				'entidad' => ['type' => 'str', 'max' => 40, 'required' => true],
+				'deleted_at' => ['type' => 'timestamp'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
