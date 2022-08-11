@@ -14,11 +14,12 @@ class GenerosSchema implements ISchema
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'nombre', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'nombre', 'deleted_at', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
 				'nombre' => 'STR',
+				'deleted_at' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -27,7 +28,7 @@ class GenerosSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'deleted_at', 'created_at', 'updated_at'],
 
 			'required'		=> ['nombre'],
 
@@ -36,6 +37,7 @@ class GenerosSchema implements ISchema
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
 				'nombre' => ['type' => 'str', 'max' => 30, 'required' => true],
+				'deleted_at' => ['type' => 'timestamp'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],

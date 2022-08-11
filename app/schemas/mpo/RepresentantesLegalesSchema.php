@@ -14,7 +14,7 @@ class RepresentantesLegalesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'tipo_doc_id', 'nro_doc', 'departamento_exp_id', 'municipio_exp_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'genero_id', 'profesion_oficio', 'tarjeta_profesional', 'estado_civil_id', 'estado_laboral_id', 'tel_fijo', 'tel_celular', 'email', 'direccion', 'zona', 'barrio', 'sabe_leer', 'sabe_escribir', 'nivel_escolaridad_id', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'tipo_doc_id', 'nro_doc', 'departamento_exp_id', 'municipio_exp_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'genero_id', 'profesion_oficio', 'tarjeta_profesional', 'estado_civil_id', 'estado_laboral_id', 'tel_fijo', 'tel_celular', 'email', 'direccion', 'zona', 'barrio', 'sabe_leer', 'sabe_escribir', 'nivel_escolaridad_id', 'deleted_at', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -39,6 +39,7 @@ class RepresentantesLegalesSchema implements ISchema
 				'sabe_leer' => 'INT',
 				'sabe_escribir' => 'INT',
 				'nivel_escolaridad_id' => 'INT',
+				'deleted_at' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -47,7 +48,7 @@ class RepresentantesLegalesSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'tel_fijo', 'zona', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'tel_fijo', 'zona', 'deleted_at', 'created_at', 'updated_at'],
 
 			'required'		=> ['tipo_doc_id', 'nro_doc', 'departamento_exp_id', 'municipio_exp_id', 'nombres', 'apellidos', 'fecha_nacimiento', 'genero_id', 'profesion_oficio', 'tarjeta_profesional', 'estado_civil_id', 'estado_laboral_id', 'tel_celular', 'email', 'direccion', 'barrio', 'sabe_leer', 'sabe_escribir', 'nivel_escolaridad_id'],
 
@@ -76,6 +77,7 @@ class RepresentantesLegalesSchema implements ISchema
 				'sabe_leer' => ['type' => 'bool', 'required' => true],
 				'sabe_escribir' => ['type' => 'bool', 'required' => true],
 				'nivel_escolaridad_id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'deleted_at' => ['type' => 'timestamp'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],

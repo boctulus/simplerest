@@ -14,7 +14,7 @@ class OrgComunalesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'nombre_org_comunal', 'fecha_aplicacion', 'zona', 'comuna_corregimiento', 'direccion', 'departamento_id', 'subregion_id', 'municipio_id', 'representante_legal_id', 'tipo_organismo_org_comunal_id', 'estado_seguimiento_id', 'institucion_avalante', 'sector_actividad_org_comunal_id', 'objetivo_social', 'certificacion_que_emite_org_comunal_id', 'areas_tematicas', 'fortalezas_organizacion', 'redes', '_tiene_estatutos', '_registrada_camara_com', 'num_radicado_camara_com', 'porc_cumpl_plan_ult_anno', 'plan_de_trabajo', 'plan_de_trabajo_pla_pub', 'plan_de_trabajo_pol_pub', 'instrumento_planeacion_id', 'recursos_economicos', 'fuentes_financiacion', 'prespuesto_anual', '_recursos_propios', 'proyectos_ejecutados_rec_propios', 'proyectos_ejecutados_rec_publicos', 'proyectos_ejecutados_cooperacion', '_registro_ingresos_y_gastos', '_obligaciones_tributarias', '_contador', 'actividades_conjuntas_privadas', 'actividades_conjuntas_publicas', 'actividades_conjuntas_otras_org', 'escala_territorial_id', 'medios_promocion', 'link_canal_emisora', '_rendicion_cuentas', 'ultima_rend_cuenta', 'acciones_control_social', 'necesidades_asesoria', 'puntuacion', 'nivel_id', 'created_at', 'updated_at'],
+			'fields'		=> ['id', 'nombre_org_comunal', 'fecha_aplicacion', 'zona', 'comuna_corregimiento', 'direccion', 'departamento_id', 'subregion_id', 'municipio_id', 'representante_legal_id', 'tipo_organismo_org_comunal_id', 'estado_seguimiento_id', 'institucion_avalante', 'sector_actividad_org_comunal_id', 'objetivo_social', 'certificacion_que_emite_org_comunal_id', 'areas_tematicas', 'fortalezas_organizacion', 'redes', '_tiene_estatutos', '_registrada_camara_com', 'num_radicado_camara_com', 'porc_cumpl_plan_ult_anno', 'plan_de_trabajo', 'plan_de_trabajo_pla_pub', 'plan_de_trabajo_pol_pub', 'instrumento_planeacion_id', 'recursos_economicos', 'fuentes_financiacion', 'prespuesto_anual', '_recursos_propios', 'proyectos_ejecutados_rec_propios', 'proyectos_ejecutados_rec_publicos', 'proyectos_ejecutados_cooperacion', '_registro_ingresos_y_gastos', '_obligaciones_tributarias', '_contador', 'actividades_conjuntas_privadas', 'actividades_conjuntas_publicas', 'actividades_conjuntas_otras_org', 'escala_territorial_id', 'medios_promocion', 'link_canal_emisora', '_rendicion_cuentas', 'ultima_rend_cuenta', 'acciones_control_social', 'necesidades_asesoria', 'puntuacion', 'nivel_id', 'deleted_at', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -66,6 +66,7 @@ class OrgComunalesSchema implements ISchema
 				'necesidades_asesoria' => 'STR',
 				'puntuacion' => 'STR',
 				'nivel_id' => 'INT',
+				'deleted_at' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -74,7 +75,7 @@ class OrgComunalesSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'zona', 'institucion_avalante', 'redes', 'num_radicado_camara_com', 'recursos_economicos', 'fuentes_financiacion', 'proyectos_ejecutados_rec_propios', 'proyectos_ejecutados_rec_publicos', 'proyectos_ejecutados_cooperacion', 'actividades_conjuntas_privadas', 'actividades_conjuntas_publicas', 'actividades_conjuntas_otras_org', 'link_canal_emisora', 'acciones_control_social', 'necesidades_asesoria', 'created_at', 'updated_at'],
+			'nullable'		=> ['id', 'zona', 'institucion_avalante', 'redes', 'num_radicado_camara_com', 'recursos_economicos', 'fuentes_financiacion', 'proyectos_ejecutados_rec_propios', 'proyectos_ejecutados_rec_publicos', 'proyectos_ejecutados_cooperacion', 'actividades_conjuntas_privadas', 'actividades_conjuntas_publicas', 'actividades_conjuntas_otras_org', 'link_canal_emisora', 'acciones_control_social', 'necesidades_asesoria', 'deleted_at', 'created_at', 'updated_at'],
 
 			'required'		=> ['nombre_org_comunal', 'fecha_aplicacion', 'comuna_corregimiento', 'direccion', 'departamento_id', 'subregion_id', 'municipio_id', 'representante_legal_id', 'tipo_organismo_org_comunal_id', 'estado_seguimiento_id', 'sector_actividad_org_comunal_id', 'objetivo_social', 'certificacion_que_emite_org_comunal_id', 'areas_tematicas', 'fortalezas_organizacion', '_tiene_estatutos', '_registrada_camara_com', 'porc_cumpl_plan_ult_anno', 'plan_de_trabajo', 'plan_de_trabajo_pla_pub', 'plan_de_trabajo_pol_pub', 'instrumento_planeacion_id', 'prespuesto_anual', '_recursos_propios', '_registro_ingresos_y_gastos', '_obligaciones_tributarias', '_contador', 'escala_territorial_id', 'medios_promocion', '_rendicion_cuentas', 'ultima_rend_cuenta', 'puntuacion', 'nivel_id'],
 
@@ -130,6 +131,7 @@ class OrgComunalesSchema implements ISchema
 				'necesidades_asesoria' => ['type' => 'str', 'max' => 255],
 				'puntuacion' => ['type' => 'str', 'max' => 20, 'required' => true],
 				'nivel_id' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'deleted_at' => ['type' => 'timestamp'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],
