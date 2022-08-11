@@ -100,18 +100,6 @@ class LaravelApiGeneratorController extends MyController
             $uniques   = $schema['uniques'];
             $nullables = $schema['nullable'];
 
-            // d($fillables_str, "{$model_name}.php");
-            
-            /*
-                Artisan commands
-
-                Ej:
-                php artisan make:controller EstadoCivilController --resource --model=EstadoCivil
-            */
-
-            // dd("sail artisan make:controller {$model_name}Controller --resource --model=$model_name");
-            // continue;
-
             /*
                 Reglas de validacion
             */
@@ -213,6 +201,12 @@ class LaravelApiGeneratorController extends MyController
 
             $ok  = file_put_contents($dest, $resource_file);
             dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+
+            /*
+                api.php
+            */
+
+            d("Route::resource('$table_name', App\\Http\\Controllers\\$ctrl_name::class);");
         }
     }
 }
