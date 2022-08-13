@@ -106,6 +106,21 @@ return [
 				\PDO::ATTR_EMULATE_PREPARES => false
 			]
 		],
+
+		'mpp' => [
+			'host'		=> env('DB_HOST', '127.0.0.1'),
+			'port'		=> env('DB_PORT'),
+			'driver' 	=> env('DB_CONNECTION'),
+			'db_name' 	=> 'mp_proyectos',
+			'user'		=> env('DB_USERNAME'), 
+			'pass'		=> env('DB_PASSWORD'),
+			'charset'	=> 'utf8',
+			//'schema'	=> 'az',  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],
 		
 	], 	
 
@@ -128,6 +143,9 @@ return [
 		],
 		'mpo' => [
 			'mpo'
+		],
+		'mpp' => [
+			'mpp'
 		]
     ], 
 	
