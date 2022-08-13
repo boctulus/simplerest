@@ -805,8 +805,8 @@ class Schema
 						// PRIMARY can not be "ADDed"
 						break;
 					case 'INDEX':
-						$constraint = (array_key_first($ix_arr) == 'DEFAULT' ? $ix_arr['DEFAULT']['fields'][0][0] : array_key_first($ix_arr));
-						$nombres_ar = $ix_arr[array_key_first($ix_arr)]['fields'][0];
+						$constraint = (arrayKeyFirst($ix_arr) == 'DEFAULT' ? $ix_arr['DEFAULT']['fields'][0][0] : arrayKeyFirst($ix_arr));
+						$nombres_ar = $ix_arr[arrayKeyFirst($ix_arr)]['fields'][0];
 
 						$nombres = array_map(function($x){ return "`$x`"; }, $nombres_ar);
 						$nombres = implode(',', $nombres);

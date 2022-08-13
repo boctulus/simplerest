@@ -40,7 +40,7 @@ class __CONTROLLER_NAME__ extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate(static::$rules);
+            $validated = $request->validate(static::$store_rules);
         } catch (\Exception $e){
             return new Response([
                 'error' => $e->getMessage()
@@ -56,9 +56,20 @@ class __CONTROLLER_NAME__ extends Controller
      * @param  \App\Models\__MODEL_NAME__  $obj
      * @return \Illuminate\Http\Response
      */
-    public function show(__MODEL_NAME__ $obj)
+    public function show($id)
     {
-        return new __RESOURCE_NAME__($obj);
+        $obj = __MODEL_NAME__::find($id);
+
+        if(!empty($obj))
+        {
+            return response()->json($obj);
+        }
+        else
+        {
+            return response()->json([
+                "mensaje" => "Recurso no encontrado"
+            ], 404);
+        }
     }
 
     /**
@@ -79,15 +90,24 @@ class __CONTROLLER_NAME__ extends Controller
      * @param  \App\Models\__MODEL_NAME__  $obj
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, __MODEL_NAME__ $obj)
+    public function update(Request $request, $id)
     {
         try {
-            $validated = $request->validate(static::$rules);
+            $validated = $request->validate(static::$update_rules);
         } catch (\Exception $e){
             return new Response([
                 'error' => $e->getMessage()
             ], 400);
         }
+
+        $obj = __MODEL_NAME__::find($id);
+
+        if(empty($obj))
+        {
+            return response()->json([
+                "mensaje" => "Recurso no encontrado"
+            ], 404);
+        }      
     
         $obj->update($validated);
         return new __RESOURCE_NAME__($obj);
@@ -107,7 +127,8 @@ class __CONTROLLER_NAME__ extends Controller
             ->delete();
         } catch (\Exception $e){
             return new Response([
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'exito' => false
             ], 400);
         }    
 
