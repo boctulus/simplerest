@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\controllers;
+namespace simplerest\libs;
 
-use simplerest\controllers\MyController;
+use simplerest\core\libs\DB;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Files;
@@ -11,19 +11,46 @@ use simplerest\core\libs\Files;
     Pablo Bozzolo <boctulus@gmail.com>
     Todos los derechos reservados (2022)
 */
-class LaravelApiGeneratorController extends MyController
+class LaravelApiGenerator
 {
-    static protected $laravel_project_path = 'D:/www/organizaciones';
-    static protected $resource_output_path = 'D:/www/organizaciones' . '/app/Http/Resources/';   
-    static protected $ctrl_output_path     = 'D:/www/organizaciones' . '/app/Http/Controllers/';
-    static protected $faker_output_path    = 'D:/www/organizaciones' . '/database/factories/';
-    static protected $seeder_output_path   = 'D:/www/organizaciones' . '/database/seeders/';
-    static protected $conn_id = 'mpo'; 
+    static protected $laravel_project_path;
+    static protected $resource_output_path;   
+    static protected $ctrl_output_path;
+    static protected $faker_output_path;
+    static protected $seeder_output_path;
+    static protected $conn_id; 
 
-    protected $table_models = [];
+    static protected $table_models = [];
+    static protected $excluded = [];
+
+    static function setProjectPath($path){
+        static::$laravel_project_path = $path;
+    }
+
+    static function setResourceDestPath($path){
+        static::$resource_output_path = $path;
+        Files::mkDirOrFail(static::$resource_output_path);
+    }
+
+    static function setControllerDestPath($path){
+        static::$ctrl_output_path = $path;
+    }
+
+    static function setFactoryDestPath($path){
+        static::$faker_output_path = $path;
+    }
+
+    static function setSeederDestPath($path){
+        static::$seeder_output_path = $path;
+    }
+
+    static function setConnId($conn_id){
+        static::$conn_id = $conn_id;
+    }
+
 
     // @return void
-    function get_model_names(){
+    static function get_model_names(){
         $models_path = static::$laravel_project_path . '/'. 'app/Models/';
         $filenames = Files::glob($models_path, '*.php');
 
@@ -32,27 +59,39 @@ class LaravelApiGeneratorController extends MyController
             $file = file_get_contents($filename);
        
             $table_name = Strings::match($file, '/protected \$table[ ]+=[ ]+\'([a-zñ0-9_-]+)\'/');
-            $this->table_models[$table_name] = $model_name;
-        }
-    }
 
-    function index(){
-        $this->process_schemas();
+            // dd($table_name, 'TABLE NAME');
+            // dd($model_name, 'MODEL NAME');
+            
+            if (empty($table_name)){
+                continue;
+            }
+
+            static::$table_models[$table_name] = $model_name;
+        }
     }
 
     /*
         Podria ser un comando
     */
-    function process_schemas(){
-        $write_controllers = true;
-        $write_resources   = false;
-        $write_fakers      = false;
-        $write_seeders     = false;
-        $write_routes      = false;
+    static function process_schemas(){
+        $write_controllers = (static::$ctrl_output_path != null);
+        $write_resources   = (static::$resource_output_path != null);
+        $write_fakers      = (static::$faker_output_path != null);
+        $write_seeders     = (static::$seeder_output_path != null);
+        $write_routes      = ($write_controllers);
 
-        $conn_id = static::$conn_id; // de SimpleRest apuntando al contenedor con Laravel
+        /*
+            Conexion de SimpleRest apuntando a Laravel
+        */
+        
+        $conn_id = static::$conn_id; 
 
-        $excluded = [
+        if (static::$conn_id == null){
+            static::$conn_id = DB::getCurrentConnectionId();
+        }
+
+        static::$excluded = [
             'Users',
             'Migrations',
             'FailedJobs',
@@ -66,7 +105,7 @@ class LaravelApiGeneratorController extends MyController
         $seeder_template_path   = ETC_PATH . "templates/seeder.php";
 
 
-        $this->get_model_names();
+        static::get_model_names();
 
         $ctrl_template     = file_get_contents($ctrl_template_path);        
         $resource_template = file_get_contents($resource_template_path);
@@ -85,7 +124,7 @@ class LaravelApiGeneratorController extends MyController
             $__class_name = Strings::beforeLast($filename, '.php'); 
             $__model_name = Strings::before($__class_name, 'Schema'); 
 
-            if (in_array($__model_name, $excluded)){
+            if (in_array($__model_name, static::$excluded)){
                 continue;
             }
 
@@ -95,7 +134,7 @@ class LaravelApiGeneratorController extends MyController
             $schema = $class_name_full::get();
 
             $table_name = $schema['table_name']; // table name
-            $class_name = $this->table_models[$table_name] ?? null;
+            $class_name = static::$table_models[$table_name] ?? null;
 
             if ($class_name === null){
                 //dd($this->table_models);
@@ -122,6 +161,8 @@ class LaravelApiGeneratorController extends MyController
             /*
                 Reglas de validacion
             */
+
+            dd("Analizando Reglas de Validacion");
 
             $rules = $schema['rules'];
 
@@ -208,6 +249,8 @@ class LaravelApiGeneratorController extends MyController
             */
 
             if ($write_controllers){
+                dd("Generando controladores ...");
+
                 $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_template);
                 $ctrl_file = str_replace('__MODEL_NAME__', $model_name, $ctrl_file);
                 $ctrl_file = str_replace('__VALIDATION_RULES__', $laravel_rules_str, $ctrl_file);
@@ -219,8 +262,6 @@ class LaravelApiGeneratorController extends MyController
                 dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
             }
 
-            continue;
-     
             /*
                 Resource files
             */
@@ -235,16 +276,24 @@ class LaravelApiGeneratorController extends MyController
                 dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
             }
 
+
+            $fillables_as_array_str = '';
+            foreach ($fillables as $f){
+                $fillables_as_array_str .= "'$f' => '[valor]',\r\n";
+            }
+
+            /*
+                Fillables como van en los Modelos !!!!!!!!
+            */
+
+            dd($fillables_str, "{$model_name}.php");
+          
+
             /*
                 Faker files
             */
         
             if ($write_fakers){
-                $fillables_as_array_str = '';
-                foreach ($fillables as $f){
-                    $fillables_as_array_str .= "'$f' => '[valor]',\r\n";
-                }
-
                 $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_template);
                 $faker_file = str_replace('__FIELDS__', $fillables_as_array_str, $faker_file);
 
@@ -263,12 +312,14 @@ class LaravelApiGeneratorController extends MyController
             }
         }
 
-        if ($write_routes){
-            dd("app.php | routes");
+        if (!empty($routes)){
+            dd("routes/api.php | routes");
             foreach ($routes as $route){
                 print_r($route."\r\n");
             }
         }
     }
 }
+
+
 
