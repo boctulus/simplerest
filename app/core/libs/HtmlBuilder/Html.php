@@ -1098,7 +1098,7 @@ class Html
             }
         }
 
-        $a2 = is_array(Arrays::array_value_first($options));
+        $a2 = is_array(Arrays::arrayValueFirst($options));
 
         // options
         $got_selected = false;

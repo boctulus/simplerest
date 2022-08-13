@@ -1809,7 +1809,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }                            
 
                             if ($append_mode == false){
-                                $k = array_key_first($dati);
+                                $k = arrayKeyFirst($dati);
 
                                 if (is_int($k) && is_array($dati[$k])){
                                     $dati_id_col = array_column($dati, 'id_tag');
@@ -1992,7 +1992,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             $diff_left  = [];  // a borrar
                             $diff_right = [];  // a insertar
         
-                            $k = array_key_first($dati);
+                            $k = arrayKeyFirst($dati);
 
                             if (is_int($k) && isset($dati[$k]) && is_array($dati[$k])){
                                 $dati_fk_ids = array_column($dati, $fk_tb);

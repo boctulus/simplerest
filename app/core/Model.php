@@ -2003,7 +2003,7 @@ class Model {
 		$vars   = [];
 		$ops    = [];
 		if (count($conditions)>0){
-			if(is_array($conditions[Arrays::array_key_first($conditions)])){
+			if(is_array($conditions[Arrays::arrayKeyFirst($conditions)])){
 
 				foreach ($conditions as $ix => $cond) {
 					$unqualified_field = $this->unqualifyField($cond[0]);
@@ -2226,7 +2226,7 @@ class Model {
 		foreach ((array) $conditions as $cond)
 		{	
 			if (Arrays::is_assoc($cond)){
-				$cond[0] = Arrays::array_key_first($cond);
+				$cond[0] = Arrays::arrayKeyFirst($cond);
 				$cond[1] = $cond[$cond[0]];
 			}
 			
