@@ -575,7 +575,7 @@ class Bt5Form extends Form
 
         if (count($content) >0){
             $inc = false;
-            if (array_key_first($content) === 0){
+            if (arrayKeyFirst($content) === 0){
                 $inc = true;
             }
 

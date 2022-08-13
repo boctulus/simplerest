@@ -19,27 +19,25 @@ class Arrays
         return array_map('rtrim', $arr);
     }
        
-
     /**
      * Gets the first key of an array
      *
      * @param array $array
      * @return mixed
      */
-    static function array_key_first(array $arr) {
+    static function arrayKeyFirst(array $arr) {
         foreach($arr as $key => $unused) {
             return $key;
         }
-        return NULL;
+        return null;
     }
 
-    static function array_value_first(array $arr) {
+    static function arrayValueFirst(array $arr) {
         foreach($arr as $val) {
             return $val;
         }
-        return NULL;
+        return null;
     }
-
 
     /**
      * shift

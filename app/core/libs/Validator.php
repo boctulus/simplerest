@@ -406,7 +406,7 @@ if (!function_exists('array_key_first')) {
      * @param array $array
      * @return mixed
      */
-    function array_key_first(array $array)
+    function arrayKeyFirst(array $array)
     {
         if (count($array)) {
             reset($array);
