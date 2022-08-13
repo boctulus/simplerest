@@ -13,9 +13,11 @@ use simplerest\core\libs\Files;
 */
 class LaravelApiGeneratorController extends MyController
 {
-    static protected $laravel_project_path = 'D:\\www\\organizaciones';
-    static protected $resource_output_path = 'D:/www\organizaciones/app/Http/Resources/';   
-    static protected $ctrl_output_path     = 'D:/www\organizaciones/app/Http/Controllers/'; 
+    static protected $laravel_project_path = 'D:/www/organizaciones';
+    static protected $resource_output_path = 'D:/www/organizaciones' . '/app/Http/Resources/';   
+    static protected $ctrl_output_path     = 'D:/www/organizaciones' . '/app/Http/Controllers/';
+    static protected $faker_output_path    = 'D:/www/organizaciones' . '/database/factories/';
+    static protected $seeder_output_path   = 'D:/www/organizaciones' . '/database/seeders/';
     static protected $conn_id = 'mpo'; 
 
     protected $table_models = [];
@@ -34,7 +36,20 @@ class LaravelApiGeneratorController extends MyController
         }
     }
 
+    function index(){
+        $this->process_schemas();
+    }
+
+    /*
+        Podria ser un comando
+    */
     function process_schemas(){
+        $write_controllers = true;
+        $write_resources   = false;
+        $write_fakers      = false;
+        $write_seeders     = false;
+        $write_routes      = false;
+
         $conn_id = static::$conn_id; // de SimpleRest apuntando al contenedor con Laravel
 
         $excluded = [
@@ -47,12 +62,16 @@ class LaravelApiGeneratorController extends MyController
 
         $ctrl_template_path     = ETC_PATH . "templates/laravel_resource_controller.php";
         $resource_template_path = ETC_PATH . "templates/larevel_resource.php";
-       
+        $faker_template_path    = ETC_PATH . "templates/faker.php";
+        $seeder_template_path   = ETC_PATH . "templates/seeder.php";
+
 
         $this->get_model_names();
 
         $ctrl_template     = file_get_contents($ctrl_template_path);        
         $resource_template = file_get_contents($resource_template_path);
+        $faker_template    = file_get_contents($faker_template_path);
+        $seeder_template   = file_get_contents($seeder_template_path);
 
 
         /*
@@ -61,8 +80,8 @@ class LaravelApiGeneratorController extends MyController
         $paths = Schema::getSchemaFiles($conn_id);
 
         foreach ($paths as $path){
-            $path       = str_replace('\\', '/', $path);
-            $filename   = Strings::last($path, '/');
+            $path         = str_replace('\\', '/', $path);
+            $filename     = Strings::last($path, '/');
             $__class_name = Strings::beforeLast($filename, '.php'); 
             $__model_name = Strings::before($__class_name, 'Schema'); 
 
@@ -106,13 +125,10 @@ class LaravelApiGeneratorController extends MyController
 
             $rules = $schema['rules'];
 
-            $laravel_rules = [];
+            $laravel_store_rules  = [];
+            $laravel_update_rules = [];
             foreach ($rules as $field => $rule){
-                $r = []; 
-                
-                if (in_array($field, $uniques)){
-                    $r[] = 'unique';
-                }
+                $r = [];                 
                 
                 if (in_array($field, $nullables)){
                     $r[] = 'nullable';
@@ -162,58 +178,97 @@ class LaravelApiGeneratorController extends MyController
                     $r[] = "max:{$rule['max']}";
                 }
 
-                $laravel_rules[$field] = implode('|', $r);
+                // No puede contener el "unique"
+                $laravel_update_rules[$field] = implode('|', $r);
+
+                if (in_array($field, $uniques)){
+                    $r[] = "unique:$table_name,$field";
+                }
+
+                $laravel_store_rules[$field] = implode('|', $r);
             }
 
+            $get_laravel_rules_str = function ($laravel_rules){
+                $laravel_rules_str = '';
+                foreach ($laravel_rules as $f => $r){
+                    $laravel_rules_str .= "\t\t'$f' => '$r',\r\n";
+                }
 
-            $laravel_rules_str = '';
-            foreach ($laravel_rules as $f => $r){
-                $laravel_rules_str .= "\t\t'$f' => '$r',\r\n";
-            }
+                return $laravel_rules_str;
+            };
 
-            $laravel_rules_str = 'static protected $rules = ['."\r\n" . $laravel_rules_str . "\t];\r\n";
+            $laravel_store_rules_str  = $get_laravel_rules_str($laravel_store_rules); 
+            $laravel_update_rules_str = $get_laravel_rules_str($laravel_update_rules); 
 
-            //dd("\r\n".$laravel_rules_str, $model_name);
+            $laravel_rules_str = 'static protected $store_rules = ['."\r\n" . $laravel_store_rules_str . "\t];\r\n\r\n\t" .
+            'static protected $update_rules = ['."\r\n" . $laravel_update_rules_str . "\t];\r\n";
 
             /*
                 Controller files
             */
+
+            if ($write_controllers){
+                $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_template);
+                $ctrl_file = str_replace('__MODEL_NAME__', $model_name, $ctrl_file);
+                $ctrl_file = str_replace('__VALIDATION_RULES__', $laravel_rules_str, $ctrl_file);
+                $ctrl_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $ctrl_file);
+
+                $dest = static::$ctrl_output_path . "{$model_name}Controller.php";
+
+                $ok  = file_put_contents($dest, $ctrl_file);
+                dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+            }
+
+            continue;
      
-            $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_template);
-            $ctrl_file = str_replace('__MODEL_NAME__', $model_name, $ctrl_file);
-            $ctrl_file = str_replace('__VALIDATION_RULES__', $laravel_rules_str, $ctrl_file);
-            $ctrl_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $ctrl_file);
-
-            $ctrl_name  = "{$model_name}Controller.php";
-            $dest = static::$ctrl_output_path . $ctrl_name;
-
-            $ok  = file_put_contents($dest, $ctrl_file);
-            dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
-
             /*
                 Resource files
             */
 
-            $resr_name  = "{$model_name}Resource.php";
-            $dest = static::$resource_output_path . $resr_name;
+            if ($write_resources){
+                $resr_name  = "{$model_name}Resource.php";
+                $dest = static::$resource_output_path . $resr_name;
 
-            $resource_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $resource_template);
+                $resource_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $resource_template);
 
-            $ok  = file_put_contents($dest, $resource_file);
-            dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+                $ok  = file_put_contents($dest, $resource_file);
+                dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+            }
 
+            /*
+                Faker files
+            */
+        
+            if ($write_fakers){
+                $fillables_as_array_str = '';
+                foreach ($fillables as $f){
+                    $fillables_as_array_str .= "'$f' => '[valor]',\r\n";
+                }
+
+                $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_template);
+                $faker_file = str_replace('__FIELDS__', $fillables_as_array_str, $faker_file);
+
+                $dest = static::$faker_output_path . "{$model_name}Factory.php";
+
+                $ok  = file_put_contents($dest, $faker_file);
+                dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+            }
+           
             /*
                 api.php
             */
 
-            $routes[] = "Route::resource('$table_name', App\\Http\\Controllers\\{$model_name}Controller::class);";
+            if ($write_routes){
+                $routes[] = "Route::resource('$table_name', App\\Http\\Controllers\\{$model_name}Controller::class);";
+            }
         }
 
-        dd("app.php | routes");
-        foreach ($routes as $route){
-            print_r($route."\r\n");
+        if ($write_routes){
+            dd("app.php | routes");
+            foreach ($routes as $route){
+                print_r($route."\r\n");
+            }
         }
-         
     }
 }
 

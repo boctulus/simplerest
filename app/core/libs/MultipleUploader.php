@@ -108,7 +108,7 @@ class MultipleUploader
 		Files::mkDirOrFail($this->location);
 		Files::writableOrFail($this->location);
 		
-		$key_0 = Arrays::array_key_first($_FILES);
+		$key_0 = Arrays::arrayKeyFirst($_FILES);
 		$file0 = $_FILES[$key_0]; 
 		$name = $input_name != NULL ? $input_name : $key_0;
 
