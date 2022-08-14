@@ -132,7 +132,6 @@ class LaravelApiGenerator
             //     continue; ///////////
             // }
 
-
             $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $__class_name;
             include $path;
 
