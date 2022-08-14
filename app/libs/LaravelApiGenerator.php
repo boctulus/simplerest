@@ -128,6 +128,11 @@ class LaravelApiGenerator
                 continue;
             }
 
+            // if ($__model_name != 'ProyectosEjecutadosRecurPublicos'){
+            //     continue; ///////////
+            // }
+
+
             $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $__class_name;
             include $path;
 
@@ -175,10 +180,6 @@ class LaravelApiGenerator
                     $r[] = 'nullable';
                 }
 
-                if (isset($rule['required'])){
-                    $r[] = 'required';
-                }
-
                 /*
                     minimos para los distintos tipos de enteros
 
@@ -224,6 +225,10 @@ class LaravelApiGenerator
 
                 if (in_array($field, $uniques)){
                     $r[] = "unique:$table_name,$field";
+                }
+
+                if (isset($rule['required'])){
+                    $r[] = 'required';
                 }
 
                 $laravel_store_rules[$field] = implode('|', $r);
