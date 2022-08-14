@@ -74,7 +74,20 @@ class LaravelApiGenerator
     /*
         Podria ser un comando
     */
-    static function process_schemas(){
+    static function process_schemas(){        
+        $ctrl_template_path     = ETC_PATH . "templates/laravel_resource_controller.php";
+        $resource_template_path = ETC_PATH . "templates/larevel_resource.php";
+        $faker_template_path    = ETC_PATH . "templates/faker.php";
+        $seeder_template_path   = ETC_PATH . "templates/seeder.php";
+
+        static::$excluded = [
+            'Users',
+            'Migrations',
+            'FailedJobs',
+            'PasswordResets',
+            'PersonalAccessTokens'
+        ];
+
         $write_controllers = (static::$ctrl_output_path != null);
         $write_resources   = (static::$resource_output_path != null);
         $write_fakers      = (static::$faker_output_path != null);
@@ -90,20 +103,6 @@ class LaravelApiGenerator
         if (static::$conn_id == null){
             static::$conn_id = DB::getCurrentConnectionId();
         }
-
-        static::$excluded = [
-            'Users',
-            'Migrations',
-            'FailedJobs',
-            'PasswordResets',
-            'PersonalAccessTokens'
-        ];
-
-        $ctrl_template_path     = ETC_PATH . "templates/laravel_resource_controller.php";
-        $resource_template_path = ETC_PATH . "templates/larevel_resource.php";
-        $faker_template_path    = ETC_PATH . "templates/faker.php";
-        $seeder_template_path   = ETC_PATH . "templates/seeder.php";
-
 
         static::get_model_names();
 

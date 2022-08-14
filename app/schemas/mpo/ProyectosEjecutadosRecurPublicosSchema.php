@@ -39,7 +39,7 @@ class ProyectosEjecutadosRecurPublicosSchema implements ISchema
 
 			'rules' 		=> [
 				'id' => ['type' => 'int', 'min' => 0],
-				'anno' => ['type' => 'bool', 'required' => true],
+				'anno' => ['type' => 'int', 'required' => true],
 				'duracion' => ['type' => 'str', 'max' => 30, 'required' => true],
 				'valor' => ['type' => 'int', 'required' => true],
 				'entidad' => ['type' => 'str', 'max' => 40, 'required' => true],
