@@ -9940,9 +9940,9 @@ class DumbController extends Controller
         LaravelApiGenerator::setConnId('mpo');
         LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
         // LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
-        // LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
-        LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
-        LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
+        LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
+        // LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
+        // LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
 
         LaravelApiGenerator::process_schemas();
     }
