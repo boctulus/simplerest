@@ -143,7 +143,8 @@ class MakeControllerBase extends Controller
         make helper my_helper [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make lib my_lib [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make interface [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
-        make schema my_table [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make schema my_table [ --from:{conn_id} ] [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make schema all [ --from:{conn_id} ] [ --unignore | -u ] [ --strict ] [ --except={table1,table2,table3} ]
         make model my_table  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --strict ] [ --remove ]
         make view my_view  [--force | -f] [ --unignore | -u ] [ --remove ]
 
@@ -153,8 +154,8 @@ class MakeControllerBase extends Controller
         make console my_console_ctrl  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make console folder/my_console_ctrl  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
-        make api my_table   [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
-        make api my_table  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make api my_table [ --from:{conn_id} ]  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make api my_table [ --from:{conn_id} ] [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
         make api all --from:some_conn_id [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
 
@@ -163,6 +164,7 @@ class MakeControllerBase extends Controller
         make schema generos --from:mpo
         make schema genero --table=generos --from:mpo
         make schema all --from:mpo
+        make schema all --from:mpp --except=migrations,password_resets,users
 
         make widget [ --include-js | --js ]
              
@@ -927,11 +929,19 @@ class MakeControllerBase extends Controller
         $unignore = false;
         $remove   = null;
         $table    = null;
+        $excluded = [];
 
         foreach ($opt as $o){            
+            $o = str_replace(',', '|', $o);
+
             if (preg_match('/^--from[=|:]([a-z][a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $from_db = $matches[1];
                 DB::getConnection($from_db);
+            }
+
+            if (preg_match('/^--(except|excluded)[=|:]([a-z][a-z0-9A-ZñÑ_-|]+)$/', $o, $matches)){
+                $_except  = $matches[2];
+                $excluded = explode('|', $_except);
             }
 
             if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
@@ -953,6 +963,8 @@ class MakeControllerBase extends Controller
 
         if (empty($table) && $name == 'all'){
             $tables = Schema::getTables();
+
+            $tables = array_diff($tables, $excluded);
 
             foreach ($tables as $table){
                 $this->schema($table, ...$opt);
