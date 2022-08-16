@@ -145,6 +145,18 @@ https://livewire-datatables.com/
 https://github.com/MedicOneSystems/livewire-datatables
 
 
+- Implementar metodo authenticate() en Controller(s) a fin de evitar poner toda la logica de autenticación en el constructor !!!
+
+  public function authenticate(){
+    $req = request();
+
+    // ....
+
+    /*
+      Podria inclusive hacer redirecciones (logicamente no en un ApiController)
+    */
+  }
+
 - Implementar "make command {nombre_comando} --method=xxxx" 
 
 en /commands/make
