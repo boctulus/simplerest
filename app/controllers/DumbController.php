@@ -9947,8 +9947,12 @@ class DumbController extends Controller
         LaravelApiGenerator::process_schemas();
     }
 
+    // Mini-endpoint
     function gen_laravel_mp_proyectos(){
         LaravelApiGenerator::setConnId('mpp');
+
+        LaravelApiGenerator::capitalizeTableNames();
+        LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
 
         LaravelApiGenerator::setProjectPath('D:/www/medellin-participa/produccion');
         LaravelApiGenerator::setResourceDestPath('D:/www/medellin-participa/produccion' . '/app/Http/Resources/');
