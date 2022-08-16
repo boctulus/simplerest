@@ -20,8 +20,14 @@ class LaravelApiGenerator
     static protected $seeder_output_path;
     static protected $conn_id; 
 
+    static protected $ctrl_template_path     = ETC_PATH . "templates/laravel_resource_controller.php";
+    static protected $resource_template_path = ETC_PATH . "templates/larevel_resource.php";
+    static protected $faker_template_path    = ETC_PATH . "templates/faker.php";
+    static protected $seeder_template_path   = ETC_PATH . "templates/seeder.php";
+
     static protected $table_models = [];
     static protected $excluded = [];
+    static protected $capitalized_table_names = false;
 
     static function setProjectPath($path){
         static::$laravel_project_path = $path;
@@ -48,17 +54,39 @@ class LaravelApiGenerator
         static::$conn_id = $conn_id;
     }
 
+    static function capitalizeTableNames(bool $status = true){
+        static::$capitalized_table_names = $status;
+    }
+
+    static function setControllerTemplatePath(string $path){
+        static::$ctrl_template_path = $path;
+    }
+
+    static function setResourceTemplatePath(string $path){
+        static::$resource_template_path = $path;
+    }
+
+    static function setFactoryTemplatePath(string $path){
+        static::$faker_template_path = $path;
+    }
+
+    static function setSeederTemplatePath(string $path){
+        static::$seeder_template_path = $path;
+    }
+
 
     // @return void
     static function get_model_names(){
         $models_path = static::$laravel_project_path . '/'. 'app/Models/';
         $filenames = Files::glob($models_path, '*.php');
 
+        $_table_models = [];
+
         foreach ($filenames as $filename){
             $model_name = Strings::before( Strings::last($filename, '/'), '.php' );
             $file = file_get_contents($filename);
        
-            $table_name = Strings::match($file, '/protected \$table[ ]+=[ ]+\'([a-zñ0-9_-]+)\'/');
+            $table_name = Strings::match($file, '/protected \$table[ ]+=[ ]+\'([a-zñ0-9_-]+)\'/i');
 
             // dd($table_name, 'TABLE NAME');
             // dd($model_name, 'MODEL NAME');
@@ -67,19 +95,16 @@ class LaravelApiGenerator
                 continue;
             }
 
-            static::$table_models[$table_name] = $model_name;
+            $_table_models[$table_name] = $model_name;
         }
+
+        return $_table_models;
     }
 
     /*
         Podria ser un comando
     */
     static function process_schemas(){        
-        $ctrl_template_path     = ETC_PATH . "templates/laravel_resource_controller.php";
-        $resource_template_path = ETC_PATH . "templates/larevel_resource.php";
-        $faker_template_path    = ETC_PATH . "templates/faker.php";
-        $seeder_template_path   = ETC_PATH . "templates/seeder.php";
-
         static::$excluded = [
             'Users',
             'Migrations',
@@ -104,12 +129,15 @@ class LaravelApiGenerator
             static::$conn_id = DB::getCurrentConnectionId();
         }
 
-        static::get_model_names();
+        static::$table_models = static::get_model_names();
 
-        $ctrl_template     = file_get_contents($ctrl_template_path);        
-        $resource_template = file_get_contents($resource_template_path);
-        $faker_template    = file_get_contents($faker_template_path);
-        $seeder_template   = file_get_contents($seeder_template_path);
+        // dd(static::$table_models, 'TABLE MODEL NAMES');
+        // exit;
+
+        $ctrl_template     = file_get_contents(static::$ctrl_template_path);        
+        $resource_template = file_get_contents(static::$resource_template_path);
+        $faker_template    = file_get_contents(static::$faker_template_path);
+        $seeder_template   = file_get_contents(static::$seeder_template_path);
 
 
         /*
@@ -137,6 +165,11 @@ class LaravelApiGenerator
             $schema = $class_name_full::get();
 
             $table_name = $schema['table_name']; // table name
+
+            if (static::$capitalized_table_names){
+                $table_name = strtoupper($table_name);
+            }
+
             $class_name = static::$table_models[$table_name] ?? null;
 
             if ($class_name === null){
