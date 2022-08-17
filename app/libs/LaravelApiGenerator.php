@@ -29,6 +29,9 @@ class LaravelApiGenerator
     static protected $excluded = [];
     static protected $capitalized_table_names = false;
 
+    static protected $callbacks = [];
+
+
     static function setProjectPath($path){
         static::$laravel_project_path = $path;
     }
@@ -74,6 +77,9 @@ class LaravelApiGenerator
         static::$seeder_template_path = $path;
     }
 
+    static function registerCallback(callable $callback){
+        static::$callbacks[] = $callback;
+    }
 
     // @return void
     static function get_model_names(){
@@ -180,6 +186,7 @@ class LaravelApiGenerator
             /*
                 Intentare usar $class_name en todos los casos
             */
+
             $model_name = $class_name;
             $ctrl_name  = $class_name;
             
@@ -193,6 +200,38 @@ class LaravelApiGenerator
 
             $uniques   = $schema['uniques'];
             $nullables = $schema['nullable'];
+
+
+            //////////////// [ PERSONALIZADO ] ///////////////////
+
+            // CALLBACKS
+            
+            foreach (static::$callbacks as $cb){
+                $res = $cb($fields);
+
+                if (isset($res['eval'])){
+                    if (is_array($res['eval'])){
+                        foreach ($res['eval'] as $eval_code){
+                            eval($eval_code);
+                        }
+                    } else {
+                        eval($res['eval']);
+                    }
+                }
+            }
+
+            if (isset($campo_borrado) && $campo_borrado != null){
+                dd($campo_borrado);
+            }      
+
+            if (isset($campo_habilitado) && $campo_habilitado!= null){
+                dd($campo_habilitado);
+            }    
+
+            exit; ///////////
+            
+            //////////////////////////////////////////////////////
+
 
             /*
                 Reglas de validacion

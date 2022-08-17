@@ -272,11 +272,14 @@ class __CONTROLLER_NAME__ extends Controller
                 if (isset($id) && $id > 0) {
                     if ($p = __MODEL_NAME__::find($id)) {
                     
+                        // __TOOGLE_BORRADO_LOGICO__
+
                         if ($p->PRE_BORRADO == true) {
                             $p->PRE_BORRADO = false;
                         } else {
                             $p->PRE_BORRADO = true;
                         }
+
                         if ($p->save()) {
                             $this->respuesta['data'] = __MODEL_NAME__::find($id);
                         } else {
@@ -297,5 +300,50 @@ class __CONTROLLER_NAME__ extends Controller
 
         return response()->json($this->respuesta, $this->error_code);
     }
+
+    // INI:__FN_HABILITAR__
+    public function habilitar(Request $request, $id){       
+        if (!$request->bearerToken()) {
+            $this->respuesta['errors'] = "No autorizado";
+            $this->error_code = 401;
+            return response()->json($this->respuesta, $this->error_code);
+        } 
+
+        $this->respuesta['meta'] = array("Cambio de estado de un registro existente");
+
+        try {
+            //validar obligatorios
+            if (isset($id) && $id > 0) {
+                $this->respuesta['errors'] = "El id es obligatorio";
+                $this->error_code = 400;
+                return response()->json($this->respuesta, $this->error_code);
+            }
+
+            if ($p = __MODEL_NAME__::find($id)) {
+                // Toogle
+                if ($p->DEB_HABILITADO == true) {
+                    $p->DEB_HABILITADO = false;
+                } else {
+                    $p->DEB_HABILITADO = true;
+                }
+
+                if ($p->save()) {
+
+                    $this->respuesta['data'] = __MODEL_NAME__::find($id);
+                } else {
+                    $this->respuesta['errors'] = "No se logró cambiar el estado, intente nuevamente";
+                }
+            } else {
+                $this->respuesta['errors'] = "No existe un proceso con el id {$id}";
+            }
+        
+        } catch (Exception $e) {
+            $this->respuesta['errors'] = $e->getMessage();
+            $this->error_code = 500;
+        }
+        
+        return response()->json($this->respuesta, $this->error_code);
+    }
+    // END:__FN_HABILITAR__
 
 }
