@@ -146,7 +146,7 @@ class __CONTROLLER_NAME__ extends Controller
         $data = $instance
         ->find($id)
         // ->when(!$include_deleted, function($q){
-        //     $q->where('INF_BORRADO', '!=', '1');
+        //     $q->where('__FIELD_BORRADO__', '!=', '1');
         // })
         ->first();
 
@@ -234,7 +234,7 @@ class __CONTROLLER_NAME__ extends Controller
         $exists = $instance
         ->where('INF_ID', $id)
         // ->when(!$include_deleted, function($q){
-        //     $q->where('INF_BORRADO', '!=', '1');
+        //     $q->where('__FIELD_BORRADO__', '!=', '1');
         // })
         ->exists();
 
@@ -271,13 +271,11 @@ class __CONTROLLER_NAME__ extends Controller
                 //validar obligatorios
                 if (isset($id) && $id > 0) {
                     if ($p = __MODEL_NAME__::find($id)) {
-                    
-                        // __TOOGLE_BORRADO_LOGICO__
-
-                        if ($p->PRE_BORRADO == true) {
-                            $p->PRE_BORRADO = false;
+                        // Toogle
+                        if ($p->__FIELD_BORRADO__ == true) {
+                            $p->__FIELD_BORRADO__ = false;
                         } else {
-                            $p->PRE_BORRADO = true;
+                            $p->__FIELD_BORRADO__ = true;
                         }
 
                         if ($p->save()) {
@@ -321,10 +319,10 @@ class __CONTROLLER_NAME__ extends Controller
 
             if ($p = __MODEL_NAME__::find($id)) {
                 // Toogle
-                if ($p->DEB_HABILITADO == true) {
-                    $p->DEB_HABILITADO = false;
+                if ($p->__FIELD_HABILITADO__ == true) {
+                    $p->__FIELD_HABILITADO__ = false;
                 } else {
-                    $p->DEB_HABILITADO = true;
+                    $p->__FIELD_HABILITADO__ = true;
                 }
 
                 if ($p->save()) {

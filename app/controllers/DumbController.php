@@ -9978,7 +9978,10 @@ class DumbController extends Controller
             return [
                 'eval' => [
                     "\$campo_borrado    = '$softdelete_fieldname';",
-                    "\$campo_habilitado = '$habilitado_fieldname';"
+                    "\$campo_habilitado = '$habilitado_fieldname';",
+                    "if (isset(\$campo_borrado)){
+                        \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
+                    };"
                 ]
             ];
         });
