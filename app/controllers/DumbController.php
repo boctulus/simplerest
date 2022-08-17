@@ -9960,6 +9960,29 @@ class DumbController extends Controller
         // LaravelApiGenerator::setFactoryDestPath('D:/www/medellin-participa/produccion' . '/database/factories/');
         // LaravelApiGenerator::setSeederDestPath('D:/www/medellin-participa/produccion' . '/database/seeders/');
 
+        LaravelApiGenerator::registerCallback(function($fields){
+            $softdelete_fieldname = null;
+            foreach($fields as $field){
+                if (Strings::endsWith('BORRADO', $field)){
+                    $softdelete_fieldname = $field;
+                }
+            }
+
+            $habilitado_fieldname = null;
+            foreach($fields as $field){
+                if (Strings::endsWith('HABILITADO', $field)){
+                    $habilitado_fieldname = $field;
+                }
+            }
+
+            return [
+                'eval' => [
+                    "\$campo_borrado    = '$softdelete_fieldname';",
+                    "\$campo_habilitado = '$habilitado_fieldname';"
+                ]
+            ];
+        });
+
         LaravelApiGenerator::process_schemas();
     }
 
