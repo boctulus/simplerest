@@ -140,10 +140,17 @@ class LaravelApiGenerator
         // dd(static::$table_models, 'TABLE MODEL NAMES');
         // exit;
 
-        $ctrl_template     = file_get_contents(static::$ctrl_template_path);        
+        $ctrl_template     = file_get_contents(static::$ctrl_template_path); 
+        $ctrl_file         = $ctrl_template;
+        
         $resource_template = file_get_contents(static::$resource_template_path);
+        $resource_file     = $resource_template;
+
         $faker_template    = file_get_contents(static::$faker_template_path);
+        $faker_file        = $faker_template;
+
         $seeder_template   = file_get_contents(static::$seeder_template_path);
+        $seeder_file       = $seeder_template;
 
 
         /*
@@ -200,37 +207,6 @@ class LaravelApiGenerator
 
             $uniques   = $schema['uniques'];
             $nullables = $schema['nullable'];
-
-
-            //////////////// [ PERSONALIZADO ] ///////////////////
-
-            // CALLBACKS
-            
-            foreach (static::$callbacks as $cb){
-                $res = $cb($fields);
-
-                if (isset($res['eval'])){
-                    if (is_array($res['eval'])){
-                        foreach ($res['eval'] as $eval_code){
-                            eval($eval_code);
-                        }
-                    } else {
-                        eval($res['eval']);
-                    }
-                }
-            }
-
-            if (isset($campo_borrado) && $campo_borrado != null){
-                dd($campo_borrado);
-            }      
-
-            if (isset($campo_habilitado) && $campo_habilitado!= null){
-                dd($campo_habilitado);
-            }    
-
-            exit; ///////////
-            
-            //////////////////////////////////////////////////////
 
 
             /*
@@ -319,14 +295,43 @@ class LaravelApiGenerator
             $laravel_rules_str = 'static protected $store_rules = ['."\r\n" . $laravel_store_rules_str . "\t];\r\n\r\n\t" .
             'static protected $update_rules = ['."\r\n" . $laravel_update_rules_str . "\t];\r\n";
 
+
+             //////////////// [ PERSONALIZADO ] ///////////////////
+
+            // CALLBACKS
+            
+            foreach (static::$callbacks as $cb){
+                $res = $cb($fields);
+
+                if (isset($res['eval'])){
+                    if (is_array($res['eval'])){
+                        foreach ($res['eval'] as $eval_code){
+                            eval($eval_code);
+                        }
+                    } else {
+                        eval($res['eval']);
+                    }
+                }
+            }
+
+            if (isset($campo_borrado) && $campo_borrado != null){
+                dd($campo_borrado);
+            }      
+
+            if (isset($campo_habilitado) && $campo_habilitado!= null){
+                dd($campo_habilitado);
+            }    
+            
+            //////////////////////////////////////////////////////
+
+
             /*
                 Controller files
             */
 
             if ($write_controllers){
-                dd("Generando controladores ...");
-
-                $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_template);
+                dd("Generando controladores ...");                
+                $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_file);
                 $ctrl_file = str_replace('__MODEL_NAME__', $model_name, $ctrl_file);
                 $ctrl_file = str_replace('__VALIDATION_RULES__', $laravel_rules_str, $ctrl_file);
                 $ctrl_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $ctrl_file);
@@ -345,7 +350,7 @@ class LaravelApiGenerator
                 $resr_name  = "{$model_name}Resource.php";
                 $dest = static::$resource_output_path . $resr_name;
 
-                $resource_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $resource_template);
+                $resource_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $resource_file);
 
                 $ok  = file_put_contents($dest, $resource_file);
                 dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
@@ -369,7 +374,7 @@ class LaravelApiGenerator
             */
         
             if ($write_fakers){
-                $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_template);
+                $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
                 $faker_file = str_replace('__FIELDS__', $fillables_as_array_str, $faker_file);
 
                 $dest = static::$faker_output_path . "{$model_name}Factory.php";
