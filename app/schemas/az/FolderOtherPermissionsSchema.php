@@ -14,6 +14,8 @@ class FolderOtherPermissionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'folder_id', 'belongs_to', 'guest', 'r', 'w'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'folder_id' => 'INT',
@@ -28,6 +30,8 @@ class FolderOtherPermissionsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'guest'],
+
+			'required'		=> ['folder_id', 'belongs_to', 'r', 'w'],
 
 			'uniques'		=> ['folder_id'],
 

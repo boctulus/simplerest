@@ -14,6 +14,8 @@ class FooSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'bar', 'hide', 'alta', 'creado_por', 'fecha_modificacion', 'modificado_por', 'fecha_borrado', 'borrado_por'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'bar' => 'STR',
@@ -31,6 +33,8 @@ class FooSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['hide', 'alta', 'creado_por', 'fecha_modificacion', 'modificado_por', 'fecha_borrado', 'borrado_por'],
+
+			'required'		=> ['id', 'bar'],
 
 			'uniques'		=> [],
 

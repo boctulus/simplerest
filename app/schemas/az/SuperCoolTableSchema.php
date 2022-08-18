@@ -14,6 +14,8 @@ class SuperCoolTableSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'name', 'age', 'active', 'belongs_to', 'deleted_at', 'is_locked'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'name' => 'STR',
@@ -29,6 +31,8 @@ class SuperCoolTableSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'deleted_at'],
+
+			'required'		=> ['name', 'age', 'active', 'belongs_to', 'is_locked'],
 
 			'uniques'		=> [],
 

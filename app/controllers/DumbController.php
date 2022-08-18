@@ -9936,6 +9936,18 @@ class DumbController extends Controller
         }
     }
 
+    function test_str_fn500(){
+        $str = 'TBL_ESCALAS_TERRITORIALES';
+
+        dd(
+            Strings::snakeToCamel($str)
+        );
+
+        dd(
+            Strings::snakeToCamel('hola_mundo_cruel')
+        );
+    }
+
     function gen_laravel_mp_org(){
         LaravelApiGenerator::setConnId('mpo');
         LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
@@ -9981,11 +9993,15 @@ class DumbController extends Controller
                     "\$campo_habilitado = '$habilitado_fieldname';",
                     "if (isset(\$campo_borrado)){
                         \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
+                    };",
+                    "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
+                        \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
                     };"
                 ]
             ];
         });
 
+       
         LaravelApiGenerator::process_schemas();
     }
 

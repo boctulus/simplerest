@@ -14,6 +14,8 @@ class ApiKeysSchema implements ISchema
 
 			'id_name'		=> 'uuid',
 
+			'fields'		=> ['uuid', 'value', 'user_id', 'created_at'],
+
 			'attr_types'	=> [
 				'uuid' => 'STR',
 				'value' => 'STR',
@@ -26,6 +28,8 @@ class ApiKeysSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['created_at'],
+
+			'required'		=> ['uuid', 'value', 'user_id'],
 
 			'uniques'		=> [],
 

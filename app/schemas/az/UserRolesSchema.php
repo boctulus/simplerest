@@ -14,6 +14,8 @@ class UserRolesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'user_id', 'role_id', 'created_at', 'updated_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'user_id' => 'INT',
@@ -27,6 +29,8 @@ class UserRolesSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'created_at', 'updated_at'],
+
+			'required'		=> ['user_id', 'role_id'],
 
 			'uniques'		=> [],
 

@@ -14,6 +14,8 @@ class Facturas2Schema implements ISchema
 
 			'id_name'		=> 'co',
 
+			'fields'		=> ['id', 'co', 'edad', 'firstname', 'lastname', 'username'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'co' => 'STR',
@@ -28,6 +30,8 @@ class Facturas2Schema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['lastname'],
+
+			'required'		=> ['id', 'co', 'edad', 'firstname', 'username'],
 
 			'uniques'		=> [],
 

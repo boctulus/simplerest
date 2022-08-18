@@ -14,6 +14,8 @@ class FoldersSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'tb', 'name', 'belongs_to'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'tb' => 'STR',
@@ -26,6 +28,8 @@ class FoldersSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['tb', 'name', 'belongs_to'],
 
 			'uniques'		=> [],
 

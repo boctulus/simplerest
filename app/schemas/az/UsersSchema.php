@@ -14,6 +14,8 @@ class UsersSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'username', 'active', 'is_locked', 'email', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'username' => 'STR',
@@ -32,6 +34,8 @@ class UsersSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'active', 'is_locked', 'confirmed_email', 'firstname', 'lastname', 'password', 'deleted_at'],
+
+			'required'		=> ['username', 'email'],
 
 			'uniques'		=> ['username', 'email'],
 

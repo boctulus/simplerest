@@ -14,6 +14,8 @@ class UserTbPermissionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'tb', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'user_id', 'created_by', 'created_at', 'updated_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'tb' => 'STR',
@@ -35,6 +37,8 @@ class UserTbPermissionsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'created_by', 'updated_at'],
+
+			'required'		=> ['tb', 'user_id', 'created_at'],
 
 			'uniques'		=> [],
 

@@ -14,6 +14,8 @@ class StudentSchema implements ISchema
 
 			'id_name'		=> null,
 
+			'fields'		=> ['id', 'name', 'age', 'class'],
+
 			'attr_types'	=> [
 				'id' => 'STR',
 				'name' => 'STR',
@@ -26,6 +28,8 @@ class StudentSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['id', 'name', 'age', 'class'],
+
+			'required'		=> [],
 
 			'uniques'		=> [],
 

@@ -14,6 +14,8 @@ class BarSchema implements ISchema
 
 			'id_name'		=> 'uuid',
 
+			'fields'		=> ['uuid', 'name', 'price', 'email', 'belongs_to', 'created_at', 'deleted_at', 'updated_at'],
+
 			'attr_types'	=> [
 				'uuid' => 'STR',
 				'name' => 'STR',
@@ -30,6 +32,8 @@ class BarSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['created_at', 'deleted_at', 'updated_at'],
+
+			'required'		=> ['uuid', 'name', 'price', 'email', 'belongs_to'],
 
 			'uniques'		=> [],
 
