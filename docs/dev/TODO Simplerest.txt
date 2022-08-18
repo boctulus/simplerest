@@ -1,5 +1,77 @@
 # TODO
 
+- Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
+
+- Crear endpoints para hacer pruebas de microservicios:
+
+  GET /api/v1/the_users/{id}?user_token=xxxxx <--- se autentica eventualmente y se envia token JWT o API KEY 
+
+  devuelve el user_id (uid) y otros posbiles campos minimos: 
+
+  {
+    "uid": "xxxx",
+    "is_active": true
+    "verified_email": false,
+    "roles": [
+      "customer",
+      "seller"
+    ],
+    "created_at": "xxxxxxxx",
+    "updated_at": "xxxxxxxx",
+  }
+  
+  GET /api/v1/the_users/{id}?user_token=xxxxx&role[in]=seller,admin?props=count(*) as cnt
+
+  respuesta:
+
+  {
+    "cnt": 0  
+  }
+
+  GET /api/v1/policies/{id}?user_token=xxxxx&can=view:dashboard
+
+  respuesta:
+
+  {
+    "can": [
+        "view:dashboard": true
+    ]
+  }
+
+  GET /api/v1/policies/{id}?user_token=xxxxx&can[in]=view:bills,access_table:users
+
+  respuesta:
+
+  {
+    "can": [
+        "access_table:users": false,
+        "view:bills": true
+    ]
+  }
+
+"can" podria interpretar el archivo acl.php o bien...  ser hasta rellenado via POST por un rol autorizado y ser persistido de distintas formas segun el driver utilizado.
+
+Y con eso deberia ser suficiente para que cualquier microservice pueda saber que hacer !!!!!!!!!!!
+
+O.... inclusive que "policies" devuelva todos los permisos:
+
+GET /api/v1/policies/{id}?user_token=xxxxx
+
+{
+  "uid": "xxxx",
+  "resource_permissions": [
+
+  ],
+  "special_permissions: [
+
+  ],
+  "fronend_permissions": [
+
+  ]
+}
+
+
+
 TOP PRIORITY
 ============
 

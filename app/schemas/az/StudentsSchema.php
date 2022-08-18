@@ -14,6 +14,8 @@ class StudentsSchema implements ISchema
 
 			'id_name'		=> 'teacher_id',
 
+			'fields'		=> ['name', 'teacher_id', 'phone'],
+
 			'attr_types'	=> [
 				'name' => 'STR',
 				'teacher_id' => 'INT',
@@ -25,6 +27,8 @@ class StudentsSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['phone'],
+
+			'required'		=> ['name', 'teacher_id'],
 
 			'uniques'		=> [],
 

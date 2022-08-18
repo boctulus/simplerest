@@ -14,6 +14,8 @@ class BoletasSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'edad', 'firstname', 'lastname', 'username', 'password', 'password_char', 'texto_vb', 'texto', 'texto_tiny', 'texto_md', 'texto_long', 'codigo', 'blob_tiny', 'blob_md', 'blob_long', 'bb', 'json_str', 'karma', 'code', 'big_num', 'ubig', 'medium', 'small', 'tiny', 'saldo', 'flotante', 'doble_p', 'num_real', 'some_bits', 'active', 'paused', 'flavors', 'role', 'hora', 'birth_year', 'fecha', 'vencimiento', 'ts', 'deleted_at', 'created_at', 'updated_at', 'correo', 'user_id'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'edad' => 'INT',
@@ -66,6 +68,8 @@ class BoletasSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['lastname', 'password_char', 'karma', 'active', 'paused', 'vencimiento', 'ts'],
+
+			'required'		=> ['id', 'edad', 'firstname', 'username', 'password', 'texto_vb', 'texto', 'texto_tiny', 'texto_md', 'texto_long', 'codigo', 'blob_tiny', 'blob_md', 'blob_long', 'bb', 'json_str', 'code', 'big_num', 'ubig', 'medium', 'small', 'tiny', 'saldo', 'flotante', 'doble_p', 'num_real', 'some_bits', 'flavors', 'role', 'hora', 'birth_year', 'fecha', 'deleted_at', 'created_at', 'updated_at', 'correo', 'user_id'],
 
 			'uniques'		=> ['username', 'correo'],
 

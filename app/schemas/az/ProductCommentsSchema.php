@@ -14,6 +14,8 @@ class ProductCommentsSchema implements ISchema
 
 			'id_name'		=> 'product_id',
 
+			'fields'		=> ['id', 'text', 'product_id'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'text' => 'STR',
@@ -25,6 +27,8 @@ class ProductCommentsSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> [],
+
+			'required'		=> ['id', 'text', 'product_id'],
 
 			'uniques'		=> [],
 

@@ -14,6 +14,8 @@ class MessagesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'from_email', 'from_name', 'to_email', 'to_name', 'subject', 'body', 'created_at', 'sent_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'from_email' => 'STR',
@@ -31,6 +33,8 @@ class MessagesSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'to_name', 'sent_at'],
+
+			'required'		=> ['from_email', 'from_name', 'to_email', 'subject', 'body', 'created_at'],
 
 			'uniques'		=> [],
 

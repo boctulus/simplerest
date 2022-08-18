@@ -14,6 +14,8 @@ class MigrationsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'migration', 'batch'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'migration' => 'STR',
@@ -25,6 +27,8 @@ class MigrationsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['migration', 'batch'],
 
 			'uniques'		=> [],
 

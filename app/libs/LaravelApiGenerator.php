@@ -296,7 +296,7 @@ class LaravelApiGenerator
             'static protected $update_rules = ['."\r\n" . $laravel_update_rules_str . "\t];\r\n";
 
 
-             //////////////// [ PERSONALIZADO ] ///////////////////
+            //////////////// [ EXTENSIONES CON CUSTOM CODE ] ///////////////////
 
             // CALLBACKS
             
@@ -313,16 +313,8 @@ class LaravelApiGenerator
                     }
                 }
             }
-
-            if (isset($campo_borrado) && $campo_borrado != null){
-                dd($campo_borrado);
-            }      
-
-            if (isset($campo_habilitado) && $campo_habilitado!= null){
-                dd($campo_habilitado);
-            }    
             
-            //////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////
 
 
             /*
