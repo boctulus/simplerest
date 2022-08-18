@@ -472,8 +472,8 @@ class Strings
 	/*
 		snake_case to CamelCase
 	*/
-	static function snakeToCamel(string $str){
-		if (static::isAllCaps($str)){
+	static function snakeToCamel(string $str, bool $force = false){
+		if ($force || static::isAllCaps($str)){
 			return $str;
 		}
 

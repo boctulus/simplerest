@@ -3,3 +3,4 @@ vendor/
 *.rar
 *.tar
 uploads/
+app/schemas/
