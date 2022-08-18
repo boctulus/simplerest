@@ -14,6 +14,8 @@ class CollectionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'entity', 'refs', 'belongs_to', 'created_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'entity' => 'STR',
@@ -27,6 +29,8 @@ class CollectionsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['entity', 'refs', 'belongs_to', 'created_at'],
 
 			'uniques'		=> [],
 

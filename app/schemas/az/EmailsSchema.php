@@ -14,6 +14,8 @@ class EmailsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'text', 'confirmed', 'user_id'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'text' => 'STR',
@@ -26,6 +28,8 @@ class EmailsSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['confirmed'],
+
+			'required'		=> ['id', 'text', 'user_id'],
 
 			'uniques'		=> [],
 

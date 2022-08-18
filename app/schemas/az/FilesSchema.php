@@ -14,6 +14,8 @@ class FilesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'filename', 'file_ext', 'filename_as_stored', 'belongs_to', 'guest_access', 'is_locked', 'broken', 'created_at', 'deleted_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'filename' => 'STR',
@@ -32,6 +34,8 @@ class FilesSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'belongs_to', 'guest_access', 'is_locked', 'broken', 'deleted_at'],
+
+			'required'		=> ['filename', 'file_ext', 'filename_as_stored', 'created_at'],
 
 			'uniques'		=> [],
 

@@ -175,10 +175,32 @@ class Strings
     }
 
 	// alias
-	static function removeEnding($substr, $str){
+	static function removeEnding(string $substr, string $str){
 		return static::rTrim($substr, $str);
 	}
 
+	/*
+		Remueve el sustring entre $startingWith y $endingWith
+	*/
+	static function removeSubstring(string $startingWith, string $endingWith, string $string){
+		if (empty($string)){
+			return $string;
+		}
+
+		$ini = strpos($string, $startingWith);
+
+		if ($ini === false){
+			return $string;
+		}
+
+		$end = strpos($string, $endingWith, $ini);
+
+		if ($end === false){
+			return $string;
+		}
+
+		return substr($string, 0, $ini) . substr($string, $end + strlen($endingWith));
+	}
 
 	/*
 		Apply tabs to some string
@@ -450,9 +472,17 @@ class Strings
 	/*
 		snake_case to CamelCase
 	*/
-	static function snakeToCamel(string $name){
-        return implode('',array_map('ucfirst',explode('_',$name)));
+	static function snakeToCamel(string $str){
+		if (static::isAllCaps($str)){
+			return $str;
+		}
+
+        return implode('',array_map('ucfirst',explode('_', $str)));
     }
+
+	static function isAllCaps(string $str){
+		return strtoupper($str) === $str;
+	}
 
     static function startsWith(string $substr, ?string $text, bool $case_sensitive = true)
 	{

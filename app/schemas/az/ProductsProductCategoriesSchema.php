@@ -14,6 +14,8 @@ class ProductsProductCategoriesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'product_id', 'product_category_id', 'created_at', 'updated_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'product_id' => 'INT',
@@ -27,6 +29,8 @@ class ProductsProductCategoriesSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'created_at', 'updated_at'],
+
+			'required'		=> ['product_id', 'product_category_id'],
 
 			'uniques'		=> [],
 

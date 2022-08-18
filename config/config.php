@@ -151,8 +151,8 @@ return [
 	
 	'DateTimeZone' => 'America/Bogota',
 
-	'error_handling'   => false,
-	'debug'   => false,  //env('APP_DEBUG', true),
+	'error_handling'   => true,
+	'debug'   => true,  //env('APP_DEBUG', true),
 
 	/*
 		Define users's table name

@@ -1,34 +1,34 @@
 <?php 
 
 $pivots = array (
-  'entidades_registrantes,org_comunales' => 'org_comunal_entidad_registrante',
+  'TBL_ENTIDADES_REG,TBL_ORG_COMUNALES' => 'TBL_ORG_COMUNAL_ENTIDAD_REG',
 );
 
 $pivot_fks = array (
-  'org_comunal_entidad_registrante' => 
+  'TBL_ORG_COMUNAL_ENTIDAD_REG' => 
   array (
-    'entidades_registrantes' => 'entidad_registrante_id',
-    'org_comunales' => 'org_comunal_id',
+    'TBL_ENTIDADES_REG' => 'ENTIDAD_REG_ID',
+    'TBL_ORG_COMUNALES' => 'ERG_ORG_COMUNAL_ID',
   ),
 );
 
 $relationships = array (
-  'org_comunal_entidad_registrante' => 
+  'TBL_ORG_COMUNAL_ENTIDAD_REG' => 
   array (
-    'entidades_registrantes' => 
+    'TBL_ENTIDADES_REG' => 
     array (
       0 => 
       array (
-        0 => 'entidades_registrantes.id',
-        1 => 'org_comunal_entidad_registrante.entidad_registrante_id',
+        0 => 'TBL_ENTIDADES_REG.ID_ERG',
+        1 => 'TBL_ORG_COMUNAL_ENTIDAD_REG.ENTIDAD_REG_ID',
       ),
     ),
-    'org_comunales' => 
+    'TBL_ORG_COMUNALES' => 
     array (
       0 => 
       array (
-        0 => 'org_comunales.id',
-        1 => 'org_comunal_entidad_registrante.org_comunal_id',
+        0 => 'TBL_ORG_COMUNALES.ID_OCM',
+        1 => 'TBL_ORG_COMUNAL_ENTIDAD_REG.ERG_ORG_COMUNAL_ID',
       ),
     ),
   ),

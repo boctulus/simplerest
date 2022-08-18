@@ -14,6 +14,8 @@ class FacturasSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['aaa', 'id', 'edad', 'firstname', 'lastname', 'username', 'password', 'password_char', 'texto_vb', 'texto', 'texto_tiny', 'texto_md', 'texto_long', 'codigo', 'blob_tiny', 'blob_md', 'blob_long', 'bb', 'json_str', 'carma', 'code', 'big_num', 'ubig', 'medium', 'small', 'tiny', 'flotante', 'doble_p', 'num_real', 'some_bits', 'active', 'flavors', 'role', 'hora', 'birth_year', 'fecha', 'vencimiento', 'ts', 'nuevo_campito', 'deleted_at', 'created_at', 'updated_at', 'correo', 'user_id'],
+
 			'attr_types'	=> [
 				'aaa' => 'STR',
 				'id' => 'INT',
@@ -66,6 +68,8 @@ class FacturasSchema implements ISchema
 			'autoincrement' => null,
 
 			'nullable'		=> ['aaa', 'lastname', 'password_char', 'carma', 'active', 'vencimiento', 'ts', 'nuevo_campito', 'deleted_at'],
+
+			'required'		=> ['id', 'edad', 'firstname', 'username', 'password', 'texto_vb', 'texto', 'texto_tiny', 'texto_md', 'texto_long', 'codigo', 'blob_tiny', 'blob_md', 'blob_long', 'bb', 'json_str', 'code', 'big_num', 'ubig', 'medium', 'small', 'tiny', 'flotante', 'doble_p', 'num_real', 'some_bits', 'flavors', 'role', 'hora', 'birth_year', 'fecha', 'created_at', 'updated_at', 'correo', 'user_id'],
 
 			'uniques'		=> ['username', 'correo'],
 
