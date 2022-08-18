@@ -14,6 +14,8 @@ class BooksSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'name', 'author_id', 'editor_id'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'name' => 'STR',
@@ -26,6 +28,8 @@ class BooksSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['name', 'author_id', 'editor_id'],
 
 			'uniques'		=> [],
 

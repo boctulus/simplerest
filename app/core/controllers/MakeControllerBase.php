@@ -33,12 +33,14 @@ class MakeControllerBase extends Controller
     const CRONJOBS_TEMPLATE = self::TEMPLATES . 'CronJob.php';
     const TASK_TEMPLATE = self::TEMPLATES . 'Task.php';
 
+    protected $table_name;
     protected $class_name;
     protected $ctr_name;
     protected $api_name; 
     protected $camel_case;
     protected $snake_case;
     protected $excluded_files = [];
+    protected $all_uppercase = false;
 
     function __construct()
     {
@@ -88,6 +90,9 @@ class MakeControllerBase extends Controller
     }
 
     protected function setup(string $name) {
+        $this->table_name    = $name; // nuevo: para cubrirme de DBs que no siguen convenciones
+        $this->all_uppercase = Strings::isAllCaps($name); 
+        
         $name = str_replace('-', '_', $name);
 
         $name = ucfirst($name);    
@@ -262,7 +267,7 @@ class MakeControllerBase extends Controller
         }
 
         foreach ($opt as $o){            
-            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--from[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
                 $from_db = $matches[1];
                 DB::getConnection($from_db);
             }
@@ -512,7 +517,7 @@ class MakeControllerBase extends Controller
         $unignore = false;
 
         foreach ($opt as $o){            
-            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--from[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
                 $from_db = $matches[1];
                 DB::getConnection($from_db);
             }
@@ -687,7 +692,7 @@ class MakeControllerBase extends Controller
         static $pivot_data = [];
 
         foreach ($opt as $o){            
-            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--from[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $from_db = $matches[1];
                 DB::getConnection($from_db);
             }
@@ -826,7 +831,7 @@ class MakeControllerBase extends Controller
     function relation_scan(...$opt)
     {
         foreach ($opt as $o){            
-            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--from[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $from_db = $matches[1]; 
                 DB::getConnection($from_db);               
             } 
@@ -934,12 +939,12 @@ class MakeControllerBase extends Controller
         foreach ($opt as $o){            
             $o = str_replace(',', '|', $o);
 
-            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
+            if (preg_match('/^--from[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $from_db = $matches[1];
                 DB::getConnection($from_db);
             }
 
-            if (preg_match('/^--(except|excluded)[=|:]([a-z][a-z0-9A-ZñÑ_-|]+)$/', $o, $matches)){
+            if (preg_match('/^--(except|excluded)[=|:]([a-z0-9A-ZñÑ_-|]+)$/', $o, $matches)){
                 $_except  = $matches[2];
                 $excluded = explode('|', $_except);
             }
@@ -952,7 +957,7 @@ class MakeControllerBase extends Controller
                 $remove = true;
             }
 
-            if (preg_match('/^--table[=|:]([a-z][a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
+            if (preg_match('/^--table[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $table = $matches[1];
             }
         }
@@ -986,7 +991,11 @@ class MakeControllerBase extends Controller
             return;
         }
 
-        $filename = $this->camel_case.'Schema.php';
+        if (!$this->all_uppercase){
+            $filename = $this->camel_case.'Schema.php';
+        } else {
+            $filename = $this->table_name.'Schema.php';
+        }        
 
         $file = file_get_contents(self::SCHEMA_TEMPLATE);
         $file = str_replace('__NAME__', $this->camel_case.'Schema', $file);
@@ -1026,13 +1035,15 @@ class MakeControllerBase extends Controller
 
         $db = DB::database();  
 
-        $_table = !empty($table) ? $table : $this->snake_case;
-
+        $_table = !empty($table) ? $table : $this->table_name;
+        
         try {
             $fields = DB::select("SHOW COLUMNS FROM $db.{$_table}", [], 'ASSOC', $from_db);
         } catch (\Exception $e) {
-            StdOut::pprint('[ SQL Error ] '. DB::getLog(). "\r\n");
+            $trace = __METHOD__ . '() - line: ' . __LINE__;
+            StdOut::pprint("[ SQL Error ] ". DB::getLog(). "\r\n");
             StdOut::pprint($e->getMessage().  "\r\n");
+            StdOut::pprint("Trace: $trace");
             exit;
         }
         
@@ -1339,7 +1350,7 @@ class MakeControllerBase extends Controller
         $no_check = false;
 
         foreach ($opt as $o){            
-            if (preg_match('/^--from[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--from[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $from_db = $matches[1];
                 DB::getConnection($from_db);
             }
@@ -1450,7 +1461,7 @@ class MakeControllerBase extends Controller
         }
 
         foreach ($opt as $o){
-            if (preg_match('/^--name[=|:]([a-zA-Z0-9_-]+)$/', $o, $matches)){
+            if (preg_match('/^--name[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $name = $matches[1];
             }
         }
@@ -1504,21 +1515,21 @@ class MakeControllerBase extends Controller
                 $dont = true;
             }
 
-            if (preg_match('/^--to[=|:]([a-zA-Z0-9_-]+)$/', $o, $matches)){
+            if (preg_match('/^--to[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $to_db = $matches[1];
             }
 
             /*
                 Makes a reference to the specified table schema
             */
-            if (preg_match('/^--(table|tb)[=|:]([a-zA-Z0-9_-]+)$/', $o, $matches)){
+            if (preg_match('/^--(table|tb)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $tb_name = $matches[2];
             }
             
             /*  
                 This option forces php class name
             */
-            if (preg_match('/^--(class_name|class)[=|:]([a-zA-Z0-9_]+)$/', $o, $matches)){
+            if (preg_match('/^--(class_name|class)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $class_name = Strings::snakeToCamel($matches[2]);
                 $file = str_replace('__NAME__', $class_name, $file); 
             } 
@@ -1527,7 +1538,7 @@ class MakeControllerBase extends Controller
                 // Convert windows directory separator into *NIX
                 $o = str_replace('\\', '/', $o);
 
-                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-Z_\-/]+)$~', $o, $matches)){
+                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-ZñÑ_\-/]+)$~', $o, $matches)){
                     $dir= $matches[2];
                 }
             }
@@ -1629,7 +1640,7 @@ class MakeControllerBase extends Controller
                 $dropColumn_ay[] =  $dropColumn;
             }
 
-            $renameColumn = Strings::matchParam($o, 'renameColumn', '[a-z0-9A-Z_-]+\,[a-z0-9A-Z_-]+'); // from,to
+            $renameColumn = Strings::matchParam($o, 'renameColumn', '[a-z0-9A-ZñÑ_-]+\,[a-z0-9A-ZñÑ_-]+'); // from,to
 
             if (!empty($renameColumn)){
                 $renameColumn_ay[] = $renameColumn;
@@ -1707,27 +1718,27 @@ class MakeControllerBase extends Controller
                 FKs 
             */
 
-            if (preg_match('/^--(foreign|fk|fromField)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(foreign|fk|fromField)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $fromField = $matches[2];
             }
 
-            if (preg_match('/^--(references|reference|toField)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(references|reference|toField)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $toField = $matches[2];
             }
 
-            if (preg_match('/^--(constraint)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(constraint)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
                 $constraint = $matches[2];
             }
 
-            if (preg_match('/^--(on|onTable|toTable)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(on|onTable|toTable)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
                 $toTable = $matches[2];
             }
 
-            if (preg_match('/^--(onDelete)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(onDelete)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
                 $onDelete = $matches[2];
             }
 
-            if (preg_match('/^--(onUpdate)[=|:]([a-z0-9A-Z_]+)$/', $o, $matches)){
+            if (preg_match('/^--(onUpdate)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
                 $onUpdate = $matches[2];
             }
 
@@ -2044,7 +2055,7 @@ class MakeControllerBase extends Controller
                 // Convert windows directory separator into *NIX
                 $o = str_replace('\\', '/', $o);
 
-                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-Z_\-/]+)$~', $o, $matches)){
+                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-ZñÑ_\-/]+)$~', $o, $matches)){
                     $dir= $matches[2] . '/';
                 }
             }

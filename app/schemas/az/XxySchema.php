@@ -14,6 +14,8 @@ class XxySchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'otro', 'otro2'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'otro' => 'STR',
@@ -25,6 +27,8 @@ class XxySchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['otro', 'otro2'],
 
 			'uniques'		=> ['otro2'],
 

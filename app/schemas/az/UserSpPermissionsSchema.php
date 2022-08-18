@@ -14,6 +14,8 @@ class UserSpPermissionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'sp_permission_id', 'user_id', 'created_by', 'created_at', 'updated_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'sp_permission_id' => 'INT',
@@ -28,6 +30,8 @@ class UserSpPermissionsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'created_by', 'updated_at'],
+
+			'required'		=> ['sp_permission_id', 'user_id', 'created_at'],
 
 			'uniques'		=> [],
 

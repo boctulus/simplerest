@@ -14,6 +14,8 @@ class CablesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'nombre', 'calibre'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'nombre' => 'STR',
@@ -25,6 +27,8 @@ class CablesSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['nombre', 'calibre'],
 
 			'uniques'		=> [],
 

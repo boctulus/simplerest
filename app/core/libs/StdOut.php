@@ -8,7 +8,7 @@ class StdOut
 
     static function pprint($v, bool $additional_carriage_return = false){
         if (self::$_printable){
-            dd($v, null, $additional_carriage_return);
+            d($v, null, $additional_carriage_return);
         }
     }
 

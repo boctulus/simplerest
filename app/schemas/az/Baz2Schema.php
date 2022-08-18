@@ -14,6 +14,8 @@ class Baz2Schema implements ISchema
 
 			'id_name'		=> 'id_baz2',
 
+			'fields'		=> ['id_baz2', 'name', 'cost'],
+
 			'attr_types'	=> [
 				'id_baz2' => 'INT',
 				'name' => 'STR',
@@ -25,6 +27,8 @@ class Baz2Schema implements ISchema
 			'autoincrement' => 'id_baz2',
 
 			'nullable'		=> ['id_baz2'],
+
+			'required'		=> ['name', 'cost'],
 
 			'uniques'		=> [],
 

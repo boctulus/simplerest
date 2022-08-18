@@ -14,6 +14,8 @@ class BookReviewsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'text', 'book_id', 'created_at', 'updated_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'text' => 'STR',
@@ -27,6 +29,8 @@ class BookReviewsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'created_at', 'updated_at'],
+
+			'required'		=> ['text', 'book_id'],
 
 			'uniques'		=> [],
 

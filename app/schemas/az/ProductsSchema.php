@@ -14,6 +14,8 @@ class ProductsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'name', 'description', 'size', 'cost', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'name' => 'STR',
@@ -37,6 +39,8 @@ class ProductsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to'],
+
+			'required'		=> ['name', 'size', 'cost'],
 
 			'uniques'		=> [],
 

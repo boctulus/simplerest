@@ -14,6 +14,8 @@ class SpPermissionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'name'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'name' => 'STR'
@@ -24,6 +26,8 @@ class SpPermissionsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['name'],
 
 			'uniques'		=> ['name'],
 
