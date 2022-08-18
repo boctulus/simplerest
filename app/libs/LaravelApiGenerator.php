@@ -141,28 +141,24 @@ class LaravelApiGenerator
         // exit;
 
         $ctrl_template     = file_get_contents(static::$ctrl_template_path); 
-        $ctrl_file         = $ctrl_template;
-        
         $resource_template = file_get_contents(static::$resource_template_path);
-        $resource_file     = $resource_template;
-
         $faker_template    = file_get_contents(static::$faker_template_path);
-        $faker_file        = $faker_template;
-
         $seeder_template   = file_get_contents(static::$seeder_template_path);
-        $seeder_file       = $seeder_template;
-
+        
 
         /*
             Schemas auto-generados de SimpleRest basados en la DB de Laravel
         */
+
         $paths = Schema::getSchemaFiles($conn_id);
 
+        $model_datos = [];
+
         foreach ($paths as $path){
-            $path         = str_replace('\\', '/', $path);
-            $filename     = Strings::last($path, '/');
-            $__class_name = Strings::beforeLast($filename, '.php'); 
-            $__model_name = Strings::before($__class_name, 'Schema'); 
+            $path          = str_replace('\\', '/', $path);
+            $filename      = Strings::last($path, '/');
+            $__class_name  = Strings::beforeLast($filename, '.php'); 
+            $__model_name  = Strings::before($__class_name, 'Schema'); 
 
             if (in_array($__model_name, static::$excluded)){
                 continue;
@@ -171,6 +167,11 @@ class LaravelApiGenerator
             // if ($__model_name != 'ProyectosEjecutadosRecurPublicos'){
             //     continue; ///////////
             // }
+
+            $ctrl_file     = $ctrl_template;
+            $resource_file = $resource_template;
+            $faker_file    = $faker_template;
+            $seeder_file   = $seeder_template;
 
             $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $__class_name;
             include $path;
@@ -202,20 +203,25 @@ class LaravelApiGenerator
             $fields    = $schema['fields'];
             $fillables = array_diff($fields, ['created_at', 'updated_at', 'deleted_at'], [ $schema['id_name'] ]);
 
-            $fillables_str =  '[' . implode(', ', Strings::enclose($fillables, "'")) . ']';
-            $fillables_str = 'protected $fillable = ' . $fillables_str . ';';
+            $uniques    = $schema['uniques'];
+            $nullables  = $schema['nullable'];
 
-            $uniques   = $schema['uniques'];
-            $nullables = $schema['nullable'];
-
+            $model_data = [];
 
             /*
                 Reglas de validacion
             */
 
-            dd("Analizando Reglas de Validacion");
+            //dd("Analizando Reglas de Validacion");
 
-            $rules = $schema['rules'];
+            $rules   = $schema['rules'];
+
+            $id_name = $schema['id_name']; // PRI_KEY si es simple o podria ser el campo AUTOINC
+
+
+            // Voy completando el modelo
+            $model_data['id_name'] = $id_name;
+         
 
             $laravel_store_rules  = [];
             $laravel_update_rules = [];
@@ -322,16 +328,24 @@ class LaravelApiGenerator
             */
 
             if ($write_controllers){
-                dd("Generando controladores ...");                
+                //dd("Generando controladores ...");                
+                
                 $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_file);
-                $ctrl_file = str_replace('__MODEL_NAME__', $model_name, $ctrl_file);
+                $ctrl_file = str_replace('__MODEL_NAME__', $class_name, $ctrl_file);
                 $ctrl_file = str_replace('__VALIDATION_RULES__', $laravel_rules_str, $ctrl_file);
-                $ctrl_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $ctrl_file);
+                $ctrl_file = str_replace('__RESOURCE_NAME__', "{$class_name}Resource", $ctrl_file);
 
-                $dest = static::$ctrl_output_path . "{$model_name}Controller.php";
+                $dest = static::$ctrl_output_path . "{$class_name}Controller.php";
+
+                // dd($dest, "{$model_name}Controller");
+                // continue;
 
                 $ok  = file_put_contents($dest, $ctrl_file);
                 dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+
+                if (!$ok){
+                    throw new \Exception("No se pudo crear controlador '{$model_name}Controller'");
+                }
             }
 
             /*
@@ -355,12 +369,11 @@ class LaravelApiGenerator
             }
 
             /*
-                Fillables como van en los Modelos !!!!!!!!
+                Fillables como van en los modelos
             */
 
-            dd($fillables_str, "{$model_name}.php");
-          
-
+            $model_data['fillables'] = $fillables;
+         
             /*
                 Faker files
             */
@@ -382,16 +395,45 @@ class LaravelApiGenerator
             if ($write_routes){
                 $routes[] = "Route::resource('$table_name', App\\Http\\Controllers\\{$model_name}Controller::class);";
             }
+
+            $model_datos[$model_name] = $model_data; 
+        } // end foreach
+
+
+        /*
+            Presento data a agregarse o actualizarse en modelos
+        */
+        foreach ($model_datos as $tb => $model_dato){
+            $pri_key   = $model_dato['id_name'];
+            $fillables = $model_dato['fillables'];
+
+            $pri_key_str   =  'protected $primaryKey = "'.$pri_key.'";';
+
+            $fillables_str =  '[' . implode(', ', Strings::enclose($fillables, "'")) . ']';
+            $fillables_str = 'protected $fillable = ' . $fillables_str . ';';
+
+            $str = "$pri_key_str\r\n\r\n$fillables_str";
+
+            dd(
+                $str
+            , $tb);
         }
 
+        /*
+            Rutas 
+            
+            (podria tener que ajustarse)
+        */
         if (!empty($routes)){
             dd("routes/api.php | routes");
             foreach ($routes as $route){
                 print_r($route."\r\n");
             }
         }
-    }
-}
+
+    } // end method
+
+} // end class
 
 
 
