@@ -3532,6 +3532,80 @@ class DumbController extends Controller
         dd($v->validate($rules, $data, $fillables));
     }
 
+    function validation_test2()
+    {
+        $rules = [
+            'nombre' => ['type' => 'alpha_spaces_utf8', 'min' => 3, 'max' => 40],
+            'username' => ['type' => 'alpha_dash', 'min' => 3, 'max' => '15'],
+            'rol' => ['type' => 'int', 'not_in' => [2, 4, 5]],
+            'poder' => ['not_between' => [4, 7]],
+            'superpoder' => ['required' => true],
+            'edad' => ['between' => [18, 100]],
+            'magia' => ['in' => [3, 21, 81]],
+            'is_active' => ['type' => 'bool', 'messages' => ['type' => 'Value should be 0 or 1']]
+        ];
+
+        $data = [
+            'nombre' => 'Juan Español',
+            'username' => 'juan_el_mejor',
+            'rol' => 5,
+            'poder' => 6,
+            'edad' => 101,
+            'magia' => 22,
+            'is_active' => 3
+        ];
+
+        $fillables = [
+            'nombre',
+            'username',
+            'edad'
+        ];
+
+        $v = new Validator();
+        dd($v->validate($rules, $data /*, $fillables */));
+    }
+
+    function validation_test3()
+    {
+        $rules = [
+            'nombre' => ['type' => 'alpha_spaces_utf8', 'min' => 3, 'max' => 40],
+            'username' => ['type' => 'alpha_dash', 'min' => 3, 'max' => '15'],
+            'rol' => ['type' => 'int', 'not_in' => [2, 4, 5]],
+            'poder' => ['not_between' => [4, 7]],
+            'superpoder' => ['required' => true],
+            'edad' => ['between' => [18, 100]],
+            'magia' => ['in' => [3, 21, 81]],
+            'is_active' => ['type' => 'bool', 'messages' => ['type' => 'Value should be 0 or 1']]
+        ];
+
+        $data = [
+            'nombre' => 'Juan Español',
+            'username' => 'juan_el_mejor',
+            'rol' => 5,
+            'poder' => 6,
+            'edad' => 101,
+            'magia' => 22,
+            'is_active' => 3
+        ];
+
+        $fillables = [
+            'nombre',
+            'username',
+            'edad'
+        ];
+
+        $v = new Validator();
+        dd($v->validate($rules, $data /*, $fillables */), 'AL CREAR');
+
+        /*
+            Al actualizar no necesito la regla de campos requeridos
+        */
+
+        dd($v
+        ->setRequired(false)
+        ->validate($rules, $data /*, $fillables */), 'AL MODIFICAR');
+    }
+
     function validacion()
     {
         $u = DB::table('users');
@@ -10025,6 +10099,8 @@ class DumbController extends Controller
         LaravelApiGenerator::setControllerDestPath('D:/www/medellin-participa/produccion' . '/app/Http/Controllers/');
         // LaravelApiGenerator::setFactoryDestPath('D:/www/medellin-participa/produccion' . '/database/factories/');
         // LaravelApiGenerator::setSeederDestPath('D:/www/medellin-participa/produccion' . '/database/seeders/');
+
+        LaravelApiGenerator::setValidator("SimpleRest");
 
         LaravelApiGenerator::registerCallback(function($fields){
             $softdelete_fieldname = null;
