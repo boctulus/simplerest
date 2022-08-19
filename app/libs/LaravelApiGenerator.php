@@ -315,9 +315,10 @@ class LaravelApiGenerator
 
                 case 'SimpleRest':
                     $validator_rules_str = var_export($rules, true);
-                    /// ....
+                    $uniques_str         = var_export($uniques, true);
 
-                    $rules_str = 'static protected $validation_rules = '."\r\n" . Strings::trimMultiline($validator_rules_str). ';';
+                    $rules_str = 'static protected $validation_rules = '."\r\n" . Strings::trimMultiline($validator_rules_str). ";\r\n" .
+                    "\r\n". 'static protected $uniques = '."\r\n" . Strings::trimMultiline($uniques_str). ';';
                     break;
             }
 
@@ -353,6 +354,7 @@ class LaravelApiGenerator
                 
                 $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_file);
                 $ctrl_file = str_replace('__MODEL_NAME__', $class_name, $ctrl_file);
+                $ctrl_file = str_replace('__TABLE_NAME__', $table_name, $ctrl_file);
                 $ctrl_file = str_replace('__PRI_KEY__', "'$id_name'", $ctrl_file);
                 $ctrl_file = str_replace('__VALIDATION_RULES__', $rules_str, $ctrl_file);
                 $ctrl_file = str_replace('__RESOURCE_NAME__', "{$class_name}Resource", $ctrl_file);

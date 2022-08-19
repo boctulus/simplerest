@@ -3374,6 +3374,9 @@ Ej:
         dd($v->validate($rules, $data, $fillables, $uniques));
 
 
+Idealmente esta funcionalidad deberia ser un Trait por portabilidad.
+
+
 ### Validaciones en los modelos
 
 Para efectuar la validación sobre las operaciones CRUD con los modelos es tan simple como incluir una instancia de la clase Validator:
