@@ -18,6 +18,7 @@ class Validator implements IValidator
 	static protected $rules = [];
 	static protected $rule_types = [];
 
+	// Para ser usado en UPDATEs
 	function setRequired(bool $state){
 		$this->required = $state;
 		return $this;
