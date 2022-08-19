@@ -129,7 +129,7 @@ class __CONTROLLER_NAME__ extends Controller
             $fillables = (new __MODEL_NAME__)->getFillable();
 
             $v = new Validator();
-            $validated = $v->validate($rules, $data, $fillables);
+            $validated = $v->validate(static::$validation_rules, $data, $fillables);
 
             if ($validated !== true){
                 $this->respuesta['errors'] = $validated;
@@ -137,15 +137,23 @@ class __CONTROLLER_NAME__ extends Controller
                 return response()->json($this->respuesta, $this->error_code);
             }
 
+            $id = __MODEL_NAME__::insertGetId($data);
+           
+            $this->respuesta = [
+                'data' => [
+                    __PRI_KEY__ => $id
+                ],
+                'message' => 'Registro creado exitosamente'
+            ];
+
         } catch (\Exception $e){
             $this->respuesta['errors'] = $e->getMessage();
             $this->error_code = 500;
             return response()->json($this->respuesta, $this->error_code);
         }
     
-        return new __RESOURCE_NAME__( __MODEL_NAME__::create($validated) );
+        return response()->json($this->respuesta, $this->error_code);
     }
-
     /**
      * Display the specified resource.
      *
@@ -283,7 +291,7 @@ class __CONTROLLER_NAME__ extends Controller
             
             $validated = $v
             ->setRequired(false)
-            ->validate($rules, $data, $fillables);
+            ->validate(static::$validation_rules, $data, $fillables);
 
             if ($validated !== true){
                 $this->respuesta['errors'] = $validated;
@@ -298,7 +306,7 @@ class __CONTROLLER_NAME__ extends Controller
         }
         
         $exists = $instance
-        ->where('INF_ID', $id)
+        ->find($id)
         // ->when(!$include_deleted, function($q){
         //     $q->where('__FIELD_BORRADO__', '!=', '1');
         // })
@@ -310,7 +318,7 @@ class __CONTROLLER_NAME__ extends Controller
         }
 
         $affected_rows = $instance
-        ->where('INF_ID', $id)
+        ->find($id)
         ->update($data);
 
         $this->respuesta['data'] = $data;
