@@ -21,17 +21,18 @@ class Validator implements IValidator
 	static protected $rules = [];
 	static protected $rule_types = [];
 
-	function setUniques(Array $uniques, string $table){
-		$this->uniques = $uniques;
-		$this->table   = $table;
-	}
-
 	function __construct(){
 		// i18n
 		bindtextdomain('validator', LOCALE_PATH);
 		textdomain('validator');
 
 		static::loadRules();
+	}
+
+	function setUniques(Array $uniques, string $table){
+		$this->uniques = $uniques;
+		$this->table   = $table;
+		return $this;
 	}
 
 	// default rules
@@ -431,6 +432,7 @@ class Validator implements IValidator
 		return $dateObj && $dateObj->format($format) == $date;
 	}
 }
+
 
 
 
