@@ -230,92 +230,98 @@ class LaravelApiGenerator
 
             // Voy completando el modelo
             $model_data['id_name'] = $id_name;
-         
-
-            $laravel_store_rules  = [];
-            $laravel_update_rules = [];
-            foreach ($rules as $field => $rule){
-                $r = [];                 
-                
-                if (in_array($field, $nullables)){
-                    $r[] = 'nullable';
-                }
-
-                /*
-                    minimos para los distintos tipos de enteros
-
-                    https://dev.mysql.com/doc/refman/8.0/en/integer-types.html
-                */
-
-                $is_int = false;
-                switch($rule['type']){
-                    case 'bool':
-                        $r[] = 'boolean';
-                        break;
-                
-                    case 'int':
-                    case 'tinyint':
-                    case 'smallint':
-                    case 'mediumint':
-                        $is_int = true;
-                        $r[] = 'integer';
-                        break;    
-
-                    case 'date':
-                        $r[] = 'date';
-                        break;    
-
-                    case 'str':
-                        $r[] = 'string';
-                        break; 
-                }
-
-                if (isset($rule['min'])){
-                    // fix para bug en schemas 
-                    if ($is_int && $rule['min'] != 0){
-                        $r[] = "min:{$rule['min']}";
-                    }
-                }
-
-                if (isset($rule['max'])){
-                    $r[] = "max:{$rule['max']}";
-                }
-
-                // No puede contener el "unique"
-                $laravel_update_rules[$field] = implode('|', $r);
-
-                if (in_array($field, $uniques)){
-                    $r[] = "unique:$table_name,$field";
-                }
-
-                if (isset($rule['required'])){
-                    $r[] = 'required';
-                }
-
-                $laravel_store_rules[$field] = implode('|', $r);
-            }
-
-            $get_rules_str = function ($laravel_rules){
-                $laravel_rules_str = '';
-                foreach ($laravel_rules as $f => $r){
-                    $laravel_rules_str .= "\t\t'$f' => '$r',\r\n";
-                }
-
-                return $laravel_rules_str;
-            };
 
             switch (static::$validator){
                 case 'Laravel':
+                    $laravel_store_rules  = [];
+                    $laravel_update_rules = [];
+
+                    $get_rules_str = function ($_rules){
+                        $rules_str = '';
+                        foreach ($_rules as $f => $r){
+                            $rules_str .= "\t\t'$f' => '$r',\r\n";
+                        }
+        
+                        return $rules_str;
+                    };
+        
+                    foreach ($rules as $field => $rule){
+                        $r = [];                 
+                        
+                        if (in_array($field, $nullables)){
+                            $r[] = 'nullable';
+                        }
+
+                        /*
+                            minimos para los distintos tipos de enteros
+
+                            https://dev.mysql.com/doc/refman/8.0/en/integer-types.html
+                        */
+
+                        $is_int = false;
+                        switch($rule['type']){
+                            case 'bool':
+                                $r[] = 'boolean';
+                                break;
+                        
+                            case 'int':
+                            case 'tinyint':
+                            case 'smallint':
+                            case 'mediumint':
+                                $is_int = true;
+                                $r[] = 'integer';
+                                break;    
+
+                            case 'date':
+                                $r[] = 'date';
+                                break;    
+
+                            case 'str':
+                                $r[] = 'string';
+                                break; 
+                        }
+
+                        if (isset($rule['min'])){
+                            // fix para bug en schemas 
+                            if ($is_int && $rule['min'] != 0){
+                                $r[] = "min:{$rule['min']}";
+                            }
+                        }
+
+                        if (isset($rule['max'])){
+                            $r[] = "max:{$rule['max']}";
+                        }
+
+                        // No puede contener el "unique"
+                        $laravel_update_rules[$field] = implode('|', $r);
+
+                        if (in_array($field, $uniques)){
+                            $r[] = "unique:$table_name,$field";
+                        }
+
+                        if (isset($rule['required'])){
+                            $r[] = 'required';
+                        }
+
+                        $laravel_store_rules[$field] = implode('|', $r);
+                    }
+
                     $laravel_store_rules_str  = $get_rules_str($laravel_store_rules); 
                     $laravel_update_rules_str = $get_rules_str($laravel_update_rules); 
         
-                    $laravel_rules_str = 'static protected $store_rules = ['."\r\n" . $laravel_store_rules_str . "\t];\r\n\r\n\t" .
+                    $rules_str = 'static protected $store_rules = ['."\r\n" . $laravel_store_rules_str . "\t];\r\n\r\n\t" .
                     'static protected $update_rules = ['."\r\n" . $laravel_update_rules_str . "\t];\r\n";
                     break;
 
                 case 'SimpleRest':
+                    $validator_rules_str = var_export($rules, true);
+                    /// ....
+
+                    $rules_str = 'static protected $validation_rules = '."\r\n" . Strings::trimMultiline($validator_rules_str). ';';
                     break;
             }
+
+            //dd($rules_str, static::$validator);
 
             //////////////// [ EXTENSIONES CON CUSTOM CODE ] ///////////////////
 
@@ -347,7 +353,8 @@ class LaravelApiGenerator
                 
                 $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_file);
                 $ctrl_file = str_replace('__MODEL_NAME__', $class_name, $ctrl_file);
-                $ctrl_file = str_replace('__VALIDATION_RULES__', $laravel_rules_str, $ctrl_file);
+                $ctrl_file = str_replace('__PRI_KEY__', "'$id_name'", $ctrl_file);
+                $ctrl_file = str_replace('__VALIDATION_RULES__', $rules_str, $ctrl_file);
                 $ctrl_file = str_replace('__RESOURCE_NAME__', "{$class_name}Resource", $ctrl_file);
 
                 $dest = static::$ctrl_output_path . "{$class_name}Controller.php";

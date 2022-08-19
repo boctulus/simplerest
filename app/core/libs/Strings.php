@@ -281,6 +281,12 @@ class Strings
 		return array_map('trim', $strings);
 	}
 
+	static function trimMultiline(string $str){
+		$lines = explode("\n", $str);
+		$arr   = static::trimArray($lines);
+		return implode("\n", $arr);
+	}
+
 	static function trimFromLastOcurrence(string $substr, string $str){
 		$pos = strrpos($str, $substr);
 
