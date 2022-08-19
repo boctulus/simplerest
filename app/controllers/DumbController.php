@@ -10028,65 +10028,6 @@ class DumbController extends Controller
         );
     }
 
-    /*
-        No usar con este proyecto porque no cumple las convenciones de Laravel
-    */
-    function gen_laravel_mp_org_base(){
-        LaravelApiGenerator::setConnId('mpo');
-        LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
-        // LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
-        LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
-        // LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
-        // LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
-
-        LaravelApiGenerator::process_schemas();
-    }
-
-    /*
-        User ESTA funcion para "Organizaciones"
-    */
-    function gen_laravel_mp_org(){
-        LaravelApiGenerator::setConnId('mpo');
-        LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
-        LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
-        LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
-        // LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
-        // LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
-
-        LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
-
-        LaravelApiGenerator::registerCallback(function($fields){
-            $softdelete_fieldname = null;
-            foreach($fields as $field){
-                if (Strings::endsWith('BORRADO', $field)){
-                    $softdelete_fieldname = $field;
-                }
-            }
-
-            $habilitado_fieldname = null;
-            foreach($fields as $field){
-                if (Strings::endsWith('HABILITADO', $field)){
-                    $habilitado_fieldname = $field;
-                }
-            }
-
-            return [
-                'eval' => [
-                    "\$campo_borrado    = '$softdelete_fieldname';",
-                    "\$campo_habilitado = '$habilitado_fieldname';",
-                    "if (isset(\$campo_borrado)){
-                        \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
-                    };",
-                    "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
-                        \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
-                    };"
-                ]
-            ];
-        });
-
-        LaravelApiGenerator::process_schemas();
-    }
-
     // Mini-endpoint
     function gen_laravel_mp_proyectos(){
         LaravelApiGenerator::setConnId('mpp');
@@ -10132,6 +10073,70 @@ class DumbController extends Controller
         });
 
        
+        LaravelApiGenerator::process_schemas();
+    }
+
+
+    
+    /*
+        No usar con este proyecto porque no cumple las convenciones de Laravel
+    */
+    function gen_laravel_mp_org_base(){
+        LaravelApiGenerator::setConnId('mpo');
+        LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
+        // LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
+        LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
+        // LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
+        // LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
+
+        LaravelApiGenerator::process_schemas();
+    }
+
+
+     /*
+        User ESTA funcion para "Organizaciones"
+    */
+    function gen_laravel_mp_org(){
+        LaravelApiGenerator::setConnId('mpo');
+        LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
+        LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
+        LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
+        // LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
+        // LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
+
+        LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
+
+        LaravelApiGenerator::setValidator("SimpleRest");
+
+        LaravelApiGenerator::registerCallback(function($fields){
+            $softdelete_fieldname = null;
+            foreach($fields as $field){
+                if (Strings::endsWith('BORRADO', $field)){
+                    $softdelete_fieldname = $field;
+                }
+            }
+
+            $habilitado_fieldname = null;
+            foreach($fields as $field){
+                if (Strings::endsWith('HABILITADO', $field)){
+                    $habilitado_fieldname = $field;
+                }
+            }
+
+            return [
+                'eval' => [
+                    "\$campo_borrado    = '$softdelete_fieldname';",
+                    "\$campo_habilitado = '$habilitado_fieldname';",
+                    "if (isset(\$campo_borrado)){
+                        \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
+                    };",
+                    "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
+                        \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
+                    };"
+                ]
+            ];
+        });
+
         LaravelApiGenerator::process_schemas();
     }
     
