@@ -39,7 +39,7 @@ class Dumb2Controller extends MyController
           );";
           
           
-          echo Strings::trimMultiline($str). PHP_EOL;
+          echo Strings::trimMultiline($str). PHP_EOL;''
     }
 }
 
