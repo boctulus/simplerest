@@ -3,6 +3,7 @@
 namespace simplerest\core\libs;
 
 use simplerest\core\interfaces\IValidator;
+use simplerest\core\libs\DB;
 
 /*
 	Validador de campos de formulario
@@ -14,22 +15,22 @@ class Validator implements IValidator
 {
 	protected $required  = true;
 	protected $ignored_fields = [];
+	protected $uniques = [];
+	protected $table   = null;
 
 	static protected $rules = [];
 	static protected $rule_types = [];
 
-	// Para ser usado en UPDATEs
-	function setRequired(bool $state){
-		$this->required = $state;
-		return $this;
-	}
-
-	function ignoreFields(array $fields){
-		$this->ignored_fields = $fields;
-		return $this;
+	function setUniques(Array $uniques, string $table){
+		$this->uniques = $uniques;
+		$this->table   = $table;
 	}
 
 	function __construct(){
+		// i18n
+		bindtextdomain('validator', LOCALE_PATH);
+		textdomain('validator');
+
 		static::loadRules();
 	}
 
@@ -118,6 +119,17 @@ class Validator implements IValidator
 		static::$rule_types = array_keys(static::$rules);
 	}
 
+	// Para ser usado en UPDATEs
+	function setRequired(bool $state){
+		$this->required = $state;
+		return $this;
+	}
+
+	function ignoreFields(array $fields){
+		$this->ignored_fields = $fields;
+		return $this;
+	}
+
 	/*
 		@param string $dato
 		@param string $tipo
@@ -173,12 +185,6 @@ class Validator implements IValidator
 
 	*/
 	function validate(?array $rules = null, array $data, $fillables = null){
-		// i18n
-        bindtextdomain('validator', LOCALE_PATH);
-		textdomain('validator');
-
-		//dd($data, 'DATA:');
-
 		if (empty($rules))
 			throw new \InvalidArgumentException('No validation rules!');
 		
@@ -195,6 +201,23 @@ class Validator implements IValidator
 			}
 
 			// Por eficiencia si hay campos no-fillables, aborto.
+			if (!empty($errores)){
+				return $errores;
+			}
+		}
+
+		if (!empty($this->uniques)){
+			foreach ($this->uniques as $unique_field){
+				if (DB::table($this->table)->where([
+					$unique_field => $data[$unique_field] 
+				])->exists()){
+					$errores[$unique_field] = [
+						"error" => "unique",
+						"error_detail" => "Field is no unique"
+					];
+				}
+			}
+
 			if (!empty($errores)){
 				return $errores;
 			}

@@ -3339,6 +3339,41 @@ Ej:
 	dd($v->validate($rules, $data, $fillables));
 
 
+### Validacion de campos unicos
+
+La validación de campos UNIQUE requiere conectarse a la DB en cuestion y ocupar el metodo setUniques()
+
+Ej:
+		DB::getConnection('eb');
+
+        $rules = [
+            'vch_clienombre' => ['type' => 'alpha_spaces_utf8', 'min' => 3, 'max' => 40],
+            'chr_cliedni' => ['type' => 'int', 'min' => 0],
+        ];
+
+        $data = [
+            'vch_clienombre' => 'Juan Español',
+            'chr_cliedni' => '10762367',
+            'vch_clietelefono' => '924-7834',
+        ];
+
+        $fillables = [
+            'vch_clienombre',
+            'chr_cliedni',
+            'vch_clietelefono'
+        ];
+
+        $uniques = [
+            'chr_cliedni',
+            'vch_clietelefono'
+        ];
+
+        $v = new Validator();
+        $v->setUniques($uniques, 'cliente');
+
+        dd($v->validate($rules, $data, $fillables, $uniques));
+
+
 ### Validaciones en los modelos
 
 Para efectuar la validación sobre las operaciones CRUD con los modelos es tan simple como incluir una instancia de la clase Validator:
