@@ -143,6 +143,18 @@ class Strings
 		return static::last(static::beforeLast($string, $substr), $substr);
 	}
 
+	static function trim($dato, bool $even_null = true, bool $even_numbers = false){
+		if ($dato === null){
+			return '';
+		}
+
+		if (is_int($dato) || is_float($dato) || is_double($dato)){
+			$dato = (string) $dato;
+		}
+
+		return trim($dato);
+	}
+
 	/*
 		Remueve del forma eficiente un substring del inicio de una cadena
 	*/

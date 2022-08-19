@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php // declare(strict_types=1);
 
 namespace simplerest\core\libs;
 
@@ -8,7 +8,7 @@ use simplerest\core\interfaces\IValidator;
 	Validador de campos de formulario
 	Ver 2.1 Beta
 
-	@author boctulus
+	@author boctulus@gmail.com
 */
 class Validator implements IValidator
 {
@@ -171,7 +171,7 @@ class Validator implements IValidator
 		@return mixed
 
 	*/
-	function validate(?array $rules = null, array $data){
+	function validate(?array $rules = null, array $data, $fillables = null){
 		// i18n
         bindtextdomain('validator', LOCALE_PATH);
 		textdomain('validator');
@@ -182,7 +182,23 @@ class Validator implements IValidator
 			throw new \InvalidArgumentException('No validation rules!');
 		
 		$errores = [];
-		
+
+		if ($fillables !== null){
+			foreach ($data as $field => $dato){
+				if (!in_array($field, $fillables)){
+					$errores[$field][] = [
+						"error" => "fillable",
+						"error_detail" => "Field is not fillable"
+					];
+				}
+			}
+
+			// Por eficiencia si hay campos no-fillables, aborto.
+			if (!empty($errores)){
+				return $errores;
+			}
+		}
+
 		/*
 			Crea array con el campo como índice
 		*/
@@ -393,27 +409,5 @@ class Validator implements IValidator
 }
 
 
-/*
-	Helper
-*/
 
-
-// @author: vitalyart dot ru
-if (!function_exists('array_key_first')) {
-    /**
-     * Gets the first key of an array
-     *
-     * @param array $array
-     * @return mixed
-     */
-    function arrayKeyFirst(array $array)
-    {
-        if (count($array)) {
-            reset($array);
-            return key($array);
-        }
-
-        return null;
-    }
-}
 

@@ -108,12 +108,12 @@ return [
 		],
 
 		'mpp' => [
-			'host'		=> env('DB_HOST', '127.0.0.1'),
-			'port'		=> env('DB_PORT'),
-			'driver' 	=> env('DB_CONNECTION'),
-			'db_name' 	=> 'mp_proyectos',
-			'user'		=> env('DB_USERNAME'), 
-			'pass'		=> env('DB_PASSWORD'),
+			'host'		=> env('DB_HOST_MPP', '127.0.0.1'),
+			'port'		=> env('DB_PORT_MPP'),
+			'driver' 	=> env('DB_CONNECTION_MPP'),
+			'db_name' 	=> env('DB_NAME_MPP'), 
+			'user'		=> env('DB_USERNAME_MPP'), 
+			'pass'		=> env('DB_PASSWORD_MPP'),
 			'charset'	=> 'utf8',
 			//'schema'	=> 'az',  
 			'pdo_options' => [
@@ -151,8 +151,8 @@ return [
 	
 	'DateTimeZone' => 'America/Bogota',
 
-	'error_handling'   => true,
-	'debug'   => false,  //env('APP_DEBUG', true),
+	'error_handling'   => false,
+	'debug'   => true,  //env('APP_DEBUG', true),
 
 	/*
 		Define users's table name

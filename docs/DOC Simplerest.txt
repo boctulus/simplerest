@@ -3230,8 +3230,9 @@ Para mostrar el funcionamiento de la clase Validator consideremos el siguiente e
 
 	$validado = (new Validator())->validate($rules,$data);
 
-	if ($validado !== true)
-		var_dump($validado);
+	if ($validado !== true){
+		dd($validado);
+	}
 
 La salida en caso de fracaso es un array conteniendo las reglas rotas para cada campo:
 
@@ -3300,6 +3301,42 @@ array
 regex:/expresión/
 
 El tipo 'time' es 'H:i:s' y el 'date' es 'd-m-Y' aunque siempre es posible crear un tipo personalizado con una expresión regular que se ajuste a las necesidades.
+
+
+### Fillables
+
+Hay casos donde se quiere evitar que se procesen campos no-fillables y para ello se puede ocupar el tercer param en validate()
+
+Ej:
+
+	$rules = [
+		'nombre' => ['type' => 'alpha_spaces_utf8', 'min' => 3, 'max' => 40],
+		'username' => ['type' => 'alpha_dash', 'min' => 3, 'max' => '15'],
+		'rol' => ['type' => 'int', 'not_in' => [2, 4, 5]],
+		'poder' => ['not_between' => [4, 7]],
+		'edad' => ['between' => [18, 100]],
+		'magia' => ['in' => [3, 21, 81]],
+		'is_active' => ['type' => 'bool', 'messages' => ['type' => 'Value should be 0 or 1']]
+	];
+
+	$data = [
+		'nombre' => 'Juan Español',
+		'username' => 'juan_el_mejor',
+		'rol' => 5,
+		'poder' => 6,
+		'edad' => 101,
+		'magia' => 22,
+		'is_active' => 3
+	];
+
+	$fillables = [
+		'nombre',
+		'username',
+		'edad'
+	];
+
+	$v = new Validator();
+	dd($v->validate($rules, $data, $fillables));
 
 
 ### Validaciones en los modelos
