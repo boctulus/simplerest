@@ -29,6 +29,7 @@ class LaravelApiGenerator
     static protected $excluded = [];
     static protected $capitalized_table_names = false;
 
+    static protected $validator = 'Laravel';
     static protected $callbacks = [];
 
 
@@ -79,6 +80,14 @@ class LaravelApiGenerator
 
     static function registerCallback(callable $callback){
         static::$callbacks[] = $callback;
+    }
+
+    static function setValidator(string $validator){
+        if (!in_array($validator, ['SimpleRest', 'Laravel'])){
+            throw new \InvalidArgumentException("Unkown validador");
+        }
+
+        static::$validator = $validator;
     }
 
     // @return void
@@ -286,7 +295,7 @@ class LaravelApiGenerator
                 $laravel_store_rules[$field] = implode('|', $r);
             }
 
-            $get_laravel_rules_str = function ($laravel_rules){
+            $get_rules_str = function ($laravel_rules){
                 $laravel_rules_str = '';
                 foreach ($laravel_rules as $f => $r){
                     $laravel_rules_str .= "\t\t'$f' => '$r',\r\n";
@@ -295,12 +304,18 @@ class LaravelApiGenerator
                 return $laravel_rules_str;
             };
 
-            $laravel_store_rules_str  = $get_laravel_rules_str($laravel_store_rules); 
-            $laravel_update_rules_str = $get_laravel_rules_str($laravel_update_rules); 
+            switch (static::$validator){
+                case 'Laravel':
+                    $laravel_store_rules_str  = $get_rules_str($laravel_store_rules); 
+                    $laravel_update_rules_str = $get_rules_str($laravel_update_rules); 
+        
+                    $laravel_rules_str = 'static protected $store_rules = ['."\r\n" . $laravel_store_rules_str . "\t];\r\n\r\n\t" .
+                    'static protected $update_rules = ['."\r\n" . $laravel_update_rules_str . "\t];\r\n";
+                    break;
 
-            $laravel_rules_str = 'static protected $store_rules = ['."\r\n" . $laravel_store_rules_str . "\t];\r\n\r\n\t" .
-            'static protected $update_rules = ['."\r\n" . $laravel_update_rules_str . "\t];\r\n";
-
+                case 'SimpleRest':
+                    break;
+            }
 
             //////////////// [ EXTENSIONES CON CUSTOM CODE ] ///////////////////
 
