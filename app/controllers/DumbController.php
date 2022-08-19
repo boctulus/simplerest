@@ -3606,6 +3606,39 @@ class DumbController extends Controller
         ->validate($rules, $data /*, $fillables */), 'AL MODIFICAR');
     }
 
+    function validation_test4()
+    {
+        DB::getConnection('eb');
+
+        $rules = [
+            'vch_clienombre' => ['type' => 'alpha_spaces_utf8', 'min' => 3, 'max' => 40],
+            'chr_cliedni' => ['type' => 'int', 'min' => 0],
+        ];
+
+        $data = [
+            'vch_clienombre' => 'Juan Español',
+            'chr_cliedni' => '10762367',
+            'vch_clietelefono' => '924-7834',
+        ];
+
+        $fillables = [
+            'vch_clienombre',
+            'chr_cliedni',
+            'vch_clietelefono'
+        ];
+
+        $uniques = [
+            'chr_cliedni',
+            'vch_clietelefono'
+        ];
+
+
+        $v = new Validator();
+        $v->setUniques($uniques, 'cliente');
+
+        dd($v->validate($rules, $data, $fillables, $uniques));
+    }
+
     function validacion()
     {
         $u = DB::table('users');
@@ -10084,16 +10117,16 @@ class DumbController extends Controller
     function gen_laravel_mp_org_base(){
         LaravelApiGenerator::setConnId('mpo');
         LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
-        // LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
+        LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
         LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
-        // LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
-        // LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
+        LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
+        LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
 
         LaravelApiGenerator::process_schemas();
     }
 
 
-     /*
+    /*
         User ESTA funcion para "Organizaciones"
     */
     function gen_laravel_mp_org(){
@@ -10101,8 +10134,8 @@ class DumbController extends Controller
         LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
         LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
         LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
-        // LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
-        // LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
+        LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
+        LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
 
         LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
 
