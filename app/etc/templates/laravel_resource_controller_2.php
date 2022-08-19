@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Libs\Validator;
 use App\Models\__MODEL_NAME__;
 use App\Models\UsuarioToken;
 use App\Http\Resources\__RESOURCE_NAME__;
+use Database\Factories\__MODEL_NAME__FakerFactory;
 use Database\Seeders\__MODEL_NAME__ as Seeders__MODEL_NAME__;
 
 date_default_timezone_set("America/Bogota");
@@ -124,11 +126,21 @@ class __CONTROLLER_NAME__ extends Controller
         */
 
         try {
-            $validated = $request->validate(static::$store_rules);
+            $fillables = (new __MODEL_NAME__)->getFillable();
+
+            $v = new Validator();
+            $validated = $v->validate($rules, $data, $fillables);
+
+            if ($validated !== true){
+                $this->respuesta['errors'] = $validated;
+                $this->error_code = 400;
+                return response()->json($this->respuesta, $this->error_code);
+            }
+
         } catch (\Exception $e){
-            return new Response([
-                'errors' => $e->getMessage()
-            ], 400);
+            $this->respuesta['errors'] = $e->getMessage();
+            $this->error_code = 500;
+            return response()->json($this->respuesta, $this->error_code);
         }
     
         return new __RESOURCE_NAME__( __MODEL_NAME__::create($validated) );
@@ -258,19 +270,32 @@ class __CONTROLLER_NAME__ extends Controller
             ], 400);
         }
 
-        try {
-            $validated = $request->validate(static::$update_rules);
-        } catch (\Exception $e){
-            return new Response([
-                'errors' => $e->getMessage()
-            ], 400);
-
-            $this->respuesta['message'] = 'No se pudo actualizar';
-            $this->respuesta['errors'] = $e->getMessage();
-            return new Response($this->respuesta, 500);
-        }
+        /*
+            Validaciones
+        */
 
         $instance = (new __MODEL_NAME__());
+
+        try {
+            $fillables = $instance->getFillable();
+
+            $v = new Validator();
+            
+            $validated = $v
+            ->setRequired(false)
+            ->validate($rules, $data, $fillables);
+
+            if ($validated !== true){
+                $this->respuesta['errors'] = $validated;
+                $this->error_code = 400;
+                return response()->json($this->respuesta, $this->error_code);
+            }
+
+        } catch (\Exception $e){
+            $this->respuesta['errors'] = $e->getMessage();
+            $this->error_code = 500;
+            return response()->json($this->respuesta, $this->error_code);
+        }
         
         $exists = $instance
         ->where('INF_ID', $id)
