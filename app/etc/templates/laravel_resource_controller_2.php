@@ -28,33 +28,36 @@ class __CONTROLLER_NAME__ extends Controller
         if (!$request->bearerToken()) {
             $this->respuesta['errors'] = "No autorizado";
             $this->error_code = 401;
-        } else {
+            return response()->json($this->respuesta, $this->error_code);
+        } 
 
-            try {
-                $ut = UsuarioToken::where('USE_TOKEN', $request->bearerToken())->first();
-                if ($ut) {
-                    if ($ut->USE_ESTADO == "A") {
-                        if (!isset($request->paginado)) {
-                            ///TODOS
-                            $this->respuesta['meta'] = array("Listando todos los registros sin borrado lógico");
-                            $this->respuesta['data'] = __MODEL_NAME__::all();
-                        } else {
-                            ///paginado
-                            $this->respuesta['meta'] = array("Listando todos los registros paginados de {$request->paginado} en {$request->paginado}");
-                            $this->respuesta['data'] = __MODEL_NAME__::simplePaginate($request->paginado);
-                        }
-                    } else {
-                        $this->respuesta['errors'] = "Token expirado";
-                        $this->error_code = 401;
-                    }
-                } else {
-                    $this->respuesta['errors'] = "Token inexistente";
+        try {
+            $ut = UsuarioToken::where('USE_TOKEN', $request->bearerToken())->first();
+            if ($ut) {
+                if ($ut->USE_ESTADO != "A") {
+                    $this->respuesta['errors'] = "Token expirado";
                     $this->error_code = 401;
+                    return response()->json($this->respuesta, $this->error_code);
                 }
-            } catch (\Exception $e) {
-                $this->respuesta['errors'] = $e->getMessage();
-                $this->error_code = 500;
+            } else {
+                $this->respuesta['errors'] = "Token inexistente";
+                $this->error_code = 401;
+                return response()->json($this->respuesta, $this->error_code);
             }
+
+            // OK
+            if (!isset($request->paginado)) {
+                ///TODOS
+                $this->respuesta['meta'] = array("Listando todos los registros sin borrado lógico");
+                $this->respuesta['data'] = __MODEL_NAME__::all();
+            } else {
+                ///paginado
+                $this->respuesta['meta'] = array("Listando todos los registros paginados de {$request->paginado} en {$request->paginado}");
+                $this->respuesta['data'] = __MODEL_NAME__::simplePaginate($request->paginado);
+            }
+        } catch (\Exception $e) {
+            $this->respuesta['errors'] = $e->getMessage();
+            $this->error_code = 500;
         }
     
         return response()->json($this->respuesta, $this->error_code);
@@ -80,6 +83,19 @@ class __CONTROLLER_NAME__ extends Controller
     {
         if (!$request->bearerToken()) {
             return response()->json("No autorizado", 401);
+        }
+
+        $ut = UsuarioToken::where('USE_TOKEN', $request->bearerToken())->first();
+        if ($ut) {
+            if ($ut->USE_ESTADO != "A") {
+                $this->respuesta['errors'] = "Token expirado";
+                $this->error_code = 401;
+                return response()->json($this->respuesta, $this->error_code);
+            }
+        } else {
+            $this->respuesta['errors'] = "Token inexistente";
+            $this->error_code = 401;
+            return response()->json($this->respuesta, $this->error_code);
         }
 
         $raw = $request->getContent();
@@ -130,6 +146,19 @@ class __CONTROLLER_NAME__ extends Controller
             return response()->json("No autorizado", 401);
         }
 
+        $ut = UsuarioToken::where('USE_TOKEN', $request->bearerToken())->first();
+        if ($ut) {
+            if ($ut->USE_ESTADO != "A") {
+                $this->respuesta['errors'] = "Token expirado";
+                $this->error_code = 401;
+                return response()->json($this->respuesta, $this->error_code);
+            }
+        } else {
+            $this->respuesta['errors'] = "Token inexistente";
+            $this->error_code = 401;
+            return response()->json($this->respuesta, $this->error_code);
+        }
+
         $this->respuesta = [
             'meta'=> array("Consultar un registro existente")
         ];
@@ -149,7 +178,6 @@ class __CONTROLLER_NAME__ extends Controller
         //     $q->where('__FIELD_BORRADO__', '!=', '1');
         // })
         ->first();
-
 
         if(!empty($data))
         {
@@ -185,6 +213,19 @@ class __CONTROLLER_NAME__ extends Controller
     {
         if (!$request->bearerToken()) {
             return response()->json("No autorizado", 401);
+        }
+
+        $ut = UsuarioToken::where('USE_TOKEN', $request->bearerToken())->first();
+        if ($ut) {
+            if ($ut->USE_ESTADO != "A") {
+                $this->respuesta['errors'] = "Token expirado";
+                $this->error_code = 401;
+                return response()->json($this->respuesta, $this->error_code);
+            }
+        } else {
+            $this->respuesta['errors'] = "Token inexistente";
+            $this->error_code = 401;
+            return response()->json($this->respuesta, $this->error_code);
         }
 
         $this->respuesta['meta'] = array("Actualizar un registro existente");
@@ -264,36 +305,50 @@ class __CONTROLLER_NAME__ extends Controller
         if (!$request->bearerToken()) {
             $this->respuesta['errors'] = "No autorizado";
             $this->error_code = 401;
+            return response()->json($this->respuesta, $this->error_code);
+        } 
+
+        $ut = UsuarioToken::where('USE_TOKEN', $request->bearerToken())->first();
+        if ($ut) {
+            if ($ut->USE_ESTADO != "A") {
+                $this->respuesta['errors'] = "Token expirado";
+                $this->error_code = 401;
+                return response()->json($this->respuesta, $this->error_code);
+            }
         } else {
+            $this->respuesta['errors'] = "Token inexistente";
+            $this->error_code = 401;
+            return response()->json($this->respuesta, $this->error_code);
+        }
 
-            $this->respuesta['meta'] = array("Borrado lógico de un registro existente");
-            try {
-                //validar obligatorios
-                if (isset($id) && $id > 0) {
-                    if ($p = __MODEL_NAME__::find($id)) {
-                        // Toogle
-                        if ($p->__FIELD_BORRADO__ == true) {
-                            $p->__FIELD_BORRADO__ = false;
-                        } else {
-                            $p->__FIELD_BORRADO__ = true;
-                        }
-
-                        if ($p->save()) {
-                            $this->respuesta['data'] = __MODEL_NAME__::find($id);
-                        } else {
-                            $this->respuesta['errors'] = "No se logró borrar, intente nuevamente";
-                        }
+        $this->respuesta['meta'] = array("Borrado lógico de un registro existente");
+        
+        try {
+            //validar obligatorios
+            if (isset($id) && $id > 0) {
+                if ($p = __MODEL_NAME__::find($id)) {
+                    // Toogle
+                    if ($p->__FIELD_BORRADO__ == true) {
+                        $p->__FIELD_BORRADO__ = false;
                     } else {
-                        $this->respuesta['errors'] = "No existe un rol con el id {$id}";
+                        $p->__FIELD_BORRADO__ = true;
+                    }
+
+                    if ($p->save()) {
+                        $this->respuesta['data'] = __MODEL_NAME__::find($id);
+                    } else {
+                        $this->respuesta['errors'] = "No se logró borrar, intente nuevamente";
                     }
                 } else {
-
-                    $this->respuesta['errors'] = "El id es obligatorio";
+                    $this->respuesta['errors'] = "No existe un rol con el id {$id}";
                 }
-            } catch (\Exception $e) {
-                $this->respuesta['errors'] = $e->getMessage();
-                $this->error_code = 500;
+            } else {
+
+                $this->respuesta['errors'] = "El id es obligatorio";
             }
+        } catch (\Exception $e) {
+            $this->respuesta['errors'] = $e->getMessage();
+            $this->error_code = 500;
         }
 
         return response()->json($this->respuesta, $this->error_code);
@@ -306,6 +361,19 @@ class __CONTROLLER_NAME__ extends Controller
             $this->error_code = 401;
             return response()->json($this->respuesta, $this->error_code);
         } 
+
+        $ut = UsuarioToken::where('USE_TOKEN', $request->bearerToken())->first();
+        if ($ut) {
+            if ($ut->USE_ESTADO != "A") {
+                $this->respuesta['errors'] = "Token expirado";
+                $this->error_code = 401;
+                return response()->json($this->respuesta, $this->error_code);
+            }
+        } else {
+            $this->respuesta['errors'] = "Token inexistente";
+            $this->error_code = 401;
+            return response()->json($this->respuesta, $this->error_code);
+        }
 
         $this->respuesta['meta'] = array("Cambio de estado de un registro existente");
 

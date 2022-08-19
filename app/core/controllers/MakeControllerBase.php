@@ -946,7 +946,18 @@ class MakeControllerBase extends Controller
 
             if (preg_match('/^--(except|excluded)[=|:]([a-z0-9A-ZñÑ_-|]+)$/', $o, $matches)){
                 $_except  = $matches[2];
-                $excluded = explode('|', $_except);
+
+                if ($_except == 'laravel_tables'){
+                    $excluded = [
+                        'migrations',
+                        'failed_jobs',
+                        'users',
+                        'password_resets',
+                        'personal_access_tokens'
+                    ];
+                } else {
+                    $excluded = explode('|', $_except);
+                }
             }
 
             if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
