@@ -129,6 +129,8 @@ class __CONTROLLER_NAME__ extends Controller
             $fillables = (new __MODEL_NAME__)->getFillable();
 
             $v = new Validator();
+
+            $v->setUniques(static::$uniques, '__TABLE_NAME__');
             $validated = $v->validate(static::$validation_rules, $data, $fillables);
 
             if ($validated !== true){
@@ -288,10 +290,11 @@ class __CONTROLLER_NAME__ extends Controller
             $fillables = $instance->getFillable();
 
             $v = new Validator();
-            
+
             $validated = $v
             ->setRequired(false)
-            ->validate(static::$validation_rules, $data, $fillables);
+            ->setUniques(static::$uniques, '__TABLE_NAME__')
+            ->validate(static::$validation_rules, $data, $fillables, static::$uniques);
 
             if ($validated !== true){
                 $this->respuesta['errors'] = $validated;
