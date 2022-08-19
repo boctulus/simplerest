@@ -3522,8 +3522,14 @@ class DumbController extends Controller
             'is_active' => 3
         ];
 
+        $fillables = [
+            'nombre',
+            'username',
+            'edad'
+        ];
+
         $v = new Validator();
-        dd($v->validate($rules, $data));
+        dd($v->validate($rules, $data, $fillables));
     }
 
     function validacion()
@@ -9968,12 +9974,11 @@ class DumbController extends Controller
     function gen_laravel_mp_org(){
         LaravelApiGenerator::setConnId('mpo');
         LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
-        // LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
+        LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
         LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
         // LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
         // LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
 
-        #LaravelApiGenerator::capitalizeTableNames();
         LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
 
         LaravelApiGenerator::registerCallback(function($fields){
