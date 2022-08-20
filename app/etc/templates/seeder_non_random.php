@@ -21,7 +21,7 @@ class __MODEL_NAME__ extends Seeder
             //...
         ];
 
-        \App\Models\__MODEL_NAME__::insert($data);
+        \App\Models\__MODEL_NAME__::insertOrIgnore($data);
     }
 }
 
