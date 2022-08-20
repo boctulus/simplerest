@@ -3,5 +3,6 @@
 namespace simplerest\core\interfaces;
 
 interface IValidator {
-    function validate(array $rules, array $data);
+    function validate(array $data, array $rules, $fillables = null);
+    function getErrors() : array;
 }

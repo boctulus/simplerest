@@ -793,10 +793,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
                 
                 if ($id === null){
-                    $validation = (new Validator())->setRequired(false)->ignoreFields($ignored)->validate($this->instance->getRules(),$data);
+                    $validator = (new Validator())->setRequired(false)->ignoreFields($ignored);
                     
-                    if ($validation !== true){
-                        throw new InvalidValidationException(json_encode($validation));
+                    $ok = $validator->validate($data, $this->instance->getRules());
+                    
+                    if ($ok !== true){
+                        throw new InvalidValidationException(json_encode($validator->getErrors()));
                     }                        
                 }      
 
@@ -1107,9 +1109,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $data[$this->instance->belongsTo()] = $f_rows[0][$this->instance->belongsTo()];    
             }    
 
-            $validado = (new Validator)->validate($this->instance->getRules(), $data);
-            if ($validado !== true){
-                Factory::response()->sendError(_('Data validation error'), 400, $validado);
+            $validator = new Validator;
+
+            $ok = $validator->validate($data, $this->instance->getRules());
+            
+            if ($ok !== true){
+                Factory::response()->sendError(_('Data validation error'), 400, $validator->getErrors());
             }  
 
             if (!empty($this->folder)) {
@@ -1809,7 +1814,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }                            
 
                             if ($append_mode == false){
-                                $k = arrayKeyFirst($dati);
+                                $k = Arrays::arrayKeyFirst($dati);
 
                                 if (is_int($k) && is_array($dati[$k])){
                                     $dati_id_col = array_column($dati, 'id_tag');
@@ -1992,7 +1997,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             $diff_left  = [];  // a borrar
                             $diff_right = [];  // a insertar
         
-                            $k = arrayKeyFirst($dati);
+                            $k = Arrays::arrayKeyFirst($dati);
 
                             if (is_int($k) && isset($dati[$k]) && is_array($dati[$k])){
                                 $dati_fk_ids = array_column($dati, $fk_tb);
@@ -2111,9 +2116,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 } 
             }   
 
-            $validado = (new Validator())->setRequired($put_mode)->validate($this->instance->getRules(), $data);
-            if ($validado !== true){
-                Factory::response()->sendError(_('Data validation error'), 400, $validado);
+            $validator = new Validator();
+
+            $ok  = $validator->setRequired($put_mode)->validate($data, $this->instance->getRules());
+            
+            if ($ok !== true){
+                Factory::response()->sendError(_('Data validation error'), 400, $validator->getErrors());
             }
 
             // agregado dic-3
