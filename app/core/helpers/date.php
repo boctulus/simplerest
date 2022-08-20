@@ -1,20 +1,9 @@
 <?php
 
-use simplerest\core\libs\Strings;
+use simplerest\core\libs\Date;
 
 function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){
-    if ($timezone === null){    
-        $timezone = new \DateTimeZone( date_default_timezone_get() );
-    } else {
-        if (is_string($timezone)){
-            $timezone = new \DateTimeZone($timezone);
-        }
-    }
-
-    $d  = new \DateTime('', $timezone);
-    $at = $d->format($format); // ok
-
-    return $at;
+    return Date::datetime($format, $timezone);
 }
 
 // alias for datetime()
@@ -32,4 +21,7 @@ function at(bool $cached = true){
     return datetime('Y-m-d H:i:s');
 }
 
-
+// alias for at()
+function now(bool $cached = true){
+    return at($cached);
+}
