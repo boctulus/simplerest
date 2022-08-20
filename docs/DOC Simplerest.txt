@@ -3228,11 +3228,13 @@ Para mostrar el funcionamiento de la clase Validator consideremos el siguiente e
 				
 	];
 
-	$validado = (new Validator())->validate($rules,$data);
-
-	if ($validado !== true){
-		dd($validado);
-	}
+	$validator = new Validator;
+	
+	if ($v->validate($data, $rules /*, $fillables */)){
+        dd('Valido');
+	} else {
+		dd($v->getErrors(), 'Errores de validacion');
+	}   
 
 La salida en caso de fracaso es un array conteniendo las reglas rotas para cada campo:
 
@@ -3335,8 +3337,13 @@ Ej:
 		'edad'
 	];
 
-	$v = new Validator();
-	dd($v->validate($rules, $data, $fillables));
+	$validator = new Validator;
+	
+	if ($v->validate($data, $rules, $fillables)){
+        dd('Valido');
+	} else {
+		dd($v->getErrors(), 'Errores de validacion');
+	}  
 
 
 ### Validacion de campos unicos
@@ -3368,10 +3375,14 @@ Ej:
             'vch_clietelefono'
         ];
 
-        $v = new Validator();
-        $v->setUniques($uniques, 'cliente');
+        $validator = (new Validator)
+		->setUniques($uniques, 'cliente');
 
-        dd($v->validate($rules, $data, $fillables, $uniques));
+		if ($v->validate($data, $rules, $fillables)){
+			dd('Valido');
+		} else {
+			dd($v->getErrors(), 'Errores de validacion');
+		}  
 
 
 Idealmente esta funcionalidad deberia ser un Trait por portabilidad.
@@ -3400,7 +3411,7 @@ Ejemplo:
 	$rules = [ ..., ... , ...];
 
 	$validado = (new Validator())->setRequired(false)
-	->validate($rules,$data);
+	->validate($data, $rules);
 
 
 ### Constraints

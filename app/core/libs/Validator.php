@@ -16,6 +16,7 @@ class Validator implements IValidator
 	protected $required  = true;
 	protected $ignored_fields = [];
 	protected $uniques = [];
+	protected $errors  = [];
 	protected $table   = null;
 
 	static protected $rules = [];
@@ -26,7 +27,11 @@ class Validator implements IValidator
 		bindtextdomain('validator', LOCALE_PATH);
 		textdomain('validator');
 
-		static::loadRules();
+		static::loadDefinitions();
+	}
+
+	function getErrors() : array {
+		return $this->errors;
 	}
 
 	function setUniques(Array $uniques, string $table){
@@ -36,7 +41,7 @@ class Validator implements IValidator
 	}
 
 	// default rules
-	static function loadRules(){
+	static function loadDefinitions(){
 		static::$rules = [ 
 			'bool' => function($dato) {
 				return $dato == 0 || $dato == 1;
@@ -168,7 +173,7 @@ class Validator implements IValidator
 		}
 
 		if (static::$rules == []){
-			static::loadRules();
+			static::loadDefinitions();
 		}
 
 		if (!in_array($tipo, static::$rule_types)){
@@ -180,21 +185,22 @@ class Validator implements IValidator
 
 
 	/*
-		@param array $rules
 		@param array $data
-		@return mixed
+		@param array $rules
+		@return boolean
 
 	*/
-	function validate(?array $rules = null, array $data, $fillables = null){
+	function validate(array $data, ?array $rules = null, $fillables = null) : bool 
+	{
 		if (empty($rules))
 			throw new \InvalidArgumentException('No validation rules!');
 		
-		$errores = [];
+		$errors = [];
 
 		if ($fillables !== null){
 			foreach ($data as $field => $dato){
 				if (!in_array($field, $fillables)){
-					$errores[$field][] = [
+					$errors[$field][] = [
 						"error" => "fillable",
 						"error_detail" => "Field is not fillable"
 					];
@@ -202,8 +208,9 @@ class Validator implements IValidator
 			}
 
 			// Por eficiencia si hay campos no-fillables, aborto.
-			if (!empty($errores)){
-				return $errores;
+			if (!empty($errors)){
+				$this->errors = $errors;
+				return false;
 			}
 		}
 
@@ -212,27 +219,28 @@ class Validator implements IValidator
 				if (DB::table($this->table)->where([
 					$unique_field => $data[$unique_field] 
 				])->exists()){
-					$errores[$unique_field] = [
+					$errors[$unique_field] = [
 						"error" => "unique",
 						"error_detail" => "Field is no unique"
 					];
 				}
 			}
 
-			if (!empty($errores)){
-				return $errores;
+			if (!empty($errors)){
+				$this->errors = $errors;
+				return false;
 			}
 		}
 
 		/*
 			Crea array con el campo como índice
 		*/
-		$push_error = function ($campo, array $error, array &$errores){
-			if(isset($errores[$campo]))
-				$errores[$campo][] = $error;
+		$push_error = function ($campo, array $error, array &$errors){
+			if(isset($errors[$campo]))
+				$errors[$campo][] = $error;
 			else{
-				$errores[$campo] = [];
-				$errores[$campo][] = $error;
+				$errors[$campo] = [];
+				$errors[$campo][] = $error;
 			}	
 		};
 			
@@ -256,7 +264,7 @@ class Validator implements IValidator
 			if (!isset($data[$field])){
 				if ($this->required && isset($rule['required']) && $rule['required']){
 					$err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] :  "Field is required";
-					$push_error($field,['data'=> null, 'error'=> 'required', 'error_detail' =>_($err)],$errores);
+					$push_error($field,['data'=> null, 'error'=> 'required', 'error_detail' =>_($err)],$errors);
 				}	
 				
 				continue;
@@ -276,7 +284,7 @@ class Validator implements IValidator
 	
 					if ($this->required && isset($rule['required']) && $rule['required']){
 						$err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] :  "Field is required";
-						$push_error($field,['data'=> null, 'error'=> 'required', 'error_detail' => _($err)],$errores);
+						$push_error($field,['data'=> null, 'error'=> 'required', 'error_detail' => _($err)],$errors);
 					}
 	
 					continue 2;
@@ -292,7 +300,7 @@ class Validator implements IValidator
 				if($rule['required']){
 					if(trim($dato)==''){
 						$err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] :  "Field is required";
-						$push_error($field,['data'=>$dato, 'error'=>'required', 'error_detail' => _($err)],$errores);
+						$push_error($field,['data'=>$dato, 'error'=>'required', 'error_detail' => _($err)],$errors);
 					}						
 				}	
 				
@@ -302,7 +310,7 @@ class Validator implements IValidator
 
 					$err = (isset($msg[$field]['in'])) ? $msg[$field]['in'] :  sprintf(_("%s is not a valid value"),$dato);
 					if (!in_array($dato, $rule['in'])){
-						$push_error($field,['data'=>$dato, 'error'=>'in', 'error_detail' => _($err)],$errores);
+						$push_error($field,['data'=>$dato, 'error'=>'in', 'error_detail' => _($err)],$errors);
 					}					
 				}
 
@@ -312,7 +320,7 @@ class Validator implements IValidator
 
 					$err = (isset($msg[$field]['not_in'])) ? $msg[$field]['not_in'] :  sprintf(_("%s is not a valid value"),$dato);
 					if (in_array($dato, $rule['not_in'])){
-						$push_error($field,['data'=>$dato, 'error'=>'not_in', 'error_detail' => _($err)],$errores);
+						$push_error($field,['data'=>$dato, 'error'=>'not_in', 'error_detail' => _($err)],$errors);
 					}					
 				}
 
@@ -325,7 +333,7 @@ class Validator implements IValidator
 
 					if ($dato > $rule['between'][1] || $dato < $rule['between'][0]){
 						$err = (isset($msg[$field]['between'])) ? $msg[$field]['between'] : sprintf(_("%s is not between %s and %s"), $dato, $rule['between'][0], $rule['between'][1]);
-						$push_error($field,['data'=>$dato, 'error'=>'between', 'error_detail' => _($err)],$errores);
+						$push_error($field,['data'=>$dato, 'error'=>'between', 'error_detail' => _($err)],$errors);
 					}					
 				}
 
@@ -338,7 +346,7 @@ class Validator implements IValidator
 
 					if (!($dato > $rule['not_between'][1] || $dato < $rule['not_between'][0])){
 						$err = (isset($msg[$field]['not_between'])) ? $msg[$field]['not_between'] :  sprintf(_("%s should be less than %s or gretter than %s"), $dato, $rule['not_between'][0], $rule['not_between'][1]);
-						$push_error($field,['data'=>$dato, 'error'=>'not_between', 'error_detail' => _($err)],$errores);
+						$push_error($field,['data'=>$dato, 'error'=>'not_between', 'error_detail' => _($err)],$errors);
 					}					
 				}
 
@@ -348,7 +356,7 @@ class Validator implements IValidator
 				if (isset($rule['type']) && !$avoid_type_check)
 					if (!get_class()::isType($dato, $rule['type'])){
 						$err =  (isset($msg[$field]['type'])) ? $msg[$field]['type'] : "It's not a valid %s";
-						$push_error($field,['data'=>$dato, 'error'=>'type', 'error_detail' => sprintf(_($err), $rule['type'])],$errores);
+						$push_error($field,['data'=>$dato, 'error'=>'type', 'error_detail' => sprintf(_($err), $rule['type'])],$errors);
 					}						
 					
 						
@@ -359,7 +367,7 @@ class Validator implements IValidator
 								$rule['min'] = (int) $rule['min'];
 								if(strlen($dato)<$rule['min']){
 									$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  "The minimum length is %d characters";
-									$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err),$rule['min'])],$errores);
+									$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err),$rule['min'])],$errors);
 								}									
 							}
 							
@@ -367,7 +375,7 @@ class Validator implements IValidator
 								$rule['max'] = (int) $rule['max'];
 								if(strlen($dato)>$rule['max']){
 									$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] :  'The maximum length is %d characters';
-									$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errores);
+									$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
 								}
 									
 							}
@@ -379,7 +387,7 @@ class Validator implements IValidator
 								$rule['min'] = (float) $rule['min']; // cast
 								if($dato<$rule['min']){
 									$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  'Minimum is %d';
-									$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errores);
+									$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errors);
 								}
 									
 							}
@@ -389,7 +397,7 @@ class Validator implements IValidator
 								if($dato>$rule['max']){
 									$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] :  'Maximum is %d';
 
-									$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errores);
+									$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
 								}
 									
 							}
@@ -402,7 +410,7 @@ class Validator implements IValidator
 						if(isset($rule['min'])){ 
 							if($t0<strtotime($rule['min'])){
 								$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  'Minimum is '.$rule['min'];
-								$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errores);
+								$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errors);
 							}
 								
 						}
@@ -410,7 +418,7 @@ class Validator implements IValidator
 						if(isset($rule['max'])){ 
 							if($t0>strtotime($rule['max'])){
 								$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'Maximum is '.$rule['max'];
-								$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errores);
+								$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
 							}
 								
 						}
@@ -421,9 +429,9 @@ class Validator implements IValidator
 							
 		}
 
-		$validated = empty($errores) ? true : $errores;
-
-		return $validated;
+		$this->errors = $errors;
+		
+		return empty($errors);
 	}
 	
 	// ok
