@@ -3529,7 +3529,14 @@ class DumbController extends Controller
         ];
 
         $v = new Validator();
-        dd($v->validate($rules, $data, $fillables));
+        
+        $ok = $v->validate($data, $rules /*, $fillables */);
+
+        if ($ok){
+            dd('Valido');
+        } else {
+            dd($v->getErrors(), 'Errores de validacion');
+        }
     }
 
     function validation_test2()
@@ -3548,7 +3555,7 @@ class DumbController extends Controller
         $data = [
             'nombre' => 'Juan Español',
             'username' => 'juan_el_mejor',
-            'rol' => 5,
+            'rol' => 'fuerte',
             'poder' => 6,
             'edad' => 101,
             'magia' => 22,
@@ -3562,7 +3569,14 @@ class DumbController extends Controller
         ];
 
         $v = new Validator();
-        dd($v->validate($rules, $data /*, $fillables */));
+        
+        $ok = $v->validate($data, $rules /*, $fillables */);
+
+        if ($ok){
+            dd('Valido');
+        } else {
+            dd($v->getErrors(), 'Errores de validacion');
+        }
     }
 
     function validation_test3()
@@ -3595,15 +3609,21 @@ class DumbController extends Controller
         ];
 
         $v = new Validator();
-        dd($v->validate($rules, $data /*, $fillables */), 'AL CREAR');
+        dd($v->validate($data, $rules /*, $fillables */), 'AL CREAR');
 
         /*
             Al actualizar no necesito la regla de campos requeridos
         */
 
-        dd($v
+        $ok = $v
         ->setRequired(false)
-        ->validate($rules, $data /*, $fillables */), 'AL MODIFICAR');
+        ->validate($data, $rules /*, $fillables */);
+            
+        if ($ok){
+            dd('Valido');
+        } else {
+            dd($v->getErrors(), 'Errores de validacion (al MODIFICAR)');
+        }
     }
 
     function validation_test4()
@@ -3636,7 +3656,11 @@ class DumbController extends Controller
         $v = new Validator();
         $v->setUniques($uniques, 'cliente');
 
-        dd($v->validate($rules, $data, $fillables, $uniques));
+        if ($v->validate($data, $rules /*, $fillables */)){
+            dd('Valido');
+        } else {
+            dd($v->getErrors(), 'Errores de validacion');
+        }
     }
 
     function validacion()
@@ -3667,10 +3691,12 @@ class DumbController extends Controller
 
     function validacion4()
     {
+        DB::getConnection('az');
+
         $p = DB::table('products')->setValidator(new Validator());
         $affected = $p->where(['cost' => '100X', 'belongs_to' => 90])->delete();
 
-        dd($affected);
+        dd($affected, 'Affected rows');
     }
 
     /*

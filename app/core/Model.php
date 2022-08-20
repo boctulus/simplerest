@@ -1228,9 +1228,11 @@ class Model {
 
 		// Validación
 		if (!empty($this->validator)){
-			$validado = $this->validator->validate($this->getRules(), array_combine($vars, $values));
+			$validado = $this->validator->validate(array_combine($vars, $values), $this->getRules());
 			if ($validado !== true){
-				throw new InvalidValidationException(json_encode($validado));
+				throw new InvalidValidationException(json_encode(
+					$this->validator->getErrors()
+				));
 			} 
 		}
 		
@@ -2067,17 +2069,20 @@ class Model {
 	}
 
 	function whereColumn(string $field1, string $field2, string $op = '='){
-		$validation = Factory::validador()->validate([ 
-					'col1' => ['type' => 'alpha_num_dash'], 
-					'col2' => ['type' => 'alpha_num_dash']
-				],
-				[
-					'col1' => $field1, 
-					'col2' => $field2
-				]);
+		$validation = Factory::validador()->validate(
+			[
+				'col1' => $field1, 
+				'col2' => $field2
+			],
+			[ 
+				'col1' => ['type' => 'alpha_num_dash'], 
+				'col2' => ['type' => 'alpha_num_dash']
+			]);
 
 		if (!$validation){
-			throw new InvalidValidationException(json_encode($validation));
+			throw new InvalidValidationException(json_encode(
+				$this->validator->getErrors()
+			));
 		}
 
 		if (!in_array($op, ['=', '>', '<', '<=', '>=', '!='])){
@@ -2371,9 +2376,11 @@ class Model {
 
 		// Validación
 		if (!empty($this->validator)){
-			$validado = $this->validator->validate($this->getRules(), $data);
+			$validado = $this->validator->validate($data, $this->getRules());
 			if ($validado !== true){
-				throw new InvalidValidationException(json_encode($validado));
+				throw new InvalidValidationException(json_encode(
+					$this->validator->getErrors()
+				));
 			} 
 		}
 	
@@ -2547,9 +2554,12 @@ class Model {
 
 		// Validación
 		if (!empty($this->validator)){
-			$validado = $this->validator->validate($this->getRules(), array_combine($this->w_vars, $this->w_vals));
+			$validado = $this->validator->validate(array_combine($this->w_vars, $this->w_vals), $this->getRules());
+
 			if ($validado !== true){
-				throw new InvalidValidationException(json_encode($validado));
+				throw new InvalidValidationException(json_encode(
+					$this->validator->getErrors()
+				));
 			} 
 		}
 
@@ -2787,9 +2797,11 @@ class Model {
 	// 				}
 	// 			}
 
-	// 			$validado = $this->validator->validate($this->getRules(), $data);
+	// 			$validado = $this->validator->validate($data, $this->getRules());
 	// 			if ($validado !== true){
-	// 				throw new InvalidValidationException(json_encode($validado));
+	// 				throw new InvalidValidationException(json_encode(
+					// 	$this->validator->getErrors()
+					// ));
 	// 			} 
 	// 		}
 
@@ -2970,9 +2982,11 @@ class Model {
 				}
 			}
 			
-			$validado = $this->validator->validate($this->getRules(), $data);
+			$validado = $this->validator->validate($data, $this->getRules());
 			if ($validado !== true){
-				throw new InvalidValidationException(json_encode($validado));
+				throw new InvalidValidationException(json_encode(
+					$this->validator->getErrors()
+				));
 			} 
 		}
 		
