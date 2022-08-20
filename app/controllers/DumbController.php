@@ -10125,7 +10125,6 @@ class DumbController extends Controller
         LaravelApiGenerator::process_schemas();
     }
 
-
     /*
         User ESTA funcion para "Organizaciones"
     */
@@ -10136,6 +10135,46 @@ class DumbController extends Controller
         LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
         LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
         LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
+
+        LaravelApiGenerator::setSeederExclusion([
+            // ...
+        ]);
+
+        LaravelApiGenerator::addNonRandomSeeders([
+            'Genero',
+            'EstadoLaboral',
+            'EstadoCivil',
+            'Municipio',            // quitar luego
+            'Departamento',         // quitar luego
+            'GrupoPoblacional',     // quitar luego
+            'EscalaTerritorial',
+            'NivelEscolaridad',
+            'Nivel',
+            'SectorActividad',
+            'Subregion',
+            'TipoDoc',
+            'TipoOrganismo',
+            'InstrumentoPlaneacion',
+            'CertificacionOrgComunal',
+            'CoberturaTerritorial',
+
+            'RepresentanteLegal',
+            'ProyectoEjecutadoCooperacion',
+            'EntidadReg',
+            'OrgComunal',
+            'OrgComunalEntidadRegistrante',  // sobre tabla puente
+        ]);
+
+        LaravelApiGenerator::addRandomSeeders([
+            'RepresentanteLegal',
+            'ProyectoEjecutadoCooperacion',
+            'ProyectoEjecutadoRecursosPropios',
+            'ProyectoEjecutadoRecursosPublicos',
+            'EntidadReg',
+            'OrgComunal',
+            'OrgComunalEntidadRegistrante',  // sobre tabla puente
+            // ...
+        ]);
 
         LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
 

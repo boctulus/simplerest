@@ -4,6 +4,29 @@ namespace simplerest\core\libs;
 
 class Date
 {
+    static function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){
+        if ($timezone === null){    
+            $timezone = new \DateTimeZone( date_default_timezone_get() );
+        } else {
+            if (is_string($timezone)){
+                $timezone = new \DateTimeZone($timezone);
+            }
+        }
+
+        $d  = new \DateTime('', $timezone);
+        $at = $d->format($format); // ok
+
+        return $at;
+    }
+
+    static function date($timezone = null){
+        return datetime('Y-m-d', $timezone);
+    }
+
+    static function time($timezone = null){
+        return datetime('H:i:s', $timezone);
+    }
+
     static function getYear(string $date = '', bool $all_digits = true) : string {
         $do = new \DateTime($date);
         return $all_digits ? $do->format('Y') : $do->format('y');

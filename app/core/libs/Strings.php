@@ -143,8 +143,12 @@ class Strings
 		return static::last(static::beforeLast($string, $substr), $substr);
 	}
 
-	static function trim($dato, bool $even_null = true, bool $even_numbers = false){
+	static function trim($dato = null, bool $even_null = true){
 		if ($dato === null){
+			if (!$even_null){
+				throw new \InvalidArgumentException("Dato can not be null");
+			}
+
 			return '';
 		}
 
@@ -157,6 +161,10 @@ class Strings
 
 	/*
 		Remueve del forma eficiente un substring del inicio de una cadena
+
+		- Precaucion: remueve cualquier caracter, no solo espacios, tabs, etc
+
+		- Podria limitarse tambien a los primeros n-caracteres tambien
 	*/
 	static function lTrim($substr, $str){
 		$len_sb = strlen($substr);
@@ -173,11 +181,6 @@ class Strings
 		return $str;
 	} 
 
-	// alias
-	static function removeBeginning($substr, $str){
-		return static::lTrim($substr, $str);
-	}
-
 	static function rTrim(string $needle, string $haystack)
     {
         if (substr($haystack, -strlen($needle)) === $needle){
@@ -185,6 +188,11 @@ class Strings
 		}
 		return $haystack;
     }
+
+	// alias
+	static function removeBeginning($substr, $str){
+		return static::lTrim($substr, $str);
+	}
 
 	// alias
 	static function removeEnding(string $substr, string $str){
@@ -443,7 +451,7 @@ class Strings
 	/*
 		Wrap target with delimeter(s)
 	*/
-	static function enclose($target, string $delimeter, $delimeter2 = null){
+	static function enclose($target, string $delimeter = "'", $delimeter2 = null){
 		if (empty($delimeter2)){
 			$delimeter2 = $delimeter;
 		}
@@ -561,20 +569,24 @@ class Strings
 		Thanks https://www.phpliveregex.com/
 	*/
 	static function containsWord(string $word, string $text, bool $case_sensitive = true) : bool {
-		$mod = $case_sensitive ? 'i' : '';
+		$mod = !$case_sensitive ? 'i' : '';
 		
-		if (preg_match('/(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/'.$mod, $text)){
+		if (preg_match('/(?<=[\s,.:;_"\']|^)' . $word . '(?=[\s,.:;_"\']|$)/'.$mod, $text)){
 			return true;
 		} 
 
 		return false;
 	}
-	
+
+	static function containsWordButNotStartsWith(string $word, string $text, bool $case_sensitive = true) : bool {
+		return !static::startsWith($word, $text, $case_sensitive) && static::containsWord($word, $text, $case_sensitive);
+	}
+
 	/*
 		Verifica si *todas* las palabras se hallan en el texto. 
 	*/
 	static function containsWords(Array $words, string $text, bool $case_sensitive = true) {
-		$mod = $case_sensitive ? 'i' : '';
+		$mod = !$case_sensitive ? 'i' : '';
 
 		foreach($words as $word){
 			if (!preg_match('/(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/'.$mod, $text)){
