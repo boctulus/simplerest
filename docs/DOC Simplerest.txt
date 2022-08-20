@@ -907,10 +907,14 @@ El método create() acepta un array asociativo de campos con sus valores y hace 
 		'age' => 22,
 	]);
 
+Con createOrIgnore() se puede ignorar el error de intentar crear un nuevo registro cuando se está repitiendo un campo unique.
+
 
 # Insert múltiple
 
-Se puede enviar a  insertar varios registros de forma simultánea y se devolverá también el ID del último registro insertando si se hace de la siguiente forma:
+Se puede enviar a insertar varios registros de una vez (no necesariamente todos juntos al motor de base de datos) y se devolverá también el ID del último registro insertando si se hace de la siguiente forma.
+
+La diferencia con create() es que si recibe un array de registros a insertar crea una transacción y si falla un INSERT, hay un rollback con lo cual el efecto es cero inserciones. Los inserts si bien se envian de uno en uno al motor de DB, se ejecutan como bloque en el sentido de la transacción. ****
 
 Ej:
 
@@ -1000,6 +1004,10 @@ Ej:
 			'req_receta' => false,
 		]
 	]);
+	
+
+El método insertOrIgnore() se puede ignorar los erroreres de intentar crear nuevos registro cuando se está repitiendo un campo unique. Es similar a createOrIgnore() excepto porque el primero está dentro de una transacción.
+
 
 # Obtención de registros
 

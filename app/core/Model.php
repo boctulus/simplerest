@@ -2719,14 +2719,178 @@ class Model {
 		return $this;
 	}
 
-	function insert(array $data, bool $at_once = false, bool $ignore_duplicates = true){
+	/*
+		@return mixed false | integer 
+
+		Si la data es un array de arrays, intenta un INSERT MULTIPLE
+	*/
+	function create(array $data, $ignore_duplicates = false)
+	{	
+		$this->current_operation = 'create';
+
+		if ($this->conn == null)
+			throw new SqlException('No connection');
+
 		if (!Arrays::is_assoc($data)){
-			if (is_array($data[0])){	
-				// if ($at_once){
-				// 	return $this->insertMultiple($data);
-				// } 
+			foreach ($data as $dato){
+				if (is_array($dato)){					
+					$last_id = $this->create($dato, $ignore_duplicates);
+				} else {
+					throw new \InvalidArgumentException('Array of data should be associative');
+				}
+			}
+		}
 		
+		// control de recursión para INSERT múltiple
+		if (isset($data[0]) && is_array($data[0])){
+			return $last_id ?? null;
+		}
+
+		$this->data = $data;	
+		
+		$data = $this->applyInputMutator($data, 'CREATE');
+		$vars = array_keys($data);
+		$vals = array_values($data);
+
+		// Event hook
+		$this->onCreating($data);
+
+		if ($this->inSchema([$this->createdAt]) && !isset($data[$this->createdAt])){
+			$this->fill([$this->createdAt]);
+
+			$at = datetime();
+			$data[$this->createdAt] = $at;
+
+			$vars = array_keys($data);
+			$vals = array_values($data);
+		}
+
+		// Validación
+		if (!empty($this->validator)){
+			if(!empty($this->fillable) && is_array($this->fillable)){
+				foreach($vars as $var){
+					if (!in_array($var,$this->fillable))
+						throw new \InvalidArgumentException("`{$this->table_name}`.`$var` is no fillable");
+				}
+			}
+			
+			$validado = $this->validator->validate($data, $this->getRules());
+			if ($validado !== true){
+				throw new InvalidValidationException(json_encode(
+					$this->validator->getErrors()
+				));
+			} 
+		}
+		
+		$symbols  = array_map(function(string $e){
+			return ':'.$e;
+		}, $vars);
+
+		$str_vars = implode(', ',$vars);
+		$str_vals = implode(', ',$symbols);
+
+		$this->insert_vars = $vars;
+
+		$q = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_vals)";
+
+		if ($this->semicolon_ending){
+			$q .= ';';
+		}
+
+		// d($q, 'Statement');
+		// d($vals, 'vals');
+
+		$st = $this->conn->prepare($q);
+	
+		foreach($vals as $ix => $val){	
+			if(is_array($val)){
+				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR'){
+					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given '$val'");
+				} else {
+					$vals[$ix] = json_encode($val);
+					$type = \PDO::PARAM_STR;
+				}			
+			} else {
+				if(is_null($val)){
+					$type = \PDO::PARAM_NULL;
+				}elseif(isset($vars[$ix]) && $this->schema != NULL && isset($this->schema['attr_types'][$vars[$ix]])){
+					$const = $this->schema['attr_types'][$vars[$ix]];
+					$type = constant("PDO::PARAM_{$const}");
+				}elseif(is_int($val))
+					$type = \PDO::PARAM_INT;
+				elseif(is_bool($val))
+					$type = \PDO::PARAM_BOOL;
+				elseif(is_string($val))
+					$type = \PDO::PARAM_STR;
+			}
+			
+			// d($type, "TYPE");	
+			// d([$vals[$ix], $symbols[$ix], $type]);
+
+			$st->bindParam($symbols[$ix], $vals[$ix], $type);
+		}
+
+		$this->last_bindings = $vals;
+		$this->last_pre_compiled_query = $q;
+		$this->last_operation = 'create';
+
+		if (!$this->exec){
+			// Ejecuto igual el hook a fines de poder ver la query con dd()
+			$this->onCreated($data, null);
+			return NULL;
+		}	
+
+		if ($ignore_duplicates){
+			try {
+                $result = $st->execute();
+            } catch (\PDOException $e){
+                if (!Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())){
+                    throw new \PDOException($e->getMessage());
+                }
+            }
+		} else {
+			$result = $st->execute();
+		}
+
+		$this->current_operation = null;
+	
+		if (!isset($result)){
+			return;
+		}
+
+		if ($result){
+			// sin schema no hay forma de saber la PRI Key. Intento con 'id' 
+			if ($this->schema != null && $this->schema['id_name'] != null){
+				$id_name = $this->schema['id_name'];
+			} else {
+				$id_name = 'id';
+			}
+			
+			if (isset($data[$id_name])){
+				$this->last_inserted_id =	$data[$id_name];
+			} else {
+				$this->last_inserted_id = $this->conn->lastInsertId();
+			}
+
+			$this->onCreated($data, $this->last_inserted_id);
+		}else {
+			$this->last_inserted_id = false;
+		}
+
+		return $this->last_inserted_id;
+	}
+	
+
+	function createOrIgnore(array $data){
+		$this->create($data, true);
+	}
+
+	function insert(array $data, bool $ignore_duplicates = false){
+		if (!Arrays::is_assoc($data)){
+			if (is_array($data[0]))
+			{	
 				DB::beginTransaction();
+			
 				try {
 					$ret = $this->create($data, $ignore_duplicates);
 					DB::commit();
@@ -2734,9 +2898,12 @@ class Model {
 					//
 					// Si el modo NO es DEBUG => NO! incluir la sentencia SQL  (revisar en todos lados)
 					//
+
 					$val_str = implode(',', $this->getLastBindingParamters());
-					response()->sendError("Error inserting data", 500, $this->from() . '-' .$e->getMessage() . '- SQL: '. $this->getLog() . " - values : [$val_str]");
+					
 					DB::rollback();
+
+					throw new \Exception("Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog() . " - values : [$val_str]");
 				}
 				
 				return $ret; 
@@ -2745,16 +2912,22 @@ class Model {
 			}
 		} else {
 			DB::beginTransaction();
+
 			try {
 				$ret = $this->create($data, $ignore_duplicates);
 				DB::commit();
 
 				return $ret;
 			} catch (\Exception $e){
-				response()->sendError("Error inserting data", 500, $this->from() . '-' .$e->getMessage());
 				DB::rollback();
+
+				throw new \Exception("Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog());	
 			}
 		}
+	}
+
+	function insertOrIgnore(array $data){
+		$this->insert($data, true);
 	}
 
 	/*
@@ -2926,169 +3099,6 @@ class Model {
 	function getInsertVals(){
 		return $this->insert_vars;
 	}
-
-	/*
-		@return mixed false | integer 
-
-		Si la data es un array de arrays, intenta un INSERT MULTIPLE
-	*/
-	function create(array $data, $ignore_duplicates = false)
-	{	
-		$this->current_operation = 'create';
-
-		if ($this->conn == null)
-			throw new SqlException('No connection');
-
-		if (!Arrays::is_assoc($data)){
-			foreach ($data as $dato){
-				if (is_array($dato)){					
-					$last_id = $this->create($dato, $ignore_duplicates);
-				} else {
-					throw new \InvalidArgumentException('Array of data should be associative');
-				}
-			}
-		}
-		
-		// control de recursión para INSERT múltiple
-		if (isset($data[0]) && is_array($data[0])){
-			return $last_id ?? null;
-		}
-
-		$this->data = $data;	
-		
-		$data = $this->applyInputMutator($data, 'CREATE');
-		$vars = array_keys($data);
-		$vals = array_values($data);
-
-		// Event hook
-		$this->onCreating($data);
-
-		if ($this->inSchema([$this->createdAt]) && !isset($data[$this->createdAt])){
-			$this->fill([$this->createdAt]);
-
-			$at = datetime();
-			$data[$this->createdAt] = $at;
-
-			$vars = array_keys($data);
-			$vals = array_values($data);
-		}
-
-		// Validación
-		if (!empty($this->validator)){
-			if(!empty($this->fillable) && is_array($this->fillable)){
-				foreach($vars as $var){
-					if (!in_array($var,$this->fillable))
-						throw new \InvalidArgumentException("`{$this->table_name}`.`$var` is no fillable");
-				}
-			}
-			
-			$validado = $this->validator->validate($data, $this->getRules());
-			if ($validado !== true){
-				throw new InvalidValidationException(json_encode(
-					$this->validator->getErrors()
-				));
-			} 
-		}
-		
-		$symbols  = array_map(function(string $e){
-			return ':'.$e;
-		}, $vars);
-
-		$str_vars = implode(', ',$vars);
-		$str_vals = implode(', ',$symbols);
-
-		$this->insert_vars = $vars;
-
-		$q = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_vals)";
-
-		if ($this->semicolon_ending){
-			$q .= ';';
-		}
-
-		// d($q, 'Statement');
-		// d($vals, 'vals');
-
-		$st = $this->conn->prepare($q);
-	
-		foreach($vals as $ix => $val){	
-			if(is_array($val)){
-				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR'){
-					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given '$val'");
-				} else {
-					$vals[$ix] = json_encode($val);
-					$type = \PDO::PARAM_STR;
-				}			
-			} else {
-				if(is_null($val)){
-					$type = \PDO::PARAM_NULL;
-				}elseif(isset($vars[$ix]) && $this->schema != NULL && isset($this->schema['attr_types'][$vars[$ix]])){
-					$const = $this->schema['attr_types'][$vars[$ix]];
-					$type = constant("PDO::PARAM_{$const}");
-				}elseif(is_int($val))
-					$type = \PDO::PARAM_INT;
-				elseif(is_bool($val))
-					$type = \PDO::PARAM_BOOL;
-				elseif(is_string($val))
-					$type = \PDO::PARAM_STR;
-			}
-			
-			// d($type, "TYPE");	
-			// d([$vals[$ix], $symbols[$ix], $type]);
-
-			$st->bindParam($symbols[$ix], $vals[$ix], $type);
-		}
-
-		$this->last_bindings = $vals;
-		$this->last_pre_compiled_query = $q;
-		$this->last_operation = 'create';
-
-		if (!$this->exec){
-			// Ejecuto igual el hook a fines de poder ver la query con dd()
-			$this->onCreated($data, null);
-			return NULL;
-		}	
-
-		if ($ignore_duplicates){
-			try {
-                $result = $st->execute();
-            } catch (\PDOException $e){
-                if (!Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())){
-                    throw new \PDOException($e->getMessage());
-                }
-            }
-		} else {
-			$result = $st->execute();
-		}
-
-		$this->current_operation = null;
-	
-		if (!isset($result)){
-			return;
-		}
-
-		if ($result){
-			// sin schema no hay forma de saber la PRI Key. Intento con 'id' 
-			if ($this->schema != null && $this->schema['id_name'] != null){
-				$id_name = $this->schema['id_name'];
-			} else {
-				$id_name = 'id';
-			}
-			
-			if (isset($data[$id_name])){
-				$this->last_inserted_id =	$data[$id_name];
-			} else {
-				$this->last_inserted_id = $this->conn->lastInsertId();
-			}
-
-			$this->onCreated($data, $this->last_inserted_id);
-		}else {
-			$this->last_inserted_id = false;
-		}
-
-		return $this->last_inserted_id;
-	}
-	
-	
 	
 	
 	/*
