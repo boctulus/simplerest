@@ -10,36 +10,41 @@ use simplerest\core\libs\Strings;
 
 class Dumb2Controller extends MyController
 {
-    function index()
-    {
-        $str = "		array (
-            'ID_COC' => 
-            array (
-              'type' => 'int',
-              'min' => 0,
-            ),
-            'COC_NOMBRE' => 
-            array (
-              'type' => 'str',
-              'max' => 60,
-              'required' => true,
-            ),
-            'COC_BORRADO' => 
-            array (
-              'type' => 'bool',
-            ),
-            'created_at' => 
-            array (
-              'type' => 'timestamp',
-            ),
-            'updated_at' => 
-            array (
-              'type' => 'timestamp',
-            ),
-          );";
-          
-          
-          echo Strings::trimMultiline($str). PHP_EOL;''
-    }
+  function test(){
+    dd(
+      Strings::containsWord('HOLA', 'solo te dire_HOLA_y chau', false)
+    );
+  }  
+
+  function test_remove_sp()
+  {
+      $str = "		array (
+          'ID_COC' => 
+          array (
+            'type' => 'int',
+            'min' => 0,
+          ),
+          'COC_NOMBRE' => 
+          array (
+            'type' => 'str',
+            'max' => 60,
+            'required' => true,
+          ),
+          'COC_BORRADO' => 
+          array (
+            'type' => 'bool',
+          ),
+          'created_at' => 
+          array (
+            'type' => 'timestamp',
+          ),
+          'updated_at' => 
+          array (
+            'type' => 'timestamp',
+          ),
+        );";
+        
+        echo Strings::trimMultiline($str). PHP_EOL;
+  }
 }
 

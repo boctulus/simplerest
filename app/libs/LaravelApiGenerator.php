@@ -5,6 +5,7 @@ namespace simplerest\libs;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\Date;
 use simplerest\core\libs\Files;
 
 /*
@@ -20,10 +21,11 @@ class LaravelApiGenerator
     static protected $seeder_output_path;
     static protected $conn_id; 
 
-    static protected $ctrl_template_path     = ETC_PATH . "templates/laravel_resource_controller.php";
-    static protected $resource_template_path = ETC_PATH . "templates/larevel_resource.php";
-    static protected $faker_template_path    = ETC_PATH . "templates/faker.php";
-    static protected $seeder_template_path   = ETC_PATH . "templates/seeder.php";
+    static protected $ctrl_template_path      = ETC_PATH . "templates/laravel_resource_controller.php";
+    static protected $resource_template_path  = ETC_PATH . "templates/larevel_resource.php";
+    static protected $faker_template_path     = ETC_PATH . "templates/faker.php";
+    static protected $seeder_template_path    = ETC_PATH . "templates/seeder.php";
+    static protected $seeder_nr_template_path = ETC_PATH . "templates/seeder_non_random.php";
 
     static protected $table_models = [];
     static protected $excluded = [];
@@ -32,7 +34,23 @@ class LaravelApiGenerator
     static protected $validator = 'Laravel';
     static protected $callbacks = [];
 
+    static protected $non_random_seeders = [];
+    static protected $random_seeders     = [];
+    static protected $excluded_seeders   = [];
 
+
+    static function setSeederExclusion(Array $class_names){
+        static::$excluded_seeders = $class_names;
+    }
+
+    static function addNonRandomSeeders(Array $class_names){
+        static::$non_random_seeders = array_merge(static::$non_random_seeders, $class_names);
+    }
+
+    static function addRandomSeeders(Array $class_names){
+        static::$random_seeders = array_merge(static::$random_seeders, $class_names);
+    }
+    
     static function setProjectPath($path){
         static::$laravel_project_path = $path;
     }
@@ -149,10 +167,11 @@ class LaravelApiGenerator
         // dd(static::$table_models, 'TABLE MODEL NAMES');
         // exit;
 
-        $ctrl_template     = file_get_contents(static::$ctrl_template_path); 
-        $resource_template = file_get_contents(static::$resource_template_path);
-        $faker_template    = file_get_contents(static::$faker_template_path);
-        $seeder_template   = file_get_contents(static::$seeder_template_path);
+        $ctrl_template      = file_get_contents(static::$ctrl_template_path); 
+        $resource_template  = file_get_contents(static::$resource_template_path);
+        $faker_template     = file_get_contents(static::$faker_template_path);
+        $seeder_template    = file_get_contents(static::$seeder_template_path);
+        $seeder_nr_template = file_get_contents(static::$seeder_nr_template_path);
         
 
         /*
@@ -177,10 +196,11 @@ class LaravelApiGenerator
             //     continue; ///////////
             // }
 
-            $ctrl_file     = $ctrl_template;
-            $resource_file = $resource_template;
-            $faker_file    = $faker_template;
-            $seeder_file   = $seeder_template;
+            $ctrl_file      = $ctrl_template;
+            $resource_file  = $resource_template;
+            $faker_file     = $faker_template;
+            $seeder_file    = $seeder_template;
+            $seeder_nr_file = $seeder_nr_template;
 
             $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $__class_name;
             include $path;
@@ -386,12 +406,6 @@ class LaravelApiGenerator
                 dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
             }
 
-
-            $fillables_as_array_str = '';
-            foreach ($fillables as $f){
-                $fillables_as_array_str .= "'$f' => '[valor]',\r\n";
-            }
-
             /*
                 Fillables como van en los modelos
             */
@@ -401,15 +415,115 @@ class LaravelApiGenerator
             /*
                 Faker files
             */
+
+            $exclude_seeder = (in_array($model_name, static::$excluded_seeders));
         
-            if ($write_fakers){
-                $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
-                $faker_file = str_replace('__FIELDS__', $fillables_as_array_str, $faker_file);
+            if (!$exclude_seeder && $write_fakers){
+                /*
+                    NON-RANDOM SEEDERS
+                */
 
-                $dest = static::$faker_output_path . "{$model_name}Factory.php";
+                if (in_array($class_name, static::$non_random_seeders)){                            
+                    $fillables_as_array_str = '';
 
-                $ok  = file_put_contents($dest, $faker_file);
-                dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+                    foreach ($fillables as $f){
+                        switch ($rules[$f]['type']){
+                            case 'int':
+                                $valor = 0;
+
+                                // deberia salir a buscar la FK cuidando que hay excepciones y a veces comienza con ID_
+                                if (Strings::endsWith('_ID', $f)){
+                                    $valor = 1;
+                                }
+                            break;
+
+                            case 'bool':
+                                $valor = 0;
+                            break;
+
+                            case 'double':
+                            case 'float':
+                                $valor = '0.00';
+                            break;
+
+                            case 'date':
+                                $valor =  Strings::enclose(Date::date());
+                            break;    
+
+                            case 'time':
+                                $valor = Strings::enclose(Date::time());
+                            break; 
+
+                            case 'timestamp':
+                            case 'datetime':
+                                $valor = Strings::enclose(Date::time());
+                            break; 
+
+                            case 'str':
+                                $valor = "[valor]";
+
+                                if (Strings::containsWordButNotStartsWith('num', $f, false) ||
+                                    Strings::containsWordButNotStartsWith('nro', $f, false) ||
+                                    Strings::containsAnyWord(['numero', 'number'], $f, false))
+                                {
+                                    $valor = '11111111';
+                                }
+
+                                if (Strings::contains('email', $f, false)){
+                                    $valor = 'xxx@dominio.com';
+                                }
+
+                                if (Strings::containsAnyWord(['telefono', 'tel', 'phone'], $f, false)){
+                                    $valor = '3001234567';
+                                }
+
+                                if (Strings::containsAnyWord(['cellphone', 'celular'], $f, false)){
+                                    $valor = '(4) 3855555';
+                                }
+
+                                $valor = "'$valor'";
+                            break;
+                                
+                            default:
+                                $valor = "'[valor]'";
+                        }
+
+                        if (Strings::endsWith('_BORRADO', $f)){
+                            $valor = 0;
+                        }
+
+                        $fillables_as_array_str .= "'$f' => $valor,\r\n";
+                    }
+
+                    Strings::replace('__MODEL_NAME__', $model_name, $seeder_nr_file);
+                    Strings::replace('__FIELDS__', rtrim(Strings::tabulate($fillables_as_array_str, 4, 0)), $seeder_nr_file);
+
+                    $dest = static::$seeder_output_path . "{$model_name}Seeder.php";
+
+                    $ok  = file_put_contents($dest, $seeder_nr_file);
+                    dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+                }
+
+                continue; /////
+
+
+                /*
+                    RANDOM SEEDERS + FAKERS
+                */
+
+                if (in_array($class_name, static::$random_seeders)){
+                    // Seeders
+
+                    // Factories
+                    $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
+                    $faker_file = str_replace('__FIELDS__', $fillables_as_array_str, $faker_file);
+
+                    $dest = static::$faker_output_path . "{$model_name}Factory.php";
+
+                    $ok  = file_put_contents($dest, $faker_file);
+                    dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+                }
+                
             }
            
             /*

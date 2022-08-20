@@ -164,11 +164,12 @@ class AuthController extends Controller implements IAuth
        
             Acl::setCurrentRoles($roles); //
 
-            $access  = $this->gen_jwt([ 'uid' => $uid, 
-                                        'roles' => $roles, 
-                                        'permissions' => $perms,
-                                        'is_active' => $is_active, 
-                                        'db_access' => $db_access
+            $access  = $this->gen_jwt([ 
+                'uid' => $uid, 
+                'roles' => $roles, 
+                'permissions' => $perms,
+                'is_active' => $is_active, 
+                'db_access' => $db_access
             ], 'access_token');
 
             // el refresh no debe llevar ni roles ni permisos por seguridad !
@@ -178,14 +179,14 @@ class AuthController extends Controller implements IAuth
             $this->onLogged($data, $uid, $is_active, $roles, $perms);
 
             Factory::response()->send([ 
-                                        'access_token'=> $access,
-                                        'token_type' => 'bearer', 
-                                        'expires_in' => $this->config['access_token']['expiration_time'],
-                                        'refresh_token' => $refresh,   
-                                        'roles' => $roles,
-                                        'uid' => $uid,
-                                        'db_access' => $db_access
-                                        ]);
+                'access_token'=> $access,
+                'token_type' => 'bearer', 
+                'expires_in' => $this->config['access_token']['expiration_time'],
+                'refresh_token' => $refresh,   
+                'roles' => $roles,
+                'uid' => $uid,
+                'db_access' => $db_access
+            ]);
           
         } catch (InvalidValidationException $e) { 
             Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
@@ -280,7 +281,7 @@ class AuthController extends Controller implements IAuth
                 ->first();
 
                 if (!$row)
-                    throw new Exception("User to impersonate does not exist");
+                    throw new \Exception("User to impersonate does not exist");
 
                 $is_active = true;    
                 if ($u->inSchema([$this->__active])){
@@ -301,12 +302,13 @@ class AuthController extends Controller implements IAuth
 
             $db_access = $this->getDbAccess($uid);
 
-            $access  = $this->gen_jwt([ 'uid' => $uid, 
-                                        'roles' => $roles, 
-                                        'permissions' => $perms,
-                                        'impersonated_by' => $impersonated_by,
-                                        'is_active' => $is_active,
-                                        'db_access' => $db_access
+            $access  = $this->gen_jwt([ 
+                'uid' => $uid, 
+                'roles' => $roles, 
+                'permissions' => $perms,
+                'impersonated_by' => $impersonated_by,
+                'is_active' => $is_active,
+                'db_access' => $db_access
             ], 'access_token');
 
             $refresh  = $this->gen_jwt(['uid' => $uid, 
@@ -1189,11 +1191,12 @@ class AuthController extends Controller implements IAuth
 
             Acl::setCurrentRoles($roles); //
 
-            $access  = $this->gen_jwt([ 'uid' => $uid, 
-                                        'roles' => $roles, 
-                                        'permissions' => $perms,
-                                        'is_active' => $is_active, 
-                                        'db_access' => $db_access
+            $access  = $this->gen_jwt([ 
+                'uid' => $uid, 
+                'roles' => $roles, 
+                'permissions' => $perms,
+                'is_active' => $is_active, 
+                'db_access' => $db_access
             ], 'access_token');
 
             // el refresh no debe llevar ni roles ni permisos por seguridad !
