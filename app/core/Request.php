@@ -220,11 +220,11 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     }
 
     function getBodyDecoded(){
-        $data = static::$body;
         $content_type = static::getHeader('Content-Type');
-
-        if (!empty($content_type)){
-
+        $data         = static::$raw;
+       
+        if (!empty($content_type))
+        {
             // Podría ser un switch-case aceptando otros MIMEs
             if (Strings::contains('application/x-www-form-urlencoded', $content_type)){
                 $data = urldecode($data);
