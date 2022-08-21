@@ -119,11 +119,12 @@ class LaravelApiGenerator
             $model_name = Strings::before( Strings::last($filename, '/'), '.php' );
             $file = file_get_contents($filename);
        
-            $table_name = Strings::match($file, '/protected \$table[ ]+=[ ]+\'([a-zñ0-9_-]+)\'/i');
+            $table_name = Strings::match($file, '/protected \$table[ ]{0,}=[ ]{0,}[\'"]([a-zñ0-9_-]+)[\'"]/i');
 
-            // dd($table_name, 'TABLE NAME');
-            // dd($model_name, 'MODEL NAME');
-            
+            // d($table_name, 'TABLE NAME');
+            // d($model_name, 'MODEL NAME');
+            // dd('-----');
+
             if (empty($table_name)){
                 continue;
             }
@@ -151,6 +152,7 @@ class LaravelApiGenerator
         $write_fakers      = (static::$faker_output_path != null);
         $write_seeders     = (static::$seeder_output_path != null);
         $write_routes      = ($write_controllers);
+
 
         /*
             Conexion de SimpleRest apuntando a Laravel
@@ -567,6 +569,14 @@ class LaravelApiGenerator
             foreach ($routes as $route){
                 print_r($route."\r\n");
             }
+        }
+
+        
+        if (!empty(static::$non_random_seeders)){
+            $seeder_clases     = Strings::enclose(static::$non_random_seeders, '', 'Seeder::class');
+            $seeder_clases_str = implode(",\r\n", $seeder_clases);
+
+            dd($seeder_clases_str, "database/seeders/DatabaseSeeder.php | Non-random");
         }
 
     } // end method

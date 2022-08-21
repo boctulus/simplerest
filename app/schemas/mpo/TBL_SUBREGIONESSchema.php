@@ -14,11 +14,11 @@ class TBL_SUBREGIONESSchema implements ISchema
 
 			'id_name'		=> 'ID_SBR',
 
-			'fields'		=> ['ID_SBR', 'SBR_nombre', 'SBR_BORRADO', 'created_at', 'updated_at'],
+			'fields'		=> ['ID_SBR', 'SBR_NOMBRE', 'SBR_BORRADO', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
 				'ID_SBR' => 'INT',
-				'SBR_nombre' => 'STR',
+				'SBR_NOMBRE' => 'STR',
 				'SBR_BORRADO' => 'INT',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
@@ -30,13 +30,13 @@ class TBL_SUBREGIONESSchema implements ISchema
 
 			'nullable'		=> ['ID_SBR', 'SBR_BORRADO', 'created_at', 'updated_at'],
 
-			'required'		=> ['SBR_nombre'],
+			'required'		=> ['SBR_NOMBRE'],
 
-			'uniques'		=> ['SBR_nombre'],
+			'uniques'		=> ['SBR_NOMBRE'],
 
 			'rules' 		=> [
 				'ID_SBR' => ['type' => 'int', 'min' => 0],
-				'SBR_nombre' => ['type' => 'str', 'max' => 255, 'required' => true],
+				'SBR_NOMBRE' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'SBR_BORRADO' => ['type' => 'bool'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']

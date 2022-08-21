@@ -4096,7 +4096,7 @@ class DumbController extends Controller
     {
         $acl = Factory::acl();
 
-        dd($acl->hasResourcePermission('show_all', ['guest'], 'products'));
+        dd($acl->hasResourcePermission('show_all', 'products', ['guest'], 'products'));
         //var_export($acl->getRolePermissions());
     }
 
@@ -5230,8 +5230,7 @@ class DumbController extends Controller
 
         $m = DB::table('product_tags');
 
-        $id = $m
-            ->create($data);
+        $id = $m->create($data);
 
         dd($id);
         d($m->getLog());
@@ -7655,9 +7654,22 @@ class DumbController extends Controller
         d("Row fue borrada.");
     }
 
+    function delete_counter(){
+        DB::getConnection('az');
+
+        $m = DB::table('foo')
+        ->where(['id', 2, '>']);
+
+        $cnt = $m->delete();
+
+        d($cnt, 'regs');
+    }  
+    
     function test_delete()
     {
-        $m = DB::table('product_valoraciones');
+        // DB::getConnection('az');
+        
+        $m = table('product_valoraciones');
 
         $m
             ->whereRaw("product_id = ?", [100])
@@ -10167,28 +10179,23 @@ class DumbController extends Controller
         ]);
 
         LaravelApiGenerator::addNonRandomSeeders([
-            'Genero',
-            'EstadoLaboral',
-            'EstadoCivil',
-            'Municipio',            // quitar luego
-            'Departamento',         // quitar luego
-            'GrupoPoblacional',     // quitar luego
-            'EscalaTerritorial',
-            'NivelEscolaridad',
-            'Nivel',
-            'SectorActividad',
-            'Subregion',
-            'TipoDoc',
-            'TipoOrganismo',
-            'InstrumentoPlaneacion',
-            'CertificacionOrgComunal',
-            'CoberturaTerritorial',
-
-            'RepresentanteLegal',
-            'ProyectoEjecutadoCooperacion',
-            'EntidadReg',
-            'OrgComunal',
-            'OrgComunalEntidadRegistrante',  // sobre tabla puente
+            // 'Genero',
+            // 'EstadoLaboral',
+            // 'EstadoCivil',
+            // 'Municipio',            // quitar luego
+            // 'Departamento',         // quitar luego
+            // 'GrupoPoblacional',     // quitar luego
+            // 'EscalaTerritorial',
+            // 'NivelEscolaridad',
+            // 'Nivel',
+            // 'SectorActividad',
+            // 'Subregion',
+            // 'TipoDoc',
+            // 'TipoOrganismo',
+            // 'InstrumentoPlaneacion',
+            // 'CertificacionOrgComunal',
+            // 'EstPersJur'
+            //'UsuarioToken'
         ]);
 
         LaravelApiGenerator::addRandomSeeders([
