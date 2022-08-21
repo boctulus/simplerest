@@ -5,17 +5,11 @@ namespace simplerest\controllers;
 use simplerest\controllers\MyController;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\libs\Factory;
+use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 
 class Dumb2Controller extends MyController
 {
-  function test(){
-    dd(
-      Strings::containsWord('HOLA', 'solo te dire_HOLA_y chau', false)
-    );
-  }  
-
   function test_remove_sp()
   {
       $str = "		array (

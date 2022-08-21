@@ -2,76 +2,6 @@
 
 - Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
 
-- Crear endpoints para hacer pruebas de microservicios:
-
-  GET /api/v1/the_users/{id}?user_token=xxxxx <--- se autentica eventualmente y se envia token JWT o API KEY 
-
-  devuelve el user_id (uid) y otros posbiles campos minimos: 
-
-  {
-    "uid": "xxxx",
-    "is_active": true
-    "verified_email": false,
-    "roles": [
-      "customer",
-      "seller"
-    ],
-    "created_at": "xxxxxxxx",
-    "updated_at": "xxxxxxxx",
-  }
-  
-  GET /api/v1/the_users/{id}?user_token=xxxxx&role[in]=seller,admin?props=count(*) as cnt
-
-  respuesta:
-
-  {
-    "cnt": 0  
-  }
-
-  GET /api/v1/policies/{id}?user_token=xxxxx&can=view:dashboard
-
-  respuesta:
-
-  {
-    "can": [
-        "view:dashboard": true
-    ]
-  }
-
-  GET /api/v1/policies/{id}?user_token=xxxxx&can[in]=view:bills,access_table:users
-
-  respuesta:
-
-  {
-    "can": [
-        "access_table:users": false,
-        "view:bills": true
-    ]
-  }
-
-"can" podria interpretar el archivo acl.php o bien...  ser hasta rellenado via POST por un rol autorizado y ser persistido de distintas formas segun el driver utilizado.
-
-Y con eso deberia ser suficiente para que cualquier microservice pueda saber que hacer !!!!!!!!!!!
-
-O.... inclusive que "policies" devuelva todos los permisos:
-
-GET /api/v1/policies/{id}?user_token=xxxxx
-
-{
-  "uid": "xxxx",
-  "resource_permissions": [
-
-  ],
-  "special_permissions: [
-
-  ],
-  "fronend_permissions": [
-
-  ]
-}
-
-
-
 TOP PRIORITY
 ============
 
@@ -104,6 +34,34 @@ When you insert a TIMESTAMP value into a table, MySQL converts it from your conn
 https://www.mysqltutorial.org/mysql-timestamp.aspx#:~:text=The%20MySQL%20TIMESTAMP%20is%20a,%3A14%3A07'%20UTC%20.
 https://stackoverflow.com/questions/409286/should-i-use-the-datetime-or-timestamp-data-type-in-mysql
 
+
+- Permitir limitar / validar tipo de archivos, exrtensiones y tamaño en bytes de archivos subidos 
+
+Ej:
+
+  use Livewire\WithFileUploads;
+  
+  class UploadPhoto extends Component
+  {
+      use WithFileUploads;
+  
+      public $photo;
+  
+      public function save()
+      {
+          $this->validate([
+              'photo' => 'image|max:1024', // 1MB Max
+          ]);
+  
+          $this->photo->store('photos');
+      }
+  }
+
+- Al comando "migrations clear" agregarle opcionalmente --file=
+
+Ej:
+
+  migracions clear --file=/some/absolute/path/2021_09_14_27910581_files.php
 
 - En vez de crear una migracion con el nombre de la clase ..... hacer como Laravel 9 que las crea anonimas instanciando directamente el objeto o buscar otra solucion similar a fin de evitar "colision de nombres" al hacer los includes!
 

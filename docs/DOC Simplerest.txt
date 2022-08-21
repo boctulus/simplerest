@@ -1769,17 +1769,13 @@ El método when() tiene tres parámetos: la condición y dos callbacks de los cu
 
 -- con when()
 
-	$filenames = DB::table('migrations')
-	->when($to_db == '__NULL__', 
-		function($q){
-			$q->whereNull('db');
-		},
-		function($q) use($to_db){
-			$q->where(['db' => $to_db]);
-		}
-	)
-	->orderBy(['created_at' => 'DESC'])
-	->pluck('filename');
+	$affected = DB::table('migrations')
+	->when($to_db != DB::getDefaultConnectionId(), function($q) use($to_db){
+		$q->where(['db' => $to_db]);
+	},function($q){
+		$q->whereRaw('1');
+	})
+	->delete();
 
 
 # Grupos
