@@ -479,15 +479,16 @@ class MigrationsControllerBase extends Controller
 
         DB::getDefaultConnection();
 
-        /*
-            Para que el where(['db' => $to_db]) no falle 'db' deberia ser obligatorio en 
-            la tabla migrations. No puede quedar en NULL !!!
-        */
 
         $affected = DB::table('migrations')
-        ->where(['db' => $to_db])
+        ->when($to_db != DB::getDefaultConnectionId(), function($q) use($to_db){
+            $q->where(['db' => $to_db]);
+        },function($q){
+            $q->whereRaw('1');
+        })
         ->delete();
 
+        // Por alguna razon falla el conteo justo con esta tabla
         StdOut::pprint("$affected entries were cleared from migrations table for database `$to_db`\r\n");
     }
 
