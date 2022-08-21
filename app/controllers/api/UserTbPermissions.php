@@ -16,7 +16,6 @@ class UserTbPermissions extends MyApiController
 
     function __construct()
     {
-
         // Falta limitar acceso
         $this->callable = ['post', 'put', 'get', 'put', 'patch'];
 
@@ -24,6 +23,10 @@ class UserTbPermissions extends MyApiController
         $this->is_retrievable = true;
                 
         parent::__construct();
+
+        if ($this->acl->isGuest()){
+            response()->sendError("No access", 403);
+        }
     }
 
     function post(){

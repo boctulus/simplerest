@@ -94,29 +94,6 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         
         return static::$instance;
     }
-    
-    protected function bodyDecode(string $data){
-        $content_type = static::getHeader('Content-Type');
-
-        if (!empty($content_type)){
-
-            // Podría ser un switch-case aceptando otros MIMEs
-            if (Strings::contains('application/x-www-form-urlencoded', $content_type)){
-                $data = urldecode($data);
-                $data = Url::parseStrQuery($data);
-
-            } else {
-                $data = json_decode($data, true);
-
-                if ($data === null) {
-                    throw new \Exception("JSON inválido");
-                }
-            }
-
-        }
-
-        return $data;
-    }
 
     function setParams($params){
         static::$params = $params;
@@ -240,6 +217,30 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     function getBody($as_obj = true)
     {
         return $as_obj ? (object) static::$body : static::$body;
+    }
+
+    function getBodyDecoded(){
+        $data = static::$body;
+        $content_type = static::getHeader('Content-Type');
+
+        if (!empty($content_type)){
+
+            // Podría ser un switch-case aceptando otros MIMEs
+            if (Strings::contains('application/x-www-form-urlencoded', $content_type)){
+                $data = urldecode($data);
+                $data = Url::parseStrQuery($data);
+
+            } else {
+                $data = json_decode($data, true);
+
+                if ($data === null) {
+                    throw new \Exception("JSON inválido");
+                }
+            }
+
+        }
+
+        return $data;
     }
 
     function getBodyParam($key){
