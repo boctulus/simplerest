@@ -567,6 +567,15 @@ class MigrationsControllerBase extends Controller
             return;
         }
 
+        /*
+            Si en la DB existe la tabla 'migrations' (es la DB principal?) => la dejo para el final.
+        */
+
+        if (in_array('migrations', $tables)){
+            unset($tables['migrations']);
+            $tables[] = 'migrations';
+        }
+
         try{
             Schema::FKcheck(false);
 
