@@ -10,6 +10,7 @@ class LoginController extends Controller
 	/*
 		Nombres de los campos en la tabla "users"
 	*/
+	
     protected $__email;
     protected $__username;
     protected $__password;

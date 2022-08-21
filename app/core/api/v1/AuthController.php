@@ -104,7 +104,7 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $data  = Factory::request()->getBody(false);
+        $data  = Factory::request()->getBodyDecoded();
 
         if ($data == null)
             return;
@@ -112,9 +112,10 @@ class AuthController extends Controller implements IAuth
         $email    = $data[$this->__email]    ?? null;
         $username = $data[$this->__username] ?? null;  
         $password = $data[$this->__password] ?? null;         
+
         
         if (empty($email) && empty($username) ){
-            Factory::response()->sendError("{$this->__username} or {$this->__password} are required",400);
+            Factory::response()->sendError("{$this->__username} or {$this->__email} are required",400);
         }else if (empty($password)){
             Factory::response()->sendError($this->__password . ' is required',400);
         }
@@ -203,7 +204,7 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $data  = Factory::request()->getBody(false);
+        $data  = Factory::request()->getBodyDecoded();
 
         if ($data === null)
             return;
@@ -526,7 +527,7 @@ class AuthController extends Controller implements IAuth
         //DB::beginTransaction();
 
         try {
-            $data  = Factory::request()->getBody(false);
+            $data  = Factory::request()->getBodyDecoded();
 
             if ($data == null)
                 Factory::response()->sendError('Bad request',400, 'Invalid JSON');
@@ -955,7 +956,7 @@ class AuthController extends Controller implements IAuth
         sino no hacer nada.
     */
 	function rememberme(){
-		$data  = Factory::request()->getBody(false);
+		$data  = Factory::request()->getBodyDecoded();
 
 		if ($data == null)
 			Factory::response()->sendError('Invalid JSON',400);
