@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Database\Factories\GeneroFakerFactory;
 
-class __MODEL_NAME__ extends Seeder
+class __MODEL_NAME__Seeder extends Seeder
 {
     static protected $qty = 5;
 

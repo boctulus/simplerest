@@ -4,13 +4,20 @@ namespace simplerest\core\libs;
 
 use simplerest\core\libs\Config;
 use simplerest\controllers\MyAuthController;
+use simplerest\core\libs\Validator;
+use simplerest\core\Acl;
+use simplerest\core\Request;
+use simplerest\core\Response;
+use simplerest\core\interfaces\IAcl;
+use simplerest\core\interfaces\IValidator;
+use simplerest\core\interfaces\IAuth;
 
 /*
 	Usar el Container de dependencias en vez de seguir creando factories !
 */
 
 class Factory {
-	static function auth(){
+	static function auth() : IAuth {
 		static $instance;
 
 		if ($instance == null){
@@ -20,25 +27,25 @@ class Factory {
         return $instance;
 	}
 
-	static function response() {
-		return \simplerest\core\Response::getInstance();
+	static function response() : Response {
+		return Response::getInstance();
 	}
 
-	static function request() {
-		return \simplerest\core\Request::getInstance();
+	static function request() : Request {
+		return Request::getInstance();
 	}
 
-	static function validador(){
+	static function validador() : Validator {
 		static $instance;
 
 		if ($instance == null){
-			$instance = new \simplerest\core\libs\Validator();
+			$instance = new Validator();
 		}
 
         return $instance;
 	}
 
-	static function acl(){
+	static function acl() : Acl {
 		static $instance;
 
 		if ($instance == null){

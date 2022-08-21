@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class __MODEL_NAME__ extends Seeder
+class __MODEL_NAME__Seeder extends Seeder
 {
     /**
      * Run the database seeds.
