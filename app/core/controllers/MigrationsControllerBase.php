@@ -478,6 +478,12 @@ class MigrationsControllerBase extends Controller
         }
 
         DB::getDefaultConnection();
+
+        /*
+            Para que el where(['db' => $to_db]) no falle 'db' deberia ser obligatorio en 
+            la tabla migrations. No puede quedar en NULL !!!
+        */
+
         $affected = DB::table('migrations')
         ->where(['db' => $to_db])
         ->delete();
@@ -571,9 +577,10 @@ class MigrationsControllerBase extends Controller
             Si en la DB existe la tabla 'migrations' (es la DB principal?) => la dejo para el final.
         */
 
-        if (in_array('migrations', $tables)){
-            unset($tables['migrations']);
-            $tables[] = 'migrations';
+        $delete_migrations_tb = false;
+        if ($ix = array_search('migrations', $tables)){
+            unset($tables[$ix]);
+            $delete_migrations_tb = true;
         }
 
         try{
@@ -591,11 +598,28 @@ class MigrationsControllerBase extends Controller
                 } else {
                     StdOut::pprint("Dropped table failure for '$table'\r\n");
                 }
-            }
-
-            Schema::FKcheck(true);      
+            } 
 
             $this->clear("--to=$to_db");     
+
+            if ($delete_migrations_tb){
+                $table = 'migrations';
+
+                StdOut::hideResponse();
+
+                StdOut::pprint("Dropping table '$table'\r\n");
+                $st = $conn->prepare("DROP TABLE IF EXISTS `$table`;");
+                $ok = $st->execute();
+
+                if ($ok){
+                    StdOut::pprint("Dropped table  '$table' --ok\r\n");
+                    $dropped[] = $table;
+                } else {
+                    StdOut::pprint("Dropped table failure for '$table'\r\n");
+                }
+            }
+
+            Schema::FKcheck(true);     
 
         } catch (\PDOException $e) {    
             dd("DROP TABLE for `$table` failed", "PDO Error");
