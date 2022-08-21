@@ -8,9 +8,6 @@ use simplerest\schemas\mpo\UsersSchema;
 
 class UsersModel extends MyModel
 {
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

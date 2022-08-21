@@ -1006,7 +1006,7 @@ Ej:
 	]);
 	
 
-El método insertOrIgnore() se puede ignorar los erroreres de intentar crear nuevos registro cuando se está repitiendo un campo unique. Es similar a createOrIgnore() excepto porque el primero está dentro de una transacción.
+El método insertOrIgnore() se puede ignorar los errores de intentar crear nuevos registro cuando se está repitiendo un campo unique. Es similar a createOrIgnore() excepto porque el primero está dentro de una transacción.
 
 
 # Obtención de registros
@@ -3800,13 +3800,27 @@ Los cambios en los permisos a nivel de usuario al igual que los roles solo se ap
 
 Hay distintas tablas y por tanto distintos endpoints para manejar distintos aspectos de los permisos:
 
-    tabla permisions: 
+	tabla roles
+
+	tabla user_roles: <tabla puente> entre usuarios y roles.
+
+	tabla sp_permissions:
+		- Tabla con cada uno de los permisos especiales que existen para aplicar a nivel granular.
+
+    tabla user_tb_permisions: 
         - show, list, create, update, delete 
         - Son permisos dados por un Admin sobre las tablas para usuarios específicos.
 
+	tabla user_sp_permisions: 
+        - show, list, create, update, delete 
+        - Son permisos dados por un Admin para que usuarios específicos tengan determinados permisos "especiales".
+
+	tabla folders:
+		- Donde se definen "folders" sobre tablas que un usuario puede tener a fin de poder tener permisos específicos sobre esos folders. 
+
     tabla folder_permissions:
         - read, write
-        - Son dados por los usuarios a ciertos usuarios sobre cierto folder de cierta tabla/
+        - Son dados por los usuarios a ciertos usuarios sobre cierto folder de cierta tabla.
 
     folder_other_permissions:
         - read, write
