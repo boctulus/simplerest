@@ -134,8 +134,9 @@ class MyAuthController extends AuthController {
         DB::getDefaultConnection();
 
         //
-        //    Debo macthear con las conexiones de la DB
+        //    Debo machear con las conexiones de la DB
         //
+        
         $db_id = DB::table('tbl_base_datos')
         ->where(['dba_varNombre' => $tenant])
         ->value('dba_intId');
@@ -178,9 +179,6 @@ class MyAuthController extends AuthController {
         // Queue email
         $ok = (bool) DB::table('email_notifications')
         ->create($msg);
-
-        // d($msg);
-        // Files::dump($msg);
 
         /*
             Posteriormente leer la tabla email_notifications y....
