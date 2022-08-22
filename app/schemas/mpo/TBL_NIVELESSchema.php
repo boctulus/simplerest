@@ -14,21 +14,19 @@ class TBL_NIVELESSchema implements ISchema
 
 			'id_name'		=> 'ID_NIV',
 
-			'fields'		=> ['ID_NIV', 'NIV_NOMBRE', 'NIV_BORRADO', 'created_at', 'updated_at'],
+			'fields'		=> ['ID_NIV', 'NIV_NOMBRE', 'NIV_BORRADO'],
 
 			'attr_types'	=> [
 				'ID_NIV' => 'INT',
 				'NIV_NOMBRE' => 'STR',
-				'NIV_BORRADO' => 'INT',
-				'created_at' => 'STR',
-				'updated_at' => 'STR'
+				'NIV_BORRADO' => 'INT'
 			],
 
 			'primary'		=> ['ID_NIV'],
 
 			'autoincrement' => 'ID_NIV',
 
-			'nullable'		=> ['ID_NIV', 'NIV_BORRADO', 'created_at', 'updated_at'],
+			'nullable'		=> ['ID_NIV', 'NIV_BORRADO'],
 
 			'required'		=> ['NIV_NOMBRE'],
 
@@ -37,9 +35,7 @@ class TBL_NIVELESSchema implements ISchema
 			'rules' 		=> [
 				'ID_NIV' => ['type' => 'int', 'min' => 0],
 				'NIV_NOMBRE' => ['type' => 'str', 'max' => 30, 'required' => true],
-				'NIV_BORRADO' => ['type' => 'bool'],
-				'created_at' => ['type' => 'timestamp'],
-				'updated_at' => ['type' => 'timestamp']
+				'NIV_BORRADO' => ['type' => 'bool']
 			],
 
 			'fks' 			=> [],
