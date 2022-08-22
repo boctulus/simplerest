@@ -753,6 +753,19 @@ class Strings
 		return self::getClassName($file, $fully_qualified);
 	}
 
+	/*
+		https://stackoverflow.com/a/13212994/980631
+	*/	
+	static function randomString(int $length = 60, bool $include_spaces = true){
+		$base = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+		if ($include_spaces){
+			$base .= str_repeat(' ', rand(0, 10));
+		}
+
+		return substr(	str_shuffle(str_repeat($x=$base, (int) ceil($length/strlen($x)) )),	1, $length);
+	}
+
     /**
 	 * Scretet_key generator
 	 *
