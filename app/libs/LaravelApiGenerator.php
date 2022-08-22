@@ -611,26 +611,19 @@ class LaravelApiGenerator
                                 $valor = rand(1, 100) / 10;
                             break;
 
-                            case 'date':                        
-                                $days  = rand(0, 365);
-
-                                $fecha = new \DateTime(Date::time());
-                                $fecha->sub(new \DateInterval("P{$days}D"));
-                                $fecha = $fecha->format('Y-m-d');
-
-                                $valor =  Strings::enclose($fecha);
-
-                                dd($valor);
-                                exit;
+                            case 'date':
+                                $fecha = Date::subDays(Date::date(), rand(0, 365));                            
+                                $valor = Strings::enclose($fecha);
                             break;    
 
                             case 'time':
-                                $valor = Strings::enclose(Date::time());
+                                $time  = Date::randomTime();
+                                $valor = Strings::enclose($time);
                             break; 
 
                             case 'timestamp':
                             case 'datetime':
-                                $valor = Strings::enclose(Date::time());
+                                $fecha = Date::subDays(Date::date(), rand(0, 365)) . ' '. Date::randomTime(true);
                             break; 
 
                             case 'str':
