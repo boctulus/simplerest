@@ -10209,10 +10209,10 @@ class DumbController extends Controller
 
         LaravelApiGenerator::addRandomSeeders([
             'EntidadReg', // depende de GrupoPoblacional
-            // 'EntidadRegGrupoPoblacional', // tabla puente
-            //'RepresentanteLegal',  // depende de TipoDoc, Departamento, Municipio, Genero, EstadoCivil, EstadoLaboral, NivelEscolaridad
-            //'OrgComunal', // cantidad de dependencias
-            //'OrgComunalEntidadReg',  // sobre tabla puente
+            'EntidadRegGrupoPoblacional', // tabla puente
+            'RepresentanteLegal',  // depende de TipoDoc, Departamento, Municipio, Genero, EstadoCivil, EstadoLaboral, NivelEscolaridad
+            'OrgComunal', // cantidad de dependencias
+            'OrgComunalEntidadReg',  // sobre tabla puente
         ]);
 
         LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
