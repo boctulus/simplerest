@@ -11,9 +11,10 @@ use simplerest\core\libs\Date;
 
 class Dumb2Controller extends MyController
 {
-  function rand_time(){
-    $fecha = Date::subDays(Date::date(), rand(0, 365)) . ' '. Date::randomTime(true);
-    dd($fecha, 'DATETIME');
+  function rand(){
+    dd(
+        Strings::randomString()
+    );
   }
 
   function test_remove_sp()
