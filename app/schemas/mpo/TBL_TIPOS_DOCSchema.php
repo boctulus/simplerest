@@ -14,21 +14,19 @@ class TBL_TIPOS_DOCSchema implements ISchema
 
 			'id_name'		=> 'ID_TDC',
 
-			'fields'		=> ['ID_TDC', 'TDC_NOMBRE', 'TDC_BORRADO', 'created_at', 'updated_at'],
+			'fields'		=> ['ID_TDC', 'TDC_NOMBRE', 'TDC_BORRADO'],
 
 			'attr_types'	=> [
 				'ID_TDC' => 'INT',
 				'TDC_NOMBRE' => 'STR',
-				'TDC_BORRADO' => 'INT',
-				'created_at' => 'STR',
-				'updated_at' => 'STR'
+				'TDC_BORRADO' => 'INT'
 			],
 
 			'primary'		=> ['ID_TDC'],
 
 			'autoincrement' => 'ID_TDC',
 
-			'nullable'		=> ['ID_TDC', 'TDC_BORRADO', 'created_at', 'updated_at'],
+			'nullable'		=> ['ID_TDC', 'TDC_BORRADO'],
 
 			'required'		=> ['TDC_NOMBRE'],
 
@@ -37,9 +35,7 @@ class TBL_TIPOS_DOCSchema implements ISchema
 			'rules' 		=> [
 				'ID_TDC' => ['type' => 'int', 'min' => 0],
 				'TDC_NOMBRE' => ['type' => 'str', 'max' => 40, 'required' => true],
-				'TDC_BORRADO' => ['type' => 'bool'],
-				'created_at' => ['type' => 'timestamp'],
-				'updated_at' => ['type' => 'timestamp']
+				'TDC_BORRADO' => ['type' => 'bool']
 			],
 
 			'fks' 			=> [],

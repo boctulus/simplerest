@@ -14,21 +14,19 @@ class TBL_DEPARTAMENTOSSchema implements ISchema
 
 			'id_name'		=> 'DEP_ID',
 
-			'fields'		=> ['DEP_ID', 'DEP_NOMBRE', 'DEP_BORRADO', 'created_at', 'updated_at'],
+			'fields'		=> ['DEP_ID', 'DEP_NOMBRE', 'DEP_BORRADO'],
 
 			'attr_types'	=> [
 				'DEP_ID' => 'INT',
 				'DEP_NOMBRE' => 'STR',
-				'DEP_BORRADO' => 'INT',
-				'created_at' => 'STR',
-				'updated_at' => 'STR'
+				'DEP_BORRADO' => 'INT'
 			],
 
 			'primary'		=> ['DEP_ID'],
 
 			'autoincrement' => 'DEP_ID',
 
-			'nullable'		=> ['DEP_ID', 'DEP_BORRADO', 'created_at', 'updated_at'],
+			'nullable'		=> ['DEP_ID', 'DEP_BORRADO'],
 
 			'required'		=> ['DEP_NOMBRE'],
 
@@ -37,19 +35,17 @@ class TBL_DEPARTAMENTOSSchema implements ISchema
 			'rules' 		=> [
 				'DEP_ID' => ['type' => 'int', 'min' => 0],
 				'DEP_NOMBRE' => ['type' => 'str', 'max' => 60, 'required' => true],
-				'DEP_BORRADO' => ['type' => 'bool'],
-				'created_at' => ['type' => 'timestamp'],
-				'updated_at' => ['type' => 'timestamp']
+				'DEP_BORRADO' => ['type' => 'bool']
 			],
 
 			'fks' 			=> [],
 
 			'relationships' => [
-				'TBL_MUNICIPIOS' => [
-					['TBL_MUNICIPIOS.FK_DEP_ID','TBL_DEPARTAMENTOS.DEP_ID']
-				],
 				'TBL_REPRESENTANTES_LEGALES' => [
 					['TBL_REPRESENTANTES_LEGALES.DEPARTAMENTO_EXP_ID','TBL_DEPARTAMENTOS.DEP_ID']
+				],
+				'TBL_MUNICIPIOS' => [
+					['TBL_MUNICIPIOS.DEP_ID','TBL_DEPARTAMENTOS.DEP_ID']
 				],
 				'TBL_ORG_COMUNALES' => [
 					['TBL_ORG_COMUNALES.DEPARTAMENTO_ID','TBL_DEPARTAMENTOS.DEP_ID']
@@ -57,22 +53,6 @@ class TBL_DEPARTAMENTOSSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-  'TBL_MUNICIPIOS' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'TBL_MUNICIPIOS',
-        1 => 'FK_DEP_ID',
-      ),
-      1 => 
-      array (
-        0 => 'TBL_DEPARTAMENTOS',
-        1 => 'DEP_ID',
-      ),
-    ),
-  ),
   'TBL_REPRESENTANTES_LEGALES' => 
   array (
     0 => 
@@ -81,6 +61,22 @@ class TBL_DEPARTAMENTOSSchema implements ISchema
       array (
         0 => 'TBL_REPRESENTANTES_LEGALES',
         1 => 'DEPARTAMENTO_EXP_ID',
+      ),
+      1 => 
+      array (
+        0 => 'TBL_DEPARTAMENTOS',
+        1 => 'DEP_ID',
+      ),
+    ),
+  ),
+  'TBL_MUNICIPIOS' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'TBL_MUNICIPIOS',
+        1 => 'DEP_ID',
       ),
       1 => 
       array (
