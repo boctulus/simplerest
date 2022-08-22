@@ -12,38 +12,38 @@ class TBL_ORG_COMUNAL_ENTIDAD_REGSchema implements ISchema
 		return [
 			'table_name'	=> 'TBL_ORG_COMUNAL_ENTIDAD_REG',
 
-			'id_name'		=> 'ID_ERG',
+			'id_name'		=> 'ID_OER',
 
-			'fields'		=> ['ID_ERG', 'ERG_TIPO_VINCULO', 'ERG_CANT_PERSONAS', 'ERG_ORG_COMUNAL_ID', 'ENTIDAD_REG_ID', 'ERG_BORRADO', 'created_at', 'updated_at'],
+			'fields'		=> ['ID_OER', 'ERG_TIPO_VINCULO', 'ERG_CANT_PERSONAS', 'ERG_ORG_COMUNAL_ID', 'ENTIDAD_REG_ID', 'OER_BORRADO', 'created_at', 'updated_at'],
 
 			'attr_types'	=> [
-				'ID_ERG' => 'INT',
+				'ID_OER' => 'INT',
 				'ERG_TIPO_VINCULO' => 'STR',
 				'ERG_CANT_PERSONAS' => 'INT',
 				'ERG_ORG_COMUNAL_ID' => 'INT',
 				'ENTIDAD_REG_ID' => 'INT',
-				'ERG_BORRADO' => 'INT',
+				'OER_BORRADO' => 'INT',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
 
-			'primary'		=> ['ID_ERG'],
+			'primary'		=> ['ID_OER'],
 
-			'autoincrement' => 'ID_ERG',
+			'autoincrement' => 'ID_OER',
 
-			'nullable'		=> ['ID_ERG', 'ERG_BORRADO', 'created_at', 'updated_at'],
+			'nullable'		=> ['ID_OER', 'OER_BORRADO', 'created_at', 'updated_at'],
 
 			'required'		=> ['ERG_TIPO_VINCULO', 'ERG_CANT_PERSONAS', 'ERG_ORG_COMUNAL_ID', 'ENTIDAD_REG_ID'],
 
 			'uniques'		=> [],
 
 			'rules' 		=> [
-				'ID_ERG' => ['type' => 'int', 'min' => 0],
+				'ID_OER' => ['type' => 'int', 'min' => 0],
 				'ERG_TIPO_VINCULO' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'ERG_CANT_PERSONAS' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'ERG_ORG_COMUNAL_ID' => ['type' => 'int', 'min' => 0, 'required' => true],
 				'ENTIDAD_REG_ID' => ['type' => 'int', 'min' => 0, 'required' => true],
-				'ERG_BORRADO' => ['type' => 'bool'],
+				'OER_BORRADO' => ['type' => 'bool'],
 				'created_at' => ['type' => 'timestamp'],
 				'updated_at' => ['type' => 'timestamp']
 			],

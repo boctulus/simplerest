@@ -10182,9 +10182,11 @@ class DumbController extends Controller
             // 'Genero',
             // 'EstadoLaboral',
             // 'EstadoCivil',
+            // 'Comuna',               // quitar luego
             // 'Municipio',            // quitar luego
             // 'Departamento',         // quitar luego
             // 'GrupoPoblacional',     // quitar luego
+            // 'Barrio',               // quitar luego
             // 'EscalaTerritorial',
             // 'NivelEscolaridad',
             // 'Nivel',
@@ -10195,17 +10197,18 @@ class DumbController extends Controller
             // 'InstrumentoPlaneacion',
             // 'CertificacionOrgComunal',
             // 'EstPersJur'
-            //'UsuarioToken'
+            // 'UsuarioToken',
+            // 'GrupoInteres'
         ]);
 
         LaravelApiGenerator::addRandomSeeders([
+            'EntidadReg', // depende de GrupoPoblacional
             'RepresentanteLegal',
             'ProyectoEjecutadoCooperacion',
             'ProyectoEjecutadoRecursosPropios',
             'ProyectoEjecutadoRecursosPublicos',
-            'EntidadReg',
             'OrgComunal',
-            'OrgComunalEntidadRegistrante',  // sobre tabla puente
+            'OrgComunalEntidadReg',  // sobre tabla puente
             // ...
         ]);
 

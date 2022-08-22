@@ -426,9 +426,9 @@ class LaravelApiGenerator
                 */
 
                 if (in_array($class_name, static::$non_random_seeders)){                            
-                    $fillables_as_array_str = '';
-
-                    foreach ($fillables as $f){
+                    $fillables_as_array_str     = '';
+               
+                    foreach ($fillables as $i => $f){
                         switch ($rules[$f]['type']){
                             case 'int':
                                 $valor = 0;
@@ -494,19 +494,21 @@ class LaravelApiGenerator
                             $valor = 0;
                         }
 
-                        $fillables_as_array_str .= "'$f' => $valor,\r\n";
+                        $fillables_as_array_str    .= "'$f'       => $valor,\r\n";                        
                     }
 
+
+                    $i = 1;
+                    $id_fillables_as_array_str  = "'$id_name' => $i,\r\n" . $fillables_as_array_str;
+
                     Strings::replace('__MODEL_NAME__', $model_name, $seeder_nr_file);
-                    Strings::replace('__FIELDS__', rtrim(Strings::tabulate($fillables_as_array_str, 4, 0)), $seeder_nr_file);
+                    Strings::replace('__FIELDS__', rtrim(Strings::tabulate($id_fillables_as_array_str, 4, 0)), $seeder_nr_file);
 
                     $dest = static::$seeder_output_path . "{$model_name}Seeder.php";
 
                     $ok  = file_put_contents($dest, $seeder_nr_file);
                     dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
                 }
-
-                continue; /////
 
 
                 /*
@@ -517,13 +519,13 @@ class LaravelApiGenerator
                     // Seeders
 
                     // Factories
-                    $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
-                    $faker_file = str_replace('__FIELDS__', $fillables_as_array_str, $faker_file);
+                    // $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
+                    // $faker_file = str_replace('__FIELDS__', $fillables_as_array_str, $faker_file);
 
-                    $dest = static::$faker_output_path . "{$model_name}Factory.php";
+                    // $dest = static::$faker_output_path . "{$model_name}Factory.php";
 
-                    $ok  = file_put_contents($dest, $faker_file);
-                    dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+                    // $ok  = file_put_contents($dest, $faker_file);
+                    // dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
                 }
                 
             }
@@ -547,12 +549,13 @@ class LaravelApiGenerator
             $pri_key   = $model_dato['id_name'];
             $fillables = $model_dato['fillables'];
 
+            $table_str     =  'protected $table = "'.$table_name.'";';
             $pri_key_str   =  'protected $primaryKey = "'.$pri_key.'";';
 
             $fillables_str =  '[' . implode(', ', Strings::enclose($fillables, "'")) . ']';
             $fillables_str = 'protected $fillable = ' . $fillables_str . ';';
 
-            $str = "$pri_key_str\r\n\r\n$fillables_str";
+            $str = "$table_str\r\n\r\n$pri_key_str\r\n\r\n$fillables_str";
 
             dd(
                 $str
