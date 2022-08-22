@@ -136,7 +136,12 @@ class LaravelApiGenerator
     }
 
     /*
-        Podria ser un comando
+        Analiza todos los schemas y modelos de existir y crea demas archivos
+
+        TODO:
+
+        - Si no existe un Model con $table entonces crear el archivo
+        sino, modificar el archivo del modelo agregando los campos que falten (priKey, fillables, etc)
     */
     static function process_schemas(){        
         static::$excluded = [
