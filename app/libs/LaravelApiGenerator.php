@@ -21,11 +21,11 @@ class LaravelApiGenerator
     static protected $seeder_output_path;
     static protected $conn_id; 
 
-    static protected $ctrl_template_path      = ETC_PATH . "templates/laravel_resource_controller.php";
-    static protected $resource_template_path  = ETC_PATH . "templates/larevel_resource.php";
-    static protected $faker_template_path     = ETC_PATH . "templates/faker.php";
-    static protected $seeder_template_path    = ETC_PATH . "templates/seeder.php";
-    static protected $seeder_nr_template_path = ETC_PATH . "templates/seeder_non_random.php";
+    static protected $ctrl_template_path          = ETC_PATH . "templates/laravel_resource_controller.php";
+    static protected $resource_template_path      = ETC_PATH . "templates/larevel_resource.php";
+    static protected $faker_template_path         = ETC_PATH . "templates/faker.php";
+    static protected $seeder_template_path        = ETC_PATH . "templates/seeder.php";
+    static protected $seeder_for_factory_tmp_path = ETC_PATH . "templates/seeder_for_factories.php";
 
     static protected $table_models = [];
     static protected $excluded = [];
@@ -50,11 +50,11 @@ class LaravelApiGenerator
         static::$excluded_seeders = $class_names;
     }
 
-    static function addNonRandomSeeders(Array $class_names){
+    static function addSeedersForHardcodedNonRandomData(Array $class_names){
         static::$non_random_seeders = array_merge(static::$non_random_seeders, $class_names);
     }
 
-    static function addRandomSeeders(Array $class_names){
+    static function addSeedersForRandomData(Array $class_names){
         static::$random_seeders = array_merge(static::$random_seeders, $class_names);
     }
     
@@ -101,6 +101,10 @@ class LaravelApiGenerator
 
     static function setSeederTemplatePath(string $path){
         static::$seeder_template_path = $path;
+    }
+
+    static function setSeederForFactoryTemplatePath(string $path){
+        static::$seeder_for_factory_tmp_path = $path;
     }
 
     static function registerCallback(callable $callback){
@@ -206,11 +210,11 @@ class LaravelApiGenerator
         // dd(static::$table_models, 'TABLE MODEL NAMES');
         // exit;
 
-        $ctrl_template      = file_get_contents(static::$ctrl_template_path); 
-        $resource_template  = file_get_contents(static::$resource_template_path);
-        $faker_template     = file_get_contents(static::$faker_template_path);
-        $seeder_template    = file_get_contents(static::$seeder_template_path);
-        $seeder_nr_template = file_get_contents(static::$seeder_nr_template_path);
+        $ctrl_template           = file_get_contents(static::$ctrl_template_path); 
+        $resource_template       = file_get_contents(static::$resource_template_path);
+        $faker_template          = file_get_contents(static::$faker_template_path);
+        $seeder_template         = file_get_contents(static::$seeder_template_path);
+        $seeder_for_factory_temp = file_get_contents(static::$seeder_for_factory_tmp_path);
         
 
         /*
@@ -239,7 +243,7 @@ class LaravelApiGenerator
             $resource_file  = $resource_template;
             $faker_file     = $faker_template;
             $seeder_file    = $seeder_template;
-            $seeder_nr_file = $seeder_nr_template;
+            $seeder_4f_file = $seeder_for_factory_temp;
 
             $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $__class_name;
             include $path;
@@ -536,147 +540,162 @@ class LaravelApiGenerator
                         $fillables_as_array_vals_str .= "'$f' => $valor,\r\n";                        
                     }
 
+                    
+                    $id_fillables_as_array_vals_str  = "'$id_name' => 1,\r\n" . $fillables_as_array_vals_str;
 
-                    $i = 1;
-                    $id_fillables_as_array_vals_str  = "'$id_name' => $i,\r\n" . $fillables_as_array_vals_str;
+                    $__fields__ = rtrim(Strings::tabulate($id_fillables_as_array_vals_str, 4, 0));
 
-                    Strings::replace('__MODEL_NAME__', $model_name, $seeder_nr_file);
-                    Strings::replace('__FIELDS__', rtrim(Strings::tabulate($id_fillables_as_array_vals_str, 4, 0)), $seeder_nr_file);
+                    $data = "[\r\n\t\t\t\t$__fields__
+                    ],";
 
-                    $dest = static::$seeder_output_path . "{$model_name}Seeder.php";
+                    Strings::replace('__MODEL_NAME__', $model_name, $seeder_file);
+                    Strings::replace('__DATA__', $data, $seeder_file);
 
-                    $ok  = file_put_contents($dest, $seeder_nr_file);
+
+                    $dest = static::$seeder_output_path . "{$model_name}Seeder.php";            
+
+                    $ok  = file_put_contents($dest, $seeder_file);
                     dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
                 }
 
 
                 /*
-                    RANDOM SEEDERS + FAKERS
+                    En vez de usar "factories" + seeders, ... de momento solo usare otro tipo de seeder:
+                    un seeder que tiene generados datos al azar
                 */
 
                 if (in_array($class_name, static::$random_seeders)){
-
+                    
                     /*
-                        Factories
+                        SEEDERs de DATA RANDOM
                     */
 
-                    $fillables_as_array_vals_str     = '';
-               
-                    foreach ($fillables as $i => $f){
-                        $max = $rules[$f]['max'] ?? 255;
-                        $min = $rules[$f]['max'] ?? 0;
+                    $data_count = 5;
 
-                        switch ($rules[$f]['type']){
-                            case 'int':
-                                $valor = rand($min, $max);
+                    $fillables_as_array_vals_str_arr = [];
+                    
+                    for ($j=0; $j<$data_count; $j++)
+                    {
+                        $fillables_as_array_vals_str = '';
 
-                                // deberia salir a buscar la FK cuidando que hay excepciones y a veces comienza con ID_
-                                if (Strings::endsWith('_ID', $f)){
-                                    //dd($f, 'F');
+                        foreach ($fillables as $i => $f){
+                            $max = $rules[$f]['max'] ?? 255;
+                            $min = $rules[$f]['max'] ?? 0;
 
-                                    /*
-                                        Estoy asumiendo hay solo una relacion entre las dos tablas
-                                    */
+                            switch ($rules[$f]['type']){
+                                case 'int':
+                                    $valor = rand($min, $max);
 
-                                    $tb = null;
-                                    $pk = null;
+                                    // deberia salir a buscar la FK cuidando que hay excepciones y a veces comienza con ID_
+                                    if (Strings::endsWith('_ID', $f)){
+                                        //dd($f, 'F');
 
-                                    foreach ($relations as $r){
-                                        if ($r[0][1][1] == $f){
-                                            $r_sel = $r[0];
+                                        /*
+                                            Estoy asumiendo hay solo una relacion entre las dos tablas
+                                        */
 
-                                            $tb = $r_sel[0][0];
-                                            $pk = $r_sel[0][1];
+                                        $tb = null;
+                                        $pk = null;
 
-                                            break;
-                                            //dd($pk, $tb);
+                                        foreach ($relations as $r){
+                                            if ($r[0][1][1] == $f){
+                                                $r_sel = $r[0];
+
+                                                $tb = $r_sel[0][0];
+                                                $pk = $r_sel[0][1];
+
+                                                break;
+                                                //dd($pk, $tb);
+                                            }
                                         }
+                                        
+                                        if ($tb == null || $pk == null){
+                                            throw new \Exception("Imposible determinar relacion para $table_name.$f");
+                                        }
+
+
+                                        $_val = DB::selectOne("SELECT $pk FROM $tb ORDER BY RAND() LIMIT 1;", null, 'ASSOC', $conn_id);
+                                        
+                                        $valor = $_val[$pk] ?? null; // y rezar que sea nullable
                                     }
-                                    
-                                    if ($tb == null || $pk == null){
-                                        throw new \Exception("Imposible determinar relacion para $table_name.$f");
+                                break;
+
+                                case 'bool':
+                                    $valor = rand(0,1);
+                                break;
+
+                                case 'double':
+                                case 'float':
+                                    // en realidad tocaria ver el min y max
+                                    $valor = rand($min, $max) * 0.99;
+                                break;
+
+                                case 'date':
+                                    $fecha = Date::subDays(Date::date(), rand(0, 365));                            
+                                    $valor = Strings::enclose($fecha);
+                                break;    
+
+                                case 'time':
+                                    $time  = Date::randomTime();
+                                    $valor = Strings::enclose($time);
+                                break; 
+
+                                case 'timestamp':
+                                case 'datetime':
+                                    $fecha = Date::subDays(Date::date(), rand(0, 365)) . ' '. Date::randomTime(true);
+                                break; 
+
+                                case 'str':
+                                    $len   = rand($min, $max);
+                                    $valor = trim(Strings::randomString($len));
+
+                                    if (Strings::containsWordButNotStartsWith('num', $f, false) ||
+                                        Strings::containsWordButNotStartsWith('nro', $f, false) ||
+                                        Strings::containsAnyWord(['numero', 'number'], $f, false))
+                                    {
+                                        $valor = '11111111';
                                     }
 
+                                    if (Strings::contains('email', $f, false)){
+                                        $valor = 'xxx@dominio.com';
+                                    }
 
-                                    $_val = DB::selectOne("SELECT $pk FROM $tb ORDER BY RAND() LIMIT 1;", null, 'ASSOC', $conn_id);
+                                    if (Strings::containsAnyWord(['telefono', 'tel', 'phone'], $f, false)){
+                                        $valor = '3001234567';
+                                    }
+
+                                    if (Strings::containsAnyWord(['cellphone', 'celular'], $f, false)){
+                                        $valor = '(4) 3855555';
+                                    }
+
+                                    $valor = "'$valor'";
+                                break;
                                     
-                                    $valor = $_val[$pk] ?? null; // y rezar que sea nullable
-                                }
-                            break;
+                                default:
+                                    $valor = "'[valor]'";
+                            }
 
-                            case 'bool':
-                                $valor = rand(0,1);
-                            break;
+                            if (Strings::endsWith('_BORRADO', $f)){
+                                $valor = 0;
+                            }
 
-                            case 'double':
-                            case 'float':
-                                // en realidad tocaria ver el min y max
-                                $valor = rand($min, $max) * 0.99;
-                            break;
-
-                            case 'date':
-                                $fecha = Date::subDays(Date::date(), rand(0, 365));                            
-                                $valor = Strings::enclose($fecha);
-                            break;    
-
-                            case 'time':
-                                $time  = Date::randomTime();
-                                $valor = Strings::enclose($time);
-                            break; 
-
-                            case 'timestamp':
-                            case 'datetime':
-                                $fecha = Date::subDays(Date::date(), rand(0, 365)) . ' '. Date::randomTime(true);
-                            break; 
-
-                            case 'str':
-                                $len   = rand($min, $max);
-                                $valor = trim(Strings::randomString($len));
-
-                                if (Strings::containsWordButNotStartsWith('num', $f, false) ||
-                                    Strings::containsWordButNotStartsWith('nro', $f, false) ||
-                                    Strings::containsAnyWord(['numero', 'number'], $f, false))
-                                {
-                                    $valor = '11111111';
-                                }
-
-                                if (Strings::contains('email', $f, false)){
-                                    $valor = 'xxx@dominio.com';
-                                }
-
-                                if (Strings::containsAnyWord(['telefono', 'tel', 'phone'], $f, false)){
-                                    $valor = '3001234567';
-                                }
-
-                                if (Strings::containsAnyWord(['cellphone', 'celular'], $f, false)){
-                                    $valor = '(4) 3855555';
-                                }
-
-                                $valor = "'$valor'";
-                            break;
-                                
-                            default:
-                                $valor = "'[valor]'";
+                            $fillables_as_array_vals_str .= "'$f' => $valor,\r\n";                        
                         }
 
-                        if (Strings::endsWith('_BORRADO', $f)){
-                            $valor = 0;
-                        }
-
-                        $fillables_as_array_vals_str .= "'$f' => $valor,\r\n";                        
+                        $fillables_as_array_vals_str_arr[] = "[\r\n" . $fillables_as_array_vals_str . "\r\n]";
                     }
 
+                    $data_str = implode(",\r\n", $fillables_as_array_vals_str_arr);
 
-                    Strings::replace('__MODEL_NAME__', $model_name, $seeder_nr_file);
-                    Strings::replace('__FIELDS__', rtrim(Strings::tabulate($fillables_as_array_vals_str, 4, 0)), $seeder_nr_file);
+                    Strings::replace('__MODEL_NAME__', $model_name, $seeder_file);
+                    Strings::replace('__DATA__', rtrim(Strings::tabulate($data_str, 4, 0)), $seeder_file);
 
-                    $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
-                    $faker_file = str_replace('__FIELDS__', $fillables_as_array_vals_str, $faker_file);
 
-                    $dest = static::$faker_output_path . "{$model_name}Factory.php";
+                    //$dest = static::$faker_output_path . "{$model_name}Factory.php";
+                    $dest = static::$seeder_output_path . "{$model_name}Seeder.php";                    
 
                     if ($write_fakers){
-                        $ok  = file_put_contents($dest, $faker_file);
+                        $ok  = file_put_contents($dest, $seeder_file);
                         dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
                     }
                 }
