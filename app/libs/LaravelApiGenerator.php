@@ -38,6 +38,13 @@ class LaravelApiGenerator
     static protected $random_seeders     = [];
     static protected $excluded_seeders   = [];
 
+    static protected $write_models       = true;
+    static protected $write_controllers  = true;
+    static protected $write_resources    = true;
+    static protected $write_fakers       = true;
+    static protected $write_seeders      = true;
+    static protected $write_routes       = true;
+
 
     static function setSeederExclusion(Array $class_names){
         static::$excluded_seeders = $class_names;
@@ -135,6 +142,30 @@ class LaravelApiGenerator
         return $_table_models;
     }
 
+    static function writeModels(bool $status = true){
+        static::$write_models = $status;
+    }
+
+    static function writeControllers(bool $status = true){
+        static::$write_controllers = $status;
+    }
+
+    static function writeResources(bool $status = true){
+        static::$write_resources = $status;
+    }
+
+    static function writeFactories(bool $status = true){
+        static::$write_fakers = $status;
+    }
+
+    static function writeSeeders(bool $status = true){
+        static::$write_seeders = $status;
+    }
+
+    static function writeRoutes(bool $status = true){
+        static::$write_routes = $status;
+    }
+
     /*
         Analiza todos los schemas y modelos de existir y crea demas archivos
 
@@ -143,7 +174,7 @@ class LaravelApiGenerator
         - Si no existe un Model con $table entonces crear el archivo
         sino, modificar el archivo del modelo agregando los campos que falten (priKey, fillables, etc)
     */
-    static function process_schemas(){        
+    static function run(){        
         static::$excluded = [
             'Users',
             'Migrations',
@@ -152,11 +183,12 @@ class LaravelApiGenerator
             'PersonalAccessTokens'
         ];
 
-        $write_controllers = (static::$ctrl_output_path != null);
-        $write_resources   = (static::$resource_output_path != null);
-        $write_fakers      = (static::$faker_output_path != null);
-        $write_seeders     = (static::$seeder_output_path != null);
-        $write_routes      = ($write_controllers);
+        $write_models      = static::$write_models; 
+        $write_controllers = static::$write_controllers && (static::$ctrl_output_path != null);
+        $write_resources   = static::$write_resources   && (static::$resource_output_path != null);
+        $write_fakers      = static::$write_fakers      && (static::$faker_output_path != null);
+        $write_seeders     = static::$write_seeders     && (static::$seeder_output_path != null);
+        $write_routes      = static::$write_routes      && $write_controllers;
 
 
         /*
@@ -215,6 +247,7 @@ class LaravelApiGenerator
             $schema = $class_name_full::get();
 
             $table_name = $schema['table_name']; // table name
+            $relations  = $schema['expanded_relationships'];
 
             if (static::$capitalized_table_names){
                 $table_name = strtoupper($table_name);
@@ -425,13 +458,14 @@ class LaravelApiGenerator
 
             $exclude_seeder = (in_array($model_name, static::$excluded_seeders));
         
-            if (!$exclude_seeder && $write_fakers){
+            if (!$exclude_seeder)
+            {
                 /*
                     NON-RANDOM SEEDERS
                 */
 
                 if (in_array($class_name, static::$non_random_seeders)){                            
-                    $fillables_as_array_str     = '';
+                    $fillables_as_array_vals_str     = '';
                
                     foreach ($fillables as $i => $f){
                         switch ($rules[$f]['type']){
@@ -499,15 +533,15 @@ class LaravelApiGenerator
                             $valor = 0;
                         }
 
-                        $fillables_as_array_str    .= "'$f'       => $valor,\r\n";                        
+                        $fillables_as_array_vals_str .= "'$f' => $valor,\r\n";                        
                     }
 
 
                     $i = 1;
-                    $id_fillables_as_array_str  = "'$id_name' => $i,\r\n" . $fillables_as_array_str;
+                    $id_fillables_as_array_vals_str  = "'$id_name' => $i,\r\n" . $fillables_as_array_vals_str;
 
                     Strings::replace('__MODEL_NAME__', $model_name, $seeder_nr_file);
-                    Strings::replace('__FIELDS__', rtrim(Strings::tabulate($id_fillables_as_array_str, 4, 0)), $seeder_nr_file);
+                    Strings::replace('__FIELDS__', rtrim(Strings::tabulate($id_fillables_as_array_vals_str, 4, 0)), $seeder_nr_file);
 
                     $dest = static::$seeder_output_path . "{$model_name}Seeder.php";
 
@@ -521,16 +555,133 @@ class LaravelApiGenerator
                 */
 
                 if (in_array($class_name, static::$random_seeders)){
-                    // Seeders
 
-                    // Factories
-                    // $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
-                    // $faker_file = str_replace('__FIELDS__', $fillables_as_array_str, $faker_file);
+                    /*
+                        Factories
+                    */
+
+                    $fillables_as_array_vals_str     = '';
+               
+                    foreach ($fillables as $i => $f){
+                        switch ($rules[$f]['type']){
+                            case 'int':
+                                $valor = rand(0, 5);
+
+                                // deberia salir a buscar la FK cuidando que hay excepciones y a veces comienza con ID_
+                                if (Strings::endsWith('_ID', $f)){
+                                    //dd($f, 'F');
+
+                                    /*
+                                        Estoy asumiendo hay solo una relacion entre las dos tablas
+                                    */
+
+                                    $tb = null;
+                                    $pk = null;
+
+                                    foreach ($relations as $r){
+                                        if ($r[0][1][1] == $f){
+                                            $r_sel = $r[0];
+
+                                            $tb = $r_sel[0][0];
+                                            $pk = $r_sel[0][1];
+
+                                            break;
+                                            //dd($pk, $tb);
+                                        }
+                                    }
+                                    
+                                    if ($tb == null || $pk == null){
+                                        throw new \Exception("Imposible determinar relacion para $table_name.$f");
+                                    }
+
+
+                                    $_val = DB::selectOne("SELECT $pk FROM $tb ORDER BY RAND() LIMIT 1;", null, 'ASSOC', $conn_id);
+                                    
+                                    $valor = $_val[$pk] ?? null; // y rezar que sea nullable
+                                }
+                            break;
+
+                            case 'bool':
+                                $valor = rand(0,1);
+                            break;
+
+                            case 'double':
+                            case 'float':
+                                // en realidad tocaria ver el min y max
+                                $valor = rand(1, 100) / 10;
+                            break;
+
+                            case 'date':                        
+                                $days  = rand(0, 365);
+
+                                $fecha = new \DateTime(Date::time());
+                                $fecha->sub(new \DateInterval("P{$days}D"));
+                                $fecha = $fecha->format('Y-m-d');
+
+                                $valor =  Strings::enclose($fecha);
+
+                                dd($valor);
+                                exit;
+                            break;    
+
+                            case 'time':
+                                $valor = Strings::enclose(Date::time());
+                            break; 
+
+                            case 'timestamp':
+                            case 'datetime':
+                                $valor = Strings::enclose(Date::time());
+                            break; 
+
+                            case 'str':
+                                $valor = "[valor]";
+
+                                if (Strings::containsWordButNotStartsWith('num', $f, false) ||
+                                    Strings::containsWordButNotStartsWith('nro', $f, false) ||
+                                    Strings::containsAnyWord(['numero', 'number'], $f, false))
+                                {
+                                    $valor = '11111111';
+                                }
+
+                                if (Strings::contains('email', $f, false)){
+                                    $valor = 'xxx@dominio.com';
+                                }
+
+                                if (Strings::containsAnyWord(['telefono', 'tel', 'phone'], $f, false)){
+                                    $valor = '3001234567';
+                                }
+
+                                if (Strings::containsAnyWord(['cellphone', 'celular'], $f, false)){
+                                    $valor = '(4) 3855555';
+                                }
+
+                                $valor = "'$valor'";
+                            break;
+                                
+                            default:
+                                $valor = "'[valor]'";
+                        }
+
+                        if (Strings::endsWith('_BORRADO', $f)){
+                            $valor = 0;
+                        }
+
+                        $fillables_as_array_vals_str .= "'$f' => $valor,\r\n";                        
+                    }
+
+
+                    Strings::replace('__MODEL_NAME__', $model_name, $seeder_nr_file);
+                    Strings::replace('__FIELDS__', rtrim(Strings::tabulate($fillables_as_array_vals_str, 4, 0)), $seeder_nr_file);
+
+                    $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
+                    $faker_file = str_replace('__FIELDS__', $fillables_as_array_vals_str, $faker_file);
 
                     // $dest = static::$faker_output_path . "{$model_name}Factory.php";
 
-                    // $ok  = file_put_contents($dest, $faker_file);
-                    // dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+                    // if ($write_fakers){
+                    //     $ok  = file_put_contents($dest, $faker_file);
+                    //     dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+                    // }
                 }
                 
             }
@@ -550,23 +701,27 @@ class LaravelApiGenerator
         /*
             Presento data a agregarse o actualizarse en modelos
         */
-        foreach ($model_datos as $tb => $model_dato){
-            $pri_key   = $model_dato['id_name'];
-            $fillables = $model_dato['fillables'];
 
-            $table_str     =  'protected $table = "'.$table_name.'";';
-            $pri_key_str   =  'protected $primaryKey = "'.$pri_key.'";';
+        if ($write_models){
+            foreach ($model_datos as $tb => $model_dato){
+                $pri_key   = $model_dato['id_name'];
+                $fillables = $model_dato['fillables'];
 
-            $fillables_str =  '[' . implode(', ', Strings::enclose($fillables, "'")) . ']';
-            $fillables_str = 'protected $fillable = ' . $fillables_str . ';';
+                $table_str     =  'protected $table = "'.$table_name.'";';
+                $pri_key_str   =  'protected $primaryKey = "'.$pri_key.'";';
 
-            $str = "$table_str\r\n\r\n$pri_key_str\r\n\r\n$fillables_str";
+                $fillables_str =  '[' . implode(', ', Strings::enclose($fillables, "'")) . ']';
+                $fillables_str = 'protected $fillable = ' . $fillables_str . ';';
 
-            dd(
-                $str
-            , $tb);
+                $str = "$table_str\r\n\r\n$pri_key_str\r\n\r\n$fillables_str";
+
+                dd(
+                    $str
+                , $tb);
+            }
         }
 
+       
         /*
             Rutas 
             
