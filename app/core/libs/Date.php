@@ -4,12 +4,25 @@ namespace simplerest\core\libs;
 
 class Date
 {   
-    static function subDays(int $days, string $fecha){
+    /*
+        Substre dias a una fecha
+    */
+    static function subDays(string $fecha, int $days, $full_format = false){    
         $do = new \DateTime($fecha);
         $do->sub(new \DateInterval("P{$days}D"));
-        $do = $do->format('Y-m-d');
+        $do = $do->format($full_format ? 'Y-m-d H:i:s' : 'Y-m-d');
 
         return $do;
+    }
+
+    static function randomTime(bool $include_seconds = false){
+        $time = str_pad((string) mt_rand(0,23), 2, "0", STR_PAD_LEFT).  ":" . str_pad((string) mt_rand(0,59), 2, "0", STR_PAD_LEFT);
+
+        if ($include_seconds){
+            $time .= ':' . str_pad((string) mt_rand(0,59), 2, "0", STR_PAD_LEFT);
+        }
+
+        return $time;
     }
 
     static function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){
