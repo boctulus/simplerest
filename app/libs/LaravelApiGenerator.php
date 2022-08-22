@@ -563,9 +563,12 @@ class LaravelApiGenerator
                     $fillables_as_array_vals_str     = '';
                
                     foreach ($fillables as $i => $f){
+                        $max = $rules[$f]['max'] ?? 255;
+                        $min = $rules[$f]['max'] ?? 0;
+
                         switch ($rules[$f]['type']){
                             case 'int':
-                                $valor = rand(0, 5);
+                                $valor = rand($min, $max);
 
                                 // deberia salir a buscar la FK cuidando que hay excepciones y a veces comienza con ID_
                                 if (Strings::endsWith('_ID', $f)){
@@ -608,7 +611,7 @@ class LaravelApiGenerator
                             case 'double':
                             case 'float':
                                 // en realidad tocaria ver el min y max
-                                $valor = rand(1, 100) / 10;
+                                $valor = rand($min, $max) * 0.99;
                             break;
 
                             case 'date':
@@ -627,7 +630,8 @@ class LaravelApiGenerator
                             break; 
 
                             case 'str':
-                                $valor = "[valor]";
+                                $len   = rand($min, $max);
+                                $valor = trim(Strings::randomString($len));
 
                                 if (Strings::containsWordButNotStartsWith('num', $f, false) ||
                                     Strings::containsWordButNotStartsWith('nro', $f, false) ||
@@ -669,12 +673,12 @@ class LaravelApiGenerator
                     $faker_file = str_replace('__MODEL_NAME__', $model_name, $faker_file);
                     $faker_file = str_replace('__FIELDS__', $fillables_as_array_vals_str, $faker_file);
 
-                    // $dest = static::$faker_output_path . "{$model_name}Factory.php";
+                    $dest = static::$faker_output_path . "{$model_name}Factory.php";
 
-                    // if ($write_fakers){
-                    //     $ok  = file_put_contents($dest, $faker_file);
-                    //     dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
-                    // }
+                    if ($write_fakers){
+                        $ok  = file_put_contents($dest, $faker_file);
+                        dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+                    }
                 }
                 
             }
