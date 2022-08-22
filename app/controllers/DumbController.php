@@ -10178,7 +10178,7 @@ class DumbController extends Controller
             // ...
         ]);
 
-        LaravelApiGenerator::addNonRandomSeeders([
+        LaravelApiGenerator::addSeedersForHardcodedNonRandomData([
             // 'Genero',
             // 'EstadoLaboral',
             // 'EstadoCivil',
@@ -10207,12 +10207,12 @@ class DumbController extends Controller
             // 'ProyectoEjecutadoRecursosPublicos',
         ]);
 
-        LaravelApiGenerator::addRandomSeeders([
+        LaravelApiGenerator::addSeedersForRandomData([
             'EntidadReg', // depende de GrupoPoblacional
-            'EntidadRegGrupoPoblacional', // tabla puente
-            'RepresentanteLegal',  // depende de TipoDoc, Departamento, Municipio, Genero, EstadoCivil, EstadoLaboral, NivelEscolaridad
-            'OrgComunal', // cantidad de dependencias
-            'OrgComunalEntidadReg',  // sobre tabla puente
+            // 'EntidadRegGrupoPoblacional', // tabla puente
+            // 'RepresentanteLegal',  // depende de TipoDoc, Departamento, Municipio, Genero, EstadoCivil, EstadoLaboral, NivelEscolaridad
+            // 'OrgComunal', // cantidad de dependencias
+            // 'OrgComunalEntidadReg',  // sobre tabla puente
         ]);
 
         LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
@@ -10253,8 +10253,8 @@ class DumbController extends Controller
         LaravelApiGenerator::writeControllers(false);
         LaravelApiGenerator::writeResources(false);
         LaravelApiGenerator::writeRoutes(false);
-        LaravelApiGenerator::writeSeeders(false);
-        LaravelApiGenerator::writeFactories(true);
+        LaravelApiGenerator::writeSeeders(true);
+        LaravelApiGenerator::writeFactories(true);  // factories o seeders de random data
 
         LaravelApiGenerator::run();
     }
