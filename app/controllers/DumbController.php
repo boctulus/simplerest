@@ -10144,7 +10144,7 @@ class DumbController extends Controller
         });
 
        
-        LaravelApiGenerator::process_schemas();
+        LaravelApiGenerator::run();
     }
 
 
@@ -10160,7 +10160,7 @@ class DumbController extends Controller
         LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
         LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
 
-        LaravelApiGenerator::process_schemas();
+        LaravelApiGenerator::run();
     }
 
     /*
@@ -10201,7 +10201,7 @@ class DumbController extends Controller
             // 'GrupoInteres',
             // 'EstadoSeguimiento',
            
-            
+
             // 'ProyectoEjecutadoCooperacion',
             // 'ProyectoEjecutadoRecursosPropios',
             // 'ProyectoEjecutadoRecursosPublicos',
@@ -10248,7 +10248,15 @@ class DumbController extends Controller
             ];
         });
 
-        LaravelApiGenerator::process_schemas();
+
+        LaravelApiGenerator::writeModels(false);
+        LaravelApiGenerator::writeControllers(false);
+        LaravelApiGenerator::writeResources(false);
+        LaravelApiGenerator::writeRoutes(false);
+        LaravelApiGenerator::writeSeeders(false);
+        LaravelApiGenerator::writeFactories(true);
+
+        LaravelApiGenerator::run();
     }
     
     

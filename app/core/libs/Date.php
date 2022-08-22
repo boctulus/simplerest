@@ -3,7 +3,15 @@
 namespace simplerest\core\libs;
 
 class Date
-{
+{   
+    static function subDays(int $days, string $fecha){
+        $do = new \DateTime($fecha);
+        $do->sub(new \DateInterval("P{$days}D"));
+        $do = $do->format('Y-m-d');
+
+        return $do;
+    }
+
     static function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){
         if ($timezone === null){    
             $timezone = new \DateTimeZone( date_default_timezone_get() );
