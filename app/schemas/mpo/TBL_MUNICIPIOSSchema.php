@@ -14,47 +14,43 @@ class TBL_MUNICIPIOSSchema implements ISchema
 
 			'id_name'		=> 'MUN_ID',
 
-			'fields'		=> ['MUN_ID', 'MUN_NOMBRE', 'FK_DEP_ID', 'MUN_BORRADO', 'created_at', 'updated_at'],
+			'fields'		=> ['MUN_ID', 'MUN_NOMBRE', 'DEP_ID', 'MUN_BORRADO'],
 
 			'attr_types'	=> [
 				'MUN_ID' => 'INT',
 				'MUN_NOMBRE' => 'STR',
-				'FK_DEP_ID' => 'INT',
-				'MUN_BORRADO' => 'INT',
-				'created_at' => 'STR',
-				'updated_at' => 'STR'
+				'DEP_ID' => 'INT',
+				'MUN_BORRADO' => 'INT'
 			],
 
 			'primary'		=> ['MUN_ID'],
 
 			'autoincrement' => 'MUN_ID',
 
-			'nullable'		=> ['MUN_ID', 'MUN_BORRADO', 'created_at', 'updated_at'],
+			'nullable'		=> ['MUN_ID', 'MUN_BORRADO'],
 
-			'required'		=> ['MUN_NOMBRE', 'FK_DEP_ID'],
+			'required'		=> ['MUN_NOMBRE', 'DEP_ID'],
 
 			'uniques'		=> ['MUN_NOMBRE'],
 
 			'rules' 		=> [
 				'MUN_ID' => ['type' => 'int', 'min' => 0],
 				'MUN_NOMBRE' => ['type' => 'str', 'max' => 60, 'required' => true],
-				'FK_DEP_ID' => ['type' => 'int', 'min' => 0, 'required' => true],
-				'MUN_BORRADO' => ['type' => 'bool'],
-				'created_at' => ['type' => 'timestamp'],
-				'updated_at' => ['type' => 'timestamp']
+				'DEP_ID' => ['type' => 'int', 'min' => 0, 'required' => true],
+				'MUN_BORRADO' => ['type' => 'bool']
 			],
 
-			'fks' 			=> ['FK_DEP_ID'],
+			'fks' 			=> ['DEP_ID'],
 
 			'relationships' => [
 				'TBL_DEPARTAMENTOS' => [
-					['TBL_DEPARTAMENTOS.DEP_ID','TBL_MUNICIPIOS.FK_DEP_ID']
-				],
-				'TBL_REPRESENTANTES_LEGALES' => [
-					['TBL_REPRESENTANTES_LEGALES.MUNICIPIO_EXP_ID','TBL_MUNICIPIOS.MUN_ID']
+					['TBL_DEPARTAMENTOS.DEP_ID','TBL_MUNICIPIOS.DEP_ID']
 				],
 				'TBL_ORG_COMUNALES' => [
 					['TBL_ORG_COMUNALES.MUNICIPIO_ID','TBL_MUNICIPIOS.MUN_ID']
+				],
+				'TBL_REPRESENTANTES_LEGALES' => [
+					['TBL_REPRESENTANTES_LEGALES.MUNICIPIO_EXP_ID','TBL_MUNICIPIOS.MUN_ID']
 				]
 			],
 
@@ -71,23 +67,7 @@ class TBL_MUNICIPIOSSchema implements ISchema
       1 => 
       array (
         0 => 'TBL_MUNICIPIOS',
-        1 => 'FK_DEP_ID',
-      ),
-    ),
-  ),
-  'TBL_REPRESENTANTES_LEGALES' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'TBL_REPRESENTANTES_LEGALES',
-        1 => 'MUNICIPIO_EXP_ID',
-      ),
-      1 => 
-      array (
-        0 => 'TBL_MUNICIPIOS',
-        1 => 'MUN_ID',
+        1 => 'DEP_ID',
       ),
     ),
   ),
@@ -107,11 +87,27 @@ class TBL_MUNICIPIOSSchema implements ISchema
       ),
     ),
   ),
+  'TBL_REPRESENTANTES_LEGALES' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'TBL_REPRESENTANTES_LEGALES',
+        1 => 'MUNICIPIO_EXP_ID',
+      ),
+      1 => 
+      array (
+        0 => 'TBL_MUNICIPIOS',
+        1 => 'MUN_ID',
+      ),
+    ),
+  ),
 ),
 
 			'relationships_from' => [
 				'TBL_DEPARTAMENTOS' => [
-					['TBL_DEPARTAMENTOS.DEP_ID','TBL_MUNICIPIOS.FK_DEP_ID']
+					['TBL_DEPARTAMENTOS.DEP_ID','TBL_MUNICIPIOS.DEP_ID']
 				]
 			],
 
@@ -128,7 +124,7 @@ class TBL_MUNICIPIOSSchema implements ISchema
       1 => 
       array (
         0 => 'TBL_MUNICIPIOS',
-        1 => 'FK_DEP_ID',
+        1 => 'DEP_ID',
       ),
     ),
   ),

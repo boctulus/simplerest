@@ -14,21 +14,19 @@ class TBL_GENEROSSchema implements ISchema
 
 			'id_name'		=> 'ID_GEN',
 
-			'fields'		=> ['ID_GEN', 'GEN_NOMBRE', 'GEN_BORRADO', 'created_at', 'updated_at'],
+			'fields'		=> ['ID_GEN', 'GEN_NOMBRE', 'GEN_BORRADO'],
 
 			'attr_types'	=> [
 				'ID_GEN' => 'INT',
 				'GEN_NOMBRE' => 'STR',
-				'GEN_BORRADO' => 'INT',
-				'created_at' => 'STR',
-				'updated_at' => 'STR'
+				'GEN_BORRADO' => 'INT'
 			],
 
 			'primary'		=> ['ID_GEN'],
 
 			'autoincrement' => 'ID_GEN',
 
-			'nullable'		=> ['ID_GEN', 'GEN_BORRADO', 'created_at', 'updated_at'],
+			'nullable'		=> ['ID_GEN', 'GEN_BORRADO'],
 
 			'required'		=> ['GEN_NOMBRE'],
 
@@ -37,9 +35,7 @@ class TBL_GENEROSSchema implements ISchema
 			'rules' 		=> [
 				'ID_GEN' => ['type' => 'int', 'min' => 0],
 				'GEN_NOMBRE' => ['type' => 'str', 'max' => 30, 'required' => true],
-				'GEN_BORRADO' => ['type' => 'bool'],
-				'created_at' => ['type' => 'timestamp'],
-				'updated_at' => ['type' => 'timestamp']
+				'GEN_BORRADO' => ['type' => 'bool']
 			],
 
 			'fks' 			=> [],

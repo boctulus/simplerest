@@ -164,14 +164,14 @@ class TBL_ORG_COMUNALESSchema implements ISchema
 				'updated_at' => ['type' => 'timestamp']
 			],
 
-			'fks' 			=> ['DEPARTAMENTO_ID', 'BARRIO_ID', 'CERTIFICACION_QUE_EMITE_ORG_COMUNAL_ID', 'ESTADO_PERSON_JURID', 'ESTADO_SEGUIMIENTO_ID', 'ESCALA_TERRITORIAL_ID', 'GRUPO_INTERES', 'INSTRUMENTO_PLANEACION_ID', 'NIVEL_ID', 'REPRESENTANTE_LEGAL_ID', 'SECTOR_ACTIVIDAD_ORG_COMUNAL_ID', 'SUBREGION_ID', 'TIPO_ORGANISMO_ORG_COMUNAL_ID', 'MUNICIPIO_ID'],
+			'fks' 			=> ['BARRIO_ID', 'DEPARTAMENTO_ID', 'CERTIFICACION_QUE_EMITE_ORG_COMUNAL_ID', 'ESTADO_PERSON_JURID', 'ESTADO_SEGUIMIENTO_ID', 'ESCALA_TERRITORIAL_ID', 'GRUPO_INTERES', 'INSTRUMENTO_PLANEACION_ID', 'NIVEL_ID', 'REPRESENTANTE_LEGAL_ID', 'SECTOR_ACTIVIDAD_ORG_COMUNAL_ID', 'SUBREGION_ID', 'TIPO_ORGANISMO_ORG_COMUNAL_ID', 'MUNICIPIO_ID'],
 
 			'relationships' => [
+				'TBL_BARRIOS' => [
+					['TBL_BARRIOS.BAR_ID','TBL_ORG_COMUNALES.BARRIO_ID']
+				],
 				'TBL_DEPARTAMENTOS' => [
 					['TBL_DEPARTAMENTOS.DEP_ID','TBL_ORG_COMUNALES.DEPARTAMENTO_ID']
-				],
-				'TBL_BARRIOS' => [
-					['TBL_BARRIOS.ID_BAR','TBL_ORG_COMUNALES.BARRIO_ID']
 				],
 				'TBL_CERTIFICACIONES_QUE_EMITE_ORG_COMUNAL' => [
 					['TBL_CERTIFICACIONES_QUE_EMITE_ORG_COMUNAL.ID_COC','TBL_ORG_COMUNALES.CERTIFICACION_QUE_EMITE_ORG_COMUNAL_ID']
@@ -215,6 +215,22 @@ class TBL_ORG_COMUNALESSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
+  'TBL_BARRIOS' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'TBL_BARRIOS',
+        1 => 'BAR_ID',
+      ),
+      1 => 
+      array (
+        0 => 'TBL_ORG_COMUNALES',
+        1 => 'BARRIO_ID',
+      ),
+    ),
+  ),
   'TBL_DEPARTAMENTOS' => 
   array (
     0 => 
@@ -228,22 +244,6 @@ class TBL_ORG_COMUNALESSchema implements ISchema
       array (
         0 => 'TBL_ORG_COMUNALES',
         1 => 'DEPARTAMENTO_ID',
-      ),
-    ),
-  ),
-  'TBL_BARRIOS' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'TBL_BARRIOS',
-        1 => 'ID_BAR',
-      ),
-      1 => 
-      array (
-        0 => 'TBL_ORG_COMUNALES',
-        1 => 'BARRIO_ID',
       ),
     ),
   ),
@@ -458,11 +458,11 @@ class TBL_ORG_COMUNALESSchema implements ISchema
 ),
 
 			'relationships_from' => [
+				'TBL_BARRIOS' => [
+					['TBL_BARRIOS.BAR_ID','TBL_ORG_COMUNALES.BARRIO_ID']
+				],
 				'TBL_DEPARTAMENTOS' => [
 					['TBL_DEPARTAMENTOS.DEP_ID','TBL_ORG_COMUNALES.DEPARTAMENTO_ID']
-				],
-				'TBL_BARRIOS' => [
-					['TBL_BARRIOS.ID_BAR','TBL_ORG_COMUNALES.BARRIO_ID']
 				],
 				'TBL_CERTIFICACIONES_QUE_EMITE_ORG_COMUNAL' => [
 					['TBL_CERTIFICACIONES_QUE_EMITE_ORG_COMUNAL.ID_COC','TBL_ORG_COMUNALES.CERTIFICACION_QUE_EMITE_ORG_COMUNAL_ID']
@@ -503,6 +503,22 @@ class TBL_ORG_COMUNALESSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
+  'TBL_BARRIOS' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'TBL_BARRIOS',
+        1 => 'BAR_ID',
+      ),
+      1 => 
+      array (
+        0 => 'TBL_ORG_COMUNALES',
+        1 => 'BARRIO_ID',
+      ),
+    ),
+  ),
   'TBL_DEPARTAMENTOS' => 
   array (
     0 => 
@@ -516,22 +532,6 @@ class TBL_ORG_COMUNALESSchema implements ISchema
       array (
         0 => 'TBL_ORG_COMUNALES',
         1 => 'DEPARTAMENTO_ID',
-      ),
-    ),
-  ),
-  'TBL_BARRIOS' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'TBL_BARRIOS',
-        1 => 'ID_BAR',
-      ),
-      1 => 
-      array (
-        0 => 'TBL_ORG_COMUNALES',
-        1 => 'BARRIO_ID',
       ),
     ),
   ),
