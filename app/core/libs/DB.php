@@ -621,7 +621,7 @@ class DB
 	//
 	// https://laravel.com/docs/5.0/database
 	//
-	public static function select(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null){
+	public static function select(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null, bool $only_one = false){
 		if ($vals === null){
 			$vals = [];
 		}
@@ -703,7 +703,13 @@ class DB
 			$st->execute();
 
 			$fetch_const = constant("\PDO::FETCH_{$fetch_mode}");
-			$result = $st->fetchAll($fetch_const);
+
+
+			if ($only_one){
+				$result = $st->fetch($fetch_const);
+			} else {
+				$result = $st->fetchAll($fetch_const);
+			}
 
 		} finally {
 			// Restore previous connection
@@ -713,6 +719,10 @@ class DB
 		}
 
 		return $result;
+	}
+
+	public static function selectOne(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null, bool $only_one = false){
+		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, true);
 	}
 
 	public static function truncate(string $table, ?string $tenant_id = null){
