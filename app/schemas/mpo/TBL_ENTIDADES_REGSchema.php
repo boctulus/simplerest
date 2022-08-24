@@ -86,11 +86,11 @@ class TBL_ENTIDADES_REGSchema implements ISchema
 				'TBL_GRUPOS_POBLACIONALES' => [
 					['TBL_GRUPOS_POBLACIONALES.GRU_ID','TBL_ENTIDADES_REG.ERG_GRUPO_POBLACIONAL_ID']
 				],
-				'TBL_ENTIDADES_REG_GRUPOS_POBLACIONALES' => [
-					['TBL_ENTIDADES_REG_GRUPOS_POBLACIONALES.ENTIDAD_REG_ID','TBL_ENTIDADES_REG.ID_ERG']
-				],
 				'TBL_ORG_COMUNAL_ENTIDAD_REG' => [
 					['TBL_ORG_COMUNAL_ENTIDAD_REG.ENTIDAD_REG_ID','TBL_ENTIDADES_REG.ID_ERG']
+				],
+				'TBL_ENTIDADES_REG_GRUPOS_POBLACIONALES' => [
+					['TBL_ENTIDADES_REG_GRUPOS_POBLACIONALES.ENTIDAD_REG_ID','TBL_ENTIDADES_REG.ID_ERG']
 				]
 			],
 
@@ -111,13 +111,13 @@ class TBL_ENTIDADES_REGSchema implements ISchema
       ),
     ),
   ),
-  'TBL_ENTIDADES_REG_GRUPOS_POBLACIONALES' => 
+  'TBL_ORG_COMUNAL_ENTIDAD_REG' => 
   array (
     0 => 
     array (
       0 => 
       array (
-        0 => 'TBL_ENTIDADES_REG_GRUPOS_POBLACIONALES',
+        0 => 'TBL_ORG_COMUNAL_ENTIDAD_REG',
         1 => 'ENTIDAD_REG_ID',
       ),
       1 => 
@@ -127,13 +127,13 @@ class TBL_ENTIDADES_REGSchema implements ISchema
       ),
     ),
   ),
-  'TBL_ORG_COMUNAL_ENTIDAD_REG' => 
+  'TBL_ENTIDADES_REG_GRUPOS_POBLACIONALES' => 
   array (
     0 => 
     array (
       0 => 
       array (
-        0 => 'TBL_ORG_COMUNAL_ENTIDAD_REG',
+        0 => 'TBL_ENTIDADES_REG_GRUPOS_POBLACIONALES',
         1 => 'ENTIDAD_REG_ID',
       ),
       1 => 

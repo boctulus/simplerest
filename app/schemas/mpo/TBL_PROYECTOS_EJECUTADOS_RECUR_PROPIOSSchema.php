@@ -51,10 +51,28 @@ class TBL_PROYECTOS_EJECUTADOS_RECUR_PROPIOSSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				
+				'TBL_ORG_COMUNALES' => [
+					['TBL_ORG_COMUNALES.PR_EJ_REC_PROP_ID','TBL_PROYECTOS_EJECUTADOS_RECUR_PROPIOS.ID_PRV']
+				]
 			],
 
 			'expanded_relationships' => array (
+  'TBL_ORG_COMUNALES' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'TBL_ORG_COMUNALES',
+        1 => 'PR_EJ_REC_PROP_ID',
+      ),
+      1 => 
+      array (
+        0 => 'TBL_PROYECTOS_EJECUTADOS_RECUR_PROPIOS',
+        1 => 'ID_PRV',
+      ),
+    ),
+  ),
 ),
 
 			'relationships_from' => [

@@ -46,11 +46,11 @@ class TBL_MUNICIPIOSSchema implements ISchema
 				'TBL_DEPARTAMENTOS' => [
 					['TBL_DEPARTAMENTOS.DEP_ID','TBL_MUNICIPIOS.DEP_ID']
 				],
-				'TBL_ORG_COMUNALES' => [
-					['TBL_ORG_COMUNALES.MUNICIPIO_ID','TBL_MUNICIPIOS.MUN_ID']
-				],
 				'TBL_REPRESENTANTES_LEGALES' => [
 					['TBL_REPRESENTANTES_LEGALES.MUNICIPIO_EXP_ID','TBL_MUNICIPIOS.MUN_ID']
+				],
+				'TBL_ORG_COMUNALES' => [
+					['TBL_ORG_COMUNALES.MUNICIPIO_ID','TBL_MUNICIPIOS.MUN_ID']
 				]
 			],
 
@@ -71,22 +71,6 @@ class TBL_MUNICIPIOSSchema implements ISchema
       ),
     ),
   ),
-  'TBL_ORG_COMUNALES' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'TBL_ORG_COMUNALES',
-        1 => 'MUNICIPIO_ID',
-      ),
-      1 => 
-      array (
-        0 => 'TBL_MUNICIPIOS',
-        1 => 'MUN_ID',
-      ),
-    ),
-  ),
   'TBL_REPRESENTANTES_LEGALES' => 
   array (
     0 => 
@@ -95,6 +79,22 @@ class TBL_MUNICIPIOSSchema implements ISchema
       array (
         0 => 'TBL_REPRESENTANTES_LEGALES',
         1 => 'MUNICIPIO_EXP_ID',
+      ),
+      1 => 
+      array (
+        0 => 'TBL_MUNICIPIOS',
+        1 => 'MUN_ID',
+      ),
+    ),
+  ),
+  'TBL_ORG_COMUNALES' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'TBL_ORG_COMUNALES',
+        1 => 'MUNICIPIO_ID',
       ),
       1 => 
       array (

@@ -10200,19 +10200,17 @@ class DumbController extends Controller
             // 'UsuarioToken',
             // 'GrupoInteres',
             // 'EstadoSeguimiento',
-           
-
-            // 'ProyectoEjecutadoCooperacion',
-            // 'ProyectoEjecutadoRecursosPropios',
-            // 'ProyectoEjecutadoRecursosPublicos',
         ]);
 
         LaravelApiGenerator::addSeedersForRandomData([
+            'ProyectoEjecutadoCooperacion',
+            'ProyectoEjecutadoRecursosPropios',
+            'ProyectoEjecutadoRecursosPublicos',
+            'RepresentanteLegal',  // depende de TipoDoc, Departamento, Municipio, Genero, EstadoCivil, EstadoLaboral, NivelEscolaridad
             'EntidadReg', // depende de GrupoPoblacional
-            // 'EntidadRegGrupoPoblacional', // tabla puente
-            // 'RepresentanteLegal',  // depende de TipoDoc, Departamento, Municipio, Genero, EstadoCivil, EstadoLaboral, NivelEscolaridad
-            // 'OrgComunal', // cantidad de dependencias
-            // 'OrgComunalEntidadReg',  // sobre tabla puente
+            'EntidadRegGrupoPoblacional', // tabla puente            
+            'OrgComunal', // cantidad de dependencias
+            'OrgComunalEntidadReg',  // sobre tabla puente
         ]);
 
         LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
