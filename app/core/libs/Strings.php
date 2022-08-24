@@ -190,13 +190,13 @@ class Strings
     }
 
 	// alias
-	static function removeBeginning($substr, $str){
-		return static::lTrim($substr, $str);
+	static function removeBeginning($substr, string $string){
+		return static::lTrim($substr, $string);
 	}
 
 	// alias
-	static function removeEnding(string $substr, string $str){
-		return static::rTrim($substr, $str);
+	static function removeEnding(string $substr, string $string){
+		return static::rTrim($substr, $string);
 	}
 
 	/*
