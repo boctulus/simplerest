@@ -10106,11 +10106,17 @@ class DumbController extends Controller
         LaravelApiGenerator::capitalizeTableNames();
         LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravel_resource_controller_2.php");
 
-        LaravelApiGenerator::setProjectPath('D:/www/medellin-participa/produccion');
-        LaravelApiGenerator::setResourceDestPath('D:/www/medellin-participa/produccion' . '/app/Http/Resources/');
-        LaravelApiGenerator::setControllerDestPath('D:/www/medellin-participa/produccion' . '/app/Http/Controllers/');
-        // LaravelApiGenerator::setFactoryDestPath('D:/www/medellin-participa/produccion' . '/database/factories/');
-        // LaravelApiGenerator::setSeederDestPath('D:/www/medellin-participa/produccion' . '/database/seeders/');
+        LaravelApiGenerator::setProjectPath('D:/www/medellin-participa/seguridad');
+        LaravelApiGenerator::setResourceDestPath('D:/www/medellin-participa/seguridad' . '/app/Http/Resources/');
+        LaravelApiGenerator::setControllerDestPath('D:/www/medellin-participa/seguridad' . '/app/Http/Controllers/');
+        // LaravelApiGenerator::setFactoryDestPath('D:/www/medellin-participa/seguridad' . '/database/factories/');
+        // LaravelApiGenerator::setSeederDestPath('D:/www/medellin-participa/seguridad' . '/database/seeders/');
+
+
+        LaravelApiGenerator::setControllerWhitelist([
+            'InformacionContacto'
+            // ...
+        ]);
 
         LaravelApiGenerator::setValidator("SimpleRest");
 
@@ -10127,6 +10133,10 @@ class DumbController extends Controller
                 if (Strings::endsWith('HABILITADO', $field)){
                     $habilitado_fieldname = $field;
                 }
+            }
+
+            if ($softdelete_fieldname == null){
+                die("Campo _BORRADO es obligatorio en el template");
             }
 
             return [
@@ -10167,14 +10177,28 @@ class DumbController extends Controller
         User ESTA funcion para "Organizaciones"
     */
     function gen_laravel_mp_org(){
-        LaravelApiGenerator::setConnId('mpo');
+        LaravelApiGenerator::setConnId('mpp'); // <----------------------- se comparte DB con produccion
         LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
         LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
         LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
         LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
         LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
 
-        LaravelApiGenerator::setSeederExclusion([
+        LaravelApiGenerator::setControllerWhitelist([
+            // 'SectorActividad'
+            // ...
+        ]);
+
+        LaravelApiGenerator::setControllerBlacklist([
+            'UsuarioToken', // pierde el campo de borrado
+            'EstPersJur',  // pierde el campo de borrado
+            'GrupoInteres' // pierde el campo de borrado
+            // ...
+        ]);
+
+        // 
+
+        LaravelApiGenerator::setSeederBlacklist([
             // ...
         ]);
 
@@ -10225,6 +10249,10 @@ class DumbController extends Controller
                 }
             }
 
+            if ($softdelete_fieldname == null){
+                // die("Campo _BORRADO es obligatorio en el template");
+            }
+
             $habilitado_fieldname = null;
             foreach($fields as $field){
                 if (Strings::endsWith('HABILITADO', $field)){
@@ -10248,11 +10276,11 @@ class DumbController extends Controller
 
 
         LaravelApiGenerator::writeModels(false);
-        LaravelApiGenerator::writeControllers(false);
+        #LaravelApiGenerator::writeControllers(false);
         LaravelApiGenerator::writeResources(false);
         LaravelApiGenerator::writeRoutes(false);
-        LaravelApiGenerator::writeSeeders(true);
-        LaravelApiGenerator::writeFactories(true);  // factories o seeders de random data
+        LaravelApiGenerator::writeSeeders(false);
+        LaravelApiGenerator::writeFactories(false);  // factories o seeders de random data
 
         LaravelApiGenerator::run();
     }
