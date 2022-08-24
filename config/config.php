@@ -107,6 +107,21 @@ return [
 			]
 		],
 
+		'mpo_remote' => [
+			'host'		=> env('DB_HOST_MPO_REMOTE'),
+			'port'		=> env('DB_PORT_MPO_REMOTE'),
+			'driver' 	=> env('DB_CONNECTION_MPO_REMOTE'),
+			'db_name' 	=> env('DB_NAME_MPO_REMOTE'),
+			'user'		=> env('DB_USERNAME_MPO_REMOTE'), 
+			'pass'		=> env('DB_PASSWORD_MPO_REMOTE'),
+			'charset'	=> 'utf8',
+			//'schema'	=> 'az',  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],
+
 		'mpp' => [
 			'host'		=> env('DB_HOST_MPP', '127.0.0.1'),
 			'port'		=> env('DB_PORT_MPP'),

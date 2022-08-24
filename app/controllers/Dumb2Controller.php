@@ -11,10 +11,42 @@ use simplerest\core\libs\Date;
 
 class Dumb2Controller extends MyController
 {
-  function rand(){
+  function test_scopes(){
+    DB::getConnection('az');  
+    
     dd(
-        Strings::randomString()
+      DB::table('products')
+      ->where(['id', 200, '>'])
+      ->count(),
+      'NORMAL'
     );
+
+    dd(
+      DB::table('products')
+      ->where(['id', 200, '>'])
+      ->costScope()
+      ->count(),
+      'SCOPE costScope'
+    );
+  }
+
+
+  function create_db(){
+    DB::getConnection('mpp');
+  
+    DB::statement("CREATE DATABASE `organizaciones`;");
+
+    // dd(
+    //   DB::getTableNames()
+    // ); 
+  }
+
+  function test(){
+    DB::getConnection('mpo_remote');
+  
+    dd(
+      DB::getTableNames()
+    );    
   }
 
   function test_remove_sp()

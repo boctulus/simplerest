@@ -20,6 +20,11 @@ class ProductsModel extends MyModel
         parent::__construct($connect, ProductsSchema::class);
 	}	
 
+	function costScope(){
+		$this->where(['cost', 100, '>=']);
+		return $this;
+	}
+
 	function onDeleting(&$data)
 	{
 		d($data, 'deleting');

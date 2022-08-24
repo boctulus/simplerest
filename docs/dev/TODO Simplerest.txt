@@ -1044,12 +1044,12 @@ Ej:
 
   ORDER BY score DESC;
 
-
   O sea cada palabra podría tener un peso específico que podría ajustar una red neuronal (perceptrón simple).  
 
   Se podrían seleccionar los primeros N resultados con score más alto.
 
   Tocaría excluir artículos y otras palabras sin valor.
+
 
 - Implementar CRUD desde consola (INSERT - READ / LIST - EDIT - DELETE) 
 
