@@ -2845,8 +2845,8 @@ class Model {
                 $result = $st->execute();
             } catch (\PDOException $e){
                 if (!Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())){
-                    throw new \PDOException($e->getMessage());
-                }
+					throw new \PDOException(config()['debug'] ? $e->getMessage() : "Integrity constraint violation");
+                } 
             }
 		} else {
 			$result = $st->execute();
@@ -2903,7 +2903,13 @@ class Model {
 					
 					DB::rollback();
 
-					throw new \Exception("Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog() . " - values : [$val_str]");
+					if (config()['debug']){
+						$msg = "Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog() . " - values : [$val_str]";
+					} else {
+						$msg = 'Error inserting data';
+					}
+
+					throw new \Exception($msg);
 				}
 				
 				return $ret; 
@@ -2921,7 +2927,13 @@ class Model {
 			} catch (\Exception $e){
 				DB::rollback();
 
-				throw new \Exception("Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog());	
+				if (config()['debug']){
+					$msg = "Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog();
+				} else {
+					$msg = 'Error inserting data';
+				}
+
+				throw new \Exception($msg);
 			}
 		}
 	}
