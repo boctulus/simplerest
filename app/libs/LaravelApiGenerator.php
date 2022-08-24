@@ -34,9 +34,12 @@ class LaravelApiGenerator
     static protected $validator = 'Laravel';
     static protected $callbacks = [];
 
+    static protected $ctrl_whitelist     = [];
+    static protected $ctrl_blacklist     = [];
+
     static protected $non_random_seeders = [];
     static protected $random_seeders     = [];
-    static protected $excluded_seeders   = [];
+    static protected $seeder_blacklist   = [];
 
     static protected $write_models       = true;
     static protected $write_controllers  = true;
@@ -46,8 +49,28 @@ class LaravelApiGenerator
     static protected $write_routes       = true;
 
 
-    static function setSeederExclusion(Array $class_names){
-        static::$excluded_seeders = $class_names;
+    static function setControllerWhitelist(Array $class_names){
+        foreach ($class_names as $ix => $classname){
+            if (Strings::endsWith('Controller', $classname)){
+                $class_names[$ix] = Strings::removeEnding('Controller', $class_names[$ix]);   
+            }
+        }
+
+        static::$ctrl_whitelist = $class_names;
+    }
+
+    static function setControllerBlacklist(Array $class_names){
+        foreach ($class_names as $ix => $classname){
+            if (Strings::endsWith('Controller', $classname)){
+                $class_names[$ix] = Strings::removeEnding('Controller', $class_names[$ix]);   
+            }
+        }
+
+        static::$ctrl_blacklist = $class_names;
+    }
+
+    static function setSeederBlacklist(Array $class_names){
+        static::$seeder_blacklist = $class_names;
     }
 
     static function addSeedersForHardcodedNonRandomData(Array $class_names){
@@ -261,7 +284,8 @@ class LaravelApiGenerator
 
             if ($class_name === null){
                 //dd($this->table_models);
-                throw new \Exception("Class name not found for '$table_name'");
+                dd("[ Warning ] Class name not found for '$table_name'");
+                continue; //
             }
 
             /*
@@ -413,9 +437,10 @@ class LaravelApiGenerator
                 Controller files
             */
 
-            if ($write_controllers){
-                //dd("Generando controladores ...");                
-                
+            if ($write_controllers && (empty(static::$ctrl_whitelist) || in_array($class_name, static::$ctrl_whitelist)) && (!in_array($class_name, static::$ctrl_blacklist)))
+            {
+                //dd("Generando controladores ...");    
+            
                 $ctrl_file = str_replace('__CONTROLLER_NAME__', "{$model_name}Controller", $ctrl_file);
                 $ctrl_file = str_replace('__MODEL_NAME__', $class_name, $ctrl_file);
                 $ctrl_file = str_replace('__TABLE_NAME__', $table_name, $ctrl_file);
@@ -460,7 +485,7 @@ class LaravelApiGenerator
                 Faker files
             */
 
-            $exclude_seeder = (in_array($model_name, static::$excluded_seeders));
+            $exclude_seeder = (in_array($model_name, static::$seeder_blacklist));
         
             if (!$exclude_seeder)
             {
@@ -581,7 +606,7 @@ class LaravelApiGenerator
                     un seeder que tiene generados datos al azar
                 */
 
-                if (in_array($class_name, static::$random_seeders)){
+                if ($write_seeders && in_array($class_name, static::$random_seeders)){
                     
                     /*
                         SEEDERs de DATA RANDOM

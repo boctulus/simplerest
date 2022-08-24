@@ -14,7 +14,7 @@ class DB
 	protected static $raw_sql;
 	protected static $values = [];
 	protected static $tb_name;
-	protected static $inited_transaction = false; 
+	protected static $inited_transaction   = false; 
 
 	const INFOMIX    = 'infomix';
 	const MYSQL      = 'mysql';
@@ -25,7 +25,6 @@ class DB
 	const ORACLE     = 'oracle';
 	const SYBASE     = 'sybase';
 	const FIREBIRD   = 'firebird';
-
 
 	public static function setConnection(string $id)
 	{
@@ -174,7 +173,14 @@ class DB
 			//dd("CONNECTION MADE TO $db_name"); //
 
 		} catch (\PDOException $e) {
-			throw new \PDOException('PDO Exception: '. $e->getMessage());	
+			$msg = 'PDO Exception: '. $e->getMessage();
+
+			if (config()['debug']){
+				$conn_arr = $config['db_connections'][static::$current_id_conn];
+				$msg .= ". Connection = ". var_export($conn_arr, true);
+			}
+			
+			throw new \PDOException($msg);	
 		} catch (\Exception $e) {
 			throw new \Exception($e->getMessage());
 		}	
@@ -711,7 +717,18 @@ class DB
 				$result = $st->fetchAll($fetch_const);
 			}
 
-		} finally {
+		} catch (\Exception $e){
+			$error = $e->getMessage();
+			
+			$msg = "Error: $error.";
+
+			if (config()['debug']){
+				$data = var_export($vals, true);
+				$msg .= "Query: $q. Data: $data";
+			}
+
+			throw new \Exception($msg);
+		} finally {	
 			// Restore previous connection
 			if (!empty($current_id_conn)){
 				DB::setConnection($current_id_conn);

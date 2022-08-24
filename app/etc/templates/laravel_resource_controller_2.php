@@ -199,7 +199,9 @@ class __CONTROLLER_NAME__ extends Controller
         // ->when(!$include_deleted, function($q){
         //     $q->where('__FIELD_BORRADO__', '!=', '1');
         // })
-        ->first();
+        ;
+
+        //$row = json_decode(json_encode($data), true);
 
         if(!empty($data))
         {
@@ -261,8 +263,6 @@ class __CONTROLLER_NAME__ extends Controller
         
         $include_deleted = isset($_GET['with_trashed']) && empty($_GET['with_trashed']) && ($_GET['with_trashed']!= '0');
 
-        $this->respuesta = [];
-        $this->respuesta['meta'] = array("Guardar un registro nuevo");
         
         if (empty(trim($raw))){
             return new Response([
