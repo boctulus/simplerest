@@ -1253,7 +1253,6 @@ El método undelete() restaura un registro borrado con softdelete pero fallará 
 Este método no chequea si realmente el registro fue borrado aunque sino existe tampoco generará excepción. En caso de querer verficar previamente si el registro fue borrado utilice trashed()
 
 
-
 # Obtener el nombre del Id de la tabla
 
 SimpleRest considera 'id' al nombre de la PRIMARY KEY (si es simple), del campo AUTOINCREMENT o bien del campo UUID de la tabla. Esto permite compatibilidad con diseños donde las tablas tienen claves primarias compuestas siempre que exista un campo que pueda representar unívocamente a cada registro.
@@ -2008,6 +2007,44 @@ Ej:
 	DB::table('products')
 	->find(145)
 	->touch();
+
+
+# Scopes
+
+En Simplerest crear lo que otros frameworks llaman "scopes" sobre las consultas es demasiado sencillo: 
+
+Simplemente vaya al modelo en cuestión y agregue los metodos que requiera. Ej:
+
+	class ProductsModel extends MyModel
+	{ 	
+		// ...
+
+		function costScope(){
+			$this->where(['cost', 100, '>=']);
+			return $this;
+		}
+
+		// ...
+	}
+
+Luego es solo llamar el método que aplica la restricción. 
+
+Ej:
+
+	DB::getConnection('az');  
+
+    dd(
+		DB::table('products')
+		->where(['id', 200, '>'])
+
+		/*
+			Agrego el o los scopes que desee 
+		*/	
+		->costScope()
+
+		->count(),
+		'SCOPE costScope'
+    );
 
 
 ### La clase DB

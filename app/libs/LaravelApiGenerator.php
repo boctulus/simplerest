@@ -472,6 +472,9 @@ class LaravelApiGenerator
                     $fillables_as_array_vals_str     = '';
                
                     foreach ($fillables as $i => $f){
+                        $max = $rules[$f]['max'] ?? 255;
+                        $min = $rules[$f]['max'] ?? 0;
+                            
                         switch ($rules[$f]['type']){
                             case 'int':
                                 $valor = 0;
@@ -505,25 +508,35 @@ class LaravelApiGenerator
                             break; 
 
                             case 'str':
-                                $valor = "[valor]";
+                                $valor = null;
 
-                                if (Strings::containsWordButNotStartsWith('num', $f, false) ||
-                                    Strings::containsWordButNotStartsWith('nro', $f, false) ||
-                                    Strings::containsAnyWord(['numero', 'number'], $f, false))
+                                if (Strings::containsAnyWord(['numero', 'number'], $f, false))
                                 {
-                                    $valor = '11111111';
+                                    $valor = '1234567890';
                                 }
 
-                                if (Strings::contains('email', $f, false)){
+                                if (is_null($valor) && Strings::containsWordButNotStartsWith('num', $f, false) ||
+                                        Strings::containsWordButNotStartsWith('nro', $f, false) ||
+                                        Strings::containsAnyWord(['valor', 'duracion'], $f, false))
+                                {
+                                    $valor = '10';
+                                }
+
+                                if (is_null($valor) && Strings::contains('email', $f, false)){
                                     $valor = 'xxx@dominio.com';
                                 }
 
-                                if (Strings::containsAnyWord(['telefono', 'tel', 'phone'], $f, false)){
+                                if (is_null($valor) && Strings::containsAnyWord(['telefono', 'tel', 'phone'], $f, false)){
                                     $valor = '3001234567';
                                 }
 
-                                if (Strings::containsAnyWord(['cellphone', 'celular'], $f, false)){
+                                if (is_null($valor) && Strings::containsAnyWord(['cellphone', 'celular'], $f, false)){
                                     $valor = '(4) 3855555';
+                                }
+
+                                if ($valor === null){
+                                    $len   = rand($min, $max);
+                                    $valor = trim(Strings::randomString($len));
                                 }
 
                                 $valor = "'$valor'";
@@ -536,11 +549,15 @@ class LaravelApiGenerator
                         if (Strings::endsWith('_BORRADO', $f)){
                             $valor = 0;
                         }
+                        
+                        if (Strings::containsWord('anno', $f, false)){
+                            $valor = '2022';
+                        }
 
                         $fillables_as_array_vals_str .= "'$f' => $valor,\r\n";                        
                     }
 
-                    
+
                     $id_fillables_as_array_vals_str  = "'$id_name' => 1,\r\n" . $fillables_as_array_vals_str;
 
                     $__fields__ = rtrim(Strings::tabulate($id_fillables_as_array_vals_str, 4, 0));
@@ -579,6 +596,9 @@ class LaravelApiGenerator
                         $fillables_as_array_vals_str = '';
 
                         foreach ($fillables as $i => $f){
+                            $is_fk       = in_array($f, $schema['fks']);
+                            $is_nullable = in_array($f, $schema['nullable']);
+
                             $max = $rules[$f]['max'] ?? 255;
                             $min = $rules[$f]['max'] ?? 0;
 
@@ -586,10 +606,8 @@ class LaravelApiGenerator
                                 case 'int':
                                     $valor = rand($min, $max);
 
-                                    // deberia salir a buscar la FK cuidando que hay excepciones y a veces comienza con ID_
-                                    if (Strings::endsWith('_ID', $f)){
-                                        //dd($f, 'F');
-
+                                    if ($is_fk)
+                                    {
                                         /*
                                             Estoy asumiendo hay solo una relacion entre las dos tablas
                                         */
@@ -613,10 +631,15 @@ class LaravelApiGenerator
                                             throw new \Exception("Imposible determinar relacion para $table_name.$f");
                                         }
 
-
                                         $_val = DB::selectOne("SELECT $pk FROM $tb ORDER BY RAND() LIMIT 1;", null, 'ASSOC', $conn_id);
                                         
-                                        $valor = $_val[$pk] ?? null; // y rezar que sea nullable
+                                        $valor = $_val[$pk] ?? 'NULL'; 
+
+                                        if (!$is_nullable && $valor === 'NULL'){
+                                            throw new \Exception("No hay registros en la tabla '$tb' y la FK '$f' no puede ser nulla");
+                                        }                    
+
+                                        # dd($valor, "VALOR PK | $table_name.$f"); ////////////////////////
                                     }
                                 break;
 
@@ -646,26 +669,35 @@ class LaravelApiGenerator
                                 break; 
 
                                 case 'str':
-                                    $len   = rand($min, $max);
-                                    $valor = trim(Strings::randomString($len));
+                                    $valor = null;
 
-                                    if (Strings::containsWordButNotStartsWith('num', $f, false) ||
-                                        Strings::containsWordButNotStartsWith('nro', $f, false) ||
-                                        Strings::containsAnyWord(['numero', 'number'], $f, false))
+                                    if (Strings::containsAnyWord(['numero', 'number'], $f, false))
                                     {
-                                        $valor = '11111111';
+                                        $valor = '1234567890';
                                     }
 
-                                    if (Strings::contains('email', $f, false)){
+                                    if (is_null($valor) && Strings::containsWordButNotStartsWith('num', $f, false) ||
+                                            Strings::containsWordButNotStartsWith('nro', $f, false) ||
+                                            Strings::containsAnyWord(['valor', 'duracion'], $f, false))
+                                    {
+                                        $valor = '10';
+                                    }
+
+                                    if (is_null($valor) && Strings::contains('email', $f, false)){
                                         $valor = 'xxx@dominio.com';
                                     }
 
-                                    if (Strings::containsAnyWord(['telefono', 'tel', 'phone'], $f, false)){
+                                    if (is_null($valor) && Strings::containsAnyWord(['telefono', 'tel', 'phone'], $f, false)){
                                         $valor = '3001234567';
                                     }
 
-                                    if (Strings::containsAnyWord(['cellphone', 'celular'], $f, false)){
+                                    if (is_null($valor) && Strings::containsAnyWord(['cellphone', 'celular'], $f, false)){
                                         $valor = '(4) 3855555';
+                                    }
+
+                                    if ($valor === null){
+                                        $len   = rand($min, $max);
+                                        $valor = trim(Strings::randomString($len));
                                     }
 
                                     $valor = "'$valor'";
@@ -677,6 +709,10 @@ class LaravelApiGenerator
 
                             if (Strings::endsWith('_BORRADO', $f)){
                                 $valor = 0;
+                            }
+
+                            if (Strings::containsWord('anno', $f, false)){
+                                $valor = rand(2022, 2032);
                             }
 
                             $fillables_as_array_vals_str .= "'$f' => $valor,\r\n";                        

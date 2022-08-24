@@ -51,10 +51,28 @@ class TBL_PROYECTOS_EJECUTADOS_COOPERACIONSchema implements ISchema
 			'fks' 			=> [],
 
 			'relationships' => [
-				
+				'TBL_ORG_COMUNALES' => [
+					['TBL_ORG_COMUNALES.PR_EJ_COOP_ID','TBL_PROYECTOS_EJECUTADOS_COOPERACION.ID_PCO']
+				]
 			],
 
 			'expanded_relationships' => array (
+  'TBL_ORG_COMUNALES' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'TBL_ORG_COMUNALES',
+        1 => 'PR_EJ_COOP_ID',
+      ),
+      1 => 
+      array (
+        0 => 'TBL_PROYECTOS_EJECUTADOS_COOPERACION',
+        1 => 'ID_PCO',
+      ),
+    ),
+  ),
 ),
 
 			'relationships_from' => [
