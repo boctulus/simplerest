@@ -4,13 +4,21 @@ namespace simplerest\controllers;
 
 use simplerest\controllers\MyController;
 use simplerest\core\Request;
-use simplerest\core\Response;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Url;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Date;
 
 class Dumb2Controller extends MyController
 {
+  static function get_url_slugs(){
+    $url = "http://127.0.0.1:8889/api/xxx/777/";
+
+    dd(
+      Url::getSlugs($url)
+    );
+  }
+  
   static function get_rand_hex(){
     return Strings::randomHexaString(6);
   }

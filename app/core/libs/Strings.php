@@ -166,7 +166,11 @@ class Strings
 
 		- Podria limitarse tambien a los primeros n-caracteres tambien
 	*/
-	static function lTrim($substr, $str){
+	static function lTrim(string $substr, ?string $str = null){
+		if (empty($str)){
+			return '';
+		}
+
 		$len_sb = strlen($substr);
 		$len_ss = strlen($str);
 
@@ -1018,11 +1022,27 @@ class Strings
        	return preg_replace('#/+#','/',$path);
 	}
 
-	static function removeTrailingSlash(string $path) : string {
+	static function removeTrailingSlash(?string $path = null) : ?string {
+		if (empty($path)){
+			return $path;
+		}
+
 		$path = static::realPathNoCoercive($path);
 
 		if (Strings::endsWith('\\', $path) || Strings::endsWith('/', $path)){
 			return substr($path, 0, strlen($path)-1);
+		}
+
+		return $path;
+	}
+
+	static function removeFirstSlash(?string $path = null) : ?string {
+		if (empty($path)){
+			return $path;
+		}
+
+		if (Strings::startsWith('\\', $path)){
+			return substr($path, 1);
 		}
 
 		return $path;
