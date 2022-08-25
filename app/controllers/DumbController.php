@@ -25,43 +25,44 @@ use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
+use simplerest\core\libs\Postman;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
+
 use simplerest\models\az\BarModel;
-
 use Endroid\QrCode\Builder\Builder;
+
 use simplerest\core\libs\ApiClient;
-
 use simplerest\core\libs\Reflector;
-use simplerest\core\libs\Validator;
 
+use simplerest\core\libs\Validator;
 use Endroid\QrCode\Writer\PngWriter;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
-use Endroid\QrCode\Encoding\Encoding;
 
+use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
+
 use simplerest\core\libs\Base64Uploader;
 
 use simplerest\libs\LaravelApiGenerator;
-
 use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\controllers\api\TblPersona;
 
 //  QR
+use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\MultipleUploader;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\controllers\MakeControllerBase;
-use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 
+use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 
@@ -10185,12 +10186,12 @@ class DumbController extends Controller
         LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
 
         LaravelApiGenerator::setControllerWhitelist([
-            // 'SectorActividad'
-            // ...
+            //'OrgComunal'
+            'ProyectoEjecutadoRecursosPropios'
         ]);
 
         LaravelApiGenerator::setControllerBlacklist([
-            'UsuarioToken', // pierde el campo de borrado
+            'UsuarioToken', // 
             'EstPersJur',  // pierde el campo de borrado
             'GrupoInteres' // pierde el campo de borrado
             // ...
@@ -10285,6 +10286,31 @@ class DumbController extends Controller
         LaravelApiGenerator::run();
     }
     
+    /*
+        Generacion de colecciones para Organizaciones
+    */
+    function gen_postman_collections(){
+        Postman::setCollectionName('Pruebita N1');
+
+        Postman::setDestPath('D:/www/organizaciones' . '/postman');
+
+        Postman::setBaseUrl('{{base_url}}');
+
+        Postman::setToken('YmluMmhleChvcGVuc3NsX3JhbmRvbV9wc2V1ZG9fYnl0ZXMoMTUwLHRydWUpKQ==.OA==.9e6e26d23469d84d0b4cf9cae453a3efaea3b5cba98ea2434d3d3fce8beedf07066a7b6d3c0a896d6e11f54ab0608d0f54cbc07cc64d3cade0d3f13e2a2e3ef9abb63923a0b48fb4b7990221e1119b0572bbdd7c0b7a712fd9803947014ba951febe9f4f603e2b24c6f604bb14e8c16655faedd8122a3202daf62273be5c737204da993ed8863ee539d54e6a6cee46c82f0f58881de0');
+
+        Postman::addEndpoints([
+            'entidadesRegistrantes',
+            'representantesLegales',
+            'orgComunales',
+            'orgComunalEntidadReg',
+            'entidadesRegGruposPobl'
+        ], [
+            Postman::GET,
+            Postman::POST,
+        ]);
+
+        Postman::generate();
+    }
     
 
 }   // end class
