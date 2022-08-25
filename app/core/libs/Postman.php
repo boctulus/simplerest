@@ -1,0 +1,129 @@
+<?php
+
+namespace simplerest\core\libs;
+
+use simplerest\core\Model;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
+
+/*
+    Postman API Collection Generator
+*/
+
+class Postman
+{   
+    static protected $resource_output_path;
+    static protected $base_url = '';
+    static protected $port;
+    static protected $collection_name = '';
+    static protected $jwt = '';
+    static protected $endpoints = [];
+
+    const GET    = 'GET';
+    const POST   = 'POST';
+    const PATCH  = 'PATCH';
+    const DELETE = 'DELETE';
+
+
+    static function setDestPath(string $path){
+        $path = Strings::addTrailingSlash($path);
+        static::$resource_output_path = $path;
+        Files::mkDirOrFail(static::$resource_output_path, false);
+    }
+
+    static function setCollectionName(string $collection_name){
+        static::$collection_name = $collection_name;
+    }
+
+    static function setBaseUrl(string $base_url){
+        Strings::removeTrailingSlash($base_url);
+        static::$base_url = $base_url;
+    }
+
+    // Su uso es opcional
+    static function setPort(string $port){
+        static::$base_url .= ":$port";
+    }
+
+    static function setToken(string $jwt){
+        static::$jwt = $jwt;
+    }
+
+    static function addEndpoints(Array $endpoints, Array $operations){
+        foreach ($operations as $op){
+            if (!in_array($op, [static::GET, static::POST, static::DELETE, static::PATCH])){
+                throw new \InvalidArgumentException("Invalid operation '$op'");
+            }
+        }
+
+        foreach ($endpoints as $ept){
+            static::$endpoints[] = [
+                'resource' => $ept, 
+                'op'       => $operations
+            ];
+        }
+    }
+
+    static protected function header(string $version = '2.1.0'){
+        $collection_name = static::$collection_name;
+
+        $postman_id =   Strings::randomHexaString(8) . '-' . 
+                        Strings::randomHexaString(4) . '-' . 
+                        Strings::randomHexaString(4) . '-' . 
+                        Strings::randomHexaString(4) . '-' . 
+                        Strings::randomHexaString(12); 
+
+        return [
+            '_postman_id' => $postman_id,
+            'name' => static::$collection_name,
+            'schema' => "https://schema.getpostman.com/json/collection/v{$version}/collection.json",
+            '_exporter_id' => '2650147'
+        ];
+    }
+
+    static function generate(){
+        $data = [];
+
+        $data["info"] = static::header();
+
+        $items = [];
+        foreach (static::$endpoints as $endpoint){
+            $ep_name  = $endpoint['resource'];
+            $base_url = static::$base_url;
+            
+            foreach ($endpoint['op'] as $op){
+                $header = [];
+
+                $url = [
+                    "raw" => static::$base_url . '/' . $ep_name
+                ];
+
+                $request = [
+                    "method" => $op,
+                    "header" => $header,
+                    "url"    => $url
+                ];
+
+                $item = [
+                    'name'    => $ep_name,
+                    'request' => $request
+                ];
+
+                $items[] = $item;
+            }
+           
+            // dd($endpoint);
+        }
+
+
+        $data["item"] = $items; //
+
+
+        $path = static::$resource_output_path . static::$collection_name . ".postman_collection.json";
+
+        Files::writableOrFail($path);
+
+        Files::write($path, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+    }
+}
+

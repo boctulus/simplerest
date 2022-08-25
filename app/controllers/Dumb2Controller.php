@@ -11,6 +11,11 @@ use simplerest\core\libs\Date;
 
 class Dumb2Controller extends MyController
 {
+  static function get_rand_hex(){
+    return Strings::randomHexaString(6);
+  }
+
+
   function test_scopes(){
     DB::getConnection('az');  
     

@@ -756,14 +756,21 @@ class Strings
 	/*
 		https://stackoverflow.com/a/13212994/980631
 	*/	
-	static function randomString(int $length = 60, bool $include_spaces = true){
-		$base = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	static function randomString(int $length = 60, bool $include_spaces = true, ?string $base = null){
+
+		if ($base == null){
+			$base = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		}
 
 		if ($include_spaces){
 			$base .= str_repeat(' ', rand(0, 10));
 		}
 
 		return substr(	str_shuffle(str_repeat($x=$base, (int) ceil($length/strlen($x)) )),	1, $length);
+	}
+
+	static function randomHexaString(int $length){
+		return static::randomString($length, false, '0123456789abcdef');
 	}
 
     /**
@@ -1025,7 +1032,7 @@ class Strings
 		$path = static::realPathNoCoercive($path);
 
 		if (!Strings::endsWith('\\', $path) && !Strings::endsWith('/', $path)){
-			return $path . DIRECTORY_SEPARATOR;
+			return $path . '/';
 		}
 
 		return $path;		
