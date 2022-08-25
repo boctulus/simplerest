@@ -10302,6 +10302,13 @@ class DumbController extends Controller
         Postman::setToken('{{token}}');
 
         Postman::addEndpoints([
+            'productos',
+            'usuarios'
+        ], [
+            Postman::GET
+        ]);
+
+        Postman::addEndpoints([
             'entidadesRegistrantes',
             'representantesLegales',
             'orgComunales',
