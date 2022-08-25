@@ -83,7 +83,13 @@ return new class extends Migration
 
 };
           
+
+- Crear comando para crear "packages" ya que hay librerias como laravelGenerator que deberian estar ahi y no en core (es demasiado offtopic) y tampoco en las librerias de usuario ya que pueden perderse de ese directorio.
+
+  com make package {nombre-paquete}
             
+Luego de alguna forma debe ser posible "cablear" esa libreria (en el caso de una libreria) para que quede disponible de forma sencilla => algun tipo de "Facade"
+
 - Incorporar "switches" incorporados en el plugin "Import quoter cl" en el Bt5Form !!
 
 - ACL

@@ -11,6 +11,8 @@ use simplerest\core\libs\Files;
 /*
     Pablo Bozzolo <boctulus@gmail.com>
     Todos los derechos reservados (2022)
+
+    Mover a "packages"
 */
 class LaravelApiGenerator
 {
@@ -86,6 +88,7 @@ class LaravelApiGenerator
     }
 
     static function setResourceDestPath($path){
+        $path = Strings::removeTrailingSlash($path); //
         static::$resource_output_path = $path;
         Files::mkDirOrFail(static::$resource_output_path);
     }
@@ -793,7 +796,7 @@ class LaravelApiGenerator
                 $str = "$table_str\r\n\r\n$pri_key_str\r\n\r\n$fillables_str";
 
                 dd(
-                    $str
+                    $str . "\r\n"
                 , $tb);
             }
         }
