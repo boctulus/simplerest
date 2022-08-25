@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace simplerest\core\libs;
 
@@ -120,6 +120,20 @@ class Url
 		return $result;
 	}
 
+    static function getSlugs(string $url){
+        $segments_str = parse_url($url, PHP_URL_PATH);
+        $segments_str = Strings::rTrim('/', Strings::lTrim('/', $segments_str));
+
+    
+        $slugs = explode('/', $segments_str);
+        
+        if (count($slugs) === 1 && empty(trim($slugs[0]))){
+            $slugs = [];
+        }
+
+        return $slugs;
+    }
+
 	static function queryString() : Array {
         if (!isset($_SERVER['QUERY_STRING'])){
             return [];
@@ -146,6 +160,28 @@ class Url
             }
         } else {
             $protocol = self::has_ssl($_SERVER['HTTP_HOST']) ? 'https' : 'http';
+        }
+
+        return $protocol;
+    }
+
+    static function getProtocol(string $url){
+        if (Strings::startsWith('http://', $url)){
+            return 'http';
+        }
+
+        if (Strings::startsWith('https://', $url)){
+            return 'https';
+        }
+
+        return null;
+    }
+
+    static function getProtocolOrFail(string $url){
+        $protocol = static::getProtocol($url);
+
+        if (empty($protocol)){
+            throw new \InvalidArgumentException("Url '$url' has no valid http or https protocol");
         }
 
         return $protocol;
@@ -275,9 +311,9 @@ class Url
         return $actual_link;
     }
 
-    static function getBaseUrl(?string $url = null)
+    static function getHostname(?string $url = null, bool $include_protocol = false)
     {
-        if (is_cli()){
+        if (is_cli() && $url === ''){
             return '';
         }
 
@@ -286,8 +322,18 @@ class Url
         }
 
         $url_info = parse_url($url);
-        $base_url = $url_info['scheme'] . '://' . $url_info['host'] . (isset($url_info['port']) ? ':'. $url_info['port'] : '');
-        return  $base_url;
+
+        $hostname = $url_info['host'] . (isset($url_info['port']) ? ':'. $url_info['port'] : '');
+
+        if ($include_protocol){
+            return $url_info['scheme'] . '://' . $hostname;
+        } else {
+            return $hostname;
+        }
+    }
+
+    static function getBaseUrl(?string $url = null){
+        return static::getHostname($url, true);
     }
 
     static function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
