@@ -15,7 +15,7 @@ function base_url(){
         return $base_url;
     }
 
-    $base_url = Url::getBaseUrl(Url::currentUrl()) . config()['BASE_URL'];
+    $base_url = Url::getHostname(Url::currentUrl()) . config()['BASE_URL'];
     
     if (!Strings::endsWith('/', $base_url)){
         $base_url .= "/";
