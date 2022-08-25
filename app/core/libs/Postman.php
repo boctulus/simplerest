@@ -18,6 +18,7 @@ class Postman
     static protected $collection_name = '';
     static protected $jwt = '';
     static protected $endpoints = [];
+    static protected $segment;
 
     const GET    = 'GET';
     const POST   = 'POST';
@@ -36,8 +37,7 @@ class Postman
     }
 
     static function setBaseUrl(string $base_url){
-        Strings::removeTrailingSlash($base_url);
-        static::$base_url = $base_url;
+        static::$base_url = Strings::removeTrailingSlash($base_url);
     }
 
     // Su uso es opcional
@@ -47,6 +47,10 @@ class Postman
 
     static function setToken(string $jwt){
         static::$jwt = $jwt;
+    }
+
+    static function setSegment(string $segment){
+        static::$segment =  Strings::removeTrailingSlash($segment) . '/';
     }
 
     static function addEndpoints(Array $endpoints, Array $operations){
@@ -82,6 +86,17 @@ class Postman
     }
 
     static function generate(){
+        $base_url = static::$base_url;
+        $protocol = Url::getProtocol($base_url);
+        $port     = static::$port;
+        $auth     = null;
+
+        if (Strings::startsWith("{", $base_url) && Strings::endsWith("}", $base_url)){
+            $hostname = $base_url;
+        } else {
+            $hostname = Url::getHostname($base_url);
+        }
+        
         $data = [];
 
         $data["info"] = static::header();
@@ -89,20 +104,55 @@ class Postman
         $items = [];
         foreach (static::$endpoints as $endpoint){
             $ep_name  = $endpoint['resource'];
-            $base_url = static::$base_url;
             
+            if (static::$jwt != null){
+                $auth = [
+                    'type' => 'bearer',
+                    'bearer' => array (
+                        array (
+                            'key' => 'token',
+                            'value' => static::$jwt,
+                            'type' => 'string',
+                        ),
+                    ),
+                ];
+            }
+
             foreach ($endpoint['op'] as $op){
                 $header = [];
 
+                $raw  = static::$base_url . '/' . static::$segment . $ep_name;
+                $path = Url::getSlugs($raw);
+
                 $url = [
-                    "raw" => static::$base_url . '/' . $ep_name
+                    "raw" => $raw
                 ];
+
+                if (!empty($protocol)){
+                    $url["protocol"] = $protocol;
+                }
+
+                if (!empty($hostname)){
+                    $url["host"] = $hostname;
+                }
+                
+                if (!empty($port)){
+                    $url["port"] = $port;
+                }
+
+                if (!empty($path)){
+                    $url["path"] = $path;
+                }
 
                 $request = [
                     "method" => $op,
                     "header" => $header,
                     "url"    => $url
                 ];
+                
+                if (!empty($auth)){
+                    $request["auth"] = $auth;
+                }
 
                 $item = [
                     'name'    => $ep_name,

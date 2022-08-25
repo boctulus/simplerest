@@ -4915,7 +4915,7 @@ class DumbController extends Controller
     function test_base_url()
     {
         dd(Url::currentUrl());
-        dd(Url::getBaseUrl());
+        dd(Url::getHostname());
     }
 
 
@@ -10294,7 +10294,9 @@ class DumbController extends Controller
 
         Postman::setDestPath('D:/www/organizaciones' . '/postman');
 
-        Postman::setBaseUrl('{{base_url}}');
+        Postman::setBaseUrl('http://127.0.0.1:8889');  // {{base_url}}
+
+        Postman::setSegment('api');
 
         Postman::setToken('YmluMmhleChvcGVuc3NsX3JhbmRvbV9wc2V1ZG9fYnl0ZXMoMTUwLHRydWUpKQ==.OA==.9e6e26d23469d84d0b4cf9cae453a3efaea3b5cba98ea2434d3d3fce8beedf07066a7b6d3c0a896d6e11f54ab0608d0f54cbc07cc64d3cade0d3f13e2a2e3ef9abb63923a0b48fb4b7990221e1119b0572bbdd7c0b7a712fd9803947014ba951febe9f4f603e2b24c6f604bb14e8c16655faedd8122a3202daf62273be5c737204da993ed8863ee539d54e6a6cee46c82f0f58881de0');
 
@@ -10307,6 +10309,8 @@ class DumbController extends Controller
         ], [
             Postman::GET,
             Postman::POST,
+            Postman::PATCH,
+            Postman::DELETE,
         ]);
 
         Postman::generate();
