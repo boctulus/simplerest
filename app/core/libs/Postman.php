@@ -86,13 +86,15 @@ class Postman
     }
 
     static function generate(){
-        $base_url = static::$base_url;
-        $protocol = Url::getProtocol($base_url);
-        $port     = static::$port;
-        $auth     = null;
+        $base_url  = static::$base_url;
+        $protocol  = Url::getProtocol($base_url);
+        $port      = static::$port;
+        $auth      = null;
+        $_host_env = false;
 
         if (Strings::startsWith("{", $base_url) && Strings::endsWith("}", $base_url)){
-            $hostname = $base_url;
+            $hostname  = $base_url;
+            $_host_env = true;
         } else {
             $hostname = Url::getHostname($base_url);
         }
@@ -122,6 +124,11 @@ class Postman
                 $header = [];
 
                 $raw  = static::$base_url . '/' . static::$segment . $ep_name;
+
+                if ($_host_env){
+                    $raw = Strings::after($raw, '}}');
+                }
+
                 $path = Url::getSlugs($raw);
 
                 $url = [
