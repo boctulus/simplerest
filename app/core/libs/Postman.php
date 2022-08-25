@@ -53,7 +53,7 @@ class Postman
         static::$segment =  Strings::removeTrailingSlash($segment) . '/';
     }
 
-    static function addEndpoints(Array $endpoints, Array $operations){
+    static function addEndpoints(Array $endpoints, Array $operations, bool $folder = false){
         foreach ($operations as $op){
             if (!in_array($op, [static::GET, static::POST, static::DELETE, static::PATCH])){
                 throw new \InvalidArgumentException("Invalid operation '$op'");
@@ -63,7 +63,8 @@ class Postman
         foreach ($endpoints as $ept){
             static::$endpoints[] = [
                 'resource' => $ept, 
-                'op'       => $operations
+                'op'       => $operations,
+                '_folder'  => $folder
             ];
         }
     }
@@ -85,7 +86,7 @@ class Postman
         ];
     }
 
-    static function generate(){
+    static function generate() : bool {
         $base_url  = static::$base_url;
         $protocol  = Url::getProtocol($base_url);
         $port      = static::$port;
@@ -118,6 +119,10 @@ class Postman
                         ),
                     ),
                 ];
+            }
+
+            if ($endpoint['_folder']){
+                $item = [];
             }
 
             foreach ($endpoint['op'] as $op){
@@ -166,10 +171,16 @@ class Postman
                     'request' => $request
                 ];
 
+                // if ($endpoint['_folder']){
+                //     $item = [
+                //         'name' => $ep_name, // para el folder cojo el nombre del recurso
+                //         'item' => $item
+                //     ];
+                // }
+                
+
                 $items[] = $item;
             }
-           
-            // dd($endpoint);
         }
 
 
@@ -180,7 +191,7 @@ class Postman
 
         Files::writableOrFail($path);
 
-        Files::write($path, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        return Files::write($path, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     }
 }
 
