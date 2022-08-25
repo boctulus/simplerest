@@ -10294,7 +10294,8 @@ class DumbController extends Controller
 
         Postman::setDestPath('D:/www/organizaciones' . '/postman');
 
-        Postman::setBaseUrl('http://127.0.0.1:8889');  // {{base_url}}
+        //Postman::setBaseUrl('http://127.0.0.1:8889'); 
+        Postman::setBaseUrl('{{base_url}}'); 
 
         Postman::setSegment('api');
 
