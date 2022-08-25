@@ -7,7 +7,13 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
 
 /*
-    Postman API Collection Generator
+    Postman API Collection Generator ver 1.00
+
+    TODO:
+
+    - Usar opcionalmente los schemas de SimpleRest para poder tener datos con que rellenar el body
+    de POST y PATCH
+
 */
 
 class Postman
@@ -101,10 +107,10 @@ class Postman
         }
         
         $data = [];
-
         $data["info"] = static::header();
 
-        $items = [];
+        $items   = [];
+
         foreach (static::$endpoints as $endpoint){
             $ep_name  = $endpoint['resource'];
             
@@ -122,10 +128,11 @@ class Postman
             }
 
             if ($endpoint['_folder']){
-                $item = [];
+                $prev_items = $items;
             }
 
-            foreach ($endpoint['op'] as $op){
+            $tmp_items = [];
+            foreach ($endpoint['op'] as $ix => $op){
                 $header = [];
 
                 $raw  = static::$base_url . '/' . static::$segment . $ep_name;
@@ -170,18 +177,22 @@ class Postman
                     'name'    => $ep_name,
                     'request' => $request
                 ];
+          
+                $tmp_items[] = $item; 
 
-                // if ($endpoint['_folder']){
-                //     $item = [
-                //         'name' => $ep_name, // para el folder cojo el nombre del recurso
-                //         'item' => $item
-                //     ];
-                // }
-                
+            } // for each verb
 
-                $items[] = $item;
+            if ($endpoint['_folder']){
+                $items[] = [
+                    'name' => $ep_name,
+                    'item' => $tmp_items
+                ];
+            } else {
+                $items = array_merge($items, $tmp_items);
             }
-        }
+
+
+        } // for each endpoint
 
 
         $data["item"] = $items; //
