@@ -10186,8 +10186,9 @@ class DumbController extends Controller
         LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
 
         LaravelApiGenerator::setControllerWhitelist([
-            //'OrgComunal'
-            'ProyectoEjecutadoRecursosPropios'
+            //'orgComunalEntidadRegController',
+            // 'OrgComunal'
+            //'ProyectoEjecutadoRecursosPropios'
         ]);
 
         LaravelApiGenerator::setControllerBlacklist([
@@ -10301,12 +10302,12 @@ class DumbController extends Controller
 
         Postman::setToken('{{token}}');
 
-        Postman::addEndpoints([
-            'productos',
-            'usuarios'
-        ], [
-            Postman::GET
-        ]);
+        // Postman::addEndpoints([
+        //     'productos',
+        //     'usuarios'
+        // ], [
+        //     Postman::GET
+        // ]);
 
         Postman::addEndpoints([
             'entidadesRegistrantes',

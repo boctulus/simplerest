@@ -216,13 +216,15 @@ class Validator implements IValidator
 
 		if (!empty($this->uniques)){
 			foreach ($this->uniques as $unique_field){
-				if (DB::table($this->table)->where([
-					$unique_field => $data[$unique_field] 
-				])->exists()){
-					$errors[$unique_field] = [
-						"error" => "unique",
-						"error_detail" => "Field is no unique"
-					];
+				if (isset($data[$unique_field])){
+					if (DB::table($this->table)->where([
+						$unique_field => $data[$unique_field] 
+					])->exists()){
+						$errores[$unique_field] = [
+							"error" => "unique",
+							"error_detail" => "Field is no unique"
+						];
+					}
 				}
 			}
 

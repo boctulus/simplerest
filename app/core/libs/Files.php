@@ -3,6 +3,7 @@
 namespace simplerest\core\libs;
 
 use simplerest\core\libs\SortedIterator;
+use simplerest\core\libs\System;
 
 class Files 
 {
@@ -936,7 +937,12 @@ class Files
 	}
 
 	static function writableOrFail(string $path, string $error = "Permission error. Path '%s' is not writable"){
+		if (PHP_OS_FAMILY == 'Windows'){
+			return true;
+		}
+
 		if (!static::isWritable($path)){
+			$path = realpath($path);
 			throw new \Exception(sprintf($error, $path));
 		}
 	}
@@ -951,6 +957,7 @@ class Files
 	*/
 	static function writeOrFail(string $path, string $string, int $flags = 0){
 		if (is_dir($path)){
+			$path = realpath($path);
 			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
 		}
 
@@ -961,6 +968,7 @@ class Files
 		$ok = (bool) @file_put_contents($path, $string, $flags);
 
 		if (!$ok){
+			$path = realpath($path);
 			throw new \Exception("$path could not be written");
 		}
 	}
