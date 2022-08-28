@@ -2,7 +2,6 @@
 
 $pivots = array (
   'TBL_TEMATICAS,TBL_USUARIOS' => 'TBL_ELECCIONES',
-  'TBL_ENTIDADES_REG,TBL_ORG_COMUNALES' => 'TBL_ORG_COMUNAL_ENTIDAD_REG',
   'TBL_DEBATES,TBL_USUARIOS' => 'TBL_PARTICIPACION_DEBATE',
   'TBL_ELECCIONES,TBL_USUARIOS' => 'TBL_PARTICIPACION_ELECCION',
   'TBL_PROPUESTAS,TBL_USUARIOS' => 'TBL_PARTICIPACION_PROPUESTA',
@@ -17,11 +16,6 @@ $pivot_fks = array (
   array (
     'TBL_TEMATICAS' => 'TEM_ID',
     'TBL_USUARIOS' => 'USU_ID',
-  ),
-  'TBL_ORG_COMUNAL_ENTIDAD_REG' => 
-  array (
-    'TBL_ENTIDADES_REG' => 'ENTIDAD_REG_ID',
-    'TBL_ORG_COMUNALES' => 'ORG_COMUNAL_ID',
   ),
   'TBL_PARTICIPACION_DEBATE' => 
   array (
@@ -77,25 +71,6 @@ $relationships = array (
       array (
         0 => 'TBL_USUARIOS.USU_ID',
         1 => 'TBL_ELECCIONES.USU_ID',
-      ),
-    ),
-  ),
-  'TBL_ORG_COMUNAL_ENTIDAD_REG' => 
-  array (
-    'TBL_ENTIDADES_REG' => 
-    array (
-      0 => 
-      array (
-        0 => 'TBL_ENTIDADES_REG.ID_ERG',
-        1 => 'TBL_ORG_COMUNAL_ENTIDAD_REG.ENTIDAD_REG_ID',
-      ),
-    ),
-    'TBL_ORG_COMUNALES' => 
-    array (
-      0 => 
-      array (
-        0 => 'TBL_ORG_COMUNALES.ID_OCM',
-        1 => 'TBL_ORG_COMUNAL_ENTIDAD_REG.ORG_COMUNAL_ID',
       ),
     ),
   ),

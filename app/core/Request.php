@@ -187,7 +187,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     }    
 
     // getter destructivo sobre $query_arr
-    function shiftQuery($key, $default_value = NULL)
+    function shiftQuery($key, $default_value = NULL, callable $fn = null)
     {
         static $arr = [];
 
@@ -201,6 +201,10 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
             $arr[$key] = $out;
         } else {
             $out = $default_value;
+        }
+
+        if ($fn != null){
+            return $fn($out, $key, $default_value);
         }
 
         return $out;

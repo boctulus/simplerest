@@ -2943,9 +2943,18 @@ class Model {
 	}
 
 	/*
-		Insert múltiple en un solo STATEMENT
+		Insert múltiple en un solo STATEMENT - Por corregir ***
+		
+		Quizas pueda re-hacerse teniendo como premisa la sintaxis:
 
-		Por corregir ***
+        INSERT INTO tbl_name VALUES (1,2,3), (4,5,6), (7,8,9)
+
+		En cualquier caso los comodines deberian estar siempre en las mismas posiciones:
+
+		Ej:
+
+        INSERT INTO tbl_name VALUES (1,?,?), (4,?,?), (7,?,?)
+
 	*/
 	// function insertMultiple(array $data_arr, bool $hooks = true, bool $mutators = true)
 	// {

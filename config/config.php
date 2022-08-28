@@ -108,7 +108,7 @@ return [
 		],
 
 		'mpp' => [
-			'host'		=> '51.161.116.202', //env('DB_CONNECTION_MPP'),
+			'host'		=> '51.161.116.202', //env('DB_HOST_MPP'),
 			'port'		=> env('DB_PORT_MPP'),
 			'driver' 	=> env('DB_CONNECTION_MPP'),
 			'db_name' 	=> env('DB_NAME_MPP'),
@@ -142,6 +142,9 @@ return [
 			'eb'
 		],
 		'mpp' => [
+			'mpp'
+		],
+		'mpo' => [
 			'mpp'
 		]
     ], 
