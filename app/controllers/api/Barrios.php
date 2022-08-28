@@ -4,14 +4,14 @@ namespace simplerest\controllers\api;
 
 use simplerest\controllers\MyApiController; 
 
-class Products extends MyApiController
+class Barrios extends MyApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [
-        //'users',
-        'product_categories',
-        'product_comments'
-    ];
+		
+	];
+
+    //public $model_name = 'BarriosModel';
 
     function __construct()
     {       

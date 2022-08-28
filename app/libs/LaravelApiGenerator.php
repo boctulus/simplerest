@@ -249,7 +249,8 @@ class LaravelApiGenerator
 
         $paths = Schema::getSchemaFiles($conn_id);
 
-        $model_datos = [];
+        $model_datos  = [];
+        $model_str_ay = [];
 
         foreach ($paths as $path){
             $path          = str_replace('\\', '/', $path);
@@ -290,6 +291,9 @@ class LaravelApiGenerator
                 dd("[ Warning ] Class name not found for '$table_name'");
                 continue; //
             }
+
+            $generated_controllers = [];
+            $generated_seeders     = [];
 
             /*
                 Intentare usar $class_name en todos los casos
@@ -462,6 +466,8 @@ class LaravelApiGenerator
                 if (!$ok){
                     throw new \Exception("No se pudo crear controlador '{$model_name}Controller'");
                 }
+
+                $generated_controllers[] = $class_name;
             }
 
             /*
@@ -601,6 +607,8 @@ class LaravelApiGenerator
 
                     $ok  = file_put_contents($dest, $seeder_file);
                     dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
+
+                    $generated_seeders[] = $class_name;
                 }
 
 
@@ -762,6 +770,8 @@ class LaravelApiGenerator
                         $ok  = file_put_contents($dest, $seeder_file);
                         dd($dest . " --" . ($ok ? 'ok' : 'failed!'));
                     }
+
+                    $generated_seeders[] = $class_name;
                 }
                 
             }
@@ -774,7 +784,25 @@ class LaravelApiGenerator
                 $routes[] = "Route::resource('$table_name', App\\Http\\Controllers\\{$model_name}Controller::class);";
             }
 
+            /*
+                Modelo
+            */
+
             $model_datos[$model_name] = $model_data; 
+
+            $pri_key   = $model_data['id_name'];
+            $fillables = $model_data['fillables'];
+
+            $table_str     =  'protected $table = "'.$table_name.'";';
+            $pri_key_str   =  'protected $primaryKey = "'.$pri_key.'";';
+
+            $fillables_str =  '[' . implode(', ', Strings::enclose($fillables, "'")) . ']';
+            $fillables_str = 'protected $fillable = ' . $fillables_str . ';';
+
+            $model_str = "$table_str\r\n\r\n$pri_key_str\r\n\r\n$fillables_str";            
+    
+            $model_str_ay[$model_name] = $model_str; 
+
         } // end foreach
 
 
@@ -783,20 +811,9 @@ class LaravelApiGenerator
         */
 
         if ($write_models){
-            foreach ($model_datos as $tb => $model_dato){
-                $pri_key   = $model_dato['id_name'];
-                $fillables = $model_dato['fillables'];
-
-                $table_str     =  'protected $table = "'.$table_name.'";';
-                $pri_key_str   =  'protected $primaryKey = "'.$pri_key.'";';
-
-                $fillables_str =  '[' . implode(', ', Strings::enclose($fillables, "'")) . ']';
-                $fillables_str = 'protected $fillable = ' . $fillables_str . ';';
-
-                $str = "$table_str\r\n\r\n$pri_key_str\r\n\r\n$fillables_str";
-
+            foreach ($model_str_ay as $tb => $model_str){
                 dd(
-                    $str . "\r\n"
+                    $model_str . "\r\n"
                 , $tb);
             }
         }

@@ -11,7 +11,9 @@ TOP PRIORITY
 
 - CSV a migraciones. Simplificar'a la creacion de tablas.
 
-- Terminal Router. Va a permitir anular el FrontController y simplificar.
+- Terminal Router HTTP. Va a permitir anular el FrontController y simplificar.
+
+- Hacer router para consola. Pre-requisito para aboler el FrontController
 
 - Modularizacion
 
@@ -23,6 +25,8 @@ TOP PRIORITY
 
 ------------x--------------
 
+- Investigar algolia / typesense / meilisearch 
+
 - Dejar de usar DATETIME para created_at y updated_at ??? usar TIMESTAMP !!!!!
 
 The MySQL TIMESTAMP is a temporal data type that holds the combination of date and time. The format of a TIMESTAMP is YYYY-MM-DD HH:MM:SS which is fixed at 19 characters.
@@ -33,6 +37,23 @@ When you insert a TIMESTAMP value into a table, MySQL converts it from your conn
 
 https://www.mysqltutorial.org/mysql-timestamp.aspx#:~:text=The%20MySQL%20TIMESTAMP%20is%20a,%3A14%3A07'%20UTC%20.
 https://stackoverflow.com/questions/409286/should-i-use-the-datetime-or-timestamp-data-type-in-mysql
+
+
+- Poder cablear el Modelo al Schema y la API al Modelo cuando las convenciones no sirven.
+
+Ej: TBL_BARRIOS
+
+Seria necesario:
+
+  make model barrios --tenant=mpp --no-check
+o
+  make model barrios --dir=mpp --no-check
+
+y si se quisiera incluir el schema:
+
+  make model barrios --tenant=mpp --schema=TBL_BARRIOSSchema
+
+<-- en este caso no seria necesario el --no-check  (revisar)
 
 
 - Permitir limitar / validar tipo de archivos, exrtensiones y tamaño en bytes de archivos subidos 
@@ -2145,7 +2166,6 @@ https://laravel.com/docs/8.x/migrations#events
 
 
 También podría estar la opción --include-model-defaults que crearia / agregaría todos los campos presentes en MyModel.php 
-
 
 
 - Permitir conocer la estructura de la tabla users también en

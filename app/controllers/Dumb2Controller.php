@@ -11,6 +11,13 @@ use simplerest\core\libs\Date;
 
 class Dumb2Controller extends MyController
 {
+  static function testx(){
+    dd(
+      (bool) ' '
+    );
+  }
+
+
   static function get_url_slugs(){
     $url = "http://127.0.0.1:8889/api/xxx/777/";
 
@@ -44,18 +51,18 @@ class Dumb2Controller extends MyController
   }
 
 
-  function create_db(){
+  function create_tb(){
     DB::getConnection('mpp');
   
-    DB::statement("CREATE DATABASE `organizaciones`;");
+    DB::statement("CREATE TABLE `TBL_TIPO_VINCULO_OER`;");
 
-    // dd(
-    //   DB::getTableNames()
-    // ); 
+    dd(
+      DB::getTableNames()
+    ); 
   }
 
-  function test(){
-    DB::getConnection('mpo_remote');
+  function test_db(){
+    DB::getConnection('mpp');
   
     dd(
       DB::getTableNames()

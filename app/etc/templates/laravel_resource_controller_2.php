@@ -50,7 +50,7 @@ class __CONTROLLER_NAME__ extends Controller
             // OK
             if (!isset($request->paginado)) {
                 ///TODOS
-                $this->respuesta['meta'] = array("Listando todos los registros sin borrado lógico");
+                $this->respuesta['meta'] = array("Listando todos los registros");
                 $this->respuesta['data'] = __MODEL_NAME__::all();
             } else {
                 ///paginado
@@ -201,6 +201,11 @@ class __CONTROLLER_NAME__ extends Controller
         // })
         ;
 
+        if (empty($data)){
+            $this->respuesta['message'] = 'No se encontró el recurso';   
+            return response()->json($this->respuesta, 404); 
+        }
+
         //$row = json_decode(json_encode($data), true);
 
         if(!empty($data))
@@ -211,7 +216,7 @@ class __CONTROLLER_NAME__ extends Controller
         else
         {
             $this->respuesta['message'] = 'No se encontró el recurso';   
-            return response()->json($this->respuesta, 200); // o 204 No Content
+            return response()->json($this->respuesta, 404);
         }
     }
 
