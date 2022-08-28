@@ -922,28 +922,50 @@ class DB
 		https://stackoverflow.com/a/10574031/980631
 		https://dba.stackexchange.com/questions/23129/benefits-of-using-backtick-in-mysql-queries
 	*/
-	static function quote(string $word){
+	static function quote(string $str){
+		$d1 = '';
+		$d2 = '';
+
 		switch (DB::driver()){
 			case DB::MYSQL:
-				return Strings::backticks($word);
+				$d1 = $d2 = "`";
+				break;
 			case DB::PGSQL:
-				return Strings::enclose($word, '"');
+				$d1 = $d2 = '"';
+				break;
 			case DB::SQLSRV:
 				// SELECT [select] FROM [from] WHERE [where] = [group by];
-				return Strings::enclose($word, '[', ']');
+				$d1 = '[';
+				$d2 = ']';
+				break;
 			case DB::SQLITE:
-				return Strings::enclose($word, '"');
+				$d1 = $d2 = '"';
+				break;
 			case DB::INFOMIX:
-				return $word;
+				return $str;
 			case DB::ORACLE:
-				return Strings::enclose($word, '"');
+				$d1 = $d2 = '"';
+				break;
 			case DB::DB2:
-				return Strings::enclose($word, '"');
+				$d1 = $d2 = '"';
+				break;
 			case DB::SYBASE:
-				return Strings::enclose($word, '"');
+				$d1 = $d2 = '"';
+				break;
 			default:
-				return Strings::enclose($word, '"');
+				$d1 = $d2 = '"';
 		}
+
+		$str = Strings::removeMultipleSpaces(trim($str));
+
+		if (Strings::contains(' as ', $str)){
+			$s1 = Strings::before($str, ' as ');
+			$s2 = Strings::after($str, ' as ');
+			
+			return "{$d1}$s1{$d2} as {$d1}$s2{$d2}";
+		}
+
+		return Strings::enclose($str, $d1, $d2);
 	}
 
 	/*

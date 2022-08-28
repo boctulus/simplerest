@@ -254,7 +254,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             return $instance;
         }
 
-        $model    = get_model_namespace() . $this->model_name;
+        $model  = get_model_namespace() . $this->model_name;
 
         $instance = (new $model(true))->setFetchMode($fetch_mode);
         DB::setModelInstance($instance);
@@ -277,7 +277,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         global $api_version;
 
         $_schema  = Factory::request()->shiftQuery('_schema');
-        $_rules   = Factory::request()->shiftQuery('_rules');
+        $_rules   = Factory::request()->shiftQuery('_rules', null, function($ret){ return ($ret !== null);});
 
         if (!empty($_schema)){
             $schema = get_schema_name($this->table_name);
@@ -291,7 +291,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             return [ 'rules' => $res['rules'] ];
         }
 
-        $_related = Factory::request()->shiftQuery('_related');
+        $_related = Factory::request()->shiftQuery('_related', null, function($ret){ return ($ret !== null);});
         $include  = Factory::request()->shiftQuery('include');        
         $_get     = Factory::request()->getQuery();
 
@@ -506,6 +506,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     */
                     if (!empty($_related) || !empty($include))
                     {
+                        here();
+
                         $res = $this->getSubResources($this->table_name, static::$connect_to, $this->instance, $this->tenantid);
                         $res = $res[0];
                     } else {

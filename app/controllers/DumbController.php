@@ -10165,28 +10165,33 @@ class DumbController extends Controller
     */
     function gen_laravel_mp_org_base(){
         LaravelApiGenerator::setConnId('mpo');
-        LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
-        LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
-        LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
-        LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
-        LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
+        LaravelApiGenerator::setProjectPath('D:/www/org_no_docker');
+        LaravelApiGenerator::setResourceDestPath('D:/www/org_no_docker' . '/app/Http/Resources/');
+        LaravelApiGenerator::setControllerDestPath('D:/www/org_no_docker' . '/app/Http/Controllers/');
+        LaravelApiGenerator::setFactoryDestPath('D:/www/org_no_docker' . '/database/factories/');
+        LaravelApiGenerator::setSeederDestPath('D:/www/org_no_docker' . '/database/seeders/');
 
         LaravelApiGenerator::run();
     }
 
     /*
+        
+    
         User ESTA funcion para "Organizaciones"
+
+
     */
     function gen_laravel_mp_org(){
         LaravelApiGenerator::setConnId('mpp'); // <----------------------- se comparte DB con produccion
-        LaravelApiGenerator::setProjectPath('D:/www/organizaciones');
-        LaravelApiGenerator::setResourceDestPath('D:/www/organizaciones' . '/app/Http/Resources/');
-        LaravelApiGenerator::setControllerDestPath('D:/www/organizaciones' . '/app/Http/Controllers/');
-        LaravelApiGenerator::setFactoryDestPath('D:/www/organizaciones' . '/database/factories/');
-        LaravelApiGenerator::setSeederDestPath('D:/www/organizaciones' . '/database/seeders/');
+        LaravelApiGenerator::setProjectPath('D:/www/org_no_docker');
+        LaravelApiGenerator::setResourceDestPath('D:/www/org_no_docker' . '/app/Http/Resources/');
+        LaravelApiGenerator::setControllerDestPath('D:/www/org_no_docker' . '/app/Http/Controllers/');
+        LaravelApiGenerator::setFactoryDestPath('D:/www/org_no_docker' . '/database/factories/');
+        LaravelApiGenerator::setSeederDestPath('D:/www/org_no_docker' . '/database/seeders/');
 
         LaravelApiGenerator::setControllerWhitelist([
-            //'orgComunalEntidadRegController',
+            // 'TipoVinculoOER'
+            // 'orgComunalEntidadRegController',
             // 'OrgComunal'
             //'ProyectoEjecutadoRecursosPropios'
         ]);
@@ -10205,6 +10210,7 @@ class DumbController extends Controller
         ]);
 
         LaravelApiGenerator::addSeedersForHardcodedNonRandomData([
+            // 'TipoVinculoOER',
             // 'Genero',
             // 'EstadoLaboral',
             // 'EstadoCivil',
@@ -10277,8 +10283,8 @@ class DumbController extends Controller
         });
 
 
-        LaravelApiGenerator::writeModels(false);
-        #LaravelApiGenerator::writeControllers(false);
+        #LaravelApiGenerator::writeModels(false);
+        LaravelApiGenerator::writeControllers(true);
         LaravelApiGenerator::writeResources(false);
         LaravelApiGenerator::writeRoutes(false);
         LaravelApiGenerator::writeSeeders(false);
@@ -10289,11 +10295,15 @@ class DumbController extends Controller
     
     /*
         Generacion de colecciones para Organizaciones
+
+        TODO:
+
+        Para DELETE y POST y PATCH agregar el :id
     */
     function gen_postman_collections(){
         Postman::setCollectionName('Pruebita N1');
 
-        Postman::setDestPath('D:/www/organizaciones' . '/postman');
+        Postman::setDestPath('D:/www/org_no_docker' . '/postman');
 
         //Postman::setBaseUrl('http://127.0.0.1:8889'); 
         Postman::setBaseUrl('{{base_url}}'); 
@@ -10310,11 +10320,7 @@ class DumbController extends Controller
         // ]);
 
         Postman::addEndpoints([
-            'entidadesRegistrantes',
-            'representantesLegales',
-            'orgComunales',
-            'orgComunalEntidadReg',
-            'entidadesRegGruposPobl'
+            'tipoVinculo'
         ], [
             Postman::GET,
             Postman::POST,
