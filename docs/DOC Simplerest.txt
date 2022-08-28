@@ -6056,7 +6056,7 @@ Por ejemplo si se quisiera que se hiciera un "JOIN" entre productos y sus catego
 		}        
 	} 
 
-Con el parámetro "_related=1" (por defecto), la salida será algo como:
+Pasando ?include=product_comments y "_related=1" (por defecto), la salida será algo como:
 
 	{
 		"data": {
