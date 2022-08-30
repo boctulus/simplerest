@@ -642,6 +642,8 @@ class DB
 
 		///////////////[ BUG FIXES ]/////////////////
 
+		$driver = DB::driver();
+
 		if (!empty($vals))
 		{
 			$_vals = [];
@@ -656,7 +658,7 @@ class DB
 				/*
 					Corrección para operaciones entre enteros y floats en PGSQL
 				*/
-				} elseif(DB::driver() == 'pgsql' && is_float($val)){ 
+				} elseif($driver == 'pgsql' && is_float($val)){ 
 					$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
 					$reps++;
 					$_vals[] = $val;
@@ -911,13 +913,6 @@ class DB
 		return Schema::enableForeignKeyConstraints();
 	}
 
-	static function whois(){
-        return strrev(Strings::interlace([
-            '.ersrshi l >o.im Aslto<oozBobPy ear rwmr sRlmS ',
-            'dvee tgrlA.mclagT uucb lzo la bdteckoeafteepi'
-        ])) . PHP_EOL;
-    }
-
 	/*
 		https://stackoverflow.com/a/10574031/980631
 		https://dba.stackexchange.com/questions/23129/benefits-of-using-backtick-in-mysql-queries
@@ -988,4 +983,11 @@ class DB
 				throw new \Exception("Not implemented");	
 		}
 	}
+	
+	static function whois(){
+        return strrev(Strings::interlace([
+            '.ersrshi l >o.im Aslto<oozBobPy ear rwmr sRlmS ',
+            'dvee tgrlA.mclagT uucb lzo la bdteckoeafteepi'
+        ])) . PHP_EOL;
+    }
 }

@@ -121,23 +121,19 @@ Luego de alguna forma debe ser posible "cablear" esa libreria (en el caso de una
 
   pero tambien:
 
-  ->addResourcePermissions('mi_conexion.products', ['read_all', 'write']) 
+  ->addResourcePermissions('products', ['read_all', 'write'], 'mi_conexion') 
 
   * Debe existir un mecanismo para otorgar permisos masivos sobre toda una base de datos (conexion). 
   
   Ej:
 
-  ->addResourcePermissions('mi_conexion.*', ['read_all', 'write'])
+  ->addResourcePermissions('*', ['read_all', 'write'], 'mi_conexion')
 
   Podrian haber mas comodines o usarse expresiones regulares pero ese seria el minimo.
   
-  Tambien serian validos:
+  Tambien seria valido:
 
   ->addResourcePermissions('*', ['read_all', 'write'])
-
-  y 
-
-  ->addResourcePermissions('*.*', ['read_all', 'write'])
 
 
 - Ensayar componente de Symfony para correr en background:
@@ -303,6 +299,10 @@ Cambiarlo va a impactar en varias funciones y m'etodos que tocar'a revisar.
 - Mover SendinBlue de dentro de "libs" a "packages" para evitar haga ruido ahí.
 
 - Implementar "seeders"
+
+- Comando para convertir relaciones 1:N a N:M y viceversa cuando sea posible.
+
+El comando no solo crearia las migraciones necesarias. Esto permitiria evolucionar un modelo mucho mas rapidamente.
 
 - Terminar "service providers" + autodiscovery
 
