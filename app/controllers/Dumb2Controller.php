@@ -11,9 +11,11 @@ use simplerest\core\libs\Date;
 
 class Dumb2Controller extends MyController
 {
-  static function testx(){
+  function testx(){
+    DB::getConnection();
+
     dd(
-      (bool) ' '
+      DB::driver()
     );
   }
 
