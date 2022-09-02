@@ -505,7 +505,7 @@ class Url
         return static::$effective_url;
     }
 
-    static function linkDownload(string $url, $dest_path = null, bool $disable_ssl = true, Array $options = []){
+    static function download(string $url, $dest_path = null, bool $disable_ssl = true, Array $options = []){
         if (empty($dest_path)){
             $dest_path = STORAGE_PATH;
         }
