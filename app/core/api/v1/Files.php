@@ -3,7 +3,7 @@
 namespace simplerest\core\api\v1;
 
 use simplerest\controllers\MyApiController; 
-use simplerest\core\libs\MultipleUploader;
+use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 use simplerest\core\Acl;
@@ -26,7 +26,7 @@ class Files extends MyApiController
     function post() {
         $data = $_POST;
 
-        $uploader = (new MultipleUploader())
+        $uploader = (new FileUploader())
         ->setFileHandler(function($uid) {
             $prefix = ($uid ?? '0').'-';
             return uniqid($prefix, true);

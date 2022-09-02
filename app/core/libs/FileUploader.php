@@ -17,7 +17,7 @@ namespace simplerest\core\libs;
 /*
 	Uso:
 
-		$uploader = (new MultipleUploader('uploads'));
+		$uploader = (new FileUploader('uploads'));
         //debug($uploader->doUpload('file_*')->getFileNames(),'file_*');
         debug($uploader->doUpload()->getFileNames(),'Cargados:');
         //debug($uploader->doUpload('other_file')->getFileNames(),'other_file:');
@@ -35,7 +35,7 @@ use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Files;
 use simplerest\libs\Debug;
 
-class MultipleUploader
+class FileUploader
 {
 	protected $filenames  = [];
 	protected $location = UPLOADS_PATH;

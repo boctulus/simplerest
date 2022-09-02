@@ -56,7 +56,7 @@ y si se quisiera incluir el schema:
 <-- en este caso no seria necesario el --no-check  (revisar)
 
 
-- Permitir limitar / validar tipo de archivos, exrtensiones y tamaño en bytes de archivos subidos 
+- Permitir limitar / validar tipo de archivos, extensiones y tamaño en bytes de archivos subidos 
 
 Ej:
 
@@ -77,6 +77,17 @@ Ej:
           $this->photo->store('photos');
       }
   }
+
+- En general revisar como funciona el upload de archivos en otros frameworks como Laravel donde se puede elegir el "driver" entre "local", "ftp", "s3"
+
+https://www.larashout.com/a-complete-guide-to-laravel-storage
+https://www.codegrepper.com/code-examples/php/Storage%3A%3Adisk+laravel
+
+
+- Soporte para S3 
+
+Usar
+https://github.com/thephpleague/flysystem-aws-s3-v3
 
 - Al comando "migrations clear" agregarle opcionalmente --file=
 

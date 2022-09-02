@@ -57,7 +57,7 @@ use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
-use simplerest\core\libs\MultipleUploader;
+use simplerest\core\libs\FileUploader;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\controllers\MakeControllerBase;
@@ -9890,7 +9890,7 @@ class DumbController extends Controller
     function test_file_upload(){
         $data = $_POST;
 
-        $uploader = (new MultipleUploader())
+        $uploader = (new FileUploader())
         ->setFileHandler(function($uid) {
             $prefix = ($uid ?? '0').'-';
             return uniqid($prefix, true);
@@ -10062,7 +10062,7 @@ class DumbController extends Controller
         $url = 'https://docs.google.com/uc?export=download&id=1Fdtxt56oCI1-rUwLmFXkzaXzQxdMhc8v';
 
         dd(
-            Url::linkDownload($url)
+            Url::download($url)
         );
     }
      
