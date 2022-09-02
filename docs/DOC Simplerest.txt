@@ -4872,7 +4872,11 @@ Files es un tipo de ApiController -versionado- y se puede "extender" fácilmente
 Se puede crear así una "API" para otro tipo de archivos como por ejemplo "updates" sin tener que duplicar toda la funcionalidad.
 
 
-# Descarga de archivos
+# Endpoint para descarga de archivos
+
+<--- se complica mucho. Ver como lo hace laravel
+https://laravel.com/docs/9.x/filesystem
+
 
 Se provee de un endpoint "download" que extiende el ResourceController "Download".
 
@@ -8081,7 +8085,7 @@ ValidationRules
 # Archivos
 
 Files				Utilidades para el manejo de archivos
-MultipleUploader	Manejador de uploads
+FileUploader	Manejador de uploads
 
 
 # Seguridad
@@ -8861,7 +8865,7 @@ En caso de querer detener la ejecución de todas las colas, no envie el nombre d
 
 # Upload de archivos
 
-Con la clase MultipleUploader es muy fácil recibir archivos y de hecho el endpoint /files implementa esta clase aunque hace uso del ACL y sino lo necesitamos podemos hacer nuestra propia implementación de forma sencilla.
+Con la clase FileUploader es muy fácil recibir archivos y de hecho el endpoint /files implementa esta clase aunque hace uso del ACL y sino lo necesitamos podemos hacer nuestra propia implementación de forma sencilla.
 
 Veamos,...
 
@@ -8873,12 +8877,11 @@ Ej de código:
 
 	$data = $_POST;
 
-	$uploader = (new MultipleUploader())
+	$uploader = (new FileUploader())
 	->setFileHandler(function($uid) {
 		$prefix = ($uid ?? '0').'-';
 		return uniqid($prefix, true);
-		}, Acl::getCurrentUid());
-
+	}, Acl::getCurrentUid());
 
 	$files    = $uploader->doUpload()->getFileNames();   
 	$failures = $uploader->getErrors();     
@@ -8890,11 +8893,13 @@ Ej de código:
 	/*
 		Archivos
 	*/
+
 	dd($files, 'FILES');
 
 	/*
 		Otros campos enviados por POST
 	*/
+	
 	dd($data, 'DATA');
 
 Eso significa que,... en un Controller podemos tener algo así:
@@ -8904,7 +8909,7 @@ Eso significa que,... en un Controller podemos tener algo así:
 
         $data = $_POST;
 
-        $uploader = (new MultipleUploader())
+        $uploader = (new FileUploader())
         ->setFileHandler(function($uid) {
             $prefix = ($uid ?? '0').'-';
             return uniqid($prefix, true);
@@ -8931,7 +8936,7 @@ Y podría guardar los nombres de los archivos en base de datos
 	function file_upload(){
         $data = $_POST;
 
-        $uploader = (new MultipleUploader())
+        $uploader = (new FileUploader())
         ->setFileHandler(function($uid) {
             $prefix = ($uid ?? '0').'-';
             return uniqid($prefix, true);
@@ -9001,7 +9006,7 @@ El nombre que va llevar el archivo se puede determinar por un callback, ejemplo:
 		Factory::response()->sendError('El parametro order_id es requerido', 400);
 	}
 
-	$uploader = (new MultipleUploader())
+	$uploader = (new FileUploader())
 	->setFileHandler(function($order_id) {
 
 		return $order_id .'-'. time();
@@ -9046,6 +9051,21 @@ La respuesta será algo como:
 		],
 		"failures": []
 	}
+
+
+# Descarga de archivos
+
+Para descargar archivos a partir de una url es mediante Url::download($url)
+
+Ej:
+
+	$url = 'https://docs.google.com/uc?export=download&id=1Fdtxt56oCI1-rUwLmFXkzaXzQxdMhc8v';
+
+	dd(
+		Url::download($url)
+	);
+
+Claramente la función debería estar en la clase Files y como mucho haber un alias en la clase Url.
 
 
 # HTML & Form builder

@@ -6205,7 +6205,7 @@ ValidationRules
 # Archivos
 
 Files				Utilidades para el manejo de archivos
-MultipleUploader	Manejador de uploads
+FileUploader	Manejador de uploads
 
 
 # Seguridad
