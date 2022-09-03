@@ -55,6 +55,27 @@ y si se quisiera incluir el schema:
 
 <-- en este caso no seria necesario el --no-check  (revisar)
 
+- En la clase Request implementar métodos que abstraen $_FILES como:
+
+  hasFile($filename)
+  file($filename) que devuelve algo una instancia de un objeto que incluye info de $_FILES para esa key
+  getOrinalFileName() que devuelve el nombre original de un archivo a partir de la instancia de file()
+  storeAs($destination_path, $instancia)  
+
+No es necesario implementarlos igual que en el Laravel aunque si seria buena idea y luego en todo caso crear otras abstracciones o parametros adicionales y alias.
+
+- File urls
+
+Si bien el contenido de la carpeta /storage no es publico si lo es /storage/app/public 
+
+Laravel provee un helper para obtener una url que referencia a ese archivo tal y como hace asset() en SimpleRest pero en vez de sobre /public/assets sobre /storage
+
+En Laravel es
+
+  $url = Storage::url('file.jpg');
+
+En Simplerest podria ser storage_url()
+
 
 - Permitir limitar / validar tipo de archivos, extensiones y tamaño en bytes de archivos subidos 
 
@@ -80,14 +101,27 @@ Ej:
 
 - En general revisar como funciona el upload de archivos en otros frameworks como Laravel donde se puede elegir el "driver" entre "local", "ftp", "s3"
 
+https://laravel.com/docs/9.x/filesystem
 https://www.larashout.com/a-complete-guide-to-laravel-storage
 https://www.codegrepper.com/code-examples/php/Storage%3A%3Adisk+laravel
-
 
 - Soporte para S3 
 
 Usar
 https://github.com/thephpleague/flysystem-aws-s3-v3
+
+
+- Implementar equivalente a la clase Storage de Laravel con similares abstracciones que en SimpleRest serian sobre Files, FileUploader, Base64Uploader y ApiClient
+
+https://laravel.com/docs/9.x/filesystem
+
+
+- Implementar en un futuro la creacion de proyectos con el comando "composer create-project" obviamente siendo simplerest un paquete privado de composer.
+
+  composer create-project boctulus/simplerest example-app
+
+https://laravel.com/docs/9.x#your-first-laravel-project
+
 
 - Al comando "migrations clear" agregarle opcionalmente --file=
 
@@ -114,7 +148,6 @@ return new class extends Migration
     }
 
 };
-          
 
 - Crear comando para crear "packages" ya que hay librerias como laravelGenerator que deberian estar ahi y no en core (es demasiado offtopic) y tampoco en las librerias de usuario ya que pueden perderse de ese directorio.
 
@@ -145,6 +178,72 @@ Luego de alguna forma debe ser posible "cablear" esa libreria (en el caso de una
   Tambien seria valido:
 
   ->addResourcePermissions('*', ['read_all', 'write'])
+
+
+- Crear cierta compatibiidad con el package Spatie de Laravel ****
+
+  . QueryBuilder::for($model)
+
+  QueryBuilder::for(UsersModel::class)
+
+  debe devolver una instancia del modelo. O sea equivale a DB::table(UsersModel::$table_name)
+
+  . allowedFilters(...$campos)
+
+  Basicamente restringe el where() a ciertos campos 
+
+  Entonces, puedo hacer,... un request /users?filter[name]=John
+
+  vendria filtraria por name pero no por phone por ejemplo y el codigo que el ApiController construiria seria:
+
+    $users = QueryBuilder::for(UsersModel::class)
+    ->allowedFilters('name')
+    ->where(['name' => 'John'])
+    ->get()
+
+. allowedIncludes(...$tablas)
+
+Actualmente en SimpleRest a nivel de API tenemos esto:
+
+  static protected $connect_to = [
+    'product_categories',
+    'product_comments'
+  ];
+
+Bueno, la idea es poder dinamicamente setear ese $connect_to
+
+  // all `User`s with their `posts` loaded
+
+  $users = QueryBuilder::for(UsersModel::class)
+  ->allowedIncludes('posts')
+  ->get();
+
+Actualmente solo podria restringir los JOINs a ciertas tablas PERO la idea es que traiga las relaciones lo cual implica MOVER la logica del ApiController al Model.
+
+. Allowed fields
+
+Restringe el select() a los campos en cuestion y usar otros genera excepcion.
+
+  $users = QueryBuilder::for(UserModel::class)
+  ->allowedFields(['id', 'email'])
+  ->get();
+
+. Sorting a query based on a request: /users?sort=id
+
+La idea el orderBy sera el especificado pero ademas no podra modificarse con ->orderBy() 
+
+  // all `User`s sorted by ascending id
+
+  $users = QueryBuilder::for(UsersModel::class)
+  ->allowedIncludes('posts')
+  ->get();
+
+Hay mas metodos de sorting:
+
+  https://spatie.be/docs/laravel-query-builder/v5/features/sorting/
+
+Mas
+https://github.com/spatie/laravel-query-builder
 
 
 - Ensayar componente de Symfony para correr en background:
