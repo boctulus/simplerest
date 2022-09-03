@@ -5,6 +5,15 @@
 TOP PRIORITY
 ============
 
+- Make commands para crear crons y colas 
+
+- Deben ser packages (ServiceProviders):
+
+  FacebookConnect y GoogleConnect. 
+  Obfuscator 
+  PayPal
+  WhatsApp
+
 - Soporte full de JSON. Es pre-requisito para Transients.
 
 - Transients (DB, archivos son locking, REDIS, Memcached)
@@ -19,13 +28,17 @@ TOP PRIORITY
 
 - Terminar generador de front !
 
-- Terminar Solucion Binaria
+- Convertir los paquetes actuales como los ACL en respositorios (github) y hacerlos privados como dependencias de composer.
 
-- Incorporar pasarela de pagos
+- Terminar Solucion Binaria -> ofrecer creacion de APIs en PHP, Laravel e integracion de APIs para WordPress / Woocommerce.
+
+- Incorporar pasarela de pagos a Solucion Binaria. TOCA RENOVAR dominio !!!! -- antes de oct 29 !!!
+
+- Como packages crear un blog y un ecommerce 
 
 ------------x--------------
 
-- Investigar algolia / typesense / meilisearch 
+- Investigar algolia / typesense / meilisearch y Elastic Search.
 
 - Dejar de usar DATETIME para created_at y updated_at ??? usar TIMESTAMP !!!!!
 
@@ -2870,10 +2883,10 @@ podría ser también,...
   ->addScope('products.read_all')
   ->addScope('emails.create')
 
-y con addScopes() ....
+y recibir un array
 
   //..
-  ->addScope(['products.read_all', 'products.write')
+  ->addScope(['products.read_all', 'products.write])
   ...
 
 
@@ -3350,7 +3363,7 @@ https://mariadb.com/kb/en/myrocks/
 }
 
 - Routing: seguir implementando siguiendo como referencia:
-https://laravel.com/docs/8.x/routing
+https://laravel.com/docs/9.x/routing
 
 Además de expresiones regulares aceptar constantes como:
 
@@ -3399,8 +3412,6 @@ https://dzone.com/articles/solving-the-options-performance-issue-with-single
 
 
 - Analizar que pasa con OPTIONS !!! no puede ser que demore tanto !
-
-- Probar si la performance no se ve afectada con "named arguments" (de PHP 8) y aplicar de mínima a la clase Model. 
 
 https://stitcher.io/blog/php-8-named-arguments
 https://dev.to/jopacicdev/what-s-new-in-php-8-and-what-does-that-mean-4kdf
@@ -3466,6 +3477,8 @@ Ej para 'products'
     "error": "Error: creation of resource fails: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '126' for key 'PRIMARY'",
     "error_detail": "INSERT INTO products (id, name, description, size, cost, belongs_to, created_by, created_at) VALUES ('126', 'Uvas ricas', 'Espectaculare', '5L', '52', '90', '90', '2020-09-29 21:55:22')"
 }
+
+<-- usar el metodo unique() de la clase validator !!!!
 
 - No debería poder ver todos los user_roles sino tengo permiso read_all de admin
     
@@ -3994,7 +4007,7 @@ Más
 https://restdb.io/docs/querying-with-the-api
 
 
-- Implementar ORM 
+- Implementar ORM basico y eficiente
 
   Ver API de Larevel y GORM
 
@@ -5312,7 +5325,7 @@ https://medium.com/@vivekdhumal/how-to-test-mail-notifications-in-laravel-345528
 
   _ Aplicar nuevas funciones del Acl
 
-  _ Implementar folders pero como "extensión" via api hooks en Traits
+  _ Implementar folders pero como "extensión" via api hooks en Traits que... debe ser un "package".
 
   _ Solo dos hooks por método: before y after.
 
@@ -5598,9 +5611,12 @@ Accept: application/vnd.api+json
       "title": "Ember Hamster",
       "src": "http://example.com/images/productivity.png"
     },
-    "relationships": {
-      "photographer": {  <----------------------- incluye sub-recursos. 
-        "data": { "type": "people", "id": "9" }  
+    "relationships": { <-------------------------- incluye sub-recursos. 
+      "photographer": {  
+        "data": { 
+          "id": "9",
+          "type": "people" 
+        }  
       }
     }
   }
@@ -5707,6 +5723,8 @@ https://stackoverflow.com/a/39833955/980631
 
 ALTER TABLE divisas MODIFY COLUMN ISO VARCHAR(10) AFTER id
 
+Implementar ->after('otro_campo') 
+
 
 - Benchmarking Tool: wrk
 
@@ -5768,7 +5786,7 @@ https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f
 
 
 
-- Implementar "Contenedor de dependencias inversas" 
+- Terminar eventualmente el "Contenedor de dependencias inversas" 
 
   <?php
 
@@ -5803,8 +5821,6 @@ https://www.sitepoint.com/how-to-build-your-own-dependency-injection-container/
 
 
 - Migraciones en el ServiceProvider (es sencillo, solo hacen un up)
-
-- FacebookConnect y GoogleConnect deben ser ServiceProviders (que deberían implementar la interfaz del ACL con el fin de poder desacoplarlos)
 
 - Ensayar con Apache y Nginx como correr SimpleRest como carpeta, ej: /api dentro de un proyecto en PHP como alternativa a meter la API en un subdominio
 
