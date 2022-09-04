@@ -104,7 +104,7 @@ class SendinBlue extends MailBase implements IMail
 
             if (static::$debug_level >0){
                 if (static::$silent){
-                    Files::dump($e->getMessage(), 'dump.txt', true);
+                    Files::dump($e->getMessage(), null, true);
                 } else {
                     dd($e->getMessage());
                 }
