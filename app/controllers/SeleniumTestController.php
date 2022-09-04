@@ -35,7 +35,7 @@ class SeleniumTestController extends MyController
                 <input type="text" class="form-control" name="text_here" id="text_here">
             </div>
             <div class="formbuilder-button form-group field-button-1655515462691">
-                <button type="button" class="btn-success btn" name="my_btn" style="success" id="my_btn" onClick="enviar(event);">Enviar</button>
+                <button type="button" class="btn-success btn mt-3" style="margin-top:10px" name="my_btn" style="success" id="my_btn" onClick="enviar(event);">Enviar</button>
             </div>
         </div>
         ';
