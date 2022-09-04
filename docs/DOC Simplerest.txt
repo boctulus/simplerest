@@ -5253,7 +5253,7 @@ El uso de constraint() es opcional como así también onDelete() y onUpdate()
 
 Se agregó cierta compatibiidad con Laravel con la sintaxis:
 
-	$table->foreignId('PRIMARY-KEY')->constrained('TABLA');
+	$table->foreignId('FOREIGN-KEY')->constrained('TABLA');
 
 Ej:
 
