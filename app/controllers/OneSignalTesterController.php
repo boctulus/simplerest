@@ -6,7 +6,7 @@ use simplerest\controllers\MyController;
 use simplerest\core\Request;
 use simplerest\core\libs\OneSignal;
 
-class PushController extends MyController
+class OneSignalTesterController extends MyController
 {
     function index()
     {
