@@ -18,6 +18,15 @@ class SeleniumTestController extends MyController
                 let el_text_here = document.getElementById("text_here")
                 alert(el_text_here.value)
             }
+
+            setTimeout(function(){
+                let el = document.createElement("article");
+                el.setAttribute("id", "myDynamicElement");
+                el.innerHTML = "<p>Probando 1 2 3</p> <p class=\'entry-summary\'>bla bla<p/> <p>Mas contenido</p>";
+
+                document.body.appendChild(el);
+            }, 1500)
+            
         </script>
 
         <div class="rendered-form">
