@@ -14,6 +14,12 @@ TOP PRIORITY
   SendinBlue (hoy es una libreria en el core + sus dependencias)
   FacebookConnect y GoogleConnect (hoy son controladores en el core)
   Obfuscator (hoy es libreria en el core)
+  laravelGenerator (hoy es libreria en el core)
+  PostmanGenerator (hoy es libreria en el core)
+
+  Probablemente hasta todos los archivos de /api/v{version} podrian estar en un package "SimpleRestApi" y simplemente desde el router decir que ese package sirve a tal o cual version de la API.
+
+  <-- requiere que se puedan instalar varias versiones de un mismo package
 
 - Soporte full de JSON. Es pre-requisito para Transients.
 
@@ -36,6 +42,25 @@ TOP PRIORITY
 - Como packages crear un blog y un ecommerce 
 
 ------------x--------------
+
+- Comando que permita crear una migración que cree una relacion entre tablas:
+
+  php com make migration --from_table:{table1} --to_table:{table2} --multiplicty=1:1 --toField={id_campo}
+
+  php com make migration --from_table:{table1} --to_table:{table2} --multiplicty=1:n --toField={id_campo}
+
+  php com make migration --from_table:{table1} --to_table:{table2} --multiplicty=n:m [ --table={nonbre_puente} ]
+
+  <-- crearia la tabla puente que apunta a table1 y table2
+
+En donde la forma "canonica" seria NO usar --from_table sino pasar el nombre como primer parametro:
+
+  php com make migration table1 --to_table:{table2} --multiplicty=1:1 --toField={id_campo}
+
+  php com make migration table1 --to_table:{table2} --multiplicty=1:n --toField={id_campo}
+
+  php com make migration table1 --to_table:{table2} --multiplicty=n:m [ --table={nonbre_puente} ]
+
 
 - Investigar algolia / typesense / meilisearch y Elastic Search.
 

@@ -5547,7 +5547,7 @@ Ej:
 	php com migrations migrate --from:main --file=2022_04_24_47066614_products.php --ignore
 
 
-# Hacer migraciones "inline"
+# Mgraciones "inline"
 
 Se extendió el comando "make migration" para que simplificar el agregado o remoción de campos:
 
@@ -5574,7 +5574,6 @@ make migration foo --comment=campo
 
 En principio no se daría soporte a --addColumn= desde la propia línea de comandos porque la definción de un campo puede incluir varios atributos y sería algo complejo hacerlo inline.
 
-
 Para construcción de claves foráneas:
         
 	--fromField | --fk= | --foreign= 
@@ -5590,7 +5589,6 @@ En si, --fromField=, --fk= y --foreign= son alias como sucede en los demás caso
 Ej:
 
 	make migration foo --fromField=user_id --toField=id --toTable=users --onDelete=cascade --onUpdate=setNull
-
 
 Además,...
 
