@@ -43,6 +43,21 @@ TOP PRIORITY
 
 ------------x--------------
 
+- Ademas de la sintaxis full para crear una relacion entre tablas existe ya la version simple:
+
+  $table->foreignId('FOREIGN-KEY')->constrained('TABLA');
+
+Por lo mismo algo como
+
+  make migration foo --fromField=user_id --toTable=users --toField=id 
+
+Debe poder escribirse asi:
+
+  make migration foo --foreignId={user_id} --constrained=users
+
+Basicamente el --toField= o sea el --reference= debe poder eliminarse (ser opcional)
+
+
 - Comando que permita crear una migración que cree una relacion entre tablas:
 
   php com make migration --from_table:{table1} --to_table:{table2} --multiplicty=1:1 --toField={id_campo}
