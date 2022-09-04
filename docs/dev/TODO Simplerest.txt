@@ -1,18 +1,19 @@
 # TODO
 
-- Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
+Respetar en lo posible la lista de prioridades para poder tener productos en el mercado alguna vez !!!
 
 TOP PRIORITY
 ============
 
+- Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
+
 - Make commands para crear crons y colas 
 
-- Deben ser packages (ServiceProviders):
+- Deben ser packages (ServiceProviders) y tener sus propios repositorios:
 
-  FacebookConnect y GoogleConnect. 
-  Obfuscator 
-  PayPal
-  WhatsApp
+  SendinBlue (hoy es una libreria en el core + sus dependencias)
+  FacebookConnect y GoogleConnect (hoy son controladores en el core)
+  Obfuscator (hoy es libreria en el core)
 
 - Soporte full de JSON. Es pre-requisito para Transients.
 
@@ -27,8 +28,6 @@ TOP PRIORITY
 - Modularizacion
 
 - Terminar generador de front !
-
-- Convertir los paquetes actuales como los ACL en respositorios (github) y hacerlos privados como dependencias de composer.
 
 - Terminar Solucion Binaria -> ofrecer creacion de APIs en PHP, Laravel e integracion de APIs para WordPress / Woocommerce.
 
@@ -2784,8 +2783,11 @@ Responde con "201 (created)" y el siguiente body
 https://howtojsonapi.com/laravel.html
 
 
-- Ver ejemplos de JSON:API !!!
+- Eventualmente implementar el filtrado de JSONAPI <----- no tiene mucho sentido excepto vaya a ofrecerse en el mercado la creacion de APIs con esta especificacion.
 
+Notar que la sintaxis ?filter[attribute]=value es "legacy" y ya existe una nueva especificacion
+
+https://www.jsonapi.net/usage/reading/filtering.html
 https://jsonapi.org/examples/
 
 
@@ -2794,7 +2796,7 @@ https://jsonapi.org/examples/
 https://speakerdeck.com/mattstauffer/getting-to-json-api-what-it-is-why-you-should-use-it-and-how-to-use-it-in-laravel?slide=110
 
 
-- Response cumpliendo  PSR-7 / PSR-15 con Middlewares
+- Response cumpliendo  PSR-7 / PSR-15 con Middlewares (eventualmente)
 
 https://www.zend.com/blog/creating-basic-php-web-server-swoole
 
@@ -2813,11 +2815,6 @@ https://www.adictosaltrabajo.com/2013/12/02/spring-hateoas/
 - Revisa como funcionan los Resource Controllers en Laravel 8 !!!
 
 Parece ser que simplifica "armar" un HATEOAS
-
-
-- Investigar microservicios..... 
-
-- Usar un array de keys para cada microservicio via "config.php" 
 
 
 - Investigar a Hasura -un generador de GraphQL y API Rest Open Source- como competencia.
@@ -3873,7 +3870,6 @@ https://stackoverflow.com/questions/30231862/laravel-eloquent-has-with-wherehas-
 https://laravel-news.com/eloquent-eager-loading
 
 
-
 - Documentación como la de IBM
 
 https://www.ibm.com/docs/en/iis/11.7?topic=content-running-referential-integrity-analysis
@@ -3897,11 +3893,6 @@ NO debebería poder restaurar el registro.***
 
 https://github.com/DamianGonzalez27/Ivy/blob/master/Packages/Charger.php
 
-
-- Implementar firstOrFail()
-
-Más
-https://stackoverflow.com/a/33027466/980631
 
 - Documentar en Git como en 
 

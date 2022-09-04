@@ -30,6 +30,8 @@ class ObfuscatorController extends MyController
     */
     function fromdir(string $ori)
     {
+        $_excluded = [];
+
         $ori_non_trailing_slash = Strings::removeTrailingSlash($ori);
         $yaml_file = $ori_non_trailing_slash . DIRECTORY_SEPARATOR . 'obf.yaml';
 
