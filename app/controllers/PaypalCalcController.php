@@ -8,7 +8,7 @@ use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 
-class PaypalController extends MyController
+class PaypalCalcController extends MyController
 {
     /*  
         https://www.paypal.com/us/webapps/mpp/paypal-fees

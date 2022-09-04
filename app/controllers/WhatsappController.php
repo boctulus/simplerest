@@ -10,7 +10,7 @@ use simplerest\core\libs\DB;
 
 class WhatsappController extends MyController
 {
-    protected $phone = '+34 644 14 9161';
+    protected $phone = '+44 754 1919915';
 
     function __construct()
     {
@@ -24,7 +24,7 @@ class WhatsappController extends MyController
 
     function link($phone = null, $message = null){
         if ($message === null){
-            $message = "Hola";
+            $message = "Hi";
         }
 
         $phone = $phone ?? $this->phone;
