@@ -4079,7 +4079,6 @@ getTbPermissions() y getSpPermissions() no ofrecen resultados necesariamente act
 
 Para el caso del paquete boctulus\grained_acl se implementan adicionalmente getFreshTbPermissions() y getFreshSpPermissions() que garantizan resultados "frescos" porque acceden directamente a la base de datos.
 
-
 Actualmente isHigherRole() y hasRoleOrHigher() están implementados en base a el árbol genealógico de roles y no compara permisos lo cual ofrece uh resultado que puede no ser exacto y solo lo será si existe una sola rama sin derivaciones en el árbol genealógico entre los roles a comparar.
 
 Sin embargo, hasAnyRoleOrHigher() ofrece obtener el resultado más preciso a pesar de que no compara permisos sino roles ya que permite comparar no con un rol sino con varios y por ende considerar derivaciones en el árbol genealógico.
