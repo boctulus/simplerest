@@ -2,6 +2,36 @@
 
 Respetar en lo posible la lista de prioridades para poder tener productos en el mercado alguna vez !!!
 
+- Se esta versionando *MAL*. Lo que deben versionarse son los modelos y apis pero *no* los componentes del core que arman las APIs. Si el core varia, deben revisarse los schemas y/o modelos para que se adecuen a la nueva version del framework.
+
+En concreto lo que debe versionarse: 
+
+- Modelos: porque pueden contener mutators
+- Transformers --no necesariamente-
+- APIs (controllers)
+
+Luego, cada version de los controladores, llamará una versión distinta de los modelos que a su vez pueden usar distintos transformers o versiones de los transformers
+
+La forma de hacerlo seria crear carpetas para cada version:
+
+  /controllers/api/<version>
+  /models/<tenant_id>/<version>
+  /app/transformers/<version>
+
+Luego un Middleware de acuerdo a la version de API solicitada (ya sea en la url o como header), invocaria al controlador correspondiente.
+
+Ver implementación:
+
+https://medium.com/mestredev/versioning-your-rest-api-with-laravel-646bcc1f70a4
+
+
+Más sobre versionado:
+
+https://www.baeldung.com/rest-versioning  
+https://stackoverflow.com/questions/389169/best-practices-for-api-versioning
+https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versioning%20is%20the%20practice,way%20that%20data%20is%20delivered.
+
+
 TOP PRIORITY
 ============
 
@@ -16,10 +46,6 @@ TOP PRIORITY
   Obfuscator (hoy es libreria en el core)
   laravelGenerator (hoy es libreria en el core)
   PostmanGenerator (hoy es libreria en el core)
-
-  Probablemente hasta todos los archivos de /api/v{version} podrian estar en un package "SimpleRestApi" y simplemente desde el router decir que ese package sirve a tal o cual version de la API.
-
-  <-- requiere que se puedan instalar varias versiones de un mismo package
 
 - Soporte full de JSON. Es pre-requisito para Transients.
 
