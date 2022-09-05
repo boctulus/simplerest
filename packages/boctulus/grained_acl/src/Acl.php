@@ -77,9 +77,9 @@ class Acl extends \simplerest\core\Acl
         $this->role_names[] = $role_name;
         
         $this->role_perms[$role_name] = [
-                            'role_id' => $role_id,
-                            'sp_permissions' => [],
-                            'tb_permissions' => []
+            'role_id' => $role_id,
+            'sp_permissions' => [],
+            'tb_permissions' => []
         ];
 
         $this->current_role = $role_name; 
