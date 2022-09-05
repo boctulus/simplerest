@@ -17,19 +17,19 @@ class VarDump
 	{	
 		$type = gettype($v);
 
-		$postman = Url::is_postman() || Url::is_insomnia();
+		$PostmanGenerator = Url::is_PostmanGenerator() || Url::is_insomnia();
 		
 		$cli  = (php_sapi_name() == 'cli');
-		$br   = ($cli || $postman) ? PHP_EOL : '<br/>';
-		$p    = ($cli || $postman) ? PHP_EOL . PHP_EOL : '<p/>';
+		$br   = ($cli || $PostmanGenerator) ? PHP_EOL : '<br/>';
+		$p    = ($cli || $PostmanGenerator) ? PHP_EOL . PHP_EOL : '<p/>';
 
 		$pre = !$cli;	
 
-		if (Url::is_postman() || Url::is_insomnia() || $type != 'array'){
+		if (Url::is_PostmanGenerator() || Url::is_insomnia() || $type != 'array'){
 			$pre = false;
 		}
 		
-		$fn = function($x) use ($type, $postman, $pre){
+		$fn = function($x) use ($type, $PostmanGenerator, $pre){
 			$pp = function ($fn, $dato) use ($pre){
 				if ($pre){
 					self::pre(function() use ($fn, $dato){ 
@@ -48,7 +48,7 @@ class VarDump
 					$pp('print_r', $x);
 					break;
 				case 'array':
-					if ($postman){
+					if ($PostmanGenerator){
 						$pp('var_export', $x);
 					} else {
 						$pp('print_r', $x);
@@ -85,17 +85,17 @@ class VarDump
 				$include_break = true;
 				break;
 			case 'array':
-				$include_break = $postman;
+				$include_break = $PostmanGenerator;
 				break;	
 			default:
 				$include_break = false;
 		}	
 
-		if (!$cli && !$postman && $type != 'array'){
+		if (!$cli && !$PostmanGenerator && $type != 'array'){
 			echo $br;
 		}
 
-		if ($include_break && ($cli ||$postman)){
+		if ($include_break && ($cli ||$PostmanGenerator)){
 			echo $br;
 		}
 

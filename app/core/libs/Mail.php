@@ -97,6 +97,22 @@ class Mail extends MailBase implements IMail
         Gmail => habilitar:
 
         https://myaccount.google.com/lesssecureapps
+
+        TODO
+
+        - Hacer que parametros que son de tipo Array puedan ser Array|string
+
+        send(
+            Array|string|null $to, 
+            $subject = '', 
+            $body = '', 
+            $attachments = null, 
+            Array|string|null $from = null, 
+            Array|string|null $cc = null, 
+            Array|string|null $bcc = null, 
+            Array|string|null $reply_to = null, 
+            $alt_body = null
+        )
     */
     static function send(Array $to, $subject = '', $body = '', $attachments = null, Array $from = [], Array $cc = [], Array $bcc = [], Array $reply_to = [], $alt_body = null){
 		$config = config();

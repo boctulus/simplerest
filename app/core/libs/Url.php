@@ -214,12 +214,12 @@ class Url
         return true;
     }
 
-    static function is_postman(){
+    static function is_PostmanGenerator(){
         if (!isset($_SERVER['HTTP_USER_AGENT'])){
             return false;
         }
 
-		return (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PostmanRuntime') !== false);
+		return (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PostmanGeneratorRuntime') !== false);
 	}
 
     static function is_insomnia(){
