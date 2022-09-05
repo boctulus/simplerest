@@ -11,11 +11,11 @@ trait ExceptionHandler
 {
     function generateCallTrace()
     {
-        $postman = Url::is_postman();
+        $PostmanGenerator = Url::is_PostmanGenerator();
 		
 		$cli  = (php_sapi_name() == 'cli');
-		$br   = ($cli || $postman) ? PHP_EOL : '<br/>';
-        $p    = ($cli || $postman) ? PHP_EOL . PHP_EOL : '<p/>';
+		$br   = ($cli || $PostmanGenerator) ? PHP_EOL : '<br/>';
+        $p    = ($cli || $PostmanGenerator) ? PHP_EOL . PHP_EOL : '<p/>';
         $t    = ($cli) ? "\t" : '';
 
         $e = new \Exception();
