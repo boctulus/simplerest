@@ -82,8 +82,8 @@ abstract class Acl implements IAcl
         return $this->roles;
     }
 
-    public function addRole(string $role_name, $role_id = null) {
-       
+    public function addRole(string $role_name, $role_id = null) 
+    {  
         if (in_array($role_id, $this->role_ids)){
             throw new \Exception("Role id '$role_id' can not be repetead. It should be UNIQUE.");
         }
@@ -100,9 +100,9 @@ abstract class Acl implements IAcl
         $this->role_names[] = $role_name;
         
         $this->role_perms[$role_name] = [
-                            'role_id' => $role_id,
-                            'sp_permissions' => [],
-                            'tb_permissions' => []
+            'role_id'        => $role_id,
+            'sp_permissions' => [],
+            'tb_permissions' => []
         ];
 
         $this->current_role = $role_name; 
@@ -248,8 +248,6 @@ abstract class Acl implements IAcl
 
         return $this;
     }
-
-
 
    public function setAsGuest(string $guest_name){
         if (!in_array($guest_name, $this->role_names)){
