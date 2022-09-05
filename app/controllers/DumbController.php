@@ -25,7 +25,7 @@ use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
-use simplerest\core\libs\Postman;
+use simplerest\core\libs\PostmanGenerator;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
@@ -10300,35 +10300,35 @@ class DumbController extends Controller
 
         Para DELETE y POST y PATCH agregar el :id
     */
-    function gen_postman_collections(){
-        Postman::setCollectionName('Pruebita N1');
+    function gen_PostmanGenerator_collections(){
+        PostmanGenerator::setCollectionName('Pruebita N1');
 
-        Postman::setDestPath('D:/www/org_no_docker' . '/postman');
+        PostmanGenerator::setDestPath('D:/www/org_no_docker' . '/PostmanGenerator');
 
-        //Postman::setBaseUrl('http://127.0.0.1:8889'); 
-        Postman::setBaseUrl('{{base_url}}'); 
+        //PostmanGenerator::setBaseUrl('http://127.0.0.1:8889'); 
+        PostmanGenerator::setBaseUrl('{{base_url}}'); 
 
-        Postman::setSegment('api');
+        PostmanGenerator::setSegment('api');
 
-        Postman::setToken('{{token}}');
+        PostmanGenerator::setToken('{{token}}');
 
-        // Postman::addEndpoints([
+        // PostmanGenerator::addEndpoints([
         //     'productos',
         //     'usuarios'
         // ], [
-        //     Postman::GET
+        //     PostmanGenerator::GET
         // ]);
 
-        Postman::addEndpoints([
+        PostmanGenerator::addEndpoints([
             'tipoVinculo'
         ], [
-            Postman::GET,
-            Postman::POST,
-            Postman::PATCH,
-            Postman::DELETE,
+            PostmanGenerator::GET,
+            PostmanGenerator::POST,
+            PostmanGenerator::PATCH,
+            PostmanGenerator::DELETE,
         ], true);
 
-        $ok = Postman::generate();
+        $ok = PostmanGenerator::generate();
 
         dd($ok, 'Generated?');
     }

@@ -7,7 +7,7 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
 
 /*
-    Postman API Collection Generator ver 1.00
+    PostmanGenerator API Collection Generator ver 1.00
 
     TODO:
 
@@ -16,7 +16,7 @@ use simplerest\core\libs\Factory;
 
 */
 
-class Postman
+class PostmanGenerator
 {   
     static protected $resource_output_path;
     static protected $base_url = '';
@@ -78,16 +78,16 @@ class Postman
     static protected function header(string $version = '2.1.0'){
         $collection_name = static::$collection_name;
 
-        $postman_id =   Strings::randomHexaString(8) . '-' . 
+        $PostmanGenerator_id =   Strings::randomHexaString(8) . '-' . 
                         Strings::randomHexaString(4) . '-' . 
                         Strings::randomHexaString(4) . '-' . 
                         Strings::randomHexaString(4) . '-' . 
                         Strings::randomHexaString(12); 
 
         return [
-            '_postman_id' => $postman_id,
+            '_PostmanGenerator_id' => $PostmanGenerator_id,
             'name' => static::$collection_name,
-            'schema' => "https://schema.getpostman.com/json/collection/v{$version}/collection.json",
+            'schema' => "https://schema.getPostmanGenerator.com/json/collection/v{$version}/collection.json",
             '_exporter_id' => '2650147'
         ];
     }
@@ -198,7 +198,7 @@ class Postman
         $data["item"] = $items; //
 
 
-        $path = static::$resource_output_path . static::$collection_name . ".postman_collection.json";
+        $path = static::$resource_output_path . static::$collection_name . ".PostmanGenerator_collection.json";
 
         Files::writableOrFail($path);
 

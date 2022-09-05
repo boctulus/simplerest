@@ -209,6 +209,27 @@ https://github.com/thephpleague/flysystem-aws-s3-v3
 
 https://laravel.com/docs/9.x/filesystem
 
+- En Mail::send() hacer que parametros que son de tipo Array puedan ser Array|string
+
+  send(
+      Array|string|null $to, 
+      $subject = '', 
+      $body = '', 
+      $attachments = null, 
+      Array|string|null $from = null, 
+      Array|string|null $cc = null, 
+      Array|string|null $bcc = null, 
+      Array|string|null $reply_to = null, 
+      $alt_body = null
+  )
+
+<-- actualizar tambien interface y las clases derivadas
+
+La idea es tener todo el "poder" pero poder escribir también:
+
+  Mail::send('to@email.com', 'Subject', 'Message');
+
+y crear un helper mail()
 
 - Implementar en un futuro la creacion de proyectos con el comando "composer create-project" obviamente siendo simplerest un paquete privado de composer.
 
@@ -5238,9 +5259,9 @@ https://github.com/mulesoft/api-designer
   https://docs.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/data-driven-crud-microservice
 
 
-- Ver documentador de POSTMAN
+- Ver documentador de PostmanGenerator
 
-https://www.postman.com/api-documentation-tool/?
+https://www.PostmanGenerator.com/api-documentation-tool/?
 
 
 - Implementar mecanismo para invalidar access tokens:
