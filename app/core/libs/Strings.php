@@ -5,6 +5,26 @@ namespace simplerest\core\libs;
 class Strings 
 {	
 	/*
+		Extrae la parte numerica de una cadena que contenga una cantidad
+		y la castea a un float
+	*/
+	static function parseCurrency(string $num, $thousand_sep = null, $decimal_sep = null){
+		if ($thousand_sep != null){
+			static::replace($thousand_sep, '', $num);
+		}
+
+		preg_match('![0-9'.$decimal_sep.']+!', $num, $matches);
+
+		$result = $matches[0] ?? false;
+
+		if ($result !== false && $decimal_sep !== null && $decimal_sep !== '.'){
+			static::replace($decimal_sep, '.', $result);
+		}
+
+		return $result;
+	}
+
+	/*
 		Interpreta un string como un número entero con la posibilidad de que contenga separador de miles
 	*/
 	static function parseInt(string $num, string $thousand_sep = '.'){
@@ -34,6 +54,44 @@ class Strings
 		if (static::parseInt($num, $thousand_sep) === false){
 			throw new \Exception("String '$num' is not an Integer");
 		}
+	}
+
+	/*
+		Intenta hacer un casting de un string numerico a float 
+
+		Evita castear null o false a 0.0
+	*/
+	static function convertIntoFloat(?string $num = null){
+		if ($num === null){
+			return null;
+		}
+	
+		if ($num === false){
+			return false;
+		}
+
+		if (!is_numeric($num)){
+			return false;
+		}
+
+		return (float) $num;
+	}
+
+
+	static function convertIntoFloatOrFail(string $num){
+		if ($num === null){
+			throw new \InvalidArgumentException("'$num' can not be null");
+		}
+	
+		if ($num === false){
+			throw new \InvalidArgumentException("'$num' can not be false");
+		}
+
+		if (!is_numeric($num)){
+			throw new \Exception("Conversion for '$num' fails");
+		}
+
+		return (float) $num;
 	}
 
 	static function formatNumber($x, string $locale = "it-IT"){

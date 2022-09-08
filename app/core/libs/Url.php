@@ -6,11 +6,6 @@ use simplerest\core\libs\ApiClient;
 
 class Url
 {
-    static protected $headers;
-    static protected $filename;
-    static protected $effective_url;
-    static protected $content_type;
-
     /*
         Obtiene la url final luego de redirecciones
 
@@ -336,175 +331,6 @@ class Url
         return static::getHostname($url, true);
     }
 
-    static function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
-    {
-        if (!extension_loaded('curl'))
-		{
-            throw new \Exception("Extension curl no cargada");
-        }
-
-        if ($headers === null){
-            $headers = [];
-        } else {
-            if (!Arrays::is_assoc($headers)){
-                $_hs = [];
-                foreach ($headers as $h){
-                    list ($k, $v)= explode(':', $h, 2);
-                    $_hs[$k] = $v;
-                }
-
-                $headers = $_hs;
-            }
-        }
-
-        if ($options === null){
-            $options = [];
-        }
-
-        $keys = array_keys($headers);
-
-        $content_type_found = false;
-        foreach ($keys as $key){
-            if (strtolower($key) == 'content-type'){
-                $content_type_found = $key;
-                break;
-            }
-        }
-
-        $accept_found = false;
-        foreach ($keys as $key){
-            if (strtolower($key) == 'accept'){
-                $accept_found = $key;
-                break;
-            }
-        }
-
-        if (!$content_type_found){
-            $headers = array_merge(
-                [
-                    'Content-Type' => 'application/json'
-                ],
-                ($headers ?? [])
-            );
-        }
-
-
-        if ($accept_found) {
-            if (Strings::startsWith('text/plain', $headers[$accept_found]) ||
-                Strings::startsWith('text/html', $headers[$accept_found])){
-                $decode = false;
-            }
-        }
-
-        if ($encode_body && is_array($body)){
-            $data = json_encode($body);
-        } else {
-            $data = $body;
-        }
-
-        $curl = curl_init();
-
-        $http_verb = strtoupper($http_verb);
-
-        if ($http_verb != 'GET' && !empty($data)){
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-
-            if ($encode_body){
-                $headers['Content-Length']   = strlen($data);
-            }
-        }
-
-        $h = [];
-        foreach ($headers as $key => $header){
-            $h[] = "$key: $header";
-        }
-
-        $options = [
-            CURLOPT_HTTPHEADER => $h
-        ] + ($options ?? []);
-
-        curl_setopt_array($curl, $options);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_ENCODING, '' );
-        curl_setopt($curl, CURLOPT_TIMEOUT, 0 );
-
-        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_verb);
-
-        // https://stackoverflow.com/a/6364044/980631
-        curl_setopt($curl, CURLOPT_FAILONERROR, false);
-        curl_setopt($curl, CURLOPT_HTTP200ALIASES, [
-            400,
-            500
-        ]);  //
-
-
-        $__headers  = [];
-        $__filename = null;
-
-        $header_fn = function ($cURLHandle, $header) use (&$__headers, &$__filename) {
-            $pieces = explode(":", $header);
-
-            if (count($pieces) >= 2)
-                $__headers[trim($pieces[0])] = trim($pieces[1]);
-
-
-            if (isset($__headers['Content-Disposition'])){
-                if (preg_match('/filename="([a-z-_.]+)";/i', $__headers['Content-Disposition'], $matches)){
-                    $__filename= $matches[1];
-                }
-            }
-
-            return strlen($header); // <-- this is the important line!
-        };
-
-        curl_setopt($curl, CURLOPT_HEADERFUNCTION,
-            $header_fn
-        );
-
-        $response  = curl_exec($curl);
-        $err_msg   = curl_error($curl);
-        $http_code = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-        $content_type  = curl_getinfo($curl,CURLINFO_CONTENT_TYPE);
-        $effective_url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
-
-        curl_close($curl);
-
-        $data = ($decode && $response !== false) ? json_decode($response, true) : $response;
-
-
-        $ret = [
-            'data'          => $data,
-            'http_code'     => $http_code,
-            'error'         => $err_msg
-        ];
-
-        static::$headers       = $__headers;
-        static::$filename      = $__filename;
-        static::$content_type  = $content_type;
-        static::$effective_url = $effective_url;
-
-        return $ret;
-    }
-
-    static function getFilename(){
-        return static::$filename;
-    }
-
-    static function getHeaders(){
-        return static::$headers;
-    }
-
-    static function getContentType(){
-        return static::$content_type;
-    }
-
-    static function getEffectiveUrl(){
-        return static::$effective_url;
-    }
-
     static function download(string $url, $dest_path = null, bool $disable_ssl = true, Array $options = []){
         if (empty($dest_path)){
             $dest_path = STORAGE_PATH;
@@ -526,8 +352,6 @@ class Url
         ->when($disable_ssl, function($questo){
             $questo->disableSSL();
         })
-        
-        
         ->get();
 
         $res = $client->getResponse(false);
@@ -548,5 +372,6 @@ class Url
         return false;
     }
 
+   
 }
 
