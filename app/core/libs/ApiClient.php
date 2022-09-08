@@ -2,10 +2,11 @@
 
 namespace simplerest\core\libs;
 
+use PDO;
 use simplerest\core\libs\Url;
 
 /*
-    Wrapper para Url::consume_api()
+    Wrapper para Url::consumeAPI()
 
     @author Pablo Bozzolo
 
@@ -46,6 +47,10 @@ class ApiClient
     function __construct($url = null)
     {
         $this->setUrl($url);
+    }
+
+    static function instance($url = null) : ApiClient {
+        return new ApiClient($url);
     }
 
     function setHeaders(Array $headers){
@@ -124,8 +129,14 @@ class ApiClient
         return $this;
     }
 
+    // alias de setCache()
     function cache(int $expiration_time = 60){
         return $this->setCache($expiration_time);
+    }
+
+    function clearCache(){
+        unlink($this->getCachePath());
+        return $this;
     }
 
     function getStatus(){
@@ -171,7 +182,7 @@ class ApiClient
     /*
         Set SSL certification
     */
-    function setSSLCrt($crt_path){
+    function setSSLCrt(string $crt_path){
         $this->addOptions([
             CURLOPT_CAINFO => $crt_path,
             CURLOPT_CAPATH => $crt_path,
@@ -180,7 +191,12 @@ class ApiClient
         return $this;
     }
 
-    function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
+    // alias
+    function certificate(string $cert_path){
+        return $this->setSSLCrt($cert_path);
+    }
+
+    function consumeAPI(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
     {
         if (!extension_loaded('curl'))
 		{
@@ -392,7 +408,7 @@ class ApiClient
         */
         while (!$ok && $retries < $this->max_retries)
         {   
-            $res = $this->consume_api($url, $http_verb, $body, $headers, $options, false, $this->encode_body);
+            $res = $this->consumeAPI($url, $http_verb, $body, $headers, $options, false, $this->encode_body);
             $this->status   = $res['http_code'];
             $this->errors   = $res['error'];
             $this->response = $res['data'];
@@ -501,11 +517,6 @@ class ApiClient
         return $path[$this->url];
     }
 
-    function clearCache(){
-        unlink($this->getCachePath());
-        return $this;
-    }
- 
 	protected function saveResponse(Array $response){
         if ($this->verb != 'GET'){
             return;

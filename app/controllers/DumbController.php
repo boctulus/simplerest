@@ -4777,7 +4777,7 @@ class DumbController extends Controller
     */
     function test_api00()
     {
-        $res = (new ApiClient)->consume_api('https://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
+        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
         dd($res);
     }
 
@@ -4786,13 +4786,31 @@ class DumbController extends Controller
     */
     function test_api01()
     {
-        $res = (new ApiClient)->consume_api('http://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
+        $options = [
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0
+        ];
+
+        $res = consume_api('http://jsonplaceholder.typicode.com/posts', 'GET', null, $options, null, true);
+        dd($res);
+    }
+
+    function test_api0b()
+    {
+        // ruta absoluta al certificado	
+        $cert = "D:\wamp64\ca-bundle.crt"; 
+
+        $res = ApiClient::instance()
+        ->setSSLCrt($cert)
+        ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
+        ->getResponse();
+
         dd($res);
     }
 
     function test_api01a()
     {
-        $res = (new ApiClient)->consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, [
+        $res = consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, [
             'Accept' => 'text/plain'
         ]);
         dd($res);
@@ -4800,7 +4818,7 @@ class DumbController extends Controller
 
     function test_api01b()
     {
-        $res = (new ApiClient)->consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
+        $res = consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
         dd($res);
     }
 
@@ -4812,7 +4830,7 @@ class DumbController extends Controller
             "body": "Some long description"
           }';
 
-        $res = (new ApiClient)->consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
         dd($res);
     }
 
@@ -4824,7 +4842,12 @@ class DumbController extends Controller
             "body" => "Other long description"
         ];
 
-        $res = (new ApiClient)->consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+        $options = [
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0
+        ];
+
+        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data, null, $options);
         dd($res);
     }
 
@@ -4832,7 +4855,7 @@ class DumbController extends Controller
     {
         $xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
-        $response = (new ApiClient)->consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
+        $response = consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
             "Content-type" => "text/xml"
         ]);
 
@@ -4842,7 +4865,7 @@ class DumbController extends Controller
     // debe responderme con erro y un body de respuesta -- ok
     function test_api05()
     {
-        $response = (new ApiClient)->consume_api('http://localhost/pruebas/get_error.php', 'POST', null, [
+        $response = consume_api('http://localhost/pruebas/get_error.php', 'POST', null, [
             "Content-type" => "text/xml"
         ]);
 
@@ -4851,8 +4874,7 @@ class DumbController extends Controller
 
     function test_api06()
     {
-
-        $response = (new ApiClient)->consume_api(
+        $response = consume_api(
             "https://onesignal.com/api/v1/notifications",
             'POST',
             ['x' => 'y'],
@@ -6655,7 +6677,7 @@ class DumbController extends Controller
 
         $xml_file_encoded = base64_encode($xml_file);
 
-        $response = (new ApiClient)->consume_api('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
+        $response = consume_api('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
             "Content-type"  => "text/plain",
             "Authorization" => "Bearer eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9hZGFwdGFkb3JAbnVtcm90LmNvbSIsInJvbGUiOiJDbGllbnRlIiwibmJmIjoxNjM2MDQ0NTQ0LCJleHAiOjE2OTkxMTY1NDQsImlhdCI6MTYzNjA0NDU0NCwiaXNzIjoibnVtcm90IiwiYXVkIjoicmVhZGVycyJ9.yejhLDwaVb4enDgKPssXyf8SYP1AyrEEa5m99joo3EjG3bhMToUPnY5696sjU6Kb"
         ]);
@@ -7348,7 +7370,7 @@ class DumbController extends Controller
     */
     function dolar()
     {
-        $res = (new ApiClient)->consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+        $res = consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
 
         if ($res['http_code'] != 200) {
             throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
@@ -7362,7 +7384,7 @@ class DumbController extends Controller
 
     function euro()
     {
-        $res = (new ApiClient)->consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+        $res = consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
 
         if ($res['http_code'] != 200) {
             throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
@@ -9200,18 +9222,26 @@ class DumbController extends Controller
         _password = 1234Admin
     */
     function test_sinergia_login(){
-        // $response = (new ApiClient())
-        // ->setHeaders(
-        //     [
-        //         "Content-Type"  => "multipart/form-data"
-        //     ]
-        // )
-        // ->setBody($body)
-        // ->disableSSL()
-        // ->post($ruta)
-        // ->getResponse();
+        $body = [
+            "_username" => 'admin',
+            "password"  => '1234Admin'
+        ];
 
-        // d($response, 'RES');      
+        // la ruta ya no existe
+        $ruta = 'https://demoapi.sinergia.pe/interfaces/login_check';
+
+        $response = ApiClient::instance()
+        ->setHeaders(
+            [
+                "Content-Type"  => "multipart/form-data"
+            ]
+        )
+        ->setBody($body)
+        ->disableSSL()
+        ->post($ruta)
+        ->getResponse();
+
+        d($response, 'RES');      
     }
 
 
@@ -9350,12 +9380,15 @@ class DumbController extends Controller
         //     CURLOPT_SSL_VERIFYPEER => 0
         // ];
 
-        // $response = (new ApiClient)->consume_api($ruta, 'POST', $body, [
+        // $response = consume_api($ruta, 'POST', $body, [
         //     "Content-type"  => "Application/json",
         //     "authToken" => "$token"
         // ], $options);
+            
+        // ruta absoluta al certificado	
+        $cert = "D:\wamp64\ca-bundle.crt"; 
 
-        $response = (new ApiClient())
+        $response = ApiClient::instance()
         ->setHeaders(
             [
                 "Content-type"  => "Application/json",
@@ -9364,6 +9397,7 @@ class DumbController extends Controller
         )
         ->setBody($body)
         ->disableSSL()
+        //->certificate($cert)
         ->post($ruta)
         ->getResponse();
 
@@ -9468,7 +9502,7 @@ class DumbController extends Controller
             ),
         );
 
-        $response = (new ApiClient())
+        $response = ApiClient::instance()
         ->setHeaders($arr['headers']
         )
         ->setBody($arr['body'])
@@ -9584,7 +9618,7 @@ class DumbController extends Controller
 
         $cert = "D:\wamp64\ca-bundle.crt"; 
 
-        $response = (new ApiClient())
+        $response = ApiClient::instance()
         ->setHeaders($arr['headers']
         )
         ->setBody($arr['body'])
@@ -9629,7 +9663,7 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = (new ApiClient)->consume_api($ruta, 'POST', $body, [
+        $response = consume_api($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
@@ -9705,7 +9739,7 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = (new ApiClient)->consume_api($ruta, 'POST', $body, [
+        $response = consume_api($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
@@ -10360,10 +10394,10 @@ class DumbController extends Controller
 
     function test_scraper_3(){
         //$url = 'https://amzn.to/3FoWKqt'; // Sin stock
-        //$url = 'https://amzn.to/2M0SCXb'; // Sin stock
+        $url = 'https://amzn.to/2M0SCXb'; // Sin stock
 
         // En stock
-        $url = 'https://www.amazon.es/dp/B07T1Q96MF/ref=vp_d_pbur_TIER4_p13sess_lp_B07N1H82KD_pd?_encoding=UTF8&pf_rd_p=232cc89e-0266-4a48-866a-f5d40f81e0b8&pf_rd_r=6G99GW3MER3H3Z4X0PDK&pd_rd_wg=j21Rj&pd_rd_i=B07T1Q96MF&pd_rd_w=xbj9b&content-id=amzn1.sym.232cc89e-0266-4a48-866a-f5d40f81e0b8&pd_rd_r=8fd663c0-86cf-435f-8abc-17e620289fbf';
+        // $url = 'https://www.amazon.es/dp/B07T1Q96MF/ref=vp_d_pbur_TIER4_p13sess_lp_B07N1H82KD_pd?_encoding=UTF8&pf_rd_p=232cc89e-0266-4a48-866a-f5d40f81e0b8&pf_rd_r=6G99GW3MER3H3Z4X0PDK&pd_rd_wg=j21Rj&pd_rd_i=B07T1Q96MF&pd_rd_w=xbj9b&content-id=amzn1.sym.232cc89e-0266-4a48-866a-f5d40f81e0b8&pd_rd_r=8fd663c0-86cf-435f-8abc-17e620289fbf';
 
         // En Stock
         // $url = 'https://www.amazon.es/Lenovo-Legion-Port%C3%A1til-RTX2060-6GB-Portugu%C3%A9s/dp/B08TCJF7NY/ref=sr_1_2?keywords=gamer+laptop&qid=1662580638&sprefix=gamer+l%2Caps%2C129&sr=8-2';
@@ -10373,5 +10407,17 @@ class DumbController extends Controller
         );        
     }
 
+    function test_follow_redirs(){
+        $url = 'https://amzn.to/2M0SCXb';
+
+        dd(
+            ApiClient::instance($url)
+            ->disableSSL()
+            ->followLocations()
+            ->cache()
+            ->get()
+            ->getResponse(false)
+        );
+    }
 
 }   // end class

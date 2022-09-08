@@ -7569,7 +7569,7 @@ Ej:
 
 # Consumo de APIs
 
-El framework provee la función Url::consume_api() para el consumo de APIs. 
+El framework provee la función consume_api() para el consumo de APIs. 
 
     consume_api(
 
@@ -7618,7 +7618,7 @@ Ej:
 
 	// ...
 
-	$res = Url::consume_api('https://jsonplaceholder.typicode.com/albums', 'GET');
+	$res = consume_api('https://jsonplaceholder.typicode.com/albums', 'GET');
 	dd($res);
 
 Y bien podría haber una lógica de control de errores:
@@ -7636,13 +7636,13 @@ Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON p
 
 1) Pasando un Accept de tipo 'text/plain' o ...
 
-	$res = Url::consume_api('http://xxxxxxxxxxxxx', 'GET', null, [
+	$res = consume_api('http://xxxxxxxxxxxxx', 'GET', null, [
 		'Accept' => 'text/plain'
 	]);
 
 2) Pasando como 6to parámetro false 
 
-	$res = Url::consume_api('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
+	$res = consume_api('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
   
 # Crear un recurso
 
@@ -7652,7 +7652,7 @@ Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON p
 		"body": "Some long description"
   	}';
 
-	$res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+	$res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
 	dd($res);  
 
 Ej:
@@ -7665,7 +7665,7 @@ Ej:
             "body" => "Other long description"
 	];
 
-	$res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+	$res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
 	dd($res);  
 
 Ej: 
@@ -7674,7 +7674,7 @@ Ej:
 
 	$xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
-	$response = Url::consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
+	$response = consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
 		"Content-type" => "text/xml"
 	]);
 
@@ -7706,7 +7706,7 @@ El envio headers se puede hacer como array asociativo o un simple array de strin
 Ej:
 	// (no-asociativo)
 
-	$response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+	$response = consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
 		[             
 			'Content-Type: application/json',
 			'Authorization: Basic ' . 'xxxxxxxxxxxx'
@@ -7718,7 +7718,7 @@ o
 Ej:
 	// (asociativo)
 
-	$response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+	$response = consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
 		[             
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Basic ' . 'xxxxxxxxxxxx'
@@ -7732,7 +7732,7 @@ Es un array asociativo de opciones para la librería curl.
 
 Ej:
 
-	$response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+	$response = consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
 		[             
 			'Content-Type: application/json',
 			'Authorization: Basic ' . 'xxxxxxxxxxxx'
@@ -7754,14 +7754,14 @@ Caso: deshabilitar el chequeo de certificado SSL
 	];
 
 	// Es un ejemplo: podría ser POST, GET, etc
-	$response = Url::consume_api($ruta, 'POST', $body, [
+	$response = consume_api($ruta, 'POST', $body, [
 		"Content-type"  => "Application/json",
 		"authToken" => "$token"
 	], $options);
 
 Otra posibilidad, es usando ApiClient:
 
-	$response = (new ApiClient())
+	$response = ApiClient::instance()
 	->setHeaders(
 		[
 			"Content-type"  => "Application/json",
@@ -7781,7 +7781,7 @@ Ej:
 	// ruta absoluta al certificado	
 	$cert = "D:\wamp64\ca-bundle.crt"; 
 
-	$response = (new ApiClient())
+	$response = ApiClient::instance()
 	->setHeaders($headers)
 	->setBody($body)
 	->setSSLCrt($cert)
@@ -7797,7 +7797,7 @@ Web tokens pueden ser enviados a la función consume_api() via el array de heade
 
 Ej:
 
-    $response = Url::consume_api('http://xxxxxxxxx:8080/api/some_resource', 'GET', null, [
+    $response = consume_api('http://xxxxxxxxx:8080/api/some_resource', 'GET', null, [
         "Authorization" => "Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx"
     ]);
 
@@ -7806,7 +7806,7 @@ Para el caso de "Basic authentication"
 
 Ej:
 
-    $res = Url::consume_api($catalog_url, 'GET', null, [
+    $res = consume_api($catalog_url, 'GET', null, [
         'Authorization: Basic '. base64_encode("$user:$pass")
     ]);
 
@@ -7821,14 +7821,14 @@ Ej:
 
     $encoded = base64_encode($file);
 
-    $response = Url::consume_api('http://xxxxxxxxx:8080/api/some_resource', 'POST', $encoded, [
+    $response = consume_api('http://xxxxxxxxx:8080/api/some_resource', 'POST', $encoded, [
         "Content-type"  => "text/plain"
     ]);
 
 
 # La clase ApiClient
 
-ApiClient es un wrapper sobre Url::consume_api() que facilita su uso y cuyas funcionalidades se irán extendiendo (ej: manejar distintos tipos de autenticación)
+ApiClient es un wrapper sobre consume_api() que facilita su uso y cuyas funcionalidades se irán extendiendo (ej: manejar distintos tipos de autenticación)
 
 Ej:
 
@@ -7972,9 +7972,15 @@ Ej:
 	d($client->getResponse(true), 'RES'); 
 
 
+# Borrado de cache
+
+Con el metodo clearCache()
+
+
 # Constructor de la clase ApiClient
 
 Es posible especificar la url del endpoint de una vez al instanciar pasándola en el constructor y también cambiar la url mediante el método setUrl() o simplemente url()
+
 
 # Haciendo las cosas fáciles
 
@@ -7991,7 +7997,7 @@ Ej:
         $ruta         = $config['url_base_endpoints'] . $endpoint;
         $token        = $config['token'];
 
-        $client = (new ApiClient($ruta));
+        $client = ApiClient::instance($ruta);
 
         $client
         ->setHeaders(
