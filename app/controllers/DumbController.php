@@ -25,11 +25,11 @@ use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
-use simplerest\core\libs\PostmanGenerator;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
+use simplerest\libs\AmazonScraper;
 
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
@@ -38,34 +38,36 @@ use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
 
 use simplerest\core\libs\Validator;
+use simplerest\libs\MaisonsScraper;
 use Endroid\QrCode\Writer\PngWriter;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
-use simplerest\core\libs\Supervisor;
 
+use simplerest\core\libs\Supervisor;
 use Endroid\QrCode\Encoding\Encoding;
+use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
+
+use simplerest\libs\LeroyMerlinScraper;
+
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 
+//  QR
 use simplerest\core\libs\Base64Uploader;
-
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\libs\HtmlBuilder\Tag;
-
-//  QR
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
-use simplerest\core\libs\FileUploader;
+use simplerest\core\libs\PostmanGenerator;
+
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\controllers\MakeControllerBase;
-
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-
 
 class DumbController extends Controller
 {
@@ -4120,9 +4122,16 @@ class DumbController extends Controller
     {
         Time::setUnit('MILI');
 
-        $t1 = Time::exec(function () {
-            $ttl_res = Url::consume_api('https://mindicador.cl/api', 'GET');
+        $res = null;
+
+        $t1 = Time::exec(function () use (&$res) {
+            $res = (new ApiClient)
+            ->disableSSL()
+            ->setUrl('https://mindicador.cl/api')
+            ->get();
         });
+
+        dd($res);
 
         dd("Time: $t1 ms");
     }
@@ -4768,7 +4777,7 @@ class DumbController extends Controller
     */
     function test_api00()
     {
-        $res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
+        $res = (new ApiClient)->consume_api('https://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
         dd($res);
     }
 
@@ -4777,13 +4786,13 @@ class DumbController extends Controller
     */
     function test_api01()
     {
-        $res = Url::consume_api('http://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
+        $res = (new ApiClient)->consume_api('http://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
         dd($res);
     }
 
     function test_api01a()
     {
-        $res = Url::consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, [
+        $res = (new ApiClient)->consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, [
             'Accept' => 'text/plain'
         ]);
         dd($res);
@@ -4791,7 +4800,7 @@ class DumbController extends Controller
 
     function test_api01b()
     {
-        $res = Url::consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
+        $res = (new ApiClient)->consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
         dd($res);
     }
 
@@ -4803,7 +4812,7 @@ class DumbController extends Controller
             "body": "Some long description"
           }';
 
-        $res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+        $res = (new ApiClient)->consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
         dd($res);
     }
 
@@ -4815,7 +4824,7 @@ class DumbController extends Controller
             "body" => "Other long description"
         ];
 
-        $res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+        $res = (new ApiClient)->consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
         dd($res);
     }
 
@@ -4823,7 +4832,7 @@ class DumbController extends Controller
     {
         $xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
-        $response = Url::consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
+        $response = (new ApiClient)->consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
             "Content-type" => "text/xml"
         ]);
 
@@ -4833,7 +4842,7 @@ class DumbController extends Controller
     // debe responderme con erro y un body de respuesta -- ok
     function test_api05()
     {
-        $response = Url::consume_api('http://localhost/pruebas/get_error.php', 'POST', null, [
+        $response = (new ApiClient)->consume_api('http://localhost/pruebas/get_error.php', 'POST', null, [
             "Content-type" => "text/xml"
         ]);
 
@@ -4843,7 +4852,7 @@ class DumbController extends Controller
     function test_api06()
     {
 
-        $response = Url::consume_api(
+        $response = (new ApiClient)->consume_api(
             "https://onesignal.com/api/v1/notifications",
             'POST',
             ['x' => 'y'],
@@ -6646,7 +6655,7 @@ class DumbController extends Controller
 
         $xml_file_encoded = base64_encode($xml_file);
 
-        $response = Url::consume_api('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
+        $response = (new ApiClient)->consume_api('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
             "Content-type"  => "text/plain",
             "Authorization" => "Bearer eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9hZGFwdGFkb3JAbnVtcm90LmNvbSIsInJvbGUiOiJDbGllbnRlIiwibmJmIjoxNjM2MDQ0NTQ0LCJleHAiOjE2OTkxMTY1NDQsImlhdCI6MTYzNjA0NDU0NCwiaXNzIjoibnVtcm90IiwiYXVkIjoicmVhZGVycyJ9.yejhLDwaVb4enDgKPssXyf8SYP1AyrEEa5m99joo3EjG3bhMToUPnY5696sjU6Kb"
         ]);
@@ -7339,7 +7348,7 @@ class DumbController extends Controller
     */
     function dolar()
     {
-        $res = Url::consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+        $res = (new ApiClient)->consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
 
         if ($res['http_code'] != 200) {
             throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
@@ -7353,7 +7362,7 @@ class DumbController extends Controller
 
     function euro()
     {
-        $res = Url::consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+        $res = (new ApiClient)->consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
 
         if ($res['http_code'] != 200) {
             throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
@@ -9341,7 +9350,7 @@ class DumbController extends Controller
         //     CURLOPT_SSL_VERIFYPEER => 0
         // ];
 
-        // $response = Url::consume_api($ruta, 'POST', $body, [
+        // $response = (new ApiClient)->consume_api($ruta, 'POST', $body, [
         //     "Content-type"  => "Application/json",
         //     "authToken" => "$token"
         // ], $options);
@@ -9620,7 +9629,7 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = Url::consume_api($ruta, 'POST', $body, [
+        $response = (new ApiClient)->consume_api($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
@@ -9696,7 +9705,7 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = Url::consume_api($ruta, 'POST', $body, [
+        $response = (new ApiClient)->consume_api($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
@@ -10058,8 +10067,8 @@ class DumbController extends Controller
         Descarga archivo
     */
     function download_link(){
-        //$url = 'https://docs.google.com/uc?export=download&id=1Ki34FJX-iCqTErvsU_EQFrs9JwHL62KJ';
-        $url = 'https://docs.google.com/uc?export=download&id=1Fdtxt56oCI1-rUwLmFXkzaXzQxdMhc8v';
+        $url = 'https://docs.google.com/uc?export=download&id=1Ki34FJX-iCqTErvsU_EQFrs9JwHL62KJ';
+        //$url = 'https://docs.google.com/uc?export=download&id=1Fdtxt56oCI1-rUwLmFXkzaXzQxdMhc8v';
 
         dd(
             Url::download($url)
@@ -10333,5 +10342,36 @@ class DumbController extends Controller
         dd($ok, 'Generated?');
     }
     
+    function test_scraper_1(){
+        $url = 'https://www.maisonsdumonde.com/FR/fr/p/canape-lit-3-4-places-en-lin-lave-bleu-petrole-barcelone-180512.htm';
+
+        dd(
+            MaisonsScraper::parseProduct($url)
+        );        
+    }
+
+    function test_scraper_2(){
+        $url = 'https://www.leroymerlin.es/fp/81873733/barbacoa-de-gas-naterial-kenton-de-4-quemadores-y-14-kw-de-potencia';
+
+        dd(
+            LeroyMerlinScraper::parseProduct($url)
+        );        
+    }
+
+    function test_scraper_3(){
+        //$url = 'https://amzn.to/3FoWKqt'; // Sin stock
+        //$url = 'https://amzn.to/2M0SCXb'; // Sin stock
+
+        // En stock
+        $url = 'https://www.amazon.es/dp/B07T1Q96MF/ref=vp_d_pbur_TIER4_p13sess_lp_B07N1H82KD_pd?_encoding=UTF8&pf_rd_p=232cc89e-0266-4a48-866a-f5d40f81e0b8&pf_rd_r=6G99GW3MER3H3Z4X0PDK&pd_rd_wg=j21Rj&pd_rd_i=B07T1Q96MF&pd_rd_w=xbj9b&content-id=amzn1.sym.232cc89e-0266-4a48-866a-f5d40f81e0b8&pd_rd_r=8fd663c0-86cf-435f-8abc-17e620289fbf';
+
+        // En Stock
+        // $url = 'https://www.amazon.es/Lenovo-Legion-Port%C3%A1til-RTX2060-6GB-Portugu%C3%A9s/dp/B08TCJF7NY/ref=sr_1_2?keywords=gamer+laptop&qid=1662580638&sprefix=gamer+l%2Caps%2C129&sr=8-2';
+
+        dd(
+            AmazonScraper::parseProduct($url)
+        );        
+    }
+
 
 }   // end class

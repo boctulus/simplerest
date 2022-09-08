@@ -11,6 +11,12 @@ use simplerest\core\libs\Date;
 
 class Dumb2Controller extends MyController
 {
+  function testy(){
+    dd(
+      Strings::parseCurrency('son EUR 108.000,40 a pagar', '.', ',')
+    );
+  }
+
   function testx(){
     DB::getConnection();
 
