@@ -46,6 +46,9 @@ TOP PRIORITY
   Obfuscator (hoy es libreria en el core)
   laravelGenerator (hoy es libreria en el core)
   PostmanGenerator (hoy es libreria en el core)
+  GoogleMaps  (hoy es libreria en el core)
+
+- El propio framework debe ser un package -privado- instalable de Composer
 
 - Soporte full de JSON. Es pre-requisito para Transients.
 
@@ -65,7 +68,20 @@ TOP PRIORITY
 
 - Incorporar pasarela de pagos a Solucion Binaria. TOCA RENOVAR dominio !!!! -- antes de oct 29 !!!
 
-- Como packages crear un blog y un ecommerce 
+- Como packages crear:
+
+  . Documentator
+
+  . Administrador de usuarios, roles y permisos
+
+  . Blog
+
+  . Sistema de tickets de soporte
+
+  . eCommerce 
+
+Los modulos (packages) al poder combinarse van a permitir crear sistemas más complejos a partir de ellos.
+
 
 ------------x--------------
 
