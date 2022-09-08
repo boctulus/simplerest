@@ -1803,7 +1803,17 @@ Luego será necesario ejecutar:
 
 ---
 
-- Portar algun server de GraphQL de Laravel a mi framework
+- Portar algun "server de GraphQL" de Laravel a mi framework como Laravel Lighthouse
+
+Inclusive hasta hay servers para WordPress !!!!
+
+https://www.youtube.com/watch?v=cvEjaP631ew
+https://www.youtube.com/watch?v=PeAOEAmR0D0
+
+Ventajas de GraphQL:
+
+https://nordicapis.com/rest-vs-graphql-a-side-by-side-comparison/#:~:text=GraphQL%3A%20Performance,the%20risk%20of%20outmoded%20data.
+https://www.techtarget.com/searchapparchitecture/tip/When-GraphQL-wins-in-a-GraphQL-vs-REST-performance-comparison
 
 ----
 
