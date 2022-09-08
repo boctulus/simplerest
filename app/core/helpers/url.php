@@ -1,5 +1,6 @@
 <?php
 
+use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\DB;
 use simplerest\core\Model;
@@ -22,4 +23,8 @@ function base_url(){
     }
 
     return $base_url;
+}
+
+function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true){
+    return ApiClient::instance()->consumeAPI($url, $http_verb, $body, $headers, $options, $decode, $encode_body);
 }
