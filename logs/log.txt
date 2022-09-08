@@ -789,3 +789,6 @@ Hecho!
 
 NULL
 
+2022-09-07 17:23:01	Parsing of https://amzn.to/2M0SCXb as failed
+2022-09-07 18:11:47	Parsing of https://amzn.to/2M0SCXb as failed
+2022-09-07 18:12:00	Parsing of https://amzn.to/2M0SCXb as failed

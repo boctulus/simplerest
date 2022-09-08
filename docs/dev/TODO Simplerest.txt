@@ -1801,6 +1801,10 @@ Luego será necesario ejecutar:
 
   php com migrations migrate
 
+---
+
+- Portar algun server de GraphQL de Laravel a mi framework
+
 ----
 
 - Usar donde se pueda "generators" (quizás en el trait de subrecursos) o en el API controller a fin de reducir el uso de memoria y/o conmutar tareas.

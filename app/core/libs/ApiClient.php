@@ -18,7 +18,8 @@ class ApiClient
 {
     protected $url;
     protected $verb;
-    protected $headers;
+    protected $req_headers;
+    protected $res_headers;
     protected $options = [];
     protected $body;
     protected $encode_body;
@@ -28,6 +29,9 @@ class ApiClient
     protected $response;
     protected $expiration;
     protected $max_retries = 1;
+    protected $filename;
+    protected $effective_url;
+    protected $content_type;
 
     function setUrl($url){
         $this->url = $url;
@@ -45,7 +49,7 @@ class ApiClient
     }
 
     function setHeaders(Array $headers){
-        $this->headers = $headers;
+        $this->req_headers = $headers;
         return $this;
     }
 
@@ -176,6 +180,171 @@ class ApiClient
         return $this;
     }
 
+    function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
+    {
+        if (!extension_loaded('curl'))
+		{
+            throw new \Exception("Extension curl no cargada");
+        }
+
+        if ($headers === null){
+            $headers = [];
+        } else {
+            if (!Arrays::is_assoc($headers)){
+                $_hs = [];
+                foreach ($headers as $h){
+                    list ($k, $v)= explode(':', $h, 2);
+                    $_hs[$k] = $v;
+                }
+
+                $headers = $_hs;
+            }
+        }
+
+        if ($options === null){
+            $options = [];
+        }
+
+        $keys = array_keys($headers);
+
+        $content_type_found = false;
+        foreach ($keys as $key){
+            if (strtolower($key) == 'content-type'){
+                $content_type_found = $key;
+                break;
+            }
+        }
+
+        $accept_found = false;
+        foreach ($keys as $key){
+            if (strtolower($key) == 'accept'){
+                $accept_found = $key;
+                break;
+            }
+        }
+
+        if (!$content_type_found){
+            $headers = array_merge(
+                [
+                    'Content-Type' => 'application/json'
+                ],
+                ($headers ?? [])
+            );
+        }
+
+
+        if ($accept_found) {
+            if (Strings::startsWith('text/plain', $headers[$accept_found]) ||
+                Strings::startsWith('text/html', $headers[$accept_found])){
+                $decode = false;
+            }
+        }
+
+        if ($encode_body && is_array($body)){
+            $data = json_encode($body);
+        } else {
+            $data = $body;
+        }
+
+        $curl = curl_init();
+
+        $http_verb = strtoupper($http_verb);
+
+        if ($http_verb != 'GET' && !empty($data)){
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+            if ($encode_body){
+                $headers['Content-Length']   = strlen($data);
+            }
+        }
+
+        $h = [];
+        foreach ($headers as $key => $header){
+            $h[] = "$key: $header";
+        }
+
+        $options = [
+            CURLOPT_HTTPHEADER => $h
+        ] + ($options ?? []);
+
+        curl_setopt_array($curl, $options);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_ENCODING, '' );
+        curl_setopt($curl, CURLOPT_TIMEOUT, 0 );
+
+        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_verb);
+
+        // https://stackoverflow.com/a/6364044/980631
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($curl, CURLOPT_HTTP200ALIASES, [
+            400,
+            500
+        ]);  //
+
+
+        $__headers  = [];
+        $__filename = null;
+
+        $header_fn = function ($cURLHandle, $header) use (&$__headers, &$__filename) {
+            $pieces = explode(":", $header);
+
+            if (count($pieces) >= 2)
+                $__headers[trim($pieces[0])] = trim($pieces[1]);
+
+
+            if (isset($__headers['Content-Disposition'])){
+                if (preg_match('/filename="([a-z-_.]+)";/i', $__headers['Content-Disposition'], $matches)){
+                    $__filename= $matches[1];
+                }
+            }
+
+            return strlen($header); // <-- this is the important line!
+        };
+
+        curl_setopt($curl, CURLOPT_HEADERFUNCTION,
+            $header_fn
+        );
+
+        $response  = curl_exec($curl);
+        $err_msg   = curl_error($curl);
+        $http_code = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        $content_type  = curl_getinfo($curl,CURLINFO_CONTENT_TYPE);
+        $effective_url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+
+        curl_close($curl);
+
+        $data = ($decode && $response !== false) ? json_decode($response, true) : $response;
+
+
+        $ret = [
+            'data'          => $data,
+            'http_code'     => $http_code,
+            'error'         => $err_msg
+        ];
+
+        $this->res_headers   = $__headers;
+        $this->filename      = $__filename;
+        $this->content_type  = $content_type;
+        $this->effective_url = $effective_url;
+
+        return $ret;
+    }
+
+    function getHeaders(){
+        return $this->req_headers;
+    }
+
+    function getContentType(){
+        return $this->content_type;
+    }
+
+    function getEffectiveUrl(){
+        return $this->effective_url;
+    }
+
     function request(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null){
         $this->url  = $url;
         $this->verb = strtoupper($http_verb);
@@ -187,7 +356,7 @@ class ApiClient
         }
 
         $body    = $body    ?? $this->body    ?? null;
-        $headers = $headers ?? $this->headers ?? null;        
+        $headers = $headers ?? $this->req_headers ?? null;        
         $decode  = $this->auto_decode; 
 
         if ($this->expiration){
@@ -223,13 +392,13 @@ class ApiClient
         */
         while (!$ok && $retries < $this->max_retries)
         {   
-            $res = Url::consume_api($url, $http_verb, $body, $headers, $options, false, $this->encode_body);
+            $res = $this->consume_api($url, $http_verb, $body, $headers, $options, false, $this->encode_body);
             $this->status   = $res['http_code'];
             $this->errors   = $res['error'];
             $this->response = $res['data'];
 
-            $this->filename     = Url::getFilename();
-            $this->res_headers  = Url::getHeaders();
+            $this->filename     = $this->getFilename();
+            $this->res_headers  = $this->getHeaders();
 
             /*
                 Si hay errores && el status code es 0 
@@ -254,7 +423,7 @@ class ApiClient
 
         // dd($res, 'RES');
 
-        if ($this->expiration){
+        if ($this->expiration && $res !== null){
             $this->saveResponse($res);
         }
 
@@ -330,6 +499,11 @@ class ApiClient
 
         $path[$this->url] = sys_get_temp_dir() . '/' . $filename;
         return $path[$this->url];
+    }
+
+    function clearCache(){
+        unlink($this->getCachePath());
+        return $this;
     }
  
 	protected function saveResponse(Array $response){
@@ -414,7 +588,7 @@ class ApiClient
 
 	public function httpHeader($header, $content = NULL)
 	{
-		$this->headers[] = $content ? $header . ': ' . $content : $header;
+		$this->req_headers[] = $content ? $header . ': ' . $content : $header;
 		return $this;
 	}
 
