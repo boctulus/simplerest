@@ -40,28 +40,29 @@ use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\MaisonsScraper;
 use Endroid\QrCode\Writer\PngWriter;
+use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
-use simplerest\core\libs\SendinBlue;
 
+use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\FileUploader;
+
 use Endroid\QrCode\Label\Font\NotoSans;
 
 use simplerest\libs\LeroyMerlinScraper;
-
 use simplerest\models\az\ProductsModel;
-use simplerest\controllers\api\Products;
 
 //  QR
+use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
-use simplerest\core\libs\PostmanGenerator;
 
+use simplerest\core\libs\PostmanGenerator;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\controllers\MakeControllerBase;
@@ -10025,6 +10026,19 @@ class DumbController extends Controller
         dd($res);
     }
 
+    function test_follow_redirs(){
+        $url = 'https://amzn.to/2M0SCXb';
+
+        dd(
+            ApiClient::instance($url)
+            ->disableSSL()
+            ->followLocations()
+            ->cache()
+            ->get()
+            ->getResponse(false)
+        );
+    }
+
     function get_bruno_csv(){
         $proveedores = [
             'MAISONS DU MONDE',
@@ -10077,24 +10091,15 @@ class DumbController extends Controller
 
 
     function maps()
-    {   
-        $address = 'Diego de Torres 5, Acala de Henaes, Madrid'; // Address
-        $apiKey = 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY'; ///// <----------  de cliente de MX de paqueteria TMH
+    { 
+        $apiKey = 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY'; 
+        ///// <----------  de cliente de MX de paqueteria TMH
 
-        // Get JSON results from this request
-        $geo = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($address).'&sensor=false&key='.$apiKey);
+        $maps = new GoogleMaps($apiKey);
 
-        $geo = json_decode($geo, true); // Convert the JSON to an array
-
-        if (isset($geo['status']) && ($geo['status'] == 'OK')) {
-            $lat = $geo['results'][0]['geometry']['location']['lat']; // Latitude
-            $lon = $geo['results'][0]['geometry']['location']['lng']; // Longitude
-
-            d([
-                'lat' => $lat,
-                'lon' => $lon
-            ]);
-        }
+        dd(
+            $maps->getCoordiantes('Diego de Torres 5, Acala de Henaes, Madrid')
+        );
     }
 
     /*
@@ -10407,17 +10412,5 @@ class DumbController extends Controller
         );        
     }
 
-    function test_follow_redirs(){
-        $url = 'https://amzn.to/2M0SCXb';
-
-        dd(
-            ApiClient::instance($url)
-            ->disableSSL()
-            ->followLocations()
-            ->cache()
-            ->get()
-            ->getResponse(false)
-        );
-    }
 
 }   // end class
