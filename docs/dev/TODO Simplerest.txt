@@ -57,6 +57,11 @@ Hay mas detalle en otra parte del documento.
   PostmanGenerator (hoy es libreria en el core)
   GoogleMaps  (hoy es libreria en el core)
 
+De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes. No pueden estar dentro del "core". Ej:
+
+  Collections (wrapper sobre arrays)
+  Carbon (extension de la clase Datetime)
+
 - El propio framework debe ser un package -privado- instalable de Composer
 
 - Soporte full de JSON. Es pre-requisito para Transients.
@@ -160,6 +165,15 @@ Componetes con codigo fuente:
 - My components: https://livewirekit.com
 
 https://www.youtube.com/watch?v=h1K9IFfPU68&ab_channel=LaravelDaily`
+
+Basicamente dentro de cada componente hay:
+
+  . Migrations
+  . Models
+  . Vista(s)
+  . Componente que extiende a la clase Component con los metodos mount(), render(), ...
+
+Migraciones y modelos estan porque generalmente se recupera y se almacena cierta informacion en DB.
 
 - Terminar Solucion Binaria -> ofrecer creacion de APIs en Laravel, Java Spring Boot, Ruby on Rails y Django
 
