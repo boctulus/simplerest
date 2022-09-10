@@ -72,18 +72,43 @@ TOP PRIORITY
 
   . Documentator
 
+  . TODO (a usarse internamente). Podria tener utilidad dentro de un eCommerce para el admin también
+
   . Administrador de usuarios, roles y permisos
 
   . Blog
 
   . Sistema de tickets de soporte
 
-  . eCommerce 
+  . eCommerce <-- debo vender algo a fin de poder mejorarlo
+
+    La forma mas sencilla de comenzar es con "productos externos" de sistemas de referidos ya que no necesitare procesar pagos pues cuando se venda algo se me pagara comision.
+
+    Intentar como experimiento armar lo mismo con NodeJs + MongoDB y GO ...y ver cuan rapido puede ser
 
 Los modulos (packages) al poder combinarse van a permitir crear sistemas más complejos a partir de ellos.
 
 
 ------------x--------------
+
+[ Migraciones ]
+
+- Poder crear "macros" para extender las funcionalidades de la clase Schema. 
+
+En Laravel un package puede por ejemplo definir archivedAt() y luego usarse asi:
+
+  Schema::create('posts', function (Blueprint $table) {
+      $table->id();
+      $table->unsignedBigInteger('user_id');
+      $table->string('title');
+      $table->timestamps();
+      $table->archivedAt(); // Macro
+  });
+
+Revisar este package
+
+https://github.com/joelbutcher/laravel-archivable
+
 
 - Ademas de la sintaxis full para crear una relacion entre tablas existe ya la version simple:
 
@@ -1372,6 +1397,38 @@ Ej:
   Comparación de registros
   https://laravel.com/docs/8.x/eloquent#comparing-models
 
+
+Se podria evitar crear ciertas tablas "maestro" de esta forma:
+
+class UserModel {
+  // ...
+
+  public function gender() {
+      return $this->gender == 1 ? 'male' : 'female';
+  }
+}
+
+<-- lo "malo" es que no funcionaria si se hiciera un JOIN a esa tabla, o sea ... no se traeria ese pseudo-atributo
+
+Quizas por eso en Laravel, se devuelve una instancia de una clase Attribute que al ser visto por "instropeccion" haria que ese campo aparezca luego de un JOIN hacia esa tabla.
+
+Algo asi:
+
+class UserModel {
+  // ...
+
+  public function gender() : Attribute {
+      return make::Attribute(){
+        $this->gender ? 1 'male' : 'female'
+      }
+  }
+}
+
+"make::Attribute" es porque en vez de instanciarlo directamente utiliza el Contenedor de Dependencias Inversas.
+
+<-- en C# serian "propiedades".
+
+El punto es que...... ni Output Mutators ni Transformers al dia de hoy son tenidos en cuenta cuando se hace un JOIN entre tablas. Esto se deberia corregir eventualmente.
 
 ---
 
@@ -5460,7 +5517,7 @@ https://medium.com/@vivekdhumal/how-to-test-mail-notifications-in-laravel-345528
 
 - Verificar realmente esté OK
 
-- CORS debe no ser por defecto sino habilitarse via Midleware
+- CORS debe no ser por defecto sino habilitarse via Midleware *****
 
 - Deben poder configurarse los "trusted domains" (array) en vez de "*"
 
@@ -5473,11 +5530,6 @@ https://medium.com/@vivekdhumal/how-to-test-mail-notifications-in-laravel-345528
 [ Redes sociales ]
 
 - Reparar logins
-
-
-[ Panel de control ]
-
-- Hacer un control panel para administrar usuarios y ajustar permisos
 
 --
 
