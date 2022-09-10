@@ -39,6 +39,15 @@ TOP PRIORITY
 
 - Make commands para crear crons y colas 
 
+Completar comandos para manejar colas
+
+  php com make cron [ {name} | --name={name} ] 
+  --time={time} | --hour={hour} --minute={--minute}
+  --weekday={weekday} 
+  --monthday={monthday}
+
+Hay mas detalle en otra parte del documento.
+
 - Deben ser packages (ServiceProviders) y tener sus propios repositorios:
 
   SendinBlue (hoy es una libreria en el core + sus dependencias)
@@ -64,7 +73,95 @@ TOP PRIORITY
 
 - Terminar generador de front !
 
-- Terminar Solucion Binaria -> ofrecer creacion de APIs en PHP, Laravel e integracion de APIs para WordPress / Woocommerce.
+- Implementar de forma sencilla DataTables
+
+Investigar como el paquete "Yajra" de Laravel simplifica el uso de DataTables
+
+La idea es poder simplemente crear un datatable dado un modelo sin tener que configurar NADA. Ej:
+
+Ver:
+
+https://yajrabox.com/docs/laravel-datatables/master/quick-starter
+https://github.com/yajra/laravel-datatables
+
+
+En un controller podria tener algo como:
+
+  function getCustomers(){
+    $query = DB::table('customers')
+    ->select(['firstname', 'lastname', 'email']);
+
+    return datatables($query);  // devuelve un JSON o Array
+  }
+
+Probablemente devoleria VIA AJAX en "/api/{version}/customers" algo como 
+                                                   ^^^^^^^^^^
+  [
+    [
+      'id' => 3,
+      'firstname' => 'Paul',
+      'lastname'  => 'Jackson',
+      'email'     => 'abc@msn.com'
+    ],
+    // ...   
+  ]
+]
+
+Luego en la vista mediante el uso de un HTML Builder se construye la datatable que recibe el input anterior:
+
+Ej:
+
+  $this->builder()
+    ->setTableId('customers') 
+    ->columns($this->getColumns())
+    ->minifiedAjax()
+    ->dom('Bfrtip')
+    ->orderBy(1)
+    ->buttons(
+        Button::make('create'),
+        Button::make('export'),
+        Button::make('print'),
+        Button::make('reset'),
+        Button::make('reload')
+    );
+
+Ver video:
+
+https://www.youtube.com/watch?v=1wgLY-V69MM&ab_channel=LaravelDaily
+
+- Ver "portar" componentes de Laravel Livewire que tiene componentes para todo! 
+
+  https://www.youtube.com/watch?v=udvFu31sFpk&ab_channel=LaravelDaily
+
+Los componentes se pueden agregar a Livewire. Hay un repositiorio de componentes para Livewire en
+
+https://livewirekit.com/
+
+Para entender como funcionan ->
+
+https://laravel-livewire.com/docs/2.x/making-components
+
+Componetes con codigo fuente:
+
+- Livewire Official Plugins: https://github.com/orgs/livewire/repo...
+- Filament Admin: https://filamentadmin.com/
+- My video: Filament Admin: Simple TALL CRUD in Minutes [REVIEW] https://www.youtube.com/watch?v=JAHYf...
+- Wire Elements / Modal: https://github.com/wire-elements/modal
+- Wire Elements / Spotlight: https://github.com/wire-elements/spot...
+- My video: Livewire Spotlight Demo: Search with Keyboard Shortcut https://www.youtube.com/watch?v=ELvpe...
+- Asantibanez / livewire-calendar: https://github.com/asantibanez/livewi...
+- My video: Livewire Calendar: Package Review and Demo https://www.youtube.com/watch?v=-l3Ot...
+- Asantibanez / livewire-charts: https://github.com/asantibanez/livewi...
+- Asantibanez / livewire-select: https://github.com/asantibanez/livewi...
+- Wire UI: https://github.com/wireui/wireui
+- Livewire Powergrid: https://github.com/Power-Components/l...
+- Rappasoft / laravel-livewire-tables: https://github.com/rappasoft/laravel-...
+- Mediconesystems / livewire-datatables https://github.com/mediconesystems/li...
+- My components: https://livewirekit.com
+
+https://www.youtube.com/watch?v=h1K9IFfPU68&ab_channel=LaravelDaily`
+
+- Terminar Solucion Binaria -> ofrecer creacion de APIs en Laravel, Java Spring Boot, Ruby on Rails y Django
 
 - Incorporar pasarela de pagos a Solucion Binaria. TOCA RENOVAR dominio !!!! -- antes de oct 29 !!!
 
@@ -90,6 +187,12 @@ Los modulos (packages) al poder combinarse van a permitir crear sistemas más co
 
 
 ------------x--------------
+
+- No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest
+
+https://laravel.com/docs/9.x/collections
+
+Igualmente podria considerarse importar Carbon para manejo de fechas
 
 [ Migraciones ]
 
@@ -1753,11 +1856,6 @@ https://patrick-assoa-adou.medium.com/writing-a-simple-dependency-injection-cont
 __FILE__, __DIR__, __LINE__, __NAMESPACE__, __CLASS__, __TRAIT__, __METHOD__ y __FUNCTION__
 
 
-- Investigar como el paquete "Yajra" de Laravel simplifica el uso de DataTables
-
-https://github.com/yajra/laravel-datatables
-
-
 - Implementar "buses" de comunicación.  
 
 Estos permiten desacople entre emisor y receptor y que la comunicación sea asíncrona.
@@ -1818,11 +1916,6 @@ https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/getting-started_basic
 - No está *creando* tablas con PRIMARY KEY cuando esta es un 'uuid' (varchar) aunque si si es integer o inclusive con uuid pero con change()
 
 ----x-----
-
-[ MAKE ]
-
-- Los schemas deben poder sobre-escribirse sin ningún tipo de cuidado. 
-Para eso están! nada de --force o --unignore
 
 
 - GRPC
@@ -1951,7 +2044,6 @@ o
 
 o
   php com cronjobs --stop --pid={pid}
-
 
 - Colas (queues) 
 
