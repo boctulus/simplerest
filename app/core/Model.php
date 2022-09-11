@@ -1704,7 +1704,7 @@ class Model {
 			$count = $st->rowCount();
 
 			if (empty($output)) {
-				$ret = [];
+				$ret = []; // deberia retornar null !!!!!! Corregir pero analizar y probar luego ApiController
 			}else {
 				$ret = $pristine ? $output : $this->applyTransformer($this->applyOutputMutators($output));
 			}
@@ -2136,18 +2136,36 @@ class Model {
 		// return $this;
 	}
 
+	function firstWhere($conditions, $conjunction = 'AND'){
+		$this->where($conditions, $conjunction);
+		return $this->first();
+	}
+
 	function find($id){
 		return $this->where([$this->getFullyQualifiedField($this->schema['id_name']) => $id]);
 	}
 
-	function findOrFail($id){
-		$this->find($id);
+	/*
+		In Laravel,	works with Relationships
+		
+		The method also works with HasMany, HasManyThrough, BelongsToMany, MorphMany, and MorphToMany relations seamlessly.
 
-		if (!$this->exists()){
-			throw new \Exception("Resource for `{$this->table_name}` and id=$id doesn't exist");
+		$user->posts()->findOr(1, fn () => '...');
+	*/
+	function findOr($id, ?callable $fn = null){
+		$query = $this->find($id);
+
+		if ($fn != null && !$this->exists()){
+			return $fn($id);
 		}   
 
-		return $this;
+		return $query;
+	}
+
+	function findOrFail($id){
+		return $this->findOr($id, function($id){
+			throw new \Exception("Resource for `{$this->table_name}` and id=$id doesn't exist");
+		});
 	}
 
 	function whereNot(string $field, $val){
