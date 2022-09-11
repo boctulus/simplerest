@@ -3236,18 +3236,34 @@ class DumbController extends Controller
 
     function test_find_or_fail()
     {
+        DB::getConnection('az');
+        
         d(
             DB::table('products')
-                ->findOrFail(1000)
-                ->first()
+            ->findOrFail(1199)
+            ->first() 
         );
     }
+
+    function test_find_or()
+    {
+        DB::getConnection('az');
+        
+        d(
+            DB::table('products')
+            ->findOr(11999, function($id) {
+                die("No existe el registro con id = $id");
+            })
+            ->first() 
+        );
+    }
+
 
     function test_update_or_fail()
     {
         d(
             DB::table('products')
-                ->updateOrFail(['description' => 'abc'])
+            ->updateOrFail(['description' => 'abc'])
         );
     }
 

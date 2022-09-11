@@ -2421,7 +2421,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }
                             
                             //dd('--> callback');
-                            Url::consume_api($hook['callback'], 'POST', $body);
+                            consume_api($hook['callback'], 'POST', $body);
                         }
                     }  
                     continue;
@@ -2439,12 +2439,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             if (empty($hook['conditions'])){
                 //dd('--> callback');
-                Url::consume_api($hook['callback'], 'POST', $body);
+                consume_api($hook['callback'], 'POST', $body);
             } else {
                 if ($op != 'list'){                   
                     if (Strings::filter($body['data'], $conditions)){
                         //dd('--> callback');
-                        Url::consume_api($hook['callback'], 'POST', $body);
+                        consume_api($hook['callback'], 'POST', $body);
                     }
                 }
             }

@@ -4296,22 +4296,58 @@ https://restdb.io/docs/querying-with-the-api
 
 - Implementar ORM basico y eficiente
 
+En principio permitir cierta compatibiidad con las funcionalidades basicas de Laravel. Hacer un wrapper sobre el QueryBuilder
+
+  . all() hace un get()
+
+  Ej:
+
+    $countries = Country::all();
+
+  . with()
+  
+  with('t1.t2.t3.tN') hace auto-JOINs con t1, t2, t3,... tN en ese orden
+
+  Ej:
+
+    $companies = Company::with('city.country')->latest()->take(5)->get();
+
+  . Traer registros relacionados
+
+  Podria funcionar con las relaciones tal y como las define Laravel en las clases modelo y tambien usando los schemas correspondientes en cuyo caso el nombre del metodo coincidiria con el nombre "camelizado" de la tabla con la que se pide la relacion - si es 'users_roles' entonces seria con userRoles() -
+
+  Ej:
+
+    $cities = Country::cities();  
+
+  . simplePaginate()
+
+  If you only need to display simple "Next" and "Previous" links in your application's UI, you may use the simplePaginate method to perform a single, efficient query:
+
+  Ej:
+
+    $lists = $list->links()->orderBy('created_at', 'desc')->simplePaginate(4)
+
+    $users = DB::table('users')->simplePaginate(15);  <----- funciona a nivel de QueryBuilder tambien
+
+  En si lo que harian paginate() y simplePaginate() es cambiar de paginador o configurarlo de forma distinta. Tambien existe cursorPaginate() que funciona a nivel de SQL con cursores.
+
+  Etc.
+
   Ver API de Larevel y GORM
 
-  Full-Featured ORM
-  Associations (has one, has many, belongs to, many to many, polymorphism, single-table inheritance)
+  Associations (has one, has many, belongs to, many to many, *polymorphism*, single-table inheritance)
   Hooks (before/after create/save/update/delete/find)
   Eager loading with Preload, Joins
-  Transactions, Nested Transactions, Save Point, RollbackTo to Saved Point  <---- implementar !
-  Context, Prepared Statment Mode, DryRun Mode
+  Transactions, *Nested Transactions*, *Save Point*, *RollbackTo to Saved Point*  <---- implementar !
+  Context, Prepared Statment Mode, *DryRun Mode*
   Batch Insert, FindInBatches, Find/Create with Map, CRUD with SQL Expr and Context Valuer
   SQL Builder, Upsert, Locking, Optimizer/Index/Comment Hints, Named Argument, SubQuery
   Composite Primary Key, Indexes, Constraints
   Auto Migrations
-  Logger
+  *Logger*
   Extendable, flexible plugin API: Database Resolver (multiple databases, read/write splitting) / Prometheus…
-  Every feature comes with tests
-  Developer Friendly
+  *Every feature comes with tests*
 
 https://gorm.io/
 https://developpaper.com/basic-usage-of-golang-gorm-operation-mysql-and-gorm/
