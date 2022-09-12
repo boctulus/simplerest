@@ -35,6 +35,8 @@ https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versi
 TOP PRIORITY
 ============
 
+- Portar "Blade" a fin de poder usarse con el port de Livewire
+
 - Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
 
 - Make commands para crear crons y colas 
@@ -136,6 +138,8 @@ https://www.youtube.com/watch?v=1wgLY-V69MM&ab_channel=LaravelDaily
 
 - Ver "portar" componentes de Laravel Livewire que tiene componentes para todo! 
 
+Solo implementar los metodos necesarios y seria necesario portar o importar Blade como package.
+
   https://www.youtube.com/watch?v=udvFu31sFpk&ab_channel=LaravelDaily
 
 Los componentes se pueden agregar a Livewire. Hay un repositiorio de componentes para Livewire en
@@ -195,12 +199,66 @@ Migraciones y modelos estan porque generalmente se recupera y se almacena cierta
 
     La forma mas sencilla de comenzar es con "productos externos" de sistemas de referidos ya que no necesitare procesar pagos pues cuando se venda algo se me pagara comision.
 
-    Intentar como experimiento armar lo mismo con NodeJs + MongoDB y GO ...y ver cuan rapido puede ser
 
-Los modulos (packages) al poder combinarse van a permitir crear sistemas más complejos a partir de ellos.
+  Los modulos (packages) al poder combinarse van a permitir crear sistemas más complejos a partir de ellos.
+
+  Intentar como experimiento armar lo mismo con NodeJs + MongoDB y GO ...y ver cuan rapido puede ser
+
+
+- Considerar el uso de templates como "vuexy-vuejs-admin-dashboard" como alternativa a AdminLTE !
+
+  https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/landing/
+
+demo
+
+  https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/demo-1/dashboard/ecommerce
+
+A la final para poder generar rapidamente algo con Vuexy seria necesario crear componentes como con Bt5Form
+
+  <template>
+    <app-collapse accordion>
+      <app-collapse-item title="Accordion Item 1">
+        Cheesecake cotton candy bonbon muffin cupcake tiramisu croissant. Tootsie roll sweet candy bear claw chupa chups
+        lollipop toffee. Macaroon donut liquorice powder candy carrot cake macaroon fruitcake.
+      </app-collapse-item>
+      <app-collapse-item title="Accordion Item 2">
+        Cheesecake cotton candy bonbon muffin cupcake tiramisu croissant. Tootsie roll sweet candy bear claw chupa chups
+        lollipop toffee. Macaroon donut liquorice powder candy carrot cake macaroon fruitcake.
+      </app-collapse-item>
+      ...
+    </app-collapse>
+  </template>
+
+  <script>
+  import AppCollapse from '@core/components/app-collapse/AppCollapse.vue'
+  import AppCollapseItem from '@core/components/app-collapse/AppCollapseItem.vue'
+
+  export default {
+    components: {
+      AppCollapse,
+      AppCollapseItem,
+    },
+  }
+  </script>
+
+https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/guide/custom-components/collapse.html#default-collapse
 
 
 ------------x--------------
+
+- Crear cliente en Javascript que pida a SimpleRest que trabaje como CouchDB. <-- para punto de venta (POS)
+
+  . Solicite los schemas al servidor incluyendo las relaciones entre tablas.
+
+  . Cree en localStorage un tablas virtuales (arrays) 
+
+  . Crear un wrapper sobre cada endpoint a fin de que si la conexion esta caida entonces si es un GET se lee en el localStorage y si es un DELETE, POST o PATCH se escribe en el localStorage pero también se genera una ¨cola de escrituras pendientes¨ que cuando se restablezca la conexion permita impactar al servidor consumiendo esa cola (queue).  
+
+  . Este diseño implica que deban usarse campos UUID por seguridad ya que no podria garantizarse que un ID en caso de un POST ya no se repitiera si fuera autoincremental.
+
+  . El cliente de frontend debe respetar la integridad referencial al usar las tablas virtuales basandose en los schemas y relaciones.
+
+  . Solo se soportarian funcionalidades muy básicas dejando de lado recursos anidades o inclusive filtros.
 
 - No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest
 
