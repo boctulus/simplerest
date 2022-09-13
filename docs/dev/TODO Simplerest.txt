@@ -35,6 +35,14 @@ https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versi
 TOP PRIORITY
 ============
 
+- Poder asociar cada "tenant" a un dominio o subdominio y un puerto !!!
+
+<-- el usuario debe tener la posibilidad de ver sus suscripciones, fecha de corte de pago, historial de pagos, obtener recibos de pago,....
+
+y administrar el nombre del dominio o sub-dominio asociado !!! <-- implica manejo de zona de DNS
+
+Tambien el usuario debe poder configurar el correo ya sea SMTP o externo.
+
 - Portar "Blade" a fin de poder usarse con el port de Livewire
 
 - Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
@@ -279,6 +287,20 @@ https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/gu
     - Sistema de personal (usuarios, registro de entrada-salida, programacion de pagos, record de inasistencias, record de incapacidades o carpetas medicas,... faltas y sanciones,...)
 
     - Sistema de alumnos (registro de asistencias e inastistencias, calificaciones, sanciones, noticaciones a los padres ya sea en general por curso o de un alumno en particular,...). Hacerlo compatible con sistema de personal y biblioteca.
+
+    - Para el caso de un Sistema para colegios puede combinarse con otros modulos que se podrian vender por aparte:
+
+      . Matriculas de estudiantes (pagos realizados, pendientes, generacion de recibos o facturas,...)
+
+      . Pagos en linea (en principio para matriculas)
+
+      . Planes de estudio y otros programas de "extension" (solo los programas colapsables con links)
+
+      . Cursos en linea
+
+      . Reportes (ingresos y egresos, evolucion de la matricula, indice de morosidad,...)
+
+Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) de 3 meses. <-- beta-testers sin saberlo ;)
 
 
 - No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest
