@@ -260,6 +260,13 @@ https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/gu
 
   . Solo se soportarian funcionalidades muy básicas dejando de lado recursos anidades o inclusive filtros.
 
+  <--- para el caso de un POS (punto de venta), para poder imprimir los recibos estando offline o los PDFs se generan el cliente de frontend o... se consume una API de otro servicio local en cualquier lenguaje pero idealmente Java o C# que:
+  
+    - En un endpoint reciba datos, rellene un template (que puede obtenerse consumiendo otro endpoint) y con eso genere un PDF y se retorne.
+
+    - En otro endpoint se envie el ID del invoice / recibo / presupuesto (proforma) generado previamnre (y visualizado en el frontend) y lo envie a imprimir.
+
+
 - No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest
 
 https://laravel.com/docs/9.x/collections
