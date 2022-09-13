@@ -262,11 +262,23 @@ https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/gu
 
   . El cliente puede escribirse en cualquier lenguaje y se podria prototipar tambien en PHP.
 
+
   <--- para el caso de un POS (punto de venta), para poder imprimir los recibos estando offline o los PDFs se generan el cliente de frontend o... se consume una API de otro servicio local en cualquier lenguaje pero idealmente Java o C# que:
   
     - En un endpoint reciba datos, rellene un template (que puede obtenerse consumiendo otro endpoint) y con eso genere un PDF y se retorne.
 
     - En otro endpoint se envie el ID del invoice / recibo / presupuesto (proforma) generado previamnre (y visualizado en el frontend) y lo envie a imprimir.
+
+
+  <--- Sistemas que se pueden beneficiar de una sincronizacion con SimpleRest serian:
+
+    - Punto de venta (que se puede especializar en restaurantes, ferreterias, farmacias,... con cierta personalizacion)
+
+    - Administracion de biblioteca (libros, usuarios, prestamos, pedidos de nuevos libros, ordenes de compra, sanciones a usuarios, estado general de los libros con antigudad promedio, los libros mas solicitados, los temas mas solicitados,..)
+
+    - Sistema de personal (usuarios, registro de entrada-salida, programacion de pagos, record de inasistencias, record de incapacidades o carpetas medicas,... faltas y sanciones,...)
+
+    - Sistema de alumnos (registro de asistencias e inastistencias, calificaciones, sanciones, noticaciones a los padres ya sea en general por curso o de un alumno en particular,...). Hacerlo compatible con sistema de personal y biblioteca.
 
 
 - No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest
