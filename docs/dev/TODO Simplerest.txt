@@ -35,6 +35,8 @@ https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versi
 TOP PRIORITY
 ============
 
+[ Admin Panel ]
+
 - Poder asociar cada "tenant" a un dominio o subdominio y un puerto !!!
 
 <-- el usuario debe tener la posibilidad de ver sus suscripciones, fecha de corte de pago, historial de pagos, obtener recibos de pago,....
@@ -43,7 +45,27 @@ y administrar el nombre del dominio o sub-dominio asociado !!! <-- implica manej
 
 Tambien el usuario debe poder configurar el correo ya sea SMTP o externo.
 
+- Las empresas podran tener varios dominios / subdominios y en cada uno tener los modulos que quieran por lo que podrian tener (y pagar por) varias veces el mismo modulo pero asociado a otro dominio / subdominio.
+
+  Empresa 
+          > subdominios  -- que pueden tener asociado un dominio
+
+                        > modulos
+
+                                  > roles
+
+
+Cada modulo (que no es exactamente lo mismo que un package) define roles (staff, alumno, usuario biblioteca, ...) por lo que una empresa puede comenzar comprando un modulo de biblioteca (que defiene que los usuarios son usuarios de biblioteca y un rol admin)
+
+Luego comprar un modulo de alumnos y asociar ya sea uno a uno, mediante algun filtro que permita seleccionarlos, etc,... y hacer que los usuarios de la biblioteca puedan ser alumnos con lo cual podran tener calificaciones, una matricula, etc.
+
+
+[ FrontEnd ]
+
 - Portar "Blade" a fin de poder usarse con el port de Livewire
+
+
+[ DevOps ]
 
 - Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
 
@@ -252,8 +274,6 @@ A la final para poder generar rapidamente algo con Vuexy seria necesario crear c
 https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/guide/custom-components/collapse.html#default-collapse
 
 
-------------x--------------
-
 - Crear cliente en Javascript que pida a SimpleRest que trabaje como CouchDB. <-- para punto de venta (POS)
 
   . Solicite los schemas al servidor incluyendo las relaciones entre tablas.
@@ -278,7 +298,7 @@ https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/gu
     - En otro endpoint se envie el ID del invoice / recibo / presupuesto (proforma) generado previamnre (y visualizado en el frontend) y lo envie a imprimir.
 
 
-  <--- Sistemas que se pueden beneficiar de una sincronizacion con SimpleRest serian:
+  <--- Sistemas que se pueden beneficiar de una *sincronizacion* con SimpleRest serian:
 
     - Punto de venta (que se puede especializar en restaurantes, ferreterias, farmacias,... con cierta personalizacion)
 
@@ -301,6 +321,9 @@ https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/gu
       . Reportes (ingresos y egresos, evolucion de la matricula, indice de morosidad,...)
 
 Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) de 3 meses. <-- beta-testers sin saberlo ;)
+
+
+------------x--------------
 
 
 - No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest
