@@ -47,17 +47,6 @@ Tambien el usuario debe poder configurar el correo ya sea SMTP o externo.
 
 - Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
 
-- Make commands para crear crons y colas 
-
-Completar comandos para manejar colas
-
-  php com make cron [ {name} | --name={name} ] 
-  --time={time} | --hour={hour} --minute={--minute}
-  --weekday={weekday} 
-  --monthday={monthday}
-
-Hay mas detalle en otra parte del documento.
-
 - Deben ser packages (ServiceProviders) y tener sus propios repositorios:
 
   SendinBlue (hoy es una libreria en el core + sus dependencias)
@@ -211,6 +200,17 @@ Migraciones y modelos estan porque generalmente se recupera y se almacena cierta
   Los modulos (packages) al poder combinarse van a permitir crear sistemas más complejos a partir de ellos.
 
   Intentar como experimiento armar lo mismo con NodeJs + MongoDB y GO ...y ver cuan rapido puede ser
+
+- Make commands para crear crons y colas 
+
+Completar comandos para manejar colas
+
+  php com make cron [ {name} | --name={name} ] 
+  --time={time} | --hour={hour} --minute={--minute}
+  --weekday={weekday} 
+  --monthday={monthday}
+
+Hay mas detalle en otra parte del documento.
 
 
 - Considerar el uso de templates como "vuexy-vuejs-admin-dashboard" como alternativa a AdminLTE !
