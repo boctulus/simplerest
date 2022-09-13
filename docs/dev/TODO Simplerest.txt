@@ -256,9 +256,11 @@ https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/gu
 
   . Este diseño implica que deban usarse campos UUID por seguridad ya que no podria garantizarse que un ID en caso de un POST ya no se repitiera si fuera autoincremental.
 
-  . El cliente de frontend debe respetar la integridad referencial al usar las tablas virtuales basandose en los schemas y relaciones.
+  . El cliente debe respetar la integridad referencial al usar las tablas virtuales basandose en los schemas y relaciones.
 
   . Solo se soportarian funcionalidades muy básicas dejando de lado recursos anidades o inclusive filtros.
+
+  . El cliente puede escribirse en cualquier lenguaje y se podria prototipar tambien en PHP.
 
   <--- para el caso de un POS (punto de venta), para poder imprimir los recibos estando offline o los PDFs se generan el cliente de frontend o... se consume una API de otro servicio local en cualquier lenguaje pero idealmente Java o C# que:
   
