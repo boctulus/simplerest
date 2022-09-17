@@ -7895,7 +7895,7 @@ Ej:
 	->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
 
 	d($client->getStatus(), 'STATUS');
-	d($client->getErrors(), 'ERRORS');
+	d($client->getError(), 'ERROR');
 	d($client->getResponse(true), 'RES'); 
 
 
@@ -7919,7 +7919,7 @@ Ej:
 	->request('https://somesite.com/login_check', 'POST');        
 
 	d($client->getStatus(), 'STATUS');
-	d($client->getErrors(), 'ERRORS');
+	d($client->getError(), 'ERROR');
 	d($client->getResponse(true), 'RES'); 
 
 
@@ -7968,7 +7968,7 @@ Ej:
 	->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
 
 	d($client->getStatus(), 'STATUS');
-	d($client->getErrors(), 'ERRORS');
+	d($client->getError(), 'ERROR');
 	d($client->getResponse(true), 'RES'); 
 
 
