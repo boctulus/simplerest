@@ -9809,7 +9809,7 @@ class DumbController extends Controller
         ->post($ruta);        
 
         d($client->getStatus(), 'STATUS');
-        d($client->getErrors(), 'ERRORS');
+        d($client->getError(), 'ERROR');
         d($client->getResponse(), 'RES');  
     }
 
@@ -9834,7 +9834,7 @@ class DumbController extends Controller
         ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
 
         d($client->getStatus(), 'STATUS');
-        d($client->getErrors(), 'ERRORS');
+        d($client->getError(), 'ERROR');
         d($client->getResponse(true), 'RES'); 
     }
 
@@ -9857,7 +9857,7 @@ class DumbController extends Controller
         ->request('https://devapi.sinergia.pe/login_check', 'POST');        
 
         d($client->getStatus(), 'STATUS');
-        d($client->getErrors(), 'ERRORS');
+        d($client->getError(), 'ERROR');
         d($client->getResponse(true), 'RES'); 
     }
 

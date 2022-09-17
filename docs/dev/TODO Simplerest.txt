@@ -60,6 +60,12 @@ Cada modulo (que no es exactamente lo mismo que un package) define roles (staff,
 Luego comprar un modulo de alumnos y asociar ya sea uno a uno, mediante algun filtro que permita seleccionarlos, etc,... y hacer que los usuarios de la biblioteca puedan ser alumnos con lo cual podran tener calificaciones, una matricula, etc.
 
 
+- Investigar como hacer una PWA !!!! Leer sobre Workbox
+
+https://www.youtube.com/watch?v=E8BeSSdIUW4&ab_channel=vaadinofficial
+https://developer.chrome.com/docs/workbox/
+https://www.youtube.com/watch?v=l44IF9fBNOs&ab_channel=NeilRowe
+
 [ FrontEnd ]
 
 - Portar "Blade" a fin de poder usarse con el port de Livewire
@@ -490,6 +496,9 @@ https://github.com/thephpleague/flysystem-aws-s3-v3
 - Implementar equivalente a la clase Storage de Laravel con similares abstracciones que en SimpleRest serian sobre Files, FileUploader, Base64Uploader y ApiClient
 
 https://laravel.com/docs/9.x/filesystem
+
+
+- Usar algo como Pusher para websockets (para chats, etc)
 
 - En Mail::send() hacer que parametros que son de tipo Array puedan ser Array|string
 
@@ -6214,6 +6223,12 @@ https://docs.microsoft.com/en-us/aspnet/core/grpc/comparison?view=aspnetcore-5.0
 https://medium.com/@saboteurkid/apis-solution-debate-rest-vs-grpc-vs-graphql-d9c25e44d6
 https://medium.com/better-programming/understanding-grpc-60737b23e79e
 https://www.gslab.com/blogs/grpc-vs-rest-a-complete-guide
+
+
+- Leer sobre CQRS !!!
+
+https://www.youtube.com/watch?v=6XO6vSiioWE&ab_channel=CodeOpinion
+https://www.techtarget.com/searchapparchitecture/definition/CQRS-command-query-responsibility-segregation#:~:text=Command%20query%20responsibility%20segregation%20(CQRS,complex%2C%20multi%2Dsystem%20changes.
 
 
 - Reemplazar clases Resonse y Request por http_foundation
