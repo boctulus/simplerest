@@ -1,5 +1,7 @@
 # TODO
 
+- Cambiar dependecias de Url::consumeApi() por el uso de ApiClient
+
 Respetar en lo posible la lista de prioridades para poder tener productos en el mercado alguna vez !!!
 
 - Se esta versionando *MAL*. Lo que deben versionarse son los modelos y apis pero *no* los componentes del core que arman las APIs. Si el core varia, deben revisarse los schemas y/o modelos para que se adecuen a la nueva version del framework.

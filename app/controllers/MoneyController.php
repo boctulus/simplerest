@@ -2,12 +2,12 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\ApiClient;
+use simplerest\controllers\MyController;
 
 class MoneyController extends MyController
 {
-
     function swap(){
 
         // Build Swap
@@ -39,26 +39,36 @@ class MoneyController extends MyController
         DataSource: API Banco de la República (de Colombia)
     */
     function dolar(){
-        $res = Url::consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
-        
-        if ($res['http_code'] != 200){
+        $url    = 'https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario';
+        $client = new ApiClient($url);
+
+        $res = $client
+        ->disableSSL()
+        ->get();
+
+        if ($res->getStatus() != 200){
             throw new \Exception("Error: ". $res['code'] . ' -code: '. $res['code']);
         }
 
-        $data  = $res['data'];
+        $data  = $res->getResponse()['data'];
         $final = $data[count($data)-1];
         dd($final[1], "DOLAR/COP (TRM) - VALOR FINAL ". date("Y-m-d H:i:s", substr($final[0], 0, 10)));
     }
 
     
     function euro(){
-        $res = Url::consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
-        
-        if ($res['http_code'] != 200){
+        $url    = 'https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario';
+        $client = new ApiClient($url);
+
+        $res = $client
+        ->disableSSL()
+        ->get();
+
+        if ($res->getStatus() != 200){
             throw new \Exception("Error: ". $res['code'] . ' -code: '. $res['code']);
         }
 
-        $data    = $res['data'];
+        $data   = $res->getResponse()['data'];
         $final  = $data[count($data)-1];
         $copusd = $final[1];
         
