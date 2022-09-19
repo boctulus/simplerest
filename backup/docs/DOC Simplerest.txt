@@ -6004,9 +6004,9 @@ Agregar en el bloque lo siguiente:
 
 # Consumo de APIs
 
-El framework provee la función Url::consume_api() para el consumo de APIs. 
+El framework provee la función Url::consumeApi() para el consumo de APIs. 
 
-    consume_api(string $url, 
+    consumeApi(string $url, 
                 string $http_verb, 
                 $body = null, 
                 ?Array $headers = null, 
@@ -6052,7 +6052,7 @@ Ej:
 
 	// ...
 
-	$res = Url::consume_api('https://jsonplaceholder.typicode.com/albums', 'GET');
+	$res = Url::consumeApi('https://jsonplaceholder.typicode.com/albums', 'GET');
 	dd($res);
 
 Y bien podría haber una lógica de control de errores:
@@ -6070,13 +6070,13 @@ Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON p
 
 1) Pasando un Accept de tipo 'text/plain' o ...
 
-	$res = Url::consume_api('http://xxxxxxxxxxxxx', 'GET', null, [
+	$res = Url::consumeApi('http://xxxxxxxxxxxxx', 'GET', null, [
 		'Accept' => 'text/plain'
 	]);
 
 2) Pasando como 6to parámetro false 
 
-	$res = Url::consume_api('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
+	$res = Url::consumeApi('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
   
 
 # Crear un recurso
@@ -6087,7 +6087,7 @@ Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON p
 		"body": "Some long description"
   	}';
 
-	$res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+	$res = Url::consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
 	dd($res);  
 
 Ej:
@@ -6100,7 +6100,7 @@ Ej:
             "body" => "Other long description"
 	];
 
-	$res = Url::consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+	$res = Url::consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
 	dd($res);  
 
 Ej: 
@@ -6109,7 +6109,7 @@ Ej:
 
 	$xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
-	$response = Url::consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
+	$response = Url::consumeApi('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
 		"Content-type" => "text/xml"
 	]);
 
@@ -6136,11 +6136,11 @@ Todos los verbos http (GET, POST, PUT, PATCH,...) son soportados
 
 # Autorización 
 
-Web tokens pueden ser enviados a la función consume_api() via el array de headers.
+Web tokens pueden ser enviados a la función consumeApi() via el array de headers.
 
 Ej:
 
-    $response = Url::consume_api('http://xxxxxxxxx:8080/api/some_resource', 'GET', null, [
+    $response = Url::consumeApi('http://xxxxxxxxx:8080/api/some_resource', 'GET', null, [
         "Authorization" => "Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx"
     ]);
 
@@ -6153,7 +6153,7 @@ Ej:
 
     $encoded = base64_encode($file);
 
-    $response = Url::consume_api('http://xxxxxxxxx:8080/api/some_resource', 'POST', $encoded, [
+    $response = Url::consumeApi('http://xxxxxxxxx:8080/api/some_resource', 'POST', $encoded, [
         "Content-type"  => "text/plain"
     ]);
 
