@@ -10,6 +10,19 @@ class Files
 	static protected $backup_path;
 	static protected $callable;
 
+	/*
+		Si es false, funciones curl no funcionaran
+	*/
+	static function isCurlAvailable(){
+		return extension_loaded('curl');
+	}
+
+	/*
+		Si es false, file_get_contents() no funcionara
+	*/
+	static function isAllowUrlFopenEnabled(){
+		return ini_get('allow_url_fopen');
+	}
 
 	/*
 		Resultado:
@@ -101,7 +114,8 @@ class Files
             return file_get_contents($path);
         }
 
-        $res = Url::consume_api($url, 'GET', null, null, null, false);
+		$client = new ApiClient();
+        $res    = $client->consumeApi($url, 'GET', null, null, null, false);
 		
 		if ($res['http_code'] != 200){
 			return;
