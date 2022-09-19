@@ -341,6 +341,8 @@ return [
 	'var_dump_separators' => [
 		'start' => '--| ',
 		'end'   => ''
-	]
+	],
+
+	'google_maps_api_key' => Env::get('GOOGLE_MAPS_API_KEY')
 	
 ];
