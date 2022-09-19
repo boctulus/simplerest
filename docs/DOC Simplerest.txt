@@ -7569,9 +7569,23 @@ Ej:
 
 # Consumo de APIs
 
-El framework provee la función consume_api() para el consumo de APIs. 
+Si simplemente se desea hacer un GET la forma más sencilla es utilizar Url::getUrlContent() que es un wrapper sobre file_get_contents() y funciones curl con la habilidad de utilizar la opción que esté disponible:
 
-    consume_api(
+	getUrlContent(string $url, bool $json_decode = false, bool $ignore_ssl_cert = false)
+
+Si se espera un JSON, enviar true en el segundo parámetro y si solo se está haciendo pruebas, se puede deshabilitar el chequeo del certificado SSL.
+
+Ej:
+
+	$url = 'https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario';
+
+	dd(
+		Url::getUrlContent($url, true, true)
+	);
+
+Además el framework provee la función consumeApi() para el consumo de APIs. ----- depredicada *
+
+    consumeApi(
 
         string $url, 
         string $http_verb, 
@@ -7618,7 +7632,7 @@ Ej:
 
 	// ...
 
-	$res = consume_api('https://jsonplaceholder.typicode.com/albums', 'GET');
+	$res = consumeApi('https://jsonplaceholder.typicode.com/albums', 'GET');
 	dd($res);
 
 Y bien podría haber una lógica de control de errores:
@@ -7636,13 +7650,13 @@ Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON p
 
 1) Pasando un Accept de tipo 'text/plain' o ...
 
-	$res = consume_api('http://xxxxxxxxxxxxx', 'GET', null, [
+	$res = consumeApi('http://xxxxxxxxxxxxx', 'GET', null, [
 		'Accept' => 'text/plain'
 	]);
 
 2) Pasando como 6to parámetro false 
 
-	$res = consume_api('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
+	$res = consumeApi('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
   
 # Crear un recurso
 
@@ -7652,7 +7666,7 @@ Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON p
 		"body": "Some long description"
   	}';
 
-	$res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+	$res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
 	dd($res);  
 
 Ej:
@@ -7665,7 +7679,7 @@ Ej:
             "body" => "Other long description"
 	];
 
-	$res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+	$res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
 	dd($res);  
 
 Ej: 
@@ -7674,7 +7688,7 @@ Ej:
 
 	$xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
-	$response = consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
+	$response = consumeApi('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
 		"Content-type" => "text/xml"
 	]);
 
@@ -7706,7 +7720,7 @@ El envio headers se puede hacer como array asociativo o un simple array de strin
 Ej:
 	// (no-asociativo)
 
-	$response = consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+	$response = consumeApi("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
 		[             
 			'Content-Type: application/json',
 			'Authorization: Basic ' . 'xxxxxxxxxxxx'
@@ -7718,7 +7732,7 @@ o
 Ej:
 	// (asociativo)
 
-	$response = consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+	$response = consumeApi("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
 		[             
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Basic ' . 'xxxxxxxxxxxx'
@@ -7732,7 +7746,7 @@ Es un array asociativo de opciones para la librería curl.
 
 Ej:
 
-	$response = consume_api("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
+	$response = consumeApi("https://onesignal.com/api/v1/notifications", 'POST', ['x' => 'y'], 
 		[             
 			'Content-Type: application/json',
 			'Authorization: Basic ' . 'xxxxxxxxxxxx'
@@ -7754,7 +7768,7 @@ Caso: deshabilitar el chequeo de certificado SSL
 	];
 
 	// Es un ejemplo: podría ser POST, GET, etc
-	$response = consume_api($ruta, 'POST', $body, [
+	$response = consumeApi($ruta, 'POST', $body, [
 		"Content-type"  => "Application/json",
 		"authToken" => "$token"
 	], $options);
@@ -7793,11 +7807,11 @@ Ej:
 
 # Autorización 
 
-Web tokens pueden ser enviados a la función consume_api() via el array de headers.
+Web tokens pueden ser enviados a la función consumeApi() via el array de headers.
 
 Ej:
 
-    $response = consume_api('http://xxxxxxxxx:8080/api/some_resource', 'GET', null, [
+    $response = consumeApi('http://xxxxxxxxx:8080/api/some_resource', 'GET', null, [
         "Authorization" => "Bearer xxxxxxxxxxxxxxxxxxxxxxxxxx"
     ]);
 
@@ -7806,7 +7820,7 @@ Para el caso de "Basic authentication"
 
 Ej:
 
-    $res = consume_api($catalog_url, 'GET', null, [
+    $res = consumeApi($catalog_url, 'GET', null, [
         'Authorization: Basic '. base64_encode("$user:$pass")
     ]);
 
@@ -7821,14 +7835,14 @@ Ej:
 
     $encoded = base64_encode($file);
 
-    $response = consume_api('http://xxxxxxxxx:8080/api/some_resource', 'POST', $encoded, [
+    $response = consumeApi('http://xxxxxxxxx:8080/api/some_resource', 'POST', $encoded, [
         "Content-type"  => "text/plain"
     ]);
 
 
 # La clase ApiClient
 
-ApiClient es un wrapper sobre consume_api() que facilita su uso y cuyas funcionalidades se irán extendiendo (ej: manejar distintos tipos de autenticación)
+ApiClient es un wrapper sobre consumeApi() que facilita su uso y cuyas funcionalidades se irán extendiendo (ej: manejar distintos tipos de autenticación)
 
 Ej:
 

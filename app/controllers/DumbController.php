@@ -4794,7 +4794,7 @@ class DumbController extends Controller
     */
     function test_api00()
     {
-        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
+        $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
         dd($res);
     }
 
@@ -4808,7 +4808,7 @@ class DumbController extends Controller
             CURLOPT_SSL_VERIFYPEER => 0
         ];
 
-        $res = consume_api('http://jsonplaceholder.typicode.com/posts', 'GET', null, $options, null, true);
+        $res = consumeApi('http://jsonplaceholder.typicode.com/posts', 'GET', null, $options, null, true);
         dd($res);
     }
 
@@ -4827,7 +4827,7 @@ class DumbController extends Controller
 
     function test_api01a()
     {
-        $res = consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, [
+        $res = consumeApi('http://34.204.139.241:8084/api/Home', 'GET', null, [
             'Accept' => 'text/plain'
         ]);
         dd($res);
@@ -4835,7 +4835,7 @@ class DumbController extends Controller
 
     function test_api01b()
     {
-        $res = consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
+        $res = consumeApi('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
         dd($res);
     }
 
@@ -4847,7 +4847,7 @@ class DumbController extends Controller
             "body": "Some long description"
           }';
 
-        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+        $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
         dd($res);
     }
 
@@ -4864,7 +4864,7 @@ class DumbController extends Controller
             CURLOPT_SSL_VERIFYPEER => 0
         ];
 
-        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data, null, $options);
+        $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data, null, $options);
         dd($res);
     }
 
@@ -4872,7 +4872,7 @@ class DumbController extends Controller
     {
         $xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
-        $response = consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
+        $response = consumeApi('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
             "Content-type" => "text/xml"
         ]);
 
@@ -4882,7 +4882,7 @@ class DumbController extends Controller
     // debe responderme con erro y un body de respuesta -- ok
     function test_api05()
     {
-        $response = consume_api('http://localhost/pruebas/get_error.php', 'POST', null, [
+        $response = consumeApi('http://localhost/pruebas/get_error.php', 'POST', null, [
             "Content-type" => "text/xml"
         ]);
 
@@ -4891,7 +4891,7 @@ class DumbController extends Controller
 
     function test_api06()
     {
-        $response = consume_api(
+        $response = consumeApi(
             "https://onesignal.com/api/v1/notifications",
             'POST',
             ['x' => 'y'],
@@ -6694,7 +6694,7 @@ class DumbController extends Controller
 
         $xml_file_encoded = base64_encode($xml_file);
 
-        $response = consume_api('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
+        $response = consumeApi('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
             "Content-type"  => "text/plain",
             "Authorization" => "Bearer eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9hZGFwdGFkb3JAbnVtcm90LmNvbSIsInJvbGUiOiJDbGllbnRlIiwibmJmIjoxNjM2MDQ0NTQ0LCJleHAiOjE2OTkxMTY1NDQsImlhdCI6MTYzNjA0NDU0NCwiaXNzIjoibnVtcm90IiwiYXVkIjoicmVhZGVycyJ9.yejhLDwaVb4enDgKPssXyf8SYP1AyrEEa5m99joo3EjG3bhMToUPnY5696sjU6Kb"
         ]);
@@ -7387,7 +7387,7 @@ class DumbController extends Controller
     */
     function dolar()
     {
-        $res = consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+        $res = consumeApi('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
 
         if ($res['http_code'] != 200) {
             throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
@@ -7401,7 +7401,7 @@ class DumbController extends Controller
 
     function euro()
     {
-        $res = consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+        $res = consumeApi('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
 
         if ($res['http_code'] != 200) {
             throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
@@ -9397,7 +9397,7 @@ class DumbController extends Controller
         //     CURLOPT_SSL_VERIFYPEER => 0
         // ];
 
-        // $response = consume_api($ruta, 'POST', $body, [
+        // $response = consumeApi($ruta, 'POST', $body, [
         //     "Content-type"  => "Application/json",
         //     "authToken" => "$token"
         // ], $options);
@@ -9680,7 +9680,7 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = consume_api($ruta, 'POST', $body, [
+        $response = consumeApi($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
@@ -9756,7 +9756,7 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = consume_api($ruta, 'POST', $body, [
+        $response = consumeApi($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
@@ -10124,6 +10124,15 @@ class DumbController extends Controller
 
         dd(
             Url::download($url)
+        );
+    }
+
+    public function test_get_url_content()
+    {
+        $url = 'https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario';
+
+        dd(
+            Url::getUrlContent($url, true, true)
         );
     }
      

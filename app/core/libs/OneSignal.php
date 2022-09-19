@@ -74,7 +74,7 @@ class OneSignal
             $fields['data'] = $extra_data;
         }
 
-        $response = Url::consume_api("https://onesignal.com/api/v1/notifications", 'POST', $fields, 
+        $response = Url::consumeApi("https://onesignal.com/api/v1/notifications", 'POST', $fields, 
             [             
                 'Content-Type: application/json',
                 'Authorization: Basic ' . $config['app_rest_api_key']
@@ -100,7 +100,7 @@ class OneSignal
             $fields['included_segments'] = $config['segments'];
         }
 
-        $response = Url::consume_api("https://onesignal.com/api/v1/players", 'POST', $fields,
+        $response = Url::consumeApi("https://onesignal.com/api/v1/players", 'POST', $fields,
             [             
                 'Content-Type: application/json',
                 'Authorization: Basic ' . $config['app_rest_api_key']
@@ -118,7 +118,7 @@ class OneSignal
     // get overview
     static function app(Array $config) 
     {
-        $response = Url::consume_api("https://onesignal.com/api/v1/apps/{$config['app_id']}", 'GET', null, 
+        $response = Url::consumeApi("https://onesignal.com/api/v1/apps/{$config['app_id']}", 'GET', null, 
             [             
                 'Content-Type: application/json',
                 'Authorization: Basic ' . $config['app_rest_api_key']
@@ -137,7 +137,7 @@ class OneSignal
         $limit  = 50;
         $offset = 0;
 
-        $response = Url::consume_api("https://onesignal.com/api/v1/players?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
+        $response = Url::consumeApi("https://onesignal.com/api/v1/players?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
             [             
                 'Content-Type: application/json',
                 'Authorization: Basic ' . $config['app_rest_api_key']
@@ -155,7 +155,7 @@ class OneSignal
 
     static function getNotifications($config, $limit = 50, $offset = 0)
     {
-        $response = Url::consume_api("https://onesignal.com/api/v1/notifications?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
+        $response = Url::consumeApi("https://onesignal.com/api/v1/notifications?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
             [             
                 'Content-Type: application/json',
                 'Authorization: Basic ' . $config['app_rest_api_key']

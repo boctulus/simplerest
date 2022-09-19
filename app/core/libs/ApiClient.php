@@ -121,6 +121,10 @@ class ApiClient
         return $this->setDecode($val);
     }
 
+    function noDecode(){
+        return $this->setDecode(false);
+    }
+
     /*
         @param $expiration_time int seconds 
     */
@@ -147,9 +151,15 @@ class ApiClient
         return $this->error;
     }
 
-    function getResponse(bool $decode = true, bool $as_array = true){       
-        // deberia $decode poder venir en null y en tal caso usar $this->auto_decode
-        
+    function getResponse(?bool $decode = null, ?bool $as_array = null){       
+        if ($decode == null){
+            $decode = $this->auto_decode;
+        }
+
+        if ($as_array == null){
+            $as_array = true;
+        }
+
         if ($decode){
             $data = json_decode($this->response, $as_array);
         } else {
@@ -200,7 +210,7 @@ class ApiClient
     {
         if (!extension_loaded('curl'))
 		{
-            throw new \Exception("Extension curl no cargada");
+            throw new \Exception("Curl extension is not enabled");
         }
 
         if ($headers === null){
@@ -333,7 +343,6 @@ class ApiClient
         curl_close($curl);
 
         $data = ($decode && $response !== false) ? json_decode($response, true) : $response;
-
 
         $ret = [
             'data'          => $data,
