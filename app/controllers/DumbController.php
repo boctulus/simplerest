@@ -10108,10 +10108,7 @@ class DumbController extends Controller
 
     function maps()
     { 
-        $apiKey = 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY'; 
-        ///// <----------  de cliente de MX de paqueteria TMH
-
-        $maps = new GoogleMaps($apiKey);
+        $maps = new GoogleMaps();
 
         dd(
             $maps->getCoordiantes('Diego de Torres 5, Acala de Henaes, Madrid')
