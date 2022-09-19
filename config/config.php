@@ -341,6 +341,8 @@ return [
 	'var_dump_separators' => [
 		'start' => '--| ',
 		'end'   => ''
-	]
+	],
+
+	'google_maps_api_key' => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY'
 	
 ];
