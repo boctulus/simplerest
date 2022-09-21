@@ -7161,6 +7161,42 @@ Ej:
 		// ...
 	}
 
+
+Además del helper css() se provee del helper js() para renderizar JavaScript en el lugar.
+
+Ej:
+
+	function test_iframe(){
+        /*
+            Make iframe automatically adjust height according to the contents without using scrollbar?
+            
+            Note: This will not work if the iframe contains content from another domain because of the Same Origin Policy
+        */
+
+        js("
+        function resizeIframe(obj) {
+            obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+        }");
+
+        css('
+        iframe {
+            display: block;
+            background: #000;
+            border: none;
+            height: 100vh;
+            width: 100%;
+        }');
+        ?>
+
+        <center>
+            <div style="margin-top:100px;width:600px; background-color:aquamarine;">
+                <iframe frameborder="0" scrolling="no" onload="resizeIframe(this)" src="https://produzione.familyintale.com/">Your Browser Does Not Support iframes!</iframe>
+            </div>
+        </center>
+
+        <?php
+    }
+
 # Templates
 
 Por defecto se carga el template "app_layout.php" pero se pueden usar cuantos templates se desee y éste es especificado como tercer parámetro del método view()
@@ -10022,9 +10058,16 @@ Ej:
 
 Están basadas en ejemplo de w3schools.com y quizás no sean 100% responsivas. Toca ajustar el ancho de la imágen según como sea ésta y también los paddings.
 
-Toca escribir el componente que use las clases flip-card, flip-card-inner, flip-card-front y flip-card-back aunque primero debería probarse su utilidad / respinsividad.
+Toca escribir el componente que use las clases flip-card, flip-card-inner, flip-card-front y flip-card-back aunque primero debería probarse su utilidad / responsividad.
 
 Ej:
+	/*
+		Esto esta mal, en todo caso definir el tag 'flip_card' que directamente
+		incluya el css para un 'flip_card'
+
+		El css para Bt5Form deberia estar dentro de una carpeta assets/css del "package" o sea.. 
+		Bt5Form deberia ser un package.
+	*/
 
 	include_widget_css('flip_card');
 
@@ -10047,7 +10090,6 @@ Ej:
 			->class("flip-card-back py-2") 
 		])  
 	]);
-
 
 
 # Citas
@@ -12285,7 +12327,6 @@ Más
 https://dev.to/mdbootstrap/bootstrap-5-animations-1kf0
 
 
-
 ~ Widgets
 
 Basados en elementos de formulario se han construido varios Widgets. 
@@ -12299,16 +12340,16 @@ Ej:
 	
 	echo tag("h_timeline")->content([
 		[
-		'title' => 2010,
-		'subTitle' => 'algo remoto'
+			'title' => 2010,
+			'subTitle' => 'algo remoto'
 		],
 		[
-		'title' => 2011,
-		'subTitle' => 'algo hermoso'
+			'title' => 2011,
+			'subTitle' => 'algo hermoso'
 		],
 		[
-		'title' => 2016,
-		'subTitle' => 'algo horrible'
+			'title' => 2016,
+			'subTitle' => 'algo horrible'
 		],        
 	]); 
 
@@ -12398,19 +12439,19 @@ Ej:
 	echo tag('wizard_steps')
 	->content([
 		[
-		'href'        => "#s1",
-		'title'       => 'Step 1',
-		'description' => 'Step 1 description'
+			'href'        => "#s1",
+			'title'       => 'Step 1',
+			'description' => 'Step 1 description'
 		],
 		[
-		'href'        => "#s2",
-		'title'       => 'Step 2',
-		'description' => 'Step 2 description'
+			'href'        => "#s2",
+			'title'       => 'Step 2',
+			'description' => 'Step 2 description'
 		],
 		[
-		'href'        => "#s3",
-		'title'       => 'Step 3',
-		'description' => 'Step 3 description'
+			'href'        => "#s3",
+			'title'       => 'Step 3',
+			'description' => 'Step 3 description'
 		],       
 	])
 	->current(2);
@@ -12422,16 +12463,16 @@ Ej:
 	echo tag('wizard_steps')
 	->content([
 		[
-		'href'        => "#s1"
+			'href'        => "#s1"
 		],
 		[
-		'href'        => "#s2"
+			'href'        => "#s2"
 		],
 		[
-		'href'        => "#s3"
+			'href'        => "#s3"
 		],    
 		[
-		'href'        => "#s4",
+			'href'        => "#s4",
 		],    
 	])
 	->current(3);
@@ -12866,7 +12907,6 @@ PD: Es posible elegir el color de los tags aunque no se implementó esta funcion
 
 Más
 https://select2.github.io/
-
 
 
 # Bootsrap Duallistbox
