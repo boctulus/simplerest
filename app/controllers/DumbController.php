@@ -10447,18 +10447,26 @@ class DumbController extends Controller
         }");
 
         css('
-        iframe {
-            display: block;
-            background: #000;
-            border: none;
-            height: 100vh;
-            width: 100%;
-        }');
+        .iframe_container {
+            padding-bottom:56.25%; 
+            position:relative; 
+            width:600px;
+            height:100%;
+            max-width:100%;
+        }
+
+        .my_iframe {
+            display:block;
+            width:100%;
+            height:100%;
+            position:absolute; top:0; left: 0;
+        }
+        ');
         ?>
 
         <center>
-            <div style="margin-top:100px;width:600px; background-color:aquamarine;">
-                <iframe frameborder="0" scrolling="no" onload="resizeIframe(this)" src="https://produzione.familyintale.com/">Your Browser Does Not Support iframes!</iframe>
+            <div class="iframe_container">
+                <iframe class="my_iframe" marginwidth="0" marginheight="0" allowfullscreen frameborder="0" scrolling="no" onload="resizeIframe(this)" src="https://produzione.familyintale.com/">Your Browser Does Not Support iframes!</iframe>
             </div>
         </center>
 
