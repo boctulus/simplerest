@@ -333,6 +333,54 @@ Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) 
 
 ------------x--------------
 
+[ OPTIMIZACIONES ]
+
+- NGINX
+
+- Con NGINX usar "full-page caching" powered by Nginx.
+
+- Ver de usar el módulo de Apache PHP-FPM (idealmente en Linux) -> habilita opcode caching
+
+- OPCache
+
+- Memcached / Redis
+
+- Cachear views 
+
+- Cachear views de componentes (cuando sea posible)
+
+- Usar un framework de FrontEnd "reactivo" 
+
+- Usar procedimientos almacenados para ciertas operaciones.
+
+- Tener la opcion de no verificar si el recurso existe antes de hacer un UPDATE 
+
+- Usar cursores a nivel de base de datos
+
+- Indexar correctamente en la DB
+
+- Usar una paginacion eficiente como la de tipo "seek"
+
+- Cachear respuestas http !!! 
+
+- HTTP 2.0
+
+- Al leer archivos si son demasiado grandes leerlos de a "chunks" (para ahorrar memoria)
+
+- Implementar SWOLE
+
+- Usar "generadores" y "fibras" cuando sea necesario.
+
+- Implementar cache a todo nivel y tener la opcion de limpiarla o deshabilitarla total o parcialmente en desarrrollo.
+
+- Clusters para MySQL ?
+
+- Usar CDNs como Cloudflare
+
+- Estudiar distintas tecnicas de optimizacion de servidores
+
+-----x----
+
 
 - No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest
 
@@ -2421,6 +2469,14 @@ https://stackoverflow.com/questions/4410632/handle-fatal-errors-in-php-using-reg
 https://www.php.net/manual/en/opcache.installation.php
 https://kinsta.com/es/blog/puntos-de-referencia-php/
 
+- Leer sobre OPCache como Object Cache
+
+Es una alternativa a MEMCACHED y REDIS cuando no están disponibles:
+
+Usar OPCache como ¨object cache¨ es una opción “válida” solo cuando tenemos nuestra web alojada en un servidor de hosting compartido donde no están ni MEMCACHED ni REDIS instalado y necesitamos el Object Cache para acelerar nuestro sitio web complejo.
+
+https://raiolanetworks.es/blog/php-8-php-7-mejorar-rendimiento-wpo-opcache/
+
 
 - Solucionar problemas con colecciones:
   
@@ -3710,7 +3766,9 @@ Se ha concluido que en Windows los valores hallados de tiempo de respuesta son i
 
 
 - Optimización de web servers 
+
 https://www.sitepoint.com/apache-vs-nginx-performance-optimization-techniques/
+
 
 - Usar RTAPI para testear tiempos de latencia:
 
