@@ -10434,5 +10434,36 @@ class DumbController extends Controller
         );        
     }
 
+    function test_iframe(){
+        /*
+            Make iframe automatically adjust height according to the contents without using scrollbar?
+            
+            Note: This will not work if the iframe contains content from another domain because of the Same Origin Policy
+        */
+
+        js("
+        function resizeIframe(obj) {
+            obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+        }");
+
+        css('
+        iframe {
+            display: block;
+            background: #000;
+            border: none;
+            height: 100vh;
+            width: 100%;
+        }');
+        ?>
+
+        <center>
+            <div style="margin-top:100px;width:600px; background-color:aquamarine;">
+                <iframe frameborder="0" scrolling="no" onload="resizeIframe(this)" src="https://produzione.familyintale.com/">Your Browser Does Not Support iframes!</iframe>
+            </div>
+        </center>
+
+        <?php
+    }
+
 
 }   // end class
