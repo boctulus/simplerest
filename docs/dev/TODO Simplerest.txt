@@ -333,7 +333,7 @@ Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) 
 
 ------------x--------------
 
-[ OPTIMIZACIONES ]
+[ OPTIMIZACIONES para maxima peformance ]
 
 - NGINX
 
@@ -378,6 +378,32 @@ Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) 
 - Usar CDNs como Cloudflare
 
 - Estudiar distintas tecnicas de optimizacion de servidores
+
+- Cominar y minificar CSS 
+
+- Minificar HTML
+
+- Minificar JS
+
+- Optimizar Google Fonts 
+
+- Optimizar imagenes
+
+- Lazy-load de imagenes
+
+- Diferir o hacer async carga de assets
+
+- Preloading -> permite dar prioridad a ciertos assets
+
+- Ver todo lo que hace el pluin WP Rocket 
+
+- Usar funciones mas eficientes que la nativa para generar UUIDs
+
+
+Ver
+
+https://www.youtube.com/watch?v=BrY6a-lsLp8&ab_channel=Ahrefs
+https://es.wordpress.org/plugins/docket-cache/
 
 -----x----
 
