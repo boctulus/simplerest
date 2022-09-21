@@ -10434,6 +10434,11 @@ class DumbController extends Controller
         );        
     }
 
+    /*
+        Investigar 
+
+        "Using the main scrollbar to scroll an iframe" 
+    */
     function test_iframe(){
         /*
             Make iframe automatically adjust height according to the contents without using scrollbar?
@@ -10444,11 +10449,29 @@ class DumbController extends Controller
         js("
         function resizeIframe(obj) {
             obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-        }");
+        }
+        
+        // $(window).load(function(){
+        //     $(document).scroll(function () {
+        //      var scrollTop = $(window).scrollTop();
+        //      var docHeight = $(document).height();
+        //      var winHeight = $(window).height();
+        //      var scrollPercent = scrollTop / (docHeight - winHeight);
+     
+        //      var divHeight = $('div').height(); 
+        //      var divContentHeight = $('div')[0].scrollHeight;
+     
+        //      var equation = scrollPercent * (divContentHeight-divHeight);
+     
+        //      $('div').scrollTop(equation);
+     
+        //  });     
+        // });
+
+        ");
 
         css('
         .iframe_container {
-            padding-bottom:56.25%; 
             position:relative; 
             width:600px;
             height:100%;
