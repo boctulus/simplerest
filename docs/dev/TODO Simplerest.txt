@@ -37,7 +37,11 @@ https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versi
 TOP PRIORITY
 ============
 
-[ Admin Panel ]
+[ DevOps ]
+
+- Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
+
+--x--
 
 - Poder asociar cada "tenant" a un dominio o subdominio y un puerto !!!
 
@@ -60,22 +64,6 @@ Tambien el usuario debe poder configurar el correo ya sea SMTP o externo.
 Cada modulo (que no es exactamente lo mismo que un package) define roles (staff, alumno, usuario biblioteca, ...) por lo que una empresa puede comenzar comprando un modulo de biblioteca (que defiene que los usuarios son usuarios de biblioteca y un rol admin)
 
 Luego comprar un modulo de alumnos y asociar ya sea uno a uno, mediante algun filtro que permita seleccionarlos, etc,... y hacer que los usuarios de la biblioteca puedan ser alumnos con lo cual podran tener calificaciones, una matricula, etc.
-
-
-- Investigar como hacer una PWA !!!! Leer sobre Workbox
-
-https://www.youtube.com/watch?v=E8BeSSdIUW4&ab_channel=vaadinofficial
-https://developer.chrome.com/docs/workbox/
-https://www.youtube.com/watch?v=l44IF9fBNOs&ab_channel=NeilRowe
-
-[ FrontEnd ]
-
-- Portar "Blade" a fin de poder usarse con el port de Livewire
-
-
-[ DevOps ]
-
-- Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
 
 - Deben ser packages (ServiceProviders) y tener sus propios repositorios:
 
@@ -103,9 +91,18 @@ De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes
 
 - Hacer router para consola. Pre-requisito para aboler el FrontController
 
+
+[ FrontEnd ]
+
+- Poder encolar tanto css o js como hace wordpress
+
 - Modularizacion
 
 - Terminar generador de front !
+
+  Entre otras cosas... deberia poder construir un formulario responsivo a partir
+  de un array. Quizas escribiendo widgets que abstraigan el uso de BT5Form ojala de
+  forma compatible con react-boostrap
 
 - Implementar de forma sencilla DataTables
 
@@ -163,6 +160,15 @@ Ver video:
 
 https://www.youtube.com/watch?v=1wgLY-V69MM&ab_channel=LaravelDaily
 
+- Investigar como hacer una PWA !!!! Leer sobre Workbox
+
+https://www.youtube.com/watch?v=E8BeSSdIUW4&ab_channel=vaadinofficial
+https://developer.chrome.com/docs/workbox/
+https://www.youtube.com/watch?v=l44IF9fBNOs&ab_channel=NeilRowe
+
+
+- Portar "Blade" a fin de poder usarse con el port de Livewire
+
 - Ver "portar" componentes de Laravel Livewire que tiene componentes para todo! 
 
 Solo implementar los metodos necesarios y seria necesario portar o importar Blade como package.
@@ -207,6 +213,8 @@ Basicamente dentro de cada componente hay:
 Migraciones y modelos estan porque generalmente se recupera y se almacena cierta informacion en DB.
 
 - Terminar Solucion Binaria -> ofrecer creacion de APIs en Laravel, Java Spring Boot, Ruby on Rails y Django
+
+  . Subirla a Amazon AWS
 
 - Incorporar pasarela de pagos a Solucion Binaria. TOCA RENOVAR dominio !!!! -- antes de oct 29 !!!
 
@@ -281,7 +289,6 @@ A la final para poder generar rapidamente algo con Vuexy seria necesario crear c
 
 https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/guide/custom-components/collapse.html#default-collapse
 
-
 - Crear cliente en Javascript que pida a SimpleRest que trabaje como CouchDB. <-- para punto de venta (POS)
 
   . Solicite los schemas al servidor incluyendo las relaciones entre tablas.
@@ -332,6 +339,9 @@ Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) 
 
 
 ------------x--------------
+
+- Crear package como wrapper de Faker
+
 
 [ OPTIMIZACIONES para maxima peformance ]
 
@@ -3617,10 +3627,6 @@ https://blog.staffjoy.com/dont-migrate-databases-automatically-5039ab061365
 
 - Dudas:
 
-  - Un Service Provider en Laravel puede reemplazarse por otro? serviría para cambiar el proveedor de correo (SMTP) ?
-
-  - Qué tipos de Service Provider hay? una librería también se distribuye como SP?
-
   - JSON:API es compatible con HATEOAS ?
 
   - JSON:API has agregative functions? parece ser que NO.
@@ -3682,7 +3688,7 @@ Casos para un registro bloqueado:
   - Solo con el permiso "lock" puede borrar de la papelera -- ok
 
 
-- Revisar si es posible acelerar las inserciones
+- Revisar si es posible acelerar las inserciones -> insertar en bulk
 
 https://dev.mysql.com/doc/refman/8.0/en/insert-optimization.html
 
@@ -4098,6 +4104,7 @@ https://developers.origami-marketplace.com/inertia-laravel/
 
 
 - Hacer algo similar a Faker 
+
 https://github.com/fzaninotto/Faker
 https://anchetawern.github.io/blog/2016/01/28/generating-fake-data-in-php-with-faker/
 
