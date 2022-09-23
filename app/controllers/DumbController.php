@@ -69,6 +69,7 @@ use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use stdClass;
 
 class DumbController extends Controller
 {
@@ -4820,6 +4821,20 @@ class DumbController extends Controller
         $fn("hello");       
     }
 
+    /*
+        Error capturado
+
+        Like any other exception, Error objects can be caught using a try/catch block.
+
+        https://trowski.com/2015/06/24/throwable-exceptions-and-errors-in-php7/
+    */
+    function test_trace3()
+    {
+        $method = 'metodo_inexistente';
+
+        $x = new stdClass();
+        $x->$method();    
+    }
 
     function test_get_rels()
     {
