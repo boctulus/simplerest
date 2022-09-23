@@ -32,7 +32,7 @@ class MySelf extends MyApiController
                 $this->is_listable = true;
                 $this->is_retrievable = true;
         } else {
-            Factory::response()->sendError("Forbidden", 403, "You need to be authenticated");
+            Factory::response()->error("Forbidden", 403, "You need to be authenticated");
         }
     }
 

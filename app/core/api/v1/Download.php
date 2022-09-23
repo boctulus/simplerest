@@ -31,7 +31,7 @@ class Download extends ResourceController
 
     function get($id = null) {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS']))
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
 
         if ($id == null)
             return;
@@ -56,7 +56,7 @@ class Download extends ResourceController
         $row = DB::table($this->table_name)->select(['filename_as_stored'])->where($_get)->first();
 
         if (empty($row))
-            Factory::response()->sendError('File not found', 404);
+            Factory::response()->error('File not found', 404);
       
         $file = UPLOADS_PATH . $row['filename_as_stored'];
 
@@ -71,7 +71,7 @@ class Download extends ResourceController
             readfile($file);
             exit;
         } else {
-            Factory::response()->sendError('File not found', 404, "$file not found in storage");
+            Factory::response()->error('File not found', 404, "$file not found in storage");
         }
     }
 

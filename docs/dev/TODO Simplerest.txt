@@ -6499,3 +6499,73 @@ http://simplerest.lan/api/v1/products?tenantid=az&created_at[gt]=2019-03-20
         }
     }
 }
+
+- Revisar el "paquete Spatie" de Laravel para certificados SSL
+
+  . Permite obtener valides e informacion sobre certificados
+
+  . Crear certificados 
+
+  . No tiene mayor dependencia que Carbon
+
+Hace uso de funciones como
+
+  stream_context_create()  
+  
+    -- parametriza la conexion de tipo stream (sockets) que se abrirá. Da un ¨contexto¨ 
+  
+  stream_socket_client()   
+  
+    -- abre una conexion por sockets 
+
+  y 
+
+  openssl_x509_parse()
+
+    -- returns information about the supplied certificate, including fields such as subject name, issuer name, purposes, valid from and valid to dates etc.
+
+  openssl_x509_fingerprint()
+
+    -- calculates the fingerprint, or digest, of a given X.509 certificate
+
+
+https://freek.dev/530-validating-ssl-certificates-with-php
+https://github.com/spatie/ssl-certificate
+
+
+Streams
+
+Especificamente sobre stream_context_create() lo que hace es contextualizar funciones de php que pueden
+abrir sockets ... entre ellas file_get_contents() cuando se le pasa una url
+
+Ej:
+
+  $postdata = http_build_query(
+      array(
+          'var1' => 'some content',
+          'var2' => 'doh'
+      )
+  );
+
+  $opts = array('http' =>
+      array(
+          'method'  => 'POST',
+          'header'  => 'Content-type: application/x-www-form-urlencoded',
+          'content' => $postdata
+      )
+  );
+
+  $context = stream_context_create($opts);
+
+  $result = file_get_contents('http://example.com/submit.php', false, $context);
+
+
+Y... a su vez,... file_get_contents() hace un wrapper sobre fopen() lo que le permite abrir un stream cuando recibe una url (o sea un string que comienza con 'http://' o 'https://' o similar)
+
+
+
+Mas
+
+https://www.php.net/manual/en/context.http.php
+
+

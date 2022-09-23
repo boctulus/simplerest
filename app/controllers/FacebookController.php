@@ -68,10 +68,10 @@ class FacebookController extends Controller
 			$access_token = $helper->getAccessToken();
 		} catch(FacebookResponseException $e) {
 			// When Graph returns an error
-			Factory::response()->SendError('Graph returned an error: ' . $e->getMessage(), 400);
+			Factory::response()->error('Graph returned an error: ' . $e->getMessage(), 400);
 		} catch(FacebookSDKException $e) {
 			// When validation fails or other local issues
-			Factory::response()->SendError('Facebook SDK returned an error: ' . $e->getMessage(), 400);
+			Factory::response()->error('Facebook SDK returned an error: ' . $e->getMessage(), 400);
 			exit;
 		}
 			
@@ -242,7 +242,7 @@ class FacebookController extends Controller
 			
 		} else {
 			if ($helper->getError()) {
-				Factory::response()->SendError('Unauthorized', 401, $helper->getErrorDescription());
+				Factory::response()->error('Unauthorized', 401, $helper->getErrorDescription());
 				/*				
 				echo "Error: " . $helper->getError() . "\n";
 				echo "Error Code: " . $helper->getErrorCode() . "\n";
@@ -250,7 +250,7 @@ class FacebookController extends Controller
 				echo "Error Description: " . $helper->getErrorDescription() . "\n";
 				*/
 			} else {
-				Factory::response()->SendError('Bad request', 400);
+				Factory::response()->error('Bad request', 400);
 			}
 			exit;
 		}

@@ -6,26 +6,37 @@ require_once __DIR__ . '/constants.php';
 // setlocale(LC_ALL, 'es_AR.UTF-8');
 
 return [
-	'APP_URL' => env('APP_URL'),
+	'app_url' => env('APP_URL'),
 
-	#
-	# For a sub-foder in /var/www/html just set as
-	# BASE_URL' => /folder'
-	#
-	'BASE_URL' => '/',   
+	/*
+		For a sub-foder in /var/www/html just set as
+	 	
+		base_url' => /folder'
+	*/
 
-	'ROUTER' => true,
-	'FRONT_CONTROLLER' => true,
+	'base_url' => '',   
+
+	'router' => true,
+	'front_controller' => true,
 	
 	/*
-		urls start with /api/ if REMOVE_API_SLUG is set to false
+		urls start with /api/ if remove_api_slug is set to false
 	*/	
-	'REMOVE_API_SLUG' => false, 
-	'HTTPS' =>  null, //'Off',
-	'DEFAULT_CONTROLLER' => 'HomeController',
+
+	'remove_api_slug' => false, 
+	
+	'default_controller' => 'HomeController',
 
 	/*
-		file .crt
+		true  | 1 | on 
+		false | 0 | off
+		null
+	*/
+
+	'https' =>  null, 
+
+	/*
+		ssl certificate file
 		null
 		false -> deshabilita la verificacion
 	*/
