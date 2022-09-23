@@ -20,9 +20,9 @@ function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $lay
 }
 
 function asset($resource){
-    $protocol = is_cli() ? 'http' : http_protocol();
+    $protocol = is_cli() ? 'http' : httpProtocol();
     
-    $base  = config()['BASE_URL'];
+    $base  = config()['base_url'];
  
     if (Strings::endsWith('/', $base)){
         $base = substr($base, 0, -1); 

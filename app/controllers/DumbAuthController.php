@@ -17,7 +17,7 @@ class DumbAuthController extends ResourceController
         // aquí ******  
 
         if (!$this->acl->hasAnyRoleOrHigher(['supervisor', 'admin'])){
-            response()->sendError('Unauthorized ***', 401);
+            response()->error('Unauthorized ***', 401);
         }
 
     }

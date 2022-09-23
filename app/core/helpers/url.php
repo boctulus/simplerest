@@ -16,7 +16,7 @@ function base_url(){
         return $base_url;
     }
 
-    $base_url = Url::getHostname(Url::currentUrl()) . config()['BASE_URL'];
+    $base_url = Url::getHostname(Url::currentUrl()) . config()['base_url'];
     
     if (!Strings::endsWith('/', $base_url)){
         $base_url .= "/";
@@ -25,6 +25,6 @@ function base_url(){
     return $base_url;
 }
 
-function consumeApi(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true){
+function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true){
     return ApiClient::instance()->consumeAPI($url, $http_verb, $body, $headers, $options, $decode, $encode_body);
 }

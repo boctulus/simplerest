@@ -113,7 +113,7 @@ class Response
 
     function send($data, int $http_code = NULL){
         if ($http_code >= 400) {
-            return $this->sendError($data, $http_code);
+            return $this->error($data, $http_code);
         }
 
         $http_code = $http_code != NULL ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
@@ -203,12 +203,12 @@ class Response
 
    
     /**
-     * sendError
+     * error
      *
      *
      * @return void
      */
-    function sendError($error = null, ?int $http_code = null, $detail = null, ?string $location = null){
+    function error($error = null, ?int $http_code = null, $detail = null, ?string $location = null){
         if (is_string($error)){
             $message = $error;
         } elseif (is_array($error)){

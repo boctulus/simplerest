@@ -75,7 +75,7 @@ class SSE
 		}		
 	}
 
-	function sendError($data, $channel = null){
+	function error($data, $channel = null){
 		if (empty($channel)){
 			$channel = $this->channel;
 		}

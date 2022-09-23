@@ -672,7 +672,7 @@ class DumbAuthController extends ResourceController
     function super_cool_action($a)
     {
         if (!$this->hasAnyRole(['cajero', 'gerente']))
-            Factory::response()->sendError('Unauthorized', 401);
+            Factory::response()->error('Unauthorized', 401);
 
         // acción cualquiera:
         return ++$a;
@@ -3433,7 +3433,7 @@ Ej:
             parent::__construct();
 
             if (!acl()->hasAnyRole(['supervisor', 'admin'])){
-                response()->sendError('Unauthorized!!!', 401);
+                response()->error('Unauthorized!!!', 401);
             }
         }
 

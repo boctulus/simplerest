@@ -20,18 +20,20 @@ class FrontController
         $middlewares = include CONFIG_PATH . 'middlewares.php';
         
         $res = Response::getInstance();    
-        $sub = (int) $config['REMOVE_API_SLUG'];
+        $sub = (int) $config['remove_api_slug'];
 
         if (php_sapi_name() != 'cli'){
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $path = preg_replace('/(.*)\/index.php/', '/', $path);
     
-            if ($config['BASE_URL'] != '/' && strpos($path, $config['BASE_URL']) === 0) {
-                $path = substr($path, strlen($config['BASE_URL']));
+            $config['base_url'] = Strings::addTrailingSlash($config['base_url']);
+
+            if ($config['base_url'] != '/' && strpos($path, $config['base_url']) === 0) {
+                $path = substr($path, strlen($config['base_url']));
             }   
     
             if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) ){
-                $res->sendError(Msg::MALFORMED_URL, 400); 
+                $res->error(Msg::MALFORMED_URL, 400); 
             }
     
             $_params = explode('/', $path);
@@ -49,8 +51,8 @@ class FrontController
 
         $req = Request::getInstance(); 
 
-        $is_auth = ((!$config['REMOVE_API_SLUG'] && isset($_params[2]) && $_params[2] === 'auth') || ($config['REMOVE_API_SLUG'] && $_params[1] == 'auth'));
-        $sub = (int) $config['REMOVE_API_SLUG'];
+        $is_auth = ((!$config['remove_api_slug'] && isset($_params[2]) && $_params[2] === 'auth') || ($config['remove_api_slug'] && $_params[1] == 'auth'));
+        $sub = (int) $config['remove_api_slug'];
 
         if ($is_auth){
             $namespace = 'simplerest\\controllers\\';
@@ -72,18 +74,18 @@ class FrontController
             $api_version = $_params[1 - $sub]; 
 
             if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $api_version, $matches) ){
-                $res->sendError(Msg::INVALID_FORMAT_API_VERSION['text']);
+                $res->error(Msg::INVALID_FORMAT_API_VERSION['text']);
             }
 
-        } elseif ($_params[0] === 'api' || $config['REMOVE_API_SLUG']) {
+        } elseif ($_params[0] === 'api' || $config['remove_api_slug']) {
             if (!isset($_params[1 - $sub])){
-                $res->sendError(Msg::MISSING_API_VERSION['text']);
+                $res->error(Msg::MISSING_API_VERSION['text']);
             }
 
             $api_version = $_params[1 - $sub]; 
 
             if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $api_version, $matches) ){
-                $res->sendError(Msg::INVALID_FORMAT_API_VERSION['text']);
+                $res->error(Msg::INVALID_FORMAT_API_VERSION['text']);
             }
 
             $controller = $_params[2 - $sub] ?? NULL;  
@@ -111,7 +113,7 @@ class FrontController
             $namespace = 'simplerest\\controllers\\';
 
             if (empty($_params) || $_params[0]==''){
-                $class_file = substr($config['DEFAULT_CONTROLLER'],0, strlen($config['DEFAULT_CONTROLLER'])-10);
+                $class_file = substr($config['default_controller'],0, strlen($config['default_controller'])-10);
                 $class_name = Strings::snakeToCamel($class_file);
                 $class_name = "${namespace}${class_name}Controller";
                 $method = self::DEFAULT_ACTION;  
@@ -158,12 +160,12 @@ class FrontController
 
 
         if (!class_exists($class_name)){
-            $res->sendError(Msg::CLASS_NOT_FOUND, 404, "Internal error - controller class $class_name not found"); 
+            $res->error(Msg::CLASS_NOT_FOUND, 404, "Internal error - controller class $class_name not found"); 
         } 
 
         if (!method_exists($class_name, $method)){
             if (php_sapi_name() != 'cli' || $method != self::DEFAULT_ACTION){
-                $res->sendError("Internal error - method $method was not found in $class_name", 404); 
+                $res->error("Internal error - method $method was not found in $class_name", 404); 
             } else {
                 $dont_exec = true;
             }
@@ -178,7 +180,7 @@ class FrontController
         // Only for API Rest
         if ($_params[0] === 'api' && !$is_auth){
             if (!in_array($method, $controller_obj->getCallable())){
-                $res->sendError("Not authorized for $controller:$method", 403);
+                $res->error("Not authorized for $controller:$method", 403);
             }
         }
         
@@ -205,7 +207,7 @@ class FrontController
                 //dd(['class' => $_class_name, 'method' => $_method], "MID $mid");
 
                 if (!class_exists($mid)){
-                    $res->sendError(_("Middleware '$mid' not found"), 404, "Internal error - controller class $class_name not found");                     
+                    $res->error(_("Middleware '$mid' not found"), 404, "Internal error - controller class $class_name not found");                     
                 }                    
 
                 $mid_obj = new $mid();
