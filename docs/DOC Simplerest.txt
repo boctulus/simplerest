@@ -7497,6 +7497,29 @@ changing the process-wide locale using setlocale().
 On Windows, locale information is maintained per thread as of PHP 7.0.5."
 
 
+# La clase Response
+
+La forma de utilizar la clase Response es obtener una instancia a traves de Factory
+
+Ej:
+
+	Factory::response()->send($data);
+
+Tambien se podria querer enviar un mensaje de error.
+
+Ej:
+
+	Factory::response()->sendError("No encontrado", 404);
+
+Aunque con el uso del helper response() se puede simplicar.
+
+	response()->sendError("No encontrado", 404);
+
+y a 
+
+	response("No encontrado", 404);
+
+
 # Compresión la respuesta
 
 Si en header Accept-Encoding se envia gzip, se hará la compresión.

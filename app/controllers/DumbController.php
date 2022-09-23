@@ -258,8 +258,19 @@ class DumbController extends Controller
     function inc($val)
     {
         $res = (float) $val + 1;
-        //response()->send($res);
+        response()->send($res);
+    }
+
+    function inc2($val)
+    {
+        $res = (float) $val + 1;
         return $res;
+    }
+
+    function inc3($val)
+    {
+        $res = (float) $val + 1;
+        response($res);
     }
 
     function login()
@@ -269,7 +280,7 @@ class DumbController extends Controller
 
     function casa_cambio()
     {
-        view('casa_cambio/home.htm', [], 'casa_cambio/layout.php', 'casa_cambio/app.htm');
+        view('casa_cambio/home.htm', null, 'casa_cambio/layout.php');
     }
 
     /*
@@ -4743,6 +4754,10 @@ class DumbController extends Controller
         Factory::response()->sendError("No encontrado", 404, "El recurso no existe");
     }
 
+    function test_error2(){
+        response('Todo mal', 500);
+    }
+
     function test_get_rels()
     {
         $table = 'books';
@@ -4794,7 +4809,7 @@ class DumbController extends Controller
     */
     function test_api00()
     {
-        $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'GET', null, null, null, true);
+        $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'GET');
         dd($res);
     }
 
@@ -4808,10 +4823,13 @@ class DumbController extends Controller
             CURLOPT_SSL_VERIFYPEER => 0
         ];
 
-        $res = consumeApi('http://jsonplaceholder.typicode.com/posts', 'GET', null, $options, null, true);
+        $res = consumeApi('http://jsonplaceholder.typicode.com/posts', 'GET', null, $options);
         dd($res);
     }
 
+    /*
+        OK!
+    */
     function test_api0b()
     {
         // ruta absoluta al certificado	
@@ -4824,6 +4842,104 @@ class DumbController extends Controller
 
         dd($res);
     }
+
+    /*
+        Ya no es necesario especificar la ruta al certificado si se configura via config.php
+    */
+    function test_api0c()
+    {
+        $res = ApiClient::instance()
+        ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
+        ->getResponse();
+
+        dd($res);
+    }
+
+    /*
+        Dolar TRM - 
+        DataSource: API Banco de la República (de Colombia)
+    */
+    function dolar()
+    {
+        $client = ApiClient::instance();
+        
+        $res = $client
+        //->disableSSL()
+        //->setSSLCrt("D:\wamp64\ca-bundle.crt")
+        ->request('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET')
+        ->getResponse();
+    
+        dd($res);
+
+        // dd($client->getStatus(), 'STATUS');
+        // dd($client->getError(), 'ERROR');
+        // dd($client->getResponse(true), 'RES'); 
+        // exit;
+
+        // $data  = $res['data'];
+        // $final = $data[count($data) - 1];
+        // d($final[1], "DOLAR/COP (TRM) - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
+    }
+
+
+    function euro()
+    {
+        $res = consumeApi('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+
+        if ($res['http_code'] != 200) {
+            throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
+        }
+
+        $data    = $res['data'];
+        $final  = $data[count($data) - 1];
+        $copusd = $final[1];
+
+        // Build Swap
+        $swap = (new \Swap\Builder())
+            ->add('european_central_bank')
+            ->add('national_bank_of_romania')
+            ->add('central_bank_of_republic_turkey')
+            ->add('central_bank_of_czech_republic')
+            ->add('russian_central_bank')
+            ->add('bulgarian_national_bank')
+            ->add('webservicex')
+            ->build();
+
+        // Get the latest EUR/USD rate
+        $rate = ($swap->latest('EUR/USD'))->getValue();
+
+        $copeur = $copusd * $rate;
+
+        d($copeur, "EUR/COP - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
+    }
+
+    function swap()
+    {
+
+        // Build Swap
+        $swap = (new \Swap\Builder())
+            ->add('european_central_bank')
+            ->add('national_bank_of_romania')
+            ->add('central_bank_of_republic_turkey')
+            ->add('central_bank_of_czech_republic')
+            ->add('russian_central_bank')
+            ->add('bulgarian_national_bank')
+            ->add('webservicex')
+            ->build();
+
+        // Get the latest EUR/USD rate
+        $rate = $swap->latest('EUR/USD');
+
+        // 1.129
+        d($rate->getValue(), 'EUR/USD');
+
+        // 2016-08-26
+        $rate->getDate()->format('Y-m-d');
+
+        // Get the EUR/USD rate 15 days ago
+        $rate = $swap->historical('EUR/USD', (new \DateTime())->modify('-15 days'));
+    }
+
 
     function test_api01a()
     {
@@ -4867,6 +4983,7 @@ class DumbController extends Controller
         $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data, null, $options);
         dd($res);
     }
+
 
     function test_api04()
     {
@@ -7378,83 +7495,6 @@ class DumbController extends Controller
         $t2 = 'tbl_usuario';
 
         d(get_fks($t1, $t2, 'db_flor'), "FKs $t1 ->  $t2");
-    }
-
-
-    /*
-        Dolar TRM - 
-        DataSource: API Banco de la República (de Colombia)
-    */
-    function dolar()
-    {
-        $res = consumeApi('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
-
-        if ($res['http_code'] != 200) {
-            throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
-        }
-
-        $data  = $res['data'];
-        $final = $data[count($data) - 1];
-        d($final[1], "DOLAR/COP (TRM) - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
-    }
-
-
-    function euro()
-    {
-        $res = consumeApi('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
-
-        if ($res['http_code'] != 200) {
-            throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
-        }
-
-        $data    = $res['data'];
-        $final  = $data[count($data) - 1];
-        $copusd = $final[1];
-
-        // Build Swap
-        $swap = (new \Swap\Builder())
-            ->add('european_central_bank')
-            ->add('national_bank_of_romania')
-            ->add('central_bank_of_republic_turkey')
-            ->add('central_bank_of_czech_republic')
-            ->add('russian_central_bank')
-            ->add('bulgarian_national_bank')
-            ->add('webservicex')
-            ->build();
-
-        // Get the latest EUR/USD rate
-        $rate = ($swap->latest('EUR/USD'))->getValue();
-
-        $copeur = $copusd * $rate;
-
-        d($copeur, "EUR/COP - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
-    }
-
-    function swap()
-    {
-
-        // Build Swap
-        $swap = (new \Swap\Builder())
-            ->add('european_central_bank')
-            ->add('national_bank_of_romania')
-            ->add('central_bank_of_republic_turkey')
-            ->add('central_bank_of_czech_republic')
-            ->add('russian_central_bank')
-            ->add('bulgarian_national_bank')
-            ->add('webservicex')
-            ->build();
-
-        // Get the latest EUR/USD rate
-        $rate = $swap->latest('EUR/USD');
-
-        // 1.129
-        d($rate->getValue(), 'EUR/USD');
-
-        // 2016-08-26
-        $rate->getDate()->format('Y-m-d');
-
-        // Get the EUR/USD rate 15 days ago
-        $rate = $swap->historical('EUR/USD', (new \DateTime())->modify('-15 days'));
     }
 
     function test_zip()
