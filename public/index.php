@@ -6,13 +6,13 @@
     use simplerest\core\FrontController;
     
 
-    if ($config['ROUTER']){        
+    if (config()['router']){        
         include __DIR__ . '../../config/routes.php';
         Route::compile();
         Route::resolve();
     } 
 
-    if ($config['FRONT_CONTROLLER']){        
+    if (config()['front_controller']){        
         FrontController::resolve();
     } 
 

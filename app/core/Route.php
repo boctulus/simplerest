@@ -34,9 +34,11 @@ class Route
     
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $path = preg_replace('/(.*)\/index.php/', '/', $path);
+
+            $config['base_url'] = Strings::addTrailingSlash($config['base_url']);
     
-            if ($config['BASE_URL'] != '/' && strpos($path, $config['BASE_URL']) === 0) {
-                $path = substr($path, strlen($config['BASE_URL']));
+            if ($config['base_url'] != '/' && strpos($path, $config['base_url']) === 0) {
+                $path = substr($path, strlen($config['base_url']));
             }   
     
             if (Strings::contains('/api/', $path) || in_array(strtolower(request()->getRequestMethod()),['post', 'put', 'patch'] )){
@@ -44,7 +46,7 @@ class Route
             }
 
             if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) ){
-                $res->sendError(Msg::MALFORMED_URL, 400); 
+                $res->error(Msg::MALFORMED_URL, 400); 
             }
                 
     
@@ -276,7 +278,7 @@ class Route
             return;
         }
 
-        return http_protocol() . '://' . $_SERVER['SERVER_NAME'] . '/' . static::$aliases[$name]['uri'];
+        return httpProtocol() . '://' . $_SERVER['SERVER_NAME'] . '/' . static::$aliases[$name]['uri'];
     }
 
     public static function post(string $uri, $callback){

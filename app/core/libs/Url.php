@@ -137,27 +137,59 @@ class Url
 		return static::parseStrQuery($_SERVER['QUERY_STRING']);
 	}
 
-    static function has_ssl( $domain ) {
+    /*
+        Si esta cerrado el puerto 443 puede demorar demasiado en contestar !
+    */
+    static function hasSSL( $domain ) {
+        /*
+            Si el puerto 443 esta cerrado,....
+
+            Warning: fsockopen(): unable to connect to ssl://{dominio}:443
+            (No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión)
+        */
+
         $ssl_check = @fsockopen( 'ssl://' . $domain, 443, $errno, $errstr, 30 );
-        $res = !! $ssl_check;
-        if ( $ssl_check ) { fclose( $ssl_check ); }
-        return $res;
+        
+        if ( $ssl_check ) { 
+            fclose( $ssl_check ); 
+        }
+        
+        return (bool) $ssl_check;
     }
 
-    static function http_protocol(){
-        $config = config();
-
-        if (isset($config['HTTPS']) && $config['HTTPS'] != null){
-            if ($config['HTTPS'] == 1 || strtolower($config['HTTPS']) == 'on'){
-                $protocol = 'https';
-            } else {
-                $protocol = 'http';
-            }
-        } else {
-            $protocol = self::has_ssl($_SERVER['HTTP_HOST']) ? 'https' : 'http';
+    /*
+        https://gist.github.com/jubalm/3447495
+    */
+    static function isSSL() {
+        if ( isset($_SERVER['HTTPS']) ) {
+            if ( 'on' == strtolower($_SERVER['HTTPS']) )
+                return true;
+        
+            if ( '1' == $_SERVER['HTTPS'] )
+                return true;
+        } elseif ( isset($_SERVER['SERVER_PORT']) && ( '443' == $_SERVER['SERVER_PORT'] ) ) {
+            return true;
+        
         }
 
-        return $protocol;
+        return false;
+    }
+
+    static function httpProtocol(){
+        $config = config();
+
+        if (isset($config['https']) && $config['https'] != null){
+            $is_ssl = ($config['https'] && !strtolower($config['https']) == 'off');
+        } else {
+            /*
+                Chequear si isSSL() funciona bien porque hasSSL() puede quedarse esperando si el puerto esta cerrado
+            */
+
+            //$is_ssl = self::hasSSL($_SERVER['HTTP_HOST'])
+           $is_ssl = static::isSSL();
+        }
+
+        return $is_ssl ? 'https' : 'http';
     }
 
     static function getProtocol(string $url){
