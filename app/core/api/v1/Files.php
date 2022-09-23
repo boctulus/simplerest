@@ -37,7 +37,7 @@ class Files extends MyApiController
         $failures = $uploader->getErrors();     
 
         if (count($files) == 0){
-            Factory::response()->error('No files or file upload failed', 400);
+            error('No files or file upload failed', 400);
         }        
         
         $instance = DB::table($this->table_name)->fill(['filename_as_stored']);
@@ -80,7 +80,7 @@ class Files extends MyApiController
     }
 
     function put ($id = null){
-        Factory::response()->error('Not implemented', 501);
+        error('Not implemented', 501);
     }
 
     /**
@@ -92,7 +92,7 @@ class Files extends MyApiController
      */
     function delete($id = NULL) {
         if($id == NULL)
-            Factory::response()->error("Lacks id in request", 400);
+            error("Lacks id in request", 400);
 
         $data = Factory::request()->getBody();        
 
@@ -111,7 +111,7 @@ class Files extends MyApiController
             $acl = Factory::acl();
 
             if ($owned && !$acl->hasSpecialPermission('write_all') && $row['belongs_to'] != Acl::getCurrentUid()){
-                Factory::response()->error('Forbidden', 403, 'You are not the owner');
+                error('Forbidden', 403, 'You are not the owner');
             }
             
             $extra = [];
@@ -122,7 +122,7 @@ class Files extends MyApiController
                 }   
             }else {
                 if (isset($row['is_locked']) && $row['is_locked'] == 1){
-                    Factory::response()->error("Locked by an admin", 403);
+                    error("Locked by an admin", 403);
                 }
             }
 
@@ -137,13 +137,13 @@ class Files extends MyApiController
 
                 if (!file_exists($path)){
                     $instance->update(['broken' => 1]);
-                    Factory::response()->error("File not found",404, $path); 
+                    error("File not found",404, $path); 
                 }
 
                 $ok = unlink($path);
 
                 if (!$ok){
-                    Factory::response()->error("File permission error", 500);
+                    error("File permission error", 500);
                 }
             }
 
@@ -152,10 +152,10 @@ class Files extends MyApiController
                 Factory::response()->sendJson("OK");
             }	
             //else
-            //    Factory::response()->error("File not found",404);
+            //    error("File not found",404);
 
         } catch (\Exception $e) {
-            Factory::response()->error("Error during DELETE for id=$id with message: {$e->getMessage()}");
+            error("Error during DELETE for id=$id with message: {$e->getMessage()}");
         }
 
     } // 

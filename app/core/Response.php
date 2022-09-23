@@ -293,10 +293,10 @@ class Response
                 ], 'tpl_basic.php');
 
             } else {
-                $message = static::$data['error']['message'] ?? '--';
-                $type = static::$data['error']['type'] ?? '--';
-                $code = static::$data['error']['code'] ?? '--';
-                $detail = static::$data['error']['detail'] ?? '--';
+                $message  = static::$data['error']['message'] ?? '--';
+                $type     = static::$data['error']['type'] ?? '--';
+                $code     = static::$data['error']['code'] ?? '--';
+                $detail   = static::$data['error']['detail'] ?? '--';
                 $location = static::$data['error']['location'] ?? '--';
 
                 echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;

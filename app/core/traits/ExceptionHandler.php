@@ -9,32 +9,6 @@ use simplerest\core\libs\Url;
 
 trait ExceptionHandler
 {
-    function generateCallTrace()
-    {
-        $PostmanGenerator = Url::is_PostmanGenerator();
-		
-		$cli  = (php_sapi_name() == 'cli');
-		$br   = ($cli || $PostmanGenerator) ? PHP_EOL : '<br/>';
-        $p    = ($cli || $PostmanGenerator) ? PHP_EOL . PHP_EOL : '<p/>';
-        $t    = ($cli) ? "\t" : '';
-
-        $e = new \Exception();
-        $trace = explode("\n", $e->getTraceAsString());
-        // reverse array to make steps line up chronologically
-        $trace = array_reverse($trace);
-        array_shift($trace); // remove {main}
-        array_pop($trace); // remove call to this method
-        $length = count($trace);
-        $result = array();
-       
-        for ($i = 0; $i < $length; $i++)
-        {
-            $result[] = ($i + 1)  . ')' . substr($trace[$i], strpos($trace[$i], ' ')); // replace '#someNum' with '$i)', set the right ordering
-        }
-       
-        return $t . implode($br . $t, $result);
-    }
-
     /**
      * exception_handler
      *
@@ -47,12 +21,36 @@ trait ExceptionHandler
        
         if (config()['debug']){
 
-            $backtrace = var_export(debug_backtrace(), true) . PHP_EOL . PHP_EOL;
+            $e      = new \Exception();
+            $traces = $e->getTrace();
+
+            foreach ($traces as $tx => $trace){
+                $args = $exception = $trace['args'];
+
+                foreach ($args as $ax => $arg){
+                    $exception = $traces[$tx]['args'][$ax];
+
+                    $trace = $exception->getTraceAsString();
+                    $trace = explode("\n", $trace);
+
+                    $traces[$tx]['args'][$ax] = [
+                        'message' => $exception->getMessage(),
+                        'prev'   => $exception->getPrevious(),
+                        'code'   => $exception->getCode(),
+                        'file'   => $exception->getFile(),
+                        'line'   => $exception->getLine(),
+                        'trace'  => $trace
+                    ];
+                }
+            }
+        
+
+            $backtrace      = json_encode($traces, JSON_PRETTY_PRINT) . PHP_EOL . PHP_EOL;
             $error_location = 'Error on line number '.$e->getLine().' in file - '.$e->getFile();
         
-            Factory::response()->error($e->getMessage(), 500, $backtrace, $error_location);
+            error($e->getMessage(), 500, $backtrace, $error_location);
         } else {
-            Factory::response()->error($e->getMessage(), 500);
+            error($e->getMessage(), 500);
         }
         
     }
