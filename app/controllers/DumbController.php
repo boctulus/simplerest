@@ -4836,7 +4836,7 @@ class DumbController extends Controller
         $cert = "D:\wamp64\ca-bundle.crt"; 
 
         $res = ApiClient::instance()
-        ->setSSLCrt($cert)
+        //->setSSLCrt($cert)
         ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
         ->getResponse();
 
