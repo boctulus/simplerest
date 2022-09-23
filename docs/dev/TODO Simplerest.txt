@@ -2116,9 +2116,16 @@ https://gradualcode.com/laravels-ioc-container-and-dependency-injection-decoded/
 https://patrick-assoa-adou.medium.com/writing-a-simple-dependency-injection-container-in-php-lessons-learned-17d3af3626ea
 
 
-- Mejorar los errores informando (en modo debug) númeero de línea de la excepción y demás. Usar constantes:
+- Mejorar los errores informando (en modo debug). De ser necesario usar constantes:
 
 __FILE__, __DIR__, __LINE__, __NAMESPACE__, __CLASS__, __TRAIT__, __METHOD__ y __FUNCTION__
+
+<--- puede haber quedado bien. La duda es si es un error pero no es Excepcion,... quizas sea "error" o "throwable"
+
+https://www.php.net/manual/en/language.errors.php7.php
+https://dev.to/aldora/unnoticed-things-about-php-exception-error-269d
+https://netgen.io/blog/modern-error-handling-in-php
+https://trowski.com/2015/06/24/throwable-exceptions-and-errors-in-php7/
 
 
 - Implementar "buses" de comunicación.  

@@ -36,7 +36,7 @@ class UserRoles extends MyApiController  /* implements IApiController */
     function post($id = NULL)
     { 
         if (!Factory::acl()->hasSpecialPermission('grant')){
-            Factory::response()->error('Forbidden to change role', 403);
+            error('Forbidden to change role', 403);
         }
 
         parent::post($id);
@@ -45,7 +45,7 @@ class UserRoles extends MyApiController  /* implements IApiController */
     function put($id = NULL)
     { 
         if (!Factory::acl()->hasSpecialPermission('grant')){
-            Factory::response()->error('Forbidden to change role', 403);
+            error('Forbidden to change role', 403);
         }
 
         parent::put($id);
@@ -54,7 +54,7 @@ class UserRoles extends MyApiController  /* implements IApiController */
     function patch($id = NULL)
     { 
         if (!Factory::acl()->hasSpecialPermission('grant')){
-            Factory::response()->error('Forbidden to change role', 403);
+            error('Forbidden to change role', 403);
         }
 
         parent::patch($id);
@@ -64,7 +64,7 @@ class UserRoles extends MyApiController  /* implements IApiController */
     function delete($id = NULL)
     { 
         if (!Factory::acl()->hasSpecialPermission('grant')){
-            Factory::response()->error('Forbidden to change role', 403);
+            error('Forbidden to change role', 403);
         }
 
         parent::delete($id);

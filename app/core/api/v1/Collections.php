@@ -45,19 +45,19 @@ class Collections extends MyApiController
         $data = Factory::request()->getBody(false);  
 
         if (empty($data))
-            Factory::response()->error('Invalid JSON',400);
+            error('Invalid JSON',400);
         
         if (empty($data['entity']))
-            Factory::response()->error('Parameter entity is required', 400);    
+            error('Parameter entity is required', 400);    
 
         if (empty($data['refs']))
-            Factory::response()->error('Parameter refs is required', 400);        
+            error('Parameter refs is required', 400);        
 
         $entity = $data['entity'];
         $refs   = $data['refs'];
 
         if (in_array(strtolower($entity), $this->forbidden_tables)){
-            Factory::response()->error('Forbidden', 403, "Table '". $entity . "' is not available for collections");
+            error('Forbidden', 403, "Table '". $entity . "' is not available for collections");
         }
 
         try {            
@@ -70,7 +70,7 @@ class Collections extends MyApiController
             $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
 
             if (!class_exists($model))
-                Factory::response()->error("Entity $entity doesn't exist", 400);
+                error("Entity $entity doesn't exist", 400);
             
                       
             $id = DB::table('collections')->create([
@@ -83,10 +83,10 @@ class Collections extends MyApiController
                 Factory::response()->send(['id' => $id], 201);
             }	
             else
-                Factory::response()->error("Error: creation of collection fails!");
+                error("Error: creation of collection fails!");
 
         } catch (\Exception $e) {
-            Factory::response()->error($e->getMessage());
+            error($e->getMessage());
         }
 
     } // 
@@ -99,7 +99,7 @@ class Collections extends MyApiController
         $data = Factory::request()->getBody(false);
 
         if (empty($data))
-            Factory::response()->error('Invalid JSON',400);
+            error('Invalid JSON',400);
 
         try {
             
@@ -107,7 +107,7 @@ class Collections extends MyApiController
                 if (DB::table('collections')->where(['id', $id])->delete()){
                     Factory::response()->sendOK();
                 } else {
-                    Factory::response()->error("Colection not found",404);
+                    error("Colection not found",404);
                 }
             } else {
 
@@ -120,7 +120,7 @@ class Collections extends MyApiController
                 $sp = Factory::acl()->hasSpecialPermission('write_all_collections');
 
                 if (!$sp && $row['belongs_to'] != Acl::getCurrentUid()){
-                    Factory::response()->error('Forbidden', 403, 'You are not the owner');
+                    error('Forbidden', 403, 'You are not the owner');
                 }         
                                
                 $entity = Strings::snakeToCamel($row['entity']);    
@@ -132,7 +132,7 @@ class Collections extends MyApiController
                 $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
 
                 if (!class_exists($model))
-                    Factory::response()->error("Entity $entity doesn't exist", 400);     
+                    error("Entity $entity doesn't exist", 400);     
                 
                 $instance = (new $model(true));      
 
@@ -146,7 +146,7 @@ class Collections extends MyApiController
                 if (!$sp) {
                     // Table must have 'belongs_to' 
                     if (!$instance->inSchema([$instance->belongsTo()])){
-                        Factory::response()->error(_("Collections are not available to this resource")); 
+                        error(_("Collections are not available to this resource")); 
                     }
                     
                     $instance->where([$instance->belongsTo() => Acl::getCurrentUid()]);
@@ -154,7 +154,7 @@ class Collections extends MyApiController
 
                 $validado = (new Validator())->setRequired($put_mode)->validate($instance->getRules(), $data);
                 if ($validado !== true){
-                    Factory::response()->error(_('Data validation error'), 400, $validado);
+                    error(_('Data validation error'), 400, $validado);
                 }   
                 
                 if ($instance->inSchema(['updated_by'])){
@@ -175,7 +175,7 @@ class Collections extends MyApiController
             }
 
         } catch (\Exception $e) {
-            Factory::response()->error("Error during update for colection $id with message: {$e->getMessage()}");
+            error("Error during update for colection $id with message: {$e->getMessage()}");
         }
     }        
 
@@ -189,7 +189,7 @@ class Collections extends MyApiController
      */
     function delete($id = NULL) {
         if($id == NULL)
-            Factory::response()->error("Lacks id for Collection in request", 400);
+            error("Lacks id for Collection in request", 400);
 
         $data = Factory::request()->getBody();  
 
@@ -204,7 +204,7 @@ class Collections extends MyApiController
             $sp = Factory::acl()->hasSpecialPermission('write_all_collections');
 
             if (!$sp && $row['belongs_to'] != Acl::getCurrentUid()){
-                Factory::response()->error('Forbidden', 403, 'You are not the owner');
+                error('Forbidden', 403, 'You are not the owner');
             }         
 
             $entity = Strings::snakeToCamel($row['entity']);    
@@ -216,7 +216,7 @@ class Collections extends MyApiController
             $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
 
             if (!class_exists($model))
-                Factory::response()->error("Entity $entity doesn't exist", 400);
+                error("Entity $entity doesn't exist", 400);
                  
             $instance = (new $model(true));     
 
@@ -239,7 +239,7 @@ class Collections extends MyApiController
             Factory::response()->send(['affected_rows' => $affected]);  
 
         } catch (\Exception $e) {
-            Factory::response()->error("Error during DELETE for collection $id with message: {$e->getMessage()}");
+            error("Error during DELETE for collection $id with message: {$e->getMessage()}");
         }
 
     } // 
