@@ -707,7 +707,7 @@ class DumbAuthController extends ResourceController
     function super_cool_action($a)
     {
         if (!$this->hasAnyRole(['cajero', 'gerente']))
-            Factory::response()->error('Unauthorized', 401);
+            error('Unauthorized', 401);
 
         // acción cualquiera:
         return ++$a;
@@ -7509,13 +7509,18 @@ Tambien se podria querer enviar un mensaje de error.
 
 Ej:
 
-	Factory::response()->error("No encontrado", 404);
+	error("No encontrado", 404, "El recurso no existe");
 
-Aunque con el uso del helper response() se puede simplicar.
+Puede simplificase a,...
 
 	response()->error("No encontrado", 404);
 
 y a 
+	error("No encontrado", 404, "El recurso no existe");
+
+Tambien se puede arrojar un error con response() pero no permite enviar el detalle del error.
+
+Ej:
 
 	response("No encontrado", 404);
 
@@ -8966,7 +8971,7 @@ Ej de código:
 	$failures = $uploader->getErrors();     
 
 	if (count($files) == 0){
-		Factory::response()->error('No files or file upload failed', 400);
+		error('No files or file upload failed', 400);
 	}        
 
 	/*
@@ -8999,7 +9004,7 @@ Eso significa que,... en un Controller podemos tener algo así:
         $failures = $uploader->getErrors();     
 
         if (count($files) == 0){
-            Factory::response()->error('No files or file upload failed', 400);
+            error('No files or file upload failed', 400);
         }        
 
         return [
@@ -9026,7 +9031,7 @@ Y podría guardar los nombres de los archivos en base de datos
         $failures = $uploader->getErrors();     
 
         if (count($files) == 0){
-            Factory::response()->error('No files or file upload failed', 400);
+            error('No files or file upload failed', 400);
         }        
 
         /*
@@ -9082,7 +9087,7 @@ El nombre que va llevar el archivo se puede determinar por un callback, ejemplo:
 	$order_id = $data['order_id'] ?? '';
 
 	if (empty($order_id)){
-		Factory::response()->error('El parametro order_id es requerido', 400);
+		error('El parametro order_id es requerido', 400);
 	}
 
 	$uploader = (new FileUploader())

@@ -17,3 +17,12 @@ function request(){
 function response($data = null, ?int $http_code = 200){
     return Factory::response($data, $http_code);
 }
+
+
+/*
+    "Alias"
+*/
+
+function error($error = null, ?int $http_code = null, $detail = null){
+    return response()->error($error, $http_code, $detail);
+}

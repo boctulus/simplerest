@@ -213,7 +213,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         
         /*
         if (empty($this->callable)){
-            Factory::response()->error("Forbidden", 403, "Operation is not permited");
+            error("Forbidden", 403, "Operation is not permited");
         }
         */
             
@@ -308,10 +308,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         // Si el rol no le permite a un usuario ver un recurso aunque se le comparta un folder tampoco podrá listarlo
         
         if ($id == null && !$this->is_listable)
-            Factory::response()->error('Unauthorized', 403, "You are not allowed to list!!!");    
+            error('Unauthorized', 403, "You are not allowed to list!!!");    
 
         if ($id != null && !$this->is_retrievable)
-            Factory::response()->error('Unauthorized', 401, "You are not allowed to retrieve");  
+            error('Unauthorized', 401, "You are not allowed to retrieve");  
 
         try {            
             $this->instance = $this->getModelInstance();
@@ -397,7 +397,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             
             foreach ((array) $fields as $field){
                 if (!in_array($field,$attributes)){
-                    Factory::response()->error("Unknown field '$field'", 400);
+                    error("Unknown field '$field'", 400);
                 }
             }
 
@@ -406,7 +406,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             foreach ((array) $exclude as $field){
                 if (!in_array($field,$attributes)){
-                    Factory::response()->error("Unknown field '$field' in exclude", 400);
+                    error("Unknown field '$field' in exclude", 400);
                 }
             }
 
@@ -435,12 +435,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $f_rows = $f->where(['id' => $this->folder])->get();
         
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
-                    Factory::response()->error('Folder not found', 404);  
+                    error('Folder not found', 404);  
         
                 $this->folder_access = $this->acl->hasSpecialPermission('read_all_folders') || $f_rows[0]['belongs_to'] == Acl::getCurrentUid()  || FoldersAclExtension::hasFolderPermission($this->folder, 'r');   
 
                 if (!$this->folder_access)
-                    Factory::response()->error("Forbidden", 403, "You don't have permission for the folder $this->folder");
+                    error("Forbidden", 403, "You don't have permission for the folder $this->folder");
             }
 
             if ($id != null)
@@ -472,7 +472,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }else{
                     // folder, by id
                     if (empty(static::$folder_field))
-                        Factory::response()->error("Forbidden", 403, "folder_field is undefined");    
+                        error("Forbidden", 403, "folder_field is undefined");    
                                            
                     $_get[] = [static::$folder_field, $f_rows[0]['name']];
                     $_get[] = [$this->instance->belongsTo(), $f_rows[0][$this->instance->belongsTo()]];
@@ -494,7 +494,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 $rows = $this->instance->where($_get)->get($fields); 
                 if (empty($rows))
-                    Factory::response()->error('Not found', 404, $id != null ? "Register with id=$id in table '{$this->table_name}' was not found" : '');
+                    error('Not found', 404, $id != null ? "Register with id=$id in table '{$this->table_name}' was not found" : '');
                 else{
                     // event hook
                     $this->onGot($id, 1);
@@ -673,7 +673,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         }
 
                                         if (!$found)
-                                            Factory::response()->error("Unknown operator '$op'", 400);
+                                            error("Unknown operator '$op'", 400);
                                     break;
                                 }
                             }
@@ -787,7 +787,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     // folder, sin id
 
                     if (empty(static::$folder_field)){
-                        Factory::response()->error("Forbidden", 403, "'folder_field' is undefined");   
+                        error("Forbidden", 403, "'folder_field' is undefined");   
                     }    
 
                     $_get[] = [static::$folder_field, $f_rows[0]['name']];
@@ -1023,7 +1023,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         $data = Factory::request()->getBody(false);
 
         if (empty($data))
-            Factory::response()->error('Invalid JSON',400);
+            error('Invalid JSON',400);
             
         /*
             Valido solamente para este tipo de API 
@@ -1047,13 +1047,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             if (!$this->acl->hasSpecialPermission('fill_all')){          
                 if ($this->instance->inSchema([$this->instance->createdBy()])){
                     if (isset($data[$this->instance->createdBy()])){
-                        Factory::response()->error("'{$this->instance->createdBy()}' is not fillable!", 400);
+                        error("'{$this->instance->createdBy()}' is not fillable!", 400);
                     }
                 }  
 
                 if ($this->instance->inSchema([$this->instance->createdAt()])){
                     if (isset($data[$this->instance->createdAt()])){  
-                        Factory::response()->error("'{$this->instance->createdAt()}' is not fillable!", 400);
+                        error("'{$this->instance->createdAt()}' is not fillable!", 400);
                     } 
                 }  
             }else{
@@ -1092,7 +1092,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             if ($this->folder !== null)
             {
                 if (empty(static::$folder_field))
-                    Factory::response()->error("Forbidden", 403, "'folder_field' is undefined");
+                    error("Forbidden", 403, "'folder_field' is undefined");
 
                 // event hook    
                 $this->onPostingFolderBeforeCheck($id, $data, $this->folder);
@@ -1101,10 +1101,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $f_rows = $f->where(['id' => $this->folder])->get();
                       
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
-                    Factory::response()->error('Folder not found', 404); 
+                    error('Folder not found', 404); 
         
                 if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
-                    Factory::response()->error("Forbidden", 403, "You have not permission for the folder $this->folder");
+                    error("Forbidden", 403, "You have not permission for the folder $this->folder");
 
                 unset($data['folder']);    
                 $data[static::$folder_field] = $f_rows[0]['name'];
@@ -1116,7 +1116,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $ok = $validator->validate($data, $this->instance->getRules());
             
             if ($ok !== true){
-                Factory::response()->error(_('Data validation error'), 400, $validator->getErrors());
+                error(_('Data validation error'), 400, $validator->getErrors());
             }  
 
             if (!empty($this->folder)) {
@@ -1447,7 +1447,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 // solo debug:
                 $db = DB::getCurrentDB();
                 $tb = DB::getTableName();
-                Factory::response()->error("Error: creation on `{$db}`.`{$tb}` of resource fails: ". $e->getMessage(), 500, 
+                error("Error: creation on `{$db}`.`{$tb}` of resource fails: ". $e->getMessage(), 500, 
                         $this->instance->getLog());
             }
 
@@ -1463,12 +1463,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 ], 201);
             }	
             else
-                Factory::response()->error("Error: creation of resource fails!");
+                error("Error: creation of resource fails!");
 
         } catch (InvalidValidationException $e) { 
-            Factory::response()->error('Validation Error', 400, json_decode($e->getMessage()));
+            error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (\Exception $e) {
-            Factory::response()->error($e->getMessage());
+            error($e->getMessage());
         }	
 
     } // 
@@ -1509,7 +1509,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $row = $instance0->where([$instance0->getIdName(), $id])->first();
 
                 if (isset($row['is_locked']) && $row['is_locked'] == 1)
-                    Factory::response()->error("Forbidden", 403, "Locked by Admin");
+                    error("Forbidden", 403, "Locked by Admin");
             }
 
             // Creo una instancia
@@ -1530,7 +1530,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 foreach ($unfill as $uf){
                     if ($this->instance->inSchema([$uf])){
                         if (isset($data[$uf])){
-                            Factory::response()->error("$uf is not fillable", 400);
+                            error("$uf is not fillable", 400);
                         }
                     }  
                 }
@@ -1548,7 +1548,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             if ($this->folder !== null)
             {
                 if (empty(static::$folder_field))
-                    Factory::response()->error("'folder_field' is undefined", 403);
+                    error("'folder_field' is undefined", 403);
 
                 // event hook    
                 $this->onPuttingFolderBeforeCheck($id, $data, $this->folder);
@@ -1557,10 +1557,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $f_rows = $f->where(['id' => $this->folder])->get();
                       
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
-                    Factory::response()->error('Folder not found', 404); 
+                    error('Folder not found', 404); 
         
                 if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$this->acl->hasSpecialPermission('write_all_folders'))
-                    Factory::response()->error("You have not permission for the folder $this->folder", 403);
+                    error("You have not permission for the folder $this->folder", 403);
 
                 $this->folder_name = $f_rows[0]['name'];
 
@@ -1588,7 +1588,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
 
                 if  ($owned && !$this->acl->hasSpecialPermission('write_all') && $rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()){
-                    Factory::response()->error('Forbidden', 403, 'You are not the owner!');
+                    error('Forbidden', 403, 'You are not the owner!');
                 }   
             }                 
 
@@ -2123,7 +2123,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $ok  = $validator->setRequired($put_mode)->validate($data, $this->instance->getRules());
             
             if ($ok !== true){
-                Factory::response()->error(_('Data validation error'), 400, $validator->getErrors());
+                error(_('Data validation error'), 400, $validator->getErrors());
             }
 
             // agregado dic-3
@@ -2171,16 +2171,16 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 
                 Factory::response()->send($data);
             } else {
-                Factory::response()->error("Error in PATCH",404);
+                error("Error in PATCH",404);
             }	
 
         } catch (InvalidValidationException $e) { 
-            Factory::response()->error('Validation Error', 400, json_decode($e->getMessage()));
+            error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (\PDOException $e){
             // solo para debug !
-            Factory::response()->error("Error: creation of resource fails: ". $e->getMessage(), 500);
+            error("Error: creation of resource fails: ". $e->getMessage(), 500);
         } catch (\Exception $e) {
-            Factory::response()->error("Error during PATCH for id=$id with message: {$e->getMessage()}");
+            error("Error during PATCH for id=$id with message: {$e->getMessage()}");
         }
     } //
 
@@ -2218,7 +2218,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
      */
     function delete($id = NULL) {
         if($id == NULL)
-            Factory::response()->error("Missing id", 400);
+            error("Missing id", 400);
 
         $data = Factory::request()->getBody(false);        
 
@@ -2250,7 +2250,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             if ($this->folder !== null)
             {
                 if (empty(static::$folder_field))
-                    Factory::response()->error("Undefined folder field", 403);
+                    error("Undefined folder field", 403);
 
                 // event hook    
                 $this->onDeletingFolderBeforeCheck($id, $this->folder);
@@ -2259,10 +2259,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $f_rows = $f->where([$id_name => $this->folder])->get();
                       
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
-                    Factory::response()->error('Folder not found', 404); 
+                    error('Folder not found', 404); 
         
                 if ($f_rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
-                    Factory::response()->error("You have not permission for the folder $this->folder", 403);
+                    error("You have not permission for the folder $this->folder", 403);
 
                 $this->folder_name = $f_rows[0]['name'];
 
@@ -2277,7 +2277,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $data['belongs_to'] = $f_rows[0][$this->instance->belongsTo()];    
             } else {
                 if ($owned && !$this->acl->hasSpecialPermission('write_all') && $rows[0]['belongs_to'] != Acl::getCurrentUid()){
-                    Factory::response()->error('Forbidden', 403, 'You are not the owner');
+                    error('Forbidden', 403, 'You are not the owner');
                 }
             }  
 
@@ -2289,7 +2289,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }   
             }else {
                 if (isset($rows[0][$this->instance->isLocked()]) && $rows[0][$this->instance->isLocked()] == 1){
-                    Factory::response()->error("Locked by Admin", 403);
+                    error("Locked by Admin", 403);
                 }
             }
 
@@ -2325,10 +2325,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 Factory::response()->sendJson("OK");
             }	
             else
-                Factory::response()->error("Record not found", 404);
+                error("Record not found", 404);
 
         } catch (\Exception $e) {
-            Factory::response()->error("Error during DELETE for $id_name=$id with message: {$e->getMessage()}");
+            error("Error during DELETE for $id_name=$id with message: {$e->getMessage()}");
         }
 
     } // 

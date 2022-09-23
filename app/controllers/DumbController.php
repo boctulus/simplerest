@@ -4768,17 +4768,58 @@ class DumbController extends Controller
 
     function respuesta()
     {
-        Factory::response()->error('Acceso no autorizado', 401, 'Header vacio');
+        error('Acceso no autorizado', 401, 'Header vacio');
     }
 
-    function test_error()
+    function test_error1()
     {
-        Factory::response()->error("No encontrado", 404, "El recurso no existe");
+        error("No encontrado", 404, "El recurso no existe");
+    }
+
+    function test_error1b()
+    {
+        response()->error("No encontrado", 404, "El recurso no existe");
     }
 
     function test_error2(){
+        // No acepta mas que dos parametros
         response('Todo mal', 500);
     }
+
+    function test_error1c()
+    {
+        // es un alias de response()->error()
+        error("No encontrado", 404, "El recurso no existe");
+    }
+
+    function test_trace()
+    {
+        $fn = function(){
+            //throw new \InvalidArgumentException("El argumento xxx es invalido");
+            //die("Ouch!");
+
+            $x = 1/0;
+        };
+
+        $fn();       
+    }
+
+    /*
+        TypeError tambien son capturados por el error_handler
+
+        Ver si demas errores son capturados:
+
+        https://trowski.com/2015/06/24/throwable-exceptions-and-errors-in-php7/
+    */
+    function test_trace2()
+    {
+        $fn = function(int $x){
+            $z = $x/2;
+        };
+
+        $fn("hello");       
+    }
+
 
     function test_get_rels()
     {
@@ -10023,7 +10064,7 @@ class DumbController extends Controller
         $failures = $uploader->getErrors();     
 
         if (count($files) == 0){
-            Factory::response()->error('No files or file upload failed', 400);
+            error('No files or file upload failed', 400);
         }        
 
         /*

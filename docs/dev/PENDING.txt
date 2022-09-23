@@ -1274,7 +1274,7 @@ class DumbController extends Controller
     }
 
     function respuesta(){
-        Factory::response()->error('Acceso no autorizado', 401, 'Header vacio');
+        error('Acceso no autorizado', 401, 'Header vacio');
     }
    
       // ok

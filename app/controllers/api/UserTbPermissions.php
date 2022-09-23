@@ -33,7 +33,7 @@ class UserTbPermissions extends MyApiController
         $data = Factory::request()->getBody(false);
 
         if (empty($data))
-            Factory::response()->error('Invalid JSON',400);
+            error('Invalid JSON',400);
         
         $instance = DB::table('user_tb_permissions')->assoc();
 
@@ -47,7 +47,7 @@ class UserTbPermissions extends MyApiController
 
             $validado = (new Validator)->validate($instance->getRules(), $data);
             if ($validado !== true){
-                Factory::response()->error(_('Data validation error'), 400, $validado);
+                error(_('Data validation error'), 400, $validado);
             }  
 
             DB::transaction(function() use($data, $instance){                
@@ -62,9 +62,9 @@ class UserTbPermissions extends MyApiController
         
 
         } catch (InvalidValidationException $e) { 
-            Factory::response()->error('Validation Error', 400, json_decode($e->getMessage()));
+            error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (\Exception $e) {
-            Factory::response()->error($e->getMessage());
+            error($e->getMessage());
         }	
 
     } // 

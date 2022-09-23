@@ -24,7 +24,7 @@ class TrashCan extends MyApiController
                     Factory::request()->shiftBodyParam('entity');
                 
         if (empty($entity))
-            Factory::response()->error('Entity is required', 400);
+            error('Entity is required', 400);
 
         $entity = Strings::snakeToCamel($entity);
 
@@ -35,20 +35,20 @@ class TrashCan extends MyApiController
         $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
         
         if (!class_exists($api_ctrl)){
-            Factory::response()->error("Entity $entity not found", 404);
+            error("Entity $entity not found", 404);
         }
 
         if (!$api_ctrl::hasSoftDelete()){
-            Factory::response()->error('Not implemented', 501, "Trashcan not implemented for $entity");
+            error('Not implemented', 501, "Trashcan not implemented for $entity");
         }
         
         if (!class_exists($this->model))
-            Factory::response()->error("Entity $entity not found", 400);
+            error("Entity $entity not found", 400);
 
         $this->instance = (new $this->model())->assoc();  
         
         if (!$this->instance->inSchema([$this->instance->deletedAt()])){
-            Factory::response()->error('Not implemented', 501, "Trashcan not implemented for $entity");
+            error('Not implemented', 501, "Trashcan not implemented for $entity");
         }
             
         $this->ask_for_deleted = true; 
@@ -62,7 +62,7 @@ class TrashCan extends MyApiController
 
     function get($id = null) {
         if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('read_all_trashcan')){
-            Factory::response()->error("Forbidden", 403);
+            error("Forbidden", 403);
         }
 
         parent::get($id);
@@ -76,13 +76,13 @@ class TrashCan extends MyApiController
 
 
     function post() {
-        Factory::response()->error('You can not create a trashcan resource',405);
+        error('You can not create a trashcan resource',405);
     }        
 
     function modify($id = NULL, bool $put_mode = false)
     {
         if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('write_all_trashcan')){
-            Factory::response()->error("Forbidden", 403);
+            error("Forbidden", 403);
         }
 
         parent::modify($id, $put_mode);
@@ -112,7 +112,7 @@ class TrashCan extends MyApiController
 
     function delete($id = NULL) {
         if (!$this->instance->inSchema([$this->instance->belongsTo()]) && !$this->acl->hasSpecialPermission('write_all_trashcan')){
-            Factory::response()->error("Forbidden", 403);
+            error("Forbidden", 403);
         }
 
         parent::delete($id);
