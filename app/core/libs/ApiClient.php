@@ -26,7 +26,7 @@ class ApiClient
     protected $encode_body;
     protected $auto_decode;
     protected $status;
-    protected $errors;
+    protected $error;
     protected $response;
     protected $expiration;
     protected $max_retries = 1;
@@ -374,6 +374,16 @@ class ApiClient
         $this->url  = $url;
         $this->verb = strtoupper($http_verb);
 
+        $cert = config()['ssl_cert'];
+        
+        if ($cert === false){
+            $this->disableSSL();
+        }
+
+        if (!empty($cert)){
+            $this->setSSLCrt($cert);
+        }
+
         if (!empty($this->options) && !empty($options)){
             $options = array_merge($this->options, $options);
         } else {
@@ -419,7 +429,7 @@ class ApiClient
         {   
             $res = $this->consumeAPI($url, $http_verb, $body, $headers, $options, false, $this->encode_body);
             $this->status   = $res['http_code'];
-            $this->error   = $res['error'];
+            $this->error    = $res['error'];
             $this->response = $res['data'];
 
             $this->filename     = $this->getFilename();

@@ -112,6 +112,10 @@ class Response
     }
 
     function send($data, int $http_code = NULL){
+        if ($http_code >= 400) {
+            return $this->sendError($data, $http_code);
+        }
+
         $http_code = $http_code != NULL ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
 
         if (!headers_sent()) {
@@ -139,12 +143,6 @@ class Response
                     $data['paginator'] = static::$paginator;
             }          
         }     
-
-        // if (Factory::request()->gzip()){
-        //    $this->addHeader('Content-Encoding: gzip');
-        //    $this->zip(json_encode($data). "\n");
-        // }else
-           json_encode($data). "\n";
 
         static::$instance->setData( $data );
         return static::$instance;   	
@@ -239,8 +237,8 @@ class Response
             https://www.baeldung.com/rest-api-error-handling-best-practices
         */
         $res['error'] = [ 
-            'type'    => $type ?? null,
-            'code'    => $code ?? null,
+            'type'    => $type    ?? null,
+            'code'    => $code    ?? null,
             'message' => $message,
             'detail'  => $detail
         ];

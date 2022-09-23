@@ -21,8 +21,16 @@ return [
 		urls start with /api/ if REMOVE_API_SLUG is set to false
 	*/	
 	'REMOVE_API_SLUG' => false, 
-	'HTTPS' => 'Off',
+	'HTTPS' =>  null, //'Off',
 	'DEFAULT_CONTROLLER' => 'HomeController',
+
+	/*
+		file .crt
+		null
+		false -> deshabilita la verificacion
+	*/
+	
+	'ssl_cert' => 'D:\wamp64\ca-bundle.crt',
 
 	/*
 		Es posible cargar la lista de conexiones disponibles

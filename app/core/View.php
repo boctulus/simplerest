@@ -23,13 +23,13 @@ class View
             $layout = static::LAYOUT;
         }
 
-        $filename   = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
+        $filename = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
         switch ($expiration_time){
             case -1:
                 $expired = false;
             break;
-            case -0:
+            case 0:
                 $expired = true;
             break;    
             default:
@@ -62,7 +62,7 @@ class View
         }
 
         if ($expiration_time != 0 && ($expired || !$file_exists)){
-            //Files::writableOrFail($filename);
+            Files::writableOrFail($filename);
 
             $bytes = Files::writter($filename, $content);
 
@@ -71,7 +71,13 @@ class View
             }
         }
 
-        include VIEWS_PATH . "$layout"; 
+        $path = VIEWS_PATH . "$layout";
+
+        if (!file_exists($path)){
+            response("Path '$path' not found", 404);
+        }
+
+        include $path; 
     }
 
     static function destroyCache(string $view_path) : bool {
