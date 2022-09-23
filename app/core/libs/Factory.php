@@ -27,8 +27,14 @@ class Factory {
         return $instance;
 	}
 
-	static function response() : Response {
-		return Response::getInstance();
+	static function response($data = null, ?int $http_code = 200) : Response {
+		$ret = Response::getInstance();
+
+		if ($data != null){
+			$ret->send($data, $http_code);
+		}
+
+		return $ret;
 	}
 
 	static function request() : Request {

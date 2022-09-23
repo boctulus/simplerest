@@ -96,6 +96,38 @@ De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes
 
 - Poder encolar tanto css o js como hace wordpress
 
+    enqueue_js($path, $in_footer)
+    enqueue_css($path)
+
+Ej:
+
+  enqueue_css([
+    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css',
+    'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css'
+  ]);
+
+  enqueue_js('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js', true);
+
+Seria equivalente a,...
+
+  view('select2/test.php', [
+      'json' => $json,
+      'head' => [
+          'css' => [
+              'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css',
+              'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css'
+          ]
+          ],
+      'footer' => [
+          'js' => [
+              'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js'
+          ]
+      ]
+  ], 'tpl_basic.php');        
+
+https://developer.wordpress.org/reference/functions/wp_enqueue_script/
+
+
 - Modularizacion
 
 - Terminar generador de front !
