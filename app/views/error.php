@@ -2,6 +2,7 @@
     #pre_error { 
         white-space: pre-wrap; 
         word-break: break-word;
+        background-color: transparent;
     }
 </style>
 
