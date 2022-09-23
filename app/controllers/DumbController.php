@@ -92,9 +92,31 @@ class DumbController extends Controller
         dd(true, 'My bool');
     }
 
+    function test_fsockopen(){
+        
+    }
+
+    /*
+        Si esta cerrado el puerto 443 puede demorar demasiado en contestar
+    */
     function test_ssl()
     {
-        dd(Url::has_ssl('simplerest.pulque.ro'));
+        dd(Url::hasSSL('google.com'));
+        dd(Url::hasSSL('woo1.lan'));
+        dd(Url::hasSSL('simplerest.lan'));
+    }
+
+    /*
+        Probar en un contenedor con SSL
+    */
+    function has_ssl(){
+        dd(
+            Url::isSSL()
+        );
+    }
+
+    function test_php_operators(){
+        // ...
     }
 
     /*
@@ -4711,7 +4733,7 @@ class DumbController extends Controller
 
     function curl()
     {
-        define('HOST', $this->config['APP_URL']);
+        define('HOST', config()['app_url']);
         define('BASE_URL', HOST . '/');
 
         $url = BASE_URL . "api/v1/auth/login";
@@ -4746,12 +4768,12 @@ class DumbController extends Controller
 
     function respuesta()
     {
-        Factory::response()->sendError('Acceso no autorizado', 401, 'Header vacio');
+        Factory::response()->error('Acceso no autorizado', 401, 'Header vacio');
     }
 
     function test_error()
     {
-        Factory::response()->sendError("No encontrado", 404, "El recurso no existe");
+        Factory::response()->error("No encontrado", 404, "El recurso no existe");
     }
 
     function test_error2(){
@@ -4809,7 +4831,7 @@ class DumbController extends Controller
     */
     function test_api00()
     {
-        $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'GET');
+        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'GET');
         dd($res);
     }
 
@@ -4823,7 +4845,7 @@ class DumbController extends Controller
             CURLOPT_SSL_VERIFYPEER => 0
         ];
 
-        $res = consumeApi('http://jsonplaceholder.typicode.com/posts', 'GET', null, $options);
+        $res = consume_api('http://jsonplaceholder.typicode.com/posts', 'GET', null, $options);
         dd($res);
     }
 
@@ -4884,7 +4906,7 @@ class DumbController extends Controller
 
     function euro()
     {
-        $res = consumeApi('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+        $res = consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
 
         if ($res['http_code'] != 200) {
             throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
@@ -4943,7 +4965,7 @@ class DumbController extends Controller
 
     function test_api01a()
     {
-        $res = consumeApi('http://34.204.139.241:8084/api/Home', 'GET', null, [
+        $res = consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, [
             'Accept' => 'text/plain'
         ]);
         dd($res);
@@ -4951,7 +4973,7 @@ class DumbController extends Controller
 
     function test_api01b()
     {
-        $res = consumeApi('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
+        $res = consume_api('http://34.204.139.241:8084/api/Home', 'GET', null, null, null, false);
         dd($res);
     }
 
@@ -4963,7 +4985,7 @@ class DumbController extends Controller
             "body": "Some long description"
           }';
 
-        $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
+        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data);
         dd($res);
     }
 
@@ -4980,7 +5002,7 @@ class DumbController extends Controller
             CURLOPT_SSL_VERIFYPEER => 0
         ];
 
-        $res = consumeApi('https://jsonplaceholder.typicode.com/posts', 'POST', $data, null, $options);
+        $res = consume_api('https://jsonplaceholder.typicode.com/posts', 'POST', $data, null, $options);
         dd($res);
     }
 
@@ -4989,7 +5011,7 @@ class DumbController extends Controller
     {
         $xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
-        $response = consumeApi('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
+        $response = consume_api('http://localhost/pruebas/get_xml.php', 'POST', $xml_file, [
             "Content-type" => "text/xml"
         ]);
 
@@ -4999,7 +5021,7 @@ class DumbController extends Controller
     // debe responderme con erro y un body de respuesta -- ok
     function test_api05()
     {
-        $response = consumeApi('http://localhost/pruebas/get_error.php', 'POST', null, [
+        $response = consume_api('http://localhost/pruebas/get_error.php', 'POST', null, [
             "Content-type" => "text/xml"
         ]);
 
@@ -5008,7 +5030,7 @@ class DumbController extends Controller
 
     function test_api06()
     {
-        $response = consumeApi(
+        $response = consume_api(
             "https://onesignal.com/api/v1/notifications",
             'POST',
             ['x' => 'y'],
@@ -5254,7 +5276,7 @@ class DumbController extends Controller
 
     function error()
     {
-        response()->sendError("Todo mal", 400);
+        response()->error("Todo mal", 400);
     }
 
     function is_type()
@@ -6811,7 +6833,7 @@ class DumbController extends Controller
 
         $xml_file_encoded = base64_encode($xml_file);
 
-        $response = consumeApi('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
+        $response = consume_api('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
             "Content-type"  => "text/plain",
             "Authorization" => "Bearer eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9hZGFwdGFkb3JAbnVtcm90LmNvbSIsInJvbGUiOiJDbGllbnRlIiwibmJmIjoxNjM2MDQ0NTQ0LCJleHAiOjE2OTkxMTY1NDQsImlhdCI6MTYzNjA0NDU0NCwiaXNzIjoibnVtcm90IiwiYXVkIjoicmVhZGVycyJ9.yejhLDwaVb4enDgKPssXyf8SYP1AyrEEa5m99joo3EjG3bhMToUPnY5696sjU6Kb"
         ]);
@@ -9437,7 +9459,7 @@ class DumbController extends Controller
         //     CURLOPT_SSL_VERIFYPEER => 0
         // ];
 
-        // $response = consumeApi($ruta, 'POST', $body, [
+        // $response = consume_api($ruta, 'POST', $body, [
         //     "Content-type"  => "Application/json",
         //     "authToken" => "$token"
         // ], $options);
@@ -9720,7 +9742,7 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = consumeApi($ruta, 'POST', $body, [
+        $response = consume_api($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
@@ -9796,7 +9818,7 @@ class DumbController extends Controller
 
         $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo";
 
-        $response = consumeApi($ruta, 'POST', $body, [
+        $response = consume_api($ruta, 'POST', $body, [
             "Content-type"  => "Application/json",
             "authToken" => "$token"
         ]);
@@ -10001,7 +10023,7 @@ class DumbController extends Controller
         $failures = $uploader->getErrors();     
 
         if (count($files) == 0){
-            Factory::response()->sendError('No files or file upload failed', 400);
+            Factory::response()->error('No files or file upload failed', 400);
         }        
 
         /*

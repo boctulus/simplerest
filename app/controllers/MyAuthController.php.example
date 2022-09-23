@@ -49,7 +49,7 @@ class MyAuthController extends AuthController {
             if ($email_confirmation)
             {                 
                 $exp = time() + $this->config['email_token']['expires_in'];
-                $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
+                $base_url =  httpProtocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']) ;
                 $token = $this->gen_jwt_email_conf($data[$this->__email], $roles, [], $uid);
                 $url = $base_url . (!$this->config['REMOVE_API_SLUG'] ? "api/$api_version" : $api_version) . '/auth/confirm_email/' . $token . '/' . $exp; 
 
@@ -110,7 +110,7 @@ class MyAuthController extends AuthController {
             $tenant = request()->getTenantId();
 
             if ($tenant === null){
-                response()->sendError("Undefined tenant", 500);
+                response()->error("Undefined tenant", 500);
             }
         }
       

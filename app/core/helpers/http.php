@@ -9,8 +9,8 @@ function route(string $name){
     return Route::getRouteByName($name);
 }
 
-function http_protocol(){
-    return Url::http_protocol();
+function httpProtocol(){
+    return Url::httpProtocol();
 }
 
 function redirect(string $url){

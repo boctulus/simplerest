@@ -50,9 +50,9 @@ trait ExceptionHandler
             $backtrace = var_export(debug_backtrace(), true) . PHP_EOL . PHP_EOL;
             $error_location = 'Error on line number '.$e->getLine().' in file - '.$e->getFile();
         
-            Factory::response()->sendError($e->getMessage(), 500, $backtrace, $error_location);
+            Factory::response()->error($e->getMessage(), 500, $backtrace, $error_location);
         } else {
-            Factory::response()->sendError($e->getMessage(), 500);
+            Factory::response()->error($e->getMessage(), 500);
         }
         
     }

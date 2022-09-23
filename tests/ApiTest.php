@@ -12,7 +12,7 @@ use simplerest\libs\Debug;
 
 $config = include __DIR__ . '../../config/config.php';
 
-define('HOST', $config['APP_URL']);
+define('HOST', config()['app_url']);
 define('BASE_URL', HOST .'/');
 
 // API UNIT TEST

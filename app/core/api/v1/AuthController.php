@@ -102,7 +102,7 @@ class AuthController extends Controller implements IAuth
     function login()
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
         $data  = Factory::request()->getBodyDecoded();
 
@@ -115,9 +115,9 @@ class AuthController extends Controller implements IAuth
 
         
         if (empty($email) && empty($username) ){
-            Factory::response()->sendError("{$this->__username} or {$this->__email} are required",400);
+            Factory::response()->error("{$this->__username} or {$this->__email} are required",400);
         }else if (empty($password)){
-            Factory::response()->sendError($this->__password . ' is required',400);
+            Factory::response()->error($this->__password . ' is required',400);
         }
 
         $this->onLogin($data);
@@ -131,12 +131,12 @@ class AuthController extends Controller implements IAuth
             ->first();
 
             if (!$row)
-                Factory::response()->sendError('Incorrect username / email or password', 401);
+                Factory::response()->error('Incorrect username / email or password', 401);
 
             $hash = $row[$this->__password];
 
             if (!password_verify($password, $hash))
-                Factory::response()->sendError('Incorrect username / email or password', 401);
+                Factory::response()->error('Incorrect username / email or password', 401);
 
             $is_active = 1;    
             if ($u->inSchema([$this->__active])){
@@ -145,14 +145,14 @@ class AuthController extends Controller implements IAuth
                 if ($is_active == null) {
 
                     if ($row[$this->__confirmed_email] === "0") {
-                        Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
+                        Factory::response()->error('Non authorized', 403, 'Please confirm your e-mail');
                     } else {
-                        Factory::response()->sendError('Non authorized', 403, 'Account pending for activation');
+                        Factory::response()->error('Non authorized', 403, 'Account pending for activation');
                     }
                 }
 
                 if ($is_active == 0 || (string) $is_active === "0") {
-                    Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+                    Factory::response()->error('Non authorized', 403, 'Deactivated account !');
                 } 
             }                
 
@@ -190,9 +190,9 @@ class AuthController extends Controller implements IAuth
             ]);
           
         } catch (InvalidValidationException $e) { 
-            Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
+            Factory::response()->error('Validation Error', 400, json_decode($e->getMessage()));
         } catch(\Exception $e){
-            Factory::response()->sendError($e->getMessage());
+            Factory::response()->error($e->getMessage());
         }	
         
     }
@@ -202,7 +202,7 @@ class AuthController extends Controller implements IAuth
     function impersonate()
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
         $data  = Factory::request()->getBodyDecoded();
 
@@ -210,7 +210,7 @@ class AuthController extends Controller implements IAuth
             return;
             
         if (!isset($data['uid']) && !isset($data['role']))
-            Factory::response()->sendError('Bad request', 400, 'Nothing to impersonate');
+            Factory::response()->error('Bad request', 400, 'Nothing to impersonate');
 
         $request = Factory::request();
 
@@ -218,7 +218,7 @@ class AuthController extends Controller implements IAuth
         $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
 
         if (empty($auth)){
-            Factory::response()->sendError('Authorization not found',400);
+            Factory::response()->error('Authorization not found',400);
         }
 
         try 
@@ -228,10 +228,10 @@ class AuthController extends Controller implements IAuth
             $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
             
             if (empty($payload))
-                Factory::response()->sendError('Unauthorized!',401);                     
+                Factory::response()->error('Unauthorized!',401);                     
 
             if (empty($payload->uid)){
-                Factory::response()->sendError('uid is needed',400);
+                Factory::response()->error('uid is needed',400);
             }
 
             $acl   = Factory::acl();
@@ -244,7 +244,7 @@ class AuthController extends Controller implements IAuth
             }
 
             if (!$acl->hasSpecialPermission("impersonate", $roles) && !(isset($payload->impersonated_by) && !empty($payload->impersonated_by)) ){
-                Factory::response()->sendError('Unauthorized!',401, 'Impersonate requires elevated privileges');
+                Factory::response()->error('Unauthorized!',401, 'Impersonate requires elevated privileges');
             }    
 
             $guest_role = $acl->getGuest();
@@ -261,7 +261,7 @@ class AuthController extends Controller implements IAuth
                 } else {
 
                     if (!$acl->roleExists($impersonate_role)){
-                        Factory::response()->sendError("Bad request", 400, "Role $impersonate_role is not valid");
+                        Factory::response()->error("Bad request", 400, "Role $impersonate_role is not valid");
                     }
 
                     $uid = $payload->uid; // sigo siendo yo (el admin)
@@ -289,9 +289,9 @@ class AuthController extends Controller implements IAuth
                     $is_active = $row[$this->__active];
 
                     if ($is_active === NULL) {
-                        Factory::response()->sendError('Account to be impersonated is pending for activation', 500);
+                        Factory::response()->error('Account to be impersonated is pending for activation', 500);
                     } elseif (((string) $is_active === "0")) {
-                        Factory::response()->sendError('User account to be impersonated is deactivated', 500);
+                        Factory::response()->error('User account to be impersonated is deactivated', 500);
                     }  
                 }
                 
@@ -332,7 +332,7 @@ class AuthController extends Controller implements IAuth
             Factory::response()->send($res);      
 
         } catch (\Exception $e) {
-            Factory::response()->sendError($e->getMessage(), 400);
+            Factory::response()->error($e->getMessage(), 400);
         }	
                                                     
     }
@@ -341,7 +341,7 @@ class AuthController extends Controller implements IAuth
     function stop_impersonate() 
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
         $request = Factory::request();
 
@@ -349,7 +349,7 @@ class AuthController extends Controller implements IAuth
         $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
 
         if (empty($auth)){
-            Factory::response()->sendError('Authorization not found',400);
+            Factory::response()->error('Authorization not found',400);
         }
 
         try {                                      
@@ -358,18 +358,18 @@ class AuthController extends Controller implements IAuth
             $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
             
             if (empty($payload))
-                Factory::response()->sendError('Unauthorized!',401);                     
+                Factory::response()->error('Unauthorized!',401);                     
 
             if (empty($payload->uid)){
-                Factory::response()->sendError('uid is needed',400);
+                Factory::response()->error('uid is needed',400);
             }
 
             if (empty($payload->impersonated_by)){
-                Factory::response()->sendError('Unauthorized!', 401, 'There is no admin behind this');
+                Factory::response()->error('Unauthorized!', 401, 'There is no admin behind this');
             }
             
         } catch (\Exception $e) {
-            Factory::response()->sendError($e->getMessage(), 400);
+            Factory::response()->error($e->getMessage(), 400);
         }	
 
         $uid   = $payload->impersonated_by;        
@@ -402,9 +402,9 @@ class AuthController extends Controller implements IAuth
                                     ]);
           
         } catch (InvalidValidationException $e) { 
-            Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
+            Factory::response()->error('Validation Error', 400, json_decode($e->getMessage()));
         } catch(\Exception $e){
-            Factory::response()->sendError($e->getMessage());
+            Factory::response()->error($e->getMessage());
         }	
     }
 
@@ -414,7 +414,7 @@ class AuthController extends Controller implements IAuth
     function token()
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
         $request = Factory::request();
 
@@ -422,7 +422,7 @@ class AuthController extends Controller implements IAuth
         $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
 
         if (empty($auth)){
-            Factory::response()->sendError('Authorization not found',400);
+            Factory::response()->error('Authorization not found',400);
         }
 
         try {                                      
@@ -432,14 +432,14 @@ class AuthController extends Controller implements IAuth
             $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
 
             if (empty($payload))
-                Factory::response()->sendError('Unauthorized!',401);                     
+                Factory::response()->error('Unauthorized!',401);                     
 
             if (!isset($payload->uid) || empty($payload->uid)){
-                Factory::response()->sendError('uid is needed',400);
+                Factory::response()->error('uid is needed',400);
             }
 
             if ($payload->exp < time())
-                Factory::response()->sendError('Token expired, please log in',401);
+                Factory::response()->error('Token expired, please log in',401);
 
 
             $uid = $payload->uid;
@@ -476,7 +476,7 @@ class AuthController extends Controller implements IAuth
 
                     if ($is_active == 0 || (string) $is_active === "0") {
                         Factory::response()
-                        ->sendError('Unauthorized', 403, 'Deactivated account !');
+                        ->error('Unauthorized', 403, 'Deactivated account !');
                     }
                 }
 
@@ -512,7 +512,7 @@ class AuthController extends Controller implements IAuth
             Factory::response()->send($res);
             
         } catch (\Exception $e) {
-            Factory::response()->sendError($e->getMessage(), 400);
+            Factory::response()->error($e->getMessage(), 400);
         }	
     }
 
@@ -522,7 +522,7 @@ class AuthController extends Controller implements IAuth
     function register()
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
         //DB::beginTransaction();
 
@@ -530,7 +530,7 @@ class AuthController extends Controller implements IAuth
             $data  = Factory::request()->getBodyDecoded();
 
             if ($data == null)
-                Factory::response()->sendError('Bad request',400, 'Invalid JSON');
+                Factory::response()->error('Bad request',400, 'Invalid JSON');
  
             // Hook
             $this->onRegister($data);        
@@ -552,7 +552,7 @@ class AuthController extends Controller implements IAuth
                     }    
                 } else {
                     // chequear si es requerido antes
-                    Factory::response()->sendError("rol is required", 400);
+                    Factory::response()->error("rol is required", 400);
                 }  
 
                 $roles = [ $data[$this->role_field] ];   
@@ -583,7 +583,7 @@ class AuthController extends Controller implements IAuth
 
             $missing = $u->getMissing($data);
             if (!empty($missing))
-                Factory::response()->sendError('Bad request', 400, 'There are missing attributes in your request: '.implode(',',$missing));
+                Factory::response()->error('Bad request', 400, 'There are missing attributes in your request: '.implode(',',$missing));
 
             $email_in_schema = $u->inSchema([$this->__email]);
 
@@ -598,11 +598,11 @@ class AuthController extends Controller implements IAuth
                     throw new \Exception("Invalid email");  
 
                 if (DB::table($this->users_table)->where([$this->__email, $data[$this->__email]])->exists())
-                    Factory::response()->sendError('Email already exists');    
+                    Factory::response()->error('Email already exists');    
             }            
 
             if (DB::table($this->users_table)->where([$this->__username , $data[$this->__username]])->exists())
-                Factory::response()->sendError('Username already exists');
+                Factory::response()->error('Username already exists');
 
             if ($u->inSchema([$this->__active])){  
                 $u->fill([$this->__active]);      
@@ -660,10 +660,10 @@ class AuthController extends Controller implements IAuth
 
         } catch (InvalidValidationException $e) { 
             //DB::rollback();           
-            Factory::response()->sendError('Validation Error', 400, json_decode($e->getMessage()));
+            Factory::response()->error('Validation Error', 400, json_decode($e->getMessage()));
         }catch(\Exception $e){
             //DB::rollback();
-            Factory::response()->sendError($e->getMessage());
+            Factory::response()->error($e->getMessage());
         }	
             
     }
@@ -684,41 +684,41 @@ class AuthController extends Controller implements IAuth
                 $config = config();
                 
                 if (empty($payload))
-                    Factory::response()->sendError('Unauthorized!',401);             
+                    Factory::response()->error('Unauthorized!',401);             
 
                 if (isset($config['restrict_by_ip']) && $config['restrict_by_ip']){
                     if (!isset($payload->ip) || empty($payload->ip))
-                        Factory::response()->sendError('Unauthorized',401,'Lacks IP in web token');
+                        Factory::response()->error('Unauthorized',401,'Lacks IP in web token');
 
                     if ($payload->ip != Request::ip())
-                        Factory::response()->sendError('Unauthorized!',401, 'IP change');
+                        Factory::response()->error('Unauthorized!',401, 'IP change');
                 }        
 
                 if (isset($config['restrict_by_user_agent']) && $config['restrict_by_user_agent']){
                     if (!isset($payload->user_agent) || empty($payload->ip))
-                        Factory::response()->sendError('Unauthorized',401,'Lacks user agent in web token');
+                        Factory::response()->error('Unauthorized',401,'Lacks user agent in web token');
 
                     if ($payload->user_agent != Request::user_agent())
-                        Factory::response()->sendError('Unauthorized!',401, 'You can only use one device at time'); 
+                        Factory::response()->error('Unauthorized!',401, 'You can only use one device at time'); 
                 }    
 
                 if (!isset($payload->uid) || empty($payload->uid))
-                    Factory::response()->sendError('Unauthorized',401,'Lacks id in web token');  
+                    Factory::response()->error('Unauthorized',401,'Lacks id in web token');  
 
                 // Lacks is_active status
                 if (DB::table($this->users_table)->inSchema(['is_active']) && !isset($payload->is_active) && $payload->uid != -1){
-                    Factory::response()->sendError('Unauthorized', 401, 'Lacks is_active status. Please log in.');
+                    Factory::response()->error('Unauthorized', 401, 'Lacks is_active status. Please log in.');
                 }    
 
                 // temporal:  active => is_active
                 $is_active = $payload->is_active ?? $payload->active;
 
                 if ($is_active === false) {
-                    Factory::response()->sendError('Unauthorized', 403, 'Deactivated account');
+                    Factory::response()->error('Unauthorized', 403, 'Deactivated account');
                 } 
                                                   
                 if ($payload->exp < time())
-                    Factory::response()->sendError('Expired token',401);
+                    Factory::response()->error('Expired token',401);
 
                 //print_r($payload->roles);
                 //fexit; 
@@ -732,10 +732,10 @@ class AuthController extends Controller implements IAuth
                 *
                 * reach this point if token is empty or invalid
                 */
-                Factory::response()->sendError($e->getMessage(),401);
+                Factory::response()->error($e->getMessage(),401);
             }	
         }else{
-            Factory::response()->sendError('Authorization jwt token not found',400);
+            Factory::response()->error('Authorization jwt token not found',400);
         }
 
     }
@@ -765,7 +765,7 @@ class AuthController extends Controller implements IAuth
                 $uid = $this->getUserIdFromApiKey($api_key);
 
                 if ($uid == NULL){
-                    Factory::response()->sendError('Invalid API Key', 401);
+                    Factory::response()->error('Invalid API Key', 401);
                 }
 
                 $u = DB::table($this->users_table);
@@ -817,7 +817,7 @@ class AuthController extends Controller implements IAuth
 
                             // Si tiene el permiso especial "read_all" le doy acceso a cualquier DB !
                             if (!acl()->hasSpecialPermission('read_all', $ret['roles'])){
-                                Factory::response()->sendError("Forbidden", 403, "No db access");
+                                Factory::response()->error("Forbidden", 403, "No db access");
                             }
                         }
                     }
@@ -855,11 +855,11 @@ class AuthController extends Controller implements IAuth
 	function confirm_email($jwt, $exp)
 	{
 		if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS']))
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
 
 		// Es menos costoso verificar así en principio
 		if ((int) $exp < time()) {
-            Factory::response()->sendError('Link is outdated', 400);
+            Factory::response()->error('Link is outdated', 400);
         }         
 
         if($jwt != null)
@@ -880,7 +880,7 @@ class AuthController extends Controller implements IAuth
                 $u = DB::table($this->users_table);
 
                 if (!$u->inSchema([$this->__confirmed_email])){
-                    Factory::response()->sendError('Email confirmation is not implemented', 501);
+                    Factory::response()->error('Email confirmation is not implemented', 501);
                 }    
 
                 $rows = $u->assoc()
@@ -892,12 +892,12 @@ class AuthController extends Controller implements IAuth
                 ->get();
 
                 if (count($rows) == 0){
-                    Factory::response()->sendError("Not found", 404, "Email not found");
+                    Factory::response()->error("Not found", 404, "Email not found");
                 }
 
                 if ($u->inSchema([$this->__active])){
                     if ((string) $rows[0][$this->__active] === "0") {
-                        Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+                        Factory::response()->error('Non authorized', 403, 'Deactivated account !');
                     }
                 }
                 
@@ -914,10 +914,10 @@ class AuthController extends Controller implements IAuth
                 *
                 * reach this point if token is empty or invalid
                 */
-                Factory::response()->sendError($e->getMessage(),401);
+                Factory::response()->error($e->getMessage(),401);
             }	
         }else{
-            Factory::response()->sendError('Authorization jwt token not found',400);
+            Factory::response()->error('Authorization jwt token not found',400);
         }     
 
         $roles = $payload->roles ?? [];
@@ -959,12 +959,12 @@ class AuthController extends Controller implements IAuth
 		$data  = Factory::request()->getBodyDecoded();
 
 		if ($data == null)
-			Factory::response()->sendError('Invalid JSON',400);
+			Factory::response()->error('Invalid JSON',400);
 
 		$email = $data[$this->__email] ?? null;
 
 		if ($email == null)
-			Factory::response()->sendError($this->__email . ' is required', 400);
+			Factory::response()->error($this->__email . ' is required', 400);
 
 		try {	
 			$u = (DB::table($this->users_table))->assoc();
@@ -974,7 +974,7 @@ class AuthController extends Controller implements IAuth
 
 			if (count($rows) === 0){
                 // Email not found
-                Factory::response()->sendError('Please check your e-mail.', 400); 
+                Factory::response()->error('Please check your e-mail.', 400); 
             }
 
             // Hook
@@ -986,17 +986,17 @@ class AuthController extends Controller implements IAuth
             $is_active = $rows[0][$this->__active];
 
             if ((string) $is_active === "0") {
-                Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+                Factory::response()->error('Non authorized', 403, 'Deactivated account !');
             }
 
-            $base_url =  http_protocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']);            
+            $base_url =  httpProtocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']);            
 
             $token = $this->gen_jwt_rememberme($uid);
             
             $url = $base_url . (!Strings::endsWith(DIRECTORY_SEPARATOR, $base_url) ? '/' : '') .'login/change_pass_by_link/' . $token . '/' . $exp; 	
 
 		} catch (\Exception $e){
-			Factory::response()->sendError($e->getMessage(), 500);
+			Factory::response()->error($e->getMessage(), 500);
 		}
     
         // Hook
@@ -1011,16 +1011,16 @@ class AuthController extends Controller implements IAuth
     */
     function change_pass_by_link($jwt = NULL, $exp = NULL){
         if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS'])){
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
         }    
 
         if ($jwt == null || $exp == null){
-            Factory::response()->sendError('Bad request', 400, 'Two paramters are expected');
+            Factory::response()->error('Bad request', 400, 'Two paramters are expected');
         }
 
         // Es menos costoso verificar así en principio
         if ((int) $exp < time()) {
-            Factory::response()->sendError('Link is outdated', 401);
+            Factory::response()->error('Link is outdated', 401);
         } else {
 
             if($jwt != null)
@@ -1029,10 +1029,10 @@ class AuthController extends Controller implements IAuth
                     $payload = \Firebase\JWT\JWT::decode($jwt, $this->config['email_token']['secret_key'], [ $this->config['email_token']['encryption'] ]);
                     
                     if (empty($payload))
-                        Factory::response()->sendError('Unauthorized!',401);                     
+                        Factory::response()->error('Unauthorized!',401);                     
 
                     if (empty($payload->uid)){
-                        Factory::response()->sendError('uid is needed',400);
+                        Factory::response()->error('uid is needed',400);
                     }
 
                     $uid = $payload->uid; 
@@ -1063,12 +1063,12 @@ class AuthController extends Controller implements IAuth
                         $is_active = $row[$this->__active];                     
 
                         if ($is_active === false) {
-                            Factory::response()->sendError('Non authorized', 403, 'Deactivated account');
+                            Factory::response()->error('Non authorized', 403, 'Deactivated account');
                         }
                     }    
 
                     if ($payload->exp < time())
-                        Factory::response()->sendError('Token expired, please log in',401);
+                        Factory::response()->error('Token expired, please log in',401);
 
                     $db_access = $this->getDbAccess($uid);
 
@@ -1106,10 +1106,10 @@ class AuthController extends Controller implements IAuth
                     *
                     * reach this point if token is empty or invalid
                     */
-                    Factory::response()->sendError($e->getMessage(),401);
+                    Factory::response()->error($e->getMessage(),401);
                 }	
             }else{
-                Factory::response()->sendError('Authorization jwt token not found',400);
+                Factory::response()->error('Authorization jwt token not found',400);
             }     
         }	
 
@@ -1118,7 +1118,7 @@ class AuthController extends Controller implements IAuth
     function change_pass_process()
     {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
-            Factory::response()->sendError('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
+            Factory::response()->error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
         $data  = Factory::request()->getBody();
 
@@ -1126,7 +1126,7 @@ class AuthController extends Controller implements IAuth
             return;
 
         if (!isset($data->password) || empty($data->password))
-            Factory::response()->sendError('Bad request', 400, 'Lacks password in request');
+            Factory::response()->error('Bad request', 400, 'Lacks password in request');
 
         $request = Factory::request();
 
@@ -1134,7 +1134,7 @@ class AuthController extends Controller implements IAuth
         $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
 
         if (empty($auth)){
-            Factory::response()->sendError('Authorization not found',400);
+            Factory::response()->error('Authorization not found',400);
         }
 
         try {                                             
@@ -1143,10 +1143,10 @@ class AuthController extends Controller implements IAuth
             $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['email_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
             
             if (empty($payload))
-                Factory::response()->sendError('Unauthorized!',401);                     
+                Factory::response()->error('Unauthorized!',401);                     
 
             if (empty($payload->uid)){
-                Factory::response()->sendError('uid is required',400);
+                Factory::response()->error('uid is required',400);
             }
 
             $ok = DB::table($this->users_table)
@@ -1156,7 +1156,7 @@ class AuthController extends Controller implements IAuth
             ]);
 
             if (!$ok){
-                Factory::response()->sendError("Unexpected error trying to update password", 500); 
+                Factory::response()->error("Unexpected error trying to update password", 500); 
             }
 
             $uid = $payload->uid;
@@ -1172,14 +1172,14 @@ class AuthController extends Controller implements IAuth
                 if ($is_active == null) {
 
                     if ($row[$this->__confirmed_email] === "0") {
-                        Factory::response()->sendError('Non authorized', 403, 'Please confirm your e-mail');
+                        Factory::response()->error('Non authorized', 403, 'Please confirm your e-mail');
                     } else {
-                        Factory::response()->sendError('Non authorized', 403, 'Account pending for activation');
+                        Factory::response()->error('Non authorized', 403, 'Account pending for activation');
                     }
                 }
 
                 if ($is_active == 0 || (string) $is_active === "0") {
-                    Factory::response()->sendError('Non authorized', 403, 'Deactivated account !');
+                    Factory::response()->error('Non authorized', 403, 'Deactivated account !');
                 } 
             }                
 
@@ -1224,7 +1224,7 @@ class AuthController extends Controller implements IAuth
             *
             * reach this point if token is empty or invalid
             */
-            Factory::response()->sendError($e->getMessage(),401);
+            Factory::response()->error($e->getMessage(),401);
         }	
 
     }
