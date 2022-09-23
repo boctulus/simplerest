@@ -14,6 +14,6 @@ function request(){
     return Factory::request();
 }
 
-function response(){
-    return Factory::response();
+function response($data = null, ?int $http_code = 200){
+    return Factory::response($data, $http_code);
 }
