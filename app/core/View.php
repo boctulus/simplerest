@@ -9,8 +9,6 @@ class View
 {
     use ExceptionHandler;
 
-    const LAYOUT = 'tpl.php';
-
     function __construct(string $view_path, array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0)
     {
 		$this->config = config();
@@ -20,7 +18,7 @@ class View
         }
 
         if (empty($layout)){
-            $layout = static::LAYOUT;
+            $layout = $this->config['template'];
         }
 
         $filename = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
@@ -51,10 +49,11 @@ class View
 
         if ($cached && $file_exists){
             $content = Files::reader($filename);
-        } else {
-            if (!empty($vars_to_be_passed))
-            extract($vars_to_be_passed);      
-            
+        } else {            
+            if (!empty($vars_to_be_passed)){
+                extract($vars_to_be_passed);
+            }      
+                    
             ob_start();
             include VIEWS_PATH . $view_path;
             $content = ob_get_contents();

@@ -4627,12 +4627,20 @@ Podés armar una clase availableProduct y escribir los WHEREs vos... O podés us
 
 "las bases de datos no SQL más populares hoy en día son documentales (como Mongo). Un ORM es un mapeador de relaciones. Las bases de datos documentales no están diseñadas para trazar relaciones entre los objetos (eso se hace en una capa superior). El equivalente a un ORM documental es un ODM."
 
-- Dar soporte a MongoDB 
 
-https://docs.mongodb.com/manual/tutorial/query-documents/
+- Tener la opcion de usar MongoDB 
+
+https://www.mongodb.com/docs/drivers/php-libraries/
+
+Afortunadamente existe un "package" de Laravel con soporte para MongoDB que,... 
+puede incluso ser usado fuera de Laravel!
+
+https://github.com/jenssegers/laravel-mongodb
+https://www.mongodb.com/compatibility/mongodb-laravel-intergration
 
 Sobre Mongo leer:
 
+https://docs.mongodb.com/manual/tutorial/query-documents/
 https://www.tutorialspoint.com/mongodb/index.htm
 https://university.mongodb.com/courses/M001/about?offering_id=M001%2F2020_November_3
 https://www.sitepoint.com/building-simple-blog-app-mongodb-php/
