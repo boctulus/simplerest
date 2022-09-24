@@ -10615,12 +10615,16 @@ class DumbController extends Controller
     }
 
     function test_async_defer(){
-        Config::set('template', 'my_tpl.php');
-        
-        $content = "Hola Sr. Putin";
-
-        render($content);
+        set_template('test_async_await/my_tpl_5.php');
+        render("Hola Sr. Putin");
     }
+
+    function test_asset_enqueue(){
+        View::enqueue_js('https://kit.fontawesome.com/3f60db90e4.js');
+
+        render("Hola Sr. Putin");
+    }
+
 
 
 }   // end class
