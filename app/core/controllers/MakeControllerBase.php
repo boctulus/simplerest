@@ -203,6 +203,7 @@ class MakeControllerBase extends Controller
         Examples:
         
         make lib my_lib
+        make lib my_folder\my_lib
         make helper my_helper
         make interface pluggable 
         make interface pluggable --remove
@@ -663,6 +664,10 @@ class MakeControllerBase extends Controller
         if ($protected){
             return;
         }
+
+        Files::mkDir(
+            Files::getDir($dest_path)
+        );
 
         Files::writableOrFail($dest_path);
 

@@ -19,6 +19,25 @@ function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $lay
     return (new MyView($view_path, $vars_to_be_passed, $layout, $expiration_time)); 
 }
 
+/*
+    A diferencia de view(), no requiere de una vista
+*/
+function render($content = null, ?string $layout = null){
+    $config = config();
+
+    if (empty($layout)){
+        $layout = $config['template'];
+    }
+
+    $path = VIEWS_PATH . "$layout";
+
+    if (!file_exists($path)){
+        response("Path '$path' not found", 404);
+    }
+
+    include $path;
+}
+
 function asset($resource){
     $protocol = is_cli() ? 'http' : httpProtocol();
     
