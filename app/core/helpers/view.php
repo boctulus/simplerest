@@ -1,6 +1,7 @@
 <?php
 
 use simplerest\views\MyView; 
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
 
 function meta($name, $content){
@@ -36,6 +37,10 @@ function render($content = null, ?string $layout = null){
     }
 
     include $path;
+}
+
+function set_template(string $file){
+    Config::set('template', $file);
 }
 
 function asset($resource){

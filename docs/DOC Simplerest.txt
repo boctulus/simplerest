@@ -7112,13 +7112,28 @@ O bien,...
 
 En estos casos 'whatever.php' es la vista que se esta pasando al template. La extension .php se puede obviar al llamar a view()
 
+
+Para cambiar de template se puede usar el helper set_template() como alias de Config::set('template', 'template_file.php')
+
+Ej:
+
+	set_template('my_tpl.php');
+    
+	$arr = [
+		'name' => 'Putin',
+		'age'  =>50,
+	];
+
+	view('whatever',  $arr);
+
+
 # Cargar el template sin vista
 
 Hay casos muy concretos donde puede querer usarse un template en un controlador (o ruta) sin especificar niguna vista y en esos casos usamos el helper render()
 
 Ej:
 
-	Config::set('template', 'my_tpl.php');
+	set_template('my_tpl.php');
 	
 	$arr = [
 		'name' => 'Putin',
@@ -7145,6 +7160,7 @@ De hecho ni el contenido es requerido y lo siguiente es valido:
 o,..
 
 	render();  // renderizaria solo el template por defecto
+
 
 # Assets
 

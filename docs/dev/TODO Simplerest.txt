@@ -431,9 +431,9 @@ Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) 
 
 - Optimizar imagenes
 
-- Lazy-load de imagenes
+- Lazy-load de imagenes. Ver https://www.youtube.com/watch?v=mC93zsEsSrg
 
-- Diferir o hacer async carga de assets
+- Para JS usar defer o async cuando sea posible.
 
 - Preloading -> permite dar prioridad a ciertos assets
 
