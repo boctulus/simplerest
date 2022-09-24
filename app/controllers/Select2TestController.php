@@ -12,13 +12,6 @@ class Select2TestController extends MyController
     }
 
     /*
-        Integrar en
-
-        https://diagnosticojournal.us8.list-manage.com/subscribe?u=a981b45880eea70b899f8ed96&id=363f983b38
-
-        Desarrollo para Gabriel. 
-        +54 9 11 6857-1750
-
         Countries & states
     */
     function index()

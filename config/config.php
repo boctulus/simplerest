@@ -27,6 +27,8 @@ return [
 	
 	'default_controller' => 'HomeController',
 
+	'template' => 'tpl.php',
+
 	/*
 		true  | 1 | on 
 		false | 0 | off
@@ -345,6 +347,7 @@ return [
 		'app_secret'	=> env('OAUTH_FACEBOOK_CLIENT_SECRET'), 
 		'callback_url'	=> env('OAUTH_FACEBOOK_CALLBACK')
 	],
+
 
 	/*
 		Service Providers

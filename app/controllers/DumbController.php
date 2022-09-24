@@ -10614,5 +10614,13 @@ class DumbController extends Controller
         <?php
     }
 
+    function test_async_defer(){
+        Config::set('template', 'my_tpl.php');
+        
+        $content = "Hola Sr. Putin";
+
+        render($content);
+    }
+
 
 }   // end class

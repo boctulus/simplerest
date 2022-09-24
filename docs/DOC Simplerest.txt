@@ -7088,6 +7088,66 @@ Lógicamente el template debe manejar la varible $title para que se vea reflejad
 		<title><?= $title ?? ''; ?></title>
 	</head>
 
+El template a utilizar se puede pasar como parametro en view() o bien,... se puede cambiar el template con Config::set()
+
+Ej:
+
+	$arr = [
+		'name' => 'Putin',
+		'age'  =>50,
+	];
+
+	view('whatever',  $arr, 'my_tpl.php');
+
+O bien,...
+
+	Config::set('template', 'my_tpl.php');
+	
+	$arr = [
+		'name' => 'Putin',
+		'age'  =>50,
+	];
+
+	view('whatever',  $arr);
+
+En estos casos 'whatever.php' es la vista que se esta pasando al template. La extension .php se puede obviar al llamar a view()
+
+# Cargar el template sin vista
+
+Hay casos muy concretos donde puede querer usarse un template en un controlador (o ruta) sin especificar niguna vista y en esos casos usamos el helper render()
+
+Ej:
+
+	Config::set('template', 'my_tpl.php');
+	
+	$arr = [
+		'name' => 'Putin',
+		'age'  =>50,
+	];
+
+	// contenido ya pintado
+	$content = "Hola Sr. {$arr['name']}";
+
+	render($content);
+
+O algo tan simple como,...
+
+    render("Hola Mundo", 'my_tpl.php');
+
+O usando el template por defecto,...
+
+	render("Hola Mundo");
+
+De hecho ni el contenido es requerido y lo siguiente es valido:
+
+	render(null, 'my_tpl.php');
+
+o,..
+
+	render();  // renderizaria solo el template por defecto
+
+# Assets
+
 Las vistas pueden contener HTML, PHP, CSS y JavaScript. Para los assets se cuenta con el helper asset()
 
 Ej:
