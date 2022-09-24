@@ -9,6 +9,9 @@ class View
 {
     use ExceptionHandler;
 
+    static protected $head   = [];
+    static protected $footer = [];
+
     function __construct(string $view_path, array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0)
     {
 		$this->config = config();
@@ -83,6 +86,26 @@ class View
         $filename = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
         return Files::delete($filename);
+    }
+
+    static function enqueue_js(string $file, ?Array $atts = null, bool $in_head = false){
+        if ($in_head){
+            static::$head['js'][] = [
+                'file' => $file,
+                'atts' => $atts
+            ];
+        } else {
+            static::$footer['js'][] = [
+                'file' => $file,
+                'atts' => $atts
+            ];
+        }        
+    }
+
+    static function enqueue_css(string $file){
+        static::$head['css'][] = [
+            'file' => $file
+        ];
     }
 
     function onCacheExpired(string $view_path){}
