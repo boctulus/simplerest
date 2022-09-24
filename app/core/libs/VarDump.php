@@ -17,7 +17,7 @@ class VarDump
 	{	
 		$type = gettype($v);
 
-		$PostmanGenerator = Url::is_PostmanGenerator() || Url::is_insomnia();
+		$PostmanGenerator = Url::isPostman() || Url::isInsomnia();
 		
 		$cli  = (php_sapi_name() == 'cli');
 		$br   = ($cli || $PostmanGenerator) ? PHP_EOL : '<br/>';
@@ -25,7 +25,7 @@ class VarDump
 
 		$pre = !$cli;	
 
-		if (Url::is_PostmanGenerator() || Url::is_insomnia() || $type != 'array'){
+		if (Url::isPostman() || Url::isInsomnia() || $type != 'array'){
 			$pre = false;
 		}
 		

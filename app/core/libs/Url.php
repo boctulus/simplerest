@@ -241,7 +241,7 @@ class Url
         return true;
     }
 
-    static function is_PostmanGenerator(){
+    static function isPostman(){
         if (!isset($_SERVER['HTTP_USER_AGENT'])){
             return false;
         }
@@ -249,7 +249,7 @@ class Url
 		return (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PostmanGeneratorRuntime') !== false);
 	}
 
-    static function is_insomnia(){
+    static function isInsomnia(){
         if (!isset($_SERVER['HTTP_USER_AGENT'])){
             return false;
         }

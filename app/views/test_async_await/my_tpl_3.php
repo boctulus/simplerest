@@ -13,6 +13,21 @@
 
 </head>
 <body>
+    <script>
+       // always blocking
+    </script>
+
+    <img src="<?= asset('img/avatar.png'); ?>" />
+
     <?= $content ?? ''; ?>
+
+    <!--
+        footer section
+    -->
+
+    <script src="<?= asset('js/test_async_await/my_blocking.js') ?>"></script>
+
+    <script src="<?= asset('js/test_async_await/alert.js') ?>"></script>
+
 </body>
 </html>
