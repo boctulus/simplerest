@@ -50,29 +50,21 @@
 </head>
 <body>
     <div class="container">
-        <nav>
-            <script>
-                if (logged()){
-                    console.log("[x] Cerrar session");
-                } else {
-                    console.log("[>] Login");
-                }
-            </script>
-        </nav>
-        
         <main>
            <?= $content ?? ''; ?>
         </main>
     </div>
 
     <footer id="footer">
-        <?php
-    
+        <?= $footer_content ?? '' ?>
+        
+        <!--
+            JS rendering in footer
+        -->
+
+        <?php    
             if (isset($footer) && is_array($footer)){
-                if (isset($footer['content'])) 
-                    echo $footer['content'] ?? ''; 
-            
-                if (isset($footer['js'])) 
+                if (isset($footer['js'])){
                     foreach ($footer['js'] as $_js){
                         if (substr($_js, 0, 4) != 'http'){
                             $path = base_url() . $_js;
@@ -84,8 +76,8 @@
                         <script type="text/javascript" src="<?= $path ?>" ></script>
                         <?php
                     }
-            }
-            
+                }   
+            }            
         ?>
     </footer>
 </body>
