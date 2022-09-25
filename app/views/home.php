@@ -15,13 +15,6 @@
             background-color: red;
         }
     ');
-
-    js('
-        setTimeout(() => {
-            $("h1").attr("style", "color: blue;");
-            $("body").attr("style", "background-color: grey");
-        }, "2000");
-    ');
 ?>
 
 <h1>Home Page</h1>
