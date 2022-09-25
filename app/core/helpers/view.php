@@ -5,16 +5,16 @@ use simplerest\views\MyView;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
 
-function meta($name, $content){
+function a_meta(string $name, string $content, ?Array $atts = null){
     return "<meta name=\"$name\" content=\"$content\">\r\n";
 }
 
-function link_css($css_file){
-    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">\r\n";
+function a_js($js_file, ?Array $atts = null){
+    return "<script type=\"text/javascript\" src=\"$js_file\"></script>\r\n";
 }
 
-function js_inline($js_file){
-    return "<script type=\"text/javascript\" src=\"$js_file\"></script>\r\n";
+function a_css($css_file){
+    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">\r\n";
 }
 
 function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0){
@@ -73,7 +73,6 @@ function section($view, Array $variables = []){
     include VIEWS_PATH . $view;
 }
 
-
 function render_metas(){
     $head = View::getHead();
 
@@ -82,7 +81,7 @@ function render_metas(){
     }
 
     foreach ($head['meta'] as $m){
-        echo meta($m['name'], $m['content']) . "\r\n";
+        echo a_meta($m['name'], $m['content']) . "\r\n";
     }
 }
 
@@ -101,7 +100,7 @@ function render_js(bool $in_head = false){
                 $path = $_js['file']    ;
             }	
             
-            echo js_inline($path);
+            echo a_js($path);
         } else {
             echo "<script>$_js</script>\r\n";
         }
@@ -117,13 +116,12 @@ function render_css(){
    
     foreach ($head['css'] as $_css){
         if (isset($_css['file'])){
-            echo link_css($_css['file']) . "\r\n";
+            echo a_css($_css['file']) . "\r\n";
         } else {
             echo "<style>$_css</style>\r\n";
         }
     }
 }
-
 
 function js_file(string $file, ?Array $atts = null, bool $in_head = false){
    return View::js_file($file, $atts, $in_head);
@@ -144,9 +142,9 @@ function css(string $file){
 function auth(){
     $model = get_user_model_name();    
            
-    $__email    = $model::$email;
-    $__username = $model::$username;
-    $__password = $model::$password;
+    $__email    = $model::$email    ?? '';
+    $__username = $model::$username ?? '';
+    $__password = $model::$password ?? '';
 
     return "
     <script>

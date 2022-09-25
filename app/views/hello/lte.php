@@ -18,8 +18,6 @@ View::css_file(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 ?>
 
-
-
 <div class="row mt-5">
     <div class="col-6 offset-3">
 
