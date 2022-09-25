@@ -22,7 +22,7 @@ class View
 
         if (empty($layout)){
             $layout = $this->config['template'];
-        }
+        } 
 
         $filename = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
@@ -56,11 +56,16 @@ class View
             if (!empty($vars_to_be_passed)){
                 extract($vars_to_be_passed);
             }      
-                    
+
             ob_start();
             include VIEWS_PATH . $view_path;
+            
             $content = ob_get_contents();
             ob_end_clean();
+
+            $footer =  static::$footer;
+            $head   =  static::$head;
+            
         }
 
         if ($expiration_time != 0 && ($expired || !$file_exists)){
