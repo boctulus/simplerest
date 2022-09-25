@@ -21,31 +21,9 @@
     <?php
         echo meta('content-type','text/html; charset=utf-8','equiv') . PHP_EOL;
 
-        if (isset($head) && is_array($head)){
-            if (isset($head['meta'])){
-                foreach ($head['meta'] as $m)
-                    echo meta($m['name'], $m['content']) . PHP_EOL;
-            }
-    
-            if (isset($head['css'])){
-                foreach ($head['css'] as $_css)
-                    echo link_css("$_css") . PHP_EOL;
-            }	
-            
-            if (isset($head['js'])){
-                foreach ($head['js'] as $_js){
-                    if (substr($_js, 0, 4) != 'http'){
-                        $path = base_url() . $_js;
-                    } else {
-                        $path = $_js;
-                    }							
-                ?>
-                    <script type="text/javascript" src="<?= $path ?>" ></script>
-                <?php
-                }
-
-            }
-        }
+        render_metas();
+        render_css();        
+        render_js(true);   
     ?>
 </head>
 <body>
@@ -57,27 +35,9 @@
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>
-        
-        <!--
-            JS rendering in footer
-        -->
-
+    
         <?php    
-            if (isset($footer) && is_array($footer)){
-                if (isset($footer['js'])){
-                    foreach ($footer['js'] as $_js){
-                        if (substr($_js, 0, 4) != 'http'){
-                            $path = base_url() . $_js;
-                        } else {
-                            $path = $_js;
-                        }							
-                        ?>
-                
-                        <script type="text/javascript" src="<?= $path ?>" ></script>
-                        <?php
-                    }
-                }   
-            }            
+            render_js(false);     
         ?>
     </footer>
 </body>

@@ -2,6 +2,7 @@
 
 namespace simplerest\controllers;
 
+use simplerest\core\View;
 use simplerest\controllers\MyController;
 
 class Select2TestController extends MyController
@@ -18,20 +19,13 @@ class Select2TestController extends MyController
     {   
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
 
-        // Js ofuscado con https://obfuscator.io/
+        css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
+        css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
+
+        js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
+
         view('select2/test.php', [
-            'json' => $json,
-            'head' => [
-                'css' => [
-                    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css',
-                    'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css'
-                ]
-                ],
-            'footer' => [
-                'js' => [
-                    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js'
-                ]
-            ]
+            'json' => $json
         ], 'tpl_basic.php');              
     }
     
@@ -44,23 +38,13 @@ class Select2TestController extends MyController
     {   
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
 
+        View::css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
+        View::css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
+
+        View::js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
+
         view('select2/diagnosticojournal.php', [
-            'json' => $json,
-            'head' => [
-                'css' => [
-                    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css',
-                    'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css',
-                    '//cdn-images.mailchimp.com/embedcode/classic-10_7_dtp.css'
-                ],
-                'js' => [
-                    '//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'
-                ]
-            ],
-            'footer' => [
-                'js' => [
-                    'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js'
-                ]
-            ]
+            'json' => $json
         ], 'tpl_basic.php');              
     }
 }

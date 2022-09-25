@@ -6,15 +6,15 @@ use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
 
 function meta($name, $content){
-    return "<meta name=\"$name\" content=\"$content\">";
+    return "<meta name=\"$name\" content=\"$content\">\r\n";
 }
 
 function link_css($css_file){
-    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">";
+    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">\r\n";
 }
 
 function js_inline($js_file){
-    return "<script type=\"text/javascript\" src=\"$js_file\"></script>";
+    return "<script type=\"text/javascript\" src=\"$js_file\"></script>\r\n";
 }
 
 function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0){
@@ -82,7 +82,7 @@ function render_metas(){
     }
 
     foreach ($head['meta'] as $m){
-        echo meta($m['name'], $m['content']) . PHP_EOL;
+        echo meta($m['name'], $m['content']) . "\r\n";
     }
 }
 
@@ -94,66 +94,55 @@ function render_js(bool $in_head = false){
     }
 
     foreach ($arr['js'] as $_js){
-        if (is_string($_js)){
-            $_js = [
-                'file' => $_js
-            ];
-        }
-
-        if (substr($_js['file'], 0, 4) != 'http'){
-            $path = base_url() . $_js['file'];
+        if (isset($_js['file'])){
+            if (substr($_js['file'], 0, 4) != 'http'){
+                $path = base_url() . $_js['file'];
+            } else {
+                $path = $_js['file']    ;
+            }	
+            
+            echo js_inline($path);
         } else {
-            $path = $_js['file']    ;
-        }	
-        
-        echo js_inline($path);
+            echo "<script>$_js</script>\r\n";
+        }
     }
 }
 
-// Depredicar de acá hacia abajo -->
+function render_css(){
+    $head = View::getHead();
 
-function include_css(string $path){
-    if (!Strings::endsWith('.css', $path)){
-        throw new \InvalidArgumentException("Path '$path' should be to .css file");
+    if (!isset($head['css'])){
+        return;
     }
-    ?>
-    <style>
-    <?php
-        include $path;
-    ?>
-    </style>
-    <?php
-}
-
-function include_js(string $path){
-    if (!Strings::endsWith('.js', $path)){
-        throw new \InvalidArgumentException("Path '$path' should be to .js file");
+   
+    foreach ($head['css'] as $_css){
+        if (isset($_css['file'])){
+            echo link_css($_css['file']) . "\r\n";
+        } else {
+            echo "<style>$_css</style>\r\n";
+        }
     }
-    ?>
-    <script>
-    <?php
-        include $path;
-    ?>
-    </script>
-    <?php
 }
 
-function css(string $css){
-    ?>
-    <style>
-    <?= $css ?>
-    </style>
-    <?php
+
+function js_file(string $file, ?Array $atts = null, bool $in_head = false){
+   return View::js_file($file, $atts, $in_head);
 }
 
-function js(string $js){
-    ?>
-    <script>
-    <?= $js ?>
-    </script>
-    <?php
+function js(string $file, ?Array $atts = null, bool $in_head = false){
+    return View::js($file, $atts, $in_head);
 }
+
+function css_file(string $file){
+    return View::css_file($file);
+}
+
+function css(string $file){
+    return View::css($file);
+}
+
+// depredicar -->
 
 function include_widget_css(string $name){
-    include_css(WIDGETS_PATH . $name . '/' . $name . '.css');
+    View::css_file(WIDGETS_PATH . $name . '/' . $name . '.css');
 }
