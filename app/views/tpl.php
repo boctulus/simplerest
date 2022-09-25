@@ -104,49 +104,15 @@
 
     <?php
         echo meta('content-type','text/html; charset=utf-8','equiv') . PHP_EOL;
+         
+        render_metas();
 
-        /*
-            Quizas se puede dividir en directivas para reemplazar los foreach:
-            
-            render_metas($arr)
-            render_css($arr)
-            render_js($arr)
-
-            El problema creo esta en poder desde una vista empujar una meta, css o jss a head / footer
-        */
-
-        if (isset($head) && is_array($head))
-        {
-            if (isset($head['meta'])){
-                foreach ($head['meta'] as $m)
-                    echo meta($m['name'], $m['content']) . PHP_EOL;
-            }
-    
-            if (isset($head['css'])){
-                foreach ($head['css'] as $_css)
-                    echo link_tag("$_css") . PHP_EOL;
-            }	
-            
-            if (isset($head['js'])){
-                foreach ($head['js'] as $_js){
-                    if (is_string($_js)){
-                        $_js = [
-                            'file' => $_js
-                        ];
-                    }
-
-                    if (substr($_js['file'], 0, 4) != 'http'){
-                        $path = base_url() . $_js['file'];
-                    } else {
-                        $path = $_js['file']    ;
-                    }								
-                ?>
-                    <script type="text/javascript" src="<?= $path ?>" ></script>
-                <?php
-                }
-
-            }
-        }
+        if (isset($head['css'])){
+            foreach ($head['css'] as $_css)
+                echo link_css("$_css") . PHP_EOL;
+        }	
+        
+        render_js(true);        
     ?>
 </head>
 <body>
@@ -209,34 +175,9 @@
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>
-      
-        <!--
-            JS rendering in footer
-        -->
-
-        <?php   
-
-            if (isset($footer) && is_array($footer)){
-                if (isset($footer['js'])){
-                    foreach ($footer['js'] as $_js){                        
-                        if (is_string($_js)){
-                            $_js = [
-                                'file' => $_js
-                            ];
-                        }
-
-                        if (substr($_js['file'], 0, 4) != 'http'){
-                            $path = base_url() . $_js['file'];
-                        } else {
-                            $path = $_js['file']    ;
-                        }							
-                        ?>
-                
-                        <script type="text/javascript" src="<?= $path ?>" ></script>
-                        <?php
-                    }
-                }   
-            }            
+    
+        <?php
+            render_js(false);  
         ?>
     </footer>
 </body>
