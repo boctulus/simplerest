@@ -7275,33 +7275,41 @@ Ej:
 
 # Templates
 
-Por defecto se carga el template "app_layout.php" pero se pueden usar cuantos templates se desee y éste es especificado como tercer parámetro del método view()
-
-Al template se le pueden enviar los archivos css y js a incluir así como meta-tags que se quiere se agregen dinámicamente. Todo depende de como se haya construido el template pero ¨tpl_basic.php¨ es un buen ejemplo.
+Por defecto se carga el template especificado en el config.php pero se pueden usar cuantos templates se desee y éste es especificado como tercer parámetro del método view()
 
 Ej:
 
 	view('select2/test.php', [
-		'json' => $json,
-		'head' => [
-				'css' => [
-					'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css',
-					'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css'
-				]
-			],
-		'footer' => [
-			'js' => [
-				'https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js'
-			]
-		]
-	], 'tpl_basic.php');      
+		'json' => $json
+	], 'tpl_basic.php');    
 
+Al template se le pueden enviar los archivos css y js a incluir así como meta-tags que se quiere se agregen dinámicamente. 
 
-Una forma alternativa sería creando los métodos addCSS($file) y addJS($file, $location = 'footer') donde para el segundo se pueda especificar donde se quiere agregar los archivos JS.
+Ej:
 
-También add_css($file) y add_jS($file, $location = 'footer') podrian ser helpers  !!!!!!!!
+	js_file('\assets\js\more_tests\console_log.js', [
+        'async' => true  // aun sin implementar
+    ], true);
 
-Luego al llamar a view() serian enviados dentro del array al template.
+    js_file('\assets\js\more_tests\coloured_body.js');
+    js_file('\assets\js\more_tests\coloured_h1.js');
+
+    css_file('\assets\css\more_tests\span_color.css');
+
+    css('
+        hr {
+            border: none;
+            height: 10px;
+            background-color: red;
+        }
+    ');
+
+    js('
+        setTimeout(() => {
+            $("h1").attr("style", "color: blue;");
+            $("body").attr("style", "background-color: grey");
+        }, "2000");
+    ');
 
 
 # Vistas parciales
@@ -12782,7 +12790,7 @@ Se implementó de forma muy primitiva la inclusión del código JS mínimo de in
 Recordar que debe incluirse el JS del plugin:
 
 	<?php
-    	include_js(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
+    	View::js_file(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
     ?>
 
 
@@ -12921,7 +12929,7 @@ Ej:
 
 Desconozco porque *no* está funcionando aún habiendo incluido en el "footer" el plugin.
 
-    include_js(ASSETS_PATH . 'adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js'
+    View::js_file(ASSETS_PATH . 'adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js'
 
 Más
 https://github.com/Johann-S/bs-custom-file-input
@@ -13194,50 +13202,6 @@ También es posible cambiar de lugar el botón con el ícono de calendario cambi
 
 Notas Dev:
 =========
-
-# CORREGIR severo problema de RENDIMIENTO relacionado con include_css()
-
-Ej:
-
-	static function ionSlider(mixed $default = null, Array $attributes = [], ...$args){
-		include_css(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/css/ion.rangeSlider.min.css');
-		
-		// ...
-
-Incluir el CSS acá genera dos problemas muy graves:
-
-		1) No puede ser cacheado y 
-
-		2) Queda repetido tantas veces como se incluya el componente! 
-
-		La solución para "producción" sería "compilar" el las vistas con lo cual los archivos css 
-		de cada componente serían incluídos una sola vez para la vista correspondiente.
-
-		En si,... include_css() debería "encolar" los archivos css para la vista corespondiente.
-
-
-# Debería existir un mecanismo para "encolar" JS a eventos como "on document ready".
-
-Ej:
-
-	enqueue_ready("        
-		$('#$id').ionRangeSlider({})
-	");
-
-Esto debería agregarlo aquí:
-
-	<!-- 
-		Antes de </body>
-	-->
-
-	<script>
-		$(function () {     
-			// ...
-
-			$('#range_2').ionRangeSlider({})
-		})
-	</script>
-
 
 # Compatibilidad con "react-boostrap"
 

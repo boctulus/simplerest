@@ -31,9 +31,9 @@
             Auth
         */
 
-        let $__email    = '<?php echo $__email    ?? null; ?>'; 
-        let $__username = '<?php echo $__username ?? null; ?>';
-        let $__password = '<?php echo $__password ?? null; ?>';
+        let $__email    = '<?= $__email    ?? null; ?>'; 
+        let $__username = '<?= $__username ?? null; ?>';
+        let $__password = '<?= $__password ?? null; ?>';
     </script>
 
     <script src="<?= asset('js/login.js') ?>"></script>
@@ -106,12 +106,7 @@
         echo meta('content-type','text/html; charset=utf-8','equiv') . PHP_EOL;
          
         render_metas();
-
-        if (isset($head['css'])){
-            foreach ($head['css'] as $_css)
-                echo link_css("$_css") . PHP_EOL;
-        }	
-        
+        render_css();        
         render_js(true);        
     ?>
 </head>

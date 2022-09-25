@@ -1,6 +1,7 @@
+console.log('CONSOLE LOG');
 
 window.addEventListener('DOMContentLoaded', (event) => {
     setTimeout(function(){
-        alert('CONSOLE LOG');
+        //alert('ALERT');
     }, 50)
 });
