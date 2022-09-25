@@ -10655,7 +10655,9 @@ class DumbController extends Controller
     }
 
     function test_asset_enqueue(){
-        View::enqueue_js('https://kit.fontawesome.com/3f60db90e4.js');
+        View::js_file('https://kit.fontawesome.com/3f60db90e4.js', [
+            "crossorigin" => "anonymous" // falta incluir atributos
+        ]);
 
         render("Hola Sr. Putin");
     }

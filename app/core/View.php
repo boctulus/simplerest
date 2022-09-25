@@ -100,24 +100,28 @@ class View
         return static::$footer;
     }
     
-    static function enqueue_js(string $file, ?Array $atts = null, bool $in_head = false){
-        if ($in_head){
-            static::$head['js'][] = [
-                'file' => $file,
-                'atts' => $atts
-            ];
-        } else {
-            static::$footer['js'][] = [
-                'file' => $file,
-                'atts' => $atts
-            ];
-        }        
+    static function js_file(string $file, ?Array $atts = null, bool $in_head = false){
+        $arr = $in_head ? 'head' : 'footer';
+
+        static::$$arr['js'][] = [
+            'file' => $file,
+            'atts' => $atts
+        ];
     }
 
-    static function enqueue_css(string $file){
+    static function js(string $file, ?Array $atts = null, bool $in_head = false){
+        $arr = $in_head ? 'head' : 'footer';
+        static::$$arr['js'][] = $file;
+    }
+
+    static function css_file(string $file){
         static::$head['css'][] = [
             'file' => $file
         ];
+    }
+
+    static function css(string $file){
+        static::$head['css'][] = $file;
     }
 
     function onCacheExpired(string $view_path){}

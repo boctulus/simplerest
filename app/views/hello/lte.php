@@ -1,7 +1,8 @@
 <?php
 
-use simplerest\core\libs\HtmlBuilder\AdminLte;
+use simplerest\core\View;
 use simplerest\core\libs\HtmlBuilder\Tag;
+use simplerest\core\libs\HtmlBuilder\AdminLte;
 
 
 Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
@@ -13,7 +14,7 @@ AdminLte::macro('salutor', function ($name, $adj, Array $att = []) {
 
 AdminLte::setIdAsName();
 
-include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
+View::css_file(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 ?>
 
@@ -1359,8 +1360,8 @@ include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
 
 
 <?php
-    include_js(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
-
+    // revisar no este roto
+    View::js_file(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
 ?>
 
 <script>
