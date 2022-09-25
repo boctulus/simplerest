@@ -95,7 +95,9 @@
     <link rel="stylesheet" href="<?= asset('css/main.css') ?>"/>
 
     <?php
-        echo meta('content-type','text/html; charset=utf-8','equiv') . PHP_EOL;
+        echo a_meta('content-type','text/html; charset=utf-8', [
+            "http-equiv" => "content-type"
+        ]);
          
         render_metas();
         render_css();        
