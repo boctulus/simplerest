@@ -22,7 +22,7 @@ function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $lay
 
 /*
     Renderiza el template
-    
+
     A diferencia de view(), no requiere de una vista
 */
 function render($content = null, ?string $layout = null){
@@ -54,7 +54,6 @@ function asset($resource){
         $base = substr($base, 0, -1); 
     }
 
-    # $public =  $base /* . '/public' */ ;
     $public =  $base . '/public';
     return $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/assets/'.$resource;
 }
