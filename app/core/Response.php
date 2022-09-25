@@ -257,6 +257,10 @@ class Response
         return static::$data; 
     }
 
+    function isEmpty(){
+        return static::$data == null;
+    }
+
     /*
         Este método podría reducirse practicamente a generar distintos
         tipos de excepciones que serían capturadas por un Handler.php
@@ -311,5 +315,17 @@ class Response
         }
         
         exit;
+    }
+
+
+    /*
+        Ejecuta un callback cuano $cond es verdadero
+    */
+    function when($cond, $fn, ...$args){
+        if ($cond){
+            $fn($this, ...$args);
+        }
+        
+        return $this;
     }
 }

@@ -27,7 +27,7 @@ class GoogleController extends Controller
         $this->__email      = $this->u_class::$email;
         $this->__username   = $this->u_class::$username;
         $this->__password   = $this->u_class::$password;
-		$this->__id 		= get_name_id($this->config['users_table']);
+		$this->__id 		= get_id_name($this->config['users_table']);
 
         $client = new \Google_Client();
         $client->setApplicationName(env('APP_NAME'));

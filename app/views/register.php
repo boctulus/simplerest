@@ -21,7 +21,7 @@
 		->header(tag('cardTitle')->text('Registro')->style('font-size: 300%;'))
 		->body([
 			tag('inputGroup')->content([
-				Bt5Form::span('<i class="fas fa-user"></i>', [
+				Bt5Form::span('<i class="fas fa-at"></i>', [
 					'class' => 'input-group-text'
 				]),
 	
@@ -65,24 +65,27 @@
 					id:"password_confirmation", 
 					placeholder:"Password confirmación",
 					required:"required",
-					name:"passwordconfirmation"
+					name:"password_confirmation"
 				)
 			])->class("mb-3"),
-
 			'<div style="margin-bottom:1em;">
 			<a href="login/rememberme">Recordar contraseña</a>
 			</div>	
 
 			<div class="form-group">
-				<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="login()">Login</button>
+				<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="register()">Enviar</button>
 			</div>
 			
 			<div class="mt-3" style="text-align:right;">
-				No registrado? <a href="login/register">regístrese</a>
-			</div>'			
+				Ya registrado? <a href="login">Ingrese</a>
+			</div>',
+			
+			'<!-- en realidad probablemente sea un pesimo lugar para poner errores -->
+			<span id="registerError" class="mt-3"></span>'		
 		])->class('card-primary card-outline');
 
 		?>
+
 		
 	</div>
 </div>
