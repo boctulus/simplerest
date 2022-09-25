@@ -19,7 +19,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <?php
-        echo meta('content-type','text/html; charset=utf-8','equiv') . PHP_EOL;
+        echo a_meta('content-type','text/html; charset=utf-8', [
+            "http-equiv" => "content-type"
+        ]);
 
         render_metas();
         render_css();        
