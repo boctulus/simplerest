@@ -2,24 +2,26 @@
 
 namespace simplerest\controllers;
 
+use stdClass;
 use simplerest\core\Acl;
 use simplerest\libs\Foo;
+use simplerest\core\View;
 use simplerest\core\Model;
 use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\libs\Env;
+
 use simplerest\core\libs\Url;
 use simplerest\core\Container;
-
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
-use simplerest\core\libs\Time;
-use simplerest\core\libs\Files;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\libs\Time;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
@@ -28,6 +30,7 @@ use simplerest\core\libs\Update;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
+
 use simplerest\core\libs\JobQueue;
 use simplerest\libs\AmazonScraper;
 
@@ -36,32 +39,31 @@ use Endroid\QrCode\Builder\Builder;
 
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
-
 use simplerest\core\libs\Validator;
 use simplerest\libs\MaisonsScraper;
 use Endroid\QrCode\Writer\PngWriter;
+
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
-
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
-use Endroid\QrCode\Encoding\Encoding;
-use simplerest\core\libs\FileUploader;
 
+use Endroid\QrCode\Encoding\Encoding;
+
+use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
 
+//  QR
 use simplerest\libs\LeroyMerlinScraper;
 use simplerest\models\az\ProductsModel;
-
-//  QR
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\controllers\api\TblPersona;
+
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
-
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
@@ -69,7 +71,6 @@ use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use stdClass;
 
 class DumbController extends Controller
 {
@@ -10612,6 +10613,40 @@ class DumbController extends Controller
         </center>
 
         <?php
+    }
+
+    /*
+        Tiene sentido pero quizas sea mejor que sea el primero y no el ultimo
+    */
+    function test_response_twice(){
+        response('Uno');
+        response('Dos'); // solo el ultimo es el que sale
+    }
+
+    function test_response_twice_2(){
+        response('Uno');
+
+        return 'Dos'; // solo el ultimo es el que sale
+    }
+
+    function test_conditional_response_1(){
+        if (response()->isEmpty()){
+            response([
+                'message' => 'OK'
+            ]);  
+        }
+    }
+
+    function test_conditional_response_2(){
+        response('Respuesta previa');
+
+        // ...
+
+        if (response()->isEmpty()){
+            response([
+                'message' => 'OK'
+            ]);  
+        }
     }
 
     function test_async_defer(){

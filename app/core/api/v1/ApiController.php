@@ -51,7 +51,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         $res = response()->encoded();
 
-        $this->tenantid = Factory::request()->getTenantId();
+        $this->tenantid = request()->getTenantId();
         if ($this->tenantid !== null){           
             $this->conn = DB::getConnection($this->tenantid);
         }
@@ -276,8 +276,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     function get($id = null) {
         global $api_version;
 
-        $_schema  = Factory::request()->shiftQuery('_schema');
-        $_rules   = Factory::request()->shiftQuery('_rules', null, function($ret){ return ($ret !== null);});
+        $_schema  = request()->shiftQuery('_schema');
+        $_rules   = request()->shiftQuery('_rules', null, function($ret){ return ($ret !== null);});
 
         if (!empty($_schema)){
             $schema = get_schema_name($this->table_name);
@@ -291,9 +291,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             return [ 'rules' => $res['rules'] ];
         }
 
-        $_related = Factory::request()->shiftQuery('_related', null, function($ret){ return ($ret !== null);});
-        $include  = Factory::request()->shiftQuery('include');        
-        $_get     = Factory::request()->getQuery();
+        $_related = request()->shiftQuery('_related', null, function($ret){ return ($ret !== null);});
+        $include  = request()->shiftQuery('include');        
+        $_get     = request()->getQuery();
 
         if (!empty($include)){
             $include  = explode(',', $include);
@@ -514,7 +514,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         $res = $rows[0];
                     }
 
-                    Factory::response()->send($res);
+                    response()->send($res);
                 }
             }else{    
                 // "list    
@@ -814,7 +814,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 //dd($_get); ////
                 //exit;
 
-                $query = Factory::request()->getQuery();
+                $query = request()->getQuery();
                 
                 if (isset($query['offset'])) 
                     unset($query['offset']);
@@ -915,7 +915,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 //dd($this->instance->dd(), 'SQL');
                 //dd($rows);
                 
-                $res = Factory::response()->setPretty($pretty);
+                $res = response()->setPretty($pretty);
 
                 /*
                     Falta paginar cuando hay groupBy & having
@@ -956,7 +956,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             $query['_related'] = $_GET['_related'];
                         }
 
-                        $api_slug = $this->config['REMOVE_API_SLUG'] ? '' : '/api' ;
+                        $api_slug = $this->config['remove_api_slug'] ? '' : '/api' ;
                         $next =  httpProtocol() . '://' . $_SERVER['HTTP_HOST'] . $api_slug . '/' . $api_version . '/'. $this->table_name . '?' . $query = str_replace(['%5B', '%5D', '%2C'], ['[', ']', ','], http_build_query($query));
                     }else{
                         $next = 'null';
@@ -1020,7 +1020,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
      * @return void
      */
     function post() {
-        $data = Factory::request()->getBody(false);
+        $data = request()->getBody(false);
 
         if (empty($data))
             error('Invalid JSON',400);
@@ -1457,7 +1457,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $this->onPost($last_inserted_id, $data);
                 $this->webhook('create', $data, $last_inserted_id);
 
-                Factory::response()->send([
+                response()->send([
                     $this->table_name => $data,
                     $this->instance->getKeyName() => $last_inserted_id
                 ], 201);
@@ -1568,7 +1568,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $instance2 = $this->getModelInstance();
 
                 if (count($instance2->where([$id_name => $id, static::$folder_field => $this->folder_name])->get()) == 0)
-                    Factory::response()->code(404)->error("Register for id=$id doesn't exist");
+                    response()->code(404)->error("Register for id=$id doesn't exist");
 
                 unset($data['folder']);    
                 $data[static::$folder_field] = $f_rows[0]['name'];
@@ -1584,7 +1584,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $rows = $this->instance2->where([$id_name => $id])->get();
 
                 if (count($rows) == 0){
-                    Factory::response()->code(404)->error("Register for id=$id doesn't exist!");
+                    response()->code(404)->error("Register for id=$id doesn't exist!");
                 }
 
                 if  ($owned && !$this->acl->hasSpecialPermission('write_all') && $rows[0][$this->instance->belongsTo()] != Acl::getCurrentUid()){
@@ -2169,7 +2169,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $this->onPut($id, $data, $affected);
                 $this->webhook('update', $data, $id);
                 
-                Factory::response()->send($data);
+                response()->send($data);
             } else {
                 error("Error in PATCH",404);
             }	
@@ -2220,7 +2220,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         if($id == NULL)
             error("Missing id", 400);
 
-        $data = Factory::request()->getBody(false);        
+        $data = request()->getBody(false);        
 
         $this->id = $id;
         $this->folder = $this->folder = $data['folder'] ?? null;
@@ -2244,7 +2244,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             //dd($this->instance->getLastPrecompiledQuery(), 'SQL');
             
             if (count($rows) == 0){
-                Factory::response()->code(404)->error("Register for $id_name=$id doesn't exist");
+                response()->code(404)->error("Register for $id_name=$id doesn't exist");
             }
 
             if ($this->folder !== null)
@@ -2270,7 +2270,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $instance2 = $this->getModelInstance();
 
                 if (count($instance2->where([$id_name => $id, static::$folder_field => $this->folder_name])->get()) == 0)
-                    Factory::response()->code(404)->error("Register for $id_name=$id doesn't exist");
+                    response()->code(404)->error("Register for $id_name=$id doesn't exist");
 
                 unset($data['folder']);    
                 $data[static::$folder_field] = $f_rows[0]['name'];
@@ -2322,7 +2322,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $this->onDeleted($id, $affected);
                 $this->webhook('delete', [ ], $id);
                 
-                Factory::response()->sendJson("OK");
+                response()->sendJson("OK");
             }	
             else
                 error("Record not found", 404);
@@ -2402,7 +2402,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             $body['webhook_id'] = $hook['id'];
 
-            if ($op == 'update' || $op == 'delete' || ($op == 'show' && !empty(Factory::request()->getQuery('fields')))){
+            if ($op == 'update' || $op == 'delete' || ($op == 'show' && !empty(request()->getQuery('fields')))){
                 
                 if ($op == 'update' && !empty($hook['conditions'])){                    
                     $cond_fields = array_keys($conditions);
@@ -2421,7 +2421,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }
                             
                             //dd('--> callback');
-                            consumeApi($hook['callback'], 'POST', $body);
+                            consume_api($hook['callback'], 'POST', $body);
                         }
                     }  
                     continue;
@@ -2439,12 +2439,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             if (empty($hook['conditions'])){
                 //dd('--> callback');
-                consumeApi($hook['callback'], 'POST', $body);
+                consume_api($hook['callback'], 'POST', $body);
             } else {
                 if ($op != 'list'){                   
                     if (Strings::filter($body['data'], $conditions)){
                         //dd('--> callback');
-                        consumeApi($hook['callback'], 'POST', $body);
+                        consume_api($hook['callback'], 'POST', $body);
                     }
                 }
             }

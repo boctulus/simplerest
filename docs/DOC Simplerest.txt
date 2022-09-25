@@ -7601,6 +7601,17 @@ Ej:
 	response("No encontrado", 404);
 
 
+Respuesta condicional
+
+Ej:
+
+if (response()->isEmpty()){
+	response([
+		'message' => 'OK'
+	]);  
+}
+
+
 # Compresión la respuesta
 
 Si en header Accept-Encoding se envia gzip, se hará la compresión.
