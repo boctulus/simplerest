@@ -50,6 +50,16 @@
 </head>
 <body>
     <div class="container">
+        <nav>
+            <script>
+                if (logged()){
+                    console.log("[x] Cerrar session");
+                } else {
+                    console.log("[>] Login");
+                }
+            </script>
+        </nav>
+        
         <main>
            <?= $content ?? ''; ?>
         </main>
