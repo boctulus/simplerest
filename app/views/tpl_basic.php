@@ -29,7 +29,7 @@
     
             if (isset($head['css'])){
                 foreach ($head['css'] as $_css)
-                    echo link_tag("$_css") . PHP_EOL;
+                    echo link_css("$_css") . PHP_EOL;
             }	
             
             if (isset($head['js'])){

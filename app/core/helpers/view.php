@@ -1,5 +1,6 @@
 <?php
 
+use simplerest\core\View;
 use simplerest\views\MyView; 
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
@@ -8,8 +9,12 @@ function meta($name, $content){
     return "<meta name=\"$name\" content=\"$content\">";
 }
 
-function link_tag($css_file){
+function link_css($css_file){
     return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">";
+}
+
+function js_inline($js_file){
+    return "<script type=\"text/javascript\" src=\"$js_file\"></script>";
 }
 
 function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0){
@@ -69,13 +74,41 @@ function section($view, Array $variables = []){
 }
 
 
-/*
-    Para cargar JS dinamicamente desde cualquier vista cheequear y probar:
+function render_metas(){
+    $head = View::getHead();
 
-    https://stackoverflow.com/questions/13121948/dynamically-add-script-tag-with-src-that-may-include-document-write
-    https://cleverbeagle.com/blog/articles/tutorial-how-to-load-third-party-scripts-dynamically-in-javascript
-    https://stackoverflow.com/a/61996709/980631
-*/
+    if (!isset($head['meta'])){
+        return;
+    }
+
+    foreach ($head['meta'] as $m){
+        echo meta($m['name'], $m['content']) . PHP_EOL;
+    }
+}
+
+function render_js(bool $in_head = false){
+    $arr = $in_head ? View::getHead() : View::getFooter();
+
+    if (!isset($arr['js'])){
+        return;
+    }
+
+    foreach ($arr['js'] as $_js){
+        if (is_string($_js)){
+            $_js = [
+                'file' => $_js
+            ];
+        }
+
+        if (substr($_js['file'], 0, 4) != 'http'){
+            $path = base_url() . $_js['file'];
+        } else {
+            $path = $_js['file']    ;
+        }	
+        
+        echo js_inline($path);
+    }
+}
 
 // Depredicar de acá hacia abajo -->
 
