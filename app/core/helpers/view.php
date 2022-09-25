@@ -21,6 +21,8 @@ function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $lay
 }
 
 /*
+    Renderiza el template
+    
     A diferencia de view(), no requiere de una vista
 */
 function render($content = null, ?string $layout = null){

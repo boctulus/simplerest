@@ -105,6 +105,16 @@
     <?php
         echo meta('content-type','text/html; charset=utf-8','equiv') . PHP_EOL;
 
+        /*
+            Quizas se puede dividir en directivas para reemplazar los foreach:
+            
+            render_metas($arr)
+            render_css($arr)
+            render_js($arr)
+
+            El problema creo esta en poder desde una vista empujar una meta, css o jss a head / footer
+        */
+
         if (isset($head) && is_array($head))
         {
             if (isset($head['meta'])){
@@ -199,9 +209,9 @@
         -->
 
         <?php    
-            if (isset($__footer) && is_array($__footer)){
-                if (isset($__footer['js'])){
-                    foreach ($__footer['js'] as $_js){
+            if (isset($footer) && is_array($footer)){
+                if (isset($footer['js'])){
+                    foreach ($footer['js'] as $_js){
                         if (substr($_js, 0, 4) != 'http'){
                             $path = base_url() . $_js;
                         } else {
