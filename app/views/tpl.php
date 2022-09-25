@@ -129,11 +129,17 @@
             
             if (isset($head['js'])){
                 foreach ($head['js'] as $_js){
-                    if (substr($_js, 0, 4) != 'http'){
-                        $path = base_url() . $_js;
+                    if (is_string($_js)){
+                        $_js = [
+                            'file' => $_js
+                        ];
+                    }
+
+                    if (substr($_js['file'], 0, 4) != 'http'){
+                        $path = base_url() . $_js['file'];
                     } else {
-                        $path = $_js;
-                    }							
+                        $path = $_js['file']    ;
+                    }								
                 ?>
                     <script type="text/javascript" src="<?= $path ?>" ></script>
                 <?php
@@ -208,14 +214,21 @@
             JS rendering in footer
         -->
 
-        <?php    
+        <?php   
+
             if (isset($footer) && is_array($footer)){
                 if (isset($footer['js'])){
-                    foreach ($footer['js'] as $_js){
-                        if (substr($_js, 0, 4) != 'http'){
-                            $path = base_url() . $_js;
+                    foreach ($footer['js'] as $_js){                        
+                        if (is_string($_js)){
+                            $_js = [
+                                'file' => $_js
+                            ];
+                        }
+
+                        if (substr($_js['file'], 0, 4) != 'http'){
+                            $path = base_url() . $_js['file'];
                         } else {
-                            $path = $_js;
+                            $path = $_js['file']    ;
                         }							
                         ?>
                 
