@@ -67,7 +67,9 @@ function keep_alive(){
 
 function checkpoint() {
     if (!keep_alive()){
-        window.location = login_page;
+        if (window.location != base_url && window.location != login_page){
+            window.location = login_page;
+        }
     }
 }
 
@@ -273,3 +275,6 @@ function update_pass() {
 
     return false;
 }
+
+
+checkpoint();
