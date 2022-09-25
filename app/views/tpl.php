@@ -20,21 +20,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
-     <!--
-        Me traigo los nombres de las keys con que debo armar los JSON
-        para pegarle a los endpoints
-    -->
     <script>
         const base_url  = '<?= base_url(); ?>';
-
-        /*
-            Auth
-        */
-
-        let $__email    = '<?= $__email    ?? null; ?>'; 
-        let $__username = '<?= $__username ?? null; ?>';
-        let $__password = '<?= $__password ?? null; ?>';
     </script>
+
+    <?= 
+        auth()
+    ?>
 
     <script src="<?= asset('js/login.js') ?>"></script>
 
