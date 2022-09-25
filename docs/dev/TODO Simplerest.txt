@@ -94,10 +94,12 @@ De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes
 
 [ FrontEnd ]
 
-- Poder encolar tanto css o js como hace wordpress
+- Poder encolar tanto css o js 
 
-    enqueue_js($path, $in_footer)
-    enqueue_css($path)
+  Una posibilidad es hacerlo al estilo WordPress:
+
+    View::enqueue_js(string $file, ?Array $atts = null, bool $in_head = false)
+    View::enqueue_css(string $file)
 
 Ej:
 
@@ -126,6 +128,43 @@ Seria equivalente a,...
   ], 'tpl_basic.php');        
 
 https://developer.wordpress.org/reference/functions/wp_enqueue_script/
+
+Sin embargo, Laravel parece hacer algo mas sencillo con Blade permitiendo definir puntos de anclaje con nombres arbitrarios para JS y CSS
+
+La directiva @push va en la child view, lo cual permite hacer un push del contenido al parent con la directiva @stack
+
+# layout/layout.blade.php
+
+  <html>
+    <head>
+      <title>advanced web tuts</title>
+    </head>
+    <body>
+      @include('layout.header')
+  
+        @yield('content')
+  
+      @include('layout.footer')
+  
+      @stack('js') <---------------------- punto de anclaje 
+    </body>
+  </html>
+
+# front/home.blade.php  < vista >
+
+  @extends('layout.layout')
+  
+  @section('content')
+  
+    //Enter your content here
+  
+  @endsection
+  
+  @push('js')
+  //Enter your js code here  <----------- *
+  @endpush
+
+https://advancedwebtuts.com/tutorial/how-to-include-common-header-and-footer-in-laravel-layout-blade-file
 
 
 - Modularizacion
