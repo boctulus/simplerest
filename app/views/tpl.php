@@ -135,6 +135,16 @@
 </head>
 <body>
     <div class="container-fluid">
+        <nav>
+            <script>
+                if (logged()){
+                    console.log("[x] Cerrar session");
+                } else {
+                    console.log("[>] Login");
+                }
+            </script>
+        </nav>
+    
         <main>
            <?= $content; ?>
         </main>
