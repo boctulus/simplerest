@@ -1,6 +1,7 @@
 <!-- Login -->
     
-<?php
+<?php	
+	// deberia encolarse !
 	include_css(WIDGETS_PATH . 'login/login.css');
 ?>
 
@@ -16,6 +17,7 @@
 
 		Bt5Form::setIdAsName();
 
+		// deberia encolarse !
 		include_css(ASSETS_PATH . 'adminlte/css/adminlte.css');
 	
 		echo tag('card')

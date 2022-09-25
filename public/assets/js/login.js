@@ -67,7 +67,7 @@ function keep_alive(){
 
 function checkpoint() {
     if (!keep_alive()){
-        if (window.location != base_url && !window.location.startsWith(login_page)){
+        if (window.location != base_url && !window.location.toString().startsWith(login_page)){
             window.location = login_page;
         }
     }
