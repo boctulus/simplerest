@@ -18,21 +18,6 @@ class Select2TestController extends MyController
     {   
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
 
-        // $all = json_decode($json, true)["countries"];
-
-        // dd(
-        //     implode(', ',array_column($all, 'country'))
-        // );
-
-        // exit;
-
-        // dd(count(
-        //     json_decode($json, true)["countries"]
-        // ));
-
-        // exit;
-
-
         // Js ofuscado con https://obfuscator.io/
         view('select2/test.php', [
             'json' => $json,
