@@ -64,8 +64,7 @@ class View
             ob_end_clean();
 
             $footer =  static::$footer;
-            $head   =  static::$head;
-            
+            $head   =  static::$head;            
         }
 
         if ($expiration_time != 0 && ($expired || !$file_exists)){
@@ -93,6 +92,14 @@ class View
         return Files::delete($filename);
     }
 
+    static function getHead(){
+        return static::$head;
+    }
+
+    static function getFooter(){
+        return static::$footer;
+    }
+    
     static function enqueue_js(string $file, ?Array $atts = null, bool $in_head = false){
         if ($in_head){
             static::$head['js'][] = [
