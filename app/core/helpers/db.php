@@ -385,7 +385,7 @@ function get_primary_key(string $table_name, $tenant_id = null){
 }
 
 // alias
-function get_name_id($table_name, $tenant_id = null){
+function get_id_name($table_name, $tenant_id = null){
     return get_primary_key($table_name, $tenant_id);
 }
 

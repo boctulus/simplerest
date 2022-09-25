@@ -34,7 +34,7 @@ class UserRoles implements IMigration
         */
 
         $users_table = config()['users_table'];
-        $users_pri   = get_name_id($users_table);
+        $users_pri   = get_id_name($users_table);
 
         $sc->foreign('user_id')->references($users_pri)->on($users_table)->onDelete('cascade');
         $sc->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');

@@ -20,49 +20,79 @@ function password_show_hide(id = 'password') {
     input.parentNode.replaceChild(input2, input);
 }
 
-function checkpoint() {
-    if (typeof login_page === 'undefined' || typeof localStorage === 'undefined') {
-        console.log('Error');
-        return;
+/*
+    Access token expiration
+
+    Estoy olvidando que el refresh token tambien tiene expiracion y ni siquiera la estoy guardando
+    en localStorage !
+*/
+function acccess_expired(){
+    return ((localStorage.getItem('exp') != null) && ((localStorage.getItem('exp') * 1000) - (new Date()).getTime()) < 0);
+}
+
+function logged(){
+    return localStorage.getItem('access_token') != null && !acccess_expired();
+}
+
+function logout(redirect = true) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+
+    if (redirect){
+        window.location.href = login_page;
+    }
+}
+
+function keep_alive(){
+    if (typeof localStorage === 'undefined') {
+        throw "No localStorage";
     }
 
-    const expired = ((localStorage.getItem('exp') != null) && ((localStorage.getItem('exp') * 1000) - (new Date()).getTime()) < 0);
+    // Sino hay un access token, tampoco habra fresh token en localStorage
+    if (localStorage.getItem('access_token') == null) {
+        return false;
+    }
 
-    if (expired)
-        console.log('expired');
+    if (!acccess_expired()){
+        return true;
+    }
+    
+    if (localStorage.getItem('refresh_token')) {
+        //console.log("Renovando access token,...");
+        return renew();
+    } else {
+        return false;
+    }
+}
 
-    if ((localStorage.getItem('access_token') == null) || expired) {
-        if (localStorage.getItem('refresh_token')) {
-            renew();
-        } else {
-            window.location = login_page;
-        }
-
+function checkpoint() {
+    if (!keep_alive()){
+        window.location = login_page;
     }
 }
 
 function register() {
-    //console.log('here');
-
-    var obj = {};
+    var data = {};
 
     if ($('#password').val() != $('#password_confirmation').val()) {
         $('#registerError').text('Contraseñas no coinciden');
+        console.log('Contraseñas no coinciden');
         return;
-    } else $('#registerError').text('');
+    } else {
+        $('#registerError').text('');
+    }
 
-    obj[$__username] = $('#username').val();
-    obj[$__email] = $('#email').val();
-    obj[$__password] = $('#password').val();
+    data[$__username] = $('#username').val();
+    data[$__email]    = $('#email').val();
+    data[$__password] = $('#password').val();
 
     $.ajax({
         type: "POST",
         url: base_url + "/api/v1/auth/register",
-        data: JSON.stringify(obj),
+        data,
         dataType: 'json',
         success: function(res) {
-
-            var data = res.data;
+            let data = res.data;
 
             if (typeof data.access_token != 'undefined') {
                 console.log('Token recibido');
@@ -87,22 +117,19 @@ function register() {
 }
 
 function login() {
-    var obj = {};
+    var data = {};
 
     if ($('#email_username').val().match(/@/) != null)
-        obj[$__email] = $('#email_username').val();
+        data[$__email] = $('#email_username').val();
     else
-        obj[$__username] = $('#email_username').val();
+        data[$__username] = $('#email_username').val();
 
-    obj[$__password] = $('#password').val();
-
-    // get form data
-    //obj = this.serializeObject();
+    data[$__password] = $('#password').val();
 
     $.ajax({
         type: "POST",
         url: base_url + '/api/v1/auth/login',
-        data: JSON.stringify(obj),
+        data,
         dataType: 'json',
         success: function(res) {
 
@@ -129,13 +156,6 @@ function login() {
     return false;
 }
 
-
-function logout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    window.location.href = login_page;
-}
-
 function renew() {
     console.log('Renewing token at ...' + (new Date()).toString());
 
@@ -152,37 +172,36 @@ function renew() {
                 localStorage.setItem('expires_in', data.expires_in);
                 localStorage.setItem('exp', parseInt((new Date).getTime() / 1000) + data.expires_in);
 
-                //console.log(data.access_token);
+                return true;
             } else {
                 console.log('Error en la renovación del token');
-                ////////window.location = login_page;
+                
+                return false;
             }
         },
         error: function(data) {
             console.log('Error en la renovación del token!!!!!!!!!!!!');
             console.log(data);
-            /////////window.location = login_page;
+            
+            return false;
         }
     });
 }
 
 function rememberme() {
-    var obj = {};
+    let data = {};
 
-    obj.email = $('#email').val();
-
-    // get form data
-    //obj = this.serializeObject();
+    data.email = $('#email').val();
 
     $('#remembermeError').text('');
 
     $.ajax({
         type: "POST",
         url: base_url + '/api/v1/auth/rememberme',
-        data: JSON.stringify(obj),
+        data,
         dataType: 'text',
         success: function(res) {
-            window.location.replace(base_url + '/login/rememberme_mail_sent/' + window.btoa(obj.email));
+            window.location.replace(base_url + '/login/rememberme_mail_sent/' + window.btoa(data.email));
         },
         error: function(xhr, status, error) {
             console.log('ERROR');
@@ -211,9 +230,9 @@ function update_pass() {
     } else
         $('#passChangeError').text('');
 
-    var obj = {};
+    let data = {};
 
-    obj['password'] = $('#password').val();
+    data['password'] = $('#password').val();
 
     const slugs = window.location.pathname.split('/');
     const token = slugs[slugs.indexOf('change_pass_by_link') + 1];
@@ -226,10 +245,10 @@ function update_pass() {
         type: "POST",
         url: base_url + "/api/v1/auth/change_pass_process",
         headers: { "Authorization": 'Bearer ' + token },
-        data: JSON.stringify(obj),
+        data,
         dataType: 'json',
         success: function(res) {
-            var data = res.data;
+            let data = res.data;
 
             if (data && data.access_token) {
                 console.log('Token recibido');
