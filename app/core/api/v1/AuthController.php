@@ -5,6 +5,7 @@ namespace simplerest\core\api\v1;
 use Exception;
 use simplerest\core\controllers\Controller;
 use simplerest\core\Request;
+use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
@@ -43,7 +44,7 @@ class AuthController extends Controller implements IAuth
         $this->__confirmed_email = $model::$confirmed_email;
         $this->__active          = $model::$is_active;
 
-        $this->__id = get_name_id($this->users_table);
+        $this->__id = get_id_name($this->users_table);
     }
        
     protected function gen_jwt(array $props, string $token_type, int $expires_in = null){
@@ -104,7 +105,7 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $data  = Factory::request()->getBodyDecoded();
+        $data  = request()->getBodyDecoded();
 
         if ($data == null)
             return;
@@ -204,7 +205,7 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $data  = Factory::request()->getBodyDecoded();
+        $data  = request()->getBodyDecoded();
 
         if ($data === null)
             return;
@@ -212,7 +213,7 @@ class AuthController extends Controller implements IAuth
         if (!isset($data['uid']) && !isset($data['role']))
             error('Bad request', 400, 'Nothing to impersonate');
 
-        $request = Factory::request();
+        $request = request();
 
         $headers = $request->headers();
         $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
@@ -343,7 +344,7 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $request = Factory::request();
+        $request = request();
 
         $headers = $request->headers();
         $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
@@ -416,7 +417,7 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $request = Factory::request();
+        $request = request();
 
         $headers = $request->headers();
         $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;
@@ -527,7 +528,7 @@ class AuthController extends Controller implements IAuth
         //DB::beginTransaction();
 
         try {
-            $data  = Factory::request()->getBodyDecoded();
+            $data  = request()->getBodyDecoded();
 
             if ($data == null)
                 error('Bad request',400, 'Invalid JSON');
@@ -669,7 +670,7 @@ class AuthController extends Controller implements IAuth
     }
 
     private function jwtPayload(){
-        $auth = Factory::request()->getAuth();
+        $auth = request()->getAuth();
 
         if (empty($auth))
             return;
@@ -755,11 +756,11 @@ class AuthController extends Controller implements IAuth
         $perms  = [];
         $roles  = [];
 
-        $auth_method = Factory::request()->authMethod();    
+        $auth_method = request()->authMethod();    
 
         switch ($auth_method){
             case 'API_KEY': 
-                $api_key = Factory::request()->getApiKey();
+                $api_key = request()->getApiKey();
 
                 $acl = Factory::acl();
                 $uid = $this->getUserIdFromApiKey($api_key);
@@ -805,7 +806,7 @@ class AuthController extends Controller implements IAuth
 
                 Acl::setCurrentRoles($ret['roles']); //
 
-                $tenantid = Factory::request()->getTenantId();
+                $tenantid = request()->getTenantId();
 
                 if ($tenantid !== null){
                     $db_access = $ret['db_access'] ?? [];   
@@ -956,7 +957,7 @@ class AuthController extends Controller implements IAuth
         sino no hacer nada.
     */
 	function rememberme(){
-		$data  = Factory::request()->getBodyDecoded();
+		$data  = request()->getBodyDecoded();
 
 		if ($data == null)
 			error('Invalid JSON',400);
@@ -967,14 +968,12 @@ class AuthController extends Controller implements IAuth
 			error($this->__email . ' is required', 400);
 
 		try {	
-			$u = (DB::table($this->users_table))->assoc();
+			$u    = DB::table($this->users_table)->assoc();
 			$rows = $u->where([$this->__email, $email])->get([$this->__id, $this->__active]);
-
-            //dd($u->dd());
 
 			if (count($rows) === 0){
                 // Email not found
-                error('Please check your e-mail.', 400); 
+                error('Please very your e-mail is correct', 400); 
             }
 
             // Hook
@@ -989,11 +988,12 @@ class AuthController extends Controller implements IAuth
                 error('Non authorized', 403, 'Deactivated account !');
             }
 
-            $base_url =  httpProtocol() . '://' . $_SERVER['HTTP_HOST'] . ($this->config['BASE_URL'] == '/' ? '/' : $this->config['BASE_URL']);            
+            $base_url = base_url();            
 
-            $token = $this->gen_jwt_rememberme($uid);
-            
-            $url = $base_url . (!Strings::endsWith(DIRECTORY_SEPARATOR, $base_url) ? '/' : '') .'login/change_pass_by_link/' . $token . '/' . $exp; 	
+            $token    = $this->gen_jwt_rememberme($uid);
+
+            $url      = $base_url . (!Strings::endsWith(DIRECTORY_SEPARATOR, $base_url) ? '/' : '') 
+            .'login/change_pass_by_link/' . $token . '/' . $exp; 	
 
 		} catch (\Exception $e){
 			error($e->getMessage(), 500);
@@ -1002,7 +1002,14 @@ class AuthController extends Controller implements IAuth
         // Hook
         $this->onRemembered($data, $url);
 
-        Factory::response()->sendOK();         
+        /*
+            Si en el hook onRemembered() no hubo respuesta, no la dejo vacia
+        */
+        if (response()->isEmpty()){
+            response([
+                'message' => 'OK'
+            ]);  
+        }
     }
     
 
@@ -1120,7 +1127,7 @@ class AuthController extends Controller implements IAuth
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST','OPTIONS']))
             error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting POST',405);
 
-        $data  = Factory::request()->getBody();
+        $data  = request()->getBody();
 
         if ($data == null)
             return;
@@ -1128,7 +1135,7 @@ class AuthController extends Controller implements IAuth
         if (!isset($data->password) || empty($data->password))
             error('Bad request', 400, 'Lacks password in request');
 
-        $request = Factory::request();
+        $request = request();
 
         $headers = $request->headers();
         $auth = $headers['Authorization'] ?? $headers['authorization'] ?? null;

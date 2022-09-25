@@ -25,12 +25,13 @@ class LoginController extends Controller
 			Recibo los nombres de las keys con que se deben armar los JSON
 			para pegarle a los endpoints. Posteriormente los pasaré a cada vista
 		*/
-        $model = get_user_model_name();    
+
+        $model = get_user_model_name();  
            
         $this->__email           = $model::$email;
         $this->__username        = $model::$username;
         $this->__password        = $model::$password;
-		$this->__id 			 = get_name_id($this->config['users_table']);
+		$this->__id 			 = get_id_name($this->config['users_table']);
     }
 
 	function index(){
@@ -41,6 +42,7 @@ class LoginController extends Controller
 		/*
 			Cargo vista y paso variables
 		*/
+		
 		$this->__view('login.php', [ 
 			'title'      =>'Ingreso', 
 			'hidenav'    => true,

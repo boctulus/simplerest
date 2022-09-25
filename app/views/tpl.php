@@ -27,11 +27,16 @@
     <script>
         const base_url  = '<?= base_url(); ?>';
 
+        /*
+            Auth
+        */
+
         let $__email    = '<?php echo $__email    ?? null; ?>'; 
         let $__username = '<?php echo $__username ?? null; ?>';
         let $__password = '<?php echo $__password ?? null; ?>';
     </script>
 
+    <script src="<?= asset('js/login.js') ?>"></script>
 
     <!-- ICONOS FONTAWESOME -->
     <script src="https://kit.fontawesome.com/3f60db90e4.js" crossorigin="anonymous"></script>
@@ -100,7 +105,8 @@
     <?php
         echo meta('content-type','text/html; charset=utf-8','equiv') . PHP_EOL;
 
-        if (isset($head) && is_array($head)){
+        if (isset($head) && is_array($head))
+        {
             if (isset($head['meta'])){
                 foreach ($head['meta'] as $m)
                     echo meta($m['name'], $m['content']) . PHP_EOL;
@@ -174,17 +180,18 @@
 
     
     <script src="<?= asset('js/boostrap_notices.js') ?>"></script>
-    <script src="<?= asset('js/login.js') ?>"></script>
 
     <footer id="footer">
-        <?php
-    
-            if (isset($footer) && is_array($footer)){
-                if (isset($footer['content'])) 
-                    echo $footer['content'] ?? ''; 
-            
-                if (isset($footer['js'])) 
-                    foreach ($footer['js'] as $_js){
+        <?= $footer_content ?? '' ?>
+      
+        <!--
+            JS rendering in footer
+        -->
+
+        <?php    
+            if (isset($__footer) && is_array($__footer)){
+                if (isset($__footer['js'])){
+                    foreach ($__footer['js'] as $_js){
                         if (substr($_js, 0, 4) != 'http'){
                             $path = base_url() . $_js;
                         } else {
@@ -195,8 +202,8 @@
                         <script type="text/javascript" src="<?= $path ?>" ></script>
                         <?php
                     }
-            }
-            
+                }   
+            }            
         ?>
     </footer>
 </body>

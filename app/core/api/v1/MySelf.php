@@ -24,7 +24,7 @@ class MySelf extends MyApiController
 
         $model = get_user_model_name();
         $this->is_active = $model::$is_active;
-        $this->__id   = get_name_id($this->config['users_table']);
+        $this->__id   = get_id_name($this->config['users_table']);
   
         if (Factory::request()->authMethod() != NULL){
                 $this->callable = ['get', 'put', 'patch', 'delete'];

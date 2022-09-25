@@ -136,6 +136,16 @@ https://developer.wordpress.org/reference/functions/wp_enqueue_script/
   de un array. Quizas escribiendo widgets que abstraigan el uso de BT5Form ojala de
   forma compatible con react-boostrap
 
+
+Hay un *bug* en Bt5Form::password() que hace si se espcifica "name", se sobre-escriba el "id"
+
+  Bt5Form::password(
+    id:"password_confirmation", 
+    placeholder:"Password confirmación",
+    required:"required",
+    name:"blabla"
+  )
+
 - Implementar de forma sencilla DataTables
 
 Investigar como el paquete "Yajra" de Laravel simplifica el uso de DataTables
