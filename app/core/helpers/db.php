@@ -78,9 +78,19 @@ function get_model_name($table_name, $tenant_id = null){
 }
 
 function get_user_model_name(){
-    $users_table = get_users_table();
+    static $model_name;
+    
+    $users_table = get_users_table(true);
+    $conn_id     = DB::getCurrentConnectionId(true);
+    $key         = $conn_id . '.' . $users_table;
 
-    return get_model_name($users_table, DB::getCurrentConnectionId());
+    if (isset($model_name[$key])){
+        return $model_name[$key];
+    }
+
+    $model_name[$key] = get_model_name($users_table, $conn_id);
+
+    return $model_name[$key];
 }
 
 

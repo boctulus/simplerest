@@ -141,6 +141,21 @@ function css(string $file){
     return View::css($file);
 }
 
+function auth(){
+    $model = get_user_model_name();    
+           
+    $__email    = $model::$email;
+    $__username = $model::$username;
+    $__password = $model::$password;
+
+    return "
+    <script>
+        let \$__email    = '$__email'; 
+        let \$__username = '$__username';
+        let \$__password = '$__password';
+    </script>";
+}
+
 // depredicar -->
 
 function include_css(string $path){
