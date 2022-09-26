@@ -50,7 +50,7 @@ class AmazonScraper
                 Redireccion fuera del standard de Amazon
             */
 
-            while ($res['http_code'] == 301){
+            while ($res['http_code'] == 301 || $res['http_code'] == 302){
                 $doc   = Dom::getDomDocument($res['data']);
                 $xpath = new \DOMXPath($doc);
                 

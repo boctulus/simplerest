@@ -351,7 +351,7 @@ Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) 
 - Crear package como wrapper de Faker
 
 
-[ OPTIMIZACIONES para maxima peformance ]
+[ OPTIMIZACIONES para maxima performance ]
 
 - NGINX
 
@@ -417,6 +417,12 @@ Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) 
 
 - Usar funciones mas eficientes que la nativa para generar UUIDs
 
+- Soporte para Sphinx con el driver SphinxQL para FULL SEARCH de 10 a 1000 veces más rápido que con MySQL.
+
+https://www.youtube.com/watch?v=-ybnxq149hA&ab_channel=SteveBarker
+https://github.com/euclid1990/php-sphinx-search
+
+<--- o Elasticsearch / lucene / etc
 
 Ver
 
@@ -425,12 +431,17 @@ https://es.wordpress.org/plugins/docket-cache/
 
 -----x----
 
-
 - No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest
 
 https://laravel.com/docs/9.x/collections
 
 Igualmente podria considerarse importar Carbon para manejo de fechas
+
+---x--
+
+- Eventualmente usar RabbitMQ
+
+---x--
 
 [ Migraciones ]
 

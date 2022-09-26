@@ -30,7 +30,11 @@ class MaisonsScraper
                 throw new \InvalidArgumentException("Url inválida: no hay slug?");
             }
 
-            $html = (new ApiClient($url))->disableSSL()->cache()->get()->getResponse(false)['data'];
+            $html = ApiClient::instance($url)
+            ->disableSSL()
+            ->cache()
+            ->get()
+            ->getResponse(false)['data'];
             
         } else {
             /*
