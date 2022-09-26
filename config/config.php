@@ -43,7 +43,7 @@ return [
 		false -> deshabilita la verificacion
 	*/
 	
-	'ssl_cert' => 'D:\wamp64\ca-bundle.crt',
+	'ssl_cert' => null,  // 'D:\wamp64\ca-bundle.crt',
 
 	/*
 		Es posible cargar la lista de conexiones disponibles

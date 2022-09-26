@@ -33,6 +33,8 @@ class ApiClient
     protected $filename;
     protected $effective_url;
     protected $content_type;
+    protected $read_only = false;
+    protected $cert_ssl  = null;
 
     function setUrl($url){
         $this->url = $url;
@@ -51,6 +53,11 @@ class ApiClient
 
     static function instance($url = null) : ApiClient {
         return new ApiClient($url);
+    }
+
+    function readOnly(bool $flag = true){
+        $this->read_only = $flag;
+        return $this;
     }
 
     function setHeaders(Array $headers){
@@ -181,6 +188,9 @@ class ApiClient
     }
 
     function disableSSL(){
+        // dejo claro se aplican settings
+        $this->cert_ssl = true;
+
         $this->options = [
             CURLOPT_SSL_VERIFYHOST => 0,
             CURLOPT_SSL_VERIFYPEER => 0
@@ -193,6 +203,9 @@ class ApiClient
         Set SSL certification
     */
     function setSSLCrt(string $crt_path){
+        // dejo claro se aplican settings
+        $this->cert_ssl = true;
+
         $this->addOptions([
             CURLOPT_CAINFO => $crt_path,
             CURLOPT_CAPATH => $crt_path,
@@ -257,7 +270,6 @@ class ApiClient
                 ($headers ?? [])
             );
         }
-
 
         if ($accept_found) {
             if (Strings::startsWith('text/plain', $headers[$accept_found]) ||
@@ -374,14 +386,19 @@ class ApiClient
         $this->url  = $url;
         $this->verb = strtoupper($http_verb);
 
-        $cert = config()['ssl_cert'];
-        
-        if ($cert === false){
-            $this->disableSSL();
-        }
+        //
+        // Sino se aplico nada sobre SSL, vale lo que diga el config
+        // 
+        if (!$this->cert_ssl){    
+            $cert = config()['ssl_cert'];
+            
+            if ($cert === false){
+                $this->disableSSL();
+            }
 
-        if (!empty($cert)){
-            $this->setSSLCrt($cert);
+            if (!empty($cert)){
+                $this->setSSLCrt($cert);
+            }    
         }
 
         if (!empty($this->options) && !empty($options)){
@@ -458,7 +475,7 @@ class ApiClient
 
         // dd($res, 'RES');
 
-        if ($this->expiration && $res !== null){
+        if ($this->expiration && $res !== null && !$this->read_only){
             $this->saveResponse($res);
         }
 
@@ -517,8 +534,12 @@ class ApiClient
         En vez de guardar en disco..... usar Transientes con drivers como Memcached o REDIS !
     */
 
-    protected function getCachePath(){
+    function getCachePath(){
         static $path;
+
+        if (empty($this->url)){
+            throw new \Exception("Undefined url");
+        }
 
         if (isset($path[$this->url])){
             return $path[$this->url];
@@ -559,7 +580,6 @@ class ApiClient
 
         if (file_exists($path)){
             include $path;
-            return $res;
         }
     }
 
