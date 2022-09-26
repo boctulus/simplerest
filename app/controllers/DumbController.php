@@ -71,6 +71,7 @@ use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\core\api\v1\ApiController;
 
 class DumbController extends Controller
 {
@@ -10523,11 +10524,17 @@ class DumbController extends Controller
     }
     
     function test_scraper_1(){
+        $url = 'https://www.maisonsdumonde.com/ES/es/p/espejo-de-teca-153x75-rivage-121734.htm?utm_source=effiliation_es&utm_campaign=generique_affiliation&utm_medium=affiliation&utm_content=43_1395110640&eff_cpt=22616853';
+
         $url = 'https://www.maisonsdumonde.com/FR/fr/p/canape-lit-3-4-places-en-lin-lave-bleu-petrole-barcelone-180512.htm';
 
         dd(
             MaisonsScraper::parseProduct($url)
-        );        
+        );       
+        
+        dd(
+            ApiClient::instance($url)->getCachePath()
+        );
     }
 
     function test_scraper_2(){

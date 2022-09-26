@@ -24,5 +24,6 @@
 
 <?php
     $my_var = 'some value..'; 
+    
     section('my_section.php', [ 'my_var' => $my_var ]);
 ?>

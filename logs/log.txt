@@ -792,3 +792,6 @@ NULL
 2022-09-07 17:23:01	Parsing of https://amzn.to/2M0SCXb as failed
 2022-09-07 18:11:47	Parsing of https://amzn.to/2M0SCXb as failed
 2022-09-07 18:12:00	Parsing of https://amzn.to/2M0SCXb as failed
+2022-09-26 14:08:19	Parsing of https://www.maisonsdumonde.com/FR/fr/p/canape-lit-3-4-places-en-lin-lave-bleu-petrole-barcelone-180512.htm as failed
+2022-09-26 14:09:59	Parsing of https://www.maisonsdumonde.com/FR/fr/p/canape-lit-3-4-places-en-lin-lave-bleu-petrole-barcelone-180512.htm as failed
+2022-09-26 14:10:11	Parsing of https://www.maisonsdumonde.com/FR/fr/p/canape-lit-3-4-places-en-lin-lave-bleu-petrole-barcelone-180512.htm as failed

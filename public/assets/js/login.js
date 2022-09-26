@@ -4,7 +4,7 @@ const login_page = base_url + '/login';
 function password_show_hide(id = 'password') {
     let icon_s = document.getElementById('show_eye');
     let icon_h = document.getElementById('hide_eye');
-    let input = document.getElementById(id);
+    let input  = document.getElementById(id);
     let input2 = input.cloneNode(false);
 
     if (input.type == 'password') {
@@ -21,7 +21,7 @@ function password_show_hide(id = 'password') {
 }
 
 /*
-    Access token expiration
+    is access token expired?
 
     Estoy olvidando que el refresh token tambien tiene expiracion y ni siquiera la estoy guardando
     en localStorage !
@@ -30,6 +30,7 @@ function acccess_expired(){
     return ((localStorage.getItem('exp') != null) && ((localStorage.getItem('exp') * 1000) - (new Date()).getTime()) < 0);
 }
 
+// is logged?
 function logged(){
     return localStorage.getItem('access_token') != null && !acccess_expired();
 }
@@ -43,6 +44,9 @@ function logout(redirect = true) {
     }
 }
 
+/*
+    Intenta mantener o recuperar un token expirado
+*/
 function keep_alive(){
     if (typeof localStorage === 'undefined') {
         throw "No localStorage";
@@ -58,13 +62,15 @@ function keep_alive(){
     }
     
     if (localStorage.getItem('refresh_token')) {
-        //console.log("Renovando access token,...");
         return renew();
     } else {
         return false;
     }
 }
 
+/*
+    Si no logra renovar el access_token,... redirecciona al login
+*/
 function checkpoint() {
     if (!keep_alive()){
         if (window.location != base_url && !window.location.toString().startsWith(login_page)){
@@ -223,7 +229,6 @@ function rememberme() {
 
     return false;
 }
-
 
 function update_pass() {
     if ($('#password').val() != $('#password_confirmation').val()) {
