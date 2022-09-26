@@ -10303,7 +10303,6 @@ class DumbController extends Controller
         // LaravelApiGenerator::setFactoryDestPath('D:/www/medellin-participa/seguridad' . '/database/factories/');
         // LaravelApiGenerator::setSeederDestPath('D:/www/medellin-participa/seguridad' . '/database/seeders/');
 
-
         LaravelApiGenerator::setControllerWhitelist([
             'InformacionContacto'
             // ...
