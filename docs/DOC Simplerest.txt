@@ -7946,7 +7946,7 @@ Otra posibilidad, es usando ApiClient:
 	->post($ruta)
 	->getResponse();
 
-Caso: quererar cargar el certificado SSL
+Caso: querer cargar el certificado SSL
 
 Usar setSSLCrt()
 
@@ -8148,6 +8148,32 @@ Ej:
 # Borrado de cache
 
 Con el metodo clearCache()
+
+Ej:
+
+	$res = $client->disableSSL()
+	->followLocations()
+	->when($overwrite_cache, function($e){
+		$e->clearCache();
+	})
+	->cache()
+	->get()
+	->getResponse(false);
+
+Lo que hemos hecho fue borrar la cache antes de volver a generarla. Esto es distinto a no usar cache porque de todas formas se esta guardando en la cache y podra ser recuperado.
+
+# Cache de solo lectura
+
+Es posible desactivar la escritura de la cache para estar seguros de que no se va a sobre-escribir usando cache() en conjunción con readOnly()
+
+Ej:
+
+	$res = ApiClient::instance($url)
+	->disableSSL()
+	->readOnly()  // <------------- *
+	->cache()
+	->get()
+	->getResponse(false);
 
 
 # Constructor de la clase ApiClient
