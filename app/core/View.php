@@ -12,6 +12,9 @@ class View
     static protected $head   = [];
     static protected $footer = [];
 
+    const HEAD   = true;
+    const FOOTER = false;
+
     function __construct(string $view_path, array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0)
     {
 		$this->config = config();
