@@ -126,11 +126,11 @@ function render_css(){
 function head(){
     render_metas();
     render_css();        
-    render_js(true);
+    render_js(VIEW::HEAD);
 }
 
 function footer(){
-    render_js(false);
+    render_js(VIEW::FOOTER);
 }
 
 function js_file(string $file, ?Array $atts = null, bool $in_head = false){

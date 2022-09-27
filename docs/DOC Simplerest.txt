@@ -7059,7 +7059,7 @@ Y ya dentro de la vista, se crearan las variables $nombre y $apellido así:
 <!-- Vista mi_archivo_vista.php -->
 <?php
 
-	var_dump($nombre); // Pablo
+	var_dump($nombre);    // Pablo
 	var_dump($apellido);  // Bozzolo
 ?>
 
@@ -7088,7 +7088,7 @@ Lógicamente el template debe manejar la varible $title para que se vea reflejad
 		<title><?= $title ?? ''; ?></title>
 	</head>
 
-El template a utilizar se puede pasar como parametro en view() o bien,... se puede cambiar el template con Config::set()
+El template a utilizar se puede pasar como parametro en view() o bien,... se puede cambiar el template con Config::set() o set_template()
 
 Ej:
 
@@ -7112,7 +7112,6 @@ O bien,...
 
 En estos casos 'whatever.php' es la vista que se esta pasando al template. La extension .php se puede obviar al llamar a view()
 
-
 Para cambiar de template se puede usar el helper set_template() como alias de Config::set('template', 'template_file.php')
 
 Ej:
@@ -7125,6 +7124,66 @@ Ej:
 	];
 
 	view('whatever',  $arr);
+
+
+# Templates
+
+Un template "mínimo" debe tener un punto de anclaje para el contenido, poder definir un title, inyectar meta-tags así como css y js.
+
+Ej:
+
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title><?= $title ?? '' ?></title>
+
+		<?php
+			render_metas();
+			render_css();        
+			render_js(true);   
+		?>
+	</head>
+	<body>
+		<main>
+			<?= $content ?? ''; ?>
+		</main>
+
+		<footer id="footer">
+			<?= 
+				$footer_content ?? '' 
+			?>
+		
+			<?php    
+				render_js(false);     
+			?>
+		</footer>
+	</body>
+	</html>
+
+
+Helpers que pueden incluirse en un template:
+
+	a_meta()	crea un meta-tag a partir se sus parámetros
+	a_css()		crea un tag <link rel="stylesheet" type="text/css">
+	a_js()		crea un tag <script type="text/javascript">
+	base_url()	bastante auto-explicatorio
+	asset()		devuelve la url de un recurso 
+	head()		es un simple wrapper sobre render_metas(), render_css() y render_js(VIEW::HEAD)
+	auth()		devuelve los nombres de los campos para username, password y e-mail a ser usados en el endpoint /auth
+	section()	incluye una vista
+	footer()	es un alias de render_js(VIEW::FOOTER)
+
+Ya dentro de una vista o sub-vista:
+
+	asset()		devuelve la url de un recurso 
+	section()	incluye una vista
+	js()		hace el enqueue de un javascript "inline"
+	css()		hace el enqueue de un css "inline"
+	js_file() 	hace el enqueue de un archivo .js
+	css_file()	hace el enqueue de un archivo .css
 
 
 # Cargar el template sin vista
@@ -7393,6 +7452,35 @@ Las variables pueden pasar del controlador a las vistas y el mismo truco puede u
     ?>
 
 
+# Hookear la clase View
+
+La clase View es extendida convenientemente como MyView a fin de poder agregar funcionalidad sin tener que tocar la clase View directamente que es parte del Core y sería sobreescrita al actualizar SimpleRest.
+
+Ej:
+
+	class MyView extends View 
+	{
+		function __construct(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php', int $expiration_time = 0)
+		{
+			/*
+				Agregado
+			*/
+			
+			$vars_to_be_passed['my_var'] = 'Hello World!';
+
+			parent::__construct($view_path, $vars_to_be_passed, $layout, $expiration_time);
+		}
+	}
+
+Hooks 
+
+	function onCacheExpired(string $view_path)
+    function onCacheWritten(string $view_path)
+
+Los hooks están presentes en la clase View y su clase derivada MyView.
+
+<--- a futuro simplemente crear eventos y dejar de lado los hooks
+
 # Cache
 
 Es posible cachear las vistas especificando el tiempo de expiración expresado en segundos como cuarto parámetro de view() y en caso de pasar -1 no expirá nunca hasta que el archivo no sea borrado.
@@ -7413,34 +7501,6 @@ A futuro se implementará un comando para la limpieza de la cache de la siguient
 
 El comando podrá borrar otro tipo de caches como la del Acl.
 
-
-Hooks 
-
-	function onCacheExpired(string $view_path)
-    function onCacheWritten(string $view_path)
-
-Los hooks están presentes en la clase MyView.
-
-
-# Hookear la clase View
-
-La clase View es extendida convenientemente como MyView a fin de poder agregar funcionalidad sin tener que tocar la clase View directamente que es parte del Core y sería sobreescrita al actualizar SimpleRest.
-
-Ej:
-
-	class MyView extends View 
-	{
-		function __construct(string $view_path, array $vars_to_be_passed  = null, string $layout = 'app_layout.php', int $expiration_time = 0)
-		{
-			/*
-				Agregado
-			*/
-			
-			$vars_to_be_passed['my_var'] = 'Hello World!';
-
-			parent::__construct($view_path, $vars_to_be_passed, $layout, $expiration_time);
-		}
-	}
 
 
 # Internacionalización
