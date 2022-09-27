@@ -25,7 +25,12 @@
     </script>
 
     <?= 
-        auth()
+        auth();
+        head();        
+         
+        echo a_meta('content-type','text/html; charset=utf-8', [
+            "http-equiv" => "content-type"
+        ]); 
     ?>
 
     <script src="<?= asset('js/login.js') ?>"></script>
@@ -94,15 +99,6 @@
 
     <link rel="stylesheet" href="<?= asset('css/main.css') ?>"/>
 
-    <?php
-        echo a_meta('content-type','text/html; charset=utf-8', [
-            "http-equiv" => "content-type"
-        ]);
-         
-        render_metas();
-        render_css();        
-        render_js(true);        
-    ?>
 </head>
 <body>
     <div class="container-fluid">
@@ -166,7 +162,7 @@
         <?= $footer_content ?? '' ?>
     
         <?php
-            render_js(false);  
+            footer();  
         ?>
     </footer>
 </body>
