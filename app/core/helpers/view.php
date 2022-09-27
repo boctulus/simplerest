@@ -123,6 +123,16 @@ function render_css(){
     }
 }
 
+function head(){
+    render_metas();
+    render_css();        
+    render_js(true);
+}
+
+function footer(){
+    render_js(false);
+}
+
 function js_file(string $file, ?Array $atts = null, bool $in_head = false){
    return View::js_file($file, $atts, $in_head);
 }
