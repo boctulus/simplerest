@@ -7,6 +7,8 @@ use simplerest\core\libs\Url;
 // Dumper
 class VarDump
 {
+	public static $render = false;
+
 	protected static function pre(callable $fn, ...$args){
 		echo '<pre>';
 		$fn($args);
@@ -110,4 +112,11 @@ class VarDump
 		self::export($val, $msg, $additional_carriage_return);
 	}
 
+	static function hideResponse(){
+        self::$render = false;
+    }
+
+    static function showResponse(){
+        self::$render = true;
+    }
 }

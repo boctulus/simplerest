@@ -5,7 +5,7 @@ namespace simplerest\controllers;
 use simplerest\controllers\MyController;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\libs\Factory;
+use simplerest\core\libs\Strings;
 use simplerest\core\libs\DB;
 
 class WhatsappController extends MyController
@@ -27,7 +27,13 @@ class WhatsappController extends MyController
             $message = "Hi";
         }
 
+        // show_debug_trace();
+        // dd('HERE');
+
         $phone = $phone ?? $this->phone;
+
+        $phone = Strings::removeBeginning('+', $phone);
+        $phone = str_replace(' ', '', $phone);
 
         return "https://api.whatsapp.com/send?phone=$phone&text=$message";
     }
