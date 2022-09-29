@@ -8461,14 +8461,15 @@ El parámetro *no* lleva argumento y puede ser --dropPrimary o --delPrimary
 
 ### Variable dumping 
 
-Para imprimir en pantalla o en la terminal de forma sencilla cualquier tipo de dato el framework provee las clases VarDump, StdOud y el helper dd()
+Para imprimir en pantalla o en la terminal de forma sencilla cualquier tipo de dato el framework provee las clases VarDump, StdOut.
 
-El helper dd() y d() son solo atajos para VarDump::dd()
+Los helper dd() y d() son solo atajos para VarDump::dd()
 
-	dd($val, $msg = null, bool $additional_carriage_return = false)
-	d($val, $msg = null);
+	d($val = null, $msg = null, bool $additional_carriage_return = false)
 
-Mientras que dd() por defecto no agrega retornos de carro adicionales, d() si lo hace.
+Y dd() es similar pero agrega retornos de carro adicionales.
+
+Veamos como se usan
 
 Ej:
 
@@ -8493,12 +8494,38 @@ Salida:
 	--[ My bool ]-- 
 	true
 
+Por otro lado es posible saber en qué archivo y  linea se están los d() o dd()
 
-La clase StdOut está pensanda para simplificar el uso de la clase Debug en aplicaciones de consola (aunque su uso no es exclusivo) y permite "encender" o "apagar" la salida fácilmente sin necesidad de retener el buffer.
+Ej:
+
+	show_debug_trace();
+    dd('HERE');
+
+Y la salida sería:
+
+	D:\www\simplerest\app\core\helpers\debug.php:21
+
+	HERE
+
+La clase StdOut ofrecer algo muy similar al helper d() pero no admite un ¨título¨ o descriptor por lo que su uso es más sencillo. Fue pensada para su uso en consola.
 
 	static function hideResponse()
 	static function showResponse()
 	static function pprint($v, bool $additional_carriage_return = false))
+
+Ej:
+
+	StdOut::pprint("Algún dato");
+
+Y para apagar / encender la respuesta,...
+
+	StdOut::hideResponse();
+	StdOut::pprint("Algún dato");	
+	StdOut::pprint("Otro dato");	
+
+	// ...
+
+	StdOut::showResponse();
 
 
 ### Perfilador del código
