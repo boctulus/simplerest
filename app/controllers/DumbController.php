@@ -10655,7 +10655,37 @@ class DumbController extends Controller
         }
     }
 
-    function test_async_defer(){
+    function test_async_defer_1(){
+        set_template('test_async_await/my_tpl_1.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_1b(){
+        set_template('test_async_await/my_tpl_1b.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_1c(){
+        set_template('test_async_await/my_tpl_1c.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_2(){
+        set_template('test_async_await/my_tpl_2.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_3(){
+        set_template('test_async_await/my_tpl_3.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_4(){
+        set_template('test_async_await/my_tpl_4.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_5(){
         set_template('test_async_await/my_tpl_5.php');
         render("Hola Sr. Putin");
     }
@@ -10668,48 +10698,6 @@ class DumbController extends Controller
         render("Hola Sr. Putin");
     }
 
-    function xrz(){
-        $files = Files::glob('D:\\www\\pruebas\\jsons', '*.json');
-
-        $arr = [];
-
-        foreach ($files as $file){
-            $json = trim(file_get_contents($file));
-            $new  = json_decode( preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $json), true );
-
-            if ($new === null){
-                switch (json_last_error()) {
-                    case JSON_ERROR_NONE:
-                        echo ' - No errors';
-                    break;
-                    case JSON_ERROR_DEPTH:
-                        echo ' - Maximum stack depth exceeded';
-                    break;
-                    case JSON_ERROR_STATE_MISMATCH:
-                        echo ' - Underflow or the modes mismatch';
-                    break;
-                    case JSON_ERROR_CTRL_CHAR:
-                        echo ' - Unexpected control character found';
-                    break;
-                    case JSON_ERROR_SYNTAX:
-                        echo ' - Syntax error, malformed JSON';
-                    break;
-                    case JSON_ERROR_UTF8:
-                        echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
-                    break;
-                    default:
-                        echo ' - Unknown error';
-                    break;
-                }
-                exit;
-            };
-
-            $arr = array_merge($arr, $new['prods']);
-        }
-
-        
-        Files::varExport('D:\www\pruebas\jsons\prods.php', $arr);
-    }
-
+    
 
 }   // end class

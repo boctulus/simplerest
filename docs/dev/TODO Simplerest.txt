@@ -175,7 +175,9 @@ https://developer.chrome.com/docs/workbox/
 https://www.youtube.com/watch?v=l44IF9fBNOs&ab_channel=NeilRowe
 
 
-- Portar "Blade" a fin de poder usarse con el port de Livewire
+- Implementar ¨Blade¨ o usar algo como "BladeOne", Blade "stand-alone", como dependencia a fin de poder usarse con el port de Livewire
+
+https://github.com/EFTEC/BladeOne
 
 - Ver "portar" componentes de Laravel Livewire que tiene componentes para todo! 
 
@@ -1787,6 +1789,10 @@ El punto es que...... ni Output Mutators ni Transformers al dia de hoy son tenid
 
 ---
 
+- Usar async / await en el frontend !
+
+https://openjavascript.info/2022/09/27/how-to-copy-an-image-to-the-clipboard-with-vanilla-javascript/?fbclid=IwAR3O6m-0lrPHrs-24Cgf5aiGcWStxROHGbU10U10VFLG6FcPF_deOATp_Kg
+
 - Aparentemente no es necesario tener TRANSACCIONES para enviar varias consultas al mismo tiempo a la DB pero si PDO::ATTR_EMULATE_PREPARES en 1 (habilitado).
 
 https://stackoverflow.com/a/6461110/980631
@@ -1803,7 +1809,7 @@ Ver sintaxis Async usada por AWS S3 SDK
 
 https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/getting-started_basic-usage.html
 
-- Usar Guzzle en vez de curl ya que permite "async requests" via CurlMultiHandler
+- Si usara Guzzle en vez de curl ya que permite "async requests" via CurlMultiHandler
 
 https://stackoverflow.com/a/36549547/980631
 https://docs.guzzlephp.org/en/latest/faq.html?highlight=curl#can-guzzle-send-asynchronous-requests
@@ -1813,7 +1819,7 @@ Usaria Client de Guzzle en vez de ApiClient
   <?php
   
   use GuzzleHTTP\Client;
-  require '>>/vendor/autoload.php';
+  require 'vendor/autoload.php';
   
   $client = new Client([
       'base_uri'=>'http://httpbin.org',
@@ -1838,15 +1844,24 @@ ApiClient podría hacerse aysnc .... como Guzzle pero a esta altura del partido.
 https://stackoverflow.com/a/35675265/980631
 https://stackoverflow.com/questions/46015529/guzzle-async-requests-not-really-async
 
-Equivalencias con ApiClient
 
-- Uso de certificado SSL en disco
+- Concurrencia en ApiClient
 
-  new GuzzleClient(['verify' => '/path/to/self-signed/cert.pem']);
+Laravel lo maneja así........
 
-- Retries
+$responses = ApiClient::pool(fn (Pool $pool) => [
+    $pool->get('http://localhost/first'),
+    $pool->get('http://localhost/second'),
+    $pool->get('http://localhost/third'),
+]);
+ 
+return $responses[0]->ok() &&
+       $responses[1]->ok() &&
+       $responses[2]->ok();
 
-  https://github.com/guzzle/guzzle/issues/1806
+https://laravel.com/docs/9.x/http-client#concurrent-requests
+https://www.php.net/manual/en/function.curl-multi-init.php
+
 
 [ Front ]
 
