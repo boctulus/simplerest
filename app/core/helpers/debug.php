@@ -2,22 +2,23 @@
 
 use simplerest\core\libs\VarDump;
 
-function show_debug_trace(){
-    VarDump::showResponse();
+function show_debug_trace(bool $status = true){
+    VarDump::showTrace($status);
 }
 
 function hide_debug_trace(){
+    VarDump::hideTrace();
+}
+
+function show_debug_response(bool $status = true){
+    VarDump::showResponse($status);
+}
+
+function hide_debug_response(){
     VarDump::hideResponse();
 }
 
 function d($val = null, $msg = null, bool $additional_carriage_return = false){
-    if (VarDump::$render){
-        $file = debug_backtrace()[1]['file'];
-        $line = debug_backtrace()[1]['line'];
-    
-        VarDump::dd("{$file}:{$line}", "LOCATION", true);
-    }
-
     return VarDump::dd($val, $msg, $additional_carriage_return);	
 }	
 
