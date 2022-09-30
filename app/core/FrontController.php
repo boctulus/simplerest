@@ -32,7 +32,7 @@ class FrontController
                 $path = substr($path, strlen($config['base_url']));
             }   
     
-            if ($path === false || ! Url::url_check($_SERVER['REQUEST_URI']) ){
+            if ($path === false || ! Url::urlCheck($_SERVER['REQUEST_URI']) ){
                 $res->error(Msg::MALFORMED_URL, 400); 
             }
     

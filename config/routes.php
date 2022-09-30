@@ -11,6 +11,26 @@ Route::get('hello', function(){
 
 Route::get('api/v1/cool',  'DumbAuthController@super_cool_action');
 
+Route::get('admin/una-pagina', function(){
+	$content = "Pagina de acceso restringido";
+	render($content);
+});
+
+Route::get('admin', function(){
+	$content = "Panel de Admin";
+	render($content);
+});
+
+
+/*
+	Si hubiera rutas de consola podria crear comandos y ejecutarlos asi:
+
+	php com get_path_public
+
+	<-- que devolveria PUBLIC_PATH
+
+	Actualmente necesitaria crear un controlador y el comando ser'ia mas largo innecesariamente
+*/
 
 /*
 	See routes.php.example
