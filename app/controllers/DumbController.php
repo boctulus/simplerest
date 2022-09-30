@@ -59,9 +59,11 @@ use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\libs\LaravelApiGenerator;
+use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\controllers\api\TblPersona;
 
+use PhpParser\Node\Scalar\MagicConst\File;
+use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
@@ -71,7 +73,6 @@ use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\core\api\v1\ApiController;
 
 class DumbController extends Controller
 {
@@ -89,6 +90,9 @@ class DumbController extends Controller
 
     function test_dd()
     {
+        //show_debug_trace();
+        //hide_debug_response();
+
         dd([4, 5, 7], "My Array", true);
         dd('hola!', null, true);
         dd(677.55, 'x');
@@ -10696,6 +10700,40 @@ class DumbController extends Controller
         ]);
 
         render("Hola Sr. Putin");
+    }
+
+    function test_cached_form(){
+        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+
+        $content = Files::getTemp('my_component.html');
+
+        if (empty($content)){
+            $content = tag('accordion')->items([
+                [
+                    'id' => "flush-collapseOne",
+                    'title' => "Accordion Item #1",
+                    'body' => 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first items accordion body.'
+                ],
+                [
+                    'id' => "flush-collapseTwo",
+                    'title' => "Accordion Item #2",
+                    'body' => 'Placeholder 2'
+                ],
+                [
+                    'id' => "flush-collapseThree",
+                    'title' => "Accordion Item #3",
+                    'body' =>  'Placeholder 3'
+                ]
+            ])
+            ->id('accordionExample')
+            ->always_open(true)
+            ->attributes(['class' => 'accordion-flush'])
+            ;
+
+            Files::saveTemp('my_component.html', $content);
+        }
+
+        render($content);
     }
 
     

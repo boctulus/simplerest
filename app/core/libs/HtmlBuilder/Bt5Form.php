@@ -2,8 +2,9 @@
 
 namespace simplerest\core\libs\HtmlBuilder;
 
-use simplerest\core\libs\HtmlBuilder\Form;
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\HtmlBuilder\Form;
 
 
 class Bt5Form extends Form
@@ -575,7 +576,7 @@ class Bt5Form extends Form
 
         if (count($content) >0){
             $inc = false;
-            if (arrayKeyFirst($content) === 0){
+            if (Arrays::arrayKeyFirst($content) === 0){
                 $inc = true;
             }
 

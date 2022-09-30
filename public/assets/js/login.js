@@ -69,11 +69,14 @@ function keep_alive(){
 }
 
 /*
-    Si no logra renovar el access_token,... redirecciona al login
+    Si no logra renovar el access_token,... redirecciona al login en caso de ...
+    ... estar en seccion restringida
 */
 function checkpoint() {
     if (!keep_alive()){
-        if (window.location != base_url && !window.location.toString().startsWith(login_page)){
+        const current_url = window.location.toString();
+
+        if (current_url == base_url + '/admin' || current_url == base_url + '/admin/' || current_url.startsWith(base_url + '/admin/')){
             window.location = login_page;
         }
     }

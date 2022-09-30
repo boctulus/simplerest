@@ -215,13 +215,13 @@ class Url
     }
 
     /**
-     * url_check - complement for parse_url
+     * urlCheck - complement for parse_url
      *
      * @param  string $url
      *
      * @return bool
      */
-    static function url_check(string $url){
+    static function urlCheck(string $url){
         $sym = null;
 
         $len = strlen($url);
@@ -443,6 +443,39 @@ class Url
         }
 
         return false;
+    }
+
+    static function cache(string $url, bool $force_reload = false, bool $fail_if_zero_length = false){
+        $str  = str_replace(['%'], ['p'], urlencode(Url::normalize($url))) . '.html';
+        $str  = str_replace('/', '', $str);
+
+		// quizas mejor usar tmpfile()
+		// https://www.php.net/manual/en/function.tmpfile.php
+		//
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $str;
+
+        if (file_exists($path) && $force_reload === false){
+            return file_get_contents($path);
+        }
+
+		$client = new ApiClient();
+        $res    = $client->consumeApi($url, 'GET', null, null, null, false);
+		
+		if ($res['http_code'] != 200){
+			return;
+		}
+
+		$str = $res['data'];
+
+		if ($str === null || strlen($str) == 0){
+			if ($fail_if_zero_length){
+				throw new \Exception("Zero length file");
+			}
+		}
+        
+        file_put_contents($path, $str);
+
+        return $str;
     }
 
    
