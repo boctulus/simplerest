@@ -380,7 +380,6 @@ Finalmente para cambiar efectivamente la contraseña se hace uso del siguiente e
 		"password": "xxxxx"
 	}
 
-
 # Renovación de tokens
 
 	POST /api/v1/auth/token
@@ -401,6 +400,20 @@ Se devolverá un nuevo acccess token en un JSON como este:
     "error": "",
     "error_detail": ""
 }
+
+
+# FrontEnd de login
+
+Si se carga el archivo login.js que viene con el framework, en caso de no estar "logueado",
+si se intenta acceder a una dirección del tipo /admin/* se redireciona al login
+
+Es fácil comprobarlo creando una ruta como esta:
+
+	Route::get('admin/una-pagina', function(){
+		$content = "Pagina de acceso restringido";
+		render($content);
+	});
+
 
 # Impersonate
 
@@ -7173,6 +7186,10 @@ Helpers que pueden incluirse en un template:
 	asset()		devuelve la url de un recurso 
 	head()		es un simple wrapper sobre render_metas(), render_css() y render_js(VIEW::HEAD)
 	auth()		devuelve los nombres de los campos para username, password y e-mail a ser usados en el endpoint /auth
+	js()		hace el enqueue de un javascript "inline"
+	css()		hace el enqueue de un css "inline"
+	js_file() 	hace el enqueue de un archivo .js
+	css_file()	hace el enqueue de un archivo .css
 	section()	incluye una vista
 	footer()	es un alias de render_js(VIEW::FOOTER)
 
@@ -9581,6 +9598,35 @@ Ej:
 o
 
 	tag('hr');
+
+
+La salida de los builders de HTML se puede perfectamente exportar porque se puede recuperar como string.
+
+Ej:
+
+	$content = tag('accordion')
+	->items([
+		[
+			'id' => "flush-collapseOne",
+			'title' => "Accordion Item #1",
+			'body' => 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first items accordion body.'
+		],
+		[
+			'id' => "flush-collapseTwo",
+			'title' => "Accordion Item #2",
+			'body' => 'Placeholder 2'
+		],
+		[
+			'id' => "flush-collapseThree",
+			'title' => "Accordion Item #3",
+			'body' =>  'Placeholder 3'
+		]
+	])
+	->id('accordionExample')
+	->always_open(true)
+	->attributes(['class' => 'accordion-flush'])
+	;
+
 
 
 # Macros

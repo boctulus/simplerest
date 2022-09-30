@@ -8,15 +8,15 @@ use simplerest\core\libs\Time;
 class Hello2Controller extends Controller
 {
     function index(){
-        $this->view('hello/hello2.php', null, null, 0);
+        view('hello/hello2.php');
     }
 
     function lte(){
-        $this->view('hello/lte.php');
+        view('hello/lte.php');
     }
     
     function test(){
-        $this->view('hello/test.php');
+        view('hello/test.php');
     }
 
    

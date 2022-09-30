@@ -7,7 +7,8 @@ use simplerest\core\libs\Url;
 // Dumper
 class VarDump
 {
-	public static $render = false;
+	public static $render       = true;
+	public static $render_trace = false;
 
 	protected static function pre(callable $fn, ...$args){
 		echo '<pre>';
@@ -109,6 +110,17 @@ class VarDump
 	// acá podría retener el buffer y hacer algun ajuste
 	static public function dd($val = null, $msg = null, bool $additional_carriage_return = false)
 	{
+		if (!static::$render){
+			return;
+		}
+
+		if (static::$render_trace){
+			$file = debug_backtrace()[1]['file'];
+			$line = debug_backtrace()[1]['line'];
+		
+			static::export("{$file}:{$line}", "LOCATION", true);
+		}
+
 		self::export($val, $msg, $additional_carriage_return);
 	}
 
@@ -116,7 +128,15 @@ class VarDump
         self::$render = false;
     }
 
-    static function showResponse(){
-        self::$render = true;
+    static function showResponse(bool $status = true){
+        self::$render = $status;
+    }
+
+	static function hideTrace(){
+        self::$render_trace = false;
+    }
+
+    static function showTrace(bool $status = true){
+        self::$render_trace = $status;
     }
 }
