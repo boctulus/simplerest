@@ -22,16 +22,7 @@ Esto podria permitir dinamicamente definir nuevos atributos y usarlos.
   . Categorias hermanas (enlacesº)
   . Botonera para buscar facil en moviles
 
-- Permitir modificar los "permisos" asignados a cada rol de forma dinamica. Esto funcionaria generando un Array similar a la salida de 
-
-  acl()->getRolePermissions()
-
-y serializando nuevamente a archivo. 
-
-Obviamente para generar el array se debe ocupar algun metodo de la clase Acl.
-
-Tambien seria necesario invalidar todos los tokens de usuarios que poseen algun rol al que se le ha afectado el permiso por el tiempo suficiente,
-hasta que cada de uno de esos tokens expiren => access tokens de maximo 30 minutos.
+- Invalidacion de tokens.
 
 La tabla `access_token_backlist` solo tendria sentido si cada vez que un usuario obtiene su "access_token", éste se almacenara en ...
 ... otra tabla `access_tokens`. Por tanto se necesitaran:
@@ -49,6 +40,39 @@ La tabla `access_token_backlist` solo tendria sentido si cada vez que un usuario
     created_at -datetime-
 
 Ambas tablas tendran los mismos campos pero no todo access token en la primera tabla estará en la segunda.
+
+  - Para invalidar (revocar) todos los tokens => cambiar la secret key correspondiente
+  - Para invalidar el token de un usuario => denegar el acceso por el tiempo de duración de ese token. Ej: 15 min <-- obviamente cachear ña blacklist.
+
+Crear endpoint:
+
+  /api/auth/revoke <-- en el body pasar el access_token a revocar o el user_id correspondiente. Con el user_id, revocar todos los access_tokens de se usuario
+
+Debería poder ser posible también revocar refresh_tokens. A su vez los refres_token(s) no deberian durar más de 30 / 90 /  200 días aprox para evitar el disco se llene de refresh_tokens ya que para poder invalidarlos...... toca almacenarlos !!!
+
+https://cloud.google.com/apigee/docs/api-platform/antipatterns/oauth-long-expiration#:~:text=The%20refresh%20token%20is%20set,864%2C000%20tokens%20in%20a%20day.
+
+- Permitir modificar los "permisos" asignados a cada rol de forma dinamica. Esto funcionaria generando un Array similar a la salida de 
+
+  acl()->getRolePermissions()
+
+y serializando nuevamente a archivo. 
+
+Obviamente para generar el array se debe ocupar algun metodo de la clase Acl.
+
+Tambien seria necesario invalidar todos los tokens de usuarios que poseen algun rol al que se le ha afectado el permiso por el tiempo suficiente,
+hasta que cada de uno de esos tokens expiren => access tokens de maximo 30 minutos.
+
+Ya no se cacheará más automaticamente desde el archivo config/acl.php sino que la serializacion desde ese archivo solo se hará desde la línea
+de comandos.
+
+  php com cache acl
+
+Esto será así en parte porque ahora la fuente para generar el serializado podrá ser dinámica:
+
+  archivo serializado <--- Acl <--- endpoint (dinámico)
+O
+  archivo serializado <--- Acl <--- acl.php  (estático)
 
 - Armar docker-compose para SimpleRest + phpmyadmin e implementar algo como "Laravel Sail" => definir puerto en el APP_PORT en el .env para saber que los comandos make a que contenedor (a que puerto) deben ir.
 
@@ -94,7 +118,7 @@ De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes
 
 - Transients (DB, archivos son locking, REDIS, Memcached)
 
-- CSV a migraciones. Simplificar'a la creacion de tablas.
+- CSV a migraciones => Simplificar'a la creacion de tablas.
 
 - Terminal Router HTTP. Va a permitir anular el FrontController y simplificar.
 
@@ -362,17 +386,26 @@ Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) 
 
 ------------x--------------
 
-- Hay un bug que hace que si se agrega una / al final de un controlador, se re-direccione a /public
+- La forma "estandar" de renovar el access_token es...
 
-Ej:
+  POST /oauth/token HTTP/1.1
+  Host: authorization-server.com
+  
+  grant_type=refresh_token
+  &refresh_token=xxxxxxxxxxx
+  &client_id=xxxxxxxxxx
+  &client_secret=xxxxxxxxxx
 
-  http://simplerest.lan/hello2/
+  The response will be a new access token, and optionally a new refresh token, just like you received when exchanging the authorization code for an access token.
 
-->
+  {
+    "access_token": "BWjcyMzY3ZDhiNmJkNTY",
+    "refresh_token": "Srq2NjM5NzA2OWJjuE7c",
+    "token_type": "Bearer",
+    "expires": 3600
+  }
 
-  http://simplerest.lan/public/hello2
-
-Da igual si es un controlador o es una ruta del router. Tiene que ver con el .htaccess
+https://www.oauth.com/oauth2-servers/making-authenticated-requests/refreshing-an-access-token/
 
 - Se esta versionando *MAL*. Lo que deben versionarse son los modelos y apis pero *no* los componentes del core que arman las APIs. Si el core varia, deben revisarse los schemas y/o modelos para que se adecuen a la nueva version del framework.
 
@@ -3053,17 +3086,6 @@ https://www.baeldung.com/java-dto-pattern
 
   exceptions [ -- core ]
   middlewares 
-
-
-- Cambiar el Exception Handler que uso en PHP ya que:
-
-  - Muestra todo el contenido del config.php incluidas credenciales => databases.php y tokens.php
-
-  - No incluye un "BackTrace"
-
-  - Termina siendo demasiado largo para debuguear en la terminal.
-
-
 
 [ HATEOAS ]
 
@@ -5819,14 +5841,6 @@ https://github.com/mulesoft/api-designer
 - Ver documentador de PostmanGenerator
 
 https://www.PostmanGenerator.com/api-documentation-tool/?
-
-
-- Implementar mecanismo para invalidar access tokens:
-
-  - Para invalidar (revocar) todos los tokens => cambiar la secret key correspondiente
-  - Para invalidar el token de un usuario => para ese user_id, denegar el acceso por el tiempo de duración de ese token. Ej: 15 min <-- obviamente cachearlo.
-
-  /api/auth/revoke <-- en el body pasar el access_token a revocar o el user_id correspondiente 
 
 
 - Implementar "token exechange": en vez de identificar a un usuario que proviene de la API de Facebook o Google por su email (que podría no ser compartido)... usar el refres_token obtenido de esas APIs como user_id :) 
