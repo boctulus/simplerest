@@ -12,7 +12,9 @@
 
         <div class="childs_home">
             <h3 id="choose_kids_h3" class="main-slider_smalltitle text-shadow">Choose kid's character</h3>
-            <div class="choose-kids" who="bmr" gender="m"><img src="public/assets/andrea/img/passport-photo/bmr.png"></div>
+            <div class="choose-kids" who="bmr" gender="m"><img src="public/assets/andrea/img/passport-photo/bmr.png">
+                <div class="check-childs"></div>
+            </div>
             <div class="choose-kids" who="bmn" gender="m"><img src="public/assets/andrea/img/passport-photo/bmn.png"></div>
             <div class="choose-kids" who="bmm" gender="m"><img src="public/assets/andrea/img/passport-photo/bmm.png"></div>
             <div class="choose-kids" who="bmb" gender="m"><img src="public/assets/andrea/img/passport-photo/bmb.png"></div>

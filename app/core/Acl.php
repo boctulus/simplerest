@@ -410,7 +410,7 @@ abstract class Acl implements IAcl
     // Also needed but not in interface
 
     /*
-        Every possible Special Permission por the ACL 
+        Every possible Special Permission for the ACL 
     */
     public function getEveryPossibleSpPermissions(){
         return $this->sp_permissions;
