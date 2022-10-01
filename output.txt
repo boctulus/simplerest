@@ -1,2 +1,0 @@
-nohup: ignoring input
-ls: cannot access 'FFFC': No such file or directory

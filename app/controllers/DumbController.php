@@ -4154,10 +4154,10 @@ class DumbController extends Controller
 
     function get_role_permissions()
     {
-        $acl = Factory::acl();
-
-        dd($acl->hasResourcePermission('show_all', 'products', ['guest'], 'products'));
-        //var_export($acl->getRolePermissions());
+        $acl = acl();
+        
+        dd($acl->hasResourcePermission('show_all', 'products', ['guest'], 'products'), 'Has a "guest" a show_all permission for "products"?');
+        dd($acl->getRolePermissions(), 'Role perm.');
     }
 
     function boom()
