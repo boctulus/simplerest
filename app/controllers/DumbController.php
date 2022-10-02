@@ -73,6 +73,7 @@ use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\models\az\AutomovilesModel;
 
 class DumbController extends Controller
 {
@@ -3059,6 +3060,42 @@ class DumbController extends Controller
         dd(DB::getLog());
     }
 
+    function j_test(){
+        DB::getConnection('az');
+
+        $autos = DB::table('automoviles')
+        ->join('medios_transporte');
+        
+        dd(
+            $autos->get()
+        );
+    }
+
+    function j_test_2(){
+        DB::getConnection('az');
+
+        $autos = (new AutomovilesModel())
+        ->join('medios_transporte', 'automoviles.id', '=', 'medios_transporte.id');
+        
+        dd(
+            $autos->get()
+        );
+    }
+
+    /*
+        Para auto-joins si necesito los schemas
+    */
+    function j_test_3(){
+        DB::getConnection('az');
+
+        $autos = (new AutomovilesModel())
+        ->join('medios_transporte');
+        
+        dd(
+            $autos->get()
+        );
+    }
+
     /*
 
         SELECT ot.*, ld.distance FROM other_table AS ot 
@@ -3087,8 +3124,6 @@ class DumbController extends Controller
 
         https://stackoverflow.com/questions/11702294/mysql-inner-join-with-or-condition#14824595
     */
-
-
     function get_nulls()
     {
         // Get products where workspace IS NULL

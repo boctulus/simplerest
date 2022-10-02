@@ -12,6 +12,10 @@ TOP PRIORITY
   . Minimo
   . Maximo
 
+<-- en una tabla "att_defs"
+
+Luego las tablas que lo necesiten podrían tener un campo "atts" donde se almacenarian los atributos.  
+
 Esto podria permitir dinamicamente definir nuevos atributos y usarlos.
 
 - Crear filtro ¨avanzado¨ a nivel de frontend en algun componente con opciones similares a las de ¨flexiContent¨ de Joomla
