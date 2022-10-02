@@ -5083,6 +5083,8 @@ Notas:
 
 - Para la creación de modelos se añadió --no-check y --no-verify que evitan corroborar que exista una tabla en la base de datos que se corresponda con el nombre del modelo. Esto podría ser útil para cambiar el tipo de DataSource
 
+- Se agregó --no-schema o -x 
+
 
 # Ayuda 
 

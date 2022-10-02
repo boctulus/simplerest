@@ -19,6 +19,7 @@ class MakeControllerBase extends Controller
     const TEMPLATES = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR;
 
     const MODEL_TEMPLATE  = self::TEMPLATES . 'Model.php';
+    const MODEL_NO_SCHEMA_TEMPLATE  = self::TEMPLATES . 'Model-no-schema.php';
     const SCHEMA_TEMPLATE = self::TEMPLATES . 'Schema.php';
     const MIGRATION_TEMPLATE  = self::TEMPLATES . 'Migration.php';
     const CONTROLLER_TEMPLATE = self::TEMPLATES . 'Controller.php';
@@ -150,7 +151,7 @@ class MakeControllerBase extends Controller
         make interface [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make schema my_table [ --from:{conn_id} ] [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make schema all [ --from:{conn_id} ] [ --unignore | -u ] [ --strict ] [ --except={table1,table2,table3} ]
-        make model my_table  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --strict ] [ --remove ]
+        make model my_table  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --no-schema | -x ] [ --strict ] [ --remove ]
         make view my_view  [--force | -f] [ --unignore | -u ] [ --remove ]
 
         make controller my_controller  [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
@@ -170,6 +171,8 @@ class MakeControllerBase extends Controller
         make schema genero --table=generos --from:mpo
         make schema all --from:mpo
         make schema all --from:mpp --except=migrations,password_resets,users
+
+        make model medios_transporte --no-schema --from:az
 
         make widget [ --include-js | --js ]
              
@@ -936,9 +939,9 @@ class MakeControllerBase extends Controller
 
     function schema($name, ...$opt) 
     {
-        $unignore = false;
-        $remove   = null;
-        $table    = null;
+        $unignore   = false;
+        $remove     = null;
+        $table      = null;
         $excluded = [];
 
         foreach ($opt as $o){            
@@ -1362,8 +1365,9 @@ class MakeControllerBase extends Controller
     }
 
     function model($name, ...$opt) { 
-        $unignore = false;
-        $no_check = false;
+        $unignore   = false;
+        $no_check   = false;
+        $schemaless = false;
 
         foreach ($opt as $o){            
             if (preg_match('/^--from[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
@@ -1377,6 +1381,10 @@ class MakeControllerBase extends Controller
 
             if (preg_match('/^--no-(check|verify)$/', $o)){
                 $no_check = true;
+            }
+
+            if (preg_match('/^(--no-schema|-x)$/', $o)){
+                $schemaless = true;
             }
         }
 
@@ -1396,7 +1404,10 @@ class MakeControllerBase extends Controller
 
         $filename = $this->camel_case . 'Model'.'.php';
 
-        $file = file_get_contents(self::MODEL_TEMPLATE);
+        $template = $schemaless ? self::MODEL_NO_SCHEMA_TEMPLATE : self::MODEL_TEMPLATE;
+        $file     = file_get_contents($template);
+
+
         $file = str_replace('__NAME__', $this->camel_case.'Model', $file);       
 
         $imports = [];
@@ -1442,16 +1453,21 @@ class MakeControllerBase extends Controller
             $folder = "$current\\";
         }
 
-        if ($no_check === false){
-            $imports[] = "use simplerest\schemas\\$folder{$this->camel_case}Schema;";
+        if (!$no_check || $schemaless){
+            if (!$schemaless){
+                $imports[] = "use simplerest\schemas\\$folder{$this->camel_case}Schema;";
+            }
         
             Strings::replace('__SCHEMA_CLASS__', "{$this->camel_case}Schema", $file); 
 
             $uuid = $this->getUuid();
             if ($uuid){
-
                 $imports[] = 'use simplerest\core\traits\Uuids;';
                 $traits[] = 'use Uuids;';      
+            }
+
+            if ($schemaless){
+                Strings::replace('__TABLE_NAME__', $this->table_name, $file);
             }
         } else {
             Strings::replace('parent::__construct($connect, __SCHEMA_CLASS__::class);', 'parent::__construct();', $file);
