@@ -3,6 +3,7 @@
 return [
         'relation_type'=> array (
   'api_keys~users' => 'n:1',
+  'automoviles~medios_transporte' => '1:n',
   'boletas~users' => 'n:1',
   'book_reviews~books' => 'n:1',
   'books~users' => 'n:1',
@@ -14,6 +15,7 @@ return [
   'folder_other_permissions~users' => 'n:1',
   'folder_permissions~users' => 'n:1',
   'folders~users' => 'n:1',
+  'medios_transporte~automoviles' => 'n:1',
   'product_categories~products_product_categories' => '1:n',
   'product_comments~products' => '1:1',
   'products~users' => 'n:1',
@@ -47,6 +49,7 @@ return [
 ),
         'multiplicity' => array (
   'api_keys~users' => false,
+  'automoviles~medios_transporte' => true,
   'boletas~users' => false,
   'book_reviews~books' => false,
   'books~users' => false,
@@ -58,6 +61,7 @@ return [
   'folder_other_permissions~users' => false,
   'folder_permissions~users' => false,
   'folders~users' => false,
+  'medios_transporte~automoviles' => false,
   'product_categories~products_product_categories' => true,
   'product_comments~products' => false,
   'products~users' => false,

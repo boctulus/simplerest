@@ -881,6 +881,96 @@ c) Usando la clase DB para obtener la instancia
 	- Obtiene una conexión a la base de datos aún antes de hacer cualquier tipo de validación.
 	- Es un poco más lenta 
 
+
+Veamos el caso de (a) vs (b)
+
+	<?php
+
+	namespace simplerest\models\az;
+
+	use simplerest\models\MyModel;
+	use simplerest\schemas\az\AutomovilesSchema;
+
+	class AutomovilesModel extends MyModel
+	{
+		protected $hidden   = [];
+
+		function __construct(bool $connect = false){
+			parent::__construct($connect, AutomovilesSchema::class);
+		}	
+	}
+
+Y en el controller hariamos,...
+
+Ej:
+
+	DB::getConnection('az');
+
+	$autos = DB::table('automoviles');
+	
+	dd(
+		$autos->get()
+	);
+
+Ahora si quisieramos hacer lo mismo sin schema, debemos comentar la linea que incluye el schema y especificar la tabla:
+
+	<?php
+
+	namespace simplerest\models\az;
+
+	use simplerest\models\MyModel;
+	// use simplerest\schemas\az\AutomovilesSchema;
+
+	class AutomovilesModel extends MyModel
+	{
+		protected $hidden   = [];
+		protected $not_fillable = [];
+		protected $table_name = 'automoviles';
+
+		function __construct(bool $connect = false){
+			//parent::__construct($connect, AutomovilesSchema::class);
+		}	
+	}
+
+Ahora en el controller seria:
+
+	Ej:
+
+	DB::getConnection('az');
+
+	$autos =  $autos = new AutomovilesModel();
+	
+	dd(
+		$autos->get()
+	);
+
+Y tampoco necesito schema en otra tabla con la que quiera unir mediante JOIN siempre que no sea un auto-join.
+
+Ej:
+
+	DB::getConnection('az');
+
+	$autos = (new AutomovilesModel())
+	->join('medios_transporte', 'automoviles.id', '=', 'medios_transporte.id');
+	
+	dd(
+		$autos->get()
+	);
+
+Para el caso de auto-joins necesito de los schemas y aun sino aunque no esten declarados en los modelos seran requeridos:
+
+	DB::getConnection('az');
+
+	$autos = (new AutomovilesModel())
+	->join('medios_transporte');
+	
+	dd(
+		$autos->get()
+	);
+
+
+# Utilizar la clase DB desde el config.php
+
 Es de destacar que podría darse el caso de que sea Ud. necesite acceder a la base de datos desde el archivo config.php pero si se hiciera DB::table('xxx') se generaría una referencia circular porque se incluiría nuevamente el archivo config.php
 
 La solución es crear una conexión directamente sin uso de las clases Model o DB y luego especificar que el modelo no deba ni crear conexión ni intentar cargar el config.php para nada.
