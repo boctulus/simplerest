@@ -1237,7 +1237,6 @@ La cache de construcción de queries tendría sentido solo *quizás* para querie
 
 ---
 
-
 - Crear mecanismo "sandbox" para funciones y métodos que no deban incluirse en los commits:
 
   . Usar una anotación sobre la función como @sandboxed
@@ -5832,17 +5831,6 @@ https://github.com/raml-org/raml-spec
 https://github.com/mulesoft/api-designer
 
 
-- Generar documentación de una tabla foo con Swagger API (OAS)   !!!!!!!
-
-  https://www.youtube.com/watch?v=Kziad2G-dkE
-  https://docs.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/data-driven-crud-microservice
-
-
-- Ver documentador de PostmanGenerator
-
-https://www.PostmanGenerator.com/api-documentation-tool/?
-
-
 - Implementar "token exechange": en vez de identificar a un usuario que proviene de la API de Facebook o Google por su email (que podría no ser compartido)... usar el refres_token obtenido de esas APIs como user_id :) 
 
 
@@ -5975,8 +5963,6 @@ https://medium.com/@vivekdhumal/how-to-test-mail-notifications-in-laravel-345528
 [ REFACTORING ]
 
 - Response: simplificar la forma de generar códigos de error http (ver notas). Hay estandar? PSR?
-
-- Response: cambiar los campos para entregar m;as información incluyendo un código de error único que identifique la clase, método y la línea donde se produjo el error (ver notas)
 
 - Midlewares. Hay estadar? PSR?
 
@@ -6189,8 +6175,7 @@ Algo interesante es que cuando se piden más registros por página del límite u
 
     - Fixed....
     - Updated ....
-
-       
+   
 
 Más 
 https://semver.org/
