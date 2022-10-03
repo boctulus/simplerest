@@ -7628,6 +7628,12 @@ Ahora veamos que hace cada helper:
 		Obtiene una vista. Puede que la recupere de cache. 
 
 
+Ahora,..... cuál la diferencia entre view() y get_view() ?
+
+	view()		renderiza una vista dentro de un template
+	get_view()	retorna una vista. No queda incluida dentro del template.
+	
+
 # Hookear la clase View
 
 La clase View es extendida convenientemente como MyView a fin de poder agregar funcionalidad sin tener que tocar la clase View directamente que es parte del Core y sería sobreescrita al actualizar SimpleRest.
