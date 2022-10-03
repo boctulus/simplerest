@@ -2,8 +2,9 @@
 
 namespace simplerest\core;
 
-use simplerest\core\traits\ExceptionHandler;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Strings;
+use simplerest\core\traits\ExceptionHandler;
 
 class View
 {
@@ -15,7 +16,79 @@ class View
     const HEAD   = true;
     const FOOTER = false;
 
-    function __construct(string $view_path, array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0)
+    static function get_view_src(string $view_path, int $expiration_time = 0){
+        if (!Strings::endsWith('.php', $view_path)){
+            $view_path .= '.php';
+        }
+
+        $filename = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
+
+        switch ($expiration_time){
+            case -1:
+                $expired = false;
+            break;
+            case 0:
+                $expired = true;
+            break;    
+            default:
+                $ct      = @filemtime($filename);
+                $expired = time() > $ct + $expiration_time;                
+        }
+
+        $cached  = !$expired;
+
+        if ($expiration_time != 0){
+            $file_exists = file_exists($filename);
+        } else {
+            $expiration_time = null;
+        }
+
+        if ($cached && $file_exists){
+            $src = $filename;
+        } else {
+            $src = VIEWS_PATH . $view_path;
+        }
+
+        return $src;
+    }
+
+    static function get_view(string $view_path, int $expiration_time = 0){
+        if (!Strings::endsWith('.php', $view_path)){
+            $view_path .= '.php';
+        }
+
+        $filename = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
+
+        switch ($expiration_time){
+            case -1:
+                $expired = false;
+            break;
+            case 0:
+                $expired = true;
+            break;    
+            default:
+                $ct      = @filemtime($filename);
+                $expired = time() > $ct + $expiration_time;                
+        }
+
+        $cached  = !$expired;
+
+        if ($expiration_time != 0){
+            $file_exists = file_exists($filename);
+        } else {
+            $expiration_time = null;
+        }
+
+        if ($cached && $file_exists){
+            $content = Files::reader($filename);
+        } else {
+            $content = Files::reader(VIEWS_PATH . $view_path);
+        }
+
+        return $content;
+    }
+
+    function __construct(string $view_path, array $vars  = null, ?string $layout = null, int $expiration_time = 0)
     {
 		$this->config = config();
 
@@ -56,8 +129,8 @@ class View
         if ($cached && $file_exists){
             $content = Files::reader($filename);
         } else {            
-            if (!empty($vars_to_be_passed)){
-                extract($vars_to_be_passed);
+            if (!empty($vars)){
+                extract($vars);
             }      
 
             ob_start();

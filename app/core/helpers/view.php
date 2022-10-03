@@ -17,6 +17,33 @@ function a_css($css_file){
     return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">\r\n";
 }
 
+function include_no_render(string $path, ?Array $vars = null){
+    global $ctrl;
+
+    if (!empty($vars)){
+        extract($vars);
+    }      
+    
+    ob_start();
+    include $path;
+    $content = ob_get_contents();
+    ob_end_clean();
+
+    return $content;
+}
+
+function get_view_src(string $view_path, int $expiration_time = 0){
+    return View::get_view_src($view_path, $expiration_time);
+}
+
+function get_view(string $view_path, ?Array $vars = null, int $expiration_time = 0){
+    if (empty($vars)){
+        return View::get_view($view_path, $expiration_time);
+    }
+
+    return include_no_render(get_view_src($view_path), $vars);
+}
+
 function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0){
     if (!Strings::endsWith('.php', $view_path)){
         $view_path .= '.php';
@@ -63,11 +90,11 @@ function asset($resource){
     return $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/assets/'.$resource;
 }
 
-function section($view, Array $variables = []){
+function section($view, Array $vars = []){
     global $ctrl;
 
-    if (!empty($variables)){
-        extract($variables);
+    if (!empty($vars)){
+        extract($vars);
     }
 
     include VIEWS_PATH . $view;
