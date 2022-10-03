@@ -7,9 +7,6 @@ use simplerest\models\MyModel;
 
 class MediosTransporteModel extends MyModel
 {
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 	protected $table_name = 'medios_transporte';
