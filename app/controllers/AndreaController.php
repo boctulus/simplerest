@@ -40,12 +40,7 @@ class AndreaController extends MyController
 
     function builder()
     {   
-        //view('andrea/builder');
-
-        $placeholder = get_view('andrea/builder', null, 60);
-        $content     = get_view('andrea/container', ['placeholder' => $placeholder]);
-
-        render($content);
+        view('andrea/builder');
     }
 
     function more_content()

@@ -41,6 +41,8 @@ function get_view(string $view_path, ?Array $vars = null, int $expiration_time =
         return View::get_view($view_path, $expiration_time);
     }
 
+    // Si hay algo que pasar a la vista, no tendria sentido obtener la version cacheada ? y cachearla?
+
     return include_no_render(get_view_src($view_path), $vars);
 }
 
@@ -49,7 +51,7 @@ function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $lay
         $view_path .= '.php';
     }
 
-    return (new MyView($view_path, $vars_to_be_passed, $layout, $expiration_time)); 
+    (new MyView($view_path, $vars_to_be_passed, $layout, $expiration_time)); 
 }
 
 /*
