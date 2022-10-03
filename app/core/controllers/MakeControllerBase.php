@@ -1414,8 +1414,9 @@ class MakeControllerBase extends Controller
         $traits  = [];
         $proterties = [];
 
-
+        //
         // destination
+        //
 
         DB::getConnection();
         $current = DB::getCurrentConnectionId(true);
@@ -1476,6 +1477,9 @@ class MakeControllerBase extends Controller
         Strings::replace('### IMPORTS', implode("\r\n", $imports), $file); 
         Strings::replace('### TRAITS',  implode("\r\n\t", $traits), $file); 
         Strings::replace('### PROPERTIES', implode("\r\n\t", $proterties), $file); 
+
+        $file = Strings::trimEmptyLinesAfter("{", $file, 0, null, 1);
+        $file = Strings::trimEmptyLinesBefore("class ", $file, 0, null, 2);
 
         $this->write($dest_path, $file, $protected);
     }
