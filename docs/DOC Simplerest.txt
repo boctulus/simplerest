@@ -7317,6 +7317,17 @@ Ya dentro de una vista o sub-vista:
 
 Nota: El helper section() sirve para incluir vistas. En campo get_view() obtiene el contenido de una vista lo cual permite manipularla, parametrizarla e inyectarla dentro de otra vista.
 
+El uso de get_view() puede reemplazar al de sector() aunque lo contrario dependerá del caso.
+
+Ej:
+
+	sector('my_section.php', [ 'my_var' => $my_var ]);
+
+puede reemplazarse por,......
+
+	echo get_view('my_section.php', [ 'my_var' => $my_var ]);
+
+
 Otros helpers,...
 
 	include_no_render()		incluye un archivo .php pero la salida es retenida y su contenido es devuelto.
