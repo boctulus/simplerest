@@ -201,7 +201,7 @@ class Strings
 		return static::last(static::beforeLast($string, $substr), $substr);
 	}
 
-	static function trim($dato = null, bool $even_null = true){
+	static function trim($dato = null, bool $even_null = true, bool $auto_cast_numbers = true){
 		if ($dato === null){
 			if (!$even_null){
 				throw new \InvalidArgumentException("Dato can not be null");
@@ -210,12 +210,40 @@ class Strings
 			return '';
 		}
 
-		if (is_int($dato) || is_float($dato) || is_double($dato)){
-			$dato = (string) $dato;
+		if ($auto_cast_numbers){
+			if (is_int($dato) || is_float($dato) || is_double($dato)){
+				$dato = (string) $dato;
+			}
 		}
 
 		return trim($dato);
 	}
+
+	/*
+		Auto-detecta retorno de carro en un string
+	*/
+	static function autoDetectCR(string $str){
+		$qty_rn = substr_count($str, "\r\n");
+
+		if ($qty_rn != 0){
+			return "\r\n";
+		}
+
+		$qty_r  = substr_count($str, "\r");
+
+		if ($qty_r != 0){
+			return "\r";
+		}
+
+		$qty_n  = substr_count($str, "\n");
+		
+		if ($qty_n != 0){
+			return "\n";
+		}
+
+		return null;
+	}
+	
 
 	/*
 		Remueve del forma eficiente un substring del inicio de una cadena
@@ -260,6 +288,109 @@ class Strings
 	static function removeEnding(string $substr, string $string){
 		return static::rTrim($substr, $string);
 	}
+
+	/*
+		Ubica la primera ocurrencia de $substr en $string 
+		y se come retornos de carro, espacios,... 
+		... hasta que se encuentra con algo distinto a derecha
+	*/
+	static function trimAfter(string $substr, string $string, int $offset = 0, ?string $chars = " \t\r\n\0\x0B", int $extra_cr = 0){
+		if ($string === ''){
+			return $string;
+		}
+		
+		$pos = strpos($string, $substr, $offset);
+
+		if ($pos === false){
+			return $string;
+		}
+
+		$pos += strlen($substr);
+
+		$l = static::left($string,  $pos);
+		$r = static::right($string, $pos);
+
+		if ($chars === null){
+			$chars = " \t\r\n\0\x0B";
+		}
+
+		return $l . str_repeat("\r\n", $extra_cr) . ltrim($r, $chars);
+	}
+
+	static function trimEmptyLinesAfter(string $substr, string $string, int $offset = 0, ?string $chars = " \t\r\n\0\x0B", int $extra_cr = 0){
+		if ($string === ''){
+			return $string;
+		}
+		
+		$pos = strpos($string, $substr, $offset);
+
+		if ($pos === false){
+			return $string;
+		}
+
+		$pos += strlen($substr);
+
+		$l = static::left($string,  $pos);
+		$r = static::right($string, $pos);
+
+		if ($chars === null){
+			$chars = " \t\r\n\0\x0B";
+		}
+		
+		// toca auto-detectar tipo de retorno de carro 
+		$cr = static::autoDetectCR($string);
+
+		$lines = explode($cr, $r);
+
+		foreach ($lines as $ix => $line){
+			if (empty(trim($line, $chars))){
+				unset($lines[$ix]);
+			} else {
+				break;
+			}
+		}
+
+		return $l . str_repeat($cr, $extra_cr) . implode($cr, $lines);
+	}
+
+	static function trimEmptyLinesBefore(string $substr, string $string, int $offset = 0, ?string $chars = " \t\r\n\0\x0B", int $extra_cr = 0){
+		if ($string === ''){
+			return $string;
+		}
+		
+		$pos = strpos($string, $substr, $offset);
+
+		if ($pos === false){
+			return $string;
+		}
+
+		$l = static::left($string,  $pos);
+		$r = static::right($string, $pos);
+
+		if ($chars === null){
+			$chars = " \t\r\n\0\x0B";
+		}
+		
+		// toca auto-detectar tipo de retorno de carro 
+		$cr = static::autoDetectCR($string);
+
+		$lines = explode($cr, $l);
+
+		$lines = array_reverse($lines);
+
+		foreach ($lines as $ix => $line){
+			if (empty(trim($line, $chars))){
+				unset($lines[$ix]);
+			} else {
+				break;
+			}
+		}
+
+		$lines = array_reverse($lines);
+
+		return  implode($cr, $lines) . str_repeat($cr, $extra_cr) . $r;
+	}
+
 
 	/*
 		Remueve el sustring entre $startingWith y $endingWith
@@ -754,20 +885,32 @@ class Strings
 		@return string el substr() de inicio a fin	
 	*/
 	static function middle(string $str, int $ini, ?int $end = null) : string {
-		if ($end == 0){
-			return substr($str, $ini);
+		if (strlen($str) === 0){
+			return '';
+		}
+
+		if ($end === 0){
+			return '';
 		} else {
 			$len = $end - $ini;
 			return substr($str, $ini, $len);
 		}
 	}
 
-	static function left(string $str, $to_pos){
-		return Strings::middle($str, 0, $to_pos);        
+	static function left(string $str, int $to_pos){
+		if ($to_pos === 0){
+			return '';
+		}
+
+		return substr($str, 0, $to_pos);         
 	}
 
-	static function right(string $str, $from_pos){
-		return Strings::middle($str, $from_pos, 0);        
+	static function right(string $str, int $from_pos){
+		if ($from_pos === 0){
+			return $str;
+		}
+
+		return substr($str, $from_pos);        
 	}
 
 	static function firstChar(string $str) : string {

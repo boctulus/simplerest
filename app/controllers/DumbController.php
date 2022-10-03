@@ -6807,7 +6807,7 @@ class DumbController extends Controller
     }
 
 
-    function test_middle()
+    function test_middle_sql()
     {
         $str = 'SELECT * 
             FROM 
@@ -10770,7 +10770,39 @@ class DumbController extends Controller
 
         render($content);
     }
-
     
+    function test_middle_str(){
+        $str = "";
+
+        dd(
+            Strings::middle($str, 5, 10)
+        );
+    }
+
+    function test_trimafter(){
+        $str = "Class XXX extends Model {\r\n \r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nprotected \$yoquese;\r\nprotected \$otra_cosa;";
+
+        var_dump(
+            Strings::trimAfter("extends Model {", $str)
+        );
+    }
+
+    function test_remove_empty_lines_after(){
+        $str = "Class XXX extends Model {\r\n \r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nprotected \$yoquese;\r\n\r\nprotected \$otra_cosa;";
+
+        var_dump(
+            Strings::trimEmptyLinesAfter("extends Model {", $str, 0, null, 1)
+        );
+    }
+
+    function test_remove_empty_lines_before(){
+        $str = "Class XXX extends Model {\r\n \r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nprotected \$yoquese;\r\n\r\nprotected \$otra_cosa;";
+
+        $str = Strings::trimEmptyLinesBefore("protected", $str, 0, null, 1);
+
+        var_dump(
+            $str
+        );
+    }
 
 }   // end class
