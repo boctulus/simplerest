@@ -10770,6 +10770,21 @@ class DumbController extends Controller
 
         render($content);
     }
+
+    /*
+        Decorado de vistas 
+    */
+    function view_decoration()
+    {  
+        css_file(
+            asset('andrea/css/master.css')
+        );
+
+        $placeholder = get_view('andrea/builder');
+        $content     = get_view('andrea/container', ['placeholder' => $placeholder]);
+
+        render($content);
+    }
     
     function test_middle_str(){
         $str = "";
