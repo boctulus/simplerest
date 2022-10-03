@@ -700,9 +700,29 @@ El Router tiene la enorme ventaja de permitir filtrar los requests por su verbo 
 		return "Deleting cosa con id = $id";
 	});
 
-
 El router se habilitan desde el archivo config/config.php y se configura desde /config/routes.php
 
+
+Actualmente el orden en que se definen las rutas es importante ..... (es algo que debe corregirse).
+
+Esta obligandose a ir de lo especifico a lo general.
+
+Ej:
+
+	Route::get('admin/una-pagina', function(){
+		$content = "Pagina (de acceso restringido)";
+		render($content);
+	});
+
+	Route::get('admin/pagina-dos', function(){
+		$content = "Pagina dos (de acceso restringido)";
+		render($content);
+	});
+
+	Route::get('admin', function(){
+		$content = "Panel de Admin";
+		render($content);
+	});
 
 ### Resource Controller:
 
@@ -739,7 +759,11 @@ Los middlewares constituyen una capa intermedia que permiten interceptar una res
 
 SimpleRest implementa Middlewares para el FrontController de la siguiente manera:
 
-Supongamos que se tiene un Controlador llamado TestController con un método que genera una respuesta y queremos alterarla *sin* tocar el código del método:
+Supongamos que se tiene un Controlador llamado TestController con un método que genera una respuesta y queremos alterarla *sin* tocar el código del método.
+
+Ej:
+
+	// Controlador de ejemplo
 
 	class TestController {
 		// ...
@@ -759,11 +783,6 @@ Supongamos que se tiene un Controlador llamado TestController con un método que
 
 	class InyectarSaludo extends Middleware
 	{   
-		function __construct()
-		{
-			parent::__construct();
-		}
-
 		function handle(?callable $next = null){
 			$data = $this->res->getData();
 

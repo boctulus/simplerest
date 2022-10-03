@@ -167,8 +167,8 @@ class MakeControllerBase extends Controller
 
         <-- "from:" is required in this case.]
         
-        make schema generos --from:mpo
-        make schema genero --table=generos --from:mpo
+        make schema genders --from:mpo
+        make schema gender --table=genders --from:mpo
         make schema all --from:mpo
         make schema all --from:mpp --except=migrations,password_resets,users
 

@@ -68,6 +68,48 @@ Bt5Form::setIdAsName();
         //->dark()
         ; 
 
+        ?>
+        
+        <!-- implementar -->
+        <div class="btn-group mt-3" role="group" aria-label="Basic radio toggle button group">
+            <input
+                type="radio"
+                class="btn-check"
+                name="unidad_longitud"
+                id="unidad_centimetro"
+                autocomplete="off"
+                value="cm"
+                onclick="cambioUnidad(this);"
+                checked
+            />
+            <label class="btn btn-outline-success" for="unidad_centimetro" style="width: 5em;">cm</label>
+            <input
+                type="radio"
+                class="btn-check"
+                name="unidad_longitud"
+                id="unidad_metro"
+                autocomplete="off"
+                value="mt"
+                onclick="cambioUnidad(this);"
+            />
+            <label class="btn btn-outline-success" for="unidad_metro" style="width: 5em;">mts</label>
+            <input
+                type="radio"
+                class="btn-check"
+                name="unidad_longitud"
+                id="unidad_pulgada"
+                autocomplete="off"
+                value="pulg"
+                onclick="cambioUnidad(this);"
+            />
+            <label class="btn btn-outline-success" for="unidad_pulgada" style="width: 5em;">pulg.</label>
+        </div>
+                    
+
+
+
+        <?php
+
         echo tag('p')->class('mt-5');
 
         echo tag('tooltip')->title('Some title')->content('Tooltip on bottom')->pos('bottom')

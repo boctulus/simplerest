@@ -50,11 +50,17 @@ Ambas tablas tendran los mismos campos pero no todo access token en la primera t
 
 Crear endpoint:
 
-  /api/auth/revoke <-- en el body pasar el access_token a revocar o el user_id correspondiente. Con el user_id, revocar todos los access_tokens de se usuario
+  /api/auth/revoke 
+
+  Un usuario puede revocar sus propios tokens y un super-admin puede revocar de otros.
+  
+  <-- Para el caso de un usuario ordinario, se pasaria el access_token y obteniendo el user_id, revocar todos los access_tokens de se usuario
 
 Debería poder ser posible también revocar refresh_tokens. A su vez los refres_token(s) no deberian durar más de 30 / 90 /  200 días aprox para evitar el disco se llene de refresh_tokens ya que para poder invalidarlos...... toca almacenarlos !!!
 
 https://cloud.google.com/apigee/docs/api-platform/antipatterns/oauth-long-expiration#:~:text=The%20refresh%20token%20is%20set,864%2C000%20tokens%20in%20a%20day.
+
+Luego de cambiar contasenas => deben invalidarse tanto access como refresh tokens!
 
 - Permitir modificar los "permisos" asignados a cada rol de forma dinamica. Esto funcionaria generando un Array similar a la salida de 
 
@@ -128,6 +134,10 @@ De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes
 
 - Hacer router para consola. Pre-requisito para aboler el FrontController
 
+- CSV a migraciones
+
+  com make migration --csv={file.csv}
+
 
 [ FrontEnd ]
 
@@ -135,7 +145,14 @@ De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes
 
 - Terminar generador de front !
 
-  Entre otras cosas... deberia poder construir un formulario responsivo a partir
+. Incorporar "switches" incorporados en el plugin "Import quoter cl" (ya estan en un controller)
+
+. Agregar Dropdown sub-menu
+
+https://stackoverflow.com/a/18024991/980631
+https://www.codeply.com/p/a1dV58wvBV
+
+. Entre otras cosas... deberia poder construir un formulario responsivo a partir
   de un array. Quizas escribiendo widgets que abstraigan el uso de BT5Form ojala de
   forma compatible con react-boostrap
 
@@ -162,6 +179,8 @@ Ver:
 
 https://yajrabox.com/docs/laravel-datatables/master/quick-starter
 https://github.com/yajra/laravel-datatables
+https://livewire-datatables.com/
+https://github.com/MedicOneSystems/livewire-datatables
 
 
 En un controller podria tener algo como:
@@ -447,6 +466,8 @@ https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versi
 
 - NGINX
 
+- Zipear las respuestas http (en Apache al menos debe hacerse explicitamente)
+
 - Con NGINX usar "full-page caching" powered by Nginx.
 
 - Ver de usar el módulo de Apache PHP-FPM (idealmente en Linux) -> habilita opcode caching
@@ -678,6 +699,8 @@ Ej:
       }
   }
 
+- Poder validar si el archivo que se esta subiendo esta dentro del tamaño maximo admitido y si el formato estáda dentro de los admitidos (pdf, xls,..)
+
 - En general revisar como funciona el upload de archivos en otros frameworks como Laravel donde se puede elegir el "driver" entre "local", "ftp", "s3"
 
 https://laravel.com/docs/9.x/filesystem
@@ -758,7 +781,6 @@ return new class extends Migration
             
 Luego de alguna forma debe ser posible "cablear" esa libreria (en el caso de una libreria) para que quede disponible de forma sencilla => algun tipo de "Facade"
 
-- Incorporar "switches" incorporados en el plugin "Import quoter cl" en el Bt5Form !!
 
 - ACL
 
@@ -899,17 +921,6 @@ Ej:
   migrations redo --to:main --step=2
 
 Esto re-haria las ultimas dos migraciones ejecutadas. Por defecto el step seria 1 (--step=1)
-
-
-- CSV a migraciones
-
-  com make migration --csv={file.csv}
-
-- Implementar un wrapper de DataTables similar a 
-
-https://livewire-datatables.com/
-https://github.com/MedicOneSystems/livewire-datatables
-
 
 - Implementar metodo authenticate() en Controller(s) a fin de evitar poner toda la logica de autenticación en el constructor !!!
 
