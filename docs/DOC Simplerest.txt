@@ -7307,11 +7307,20 @@ Helpers que pueden incluirse en un template:
 Ya dentro de una vista o sub-vista:
 
 	asset()		devuelve la url de un recurso 
-	section()	incluye una vista
+	section()	incluye una vista. La vista es renderizada.
+	get_view()	retorna una vista. No queda incluida dentro del template.
 	js()		hace el enqueue de un javascript "inline"
 	css()		hace el enqueue de un css "inline"
 	js_file() 	hace el enqueue de un archivo .js
 	css_file()	hace el enqueue de un archivo .css
+
+
+Nota: El helper section() sirve para incluir vistas. En campo get_view() obtiene el contenido de una vista lo cual permite manipularla, parametrizarla e inyectarla dentro de otra vista.
+
+Otros helpers,...
+
+	include_no_render()		incluye un archivo .php pero la salida es retenida y su contenido es devuelto.
+	get_view_src()			retorna el path de una vista que si está cacheada y la caché no ha expirado, será de la versión cacheada.
 
 
 # Cargar el template sin vista
@@ -7580,6 +7589,9 @@ En este caso podriamos leer la vista "hija" y luego la vista "padre" pasándole 
 En el siguiente ejemplo haremos uso de los helpers get_view(), get_view_src() y include_no_render()
 
 Ej:
+
+<?php
+
 	/*
 		views/andrea/container.php
 	*/
@@ -7601,6 +7613,8 @@ Ej:
 
 
 Sin embargo, es posible simplificar mucho mas,.... 
+
+<?php
 
 	/*
 		En una vista (mas simple)
@@ -7632,7 +7646,7 @@ Ahora,..... cuál la diferencia entre view() y get_view() ?
 
 	view()		renderiza una vista dentro de un template
 	get_view()	retorna una vista. No queda incluida dentro del template.
-	
+
 
 # Hookear la clase View
 
