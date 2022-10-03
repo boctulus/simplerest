@@ -2,26 +2,55 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\View;
+use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
+use simplerest\controllers\MyController;
 
 class AndreaController extends MyController
 {
-    function index()
+    function __construct()
     {
-        css_file(
-            asset('andrea/css/theme.css')
-        );
+        $this->assets();
+    }
 
+    function index(){
+        $this->builder();
+    }
+
+    protected function assets(){
         css_file(
             asset('andrea/css/master.css')
         );
 
+        css_file(
+            asset('andrea/css/header2.css')
+        );
 
-        view('andrea/builder');            
+        css_file(
+            asset('andrea/css/bookblock.css')
+        );
+
+        css('
+            .main-slider_content { background-color:#FFCB0B; }
+        ');
+    }
+
+    function builder()
+    {   
+        //view('andrea/builder');
+
+        $placeholder = get_view('andrea/builder', null, 60);
+        $content     = get_view('andrea/container', ['placeholder' => $placeholder]);
+
+        render($content);
+    }
+
+    function more_content()
+    {
+        view('andrea/more_content');
     }
 }
 
