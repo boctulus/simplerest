@@ -5193,7 +5193,7 @@ class DumbController extends Controller
 
     function serve_assets()
     {
-        view('test_assets.php');
+        view('test_assets.php', null, null, 60);
     }
 
     function test_base_url()
