@@ -21,6 +21,10 @@ class View
             $view_path .= '.php';
         }
 
+        if ($expiration_time === 0){
+            return VIEWS_PATH . $view_path;
+        }
+
         $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
 
         $file_exists = null;
@@ -73,10 +77,13 @@ class View
         if (!Strings::endsWith('.php', $view_path)){
             $view_path .= '.php';
         }
-
-        $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
+        
+        if ($expiration_time === 0){
+            return Files::reader(VIEWS_PATH . $view_path);
+        }
 
         $file_exists = null;
+        $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
 
         switch ($expiration_time){
             // nunca expira
@@ -98,7 +105,7 @@ class View
                 }            
         }
 
-        $cached  = !$expired;
+        $cached = !$expired;    
 
         if ($cached){
             $content = Files::reader($cached_path);
@@ -126,35 +133,45 @@ class View
             $layout = $this->config['template'];
         } 
 
-        $cached_path = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
+        $layout_path = VIEWS_PATH . "$layout";
 
-        switch ($expiration_time){
-            case -1:
-                $expired = false;
-            break;
-            case 0:
-                $expired = true;
-            break;    
-            default:
-                $ct      = @filemtime($cached_path);
-                $expired = time() > $ct + $expiration_time;                
+        if (!file_exists($layout_path)){
+            response("Layout path '$layout_path' not found", 404);
         }
         
-        if ($expired && $expiration_time != 0){
-            $this->onCacheExpired($view_path);
-        }
+        if ($expiration_time !== 0){
+            $cached_path = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
-        $cached  = !$expired;
+            switch ($expiration_time){
+                case -1:
+                    $expired = false;
+                break;
+                case 0:
+                    $expired = true;
+                break;    
+                default:
+                    $file_exists = file_exists($cached_path);
 
-        if ($expiration_time != 0){
-            $file_exists = file_exists($cached_path);
+                    if (!$file_exists){
+                        $expired = true;
+                    } else {
+                        $_ct     = filemtime($cached_path);
+                        $expired = time() > $_ct + $expiration_time;
+                    }                  
+            } 
+
+            $cached = !$expired;
+
+            if ($expired){
+                $this->onCacheExpired($view_path);
+            }
         } else {
-            $expiration_time = null;
+            $cached = false;
         }
-
-        if ($cached && $file_exists){
+       
+        if ($cached){
             $content = Files::reader($cached_path);
-        } else {            
+        } else {          
             if (!empty($vars)){
                 extract($vars);
             }      
@@ -169,9 +186,8 @@ class View
             $head   =  static::$head;            
         }
 
-        if ($expiration_time != 0 && ($expired || !$file_exists)){
+        if ($expiration_time != 0){
             Files::writableOrFail($cached_path);
-
             $bytes = Files::writter($cached_path, $content);
 
             if ($bytes != 0){
@@ -179,13 +195,7 @@ class View
             }
         }
 
-        $path = VIEWS_PATH . "$layout";
-
-        if (!file_exists($path)){
-            response("Path '$path' not found", 404);
-        }
-
-        include $path; 
+        include $layout_path; 
     }
 
     static function destroyCache(string $view_path) : bool {
