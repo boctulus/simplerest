@@ -37,19 +37,19 @@ class MySelf extends MyApiController
     }
 
     function get($id = null){
-        $id = auth()->getCurrentUid();
+        $id = auth()->uid();
         parent::get($id);
     } 
 
     function put($id = NULL)
     { 
-        $id = auth()->getCurrentUid();
+        $id = auth()->uid();
         parent::put($id);
     } //
 
     function patch($id = NULL)
     { 
-        $id = auth()->getCurrentUid();
+        $id = auth()->uid();
         parent::patch($id);
     } //
         
@@ -58,7 +58,7 @@ class MySelf extends MyApiController
     }
 
     function delete($id = null){
-        $id = auth()->getCurrentUid();
+        $id = auth()->uid();
 
         $u = DB::table($this->table_name);
 
