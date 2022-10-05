@@ -11,15 +11,12 @@ abstract class ResourceController extends Controller
     protected $acl;
     protected $auth;
 
-    protected $headers = [
-        'Access-Control-Allow-Headers' => 'Authorization,Content-Type', 
-        'Access-Control-Allow-Origin' => '*',
-        'Access-Control-Allow-Methods' => 'GET,POST,DELETE,PUT,PATCH,HEAD,OPTIONS',
-        'Access-Control-Allow-Credentials' => 'true'
-    ];
+    protected $headers = [];
 
     function __construct(?IAuth $auth = null)
     {   
+        cors(); 
+
         foreach ($this->headers as $key => $header){
             header("$key: $header");
         } 
@@ -35,7 +32,7 @@ abstract class ResourceController extends Controller
         $roles = $this->auth['roles'];
         $perms = $this->auth['permissions'];
 
-        $auth->setCurrentUid($uid); 
+        $auth->setUID($uid); 
         $auth->setCurrentRoles($roles);
         $auth->setCurrentPermissions($perms);   
 

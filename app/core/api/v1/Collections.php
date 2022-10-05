@@ -76,7 +76,7 @@ class Collections extends MyApiController
             $id = DB::table('collections')->create([
                 'entity' => $table_name,
                 'refs' => json_encode($refs),
-                'belongs_to' => auth()->getCurrentUid()
+                'belongs_to' => auth()->uid()
             ]);
 
             if ($id !== false){
@@ -119,7 +119,7 @@ class Collections extends MyApiController
             
                 $sp = Factory::acl()->hasSpecialPermission('write_all_collections');
 
-                if (!$sp && $row['belongs_to'] != auth()->getCurrentUid()){
+                if (!$sp && $row['belongs_to'] != auth()->uid()){
                     error('Forbidden', 403, 'You are not the owner');
                 }         
                                
@@ -149,7 +149,7 @@ class Collections extends MyApiController
                         error(_("Collections are not available to this resource")); 
                     }
                     
-                    $instance->where([$instance->belongsTo() => auth()->getCurrentUid()]);
+                    $instance->where([$instance->belongsTo() => auth()->uid()]);
                 }
 
                 $validado = (new Validator())->setRequired($put_mode)->validate($instance->getRules(), $data);
@@ -158,7 +158,7 @@ class Collections extends MyApiController
                 }   
                 
                 if ($instance->inSchema(['updated_by'])){
-                    $data['updated_by'] = auth()->getCurrentUid();
+                    $data['updated_by'] = auth()->uid();
                 }                
 
                 $refs = json_decode($row['refs']);
@@ -203,7 +203,7 @@ class Collections extends MyApiController
             
             $sp = Factory::acl()->hasSpecialPermission('write_all_collections');
 
-            if (!$sp && $row['belongs_to'] != auth()->getCurrentUid()){
+            if (!$sp && $row['belongs_to'] != auth()->uid()){
                 error('Forbidden', 403, 'You are not the owner');
             }         
 
@@ -222,7 +222,7 @@ class Collections extends MyApiController
 
             // Table must have 'belongs_to' 
             if (!$sp) {
-                $instance->where(['belongs_to' => auth()->getCurrentUid()]);
+                $instance->where(['belongs_to' => auth()->uid()]);
             }    
             
             $refs = json_decode($row['refs']);
