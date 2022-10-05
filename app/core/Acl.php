@@ -423,7 +423,7 @@ abstract class Acl implements IAcl
         Permissions can not be "fresh" if it comes from an Web Token
     */
     public function getTbPermissions(string $table = null, bool $unpacked = true){
-        $current_user_permissions = auth()->getCurrentPermissions();
+        $current_user_permissions = auth()->getPermissions();
 
         if (empty($current_user_permissions)){
             return null;
@@ -444,7 +444,7 @@ abstract class Acl implements IAcl
         Permissions can not be "fresh" if it comes from an Web Token
     */
     public function getSpPermissions(string $table = null){
-        $current_user_permissions = auth()->getCurrentPermissions();
+        $current_user_permissions = auth()->getPermissions();
 
         if (empty($current_user_permissions)){
             return null;
