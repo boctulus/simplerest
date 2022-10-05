@@ -33,10 +33,7 @@ class AuthController extends Controller implements IAuth
 
     function __construct()
     { 
-        header('Access-Control-Allow-Credentials: True');
-        header('Access-Control-Allow-Headers: Origin,Content-Type,X-Auth-Token,AccountKey,X-requested-with,Authorization,Accept, Client-Security-Token,Host,Date,Cookie,Cookie2'); 
-        header('Access-Control-Allow-Methods: POST,OPTIONS'); 
-        header('Access-Control-Allow-Origin: *');
+        cors();
 
         parent::__construct();
 
@@ -68,25 +65,6 @@ class AuthController extends Controller implements IAuth
         return \Firebase\JWT\JWT::encode($payload, $this->config[$token_type]['secret_key'],  $this->config[$token_type]['encryption']);
     }
 
-    protected function gen_jwt_email_conf(string $email, array $roles, array $perms, $uid){
-        $time = time();
-
-        $payload = [
-            'alg' => $this->config['email_token']['encryption'],
-            'typ' => 'JWT',
-            'iat' => $time, 
-            'exp' => $time + $this->config['email_token']['expires_in'],
-            'ip'  => Request::ip(),
-            'user_agent' => Request::user_agent(),
-            'email' => $email,
-            'roles' => $roles,
-            'permissions' => $perms,
-            'db_access' => $this->getDbAccess($uid)
-         ];
-
-        return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
-    }
-
     protected function gen_jwt_rememberme($uid){
         $time = time();
 
@@ -102,6 +80,40 @@ class AuthController extends Controller implements IAuth
          ];
 
         return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
+    }
+
+    function setUID($uid){
+        static::$current_user_uid = $uid;
+    }
+
+    function getUID(){
+        return static::$current_user_uid;
+    }
+
+    // alias
+    function uid(){
+        return $this->getUID();
+    }
+
+    function setCurrentPermissions(Array $perms){
+        static::$current_user_permissions = $perms;
+    }
+
+    function getCurrentPermissions(){
+        return static::$current_user_permissions;
+    }
+
+    function setCurrentRoles(Array $roles){
+        static::$current_user_roles = $roles;
+    }
+
+    function getCurrentRoles(){
+        return static::$current_user_roles;
+    }
+
+    // alias
+    public function getRoles(){
+        return static::$current_user_roles;
     }
 
     function login()
@@ -237,7 +249,7 @@ class AuthController extends Controller implements IAuth
                 error('uid is needed',400);
             }
 
-            $acl   = Factory::acl();
+            $acl   = acl();
             $u     = DB::table($this->users_table);
 
             if ($u->inSchema([$this->role_field])){
@@ -291,7 +303,7 @@ class AuthController extends Controller implements IAuth
                 if ($u->inSchema([$this->__active])){
                     $is_active = $row[$this->__active];
 
-                    if ($is_active === NULL) {
+                    if ($is_active === null) {
                         error('Account to be impersonated is pending for activation', 500);
                     } elseif (((string) $is_active === "0")) {
                         error('User account to be impersonated is deactivated', 500);
@@ -639,11 +651,11 @@ class AuthController extends Controller implements IAuth
             $this->onRegistered($data, $uid, $is_active, $roles);
                 
             $access  = $this->gen_jwt([
-                                        'uid' => $uid, 
-                                        'roles' => $roles,
-                                        'permissions' => [],
-                                        'is_active' => $is_active,
-                                        'db_access' => $db_access
+                'uid' => $uid, 
+                'roles' => $roles,
+                'permissions' => [],
+                'is_active' => $is_active,
+                'db_access' => $db_access
             ], 'access_token');
 
             $refresh = $this->gen_jwt([
@@ -769,7 +781,7 @@ class AuthController extends Controller implements IAuth
                 $acl = Factory::acl();
                 $uid = $this->getUserIdFromApiKey($api_key);
 
-                if ($uid == NULL){
+                if ($uid == null){
                     error('Invalid API Key', 401);
                 }
 
@@ -843,7 +855,7 @@ class AuthController extends Controller implements IAuth
                 ];
         }
 
-        static::setCurrentUid($ret['uid']) ;
+        static::setUID($ret['uid']) ;
 
         // Hook
         $this->onChecked($ret['uid'], $is_active, $roles, $perms, $auth_method);
@@ -1017,11 +1029,10 @@ class AuthController extends Controller implements IAuth
         }
     }
     
-
     /*
         Proviene de rememberme() y da la oportunidad de cambiar el pass otorgando tokens a tal fin
     */
-    function change_pass_by_link($jwt = NULL, $exp = NULL){
+    function change_pass_by_link($jwt = null, $exp = null){
         if (!in_array($_SERVER['REQUEST_METHOD'], ['GET','OPTIONS'])){
             error('Incorrect verb ('.$_SERVER['REQUEST_METHOD'].'), expecting GET',405);
         }    
@@ -1341,35 +1352,6 @@ class AuthController extends Controller implements IAuth
         return in_array($db_connection, $this->getDbAccess($user_id));
     }
     
-    function setCurrentUid($uid){
-        static::$current_user_uid = $uid;
-    }
-
-    function getCurrentUid(){
-        return static::$current_user_uid;
-    }
-
-    function setCurrentPermissions(Array $perms){
-        static::$current_user_permissions = $perms;
-    }
-
-    function getCurrentPermissions(){
-        return static::$current_user_permissions;
-    }
-
-    function setCurrentRoles(Array $roles){
-        static::$current_user_roles = $roles;
-    }
-
-    function getCurrentRoles(){
-        return static::$current_user_roles;
-    }
-
-    // alias
-    public function getRoles(){
-        return static::$current_user_roles;
-    }
-
     /*
         Event Hooks
     */

@@ -4,6 +4,12 @@ use simplerest\core\Route;
 use simplerest\core\Response;
 use simplerest\core\libs\Url;
 
+function cors(){
+    header('Access-Control-Allow-Credentials: True');
+    header('Access-Control-Allow-Headers: Origin,Content-Type,X-Auth-Token,AccountKey,X-requested-with,Authorization,Accept, Client-Security-Token,Host,Date,Cookie,Cookie2'); 
+    header('Access-Control-Allow-Methods: POST,OPTIONS'); 
+    header('Access-Control-Allow-Origin: *');
+}
 
 function route(string $name){
     return Route::getRouteByName($name);
