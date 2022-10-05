@@ -47,5 +47,46 @@ class AndreaController extends MyController
     {
         view('andrea/more_content');
     }
+
+    function result(){
+        js_file('andrea/js/modernizr.custom.js', null, true);	
+        js_file('andrea/js/jquery-ui.min.js', null, true);
+
+        js_file('andrea/js/modernizr.custom.js');
+        js_file('andrea/js/jquery.placeholder.min.js');
+        js_file('andrea/js/smoothscroll.min.js');
+
+        //<!-- Loader -->
+        js_file('andrea/js/plugins/loader/js/classie.js'); 
+        js_file('andrea/js/plugins/loader/js/pathLoader.js');
+        js_file('andrea/js/plugins/loader/js/main.js');
+        js_file('andrea/js/classie.js');
+
+        //<!-- bxSlider --> 
+        js_file('andrea/js/plugins/bxslider/jquery.bxslider.min.js');
+
+        //<!--Switcher--> 
+        js_file('andrea/js/plugins/switcher/js/bootstrap-select.js');
+        js_file('andrea/js/plugins/switcher/js/evol.colorpicker.min.js');
+        js_file('andrea/js/plugins/switcher/js/dmss.js');
+
+        //<!-- SCRIPTS --> 
+        js_file('andrea/js/plugins/isotope/jquery.isotope.min.js');
+
+        //<!--Owl Carousel--> 
+        js_file('andrea/js/plugins/owl-carousel/owl.carousel.min.js');
+
+
+        //<!--THEME--> 
+        js_file('andrea/js/wow.min.js');
+        js_file('andrea/js/cssua.min.js');
+        js_file('andrea/js/theme.js');
+        js_file('andrea/js/jquerypp.custom.js');
+        js_file('andrea/js/jquery.bookblock.js');
+
+        js_file('andrea/js/custom.js');
+
+        view('andrea/result');
+    }
 }
 
