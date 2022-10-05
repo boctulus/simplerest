@@ -3,34 +3,58 @@
 namespace simplerest\core\interfaces;
 
 interface IAcl {
-    public function addRole(string $role_name, $role_id = null);
+    function addRole(string $role_name, $role_id = null);
 
-    public function addRoles(Array $roles);
+    function addRoles(Array $roles);
 
-    public function addInherit(string $role_name, $to_role = null);
+    function addInherit(string $role_name, $to_role = null);
 
-    public function addSpecialPermissions(Array $sp_permissions, $to_role = null);
+    function addSpecialPermissions(Array $sp_permissions, $to_role = null);
     
-    public function addResourcePermissions(string $table, Array $tb_permissions, $to_role = null);
+    function addResourcePermissions(string $table, Array $tb_permissions, $to_role = null);
     
-    public function setAsGuest(string $guest_name);
+    function setAsGuest(string $guest_name);
 
-    public function getGuest();
+    function getGuest();
 
-    public function getRoleName($role_id = null);
+    function getRoleName($role_id = null);
 
-    public function getRoleId(string $role_name);
+    function getRoleId(string $role_name);
 
-    public function roleExists(string $role_name);
+    function roleExists(string $role_name);
 
-    public function hasSpecialPermission(string $perm, Array $role_names);
+    function hasSpecialPermission(string $perm, ?Array $role_names = null, $id = null);
 
-    public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = []);
+    function hasResourcePermission(string $perm, string $resource, ?Array $role_names = []);
     
-    //public function isAllowed(string $op_type, Array $role_names, $resource);
+    //function isAllowed(string $op_type, Array $role_names, $resource);
 
-    public function getResourcePermissions(string $role, string $resource, $op_type = null);
+    function getResourcePermissions(string $role, string $resource, $op_type = null);
 
-    public function getRolePermissions(); 
+    function getRolePermissions(); 
+
+    function getAncestry(string $role);
+
+    function getEveryPossibleSpPermissions();
+
+    function getTbPermissions(string $table = null, bool $unpacked = true);
+
+    function getSpPermissions(string $table = null);
+
+    function isGuest() : bool;
+
+    function isRegistered() : bool;
+
+    function hasRole(string $role) : bool;
+
+    function isHigherRole(string $role, string $referenced_role);
+
+    function hasRoleOrHigher(string $role);
+
+    function hasRoleOrChild(string $role);
+
+    function hasAnyRole(array $authorized_roles);
+
+    function hasAnyRoleOrChild(array $authorized_roles);
 
 }

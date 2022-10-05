@@ -42,7 +42,7 @@ class UserTbPermissions extends MyApiController
             $instance->setConn($conn);
 
             if ($instance->inSchema(['created_by'])){
-                $data['created_by'] = Acl::getCurrentUid();
+                $data['created_by'] = auth()->getCurrentUid();
             }
 
             $validado = (new Validator)->validate($instance->getRules(), $data);
