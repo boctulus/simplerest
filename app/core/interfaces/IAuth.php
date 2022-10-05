@@ -8,11 +8,10 @@ interface IAuth {
     function register();
     function check();   
 
-    function hasDbAcces($user_id, string $db_connection);
     function setUID($uid);
     function uid();
-    function setCurrentPermissions(Array $perms);
-    function getCurrentPermissions();
-    function setCurrentRoles(Array $roles);
+    function setPermissions(Array $perms);
+    function getPermissions();
+    function setRoles(Array $roles);
     function getRoles();
 }
