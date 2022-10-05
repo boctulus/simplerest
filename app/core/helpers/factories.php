@@ -1,16 +1,24 @@
 <?php
 
+use simplerest\core\interfaces\IAcl;
+use simplerest\core\interfaces\IAuth;
 use simplerest\core\libs\Factory;
+use simplerest\core\libs\HtmlBuilder\Tag;
+use simplerest\core\Request;
 
-function tag(string $name){
-    return new simplerest\core\libs\HtmlBuilder\Tag($name);
+function tag(string $name) : Tag {
+    return new Tag($name);
 }
 
-function acl(){
+function acl() : IAcl {
     return Factory::acl();
 }
 
-function request(){
+function auth() : IAuth {
+    return Factory::auth();
+}
+
+function request() : Request {
     return Factory::request();
 }
 

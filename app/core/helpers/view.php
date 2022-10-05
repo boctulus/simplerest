@@ -178,7 +178,7 @@ function css(string $file){
     return View::css($file);
 }
 
-function auth(){
+function umodel(){
     $model = get_user_model_name();    
            
     $__email    = $model::$email    ?? '';
