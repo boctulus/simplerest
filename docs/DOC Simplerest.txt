@@ -7296,7 +7296,7 @@ Helpers que pueden incluirse en un template:
 	base_url()	bastante auto-explicatorio
 	asset()		devuelve la url de un recurso 
 	head()		es un simple wrapper sobre render_metas(), render_css() y render_js(VIEW::HEAD)
-	auth()		devuelve los nombres de los campos para username, password y e-mail a ser usados en el endpoint /auth
+	umodel()	script con los nombres de los campos para username, password y e-mail  del user model a ser usados en el endpoint /auth
 	js()		hace el enqueue de un javascript "inline"
 	css()		hace el enqueue de un css "inline"
 	js_file() 	hace el enqueue de un archivo .js

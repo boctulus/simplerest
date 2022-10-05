@@ -27,6 +27,16 @@ class Factory {
         return $instance;
 	}
 
+	static function acl() : Acl {
+		static $instance;
+
+		if ($instance == null){
+			$instance = include CONFIG_PATH . 'acl.php';
+		}
+
+        return $instance;
+	}
+
 	static function response($data = null, ?int $http_code = 200) : Response {
 		$ret = Response::getInstance();
 
@@ -46,16 +56,6 @@ class Factory {
 
 		if ($instance == null){
 			$instance = new Validator();
-		}
-
-        return $instance;
-	}
-
-	static function acl() : Acl {
-		static $instance;
-
-		if ($instance == null){
-			$instance = include CONFIG_PATH . 'acl.php';
 		}
 
         return $instance;
