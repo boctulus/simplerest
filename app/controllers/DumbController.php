@@ -3344,7 +3344,7 @@ class DumbController extends Controller
 
     function get_userdata()
     {
-        //d(Acl::getCurrentUid());
+        //d(auth()->getCurrentUidUid());
 
         $data = [];
         $data['email'] = 'xxx@g.com';
@@ -3363,7 +3363,7 @@ class DumbController extends Controller
 
     function get_userdata2()
     {
-        //$uid = Acl::getCurrentUid();
+        //$uid = auth()->getCurrentUidUid();
 
         $uid = 99;
 
@@ -10292,7 +10292,7 @@ class DumbController extends Controller
         ->setFileHandler(function($uid) {
             $prefix = ($uid ?? '0').'-';
             return uniqid($prefix, true);
-        }, Acl::getCurrentUid());
+        }, auth()->getCurrentUidUid());
 
 
         $files    = $uploader->doUpload()->getFileNames();   
@@ -10329,7 +10329,7 @@ class DumbController extends Controller
         ->setFileHandler(function($uid) {
             $prefix = ($uid ?? '0').'-';
             return uniqid($prefix, true);
-        }, Acl::getCurrentUid());
+        }, auth()->getCurrentUidUid());
 
         $files    = $uploader->doUpload()->getFileNames();   
         $failures = $uploader->getErrors();     

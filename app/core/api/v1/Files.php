@@ -30,7 +30,7 @@ class Files extends MyApiController
         ->setFileHandler(function($uid) {
             $prefix = ($uid ?? '0').'-';
             return uniqid($prefix, true);
-         }, Acl::getCurrentUid());
+         }, auth()->getCurrentUid());
 
 
         $files    = $uploader->doUpload()->getFileNames();   
@@ -50,7 +50,7 @@ class Files extends MyApiController
                 if (isset($data['belongs_to']))
                     $belongs_to = $data['belongs_to'];    
             } else 
-                $belongs_to = !$this->acl->isGuest() ? Acl::getCurrentUid() : null;    
+                $belongs_to = !$this->acl->isGuest() ? auth()->getCurrentUid() : null;    
 
             $file_ext = pathinfo($filename_ori, PATHINFO_EXTENSION);
 
@@ -110,7 +110,7 @@ class Files extends MyApiController
             
             $acl = Factory::acl();
 
-            if ($owned && !$acl->hasSpecialPermission('write_all') && $row['belongs_to'] != Acl::getCurrentUid()){
+            if ($owned && !$acl->hasSpecialPermission('write_all') && $row['belongs_to'] != auth()->getCurrentUid()){
                 error('Forbidden', 403, 'You are not the owner');
             }
             
@@ -127,7 +127,7 @@ class Files extends MyApiController
             }
 
             if ($instance->inSchema(['deleted_by'])){
-                $extra = array_merge($extra, ['deleted_by' => Acl::getCurrentUid()]);                
+                $extra = array_merge($extra, ['deleted_by' => auth()->getCurrentUid()]);                
             } 
             
             $soft_delete = static::$soft_delete && $instance->inSchema(['deleted_at']);

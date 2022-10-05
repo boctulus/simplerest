@@ -5,6 +5,7 @@ namespace simplerest\core;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\Url;
 
 use function GuzzleHttp\json_decode;
 
@@ -236,6 +237,11 @@ class Response
         /*
             https://www.baeldung.com/rest-api-error-handling-best-practices
         */
+        
+        if (Url::isPostman() || Url::isInsomnia()){
+            $detail = json_decode(trim($detail), true);
+        }
+
         $res['error'] = [ 
             'type'    => $type    ?? null,
             'code'    => $code    ?? null,

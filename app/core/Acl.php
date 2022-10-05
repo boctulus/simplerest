@@ -19,10 +19,6 @@ abstract class Acl implements IAcl
     protected $sp_permissions = [];
     protected $ancestors = []; 
     
-    static protected $current_user_uid; //
-    static protected $current_user_permissions = []; //
-    static protected $current_user_roles = []; //
-
 
     public function __construct()
     {
@@ -49,35 +45,6 @@ abstract class Acl implements IAcl
         Files::writableOrFail(SECURITY_PATH . config()['acl_file']);
     }
 
-    static function setCurrentUid($uid){
-        static::$current_user_uid = $uid;
-    }
-
-    static function getCurrentUid(){
-        return static::$current_user_uid;
-    }
-
-    static function setCurrentPermissions(Array $perms){
-        static::$current_user_permissions = $perms;
-    }
-
-    static function getCurrentPermissions(){
-        return static::$current_user_permissions;
-    }
-
-    static function setCurrentRoles(Array $roles){
-        static::$current_user_roles = $roles;
-    }
-
-    static function getCurrentRoles(){
-        return static::$current_user_roles;
-    }
-
-    // alias
-    public function getRoles(){
-        return static::$current_user_roles;
-    }
-    
     public function getEveryPossibleRole(){
         return $this->roles;
     }
@@ -268,7 +235,7 @@ abstract class Acl implements IAcl
     }
 
     public function getGuest(){
-        if ($this->guest_name == NULL){
+        if ($this->guest_name == null){
             throw new \Exception("Undefined guest rol in ACL");
         }
 
@@ -276,15 +243,15 @@ abstract class Acl implements IAcl
     }
 
     public function getRegistered(){
-        if ($this->registered_name == NULL){
+        if ($this->registered_name == null){
             throw new \Exception("Undefined guest rol in ACL");
         }
 
         return $this->registered_name;
     }
 
-    public function getRoleName($role_id = NULL){
-        if ($role_id === NULL){
+    public function getRoleName($role_id = null){
+        if ($role_id === null){
             return $this->role_names;
         }
 
@@ -309,18 +276,23 @@ abstract class Acl implements IAcl
         return isset($this->role_perms[$role_name]);
     }
 
-    public function hasSpecialPermission(string $perm, Array $role_names = []){
+    public function hasSpecialPermission(string $perm, ?Array $role_names = null, $uid = null){
         if (empty($role_names)){
-            $role_names = static::$current_user_roles;
+            $role_names = auth()->getRoles();
+        }
+
+        // Podria chequearse si un usuario dado su uid tiene el permiso
+        if ($uid !== null){
+            // ...
         }
 
         if (!in_array($perm, $this->sp_permissions)){
-            throw new \InvalidArgumentException("hasSpecialPermission : invalid permission '$perm'");    
+            throw new \InvalidArgumentException("Invalid permission '$perm'");    
         }
 
         foreach ($role_names as $r_name){
             if (!isset($this->role_perms[$r_name])){
-                throw new \InvalidArgumentException("hasSpecialPermission : invalid role name '$r_name'");
+                throw new \InvalidArgumentException("Invalid role name '$r_name'");
             }
 
             if (in_array($perm, $this->role_perms[$r_name]['sp_permissions'])){
@@ -331,9 +303,9 @@ abstract class Acl implements IAcl
         return false;
     }
 
-    public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = []){
+    public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = null){
         if (empty($role_names)){
-            $role_names = $role_names = static::$current_user_roles;
+            $role_names = $role_names = auth()->getRoles();
         }
 
         if (!in_array($perm, ['show', 'show_all', 'list', 'list_all', 'create', 'update', 'delete'])){
@@ -404,11 +376,6 @@ abstract class Acl implements IAcl
         return $ancestors[$ref];
     }
 
-    ////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////
-
-    // Also needed but not in interface
-
     /*
         Every possible Special Permission for the ACL 
     */
@@ -456,17 +423,19 @@ abstract class Acl implements IAcl
         Permissions can not be "fresh" if it comes from an Web Token
     */
     public function getTbPermissions(string $table = null, bool $unpacked = true){
-        if (empty(static::$current_user_permissions)){
-            return NULL;
+        $current_user_permissions = auth()->getCurrentPermissions();
+
+        if (empty($current_user_permissions)){
+            return null;
         }
 
-        $tb_perms = static::$current_user_permissions['tb'];
+        $tb_perms = $current_user_permissions['tb'];
 
-        if ($table == NULL)
+        if ($table == null)
             return $unpacked ? $this->unpackTbPermissions($tb_perms) : $tb_perms;
 
         if (!isset($tb_perms[$table]))
-            return NULL;
+            return null;
 
         return $unpacked ? $this->unpackTbPermissions($tb_perms[$table]) : $tb_perms[$table];
     }
@@ -475,35 +444,37 @@ abstract class Acl implements IAcl
         Permissions can not be "fresh" if it comes from an Web Token
     */
     public function getSpPermissions(string $table = null){
-        if (empty(static::$current_user_permissions)){
-            return NULL;
+        $current_user_permissions = auth()->getCurrentPermissions();
+
+        if (empty($current_user_permissions)){
+            return null;
         }
 
-        $tb_perms = static::$current_user_permissions['sp'];
+        $tb_perms = $current_user_permissions['sp'];
 
-        if ($table == NULL)
+        if ($table == null)
             return $tb_perms;
 
         if (!isset($tb_perms[$table]))
-            return NULL;
+            return null;
 
         return $tb_perms[$table];
     }
 
 
     // fiexed
-    public function isGuest(){
-        return static::$current_user_roles == [$this->getGuest()];
+    public function isGuest() : bool {
+        return auth()->getRoles() == [$this->getGuest()];
     }
 
-    public function isRegistered(){
+    public function isRegistered() : bool {
         return !$this->isGuest();
     }
 
     // Not in interfaces 
 
-    public function hasRole(string $role){
-        return in_array($role, static::$current_user_roles);
+    public function hasRole(string $role) : bool {
+        return in_array($role, auth()->getRoles());
     }
 
     /*
@@ -540,7 +511,9 @@ abstract class Acl implements IAcl
             return true;
         }
 
-        foreach (self::$current_user_roles as $user_role){
+        $current_user_roles = auth()->getRoles();
+
+        foreach ($current_user_roles as $user_role){
             if ($this->isHigherRole($user_role, $role)){
                 return true;
             }

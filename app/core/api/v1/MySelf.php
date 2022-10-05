@@ -37,19 +37,19 @@ class MySelf extends MyApiController
     }
 
     function get($id = null){
-        $id = Acl::getCurrentUid();
+        $id = auth()->getCurrentUid();
         parent::get($id);
     } 
 
     function put($id = NULL)
     { 
-        $id = Acl::getCurrentUid();
+        $id = auth()->getCurrentUid();
         parent::put($id);
     } //
 
     function patch($id = NULL)
     { 
-        $id = Acl::getCurrentUid();
+        $id = auth()->getCurrentUid();
         parent::patch($id);
     } //
         
@@ -58,7 +58,7 @@ class MySelf extends MyApiController
     }
 
     function delete($id = null){
-        $id = Acl::getCurrentUid();
+        $id = auth()->getCurrentUid();
 
         $u = DB::table($this->table_name);
 
