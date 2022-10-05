@@ -11,9 +11,6 @@ use simplerest\core\Acl;
 
 class UserTbPermissions extends MyApiController
 {   
-    //protected $model_name  = 'UserTbPermissionsModel';
-    //protected $table_name = 'user_tb_permissions';
-
     function __construct()
     {
         // Falta limitar acceso
@@ -42,7 +39,7 @@ class UserTbPermissions extends MyApiController
             $instance->setConn($conn);
 
             if ($instance->inSchema(['created_by'])){
-                $data['created_by'] = auth()->getCurrentUid();
+                $data['created_by'] = auth()->uid();
             }
 
             $validado = (new Validator)->validate($instance->getRules(), $data);
@@ -57,7 +54,7 @@ class UserTbPermissions extends MyApiController
 
                 $id = $instance->create($data);
 
-                Factory::response()->send(['id' => $id], 201);
+                response()->send(['id' => $id], 201);
             });
         
 

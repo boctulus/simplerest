@@ -47,7 +47,7 @@ class Download extends ResourceController
                 }
                                          
             } else {
-                $_get[] = ['belongs_to', auth()->getCurrentUid()];
+                $_get[] = ['belongs_to', auth()->uid()];
             }
         }
 

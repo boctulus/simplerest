@@ -204,7 +204,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         $this->impersonated_by = $this->auth->impersonated_by ?? null;
 
     
-        // dd(auth()->getCurrentUid(), 'uid');
+        // dd(auth()->uid(), 'uid');
         // dd($perms, 'permissions');
         // dd($this->is_listable, 'is_listable?');
         // dd($this->is_retrievable, 'is_retrievable?');
@@ -326,7 +326,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             if ($this->ask_for_deleted && !$acl->hasSpecialPermission('read_all_trashcan')){
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
-                    $_get[$this->instance->belongsTo()] = auth()->getCurrentUid();
+                    $_get[$this->instance->belongsTo()] = auth()->uid();
                 }
             } 
 
@@ -344,17 +344,17 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 foreach ($fs as $f){
                     if (isset($_get[$f])){
                         if ($_get[$f] == 'me')
-                            $_get[$f] = auth()->getCurrentUid();
+                            $_get[$f] = auth()->uid();
                         elseif (is_array($_get[$f])){
                             foreach ($_get[$f] as $op => $idx){                            
                                 if ($idx == 'me'){
-                                    $_get[$f][$op] = auth()->getCurrentUid();
+                                    $_get[$f][$op] = auth()->uid();
                                 }else{      
                                     $p = explode(',',$idx);
                                     if (count($p)>1){
                                     foreach ($p as $ix => $idy){
                                         if ($idy == 'me')
-                                            $p[$ix] = auth()->getCurrentUid();
+                                            $p[$ix] = auth()->uid();
                                         }
                                     }
                                     $_get[$f][$op] = implode(',',$p);
@@ -365,7 +365,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             if (count($p)>1){
                             foreach ($p as $ix => $idx){
                                 if ($idx == 'me')
-                                    $p[$ix] = auth()->getCurrentUid();
+                                    $p[$ix] = auth()->uid();
                                 }
                             }
                             $_get[$f] = implode(',',$p);
@@ -377,7 +377,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 //exit; ////
 
                 if (isset($_get[$this->instance->createdBy()]) && $_get[$this->instance->createdBy()] == 'me')
-                    $_get[$this->instance->createdBy()] = auth()->getCurrentUid();
+                    $_get[$this->instance->createdBy()] = auth()->uid();
 
                 foreach ($_get as $f => $v){
                     if (!is_array($v) && strpos($v, ',')=== false)
@@ -439,7 +439,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     error('Folder not found', 404);  
         
-                $this->folder_access = $acl->hasSpecialPermission('read_all_folders') || $f_rows[0]['belongs_to'] == auth()->getCurrentUid()  || FoldersAclExtension::hasFolderPermission($this->folder, 'r');   
+                $this->folder_access = $acl->hasSpecialPermission('read_all_folders') || $f_rows[0]['belongs_to'] == auth()->uid()  || FoldersAclExtension::hasFolderPermission($this->folder, 'r');   
 
                 if (!$this->folder_access)
                     error("Forbidden", 403, "You don't have permission for the folder $this->folder");
@@ -466,7 +466,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         if ($owned && !$acl->hasSpecialPermission('read_all') && 
                             !$acl->hasResourcePermission('show_all', $this->table_name))
                         {                              
-                            $_get[] = [$this->instance->belongsTo(), auth()->getCurrentUid()];
+                            $_get[] = [$this->instance->belongsTo(), auth()->uid()];
                         }                            
                     }
                        
@@ -783,7 +783,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     if (!$acl->isGuest() && $owned && 
                         !$acl->hasSpecialPermission('read_all') &&
                         !$acl->hasResourcePermission('list_all', $this->table_name) ){
-                        $_get[] = [$this->instance->belongsTo(), auth()->getCurrentUid()];     
+                        $_get[] = [$this->instance->belongsTo(), auth()->uid()];     
                     }       
                 }else{
                     // folder, sin id
@@ -1065,7 +1065,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             }
 
             if ($this->instance->inSchema([$this->instance->createdBy()])){
-                $data[$this->instance->createdBy()] = $this->impersonated_by != null ? $this->impersonated_by : auth()->getCurrentUid();
+                $data[$this->instance->createdBy()] = $this->impersonated_by != null ? $this->impersonated_by : auth()->uid();
             }  
 
             if (!isset($data[$this->instance->createdAt()]) && $this->instance->inSchema([$this->instance->createdAt()])){
@@ -1083,13 +1083,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             */
             if ($this->instance->inSchema([$this->instance->updatedBy()])){
                 if (!in_array($this->instance->updatedBy(), $this->instance->getNullables())){
-                    $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : auth()->getCurrentUid();
+                    $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : auth()->uid();
                 }
             }
     
             if (!$acl->hasSpecialPermission('transfer')){    
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
-                    $data[$this->instance->belongsTo()] = auth()->getCurrentUid();
+                    $data[$this->instance->belongsTo()] = auth()->uid();
                 }
             }   
             
@@ -1107,7 +1107,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     error('Folder not found', 404); 
         
-                if ($f_rows[0][$this->instance->belongsTo()] != auth()->getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
+                if ($f_rows[0][$this->instance->belongsTo()] != auth()->uid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
                     error("Forbidden", 403, "You have not permission for the folder $this->folder");
 
                 unset($data['folder']);    
@@ -1391,7 +1391,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         foreach ($data as $ix => $dato)
                         {
                             if ($rel_tb_has_created_by){
-                                $data[$ix][$rel_tb_created_by] = $this->impersonated_by != null ? $this->impersonated_by : auth()->getCurrentUid();
+                                $data[$ix][$rel_tb_created_by] = $this->impersonated_by != null ? $this->impersonated_by : auth()->uid();
                             }  
                 
                             /*
@@ -1405,7 +1405,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             */
                             if ($rel_tb_has_updated_by){
                                 if (!$rel_tb_updated_by_in_nullables){
-                                    $data[$ix][$rel_tb_updated_by] = $this->impersonated_by != null ? $this->impersonated_by : auth()->getCurrentUid();
+                                    $data[$ix][$rel_tb_updated_by] = $this->impersonated_by != null ? $this->impersonated_by : auth()->uid();
                                 }
                             }
 
@@ -1546,7 +1546,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             }
 
             if ($this->instance->inSchema([$this->instance->updatedBy()])){
-                $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : auth()->getCurrentUid();
+                $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : auth()->uid();
             }  
 
             $owned = $this->instance->inSchema([$this->instance->belongsTo()]);            
@@ -1565,7 +1565,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     error('Folder not found', 404); 
         
-                if ($f_rows[0][$this->instance->belongsTo()] != auth()->getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$acl->hasSpecialPermission('write_all_folders'))
+                if ($f_rows[0][$this->instance->belongsTo()] != auth()->uid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$acl->hasSpecialPermission('write_all_folders'))
                     error("You have not permission for the folder $this->folder", 403);
 
                 $this->folder_name = $f_rows[0]['name'];
@@ -1593,7 +1593,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     response()->code(404)->error("Register for id=$id doesn't exist!");
                 }
 
-                if  ($owned && !$acl->hasSpecialPermission('write_all') && $rows[0][$this->instance->belongsTo()] != auth()->getCurrentUid()){
+                if  ($owned && !$acl->hasSpecialPermission('write_all') && $rows[0][$this->instance->belongsTo()] != auth()->uid()){
                     error('Forbidden', 403, 'You are not the owner!');
                 }   
             }                 
@@ -2145,7 +2145,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             if (!$owned && $this->show_deleted && !$acl->hasSpecialPermission('write_all_trashcan')){
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
-                    $data[$this->instance->belongsTo()] = auth()->getCurrentUid();
+                    $data[$this->instance->belongsTo()] = auth()->uid();
                 } 
             } 
                      
@@ -2269,7 +2269,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     error('Folder not found', 404); 
         
-                if ($f_rows[0][$this->instance->belongsTo()] != auth()->getCurrentUid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
+                if ($f_rows[0][$this->instance->belongsTo()] != auth()->uid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
                     error("You have not permission for the folder $this->folder", 403);
 
                 $this->folder_name = $f_rows[0]['name'];
@@ -2284,7 +2284,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $data[static::$folder_field] = $f_rows[0]['name'];
                 $data['belongs_to'] = $f_rows[0][$this->instance->belongsTo()];    
             } else {
-                if ($owned && !$acl->hasSpecialPermission('write_all') && $rows[0]['belongs_to'] != auth()->getCurrentUid()){
+                if ($owned && !$acl->hasSpecialPermission('write_all') && $rows[0]['belongs_to'] != auth()->uid()){
                     error('Forbidden', 403, 'You are not the owner');
                 }
             }  
@@ -2305,7 +2305,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $soft_del_has_author = $this->instance->inSchema([$this->instance->deletedBy()]);
             
             if ($soft_is_supported && $soft_del_has_author){
-                $extra = array_merge($extra, [$this->instance->deletedBy() => $this->impersonated_by != null ? $this->impersonated_by : auth()->getCurrentUid()]);
+                $extra = array_merge($extra, [$this->instance->deletedBy() => $this->impersonated_by != null ? $this->impersonated_by : auth()->uid()]);
             }               
        
             if (!empty($this->folder)) {
@@ -2397,7 +2397,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             'entity' => $this->table_name,
             'id' => $id,
             'data' => $data,
-            'user_id' => auth()->getCurrentUid(),
+            'user_id' => auth()->uid(),
             'at' => date("Y-m-d H:i:s", time())
         ];
 
