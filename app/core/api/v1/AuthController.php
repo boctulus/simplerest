@@ -27,6 +27,10 @@ class AuthController extends Controller implements IAuth
     protected $__confirmed_email;
     protected $__active;
 
+    static protected $current_user_uid; //
+    static protected $current_user_permissions = []; //
+    static protected $current_user_roles = []; //
+
     function __construct()
     { 
         header('Access-Control-Allow-Credentials: True');
@@ -1335,7 +1339,9 @@ class AuthController extends Controller implements IAuth
 
     function hasDbAccess($user_id, string $db_connection){
         return in_array($db_connection, $this->getDbAccess($user_id));
-    } 
+    }
+    
+    
 
     /*
         Event Hooks

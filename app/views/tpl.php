@@ -25,7 +25,7 @@
     </script>
 
     <?= 
-        auth();
+        umodel();
         head();        
          
         echo a_meta('content-type','text/html; charset=utf-8', [
