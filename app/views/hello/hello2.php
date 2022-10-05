@@ -13,7 +13,6 @@ Bt5Form::macro('salutor', function ($name, $adj, Array $att = []) {
 
 Bt5Form::setIdAsName();
 
-
 ?>
 
 <div class="row mt-5">

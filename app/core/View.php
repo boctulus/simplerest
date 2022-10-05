@@ -138,7 +138,7 @@ class View
         if (!file_exists($layout_path)){
             response("Layout path '$layout_path' not found", 404);
         }
-        
+
         if ($expiration_time !== 0){
             $cached_path = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
@@ -186,7 +186,7 @@ class View
             $head   =  static::$head;            
         }
 
-        if ($expiration_time != 0){
+        if ($expiration_time != 0 && !$cached){
             Files::writableOrFail($cached_path);
             $bytes = Files::writter($cached_path, $content);
 
@@ -214,6 +214,10 @@ class View
     
     static function js_file(string $file, ?Array $atts = null, bool $in_head = false){
         $arr = $in_head ? 'head' : 'footer';
+
+        if (!Strings::startsWith('http', $file)){
+            $file = '/public/assets/' . Strings::removeFirstSlash($file);
+        }
 
         static::$$arr['js'][] = [
             'file' => $file,
