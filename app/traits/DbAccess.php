@@ -13,6 +13,9 @@ use simplerest\core\libs\Arrays;
 
 trait DbAccess
 {
+    /*
+        Retorna un array con los nombres de las bases de datos a las que un usuario tiene acceso
+    */
     function getDbAccess($user_id) : Array {
         // casting o validación por seguridad
         $user_id = (int) $user_id;

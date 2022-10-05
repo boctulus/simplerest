@@ -168,7 +168,7 @@ class AuthController extends Controller implements IAuth
             $perms     = $this->fetchPermissions($uid);
             $db_access = $this->getDbAccess($uid);
        
-            Acl::setCurrentRoles($roles); //
+            static::setCurrentRoles($roles); //
 
             $access  = $this->gen_jwt([ 
                 'uid' => $uid, 
@@ -633,7 +633,7 @@ class AuthController extends Controller implements IAuth
             $is_active = $this->config['pre_activated'] ? true : null;
             $db_access = $this->getDbAccess($uid);
 
-            Acl::setCurrentRoles($roles); //
+            static::setCurrentRoles($roles); //
 
             // Hook
             $this->onRegistered($data, $uid, $is_active, $roles);
@@ -785,7 +785,7 @@ class AuthController extends Controller implements IAuth
                 $is_active = true;
                 $perms  = $this->fetchPermissions($uid);
                 
-                Acl::setCurrentRoles($ret['roles']); //
+                static::setCurrentRoles($ret['roles']); //
 
                 $ret = [
                     'uid'           => $uid,
@@ -808,7 +808,7 @@ class AuthController extends Controller implements IAuth
                     }
                 } 
 
-                Acl::setCurrentRoles($ret['roles']); //
+                static::setCurrentRoles($ret['roles']); //
 
                 $tenantid = request()->getTenantId();
 
@@ -833,7 +833,7 @@ class AuthController extends Controller implements IAuth
                 $perms = []; 
                 $roles = [Factory::acl()->getGuest()];
 
-                Acl::setCurrentRoles($roles); //
+                static::setCurrentRoles($roles); //
 
                 $ret = [
                     'uid' => null,
@@ -843,7 +843,7 @@ class AuthController extends Controller implements IAuth
                 ];
         }
 
-        Acl::setCurrentUid($ret['uid']) ;
+        static::setCurrentUid($ret['uid']) ;
 
         // Hook
         $this->onChecked($ret['uid'], $is_active, $roles, $perms, $auth_method);
@@ -929,7 +929,7 @@ class AuthController extends Controller implements IAuth
         $perms = $payload->permissions ?? [];
         $db_access = $this->getDbAccess($uid);
 
-        Acl::setCurrentRoles($roles); //
+        static::setCurrentRoles($roles); //
 
         $access  = $this->gen_jwt([ 
             'uid' => $uid,   
@@ -1096,7 +1096,7 @@ class AuthController extends Controller implements IAuth
                     ], 'refresh_token');
 
 
-                    Acl::setCurrentRoles($roles); //
+                    static::setCurrentRoles($roles); //
 
                     ///////////
                     response()->send([ 
@@ -1202,7 +1202,7 @@ class AuthController extends Controller implements IAuth
             $perms     = $this->fetchPermissions($uid);
             $db_access = $this->getDbAccess($uid);
 
-            Acl::setCurrentRoles($roles); //
+            static::setCurrentRoles($roles); //
 
             $access  = $this->gen_jwt([ 
                 'uid' => $uid, 
@@ -1341,7 +1341,34 @@ class AuthController extends Controller implements IAuth
         return in_array($db_connection, $this->getDbAccess($user_id));
     }
     
-    
+    function setCurrentUid($uid){
+        static::$current_user_uid = $uid;
+    }
+
+    function getCurrentUid(){
+        return static::$current_user_uid;
+    }
+
+    function setCurrentPermissions(Array $perms){
+        static::$current_user_permissions = $perms;
+    }
+
+    function getCurrentPermissions(){
+        return static::$current_user_permissions;
+    }
+
+    function setCurrentRoles(Array $roles){
+        static::$current_user_roles = $roles;
+    }
+
+    function getCurrentRoles(){
+        return static::$current_user_roles;
+    }
+
+    // alias
+    public function getRoles(){
+        return static::$current_user_roles;
+    }
 
     /*
         Event Hooks
@@ -1359,4 +1386,5 @@ class AuthController extends Controller implements IAuth
     function onChangedPassword($uid, $roles, $perms){}
 
     function getDbAccess($uid) : Array { return []; }
+    function hasDbAcces($user_id, string $db_connection){ return true; }
 }
