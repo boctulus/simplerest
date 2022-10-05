@@ -33,8 +33,8 @@ abstract class ResourceController extends Controller
         $perms = $this->auth['permissions'];
 
         $auth->setUID($uid); 
-        $auth->setCurrentRoles($roles);
-        $auth->setCurrentPermissions($perms);   
+        $auth->setRoles($roles);
+        $auth->setPermissions($perms);   
 
         parent::__construct();
     }

@@ -95,23 +95,18 @@ class AuthController extends Controller implements IAuth
         return $this->getUID();
     }
 
-    function setCurrentPermissions(Array $perms){
+    function setPermissions(Array $perms){
         static::$current_user_permissions = $perms;
     }
 
-    function getCurrentPermissions(){
+    function getPermissions(){
         return static::$current_user_permissions;
     }
 
-    function setCurrentRoles(Array $roles){
+    function setRoles(Array $roles){
         static::$current_user_roles = $roles;
     }
 
-    function getCurrentRoles(){
-        return static::$current_user_roles;
-    }
-
-    // alias
     public function getRoles(){
         return static::$current_user_roles;
     }
@@ -180,7 +175,7 @@ class AuthController extends Controller implements IAuth
             $perms     = $this->fetchPermissions($uid);
             $db_access = $this->getDbAccess($uid);
        
-            static::setCurrentRoles($roles); //
+            static::setRoles($roles); //
 
             $access  = $this->gen_jwt([ 
                 'uid' => $uid, 
@@ -645,7 +640,7 @@ class AuthController extends Controller implements IAuth
             $is_active = $this->config['pre_activated'] ? true : null;
             $db_access = $this->getDbAccess($uid);
 
-            static::setCurrentRoles($roles); //
+            static::setRoles($roles); //
 
             // Hook
             $this->onRegistered($data, $uid, $is_active, $roles);
@@ -797,7 +792,7 @@ class AuthController extends Controller implements IAuth
                 $is_active = true;
                 $perms  = $this->fetchPermissions($uid);
                 
-                static::setCurrentRoles($ret['roles']); //
+                static::setRoles($ret['roles']); //
 
                 $ret = [
                     'uid'           => $uid,
@@ -820,7 +815,7 @@ class AuthController extends Controller implements IAuth
                     }
                 } 
 
-                static::setCurrentRoles($ret['roles']); //
+                static::setRoles($ret['roles']); //
 
                 $tenantid = request()->getTenantId();
 
@@ -845,7 +840,7 @@ class AuthController extends Controller implements IAuth
                 $perms = []; 
                 $roles = [Factory::acl()->getGuest()];
 
-                static::setCurrentRoles($roles); //
+                static::setRoles($roles); //
 
                 $ret = [
                     'uid' => null,
@@ -941,7 +936,7 @@ class AuthController extends Controller implements IAuth
         $perms = $payload->permissions ?? [];
         $db_access = $this->getDbAccess($uid);
 
-        static::setCurrentRoles($roles); //
+        static::setRoles($roles); //
 
         $access  = $this->gen_jwt([ 
             'uid' => $uid,   
@@ -1107,7 +1102,7 @@ class AuthController extends Controller implements IAuth
                     ], 'refresh_token');
 
 
-                    static::setCurrentRoles($roles); //
+                    static::setRoles($roles); //
 
                     ///////////
                     response()->send([ 
@@ -1213,7 +1208,7 @@ class AuthController extends Controller implements IAuth
             $perms     = $this->fetchPermissions($uid);
             $db_access = $this->getDbAccess($uid);
 
-            static::setCurrentRoles($roles); //
+            static::setRoles($roles); //
 
             $access  = $this->gen_jwt([ 
                 'uid' => $uid, 
@@ -1368,5 +1363,4 @@ class AuthController extends Controller implements IAuth
     function onChangedPassword($uid, $roles, $perms){}
 
     function getDbAccess($uid) : Array { return []; }
-    function hasDbAcces($user_id, string $db_connection){ return true; }
 }
