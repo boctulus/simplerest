@@ -246,7 +246,7 @@ class Url
             return false;
         }
 
-		return (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'PostmanGeneratorRuntime') !== false);
+		return (Strings::startsWith('Postman', $_SERVER['HTTP_USER_AGENT']));
 	}
 
     static function isInsomnia(){
