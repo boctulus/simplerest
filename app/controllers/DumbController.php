@@ -313,6 +313,185 @@ class DumbController extends Controller
         view('casa_cambio/home.htm', null, 'casa_cambio/layout.php');
     }
 
+    function random_res(){
+        return rand(1, 9999);
+    }
+
+    function no_processing(){
+        $str = <<<STR
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+
+            <title></title>
+
+            <base href="http://simplerest.lan">
+
+            <!-- ico -->
+            <link rel="shortcut icon" href="http://simplerest.lan/public/assets/img/favicon.ico" />
+
+            <!-- google fonts 
+
+                For download 
+                https://github.com/majodev/google-webfonts-helper
+            -->
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+            <script>
+                const base_url  = 'http://simplerest.lan';
+            </script>
+
+            
+            <script>
+                let \$__email    = 'email'; 
+                let \$__username = 'username';
+                let \$__password = 'password';
+            </script><meta name="content-type" content="text/html; charset=utf-8">
+
+            <script src="http://simplerest.lan/public/assets/js/login.js"></script>
+
+            <!-- ICONOS FONTAWESOME -->
+            <script src="https://kit.fontawesome.com/3f60db90e4.js" crossorigin="anonymous"></script>
+            
+            <!-- TEMPLATE ADMIN LTE -->
+
+            <!-- Google Font: Source Sans Pro -->
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+            
+            <!-- Font Awesome -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/adminlte/plugins/fontawesome-free/css/all.min.css">
+            
+            <!-- Ionicons -->
+            <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+            <!-- Tempusdominus Bootstrap 4 -->
+
+            <!-- bootstrap 5.1.3 solo css -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/css/bootstrap.min.css">
+            
+            <!-- iCheck -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+            <!-- JQVMap -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/adminlte/plugins/jqvmap/jqvmap.min.css">
+        
+            <!-- overlayScrollbars -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css ">
+            <!-- Daterange picker -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/adminlte/plugins/daterangepicker/daterangepicker.css">
+            <!-- summernote -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/adminlte/plugins/summernote/summernote-bs4.min.css">
+
+        
+            <!-- Datatables -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/css/lib/datatables-net/datatables.min.css">
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/css/lib/datatables-net/datatables-net.min.css">
+
+            <!-- jQuery -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/jquery/jquery.min.js"></script>
+            
+            <!-- JavaScript Bundle with Popper -->
+            <script src="http://simplerest.lan/public/assets/js/bootstrap.bundle.min.js"></script>
+
+            <!-- FILEPOND -->
+            <!--link rel="stylesheet" href="... 'js/plugins/filepond/dist/filepond.css') ?>"-->
+
+
+            <!-- Select2 -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css" />
+
+            <!-- DualListbox -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/adminlte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.css"/>
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+            <!-- InputMask -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/moment/moment.min.js"></script>
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
+
+            <!-- date-range-picker -->
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/adminlte/plugins/daterangepicker/daterangepicker.css"/>
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/daterangepicker/daterangepicker.js"></script>
+            
+
+            <link rel="stylesheet" href="http://simplerest.lan/public/assets/css/main.css"/>
+
+        </head>
+        <body>
+            <div class="container-fluid">
+                <nav>
+                    <script>
+                        if (logged()){
+                            console.log("[x] Cerrar session");
+                        } else {
+                            console.log("[>] Login");
+                        }
+                    </script>
+                </nav>
+            
+                <main>
+                <h1>Test Assets</h1>
+
+        <img src="http://simplerest.lan/public/assets/img/avatar.png" />        </main>
+            </div>
+            
+
+            <!-- jQuery UI 1.11.4 -->
+            <!--script src="< ?= asset('adminlte/plugins/jquery-ui/jquery-ui.min.js') ?>"></script-->
+
+            <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+            <script>
+                //$.widget.bridge('uibutton', $.ui.button)
+            </script>
+
+            <!-- ChartJS -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/chart.js/Chart.min.js"></script>
+            
+            <!-- Sparkline -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/sparklines/sparkline.js"></script>
+            
+            <!-- JQVMap -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/jqvmap/jquery.vmap.min.js"></script>
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+            
+            <!-- jQuery Knob Chart -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/jquery-knob/jquery.knob.min.js"></script>
+            
+            <!-- daterangepicker -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/moment/moment.min.js"></script>
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/daterangepicker/daterangepicker.js"></script>
+            
+            <!-- Tempusdominus Bootstrap 4 -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+            
+            <!-- Summernote -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/summernote/summernote-bs4.min.js"></script>
+            
+            <!-- overlayScrollbars -->
+            <script src="http://simplerest.lan/public/assets/adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+            <!-- Select2 -->
+            <script src="https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js"></script>
+
+            
+            <script src="http://simplerest.lan/public/assets/js/boostrap_notices.js"></script>
+
+            <footer id="footer">
+                    
+                    </footer>
+        </body>
+        </html>
+        STR;
+ 
+        return strlen($str);
+    }
+
+    function just_string(){
+        return 'TUpHG 0VQ IImwRMTLBAHhL4QoJeUTy sJjqb6hI1dpArfm NP Rtv2qYLbiE wtSwO0 skm2 dpgpPXpNJrJIFhDhf8zl7O8C5bCcX 6 gMiU OgpXYZyqhyWdFnQq6BbYpZD1M6MuAPLQvMHBHkyX1boS4 h2K2vS7XAVGy7AM y6f5xA JwAd3CE91no eLzmeZ7lonHm cPUZb4Iv08 XCCoDhJRfzEoJI989Urr44l5z amFKv4UMlRZJDdHMNisj2srm5t8t k79tl7Kcl1IWSzP mWzrbGzrgOS JSBpQFnM2uaoM Gbwekga6ZEUkmsEQKOYOVA LpQcQCooMLTX93a0wu2i5uGLituy p BnDJt n3mUskFs Meh73Os xpno2SueX 5OIrQvFJVJc7DRqeoxd0UwvXeKHlK9hr9QZ7xY PP Hq 9yhsVPcDLayajQv3ZSU ty3aBlY5wfWGb 917NRDXDQX GZ1Em4u4X2Aftqvmb jUG8pKZgzHc4XGj YS3pztrFijhoCQyE wkcH1V hk2AwTLlTrZgjohtiSArDjzrrxZcdzBgBmaW2eF fInWvEQdknXr61iX5MNZKK6K DzOfQekZC16EBMyYdc6iFR9tpp lOGPEWBIZcj1xsTcM4 6 8ll 2k 09 AIqm VnbmEbsXSvgcVvY8 9 O4ks 2ZoBqxps rW5Q i L ps ubgdh QFtisxQ G mzrJoNUbc Yu8ljmhT1t8moYsTK bEsMLSdPASD0Ny8g znJqAzbYhzmr i3tKcCYOpC yD Ur8n 1YhSrHjws395XjVl1oTbiy 4BQDC zLwk68541sAsC Z YCOoHZ dnr AQ ED8sYbA5Zn44J158vzOd9w iBf Sc9Gfl ARgR4pyX 7LTRwA6WbEauIKTwTk0Nuz9 F63OQ17g bJpVNetO9a RvRTDoG1bESc3Kt7o6Rvldiz 8 j0KJEsquQ70rxjNvHjUnQY4jJ 8XkIMwUNMgGdBXUxuNUK pde rktHya2MXz Yf QcXc 59ui UtNHV unXhsBg 5msGND wgBh E45DcsnMBU1 NsjTvD bs7GVYxzjHHd3tAaTKIp zZu6Lt yz 78uFB2Gilw7mB WHfuF6UCneNn0xgMk8llV8xsH6QlOAkf6dZcA7MmEtZ jZI5WWESJeM Fkv8CLmqBB6KQRzpaGLetlbD2Mz08o3LtktLjxJ2YeYqlkzbd 7RV0 ln09vCoeqMJMuxpvS0JsBJ5fVSk j9XztsOLhhtHBcYxLoH5oeKqMpX KZ5aBjzR Q 8RbfuGmeytn1Ec8R MCSEsMgV9Q Y3KWBPE1aRxpZL a7vTGV7j8YgG 2I hiXRKp8KhPsmUpe C Nm2LIJ VIZVhp5Q3X6gxHZ W9nj2m E9ycdmmO5X6G6nUFL0gK38sAuRTSaXuyl5 a vzEHruQ0gd40l Mnh89IOR ZTZMbV1kZdQDJ Y1XVoDahIITDd90jiaLYIAxmuDOGFRDuMtQpqWmG6Dkkc2 hLULNsvHgQz4dLkN21H7cg Hh116 H3ytpPx olFit3J1Vo 3yz yoHiv vbbe7gUhOOtB8i0IRwo4Vpzlof5HmD92DP7A F zUaPnYdCmNngwDw lZx 9Lj4m57WIdO9W5YenJBws M rDZ mYnTNLv 1psP BK0TlBCPOLt0 KCJTMyuJ6BP9iOgVCokVUk69 muUqyBeL0HFdf5 a DTbUhKLvPL 8MW4rEirgiDgcIPy6PVcAaVIIEeLZjQ qpFb Y w9oBZW odft0vFwSF4mfnsh1WUm6Wb7DR7NEivWcPyKTodhvJ7dt68 01z0Nxyr snMZXcxScsOJ48RwqZZt A Wb6ayXK tkiSwHn8aNX2Agkx Pa3W hb318xTlKWtsfSU hVMCU xf VEAp4nBASSN1u abIymJ QOu OE eCxP VVlESNgaz 5CNU7AkQbZMCKLCZNEd5D Od7ECTE3 0BXrMZP EjK HtoLhjhTjZ 3SnbDzy80v2cFw5JB HZK nqm HxYdkhL2y53EZkgSACO4jrKlhXQHFyKuSx2lGpHQrCtm5DF dHeD58Wiq Sm 33d mG o6B0cYGNtJDBvtBFF2e alu2B3oje0nB8lv4rucsePbojxREM g90lrvu0YD6jP2yZw4bmmdTK z y eyc roq jtP2nF45R aa7VSw5g yWGP7zXxwVlEVAnC uQC0y2HJc Di oeVX1CvDQheJ7ES MWbj05eaMSw0wxlajiF kbrU1sVxVH 2J0dvtYz6rtHSbpm9SKQscHH4uF iEkLOFt 6pWNrQ5OHhNhqlI0TBcQ eSQkettYFqDw3nBW7CO7bdl7qxk2j4NvFlHB94OKCxmb99c 9 fWb YEcWb7 nRwcr RDkXrDXSYGxEp ZTNCkjf2m3yzMxu5ykxx1BfK9tS 87e JY q JpJfV0RovaaiDqavPpXexebq8 Bjuv A kvLyDoze0 pzg7aR25IDJcPHE6ISTbIeXN aSY6VwhY1 3Jo nE54N8ke5If MoPEXD0 n2AfIqPz8RiZIsUY Iw X 3mUvPQURWKJOCTEmtMbF NKmJ2n7aIpZ OzD1O q3ihRbgAspM IPV8XnahRlo y3 xWgrRffbfpMX SA k aN9G5XO 4Cpllpo q6FsL YcxyCQYQwAj3E4SR0LdpyAIboBWcMdzQBfCK J eVhlF0uMZV3kIM7 0D R Zhp1BWs1u QU YEfPgbnN3z4RYke3q3w758GMROl2q JrAUQ zIP6ppe62SAqx7DK1EfuKmIPafv7gix10aHO66 f2gHuN5JpygND Vk8vrf8wLAsu TjQG MKMXIVtdSqdjKkzqjaUNicg2CSaQbk5Rgq11YTY UN9I4eIyg5A9wWgQmhcQ2YodnoRoPShICCOrTDVwuFZaXGN p4 DGUhgSnRhvwI QtLHiqpc Se eI 3708 lAU23Q3kUjraJyIkVqbKWBKB6dHpIrUPseBSFY Obnojqmx OzSYClU2AJudV wIqXr vJp8lNrpkBmTGEPg7Bjhfd bN YyDt6KNzn 9 8uOouaRuXRFiBbze366K3Skyj7s8pegG y9aWMjbOeHiG4pZKLUaj79HIe01JUE dc9ABbpHG G7JU SD5Mx SiLgZbCgSypRy3uI Cd93BsAdqw fL814ScOqoi3GGi HfSP89PkRbtHBTbQept1i GQle nc J uy PirocOJqy7 DlNXFCULE 4 eSe dWMjWuQsHF pw Uo5qrnYcBMdEbbnvTeOQVo vP E582 m4jlR KWQKn4NUW3Byx71PuW22 TBR3ash UIIPwclAJrjci ZUw7f2LFrdD Xy6Z5kTlNqbnOQHH srPYljX8 lkWZmAXgXc8vNBGhwyYB8jJE9SRJ ji1LIkn7 0iJlFrPvJ9miPU wQ5ap1 V2CEPUGNdM01G2k3KZsnfPJBDA yf2VqhOc58kX3mLB Pow8MIqYTTJKfDvnIFkaF5ijd47o0g9O6EZxCR uKILC NpL9n576TrCQcvMZioAcqOYvWrZnL9N c Julcv5Kc SumY JCT7ur3V 8 DFU0D16JzsRcqX0L5ZHV4qUFGXCecubsN3 YLu1AYr 1a1IeV3haGwZxnjurDmo84Ro Z4Xt16DNXYrmZ1 zTG M5BYdkti3myNvUGQ0H6UTYDaOv5M Wn8kv5IaY94h2VQjAbMuogKXyvCYok8lNy9WQbmIsHLNuH9cxxrD60ek oOGVvN3q9ifEcL3 AZ4V9xqgESezwdcE6d4ATd xU1TkFqN08P8 Mm8I05JXBOVu 3F0dUF7NYVC2S HPxe1R3KlzpRtA 6Z Wnh1rGAGfSwjCsI8E 1ET r4cn9H0LPNv22KNtnsg2M I1lNfkM2xM7R0LS2Bgmp5EUMO76VVOMBFiwwEZzZpr1ZpOxj5uu1cQjKIN56rsTwHlntk88hccAfh37i4DFOtgWBdba 1U86ne3eSlLKq4rig FaaExTWxjMO C RyDj6tHXt9Cq FeJ8Oa 8bW0S7 4MhwjksWvA4 jWb6e1 j q TNTl48VO7oNzKr4kZiBhG toCLqfdmhNPEjC2Aio stC08 WggDZA wjbq ZNvys3zp3WcTI A oj5VPC2N1Y LoFUyJ41 7o bdYET rzT d 2JLDPvQ1 5Wse SgdXi2 6cEP n4Oxg8oMtKQ4yUw8NBUBp78wLdyvU5BAkDsia7rtfEbVDYhN9 2f3cocYHGfof1YnaqvDqU7sx Nb1MjSuE7i ff oE y05KA9b9KfzDVF8 0eK31 VwbV7qpLb1SLOAcx R5hCIXc5lgDKvAtQ4W Cff0H uMu ntwvz9J kJ HZI6C1YFYVV1aLSz8dwI3d PmWOI0 AP4 eE9LipgTX96Lz0CzgMuQOG784qbisJeWZ6gqrd0h YiwL YdxaaUevSfBuI d FSQeEF7Tseq5ZiivecU UwBvXNpvvd bmoHS6ScHqW CT0Qn9aW 5Jn WNg3PG3lbRszbOk cL8VqyqKW Tu0fGu aQ Z wfM4usdv 1Y svLrSeguRCV7Lhw Lb818 qTJW7 TG7Vs To BFfB8jxgG HAFGYDrw7URihp uAC MEaKFffy A9r3w z12AygnKGjWdVoLpcDPX Cdq9FLdW3e HXU4dCtkiKtdV3p RXNy6 XciU2eaA UTxkAsT6C5jv8M 6kn4LW Uw c9Gco erDLVfR oUhWvCYhA2hh031LhgQls1xFwR uyTEKdbf k7yRhn3acgX q6hKL440xnFbdUfyZrVo7WU5QnyweG8TDW4S3vs G54wkv UtMZsHQ4pxlo JCPnn6mumakD6L1j0z0YIn6m41G TJp6z4WiW8 VRX FWX 2g yK9HJo faz kN8t63so3Qbu67 4IFGb2 CIGq2k KGIVMIcaHQPe p4Giaa6qBs CySsxsSj3YSm T R3Q1eWJulU QJ 3U4szk3t3ZrIA 0RchE rfBP4dGMvHKGWExxPGMdf6w5abq7x96tMqyAtoymXY JWK xNYXd quTmdjOhaUB2 gzUTOZ iTgnvEcxtXIpiMJoiPvYohxrm Pu pNQb2iiyNAVegkGOgQ4kmtuWgaaqq4DiffVi7T 7AlLfkxn I2P m9IhIj Bxk 00g4lKU Y2IH2oN68 jUrqR0G mZYW Gfya M7os6XKh f91DDU2tQ9fOmoPilYlR4nHdO qffCqk2ekbbdAR94L0ldaHdcUT Z5k6dfCi E9w8P o NWjnftx0nPYwFhLYtly FoyZ0I5iIlQTG2 yW D PMQwBhA66IELOvfXKmpSPATCk mRn84C9fZPB6mFRc NPDx Oe YMgNHEAZFgG3bgKf9uNsL5GSTgiTL1SK3FZAhvlbM MVB6z8xiP4tsCEjZCFVc2XVG87NbhqiVanwxT7pWIZrvjcR0sO4tTB0ndHlNgi4 Py5CFud5F14 ycxaut1g5Qi89XsStvNtYf5nx10Ju9LonA v3axQFEhfh n1 JMG01zIGjE wPW zV2gsFgUpy96jfM4P MvDE feyOO53pDTk7EP7lXpWNTj4O7R95 6iUFATFFeIamDAqNuT15 2wsG 3EEzGrNZryza4P9 iRvz2sSC4fHCeJd5YYFnHuX4T0Ojc V9q0XsThlM P6jETugK5qJyaek vyT3rIDI RilK GttttRRq29 tfrkn7Gvnl22R5fAOicrK3C 5gOb 4 RRXRrvP0nzGN6ezjB pk wmp hlOlgHTmjKOUlar zTJ yW17M0PV TPC3u2Cu rR oNixKW3HawtO0mZR0 V z z rJxB0lz FpfIM qzhKtfg2nfHlmTW663kSCWM7sjRM4BY06mOV C07 YgsLozKXFDsnKwOk Zr07lOApwPwpGW6H aivLG15LgiNhXrD7BWhwbuXxZ2a yOCQgX ehXjxfHlRE0dGO9eHiLV XpCWes8hQBHRzrv3dD5ot5e56Ws8yR XB hMCOnFmqfZF6kywzujRxuRXh9vtG 7uCGf x ztxIgZLs2S9D2gJZbwiT n2Ddxov zwOLCm1R CKawGaHKqOAX9jsbGSwT OtN2qkDfJiTp18NGhflJ9wN 9Kwd 8 KBemidxy o44p9xco7UWYkUHA zJrVQIkF BrNAF3 KQBfXQ QE2wRpdSVgSv9PmmjGrFJWZzzJQf LPdilJI2HcV1lNzWP6c7milzJn0SO0y 2url0OV UAhHFe9qMqXrxaj5xImQFv64CRF9neK9A5ES1rz wlHDTAaEPBaB 8x73 SzlrFeVqxEsUfuS3EGAZO pP8d33WEbwG3uZ SjOE5LtDpW FH J0FtwRe3X SIR0Yw2sx5h9pR6JYJg2Vmk qY4WU70ox3v1 NAPjLbVwXSYjPj7I lBB HC2eXhEXrJcrZt9zQO1ckKLE974q VHl A6ePlDCKPR5uqSywR6SWuaV1mFqUG Ta2UL u PqDF 5j 5ZigYhQIFUaVIP12dTz o8EOBzcGHh GBgpyWTQJ3ZxVFA';
+    }
+
     /*
     function xyz(){
         DB::getConnection('db3');
