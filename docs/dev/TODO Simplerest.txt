@@ -542,6 +542,11 @@ Ver
 https://www.youtube.com/watch?v=BrY6a-lsLp8&ab_channel=Ahrefs
 https://es.wordpress.org/plugins/docket-cache/
 
+
+- Para metricas de performance de la web ->
+
+https://onlineornot.com/understanding-page-speed-metrics-google-lighthouse
+
 -----x----
 
 - No seria mala idea "importar" la clase que crea Colecciones en Laravel a SimpleRest

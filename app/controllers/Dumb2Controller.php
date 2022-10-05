@@ -12,6 +12,12 @@ use simplerest\controllers\MyController;
 
 class Dumb2Controller extends MyController
 {
+  function get_rand_str(){
+    $len = 6770;
+
+    return Strings::randomString($len);
+  }
+
   function testy(){
     dd(
       Strings::parseCurrency('son EUR 108.000,40 a pagar', '.', ',')

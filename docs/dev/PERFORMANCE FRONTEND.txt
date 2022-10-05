@@ -1,0 +1,10 @@
+TIEMPO DE "CARGA" DE UNA PAGINA
+-------------------------------
+
+El tiempo empleado en renderizar componentes con Bt5Form es totalmente irrelevante !
+
+El cachear archivos HTML en el backend no aporta nada significativo.
+
+Se demora lo mismo el navegador en renderizar un string de 1 caracter a uno de 10,000.
+
+Lo que SI le lleva tiempo al navegador es *renderizar* cuando hay etiquetas de HTML y recursos que debe interpretar como Javascript o imagnes que debe leer y renderizar.
