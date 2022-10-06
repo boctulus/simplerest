@@ -24,6 +24,9 @@
         const base_url  = '<?= base_url(); ?>';
     </script>
 
+    <!-- jQuery -->
+    <script src="<?= asset('adminlte/plugins/jquery/jquery.min.js') ?>"></script>
+
     <?= 
         umodel();
         head();        
@@ -70,8 +73,6 @@
     <link rel="stylesheet" href="<?= asset('css/lib/datatables-net/datatables.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/lib/datatables-net/datatables-net.min.css') ?>">
 
-     <!-- jQuery -->
-     <script src="<?= asset('adminlte/plugins/jquery/jquery.min.js') ?>"></script>
      
     <!-- JavaScript Bundle with Popper -->
     <script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
