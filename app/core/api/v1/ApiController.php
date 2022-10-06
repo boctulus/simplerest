@@ -316,7 +316,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         $acl = acl();
 
-        try {            
+        try {                     
             $this->instance = $this->getModelInstance();
                         
             $data    = []; 
@@ -343,18 +343,20 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 foreach ($fs as $f){
                     if (isset($_get[$f])){
-                        if ($_get[$f] == 'me')
+                        if ($_get[$f] == 'me'){
                             $_get[$f] = auth()->uid();
-                        elseif (is_array($_get[$f])){
+                        }elseif (is_array($_get[$f])){
                             foreach ($_get[$f] as $op => $idx){                            
                                 if ($idx == 'me'){
                                     $_get[$f][$op] = auth()->uid();
                                 }else{      
                                     $p = explode(',',$idx);
                                     if (count($p)>1){
-                                    foreach ($p as $ix => $idy){
-                                        if ($idy == 'me')
-                                            $p[$ix] = auth()->uid();
+                                        foreach ($p as $ix => $idy){
+                                            if ($idy == 'me'){
+                                                $p[$ix] = auth()->uid();
+                                                break;
+                                            }
                                         }
                                     }
                                     $_get[$f][$op] = implode(',',$p);
@@ -363,18 +365,21 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         }else{
                             $p = explode(',',$_get[$f]);
                             if (count($p)>1){
-                            foreach ($p as $ix => $idx){
-                                if ($idx == 'me')
-                                    $p[$ix] = auth()->uid();
+                                foreach ($p as $ix => $idx){
+                                    if ($idx == 'me'){
+                                        $p[$ix] = auth()->uid();
+                                        break;
+                                    }
                                 }
                             }
+
                             $_get[$f] = implode(',',$p);
                         }
                     }
                 }
         
-                //var_export($_get);
-                //exit; ////
+                // var_export($_get);
+                // exit; ////
 
                 if (isset($_get[$this->instance->createdBy()]) && $_get[$this->instance->createdBy()] == 'me')
                     $_get[$this->instance->createdBy()] = auth()->uid();
@@ -454,7 +459,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (empty($this->folder)){               
                     // root, by id          
                          
-                    if ($acl->isGuest()){                        
+                    if (auth()->isRegistered()){                        
                         if ($this->instance->inSchema(['guest_access'])){
                             $_get[] = ['guest_access', 1];
                         } elseif (!empty(static::$folder_field)) {
@@ -482,7 +487,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
 
                 // avoid guests can see everything with just 'read' permission
-                if ($acl->isGuest()){
+                if (auth()->isRegistered()){
                     if ($owned){             
                         if (!$acl->hasSpecialPermission('read_all') && 
                             (!$acl->hasResourcePermission('show_all', $this->table_name))
@@ -722,7 +727,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
 
                 // avoid guests can see everything with just 'read' permission
-                if ($acl->isGuest()){
+                if (auth()->isRegistered()){
                     if ($owned){             
                         if (!$acl->hasSpecialPermission('read_all') && 
                             (!$acl->hasResourcePermission('list_all', $this->table_name))
@@ -780,7 +785,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 if (empty($this->folder)){
                     // root, sin especificar folder ni id (lista)   // *             
-                    if (!$acl->isGuest() && $owned && 
+                    if (!auth()->isRegistered() && $owned && 
                         !$acl->hasSpecialPermission('read_all') &&
                         !$acl->hasResourcePermission('list_all', $this->table_name) ){
                         $_get[] = [$this->instance->belongsTo(), auth()->uid()];     

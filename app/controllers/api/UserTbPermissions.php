@@ -21,13 +21,13 @@ class UserTbPermissions extends MyApiController
                 
         parent::__construct();
 
-        if ($this->acl->isGuest()){
-            response()->error("No access", 403);
+        if (auth()->isGuest()){
+            response()->error("Not authorized", 403);
         }
     }
 
     function post(){
-        $data = Factory::request()->getBody(false);
+        $data = request()->getBody(false);
 
         if (empty($data))
             error('Invalid JSON',400);

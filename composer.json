@@ -23,7 +23,6 @@
         "florianv/swap": "^4.3",
         "league/oauth2-google": "^4.0",
         "sendgrid/sendgrid": "~7",
-        "guzzlehttp/guzzle": "^7.4",
         "endroid/qr-code": "^4.4"
     },
     "autoload": {

@@ -27,15 +27,7 @@ abstract class ResourceController extends Controller
         
         $auth = $auth ?? auth();
         $this->auth = ($auth)->check();
-
-        $uid   = $this->auth['uid'];
-        $roles = $this->auth['roles'];
-        $perms = $this->auth['permissions'];
-
-        $auth->setUID($uid); 
-        $auth->setRoles($roles);
-        $auth->setPermissions($perms);   
-
+  
         parent::__construct();
     }
     

@@ -18,13 +18,11 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     $acl
     ->addRole('guest', -1)
-    ->addResourcePermissions('products', ['read_all', 'write'])
     ->addResourcePermissions('testx', ['read', 'write'])
     ->addResourcePermissions('facturas', ['read', 'write'])
     ->addResourcePermissions('factura_detalle', ['read', 'write'])
     ->addResourcePermissions('tbl_estado_civil', ['read', 'write'])
     ->addResourcePermissions('tbl_factura_detalle', ['read', 'write'])
-    ->addResourcePermissions('bar', ['read', 'write'])
     ->addResourcePermissions('baz', ['read', 'write'])
     ->addResourcePermissions('telefonos', ['read', 'write'])
     ->addResourcePermissions('files', ['read', 'write'])
@@ -60,7 +58,10 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     //->setAsGuest('guest')
 
     ->addRole('registered', 1)
+    ->setAsRegistered('registered')
     ->addInherit('guest') 
+    ->addResourcePermissions('bar', ['read', 'write'])
+    ->addResourcePermissions('products', ['read'])
     ->addResourcePermissions('tbl_persona', ['read', 'write'])
     ->addResourcePermissions('u', ['read'])
     ->addResourcePermissions('tbl_scritp_tablas', ['read'])
@@ -79,10 +80,6 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('user_sp_permissions', ['read', 'write'])
     ->addResourcePermissions('updates', ['read_all'])  // *
     ->addResourcePermissions('tbl_sub_cuenta_contable', ['read', 'write'])
-    
-    
-    // ...
-    ->setAsRegistered('registered')
     
     
     ->addRole('usuario', 10) 

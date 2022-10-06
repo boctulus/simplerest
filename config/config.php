@@ -1,5 +1,7 @@
 <?php
 
+use simplerest\core\Paginator;
+
 require_once __DIR__ . '/constants.php';
 
 // puede afectar el punto decimal al formar sentencias SQL !!!
@@ -186,9 +188,9 @@ return [
 	'include_enity_name' => true,
 	'nest_sub_resources' => false,	
 	'paginator' => [
-					'max_limit' => 50,
-					'default_limit' => 10,
-					'position' => 'BOTTOM'
+		'max_limit' => 50,
+		'default_limit' => 10,
+		'position' => Paginator::TOP
 	],
 
 	'pretty' => false,
