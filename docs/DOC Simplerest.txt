@@ -7595,35 +7595,13 @@ Las variables pueden pasar del controlador a las vistas y el mismo truco puede u
 
 El helper section() incluye una vista dentro del template u otra vista pero y si quisieramos tener una vista que fuera como un "wrapper" re-utilizable para aplicar sobre cualquier otra vista?
 
+Usaremos get_view()
+
+	get_view(string $view_path, ?Array $vars = null, int $expiration_time = 0)
+
+	Obtiene una vista. Puede que la recupere de cache. 
+
 En este caso podriamos leer la vista "hija" y luego la vista "padre" pasándole la hija a un placeholder dentro del padre.
-
-En el siguiente ejemplo haremos uso de los helpers get_view(), get_view_src() y include_no_render()
-
-Ej:
-
-<?php
-
-	/*
-		views/andrea/container.php
-	*/
-
-	<section style="margin-top:-20px;">
-        <?= $placeholder ?>
-	</section>
-
-	/*
-		En una vista
-	*/
-
-	$placeholder = get_view('andrea/builder');
-    $content     = include_no_render(get_view_src('andrea/container'), ['placeholder' => $placeholder]);
-
-	// Y luego ese $content puede a su vez pasarse a otras vistas o enviarse al template:
-
-	render($content);
-
-
-Sin embargo, es posible simplificar mucho mas,.... 
 
 <?php
 
@@ -7636,27 +7614,36 @@ Sin embargo, es posible simplificar mucho mas,....
 	
 	render($content);
 
-Como puede observarse, get_view() puede por debajo hacer las llamadas a include_no_render() y get_view_src() quedando algo mucho mas simple.
 
-Ahora veamos que hace cada helper:
+Donde 'andrea/container' hace referencia a una vista container.php dentro de la carpeta andrea con algo como:
 
-	include_no_render(string $path, ?Array $vars = null)
-
-		Hace un include() al que puede pasarle variables pero retiene el buffer y devuelve el resultado como string
-
-	get_view_src(string $view_path, int $expiration_time = 0)
-
-		Obtiene el path de una vista. Puede que la recupere el path de la versión cacheada si aún no ha expirado.
-
-	get_view(string $view_path, ?Array $vars = null, int $expiration_time = 0)
-
-		Obtiene una vista. Puede que la recupere de cache. 
+	<section style="border: red 1px solid;">
+			<?= $placeholder ?>
+	</section>
 
 
 Ahora,..... cuál la diferencia entre view() y get_view() ?
 
 	view()		renderiza una vista dentro de un template
 	get_view()	retorna una vista. No queda incluida dentro del template.
+
+
+Igualmente lo anterior se puede hacer mucho más simple si en vez de hacer uso de otra vista como wrapper simplemente se embebiera una vista dentro de la otra.
+
+Ej:
+
+  $content = '<section style="border: red 1px solid;">' .
+      get_view('andrea/builder') .
+  '</section>';
+
+  render($content);
+
+En vez de ....
+
+  $placeholder = get_view('andrea/builder');
+  $content     = get_view('andrea/container', ['placeholder' => $placeholder]);
+
+  render($content);
 
 
 # Hookear la clase View
