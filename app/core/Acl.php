@@ -461,16 +461,6 @@ abstract class Acl implements IAcl
         return $tb_perms[$table];
     }
 
-
-    // fiexed
-    public function isGuest() : bool {
-        return auth()->getRoles() == [$this->getGuest()];
-    }
-
-    public function isRegistered() : bool {
-        return !$this->isGuest();
-    }
-
     // Not in interfaces 
 
     public function hasRole(string $role) : bool {

@@ -50,7 +50,7 @@ class Files extends MyApiController
                 if (isset($data['belongs_to']))
                     $belongs_to = $data['belongs_to'];    
             } else 
-                $belongs_to = !$this->acl->isGuest() ? auth()->uid() : null;    
+                $belongs_to = !auth()->isGuest() ? auth()->uid() : null;    
 
             $file_ext = pathinfo($filename_ori, PATHINFO_EXTENSION);
 

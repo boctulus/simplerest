@@ -1,12 +1,5 @@
 # TODO
 
-- No tiene sentido que algunas cosas esten dentro de Acl y deberian estar dentro de AuthController:
-
-    static protected $current_user_uid; //
-    static protected $current_user_permissions = []; //
-    static protected $current_user_roles = []; //
-
-
 TOP PRIORITY
 ============
 

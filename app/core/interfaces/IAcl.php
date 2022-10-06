@@ -41,10 +41,6 @@ interface IAcl {
 
     function getSpPermissions(string $table = null);
 
-    function isGuest() : bool;
-
-    function isRegistered() : bool;
-
     function hasRole(string $role) : bool;
 
     function isHigherRole(string $role, string $referenced_role);

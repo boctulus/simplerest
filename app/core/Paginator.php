@@ -15,6 +15,9 @@ class Paginator
     protected $query = '';
     protected $binding = [];
 
+    const TOP    = 'TOP';
+    const BOTTOM = 'BOTTOM';
+
     /** 
      * @param array $attributes of the entity to be paginated
      * @param array $order 
