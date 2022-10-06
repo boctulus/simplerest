@@ -9,9 +9,7 @@ interface IAuth {
     function check();   
 
     function uid();
-    function setPermissions(Array $perms);
     function getPermissions();
-    function setRoles(Array $roles);
     function getRoles();
     function isGuest() : bool;
     function isRegistered() : bool;
