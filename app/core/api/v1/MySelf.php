@@ -17,14 +17,15 @@ class MySelf extends MyApiController
 {  
     function __construct() 
     { 
-        $this->config = config();
-        $this->table_name = $this->config['users_table'];
+        $config = config();
+        $this->table_name = $config['users_table'];
 
         parent::__construct();
 
         $model = get_user_model_name();
+
         $this->is_active = $model::$is_active;
-        $this->__id   = get_id_name($this->config['users_table']);
+        $this->__id      = get_id_name($config['users_table']);
   
         if (Factory::request()->authMethod() != NULL){
                 $this->callable = ['get', 'put', 'patch', 'delete'];
@@ -63,7 +64,7 @@ class MySelf extends MyApiController
         $u = DB::table($this->table_name);
 
         if ($u->inSchema([$this->is_active])){
-            Factory::response()->send("Account deactivation not implemented", 501);
+            response()->send("Account deactivation not implemented", 501);
         }
 
         $ok = (bool) $u
@@ -72,9 +73,9 @@ class MySelf extends MyApiController
         ->update([$this->is_active => 0]);
 
         if ($ok) {
-            Factory::response()->send("Your account was succesfully disabled");
+            response()->send("Your account was succesfully disabled");
         } else {
-            Factory::response()->send("An error has ocurred trying to disable your account.");
+            response()->send("An error has ocurred trying to disable your account.");
         }        
     } // 
        

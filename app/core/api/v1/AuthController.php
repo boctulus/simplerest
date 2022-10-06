@@ -82,17 +82,12 @@ class AuthController extends Controller implements IAuth
         return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
     }
 
-    function setUID($uid){
+    protected function setUID($uid){
         static::$current_user_uid = $uid;
     }
 
-    function getUID(){
-        return static::$current_user_uid;
-    }
-
-    // alias
     function uid(){
-        return $this->getUID();
+        return static::$current_user_uid;
     }
 
     function setPermissions(Array $perms){
@@ -109,6 +104,14 @@ class AuthController extends Controller implements IAuth
 
     public function getRoles(){
         return static::$current_user_roles;
+    }
+
+    public function isGuest() : bool {
+        return auth()->getRoles() == [ acl()->getGuest() ];
+    }
+
+    public function isRegistered() : bool {
+        return !$this->isGuest();
     }
 
     function login()
@@ -807,7 +810,7 @@ class AuthController extends Controller implements IAuth
                 if (DB::table($this->users_table)->inSchema([$this->role_field])){
                     $ret['roles'] = [ Factory::acl()->getRoleName($ret['roles']) ]; 
                 } else {
-                    if (Factory::acl()->isRegistered()){
+                    if ($this->isRegistered()){
                         // sino preguntara sobre-escribiría roles
                         if (empty($ret['roles'])){
                             $ret['roles'] = [ Factory::acl()->getRegistered()];

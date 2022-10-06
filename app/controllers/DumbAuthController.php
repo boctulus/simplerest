@@ -63,7 +63,7 @@ class DumbAuthController extends ResourceController
         // toca hacer que isHigherRole() se arme con permisos y no roles
         dd($acl->hasAnyRoleOrHigher(['admin', 'dsi']), "HAS ANY ROLE OR HIGHER ONE?");
 
-        dd($acl->isGuest(), 'IS GUEST'); 
+        dd(auth()->isRegistered(), 'IS GUEST'); 
         dd($acl->isRegistered(), 'IS REGISTERED');
         
         

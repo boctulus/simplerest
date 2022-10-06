@@ -39,7 +39,7 @@ class Download extends ResourceController
         $_get = [];    
         
         if (!Factory::acl()->hasSpecialPermission('read_all')){
-            if ($this->acl->isGuest()){                
+            if (auth()->isGuest()){                
                 $instance = DB::table($this->table_name);
                 
                 if ($instance->inSchema(['guest_access'])){
