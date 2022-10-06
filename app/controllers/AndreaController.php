@@ -47,7 +47,7 @@ class AndreaController extends MyController
         //<!-- Loader -->
         js_file('andrea/js/plugins/loader/js/classie.js'); 
         js_file('andrea/js/plugins/loader/js/pathLoader.js');
-        #js_file('andrea/js/plugins/loader/js/main.js');
+        js_file('andrea/js/plugins/loader/js/main.js'); //
         js_file('andrea/js/classie.js');
 
         //<!-- bxSlider --> 
@@ -86,6 +86,10 @@ class AndreaController extends MyController
 
     function dedication(){
         view('andrea/dedication');
+    }
+
+    function buttons(){
+        view('andrea/buttons');
     }
 
     function more_content()
