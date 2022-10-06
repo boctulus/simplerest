@@ -13,7 +13,7 @@
         <div class="childs_home">
             <h3 id="choose_kids_h3" class="main-slider_smalltitle text-shadow">Choose kid's character</h3>
             <div class="choose-kids" who="bmr" gender="m"><img src="public/assets/andrea/img/passport-photo/bmr.png">
-                <div class="check-childs"></div>
+                <!--div class="check-childs"></div-->
             </div>
             <div class="choose-kids" who="bmn" gender="m"><img src="public/assets/andrea/img/passport-photo/bmn.png"></div>
             <div class="choose-kids" who="bmm" gender="m"><img src="public/assets/andrea/img/passport-photo/bmm.png"></div>
@@ -93,7 +93,7 @@
                         $('#create_loading_off').hide();
                         $('#create_loading_on').show();
 
-                        $("#create_tale").submit();
+                        //$("#create_tale").submit();
                     }
 
                 });

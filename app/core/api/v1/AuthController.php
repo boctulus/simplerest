@@ -21,6 +21,7 @@ use simplerest\core\interfaces\IDbAccess;
 class AuthController extends Controller implements IAuth
 {
     protected $role_field;
+    
     protected $__email;
     protected $__username;
     protected $__password;

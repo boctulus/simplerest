@@ -461,8 +461,6 @@ abstract class Acl implements IAcl
         return $tb_perms[$table];
     }
 
-    // Not in interfaces 
-
     public function hasRole(string $role) : bool {
         return in_array($role, auth()->getRoles());
     }

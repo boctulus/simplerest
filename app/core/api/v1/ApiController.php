@@ -22,12 +22,8 @@ use simplerest\core\interfaces\ISubResources;
 
 abstract class ApiController extends ResourceController implements IApi, ISubResources
 {
-    public $model_name;
-    public $table_name;
-
-    static protected $folder_field;
-    static protected $soft_delete = true;
-    static protected $connect_to = [];
+    public    $model_name;
+    public    $table_name;
 
     protected $is_listable;
     protected $is_retrievable;
@@ -43,6 +39,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
     protected $show_deleted;
     protected $ask_for_deleted;
+
+    static protected $folder_field;
+    static protected $soft_delete = true;
+    static protected $connect_to = [];
 
 
     function __construct($auth = null) 
