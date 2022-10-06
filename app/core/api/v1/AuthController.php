@@ -90,7 +90,7 @@ class AuthController extends Controller implements IAuth
         return static::$current_user_uid;
     }
 
-    function setPermissions(Array $perms){
+    protected function setPermissions(Array $perms){
         static::$current_user_permissions = $perms;
     }
 
@@ -98,7 +98,7 @@ class AuthController extends Controller implements IAuth
         return static::$current_user_permissions;
     }
 
-    function setRoles(Array $roles){
+    protected function setRoles(Array $roles){
         static::$current_user_roles = $roles;
     }
 
