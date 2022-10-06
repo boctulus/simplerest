@@ -36,19 +36,7 @@ class AndreaController extends MyController
         css('
             .main-slider_content { background-color:#FFCB0B; }
         ');
-    }
 
-    function builder()
-    {   
-        view('andrea/builder');
-    }
-
-    function more_content()
-    {
-        view('andrea/more_content');
-    }
-
-    function result(){
         js_file('andrea/js/modernizr.custom.js', null, true);	
         js_file('andrea/js/jquery-ui.min.js', null, true);
 
@@ -59,7 +47,7 @@ class AndreaController extends MyController
         //<!-- Loader -->
         js_file('andrea/js/plugins/loader/js/classie.js'); 
         js_file('andrea/js/plugins/loader/js/pathLoader.js');
-        js_file('andrea/js/plugins/loader/js/main.js');
+        #js_file('andrea/js/plugins/loader/js/main.js');
         js_file('andrea/js/classie.js');
 
         //<!-- bxSlider --> 
@@ -85,8 +73,24 @@ class AndreaController extends MyController
         js_file('andrea/js/jquery.bookblock.js');
 
         js_file('andrea/js/custom.js');
+    }
 
+    function builder()
+    {   
+        view('andrea/builder');
+    }
+
+    function result(){
         view('andrea/result');
+    }
+
+    function dedication(){
+        view('andrea/dedication');
+    }
+
+    function more_content()
+    {
+        view('andrea/more_content');
     }
 }
 
