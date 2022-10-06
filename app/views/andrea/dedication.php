@@ -1,3 +1,8 @@
+<!--
+
+    https://stackoverflow.com/questions/28450452/max-width-767px-media-query-styles-only-render-at-766px-or-below-only-firefox
+-->
+
 <div id="dedication_panel" class="config_tale_box hvartale hvarneg" style="display: block;">
   <div class="close_dedication_tale_panel"><span class="icon-arrow-left customColor" aria-hidden="true"></span> Close</div>
   <div class="container clearfix">
@@ -5,7 +10,7 @@
       <div class="blog-container blogmobile">
         <div class="row">
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 clearfix">
-            <div class="blog-preview-small wow fadeInLeft" data-wow-delay="0.3s"> <img class="blog-preview-small_img" src="/img/str/dedication.jpg" alt="Post"> </div>
+            <div class="blog-preview-small wow fadeInLeft" data-wow-delay="0.3s"> <img class="blog-preview-small_img" src="/public/assets/andrea/img/str/dedication.jpg" alt="Post"> </div>
           </div>
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 clearfix">
             <div class="blog-preview-small wow fadeInLeft" data-wow-delay="0.3s"> Write your dedication and click on<br> "<strong>CONFIRM DEDICATION</strong>" </div>
