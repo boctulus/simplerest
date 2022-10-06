@@ -7,8 +7,6 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Url;
 
-use function GuzzleHttp\json_decode;
-
 class Response
 {
     static protected $data;
@@ -239,7 +237,7 @@ class Response
         */
         
         if (Url::isPostman() || Url::isInsomnia()){
-            $detail = json_decode(trim($detail), true);
+            $detail = \json_decode(trim($detail), true);
         }
 
         $res['error'] = [ 
