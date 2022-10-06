@@ -10964,6 +10964,19 @@ class DumbController extends Controller
 
         render($content);
     }
+
+    function view_decoration_2()
+    {  
+        css_file(
+            asset('andrea/css/master.css')
+        );
+
+        $content = '<section style="border: red 1px solid;">' .
+            get_view('andrea/builder') .
+        '</section>';
+
+        render($content);
+    }
     
     function test_middle_str(){
         $str = "";
