@@ -329,11 +329,11 @@ class Url
         return $x;
     }
 
-    static function makeQueryString(array|object $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
+    static function makeQueryString($data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
         return http_build_query($data, $numeric_prefix, $arg_separator, $encoding_type);
     }
 
-    static function buildUrl(string $base_url, array|object $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
+    static function buildUrl(string $base_url, $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
         return  Strings::removeTrailingSlash($base_url) . '?'. static::makeQueryString($data);
     }
 
