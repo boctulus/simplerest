@@ -154,8 +154,22 @@ class ApiClient
         return $this->status;
     }
 
+    // alias de getStatus()
+    function status(){
+        return $this->getStatus();
+    }
+
     function getError(){
         return $this->error;
+    }
+
+    // alias de getError()
+    function error(){
+        return $this->error();
+    }
+
+    function data(){
+        return $this->response;
     }
 
     function getResponse(?bool $decode = null, ?bool $as_array = null){       
@@ -176,7 +190,7 @@ class ApiClient
         $res = [
             'data' => $data,
             'http_code' => $this->status,
-            'errors' => $this->error
+            'error' => $this->error
         ];
 
         return $res;
@@ -498,7 +512,7 @@ class ApiClient
         return $this->request($this->url ?? $url, 'PUT', $body, $headers, $options);
     }
 
-    function  patch($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+    function patch($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
         return $this->request($this->url ?? $url, 'PATCH', $body, $headers, $options);
     }
 
