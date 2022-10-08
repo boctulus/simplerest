@@ -308,7 +308,7 @@ class Url
     /*
         funcion auxiliar para parseStrQuery()
     */
-    static function getQueryParam(string $url, ?string $param = null){
+    protected static function getQueryParam(string $url, ?string $param = null) : ?Array {
         if ($param === null){
             return static::getQueryParams($url);
         }
@@ -327,6 +327,14 @@ class Url
         }
 
         return $x;
+    }
+
+    static function makeQueryString(array|object $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
+        return http_build_query($data, $numeric_prefix, $arg_separator, $encoding_type);
+    }
+
+    static function buildUrl(string $base_url, array|object $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
+        return  Strings::removeTrailingSlash($base_url) . '?'. static::makeQueryString($data);
     }
 
     static function currentUrl(){

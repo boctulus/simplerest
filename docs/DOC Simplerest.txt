@@ -8494,6 +8494,29 @@ Ej:
     }
 
 
+[ Actualización 8-10-2020 ]
+
+Ya no es necesario llamar a getResponse() sino que es posible directamente acceder a la respuesta http y a la data obtenida directamente con los métodos correspondientes:
+
+	status()	el código http de la respuesta
+	error()		mensaje de error si lo hubiera	
+	data()		data obtenida
+
+Ej:
+
+	$client = ApiClient::instance()
+	->disableSSL()
+	->redirect()
+	->get($url);
+
+	if ($client->getStatus() != 200){
+		throw new \Exception($client->error());
+	}
+
+	dd(
+		$client->data()         
+	);
+
 ### Componentes del core del framework
 
 # Base de datos
