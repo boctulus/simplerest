@@ -5153,6 +5153,37 @@ class DumbController extends Controller
         dd($res);
     }
 
+    function easy_sintax(){
+        $base_url = "https://produzione.familyintale.com/create-personalized-tale_p/";
+
+        $params = array ( 
+            'name_b' => 'Andrea', 
+            'name_p' => 'Pablo', 
+            'genderkids' => 'm', 
+            'genderparents' => 'm', 
+            'characterkids' => 'bfb', 
+            'characterparents' => 'gfb', 
+            'tale_language' => 'es', 
+            'tale_story' => 'gu', 
+        );
+
+        $url = Url::buildUrl($base_url, $params);
+
+        $client = ApiClient::instance()
+        ->disableSSL()
+        ->redirect()
+        ->get($url);
+
+        if ($client->status() != 200){
+            throw new \Exception($client->error());
+        }
+
+        dd(
+            $client->data()         
+        );
+
+    }
+
     /*
         Dolar TRM - 
         DataSource: API Banco de la República (de Colombia)
