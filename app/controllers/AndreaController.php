@@ -5,9 +5,11 @@ namespace simplerest\controllers;
 use simplerest\core\View;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
+use simplerest\core\libs\Url;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\controllers\MyController;
+use simplerest\core\libs\ApiClient;
 
 class AndreaController extends MyController
 {
@@ -95,6 +97,37 @@ class AndreaController extends MyController
     function more_content()
     {
         view('andrea/more_content');
+    }
+
+    function dinamic_res(){
+        $base_url = "https://produzione.familyintale.com/create-personalized-tale_p/";
+
+        $params = array ( 
+            'name_b' => 'Andrea', 
+            'name_p' => 'Pablo', 
+            'genderkids' => 'm', 
+            'genderparents' => 'm', 
+            'characterkids' => 'bfb', 
+            'characterparents' => 'gfb', 
+            'tale_language' => 'es', 
+            'tale_story' => 'gu', 
+        );
+
+        $url = Url::buildUrl($base_url, $params);
+
+        $client = ApiClient::instance()
+        ->disableSSL()
+        ->redirect()
+        ->get($url);
+
+        if ($client->status() != 200){
+            throw new \Exception($client->error());
+        }
+
+        dd(
+            $client->data()         
+        );
+
     }
 }
 
