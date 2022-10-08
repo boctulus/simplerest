@@ -7,9 +7,10 @@ use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\libs\Url;
 use simplerest\core\Response;
+use simplerest\core\libs\Html;
 use simplerest\core\libs\Factory;
-use simplerest\controllers\MyController;
 use simplerest\core\libs\ApiClient;
+use simplerest\controllers\MyController;
 
 class AndreaController extends MyController
 {
@@ -118,16 +119,19 @@ class AndreaController extends MyController
         $client = ApiClient::instance()
         ->disableSSL()
         ->redirect()
+        ->cache(3600)
         ->get($url);
 
         if ($client->status() != 200){
             throw new \Exception($client->error());
         }
 
-        dd(
-            $client->data()         
-        );
+        $data = $client->data();
 
+        $data = Html::stripTagScript($data);
+        $data = Html::removeComments($data);
+                     
+        echo $data;
     }
 }
 
