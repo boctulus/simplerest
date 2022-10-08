@@ -222,7 +222,7 @@ class Strings
 	/*
 		Auto-detecta retorno de carro en un string
 	*/
-	static function autoDetectCR(string $str){
+	static function carriageReturn(string $str){
 		$qty_rn = substr_count($str, "\r\n");
 
 		if ($qty_rn != 0){
@@ -338,7 +338,7 @@ class Strings
 		}
 		
 		// toca auto-detectar tipo de retorno de carro 
-		$cr = static::autoDetectCR($string);
+		$cr = static::carriageReturn($string);
 
 		$lines = explode($cr, $r);
 
@@ -372,7 +372,7 @@ class Strings
 		}
 		
 		// toca auto-detectar tipo de retorno de carro 
-		$cr = static::autoDetectCR($string);
+		$cr = static::carriageReturn($string);
 
 		$lines = explode($cr, $l);
 
