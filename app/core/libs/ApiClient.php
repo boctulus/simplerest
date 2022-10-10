@@ -165,7 +165,7 @@ class ApiClient
 
     // alias de getError()
     function error(){
-        return $this->error();
+        return $this->error;
     }
 
     function data(){
