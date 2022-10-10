@@ -2,6 +2,7 @@
 
 namespace simplerest\controllers;
 
+use Client;
 use stdClass;
 use simplerest\core\Acl;
 use simplerest\libs\Foo;
@@ -10,16 +11,16 @@ use simplerest\core\Model;
 use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
-use simplerest\core\libs\Env;
 
+use simplerest\core\libs\Env;
 use simplerest\core\libs\Url;
 use simplerest\core\Container;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
-use simplerest\core\libs\Task;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Config;
@@ -29,51 +30,51 @@ use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Factory;;
+
 use simplerest\core\libs\Hardware;
-
 use simplerest\core\libs\JobQueue;
+
 use simplerest\libs\AmazonScraper;
-
 use simplerest\models\az\BarModel;
-use Endroid\QrCode\Builder\Builder;
 
+use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\MaisonsScraper;
-use Endroid\QrCode\Writer\PngWriter;
 
+use Endroid\QrCode\Writer\PngWriter;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
+
 use simplerest\core\libs\Supervisor;
 
 use Endroid\QrCode\Encoding\Encoding;
-
 use simplerest\core\libs\FileUploader;
-use Endroid\QrCode\Label\Font\NotoSans;
 
 //  QR
+use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\libs\LeroyMerlinScraper;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
-use simplerest\core\libs\HtmlBuilder\Tag;
 
+use simplerest\core\libs\HtmlBuilder\Tag;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
+use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\models\az\AutomovilesModel;
 
 class DumbController extends Controller
 {
@@ -11042,5 +11043,7 @@ class DumbController extends Controller
             $str
         );
     }
+
+    
 
 }   // end class

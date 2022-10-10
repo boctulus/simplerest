@@ -9,6 +9,7 @@ use simplerest\core\libs\Url;
 use simplerest\core\Response;
 use simplerest\core\libs\Html;
 use simplerest\core\libs\Factory;
+use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 use simplerest\controllers\MyController;
 
@@ -110,11 +111,11 @@ class AndreaController extends MyController
             'genderparents' => 'm', 
             'characterkids' => 'bfb', 
             'characterparents' => 'gfb', 
-            'tale_language' => 'es', 
+            'tale_language' => 'en', 
             'tale_story' => 'gu', 
         );
 
-        $url = Url::buildUrl($base_url, $params);
+       $url = Url::buildUrl($base_url, $params);
 
         $client = ApiClient::instance()
         ->disableSSL()
@@ -128,8 +129,8 @@ class AndreaController extends MyController
 
         $data = $client->data();
 
-        $data = Html::stripTagScript($data);
-        $data = Html::removeComments($data);
+        // $data = Html::stripTagScript($data);
+        // $data = Html::removeComments($data);
                      
         echo $data;
     }

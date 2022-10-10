@@ -820,7 +820,11 @@ class Strings
 		return ($s1 === $s2);
 	}
 
-	static function replace($search, $replace, &$subject, $count = NULL, $case_sensitive = true){
+	static function replace($search, $replace, &$subject, $count = NULL, $case_sensitive = true)
+	{
+		if ($subject === null){
+			return null;
+		}
 
 		if ($case_sensitive){
 			$subject = str_replace($search, $replace, $subject, $count);
