@@ -16,7 +16,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/fontawesome-free/css/all.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
     <!-- Theme style -->
     <link rel="stylesheet" href="<?= asset('adminlte/dist/css/adminlte.min.css') ?>">
 
@@ -26,6 +26,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
     ?>
 
     <script src="<?= asset('js/login.js') ?>"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            function render_username(){
+                $('#username_text').text(username());
+            }
+
+            document.querySelector('#btn_logout').addEventListener("click", (e) => {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                console.log('LOG OUT');
+                
+                logout();
+            });
+            
+            render_username();
+        });        
+  </script>
 
 </head>
 
@@ -178,7 +196,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
+            <a href="/" class="brand-link">
                 <img src="<?= asset($logo ?? 'adminlte/dist/img/AdminLTELogo.png') ?>" alt="<?= $logo_alt ?? '' ?>" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light"><?= $brandname ?? '&nbsp;' ?></span>
             </a>
@@ -188,10 +206,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="<?= asset('adminlte/dist/img/avatar_blue.png') ?>" class="img-circle elevation-2" alt="User Image">
+                        <a href="#" id="btn_logout">
+                            <i class='fas fa-sign-out-alt' style="display: inline-block; font-size:1rem; padding-top:0.65rem"></i>  
+                        </a>
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block"><?= $username ?? 'fulanito' ?></a>
+                        <a href="#" class="d-block" id="username_text">
                     </div>
                 </div>
 
