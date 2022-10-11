@@ -425,12 +425,13 @@ class ApiClient
         $headers = $headers ?? $this->req_headers ?? null;        
         $decode  = $this->auto_decode; 
 
-
-        $expiration_time = $this->expiration;
-        $cached_path     = $this->getCachePath();
-
-        $expired         = Cache::expiredFile($cached_path, $expiration_time);
-
+        if ($this->expiration == null){
+            $expired = true;
+        } else {
+            $cached_path     = $this->getCachePath();
+            $expired         = Cache::expiredFile($cached_path, $this->expiration);    
+        }
+       
         if (!$expired){
             $res = $this->getCache();
 
