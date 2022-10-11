@@ -172,7 +172,7 @@ return [
 		]
     ], 
 	
-	'DateTimeZone' => 'America/Bogota',
+	'DateTimeZone' => 'Europe/London',
 
 	'error_handling'   => true,
 	'debug'   => true,  //env('APP_DEBUG', true),

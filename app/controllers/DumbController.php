@@ -104,7 +104,7 @@ class DumbController extends Controller
 
         $res = $client->disableSSL()
         ->followLocations()
-        ->cache(600)  
+        //->cache(600)  
         ->get()
         ->getResponse(false);
 
