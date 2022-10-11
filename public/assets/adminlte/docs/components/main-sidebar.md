@@ -29,7 +29,7 @@ The sidebar used in this page to the left provides an example of what your sideb
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-bs-widget="treeview" role="menu">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
         <li class="nav-item menu-open">
@@ -98,7 +98,7 @@ You can place the pushmenu button inside the brand, simply replace the brand-lin
     <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">
     <span class="brand-text font-weight-light">AdminLTE 3</span>
   </a>
-  <a class="pushmenu" data-bs-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+  <a class="pushmenu" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
 </div>
 ```
 

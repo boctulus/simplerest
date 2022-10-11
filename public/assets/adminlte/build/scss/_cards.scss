@@ -44,7 +44,7 @@
       overflow: auto;
     }
 
-    [data-bs-card-widgett="collapse"] {
+    [data-card-widgett="collapse"] {
       display: none;
     }
 
@@ -235,7 +235,7 @@ html.maximized-card {
       margin-top: -$card-spacer-y * .4;
     }
 
-    [data-bs-toggle="tooltip"] {
+    [data-toggle="tooltip"] {
       position: relative;
     }
   }
@@ -411,6 +411,7 @@ html.maximized-card {
       display: none;
       float: right;
 
+      /* stylelint-disable selector-class-pattern */
       // icons
       > .fa,
       > .fas,
@@ -423,6 +424,7 @@ html.maximized-card {
         cursor: pointer;
         margin-right: 5px;
       }
+      /* stylelint-enable selector-class-pattern */
     }
 
     &:hover .tools {

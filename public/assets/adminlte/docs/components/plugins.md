@@ -14,7 +14,7 @@ Example:
 
 ```html
 <div class="slider-red">
-  <input type="text" value="" class="slider form-control" data-bs-slider...>
+  <input type="text" value="" class="slider form-control" data-slider...>
 </div>
 ```
 
@@ -27,7 +27,7 @@ Example:
 
 ```html
 <div class="slider-red">
-  <input type="text" value="" class="slider slider-vertical form-control" data-bs-slider...>
+  <input type="text" value="" class="slider slider-vertical form-control" data-slider...>
 </div>
 ```
 

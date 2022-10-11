@@ -22,7 +22,7 @@ const EVENT_COLLAPSED = `collapsed${EVENT_KEY}`
 
 const SELECTOR_TABLE = '.expandable-table'
 const SELECTOR_EXPANDABLE_BODY = '.expandable-body'
-const SELECTOR_DATA_TOGGLE = '[data-bs-widget="expandable-table"]'
+const SELECTOR_DATA_TOGGLE = '[data-widget="expandable-table"]'
 const SELECTOR_ARIA_ATTR = 'aria-expanded'
 
 /**
@@ -30,14 +30,13 @@ const SELECTOR_ARIA_ATTR = 'aria-expanded'
   * ====================================================
   */
 class ExpandableTable {
-  constructor(element, options) {
-    this._options = options
+  constructor(element) {
     this._element = element
   }
 
   // Public
 
-  init() {
+  _init() {
     $(SELECTOR_DATA_TOGGLE).each((_, $header) => {
       const $type = $($header).attr(SELECTOR_ARIA_ATTR)
       const $body = $($header).next(SELECTOR_EXPANDABLE_BODY).children().first().children()
@@ -80,8 +79,7 @@ class ExpandableTable {
   }
 
   // Static
-
-  static _jQueryInterface(operation) {
+  static _jQueryInterface(config) {
     return this.each(function () {
       let data = $(this).data(DATA_KEY)
 
@@ -90,8 +88,8 @@ class ExpandableTable {
         $(this).data(DATA_KEY, data)
       }
 
-      if (typeof operation === 'string' && /init|toggleRow/.test(operation)) {
-        data[operation]()
+      if (typeof config === 'string' && /init|toggleRow/.test(config)) {
+        data[config]()
       }
     })
   }
@@ -102,7 +100,7 @@ class ExpandableTable {
   * ====================================================
   */
 $(SELECTOR_TABLE).ready(function () {
-  ExpandableTable._jQueryInterface.call($(this), 'init')
+  ExpandableTable._jQueryInterface.call($(this), '_init')
 })
 
 $(document).on('click', SELECTOR_DATA_TOGGLE, function () {

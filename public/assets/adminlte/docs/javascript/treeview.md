@@ -11,10 +11,10 @@ This plugin can be activated as a jQuery plugin or using the data api.
 ###### Data API
 {: .text-bold }
 
-Add `data-bs-widget="treeview"` to any `ul` or `ol` element to activate the plugin. 
+Add `data-widget="treeview"` to any `ul` or `ol` element to activate the plugin. 
 
 ```html
-<ul data-bs-widget="treeview">
+<ul data-widget="treeview">
   <li><a href="#">One Level</a></li>
   <li class="nav-item">
     <a class="nav-link" href="#">Multilevel</a>
@@ -39,15 +39,15 @@ $('ul').Treeview(options)
 |-|-|-|-
 |animationSpeed | Number | 300 | Speed of slide down/up animation in milliseconds.
 |accordion | Boolean | TRUE | Whether to collapse the open menu when expanding another.
-|trigger | String | `[data-bs-widget="treeview"] .nav-link` |  Selector of the element that should respond to the click and result in expanding or collapsing it sibling sub menu. 
+|trigger | String | `[data-widget="treeview"] .nav-link` |  Selector of the element that should respond to the click and result in expanding or collapsing it sibling sub menu. 
 |expandSidebar | Boolean | FALSE | Whether to expand sidebar on open menu.
-|sidebarButtonSelector | String | `[data-bs-widget="pushmenu"]` | Selector of the sidebar button.
+|sidebarButtonSelector | String | `[data-widget="pushmenu"]` | Selector of the sidebar button.
 {: .table .table-bordered .bg-light}
 
 > ##### Tip!
 > You can use any option via the data-attributes like this.
 > ```html
-> <ul data-bs-widget="treeview" data-bs-accordion="false">...</ul>
+> <ul data-widget="treeview" data-accordion="false">...</ul>
 > ```
 {: .quote-info}
 
@@ -55,7 +55,7 @@ $('ul').Treeview(options)
 > If you want to use a multiple treeview's beside the main-sidebar treeview, 
 > then you need to add to all treeview's a ID-tag.
 > ```html
-> <ul data-bs-widget="treeview" id="someIdNameOrSo" data-bs-accordion="false">...</ul>
+> <ul data-widget="treeview" id="someIdNameOrSo" data-accordion="false">...</ul>
 > ```
 {: .quote-danger}
 

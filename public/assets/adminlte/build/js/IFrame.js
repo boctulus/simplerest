@@ -1,3 +1,5 @@
+// noinspection EqualityComparisonWithCoercionJS
+
 /**
  * --------------------------------------------
  * AdminLTE IFrame.js
@@ -16,11 +18,11 @@ const NAME = 'IFrame'
 const DATA_KEY = 'lte.iframe'
 const JQUERY_NO_CONFLICT = $.fn[NAME]
 
-const SELECTOR_DATA_TOGGLE = '[data-bs-widget="iframe"]'
-const SELECTOR_DATA_TOGGLE_CLOSE = '[data-bs-widget="iframe-close"]'
-const SELECTOR_DATA_TOGGLE_SCROLL_LEFT = '[data-bs-widget="iframe-scrollleft"]'
-const SELECTOR_DATA_TOGGLE_SCROLL_RIGHT = '[data-bs-widget="iframe-scrollright"]'
-const SELECTOR_DATA_TOGGLE_FULLSCREEN = '[data-bs-widget="iframe-fullscreen"]'
+const SELECTOR_DATA_TOGGLE = '[data-widget="iframe"]'
+const SELECTOR_DATA_TOGGLE_CLOSE = '[data-widget="iframe-close"]'
+const SELECTOR_DATA_TOGGLE_SCROLL_LEFT = '[data-widget="iframe-scrollleft"]'
+const SELECTOR_DATA_TOGGLE_SCROLL_RIGHT = '[data-widget="iframe-scrollright"]'
+const SELECTOR_DATA_TOGGLE_FULLSCREEN = '[data-widget="iframe-fullscreen"]'
 const SELECTOR_CONTENT_WRAPPER = '.content-wrapper'
 const SELECTOR_CONTENT_IFRAME = `${SELECTOR_CONTENT_WRAPPER} iframe`
 const SELECTOR_TAB_NAV = `${SELECTOR_CONTENT_WRAPPER}.iframe-mode .nav`
@@ -97,7 +99,7 @@ class IFrame {
       navId += `-${Math.floor(Math.random() * 1000)}`
     }
 
-    const newNavItem = `<li class="nav-item" role="presentation"><a href="#" class="btn-iframe-close" data-bs-widget="iframe-close" data-bs-type="only-this"><i class="fas fa-times"></i></a><a class="nav-link" data-bs-toggle="row" id="${navId}" href="#${tabId}" role="tab" aria-controls="${tabId}" aria-selected="false">${title}</a></li>`
+    const newNavItem = `<li class="nav-item" role="presentation"><a href="#" class="btn-iframe-close" data-widget="iframe-close" data-type="only-this"><i class="fas fa-times"></i></a><a class="nav-link" data-toggle="row" id="${navId}" href="#${tabId}" role="tab" aria-controls="${tabId}" aria-selected="false">${title}</a></li>`
     $(SELECTOR_TAB_NAVBAR_NAV).append(unescape(escape(newNavItem)))
 
     const newTabItem = `<div class="tab-pane fade" id="${tabId}" role="tabpanel" aria-labelledby="${navId}"><iframe src="${link}"></iframe></div>`
@@ -106,7 +108,11 @@ class IFrame {
     if (autoOpen) {
       if (this._config.loadingScreen) {
         const $loadingScreen = $(SELECTOR_TAB_LOADING)
-        $loadingScreen.fadeIn()
+
+        if (!$loadingScreen.is(':animated')) {
+          $loadingScreen.fadeIn()
+        }
+
         $(`${tabId} iframe`).ready(() => {
           if (typeof this._config.loadingScreen === 'number') {
             this.switchTab(`#${navId}`)
@@ -258,8 +264,6 @@ class IFrame {
 
     if (usingDefTab) {
       const $el = $(`${SELECTOR_TAB_PANE}`).first()
-      // eslint-disable-next-line no-console
-      console.log($el)
       const uniqueName = $el.attr('id').replace('panel-', '')
       const navId = `#tab-${uniqueName}`
 
@@ -316,11 +320,11 @@ class IFrame {
       e.preventDefault()
       let { target } = e
 
-      if (target.nodeName == 'I') {
+      if (target.nodeName === 'I') {
         target = e.target.offsetParent
       }
 
-      this.removeActiveTab(target.attributes['data-bs-type'] ? target.attributes['data-bs-type'].nodeValue : null, target)
+      this.removeActiveTab(target.attributes['data-type'] ? target.attributes['data-type'].nodeValue : null, target)
     })
     $(document).on('click', SELECTOR_DATA_TOGGLE_FULLSCREEN, e => {
       e.preventDefault()
@@ -411,8 +415,8 @@ class IFrame {
   }
 
   // Static
-
-  static _jQueryInterface(config) {
+  // eslint-disable-next-line max-params
+  static _jQueryInterface(config, name, link, id, reload) {
     if ($(SELECTOR_DATA_TOGGLE).length > 0) {
       let data = $(this).data(DATA_KEY)
 
@@ -422,16 +426,14 @@ class IFrame {
 
       const _options = $.extend({}, Default, typeof config === 'object' ? config : data)
       localStorage.setItem('AdminLTE:IFrame:Options', JSON.stringify(_options))
-
       const plugin = new IFrame($(this), _options)
-
-      $(this).data(DATA_KEY, typeof config === 'object' ? config : data)
-
+      window.iFrameInstance = plugin
+      $(this).data(DATA_KEY, typeof config === 'object' ? config : { link, name, id, reload, ...data })
       if (typeof config === 'string' && /createTab|openTabSidebar|switchTab|removeActiveTab/.test(config)) {
-        plugin[config]()
+        plugin[config](name, link, id, reload)
       }
     } else {
-      new IFrame($(this), JSON.parse(localStorage.getItem('AdminLTE:IFrame:Options')))._initFrameElement()
+      window.iFrameInstance = new IFrame($(this), JSON.parse(localStorage.getItem('AdminLTE:IFrame:Options')))._initFrameElement()
     }
   }
 }

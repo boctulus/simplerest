@@ -425,7 +425,13 @@ class ApiClient
         $headers = $headers ?? $this->req_headers ?? null;        
         $decode  = $this->auto_decode; 
 
-        if ($this->expiration){
+
+        $expiration_time = $this->expiration;
+        $cached_path     = $this->getCachePath();
+
+        $expired         = Cache::expiredFile($cached_path, $expiration_time);
+
+        if (!$expired){
             $res = $this->getCache();
 
             if ($res !== null){
@@ -442,7 +448,7 @@ class ApiClient
                 }
                 
                 $this->status   = $res['http_code'];
-                $this->error   = $res['error'];
+                $this->error    = $res['error'];
                 $this->response = $res['data'];
 
                 return $this;
@@ -582,7 +588,7 @@ class ApiClient
             return;
         }
 
-        file_put_contents($path, '<?php $res = ' . var_export($response, true) . ';');
+        file_put_contents($path, '<?php return ' . var_export($response, true) . ';');
     }
 
     protected function getCache(){
@@ -593,7 +599,7 @@ class ApiClient
         }
 
         if (file_exists($path)){
-            include $path;
+            return include $path;
         }
     }
 

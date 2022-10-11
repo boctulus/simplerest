@@ -43,7 +43,7 @@ class LoginController extends Controller
 			Cargo vista y paso variables
 		*/
 		
-		$this->__view('login.php', [ 
+		$this->__view('userlogin/login.php', [ 
 			'title'      =>'Ingreso', 
 			'hidenav'    => true,
 			'__email'    => $this->__email,
@@ -53,7 +53,7 @@ class LoginController extends Controller
 	}
 	
 	function register(){
-		$this->__view('register.php', [
+		$this->__view('userlogin/register.php', [
 			'title'      =>'Registro', 
 			'hidenav'    => true,
 			'__email'    => $this->__email,
@@ -71,7 +71,7 @@ class LoginController extends Controller
 		$res = $google_ctrl->login_or_register();
 
 		if (isset($res['data'])){
-			$this->__view('generic.php', [
+			$this->__view('userlogin/blank.php', [
 				'title'=>'Google login', 
 				'hidenav'=> true,
 				'access_token' => $res['data']['access_token'],
@@ -79,7 +79,7 @@ class LoginController extends Controller
 				'refresh_token' => $res['data']['refresh_token']
 			]);
 		}else {
-			$this->__view('generic.php', [
+			$this->__view('userlogin/blank.php', [
 				'title'=>'Google login', 
 				'hidenav'=> false,
 				'error' => $res['error']
@@ -98,7 +98,7 @@ class LoginController extends Controller
 		session_destroy();
 
 		if (isset($res['data'])){
-			$this->__view('generic.php', [
+			$this->__view('userlogin/blank.php', [
 				'title'=>'Facebook login', 
 				'hidenav'=> true,
 				'access_token' => $res['data']['access_token'],
@@ -106,7 +106,7 @@ class LoginController extends Controller
 				'refresh_token' => $res['data']['refresh_token']
 			]);
 		}else {
-			$this->__view('generic.php', [
+			$this->__view('userlogin/blank.php', [
 				'title'=>'Facebook login', 
 				'hidenav'=> false,
 				'error' => $res['error']
@@ -115,46 +115,8 @@ class LoginController extends Controller
 		
 	}
 
-	/*
-        JWT token for email confirmation & remember me
-    */
-	/*
-    protected function gen_jwt_email_conf(string $email){
-        $time = time();
-
-        $payload = [
-            'alg' => $this->config['email_token']['encryption'],
-            'typ' => 'JWT',
-            'iat' => $time, 
-            'exp' => $time + $this->config['email_token']['expires_in'],
-            'ip'  => $_SERVER['REMOTE_ADDR'],
-			'user_agent' => Request::user_agent(),
-            'email' => $email
-         ];
-
-        return \Firebase\JWT\JWT::encode($payload, $this->config['email_token']['secret_key'],  $this->config['email_token']['encryption']);
-    }
-	*/
-
-	/*
-	protected function gen_jwt(array $props, string $token_type){
-        $time = time();
-
-        $payload = [
-            'alg' => $this->config[$token_type]['encryption'],
-            'typ' => 'JWT',
-            'iat' => $time, 
-            'exp' => $time + $this->config[$token_type]['expiration_time']
-        ];
-        
-        $payload = array_merge($payload, $props);
-
-        return \Firebase\JWT\JWT::encode($payload, $this->config[$token_type]['secret_key'],  $this->config[$token_type]['encryption']);
-    }
-	*/
-
 	function rememberme(){
-		$this->__view('rememberme.php', [
+		$this->__view('userlogin/rememberme.php', [
 			'title'=>'Recuérdame', 
 			'hidenav'=> true,
 			'__email'    => $this->__email,
@@ -165,7 +127,7 @@ class LoginController extends Controller
 
 	
 	function rememberme_mail_sent(){
-		$this->__view('rememberme_mail_sent.php', [
+		$this->__view('userlogin/rememberme_mail_sent.php', [
 			'title'=>'Recuérdame', 
 			'hidenav'=> true,
 			'__email'    => $this->__email,
@@ -184,7 +146,7 @@ class LoginController extends Controller
 
 		/*
 		if ($cond)			
-			$this->__view('generic.php', [
+			$this->__view('blank.php', [
 				'title'=>'Confirmación de correo', 
 				'hidenav'=> true,
 				'access_token' => $access,
@@ -193,7 +155,7 @@ class LoginController extends Controller
 			]);
 	
 		} else {
-			$this->__view('generic.php', [
+			$this->__view('blank.php', [
 				'title'=>'Confirmación de correo fallida', 
 				'hidenav'=> false,
 				'error' => $error
@@ -249,7 +211,7 @@ class LoginController extends Controller
 
 			$email = DB::table($this->users_table)->where([$this->__id => $payload->uid])->value($this->__email);
 
-			$this->__view('update_pass.php', [
+			$this->__view('userlogin/update_pass.php', [
 				'title'		 =>'Recuperación de contraseña', 
 				'hidenav'	 => true,
 				'__email'    => $this->__email,
@@ -258,7 +220,7 @@ class LoginController extends Controller
 			]);
 	
 		}else {
-			$this->__view('generic.php', [
+			$this->__view('userlogin/blank.php', [
 				'title'=>'Recuperación de contraseña', 
 				'hidenav'=> false,
 				'error' => $error,

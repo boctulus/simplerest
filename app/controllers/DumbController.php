@@ -22,6 +22,7 @@ use simplerest\core\libs\Mail;
 //use Symfony\Component\Uid\Uuid;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Schema;
@@ -29,39 +30,39 @@ use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
 use simplerest\core\libs\Strings;
+
 use simplerest\core\libs\Factory;;
-
 use simplerest\core\libs\Hardware;
+
 use simplerest\core\libs\JobQueue;
-
 use simplerest\libs\AmazonScraper;
-use simplerest\models\az\BarModel;
 
+use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
-use simplerest\libs\MaisonsScraper;
 
+use simplerest\libs\MaisonsScraper;
 use Endroid\QrCode\Writer\PngWriter;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
+
 use simplerest\core\libs\SendinBlue;
 
 use simplerest\core\libs\Supervisor;
-
 use Endroid\QrCode\Encoding\Encoding;
-use simplerest\core\libs\FileUploader;
 
 //  QR
+use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\libs\LeroyMerlinScraper;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\libs\LaravelApiGenerator;
-use simplerest\core\api\v1\ApiController;
 
+use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
@@ -82,6 +83,46 @@ class DumbController extends Controller
     {
         parent::__construct();
         //DB::getConnection('az');
+    }
+
+    function index(){
+        echo datetime('H:i:s'). "\r\n";
+    }
+
+    function is_expired(){
+        $file = 'C:\Windows\Temp'. DIRECTORY_SEPARATOR. 'httpp3Ap2Fp2Fplanex.lanp2Fdumb.php';
+
+        dd(
+            Cache::expiredFile($file, 1900)
+        );
+    }
+
+    function test_apiclient_cache(){
+        $url    = base_url() . '/dumb';
+
+        $client = new ApiClient($url);
+
+        $res = $client->disableSSL()
+        ->followLocations()
+        ->cache(600)  
+        ->get()
+        ->getResponse(false);
+
+        if ($res === null){
+            return;
+        }
+
+        if ($res['http_code'] != 200){
+            return;
+        }
+
+        $html = $res['data'];
+
+        echo $html;
+    }
+
+    function test_view_cache(){
+        view('random', null, null, 0);
     }
 
     function test_logger()

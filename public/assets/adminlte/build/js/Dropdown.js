@@ -19,7 +19,7 @@ const JQUERY_NO_CONFLICT = $.fn[NAME]
 const SELECTOR_NAVBAR = '.navbar'
 const SELECTOR_DROPDOWN_MENU = '.dropdown-menu'
 const SELECTOR_DROPDOWN_MENU_ACTIVE = '.dropdown-menu.show'
-const SELECTOR_DROPDOWN_TOGGLE = '[data-bs-toggle="dropdown"]'
+const SELECTOR_DROPDOWN_TOGGLE = '[data-toggle="dropdown"]'
 
 const CLASS_NAME_DROPDOWN_RIGHT = 'dropdown-menu-right'
 const CLASS_NAME_DROPDOWN_SUBMENU = 'dropdown-submenu'
@@ -89,18 +89,19 @@ class Dropdown {
   }
 
   // Static
-
   static _jQueryInterface(config) {
     return this.each(function () {
       let data = $(this).data(DATA_KEY)
-      const _config = $.extend({}, Default, $(this).data())
+      const _config = $.extend({}, Default, typeof config === 'object' ? config : $(this).data())
 
       if (!data) {
         data = new Dropdown($(this), _config)
         $(this).data(DATA_KEY, data)
-      }
+      } else if (typeof config === 'string') {
+        if (typeof data[config] === 'undefined') {
+          throw new TypeError(`No method named "${config}"`)
+        }
 
-      if (config === 'toggleSubmenu' || config === 'fixPosition') {
         data[config]()
       }
     })
