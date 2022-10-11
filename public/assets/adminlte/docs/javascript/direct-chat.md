@@ -10,9 +10,9 @@ This plugin can be activated as a jQuery plugin or using the data api.
 
 ###### Data API
 {: .text-bold }
-Add `data-bs-widget="chat-pane-toggle"` to a button to activate the plugin. 
+Add `data-widget="chat-pane-toggle"` to a button to activate the plugin. 
 ```html
-<button class="btn btn-primary" data-bs-widget="chat-pane-toggle">Toggle Chat Pane</button>
+<button class="btn btn-primary" data-widget="chat-pane-toggle">Toggle Chat Pane</button>
 ``` 
 
 ###### jQuery

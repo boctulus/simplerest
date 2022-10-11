@@ -79,7 +79,7 @@
   background-color: inherit !important;
 }
 
-[data-bs-widget="expandable-table"] {
+[data-widget="expandable-table"] {
   cursor: pointer;
 
   i.expandable-table-caret {
@@ -105,7 +105,7 @@
   i.expandable-table-caret {
     transition: transform $transition-speed linear;
   }
-  [data-bs-widget="expandable-table"] {
+  [data-widget="expandable-table"] {
     i.expandable-table-caret {
       // stylelint-disable selector-max-attribute
       &[class*="right"] {

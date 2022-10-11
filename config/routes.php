@@ -28,10 +28,10 @@ Route::get('admin/pagina-dos', function(){
 	render($content);
 });
 
-Route::get('admin', function(){
-	$content = "Panel de Admin";
-	render($content);
-});
+//Route::get('admin', function(){
+//	$content = "Panel de Admin";
+//	render($content);
+//});
 
 
 /*

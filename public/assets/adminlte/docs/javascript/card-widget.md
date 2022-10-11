@@ -13,7 +13,7 @@ This plugin can be activated as a jQuery plugin or using the data API.
 
 This plugin provides two `data-api` attributes. Any element using one of the following attributes should be placed within the `.card-tools` div, which is usually in the card header. For more information about the [card HTML structure]({% link components/cards.md %}), visit the card component documentation 
 
-##### `data-bs-card-widget="collapse"`
+##### `data-card-widget="collapse"`
 
 This attribute, when attached to a button, allows the box to be collapsed/expanded when clicked. 
 
@@ -23,7 +23,7 @@ This attribute, when attached to a button, allows the box to be collapsed/expand
       <div class="card-header">
         <h3 class="card-title">Collapsible Card Example</h3>
         <div class="card-tools">
-          <button type="button" class="btn btn-tool" data-bs-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
         </div>
       </div>
       <div class="card-body">
@@ -38,7 +38,7 @@ This attribute, when attached to a button, allows the box to be collapsed/expand
     <h3 class="card-title">Collapsible Card Example</h3>
     <div class="card-tools">
       <!-- Collapse Button -->
-      <button type="button" class="btn btn-tool" data-bs-card-widget="collapse"><i class="fas fa-minus"></i></button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
     </div>
     <!-- /.card-tools -->
   </div>
@@ -54,7 +54,7 @@ This attribute, when attached to a button, allows the box to be collapsed/expand
   </div>
 </div>
 
-##### `data-bs-card-widget="remove"`
+##### `data-card-widget="remove"`
 
 This attribute, when attached to a button, allows the box to be removed when clicked. 
 
@@ -64,7 +64,7 @@ This attribute, when attached to a button, allows the box to be removed when cli
       <div class="card-header">
         <h3 class="card-title">Removable Card Example</h3>
         <div class="card-tools">
-          <button type="button" class="btn btn-tool" data-bs-card-widget="remove"><i class="fas fa-times"></i></button>
+          <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
         </div>
       </div>
       <div class="card-body">
@@ -79,7 +79,7 @@ This attribute, when attached to a button, allows the box to be removed when cli
     <h3 class="card-title">Removable Card Example</h3>
     <div class="card-tools">
       <!-- Remove Button -->
-      <button type="button" class="btn btn-tool" data-bs-card-widget="remove"><i class="fas fa-times"></i></button>
+      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
     </div>
     <!-- /.card-tools -->
   </div>
@@ -95,7 +95,7 @@ This attribute, when attached to a button, allows the box to be removed when cli
   </div>
 </div>
 
-##### `data-bs-card-widget="maximize"`
+##### `data-card-widget="maximize"`
 
 This attribute, when attached to a button, allows the box to be maximize/minimize when clicked. 
 
@@ -105,7 +105,7 @@ This attribute, when attached to a button, allows the box to be maximize/minimiz
       <div class="card-header">
         <h3 class="card-title">Maximizable Card Example</h3>
         <div class="card-tools">
-          <button type="button" class="btn btn-tool" data-bs-card-widget="maximize"><i class="fas fa-expand"></i></button>
+          <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
         </div>
       </div>
       <div class="card-body">
@@ -120,7 +120,7 @@ This attribute, when attached to a button, allows the box to be maximize/minimiz
     <h3 class="card-title">Maximizable Card Example</h3>
     <div class="card-tools">
       <!-- Maximize Button -->
-      <button type="button" class="btn btn-tool" data-bs-card-widget="maximize"><i class="fas fa-expand"></i></button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
     </div>
     <!-- /.card-tools -->
   </div>
@@ -139,7 +139,7 @@ This attribute, when attached to a button, allows the box to be maximize/minimiz
 
 ###### jQuery
 {: .text-bold }
-To activate any button using jQuery, you must provide the removeTrigger and collapseTrigger options. Otherwise, the plugin will assume the default `data-bs-card-widget` selectors. 
+To activate any button using jQuery, you must provide the removeTrigger and collapseTrigger options. Otherwise, the plugin will assume the default `data-card-widget` selectors. 
 
 ```js
 $('#my-card').CardWidget(options)
@@ -152,15 +152,15 @@ $('#my-card').CardWidget(options)
 | Name | Type | Default | Description
 |-|-|-|-
 |animationSpeed | Number | 300 | Speed of slide down/up animation in milliseconds.
-|collapseTrigger | String | `[data-bs-card-widget="collapse"]` | jQuery selector to the element responsible for collapsing the box.
-|removeTrigger | String | `[data-bs-card-widget="remove"]` | jQuery selector to the element responsible for removing the box.
-|maximizeTrigger | String | `[data-bs-card-widget="maximize"]` | jQuery selector to the element responsible for maximizing the box.
+|collapseTrigger | String | `[data-card-widget="collapse"]` | jQuery selector to the element responsible for collapsing the box.
+|removeTrigger | String | `[data-card-widget="remove"]` | jQuery selector to the element responsible for removing the box.
+|maximizeTrigger | String | `[data-card-widget="maximize"]` | jQuery selector to the element responsible for maximizing the box.
 {: .table .table-bordered .bg-light}
 
 > ##### Tip!
 > You can use any option via the data-attributes like this.
 > ```html
-> <button type="button" class="btn btn-tool" data-bs-card-widget="collapse" data-animation-speed="1000"><i class="fas fa-minus"></i></button>
+> <button type="button" class="btn btn-tool" data-card-widget="collapse" data-animation-speed="1000"><i class="fas fa-minus"></i></button>
 > ```
 {: .quote-info}
 

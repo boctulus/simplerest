@@ -25,7 +25,7 @@ const SELECTOR_LI = '.nav-item'
 const SELECTOR_LINK = '.nav-link'
 const SELECTOR_TREEVIEW_MENU = '.nav-treeview'
 const SELECTOR_OPEN = '.menu-open'
-const SELECTOR_DATA_WIDGET = '[data-bs-widget="treeview"]'
+const SELECTOR_DATA_WIDGET = '[data-widget="treeview"]'
 
 const CLASS_NAME_OPEN = 'menu-open'
 const CLASS_NAME_IS_OPENING = 'menu-is-opening'
@@ -36,7 +36,7 @@ const Default = {
   animationSpeed: 300,
   accordion: true,
   expandSidebar: false,
-  sidebarButtonSelector: '[data-bs-widget="pushmenu"]'
+  sidebarButtonSelector: '[data-widget="pushmenu"]'
 }
 
 /**
@@ -51,7 +51,7 @@ class Treeview {
 
   // Public
 
-  init() {
+  _init() {
     $(`${SELECTOR_LI}${SELECTOR_OPEN} ${SELECTOR_TREEVIEW_MENU}${SELECTOR_OPEN}`).css('display', 'block')
     this._setupListeners()
   }
@@ -131,19 +131,23 @@ class Treeview {
   }
 
   // Static
-
   static _jQueryInterface(config) {
     return this.each(function () {
       let data = $(this).data(DATA_KEY)
-      const _options = $.extend({}, Default, $(this).data())
+      const _config = $.extend({}, Default, typeof config === 'object' ? config : $(this).data())
 
       if (!data) {
-        data = new Treeview($(this), _options)
+        data = new Treeview($(this), _config)
         $(this).data(DATA_KEY, data)
-      }
+        data._init()
+      } else if (typeof config === 'string') {
+        if (typeof data[config] === 'undefined') {
+          throw new TypeError(`No method named "${config}"`)
+        }
 
-      if (config === 'init') {
         data[config]()
+      } else if (typeof config === 'undefined') {
+        data._init()
       }
     })
   }

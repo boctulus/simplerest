@@ -5,7 +5,7 @@
   </a>
   <div class="sidebar">
     <div class="form-inline mt-2">
-      <div class="input-group" data-bs-widget="sidebar-search">
+      <div class="input-group" data-widget="sidebar-search">
         <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
           <button class="btn btn-sidebar">
@@ -15,7 +15,7 @@
       </div>
     </div>
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar nav-child-indent flex-column" data-bs-widget="treeview" role="menu">
+      <ul class="nav nav-pills nav-sidebar nav-child-indent flex-column" data-widget="treeview" role="menu">
        {% for item in site.navigation -%}
           {%- assign subitem_active = 'false' -%}
           {%- for subitem in item.subitems -%}

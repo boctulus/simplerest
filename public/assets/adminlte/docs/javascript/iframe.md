@@ -9,9 +9,9 @@ The iframe plugin provides the functionality to open sidebar & navbar items in a
 To get the iframe 100% working you need the following content-wrapper markup:
 
 ```html
-<div class="content-wrapper iframe-mode" data-bs-widget="iframe" data-loading-screen="750">
+<div class="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
   <div class="nav navbar navbar-expand-lg navbar-white navbar-light border-bottom p-0">
-    <a class="nav-link bg-danger" href="#" data-bs-widget="iframe-close">Close</a>
+    <a class="nav-link bg-danger" href="#" data-widget="iframe-close">Close</a>
     <ul class="navbar-nav" role="tablist"></ul>
   </div>
   <div class="tab-content">
@@ -29,19 +29,19 @@ To get the iframe 100% working you need the following content-wrapper markup:
 
 ###### Markup with Default IFrame Tab
 ```html
-<div class="content-wrapper iframe-mode" data-bs-widget="iframe" data-loading-screen="750">
+<div class="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
   <div class="nav navbar navbar-expand navbar-white navbar-light border-bottom p-0">
     <div class="nav-item dropdown">
-      <a class="nav-link bg-danger dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Close</a>
+      <a class="nav-link bg-danger dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Close</a>
       <div class="dropdown-menu mt-0">
-        <a class="dropdown-item" href="#" data-bs-widget="iframe-close" data-bs-type="all">Close All</a>
-        <a class="dropdown-item" href="#" data-bs-widget="iframe-close" data-bs-type="all-other">Close All Other</a>
+        <a class="dropdown-item" href="#" data-widget="iframe-close" data-type="all">Close All</a>
+        <a class="dropdown-item" href="#" data-widget="iframe-close" data-type="all-other">Close All Other</a>
       </div>
     </div>
-    <a class="nav-link bg-light" href="#" data-bs-widget="iframe-scrollleft"><i class="fas fa-angle-double-left"></i></a>
-    <ul class="navbar-nav overflow-hidden" role="tablist"><li class="nav-item active" role="presentation"><a href="#" class="btn-iframe-close" data-bs-widget="iframe-close" data-bs-type="only-this"><i class="fas fa-times"></i></a><a class="nav-link active" data-bs-toggle="row" id="tab-index-html" href="#panel-index-html" role="tab" aria-controls="panel-index-html" aria-selected="true">Dashboard v1</a></li></ul>
-    <a class="nav-link bg-light" href="#" data-bs-widget="iframe-scrollright"><i class="fas fa-angle-double-right"></i></a>
-    <a class="nav-link bg-light" href="#" data-bs-widget="iframe-fullscreen"><i class="fas fa-expand"></i></a>
+    <a class="nav-link bg-light" href="#" data-widget="iframe-scrollleft"><i class="fas fa-angle-double-left"></i></a>
+    <ul class="navbar-nav overflow-hidden" role="tablist"><li class="nav-item active" role="presentation"><a href="#" class="btn-iframe-close" data-widget="iframe-close" data-type="only-this"><i class="fas fa-times"></i></a><a class="nav-link active" data-toggle="row" id="tab-index-html" href="#panel-index-html" role="tab" aria-controls="panel-index-html" aria-selected="true">Dashboard v1</a></li></ul>
+    <a class="nav-link bg-light" href="#" data-widget="iframe-scrollright"><i class="fas fa-angle-double-right"></i></a>
+    <a class="nav-link bg-light" href="#" data-widget="iframe-fullscreen"><i class="fas fa-expand"></i></a>
   </div>
   <div class="tab-content">
     <div class="tab-empty">
@@ -62,7 +62,7 @@ This plugin can be activated as a jQuery plugin or using the data api.
 
 ###### Data API
 {: .text-bold }
-Activate the plugin by adding `data-bs-widget="iframe"` to the `.content-wrapper`. If you need to provide onCheck and onUncheck methods, please use the jQuery API.
+Activate the plugin by adding `data-widget="iframe"` to the `.content-wrapper`. If you need to provide onCheck and onUncheck methods, please use the jQuery API.
 
 ###### jQuery
 {: .text-bold }

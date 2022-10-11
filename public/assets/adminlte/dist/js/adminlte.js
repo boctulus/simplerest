@@ -33,7 +33,7 @@
   var EVENT_OVERLAY_REMOVED = "overlay.removed" + EVENT_KEY$7;
   var CLASS_NAME_CARD$1 = 'card';
   var SELECTOR_CARD$1 = "." + CLASS_NAME_CARD$1;
-  var SELECTOR_DATA_REFRESH = '[data-bs-card-widget="card-refresh"]';
+  var SELECTOR_DATA_REFRESH = '[data-card-widget="card-refresh"]';
   var Default$c = {
     source: '',
     sourceSelector: '',
@@ -206,9 +206,9 @@
   var CLASS_NAME_EXPANDING = 'expanding-card';
   var CLASS_NAME_WAS_COLLAPSED = 'was-collapsed';
   var CLASS_NAME_MAXIMIZED = 'maximized-card';
-  var SELECTOR_DATA_REMOVE = '[data-bs-card-widget="remove"]';
-  var SELECTOR_DATA_COLLAPSE = '[data-bs-card-widget="collapse"]';
-  var SELECTOR_DATA_MAXIMIZE = '[data-bs-card-widget="maximize"]';
+  var SELECTOR_DATA_REMOVE = '[data-card-widget="remove"]';
+  var SELECTOR_DATA_COLLAPSE = '[data-card-widget="collapse"]';
+  var SELECTOR_DATA_MAXIMIZE = '[data-card-widget="maximize"]';
   var SELECTOR_CARD = "." + CLASS_NAME_CARD;
   var SELECTOR_CARD_HEADER = '.card-header';
   var SELECTOR_CARD_BODY = '.card-body';
@@ -426,7 +426,7 @@
   var EVENT_EXPANDED$2 = "expanded" + EVENT_KEY$5;
   var SELECTOR_CONTROL_SIDEBAR = '.control-sidebar';
   var SELECTOR_CONTROL_SIDEBAR_CONTENT$1 = '.control-sidebar-content';
-  var SELECTOR_DATA_TOGGLE$4 = '[data-bs-widget="control-sidebar"]';
+  var SELECTOR_DATA_TOGGLE$4 = '[data-widget="control-sidebar"]';
   var SELECTOR_HEADER$1 = '.main-header';
   var SELECTOR_FOOTER$1 = '.main-footer';
   var CLASS_NAME_CONTROL_SIDEBAR_ANIMATE = 'control-sidebar-animate';
@@ -738,7 +738,7 @@
   var EVENT_KEY$4 = "." + DATA_KEY$b;
   var JQUERY_NO_CONFLICT$b = $__default["default"].fn[NAME$b];
   var EVENT_TOGGLED = "toggled" + EVENT_KEY$4;
-  var SELECTOR_DATA_TOGGLE$3 = '[data-bs-widget="chat-pane-toggle"]';
+  var SELECTOR_DATA_TOGGLE$3 = '[data-widget="chat-pane-toggle"]';
   var SELECTOR_DIRECT_CHAT = '.direct-chat';
   var CLASS_NAME_DIRECT_CHAT_OPEN = 'direct-chat-contacts-open';
   /**
@@ -818,7 +818,7 @@
   var SELECTOR_NAVBAR = '.navbar';
   var SELECTOR_DROPDOWN_MENU = '.dropdown-menu';
   var SELECTOR_DROPDOWN_MENU_ACTIVE = '.dropdown-menu.show';
-  var SELECTOR_DROPDOWN_TOGGLE = '[data-bs-toggle="dropdown"]';
+  var SELECTOR_DROPDOWN_TOGGLE = '[data-toggle="dropdown"]';
   var CLASS_NAME_DROPDOWN_RIGHT = 'dropdown-menu-right';
   var CLASS_NAME_DROPDOWN_SUBMENU = 'dropdown-submenu'; // TODO: this is unused; should be removed along with the extend?
 
@@ -960,7 +960,7 @@
   var EVENT_COLLAPSED$2 = "collapsed" + EVENT_KEY$3;
   var SELECTOR_TABLE = '.expandable-table';
   var SELECTOR_EXPANDABLE_BODY = '.expandable-body';
-  var SELECTOR_DATA_TOGGLE$2 = '[data-bs-widget="expandable-table"]';
+  var SELECTOR_DATA_TOGGLE$2 = '[data-widget="expandable-table"]';
   var SELECTOR_ARIA_ATTR = 'aria-expanded';
   /**
     * Class Definition
@@ -1077,7 +1077,7 @@
   var NAME$8 = 'Fullscreen';
   var DATA_KEY$8 = 'lte.fullscreen';
   var JQUERY_NO_CONFLICT$8 = $__default["default"].fn[NAME$8];
-  var SELECTOR_DATA_WIDGET$2 = '[data-bs-widget="fullscreen"]';
+  var SELECTOR_DATA_WIDGET$2 = '[data-widget="fullscreen"]';
   var SELECTOR_ICON = SELECTOR_DATA_WIDGET$2 + " i";
   var EVENT_FULLSCREEN_CHANGE = 'webkitfullscreenchange mozfullscreenchange fullscreenchange MSFullscreenChange';
   var Default$8 = {
@@ -1195,11 +1195,11 @@
   var NAME$7 = 'IFrame';
   var DATA_KEY$7 = 'lte.iframe';
   var JQUERY_NO_CONFLICT$7 = $__default["default"].fn[NAME$7];
-  var SELECTOR_DATA_TOGGLE$1 = '[data-bs-widget="iframe"]';
-  var SELECTOR_DATA_TOGGLE_CLOSE = '[data-bs-widget="iframe-close"]';
-  var SELECTOR_DATA_TOGGLE_SCROLL_LEFT = '[data-bs-widget="iframe-scrollleft"]';
-  var SELECTOR_DATA_TOGGLE_SCROLL_RIGHT = '[data-bs-widget="iframe-scrollright"]';
-  var SELECTOR_DATA_TOGGLE_FULLSCREEN = '[data-bs-widget="iframe-fullscreen"]';
+  var SELECTOR_DATA_TOGGLE$1 = '[data-widget="iframe"]';
+  var SELECTOR_DATA_TOGGLE_CLOSE = '[data-widget="iframe-close"]';
+  var SELECTOR_DATA_TOGGLE_SCROLL_LEFT = '[data-widget="iframe-scrollleft"]';
+  var SELECTOR_DATA_TOGGLE_SCROLL_RIGHT = '[data-widget="iframe-scrollright"]';
+  var SELECTOR_DATA_TOGGLE_FULLSCREEN = '[data-widget="iframe-fullscreen"]';
   var SELECTOR_CONTENT_WRAPPER = '.content-wrapper';
   var SELECTOR_CONTENT_IFRAME = SELECTOR_CONTENT_WRAPPER + " iframe";
   var SELECTOR_TAB_NAV = SELECTOR_CONTENT_WRAPPER + ".iframe-mode .nav";
@@ -1278,7 +1278,7 @@
         navId += "-" + Math.floor(Math.random() * 1000);
       }
 
-      var newNavItem = "<li class=\"nav-item\" role=\"presentation\"><a href=\"#\" class=\"btn-iframe-close\" data-bs-widget=\"iframe-close\" data-bs-type=\"only-this\"><i class=\"fas fa-times\"></i></a><a class=\"nav-link\" data-bs-toggle=\"row\" id=\"" + navId + "\" href=\"#" + tabId + "\" role=\"tab\" aria-controls=\"" + tabId + "\" aria-selected=\"false\">" + title + "</a></li>";
+      var newNavItem = "<li class=\"nav-item\" role=\"presentation\"><a href=\"#\" class=\"btn-iframe-close\" data-widget=\"iframe-close\" data-type=\"only-this\"><i class=\"fas fa-times\"></i></a><a class=\"nav-link\" data-toggle=\"row\" id=\"" + navId + "\" href=\"#" + tabId + "\" role=\"tab\" aria-controls=\"" + tabId + "\" aria-selected=\"false\">" + title + "</a></li>";
       $__default["default"](SELECTOR_TAB_NAVBAR_NAV).append(unescape(escape(newNavItem)));
       var newTabItem = "<div class=\"tab-pane fade\" id=\"" + tabId + "\" role=\"tabpanel\" aria-labelledby=\"" + navId + "\"><iframe src=\"" + link + "\"></iframe></div>";
       $__default["default"](SELECTOR_TAB_CONTENT).append(unescape(escape(newTabItem)));
@@ -1534,7 +1534,7 @@
           target = e.target.offsetParent;
         }
 
-        _this3.removeActiveTab(target.attributes['data-bs-type'] ? target.attributes['data-bs-type'].nodeValue : null, target);
+        _this3.removeActiveTab(target.attributes['data-type'] ? target.attributes['data-type'].nodeValue : null, target);
       });
       $__default["default"](document).on('click', SELECTOR_DATA_TOGGLE_FULLSCREEN, function (e) {
         e.preventDefault();
@@ -1695,9 +1695,9 @@
   var SELECTOR_SIDEBAR$1 = '.main-sidebar .sidebar';
   var SELECTOR_CONTENT = '.content-wrapper';
   var SELECTOR_CONTROL_SIDEBAR_CONTENT = '.control-sidebar-content';
-  var SELECTOR_CONTROL_SIDEBAR_BTN = '[data-bs-widget="control-sidebar"]';
+  var SELECTOR_CONTROL_SIDEBAR_BTN = '[data-widget="control-sidebar"]';
   var SELECTOR_FOOTER = '.main-footer';
-  var SELECTOR_PUSHMENU_BTN = '[data-bs-widget="pushmenu"]';
+  var SELECTOR_PUSHMENU_BTN = '[data-widget="pushmenu"]';
   var SELECTOR_LOGIN_BOX = '.login-box';
   var SELECTOR_REGISTER_BOX = '.register-box';
   var SELECTOR_PRELOADER = '.preloader';
@@ -1946,7 +1946,7 @@
   var EVENT_COLLAPSED$1 = "collapsed" + EVENT_KEY$2;
   var EVENT_COLLAPSED_DONE = "collapsed-done" + EVENT_KEY$2;
   var EVENT_SHOWN = "shown" + EVENT_KEY$2;
-  var SELECTOR_TOGGLE_BUTTON$1 = '[data-bs-widget="pushmenu"]';
+  var SELECTOR_TOGGLE_BUTTON$1 = '[data-widget="pushmenu"]';
   var SELECTOR_BODY = 'body';
   var SELECTOR_OVERLAY = '#sidebar-overlay';
   var SELECTOR_WRAPPER = '.wrapper';
@@ -2174,7 +2174,7 @@
   var CLASS_NAME_HEADER = 'nav-header';
   var CLASS_NAME_SEARCH_RESULTS = 'sidebar-search-results';
   var CLASS_NAME_LIST_GROUP = 'list-group';
-  var SELECTOR_DATA_WIDGET$1 = '[data-bs-widget="sidebar-search"]';
+  var SELECTOR_DATA_WIDGET$1 = '[data-widget="sidebar-search"]';
   var SELECTOR_SIDEBAR = '.main-sidebar .nav-sidebar';
   var SELECTOR_NAV_LINK = '.nav-link';
   var SELECTOR_NAV_TREEVIEW = '.nav-treeview';
@@ -2464,7 +2464,7 @@
   var NAME$3 = 'NavbarSearch';
   var DATA_KEY$3 = 'lte.navbar-search';
   var JQUERY_NO_CONFLICT$3 = $__default["default"].fn[NAME$3];
-  var SELECTOR_TOGGLE_BUTTON = '[data-bs-widget="navbar-search"]';
+  var SELECTOR_TOGGLE_BUTTON = '[data-widget="navbar-search"]';
   var SELECTOR_SEARCH_BLOCK = '.navbar-search-block';
   var SELECTOR_SEARCH_INPUT = '.form-control';
   var CLASS_NAME_OPEN$1 = 'navbar-search-open';
@@ -2774,7 +2774,7 @@
   var NAME$1 = 'TodoList';
   var DATA_KEY$1 = 'lte.todolist';
   var JQUERY_NO_CONFLICT$1 = $__default["default"].fn[NAME$1];
-  var SELECTOR_DATA_TOGGLE = '[data-bs-widget="todo-list"]';
+  var SELECTOR_DATA_TOGGLE = '[data-widget="todo-list"]';
   var CLASS_NAME_TODO_LIST_DONE = 'done';
   var Default$1 = {
     onCheck: function onCheck(item) {
@@ -2896,7 +2896,7 @@
   var SELECTOR_LINK = '.nav-link';
   var SELECTOR_TREEVIEW_MENU = '.nav-treeview';
   var SELECTOR_OPEN = '.menu-open';
-  var SELECTOR_DATA_WIDGET = '[data-bs-widget="treeview"]';
+  var SELECTOR_DATA_WIDGET = '[data-widget="treeview"]';
   var CLASS_NAME_OPEN = 'menu-open';
   var CLASS_NAME_IS_OPENING = 'menu-is-opening';
   var CLASS_NAME_SIDEBAR_COLLAPSED = 'sidebar-collapse';
@@ -2905,7 +2905,7 @@
     animationSpeed: 300,
     accordion: true,
     expandSidebar: false,
-    sidebarButtonSelector: '[data-bs-widget="pushmenu"]'
+    sidebarButtonSelector: '[data-widget="pushmenu"]'
   };
   /**
    * Class Definition
