@@ -17,6 +17,16 @@ function a_css($css_file){
     return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">\r\n";
 }
 
+function base(){
+    $base_url = base_url();
+
+    return "<base href=\"$base_url\">
+
+    <script>
+        const base_url  = '$base_url';        
+    </script>";
+}
+
 function include_no_render(string $path, ?Array $vars = null){
     global $ctrl;
 
@@ -46,12 +56,12 @@ function get_view(string $view_path, ?Array $vars = null, int $expiration_time =
     return include_no_render(View::get_view_src($view_path), $vars);
 }
 
-function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $layout = null, int $expiration_time = 0){
+function view(string $view_path, ?array $vars  = null, ?string $layout = null, int $expiration_time = 0){
     if (!Strings::endsWith('.php', $view_path)){
         $view_path .= '.php';
     }
 
-    (new MyView($view_path, $vars_to_be_passed, $layout, $expiration_time)); 
+    (new MyView($view_path, $vars, $layout, $expiration_time)); 
 }
 
 /*
@@ -59,7 +69,7 @@ function view(string $view_path, ?array $vars_to_be_passed  = null, ?string $lay
 
     A diferencia de view(), no requiere de una vista
 */
-function render($content = null, ?string $layout = null){
+function render($content = null, ?string $layout = null, ?array $vars  = null){
     $config = config();
 
     if (empty($layout)){
@@ -71,6 +81,10 @@ function render($content = null, ?string $layout = null){
     if (!file_exists($path)){
         response("Path '$path' not found", 404);
     }
+
+    if (!empty($vars)){
+        extract($vars);
+    }   
 
     include $path;
 }

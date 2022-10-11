@@ -9,7 +9,7 @@ The expandable table plugin provides simple functionality to create expandable t
 ```html
 <table class="table table-bordered table-hover">
   <tbody>
-    <tr data-bs-widget="expandable-table" aria-expanded="false">
+    <tr data-widget="expandable-table" aria-expanded="false">
       <td>183</td>
     </tr>
     <tr class="expandable-body">
@@ -19,7 +19,7 @@ The expandable table plugin provides simple functionality to create expandable t
         </p>
       </td>
     </tr>
-    <tr data-bs-widget="expandable-table" aria-expanded="true">
+    <tr data-widget="expandable-table" aria-expanded="true">
       <td>219</td>
     </tr>
     <tr class="expandable-body">
@@ -29,7 +29,7 @@ The expandable table plugin provides simple functionality to create expandable t
         </p>
       </td>
     </tr>
-    <tr data-bs-widget="expandable-table" aria-expanded="true">
+    <tr data-widget="expandable-table" aria-expanded="true">
       <td>657</td>
     </tr>
     <tr class="expandable-body">
@@ -55,9 +55,9 @@ This plugin can be activated as a jQuery plugin or using the data api.
 
 ###### Data API
 {: .text-bold }
-Add `data-bs-widget="expandable-table"` to a table row to activate the plugin and place a new table row below with the `.expandable-body`-class.
+Add `data-widget="expandable-table"` to a table row to activate the plugin and place a new table row below with the `.expandable-body`-class.
 ```html
-<tr data-bs-widget="expandable-table" aria-expanded="true">
+<tr data-widget="expandable-table" aria-expanded="true">
   <td>657</td>
 </tr>
 <tr class="expandable-body">

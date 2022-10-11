@@ -10,9 +10,9 @@ This plugin can be activated as a jQuery plugin or using the data api.
 
 ###### Data API
 {: .text-bold }
-Add `data-bs-widget="pushmenu"` to a button to activate the plugin. 
+Add `data-widget="pushmenu"` to a button to activate the plugin. 
 ```html
-<button class="btn btn-primary" data-bs-widget="pushmenu">Toggle Sidebar</button>
+<button class="btn btn-primary" data-widget="pushmenu">Toggle Sidebar</button>
 ```
 
 ###### jQuery
@@ -36,7 +36,7 @@ $('.sidebar-toggle-btn').PushMenu(options)
 > ##### Tip!
 > You can use any option via the data-attributes like this to enable auto collapse sidebar on 768 pixels width.
 > ```html
-> <button class="btn btn-primary" data-bs-widget="pushmenu" data-auto-collapse-size="768">Toggle Sidebar</button>
+> <button class="btn btn-primary" data-widget="pushmenu" data-auto-collapse-size="768">Toggle Sidebar</button>
 > ```
 {: .quote-info}
 
@@ -66,4 +66,4 @@ Example: `$(document).on('shown.lte.pushmenu', handleExpandedEvent)`
 |expand | Expands the sidebar menu
 {: .table .table-bordered .bg-light}
 
-Example: `$('[data-bs-widget="pushmenu"]').PushMenu('toggle')`
+Example: `$('[data-widget="pushmenu"]').PushMenu('toggle')`

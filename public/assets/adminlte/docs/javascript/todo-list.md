@@ -10,7 +10,7 @@ This plugin can be activated as a jQuery plugin or using the data api.
 
 ###### Data API
 {: .text-bold }
-Activate the plugin by adding `data-bs-widget="todo-list"` to the ul element. If you need to provide onCheck and onUncheck methods, please use the jQuery API. 
+Activate the plugin by adding `data-widget="todo-list"` to the ul element. If you need to provide onCheck and onUncheck methods, please use the jQuery API. 
 
 ###### jQuery
 {: .text-bold }

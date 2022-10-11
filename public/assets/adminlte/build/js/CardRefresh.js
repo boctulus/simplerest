@@ -24,7 +24,7 @@ const EVENT_OVERLAY_REMOVED = `overlay.removed${EVENT_KEY}`
 const CLASS_NAME_CARD = 'card'
 
 const SELECTOR_CARD = `.${CLASS_NAME_CARD}`
-const SELECTOR_DATA_REFRESH = '[data-bs-card-widget="card-refresh"]'
+const SELECTOR_DATA_REFRESH = '[data-card-widget="card-refresh"]'
 
 const Default = {
   source: '',
@@ -114,21 +114,25 @@ class CardRefresh {
   }
 
   // Static
-
   static _jQueryInterface(config) {
-    let data = $(this).data(DATA_KEY)
-    const _options = $.extend({}, Default, $(this).data())
+    return this.each(function () {
+      let data = $(this).data(DATA_KEY)
+      const _config = $.extend({}, Default, typeof config === 'object' ? config : $(this).data())
 
-    if (!data) {
-      data = new CardRefresh($(this), _options)
-      $(this).data(DATA_KEY, typeof config === 'string' ? data : config)
-    }
+      if (!data) {
+        data = new CardRefresh($(this), _config)
+        $(this).data(DATA_KEY, data)
+        data._init()
+      } else if (typeof config === 'string') {
+        if (typeof data[config] === 'undefined') {
+          throw new TypeError(`No method named "${config}"`)
+        }
 
-    if (typeof config === 'string' && /load/.test(config)) {
-      data[config]()
-    } else {
-      data._init($(this))
-    }
+        data[config]()
+      } else if (typeof config === 'undefined') {
+        data._init()
+      }
+    })
   }
 }
 

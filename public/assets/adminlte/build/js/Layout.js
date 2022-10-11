@@ -21,9 +21,9 @@ const SELECTOR_MAIN_SIDEBAR = '.main-sidebar'
 const SELECTOR_SIDEBAR = '.main-sidebar .sidebar'
 const SELECTOR_CONTENT = '.content-wrapper'
 const SELECTOR_CONTROL_SIDEBAR_CONTENT = '.control-sidebar-content'
-const SELECTOR_CONTROL_SIDEBAR_BTN = '[data-bs-widget="control-sidebar"]'
+const SELECTOR_CONTROL_SIDEBAR_BTN = '[data-widget="control-sidebar"]'
 const SELECTOR_FOOTER = '.main-footer'
-const SELECTOR_PUSHMENU_BTN = '[data-bs-widget="pushmenu"]'
+const SELECTOR_PUSHMENU_BTN = '[data-widget="pushmenu"]'
 const SELECTOR_LOGIN_BOX = '.login-box'
 const SELECTOR_REGISTER_BOX = '.register-box'
 const SELECTOR_PRELOADER = '.preloader'
@@ -210,21 +210,23 @@ class Layout {
   }
 
   // Static
-
-  static _jQueryInterface(config = '') {
+  static _jQueryInterface(config) {
     return this.each(function () {
       let data = $(this).data(DATA_KEY)
-      const _options = $.extend({}, Default, $(this).data())
+      const _config = $.extend({}, Default, typeof config === 'object' ? config : $(this).data())
 
       if (!data) {
-        data = new Layout($(this), _options)
+        data = new Layout($(this), _config)
         $(this).data(DATA_KEY, data)
-      }
-
-      if (config === 'init' || config === '') {
         data._init()
-      } else if (config === 'fixLayoutHeight' || config === 'fixLoginRegisterHeight') {
+      } else if (typeof config === 'string') {
+        if (typeof data[config] === 'undefined') {
+          throw new TypeError(`No method named "${config}"`)
+        }
+
         data[config]()
+      } else if (typeof config === 'undefined') {
+        data._init()
       }
     })
   }

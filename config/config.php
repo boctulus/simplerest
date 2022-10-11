@@ -29,7 +29,7 @@ return [
 	
 	'default_controller' => 'HomeController',
 
-	'template' => 'tpl.php',
+	'template' => 'templates/tpl.php',
 
 	/*
 		true  | 1 | on 

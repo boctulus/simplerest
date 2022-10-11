@@ -12,7 +12,7 @@ This plugin can be activated as a jQuery plugin or using the data API.
 ###### Data API
 {: .text-bold }
 
-Activate the plugin by adding the following data-attribue `data-bs-widget="sidebar-search"` to a input-group inside the sidebar. You can use the HTML Markup below for a quick start.
+Activate the plugin by adding the following data-attribue `data-widget="sidebar-search"` to a input-group inside the sidebar. You can use the HTML Markup below for a quick start.
 
 
 ###### jQuery
@@ -21,14 +21,14 @@ Activate the plugin by adding the following data-attribue `data-bs-widget="sideb
 The jQuery API provides more customizable options that allows the developer to pre-process the request before rendering and post-process it after rendering. 
 
 ```js
-("[data-bs-widget="sidebar-search"]").SidebarSearch(options)
+("[data-widget="sidebar-search"]").SidebarSearch(options)
 ```
 
 ##### HTML Markup
 Place this HTML Markup after `div.user-panel`.
 ```html
 <div class="form-inline">
-  <div class="input-group" data-bs-widget="sidebar-search">
+  <div class="input-group" data-widget="sidebar-search">
     <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
     <div class="input-group-append">
       <button class="btn btn-sidebar">
@@ -68,4 +68,4 @@ Place this HTML Markup after `div.user-panel`.
 |search | Triggers a search.
 {: .table .table-bordered .bg-light}
 
-Example: `$('[data-bs-widget="sidebar-search"]').SidebarSearch('toggle')`
+Example: `$('[data-widget="sidebar-search"]').SidebarSearch('toggle')`

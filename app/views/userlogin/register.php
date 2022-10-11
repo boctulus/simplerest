@@ -6,7 +6,7 @@
 ?>
 
 <div class="row vh-100 d-flex  align-items-center">
-	<div class="col-xs-12 col-sm-6 offset-sm-3 col-md-4 offset-md-4">	
+	<div class="col-xs-12   col-sm-8 offset-sm-2    col-md-6 offset-md-3    col-lg-4 offset-lg-4">	
 
 		<?php
  
@@ -18,30 +18,32 @@
 		Bt5Form::setIdAsName();
 
 		echo tag('card')
-		->header(tag('cardTitle')->text('Registro')->style('font-size: 300%;'))
+		->header(tag('cardTitle')->text('Registro'))
 		->body([
 			tag('inputGroup')->content([
 				Bt5Form::span('<i class="fas fa-at"></i>', [
 					'class' => 'input-group-text'
 				]),
 	
-				Bt5Form::inputText(
-					id:"email",
-					placeholder:"E-mail",
-					required:"required"
-				)
+				tag('email')
+				->id("email")	
+				->placeholder("E-mail")
+				->required("required")
+				->style("font-size:1rem")
+
 			])->class("mb-3"),
 	
 			tag('inputGroup')->content([
 				Bt5Form::span('<i class="fas fa-user"></i>', [
 					'class' => 'input-group-text'
 				]),
-	
-				Bt5Form::inputText(
-					id:"username",
-					placeholder:"Nombre de usuario",
-					required:"required"
-				)
+
+				tag('inputText')
+				->id("username")	
+				->placeholder("Nombre de usuario")
+				->required("required")
+				->style("font-size:1rem")
+
 			])->class("mb-3"),
 			
 			tag('inputGroup')->content([
@@ -49,24 +51,25 @@
 					'class' => 'input-group-text'
 				]),
 	
-				Bt5Form::password(
-					id:"password", 
-					placeholder:"Password",
-					required:"required"
-				)
+				tag('password')
+				->id("password")	
+				->placeholder("Password")
+				->required("required")
+				->style("font-size:1rem")
+
 			])->class("mb-3"),
 	
 			tag('inputGroup')->content([
 				Bt5Form::span('<i class="fas fa-key"></i>', [
 					'class' => 'input-group-text'
 				]),
-	
-				Bt5Form::password(
-					id:"password_confirmation", 
-					placeholder:"Password confirmación",
-					required:"required",
-					name:"password_confirmation"
-				)
+				
+				tag('password')
+				->id("password_confirmation")	
+				->placeholder("Password confirmación")
+				->required("required")
+				->style("font-size:1rem")
+
 			])->class("mb-3"),
 			'<div style="margin-bottom:1em;">
 			<a href="login/rememberme">Recordar contraseña</a>

@@ -19,7 +19,7 @@ const JQUERY_NO_CONFLICT = $.fn[NAME]
 
 const EVENT_TOGGLED = `toggled${EVENT_KEY}`
 
-const SELECTOR_DATA_TOGGLE = '[data-bs-widget="chat-pane-toggle"]'
+const SELECTOR_DATA_TOGGLE = '[data-widget="chat-pane-toggle"]'
 const SELECTOR_DIRECT_CHAT = '.direct-chat'
 
 const CLASS_NAME_DIRECT_CHAT_OPEN = 'direct-chat-contacts-open'
@@ -40,7 +40,6 @@ class DirectChat {
   }
 
   // Static
-
   static _jQueryInterface(config) {
     return this.each(function () {
       let data = $(this).data(DATA_KEY)
@@ -48,9 +47,15 @@ class DirectChat {
       if (!data) {
         data = new DirectChat($(this))
         $(this).data(DATA_KEY, data)
-      }
+      } else if (typeof config === 'string') {
+        if (typeof data[config] === 'undefined') {
+          throw new TypeError(`No method named "${config}"`)
+        }
 
-      data[config]()
+        data[config]()
+      } else if (typeof config === 'undefined') {
+        data._init()
+      }
     })
   }
 }
