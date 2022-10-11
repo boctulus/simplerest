@@ -1,4 +1,5 @@
 const login_page = base_url + '/login';
+const admin_page = base_url + '/admin';
 
 
 function password_show_hide(id = 'password') {
@@ -38,6 +39,11 @@ function logged(){
 function logout(redirect = true) {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('username');
+
+    if (window.location.href == login_page){
+        return;
+    }
 
     if (redirect){
         window.location.href = login_page;
@@ -77,7 +83,7 @@ function checkpoint() {
         const current_url = window.location.toString();
 
         if (current_url == base_url + '/admin' || current_url == base_url + '/admin/' || current_url.startsWith(base_url + '/admin/')){
-            window.location = login_page;
+            window.location.href = login_page;
         }
     }
 }
@@ -112,7 +118,7 @@ function register() {
                 localStorage.setItem('expires_in', data.expires_in);
                 localStorage.setItem('exp', parseInt((new Date).getTime() / 1000) + data.expires_in);
                 console.log('Tokens obtenidos', data);
-                window.location = base_url;
+                window.location.href = base_url;
             } else {
                 $('#registerError').text('Error desconcido');
                 console.log(data);
@@ -125,6 +131,10 @@ function register() {
     });
 
     return false;
+}
+
+function username(){
+    return localStorage.getItem('username');
 }
 
 function login() {
@@ -151,8 +161,10 @@ function login() {
                 localStorage.setItem('refresh_token', data.refresh_token);
                 localStorage.setItem('expires_in', data.expires_in);
                 localStorage.setItem('exp', parseInt((new Date).getTime() / 1000) + data.expires_in);
+                localStorage.setItem('username', data.username);
                 console.log('Tokens obtenidos');
-                window.location = base_url;
+
+                window.location.href = admin_page;
             } else {
                 console.log('Error (success)', data);
                 $('#loginError').text(data.responseJSON.error);
@@ -267,7 +279,7 @@ function update_pass() {
                 localStorage.setItem('expires_in', data.expires_in);
                 localStorage.setItem('exp', parseInt((new Date).getTime() / 1000) + data.expires_in);
                 console.log('Tokens obtenidos', data);
-                window.location = base_url;
+                window.location.href = base_url;
             } else {
                 $('#passChangeError').text('Error desconcido');
                 console.log(res);
