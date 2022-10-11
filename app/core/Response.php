@@ -143,7 +143,7 @@ class Response
             }          
         }     
 
-        static::$instance->setData( $data );
+        static::$instance->set( $data );
         return static::$instance;   	
     }
 
@@ -156,7 +156,7 @@ class Response
     } 
 
     function sendCode(int $http_code){
-        static::$instance->setData( json_encode(['status_code' => $http_code]) );
+        static::$instance->set( json_encode(['status_code' => $http_code]) );
           
         if (!static::$fake_status_codes){    
             http_response_code($http_code);
@@ -194,7 +194,7 @@ class Response
 
         static::$http_code = $http_code; //
 
-        static::$instance->setData($res);
+        static::$instance->set($res);
 
         return static::$instance; 
     }
@@ -248,17 +248,22 @@ class Response
         ];
 
             
-        static::$instance->setData($res);  
+        static::$instance->set($res);  
         static::$instance->flush();
     }
 
-    function setData($data){
+    function set($data){
         static::$data = $data;
         return static::$instance; 
     }
 
-    function getData(){ 
+    function get(){ 
         return static::$data; 
+    }
+
+    function __toString()
+    {
+        return $this->get();
     }
 
     function isEmpty(){
