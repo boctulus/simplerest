@@ -1,5 +1,4 @@
 <script>
-
     <?php
         if (isset($access_token))
             echo "localStorage.setItem('access_token','$access_token');";
@@ -16,17 +15,13 @@
           
         if (!isset($error)){
             echo "window.location.replace('/')";
-        } 
-              
+        }               
     ?>
-
 </script>    
 
 
 <?php 
     if (isset($error)){
-        echo '<div class="error">';
-        echo $error;
-        echo '</div>';
+        echo "<div class=\"error\">$error</div>";
     }     
 ?>

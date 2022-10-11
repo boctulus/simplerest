@@ -30,9 +30,9 @@ const CLASS_NAME_EXPANDING = 'expanding-card'
 const CLASS_NAME_WAS_COLLAPSED = 'was-collapsed'
 const CLASS_NAME_MAXIMIZED = 'maximized-card'
 
-const SELECTOR_DATA_REMOVE = '[data-bs-card-widget="remove"]'
-const SELECTOR_DATA_COLLAPSE = '[data-bs-card-widget="collapse"]'
-const SELECTOR_DATA_MAXIMIZE = '[data-bs-card-widget="maximize"]'
+const SELECTOR_DATA_REMOVE = '[data-card-widget="remove"]'
+const SELECTOR_DATA_COLLAPSE = '[data-card-widget="collapse"]'
+const SELECTOR_DATA_MAXIMIZE = '[data-card-widget="maximize"]'
 const SELECTOR_CARD = `.${CLASS_NAME_CARD}`
 const SELECTOR_CARD_HEADER = '.card-header'
 const SELECTOR_CARD_BODY = '.card-body'
@@ -108,6 +108,7 @@ class CardWidget {
     this._parent.css({
       height: this._parent.height(),
       width: this._parent.width(),
+      position: 'fixed',
       transition: 'all .15s'
     }).delay(150).queue(function () {
       const $element = $(this)
@@ -176,13 +177,12 @@ class CardWidget {
   }
 
   // Static
-
   static _jQueryInterface(config) {
     let data = $(this).data(DATA_KEY)
-    const _options = $.extend({}, Default, $(this).data())
+    const _config = $.extend({}, Default, $(this).data())
 
     if (!data) {
-      data = new CardWidget($(this), _options)
+      data = new CardWidget($(this), _config)
       $(this).data(DATA_KEY, typeof config === 'string' ? data : config)
     }
 

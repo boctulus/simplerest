@@ -20,7 +20,7 @@ The biggest change in Main Header is the Logo is moved to Main Sidebar and the M
 2. Header / Nav
   - `<header class="main-header">` & `<nav class="navbar navbar-static-top">` merged with `<nav class="main-header navbar navbar-expand navbar-white navbar-light">`
 3. Sidebar Toggle / Left Navbar
-  - `<a href="#" class="sidebar-toggle" data-bs-toggle="push-menu" role="button"><span class="sr-only">Toggle navigation</span></a>` replaced with `<ul class="navbar-nav"><li class="nav-item"><a class="nav-link" data-bs-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a></li></ul>`
+  - `<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button"><span class="sr-only">Toggle navigation</span></a>` replaced with `<ul class="navbar-nav"><li class="nav-item"><a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a></li></ul>`
 3. Right Navbar
   - `<div class="navbar-custom-menu">` & `<ul class="nav navbar-nav">` merged with `<ul class="navbar-nav ml-auto">`
 
@@ -37,8 +37,8 @@ Like above the biggest change is the Main Sidebar contains now the Logo and the 
 4. User Panel
   - `<div class="user-panel"><div class="pull-left image"><img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image"></div><div class="pull-left info"><p>Alexander Pierce</p><a href="#"><i class="fa fa-circle text-success"></i> Online</a></div></div>` replaced with `<div class="user-panel mt-3 pb-3 mb-3 d-flex"><div class="image"><img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image"></div><div class="info"><a href="#" class="d-block">Alexander Pierce</a></div></div>`
 5. Sidebar Menu
-  - `<nav class="mt-2">` now around `<ul class="sidebar-menu" data-bs-widget="tree">`
-  - `<ul class="sidebar-menu" data-bs-widget="tree">` replaced with `<ul class="nav nav-pills nav-sidebar flex-column" data-bs-widget="treeview" role="menu">`
+  - `<nav class="mt-2">` now around `<ul class="sidebar-menu" data-widget="tree">`
+  - `<ul class="sidebar-menu" data-widget="tree">` replaced with `<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">`
   - `<li class="header">` repalced with `<li class="nav-header">`
   - `<li>` need a new class `.nav-item`
   - `<li> <a>` need a new class `.nav-link`
@@ -199,5 +199,5 @@ Here are some other little css/html changes since v3.0:
 
 Here are some other little JavaScript changes since v3.0:
 
-- `data-bs-toggle="*"` renamed to `data-bs-widget="*"` instead of CardWidget items
-  - for CardWidget it's now `data-bs-card-widget="*"`
+- `data-toggle="*"` renamed to `data-widget="*"` instead of CardWidget items
+  - for CardWidget it's now `data-card-widget="*"`

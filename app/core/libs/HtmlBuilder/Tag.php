@@ -11,8 +11,9 @@ class Tag
     static protected $builder;
 
     function __construct(string $name) {
-        if (static::$builder == false){
-            throw new \Exception("Please register the HTML builder first");
+        if (static::$builder === null){
+            dd("Please register the HTML builder first");
+            exit(1);
         }
 
         $this->name = $name;
