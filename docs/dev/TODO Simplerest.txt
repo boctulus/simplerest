@@ -241,6 +241,10 @@ Ver video:
 
 https://www.youtube.com/watch?v=1wgLY-V69MM&ab_channel=LaravelDaily
 
+- Animaciones de
+
+  https://animate.style/
+
 - Investigar como hacer una PWA !!!! Leer sobre Workbox
 
 https://www.youtube.com/watch?v=E8BeSSdIUW4&ab_channel=vaadinofficial
@@ -1928,7 +1932,13 @@ Ver sintaxis Async usada por AWS S3 SDK
 
 https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/getting-started_basic-usage.html
 
-- Si usara Guzzle en vez de curl ya que permite "async requests" via CurlMultiHandler
+
+- Peticiones CURL en paralelo !
+
+https://www.php.net/manual/en/function.curl-multi-exec.php
+
+
+- Si usara Guzzle....
 
 https://stackoverflow.com/a/36549547/980631
 https://docs.guzzlephp.org/en/latest/faq.html?highlight=curl#can-guzzle-send-asynchronous-requests
