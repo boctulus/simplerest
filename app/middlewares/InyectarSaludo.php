@@ -17,11 +17,11 @@ class InyectarSaludo extends Middleware
     }
 
     function handle(?callable $next = null){
-        $data = $this->res->getData();
+        $data = $this->res;
 
         if (is_string($data)){
             if (Strings::startsWith('Hello ', $data)){
-                $this->res->setData(preg_replace('/Hello (.*)/', "Hello happy $1", $data,1));
+                $this->res->set(preg_replace('/Hello (.*)/', "Hello happy $1", $data,1));
             }
         }
 
