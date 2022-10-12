@@ -33,6 +33,7 @@ class MakeControllerBase extends Controller
     const TRAIT_TEMPLATE = self::TEMPLATES . 'Trait.php';
     const CRONJOBS_TEMPLATE = self::TEMPLATES . 'CronJob.php';
     const TASK_TEMPLATE = self::TEMPLATES . 'Task.php';
+    const MIDDLEWARE_TEMPLATE = self::TEMPLATES . 'Middleware.php';
 
     protected $table_name;
     protected $class_name;
@@ -398,6 +399,16 @@ class MakeControllerBase extends Controller
         $template_path = self::CONSOLE_TEMPLATE;
         $prefix = '';
         $subfix = 'Controller';  
+
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
+    }
+
+    function middleware($name, ...$opt) {
+        $namespace = 'simplerest\\controllers';
+        $dest_path = MIDDLEWARES_PATH;
+        $template_path = self::MIDDLEWARE_TEMPLATE;
+        $prefix = '';
+        $subfix = '';  
 
         $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
