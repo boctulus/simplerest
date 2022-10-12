@@ -2,6 +2,7 @@
 
 namespace simplerest\core;
 
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
 use simplerest\core\traits\ExceptionHandler;
@@ -27,47 +28,19 @@ class View
 
         $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
 
-        $file_exists = null;
+        $expired = Cache::expiredFile($cached_path, $expiration_time);
 
-        switch ($expiration_time){
-            // nunca expira
-            case -1:
-                $expired = false;
-            break;
-            // nunca se cachea
-            case 0:
-                $expired = true;
-            break;    
-            default:
-                $file_exists = file_exists($cached_path);
-
-                if (!$file_exists){
-                    $expired = true;
-                } else {
-                    $_ct     = filemtime($cached_path);
-                    $expired = time() > $_ct + $expiration_time;
-                }            
-        }
-
-        $cached  = !$expired;
-
-        if ($expiration_time != 0){
-            $file_exists = file_exists($cached_path);
-        } else {
-            $expiration_time = null;
-        }
-
-        if ($cached){
+        if (!$expired){
             $src = $cached_path;
         } else {
             $src = VIEWS_PATH . $view_path;
 
-            $content = Files::reader($src);
+            // $content = Files::reader($src);
 
-            if ($expiration_time != 0){
-                Files::writableOrFail($cached_path);
-                $bytes = Files::writter($cached_path, $content);
-            }
+            // if ($expiration_time != 0){
+            //     Files::writableOrFail($cached_path);
+            //     $bytes = Files::writter($cached_path, $content);
+            // }
         }
 
         return $src;
@@ -85,29 +58,9 @@ class View
         $file_exists = null;
         $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
 
-        switch ($expiration_time){
-            // nunca expira
-            case -1:
-                $expired = false;
-            break;
-            // nunca se cachea
-            case 0:
-                $expired = true;
-            break;    
-            default:
-                $file_exists = file_exists($cached_path);
+        $expired = Cache::expiredFile($cached_path, $expiration_time);
 
-                if (!$file_exists){
-                    $expired = true;
-                } else {
-                    $_ct     = filemtime($cached_path);
-                    $expired = time() > $_ct + $expiration_time;
-                }            
-        }
-
-        $cached = !$expired;    
-
-        if ($cached){
+        if (!$expired){
             $content = Files::reader($cached_path);
         } else {
             $content = Files::reader(VIEWS_PATH . $view_path);
@@ -142,25 +95,8 @@ class View
         if ($expiration_time !== 0){
             $cached_path = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
-            switch ($expiration_time){
-                case -1:
-                    $expired = false;
-                break;
-                case 0:
-                    $expired = true;
-                break;    
-                default:
-                    $file_exists = file_exists($cached_path);
-
-                    if (!$file_exists){
-                        $expired = true;
-                    } else {
-                        $_ct     = filemtime($cached_path);
-                        $expired = time() > $_ct + $expiration_time;
-                    }                  
-            } 
-
-            $cached = !$expired;
+            $expired = Cache::expiredFile($cached_path, $expiration_time);
+            $cached  = !$expired;
 
             if ($expired){
                 $this->onCacheExpired($view_path);
@@ -231,6 +167,10 @@ class View
     }
 
     static function css_file(string $file){
+        if (!Strings::startsWith('http', $file)){
+            $file = '/public/assets/' . Strings::removeFirstSlash($file);
+        }
+
         static::$head['css'][] = [
             'file' => $file
         ];

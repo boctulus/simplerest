@@ -104,7 +104,7 @@ class DumbController extends Controller
 
         $res = $client->disableSSL()
         ->followLocations()
-        //->cache(600)  
+        ->cache(600)  
         ->get()
         ->getResponse(false);
 
@@ -122,7 +122,7 @@ class DumbController extends Controller
     }
 
     function test_view_cache(){
-        view('random', null, null, 0);
+        view('random', null, null, 10);
     }
 
     function test_logger()
@@ -313,8 +313,8 @@ class DumbController extends Controller
 
     function div()
     {
-        $request = request();
-        $res = $request->getParam(0) / $request->getParam(1);
+        $ch = request();
+        $res = $ch->getParam(0) / $ch->getParam(1);
 
         //dd($res);
         //
@@ -5236,7 +5236,7 @@ class DumbController extends Controller
         
         $res = $client
         //->disableSSL()
-        //->setSSLCrt("D:\wamp64\ca-bundle.crt")
+        //->setSSLCrt("c:\php\cacert.pem")
         ->request('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET')
         ->getResponse();
     
@@ -11083,6 +11083,41 @@ class DumbController extends Controller
         var_dump(
             $str
         );
+    }
+
+    /*
+        Curl con proxy
+    */
+    function test_curl_proxy(){
+        $url = 'https://amzn.to/2M0SCXb';
+
+        $ch  = curl_init('https://proxy.pulque.ro/Proxy.php');
+
+        curl_setopt ( $ch , CURLOPT_SSL_VERIFYPEER, 0 );
+        curl_setopt ( $ch , CURLOPT_SSL_VERIFYHOST, 0 );
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+            'Proxy-Target-URL: '.$url
+        ));
+
+        curl_setopt_array($ch, array(    
+            CURLOPT_RETURNTRANSFER => true,     
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true
+        ));
+
+        $res = curl_exec($ch);
+
+        if($res === false)
+        {
+            trigger_error(curl_error($ch));
+        }
+
+        curl_close($ch); 
+
+        dd($res);
     }
 
     
