@@ -71,7 +71,9 @@
 			
 			<div class="mt-3" style="text-align:right;">
 				No registrado? <a href="login/register">regístrese</a>
-			</div>'
+			</div>',
+
+			'<span id="loginError" class="mt-5"></span>'
 		])->class('card-primary card-outline');
 	?>
 
