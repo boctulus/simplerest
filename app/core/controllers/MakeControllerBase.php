@@ -404,7 +404,7 @@ class MakeControllerBase extends Controller
     }
 
     function middleware($name, ...$opt) {
-        $namespace = 'simplerest\\controllers';
+        $namespace = 'simplerest\\middlewares';
         $dest_path = MIDDLEWARES_PATH;
         $template_path = self::MIDDLEWARE_TEMPLATE;
         $prefix = '';
