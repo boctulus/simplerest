@@ -117,8 +117,10 @@ function register() {
                 localStorage.setItem('refresh_token', data.refresh_token);
                 localStorage.setItem('expires_in', data.expires_in);
                 localStorage.setItem('exp', parseInt((new Date).getTime() / 1000) + data.expires_in);
+                localStorage.setItem('username', data.username);
                 console.log('Tokens obtenidos', data);
-                window.location.href = base_url;
+
+                window.location.href = admin_page + '?first_time';
             } else {
                 $('#registerError').text('Error desconcido');
                 console.log(data);
