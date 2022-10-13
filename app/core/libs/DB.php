@@ -555,10 +555,11 @@ class DB
 		El rollback() fallará ya que no puede hacer rollback de la más interna ya que nunca se hizo el beginTransaction()
 		dado que... ya había comenzado uno y la bandera no lo dejará iniciar.
 
-		Termina pasando esto:
+		Termina pasando algo como esto:
 
 		beginTransaction()	- main
-		;beginTransaction() - db_xxx   -nunca ocurre-
+		// beginTransaction() - db_xxx   
+		// rollback() 			- db_yyy   -nunca ocurre-
 		rollback() 			- db_xxx   <------------------- There is no active transaction
 
 
