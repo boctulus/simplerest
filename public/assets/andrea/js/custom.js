@@ -1,21 +1,42 @@
 
+let name_b           = null; // $("#chidsname")
+let name_p           = null; // $("#parentsname")
+let tale_language    = null; // document.querySelector('[name=language]').value
+let tale_story       = null;
+
+let genderkids       = null; //
+let genderparents    = null; //
+let characterkids    = null; //
+let characterparents = null; //
+
+
 $('.choose-parents').click(function() {
-    var who = $(this).attr('who');
+    var who    = $(this).attr('who');
     var gender = $(this).attr('gender');
+
     $('#characterparents').val(who);
     $('#genderparents').val(gender);
-    $('.check-parents').hide();
+    $('.check-parents').hide();    
     $(this).append('<div class="check-parents">');
+
+    characterparents = who
+    genderparents    = gender
+
     $.fn.checkform();
 });
 
 $('.choose-kids').click(function() {
-    var who = $(this).attr('who');
+    var who    = $(this).attr('who');
     var gender = $(this).attr('gender');
+
     $('#characterkids').val(who);
     $('#genderkids').val(gender);
     $('.check-childs').hide();
     $(this).append('<div class="check-childs">');
+
+    characterkids   = who
+    genderkids      = gender
+    
     $.fn.checkform();
 });
 
