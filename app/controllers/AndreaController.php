@@ -25,26 +25,14 @@ class AndreaController extends MyController
     }
 
     protected function assets(){
-        css_file(
-            asset('andrea/css/master.css')
-        );
-
-        css_file(
-            asset('andrea/css/header2.css')
-        );
-
-        css_file(
-            asset('andrea/css/bookblock.css')
-        );
-
-        css('
-            .main-slider_content { background-color:#FFCB0B; }
-        ');
+        css_file('andrea/css/master.css');
+        css_file('andrea/css/header2.css');
+        css_file('andrea/css/bookblock.css');
+        css_file('andrea/css/custom.css');
 
         js_file('andrea/js/modernizr.custom.js', null, true);	
         js_file('andrea/js/jquery-ui.min.js', null, true);
 
-        js_file('andrea/js/modernizr.custom.js');
         js_file('andrea/js/jquery.placeholder.min.js');
         js_file('andrea/js/smoothscroll.min.js');
 
@@ -102,6 +90,8 @@ class AndreaController extends MyController
     }
 
     function dinamic_res(){
+        $builder  = get_view('andrea/builder');
+
         $base_url = "https://produzione.familyintale.com/create-personalized-tale_p/";
 
         $params = array ( 
@@ -111,7 +101,7 @@ class AndreaController extends MyController
             'genderparents' => 'm', 
             'characterkids' => 'bfb', 
             'characterparents' => 'gfb', 
-            'tale_language' => 'en', 
+            'tale_language' => 'es', 
             'tale_story' => 'gu', 
         );
 
@@ -127,12 +117,16 @@ class AndreaController extends MyController
             throw new \Exception($client->error());
         }
 
-        $data = $client->data();
+        $book = $client->data();
 
-        // $data = Html::stripTagScript($data);
-        // $data = Html::removeComments($data);
+        // $book = Html::stripTagScript($book);
+        // $book = Html::removeComments($book);
+
+        Strings::replace('/img/', '/public/assets/andrea/img/', $book);
                      
-        echo $data;
+        $content = "$builder";
+
+        render($content);
     }
 }
 
