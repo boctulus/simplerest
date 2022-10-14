@@ -11088,64 +11088,29 @@ class DumbController extends Controller
     /*
         Curl con proxy
     */
-    function test_curl_proxy(){
-        $url = 'https://amzn.to/2M0SCXb';
-
-        $ch  = curl_init('http://2.56.221.125/php-proxy/Proxy.php');
-
-        curl_setopt ( $ch , CURLOPT_SSL_VERIFYPEER, 0 );
-        curl_setopt ( $ch , CURLOPT_SSL_VERIFYHOST, 0 );
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
-            'Proxy-Target-URL: '.$url
-        ));
-
-        curl_setopt_array($ch, array(    
-            CURLOPT_RETURNTRANSFER => true,     
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true
-        ));
-
-        $res = curl_exec($ch);
-
-        if($res === false)
-        {
-            trigger_error(curl_error($ch));
-        }
-
-        curl_close($ch); 
-
-        dd($res);
-    }
 
     function test_curl_proxy_2(){
-        // $url = 'https://amzn.to/2M0SCXb';
+        $url       = 'https://amzn.to/2M0SCXb';
+        $proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
 
+        $client = ApiClient::instance($proxy_url)
+        ->setHeaders([
+            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+            'Proxy-Target-URL: '.$url
+        ]);
 
-        // $proxy  = 'http://2.56.221.125/php-proxy/Proxy.php';
-        
-        // $headers = [
-        //     'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
-        //     'Proxy-Target-URL: '.$url
-        // ];
+        $client
+        ->disableSSL()
+        ->redirect()
+        ->get();
 
-        // $client = ApiClient::instance()
-        // ->disableSSL()
-        // ->setHeaders($headers)
-        // ->redirect()
-        // ->get($url);
+        if ($client->getStatus() != 200){
+            throw new \Exception($client->error());
+        }
 
-        // if ($client->getStatus() != 200){
-        //     throw new \Exception($client->error());
-        // }
-
-        // dd(
-        //     $client->data()         
-        // );
-
-        //dd($res);
+        dd(
+            $client->data()         
+        );  
     }
 
     
