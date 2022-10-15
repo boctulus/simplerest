@@ -188,7 +188,7 @@ class FrontController
 
         // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
         if (!empty($data)){
-            $res->setData($data);  
+            $res->set($data);  
         }
         
         /*
