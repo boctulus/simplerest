@@ -10,6 +10,14 @@ class VarDump
 	public static $render       = true;
 	public static $render_trace = false;
 
+	static function p(){
+		return (php_sapi_name() == 'cli' || Url::isPostmanOrInsomnia()) ? PHP_EOL . PHP_EOL : '<p/>';
+	}
+
+	static function br(){
+		return (php_sapi_name() == 'cli' || Url::isPostmanOrInsomnia())  ? PHP_EOL : '<br/>';;
+	}
+
 	protected static function pre(callable $fn, ...$args){
 		echo '<pre>';
 		$fn($args);
@@ -20,19 +28,19 @@ class VarDump
 	{	
 		$type = gettype($v);
 
-		$PostmanGenerator = Url::isPostman() || Url::isInsomnia();
+		$postman = Url::isPostmanOrInsomnia();
 		
-		$cli  = (php_sapi_name() == 'cli');
-		$br   = ($cli || $PostmanGenerator) ? PHP_EOL : '<br/>';
-		$p    = ($cli || $PostmanGenerator) ? PHP_EOL . PHP_EOL : '<p/>';
+		$cli     = (php_sapi_name() == 'cli');
+		$br      = static::br();
+		$p       = static::p();
 
 		$pre = !$cli;	
 
-		if (Url::isPostman() || Url::isInsomnia() || $type != 'array'){
+		if ($postman || $type != 'array'){
 			$pre = false;
 		}
 		
-		$fn = function($x) use ($type, $PostmanGenerator, $pre){
+		$fn = function($x) use ($type, $postman, $pre){
 			$pp = function ($fn, $dato) use ($pre){
 				if ($pre){
 					self::pre(function() use ($fn, $dato){ 
@@ -51,7 +59,7 @@ class VarDump
 					$pp('print_r', $x);
 					break;
 				case 'array':
-					if ($PostmanGenerator){
+					if ($postman){
 						$pp('var_export', $x);
 					} else {
 						$pp('print_r', $x);
@@ -88,17 +96,17 @@ class VarDump
 				$include_break = true;
 				break;
 			case 'array':
-				$include_break = $PostmanGenerator;
+				$include_break = $postman;
 				break;	
 			default:
 				$include_break = false;
 		}	
 
-		if (!$cli && !$PostmanGenerator && $type != 'array'){
+		if (!$cli && !$postman && $type != 'array'){
 			echo $br;
 		}
 
-		if ($include_break && ($cli ||$PostmanGenerator)){
+		if ($include_break && ($cli ||$postman)){
 			echo $br;
 		}
 
@@ -107,7 +115,6 @@ class VarDump
 		}
 	}	
 
-	// acá podría retener el buffer y hacer algun ajuste
 	static public function dd($val = null, $msg = null, bool $additional_carriage_return = false)
 	{
 		if (!static::$render){
