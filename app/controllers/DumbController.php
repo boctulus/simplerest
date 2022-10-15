@@ -11115,6 +11115,15 @@ class DumbController extends Controller
         );  
     }
 
-    
+
+    function testxxxx(){
+        StdOut::toLog();
+
+        StdOut::pprint([
+            'x' => 5,
+            'y' => 'Feli'
+        ], true);
+    }
+
 
 }   // end class

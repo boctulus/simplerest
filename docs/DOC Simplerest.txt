@@ -8517,6 +8517,41 @@ Ej:
 		$client->data()         
 	);
 
+
+# Proxy para ApiClient
+
+Un muy buen recurso cuando se quiere hacer una VPN casera es utilizar el siguiente recurso:
+
+	https://github.com/zounar/php-proxy/blob/master/Proxy.php
+
+
+Se instala el scripy Proxy.php en el servidor donde queremos que se haga la peticion y el codigo para ApiClient quedaria como en el ej.
+
+Ej:
+
+	$url       = 'https://amzn.to/2M0SCXb';
+	$proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
+
+	$client = ApiClient::instance($proxy_url)
+	->setHeaders([
+		'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+		'Proxy-Target-URL: '.$url
+	]);
+
+	$client
+	->disableSSL()
+	->redirect()
+	->get();
+
+	if ($client->getStatus() != 200){
+		throw new \Exception($client->error());
+	}
+
+	dd(
+		$client->data()         
+	);  
+
+
 ### Componentes del core del framework
 
 # Base de datos
@@ -8743,6 +8778,17 @@ Y para apagar / encender la respuesta,...
 	// ...
 
 	StdOut::showResponse();
+
+
+También es posible re-dirigir la salida de pprint() a un archivo.
+
+	StdOut::toFile($path);
+	StdOut::pprint($data);
+
+O directamente a /logs
+
+	StdOut::toLog();
+	StdOut::pprint($data);
 
 
 ### Perfilador del código
