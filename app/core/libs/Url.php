@@ -242,20 +242,49 @@ class Url
     }
 
     static function isPostman(){
-        if (!isset($_SERVER['HTTP_USER_AGENT'])){
-            return false;
+        static $is;
+
+        if ($is !== null){
+            return $is;
         }
 
-		return (Strings::startsWith('Postman', $_SERVER['HTTP_USER_AGENT']));
+        if (!isset($_SERVER['HTTP_USER_AGENT'])){
+            $is = false;
+            return $is;
+        }
+
+		$is = Strings::startsWith('Postman', $_SERVER['HTTP_USER_AGENT']);
+        return $is;
 	}
 
     static function isInsomnia(){
-        if (!isset($_SERVER['HTTP_USER_AGENT'])){
-            return false;
+        static $is;
+
+        if ($is !== null){
+            return $is;
         }
 
-        return Strings::startsWith('insomnia', $_SERVER['HTTP_USER_AGENT']);
+        if (!isset($_SERVER['HTTP_USER_AGENT'])){
+            $is = false;
+            return $is;
+        }
+
+        $is = Strings::startsWith('insomnia', $_SERVER['HTTP_USER_AGENT']);
+        return $is;
     }
+
+    static function isPostmanOrInsomnia(){
+		static $is;
+
+		if ($is !== null){
+			return $is;
+		}
+
+		$is = static::isPostman() || static::isInsomnia();
+
+		return $is;
+	}
+
 
     /*
         Usar antes de parseStrQuery()
