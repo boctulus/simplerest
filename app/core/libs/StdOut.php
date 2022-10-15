@@ -15,7 +15,6 @@ class StdOut
             ob_end_clean();
 
             file_put_contents(static::$path, $content, FILE_APPEND);
-            return;
         }
 
         if (static::$render){
@@ -23,12 +22,13 @@ class StdOut
         }
     }
 
-    static function toFile($path){
-        static::$path = $path;
+    static function toFile(string $path, bool $only = true){
+        static::$path   = $path;
+        static::$render = !$only; 
     }
 
-    static function toLog(){
-        static::$path = LOGS_PATH . '/' . config()['log_file'];
+    static function toLog(bool $only = true){
+        static::toFile(LOGS_PATH . '/' . config()['log_file'], $only);
     }
 
     static function hideResponse(){
