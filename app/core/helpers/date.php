@@ -7,7 +7,7 @@ function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){
 }
 
 // alias for datetime()
-function at(bool $cached = true){
+function at(bool $cached = false){
     static $date;
     
     if ($cached){
@@ -22,6 +22,6 @@ function at(bool $cached = true){
 }
 
 // alias for at()
-function now(bool $cached = true){
+function now(bool $cached = false){
     return at($cached);
 }
