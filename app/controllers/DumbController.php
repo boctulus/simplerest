@@ -11087,6 +11087,8 @@ class DumbController extends Controller
 
     /*
         Curl con proxy
+
+        https://github.com/zounar/php-proxy/blob/master/Proxy.php
     */
 
     function test_curl_proxy_2(){
