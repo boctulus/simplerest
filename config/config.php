@@ -362,6 +362,9 @@ return [
 		// ...
 	],
 
+
+	'log_file' => 'log.txt',
+
 	'var_dump_separators' => [
 		'start' => '--| ',
 		'end'   => ''
