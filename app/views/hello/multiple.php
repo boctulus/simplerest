@@ -84,7 +84,7 @@ body {
                                     <label class="custom-control-label" for="customRadio2">
                                         <p class="mb-0">Decoracion</p>
                                     </label>
-                                    <p class="mb-0">Decoracion > Artesanias<span class="small font-italic text-muted"></span></p>
+                                    <p class="mb-0"><span class="small font-italic text-muted">Decoracion > Artesanias</span></p>
                                 </div>
                                 <!--label for="customRadio2"><img src="https://i.postimg.cc/zf5ChFgs/2-rqo4zs.gif" alt="" width="60"></label-->
                                 <span class="badge bg-primary rounded-pill">+100</span>
