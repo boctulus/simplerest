@@ -141,7 +141,7 @@ body {
     }
 
     function clear_cat_error_msg(msg){
-        document.querySelector('#cat-selector-msgs').innerText = "&nbsp;"
+        document.querySelector('#cat-selector-msgs').innerText = ""
     }
 
     function report_cat_change(id, elem, event){
@@ -150,13 +150,18 @@ body {
 
         let acc = 0;
         checkboxes.forEach((element, ix) => {
-            acc += element ? 1 : 0;
-
-            if (acc >3){
-                document.querySelector('#cat-'+ id).checked = false;
-                checkboxes[id] = false
-            }  
+            acc += element ? 1 : 0;            
         });
+
+        if (acc <3){
+            clear_cat_error_msg();
+        }
+
+        if (acc >3){
+            document.querySelector('#cat-'+ id).checked = false;
+            checkboxes[id] = false
+            set_cat_error_msg("Has alcanzado el máximo de categorias")
+        }  
     }
 
 </script>
@@ -179,7 +184,7 @@ body {
                 <div class="card shadow border-0 mb-5">
                     <div class="card-body p-5">
                         <h2 class="h4 mb-1">Categorias de productos</h2>
-                        <p class="small text-muted font-italic mb-4">Hasta un maximo de 3</p>
+                        <p class="small text-muted font-italic mt-2 mb-4">Hasta un máximo de 3</p>
                         <ul class="list-group">
 
                             <?php foreach ($categos as $cat): ?>
