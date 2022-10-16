@@ -1130,7 +1130,6 @@ Ej:
 
 El método insertOrIgnore() se puede ignorar los errores de intentar crear nuevos registro cuando se está repitiendo un campo unique. Es similar a createOrIgnore() excepto porque el primero está dentro de una transacción.
 
-
 # Obtención de registros
 
 Antes que nada es posible usar la clase DB solo (si as'i se desea) para hacer la conexion la DB y hacer el resto de forma artesanal.
@@ -1149,7 +1148,7 @@ Ej:
 	dd($rows, 'ROWS');
 
 
-# Usando el m'etodo table()
+# Usando el metodo table()
 
 Todos los registros (menos los marcados como borrados)
 
@@ -8523,7 +8522,6 @@ Ej:
 Un muy buen recurso cuando se quiere hacer una VPN casera es utilizar el siguiente recurso:
 
 	https://github.com/zounar/php-proxy/blob/master/Proxy.php
-
 
 Se instala el scripy Proxy.php en el servidor donde queremos que se haga la peticion y el codigo para ApiClient quedaria como en el ej.
 
