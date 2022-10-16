@@ -1936,7 +1936,83 @@ https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/getting-started_basic
 - Peticiones CURL en paralelo !
 
 https://www.php.net/manual/en/function.curl-multi-exec.php
+https://webkul.com/blog/simultaneous-curl-requests-in-php/  <----- ver ejemplo!
 
+Otro ejemplo interesante es:
+
+https://www.phpclasses.org/browse/file/45301.html
+https://github.com/jsocol/oocurl <-- original
+
+Ej:
+ 
+ * $a = new Curl("http://www.yahoo.com/");
+ * $b = new Curl("http://www.microsoft.com/");
+ *
+ * $m = new CurlParallel($a, $b);
+ *
+ * $m->exec(); // Now we play the waiting game.
+ *
+ * printf("Yahoo is %n characters.\n", strlen($a->fetch()));
+ * printf("Microsoft is %n characters.\n", strlen($a->fetch()));
+ * </code>
+ *
+ * You can add any number of {@link Curl} objects to the
+ * CurlParallel object's constructor (including 0), or you
+ * can add with the {@link add()} method:
+ *
+ * <code>
+ * $m = new CurlParallel;
+ *
+ * $a = new Curl("http://www.yahoo.com/");
+ * $b = new Curl("http://www.microsoft.com/");
+ *
+ * $m->add($a);
+ * $m->add($b);
+ *
+ * $m->exec(); // Now we play the waiting game.
+ *
+ * printf("Yahoo is %n characters.\n", strlen($a->fetch()));
+ * printf("Microsoft is %n characters.\n", strlen($a->fetch()));
+
+En si.... todo se resume en:
+
+  1) Initialize the CURL requests and set the options.
+    
+    $chA = curl_init();
+    $chB = curl_init();
+    curl_setopt($chA, CURLOPT_URL, "http://site-A.com");
+    curl_setopt($chB, CURLOPT_URL, "http://site-B.com");
+    curl_setopt($chA, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($chB, CURLOPT_RETURNTRANSFER, true);
+
+  2) Itialize multi CURL and add the handlers.
+  
+    $mh = curl_multi_init();
+    curl_multi_add_handle($mh, $chA);
+    curl_multi_add_handle($mh, $chB);
+
+  3) Run the multi CURL
+  
+    do { curl_multi_exec($mh, $active); } while ($active);
+
+  4) Close all the CURL connections when done.
+  
+    curl_multi_remove_handle($mh, $chA);
+    curl_multi_remove_handle($mh, $chB);
+    curl_multi_close($mh);
+    
+  5) Fetch the results.
+  
+    $resA = curl_multi_getcontent($chA);
+    $resB = curl_multi_getcontent($chB);
+
+https://code-boxx.com/multi-async-curl-php/
+
+- Keep-Alive Connection Header 
+
+Ya no es valido para HTTP/2
+
+https://reqbin.com/req/php/c-jjwwaevv/curl-command-with-keep-alive-connection-header
 
 - Si usara Guzzle....
 
