@@ -16,7 +16,11 @@ body {
 
 .cursor-pointer {
     cursor: pointer;
-}');
+}
+
+');
+
+
 
 ?>
 
@@ -41,52 +45,61 @@ body {
                         <p class="small text-muted font-italic mb-4">Selecccione hasta un maximo de 3</p>
                         <ul class="list-group">
                             <li class="list-group-item rounded-0 d-flex align-items-center justify-content-between">
-                                <div class="custom-control custom-radio">
-                                    <input class="custom-control-input" id="customRadio1" type="checkbox" name="customRadio">
+                                <div class="custom-control">
+                                    <input class="form-check-input me-2" id="customRadio1" type="checkbox" name="customRadio">
                                     <label class="custom-control-label" for="customRadio1">
-                                        <p class="mb-0">Limpieza e higiene</p><span class="small font-italic text-muted">/</span>
+                                        <p class="mb-0">Limpieza e higiene</p>
                                     </label>
+                                    <p class="mb-0"><span class="small font-italic text-muted">/</span></p>
                                 </div>
                                 <!-- label for="customRadio1"><img src="https://i.postimg.cc/Hsq4Ygss/1-ezgo0i.png" alt="" width="60"></label -->
-                                <span class="badge bg-primary rounded-pill">17</span>
+                                <span class="badge bg-primary rounded-pill">+500</span>
                             </li>
                             <li class="list-group-item rounded-0 d-flex align-items-center justify-content-between">
-                                <div class="custom-control custom-radio">
-                                    <input class="custom-control-input" id="customRadio1" type="checkbox" name="customRadio">
+                                <div class="custom-control">
+                                    <input class="form-check-input me-2" id="customRadio1" type="checkbox" name="customRadio">
                                     <label class="custom-control-label" for="customRadio1">
-                                        <p class="mb-0">Cuidado personal</p><span class="small font-italic text-muted">Limpieza e higiene > Cuidado personal</span>
+                                        <p class="mb-0">Cuidado personal</p>
                                     </label>
+                                    <p class="mb-0"><span class="small font-italic text-muted">Limpieza e higiene > Cuidado personal</span></p>
                                 </div>
-                                <label for="customRadio1"><img src="https://i.postimg.cc/Hsq4Ygss/1-ezgo0i.png" alt="" width="60"></label>
+                                <!--label for="customRadio1"><img src="https://i.postimg.cc/Hsq4Ygss/1-ezgo0i.png" alt="" width="60"></label-->
+                                <span class="badge bg-primary rounded-pill">+200</span>
                             </li>
 
                             <li class="list-group-item d-flex align-items-center justify-content-between">
-                                <div class="custom-control custom-radio">
-                                    <input class="custom-control-input" id="customRadio2" type="checkbox" name="customRadio">
+                                <div class="custom-control">
+                                    <input class="form-check-input me-2" id="customRadio2" type="checkbox" name="customRadio">
                                     <label class="custom-control-label" for="customRadio2">
-                                        <p class="mb-0">Decoracion</p><span class="small font-italic text-muted"></span>
+                                        <p class="mb-0">Decoracion</p>
                                     </label>
+                                    <p class="mb-0"><span class="small font-italic text-muted">/</span></p>
                                 </div>
-                                <label for="customRadio2"><img src="https://i.postimg.cc/zf5ChFgs/2-rqo4zs.gif" alt="" width="60"></label>
+                                <!--label for="customRadio2"><img src="https://i.postimg.cc/zf5ChFgs/2-rqo4zs.gif" alt="" width="60"></label-->
+                                <span class="badge bg-primary rounded-pill">+100</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center justify-content-between">
-                                <div class="custom-control custom-radio">
-                                    <input class="custom-control-input" id="customRadio2" type="checkbox" name="customRadio">
+                                <div class="custom-control">
+                                    <input class="form-check-input me-2" id="customRadio2" type="checkbox" name="customRadio">
                                     <label class="custom-control-label" for="customRadio2">
-                                        <p class="mb-0">Decoracion</p><span class="small font-italic text-muted">Decoracion > Artesanias</span>
+                                        <p class="mb-0">Decoracion</p>
                                     </label>
+                                    <p class="mb-0">Decoracion > Artesanias<span class="small font-italic text-muted"></span></p>
                                 </div>
-                                <label for="customRadio2"><img src="https://i.postimg.cc/zf5ChFgs/2-rqo4zs.gif" alt="" width="60"></label>
+                                <!--label for="customRadio2"><img src="https://i.postimg.cc/zf5ChFgs/2-rqo4zs.gif" alt="" width="60"></label-->
+                                <span class="badge bg-primary rounded-pill">+100</span>
                             </li>        
 
                             <li class="list-group-item d-flex align-items-center justify-content-between">
-                                <div class="custom-control custom-radio">
-                                    <input class="custom-control-input" id="customRadio3" type="checkbox" name="customRadio">
+                                <div class="custom-control">
+                                    <input class="form-check-input me-2" id="customRadio3" type="checkbox" name="customRadio">
                                     <label class="custom-control-label" for="customRadio3">
                                         <p class="mb-0">Calefaccion</p><span class="small font-italic text-muted"></span>
                                     </label>
+                                    <p class="mb-0"><span class="small font-italic text-muted">/</span></p>
                                 </div>
-                                <label for="customRadio3"><img src="https://i.postimg.cc/Jnzj67KK/4-t444fl.png" alt="" width="60"></label>
+                                <!--label for="customRadio3"><img src="https://i.postimg.cc/Jnzj67KK/4-t444fl.png" alt="" width="60"></label-->
+                                <span class="badge bg-primary rounded-pill">+300</span>
                             </li>
                         </ul>
                     </div>
