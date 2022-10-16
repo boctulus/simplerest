@@ -8,17 +8,20 @@ use simplerest\core\libs\Time;
 class Hello2Controller extends Controller
 {
     function index(){
-        view('hello/hello2.php', null, null, 15);
+        view('hello/hello2', null, null, 15);
     }
 
     function lte(){
-        view('hello/lte.php', null, null, 15);
+        view('hello/lte', null, null, 15);
     }
     
     function test(){
-        view('hello/test.php');
+        view('hello/test');
     }
 
+    function test_multiple(){
+        view('hello/multiple');
+    }
    
 }
 
