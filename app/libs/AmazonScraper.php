@@ -10,7 +10,20 @@ use simplerest\core\libs\ApiClient;
 
 class AmazonScraper
 {
+    static function get_api_client(string $url){
+        $proxy_url = "http://2.56.221.125/php-proxy/Proxy.php";
+    
+        return (new ApiClient($proxy_url))
+        ->setHeaders([
+            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+            'Proxy-Target-URL: '.$url
+        ]);
+    }
+
     static function parseProduct(string $ori) {
+        $decimal_sep   = ',';
+        $thousand_sep  = '.';
+
         if (Strings::startsWith('http', $ori)){
             /*
                 Es una url
@@ -29,28 +42,28 @@ class AmazonScraper
             if (!isset($slug)){
                 throw new \InvalidArgumentException("Url inválida: no hay slug?");
             }
-
-            $client = new ApiClient($url);
+            
+            $client = static::get_api_client($url);
 
             $res = $client->disableSSL()
             ->followLocations()
-            ->cache()
+            //->cache()
             ->get()
             ->getResponse(false);
 
-            if ($res === null){
-                $res = $client->disableSSL()
-                ->followLocations()
-                ->clearCache()
-                ->get()
-                ->getResponse(false);
-            }
+            // if ($res === null){
+            //     $res = $client->disableSSL()
+            //     ->followLocations()
+            //     ->clearCache()
+            //     ->get()
+            //     ->getResponse(false);
+            // }
 
             /*
                 Redireccion fuera del standard de Amazon
             */
 
-            while ($res['http_code'] == 301 || $res['http_code'] == 302){
+            while ($res['http_code'] == 301){
                 $doc   = Dom::getDomDocument($res['data']);
                 $xpath = new \DOMXPath($doc);
                 
@@ -58,7 +71,7 @@ class AmazonScraper
                 $tgs  = $xpath->query('//a/@href');
                 $url  = trim($tgs[0]->nodeValue);
 
-                $client = new ApiClient($url);
+                $client = static::get_api_client($url);
 
                 $res = $client->disableSSL()
                 ->followLocations()
@@ -87,7 +100,6 @@ class AmazonScraper
                 return;
             }
 
-
             $uri  = str_replace(BASE_URL, '', $ori);
             $uri  = str_replace('p2F', '/', $uri);
             $uri  = str_replace('p3F', '/', $uri);
@@ -112,10 +124,28 @@ class AmazonScraper
         $doc   = Dom::getDomDocument($html);
         $xpath = new \DOMXPath($doc);
 
-        $tgs    = $xpath->query('//span[contains(@class, "a-price")]//span[contains(@class, "a-offscreen")]');
-        $precio = trim($tgs[0]->nodeValue ?? '');
+        $tgs = $xpath->query('//span[contains(@class, "priceToPay")]//span//span[contains(@class, "a-price-whole")]');
+        
+        // No se encuentra precio => no disponible
+        if ($tgs[0]->nodeValue === null){
+            return [
+                'stock_status'  => 'out of stock',
+                'regular_price' => 0
+            ];
+        }
 
-        $precio = Strings::parseCurrency($precio, '.', ',');
+        $node_val             = rtrim($tgs[0]->nodeValue, $decimal_sep) ?? '';
+        $precio_parte_entera  = str_replace($thousand_sep, '', trim($node_val));
+
+        $tgs = $xpath->query('//span[contains(@class, "priceToPay")]//span//span[contains(@class, "a-price-fraction")]');
+        $precio_parte_decimal = trim($tgs[0]->nodeValue ?? '');
+
+        if (empty($precio_parte_decimal)){
+            $tgs = $xpath->query('//span[contains(@class, "priceToPay")]//span//span[contains(@class, "a-price-decimal")]');
+            $precio_parte_decimal = trim($tgs[0]->nodeValue ?? '');
+        }
+
+        $precio = "{$precio_parte_entera}.{$precio_parte_decimal}";
 
         /*
             DISPONIBILIDAD 
@@ -141,14 +171,17 @@ class AmazonScraper
         */
 
         $tgs  = $xpath->query('//div[@id="availability"]');
-        $disp = trim($tgs[0]->nodeValue ?? '');
+        $availability = trim($tgs[0]->nodeValue ?? '');
+
+        $available      = Strings::contains('En stock',  $availability, false) || 
+                          Strings::contains('In stock',  $availability, false);
+
+        $available_soon = Strings::contains('Envío en ', $availability, false);
 
         return [
-            'stock_status' => (bool) Strings::contains('en stock', $disp, false),
+            'stock_status'  => ($available || $available_soon) ? 'in stock' : 'out of stock',
             'regular_price' => Strings::convertIntoFloat($precio)
         ];
      }
-
-
 }
 

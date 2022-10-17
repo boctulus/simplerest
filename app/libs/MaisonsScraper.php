@@ -10,6 +10,16 @@ use simplerest\core\libs\ApiClient;
 
 class MaisonsScraper 
 {    
+    static function get_api_client(string $url){
+        $proxy_url = "http://2.56.221.125/php-proxy/Proxy.php";
+    
+        return (new ApiClient($proxy_url))
+        ->setHeaders([
+            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+            'Proxy-Target-URL: '.$url
+        ]);
+    }
+
     static function parseProduct(string $ori){
         if (Strings::startsWith('http', $ori)){
             /*
@@ -30,11 +40,31 @@ class MaisonsScraper
                 throw new \InvalidArgumentException("Url inválida: no hay slug?");
             }
 
-            $html = ApiClient::instance($url)
-            ->disableSSL()
-            ->cache()
+            $client = static::get_api_client($url);
+
+            $res = $client->disableSSL()
+            ->followLocations()
+            //->cache()
             ->get()
-            ->getResponse(false)['data'];
+            ->getResponse(false);
+
+            // if ($res === null){
+            //     $res = $client->disableSSL()
+            //     ->followLocations()
+            //     ->clearCache()
+            //     ->get()
+            //     ->getResponse(false);
+            // }
+
+            if ($res === null){
+                return;
+            }
+
+            if ($res['http_code'] != 200){
+                return;
+            }
+
+            $html = $res['data'];
             
         } else {
             /*
@@ -89,7 +119,7 @@ class MaisonsScraper
         $precio = str_replace(['€', ' ', ' ', '.'], '', $precio);    
         $precio = str_replace(',', '.', $precio);  // punto decimal
         #d($precio, 'PRECIO (NORMAL)');
-            
+
         // // Costo recogida
         // $str = 'Entrega a domicilio o a un punto de recogida:';
 
@@ -109,7 +139,11 @@ class MaisonsScraper
         // Stock status
         $tgs        = $xpath->query('//span[contains(@class, "product-stock")]');
         $prod_stock_status = trim($tgs[0]->nodeValue ?? '');
-        $prod_stock_status = ($prod_stock_status === 'En stock' || $prod_stock_status === 'Disponible') ? 'in stock' : 'out of stock';
+
+        $available      = $prod_stock_status === 'En stock' || $prod_stock_status === 'Disponible';
+        $available_soon = Strings::contains('Enviado dentro de', $prod_stock_status);
+
+        $prod_stock_status = ($available || $available_soon) ? 'in stock' : 'out of stock';
         #d($prod_stock_status, 'STOCK STATUS');
         
         // Caractersticas (campos varios)
