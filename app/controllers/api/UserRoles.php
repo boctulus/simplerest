@@ -8,11 +8,11 @@ use simplerest\core\libs\Factory;
 
 class UserRoles extends MyApiController  /* implements IApiController */
 {    
-    protected $table_name = 'user_roles';
+    public $table_name = 'user_roles';
 
     function __construct()
     {
-        if (Factory::request()->hasAuth() && Factory::acl()->isRegistered()){
+        if (request()->hasAuth() && auth()->isRegistered()){
             $this->callable = ['get'];
 
             $this->is_retrievable   = true;
@@ -27,15 +27,15 @@ class UserRoles extends MyApiController  /* implements IApiController */
     } 
 
     function onGettingAfterCheck($id){
-        if (!Factory::acl()->hasSpecialPermission('grant') && 
-            !Factory::acl()->hasSpecialPermission('read_all')) {
+        if (!acl()->hasSpecialPermission('grant') && 
+            !acl()->hasSpecialPermission('read_all')) {
             $this->instance->where(['user_id' => $this->auth['uid']]); 
         }
     }
 
     function post($id = NULL)
     { 
-        if (!Factory::acl()->hasSpecialPermission('grant')){
+        if (!acl()->hasSpecialPermission('grant')){
             error('Forbidden to change role', 403);
         }
 
@@ -44,7 +44,7 @@ class UserRoles extends MyApiController  /* implements IApiController */
     
     function put($id = NULL)
     { 
-        if (!Factory::acl()->hasSpecialPermission('grant')){
+        if (!acl()->hasSpecialPermission('grant')){
             error('Forbidden to change role', 403);
         }
 
@@ -53,7 +53,7 @@ class UserRoles extends MyApiController  /* implements IApiController */
 
     function patch($id = NULL)
     { 
-        if (!Factory::acl()->hasSpecialPermission('grant')){
+        if (!acl()->hasSpecialPermission('grant')){
             error('Forbidden to change role', 403);
         }
 
@@ -63,7 +63,7 @@ class UserRoles extends MyApiController  /* implements IApiController */
 
     function delete($id = NULL)
     { 
-        if (!Factory::acl()->hasSpecialPermission('grant')){
+        if (!acl()->hasSpecialPermission('grant')){
             error('Forbidden to change role', 403);
         }
 
