@@ -141,7 +141,7 @@ body {
     }
 
     function clear_cat_error_msg(msg){
-        document.querySelector('#cat-selector-msgs').innerText = ""
+        document.querySelector('#cat-selector-msgs').innerText = " "
     }
 
     function report_cat_change(id, elem, event){
@@ -163,7 +163,6 @@ body {
             set_cat_error_msg("Has alcanzado el máximo de categorias")
         }  
     }
-
 </script>
 
 <!-- Demo header-->
@@ -185,7 +184,7 @@ body {
                     <div class="card-body p-5">
                         <h2 class="h4 mb-1">Categorias de productos</h2>
                         <p class="small text-muted font-italic mt-2 mb-4">Hasta un máximo de 3</p>
-                        <ul class="list-group">
+                        <ul class="list-group" style="margin-left: 0px;">
 
                             <?php foreach ($categos as $cat): ?>
 
