@@ -127,7 +127,7 @@ class AmazonScraper
         $tgs = $xpath->query('//span[contains(@class, "priceToPay")]//span//span[contains(@class, "a-price-whole")]');
         
         // No se encuentra precio => no disponible
-        if ($tgs[0]->nodeValue === null){
+        if ($tgs[0] === null || $tgs[0]->nodeValue === null){
             return [
                 'stock_status'  => 'out of stock',
                 'regular_price' => 0
