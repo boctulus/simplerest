@@ -237,7 +237,7 @@ class Response
         */
         
         if (Url::isPostman() || Url::isInsomnia()){
-            $detail = \json_decode(trim($detail), true);
+            $detail = $detail === null ? '' : \json_decode(trim($detail), true);
         }
 
         $res['error'] = [ 

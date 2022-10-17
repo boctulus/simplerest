@@ -10836,15 +10836,8 @@ class DumbController extends Controller
     }
 
     function test_scraper_3(){
-        //$url = 'https://amzn.to/3FoWKqt'; // Sin stock
-        $url = 'https://amzn.to/2M0SCXb'; // Sin stock
-
-        // En stock
-        // $url = 'https://www.amazon.es/dp/B07T1Q96MF/ref=vp_d_pbur_TIER4_p13sess_lp_B07N1H82KD_pd?_encoding=UTF8&pf_rd_p=232cc89e-0266-4a48-866a-f5d40f81e0b8&pf_rd_r=6G99GW3MER3H3Z4X0PDK&pd_rd_wg=j21Rj&pd_rd_i=B07T1Q96MF&pd_rd_w=xbj9b&content-id=amzn1.sym.232cc89e-0266-4a48-866a-f5d40f81e0b8&pd_rd_r=8fd663c0-86cf-435f-8abc-17e620289fbf';
-
-        // En Stock
-        // $url = 'https://www.amazon.es/Lenovo-Legion-Port%C3%A1til-RTX2060-6GB-Portugu%C3%A9s/dp/B08TCJF7NY/ref=sr_1_2?keywords=gamer+laptop&qid=1662580638&sprefix=gamer+l%2Caps%2C129&sr=8-2';
-
+        $url = 'https://amzn.to/2N7LgBZ';
+        
         dd(
             AmazonScraper::parseProduct($url)
         );        
@@ -11091,10 +11084,33 @@ class DumbController extends Controller
         https://github.com/zounar/php-proxy/blob/master/Proxy.php
     */
 
-    function test_curl_proxy_2(){
-        $url       = 'https://amzn.to/2M0SCXb';
+    function test_curl_proxy_2()
+    {  
+        $url       = 'https://amzn.to/3bkUhzB';
         $proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
 
+        $scraper = function(string $url){
+            if (Strings::startsWith('https://amzn.to/', $url)){
+                return AmazonScraper::class;
+            } 
+
+            if (Strings::startsWith('https://www.awin1.com/', $url)){
+                return LeroyMerlinScraper::class;
+            } 
+
+            if (Strings::startsWith('https://track.effiliation.com/', $url)){
+                return MaisonsScraper::class;
+            } 
+
+            throw new \Exception("Scraper correcto no encontrado para '$url'");
+        };
+
+        $class = $scraper($url);
+
+        dd(
+            $class::parseProduct($url)
+        ); 
+        
         $client = ApiClient::instance($proxy_url)
         ->setHeaders([
             'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
@@ -11103,6 +11119,7 @@ class DumbController extends Controller
 
         $client
         ->disableSSL()
+        //->cache()
         ->redirect()
         ->get();
 
