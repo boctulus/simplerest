@@ -110,7 +110,7 @@ class AndreaController extends MyController
         $client = ApiClient::instance()
         ->disableSSL()
         ->redirect()
-        ->cache(3600)
+        //->cache(3600)
         ->get($url);
 
         if ($client->status() != 200){
@@ -124,7 +124,7 @@ class AndreaController extends MyController
 
         Strings::replace('/img/', '/public/assets/andrea/img/', $book);
                      
-        $content = "$builder";
+        $content = $builder . $book;
 
         render($content);
     }
