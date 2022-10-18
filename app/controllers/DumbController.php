@@ -35,7 +35,6 @@ use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 
 use simplerest\core\libs\JobQueue;
-use simplerest\libs\AmazonScraper;
 
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
@@ -43,7 +42,6 @@ use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 
-use simplerest\libs\MaisonsScraper;
 use Endroid\QrCode\Writer\PngWriter;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
@@ -53,14 +51,15 @@ use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
 use Endroid\QrCode\Encoding\Encoding;
 
-//  QR
 use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
-use simplerest\libs\LeroyMerlinScraper;
+
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\libs\LaravelApiGenerator;
+
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
@@ -71,7 +70,11 @@ use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
+
+use simplerest\libs\scrapers\AmazonScraper;
+use simplerest\libs\scrapers\MaisonsScraper;
+use simplerest\libs\scrapers\LeroyMerlinScraper;
+
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
@@ -11086,8 +11089,10 @@ class DumbController extends Controller
 
     function test_curl_proxy_2()
     {  
-        $url       = 'https://amzn.to/3bkUhzB';
+        $url       = 'https://amzn.to/3k4CfFB';
         $proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
+
+        dd($url, 'URL');
 
         $scraper = function(string $url){
             if (Strings::startsWith('https://amzn.to/', $url)){
@@ -11133,11 +11138,6 @@ class DumbController extends Controller
     }
 
 
-    function testxxxx(){
-        StdOut::toLog();
-
-        StdOut::pprint(at(), true);
-    }
 
 
 }   // end class
