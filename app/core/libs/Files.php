@@ -1032,6 +1032,10 @@ class Files
 	static function getTemp(string $filename){
 		return file_get_contents(static::getCachePath() . DIRECTORY_SEPARATOR . $filename);
 	}
+
+	static function fileExtension(string $filename){
+		return Strings::last($filename, '.');
+	}
 }    
 
 

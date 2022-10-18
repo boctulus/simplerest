@@ -5461,6 +5461,7 @@ class DumbController extends Controller
     function x()
     {
         dd(asset("jota.jpg"));
+        dd(asset("assets/jota.jpg"));
     }
 
     function dir()
@@ -11136,7 +11137,10 @@ class DumbController extends Controller
             $client->data()         
         );  
     }
-
+    
+    function test39393(){
+        dd(Files::fileExtension('xxxx.htm.php'));
+    }
 
 
 
