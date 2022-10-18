@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\libs;
+namespace simplerest\libs\scrapers;
 
 use simplerest\core\libs\Dom;
 use simplerest\core\libs\Url;
@@ -128,6 +128,15 @@ class AmazonScraper
         
         // No se encuentra precio => no disponible
         if ($tgs[0] === null || $tgs[0]->nodeValue === null){
+            $buying_choices = Strings::contains('Ver todas las opciones de compra', $html);
+
+            if ($buying_choices){
+                dd("El producto tiene 'opciones de compra' que el usuario debe seleccionar. Imposible leer un precio");
+            } else {
+                // razon generica
+                dd("No encuentro precio para '$url'");
+            }
+
             return [
                 'stock_status'  => 'out of stock',
                 'regular_price' => 0
@@ -168,18 +177,54 @@ class AmazonScraper
             No disponible.
             En stock.
             Sólo queda(n) {cantidad} en stock.
+
+            Tambien... al menos para productos PRIME puede haber algo como:
+
+            <span data-csa-c-type="element" data-csa-c-content-id="DEXUnifiedCXPDM" data-csa-c-delivery-price="por 3,99&nbsp;€" data-csa-c-value-proposition="" data-csa-c-delivery-type="Entrega" data-csa-c-delivery-time="el miércoles, 7 de diciembre" data-csa-c-delivery-condition="" data-csa-c-pickup-location="" data-csa-c-distance="" data-csa-c-delivery-cutoff="" data-csa-c-mir-view="CONSOLIDATED_CX" data-csa-c-mir-type="DELIVERY" data-csa-c-mir-sub-type="" data-csa-c-mir-variant="DEFAULT" data-csa-c-delivery-benefit-program-id="rafn" data-csa-c-id="j6ywby-y2ufy-51n2vt-828mw9"> Entrega por 3,99&nbsp;€ el <span class="a-text-bold">miércoles, 7 de diciembre</span> </span>a<span
+            data-csa-c-type="element"
+            data-csa-c-content-id="DEXUnifiedCXPDM"
+            data-csa-c-delivery-price="por 3,99&nbsp;€"
+            data-csa-c-value-proposition=""
+            data-csa-c-delivery-type="Entrega"
+            data-csa-c-delivery-time="el miércoles, 7 de diciembre"
+            data-csa-c-delivery-condition=""
+            data-csa-c-pickup-location=""
+            data-csa-c-distance=""
+            data-csa-c-delivery-cutoff=""
+            data-csa-c-mir-view="CONSOLIDATED_CX"
+            data-csa-c-mir-type="DELIVERY"
+            data-csa-c-mir-sub-type=""
+            data-csa-c-mir-variant="DEFAULT"
+            data-csa-c-delivery-benefit-program-id="rafn"
+            data-csa-c-id="j6ywby-y2ufy-51n2vt-828mw9"
+            >
+                Entrega por 3,99&nbsp;€ el <span class="a-text-bold">miércoles, 7 de diciembre</span>
+            </span>
+
         */
 
         $tgs  = $xpath->query('//div[@id="availability"]');
         $availability = trim($tgs[0]->nodeValue ?? '');
 
-        $available      = Strings::contains('En stock',  $availability, false) || 
-                          Strings::contains('In stock',  $availability, false);
+        $available             = Strings::contains('En stock',  $availability, false) || 
+                                 Strings::contains('In stock',  $availability, false);
 
-        $available_soon = Strings::contains('Envío en ', $availability, false);
+        $_delivery_date         = Strings::match($html, '/data-csa-c-delivery-time="([^"]+)/');
+
+        $available_in_a_future = (Strings::containsAnyWord([
+            'lunes',
+            'martes',
+            'miércoles',
+            'jueves',
+            'viernes',
+            'sábado',
+            'domingo'
+        ], $_delivery_date));                  
+
+        $available_soon = Strings::contains('Envío en ', $availability);
 
         return [
-            'stock_status'  => ($available || $available_soon) ? 'in stock' : 'out of stock',
+            'stock_status'  => ($available || $available_soon || $available_in_a_future) ? 'in stock' : 'out of stock',
             'regular_price' => Strings::convertIntoFloat($precio)
         ];
      }
