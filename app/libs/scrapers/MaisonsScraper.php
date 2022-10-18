@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\libs;
+namespace simplerest\libs\scrapers;
 
 use simplerest\core\libs\Dom;
 use simplerest\core\libs\Url;
