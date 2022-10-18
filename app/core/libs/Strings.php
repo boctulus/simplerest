@@ -1335,6 +1335,10 @@ class Strings
 	static function removeComments(string $str) : string {
 		return static::removeInlineComments(static::removeMultiLineComments($str));
 	}
+
+	static function fileExtension(string $filename){
+		return Files::fileExtension($filename);
+	}
 }
 
 

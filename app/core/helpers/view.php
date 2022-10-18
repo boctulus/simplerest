@@ -5,11 +5,11 @@ use simplerest\views\MyView;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
 
-function a_meta(string $name, string $content, ?Array $atts = null){
+function a_meta(string $name, string $content){
     return "<meta name=\"$name\" content=\"$content\">\r\n";
 }
 
-function a_js($js_file, ?Array $atts = null){
+function a_js($js_file){
     return "<script type=\"text/javascript\" src=\"$js_file\"></script>\r\n";
 }
 
@@ -102,8 +102,16 @@ function asset($resource){
         $base = substr($base, 0, -1); 
     }
 
-    $public =  $base . '/public';
-    return $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/assets/'.$resource;
+    $public = $base . '/public';
+    $url    = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/';
+
+    if (!Strings::startsWith('assets/', $resource)){
+        $url .= 'assets/';
+    }
+
+    $url .= $resource;
+
+    return $url;    
 }
 
 function section($view, Array $vars = []){
