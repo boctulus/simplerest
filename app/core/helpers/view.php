@@ -93,6 +93,11 @@ function set_template(string $file){
     Config::set('template', $file);
 }
 
+/*
+    Incluye assets
+
+    Siempre de /public/assets
+*/
 function asset($resource){
     $protocol = is_cli() ? 'http' : httpProtocol();
     
