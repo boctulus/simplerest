@@ -11090,7 +11090,7 @@ class DumbController extends Controller
 
     function test_curl_proxy_2()
     {  
-        $url       = 'https://amzn.to/3k4CfFB';
+        $url       = 'https://amzn.to/3pqmCga';
         $proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
 
         dd($url, 'URL');
