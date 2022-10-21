@@ -4,6 +4,14 @@ namespace simplerest\core\libs;
 
 class Arrays 
 {
+    static function getOrFail(Array $array, $key_name){
+        if (!isset($array[$key_name])){
+            throw new \Exception("'$key_name' is missing in the request");
+        }
+
+        return $array[$key_name];
+    }
+    
     /*
         Trim every element of array
     */
