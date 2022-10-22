@@ -1,15 +1,5 @@
 # TODO
 
-- "Buenas a todos, se recomienda ocupar sockets para verificar si un usuario se encuentra editando un registro x ? 
-
-esto para prevenir que 2 usuarios esten modificando el mismo registro, o segun su experiencia hay alguna otra opcion para llegar al mismo resultado?. De antemano gracias por los aportes."
-
-Yo > Creería que la mejor forma de lograrlo es mediante un SP (¨procedimiento almacenado¨) ya que estarías directamente del lado del motor. Entonces yo creería una procedimiento LEER_PARA_EDITAR el cual recibiría como parámetros ID del registro y el USER_ID y no devolvería nada hasta que no recibo un ESCRIBIR_EDICION para el mismo ID de registro y USER_ID.
-
-También dentro del SP podés evitar dos ESCRIBIR_EDICION de distinto USER_ID para el mismo ID de registro en el timeframe que quieras como 1 segundo, 5 segundos, etc
-
-O lo mismo a nivel de Modelo.
-
 - Investigar lo que hace WP para evitar multiples requests al mismo cronjob en wp-cron.php
 
   ignore_user_abort( true );
@@ -1425,7 +1415,21 @@ http://acmeextension.com/integrate-twig-with-codeigniter/
   
 ----
 
--- Leer sobre el uso "bloqueo" de archivos (LOCK_EX, LOCK_SH, etc) para concurrencia... caso escritura de cache
+- Locking rows and tables (DB)
+
+# Row level
+
+https://www.youtube.com/watch?v=nuBi2XbHH18&ab_channel=HusseinNasser
+https://www.youtube.com/watch?v=B-QWfuIIBfk&ab_channel=MrVenkat369
+
+# Transaction Isolation level
+
+Bloqueo a nivel de la tabla
+
+https://medium.com/analytics-vidhya/understanding-mysql-transaction-isolation-levels-by-example-1d56fce66b3d
+
+
+- Leer sobre el uso "bloqueo" de archivos (LOCK_EX, LOCK_SH, etc) para concurrencia... caso escritura de cache
 
 https://tqdev.com/2018-locking-file-cache-php
 https://softwareengineering.stackexchange.com/questions/171508/php-file-put-contents-file-locking
