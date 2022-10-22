@@ -1,5 +1,15 @@
 # TODO
 
+- "Buenas a todos, se recomienda ocupar sockets para verificar si un usuario se encuentra editando un registro x ? 
+
+esto para prevenir que 2 usuarios esten modificando el mismo registro, o segun su experiencia hay alguna otra opcion para llegar al mismo resultado?. De antemano gracias por los aportes."
+
+Yo > Creería que la mejor forma de lograrlo es mediante un SP (¨procedimiento almacenado¨) ya que estarías directamente del lado del motor. Entonces yo creería una procedimiento LEER_PARA_EDITAR el cual recibiría como parámetros ID del registro y el USER_ID y no devolvería nada hasta que no recibo un ESCRIBIR_EDICION para el mismo ID de registro y USER_ID.
+
+También dentro del SP podés evitar dos ESCRIBIR_EDICION de distinto USER_ID para el mismo ID de registro en el timeframe que quieras como 1 segundo, 5 segundos, etc
+
+O lo mismo a nivel de Modelo.
+
 - Investigar lo que hace WP para evitar multiples requests al mismo cronjob en wp-cron.php
 
   ignore_user_abort( true );
