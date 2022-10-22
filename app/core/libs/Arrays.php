@@ -4,12 +4,18 @@ namespace simplerest\core\libs;
 
 class Arrays 
 {
-    static function getOrFail(Array $array, $key_name){
+    static function getOrFail(Array $array, string $key_name, $allowed_values = null){
         if (!isset($array[$key_name])){
             throw new \Exception("'$key_name' is missing in the request");
         }
 
-        return $array[$key_name];
+        $val = $array[$key_name];
+
+        if (!empty($allowed_values) && !in_array($val, $allowed_values)){
+            throw new \Exception("Value '$val' for '$key_name' was unexpected.");
+        }
+
+        return $val;
     }
     
     /*
