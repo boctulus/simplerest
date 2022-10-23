@@ -358,7 +358,7 @@ class Url
         return $x;
     }
 
-    static function makeQueryString($data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
+    static function makeQueryString($data, string $numeric_prefix = "", ?string $arg_separator = '&', int $encoding_type = PHP_QUERY_RFC1738){
         return http_build_query($data, $numeric_prefix, $arg_separator, $encoding_type);
     }
 
