@@ -196,6 +196,15 @@ class Strings
 		return implode($substr, array_slice($parts, 0, count($parts)-1));
 	}
 
+	/*
+		Ensayar para todos los casos incluida la no ocurrencia
+	*/
+	static function untilLast(string $string, string $substr){
+		$parts = explode($substr, $string);
+
+		return implode($substr, array_slice($parts, 0, count($parts)-1)) . $substr;
+	}
+
 	// Segment before the last one
 	static function beforeLastSegment(string $string, string $substr){
 		return static::last(static::beforeLast($string, $substr), $substr);
