@@ -32,6 +32,15 @@ Luego las tablas que lo necesiten podrían tener un campo "atts" donde se almace
 
 Esto podria permitir dinamicamente definir nuevos atributos y usarlos.
 
+Ademàs, no tiene sentido lo siguiente:
+
+  $sc = new Schema('talla');
+  $sc->increments()
+  ->varchar('nombre', 20)
+  ->create();	
+
+Ya que la talla es solo eso... y puede ser un numero o no asi que el nombre del campo podria siempre ser incorrecto.
+
 - Crear filtro ¨avanzado¨ a nivel de frontend en algun componente con opciones similares a las de ¨flexiContent¨ de Joomla
 
   . Busqueda de texto
@@ -1416,6 +1425,9 @@ http://acmeextension.com/integrate-twig-with-codeigniter/
 ----
 
 - Locking rows and tables (DB)
+
+Ver implemetación de Laravel >
+https://laravel.com/docs/9.x/queries#pessimistic-locking
 
 # Row level
 
