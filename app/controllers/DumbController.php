@@ -2657,6 +2657,8 @@ class DumbController extends Controller
 	*/
     function having0()
     {
+        DB::getConnection('az');
+
         $m = DB::table('products')
             //->dontExec()
             ->groupBy(['name'])
