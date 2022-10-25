@@ -8,7 +8,10 @@ class Config
 
     static protected function setup()
     {   
-        static::$data = include CONFIG_PATH . 'config.php';
+        static::$data = array_merge(
+            include CONFIG_PATH . 'config.php',
+            include CONFIG_PATH . 'databases.php'
+        );
     }
 
     static function get(?string $property = null)
