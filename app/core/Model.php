@@ -539,6 +539,16 @@ class Model {
 		return $this->table($table, $table_alias);		
 	}
 
+	function prefix(string $prefix){
+		$this->table_name = $prefix . $this->table_name;
+		return $this;
+	}
+
+	// alias for prefix()
+	function setPrefix(string $prefix){
+		return $this->prefix($prefix);
+	}
+
 	protected function from(){
 		if ($this->table_raw_q != null){
 			return $this->table_raw_q;

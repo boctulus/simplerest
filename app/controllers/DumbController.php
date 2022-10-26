@@ -11144,6 +11144,15 @@ class DumbController extends Controller
         dd(Files::fileExtension('xxxx.htm.php'));
     }
 
+    function test_tb_prefix(){
+        DB::getConnection('woo3');
+
+        $rows = table('users')
+        ->prefix('wp_')
+        ->get();
+
+        dd($rows);
+    }
 
 
 }   // end class
