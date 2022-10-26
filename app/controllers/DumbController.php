@@ -11148,8 +11148,16 @@ class DumbController extends Controller
         DB::getConnection('woo3');
 
         $rows = table('users')
-        ->prefix('wp_')
-        ->get();
+        //->wp()
+        ->first();
+
+        dd($rows);
+
+
+        $rows = table('users')
+        ->wp()
+        ->orderBy(['ID' => 'DESC'])
+        ->first();
 
         dd($rows);
     }
