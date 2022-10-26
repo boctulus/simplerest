@@ -1,11 +1,11 @@
 <?php
 
-use simplerest\controllers\MakeController;
-use simplerest\core\libs\Strings;
+use simplerest\models\MyModel;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\StdOut;
-use simplerest\core\Model;
+use simplerest\core\libs\Strings;
 use simplerest\core\controllers\MakeControllerBase;
+
 
 function get_default_connection(){
     return DB::getDefaultConnection();
@@ -24,7 +24,7 @@ function get_default_database_name(){
     Similar to DB::table() but schema is not loaded so no validations are performed
 */
 function table(string $tb_name){
-    return (new Model(true))->table($tb_name);
+    return (new MyModel(true))->table($tb_name);
 }
 
 function get_users_table(){
@@ -774,7 +774,7 @@ function get_fks(string $t1, string $t2, ?string $tenant_id = null){
 
 
 function sql_formater(string $sql, ...$options){
-    return Model::sqlFormatter($sql, ...$options);
+    return MyModel::sqlFormatter($sql, ...$options);
 }
 
 /*

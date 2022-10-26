@@ -17,13 +17,13 @@ use simplerest\core\exceptions\SqlException;
 use simplerest\core\interfaces\ITransformer;
 use simplerest\core\traits\ExceptionHandler;
 
-
 class Model {
 	use ExceptionHandler;
 
 	// for internal use
 	protected $table_alias = [];
 	protected $table_name;
+	protected $prefix;
 
 	// Schema
 	protected $schema;
@@ -180,6 +180,8 @@ class Model {
 
 	function __construct(bool $connect = false, $schema = null, bool $load_config = true)
 	{
+		$this->boot();
+
 		// static::$sql_formatter_callback = function(string $sql, bool $highlight = false){
 		// 	return \SqlFormatter::format($sql, $highlight);
 		// };
@@ -290,7 +292,7 @@ class Model {
 		}
 
 		// event handler
-		$this->boot();
+		$this->init();
 	}
 
 	/*	
@@ -528,9 +530,16 @@ class Model {
 	}
 
 	// set table and alias
-	function table(string $table, $table_alias = null){
+	function table(string $table, $table_alias = null)
+	{
 		$this->table_name          = $table;
 		$this->table_alias[$table] = $table_alias;
+
+		if (!empty($this->prefix)){
+			$this->table_name = $this->prefix . $this->table_name;
+			$this->prefix     = null;
+		}
+
 		return $this;		
 	}
 
@@ -539,13 +548,13 @@ class Model {
 		return $this->table($table, $table_alias);		
 	}
 
-	function prefix(string $prefix){
-		$this->table_name = $prefix . $this->table_name;
+	function prefix(?string $prefix = ''){
+		$this->prefix     = $prefix;
 		return $this;
 	}
 
 	// alias for prefix()
-	function setPrefix(string $prefix){
+	function setPrefix(?string $prefix = ''){
 		return $this->prefix($prefix);
 	}
 
@@ -3213,6 +3222,8 @@ class Model {
 
 	protected function onRestoring(Array &$data) { }
 	protected function onRestored(Array &$data, ?int $count) { }
+
+	protected function init() { }
 
 
 	function getSchema(){
