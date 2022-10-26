@@ -47,11 +47,6 @@ return [
 	
 	'ssl_cert' => null,  // 'D:\wamp64\ca-bundle.crt',
 
-	/*
-		Es posible cargar la lista de conexiones disponibles
-		de forma dinámica
-	*/
-
 	'DateTimeZone' => 'Europe/London',
 
 	'error_handling'   => true,
