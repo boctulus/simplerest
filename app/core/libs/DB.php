@@ -2,9 +2,9 @@
 
 namespace simplerest\core\libs;
 
-use simplerest\core\Model;
-use simplerest\core\libs\Strings;
+use simplerest\models\MyModel;
 use simplerest\core\libs\Schema;
+use simplerest\core\libs\Strings;
 
 class DB 
 {
@@ -537,7 +537,7 @@ class DB
 			return $obj;	
 		}
 
-		static::$model_instance = (new Model($connect));
+		static::$model_instance = (new MyModel($connect));
 		static::$tb_name = static::$model_instance->getTableName();  //
 
 		$st = static::$model_instance->fromRaw($from);	
