@@ -13,4 +13,18 @@ class MyModel extends Model
     function __construct(bool $connect = false, $schema = null, bool $load_config = true){
         parent::__construct($connect, $schema, $load_config);
     }
+
+    function wp(){
+		return $this->prefix('wp_');
+	}
+
+    protected function boot(){          
+        if (empty($this->prefix)){
+			$this->wp();
+		}       
+    }
+
+    protected function init(){		
+		
+	}
 }
