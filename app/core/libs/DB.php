@@ -195,6 +195,14 @@ class DB
 	static function getDefaultConnection(){
 		return self::getConnection(config()['db_connection_default']);
 	}
+
+	public static function isDefaultConnection(){
+		if (static::$current_id_conn === null){
+			throw new \Exception("No current db connection");
+		}
+
+		return static::getDefaultConnectionId() === static::$current_id_conn;
+	}
 	
     static function closeConnection(string $conn_id = null) {
 		if ($conn_id == null){
