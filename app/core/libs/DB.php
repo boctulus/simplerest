@@ -203,6 +203,14 @@ class DB
 
 		return static::getDefaultConnectionId() === static::$current_id_conn;
 	}
+
+	public static function isDefaultOrNoConnection(){
+		if (static::$current_id_conn === null){
+			return true;
+		}
+
+		return static::getDefaultConnectionId() === static::$current_id_conn;
+	}
 	
     static function closeConnection(string $conn_id = null) {
 		if ($conn_id == null){

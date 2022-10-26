@@ -3,6 +3,7 @@
 namespace simplerest\models;
 
 use simplerest\core\Model;
+use simplerest\core\libs\DB;
 
 class MyModel extends Model 
 {
@@ -19,9 +20,9 @@ class MyModel extends Model
 	}
 
     protected function boot(){          
-        if (empty($this->prefix)){
+        if (empty($this->prefix) && (in_array(DB::getCurrentConnectionId(), ['woo3', null]))){
 			$this->wp();
-		}       
+		}        
     }
 
     protected function init(){		
