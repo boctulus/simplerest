@@ -2,8 +2,6 @@
 
 namespace simplerest\core;
 
-use Exchanger\Exception\NonBreakingInvalidArgumentException;
-use PDO;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Strings;
