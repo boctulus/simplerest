@@ -14,7 +14,7 @@ class Env
         static::$data = parse_ini_file(ROOT_PATH . '.env');
     }
 
-    static function get(?string $key = null){
+    static function get(?string $key = null, $default_value = null){
         if (empty(static::$data)){
             static::setup();
         }
@@ -23,7 +23,7 @@ class Env
             return static::$data;
         } 
 
-        return static::$data[$key];
+        return static::$data[$key] ?? $default_value;
     }
 }
 

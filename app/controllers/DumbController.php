@@ -11154,5 +11154,20 @@ class DumbController extends Controller
         dd($rows);
     }
 
+    function test_xxxxx(){
+        DB::getConnection('woo3');
+
+        dd(
+            DB::isDefaultConnection()
+        );
+
+        DB::getDefaultConnection();
+
+        dd(
+            DB::isDefaultConnection()
+        );
+    }
+
+
 
 }   // end class
