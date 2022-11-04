@@ -11176,6 +11176,20 @@ class DumbController extends Controller
         );
     }
 
+    function test_json_search(){
+        DB::getConnection('woo3');
+
+        $sql = table('product_updates')
+        ->whereRaw("JSON_CONTAINS(`categories`, '?')", [17])
+        ->dd();
+
+        dd($sql, 'SQL');
+
+        dd(
+            DB::select($sql)
+        );
+    }
+
 
 
 }   // end class
