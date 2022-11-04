@@ -3700,6 +3700,11 @@ Ej:
 
 [ MICROSERVICIOS ]
 
+- Investigar ¨Keycloak¨ para escaparle a todo el tema de la autenticación
+
+https://www.keycloak.org/
+https://www.keycloak.org/documentation
+
 - Investigar microservicios. Buscar un Hello World. Cómo es la communicación entre microservicios?
 
 Ver tuto:
@@ -3709,13 +3714,10 @@ https://www.youtube.com/watch?v=In6DBL0tq9c  !!!!!!!
 
 - "API GATEWAY" se hace a través del "orquestador" y entre otras cosas se encarga del *logging* con lo cual habría que revisar la necesidad de tener un ACL y el AuthController ************* 
 
-
 Elegir un API GATEWAY como por ejemplo Kong Gateway, KrakenD, Goku API Gateway, etc
-
 
 https://www.axway.com/en/products/api-management/gateway
 https://geekflare.com/api-gateway/
-
 
 - Considerar usar Apache ZooKeeper/Kafka
 
@@ -3786,7 +3788,6 @@ https://laravel.com/docs/8.x/migrations#squashing-migrations
 
 - Sería genial poder hacer Squashing Migrations sobre toda una carpeta o sub-carpeta (módulo) y luego poder generar un Store Procedure basado en "migración aplastada" (unificada). Se podría llamar "combianación o unificación"
 
- 
 - Anonymous Migrations  
 
   return new class extends Migration

@@ -1,0 +1,59 @@
+BUSQUEDAS EN JSONs
+------------------
+
+# Leer / referenciar todos los valores en la primera posicion (pluck) en un array
+
+SELECT categories->"$[0]" FROM `wp_product_updates`;
+
+
+# Buscar un valor dentro de un aray:
+
+SELECT * FROM `wp_product_updates` 
+WHERE JSON_CONTAINS(`wp_product_updates`.`categories`, "17", "$");
+
+<-- donde esta el "$" es la referencia a un campo (key) que podria contener el JSON (ver nota)
+
+o ...
+
+
+SELECT * FROM `wp_product_updates` 
+WHERE JSON_CONTAINS(`wp_product_updates`.`categories`, "17");
+
+
+o ...
+
+
+SELECT * FROM `wp_product_updates` 
+WHERE JSON_CONTAINS(`categories`, "17");
+
+
+NOTA:
+
+Donde esta el "$" es la referencia a un campo (key) que podria contener el JSON
+y podria ser algo complejo como ....
+
+	'$[*].addresses[*].country' 
+
+en
+
+	mytable.info = [
+	  {
+	    "name": "Bee",
+	    "addresses": [
+	      { "country": "Japan", "street": "..." },
+	      { "country": "Malaysia", "street": "..." }
+	    ]
+	  },
+	  {
+	    "name": "Hamster",
+	    "addresses": [
+	      { "country": "Singapore", "street": "..." },
+	      { "country": "Sweden", "street": "..." }
+	    ]
+	  }
+	]
+
+
+Mas
+
+https://medium.com/@spartan.tambay/mysql-json-search-cookbook-d773286fa0d7
