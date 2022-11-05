@@ -9,16 +9,23 @@ use simplerest\core\libs\Arrays;
 
 class Request  implements /*\ArrayAccess,*/ Arrayable
 {
-    static protected $query_arr;
-    static protected $raw;
-    static protected $body;
-    static protected $params;
-    static protected $headers;
-    static protected $accept_encoding;
-    static protected $content_type;
-    static protected $instance = NULL;
+    protected static $query_arr;
+    protected static $raw;
+    protected static $body;
+    protected static $params;
+    protected static $headers;
+    protected static $accept_encoding;
+    protected static $content_type;
+    protected static $instance = NULL;
+
+    protected        $as_object = true;
 
     protected function __construct() { }
+
+    function as_array(){
+        $this->as_object = false;
+        return $this;
+    }
 
     static function getInstance(){
         if(static::$instance == NULL){
@@ -218,8 +225,12 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         return static::$params;
     } 
 
-    function getBody($as_obj = true)
+    function getBody(?bool $as_obj = null)
     {
+        if ($as_obj === null){
+            $as_obj = $this->as_object;
+        }
+
         return $as_obj ? (object) static::$body : static::$body;
     }
 
