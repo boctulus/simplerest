@@ -24,42 +24,42 @@ use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
-use simplerest\core\libs\Strings;
 
+use simplerest\core\libs\Strings;
 use simplerest\core\libs\Factory;;
+
 use simplerest\core\libs\Hardware;
 
 use simplerest\core\libs\JobQueue;
-
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
-use simplerest\core\libs\Validator;
 
+use simplerest\core\libs\Validator;
 use Endroid\QrCode\Writer\PngWriter;
 use simplerest\core\libs\GoogleMaps;
+
 use simplerest\core\libs\Obfuscator;
 
 use simplerest\core\libs\SendinBlue;
-
 use simplerest\core\libs\Supervisor;
+
 use Endroid\QrCode\Encoding\Encoding;
-
 use simplerest\core\libs\FileUploader;
-use Endroid\QrCode\Label\Font\NotoSans;
 
+use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
-use simplerest\libs\LaravelApiGenerator;
 
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
+use simplerest\libs\LaravelApiGenerator;
 
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
@@ -73,8 +73,9 @@ use simplerest\core\controllers\Controller;
 
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
-use simplerest\libs\scrapers\LeroyMerlinScraper;
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
+use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
@@ -11190,6 +11191,25 @@ class DumbController extends Controller
         );
     }
 
+    function test_arr_col(){
+        $arr = [
+            (object) [
+                'x' => 4,
+                'y' => 0
+            ],
+            (object) [
+                'x' => 2,
+                'y' => 7
+            ],
+            (object) [
+                'x' => 8,
+                'y' => 3
+            ]
+        ];
 
+        dd(
+            Arrays::arrayColumn($arr, 'y')
+        );       
+    }
 
 }   // end class
