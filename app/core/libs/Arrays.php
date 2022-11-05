@@ -17,6 +17,53 @@ class Arrays
 
         return $val;
     }
+
+    /*
+        Get with safety 
+
+        @param array 
+        @param index1
+        @param index2
+        ..
+
+        Casos de uso:
+
+        $arr['a']['b'] = 'ab';
+        var_dump( get($arr,'a','b') ); // 'ab'
+        
+        $arr = [];
+        var_dump( get($arr,'a','b') ); // NULL
+    */
+    static function getSafely(){ 
+        $numargs  = func_num_args();
+        $arg_list = func_get_args();
+
+        $v = $arg_list[0];  
+
+        for ($i = 1; $i < $numargs; $i++) 
+        {
+            if (isset($v[$arg_list[$i]]))
+                $v = $v[$arg_list[$i]];
+            else
+                return null;
+        }
+
+        return $v;
+    }
+
+    
+    /*
+        array_column() que funciona con array de arrays o arrays de objetos
+    */
+    static function arrayColumn(Array $arr, $col_name){
+        $out = [];
+        foreach ($arr as $val){
+            $val   = (array) $val;
+            $out[] = $val[$col_name];
+        }
+
+        return $out;
+    }
     
     /*
         Trim every element of array
