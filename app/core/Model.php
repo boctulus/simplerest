@@ -555,6 +555,14 @@ class Model {
 	function setPrefix(?string $prefix = ''){
 		return $this->prefix($prefix);
 	}
+	
+	function removePrefix(string $prefix){
+		$table = Strings::after($this->table_name, $prefix);
+		$this->table($table);	
+		$this->prefix = null;
+		
+		return $this;
+	}
 
 	protected function from(){
 		if ($this->table_raw_q != null){
