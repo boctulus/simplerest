@@ -211,7 +211,7 @@ class AmazonScraper
 
         $_delivery_date         = Strings::match($html, '/data-csa-c-delivery-time="([^"]+)/');
 
-        if ($delivery_date !== false){
+        if ($_delivery_date !== false){
             $available_in_a_future = (Strings::containsAnyWord([
                 'lunes',
                 'martes',
@@ -220,7 +220,7 @@ class AmazonScraper
                 'viernes',
                 'sábado',
                 'domingo'
-            ], $delivery_date));                  
+            ], $_delivery_date));                  
         } else {
             $available_in_a_future = null;
         }          

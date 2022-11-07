@@ -80,6 +80,7 @@ use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\libs\scrapers\Curiosite;
 
 class DumbController extends Controller
 {
@@ -10849,6 +10850,15 @@ class DumbController extends Controller
             AmazonScraper::parseProduct($url)
         );        
     }
+
+    function test_scraper_4(){
+        $url = 'https://www.curiosite.es/producto/zapatillas-de-andar-por-casa-multicolores.html';
+        
+        dd(
+            Curiosite::parseProduct($url)
+        );        
+    }
+
 
     /*
         Investigar 
