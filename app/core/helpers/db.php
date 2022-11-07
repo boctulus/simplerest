@@ -780,10 +780,10 @@ function sql_formater(string $sql, ...$options){
 /*
     Lee linea por línea y ejecuta sentencias SQL
 */
-function processSql(string $path){
+function process_sql_file(string $path, string $delimeter = ';'){
     $file = file_get_contents($path);
     
-    $sentences = explode(';', $file);
+    $sentences = explode($delimeter, $file);
         
     foreach ($sentences as $sentence){
         $sentence = trim($sentence);
