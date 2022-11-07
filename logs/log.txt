@@ -817,3 +817,5 @@ Array
 2022-10-15 18:41:44
 2022-10-17 13:49:15	Parsing of https://track.effiliation.com/servlet/effi.redir?id_compteur=22616853&url=https%3A%2F%2Fwww.maisonsdumonde.com%2FES%2Fes%2Fp%2Fespejo-de-paulonia-dorado-con-efecto-envejecido-119x194-omera-209699.htm as failed
 2022-10-17 13:52:04	Parsing of https://www.awin1.com/cread.php?awinmid=20598&awinaffid=856219&platform=dl&ued=https%3A%2F%2Fwww.leroymerlin.es%2Ffp%2F82395414%2Fespejo-rectangular-ayo-viejo-dorado-158-x-58-cm as failed
+2022-11-07 18:25:55	Parsing of https://www.curiosite.es/producto/triturador-de-ajos-gracula.html?wgu=2401_1559805_16678447770175_489f52f031&wgexpiry=1699380776&utm_source=webgains&utm_medium=affiliation&siteid=1559805 as failed
+2022-11-07 18:26:20	Parsing of https://www.curiosite.es/producto/triturador-de-ajos-gracula.html?wgu=2401_1559805_16678447770175_489f52f031&wgexpiry=1699380776&utm_source=webgains&utm_medium=affiliation&siteid=1559805 as failed
