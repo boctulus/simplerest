@@ -924,6 +924,7 @@ https://github.com/spatie/laravel-query-builder
 
 Mas
 https://symfony.com/doc/current/components/process.html  
+https://gist.github.com/ratulcse10/ee71916d3b2223234fed50e0c3171f33
 https://stackoverflow.com/a/14475122/980631
 https://stackoverflow.com/a/13804094/980631
 
