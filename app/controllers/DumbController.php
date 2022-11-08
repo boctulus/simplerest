@@ -11222,4 +11222,28 @@ class DumbController extends Controller
         );       
     }
 
+    function test_bg(){
+        $params = "com dumb fnx";
+        $cmd    = "D:\wamp64\bin\php\php7.4.26\php.exe ". ROOT_PATH . $params;
+        dd($cmd);
+
+        $shell = new \COM("WScript.Shell");
+        $shell->Run($cmd);
+        $shell = null;
+    }
+
+    function fnx(){
+        for ($i=0; $i< 50; $i++){
+            Files::logger("S-> $i");
+            usleep(100000);
+        }
+    }
+
+    function test_run_in_background(){
+        $php = System::isWindows() ? shell_exec("where php.exe") : "php";        
+        System::runInBackground("$php com dumb fnx");    
+    }
+
+
+
 }   // end class
