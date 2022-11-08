@@ -31,10 +31,19 @@ class System
     }
 
     /*
+        Returns PHP path
+        as it is needed to be used with runInBackground()
+    */  
+    static function getPHP(){
+        return System::isWindows() ? shell_exec("where php.exe") : "php";
+    }
+
+    /*
         https://factory.dev/pimcore-knowledge-base/how-to/execute-php-pimcore
 
         Ver tambi'en
         https://gist.github.com/damienalexandre/1300820
+        https://stackoverflow.com/questions/13257571/call-command-vs-start-with-wait-option
     */
     static function runInBackground(string $cmd, string $output_path = null, $ignore_user_abort = true, int $execution_time = 0)
     {
@@ -44,10 +53,13 @@ class System
         switch (PHP_OS_FAMILY) {
             case 'Windows':
                 if ($output_path !== null){
-                    pclose(popen("start /B $cmd >> $output_path ", "r")); 
-                } else {
-                    pclose(popen("start /B $cmd", "r")); 
-                }                
+                    $cmd .= " >> $output_path";
+                }
+
+                $shell = new \COM("WScript.Shell");
+                $shell->Run($cmd);
+                $shell = null;
+
                 break;
             case 'Linux':
                 if ($output_path !== null){
@@ -55,6 +67,7 @@ class System
                 } else {
                     $pid = (int) shell_exec("nohup nice -n 19 $cmd > /dev/null 2>&1 & echo $!");
                 }
+
                 break;
             default:
             // unsupported
