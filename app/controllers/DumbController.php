@@ -134,6 +134,10 @@ class DumbController extends Controller
     {
         Files::logger('Holaaa mundo');
         Files::logger('R.I.P.');
+
+        Files::logger([
+            'x' => 'y'
+        ], ETC_PATH . 'some_file.txt');
     }
 
     function test_dd()
@@ -9515,13 +9519,11 @@ class DumbController extends Controller
         woo-sizes.php
         FILES;
 
-        $ok = Obfuscator::obfuscate($ori, $dst, null, $excluded, [
+        Obfuscator::obfuscate($ori, $dst, null, $excluded, [
             "--obfuscate-function-name",
             "--obfuscate-class_constant-name",
             "--obfuscate-label-name"
         ]);
-
-        d($ok);
     }
 
     function scan()
@@ -11002,7 +11004,7 @@ class DumbController extends Controller
     function test_cached_form(){
         Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
-        $content = Files::getTemp('my_component.html');
+        $content = Files::getFromTempFile('my_component.html');
 
         if (empty($content)){
             $content = tag('accordion')->items([
@@ -11027,7 +11029,7 @@ class DumbController extends Controller
             ->attributes(['class' => 'accordion-flush'])
             ;
 
-            Files::saveTemp('my_component.html', $content);
+            Files::saveToTempFile($content, 'my_component.html');
         }
 
         render($content);
@@ -11244,6 +11246,58 @@ class DumbController extends Controller
         System::runInBackground("$php com dumb fnx");    
     }
 
+    function test_look_for_exe(){
+        dd(
+            System::isExecutableInPath('php.exe')
+        );
+    }
+
+    function debug_api_client(){
+        $path  = 'D:\www\woo3\wp-content\plugins\reactorv2\logs\exported_prods_2.php';
+
+        $prods = include $path;
+
+        $user_api_key = 'mia0-010011010101';
+        $url   = 'http://woo4.lan/wp-json/connector/v1/products';
+
+        $res  = ApiClient::instance()
+        ->setBody([
+            'data' => [
+                "products" => $prods
+            ]
+        ])
+        ->setHeaders([
+            'X-API-KEY' => $user_api_key
+        ])
+        ->disableSSL()
+        //->decode(true)
+        ->post($url);
+
+
+        $export = $res->dump();
+        Files::varExport($export, 'api_debug.php');
+        //dd($prods);
+    }
+
+    function debug_api_client_exec(){
+        $data = include 'D:\www\simplerest\logs\api_debug.php';
+
+        dd($data);
+
+        $res = ApiClient::instance()
+        ->exec($data);
+
+        if ($res->status() != 200){
+            dd($res->error(), 'ERROR');
+        }
+
+        dd($res->status(), 'STATUS CODE');
+
+        dd(
+            $res->data()         
+        , 'DATA');
+        
+    }
 
 
 }   // end class

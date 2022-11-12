@@ -2,10 +2,6 @@
 
 namespace simplerest\core\libs;
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-
 class System
 {
     static function getOS(){
@@ -30,12 +26,40 @@ class System
         return (in_array($os, ['Linux', 'BSD', 'Darwin', ' NetBSD', 'FreeBSD', 'Solaris']));
     }
 
+    // https://www.php.net/manual/en/function.is-executable.php#123883
+    static function isExecutableInPath(string $filename) : bool
+    {
+        if (is_executable($filename)) {
+            return true;
+        }
+
+        if ($filename !== basename($filename)) {
+            return false;
+        }
+
+        $paths = explode(PATH_SEPARATOR, getenv("PATH"));
+        
+        foreach ($paths as $path) {
+
+            $f = $path . DIRECTORY_SEPARATOR . $filename;
+
+            if (is_executable($f)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /*
         Returns PHP path
         as it is needed to be used with runInBackground()
+
+        Pre-requisito: php.exe debe estar en el PATH
     */  
     static function getPHP(){
-        return System::isWindows() ? shell_exec("where php.exe") : "php";
+        $location = System::isWindows() ? shell_exec("where php.exe") : "php";
+        return trim($location);
     }
 
     /*
