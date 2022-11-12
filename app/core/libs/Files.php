@@ -33,19 +33,72 @@ class Files
 		'x' => 'Z',
 		);
 	*/
-	static function varExport($path, $data, $variable = '$arr'){
+	static function varExport($data, $path = null, $variable = null){
+		if ($path === null){
+			$path = LOGS_PATH . 'exported.php';
+		} else {
+			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
+				$path = LOGS_PATH . $path;
+			}
+		}
+
 		if ($variable === null){
 			$bytes = file_put_contents($path, '<?php '. "\r\n\r\n" . 'return ' . var_export($data, true). ';');
 		} else {
+			if (!Strings::startsWith('$', $variable)){
+				$variable = '$'. $variable;
+			}
+			
 			$bytes = file_put_contents($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
 		}
 
 		return ($bytes > 0);
 	}
 
-	static function JSONExport($path, $data){
+	static function JSONExport($data, ?string $path = null){
+		if ($path === null){
+			$path = LOGS_PATH . 'exported.json';
+		} else {
+			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
+				$path = LOGS_PATH . $path;
+			}
+		}
+
 		$bytes = file_put_contents($path, json_encode($data));
 		return ($bytes > 0);
+	}
+
+	static function logger($data, ?string $path = null, $append = true){	
+		if ($path === null){
+			$path = LOGS_PATH . (config()['log_file'] ?? 'log.txt');
+		} else {
+			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
+				$path = LOGS_PATH . $path;
+			}
+		}
+
+		if (is_array($data) || is_object($data))
+			$data = json_encode($data);
+		
+		$data = date("Y-m-d H:i:s"). "\t" .$data;
+
+		return static::writeOrFail($path, $data. "\n",  $append ? FILE_APPEND : 0);
+	}
+
+	static function dump($object, ?string $path = null, $append = false){
+		if ($path === null){
+			$path = LOGS_PATH . (config()['log_file'] ?? 'log.txt');
+		} else {
+			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
+				$path = LOGS_PATH . $path;
+			}
+		}
+
+		if ($append){
+			static::writeOrFail($path, var_export($object,  true) . "\n", FILE_APPEND);
+		} else {
+			static::writeOrFail($path, var_export($object,  true) . "\n");
+		}		
 	}
 
 	/*
@@ -383,12 +436,6 @@ class Files
     */
     static function copy(string $ori, string $dst, ?Array $files = null, ?Array $except = null, ?callable $callable = null)
     {
-		// d($ori, 'ori');
-		// d($dst, 'dest');
-		// d($files, 'files');
-		// d($except, 'except');
-		// d($callable, 'callable');
-
 		if (empty($dst)){
 			throw new \InvalidArgumentException("Destination dst can not be empty");
 		}
@@ -779,33 +826,6 @@ class Files
 		static::delTree($dir, $include_self, true);
 	}
 
-	static function logger($data, string $file = 'log.txt'){		
-		if (is_array($data) || is_object($data))
-			$data = json_encode($data);
-		
-		$data = date("Y-m-d H:i:s"). "\t" .$data;
-
-		return static::writeOrFail(LOGS_PATH . $file, $data. "\n", FILE_APPEND);
-	}
-
-	static function dump($object, $filename = null, $append = false){
-		if (empty($filename)){
-			$filename = 'dump.txt';
-		}
-
-		if (!Strings::contains('/', $filename)){
-			$path = LOGS_PATH . $filename; 
-		} else {
-			$path = $filename;
-		}
-
-		if ($append){
-			static::writeOrFail($path, var_export($object,  true) . "\n", FILE_APPEND);
-		} else {
-			static::writeOrFail($path, var_export($object,  true) . "\n");
-		}		
-	}
-
 
 	/*
 		https://stackoverflow.com/a/1334949/980631
@@ -1021,21 +1041,24 @@ class Files
 		return file_put_contents($filename, '', $flags) !== false;
 	}
 
-	static function getCachePath(){
-		return sys_get_temp_dir();
+	static function getTempFilename(?string $extension = null){
+		return sys_get_temp_dir(). DIRECTORY_SEPARATOR . Strings::randomString(60, false). ".$extension";
 	}
 
-	static function saveTemp(string $filename, string $data, int $flags = 0, $context = null){
-		return file_put_contents(static::getCachePath() . DIRECTORY_SEPARATOR . $filename, $data, $flags, $context);
+	static function saveToTempFile($data, ?string $filename = null, $flags = null, $context = null){
+		$filename = $filename ?? static::getTempFilename();
+		file_put_contents($filename, $data, $flags, $context);
+
+		return $filename;
 	}
 
-	static function getTemp(string $filename){
-		return file_get_contents(static::getCachePath() . DIRECTORY_SEPARATOR . $filename);
+	static function getFromTempFile(string $filename){
+		return file_get_contents(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename);
 	}
 
 	static function fileExtension(string $filename){
 		return Strings::last($filename, '.');
 	}
-}    
+}   
 
 

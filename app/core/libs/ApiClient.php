@@ -17,24 +17,58 @@ use simplerest\core\libs\Url;
 */
 class ApiClient
 {
+    // Request
     protected $url;
     protected $verb;
     protected $req_headers;
-    protected $res_headers;
     protected $options = [];
     protected $body;
     protected $encode_body;
+    protected $max_retries = 1;
+    protected $cert_ssl  = null;
+
+    // Response
+    protected $response;
+    protected $filename;
+    protected $res_headers;
     protected $auto_decode;
     protected $status;
     protected $error;
-    protected $response;
-    protected $expiration;
-    protected $max_retries = 1;
-    protected $filename;
+
+    // Response Info
     protected $effective_url;
     protected $content_type;
+
+    // Cache
+    protected $expiration;
     protected $read_only = false;
-    protected $cert_ssl  = null;
+
+
+    function dump(){
+        return [
+            'url'         => $this->url,
+            'verb'        => $this->verb,
+            'headers'     => $this->req_headers,
+            'options'     => $this->options,
+            'body'        => $this->body,
+            'encode_body' => $this->encode_body,
+            'max_retries' => $this->max_retries,
+            'ssl'         => $this->cert_ssl,
+        ];
+    }
+
+    function exec(Array $args){
+        $this->url         = $args['url'];
+        $this->verb        = $args['verb'];
+        $this->req_headers = $args['headers'];
+        $this->body        = $args['body'];
+        $this->options     = $args['options'];
+        $this->encode_body = $args['encode_body'];
+        $this->max_retries = $args['max_retries'];
+        $this->cert_ssl    = $args['ssl'];
+
+        return $this->request($this->url, $this->verb, $this->body, $this->req_headers, $this->options);
+    }
 
     function setUrl($url){
         $this->url = $url;
