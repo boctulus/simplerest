@@ -113,12 +113,11 @@ class ObfuscatorController extends MyController
         Files::copy($ori, $_dst, $files);
 
         // Ofusco 
-        $ok = Obfuscator::obfuscate($_dst, $dest, null, $excluded, null, $def_profile, false);
+        Obfuscator::obfuscate($_dst, $dest, null, $excluded, null, $def_profile, false);
         
         // copio archivos excluidos de la ofuscación
         Files::copy($ori, $dest, $excluded);
-
-        d($ok);    
+   
         // dd($excluded, 'EXCLUDED');
         // dd($files, 'FILES');
     }
