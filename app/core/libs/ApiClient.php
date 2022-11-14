@@ -6,8 +6,6 @@ use PDO;
 use simplerest\core\libs\Url;
 
 /*
-    Wrapper para Url::consumeAPI()
-
     @author Pablo Bozzolo
 
     Ver interesante uso de cURL aqui:

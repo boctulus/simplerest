@@ -830,6 +830,16 @@ class DumbController extends Controller
         ]));
     }
 
+    function getEnqueuedOperationsByCategoryId(int $cat_id){
+        $sql = table('product_updates')
+        ->whereRaw("JSON_CONTAINS(`categories`, '?')", [$cat_id])
+        ->orderByRaw("id DESC")
+        ->dd();
+
+        dd($sql);
+        //return DB::select($sql);
+    }
+
     function get_products()
     {
         dd(DB::table('products')->get());
@@ -11296,7 +11306,18 @@ class DumbController extends Controller
         dd(
             $res->data()         
         , 'DATA');
-        
+    }
+
+
+    /*
+        Revisar
+    */
+    function test_error_response(){
+        return error('Validation error', 400, [
+            'Validation error 1',
+            'Validation error 2',
+            'Validation error N',
+        ]);
     }
 
 
