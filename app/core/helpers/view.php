@@ -189,8 +189,8 @@ function js_file(string $file, ?Array $atts = null, bool $in_head = false){
    return View::js_file($file, $atts, $in_head);
 }
 
-function js(string $file, ?Array $atts = null, bool $in_head = false){
-    return View::js($file, $atts, $in_head);
+function js(string $code, ?Array $atts = null, bool $in_head = false){
+    return View::js($code, $atts, $in_head);
 }
 
 function css_file(string $file){
