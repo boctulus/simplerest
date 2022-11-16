@@ -166,9 +166,9 @@ class View
         ];
     }
 
-    static function js(string $file, ?Array $atts = null, bool $in_head = false){
+    static function js(string $code, ?Array $atts = null, bool $in_head = false){
         $arr = $in_head ? 'head' : 'footer';
-        static::$$arr['js'][] = $file;
+        static::$$arr['js'][] = $code;
     }
 
     static function css_file(string $file){
