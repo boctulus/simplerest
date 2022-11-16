@@ -1,17 +1,13 @@
 # TODO
 
-
-
 - DATATABLES |------------------------------------------------------------------------------------
 
-- Con botones de borrar, editar y crear nuevo registro
+- Generador: <-- muy lindo pero cuesta 120 euros / año
 
-https://editor.datatables.net/examples/simple/inTableControls.html
+  Con botones de borrar, editar y crear nuevo registro
 
-
-- Generador !
-
-https://editor.datatables.net/generator/index
+  https://editor.datatables.net/examples/simple/inTableControls.html
+  https://editor.datatables.net/generator/index   
 
 Mas
 
