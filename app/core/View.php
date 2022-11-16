@@ -151,8 +151,13 @@ class View
     static function js_file(string $file, ?Array $atts = null, bool $in_head = false){
         $arr = $in_head ? 'head' : 'footer';
 
-        if (!Strings::startsWith('http', $file)){
-            $file = '/public/assets/' . Strings::removeFirstSlash($file);
+        if (Files::isAbsolutePath($file)){
+            $file = str_replace(ROOT_PATH, base_url() . '/', $file);
+            $file = str_replace('\\', '/', $file);
+        } else {
+            if (!Strings::startsWith('http', $file)){
+                $file = '/public/assets/' . Strings::removeFirstSlash($file);
+            } 
         }
 
         static::$$arr['js'][] = [
@@ -167,8 +172,13 @@ class View
     }
 
     static function css_file(string $file){
-        if (!Strings::startsWith('http', $file)){
-            $file = '/public/assets/' . Strings::removeFirstSlash($file);
+        if (Files::isAbsolutePath($file)){
+            $file = str_replace(ROOT_PATH, base_url() . '/', $file);
+            $file = str_replace('\\', '/', $file);
+        } else {
+            if (!Strings::startsWith('http', $file)){
+                $file = '/public/assets/' . Strings::removeFirstSlash($file);
+            } 
         }
 
         static::$head['css'][] = [

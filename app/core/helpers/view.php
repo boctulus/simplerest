@@ -150,11 +150,7 @@ function render_js(bool $in_head = false){
 
     foreach ($arr['js'] as $_js){
         if (isset($_js['file'])){
-            if (substr($_js['file'], 0, 4) != 'http'){
-                $path = base_url() . $_js['file'];
-            } else {
-                $path = $_js['file']    ;
-            }	
+            $path = $_js['file'];
             
             echo a_js($path);
         } else {
