@@ -31,12 +31,30 @@ class LeroyMerlinScraper
                 throw new \InvalidArgumentException("Url inválida: no hay slug?");
             }
 
-            $res = (new ApiClient($url))->disableSSL()
+            $client = ApiClient::instance()
             ->followLocations()
-            //->clearCache()
+            ->disableSSL();
+
+            $res = $client
+           
             //->cache()
-            ->get()
+            ->get($ori)
             ->getResponse(false);
+
+            dd($res, 'RES');
+            exit;
+
+            // if ($res === null){
+            //     $res = $client->disableSSL()
+            //     ->followLocations()
+            //     ->clearCache()
+            //     ->get()
+            //     ->getResponse(false);
+            // }
+
+            if ($res === null){
+                return;
+            }
 
             if ($res['http_code'] != 200){
                 return;

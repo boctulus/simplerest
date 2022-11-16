@@ -5050,32 +5050,6 @@ class DumbController extends Controller
         dd($error_msg, 'error');
     }
 
-    function respuesta()
-    {
-        error('Acceso no autorizado', 401, 'Header vacio');
-    }
-
-    function test_error1()
-    {
-        error("No encontrado", 404, "El recurso no existe");
-    }
-
-    function test_error1b()
-    {
-        response()->error("No encontrado", 404, "El recurso no existe");
-    }
-
-    function test_error2(){
-        // No acepta mas que dos parametros
-        response('Todo mal', 500);
-    }
-
-    function test_error1c()
-    {
-        // es un alias de response()->error()
-        error("No encontrado", 404, "El recurso no existe");
-    }
-
     function test_trace()
     {
         $fn = function(){
@@ -10847,8 +10821,17 @@ class DumbController extends Controller
         );
     }
 
+
+    /*
+       Leroy Merlin esta dando HTTP request failed! HTTP/1.1 403 Forbidden
+    */
     function test_scraper_2(){
         $url = 'https://www.leroymerlin.es/fp/81873733/barbacoa-de-gas-naterial-kenton-de-4-quemadores-y-14-kw-de-potencia';
+
+        dd(
+            file_get_contents($url),
+        'VIA FILE GET CONTENTS');
+        exit;
 
         dd(
             LeroyMerlinScraper::parseProduct($url)
@@ -11011,6 +10994,23 @@ class DumbController extends Controller
         render("Hola Sr. Putin");
     }
 
+    function test_asset_local(){
+        View::js_file('js/dojo/dojo.js');
+
+        render("Hola Sr. Putin");
+    }
+
+    /*
+        Las rutas absolutas deben ubicarse dentro del proyecto 
+        y de momento estar dentro de VIEWS_PATH
+        pero podria ser otra........ permitiendo crear modulos en otro lado
+    */  
+    function test_asset_local_ruta_absoluta(){
+        js_file(VIEWS_PATH . 'factory_parts/js/custom_dt.js');
+
+        render("Hola Sr. Putin");
+    }
+
     function test_cached_form(){
         Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
@@ -11105,6 +11105,23 @@ class DumbController extends Controller
         var_dump(
             $str
         );
+    }
+
+
+    function test_curl_no_proxy()
+    {  
+        $url  = 'https://iplocation.net/';
+
+        $res  = ApiClient::instance()
+        ->disableSSL()
+        ->redirect()
+        //->decode(true)
+        ->get($url);
+    
+        //$export = $res->dump();
+        //Files::varExport($export, 'api_debug.php');
+       
+        dd($res->data());
     }
 
     /*
@@ -11283,10 +11300,12 @@ class DumbController extends Controller
         //->decode(true)
         ->post($url);
 
+        dd($res->dump());
 
-        $export = $res->dump();
-        Files::varExport($export, 'api_debug.php');
-        //dd($prods);
+        //$export = $res->dump();
+        //Files::varExport($export, 'api_debug.php');
+       
+        dd($res->data());
     }
 
     function debug_api_client_exec(){
@@ -11309,8 +11328,38 @@ class DumbController extends Controller
     }
 
 
+    
+    function respuesta()
+    {
+        error('Acceso no autorizado', 401, 'Header vacio');
+    }
+
+    function test_error1()
+    {
+        error("No encontrado", 404, "El recurso no existe");
+    }
+
+    function test_error1b()
+    {
+        response()->error("No encontrado", 404, "El recurso no existe");
+    }
+
+    function test_error2(){
+        // No acepta mas que dos parametros
+        response('Todo mal', 500);
+    }
+
+    function test_error1c()
+    {
+        // es un alias de response()->error()
+        error("No encontrado", 404, "El recurso no existe");
+    }
+
+
     /*
         Revisar
+
+        Como se hace realmente con los errores de validacion?
     */
     function test_error_response(){
         return error('Validation error', 400, [
