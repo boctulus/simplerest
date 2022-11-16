@@ -236,8 +236,14 @@ class Response
             https://www.baeldung.com/rest-api-error-handling-best-practices
         */
         
+        // Parche 14-Nov-2022
+        
         if (Url::isPostman() || Url::isInsomnia()){
-            $detail = $detail === null ? '' : \json_decode(trim($detail), true);
+            if (is_string($detail)){
+                $detail = trim($detail);
+
+                $detail = $detail === null ? '' : \json_decode($detail, true);
+            } 
         }
 
         $res['error'] = [ 
@@ -258,6 +264,13 @@ class Response
     }
 
     function get(){ 
+        // Parche aplicado el 14-Nov-2022
+        
+        if (is_array(static::$data)){
+            header('Content-type:application/json;charset=utf-8');
+            return json_encode(static::$data);
+        }
+        
         return static::$data; 
     }
 
