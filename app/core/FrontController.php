@@ -15,7 +15,7 @@ class FrontController
     {
         global $argv;
         global $api_version;
-
+        
         $config      = config();
         $middlewares = include CONFIG_PATH . 'middlewares.php';
         
@@ -26,6 +26,20 @@ class FrontController
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $path = preg_replace('/(.*)\/index.php/', '/', $path);
     
+            /*
+                Caso: assets   
+
+                La idea es tener ciertas rutas relativas para las cuales no se intente interpretar como Controller
+            */
+
+            if (Strings::startsWith('/app/views/', $path)){
+                $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+                $path = Strings::removeTrailingSlash(ROOT_PATH) . $path;
+
+                include $path;
+                return;
+            }
+
             $config['base_url'] = Strings::addTrailingSlash($config['base_url']);
 
             if ($config['base_url'] != '/' && strpos($path, $config['base_url']) === 0) {
