@@ -2,7 +2,7 @@
 
 - DATATABLES |------------------------------------------------------------------------------------
 
-- Generador: <-- muy lindo pero cuesta 120 euros / año
+- Generador:
 
   Con botones de borrar, editar y crear nuevo registro
 
