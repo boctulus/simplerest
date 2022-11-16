@@ -32,12 +32,20 @@ class FrontController
                 La idea es tener ciertas rutas relativas para las cuales no se intente interpretar como Controller
             */
 
-            if (Strings::startsWith('/app/views/', $path)){
-                $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
-                $path = Strings::removeTrailingSlash(ROOT_PATH) . $path;
+            $allowed_paths = [
+                '/app/views/'
+            ];
 
-                include $path;
-                return;
+            foreach($allowed_paths as $ok_path){
+                if (Strings::startsWith($ok_path, $path)){
+                    $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+                    $path = Strings::removeTrailingSlash(ROOT_PATH) . $path;
+
+                    include $path;
+
+                    // evito siga el flujo normal
+                    return;
+                }
             }
 
             $config['base_url'] = Strings::addTrailingSlash($config['base_url']);
