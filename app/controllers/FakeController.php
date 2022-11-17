@@ -14,10 +14,28 @@ class FakeController extends MyController
     function parts(){
         header('Content-Type: application/json; charset=utf-8');
         
-        return '[
-            {"id":1, "name":"bob", "age":"23"},
-            {"id":2, "name":"jim", "age":"45"},
-            {"id":3, "name":"steve", "age":"32"}
+        return '[            
+            {
+                "id": "1",
+                "nombre": "px400",
+                "nota": "una parte cualquiera",
+                "created_at": "2022-11-17 17:23:05",
+                "updated_at": "2022-11-17 17:23:05"
+            },
+            {
+                "id": "2",
+                "nombre": "ftx600",
+                "nota": "bla bla",
+                "created_at": "2022-11-17 17:23:05",
+                "updated_at": "2022-11-17 17:23:05"
+            },
+            {
+                "id": "3",
+                "nombre": "px500",
+                "nota": "una parte cualquiera",
+                "created_at": "2022-11-17 17:32:17",
+                "updated_at": null
+            }
         ]';
     }
 
