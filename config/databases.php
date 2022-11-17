@@ -70,6 +70,21 @@ return
 			]
 		],
 
+		'parts' => [
+			'host'		=> env('DB_HOST_FACTORY_PARTS', '127.0.0.1'),
+			'port'		=> env('DB_PORT_FACTORY_PARTS'),
+			'driver' 	=> env('DB_CONNECTION_FACTORY_PARTS'),
+			'db_name' 	=> env('DB_NAME_FACTORY_PARTS'),
+			'user'		=> env('DB_USERNAME_FACTORY_PARTS'), 
+			'pass'		=> env('DB_PASSWORD_FACTORY_PARTS'),
+			'charset'	=> env('DB_CHARSET_FACTORY_PARTS', 'utf8'),
+			'schema'	=> null,  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => true // *
+			]
+		],
+
 		'eb' => [
 			'host'		=> env('DB_HOST_2', '127.0.0.1'),
 			'port'		=> env('DB_PORT_2'),
@@ -139,6 +154,9 @@ return
 		],
 		'mpo' => [
 			'mpp'
+		],
+		'parts' => [
+			'parts'
 		]
     ], 
 ];
