@@ -1,18 +1,6 @@
 # TODO
 
-- DATATABLES |------------------------------------------------------------------------------------
-
-- Generador:
-
-  Con botones de borrar, editar y crear nuevo registro
-
-  https://editor.datatables.net/examples/simple/inTableControls.html
-  https://editor.datatables.net/generator/index   
-
-Mas
-
-https://stackoverflow.com/questions/60410372/how-to-add-edit-and-delete-buttons-in-datatable
-
+[ DATATABLES (DATAGRIDS) ]
 
 - Implementar de forma sencilla DataTables
 
