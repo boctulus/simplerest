@@ -130,9 +130,18 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     }
 
     function getAuth(){
-        return static::$headers['authorization'] ?? NULL;
-    }
+        $token = $this->shiftQuery('token'); 
 
+        if (!empty($token)){
+            return "Bearer $token";
+        }
+
+        return static::$headers['authorization'] ?? null;
+    }
+    
+    /*
+        Se refiere solo a si tiene el campo Autorization en headers !
+    */
     function hasAuth(){
         return $this->getAuth() != NULL; 
     }
