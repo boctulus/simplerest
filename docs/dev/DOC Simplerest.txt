@@ -621,7 +621,10 @@ o
 
 El framework soporta dos tipos de autenticación, una basada en web tokens y otra en API Keys para backend-to-backend 
 
-Para API KEYs, se deben generar las apis para los usuarios (una por usuario) e insertarlas en la tabla api_keys.
+
+# Via API KEYs
+
+Se deben generar las apis para los usuarios (una por usuario) e insertarlas en la tabla api_keys.
 
 Hay dos formas de pasar la API KEY
 
@@ -638,6 +641,17 @@ Ej:
 
 Más
 https://swagger.io/docs/specification/authentication/api-keys/
+
+
+# Via tokens JWT
+
+Para el caso del token JWT, este deberia ser pasado via header "Authentication" pero dado que algunos clientes de Javascript pueden por algun fallo no permitir enviar un header (caso de Tabulator version 5.x), entonces se admite (aunque desaconseja) enviar headers via url:
+
+Ej:
+
+	http://simplerest.lan/api/v1/products?token=xxxxxxxxxxxxxxxxxx
+
+* Se le da prioridad (por seguridad) al header en caso de existir via header y via parametro de la url.
 
 
 ### Controlador

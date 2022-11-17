@@ -9,15 +9,14 @@
 -->
 
 <script>
-    const resource = "part_numbers";
-    const tenantid = "parts"; 
-    const token    = null;
+    const resource = "products";
+    const tenantid = "az"; 
+    const token    = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
 
     const api_url  = `http://simplerest.lan/api/v1/${resource}?tenantid=${tenantid}` + (token !== null ? `&token=${token}` : ''); 
-
+    
     window.addEventListener('DOMContentLoaded', (event) => {
-        let tableData = [
-        ];
+        let tableData = [];
 
         var table = new Tabulator("#example-table", {
             height:"311px",

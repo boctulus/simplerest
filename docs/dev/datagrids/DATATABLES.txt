@@ -76,14 +76,42 @@ El número de página que está solicitando se envia como "page".
 
 y estos parametros son enviados asi:
 
-var table = new Tabulator("#example-table", {
-    pagination:true, //enable pagination
-    paginationMode:"remote", //enable remote pagination
-    ajaxURL:"http://testdata.com/data", //set url for ajax request
-    ajaxParams:{token:"ABC123"}, //set any standard parameters to pass with the request
-    paginationSize:5, //  <------------ optional parameter to request a certain number of rows per page
-    paginationInitialPage:2, //<------------  optional parameter to set the initial page to load
-});
+    var table = new Tabulator("#example-table", {
+        pagination:true, //enable pagination
+        paginationMode:"remote", //enable remote pagination
+        ajaxURL:"http://testdata.com/data", //set url for ajax request
+        ajaxParams:{token:"ABC123"}, //set any standard parameters to pass with the request
+        paginationSize:5, //  <------------ optional parameter to request a certain number of rows per page
+        paginationInitialPage:2, //<------------  optional parameter to set the initial page to load
+    });
+
+Tambien es posible usar la paginacion sin hacer cambios en el backend con "Custom Pagination URL Construction" 
+
+Ej:
+
+    var table = new Tabulator("#example-table", {
+        ajaxURLGenerator:function(url, config, params){
+            //url - the url from the ajaxURL property or setData function
+            //config - the request config object from the ajaxConfig property
+            //params - the params object from the ajaxParams property, this will also include any pagination, filter and sorting properties based on table setup
+
+            //return request url
+            return url + "?params=" + encodeURI(JSON.stringify(params)); //encode parameters as a json object
+        },
+    });
+
+
+Tambien puede evitar tener que modificar la respuesta (via middleware) de la API 
+
+    var table = new Tabulator("#example-table", {
+        pagination:true, //enable pagination
+        paginationMode:"remote", //enable remote pagination
+        ajaxURL:"http://testdata.com/data", //set url for ajax request
+        dataReceiveParams:{
+            "last_page":"max_pages", // <----------  change last_page parameter name to "max_pages"
+        } ,
+    });
+
 
 Demo
 
