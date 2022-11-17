@@ -1,0 +1,98 @@
+DATAGRIDS
+---------
+
+El DataTables original hoy es de pago y la version free no permite tiene los botones de agregar, borrar, exportar,....
+
+Alternativas:
+
+* Tabulator +++++
+
+https://tabulator.info/
+
+    . AJAX Data Loading
+
+    . Data Reactivity
+
+    . Editable Data -> facil edicion de textos, checkboxes, listas como dropdowns,....
+
+    . Nested Data Trees -> categorias, jerarquia de roles,...
+
+    . Create from HTML Table Element
+
+    . Validate User Input
+
+    . Filter Data => filtro avanzado
+
+    . Filter Data In Header
+
+    . Grouping Data -> recursos disponibles / no-disponibles
+
+    . Selectable Rows -> seleccionar / des-seleccionar todos
+
+    . Selectable Rows With Tickbox
+
+    . Add / Delete Rows -> alternativa a crear registros en una ventana modal
+
+    . Movable Rows Between Tables -> podria ser una forma sencilla de asignar recursos
+
+    . Menus -> los "..." al lado de cada titulo de columna para seleccionar columnas o cualquier otra cosa!
+
+    . Popups -> una forma sencilla de pre-visualizar informacion sin abrir el modal con todos los datos.
+
+    . Alerts -> alerts centrados dentro de la tabla puede ser util para mostrar una situacion critica como escases de recursos, ...
+
+    . Download Table Data -> descarga de listados como CSV, XLSX, PDF
+
+    . Interaction History -> UNDO / REDO    
+
+    . Printing -> no parece estar funcionando
+
+    . Localization -> traduccion de nombre de columnas, paginador,...
+
+    . Callbacks and Events -> eventos al clickear una celda con boton izquiero o derecho del mouse.
+
+    . Theming -> se pueden aplicar temas sobre las tablas
+
+* GridJs.Io +++
+
+https://gridjs.io/docs/examples/pagination
+
+Tampoco permite borrar?
+
+Permite ¨row buttons¨ donde podrian colocarse edit / delete
+
+https://gridjs.io/docs/examples/row-buttons/
+
+
+* FidusWritter ++
+
+https://github.com/fiduswriter/Simple-DataTables
+
+Tampoco permite borrar?
+
+Ej:
+
+https://fiduswriter.github.io/Simple-DataTables/
+
+Tiene ¨column manipulation¨
+
+https://fiduswriter.github.io/Simple-DataTables/5-column-manipulation/
+
+
+* ZingGrid
+
+* jqGrid
+
+* Handsontable
+
+* Backgrid.js
+
+* Ag-grid
+
+* Vuetable 2
+
+* Vue-Easytable
+
+* Vue Good Table
+
+* Vueye-Table
