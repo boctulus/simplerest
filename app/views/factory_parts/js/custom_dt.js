@@ -1,8 +1,5 @@
 /*
-
-
     https://stackoverflow.com/questions/57321196/how-to-add-an-edit-buttons-in-datatables-plugin
-
 */
 
 $(document).ready(function() {
