@@ -14,7 +14,7 @@ use simplerest\core\libs\HtmlBuilder\Tag;
 Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 //Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
 
-include_css(ASSETS_PATH . 'adminlte/dist/css/adminlte.css');
+include_css(ASSETS_PATH . 'vendors/adminlte/dist/css/adminlte.css');
 
 
 ?>

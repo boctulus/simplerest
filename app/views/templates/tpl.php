@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
     <!-- jQuery -->
-    <script src="<?= asset('adminlte/plugins/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
 
     <?= 
         umodel();
@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/fontawesome-free/css/all.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css') ?>">
     
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
@@ -49,16 +49,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
     
     <!-- iCheck -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
     <!-- JQVMap -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/jqvmap/jqvmap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/jqvmap/jqvmap.min.css') ?>">
    
     <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') ?> ">
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') ?> ">
     <!-- Daterange picker -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/daterangepicker/daterangepicker.css') ?>">
     <!-- summernote -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/summernote/summernote-bs4.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/summernote/summernote-bs4.min.css') ?>">
 
    
     <!-- Datatables -->
@@ -78,16 +78,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <!-- DualListbox -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.css') ?>"/>
-    <script src="<?= asset('adminlte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') ?>"></script>
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.css') ?>"/>
+    <script src="<?= asset('vendors/adminlte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') ?>"></script>
 
     <!-- InputMask -->
-    <script src="<?= asset('adminlte/plugins/moment/moment.min.js') ?>"></script>
-    <script src="<?= asset('adminlte/plugins/inputmask/jquery.inputmask.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/moment/moment.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/inputmask/jquery.inputmask.min.js') ?>"></script>
 
     <!-- date-range-picker -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.css') ?>"/>
-    <script src="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.js') ?>"></script>
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/daterangepicker/daterangepicker.css') ?>"/>
+    <script src="<?= asset('vendors/adminlte/plugins/daterangepicker/daterangepicker.js') ?>"></script>
     
 
     <link rel="stylesheet" href="<?= asset('css/main.css') ?>"/>
@@ -112,7 +112,7 @@
     
 
     <!-- jQuery UI 1.11.4 -->
-    <!--script src="< ?= asset('adminlte/plugins/jquery-ui/jquery-ui.min.js') ?>"></script-->
+    <!--script src="< ?= asset('vendors/adminlte/plugins/jquery-ui/jquery-ui.min.js') ?>"></script-->
 
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
@@ -120,30 +120,30 @@
     </script>
 
     <!-- ChartJS -->
-    <script src="<?= asset('adminlte/plugins/chart.js/Chart.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/chart.js/Chart.min.js') ?>"></script>
     
     <!-- Sparkline -->
-    <script src="<?= asset('adminlte/plugins/sparklines/sparkline.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/sparklines/sparkline.js') ?>"></script>
     
     <!-- JQVMap -->
-    <script src="<?= asset('adminlte/plugins/jqvmap/jquery.vmap.min.js') ?>"></script>
-    <script src="<?= asset('adminlte/plugins/jqvmap/maps/jquery.vmap.usa.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/jqvmap/jquery.vmap.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/jqvmap/maps/jquery.vmap.usa.js') ?>"></script>
     
     <!-- jQuery Knob Chart -->
-    <script src="<?= asset('adminlte/plugins/jquery-knob/jquery.knob.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/jquery-knob/jquery.knob.min.js') ?>"></script>
     
     <!-- daterangepicker -->
-    <script src="<?= asset('adminlte/plugins/moment/moment.min.js') ?>"></script>
-    <script src="<?= asset('adminlte/plugins/daterangepicker/daterangepicker.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/moment/moment.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/daterangepicker/daterangepicker.js') ?>"></script>
     
     <!-- Tempusdominus Bootstrap 4 -->
-    <script src="<?= asset('adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') ?>"></script>
     
     <!-- Summernote -->
-    <script src="<?= asset('adminlte/plugins/summernote/summernote-bs4.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/summernote/summernote-bs4.min.js') ?>"></script>
     
     <!-- overlayScrollbars -->
-    <script src="<?= asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') ?>"></script>
 
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js"></script>

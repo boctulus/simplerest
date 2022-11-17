@@ -70,9 +70,9 @@
 
 		    <style>
     <br />
-<b>Warning</b>:  include(D:\www\simplerest\public\assets\adminlte/css/adminlte.css): Failed to open stream: No such file or directory in <b>D:\www\simplerest\app\core\helpers\view.php</b> on line <b>205</b><br />
+<b>Warning</b>:  include(D:\www\simplerest\public\assets\vendors/adminlte/css/adminlte.css): Failed to open stream: No such file or directory in <b>D:\www\simplerest\app\core\helpers\view.php</b> on line <b>205</b><br />
 <br />
-<b>Warning</b>:  include(): Failed opening 'D:\www\simplerest\public\assets\adminlte/css/adminlte.css' for inclusion (include_path='.;C:\php\pear') in <b>D:\www\simplerest\app\core\helpers\view.php</b> on line <b>205</b><br />
+<b>Warning</b>:  include(): Failed opening 'D:\www\simplerest\public\assets\vendors/adminlte/css/adminlte.css' for inclusion (include_path='.;C:\php\pear') in <b>D:\www\simplerest\app\core\helpers\view.php</b> on line <b>205</b><br />
     </style>
     <div class="card card-primary card-outline"><div class="card-header"><h5 class="card-title" style="font-size: 300%;">Login</h5></div> <div class="card-body"><div class="social-btn">
 				<a href="facebook/login" class="btn btn-primary w-100"><i class="fa fa-facebook"></i> Sign in with <b>Facebook</b></a>

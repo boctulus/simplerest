@@ -153,7 +153,7 @@ class AdminLte extends Bt5Form
             En si,... include_css() debería "encolar" los archivos css para la vista corespondiente.
         */
 
-        include_css(ASSETS_PATH . 'adminlte/plugins/ion-rangeslider/css/ion.rangeSlider.min.css');
+        include_css(ASSETS_PATH . 'vendors/adminlte/plugins/ion-rangeslider/css/ion.rangeSlider.min.css');
 
         $att = [
         ];
