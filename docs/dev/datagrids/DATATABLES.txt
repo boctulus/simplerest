@@ -53,6 +53,47 @@ https://tabulator.info/
 
     . Theming -> se pueden aplicar temas sobre las tablas
 
+
+Investigar "Progressive Ajax Loading"
+
+https://tabulator.info/docs/5.4/data#ajax-progressive
+
+Requiere que la respuesta tenga un campo "last_page"
+
+{
+    "last_page":15, // <--- the total number of available pages (this value must be greater than 0)
+    "data":[ // an array of row data objects
+        {"id":1, "name":"bob", "age":"23"} //example row data object
+    ]
+}
+
+El número de página que está solicitando se envia como "page". 
+
+    page - the page number being requested
+    size - the number of rows to a page (if paginationSize is set)
+    sorters - the first current sorters(if any)
+    filter - an array of the current filters (if any)
+
+y estos parametros son enviados asi:
+
+var table = new Tabulator("#example-table", {
+    pagination:true, //enable pagination
+    paginationMode:"remote", //enable remote pagination
+    ajaxURL:"http://testdata.com/data", //set url for ajax request
+    ajaxParams:{token:"ABC123"}, //set any standard parameters to pass with the request
+    paginationSize:5, //  <------------ optional parameter to request a certain number of rows per page
+    paginationInitialPage:2, //<------------  optional parameter to set the initial page to load
+});
+
+Demo
+
+https://tabulator.info/examples/5.4?#ajax-progressive
+
+Ver paginacion remota 
+
+https://tabulator.info/docs/5.4/page#remote
+
+
 * GridJs.Io +++
 
 https://gridjs.io/docs/examples/pagination
