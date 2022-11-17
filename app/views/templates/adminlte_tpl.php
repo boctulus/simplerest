@@ -16,9 +16,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="<?= asset('adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
     <!-- Theme style -->
-    <link rel="stylesheet" href="<?= asset('adminlte/dist/css/adminlte.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/dist/css/adminlte.min.css') ?>">
 
     <?=
         umodel();
@@ -99,7 +99,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="<?= asset('adminlte/dist/img/user1-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                <img src="<?= asset('vendors/adminlte/dist/img/user1-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Brad Diesel
@@ -115,7 +115,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="<?= asset('adminlte/dist/img/user8-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="<?= asset('vendors/adminlte/dist/img/user8-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         John Pierce
@@ -131,7 +131,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="<?= asset('adminlte/dist/img/user3-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="<?= asset('vendors/adminlte/dist/img/user3-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Nora Silvester
@@ -197,7 +197,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="/" class="brand-link">
-                <img src="<?= asset($logo ?? 'adminlte/dist/img/AdminLTELogo.png') ?>" alt="<?= $logo_alt ?? '' ?>" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src="<?= asset($logo ?? 'vendors/adminlte/dist/img/AdminLTELogo.png') ?>" alt="<?= $logo_alt ?? '' ?>" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light"><?= $brandname ?? '&nbsp;' ?></span>
             </a>
 
@@ -326,12 +326,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- REQUIRED SCRIPTS -->
 
     <!-- jQuery -->
-    <script src="<?= asset('adminlte/plugins/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
     <!-- Bootstrap 5.2.2 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="<?= asset('adminlte/dist/js/adminlte.min.js') ?>"></script>
-    <script src="<?= asset('adminlte/dist/js/darktheme.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/dist/js/adminlte.min.js') ?>"></script>
+    <script src="<?= asset('vendors/adminlte/dist/js/darktheme.js') ?>"></script>
 
     <?php
         footer();  
