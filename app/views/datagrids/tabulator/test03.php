@@ -4,10 +4,12 @@
 
 <!--
     Con Ajax
+
+    Custom headers no estan siendo enviados asi que el tenant_id o que sea debe enviarse via parametro en la url !
 -->
 
 <script>
-    const api_url = "http://simplerest.lan/api/v1/part_numbers?tenantid=parts";
+    const api_url = "http://simplerest.lan/api/v1/part_numbers?tenantid=parts"; 
     
     window.addEventListener('DOMContentLoaded', (event) => {
         let tableData = [
@@ -28,17 +30,19 @@
             // AJAX
             ajaxURL:api_url, //ajax URL
             ajaxConfig:"GET",
-            // ajaxContentType:{
-            //     headers:{
-            //         'Content-Type': 'application/json',
-            //         'X-TENANT-ID' : 'parts'
-            //     }
-            // },
+            ajaxContentType:{
+                headers:{
+                    'Content-Type': 'application/json',
+                    //'X-TENANT-ID' : 'parts'
+                }
+            },
             //ajaxParams:{key1:"value1", key2:"value2"}, //ajax parameters
 
             ajaxResponse:function(url, params, response){
                 return response.data.part_numbers; //pass the data array into Tabulator
             },
+            
+            placeholder:"Cargando datos,...",
         });
 
         table.on("tableBuilt", () => {
