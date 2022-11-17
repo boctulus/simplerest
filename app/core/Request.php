@@ -27,7 +27,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         return $this;
     }
 
-    static function getInstance(){
+    static function getInstance() : Request {
         if(static::$instance == NULL){
             if (php_sapi_name() != 'cli'){
                 if (isset($_SERVER['QUERY_STRING'])){
@@ -190,7 +190,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         if ($key == null)
             return static::$query_arr;
         else 
-             return static::$query_arr[$key];   
+             return static::$query_arr[$key] ?? null;   
     }    
 
     // getter destructivo sobre $query_arr
