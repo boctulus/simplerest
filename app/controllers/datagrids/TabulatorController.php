@@ -21,7 +21,7 @@ class TabulatorController extends MyController
 		
         js_file('vendors/tabulator/dist/js/tabulator.min.js');
 
-        view('factory_parts/parts');
+        view('datagrids/tabulator/test01');
     }                
 
 }

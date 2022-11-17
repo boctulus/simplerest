@@ -7518,6 +7518,17 @@ Ej:
     ');
 
 
+Tanto js_file() como css_file() admiten rutas relativas a ASSETS_PATH, externas (http:// y https://) asi como absolutas pero dentro de VIEWS_PATH
+
+Ej:
+
+	/*
+		 Dentro de /app/views
+	*/
+
+	css_file(VIEWS_PATH . 'factory_parts/css/editor.dataTables.min.css');
+	
+	
 # Vistas parciales
 
 Se pueden incluir "secciones" por medio del helper section()
@@ -13330,9 +13341,9 @@ Ej:
 		?>
 	</div>
 
-Desconozco porque *no* está funcionando aún habiendo incluido en el "footer" el plugin.
+Se requiere incluir el plugin:
 
-    View::js_file(ASSETS_PATH . 'adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js'
+    js_file('vendors/adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js')
 
 Más
 https://github.com/Johann-S/bs-custom-file-input
