@@ -1144,6 +1144,7 @@ Ej:
 
 El método insertOrIgnore() se puede ignorar los errores de intentar crear nuevos registro cuando se está repitiendo un campo unique. Es similar a createOrIgnore() excepto porque el primero está dentro de una transacción.
 
+
 # Obtención de registros
 
 Antes que nada es posible usar la clase DB solo (si as'i se desea) para hacer la conexion la DB y hacer el resto de forma artesanal.
@@ -1546,8 +1547,31 @@ El "problema" es que cuando hay más de una relación entre dos tablas se necesi
 
 La clase Model responsable del Query Builder tiene una gran cantidad de métodos que proveen las distintas funcionalidades.
 
+# Paginacion
 
-# where
+El framework ofrece varios metodos de paginacion:
+
+	offset / limit 
+	take / skip  -- similar al anterior
+	paginate
+
+Con pagiante() es directamente pasando la cantidad de paginas y el tamano de pagina.
+
+Ej:
+
+	$page_size = $_GET['size'] ?? 10;
+	$page      = $_GET['page'] ?? 1;
+
+	DB::getConnection('az');
+
+	$rows = DB::table('products')
+	->paginate($page, $page_size)
+	->get();
+
+Por otro lado la clase Paginator se encarga de generar el SQL para el modelo y ofrece metodos de calculo de paginacion.
+
+
+# Los where
 
 Los arrays de los where pueden ser asociativos:
 

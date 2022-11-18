@@ -62,10 +62,23 @@ return [
 	*/
 	'include_enity_name' => true,
 	'nest_sub_resources' => false,	
+
 	'paginator' => [
 		'max_limit' => 50,
 		'default_limit' => 10,
-		'position' => Paginator::TOP
+		'position' => Paginator::BOTTOM,
+		'formater'   => function ($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
+			return [
+				//'paginator' => [
+					"total"       => $row_count, 
+					"count"       => $count,
+					"last_page"   => $current_page,
+					"total_pages" => $page_count,
+					"page_size"   => $page_size,
+					"next_url"	  => $nextUrl
+				//]
+			];
+		}
 	],
 
 	'pretty' => false,
