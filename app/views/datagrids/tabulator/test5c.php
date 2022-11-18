@@ -9,28 +9,30 @@
 -->
 
 <script>
+    // const resource = "products";
+    // const tenantid = "az"; 
+    // const token    = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
+
     const api_url  = `http://simplerest.lan/fake/test5c`; 
+
+    res = {};
+
     window.addEventListener('DOMContentLoaded', (event) => {
         var table = new Tabulator("#example-table", {
-                height:"311px",
+                height:"325px",
                 layout:"fitColumns",
+
                 ajaxURL:api_url,
                 progressiveLoad:"scroll",
-                paginationSize:20,
+                paginationSize:10,
                 placeholder:"No Data Set",
-                // columns:[
-                //     {title:"Name", field:"name", sorter:"string", width:200},
-                //     {title:"Progress", field:"progress", sorter:"number", formatter:"progress"},
-                //     {title:"Gender", field:"gender", sorter:"string"},
-                //     {title:"Rating", field:"rating", formatter:"star", hozAlign:"center", width:100},
-                //     {title:"Favourite Color", field:"col", sorter:"string"},
-                //     {title:"Date Of Birth", field:"dob", sorter:"date", hozAlign:"center"},
-                //     {title:"Driver", field:"car", hozAlign:"center", formatter:"tickCross", sorter:"boolean"},
-                // ],
+
                 autoColumns:true,
             
+                
                 ajaxResponse:function(url, params, response){
-                    console.log(response);
+                    res = response; //
+            
                     return response;
                 },
             },

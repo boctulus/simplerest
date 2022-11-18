@@ -292,9 +292,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             return [ 'rules' => $res['rules'] ];
         }
 
-        $_related = request()->shiftQuery('_related', null, function($ret){ return ($ret !== null);});
-        $include  = request()->shiftQuery('include');        
-        $_get     = request()->getQuery();
+        $req = request();
+
+        $_related         = $req->shiftQuery('_related', null, function($ret){ return ($ret !== null);});
+        $include          = $req->shiftQuery('include');    
+        $paginator_params = $req->getPaginatorParams();    
+        $_get             = $req->getQuery();
 
         if (!empty($include)){
             $include  = explode(',', $include);
@@ -541,8 +544,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     } 
                 };
    
-                $page  = Arrays::shift($_get,'page');
-                $page_size = Arrays::shift($_get,'pageSize');
+                $page      = $paginator_params['page'];
+                $page_size = $paginator_params['pageSize'];
 
                 if ($page != null)
                     $page = (int) $page;

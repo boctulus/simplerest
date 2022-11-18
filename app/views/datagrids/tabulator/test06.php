@@ -40,29 +40,24 @@
                 }
             },
 
-            ajaxResponse:function(url, params, response){
-                let data = response.data[resource];
-                return response.data[resource]; 
-            },
-
             ajaxParams: {
                 tenantid,
                 token
             },
 
-            //progressiveLoad:"scroll",
+            ajaxResponse:function(url, params, response){
+                let res = {};
+                
+                res.data = response.data[resource];
+                return res; 
+            },
+
+            progressiveLoad:"scroll",
             
             paginationMode:"remote", //enable remote pagination
             paginationSize:5, //  <------------ optional parameter to request a certain number of rows per page
             paginationInitialPage:2, //<------------  optional parameter to set the initial page to load
 
-            dataSendParams:{
-                "page":"page", 
-                "size":"pageSize"
-            } ,
-            dataReceiveParams:{
-                "last_page":"paginator.totalPages", // <----------  change last_page parameter name to "max_pages"
-            } ,
         });
 
         table.on("tableBuilt", () => {
