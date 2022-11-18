@@ -63,7 +63,7 @@ class FakeController extends MyController
         $page_size = $_GET['size'] ?? 10;
         $page      = $_GET['page'] ?? 1;
 
-        $offset = Paginator::calcOffset($page_size, $page);
+        $offset = Paginator::calcOffset($page, $page_size);
 
         DB::getConnection('az');
 
@@ -74,7 +74,7 @@ class FakeController extends MyController
 
         $row_count = DB::table('products')->count();
 
-        $paginator = Paginator::calc($page_size, $page, $row_count);
+        $paginator = Paginator::calc($page, $page_size, $row_count);
         $last_page = $paginator['totalPages'];
 
         return [

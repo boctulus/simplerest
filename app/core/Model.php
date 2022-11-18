@@ -3,17 +3,18 @@
 namespace simplerest\core;
 
 use simplerest\core\libs\DB;
+use simplerest\core\Paginator;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Validator;
 use simplerest\core\libs\ValidationRules;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Files;
 use simplerest\core\interfaces\IValidator;
-use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\exceptions\SqlException;
 use simplerest\core\interfaces\ITransformer;
 use simplerest\core\traits\ExceptionHandler;
+use simplerest\core\exceptions\InvalidValidationException;
 
 class Model {
 	use ExceptionHandler;
@@ -889,6 +890,17 @@ class Model {
 
 	function skip(int $n = null){
 		return $this->offset($n);
+	}
+
+	function paginate(int $page, ?int $page_size = null){
+		if ($page_size === null){
+			$page_size = config()['paginator']['default_limit'] ?? 10;
+		}
+
+		$this->limit  = $page_size;
+        $this->offset = Paginator::calcOffset($page, $page_size);
+
+		return $this;
 	}
 
 	function groupBy(array $g){
