@@ -107,6 +107,17 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         return static::getInstance();
     }
 
+    function getPaginatorParams(){
+        $param_names    = config()['paginator']['params'];
+        $page_name      = $param_names['page'];
+        $page_size_name = $param_names['pageSize'];
+        
+        return [
+            'page'     => static::shiftQuery($page_name),
+            'pageSize' => static::shiftQuery($page_size_name),
+        ];    
+    }
+
     function headers(){
         return static::$headers;
     }

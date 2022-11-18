@@ -12,11 +12,11 @@
     const api_url  = `http://simplerest.lan/fake/test05`; 
     window.addEventListener('DOMContentLoaded', (event) => {
         var table = new Tabulator("#example-table", {
-                height:"311px",
+                height:"325px",
                 layout:"fitColumns",
                 ajaxURL:api_url,
                 progressiveLoad:"scroll",
-                paginationSize:20,
+                paginationSize:10,
                 placeholder:"No Data Set",
                 columns:[
                     {title:"Name", field:"name", sorter:"string", width:200},

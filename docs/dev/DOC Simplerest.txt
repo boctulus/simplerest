@@ -1570,7 +1570,6 @@ Ej:
 
 Por otro lado la clase Paginator se encarga de generar el SQL para el modelo y ofrece metodos de calculo de paginacion.
 
-
 # Los where
 
 Los arrays de los where pueden ser asociativos:
@@ -4710,6 +4709,55 @@ Response is an array of rows that include a paginator with navigation informatio
         "nextUrl": "http://simplerest.lan/api/v1/products?pageSize=10&page=2"
     }
 }
+
+La respuesta del paginador puede cambiarse aplicando un transformer definido en el config.php
+
+Ej:
+
+	'paginator' => [
+		'max_limit' => 50,
+		'default_limit' => 10,
+		'position' => Paginator::BOTTOM,
+		//...
+		'formater' => function ($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
+			return [
+				//'paginator' => [
+					"total"       => $row_count, 
+					"count"       => $count,
+					"last_page"   => $current_page,
+					"total_pages" => $page_count,
+					"page_size"   => $page_size,
+					"next_url"	  => $nextUrl
+				//]
+			];
+		}
+	],
+
+Y los parametros del paginador tambien pueden modificarse:
+
+'paginator' => [
+		'max_limit' => 50,
+		'default_limit' => 10,
+		'position' => Paginator::TOP,
+		'params'   => [
+			'pageSize' => 'size',   <---------- *
+			'page'	   => 'pageNo'  <---------- *
+		],
+		'formater' => function ($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
+			return [
+				'paginator' => [
+					"total"       => $row_count, 
+					"count"       => $count,
+					"currentPage" => $current_page,
+					"totalPages"  => $page_count,
+					"pageSize"    => $page_size,
+					"nextUrl"	  => $nextUrl
+				],
+				"last_page" => $current_page,
+			];
+		},
+	],
+
     
 # Aggregate Functions – Average, Count, Sum, Max and Min
 
