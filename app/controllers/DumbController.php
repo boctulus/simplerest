@@ -80,6 +80,7 @@ use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\core\Paginator;
 use simplerest\libs\scrapers\Curiosite;
 
 class DumbController extends Controller
@@ -11379,6 +11380,42 @@ class DumbController extends Controller
         dd(
             Date::addDays($date, 85)
         , '+ 85 dias');
+    }
+
+    
+    /*
+        0
+        1
+        2
+
+        3 <--- page offset
+        4
+        5
+
+        6
+        7
+        8
+        
+    */
+    function calc_page_offset(){
+        $page_size = 3;
+        $page      = 2;
+
+        dd(
+            Paginator::calcOffset($page_size, $page)
+        );
+    }
+
+    function calc_pagination(){
+        $page_size = $_GET['size'] ?? 10;
+        $page      = $_GET['page'] ?? 1;
+
+        DB::getConnection('az');
+
+        $row_count = DB::table('products')
+        ->count();
+
+        return Paginator::calc($page_size, $page, $row_count);
     }
 
 
