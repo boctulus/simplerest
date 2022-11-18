@@ -18,6 +18,39 @@ class Paginator
     const TOP    = 'TOP';
     const BOTTOM = 'BOTTOM';
 
+    /*
+        Calcula el LIMIT dados el size la page y la page actual
+    */
+
+    static function calcOffset(int $page_size, int $current_page){
+        return ($page_size * $current_page) - $page_size;
+    }
+
+    /*
+        Calcula todo lo que debe tener el paginador 
+        a excepcion de la proxima url
+
+    */
+    static function calc(int $page_size, int $current_page, int $row_count){
+        $page_count  = (int) ceil($row_count / $page_size);
+        
+        if ($current_page < $page_count){
+            $count = $page_size;
+        } elseif ($current_page > $page_count){
+            $count = 0;
+        } else {
+            $count = $row_count - ($page_size * ($current_page-1));
+        }
+    
+        return [
+            "total"       => $row_count,  // cant. total de registros
+            "count"       => $count,
+            "currentPage" => $current_page,
+            "totalPages"  => $page_count,
+            "pageSize"    => $page_size
+        ];
+    }
+
     /** 
      * @param array $attributes of the entity to be paginated
      * @param array $order 
