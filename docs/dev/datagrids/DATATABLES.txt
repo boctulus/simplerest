@@ -85,7 +85,10 @@ y estos parametros son enviados asi:
         paginationInitialPage:2, //<------------  optional parameter to set the initial page to load
     });
 
-Tambien es posible usar la paginacion sin hacer cambios en el backend con "Custom Pagination URL Construction" 
+
+Ajustes:
+
+Es posible usar la paginacion sin hacer cambios en el backend con "Custom Pagination URL Construction" 
 
 Ej:
 
@@ -100,17 +103,27 @@ Ej:
         },
     });
 
+Pero en especial:
 
-Tambien puede evitar tener que modificar la respuesta (via middleware) de la API 
+var table = new Tabulator("#example-table", {
+    pagination:true, //enable pagination
+    paginationMode:"remote", //enable remote pagination
+    ajaxURL:"http://testdata.com/data", //set url for ajax request
+    dataSendParams:{
+        "page":"pageNo", //change page request parameter to "pageNo"
+    } ,
+});
 
-    var table = new Tabulator("#example-table", {
-        pagination:true, //enable pagination
-        paginationMode:"remote", //enable remote pagination
-        ajaxURL:"http://testdata.com/data", //set url for ajax request
-        dataReceiveParams:{
-            "last_page":"max_pages", // <----------  change last_page parameter name to "max_pages"
-        } ,
-    });
+y
+
+var table = new Tabulator("#example-table", {
+    pagination:true, //enable pagination
+    paginationMode:"remote", //enable remote pagination
+    ajaxURL:"http://testdata.com/data", //set url for ajax request
+    dataReceiveParams:{
+        "last_page":"max_pages", // <----------  change last_page parameter name to "max_pages"
+    } ,
+});
 
 
 Demo

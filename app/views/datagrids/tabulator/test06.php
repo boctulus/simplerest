@@ -1,4 +1,4 @@
-<h3>Prueba con Ajax</h3>
+<h3>Prueba con Ajax con paginacion</h3>
 
 <div id="example-table"></div>
 
@@ -29,6 +29,7 @@
                 filter:true,
                 columns:true,
             },
+            placeholder:"No Data Set",
 
             // AJAX
             ajaxURL:api_url, //ajax URL
@@ -38,31 +39,42 @@
                     'Content-Type': 'application/json',
                 }
             },
-            //ajaxParams:{key1:"value1", key2:"value2"}, //ajax parameters
 
             ajaxResponse:function(url, params, response){
-                return response.data[resource]; //pass the data array into Tabulator
+                let data = response.data[resource];
+                return response.data[resource]; 
             },
 
             ajaxParams: {
                 tenantid,
                 token
-            }
+            },
 
-            //paginationMode:"remote", //enable remote pagination
+            //progressiveLoad:"scroll",
+            
+            paginationMode:"remote", //enable remote pagination
+            paginationSize:5, //  <------------ optional parameter to request a certain number of rows per page
+            paginationInitialPage:2, //<------------  optional parameter to set the initial page to load
+
+            dataSendParams:{
+                "page":"page", 
+                "size":"pageSize"
+            } ,
+            dataReceiveParams:{
+                "last_page":"paginator.totalPages", // <----------  change last_page parameter name to "max_pages"
+            } ,
         });
 
         table.on("tableBuilt", () => {
-            //table.import("json", ".json");
-            table.setData(api_url)
-            .then(function(){
-                //run code after table has been successfully updated
-                console.log('table has been successfully updated');
-            })
-            .catch(function(error){
-                //handle error loading data
-                console.log('error loading data');
-            });
+            // table.setData(api_url)
+            // .then(function(){
+            //     //run code after table has been successfully updated
+            //     console.log('table has been successfully updated');
+            // })
+            // .catch(function(error){
+            //     //handle error loading data
+            //     console.log('error loading data');
+            // });
         });
 
     });
