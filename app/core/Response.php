@@ -18,7 +18,7 @@ class Response
     static protected $version = '2';
     static protected $config;
     static protected $pretty;
-    static protected $paginator;
+    static protected $paginator_params;
     static protected $as_object = false;
     static protected $fake_status_codes = false; // send 200 instead
     static protected $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
@@ -100,13 +100,19 @@ class Response
     }
 
     function encoded(){
-        self::$to_be_encoded = true;
+        static::$to_be_encoded = true;
         return static::getInstance();
     }
 
-    function setPaginator(array $p){
-        self::$to_be_encoded = true; 
-        static::$paginator = $p;
+    function setPaginatorParams($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
+        $formater = config()['paginator']['formater'];
+       
+        static::$to_be_encoded    = true; 
+
+        static::$paginator_params = $formater(
+            $row_count, $count, $current_page, $page_count, $page_size, $nextUrl
+        );
+
         return static::getInstance();
     }
 
@@ -125,8 +131,9 @@ class Response
             $arr = [];
 
             if (static::$config['paginator']['position'] == 'TOP'){
-                if (static::$paginator != NULL)
-                    $arr['paginator'] = static::$paginator;
+                if (static::$paginator_params != NULL){
+                    $arr = array_merge($arr, static::$paginator_params);
+                }
             }
 
             $data = array_merge($arr,[
@@ -138,8 +145,9 @@ class Response
             static::$http_code = $http_code; //
 
             if (static::$config['paginator']['position'] == 'BOTTOM'){                
-                if (static::$paginator != NULL)
-                    $data['paginator'] = static::$paginator;
+                if (static::$paginator_params != NULL){
+                    $data = array_merge($data, static::$paginator_params);
+                }
             }          
         }     
 

@@ -22,7 +22,7 @@ class Paginator
         Calcula el LIMIT dados el size la page y la page actual
     */
 
-    static function calcOffset(int $page_size, int $current_page){
+    static function calcOffset(int $current_page, int $page_size){
         return ($page_size * $current_page) - $page_size;
     }
 
@@ -31,7 +31,7 @@ class Paginator
         a excepcion de la proxima url
 
     */
-    static function calc(int $page_size, int $current_page, int $row_count){
+    static function calc(int $current_page, int $page_size, int $row_count){
         $page_count  = (int) ceil($row_count / $page_size);
         
         if ($current_page < $page_count){
@@ -57,7 +57,7 @@ class Paginator
      * @param int $offset
      * @param int $limit
     */
-    function __construct($attributes = null, array $order = null, int $offset = 0, int $limit = null){
+    function __construct($attributes = null, array $order = null, int $offset = 0, int $limit = null) {
         $this->order = $order;
         $this->offset = $offset;
         $this->limit = $limit;
@@ -67,7 +67,7 @@ class Paginator
             $this->compile();
     }
 
-    function compile():void
+    function compile(): void
     {
         $query = '';
         if (!empty($this->orders)){
@@ -101,7 +101,6 @@ class Paginator
         }
 
         $ol = [$this->limit !== null, !empty($this->offset)];
-        //dd($ol, 'ol');
 
         // https://stackoverflow.com/questions/595123/is-there-an-ansi-sql-alternative-to-the-mysql-limit-keyword
         if ($ol[0] || $ol[1]){
@@ -200,6 +199,11 @@ class Paginator
     function getQuery(): string
     {
         return $this->query;
+    }
+
+    function page(int $current_page, int $page_size){
+        $this->limit  = $page_size;
+        $this->offset = static::calcOffset($current_page, $page_size);
     }
 
     /**
