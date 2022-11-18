@@ -11369,5 +11369,17 @@ class DumbController extends Controller
         ]);
     }
 
+    function test_add_sub_dates(){
+        $date = '29 November 2022';
+
+        dd(
+            Date::addDays($date, 90)
+        , '+ 90 dias');
+
+        dd(
+            Date::addDays($date, 85)
+        , '+ 85 dias');
+    }
+
 
 }   // end class
