@@ -7,6 +7,7 @@ use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
+use simplerest\core\Paginator;
 
 class FakeController extends MyController
 {
@@ -53,6 +54,32 @@ class FakeController extends MyController
         return [
             "last_page"=>30, 
             "data"=>$data
+        ];
+    }
+
+    function test5c(){
+        header('Content-Type: application/json; charset=utf-8');
+
+        $page_size = $_GET['size'] ?? 10;
+        $page      = $_GET['page'] ?? 1;
+
+        $offset = Paginator::calcOffset($page_size, $page);
+
+        DB::getConnection('az');
+
+        $rows = DB::table('products')
+        ->take($page_size)
+        ->offset($offset)
+        ->get();
+
+        $row_count = DB::table('products')->count();
+
+        $paginator = Paginator::calc($page_size, $page, $row_count);
+        $last_page = $paginator['totalPages'];
+
+        return [
+            "last_page" => $last_page, 
+            "data" => $rows
         ];
     }
 
