@@ -1,7 +1,8 @@
 <?php
 
-use simplerest\models\MyModel;
+use simplerest\core\Model;
 use simplerest\core\libs\DB;
+use simplerest\models\MyModel;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
 use simplerest\core\controllers\MakeControllerBase;
@@ -23,7 +24,7 @@ function get_default_database_name(){
 /*
     Similar to DB::table() but schema is not loaded so no validations are performed
 */
-function table(string $tb_name){
+function table(string $tb_name) : MyModel {
     return (new MyModel(true))->table($tb_name);
 }
 

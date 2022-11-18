@@ -1042,8 +1042,13 @@ class DumbController extends Controller
         dd(DB::getLog());
     }
 
+    /*
+        No esta pudiendo deshabilitarse el paginador -bug-
+    */
     function limit0()
     {
+        DB::getConnection('az');
+        
         dd(DB::table('products')
             ->offset(20)
             ->select(['id', 'name', 'cost'])
@@ -11415,7 +11420,20 @@ class DumbController extends Controller
         $row_count = DB::table('products')
         ->count();
 
-        return Paginator::calc($page_size, $page, $row_count);
+        return Paginator::calc($page, $page_size, $row_count);
+    }
+
+    function pagination  (){
+        $page_size = $_GET['size'] ?? 10;
+        $page      = $_GET['page'] ?? 1;
+
+        DB::getConnection('az');
+
+        $rows = DB::table('products')
+        ->paginate($page, $page_size)
+        ->get();
+
+        return $rows;
     }
 
 

@@ -969,16 +969,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         $next = 'null';
                     }        
 
-                    $pg = [ 
-                        'total' => $total,
-                        'count' => count($rows),
-                        'currentPage' => $page,
-                        'totalPages' => $page_count, 
-                        'pageSize' => $page_size,
-                        'nextUrl' => $next                                              
-                    ];  
-
-                    $res->setPaginator($pg);
+                    $res->setPaginatorParams($total, count($rows), $page, $page_count, $page_count, $next);
                 }
                 
                                
