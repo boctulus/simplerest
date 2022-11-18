@@ -11436,5 +11436,11 @@ class DumbController extends Controller
         return $rows;
     }
 
+    function get_pagination_params(){
+        dd(
+            request()->getPaginatorParams()
+        );
+    }
+
 
 }   // end class
