@@ -4,15 +4,37 @@ namespace simplerest\core\libs;
 
 class Date
 {   
+    protected static function add(string $date, $diff, $unit, $full_format = false){
+        $do = new \DateTime($date);
+        $do->add(new \DateInterval("P{$diff}{$unit}"));
+
+        return $do->format($full_format ? 'Y-m-d H:i:s' : 'Y-m-d');
+    }
+
+    protected static function sub(string $date, $diff, $unit, $full_format = false){
+        $do = new \DateTime($date);
+        $do->sub(new \DateInterval("P{$diff}M"));
+
+        return $do->format($full_format ? 'Y-m-d H:i:s' : 'Y-m-d');
+    }
+ 
     /*
         Substre dias a una fecha
     */
-    static function subDays(string $fecha, int $days, $full_format = false){    
-        $do = new \DateTime($fecha);
-        $do->sub(new \DateInterval("P{$days}D"));
-        $do = $do->format($full_format ? 'Y-m-d H:i:s' : 'Y-m-d');
+    static function subDays(string $date, int $diff, $full_format = false){    
+        return static::sub($date, $diff, 'D', $full_format);
+    }
 
-        return $do;
+    static function addDays(string $date, int $diff, $full_format = false){    
+        return static::add($date, $diff, 'D', $full_format);
+    }
+
+    static function addMonths(string $date, int $diff, $full_format = false){    
+        return static::add($date, $diff, 'M', $full_format);
+    }
+
+    static function subMonths(string $date, int $diff, $full_format = false){    
+        return static::sub($date, $diff, 'M', $full_format);
     }
 
     static function randomTime(bool $include_seconds = false){

@@ -140,7 +140,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     }
     
     /*
-        Se refiere solo a si tiene el campo Autorization en headers !
+        Se refiere solo a si tiene el campo Autorization en headers o ... via url pero es de tipo JWT
     */
     function hasAuth(){
         return $this->getAuth() != NULL; 
