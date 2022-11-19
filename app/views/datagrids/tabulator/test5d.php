@@ -23,6 +23,14 @@
                 layout:"fitColumns",
                 //responsiveLayout:"collapse",
                 ajaxURL:api_url,
+                
+                // ajaxConfig:"GET",
+                // ajaxContentType:{
+                //     headers:{
+                //         'Content-Type': 'application/json',
+                //     }
+                // },
+
                 progressiveLoad:"scroll",
                 paginationSize:10,
                 placeholder:"No Data Set",
@@ -35,6 +43,8 @@
                 },
 
                 //paginationMode:"remote", //enable remote pagination
+                // paginationSize:5, //  <------------ optional parameter to request a certain number of rows per page
+                // paginationInitialPage:2, //<------------  optional parameter to set the initial page to load
             
                 ajaxResponse:function(url, params, response){                    
                     res.data      = response.data[resource];
@@ -43,6 +53,10 @@
                 },
             },
         );
+
+        table.on("tableBuilt", () => {
+            // ...
+        });
     });
 
        
