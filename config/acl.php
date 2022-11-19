@@ -29,6 +29,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('empleado', ['read_all'])
     ->addResourcePermissions('barrios', ['read'])
     ->addResourcePermissions('part_numbers', ['read', 'write'])
+    ->addResourcePermissions('automoviles', ['read', 'write'])
 
     // Medellin Participa: Organizaciones
     

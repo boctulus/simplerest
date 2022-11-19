@@ -1,6 +1,13 @@
 <h3>Prueba con Ajax con paginacion</h3>
 
-<div id="example-table"></div>
+
+<div style="margin-top:3em">
+    <button id="reactivity-add">Add New Row</button>
+    <button id="reactivity-delete">Remove Row</button>
+    <button id="reactivity-update">Update First Row Name</button>
+</div>
+
+<div id="example-table" style="margin-top:1em"></div>
 
 <!--
     Con Ajax
@@ -44,23 +51,51 @@
                     return res; 
                 },
 
-                //renderHorizontal:"virtual",
+
+                reactiveData:true, //turn on data reactivity
 
                 /*
                     Rendering
                 */
 
                 height:"325px",
-                layout:"fitColumns",
+
+                // layout: "fitData",
+                // layout: "fitDataFill",
+                // layout: "fitDataStretch",
+                // layout: "fitDataTable",
+                layout: "fitColumns",
+
+                // responsiveLayout:"hide",
                 responsiveLayout:"collapse",
+
                 resizableColumnFit:true,
-                placeholder:"No Data Set",
+                placeholder:"Sin datos",
+
+                // headerVisible:false, 
+                // textDirection:"rtl",
             },
         );
 
+        //add row to bottom of table on button click
+        document.getElementById("reactivity-add").addEventListener("click", function(){
+            tabledata.push({name:"IM A NEW ROW", progress:100, gender:"male"});
+        });
+
+        //remove bottom row from table on button click
+        document.getElementById("reactivity-delete").addEventListener("click", function(){
+            tabledata.pop();
+        });
+
+        //update name on first row in table on button click
+        document.getElementById("reactivity-update").addEventListener("click", function(){
+            tabledata[0].name = "IVE BEEN UPDATED";
+        });
+        
         table.on("tableBuilt", () => {
             // ...
         });
+
     });
 
        
