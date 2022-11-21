@@ -1,6 +1,132 @@
 TABULATOR
 ---------
 
+   . AJAX Data Loading
+
+    . Data Reactivity
+
+    . Editable Data -> facil edicion de textos, checkboxes, listas como dropdowns,....
+
+    . Nested Data Trees -> categorias, jerarquia de roles,...
+
+    . Create from HTML Table Element
+
+    . Validate User Input
+
+    . Filter Data => filtro avanzado
+
+    . Filter Data In Header
+
+    . Grouping Data -> recursos disponibles / no-disponibles
+
+    . Selectable Rows -> seleccionar / des-seleccionar todos
+
+    . Selectable Rows With Tickbox
+
+    . Add / Delete Rows -> alternativa a crear registros en una ventana modal
+
+    . Movable Rows Between Tables -> podria ser una forma sencilla de asignar recursos
+
+    . Menus -> los "..." al lado de cada titulo de columna para seleccionar columnas o cualquier otra cosa!
+
+    . Popups -> una forma sencilla de pre-visualizar informacion sin abrir el modal con todos los datos.
+
+    . Alerts -> alerts centrados dentro de la tabla puede ser util para mostrar una situacion critica como escases de recursos, ...
+
+    . Download Table Data -> descarga de listados como CSV, XLSX, PDF
+
+    . Interaction History -> UNDO / REDO    
+
+    . Printing -> no parece estar funcionando
+
+    . Localization -> traduccion de nombre de columnas, paginador,...
+
+    . Callbacks and Events -> eventos al clickear una celda con boton izquiero o derecho del mouse.
+
+    . Theming -> se pueden aplicar temas sobre las tablas
+
+
+Investigar "Progressive Ajax Loading"
+
+https://tabulator.info/docs/5.4/data#ajax-progressive
+
+Requiere que la respuesta tenga un campo "last_page"
+
+{
+    "last_page":15, // <--- the total number of available pages (this value must be greater than 0)
+    "data":[ // an array of row data objects
+        {"id":1, "name":"bob", "age":"23"} //example row data object
+    ]
+}
+
+El número de página que está solicitando se envia como "page". 
+
+    page - the page number being requested
+    size - the number of rows to a page (if paginationSize is set)
+    sorters - the first current sorters(if any)
+    filter - an array of the current filters (if any)
+
+y estos parametros son enviados asi:
+
+    var table = new Tabulator("#example-table", {
+        pagination:true, //enable pagination
+        paginationMode:"remote", //enable remote pagination
+        ajaxURL:"http://testdata.com/data", //set url for ajax request
+        ajaxParams:{token:"ABC123"}, //set any standard parameters to pass with the request
+        paginationSize:5, //  <------------ optional parameter to request a certain number of rows per page
+        paginationInitialPage:2, //<------------  optional parameter to set the initial page to load
+    });
+
+
+Ajustes:
+
+Es posible usar la paginacion sin hacer cambios en el backend con "Custom Pagination URL Construction" 
+
+Ej:
+
+    var table = new Tabulator("#example-table", {
+        ajaxURLGenerator:function(url, config, params){
+            //url - the url from the ajaxURL property or setData function
+            //config - the request config object from the ajaxConfig property
+            //params - the params object from the ajaxParams property, this will also include any pagination, filter and sorting properties based on table setup
+
+            //return request url
+            return url + "?params=" + encodeURI(JSON.stringify(params)); //encode parameters as a json object
+        },
+    });
+
+Pero en especial:
+
+var table = new Tabulator("#example-table", {
+    pagination:true, //enable pagination
+    paginationMode:"remote", //enable remote pagination
+    ajaxURL:"http://testdata.com/data", //set url for ajax request
+    dataSendParams:{
+        "page":"pageNo", //change page request parameter to "pageNo"
+    } ,
+});
+
+y
+
+var table = new Tabulator("#example-table", {
+    pagination:true, //enable pagination
+    paginationMode:"remote", //enable remote pagination
+    ajaxURL:"http://testdata.com/data", //set url for ajax request
+    dataReceiveParams:{
+        "last_page":"max_pages", // <----------  change last_page parameter name to "max_pages"
+    } ,
+});
+
+
+Demo
+
+https://tabulator.info/examples/5.4?#ajax-progressive
+
+Ver paginacion remota 
+
+https://tabulator.info/docs/5.4/page#remote
+
+
 
 Ver ejemplos:
 

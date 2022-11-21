@@ -96,9 +96,39 @@ class Model {
 	protected $is_locked = 'is_locked';
 	protected $belongsTo = 'belongs_to';
 
+	/*	
+		Nombres de los campos
+
+		Ej:
+
+		[
+			"created_at" => "Created At",
+			// ...
+		]
+	*/
+	protected $field_names = [];
+
+	/*
+		Aca se especificaria si es un checkbox o radiobox por ejemplo
+
+		Para tipo "dropdown" o "list" se utilizarian los valores de la regla de validacion
+		o de la tabla relacionada 
+
+		Tambien otros formaters que puedan estar disponibles en el frontend
+	*/
+	protected $formaters = [];
+
 	static protected $sql_formatter_callback;
-	protected $sql_formatter_status;
+	protected        $sql_formatter_status;
 	
+
+	function getFieldNames(){
+		return $this->field_names;
+	}
+
+	function getFormaters(){
+		return $this->formaters;
+	}
 
 	function createdAt(){
 		return $this->createdAt;
