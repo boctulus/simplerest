@@ -11443,5 +11443,17 @@ class DumbController extends Controller
         );
     }
 
+    function get_model_defs(){
+        DB::getConnection('az');
+
+        dd(
+            get_defs('products')
+        );
+
+        dd(
+            get_defs('automoviles')
+        );
+    }
+
 
 }   // end class

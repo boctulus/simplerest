@@ -14,7 +14,7 @@ class __NAME__ extends MyModel
 	protected $not_fillable = [];
 
 	protected $field_names  = [];
-	protected $formaters    = [];
+	protected $formatters    = [];
 
     function __construct(bool $connect = false){
         parent::__construct($connect, __SCHEMA_CLASS__::class);
