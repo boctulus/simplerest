@@ -49,9 +49,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     {  
         parent::__construct($auth);
 
-        $res = response()->encoded();
+        $res = response()
+        ->encoded();
 
         $this->tenantid = request()->getTenantId();
+
         if ($this->tenantid !== null){           
             $this->conn = DB::getConnection($this->tenantid);
         }
@@ -249,18 +251,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     }
   
     protected function getModelInstance($fetch_mode = 'ASSOC', bool $reuse = false){
-        static $instance;
-
-        if ($reuse && !empty($instance)){
-            return $instance;
-        }
-
-        $model  = get_model_namespace() . $this->model_name;
-
-        $instance = (new $model(true))->setFetchMode($fetch_mode);
-        DB::setModelInstance($instance);
-
-        return $instance;
+        return get_model_instance($this->model_name, $fetch_mode, $reuse);
     }
 
     static function getConnectable(){
@@ -282,41 +273,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         if (!empty($_schema)){
             $schema = get_schema_name($this->table_name);
-            $res = $schema::get();
+            $res    = $schema::get();
             return $res;
         }
 
-        if (!empty($defs)){
-            $schema      = get_schema_name($this->table_name);
-            $schema_defs = $schema::get();
-
-            $instance    = $this->instance = $this->getModelInstance();
-
-            $field_mames = $instance->getFieldNames();
-            $formaters   = $instance->getFormaters();
-            $fields      = $schema_defs['fields'];
-            $rules       = $schema_defs['rules'];
-
-            $defs = [];
-            foreach ($fields as $field){
-                if (isset($field_mames[$field])){
-                    $defs[$field]['name']     = $field_mames[$field]; 
-                }
-                
-                if (isset($formaters[$field])){
-                    $defs[$field]['formater'] = $formaters[$field];
-                }
-
-                if (isset($rules[$field])){
-                    if (!isset($defs[$field])){
-                        $defs[$field] = $rules[$field];
-                    } else {
-                        $defs[$field] = array_merge($defs[$field], $rules[$field]);
-                    }
-                }
-            }
-
-            return [ 'defs' => $defs ];
+        if (!empty($defs)){            
+            return [ 'defs' => get_defs($this->table_name) ];
         }
 
         $req = request();
