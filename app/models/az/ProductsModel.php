@@ -29,9 +29,9 @@ class ProductsModel extends MyModel
 		Para tipo "dropdown" o "list" se utilizarian los valores de la regla de validacion
 		o de la tabla relacionada 
 
-		Tambien otros formaters que puedan estar disponibles en el frontend
+		Tambien otros formatters que puedan estar disponibles en el frontend
 	*/
-	protected $formaters = [
+	protected $formatters = [
 		"is_locked"     => "checkbox",
 		"active"        => "radio",
 		"rating"        => "starts",
