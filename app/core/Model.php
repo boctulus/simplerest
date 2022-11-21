@@ -114,9 +114,9 @@ class Model {
 		Para tipo "dropdown" o "list" se utilizarian los valores de la regla de validacion
 		o de la tabla relacionada 
 
-		Tambien otros formaters que puedan estar disponibles en el frontend
+		Tambien otros formatters que puedan estar disponibles en el frontend
 	*/
-	protected $formaters = [];
+	protected $formatters = [];
 
 	static protected $sql_formatter_callback;
 	protected        $sql_formatter_status;
@@ -126,8 +126,8 @@ class Model {
 		return $this->field_names;
 	}
 
-	function getFormaters(){
-		return $this->formaters;
+	function getformatters(){
+		return $this->formatters;
 	}
 
 	function createdAt(){

@@ -21,6 +21,95 @@ function get_default_database_name(){
     return config()['db_connections'][$def_con]['db_name'];
 }
 
+function get_model_instance(string $model_name, $fetch_mode = 'ASSOC', bool $reuse = false){
+    static $instance;
+
+    if ($reuse && isset($instance[$model_name]) && !empty($instance[$model_name])){
+        return $instance[$model_name];
+    }
+
+    if (!Strings::startsWith('\\simplerest\\', $model_name)){
+        $model = get_model_namespace() . $model_name;
+    } else {
+        $model = $model_name;
+    }
+    
+    $instance[$model_name] = (new $model(true))->setFetchMode($fetch_mode);
+    DB::setModelInstance($instance[$model_name]);
+
+    return $instance[$model_name];
+}
+
+function get_model_instance_by_table(string $table_name, $fetch_mode = 'ASSOC', bool $reuse = false){
+    return get_model_instance(
+        get_model_name($table_name)
+    );
+}
+
+/*
+    Retorna definicion de modelos
+
+    Ej:
+
+    {
+        "defs": {
+            "id": {
+                "type": "int"
+            },
+            "rating": {
+                "formater": "starts",
+                "type": "int"
+            },
+            "how_popular": {
+                "name": "Popularity",
+                "formater": "progress",
+                "type": "int"
+            },
+            "created_at": {
+                "name": "Creation Date",
+                "type": "datetime"
+            }
+        }
+    }        
+*/
+function get_defs(string $table_name, $tenant_id = null){
+    if ($tenant_id != null){
+        DB::getConnection($tenant_id);
+    }
+
+    $schema      = get_schema_name($table_name);
+    $schema_defs = $schema::get();
+
+    $fields      = $schema_defs['fields'];
+    $rules       = $schema_defs['rules'];
+
+    $instance    = get_model_instance_by_table($table_name);
+
+    $field_mames = $instance->getFieldNames();
+    $formatters   = $instance->getformatters();
+
+    $defs = [];
+    foreach ($fields as $field){
+        if (isset($field_mames[$field])){
+            $defs[$field]['name']     = $field_mames[$field]; 
+        }
+        
+        if (isset($formatters[$field])){
+            $defs[$field]['formater'] = $formatters[$field];
+        }
+
+        if (isset($rules[$field])){
+            if (!isset($defs[$field])){
+                $defs[$field] = $rules[$field];
+            } else {
+                $defs[$field] = array_merge($defs[$field], $rules[$field]);
+            }
+        }
+    }
+
+    return $defs;
+}
+
 /*
     Similar to DB::table() but schema is not loaded so no validations are performed
 */
