@@ -40,7 +40,7 @@ js_file('js/axios.min.js', null, true);
             .then(response => response.json())
             .catch(error => {
                 console.log('error', error)
-                //Promise.reject(new Error(400));
+                Promise.reject(new Error(400));
             });
     }
 
