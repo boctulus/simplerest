@@ -10,6 +10,7 @@
 
 <script>
     const api_url  = `http://simplerest.lan/fake/test05`; 
+    
     window.addEventListener('DOMContentLoaded', (event) => {
         var table = new Tabulator("#example-table", {
                 height:"325px",

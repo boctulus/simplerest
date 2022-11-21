@@ -1,5 +1,17 @@
 <h3>Prueba con Ajax con paginacion</h3>
 
+<script>
+    
+    const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
+
+    /*
+        https://stackoverflow.com/questions/27746304/how-to-check-if-an-object-is-a-promise/27746324#27746324
+    */
+    function isPromise(p) {
+        return p && Object.prototype.toString.call(p) === "[object Promise]";
+    }
+
+</script>
 
 <div>
     <button id="btn-add">(+)</button>
@@ -43,12 +55,10 @@
     let res     = {}
     let tmp;
 
-    const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
-
     async function patch_row(data) {
         const url = `${api_url}`;
 
-        console.log('DATA', data);
+        //console.log('DATA', data);
 
         var myHeaders = new Headers();
         myHeaders.append("X-TENANT-ID", "az");
@@ -172,18 +182,22 @@
                 Para edicion de campos puntuales
             */
             table.on("cellEdited", (proxy) => {
-                tmp = proxy;
-
                 row           = proxy.getData();
+
                 field_updated = proxy.getColumn()._column.field;
-                new_value     = proxy.getRow()._row.data[field_updated];
+                new_value     = row[field_updated];
 
                 data = [];
                 
+                console.log('es promesa?', isPromise(row)); // false
+                console.log('row', row); // {…}
+                console.log('row[id]', row.id); // 2
+
+                data['id']          = row.id;   
                 data[field_updated] = new_value;
-                
+
                 //patch_row(data);
-                console.log(data);
+                //console.log(data);
             });
 
         }; // end render_datadrid
