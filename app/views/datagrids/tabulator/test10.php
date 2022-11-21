@@ -41,17 +41,50 @@
 
     let columns = [];
     let res     = {}
+    let tmp;
 
     const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
+
+    async function patch_row(data) {
+        const url = `${api_url}`;
+
+        console.log('DATA', data);
+
+        var myHeaders = new Headers();
+        myHeaders.append("X-TENANT-ID", "az");
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        var requestOptions = {
+            method: 'PATCH',
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: myHeaders,
+            body: JSON.stringify(data)
+        };
+
+        return await fetch(url, requestOptions)
+            .then(response => response.json())
+            .catch(error => {
+                console.log('error', error)
+                Promise.reject(new Error(400));
+            });
+    }
 
     /*
         Formatters disponibles para Tabulator:
 
-        input  -- es el mas generico-
+        plaintext  -- es el mas generico-
         progress
         tickCross
         star
         list   -- requiere de editorParam
+
+        Mas formaters:
+
+        https://tabulator.info/docs/5.4/format
+
+        Validacion: ver
+
+        https://tabulator.info/docs/5.4/validate
     */
 
     window.addEventListener('DOMContentLoaded', (event) => {
@@ -64,66 +97,65 @@
 
                 obj.field     = field;
                 obj.title     = typeof def.name == 'undefined' ? ucfirst(field) : def.name;
-                obj.formatter = typeof def.formatter == 'undefined' ? 'input' : def.formatter;
+                obj.formatter = typeof def.formatter == 'undefined' ? 'plaintext' : def.formatter;
                 obj.editor    = true;
 
                 columns.push(obj);
             }
 
-            var table = new Tabulator("#example-table", 
-            {
-                    ajaxURL:api_url,
+            var table = new Tabulator("#example-table", {
+                ajaxURL:api_url,
 
-                    // ajaxConfig:"GET",
-                    // ajaxContentType:{
-                    //     headers:{
-                    //         'Content-Type': 'application/json',
-                    //     }
-                    // },
+                // ajaxConfig:"GET",
+                // ajaxContentType:{
+                //     headers:{
+                //         'Content-Type': 'application/json',
+                //     }
+                // },
 
-                    //autoColumns:true,
+                //autoColumns:true,
 
-                    columns: columns,
+                columns: columns,
 
-                    ajaxParams: {
-                        tenantid,
-                        token
-                    },
-
-                    paginationSize:10,  // <--- puede implicar modificar el height
-                    paginationMode:"remote", 
-                    progressiveLoad:"scroll", // obligatorio?
-
-                    ajaxResponse:function(url, params, response){                    
-                        res.data      = response.data[resource];
-                        res.last_page = response.last_page;
-                        return res; 
-                    },
-
-                    reactiveData:true, //turn on data reactivity
-
-                    /*
-                        Rendering
-                    */
-
-                    height:"325px",
-
-                    // layout: "fitData",
-                    // layout: "fitDataFill",
-                    // layout: "fitDataStretch",
-                    // layout: "fitDataTable",
-                    layout: "fitColumns",
-
-                    // responsiveLayout:"hide",
-                    responsiveLayout:"collapse",
-
-                    resizableColumnFit:true,
-                    placeholder:"Sin datos",
-
-                    // headerVisible:false, 
-                    // textDirection:"rtl",
+                ajaxParams: {
+                    tenantid,
+                    token
                 },
-            );
+
+                paginationSize:10,  // <--- puede implicar modificar el height
+                paginationMode:"remote", 
+                progressiveLoad:"scroll", // obligatorio?
+
+                ajaxResponse:function(url, params, response){                    
+                    res.data      = response.data[resource];
+                    res.last_page = response.last_page;
+                    return res; 
+                },
+
+                reactiveData:true, //turn on data reactivity
+
+                /*
+                    Rendering
+                */
+
+                height:"325px",
+
+                // layout: "fitData",
+                // layout: "fitDataFill",
+                // layout: "fitDataStretch",
+                // layout: "fitDataTable",
+                layout: "fitColumns",
+
+                // responsiveLayout:"hide",
+                responsiveLayout:"collapse",
+
+                resizableColumnFit:true,
+                placeholder:"Sin datos",
+
+                // headerVisible:false, 
+                // textDirection:"rtl",
+            
+            });
 
             //add row to bottom of table on button click
             document.getElementById("btn-add").addEventListener("click", function(){
@@ -134,6 +166,24 @@
 
             table.on("tableBuilt", () => {
                 // ...
+            });
+
+            /*
+                Para edicion de campos puntuales
+            */
+            table.on("cellEdited", (proxy) => {
+                tmp = proxy;
+
+                row           = proxy.getData();
+                field_updated = proxy.getColumn()._column.field;
+                new_value     = proxy.getRow()._row.data[field_updated];
+
+                data = [];
+                
+                data[field_updated] = new_value;
+                
+                //patch_row(data);
+                console.log(data);
             });
 
         }; // end render_datadrid
