@@ -14,7 +14,7 @@ class ProductsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
-			'fields'		=> ['id', 'name', 'description', 'size', 'cost', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to'],
+			'fields'		=> ['id', 'name', 'description', 'size', 'cost', 'rating', 'how_popular', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to'],
 
 			'attr_types'	=> [
 				'id' => 'INT',
@@ -22,6 +22,8 @@ class ProductsSchema implements ISchema
 				'description' => 'STR',
 				'size' => 'STR',
 				'cost' => 'INT',
+				'rating' => 'INT',
+				'how_popular' => 'INT',
 				'created_at' => 'STR',
 				'created_by' => 'INT',
 				'updated_at' => 'STR',
@@ -38,7 +40,7 @@ class ProductsSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to'],
+			'nullable'		=> ['id', 'description', 'rating', 'how_popular', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by', 'active', 'is_locked', 'workspace', 'belongs_to'],
 
 			'required'		=> ['name', 'size', 'cost'],
 
@@ -50,6 +52,8 @@ class ProductsSchema implements ISchema
 				'description' => ['type' => 'str', 'max' => 240],
 				'size' => ['type' => 'str', 'max' => 30, 'required' => true],
 				'cost' => ['type' => 'int', 'required' => true],
+				'rating' => ['type' => 'int'],
+				'how_popular' => ['type' => 'int'],
 				'created_at' => ['type' => 'datetime'],
 				'created_by' => ['type' => 'int'],
 				'updated_at' => ['type' => 'datetime'],
