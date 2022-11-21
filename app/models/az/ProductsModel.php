@@ -16,6 +16,28 @@ class ProductsModel extends MyModel
 	protected $hidden   = [];
 	protected $not_fillable = [];
 
+	protected $field_names = [
+		"is_locked"   => "Locked?",
+        "created_at"  => "Creation Date",
+        "updated_at"  => "Update Date", 
+		"how_popular" => "Popularity"
+    ];
+
+	/*
+		Aca se especificaria si es un checkbox o radiobox por ejemplo
+
+		Para tipo "dropdown" o "list" se utilizarian los valores de la regla de validacion
+		o de la tabla relacionada 
+
+		Tambien otros formaters que puedan estar disponibles en el frontend
+	*/
+	protected $formaters = [
+		"is_locked"     => "checkbox",
+		"active"        => "radio",
+		"rating"        => "starts",
+		"how_popular"   => "progress"
+	];
+
     function __construct(bool $connect = false){
         parent::__construct($connect, ProductsSchema::class);
 	}	

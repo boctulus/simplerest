@@ -277,8 +277,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     function get($id = null) {
         global $api_version;
 
-        $_schema  = request()->shiftQuery('_schema');
-        $_rules   = request()->shiftQuery('_rules', null, function($ret){ return ($ret !== null);});
+        $_schema = request()->shiftQuery('_schema');
+        $defs    = request()->shiftQuery('defs', null, function($ret){ return ($ret !== null);});
 
         if (!empty($_schema)){
             $schema = get_schema_name($this->table_name);
@@ -286,10 +286,37 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             return $res;
         }
 
-        if (!empty($_rules)){
-            $schema = get_schema_name($this->table_name);
-            $res = $schema::get();
-            return [ 'rules' => $res['rules'] ];
+        if (!empty($defs)){
+            $schema      = get_schema_name($this->table_name);
+            $schema_defs = $schema::get();
+
+            $instance    = $this->instance = $this->getModelInstance();
+
+            $field_mames = $instance->getFieldNames();
+            $formaters   = $instance->getFormaters();
+            $fields      = $schema_defs['fields'];
+            $rules       = $schema_defs['rules'];
+
+            $defs = [];
+            foreach ($fields as $field){
+                if (isset($field_mames[$field])){
+                    $defs[$field]['name']     = $field_mames[$field]; 
+                }
+                
+                if (isset($formaters[$field])){
+                    $defs[$field]['formater'] = $formaters[$field];
+                }
+
+                if (isset($rules[$field])){
+                    if (!isset($defs[$field])){
+                        $defs[$field] = $rules[$field];
+                    } else {
+                        $defs[$field] = array_merge($defs[$field], $rules[$field]);
+                    }
+                }
+            }
+
+            return [ 'defs' => $defs ];
         }
 
         $req = request();

@@ -4083,7 +4083,7 @@ El resultado sería que para el "user_id" = 119 y la tabla "table_xyz" se tendr�
 
 Para conocer todos los campos (con distintos tipos de permisos) que se pueden enviar:
 
-	GET /api/{version}/user_tb_permissions?_rules=1
+	GET /api/{version}/user_tb_permissions?defs=1
 
 
 Los permisos "especiales" se trabajan sobre el endpoint
@@ -7049,11 +7049,11 @@ Notas:
 
 # Schema y las reglas de validación via endpoint
 
-Pasando los parámetros _schema=true o _rules=true en cualquier endpoint se obtienen el schema completo y las reglas de validación en particular respectivamente.
+Pasando los parámetros _schema=true o defs=true en cualquier endpoint se obtienen el schema completo y las reglas de validación en particular respectivamente.
 
 Ej: 
 
-	GET http://simplerest.lan/api/v1/products?tenantid=az&_rules=1
+	GET http://simplerest.lan/api/v1/products?tenantid=az&defs=1
 
 Rta:
 
