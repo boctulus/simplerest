@@ -46,6 +46,22 @@ function get_model_instance_by_table(string $table_name, $fetch_mode = 'ASSOC', 
     );
 }
 
+function get_api_name($resource_name, $api_ver = null){
+    global $api_version;
+
+    if ($api_ver !== null){
+        $api_version = 'v'.$api_ver;
+    }
+
+    if (!Strings::startsWith('\\simplerest\\',$resource_name)){
+        $api = get_api_namespace($resource_name);
+    } else {
+        $api = $resource_name;
+    }
+
+    return $api;
+}
+
 /*
     Retorna definicion de modelos
 
@@ -72,7 +88,7 @@ function get_model_instance_by_table(string $table_name, $fetch_mode = 'ASSOC', 
         }
     }        
 */
-function get_defs(string $table_name, $tenant_id = null){
+function get_model_defs(string $table_name, $tenant_id = null, bool $include_hidden = true){
     if ($tenant_id != null){
         DB::getConnection($tenant_id);
     }
@@ -86,10 +102,16 @@ function get_defs(string $table_name, $tenant_id = null){
     $instance    = get_model_instance_by_table($table_name);
 
     $field_mames = $instance->getFieldNames();
-    $formatters   = $instance->getformatters();
+    $formatters  = $instance->getformatters();
+
+    $hidden_ay   = $instance->getHidden();
 
     $defs = [];
     foreach ($fields as $field){
+        if (!$include_hidden && in_array($field, $hidden_ay)){
+            continue;
+        }
+
         if (isset($field_mames[$field])){
             $defs[$field]['name']     = $field_mames[$field]; 
         }
@@ -109,6 +131,26 @@ function get_defs(string $table_name, $tenant_id = null){
 
     return $defs;
 }
+
+
+function get_defs(string $table_name, $tenant_id = null, bool $include_hidden = true, bool $include_hidden_from_api = true){
+    $defs = get_model_defs($table_name, $tenant_id, $include_hidden);
+
+    $api        = get_api_name($table_name, 1);
+    $api_hidden = $api::getHidden();
+
+    if (!$include_hidden_from_api){
+        foreach ($api_hidden as $hide){
+            if (array_key_exists($hide, $defs)){
+                unset($defs[$hide]);
+            }
+        }
+    }
+
+    return $defs;
+}
+
+
 
 /*
     Similar to DB::table() but schema is not loaded so no validations are performed
@@ -165,6 +207,10 @@ function get_model_name($table_name, $tenant_id = null){
     }
 
     return '\\simplerest\\models\\' . $extra . Strings::snakeToCamel($table_name). 'Model';
+}
+
+function get_api_namespace($resource_name){
+    return '\\simplerest\\controllers\\api\\' . Strings::snakeToCamel($resource_name);
 }
 
 function get_user_model_name(){

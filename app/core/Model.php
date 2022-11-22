@@ -130,6 +130,10 @@ class Model {
 		return $this->formatters;
 	}
 
+	function getHidden(){
+		return $this->hidden;
+	}
+
 	function createdAt(){
 		return $this->createdAt;
 	}

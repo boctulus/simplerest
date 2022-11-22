@@ -13,7 +13,10 @@ class ProductsModel extends MyModel
 	protected $updatedAt = 'updated_at';
 	protected $updatedBy = 'updated_by';
 
-	protected $hidden   = [];
+	protected $hidden   = [
+		"is_locked" 
+	];
+	
 	protected $not_fillable = [];
 
 	protected $field_names = [

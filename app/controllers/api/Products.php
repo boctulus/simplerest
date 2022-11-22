@@ -13,6 +13,10 @@ class Products extends MyApiController
         'product_comments'
     ];
 
+    static protected $hidden = [
+
+    ];
+
     function __construct()
     {       
         parent::__construct();

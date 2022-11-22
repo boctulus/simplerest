@@ -13,8 +13,8 @@ global $api_version;
 
 $api_version = (string) $api_version;
 
-if ($api_version[0] != 'v' || !is_numeric(substr($api_version, 1))){
-    throw new \Exception("Invalid API version");
+if (!isset($api_version[0]) || $api_version[0] != 'v' || !is_numeric(substr($api_version, 1))){
+    throw new \Exception("Invalid API version. Expected something like 'v1'. Found: '$api_version'");
 }
 
 /*
