@@ -27,8 +27,6 @@
 
 <?php
 
-use simplerest\core\libs\VarDump;
-
     $resource = "automoviles";
     $tenantid = "az";  
 
@@ -187,14 +185,20 @@ use simplerest\core\libs\VarDump;
                 Para edicion de campos puntuales
             */
             table.on("cellEdited", async (proxy) => {
-                row           = proxy.getData();
+                let initial_value = proxy._cell.initialValue;
+                let old_value     = proxy._cell.oldValue;
+                let new_value     = proxy._cell.value;
 
-                field_updated = proxy.getColumn()._column.field;
-                new_value     = row[field_updated];
+                if (new_value == old_value){
+                    return
+                }
+
+                let row           = proxy.getData();
+                let field_updated = proxy.getColumn()._column.field;
 
                 data = {};
                 
-                let id        = row.id;   
+                let id              = row.id;   
                 data[field_updated] = new_value;
 
                 let res = await patch_row(id, data);
