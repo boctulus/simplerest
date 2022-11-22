@@ -50,7 +50,6 @@ class Arrays
 
         return $v;
     }
-
     
     /*
         array_column() que funciona con array de arrays o arrays de objetos
