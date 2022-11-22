@@ -501,12 +501,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
 
                     /*
-                         HATEOAS
+                         SUBRECURSOS
                     */
                     if (!empty($_related) || !empty($include))
                     {
-                        here();
-
                         $res = $this->getSubResources($this->table_name, static::$connect_to, $this->instance, $this->tenantid);
                         $res = $res[0];
                     } else {
@@ -891,7 +889,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $rows = $this->instance->$ag_fn($ag_ff, $ag_alias);
                 }else {
                     /*
-                        HATEOAS
+                        SUBRECURSOS
                     */
 
                     $_related = ($_related != "0" && $_related != "false");
@@ -976,7 +974,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 
                 
                 /*
-                        HATEOAS
+                        SUBRECURSOS
                 */
 
                 // if (!empty($props)){    
@@ -1121,7 +1119,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             try {
                 /*
-                    HATEOAS
+                    SUBRECURSOS
 
                 */
 
@@ -1533,8 +1531,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $this->instance->fillAll();                
             }
 
+            $uid = auth()->uid();
+
             if ($this->instance->inSchema([$this->instance->updatedBy()])){
-                $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : auth()->uid();
+                $data[$this->instance->updatedBy()] = $this->impersonated_by != null ? $this->impersonated_by : $uid;
             }  
 
             $owned = $this->instance->inSchema([$this->instance->belongsTo()]);            
@@ -1553,7 +1553,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     error('Folder not found', 404); 
         
-                if ($f_rows[0][$this->instance->belongsTo()] != auth()->uid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$acl->hasSpecialPermission('write_all_folders'))
+                if ($f_rows[0][$this->instance->belongsTo()] != $uid  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$acl->hasSpecialPermission('write_all_folders'))
                     error("You have not permission for the folder $this->folder", 403);
 
                 $this->folder_name = $f_rows[0]['name'];
@@ -1569,7 +1569,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $data[$this->instance->belongsTo()] = $f_rows[0][$this->instance->belongsTo()];    
                 
             } else {
-
                 $this->instance2 = $this->getModelInstance(); 
 
                 // event hook    
@@ -1581,13 +1580,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     response()->code(404)->error("Register for id=$id doesn't exist!");
                 }
 
-                if  ($owned && !$acl->hasSpecialPermission('write_all') && $rows[0][$this->instance->belongsTo()] != auth()->uid()){
+                if  ($owned && !$acl->hasSpecialPermission('write_all') && $rows[0][$this->instance->belongsTo()] != $uid){
                     error('Forbidden', 403, 'You are not the owner!');
                 }   
-            }                 
+            }           
 
             /* 
-                HATEOAS 
+                SUBRECURSOS 
             */
             if (!empty(static::$connect_to)){                
               
@@ -2120,7 +2119,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 error(_('Data validation error'), 400, $validator->getErrors());
             }
 
-            // agregado dic-3
+  
             $this->instance->fill([$this->instance->updatedBy()]);
 
             if (!empty($this->folder)) {
@@ -2133,15 +2132,27 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             if (!$owned && $this->show_deleted && !$acl->hasSpecialPermission('write_all_trashcan')){
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
-                    $data[$this->instance->belongsTo()] = auth()->uid();
+                    $data[$this->instance->belongsTo()] = $uid;
                 } 
             } 
                      
-            if (!$acl->hasSpecialPermission('fill_all')){
-                $spp = $this->instance->getAutoFields();
+            /*
+                Revisar que campos estoy quitando 
 
-                foreach ($spp as $sp){
-                    if (isset($data[$sp])){
+                Realmente seria mejor generar un error de validacion y hacer eso ANTES
+                de llegar a este punto !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                y ser concistentes con el create
+            */
+            if (!$acl->hasSpecialPermission('fill_all')){
+                $sp_ay = $this->instance->getAutoFields();
+
+                $ok_fields = [
+                    $this->instance->updatedBy()
+                ];
+
+                foreach ($sp_ay as $sp){                   
+                    if (!in_array($sp, $ok_fields) && isset($data[$sp])){
                         unset($data[$sp]); 
                     }
                 }
