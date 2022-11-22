@@ -55,10 +55,11 @@
     let res     = {}
     let tmp;
 
-    async function patch_row(data) {
-        const url = `${api_url}`;
-
-        //console.log('DATA', data);
+    async function patch_row(id, data) {
+        const url = `${api_url}/${id}`;
+        
+        let body = JSON.stringify(data);
+        console.log('body', body);
 
         var myHeaders = new Headers();
         myHeaders.append("X-TENANT-ID", "az");
@@ -68,11 +69,13 @@
             method: 'PATCH',
             mode: 'cors', // no-cors, *cors, same-origin
             headers: myHeaders,
-            body: JSON.stringify(data)
+            body: body
         };
 
         return await fetch(url, requestOptions)
-            .then(response => response.json())
+            .then(response => {
+                return response.text()
+            })
             .catch(error => {
                 console.log('error', error)
                 Promise.reject(new Error(400));
@@ -181,23 +184,19 @@
             /*
                 Para edicion de campos puntuales
             */
-            table.on("cellEdited", (proxy) => {
+            table.on("cellEdited", async (proxy) => {
                 row           = proxy.getData();
 
                 field_updated = proxy.getColumn()._column.field;
                 new_value     = row[field_updated];
 
-                data = [];
+                data = {};
                 
-                console.log('es promesa?', isPromise(row)); // false
-                console.log('row', row); // {…}
-                console.log('row[id]', row.id); // 2
-
-                data['id']          = row.id;   
+                let id        = row.id;   
                 data[field_updated] = new_value;
 
-                //patch_row(data);
-                //console.log(data);
+                let res = await patch_row(id, data);
+                await console.log(res);
             });
 
         }; // end render_datadrid
