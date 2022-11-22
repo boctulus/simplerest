@@ -27,7 +27,7 @@
 
 <?php
 
-    $resource = "products";
+    $resource = "automoviles";
     $tenantid = "az";  
 
     /*
@@ -102,6 +102,21 @@
 
     window.addEventListener('DOMContentLoaded', (event) => {
         const render_datagrid = async () => {
+
+            /*
+                Agregado de botones
+
+                https://stackoverflow.com/a/53655551/980631
+            */
+
+            var the_Function = function(cell, formatterParams, onRendered){ //plain text value
+
+                //var formA = '<form class="" action="/upload" method="post">'
+                //var inputFn = '<input type="file" id="imgupload" />' ;
+                //var uploadBtnn = '<button type="submit" id="OpenImgUpload">ID upload</button></form>'
+                //return uploadBtnn
+                return "<i class='fa fa-print'>function_trigger</i>";
+            };
                     
             let columns = [];
             for (var field in defs){ 
@@ -205,7 +220,21 @@
                 await console.log(res);
             });
 
-    
+            table.addColumn({
+                title:"ID", 
+                field: "ID" ,
+                formatter:the_Function,
+                width:100, 
+                align:"center",
+                cellClick:function(e, cell){ 
+                    //button's function for example 
+                    var btn = document.createElement('button');
+                    btn.id = "Btn_Id";
+
+                    console.log(btn);
+                    return btn
+                }
+            });
 
         }; // end render_datadrid
 
