@@ -23,7 +23,8 @@ function d($val = null, $msg = null, bool $additional_carriage_return = false){
 }	
 
 function dd($val = null, $msg = null, bool $additional_carriage_return = true){
-    return d($val, $msg, $additional_carriage_return);	
+    return VarDump::dd($val, $msg, $additional_carriage_return);	
+    //return d($val, $msg, $additional_carriage_return);	
 }
 
 function here(){

@@ -7,7 +7,10 @@ use simplerest\schemas\az\AutomovilesSchema;
 
 class AutomovilesModel extends MyModel
 {
-	protected $hidden   = [];
+	protected $hidden   = [
+		// "created_at"
+	];
+
 	protected $not_fillable = [];
 
 	protected $field_names = [
