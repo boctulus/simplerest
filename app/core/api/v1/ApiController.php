@@ -524,8 +524,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                         De momento no afecta a sub-recursos
                     */
-                    if (!empty($this->hidden)){
-                        foreach ($this->hidden as $hide){
+                    if (!empty(static::$hidden)){
+                        foreach (static::$hidden as $hide){
                             if (array_key_exists($hide, $res)){
                                 unset($res[$hide]);
                             }
@@ -939,8 +939,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 */
 
                 foreach ($rows as $rix => $row){
-                    if (!empty($this->hidden)){
-                        foreach ($this->hidden as $hide){
+                    if (!empty(static::$hidden)){
+                        foreach (static::$hidden as $hide){
                             if (array_key_exists($hide, $rows[$rix])){
                                 unset($rows[$rix][$hide]);
                             }
