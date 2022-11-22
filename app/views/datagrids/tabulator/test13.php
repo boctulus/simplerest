@@ -56,21 +56,20 @@ js("
     let res     = {};
 
     function deleteBtn(id){
+        if (!confirm("Seguro de borrar?")) {
+            return;
+        }
+        
         const res = delete_row(id);
 
-        res.then((resp) =>{
-            //console.log(resp)
-            
+        res.then((resp) =>{            
             table.setData(api_url)
             .then(function(){
-                //run code after table has been successfully updated
-                console.log('table has been successfully updated');
             })
             .catch(function(error){
                 //handle error loading data
                 console.log('error loading data');
             });
-
         })
     }
 
