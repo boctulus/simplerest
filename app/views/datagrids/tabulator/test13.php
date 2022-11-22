@@ -51,6 +51,7 @@ js("
 
     const api_url = `http://simplerest.lan/api/v1/${resource}`;
 
+    let table   = {};
     let columns = [];
     let res     = {};
 
@@ -58,7 +59,18 @@ js("
         const res = delete_row(id);
 
         res.then((resp) =>{
-            console.log(resp)
+            //console.log(resp)
+            
+            table.setData(api_url)
+            .then(function(){
+                //run code after table has been successfully updated
+                console.log('table has been successfully updated');
+            })
+            .catch(function(error){
+                //handle error loading data
+                console.log('error loading data');
+            });
+
         })
     }
 
@@ -154,7 +166,8 @@ js("
             columns.push({
                 //column definition in the columns array
                 formatter: function(cell, formatterParams, onRendered) {
-                    let data   = cell.getRow().getData();
+                    let row    = cell.getRow()
+                    let data   = row.getData()
                     let id     = data.id;
 
                     let data_s = JSON.stringify(data);
@@ -168,7 +181,7 @@ js("
                 hozAlign: "center",
             })
 
-            var table = new Tabulator("#example-table", {
+            table = new Tabulator("#example-table", {
                 ajaxURL: api_url,
 
                 // ajaxConfig:"GET",
