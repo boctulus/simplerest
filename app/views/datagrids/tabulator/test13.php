@@ -55,7 +55,34 @@ js("
     let res     = {};
 
     function deleteBtn(id){
-        console.log(id);
+        const res = delete_row(id);
+
+        res.then((resp) =>{
+            console.log(resp)
+        })
+    }
+
+    async function delete_row(id) {
+        const url = `${api_url}/${id}`;
+
+        var myHeaders = new Headers();
+        myHeaders.append("X-TENANT-ID", "az");
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        var requestOptions = {
+            method: 'DELETE',
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: myHeaders
+        };
+
+        return await fetch(url, requestOptions)
+            .then(response => {
+                return response.json()
+            })
+            .catch(error => {
+                console.log('error', error)
+                Promise.reject(error);
+            });
     }
 
     function editBtn(data){
@@ -80,13 +107,14 @@ js("
 
         return await fetch(url, requestOptions)
             .then(response => {
-                return response.text()
+                return response.json()
             })
             .catch(error => {
                 console.log('error', error)
-                Promise.reject(new Error(400));
+                Promise.reject(error);
             });
     }
+
 
     /*
         Formatters disponibles para Tabulator:
