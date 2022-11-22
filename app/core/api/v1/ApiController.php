@@ -40,13 +40,21 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected $show_deleted;
     protected $ask_for_deleted;
 
+    static protected $hidden  = [];
+
     static protected $folder_field;
     static protected $soft_delete = true;
     static protected $connect_to = [];
 
 
+    static function getHidden(){
+		return static::$hidden;
+	}
+
     function __construct($auth = null) 
     {  
+        //show_debug_trace();
+    
         parent::__construct($auth);
 
         $res = response()
@@ -278,7 +286,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         }
 
         if (!empty($defs)){            
-            return [ 'defs' => get_defs($this->table_name) ];
+            return [ 'defs' => get_defs($this->table_name, null, false, false) ];
         }
 
         $req = request();
@@ -511,6 +519,19 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         $res = $rows[0];
                     }
 
+                    /*
+                        Elimino campos que deben ocultarse de la respuesta.
+
+                        De momento no afecta a sub-recursos
+                    */
+                    if (!empty($this->hidden)){
+                        foreach ($this->hidden as $hide){
+                            if (array_key_exists($hide, $res)){
+                                unset($res[$hide]);
+                            }
+                        }
+                    }
+
                     response()->send($res);
                 }
             }else{    
@@ -727,7 +748,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     }
                 }   
 
-
                 /*
                     Query a sub-recursos (parte I)
                 */
@@ -908,9 +928,25 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     }
                 }                             
                     
-                
+
                 //dd($this->instance->dd(), 'SQL');
                 //dd($rows);
+                
+                /*
+                    Elimino campos que deben ocultarse de la respuesta.
+
+                    De momento no afecta a sub-recursos
+                */
+
+                foreach ($rows as $rix => $row){
+                    if (!empty($this->hidden)){
+                        foreach ($this->hidden as $hide){
+                            if (array_key_exists($hide, $rows[$rix])){
+                                unset($rows[$rix][$hide]);
+                            }
+                        }
+                    }
+                }
                 
                 $res = response()->setPretty($pretty);
 

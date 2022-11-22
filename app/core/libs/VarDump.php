@@ -121,6 +121,8 @@ class VarDump
 			return;
 		}
 
+		var_dump(static::$render_trace);
+
 		if (static::$render_trace){
 			$file = debug_backtrace()[1]['file'];
 			$line = debug_backtrace()[1]['line'];

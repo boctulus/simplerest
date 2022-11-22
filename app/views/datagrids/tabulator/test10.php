@@ -26,8 +26,11 @@
 -->
 
 <?php
+
+use simplerest\core\libs\VarDump;
+
     $resource = "automoviles";
-    $tenantid = "az";
+    $tenantid = "az";  
 
     /*
         Dado que no estoy usando un framework reactivo,
@@ -35,7 +38,7 @@
         evitandome otro request.
     */
 
-    $defs   = get_defs($resource, $tenantid);
+    $defs   = get_defs($resource, $tenantid, false, false);
 
     js_file('js/axios.min.js', null, true);
 
@@ -58,8 +61,7 @@
     async function patch_row(id, data) {
         const url = `${api_url}/${id}`;
         
-        let body = JSON.stringify(data);
-        console.log('body', body);
+        let body  = JSON.stringify(data);
 
         var myHeaders = new Headers();
         myHeaders.append("X-TENANT-ID", "az");
