@@ -1,7 +1,6 @@
 <h3>Prueba con Ajax con paginacion</h3>
 
 <script>
-    
     const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
 
     /*
@@ -10,7 +9,6 @@
     function isPromise(p) {
         return p && Object.prototype.toString.call(p) === "[object Promise]";
     }
-
 </script>
 
 <div>
@@ -27,39 +25,44 @@
 
 <?php
 
-    $resource = "products";
-    $tenantid = "az";  
+$resource = "products";
+$tenantid = "az";
 
-    /*
+/*
         Dado que no estoy usando un framework reactivo,
         las definiciones pueden directamente ofrecerse en el backend
         evitandome otro request.
     */
 
-    $defs   = get_defs($resource, $tenantid, false, false);
+$defs   = get_defs($resource, $tenantid, false, false);
 
-    js_file('js/axios.min.js', null, true);
+js_file('js/axios.min.js', null, true);
 
-    js("
-        const defs     = " . json_encode($defs) . ";
-        const resource = '". $resource . "';
-        const tenantid = '". $tenantid . "';
+js("
+    const resource = '" . $resource . "';
+    const tenantid = '" . $tenantid . "';
+
+    let   defs     = " . json_encode($defs) . ";
     ", null, true);
 ?>
 
 <script>
-    const token    = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
+    const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
 
-    const api_url  = `http://simplerest.lan/api/v1/${resource}`;
+    const api_url = `http://simplerest.lan/api/v1/${resource}`;
 
     let columns = [];
-    let res     = {}
+    let res = {}
     let tmp;
+
+    function btnClick(){
+        alert('click')
+    }
 
     async function patch_row(id, data) {
         const url = `${api_url}/${id}`;
-        
-        let body  = JSON.stringify(data);
+
+        let body = JSON.stringify(data);
 
         var myHeaders = new Headers();
         myHeaders.append("X-TENANT-ID", "az");
@@ -101,23 +104,38 @@
     */
 
     window.addEventListener('DOMContentLoaded', (event) => {
+        
         const render_datagrid = async () => {
-                    
+
             let columns = [];
-            for (var field in defs){ 
+            for (var field in defs) {
                 let obj = {};
                 let def = defs[field];
 
-                obj.field     = field;
-                obj.title     = typeof def.name == 'undefined' ? ucfirst(field) : def.name;
+                obj.field = field;
+                obj.title = typeof def.name == 'undefined' ? ucfirst(field) : def.name;
                 obj.formatter = typeof def.formatter == 'undefined' ? 'plaintext' : def.formatter;
-                obj.editor    = true;
+                obj.editor = true;
 
                 columns.push(obj);
             }
 
+            columns.push({
+                //column definition in the columns array
+                formatter: function(cell, formatterParams, onRendered) {
+                    // var data = row.getData();
+
+                    // console.log(cell);
+                    // console.log(data);
+
+                    return `<button type="button" onclick="btnClick()">Click</button>`;
+                },
+                width: 60,
+                hozAlign: "center",
+            })
+
             var table = new Tabulator("#example-table", {
-                ajaxURL:api_url,
+                ajaxURL: api_url,
 
                 // ajaxConfig:"GET",
                 // ajaxContentType:{
@@ -130,28 +148,39 @@
 
                 columns: columns,
 
+                /* 
+                    Formatea una columna
+                */
+                rowFormatter:function(row){                    
+                    var data = row.getData();
+
+                    if(data.deleted_at != null){
+                        row.getElement().style.backgroundColor = "red";
+                    }
+                },
+
                 ajaxParams: {
                     tenantid,
                     token
                 },
 
-                paginationSize:10,  // <--- puede implicar modificar el height
-                paginationMode:"remote", 
-                progressiveLoad:"scroll", // obligatorio?
+                paginationSize: 10, // <--- puede implicar modificar el height
+                paginationMode: "remote",
+                progressiveLoad: "scroll", // obligatorio?
 
-                ajaxResponse:function(url, params, response){                    
-                    res.data      = response.data[resource];
+                ajaxResponse: function(url, params, response) {
+                    res.data = response.data[resource];
                     res.last_page = response.last_page;
-                    return res; 
+                    return res;
                 },
 
-                reactiveData:true, //turn on data reactivity
+                reactiveData: true, //turn on data reactivity
 
                 /*
                     Rendering
                 */
 
-                height:"325px",
+                height: "325px",
 
                 // layout: "fitData",
                 // layout: "fitDataFill",
@@ -160,21 +189,23 @@
                 layout: "fitColumns",
 
                 // responsiveLayout:"hide",
-                responsiveLayout:"collapse",
+                responsiveLayout: "collapse",
 
-                resizableColumnFit:true,
-                placeholder:"Sin datos",
+                resizableColumnFit: true,
+                placeholder: "Sin datos",
 
                 // headerVisible:false, 
                 // textDirection:"rtl",
-            
+
             });
 
             //add row to bottom of table on button click
-            document.getElementById("btn-add").addEventListener("click", function(){
-                table.addData([
-                    {id:20, kilometraje: 550, num_asientos:7 }
-                ], false);
+            document.getElementById("btn-add").addEventListener("click", function() {
+                table.addData([{
+                    id: 20,
+                    kilometraje: 550,
+                    num_asientos: 7
+                }], false);
             });
 
             table.on("tableBuilt", () => {
@@ -186,26 +217,26 @@
             */
             table.on("cellEdited", async (proxy) => {
                 let initial_value = proxy._cell.initialValue;
-                let old_value     = proxy._cell.oldValue;
-                let new_value     = proxy._cell.value;
+                let old_value = proxy._cell.oldValue;
+                let new_value = proxy._cell.value;
 
-                if (new_value == old_value){
+                if (new_value == old_value) {
                     return
                 }
 
-                let row           = proxy.getData();
+                let row = proxy.getData();
                 let field_updated = proxy.getColumn()._column.field;
 
                 data = {};
-                
-                let id              = row.id;   
+
+                let id = row.id;
                 data[field_updated] = new_value;
 
                 let res = await patch_row(id, data);
                 await console.log(res);
             });
 
-    
+
 
         }; // end render_datadrid
 
