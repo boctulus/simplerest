@@ -68,6 +68,10 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('u', ['read'])
     ->addResourcePermissions('tbl_scritp_tablas', ['read'])
     ->addResourcePermissions('products', ['read_all'])
+    ->addSpecialPermissions([
+        //'read_all', 
+        'write_all'
+    ])
     //->addResourcePermissions('tbl_usuario_empresa', ['read'])
     ->addResourcePermissions('tbl_estado_civil', ['read'])
     ->addResourcePermissions('tbl_categoria_persona', ['read'])
