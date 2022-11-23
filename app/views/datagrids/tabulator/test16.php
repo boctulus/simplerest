@@ -1,5 +1,7 @@
 <?php
-    use simplerest\core\libs\HtmlBuilder\Bt5Form;
+
+use Google\Service\CloudNaturalLanguage\Document;
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
     use simplerest\core\libs\HtmlBuilder\Tag;
 
     Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
@@ -7,7 +9,39 @@
 
 <h3>Prueba con Ajax con paginacion</h3>
 
+<?php
+    js_file('vendors/axios/axios.min.js', null, true);
+    //js_file('vendors/lodash/lodash.min.js', null, true);
+
+    css_file('css/bt-custom.css');
+
+    echo tag('buttonGroup')->content([
+		tag('button')->content('Nuevo')
+        ->class('no-border')
+        ->style('margin-right:5px;')
+        ->id('btn-create')
+        ->info(),
+		
+        tag('button')->content('Borrar')
+        ->class('no-border')
+        ->id('btn-mutiple-delete')
+        ->danger()        
+	])
+    ->class('my-3');
+
+?>
+
 <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('btn-create').onclick = function () { 
+            $('#row-form-modal').show()
+        };
+
+        document.getElementById('btn-mutiple-delete').onclick = function () { 
+            alert('did stuff #2'); 
+        };
+    });    
+    
     const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
 
     /*
@@ -25,24 +59,21 @@
         tag('modalDialog')->content(
             tag('modalContent')->content(
                 tag('modalHeader')->content(
-                    tag('modalTitle')->text('Modal title') . 
+                    tag('modalTitle')->text('Nuevo') . 
                     tag('closeButton')->dataBsDismiss('modal')
                 ) .
                 tag('modalBody')->content(
-                    tag('p')->text('Modal body text goes here.')
+                    tag('p')->text('Aca irian los campos')
                 ) . 
                 tag('modalFooter')->content(
-                    tag('closeModal') .
-                    tag('button')->text('Save changes')
+                    tag('closeModal')->content("Cerrar") .
+                    tag('button')->text('Guardar')
                 ) 
             ) 
         )
-    )->id('exampleModal');
+    )->id('row-form-modal');
 
-    echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 ?>
-
-
 
 <!--
     Para agregar botones al header ver (sin probar)
@@ -63,8 +94,6 @@ $tenantid = "az";
 
 $defs   = get_defs($resource, $tenantid, false, false);
 
-js_file('js/axios.min.js', null, true);
-
 js("
     const resource = '" . $resource . "';
     const tenantid = '" . $tenantid . "';
@@ -81,6 +110,23 @@ js("
     let table   = {};
     let columns = [];
     let res     = {};
+
+    let checked = [];
+
+    function checkboxSelected(id){
+        elem = document.getElementById(id);
+
+        if (elem.checked){
+            checked.push(id)
+        } else {
+            var index = checked.indexOf(id);
+            if (index !== -1) {
+                checked.splice(index, 1);
+            }
+        }
+
+        //console.log (checked)
+    }
 
     function deleteBtn(id){
         if (!confirm("Seguro de borrar?")) {
@@ -177,6 +223,24 @@ js("
         const render_datagrid = async () => {
 
             let columns = [];
+
+            columns.push({
+                //column definition in the columns array
+                formatter: function(cell, formatterParams, onRendered) {
+                    let row      = cell.getRow()
+                    let data     = row.getData()
+                    let id       = data.id;
+
+                    let data_s   = JSON.stringify(data);
+
+                    let input_id = "chk-"+id;
+
+                    return `<input type="checkbox" id="${input_id}" onchange="checkboxSelected('${input_id}');"/>`;
+                },
+                width: 30,
+                hozAlign: "center",
+            })
+
             for (var field in defs) {
                 let obj = {};
                 let def = defs[field];
@@ -220,6 +284,11 @@ js("
                 //autoColumns:true,
 
                 columns: columns,
+
+                /*
+                    https://tabulator.info/docs/5.4/select
+                */
+                //selectable:true,
 
                 /* 
                     Formatea una columna
@@ -273,13 +342,13 @@ js("
             });
 
             //add row to bottom of table on button click
-            document.getElementById("btn-add").addEventListener("click", function() {
-                table.addData([{
-                    id: 20,
-                    kilometraje: 550,
-                    num_asientos: 7
-                }], false);
-            });
+            // document.getElementById("btn-add").addEventListener("click", function() {
+            //     table.addData([{
+            //         id: 20,
+            //         kilometraje: 550,
+            //         num_asientos: 7
+            //     }], false);
+            // });
 
             table.on("tableBuilt", () => {
                 // ...
