@@ -10088,7 +10088,7 @@ A un botón se le puede setear el color muy fácil mediante métodos Form::{colo
 
 Ej:
 
-	echo tag('button')->content(Notifications')->primary();
+	echo tag('button')->content('Notifications')->primary();
 
 Que es lo mismo que:
 
@@ -10867,6 +10867,11 @@ La estructura de un modal es más o menos la siguiente:
 			) 
 		)
 	)->id('exampleModal');
+
+
+El texto del boton en closeModal se puede personalizar como el de cualquier otro boton:
+
+	tag('closeModal')->content("Cerrar")
 
 
 Static

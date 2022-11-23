@@ -42,8 +42,6 @@
     echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 ?>
 
-
-
 <!--
     Para agregar botones al header ver (sin probar)
 
@@ -81,6 +79,11 @@ js("
     let table   = {};
     let columns = [];
     let res     = {};
+
+    function checkboxSelected(id){
+        elem = document.getElementById(id);
+        console.log (id, elem.checked)
+    }
 
     function deleteBtn(id){
         if (!confirm("Seguro de borrar?")) {
@@ -177,6 +180,24 @@ js("
         const render_datagrid = async () => {
 
             let columns = [];
+
+            columns.push({
+                //column definition in the columns array
+                formatter: function(cell, formatterParams, onRendered) {
+                    let row      = cell.getRow()
+                    let data     = row.getData()
+                    let id       = data.id;
+
+                    let data_s   = JSON.stringify(data);
+
+                    let input_id = "chk-"+id;
+
+                    return `<input type="checkbox" id="${input_id}" onchange="checkboxSelected('${input_id}');"/>`;
+                },
+                width: 30,
+                hozAlign: "center",
+            })
+
             for (var field in defs) {
                 let obj = {};
                 let def = defs[field];
@@ -220,6 +241,11 @@ js("
                 //autoColumns:true,
 
                 columns: columns,
+
+                /*
+                    https://tabulator.info/docs/5.4/select
+                */
+                //selectable:true,
 
                 /* 
                     Formatea una columna
@@ -273,13 +299,13 @@ js("
             });
 
             //add row to bottom of table on button click
-            document.getElementById("btn-add").addEventListener("click", function() {
-                table.addData([{
-                    id: 20,
-                    kilometraje: 550,
-                    num_asientos: 7
-                }], false);
-            });
+            // document.getElementById("btn-add").addEventListener("click", function() {
+            //     table.addData([{
+            //         id: 20,
+            //         kilometraje: 550,
+            //         num_asientos: 7
+            //     }], false);
+            // });
 
             table.on("tableBuilt", () => {
                 // ...
