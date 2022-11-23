@@ -69,7 +69,18 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
             const col_res = create_collection(entity, checked);
             col_res.then((res) => {
-                console.log('id', res.data.id)
+                let col_id = res.data.id;
+                let resp   = mass_delete(col_id);
+
+                resp.then(res => {
+                    // console.log(res)
+
+                    table.setData(api_url)
+                    .catch(function(error){
+                        //handle error loading data
+                        console.log('error loading data');
+                    });
+                })
             })
         };
     });    
@@ -165,6 +176,28 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
             });
     }
 
+    async function mass_delete(col_id){
+        const url = `${base_url}/api/v1/collections/${col_id}?entity=${entity}`;
+
+        var myHeaders = new Headers();
+        myHeaders.append("X-TENANT-ID", "az");
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        var requestOptions = {
+            method: 'DELETE',
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: myHeaders
+        };
+
+        return await fetch(url, requestOptions)
+            .then(response => {
+                return response.json()
+            })
+            .catch(error => {
+                console.log('error', error)
+                Promise.reject(error);
+            });
+    }
 
     function deleteBtn(id){
         if (!confirm("Seguro de borrar?")) {

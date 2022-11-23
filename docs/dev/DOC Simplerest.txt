@@ -4532,7 +4532,14 @@ Luego si por ejemplo quiero realizar una edición masiva de un campo "enabled" p
 
 Para borrar masivamente
 
-	DELETE /api/v1/collections/9
+	DELETE /api/v1/collections/3?entity=products
+
+* No olvide pasar el "tenant id"
+
+Ej:
+
+	DELETE /api/v1/collections/3?entity=products&tenantid=az
+
 
 Cabe destacar que las operaciones PATCH y DELETE se efectuan sobre los registros contenidos en la colección de sus respectiva entidad o dicho de otro modo un DELETE sobre una colección no borra solo el registro de la colección sino los registros asociados + el registro de la colección.
 
