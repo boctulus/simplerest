@@ -119,7 +119,8 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
     let res     = {};
 
     function checkboxSelected(id){
-        elem = document.getElementById(id);
+        let input_id = "chk-"+id;
+        elem         = document.getElementById(input_id);
 
         if (elem.checked){
             checked.push(id)
@@ -272,7 +273,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
                     let input_id = "chk-"+id;
 
-                    return `<input type="checkbox" id="${input_id}" onchange="checkboxSelected('${input_id}');"/>`;
+                    return `<input type="checkbox" id="${input_id}" onchange="checkboxSelected('${id}');"/>`;
                 },
                 width: 30,
                 hozAlign: "center",
