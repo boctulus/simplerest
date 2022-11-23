@@ -41,6 +41,9 @@ class Collections extends MyApiController
         parent::__construct();
     }
 
+    /*
+        Nov-2022 -- working
+    */
     function post() {
         $data = request()->getBodyDecoded();
 
@@ -90,7 +93,7 @@ class Collections extends MyApiController
         if ($id == null)
             Factory::response()->code(400)->error("Missing id");
 
-        $data = Factory::request()->getBody(false);
+        $data = request()->getBodyDecoded();
 
         if (empty($data))
             error('Invalid JSON',400);
@@ -119,11 +122,7 @@ class Collections extends MyApiController
                                
                 $entity = Strings::snakeToCamel($row['entity']);    
            
-                $model_name   = ucfirst($entity) . 'Model';
-                $table_name = strtolower($entity);
-
-                $model    = 'simplerest\\models\\'. $model_name;
-                $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
+                $model  = get_model_name($entity);
 
                 if (!class_exists($model))
                     error("Entity $entity doesn't exist", 400);     
@@ -180,12 +179,18 @@ class Collections extends MyApiController
      * @param  mixed $id
      *
      * @return void
+     * 
+     * Nov-2022 -- working
      */
     function delete($id = NULL) {
         if($id == NULL)
-            error("Lacks id for Collection in request", 400);
+            error("Id is missing for Collection in request", 400);
 
-        $data = Factory::request()->getBody();  
+        $entity = $_GET['entity'] ?? null;
+
+        if (empty($entity)){
+            error("Entity is missing for Collection in request", 400);
+        }
 
         try {            
 
@@ -201,13 +206,7 @@ class Collections extends MyApiController
                 error('Forbidden', 403, 'You are not the owner');
             }         
 
-            $entity = Strings::snakeToCamel($row['entity']);    
-           
-            $model_name = ucfirst($entity) . 'Model';
-            $table_name = strtolower($entity);
-
-            $model    = 'simplerest\\models\\'. $model_name;
-            $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
+            $model = get_model_name($entity);
 
             if (!class_exists($model))
                 error("Entity $entity doesn't exist", 400);
@@ -219,18 +218,17 @@ class Collections extends MyApiController
                 $instance->where(['belongs_to' => auth()->uid()]);
             }    
             
-            $refs = json_decode($row['refs']);
+            $refs     = json_decode($row['refs']);
             $affected = 0;
-            DB::transaction(function() use ($instance, $api_ctrl, $refs, $id, &$affected) {
+
+            DB::transaction(function() use ($instance, $refs, $id, &$affected) {
                 $affected = $instance->whereIn('id', $refs)
                 ->delete();
 
                 DB::table('collections')->where(['id' => $id])->delete();
             });   
 
-            //echo " affected ( $affected )";
-
-            Factory::response()->send(['affected_rows' => $affected]);  
+            response()->send(['affected_rows' => $affected]);  
 
         } catch (\Exception $e) {
             error("Error during DELETE for collection $id with message: {$e->getMessage()}");
