@@ -82,6 +82,19 @@ js("
     let columns = [];
     let res     = {};
 
+    //row selection formatter
+    var rowSelectFormatter = function(cell, formatterParams, onRendered){
+        var input = document.createElement("input");
+
+        input.type  = "checkbox";
+        input.name  = "test";
+        //input.style = "margin: 0 20px 0 20px";
+
+        return input;
+    }
+
+    defs.selectable = {title:" ", formatter:rowSelectFormatter}
+   
     function deleteBtn(id){
         if (!confirm("Seguro de borrar?")) {
             return;
@@ -221,6 +234,11 @@ js("
 
                 columns: columns,
 
+                /*
+                    https://tabulator.info/docs/5.4/select
+                */
+                //selectable:true,
+
                 /* 
                     Formatea una columna
                 */
@@ -273,13 +291,13 @@ js("
             });
 
             //add row to bottom of table on button click
-            document.getElementById("btn-add").addEventListener("click", function() {
-                table.addData([{
-                    id: 20,
-                    kilometraje: 550,
-                    num_asientos: 7
-                }], false);
-            });
+            // document.getElementById("btn-add").addEventListener("click", function() {
+            //     table.addData([{
+            //         id: 20,
+            //         kilometraje: 550,
+            //         num_asientos: 7
+            //     }], false);
+            // });
 
             table.on("tableBuilt", () => {
                 // ...
