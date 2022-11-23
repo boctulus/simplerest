@@ -10874,6 +10874,13 @@ El texto del boton en closeModal se puede personalizar como el de cualquier otro
 	tag('closeModal')->content("Cerrar")
 
 
+Y claro, se debe agregar un evento para los botones. Ej:
+
+	tag('closeModal')
+	->content("Cerrar")
+	->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ]) .
+
+
 Static
 
 Para que la ventana modal no se cierre al hacer click fuera de ella se puede usar static()
