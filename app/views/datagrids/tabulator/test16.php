@@ -10,8 +10,14 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 <h3>Prueba con Ajax con paginacion</h3>
 
 <?php
+
+    $resource = "products";
+    $tenantid = "az";
+
     js_file('vendors/axios/axios.min.js', null, true);
     //js_file('vendors/lodash/lodash.min.js', null, true);
+    js_file('js/bt-utilities.js');
+    js_file('js/utilities.js');
 
     css_file('css/bt-custom.css');
 
@@ -24,37 +30,56 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 		
         tag('button')->content('Borrar')
         ->class('no-border')
-        ->id('btn-mutiple-delete')
+        ->id('btn-multiple-delete')
         ->danger()        
 	])
     ->class('my-3');
 
+    /*
+        Dado que no estoy usando un framework reactivo,
+        las definiciones pueden directamente ofrecerse en el backend
+        evitandome otro request.
+    */
+
+    $defs = get_defs($resource, $tenantid, false, false);
+
+    js("
+        const resource = '" . $resource . "';
+        const tenantid = '" . $tenantid . "';
+
+        let   defs     = " . json_encode($defs) . ";
+    ", null, true);
+
 ?>
 
 <script>
+    let checked = [];
+
     window.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('btn-create').onclick = function () { 
             $('#row-form-modal').show()
         };
 
-        document.getElementById('btn-mutiple-delete').onclick = function () { 
+        document.getElementById('btn-multiple-delete').onclick = function () { 
+            let checked_count = checked.length; 
+
+            if (!confirm(`Está por borrar ${checked_count} registros. Está seguro?`)) {
+                return;
+            }
+
             alert('did stuff #2'); 
         };
     });    
     
-    const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
-
-    /*
-        https://stackoverflow.com/questions/27746304/how-to-check-if-an-object-is-a-promise/27746324#27746324
-    */
-    function isPromise(p) {
-        return p && Object.prototype.toString.call(p) === "[object Promise]";
-    }
 </script>
 
 <div id="example-table"></div>
 
 <?php
+    /*
+        Crear / editar row 
+    */
+
     echo tag('modal')->content(
         tag('modalDialog')->content(
             tag('modalContent')->content(
@@ -66,7 +91,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
                     tag('p')->text('Aca irian los campos')
                 ) . 
                 tag('modalFooter')->content(
-                    tag('closeModal')->content("Cerrar") .
+                    tag('closeModal')->content("Cancelar")->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ]) .
                     tag('button')->text('Guardar')
                 ) 
             ) 
@@ -81,27 +106,6 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
     https://stackoverflow.com/questions/67695811/tabulator-add-a-button-in-a-column-header
 -->
 
-<?php
-
-$resource = "products";
-$tenantid = "az";
-
-/*
-        Dado que no estoy usando un framework reactivo,
-        las definiciones pueden directamente ofrecerse en el backend
-        evitandome otro request.
-    */
-
-$defs   = get_defs($resource, $tenantid, false, false);
-
-js("
-    const resource = '" . $resource . "';
-    const tenantid = '" . $tenantid . "';
-
-    let   defs     = " . json_encode($defs) . ";
-    ", null, true);
-?>
-
 <script>
     const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
 
@@ -110,8 +114,6 @@ js("
     let table   = {};
     let columns = [];
     let res     = {};
-
-    let checked = [];
 
     function checkboxSelected(id){
         elem = document.getElementById(id);

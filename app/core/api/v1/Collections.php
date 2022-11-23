@@ -42,7 +42,7 @@ class Collections extends MyApiController
     }
 
     function post() {
-        $data = Factory::request()->getBody(false);  
+        $data = request()->getBodyDecoded();
 
         if (empty($data))
             error('Invalid JSON',400);
@@ -61,21 +61,15 @@ class Collections extends MyApiController
         }
 
         try {            
-            $entity = Strings::snakeToCamel($entity);    
-           
-            $model_name   = ucfirst($entity) . 'Model';
-            $table_name = strtolower($entity);
-
-            $model    = 'simplerest\\models\\'. $model_name;
-            $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
+            $model = get_model_name($entity);
 
             if (!class_exists($model))
                 error("Entity $entity doesn't exist", 400);
             
                       
             $id = DB::table('collections')->create([
-                'entity' => $table_name,
-                'refs' => json_encode($refs),
+                'entity'     => $entity,
+                'refs'       => json_encode($refs),
                 'belongs_to' => auth()->uid()
             ]);
 
