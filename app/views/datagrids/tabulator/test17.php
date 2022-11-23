@@ -1,5 +1,7 @@
 <?php
-    use simplerest\core\libs\HtmlBuilder\Bt5Form;
+
+use Google\Service\CloudNaturalLanguage\Document;
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
     use simplerest\core\libs\HtmlBuilder\Tag;
 
     Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
@@ -7,39 +9,130 @@
 
 <h3>Prueba con Ajax con paginacion</h3>
 
-<script>
-    const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
+<?php
+
+    $entity   = "automoviles";
+    $tenantid = "az";
+
+    js_file('vendors/axios/axios.min.js', null, true);
+    //js_file('vendors/lodash/lodash.min.js', null, true);
+    js_file('js/bt-utilities.js');
+    js_file('js/utilities.js');
+
+    css_file('css/bt-custom.css');
+
+    echo tag('buttonGroup')->content([
+		tag('button')->content('Nuevo')
+        ->class('no-border')
+        ->style('margin-right:5px;')
+        ->id('btn-create')
+        ->info(),
+		
+        tag('button')->content('Borrar')
+        ->class('no-border')
+        ->id('btn-multiple-delete')
+        ->danger()        
+	])
+    ->class('my-3');
 
     /*
-        https://stackoverflow.com/questions/27746304/how-to-check-if-an-object-is-a-promise/27746324#27746324
+        Dado que no estoy usando un framework reactivo,
+        las definiciones pueden directamente ofrecerse en el backend
+        evitandome otro request.
     */
-    function isPromise(p) {
-        return p && Object.prototype.toString.call(p) === "[object Promise]";
-    }
+
+    $defs = get_defs($entity, $tenantid, false, false);
+
+    js("
+        const entity   = '" . $entity . "';
+        const tenantid = '" . $tenantid . "';
+
+        let   defs     = " . json_encode($defs) . ";
+    ", null, true);
+
+?>
+
+<script>
+    let checked = [];
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        //$('#row-form-modal').show();  // SOLO PARA DEBUG
+
+        document.getElementById('btn-create').onclick = function () { 
+            $('#row-form-modal').show()
+        };
+
+        document.getElementById('btn-multiple-delete').onclick = function () { 
+            let checked_count = checked.length; 
+
+            if (!confirm(`Está por borrar ${checked_count} registros. Está seguro?`)) {
+                return;
+            }
+
+            const col_res = create_collection(entity, checked);
+            col_res.then((res) => {
+                let col_id = res.data.id;
+                let resp   = mass_delete(col_id);
+
+                resp.then(res => {
+                    // console.log(res)
+
+                    table.setData(api_url)
+                    .catch(function(error){
+                        //handle error loading data
+                        console.log('error loading data');
+                    });
+                })
+            })
+        };
+    });    
+    
 </script>
 
 <div id="example-table"></div>
 
 <?php
+    /*
+        Crear / editar row 
+    */
+
+
+    $id = 191; // hardcoded
+
+    $fields = [];
+    foreach ($defs as $field => $info){
+        //dd($info, $field);
+
+        $type   = $info['type'];
+        $max    = $info['max'] ?? null;
+        $min    = $info['min'] ?? null;
+        $is_req = $info['required'] ?? null;
+        $title  = $info['name'] ?? ucfirst($field);
+
+        $fields[] = tag('inputText')
+        ->placeholder($title)
+        ->class('my-1')
+        ;
+    }
+
     echo tag('modal')->content(
         tag('modalDialog')->content(
             tag('modalContent')->content(
                 tag('modalHeader')->content(
-                    tag('modalTitle')->text('Modal title') . 
+                    tag('modalTitle')->text('Nuevo') . 
                     tag('closeButton')->dataBsDismiss('modal')
                 ) .
                 tag('modalBody')->content(
-                    tag('p')->text('Modal body text goes here.')
+                    $fields
                 ) . 
                 tag('modalFooter')->content(
-                    tag('closeModal') .
-                    tag('button')->text('Save changes')
+                    tag('closeModal')->content("Cancelar")->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ]) .
+                    tag('button')->text('Guardar')
                 ) 
             ) 
         )
-    )->id('exampleModal');
+    )->id('row-form-modal');
 
-    echo tag('openButton')->target("exampleModal")->content('Launch demo modal')->class('my-3');
 ?>
 
 <!--
@@ -48,41 +141,83 @@
     https://stackoverflow.com/questions/67695811/tabulator-add-a-button-in-a-column-header
 -->
 
-<?php
-
-$resource = "products";
-$tenantid = "az";
-
-/*
-        Dado que no estoy usando un framework reactivo,
-        las definiciones pueden directamente ofrecerse en el backend
-        evitandome otro request.
-    */
-
-$defs   = get_defs($resource, $tenantid, false, false);
-
-js_file('js/axios.min.js', null, true);
-
-js("
-    const resource = '" . $resource . "';
-    const tenantid = '" . $tenantid . "';
-
-    let   defs     = " . json_encode($defs) . ";
-    ", null, true);
-?>
-
 <script>
-    const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
+    const token   = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
 
-    const api_url = `http://simplerest.lan/api/v1/${resource}`;
+    const api_url = `${base_url}/api/v1/${entity}`;
 
     let table   = {};
     let columns = [];
     let res     = {};
 
     function checkboxSelected(id){
-        elem = document.getElementById(id);
-        console.log (id, elem.checked)
+        let input_id = "chk-"+id;
+        elem         = document.getElementById(input_id);
+
+        if (elem.checked){
+            checked.push(id)
+        } else {
+            var index = checked.indexOf(id);
+            if (index !== -1) {
+                checked.splice(index, 1);
+            }
+        }
+
+        //console.log (checked)
+    }
+
+    async function create_collection(entity, id_ay) {
+        const url  = `${base_url}/api/v1/collections`;
+
+        const data = {
+            entity:entity,
+            refs:id_ay 
+        }
+
+        let body = JSON.stringify(data);
+
+        var myHeaders = new Headers();
+        myHeaders.append("X-TENANT-ID", "az");
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        var requestOptions = {
+            method: 'POST',
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: myHeaders,
+            body
+        };
+
+        return await fetch(url, requestOptions)
+            .then(response => {
+                return response.json()
+            })
+            .catch(error => {
+                console.log('error', error)
+                Promise.reject(error);
+            });
+    }
+
+    async function mass_delete(col_id){
+        const url = `${base_url}/api/v1/collections/${col_id}?entity=${entity}`;
+
+        var myHeaders = new Headers();
+        myHeaders.append("X-TENANT-ID", "az");
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        var requestOptions = {
+            method: 'DELETE',
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: myHeaders
+        };
+
+        return await fetch(url, requestOptions)
+            .then(response => {
+                return response.json()
+            })
+            .catch(error => {
+                console.log('error', error)
+                Promise.reject(error);
+            });
     }
 
     function deleteBtn(id){
@@ -192,7 +327,7 @@ js("
 
                     let input_id = "chk-"+id;
 
-                    return `<input type="checkbox" id="${input_id}" onchange="checkboxSelected('${input_id}');"/>`;
+                    return `<input type="checkbox" id="${input_id}" onchange="checkboxSelected('${id}');"/>`;
                 },
                 width: 30,
                 hozAlign: "center",
@@ -268,7 +403,7 @@ js("
                 progressiveLoad: "scroll", // obligatorio?
 
                 ajaxResponse: function(url, params, response) {
-                    res.data = response.data[resource];
+                    res.data = response.data[entity];
                     res.last_page = response.last_page;
                     return res;
                 },

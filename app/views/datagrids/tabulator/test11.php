@@ -91,7 +91,7 @@
         star
         list   -- requiere de editorParam
 
-        Mas formaters:
+        Mas formatters:
 
         https://tabulator.info/docs/5.4/format
 
