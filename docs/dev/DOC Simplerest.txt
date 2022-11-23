@@ -10885,7 +10885,28 @@ Y claro, se debe agregar un evento para los botones. Ej:
 
 	tag('closeModal')
 	->content("Cerrar")
-	->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ]) .
+	->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ])
+
+
+Ejemplo completo:
+
+	echo tag('modal')->content(
+        tag('modalDialog')->content(
+            tag('modalContent')->content(
+                tag('modalHeader')->content(
+                    tag('modalTitle')->text('Nuevo') . 
+                    tag('closeButton')->dataBsDismiss('modal')
+                ) .
+                tag('modalBody')->content(
+                    tag('p')->text('El contenido')
+                ) . 
+                tag('modalFooter')->content(
+                    tag('closeModal')->content("Cancelar")->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ]) .
+                    tag('button')->text('Guardar')
+                ) 
+            ) 
+        )
+    )->id('row-form-modal');
 
 
 Static

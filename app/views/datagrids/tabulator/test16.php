@@ -56,6 +56,8 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
     let checked = [];
 
     window.addEventListener('DOMContentLoaded', (event) => {
+        $('#row-form-modal').show();  // SOLO PARA DEBUG
+
         document.getElementById('btn-create').onclick = function () { 
             $('#row-form-modal').show()
         };
@@ -94,6 +96,25 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
         Crear / editar row 
     */
 
+
+    $id = 191; // hardcoded
+
+    $fields = [];
+    foreach ($defs as $field => $info){
+        //dd($info, $field);
+
+        $type   = $info['type'];
+        $max    = $info['max'] ?? null;
+        $min    = $info['min'] ?? null;
+        $is_req = $info['required'] ?? null;
+        $title  = $info['name'] ?? ucfirst($field);
+
+        $fields[] = tag('inputText')
+        ->placeholder($title)
+        ->class('my-1')
+        ;
+    }
+
     echo tag('modal')->content(
         tag('modalDialog')->content(
             tag('modalContent')->content(
@@ -102,7 +123,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
                     tag('closeButton')->dataBsDismiss('modal')
                 ) .
                 tag('modalBody')->content(
-                    tag('p')->text('Aca irian los campos')
+                    $fields
                 ) . 
                 tag('modalFooter')->content(
                     tag('closeModal')->content("Cancelar")->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ]) .
