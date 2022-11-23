@@ -71,7 +71,7 @@ return [
 			'pageSize' => 'size',
 			'page'	   => 'page'
 		],
-		'formater' => function ($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
+		'formatter' => function ($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
 			return [
 				"last_page" => $page_count,
 				'paginator' => [

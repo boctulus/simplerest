@@ -189,13 +189,13 @@ class Model {
 		static::$sql_formatter_callback = $fn;
 	}
 
-	function sqlFormaterOff(){
+	function sqlformatterOff(){
 		$this->sql_formatter_status = false;
 
 		return $this;
 	}
 
-	function sqlFormaterOn(){
+	function sqlformatterOn(){
 		$this->sql_formatter_status = true;
 
 		return $this;
@@ -1687,8 +1687,8 @@ class Model {
 	}
 
 	// Debug query
-	function dd(bool $sql_formater = false){
-		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formater;
+	function dd(bool $sql_formatter = false){
+		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formatter;
 
 		if ($this->last_operation == 'create'){
 			return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
@@ -1698,8 +1698,8 @@ class Model {
 	}
 
 	// Debug last query
-	function getLog(bool $sql_formater = false){		
-		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formater;
+	function getLog(bool $sql_formatter = false){		
+		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formatter;
 
 		return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
 	}
