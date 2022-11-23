@@ -11,7 +11,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
 <?php
 
-    $resource = "products";
+    $entity   = "products";
     $tenantid = "az";
 
     js_file('vendors/axios/axios.min.js', null, true);
@@ -41,10 +41,10 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
         evitandome otro request.
     */
 
-    $defs = get_defs($resource, $tenantid, false, false);
+    $defs = get_defs($entity, $tenantid, false, false);
 
     js("
-        const resource = '" . $resource . "';
+        const entity   = '" . $entity . "';
         const tenantid = '" . $tenantid . "';
 
         let   defs     = " . json_encode($defs) . ";
@@ -67,7 +67,10 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
                 return;
             }
 
-            alert('did stuff #2'); 
+            const col_res = create_collection(entity, checked);
+            col_res.then((res) => {
+                console.log('id', res.data.id)
+            })
         };
     });    
     
@@ -107,9 +110,9 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 -->
 
 <script>
-    const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
+    const token   = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlhdCI6MTY2NTAwMTM5NCwiZXhwIjoxNjc0MDAxMzk0LCJpcCI6IjEyNy4wLjAuMSIsInVzZXJfYWdlbnQiOiJQb3N0bWFuUnVudGltZVwvNy4yOS4yIiwidWlkIjoxLCJyb2xlcyI6W10sInBlcm1pc3Npb25zIjp7InRiIjpbXSwic3AiOltdfSwiaXNfYWN0aXZlIjoxLCJkYl9hY2Nlc3MiOltdfQ.XHCPxQ30xupsJCPuIVoMqWkjgni_zQy95S745BlCF8A";
 
-    const api_url = `http://simplerest.lan/api/v1/${resource}`;
+    const api_url = `${base_url}/api/v1/${entity}`;
 
     let table   = {};
     let columns = [];
@@ -129,6 +132,38 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
         //console.log (checked)
     }
+
+    async function create_collection(entity, id_ay) {
+        const url  = `${base_url}/api/v1/collections`;
+
+        const data = {
+            entity:entity,
+            refs:id_ay 
+        }
+
+        let body = JSON.stringify(data);
+
+        var myHeaders = new Headers();
+        myHeaders.append("X-TENANT-ID", "az");
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        var requestOptions = {
+            method: 'POST',
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: myHeaders,
+            body
+        };
+
+        return await fetch(url, requestOptions)
+            .then(response => {
+                return response.json()
+            })
+            .catch(error => {
+                console.log('error', error)
+                Promise.reject(error);
+            });
+    }
+
 
     function deleteBtn(id){
         if (!confirm("Seguro de borrar?")) {
@@ -313,7 +348,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
                 progressiveLoad: "scroll", // obligatorio?
 
                 ajaxResponse: function(url, params, response) {
-                    res.data = response.data[resource];
+                    res.data = response.data[entity];
                     res.last_page = response.last_page;
                     return res;
                 },
