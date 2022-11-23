@@ -1,5 +1,21 @@
 # TODO
 
+- Colecciones:
+
+  Ya no almacenar mas nada en ninguna tabla sino ejecutar las operaciones directamente SIN colecciones:
+
+  DELETE /api/v1/{entidad}/{array}
+
+	PATCH /api/v1/{entidad}/{array}
+
+Las colecciones son dificiles de mantener y generan aguejos de seguridad
+
+Sin embargo, habria un permiso especial (sp) para operaciones masivas llamado "mass_writing" el cual
+reemplazaria a "write_all_collections" y de no tenerlo la operacion seria rechazada
+
+Tambien podria especificarse si desea esperar a la respuesta o procesar en segundo plano.
+
+
 [ DATATABLES (DATAGRIDS) ]
 
 - Implementar de forma sencilla DataTables
