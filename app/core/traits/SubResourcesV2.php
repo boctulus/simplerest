@@ -164,7 +164,7 @@ trait SubResourcesV2
     
                     /////////////////////////////
                     //dd(Model::query($sql), $tb);
-                    //dd(sql_formater($sql), "SubQuery for $tb");
+                    //dd(sql_formatter($sql), "SubQuery for $tb");
                     // dd('-------------------------------------'. PHP_EOL . PHP_EOL);
                     // dd($sql, "Pre-compiled SubQuery for $tb"); //
                     // print_r(PHP_EOL . PHP_EOL);
@@ -264,7 +264,7 @@ trait SubResourcesV2
                     
                         /////////////////////////////
                         //dd(Model::query($sql), $tb);
-                        //dd(sql_formater($sql), "SubQuery for $tb"); //
+                        //dd(sql_formatter($sql), "SubQuery for $tb"); //
                         // dd('-------------------------------------'. PHP_EOL . PHP_EOL);
                         // dd($sql, "Pre-compiled SubQuery for $tb"); //
                         // print_r(PHP_EOL . PHP_EOL);
@@ -316,7 +316,7 @@ trait SubResourcesV2
             }
         }
 
-        //dd(sql_formater($sql)); exit;//
+        //dd(sql_formatter($sql)); exit;//
         return $rows;
     }
 }

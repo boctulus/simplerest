@@ -23,8 +23,8 @@ class AutomovilesModel extends MyModel
 	protected $formatters = [
 		"is_locked"     => "checkbox",
 		"active"        => "radio",
-		"rating"        => "starts",
-		"how_popular"   => "progress"
+		"quality"       => "star",
+		"how_popular"   => "progress",
 	];
 
     function __construct(bool $connect = false){

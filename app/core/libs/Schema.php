@@ -1868,8 +1868,8 @@ class Schema
 		
 	}
 
-	function dd(bool $sql_formater = false){
-		return Model::sqlFormatter(Strings::removeMultipleSpaces($this->query), $sql_formater);
+	function dd(bool $sql_formatter = false){
+		return Model::sqlFormatter(Strings::removeMultipleSpaces($this->query), $sql_formatter);
 	}
 	
 	function change()

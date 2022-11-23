@@ -6738,7 +6738,7 @@ class DumbController extends Controller
         dd(
             $m
                 //->setPaginator(false)
-                ->sqlFormaterOn()
+                ->sqlformatterOn()
                 ->dd()
         );
     }
@@ -6953,9 +6953,9 @@ class DumbController extends Controller
     }
 
     /*
-        Sql formater habilitado via Model::sqlFormaterOn()
+        Sql formatter habilitado via Model::sqlformatterOn()
     */
-    function test_sql_formater001()
+    function test_sql_formatter001()
     {
         $m = DB::table('products')
             ->deleted()
@@ -6970,15 +6970,15 @@ class DumbController extends Controller
 
         dd(
             $m
-                ->sqlFormaterOn()   /* habilito */
+                ->sqlformatterOn()   /* habilito */
                 ->dd()
         );
     }
 
     /*
-        Sql formater des-habilitado
+        Sql formatter des-habilitado
     */
-    function test_sql_formater002()
+    function test_sql_formatter002()
     {
         $m = DB::table('products')
             ->deleted()
@@ -6995,9 +6995,9 @@ class DumbController extends Controller
     }
 
     /*
-        Sql formater habilitado via Model::dd()
+        Sql formatter habilitado via Model::dd()
     */
-    function test_sql_formater003()
+    function test_sql_formatter003()
     {
         $m = DB::table('products')
             ->deleted()
@@ -7020,7 +7020,7 @@ class DumbController extends Controller
         Sql formateador es aplicado en un segundo paso
         y se parametriza para colorizar 
     */
-    function test_sql_formater004()
+    function test_sql_formatter004()
     {
         $m = DB::table('products')
             ->deleted()
@@ -7040,9 +7040,9 @@ class DumbController extends Controller
 
     /*
         Sql formateador es aplicado en un segundo paso
-        y se parametriza para colorizar pero usando el helper sql_formater 
+        y se parametriza para colorizar pero usando el helper sql_formatter 
     */
-    function test_sql_formater005()
+    function test_sql_formatter005()
     {
         $m = DB::table('products')
             ->deleted()
@@ -7056,7 +7056,7 @@ class DumbController extends Controller
             ->select(['cost', 'size', 'belongs_to']);
 
         dd(
-            sql_formater($m->dd(), true)
+            sql_formatter($m->dd(), true)
         );
     }
 

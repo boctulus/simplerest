@@ -105,11 +105,11 @@ class Response
     }
 
     function setPaginatorParams($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
-        $formater = config()['paginator']['formater'];
+        $formatter = config()['paginator']['formatter'];
        
         static::$to_be_encoded    = true; 
 
-        static::$paginator_params = $formater(
+        static::$paginator_params = $formatter(
             $row_count, $count, $current_page, $page_count, $page_size, $nextUrl
         );
 
