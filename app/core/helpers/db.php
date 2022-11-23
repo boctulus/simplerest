@@ -73,12 +73,12 @@ function get_api_name($resource_name, $api_ver = null){
                 "type": "int"
             },
             "rating": {
-                "formater": "starts",
+                "formatter": "starts",
                 "type": "int"
             },
             "how_popular": {
                 "name": "Popularity",
-                "formater": "progress",
+                "formatter": "progress",
                 "type": "int"
             },
             "created_at": {
@@ -117,7 +117,7 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
         }
         
         if (isset($formatters[$field])){
-            $defs[$field]['formater'] = $formatters[$field];
+            $defs[$field]['formatter'] = $formatters[$field];
         }
 
         if (isset($rules[$field])){
@@ -909,7 +909,7 @@ function get_fks(string $t1, string $t2, ?string $tenant_id = null){
 }
 
 
-function sql_formater(string $sql, ...$options){
+function sql_formatter(string $sql, ...$options){
     return MyModel::sqlFormatter($sql, ...$options);
 }
 
