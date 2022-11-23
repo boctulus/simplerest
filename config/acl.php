@@ -70,7 +70,8 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('products', ['read_all'])
     ->addSpecialPermissions([
         //'read_all', 
-        'write_all'
+        'write_all',
+        'write_all_collections'
     ])
     //->addResourcePermissions('tbl_usuario_empresa', ['read'])
     ->addResourcePermissions('tbl_estado_civil', ['read'])
