@@ -636,6 +636,12 @@ class AuthController extends Controller implements IAuth
             if (empty($uid))
                 throw new \Exception('Error on user creation');
             
+            if (empty($roles)){
+                $roles = [
+                    config()['default_role'] ?? acl()->getRegistered()
+                ];
+            }
+
             if ($many_to_many && !empty($roles))
             {
                 $this->addUserRoles($roles, $uid);
@@ -650,25 +656,25 @@ class AuthController extends Controller implements IAuth
             $this->onRegistered($data, $uid, $is_active, $roles);
                 
             $access  = $this->gen_jwt([
-                'uid' => $uid, 
-                'roles' => $roles,
-                'permissions' => [],
-                'is_active' => $is_active,
-                'db_access' => $db_access
+                'uid'           => $uid, 
+                'roles'         => $roles,
+                'permissions'   => [],
+                'is_active'     => $is_active,
+                'db_access'     => $db_access
             ], 'access_token');
 
             $refresh = $this->gen_jwt([
-                                        'uid' => $uid
+                'uid' => $uid
             ], 'refresh_token');
 
             $res = [ 
-                'uid' => $uid,
-                'access_token'=> $access,
-                'token_type' => 'bearer', 
-                'expires_in' => $this->config['access_token']['expiration_time'],
+                'uid'           => $uid,
+                'access_token'  => $access,
+                'token_type'    => 'bearer', 
+                'expires_in'    => $this->config['access_token']['expiration_time'],
                 'refresh_token' => $refresh,
-                'roles' => $roles,
-                'db_access' => $db_access
+                'roles'         => $roles,
+                'db_access'     => $db_access
             ];    
 
             //DB::commit();    
