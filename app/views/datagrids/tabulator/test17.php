@@ -7,12 +7,11 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
     Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 ?>
 
-<h3>Prueba con Ajax con paginacion</h3>
 
 <?php
 
-    $entity   = "products";
-    $tenantid = "az";
+    $entity   = "colores";
+    $tenantid = "main";
 
     js_file('vendors/axios/axios.min.js', null, true);
     //js_file('vendors/lodash/lodash.min.js', null, true);
@@ -176,14 +175,14 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
         let body = JSON.stringify(data);
 
-        var myHeaders = new Headers();
-        myHeaders.append("X-TENANT-ID", "az");
-        myHeaders.append("Authorization", `Bearer ${token}`);
+        var headers = new Headers();
+        headers.append("X-TENANT-ID", tenantid);
+        headers.append("Authorization", `Bearer ${token}`);
 
         var requestOptions = {
             method: 'POST',
             mode: 'cors', // no-cors, *cors, same-origin
-            headers: myHeaders,
+            headers: headers,
             body
         };
 
@@ -200,14 +199,14 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
     async function mass_delete(col_id){
         const url = `${base_url}/api/v1/collections/${col_id}?entity=${entity}`;
 
-        var myHeaders = new Headers();
-        myHeaders.append("X-TENANT-ID", "az");
-        myHeaders.append("Authorization", `Bearer ${token}`);
+        var headers = new Headers();
+        headers.append("X-TENANT-ID", tenantid);
+        headers.append("Authorization", `Bearer ${token}`);
 
         var requestOptions = {
             method: 'DELETE',
             mode: 'cors', // no-cors, *cors, same-origin
-            headers: myHeaders
+            headers: headers
         };
 
         return await fetch(url, requestOptions)
@@ -241,14 +240,14 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
     async function delete_row(id) {
         const url = `${api_url}/${id}`;
 
-        var myHeaders = new Headers();
-        myHeaders.append("X-TENANT-ID", "az");
-        myHeaders.append("Authorization", `Bearer ${token}`);
+        var headers = new Headers();
+        headers.append("X-TENANT-ID", tenantid);
+        headers.append("Authorization", `Bearer ${token}`);
 
         var requestOptions = {
             method: 'DELETE',
             mode: 'cors', // no-cors, *cors, same-origin
-            headers: myHeaders
+            headers: headers
         };
 
         return await fetch(url, requestOptions)
@@ -270,20 +269,26 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
         let body = JSON.stringify(data);
 
-        var myHeaders = new Headers();
-        myHeaders.append("X-TENANT-ID", "az");
-        myHeaders.append("Authorization", `Bearer ${token}`);
+        var headers = new Headers();
+        headers.append("X-TENANT-ID", tenantid);
+        headers.append("Authorization", `Bearer ${token}`);
 
         var requestOptions = {
             method: 'PATCH',
             mode: 'cors', // no-cors, *cors, same-origin
-            headers: myHeaders,
+            headers: headers,
             body: body
         };
 
         return await fetch(url, requestOptions)
             .then(response => {
-                return response.json()
+                // console.log('req', [
+                //     url,
+                //     headers,
+                //     body
+                // ]);
+                console.log('res', response.text())
+                return response
             })
             .catch(error => {
                 console.log('error', error)

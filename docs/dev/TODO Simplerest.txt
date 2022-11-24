@@ -16,6 +16,11 @@ reemplazaria a "write_all_collections" y de no tenerlo la operacion seria rechaz
 Tambien podria especificarse si desea esperar a la respuesta o procesar en segundo plano.
 
 
+- Si un usuario no tiene roles, tampoco esta siendo considerado "registrado" aun cuando entrega credenciales y son validas. 
+
+Est'a tocando insertar en la tabla user_roles el user_id lo cual es un BUG !
+
+
 [ DATATABLES (DATAGRIDS) ]
 
 - Implementar de forma sencilla DataTables

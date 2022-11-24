@@ -127,9 +127,12 @@ return [
 	*/
 	'auto_approval_roles' => ['admin', 'usuario', 'supervisor', 'superadmin'],
 
+	'default_role' => null,
+	
 	/*
 		If you need email confirmation then pre_activated should be false
 	*/
+	
 	'pre_activated' => true,
 
 	'email' => [
