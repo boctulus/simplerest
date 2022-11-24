@@ -11,7 +11,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
 <?php
 
-    $entity   = "products";
+    $entity   = "automoviles";
     $tenantid = "az";
 
     js_file('vendors/axios/axios.min.js', null, true);
@@ -56,7 +56,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
     let checked = [];
 
     window.addEventListener('DOMContentLoaded', (event) => {
-        $('#row-form-modal').show();  // SOLO PARA DEBUG
+        //$('#row-form-modal').show();  // SOLO PARA DEBUG
 
         document.getElementById('btn-create').onclick = function () { 
             $('#row-form-modal').show()
@@ -354,8 +354,8 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
                     let data_s = JSON.stringify(data);
 
-                    const del_btn = `<button type="button" onclick="deleteBtn(${id})"><i class="fa fa-trash" style="color:#ff3333"></i></button>`;
-                    const edt_btn = `<button type="button" onclick='editBtn(${data_s})'><i class="fa fa-pen" style="color:#6699ff"></i></button>`;
+                    const del_btn = `<button type="button" onclick="deleteBtn(${id})" ><i class="fa fa-trash" style="color:#ff3333"></i></button>`;
+                    const edt_btn = `<button type="button" onclick='editBtn(${data_s})' ><i class="fa fa-pen" style="color:#6699ff"></i></button>`;
 
                     return `${edt_btn} ${del_btn}`;
                 },

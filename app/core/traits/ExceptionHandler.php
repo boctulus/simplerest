@@ -19,8 +19,11 @@ trait ExceptionHandler
      */
     function exception_handler($e) {
         DB::closeAllConnections();
+
+        $error_msg = $e->getMessage();
        
         if (config()['debug']){
+            $e      = new \Exception();
             $traces = $e->getTrace();
 
             foreach ($traces as $tx => $trace){
@@ -51,11 +54,12 @@ trait ExceptionHandler
             $backtrace      = json_encode($traces, JSON_PRETTY_PRINT) . PHP_EOL . PHP_EOL;
             $error_location = 'Error on line number '.$e->getLine().' in file - '.$e->getFile();
         
-            error($e->getMessage(), 500, $backtrace, $error_location);
+            error($error_msg, 500, $backtrace, $error_location);
         } else {
-            error($e->getMessage(), 500);
+            error($error_msg, 500);
         }
         
     }
     
 }
+    
