@@ -10,7 +10,7 @@ function tag(string $name) : Tag {
     return new Tag($name);
 }
 
-function acl() : IAcl {
+function acl() /* : IAcl */ {
     return Factory::acl();
 }
 
