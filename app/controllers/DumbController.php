@@ -4443,16 +4443,6 @@ class DumbController extends Controller
         dd($acl->getRolePermissions(), 'Role perm.');
     }
 
-    function boom()
-    {
-        throw new \Exception('BOOOOM');
-    }
-
-    function ops()
-    {
-        $this->boom();
-    }
-
     function hi($name = null)
     {
         return 'hi ' . $name;
@@ -11465,6 +11455,15 @@ class DumbController extends Controller
         // dd(
         //     get_model_defs('automoviles')
         // );
+    }
+
+    function boom(){
+        puff();
+    }
+
+    function oops()
+    {
+        $this->boom();
     }
 
 
