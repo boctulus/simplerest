@@ -92,10 +92,10 @@ return [
 		Restrictions can be aplied
 	*/
 	
-	'restrict_by_ip'	=> false,
+	'restrict_by_ip'	     => false,
 	'restrict_by_user_agent' => false,
 	// solo deshabilitar en pruebas
-	'restrict_by_tenant' => false,     
+	'restrict_by_tenant'     => false,     
 	
 	'acl_file' => SECURITY_PATH . 'acl.cache',
 
