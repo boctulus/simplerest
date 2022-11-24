@@ -2,10 +2,11 @@
 
 namespace simplerest\core\traits;
 
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
 use simplerest\libs\Debug;
+use simplerest\core\libs\DB;
 use simplerest\core\libs\Url; 
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Factory;
 
 trait ExceptionHandler
 {
@@ -20,12 +21,14 @@ trait ExceptionHandler
         DB::closeAllConnections();
        
         if (config()['debug']){
-
-            $e      = new \Exception();
             $traces = $e->getTrace();
 
             foreach ($traces as $tx => $trace){
-                $args = $exception = $trace['args'];
+                $args = $exception = $trace['args'] ?? null;
+
+                if (empty($args)){
+                    continue;
+                }
 
                 foreach ($args as $ax => $arg){
                     $exception = $traces[$tx]['args'][$ax];
