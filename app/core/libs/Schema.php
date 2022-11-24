@@ -3,10 +3,13 @@
 namespace simplerest\core\libs;
 
 use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
 use simplerest\libs\Debug;
+use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\VarDump;
+use simplerest\core\exceptions\EmptySchemaException;
+use simplerest\core\exceptions\TableAlreadyExistsException;
 
 /*
 	Schema Builder
@@ -539,8 +542,18 @@ class Schema
 		return $this;		
 	}	
 
+	function big(string $name){
+		return $this->bigint($name);		
+	}	
+
+	// alias de bigint()
+	function ubig(string $name){
+		$this->bigint($name)->unsigned();
+		return $this;		
+	}
+
 	function id(){		
-		$this->bigint('id')->unsigned();
+		$this->ubig('id');
 		$this->primary();
 		return $this;		
 	}
@@ -1211,15 +1224,23 @@ class Schema
 		}
 	} 
 
-	function createTable(bool $ignore_if_exists = false){
+	function createTable(bool $ignore_if_exists = false, bool $ignore_warnings = true){
 		if (!$ignore_if_exists){
 			if ($this->tableExists()){
-				throw new \Exception("Table {$this->tb_name} already exists");
+				if ($ignore_warnings){
+					return false;
+				}
+
+				throw new TableAlreadyExistsException("Table {$this->tb_name} already exists");
 			}
 		}		
 
 		if (empty($this->fields)){
-			throw new \Exception("No fields!");
+			if ($ignore_warnings){
+				return false;
+			}
+
+			throw new EmptySchemaException("No fields!");
 		}	
 
 		if ($this->engine == NULL){
