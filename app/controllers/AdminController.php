@@ -22,7 +22,9 @@ class AdminController extends MyController
         render($content, 'templates/adminlte_tpl.php', [
             'brandname' => 'Planex',
             'logo'       => 'img/planex_logo.png',
-            'logo_alt'   => 'Planex'
+            'logo_alt'   => 'Planex',
+            'title'      => 'Titulo cualquiera',
+            'page_name'  => 'Nombre de Pagina'
         ]);            
     }
 }

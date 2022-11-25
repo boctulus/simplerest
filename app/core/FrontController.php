@@ -185,7 +185,10 @@ class FrontController
             $res->error(Msg::CLASS_NOT_FOUND, 404, "Internal error - controller class $class_name not found"); 
         } 
 
-        if (!method_exists($class_name, $method)){
+        /*
+            Se agrego is_callable() para poder usarse con __call()
+        */
+        if (!method_exists($class_name, $method) && !is_callable($class_name, $method)){
             if (php_sapi_name() != 'cli' || $method != self::DEFAULT_ACTION){
                 $res->error("Internal error - method $method was not found in $class_name", 404); 
             } else {
