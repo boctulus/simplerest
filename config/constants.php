@@ -79,6 +79,9 @@ if (!defined('VIEWS_PATH'))
 if (!defined('CONTROLLERS_PATH'))
     define('CONTROLLERS_PATH', APP_PATH . 'controllers' . DIRECTORY_SEPARATOR);    
 
+if (!defined('PAGES_PATH'))
+    define('PAGES_PATH', APP_PATH . 'pages' . DIRECTORY_SEPARATOR);  
+
 if (!defined('SECURITY_PATH'))
     define('SECURITY_PATH', STORAGE_PATH . 'security'. DIRECTORY_SEPARATOR);
 
