@@ -160,15 +160,15 @@ class Strings
 		return $parts[0];
 	}
 
-	// String después de la primera ocurrencia del substring
-	static function after(string $string, string $substr){
-		$parts = explode($substr, $string, 2);
+	// String después de la N-esima ocurrencia del substring
+	static function after(string $string, string $substr, int $occurence = 1){
+		$parts = explode($substr, $string, $occurence+1);
 
-		if (!isset($parts[1])){
+		if (!isset($parts[$occurence])){
 			return false;
 		}
 
-		return $parts[1];
+		return implode($substr, array_slice($parts, $occurence));
 	}
 
 	// String después de la primera ocurrencia del substring
