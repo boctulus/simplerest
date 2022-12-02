@@ -7816,7 +7816,7 @@ Ej:
 	use simplerest\core\libs\DB;
 	use simplerest\core\Request;
 
-	class Tabulator 
+	class Tabulator /* extends Page */
 	{
 		public $tpl        = 'templates/adminlte_tpl.php'; //
 		public $tpl_params = [
@@ -7833,8 +7833,125 @@ Ej:
 		}
 	}
 
+Se ejecutara el metodo index() de la page correspondiente.
 
-Se ejecutara el metodo index() de la pagina correspondiente.
+Los parametros son pasados a las paginas en el metodo index como ...$args
+
+Ej:
+
+	<?php
+
+	namespace simplerest\pages\admin;
+
+	use simplerest\core\libs\DB;
+
+	class Tabulator /* extends Page */
+	{
+		public $tpl        = 'templates/adminlte_tpl.php';
+		public $tpl_params = [
+			'brand_name'  => 'Mi marca',
+			'logo'       => 'img/mi_logo.png',
+			'logo_alt'   => 'Mi empresa',
+			'title'      => 'Some title',
+			'page_name'  => ''
+		];
+
+		function __construct()
+		{   
+			/*
+				Carga de assets
+			*/
+
+			css_file('vendors/tabulator/dist/css/tabulator.min.css');
+			js_file('vendors/tabulator/dist/js/tabulator.min.js');
+		}
+
+		function index(...$args)  // <-------- HERE
+		{
+			$entity = $args[0] ?? null;  
+			
+			if ($entity == null){
+				throw new \Exception("Debe pasarse el parametro 'entity'");
+			}
+
+			$this->tpl_params['page_name'] = "DataGrid ".ucfirst($entity);
+
+			return get_view("datagrids/tabulator/tabulator", [
+				'entity'   => $entity,
+				'tenantid' => DB::getCurrentConnectionId(true)
+			]);  
+		}   
+	}
+
+Y por supuesto puede pueden recibirse solo los paramatros esperados. Ej:`
+
+	function index($entity = null){
+		// ...
+	}
+
+
+Un ejemplo de una pagina que acepta un numero variable de argumentos es una simple pagina de calculadora:
+
+	<?php
+
+	namespace simplerest\pages\admin;
+
+	class Calc /* extends Page */
+	{
+		public $tpl        = 'templates/adminlte_tpl.php'; //
+		public $tpl_params = [
+			'brand_name'  => 'Planex',
+			'logo'       => 'img/planex_logo.png',
+			'logo_alt'   => 'Planex',
+			'title'      => 'Calc',
+			'page_name'  => 'Calculator'
+		];
+
+		function index($op, ...$args){
+			$this->tpl_params['page_name'] = "Operacion ".ucfirst($op);
+
+			switch ($op){
+				case 'sum':
+				return "la suma de [ ". implode(', ', $args) . ' ] es '. array_sum($args);
+				case 'mul':
+					return "el producto de [ ". implode(', ', $args) . ' ] es '. array_product($args);
+				default:
+					$res = 'Invalid operation for '. $op;
+			}
+			
+			return $res;
+		}
+	}
+
+Entonces la calculadora se mostraria en un controlador al visitar la ruta:
+
+	/{controlador}/calc/mul/2/5/4
+
+Siempre asumiento se esta haciendo uso del FrontController
+
+
+# Pagina por defecto 
+
+Siempre haciendo uso del trait, es posible especificar la pagina por defecto.
+
+Ej:
+
+	<?php
+
+	namespace simplerest\controllers;
+
+	use simplerest\core\traits\PagesTrait;
+	use simplerest\controllers\MyController;
+
+	class AdminController extends MyController
+	{    
+		use PagesTrait;
+
+		public $default_page = 'main';  // <------- ACA
+		// ..
+	}
+
+En este caso la pagina se buscara dentro de /pages/admin	
 
 
 # Cache
