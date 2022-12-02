@@ -210,6 +210,26 @@ class Strings
 		return static::last(static::beforeLast($string, $substr), $substr);
 	}
 
+	static function lastSegment(string $string, string $delimeter){
+		$segments = explode($delimeter, $string);
+
+		if (count($segments) === 1){
+			return null;
+		}
+
+        return $segments[count($segments)-1];
+	}
+
+	static function lastSegmentOrFail(string $string, string $delimeter){
+		$ret = static::lastSegment($string, $delimeter);
+
+		if ($ret === null){
+			throw new \Exception("Substring '$delimeter' not found in '$string'");
+		}
+
+		return $ret;
+	}
+
 	static function trim($dato = null, bool $even_null = true, bool $auto_cast_numbers = true){
 		if ($dato === null){
 			if (!$even_null){
