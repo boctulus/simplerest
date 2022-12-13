@@ -261,8 +261,9 @@ class Model {
 							$this->deletedBy
 			]);	
 		}
-
+		
 		$this->unfill($this->not_fillable);
+		
 
 		// dd($this->not_fillable, 'NOT FILLABLE');
 		// dd($this->getFillables(), 'FILLABLES');
@@ -284,19 +285,15 @@ class Model {
 
 		$to_fill = [];
 
-		if (!empty($this->schema['id_name'])){
-			$to_fill[] = $this->schema['id_name'];
-		}
-
-		// if ($this->inSchema([$this->createdBy])){
-		// 	$to_fill[] = $this->createdBy;
-		// }
-
-		// if ($this->inSchema([$this->updatedBy])){
-		// 	$to_fill[] = $this->updatedBy;
+		// if (!empty($this->schema['id_name'])){
+		// 	$to_fill[] = $this->schema['id_name'];
 		// }
 
 		$this->fill($to_fill);		
+
+		$this->unfill([ 
+			$this->id() 
+		]);
 		
 		$this->soft_delete = $this->inSchema([$this->deletedAt]);
 

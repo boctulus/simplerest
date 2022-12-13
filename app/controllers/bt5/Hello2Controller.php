@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers;
+namespace simplerest\controllers\bt5;
 
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Time;
