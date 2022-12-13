@@ -4,15 +4,11 @@ namespace simplerest\core\libs\HtmlBuilder;
 
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Strings;
-use simplerest\core\libs\HtmlBuilder\Form;
+use simplerest\core\libs\HtmlBuilder\Html;
 
 
-class Bt5Form extends Form
+class Bt5Form extends Html
 {
-    static function form(mixed $content, Array $attributes = [], ...$args){  
-        return static::group($content, __FUNCTION__, $attributes, ...$args);
-    }
-
     /* Tables */
 
     static function table(mixed $content = [], $attributes = [], ...$args)
