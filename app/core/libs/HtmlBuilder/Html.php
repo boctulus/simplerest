@@ -232,6 +232,14 @@ class Html
     
     static protected $macros = [];
 
+    static function render($content, string $enclosingTag, Array $attributes = [], ...$args) : string {
+        return static::group($content, $enclosingTag, $attributes, ...$args);
+    }
+
+    static function form($content, ?string $enclosingTag = 'form', Array $attributes = [], ...$args) : string {
+        return static::render($content, $enclosingTag, $attributes, ...$args);
+    }
+
     // mover a un helper ya que es muy general
     static protected function shift(string $key, &$var, $default_value = null) : mixed {
         $out = $var[$key] ?? $default_value;
