@@ -17,17 +17,19 @@ Bt5Form::setIdAsName();
 
     <?php
 
-    //echo tag('label')->for("nombre")->text("First nameee: ");
-    echo tag('inputText')->name('nombre');
+    echo tag('form')->novalidate()->content([        
+        tag('label')->for("nombre")->text("Nombre"),
+        tag('inputText')->name('nombre'),
 
-    //echo tag('label')->for("apellido")->text("Apellido")->class('mt-4');
-    echo tag('inputText')->name('apellido')->placeholder("apellido");
-    
-    //echo tag('label')->for("edad")->text("Edad")->class('mt-4');
-    echo tag('range')->name('edad')->min(0)->max(99)->default(10)->class('my-3');
-    
-    //echo tag('label')->for("exp")->text("Experiencia")->class('mt-4');;
-    echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3');
+        tag('label')->for("apellido")->class('mt-3')->text("Apellido"),
+        tag('inputText')->name('apellido')->placeholder("apellido"),
+
+        tag('label')->for("edad")->class('mt-3')->text("Edad"),
+        tag('range')->name('edad')->min(0)->max(99)->default(10),
+
+        tag('label')->for("exp")->class('mt-3')->text("Experiencia"),
+        tag('range')->name('exp')->min(0)->max(99)->default(30),
+    ]);
 
 
 
