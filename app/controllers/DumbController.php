@@ -11128,7 +11128,7 @@ class DumbController extends Controller
 
     function test_curl_proxy_2()
     {  
-        $url       = 'https://amzn.to/3pqmCga';
+        $url       = 'https://amzn.to/3k7jfX5';
         $proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
 
         dd($url, 'URL');
@@ -11437,7 +11437,7 @@ class DumbController extends Controller
         DB::getConnection('az');
 
         dd(
-            get_model_defs('products', null, false)
+            get_model_defs('products', null, true)
         );
 
         // dd(

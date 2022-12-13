@@ -17,7 +17,9 @@ class ProductsModel extends MyModel
 		"is_locked" 
 	];
 	
-	protected $not_fillable = [];
+	protected $not_fillable = [
+
+	];
 
 	protected $field_names = [
 		"is_locked"   => "Locked?",

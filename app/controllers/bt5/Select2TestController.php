@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers;
+namespace simplerest\controllers\bt5;
 
 use simplerest\core\View;
 use simplerest\controllers\MyController;

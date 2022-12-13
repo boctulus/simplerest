@@ -809,10 +809,10 @@ Bt5Form::setIdAsName();
 
         echo tag('h3')->text('input range')->class('mt-3 mb-3');
 
-        echo tag('label')->name("edad")->text("Edad");
+        echo tag('label')->for("edad")->text("Edad");
         echo Bt5Form::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
 
-        echo tag('label')->name("exp")->text("Experiencia");
+        echo tag('label')->for("exp")->text("Experiencia");
         echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3');
 
         echo tag('h3')->text('checkGroup')->class('mb-3');
@@ -844,7 +844,7 @@ Bt5Form::setIdAsName();
 
         echo Bt5Form::url(default: "https://www.linkedin.com/in/pablo-bozzolo/", class: "mt-3");
 
-        echo Bt5Form::label(id: "comment", placeholder: "Algo que desea agregar:", class: 'mt-3');
+        echo Bt5Form::label("comment", "Algo que desea agregar:");
         echo Bt5Form::area(id: 'comment', default: 'bla bla', class: 'my-3');
 
 

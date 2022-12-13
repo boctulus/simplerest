@@ -403,8 +403,12 @@ class DB
 		return array_keys(config()['tentant_groups']);
 	}
 
-	static function getTenantGroupName(string $tenant_id) : ?string {
+	static function getTenantGroupName(?string $tenant_id = null) : ?string {
 		static $gns;
+
+		if ($tenant_id === null){
+			return get_default_connection_id();
+		}
 
 		if (is_null($gns)){
 			$gns = [];
