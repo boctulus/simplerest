@@ -2,9 +2,10 @@
 
 namespace simplerest\core\libs\HtmlBuilder;
 
-use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\core\libs\Strings;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\HtmlBuilder\Tag;
 
 
 class Html
@@ -823,6 +824,31 @@ class Html
             }
         }
         
+        if (isset($args['show'])){
+            // Esto deberia simplificarse:
+            $attributes['style'] = $attributes['style'] ?? '';
+            static::addStyle('display:block', $attributes['style']);
+
+            // por las dudas
+            static::removeClass('d-none', $attributes['class']);
+        }
+
+        if (isset($args['hide'])){
+            // Esto deberia simplificarse:
+            $attributes['style'] = $attributes['style'] ?? '';
+            static::addStyle('display:none', $attributes['style']);
+        }
+
+        if (isset($args['display'])){
+            if ($args['display'] == 'block' || $args['display'] === true){
+                static::removeClass('d-none', $attributes['class']);
+                static::addClass('d-block', $attributes['class']);
+            } else {
+                static::removeClass('d-block', $attributes['class']);
+                static::addClass('d-none', $attributes['class']);
+            }
+        }
+
         $attributes = array_merge($attributes, $args);
 
         $name = $attributes['name'] ?? '';
@@ -997,7 +1023,7 @@ class Html
         return static::input('url', $default, $attributes, ...$args); 
     }
 
-    static protected function label(string $for, string $text, Array $attributes = [], ...$args){
+    static function label(string $for, string $text, Array $attributes = [], ...$args){
         $attributes['for'] = $for;
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass('label') : static::getClass('label');
 

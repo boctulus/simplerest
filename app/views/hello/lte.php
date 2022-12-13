@@ -1096,9 +1096,6 @@ View::css_file(ASSETS_PATH . 'vendors/adminlte/dist/css/adminlte.css');
 
         echo AdminLte::url(default: "https://www.linkedin.com/in/pablo-bozzolo/", class: "mt-3");
 
-        echo AdminLte::label(id: "comment", placeholder: "Algo que desea agregar:", class: 'mt-3');
-        echo AdminLte::area(id: 'comment', default: 'bla bla', class: 'my-3');
-
 
         echo tag('file')
         ->multiple()

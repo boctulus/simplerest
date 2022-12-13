@@ -105,12 +105,18 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
     $formatters  = $instance->getformatters();
 
     $hidden_ay   = $instance->getHidden();
+    $fillable_ay = $instance->getFillables();
+    $nullable_ay = $instance->getNullables();    
 
     $defs = [];
     foreach ($fields as $field){
         if (!$include_hidden && in_array($field, $hidden_ay)){
             continue;
         }
+
+        $defs[$field]['hidden']   = in_array($field, $hidden_ay)   ? 1 : 0;
+        $defs[$field]['fillable'] = in_array($field, $fillable_ay) ? 1 : 0;
+        $defs[$field]['nullable'] = in_array($field, $nullable_ay) ? 1 : 0;
 
         if (isset($field_mames[$field])){
             $defs[$field]['name']     = $field_mames[$field]; 
