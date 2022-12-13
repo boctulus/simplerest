@@ -10242,6 +10242,47 @@ Ej:
 	</div>
 
 
+# Mostrar / ocultar
+
+Para ocultar o mostrar un elemento se pueden utilizar los metodos show() y hide()
+
+Ej:
+
+    echo tag('modal')->content(
+        tag('modalDialog')->content(
+            tag('modalContent')->content(
+                tag('modalHeader')->content(
+                    tag('modalTitle')->text('Nuevo') . 
+                    tag('closeButton')->dataBsDismiss('modal')
+                ) .
+                tag('modalBody')->content(
+                    $modal_body                    
+                ) . 
+                tag('modalFooter')->content(
+                    tag('closeModal')->content("Cancelar")->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ]) .
+                    tag('button')->id("save_row")->text('Guardar')
+                ) 
+            ) 
+        )
+    )
+    ->show()  // <-------------------- HERE
+    ->id('row-form-modal');
+
+En el ejemplo anterior el modal seria renderizado ya abierto.
+
+Nota:
+
+Tambien se agrego el metodo display() pero no es compatible con modales de BT5 !!!
+
+    ->display('block')
+O
+    ->display('none')
+
+De todas formas, hay más clases que no es están considerando:
+
+¨To hide elements simply use the .d-none class or one of the .d-{sm,md,lg,xl,xxl}-none classes for any responsive screen variation.¨
+
+
 # Atributos data-*
 
 Los atributos data-* en caso de usarse como métodos encadenados con la clase Tag deben pasarse a camelCase.

@@ -1,7 +1,0 @@
-2022-11-22 13:03:15	{"id":"2","put_mode":false,"raw_body":""}
-2022-11-22 13:03:55	{"id":"5068","put_mode":false,"raw_body":"{\r\n    \"description\": \"gaseosaaaaaaa!!\",\r\n    \"updated_by\": 19\r\n}"}
-2022-11-22 13:04:49	{"id":"2","put_mode":false,"raw_body":"{\r\n    \"description\": \"gaseosaaaaaaa!!\",\r\n    \"updated_by\": 19\r\n}"}
-2022-11-22 13:05:30	{"id":"2","put_mode":false,"raw_body":"{\r\n    \"kilometraje\": 500,\r\n    \"updated_by\": 19\r\n}"}
-2022-11-22 13:05:47	{"id":"2","put_mode":false,"raw_body":"{\r\n    \"kilometraje\": 500,\r\n  "}
-2022-11-22 13:08:19	{"id":"2","put_mode":false,"raw_body":"{\"kilometraje\":455}"}
-2022-11-22 13:08:48	{"id":"2","put_mode":false,"raw_body":"{\"kilometraje\":455}"}
