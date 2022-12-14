@@ -528,7 +528,7 @@ class DumbController extends Controller
             <script src="https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js"></script>
 
             
-            <script src="http://simplerest.lan/public/assets/js/boostrap_notices.js"></script>
+            <script src="http://simplerest.lan/public/assets/js/boostrap/boostrap_notices.js"></script>
 
             <footer id="footer">
                     

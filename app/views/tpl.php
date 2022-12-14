@@ -157,7 +157,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js"></script>
 
     
-    <script src="<?= asset('js/boostrap_notices.js') ?>"></script>
+    <script src="<?= asset('js/boostrap/boostrap_notices.js') ?>"></script>
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>

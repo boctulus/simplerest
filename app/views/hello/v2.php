@@ -11,10 +11,15 @@ Bt5Form::setIdAsName();
 /*
     Bootstrap 5 validation
 
-    https://getbootstrap.com/docs/5.0/forms/validation/
+    ToolTips
+
+    Implica hacer un swap de las clases .{valid|invalid}-feedback 
+    por las clases .{valid|invalid}-tooltip
+
+    Ademas el padre debe tener position: relative
 */
 
-js_file('js/boostrap/bt_validation.js');
+js_file('js/bootstrap/bt_validation.js');
 
 ?>
 
@@ -26,7 +31,7 @@ js_file('js/boostrap/bt_validation.js');
     <?php
 
     /*
-        Boostrap Validation !
+        Bootstrap Validation !
 
         Incluye textos que seran mostrados si el campo valida o no valida
     */
