@@ -26,7 +26,9 @@ js_file('js/boostrap/bt_validation.js');
     <?php
 
     /*
-        Ver Boostrap Validation !
+        Boostrap Validation !
+
+        Incluye textos que seran mostrados si el campo valida o no valida
     */
 
     echo tag('form')
@@ -52,3 +54,9 @@ js_file('js/boostrap/bt_validation.js');
         tag('submit')->class('mt-3')->id("enviar")->value("Enviar")->success()
     ]);
 
+
+    
+    ?>
+    
+    </div>
+</div>
