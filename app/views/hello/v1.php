@@ -35,9 +35,13 @@ js_file('js/boostrap/bt_validation.js');
     ->content([        
         tag('label')->for("nombre")->text("Nombre"),
         tag('inputText')->name('nombre')->required(),
+        tag('div')->class('invalid-feedback')->content('Campo obligatorio'), // texto si valida
+        tag('div')->class('valid-feedback')->content('Luce bien'), // texto sino valida
 
         tag('label')->class('mt-3')->for("apellido")->text("Apellido"),
-        tag('inputText')->name('apellido')->placeholder("apellido"),
+        tag('inputText')->name('apellido')->placeholder("apellido")->required(),
+        tag('div')->class('invalid-feedback')->content('Campo obligatorio'),
+        tag('div')->class('valid-feedback')->content('Luce bien'),
 
         tag('label')->class('mt-3')->for("edad")->text("Edad"),
         tag('range')->name('edad')->min(0)->max(99)->default(10),

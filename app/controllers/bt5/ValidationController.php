@@ -10,8 +10,23 @@ use simplerest\core\libs\DB;
 
 class ValidationController extends MyController
 {
+    /*
+        Basico  
+    */
     function index(){
-        view('hello/validation', null, null, 15);
+        view('hello/validation');
+    }
+
+    function v1(){
+        view('hello/v1');
+    }
+
+    function v2(){
+        view('hello/v1');
+    }
+
+    function v3(){
+        view('hello/v1');
     }
 }
 
