@@ -48,3 +48,8 @@ js_file('js/boostrap/bt_validation.js');
         tag('submit')->class('mt-3')->id("enviar")->value("Enviar")->success()
     ]);
 
+
+    ?>
+    
+    </div>
+</div>

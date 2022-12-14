@@ -22,11 +22,16 @@ class ValidationController extends MyController
     }
 
     function v2(){
-        view('hello/v1');
+        view('hello/v2');
+    }
+
+    function v2a(){
+        view('hello/v2a');
     }
 
     function v3(){
-        view('hello/v1');
+        view('hello/v3');
     }
+
 }
 
