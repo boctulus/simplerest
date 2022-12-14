@@ -16,7 +16,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
     js_file('vendors/axios/axios.min.js', null, true);
     //js_file('vendors/lodash/lodash.min.js', null, true);
-    js_file('js/bt-utilities.js');
+    js_file('js/bootstrap/bt-utilities.js');
     js_file('js/utilities.js');
 
     css_file('css/bt-custom.css');
