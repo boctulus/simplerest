@@ -14,7 +14,7 @@ Bt5Form::setIdAsName();
     https://getbootstrap.com/docs/5.0/forms/validation/
 */
 
-js_file('js/boostrap/bt_validation.js');
+js_file('js/bootstrap/bt_validation.js');
 
 ?>
 
@@ -26,7 +26,7 @@ js_file('js/boostrap/bt_validation.js');
     <?php
 
     /*
-        Boostrap Validation !
+        Bootstrap Validation !
 
         Incluye textos que seran mostrados si el campo valida o no valida
     */
@@ -55,7 +55,7 @@ js_file('js/boostrap/bt_validation.js');
     ]);
 
 
-    
+
     ?>
     
     </div>

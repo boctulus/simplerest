@@ -11070,6 +11070,18 @@ Ej:
 	->height('400px');
 	
 
+# Eventos
+
+Usando attributes() en principio es posible manejar eventos aunque logicamente tambien se puede utilizar addEventListener
+
+	tag('button')
+	->content("Hacer algo")
+	->attributes([ 'onClick' => "console.log('hago algo')" ]) 
+
+Notas:
+
+Si para abrir / cerrar una ventana modal lo que deben usarse son los tags tag('openButton') y tag('closeButton')
+
 # Ventanas modales
 
 La estructura de un modal es más o menos la siguiente:
@@ -11098,32 +11110,55 @@ El texto del boton en closeModal se puede personalizar como el de cualquier otro
 	tag('closeModal')->content("Cerrar")
 
 
-Y claro, se debe agregar un evento para los botones. Ej:
-
-	tag('closeModal')
-	->content("Cerrar")
-	->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ])
-
-
 Ejemplo completo:
 
 	echo tag('modal')->content(
         tag('modalDialog')->content(
             tag('modalContent')->content(
                 tag('modalHeader')->content(
-                    tag('modalTitle')->text('Nuevo') . 
+                    tag('modalTitle')->text('Nuevo / Editar') . 
                     tag('closeButton')->dataBsDismiss('modal')
                 ) .
                 tag('modalBody')->content(
                     tag('p')->text('El contenido')
                 ) . 
                 tag('modalFooter')->content(
-                    tag('closeModal')->content("Cancelar")->attributes([ 'onClick' => "hide_elem_by_id('row-form-modal');" ]) .
+                    tag('closeModal')->content("Cancelar") .
                     tag('button')->text('Guardar')
                 ) 
             ) 
         )
     )->id('row-form-modal');
+
+	echo tag('openButton')->target("row-form-modal")->content('Launch demo modal')->class('my-3');
+
+O...
+
+	echo tag('modal')
+	->header(
+		tag('modalTitle')->text('Nuevo / Editar') . 
+		tag('closeButton')->dataBsDismiss('modal')
+	)
+	->body(
+		$modal_body
+	)
+	->footer(
+		tag('closeModal') .
+		tag('button')->id("save_row")->text('Guardar')
+	)
+	->options([
+		//'fullscreen',
+		//'center',
+		//'scrollable'
+	])
+	//->show() ///
+	->id('row-form-modal');
+
+	echo tag('openButton')->target("row-form-modal")->content('Launch demo modal')->class('my-3');
+
+Nota:
+
+Para abrir / cerrar una ventana modal lo que deben usarse son los tags tag('openButton') y tag('closeButton')
 
 
 Static
