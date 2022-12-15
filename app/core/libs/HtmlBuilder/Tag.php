@@ -45,5 +45,16 @@ class Tag
         return $this->render();
     }
 
+    /*
+        Ejecuta un callback cuano $cond es verdadero
+    */
+    function when($cond, $fn, ...$args){
+        if ($cond){
+            $fn($this, ...$args);
+        }
+        
+        return $this;
+    }
+
 }
 
