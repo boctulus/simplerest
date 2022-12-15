@@ -10005,7 +10005,6 @@ Ej:
 		content:[ $arr['title'] ]
 	)
 
-
 # Select
 
 Ej:
@@ -10118,7 +10117,7 @@ Se puede generar una copia del valor del atributo "name" en "id" para evitar rep
 	Bt5Form::setIdAsName();
 
 
-# Métodos genérico tag()
+# Métodos genéricos con tag()
 
 Hay muchísimos tags de HTML y si alguno no está contemplado siempre es posible usar el métodos tag() para conseguir el resultado deseado.
 
@@ -10157,7 +10156,6 @@ Ej:
 	->always_open(true)
 	->attributes(['class' => 'accordion-flush'])
 	;
-
 
 
 # Macros
@@ -10247,6 +10245,19 @@ Ej:
 		?>
 		</div>
 	</div>
+
+
+# When
+
+Al igual que en el QueryBuilder disponemos de when()
+
+$req = true;
+
+$html = tag('inputText')
+->name('nombre')
+->when($req, function($o){
+    $o->required('required');
+});
 
 
 # Mostrar / ocultar

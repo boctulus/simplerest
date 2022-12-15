@@ -30,7 +30,18 @@ class ValidationController extends MyController
     }
 
     function v3(){
-        view('hello/v3');
+        \simplerest\core\libs\HtmlBuilder\Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Html::class);
+        \simplerest\core\libs\HtmlBuilder\Bt5Form::setIdAsName();
+
+        $req = true;
+
+        $html = tag('inputText')
+        ->name('nombre')
+        ->when($req, function($o){
+            $o->required('required');
+        });
+
+        dd($html->render());
     }
 
 }
