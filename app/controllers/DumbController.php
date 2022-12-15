@@ -110,7 +110,7 @@ class DumbController extends Controller
 
         $res = $client->disableSSL()
         ->followLocations()
-        ->cache(600)  
+        ->cache(5)  
         ->get()
         ->getResponse(false);
 
@@ -124,7 +124,10 @@ class DumbController extends Controller
 
         $html = $res['data'];
 
-        echo $html;
+        dd([
+            'realtime' => file_get_contents($url),
+            'cached'   => $html
+        ]);
     }
 
     function test_view_cache(){
@@ -11324,6 +11327,34 @@ class DumbController extends Controller
     }
 
 
+    function test_basic_auth(){
+        $username = 'intergrade';
+        $password = '9660ed881416fad88c5f48eddd7334c6';
+
+        $url = 'http://200.6.78.34/stock/v1/catalogfilter/packaging';
+
+        $client = ApiClient::instance()
+        //->setBody($body)
+        ->setHeaders([
+            'Authorization: Basic '. base64_encode("$username:$password")
+        ])
+        ->setCache(3600)
+        ->decode(true);
+
+        $client->setUrl($url);
+
+        dd(
+            $client->getCachePath()
+        , 'CACHE PATH');
+
+        exit;
+
+        $res = $client->get();
+
+        dd($res->getStatus(), 'STATUS');
+        dd($res->getError(), 'ERROR');
+        dd($res->data(), 'DATA');
+    }
     
     function respuesta()
     {
@@ -11464,6 +11495,55 @@ class DumbController extends Controller
     function oops()
     {
         $this->boom();
+    }
+
+    /*
+        REGLA:
+
+        SI el precio es mayor a 10.000 entonces que si el digito ante-ante-ante-ultimo es 5 o mas de 5 entonces sea 900 o sea..
+
+        10200 sigue igual
+        10300 sigue igual
+        10400 sigue igual
+        10500 pasa a 10900
+        10600 pasa a 10900
+        ...
+
+        y en todos los casos... los ultimos dos digitos seran 00
+    */
+    function custom_round(){
+        $my_round = function($val){
+
+            if ($val > 100){
+                $val = 100 * number_format(0.01 * $val, 0, '.', '');
+            }
+           
+            if ($val < 10000){
+                return $val;
+            }
+
+            $last_4_str = substr($val, -4);
+
+            if ($last_4_str > 5000){
+                $last_4_str = substr($last_4_str, 0, 1) . '900';
+                //dd(" <--------- ! para $val");
+                $val = substr($val, 0, -4) . $last_4_str;
+            }
+
+
+            return $val;
+        };
+        
+        for ($i=0; $i<10000000; $i++){
+
+            $i = $i+ rand(0, 1+ 0.5*$i);
+            
+            dd(
+                $i . "\t>\t" .$my_round($i)
+            );
+
+        }
+        dd("Done");
     }
 
 
