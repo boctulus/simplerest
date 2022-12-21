@@ -12936,7 +12936,7 @@ Ej:
 
 Border radius
 
-Con borderRad() se especifica la redondez de 1 a 3
+Con borderRad() se especifica la redondez de 0 a 3 donde 0 es sin redondez alguna.
 
 Ej:
 
@@ -12949,6 +12949,24 @@ Ej:
     ->borderWidth(5)
     ->borderColor('success')
 	->borderRad(3);
+
+Un buen ejemplo de uso es dentro de un buttonGroup.
+
+Ej:
+
+	tag('buttonGroup')
+	->content([
+		tag('closeModal')
+		->text('Cerrar')
+		->borderRad(0)
+		->style('margin-right:0.25em'),
+		
+		tag('submit')
+		->id("save_row")
+		->text('Guardar')
+		->borderRad(0)
+	])   
+
 
 Bordes como "píldora"
 
@@ -13420,6 +13438,22 @@ Ej:
 
 Con vertical() debería verse vertical pero parece que faltó importar CSS.
 	
+
+# Tags que no cierran
+
+Hay ciertos tag que la W3 ha determinado que deben abrirse pero no cerrarse como el hr. En su implementación eso es demarcado con 
+
+	$attributes['close_tag'] = false
+
+Ej:
+
+	static function hr(Array $attributes = [], ...$args){
+		$attributes['close_tag'] = false;
+
+		return static::tag('hr', '', $attributes, null,...$args);
+	}
+
+Logicamente un tag que no cierra tampoco puede tener "contenido" entre apertura y cierre porque hay un solo tag.
 
 ----- 
 -----

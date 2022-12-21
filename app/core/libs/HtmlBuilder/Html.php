@@ -506,7 +506,7 @@ class Html
         return implode(' ', $_att);
     }
 
-    static public function getClass(string $tag) : string{
+    static function getClass(string $tag) : string{
         return static::$classes[$tag] ?? '';
     }
 
@@ -522,6 +522,12 @@ class Html
             $plain_attr[] = 'readonly';
             unset($args['readonly']);
         }
+
+        $close_tag = true;
+        if (isset($attributes['close_tag'])){
+            $close_tag = $attributes['close_tag'];
+            unset($attributes['close_tag']);
+        } 
 
         $justif = [
             "center" => "center",
@@ -871,8 +877,15 @@ class Html
         $props = trim("$att_str $p_atr");
         $props = !empty($props) ? ' '.$props : $props;
 
-        // en principio asumo que abre y cierra
-        $ret = "<$type{$props}>$val</$type>";
+    
+        if ($close_tag){
+            // en principio abre y cierra
+            $ret = "<$type{$props}>$val</$type>";
+        } else {
+            // sino cierra entonces tampoco hay un "contenido"
+            $ret = "<$type{$props}/>";
+        }
+
 
         /*
             Insert something after tag
@@ -885,6 +898,12 @@ class Html
         }
 
         return static::$pretty ? static::beautifier($ret) : $ret;
+    }
+
+    static function hr(Array $attributes = [], ...$args){
+        $attributes['close_tag'] = false;
+
+        return static::tag('hr', '', $attributes, null,...$args);
     }
 
     static function group(mixed $content, string $tag = 'div', Array $attributes = [], ...$args){
@@ -921,6 +940,8 @@ class Html
 
     static function input(string $type, ?string $default = null, Array $attributes = [], Array $plain_attr = [], ...$args)
     {  
+        $attributes['close_tag'] = false;
+
         if ($type != 'list'){
             $attributes['type']  = $type;
         }
@@ -1254,7 +1275,9 @@ class Html
         return static::input($type, $value, $attributes, ...$args);
     } 
 
-    static function submit(string $value, Array $attributes = [], ...$args){
+    static function submit(string $value = null, Array $attributes = [], ...$args){
+        $value = $value ?? $args['text'] ?? 'Submit';
+
         return static::inputButton($value, $attributes, __FUNCTION__, ...$args);
     }
 
@@ -1611,6 +1634,7 @@ class Html
     static function td(mixed $content, Array $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
+    
 
     /*
         No usar ni htmLawed ni tidy !!!
