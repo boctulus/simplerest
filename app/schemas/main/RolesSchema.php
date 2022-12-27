@@ -14,6 +14,8 @@ class RolesSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'name'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'name' => 'STR'
@@ -24,6 +26,8 @@ class RolesSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['name'],
 
 			'uniques'		=> [],
 
@@ -41,30 +45,30 @@ class RolesSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				  'user_roles' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'user_roles',
-				        1 => 'role_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'roles',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				),
+  'user_roles' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_roles',
+        1 => 'role_id',
+      ),
+      1 => 
+      array (
+        0 => 'roles',
+        1 => 'id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

@@ -14,6 +14,8 @@ class BackgroundWorkersSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'queue', 'pid', 'created_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'queue' => 'STR',
@@ -25,13 +27,15 @@ class BackgroundWorkersSchema implements ISchema
 
 			'autoincrement' => 'id',
 
-			'nullable'		=> ['id', 'queue'],
+			'nullable'		=> ['id'],
+
+			'required'		=> ['queue', 'pid', 'created_at'],
 
 			'uniques'		=> ['pid'],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int'],
-				'queue' => ['type' => 'str', 'max' => 60],
+				'queue' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'pid' => ['type' => 'int', 'required' => true],
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
@@ -43,14 +47,14 @@ class BackgroundWorkersSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

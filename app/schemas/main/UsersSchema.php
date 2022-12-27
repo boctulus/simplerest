@@ -14,6 +14,8 @@ class UsersSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'firstname', 'lastname', 'username', 'password', 'is_active', 'is_locked', 'email', 'confirmed_email', 'belongs_to', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'firstname' => 'STR',
@@ -38,6 +40,8 @@ class UsersSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'firstname', 'lastname', 'password', 'is_active', 'is_locked', 'confirmed_email', 'belongs_to', 'created_by', 'updated_by', 'deleted_by', 'updated_at', 'deleted_at'],
+
+			'required'		=> ['username', 'email', 'created_at'],
 
 			'uniques'		=> [],
 
@@ -72,122 +76,307 @@ class UsersSchema implements ISchema
 					['users.created_by','users.id'],
 					['users.updated_by','users.id'],
 					['users.deleted_by','users.id']
+				],
+				'api_keys' => [
+					['api_keys.user_id','users.id']
+				],
+				'collections' => [
+					['collections.belongs_to','users.id']
+				],
+				'files' => [
+					['files.belongs_to','users.id']
+				],
+				'folder_other_permissions' => [
+					['folder_other_permissions.belongs_to','users.id']
+				],
+				'folder_permissions' => [
+					['folder_permissions.belongs_to','users.id'],
+					['folder_permissions.access_to','users.id']
+				],
+				'folders' => [
+					['folders.belongs_to','users.id']
+				],
+				'user_roles' => [
+					['user_roles.user_id','users.id']
+				],
+				'user_sp_permissions' => [
+					['user_sp_permissions.user_id','users.id']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','users.id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__created_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'created_by',
-				      ),
-				    ),
-				    2 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__updated_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'updated_by',
-				      ),
-				    ),
-				    3 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__deleted_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'deleted_by',
-				      ),
-				    ),
-				    4 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				    ),
-				    5 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'created_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				    ),
-				    6 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'updated_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				    ),
-				    7 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'deleted_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'belongs_to',
+      ),
+    ),
+    1 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__created_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'created_by',
+      ),
+    ),
+    2 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__updated_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'updated_by',
+      ),
+    ),
+    3 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__deleted_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'deleted_by',
+      ),
+    ),
+    4 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+    5 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'created_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+    6 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'updated_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+    7 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'deleted_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'api_keys' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'api_keys',
+        1 => 'user_id',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'collections' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'collections',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'files' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'files',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'folder_other_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'folder_other_permissions',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'folder_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'folder_permissions',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+    1 => 
+    array (
+      0 => 
+      array (
+        0 => 'folder_permissions',
+        1 => 'access_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'folders' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'folders',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'user_roles' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_roles',
+        1 => 'user_id',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'user_sp_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_sp_permissions',
+        1 => 'user_id',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'user_tb_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_tb_permissions',
+        1 => 'user_id',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				'users' => [
@@ -199,66 +388,66 @@ class UsersSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-				  'users' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__created_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'created_by',
-				      ),
-				    ),
-				    2 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__updated_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'updated_by',
-				      ),
-				    ),
-				    3 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'users',
-				        1 => 'id',
-				        'alias' => '__deleted_by',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'users',
-				        1 => 'deleted_by',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'belongs_to',
+      ),
+    ),
+    1 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__created_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'created_by',
+      ),
+    ),
+    2 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__updated_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'updated_by',
+      ),
+    ),
+    3 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__deleted_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'deleted_by',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

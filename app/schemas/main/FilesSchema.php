@@ -14,6 +14,8 @@ class FilesSchema implements ISchema
 
 			'id_name'		=> 'uuid',
 
+			'fields'		=> ['uuid', 'filename', 'file_ext', 'filename_as_stored', 'belongs_to', 'guest_access', 'is_locked', 'broken', 'created_at', 'deleted_at'],
+
 			'attr_types'	=> [
 				'uuid' => 'STR',
 				'filename' => 'STR',
@@ -24,16 +26,16 @@ class FilesSchema implements ISchema
 				'is_locked' => 'INT',
 				'broken' => 'INT',
 				'created_at' => 'STR',
-				'deleted_at' => 'STR',
-				'description' => 'STR',
-				'workspace' => 'STR'
+				'deleted_at' => 'STR'
 			],
 
 			'primary'		=> ['uuid'],
 
 			'autoincrement' => null,
 
-			'nullable'		=> ['belongs_to', 'guest_access', 'is_locked', 'broken', 'deleted_at', 'description', 'workspace'],
+			'nullable'		=> ['belongs_to', 'guest_access', 'is_locked', 'broken', 'deleted_at'],
+
+			'required'		=> ['uuid', 'filename', 'file_ext', 'filename_as_stored', 'created_at'],
 
 			'uniques'		=> [],
 
@@ -47,62 +49,60 @@ class FilesSchema implements ISchema
 				'is_locked' => ['type' => 'bool'],
 				'broken' => ['type' => 'bool'],
 				'created_at' => ['type' => 'datetime', 'required' => true],
-				'deleted_at' => ['type' => 'datetime'],
-				'description' => ['type' => 'str', 'max' => 60],
-				'workspace' => ['type' => 'str', 'max' => 40]
+				'deleted_at' => ['type' => 'datetime']
 			],
 
 			'fks' 			=> ['belongs_to'],
 
 			'relationships' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','files.belongs_to']
+				'users' => [
+					['users.id','files.belongs_to']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'files',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'files',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','files.belongs_to']
+				'users' => [
+					['users.id','files.belongs_to']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'files',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'files',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

@@ -5,7 +5,7 @@ namespace simplerest\controllers\bt5;
 use simplerest\core\View;
 use simplerest\controllers\MyController;
 
-class Select2TestController extends MyController
+class Select2Controller extends MyController
 {
     function __construct()
     {
@@ -26,7 +26,7 @@ class Select2TestController extends MyController
 
         view('select2/test.php', [
             'json' => $json
-        ], 'tpl_basic.php');              
+        ], 'templates/tpl_basic.php');              
     }
     
     /*
@@ -45,7 +45,7 @@ class Select2TestController extends MyController
 
         view('select2/diagnosticojournal.php', [
             'json' => $json
-        ], 'tpl_basic.php');              
+        ], 'templates/tpl_basic.php');              
     }
 }
 

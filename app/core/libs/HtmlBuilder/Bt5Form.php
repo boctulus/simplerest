@@ -1906,7 +1906,7 @@ class Bt5Form extends Html
     */
     static function searchTool(mixed $content = 'Search', Array $attributes = [], ...$args)
     {
-        include_widget_css(__FUNCTION__);
+        css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
         
         $attributes['class'] = 'col-md-5 mx-auto';
 
@@ -1933,7 +1933,7 @@ class Bt5Form extends Html
     */
 
     static function mask(mixed $content = '', Array $attributes = [], ...$args){
-        include_widget_css(__FUNCTION__);
+        css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
         $attributes['class'] = 'bg-image rounded';
 
@@ -1964,9 +1964,9 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function shadow(mixed $content = '', Array $attributes = [], ...$args){     
-        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
-    
+    static function shadow(mixed $content = '', Array $attributes = [], ...$args){       
+        css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+
         $class = $args['class'] ?? $attributes['class'] ?? null;
 
         // default shadow
@@ -1978,7 +1978,7 @@ class Bt5Form extends Html
     }
 
     static function note(mixed $text, Array $attributes = [], ...$args){     
-        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+       css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
         
         $attributes['class'] = "note";
 
@@ -2000,7 +2000,7 @@ class Bt5Form extends Html
 
     // milestone minimalista
     static function steps(int $current, int $max, Array $attributes = [], ...$args){     
-        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+       css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
     
         $attributes['class'] = "all-steps";
 
@@ -2027,7 +2027,7 @@ class Bt5Form extends Html
         https://www.bootdey.com/snippets/view/timeline-steps#preview
     */
     static function h_timeline(mixed $content, Array $attributes = [], ...$args){
-        include_widget_css(__FUNCTION__);
+        css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
         $attributes['class'] = 'timeline-steps aos-init aos-animate';
         $attributes['data-aos'] = 'fade-up';
@@ -2059,7 +2059,7 @@ class Bt5Form extends Html
         https://colorlib.com/polygon/gentelella/form_wizards.html
     */
     static function wizard_steps(int $current, int $max = 0, Array $content = [], Array $attributes = [], ...$args){     
-        include_widget_css(__FUNCTION__);
+        css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
         $vertical = (isset($args['vertical']) || (isset($attributes['vertical']) && $attributes['vertical'] !== false));
 
