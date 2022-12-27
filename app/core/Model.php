@@ -2052,6 +2052,98 @@ class Model {
 		return $this;	
 	}
 
+	/*
+		Interpreta un array como el siguiente:
+
+		[
+			'AND' => [
+				['name', '%a%', 'LIKE'],
+
+				[
+					'AND' => [                     // <----- podria ser hibrido funcionando igual si falta la conjuncion y asumiendo es 'AND'
+						['cost', 100, '>'],
+						['id', 50, '<']
+					]
+				],
+				
+				[
+					'OR' => [
+						['is_active', 1],
+						[
+							'AND' => [ 
+								['cost', 100, '<='],
+								['description', 'NOT NULL', 'IS']
+							]
+						]
+					]
+				],
+				
+				['belongs_to', 150, '>']		
+			]	
+		]
+	*/
+	static protected function _where_array(Array $cond_ay, $parent_conj = 'AND', $inside_group = false)
+	{
+		$code = '';
+		foreach ($cond_ay as $key => $ay){
+			if (!is_array($ay)){
+				continue;
+			}
+
+			$ay_str = var_export($ay, true);
+
+			if (is_string($key)){
+				if ($key != 'OR' && $key != 'AND'){
+					throw new \Exception();
+				}
+
+				$conj = $key;
+
+			
+				$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj, true) ."});\n";
+			} else {
+				if (Arrays::isMultidim($ay)){			
+					// chequear si todos los arrays internos son no-asociativos (esto limita artificialmente la estructura)
+					
+					if (Arrays::areSimpleAllSubArrays($ay)){
+						$w_type = ($parent_conj == 'OR' ? 'orWhere' : 'where');
+						$code .= "->$w_type($ay_str)";
+					} else {
+						$code .= static::_where_array($ay);
+					}
+
+				} else {
+
+					dd([
+						'ay'       => $ay,
+						'conj'     => $parent_conj,
+						'is_group' => $inside_group
+					]);
+
+					if ($inside_group){
+						$w_type = ($parent_conj == 'OR' ? 'whereOr' : 'where');
+						$code  .= "\$q->$w_type(". $ay_str .");\n";
+					} else {
+						$w_type = ($parent_conj == 'OR' ? 'orWhere' : 'where');
+						$code  .= $ay_str;
+					}
+					
+
+					
+				}
+			}
+		}	
+
+		return $code;
+	}
+
+	static function where_array(Array $cond_ay){
+		return ltrim(
+			static::_where_array($cond_ay),
+			'$q'
+		);
+	}
+
 	protected function _where(?Array $conditions = null, string $group_op = 'AND', $conjunction = null)
 	{
 		//dd($group_op, 'group_op');
@@ -2284,6 +2376,11 @@ class Model {
 						[$this->getFullyQualifiedField($field), $min, '<'],
 						[$this->getFullyQualifiedField($field), $max, '>']
 		], 'OR');
+		return $this;
+	}
+
+	function whereLike(string $field, $val){
+		$this->where([$this->getFullyQualifiedField($field), $val, 'LIKE']);
 		return $this;
 	}
 

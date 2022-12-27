@@ -6,7 +6,7 @@ class Arrays
 {
     static function getOrFail(Array $array, string $key_name, $allowed_values = null){
         if (!isset($array[$key_name])){
-            throw new \Exception("'$key_name' is missing in the request");
+            throw new \Exception("'$key_name' is missing");
         }
 
         $val = $array[$key_name];
@@ -199,6 +199,41 @@ class Arrays
         }
 
         return $new;
+    }
+
+    /*
+        https://stackoverflow.com/a/145348/980631
+    */
+    static function isMultidim($a) {
+        foreach ($a as $v) {
+            if (is_array($v)) return true;
+        }
+        return false;
+    }
+
+    /*
+         $a = [
+            ['a', 'c'],
+            ['x' => 7], // <--- false
+            ['a', 'c', 5],
+        ];
+        
+        dd(
+            Arrays::areSimpleAllSubArrays($a)
+        );
+    */
+    static function areSimpleAllSubArrays($a){
+        foreach ($a as $sub){
+            if (!is_array($sub)){
+                throw new \InvalidArgumentException("An element -'$sub'- is not a sub-array as expected");
+            }
+
+            if (Arrays::is_assoc($sub)){
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

@@ -14,6 +14,8 @@ class EmailNotificationsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'from_addr', 'from_name', 'to_addr', 'to_name', 'cc_addr', 'cc_name', 'bcc_addr', 'bcc_name', 'replyto_addr', 'subject', 'body', 'sent_at', 'created_at', 'deleted_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'from_addr' => 'STR',
@@ -37,6 +39,8 @@ class EmailNotificationsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'from_addr', 'from_name', 'to_name', 'cc_addr', 'cc_name', 'bcc_addr', 'bcc_name', 'replyto_addr', 'body', 'sent_at', 'deleted_at'],
+
+			'required'		=> ['to_addr', 'subject', 'created_at'],
 
 			'uniques'		=> [],
 
@@ -65,14 +69,14 @@ class EmailNotificationsSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

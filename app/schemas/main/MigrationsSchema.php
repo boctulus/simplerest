@@ -14,6 +14,8 @@ class MigrationsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'db', 'filename', 'created_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'db' => 'STR',
@@ -26,6 +28,8 @@ class MigrationsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'db', 'created_at'],
+
+			'required'		=> ['filename'],
 
 			'uniques'		=> [],
 
@@ -43,14 +47,14 @@ class MigrationsSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

@@ -14,6 +14,8 @@ class WebhooksSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'name', 'entity', 'op', 'conditions', 'callback', 'belongs_to', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'name' => 'STR',
@@ -35,6 +37,8 @@ class WebhooksSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id', 'name', 'conditions', 'belongs_to', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
+
+			'required'		=> ['entity', 'op', 'callback', 'created_at'],
 
 			'uniques'		=> [],
 
@@ -61,14 +65,14 @@ class WebhooksSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

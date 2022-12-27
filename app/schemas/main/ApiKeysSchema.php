@@ -12,7 +12,9 @@ class ApiKeysSchema implements ISchema
 		return [
 			'table_name'	=> 'api_keys',
 
-			'id_name'		=> 'uuid',
+			'id_name'		=> null,
+
+			'fields'		=> ['uuid', 'value', 'user_id', 'created_at'],
 
 			'attr_types'	=> [
 				'uuid' => 'STR',
@@ -21,11 +23,13 @@ class ApiKeysSchema implements ISchema
 				'created_at' => 'STR'
 			],
 
-			'primary'		=> ['uuid'],
+			'primary'		=> [],
 
 			'autoincrement' => null,
 
 			'nullable'		=> ['created_at'],
+
+			'required'		=> ['uuid', 'value', 'user_id'],
 
 			'uniques'		=> [],
 
@@ -39,54 +43,54 @@ class ApiKeysSchema implements ISchema
 			'fks' 			=> ['user_id'],
 
 			'relationships' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','api_keys.user_id']
+				'users' => [
+					['users.id','api_keys.user_id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'api_keys',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'api_keys',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','api_keys.user_id']
+				'users' => [
+					['users.id','api_keys.user_id']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'api_keys',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'api_keys',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }
