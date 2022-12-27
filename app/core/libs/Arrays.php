@@ -128,7 +128,7 @@ class Arrays
 
     /**
      * nonassoc
-     * Associative to non associative array
+     * Turns associative into non associative array
      * 
      * @param  array $arr
      *
@@ -142,12 +142,27 @@ class Arrays
         return $out;
     }
  
-    static function is_assoc(array $arr)
+    /*
+        Solo se es no-asociativo si ninguna key es no-numerica
+    */
+    static function is_non_assoc(array $arr)
     {
-        foreach(array_keys($arr) as $key){
-            if (!is_int($key)) return true;
-	            return false; 
+        $keys = array_keys($arr);
+
+        foreach($keys as $key){
+            if (!is_int($key)){
+                return false;
+            }
         }		
+
+        return true;
+    }
+
+    /*
+        Un array es asociativo con que al menos una key sea un string
+    */
+    static function is_assoc(array $arr){
+        return !static::is_non_assoc($arr);
     }
 
     /**
@@ -222,13 +237,21 @@ class Arrays
             Arrays::areSimpleAllSubArrays($a)
         );
     */
-    static function areSimpleAllSubArrays($a){
-        foreach ($a as $sub){
-            if (!is_array($sub)){
-                throw new \InvalidArgumentException("An element -'$sub'- is not a sub-array as expected");
+    static function areSimpleAllSubArrays($a, $throw_exception = false){
+        foreach ($a as $k => $sub){
+            if (!is_int($k)){
+                return false;
             }
 
-            if (Arrays::is_assoc($sub)){
+            if (!is_array($sub)){
+                if ($throw_exception){
+                    throw new \InvalidArgumentException("An element -'$sub'- is not a sub-array as expected");
+                }
+
+                return false;
+            }
+
+            if (static::is_assoc($sub)){
                 return false;
             }
         }
