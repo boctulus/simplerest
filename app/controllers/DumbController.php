@@ -11596,142 +11596,11 @@ class DumbController extends Controller
         dd("Done");
     }
 
-    /*
-        $ay = [
-            'AND' => [
-                ['name', '%a%', 'LIKE'],
-
-                [
-                    'AND' => [                     // <----- podria ser hibrido funcionando igual si falta la conjuncion y asumiendo es 'AND'
-                        ['cost', 100, '>'],
-                        ['id', 50, '<']
-                    ]
-                ],
-                
-                [
-                    'OR' => [
-                        ['is_active', 1],
-                        [
-                            'AND' => [ 
-                                ['cost', 100, '<='],
-                                ['description', 'NOT NULL', 'IS']
-                            ]
-                        ]
-                    ]
-                ],
-                
-                ['belongs_to', 150, '>']		
-            ]	
-        ];
-
-    */
-    function test_where_ay(){
-        $ay = [
-            'OR' => [
-                'OR' => [
-                    ['cost', 100, '<='],
-                    ['description', 'NOT NULL', 'IS']
-                ],
-
-                ['name', 'Pablo', 'starsWith']
-            ]
-        ];
-        
-        $q = Model::where_array($ay);
-        dd($q);
-    }
-
-    function test_if_array_is_multi_but_simple(){
-        $a = [
-            ['a', 'c'],
-            ['x' => 7], // <--- false
-            ['a', 'c', 5],
-        ];
-        
-        dd(
-            Arrays::areSimpleAllSubArrays($a)
-        );
-    }
 
     /*
-        Objetivo:
+        puede ejecutarse con eval() ??? ????
 
-        [
-            'AND' => [
-                [
-                    'OR' => [
-                        'OR' => [
-                            ['cost', 100, '<='],
-                            ['description', 'NOT NULL', 'IS']
-                        ],
-
-                        ['name', 'Pablo', 'starsWith']
-                    ]
-                ],
-
-                ['stars', 5]
-            ]    
-        ]
-    */
-    function test_555(){
-        $m = table('my_tb');
-
-        $r = $m
-        ->group(function($q){
-            $q->whereOr([
-                array (
-                    0 => 'cost',
-                    1 => 100,
-                    2 => '<=',
-                ),
-                array (
-                    0 => 'description',
-                    1 => 'NOT NULL',
-                    2 => 'IS',
-                )
-          ])
-            ->orWhere(array(
-                0 => 'name',
-                1 => 'Pablo',
-                2 => 'starsWith',
-            ));
-        })
-        ->where(['stars', 5]);
-
-        // <-------------------- seguir intentando lograr el mismo resultado
-
-        // // prueba
-        // $r = $m
-        // ->group(function ($q) {
-        //     $q->group(function ($q) {
-        //         $q->whereOr(array(
-        //             0 => 'cost',
-        //             1 => 100,
-        //             2 => '<=',
-        //         ));
-        //         $q->whereOr(array(
-        //             0 => 'description',
-        //             1 => 'NOT NULL',
-        //             2 => 'IS',
-        //         ));
-        //     });
-        //     $q->whereOr(array(
-        //         0 => 'name',
-        //         1 => 'Pablo',
-        //         2 => 'starsWith',
-        //     ));
-        // });
-        
-        dd(
-            $r->dd()
-        );
-    }
-
-
-    /*
-         puede ejecutarse con eval() ??? ????
-
-         Si, pero debe agregarse un "return " al comienzo
+        Si, pero debe agregarse un "return " al comienzo
     */
     function test_eval(){
         $code = "return table('my_tb')
@@ -11762,42 +11631,125 @@ class DumbController extends Controller
             eval($code)
         );
     }
-
-    function test_506(){
-        $w = [
-            ['cost', 100, '<='],
-            ['description', 'NOT NULL', 'IS']
+    function test_if_array_is_multi_but_simple(){
+        $a = [
+            ['a', 'c'],
+            ['x' => 7], // <--- false
+            ['a', 'c', 5],
         ];
-
-        $m = table('xxx');
-
-        $q = $m
-        ->where($w, 'OR')
-        ->dontBind()
-        ->dd();
-
-        $pre_q = $m->whereFormedQuery();
-        $vals  = $m->getLastBindingParamters();
-
-        /////
-
-        $w2 = ['name', 'Pablo', 'starsWith'];
-
-        $m = table('xxx');
-
-        $q = $m
-        ->where([
-            $pre_q,
-            $w2
-        ], 'OR')
-        ->dontBind()
-        ->dd();
-
-        $pre_q = $m->whereFormedQuery();
-        $vals  = $m->getLastBindingParamters();
-
-        dd($pre_q);
-
+        
+        dd(
+            Arrays::areSimpleAllSubArrays($a)
+        );
     }
+
+    /*
+        Objetivo:
+
+       [
+        'AND' => [
+            [
+                'OR' => [
+                    'OR' => [
+                        ['cost', 100, '<='],
+                        ['description', NULL, 'IS NOT']
+                    ],
+
+                    ['name', '%Pablo', 'LIKE']
+                ]
+            ],
+
+            ['stars', 5]
+        ]    
+    ]
+
+    */
+    function test_555(){
+        $m = table('my_tb');
+
+        // $r = $m
+        // ->group(function($q){
+        //     $q->whereOr([
+        //         array (
+        //             0 => 'cost',
+        //             1 => 100,
+        //             2 => '<=',
+        //         ),
+        //         array (
+        //             0 => 'description',
+        //             1 => 'NOT NULL',
+        //             2 => 'IS',
+        //         )
+        //   ])
+        //     ->orWhere(array(
+        //         0 => 'name',
+        //         1 => '%Pablo',
+        //         2 => 'LIKE',
+        //     ));
+        // })
+        // ->where(['stars', 5]);
+
+        // <-------------------- seguir intentando lograr el mismo resultado
+
+        // // prueba
+        $r = $m
+
+        ->group(function ($q) {$q->group(function ($q) {$q->group(function ($q) {$q->whereOr(array (
+            0 =>
+            array (
+              0 => 'cost',
+              1 => 100,
+              2 => '<=',
+            ),
+            1 =>
+            array (
+              0 => 'description',
+              1 => NULL,
+              2 => 'IS NOT',
+            ),
+          ));
+          $q->orWhere(array (
+            0 => 'name',
+            1 => '%Pablo',
+            2 => 'LIKE',
+          ));
+          });
+          });
+          $q->where(array (
+            0 => 'stars',
+            1 => 5,
+          ));
+          });
+        
+        dd(
+            $r->dd()
+        );
+    }
+
+
+    function test_where_ay(){
+        $ay = [
+            'AND' => [
+                [
+                    'OR' => [
+                        'OR' => [
+                            ['cost', 100, '<='],
+                            ['description', NULL, 'IS NOT']
+                        ],
+    
+                        ['name', '%Pablo', 'LIKE']
+                    ]
+                ],
+    
+                ['stars', 5]
+            ]    
+        ];
+        
+        $q = Model::where_array($ay);
+        dd($q);
+    }
+
+
+   
 
 }   // end class

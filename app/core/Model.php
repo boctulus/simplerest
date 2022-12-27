@@ -2055,6 +2055,26 @@ class Model {
 	/*
 		Interpreta un array como el siguiente:
 
+      	[
+			'AND' => [
+				[
+					'OR' => [
+						'OR' => [
+							['cost', 100, '<='],
+							['description', NULL, 'IS NOT']
+						],
+
+						['name', '%Pablo', 'LIKE']
+					]
+				],
+
+				['stars', 5]
+			]    
+		]
+
+
+		Y debe poder interpretar lo siguiente:
+
 		[
 			'AND' => [
 				['name', '%a%', 'LIKE'],
@@ -2072,7 +2092,7 @@ class Model {
 						[
 							'AND' => [ 
 								['cost', 100, '<='],
-								['description', 'NOT NULL', 'IS']
+								['description', NULL, 'IS NOT']
 							]
 						]
 					]
@@ -2099,38 +2119,45 @@ class Model {
 
 				$conj = $key;
 
-			
-				$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj, true) ."});\n";
-			} else {
-				if (Arrays::isMultidim($ay)){			
-					// chequear si todos los arrays internos son no-asociativos (esto limita artificialmente la estructura)
-					
-					if (Arrays::areSimpleAllSubArrays($ay)){
-						$w_type = ($parent_conj == 'OR' ? 'orWhere' : 'where');
-						$code .= "->$w_type($ay_str)";
-					} else {
-						$code .= static::_where_array($ay);
-					}
+				$is_simple = Arrays::areSimpleAllSubArrays($ay);
+				$is_multi  = is_array($ay) && Arrays::isMultidim($ay);
 
+				//dd($ay, "GRUPO con op $key " . ($is_simple ? ' -- simple' : ''));
+
+				if ($is_simple || !$is_multi){
+					$w_type = ($parent_conj == 'OR' ? 'whereOr' : 'where');
+					$code .= "\$q->$w_type($ay_str);\n";
+				} else {
+					$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj, true) ."});\n";
+				}
+				
+				
+			} else {
+				$is_simple = is_array($ay) && Arrays::areSimpleAllSubArrays($ay);
+				$is_multi  = is_array($ay) && Arrays::isMultidim($ay);
+
+				//dd($ay, "GRUPO - key $key" . ($is_simple ? ' -- simple' : ''));
+
+				if ($is_simple || !$is_multi){
+					
+					$w_type = ($parent_conj == 'OR' ? 'orWhere' : 'where');
+					$code  .= "\$q->$w_type(". $ay_str .");\n";
+				
 				} else {
 
-					dd([
-						'ay'       => $ay,
-						'conj'     => $parent_conj,
-						'is_group' => $inside_group
-					]);
+					// dd(
+					// 	$ay, "Multi?" . ((int) $is_multi) .  " Simple? " . ((int) $is_simple)
+					// );
 
-					if ($inside_group){
-						$w_type = ($parent_conj == 'OR' ? 'whereOr' : 'where');
-						$code  .= "\$q->$w_type(". $ay_str .");\n";
+					if ($key != 'OR' && $key != 'AND'){
+						$conj = 'AND';
 					} else {
-						$w_type = ($parent_conj == 'OR' ? 'orWhere' : 'where');
-						$code  .= $ay_str;
+						$conj = $key;
 					}
-					
 
-					
+					$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj, true) ."});\n";
 				}
+
 			}
 		}	
 
