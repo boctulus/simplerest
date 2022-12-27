@@ -14,6 +14,8 @@ class SpPermissionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'name'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'name' => 'STR'
@@ -24,6 +26,8 @@ class SpPermissionsSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['name'],
 
 			'uniques'		=> [],
 
@@ -41,30 +45,30 @@ class SpPermissionsSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				  'user_sp_permissions' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'user_sp_permissions',
-				        1 => 'sp_permission_id',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'sp_permissions',
-				        1 => 'id',
-				      ),
-				    ),
-				  ),
-				),
+  'user_sp_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_sp_permissions',
+        1 => 'sp_permission_id',
+      ),
+      1 => 
+      array (
+        0 => 'sp_permissions',
+        1 => 'id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

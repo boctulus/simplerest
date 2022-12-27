@@ -14,6 +14,8 @@ class FoldersSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'tb', 'name', 'belongs_to', 'created_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'tb' => 'STR',
@@ -28,6 +30,8 @@ class FoldersSchema implements ISchema
 
 			'nullable'		=> ['id'],
 
+			'required'		=> ['tb', 'name', 'belongs_to', 'created_at'],
+
 			'uniques'		=> [],
 
 			'rules' 		=> [
@@ -41,54 +45,54 @@ class FoldersSchema implements ISchema
 			'fks' 			=> ['belongs_to'],
 
 			'relationships' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','folders.belongs_to']
+				'users' => [
+					['users.id','folders.belongs_to']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folders',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'folders',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','folders.belongs_to']
+				'users' => [
+					['users.id','folders.belongs_to']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folders',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'folders',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

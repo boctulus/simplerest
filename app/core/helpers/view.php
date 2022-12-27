@@ -216,34 +216,3 @@ function umodel(){
     </script>";
 }
 
-// depredicar -->
-
-function include_css(string $path){
-    if (!Strings::endsWith('.css', $path)){
-        throw new \InvalidArgumentException("Path '$path' should be to .css file");
-    }
-    ?>
-    <style>
-    <?php
-        include $path;
-    ?>
-    </style>
-    <?php
-}
-
-function include_js(string $path){
-    if (!Strings::endsWith('.js', $path)){
-        throw new \InvalidArgumentException("Path '$path' should be to .js file");
-    }
-    ?>
-    <script>
-    <?php
-        include $path;
-    ?>
-    </script>
-    <?php
-}
-
-function include_widget_css(string $name){
-    include_css(WIDGETS_PATH . $name . '/' . $name . '.css');
-}

@@ -14,6 +14,8 @@ class FolderOtherPermissionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'folder_id', 'belongs_to', 'guest', 'r', 'w', 'created_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'folder_id' => 'INT',
@@ -30,6 +32,8 @@ class FolderOtherPermissionsSchema implements ISchema
 
 			'nullable'		=> ['id', 'guest'],
 
+			'required'		=> ['folder_id', 'belongs_to', 'r', 'w', 'created_at'],
+
 			'uniques'		=> [],
 
 			'rules' 		=> [
@@ -45,54 +49,54 @@ class FolderOtherPermissionsSchema implements ISchema
 			'fks' 			=> ['belongs_to'],
 
 			'relationships' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','folder_other_permissions.belongs_to']
+				'users' => [
+					['users.id','folder_other_permissions.belongs_to']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folder_other_permissions',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'folder_other_permissions',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','folder_other_permissions.belongs_to']
+				'users' => [
+					['users.id','folder_other_permissions.belongs_to']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folder_other_permissions',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'folder_other_permissions',
+        1 => 'belongs_to',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

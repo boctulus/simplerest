@@ -14,6 +14,8 @@ class BackgroundProcessSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'job', 'pid', 'created_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'job' => 'STR',
@@ -26,6 +28,8 @@ class BackgroundProcessSchema implements ISchema
 			'autoincrement' => 'id',
 
 			'nullable'		=> ['id'],
+
+			'required'		=> ['job', 'pid', 'created_at'],
 
 			'uniques'		=> ['pid'],
 
@@ -43,14 +47,14 @@ class BackgroundProcessSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

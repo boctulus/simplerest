@@ -1,0 +1,61 @@
+CONVERTIR - interpretar por where_lo() por "where de bajo nivel"
+
+[
+	'AND' => [
+		['name', '%a%', 'LIKE'],
+		[
+			'AND' => [                     // <----- podria ser hibrido funcionando igual si falta la conjuncion y asumiendo es 'AND'
+				['cost', 100, '>'],
+				['id', 50, '<']
+			]
+		],
+		[
+			'OR' => [
+				[is_active, 1],
+				[
+					'AND' => [ 
+						['cost', 100, '<='],
+						['description', 'NOT NULL', 'IS']
+					]
+				]
+			]
+		],
+		['belongs_to', 150, '>']		
+	]	
+]
+
+En
+
+->where([
+    ['cost', 100, '>'], // AND
+    ['id', 50, '<']
+])    
+->where('name', '%a%', LIKE')
+->group(function ($q) {
+    $q->where(['is_active', 1])
+        // OR
+        ->orWhere([
+            ['cost', 100, '<='],
+            ['description', NULL, 'IS NOT']
+        ]);
+})
+->where(['belongs_to', 150, '>'])
+
+
+Lo que me preocupa es poder interpretar:   <--- por esto debe ser hibrido
+
+[
+	[
+		'id',
+		13
+	],
+	[
+		'OR' => [
+			['belongs_to', NULL, 'IS'],
+			['belongs_to', 5],
+		]
+	]
+]
+
+
+Usar where_lo() en vez de where() en ApiController

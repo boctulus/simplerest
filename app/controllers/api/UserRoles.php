@@ -10,6 +10,10 @@ class UserRoles extends MyApiController  /* implements IApiController */
 {    
     public $table_name = 'user_roles';
 
+    static protected $connect_to = [
+        'roles'
+    ];
+
     function __construct()
     {
         if (request()->hasAuth() && auth()->isRegistered()){

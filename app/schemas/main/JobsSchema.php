@@ -14,8 +14,11 @@ class JobsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'queue', 'object', 'params', 'created_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
+				'queue' => 'STR',
 				'object' => 'STR',
 				'params' => 'STR',
 				'created_at' => 'STR'
@@ -27,10 +30,13 @@ class JobsSchema implements ISchema
 
 			'nullable'		=> ['id'],
 
+			'required'		=> ['queue', 'object', 'params', 'created_at'],
+
 			'uniques'		=> [],
 
 			'rules' 		=> [
 				'id' => ['type' => 'int'],
+				'queue' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'object' => ['type' => 'str', 'required' => true],
 				'params' => ['type' => 'str', 'required' => true],
 				'created_at' => ['type' => 'datetime', 'required' => true]
@@ -43,14 +49,14 @@ class JobsSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-				),
+),
 
 			'relationships_from' => [
 				
 			],
 
 			'expanded_relationships_from' => array (
-				)
+)
 		];
 	}	
 }

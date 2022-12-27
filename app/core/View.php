@@ -47,12 +47,14 @@ class View
     }
 
     static function get_view(string $view_path, int $expiration_time = 0){
+        $path = Files::isAbsolutePath($view_path) ?  $view_path : VIEWS_PATH . $view_path;
+        
         if (!Strings::endsWith('.php', $view_path)){
             $view_path .= '.php';
         }
         
         if ($expiration_time === 0){
-            return Files::reader(VIEWS_PATH . $view_path);
+            return Files::reader($path);
         }
 
         $file_exists = null;
@@ -63,7 +65,7 @@ class View
         if (!$expired){
             $content = Files::reader($cached_path);
         } else {
-            $content = Files::reader(VIEWS_PATH . $view_path);
+            $content = Files::reader($path);
 
             if ($expiration_time != 0){
                 Files::writableOrFail($cached_path);
@@ -149,6 +151,18 @@ class View
     }
     
     static function js_file(string $file, ?Array $atts = null, bool $in_head = false){
+        static $included;
+
+        $file_ori = $file;
+
+        if (!isset($included) || $included == null){
+            $included = [];
+        } 
+
+        if (in_array($file_ori, $included)){
+            return;
+        }
+
         $arr = $in_head ? 'head' : 'footer';
 
         if (Files::isAbsolutePath($file)){
@@ -159,6 +173,8 @@ class View
                 $file = '/public/assets/' . Strings::removeFirstSlash($file);
             } 
         }
+
+        $included[] = $file_ori;
 
         static::$$arr['js'][] = [
             'file' => $file,
@@ -172,6 +188,18 @@ class View
     }
 
     static function css_file(string $file){
+        static $included;
+
+        $file_ori = $file;
+
+        if (!isset($included) || $included == null){
+            $included = [];
+        } 
+
+        if (in_array($file_ori, $included)){
+            return;
+        }
+
         if (Files::isAbsolutePath($file)){
             $file = str_replace(ROOT_PATH, base_url() . '/', $file);
             $file = str_replace('\\', '/', $file);
@@ -180,10 +208,12 @@ class View
                 $file = '/public/assets/' . Strings::removeFirstSlash($file);
             } 
         }
-
+     
         static::$head['css'][] = [
             'file' => $file
         ];
+
+        $included[] = $file_ori;
     }
 
     static function css(string $file){
