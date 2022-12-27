@@ -14,6 +14,8 @@ class UserTbPermissionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'tb', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'user_id', 'created_by', 'created_at', 'updated_by', 'updated_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'tb' => 'STR',
@@ -37,6 +39,8 @@ class UserTbPermissionsSchema implements ISchema
 
 			'nullable'		=> ['id', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'created_by', 'created_at', 'updated_by', 'updated_at'],
 
+			'required'		=> ['tb', 'user_id'],
+
 			'uniques'		=> [],
 
 			'rules' 		=> [
@@ -59,54 +63,54 @@ class UserTbPermissionsSchema implements ISchema
 			'fks' 			=> ['user_id'],
 
 			'relationships' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','user_tb_permissions.user_id']
+				'users' => [
+					['users.id','user_tb_permissions.user_id']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_tb_permissions',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'user_tb_permissions',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa.use_intId','user_tb_permissions.user_id']
+				'users' => [
+					['users.id','user_tb_permissions.user_id']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'user_tb_permissions',
-				        1 => 'user_id',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'user_tb_permissions',
+        1 => 'user_id',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

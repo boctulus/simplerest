@@ -14,6 +14,8 @@ class FolderPermissionsSchema implements ISchema
 
 			'id_name'		=> 'id',
 
+			'fields'		=> ['id', 'folder_id', 'belongs_to', 'access_to', 'r', 'w', 'created_at'],
+
 			'attr_types'	=> [
 				'id' => 'INT',
 				'folder_id' => 'INT',
@@ -30,6 +32,8 @@ class FolderPermissionsSchema implements ISchema
 
 			'nullable'		=> ['id'],
 
+			'required'		=> ['folder_id', 'belongs_to', 'access_to', 'r', 'w', 'created_at'],
+
 			'uniques'		=> [],
 
 			'rules' 		=> [
@@ -42,89 +46,89 @@ class FolderPermissionsSchema implements ISchema
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 
-			'fks' 			=> ['access_to', 'belongs_to'],
+			'fks' 			=> ['belongs_to', 'access_to'],
 
 			'relationships' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa|__access_to.use_intId','folder_permissions.access_to'],
-					['tbl_usuario_empresa|__belongs_to.use_intId','folder_permissions.belongs_to']
+				'users' => [
+					['users|__belongs_to.id','folder_permissions.belongs_to'],
+					['users|__access_to.id','folder_permissions.access_to']
 				]
 			],
 
 			'expanded_relationships' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				        'alias' => '__access_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folder_permissions',
-				        1 => 'access_to',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				        'alias' => '__belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folder_permissions',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				),
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'folder_permissions',
+        1 => 'belongs_to',
+      ),
+    ),
+    1 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__access_to',
+      ),
+      1 => 
+      array (
+        0 => 'folder_permissions',
+        1 => 'access_to',
+      ),
+    ),
+  ),
+),
 
 			'relationships_from' => [
-				'tbl_usuario_empresa' => [
-					['tbl_usuario_empresa|__access_to.use_intId','folder_permissions.access_to'],
-					['tbl_usuario_empresa|__belongs_to.use_intId','folder_permissions.belongs_to']
+				'users' => [
+					['users|__belongs_to.id','folder_permissions.belongs_to'],
+					['users|__access_to.id','folder_permissions.access_to']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-				  'tbl_usuario_empresa' => 
-				  array (
-				    0 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				        'alias' => '__access_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folder_permissions',
-				        1 => 'access_to',
-				      ),
-				    ),
-				    1 => 
-				    array (
-				      0 => 
-				      array (
-				        0 => 'tbl_usuario_empresa',
-				        1 => 'use_intId',
-				        'alias' => '__belongs_to',
-				      ),
-				      1 => 
-				      array (
-				        0 => 'folder_permissions',
-				        1 => 'belongs_to',
-				      ),
-				    ),
-				  ),
-				)
+  'users' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'folder_permissions',
+        1 => 'belongs_to',
+      ),
+    ),
+    1 => 
+    array (
+      0 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+        'alias' => '__access_to',
+      ),
+      1 => 
+      array (
+        0 => 'folder_permissions',
+        1 => 'access_to',
+      ),
+    ),
+  ),
+)
 		];
 	}	
 }

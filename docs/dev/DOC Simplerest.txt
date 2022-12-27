@@ -1736,6 +1736,21 @@ El operador not() niega todo un grupo de condiciones. Ej:
 	->get();
 
 
+# whereLike
+
+Siempre teniendo en cuenta que LIKE es muy ineficiente,... tenemos whereLike()
+
+Ej:
+
+	$m = (new Model())
+	->table('products')
+	->whereLike('name', '%a%')
+	->select(['id', 'name']);
+
+	dd($m->get());
+	var_dump($m->dd());
+
+
 # whereRegEx / whereNotRegEx
 
 Es posible usar expresiones regulares siempre claro que el motor de base de datos las soporte.
@@ -2030,13 +2045,13 @@ Otra opción, más general, es usar un grupo también para "agrupar" las condici
 
 	DB::table('xxxx')
 	->group(function($q){
-		$q->where(condA)
+		$q->where(condA);
 		$q->where(condB);
-	])
+	})
 	->or(function($q){
-		$q->where([
+		$q->where(
 			condC
-		]);
+		);
 	})
 
 
@@ -3624,7 +3639,6 @@ max			# valor máximo o longitud máxima para un string
 in 			# el valor debe estar dentro de un array de valores
 between		# el valor debe estar entre dos valores; es un rango que incluye ambos extremos
 
-
 ### Mensajes personalizados
 
 Para cualquier restricción es posible crear un mensaje personalizable (traducible con i18n) para el error en caso de que falle. 
@@ -3633,25 +3647,61 @@ Los mensajes se crean para cualquier restricción como required, type, min, max,
 
 Ejemplo:
 
-	protected $rules = [
-		'id 			=> ['type' => 'int', 'required' => true]
-        'name' 			=> ['min'=>3, 'max'=>40],
-		'description' 	=> ['max'=>50],
-		'size' 			=> ['max'=>20],
-		'workspace'		=> ['max'=>20],
-		'is_active'		=> ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
-	];
+	'is_active'		=> ['type' => 'bool', 'messages' => [ 'type' => 'Value should be 0 or 1'] ]
 
-Es posible utiliza una sintaxis mucho más amigable importando la librería ValidationRules. Así en un modelo podríamos tener el constructor:
 
-	$this->addRules((new ValidationRules())
+# Donde se guardan las reglas de valicacion  
+
+Las reglas de validaciòn están en los archivos de ¨schema¨ y éstos son referenciados desde los modelos en su constructor.
+
+Ej:
+
+class UsersModel extends MyModel
+{
+    function __construct(bool $connect = false){	
+	    parent::__construct($connect, UsersSchema::class);
+	}
+
+	// ..
+}
+
+# Re-definción de reglas
+
+Las reglas se pueden re-definir pisando alguna que auto-generada en un schema.
+
+Ej:
+
+	class UsersModel extends MyModel
+	{
+		function __construct(bool $connect = false){	
+		
+			parent::__construct($connect, UsersSchema::class);
+
+			/*
+				Re-definicion de reglas de validacion
+			*/
+
+			$this->schema['rules']['email']['type'] = 'email';
+		}
+
+		// ..
+	}
+
+
+# La clase ValidationRules
+
+El framework posee una sintaxis fluida para las reglas de validacion aunque su uso con modelos probablemente no tenga sentido dado que los schemas son auto-generados y tampoco tendria mayor sentido pisar todas las reglas ni siquiera para un campo concreto.
+
+	$rules = addRules((new ValidationRules())
 		->field('id')->type('int')->required()
 		->field('name')->type('str')->max(40)->min(3)
 		->field('description')->type('str')->max(50)
 		->field('size')->type('str')->max(20)
 		->field('workspace')->type('str')->max(20)
 		->field('is_active')->type('bool', 'Value should be 0 or 1')
-	);
+	)->getRules();
+
+<-- posiblemente seria depredicado
 
 
 ### El helper db
@@ -4017,6 +4067,15 @@ Hay distintas tablas y por tanto distintos endpoints para manejar distintos aspe
         - read, write
         - Son dados por los usuarios a otros usuarios (sin especificar su id)
         - Puede especificarse el otorgamiento de permisos a usuarios no-registrados (guest)
+
+
+A nivel de API para poder filtrar los roles del usuario logueado es con:
+
+	/api/v1/user_roles?user_id=me
+
+Esto es porque si es Admin, entonces se listarian todos los roles.
+
+Lo anterior funciona porque "me" vale el user_id del usuario logueado.
 
 
 # Como agregar / cambiar permisos a nivel de usuario 
@@ -7786,26 +7845,34 @@ Para poder utilizarlas es necesario incluir el Trait PagesTrait.
 
 Ej:
 
-	<?php
-
 	namespace simplerest\controllers;
 
 	use simplerest\core\traits\PagesTrait;
 	use simplerest\controllers\MyController;
 
-
 	class AdminController extends MyController
 	{    
 		use PagesTrait;
+
+		public $default_page  = 'main';
+
+		public $tpl           = 'templates/adminlte_tpl.php'; //
+		public $tpl_params    = [
+			'brand_name' => 'Planex',
+			'logo'       => 'img/planex_logo.png',
+			'logo_alt'   => 'Planex',
+		];
+		
+		// ..
 	}
 
-Entonces podran cargarse paginas como /controlador/pagina
+Entonces podran cargarse paginas como /controlador/pagina via FrontController y convivir con entradas del router para el mismo segmento correspondiente al nombre del controlador.  
 
 	Ej:
 
 	/admin/tabulator?entity=colores
 
-En la pagina en cuestion se setea el template y los paramtros que este recibira. 
+En la pagina en cuestion se setea el template y los parametros que este recibira. 
 
 Ej:
 
@@ -7818,15 +7885,6 @@ Ej:
 
 	class Tabulator /* extends Page */
 	{
-		public $tpl        = 'templates/adminlte_tpl.php'; //
-		public $tpl_params = [
-			'brand_name'  => 'Planex',
-			'logo'       => 'img/planex_logo.png',
-			'logo_alt'   => 'Planex',
-			'title'      => 'DataGrid',
-			'page_name'  => 'DataGrid'
-		];
-
 		function index()
     	{
 			// ...
@@ -7847,15 +7905,11 @@ Ej:
 
 	class Tabulator /* extends Page */
 	{
-		public $tpl        = 'templates/adminlte_tpl.php';
-		public $tpl_params = [
-			'brand_name'  => 'Mi marca',
-			'logo'       => 'img/mi_logo.png',
-			'logo_alt'   => 'Mi empresa',
-			'title'      => 'Some title',
+		public $tpl_params    = [
+			'title'      => 'DataGrid',
 			'page_name'  => ''
 		];
-
+		
 		function __construct()
 		{   
 			/*
@@ -7889,7 +7943,6 @@ Y por supuesto puede pueden recibirse solo los paramatros esperados. Ej:`
 		// ...
 	}
 
-
 Un ejemplo de una pagina que acepta un numero variable de argumentos es una simple pagina de calculadora:
 
 	<?php
@@ -7898,15 +7951,11 @@ Un ejemplo de una pagina que acepta un numero variable de argumentos es una simp
 
 	class Calc /* extends Page */
 	{
-		public $tpl        = 'templates/adminlte_tpl.php'; //
 		public $tpl_params = [
-			'brand_name'  => 'Planex',
-			'logo'       => 'img/planex_logo.png',
-			'logo_alt'   => 'Planex',
 			'title'      => 'Calc',
 			'page_name'  => 'Calculator'
 		];
-
+		
 		function index($op, ...$args){
 			$this->tpl_params['page_name'] = "Operacion ".ucfirst($op);
 
@@ -7928,6 +7977,13 @@ Entonces la calculadora se mostraria en un controlador al visitar la ruta:
 	/{controlador}/calc/mul/2/5/4
 
 Siempre asumiento se esta haciendo uso del FrontController
+
+
+Nota: 
+
+Tanto $tpl como $tpl_params pueden definirse en la pagina o en el controlador sin embargo, $tpl_params si es definido en ambos, sufrirá un merge.
+
+Lo ideal es definir el template en el controller junto los $tpl_params mínimos necesarios y el resto de los parámetros en la página como en los ejemplos precedentes.
 
 
 # Pagina por defecto 
@@ -7977,6 +8033,10 @@ El comando podrá borrar otro tipo de caches como la del Acl.
 
 
 # Internacionalización
+
+Pre-requisito:
+
+	extension=gettext.so
 
 Para las traducciones se utiliza i18n y estas se alojan en el directorio app\locale y las mismas deben ser compiladas. Para Windows existe un .bat de ejemplo que realiza el proceso: compile_i18n.bat
 

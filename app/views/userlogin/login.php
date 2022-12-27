@@ -1,8 +1,7 @@
 <!-- Login -->
     
 <?php	
-	// deberia encolarse !
-	include_css(WIDGETS_PATH . 'login/login.css');
+	css_file('css/login/login.css');
 ?>
 
 <div class="row vh-100 d-flex align-items-center">
@@ -17,8 +16,7 @@
 
 		Bt5Form::setIdAsName();
 
-		// deberia encolarse !
-		include_css(ASSETS_PATH . 'vendors/adminlte/css/adminlte.css');
+		// css_file('vendors/adminlte/dist/css/adminlte.css');
 	
 		echo tag('card')
 		->header(tag('cardTitle')->text('Ingreso'))

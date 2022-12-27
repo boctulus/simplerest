@@ -139,21 +139,9 @@ class AdminLte extends Bt5Form
             hasGrid : true
         })
     */
-    static function ionSlider(mixed $default = null, Array $attributes = [], ...$args){
-        /*
-            Incluir el CSS acá genera dos problemas muy graves:
-
-            1) No puede ser cacheado y 
-
-            2) Queda repetido tantas veces como se incluya el componente! 
-
-            La solución para "producción" sería "compilar" el las vistas con lo cual los archivos css 
-            de cada componente serían incluídos una sola vez para la vista correspondiente.
-
-            En si,... include_css() debería "encolar" los archivos css para la vista corespondiente.
-        */
-
-        include_css(ASSETS_PATH . 'vendors/adminlte/plugins/ion-rangeslider/css/ion.rangeSlider.min.css');
+    static function ionSlider(mixed $default = null, Array $attributes = [], ...$args)
+    {
+        css_file('vendors/adminlte/plugins/ion-rangeslider/css/ion.rangeSlider.min.css');
 
         $att = [
         ];
