@@ -11732,7 +11732,7 @@ class DumbController extends Controller
             'AND' => [
                 [
                     'OR' => [
-                        'OR' => [
+                        'AND' => [
                             ['cost', 100, '<='],
                             ['description', NULL, 'IS NOT']
                         ],
@@ -11741,12 +11741,20 @@ class DumbController extends Controller
                     ]
                 ],
     
-                ['stars', 5]
+                ['belongs_to', 5]
             ]    
         ];
         
+        DB::getConnection("az");
         $q = Model::where_array($ay);
-        dd($q);
+
+        $code = Strings::beforeLast("return table('products')$q", ';') . '->dd();';
+
+        dd($code);
+
+        dd(
+            eval($code)
+        );
     }
 
 

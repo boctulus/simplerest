@@ -1646,7 +1646,9 @@ Es posible hacer un WHERE IN( array ) y un WHERE NOT IN ( array ) con whereIn() 
 
 # whereOr
 
-Se puede realizar un "WHERE OR"
+Se puede realizar un "WHERE OR" o sea hacer un OR dentro de cada sub-where
+
+Ej:
 
 	$rows = DB::table('products')
 	->where(['belongs_to', 90])
@@ -1657,9 +1659,33 @@ Se puede realizar un "WHERE OR"
 	])
 	->get();
 
+O bien,...
+
+	DB::table('products')->deleted()
+	->where(['belongs_to', 90])
+	->where([                         
+		['name', ['CocaCola', 'PesiLoca']],
+		['cost', 550, '>='],
+		['cost', 100, '<']
+	], 'OR')
+	->whereNotNull('description');
+
+Resultando en el SQL
+
+	SELECT  name, cost, id FROM products WHERE 
+	belongs_to = '90' AND 
+	(
+		name IN ('CocaCola', 'PesiLoca') OR 
+		cost >= 550 OR 
+		cost < 100
+	) AND 
+	description IS NOT NULL
+
 # orWhere
 
-Se puede realizar un "OR WHERE"
+Tambien se puede efectuar un "OR WHERE" o sea un ...OR ( WHERE($cond) ) 
+
+Ej:
 
 	$rows = DB::table('users')
 	->where([ 'email'=> $email ]) 
@@ -2051,7 +2077,7 @@ Otra opción, más general, es usar un grupo también para "agrupar" las condici
 	->or(function($q){
 		$q->where(
 			condC
-		);
+			);
 	})
 
 
