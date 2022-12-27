@@ -16,6 +16,8 @@ use simplerest\core\interfaces\ITransformer;
 use simplerest\core\traits\ExceptionHandler;
 use simplerest\core\exceptions\InvalidValidationException;
 
+use function GuzzleHttp\default_ca_bundle;
+
 class Model {
 	use ExceptionHandler;
 
@@ -2041,7 +2043,6 @@ class Model {
 		return $this->group($closure, 'OR', true);
 	}
 
-
 	function when($precondition = null, ?callable $closure = null, ?callable $closure2 = null){
 		if (!empty($precondition)){			
 			call_user_func($closure, $this);	
@@ -2102,8 +2103,12 @@ class Model {
 			]	
 		]
 	*/
-	static protected function _where_array(Array $cond_ay, $parent_conj = 'AND', $inside_group = false)
+	static protected function _where_array(Array $cond_ay, $parent_conj = 'AND')
 	{
+		$accepted_conj = [
+			'AND', 'OR', 'NOT', 'AND NOT', 'OR NOT'
+		];
+
 		$code = '';
 		foreach ($cond_ay as $key => $ay){
 			if (!is_array($ay)){
@@ -2112,9 +2117,11 @@ class Model {
 
 			$ay_str = var_export($ay, true);
 
+			dd($ay, "PARENT CONJ is $parent_conj");
+
 			if (is_string($key)){
-				if ($key != 'OR' && $key != 'AND'){
-					throw new \Exception();
+				if (!in_array($key, $accepted_conj)){
+					throw new \Exception("Conjuntion '$key' is invalid");
 				}
 
 				$conj = $key;
@@ -2126,9 +2133,34 @@ class Model {
 
 				if ($is_simple || !$is_multi){
 					$w_type = ($parent_conj == 'OR' ? 'whereOr' : 'where');
+				
+					// switch ($parent_conj){
+					// 	case 'OR':
+					// 		$w_type = 'whereOr';
+					// 		break;
+					// 	case 'AND':
+					// 		$w_type = 'where';
+					// 		break;
+
+					// 	case 'NOT':
+					// 		$w_type = 'andNot'; //
+					// 		break;
+					// 	case 'OR NOT':
+					// 		$w_type = 'orNot'; //
+					// 		break;
+					// 	case 'AND NOT':
+					// 		$w_type = 'andNot'; //
+					// 		break;
+				
+					// 	default:
+					// 		$w_type = 'where';
+					// 		break;
+					// }
+
+
 					$code .= "\$q->$w_type($ay_str);\n";
 				} else {
-					$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj, true) ."});\n";
+					$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj) ."});\n";
 				}
 				
 				
@@ -2141,6 +2173,31 @@ class Model {
 				if ($is_simple || !$is_multi){
 					
 					$w_type = ($parent_conj == 'OR' ? 'orWhere' : 'where');
+
+					// switch ($parent_conj){
+					// 	case 'OR':
+					// 		$w_type = 'orWhere';
+					// 		break;
+					// 	case 'AND':
+					// 		$w_type = 'where';
+					// 		break;
+
+					// 	case 'NOT':
+					// 		$w_type = 'andNot'; //
+					// 		break;
+					// 	case 'OR NOT':
+					// 		$w_type = 'orNot'; //
+					// 		break;
+					// 	case 'AND NOT':
+					// 		$w_type = 'andNot'; //
+					// 		break;
+				
+					// 	default:
+					// 		$w_type = 'where';
+					// 		break;
+					// }
+
+
 					$code  .= "\$q->$w_type(". $ay_str .");\n";
 				
 				} else {
@@ -2149,13 +2206,13 @@ class Model {
 					// 	$ay, "Multi?" . ((int) $is_multi) .  " Simple? " . ((int) $is_simple)
 					// );
 
-					if ($key != 'OR' && $key != 'AND'){
+					if (!in_array($key, $accepted_conj)){
 						$conj = 'AND';
 					} else {
 						$conj = $key;
 					}
 
-					$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj, true) ."});\n";
+					$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj) ."});\n";
 				}
 
 			}
