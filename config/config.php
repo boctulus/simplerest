@@ -101,7 +101,7 @@ return [
 
 	'access_token' => [
 		'secret_key' 		=> env('TOKENS_ACCSS_SECRET_KEY'),
-		'expiration_time'	=> 60 * 15 * 10000,   // seconds (normalmente 60 * 15)
+		'expiration_time'	=> 60 * 15 * 50000,   // seconds (normalmente 60 * 15)
 		'encryption'		=> 'HS256'			
 	],
 

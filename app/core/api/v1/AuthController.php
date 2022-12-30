@@ -779,7 +779,8 @@ class AuthController extends Controller implements IAuth
 
         $auth_method = request()->authMethod();    
 
-        switch ($auth_method){
+        switch ($auth_method)
+        {
             case 'API_KEY': 
                 $api_key = request()->getApiKey();
 

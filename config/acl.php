@@ -30,6 +30,8 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('barrios', ['read'])
     ->addResourcePermissions('part_numbers', ['read', 'write'])
     ->addResourcePermissions('automoviles', ['read', 'write'])
+    ->addResourcePermissions('users', ['read', 'write'])
+
 
     // Medellin Participa: Organizaciones
     
@@ -69,7 +71,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('tbl_scritp_tablas', ['read'])
     ->addResourcePermissions('products', ['read_all'])
     ->addSpecialPermissions([
-        //'read_all', 
+        'read_all', 
         'write_all',
         'write_all_collections'
     ])
