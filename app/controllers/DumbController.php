@@ -6540,11 +6540,11 @@ class DumbController extends Controller
         // dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?"); 
 
 
-        // $t1 = 'products';
-        // $t2 = 'product_categories';
+        $t1 = 'products';
+        $t2 = 'product_categories';
 
         // dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?"); 
-        // dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?"); 
+        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?"); 
         // dd(is_n_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
         // dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
 
@@ -8157,6 +8157,26 @@ class DumbController extends Controller
         }
 
         d("Row fue borrada.");
+    }
+
+    function get_prods()
+    {
+        $rows = DB::table('products')
+            ->whereIn('id', [177, 178])
+            ->get();
+
+        dd($rows);
+    }
+
+    function undelete_prods()
+    {
+        DB::getConnection('az');
+
+        $rows = DB::table('products')
+            ->whereIn('id', [177, 178])
+            ->undelete();
+
+        dd($rows);
     }
 
     function delete_counter(){
@@ -11745,12 +11765,14 @@ class DumbController extends Controller
             ]    
         ];
         
-        DB::getConnection("az");
+
         $q = Model::where_array($ay);
 
         $code = Strings::beforeLast("return table('products')$q", ';') . '->dd();';
 
         dd($code);
+
+        DB::getConnection("az");
 
         dd(
             eval($code)
@@ -11758,6 +11780,14 @@ class DumbController extends Controller
     }
 
 
+    function test_get_db_ver(){
+        DB::getDefaultConnection();
+
+        dd(DB::driver(), 'Driver');
+        dd(DB::driverVersion(), 'Driver version');
+        dd(DB::driverVersion(true), 'Driver version (num)');
+        dd(DB::isMariaDB(), 'Is MariaDB');
+    }
    
 
 }   // end class

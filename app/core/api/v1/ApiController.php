@@ -2258,9 +2258,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
      * @return void
      */
     function delete($id = NULL) {
-        if($id == NULL)
+        if($id == NULL){
             error("Missing id", 400);
+        }           
 
+        if (Strings::contains(',', $id)){
+            error("Use Collections for bulk delete");
+        }    
+        
         $data = request()->getBody(false);        
 
         $this->id = $id;

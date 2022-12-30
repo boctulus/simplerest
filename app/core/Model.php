@@ -2053,56 +2053,6 @@ class Model {
 		return $this;	
 	}
 
-	/*
-		Interpreta un array como el siguiente:
-
-      	[
-			'AND' => [
-				[
-					'OR' => [
-						'OR' => [
-							['cost', 100, '<='],
-							['description', NULL, 'IS NOT']
-						],
-
-						['name', '%Pablo', 'LIKE']
-					]
-				],
-
-				['stars', 5]
-			]    
-		]
-
-
-		Y debe poder interpretar lo siguiente:
-
-		[
-			'AND' => [
-				['name', '%a%', 'LIKE'],
-
-				[
-					'AND' => [                     // <----- podria ser hibrido funcionando igual si falta la conjuncion y asumiendo es 'AND'
-						['cost', 100, '>'],
-						['id', 50, '<']
-					]
-				],
-				
-				[
-					'OR' => [
-						['is_active', 1],
-						[
-							'AND' => [ 
-								['cost', 100, '<='],
-								['description', NULL, 'IS NOT']
-							]
-						]
-					]
-				],
-				
-				['belongs_to', 150, '>']		
-			]	
-		]
-	*/
 	static protected function _where_array(Array $cond_ay, $parent_conj = 'AND')
 	{
 		$accepted_conj = [
@@ -2117,7 +2067,7 @@ class Model {
 
 			$ay_str = var_export($ay, true);
 
-			dd($ay, "PARENT CONJ is $parent_conj");
+			//dd($ay, "PARENT CONJ is $parent_conj");
 
 			if (is_string($key)){
 				if (!in_array($key, $accepted_conj)){
@@ -2221,6 +2171,75 @@ class Model {
 		return $code;
 	}
 
+	/*
+	Interpreta un array como el siguiente:
+
+      	[
+			'AND' => [
+				[
+					'OR' => [
+						'OR' => [
+							['cost', 100, '<='],
+							['description', NULL, 'IS NOT']
+						],
+
+						['name', '%Pablo', 'LIKE']
+					]
+				],
+
+				['stars', 5]
+			]    
+		]
+
+		Y debe poder interpretar lo siguiente:
+
+		[
+			'AND' => [
+				['name', '%a%', 'LIKE'],
+
+				[
+					'AND' => [                     // <----- podria ser hibrido funcionando igual si falta la conjuncion y asumiendo es 'AND'
+						['cost', 100, '>'],
+						['id', 50, '<']
+					]
+				],
+				
+				[
+					'OR' => [
+						['is_active', 1],
+						[
+							'AND' => [ 
+								['cost', 100, '<='],
+								['description', NULL, 'IS NOT']
+							]
+						]
+					]
+				],
+				
+				['belongs_to', 150, '>']		
+			]	
+		]
+
+		* Tambien deberia poder (a futuro) aceptar NOT, AND NOT y OR NOT
+
+		De momento devuelve el codigo que debe evaluarse con eval()
+
+		Ej:
+
+		$q = Model::where_array($ay);
+
+        $code = Strings::beforeLast("return table('products')$q", ';') . '->dd();';
+
+        dd($code);
+
+        DB::getConnection("az");
+        
+        dd(
+            eval($code)
+        );
+
+		Podria eventualmente armar solamente el where() y encolar los parametros para hacer luego el binding sin requerir eval.
+	*/
 	static function where_array(Array $cond_ay){
 		return ltrim(
 			static::_where_array($cond_ay),
