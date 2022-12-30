@@ -179,11 +179,23 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     }
 
     function authMethod(){
-        if ($this->hasApiKey()){
-            return 'API_KEY';
-        }elseif ($this->hasAuth()){
-            return 'JWT';
+        static $method;
+
+        if ($method !== null){
+            return $method;
         }
+
+        if ($this->hasApiKey()){
+            $method = 'API_KEY';
+        }elseif ($this->hasAuth()){
+            $method = 'JWT';
+        }
+
+        return $method;
+    }
+
+    function isAuthenticated(){
+        return !is_cli() && !empty($this->authMethod());
     }
 
     /*  

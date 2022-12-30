@@ -4196,7 +4196,7 @@ Donde para conocer el "sp_permission_id" puede consultar el endpoint:
 
 # Posible FrontEnd para los roles y permisos
 
-A un Administrador se le odría presentarse la información sobre roles y permisos así:
+A un Administrador se le podría presentarse la información sobre roles y permisos así:
 
 Para un usuario:
 
@@ -4293,32 +4293,34 @@ https://www.freecodecamp.org/news/best-practices-for-building-api-keys-97c26eabf
 
 El Acl provee un conjunto de métodos básicos para conocer el rol o los permisos del usuario y puede extender a partir de "paquetes" (service providers).
 
-getEveryPosibleRole()                   Devuelve todos los roles registrados en el ACL.
-roleExists($rol)                        Existe el rol?
-getRolePermissions($rol)                Devuelve todos los permisos para un determinado rol.
-getAncestry($rol)                       Roles de los ancestros de un usuario.
-isHigherRole($rol1, $rol2)              Tiene el rol$1 mayor nivel de acceso que $rol2? (2)
+getEveryPosibleRole()                   						Devuelve todos los roles registrados en el ACL.
+roleExists($rol)                        						Existe el rol?
+getRolePermissions($rol)                						Devuelve todos los permisos para un determinado rol.
+getAncestry($rol)                       						Roles de los ancestros de un usuario.
+isHigherRole($rol1, $rol2)              						Tiene el rol$1 mayor nivel de acceso que $rol2? (2)
 
-isGuest()                               Es un visitante no registrado?
-isRegistered()                          Es un usuario que ha entregado credenciales?    
-getRoles()                              Rol o roles de usuario.
+isGuest()                               						Es un visitante no registrado?
+isRegistered()                          						Es un usuario que ha entregado credenciales?    
+getRoles()                              						Rol o roles de usuario.
 
-hasRole($rol)                           El usuario posee ese rol? (no considera herencia)
-hasAnyRole([$rol1, ...])                El usuario posee alguno de esos roles? (no considera herencia)   
-hasRoleOrHigher($rol)                   Se tiene el rol o uno "superior" (2)
-hasAnyRoleOrHigher([$rol1, ...])        Se tiene un rol o uno "superior" (2)
+hasRole($rol)                          							El usuario posee ese rol? (no considera herencia)
+hasAnyRole([$rol1, ...])               							El usuario posee alguno de esos roles? (no considera herencia)   
+hasRoleOrHigher($rol)                   						Se tiene el rol o uno "superior" (2)
+hasAnyRoleOrHigher([$rol1, ...])        						Se tiene un rol o uno "superior" (2)
 
-getTbPermissions($table = null)			Retorna permisos sobre recursos (tablas) (1)
-getSpPermissions($table = null)			Retorna permisos "especiales" (1)
-getFreshTbPermissions($table = null)	Retorna permisos sobre recursos (tablas)
-getFreshSpPermissions()					Retorna permisos "especiales"
-hasResourcePermission($perm, $tabla)    El usuario tiene permisos explícitos sobre esa tabla?
-hasSpecialPermission($permiso)          El usuario tiene ese permiso especial?
-
+getTbPermissions($table = null)									Retorna permisos sobre recursos (tablas) (1)
+getSpPermissions($table = null)									Retorna permisos "especiales" (1)
+getFreshTbPermissions($table = null)							Retorna permisos sobre recursos (tablas)
+getFreshSpPermissions()											Retorna permisos "especiales"
+hasResourcePermission($perm, $tabla)    						El usuario tiene permisos explícitos sobre esa tabla?
+hasSpecialPermission($permiso)          						El usuario tiene ese permiso especial?
+hasPermission($perm, $resource, $uid = null, $row_id = null)	Permisos sobre una tabla o registro 
 
 Notas:
 
 getTbPermissions() y getSpPermissions() no ofrecen resultados necesariamente actualizados (a diferencia de acceder a los endpoints correspondientes). Si el usuario entregó credenciales via Web Tokens, estos permisos muy probablemente serán derivados del payload del web token.
+
+hasPermission() es el método con la misión de poder contestar de forma simple y definitiva si un usuario tiene o no permisos sobre un registro.
 
 Para el caso del paquete boctulus\grained_acl se implementan adicionalmente getFreshTbPermissions() y getFreshSpPermissions() que garantizan resultados "frescos" porque acceden directamente a la base de datos.
 
@@ -4617,13 +4619,15 @@ Luego si por ejemplo quiero realizar una edición masiva de un campo "enabled" p
 
 Para borrar masivamente
 
-	DELETE /api/v1/collections/3?entity=products
+	DELETE /api/v1/collections/{id}?entity={tabla}
 
-* No olvide pasar el "tenant id"
+No olvide pasar el "tenant id"
 
 Ej:
 
 	DELETE /api/v1/collections/3?entity=products&tenantid=az
+
+Recordar que el tenant-id se puede pasar por header como X-TENANT
 
 
 Cabe destacar que las operaciones PATCH y DELETE se efectuan sobre los registros contenidos en la colección de sus respectiva entidad o dicho de otro modo un DELETE sobre una colección no borra solo el registro de la colección sino los registros asociados + el registro de la colección.

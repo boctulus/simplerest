@@ -90,6 +90,8 @@ class Collections extends MyApiController
     
     protected function modify($id = NULL, bool $put_mode = false)
     {
+        exit; 
+
         if ($id == null)
             Factory::response()->code(400)->error("Missing id");
 
@@ -150,8 +152,8 @@ class Collections extends MyApiController
                     error(_('Data validation error'), 400, $validado);
                 }   
                 
-                if ($instance->inSchema(['updated_by'])){
-                    $data['updated_by'] = auth()->uid();
+                if ($instance->inSchema([$instance->updatedBy()])){
+                    $data[$instance->updatedBy()] = auth()->uid();
                 }                
 
                 $refs = json_decode($row['refs']);
@@ -215,12 +217,16 @@ class Collections extends MyApiController
 
             // Table must have 'belongs_to' 
             if (!$sp) {
-                $instance->where(['belongs_to' => auth()->uid()]);
+                if ($instance->belongsTo() == null){
+                    error("Bulk deletion is only available for tables with belongs_to");
+                }
+
+                $instance->where([$instance->belongsTo() => auth()->uid()]);
             }    
             
             $refs     = json_decode($row['refs']);
             $affected = 0;
-
+            
             DB::transaction(function() use ($instance, $refs, $id, &$affected) {
                 $affected = $instance->whereIn('id', $refs)
                 ->delete();

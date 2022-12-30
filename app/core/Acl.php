@@ -2,8 +2,9 @@
 
 namespace simplerest\core;
 
-use simplerest\core\interfaces\IAcl;
+use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;
+use simplerest\core\interfaces\IAcl;
 
 abstract class Acl implements IAcl
 {
@@ -276,19 +277,38 @@ abstract class Acl implements IAcl
         return isset($this->role_perms[$role_name]);
     }
 
-    public function hasSpecialPermission(string $perm, ?Array $role_names = null, $uid = null){
-        if (empty($role_names)){
-            $role_names = auth()->getRoles();
-        }
-
-        // Podria chequearse si un usuario dado su uid tiene el permiso
-        if ($uid !== null){
-            // ...
-        }
-
+    public function hasSpecialPermission(string $perm, ?Array $role_names = null, $uid = null){   
         if (!in_array($perm, $this->sp_permissions)){
             throw new \InvalidArgumentException("Invalid permission '$perm'");    
         }
+
+        if (empty($role_names)){
+            $role_names = auth()->getRoles();
+        }       
+
+        $user_perms = [];
+
+        $is_auth   = request()->isAuthenticated();
+        
+        if (!$is_auth){
+            if ($uid != null)
+            {
+                $user_perms = DB::table('user_sp_permissions')
+                ->join('sp_permissions')
+                ->where([
+                    'user_id' => $uid
+                ])
+                ->pluck('name');
+            }
+        } else {
+            $user_perms = auth()->getPermissions();
+        }
+
+        if (in_array($perm, $user_perms)){
+            return true;
+        }
+
+        // dd($user_perm, 'USER PERMS');
 
         foreach ($role_names as $r_name){
             if (!isset($this->role_perms[$r_name])){
@@ -303,13 +323,18 @@ abstract class Acl implements IAcl
         return false;
     }
 
+    /*
+        Si $role_names esta vacio, busca los roles del usuario autenticado
+    */
     public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = null){
         if (empty($role_names)){
             $role_names = $role_names = auth()->getRoles();
         }
 
-        if (!in_array($perm, ['show', 'show_all', 'list', 'list_all', 'create', 'update', 'delete'])){
-            throw new \InvalidArgumentException("hasResourcePermission : invalid permission '$perm'");    
+        $allowed_sp_perms = ['show', 'show_all', 'list', 'list_all', 'create', 'update', 'delete'];
+
+        if (!in_array($perm, $allowed_sp_perms)){
+            throw new \InvalidArgumentException("hasResourcePermission : invalid permission '$perm'. Allowed: ". implode(', ', $allowed_sp_perms));    
         }
 
         foreach ($role_names as $r_name){
@@ -325,6 +350,54 @@ abstract class Acl implements IAcl
         }
         
         return false;
+    }
+
+    /*
+        Determina si se tiene permiso a nivel de *tabla* para un rol o conjunto de roles particular
+
+        Incluye la posibilidad de permisos especiales que otorguen permisos sobre esa tabla
+
+        Tambien podria determinar los permisos a nivel de "row" (registro)  --- implementar !
+        
+    */
+    public function hasPermission(string $perm, string $resource, $uid = null, $row_id = null)
+    {
+        $is_auth = request()->isAuthenticated();
+
+        if ($uid == null && !$is_auth){
+            return false;
+        }
+
+        // Sino esta autenticado recurro a la base de datos para saber que permisos puede tener
+        if (!$is_auth){
+            $roles = DB::table('user_roles')
+            ->join('roles')
+            ->where([
+                'user_id' => $uid
+            ])
+            ->pluck('name');
+
+        } else {
+            $roles = auth()->getRoles();
+        }
+
+        if (in_array($perm, ['show', 'list', 'read', 'show', 'show_all', 'read_all'])){
+            if ($this->hasSpecialPermission('read_all', $roles, $uid)){
+                return true;
+            }
+        }
+
+        if (in_array($perm, ['create', 'update', 'delete', 'write', 'write_all'])){
+            if ($this->hasSpecialPermission('write_all', $roles, $uid)){
+                return true;
+            }
+        }
+        
+        if ($this->hasResourcePermission($perm, $resource, $roles)){
+            return true;
+        }
+
+       return false;
     }
 
     public function getResourcePermissions(string $role, string $resource, $op_type = null){

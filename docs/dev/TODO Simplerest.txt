@@ -1,5 +1,12 @@
 # TODO
 
+- Esta falantando llamar a auth()->setPermissions()
+
+cuando el usuario se loguea !!!!!
+
+Esto esta afectando a hasSpecialPermission()
+
+
 - Colecciones:
 
   Ya no almacenar mas nada en ninguna tabla sino ejecutar las operaciones directamente SIN colecciones:
