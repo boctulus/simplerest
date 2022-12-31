@@ -7,7 +7,7 @@ use simplerest\core\libs\DB;
 
 /*
 	Validador de campos de formulario
-	Ver 2.1 Beta
+	Ver 2.2 Beta
 
 	@author boctulus@gmail.com
 */
@@ -251,9 +251,9 @@ class Validator implements IValidator
 			
 		$msg = [];
 		foreach($rules as $field => $rule){
-			$value = $data[$field];
-
 			if (isset($rule['type']) && $rule['type'] == 'array'){
+				$value = $data[$field];
+				
 				if (!is_array($value)){
 					$err = sprintf(_("Invalid Data type. Expected Array"));
 					$push_error($field,['data'=>$value, 'error'=>'type', 'error_detail' => _($err)], $errors);
