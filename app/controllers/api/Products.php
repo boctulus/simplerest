@@ -17,6 +17,9 @@ class Products extends MyApiController
 
     ];
 
+    // Si es true, el campo desaparece de los GETs
+    static protected $hide_in_response = false;
+
     function __construct()
     {       
         parent::__construct();
