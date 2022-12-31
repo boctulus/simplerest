@@ -43,82 +43,79 @@ class Validator implements IValidator
 	// default rules
 	static function loadDefinitions(){
 		static::$rules = [ 
-			'bool' => function($dato) {
-				return $dato == 0 || $dato == 1;
+			'bool' => function($value) {
+				return $value == 0 || $value == 1;
 			},
-			'int' => function($dato) {
-				return preg_match('/^(-?[0-9]+)+$/',trim($dato)) == 1;
+			'int' => function($value) {
+				return preg_match('/^(-?[0-9]+)+$/',trim($value)) == 1;
 			},
-			'float' => function($dato) {
-				$dato = trim($dato);
-				return is_numeric($dato);
+			'float' => function($value) {
+				$value = trim($value);
+				return is_numeric($value);
 			},
-			'number' => function($dato) {
-				$dato = trim($dato);
-				return ctype_digit($dato) || is_numeric($dato);
+			'number' => function($value) {
+				$value = trim($value);
+				return ctype_digit($value) || is_numeric($value);
 			},
-			'str' => function($dato) {
-				return is_string($dato);
+			'str' => function($value) {
+				return is_string($value);
 			},
-			'string' => function($dato) {
-				return is_string($dato);
+			'string' => function($value) {
+				return is_string($value);
 			},
-			'alpha' => function($dato) {                                   
-				return (preg_match('/^[a-z]+$/i',$dato) == 1); 
+			'alpha' => function($value) {                                   
+				return (preg_match('/^[a-z]+$/i',$value) == 1); 
 			},	
-			'alpha_num' => function($dato) {                                     
-				return (preg_match('/^[a-z0-9]+$/i',$dato) == 1);
+			'alpha_num' => function($value) {                                     
+				return (preg_match('/^[a-z0-9]+$/i',$value) == 1);
 			},
-			'alpha_dash' => function($dato) {                                     
-				return (preg_match('/^[a-z\-_]+$/i',$dato) == 1);
+			'alpha_dash' => function($value) {                                     
+				return (preg_match('/^[a-z\-_]+$/i',$value) == 1);
 			},
-			'alpha_num_dash' => function($dato) {                                    
-				return (preg_match('/^[a-z0-9\-_]+$/i',$dato) == 1);
+			'alpha_num_dash' => function($value) {                                    
+				return (preg_match('/^[a-z0-9\-_]+$/i',$value) == 1);
 			},	
-			'alpha_spaces' => function($dato) {                                     
-				return (preg_match('/^[a-z ]+$/i',$dato) == 1);  
+			'alpha_spaces' => function($value) {                                     
+				return (preg_match('/^[a-z ]+$/i',$value) == 1);  
 			},
-			'alpha_utf8' => function($dato) {                                    
-				return (preg_match('/^[\pL\pM]+$/u',$dato) == 1); 
+			'alpha_utf8' => function($value) {                                    
+				return (preg_match('/^[\pL\pM]+$/u',$value) == 1); 
 			},
-			'alpha_num_utf8' => function($dato) {                                    
-				return (preg_match('/^[\pL\pM0-9]+$/u',$dato) == 1);
+			'alpha_num_utf8' => function($value) {                                    
+				return (preg_match('/^[\pL\pM0-9]+$/u',$value) == 1);
 			},
-			'alpha_dash_utf8' => function($dato) {                                   
-				return (preg_match('/^[\pL\pM\-_]+$/u',$dato) == 1); 	
+			'alpha_dash_utf8' => function($value) {                                   
+				return (preg_match('/^[\pL\pM\-_]+$/u',$value) == 1); 	
 			},
-			'alpha_spaces_utf8' => function($dato) {                                   
-				return (preg_match('/^[\pL\pM\p{Zs}]+$/u',$dato) == 1); 		
+			'alpha_spaces_utf8' => function($value) {                                   
+				return (preg_match('/^[\pL\pM\p{Zs}]+$/u',$value) == 1); 		
 			},
-			'notnum' => function($dato) {
-				return preg_match('/[0-9]+/',$dato) == 0;
+			'notnum' => function($value) {
+				return preg_match('/[0-9]+/',$value) == 0;
 			},
-			'email' => function($dato) {
-				return filter_var($dato, FILTER_VALIDATE_EMAIL);
+			'email' => function($value) {
+				return filter_var($value, FILTER_VALIDATE_EMAIL);
 			},
-			'url' => function($dato) {
-				return filter_var($dato, FILTER_VALIDATE_URL);
+			'url' => function($value) {
+				return filter_var($value, FILTER_VALIDATE_URL);
 			},
-			'mac' => function($dato) {
-				return filter_var($dato, FILTER_VALIDATE_MAC);
+			'mac' => function($value) {
+				return filter_var($value, FILTER_VALIDATE_MAC);
 			},		
-			'domain' => function($dato) {
-				return filter_var($dato, FILTER_VALIDATE_DOMAIN);
+			'domain' => function($value) {
+				return filter_var($value, FILTER_VALIDATE_DOMAIN);
 			},
-			'date' => function($dato) {
-				return get_class()::isValidDate($dato);
+			'date' => function($value) {
+				return get_class()::isValidDate($value);
 			},
-			'time' => function($dato) {
-				return get_class()::isValidDate($dato,'H:i:s');
+			'time' => function($value) {
+				return get_class()::isValidDate($value,'H:i:s');
 			},			
-			'datetime' => function($dato) {
-				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$dato)== 1;
+			'datetime' => function($value) {
+				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$value)== 1;
 			},
-			'timestamp' => function($dato) {
-				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$dato)== 1;
-			},
-			'array' => function($dato) {
-				return is_array($dato);
+			'timestamp' => function($value) {
+				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$value)== 1;
 			}
 		];		
 		
@@ -137,8 +134,8 @@ class Validator implements IValidator
 	}
 
 	/*
-		@param string $dato
-		@param string $tipo
+		@param string $value
+		@param string $expected_type
 		@return mixed
 		
 		Chequear si es mejor utilizar FILTER_VALIDATE_INT y FILTER_VALIDATE_FLOAT
@@ -147,40 +144,46 @@ class Validator implements IValidator
 		
 		
 	*/
-	static function isType($dato, $tipo){
-		if ($dato === NULL)
-			throw new \InvalidArgumentException('No data'); 
+	static function isType($value, string $expected_type, bool $null_throw_exception = false){
+		if ($value === NULL){
+			if (!$null_throw_exception){
+				throw new \InvalidArgumentException('No data'); 
+			} else {
+				return false;
+			}
+		}			
 		
-		if (empty($tipo))
+		if (empty($expected_type)){
 			throw new \InvalidArgumentException('Data type is undefined');
+		}
 			
-		if (substr($tipo,0,6) == 'regex:'){
+		if (substr($expected_type,0,6) == 'regex:'){
 			try{
-				$regex = substr($tipo,6);
-				return preg_match($regex,$dato) == 1;	
-			}catch(\Exception $e){
-				throw new \InvalidArgumentException('Invalid regular expression!');
+				$regex = substr($expected_type,6);
+				return preg_match($regex,$value) == 1;	
+			}catch(\Exception $e){				
+				throw new \InvalidArgumentException('Regex malformed');
 			}	
 		}
 
-		if (substr($tipo,0,8) == 'decimal('){
-			$regex = substr($tipo,6);
-			$nums  = substr($tipo, strlen('decimal('), -1);
+		if (substr($expected_type,0,8) == 'decimal('){
+			$regex = substr($expected_type,6);
+			$nums  = substr($expected_type, strlen('decimal('), -1);
 			list($tot,$dec) = explode(',', $nums);
 
-			$f = explode('.',$dato);
-			return (strlen($dato) <= ($tot+1) && strlen($f[1] ?? '') <= $dec);	
+			$f = explode('.',$value);
+			return (strlen($value) <= ($tot+1) && strlen($f[1] ?? '') <= $dec);	
 		}
 
 		if (static::$rules == []){
 			static::loadDefinitions();
 		}
 
-		if (!in_array($tipo, static::$rule_types)){
-			throw new \InvalidArgumentException(sprintf(_('Invalid data type for %s'), $tipo));	
+		if (!in_array($expected_type, static::$rule_types)){
+			return false;
 		}
 
-		return static::$rules[$tipo]($dato);
+		return static::$rules[$expected_type]($value);
 	}	
 
 
@@ -198,7 +201,7 @@ class Validator implements IValidator
 		$errors = [];
 
 		if ($fillables !== null){
-			foreach ($data as $field => $dato){
+			foreach ($data as $field => $value){
 				if (!in_array($field, $fillables)){
 					$errors[$field][] = [
 						"error" => "fillable",
@@ -248,7 +251,29 @@ class Validator implements IValidator
 			
 		$msg = [];
 		foreach($rules as $field => $rule){
-			//dd($rule, "RULE $field :");
+			$value = $data[$field];
+
+			if (isset($rule['type']) && $rule['type'] == 'array'){
+				if (!is_array($value)){
+					$err = sprintf(_("Invalid Data type. Expected Array"));
+					$push_error($field,['data'=>$value, 'error'=>'type', 'error_detail' => _($err)], $errors);
+				}
+
+				if (isset($rule['len']) && count($value) != $rule['len']){
+					$err = sprintf(_("Array has not the expected lenght of %d"), $rule['len']);
+					$push_error($field,['data'=>$value, 'error'=>'len', 'error_detail' => _($err)], $errors);
+				}
+
+				if (isset($rule['min_len']) && count($value) < $rule['min_len']){
+					$err = sprintf(_("Array has not the minimum expected lenght of %d"),  $rule['min_len']);
+					$push_error($field,['data'=>$value, 'error'=>'min_len', 'error_detail' => _($err)], $errors);
+				}
+
+				if (isset($rule['max_len']) && count($value) > $rule['max_len']){
+					$err = sprintf(_("Array has not the maximum expected lenght of %d"),  $rule['max_len']);
+					$push_error($field,['data'=>$value, 'error'=>'max_len', 'error_detail' => _($err)], $errors);
+				}
+			}
 			
 			//var_export(array_diff(array_keys($rule), ['messages']));
 			if (isset($rules[$field]['messages'])){
@@ -272,8 +297,8 @@ class Validator implements IValidator
 				continue;
 			}
 				
-			foreach ((array) $data[$field] as $dato){
-				//dd(['field' => $field, 'data' => $dato]);
+			foreach ((array) $data[$field] as $value){
+				//dd(['field' => $field, 'data' => $value]);
 
 				//var_export($rules[$field]['messages']);
 				//var_export(array_diff(array_keys($rule), ['messages']));
@@ -281,8 +306,8 @@ class Validator implements IValidator
 				//$constraints = array_diff(array_keys($rule), ['messages']);
 				//var_export($constraints);
 
-				if (!isset($dato) || $dato === '' || $dato === null){
-					//var_export(['field' =>$dato, 'required' => $rule['required']]);
+				if (!isset($value) || $value === '' || $value === null){
+					//var_export(['field' =>$value, 'required' => $rule['required']]);
 	
 					if ($this->required && isset($rule['required']) && $rule['required']){
 						$err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] :  "Field is required";
@@ -300,19 +325,24 @@ class Validator implements IValidator
 	
 				$avoid_type_check = false;
 				if($rule['required']){
-					if(trim($dato)==''){
+					if(trim($value)==''){
 						$err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] :  "Field is required";
-						$push_error($field,['data'=>$dato, 'error'=>'required', 'error_detail' => _($err)],$errors);
+						$push_error($field,['data'=>$value, 'error'=>'required', 'error_detail' => _($err)],$errors);
 					}						
 				}	
+
+				// Creo un alias entre in y set
+				if (isset($rule['set'])){
+					$rule['in'] = $rule['set'];
+				}
 				
 				if (isset($rule['in'])){
 					if (!is_array($rule['in']))
 						throw new \InvalidArgumentException("IN requieres an array");
 
-					$err = (isset($msg[$field]['in'])) ? $msg[$field]['in'] :  sprintf(_("%s is not a valid value"),$dato);
-					if (!in_array($dato, $rule['in'])){
-						$push_error($field,['data'=>$dato, 'error'=>'in', 'error_detail' => _($err)],$errors);
+					$err = (isset($msg[$field]['in'])) ? $msg[$field]['in'] : sprintf(_("%s is not a valid value. Accepted: %s"), $value, implode(',', $rule['in']));
+					if (!in_array($value, $rule['in'])){
+						$push_error($field,['data'=>$value, 'error'=>'in', 'error_detail' => _($err)],$errors);
 					}					
 				}
 
@@ -320,9 +350,9 @@ class Validator implements IValidator
 					if (!is_array($rule['not_in']))
 						throw new \InvalidArgumentException("in requieres an array");
 
-					$err = (isset($msg[$field]['not_in'])) ? $msg[$field]['not_in'] :  sprintf(_("%s is not a valid value"),$dato);
-					if (in_array($dato, $rule['not_in'])){
-						$push_error($field,['data'=>$dato, 'error'=>'not_in', 'error_detail' => _($err)],$errors);
+					$err = (isset($msg[$field]['not_in'])) ? $msg[$field]['not_in'] : sprintf(_("%s is not a valid value. Accepted: %s"), $value, implode(',', $rule['in']));
+					if (in_array($value, $rule['not_in'])){
+						$push_error($field,['data'=>$value, 'error'=>'not_in', 'error_detail' => _($err)],$errors);
 					}					
 				}
 
@@ -333,9 +363,9 @@ class Validator implements IValidator
 					if (count($rule['between'])!=2)
 						throw new \InvalidArgumentException("between requieres an array of two values");
 
-					if ($dato > $rule['between'][1] || $dato < $rule['between'][0]){
-						$err = (isset($msg[$field]['between'])) ? $msg[$field]['between'] : sprintf(_("%s is not between %s and %s"), $dato, $rule['between'][0], $rule['between'][1]);
-						$push_error($field,['data'=>$dato, 'error'=>'between', 'error_detail' => _($err)],$errors);
+					if ($value > $rule['between'][1] || $value < $rule['between'][0]){
+						$err = (isset($msg[$field]['between'])) ? $msg[$field]['between'] : sprintf(_("%s is not between %s and %s"), $value, $rule['between'][0], $rule['between'][1]);
+						$push_error($field,['data'=>$value, 'error'=>'between', 'error_detail' => _($err)],$errors);
 					}					
 				}
 
@@ -346,38 +376,38 @@ class Validator implements IValidator
 					if (count($rule['not_between'])!=2)
 						throw new \InvalidArgumentException("not_between requieres an array of two values");
 
-					if (!($dato > $rule['not_between'][1] || $dato < $rule['not_between'][0])){
-						$err = (isset($msg[$field]['not_between'])) ? $msg[$field]['not_between'] :  sprintf(_("%s should be less than %s or gretter than %s"), $dato, $rule['not_between'][0], $rule['not_between'][1]);
-						$push_error($field,['data'=>$dato, 'error'=>'not_between', 'error_detail' => _($err)],$errors);
+					if (!($value > $rule['not_between'][1] || $value < $rule['not_between'][0])){
+						$err = (isset($msg[$field]['not_between'])) ? $msg[$field]['not_between'] :  sprintf(_("%s should be less than %s or gretter than %s"), $value, $rule['not_between'][0], $rule['not_between'][1]);
+						$push_error($field,['data'=>$value, 'error'=>'not_between', 'error_detail' => _($err)],$errors);
 					}					
 				}
 
-				if (isset($rule['type']) && in_array($rule['type'],['number','int','float','double']) && trim($dato)=='')
+				if (isset($rule['type']) && in_array($rule['type'],['number','int','float','double']) && trim($value)=='')
 					$avoid_type_check = true;
 				
-				if (isset($rule['type']) && !$avoid_type_check)
-					if (!get_class()::isType($dato, $rule['type'])){
+				if (isset($rule['type']) && !$avoid_type_check){
+					if ($rule['type'] != 'array' && !get_class()::isType($value, $rule['type'])){
 						$err =  (isset($msg[$field]['type'])) ? $msg[$field]['type'] : "It's not a valid %s";
-						$push_error($field,['data'=>$dato, 'error'=>'type', 'error_detail' => sprintf(_($err), $rule['type'])],$errors);
-					}						
-					
+						$push_error($field,['data'=>$value, 'error'=>'type', 'error_detail' => sprintf(_($err), $rule['type'])],$errors);
+					}
+				}
 						
 				if(isset($rule['type'])){	
 					if (in_array($rule['type'],['str','not_num','email']) || strpos($rule['type'], 'regex:') === 0 ){
 							
 							if(isset($rule['min'])){ 
 								$rule['min'] = (int) $rule['min'];
-								if(strlen($dato)<$rule['min']){
+								if(strlen($value)<$rule['min']){
 									$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  "The minimum length is %d characters";
-									$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err),$rule['min'])],$errors);
+									$push_error($field,['data'=>$value, 'error'=>'min', 'error_detail' => sprintf(_($err),$rule['min'])],$errors);
 								}									
 							}
 							
 							if(isset($rule['max'])){ 
 								$rule['max'] = (int) $rule['max'];
-								if(strlen($dato)>$rule['max']){
+								if(strlen($value)>$rule['max']){
 									$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] :  'The maximum length is %d characters';
-									$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
+									$push_error($field,['data'=>$value, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
 								}
 									
 							}
@@ -387,19 +417,19 @@ class Validator implements IValidator
 							
 							if(isset($rule['min'])){ 
 								$rule['min'] = (float) $rule['min']; // cast
-								if($dato<$rule['min']){
+								if($value<$rule['min']){
 									$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  'Minimum is %d';
-									$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errors);
+									$push_error($field,['data'=>$value, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errors);
 								}
 									
 							}
 							
 							if(isset($rule['max'])){ 
 								$rule['max'] = (float) $rule['max']; // cast
-								if($dato>$rule['max']){
+								if($value>$rule['max']){
 									$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] :  'Maximum is %d';
 
-									$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
+									$push_error($field,['data'=>$value, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
 								}
 									
 							}
@@ -407,12 +437,12 @@ class Validator implements IValidator
 					
 					if(in_array($rule['type'],['time','date'])){
 							
-						$t0 = strtotime($dato);
+						$t0 = strtotime($value);
 
 						if(isset($rule['min'])){ 
 							if($t0<strtotime($rule['min'])){
 								$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  'Minimum is '.$rule['min'];
-								$push_error($field,['data'=>$dato, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errors);
+								$push_error($field,['data'=>$value, 'error'=>'min', 'error_detail' => sprintf(_($err), $rule['min'])],$errors);
 							}
 								
 						}
@@ -420,7 +450,7 @@ class Validator implements IValidator
 						if(isset($rule['max'])){ 
 							if($t0>strtotime($rule['max'])){
 								$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'Maximum is '.$rule['max'];
-								$push_error($field,['data'=>$dato, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
+								$push_error($field,['data'=>$value, 'error'=>'max', 'error_detail' => sprintf(_($err), $rule['max'])],$errors);
 							}
 								
 						}
