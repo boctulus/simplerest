@@ -41,6 +41,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected $ask_for_deleted;
 
     static protected $hidden  = [];
+    static protected $hide_in_response = false;
 
     static protected $folder_field;
     static protected $soft_delete = true;
@@ -285,8 +286,24 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             return $res;
         }
 
-        if (!empty($defs)){            
-            return [ 'defs' => get_defs($this->table_name, null, false, false) ];
+        if (!empty($defs)){         
+            $the_defs = get_defs($this->table_name, null, false, true);  
+
+            foreach ($the_defs as $ix => $def){
+                if (isset($def['hidden'])){
+                    $the_defs[$ix]['hidden'] = (bool) $def['hidden'];
+                }
+
+                if (isset($def['fillable'])){
+                    $the_defs[$ix]['fillable'] = (bool) $def['fillable'];
+                }
+
+                if (isset($def['nullable'])){
+                    $the_defs[$ix]['nullable'] = (bool) $def['nullable'];
+                }
+            }
+            
+            return [ 'defs' => $the_defs ];
         }
 
         $req = request();
@@ -507,7 +524,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $this->onGot($id, 1);
                     $this->webhook('show', $rows[0], $id);
 
-
                     /*
                          SUBRECURSOS
                     */
@@ -524,10 +540,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                         De momento no afecta a sub-recursos
                     */
-                    if (!empty(static::$hidden)){
-                        foreach (static::$hidden as $hide){
-                            if (array_key_exists($hide, $res)){
-                                unset($res[$hide]);
+                  
+                    if (static::$hide_in_response){
+                        if (!empty(static::$hidden)){
+                            foreach (static::$hidden as $hide){
+                                if (array_key_exists($hide, $rows[0])){
+                                    unset($res[$hide]);
+                                }
                             }
                         }
                     }
@@ -938,11 +957,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     De momento no afecta a sub-recursos
                 */
 
-                foreach ($rows as $rix => $row){
-                    if (!empty(static::$hidden)){
-                        foreach (static::$hidden as $hide){
-                            if (array_key_exists($hide, $rows[$rix])){
-                                unset($rows[$rix][$hide]);
+                if (static::$hide_in_response){
+                    foreach ($rows as $rix => $row){
+                        if (!empty(static::$hidden)){
+                            foreach (static::$hidden as $hide){
+                                if (array_key_exists($hide, $rows[$rix])){
+                                    unset($rows[$rix][$hide]);
+                                }
                             }
                         }
                     }

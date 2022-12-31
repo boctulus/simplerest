@@ -145,17 +145,16 @@ function get_defs(string $table_name, $tenant_id = null, bool $include_hidden = 
     $api        = get_api_name($table_name, 1);
     $api_hidden = $api::getHidden();
 
-    if (!$include_hidden_from_api){
-        foreach ($api_hidden as $hide){
-            if (array_key_exists($hide, $defs)){
-                unset($defs[$hide]);
+    if ($include_hidden_from_api){
+        foreach ($api_hidden as $col){
+            if (array_key_exists($col, $defs)){
+                $defs[$col]['hidden'] = true;
             }
         }
     }
 
     return $defs;
 }
-
 
 
 /*
