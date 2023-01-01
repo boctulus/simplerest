@@ -1,5 +1,9 @@
 # TODO
 
+- Investigar porque con render() no se estan enviando js y css a los templates !!! 
+
+  Este problema no sucede cuando se usa view()
+
 - Esta falantando llamar a auth()->setPermissions()
 
 cuando el usuario se loguea !!!!!
@@ -8,26 +12,11 @@ Esto esta afectando a hasSpecialPermission()
 
 - Completar (y testear) Acl::hasPermission()
 
-
-- Colecciones:
-
-  Ya no almacenar mas nada en ninguna tabla sino ejecutar las operaciones directamente SIN colecciones:
-
-  DELETE /api/v1/{entidad}/{array}
-
-	PATCH /api/v1/{entidad}/{array}
-
-Las colecciones son dificiles de mantener y generan aguejos de seguridad
-
-Sin embargo, habria un permiso especial (sp) para operaciones masivas llamado "mass_writing" el cual
-reemplazaria a "write_all_collections" y de no tenerlo la operacion seria rechazada
-
-Tambien podria especificarse si desea esperar a la respuesta o procesar en segundo plano.
-
-
 - Si un usuario no tiene roles, tampoco esta siendo considerado "registrado" aun cuando entrega credenciales y son validas. 
 
 Est'a tocando insertar en la tabla user_roles el user_id lo cual es un BUG !
+
+- Volver a revisar porque una vista puede detonar y alcanzar a renderizar algo antes de detener el script y mostrar el error. Antes de modificar la clase Response y el FronController no sucedia !
 
 
 [ DATATABLES (DATAGRIDS) ]
@@ -89,11 +78,6 @@ Ej:
 Ver video:
 
 https://www.youtube.com/watch?v=1wgLY-V69MM&ab_channel=LaravelDaily
-
-
-
-
-
 
 - Investigar lo que hace WP para evitar multiples requests al mismo cronjob en wp-cron.php
 
@@ -286,7 +270,6 @@ Hay un *bug* en Bt5Form::password() que hace si se espcifica "name", se sobre-es
 - Chequear JQueryUI y en particular el tema "themeroller"
 
 https://jqueryui.com/themeroller/#!zThemeParams=5d000080001406000000000000003d8888d844329a8dfe02723de3e5701dc2cb2be0d98fe676bb46e85f3b85ff2d347a9c5170a6c17a4a3d926b08b9d199c4e573fcbf9cc1a2dd092a9d80b65cc27a41c959e1c11c3f58747718755b7fc90eb73b9c06df29f308cd295b41834e81e06bc171040b3fb939e3cffe02ad60b22eefb1243857d44b57a7ae82073629d27fa97cc0edcf793a9cb7175c405a0fa51e08df692bc77c30ef2c23740da336467993778516e3dda3f982563ac46b0ba5b9b64df82fbefdc978a60da222d6e19d42bb6f12585a895b8d4d97384e78a22fb35b74b6f91ae2aad36e8f5f86717bd8b72eba83277750c9414396c588e930448edf4accb116bad7cbea9aa63ceb2050de67c088b0dea8f499b926c049b66783237a4e8c78c4db65eec9b26b8ee132cb4a78d61368c6206680e917ce6d5ff259427d3c79d1dadee11c17d46588dd4bf09a21332ac25c72fd14407b609e8d4ffbf4a64651aff71655cfab38845646b86b9f101428244db7e76be5b1f2cf349e8ee6eccee38c4c953cd87dbf0295a5e2f3d7200606b00faf01a0a8f84eca9e6c9d81c04224a4a7a04b2f2bbfb8388d452da8b8eb8a27dca6d43d873825fb60e05fa5883e2ba01be09224a00857dcbb8909ab1f83d20dbc67fb7206d8d931b2ccf0c90a9ae4717bbbac54591f74b98362be6647704acbc4142dfead8079290ad3fc39e18983e13469399a4439a14e58ee84a79a7bc90b9198e57ac92bf73219860f69511830ffbcdea824
-
 
 - Animaciones de
 
