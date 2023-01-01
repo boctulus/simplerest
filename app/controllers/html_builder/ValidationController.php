@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers\bt5;
+namespace simplerest\controllers\html_builder;
 
 use simplerest\controllers\MyController;
 use simplerest\core\Request;
@@ -14,19 +14,19 @@ class ValidationController extends MyController
         Basico  
     */
     function index(){
-        view('hello/validation');
+        view('html_builder_examples/validation');
     }
 
     function v1(){
-        view('hello/v1');
+        view('html_builder_examples/v1');
     }
 
     function v2(){
-        view('hello/v2');
+        view('html_builder_examples/v2');
     }
 
     function v2a(){
-        view('hello/v2a');
+        view('html_builder_examples/v2a');
     }
 
     function v3(){

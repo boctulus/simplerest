@@ -1648,5 +1648,20 @@ class Html
         //....
     }
 
+    static function select2(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args)
+    {  
+        static::addClass("select2", $attributes['class']);
+               
+        css_file('css/html_builder/select2/select2.css');
+        js_file('js/html_builder/select2/select2.js', null, true);
+
+        js('
+            $(document).ready(function() { 
+                $(".select2").select2();
+            });
+        ');
+
+        return static::select($options, $default, $placeholder, $attributes, ...$args);
+    }
 }
 
