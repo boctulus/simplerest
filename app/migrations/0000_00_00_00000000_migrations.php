@@ -19,58 +19,38 @@ class Migrations implements IMigration
     */
     public function up()
     {
-        DB::beginTransaction();
-        
-        try {
-            DB::disableForeignKeyConstraints();
+        $driver = DB::driver();
 
-            $driver = DB::driver();
-
-            switch ($driver){
-                case 'sqlite':
-                    DB::statement("
-                    CREATE TABLE IF NOT EXISTS migrations (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        db varchar(50) DEFAULT NULL,
-                        filename varchar(255) NOT NULL,
-                        created_at DATETIME NULL
-                    );");
-                    break;
-
-                case 'mysql':
-                    DB::statement("
-                    CREATE TABLE IF NOT EXISTS `migrations` (
-                        `id` int(11) PRIMARY KEY NOT NULL,
-                        `db` varchar(50) DEFAULT NULL,
-                        `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-                        `created_at` DATETIME NULL
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-                    ");
-
-                    DB::statement("
-                    ALTER TABLE `migrations`
-                        MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");    
-
+        switch ($driver){
+            case 'sqlite':
+                DB::statement("
+                CREATE TABLE IF NOT EXISTS migrations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    db varchar(50) DEFAULT NULL,
+                    filename varchar(255) NOT NULL,
+                    created_at DATETIME NULL
+                );");
                 break;
 
-                default:
-                 throw new \InvalidArgumentException("Driver $driver is not fully supported for migrations");   
-            }
+            case 'mysql':
+                DB::statement("
+                CREATE TABLE IF NOT EXISTS `migrations` (
+                    `id` int(11) PRIMARY KEY NOT NULL,
+                    `db` varchar(50) DEFAULT NULL,
+                    `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                    `created_at` DATETIME NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+                ");
 
-            
-            DB::commit(); 
-    
-        }catch(\Exception $e){
-            try {
-                DB::rollback();
-                throw $e;
-            } catch (\Exception $e){
-                d($e->getMessage(), "Transaction error");
-                throw $e;
-            }
-        } finally {
-            DB::enableForeignKeyConstraints();
-        }	
+                DB::statement("
+                ALTER TABLE `migrations`
+                    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");    
+
+            break;
+
+            default:
+                throw new \InvalidArgumentException("Driver $driver is not fully supported for migrations");   
+        }
     }
 }
 
