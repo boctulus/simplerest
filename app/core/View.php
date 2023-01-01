@@ -17,65 +17,6 @@ class View
     const HEAD   = true;
     const FOOTER = false;
 
-    static function get_view_src(string $view_path, int $expiration_time = 0){
-        if (!Strings::endsWith('.php', $view_path)){
-            $view_path .= '.php';
-        }
-
-        if ($expiration_time === 0){
-            return VIEWS_PATH . $view_path;
-        }
-
-        $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
-
-        $expired = Cache::expiredFile($cached_path, $expiration_time);
-
-        if (!$expired){
-            $src = $cached_path;
-        } else {
-            $src = VIEWS_PATH . $view_path;
-
-            // $content = Files::reader($src);
-
-            // if ($expiration_time != 0){
-            //     Files::writableOrFail($cached_path);
-            //     $bytes = Files::writter($cached_path, $content);
-            // }
-        }
-
-        return $src;
-    }
-
-    static function get_view(string $view_path, int $expiration_time = 0){
-        $path = Files::isAbsolutePath($view_path) ?  $view_path : VIEWS_PATH . $view_path;
-        
-        if (!Strings::endsWith('.php', $view_path)){
-            $view_path .= '.php';
-        }
-        
-        if ($expiration_time === 0){
-            return Files::reader($path);
-        }
-
-        $file_exists = null;
-        $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
-
-        $expired = Cache::expiredFile($cached_path, $expiration_time);
-
-        if (!$expired){
-            $content = Files::reader($cached_path);
-        } else {
-            $content = Files::reader($path);
-
-            if ($expiration_time != 0){
-                Files::writableOrFail($cached_path);
-                $bytes = Files::writter($cached_path, $content);
-            }
-        }
-
-        return $content;
-    }
-
     function __construct(string $view_path, array $vars  = null, ?string $layout = null, int $expiration_time = 0)
     {
 		$this->config = config();
@@ -134,6 +75,56 @@ class View
         }
 
         include $layout_path; 
+    }
+
+    static function get_view_src(string $view_path, int $expiration_time = 0){
+        if (!Strings::endsWith('.php', $view_path)){
+            $view_path .= '.php';
+        }
+
+        if ($expiration_time === 0){
+            return VIEWS_PATH . $view_path;
+        }
+
+        $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
+        $expired     = Cache::expiredFile($cached_path, $expiration_time);
+
+        if (!$expired){
+            $src = $cached_path;
+        } else {
+            $src = VIEWS_PATH . $view_path;
+        }
+
+        return $src;
+    }
+
+    static function get_view(string $view_path, int $expiration_time = 0){
+        $path = Files::isAbsolutePath($view_path) ?  $view_path : VIEWS_PATH . $view_path;
+        
+        if (!Strings::endsWith('.php', $view_path)){
+            $view_path .= '.php';
+        }
+        
+        $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
+
+        $expired     = Cache::expiredFile($cached_path, $expiration_time);
+
+        if (!$expired){
+            $content = Files::reader($cached_path);
+        } else {
+            ob_start();
+            include $path;
+            
+            $content = ob_get_contents();
+            ob_end_clean();
+            
+            if ($expiration_time != 0){
+                Files::writableOrFail($cached_path);
+                $bytes = Files::writter($cached_path, $content);
+            }
+        }
+        
+        return $content;
     }
 
     static function destroyCache(string $view_path) : bool {
