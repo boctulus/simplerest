@@ -1078,6 +1078,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $data = json_decode($data, true);
         }
 
+        if (empty($data))
+            error('Invalid JSON',400);
+
         $this->instance = $this->getModelInstance();
 
         $id = $data[$this->instance->getIdName()] ?? null;

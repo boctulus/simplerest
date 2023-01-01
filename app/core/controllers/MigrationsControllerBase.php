@@ -238,12 +238,27 @@ class MigrationsControllerBase extends Controller
                     DB::setConnection($to_db);
                 }
 
+                DB::beginTransaction();
+	
                 try {
                     DB::disableForeignKeyConstraints();
-                    (new $class_name())->up();   
+
+                    (new $class_name())->up();
+                    
+                    DB::commit(); 
+
+                }catch(\Exception $e){
+                    try {
+                        DB::rollback();
+                        throw $e;
+                    } catch (\Exception $e){
+                        d($e->getMessage(), "Transaction error");
+                        throw $e;
+                    }
                 } finally {
                     DB::enableForeignKeyConstraints();
                 }
+
             } else {
                 $ix++;
                 continue;
