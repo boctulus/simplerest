@@ -42,6 +42,8 @@ class Users implements IMigration
         DB::statement("
         ALTER TABLE `users`
             ADD PRIMARY KEY (`id`),
+            ADD UNIQUE(`email`),
+            ADD UNIQUE(`username`),
             ADD KEY `belongs_to` (`belongs_to`),
             ADD KEY `created_by` (`created_by`),
             ADD KEY `deleted_by` (`deleted_by`),
