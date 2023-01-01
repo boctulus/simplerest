@@ -1,5 +1,23 @@
 # TODO
 
+- Investigar porque (bug) esta dejando actualizar con "belongs_to", "updated_by" y "updated_at" por el usuario. Verificar que si se corresponda con las capacidades del usuario (permiso especial para lograr eso)
+
+POST /api/v1/users
+
+{
+    "firstname": "Juan",
+    "username": "jp",
+    "is_active": 0,
+    "is_locked": 0,
+    "email": "pj_elcapo@gmail.com",
+    "confirmed_email": 1,
+    "address": "Cale xxx Num 333",
+    "belongs_to": 1,  
+    "updated_by": 1,
+    "updated_at": "2022-12-04 02:55:22",
+    "genders": 1
+}
+
 - Investigar porque con render() no se estan enviando js y css a los templates !!! 
 
   Este problema no sucede cuando se usa view()
@@ -6800,10 +6818,27 @@ Ej:
 
 Y... a su vez,... file_get_contents() hace un wrapper sobre fopen() lo que le permite abrir un stream cuando recibe una url (o sea un string que comienza con 'http://' o 'https://' o similar)
 
-
-
 Mas
 
 https://www.php.net/manual/en/context.http.php
 
 
+- Corregir BUG que hace que cuando se aplica la misma migracion varias veces con un "redo", las claves foraneas puedan multipicarse. Y lo malo es que SQLite no las muestra pero el framework las detecta.
+
+Ej:
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`belongs_to`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `users_ibfk_3` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `users_ibfk_4` FOREIGN KEY (`deleted_by`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `users_ibfk_5` FOREIGN KEY (`gender_id`) REFERENCES `genders` (`id`),  -- aca
+  ADD CONSTRAINT `users_ibfk_6` FOREIGN KEY (`gender_id`) REFERENCES `genders` (`id`),
+  ADD CONSTRAINT `users_ibfk_7` FOREIGN KEY (`gender_id`) REFERENCES `genders` (`id`),
+  ADD CONSTRAINT `users_ibfk_8` FOREIGN KEY (`gender_id`) REFERENCES `genders` (`id`),
+  ADD CONSTRAINT `users_ibfk_9` FOREIGN KEY (`gender_id`) REFERENCES `genders` (`id`);
+
+Una forma de evitarlo seria que el framework defina la CONSTRAINT (ej: users_ibfk...) de forma inequivoca y de esa forma antes de intentar agrehgar una FK ... se pueda verificar si ya existe.

@@ -9,10 +9,29 @@ use simplerest\core\libs\DB;
 
 class InstallController extends ConsoleController
 {
-    function __construct()
-    {
-        parent::__construct();
+    function index(){
         $this->install();
+    }
+
+    private function create_first_user(){
+        $data = [
+            "username" => "adm1",
+            "email" => "adm1@mail.com",
+            "password" => "gogogo",
+            "is_active" => 1
+        ];
+
+        DB::transaction(function() use($data) {
+            $uid = DB::table('users')->insert($data);
+    
+            table('user_roles')->insert([
+                "user_id" => $uid,
+                "role_id" => 900  // deberia usando el Acl() entregar el role_id del rol mas alto en la jerarquia
+            ]);
+        });
+
+        // el metodo DB::transaction() deberia devolver si ha fallado o no 
+        dd($data, 'USER CREATED');
     }
 
     /*
@@ -24,19 +43,17 @@ class InstallController extends ConsoleController
         Schema::disableForeignKeyConstraints();
         
         $res = shell_exec('php com migrations migrate');
-        dd($res);
+        print_r($res);
         
         Schema::enableForeignKeyConstraints();
 
+        $res = shell_exec("php com make model all --from:main");
+        print_r($res);
 
         $res = shell_exec("php com make schema all -f --from:main");
-        dd($res);
+        print_r($res);
 
-        $res = shell_exec("php com make model all --from:main");
-        dd($res);
-
-        $res = shell_exec("php com make db_scan --from:main");
-        dd($res);
+        $this->create_first_user();
     }
 
 }
