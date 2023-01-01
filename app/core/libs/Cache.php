@@ -5,23 +5,18 @@ namespace simplerest\core\libs;
 class Cache
 {
     const FOREVER = -1;
-    const NEVER   =  0;
+    const EXPIRED =  0;
 
     static function expired(int $cached_at, int $expiration_time) : bool {
-        switch ($expiration_time){
-            // nunca expira
-            case -1:
-                $expired = false;
-            break;
-            // nunca se cachea
-            case 0:
-                $expired = true;
-            break;    
-            default:
-                $expired = time() > $cached_at + $expiration_time;
+        if ($expiration_time == 0){
+            return true;
         }
 
-        return $expired;
+        if ($expiration_time == -1){
+            return false;
+        }
+
+        return time() > $cached_at + $expiration_time;;
     }
 
     static function expiredFile(string $cache_path, int $expiration_time) : bool {
