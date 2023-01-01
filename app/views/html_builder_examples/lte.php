@@ -694,8 +694,9 @@ View::css_file(ASSETS_PATH . 'vendors/adminlte/dist/css/adminlte.css');
             ->placeholder()
         ]);
 
-        include_widget_css('flip_card');
 
+        echo tag('h3')->text('flip-card');
+        
         echo tag('card')->class('my-3 flip-card')
         ->content([
             tag('div')
@@ -844,12 +845,10 @@ View::css_file(ASSETS_PATH . 'vendors/adminlte/dist/css/adminlte.css');
         )->class('mb-3');
 
 
-        include_widget_css('searchTool');
-
         echo tag('inputGroup')
         ->content(
             tag('inputText')
-            ->placeholder('Search')
+            ->placeholder('Buscar')
         )
         ->append(
             tag('button')->info()->icon('search')
@@ -1056,12 +1055,12 @@ View::css_file(ASSETS_PATH . 'vendors/adminlte/dist/css/adminlte.css');
 
         echo tag('h3')->text('input range')->class('mt-3 mb-3');
 
-        echo tag('label')->name("edad")->text("Edad");
+        echo tag('label')->for("edad")->text("Edad");
         echo AdminLte::range(name: 'edad', min: 0, max: 99, default: 10, class: 'my-3');
 
         echo tag('p');
 
-        echo tag('label')->name("exp")->text("Experiencia");
+        echo tag('label')->for("exp")->text("Experiencia");
         echo tag('range')->name('exp')->min(0)->max(99)->default(30)->class('my-3')->color('teal');
 
 
