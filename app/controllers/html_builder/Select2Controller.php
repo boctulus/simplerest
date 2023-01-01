@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers\bt5;
+namespace simplerest\controllers\html_builder;
 
 use simplerest\core\View;
 use simplerest\controllers\MyController;
@@ -38,10 +38,10 @@ class Select2Controller extends MyController
     {   
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
 
-        View::css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
-        View::css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
+        css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
+        css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
 
-        View::js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
+        js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
 
         view('select2/diagnosticojournal.php', [
             'json' => $json

@@ -6,6 +6,8 @@ cuando el usuario se loguea !!!!!
 
 Esto esta afectando a hasSpecialPermission()
 
+- Completar (y testear) Acl::hasPermission()
+
 
 - Colecciones:
 
