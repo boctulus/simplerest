@@ -7585,6 +7585,9 @@ o,..
 	render();  // renderizaria solo el template por defecto
 
 
+Nota: actualmente cuando se usa render() no se carga ningún css o js en el template !
+
+
 # Assets
 
 Las vistas pueden contener HTML, PHP, CSS y JavaScript. Para los assets se cuenta con el helper asset()
@@ -7633,33 +7636,16 @@ Ej:
 		// ...
 	}
 
-Pero en caso de ser un css de varias líneas de código, se recomienda utilizar include_css()
+Pero en caso de ser un css de varias líneas de código, se recomienda utilizar css_file() que lo encola para su carga en el head.
 
 Ej:
 
 	static function searchTool(mixed $content = 'Search', Array $attributes = [], ...$args)
     {
-        include_css(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        css_file(WIDGETS_PATH . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
 		// ..
 	}
-
-O en una vista:
-
-	<?php
-		include_css(WIDGETS_PATH . 'login/login.css');
-	?>
-
-O usando include_widget_css() como atajo.
-
-Ej:
-
-	static function carousel(mixed $content = [], Array $attributes = [], ...$args){
-        include_widget_css(__FUNCTION__);
-
-		// ...
-	}
-
 
 Además del helper css() se provee del helper js() para renderizar JavaScript en el lugar.
 

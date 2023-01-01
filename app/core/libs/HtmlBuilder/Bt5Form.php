@@ -1978,7 +1978,7 @@ class Bt5Form extends Html
     }
 
     static function note(mixed $text, Array $attributes = [], ...$args){     
-       css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        css_file('css/html_builder/note/note.css');
         
         $attributes['class'] = "note";
 
@@ -2000,7 +2000,7 @@ class Bt5Form extends Html
 
     // milestone minimalista
     static function steps(int $current, int $max, Array $attributes = [], ...$args){     
-       css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
     
         $attributes['class'] = "all-steps";
 
@@ -2139,6 +2139,14 @@ class Bt5Form extends Html
         $content = "{$_title}<p>$content</p>";
 
         return static::div($content, $attributes, ...$args);
+    }
+
+
+    static function select2(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args)
+    {  
+        css_file('css/html_builder/select2/select2-bootstrap-5-theme.min.css');
+
+        return parent::select2($options, $default, $placeholder, $attributes, ...$args);
     }
 
 
