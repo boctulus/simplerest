@@ -32,10 +32,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected $impersonated_by;
     protected $conn;
     protected $instance; // main
+    protected $instance2; //
     protected $tenantid;
 
     protected $id;
     protected $folder;
+    protected $folder_name; //
+    protected $folder_access; //
 
     protected $show_deleted;
     protected $ask_for_deleted;
@@ -1571,10 +1574,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             if (!$acl->hasSpecialPermission('fill_all')){
                 $unfill = [ 
-                            $this->instance->deletedAt(),
-                            $this->instance->deletedBy(),
-                            $this->instance->createdAt(),
-                            $this->instance->createdBy()
+                    $this->instance->createdAt(),
+                    $this->instance->createdBy(),
+                    $this->instance->deletedAt(),
+                    $this->instance->deletedBy(),
+                    $this->instance->updatedAt(),
+                    $this->instance->updateddBy()                            
                 ];    
 
                 $this->instance->unfill($unfill);
