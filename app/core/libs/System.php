@@ -100,5 +100,21 @@ class System
 
         return $pid ?? null;
     }
+
+    /*
+        Ejecuta un comado com
+    */
+    static function com($command, ...$args){
+        $extra = implode(' ', array_values($args));
+
+        $current_dir = getcwd();
+
+		chdir(ROOT_PATH);
+        $ret         =  shell_exec("php com $command $extra");
+        chdir($current_dir);
+        
+        return $ret;
+    }
+
 }
 

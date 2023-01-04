@@ -11898,5 +11898,12 @@ class DumbController extends Controller
         dd(DB::isMariaDB(), 'Is MariaDB');
     }
    
+    function test_exec(){
+        chdir('d:\\');
+
+       dd(
+            System::com("make", "controller", "xyz")
+       );
+    }
 
 }   // end class
