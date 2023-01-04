@@ -149,12 +149,19 @@ if (!$acl_cache || is_file($acl_file) !== true) {
         'grant'
     ]);
 
+    if (!is_dir(SECURITY_PATH)){
+        Files::mkDirOrFail(SECURITY_PATH);
+    }
 
     // Store serialized list into plain file
-    file_put_contents(
+    $bytes = file_put_contents(
         $acl_file,
         serialize($acl)
     );
+
+    if ($bytes === 0){
+        throw new \Exception("Internal Error. ACL File could not be written");
+    }
 } else {
     // Restore ACL object from serialized file
 
