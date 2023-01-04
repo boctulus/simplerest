@@ -1,6 +1,13 @@
 # TODO
 
+- Pestaña para ver registros borrados en el datatable (en caso de que posea soft-delete y esté habilitado) con el botón de restore sobre cada campo. Si se seleccionaran varios en la pestaña de borrados .. debería mostrarse el botón de ¨restaurar¨.
+
+- Incorporar los campos archived_at y archived_by los cuales responderian a los mismos permisos que deleted_at y deleted_by (update, write, write_all y fill). Deberia poder hacerse desde un trait.
+
+- Incorporar un UNDO con un stack para operaciones de borrado de registros. Cada vez que se presiona iría hacia atrás una vez. Luego de presionarlo aparecería el botón REDO que lo volvería a borrar volviéndolo a dejar para recuperar. Podría afectar a los registros creados borrándolos pero con previo mensaje de confirmacíón el cual debería advertir si el registro se borrará permanentemente (por falta de soft-delete)
+
 - Investigar porque (bug) esta dejando actualizar con "belongs_to", "updated_by" y "updated_at" por el usuario. Verificar que si se corresponda con las capacidades del usuario (permiso especial para lograr eso)
+
 
 POST /api/v1/users
 
