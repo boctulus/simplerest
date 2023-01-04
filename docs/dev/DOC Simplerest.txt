@@ -9647,6 +9647,23 @@ En caso de que nuestra clase tenga parámetros y se los querramos pasar o sean r
 	print_r($o);
 
 
+# Ejecutar comandos llamando nuevamente al interprete
+
+Esto puede ser necesario en algunos casos y entonces en vez de escribir:
+
+	shell_exec("php com {comando}");
+
+Se puede simplificar a....
+
+	System::com("{comando");
+
+Ademas acepta argumentos.
+
+Ej:
+
+	System::com("make", "controller", "xyz")
+
+
 # Correr procesos en background
 
 Puede utilizar System::runInBackground() desde la versión 0.7.0

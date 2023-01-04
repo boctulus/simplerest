@@ -26,7 +26,10 @@ class InstallController extends ConsoleController
     
             table('user_roles')->insert([
                 "user_id" => $uid,
-                "role_id" => 900  // deberia usando el Acl() entregar el role_id del rol mas alto en la jerarquia
+                
+                // deberia usando el Acl() entregar el role_id del rol mas alto en la jerarquia
+                // o bien... dejar vacio el rol pero agregarle todos los permisos a nivel de usuario
+                "role_id" => 900  
             ]);
         });
 

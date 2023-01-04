@@ -23,9 +23,9 @@ class WhatsappController extends MyController
     }
 
     function link($phone = null, $message = null){
-        if ($message === null){
-            $message = "Hi";
-        }
+        // if ($message === null){
+        //     $message = "Hi";
+        // }
 
         // show_debug_trace();
         // dd('HERE');
@@ -35,8 +35,12 @@ class WhatsappController extends MyController
         $phone = Strings::removeBeginning('+', $phone);
         $phone = str_replace(' ', '', $phone);
 
-        return "https://api.whatsapp.com/send?phone=$phone&text=$message";
-    }
+        if (empty($message)){
+            return "https://wa.me/$phone";
+        } else {
+            return "https://api.whatsapp.com/send?phone=$phone&text=$message";
+        }
+    }   
 
     function call($phone = null, $message = null){
         return $this->link($phone, $message);

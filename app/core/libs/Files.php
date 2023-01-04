@@ -307,10 +307,23 @@ class Files
 	/*
 		Extract directory from some path
 	*/
-	static function getDir(string $path){
+	static function getDir(string $path, bool $should_exist = false, bool $throw = false){
+		if (!$should_exist){
+			if (!is_dir($path)){
+				$path = str_replace('\\', DIRECTORY_SEPARATOR, $path);
+				$path = Strings::beforeLast($path, DIRECTORY_SEPARATOR);
+			}
+
+			return $path;
+		}
+
 		$_path = realpath($path);
 
 		if ($_path === false){
+			if ($throw){
+				throw new \InvalidArgumentException("PATH '$path' no existe");
+			}
+
 			return '';
 		}
 
