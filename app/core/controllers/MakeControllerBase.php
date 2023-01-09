@@ -2,13 +2,14 @@
 
 namespace simplerest\core\controllers;
 
-use simplerest\core\libs\Cache;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\StdOut;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
 use simplerest\core\libs\Schema;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\i18n\Translate;
 
 /*
     Class builder
@@ -2150,14 +2151,12 @@ class MakeControllerBase extends Controller
         }
 
         if ($po === true){
-            if ($mo === true){
-                exportLangDef(true, $dir);
-            } else {
-                exportLangDef(false, $dir);
-            }
+            $include_po = ($mo === true);
         } else {
-            exportLangDef(true, $dir);
+            $include_po = true;
         }        
+
+        Translate::exportLangDef($include_po, $dir);
     }
 
     /*

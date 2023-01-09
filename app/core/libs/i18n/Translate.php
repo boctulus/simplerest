@@ -10,6 +10,16 @@ use simplerest\core\Container;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\i18n\POParser;
 
+/*
+    Ver mejores soluciones que la clase POParse que estoy usando como:
+
+    https://github.com/php-gettext/Gettext
+    https://github.com/pherrymason/PHP-po-parser
+
+    Más
+    https://stackoverflow.com/a/16744070/980631
+*/
+
 class Translate
 {
     static $currentTextDomain = null;
@@ -77,7 +87,9 @@ class Translate
             return gettext($text);
         }
 
-        return static::$translations[static::$currentTextDomain][$text] ?? $text;
+        $translation = static::$translations[static::$currentTextDomain][$text] ?? $text;
+
+        return !empty($translation) ? $translation : $text;
     }
 
     // alias de Translate::gettext()
