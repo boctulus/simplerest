@@ -246,6 +246,13 @@ return [
 		'callback_url'	=> env('OAUTH_FACEBOOK_CALLBACK')
 	],
 
+	/*
+		i18n
+	*/
+
+	'translate' => [
+		'use_gettext' => false
+	],
 
 	/*
 		Service Providers

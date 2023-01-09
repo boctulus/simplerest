@@ -2,6 +2,7 @@
 
 namespace simplerest\core\controllers;
 
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\DB;
@@ -21,9 +22,7 @@ class MakeControllerBase extends Controller
     const MODEL_TEMPLATE  = self::TEMPLATES . 'Model.php';
     const MODEL_NO_SCHEMA_TEMPLATE  = self::TEMPLATES . 'Model-no-schema.php';
     const SCHEMA_TEMPLATE = self::TEMPLATES . 'Schema.php';
-    const MIGRATION_TEMPLATE  = self::TEMPLATES . 'Migration.php';
-    const CONTROLLER_TEMPLATE = self::TEMPLATES . 'Controller.php';
-    const CONSOLE_TEMPLATE = self::TEMPLATES . 'ConsoleController.php';
+    const MIGRATION_TEMPLATE  = self::TEMPLATES . 'Migration.php'; // todas estas constantes quedaran depredicadas
     const API_TEMPLATE = self::TEMPLATES . 'ApiRestfulController.php';
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; 
     const SYSTEM_CONST_TEMPLATE = self::TEMPLATES . 'SystemConstants.php';
@@ -203,6 +202,15 @@ class MakeControllerBase extends Controller
         php com make trans --po --mo
         php com make trans --po
         php com make trans --dir='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
+
+        make acl
+
+        php com make acl [ --debug ]
+
+        make page
+
+        php com make page admin/graficos
+        php com make page admin/control_usuarios
         
         Examples:
         
@@ -383,10 +391,42 @@ class MakeControllerBase extends Controller
         $this->write($dest_path, $data, $protected);
     }
 
+    function acl(...$opt){
+        $debug = false;
+
+        foreach ($opt as $o){            
+            if ($o == '--debug' || $o == '--dd'){
+                $debug = true;
+            }
+        }
+
+        try {
+            $acl = include CONFIG_PATH . 'acl.php';
+
+            if ($debug){
+                dd($acl, 'ACL generated');
+            }
+
+            dd("ACL file was generated. Path: ". SECURITY_PATH);
+        } catch (\Exception $e){
+            dd("Acl generation fails. Detail: " . $e->getMessage());
+        }
+    }
+
+    function page($name, ...$opt) {
+        $namespace = 'simplerest\\controllers';
+        $dest_path = PAGES_PATH;
+        $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
+        $prefix = '';
+        $subfix = '';  // 'Page';  
+
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
+    }
+
     function controller($name, ...$opt) {
         $namespace = 'simplerest\\controllers';
         $dest_path = CONTROLLERS_PATH;
-        $template_path = self::CONTROLLER_TEMPLATE;
+        $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
         $subfix = 'Controller';  
 
@@ -396,7 +436,7 @@ class MakeControllerBase extends Controller
     function console($name, ...$opt) {
         $namespace = 'simplerest\\controllers';
         $dest_path = CONTROLLERS_PATH;
-        $template_path = self::CONSOLE_TEMPLATE;
+        $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
         $subfix = 'Controller';  
 
@@ -406,7 +446,7 @@ class MakeControllerBase extends Controller
     function middleware($name, ...$opt) {
         $namespace = 'simplerest\\middlewares';
         $dest_path = MIDDLEWARES_PATH;
-        $template_path = self::MIDDLEWARE_TEMPLATE;
+        $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
         $subfix = '';  
 
@@ -426,7 +466,7 @@ class MakeControllerBase extends Controller
     function task($name, ...$opt) {
         $namespace = 'simplerest\\jobs\\tasks';
         $dest_path = TASKS_PATH;
-        $template_path = self::TASK_TEMPLATE;
+        $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
         $subfix = 'Task';  
 
