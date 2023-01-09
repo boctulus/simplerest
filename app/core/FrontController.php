@@ -232,7 +232,7 @@ class FrontController
                 //dd(['class' => $_class_name, 'method' => $_method], "MID $mid");
 
                 if (!class_exists($mid)){
-                    $res->error(_("Middleware '$mid' not found"), 404, "Internal error - controller class $class_name not found");                     
+                    $res->error(trans("Middleware '$mid' not found"), 404, "Internal error - controller class $class_name not found");                     
                 }                    
 
                 $mid_obj = new $mid();

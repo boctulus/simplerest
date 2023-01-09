@@ -1,5 +1,7 @@
 <?php
 
+use simplerest\core\libs\i18n\Translate;
+
     // App bootstraping
 
     ini_set('display_errors', 1);
@@ -44,11 +46,16 @@
         
     $config = include __DIR__ . '/../config/config.php';
             
-    // i18n
+    /*
+        i18n
+    */
+    
+    Translate::useGettext(config()['translate']['use_gettext']);
+
     $req  = request(); 
     $lang = $req->shiftQuery('lang') ?? $req->header('Accept-Language');
     setLang($lang); 
-    
+
     foreach ($config['providers'] as $provider){
         $p = new $provider();
         $p->boot();
