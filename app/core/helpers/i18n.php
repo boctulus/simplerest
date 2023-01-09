@@ -12,7 +12,7 @@ use simplerest\core\libs\i18n\Translate;
 */
 function exportLangDef(bool $include_mo = true, string $locale_path = null)
 {   
-    Translate::xportLangDef($include_mo, $locale_path);
+    Translate::exportLangDef($include_mo, $locale_path);
 }
   
 /*

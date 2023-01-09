@@ -11928,7 +11928,7 @@ class DumbController extends Controller
         Translate::bind('validator');
 
         // El campo es requerido (traducido)
-        dd(trans('Field is required'));
+        dd(trans('Field is required'), Translate::getLocale());
     }
 
     // OK

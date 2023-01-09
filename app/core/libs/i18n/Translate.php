@@ -35,6 +35,10 @@ class Translate
             putenv("LANGUAGE=$lang.$encoding");
         }
     }
+
+    static function getLocale(){
+        return static::$currentLang;
+    }
     
     static function bind(string $domain, $path = LOCALE_PATH){
         static::$currentTextDomain    = $domain;
@@ -44,8 +48,9 @@ class Translate
             bindtextdomain($domain, $path);
         } else {
             Container::singleton('po_parser', POParser::class);
-            static::$translations[$domain] = Container::make('po_parser')->parse(LOCALE_PATH .  "es_AR/LC_MESSAGES/$domain.po");
 
+            static::$translations[$domain] = Container::make('po_parser')
+            ->parse(LOCALE_PATH .  static::$currentLang . "/LC_MESSAGES/$domain.po");
         }
 
         // De una vez selecciono el text domain
