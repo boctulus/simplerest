@@ -141,7 +141,7 @@ class Collections extends MyApiController
                 if (!$sp) {
                     // Table must have 'belongs_to' 
                     if (!$instance->inSchema([$instance->belongsTo()])){
-                        error(_("Collections are not available to this resource")); 
+                        error(trans("Collections are not available to this resource")); 
                     }
                     
                     $instance->where([$instance->belongsTo() => auth()->uid()]);
@@ -149,7 +149,7 @@ class Collections extends MyApiController
 
                 $validado = (new Validator())->setRequired($put_mode)->validate($instance->getRules(), $data);
                 if ($validado !== true){
-                    error(_('Data validation error'), 400, $validado);
+                    error(trans('Data validation error'), 400, $validado);
                 }   
                 
                 if ($instance->inSchema([$instance->updatedBy()])){

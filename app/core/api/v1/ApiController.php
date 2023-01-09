@@ -1169,7 +1169,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $ok = $validator->validate($data, $this->instance->getRules());
             
             if ($ok !== true){
-                error(_('Data validation error'), 400, $validator->getErrors());
+                error(trans('Data validation error'), 400, $validator->getErrors());
             }  
 
             if (!empty($this->folder)) {
@@ -2181,7 +2181,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $ok  = $validator->setRequired($put_mode)->validate($data, $this->instance->getRules());
             
             if ($ok !== true){
-                error(_('Data validation error'), 400, $validator->getErrors());
+                error(trans('Data validation error'), 400, $validator->getErrors());
             }
 
   
