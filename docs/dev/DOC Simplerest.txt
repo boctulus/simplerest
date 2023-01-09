@@ -8085,9 +8085,14 @@ El comando podrá borrar otro tipo de caches como la del Acl.
 
 # Internacionalización
 
-Pre-requisito:
+Pre-requisitos:
+
+Tener la extension gettext
 
 	extension=gettext.so
+
+"If you want to use the builtin internationalisation system (I18N), the php-gettext extension must be installed or compiled into PHP (--with-gettext)."
+
 
 Para las traducciones se utiliza i18n y estas se alojan en el directorio app\locale y las mismas deben ser compiladas. Para Windows existe un .bat de ejemplo que realiza el proceso: compile_i18n.bat
 
@@ -8213,16 +8218,62 @@ Para que funcione setlocale() debe instalarse cada lenguaje:
 Ej:
 
 	sudo locale-gen de_DE.UTF-8
-        
+
 setlocale() puede llevar a tener problemas con MySQL y otros motores.
 
 setlocale() debería solo correrse con un PHP compilado como "mono-hilo" ya que
+
 "If you are running PHP on a multithreaded server API , 
 you may experience sudden changes in locale settings while a script is running, 
 though the script itself never called setlocale(). 
 This happens due to other scripts running in different threads of the same process at the same time, 
 changing the process-wide locale using setlocale(). 
 On Windows, locale information is maintained per thread as of PHP 7.0.5."
+
+
+# Alternativa gettext y setlocale
+
+No siempre gettext() o su alias _() funcionan dado que depende de tene instalada la extension "gettext" pero además PHP debe haber sido compilado acordemente y hasta puede depender de la version de PHP el soporte.
+
+Por todo lo anterior, se puede optar por una alternativa usando la clase i18/Translate y sus dependencias.
+
+El codigo
+
+	setLang('es_AR');
+        
+	bindtextdomain('validator', LOCALE_PATH);
+	textdomain('validator');
+
+	// El campo es requerido (traducido)
+	dd(_('Field is required'));
+
+Pasa a ...
+
+	Translate::useGettext(true); // usar funciones nativas
+
+	setLang('es_AR');
+
+	// i18n
+	Translate::bind('validator');
+
+	// El campo es requerido (traducido)
+	dd(Translate::trans('Field is required'));
+
+
+Detalle:
+
+	Translate::bind() 				reemplaza a 	bindtextdomain() + textdomain()
+	Translate::setTextDomain()		...				textdomain()
+	Translate::trans()				...				gettext() y _()
+
+Y
+	Translate::useGettext(bool $val) permite elegir si se ulizaran las funciones nativas o por el contrario las alternativas.		
+	Translate::setLang() seleciona el idioma				
+
+Helpers
+
+	trans()							reemplaza a		Translate::trans()
+	setLang() 						...				Translate::setLang()
 
 
 # La clase Response
@@ -10243,6 +10294,26 @@ Se verificó su funcionamiento para el caso de los <input> aunque se implemetó 
 Se puede generar una copia del valor del atributo "name" en "id" para evitar repetir:
 
 	Bt5Form::setIdAsName();
+
+
+# Cuando usar content()
+
+Para algunas etiquetas se debe utilizar content() y para otras no y en esos casos dependiendo de la etiqueta es value() como para los INPUT pero bien podría ser text(). 
+
+Cuál es el criterio?
+
+Ej:
+
+	echo tag('inputButton')
+	->id("comprar")
+	->value('Comprar')
+	->attributes([ 'onClick' => "alert('Me presionaste')" ]);
+	
+	echo tag('button')
+	->content('Notifications')
+	->onclick("alert('Me presionaste')");
+
+Sucede que hay dos tipos de etiquetas, las que se cierran (encerrando un contenido) y las que no. Dentro de las primeras tenemos los button, div y derivados. Entre las que no se cierran, input y hr.
 
 
 # Métodos genéricos con tag()

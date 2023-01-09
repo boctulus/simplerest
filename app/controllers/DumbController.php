@@ -22,6 +22,7 @@ use simplerest\core\libs\Mail;
 //use Symfony\Component\Uid\Uuid;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
+use simplerest\core\Paginator;
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Arrays;
@@ -29,59 +30,62 @@ use simplerest\core\libs\Config;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
-use simplerest\core\libs\Update;
 
+use simplerest\core\libs\Update;
 use simplerest\core\libs\Strings;
+
 use simplerest\core\libs\Factory;;
 
 use simplerest\core\libs\Hardware;
-
 use simplerest\core\libs\JobQueue;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\Reflector;
 
+use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use Endroid\QrCode\Writer\PngWriter;
+
 use simplerest\core\libs\GoogleMaps;
 
 use simplerest\core\libs\Obfuscator;
-
 use simplerest\core\libs\SendinBlue;
+
 use simplerest\core\libs\Supervisor;
-
 use Endroid\QrCode\Encoding\Encoding;
-use simplerest\core\libs\FileUploader;
 
+use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
+use simplerest\core\libs\i18n\POParser;
+use simplerest\libs\scrapers\Curiosite;
+
 use simplerest\models\az\ProductsModel;
+
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
-
+use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
-
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
+
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
-use simplerest\core\controllers\Controller;
 
+use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
-
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+
+use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\core\Paginator;
-use simplerest\libs\scrapers\Curiosite;
 
 class DumbController extends Controller
 {
@@ -9389,31 +9393,6 @@ class DumbController extends Controller
     //     d($this->cotiza(10, 1, 19.7, 19.7, 19.7, 'pulg'));
     // }
 
-    /*
-        Ver mejores soluciones como:
-
-        https://github.com/php-gettext/Gettext
-
-        Más
-        https://stackoverflow.com/a/16744070/980631
-    */
-    function test_export_lang()
-    {
-        exportLangDef();
-    }
-
-    function test_trans()
-    {
-        setLang('es_AR');
-
-        // i18n
-        bindtextdomain('validator', LOCALE_PATH);
-        textdomain('validator');
-
-        // No se recibieron datos
-        dd(_('No data'));
-    }
-
     function test_format_num(){
         $format_number = function($num){
 			$num = (float) $num;
@@ -11904,6 +11883,63 @@ class DumbController extends Controller
        dd(
             System::com("make", "controller", "xyz")
        );
+    }
+
+    function testtttt(){
+    
+        $client = ApiClient::instance('https://www.sumerlabs.com/catalogo/gadgetprotecnologia-jairmaro');
+
+        $client
+        ->disableSSL()
+        ->redirect()
+        ->get();
+
+      
+        dd(
+            $client->data()         
+        );  
+    }
+
+
+    function get_extensions(){
+        dd(get_loaded_extensions());
+    }
+
+    /*
+        Ver mejores soluciones como:
+
+        https://github.com/php-gettext/Gettext
+
+        Más
+        https://stackoverflow.com/a/16744070/980631
+    */
+    function test_export_lang()
+    {
+        exportLangDef();
+    }
+
+    function test_trans()
+    {
+        #Translate::useGettext(true); // usar funciones nativas
+
+        setLang('es_AR');
+
+        // i18n
+        Translate::bind('validator');
+
+        // El campo es requerido (traducido)
+        dd(trans('Field is required'));
+    }
+
+    // OK
+    function test_po_parser(){
+        //Translate::useGettext(false); // usar alternativa
+        
+        Translate::bind('validator');
+        
+        dd(
+            trans("It's not a valid float")
+        );
     }
 
 }   // end class
