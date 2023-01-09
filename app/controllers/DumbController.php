@@ -11909,13 +11909,14 @@ class DumbController extends Controller
         Ver mejores soluciones como:
 
         https://github.com/php-gettext/Gettext
+        https://github.com/pherrymason/PHP-po-parser
 
         Más
         https://stackoverflow.com/a/16744070/980631
     */
     function test_export_lang()
     {
-        exportLangDef();
+        Translate::exportLangDef();
     }
 
     function test_trans()
