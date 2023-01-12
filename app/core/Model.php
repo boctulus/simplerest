@@ -3604,6 +3604,10 @@ class Model {
 		return array_diff($this->attributes, $this->schema['nullable']);
 	}
 
+	function getUniques(){
+		return $this->schema['uniques'];
+	}
+
 	function getRules(){
 		return $this->schema['rules'] ?? NULL;
 	}
