@@ -188,13 +188,24 @@ class FrontController
         /*
             Se agrego is_callable() para poder usarse con __call()
         */
-        if (!method_exists($class_name, $method) && !is_callable($class_name, $method)){
+        if (!method_exists($class_name, $method)){
             if (php_sapi_name() != 'cli' || $method != self::DEFAULT_ACTION){
-                $res->error("Internal error - method $method was not found in $class_name", 404); 
+                if (!method_exists($class_name, '__call') || !is_callable($class_name, $method)){
+                    $res->error("Internal error - method $method was not found in $class_name", 404); 
+                }
             } else {
                 $dont_exec = true;
             }
         }
+
+        // if (!method_exists($class_name, $method) && !is_callable($class_name, $method) */){
+        //     if (php_sapi_name() != 'cli' || $method != self::DEFAULT_ACTION){
+        //         $res->error("Internal error - method $method was not found in $class_name", 404); 
+        //     } else {
+        //         $dont_exec = true;
+        //     }
+        // }
+             
                    
         $controller_obj = new $class_name();
 
