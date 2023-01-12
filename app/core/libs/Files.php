@@ -976,9 +976,13 @@ class Files
 		if (is_dir($path)){
 			$path = realpath($path);
 			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
-		}
+		} 
 
-		$dir = Strings::beforeLast($path, DIRECTORY_SEPARATOR);
+		$dir = static::getDir($path);
+
+		if (!file_exists($path)){	
+			static::mkDirOrFail($dir);
+		}
 
 		static::writableOrFail($dir);
 
@@ -986,7 +990,7 @@ class Files
 
 		if (!$ok){
 			$path = realpath($path);
-			throw new \Exception("$path could not be written");
+			throw new \Exception("Path '$path' could not be written");
 		}
 	}
 

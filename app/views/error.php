@@ -17,6 +17,10 @@
     Location: <?= $location ?? '' ?><br/>
     Code: <?= $code ?><br/>
     Message: <?= $message ?? '' ?><br/>
-    Detail: <?= p(). pre($detail, 'pre_error') ?? '' ?>
+    <?php
+        if ($detail != null){
+            echo "Detail: ". p(). pre($detail, 'pre_error');
+        }
+    ?>
 </div>
 

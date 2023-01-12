@@ -7,6 +7,8 @@ namespace simplerest\core\libs\i18n;
 */
 
 use simplerest\core\Container;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\i18n\POParser;
 
