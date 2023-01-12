@@ -49,8 +49,42 @@ return [
 
 	'DateTimeZone' => 'Europe/London',
 
-	'error_handling'   => true,
-	'debug'   => true,  //env('APP_DEBUG', true),
+	/*
+		Intercepta errores
+	*/
+	
+	'error_handling' => true,
+
+	/*
+		Puede mostrar detalles como consultas SQL fallidas 
+
+		Ver 'log_sql'
+	*/
+
+	'debug'   		 => true,  //env('APP_DEBUG', true),
+	
+	/*
+		Loguea cada consulta / statement -al menos las ejecutadas usando Model-
+
+		Solo aplica si 'debug' esta en true
+	
+	*/
+
+	'log_sql'         => true,
+	
+	/*
+		Genera logs por cada error / excepcion
+	*/
+
+	'log_errors'	 => true,
+
+	/*
+		Si se quiere incluir todo el trace del error -suele ser bastante largo-
+
+		Solo aplica con 'log_errors' en true
+	*/
+
+	'log_stack_trace' => false,
 
 	/*
 		Define users's table name

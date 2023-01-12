@@ -89,6 +89,9 @@ class Model {
 	protected $insert_vars = [];
 	protected $data = []; 
 
+	protected $having_group_op;
+	protected $config;
+
 	protected $createdAt = 'created_at';
 	protected $updatedAt = 'updated_at';
 	protected $deletedAt = 'deleted_at'; 
@@ -123,6 +126,8 @@ class Model {
 	static protected $sql_formatter_callback;
 	protected        $sql_formatter_status;
 	
+	static protected $current_sql;
+
 
 	function getFieldNames(){
 		return $this->field_names;
@@ -1599,10 +1604,24 @@ class Model {
 			return; //
 		}
 
+		/*
+			La idea es poder accederlo desde el Error Handler por ejemplo
+			en caso de ser necesario
+
+			Se supone que cualquier SQL generado y ejecutado sera bindeado
+			asi que debe de pasar por este lugar 
+			
+			(excepto claro que se use la clase DB directamente)
+		*/
+
+		static::$current_sql = $q;
+
 		try {
 			$st = $this->conn->prepare($q);			
 		} catch (\Exception $e){
 			$vals_str = implode(',', $vals);
+
+			$this->logSQL();
 			throw new SqlException("Query '$q' - and vals = [$vals_str] | ". $e->getMessage());
 		}
 		
@@ -1719,6 +1738,14 @@ class Model {
 		
 		} else {
 			return $this->dd();
+		}
+	}
+
+	function logSQL(){
+		$config = config();
+
+		if ($config['debug'] && $config['log_sql']){
+			Files::logger($this->dd(), 'sqls.txt');
 		}
 	}
 
