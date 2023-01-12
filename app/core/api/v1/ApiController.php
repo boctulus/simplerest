@@ -32,13 +32,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected $impersonated_by;
     protected $conn;
     protected $instance; // main
-    protected $instance2; //
     protected $tenantid;
 
     protected $id;
     protected $folder;
-    protected $folder_name; //
-    protected $folder_access; //
 
     protected $show_deleted;
     protected $ask_for_deleted;
@@ -82,6 +79,21 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $res->error("ApiController with undefined Model", 500);
             }  
         }
+
+        
+        $instance = $this->getModelInstance();
+
+        // todavia sin uso pero la idea es verificar si el campo esta protegido desde aca
+        // $this->guarded_fields = [ 
+        //     $this->instance->is_locked(),
+        //     $this->instance->belongsTo(),
+        //     $this->instance->createdAt(),
+        //     $this->instance->createdBy(),
+        //     $this->instance->deletedAt(),
+        //     $this->instance->deletedBy(),
+        //     $this->instance->updatedAt(),
+        //     $this->instance->updatedBy()                            
+        // ];
     
         $acl = acl();
 
@@ -281,7 +293,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         global $api_version;
 
         $_schema = request()->shiftQuery('_schema');
-        $defs    = request()->shiftQuery('defs', null, function($ret){ return ($ret !== null);});
+        $defs    = request()->shiftQuery('defs', null, function($ret){ return ($ret !== null);});  // bool
 
         if (!empty($_schema)){
             $schema = get_schema_name($this->table_name);
@@ -291,21 +303,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         if (!empty($defs)){         
             $the_defs = get_defs($this->table_name, null, false, true);  
-
-            foreach ($the_defs as $ix => $def){
-                if (isset($def['hidden'])){
-                    $the_defs[$ix]['hidden'] = (bool) $def['hidden'];
-                }
-
-                if (isset($def['fillable'])){
-                    $the_defs[$ix]['fillable'] = (bool) $def['fillable'];
-                }
-
-                if (isset($def['nullable'])){
-                    $the_defs[$ix]['nullable'] = (bool) $def['nullable'];
-                }
-            }
-            
             return [ 'defs' => $the_defs ];
         }
 
@@ -464,9 +461,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (count($f_rows) == 0 || $f_rows[0]['tb'] != $this->table_name)
                     error('Folder not found', 404);  
         
-                $this->folder_access = $acl->hasSpecialPermission('read_all_folders') || $f_rows[0]['belongs_to'] == auth()->uid()  || FoldersAclExtension::hasFolderPermission($this->folder, 'r');   
+                $folder_access = $acl->hasSpecialPermission('read_all_folders') || $f_rows[0]['belongs_to'] == auth()->uid()  || FoldersAclExtension::hasFolderPermission($this->folder, 'r');   
 
-                if (!$this->folder_access)
+                if (!$folder_access)
                     error("Forbidden", 403, "You don't have permission for the folder $this->folder");
             }
 
@@ -1056,7 +1053,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         } catch (\PDOException $e) {    
             $db = DB::getCurrentDB();
             response()->error('PDO Exception', 500, $e->getMessage(). ' - '. $this->instance->getLog() . " - database: '{$db}' - table: '{$this->instance->getTableName()}'"); 
-        } catch (\Exception $e) {   
+        } catch (\Exception $e) {
             response()->error($e->getMessage());
         }	    
     } // 
@@ -1579,7 +1576,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $this->instance->deletedAt(),
                     $this->instance->deletedBy(),
                     $this->instance->updatedAt(),
-                    $this->instance->updateddBy()                            
+                    $this->instance->updatedBy()                            
                 ];    
 
                 $this->instance->unfill($unfill);
@@ -1621,12 +1618,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($f_rows[0][$this->instance->belongsTo()] != $uid  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w') && !$acl->hasSpecialPermission('write_all_folders'))
                     error("You have not permission for the folder $this->folder", 403);
 
-                $this->folder_name = $f_rows[0]['name'];
+                $folder_name = $f_rows[0]['name'];
 
                 // Creo otra nueva instancia
                 $instance2 = $this->getModelInstance();
 
-                if (count($instance2->where([$id_name => $id, static::$folder_field => $this->folder_name])->get()) == 0)
+                if (count($instance2->where([$id_name => $id, static::$folder_field => $folder_name])->get()) == 0)
                     response()->code(404)->error("Register for id=$id doesn't exist");
 
                 unset($data['folder']);    
@@ -1634,12 +1631,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $data[$this->instance->belongsTo()] = $f_rows[0][$this->instance->belongsTo()];    
                 
             } else {
-                $this->instance2 = $this->getModelInstance(); 
+                $instance2 = $this->getModelInstance(); 
 
                 // event hook    
                 $this->onPuttingBeforeCheck2($id, $data);
 
-                $rows = $this->instance2->where([$id_name => $id])->get();
+                $rows = $instance2->where([$id_name => $id])->get();
 
                 if (count($rows) == 0){
                     response()->code(404)->error("Register for id=$id doesn't exist!");
@@ -2227,8 +2224,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $affected = $this->instance->where([$id_name => $id])->update($data);
                 //var_dump($this->instance->getLog());
             } catch (\Exception $e){
-                //$affected = $this->instance->where([$id_name => $id])->dontExec()->update($data);
-                //dd($this->instance->getLog());
+
+                dd($this->instance->getLog(), "SQL ERROR"); // ---------- *
                 response()->error($e->getMessage());
             }
 
@@ -2341,12 +2338,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if ($f_rows[0][$this->instance->belongsTo()] != auth()->uid()  && !FoldersAclExtension::hasFolderPermission($this->folder, 'w'))
                     error("You have not permission for the folder $this->folder", 403);
 
-                $this->folder_name = $f_rows[0]['name'];
+                $folder_name = $f_rows[0]['name'];
 
                 // Creo otra nueva instancia
                 $instance2 = $this->getModelInstance();
 
-                if (count($instance2->where([$id_name => $id, static::$folder_field => $this->folder_name])->get()) == 0)
+                if (count($instance2->where([$id_name => $id, static::$folder_field => $folder_name])->get()) == 0)
                     response()->code(404)->error("Register for $id_name=$id doesn't exist");
 
                 unset($data['folder']);    
