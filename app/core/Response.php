@@ -2,10 +2,11 @@
 
 namespace simplerest\core;
 
-use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Strings;
 
 class Response
 {
@@ -215,13 +216,27 @@ class Response
      *
      * @return void
      */
-    function error($error = null, ?int $http_code = null, $detail = null, ?string $location = null){
+    function error($error = null, ?int $http_code = null, $detail = null, ?string $location = null)
+    {
+        $config = config();
+
         if (is_string($error)){
             $message = $error;
         } elseif (is_array($error)){
             $type    = $error['type'] ?? null;
             $message = $error['text'] ?? null;
             $code    = $error['code'];
+        }
+
+        if ($config['log_errors']){
+            Files::logger([
+                'type'      => $type ?? null,
+                'location'  => $location,
+                'code'      => $code ?? null,
+                'http_code' => $http_code,
+                'message'   => $message,
+                'detail'    => $detail
+            ], 'errors.txt');
         }
 
         if (!is_cli()){
@@ -264,6 +279,8 @@ class Response
             
         static::$instance->set($res);  
         static::$instance->flush();
+
+        exit;
     }
 
     function set($data){
@@ -324,7 +341,7 @@ class Response
                     'location'  => static::$data['error']['location'] ?? '',
                     'message'   => static::$data['error']['message'] ?? '',
                     'detail'    => static::$data['error']['detail'] ?? '',
-                ], 'templates/tpl_basic.php');
+                ], 'templates\tpl_basic.php');
 
             } else {
                 $message  = static::$data['error']['message'] ?? '--';
