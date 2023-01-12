@@ -4,3 +4,4 @@ vendor/
 *.tar
 uploads/
 app/schemas/
+logs/*
