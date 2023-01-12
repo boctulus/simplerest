@@ -14,9 +14,9 @@ class PaypalCalcController extends MyController
         https://www.paypal.com/us/webapps/mpp/paypal-fees
     */
 
-    static protected $per   = 5.7;
-    static protected $fixed = 1;
-    static protected $round_fn = 'floor';
+    static protected $per   = 5.4;
+    static protected $fixed = 0.3;
+    static protected $round_fn = null; // 'floor';
     static protected $paypal_me = 'paypal.me/binsolver';
 
     function __construct()
