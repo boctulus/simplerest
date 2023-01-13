@@ -3844,7 +3844,6 @@ Ex:
 
 Please note SimpleRest make a distinction between 1:n and n:1
 
-
 is_1_1()
 
 	Returns if the relation between two given tables is 1:1
@@ -3865,6 +3864,28 @@ is_n_m()
 is_mul_rel()
 
 	Returns if the relation between two given tables can gives multiple rows or not. If rel type is 1:1 or FK is on $t1 (left side) => false
+
+
+Sobre get_rel_type(), esta función tiene un parámetro opcional sobre el tipo de relación. 
+
+Caso más simple.
+
+Ej:
+
+	$t2 = 'tbl_sub_cuenta_contable';
+	$t1 = 'tbl_producto';
+
+	dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+
+Y especificando el string sobre la relación que se quiere indagar en caso de que haya más de una relación (via distintas llaves foráneas) entre esas dos tablas:
+
+Ej:
+
+	$t1 = 'tbl_producto';
+	$t2 = 'tbl_sub_cuenta_contable';
+	$rel_str = 'tbl_producto.sub_intIdCuentaContableCompra=tbl_sub_cuenta_contable.sub_intId';
+
+	dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
 
 ### ACL
