@@ -431,8 +431,8 @@ class MigrationsControllerBase extends Controller
             StdOut::pprint("Rolling back '$filename'\r\n");
 
             if (!method_exists($class_name, 'down')){
-                StdOut::pprint("Method down() is not present. Imposible to rollback $filename\r\n");
-                continue;
+                StdOut::pprint("Method down() is not present. Impossible to rollback $filename\r\n");
+                exit(1);
             }
 
             if (!$simulate){
