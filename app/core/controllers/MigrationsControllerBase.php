@@ -252,7 +252,6 @@ class MigrationsControllerBase extends Controller
                         DB::rollback();
                         throw $e;
                     } catch (\Exception $e){
-                        d($e->getMessage(), "Transaction error");
                         throw $e;
                     }
                 } finally {
@@ -510,8 +509,9 @@ class MigrationsControllerBase extends Controller
     /*
         Rollback de todas las migraciones. Equivale a "rollback --all"
     */
-    function reset() {
-        $this->rollback("--all");
+    function reset(...$opt) {
+        $opt[] = "--all";
+        $this->rollback(...$opt);
     }
 
     /*  
@@ -659,9 +659,9 @@ class MigrationsControllerBase extends Controller
 
         Lo que hace exactamente es un reset() seguido un migrate()
     */
-    function refresh() {
-        $this->reset();
-        $this->migrate();
+    function refresh(...$opt) {
+        $this->reset(...$opt);
+        $this->migrate(...$opt);
     }
 
     function index(...$opt){

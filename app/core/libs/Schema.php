@@ -552,14 +552,14 @@ class Schema
 		return $this;		
 	}
 
-	function id(){		
-		$this->ubig('id');
+	function id(string $name = 'id'){		
+		$this->ubig($name);
 		$this->primary();
 		return $this;		
 	}
 
-	function increments(){
-		$this->id();
+	function increments(string $name = 'id'){
+		$this->id($name);
 		$this->auto();
 		return $this;
 	}
