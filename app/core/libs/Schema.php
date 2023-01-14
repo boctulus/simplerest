@@ -32,6 +32,7 @@ class Schema
 	
 	protected $raw_lines = [];
 	protected $fields  = [];
+	protected $field;  
 	protected $current_field;
 	protected $indices = []; // 'PRIMARY', 'UNIQUE', 'INDEX', 'FULLTEXT', 'SPATIAL'
 	protected $fks = [];
@@ -505,7 +506,7 @@ class Schema
 	}
 
 	function setCharset(string $val){
-		$this->chartset = $val;
+		$this->charset = $val;
 		return $this;
 	}
 
@@ -546,7 +547,6 @@ class Schema
 		return $this->bigint($name);		
 	}	
 
-	// alias de bigint()
 	function ubig(string $name){
 		$this->bigint($name)->unsigned();
 		return $this;		
@@ -1333,15 +1333,12 @@ class Schema
 			// };
 
 			foreach($this->commands as $change){     
-				$st = $conn->prepare($change);
-				$res = $st->execute();
+				$res = DB::statement($change);
 			}
 
 			DB::commit();
 
 		} catch (\PDOException $e) {
-			d($change, 'SQL with error');
-			d($e->getMessage(), "PDO error");
 			DB::rollback();
 			throw $e;		
         } catch (\Exception $e) {;
