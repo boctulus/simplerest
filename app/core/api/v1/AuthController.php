@@ -22,11 +22,14 @@ class AuthController extends Controller implements IAuth
 {
     protected $role_field;
     
+    protected $__id;
     protected $__email;
     protected $__username;
     protected $__password;
     protected $__confirmed_email;
     protected $__active;
+    
+    protected $config;
 
     static protected $current_user_uid; //
     static protected $current_user_permissions = []; //
@@ -1346,7 +1349,7 @@ class AuthController extends Controller implements IAuth
                 ->where(['id' => $uid])
                 ->create(['user_id' => $uid, 'role_id' => $role_id]);
             } catch (\Exception $e){
-                Files::logger($e->getMessage());
+                log_error($e->getMessage());
             }            
 
             if (empty($ur_id))

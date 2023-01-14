@@ -1647,8 +1647,7 @@ class Model {
 			elseif(is_array($val)){
 				throw new \Exception("where value can not be an array!");				
 			}else {
-				var_dump($val);
-				throw new \Exception("Unsupported type");
+				throw new \Exception("Unsupported type: " . var_export($val, true));
 			}	
 
 			$st->bindValue($ix +1 , $val, $type);
@@ -1745,7 +1744,7 @@ class Model {
 		$config = config();
 
 		if ($config['debug'] && $config['log_sql']){
-			Files::logger($this->dd(), 'sqls.txt');
+			log_sql($this->dd());
 		}
 	}
 
