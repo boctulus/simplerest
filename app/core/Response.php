@@ -218,25 +218,12 @@ class Response
      */
     function error($error = null, ?int $http_code = null, $detail = null, ?string $location = null)
     {
-        $config = config();
-
         if (is_string($error)){
             $message = $error;
         } elseif (is_array($error)){
             $type    = $error['type'] ?? null;
             $message = $error['text'] ?? null;
             $code    = $error['code'];
-        }
-
-        if ($config['log_errors']){
-            Files::logger([
-                'type'      => $type ?? null,
-                'location'  => $location,
-                'code'      => $code ?? null,
-                'http_code' => $http_code,
-                'message'   => $message,
-                'detail'    => $detail
-            ], 'errors.txt');
         }
 
         if (!is_cli()){
