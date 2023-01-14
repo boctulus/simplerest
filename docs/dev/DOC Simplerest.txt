@@ -6294,11 +6294,28 @@ De hecho si se hiciera un dd() o var_dump() de config() antes y después de inte
 
 # fresh
 
-Con "fresh" podemos hacer un "borrón y cuenta nueva" para migraciones sobre una base de datos en particular:
+A nivel de base de datos
 
-	php com migrations fresh --from=db_b --force
+Con "fresh" podemos hacer un "borrón y cuenta nueva" para migraciones sobre una base de datos en particular.
+
+Ej:
+
+	migrations fresh --from=db_b --force
 
 Cabe notar que comienza haciendo un DROP TABLE sobre cada tabla en la base de datos (esté o no en la tabla de migraciones) por lo cual este comando usado de este modo debe usarse con precaución.
+
+Si se desea que al final ejecute un migrate, debe incluirse --migrate
+
+Ej:
+
+	migrations fresh --to=main --force
+
+O su equivalente usando "migrations migrate",
+
+	migrations migrate --fresh --to=main --force
+
+
+A nivel de archivo de migracion
 
 También es posible hacer un "fresh" sobre una migración en particular:
 
@@ -6308,6 +6325,9 @@ equivale a hacer:
 
 	php com migrations rollback --file=2021_09_14_27910581_files.php --to:main
 	php com migrations migrate --file=2021_09_14_27910581_files.php
+
+
+A nivel de directorio
 
 También es posible hacer un "fresh" sobre migraciones en un directorio. 
 

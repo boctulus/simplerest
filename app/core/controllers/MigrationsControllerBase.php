@@ -3,12 +3,13 @@
 namespace simplerest\core\controllers;
 
 use Migrations;
-use simplerest\controllers\MakeController;
-use simplerest\core\libs\StdOut;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
 use simplerest\core\libs\Schema;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\System;
+use simplerest\core\libs\Strings;
+use simplerest\controllers\MakeController;
 
 /*
     Migration commands
@@ -39,8 +40,11 @@ class MigrationsControllerBase extends Controller
         $skip      = 0;
         $retry     = false;
         $ignore    = null; 
+        $fresh     = false;
         
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
+
+        StdOut::showResponse();
 
         foreach ($opt as $o)
         {
@@ -59,6 +63,10 @@ class MigrationsControllerBase extends Controller
 
             if ('--ignore' == $o){
                 $ignore = true;
+            }
+
+            if ('--fresh' == $o){
+                $fresh = true;
             }
 
             if (Strings::startsWith('--file=', $o)){
@@ -149,9 +157,12 @@ class MigrationsControllerBase extends Controller
 
         $cnt = min($steps, count($filenames));
         
-        DB::disableForeignKeyConstraints();
-        
         get_default_connection();
+
+        if ($fresh){
+            $this->fresh(...$opt);
+        }
+
         if (!Schema::hasTable('migrations')){ 
             $filename_mg = '0000_00_00_00000000_migrations.php';
             $path_mg = MIGRATIONS_PATH;
@@ -306,6 +317,8 @@ class MigrationsControllerBase extends Controller
 
         $steps = 1;
         $simulate = false;
+
+        StdOut::showResponse();
 
         foreach ($opt as $o){
             if (isset($opt[0]) && $opt[0] !== NULL){
@@ -527,17 +540,27 @@ class MigrationsControllerBase extends Controller
 
         At the end it clear all records in `migrations` table for the database.
 
-        It differs from Laravel equivalent because this one does not run "migrate" at the end neither has --seed to run seeders (at this moment)
+        Solo ejecuta un migrate si se le pasa --migrate
+
+        TODO: falta implementar --seed
     */
     function fresh(...$opt) 
     {   
-        $force = false;
-        $_f   = null;
-        $_dir = null;
+        $force   = false;
+        $migrate = false;
+        $_f      = null;
+        $_dir    = null;
 
+        StdOut::showResponse();
+        
         foreach ($opt as $o){
             if ($o == '--force'){
                 $force = true;
+                continue;
+            }
+
+            if ($o == '--migrate'){
+                $migrate = true;
                 continue;
             }
             
@@ -586,6 +609,10 @@ class MigrationsControllerBase extends Controller
         $dropped = [];
 
         if (empty($tables)){
+            if ($migrate){
+                $this->migrate(...$opt);
+            }
+
             return;
         }
 
@@ -605,10 +632,9 @@ class MigrationsControllerBase extends Controller
             $table = '';
             foreach($tables as $table) {
                 StdOut::pprint("Dropping table '$table'\r\n");
-                $st = $conn->prepare("DROP TABLE IF EXISTS `$table`;");
-                $ok = $st->execute();
-
-                if ($ok){
+                $res = DB::statement("DROP TABLE IF EXISTS `$table`;");
+                
+                if ($res){
                     StdOut::pprint("Dropped table  '$table' --ok\r\n");
                     $dropped[] = $table;
                 } else {
@@ -616,7 +642,7 @@ class MigrationsControllerBase extends Controller
                 }
             } 
 
-            $this->clear("--to=$to_db");     
+            $this->clear("--to=$to_db");  
 
             if ($delete_migrations_tb){
                 $table = 'migrations';
@@ -624,10 +650,9 @@ class MigrationsControllerBase extends Controller
                 StdOut::hideResponse();
 
                 StdOut::pprint("Dropping table '$table'\r\n");
-                $st = $conn->prepare("DROP TABLE IF EXISTS `$table`;");
-                $ok = $st->execute();
+                $res = DB::statement("DROP TABLE IF EXISTS `$table`;");
 
-                if ($ok){
+                if ($res){
                     StdOut::pprint("Dropped table  '$table' --ok\r\n");
                     $dropped[] = $table;
                 } else {
@@ -635,16 +660,18 @@ class MigrationsControllerBase extends Controller
                 }
             }
 
-            Schema::FKcheck(true);     
+            if ($migrate){
+                StdOut::showResponse();
+                $this->migrate(...$opt);
+            }
 
         } catch (\PDOException $e) {    
-            dd("DROP TABLE for `$table` failed", "PDO Error");
-            dd($e->getMessage(), "MSG"); 
+            log_error($e->getMessage());
             throw $e;
-        } catch (\Exception $e) {   
-            dd($e->getMessage(), "MSG");
-            throw $e;
-        }                
+        } finally {
+            Schema::FKcheck(true);     
+            StdOut::showResponse();
+        }             
     }
 
     /*
@@ -720,14 +747,17 @@ class MigrationsControllerBase extends Controller
         migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
         migrations migrate --dir=compania_new --to=db_flor --simulate
         migrations migrate --dir=compania --file=some_migr_file.php --to=db_189 --retry
-        
-        migrations fresh --to=db_195 --force
-        migrations fresh --file=2021_09_14_27910581_files.php --to:main
-        migrations fresh --dir=compania --to:db_149 --force
-
-        migrations redo --file=2021_09_14_27910581_files.php --to:main
 
         migrations migrate --from:main --file=some_migr_file.ph --ignore
+
+        migrations migrate --fresh --to:main --force
+        
+        migrations redo  --file=2021_09_14_27910581_files.php --to:main
+
+        migrations fresh --to=db_195 --force
+        migrations fresh --to=the_tenant --force --migrate
+        migrations fresh --file=2021_09_14_27910581_files.php --to:main
+        migrations fresh --dir=compania --to:db_149 --force
 
         Inline migrations
         
