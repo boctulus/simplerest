@@ -102,6 +102,10 @@ class Files
 	}
 
 	static function logError($error){
+		if ($error instanceof \Exception){
+			$error = $error->getMessage();
+		}
+
 		Files::logger($error, 'errors.txt');
 	}
 
