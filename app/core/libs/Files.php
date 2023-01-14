@@ -101,6 +101,16 @@ class Files
 		}		
 	}
 
+	static function logError($error){
+		Files::logger($error, 'errors.txt');
+	}
+
+	static function logSQL(string $sql_str){
+		$config = config();
+
+		Files::logger($sql_str, 'sql_log.txt');
+	}
+
 	/*
 		https://www.codewall.co.uk/write-php-array-to-csv-file/
 		https://fuelingphp.com/how-to-convert-associative-array-to-csv-in-php/
