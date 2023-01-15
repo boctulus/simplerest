@@ -832,6 +832,7 @@ class MakeControllerBase extends Controller
             /*
                 Construyo $pivot_fks  
             */
+
             foreach ($pivots as $pv => $tbs){
                 $rels = $relationships[$pv];
                 $tbs  = array_keys($rels);
@@ -865,6 +866,14 @@ class MakeControllerBase extends Controller
 
         $_pivots = [];
         foreach ($pivots as $pv => $tbs){
+            /*
+                Si bien una tabla podria pivotearse a si misma si se auto-referencia,
+                voy a excluir esa posibilidad.
+            */
+            if (in_array($pv, $tbs)){
+                continue;
+            }
+
             sort($tbs);
 
             $str_tbs = implode(',', $tbs);
@@ -874,14 +883,14 @@ class MakeControllerBase extends Controller
         $path = str_replace('//', '/', $dir . '/' . $pivot_file);
         
         $pivot_data[$db_conn_id] = [
-            'pivots' => $_pivots,
-            'pivot_fks' => $pivot_fks,
+            'pivots'        => $_pivots,
+            'pivot_fks'     => $pivot_fks,
             'relationships' => $relationships
         ];
 
         $this->write($path, '<?php '. PHP_EOL. PHP_EOL . 
-          '$pivots = ' .var_export($_pivots, true) . ';' . PHP_EOL . PHP_EOL .
-          '$pivot_fks = ' .var_export($pivot_fks, true) . ';' . PHP_EOL . PHP_EOL .
+          '$pivots        = ' .var_export($_pivots, true) . ';' . PHP_EOL . PHP_EOL .
+          '$pivot_fks     = ' .var_export($pivot_fks, true) . ';' . PHP_EOL . PHP_EOL .
           '$relationships = ' . var_export($relationships, true) . ';' . PHP_EOL
         , false);
 
@@ -1158,11 +1167,6 @@ class MakeControllerBase extends Controller
             #dd($field, "FIELD $field_name"); //
             
             if ($field['Key'] == 'PRI'){ 
-                // if ($id_name != NULL){
-                //     $msg = "A table should have simple Primary Key by convention for table \"$name\"";
-                //     Files::logger($msg);      
-                // }
-                
                 $id_name = $field['Field'];
                 $pri_components[] = $field_name;
             } else if ($field['Key'] == 'UNI'){ 
@@ -1212,11 +1216,7 @@ class MakeControllerBase extends Controller
             // busco si hay un AUTOINC
             if (!empty($autoinc)){
                 $id_name = $autoinc; 
-            } else {
-                //$msg = "A table should have simple Primary Key by convention for table \"$name\"";
-                //Files::logger($msg);  
-                //dd($msg, 'WARNING'); 
-            }
+            } 
         }
 
         $nullables = array_unique($nullables);
@@ -2156,7 +2156,7 @@ class MakeControllerBase extends Controller
             $include_po = true;
         }        
 
-        Translate::exportLangDef($include_po, $dir);
+        Translate::exportLangDef($include_po, $dir);   
     }
 
     /*
