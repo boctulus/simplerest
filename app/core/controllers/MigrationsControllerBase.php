@@ -41,6 +41,7 @@ class MigrationsControllerBase extends Controller
         $retry     = false;
         $ignore    = null; 
         $fresh     = false;
+        $make      = false;
         
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
 
@@ -67,6 +68,11 @@ class MigrationsControllerBase extends Controller
 
             if ('--fresh' == $o){
                 $fresh = true;
+            }
+
+
+            if (preg_match('/^--make[=|:](.*)$/', $o, $matches)){
+                $make = $matches[1];
             }
 
             if (Strings::startsWith('--file=', $o)){
@@ -122,6 +128,7 @@ class MigrationsControllerBase extends Controller
                 }
             }
         } // end foreach
+
 
         if (!$file_opt){
             foreach (new \DirectoryIterator($path) as $fileInfo) {
@@ -229,11 +236,6 @@ class MigrationsControllerBase extends Controller
 
             $full_path = str_replace('//', '/', $path . '/'. trim($filename));
 
-            // if (!file_exists($full_path)){
-            //     StdOut::pprint("Path '$full_path' does not exist !");
-            //     exit;
-            // }
-
             require_once $full_path;
 
             $class_name = Strings::getClassNameByFileName($full_path);
@@ -304,6 +306,26 @@ class MigrationsControllerBase extends Controller
         }     
         
         DB::enableForeignKeyConstraints();
+
+        /*
+            Soporte para:
+
+            make:model
+            make:schema
+            make:schema,model
+        */
+
+        $actions = explode(',', $make);
+
+        foreach ($actions as $action){
+            if ($action == 'schema'){
+                $make_o = (new MakeController())->schema('all');
+            }
+
+            if ($action == 'model'){
+                $make_o = (new MakeController())->model('all');
+            }
+        }
     }
     
     /*
@@ -708,9 +730,9 @@ class MigrationsControllerBase extends Controller
 
         migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ]         
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3 
-        migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --retry ] [ --ignore ]
+        migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ] [ --ignore ] [ --make= ]
         migrations rollback --to={some_db_conn} [ --dir= ] [ --file= ] [ --step=={N} | --all] [ --simulate ]
-        migrations fresh [ --dir= ] [ --file= ] --to=some_db_conn [ --force ]
+        migrations fresh [ --dir= ] [ --file= ] --to=some_db_conn [ --force ] [ --migrate ]
         migrations redo --to={some_db_conn} [ --dir= ] [ --file= ] [ --simulate ]
 
 
@@ -758,6 +780,13 @@ class MigrationsControllerBase extends Controller
         migrations fresh --to=the_tenant --force --migrate
         migrations fresh --file=2021_09_14_27910581_files.php --to:main
         migrations fresh --dir=compania --to:db_149 --force
+
+        --make:model
+        --make:schema
+        --make:schema,model
+
+        migrations migrate --make=schema,model
+        migrations migrate --fresh --to:main --force --make=schema
 
         Inline migrations
         
