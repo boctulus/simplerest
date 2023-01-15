@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\Model;
 use simplerest\models\MyModel;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\Strings;
@@ -506,10 +507,14 @@ class DB
 	}
 
 	// Returns last executed query 
-	public static function getLog(){
+	static public function getLog(){
 		if (!is_null(static::$raw_sql)){
 			$sql = Arrays::str_replace_array('?', static::$values, static::$raw_sql);
-			$sql = trim(preg_replace('!\s+!', ' ', $sql)).';';
+			$sql = trim(preg_replace('!\s+!', ' ', $sql));
+
+			if (!Strings::endsWith(';', $sql)){
+				$sql .= ';';
+			}
 
 			return $sql;	
 		}
@@ -517,6 +522,31 @@ class DB
 		if (static::$model_instance != NULL){
 			return static::$model_instance->getLog();
 		}
+	}
+
+	static private function dd($pre_compiled_sql, $bindings){		
+		foreach($bindings as $ix => $val){			
+			if(is_null($val)){
+				$bindings[$ix] = 'NULL';
+			}elseif(isset($vars[$ix])){
+				$bindings[$ix] = "'$val'";
+			}elseif(is_int($val)){
+				// pass
+			}
+			elseif(is_bool($val)){
+				// pass
+			} elseif(is_string($val))
+				$bindings[$ix] = "'$val'";	
+		}
+
+		$sql = Arrays::str_replace_array('?', $bindings, $pre_compiled_sql);
+		$sql = trim(preg_replace('!\s+!', ' ', $sql));
+
+		if (!Strings::endsWith(';', $sql)){
+			$sql .= ';';
+		}
+				
+		return $sql;
 	}
 
 	// SET autocommit=0;
@@ -721,8 +751,7 @@ class DB
 				elseif(is_array($val)){
 					throw new \Exception("where value can not be an array!");				
 				}else {
-					var_dump($val);
-					throw new \Exception("Unsupported type");
+					throw new \Exception("Unsupported type: " . var_export($val, true));
 				}	
 
 				$st->bindValue($ix +1 , $val, $type);
@@ -741,16 +770,11 @@ class DB
 			}
 
 		} catch (\Exception $e){
-			$error = $e->getMessage();
-			
-			$msg = "Error: $error.";
 
-			if (config()['debug']){
-				$data = var_export($vals, true);
-				$msg .= "Query: $q. Data: $data";
-			}
+			logger($e->getMessage());
+			log_sql(static::getLog());
 
-			throw new \Exception($msg);
+			throw ($e);
 		} finally {	
 			// Restore previous connection
 			if (!empty($current_id_conn)){
@@ -806,10 +830,9 @@ class DB
 					// https://stackoverflow.com/a/36724762/980631
 					$type = \PDO::PARAM_LOB;  // 3
 				elseif(is_array($val)){
-					throw new \Exception("where value can not be an array!");				
+					throw new \Exception("WHERE clasuule value can not be an array: " . var_export($val, true));				
 				}else {
-					var_dump($val);
-					throw new \Exception("Unsupported type");
+					throw new \Exception("Unsupported type: " . var_export($val, true));
 				}	
 
 				$st->bindValue($ix +1 , $val, $type);
@@ -891,8 +914,7 @@ class DB
 				elseif(is_array($val)){
 					throw new \Exception("where value can not be an array!");				
 				}else {
-					var_dump($val);
-					throw new \Exception("Unsupported type");
+					throw new \Exception("Unsupported type: " . var_export($val, true));
 				}	
 
 				$st->bindValue($ix +1 , $val, $type);
@@ -903,7 +925,11 @@ class DB
 				$count = $st->rowCount();
 			} else 
 				$count = false;
-				
+
+		} catch (\Exception $e){
+			logger($e->getMessage());
+			log_sql(static::getLog());
+			throw ($e);				
 		} finally {
 			// Restore previous connection
 			if (!empty($current_id_conn)){

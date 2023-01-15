@@ -5450,6 +5450,20 @@ Es válido:
 	php com make migration --class_name=BooksRenameColumn --table=books
 	etc.
 
+
+El comando "migrations migrate" acepta otras acciones secundarias como realizar previamente un "fresh" o posteriormente un "make schema all"
+
+Ej:
+
+	migrations migrate --fresh --to:main --force --make=schema
+
+El --make: acepta schema, model y schema,model
+
+	migrations migrate --make=schema,model
+
+Actualmente con --make: siempre hay un "all" implicito y no se pueden pasar parametros a este comando.
+
+
 # Directorios
 
 Es posible crear migraciones en directorios y sub-sub-directorios.
@@ -5907,7 +5921,7 @@ Ej:
 	php com migrations migrate --from:main --file=2022_04_24_47066614_products.php --ignore
 
 
-# Mgraciones "inline"
+# Migraciones "inline"
 
 Se extendió el comando "make migration" para que simplificar el agregado o remoción de campos:
 
