@@ -315,17 +315,20 @@ class MigrationsControllerBase extends Controller
             make:schema,model
         */
 
-        $actions = explode(',', $make);
+        if (!empty($make)){
+            $actions = explode(',', $make);
 
-        foreach ($actions as $action){
-            if ($action == 'schema'){
-                $make_o = (new MakeController())->schema('all');
-            }
+            foreach ($actions as $action){
+                if ($action == 'schema'){
+                    $make_o = (new MakeController())->schema('all');
+                }
 
-            if ($action == 'model'){
-                $make_o = (new MakeController())->model('all');
+                if ($action == 'model'){
+                    $make_o = (new MakeController())->model('all');
+                }
             }
         }
+
     }
     
     /*
