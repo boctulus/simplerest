@@ -66,6 +66,7 @@ class Model {
 	protected $to_merge_bindings = [];
 	protected $last_pre_compiled_query;
 	protected $last_bindings = [];
+	protected $last_compiled_sql;
 	protected $limit;
 	protected $offset;
 	protected $pag_vals = [];
@@ -1708,7 +1709,7 @@ class Model {
 		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formatter;
 
 		if ($this->last_operation == 'create'){
-			return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
+			return $this->last_compiled_sql;
 		}
 
 		return $this->_dd($this->toSql(), $this->getBindings());
@@ -3098,19 +3099,22 @@ class Model {
 			return ':'.$e;
 		}, $vars);
 
-		$str_vars = implode(', ',$vars);
-		$str_vals = implode(', ',$symbols);
+		$q_marks  = array_map(function(string $e){
+			return "'$e'";
+		}, $vals);
+
+		$str_vars   = implode(', ',$vars);
+		$str_vals   = implode(', ',$symbols);
+		$str_qmarks = implode(', ',$q_marks);
 
 		$this->insert_vars = $vars;
 
-		$q = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_vals)";
+		$q                       = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_vals)";
+		$this->last_compiled_sql = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_qmarks)";
 
 		if ($this->semicolon_ending){
 			$q .= ';';
 		}
-
-		// d($q, 'Statement');
-		// d($vals, 'vals');
 
 		$st = $this->conn->prepare($q);
 	
@@ -3147,23 +3151,24 @@ class Model {
 		$this->last_operation = 'create';
 
 		if (!$this->exec){
+			$this->logSQL();
+
 			// Ejecuto igual el hook a fines de poder ver la query con dd()
 			$this->onCreated($data, null);
 			return NULL;
 		}	
 
-		if ($ignore_duplicates){
-			try {
-                $result = $st->execute();
-            } catch (\PDOException $e){
-                if (!Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())){
-					throw new \PDOException(config()['debug'] ? $e->getMessage() : "Integrity constraint violation");
-                } 
-            }
-		} else {
-			$result = $st->execute();
-		}
 
+		try {
+			$result = $st->execute();
+		} catch (\PDOException $e){
+			$this->logSQL();
+			
+			if (!$ignore_duplicates && !Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())){
+				throw new \PDOException(config()['debug'] ? $e->getMessage() : "Integrity constraint violation");
+			} 
+		}
+	
 		$this->current_operation = null;
 	
 		if (!isset($result)){
