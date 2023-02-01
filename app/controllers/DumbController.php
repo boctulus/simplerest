@@ -34,33 +34,34 @@ use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
 use simplerest\core\libs\Strings;
 
-use simplerest\core\libs\Factory;;
+use simplerest\core\libs\Dyslexia;
 
+use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
-use simplerest\core\libs\ApiClient;
 
+use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
+
 use Endroid\QrCode\Writer\PngWriter;
 
 use simplerest\core\libs\GoogleMaps;
-
 use simplerest\core\libs\Obfuscator;
+
 use simplerest\core\libs\SendinBlue;
-
 use simplerest\core\libs\Supervisor;
-use Endroid\QrCode\Encoding\Encoding;
 
+use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\i18n\POParser;
+
 use simplerest\libs\scrapers\Curiosite;
 
 use simplerest\models\az\ProductsModel;
-
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
@@ -69,20 +70,20 @@ use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
-use simplerest\core\libs\HtmlBuilder\Form;
 
+use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
-use simplerest\models\az\AutomovilesModel;
 
+use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
-use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 
+use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
@@ -97,6 +98,10 @@ class DumbController extends Controller
 
     function index(){
         echo datetime('H:i:s'). "\r\n";
+    }
+
+    function info(){
+        phpinfo();
     }
 
     function is_expired(){
@@ -5141,10 +5146,24 @@ class DumbController extends Controller
         dd($index, 'INDEX');
     }
 
-    function test_get_conn()
+    function test_conn()
     {
-        DB::setConnection('db_flor');
-        dd(DB::select('SELECT * FROM tbl_usuario'));
+        DB::setConnection('parts');
+        
+        
+        dd(
+            Schema::getTables()
+        , 'TABLES');
+    }
+
+    function test_get_tables()
+    {
+        DB::setConnection('parts');
+        
+        dd(
+            DB::table('tbl_productos')
+            ->get()
+        , 'TABLES');
     }
 
     function test_conn2()
@@ -10943,12 +10962,12 @@ class DumbController extends Controller
 
         PostmanGenerator::setToken('{{token}}');
 
-        // PostmanGenerator::addEndpoints([
-        //     'productos',
-        //     'usuarios'
-        // ], [
-        //     PostmanGenerator::GET
-        // ]);
+        PostmanGenerator::addEndpoints([
+            'productos',
+            'usuarios'
+        ], [
+            PostmanGenerator::GET
+        ]);
 
         PostmanGenerator::addEndpoints([
             'tipoVinculo'
@@ -11941,6 +11960,14 @@ class DumbController extends Controller
         dd(
             trans("It's not a valid float")
         );
+    }
+
+    function test_dislexia(){
+        $word = 'pablo';
+
+        $w = new Dyslexia($word);
+        echo $w->getAnyChange();
+
     }
 
 }   // end class
