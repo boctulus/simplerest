@@ -2,10 +2,11 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\controllers\ConsoleController;
 use simplerest\core\Model;
-use simplerest\core\libs\Schema;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Schema;
+use simplerest\core\libs\System;
+use simplerest\core\controllers\ConsoleController;
 
 class InstallController extends ConsoleController
 {
@@ -13,7 +14,7 @@ class InstallController extends ConsoleController
         $this->install();
     }
 
-    private function create_first_user(){
+    public function create_first_user(){
         $data = [
             "username" => "adm1",
             "email" => "adm1@mail.com",
@@ -26,10 +27,7 @@ class InstallController extends ConsoleController
     
             table('user_roles')->insert([
                 "user_id" => $uid,
-                
-                // deberia usando el Acl() entregar el role_id del rol mas alto en la jerarquia
-                // o bien... dejar vacio el rol pero agregarle todos los permisos a nivel de usuario
-                "role_id" => 900  
+                "role_id" => 10000  // deberia usando el Acl() entregar el role_id del rol mas alto en la jerarquia
             ]);
         });
 
@@ -45,15 +43,18 @@ class InstallController extends ConsoleController
     {    
         Schema::disableForeignKeyConstraints();
         
-        $res = shell_exec('php com migrations migrate');
+        $res = System::com('migrations migrate');
         print_r($res);
         
         Schema::enableForeignKeyConstraints();
 
-        $res = shell_exec("php com make model all --from:main");
+        $res = System::com("make model all --from:main");
         print_r($res);
 
-        $res = shell_exec("php com make schema all -f --from:main");
+        $res = System::com("make schema all -f --from:main");
+        print_r($res);
+
+        $res = System::com("make acl");
         print_r($res);
 
         $this->create_first_user();

@@ -917,17 +917,15 @@ class Strings
 		@param int indice final
 		@return string el substr() de inicio a fin	
 	*/
-	static function middle(string $str, int $ini, ?int $end = null) : string {
-		if (strlen($str) === 0){
-			return '';
-		}
-
-		if ($end === 0){
-			return '';
-		} else {
-			$len = $end - $ini;
-			return substr($str, $ini, $len);
-		}
+	static function middle(string $str, int $ini, int $end = 0) : string {
+		if (($ini==0) and ($end==0)){
+			return ($str[0]);
+		}else{  
+			if ($end==0){
+				$end = strlen($str);
+			} 	
+			return substr ($str,$ini,$end-$ini+1);
+		}  	
 	}
 
 	static function left(string $str, int $to_pos){

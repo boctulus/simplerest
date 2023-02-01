@@ -8751,7 +8751,31 @@ Ej:
 
 # La clase ApiClient
 
-ApiClient es un wrapper sobre consumeApi() que facilita su uso y cuyas funcionalidades se irán extendiendo (ej: manejar distintos tipos de autenticación)
+# La clase ApiClient
+
+ApiClient es un wrapper sobre funciones curl e include manejo distintos tipos de autenticación.
+
+Ej: (base)
+
+    $url    = "https://www.amazon.com/Logitech-Widescreen-Calling-Recording-Desktop/dp/B006JH8T3S/ref=sr_1_3?s=pc&ie=UTF8&qid=1510936764&sr=1-3&keywords=logitech&tag=lnrscm-20";
+
+    $client = new ApiClient($url);
+
+    $res = $client
+    ->get()
+    ->getResponse(false);
+
+    if ($res === null){
+        return;
+    }
+
+    if ($res['http_code'] != 200){
+        return;
+    }
+
+Para utilizar POST es con post() en vez de get() y soporta tambien delete(), patch() y put()
+
+también se pueden incluir headers.
 
 Ej:
 
@@ -8797,6 +8821,58 @@ Ej:
 		"authToken" => "$token"
 	])
 	->post($ruta);   
+
+
+# Chequeo de certificado SSL
+
+Consideremos el siguiente ejemplo con Amazon:
+
+    $url    = "https://www.amazon.com/Logitech-Widescreen-Calling-Recording-Desktop/dp/B006JH8T3S/ref=sr_1_3?s=pc&ie=UTF8&qid=1510936764&sr=1-3&keywords=logitech&tag=lnrscm-20";
+
+    $client = new ApiClient($url);
+
+    $res = $client
+    ->get()
+    ->getResponse(false);
+
+
+    if ($res === null){
+        print_r("Respuesta vacia");
+        return;
+    }
+
+    if (!empty($res['error'])){
+        print_r("Respuesta con error: {$res['error']} y codigo http {$res['http_code']}");
+        return;
+    }
+
+    if ($res['http_code'] != 200){
+        print_r("Respuesta con codigo http {$res['http_code']}");
+        return;
+    }
+
+    var_dump($res);
+
+
+La respuesta sera:
+
+    Respuesta con error: SSL certificate problem: unable to get local issuer certificate y codigo http 0
+
+La solución es incluir el archivo del certificado SSL 
+        
+    $cert = 'ruta al archivo de certificado';
+
+    $res = $client
+    ->setSSLCrt($cert) <---- *
+    ->get()
+    ->getResponse(false);
+
+pero también se puede deshabilitar:
+
+    $res = $client
+    ->disableSSL()  <---- *
+    ->get()
+    ->getResponse(false);
 
 
 # Autenticación
