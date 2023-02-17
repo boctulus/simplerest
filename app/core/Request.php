@@ -102,6 +102,51 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         return static::$instance;
     }
 
+    function getRaw(){
+        return static::$raw;
+    }
+
+    function getFormData(){
+        return $_POST;
+    }
+
+    /*
+        Intenta recuperar via $_POST un JSON enviado como body en modo "raw"
+
+        $_POST solo funciona con
+
+            Content-Type: application/x-www-form-urlencoded
+
+        y
+
+            Content-Type: multipart/form-data (usado principalmente para file uploads)
+
+        Ver
+        https://stackoverflow.com/a/8893792
+
+    */
+    function parseFormData(){
+        $data = $_POST;
+
+        if (static::getHeader('Content-type') == 'application/x-www-form-urlencoded'){
+            $json = Arrays::arrayKeyFirst($data);
+            $json = preg_replace('/_(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/i', ' ', $json);
+            $data = json_decode($json, true);
+
+            if (empty($data)){
+                return false;
+            }
+
+            foreach($data as $k => $v){
+                if (is_string($v)){
+                    $data[$k] = str_replace('_', ' ', $v);
+                }
+            }
+        }
+
+        return $data;
+    }
+    
     function setParams($params){
         static::$params = $params;
         return static::getInstance();
