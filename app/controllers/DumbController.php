@@ -11576,9 +11576,11 @@ class DumbController extends Controller
     function test_add_sub_dates(){
         $date = '27 Feb 2023';
 
+        $d    = 25;
+
         dd(
-            Date::addDays($date, 30)
-        , '+ 25 dias');
+            Date::addDays($date, $d)
+        , "+ $d dias");
     }
 
     
