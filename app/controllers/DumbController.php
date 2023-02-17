@@ -11574,16 +11574,11 @@ class DumbController extends Controller
     }
 
     function test_add_sub_dates(){
-        $date = '29 November 2022';
+        $date = '27 Feb 2023';
 
         dd(
-            Date::addDays($date, 90)
-        , '+ 90 dias');
-
-        // 2023-02-22
-        dd(
-            Date::addDays($date, 85) 
-        , '+ 85 dias');
+            Date::addDays($date, 30)
+        , '+ 25 dias');
     }
 
     
@@ -11967,7 +11962,35 @@ class DumbController extends Controller
 
         $w = new Dyslexia($word);
         echo $w->getAnyChange();
+    }
 
+    function test_xxxxxx(){
+        /*
+            Debo reemplaza cualquier min por "0"
+        */
+        $str = <<<STR
+
+
+            <input
+                type="number"
+                id="quantity_63e85c660321c"
+                class="input-text qty text"
+                step="25"
+                min="75"
+                max="99999999"
+                name="cart[ef16eb9ad9476987857bb5e38d3930a3][qty]"
+                value="100"
+                title="Cantidad"
+                size="4"
+                placeholder=""
+                inputmode="" />
+
+
+        STR;
+
+        $str = preg_replace('/min=\"([0-9]+)\"/', 'min="0"', $str);
+
+        dd($str, 'STR');
     }
 
 }   // end class

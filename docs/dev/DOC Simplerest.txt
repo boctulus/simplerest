@@ -9130,6 +9130,40 @@ Ej:
 	);  
 
 
+# Debugging de requests con ApiClient
+
+Puede que no estemos seguros de que se ha enviado en el request y/o que querramos poder reproducirlo en otro momento. Para esto se proveen los metodos dump() y exec()
+
+Ej:
+
+	$user_api_key = 'some-key';
+	$url          = 'some-endpoint';
+
+	$res  = ApiClient::instance()
+	->setBody([
+		// some data
+	])
+	->setHeaders([
+		'X-API-KEY' => $user_api_key
+	])
+	->disableSSL()
+
+	// some http verb
+	->post($url);  
+
+	/*	
+		Exporto el request incluyendo url, verbo, headers,......
+	*/
+
+	$export = $res->dump();
+
+	/*
+		Almaceno el array 	
+	*/
+
+	Files::varExport($export, 'api_debug.php');
+
+
 ### Componentes del core del framework
 
 # Base de datos
