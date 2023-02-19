@@ -11971,8 +11971,6 @@ class DumbController extends Controller
             Debo reemplaza cualquier min por "0"
         */
         $str = <<<STR
-
-
             <input
                 type="number"
                 id="quantity_63e85c660321c"
@@ -11986,13 +11984,98 @@ class DumbController extends Controller
                 size="4"
                 placeholder=""
                 inputmode="" />
-
-
         STR;
 
         $str = preg_replace('/min=\"([0-9]+)\"/', 'min="0"', $str);
 
         dd($str, 'STR');
+    }
+
+
+    static function getAvailableDates($cat, $weekday){
+        $cfg = include 'D:\www\woo3\wp-content\plugins\bot-alia247\config\config.php';
+
+        $time_to_int = function($time){
+            if (!Strings::contains(':', $time)){
+                throw new \InvalidArgumentException("Invalid time format for '$time'");
+            }
+
+            [$h, $m] = explode(':', $time);
+
+            $h = (int) $h;
+            $m = (int) $m;
+
+            return ($h * 60) + $m;
+        };
+
+        $int_to_time = function($int){
+            $quotient = $int/60;
+            $p_int    = floor($quotient);
+            $p_dec    = $quotient - $p_int;
+
+            $h        = str_pad($p_int, 2, '0', STR_PAD_LEFT);
+            $m        = str_pad(60 * $p_dec, 2, '0', STR_PAD_LEFT);
+
+            return "$h:$m";
+        };
+
+        $av_app  = [];
+        foreach ($cfg['appointments'] as $ap){
+            $current_cat = $ap['cat'];
+
+            if ($current_cat != $cat){
+                continue;
+            }
+
+            $duration = $ap['duration'];
+
+            foreach ($ap['lawyers'] as $lawyer){
+                $wh = $lawyer['working_hours'][$weekday];
+
+                foreach ($wh as $time_band){
+                    $from = $time_to_int($time_band['from']);
+                    $to   = $time_to_int($time_band['to']);
+
+                    for($t=$from; $t<$to; $t=$t+$duration){
+                        $av_app[] = $int_to_time($t);
+                    }
+                }
+            }
+        }
+
+        return $av_app;
+    }
+
+    function test_gfg5()
+    {
+
+        // Esta semana 
+        $date = at();
+
+        $date = Date::nextNthWeekDay(1, $date);
+        dd($date);
+
+        // Semana del xxxx-xx-xx
+        $date = Date::addDays($date, 7);
+        dd($date);
+
+        // Semana del xxxx-xx-xx
+        $date = Date::addDays($date, 7);
+        dd($date);
+
+        // Semana del xxxx-xx-xx
+        $date = Date::addDays($date, 7);
+        dd($date);
+
+        exit;
+        /////
+
+        $weekday = 'M';
+        $cat     = 'matrimonio';
+       
+        dd(
+            static::getAvailableDates($cat, $weekday)
+        );
     }
 
 }   // end class
