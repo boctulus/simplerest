@@ -18,6 +18,12 @@ class Date
         return $do->format($format);
     }
  
+
+    static function format(string $date, string $new_format = 'd-m'){
+        $do = new \DateTime($date);
+        return $do->format($new_format);
+    }
+
     /*
         Substre dias a una fecha
     */
