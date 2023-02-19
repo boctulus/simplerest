@@ -4,37 +4,37 @@ namespace simplerest\core\libs;
 
 class Date
 {   
-    protected static function add(string $date, $diff, $unit, $full_format = false){
+    protected static function add(string $date, $diff, $unit, $format = 'Y-m-d'){
         $do = new \DateTime($date);
         $do->add(new \DateInterval("P{$diff}{$unit}"));
 
-        return $do->format($full_format ? 'Y-m-d H:i:s' : 'Y-m-d');
+        return $do->format($format);
     }
 
-    protected static function sub(string $date, $diff, $unit, $full_format = false){
+    protected static function sub(string $date, $diff, $unit, $format = 'Y-m-d'){
         $do = new \DateTime($date);
         $do->sub(new \DateInterval("P{$diff}M"));
 
-        return $do->format($full_format ? 'Y-m-d H:i:s' : 'Y-m-d');
+        return $do->format($format);
     }
  
     /*
         Substre dias a una fecha
     */
-    static function subDays(string $date, int $diff, $full_format = false){    
-        return static::sub($date, $diff, 'D', $full_format);
+    static function subDays(string $date, int $diff, $format = 'Y-m-d'){    
+        return static::sub($date, $diff, 'D', $format);
     }
 
-    static function addDays(string $date, int $diff, $full_format = false){    
-        return static::add($date, $diff, 'D', $full_format);
+    static function addDays(string $date, int $diff, $format = 'Y-m-d'){    
+        return static::add($date, $diff, 'D', $format);
     }
 
-    static function addMonths(string $date, int $diff, $full_format = false){    
-        return static::add($date, $diff, 'M', $full_format);
+    static function addMonths(string $date, int $diff, $format = 'Y-m-d'){    
+        return static::add($date, $diff, 'M', $format);
     }
 
-    static function subMonths(string $date, int $diff, $full_format = false){    
-        return static::sub($date, $diff, 'M', $full_format);
+    static function subMonths(string $date, int $diff, $format = 'Y-m-d'){    
+        return static::sub($date, $diff, 'M', $format);
     }
 
     static function randomTime(bool $include_seconds = false){
