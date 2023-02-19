@@ -91,9 +91,21 @@ class Date
         return $leading_zeros ? $do->format('d') : $do->format('j');
     }
 
-    static function getWeekDay(string $date = '') : string {
+    static function getDayOfWeek(string $date = '') : string {
         $do = new \DateTime($date);
         return $do->format('w');
+    }
+
+    static function isMonday(string $date = '') : bool {
+        return static::getDayOfWeek($date) == 0;
+    }
+
+    static function isSaturday(string $date = '') : bool {
+        return static::getDayOfWeek($date) == 5;
+    }
+
+    static function isSunday(string $date = '') : bool {
+        return static::getDayOfWeek($date) == 6;
     }
 
     static function diffInSeconds(string $date2, string $date1 = '') : int {
