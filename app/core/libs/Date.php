@@ -18,7 +18,6 @@ class Date
         return $do->format($format);
     }
  
-
     static function format(string $date, string $new_format = 'd-m'){
         $do = new \DateTime($date);
         return $do->format($new_format);
@@ -100,6 +99,22 @@ class Date
         return static::getDayOfWeek($date) == 0;
     }
 
+    static function isTuesday(string $date = '') : bool {
+        return static::getDayOfWeek($date) == 1;
+    }
+    
+    static function isWednesday(string $date = '') : bool {
+        return static::getDayOfWeek($date) == 1;
+    }
+    
+    static function isThursday(string $date = '') : bool {
+        return static::getDayOfWeek($date) == 1;
+    }
+
+    static function isFriday(string $date = '') : bool {
+        return static::getDayOfWeek($date) == 1;
+    }
+
     static function isSaturday(string $date = '') : bool {
         return static::getDayOfWeek($date) == 5;
     }
@@ -147,10 +162,18 @@ class Date
         return $d->format($format);
     }
 
-    /*
-     salta sábados y domingos
+    static function nextDays(string $date, int $days = 5){
+        $dates = [];
+        for ($i=0; $i<$days; $i++){
+            $date = static::nextDay($date);
+            $dates[] = $date;
+        }
 
-     https://stackoverflow.com/a/5532070/980631
+        return $dates;
+    }
+
+    /*
+        salta sábados y domingos
     */ 
     static function nextWorkingDay(string $date, string $format = 'Y-m-d') : string {
         $d = new \DateTime($date);
@@ -224,5 +247,18 @@ class Date
             $diff = $weekday - $w1;
             return $d1->modify("+$diff days")->format($format);
         }
+    }
+
+    // https://stackoverflow.com/a/14505065
+    static function isValid($date, string $format = 'Y-m-d', $strict = true)
+    {
+        $dateTime = \DateTime::createFromFormat($format, $date);
+        if ($strict) {
+            $errors = \DateTime::getLastErrors();
+            if (!empty($errors['warning_count'])) {
+                return false;
+            }
+        }
+        return $dateTime !== false;
     }
 }
