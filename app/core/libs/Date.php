@@ -175,7 +175,7 @@ class Date
 
             if ($working_days_only){
                 if (static::isSaturday($date) || static::isSunday($date)){
-                    break;
+                    continue;
                 }
             }
 
