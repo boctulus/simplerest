@@ -13,7 +13,7 @@ class Date
 
     protected static function sub(string $date, $diff, $unit, $format = 'Y-m-d'){
         $do = new \DateTime($date);
-        $do->sub(new \DateInterval("P{$diff}M"));
+        $do->sub(new \DateInterval("P{$diff}{$unit}"));
 
         return $do->format($format);
     }
@@ -96,31 +96,31 @@ class Date
     }
 
     static function isMonday(string $date = '') : bool {
-        return static::getDayOfWeek($date) == 0;
+        return static::getDayOfWeek($date) == 1;
     }
 
     static function isTuesday(string $date = '') : bool {
-        return static::getDayOfWeek($date) == 1;
+        return static::getDayOfWeek($date) == 2;
     }
     
     static function isWednesday(string $date = '') : bool {
-        return static::getDayOfWeek($date) == 1;
+        return static::getDayOfWeek($date) == 3; // ok
     }
     
     static function isThursday(string $date = '') : bool {
-        return static::getDayOfWeek($date) == 1;
+        return static::getDayOfWeek($date) == 4;
     }
 
     static function isFriday(string $date = '') : bool {
-        return static::getDayOfWeek($date) == 1;
-    }
-
-    static function isSaturday(string $date = '') : bool {
         return static::getDayOfWeek($date) == 5;
     }
 
-    static function isSunday(string $date = '') : bool {
+    static function isSaturday(string $date = '') : bool {
         return static::getDayOfWeek($date) == 6;
+    }
+
+    static function isSunday(string $date = '') : bool {
+        return static::getDayOfWeek($date) == 7;
     }
 
     static function diffInSeconds(string $date2, string $date1 = '') : int {
@@ -162,10 +162,23 @@ class Date
         return $d->format($format);
     }
 
-    static function nextDays(string $date, int $days = 5){
+    static function nextDays(string $date, int $days = 5, bool $include_start = false, bool $working_days_only = true){
         $dates = [];
+
+        if ($include_start){
+            $dates[] = $date;
+            $days--;
+        }
+
         for ($i=0; $i<$days; $i++){
             $date = static::nextDay($date);
+
+            if ($working_days_only){
+                if (static::isSaturday($date) || static::isSunday($date)){
+                    break;
+                }
+            }
+
             $dates[] = $date;
         }
 
