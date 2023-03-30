@@ -17,6 +17,8 @@ class View
     const HEAD   = true;
     const FOOTER = false;
 
+    protected $config;
+
     function __construct(string $view_path, array $vars  = null, ?string $layout = null, int $expiration_time = 0)
     {
 		$this->config = config();
