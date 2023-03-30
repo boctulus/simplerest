@@ -130,6 +130,16 @@ class Date
         return $d2->getTimestamp() - $d1->getTimestamp();
     }
     
+    static function isToday(string $date) : bool {
+        $d         = new \DateTime($date);
+        $date_ymd  = $d->format('Y-m-d');
+
+        $today     = new \DateTime('now');
+        $today_ymd = $today->format('Y-m-d');
+
+        return ($date_ymd == $today_ymd);
+    }
+
     static function nextYearFirstDay(string $date = '', string $format = 'Y-m-d') : string {
         $d = new \DateTime($date);
         $d->modify('first day of next year');   
