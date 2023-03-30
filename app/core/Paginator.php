@@ -11,6 +11,7 @@ class Paginator
     protected $orders = [];
     protected $offset = 0;
     protected $limit = null;
+    protected $order = null;
     protected $attributes = [];
     protected $query = '';
     protected $binding = [];
