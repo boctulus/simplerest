@@ -6,7 +6,7 @@ use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
-class __NAME__ implements IMigration
+class Todo implements IMigration
 {
     /**
 	* Run migration.
@@ -15,7 +15,9 @@ class __NAME__ implements IMigration
     */
     public function up()
     {
-        ### UP
+        $sc = new Schema('Todo');
+		$sc->alter();
+		
     }
 
     /**
