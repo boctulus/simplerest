@@ -1539,7 +1539,7 @@ class MakeControllerBase extends Controller
     /*
         Debería estar en otro archivo!!! de hecho solo se deberían incluir y no estar todos los comandos acá !!!
 
-        Falta el --delete para borrar el archivo generado
+        Falta el --remove para borrar el archivo generado
     */
     function migration(...$opt) 
     {
