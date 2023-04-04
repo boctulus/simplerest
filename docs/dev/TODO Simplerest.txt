@@ -636,6 +636,28 @@ Igualmente podria considerarse importar Carbon para manejo de fechas
 
 [ Migraciones ]
 
+- El nombre de la tabla se debe tomar conversion a "dash case" (_)
+
+- Si se pasa el parametro "--create" como en:
+
+  php com make migration books --create
+
+Entonces debe crear completar asi:
+
+  public function up()
+  {
+    $sc = new Schema('books');
+    $sc->id();
+    $sc->timestamps();
+    $sc->create();
+  }
+
+  public function down()
+  {
+    Schema::dropIfExists('books');
+  }
+
+
 - Poder crear "macros" para extender las funcionalidades de la clase Schema. 
 
 En Laravel un package puede por ejemplo definir archivedAt() y luego usarse asi:
@@ -825,6 +847,10 @@ y crear un helper mail()
   composer create-project boctulus/simplerest example-app
 
 https://laravel.com/docs/9.x#your-first-laravel-project
+
+  Lo que hace el comando es descomprimir el paquete y luego:
+
+   @php -r "file_exists('.env') || copy('.env.example', '.env');"
 
 
 - Al comando "migrations clear" agregarle opcionalmente --file=
@@ -1469,6 +1495,30 @@ Aparentemente es algo parecido a lo que hago con Tag() para simplificar el uso d
 https://medium.com/hackeradda/codeigniter-with-blade-templating-engine-daf8d0dd51e9
 http://acmeextension.com/integrate-twig-with-codeigniter/
   
+
+---
+
+Implementar 'engine' para mysql al menos
+
+'main' => [
+			'host'		=> env('DB_HOST', '127.0.0.1'),
+			'port'		=> env('DB_PORT'),
+			'driver' 	=> env('DB_CONNECTION'),
+			'db_name' 	=> env('DB_NAME'),
+			'user'		=> env('DB_USERNAME'), 
+			'pass'		=> env('DB_PASSWORD'),
+			'charset'	=> 'utf8',
+			//'schema'	=> 'az',  
+			'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',  // <-------------- not-implemented
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],
+
+
+https://stackoverflow.com/a/46641266/980631
+
 ----
 
 - Locking rows and tables (DB)
@@ -3094,7 +3144,7 @@ Debe haber un comando que setee la configuración para la "demo"
 https://laravel.com/docs/9.x/eloquent#observers
 
 
-[ Migraciones ]
+- [ Migraciones ] Auto-migraciones: "in Laravel we use migration files to create the database schema. In Doctrine 2, the database is automatically created to reflect the meta data in the entity annotations."
 
 - Poder des-habilitar migraciones tanto desde el archivo 
 
@@ -3131,7 +3181,6 @@ https://laravel.com/docs/8.x/migrations#events
 
 También podría estar la opción --include-model-defaults que crearia / agregaría todos los campos presentes en MyModel.php 
 
-
 - Permitir conocer la estructura de la tabla users también en
 
   login
@@ -3142,8 +3191,6 @@ GET http://simplerest.lan/a`pi/v1/auth/register?_rules=1
 
 
 - [ EasyRest ] Usar enlaces simbólicos sobre carpetas específicas (models, controllers, views, libs, helpers,...) para proteger el core. (verificado que sirve)
-
-- Wrapper sobre el QueryBuilder a fin de poder usar otros con más soporte de motores de base de datos y debugear las queries generadas por estos a fin de evolucionar el propio. Además comparar performance.   
 
 - Probar SubRecursos con Postgres y SQLite (con V1, V2 y V3). Posible switch automático según db driver.
 
@@ -3188,7 +3235,6 @@ Y con demás operadores:
 1001  NOT_BETWEEN       "%s should be less than %s or gretter than %s"
 1002  INVALID_DATA_TYPE     "It's not a valid %s"
 ...
-
 
 - Implementar INSERTs "tipo-ORM" procesando arrays de arrays en transacción:
 
@@ -3248,7 +3294,6 @@ O sea mover el HATEOAS al modelo y re-implementar.
 - Estudiar adaptadores de laminas-db
 
 https://github.com/laminas/laminas-db/tree/2.14.x/src
-
 
 
 - Admitir que las clases de API se construyan sobre "DTO(s)" además de sobre entidades
@@ -4828,10 +4873,75 @@ https://www.ibm.com/support/knowledgecenter/en/SS6KJL_8.6.4/FEB/ref_data_rest_ap
 Más
 https://restdb.io/docs/querying-with-the-api
 
+-  Transaction Nesting
+
+Calling beginTransaction() while already in a transaction will result in two very different behaviors depending on whether transaction nesting with savepoints is enabled or not. In both cases though, there won't be an actual transaction inside a transaction, even if your RDBMS supports it. There is always only a single, real database transaction.
+
+By default, transaction nesting at the SQL level with savepoints is disabled. The value for that setting can be set on a per-connection basis, with Doctrine\DBAL\Connection#setNestTransactionsWithSavepoints().
+
+Nesting transactions without savepoints is deprecated, but is the default behavior for backward compatibility reasons.
+
+https://www.doctrine-project.org/projects/doctrine-dbal/en/current/reference/transactions.html#transaction-nesting
+
+<-- leer bien como debe funcionar con la DOC de Doctrine2
+
+
+- Para la clase Schema
+
+  . Crear un SchemaManager que sea capaz segun el driver de la conexion de seleccionar un Schema para ese motor de base de datos. Pueden hereder de Schema lo que evitaria repetir tanto codigo. No usar mas CASEs.
+
+  . Implementar metodos como
+
+    listDatabases() 
+    listTableColumns()
+    listTableForeignKeys()
+    listTableIndexes()
+    listTables()
+    listViews() 
+
+  https://www.doctrine-project.org/projects/doctrine-dbal/en/current/reference/schema-manager.html#schema-manager
+
+- Crear abstraccion sobre el driver PDO como lo hace Doctrine con DBAL
+
+  . Entre otras cosas posee un "schema manager"
+
+  "The DBAL is separated into several different packages that separate responsibilities of the different RDBMS layer"
 
 - Implementar ORM basico y eficiente
 
-En principio permitir cierta compatibiidad con las funcionalidades basicas de Laravel. Hacer un wrapper sobre el QueryBuilder
+  . Implementar "Unit Of Work" pattern => ahorra escrituras en la DB
+
+  . Implementar "The Identity Map" pattern => ahorra lecturas desde la DB
+  
+  EJ:
+
+    $user = EntityManager::find("Cribbb\Entities\User", 1);
+    $user->setUsername("philipbrown");
+
+    $user = EntityManager::find("Cribbb\Entities\User", 1);
+    echo $user->getUsername();
+
+    Leer !!!
+    https://culttt.com/2014/07/07/doctrine-2-different-eloquent#:~:text=One%20of%20the%20big%20differences,persistence%20logic%20of%20the%20ORM.
+
+  . Posiblemente sea interesante implementar un dialecto de SQL como DQL de Doctrine. Entre otras cosas simplifica los JOINs (cuando no hay ambiguedades como varias FK que pudieran ser usadas) pudiendo ser algo como
+
+  SELECT * FROM tabla JOIN tabla2 JOIN tabla3
+
+o
+
+  SELECT * FROM tabla t JOIN tabla2 t2 JOIN tabla3 t3
+
+Ademas como puede hacer referencia a una clase modelo entonces podrian usarse los schemas para esas tablas:
+
+  query = $em->createQuery('SELECT u FROM MyProject\Model\User u WHERE u.age > 20');
+  $users = $query->getResult();
+
+No tiene claro que implementarse igual.
+
+https://www.doctrine-project.org/projects/doctrine-orm/en/2.14/reference/dql-doctrine-query-language.html
+
+- En principio permitir cierta compatibiidad con las funcionalidades basicas de Laravel. Hacer un wrapper sobre el QueryBuilder
 
   . all() hace un get()
 
@@ -4869,7 +4979,11 @@ En principio permitir cierta compatibiidad con las funcionalidades basicas de La
 
   Etc.
 
-  Ver API de Larevel y GORM
+- Leer 
+
+  https://medium.com/@joseemiguelq/laravel-with-eloquent-or-doctrine-4be652fb8c60
+
+- Ver API de Larevel y GORM
 
   Associations (has one, has many, belongs to, many to many, *polymorphism*, single-table inheritance)
   Hooks (before/after create/save/update/delete/find)
@@ -6041,6 +6155,14 @@ https://github.com/mulesoft/api-designer
 
 Duda: cada MS debe implementar REDIS?      
 
+
+[ CACHE ]
+
+Implementar cache de forma pluggeable con distintos drivers como archivo, REDIS, MEMCACHED, etc
+
+De minima cachear consultas SQL:
+
+  https://www.doctrine-project.org/projects/doctrine-dbal/en/current/reference/query-builder.html#caching
 
 [ REDIS ]
 
