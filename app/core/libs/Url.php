@@ -377,8 +377,8 @@ class Url
 
     static function getHostname(?string $url = null, bool $include_protocol = false)
     {
-        if (is_cli() && $url === ''){
-            return '';
+        if (is_cli() && empty($url)){
+            return config()['app_url'];
         }
 
         if (is_null($url)){

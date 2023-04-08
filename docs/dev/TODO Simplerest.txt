@@ -479,6 +479,40 @@ https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/gu
 
 Ofrecer periodos de prueba sin costo (pero deben dejar los datos de la tarjeta) de 3 meses. <-- beta-testers sin saberlo ;)
 
+---
+
+- Ver de GENERAR una DOC como esta:
+
+https://developer.loyverse.com/docs/#section/Using-the-REST-API
+
+Incluidas las colecciones de POSTMAN con los tipos de campo. Ej:
+
+  {
+      "id": "<string>",
+      "name": "<string>",
+      "position": "<integer>",
+      "stores": [
+          "<string>",
+          "<string>"
+      ],
+      "modifier_options": [
+          {
+              "name": "<string>",
+              "id": "<string>",
+              "price": 0,
+              "position": "<integer>"
+          },
+          {
+              "name": "<string>",
+              "id": "<string>",
+              "price": 0,
+              "position": "<integer>"
+          }
+      ],
+      "created_at": "<dateTime>",
+      "updated_at": "<dateTime>",
+      "deleted_at": "<dateTime>"
+  }
 
 ------------x--------------
 
@@ -5247,10 +5281,137 @@ https://idratherbewriting.com/learnapidoc/pubapis_openapi_tutorial_overview.html
 https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md
 
 
-- Revisar especificación OpenID donde además de Access Token (y Refresh Token) hay un "ID Token" que sirve para obtener información del usuario (mas no de los resources). 
+[ OpenID Connect ] <-------------- *
+
+OpenID Connect is a simple identity layer on top of the OAuth 2.0 protocol. It allows your app to authorize the user and obtain basic user profile information.
+
+ID token is a JSON Web Token (JWT) that contains identity information about the user that is digitally signed. To get ID token you need to specify OPENID scope in the authorization request along with other scopes that are necessary for your app.
+
+Response example:
+
+{
+  "access_token": "39557133-8881-4ce7-99b5-2ab4d15c2092",
+  "id_token": "eyJ0eX1NiJ9.eyJzdY29tIn0.hQuVKPVxVz06dpBBpsdwMfI6Ofw"
+  "token_type": "Bearer",
+  "expires_in": 43200,
+  "refresh_token": "J3F62YPIQdfJjJia1xJuaHp7NoQYtm9y0WadNBTh",
+  "scope": "OPENID ITEMS_READ ITEMS_WRITE RECEIPTS_READ"
+}
+
+An ID token consists of three encoded parts separated by dots (".")
+
+  Header
+  Payload
+  Signature
+
+Header is Base64Url encoded JSON with the following structure:
+
+{
+  typ: "JWT",
+  alg: "RS256"
+}
+
+typ: the type of the token
+alg: the hashing algorithm being used, such as HMAC SHA256 or RSA
+
+The second part of ID token is a payload that has metadata about the user. Fields (claims):
+
+  aud	The audience that this ID token is intended for. It must be the OAuth 2.0 client ID of a developer app.
+  exp	The time when ID token expires, represented in Unix time (integer seconds).
+  iat	The time the ID token was issued. Represented in Unix time (integer seconds).
+  iss	The issuer identifier for the issuer of the response. This is always set to https://api.loyverse.com
+  sub	An identifier for the user, unique among all Loyverse accounts and never reused. You can use sub within your application as the unique-identifier key for the user.
+  country	The country code associated with the merchant account (ISO 3166-1-alpha-2 format)
+  name	The name of business
+  email	The account email address
+  created_at	The date and time when the merchant account was created
+
+<-- los primeros campos son estandar y los ultimos campos son personalizados
+
+The payload example:
+
+{
+  "sub": "b4d08058-dc81-11ea-90b4-1269e7c5a22d",
+  "aud": "rmCfGKJJ22UdUGndankJ",
+  "iss": "https://api.loyverse.com",
+  "iat": 1353601026,
+  "exp": 1353604926,
+  "country": "jp",
+  "name": "Best Store",
+  "created_at": "2020-06-04T15:44:20.020+03:00",
+  "email": "jsmith@example.com",
+}
+
+Revisar especificación OpenID donde además de Access Token (y Refresh Token) hay un "ID Token" que sirve para obtener información del usuario (mas no de los resources). 
 
 https://auth0.com/blog/id-token-access-token-what-is-the-difference/
 https://developer.okta.com/blog/2017/07/25/oidc-primer-part-1
+
+Discovery document
+
+The OpenID Connect protocol requires the use of multiple endpoints for authenticating users, and for requesting resources including tokens, user information, and public keys. To simplify implementations and increase flexibility, OpenID Connect allows the use of a "Discovery document," a JSON document found at a well-known location containing key-value pairs which provide details about the OpenID Connect provider's configuration, including the URIs of the authorization, token, revocation, userinfo, and public-keys endpoints. The Discovery document for Loyverse OpenID Connect service may be found here:
+
+https://api.loyverse.com/.well-known/openid-configuration
+
+Response example:
+
+  {
+    "issuer": "https://api.loyverse.com",
+    "authorization_endpoint": "https://api.loyverse.com/oauth/authorize",
+    "token_endpoint": "https://api.loyverse.com/oauth/token",
+    "userinfo_endpoint": "https://api.loyverse.com/userinfo",
+    "jwks_uri": "https://api.loyverse.com/.well-known/jwks.json",
+    "scopes_supported": [
+      "items_read",
+      "items_write",
+      "customers_read",
+      "customers_write",
+      "employees_read",
+      "inventory_read",
+      "inventory_write",
+      "pos_devices_read",
+      "pos_devices_write",
+      "receipts_read",
+      "receipts_write",
+      "shifts_read",
+      "stores_read",
+      "payment_types_read",
+      "taxes_read",
+      "taxes_write",
+      "merchant_read",
+      "profile_read",
+      "suppliers_read",
+      "suppliers_write",
+      "openid"
+    ],
+    "response_types_supported": [
+      "code"
+    ]
+  }
+
+Ver !!!!
+
+https://developer.loyverse.com/docs/#section/Authorization
+
+
+- Estandarizar errores y documentarlos. Ej:
+
+  Error code	Description
+
+  500 INTERNAL_SERVER_ERROR	Generic internal server error. Try again later.
+  400 BAD_REQUEST	General client error. The request was not understood by the server, generally due to bad syntax.
+  400 INCORRECT_VALUE_TYPE	The JSON value type for the field is incorrect. For example, a string instead of an integer.
+  400 MISSING_REQUIRED_PARAMETER	A required path, query, or body parameter is missing.
+  400 INVALID_VALUE	A parameter's value is incorrect.
+  400 INVALID_RANGE	Specified time range is incorrect. For example, the end time is before the start time.
+  400 INVALID_CURSOR	The pagination cursor is incorrect.
+  400 CONFLICTING_PARAMETERS	1 or more of the request parameters conflict with each other.
+  401 UNAUTHORIZED	An authentication error. Request had a missing, malformed, or invalid authorization data
+  402 PAYMENT_REQUIRED	The subscription of account has lapsed
+  403 FORBIDDEN	The resource requested is not available with your permissions
+  404 NOT_FOUND	The resource was not found
+  415 UNSUPPORTED_MEDIA_TYPE	The server doesn't accept the submitted content-type.
+  429 RATE_LIMITED	The request was not accepted because the application has exceeded the rate limit.
 
 
 - Revisar 
