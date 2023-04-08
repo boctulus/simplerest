@@ -8,7 +8,13 @@ class Env
 
     static function setup(){
         if (!file_exists(ROOT_PATH . '.env')){
-            throw new \Exception("File .env not found in path " . ROOT_PATH . '.env');
+            if (!file_exists(ROOT_PATH . '/.env')){
+                if (!file_exists(ROOT_PATH . '/env.example')){
+                    throw new \Exception("Neither .env nor env.example found");
+                }
+
+                copy(ROOT_PATH . 'env.example', ROOT_PATH . '.env');
+            }
         }
         
         if (!empty($_ENV)){

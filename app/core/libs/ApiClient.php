@@ -535,24 +535,54 @@ class ApiClient
         return $this;
     }
 
-    function get($url = null, ?Array $headers = null, ?Array $options = null){        
-        return $this->request($this->url ?? $url, 'GET', null, $headers, $options);
+    function get($url = null, ?Array $headers = null, ?Array $options = null){    
+        $url = $this->url ?? $url;
+
+        if ($url === null){
+            throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");
+        }
+        
+        return $this->request($url, 'GET', null, $headers, $options);
     }
 
     function delete($url = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($this->url ?? $url, 'DELETE', null, $headers, $options);
+        $url = $this->url ?? $url;
+
+        if ($url === null){
+            throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");
+        }
+
+        return $this->request($url, 'DELETE', null, $headers, $options);
     }
 
     function post($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($this->url ?? $url, 'POST', $body, $headers, $options);
+        $url = $this->url ?? $url;
+
+        if ($url === null){
+            throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . "() or constructor or setUrl()");
+        }
+
+        return $this->request($url, 'POST', $body, $headers, $options);
     }
 
     function put($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($this->url ?? $url, 'PUT', $body, $headers, $options);
+        $url = $this->url ?? $url;
+
+        if ($url === null){
+            throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");
+        }
+
+        return $this->request($url, 'PUT', $body, $headers, $options);
     }
 
     function patch($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
-        return $this->request($this->url ?? $url, 'PATCH', $body, $headers, $options);
+        $url = $this->url ?? $url;
+
+        if ($url === null){
+            throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");
+        }
+
+        return $this->request($url, 'PATCH', $body, $headers, $options);
     }
 
     /*
