@@ -11998,16 +11998,18 @@ class DumbController extends Controller
         ->disableSSL()
         //->cache()
         //->redirect()
-        ->setBody('{
-            "fname": "Tomas",
-            "lname": "Cruz",
-            "email": "cruz_t@gmail.com",
-            "input_channel_id": 8,
-            "source_id": 2,
-            "interest_type_id": 4,
-            "project_id": 540,
-                "rango_de_presupuesto": "2millones_a_3millones"
-        }')
+        ->setBody([
+            "fname" => "Tomas",
+            "lname" => "Cruz",
+            "email" => "cruz_t@gmail.com",
+            "input_channel_id" => 8,
+            "source_id" => 2,
+            "interest_type_id" => 4,
+            "project_id" => 540,
+            "extra_fields" => [
+                "rango_de_presupuesto" => "2M-3M"
+            ]            
+        ])
         ->setUrl('https://api.eterniasoft.com/v3/clients')
         ->post()
         ->getResponse();
