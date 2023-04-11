@@ -96,17 +96,26 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
     $schema      = get_schema_name($table_name);
     $schema_defs = $schema::get();
 
+    // dd($schema_defs);
+    // exit;
+
     $fields      = $schema_defs['fields'];
     $rules       = $schema_defs['rules'];
 
     $instance    = get_model_instance_by_table($table_name);
 
-    $field_mames = $instance->getFieldNames();
-    $formatters  = $instance->getformatters();
+    $field_mames = $instance->getFieldNames();  //  -- UNIFICAR field_names con formatters
+    $formatters  = $instance->getformatters();  //
 
     $hidden_ay   = $instance->getHidden();
     $fillable_ay = $instance->getFillables();
-    $nullable_ay = $instance->getNullables();    
+    $nullable_ay = $instance->getNullables(); 
+    $uniques_ay  = $instance->getUniques();  
+
+    $schema      = $instance->getSchema();
+
+    $fk_ay       = $schema['fks'];
+    $rels_from   = $schema['expanded_relationships_from'];
 
     $defs = [];
     foreach ($fields as $field){
@@ -114,12 +123,45 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
             continue;
         }
 
-        $defs[$field]['hidden']   = in_array($field, $hidden_ay)   ? 1 : 0;
-        $defs[$field]['fillable'] = in_array($field, $fillable_ay) ? 1 : 0;
-        $defs[$field]['nullable'] = in_array($field, $nullable_ay) ? 1 : 0;
+        $defs[$field]['hidden']   = in_array($field, $hidden_ay);
+        $defs[$field]['fillable'] = in_array($field, $fillable_ay);
+        $defs[$field]['nullable'] = in_array($field, $nullable_ay);
+        $defs[$field]['unique']   = in_array($field, $uniques_ay);
+        $defs[$field]['fk']       = in_array($field, $fk_ay);
 
+        if ($defs[$field]['fk']){
+            foreach ($rels_from as $rels_fk){
+                foreach ($rels_fk as $rel){
+                    if ($rel[1][1] == $field){
+                        $t2 = $rel[0][0];
+
+                        /*
+                            Falta incluir la multiplicidad
+                            (1>1, 1>n, n>m)
+                        */
+
+                        $rel = get_rel_type($table_name, $t2);
+
+                        if ($rel == 'n:1'){
+                            $rel = '1:n';
+                        }
+                        
+                        $defs[$field]['fk'] = [
+                            'table' => $t2,
+                            'mul' => $rel,
+                            'self_ref' => ($table_name == $t2)
+                        ];
+                    }
+                }
+            }
+        }
+
+        //
+        //  -- UNIFICAR field_names con formatters
+        //
+        
         if (isset($field_mames[$field])){
-            $defs[$field]['name']     = $field_mames[$field]; 
+            $defs[$field]['name']      = $field_mames[$field]; 
         }
         
         if (isset($formatters[$field])){
@@ -140,7 +182,7 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
 
 
 function get_defs(string $table_name, $tenant_id = null, bool $include_hidden = true, bool $include_hidden_from_api = true){
-    $defs = get_model_defs($table_name, $tenant_id, $include_hidden);
+    $defs       = get_model_defs($table_name, $tenant_id, $include_hidden);
 
     $api        = get_api_name($table_name, 1);
     $api_hidden = $api::getHidden();
@@ -792,9 +834,6 @@ function get_rels(string $t1, string $t2, string $type, ?string $tenant_id = nul
         $sc   = get_schema($t1, $tenant_id);
         $fks  = $sc['fks'] ?? false;
 
-        #dd($fks, 'FKs');
-        #dd($_rels, 'RELS');
-
         if ($fks === false){
             throw new \Exception("Schema file for $t1 is outdated. Please re-generate all.");
         }
@@ -812,16 +851,10 @@ function get_rels(string $t1, string $t2, string $type, ?string $tenant_id = nul
                     $meet_n_1[] = $ix;
                 }
             }
-
-            #dd($meet_n_1, 'MEETS N:1');
-            #exit;
     
             // Llegado a este punto, solo puede ser 1:n o n:1 en cada relación
 
             $rel_is = null;
-
-            #dd($_rels, 'RELS');
-            #dd(count($meet_n_1) . ' de '. count($_rels), "RELACIONES QUE CUMPLEN ");
 
             // Si hay una sola relación,....
             if (count($meet_n_1) == count($_rels)){
@@ -921,7 +954,7 @@ function sql_formatter(string $sql, ...$options){
 /*
     Lee linea por línea y ejecuta sentencias SQL
 */
-function process_sql_file(string $path, string $delimeter = ';'){
+function process_sql_file(string $path, string $delimeter = ';', bool $stop_if_error = false){
     $file = file_get_contents($path);
     
     $sentences = explode($delimeter, $file);
@@ -933,12 +966,16 @@ function process_sql_file(string $path, string $delimeter = ';'){
             continue;
         }
 
-        //dd($sentence, 'SENTENCE');
+        StdOut::pprint($sentence, 'SENTENCE');
 
         try {
             $ok = DB::statement($sentence);
         } catch (\Exception $e){
-            dd($e, 'Sql Exception');
+            dd($e->getMessage(), 'Sql Exception');
+
+            if ($stop_if_error){
+                exit(1);
+            }
         }
     }    
 }

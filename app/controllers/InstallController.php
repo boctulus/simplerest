@@ -22,9 +22,13 @@ class InstallController extends ConsoleController
             "is_active" => 1
         ];
 
+        if (DB::table('users')->where($data)->exists()){
+            return;
+        }
+
         DB::transaction(function() use($data) {
             $uid = DB::table('users')->insert($data);
-    
+
             table('user_roles')->insert([
                 "user_id" => $uid,
                 "role_id" => 10000  // deberia usando el Acl() entregar el role_id del rol mas alto en la jerarquia
@@ -42,20 +46,21 @@ class InstallController extends ConsoleController
     private function install()
     {    
         Schema::disableForeignKeyConstraints();
-        
-        $res = System::com('migrations migrate');
-        print_r($res);
+
+        $commands = [
+            'migrations fresh --to=main --force',
+            'migrations migrate',
+            'make model all --from:main',
+            'make schema all -f --from:main',
+            'make acl'
+        ];
+
+        foreach ($commands as $cmd){
+            $res = System::com($cmd);
+            print_r($res);
+        }
         
         Schema::enableForeignKeyConstraints();
-
-        $res = System::com("make model all --from:main");
-        print_r($res);
-
-        $res = System::com("make schema all -f --from:main");
-        print_r($res);
-
-        $res = System::com("make acl");
-        print_r($res);
 
         $this->create_first_user();
     }
