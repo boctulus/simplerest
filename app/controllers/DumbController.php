@@ -12025,4 +12025,25 @@ class DumbController extends Controller
         );  
     }
 
+    function test_2json(){
+        $arr = array (
+            'fname' => 'Hello',
+            'lname' => 'Fintz',
+            'email' => 'he.llo00_fintz@gmail.com',
+            'phone' => '10000000',
+            'input_channel_id' => '9',
+            'source_id' => '4',
+            'interest_type_id' => '3',
+            'project_id' => '540',
+            'extra_fields' => 
+              array (
+                'presupuesto' => 'De $2,000,000 a $3,000,000',
+              ),
+        );
+
+        dd(json_encode($arr, JSON_PRETTY_PRINT));
+          
+    }
+
+
 }   // end class
