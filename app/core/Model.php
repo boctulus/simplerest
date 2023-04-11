@@ -14,7 +14,7 @@ use simplerest\core\exceptions\SqlException;
 use simplerest\core\interfaces\ITransformer;
 use simplerest\core\traits\ExceptionHandler;
 use simplerest\core\exceptions\InvalidValidationException;
-
+             
 class Model {
 	use ExceptionHandler;
 
