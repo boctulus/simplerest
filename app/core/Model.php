@@ -4,7 +4,6 @@ namespace simplerest\core;
 
 use simplerest\core\libs\DB;
 use simplerest\core\Paginator;
-use simplerest\core\libs\Files;
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
@@ -15,8 +14,6 @@ use simplerest\core\exceptions\SqlException;
 use simplerest\core\interfaces\ITransformer;
 use simplerest\core\traits\ExceptionHandler;
 use simplerest\core\exceptions\InvalidValidationException;
-
-use function GuzzleHttp\default_ca_bundle;
 
 class Model {
 	use ExceptionHandler;
@@ -725,9 +722,17 @@ class Model {
 			$this_alias = $matches[2];
 		}
 
-		$on_replace = function(string &$on) use ($this_alias, $table)
+		$on_replace = function(&$on) use ($this_alias, $table)
 		{	
+			if (empty($on)){
+				throw new \InvalidArgumentException("Paramter 1 in on_replace can not be null or empty");
+			}
+
 			$_on = explode('.', $on);
+
+			if (count($_on) != 2){
+				throw new \InvalidArgumentException("Paramter 1 format in on_replace is not well-formatted.");
+			}
 			
 			if (isset($this->table_alias[$this->table_name])){
 				if ($_on[0] ==  $this->table_name){
@@ -1715,9 +1720,12 @@ class Model {
 		return $this->_dd($this->toSql(), $this->getBindings());
 	}
 
-	// Debug last query
 	function getLog(bool $sql_formatter = false){		
 		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formatter;
+
+		if ($this->last_operation == 'create'){
+			return $this->last_compiled_sql;
+		}
 
 		return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
 	}
@@ -3095,11 +3103,19 @@ class Model {
 			} 
 		}
 		
-		$symbols  = array_map(function(string $e){
+		$symbols  = array_map(function(?string $e = null){
+			if ($e === null){
+				$e = '';
+			}
+
 			return ':'.$e;
 		}, $vars);
 
-		$q_marks  = array_map(function(string $e){
+		$q_marks  = array_map(function(?string $e = null){
+			if ($e === null){
+				$e = '';
+			}
+			
 			return "'$e'";
 		}, $vals);
 
@@ -3221,7 +3237,7 @@ class Model {
 					DB::rollback();
 
 					if (config()['debug']){
-						$msg = "Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog() . " - values : [$val_str]";
+						$msg = "Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog();
 					} else {
 						$msg = 'Error inserting data';
 					}

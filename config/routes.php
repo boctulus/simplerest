@@ -3,8 +3,15 @@
 use simplerest\core\Route;
 use simplerest\libs\Debug;
 use simplerest\core\libs\Mail;
+use simplerest\core\libs\Files;
 
 $route = Route::getInstance();
+
+Route::post('api/v1/save_demo', function(){
+	$req = request()->as_array()->getBody();
+	
+	Files::dump($req);
+});
 
 Route::get('hello', function(){
 	return "Hellooooo";
