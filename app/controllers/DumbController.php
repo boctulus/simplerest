@@ -34,7 +34,7 @@ use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
 use simplerest\core\libs\Strings;
 
-use simplerest\core\libs\Dyslexia;
+use simplerest\core\libs\Xml;
 
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
@@ -12025,24 +12025,21 @@ class DumbController extends Controller
         );  
     }
 
-    function test_2json(){
-        $arr = array (
-            'fname' => 'Hello',
-            'lname' => 'Fintz',
-            'email' => 'he.llo00_fintz@gmail.com',
-            'phone' => '10000000',
-            'input_channel_id' => '9',
-            'source_id' => '4',
-            'interest_type_id' => '3',
-            'project_id' => '540',
-            'extra_fields' => 
-              array (
-                'presupuesto' => 'De $2,000,000 a $3,000,000',
-              ),
-        );
 
-        dd(json_encode($arr, JSON_PRETTY_PRINT));
-          
+    function test_xml_to_arr(){
+        $str = "<?xml version='1.0'?> 
+        <document>
+        <title>Forty What?</title>
+        <from>Joe</from>
+        <to>Jane</to>
+        <body>
+        I know that's the answer -- but what's the question?
+        </body>
+        </document>";
+        
+        dd(
+            Xml::toArray($str)
+        );
     }
 
 
