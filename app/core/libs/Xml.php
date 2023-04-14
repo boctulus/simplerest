@@ -2,7 +2,7 @@
 
 namespace simplerest\core\libs;
 
-class Xml
+class XML
 {
     static function toArray(string $xml){
         $xml = trim($xml);

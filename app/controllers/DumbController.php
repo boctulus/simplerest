@@ -12038,7 +12038,7 @@ class DumbController extends Controller
         </document>";
         
         dd(
-            Xml::toArray($str)
+            XML::toArray($str)
         );
     }
 
