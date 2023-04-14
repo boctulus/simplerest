@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
 
-class Html
+class HTML
 {
     /*
         https://stackoverflow.com/a/7131156/980631
