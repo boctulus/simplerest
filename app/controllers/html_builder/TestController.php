@@ -22,23 +22,23 @@ class TestController extends MyController
 
     function index()
     {   
-        $json  = file_get_contents(ETC_PATH . 'countries_states.json');
+        // $json  = file_get_contents(ETC_PATH . 'countries_states.json');
 
-        css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
-        css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
+        // css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
+        // css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
 
-        js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
+        // js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
 
-        view('select2/diagnosticojournal.php', [
-            'json' => $json
-        ], 'templates/tpl_basic.php');              
+        // view('select2/diagnosticojournal.php', [
+        //     'json' => $json
+        // ], 'templates/tpl_basic.php');              
         
 
-        // Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
-        // $html = tag('inputText')->value(microtime());
+        $html = tag('inputText')->value(microtime());
         
-        // return $html->render();
+        return $html->render();
     }
 
     function t2(){
