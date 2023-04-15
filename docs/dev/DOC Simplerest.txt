@@ -3751,7 +3751,7 @@ Ej:
 
 # La clase ValidationRules
 
-El framework posee una sintaxis fluida para las reglas de validacion aunque su uso con modelos probablemente no tenga sentido dado que los schemas son auto-generados y tampoco tendria mayor sentido pisar todas las reglas ni siquiera para un campo concreto.
+El framework posee una sintaxis fluida para las reglas de validacion. Basicamente te permite construir las reglas con metodos encadenados.
 
 	$rules = addRules((new ValidationRules())
 		->field('id')->type('int')->required()
@@ -3762,7 +3762,8 @@ El framework posee una sintaxis fluida para las reglas de validacion aunque su u
 		->field('is_active')->type('bool', 'Value should be 0 or 1')
 	)->getRules();
 
-<-- posiblemente seria depredicado
+
+Su uso con modelos probablemente no tenga sentido dado que los schemas son auto-generados y tampoco tendria mayor sentido pisar todas las reglas ni siquiera para un campo concreto. Solo tiene sentido para usar el validador fuera del modelo.
 
 
 ### El helper db
