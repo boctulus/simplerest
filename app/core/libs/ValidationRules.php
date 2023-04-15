@@ -2,6 +2,10 @@
 
 namespace simplerest\core\libs;
 
+/*
+	@author Pablo Bozzolo
+*/
+
 class ValidationRules
 {
 	protected $rules = [];
