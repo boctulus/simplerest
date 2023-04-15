@@ -14,12 +14,13 @@ use simplerest\core\Request;
 
 use simplerest\core\libs\Env;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\Xml;
 use simplerest\core\Container;
 use simplerest\core\libs\Date;
-use simplerest\core\libs\Mail;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
 use simplerest\core\Paginator;
@@ -29,12 +30,11 @@ use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
+
 use simplerest\core\libs\System;
-
 use simplerest\core\libs\Update;
-use simplerest\core\libs\Strings;
 
-use simplerest\core\libs\Xml;
+use simplerest\core\libs\Strings;
 
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
@@ -68,21 +68,22 @@ use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
+use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
-use simplerest\controllers\api\TblPersona;
 
+use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
-use simplerest\core\libs\PostmanGenerator;
 
+use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
-use simplerest\core\controllers\MakeControllerBase;
 
+use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
@@ -841,6 +842,37 @@ class DumbController extends Controller
 
         $v = new Validator;
 
+        if ($v->validate($data, $rules /*, $fillables */)){
+            dd('Valido');
+        } else {
+           dd($v->getErrors(), 'Errores de validacion');
+        } 
+    }
+
+    function test_validator_rules(){
+        $data = [
+            "fname" => "Tomas Juan",
+            "lname" => "Cruz",
+            "email" => "cruz_t@gmail.com",
+            "input_channel_id" => 8,
+            "is_active" => 2,
+            "extra_fields" => [
+                "rango_de_presupuesto" => "2M-3M"
+            ]            
+        ];
+    
+        $rules = (new ValidationRules())
+            ->field('fname')->type('alpha')->required()->min(4)
+            ->field('lname')->type('alpha')->required()->min(2)->max(100)
+            ->field('email')->type('email')->required()
+            ->field('input_channel_id')->type('int')->required()
+            // ...
+            ->field('is_active')->type('bool', 'Value should be 0 or 1')
+
+        ->getRules();
+    
+        $v = new Validator;
+    
         if ($v->validate($data, $rules /*, $fillables */)){
             dd('Valido');
         } else {

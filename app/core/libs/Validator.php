@@ -46,10 +46,10 @@ class Validator implements IValidator
 	// default rules
 	static function loadDefinitions(){
 		static::$rules = [ 
-			'bool' => function($value) {
+			'boolean' => function($value) {
 				return $value == 0 || $value == 1;
 			},
-			'int' => function($value) {
+			'integer' => function($value) {
 				return preg_match('/^(-?[0-9]+)+$/',trim($value)) == 1;
 			},
 			'float' => function($value) {
@@ -59,9 +59,6 @@ class Validator implements IValidator
 			'number' => function($value) {
 				$value = trim($value);
 				return ctype_digit($value) || is_numeric($value);
-			},
-			'str' => function($value) {
-				return is_string($value);
 			},
 			'string' => function($value) {
 				return is_string($value);
@@ -93,9 +90,6 @@ class Validator implements IValidator
 			'alpha_spaces_utf8' => function($value) {                                   
 				return (preg_match('/^[\pL\pM\p{Zs}]+$/u',$value) == 1); 		
 			},
-			'notnum' => function($value) {
-				return preg_match('/[0-9]+/',$value) == 0;
-			},
 			'email' => function($value) {
 				return filter_var($value, FILTER_VALIDATE_EMAIL);
 			},
@@ -116,11 +110,22 @@ class Validator implements IValidator
 			},			
 			'datetime' => function($value) {
 				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$value)== 1;
-			},
-			'timestamp' => function($value) {
-				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$value)== 1;
 			}
 		];		
+
+		/*
+			Alias
+		*/
+
+		static::$rule_types['int']           = static::$rule_types['integer'];
+		static::$rule_types['num']           = static::$rule_types['number'];
+		static::$rule_types['numeric']       = static::$rule_types['number'];
+		static::$rule_types['not-number']    = !static::$rule_types['number'];
+		static::$rule_types['not-num']       = !static::$rule_types['number'];
+		static::$rule_types['not-numeric']   = !static::$rule_types['number'];
+		static::$rule_types['bool']          = static::$rule_types['boolean'];
+		static::$rule_types['str']           = static::$rule_types['string'];
+		static::$rule_types['timestamp']     = static::$rule_types['datetime'];
 		
 		static::$rule_types = array_keys(static::$rules);
 	}
