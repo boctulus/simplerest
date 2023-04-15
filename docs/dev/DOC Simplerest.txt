@@ -3527,20 +3527,38 @@ La salida en caso de fracaso es un array conteniendo las reglas rotas para cada 
 
 Los tipos (type) admitidos son:
 
-bool
-int
-float
 number
+not-number
+boolean
+integer
+float
 decimal(n,m)
+
 string
-alpha
-notnum
+alpha_spaces
+alpha_dash
+alpha_num
+alpha_num_dash
+alpha_utf8
+alpha_num_utf8
+alpha_dash_utf8
+alpha_spaces_utf8
+
 email
+url
+domain
+mac
+
 date
-datetime (compatible con DATETIME de SQL)
 time
+datetime (compatible con DATETIME de SQL)
+timestamp
+
 array
 regex:/expresión/
+
+
+Nota:
 
 El tipo 'time' es 'H:i:s' y el 'date' es 'd-m-Y' aunque siempre es posible crear un tipo personalizado con una expresión regular que se ajuste a las necesidades.
 
