@@ -3753,17 +3753,81 @@ Ej:
 
 El framework posee una sintaxis fluida para las reglas de validacion. Basicamente te permite construir las reglas con metodos encadenados.
 
-	$rules = addRules((new ValidationRules())
+	$rules = (new ValidationRules())
 		->field('id')->type('int')->required()
 		->field('name')->type('str')->max(40)->min(3)
 		->field('description')->type('str')->max(50)
 		->field('size')->type('str')->max(20)
 		->field('workspace')->type('str')->max(20)
 		->field('is_active')->type('bool', 'Value should be 0 or 1')
-	)->getRules();
-
+	->getRules();
 
 Su uso con modelos probablemente no tenga sentido dado que los schemas son auto-generados y tampoco tendria mayor sentido pisar todas las reglas ni siquiera para un campo concreto. Solo tiene sentido para usar el validador fuera del modelo.
+
+Para explicar su uso consideremos este codigo:
+
+	$data = [
+		"fname" => "Tomas",
+		"lname" => "Cruz",
+		"email" => "cruz_t@gmail.com",
+		"input_channel_id" => 8,
+		"source_id" => 2,
+		"interest_type_id" => 4,
+		"project_id" => 540,
+		"extra_fields" => [
+			"rango_de_presupuesto" => "2M-3M"
+		]            
+	];
+
+	$rules = [
+		'fname' 			=> ['type'=>'alpha','required'=>true,'min'=>3],
+		'lname' 			=> ['type'=>'alpha','required'=>true,'min'=>2,'max'=>100],
+		'email' 			=> ['type'=>'email','required'=>true], 
+		'input_channel_id'  => ['type'=>'int',  'required'=>true,'min'=>0],
+		'source_id'         => ['type'=>'int',  'required'=>true,'min'=>0],
+		'interest_type_id'  => ['type'=>'int',  'required'=>true,'min'=>0],
+		'project_id'        => ['type'=>'int',  'required'=>true,'min'=>0],
+		'extra_fields' 	    => ['type'=>'array','min'=>1],
+	];
+
+	$v = new Validator;
+
+	if ($v->validate($data, $rules /*, $fillables */)){
+		dd('Valido');
+	} else {
+	   dd($v->getErrors(), 'Errores de validacion');
+	} 
+
+Ahora nos evitaremos escribir las reglas como array pudiendo usar la sintaxis de metodos encadenados:
+
+	$data = [
+		"fname" => "Tomas",
+		"lname" => "Cruz",
+		"email" => "cruz_t@gmail.com",
+		"input_channel_id" => 8,
+		"source_id" => 2,
+		"interest_type_id" => 4,
+		"project_id" => 540,
+		"extra_fields" => [
+			"rango_de_presupuesto" => "2M-3M"
+		]            
+	];
+
+	$rules = (new ValidationRules())
+		->field('fname')->type('alpha')->required()->min(4)
+		->field('lname')->type('alpha')->required()->min(2)->max(100)
+		->field('email')->type('email')->required()
+		->field('input_channel_id')->type('int')->required()
+		// ...
+	->getRules();
+
+	$v = new Validator;
+
+	if ($v->validate($data, $rules /*, $fillables */)){
+		dd('Valido');
+	} else {
+	   dd($v->getErrors(), 'Errores de validacion');
+	} 
 
 
 ### El helper db
