@@ -4,6 +4,17 @@ namespace simplerest\core\libs;
 
 class OneSignal
 {
+    static function getClient(){
+        return (new ApiClient())
+        ->setHeaders([             
+            'Content-Type: application/json',
+            'Authorization: Basic ' . config()['app_rest_api_key']
+        ])->setOptions([
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false
+        ]);
+    }
+
     static function send($config) {
         if (!sizeof($config)) {  
             return null;
@@ -74,17 +85,11 @@ class OneSignal
             $fields['data'] = $extra_data;
         }
 
-        $response = Url::consumeApi("https://onesignal.com/api/v1/notifications", 'POST', $fields, 
-            [             
-                'Content-Type: application/json',
-                'Authorization: Basic ' . $config['app_rest_api_key']
-            ],  
-            
-            [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => false
-            ]
-        );
+        $response = static::getClient()
+        ->url("https://onesignal.com/api/v1/notifications")
+        ->setBody($fields)
+        ->post()
+        ->getResponse();
         
         return $response;
     } 
@@ -100,17 +105,11 @@ class OneSignal
             $fields['included_segments'] = $config['segments'];
         }
 
-        $response = Url::consumeApi("https://onesignal.com/api/v1/players", 'POST', $fields,
-            [             
-                'Content-Type: application/json',
-                'Authorization: Basic ' . $config['app_rest_api_key']
-            ],  
-            
-            [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => false
-            ]
-        );
+        $response = static::getClient()
+        ->url("https://onesignal.com/api/v1/players")
+        ->setBody($fields)
+        ->post()
+        ->getResponse();
         
        return $response;        
     }
@@ -118,18 +117,11 @@ class OneSignal
     // get overview
     static function app(Array $config) 
     {
-        $response = Url::consumeApi("https://onesignal.com/api/v1/apps/{$config['app_id']}", 'GET', null, 
-            [             
-                'Content-Type: application/json',
-                'Authorization: Basic ' . $config['app_rest_api_key']
-            ],  
-            
-            [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => false
-            ]
-        );
-    
+        $response = static::getClient()
+        ->url("https://onesignal.com/api/v1/apps/{$config['app_id']}")
+        ->get()
+        ->getResponse();
+        
         return $response;
     }
 
@@ -137,42 +129,22 @@ class OneSignal
         $limit  = 50;
         $offset = 0;
 
-        $response = Url::consumeApi("https://onesignal.com/api/v1/players?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
-            [             
-                'Content-Type: application/json',
-                'Authorization: Basic ' . $config['app_rest_api_key']
-            ],  
-            
-            [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => false
-            ]
-        );
-
+        $response = static::getClient()
+        ->url("https://onesignal.com/api/v1/players?app_id={$config['app_id']}&limit=$limit&offset=$offset")
+        ->get()
+        ->getResponse();
         
         return $response;
     }
 
     static function getNotifications($config, $limit = 50, $offset = 0)
     {
-        $response = Url::consumeApi("https://onesignal.com/api/v1/notifications?app_id={$config['app_id']}&limit=$limit&offset=$offset", 'GET', null, 
-            [             
-                'Content-Type: application/json',
-                'Authorization: Basic ' . $config['app_rest_api_key']
-            ],  
-            
-            [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HEADER => false
-            ]
-        );
-
+        $response = static::getClient()
+        ->url("https://onesignal.com/api/v1/notifications?app_id={$config['app_id']}&limit=$limit&offset=$offset")
+        ->get()
+        ->getResponse();
         
         return $response;
     }
-
-
-
-    
 }
 

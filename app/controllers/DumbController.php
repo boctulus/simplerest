@@ -8529,7 +8529,7 @@ class DumbController extends Controller
 
     function test_refl()
     {
-        d(Reflector::getConstructor(\simplerest\libs\Foo2::class));
+        d(Reflector::getConstructor(\simplerest\core\libs\ApiClient::class));
     }
 
     // function test_container()
