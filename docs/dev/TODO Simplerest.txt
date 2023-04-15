@@ -1697,6 +1697,37 @@ En CI4:
 Ver "Validation Placeholders"
 https://codeigniter.com/user_guide/models/model.html#validation-placeholders
 
+
+- En ValidationRules
+
+Ademas de,......
+
+  $rules = (new ValidationRules())
+  ->field('fname')->type('alpha')->required()->min(4)
+  ->field('lname')->type('alpha')->required()->min(2)->max(100)
+  ->field('email')->type('email')->required()
+  ->field('input_channel_id')->type('int')->required()
+  // ...
+  ->getRules();
+
+Admitir:
+
+  $rules = (new ValidationRules())
+  ->field('fname')->alpha()->required()->min(4)
+  ->field('lname')->alpha()->required()->min(2)->max(100)
+  ->field('email')->email()->required()
+  ->field('input_channel_id')->int()->required()
+  // ...
+  ->getRules();
+
+
+Donde los metodos int(), string(), email() son dinamicos basados en las reglas existentes implementado con metodos magicos como sucede con el el HTML builder.
+
+Ademas Implementar
+  
+  not()
+  when()
+
 --
 
 [ Model ]
