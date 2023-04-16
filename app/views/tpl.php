@@ -39,7 +39,7 @@
     <script src="<?= asset('js/login.js') ?>"></script>
 
     <!-- ICONOS FONTAWESOME -->
-    <script src="https://kit.fontawesome.com/3f60db90e4.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous"></script>
     
     <!-- TEMPLATE ADMIN LTE -->
 
