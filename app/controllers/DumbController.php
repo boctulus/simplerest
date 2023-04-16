@@ -34,33 +34,34 @@ use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
 
-use simplerest\core\libs\Strings;
+use simplerest\core\libs\Logger;
 
+use simplerest\core\libs\Strings;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
 use simplerest\models\az\BarModel;
-use Endroid\QrCode\Builder\Builder;
 
+use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
+
 use simplerest\core\libs\Validator;
 
 use Endroid\QrCode\Writer\PngWriter;
-
 use simplerest\core\libs\GoogleMaps;
+
 use simplerest\core\libs\Obfuscator;
-
 use simplerest\core\libs\SendinBlue;
-use simplerest\core\libs\Supervisor;
 
+use simplerest\core\libs\Supervisor;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
+
 use simplerest\core\libs\i18n\POParser;
 
 use simplerest\libs\scrapers\Curiosite;
-
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
@@ -69,20 +70,20 @@ use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\ValidationRules;
-use PhpParser\Node\Scalar\MagicConst\File;
 
+use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
-use simplerest\core\libs\HtmlBuilder\Html;
 
+use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\libs\scrapers\LeroyMerlinScraper;
 
+use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
@@ -103,6 +104,20 @@ class DumbController extends Controller
 
     function info(){
         phpinfo();
+    }
+
+    function test_dd()
+    {
+        //show_debug_trace();
+        //hide_debug_response();
+
+        dd([4, 5, 7], "My Array", true);
+        dd('hola!', null, true);
+        dd(677.55, 'x');
+        dd(true, 'My bool');
+
+        // titulo al final
+        dd([4, 5, 7], "My Array", true, false);
     }
 
     function is_expired(){
@@ -146,23 +161,18 @@ class DumbController extends Controller
 
     function test_logger()
     {
-        Files::logger('Holaaa mundo');
-        Files::logger('R.I.P.');
+        Logger::log('Holaaa mundo');
+        Logger::log('R.I.P.');
 
-        Files::logger([
+        Logger::log([
             'x' => 'y'
         ], ETC_PATH . 'some_file.txt');
     }
 
-    function test_dd()
-    {
-        //show_debug_trace();
-        //hide_debug_response();
-
-        dd([4, 5, 7], "My Array", true);
-        dd('hola!', null, true);
-        dd(677.55, 'x');
-        dd(true, 'My bool');
+    function test_truncate(){
+        Logger::truncate();
+        
+        dd(Logger::getContent(), Logger::getLogFilename(true), true, false);
     }
 
     function test_fsockopen(){
@@ -206,14 +216,14 @@ class DumbController extends Controller
         $queue->enqueue('c');
 
         // shift
-        d($queue->dequeue());
+        dd($queue->dequeue());
 
         // lista elementos
         foreach ($queue as $item) {
-            d($item);
+            dd($item);
         }
 
-        //d($queue);
+        //dd($queue);
     }
 
     // ok
@@ -1022,7 +1032,7 @@ class DumbController extends Controller
             'digital_id' => 1
         ]);
 
-        d($m->debug(), 'SQL');
+        dd($m->debug(), 'SQL');
 
         return $id;
     }
@@ -2461,9 +2471,9 @@ class DumbController extends Controller
             ->delete();
 
         $sql = $m->getLog();
-        d($sql, 'SQL');
+        dd($sql, 'SQL');
 
-        d(DB::statement($sql), 'AFFECTED ROWS');
+        dd(DB::statement($sql), 'AFFECTED ROWS');
     }
 
 
@@ -2477,9 +2487,9 @@ class DumbController extends Controller
             ->delete();
 
         $sql = $m->getLog();
-        d($sql, 'SQL');
+        dd($sql, 'SQL');
 
-        d(DB::statement($sql), 'AFFECTED ROWS');
+        dd(DB::statement($sql), 'AFFECTED ROWS');
     }
 
     function where_raw_where_in2()
@@ -2502,7 +2512,7 @@ class DumbController extends Controller
         $sql = $m->dd();
         dd($sql);
 
-        d(DB::statement($sql));
+        dd(DB::statement($sql));
     }
 
     function when()
@@ -2734,25 +2744,25 @@ class DumbController extends Controller
             ->whereDate('created_at', '2021-12-29')
             ->get();
 
-        d($facturas);
+        dd($facturas);
 
         $facturas = DB::table('facturas')
             ->whereDate('created_at', '2021-12-29 19:42:08')
             ->get();
 
-        d($facturas);
+        dd($facturas);
 
         $testx   = DB::table('testx')
             ->whereDate('fecha', '2022-01-12')
             ->get();
 
-        d($testx);
+        dd($testx);
 
         $testx   = DB::table('testx')
             ->whereDate('fecha', '2022-01-12 20:10:18')
             ->get();
 
-        d($testx);
+        dd($testx);
     }
 
     function test_where_date2()
@@ -2761,7 +2771,7 @@ class DumbController extends Controller
             ->whereDate('created_at', '2021-12-29', '>')
             ->get();
 
-        d($facturas);
+        dd($facturas);
     }
 
     function test_where_date3()
@@ -2770,7 +2780,7 @@ class DumbController extends Controller
             ->whereDate('fecha', '2022-01-12', '>')
             ->get();
 
-        d($testx);
+        dd($testx);
     }
 
     /*
@@ -3616,7 +3626,7 @@ class DumbController extends Controller
 
     function get_userdata()
     {
-        //d(auth()->uid());
+        //dd(auth()->uid());
 
         $data = [];
         $data['email'] = 'xxx@g.com';
@@ -3630,7 +3640,7 @@ class DumbController extends Controller
             ->where([$u::$email => $data['email']])
             ->first();
 
-        d($userdata);
+        dd($userdata);
     }
 
     function get_userdata2()
@@ -3651,8 +3661,8 @@ class DumbController extends Controller
             ->find($uid)
             ->first();
 
-        d($userdata);
-        d($m->dd());
+        dd($userdata);
+        dd($m->dd());
     }
 
     function get_user($id)
@@ -3721,7 +3731,7 @@ class DumbController extends Controller
             ->find(145)
             ->first();
 
-        d($p);
+        dd($p);
     }
 
     function create_user($username, $email, $password, $firstname, $lastname)
@@ -3764,7 +3774,7 @@ class DumbController extends Controller
     {
         DB::getConnection('az');
         
-        d(
+        dd(
             DB::table('products')
             ->findOrFail(1199)
             ->first() 
@@ -3775,7 +3785,7 @@ class DumbController extends Controller
     {
         DB::getConnection('az');
         
-        d(
+        dd(
             DB::table('products')
             ->findOr(11999, function($id) {
                 die("No existe el registro con id = $id");
@@ -3787,7 +3797,7 @@ class DumbController extends Controller
 
     function test_update_or_fail()
     {
-        d(
+        dd(
             DB::table('products')
             ->updateOrFail(['description' => 'abc'])
         );
@@ -3822,8 +3832,8 @@ class DumbController extends Controller
             'Hola!<p/>Esto es una más <b>prueba</b> con el server de JuamMa<p/>Chau'
         );
 
-        d(Mail::errors(), 'Error');
-        d(Mail::status(), 'Status');
+        dd(Mail::errors(), 'Error');
+        dd(Mail::status(), 'Status');
     }
 
     function sender_o()
@@ -3858,8 +3868,8 @@ class DumbController extends Controller
             // ]
         );
 
-        d(Mail::errors(), 'Error');
-        d(Mail::status(), 'Status');
+        dd(Mail::errors(), 'Error');
+        dd(Mail::status(), 'Status');
     }
 
     // function sender_v8(){
@@ -4820,7 +4830,7 @@ class DumbController extends Controller
         }, 1);
 
         //dd("Time: $t ms");
-        Files::logger("Time(show) : $t ms");
+        Logger::log("Time(show) : $t ms");
     }
 
     function speed_list()
@@ -4840,7 +4850,7 @@ class DumbController extends Controller
         }, 1);
 
         //dd("Time: $t ms");
-        Files::logger("Time(list) : $t ms");
+        Logger::log("Time(list) : $t ms");
     }
 
     function get_bulk()
@@ -4876,11 +4886,11 @@ class DumbController extends Controller
         }
 
         foreach ($t1a as $t1) {
-            Files::logger("Time(list) : $t1 ms");
+            Logger::log("Time(list) : $t1 ms");
         }
 
         foreach ($t2a as $t2) {
-            Files::logger("Time(show) : $t2 ms");;
+            Logger::log("Time(show) : $t2 ms");;
         }
     }
 
@@ -5092,8 +5102,8 @@ class DumbController extends Controller
             Debugging
         */
 
-        d($sc->getSchema(), 'SCHEMA');
-        d($sc->dd(true), 'SQL');
+        dd($sc->getSchema(), 'SCHEMA');
+        dd($sc->dd(true), 'SQL');
     }
 
     function has_table()
@@ -5457,7 +5467,7 @@ class DumbController extends Controller
 
         // $data  = $res['data'];
         // $final = $data[count($data) - 1];
-        // d($final[1], "DOLAR/COP (TRM) - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
+        // dd($final[1], "DOLAR/COP (TRM) - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
     }
 
 
@@ -5489,7 +5499,7 @@ class DumbController extends Controller
 
         $copeur = $copusd * $rate;
 
-        d($copeur, "EUR/COP - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
+        dd($copeur, "EUR/COP - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
     }
 
     function swap()
@@ -5510,7 +5520,7 @@ class DumbController extends Controller
         $rate = $swap->latest('EUR/USD');
 
         // 1.129
-        d($rate->getValue(), 'EUR/USD');
+        dd($rate->getValue(), 'EUR/USD');
 
         // 2016-08-26
         $rate->getDate()->format('Y-m-d');
@@ -5736,19 +5746,19 @@ class DumbController extends Controller
 
     function get_pks()
     {
-        d(Schema::getPKs('boletas'));
+        dd(Schema::getPKs('boletas'));
     }
 
     function get_db()
     {
-        d(Schema::getCurrentDatabase());
+        dd(Schema::getCurrentDatabase());
     }
 
     function get_autoinc()
     {
-        d(Schema::getAutoIncrement('book_reviews'));
-        d(Schema::getAutoIncrement('bar'));
-        d(Schema::hasAutoIncrement('bar'));
+        dd(Schema::getAutoIncrement('book_reviews'));
+        dd(Schema::getAutoIncrement('bar'));
+        dd(Schema::hasAutoIncrement('bar'));
     }
 
     function test_alter_table()
@@ -5770,8 +5780,8 @@ class DumbController extends Controller
         $sc->dontExec();
         $sc->alter();
 
-        d($sc->getSchema(), 'SCHEMA');
-        d($sc->dd(), 'SQL');
+        dd($sc->getSchema(), 'SCHEMA');
+        dd($sc->dd(), 'SQL');
     }
 
     function test_alter_table2()
@@ -5786,8 +5796,8 @@ class DumbController extends Controller
         $sc->dontExec();
         $sc->alter();
 
-        d($sc->getSchema(), 'SCHEMA');
-        d($sc->dd(true), 'SQL');
+        dd($sc->getSchema(), 'SCHEMA');
+        dd($sc->dd(true), 'SQL');
     }
 
     function test_alter_table3()
@@ -5801,8 +5811,8 @@ class DumbController extends Controller
         //$sc->dontExec();
         $sc->alter();
 
-        d($sc->getSchema(), 'SCHEMA');
-        d($sc->dd(true), 'SQL');
+        dd($sc->getSchema(), 'SCHEMA');
+        dd($sc->dd(true), 'SQL');
     }
 
     function test_alter_table4()
@@ -5818,8 +5828,8 @@ class DumbController extends Controller
 
     function get_auto_field()
     {
-        d(Schema::getAutoIncrementField('book_reviews'));
-        d(Schema::getAutoIncrementField('bar'));
+        dd(Schema::getAutoIncrementField('book_reviews'));
+        dd(Schema::getAutoIncrementField('bar'));
     }
 
     function mk()
@@ -5979,7 +5989,7 @@ class DumbController extends Controller
         $id = $m->create($data);
 
         dd($id);
-        d($m->getLog());
+        dd($m->getLog());
     }
 
     /*
@@ -6042,7 +6052,7 @@ class DumbController extends Controller
             ->insert($data, false, false);
 
         dd($id);
-        d($m->getLog());
+        dd($m->getLog());
     }
 
     /*
@@ -6086,7 +6096,7 @@ class DumbController extends Controller
             ->insert($data, false, false);
 
         dd($id);
-        d($m->getLog());
+        dd($m->getLog());
     }
 
     /*
@@ -6140,7 +6150,7 @@ class DumbController extends Controller
         $mbr = DB::table('product_valoraciones');
         $ok = $mbr->create($data);
 
-        d($ok, 'Ok?');
+        dd($ok, 'Ok?');
     }
 
     /*
@@ -6293,7 +6303,7 @@ class DumbController extends Controller
         DB::getConnection('db_flor');
 
         $tables = Schema::getTables();
-        d($tables, 'TABLES');
+        dd($tables, 'TABLES');
     }
 
     function drop_all_tables(string $db_conn_id)
@@ -7287,10 +7297,10 @@ class DumbController extends Controller
     function test_match()
     {
         $o = '--name=xYz';
-        d(Strings::match($o, '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/'));
+        dd(Strings::match($o, '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/'));
 
         $o = '--namae=xYz';
-        d(Strings::match($o, [
+        dd(Strings::match($o, [
             '/^--name[=|:]([a-z][a-z0-9A-Z_]+)$/',
             '/^--namae[=|:]([a-z][a-z0-9A-Z_]+)$/',
             '/^--nombre[=|:]([a-z][a-z0-9A-Z_]+)$/'
@@ -7302,10 +7312,10 @@ class DumbController extends Controller
             'removeColumn'
         ]);
 
-        d($dropColumn);
+        dd($dropColumn);
 
         $o = '--renameColumn=aBcK,jU000w';
-        d(Strings::match($o, '/^--renameColumn[=|:]([a-z0-9A-Z_-]+\,[a-z0-9A-Z_-]+)$/'));
+        dd(Strings::match($o, '/^--renameColumn[=|:]([a-z0-9A-Z_-]+\,[a-z0-9A-Z_-]+)$/'));
     }
 
     /*  
@@ -8028,39 +8038,39 @@ class DumbController extends Controller
     function test_at()
     {
         for ($i = 0; $i < 100000; $i++) {
-            d(at());
+            dd(at());
         }
 
         // esta vez debería ser un valor distinto
-        d(at(false));
+        dd(at(false));
     }
 
     function test_dates()
     {
         //  mes 1-12
-        d(datetime('n'));
+        dd(datetime('n'));
 
         // día 1-31
-        d(datetime('j'));
+        dd(datetime('j'));
 
         // weekday (0-6)
-        d(datetime('w'));
+        dd(datetime('w'));
 
         // hour
-        d(datetime('G'));
+        dd(datetime('G'));
 
         // minutes
-        d((int) datetime('i'));
+        dd((int) datetime('i'));
 
         // seconds
-        d((int) datetime('s'));
+        dd((int) datetime('s'));
     }
 
     function test_next_dates()
     {
-        d(Date::nextYearFirstDay());
-        d(Date::nextMonthFirstDay());
-        d(Date::nextWeek());
+        dd(Date::nextYearFirstDay());
+        dd(Date::nextMonthFirstDay());
+        dd(Date::nextWeek());
     }
 
     function test_get_fk()
@@ -8068,13 +8078,13 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'product_categories';
 
-        d(get_fks($t1, $t2), "FKs $t1 ->  $t2");
+        dd(get_fks($t1, $t2), "FKs $t1 ->  $t2");
 
 
         $t1 = 'tbl_genero';
         $t2 = 'tbl_usuario';
 
-        d(get_fks($t1, $t2, 'db_flor'), "FKs $t1 ->  $t2");
+        dd(get_fks($t1, $t2, 'db_flor'), "FKs $t1 ->  $t2");
     }
 
     function test_zip()
@@ -8118,7 +8128,7 @@ class DumbController extends Controller
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET SESSION sql_mode="TRADITIONAL"'
         ];
 
-        d($pdo_opt, 'PDO OPTIONS');
+        dd($pdo_opt, 'PDO OPTIONS');
 
         $conn = new \PDO(
             $dsn,
@@ -8138,7 +8148,7 @@ class DumbController extends Controller
         $stmt = $conn->prepare($sql);
         $res = $stmt->execute();
 
-        d($res, 'RES');
+        dd($res, 'RES');
     }
 
     function test_file_exits()
@@ -8192,14 +8202,14 @@ class DumbController extends Controller
 
     function test_last_update_dir()
     {
-        d(Update::getLastVersionInDirectories());
+        dd(Update::getLastVersionInDirectories());
     }
 
     function test_100()
     {
         $q = "SELECT * FROM products INNER JOIN product_categories as pc ON pc.id_catego=products.category WHERE (pc.name_catego = 'frutas') AND products.deleted_at IS NULL LIMIT 10";
 
-        d(DB::select($q));
+        dd(DB::select($q));
     }
 
     function test_101()
@@ -8207,7 +8217,7 @@ class DumbController extends Controller
         $q = "SELECT * FROM products INNER JOIN product_categories as pc ON pc.id_catego=products.category WHERE (pc.name_catego = ?)
         AND products.deleted_at IS NULL LIMIT ?";
 
-        d(DB::select($q, ['frutas', 10]));
+        dd(DB::select($q, ['frutas', 10]));
     }
 
     function test_102()
@@ -8222,55 +8232,55 @@ class DumbController extends Controller
             ->where($conds)
             ->join('product_categories as pc');
 
-        d($m->dd(true));
+        dd($m->dd(true));
 
         $total = (int) ($m
             ->column()
             ->count()
         );
 
-        d($total, 'total');
+        dd($total, 'total');
     }
 
     function test_update_cmp()
     {
         $v1 = '0.5.0';
         $v2 = '0.6.0';
-        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+        dd(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
 
         $v1 = '0.5.0';
         $v2 = '0.4.0';
-        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+        dd(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
 
         $v1 = '0.5.0-alpha';
         $v2 = '0.4.0';
-        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+        dd(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
 
         $v1 = '0.5.0';
         $v2 = '0.4.0-alpha';
-        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+        dd(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
 
         $v1 = '0.5.0-alpha';
         $v2 = '0.4.0-alpha';
-        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+        dd(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
 
         $v1 = '0.5.0-alpha';
         $v2 = '0.4.0-beta';
-        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+        dd(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
 
         $v1 = '0.5.0-alpha';
         $v2 = '0.5.0-beta';
-        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+        dd(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
 
         $v1 = '0.5.0-beta';
         $v2 = '0.5.0-alpha';
-        d(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
+        dd(Update::compareVersionStrings($v1, $v2), "$v1 respecto de $v2");
     }
 
     function get_random_user()
     {
         DB::getDefaultConnection();
-        d(
+        dd(
             DB::table(get_users_table())
                 ->random()->dd()
         );
@@ -8278,7 +8288,7 @@ class DumbController extends Controller
 
     function get_random_product()
     {
-        d(
+        dd(
             DB::table('products')
                 ->random()->top()
         );
@@ -8286,7 +8296,7 @@ class DumbController extends Controller
 
     function test_390()
     {
-        d(DB::table('super_cool_table')->id());
+        dd(DB::table('super_cool_table')->id());
     }
 
     /*
@@ -8301,8 +8311,8 @@ class DumbController extends Controller
             ->orderBy([$m->createdAt() => 'DESC'])
             ->first();
 
-        d($row);
-        d($m->dd());
+        dd($row);
+        dd($m->dd());
     }
 
     function m()
@@ -8316,11 +8326,11 @@ class DumbController extends Controller
                 ->find(145)
                 ->first();
 
-            d($row, "La row existe");
+            dd($row, "La row existe");
             return;
         }
 
-        d("Row fue borrada.");
+        dd("Row fue borrada.");
     }
 
     function get_prods()
@@ -8351,7 +8361,7 @@ class DumbController extends Controller
 
         $cnt = $m->delete();
 
-        d($cnt, 'regs');
+        dd($cnt, 'regs');
     }  
     
     function test_delete()
@@ -8365,7 +8375,7 @@ class DumbController extends Controller
             ->dontExec()
             ->delete();
 
-        d($m->getLog());
+        dd($m->getLog());
     }
 
     function test_delete_raw()
@@ -8384,11 +8394,11 @@ class DumbController extends Controller
     {
         $m = DB::table('products');
 
-        d($m
+        dd($m
             ->find(145)
             ->trashed());
 
-        d($m->dd());
+        dd($m->dd());
     }
 
     function test_undelete()
@@ -8402,11 +8412,11 @@ class DumbController extends Controller
                 ->find(145)
                 ->first();
 
-            d($row, "La row existe");
+            dd($row, "La row existe");
             return;
         }
 
-        d("Row fue borrada. Intento restaurar");
+        dd("Row fue borrada. Intento restaurar");
 
         $m = DB::table('products');
 
@@ -8414,12 +8424,12 @@ class DumbController extends Controller
             ->find(145)
             ->undelete();
 
-        d($m->getLog());
+        dd($m->getLog());
 
         $row = $m = DB::table('products')
             ->find(145)
             ->first();
-        d($row);
+        dd($row);
     }
 
     function test_force_del()
@@ -8434,7 +8444,7 @@ class DumbController extends Controller
         $m = DB::table('products');
         $cnt = $m->count();
 
-        d($cnt, 'regs');
+        dd($cnt, 'regs');
     }
 
     function get_products_with_trashed()
@@ -8442,7 +8452,7 @@ class DumbController extends Controller
         $m = DB::table('products');
         $cnt = $m->withTrashed()->count();
 
-        d($cnt, 'regs');
+        dd($cnt, 'regs');
     }
 
     function get_products_only_trashed()
@@ -8450,12 +8460,12 @@ class DumbController extends Controller
         $m = DB::table('products');
         $cnt = $m->onlyTrashed()->count();
 
-        d($cnt, 'regs');
+        dd($cnt, 'regs');
     }
 
     function test_103()
     {
-        d(
+        dd(
             DB::table('products')
                 ->leftJoin("product_categories")
                 ->leftJoin("product_tags")
@@ -8466,7 +8476,7 @@ class DumbController extends Controller
 
     function test_104()
     {
-        d(
+        dd(
             DB::table("product_tags")
                 ->where(['product_id', 145])
                 ->get()
@@ -8480,7 +8490,7 @@ class DumbController extends Controller
         // ->whereRaw("product_id = ?", [145])
         // ->delete();            
 
-        d(
+        dd(
             DB::table('product_valoraciones')
                 ->join('valoraciones')
                 ->where(['product_id', 145])
@@ -8492,7 +8502,7 @@ class DumbController extends Controller
     function test_q()
     {
         $sql = file_get_contents(ETC_PATH . 'test.sql');
-        d(DB::select($sql));
+        dd(DB::select($sql));
     }
 
 
@@ -8504,7 +8514,7 @@ class DumbController extends Controller
         // protect spaces
         $literal = str_replace(' ', '-', $literal);
 
-        d(Strings::deinterlace($literal));
+        dd(Strings::deinterlace($literal));
     }
 
     function test_entrelazado()
@@ -8537,14 +8547,14 @@ class DumbController extends Controller
 
     function test_date3()
     {
-        // d(Date::nextNthMonthFirstDay(12));
-        // d(Date::nextNthMonthFirstDay(1));
-        // d(Date::nextNthMonthFirstDay(4));
+        // dd(Date::nextNthMonthFirstDay(12));
+        // dd(Date::nextNthMonthFirstDay(1));
+        // dd(Date::nextNthMonthFirstDay(4));
 
-        // d(Date::nextNthWeekDay(5));
+        // dd(Date::nextNthWeekDay(5));
 
-        d(Date::nextNthMonthDay(5));
-        d(Date::nextNthMonthDay(18));
+        dd(Date::nextNthMonthDay(5));
+        dd(Date::nextNthMonthDay(18));
     }
 
     /*
@@ -8556,12 +8566,12 @@ class DumbController extends Controller
     */
     function __invoke(int $id)
     {
-        d($id);
+        dd($id);
     }
 
     function test_refl()
     {
-        d(Reflector::getConstructor(\simplerest\core\libs\ApiClient::class));
+        dd(Reflector::getConstructor(\simplerest\core\libs\ApiClient::class));
     }
 
     // function test_container()
@@ -8629,7 +8639,7 @@ class DumbController extends Controller
     function some_work()
     {
         for ($i = 1; $i <= rand(5, 10); $i++) {
-            d($i);
+            dd($i);
             sleep(1);
         }
     }
@@ -8648,7 +8658,7 @@ class DumbController extends Controller
         $cmd = 'php com dumb some';
         $pid = System::runInBackground($cmd);
 
-        d($pid, 'pid');
+        dd($pid, 'pid');
     }
 
     function test_supervisor_start()
@@ -8663,7 +8673,7 @@ class DumbController extends Controller
 
     function test_is_job_running()
     {
-        d(Supervisor::isRunning('some.php'));
+        dd(Supervisor::isRunning('some.php'));
     }
 
     function test_dispatch_q1()
@@ -8872,7 +8882,7 @@ class DumbController extends Controller
         // var_dump(Bt5Form::addClass("hide", "hide class1 class3"));
         // var_dump(Bt5Form::addClass("hide", ""));
 
-        // d('');
+        // dd('');
 
         // var_dump(Bt5Form::removeClass("hide", "class1 class2"));
         // var_dump(Bt5Form::removeClass("hide", "hide class1 class2"));
@@ -8905,23 +8915,23 @@ class DumbController extends Controller
         //echo tag('button')->success()->text('Save changes');
 
         //echo tag('closeModal');
-        //    d('--');
+        //    dd('--');
         //    echo '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>';
 
 
-        // d(Form::hasColor("class1 btn-success class2", "success"));
-        // d(Form::hasColor("class1 btn-success class2", "btn-success")); 
-        // d(Form::hasColor("class1 btn-success class2", "danger")); 
-        // d(Form::hasColor("class1 btn-success class2"));
-        // d(Form::hasColor("class1 class2"));        
+        // dd(Form::hasColor("class1 btn-success class2", "success"));
+        // dd(Form::hasColor("class1 btn-success class2", "btn-success")); 
+        // dd(Form::hasColor("class1 btn-success class2", "danger")); 
+        // dd(Form::hasColor("class1 btn-success class2"));
+        // dd(Form::hasColor("class1 class2"));        
 
         //echo tag('button')->text('Save changes');
-        // d('');
+        // dd('');
         //echo tag('basicButton')->class('btn-danger')->class('btn-success')->text('Save changes');
 
         //echo tag('button')->class('btn-danger')->success()->text('Save changes');         
 
-        // d('');
+        // dd('');
 
         //echo tag('closeModal');
 
@@ -9372,7 +9382,7 @@ class DumbController extends Controller
     //     // dd($dim3, 'dim3');
 
     //     $peso_volumetrico = $dim1 * $dim2 * $dim3 * 0.000001;
-    //     //d($peso_volumetrico, 'Peso vol');
+    //     //dd($peso_volumetrico, 'Peso vol');
 
     //     $peso_volumetrico_corregido = $peso_volumetrico * PV;
     //     //dd($peso_volumetrico_corregido, 'Peso vol corregido');
@@ -9440,8 +9450,8 @@ class DumbController extends Controller
     // }
 
     // function test_cotiza(){
-    //     d($this->cotiza(10, 1, 50, 50, 50, 'cm'));
-    //     d($this->cotiza(10, 1, 19.7, 19.7, 19.7, 'pulg'));
+    //     dd($this->cotiza(10, 1, 50, 50, 50, 'cm'));
+    //     dd($this->cotiza(10, 1, 19.7, 19.7, 19.7, 'pulg'));
     // }
 
     function test_format_num(){
@@ -9555,7 +9565,7 @@ class DumbController extends Controller
     function test_remove_comments()
     {
         $file = file_get_contents('/home/www/simplerest/updates/2021-12-20-0.7.0/files/app/core/Container.php');
-        d(Strings::removeMultiLineComments($file));
+        dd(Strings::removeMultiLineComments($file));
     }
 
     function jj()
@@ -9636,13 +9646,13 @@ class DumbController extends Controller
         $ord3 = $ord2 + 1;;
 
         // J
-        // d(chr($ord1). " ($ord1)", 'ord1');
+        // dd(chr($ord1). " ($ord1)", 'ord1');
 
         // // O
-        // d(chr($ord2). " ($ord2)", 'ord2');
+        // dd(chr($ord2). " ($ord2)", 'ord2');
 
         // // P
-        // d(chr($ord3). " ($ord3)", 'ord3');
+        // dd(chr($ord3). " ($ord3)", 'ord3');
 
         // dd(chr($ord1), 'ord1');
         // dd(chr($ord2), 'ord2');
@@ -9722,7 +9732,7 @@ class DumbController extends Controller
     {
         $dir = '/home/www/woo4/wp-content/plugins/woo-sizes';
 
-        d(
+        dd(
             Files::deepScan($dir, true)
         );
     }
@@ -9756,7 +9766,7 @@ class DumbController extends Controller
         $names_repetidos = [];
 
         $total = count($rows);
-        d($total, 'TOTAL');
+        dd($total, 'TOTAL');
 
         foreach ($rows as $row) {
             if (empty(trim($row['Código Isp']))) {
@@ -9770,10 +9780,10 @@ class DumbController extends Controller
             if ($row['Código Isp'] == $last_code) {
                 if ($row['SKU'] == $last_sku) {
                     // si se imprimiera sería porque habría "productos variables" (cosa que no sucede)
-                    //d($last_sku, $last_code);
+                    //dd($last_sku, $last_code);
                 }
 
-                //d($last_code, 'CÓDIGO ISP REPETIDO');
+                //dd($last_code, 'CÓDIGO ISP REPETIDO');
                 $isp_repetidos++;
             }
 
@@ -9790,12 +9800,12 @@ class DumbController extends Controller
             $last_sku  = $row['SKU'];
         }
 
-        d($isp_nulos, "ISP NULOS");
-        d($isp_repetidos, 'ISP REPETIDOS');
-        d($isp_repetidos - $isp_nulos, 'ISP REPETIDOS NO-NULOS');
-        d($sku_nulos, "SKU NULOS");
-        d($sku_repetidos, "SKU REPETIDOS");
-        d($names_repetidos, "NAMES REPETIDOS : " . count($names_repetidos));
+        dd($isp_nulos, "ISP NULOS");
+        dd($isp_repetidos, 'ISP REPETIDOS');
+        dd($isp_repetidos - $isp_nulos, 'ISP REPETIDOS NO-NULOS');
+        dd($sku_nulos, "SKU NULOS");
+        dd($sku_repetidos, "SKU REPETIDOS");
+        dd($names_repetidos, "NAMES REPETIDOS : " . count($names_repetidos));
     }
 
     function csv_debug1()
@@ -9806,7 +9816,7 @@ class DumbController extends Controller
 
         foreach ($rows as $row) {
             #if ($row['Código Isp'] == 'F-13670/14'){
-            d($row);
+            dd($row);
             #}
         }
     }
@@ -9871,7 +9881,7 @@ class DumbController extends Controller
         ->post($ruta)
         ->getResponse();
 
-        d($response, 'RES');      
+        dd($response, 'RES');      
     }
 
 
@@ -10031,7 +10041,7 @@ class DumbController extends Controller
         ->post($ruta)
         ->getResponse();
 
-        d($response, 'RES');       
+        dd($response, 'RES');       
     }
 
     function test_ssl_no_check()
@@ -10140,7 +10150,7 @@ class DumbController extends Controller
         ->request($arr['url'], $arr['verb'])
         ->getResponse();
 
-        d($response, 'RES');   
+        dd($response, 'RES');   
     }
 
     /*
@@ -10256,7 +10266,7 @@ class DumbController extends Controller
         ->request($arr['url'], $arr['verb'])
         ->getResponse();
 
-        d($response, 'RES');   
+        dd($response, 'RES');   
     }
 
     function test_sinergia_registrar_cliente()
@@ -10298,7 +10308,7 @@ class DumbController extends Controller
             "authToken" => "$token"
         ]);
 
-        d($response, 'RES');       
+        dd($response, 'RES');       
     }
 
 
@@ -10374,7 +10384,7 @@ class DumbController extends Controller
             "authToken" => "$token"
         ]);
 
-        d($response, 'RES');
+        dd($response, 'RES');
     }
 
     function test_api_client(){
@@ -10421,9 +10431,9 @@ class DumbController extends Controller
         ->disableSSL()
         ->post($ruta);        
 
-        d($client->getStatus(), 'STATUS');
-        d($client->getError(), 'ERROR');
-        d($client->getResponse(), 'RES');  
+        dd($client->getStatus(), 'STATUS');
+        dd($client->getError(), 'ERROR');
+        dd($client->getResponse(), 'RES');  
     }
 
     function test_api_client2()
@@ -10446,9 +10456,9 @@ class DumbController extends Controller
         ->disableSSL()
         ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
 
-        d($client->getStatus(), 'STATUS');
-        d($client->getError(), 'ERROR');
-        d($client->getResponse(true), 'RES'); 
+        dd($client->getStatus(), 'STATUS');
+        dd($client->getError(), 'ERROR');
+        dd($client->getResponse(true), 'RES'); 
     }
 
 
@@ -10469,9 +10479,9 @@ class DumbController extends Controller
         ->disableSSL()
         ->request('https://devapi.sinergia.pe/login_check', 'POST');        
 
-        d($client->getStatus(), 'STATUS');
-        d($client->getError(), 'ERROR');
-        d($client->getResponse(true), 'RES'); 
+        dd($client->getStatus(), 'STATUS');
+        dd($client->getError(), 'ERROR');
+        dd($client->getResponse(true), 'RES'); 
     }
 
 
@@ -10635,7 +10645,7 @@ class DumbController extends Controller
             $out[$sku]['precio_plus'] = $precio_plus;
         }
         
-        Files::varExport(UPLOADS_PATH . 'completo-csv.php', $out);
+        Logger::varExport(UPLOADS_PATH . 'completo-csv.php', $out);
     
         // dd($out);
         // dd(count($out), 'COUNT');      
@@ -11471,7 +11481,7 @@ class DumbController extends Controller
 
     function fnx(){
         for ($i=0; $i< 50; $i++){
-            Files::logger("S-> $i");
+            Logger::log("S-> $i");
             usleep(100000);
         }
     }
@@ -12100,20 +12110,24 @@ class DumbController extends Controller
         // example of how to modify HTML contents
         require_once THIRD_PARTY_PATH . '/simple_html_dom_parser/simple_html_dom.php';
 
-        // get DOM from URL or file
-        $html = file_get_html('http://www.google.com/');
+        Logger::truncate();
 
-        // remove all image
-        foreach($html->find('img') as $e)
-            $e->outertext = '';
+        // get DOM from URL or file
+        $html = file_get_html(ROOT_PATH . '/tmp/woo.html');
+
+        foreach($html->find('li') as $e){
+            Logger::log($e->outertext);
+        }
+            
 
         // replace all input
-        foreach($html->find('input') as $e)
-            $e->outertext = '[INPUT]';
+        // foreach($html->find('input') as $e)
+        //     $e->outertext = '[INPUT]';
 
-        // dump contents
+
         echo $html;
     }
+
 
 
 

@@ -24,7 +24,7 @@ class VarDump
 		echo '</pre>';
 	}
 
-	protected static function export($v = null, $msg = null, bool $additional_carriage_return = false) 
+	protected static function export($v = null, $msg = null, bool $additional_carriage_return = false, bool $msg_at_top = true) 
 	{	
 		$type = gettype($v);
 
@@ -77,7 +77,7 @@ class VarDump
 			$v = $v ? 'true' : 'false';
 		}	
 
-		if (!empty($msg)){
+		if ($msg_at_top && !empty($msg)){
 			$cfg = config();
 			$ini = $cfg['var_dump_separators']['start'] ?? '--| ';
 			$end = $cfg['var_dump_separators']['end']   ?? '';
@@ -102,6 +102,14 @@ class VarDump
 				$include_break = false;
 		}	
 
+		if (!$msg_at_top && !empty($msg)){
+			$cfg = config();
+			$ini = $cfg['var_dump_separators']['start'] ?? '--| ';
+			$end = $cfg['var_dump_separators']['end']   ?? '';
+
+			echo "{$ini}$msg{$end}". (!$pre ? $br : '');
+		}
+
 		if (!$cli && !$postman && $type != 'array'){
 			echo $br;
 		}
@@ -115,7 +123,7 @@ class VarDump
 		}
 	}	
 
-	static public function dd($val = null, $msg = null, bool $additional_carriage_return = false)
+	static public function dd($val = null, $msg = null, bool $additional_carriage_return = false, bool $msg_at_top = true)
 	{
 		if (!static::$render){
 			return;
@@ -127,10 +135,10 @@ class VarDump
 			$file = debug_backtrace()[1]['file'];
 			$line = debug_backtrace()[1]['line'];
 		
-			static::export("{$file}:{$line}", "LOCATION", true);
+			static::export("{$file}:{$line}", "LOCATION", true, $msg_at_top);
 		}
 
-		self::export($val, $msg, $additional_carriage_return);
+		self::export($val, $msg, $additional_carriage_return, $msg_at_top);
 	}
 
 	static function hideResponse(){

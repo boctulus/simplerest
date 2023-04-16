@@ -18,12 +18,8 @@ function hide_debug_response(){
     VarDump::hideResponse();
 }
 
-function d($val = null, $msg = null, bool $additional_carriage_return = false){
-    return VarDump::dd($val, $msg, $additional_carriage_return);	
-}	
-
-function dd($val = null, $msg = null, bool $additional_carriage_return = true){
-    return VarDump::dd($val, $msg, $additional_carriage_return);
+function dd($val = null, $msg = null, bool $additional_carriage_return = true, bool $msg_at_top = true){
+    return VarDump::dd($val, $msg, $additional_carriage_return, $msg_at_top);
 }
 
 function here(){

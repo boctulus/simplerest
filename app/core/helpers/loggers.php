@@ -1,6 +1,7 @@
 <?php
 
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 
 
 /*
@@ -11,7 +12,7 @@ function logger($data, ?string $path = null, $append = true){
         return;
     }
 
-    return Files::logger($data, $path, $append);
+    return Logger::log($data, $path, $append);
 }
 
 /*
@@ -22,7 +23,7 @@ function dump($object, ?string $path = null, $append = false){
         return;
     }
 
-    return Files::dump($object, $path, $append);
+    return Logger::dump($object, $path, $append);
 }
 
 /*
@@ -33,7 +34,7 @@ function log_error($error){
         return;
     }
 
-    return Files::logError($error);
+    return Logger::logError($error);
 }
 
 /*
@@ -44,5 +45,5 @@ function log_sql(string $sql_str){
         return;
     }
 
-    return Files::logSQL($sql_str);
+    return Logger::logSQL($sql_str);
 }
