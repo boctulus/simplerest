@@ -104,9 +104,6 @@ Bt5Form::setIdAsName();
             <label class="btn btn-outline-success" for="unidad_pulgada" style="width: 5em;">pulg.</label>
         </div>
                     
-
-
-
         <?php
 
         echo tag('p')->class('mt-5');

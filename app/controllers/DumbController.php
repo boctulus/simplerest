@@ -12074,5 +12074,47 @@ class DumbController extends Controller
         );
     }
 
+    // author: stackoverflow user
+    function test_html_replace(){
+        $txt      = 'good <div class="good">good</div>';
+        $search   = 'good';
+        $replace  = 'nice';
+
+        libxml_use_internal_errors(true);
+        $dom = new \DomDocument();
+        $dom->loadHTML($txt, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $xpath = new \DOMXPath($dom);
+
+        foreach ($xpath->query('//text()') as $text) {
+            dd(trim($text->nodeValue));
+            
+            if (trim($text->nodeValue)) {
+                $text->nodeValue = str_replace($search,$replace, $text->nodeValue);
+            }
+        }
+
+        $html = $dom->saveHTML();
+    }
+
+    function test_html_replace_2(){
+        // example of how to modify HTML contents
+        require_once THIRD_PARTY_PATH . '/simple_html_dom_parser/simple_html_dom.php';
+
+        // get DOM from URL or file
+        $html = file_get_html('http://www.google.com/');
+
+        // remove all image
+        foreach($html->find('img') as $e)
+            $e->outertext = '';
+
+        // replace all input
+        foreach($html->find('input') as $e)
+            $e->outertext = '[INPUT]';
+
+        // dump contents
+        echo $html;
+    }
+
+
 
 }   // end class
