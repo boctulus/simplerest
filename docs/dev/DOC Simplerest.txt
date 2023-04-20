@@ -3369,7 +3369,7 @@ Las APIs reversas o webhooks son un mecanismo que evita tener que andar pregunta
 
 Los webhooks se crean via POST como cualquier otro recurso:
 
-	POST /api/v1/hooks 
+	POST /api/v1/webhooks 
 
 	{
 		"name": "musk-cryptos", <nullable>

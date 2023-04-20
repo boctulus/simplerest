@@ -27,8 +27,6 @@ class FrontController
             $path = preg_replace('/(.*)\/index.php/', '/', $path);
     
             /*
-                Caso: assets   
-
                 La idea es tener ciertas rutas relativas para las cuales no se intente interpretar como Controller
             */
 
@@ -88,7 +86,7 @@ class FrontController
             $method = !empty($action) ? $action : self::DEFAULT_ACTION;
     
             $class_name = 'MyAuth';
-            $class_name = "${namespace}${class_name}Controller";
+            $class_name = "{$namespace}{$class_name}Controller";
 
             // dd($class_name, 'CLASS_NAME:');
             // dd($method, 'METHOD:');
@@ -137,7 +135,7 @@ class FrontController
             if (empty($_params) || $_params[0]==''){
                 $class_file = substr($config['default_controller'],0, strlen($config['default_controller'])-10);
                 $class_name = Strings::snakeToCamel($class_file);
-                $class_name = "${namespace}${class_name}Controller";
+                $class_name = "{$namespace}{$class_name}Controller";
                 $method = self::DEFAULT_ACTION;  
                 $params = []; 
             }else{
@@ -170,7 +168,7 @@ class FrontController
                 $method = !empty($action) ? $action : self::DEFAULT_ACTION;
         
                 $class_name = Strings::snakeToCamel($controller);
-                $class_name = "${namespace}${folder}${class_name}Controller";
+                $class_name = "{$namespace}{$folder}{$class_name}Controller";
 
                 //dd($class_name, 'CLASS_NAME:');
                 //dd($method, 'METHOD:');
