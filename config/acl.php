@@ -2,6 +2,9 @@
 
 use boctulus\grained_acl\Acl;
 
+use simplerest\controllers\api\Files;
+
+
 // debería leerse de archivo
 $acl_cache = false;
 $acl_file  = config()['acl_file'];
@@ -31,6 +34,8 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ->addResourcePermissions('part_numbers', ['read', 'write'])
     ->addResourcePermissions('automoviles', ['read', 'write'])
     ->addResourcePermissions('users', ['read', 'write'])
+    //
+    ->addResourcePermissions('webhooks', ['read', 'write'])
 
 
     // Medellin Participa: Organizaciones
@@ -150,7 +155,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ]);
 
     if (!is_dir(SECURITY_PATH)){
-        Files::mkDirOrFail(SECURITY_PATH);
+        simplerest\core\libs\Files::mkDirOrFail(SECURITY_PATH);
     }
 
     // Store serialized list into plain file

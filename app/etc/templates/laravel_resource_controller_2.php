@@ -15,7 +15,7 @@ date_default_timezone_set("America/Bogota");
 
 class __CONTROLLER_NAME__ extends Controller
 {
-    __VALIDATION_RULES__
+    //__VALIDATION_RULES__
 
     private $respuesta = array('jsonapi' => ["version" => "1.0"]);
     private $error_code = 200;

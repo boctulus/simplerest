@@ -3,9 +3,6 @@
 namespace simplerest\middlewares;
 
 use simplerest\core\Middleware;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Schema;
-use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
 class InyectarInfoEmpresa extends Middleware
