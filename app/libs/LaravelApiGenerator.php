@@ -452,7 +452,7 @@ class LaravelApiGenerator
                 $ctrl_file = str_replace('__MODEL_NAME__', $class_name, $ctrl_file);
                 $ctrl_file = str_replace('__TABLE_NAME__', $table_name, $ctrl_file);
                 $ctrl_file = str_replace('__PRI_KEY__', "'$id_name'", $ctrl_file);
-                $ctrl_file = str_replace('__VALIDATION_RULES__', $rules_str, $ctrl_file);
+                $ctrl_file = str_replace('//__VALIDATION_RULES__', $rules_str, $ctrl_file);
                 $ctrl_file = str_replace('__RESOURCE_NAME__', "{$class_name}Resource", $ctrl_file);
 
                 $dest = static::$ctrl_output_path . "{$class_name}Controller.php";

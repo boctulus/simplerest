@@ -9,7 +9,7 @@ use App\Http\Resources\__RESOURCE_NAME__;
 
 class __CONTROLLER_NAME__ extends Controller
 {
-    __VALIDATION_RULES__
+    //__VALIDATION_RULES__
 
     /**
      * Display a listing of the resource.

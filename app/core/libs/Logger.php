@@ -6,7 +6,7 @@ use simplerest\core\libs\Files;
 
 class Logger
 {
-    static $logFile;
+    static $logFile = 'log.txt';
 
     static function getLogFilename(bool $full_path = false)
     {
@@ -78,7 +78,7 @@ class Logger
 
 	static function log($data, ?string $path = null, $append = true){	
 		if ($path === null){
-			$path = LOGS_PATH . (static::getLogFilename() ?? 'log.txt');
+			$path = LOGS_PATH . static::getLogFilename();
 		} else {
 			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
 				$path = LOGS_PATH . $path;
@@ -95,7 +95,7 @@ class Logger
 
 	static function dump($object, ?string $path = null, $append = false){
 		if ($path === null){
-			$path = LOGS_PATH . (static::getLogFilename() ?? 'log.txt');
+			$path = LOGS_PATH . static::getLogFilename();
 		} else {
 			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
 				$path = LOGS_PATH . $path;
