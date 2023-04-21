@@ -1,3 +1,23 @@
+
+- Controller para convertir horarios y rangos horarios
+
+    . Debe dado mis horarios disponibles y otra zona horaria (dado su GMT) decirme en que horarios (como rangos) esa zona horaria, estoy disponible. -> para entrevistas con consultoras y clientes
+
+- Axios / fetch / jQuery script generator for consuming APIs 
+
+- Poder exportar rutas del FrontController en formato que puedan usarse en el Router (GET::xxxxxxxx, dado que el segundo es mas performante y seguro). Usar solo el FrontController en desarrollo.
+
+- Admitir parametros en routes del Router.
+
+- Testing de APIs: internas y externas.
+
+  . Habilitar mocking dentro de ApiClient
+
+  . Revisar paquetes de testing de APIs
+  
+  . Combinar con generador de POSTMAN, Swagger
+
+
 # TODO
 
 - Pestaña para ver registros borrados en el datatable (en caso de que posea soft-delete y esté habilitado) con el botón de restore sobre cada campo. Si se seleccionaran varios en la pestaña de borrados .. debería mostrarse el botón de ¨restaurar¨.
