@@ -3372,12 +3372,12 @@ Los webhooks se crean via POST como cualquier otro recurso:
 	POST /api/v1/webhooks 
 
 	{
-		"name": "musk-cryptos", <nullable>
+	"name": "musk-cryptos",
 		"entity": "twitts",
-		"op": "create"			
-		"conditions": "account=eleonmusk&body[containsWord]=BTC,bitcoin,doge,crypto"
+		"op": "create",
+		"conditions": "account=eleonmusk&body[containsWord]=BTC,bitcoin,doge,crypto",
 		"callback": "http://hexagon-alerts.lan/feed-reaction"
-	} 
+	}
 
 Existen 5 tipos de eventos u "operaciones" a las que reacciona un webhook: "create", "show", "list", "update" y "delete"
 
@@ -3397,7 +3397,7 @@ El callback apunta a donde es procesador el request (también un POST ya que lle
         }
 
         $body = Factory::request()->getBody(false);
-        Files::logger($body);
+        Logger::log($body);
     
 Notar que no tendría sentido hacer un volcado hacia la salida estándar ya que el procesamiento ocurre en background.
 
@@ -10031,7 +10031,7 @@ El siguiente cron job se ejecuta cada 5 segundos a las 21 Hs de cada día.
 		static protected $is_active = true;
 
 		function run(){
-			Files::logger("Bum bum bum");
+			Logger::log("Bum bum bum");
 		}
 	}
 
@@ -10082,7 +10082,7 @@ Las tareas deben extender de Task e implementar el método run() el cual puede r
 		function run(string $name, int $age){
 			// your logic here
 
-			Files::logger("Hello $name. Are you $age years old?");
+			Logger::log("Hello $name. Are you $age years old?");
 		}
 	}
 
