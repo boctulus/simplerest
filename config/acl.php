@@ -1,8 +1,7 @@
 <?php
 
 use boctulus\grained_acl\Acl;
-
-use simplerest\controllers\api\Files;
+use simplerest\core\libs\Files;
 
 
 // debería leerse de archivo
@@ -155,7 +154,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     ]);
 
     if (!is_dir(SECURITY_PATH)){
-        simplerest\core\libs\Files::mkDirOrFail(SECURITY_PATH);
+        Files::mkDirOrFail(SECURITY_PATH);
     }
 
     // Store serialized list into plain file
