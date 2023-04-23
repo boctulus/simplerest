@@ -306,6 +306,15 @@ return [
 		'end'   => ''
 	],
 
-	'google_maps_api_key' => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY'
-	
+	'google_maps_api_key' => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY',
+
+
+	/*
+		Si falta un paquete de Composer o el autoload.php o el composer.json intenta resolverlo
+
+		Requiere que Composer este instalado
+	*/
+
+	'use_composer'      => true,
+		
 ];
