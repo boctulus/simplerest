@@ -3597,6 +3597,16 @@ Ej:
 
 Nota: se toma a "set" como alias de "in" 
 
+En arrays las posibilidades de validación son:
+
+	required
+	in
+	not_in
+	len
+	min_len
+	max_len
+
+Notar que es min_len y max_len en vez de min y max.
 
 ### Fillables
 
