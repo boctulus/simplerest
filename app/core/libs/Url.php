@@ -192,7 +192,11 @@ class Url
         return $is_ssl ? 'https' : 'http';
     }
 
-    static function getProtocol(string $url){
+    static function getProtocol(?string $url = null){
+        if (empty($url)){
+            return static::httpProtocol();
+        }
+       
         if (Strings::startsWith('http://', $url)){
             return 'http';
         }
@@ -204,15 +208,29 @@ class Url
         return null;
     }
 
-    static function getProtocolOrFail(string $url){
+    static function getProtocolOrFail(?string $url = null){
         $protocol = static::getProtocol($url);
 
         if (empty($protocol)){
-            throw new \InvalidArgumentException("Url '$url' has no valid http or https protocol");
+            throw new \InvalidArgumentException("Impossible to determinatte if the protocol is http or https");
         }
 
         return $protocol;
     }
+    
+    /*
+        Devuelve algo como:
+
+        Host: http://simplerest.lan:80
+    */
+    static function constructHostHeader() {
+        $host     = static::getHostname();
+        $protocol = static::httpProtocol();
+    
+        $port = ($protocol == 'https') ? '443' : '80'; // default port for http and https
+        $header = "Host: $host:$port\r\n";
+        return $header;
+    }  
 
     /**
      * urlCheck - complement for parse_url
@@ -358,12 +376,12 @@ class Url
         return $x;
     }
 
-    static function makeQueryString($data, string $numeric_prefix = "", ?string $arg_separator = '&', int $encoding_type = PHP_QUERY_RFC1738){
+    static function encodeParams(array $data, string $numeric_prefix = "", ?string $arg_separator = '&', int $encoding_type = PHP_QUERY_RFC1738){
         return http_build_query($data, $numeric_prefix, $arg_separator, $encoding_type);
     }
 
-    static function buildUrl(string $base_url, $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
-        return  Strings::removeTrailingSlash($base_url) . '?'. static::makeQueryString($data);
+    static function buildUrl(string $base_url, array $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
+        return  Strings::removeTrailingSlash($base_url) . '?'. static::encodeParams($data);
     }
 
     static function currentUrl(){

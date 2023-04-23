@@ -8,7 +8,21 @@ use simplerest\core\libs\i18n\Translate;
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    require __DIR__.'/../vendor/autoload.php';
+    require_once  __DIR__ . '/../config/constants.php';
+
+    if (!file_exists(ROOT_PATH .'composer.json')){
+        chdir(__DIR__);
+        exec("composer init --name=boctulus/simplerest --no-interaction");
+        sleep(5);
+    }       
+    
+     if (!file_exists(ROOT_PATH . 'vendor'. DIRECTORY_SEPARATOR .'autoload.php')){
+        chdir(__DIR__);
+        exec("composer install --no-interaction");
+        sleep(10);
+    }
+    
+    require_once __DIR__.'/../vendor/autoload.php';
 
     if (class_exists('Dotenv\\Dotenv')){
         $class  = Dotenv\Dotenv::class;

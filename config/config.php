@@ -306,6 +306,15 @@ return [
 		'end'   => ''
 	],
 
-	'google_maps_api_key' => Env::get('GOOGLE_MAPS_API_KEY')
-	
+	'google_maps_api_key' => Env::get('GOOGLE_MAPS_API_KEY'),
+
+
+	/*
+		Si falta un paquete de Composer o el autoload.php o el composer.json intenta resolverlo
+
+		Requiere que Composer este instalado
+	*/
+
+	'use_composer'      => true,
+		
 ];
