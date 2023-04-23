@@ -63,7 +63,7 @@ class Logger
 		return ($bytes > 0);
 	}
 
-	static function JSONExport($data, ?string $path = null){
+	static function JSONExport($data, ?string $path = null, bool $pretty = false){
 		if ($path === null){
 			$path = LOGS_PATH . 'exported.json';
 		} else {
@@ -72,7 +72,13 @@ class Logger
 			}
 		}
 
-		$bytes = file_put_contents($path, json_encode($data));
+		$flags = JSON_UNESCAPED_SLASHES;
+
+		if ($pretty){
+			$flags = $flags|JSON_PRETTY_PRINT;
+		}
+
+		$bytes = file_put_contents($path, json_encode($data, $flags));
 		return ($bytes > 0);
 	}
 
@@ -86,7 +92,7 @@ class Logger
 		}
 
 		if (is_array($data) || is_object($data))
-			$data = json_encode($data);
+			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
 		
 		$data = date("Y-m-d H:i:s"). "\t" .$data;
 
@@ -107,6 +113,10 @@ class Logger
 		} else {
 			Files::writeOrFail($path, var_export($object,  true) . "\n");
 		}		
+	}
+
+	static function dd($data, $msg, bool $append = true){
+		static::log([$msg => $data], null, $append);
 	}
 
 	static function logError($error){

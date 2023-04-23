@@ -28,39 +28,40 @@ use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Schema;
-use simplerest\core\libs\StdOut;
 
+use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
+
 use simplerest\core\libs\Update;
 
-use simplerest\core\libs\Logger;
-
 use simplerest\core\libs\Strings;
+use Spatie\ArrayToXml\ArrayToXml;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
-use simplerest\models\az\BarModel;
 
+use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
+
 use simplerest\core\libs\Reflector;
 
 use simplerest\core\libs\Validator;
-
 use Endroid\QrCode\Writer\PngWriter;
+
 use simplerest\core\libs\GoogleMaps;
-
 use simplerest\core\libs\Obfuscator;
-use simplerest\core\libs\SendinBlue;
 
+use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\FileUploader;
+
 use Endroid\QrCode\Label\Font\NotoSans;
 
 use simplerest\core\libs\i18n\POParser;
-
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
@@ -69,20 +70,20 @@ use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\core\libs\ValidationRules;
 
+use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
-use simplerest\core\libs\HtmlBuilder\Form;
 
+use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
@@ -12040,7 +12041,7 @@ class DumbController extends Controller
         ->disableSSL()
         //->cache()
         //->redirect()
-        ->setBody([
+        ->setBody('[
             "fname" => "Tomas",
             "lname" => "Cruz",
             "email" => "cruz_t@gmail.com",
@@ -12051,7 +12052,7 @@ class DumbController extends Controller
             "extra_fields" => [
                 "rango_de_presupuesto" => "2M-3M"
             ]            
-        ])
+        ]')
         ->setUrl('https://api.eterniasoft.com/v3/clients')
         ->post()
         ->getResponse();
@@ -12067,21 +12068,63 @@ class DumbController extends Controller
         );  
     }
 
-
     function test_xml_to_arr(){
-        $str = "<?xml version='1.0'?> 
-        <document>
-        <title>Forty What?</title>
-        <from>Joe</from>
-        <to>Jane</to>
-        <body>
-        I know that's the answer -- but what's the question?
-        </body>
-        </document>";
+        $str = "<ped><num>1234321</num><cli><rut>1-9</rut><nom>david lara oyarzun</nom><dir>los dominicos 7177</dir><gir>sin giro</gir><fon>899934523</fon><ema>dlara@runa.cl</ema><com>huechuraba</com></cli><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art></ped>";
         
-        dd(
-            XML::toArray($str)
+        var_export(XML::toArray($str));
+    }
+
+    function test_arr_to_xml(){
+        $arr = array (
+            'num' => '1234321',
+            'cli' =>
+            array (
+              'rut' => '1-9',
+              'nom' => 'david lara oyarzun',
+              'dir' => 'los dominicos 7177',
+              'gir' => 'sin giro',
+              'fon' => '899934523',
+              'ema' => 'dlara@runasssssss.cl',
+              'com' => 'huechuraba',
+            ),
+            'art' =>
+            array (
+              0 =>
+              array (
+                'cod' => '2345432134532',
+                'pre' => '1000',
+                'can' => '1',
+                'des' => '0',
+                'tot' => '1000',
+              ),
+              1 =>
+              array (
+                'cod' => '2345432134532',
+                'pre' => '1000',
+                'can' => '1',
+                'des' => '0',
+                'tot' => '1000',
+              ),
+              2 =>
+              array (
+                'cod' => '2345432134532',
+                'pre' => '1000',
+                'can' => '1',
+                'des' => '0',
+                'tot' => '1000',
+              ),
+            ),
         );
+
+        /*
+            Result:
+
+           <root><num>1234321</num><cli><rut>1-9</rut><nom>david lara oyarzun</nom><dir>los dominicos 7177</dir><gir>sin giro</gir><fon>899934523</fon><ema>dlara@runa.cl</ema><com>huechuraba</com></cli><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art></root>
+        */
+
+        $result = XML::fromArray($arr, 'ped', false);
+
+        return $result;
     }
 
     // author: stackoverflow user
@@ -12126,6 +12169,100 @@ class DumbController extends Controller
 
 
         echo $html;
+    }
+    
+    function test_runa(){
+        $base_url = "http://201.148.107.125/~runa/js/zoh/pedidos.php";
+        $password = "f32fq3fq32412";
+        
+        $arr = array (
+            'num' => '123434421',
+            'cli' =>
+            array (
+              'rut' => '1-9',
+              'nom' => 'david lara oyarzun',
+              'dir' => 'los dominicos 7177',
+              'gir' => 'sin giro',
+              'fon' => '89993450773',
+              'ema' => 'dlara@runasssssssss.cl',
+              'com' => 'huechuraba',
+            ),
+            'art' =>
+            array (
+              0 =>
+              array (
+                'cod' => '2345432134532',
+                'pre' => '1000',
+                'can' => '1',
+                'des' => '0',
+                'tot' => '1000',
+              ),
+              1 =>
+              array (
+                'cod' => '2345432134532',
+                'pre' => '1000',
+                'can' => '1',
+                'des' => '0',
+                'tot' => '1000',
+              )
+            ),
+        );
+
+        $data = XML::fromArray($arr, 'ped', false);
+
+        $params = [
+            'pass' => 'f32fq3fq32412', 
+            'data' => $data
+        ];
+
+        $url = Url::buildUrl('http://201.148.107.125/~runa/js/zoh/pedidos.php', $params);
+
+        $client = new ApiClient;
+
+        $client
+        ->disableSSL()
+        //->cache()
+        //->redirect()
+        ->setUrl($url)
+        ->get();
+
+        $status = $client->getStatus();
+
+        if ($status != 200){
+            throw new \Exception("Error: " . $client->error());
+        }
+
+        dd(
+            $client->data()         
+        );  
+    }      
+
+
+    function test_ggg()
+    {
+        $curl = curl_init();
+        
+        $data = [
+                'pass' => 'f32fq3fq32412', 
+                'data' => '<ped><num>1234321</num><cli><rut>1-9</rut><nom>david lara oyarzun</nom><dir>los dominicos 7177</dir><gir>sin giro</gir><fon>8999345043</fon><ema>dlara@runasssssss.cl</ema><com>huechuraba</com></cli><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art></ped>'
+        ];
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => Url::buildUrl('http://201.148.107.125/~runa/js/zoh/pedidos.php', $data),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        echo $response;
+
     }
 
 

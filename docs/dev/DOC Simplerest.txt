@@ -9232,7 +9232,7 @@ Ej:
 	$user_api_key = 'some-key';
 	$url          = 'some-endpoint';
 
-	$res  = ApiClient::instance()
+	$client  = ApiClient::instance()
 	->setBody([
 		// some data
 	])
@@ -9248,7 +9248,7 @@ Ej:
 		Exporto el request incluyendo url, verbo, headers,......
 	*/
 
-	$export = $res->dump();
+	$export = $client->dump();
 
 	/*
 		Almaceno el array 	
@@ -9285,53 +9285,54 @@ Actualmente Model soporta MySQL / MariaDB / SQLite y Postgres pero Schema es má
 
 Relacionado con el tema de peticiones http podemos enumerar las siguientes clases y helpers:
 
-Response 			Manejo de respuestas http		
-Request				Procesamiento de peticiones http
-FrontController		Front controller
-Route				Enrutador
-Url					Librería
-ApiController 		Creación de APIs Restful
+	Response 			Manejo de respuestas http		
+	Request				Procesamiento de peticiones http
+	FrontController		Front controller
+	Route				Enrutador
+	Url					Librería
+	ApiController 		Creación de APIs Restful
 
 Hay más clases relacionadas pero se mencionaron las principales.
 
 
 # Validaciones
 
-Validator
-ValidationRules
-
+	Validator
+	ValidationRules
 
 # Archivos
 
-Files				Utilidades para el manejo de archivos
-FileUploader		Manejador de uploads
-Base64Uploader		Manejador de uploads en base 64
-
+	Files				Utilidades para el manejo de archivos
+	FileUploader		Manejador de uploads
+	Base64Uploader		Manejador de uploads en base 64
 
 # Seguridad
 
-Acl
-FoldersAclExtension
-
+	Acl
+	FoldersAclExtension
 
 # Dumping de variables
 
-VarDump				
+	VarDump				
+
+# Logs
+
+	Logger
 
 
 # Manejo de errores
 
-ExceptionHandler 	Trait 
+	ExceptionHandler 	Trait 
 
 
 # Manejo de cadenas
 
-Strings 			Librería
+	Strings 			librería
 
 
 # Envio de correos
 
-Mails				Librería
+	Mails				librería
 
 
 ### Strings

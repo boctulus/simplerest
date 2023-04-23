@@ -37,6 +37,32 @@ class XML
 
         return $arrOutput;
     }  
+
+    /*
+        Requiere del paquete de Composer spatie/array-to-xml
+
+        composer require spatie/array-to-xml
+    */
+    static function fromArray(array $arr, string $root_elem = 'root', $header = true){
+        if (!\Composer\InstalledVersions::isInstalled('spatie/array-to-xml')){
+            throw new \Exception("Composer package spatie/array-to-xml is requiered");
+        }
+
+        if (!class_exists(\Spatie\ArrayToXml\ArrayToXml::class)){
+            throw new \Exception("Class not found");
+        } else {
+            $class = "\Spatie\ArrayToXml\ArrayToXml";
+            $converter = new $class($arr, $root_elem);
+        }
+
+        $result = $converter::convert($arr, $root_elem, $header);
+
+        if (!$header){
+            $result = trim(substr($result, 21));
+        }
+
+        return $result;
+    }
     
     static function getDomDocument(string $html){
         $doc = new \DOMDocument();
@@ -53,6 +79,38 @@ class XML
             static::getDomDocument($html)
         );
     }   
+
+     /*
+        https://stackoverflow.com/a/7131156/980631
+    */
+    static function stripTagScript(string $html) {
+        $dom = new \DOMDocument;
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        $script = $dom->getElementsByTagName('script');
+
+        $remove = [];
+        foreach($script as $item){
+            $remove[] = $item;
+        }
+
+        foreach ($remove as $item){
+            $item->parentNode->removeChild($item); 
+        }
+
+        $html = $dom->saveHTML();
+        
+        return $html;
+    }
+
+    /*
+        https://davidwalsh.name/remove-html-comments-php
+    */
+    static function removeComments(string $html = '') {
+        return preg_replace('/<!--(.|\s)*?-->/', '', $html);
+    }
    
 }
 
