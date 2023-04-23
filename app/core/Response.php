@@ -137,6 +137,13 @@ class Response
                 }
             }
 
+            /*
+                Evita responder con data[data]
+            */
+            if (isset($data['data'])){
+                $data = $data['data'];
+            }
+
             $data = array_merge($arr,[
                     'data' => $data, 
                     'status_code' => $http_code,
