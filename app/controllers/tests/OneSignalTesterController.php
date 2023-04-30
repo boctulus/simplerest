@@ -69,9 +69,9 @@ class OneSignalTesterController extends MyController
         $res  = OneSignal::send($config);
 
         if (isset($res['errors'])){
-            d($res['errors'], 'Errores');
+            dd($res['errors'], 'Errores');
         } else {
-            d($res);
+            dd($res);
         }
     }
 
@@ -103,9 +103,9 @@ class OneSignalTesterController extends MyController
         $res  = OneSignal::addDevice($config);
 
         if (isset($res['errors'])){
-            d($res['errors'], 'Errores');
+            dd($res['errors'], 'Errores');
         } else {
-            d($res);
+            dd($res);
         }
     }
 
@@ -143,9 +143,9 @@ class OneSignalTesterController extends MyController
         $res  = OneSignal::app($config);
 
         if (isset($res['errors'])){
-            d($res['errors'], 'Errores');
+            dd($res['errors'], 'Errores');
         } else {
-            d($res);
+            dd($res);
         }
     }
 
@@ -184,9 +184,9 @@ class OneSignalTesterController extends MyController
         $res  = OneSignal::getUsers($config);
 
         if (isset($res['errors'])){
-            d($res['errors'], 'Errores');
+            dd($res['errors'], 'Errores');
         } else {
-            d($res);
+            dd($res);
         }
     }
 
@@ -225,9 +225,9 @@ class OneSignalTesterController extends MyController
         $res  = OneSignal::getNotifications($config);
 
         if (isset($res['errors'])){
-            d($res['errors'], 'Errores');
+            dd($res['errors'], 'Errores');
         } else {
-            d($res);
+            dd($res);
         }
     }
 
