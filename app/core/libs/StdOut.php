@@ -23,7 +23,7 @@ class StdOut
         }
 
         if (static::$render){
-            d($v, null, $additional_carriage_return);
+            dd($v, null, $additional_carriage_return);
         }
     }
 

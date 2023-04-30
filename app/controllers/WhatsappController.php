@@ -10,6 +10,9 @@ use simplerest\core\libs\DB;
 
 class WhatsappController extends MyController
 {
+    /*
+        https://tinyurl.com/wa-boctulus
+    */
     protected $phone = '+44 754 1919915';
 
     function __construct()
@@ -22,14 +25,14 @@ class WhatsappController extends MyController
         return $this->link();            
     }
 
+    /*
+        Tiene quemado el numero de UK
+    */
+    function tinyurl(){
+        return 'https://tinyurl.com/wa-boctulus';
+    }
+
     function link($phone = null, $message = null){
-        // if ($message === null){
-        //     $message = "Hi";
-        // }
-
-        // show_debug_trace();
-        // dd('HERE');
-
         $phone = $phone ?? $this->phone;
 
         $phone = Strings::removeBeginning('+', $phone);
@@ -46,7 +49,11 @@ class WhatsappController extends MyController
         return $this->link($phone, $message);
     }
 
-    // El front controller requiere explicitamentar el action del controlador. No funciona. Podria fixearse
+    /*
+        El front controller requiere explicitamentar el action del controlador. No funciona. Podria fixearse
+
+        Otra opcion seria tener un router para la consola
+    */
     function __call($name, $arguments)
     {
         if (!is_numeric($name)){

@@ -201,6 +201,20 @@ function css(string $file){
     return View::css($file);
 }
 
+/*
+    Antes llamada encodeProp()
+
+    Otra posibilidad seria colocar las variables en un archivo .js que sea el primero en cargarse de los .js
+    En este caso deberia ser un solo archivo .js independientemente de cuantas veces se llame a push_var()
+
+    La funcion podira llamarse push_var() y no haria falta nada del lado de JS
+*/
+function var_encode($name, $value){
+    $encoded = base64_encode(is_array($value) ? '--array--' . json_encode($value) : $value);
+
+    return "<input type=\"hidden\" name=\"$name-encoded\" id=\"comunas-encoded\" value=\"$encoded\">";
+}
+
 function umodel(){
     $model = get_user_model_name();    
            

@@ -1570,6 +1570,44 @@ Ej:
 
 Por otro lado la clase Paginator se encarga de generar el SQL para el modelo y ofrece metodos de calculo de paginacion.
 
+En si, paginate() es equivalente a llamar a take() y offset()
+
+	$rows = DB::table('products')
+	->take($page_size)
+	->offset($offset)
+	->get();
+
+pero ahora necesitamos saber cuando vale offset.
+
+Existe otra forma de paginación "más a bajo nivel" que es manipulando directamente la clase Paginator.
+
+Ej:
+
+	header('Content-Type: application/json; charset=utf-8');
+
+	$page_size = $_GET['size'] ?? 10;
+	$page      = $_GET['page'] ?? 1;
+
+	$offset = Paginator::calcOffset($page, $page_size);
+
+	DB::getConnection('az');
+
+	$rows = DB::table('products')
+	->take($page_size)
+	->offset($offset)
+	->get();
+
+	$row_count = DB::table('products')->count();
+
+	$paginator = Paginator::calc($page, $page_size, $row_count);
+	$last_page = $paginator['totalPages'];
+
+	return [
+		"last_page" => $last_page, 
+		"data" => $rows
+	];
+
+
 # Los where
 
 Los arrays de los where pueden ser asociativos:
@@ -9021,14 +9059,16 @@ Por defecto no se siguen redirecciones pero se pueden habilitar llamando al meto
 
 Ej:
 
-	$url = 'https://www.awin1.com/cread.php?awinmid=20598&awinaffid=856219&platform=dl&ued=https%3A%2F%2Fwww.leroymerlin.es%2Ffp%2F81926166%2Fespejo-rectangular-pierre-roble-roble-152-x-52-cm';
+	$url    = 'https://www.awin1.com/cread.php?awinmid=20598&awinaffid=856219&platform=dl&ued=https%3A%2F%2Fwww.leroymerlin.es%2Ffp%2F81926166%2Fespejo-rectangular-pierre-roble-roble-152-x-52-cm';
 
-	$api = new ApiClient($url);
+	$client = new ApiClient($url);
 
-	$res = $api
+	$client
 	->disableSSL()
 	->redirect()
 	->get();
+
+	$data = $client->data();
 
 
 # When
@@ -9037,16 +9077,18 @@ Al igual que en el QueryBuilder disponemos de when()
 
 Ej:
 
-$res = $client->disableSSL()
+$client->disableSSL()
 	->followLocations()
 	->when($overwrite_cache, function($e){
 		$e->clearCache();
 	})
 	->cache()
-	->get()
-	->getResponse(false);
+	->get();
+
+$data = $client->data();
 
 Lo que hemos hecho fue borrar la cache antes de volver a generarla. Esto es distinto a no usar cache porque de todas formas se esta guardando en la cache y podra ser recuperado.
+
 
 # Uso de cache
 
@@ -9094,12 +9136,13 @@ Es posible desactivar la escritura de la cache para estar seguros de que no se v
 
 Ej:
 
-	$res = ApiClient::instance($url)
+	$client = ApiClient::instance($url)
 	->disableSSL()
 	->readOnly()  // <------------- *
 	->cache()
-	->get()
-	->getResponse(false);
+	->get();
+
+	$data = $client->data();
 
 
 # Constructor de la clase ApiClient
@@ -9119,8 +9162,8 @@ Ej:
 	static function getClient($endpoint){
         global $config;
 
-        $ruta         = $config['url_base_endpoints'] . $endpoint;
-        $token        = $config['token'];
+        $ruta   = $config['url_base_endpoints'] . $endpoint;
+        $token  = $config['token'];
 
         $client = ApiClient::instance($ruta);
 
@@ -9149,7 +9192,7 @@ Ej:
         $response = static::getClient($endpoint)
         ->setBody($data)
         ->post()
-        ->getResponse();
+        ->data();
 
         return $response;
     }
@@ -9158,17 +9201,14 @@ Ej:
         $ruc_prop = static::getRuCPropietario();
         $endpoint = "/business/invoice-{$ruc_prop}-$serie-$correlativo/pdf";
 
-        $response = static::getClient($endpoint)
-        ->get()
-        ->getResponse();
+        static::getClient($endpoint)
+        ->get()->data();
 
         return $response;
     }
 
 
-[ Actualización 8-10-2020 ]
-
-Ya no es necesario llamar a getResponse() sino que es posible directamente acceder a la respuesta http y a la data obtenida directamente con los métodos correspondientes:
+Metodos para acceder a la respuesta:
 
 	status()	el código http de la respuesta
 	error()		mensaje de error si lo hubiera	
@@ -9225,7 +9265,7 @@ Ej:
 
 # Debugging de requests con ApiClient
 
-Puede que no estemos seguros de que se ha enviado en el request y/o que querramos poder reproducirlo en otro momento. Para esto se proveen los metodos dump() y exec()
+Puede que no estemos seguros de que se ha enviado en el request y/o que querramos poder reproducirlo en otro momento. Para esto se proveen los metodos dd() y exec()
 
 Ej:
 
@@ -9248,7 +9288,7 @@ Ej:
 		Exporto el request incluyendo url, verbo, headers,......
 	*/
 
-	$export = $client->dump();
+	$export = $client->dd();
 
 	/*
 		Almaceno el array 	

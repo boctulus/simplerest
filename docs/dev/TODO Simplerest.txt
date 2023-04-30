@@ -18,6 +18,9 @@
   . Combinar con generador de POSTMAN, Swagger
 
 
+- Debe ser posible forkear y extender "WpDataTables" (leer bien licencia) para que en vez de leer tomar como data-source un CSV, que en definitiva en algun punto lo toma como array, que lea el contenido de una TABLA de SQL
+
+
 # TODO
 
 - Pestaña para ver registros borrados en el datatable (en caso de que posea soft-delete y esté habilitado) con el botón de restore sobre cada campo. Si se seleccionaran varios en la pestaña de borrados .. debería mostrarse el botón de ¨restaurar¨.

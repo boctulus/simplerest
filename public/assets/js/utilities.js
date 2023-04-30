@@ -16,17 +16,22 @@ const isPromise = p => {
     return p && Object.prototype.toString.call(p) === "[object Promise]";
 }
 
-const decodeProp = (prop_id) => {
-    const el = document.getElementById(prop_id);
+/*
+    Antes llamada decodeProp
+
+    Trabaja con var_encode() de PHP
+*/
+const var_decode = (id) => {
+    const el = document.getElementById(id + '-encoded');
 
     if (el == null){
-        throw `Propery ${prop_id} not found`
+        throw `Propery ${id} not found`
     }
 
     const val = el.value;
 
     if (val == null){
-        throw `Value of ${prop_id} is empty?`
+        throw `Value of ${id} is empty?`
     }
 
     const bin = atob(val);
