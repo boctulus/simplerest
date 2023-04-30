@@ -3600,7 +3600,24 @@ class ModelController extends MyController
 
         dd($rows);
     }
-
+    function test_scopes(){
+        DB::getConnection('az');  
+        
+        dd(
+          DB::table('products')
+          ->where(['id', 200, '>'])
+          ->count(),
+          'NORMAL'
+        );
+    
+        dd(
+          DB::table('products')
+          ->where(['id', 200, '>'])
+          ->costScope()
+          ->count(),
+          'SCOPE costScope'
+        );
+    }
     
     function test_json_search(){
         DB::getConnection('woo3');

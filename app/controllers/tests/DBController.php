@@ -43,7 +43,16 @@ class DBController extends MyController
             ->create();
     }
 
+    function statement(){
+        DB::getConnection('mpp');
+      
+        DB::statement("CREATE TABLE `TBL_TIPO_VINCULO_OER`;");
     
+        dd(
+          DB::getTableNames()
+        ); 
+    }
+
 
 }
 

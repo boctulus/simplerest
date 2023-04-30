@@ -107,6 +107,78 @@ class DumbController extends Controller
         phpinfo();
     }
 
+    function get_rand_str(){
+        $len = 6770;
+    
+        return Strings::randomString($len);
+      }
+    
+      function testy(){
+        dd(
+          Strings::parseCurrency('son EUR 108.000,40 a pagar', '.', ',')
+        );
+      }
+    
+      function testx(){
+        DB::getConnection();
+    
+        dd(
+          DB::driver()
+        );
+      }
+    
+    
+      static function get_url_slugs(){
+        $url = "http://127.0.0.1:8889/api/xxx/777/";
+    
+        dd(
+          Url::getSlugs($url)
+        );
+      }
+      
+      static function get_rand_hex(){
+        return Strings::randomHexaString(6);
+      }
+    
+      function test_db(){
+        DB::getConnection('mpp');
+      
+        dd(
+          DB::getTableNames()
+        );    
+      }
+    
+      function test_remove_sp()
+      {
+          $str = "		array (
+              'ID_COC' => 
+              array (
+                'type' => 'int',
+                'min' => 0,
+              ),
+              'COC_NOMBRE' => 
+              array (
+                'type' => 'str',
+                'max' => 60,
+                'required' => true,
+              ),
+              'COC_BORRADO' => 
+              array (
+                'type' => 'bool',
+              ),
+              'created_at' => 
+              array (
+                'type' => 'timestamp',
+              ),
+              'updated_at' => 
+              array (
+                'type' => 'timestamp',
+              ),
+            );";
+            
+            echo Strings::trimMultiline($str). PHP_EOL;
+      }
+
     function test_dd()
     {
         //show_debug_trace();
