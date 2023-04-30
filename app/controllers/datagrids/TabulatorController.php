@@ -19,6 +19,9 @@ class TabulatorController extends MyController
 
     function index()
     {
+        /*
+            /?v={version}
+        */
         $v = Request::getInstance()
         ->getQuery('v') ?? '1';
 
