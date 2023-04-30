@@ -1608,6 +1608,29 @@ Ej:
 	];
 
 
+# Value
+
+Ej:
+
+	DB::table('products')->where([
+		['cost', 5000, '>=']
+	])
+	->value('name');
+
+# Casting con value()
+
+Ej:
+
+	$city = 'Santiago';
+        
+	$gmt = DB::table('timezones')
+	->where([
+		'city' => $city
+	])
+	->value('gmt', 'float');
+
+	dd($gmt, 'GMT');
+
 # Los where
 
 Los arrays de los where pueden ser asociativos:
@@ -9455,7 +9478,6 @@ Ej:
 El parámetro *no* lleva argumento y puede ser --dropPrimary o --delPrimary 
 
 	$_dropPrimary  = Strings::matchParam($str, ['dropPrimary', 'delPrimary'], null);
-
 
 ### Variable dumping 
 

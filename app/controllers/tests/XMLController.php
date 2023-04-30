@@ -4,6 +4,7 @@ namespace simplerest\controllers\tests;
 
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
+use simplerest\core\libs\XML;
 use simplerest\core\Response;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Factory;
