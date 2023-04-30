@@ -128,8 +128,6 @@ class Logger
 	}
 
 	static function logSQL(string $sql_str){
-		$config = config();
-
 		static::log($sql_str, 'sql_log.txt');
 	}
 

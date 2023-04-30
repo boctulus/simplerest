@@ -25,7 +25,7 @@ class MoneyController extends MyController
         $rate = $swap->latest('EUR/USD');
         
         // 1.129
-        d($rate->getValue(), 'EUR/USD');
+        dd($rate->getValue(), 'EUR/USD');
 
         // 2016-08-26
         $rate->getDate()->format('Y-m-d');
