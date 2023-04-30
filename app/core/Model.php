@@ -1840,10 +1840,10 @@ class Model {
 		return $this->first($fields, $pristine);
 	}
 
-	function value($field){
+	function value($field, ?string $cast_to = null){
 		$this->onReading();
 
-		$q = $this->toSql([$field]);
+		$q  = $this->toSql([$field]);
 		$st = $this->bind($q);
 
 		$count = null;
@@ -1854,6 +1854,61 @@ class Model {
 			$this->onRead($count);
 		} else
 			$ret = false;
+
+		/* 
+			Castear false daria muchos errores
+			ya que es el valor devuelto ante fallo
+		*/
+		if ($ret != false && !empty($cast_to)){
+			switch ($cast_to){
+				case 'string':
+					$ret = (string) $ret;
+					break;
+				case 'int':
+				case 'integer':
+					$ret = (int) $ret;
+					break;
+				case 'float':
+					$ret = (float) $ret;
+					break;
+				case 'double':
+					$ret = (double) $ret;
+					break;
+				case 'bool':
+					switch(gettype($ret)){
+						case 'string':
+							$_s = strtolower($ret);
+							
+							switch($_s){
+								case '1':
+								case 'on':
+									$ret = true;
+									break;
+								case '0':
+								case 'off':
+									$ret = false;
+									break;
+							}
+						break;
+
+						case 'int':
+							switch($ret){
+								case 1:
+									$ret = true;
+									break;
+								case 0:
+									$ret = false;
+									break;
+							}
+						break;
+					}
+					// sino cumple esas reglas estricas, el casting de bools no se efectua
+					
+					break;
+				default:
+					throw new \InvalidArgumentException("Invalid cast");
+			}
+		}
 			
 		return $ret;	
 	}
