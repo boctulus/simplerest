@@ -11,7 +11,7 @@ use simplerest\controllers\MyController;
 
 class SchemaController extends MyController
 {
-     /*
+    /*
 
         https://www.w3resource.com/mysql/mysql-data-types.php
         https://manuales.guebs.com/mysql-5.0/spatial-extensions.html

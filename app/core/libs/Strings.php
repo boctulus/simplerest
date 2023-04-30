@@ -272,7 +272,39 @@ class Strings
 
 		return null;
 	}
+
+	// alias
+	static function newLine(string $str){
+		return static::carriageReturn($str);
+	}
 	
+	/*
+		Convierte string en array de lineas (rows)
+		usando retorno de carro en autodeteccion
+
+		@param string $str 
+		@param bool $trim
+		@param bool $empty_lines
+	*/
+	static function lines(string $str, bool $trim = false, bool $empty_lines = true){
+		$lines = explode(static::carriageReturn($str), $str);
+
+		if (!$empty_lines){
+			foreach ($lines as $ix => $line){
+				$trimmed = trim($line);
+
+				if (empty($trimmed)){
+					unset($lines[$ix]);
+				} else {
+					if ($trim){
+						$lines[$ix] = $trimmed;
+					}
+				}
+			}
+		}
+
+		return $lines;
+	}
 
 	/*
 		Remueve del forma eficiente un substring del inicio de una cadena
