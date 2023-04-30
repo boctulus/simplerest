@@ -284,4 +284,42 @@ class Date
         }
         return $dateTime !== false;
     }
+
+    /*
+        Ajusta una hora ya se en formato hh, hh:mm, hh:mm:ss
+        en un formato de 0 a 23 horas
+
+        Util cuando se suman horas porque el resultado puede exceder
+
+        Notar que no advierte sobre el dia que es +1
+
+        @param string $time  
+    */
+    static function realTime($time)
+    {
+        // Sexagesimal
+        if (Strings::contains(':', (string) $time)){
+            $_t = explode(':', $time);
+
+            $h_digits = strlen($_t[0]);
+
+            $hh = (int) $_t[0];
+
+            if ($hh >= 24){
+                $hh = $hh - 24;
+
+                $_t[0] = str_pad((string) $hh, $h_digits, '0', STR_PAD_LEFT);
+            }
+
+            $time =  implode(':', $_t);
+        } else {
+            // decimal
+            
+            if ($time >= 24){
+                $time = $time - 24;
+            }
+        }
+
+        return $time;
+    }
 }
