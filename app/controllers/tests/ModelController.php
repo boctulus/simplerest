@@ -536,6 +536,18 @@ class ModelController extends MyController
 
         dd(DB::getLog());
     }
+    
+    function value_plus_casting(){
+        $city = 'Santiago';
+        
+        $gmt = DB::table('timezones')
+        ->where([
+            'city' => $city
+        ])
+        ->value('gmt', 'float');
+
+        dd($gmt, 'GMT');
+    }
 
     function oldest()
     {
