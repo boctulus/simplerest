@@ -11,9 +11,7 @@ use simplerest\core\libs\i18n\Translate;
     require_once  __DIR__ . '/../config/constants.php';
 
     if (!file_exists(ROOT_PATH .'composer.json')){
-        chdir(__DIR__);
-        exec("composer init --name=boctulus/simplerest --no-interaction");
-        sleep(5);
+        throw new \Exception("File composer.json is missing");
     }       
     
      if (!file_exists(ROOT_PATH . 'vendor'. DIRECTORY_SEPARATOR .'autoload.php')){

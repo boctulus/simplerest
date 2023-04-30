@@ -178,7 +178,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
         var myHeaders = new Headers();
         myHeaders.append("X-TENANT-ID", "az");
-        myHeaders.append("Authorization", `Bearer ${token}`);
+        //myHeaders.append("Authorization", `Bearer ${token}`);
 
         var requestOptions = {
             method: 'POST',
@@ -202,7 +202,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
         var myHeaders = new Headers();
         myHeaders.append("X-TENANT-ID", "az");
-        myHeaders.append("Authorization", `Bearer ${token}`);
+        //myHeaders.append("Authorization", `Bearer ${token}`);
 
         var requestOptions = {
             method: 'DELETE',
@@ -243,7 +243,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
         var myHeaders = new Headers();
         myHeaders.append("X-TENANT-ID", "az");
-        myHeaders.append("Authorization", `Bearer ${token}`);
+        //myHeaders.append("Authorization", `Bearer ${token}`);
 
         var requestOptions = {
             method: 'DELETE',
@@ -272,7 +272,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
         var myHeaders = new Headers();
         myHeaders.append("X-TENANT-ID", "az");
-        myHeaders.append("Authorization", `Bearer ${token}`);
+        //myHeaders.append("Authorization", `Bearer ${token}`);
 
         var requestOptions = {
             method: 'PATCH',
@@ -395,7 +395,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
                 ajaxParams: {
                     tenantid,
-                    token
+                    //token
                 },
 
                 paginationSize:  50, // <--- puede implicar modificar el height

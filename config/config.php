@@ -315,6 +315,6 @@ return [
 		Requiere que Composer este instalado
 	*/
 
-	'use_composer'      => true,
+	'use_composer' => true,
 		
 ];
