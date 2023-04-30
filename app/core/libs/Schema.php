@@ -552,6 +552,9 @@ class Schema
 		return $this;		
 	}
 
+	/*
+		No es autoinc
+	*/
 	function id(string $name = 'id'){		
 		$this->ubig($name);
 		$this->primary();
