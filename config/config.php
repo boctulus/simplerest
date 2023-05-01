@@ -47,7 +47,7 @@ return [
 	
 	'ssl_cert' => null,  // 'D:\wamp64\ca-bundle.crt',
 
-	'DateTimeZone' => 'Europe/London',
+	'DateTimeZone' => 'Asia/Manila',
 
 	/*
 		Intercepta errores

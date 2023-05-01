@@ -7016,7 +7016,54 @@ class DumbController extends Controller
     }
 
     
-    
+   
+    function test_ggg()
+    {
+        $curl = curl_init();
+        
+        $data = [
+                'pass' => 'f32fq3fq32412', 
+                'data' => '<ped><num>1234321</num><cli><rut>1-9</rut><nom>david lara oyarzun</nom><dir>los dominicos 7177</dir><gir>sin giro</gir><fon>8999345043</fon><ema>dlara@runasssssss.cl</ema><com>huechuraba</com></cli><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art></ped>'
+        ];
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => Url::buildUrl('http://201.148.107.125/~runa/js/zoh/pedidos.php', $data),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        echo $response;
+    }
+
+
+    function debug_api_client_exec_2(){
+        $data = include 'D:\www\simplerest\logs\api_debug.php';
+
+        dd($data);
+
+        $res = ApiClient::instance()
+        ->exec($data);
+
+        if ($res->status() != 200){
+            dd($res->error(), 'ERROR');
+        }
+
+        dd($res->status(), 'STATUS CODE');
+
+        dd(
+            $res->data()         
+        , 'DATA');
+    }
+
+     
     function test_runa(){
         $base_url = "http://201.148.107.125/~runa/js/zoh/pedidos.php";
         $password = "f32fq3fq32412";
@@ -7093,53 +7140,6 @@ class DumbController extends Controller
         //     $client->data()         
         // );  
     }      
-
-
-    function test_ggg()
-    {
-        $curl = curl_init();
-        
-        $data = [
-                'pass' => 'f32fq3fq32412', 
-                'data' => '<ped><num>1234321</num><cli><rut>1-9</rut><nom>david lara oyarzun</nom><dir>los dominicos 7177</dir><gir>sin giro</gir><fon>8999345043</fon><ema>dlara@runasssssss.cl</ema><com>huechuraba</com></cli><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art></ped>'
-        ];
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => Url::buildUrl('http://201.148.107.125/~runa/js/zoh/pedidos.php', $data),
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        echo $response;
-    }
-
-
-    function debug_api_client_exec_2(){
-        $data = include 'D:\www\simplerest\logs\api_debug.php';
-
-        dd($data);
-
-        $res = ApiClient::instance()
-        ->exec($data);
-
-        if ($res->status() != 200){
-            dd($res->error(), 'ERROR');
-        }
-
-        dd($res->status(), 'STATUS CODE');
-
-        dd(
-            $res->data()         
-        , 'DATA');
-    }
 
     function decode_catasto()
     {
