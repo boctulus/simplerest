@@ -70,6 +70,7 @@ class TimeZone
         }   
 
         // la suma solo funcionara con $time numerico y no sexagecimal
+        // el parche seria remover minutos y segundos y luego concatenarlos al resultado
         return Date::realTime($time + $diff);
     }
 
@@ -89,6 +90,7 @@ class TimeZone
         }   
 
         // la suma solo funcionara con $time numerico y no sexagecimal
+        // el parche seria remover minutos y segundos y luego concatenarlos al resultado
         return Date::realTime($time + $diff);
     }
 
