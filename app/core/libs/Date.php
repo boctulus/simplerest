@@ -286,6 +286,23 @@ class Date
     }
 
     /*
+        Recibe una zona horaria de PHP como 'America/Argentina/Buenos_Aires'
+
+        y retorna el valor de GMT como GMT-3
+    */
+    static function getGMTfromTimeZone(string $timezone_php){
+        $timezone = new \DateTimeZone($timezone_php);
+
+        $date = new \DateTime('00:00:00', $timezone);
+
+        $offset = $timezone->getOffset($date);
+
+        $gmt = $offset / 3600;
+
+        return $gmt;
+    }
+
+    /*
         Ajusta una hora ya se en formato hh, hh:mm, hh:mm:ss
         en un formato de 0 a 23 horas
 
@@ -305,8 +322,12 @@ class Date
 
             $hh = (int) $_t[0];
 
-            if ($hh >= 24){
-                $hh = $hh - 24;
+            if ($hh >= 24 || $hh < 0){
+                if ($hh >= 24){
+                    $hh = $hh - 24;
+                } elseif ($time < 0){
+                    $hh = $hh + 24;
+                }                
 
                 $_t[0] = str_pad((string) $hh, $h_digits, '0', STR_PAD_LEFT);
             }
@@ -317,6 +338,8 @@ class Date
             
             if ($time >= 24){
                 $time = $time - 24;
+            } elseif ($time < 0){
+                $time = $time + 24;
             }
         }
 
