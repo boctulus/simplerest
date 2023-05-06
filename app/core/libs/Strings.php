@@ -478,6 +478,8 @@ class Strings
 
 	/*
 		Apply tabs to some string
+
+		En vez de PHP_EOL, deberias usar Strings::carriageReturn($str)
 	*/
 	static function tabulate(string $str, int $tabs, ?int $first = null, ?int $last = null){
 		$lines = explode(PHP_EOL, $str);
