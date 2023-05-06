@@ -7141,6 +7141,19 @@ class DumbController extends Controller
         // );  
     }      
 
+    /*
+        I will receive 15600 PHP
+    */
+    function refund(){
+        $d1 = '2023-04-28';
+        $d2 = '2023-05-08';
+
+        dd(
+            23400 * ((30 - Date::diffInDays($d2, $d1)) / 30)
+        );
+    }
+
+
     function decode_catasto()
     {
         /*
@@ -7167,6 +7180,5 @@ class DumbController extends Controller
         );
 
     }
-
 
 }   // end class

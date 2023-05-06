@@ -26,19 +26,19 @@ class Date
     /*
         Substre dias a una fecha
     */
-    static function subDays(string $date, int $diff, $format = 'Y-m-d'){    
+    static function subDays(string $date, int $diff, $format = 'Y-m-d') : string {    
         return static::sub($date, $diff, 'D', $format);
     }
 
-    static function addDays(string $date, int $diff, $format = 'Y-m-d'){    
+    static function addDays(string $date, int $diff, $format = 'Y-m-d') : string {    
         return static::add($date, $diff, 'D', $format);
     }
 
-    static function addMonths(string $date, int $diff, $format = 'Y-m-d'){    
+    static function addMonths(string $date, int $diff, $format = 'Y-m-d') : string {    
         return static::add($date, $diff, 'M', $format);
     }
 
-    static function subMonths(string $date, int $diff, $format = 'Y-m-d'){    
+    static function subMonths(string $date, int $diff, $format = 'Y-m-d') : string {    
         return static::sub($date, $diff, 'M', $format);
     }
 
@@ -52,7 +52,7 @@ class Date
         return $time;
     }
 
-    static function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){
+    static function datetime(string $format = 'Y-m-d H:i:s', $timezone = null) : string {
         if ($timezone === null){    
             $timezone = new \DateTimeZone( date_default_timezone_get() );
         } else {
@@ -67,11 +67,11 @@ class Date
         return $at;
     }
 
-    static function date($timezone = null){
+    static function date($timezone = null) : string {
         return datetime('Y-m-d', $timezone);
     }
 
-    static function time($timezone = null){
+    static function time($timezone = null) : string {
         return datetime('H:i:s', $timezone);
     }
 
@@ -128,6 +128,9 @@ class Date
         $d2 = new \DateTime($date2);
     
         return $d2->getTimestamp() - $d1->getTimestamp();
+    }
+    static function diffInDays(string $date2, string $date1 = '') : float {    
+        return static::diffInSeconds($date2, $date1) / (3600 * 24);
     }
     
     static function isToday(string $date) : bool {
