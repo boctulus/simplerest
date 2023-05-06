@@ -933,6 +933,13 @@ class Files
 		}
 	}
 
+	static function append(string $path, string $string, $add_newline_before = true) : bool {
+		return static::write($path, ($add_newline_before ? Strings::carriageReturn($path) : "") . $string, FILE_APPEND);
+	}
+
+	static function appendOrFail(string $path, string $string, $add_newline_before = true){
+		static::writeOrFail($path, ($add_newline_before ? Strings::carriageReturn($path) : "") . $string, FILE_APPEND);
+	}
 	
 	/*
 		Para cache lo mejor sería usar PHP FAST CACHE 
