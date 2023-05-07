@@ -1,0 +1,49 @@
+En mis APIs usar los HTTP CODEs que corresponde!
+
+Ej:
+
+200 OK
+
+{
+  "data": [
+    {
+      "denominazione": "OPEN HOLDING S.R.L.",
+      "nome": null,
+      "cognome": null,
+      "cf_socio": "16935371001",
+      "quota": 100
+    }
+  ],
+  "success": true,
+  "message": "",
+  "error": null
+}
+
+400 Bad Request
+
+{
+  "success": false,
+  "message": "Id, cf or piva required",
+  "error": 227,
+  "data": null
+}
+
+
+402 Payment Required
+
+{
+  "success": false,
+  "message": "Insufficient Credit in Wallet: 182.03",
+  "error": 229,
+  "data": null
+}
+
+406 Not Acceptable <-------- notar que no es 400 Bad Request
+
+{
+  "success": false,
+  "message": "cf/piva not valid",
+  "error": 228,
+  "data": null
+}
+
