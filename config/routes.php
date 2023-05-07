@@ -7,14 +7,17 @@ use simplerest\core\libs\Files;
 
 $route = Route::getInstance();
 
+/*
+	Penosamente no hay para la consola
+*/
+Route::get('revolut', function(){
+	return "http://revolut.me/boctulus";
+});
+
 Route::post('api/v1/save_demo', function(){
 	$req = request()->as_array()->getBody();
 	
 	Files::dump($req);
-});
-
-Route::get('hello', function(){
-	return "Hellooooo";
 });
 
 Route::get('api/v1/cool',  'DumbAuthController@super_cool_action');

@@ -40,7 +40,7 @@
     <!-- Tempusdominus Bootstrap 4 -->
 
     <!-- bootstrap 5.1.3 solo css -->
-    <link rel="stylesheet" href="<?= asset('css/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/bootstrap.min.css') ?>">
     
     <!-- iCheck -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
@@ -98,7 +98,7 @@
     </script>
     
 
-    <link rel="stylesheet" href="<?= asset('css/main.css') ?>"/>
+    <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
 </head>
 <body>
     <div class="container-fluid">
@@ -160,7 +160,7 @@
     </script>
     
     
-    <script src="<?= asset('js/boostrap/boostrap_notices.js') ?>"></script>
+    <script src="<?= asset('js/bootstrap/boostrap_notices.js') ?>"></script>
     <script src="<?= asset('js/login.js') ?>"></script>
 </body>
 </html>

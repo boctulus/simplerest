@@ -139,8 +139,20 @@ class AdminLte extends Bt5Form
             hasGrid : true
         })
     */
-    static function ionSlider(mixed $default = null, Array $attributes = [], ...$args)
-    {
+    static function ionSlider(mixed $default = null, Array $attributes = [], ...$args){
+        /*
+            Incluir el CSS acá genera dos problemas muy graves:
+
+            1) No puede ser cacheado y 
+
+            2) Queda repetido tantas veces como se incluya el componente! 
+
+            La solución para "producción" sería "compilar" el las vistas con lo cual los archivos css 
+            de cada componente serían incluídos una sola vez para la vista correspondiente.
+
+            En si,... include_css() debería "encolar" los archivos css para la vista corespondiente.
+        */
+        
         css_file('vendors/adminlte/plugins/ion-rangeslider/css/ion.rangeSlider.min.css');
 
         $att = [
@@ -416,6 +428,78 @@ class AdminLte extends Bt5Form
         
         return static::inputGroup($content, $attributes, ...$args);
     }
+
+    static function sideMenuSearchTool(mixed $content = 'Search', Array $attributes = [], ...$args)
+    {
+        css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+        
+        //$attributes['class'] = '';
+
+        $id = $args['id'] ?? $attributes['id'] ?? null;
+            
+        $id_str = ($id !== null) ? 'id="'.$id.'"' : '';
+        
+        $content = "
+            <div class=\"input-group\" data-widget=\"sidebar-search\">
+                <input class=\"form-control form-control-sidebar\" type=\"search\" $id_str placeholder=\"$content\" aria-label=\"Search\">
+                <div class=\"input-group-append\">
+                    <button class=\"btn btn-sidebar\">
+                        <i class=\"fas fa-search fa-fw\"></i>
+                    </button>
+                </div>
+            </div>
+            ";
+            
+        return static::div($content, $attributes, ...$args);
+    }
+
+    static function navItemSideMenu(Array $items, ?string $default = null, Array $attributes = [], ...$args)
+    {
+        //css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+
+        $attributes['class'] = '';
+
+        if ($default === null){
+            $default = $_SERVER['REQUEST_URI'];
+        }
+
+        $content = '';
+        foreach ($items as $p_name => $pg){
+            $item = tag('link')->class("nav-link active")->anchor(
+                '<i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                    ' . $p_name . '
+                    <i class="right fas fa-angle-left"></i>
+                </p>'
+            );
+
+            $has_active = false;
+
+            foreach ($pg as $anchor => $url){
+                $active = ($default == $url) ? 'active' : '';
+
+                if ($default == $url){
+                    $has_active = true;
+                }
+
+                $item .= '
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="' . $url .'" class="nav-link '.$active.'"><!-- active -->
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>'. $anchor .'</p>
+                        </a>
+                    </li>
+                </ul>
+                ';
+            }
+
+            $content .= tag('navItem')->content($item)->when($has_active, function($e) { $e->class('menu-open'); });
+        }   
+
+        return $content; // <!-- menu-open -->
+    }
+
 
 }
 

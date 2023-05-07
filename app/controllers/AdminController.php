@@ -2,30 +2,22 @@
 
 namespace simplerest\controllers;
 
+use simplerest\core\traits\PagesTrait;
 use simplerest\controllers\MyController;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
 
 class AdminController extends MyController
-{
-    function __construct()
-    {
-        parent::__construct();        
-    }
+{    
+	use PagesTrait;
 
-    function index()
-    {
-        $content = 'Hola mundo!';
+	// 'tabulator', 'main',...
+	public $default_page  = 'tabulator';
 
-        render($content, 'templates/adminlte_tpl.php', [
-            'brandname' => 'Planex',
-            'logo'       => 'img/planex_logo.png',
-            'logo_alt'   => 'Planex',
-            'title'      => 'Titulo cualquiera',
-            'page_name'  => 'Nombre de Pagina'
-        ]);            
-    }
+	public $tpl           = 'templates/adminlte_tpl.php'; //
+	public $tpl_params    = [
+		'brand_name' => 'Planex',
+		'logo'       => 'img/planex_logo.png',
+		'logo_alt'   => 'Planex'
+	];	
+	
+	// ..
 }
-

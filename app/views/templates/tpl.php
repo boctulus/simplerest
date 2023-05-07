@@ -31,7 +31,7 @@
     <script src="<?= asset('js/login.js') ?>"></script>
 
     <!-- ICONOS FONTAWESOME -->
-    <script src="https://kit.fontawesome.com/3f60db90e4.js" crossorigin="anonymous"></script>
+    <script src="<?= asset('vendors/fontawesome/fontawesome_kit.js') ?>" crossorigin="anonymous"></script>
     
     <!-- TEMPLATE ADMIN LTE -->
 
@@ -42,40 +42,36 @@
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css') ?>">
     
     <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="<?= asset('vendors/ionicframework/ionicons.min.css') ?>">
 
-    <!-- bootstrap 5.2.2 solo css -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+    <!-- bootstrap 5.1.3 solo css -->
+    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/bootstrap.min.css') ?>">
     
     <!-- iCheck -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
+    
     <!-- JQVMap -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/jqvmap/jqvmap.min.css') ?>">
    
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') ?> ">
+
     <!-- Daterange picker -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/daterangepicker/daterangepicker.css') ?>">
+    
     <!-- summernote -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/summernote/summernote-bs4.min.css') ?>">
-
-   
+ 
     <!-- Datatables -->
     <link rel="stylesheet" href="<?= asset('css/lib/datatables-net/datatables.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/lib/datatables-net/datatables-net.min.css') ?>">
-
      
-    <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
+    <!-- Bootstrap 5.1.3 -->
+    <script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
     
     <!-- FILEPOND -->
     <!--link rel="stylesheet" href="... 'js/plugins/filepond/dist/filepond.css') ?>"-->
 
-
-    <!-- Select2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <!-- DualListbox -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.css') ?>"/>
@@ -90,7 +86,7 @@
     <script src="<?= asset('vendors/adminlte/plugins/daterangepicker/daterangepicker.js') ?>"></script>
     
 
-    <link rel="stylesheet" href="<?= asset('css/main.css') ?>"/>
+    <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
 
 </head>
 <body>
@@ -145,11 +141,8 @@
     <!-- overlayScrollbars -->
     <script src="<?= asset('vendors/adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') ?>"></script>
 
-    <!-- Select2 -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js"></script>
-
     
-    <script src="<?= asset('js/boostrap/boostrap_notices.js') ?>"></script>
+    <script src="<?= asset('js/bootstrap/boostrap_notices.js') ?>"></script>
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>

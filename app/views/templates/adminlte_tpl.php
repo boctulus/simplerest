@@ -20,10 +20,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Theme style -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/dist/css/adminlte.min.css') ?>">
 
+    <!-- bootstrap 5.1.3 solo css -->
+    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/bootstrap.min.css') ?>">
+
+    <!--
+        https://jsfiddle.net/u910ed2L/6/v
+    -->
+    <link href="<?= asset('vendors/tabulator/dist/css/tabulator_midnight.min.css') ?>" rel="stylesheet">
+
     <?=
         umodel();
         head();
     ?>
+
+     <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
+
+    <!-- jQuery -->
+    <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
 
     <script src="<?= asset('js/login.js') ?>"></script>
 
@@ -50,6 +63,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <body id="layoutBody" class="hold-transition sidebar-mini">
     <div class="wrapper">
 
+        <?php
+
+        use simplerest\core\View;
+        use simplerest\core\libs\HtmlBuilder\Tag;
+        use simplerest\core\libs\HtmlBuilder\AdminLte;
+
+
+        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
+        ?>
+                
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
@@ -196,9 +219,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="/" class="brand-link">
+            <a href="/" class="brand-link text-decoration-none">
                 <img src="<?= asset($logo ?? 'vendors/adminlte/dist/img/AdminLTELogo.png') ?>" alt="<?= $logo_alt ?? '' ?>" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light"><?= $brandname ?? '&nbsp;' ?></span>
+                <span class="brand-text font-weight-light"><?= $brand_name ?? '&nbsp;' ?></span>
             </a>
 
             <!-- Sidebar -->
@@ -211,51 +234,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </a>
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block" id="username_text">
+                        <span class="d-block" id="username_text"></span>
                     </div>
                 </div>
 
                 <!-- SidebarSearch Form -->
-                <div class="form-inline">
-                    <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <?= tag('sideMenuSearchTool')->class('form-inline') ?>
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Starter Pages
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Active Page</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Inactive Page</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
+                        with font-awesome or any other icon font library -->
+
+                        <?php
+                            $pg_grps= config()['admin_menu_linked_pages'];
+
+                            echo tag('navItemSideMenu')->items($pg_grps);
+                        ?>
+                
+                        <!-- <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-th"></i>
                                 <p>
@@ -263,10 +261,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <span class="right badge badge-danger">New</span>
                                 </p>
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
+
+
             </div>
             <!-- /.sidebar -->
         </aside>
@@ -318,17 +318,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 ~
             </div>
             <!-- Default to the left -->
-            Copyright &copy; 2022, <strong>Cabildo de La Palma</strong>. Todos los derechos reservados.
+            Copyright &copy; 2023, <strong>Fabio Istrefi</strong>
         </footer>
     </div>
     <!-- ./wrapper -->
 
     <!-- REQUIRED SCRIPTS -->
 
-    <!-- jQuery -->
-    <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
-    <!-- Bootstrap 5.2.2 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5.1.3 -->
+    <script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
+    
     <!-- AdminLTE App -->
     <script src="<?= asset('vendors/adminlte/dist/js/adminlte.min.js') ?>"></script>
     <script src="<?= asset('vendors/adminlte/dist/js/darktheme.js') ?>"></script>
