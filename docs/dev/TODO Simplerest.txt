@@ -66,6 +66,70 @@ Est'a tocando insertar en la tabla user_roles el user_id lo cual es un BUG !
 
 - Volver a revisar porque una vista puede detonar y alcanzar a renderizar algo antes de detener el script y mostrar el error. Antes de modificar la clase Response y el FronController no sucedia !
 
+- Revisar que sucede con PHP 8+ porque fallan las migraciones pero es algo que *no* sucede en PHP 7.4
+
+  $ php com migrations migrate
+
+  Migrating '0000_00_00_00000000_migrations.php'
+  Migrating '0000_00_00_00000000_migrations.php'  <-- notar que *repite*
+
+  --| Error: "There is no active transaction". -|Type: --. -|Code: -- -| Location: -- -|Detail: [
+      {
+          "function": "exception_handler",
+          "class": "simplerest\\core\\Model",
+          "type": "->"
+      }
+  ]
+
+Con PHP 7.4, el comportamiento es el esperado:
+
+  $ php com migrations migrate
+  
+  Migrating '0000_00_00_00000000_migrations.php'
+  Migrated  '0000_00_00_00000000_migrations.php' --ok
+
+  Migrating '0000_00_00_00000001_users.php'
+  Migrated  '0000_00_00_00000001_users.php' --ok
+
+NOTABLEMENTE sucede o ha sucedido lo mismo con DOCTRINE, migraciones y PHP 8+
+
+https://github.com/doctrine/migrations/issues/1202
+
+Chequear esto:
+
+https://stackoverflow.com/a/50004926/980631
+
+- Considerar generar el schema correspondiente luego de ejecutar cada archivo de migracion dado que en algun caso dentro un archivo de migracion podria haber una dependencia como ocurre en
+  
+  2021_09_13_27908784_user_roles.php
+
+  public function up()
+    {
+        get_default_connection();;
+
+        $sc = (new Schema('user_roles'))
+
+        $sc->integer('id')->auto()->pri();
+        $sc->integer('user_id')->index();
+        // ...
+
+        /*
+            Esta debe depender del nombre de la tabla users y del id de dicha tabla 
+        */
+
+        // El helper get_id_name() requiere que el schema exista 
+        System::com("make schema users --from:main");
+
+        $users_table = config()['users_table'];
+        $users_pri   = get_id_name($users_table); // <----------- aqui 
+
+        $sc->foreign('user_id')->references($users_pri)->on($users_table)->onDelete('cascade');
+        $sc->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+
+        $res = $sc->create();
+    }
+
+La "solucion" es generar el schema necesario antes pero podria evitarse hacer eso dentro del archivo de migracion.
 
 [ DATATABLES (DATAGRIDS) ]
 

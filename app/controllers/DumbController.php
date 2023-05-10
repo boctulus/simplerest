@@ -5329,31 +5329,18 @@ class DumbController extends Controller
 
     function csv_debug1()
     {
-        $path = '/home/feli/Desktop/SOLUCION BINARIA/@PROYECTOS CLIENTES/RODRIGO CHILE (EN CURSO)/EASYFARMA/CSV/prod.csv';
+        $path = 'D:\Desktop\PRECIOS MAYOREO - JUANITA\wc-product-export-9-5-2023-1683646857175.csv';
 
         $rows = Files::getCSV($path)['rows'];
 
-        foreach ($rows as $row) {
-            #if ($row['Código Isp'] == 'F-13670/14'){
-            dd($row);
-            #}
-        }
-    }
-
-    function csv_debug2()
-    {
-        $path = 'D:\Desktop\SOLUCION BINARIA\PROYECTOS CLIENTES\@PROYECTOS CLIENTES\RODRIGO CHILE (EN CURSO)\EASYFARMA\CSV\completo.csv';
-
-        $rows = Files::getCSV($path)['rows'];
-
-        foreach ($rows as $row) {
-            if ($row['SKU'] == 606110083669){
-                dd($row);
-                break;
+        foreach ($rows as $key => $row) {
+            if (Strings::contains(' #ff6404', $key)){
+                dd($row, $key);
             }
+            
         }
-
     }
+
 
     ////////////
 

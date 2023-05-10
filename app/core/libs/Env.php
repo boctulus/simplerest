@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;;
+namespace simplerest\core\libs;
 
 class Env
 {
@@ -21,7 +21,16 @@ class Env
             static::$data = $_ENV;  
         }
 
-        static::$data = parse_ini_file(ROOT_PATH . '.env');
+        static::$data = @parse_ini_file(ROOT_PATH . '.env');
+
+        if (static::$data === false){
+            $ini_file = ROOT_PATH . '.env';
+
+            echo !is_cli() ? '<pre>' : '';
+            throw new \Exception("Invalid .ini file. Syntax error in \"$ini_file\"");
+            echo !is_cli() ? '</pre>' : '';
+        }
+
     }
 
     static function get(?string $key = null, $default_value = null){
