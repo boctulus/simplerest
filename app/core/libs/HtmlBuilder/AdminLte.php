@@ -453,9 +453,14 @@ class AdminLte extends Bt5Form
         return static::div($content, $attributes, ...$args);
     }
 
+    /*
+        ->openAll() hace que cada nav-item comience abierto
+    */
     static function navItemSideMenu(Array $items, ?string $default = null, Array $attributes = [], ...$args)
     {
         //css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
+
+        $open_all = (array_key_exists('openAll', $args) || (isset($attributes['openAll']) && $attributes['openAll'] !== false));
 
         $attributes['class'] = '';
 
@@ -494,7 +499,7 @@ class AdminLte extends Bt5Form
                 ';
             }
 
-            $content .= tag('navItem')->content($item)->when($has_active, function($e) { $e->class('menu-open'); });
+            $content .= tag('navItem')->content($item)->when($open_all | $has_active, function($e) { $e->class('menu-open'); });
         }   
 
         return $content; // <!-- menu-open -->

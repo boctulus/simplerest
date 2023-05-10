@@ -1,8 +1,9 @@
 <?php
 
-use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Factory;
 use simplerest\core\libs\Schema;
+use simplerest\core\libs\System;
+use simplerest\core\libs\Factory;
+use simplerest\core\interfaces\IMigration;
 
 class UserRoles implements IMigration
 {
@@ -32,6 +33,9 @@ class UserRoles implements IMigration
         /*
             Esta debe depender del nombre de la tabla users y del id de dicha tabla 
         */
+
+        // El helper get_id_name() requiere que el schema exista 
+        System::com("make schema users --from:main");
 
         $users_table = config()['users_table'];
         $users_pri   = get_id_name($users_table);
