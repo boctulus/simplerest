@@ -68,7 +68,7 @@ class ApiClient
         }
 
         if (is_array($mock)){
-            $mock = json_encode($mock);
+            $mock = json_encode($mock, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_SLASHES);
         }
 
         $this->response = $mock;
