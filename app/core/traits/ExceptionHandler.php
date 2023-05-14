@@ -6,6 +6,7 @@ use simplerest\libs\Debug;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url; 
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Factory;
 
 trait ExceptionHandler
@@ -70,6 +71,7 @@ trait ExceptionHandler
             error($error_msg, 500);
         }
         
+        exit(1);
     }
     
 }

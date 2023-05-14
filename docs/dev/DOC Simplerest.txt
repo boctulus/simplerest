@@ -9320,6 +9320,107 @@ Ej:
 	Files::varExport($export, 'api_debug.php');
 
 
+# Mocking
+
+Es posible "mockear" una solicitud http, con lo cual si esta tiene costo por ejemplo y no hay un sandbox,
+podriamos probarla las veces que querramos.
+
+Consideraciones:
+
+	- Debe usarse *antes* de llamar a request(), get(), post(), etc
+
+    - $mock puede ser la ruta a un archivo .json, .php o un array
+
+Ej:
+
+	$mock = ETC_PATH . 'res_ricerca_nazionale.php';
+	//$mock = ETC_PATH . 'res_jsonplaceholder.json';
+
+	$cli  = new ApiClient();
+
+	$res  = $cli
+	->when(!empty($mock), function($it) use ($mock){
+		$it->mock($mock);
+	})
+	->request('http://jsonplaceholder.typicode.com/posts/3', 'GET')
+	->getResponse();
+
+	/*
+		Array
+			(
+				[data] => {
+				"userId": 1,
+				"id": 3,
+				"title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
+				"body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+				}
+					[http_code] => 200
+					[error] =>
+				)
+			)
+	*
+
+	dd($res);
+
+	/*
+		{
+			"userId": 1,
+			"id": 3,
+			"title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
+			"body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+		}
+	*/
+	
+	dd($cli->data());
+
+
+Notas: 
+
+- Para usarse con archivos .php, estos deben ser el resultado de la exportacion con dump()
+
+Ej:
+
+	<?php
+
+	return array (
+		'data' => 
+		array (
+		'endpoint' => 'ricerca_nazionale_pg',
+		'stato' => 'in_erogazione',
+		'callback' => 
+		array (
+			'url' => 'https://ticiwe.com/callbacks?r=realstate&sub=ricerca_nazionale',
+			'field' => 'data',
+			'method' => 'POST',
+			'data' => 
+			array (
+			),
+		),
+		'parametri' => 
+		array (
+			'cf_piva' => '12485671007',
+			'tipo_catasto' => 'TF',
+			'provincia' => 'NAZIONALE-IT',
+		),
+		'risultato' => NULL,
+		'esito' => NULL,
+		'timestamp' => 1683988870,
+		'owner' => 'fabio56istrefi@gmail.com',
+		'id' => '645fa18682673817d87710e8',
+		),
+		'success' => true,
+		'message' => '',
+		'error' => NULL,
+	);
+
+
+- Con mocking "http_code" y "error" quedaran "indefinidas".
+
+- Usar el sistema de cache en vez del de mocking es una mala idea y de todas formas,
+la cache no esta bien implementada ni terminada.
+
+
+
 ### Componentes del core del framework
 
 # Base de datos
@@ -14627,6 +14728,19 @@ Al traducir a JavaScript usar los siguientes "ports" de métodos mágicos como _
 
 https://gist.github.com/loilo/4d385d64e2b8552dcc12a0f5126b6df8
 https://gist.github.com/adinan-cenci/ed4f23eb719e4c2820aedc5feb91032b
+
+
+# ODBC
+
+Sera posible utilizar ODBC usando / adaptando alguno de los siguientes paquetes:
+
+https://github.com/appsfortableau/laravel-pdo-odbc
+
+	<-- funciona standalone
+
+https://github.com/andreossido/laravel-odbc
+
+	<-- quizas mas acoplada a Laravel
 
 
 

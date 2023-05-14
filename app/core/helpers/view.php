@@ -212,7 +212,7 @@ function css(string $file){
 function var_encode($name, $value){
     $encoded = base64_encode(is_array($value) ? '--array--' . json_encode($value) : $value);
 
-    return "<input type=\"hidden\" name=\"$name-encoded\" id=\"comunas-encoded\" value=\"$encoded\">";
+    echo "<input type=\"hidden\" name=\"$name-encoded\" id=\"$name-encoded\" value=\"$encoded\">";
 }
 
 function umodel(){

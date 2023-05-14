@@ -58,8 +58,15 @@ class System
         Pre-requisito: php.exe debe estar en el PATH
     */  
     static function getPHP(){
-        $location = System::isWindows() ? shell_exec("where php.exe") : "php";
-        return trim($location);
+        static $location;
+
+        if ($location !== null){
+            return $location;
+        }
+
+        $location =  trim(System::isWindows() ? shell_exec("where php.exe") : "php");
+        
+        return  $location;
     }
 
     /*
@@ -102,18 +109,74 @@ class System
     }
 
     /*
-        Ejecuta un comado com
+        Ejecuta un comando / script situandose primero en el root del proyecto
     */
-    static function com($command, ...$args){
+    static function exec($command, ...$args){
         $extra = implode(' ', array_values($args));
 
         $current_dir = getcwd();
 
 		chdir(ROOT_PATH);
-        $ret         =  shell_exec("php com $command $extra");
+        $ret =  shell_exec("$command $extra");
         chdir($current_dir);
         
         return $ret;
+    }
+
+    /*
+        Ejecuta un comando "com"
+    */
+    static function com($command, ...$args){
+        return static::exec(static::getPHP() . " com $command". $args);
+    }
+
+
+    /*        
+       "Memory profilers"
+        
+        - Xhprof PHP Memory Profiler
+        
+        XHprof has a simple user interface that will help you discover PHP memory leaks. It can also identify the performance issues that make PHP memory leaks happen.
+
+        - Xdebug PHP Profiler
+        
+        XDebug is a standard PHP profiler that you can use to discover a variety of performance issues in your scripts. The lightweight profiler doesn’t use much memory, so you can run it alongside your PHP scripts for real-time performance debugging.
+
+        - PHP-memprof
+        
+        PHP-memprof is a stand-alone PHP memory profiler that can tell you exactly how much memory each of your functions uses. It can even trace an allocated byte back to a function.
+
+        - New Relic
+    */
+
+
+    /*
+        dd(System::getMemoryLimit(), 'Memory limit');
+    */
+    static function getMemoryLimit()
+    {
+        return ini_get('memory_limit');
+    }
+
+    static function setMemoryLimit(string $limit)
+    {
+        ini_set('memory_limit', $limit);
+    }
+
+    /*
+        dd(System::getMemoryUsage(), 'Memory usage');
+        dd(System::getMemoryUsage(true), 'Memory usage (real)');
+    */
+    static function getMemoryUsage(bool $real_usage = false){
+        return (round(memory_get_usage($real_usage) / 1048576,2)) . 'M'; 
+    }
+
+    /*      
+        dd(System::getMemoryPeakUsage(), 'Memory peak usage');
+        dd(System::getMemoryPeakUsage(true), 'Memory peak usage (real)');
+    */
+    static function getMemoryPeakUsage(bool $real_usage = false){
+        return (round(memory_get_peak_usage($real_usage) / 1048576, 2)) . 'M';
     }
 
 }

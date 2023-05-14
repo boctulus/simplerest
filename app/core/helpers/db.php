@@ -5,6 +5,7 @@ use simplerest\core\libs\DB;
 use simplerest\models\MyModel;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
+use simplerest\core\exceptions\SqlException;
 use simplerest\core\controllers\MakeControllerBase;
 
 
@@ -104,7 +105,7 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
 
     $instance    = get_model_instance_by_table($table_name);
 
-    $field_mames = $instance->getFieldNames();  //  -- UNIFICAR field_names con formatters
+    $field_names = $instance->getFieldNames();  //  -- UNIFICAR field_names con formatters
     $formatters  = $instance->getformatters();  //
 
     $hidden_ay   = $instance->getHidden();
@@ -160,13 +161,15 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
         //  -- UNIFICAR field_names con formatters
         //
         
-        if (isset($field_mames[$field])){
-            $defs[$field]['name']      = $field_mames[$field]; 
+        if (isset($field_names[$field])){
+            $defs[$field]['name'] = $field_names[$field]; 
+        } else {
+            $defs[$field]['name'] = ucfirst(str_replace('_', ' ', $field));
         }
         
         if (isset($formatters[$field])){
             $defs[$field]['formatter'] = $formatters[$field];
-        }
+        } 
 
         if (isset($rules[$field])){
             if (!isset($defs[$field])){
@@ -970,7 +973,7 @@ function process_sql_file(string $path, string $delimeter = ';', bool $stop_if_e
 
         try {
             $ok = DB::statement($sentence);
-        } catch (\Exception $e){
+        } catch (SqlException $e){
             dd($e->getMessage(), 'Sql Exception');
 
             if ($stop_if_error){
