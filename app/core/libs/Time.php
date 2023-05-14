@@ -2,15 +2,6 @@
 
 namespace simplerest\core\libs;
 
-/*
-    Stackoverflow comment:
-
-    "always call gc_collect_cycles before starting the timer to get more accurate results."
-
-    https://stackoverflow.com/a/13558543/980631
-    https://stackoverflow.com/questions/19715048/what-gc-collect-cycles-function-is-useful-for
-    https://www.php.net/manual/en/features.gc.collecting-cycles.php
-*/
 class Time {
     static $unit = 'MILI';   
     static $capture_buffer = false;

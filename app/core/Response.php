@@ -5,6 +5,8 @@ namespace simplerest\core;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
+use simplerest\core\libs\System;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
 
@@ -253,24 +255,23 @@ class Response
             https://www.baeldung.com/rest-api-error-handling-best-practices
         */
         
-        // Parche 14-Nov-2022
+        // Parche 14-Nov-2022 -modificado en 2023-
         
         if (Url::isPostman() || Url::isInsomnia()){
             if (is_string($detail)){
                 $detail = trim($detail);
-
-                $detail = $detail === null ? '' : \json_decode($detail, true);
-            } 
+                $detail = Strings::isJSON($detail) ? json_decode($detail, true) : '';
+            }
         }
 
         $res['error'] = [ 
-            'type'    => $type    ?? null,
-            'code'    => $code    ?? null,
-            'message' => $message,
-            'detail'  => $detail
+            'type'     => $type    ?? null,
+            'code'     => $code    ?? null,
+            'message'  => $message,
+            'detail'   => $detail,
+            'location' => $location  // <--- location deberia ser rellado automaticamente leyendo el stack
         ];
-
-            
+       
         static::$instance->set($res);  
         static::$instance->flush();
 
@@ -310,6 +311,9 @@ class Response
         https://tutsforweb.com/how-to-create-custom-404-page-laravel/
     */
     function flush(){
+        // print_r(['Memory usage'=> System::getMemoryUsage()]);
+        // print_r("<br>");
+
         if (self::$to_be_encoded){
             static::$data = $this->encode(static::$data);
             header('Content-type:application/json;charset=utf-8');
@@ -327,6 +331,8 @@ class Response
         $cli = (php_sapi_name() == 'cli');
 
         if (isset(static::$data['error']) && !empty(static::$data['error'])){
+            // print_r('*'); // *
+
             if (!$cli){
                 view('error.php', [
                     'status'    => static::$http_code,

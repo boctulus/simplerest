@@ -47,13 +47,14 @@ trait PagesTrait
             y por eso se llama $extra y puede ser nulo
         */
 
-        $ctrl         = Strings::lastSegmentOrFail(__CLASS__, '\\');
-        $ctrl_seg     = Strings::beforeLast($ctrl, 'Controller');
-        $ctrl_seg     = strtolower($ctrl_seg);
-        $extra        = !empty($ctrl_seg) ? "$ctrl_seg\\" : "";
+        $ctrl     = Strings::lastSegmentOrFail(__CLASS__, '\\');
+        $ctrl_seg = Strings::beforeLast($ctrl, 'Controller');
+        $ctrl_seg = strtolower($ctrl_seg);
+        $extra    = !empty($ctrl_seg) ? "$ctrl_seg\\" : "";
         
-        $default_page = str_replace('/', '\\', ucfirst($this->default_page));
-        $class_name   = "simplerest\\pages\\{$extra}{$default_page}";
+        $default_page = ucfirst(str_replace('/', '\\', $this->default_page));
+
+        $class_name   = "simplerest\\pages\\{$extra}{$default_page}";;
 
         $instance     = new $class_name();
 
