@@ -1049,7 +1049,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         } catch (InvalidValidationException $e) { 
             response()->error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (SqlException $e) { 
-            response()->error('SQL Exception', 500, json_decode($e->getMessage())); 
+            response()->error('SQL Exception', 500, Strings::isJSON($e->getMessage()) ? json_decode($e->getMessage()) : '', __METHOD__); 
         } catch (\PDOException $e) {    
             $db = DB::getCurrentDB();
             response()->error('PDO Exception', 500, $e->getMessage(). ' - '. $this->instance->getLog() . " - database: '{$db}' - table: '{$this->instance->getTableName()}'"); 

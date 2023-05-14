@@ -100,7 +100,12 @@ class DumbController extends Controller
     }
 
     function index(){
-        echo datetime('H:i:s'). "\r\n";
+        dd(System::getMemoryLimit(), 'Memory limit');
+        dd(System::getMemoryUsage(), 'Memory usage');
+        dd(System::getMemoryUsage(true), 'Memory usage (real)');
+
+        dd(System::getMemoryPeakUsage(), 'Memory peak usage');
+        dd(System::getMemoryPeakUsage(true), 'Memory peak usage (real)');
     }
 
     function info(){
@@ -201,8 +206,12 @@ class DumbController extends Controller
         );
     }
 
+    function now(){
+        return at();
+    }
+
     function test_apiclient_cache(){
-        $url    = base_url() . '/dumb';
+        $url    = base_url() . '/dumb/now';
 
         $client = new ApiClient($url);
 
@@ -227,6 +236,39 @@ class DumbController extends Controller
             'cached'   => $html
         ]);
     }
+
+    function test_apiclient_cache_until(){
+        $url    = base_url() . '/dumb/now';
+
+        $client = new ApiClient($url);
+
+        $res = $client->disableSSL()
+        ->followLocations()
+        //->clearCache()
+        ->cacheUntil('9:56')  
+        ->get()
+        ->getResponse(false);
+
+        dd(
+            $client->getCachePath(), 'CACHE PATH'
+        );
+
+        if ($res === null){
+            return;
+        }
+
+        if ($res['http_code'] != 200){
+            return;
+        }
+
+        $html = $res['data'];
+
+        dd([
+            'realtime' => file_get_contents($url),
+            'cached'   => $html
+        ]);
+    }
+
 
     function test_view_cache(){
         view('random', null, null, 10);
@@ -1142,7 +1184,7 @@ class DumbController extends Controller
         $client = ApiClient::instance();
         
         $res = $client
-        //->disableSSL()
+        ->disableSSL()
         //->setSSLCrt("c:\php\cacert.pem")
         ->request('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET')
         ->getResponse();
@@ -5208,24 +5250,24 @@ class DumbController extends Controller
     }
 
 
-    function test_qr()
-    {
-        $result = Builder::create()
+    // function test_qr()
+    // {
+    //     $result = Builder::create()
 
-            ->writer(new PngWriter())
-            ->writerOptions([])
-            ->data('Custom QR code contents')
-            ->encoding(new Encoding('UTF-8'))
-            ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
-            ->size(300)
-            ->margin(10)
-            ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
-            ->logoPath(ASSETS_PATH . 'img/logo_t.png')
-            ->labelText('This is the label')
-            ->labelFont(new NotoSans(20))
-            ->labelAlignment(new LabelAlignmentCenter())
-            ->build();
-    }
+    //         ->writer(new PngWriter())
+    //         ->writerOptions([])
+    //         ->data('Custom QR code contents')
+    //         ->encoding(new Encoding('UTF-8'))
+    //         ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+    //         ->size(300)
+    //         ->margin(10)
+    //         ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
+    //         ->logoPath(ASSETS_PATH . 'img/logo_t.png')
+    //         ->labelText('This is the label')
+    //         ->labelFont(new NotoSans(20))
+    //         ->labelAlignment(new LabelAlignmentCenter())
+    //         ->build();
+    // }
 
 
     function obf_test()
@@ -6925,34 +6967,6 @@ class DumbController extends Controller
         );
     }
 
-      function testtttt(){
-        /*
-            http://test.lan/callback.php
-            https://catasto.000webhostapp.com/callback.php
-        */
-        
-        $url = 'http://test.lan/callback.php';
-        $url = 'https://catasto.000webhostapp.com/callback.php';
-    
-        $client = new ApiClient($url);
-
-        $client
-        ->disableSSL()
-        ->redirect()
-        ->setBody([
-            'data' => [
-                'name' => 'Fabio',
-            'age'  => 27
-            ]
-        ])
-        ->post();
-      
-        dd(
-            $client->data()         
-        );  
-    }
-
-
     function get_extensions(){
         dd(get_loaded_extensions());
     }
@@ -7146,7 +7160,7 @@ class DumbController extends Controller
         /*
             Telefonos
         */
-        $str = "data=%7B%22status%22%3A%22COMPLETED%22%2C%22date_request%22%3A%222023-04-25+15%3A00%3A01%22%2C%22date_completion%22%3A%222023-04-26+08%3A25%3A38%22%2C%22id%22%3A%226447ceb9a18b1c3496263405%22%2C%22cf_piva%22%3A%22CCCMRN48T59E625G%22%2C%22callback%22%3A%7B%22url%22%3A%22https%3A%5C%2F%5C%2Fcatasto.000webhostapp.com%5C%2Fcallback.php%22%2C%22field%22%3A%22data%22%2C%22method%22%3A%22POST%22%2C%22data%22%3A%5B%5D%7D%2C%22tipo%22%3A%5B%22telefoni%22%5D%2C%22esito%22%3A%7B%22codice%22%3A200%2C%22info%22%3A%22OK%22%7D%2C%22timestamp%22%3A1682427577%2C%22owner%22%3A%22fabio56istrefi%40gmail.com%22%2C%22soggetto%22%3A%7B%22code%22%3A%22CCCMRN48T59E625G%22%2C%22utenze%22%3A%5B%223273271075%22%2C%223405355951%22%5D%7D%7D";
+        //$str = "data=%7B%22status%22%3A%22COMPLETED%22%2C%22date_request%22%3A%222023-04-25+15%3A00%3A01%22%2C%22date_completion%22%3A%222023-04-26+08%3A25%3A38%22%2C%22id%22%3A%226447ceb9a18b1c3496263405%22%2C%22cf_piva%22%3A%22CCCMRN48T59E625G%22%2C%22callback%22%3A%7B%22url%22%3A%22https%3A%5C%2F%5C%2Fcatasto.000webhostapp.com%5C%2Fcallback.php%22%2C%22field%22%3A%22data%22%2C%22method%22%3A%22POST%22%2C%22data%22%3A%5B%5D%7D%2C%22tipo%22%3A%5B%22telefoni%22%5D%2C%22esito%22%3A%7B%22codice%22%3A200%2C%22info%22%3A%22OK%22%7D%2C%22timestamp%22%3A1682427577%2C%22owner%22%3A%22fabio56istrefi%40gmail.com%22%2C%22soggetto%22%3A%7B%22code%22%3A%22CCCMRN48T59E625G%22%2C%22utenze%22%3A%5B%223273271075%22%2C%223405355951%22%5D%7D%7D";
 
 
         /*
@@ -7154,7 +7168,7 @@ class DumbController extends Controller
         */
         $str = "data=%7B%22endpoint%22%3A%22elenco_immobili%22%2C%22stato%22%3A%22evasa%22%2C%22callback%22%3A%7B%22url%22%3A%22https%3A%5C%2F%5C%2Fcatasto.000webhostapp.com%5C%2Fcallback.php%22%2C%22field%22%3A%22data%22%2C%22method%22%3A%22POST%22%2C%22data%22%3A%7B%7D%7D%2C%22parametri%22%3A%7B%22tipo_catasto%22%3A%22F%22%2C%22provincia%22%3A%22MATERA+Territorio-MT%22%2C%22comune%22%3A%22F052%23MATERA%230%230%22%2C%22sezione%22%3Anull%2C%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%7D%2C%22risultato%22%3A%7B%22immobili%22%3A%5B%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A1%2C%22indirizzo%22%3A%22%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22%22%2C%22classe%22%3A%22%22%2C%22consistenza%22%3A%22%22%2C%22rendita%22%3A%22%22%2C%22partita%22%3A%22Soppressa%22%2C%22id_immobile%22%3A%22MzIzMyMzMjMzI0YjNTIjNTk3I0YwNTIjU29wcHJlc3NhIzEjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A2%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+n.+SC+Piano+S1%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C03%22%2C%22classe%22%3A%2205%22%2C%22consistenza%22%3A%22122++m2%22%2C%22rendita%22%3A%22R.Euro%3A447%2C35%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22MzIzNCMzMjM0I0YjNTIjNTk3I0YwNTIjIzIjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A3%2C%22indirizzo%22%3A%22%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22%22%2C%22classe%22%3A%22%22%2C%22consistenza%22%3A%22%22%2C%22rendita%22%3A%22%22%2C%22partita%22%3A%22Soppressa%22%2C%22id_immobile%22%3A%22MzIzNSMzMjM1I0YjNTIjNTk3I0YwNTIjU29wcHJlc3NhIzMjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A4%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+Piano+T%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C02%22%2C%22classe%22%3A%2203%22%2C%22consistenza%22%3A%22175++m2%22%2C%22rendita%22%3A%22R.Euro%3A406%2C71%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22MzIzNiMzMjM2I0YjNTIjNTk3I0YwNTIjIzQjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A5%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+Piano+T-1+-+2+-+3%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22D01%22%2C%22classe%22%3A%22%22%2C%22consistenza%22%3A%22%22%2C%22rendita%22%3A%22R.Euro%3A4343%2C40%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22MzIzNyMzMjM3I0YjNTIjNTk3I0YwNTIjIzUjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A6%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+Piano+T%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C01%22%2C%22classe%22%3A%2204%22%2C%22consistenza%22%3A%22109++m2%22%2C%22rendita%22%3A%22R.Euro%3A1874%2C58%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22MzIzOCMzMjM4I0YjNTIjNTk3I0YwNTIjIzYjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A7%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+Piano+T%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C01%22%2C%22classe%22%3A%2204%22%2C%22consistenza%22%3A%2287++m2%22%2C%22rendita%22%3A%22R.Euro%3A1496%2C23%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22MzIzOSMzMjM5I0YjNTIjNTk3I0YwNTIjIzcjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A8%2C%22indirizzo%22%3A%22%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22%22%2C%22classe%22%3A%22%22%2C%22consistenza%22%3A%22%22%2C%22rendita%22%3A%22%22%2C%22partita%22%3A%22Soppressa%22%2C%22id_immobile%22%3A%22MzkzOTc4IzM5Mzk3OCNGIzUyIzU5NyNGMDUyI1NvcHByZXNzYSM4IyAjTUFURVJB%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A10%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+n.+SC+Piano+T-S1%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22%22%2C%22classe%22%3A%22%22%2C%22consistenza%22%3A%22%22%2C%22rendita%22%3A%22R.Euro%3A%22%2C%22partita%22%3A%22Bene+comune+non+censibile%22%2C%22id_immobile%22%3A%22NDc1MjA3IzQ3NTIwNyNGIzUyIzU5NyNGMDUyI0JlbmUgY29tdW5lIG5vbiBjZW5zaWJpbGUjMTAjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A11%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+n.+SC+Piano+S1%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22%22%2C%22classe%22%3A%22%22%2C%22consistenza%22%3A%22%22%2C%22rendita%22%3A%22R.Euro%3A%22%2C%22partita%22%3A%22Bene+comune+non+censibile%22%2C%22id_immobile%22%3A%22NDc1MjA4IzQ3NTIwOCNGIzUyIzU5NyNGMDUyI0JlbmUgY29tdW5lIG5vbiBjZW5zaWJpbGUjMTEjICNNQVRFUkE%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A12%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+n.+SC+Piano+S1%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C02%22%2C%22classe%22%3A%2202%22%2C%22consistenza%22%3A%2265++m2%22%2C%22rendita%22%3A%22R.Euro%3A127%2C57%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22NDc1MjA5IzQ3NTIwOSNGIzUyIzU5NyNGMDUyIyMxMiMgI01BVEVSQQ%3D%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A13%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+n.+SC+Piano+S1%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C02%22%2C%22classe%22%3A%2202%22%2C%22consistenza%22%3A%2211++m2%22%2C%22rendita%22%3A%22R.Euro%3A21%2C59%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22NDc1MjEwIzQ3NTIxMCNGIzUyIzU5NyNGMDUyIyMxMyMgI01BVEVSQQ%3D%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A14%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+n.+SC+Piano+S1%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C02%22%2C%22classe%22%3A%2202%22%2C%22consistenza%22%3A%22152++m2%22%2C%22rendita%22%3A%22R.Euro%3A298%2C31%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22NDc1MjExIzQ3NTIxMSNGIzUyIzU5NyNGMDUyIyMxNCMgI01BVEVSQQ%3D%3D%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A9%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+n.+SC+Piano+T%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C02%22%2C%22classe%22%3A%2201%22%2C%22consistenza%22%3A%22290++m2%22%2C%22rendita%22%3A%22R.Euro%3A479%2C27%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22NDc1MjI2IzQ3NTIyNiNGIzUyIzU5NyNGMDUyIyM5IyAjTUFURVJB%22%7D%2C%7B%22sezione_urbana%22%3Anull%2C%22foglio%22%3A52%2C%22particella%22%3A597%2C%22subalterno%22%3A15%2C%22indirizzo%22%3A%22CONTRADA+LA+VAGLIA+n.+SC+Piano+S1%22%2C%22sezione%22%3Anull%2C%22zona_censuaria%22%3A%22%22%2C%22categoria%22%3A%22C02%22%2C%22classe%22%3A%2202%22%2C%22consistenza%22%3A%22540++m2%22%2C%22rendita%22%3A%22R.Euro%3A1059%2C77%22%2C%22partita%22%3A%22%22%2C%22id_immobile%22%3A%22NDkxNTk2IzQ5MTU5NiNGIzUyIzU5NyNGMDUyIyMxNSMgI01BVEVSQQ%3D%3D%22%7D%5D%7D%2C%22esito%22%3A%22OK%22%2C%22timestamp%22%3A1682523120%2C%22owner%22%3A%22fabio56istrefi%40gmail.com%22%2C%22id%22%3A%22644943f09213dd5ac37f82b6%22%7D";
 
-        $str = "data=%7B%22status%22%3A%22COMPLETED%22%2C%22date_request%22%3A%222023-04-27+17%3A47%3A01%22%2C%22date_completion%22%3A%222023-04-27+17%3A47%3A21%22%2C%22id%22%3A%22644a98c0a6c7f7296966411d%22%2C%22cf_piva%22%3A%22DNILSE69T53I073J%22%2C%22callback%22%3A%7B%22url%22%3A%22https%3A%5C%2F%5C%2Fcatasto.000webhostapp.com%5C%2Fcallback.php%22%2C%22field%22%3A%22data%22%2C%22method%22%3A%22POST%22%2C%22data%22%3A%5B%5D%7D%2C%22tipo%22%3A%5B%22telefoni%22%5D%2C%22esito%22%3A%7B%22codice%22%3A200%2C%22info%22%3A%22OK%22%7D%2C%22timestamp%22%3A1682610368%2C%22owner%22%3A%22fabio56istrefi%40gmail.com%22%2C%22soggetto%22%3A%7B%22code%22%3A%22DNILSE69T53I073J%22%2C%22utenze%22%3A%5B%5D%7D%7D";
+        // $str = "data=%7B%22status%22%3A%22COMPLETED%22%2C%22date_request%22%3A%222023-04-27+17%3A47%3A01%22%2C%22date_completion%22%3A%222023-04-27+17%3A47%3A21%22%2C%22id%22%3A%22644a98c0a6c7f7296966411d%22%2C%22cf_piva%22%3A%22DNILSE69T53I073J%22%2C%22callback%22%3A%7B%22url%22%3A%22https%3A%5C%2F%5C%2Fcatasto.000webhostapp.com%5C%2Fcallback.php%22%2C%22field%22%3A%22data%22%2C%22method%22%3A%22POST%22%2C%22data%22%3A%5B%5D%7D%2C%22tipo%22%3A%5B%22telefoni%22%5D%2C%22esito%22%3A%7B%22codice%22%3A200%2C%22info%22%3A%22OK%22%7D%2C%22timestamp%22%3A1682610368%2C%22owner%22%3A%22fabio56istrefi%40gmail.com%22%2C%22soggetto%22%3A%7B%22code%22%3A%22DNILSE69T53I073J%22%2C%22utenze%22%3A%5B%5D%7D%7D";
 
         $str = substr(trim($str), 5);
 
@@ -7165,7 +7179,80 @@ class DumbController extends Controller
         dd(
             $str
         );
+    }
 
+    function gen_file(){
+        $size = 10 * 1024 * 1024;
+        Files::writeOrFail(ETC_PATH . 'big_file.txt', str_repeat('*', $size));
+    }
+
+   
+    function api_callback(){
+        /*
+            http://test.lan/callback.php
+            https://catasto.000webhostapp.com/callback.php
+        */
+        
+        $url = 'http://test.lan/callback.php';
+        //$url = 'https://ticiwe.com/callbacks';
+    
+        $client = new ApiClient($url);
+
+        $client
+        ->disableSSL()
+        ->redirect()
+        ->setBody([
+            'data' => [
+                'name' => 'Fabio',
+            'age'  => 27
+            ]
+        ])
+        ->post();
+      
+        dd(
+            $client->data()         
+        );  
+    }
+
+    function test_api0c_mock()
+    {
+        $mock = ETC_PATH . 'res_ricerca_nazionale.php';
+        //$mock = ETC_PATH . 'res_jsonplaceholder.json';
+
+        $cli  = new ApiClient();
+
+        $res  = $cli
+        ->when(!empty($mock), function($it) use ($mock){
+            $it->mock($mock);
+        })
+        ->request('http://jsonplaceholder.typicode.com/posts/3', 'GET')
+        ->getResponse();
+
+        /*
+            Array
+                (
+                    [data] => {
+                    "userId": 1,
+                    "id": 3,
+                    "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
+                    "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+                    }
+                        [http_code] => 200
+                        [error] =>
+                    )
+                )
+        */
+        dd($res);
+
+        /*
+            {
+                "userId": 1,
+                "id": 3,
+                "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
+                "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+            }
+        */
+        dd($cli->data());
     }
 
 }   // end class

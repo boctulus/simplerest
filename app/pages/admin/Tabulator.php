@@ -24,7 +24,9 @@ class Tabulator /* extends Page */
         $right_cont = '';
 
         if (!empty($entity)){
-            $this->tpl_params['page_name'] = "DataGrid ".ucfirst($entity);
+            $this->tpl_params['page_name'] = ucfirst(
+                str_replace('_', ' ', $entity)
+            );
 
             $main = get_view("datagrids/tabulator/tabulator", [
                 'entity'   => $entity,

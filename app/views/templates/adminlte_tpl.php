@@ -81,10 +81,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="index3.html" class="nav-link">Home</a>
+                    <a href="/" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
+                    <a href="https://wa.me/447541919915" class="nav-link" target="_blank">Contact</a>
                 </li>
             </ul>
 
@@ -313,12 +313,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         <!-- Main Footer -->
         <footer class="main-footer">
-            <!-- To the right -->
-            <div class="float-right d-none d-sm-inline">
-                ~
-            </div>
-            <!-- Default to the left -->
-            Copyright &copy; 2023, <strong>Fabio Istrefi</strong>
+            <?= $footer ?>
         </footer>
     </div>
     <!-- ./wrapper -->

@@ -6,6 +6,7 @@ use simplerest\core\Model;
 use simplerest\models\MyModel;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\Strings;
+use simplerest\core\exceptions\SqlException;
 
 class DB 
 {
@@ -912,9 +913,9 @@ class DB
 					// https://stackoverflow.com/a/36724762/980631
 					$type = \PDO::PARAM_LOB;  // 3
 				elseif(is_array($val)){
-					throw new \Exception("where value can not be an array!");				
+					throw new SqlException("The value for WHERE can not be an array!");				
 				}else {
-					throw new \Exception("Unsupported type: " . var_export($val, true));
+					throw new SqlException("Unsupported type: " . var_export($val, true));
 				}	
 
 				$st->bindValue($ix +1 , $val, $type);
