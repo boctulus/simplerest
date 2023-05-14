@@ -13,6 +13,7 @@ abstract class Controller
     protected $callable = [];
     protected $users_table;
     protected $_title;
+    protected $config;
 
     protected static $_printable = true;
     

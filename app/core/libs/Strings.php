@@ -1400,6 +1400,39 @@ class Strings
 	static function fileExtension(string $filename){
 		return Files::fileExtension($filename);
 	}
+
+	/*
+		Chequeo rapido
+	*/
+	static function isJSON($val, bool $fast_check = false){
+		if ($val === null){
+			return false;
+		}
+
+		if (!is_string($val)){
+			return false;
+		}
+
+		if ($val == ''){
+			return false;
+		}
+
+		if (substr($val, 0, 1) != '{'){
+			return false;
+		}
+
+		if (substr($val, strlen($val)-1, 1) != '}'){
+			return false;
+		}
+
+		if (!$fast_check){
+			if (json_decode($val) === null){
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
 
 

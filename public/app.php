@@ -73,3 +73,17 @@ use simplerest\core\libs\i18n\Translate;
         $p->boot();
     }
     
+    /*
+        TimeZone adjust
+
+        Lo ideal seria que esto este dentro de un package y que se pueda desconectar
+    */
+
+    $cfg = config();
+    if (isset($cfg['DateTimeZone'])){
+        $ok = date_default_timezone_set($cfg['DateTimeZone']);
+        
+        if (!$ok){
+            dd("FALLO AL INTENTAR CAMBIAR TIMEZONE");
+        }
+    }

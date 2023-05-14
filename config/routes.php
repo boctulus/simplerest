@@ -3,9 +3,25 @@
 use simplerest\core\Route;
 use simplerest\libs\Debug;
 use simplerest\core\libs\Mail;
-use simplerest\core\libs\Files;
+use simplerest\core\libs\System;
+use simplerest\core\libs\Logger;
 
 $route = Route::getInstance();
+
+Route::get('mem', function(){
+	dd(System::getMemoryLimit(), 'Memory limit');
+	dd(System::getMemoryUsage(), 'Memory usage');
+	dd(System::getMemoryUsage(true), 'Memory usage (real)');
+
+	dd(System::getMemoryPeakUsage(), 'Memory peak usage');
+	dd(System::getMemoryPeakUsage(true), 'Memory peak usage (real)');
+});
+
+Route::get('git/pull', function(){
+	dd(
+		System::exec("git pull")
+	);
+});
 
 /*
 	Penosamente no hay para la consola
@@ -17,7 +33,7 @@ Route::get('revolut', function(){
 Route::post('api/v1/save_demo', function(){
 	$req = request()->as_array()->getBody();
 	
-	Files::dump($req);
+	Logger::dump($req);
 });
 
 Route::get('api/v1/cool',  'DumbAuthController@super_cool_action');
@@ -35,7 +51,7 @@ Route::get('admin/migrate', function(){
 	exec("php com migrations migrate", $output_lines, $res_code);
 	
 	foreach($output_lines as $output_line){
-		d($output_line);
+		dd($output_line);
 	}
 
 	dd($res_code, 'RES_CODE');
@@ -55,8 +71,8 @@ Route::get('admin/test_smtp', function(){
 		'Hola!<p/>Esto es una más <b>prueba</b> con el server de Planex<p/>Chau'
 	);
 
-	d(Mail::errors(), 'Error');
-	d(Mail::status(), 'Status');
+	dd(Mail::errors(), 'Error');
+	dd(Mail::status(), 'Status');
 });
 
 

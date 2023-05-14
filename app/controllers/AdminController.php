@@ -16,7 +16,13 @@ class AdminController extends MyController
 	public $tpl_params    = [
 		'brand_name' => 'Planex',
 		'logo'       => 'img/planex_logo.png',
-		'logo_alt'   => 'Planex'
+		'logo_alt'   => 'Planex',
+		'footer'     => '<!-- To the right -->
+						<div class="float-right d-none d-sm-inline">
+						</div>
+						
+						<!-- Default to the left -->
+						Copyright &copy; 2022-2023, <strong>Cabildo de La Palma</strong>. Todos los derechos reservados.'
 	];	
 	
 	// ..
