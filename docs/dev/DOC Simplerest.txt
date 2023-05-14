@@ -9376,7 +9376,7 @@ Ej:
 
 Notas: 
 
-- Para usarse con archivos .php, estos deben ser el resultado de la exportacion con dump()
+- Con archivos .php
 
 Ej:
 
