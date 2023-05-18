@@ -7289,21 +7289,77 @@ class DumbController extends Controller
         print_r($resultado);
     }
 
-    function test_casting(){
-        dd(
+    function test_casting_to_number(){
+        var_dump(
+            Strings::toIntOrFail(null)
+        );
+
+        var_dump(
+            Strings::toIntOrFail(false)
+        );
+
+        var_dump(
             Strings::toIntOrFail("52")
         );
 
-        dd(
+        var_dump(
             Strings::toIntOrFail(52)
         );
 
-        dd(
+        var_dump(
             Strings::toIntOrFail("52.7")
         );
 
-        dd(
+        var_dump(
             Strings::toIntOrFail(52.7)
+        );
+    }
+
+    function test_casting_int_to_str(){
+        var_dump(
+            Strings::fromInt(null)
+        );
+
+        var_dump(
+            Strings::fromInt("52")
+        );
+
+        var_dump(
+            Strings::fromInt(52)
+        );
+
+        // Invalid integer for '52.7'
+        var_dump(
+            Strings::fromInt("52.7")
+        );
+
+        // Invalid integer for '52.7'
+        var_dump(
+            Strings::fromInt(52.7)
+        );
+    }
+
+    function test_casting_float_to_str(){
+        var_dump(
+            Strings::fromFloat(null)
+        );
+
+        var_dump(
+            Strings::fromFloat("52")
+        );
+
+        var_dump(
+            Strings::fromFloat(52)
+        );
+
+        // Invalid integer for '52.7'
+        var_dump(
+            Strings::fromFloat("52.7")
+        );
+
+        // Invalid integer for '52.7'
+        var_dump(
+            Strings::fromFloat(52.7)
         );
     }
 
