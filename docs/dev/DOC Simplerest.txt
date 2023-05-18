@@ -3320,9 +3320,29 @@ Existen otros hooks en en ApiController relacionados con el acceso a folders.
 
 Uso prácticos de los hooks sobre APIs:
 
+OnPosting
+
 Ej:
 
-	Podríamos querer recibir cierto parámetro por GET o via body y evitar que tener problemas con las valicaciones que hace el framework en particular del ApiController.
+	function onPostingAfterCheck($id, array &$data)
+    {
+        /*
+            Casting
+        */
+        
+        try {
+            $data['foglio']     = Strings::toIntOrFail($data['foglio']);
+            $data['particella'] = Strings::toIntOrFail($data['particella']);
+        } catch (\Exception $e){
+            throw new InvalidValidationException($e->getMessage());
+        }            
+    }
+
+OnPost
+
+Ej:
+
+	Podríamos querer recibir cierto parámetro por GET o via body y evitar que tener problemas con las validaciones que hace el framework en particular del ApiController.
 
 	Si el parámetro viene via Body podríamos leer el valor de forma destructiva en el constructor de la clase ApiController derivada con shiftBodyParam() así:
 
