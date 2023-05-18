@@ -259,5 +259,25 @@ class Arrays
         return true;
     }
 
+    /*
+        Dados dos arrays (no-asociativos) $a y $b, se altera el orden en que aparecen los elementos del primer array ($a)
+        de forma que sigan el orden impuesto por el array segundo ($b)
+
+        $a sigue el orden impuesto por $a
+
+        Estrictamete hay varias soluciones posibles, todas validas.
+    */
+    static function followOrder(array $a, array $b) {
+        $first_pos_b_in_a = array_search($b[0], $a);
+        
+        $a = array_diff($a, $b);
+
+        list($a1, $a2) = array_chunk($a, $first_pos_b_in_a);
+
+        $a = array_merge($a1, $b, $a2);
+        
+        return $a;
+    }
+
 }
 

@@ -1285,6 +1285,65 @@ Igualmente hay métodos para programáticamente hacer rellenables o no-rellenabl
     				'lastname'=>$lastname
     ]);
     
+# Personalización de modelos
+
+Los campos se pueden definir como "fillables", 
+"no fillables", 
+"ocultos", 
+se puede enviar al frontend un "nuevos nombres" para los campos,
+se puede definir el "orden de campos" en que deben ser mostrados en el frontend,
+se puede modificar el "orden" -ORDER BY- (o mas de uno) por defecto para los campos,
+se pueden enviar una sugerencia de "formato" para los campos en el frontend
+
+Ej:
+
+Dentro de un modelo:
+
+	function __construct(bool $connect = false, $schema = null, bool $load_config = true){
+        parent::__construct($connect, $schema, $load_config);
+
+        $this->unfill([
+            'status',
+            // 'response',
+            // 'result'           
+        ]);
+
+        $this->hide([
+            'created_at',
+            'updated_at',
+            'deleted_at'
+        ]);
+
+        $this->field_names = array_merge($this->field_names, [
+            'id'         => 'ID',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+            'deleted_at' => 'Deleted At',
+            'result'     => 'Resultato',
+        ]);
+
+        /*
+            Indicacion para el FronEnd
+
+            Los campos que aparecen primero, deben mostrarse primero. Afecta a get_model_defs() y get_defs()
+        */
+        $this->field_order = [
+            'response',
+            'status',
+            'result'
+        ];
+        
+        /*
+            Default sort
+        */
+        $this->order       = [
+            $this->id() => 'DESC',
+			// demas ordenamientos
+        ];
+
+        $this->formatters['response'] = 'textarea';
+        $this->formatters['result']   = 'textarea';
+    }
 
 # Borrado de registros
 

@@ -20,6 +20,14 @@
 
 - Debe ser posible forkear y extender "WpDataTables" (leer bien licencia) para que en vez de leer tomar como data-source un CSV, que en definitiva en algun punto lo toma como array, que lea el contenido de una TABLA de SQL
 
+- DOCUMENTAR APIs con
+
+https://readme.com/
+
+Ej:
+
+https://developer.alegra.com/reference/get_variant-attributes  <-- documentado on readme.com
+
 
 # TODO
 
