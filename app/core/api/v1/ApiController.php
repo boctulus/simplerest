@@ -20,6 +20,8 @@ use simplerest\core\api\v1\ResourceController;
 use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\interfaces\ISubResources;
 
+use simplerest\core\traits\SubResourcesV2;
+
 abstract class ApiController extends ResourceController implements IApi, ISubResources
 {
     public    $model_name;
@@ -31,7 +33,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected $config;
     protected $impersonated_by;
     protected $conn;
-    protected $instance; // main
+    protected $instance; // model main
     protected $tenantid;
 
     protected $id;
@@ -47,6 +49,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     static protected $soft_delete = true;
     static protected $connect_to = [];
 
+    use SubResourcesV2;
 
     static function getHidden(){
 		return static::$hidden;
@@ -303,6 +306,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         if (!empty($defs)){         
             $the_defs = get_defs($this->table_name, null, false, true);  
+
             return [ 'defs' => $the_defs ];
         }
 
@@ -1111,11 +1115,19 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             }
 
             if ($this->instance->inSchema([$this->instance->createdBy()])){
+                $this->instance->fill([ $this->instance->createdAt() ]);
                 $data[$this->instance->createdBy()] = $this->impersonated_by != null ? $this->impersonated_by : auth()->uid();
             }  
 
             if (!isset($data[$this->instance->createdAt()]) && $this->instance->inSchema([$this->instance->createdAt()])){
-                $data[$this->instance->createdAt()] = at();
+                // dd($this->instance->getFillables(),    'FILLABLES');
+                // dd($this->instance->getNotFillables(), 'NOT FILLABLES');
+
+                $this->instance->fill([ $this->instance->createdAt() ]);
+                $data[$this->instance->createdAt()] = at();  /// <<-------------- *
+
+                // dd($this->instance->getFillables(),    'FILLABLES');
+                // dd($this->instance->getNotFillables(), 'NOT FILLABLES');
             }
 
             /*
@@ -1164,7 +1176,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $validator = new Validator;
 
             $ok = $validator->validate($data, $this->instance->getRules());
-            
+               
             if ($ok !== true){
                 error(trans('Data validation error'), 400, $validator->getErrors());
             }  
@@ -1173,6 +1185,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 // event hook    
                 $this->onPostingFolderAfterCheck($id, $data, $this->folder);
             }
+            
 
             // event hook             
             $this->onPostingAfterCheck($id, $data);
@@ -1403,7 +1416,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         unset($data[$t]);
                     }
                 }
+
                 
+                // dd($this->instance->getFillables(),    'FILLABLES');
+                // dd($this->instance->getNotFillables(), 'NOT FILLABLES');
 
                 // Debería acá comenzar transacción
 

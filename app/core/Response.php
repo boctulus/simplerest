@@ -260,7 +260,7 @@ class Response
         if (Url::isPostman() || Url::isInsomnia()){
             if (is_string($detail)){
                 $detail = trim($detail);
-                $detail = Strings::isJSON($detail) ? json_decode($detail, true) : '';
+                $detail = Strings::isJSON($detail) ? json_decode($detail, true, 512, JSON_UNESCAPED_SLASHES) : $detail;
             }
         }
 
@@ -333,17 +333,17 @@ class Response
         if (isset(static::$data['error']) && !empty(static::$data['error'])){
             // print_r('*'); // *
 
-            if (!$cli){
-                view('error.php', [
-                    'status'    => static::$http_code,
-                    'type'      => static::$data['error']['type'],
-                    'code'      => static::$data['error']['code'],
-                    'location'  => static::$data['error']['location'] ?? '',
-                    'message'   => static::$data['error']['message'] ?? '',
-                    'detail'    => static::$data['error']['detail'] ?? '',
-                ], 'templates\tpl_basic.php');
+            // if (!$cli){
+            //     view('error.php', [
+            //         'status'    => static::$http_code,
+            //         'type'      => static::$data['error']['type'],
+            //         'code'      => static::$data['error']['code'],
+            //         'location'  => static::$data['error']['location'] ?? '',
+            //         'message'   => static::$data['error']['message'] ?? '',
+            //         'detail'    => static::$data['error']['detail'] ?? '',
+            //     ], 'templates\tpl_basic.php');
 
-            } else {
+            // } else {
                 $message  = static::$data['error']['message'] ?? '--';
                 $type     = static::$data['error']['type'] ?? '--';
                 $code     = static::$data['error']['code'] ?? '--';
@@ -351,7 +351,7 @@ class Response
                 $location = static::$data['error']['location'] ?? '--';
 
                 echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;
-            }
+            //}
             
         } else {
             if (is_array(static::$data) && !self::$to_be_encoded){

@@ -3,6 +3,7 @@
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 use simplerest\models\MyModel;
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
 use simplerest\core\exceptions\SqlException;
@@ -107,6 +108,12 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
 
     $field_names = $instance->getFieldNames();  //  -- UNIFICAR field_names con formatters
     $formatters  = $instance->getformatters();  //
+
+    $field_order = $instance->getFieldOrder();
+    
+    if (!empty($field_order)){
+        $fields = Arrays::followOrder($fields, $field_order);
+    }
 
     $hidden_ay   = $instance->getHidden();
     $fillable_ay = $instance->getFillables();

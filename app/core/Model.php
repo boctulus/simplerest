@@ -26,7 +26,7 @@ class Model {
 	// Schema
 	protected $schema;
 
-	protected $fillable = [];
+	protected $fillable     = [];
 	protected $not_fillable = [];
 	protected $hidden   = [];
 	protected $attributes = [];
@@ -109,7 +109,12 @@ class Model {
 			// ...
 		]
 	*/
-	protected $field_names = [];
+	protected        $field_names = [];
+
+	/*
+		Solo como indicaicon para el FrontEnd
+	*/
+	protected 		 $field_order = [];
 
 	/*
 		Aca se especificaria si es un checkbox o radiobox por ejemplo
@@ -119,7 +124,7 @@ class Model {
 
 		Tambien otros formatters que puedan estar disponibles en el frontend
 	*/
-	protected $formatters = [];
+	protected        $formatters = [];
 
 	static protected $sql_formatter_callback;
 	protected        $sql_formatter_status;
@@ -241,7 +246,6 @@ class Model {
 			}
 		}
 		
-		
 		if ($this->schema == null){
 			return;
 		}	
@@ -251,28 +255,10 @@ class Model {
 		if (in_array('', $this->attributes, true)){
 			throw new \Exception("An attribute is invalid");
 		}
-		
 
-		if ($this->fillable == NULL){
+		if ($this->fillable == null){
 			$this->fillable = $this->attributes;
-			$this->unfill([
-							$this->is_locked, 
-							$this->belongsTo,
-							$this->createdAt,							
-							$this->updatedAt, 							
-							$this->deletedAt, 
-							$this->createdBy, 
-							$this->updatedBy, 
-							$this->deletedBy
-			]);	
 		}
-		
-		$this->unfill($this->not_fillable);
-		
-
-		// dd($this->not_fillable, 'NOT FILLABLE');
-		// dd($this->getFillables(), 'FILLABLES');
-		// exit;
 
 		$this->schema['nullable'][] = $this->is_locked;		
 		$this->schema['nullable'][] = $this->createdAt;
@@ -326,6 +312,21 @@ class Model {
 			}
 		}
 
+		//dd($this->not_fillable, 'NF');
+
+		/*
+			Remuevo los campos no-fillables de los fillables
+		*/
+		foreach ($this->not_fillable as $f){
+			$pos = array_search($f, $this->fillable);
+			
+			if ($pos !== false){
+				unset($this->fillable[$pos]);
+			}
+		}
+
+		//$this->setValidator(new Validator());
+
 		// event handler
 		$this->init();
 	}
@@ -371,7 +372,7 @@ class Model {
 	}
 
 	function noValidation(){
-		$this->validator = [];
+		$this->validator = null;
 		return $this;
 	}
 
@@ -653,8 +654,11 @@ class Model {
 	 * @return void
 	 */
 	function hide(array $fields){
-		foreach ($fields as $f)
-			$this->hidden[] = $f;
+		foreach ($fields as $f){
+			if (!in_array($f, $this->hidden)){
+				$this->hidden[] = $f;
+			}
+		}
 
 		return $this;	
 	}
@@ -669,8 +673,39 @@ class Model {
 	 * @return object
 	 */
 	function fill(array $fields){
-		foreach ($fields as $f)
-			$this->fillable[] = $f;
+		foreach ($fields as $f){
+			if (!in_array($f, $this->fillable)){
+				$this->fillable[] = $f;
+			}
+		
+			/*
+				Remuevo los campos fillables del array de los no-fillables	
+			*/
+			$pos = array_search($f, $this->not_fillable);
+			
+			if ($pos !== false){
+				unset($this->not_fillable[$pos]);
+			}
+		}
+
+		return $this;	
+	}
+
+	function unfill(array $fields){
+		foreach ($fields as $f){
+			if (!in_array($f, $this->not_fillable)){
+				$this->not_fillable[] = $f;
+			}
+
+			/*
+				Remuevo los campos no-fillables del array de los fillables	
+			*/
+			$pos = array_search($f, $this->fillable);
+			
+			if ($pos !== false){
+				unset($this->fillable[$pos]);
+			}
+		}
 
 		return $this;	
 	}
@@ -679,7 +714,9 @@ class Model {
 		Make all fields fillable
 	*/
 	function fillAll(){
-		$this->fillable = $this->attributes;
+		$this->fillable     = $this->attributes;
+		$this->not_fillable = [];
+
 		return $this;	
 	}
 	
@@ -691,7 +728,7 @@ class Model {
 	 *
 	 * @return void
 	 */
-	function unfill(array $fields){
+	protected function unfillAll(array $fields){
 		if (!empty($this->fillable) && !empty($fields)){		
 			foreach ($this->fillable as $ix => $f){
 				foreach ($fields as $to_unset){
@@ -709,6 +746,7 @@ class Model {
 
 		return $this;
 	}
+	
 
 	// INNER | LEFT | RIGTH JOIN
 	function join($table, $on1 = null, $op = '=', $on2 = null, string $type = 'INNER JOIN')
@@ -1310,6 +1348,7 @@ class Model {
 		// Validación
 		if (!empty($this->validator)){
 			$validado = $this->validator->validate(array_combine($vars, $values), $this->getRules());
+
 			if ($validado !== true){
 				throw new InvalidValidationException(json_encode(
 					$this->validator->getErrors()
@@ -2738,8 +2777,11 @@ class Model {
 			throw new SqlException('Array of data should be associative');
 		}
 
+		$this->ignoreFieldsNotPresentInSchema($data);
+
+	
 		$data = $this->applyInputMutator($data, 'UPDATE');
-		$vars   = array_keys($data);
+		$vars = array_keys($data);
 		$vals = array_values($data);
 
 
@@ -2796,6 +2838,10 @@ class Model {
 			$where = '';
 		}
 
+		if (trim($where) == ''){
+			throw new SqlException("WHERE can not be empty in UPDATE statement");
+		}
+
 		$q = "UPDATE ". DB::quote($this->from()) .
 				" SET $set WHERE " . $where;		
 
@@ -2833,9 +2879,9 @@ class Model {
 		if ($this->semicolon_ending){
 			$q .= ';';
 		}
-	
-		// d($vals, 'vals');
-		// d($q, 'q');
+
+		// dd($vals, 'vals');
+		// dd($q, 'q');
 
 		$st = $this->conn->prepare($q);
 
@@ -3096,6 +3142,22 @@ class Model {
 	}
 
 	/*
+		Si un campo es enviado al Modelo pero realmente no existe en el schema
+		entonces se debe ignorar para evitar generar un error innecesario.
+	*/
+	protected function ignoreFieldsNotPresentInSchema(array &$data){
+		if (empty($this->schema)){
+			return;
+		}
+
+		foreach ($data as $key => $dato){
+			if (!in_array($key, $this->getFillables())){
+				unset($data[$key]);
+			}
+		}
+	}
+
+	/*
 		@return mixed false | integer 
 
 		Si la data es un array de arrays, intenta un INSERT MULTIPLE
@@ -3122,6 +3184,8 @@ class Model {
 			return $last_id ?? null;
 		}
 
+		$this->ignoreFieldsNotPresentInSchema($data);
+
 		$this->data = $data;	
 		
 		$data = $this->applyInputMutator($data, 'CREATE');
@@ -3141,23 +3205,23 @@ class Model {
 			$vals = array_values($data);
 		}
 
+		// no entiendo como puede estar null algunas veces y otras no !!!!
+		$this->validator = new Validator();			
+
+		// dd($this->fillable, 'FILLABLE');
+		// dd($this->not_fillable, 'NOT FILLABLE');
+
 		// Validación
-		if (!empty($this->validator)){
-			if(!empty($this->fillable) && is_array($this->fillable)){
-				foreach($vars as $var){
-					if (!in_array($var,$this->fillable))
-						throw new \InvalidArgumentException("`{$this->table_name}`.`$var` is no fillable");
-				}
-			}
-			
-			$validado = $this->validator->validate($data, $this->getRules());
+		if (!empty($this->validator))
+		{			
+			$validado = $this->validator->validate($data, $this->getRules(), $this->fillable, $this->not_fillable);
 			if ($validado !== true){
 				throw new InvalidValidationException(json_encode(
 					$this->validator->getErrors()
 				));
 			} 
 		}
-		
+
 		$symbols  = array_map(function(?string $e = null){
 			if ($e === null){
 				$e = '';
@@ -3648,7 +3712,7 @@ class Model {
 	}
 
 	function isFillable(string $field){
-		return in_array($field, $this->fillable);
+		return in_array($field, $this->fillable) && !in_array($field, $this->not_fillable);
 	}
 
 	function getFillables(){
@@ -3689,6 +3753,10 @@ class Model {
 
 	function getRule(string $name){
 		return $this->schema['rules'][$name] ?? NULL;
+	}
+
+	function getFieldOrder(){
+		return $this->field_order;
 	}
 
 	/**

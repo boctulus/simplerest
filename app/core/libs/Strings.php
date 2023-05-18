@@ -8,7 +8,7 @@ class Strings
 		Extrae la parte numerica de una cadena que contenga una cantidad
 		y la castea a un float
 	*/
-	static function parseCurrency(string $num, $thousand_sep = null, $decimal_sep = null){
+	static function parseFloat(string $num, $thousand_sep = null, $decimal_sep = null){
 		if ($thousand_sep != null){
 			static::replace($thousand_sep, '', $num);
 		}
@@ -22,6 +22,17 @@ class Strings
 		}
 
 		return $result;
+	}
+
+	// alias -- depredicar?
+	static function parseCurrency(string $num, $thousand_sep = null, $decimal_sep = null){
+		return static::parseFloat($num, $thousand_sep, $decimal_sep);
+	}
+
+	static function parseFloatOrFail(string $num, $thousand_sep = null, $decimal_sep = null){
+		if (static::parseFloat($num, $thousand_sep, $decimal_sep) === false){
+			throw new \Exception("String '$num' is not a Float");
+		}
 	}
 
 	/*
@@ -56,12 +67,56 @@ class Strings
 		}
 	}
 
+	static function toInt($num = null){
+		if (is_int($num)){
+			return $num;
+		}
+
+		if ($num === null){
+			return null;
+		}
+	
+		if ($num === false){
+			return false;
+		}
+
+		if (!is_numeric($num)){
+			return false;
+		}
+
+		return (int) $num;
+	}
+
+	static function toIntOrFail($num){
+		if (is_int($num)){
+			return $num;
+		}
+
+		if ($num === null){
+			throw new \InvalidArgumentException("'$num' can not be null");
+		}
+	
+		if ($num === false){
+			throw new \InvalidArgumentException("'$num' can not be false");
+		}
+
+		if (!is_numeric($num)){
+			throw new \Exception("Conversion for '$num' failed");
+		}
+
+		return (int) $num;
+	}
+
 	/*
 		Intenta hacer un casting de un string numerico a float 
 
 		Evita castear null o false a 0.0
 	*/
-	static function convertIntoFloat(?string $num = null){
+	static function toFloat(?string $num = null){
+		if (is_float($num)){
+			return $num;
+		}
+
 		if ($num === null){
 			return null;
 		}
@@ -77,8 +132,11 @@ class Strings
 		return (float) $num;
 	}
 
+	static function toFloatOrFail($num){
+		if (is_float($num)){
+			return $num;
+		}
 
-	static function convertIntoFloatOrFail(string $num){
 		if ($num === null){
 			throw new \InvalidArgumentException("'$num' can not be null");
 		}
@@ -88,11 +146,12 @@ class Strings
 		}
 
 		if (!is_numeric($num)){
-			throw new \Exception("Conversion for '$num' fails");
+			throw new \Exception("Conversion for '$num' failed");
 		}
 
 		return (float) $num;
 	}
+
 
 	static function formatNumber($x, string $locale = "it-IT"){
 		$nf = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
@@ -286,7 +345,11 @@ class Strings
 		@param bool $trim
 		@param bool $empty_lines
 	*/
-	static function lines(string $str, bool $trim = false, bool $empty_lines = true){
+	static function lines(?string $str, bool $trim = false, bool $empty_lines = true){
+		if ($str == null){
+			return [];
+		}
+
 		$lines = explode(static::carriageReturn($str), $str);
 
 		if (!$empty_lines){
@@ -1414,14 +1477,6 @@ class Strings
 		}
 
 		if ($val == ''){
-			return false;
-		}
-
-		if (substr($val, 0, 1) != '{'){
-			return false;
-		}
-
-		if (substr($val, strlen($val)-1, 1) != '}'){
 			return false;
 		}
 

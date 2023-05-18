@@ -31,7 +31,7 @@ class VhostController extends MyController
         } 
     }
 
-    function add(string $name, string $extension = 'test', int $port = 80){
+    function create(string $name, string $extension = 'test', int $port = 80){
         /*
             Seria util poder remover linea a linea, la misma cantidad de espacios desde la primera linea no-vacia
 
