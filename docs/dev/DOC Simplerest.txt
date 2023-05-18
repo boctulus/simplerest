@@ -9659,6 +9659,23 @@ El parámetro *no* lleva argumento y puede ser --dropPrimary o --delPrimary
 
 	$_dropPrimary  = Strings::matchParam($str, ['dropPrimary', 'delPrimary'], null);
 
+
+# Casting
+
+La clase String provee de varios metodos utiles para realizar casting.
+
+Ej:
+
+En un Controller o Model podria tener esto:
+
+	try {
+		$data['foglio']     = Strings::fromInt($data['foglio']);   // deberia ser fromIntOrFail()
+		$data['particella'] = Strings::fromInt($data['particella']);
+	} catch (\Exception $e){
+		error(trans('Data validation error'), 400, $e->getMessage());
+	}     
+
+
 ### Variable dumping 
 
 Para imprimir en pantalla o en la terminal de forma sencilla cualquier tipo de dato el framework provee las clases VarDump, StdOut.
