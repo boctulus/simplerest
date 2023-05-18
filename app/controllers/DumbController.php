@@ -7255,4 +7255,56 @@ class DumbController extends Controller
         dd($cli->data());
     }
 
+    function reordenarArray($a, $b) {
+        $first_pos_b_in_a = array_search($b[0], $a);
+        
+        $a = array_diff($a, $b);
+
+        list($a1, $a2) = array_chunk($a, $first_pos_b_in_a);
+
+        $a = array_merge($a1, $b, $a2);
+        
+        return $a;
+    }
+    
+    function test_ra(){
+        // Ejemplo de uso
+        $a = ['X', 'A', 'B', 'C', 'D', 'E'];
+        $b = ['C', 'A'];
+        
+        /*
+            Array
+            (
+                [0] => X
+                [1] => B
+                [2] => D
+                [3] => C
+                [4] => A
+                [5] => E
+            )
+        */
+        $resultado = $this->reordenarArray($a, $b);
+        
+        // Imprimimos el resultado
+        print_r($resultado);
+    }
+
+    function test_casting(){
+        dd(
+            Strings::toIntOrFail("52")
+        );
+
+        dd(
+            Strings::toIntOrFail(52)
+        );
+
+        dd(
+            Strings::toIntOrFail("52.7")
+        );
+
+        dd(
+            Strings::toIntOrFail(52.7)
+        );
+    }
+
 }   // end class

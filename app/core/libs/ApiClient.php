@@ -67,12 +67,16 @@ class ApiClient
             $mock = file_get_contents($mock);
         }
 
-        if (is_array($mock)){
-            $mock = json_encode($mock, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_SLASHES);
-        }
+        // if (is_array($mock)){
+        //     $mock = json_encode($mock, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_SLASHES);
+        // }
 
         $this->response = $mock;
         $this->mocked   = true;
+
+        if (Strings::isJSON($this->response)){
+            $this->response = json_decode($this->response, true);
+        }
     }
 
     function dump(){

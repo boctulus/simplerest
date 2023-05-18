@@ -127,7 +127,7 @@ class System
         Ejecuta un comando "com"
     */
     static function com($command, ...$args){
-        return static::exec(static::getPHP() . " com $command". $args);
+        return static::exec(static::getPHP() . " com $command", ...$args);
     }
 
 

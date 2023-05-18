@@ -146,6 +146,10 @@ class View
     static function js_file(string $file, ?Array $atts = null, bool $in_head = false){
         static $included;
 
+        if (!Strings::endsWith('.js', $file)){
+            throw new \InvalidArgumentException("Invalid file extension for '$file'. Expecting .js");
+        }
+
         $file_ori = $file;
 
         if (!isset($included) || $included == null){
@@ -182,6 +186,10 @@ class View
 
     static function css_file(string $file){
         static $included;
+
+        if (!Strings::endsWith('.css', $file)){
+            throw new \InvalidArgumentException("Invalid file extension for '$file'. Expecting .css");
+        }
 
         $file_ori = $file;
 
