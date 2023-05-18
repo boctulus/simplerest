@@ -618,6 +618,10 @@ class DB
 	public static function beginTransaction(){
 		#dd("Solicitud de inicio de transacción para => ". static::getCurrentConnectionId());
 
+		if (phpversion() >= 8){
+			return;
+		}
+
 		if (static::$inited_transaction){
 			// don't start it again!
 			return;
@@ -635,6 +639,10 @@ class DB
 	}
 
 	public static function commit(){
+		if (phpversion() >= 8){
+			return;
+		}
+
 		if (!static::$inited_transaction){
 			// nothing to do
 			return;
@@ -645,6 +653,10 @@ class DB
 	}
 
 	public static function rollback(){
+		if (phpversion() >= 8){
+			return;
+		}
+
 		if (!static::$inited_transaction){
 			// nothing to do
 			return;
@@ -657,6 +669,10 @@ class DB
 	// https://github.com/laravel/framework/blob/4.1/src/Illuminate/DB/Connection.php#L417
 	public static function transaction(\Closure $callback)
     {		
+		if (phpversion() >= 8){
+			return $callback();
+		}
+
 		if (static::$inited_transaction){
 			// don't start it again!
 			return;

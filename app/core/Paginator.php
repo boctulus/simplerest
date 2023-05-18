@@ -76,8 +76,6 @@ class Paginator
             
             foreach($this->orders as $field => $_order){
                 $order = strtoupper($_order);
-                
-                $field = filter_var($field, FILTER_SANITIZE_STRING);
 
                 if ((preg_match('/^[a-z0-9\-_\.]+$/i',$field) != 1)){
                     throw new \InvalidArgumentException("Field '$field' is not a valid field");

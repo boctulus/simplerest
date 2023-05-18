@@ -10,7 +10,7 @@ use simplerest\core\libs\Logger;
     https://www.php.net/manual/en/language.exceptions.extending.php
 
 */
-class SqlException extends \Exception {
+class SqlException extends \PDOException {
     public function __construct($message = null, $code = 0) {
         parent::__construct($message, $code);
 

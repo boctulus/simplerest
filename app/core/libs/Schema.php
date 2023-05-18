@@ -1893,6 +1893,10 @@ class Schema
 		return Model::sqlFormatter(Strings::removeMultipleSpaces($this->query), $sql_formatter);
 	}
 	
+	/*
+		Sino hay nada que alterar, deberia lanzar Exception
+		para evitar ejecutar migraciones vacias por error 
+	*/
 	function change()
 	{	
 		// dd($this->indices, 'INDICES');
@@ -2009,7 +2013,7 @@ class Schema
 			return;
 		}
 
-		$conn = DB::getConnection();   
+		DB::getConnection();   
 		
 		DB::beginTransaction();
 		try{
@@ -2021,17 +2025,16 @@ class Schema
 			
 			DB::commit();
 		} catch (\PDOException $e) {
-			DB::rollback();
 			dd($change, 'SQL');
 			dd($e->getMessage(), "PDO error");
 			throw $e;		
         } catch (\Exception $e) {
-            DB::rollback();
             throw $e;
-        } catch (\Throwable $e) {
-            DB::rollback();     
+        } catch (\Throwable $e) {  
 			throw $e;       
-        }     
+        } finally {
+			DB::rollback();     
+		}    
 	}	
 
 
