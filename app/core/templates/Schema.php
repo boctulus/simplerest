@@ -10,27 +10,29 @@ class __NAME__ implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> __TABLE_NAME__,
+			'table_name'		=> __TABLE_NAME__,
 
-			'id_name'		=> __ID__,
+			'id_name'			=> __ID__,
 
-			'fields'		=> __FIELDS__,
+			'fields'			=> __FIELDS__,
 
-			'attr_types'	=> __ATTR_TYPES__,
+			'attr_types'		=> __ATTR_TYPES__,
 
-			'primary'		=> __PRIMARY__,
+			'attr_type_detail'	=> __ATTR_TYPE_DETAIL__,
 
-			'autoincrement' => __AUTOINCREMENT__,
+			'primary'			=> __PRIMARY__,
 
-			'nullable'		=> __NULLABLES__,
+			'autoincrement' 	=> __AUTOINCREMENT__,
 
-			'required'		=> __REQUIRED__,
+			'nullable'			=> __NULLABLES__,
 
-			'uniques'		=> __UNIQUES__,
+			'required'			=> __REQUIRED__,
 
-			'rules' 		=> __RULES__,
+			'uniques'			=> __UNIQUES__,
 
-			'fks' 			=> __FKS__,
+			'rules' 			=> __RULES__,
+
+			'fks' 				=> __FKS__,
 
 			'relationships' => [
 				__RELATIONS__

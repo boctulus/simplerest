@@ -284,17 +284,18 @@ class Files
 	static function setCallback(?callable $fn) : void {
 		static::$callable = $fn;
 	}
-
+	
 	/*
 		Copy single files
+		
+		@return bool
 	*/
 	static function cp(string $ori, string $dst, bool $simulate = false, bool $overwrite = true, ?callable $callable = null){
 		$ori = trim($ori);
         $dst = trim($dst);
 		
 		if (!is_file($ori)){
-			//return;
-			throw new \InvalidArgumentException("File '$ori' not found");
+			return false;
 		}
 
 		if (!file_exists($ori)){
@@ -368,11 +369,11 @@ class Files
             $ok = true;
         }       
 
-        if ($ok){
-            StdOut::pprint("-- ok", true);
-        } else {
-            StdOut::pprint("-- FAILED !", true);
-        }
+        // if ($ok){
+        //     StdOut::pprint("-- ok", true);
+        // } else {
+        //     StdOut::pprint("-- FAILED !", true);
+        // }
 
         return $ok;
     }
@@ -925,12 +926,9 @@ class Files
 
 		static::writableOrFail($dir);
 
-		$ok = (bool) @file_put_contents($path, $string, $flags);
+		$bytes = @file_put_contents($path, $string, $flags);
 
-		if (!$ok){
-			$path = realpath($path);
-			throw new \Exception("Path '$path' could not be written");
-		}
+		return $bytes;
 	}
 
 	static function append(string $path, string $string, $add_newline_before = true) : bool {
@@ -1013,7 +1011,7 @@ class Files
 
 		if ($content === false || $content === null){
 			$path = realpath($path);
-			throw new \Exception("File '$path' was unable to be written!");
+			throw new \Exception("File '$path' was unabble to be written!");
 		}
 
 		return $content;

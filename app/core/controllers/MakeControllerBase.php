@@ -1225,7 +1225,8 @@ class MakeControllerBase extends Controller
             return "'$x'"; 
         };
 
-        $_attr_types = [];
+        $_attr_types       = [];
+        $_attr_type_detail = [];
 
         foreach ($types as $f => $type){
             $_attr_types[] = "\t\t\t\t'$f' => '$type'";
@@ -1304,6 +1305,9 @@ class MakeControllerBase extends Controller
                 $_rules[$f]['type'] =  'time';  
             }
 
+            if (strtolower($types_raw[$f]) == 'json'){
+                $_attr_type_detail[] = "\t\t\t\t'$f' => 'JSON'";
+            }
 
             /*
                 Para blobs
@@ -1324,8 +1328,9 @@ class MakeControllerBase extends Controller
             $_rules[$f] = "\t\t\t\t'$f' => " . '[' . implode(', ', $tmp) . ']';
         }
 
-        $attr_types = "[\r\n". implode(",\r\n", $_attr_types). "\r\n\t\t\t]";
-        $rules  = "[\r\n". implode(",\r\n", $_rules). "\r\n\t\t\t]";
+        $attr_types        = "[\r\n". implode(",\r\n", $_attr_types). "\r\n\t\t\t]";
+        $attr_type_detail  = "[\r\n". implode(",\r\n", $_attr_type_detail). "\r\n\t\t\t]";
+        $rules             = "[\r\n". implode(",\r\n", $_rules). "\r\n\t\t\t]";
 
         // Non-nullables
         $required = array_diff($field_names, $nullables);
@@ -1373,6 +1378,7 @@ class MakeControllerBase extends Controller
         Strings::replace('__AUTOINCREMENT__', !empty($autoinc) ? "'$autoinc'" : 'null', $file);
         Strings::replace('__FIELDS__', '[' . implode(', ', Strings::enclose($field_names, "'")) . ']' , $file);    
         Strings::replace('__ATTR_TYPES__', $attr_types, $file);
+        Strings::replace('__ATTR_TYPE_DETAIL__', $attr_type_detail, $file);
         Strings::replace('__PRIMARY__', '['. implode(', ',array_map($escf,  $pri_components)). ']',$file);
         Strings::replace('__NULLABLES__', '['. implode(', ',array_map($escf, $nullables)). ']',$file);        
         Strings::replace('__REQUIRED__', '[' . implode(', ', Strings::enclose($required, "'")) . ']',$file);

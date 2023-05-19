@@ -7355,7 +7355,7 @@ class DumbController extends Controller
         // Invalid integer for '52.7'
         var_dump(
             Strings::fromFloat("52.7")
-        );
+    );
 
         // Invalid integer for '52.7'
         var_dump(
