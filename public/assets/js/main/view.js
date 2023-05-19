@@ -468,7 +468,31 @@ async function save_row(jsonData, id = null) {
       data: jsonData,
     })
     .then(({ data }) => {
-      //console.log(data)
+      console.log('DATA', data)
+
+      // POSIBLE NO-CONTENT
+
+      if (typeof data === 'undefined' || data === null || data === ""){
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops... something went wrong',
+          text: "NO CONTENT"
+          // footer: '<a href="">Why do I have this issue?</a>'
+        })
+
+        return;
+      }
+
+      if (typeof data.data === 'undefined'){
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops... something went wrong',
+          text: (typeof(data) == 'string' ? data : JSON.stringify(data))
+          // footer: '<a href="">Why do I have this issue?</a>'
+        })
+
+        return;
+      }
 
       // TODO: Importante revisar, el data response devuelto en POST difiere mucho del devuelto en PATCH
       if (id) {
@@ -489,15 +513,28 @@ async function save_row(jsonData, id = null) {
 
     })
     .catch((error) => {
-      //tmp = error
+      // tmp = error
+      // console.log(error)
 
-      const detail  = error?.response?.data?.error?.detail; // Errores de validación
-      const err_msg = error?.response?.data?.error?.message || error?.message || (!Array.isArray(detail) ? detail : null) || "Unknown error"
-        
-      console.log('err_msg', err_msg) 
-      console.log('detail', detail) 
+      const detail  = error?.response?.data?.error?.detail ?? null // Errores de validación
+      let   err_msg = "Unknown error"
+  
+      if (typeof(error?.response?.data == 'string')){
+        err_msg = error?.response?.data || err_msg;
+      } else {
+        err_msg = error?.response?.data?.error?.message || error?.message || (!Array.isArray(detail) ? detail : null) || err_msg
+      }
+      
+      if (err_msg == "Unknown error"){
+        tmp = error
+        console.log(error)
+      } else {
+        tmp = detail
+      }
 
-      tmp = detail
+      // console.log('err_msg', err_msg) 
+      // console.log('detail', detail) 
+
 
       if (detail !== null && typeof(detail) === 'object') {
 
@@ -518,7 +555,7 @@ async function save_row(jsonData, id = null) {
         Swal.fire({
           icon: 'error',
           title: 'Oops... something went wrong',
-          text: err_msg,
+          text: err_msg + (typeof(detail) == 'string' ?  `Detalle: ${detail}` : ''),
           // footer: '<a href="">Why do I have this issue?</a>'
         })
 
@@ -532,10 +569,23 @@ const setMode = (mode) => {
 
   if (mode == 'see'){
     $('#save_row').hide();
-  } else {
+  } else {    
     $('#save_row').show();
   }
 
+  if (mode == 'see'){
+    setAttrWithCallback((id, sel) => {
+      return ("true")
+    
+    }, viewData.fields, 'col-', {"style": "display: block"})
+  } else {
+    setAttrWithCallback((id, sel) => {
+      return (sel.data('visibility') !== "true")
+    
+    }, ['status', 'response', 'result'], 'col-', {"style": "display: none"})
+  }
+
+  
   if (mode == 'create'){
     $('.modal-title').text('New')
     return
@@ -559,3 +609,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
     setAttr(viewData.fields, 'col-', { readonly: false })
   };
 })
+
+
+
