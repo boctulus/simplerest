@@ -1558,6 +1558,13 @@ class Strings
 
 		return true;
 	}
+
+	static function formatJSON(string $str){
+		$arr = json_decode($str, true);
+		$str = json_encode($arr, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+		return $str;
+	}
 }
 
 
