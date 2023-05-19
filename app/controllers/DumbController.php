@@ -7363,4 +7363,16 @@ class DumbController extends Controller
         );
     }
 
+    function test_format_json(){
+        $str = '{"endpoint":"ricerca_nazionale_pg","stato":"evasa","callback":{"url":"https:\/\/ticiwe.com\/callbacks?r=realstate&sub=ricerca_nazionale","field":"data","method":"POST","data":[]},"parametri":{"cf_piva":"12485671007","tipo_catasto":"TF","provincia":"NAZIONALE-IT"},"risultato":{"soggetti":[{"denominazione":"ALTRAVIA SERVIZI SOCIETA\' A RESPONSABILITA\' LIMITATA","sede":"ROMA (RM)","cf":"12485671007","id_soggetto":"OTgwMzI3NTA1MiMwI0FMVFJBVklBIFNFUlZJWkkgU09DSUVUQScgQSBSRVNQT05TQUJJTElUQScgTElNSVRBVEEjUk9NQSAoUk0pIzEyNDg1NjcxMDA3","catasti":[{"citta":"ROMA","fabbricati":1,"terreni":0}]}]},"esito":"OK","timestamp":1683988870,"owner":"fabio56istrefi@gmail.com","id":"645fa18682673817d87710e8"}';
+
+        dd(Strings::formatJSON($str));
+    }
+
+    function test_file_fn(){
+        var_dump(Logger::getContent());
+
+        dd(Files::readOrFail("c:\ddd"));
+    }
+
 }   // end class

@@ -18,7 +18,7 @@ class Logger
     }
     
     static function truncate(){
-        file_put_contents(LOGS_PATH . static::getLogFilename(), '');
+        Files::writeOrFail(LOGS_PATH . static::getLogFilename(), '');
     }
     
     static function getContent(?string $file = null){
@@ -32,7 +32,7 @@ class Logger
 			return false;
 		}
 
-        return file_get_contents($path);
+        return Files::readOrFail($path);
     }
 
 
@@ -55,13 +55,13 @@ class Logger
 		}
 
 		if ($variable === null){
-			$bytes = file_put_contents($path, '<?php '. "\r\n\r\n" . 'return ' . var_export($data, true). ';');
+			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . 'return ' . var_export($data, true). ';');
 		} else {
 			if (!Strings::startsWith('$', $variable)){
 				$variable = '$'. $variable;
 			}
 			
-			$bytes = file_put_contents($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
+			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
 		}
 
 		return ($bytes > 0);
@@ -82,7 +82,7 @@ class Logger
 			$flags = $flags|JSON_PRETTY_PRINT;
 		}
 
-		$bytes = file_put_contents($path, json_encode($data, $flags));
+		$bytes = Files::writeOrFail($path, json_encode($data, $flags));
 		return ($bytes > 0);
 	}
 
