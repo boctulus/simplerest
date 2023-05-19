@@ -17,8 +17,8 @@ class Logger
         return ($full_path ? LOGS_PATH : '') . static::$logFile;
     }
     
-    static function truncate(){
-        Files::writeOrFail(LOGS_PATH . static::getLogFilename(), '');
+    static function truncate($log_file = null){
+        Files::writeOrFail(LOGS_PATH . ($log_file ?? static::getLogFilename()), '');
     }
     
     static function getContent(?string $file = null){
@@ -32,7 +32,7 @@ class Logger
 			return false;
 		}
 
-        return Files::readOrFail($path);
+		return Files::readOrFail($path);
     }
 
 

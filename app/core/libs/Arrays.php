@@ -268,11 +268,16 @@ class Arrays
         Estrictamete hay varias soluciones posibles, todas validas.
     */
     static function followOrder(array $a, array $b) {
+        if (count($b) == 0){
+            return;
+        }
+
         $first_pos_b_in_a = array_search($b[0], $a);
-        
-        $a = array_diff($a, $b);
 
         list($a1, $a2) = array_chunk($a, $first_pos_b_in_a);
+
+        $a1 = array_diff($a1, $b);
+        $a2 = array_diff($a2, $b);
 
         $a = array_merge($a1, $b, $a2);
         

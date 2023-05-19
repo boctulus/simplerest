@@ -4,6 +4,7 @@ namespace simplerest\core;
 
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\traits\ExceptionHandler;
 
@@ -146,9 +147,9 @@ class View
     static function js_file(string $file, ?Array $atts = null, bool $in_head = false){
         static $included;
 
-        if (!Strings::endsWith('.js', $file)){
-            throw new \InvalidArgumentException("Invalid file extension for '$file'. Expecting .js");
-        }
+        // if (!Strings::endsWith('.js', $file)){
+        //     Logger::logError("Possible invalid file extension for '$file'. Expecting .js");
+        // }
 
         $file_ori = $file;
 
@@ -188,7 +189,7 @@ class View
         static $included;
 
         if (!Strings::endsWith('.css', $file)){
-            throw new \InvalidArgumentException("Invalid file extension for '$file'. Expecting .css");
+            // Logger::logError("Possible invalid file extension for '$file'. Expecting .css");
         }
 
         $file_ori = $file;
