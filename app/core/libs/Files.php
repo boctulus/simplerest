@@ -996,12 +996,35 @@ class Files
 		return static::file_get_contents_locking($filename, $flags);
 	}
 
+	/*
+		Lee archivo o falla.
+	*/
+	static function readOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
+		if (is_dir($path)){
+			$path = realpath($path);
+			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
+		} 
+
+		if (!file_exists($path)){	
+			throw new \InvalidArgumentException("Path '$path' does not exist!");
+		}
+
+		$content =  @file_get_contents($path, $use_include_path, $context, $offset, $length);
+
+		if ($content === false || $content === null){
+			$path = realpath($path);
+			throw new \Exception("File '$path' was unable to be written!");
+		}
+
+		return $content;
+	}
+
 	static function touch(string $filename, int $flags = 0){
 		if (file_exists($filename)){
 			return touch($filename);
 		}
 
-		return file_put_contents($filename, '', $flags) !== false;
+		return static::writeOrFail($filename, '', $flags) !== false;
 	}
 
 	static function getTempFilename(?string $extension = null){
@@ -1010,13 +1033,13 @@ class Files
 
 	static function saveToTempFile($data, ?string $filename = null, $flags = null, $context = null){
 		$filename = $filename ?? static::getTempFilename();
-		file_put_contents($filename, $data, $flags, $context);
+		static::writeOrFail($filename, $data, $flags, $context);
 
 		return $filename;
 	}
 
 	static function getFromTempFile(string $filename){
-		return file_get_contents(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename);
+		return static::readOrFail(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename);
 	}
 
 	static function fileExtension(string $filename){
