@@ -136,7 +136,7 @@ class Strings
 	/*
 		int|string|null => Exception
 	*/
-	static function fromInt($num = null, bool $accept_null = true){
+	static function fromInt($num = null, bool $accept_null = true){		
 		if ($num === null){
 			if ($accept_null){
 				return null;

@@ -26,6 +26,7 @@ class ApiClient
     protected $cert_ssl  = null;
 
     // Response
+    protected $raw_response;
     protected $response;
     protected $filename;
     protected $res_headers;
@@ -49,8 +50,12 @@ class ApiClient
 
         $mock puede ser la ruta a un archivo .json, .php o un array
     */
-    function mock($mock)
+    function mock($mock, bool $ignore_empty = false)
     {   
+        if (!$ignore_empty && empty($mock)){
+            throw new \Exception("Empty mock!");
+        }
+
         if (is_string($mock) && Strings::endsWith('.php', $mock)){
             if (!file_exists($mock)){
                 throw new \Exception("Mock file '$mock' not found");
@@ -74,8 +79,10 @@ class ApiClient
         $this->response = $mock;
         $this->mocked   = true;
 
-        if (Strings::isJSON($this->response)){
-            $this->response = json_decode($this->response, true);
+        if ($this->auto_decode == false){
+            if (!Strings::isJSON($this->response)){
+                $this->response = json_encode($this->response);
+            }
         }
     }
 
@@ -137,9 +144,11 @@ class ApiClient
     /*
         Ejecuta un callback cuano $cond es verdadero
     */
-    function when($cond, $fn, ...$args){
+    function when($cond, callable $fn_success,  callable $fn_fail = null, ...$args){
         if ($cond){
-            $fn($this, ...$args);
+            $fn_success($this, ...$args);
+        } elseif ($fn_fail != null){
+            $fn_fail($this, ...$args);
         }
         
         return $this;
@@ -230,6 +239,10 @@ class ApiClient
         return $this;
     }
 
+    function getRawResponse(){
+        return $this->raw_response;
+    }
+
     function getStatus(){
         return $this->status;
     }
@@ -248,8 +261,8 @@ class ApiClient
         return $this->error;
     }
 
-    function data(){
-        return $this->response;
+    function data(bool $raw = false){
+        return $raw ? $this->raw_response : $this->response;
     }
 
     function getResponse(?bool $decode = null, ?bool $as_array = null){       
@@ -439,14 +452,18 @@ class ApiClient
             $header_fn
         );
 
-        $response  = curl_exec($curl);
-        $err_msg   = curl_error($curl);
-        $http_code = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $response      = curl_exec($curl);
+        $err_msg       = curl_error($curl);
+        $http_code     = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         $content_type  = curl_getinfo($curl,CURLINFO_CONTENT_TYPE);
         $effective_url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
 
         curl_close($curl);
+
+
+        // Preservo la respuesta
+        $this->raw_response = $response;
 
         $data = ($decode && $response !== false) ? json_decode($response, true) : $response;
 
@@ -507,8 +524,7 @@ class ApiClient
 
         $body    = $body    ?? $this->body    ?? null;
         $headers = $headers ?? $this->req_headers ?? null;        
-        $decode  = $this->auto_decode; 
-
+    
         if ($this->expiration == null){
             $expired = true;
         } else {
