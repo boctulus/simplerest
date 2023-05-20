@@ -24,13 +24,6 @@ class Files
 	static function isAllowUrlFopenEnabled(){
 		return ini_get('allow_url_fopen');
 	}
-	
-	/*
-		Remover en siguientes versiones
-	*/
-	static function logger($data, ?string $path = null, $append = true){
-		return Logger::log($data, $path, $append);
-	}
 
 	/*
 		https://www.codewall.co.uk/write-php-array-to-csv-file/
@@ -912,7 +905,7 @@ class Files
 	/*
 		Escribe archivo o falla.
 	*/
-	static function writeOrFail(string $path, string $string, int $flags = 0){
+	static function writeOrFail(string $path, string|array|object $content, int $flags = 0){
 		if (is_dir($path)){
 			$path = realpath($path);
 			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
@@ -925,6 +918,15 @@ class Files
 		}
 
 		static::writableOrFail($dir);
+
+		// Pruebo a ver si tiene __toString()
+		if (is_string($content)){
+			$string = $content;
+		} elseif (is_object($content)){
+			$string = (string) $content;
+		} elseif (is_array($content)){
+			$string = implode(PHP_EOL, $content);
+		} 
 
 		$bytes = @file_put_contents($path, $string, $flags);
 
@@ -1015,6 +1017,11 @@ class Files
 		}
 
 		return $content;
+	}
+
+	// alias
+	static function getContent(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
+		return static::readOrFail($path, $use_include_path, $context, $offset, $length);
 	}
 
 	static function touch(string $filename, int $flags = 0){
