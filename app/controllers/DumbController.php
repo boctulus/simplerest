@@ -49,7 +49,6 @@ use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Reflector;
 
 use simplerest\core\libs\Validator;
-use Endroid\QrCode\Writer\PngWriter;
 
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
@@ -7490,7 +7489,7 @@ class DumbController extends Controller
     function test_remove_bt_classes(){
         $html = '</li>
         <li class="nav-item">
-            <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank">
+            <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank" style="color:red">
               
                 Bootstrap Components
             </a>
@@ -7499,8 +7498,11 @@ class DumbController extends Controller
             <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/bootstrap/templates?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank"><p>XXX</p></a>
         </li>';
         
-        $html = HTML::removeAllCSSClasses($html );
         
+        $html = XML::removeCSS($html);
+        $html = XML::removeHTMLAttributes($html, ['rel', 'target']);
+
+
         /* 
             Salida:
 
