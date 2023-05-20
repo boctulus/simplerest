@@ -4,18 +4,6 @@ namespace simplerest\core\libs;
 
 class Strings 
 {	
-	// sacar de aca
-	static function extractBootstrapClasses(string $page): array
-    {
-        // Expresión regular para encontrar los enlaces con la clase especificada
-        $pattern = '/<a[^>]+class="list-group-item list-group-item-action "[^>]*>(.*?)<\/a>/s';
-        
-        // Buscar todas las coincidencias y obtener los textos encontrados
-        preg_match_all($pattern, $page, $matches);
-        $texts = $matches[1];
-        
-        return $texts;
-    }
 
 	/*
 		Extrae la parte numerica de una cadena que contenga una cantidad
@@ -1011,14 +999,59 @@ class Strings
 	}
 
 	/*
+		Extrae las primeras $count palabras de un texto
+		
+		https://stackoverflow.com/a/5956635/980631
+	*/
+	static function getUpToNWords($sentence, $count = 10) {
+		preg_match("/(?:\w+(?:\W+|$)){0,$count}/", $sentence, $matches);
+		return $matches[0];
+	}
+
+	/*
 		Recupera todas las palabras de un texto
 
 		https://stackoverflow.com/a/10685513/980631
 	*/
-	static function getWords(string $str){
-		$n_words = preg_match_all('/([a-zA-Z]|\xC3[\x80-\x96\x98-\xB6\xB8-\xBF]|\xC5[\x92\x93\xA0\xA1\xB8\xBD\xBE]){4,}/', $str, $match_arr);
+	static function getWordsPerLenght(string $str, int $min_chars){
+		preg_match_all('/([a-zA-Z]|\xC3[\x80-\x96\x98-\xB6\xB8-\xBF]|\xC5[\x92\x93\xA0\xA1\xB8\xBD\xBE]){'.$min_chars.',}/', $str, $match_arr);
 		return $match_arr[0];
 	}
+
+	/*
+		Revise el DOM y acorte los textos utilizando el metodo getUpToNWords() 
+		listado mas abajo a $n_words palabras 
+
+		NO debe afectar codigo Javascript o CSS si lo hubiera.
+
+		No debe truncar NADA dentro de atributos como style, class, etc
+	*/
+	static function reduceText(string $html, int $n_words): string {
+        // Cargar el HTML en un objeto DOMDocument
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
+        // Obtener todos los nodos de texto
+        $xpath = new \DOMXPath($dom);
+		
+        $textNodes = $xpath->query('//text()');
+
+        // Acortar el texto de cada nodo
+        foreach ($textNodes as $node) {
+            $text            = $node->nodeValue;
+            $words           = preg_split('/\s+/', $text);
+            $shortenedWords  = array_slice($words, 0, $n_words);
+            $shortenedText   = implode(' ', $shortenedWords);
+            $node->nodeValue = $shortenedText;
+        }
+
+        // Obtener el HTML resultante
+        $reducedHtml = $dom->saveHTML();
+
+        return $reducedHtml;
+    }
 
 	static function equal(string $s1, string $s2, bool $case_sensitive = true){
 		if ($case_sensitive === false){
