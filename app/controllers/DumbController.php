@@ -7473,18 +7473,6 @@ class DumbController extends Controller
             Files::getContent($path), 'CONTENT'
         );
     }
-
-    // Función de prueba
-    function test_extractbt_classes()
-    {
-        $page  = Files::getContent(ETC_PATH . 'bt_clases.html');
-        
-        $clases = Strings::extractBootstrapClasses($page);
-
-        dd($clases);
-
-        Logger::varExport($clases, ETC_PATH . 'bt.php');
-    }
     
     function test_remove_bt_classes(){
         $html = '</li>
@@ -7519,6 +7507,48 @@ class DumbController extends Controller
             </li>
         */
         dd($html); 
+    }
+
+
+    function test_remove_social_links(){
+        // Ejemplo de uso
+        $html = '
+        <a href="https://www.facebook.com/mi-pagina">Visita mi página de Facebook</a>
+        <a href="https://www.twitter.com/mi-usuario/2">Sígueme en Twitter</a>
+        <a href="https://www.instagram.com/mi-usuario">Sígueme en Instagram</a>
+        <a href="https://www.linkedin.com/in/mi-usuario">Conéctate conmigo en LinkedIn</a>
+        <a href="https://www.otra-red-social.com/mi-usuario">Enlace a otra red social</a>
+        ';
+
+        $filteredHtml = XML::removeSocialLinks($html);
+        
+        dd($filteredHtml);
+    }
+
+    function test_until_n_words(){
+        dd(
+            Strings::getUpToNWords("To add support, for other word breaks like commas and dashes, preg_match gives a quick way and doesn't require splitting the string", 8)
+        );
+    }
+
+    function test_reducetext() {
+        /*
+            Prueba 1
+        */
+        $html1 = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>';
+        $n_words1 = 5;
+        $result1 = Strings::reduceText($html1, $n_words1);
+        dd($result1, 'PRUEBA 1');
+        // Salida esperada: "<p>Lorem ipsum dolor sit amet,</p>"
+    
+        /*
+            Prueba 2
+        */
+        $html2 = '<div><h1>Title</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>';
+        $n_words2 = 4;
+        $result2 = Strings::reduceText($html2, $n_words2);
+        dd($result2, 'PRUEBA 2');
+        // Salida esperada: "<div><h1>Title</h1><p>Lorem ipsum dolor sit amet, consectetur,</p></div>"
     }
 
     
