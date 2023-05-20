@@ -7487,6 +7487,38 @@ class DumbController extends Controller
         Logger::varExport($clases, ETC_PATH . 'bt.php');
     }
     
+    function test_remove_bt_classes(){
+        $html = '</li>
+        <li class="nav-item">
+            <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank">
+              
+                Bootstrap Components
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/bootstrap/templates?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank"><p>XXX</p></a>
+        </li>';
+        
+        $html = HTML::removeAllCSSClasses($html );
+        
+        /* 
+            Salida:
+
+            </li>
+            <li class="nav-item">
+                <a class="d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank">
+                    <svg style="margin-right: 0.375rem; --darkreader-inline-stroke: currentColor;" height="16" width="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-darkreader-inline-stroke=""><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Bootstrap Components
+                </a>
+            </li>
+            <li class="nav-item">
+                <span class="a-class">AAA AAA</span>
+                <a class="d-inline-flex align-items-center" href="https://shuffle.dev/bootstrap/templates?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank"><p>XXX</p></a>
+            </li>
+        */
+        dd($html); 
+    }
+
     
 
 }   // end class
