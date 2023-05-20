@@ -4,6 +4,19 @@ namespace simplerest\core\libs;
 
 class Strings 
 {	
+	// sacar de aca
+	static function extractBootstrapClasses(string $page): array
+    {
+        // Expresión regular para encontrar los enlaces con la clase especificada
+        $pattern = '/<a[^>]+class="list-group-item list-group-item-action "[^>]*>(.*?)<\/a>/s';
+        
+        // Buscar todas las coincidencias y obtener los textos encontrados
+        preg_match_all($pattern, $page, $matches);
+        $texts = $matches[1];
+        
+        return $texts;
+    }
+
 	/*
 		Extrae la parte numerica de una cadena que contenga una cantidad
 		y la castea a un float
@@ -1518,18 +1531,6 @@ class Strings
         return $ret;
     }
 
-	static function removeInlineComments(string $str) : string {	
-		return preg_replace('/\n\s*\n/', "\n", $str);
-	}	
-
-	static function removeMultiLineComments(string $str) : string {	
-		return preg_replace('!/\*.*?\*/!s', '', $str);	
-	}
-
-	static function removeComments(string $str) : string {
-		return static::removeInlineComments(static::removeMultiLineComments($str));
-	}
-
 	static function fileExtension(string $filename){
 		return Files::fileExtension($filename);
 	}
@@ -1564,6 +1565,14 @@ class Strings
 		$str = json_encode($arr, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 		return $str;
+	}
+
+	static function replaceLinesOnlyContainingSpaces(string $str) : string {	
+		return preg_replace('/\n\s*\n/', "\n", $str);
+	}	
+
+	static function removeMultiLineComments(string $str) : string {	
+		return preg_replace('!/\*.*?\*/!s', '', $str);	
 	}
 }
 

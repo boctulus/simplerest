@@ -7375,4 +7375,118 @@ class DumbController extends Controller
         dd(Files::readOrFail("c:\ddd"));
     }
 
+    function test_curl_proxy_3()
+    {  
+        $url       = 'https://academico.upla.edu.pe/uplanet/frm_login.aspx';
+        $proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
+
+        dd($url, 'URL');
+
+        $client = ApiClient::instance($proxy_url)
+        ->setHeaders([
+            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+            'Proxy-Target-URL: '.$url
+        ]);
+
+        $client
+        ->disableSSL()
+        //->cache()
+        ->redirect()
+        ->get();
+
+        if ($client->getStatus() != 200){
+            throw new \Exception($client->error());
+        }
+
+        dd(
+            $client->data()         
+        );  
+    }
+
+    function test_remove_css(){
+        $html = '<html>
+                <head>
+                    <style>
+                        .my-style {
+                            color: red;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div style="font-size: 16px;">Some text</div>
+                    <div class="my-style">Some text with class</div>
+                </body>
+            </html>';
+
+        $cleanHtml = HTML::removeCSS($html, true, true, true);
+
+        dd($cleanHtml);
+    }
+
+    function test_remove_tag(){
+        $html = '</li>
+        <li class="nav-item">
+            <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank">
+                <svg style="margin-right: 0.375rem; --darkreader-inline-stroke: currentColor;" height="16" width="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-darkreader-inline-stroke=""><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                Bootstrap Components
+            </a>
+        </li>
+        <li class="nav-item">
+            <span class="a-class">AAA AAA</span>
+            <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/bootstrap/templates?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank"><p>XXX</p></a>
+        </li>';
+
+
+        //$html = HTML::removeTags($html, 'svg');
+        //dd($html); // Salida: 
+
+        $html = HTML::removeTags($html, ['svg', 'span']);
+        dd($html); // Salida: 
+    }
+
+    function test_removehtmlattributes() {
+        $html = '<div onclick="alert(\'Hello\');" style="color: red;" class="container">Content</div>';
+    
+        // Eliminar el atributo 'onclick'
+        $result1 = HTML::removeHTMLAttributes($html, 'onclick');
+        dd($result1, 'PRUEBA 1');
+        // Salida esperada: '<div style="color: red;" class="container">Content</div>'
+    
+        // Eliminar los atributos 'style' y 'class'
+        $result2 = HTML::removeHTMLAttributes($html, ['style', 'class']);
+        dd($result2, 'PRUEBA 2');
+        // Salida esperada: '<div onclick="alert(\'Hello\');">Content</div>'
+    }
+
+    function test_var_export()
+    {        
+        $content = [
+            'A', 'B', 'C'
+        ];
+
+        // $content = "HOLA";
+
+        $path = ETC_PATH . 'bt.php';
+
+        Logger::varExport($content, $path);
+
+        dd(
+            Files::getContent($path), 'CONTENT'
+        );
+    }
+
+    // Función de prueba
+    function test_extractbt_classes()
+    {
+        $page  = Files::getContent(ETC_PATH . 'bt_clases.html');
+        
+        $clases = Strings::extractBootstrapClasses($page);
+
+        dd($clases);
+
+        Logger::varExport($clases, ETC_PATH . 'bt.php');
+    }
+    
+    
+
 }   // end class

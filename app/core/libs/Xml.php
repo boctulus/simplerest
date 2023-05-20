@@ -80,16 +80,19 @@ class XML
         );
     }   
 
-     /*
+    /*
+        Puede remover cualquier <tag> de HTML 
+        sin hacer uso de regex
+
         https://stackoverflow.com/a/7131156/980631
     */
-    static function stripTagScript(string $html) {
+    static function stripTag(string $html, $tag) {
         $dom = new \DOMDocument;
         libxml_use_internal_errors(true);
         $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
 
-        $script = $dom->getElementsByTagName('script');
+        $script = $dom->getElementsByTagName($tag);
 
         $remove = [];
         foreach($script as $item){
