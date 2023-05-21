@@ -1,7 +1,18 @@
 
+- Luego de correr migraciones,......
+
+  . Recordar que es recomendable re-generar schemas
+
+  . O... preguntar si se quieren re-generar, preguntando tambien el tentant_id (default=main)
+
+  . O... configurar si se quiere que por defecto regenere schemas o pregunte o no haga nada.
+
 - Controller para convertir horarios y rangos horarios
 
     . Debe dado mis horarios disponibles y otra zona horaria (dado su GMT) decirme en que horarios (como rangos) esa zona horaria, estoy disponible. -> para entrevistas con consultoras y clientes
+
+    . Refactorizar funciones de la clasee Date que que no dependan de ninguna tabla en base de datos 
+    para estimar TimeZone Gap
 
 - Axios / fetch / jQuery script generator for consuming APIs 
 
@@ -11,7 +22,7 @@
 
 - Testing de APIs: internas y externas.
 
-  . Habilitar mocking dentro de ApiClient
+  . Habilitar STATUS CODE en mock() dentro de ApiClient --- falta
 
   . Revisar paquetes de testing de APIs
   
