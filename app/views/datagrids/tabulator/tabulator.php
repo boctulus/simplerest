@@ -4,8 +4,6 @@ use simplerest\core\libs\HtmlBuilder\Tag;
 
 Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
-/** Definiciones de la vista */
-$defs = get_defs($entity, $tenantid, false, false);
 
 /**
  * Se utiliza un array temporal para colocar los campos de
@@ -22,8 +20,8 @@ foreach ($defs as $field => $info)
 
 $defs = array_merge($defs, $textAreas);
 
-var_encode('defs', $defs);
-var_encode('entity', $entity);
+var_encode('defs',     $defs);
+var_encode('entity',   $entity);
 var_encode('tenantid', $tenantid ?? 'main');
 
 /** Hojas de estilo */
@@ -97,6 +95,8 @@ echo tag('div')->content([
 
 <?php
 /** Crear / editar row  */
+
+//foo();
 
 $fields = [];
 foreach ($defs as $field => $info)
