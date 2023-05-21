@@ -10,33 +10,37 @@ class RolesSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'roles',
+			'table_name'		=> 'roles',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'name'],
+			'fields'			=> ['id', 'name'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'name' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['name'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id'],
 
-			'rules' 		=> [
+			'required'			=> ['name'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'name' => ['type' => 'str', 'max' => 50, 'required' => true]
 			],
 
-			'fks' 			=> [],
+			'fks' 				=> [],
 
 			'relationships' => [
 				'user_roles' => [

@@ -10,13 +10,13 @@ class FoldersSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'folders',
+			'table_name'		=> 'folders',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'tb', 'name', 'belongs_to', 'created_at'],
+			'fields'			=> ['id', 'tb', 'name', 'belongs_to', 'created_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'tb' => 'STR',
 				'name' => 'STR',
@@ -24,17 +24,21 @@ class FoldersSchema implements ISchema
 				'created_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['tb', 'name', 'belongs_to', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id'],
 
-			'rules' 		=> [
+			'required'			=> ['tb', 'name', 'belongs_to', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'tb' => ['type' => 'str', 'max' => 50, 'required' => true],
 				'name' => ['type' => 'str', 'max' => 50, 'required' => true],
@@ -42,7 +46,7 @@ class FoldersSchema implements ISchema
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 
-			'fks' 			=> ['belongs_to'],
+			'fks' 				=> ['belongs_to'],
 
 			'relationships' => [
 				'users' => [

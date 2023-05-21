@@ -248,9 +248,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         with font-awesome or any other icon font library -->
 
                         <?php
-                            $pg_grps= config()['admin_menu_linked_pages'];
+                            $pg_grps= config()['admin_menu_linked_pages'] ?? null;
 
-                            echo tag('navItemSideMenu')->items($pg_grps);
+                            if ($pg_grps){
+                                echo tag('navItemSideMenu')->items($pg_grps)
+                                ->openAll();
+                            } else {
+                                echo "<!-- NO admin_menu_linked_pages defined in config.php -->";
+                            }                            
                         ?>
                 
                         <!-- <li class="nav-item">

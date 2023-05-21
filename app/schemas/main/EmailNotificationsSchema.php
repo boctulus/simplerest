@@ -10,13 +10,13 @@ class EmailNotificationsSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'email_notifications',
+			'table_name'		=> 'email_notifications',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'from_addr', 'from_name', 'to_addr', 'to_name', 'cc_addr', 'cc_name', 'bcc_addr', 'bcc_name', 'replyto_addr', 'subject', 'body', 'sent_at', 'created_at', 'deleted_at'],
+			'fields'			=> ['id', 'from_addr', 'from_name', 'to_addr', 'to_name', 'cc_addr', 'cc_name', 'bcc_addr', 'bcc_name', 'replyto_addr', 'subject', 'body', 'sent_at', 'created_at', 'deleted_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'from_addr' => 'STR',
 				'from_name' => 'STR',
@@ -34,17 +34,21 @@ class EmailNotificationsSchema implements ISchema
 				'deleted_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id', 'from_addr', 'from_name', 'to_name', 'cc_addr', 'cc_name', 'bcc_addr', 'bcc_name', 'replyto_addr', 'body', 'sent_at', 'deleted_at'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['to_addr', 'subject', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id', 'from_addr', 'from_name', 'to_name', 'cc_addr', 'cc_name', 'bcc_addr', 'bcc_name', 'replyto_addr', 'body', 'sent_at', 'deleted_at'],
 
-			'rules' 		=> [
+			'required'			=> ['to_addr', 'subject', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'from_addr' => ['type' => 'str', 'max' => 320],
 				'from_name' => ['type' => 'str', 'max' => 80],
@@ -62,7 +66,7 @@ class EmailNotificationsSchema implements ISchema
 				'deleted_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> [],
+			'fks' 				=> [],
 
 			'relationships' => [
 				

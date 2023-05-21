@@ -1,13 +1,20 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace simplerest\core\traits;
 
 trait Uuids
 {
-    protected function boot()
+    // protected function boot()
+    // {
+    //     parent::boot();
+
+    //     // ...
+    // }    
+
+    protected function init()
     {
-        parent::boot();
-        
+        parent::init();
+
         $this->registerInputMutator($this->getIdName(), function($id){ 
 			return uuid_create(UUID_TYPE_RANDOM); 
 		}, function($op, $dato){

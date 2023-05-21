@@ -90,13 +90,25 @@ function get_api_name($resource_name, $api_ver = null){
         }
     }        
 */
-function get_model_defs(string $table_name, $tenant_id = null, bool $include_hidden = true){
+function get_model_defs(string $table_name, $tenant_id = null, bool $include_hidden = true, bool $include_related = true){
     if ($tenant_id != null){
         DB::getConnection($tenant_id);
     }
 
     $schema      = get_schema_name($table_name);
     $schema_defs = $schema::get();
+
+    $defs          = [];
+    $rel_tables    = [];
+
+    /*
+        Obtengo las "related tables"
+    */
+    $rels        = get_relations($tenant_id);
+    $_related    = $rels['related_tables'];
+    $rel_tables  = $_related[$table_name] ?? [];
+
+    Arrays::destroyIfExists($rel_tables, $table_name);
 
     // dd($schema_defs);
     // exit;
@@ -125,7 +137,8 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
     $fk_ay       = $schema['fks'];
     $rels_from   = $schema['expanded_relationships_from'];
 
-    $defs = [];
+    // dd($fk_ay);
+
     foreach ($fields as $field){
         if (!$include_hidden && in_array($field, $hidden_ay)){
             continue;
@@ -140,6 +153,9 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
         if ($defs[$field]['fk']){
             foreach ($rels_from as $rels_fk){
                 foreach ($rels_fk as $rel){
+                    
+                    // dd($rel, 'REL');
+
                     if ($rel[1][1] == $field){
                         $t2 = $rel[0][0];
 
@@ -186,9 +202,27 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
             }
         }
     }
-
+   
+    // if ($include_related){
+    //     $defs['__related_tables'] = array_values($rel_tables);
+    // }
+    
     return $defs;
 }
+
+// function get_related_table_defs(array $tables, $tenant_id, bool $include_hidden, $processed_tbs) {
+//     $table_defs = [];
+
+//     foreach ($tables as $table) {
+//         if (!in_array($table, $processed_tbs)){
+//             $table_defs[$table] = get_model_defs($table, $tenant_id, $include_hidden, $processed_tbs);
+//             $processed_tbs[] = $table;
+//         }       
+//     }
+
+//     return $table_defs;
+// }
+
 
 
 function get_defs(string $table_name, $tenant_id = null, bool $include_hidden = true, bool $include_hidden_from_api = true){
@@ -508,12 +542,24 @@ function is_mul_rel(string $t1, string $t2, ?string $relation_str = null ,?strin
     }
 }
 
-function is_mul_rel_cached(string $t1, string $t2, ?string $relation_str = null ,?string $tenant_id = null){
-    if (!is_null($relation_str)){
-        return is_mul_rel($t1, $t2, $relation_str, $tenant_id);
-    }
+/*
+    Devuelve el contenido del archivo Relations.php 
+    para el tenant especificado o el actual
+*/
+function get_relations(?string $tenant_id = null, ?string $table = null){
+    static $rels;
 
     $def_conn_id = config()['db_connection_default'];
+
+    $key = ($tenant_id ?? $def_conn_id) . '.' . $table;
+
+    if ($rels === null){
+        $rels = [];
+    }
+
+    if (isset($rels[$key])){
+        return $rels[$key];
+    }
 
     if ($tenant_id == $def_conn_id){
         $folder = $def_conn_id . '/';
@@ -537,13 +583,23 @@ function is_mul_rel_cached(string $t1, string $t2, ?string $relation_str = null 
     $path = SCHEMA_PATH . $folder . 'Relations.php';
 
     if (!file_exists($path)){
-        throw new \Exception("Please run 'php com make relation_scan --from:$tenant_id' or re-build all schemas. Detail: $path is not updated. Multiplicity for $t1~$t2 not found");
+        throw new \Exception("Please run \"php com make relation_scan --from:$tenant_id\" or re-build All schemas!");
     }
 
-    $r = include $path;
+    $rels[$key] = include $path;
+
+    return $rels[$key];
+}
+
+function is_mul_rel_cached(string $t1, string $t2, ?string $relation_str = null ,?string $tenant_id = null){
+    if (!is_null($relation_str)){
+        return is_mul_rel($t1, $t2, $relation_str, $tenant_id);
+    }
+
+    $r = get_relations($tenant_id);
 
     if (!isset($r['multiplicity']["$t1~$t2"])){
-        throw new \Exception("Please run 'php com make relation_scan --from:$tenant_id' or re-build all schemas. Detail: $path is not updated. Multiplicity for $t1~$t2 not found");
+        throw new \Exception("Please run \"php com make relation_scan --from:$tenant_id\" or re-build all schemas");
     }
 
     return $r['multiplicity']["$t1~$t2"];

@@ -1,34 +1,26 @@
 <?php 
 
-$pivots = array (
+$pivots        = array (
   'roles,users' => 'user_roles',
   'sp_permissions,users' => 'user_sp_permissions',
 );
 
-$pivot_fks = array (
+$pivot_fks     = array (
   'user_roles' => 
   array (
-    'roles' => 'role_id',
     'users' => 'user_id',
+    'roles' => 'role_id',
   ),
   'user_sp_permissions' => 
   array (
-    'sp_permissions' => 'sp_permission_id',
     'users' => 'user_id',
+    'sp_permissions' => 'sp_permission_id',
   ),
 );
 
 $relationships = array (
   'user_roles' => 
   array (
-    'roles' => 
-    array (
-      0 => 
-      array (
-        0 => 'roles.id',
-        1 => 'user_roles.role_id',
-      ),
-    ),
     'users' => 
     array (
       0 => 
@@ -37,23 +29,31 @@ $relationships = array (
         1 => 'user_roles.user_id',
       ),
     ),
-  ),
-  'user_sp_permissions' => 
-  array (
-    'sp_permissions' => 
+    'roles' => 
     array (
       0 => 
       array (
-        0 => 'sp_permissions.id',
-        1 => 'user_sp_permissions.sp_permission_id',
+        0 => 'roles.id',
+        1 => 'user_roles.role_id',
       ),
     ),
+  ),
+  'user_sp_permissions' => 
+  array (
     'users' => 
     array (
       0 => 
       array (
         0 => 'users.id',
         1 => 'user_sp_permissions.user_id',
+      ),
+    ),
+    'sp_permissions' => 
+    array (
+      0 => 
+      array (
+        0 => 'sp_permissions.id',
+        1 => 'user_sp_permissions.sp_permission_id',
       ),
     ),
   ),
