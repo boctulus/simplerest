@@ -10,37 +10,41 @@ class BackgroundWorkersSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'background_workers',
+			'table_name'		=> 'background_workers',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'queue', 'pid', 'created_at'],
+			'fields'			=> ['id', 'queue', 'pid', 'created_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'queue' => 'STR',
 				'pid' => 'INT',
 				'created_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['queue', 'pid', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> ['pid'],
+			'nullable'			=> ['id'],
 
-			'rules' 		=> [
+			'required'			=> ['queue', 'pid', 'created_at'],
+
+			'uniques'			=> ['pid'],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'queue' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'pid' => ['type' => 'int', 'required' => true],
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 
-			'fks' 			=> [],
+			'fks' 				=> [],
 
 			'relationships' => [
 				

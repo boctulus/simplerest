@@ -4,51 +4,31 @@ namespace simplerest\core\libs;
 
 class Arrays 
 {
-    static function getOrFail(Array $array, string $key_name, $allowed_values = null){
-        if (!isset($array[$key_name])){
-            throw new \Exception("'$key_name' is missing");
+    /*
+        Trata un array no-asociativo como un Set (conjunto)
+
+        y agrega el valor sino existe en el mismo
+    */
+    static function pushIfNotExists(array &$array, $value, bool $strict = false){
+        $id = array_search($value, $array, $strict);
+
+        if ($id !== false){
+            $array[] = $id;
         }
-
-        $val = $array[$key_name];
-
-        if (!empty($allowed_values) && !in_array($val, $allowed_values)){
-            throw new \Exception("Value '$val' for '$key_name' was unexpected.");
-        }
-
-        return $val;
     }
 
     /*
-        Get with safety 
+        Trata un array no-asociativo como un Set (conjunto)
 
-        @param array 
-        @param index1
-        @param index2
-        ..
-
-        Casos de uso:
-
-        $arr['a']['b'] = 'ab';
-        var_dump( get($arr,'a','b') ); // 'ab'
-        
-        $arr = [];
-        var_dump( get($arr,'a','b') ); // NULL
+        Si existe el valor en un array no-asociativo,
+        lo encuentra y destruye
     */
-    static function getSafely(){ 
-        $numargs  = func_num_args();
-        $arg_list = func_get_args();
+    static function destroyIfExists(array &$array, $value, bool $strict = false){
+        $id = array_search($value, $array, $strict);
 
-        $v = $arg_list[0];  
-
-        for ($i = 1; $i < $numargs; $i++) 
-        {
-            if (isset($v[$arg_list[$i]]))
-                $v = $v[$arg_list[$i]];
-            else
-                return null;
+        if ($id !== false){
+            unset($array[$id]);
         }
-
-        return $v;
     }
     
     /*

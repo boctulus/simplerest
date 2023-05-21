@@ -10,13 +10,13 @@ class JobsSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'jobs',
+			'table_name'		=> 'jobs',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'queue', 'object', 'params', 'created_at'],
+			'fields'			=> ['id', 'queue', 'object', 'params', 'created_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'queue' => 'STR',
 				'object' => 'STR',
@@ -24,17 +24,21 @@ class JobsSchema implements ISchema
 				'created_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['queue', 'object', 'params', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id'],
 
-			'rules' 		=> [
+			'required'			=> ['queue', 'object', 'params', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'queue' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'object' => ['type' => 'str', 'required' => true],
@@ -42,7 +46,7 @@ class JobsSchema implements ISchema
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 
-			'fks' 			=> [],
+			'fks' 				=> [],
 
 			'relationships' => [
 				

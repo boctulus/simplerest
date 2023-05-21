@@ -10,13 +10,13 @@ class FilesSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'files',
+			'table_name'		=> 'files',
 
-			'id_name'		=> 'uuid',
+			'id_name'			=> 'uuid',
 
-			'fields'		=> ['uuid', 'filename', 'file_ext', 'filename_as_stored', 'belongs_to', 'guest_access', 'is_locked', 'broken', 'created_at', 'deleted_at'],
+			'fields'			=> ['uuid', 'filename', 'file_ext', 'filename_as_stored', 'belongs_to', 'guest_access', 'is_locked', 'broken', 'created_at', 'deleted_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'uuid' => 'STR',
 				'filename' => 'STR',
 				'file_ext' => 'STR',
@@ -29,17 +29,21 @@ class FilesSchema implements ISchema
 				'deleted_at' => 'STR'
 			],
 
-			'primary'		=> ['uuid'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => null,
+			],
 
-			'nullable'		=> ['belongs_to', 'guest_access', 'is_locked', 'broken', 'deleted_at'],
+			'primary'			=> ['uuid'],
 
-			'required'		=> ['uuid', 'filename', 'file_ext', 'filename_as_stored', 'created_at'],
+			'autoincrement' 	=> null,
 
-			'uniques'		=> [],
+			'nullable'			=> ['belongs_to', 'guest_access', 'is_locked', 'broken', 'deleted_at'],
 
-			'rules' 		=> [
+			'required'			=> ['uuid', 'filename', 'file_ext', 'filename_as_stored', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'uuid' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'filename' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'file_ext' => ['type' => 'str', 'max' => 30, 'required' => true],
@@ -52,7 +56,7 @@ class FilesSchema implements ISchema
 				'deleted_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> ['belongs_to'],
+			'fks' 				=> ['belongs_to'],
 
 			'relationships' => [
 				'users' => [

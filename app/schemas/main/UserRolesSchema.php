@@ -10,13 +10,13 @@ class UserRolesSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'user_roles',
+			'table_name'		=> 'user_roles',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'user_id', 'role_id', 'created_by', 'created_at', 'updated_by', 'updated_at'],
+			'fields'			=> ['id', 'user_id', 'role_id', 'created_by', 'created_at', 'updated_by', 'updated_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'user_id' => 'INT',
 				'role_id' => 'INT',
@@ -26,17 +26,21 @@ class UserRolesSchema implements ISchema
 				'updated_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id', 'created_by', 'updated_by', 'updated_at'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['user_id', 'role_id', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id', 'created_by', 'updated_by', 'updated_at'],
 
-			'rules' 		=> [
+			'required'			=> ['user_id', 'role_id', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'user_id' => ['type' => 'int', 'required' => true],
 				'role_id' => ['type' => 'int', 'required' => true],
@@ -46,34 +50,18 @@ class UserRolesSchema implements ISchema
 				'updated_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> ['role_id', 'user_id'],
+			'fks' 				=> ['user_id', 'role_id'],
 
 			'relationships' => [
-				'roles' => [
-					['roles.id','user_roles.role_id']
-				],
 				'users' => [
 					['users.id','user_roles.user_id']
+				],
+				'roles' => [
+					['roles.id','user_roles.role_id']
 				]
 			],
 
 			'expanded_relationships' => array (
-  'roles' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'roles',
-        1 => 'id',
-      ),
-      1 => 
-      array (
-        0 => 'user_roles',
-        1 => 'role_id',
-      ),
-    ),
-  ),
   'users' => 
   array (
     0 => 
@@ -87,37 +75,37 @@ class UserRolesSchema implements ISchema
       array (
         0 => 'user_roles',
         1 => 'user_id',
+      ),
+    ),
+  ),
+  'roles' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'roles',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'user_roles',
+        1 => 'role_id',
       ),
     ),
   ),
 ),
 
 			'relationships_from' => [
-				'roles' => [
-					['roles.id','user_roles.role_id']
-				],
 				'users' => [
 					['users.id','user_roles.user_id']
+				],
+				'roles' => [
+					['roles.id','user_roles.role_id']
 				]
 			],
 
 			'expanded_relationships_from' => array (
-  'roles' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'roles',
-        1 => 'id',
-      ),
-      1 => 
-      array (
-        0 => 'user_roles',
-        1 => 'role_id',
-      ),
-    ),
-  ),
   'users' => 
   array (
     0 => 
@@ -131,6 +119,22 @@ class UserRolesSchema implements ISchema
       array (
         0 => 'user_roles',
         1 => 'user_id',
+      ),
+    ),
+  ),
+  'roles' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'roles',
+        1 => 'id',
+      ),
+      1 => 
+      array (
+        0 => 'user_roles',
+        1 => 'role_id',
       ),
     ),
   ),

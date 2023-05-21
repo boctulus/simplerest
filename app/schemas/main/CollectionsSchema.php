@@ -10,13 +10,13 @@ class CollectionsSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'collections',
+			'table_name'		=> 'collections',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'entity', 'refs', 'belongs_to', 'created_at'],
+			'fields'			=> ['id', 'entity', 'refs', 'belongs_to', 'created_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'entity' => 'STR',
 				'refs' => 'STR',
@@ -24,17 +24,21 @@ class CollectionsSchema implements ISchema
 				'created_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['entity', 'refs', 'belongs_to', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id'],
 
-			'rules' 		=> [
+			'required'			=> ['entity', 'refs', 'belongs_to', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'entity' => ['type' => 'str', 'max' => 80, 'required' => true],
 				'refs' => ['type' => 'str', 'required' => true],
@@ -42,7 +46,7 @@ class CollectionsSchema implements ISchema
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 
-			'fks' 			=> ['belongs_to'],
+			'fks' 				=> ['belongs_to'],
 
 			'relationships' => [
 				'users' => [

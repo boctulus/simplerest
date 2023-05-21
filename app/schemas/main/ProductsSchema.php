@@ -10,13 +10,13 @@ class ProductsSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'products',
+			'table_name'		=> 'products',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'name', 'type', 'regular_price', 'sale_price', 'description', 'short_description', 'slug', 'images', 'categories', 'tags', 'dimensions', 'attributes', 'sku', 'status', 'stock', 'stock_status', 'url_ori', 'posted', 'comment', 'created_at', 'updated_at'],
+			'fields'			=> ['id', 'name', 'type', 'regular_price', 'sale_price', 'description', 'short_description', 'slug', 'images', 'categories', 'tags', 'dimensions', 'attributes', 'sku', 'status', 'stock', 'stock_status', 'url_ori', 'posted', 'comment', 'created_at', 'updated_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'name' => 'STR',
 				'type' => 'STR',
@@ -41,17 +41,23 @@ class ProductsSchema implements ISchema
 				'updated_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
+				'images' => 'JSON',
+				'dimensions' => 'JSON',
+				'attributes' => 'JSON'
+			],
 
-			'autoincrement' => 'id',
+			'primary'			=> ['id'],
 
-			'nullable'		=> ['id', 'type', 'regular_price', 'sale_price', 'short_description', 'categories', 'tags', 'dimensions', 'attributes', 'sku', 'status', 'stock', 'stock_status', 'url_ori', 'posted', 'comment', 'updated_at'],
+			'autoincrement' 	=> 'id',
 
-			'required'		=> ['name', 'description', 'slug', 'images', 'created_at'],
+			'nullable'			=> ['id', 'type', 'regular_price', 'sale_price', 'short_description', 'categories', 'tags', 'dimensions', 'attributes', 'sku', 'status', 'stock', 'stock_status', 'url_ori', 'posted', 'comment', 'updated_at'],
 
-			'uniques'		=> ['slug', 'url_ori'],
+			'required'			=> ['name', 'description', 'slug', 'images', 'created_at'],
 
-			'rules' 		=> [
+			'uniques'			=> ['slug', 'url_ori'],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'name' => ['type' => 'str', 'max' => 80, 'required' => true],
 				'type' => ['type' => 'str', 'max' => 20],
@@ -76,7 +82,7 @@ class ProductsSchema implements ISchema
 				'updated_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> [],
+			'fks' 				=> [],
 
 			'relationships' => [
 				

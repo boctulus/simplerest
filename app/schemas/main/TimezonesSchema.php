@@ -10,35 +10,39 @@ class TimezonesSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'timezones',
+			'table_name'		=> 'timezones',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'city', 'gmt'],
+			'fields'			=> ['id', 'city', 'gmt'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'city' => 'STR',
 				'gmt' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['city', 'gmt'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> ['city'],
+			'nullable'			=> ['id'],
 
-			'rules' 		=> [
+			'required'			=> ['city', 'gmt'],
+
+			'uniques'			=> ['city'],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int', 'min' => 0],
 				'city' => ['type' => 'str', 'max' => 80, 'required' => true],
 				'gmt' => ['type' => 'str', 'max' => 6, 'required' => true]
 			],
 
-			'fks' 			=> [],
+			'fks' 				=> [],
 
 			'relationships' => [
 				

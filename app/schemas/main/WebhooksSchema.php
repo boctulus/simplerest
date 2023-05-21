@@ -10,13 +10,13 @@ class WebhooksSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'webhooks',
+			'table_name'		=> 'webhooks',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'name', 'entity', 'op', 'conditions', 'callback', 'belongs_to', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
+			'fields'			=> ['id', 'name', 'entity', 'op', 'conditions', 'callback', 'belongs_to', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'name' => 'STR',
 				'entity' => 'STR',
@@ -32,17 +32,21 @@ class WebhooksSchema implements ISchema
 				'deleted_by' => 'INT'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id', 'name', 'conditions', 'belongs_to', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['entity', 'op', 'callback', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id', 'name', 'conditions', 'belongs_to', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
 
-			'rules' 		=> [
+			'required'			=> ['entity', 'op', 'callback', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'name' => ['type' => 'str', 'max' => 50],
 				'entity' => ['type' => 'str', 'max' => 50, 'required' => true],
@@ -58,7 +62,7 @@ class WebhooksSchema implements ISchema
 				'deleted_by' => ['type' => 'int']
 			],
 
-			'fks' 			=> [],
+			'fks' 				=> [],
 
 			'relationships' => [
 				
