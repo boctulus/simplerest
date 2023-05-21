@@ -272,6 +272,8 @@ class MigrationsControllerBase extends Controller
                 }
 
             } else {
+                StdOut::pprint("*** This is a Simulation ***" . PHP_EOL);
+
                 $ix++;
                 continue;
             }
@@ -409,6 +411,7 @@ class MigrationsControllerBase extends Controller
      
 
                 if (in_array($o, ['--simulate', 'simulate', '--sim'])){
+                    StdOut::pprint("*** This is a Simulation ***" . PHP_EOL);
                     $simulate = true;
                 }
             }
@@ -419,7 +422,7 @@ class MigrationsControllerBase extends Controller
             exit;
         }
 
-        StdOut::pprint("Rolling back up to $steps migrations\r\n\r\n");
+        StdOut::pprint("Rolling back up to $steps migrations\r\n");
 
         if (!isset($filenames)){
             $filenames = DB::table('migrations')
