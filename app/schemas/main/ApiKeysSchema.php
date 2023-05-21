@@ -10,37 +10,41 @@ class ApiKeysSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'api_keys',
+			'table_name'		=> 'api_keys',
 
-			'id_name'		=> null,
+			'id_name'			=> null,
 
-			'fields'		=> ['uuid', 'value', 'user_id', 'created_at'],
+			'fields'			=> ['uuid', 'value', 'user_id', 'created_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'uuid' => 'STR',
 				'value' => 'STR',
 				'user_id' => 'INT',
 				'created_at' => 'STR'
 			],
 
-			'primary'		=> [],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => null,
+			],
 
-			'nullable'		=> ['created_at'],
+			'primary'			=> [],
 
-			'required'		=> ['uuid', 'value', 'user_id'],
+			'autoincrement' 	=> null,
 
-			'uniques'		=> [],
+			'nullable'			=> ['created_at'],
 
-			'rules' 		=> [
+			'required'			=> ['uuid', 'value', 'user_id'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'uuid' => ['type' => 'str', 'max' => 36, 'required' => true],
 				'value' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'user_id' => ['type' => 'int', 'required' => true],
 				'created_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> ['user_id'],
+			'fks' 				=> ['user_id'],
 
 			'relationships' => [
 				'users' => [

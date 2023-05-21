@@ -10,13 +10,13 @@ class FolderOtherPermissionsSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'folder_other_permissions',
+			'table_name'		=> 'folder_other_permissions',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'folder_id', 'belongs_to', 'guest', 'r', 'w', 'created_at'],
+			'fields'			=> ['id', 'folder_id', 'belongs_to', 'guest', 'r', 'w', 'created_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'folder_id' => 'INT',
 				'belongs_to' => 'INT',
@@ -26,17 +26,21 @@ class FolderOtherPermissionsSchema implements ISchema
 				'created_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id', 'guest'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['folder_id', 'belongs_to', 'r', 'w', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id', 'guest'],
 
-			'rules' 		=> [
+			'required'			=> ['folder_id', 'belongs_to', 'r', 'w', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'folder_id' => ['type' => 'int', 'required' => true],
 				'belongs_to' => ['type' => 'int', 'required' => true],
@@ -46,7 +50,7 @@ class FolderOtherPermissionsSchema implements ISchema
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 
-			'fks' 			=> ['belongs_to'],
+			'fks' 				=> ['belongs_to'],
 
 			'relationships' => [
 				'users' => [

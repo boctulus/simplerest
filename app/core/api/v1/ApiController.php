@@ -305,7 +305,16 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         }
 
         if (!empty($defs)){         
-            $the_defs = get_defs($this->table_name, null, false, true);  
+            $the_defs = get_defs($this->table_name, null, false, true, false); // <-- si el 5to param es false ... 
+
+            if (isset($the_defs['__related_tables'])){                
+                $rel_tables_defs = [];
+                foreach ($the_defs['__related_tables'] as $table){
+                    $rel_tables_defs[$table] = get_model_defs($table);  //////////
+                }
+                        
+                $the_defs['__related_tables'] = $rel_tables_defs;
+            }
 
             return [ 'defs' => $the_defs ];
         }
@@ -2443,8 +2452,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected function onGettingBeforeCheck($id) { }
     protected function onGettingAfterCheck($id) { }
     protected function onGettingAfterCheck2($id) { }  ///
-
     protected function onGot($id, ?int $count){ }
+
     protected function onDeletingBeforeCheck($id){ }
     protected function onDeletingAfterCheck($id){ }    
     protected function onDeleted($id, ?int $affected){ }

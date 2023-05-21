@@ -927,13 +927,15 @@ class MakeControllerBase extends Controller
         }
 
         $rel_file = 'Relations.php';
-        $dir  = SCHEMA_PATH . $folder;
-        $path = str_replace('//', '/', $dir . '/' . $rel_file);
+        $dir      = SCHEMA_PATH . $folder;
+        $path     = str_replace('//', '/', $dir . '/' . $rel_file);
         
         $relation_type = [];
         $multiplicity  = [];
+        $related       = [];
 
         $tables = Schema::getTables();
+        
         foreach ($tables as $t){
             $rl = Schema::getAllRelations($t);
             $related_tbs = array_keys($rl);
@@ -941,6 +943,11 @@ class MakeControllerBase extends Controller
             foreach ($related_tbs as $rtb){
                 $relation_type["$t~$rtb"] = get_rel_type($t, $rtb, null, $from_db);
                 $multiplicity["$t~$rtb"]  = is_mul_rel($t, $rtb, null, $from_db); 
+
+                // New *
+                if (!in_array($rtb, $related)){
+                    $related[$t][] = $rtb;
+                }
             }
         }
 
@@ -971,14 +978,18 @@ class MakeControllerBase extends Controller
 
         $relation_type_str = var_export($relation_type, true);
         $multiplicity_str  = var_export($multiplicity, true);
+        $related_str       = var_export($related, true);
 
         $relation_type_str = Strings::tabulate($relation_type_str, 3, 0);
         $multiplicity_str  = Strings::tabulate($multiplicity_str, 3, 0);
+        $related_str       = Strings::tabulate($related_str, 3, 0);
+
 
         $this->write($path, '<?php '. PHP_EOL. PHP_EOL .  
         Strings::tabulate("return [
-        'relation_type'=> $relation_type_str,
-        'multiplicity' => $multiplicity_str
+        'related_tables' => $related_str,
+        'relation_type'  => $relation_type_str,
+        'multiplicity'   => $multiplicity_str,
         ];", 0, 0, -8), false);
     }
 

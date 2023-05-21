@@ -10,13 +10,13 @@ class UserTbPermissionsSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'user_tb_permissions',
+			'table_name'		=> 'user_tb_permissions',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'tb', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'user_id', 'created_by', 'created_at', 'updated_by', 'updated_at'],
+			'fields'			=> ['id', 'tb', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'user_id', 'created_by', 'created_at', 'updated_by', 'updated_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'tb' => 'STR',
 				'can_list_all' => 'INT',
@@ -33,17 +33,21 @@ class UserTbPermissionsSchema implements ISchema
 				'updated_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'created_by', 'created_at', 'updated_by', 'updated_at'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['tb', 'user_id'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id', 'can_list_all', 'can_show_all', 'can_list', 'can_show', 'can_create', 'can_update', 'can_delete', 'created_by', 'created_at', 'updated_by', 'updated_at'],
 
-			'rules' 		=> [
+			'required'			=> ['tb', 'user_id'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'tb' => ['type' => 'str', 'max' => 80, 'required' => true],
 				'can_list_all' => ['type' => 'bool'],
@@ -60,7 +64,7 @@ class UserTbPermissionsSchema implements ISchema
 				'updated_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> ['user_id'],
+			'fks' 				=> ['user_id'],
 
 			'relationships' => [
 				'users' => [
