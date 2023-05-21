@@ -10,13 +10,13 @@ class UsersSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'	=> 'users',
+			'table_name'		=> 'users',
 
-			'id_name'		=> 'id',
+			'id_name'			=> 'id',
 
-			'fields'		=> ['id', 'firstname', 'lastname', 'username', 'password', 'is_active', 'is_locked', 'email', 'confirmed_email', 'belongs_to', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at'],
+			'fields'			=> ['id', 'firstname', 'lastname', 'username', 'password', 'is_active', 'is_locked', 'email', 'confirmed_email', 'belongs_to', 'created_by', 'updated_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at'],
 
-			'attr_types'	=> [
+			'attr_types'		=> [
 				'id' => 'INT',
 				'firstname' => 'STR',
 				'lastname' => 'STR',
@@ -35,17 +35,21 @@ class UsersSchema implements ISchema
 				'deleted_at' => 'STR'
 			],
 
-			'primary'		=> ['id'],
+			'attr_type_detail'	=> [
 
-			'autoincrement' => 'id',
+			],
 
-			'nullable'		=> ['id', 'firstname', 'lastname', 'password', 'is_active', 'is_locked', 'confirmed_email', 'belongs_to', 'created_by', 'updated_by', 'deleted_by', 'updated_at', 'deleted_at'],
+			'primary'			=> ['id'],
 
-			'required'		=> ['username', 'email', 'created_at'],
+			'autoincrement' 	=> 'id',
 
-			'uniques'		=> [],
+			'nullable'			=> ['id', 'firstname', 'lastname', 'password', 'is_active', 'is_locked', 'confirmed_email', 'belongs_to', 'created_by', 'updated_by', 'deleted_by', 'updated_at', 'deleted_at'],
 
-			'rules' 		=> [
+			'required'			=> ['username', 'email', 'created_at'],
+
+			'uniques'			=> [],
+
+			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'firstname' => ['type' => 'str', 'max' => 50],
 				'lastname' => ['type' => 'str', 'max' => 80],
@@ -64,7 +68,7 @@ class UsersSchema implements ISchema
 				'deleted_at' => ['type' => 'datetime']
 			],
 
-			'fks' 			=> ['belongs_to', 'created_by', 'updated_by', 'deleted_by'],
+			'fks' 				=> ['belongs_to', 'created_by', 'updated_by', 'deleted_by'],
 
 			'relationships' => [
 				'users' => [

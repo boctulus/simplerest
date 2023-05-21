@@ -3051,12 +3051,20 @@ deleted_by		apunta indefectiblemente al user_id que hizo un borrado suave un reg
 created_at 		apunta indefectiblemente a la fecha-hora en que se creó un registro.
 updated_at 		apunta indefectiblemente a la fecha-hora en que se modificó por última vez un registro.
 deleted_at 		apunta indefectiblemente a la fecha-hora en que se creó un registro.
-is_locked 			cuando un registro es mofificado por un usuario con permiso de 'lock' automáticamente se guarda un 1.
+is_locked 		cuando un registro es mofificado por un usuario con permiso de 'lock' automáticamente se guarda un 1.
 
 
 Los campos created_by, update_at y deleted_at son rellenados por Model pero al modelo no le compete si hay un sistema de autenticación y que usuario está haciendo el query así que los campos created_by, update_by, deleted_by y belongs_to son manejados a nivel de la API por ApiController al igual que el campo is_locked.
 
 Nota: no olvides que los campos que necesites deben estar en las tablas y en el schema del modelo correspondiente. 
+
+
+### Los metodos init() y boot() de Model
+
+Los modelos tienen un par de metodos que se ejecutan uno antes del constructor y otro justo despues:
+
+	boot()		se ejecuta antes
+	init()		se ejecuta despues
 
 
 ### Mutators
@@ -3094,9 +3102,9 @@ El procedimiento es registrar los mutators para cada campo del modelo que los re
 
 	trait Uuids
 	{
-		protected function boot()
+		protected function init()
 		{
-			parent::boot();
+			parent::init();
 
 			$this->registerInputMutator('uuid', function($id){ 
 				return uuid_create(UUID_TYPE_RANDOM); 
@@ -6669,7 +6677,50 @@ Ver sección de configuración de "tentant groups"
 
 Se implementan subrecursos permitiendo definir relaciones con otras entidades (que deben tener su correlato en llaves foráneas) en endpoints.
 
-Por ejemplo si se quisiera que se hiciera un "JOIN" entre productos y sus categorías:
+Por ejemplo, podria haber una relacion 1:1 entre 'recursos_humanos' y 'users' para evitar la duplicacion de informacion.
+
+/*
+    En cierto RecursosHumanos modo "extiende" a Users
+    dado que es una relacion 1:1 dada por la FK hacia users + que esa FK es un campo UNIQUE
+*/
+class RecursosHumanos extends MyApiController
+{ 
+    static protected $soft_delete = true;
+
+    static protected $connect_to = [
+		'users'
+	];
+}
+
+Entonces haciendo un GET a {{base_url}}/api/v1/recursos_humanos?_related=1&include=users
+
+La respuesta sera algo como,...
+
+    {
+    "data": {
+        "recursos_humanos": [
+            {
+                "id": 1,
+                "user_id": 1,
+                "fecha_nacimiento": "1986-10-30",
+                "users": {
+                    "id": 1,
+                    "email": "adm1@mail.com",
+                    "username": "adm1"
+                }
+            }
+        ]
+    },
+
+
+Nota: 
+
+En este caso en particular, RecursosHumanos en cierto modo "extiende" a Users
+dado que es una relacion 1:1 dada por la FK hacia users + que esa FK es un campo UNIQUE
+
+Otro ejemplo:
+
+Si se quisiera que se hiciera un "JOIN" entre productos y sus categorías:
 
 	class Products extends MyApiController
 	{ 
@@ -6677,12 +6728,7 @@ Por ejemplo si se quisiera que se hiciera un "JOIN" entre productos y sus catego
 
 		static protected $connect_to = [
 			'product_categories'
-		];
-
-		function __construct()
-		{       
-			parent::__construct();
-		}        
+		];  
 	} 
 
 Pasando ?include=product_comments y "_related=1" (por defecto), la salida será algo como:
@@ -6730,7 +6776,7 @@ Ejemplos:
 Si se especifica el parámetro "include" se asume que se quiere traer las relaciones como si "_related=1"
 
 
-Es posible formatear el JSON de la respuesta con opciones dentro del config.php 
+Es posible modificar el JSON de la respuesta con opciones dentro del config.php 
 
 	'include_enity_name' => true,
 	'nest_sub_resources' => false,
@@ -7477,7 +7523,7 @@ Ej:
 Rta:
 
 	{
-		"rules": {
+		"defs": {
 			"id": {
 				"type": "int"
 			},
@@ -7499,42 +7545,287 @@ Rta:
 				"type": "int",
 				"required": true
 			},
-			"created_at": {
-				"type": "datetime"
-			},
-			"created_by": {
-				"type": "int"
-			},
-			"updated_at": {
-				"type": "datetime"
-			},
-			"updated_by": {
-				"type": "int"
-			},
-			"deleted_at": {
-				"type": "datetime"
-			},
-			"deleted_by": {
-				"type": "int"
-			},
-			"is_active": {
-				"type": "bool"
-			},
-			"is_locked": {
-				"type": "bool"
-			},
-			"workspace": {
-				"type": "str",
-				"max": 40
-			},
-			"belongs_to": {
-				"type": "int"
-			},
-			"category": {
-				"type": "int"
+			"__related_tables": {
 			}
 		}
 	}
+
+
+Sin embargo en realidad se devuelve mucha mas informacion si hay relaciones con otras tablas.
+
+Ej:
+
+{
+    "defs": {
+        "id": {
+            "hidden": false,
+            "fillable": false,
+            "nullable": true,
+            "unique": false,
+            "fk": false,
+            "name": "Id",
+            "type": "int",
+            "min": 0
+        },
+        "user_id": {
+            "hidden": false,
+            "fillable": true,
+            "nullable": false,
+            "unique": true,
+            "fk": {
+                "table": "users",
+                "mul": "1:1",
+                "self_ref": false
+            },
+            "name": "User id",
+            "type": "int",
+            "required": true
+        },
+        "fecha_nacimiento": {
+            "hidden": false,
+            "fillable": true,
+            "nullable": true,
+            "unique": false,
+            "fk": false,
+            "name": "Nac. (aaaa-mm-dd)",
+            "type": "date"
+        },
+        "especialidad": {
+            "hidden": false,
+            "fillable": true,
+            "nullable": false,
+            "unique": false,
+            "fk": false,
+            "name": "Especialidad",
+            "type": "str",
+            "max": 60,
+            "required": true
+        },
+        "titulacion": {
+            "hidden": false,
+            "fillable": true,
+            "nullable": true,
+            "unique": false,
+            "fk": false,
+            "name": "Titulacion",
+            "type": "str",
+            "max": 240
+        },
+        "__related_tables": {
+            "users": {
+                "id": {
+                    "hidden": false,
+                    "fillable": false,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Id",
+                    "type": "int"
+                },
+                "firstname": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Nombre",
+                    "type": "str",
+                    "max": 50
+                },
+                "lastname": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Apellido",
+                    "type": "str",
+                    "max": 80
+                },
+                "username": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": false,
+                    "unique": true,
+                    "fk": false,
+                    "name": "Username",
+                    "type": "str",
+                    "max": 15,
+                    "required": true
+                },
+                "password": {
+                    "hidden": true,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Password",
+                    "type": "str",
+                    "max": 60
+                },
+                "is_active": {
+                    "hidden": false,
+                    "fillable": false,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Is active",
+                    "type": "bool"
+                },
+                "is_locked": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Is locked",
+                    "type": "bool"
+                },
+                "email": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": false,
+                    "unique": true,
+                    "fk": false,
+                    "name": "Email",
+                    "type": "str",
+                    "max": 60,
+                    "required": true
+                },
+                "confirmed_email": {
+                    "hidden": false,
+                    "fillable": false,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Confirmed email",
+                    "type": "bool"
+                },
+                "address": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Address",
+                    "type": "str",
+                    "max": 240
+                },
+                "belongs_to": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": {
+                        "table": "users",
+                        "mul": "1:n",
+                        "self_ref": true
+                    },
+                    "name": "Belongs to",
+                    "type": "int"
+                },
+                "created_by": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": {
+                        "table": "users",
+                        "mul": "1:n",
+                        "self_ref": true
+                    },
+                    "name": "Created by",
+                    "type": "int"
+                },
+                "updated_by": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": {
+                        "table": "users",
+                        "mul": "1:n",
+                        "self_ref": true
+                    },
+                    "name": "Updated by",
+                    "type": "int"
+                },
+                "deleted_by": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": {
+                        "table": "users",
+                        "mul": "1:n",
+                        "self_ref": true
+                    },
+                    "name": "Deleted by",
+                    "type": "int"
+                },
+                "created_at": {
+                    "hidden": true,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Created at",
+                    "type": "datetime",
+                    "required": true
+                },
+                "updated_at": {
+                    "hidden": true,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Updated at",
+                    "type": "datetime"
+                },
+                "deleted_at": {
+                    "hidden": true,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": false,
+                    "name": "Deleted at",
+                    "type": "datetime"
+                },
+                "gender_id": {
+                    "hidden": false,
+                    "fillable": true,
+                    "nullable": true,
+                    "unique": false,
+                    "fk": {
+                        "table": "genders",
+                        "mul": "1:n",
+                        "self_ref": false
+                    },
+                    "name": "Gender id",
+                    "type": "int"
+                },
+                "__related_tables": [
+                    "genders",
+                    "api_keys",
+                    "collections",
+                    "files",
+                    "folder_other_permissions",
+                    "folder_permissions",
+                    "folders",
+                    "recursos_humanos",
+                    "user_roles",
+                    "user_sp_permissions",
+                    "user_tb_permissions"
+                ]
+            }
+        }
+    }
+}
+
+Se agrega un campo "__related_tables" que contiene las definiciones de las tablas relacionadas 
+pero ademas si estas a su vez tienen mas relaciones se agrega nuevamente un campo "__related_tables"
+pero esta vez para limitar la recursion y evitar bucles infinitos solo se trae el listado de tablas relacionadas
+en vez de las definciones de esas tablas.
 
 
 # UUIDs
