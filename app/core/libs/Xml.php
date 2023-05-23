@@ -4,6 +4,26 @@ namespace simplerest\core\libs;
 
 class XML
 {
+    static function removeSocialLinks($html) {
+        // Array de redes sociales conocidas y sus dominios
+        $socialNetworks = array(
+            'facebook.com',
+            'twitter.com',
+            'instagram.com',
+            'linkedin.com'
+            // Agrega más redes sociales y dominios si lo deseas
+        );
+    
+        // Construye la expresión regular para buscar los enlaces a redes sociales conocidas
+        $pattern = '/<a.*href=["\']https?:\/\/(www\.)?(%s)\/.*["\'].*>.*<\/a>/i';
+        $pattern = sprintf($pattern, implode('|', $socialNetworks));
+    
+        // Remueve los enlaces a redes sociales conocidas
+        $html = preg_replace($pattern, '', $html);
+    
+        return $html;
+    }
+    
     static function toArray(string $xml){
         $xml = trim($xml);
 
@@ -80,13 +100,43 @@ class XML
         );
     }   
 
+    static function removeHTMLTextModifiers(string $html, array|string $tags = null): string {
+		$dom   = static::getDomDocument($html);
+		$xpath = new \DOMXPath($dom);  // HERE
+	
+		$tagsToRemove = ['b', 'i', 'u', 's', 'strong', 'em', 'sup', 'sub', 'mark', 'small'];
+	
+		if (is_array($tags) || is_string($tags)) {
+			// Si se proporciona un array o una cadena de etiquetas, se utilizan en lugar de las predeterminadas
+			$tagsToRemove = is_array($tags) ? $tags : [$tags];
+		}
+	
+		foreach ($tagsToRemove as $tag) {
+			$elements = $xpath->query("//{$tag}");
+			foreach ($elements as $element) {
+				$parent = $element->parentNode;
+				while ($element->firstChild) {
+					$parent->insertBefore($element->firstChild, $element);
+				}
+				$parent->removeChild($element);
+			}
+		}
+	
+		$output = $dom->saveHTML();
+	
+		// Eliminar la etiqueta <!DOCTYPE> y la envoltura <html><body> agregadas por DOMDocument
+		$output = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $output);
+	
+		return $output;
+	}
+
     /*
         Puede remover cualquier <tag> de HTML 
         sin hacer uso de regex
 
         https://stackoverflow.com/a/7131156/980631
     */
-    static function stripTag(string $html, $tag) {
+    static function stripTag(string $html, $tag) : string {
         $dom = new \DOMDocument;
         libxml_use_internal_errors(true);
         $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -111,14 +161,16 @@ class XML
     /*
         https://davidwalsh.name/remove-html-comments-php
     */
-    static function removeComments(string $html = '') {
+    static function removeComments(string $html = '') : string {
         return preg_replace('/<!--(.|\s)*?-->/', '', $html);
     }
 
     /*
 		Puede usarse para remover <head>, <footer>, <style> y <script>
+
+        Es recomendable usar stripTag() en su lugar
 	*/
-	public static function removeTags(string $page, array|string $tag) {
+	public static function removeTags(string $page, array|string $tag) : string {
         if (is_string($tag)) {
             // Si se proporciona un solo tag como string, convertirlo a un array de un solo elemento
             $tag = [$tag];
@@ -135,14 +187,14 @@ class XML
 	/*
 		Util para eliminar eventos de JS y atributos como style y class
 	*/
-	public static function removeHTMLAttributes(string $page, array|string $attr): string {
+	public static function removeHTMLAttributes(string $page, array|string $attr) : string {
         /*
             Eliminar todas las ocurrencias del atributo o atributos especificados.
 
             Ej:
 
-            Strings::removeHTMLAttributes($html, 'onclick');
-            Strings::removeHTMLAttributes($html, ['style', 'class']);
+                XML::removeHTMLAttributes($html, 'onclick');
+                XML::removeHTMLAttributes($html, ['style', 'class']);
 
             Nota:
 
@@ -170,13 +222,14 @@ class XML
     /*
         https://www.itsupportguides.com/knowledge-base/wordpress/wordpress-php-code-to-remove-html-class-attributes-from-post-content/
     */
-    static function removeCSSClasses(string $html){
+    static function removeCSSClasses(string $html) : string {
         return preg_replace_callback('/<[^<>]*\sclass=[\'"`][^\'"`]*[\'"`][^<>]*>/i', function($match) {
             return preg_replace('/\sclass=[\'"`][^\'"`]*[\'"`]/i', '', $match[0]);
         }, $html);    
     }
    
-    static function removeCSS(string $page, bool $remove_style_sections = true, bool $remove_css_inline = true, bool $remove_bt_classes = true) {
+    static function removeCSS(string $page, bool $remove_style_sections = true, bool $remove_css_inline = true, bool $remove_bt_classes = true) : string
+     {
 		// Eliminar CSS entre etiquetas <style></style>
 		if ($remove_style_sections) {
 			$page = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $page);
