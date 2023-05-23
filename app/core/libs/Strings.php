@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\XML;
+
 class Strings 
 {	
 
@@ -221,8 +223,6 @@ class Strings
 
 		return $num;
 	}
-
-
 
 	static function formatNumber($x, string $locale = "it-IT"){
 		$nf = new \NumberFormatter($locale, \NumberFormatter::DECIMAL);
@@ -1009,11 +1009,11 @@ class Strings
 	}
 
 	/*
-		Recupera todas las palabras de un texto
+		Recupera todas las palabras desde N caracteres por palabra un texto
 
 		https://stackoverflow.com/a/10685513/980631
 	*/
-	static function getWordsPerLenght(string $str, int $min_chars){
+	static function getWordsPerLength(string $str, int $min_chars){
 		preg_match_all('/([a-zA-Z]|\xC3[\x80-\x96\x98-\xB6\xB8-\xBF]|\xC5[\x92\x93\xA0\xA1\xB8\xBD\xBE]){'.$min_chars.',}/', $str, $match_arr);
 		return $match_arr[0];
 	}
@@ -1022,9 +1022,9 @@ class Strings
 		Revise el DOM y acorte los textos utilizando el metodo getUpToNWords() 
 		listado mas abajo a $n_words palabras 
 
-		NO debe afectar codigo Javascript o CSS si lo hubiera.
+		No afecta codigo Javascript o CSS si lo hubiera.
 
-		No debe truncar NADA dentro de atributos como style, class, etc
+		No trunca nada dentro de atributos como style, class, etc
 	*/
 	static function reduceText(string $html, int $n_words): string {
         // Cargar el HTML en un objeto DOMDocument
@@ -1462,7 +1462,10 @@ class Strings
 	static function replaceSlashes(string $path) : string {
 		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
 	}
-        
+    
+	/*
+		'Util para normalizar rutas de archivos o URLs y asegurarse de que no haya barras diagonales duplicadas
+	*/
 	static function removeUnnecessarySlashes(string $path) : string {
        	return preg_replace('#/+#','/',$path);
 	}
@@ -1600,12 +1603,132 @@ class Strings
 		return $str;
 	}
 
-	static function replaceLinesOnlyContainingSpaces(string $str) : string {	
+	static function removeMultipleSpacesInLines(string $str) : string {	
 		return preg_replace('/\n\s*\n/', "\n", $str);
 	}	
 
 	static function removeMultiLineComments(string $str) : string {	
 		return preg_replace('!/\*.*?\*/!s', '', $str);	
+	}
+
+	static function wipeEmptyTags(string $input, $tag = null) : string {
+		if ($tag === null) {
+			// Eliminar cualquier etiqueta vacía
+			$pattern = '/<[^\/>]*>\s*<\/[^>]*>/';
+		} else {
+			// Escapar caracteres especiales en el tag
+			$tag = preg_quote($tag);
+			
+			// Crear el patrón de búsqueda con el tag
+			$pattern = '/<' . $tag . '>\s*<\/' . $tag . '>/';
+		}
+		
+		// Realizar el reemplazo
+		$output = preg_replace($pattern, '', $input);
+		
+		return $output;
+	}
+
+	/*
+		Hay una version analoga en la clase XML 
+
+		La diferencia es que esta *no* remueve tags si poseen atributos (puede ser algo bueno o malo)
+	*/
+	static function removeHTMLTextModifiers(string $html, array|string $tags = null): string {
+		$tagsToRemove = ['b', 'i', 'u', 's', 'strong', 'em', 'sup', 'sub', 'mark', 'small'];
+	
+		if (is_array($tags) || is_string($tags)) {
+			// Si se proporciona un array o una cadena de etiquetas, se utilizan en lugar de las predeterminadas
+			$tagsToRemove = is_array($tags) ? $tags : [$tags];
+		}
+	
+		$pattern = '/<\/?(' . implode('|', $tagsToRemove) . ')>/i';
+		$page = preg_replace($pattern, '', $html);
+	
+		return $page;
+	}
+
+	static function removeSpaceBetweenTags(string $html): string {
+        // Eliminar espacios, tabs, saltos de linea entre etiquetas HTML
+        $pattern     = '/>(\s+)</';
+        $replacement = '><';
+        $html = preg_replace($pattern, $replacement, $html);
+
+        return $html;
+    }
+
+	static function replaceHTMLentities(string $page): string {
+        return html_entity_decode($page);
+    }
+
+	static function removeDataAttr(string $page): string {
+        // Eliminar todas las ocurrencias de atributos data-* en HTML
+        $pattern = '/\s+data-[a-zA-Z0-9-]+=[\'"][^\'"]*[\'"]/i';
+        $page    = preg_replace($pattern, '', $page);
+
+        return $page;
+    }
+
+	/*
+		String length in Kilo bytes
+	*/
+	static function getLengthInKB(string $str, bool $include_subfix = true){
+		return ((string) round(strlen($str) / (1024))) . ($include_subfix ? ' KB' : '') ;
+	}
+
+	static function minimifyHTML($html, bool $extreme = false) : string {
+		$html = XML::stripTag($html, 'head');
+		$html = XML::stripTag($html, 'footer');
+		$html = XML::stripTag($html, 'script');
+		$html = XML::stripTag($html, 'style');
+		$html = XML::stripTag($html, 'iframe');
+		$html = XML::removeHTMLAttributes($html, [
+			'onclick',
+			'ondblclick',
+			'onmousedown',
+			'onmouseup',
+			'onmousemove',
+			'onmouseover',
+			'onmouseout',
+			'onkeydown',
+			'onkeyup',
+			'onkeypress',
+			'onfocus',
+			'onblur',
+			'onchange',
+			'onsubmit',
+			'onreset',
+			'onselect',
+			'oninput',
+			'onload',
+			'onunload',
+			'onerror',
+			'onresize',
+			'onscroll'
+		]);
+		$html = XML::removeHTMLAttributes($html, ['style', 'class', 'rel', 'target', 'type']);
+		$html = XML::removeComments($html);
+		$html = Strings::removeMultiLineComments($html);
+		$html = Strings::reduceText($html, 10);
+		$html = XML::removeCSS($html);
+		$html = XML::removeSocialLinks($html);
+		$html = Strings::removeMultipleSpacesInLines($html);
+		$html = Strings::wipeEmptyTags($html);
+		$html = Strings::removeHTMLTextModifiers($html);
+		$html = Strings::replaceHTMLentities($html);
+		$html = Strings::removeDataAttr($html); // bye data-*
+			
+		//
+		// y si todavia superara los tokens permitidos,...
+
+		if ($extreme){
+			$html = XML::removeCSSClasses($html);
+			$html = XML::removeHTMLTextModifiers($html);	
+		}
+
+		$html = Strings::removeSpaceBetweenTags($html);
+
+		return $html;		
 	}
 }
 
