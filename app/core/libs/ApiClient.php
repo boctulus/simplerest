@@ -688,26 +688,11 @@ class ApiClient
     */
 
     function getCachePath(){
-        static $path;
-
         if (empty($this->url)){
-            throw new \Exception("Undefined url");
+            throw new \Exception("Undefined URL");
         }
 
-        if (isset($path[$this->url])){
-            return $path[$this->url];
-        }
-
-        $filename = str_replace(['%'], ['p'], urlencode(Url::normalize($this->url))) . '.php';
-        $filename = str_replace('/', '', $filename);
-
-        // Evito problemas con nombres largos
-        if (strlen($filename) > 250){
-            return null;
-        }
-
-        $path[$this->url] = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
-        return $path[$this->url];
+        return Cache::getCachePath($this->url);
     }
 
 	protected function saveResponse(Array $response){
