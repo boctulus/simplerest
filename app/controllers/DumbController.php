@@ -56,10 +56,11 @@ use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
 use Endroid\QrCode\Encoding\Encoding;
+use simplerest\core\libs\GoogleDrive;
+
 use simplerest\core\libs\FileUploader;
 
 use Endroid\QrCode\Label\Font\NotoSans;
-
 use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
@@ -68,20 +69,20 @@ use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
-use simplerest\core\libs\HtmlBuilder\Tag;
 
+use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
-use simplerest\controllers\api\TblPersona;
 
+use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
-use simplerest\libs\scrapers\MaisonsScraper;
 
+use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
@@ -7551,6 +7552,14 @@ class DumbController extends Controller
         // Salida esperada: "<div><h1>Title</h1><p>Lorem ipsum dolor sit amet, consectetur,</p></div>"
     }
 
+    function test_getupdatedate()
+    {
+        $googleDrive = new GoogleDrive();
+        $updateDate = $googleDrive->getUpdateDate('google_drive_link_or_id');
+
+        // Use dd() instead of echo to display the results
+        dd($updateDate, 'INFO');
+    }
     
 
 }   // end class

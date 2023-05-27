@@ -9,6 +9,7 @@ require_once __DIR__ . '/constants.php';
 
 return [
 	'app_url' => env('APP_URL'),
+	'app_name'=> env('APP_NAME'),
 
 	/*
 		For a sub-foder in /var/www/html just set as
@@ -306,7 +307,9 @@ return [
 		'end'   => ''
 	],
 
-	'google_maps_api_key' => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY',
+
+	'google_console_api_key' => env('GOOGLE_CONSOLE_API_KEY'),
+	'google_maps_api_key'    => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY',
 
 
 	/*

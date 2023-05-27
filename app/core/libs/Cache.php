@@ -2,6 +2,11 @@
 
 namespace simplerest\core\libs;
 
+/*
+    Idealmente implementar PSR 6 cache interface
+
+    https://www.php-fig.org/psr/psr-6/
+*/
 class Cache
 {
     const FOREVER = -1;
