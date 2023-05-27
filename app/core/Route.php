@@ -195,9 +195,7 @@ class Route
                 exit;
             }
             
-        }
-
-        
+        }        
     }
 
     public static function compile()
@@ -227,7 +225,7 @@ class Route
                         $method = substr($ck, $pos+1);
                     }
 
-                    $class_name = "${namespace}${ctrl}";
+                    $class_name = "{$namespace}{$ctrl}";
                     if (!class_exists($class_name)){
                         throw new \InvalidArgumentException("Controller class $class_name not found");  
                     }
