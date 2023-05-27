@@ -4,6 +4,11 @@ namespace simplerest\core\libs;;
 
 use simplerest\core\libs\Files;
 
+/*
+	Idealmente implementar PSR 3 logger
+
+	https://www.php-fig.org/psr/psr-3/
+*/
 class Logger
 {
     static $logFile = 'log.txt';
@@ -63,8 +68,6 @@ class Logger
 			
 			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
 		}
-
-		dd($bytes);
 
 		return ($bytes > 0);
 	}
