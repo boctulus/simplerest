@@ -9,6 +9,7 @@ class GoogleDrive
 
     function __construct() { $this->__getClient(); }
 
+    // Google API client
 	protected function __getClient(){
 		$cfg = config();
 
@@ -32,21 +33,29 @@ class GoogleDrive
 		$this->client = $client;
 	}
 
+    protected function __getDriveService(){
+        $class = 'Google_Service_Drive';
+        return new $class($this->client);
+    }
+
 	function getUpdateDate(string $link_or_id): string
     {
-        $class   = 'Google_Service_Drive';
-        $service = new $class($this->client);
+        if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
+            $id = Url::getQueryParam($link_or_id, 'id');
+        } else {
+            $id = $link_or_id;
+        }
+
+        $service = $this->__getDriveService();
 
         // Retrieve the file metadata based on the link or ID
-        $file = $service->files->get($link_or_id, ['fields' => 'modifiedTime']);
+        $file = $service->files->get($id, ['fields' => 'modifiedTime']);
 
         // Extract the modified time from the file metadata
         $modifiedTime = $file->getModifiedTime();
 
         // Convert the modified time to the desired format (e.g., 'Y-m-d H:i:s')
         $updateDate = date('Y-m-d H:i:s', strtotime($modifiedTime));
-
-		//here();
 
         return $updateDate;
     }

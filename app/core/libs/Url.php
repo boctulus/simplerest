@@ -353,9 +353,9 @@ class Url
     }
 
     /*
-        funcion auxiliar para parseStrQuery()
+        @return string|array
     */
-    protected static function getQueryParam(string $url, ?string $param = null) : ?Array {
+    static function getQueryParam(string $url, ?string $param = null) {
         if ($param === null){
             return static::getQueryParams($url);
         }
