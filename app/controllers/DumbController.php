@@ -7554,7 +7554,7 @@ class DumbController extends Controller
 
     function test_getupdatedate()
     {
-        $gd_link     = 'https://docs.google.com/uc?export=download&id=1v1muw13biKMGFy0PotB_sHzDh7Fic8a3';
+        $gd_link     = 'https://docs.google.com/uc?export=download&id=17RAZgbp_T-KIgG8BSrb1siocXUusFoLL';
 
         $googleDrive = new GoogleDrive();
         $updateDate  = $googleDrive->getUpdateDate($gd_link);
