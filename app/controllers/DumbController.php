@@ -7562,6 +7562,16 @@ class DumbController extends Controller
         // Use dd() instead of echo to display the results
         dd($updateDate, 'INFO');
     }
+
+    function test_gdrive_info(){
+
+        $googleDrive = new GoogleDrive();
+        $info        = $googleDrive->getInfo('1oUqLiey81m0keXAo1ZtOsGYfd5c1VTeT', [
+            'pageSize' => 5
+        ], 'id, name, createdTime, modifiedTime');
+
+        dd($info);
+    }
     
 
 }   // end class
