@@ -60,6 +60,10 @@ class GoogleDrive
             'pageSize' => 10
         ], 'id, name, createdTime, modifiedTime');
 
+
+        Para saber que atributos ('createdTime', 'modifiedTime', etc) se pueden solicitar, ver la lista:
+
+        https://developers.google.com/resources/api-libraries/documentation/drive/v3/php/latest/class-Google_Service_Drive_DriveFile.html
     */
     function getInfo(?string $folder_id = null, ?array $options = null, ...$file_fields)
     {
