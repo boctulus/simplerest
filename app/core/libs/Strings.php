@@ -6,7 +6,6 @@ use simplerest\core\libs\XML;
 
 class Strings 
 {	
-
 	/*
 		Extrae la parte numerica de una cadena que contenga una cantidad
 		y la castea a un float
@@ -299,6 +298,22 @@ class Strings
 		}
 
 		return implode($substr, array_slice($parts, $occurence));
+	}
+
+	static function beforeIfContains(string $str, string $substr, int $occurence = 1){
+		if (!static::contains($substr, $str)){
+			return $str;
+		} else {
+			return static::before($str, $substr, $occurence);
+		}
+	}
+	
+	static function afterIfContains(string $str, string $substr, int $occurence = 1){
+		if (!static::contains($substr, $str)){
+			return $str;
+		} else {
+			return static::after($str, $substr, $occurence);
+		}
 	}
 
 	// String después de la primera ocurrencia del substring
@@ -679,10 +694,16 @@ class Strings
 		return array_map('trim', $strings);
 	}
 
+	/*
+		Elimina espacios, tabs etc del comienzo de cada linea
+	*/
 	static function trimMultiline(string $str){
-		$lines = explode("\n", $str);
+		$cr    = static::carriageReturn($str);
+
+		$lines = explode($cr, $str);
 		$arr   = static::trimArray($lines);
-		return implode("\n", $arr);
+
+		return implode($cr, $arr);
 	}
 
 	static function trimFromLastOcurrence(string $substr, string $str){
@@ -1661,6 +1682,10 @@ class Strings
         return html_entity_decode($page);
     }
 
+	static function removeHTMLentities(string $html): string {
+        return preg_replace("/&#?[a-z0-9]+;/i","", $html);
+    }
+
 	static function removeDataAttr(string $page): string {
         // Eliminar todas las ocurrencias de atributos data-* en HTML
         $pattern = '/\s+data-[a-zA-Z0-9-]+=[\'"][^\'"]*[\'"]/i';
@@ -1669,6 +1694,33 @@ class Strings
         return $page;
     }
 
+	// php.net
+	static function stripTags($text, $tags = null, $invert = FALSE)
+	{
+		if (!empty($tags)){
+			preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags);
+		
+			$tags = array_unique($tags[1]);
+		}
+		   
+		if(is_array($tags) AND count($tags) > 0) {
+	  
+		  if($invert == FALSE) {
+			return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text);
+		  }
+	  
+		  else {
+			return preg_replace('@<('. implode('|', $tags) .')\b.*?>.*?</\1>@si', '', $text);
+		  }
+		}
+	  
+		elseif($invert == FALSE) {
+		  return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text);
+		}
+	  
+		return $text;
+	}
+
 	/*
 		String length in Kilo bytes
 	*/
@@ -1676,12 +1728,29 @@ class Strings
 		return ((string) round(strlen($str) / (1024))) . ($include_subfix ? ' KB' : '') ;
 	}
 
-	static function minimifyHTML($html, bool $extreme = false) : string {
+	/*
+		0 < $level < 8
+	*/
+	static function minimifyHTML($html, int $level = 5) : string {
+		if ($level >= 7){
+			$html = XML::stripTag($html, 'nav');
+            $html = XML::stripTag($html, 'img');
+			$html = XML::stripTag($html, 'footer');
+			$html = XML::HTML2Text($html);
+
+			// Replace multiple (one ore more) line breaks with a single one.
+			$html = preg_replace("/[\r\n]+/", "\n", $html);
+									
+			return $html;
+		}
+
+		$html = Strings::removeHTMLentities($html);
 		$html = XML::stripTag($html, 'head');
 		$html = XML::stripTag($html, 'footer');
 		$html = XML::stripTag($html, 'script');
 		$html = XML::stripTag($html, 'style');
 		$html = XML::stripTag($html, 'iframe');
+		$html = XML::stripTag($html, 'svg');		
 		$html = XML::removeHTMLAttributes($html, [
 			'onclick',
 			'ondblclick',
@@ -1706,27 +1775,37 @@ class Strings
 			'onresize',
 			'onscroll'
 		]);
-		$html = XML::removeHTMLAttributes($html, ['style', 'class', 'rel', 'target', 'type']);
-		$html = XML::removeComments($html);
-		$html = Strings::removeMultiLineComments($html);
-		$html = Strings::reduceText($html, 10);
-		$html = XML::removeCSS($html);
-		$html = XML::removeSocialLinks($html);
-		$html = Strings::removeMultipleSpacesInLines($html);
-		$html = Strings::wipeEmptyTags($html);
-		$html = Strings::removeHTMLTextModifiers($html);
-		$html = Strings::replaceHTMLentities($html);
-		$html = Strings::removeDataAttr($html); // bye data-*
-			
-		//
-		// y si todavia superara los tokens permitidos,...
 
-		if ($extreme){
-			$html = XML::removeCSSClasses($html);
-			$html = XML::removeHTMLTextModifiers($html);	
+		$html = XML::removeHTMLAttributes($html, ['style', 'class', 'rel', 'target', 'type']);
+		$html = Strings::removeMultiLineComments($html);
+		$html = XML::removeCSS($html);
+
+		if ($level >=2){
+			$html = XML::removeComments($html);
+		}
+
+		if ($level >=3){
+			$html = Strings::removeHTMLTextModifiers($html);
+		}
+
+		if ($level >= 4){
+			$html = XML::removeCSSClasses($html);			
+		}
+
+		if ($level >= 5){
+			$html = Strings::removeDataAttr($html); // bye data-*
 		}
 
 		$html = Strings::removeSpaceBetweenTags($html);
+		$html = Strings::removeMultipleSpacesInLines($html);
+		$html = Strings::wipeEmptyTags($html);		
+
+		
+		$html = static::afterIfContains($html, '<body>');
+
+		if (Strings::contains('</body>', $html)){
+			$html = static::beforeLast($html, '</body>');
+		}	
 
 		return $html;		
 	}
