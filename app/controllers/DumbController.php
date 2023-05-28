@@ -7566,7 +7566,7 @@ class DumbController extends Controller
     function test_gdrive_info(){
 
         $googleDrive = new GoogleDrive();
-        $info        = $googleDrive->getInfo('1oUqLiey81m0keXAo1ZtOsGYfd5c1VTeT', [
+        $info        = $googleDrive->getFolderInfo('1oUqLiey81m0keXAo1ZtOsGYfd5c1VTeT', [
             'pageSize' => 5
         ], 'id, name, createdTime, modifiedTime');
 
