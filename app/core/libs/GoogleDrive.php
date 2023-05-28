@@ -2,7 +2,11 @@
 
 namespace simplerest\core\libs;
 
+/*
+    Wrapper sobre el SDK de Google Drive
 
+    @author Pablo Bozzolo < boctulus >
+*/
 class GoogleDrive
 {
 	protected $client;
@@ -115,7 +119,19 @@ class GoogleDrive
         return $ret;
     }
 
-    function getInfo(string $link_or_id, array|string $fields, string $format = null): string
+    /*
+        Obtiene INFO sobre un ARCHIVO en particular
+
+        $googleDrive  = new GoogleDrive();
+        $modifiedTime = $googleDrive->getInfo($id, 'modifiedTime')['modifiedTime'];
+
+        Nota:
+
+        Solo usar $format si todos los campos pasados detro de $fields son de tipo timestamp
+        porque se aplica $format a todos los campos (por diseño)
+
+    */
+    function getInfo(string $link_or_id, array|string $fields, ?string $format = null): array
     {
         if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
             $id = Url::getQueryParam($link_or_id, 'id');
@@ -141,21 +157,22 @@ class GoogleDrive
 
         foreach ($fields as $field){
             $getter = "get". ucfirst($field);
-            $row[$field] = $file->{$getter}();
+            $ret[$field] = $file->{$getter}();
 
             // Se aplica a cada campo !
             if (!empty($format)){
-                $row[$field] = date($format, strtotime($row[$field]));
+                $ret[$field] = date($format, strtotime($ret[$field]));
             }
-        }
-
-        $ret[] = $row;
+        };
     
         return $ret;
     }
 
     /*
-        Obtiene info sobre un ARCHIVO en particular
+        Obtiene "Update date" sobre un ARCHIVO en particular
+
+        $googleDrive = new GoogleDrive();
+        $updateDate  = $googleDrive->getUpdateDate($gd_link, 'd-m-Y');
     */
     function getUpdateDate(string $link_or_id, string $format = 'Y-m-d H:i:s'): string
     {
@@ -165,20 +182,10 @@ class GoogleDrive
             $id = $link_or_id;
         }
 
-        $service = $this->__getDriveService();
-
-        // Retrieve the file metadata based on the link or ID
-        $file = $service->files->get($id, [
-            'fields' => 'modifiedTime'
-        ]);
-
         // Extract the modified time from the file metadata
-        $modifiedTime = $file->getModifiedTime();
+        $modifiedTime = $this->getInfo($id, 'modifiedTime', $format)['modifiedTime'];
 
-        // Convert the modified time to the desired format (e.g., 'Y-m-d H:i:s')
-        $updateDate = date($format, strtotime($modifiedTime));
-
-        return $updateDate;
+        return $modifiedTime;
     }
 
 }
