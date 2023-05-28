@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Cache;
+
 /*
     GitHub Gist: GitHub Gist is a service provided by GitHub that allows you to share code snippets, text, and more. It has an API that you can use to programmatically create and retrieve Gists. Gists can be either public or private.
 
@@ -14,6 +16,29 @@ namespace simplerest\core\libs;
 
 class PastebinLike
 {   
+
+    /*
+        Se podria generalizar haciendo reflection para saber que proveedores hay implementados en esta clase
+        O permitir registrar otros
+    */
+    static function getLink(string $str)
+    {    
+        // pruebo 
+        $link = PastebinLike::sendToSprunge($str);
+
+        // pruebo con otro servicio
+        if (empty($link)){
+            $link = PastebinLike::sendToIx($str);
+        }
+
+        // Si todo falla
+        if (empty($link)){
+            throw new \Exception("No pastebin available");
+        }
+
+        return $link;
+    }
+
     /*
         Lo ideal seria que si falla, se recordara que ha fallado para no usar este servidor
         por un tiempo.
