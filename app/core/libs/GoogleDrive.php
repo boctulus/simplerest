@@ -13,7 +13,11 @@ class GoogleDrive
 
     function __construct() { $this->__getClient(); }
 
-    // Google API client
+    /*
+        Google API client
+
+        Podria trabajar tambien on OAuth
+    */
 	protected function __getClient(){
 		$cfg = config();
 
