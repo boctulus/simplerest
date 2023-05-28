@@ -65,7 +65,7 @@ class GoogleDrive
 
         https://developers.google.com/resources/api-libraries/documentation/drive/v3/php/latest/class-Google_Service_Drive_DriveFile.html
     */
-    function getInfo(?string $folder_id = null, ?array $options = null, ...$file_fields)
+    function getFolderInfo(?string $folder_id = null, ?array $options = null, ...$file_fields)
     {
         $service = $this->__getDriveService();
 
@@ -115,10 +115,49 @@ class GoogleDrive
         return $ret;
     }
 
+    function getInfo(string $link_or_id, array|string $fields, string $format = null): string
+    {
+        if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
+            $id = Url::getQueryParam($link_or_id, 'id');
+        } else {
+            $id = $link_or_id;
+        }
+
+        $service = $this->__getDriveService();
+
+        if (is_array($fields)){
+            $fields_str = implode(',', $fields);
+        } else {
+            $fields_str = $fields;
+            $fields     = explode(',', $fields);
+        }
+
+        // Retrieve the file metadata based on the link or ID
+        $file = $service->files->get($id, [
+            'fields' => $fields_str
+        ]);
+
+        $ret = [];    
+
+        foreach ($fields as $field){
+            $getter = "get". ucfirst($field);
+            $row[$field] = $file->{$getter}();
+
+            // Se aplica a cada campo !
+            if (!empty($format)){
+                $row[$field] = date($format, strtotime($row[$field]));
+            }
+        }
+
+        $ret[] = $row;
+    
+        return $ret;
+    }
+
     /*
         Obtiene info sobre un ARCHIVO en particular
     */
-    function getUpdateDate(string $link_or_id): string
+    function getUpdateDate(string $link_or_id, string $format = 'Y-m-d H:i:s'): string
     {
         if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
             $id = Url::getQueryParam($link_or_id, 'id');
@@ -137,7 +176,7 @@ class GoogleDrive
         $modifiedTime = $file->getModifiedTime();
 
         // Convert the modified time to the desired format (e.g., 'Y-m-d H:i:s')
-        $updateDate = date('Y-m-d H:i:s', strtotime($modifiedTime));
+        $updateDate = date($format, strtotime($modifiedTime));
 
         return $updateDate;
     }
