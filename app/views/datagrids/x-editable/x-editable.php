@@ -203,6 +203,10 @@ user!</a></td>
 </div>
 
 <?php
+    /*
+        Importante para la DEMO
+    */
+
     js_file('vendors/x-editable/demo/demo.js');
     js_file('vendors/x-editable/demo/demo-mock.js');
 ?>
