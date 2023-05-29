@@ -6,10 +6,10 @@
 </style>
 
 <script>
-    var c = window.location.href.match(/c=inline/i) ? 'inline' : 'popup';
-    $.fn.editable.defaults.mode = c === 'inline' ? 'inline' : 'popup';
+    onLoaded((e)=>{
+        var c = window.location.href.match(/c=inline/i) ? 'inline' : 'popup';
+        $.fn.editable.defaults.mode = c === 'inline' ? 'inline' : 'popup';
 
-    $(function(){
         $('#f').val(f);
         $('#c').val(c);
         
@@ -25,8 +25,11 @@
                 $(this).attr('action', 'demo-bs3.html');                        
             }
         });
-    });
+    })
+
+
 </script>        
+
         
 <style type="text/css">
     body {
@@ -198,3 +201,8 @@ user!</a></td>
     </div>
 
 </div>
+
+<?php
+    js_file('vendors/x-editable/demo/demo.js');
+    js_file('vendors/x-editable/demo/demo-mock.js');
+?>
