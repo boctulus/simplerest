@@ -4,6 +4,120 @@ namespace simplerest\core\libs;
 
 class XML
 {
+    /*
+        The intend is to get the "DOM selector" given a text which should be found as substring of a text node. The problem is an error.
+    */
+    public static function getSelector(string $html, string $text) : string {
+        $dom = static::getDocument($html);
+
+        $xpath = new \DOMXPath($dom);
+        $nodes = $xpath->query("//text()[contains(., '$text')]/parent::*");
+
+        $selector = '';
+        foreach ($nodes as $node) {
+            $selector .= self::getNodeSelector($node) . '/';
+        }
+
+        $selector = rtrim($selector, '/');
+
+        return $selector;
+    }
+
+    private static function getNodeSelector(\DOMNode $node) : string {
+    $selector = '';
+
+    while ($node && $node->nodeType === XML_ELEMENT_NODE) {
+        $nodeName = $node->nodeName;
+        $nodeIndex = self::getNodeIndex($node);
+        $selector = "{$nodeName}[{$nodeIndex}]{$selector}"; // Update the order of concatenation
+
+        $node = $node->parentNode; // Move to the parent node
+    }
+
+    $selector = '/' . rtrim($selector, '/');
+
+    return $selector;
+}
+ 
+
+    private static function getNodeIndex(\DOMNode $node) : int {
+        $index = 1;
+        $previousNode = $node->previousSibling;
+
+        while ($previousNode) {
+            if ($previousNode->nodeName === $node->nodeName) {
+                $index++;
+            }
+            $previousNode = $previousNode->previousSibling;
+        }
+
+        return $index;
+    }
+
+    /*
+        Ej:
+
+        $selector = '//p';
+        $result = XML::getTag($html, $selector);
+        dd($result, $selector); 
+    
+        $selector = '//div[contains(@class, "my_class")]';
+        $result = XML::getTag($html, $selector);
+        dd($result, $selector); 
+    */
+    static function getTag(string $html, string $selector): array {
+        $dom = static::getDocument($html);
+        
+        $xpath = new \DOMXPath($dom);
+        $nodes = $xpath->query($selector);
+
+        $result = array();
+        foreach ($nodes as $node) {
+            $result[] = $dom->saveXML($node);
+        }
+
+        return $result;
+    }
+
+    /*
+        Devuelve ocurrencias de <article>
+
+        Ej:
+
+        $html = Files::getContent(ETC_PATH . 'page.html');        
+        $html = XML::getArticles($html) ?? $html;
+
+        dd($html);
+    */
+    static function getArticles(string $html, bool $as_string = true){
+        $arts = XML::query($html, '//article');
+
+        if (empty($arts)){
+            return;
+        }
+
+        if ($as_string){
+            $arts = implode("\r\n\r\n", $arts);
+        }   
+
+        return $arts;
+    }
+
+    // alias
+    static function query(string $html, string $selector): array {
+        return static::getTag($html, $selector);
+    }
+    
+    static function saveXMLNoHeader(\DOMDocument $dom) : string {
+        $str = $dom->saveXML();
+
+        $str = Strings::afterIfContains($str, '<?xml version="1.0" standalone="yes"?>');
+        $str = Strings::afterIfContains($str, '<?xml encoding="UTF-8"?>');
+        $str = static::stripDOCTYPE($str);
+
+        return ltrim($str);
+    }
+
     static function removeSocialLinks($html) {
         // Array de redes sociales conocidas y sus dominios
         $socialNetworks = array(
@@ -84,11 +198,16 @@ class XML
         return $result;
     }
     
-    static function getDomDocument(string $html){
+    static function getDocument(string $html){
         $doc = new \DOMDocument();
 
         libxml_use_internal_errors(true);
-        $doc->loadHTML('<?xml encoding="UTF-8">' . $html);
+
+        if (!Strings::contains('<?xml encoding="UTF-8">', $html)){
+            $html = '<?xml encoding="UTF-8">' . $html;
+        }
+        
+        $doc->loadHTML($html);       
         libxml_use_internal_errors(false);
 
         return $doc;
@@ -96,12 +215,12 @@ class XML
     
     static function getXPath(string $html){
         return new \DOMXPath(
-            static::getDomDocument($html)
+            static::getDocument($html)
         );
     }   
 
     static function removeHTMLTextModifiers(string $html, array|string $tags = null): string {
-		$dom   = static::getDomDocument($html);
+		$dom   = static::getDocument($html);
 		$xpath = new \DOMXPath($dom);  // HERE
 	
 		$tagsToRemove = ['b', 'i', 'u', 's', 'strong', 'em', 'sup', 'sub', 'mark', 'small'];
@@ -122,10 +241,10 @@ class XML
 			}
 		}
 	
-		$output = $dom->saveHTML();
+		$output = static::saveXMLNoHeader($dom);
 	
 		// Eliminar la etiqueta <!DOCTYPE> y la envoltura <html><body> agregadas por DOMDocument
-		$output = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $output);
+		// $output = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $output);
 	
 		return $output;
 	}
@@ -133,6 +252,8 @@ class XML
     /*
         Puede remover cualquier <tag> de HTML 
         sin hacer uso de regex
+
+        Remueve tambien sus hijos
 
         https://stackoverflow.com/a/7131156/980631
     */
@@ -153,16 +274,109 @@ class XML
             $item->parentNode->removeChild($item); 
         }
 
-        $html = $dom->saveHTML();
+        $html = static::saveXMLNoHeader($dom);
         
         return $html;
     }
 
+    static function stripTagById(string $page, string $id): string {
+        $dom = new \DOMDocument;
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($page, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        // Obtén el elemento con el ID especificado
+        $element = $dom->getElementById($id);
+        
+        if ($element) {
+            // Obtén el padre del elemento y elimina el elemento del árbol DOM
+            $parent = $element->parentNode;
+            $parent->removeChild($element);
+        }
+        
+        // Obtén el XML resultante como string
+        $newPage = static::saveXMLNoHeader($dom);
+        
+        return $newPage;
+    }
+
+
+    static function stripTagByClass(string $page, string $class): string {
+        $dom = new \DOMDocument;
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($page, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+        
+        // Crea un objeto DOMXPath para buscar por clase de CSS
+        $xpath = new \DOMXPath($dom);
+        
+        // Encuentra todos los elementos con la clase especificada
+        $elements = $xpath->query("//*[@class='$class']");
+        
+        // Elimina cada elemento encontrado
+        foreach ($elements as $element) {
+            $parent = $element->parentNode;
+            $parent->removeChild($element);
+        }
+        
+        // Obtén el XML resultante como string
+        $newPage = static::saveXMLNoHeader($dom);
+        
+        return $newPage;
+    }
+
+    static function stripXMLTags(string $str): string {
+        $str = Strings::afterIfContains($str, '<?xml version="1.0" standalone="yes"?>');
+        $str = Strings::afterIfContains($str, '<?xml encoding="UTF-8"?>');
+
+        return trim($str);
+    }
+
+    public static function HTML2Text(string $page): string {
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true); // Suprime los errores de HTML mal formado
+        $dom->loadHTML($page);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($dom);
+
+        $tagsWithLineBreak = ['div', 'br', 'p']; // Agrega aquí los tags adicionales que deseas
+
+        // Elimina los elementos de script y style
+        $scripts = $xpath->query('//script|//style');
+        foreach ($scripts as $script) {
+            $script->parentNode->removeChild($script);
+        }
+
+        $text = '';
+        $nodes = $xpath->query('//text()');
+        foreach ($nodes as $node) {
+            $parentNode = $node->parentNode;
+            if (in_array(strtolower($parentNode->nodeName), $tagsWithLineBreak)) {
+                $text .= $node->nodeValue . "\r\n";
+            } else {
+                $text .= $node->nodeValue;
+            }
+        }
+
+        $text = Strings::trimMultiline($text);
+
+        return $text;
+    }
+    
+    static function stripDOCTYPE(string $page) : string {
+        $pattern = '/<!DOCTYPE[^>]+>/i';
+        $stripped_page = preg_replace($pattern, '', $page);
+        return $stripped_page;
+    }
+
     /*
         https://davidwalsh.name/remove-html-comments-php
+
+        Not working as expected
     */
-    static function removeComments(string $html = '') : string {
-        return preg_replace('/<!--(.|\s)*?-->/', '', $html);
+    static function removeComments(string $html) : string {
+        return preg_replace('/<!--(^-->)*?-->/', '', $html);
     }
 
     /*
@@ -183,11 +397,17 @@ class XML
 
         return $page;
     }
+    
 
 	/*
 		Util para eliminar eventos de JS y atributos como style y class
 	*/
-	public static function removeHTMLAttributes(string $page, array|string $attr) : string {
+	public static function removeHTMLAttributes(string $page, array|string $attr = null) : string {
+        // if ($attr === null) {
+        //     // Si no se proporciona ningún atributo, eliminar todos los atributos en las etiquetas
+        //     return preg_replace('/\s*([a-z]+\s*=\s*"[^"]*"|([a-z]+\s*=\s*\'[^\']*\'))/i', '', $page);
+        // }   
+
         /*
             Eliminar todas las ocurrencias del atributo o atributos especificados.
 
