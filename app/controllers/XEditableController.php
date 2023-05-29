@@ -50,7 +50,7 @@ class XEditableController extends MyController
         
         // return $html->render();   
         
-        view('datagrids/x-editable/x-editable.php', null, 'tpl.php');
+        view('datagrids/x-editable/x-editable.php', null, 'templates/tpl.php');
     }
 }
 
