@@ -6,6 +6,12 @@ if (typeof $ == 'undefined' && typeof jQuery != 'undefined'){
     $=jQuery
 }
 
+const onLoaded = function(callback, event){
+    window.addEventListener("DOMContentLoaded", (event) => {
+        callback(event)
+    });
+}       
+
 const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
 
 /*
