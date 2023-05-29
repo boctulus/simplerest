@@ -1,4 +1,22 @@
 TODO de proyecto 'Supra'
+------------------------
+
+- En proyectos es recomendable tener otro template como "TK. ThemeKit"
+
+    https://github.com/ThemeKit/BootstrapAdmin
+
+Como usa BT4 es posible que sea compatible con los componentes de AdminLTE
+
+- Tomar fuentes o algo mas de
+
+https://appdevtools.com/html-validator
+
+  <-- se ve bastante bien!
+
+- Seguir trabajando para integrar totalmente la demo del plugin "X-EDITABLE"
+
+  (funcional en http://simplerest.lan/xeditable)
+
 
 - Dar la posibilidad de ingresar todo como Array
 
