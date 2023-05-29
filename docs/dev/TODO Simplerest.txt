@@ -1,15 +1,11 @@
 
-- En proyectos es recomendable tener otro template como "TK. ThemeKit"
+- Crear IMPORTER de ASSETs o sea... debe leer un HTML con referencias ya sea locales o CDNs y 
 
-    https://github.com/ThemeKit/BootstrapAdmin
+  . Descargar localmente dentro de /public/assets
 
-Como usa BT4 es posible que sea compatible con los componentes de AdminLTE
+  . Escupir el codigo haciendo uso de css_file(), js_file() y similares
 
-- Tomar fuentes o algo mas de
-
-https://appdevtools.com/html-validator
-
-  <-- se ve bastante bien!
+<--- PIERDO *HORAS* cada vez que quiero adaptar una demo como X-editable 
 
 - Luego de correr migraciones,......
 
