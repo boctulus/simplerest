@@ -2376,7 +2376,7 @@ class Model {
 		);
 	}
 
-	protected function _where(?Array $conditions = null, string $group_op = 'AND', $conjunction = null)
+	protected function _where(?array $conditions = null, string $group_op = 'AND', $conjunction = null)
 	{
 		//dd($group_op, 'group_op');
 		//dd($conjunction, 'conjuntion');
@@ -2489,6 +2489,17 @@ class Model {
 	}
 
 	function where($conditions, $conjunction = 'AND'){
+		/*
+			Laravel compatibility
+			
+			In "Laravel mode", $conditions es la key y $conjunction el valor
+		*/
+		if (is_string($conditions)){
+			$key              = $conditions;
+			$conditions       = [];
+			$conditions[$key] = $conjunction;
+		}
+
 		$this->_where($conditions, 'AND', $conjunction);
 		return $this;
 	}
@@ -3216,6 +3227,8 @@ class Model {
 		{			
 			$validado = $this->validator->validate($data, $this->getRules(), $this->fillable, $this->not_fillable);
 			if ($validado !== true){
+				dd($this->validator->getErrors());
+
 				throw new InvalidValidationException(json_encode(
 					$this->validator->getErrors()
 				));

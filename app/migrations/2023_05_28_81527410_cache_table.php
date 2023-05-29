@@ -6,7 +6,7 @@ use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
-class Todo implements IMigration
+class CacheTable implements IMigration
 {
     /**
 	* Run migration.
@@ -15,9 +15,12 @@ class Todo implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('Todo');
-		$sc->alter();
-		
+        $sc = new Schema('cache');
+        $sc->string('key')->primary(); // no esta agregando el primary !!!
+        $sc->text('value');
+        $sc->timestamp('cached_at')->nullable();
+        $sc->integer('expiration_time');
+		$sc->create();
     }
 
     /**
@@ -27,7 +30,7 @@ class Todo implements IMigration
     */
     public function down()
     {
-        ### DOWN
+        Schema::dropIfExists('cache');
     }
 }
 

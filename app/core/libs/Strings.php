@@ -1655,7 +1655,7 @@ class Strings
 
 		La diferencia es que esta *no* remueve tags si poseen atributos (puede ser algo bueno o malo)
 	*/
-	static function removeHTMLTextModifiers(string $html, array|string $tags = null): string {
+	static function removeHTMLTextModifiers(string $html, $tags = null): string {
 		$tagsToRemove = ['b', 'i', 'u', 's', 'strong', 'em', 'sup', 'sub', 'mark', 'small'];
 	
 		if (is_array($tags) || is_string($tags)) {
