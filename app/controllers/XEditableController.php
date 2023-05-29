@@ -12,11 +12,31 @@ class XEditableController extends MyController
     function __construct()
     {
         parent::__construct();
+        js("
+            var f = 'bootstrap3';
+        ");
 
-        css_file('vendors/x-editable/bt/css/bootstrap-editable.css');
-        css_file('vendors/x-editable/bt/css/style.scss');
+        js_file('vendors/mockjax/jquery.mockjax.js', null, true);
 
-        js_file('vendors/x-editable/bt/js/bootstrap-editable.js');
+        css_file('vendors/bootstrap-datetimepicker/css/datetimepicker.css');
+        js_file('vendors/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js', null, true);
+        
+        js_file('vendors/x-editable/dist/bootstrap5-editable/js/bootstrap-editable.min.js', null, true);
+        css_file('vendors/x-editable/dist/bootstrap5-editable/css/bootstrap-editable.css');
+
+        css_file('vendors/x-editable/dist/inputs-ext/typeaheadjs/lib/typeahead.js-bootstrap.css');
+        js_file('vendors/x-editable/dist/inputs-ext/typeaheadjs/lib/typeahead.js', null, true);  
+        js_file('vendors/x-editable/dist/inputs-ext/typeaheadjs/typeaheadjs.js', null, true);       
+        
+        css_file('vendors/x-editable/dist/inputs-ext/wysihtml5/bootstrap-wysihtml5-0.0.3/bootstrap-wysihtml5-0.0.3.css');
+        js_file('vendors/x-editable/dist/inputs-ext/wysihtml5/bootstrap-wysihtml5-0.0.3/wysihtml5-0.3.0.min.js', null, true);
+        js_file('vendors/x-editable/dist/inputs-ext/wysihtml5/bootstrap-wysihtml5-0.0.3/bootstrap-wysihtml5-0.0.3.min.js', null, true);
+        js_file('vendors/x-editable/dist/inputs-ext/wysihtml5/bootstrap-wysihtml5-0.0.3/bootstrap-wysihtml5-0.0.3.min.js', null, true);
+
+        css_file('vendors/x-editable/dist/bootstrap5-editable/css/demo-bs3.css');
+
+        css_file('vendors/x-editable/dist/inputs-ext/address/address.css');
+        js_file('vendors/x-editable/dist/inputs-ext/address/address.js');
     }
 
     function index()
