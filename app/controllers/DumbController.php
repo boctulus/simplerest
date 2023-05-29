@@ -46,20 +46,21 @@ use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
 
+use simplerest\core\libs\FileCache;
+
 use simplerest\core\libs\Reflector;
 
 use simplerest\core\libs\Validator;
-
 use simplerest\core\libs\GoogleMaps;
-use simplerest\core\libs\Obfuscator;
 
+use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
 use Endroid\QrCode\Encoding\Encoding;
+
 use simplerest\core\libs\GoogleDrive;
 
 use simplerest\core\libs\FileUploader;
-
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
@@ -68,20 +69,20 @@ use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
-use simplerest\core\api\v1\ApiController;
 
+use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\ValidationRules;
-use PhpParser\Node\Scalar\MagicConst\File;
 
+use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
-use simplerest\libs\scrapers\AmazonScraper;
 
+use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
@@ -90,6 +91,7 @@ use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\core\libs\DBCache;
 
 class DumbController extends Controller
 {
@@ -106,6 +108,10 @@ class DumbController extends Controller
 
         dd(System::getMemoryPeakUsage(), 'Memory peak usage');
         dd(System::getMemoryPeakUsage(true), 'Memory peak usage (real)');
+    }
+
+    function phpinfo(){
+        phpinfo();
     }
 
     function info(){
@@ -196,14 +202,6 @@ class DumbController extends Controller
 
         // titulo al final
         dd([4, 5, 7], "My Array", true, false);
-    }
-
-    function is_expired(){
-        $file = 'C:\Windows\Temp'. DIRECTORY_SEPARATOR. 'httpp3Ap2Fp2Fplanex.lanp2Fdumb.php';
-
-        dd(
-            Cache::expiredFile($file, 1900)
-        );
     }
 
     function now(){
@@ -553,7 +551,7 @@ class DumbController extends Controller
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
             
             <!-- Font Awesome -->
-            <link rel="stylesheet" href="http://simplerest.lan/public/assets/vendors/adminlte/plugins/fontawesome-free/css/all.min.css">
+             <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
             
             <!-- Ionicons -->
             <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
@@ -7572,6 +7570,46 @@ class DumbController extends Controller
 
         dd($info);
     }
+
+    function test_file_cache_path(){
+        dd(
+            FileCache::getCachePath('constelacion')
+        );
+    }
+
+    function test_file_cache_put(){
+        dd(
+            FileCache::put('constelacion', 'andromeda', 2)
+        );
+    }
+
+    function test_file_cache_get(){
+        dd(
+            FileCache::get('constelacion')
+        );
+    }
+
+    function is_expired(){
+        $file = FileCache::getCachePath('constelacion');
+
+        dd(
+            FileCache::expiredFile($file    )
+        );
+    }
+
+    function test_db_cache_put(){
+        $data = [
+            'the_key'   => 'nombre',
+            'the_value' => serialize('Feli'),
+            'cached_at' => time(),
+            'expiration_time' => 100000,
+        ];
+        
+        DB::table('cache')->create($data);  
+
+        //DBCache::put('galaxia', 'voa lactea', 60);
+    }
+
     
 
 }   // end class

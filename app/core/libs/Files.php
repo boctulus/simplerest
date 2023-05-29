@@ -905,7 +905,7 @@ class Files
 	/*
 		Escribe archivo o falla.
 	*/
-	static function writeOrFail(string $path, string|array|object $content, int $flags = 0){
+	static function writeOrFail(string $path, $content, int $flags = 0){
 		if (is_dir($path)){
 			$path = realpath($path);
 			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");

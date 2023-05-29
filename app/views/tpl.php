@@ -26,6 +26,8 @@
 
     <!-- jQuery -->
     <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
+    
+    <script src="<?= asset('js/utilities.js') ?>"></script>
 
     <?= 
         umodel();
@@ -39,15 +41,12 @@
     <script src="<?= asset('js/login.js') ?>"></script>
 
     <!-- ICONOS FONTAWESOME -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
     
     <!-- TEMPLATE ADMIN LTE -->
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css') ?>">
     
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
@@ -157,7 +156,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js"></script>
 
     
-    <script src="<?= asset('js/boostrap/boostrap_notices.js') ?>"></script>
+    <script src="<?= asset('js/bootstrap/boostrap_notices.js') ?>"></script>
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>
