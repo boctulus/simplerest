@@ -1,3 +1,4 @@
+- Resolver problema de templates duplicados. Depredicar carpeta de templates
 
 - Crear IMPORTER de ASSETs o sea... debe leer un HTML con referencias ya sea locales o CDNs y 
 

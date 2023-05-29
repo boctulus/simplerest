@@ -23,6 +23,8 @@
     <!-- jQuery -->
     <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
 
+    <script src="<?= asset('js/utilities.js') ?>"></script>
+
     <?= 
         umodel();
         head();  
