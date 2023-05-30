@@ -2,8 +2,8 @@
 
 namespace simplerest\core\libs;
 
-use PDO;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\FileCache;
 
 /*
     @author Pablo Bozzolo
@@ -15,6 +15,13 @@ use simplerest\core\libs\Url;
 */
 class ApiClient
 {
+    const     HTTP_METH_POST   = "POST";
+    const     HTTP_METH_GET    = "GET";
+    const     HTTP_METH_PATCH  = "PATCH";
+    const     HTTP_METH_PUT    = "PUT";
+    const     HTTP_METH_DELETE = "DELETE";
+    const     HTTP_METH_HEAD   = "HEAD";
+
     // Request
     protected $url;
     protected $verb;
@@ -529,7 +536,7 @@ class ApiClient
             $expired = true;
         } else {
             $cached_path     = $this->getCachePath();
-            $expired         = Cache::expiredFile($cached_path, $this->expiration);    
+            $expired         = FileCache::expired($cached_path, $this->expiration);    
         }
        
         if (!$expired){
@@ -653,6 +660,23 @@ class ApiClient
         return $this->request($url, 'PATCH', $body, $headers, $options);
     }
 
+    function setMethod(string $verb){
+        if (!in_array($verb, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])){
+            throw new \InvalidArgumentException("Unsupported verb \"$verb\"");
+        }
+
+        $this->verb = $verb;
+        return $this;
+    }
+
+    function send($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+        return $this->request($url ?? $this->url, $this->verb, $body, $headers, $options);
+    }
+
+    function getBody(){
+        return $this->data();
+    }
+
     /*
         Authentication
     */
@@ -692,7 +716,7 @@ class ApiClient
             throw new \Exception("Undefined URL");
         }
 
-        return Cache::getCachePath($this->url);
+        return FileCache::getCachePath($this->url);
     }
 
 	protected function saveResponse(Array $response){
