@@ -129,13 +129,23 @@ class Url
         return $slugs;
     }
 
-	static function queryString() : Array {
+	static function queryString($url = null) : Array {
+        if ($url !== null){
+            return static::parseStrQuery($url);
+    }
+
         if (!isset($_SERVER['QUERY_STRING'])){
             return [];
         }
 
 		return static::parseStrQuery($_SERVER['QUERY_STRING']);
 	}
+
+
+    static function query($url = null){
+        return static::queryString($url);
+    }
+
 
     /*
         Si esta cerrado el puerto 443 puede demorar demasiado en contestar !
