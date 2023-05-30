@@ -9790,6 +9790,74 @@ Ej:
 la cache no esta bien implementada ni terminada.
 
 
+# Sintaxis alternativa para ApiClient
+
+Se pueden usar alternativamente los metodos setMethod(), send() y getBody()
+
+	setMethod() + send()	reemplazo para get(), post(), ...
+	getBody() 				reemplazo para data()
+
+Ej:
+
+	$client->setUrl('https://api.inmofactory.com/api/property');
+    $client->setMethod(HTTP_METH_POST);
+
+    $client->setHeaders(array(
+      'Cache-Control' => 'no-cache',
+      'Inmofactory-Api-Key' => '37d14b4e9a7a4f0fa4f959dbef3e23f69bb29abc6bdc4787809cfxxxxxxxxxxxxxx',
+      'Content-Type' => 'application/json'
+    ));
+
+    $client->setBody('{  
+       DATOS INMUEBLE EN FORMATO JSON
+    }');
+
+    try {
+      $client->send();
+
+      echo $client->getBody();
+    } catch (\Exception $ex) {
+      echo $ex;
+    }
+
+Ej:
+
+	$base_url = "https://produzione.familyintale.com/create-personalized-tale_p/";
+
+	$params = array ( 
+		'name_b' => 'Andrea', 
+		'name_p' => 'Pablo', 
+		'genderkids' => 'm', 
+		'genderparents' => 'm', 
+		'characterkids' => 'bfb', 
+		'characterparents' => 'gfb', 
+		'tale_language' => 'es', 
+		'tale_story' => 'gu', 
+	);
+
+	$url = Url::buildUrl($base_url, $params);
+
+	$client = ApiClient::instance()
+	->disableSSL()
+	->redirect()
+	->setUrl($url)
+	//->setBody($body)
+	->setMethod(ApiClient::HTTP_METH_GET);
+
+	try {
+		$client->send();
+
+		if ($client->status() != 200){
+			throw new \Exception($client->error());
+		}
+
+		dd(
+			$client->getBody()
+		);
+	} catch (\Exception $ex) {
+		dd($ex);
+	}
+
 
 ### Componentes del core del framework
 

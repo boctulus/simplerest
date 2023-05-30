@@ -7610,6 +7610,13 @@ class DumbController extends Controller
         //DBCache::put('galaxia', 'voa lactea', 60);
     }
 
-    
+    function testtttttt(){
+        $link     = 'https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
+
+        $id       = Url::getQueryParam($link, 'id');
+
+        dd($id, 'ID');
+    }
+
 
 }   // end class
