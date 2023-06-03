@@ -5369,14 +5369,14 @@ class DumbController extends Controller
 
     function csv_debug1()
     {
-        $path = 'D:\Desktop\PRECIOS MAYOREO - JUANITA\wc-product-export-9-5-2023-1683646857175.csv';
+        $path = 'D:\Desktop\PRECIOS MAYOREO - JUANITA\wc-product-export-30-5-2023-1685450160446.csv';
 
         $rows = Files::getCSV($path)['rows'];
 
         foreach ($rows as $key => $row) {
-            if (Strings::contains(' #ff6404', $key)){
+            // if (Strings::contains(' #ff6404', $key)){
                 dd($row, $key);
-            }
+            // }
             
         }
     }
