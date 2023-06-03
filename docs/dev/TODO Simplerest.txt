@@ -48,6 +48,39 @@ Ej:
 
 https://developer.alegra.com/reference/get_variant-attributes  <-- documentado on readme.com
 
+- En CADA API que cree para uso de terceros, incluir una forma sencilla
+de obtener resultados sin codigo solo ingresando TOKEN + JSON del request
+
+Ej:
+
+	[ Credenciales de usuario ]
+
+	___________token__________
+
+	[ JSON del request        ]
+
+	_{________________________
+	_________________________
+	_}________________________
+
+	[ Resultado               ]
+
+	_{________________________
+	_________________________
+	_}________________________
+
+
+* Ademas debe validar el token y JSON del request.
+
+https://api.inmofactory.com/Help/Property/JsonValidator
+
+- Ademas..... en cada API que construya debo documentar de forma clara HTTP CODES y CODIGOS DE ERROR
+
+Ej:
+
+https://api.inmofactory.com/Help/Misc/ValidationResponseMessage
+https://api.inmofactory.com/Help/Misc/HttpStatusCode
+
 
 # TODO
 
