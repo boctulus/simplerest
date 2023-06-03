@@ -365,9 +365,13 @@ class Url
     /*
         @return string|array
     */
-    static function getQueryParam(string $url, ?string $param = null) {
+    static function getQueryParam(string $url, ?string $param = null, bool $autodecode = true) {
         if ($param === null){
             return static::getQueryParams($url);
+        }
+
+        if (!Strings::startsWith('http', $url)){
+            throw new \InvalidArgumentException("URL '$url' is invalid");
         }
 
         $query = parse_url($url, PHP_URL_QUERY);
@@ -381,6 +385,10 @@ class Url
                     $x  = $_x[count($_x)-1];
                 }
             }
+        }
+
+        if ($autodecode && Strings::contains('%2F', $x)){
+            $x = urldecode($x);
         }
 
         return $x;

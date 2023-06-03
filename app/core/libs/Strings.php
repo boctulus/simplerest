@@ -1049,10 +1049,7 @@ class Strings
 	*/
 	static function reduceText(string $html, int $n_words): string {
         // Cargar el HTML en un objeto DOMDocument
-        $dom = new \DOMDocument();
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($html);
-        libxml_clear_errors();
+        $dom = XML::getDocument($html);
 
         // Obtener todos los nodos de texto
         $xpath = new \DOMXPath($dom);
@@ -1511,6 +1508,10 @@ class Strings
 		}
 
 		if (Strings::startsWith('\\', $path)){
+			return substr($path, 1);
+		}
+
+		if (Strings::startsWith('/', $path)){
 			return substr($path, 1);
 		}
 

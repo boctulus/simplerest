@@ -12,6 +12,18 @@ use simplerest\core\libs\FileCache;
     
     https://stackoverflow.com/a/42375193/980631
     https://stackoverflow.com/a/20605980/980631
+
+    IMPLEMENTAR alias de metodos restantes de distintas librerias
+
+    https://www.twilio.com/blog/5-ways-to-make-http-requests-in-php
+
+    Devolver la respuesta como objeto con el metodo send() y request()
+    y ese objeto podria implementar metodos como:
+
+    toArray()
+
+    Mantener data() y getBody() sin cambios
+
 */
 class ApiClient
 {
@@ -311,6 +323,10 @@ class ApiClient
         ];
 
         return $this;
+    }
+
+    function withoutStrictSSL(){
+        return $this->disableSSL();
     }
 
     /*
