@@ -16,6 +16,40 @@
 
     csvFileInput.addEventListener('change', handleFileSelect, false);
 
+    /*
+        Ejemplo de uso
+        
+        let obj = {
+            'MAYORISTA-CUSTOMER-10': '7000',
+            'MAYORISTA-CUSTOMER-50': '6000',
+            'MAYORISTA-L1-10': '6000',
+            'MAYORISTA-L1-50': '5500',
+            'MAYORISTA-L2-10': '5400',
+            'MAYORISTA-L2-50': '4900',
+        };
+
+        const filteredObj = filterByKeys(obj, ['MAYORISTA-L1-10', 'MAYORISTA-L2-*']);
+    */
+    function filterByKeys(obj, keys) {
+        const result = {};
+
+        for (const key in obj) {
+            if (keys.includes(key) || keys.includes('*')) {
+            result[key] = obj[key];
+            } else {
+            for (const filterKey of keys) {
+                if (filterKey.includes('*') && key.startsWith(filterKey.replace('*', ''))) {
+                result[key] = obj[key];
+                break;
+                }
+            }
+            }
+        }
+
+        return result;
+    }
+
+
     function convertToAssociativeArray(headers, rows) {
         const arrayOfObjects = [];
 
@@ -45,7 +79,19 @@
             // console.log(parsedData.rows);    // [["Value 1", "Value 2", "Value 3"]]
 
             const associativeArray = convertToAssociativeArray(parsedData.headers, parsedData.rows);
-            console.log(associativeArray);   // { "Header 1": "Value 1", "Header 2": "Value 2", "Header 3": "Value 3" }
+
+            // console.log(associativeArray);   // { "Header 1": "Value 1", "Header 2": "Value 2", "Header 3": "Value 3" }
+
+            /*
+                Aplicar filterByKeys() con ['MAYORISTA'] a cada array dentro de associativeArray
+                y hacer un console.log del resultado
+            */
+           
+            const filteredAssociativeArray = associativeArray.map(obj => filterByKeys(obj, ['MAYORISTA-*']));
+            
+            console.log(filteredAssociativeArray);
+
+
         };
 
         reader.readAsText(file);
