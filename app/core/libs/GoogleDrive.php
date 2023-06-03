@@ -11,17 +11,19 @@ class GoogleDrive
 {
 	protected $client;
 
-    function __construct() { $this->__getClient(); }
+    function __construct($api_key = null) { 
+        $this->__getClient($api_key); 
+    }
 
     /*
         Google API client
 
         Podria trabajar tambien on OAuth
     */
-	protected function __getClient(){
+	protected function __getClient($api_key = null){
 		$cfg = config();
 
-        $google_console_api_key = $cfg['google_console_api_key'];
+        $google_console_api_key = $api_key ?? $cfg['google_console_api_key'];
 
         $class  = 'Google\Client';
         $client = new $class();
@@ -32,7 +34,7 @@ class GoogleDrive
                 CURLOPT_SSL_VERIFYPEER => false
             ]]);        
         }
-        
+
         $client->setHttpClient($guzzleClient);
 
         $client->setApplicationName($cfg['app_name']);
@@ -135,7 +137,7 @@ class GoogleDrive
         porque se aplica $format a todos los campos (por diseño)
 
     */
-    function getInfo(string $link_or_id, array|string $fields, ?string $format = null): array
+    function getInfo(string $link_or_id, $fields, ?string $format = null): array
     {
         if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
             $id = Url::getQueryParam($link_or_id, 'id');
@@ -178,12 +180,23 @@ class GoogleDrive
         $googleDrive = new GoogleDrive();
         $updateDate  = $googleDrive->getUpdateDate($gd_link, 'd-m-Y');
     */
-    function getUpdateDate(string $link_or_id, string $format = 'Y-m-d H:i:s'): string
+    function getUpdateDate(string $link_or_id, string $format = 'Y-m-d H:i:s')
     {
         if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
             $id = Url::getQueryParam($link_or_id, 'id');
+
+            // var_dump($link_or_id);
+            // dd($id, 'link or id = '. $link_or_id);
         } else {
             $id = $link_or_id;
+        }
+
+        // if (is_null($id)){
+        //     dd($link_or_id, 'link or id');
+        // }
+
+        if (empty($id)){
+            return null;
         }
 
         // Extract the modified time from the file metadata
@@ -193,3 +206,4 @@ class GoogleDrive
     }
 
 }
+
