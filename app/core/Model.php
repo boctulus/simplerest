@@ -3262,9 +3262,17 @@ class Model {
 			}
 		}
 
-		$str_vars   = implode(', ',$vars);
-		$str_vals   = implode(', ',$symbols);
-		$str_qmarks = implode(', ',$q_marks);
+		if (DB::driver() == DB::MYSQL || DB::isMariaDB()) {
+			$str_vars = implode(', ', array_map(function ($var) {
+				return "`$var`";
+			}, $vars));
+		} else {
+			$str_vars = implode(', ',$vars);
+		}
+
+		$str_vals     = implode(', ',$symbols);
+
+		$str_qmarks   = implode(', ',$q_marks);
 
 		$this->insert_vars = $vars;
 

@@ -1618,7 +1618,14 @@ class Strings
 		return true;
 	}
 
-	static function formatJSON(string $str){
+	static function formatJSON(string $str)
+	{
+		if (static::startsWith('http', $str)){
+			$str = consume_api($str);
+		} else if (static::endsWith('.json', $str)){
+			$str = file_get_contents($str);
+		}
+
 		$arr = json_decode($str, true);
 		$str = json_encode($arr, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 

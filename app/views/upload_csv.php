@@ -87,11 +87,9 @@
                 y hacer un console.log del resultado
             */
            
-            const filteredAssociativeArray = associativeArray.map(obj => filterByKeys(obj, ['MAYORISTA-*']));
-            
-            console.log(filteredAssociativeArray);
+            const filteredAssociativeArray = associativeArray.map(obj => filterByKeys(obj, ['ID', 'SKU', 'MAYORISTA-*']));
 
-
+            filteredAssociativeArray.forEach(obj => console.log(obj));
         };
 
         reader.readAsText(file);
