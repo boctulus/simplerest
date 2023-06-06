@@ -21,6 +21,17 @@ function base_url(){
     return $base_url;
 }
 
-function consume_api(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true){
-    return ApiClient::instance()->consumeAPI($url, $http_verb, $body, $headers, $options, $decode, $encode_body);
+function consume_api(string $url, string $http_verb = 'GET', $body = null, $headers = null, $options = null, $decode = true, $encode_body = true){
+    $cli = ApiClient::instance($url)
+    ->withoutStrictSSL();
+
+    $cli->setMethod($http_verb);
+    $cli->setBody($body, $encode_body);
+    $cli->setHeaders($headers ?? []);
+    $cli->setOptions($options ?? []);
+    $cli->setDecode($decode);
+    
+    $cli->send();
+
+    return $cli->data();
 }

@@ -7619,4 +7619,20 @@ class DumbController extends Controller
     }
 
 
+    function test_consume_api(){
+        dd(
+            consume_api('www.yahoo.in')
+        );
+    }
+
+    
+    function test_format_json_to_file(){
+        $path = 'D:\Desktop\SHADOWR FIVERR\CategoriesJsonFile(4).json';
+
+        $str = Strings::formatJSON($path);
+
+        file_put_contents('D:\Desktop\SHADOWR FIVERR\formatted\CategoriesJsonFile(4).json', $str);
+    }
+
+
 }   // end class
