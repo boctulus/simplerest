@@ -23,6 +23,12 @@ function redirect(string $url){
     return Response::redirect($url);
 }
 
+function get_api_key_from_request() 
+{
+    $headers = apache_request_headers();    
+    return $headers['X-API-KEY'] ?? Url::getQueryParam(null, 'api_key');
+}
+
 // @author limalopex.eisfux.de
 if (!function_exists('apache_request_headers')){
     function apache_request_headers() {
