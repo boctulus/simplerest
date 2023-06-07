@@ -7634,5 +7634,9 @@ class DumbController extends Controller
         file_put_contents('D:\Desktop\SHADOWR FIVERR\formatted\CategoriesJsonFile(4).json', $str);
     }
 
+    function get_url_params(){
+        dd(Url::getSlugs(null, true));
+    }
+
 
 }   // end class

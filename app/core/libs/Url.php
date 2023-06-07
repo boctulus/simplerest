@@ -115,10 +115,15 @@ class Url
 		return $result;
 	}
 
-    static function getSlugs(string $url){
+    static function getSlugs($url = null, $as_string = false){
+        $url          = $url ?? static::currentUrl();
+
         $segments_str = parse_url($url, PHP_URL_PATH);
         $segments_str = Strings::rTrim('/', Strings::lTrim('/', $segments_str));
 
+        if ($as_string){
+            return (trim($segments_str) !== '' ? '/' : '') . $segments_str;
+        }
     
         $slugs = explode('/', $segments_str);
         
@@ -365,7 +370,11 @@ class Url
     /*
         @return string|array
     */
-    static function getQueryParam(string $url, ?string $param = null, bool $autodecode = true) {
+    static function getQueryParam(string $url = null, $param = null, $autodecode = true) {
+        if (empty($url)){
+            $url = static::currentUrl();
+        }
+
         if ($param === null){
             return static::getQueryParams($url);
         }
@@ -387,7 +396,7 @@ class Url
             }
         }
 
-        if ($autodecode && Strings::contains('%2F', $x)){
+        if ($autodecode && $x !== null && Strings::contains('%2F', $x)){
             $x = urldecode($x);
         }
 
@@ -409,6 +418,10 @@ class Url
 
         $actual_link = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? "https" : "http") . "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
         return $actual_link;
+    }
+
+    static function getCurrentUrl(){
+        return static::currentUrl();
     }
 
     static function getHostname(?string $url = null, bool $include_protocol = false)
