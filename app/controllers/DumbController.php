@@ -7638,5 +7638,11 @@ class DumbController extends Controller
         dd(Url::getSlugs(null, true));
     }
 
+    function dolar_widget_test(){
+        js_file("https://www.dolar-colombia.com/widget.js?t=2&c=1");
+
+        render();
+    }
+
 
 }   // end class
