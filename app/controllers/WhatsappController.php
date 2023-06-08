@@ -17,7 +17,18 @@ class WhatsappController extends MyController
 
     function __construct()
     {
-        $this->phone = str_replace(['+', ' '], '', $this->phone);
+       $this->setPhone($this->phone);
+    }
+
+    private function sanitize($phone){
+        $phone = str_replace([' ', '-', '+'], '', $phone);
+        $phone = preg_replace("/[^0-9]/", "", $phone);
+
+        return $phone;
+    }
+
+    function setPhone($phone){
+        $this->phone = $this->sanitize($phone); 
     }
 
     function index()
@@ -33,10 +44,9 @@ class WhatsappController extends MyController
     }
 
     function link($phone = null, $message = null){
-        $phone = $phone ?? $this->phone;
+        $phone = $phone ?? $this->phone;        
 
-        $phone = Strings::removeBeginning('+', $phone);
-        $phone = str_replace(' ', '', $phone);
+        $phone = $this->sanitize($phone);
 
         if (empty($message)){
             return "https://wa.me/$phone";
@@ -45,7 +55,7 @@ class WhatsappController extends MyController
         }
     }   
 
-    function call($phone = null, $message = null){
+    function get($phone = null, $message = null){
         return $this->link($phone, $message);
     }
 
@@ -57,7 +67,7 @@ class WhatsappController extends MyController
     function __call($name, $arguments)
     {
         if (!is_numeric($name)){
-            throw new \InvalidArgumentException("Numero de telefono no valido");
+            throw new \InvalidArgumentException("Comando '$name' no valido");
         }
 
         return $this->link($name, ...$arguments);

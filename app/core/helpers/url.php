@@ -22,16 +22,24 @@ function base_url(){
 }
 
 function consume_api(string $url, string $http_verb = 'GET', $body = null, $headers = null, $options = null, $decode = true, $encode_body = true){
-    $cli = ApiClient::instance($url)
+    $cli = (new ApiClient($url))
     ->withoutStrictSSL();
 
     $cli->setMethod($http_verb);
     $cli->setBody($body, $encode_body);
     $cli->setHeaders($headers ?? []);
-    $cli->setOptions($options ?? []);
-    $cli->setDecode($decode);
     
+    if (!empty($options)){
+        $cli->setOptions($options);
+    }
+
     $cli->send();
 
-    return $cli->data();
+    $res = $cli->data();
+
+    if ($decode && Strings::isJSON($res)){
+        $res = json_decode($res, true);
+    }
+
+    return $res;
 }
