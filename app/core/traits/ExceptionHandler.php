@@ -74,5 +74,15 @@ trait ExceptionHandler
         exit(1);
     }
     
+    /**
+	 * Shutdown handler
+	 *
+	 * @return void
+	 */
+	public static function shutdown() {
+		if ( ( $error = error_get_last() ) ) {
+			error( "Script has sthuted down with error", 500, $error);
+		}
+	}
 }
     
