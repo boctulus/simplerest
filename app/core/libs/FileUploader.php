@@ -31,9 +31,9 @@ namespace simplerest\core\libs;
         }
 */
 
-use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Files;
-use simplerest\libs\Debug;
+use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Numbers;
 
 class FileUploader
 {
@@ -44,14 +44,18 @@ class FileUploader
 	protected const WILDCARD = '*';
 	
 	
-	public function __construct(){
+	function __construct(){
         if (!file_exists($this->location)){
             Files::mkDirOrFail($this->location);
         }
 	}	
 	
+	static function setLimits($upload_max_filesize = '1024M', $post_max_size = '1024M', $memory_limit = '768M', $max_exec_time = '600'){
+		set_upload_limits($upload_max_filesize, $post_max_size, $memory_limit, $max_exec_time);
+	}
+
 	// @param string path (sin / al final)
-	public function setLocation($path){
+	function setLocation($path){
 		$this->location = $path;
 
         if (!file_exists($this->location)){
@@ -61,29 +65,29 @@ class FileUploader
 		return $this;
 	}	
 
-	public function getLocation(){
+	function getLocation(){
 		return $this->location;
 	}
 	
 	/*
 		Renamer
 	*/
-	public function setFileHandler($fn, ...$params){
-		$this->renamer = [$fn, $params];
+	function setFileHandler($fn, ...$params){
+		$this->renamerFn = [$fn, $params];
 		return $this;
 	}
 	
 	/* 
 		Retorna un array con el nombre original y el nombre con el que se almacenó
 	*/
-	public function getFileNames(){
+	function getFileNames(){
 		return $this->filenames;
 	}
 	
 	/**
 	* Los archivos que presentaron error quedan aqui	
 	*/
-	public function getErrors(){
+	function getErrors(){
 		return $this->erroneous;
 	}
 		
@@ -93,13 +97,13 @@ class FileUploader
 	* y si hay varias declaraciones de archivos como arrays o algunos estan declarados
 	* como arrays y otros no, será necesario seleccionarlos con su NAME en $input_name
 	*/	
-	public function doUpload($input_name = NULL)
+	function doUpload($input_name = NULL)
 	{		
 		if(empty($_FILES))
 			return $this;
 					
-		$renamer = $this->renamer[0];
-		$subfijo = $this->renamer[1][0];	
+		$renamerFn = $this->renamerFn[0];
+		$subfijo   = $this->renamerFn[1][0];	
 
 		// reset	
 		$this->filenames  = [];	
@@ -126,7 +130,7 @@ class FileUploader
 					
 					$tmp_name = $_FILES[$name]["tmp_name"][$key];
 					$filename = basename($_FILES[$name]["name"][$key]); 
-					$new_filename = $renamer($subfijo) . '.' . pathinfo($_FILES[$name]["name"][$key], PATHINFO_EXTENSION);
+					$new_filename = $renamerFn($subfijo) . '.' . pathinfo($_FILES[$name]["name"][$key], PATHINFO_EXTENSION);
 					$this->filenames[$i] = [ 
 						'ori_name'  => $filename, 
 						'as_stored' => $new_filename 
@@ -144,7 +148,7 @@ class FileUploader
 				{
 					$tmp_name = $_FILES[$input_name]['tmp_name'];
 					$filename =  basename($_FILES[$input_name]['name']);
-					$new_filename = $renamer($subfijo) . '.' . pathinfo($_FILES[$input_name]['name'], PATHINFO_EXTENSION);
+					$new_filename = $renamerFn($subfijo) . '.' . pathinfo($_FILES[$input_name]['name'], PATHINFO_EXTENSION);
 					$this->filenames[] = [ 
 						'ori_name'  => $filename, 
 						'as_stored' => $new_filename 
@@ -160,7 +164,7 @@ class FileUploader
 						{
 							$tmp_name = $file['tmp_name'];
 							$filename =  basename($file['name']);
-							$new_filename = $renamer($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+							$new_filename = $renamerFn($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
 							$this->filenames[] = [ 
 								'ori_name'  => $filename, 
 								'as_stored' => $new_filename
@@ -180,7 +184,7 @@ class FileUploader
 						{
 							$tmp_name = $file['tmp_name'];
 							$filename =  basename($file['name']);
-							$new_filename = $renamer($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+							$new_filename = $renamerFn($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
 							$this->filenames[] = [ 
 								'ori_name'  => $filename, 
 								'as_stored' => $new_filename 

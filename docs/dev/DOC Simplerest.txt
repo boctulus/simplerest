@@ -121,6 +121,22 @@ Ud. puede cambiar un valor de configuración con Config::set() aunque tenga en c
 	Config::set('db_connection_default') = 'db_xyz';
 	DB::getDefaultConnection(); // sin cambio
 
+Helpers
+
+	get_cfg()
+	set_cfg()
+
+
+### Options
+
+Para brindar cierto grado de compatibiidad con WordPress se implementan helpers analogos
+
+	get_option()
+	set_option()		equivale a update_uption
+
+
+Es un almacen de clave-valor almacenado en base de datos (tabla `options`)
+
 
 # Configuración de "tenant groups"
 
