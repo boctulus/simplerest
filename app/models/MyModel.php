@@ -32,9 +32,9 @@ class MyModel extends Model
 	}
 
     protected function boot(){          
-        if (empty($this->prefix) && (in_array(DB::getCurrentConnectionId(), ['woo3', null]))){
-			$this->wp();
-		}        
+        // if (empty($this->prefix) && (in_array(DB::getCurrentConnectionId(), ['woo3', null]))){
+		// 	$this->wp();
+		// }        
     }
 
     protected function init(){		

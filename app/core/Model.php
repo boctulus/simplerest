@@ -3216,9 +3216,6 @@ class Model {
 			$vals = array_values($data);
 		}
 
-		// no entiendo como puede estar null algunas veces y otras no !!!!
-		$this->validator = new Validator();			
-
 		// dd($this->fillable, 'FILLABLE');
 		// dd($this->not_fillable, 'NOT FILLABLE');
 

@@ -36,30 +36,32 @@ use simplerest\core\libs\System;
 
 use simplerest\core\libs\Update;
 
+use simplerest\core\libs\DBCache;
+use simplerest\core\libs\Numbers;
 use simplerest\core\libs\Strings;
 use Spatie\ArrayToXml\ArrayToXml;
 use simplerest\core\libs\Factory;;
+
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
-
 use simplerest\models\az\BarModel;
+
 use Endroid\QrCode\Builder\Builder;
+
 use simplerest\core\libs\ApiClient;
 
 use simplerest\core\libs\FileCache;
-
 use simplerest\core\libs\Reflector;
 
 use simplerest\core\libs\Validator;
 use simplerest\core\libs\GoogleMaps;
-
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
+
 use simplerest\core\libs\Supervisor;
+
 use Endroid\QrCode\Encoding\Encoding;
-
 use simplerest\core\libs\GoogleDrive;
-
 use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\i18n\POParser;
@@ -67,21 +69,22 @@ use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
+
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
-
 use simplerest\core\api\v1\ApiController;
+
+use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\ValidationRules;
-
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
+
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
-
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
@@ -91,7 +94,6 @@ use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\core\libs\DBCache;
 
 class DumbController extends Controller
 {
@@ -6270,11 +6272,6 @@ class DumbController extends Controller
         dd('OK');
     }
 
-    function test_csv_uploader(){
-        view('csv_uploader');
-    }
-
-
     function maps()
     { 
         $maps = new GoogleMaps();
@@ -7642,6 +7639,52 @@ class DumbController extends Controller
         js_file("https://www.dolar-colombia.com/widget.js?t=2&c=1");
 
         render();
+    }
+
+    function test_csv_uploader(){
+        view('csv_uploader');
+    }
+
+    function test_update_htaccess(){
+        ApacheWebServer::updateHtaccessFile([
+            'upload_max_filesize' => '1024M',
+            'post_max_size' => '1024M',
+        ], ROOT_PATH);    
+    }
+
+    function test_upload_limits(){
+        FileUploader::setLimits();
+
+        dd([
+		    "memory_limit"          => ini_get("memory_limit"),
+		    "max_execution_time"    => ini_get("max_execution_time"),
+            "upload_max_filesize"   => ini_get("upload_max_filesize"),
+		    "post_max_size"         => ini_get("post_max_size")
+        ]);
+    }
+
+    function cfg(){
+        dd(
+            get_cfg('log_file')
+        );
+
+        set_cfg('log_file', 'debug.log');
+
+        dd(
+            get_cfg('log_file')
+        );
+    }
+
+    function opt(){
+        dd(
+            get_option('free_mem')
+        );
+
+        set_option('free_mem', '1200M');
+
+        dd(
+            get_option('free_mem')
+        );
     }
 
 

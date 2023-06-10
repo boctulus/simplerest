@@ -337,14 +337,17 @@ class MakeControllerBase extends Controller
 
     /*
         File manipulation
+
+        Pasar --lowercase si se quiere que el nombre de archivo concista en solo minusculas
     */
     function generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace = null, ...$opt) {        
         $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
 
-        $unignore = false;
-        $remove   = false;
-        $force    = false;
-        $strict   = false;
+        $unignore  = false;
+        $remove    = false;
+        $force     = false;
+        $strict    = false;
+        $lowercase = false;
 
         foreach ($opt as $o){ 
             if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)){
@@ -353,6 +356,10 @@ class MakeControllerBase extends Controller
 
             if (preg_match('/^(--strict)$/', $o)){
                 $strict = true;
+            }
+
+            if (preg_match('/^(--lowercase)$/', $o)){
+                $lowercase = true;
             }
         }
         
@@ -366,8 +373,10 @@ class MakeControllerBase extends Controller
         }
 
         $this->setup($name);    
+
+        $fname     = (!$lowercase ? $this->camel_case : strtolower($this->snake_case));  
     
-        $filename  = $this->camel_case . $subfix.'.php';
+        $filename  = $prefix . $fname . $subfix . '.php';
         $dest_path = $dest_path . $sub_path . $filename;
 
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
@@ -565,6 +574,8 @@ class MakeControllerBase extends Controller
         $template_path = self::HELPER_TEMPLATE;
         $prefix = '';
         $subfix = '';  // Ej: 'Controller'
+
+        $opt[] = "--lowercase";
 
         $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
