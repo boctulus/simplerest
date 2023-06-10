@@ -1,3 +1,48 @@
+- Crear equivalente a get_option() y set_option (update_uption) de WordPress
+
+  . Deben leer / escribir en tabla "options" como clave-valor
+  . La tabla debe sorportar "belongs_to" y escribir/leer en la base de datos seleccionada.
+
+  NO esta agragndo la PKEY !!
+
+  class Options implements IMigration
+  {
+      /**
+    * Run migration.
+      *
+      * @return void
+      */
+      public function up()
+      {
+          $sc = new Schema('options');
+          
+          $sc
+          // No esta agregando la PRI KEY !!!!
+          ->varchar('key')->primary()
+          ->varchar('val', 240)
+          ->datetime('created_at')
+          ->datetime('updated_at');
+
+      $sc->create();		
+      }
+
+  SOLUCION PARCHE:
+
+   $sc = new Schema('options');
+        
+    $sc
+    // No esta agregando la PRI KEY !!!!
+    ->varchar('the_key')
+    ->varchar('the_val', 240)
+    ->datetime('created_at')
+    ->datetime('updated_at');
+
+		$sc->create();		
+
+    $sc->addPrimary('the_key'); // <------------ *
+    $sc->alter();
+
+
 - Resolver problema de templates duplicados. Depredicar carpeta de templates
 
 - Crear IMPORTER de ASSETs o sea... debe leer un HTML con referencias ya sea locales o CDNs y 
