@@ -1051,10 +1051,14 @@ class Strings
         En caso de que ambos parametros sean no-nulos, se entrega un string que tenga como maximo 
 		esa cantidad de caracteres y como maximo esa cantidad de palabras (doble restriccion)
 	*/
-	static function getUpTo(string $sentence, $count = null, $max_char_len = null) {
+	static function getUpTo(string $sentence, $max_word_count = null, $max_char_len = null) {
+		if ($max_word_count === null) {
+            $max_word_count = PHP_INT_MAX;
+        }
+
         $words = explode(' ', $sentence);
 
-        if ($count !== null && $max_char_len !== null) {
+        if ($max_word_count !== null && $max_char_len !== null) {
             // Ambos parámetros son no nulos
             $trimmedSentence = '';
             $wordCount = 0;
@@ -1071,15 +1075,15 @@ class Strings
                 $charCount += $wordLength + 1; // +1 for space
                 $trimmedSentence .= $word . ' ';
 
-                if ($wordCount >= $count) {
+                if ($wordCount >= $max_word_count) {
                     break;
                 }
             }
 
             $trimmedSentence = trim($trimmedSentence);
-        } elseif ($count !== null) {
+        } elseif ($max_word_count !== null) {
             // Solo se proporciona la cantidad máxima de palabras
-            $trimmedSentence = self::getUpToNWords($sentence, $count);
+            $trimmedSentence = self::getUpToNWords($sentence, $max_word_count);
         } elseif ($max_char_len !== null) {
             // Solo se proporciona la cantidad máxima de caracteres
             $trimmedSentence = mb_substr($sentence, 0, $max_char_len);
