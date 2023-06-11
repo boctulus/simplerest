@@ -880,6 +880,22 @@ class Strings
 		return static::enclose($target, '`');
 	}
 
+	static function toSnakeCase(string $str) : string {
+        // Se convierte todo a minúsculas
+        $str = strtolower($str);
+        
+        // Se elimina cualquier caracter no-alfanumérico excepto espacios
+        $str = preg_replace('/[^a-z0-9\s]/', '', $str);
+        
+        // Se reemplazan espacios múltiples por uno solo
+        $str = preg_replace('/\s+/', ' ', $str);
+        
+        // Se reemplazan espacios por "_"
+        $str = str_replace(' ', '_', $str);
+        
+        return $str;
+    }
+	
 	/*
 		CamelCase to snake_case
 	*/
@@ -1028,6 +1044,52 @@ class Strings
 		preg_match("/(?:\w+(?:\W+|$)){0,$count}/", $sentence, $matches);
 		return $matches[0];
 	}
+
+	/*
+		Filtra por cantidad maxima de palabras y/o de caracteres
+
+        En caso de que ambos parametros sean no-nulos, se entrega un string que tenga como maximo 
+		esa cantidad de caracteres y como maximo esa cantidad de palabras (doble restriccion)
+	*/
+	static function getUpTo(string $sentence, $count = null, $max_char_len = null) {
+        $words = explode(' ', $sentence);
+
+        if ($count !== null && $max_char_len !== null) {
+            // Ambos parámetros son no nulos
+            $trimmedSentence = '';
+            $wordCount = 0;
+            $charCount = 0;
+
+            foreach ($words as $word) {
+                $wordCount++;
+                $wordLength = mb_strlen($word);
+
+                if ($charCount + $wordLength > $max_char_len) {
+                    break;
+                }
+
+                $charCount += $wordLength + 1; // +1 for space
+                $trimmedSentence .= $word . ' ';
+
+                if ($wordCount >= $count) {
+                    break;
+                }
+            }
+
+            $trimmedSentence = trim($trimmedSentence);
+        } elseif ($count !== null) {
+            // Solo se proporciona la cantidad máxima de palabras
+            $trimmedSentence = self::getUpToNWords($sentence, $count);
+        } elseif ($max_char_len !== null) {
+            // Solo se proporciona la cantidad máxima de caracteres
+            $trimmedSentence = mb_substr($sentence, 0, $max_char_len);
+        } else {
+            // Ningún parámetro proporcionado, devuelve la cadena original
+            $trimmedSentence = $sentence;
+        }
+
+        return trim($trimmedSentence);
+    }
 
 	/*
 		Recupera todas las palabras desde N caracteres por palabra un texto
