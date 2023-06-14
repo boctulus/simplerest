@@ -1047,11 +1047,81 @@ class DB
 				throw new \Exception("Not implemented");	
 		}
 	}
-	
-	static function whois(){
-        return strrev(Strings::interlace([
-            '.ersrshi l >o.im Aslto<oozBobPy ear rwmr sRlmS ',
-            'dvee tgrlA.mclagT uucb lzo la bdteckoeafteepi'
-        ])) . PHP_EOL;
-    }
+
+	/*
+		Similar a SHOW TABLES pero incluye mucha info extra como el tipo de "engine" y "collation" de cada tabla, etc
+
+		Valida para MYSQL
+	*/
+	static function status(){
+		return static::select("SHOW TABLE STATUS");
+	}
+
+	/*
+		Optimiza tablas en MySQL -- chequear si existe equivalente para otros motores
+
+		Retorna algo como:
+
+		--| api_keys
+		Array
+		(
+			[0] => Array
+				(
+					[Table] => simplerest.api_keys
+					[Op] => optimize
+					[Msg_type] => status
+					[Msg_text] => OK
+				)
+
+		)
+
+	*/
+	static function optimize($tables, bool $quote = false){
+		if (is_array($tables)){
+			if ($quote){
+				$tables = array_map([DB::class, 'quote'], $tables);
+			}
+
+			$tables = implode(', ', $tables);
+		} else {
+			if ($quote){
+				$tables = static::quote($tables);
+			}
+		}
+
+		return static::select("OPTIMIZE TABLE $tables");
+	}
+
+	/*
+		Efectua proceso de reparacion de tablas en MYSQL
+
+		Retorna algo como:
+
+		--| api_keys
+		Array
+		(
+			[0] => Array
+				(
+					[Table] => simplerest.api_keys
+					[Op] => repair
+					[Msg_type] => note
+					[Msg_text] => The storage engine for the table doesn't support repair <--- tomar nota de esto
+				)
+		)
+	*/
+	static function repair($tables, bool $quote = false){
+		if (is_array($tables)){
+			if ($quote){
+				$tables = array_map([DB::class, 'quote'], $tables);
+			}
+
+			$tables = implode(', ', $tables);
+		} else {
+			if ($quote){
+				$tables = static::quote($tables);
+			}
+		}
+
+		return static::select("REPAIR TABLE $tables");
+	}
 }

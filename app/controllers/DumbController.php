@@ -4135,11 +4135,6 @@ class DumbController extends Controller
         return Strings::interlace($str);
     }
 
-    function test_whois()
-    {
-        return DB::whois();
-    }
-
     function test_unserialize()
     {
         $s_object = 'O:29:"simplerest\jobs\tasks\DosTask":0:{}';
@@ -7685,6 +7680,16 @@ class DumbController extends Controller
         dd(
             get_option('free_mem')
         );
+    }
+
+    function test_optimize(){
+        DB::getConnection();
+
+        $tb = DB::getTableNames()[0];
+
+        dd(
+            DB::repair($tb, true),
+        $tb);
     }
 
 

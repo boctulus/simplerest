@@ -28,6 +28,18 @@ class System
         return (in_array($os, ['Linux', 'BSD', 'Darwin', ' NetBSD', 'FreeBSD', 'Solaris']));
     }
 
+    /*
+        Es el server IIS ?
+    */
+    function isIIS() {
+        $server_software = strtolower( $_SERVER['SERVER_SOFTWARE'] );
+        if ( strpos( $server_software, 'microsoft-iis') !== false ) {
+            return true;
+        }
+    
+        return false;
+    }
+
     // https://www.php.net/manual/en/function.is-executable.php#123883
     static function isExecutableInPath(string $filename) : bool
     {
