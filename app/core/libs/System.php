@@ -4,6 +4,8 @@ namespace simplerest\core\libs;
 
 class System
 {
+    static $res_code;
+
     static function getOS(){
         return defined('PHP_OS_FAMILY') ? PHP_OS_FAMILY : PHP_OS;
     }
@@ -117,10 +119,14 @@ class System
         $current_dir = getcwd();
 
 		chdir(ROOT_PATH);
-        $ret =  shell_exec("$command $extra");
+        exec("$command $extra", $ret, static::$res_code);
         chdir($current_dir);
         
         return $ret;
+    }
+
+    static function resultCode(){
+        return static::$res_code;
     }
 
     /*

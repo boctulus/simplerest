@@ -2790,11 +2790,22 @@ class Model {
 
 		$this->ignoreFieldsNotPresentInSchema($data);
 
-	
+
+		$this->data = $data;
+
+		switch ($this->current_operation){
+			case 'restore':
+				$this->onRestoring($data);
+				break;
+			case 'delete':
+				$this->onDeleting($data);
+			default:
+				$this->onUpdating($data);
+		}		
+
 		$data = $this->applyInputMutator($data, 'UPDATE');
 		$vars = array_keys($data);
 		$vals = array_values($data);
-
 
 		if(!empty($this->fillable) && is_array($this->fillable)){
 			foreach($vars as $var){
@@ -2813,18 +2824,6 @@ class Model {
 			} 
 		}
 	
-		$this->data = $data;
-
-		switch ($this->current_operation){
-			case 'restore':
-				$this->onRestoring($data);
-				break;
-			case 'delete':
-				$this->onDeleting($data);
-			default:
-				$this->onUpdating($data);
-		}		
-		
 		$set = '';
 		foreach($vars as $ix => $var){
 			$set .= " $var = ?, ";
@@ -2856,7 +2855,7 @@ class Model {
 		$q = "UPDATE ". DB::quote($this->from()) .
 				" SET $set WHERE " . $where;		
 
-		//d($q, 'Update statement');
+		// dd($q, 'Update statement');
 
 		$vals = array_merge($vals, $this->w_vals);
 		$vars = array_merge($vars, $this->w_vars);		
