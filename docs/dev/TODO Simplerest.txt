@@ -1,3 +1,5 @@
+- Usar #[\ReturnTypeWillChange] donde corresponda para silenciar warnings
+
 - Crear equivalente a get_option() y set_option (update_uption) de WordPress
 
   . Deben leer / escribir en tabla "options" como clave-valor
