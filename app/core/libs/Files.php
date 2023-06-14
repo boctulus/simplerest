@@ -12,6 +12,25 @@ class Files
 	static protected $callable;
 
 	/*
+		Fuerza la descarga del archivo
+	*/
+	static function download($file){
+		if (!file_exists($file)) {
+			throw new \InvalidArgumentException("File not found for '$file'");
+		}
+
+		header('Content-Description: File Transfer');
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="'.basename($file).'"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+		header('Content-Length: ' . filesize($file));
+		@readfile($file);
+		exit;
+	}
+
+	/*
 		Si es false, funciones curl no funcionaran
 	*/
 	static function isCurlAvailable(){
