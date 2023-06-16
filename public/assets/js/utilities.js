@@ -6,12 +6,15 @@ if (typeof $ == 'undefined' && typeof jQuery != 'undefined'){
     $=jQuery
 }
 
-const onLoaded = function(callback, event){
-    window.addEventListener("DOMContentLoaded", (event) => {
-        callback(event)
+/*
+    onReady(event => {
+        // Código que se ejecutará cuando el evento DOMContentLoaded ocurra
     });
-}       
-
+*/
+const onReady = (callback) => {
+    document.addEventListener("DOMContentLoaded", callback);
+}
+  
 const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
 
 /*
@@ -194,3 +197,4 @@ const clearForm = (formId) => {
     $(`#${formId}`).trigger('reset')
     clearFormValidations()
 }
+

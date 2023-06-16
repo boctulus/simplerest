@@ -264,5 +264,17 @@ class Arrays
         return $a;
     }
 
+    static function chunk($data, $length = null, $offset = 0) {
+        if ($offset > 0) {
+            $data = array_slice($data, $offset);
+        }
+
+        if ($length === null) {
+            return $data;
+        }
+
+        return array_slice($data, 0, $length);
+    }
+
 }
 

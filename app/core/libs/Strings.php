@@ -876,6 +876,11 @@ class Strings
 		}
 	}
 	
+	// alias de enclose()
+	static function wrap($target, string $delimeter = "'", $delimeter2 = null){
+		return static::enclose($target, $delimeter, $delimeter2);
+	}
+
 	static function backticks($target){
 		return static::enclose($target, '`');
 	}
