@@ -7739,7 +7739,7 @@ class DumbController extends Controller
 
     function test_chunk(){
         $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        $chunks = Arrays::chunk($data, null, 1);
+        $chunks = Arrays::chunk($data, 5, 1);
 
         dd($chunks);
     }
@@ -7768,7 +7768,15 @@ class DumbController extends Controller
 
         $offset = Paginator::calcOffset($page, $page);
 
-        return array_chunk($data, $page_size);
+        $res = Arrays::chunk($data, $page_size, $offset);
+
+        $res = [
+            'data' => [
+                'products' => $res
+            ]
+        ];
+
+        response()->sendJson($res);
     }
 
 }   // end class
