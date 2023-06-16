@@ -204,6 +204,13 @@ class Response
             header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
         }
 
+        /*
+            Evita responder con data[data]
+        */
+        if (isset($data['data'])){
+            $data = $data['data'];
+        }
+
         $res = [ 
             'data' => $data, 
             'status_code' => $http_code,

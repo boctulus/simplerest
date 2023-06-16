@@ -264,6 +264,7 @@ class Arrays
         return $a;
     }
 
+    // seria mejor en ciertos casos con generadores
     static function chunk($data, $length = null, $offset = 0) {
         if ($offset > 0) {
             $data = array_slice($data, $offset);
