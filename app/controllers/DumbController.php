@@ -7204,47 +7204,6 @@ class DumbController extends Controller
         );  
     }
 
-    function test_api0c_mock()
-    {
-        $mock = ETC_PATH . 'res_ricerca_nazionale.php';
-        //$mock = ETC_PATH . 'res_jsonplaceholder.json';
-
-        $cli  = new ApiClient();
-
-        $res  = $cli
-        ->when(!empty($mock), function($it) use ($mock){
-            $it->mock($mock);
-        })
-        ->request('http://jsonplaceholder.typicode.com/posts/3', 'GET')
-        ->getResponse();
-
-        /*
-            Array
-                (
-                    [data] => {
-                    "userId": 1,
-                    "id": 3,
-                    "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
-                    "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
-                    }
-                        [http_code] => 200
-                        [error] =>
-                    )
-                )
-        */
-        dd($res);
-
-        /*
-            {
-                "userId": 1,
-                "id": 3,
-                "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
-                "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
-            }
-        */
-        dd($cli->data());
-    }
-
     function reordenarArray($a, $b) {
         $first_pos_b_in_a = array_search($b[0], $a);
         
@@ -7692,5 +7651,124 @@ class DumbController extends Controller
         $tb);
     }
 
+    function test_query_param() {       
+        echo Url::addQueryParam('http://simplerest.lan/api/v1/products', 'q', 'fiesta') . "\n";
+        echo Url::addQueryParam('http://simplerest.lan/api/v1/products?v=1', 'q', 'fiesta') . "\n";
+        echo Url::addQueryParam('http://simplerest.lan/api/v1/products?v=1', 'v', '3') . "\n";
+        
+        // http://www.google.com?q=fiesta
+        echo Url::addQueryParam('http://www.google.com', 'q', 'fiesta') . "\n";
+
+        // http://www.google.com?today=&q=fiesta
+        echo Url::addQueryParam('http://www.google.com?today', 'q', 'fiesta') . "\n";
+    }
+
+    function test_paginate()
+    {
+        $cli  = ApiClient::instance('http://simplerest.lan/api/v1/products?v=1');
+
+        $cli
+        ->queryParam('size', 3)
+        ->queryParam('page', 2)
+        
+        ->setMethod('GET') 
+
+        ->send();
+
+        dd($cli->data());
+    }
+
+
+
+    function test_api0c_mock()
+    {
+        $mock = ETC_PATH . 'res_jsonplaceholder.json';
+
+        $cli  = new ApiClient();
+
+        $res  = $cli
+        ->when(!empty($mock), function($it) use ($mock){
+            $it->mock($mock);
+        })
+        ->request('http://jsonplaceholder.typicode.com/posts/3', 'GET')
+        ->getResponse();
+
+        /*
+            Array
+                (
+                    [data] => {
+                    "userId": 1,
+                    "id": 3,
+                    "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
+                    "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+                    }
+                        [http_code] => 200
+                        [error] =>
+                    )
+                )
+        */
+        dd($res);
+
+        /*
+            {
+                "userId": 1,
+                "id": 3,
+                "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
+                "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+            }
+        */
+        dd($cli->data());
+    }
+
+    function test_mock()
+    {
+        $mock = 'D:\www\woo2\wp-content\plugins\mutawp\etc\responses\products.json';
+
+        $cli  = new ApiClient();
+
+        $res  = $cli
+        ->when(!empty($mock), function($it) use ($mock){
+            $it->mock($mock);
+        })
+        ->request('https://mutawp.com/ajax/get_products?v=1', 'GET')
+        ->getResponse();
+
+        dd($res);
+        dd($cli->data());
+    }
+
+    function test_chunk(){
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $chunks = Arrays::chunk($data, null, 1);
+
+        dd($chunks);
+    }
+
+    /*
+        Paginarlo y usarlo para alimentar WP Muta !!!
+    */  
+    function serve_json(){
+        $path      = 'D:\www\woo2\wp-content\plugins\mutawp\etc\responses\products.json';
+        $row_path  = "data.products"; // ['data']['products']
+        $page      = 2;
+        $page_size = 3;
+
+        $content  = Files::getContent($path);
+
+        if (Strings::isJSON($content)){ 
+            $content = json_decode($content, true);
+        }
+
+        $row_path_s  = explode('.', $row_path);
+        
+        $data = $content;
+        foreach ($row_path_s as $slug){
+            $data = $data[$slug];
+        }
+
+        $offset = Paginator::calcOffset($page, $page);
+
+        return array_chunk($data, $page_size);
+    }
 
 }   // end class

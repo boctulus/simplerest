@@ -8,36 +8,36 @@ class XML
         The intend is to get the "DOM selector" given a text which should be found as substring of a text node. The problem is an error.
     */
     public static function getSelector(string $html, string $text) : string {
-        $dom = static::getDocument($html);
+            $dom = static::getDocument($html);
 
-        $xpath = new \DOMXPath($dom);
-        $nodes = $xpath->query("//text()[contains(., '$text')]/parent::*");
+            $xpath = new \DOMXPath($dom);
+            $nodes = $xpath->query("//text()[contains(., '$text')]/parent::*");
 
-        $selector = '';
-        foreach ($nodes as $node) {
-            $selector .= self::getNodeSelector($node) . '/';
+            $selector = '';
+            foreach ($nodes as $node) {
+                $selector .= self::getNodeSelector($node) . '/';
+            }
+
+            $selector = rtrim($selector, '/');
+
+            return $selector;
         }
 
-        $selector = rtrim($selector, '/');
+        private static function getNodeSelector(\DOMNode $node) : string {
+        $selector = '';
+
+        while ($node && $node->nodeType === XML_ELEMENT_NODE) {
+            $nodeName = $node->nodeName;
+            $nodeIndex = self::getNodeIndex($node);
+            $selector = "{$nodeName}[{$nodeIndex}]{$selector}"; // Update the order of concatenation
+
+            $node = $node->parentNode; // Move to the parent node
+        }
+
+        $selector = '/' . rtrim($selector, '/');
 
         return $selector;
     }
-
-    private static function getNodeSelector(\DOMNode $node) : string {
-    $selector = '';
-
-    while ($node && $node->nodeType === XML_ELEMENT_NODE) {
-        $nodeName = $node->nodeName;
-        $nodeIndex = self::getNodeIndex($node);
-        $selector = "{$nodeName}[{$nodeIndex}]{$selector}"; // Update the order of concatenation
-
-        $node = $node->parentNode; // Move to the parent node
-    }
-
-    $selector = '/' . rtrim($selector, '/');
-
-    return $selector;
-}
  
 
     private static function getNodeIndex(\DOMNode $node) : int {
