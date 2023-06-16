@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace simplerest\core;
 
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Strings;
 
 class Paginator
@@ -211,5 +213,46 @@ class Paginator
     function getBinding(): array
     {
         return $this->binding;
+    }
+
+    /*
+        Dados unos registros (ya sea como array o json) 
+        y un "path" hacia donde se hallan anidados dentro de un array o JSON,
+        pagina los resultados
+
+        Ej:
+
+        $path      = 'D:\www\woo2\wp-content\plugins\mutawp\etc\responses\products.json';
+        $row_path  = "data.products"; // ['data']['products']
+        $page      = 2;
+        $page_size = 3;
+
+        $data      = Files::getContent($path);
+
+        $res       = Paginator::paginate($data, $page, $page_size, $row_path);
+    */
+    static function paginate($data, $page, $page_size, $rows_path = null)
+    {
+        if (Strings::isJSON($data)){
+            $data = json_decode($data, true);
+        }
+
+        if (!empty($rows_path)){
+            $rows_path_s = explode('.', $rows_path);
+            
+            foreach ($rows_path_s as $slug){
+                $data = $data[$slug];
+            }
+        }
+
+        $offset = static::calcOffset($page, $page_size);
+
+        $res = Arrays::chunk($data, $page_size, $offset);
+
+        if (!empty($rows_path)){
+            $res = Arrays::makeArray($res, $rows_path);
+        }
+
+        return $res;
     }
 }
