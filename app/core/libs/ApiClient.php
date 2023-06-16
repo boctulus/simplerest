@@ -64,6 +64,10 @@ class ApiClient
     // Mock
     protected $mocked;
 
+    // Extras
+    protected $query_params = [];
+
+
     /*
         Debe usarse *antes* de llamar a request(), get(), post(), etc
 
@@ -148,6 +152,12 @@ class ApiClient
 
     static function instance($url = null) : ApiClient {
         return new ApiClient($url);
+    }
+
+    // add new query param
+    function queryParam(string $name, $value){
+        $this->query_params[$name] = $value;
+        return $this;
     }
 
     function readOnly(bool $flag = true){
@@ -521,10 +531,21 @@ class ApiClient
             return $this;
         }
 
+        $url = $url ?? $this->url;
+
+        if (!empty($this->query_params)){
+            foreach($this->query_params as $param_name => $param_value){
+                $url = Url::addQueryParam($url, $param_name, $param_value);
+            }
+        }
+
+        dd($url);
+        exit;
+
         $this->url  = $url;
         $this->verb = strtoupper($http_verb);
 
-        //
+          //
         // Sino se aplico nada sobre SSL, vale lo que diga el config
         // 
         if (!$this->cert_ssl){    
@@ -677,6 +698,8 @@ class ApiClient
     }
 
     function setMethod(string $verb){
+        $verb = strtoupper($verb);
+        
         if (!in_array($verb, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])){
             throw new \InvalidArgumentException("Unsupported verb \"$verb\"");
         }
@@ -850,7 +873,5 @@ class ApiClient
 	{
 		return function_exists('curl_init');
 	}
-
-
 }
 

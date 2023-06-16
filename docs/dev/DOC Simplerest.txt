@@ -9706,6 +9706,25 @@ Ej:
 	Files::varExport($export, 'api_debug.php');
 
 
+# Paginacion
+
+Una forma sencilla de paginar es agregar los parametros de paginacion con queryParam()
+
+Ej:
+
+	$cli  = ApiClient::instance('http://simplerest.lan/api/v1/products?v=1');
+
+	$cli
+	->queryParam('size', 3)
+	->queryParam('page', 2)
+	
+	->setMethod('GET') 
+
+	->send();
+
+	dd($cli->data());
+
+
 # Mocking
 
 Es posible "mockear" una solicitud http, con lo cual si esta tiene costo por ejemplo y no hay un sandbox,
