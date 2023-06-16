@@ -277,5 +277,27 @@ class Arrays
         return array_slice($data, 0, $length);
     }
 
+    /*
+        Dado un array y un "path", deja el array original dentro del path
+
+        Ej:
+
+        $path   = 'data.products';
+        $result = Arrays::makeArray($array, $path);
+    */
+    static function makeArray(array $a, string $path) {
+        $rows_path_s = explode('.', $path);
+        $result      = [];
+        $current     = &$result;
+        
+        foreach ($rows_path_s as $key) {
+            $current[$key] = [];
+            $current = &$current[$key];
+        }
+        
+        $current = $a;
+        
+        return $result;
+    }
 }
 

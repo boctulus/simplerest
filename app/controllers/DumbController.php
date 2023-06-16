@@ -7744,37 +7744,35 @@ class DumbController extends Controller
         dd($chunks);
     }
 
+    function test_makearray() {
+        $array = [
+            'name' => 'John Doe',
+            'age' => 30,
+            'country' => 'USA'
+        ];
+    
+        $path = 'data.products';
+    
+        $result = Arrays::makeArray($array, $path);
+    
+        print_r($result);
+    }
+
     /*
         Paginarlo y usarlo para alimentar WP Muta !!!
     */  
     function serve_json(){
         $path      = 'D:\www\woo2\wp-content\plugins\mutawp\etc\responses\products.json';
         $row_path  = "data.products"; // ['data']['products']
-        $page      = 2;
-        $page_size = 3;
+        $page      = $_GET['page'] ?? 1;
+        $page_size = $_GET['page_size'] ?? 10;
 
-        $content  = Files::getContent($path);
+        $page      = (int) $page;
+        $page_size = (int) $page_size;
 
-        if (Strings::isJSON($content)){ 
-            $content = json_decode($content, true);
-        }
+        $data      = Files::getContent($path);
 
-        $row_path_s  = explode('.', $row_path);
-        
-        $data = $content;
-        foreach ($row_path_s as $slug){
-            $data = $data[$slug];
-        }
-
-        $offset = Paginator::calcOffset($page, $page);
-
-        $res = Arrays::chunk($data, $page_size, $offset);
-
-        $res = [
-            'data' => [
-                'products' => $res
-            ]
-        ];
+        $res = Paginator::paginate($data, $page, $page_size, $row_path);
 
         response()->sendJson($res);
     }
