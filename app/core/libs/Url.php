@@ -410,6 +410,24 @@ class Url
     static function buildUrl(string $base_url, array $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
         return  Strings::removeTrailingSlash($base_url) . '?'. static::encodeParams($data);
     }
+    
+    /*
+        Agrega o cambia un parametro en una url
+
+        Ej:
+
+        echo Url::addQueryParam('http://simplerest.lan/api/v1/products', 'q', 'fiesta') . "\n";
+        echo Url::addQueryParam('http://simplerest.lan/api/v1/products?v=1', 'q', 'fiesta') . "\n";
+        echo Url::addQueryParam('http://simplerest.lan/api/v1/products?v=1', 'v', '3') . "\n";
+    */
+    public static function addQueryParam(string $url, $param_name, $param_value) {
+        $parsed_url = Strings::before($url, '?');
+        $query_arr  = Url::getQueryParams($url);
+
+        $query_arr[$param_name] = $param_value;
+     
+        return static::buildUrl($parsed_url, $query_arr);
+    }
 
     static function currentUrl(){
         if (is_cli()){
