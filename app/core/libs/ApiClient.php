@@ -231,7 +231,7 @@ class ApiClient
     }
 
     // alias
-    function decode(bool $val){
+    function decode(bool $val = true){
         return $this->setDecode($val);
     }
 
@@ -291,6 +291,12 @@ class ApiClient
     }
 
     function data(bool $raw = false){
+        if ($raw === false){
+            if ($this->auto_decode && Strings::isJSON($this->response)){
+                return json_decode($this->response, true);
+            }
+        }
+
         return $raw ? $this->raw_response : $this->response;
     }
 
