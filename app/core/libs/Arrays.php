@@ -278,14 +278,15 @@ class Arrays
     }
 
     /*
-        Dado un array y un "path", deja el array original dentro del path
+        Dado un contenido (entero, string, array,...) y un "path", deja el contenido dentro del path 
+        en el array en construccion o sea anidado dentro las keys del path
 
         Ej:
 
         $path   = 'data.products';
         $result = Arrays::makeArray($array, $path);
     */
-    static function makeArray(array $a, string $path) {
+    static function makeArray($content, string $path) {
         $rows_path_s = explode('.', $path);
         $result      = [];
         $current     = &$result;
@@ -295,7 +296,7 @@ class Arrays
             $current = &$current[$key];
         }
         
-        $current = $a;
+        $current = $content;
         
         return $result;
     }
