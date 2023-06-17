@@ -22,13 +22,20 @@ class Paginator
     const BOTTOM = 'BOTTOM';
 
     /*
-        Calcula el LIMIT dados el size la page y la page actual
+        Calcula el offset dados el size la page y la page actual
     */
 
     static function calcOffset(int $current_page, int $page_size){
         return ($page_size * $current_page) - $page_size;
     }
 
+    static function human2SQL(int $page, int $page_size)
+    {  
+        $offset = static::calcOffset($page, $page_size);
+        $limit  = $page_size;
+
+        return [$offset, $limit];
+    }
     /*
         Calcula todo lo que debe tener el paginador 
         a excepcion de la proxima url
@@ -216,9 +223,16 @@ class Paginator
     }
 
     /*
+        Que hace
+
         Dados unos registros (ya sea como array o json) 
         y un "path" hacia donde se hallan anidados dentro de un array o JSON,
         pagina los resultados
+
+        Cuando usarla
+        
+        El caso de uso de esta funcion es tomar un JSON con muchos registros
+        y paginarlos para ser servidos en una API posiblemente para testing
 
         Ej:
 

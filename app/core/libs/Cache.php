@@ -14,8 +14,18 @@ abstract class Cache
 
     /*
         Logica para saber si un recurso ha expirado
+
+        @$cached_at int|false
     */
-    static function expired(int $cached_at, int $expiration_time) : bool {
+    static function expired($cached_at, int $expiration_time) : bool {
+        if (!is_int($cached_at) && $cached_at !== false){
+            throw new \InvalidArgumentException("cached_at should be int|false but ". gettype($cached_at) . " was received");
+        }
+
+        if ($cached_at === false){
+            return false;
+        }
+
         if ($expiration_time == 0){
             return true;
         }
