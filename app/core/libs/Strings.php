@@ -1542,7 +1542,11 @@ class Strings
 		return $ok;
 	}
 
-	static function realPathNoCoercive(string $path){
+	static function realPathNoCoercive($path = null){
+		if ($path === null){
+			return false;
+		}
+
 		$_path = realpath($path);
 
 		return $_path === false ? $path : $_path;
