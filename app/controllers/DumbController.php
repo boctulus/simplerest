@@ -7777,4 +7777,19 @@ class DumbController extends Controller
         response()->sendJson($res);
     }
 
+
+    function test_p()
+    {
+        $url = 'http://146.190.123.27';
+        $cli = new ApiClient($url);
+
+        $res  = $cli
+        ->withoutStrictSSL()
+        ->setMethod('GET')
+        ->getResponse();
+
+        dd($res);
+        dd($cli->data());
+    }
+
 }   // end class
