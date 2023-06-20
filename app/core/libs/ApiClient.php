@@ -545,9 +545,6 @@ class ApiClient
             }
         }
 
-        dd($url);
-        exit;
-
         $this->url  = $url;
         $this->verb = strtoupper($http_verb);
 

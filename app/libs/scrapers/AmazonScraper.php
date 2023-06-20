@@ -4,20 +4,26 @@ namespace simplerest\libs\scrapers;
 
 use simplerest\core\libs\Dom;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\XML;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 
 class AmazonScraper
 {
-    static function get_api_client(string $url){
-        $proxy_url = "http://2.56.221.125/php-proxy/Proxy.php";
-    
-        return (new ApiClient($proxy_url))
-        ->setHeaders([
-            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
-            'Proxy-Target-URL: '.$url
-        ]);
+    static function get_api_client(string $url, bool $using_proxy = true){
+        if ($using_proxy){
+            $proxy_url = "http://2.56.221.125/php-proxy/Proxy.php";
+        
+            return (new ApiClient($proxy_url))
+            ->setHeaders([
+                'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+                'Proxy-Target-URL: '.$url
+            ]);
+        }
+        
+        return (new ApiClient($url));
     }
 
     static function parseProduct(string $ori) {
@@ -51,6 +57,7 @@ class AmazonScraper
             ->get()
             ->getResponse(false);
 
+
             // if ($res === null){
             //     $res = $client->disableSSL()
             //     ->followLocations()
@@ -64,7 +71,7 @@ class AmazonScraper
             */
 
             while ($res['http_code'] == 301){
-                $doc   = Dom::getDomDocument($res['data']);
+                $doc   = XML::getDocument($res['data']);
                 $xpath = new \DOMXPath($doc);
                 
                 // Url del destino
@@ -115,13 +122,13 @@ class AmazonScraper
 
         // Verifico que SI sea una página de producto (detalle)
         if (!Strings::contains('productTitle', $html)){
-            Files::logger("Parsing of $ori as failed");
+            Logger::logError("Parsing of $ori as failed");
             return;
         }
 
         // ..
 
-        $doc   = Dom::getDomDocument($html);
+        $doc   = XML::getDocument($html);
         $xpath = new \DOMXPath($doc);
 
         $tgs = $xpath->query('//span[contains(@class, "priceToPay")]//span//span[contains(@class, "a-price-whole")]');
@@ -229,7 +236,7 @@ class AmazonScraper
 
         return [
             'stock_status'  => ($available || $available_soon || $available_in_a_future) ? 'in stock' : 'out of stock',
-            'regular_price' => Strings::convertIntoFloat($precio)
+            'regular_price' => Strings::toFloatOrFail   ($precio)
         ];
      }
 }
