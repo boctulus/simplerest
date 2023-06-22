@@ -7825,12 +7825,12 @@ class DumbController extends Controller
     {
         // "https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR"
         $fileId      = '1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
-     
         $destination = ETC_PATH . 'file_2.zip';
 
         $result = (new GoogleDrive())
         ->download($fileId, $destination);
 
+        // true
         dd($result, 'RESULT');
     }
 
