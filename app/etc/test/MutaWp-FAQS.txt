@@ -1,0 +1,85 @@
+Bienvenido a www.MutaWp.com • Welcome to www.MutaWp.com/en/
+---------------------------------------------------------------------------------------------------------------------------
+
+• ¿Qué incluyen las descargas de MutaWp?
+
+Cuando compras un producto (plugin o plantilla) en MutaWp obtienes un archivo ZIP correspondiente 
+a ese producto en la versión especificada en la ficha. Este archivo es exactamente igual al que obtendrías al descargarlo
+Desde la web del desarrollador, sin ningún tipo de modificación (no se trata de cracks o plugins/plantillas nulled).
+
+• What do the MutaWp downloads include?
+
+When you buy a product (plugin or template) in MutaWp you get a corresponding ZIP file
+to that product in the version specified in the card. This file is exactly the same as what you would get when you download it
+From the developer's website, without any modification (not cracks or nulled plugins / templates).
+
+---------------------------------------------------------------------------------------------------------------------------
+
+• ¿Se pueden usar los plugins/plantillas sin una clave de licencia?
+
+Sí, los plugins y plantillas premium se pueden usar sin límites aunque no se disponga de una licencia.
+Son 100% funcionales y puedes usarlos en tantas webs como quieras.
+De hecho, la mayoría de usuarios los utilizan así aunque los compren en la web del desarrollador, ya que pagan
+la licencia la primera vez para poder acceder a la descarga y, una vez pasado el primer año, nunca la renuevan.
+Comprando tu plugin o plantilla en MutaWp te ahorras también esa primera licencia.
+
+• Can the plugins / templates be used without a license key?
+
+Yes, premium plugins and templates can be used without limits even without a license.
+They are 100% functional and you can use them on as many websites as you want.
+In fact, most users use them like this even if they buy them on the developer's website, since they pay
+the license the first time to be able to access the download and, after the first year, they never renew it.
+Buying your plugin or template in MutaWp also saves you that first license.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+• ¿Por que los plugins/plantillas de MutaWp son tan baratos respecto a comprarlos en la web de los desarrolladores?
+
+Los plugins y plantillas a la venta en MutaWp no incluyen el soporte premium que sí incluye si lo compras a través de 
+la web del desarrollador. De esa manera podemos ofrecerte los mismos plugins o plantillas que si lo compras en las webs
+oficiales, pero con un precio hasta el 99% menor.
+
+Parte del dinero de la venta de estos productos se destina a la compra de nuevos plugins y plantillas, con lo
+que de nuevo revierte en los usuarios en una especie de «repositorio colaborativo».
+
+• Why are MutaWp plugins / templates so cheap compared to buying them from the developers' website?
+
+The plugins and templates for sale on MutaWp do not include the premium support that it does include if you buy it through
+the developer's website. In this way we can offer you the same plugins or templates as if you buy it on the webs
+official, but with a price up to 99% lower.
+
+Part of the money from the sale of these products goes to the purchase of new plugins and templates, with which
+which again reverts to users in a kind of «collaborative repository».
+
+---------------------------------------------------------------------------------------------------------------------------
+
+• ¿Podré actualizar un plugin o plantilla comprado en MutaWp?
+Al no disponer de licencia oficial de los desarrolladores, los plugins y plantillas que compres en MutaWp no cuentan con
+actualizaciones automáticas. Sin embargo, podrás descargar las nuevas versiones que vayamos subiendo a la plataforma
+desde tu dashboard siempre que quieras (sin límite de veces, durante un año) y subirla a tu instalación.
+
+Aquí tienes una guía de cómo actualizar plugins y plantillas fácilmente sin tener que subirlos por FTP:
+ https://mutawp.com/tutorial/instalar-y-actualizar-plugins-y-temas-de-wordpress/
+
+Ten en cuenta que, aunque hacemos lo posible por subir las actualizaciones tan pronto como se publican, puede haber
+un pequeño desfase (típicamente de unos 2-5 días) entre que se publica una actualización y está disponible en MutaWp
+
+Los clientes registrados disponen de un botón en cada ficha de producto para notificarnos la publicación de una 
+actualización y acelerar el proceso. Cuando recibimos una de estas notificaciones damos prioridad a esta actualización,
+pero no podemos garantizar que esté disponible inmediatamente.
+
+• Will I be able to update a plugin or template purchased from MutaWp?
+
+As it does not have an official license from the developers, the plugins and templates that you buy in MutaWp do not have
+Automatic Updates. However, you can download the new versions that we upload to the platform
+from your dashboard whenever you want (unlimited times, for a year) and upload it to your installation.
+
+Here's a guide on how to easily update plugins and templates without having to upload them via FTP:
+ https://mutawp.com/en/tutorial-en/how-to-install-and-update-premium-wordpress-plugins-and-themes-manually/
+
+Please note that while we do our best to upload updates as soon as they are released, there may be
+a small lag (typically around 2-5 days) between an update being posted and available on MutaWp
+
+Registered customers have a button on each product file to notify us of the publication of a
+update and speed up the process. When we receive one of these notifications we give priority to this update,
+but we cannot guarantee that it will be available immediately.
