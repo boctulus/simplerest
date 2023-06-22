@@ -205,5 +205,32 @@ class GoogleDrive
         return $modifiedTime;
     }
 
+    /**
+     * Descarga un archivo de Google Drive
+     *
+     * @param string $fileId ID del archivo a descargar
+     * @param string $destination Ruta de destino para guardar el archivo descargado
+     * @return bool True si la descarga se realizó correctamente, false en caso contrario
+     */
+    static function download(string $fileId, string $destination): bool
+    {
+        $service = self::__getDriveService();
+
+        try {
+            $response = $service->files->get($fileId, ['alt' => 'media']);
+
+            $fileHandle = fopen($destination, 'w');
+            while (!$response->getBody()->eof()) {
+                fwrite($fileHandle, $response->getBody()->read(1024));
+            }
+            fclose($fileHandle);
+
+            return true;
+        } catch (\Exception $e) {
+            // Manejar el error según tus necesidades
+            return false;
+        }
+    }
+
 }
 
