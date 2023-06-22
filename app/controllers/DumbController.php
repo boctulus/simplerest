@@ -7821,4 +7821,17 @@ class DumbController extends Controller
         dd($bytes, 'BYTES escritos');
     }
 
+    function test_get_zip_from_google_drive()
+    {
+        // "https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR"
+        $fileId      = '1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
+     
+        $destination = ETC_PATH . 'file_2.zip';
+
+        $result = (new GoogleDrive())
+        ->download($fileId, $destination);
+
+        dd($result, 'RESULT');
+    }
+
 }   // end class

@@ -212,9 +212,9 @@ class GoogleDrive
      * @param string $destination Ruta de destino para guardar el archivo descargado
      * @return bool True si la descarga se realizó correctamente, false en caso contrario
      */
-    static function download(string $fileId, string $destination): bool
+    function download(string $fileId, string $destination): bool
     {
-        $service = self::__getDriveService();
+        $service = $this->__getDriveService();
 
         try {
             $response = $service->files->get($fileId, ['alt' => 'media']);
