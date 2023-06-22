@@ -7792,4 +7792,33 @@ class DumbController extends Controller
         dd($cli->data());
     }
 
+    // descarga archivo binario en este caso
+    function test_get_binary()
+    {
+        $url = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample.tar';
+        $cli = new ApiClient($url); 
+
+        $cli
+        ->setBinary()
+        ->withoutStrictSSL();
+
+        $bytes = $cli->download(ETC_PATH . 'file.zip');
+
+        // empty => OK
+        if (!empty($cli->error())){
+            dd("HTTP Error. Detail: " . $cli->error());
+        }
+        
+        // 200 OK
+        if ($cli->status() != 200){
+            dd("HTTP status code" . $cli->status());
+            exit;
+        }
+
+        // true
+        dd($cli->data(), 'DATA');
+
+        dd($bytes, 'BYTES escritos');
+    }
+
 }   // end class

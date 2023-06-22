@@ -1577,6 +1577,11 @@ class Strings
 		return $path;
 	}
 
+	// alias
+	static function trimTrailingSlash($path = null){
+		return static::removeTrailingSlash($path);
+	}
+
 	static function removeFirstSlash(?string $path = null) : ?string {
 		if (empty($path)){
 			return $path;
@@ -1591,6 +1596,11 @@ class Strings
 		}
 
 		return $path;
+	}
+
+	// alias
+	static function trimFirstSlash($path = null){
+		return static::removeFirstSlash($path);
 	}
 
 	static function addTrailingSlash(string $path) : string{
