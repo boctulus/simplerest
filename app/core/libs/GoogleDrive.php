@@ -48,6 +48,16 @@ class GoogleDrive
         return new $class($this->client);
     }
 
+    protected function getId(string $link_or_id){
+        if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
+            $id = Url::getQueryParam($link_or_id, 'id');
+        } else {
+            $id = $link_or_id;
+        }
+
+        return $id;
+    }
+
     /*
         Obtiene info (con los permisos correctos) sobre un "drive" o "folder" 
         o sea... primero hace un "list" de archivos
@@ -138,14 +148,9 @@ class GoogleDrive
 
     */
     function getInfo(string $link_or_id, $fields, ?string $format = null): array
-    {
-        if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
-            $id = Url::getQueryParam($link_or_id, 'id');
-        } else {
-            $id = $link_or_id;
-        }
-
+    {       
         $service = $this->__getDriveService();
+        $id      = $this->getId($link_or_id);
 
         if (is_array($fields)){
             $fields_str = implode(',', $fields);
@@ -182,18 +187,7 @@ class GoogleDrive
     */
     function getUpdateDate(string $link_or_id, string $format = 'Y-m-d H:i:s')
     {
-        if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
-            $id = Url::getQueryParam($link_or_id, 'id');
-
-            // var_dump($link_or_id);
-            // dd($id, 'link or id = '. $link_or_id);
-        } else {
-            $id = $link_or_id;
-        }
-
-        // if (is_null($id)){
-        //     dd($link_or_id, 'link or id');
-        // }
+        $id = $this->getId($link_or_id);
 
         if (empty($id)){
             return null;
@@ -205,19 +199,36 @@ class GoogleDrive
         return $modifiedTime;
     }
 
-    /**
-     * Descarga un archivo de Google Drive
-     *
-     * @param string $fileId ID del archivo a descargar
-     * @param string $destination Ruta de destino para guardar el archivo descargado
-     * @return bool True si la descarga se realizó correctamente, false en caso contrario
+    /*
+      Descarga un archivo de Google Drive
+     
+      @param string $link_or_id del archivo a descargar
+      @param string $destination Ruta de destino para guardar el archivo descargado
+      @return bool  true si la descarga se realizó correctamente, false en caso contrario
+      
+      Ej:
+      
+        // "https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR"
+        $fileId      = '1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
+        $destination = ETC_PATH . 'file_2.zip';
+     
+        $result = (new GoogleDrive())
+        ->download($fileId, $destination);
+
+        // true
+        dd($result, 'RESULT');
      */
-    function download(string $fileId, string $destination): bool
+    function download(string $link_or_id, string $destination): bool
     {
         $service = $this->__getDriveService();
+        $id      = $this->getId($link_or_id);
+
+        if (empty($id)){
+            return null;
+        }
 
         try {
-            $response = $service->files->get($fileId, ['alt' => 'media']);
+            $response = $service->files->get($id, ['alt' => 'media']);
 
             $fileHandle = fopen($destination, 'w');
             while (!$response->getBody()->eof()) {
