@@ -548,7 +548,7 @@ class ApiClient
         $this->url  = $url;
         $this->verb = strtoupper($http_verb);
 
-          //
+        //
         // Sino se aplico nada sobre SSL, vale lo que diga el config
         // 
         if (!$this->cert_ssl){    
@@ -718,6 +718,105 @@ class ApiClient
     function getBody(){
         return $this->data();
     }
+
+    // Ej: "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
+    function setUserAgent(string $webbrowser){
+        $this->option(CURLOPT_USERAGENT, $webbrowser);
+        return $this;
+    }
+    
+    // Para descargar archivos binarios
+    function setBinary(){
+        $this->option(CURLOPT_RETURNTRANSFER, true);
+        return $this;
+    }
+
+    /*
+        Ej:
+
+        $url = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample.tar';
+        $cli = new ApiClient($url); // setea $url dentro de la clase
+
+        $cli
+        ->setBinary()
+        ->withoutStrictSSL();
+
+        $bytes = $cli->downloadZipFile(ETC_PATH . 'file.zip');
+
+        dd($bytes, 'BYTES escritos');
+    */
+    function download($filepath, $url = null, $body = null, $headers = null, $options = null)
+    {   
+        $fp = fopen($filepath, 'w+');
+        $ch = curl_init($url ?? $this->url);
+   
+        $this->setOption(CURLOPT_RETURNTRANSFER, false);
+        $this->setOption(CURLOPT_FILE, $fp);
+
+        $url = $url ?? $this->url;
+
+        if (!empty($this->query_params)){
+            foreach($this->query_params as $param_name => $param_value){
+                $url = Url::addQueryParam($url, $param_name, $param_value);
+            }
+        }
+
+        $this->url  = $url;
+
+        //
+        // Sino se aplico nada sobre SSL, vale lo que diga el config
+        // 
+        if (!$this->cert_ssl){    
+            $cert = config()['ssl_cert'];
+            
+            if ($cert === false){
+                $this->disableSSL();
+            }
+
+            if (!empty($cert)){
+                $this->setSSLCrt($cert);
+            }    
+        }
+
+        if (!empty($this->options) && !empty($options)){
+            $options = array_merge($this->options, $options);
+        } else {
+            $options = $options ?? $this->options ?? null;
+        }
+
+        $body    = $body    ?? $this->body    ?? null;
+        $headers = $headers ?? $this->req_headers ?? null;        
+    
+        if (!empty($this->options)){
+            foreach ($this->options as $curl_op => $value){
+                curl_setopt($ch, $curl_op, $value);
+            }    
+        }
+        
+        curl_exec($ch);
+
+        // if (!empty($this->header_callback)){
+        //     curl_setopt($ch, CURLOPT_HEADERFUNCTION, $this->header_callback);
+        // }
+
+        $response      = curl_exec($ch);
+        $err_msg       = curl_error($ch);
+        $http_code     = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        $content_type  = curl_getinfo($ch,CURLINFO_CONTENT_TYPE);
+        $effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+   
+        curl_close($ch);
+        fclose($fp);
+
+        $this->response      = $response;
+        $this->status        = $http_code;
+        $this->error         = $err_msg;
+        $this->content_type  = $content_type;
+        $this->effective_url = $effective_url;
+
+        return filesize($filepath);
+    }   
 
     /*
         Authentication

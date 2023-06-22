@@ -11,6 +11,9 @@ class Files
 	static protected $backup_path;
 	static protected $callable;
 
+	const LINUX_DIR_SLASH = '/';
+	const WIN_DIR_SLASH   = '\\';
+
 	/*
 		Fuerza la descarga del archivo
 	*/
@@ -123,21 +126,36 @@ class Files
 		return array_diff($files_path1, $files_path2);
 	}
 
-
 	/*
-		Remueve el path (la parte constanre) de un array de un array de entradas de directorio 
+		Remueve el path (la parte constante) de un array de un array de entradas de directorio 
+
+		Ej:
+
+			$clean_path  = Files::removePath($path, static::PLUGINDIR)[0];
+
+		Ej:
+
+			$clean_paths = Files::removePath([ $path1, $path2, $path_n ], static::PLUGINDIR);
 	*/
-	static function removePath(Array $list, string $path) : Array {
+	static function removePath($to_clean, string $path) {
 		$path_non_trailing_slash = Strings::removeTrailingSlash($path);
 
 		$len = strlen($path_non_trailing_slash) + 1;
-        foreach ($list as $ix => $f){
-            $list[$ix] = substr($f, $len);
+
+		if (!is_array($to_clean)){
+			return substr($to_clean, $len);
+		}
+
+        foreach ($to_clean as $ix => $f){
+            $to_clean[$ix] = substr($f, $len);
         }
 
-		return $list;
+		return $to_clean;
 	}
 
+	/* 
+		str_replace sobre archivo
+	*/
 	static function replace(string $filename, $search, $replace){
 		$file  = file_get_contents($filename);
 		$file  = str_replace($search, $replace, $file);
@@ -145,6 +163,9 @@ class Files
 		return file_put_contents($filename, $file);
 	}
 
+	/* 
+		preg_replace sobre archivo
+	*/
 	static function pregReplace(string $filename, $search, $replace){
 		$file = file_get_contents($filename);
 		$file = preg_replace($search, $replace, $file);
@@ -152,7 +173,28 @@ class Files
 		return file_put_contents($filename, $file);
 	}
 
+	/*
+		Convierte todos los slashs de la ruta a los apropiados o especificados
+	*/
+	static function convertSlashes($path, $to_slash = null){
+		if ($to_slash === null){
+			$to_slash = DIRECTORY_SEPARATOR;
+		}
+
+		$path = str_replace('\\', $to_slash, $path);
+		$path = str_replace('/' , $to_slash, $path);
+
+		return $path;
+	}
+
+	// alias 
+	static function normalize($path, $to_slash = null){
+		return static::convertSlashes($path, $to_slash);
+	}
+
 	static function isAbsolutePath(string $path){
+		$path = static::convertSlashes($path);
+
 		if (Strings::contains('..', $path) || Strings::startsWith('.' . DIRECTORY_SEPARATOR , $path)|| Strings::startsWith('..' . DIRECTORY_SEPARATOR , $path)){
 			return false;
 		}
