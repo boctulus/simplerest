@@ -7840,7 +7840,7 @@ class DumbController extends Controller
         $file = ETC_PATH . 'file_2.zip';
 
         dd(
-            Zip::unzip($file)
+            Zip::unzip($file, ETC_PATH . 'test')
         );
     }
 
