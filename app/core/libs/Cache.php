@@ -26,7 +26,7 @@ abstract class Cache
             return false;
         }
 
-        if ($expiration_time == 0){
+        if ($expiration_time === 0){
             return true;
         }
 
@@ -34,7 +34,7 @@ abstract class Cache
             return false;
         }
 
-        return time() > $cached_at + $expiration_time;;
+        return time() > $cached_at + $expiration_time;
     }
 
     abstract static function put(string $key, $value, int $time);

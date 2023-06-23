@@ -300,6 +300,7 @@ return [
 		boctulus\grained_acl\GrainedAclServiceProvider::class,
 		//boctulus\basic_acl\BasicAclServiceProvider::class
 		// ...
+		//boctulus\hello_world\HelloServiceProvider::class
 	],
 
 	'var_dump_separators' => [
