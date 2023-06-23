@@ -2,10 +2,6 @@
 
 namespace simplerest\core\libs;
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-
 class GoogleMaps
 {
     protected $api_key;

@@ -23,7 +23,7 @@ class DBCache extends Cache
             'expiration_time' => $expiration_time,
         ];
 
-        dd($data, 'DATA for put()');
+        dd($data, 'DATA for put()');  // <------------- revisaR
 
         return DB::table('cache')
         ->create($data);

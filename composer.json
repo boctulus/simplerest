@@ -24,7 +24,9 @@
         "league/oauth2-google": "^4.0",
         "sendgrid/sendgrid": "~7",
         "datatables.net/editor-php": "2.*",
-        "phptal/phptal": "^1.6"
+        "phptal/phptal": "^1.6",
+        "ehime/hello-world": "^1.0",
+        "boctulus/hello_world": "dev-main"
     },
     "scripts": {
         "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
@@ -39,7 +41,8 @@
             "simplerest\\": "app/",
             "devdojo\\calculator\\": "packages/devdojo/calculator/src",
             "boctulus\\grained_acl\\": "packages/boctulus/grained_acl/src",
-            "boctulus\\basic_acl\\": "packages/boctulus/basic_acl/src"
+            "boctulus\\basic_acl\\": "packages/boctulus/basic_acl/src",
+            "boctulus\\hello_world\\": "vendor/boctulus/hello_world/src"
         }
     },
     "config": {
