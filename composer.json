@@ -25,8 +25,7 @@
         "sendgrid/sendgrid": "~7",
         "datatables.net/editor-php": "2.*",
         "phptal/phptal": "^1.6",
-        "ehime/hello-world": "^1.0",
-        "boctulus/hello_world": "dev-main"
+        "boctulus/hello_world": "^1.0"
     },
     "scripts": {
         "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
