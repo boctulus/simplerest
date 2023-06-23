@@ -70,6 +70,7 @@ use simplerest\core\libs\i18n\Translate;
 
     foreach ($config['providers'] as $provider){
         $p = new $provider();
+        $p->register();
         $p->boot();
     }
     
