@@ -1,0 +1,126 @@
+COMPOSER
+--------
+
+# Creacion de paquete y publicacion en composer
+
+- Crear la estructura
+
+- Ejecutar el comando
+
+  $ composer init
+
+- Ajustar el composer.json de ser necesario
+
+- Si se hicieron cambios para validar el json, ejecutar: 
+
+  $ composer validate
+
+- Testear el paquete agregandolo en el "autoload" del proyecto que lo incluira:
+
+    "autoload": {
+          "psr-4": {
+              "simplerest\\": "app/",
+              "boctulus\\hello_world\\": "packages/boctulus/hello_world/src" <--- no mas
+          }
+    },
+
+y ejecutar: 
+
+  $ composer dump-autoload
+
+- Submitearlo a composer en: 
+
+  https://packagist.org/packages/submit
+
+- Para probarlo, hacer el "composer requiere" correspondiente. Ej:
+
+  $ composer require boctulus/hello_world:dev-main
+
+<-- en las pruebas que he hecho, ha sido necesario agregar ":dev-main"
+
+- Si el paquete no incluye el autoloading, sera necesario ajustar en el composer.json el proyecto
+
+Antes:
+
+  "autoload": {
+        "psr-4": {
+            "simplerest\\": "app/",
+            "boctulus\\hello_world\\": "packages/boctulus/hello_world/src" 
+        }
+  },
+
+Cambiar a:
+
+  "autoload": {
+    "psr-4": {
+        "simplerest\\": "app/",
+        "boctulus\\hello_world\\": "vendor/boctulus/hello_world/src"
+    }
+  },
+
+<-- notar que antes estaba en "packages/" (en simplerest) y ahora pasa a "vendor/"
+
+Y dado que se esta modificando la estructura del composer.json, ejecutar:
+
+  $ composer dump-autoload
+
+
+# Comandos
+
+- composer dump-autoload
+
+  El comando composer dump-autoload se utiliza principalmente cuando hay cambios en la configuración de autoloading en el archivo composer.json o cuando se agregan o eliminan clases o archivos en tu proyecto. El comando regenera el archivo autoload.php para reflejar estos cambios y asegurarse de que las clases y archivos se carguen correctamente.
+
+  Recuerda que si tu biblioteca es utilizada por otros proyectos a través de Composer, esos proyectos deberán ejecutar composer require o composer update para descargar e instalar tu biblioteca y generar automáticamente el archivo autoload.php en sus propias carpetas vendor/, lo que les permitirá cargar tus clases automáticamente.
+
+
+- composer update
+
+  El comando composer update es utilizado en Composer para actualizar las dependencias de tu proyecto a las últimas versiones compatibles según las restricciones especificadas en el archivo composer.json.
+
+  Cuando ejecutas composer update, Composer analiza el archivo composer.json y determina las dependencias requeridas por tu proyecto y sus respectivas restricciones de versión. Luego, busca las versiones más recientes de las dependencias que cumplan con esas restricciones y las descarga e instala en tu proyecto.
+
+  El comando composer update realiza las siguientes acciones:
+
+  Resolución de dependencias: Composer analiza las dependencias definidas en el archivo composer.json y resuelve las versiones más recientes y compatibles de las mismas. Asegura que todas las dependencias cumplan con las restricciones de versión definidas y evita conflictos entre ellas.
+
+  Descarga e instalación: Composer descarga las últimas versiones de las dependencias que necesitan ser actualizadas, así como sus dependencias transitivas. Luego, las instala en la carpeta vendor/ de tu proyecto.
+
+  Actualización del archivo composer.lock: Composer actualiza el archivo composer.lock, que registra las versiones exactas de las dependencias instaladas en tu proyecto. Este archivo es importante para garantizar la consistencia de las dependencias en diferentes entornos.
+
+  Es importante tener en cuenta que composer update también actualizará las dependencias a nuevas versiones que cumplan con las restricciones definidas, lo cual puede incluir cambios en la funcionalidad y comportamiento de las dependencias. Por lo tanto, es recomendable realizar pruebas exhaustivas después de ejecutar composer update para asegurarte de que tu proyecto siga funcionando correctamente.
+
+  En resumen, composer update actualiza las dependencias de tu proyecto a las últimas versiones compatibles, descargándolas e instalándolas en tu proyecto, y actualiza el archivo composer.lock.
+
+
+- composer update --dry-run
+
+  Si deseas realizar solo la resolución de dependencias sin descargar o instalar los paquetes nuevos, puedes utilizar el comando composer update --dry-run. Esta opción realiza una simulación de la actualización y muestra la lista de paquetes que se actualizarían sin realizar ninguna acción real.
+
+  Al ejecutar composer update --dry-run, Composer analizará las dependencias de tu proyecto, resolverá las versiones más recientes compatibles y mostrará una lista de los paquetes que se actualizarían junto con las nuevas versiones correspondientes. Esta simulación puede ayudarte a obtener información sobre los posibles cambios y actualizaciones en las dependencias sin afectar directamente tu proyecto.
+
+  Es importante destacar que composer update --dry-run no realiza cambios reales en tu proyecto y no actualiza las dependencias. Solo muestra la información sobre las actualizaciones propuestas. Esto te brinda la oportunidad de revisar y evaluar los posibles impactos antes de proceder con la actualización real.
+
+  Recuerda que después de ejecutar composer update --dry-run, si decides realizar la actualización, puedes ejecutar simplemente composer update sin la opción --dry-run para realizar el proceso completo de descarga e instalación de las nuevas versiones de las dependencias.
+
+
+- composer init
+
+  Package Type (e.g. library, project, metapackage, composer-plugin) []:
+
+  En el contexto de Composer, los diferentes tipos de paquetes tienen las siguientes diferencias:
+
+  Library: Un paquete de tipo "library" es un paquete que proporciona funcionalidad reutilizable que puede ser utilizada por otros proyectos. Por lo general, contiene clases, interfaces, funciones u otros componentes que se pueden importar y utilizar en otros proyectos de PHP. Un paquete de tipo "library" no tiene una aplicación o funcionalidad específica en sí mismo, sino que está diseñado para ser utilizado por otros proyectos.
+
+  Project: Un paquete de tipo "project" se refiere a un proyecto completo en sí mismo, que puede tener dependencias en otros paquetes. Este tipo de paquete generalmente representa una aplicación o un proyecto independiente, en lugar de una biblioteca reutilizable. Un paquete de tipo "project" tiene un punto de entrada o archivo principal que se ejecuta cuando se utiliza o se instala el paquete.
+
+  Metapackage: Un paquete de tipo "metapackage" no contiene código o funcionalidad en sí mismo, sino que se utiliza para agrupar o requerir otros paquetes relacionados. Sirve como una forma de gestionar dependencias comunes en varios proyectos. Por ejemplo, un metapaquete podría requerir varios paquetes de biblioteca y configurar automáticamente todas sus dependencias.
+
+  Composer-plugin: Un paquete de tipo "composer-plugin" es un paquete que extiende o modifica la funcionalidad de Composer en sí mismo. Puede agregar nuevos comandos, ganchos o capacidades adicionales al administrador de paquetes Composer.
+
+  En resumen, la diferencia principal entre estos tipos de paquetes radica en su propósito y funcionalidad. Los paquetes de tipo "library" son bibliotecas reutilizables, los paquetes de tipo "project" son proyectos independientes, los paquetes de tipo "metapackage" agrupan otros paquetes y los paquetes de tipo "composer-plugin" extienden Composer. La elección del tipo de paquete depende de la naturaleza y el propósito de tu proyecto en particular.
+
+
+  Add PSR-4 autoload mapping? Maps namespace "Boctulus\HelloWorld" to the entered relative path. [src/, n to skip]:
+
+  La convención "StudlyCaps" o "PascalCase", con la primera letra de cada palabra en mayúscula, es ampliamente utilizada en la comunidad de PHP y puede ser preferible para mantener un estilo de código consistente.

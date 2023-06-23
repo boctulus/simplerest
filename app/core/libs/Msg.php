@@ -3,8 +3,7 @@
 namespace simplerest\core\libs;
 
 class Msg
-{
-    
+{    
 	const INVALID_CLASS = [
                 'type' => 'GENERAL',
                 'code' => 'INVALID_CLASS',

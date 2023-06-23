@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Zip;
+
 class Update
 {
     static function compareVersions(Array $v1, Array $v2) : int {
@@ -149,7 +151,7 @@ class Update
         Files::copy(UPDATE_PATH, $tmp_dst . 'updates', [ basename($update_dir) ]);
         //Files::copy(ROOT_PATH, $tmp_dst, ['app/controllers/UpdateController.php']);
 
-        Files::zip($tmp_dst, UPDATE_PATH . 'update-' . basename($update_dir) . '.zip', [
+        Zip::zip($tmp_dst, UPDATE_PATH . 'update-' . basename($update_dir) . '.zip', [
             "completed"
         ]);
     }
