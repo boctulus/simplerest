@@ -249,8 +249,10 @@ class Files
 	}
 
 	static function glob(string $path, string $pattern, $flags = 0){
-		if (Strings::lastChar($path) != '/'){
-			$path .= '/';
+		$last_char = Strings::lastChar($path);
+
+		if ($last_char != '/' && $last_char != '\\'){
+			$path .= DIRECTORY_SEPARATOR;
 		}
 
 		return glob($path . $pattern, $flags);
