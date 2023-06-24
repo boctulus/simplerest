@@ -22,6 +22,8 @@ class FileCache extends Cache
 
     /*
         Logica para saber si un archivo usado como cache ha expirado
+
+        Esta implementacion requiere deserializar el archivo que fue serializado con put()
     */
     static function expiredFile(string $path, ?int $expiration_time = null) : bool {
         $exists = file_exists($path);
