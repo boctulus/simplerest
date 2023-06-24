@@ -10,9 +10,10 @@ namespace simplerest\core\libs;
 class GoogleDrive
 {
 	protected $client;
+    protected $api_key;
 
     function __construct($api_key = null) { 
-        $this->__getClient($api_key); 
+        $this->api_key = $api_key;
     }
 
     /*
@@ -23,10 +24,9 @@ class GoogleDrive
 	protected function __getClient($api_key = null){
 		$cfg = config();
 
-        $google_console_api_key = $api_key ?? $cfg['google_console_api_key'];
+        $google_console_api_key = $this->api_key ?? $api_key ?? $cfg['google_console_api_key'];
 
-        $class  = 'Google\Client';
-        $client = new $class();
+        $client = new \Google\Client();
 
         // Disable SSL check in local
         if (env('APP_ENV') == 'local' || env('APP_ENV') == 'debug' || env('DEGUG') == 'true'){  
@@ -43,7 +43,10 @@ class GoogleDrive
 		$this->client = $client;
 	}
 
-    protected function __getDriveService(){
+    protected function __getDriveService()
+    {
+        $this->__getClient();
+
         $class = 'Google_Service_Drive';
         return new $class($this->client);
     }
@@ -217,14 +220,22 @@ class GoogleDrive
 
         // true
         dd($result, 'RESULT');
-
-
-        <-- implemetar CACHE para evitar realizar tantas descargas ***
      */
     function download(string $link_or_id, string $destination, bool $throw = false, $expiration_time = null): bool
-    {
+    {       
+        $id = $this->getId($link_or_id);
+
+        if ($expiration_time !== null){
+            if (file_exists($destination)){
+                if (FileCache::expired(filemtime($destination), $expiration_time)){
+                    unlink($destination);
+                } else {
+                    return true;
+                }
+            }
+        }
+
         $service = $this->__getDriveService();
-        $id      = $this->getId($link_or_id);
         
         if (empty($id)){
             if ($throw){
@@ -237,16 +248,6 @@ class GoogleDrive
         Files::mkDestination($destination);
        
         try {
-            if ($expiration_time !== null){
-                if (file_exists($destination)){
-                    if (FileCache::expired(filemtime($destination), $expiration_time)){
-                        unlink($destination);
-                    } else {
-                        return true;
-                    }
-                }
-            }
-
             $response = $service->files->get($id, ['alt' => 'media']);
 
             $fileHandle = fopen($destination, 'w');
@@ -268,4 +269,6 @@ class GoogleDrive
     }
 
 }
+
+
 
