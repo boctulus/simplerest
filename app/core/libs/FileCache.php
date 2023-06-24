@@ -4,6 +4,9 @@ namespace simplerest\core\libs;
 
 class FileCache extends Cache
 {
+    /*
+        La $key puede ser una url o el nombre de un archivo
+    */
     static function getCachePath(string $key) : string {
         static $path;
 
