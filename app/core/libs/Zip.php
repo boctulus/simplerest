@@ -131,6 +131,8 @@ class Zip
                 throw new \Exception("ZIP file was unable to be opened");                
             }
 
+            $extraction_folder = rtrim($zip->getNameIndex(0), '/');
+
             // Extraer los archivos en la carpeta de destino
             $zip->extractTo($destination_folder);
             $zip->close();
@@ -140,21 +142,12 @@ class Zip
             }
             
             // Retornar la ruta de la carpeta de destino
-            return $destination_folder;
+            return $extraction_folder;
         }
         
         // Verificar si el comando unzip está disponible
         if (self::isUnzipCommandAvailable()) {
-            // Ejecutar el comando unzip
-            $command = "unzip $file_path -d $destination_folder";
-            exec($command);
-
-            if ($verify && !static::verifyUnzip($file_path, $destination)){
-                throw new \Exception("Uncompression failled or finish with errors");                    
-            }
-            
-            // Retornar la ruta de la carpeta de destino
-            return $destination_folder;
+            // ....
         }
         
         // Lanzar excepción si ninguna opción está disponible
