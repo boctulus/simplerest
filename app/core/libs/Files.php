@@ -797,9 +797,9 @@ class Files
 		return @rmdir($dir);
 	}
 
-	static function delTree(string $dir, bool $include_self = false, bool $warn_if_not_exists = false) {
+	static function delTree(string $dir, bool $include_self = false, bool $throw = false) {
 		if (!is_dir($dir)){
-			if ($warn_if_not_exists){
+			if ($throw){
 				throw new \InvalidArgumentException("Invalid directory '$dir'");
 			} else {
 				return;
