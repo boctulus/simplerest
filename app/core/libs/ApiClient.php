@@ -576,7 +576,7 @@ class ApiClient
             $expired = true;
         } else {
             $cached_path     = $this->getCachePath();
-            $expired         = FileCache::expired(filemtime($cached_path), $this->expiration);  // fixex on jun-17
+            $expired         = is_file($cached_path) ? FileCache::expired(filemtime($cached_path), $this->expiration) : true;  // fixex on jun-17/24
         }
        
         if (!$expired){
