@@ -253,12 +253,12 @@ class ApiClient
     }
 
     /*
-        Revisar. No funciona bien
+        Revisar. No funcionaria bien
     */
     function cacheUntil(string $datetime){
         $expiration_time = Date::diffInSeconds($datetime);
 
-        dd($expiration_time, 'EXP TIME (SECS)');
+        // dd($expiration_time, 'EXP TIME (SECS)');
 
         return $this->setCache($expiration_time);
     }
