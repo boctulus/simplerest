@@ -7835,7 +7835,7 @@ class DumbController extends Controller
 
     function test_unzip()
     {
-        $file = ETC_PATH . 'file_2.zip';
+        $file = ETC_PATH . 'Livemesh Addons for Elementor Premium v7.2.4.zip';
 
         dd(
             Zip::unzip($file, ETC_PATH . 'test')
@@ -7847,7 +7847,7 @@ class DumbController extends Controller
 
         dd(SimpleCrypt::encrypt($str));
 
-        dd(SimpleCrypt::encrypt(
+        dd(SimpleCrypt::decrypt(
             SimpleCrypt::encrypt($str)
         ));
     }
