@@ -221,7 +221,7 @@ class GoogleDrive
 
         <-- implemetar CACHE para evitar realizar tantas descargas ***
      */
-    function download(string $link_or_id, string $destination, bool $throw = false): bool
+    function download(string $link_or_id, string $destination, bool $throw = false, $expiration_time = null): bool
     {
         $service = $this->__getDriveService();
         $id      = $this->getId($link_or_id);
@@ -237,6 +237,16 @@ class GoogleDrive
         Files::mkDestination($destination);
        
         try {
+            if ($expiration_time !== null){
+                if (file_exists($destination)){
+                    if (FileCache::expired(filemtime($destination), $expiration_time)){
+                        unlink($destination);
+                    } else {
+                        return true;
+                    }
+                }
+            }
+
             $response = $service->files->get($id, ['alt' => 'media']);
 
             $fileHandle = fopen($destination, 'w');
