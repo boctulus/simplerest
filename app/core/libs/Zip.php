@@ -127,18 +127,20 @@ class Zip
             $zip = new \ZipArchive();
             
             // Abrir el archivo zip
-            if ($zip->open($file_path) === true) {
-                // Extraer los archivos en la carpeta de destino
-                $zip->extractTo($destination_folder);
-                $zip->close();
-
-                if ($verify && !static::verifyUnzip($file_path, $destination)){
-                    throw new \Exception("Uncompression failled or finish with errors");                    
-                }
-                
-                // Retornar la ruta de la carpeta de destino
-                return $destination_folder;
+            if ($zip->open($file_path) !== true) {
+                throw new \Exception("ZIP file was unable to be opened");                
             }
+
+            // Extraer los archivos en la carpeta de destino
+            $zip->extractTo($destination_folder);
+            $zip->close();
+
+            if ($verify && !static::verifyUnzip($file_path, $destination)){
+                throw new \Exception("Uncompression failled or finish with errors");                    
+            }
+            
+            // Retornar la ruta de la carpeta de destino
+            return $destination_folder;
         }
         
         // Verificar si el comando unzip está disponible
@@ -158,7 +160,6 @@ class Zip
         // Lanzar excepción si ninguna opción está disponible
         throw new \Exception('No se puede descomprimir el archivo. El servicio no está disponible.');
     }
-
 
 }
 
