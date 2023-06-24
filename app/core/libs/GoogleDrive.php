@@ -218,27 +218,38 @@ class GoogleDrive
         // true
         dd($result, 'RESULT');
      */
-    function download(string $link_or_id, string $destination): bool
+    function download(string $link_or_id, string $destination, bool $throw = false): bool
     {
         $service = $this->__getDriveService();
         $id      = $this->getId($link_or_id);
-
+        
         if (empty($id)){
+            if ($throw){
+                throw new \Exception("id is empty for '$link_or_id'");
+            }
+
             return null;
         }
 
+        Files::mkDestination($destination);
+       
         try {
             $response = $service->files->get($id, ['alt' => 'media']);
 
             $fileHandle = fopen($destination, 'w');
+
             while (!$response->getBody()->eof()) {
                 fwrite($fileHandle, $response->getBody()->read(1024));
             }
+            
             fclose($fileHandle);
 
             return true;
-        } catch (\Exception $e) {
-            // Manejar el error según tus necesidades
+        } catch (\Exception $e) {           
+            if ($throw){
+                throw new \Exception($e->getMessage());
+            }
+
             return false;
         }
     }

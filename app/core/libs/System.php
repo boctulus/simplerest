@@ -17,6 +17,10 @@ class System
     }
 
     static function isWindows(){
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+            return true;
+        }
+
         $os = static::getOS();
 
         return ($os == 'Windows' || $os == 'WIN32' || $os == 'WINNT');

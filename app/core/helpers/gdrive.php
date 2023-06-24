@@ -36,9 +36,9 @@ function gdrive_file_updated_at($link){
 
 	$key     = 'gdrive_'. $id .'_updated_at';
 
-	$updated = get_transient($key);
+	// $updated = get_transient($key);
 
-	if (!empty($updated)){
+	if (isset($updated) && !empty($updated)){
 		// dd("Obteniendo '$key' de TRANSIENT");
 		return $updated;
 	}
@@ -49,7 +49,7 @@ function gdrive_file_updated_at($link){
 		->getUpdateDate($link);
 
 		// Para no saturar a Google Drive con peticiones las distribuyo en el tiempo
-		set_transient($key, $updated, 3600 * 24 + rand(3600, 3600 *  48));
+		// set_transient($key, $updated, 3600 * 24 + rand(3600, 3600 *  48));
 		
 		return $updated;
 
