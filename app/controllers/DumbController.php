@@ -64,22 +64,23 @@ use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
+use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\FileUploader;
 use Endroid\QrCode\Label\Font\NotoSans;
-use simplerest\core\libs\i18n\POParser;
 
+use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
-use simplerest\controllers\api\Products;
 
+use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\core\libs\ValidationRules;
 
+use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
@@ -93,8 +94,8 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
-use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 
+use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 
@@ -6275,7 +6276,7 @@ class DumbController extends Controller
         $maps = new GoogleMaps();
 
         dd(
-            $maps->getCoordiantes('Diego de Torres 5, Acala de Henaes, Madrid')
+            $maps->getCoordinates('Diego de Torres 5, Acala de Henaes, Madrid')
         );
     }
 
@@ -7525,15 +7526,22 @@ class DumbController extends Controller
         dd($info);
     }
 
-    function test_file_cache_path(){
+    function test_file_cache_put(){
         dd(
-            FileCache::getCachePath('constelacion')
+            FileCache::put('constelacion', 'andromeda X', 2)
         );
     }
 
-    function test_file_cache_put(){
+    /*
+        Devuelve la ruta del archivo de cache
+
+        Ej:
+
+        C:\Users\jayso\AppData\Local\Temp\8302505164ff597cfd342a21e60c849d26093d73.cache
+    */
+    function test_file_cache_path(){
         dd(
-            FileCache::put('constelacion', 'andromeda', 2)
+            FileCache::getCachePath('constelacion')
         );
     }
 
@@ -7805,7 +7813,8 @@ class DumbController extends Controller
         ->setBinary()
         ->withoutStrictSSL();
 
-        $bytes = $cli->download(ETC_PATH . 'file.zip');
+        $bytes = $cli
+        ->download(ETC_PATH . 'file.zip');
 
         // empty => OK
         if (!empty($cli->error())){
@@ -7824,6 +7833,25 @@ class DumbController extends Controller
         dd($bytes, 'BYTES escritos');
     }
 
+    function test_unzip()
+    {
+        $file = ETC_PATH . 'file_2.zip';
+
+        dd(
+            Zip::unzip($file, ETC_PATH . 'test')
+        );
+    }
+    
+    function test_crypt(){
+        $str = "Hola mundo";
+
+        dd(SimpleCrypt::encrypt($str));
+
+        dd(SimpleCrypt::encrypt(
+            SimpleCrypt::encrypt($str)
+        ));
+    }
+
     function test_get_zip_from_google_drive()
     {
         // "https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR"
@@ -7837,13 +7865,7 @@ class DumbController extends Controller
         dd($result, 'RESULT');
     }
 
-    function test_unzip()
-    {
-        $file = ETC_PATH . 'file_2.zip';
 
-        dd(
-            Zip::unzip($file, ETC_PATH . 'test')
-        );
-    }
+
 
 }   // end class

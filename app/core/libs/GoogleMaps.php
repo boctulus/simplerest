@@ -15,7 +15,7 @@ class GoogleMaps
         $this->api_key = $api_key;
     }
 
-    function getCoordiantes(string $address)
+    function getCoordinates(string $address)
     {   
         $allow_url_open = Files::isAllowUrlFopenEnabled();
         $curl_available = Files::isCurlAvailable();
