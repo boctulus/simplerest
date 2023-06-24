@@ -595,11 +595,15 @@ class ApiClient
                     }
                 }
                 
-                $this->status   = $res['http_code'];
-                $this->error    = $res['error'];
-                $this->response = $res['data'];
+                // Solo sino hay errores (hago un return y con eso) evito continuar obteniendo una respuesta fresca
+                if (empty($res['error']))
+                {    
+                    $this->status   = $res['http_code'];
+                    $this->error    = $res['error'];
+                    $this->response = $res['data'];
 
-                return $this;
+                    return $this;
+                }
             }
         }
 
