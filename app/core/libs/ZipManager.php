@@ -2,7 +2,7 @@
 
 namespace simplerest\core\libs;
 
-class Zip 
+class ZipManager 
 {
     /*
         https://stackoverflow.com/a/1334949/980631
@@ -13,7 +13,7 @@ class Zip
 
         Si no esta presente la extension, intentar usar el comando zip
     */
-    static function zip(string $ori, string $dst, ?Array $except = null, bool $overwrite = true)
+    static function zip(string $ori, string $dst, ?Array $exclude = null, bool $overwrite = true)
     {
         if (!extension_loaded('zip') || !file_exists($ori)) {
             return false;
@@ -24,8 +24,8 @@ class Zip
             return false;
         }
     
-        if (is_null($except)){
-            $except = [];
+        if (is_null($exclude)){
+            $exclude = [];
         }
 
         $ori = str_replace('\\', '/', realpath($ori));
@@ -33,17 +33,17 @@ class Zip
         if (is_dir($ori) === true)
         {
             $new_excluded = [];
-            foreach ($except as $ix => $file){
+            foreach ($exclude as $ix => $file){
                 if (!Files::isAbsolutePath($file)){
-                    $except[$ix] = Files::getAbsolutePath($file, $ori);
+                    $exclude[$ix] = Files::getAbsolutePath($file, $ori);
                 }
 
-                if (is_dir($except[$ix])){
-                    $new_excluded = array_merge($new_excluded, Files::recursiveGlob($except[$ix] . '/*'));  
+                if (is_dir($exclude[$ix])){
+                    $new_excluded = array_merge($new_excluded, Files::recursiveGlob($exclude[$ix] . '/*'));  
                 }
             }
 
-            $except = array_merge(array_values($except), array_values($new_excluded));
+            $exclude = array_merge(array_values($exclude), array_values($new_excluded));
 
             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($ori), \RecursiveIteratorIterator::SELF_FIRST);
     
@@ -57,11 +57,11 @@ class Zip
     
                 $file = realpath($file);
     
-                if (!empty($except) && in_array($file, $except)){
+                if (!empty($exclude) && in_array($file, $exclude)){
                     continue;
                 }
 
-                if (is_dir($file) === true && !in_array($file, $except))
+                if (is_dir($file) === true && !in_array($file, $exclude))
                 {
                     $zip->addEmptyDir(str_replace($ori . '/', '', $file . '/'));
                 }
