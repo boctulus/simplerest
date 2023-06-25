@@ -7,9 +7,11 @@ class Zip
     /*
         https://stackoverflow.com/a/1334949/980631
 
-        Modified by @boctulus
+        Modified version by @boctulus
 
-        Por concistencia si no esta presente la extension, intentar usar el comando zip
+        TODO
+
+        Si no esta presente la extension, intentar usar el comando zip
     */
     static function zip(string $ori, string $dst, ?Array $except = null, bool $overwrite = true)
     {
@@ -111,9 +113,11 @@ class Zip
         return false;
     }
 
-    //
-    // Por concistencia implementar $overwrite 
-    //
+    /*
+        TODO
+
+        Implementar $overwrite
+    */
     public static function unzip(string $file_path, $destination = null, bool $verify = true) {
         // Utilizar la ruta de destino si se proporciona
         if ($destination !== null) {
@@ -132,6 +136,7 @@ class Zip
             }
 
             $extraction_folder = rtrim($zip->getNameIndex(0), '/');
+            $extraction_folder = Strings::beforeIfContains($extraction_folder, '/'); // parche -probado en Windows-
 
             // Extraer los archivos en la carpeta de destino
             $zip->extractTo($destination_folder);
@@ -155,6 +160,5 @@ class Zip
     }
 
 }
-
 
 
