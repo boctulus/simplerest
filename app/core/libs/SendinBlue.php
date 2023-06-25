@@ -3,13 +3,14 @@
 namespace simplerest\core\libs;
 
 use GuzzleHttp;
+use simplerest\core\libs\Logger;
+use simplerest\core\interfaces\IMail;
 use simplerest\libs\SendinBlue\Client\Configuration;
-use simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail;
 use simplerest\libs\SendinBlue\Client\Api\AccountApi;
 use simplerest\libs\SendinBlue\Client\ObjectSerializer;
-use simplerest\libs\SendinBlue\Client\Api\TransactionalEmailsApi;
 
-use simplerest\core\interfaces\IMail;
+use simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail;
+use simplerest\libs\SendinBlue\Client\Api\TransactionalEmailsApi;
 
 class SendinBlue extends MailBase implements IMail
 {
@@ -94,7 +95,7 @@ class SendinBlue extends MailBase implements IMail
 
             if (static::$debug_level >0){
                 if (static::$silent){
-                    Files::dump(true, 'dump.txt', true);
+                    Logger::dump(true, 'dump.txt', true);
                 } else {
                     dd($result);
                 }
@@ -104,7 +105,7 @@ class SendinBlue extends MailBase implements IMail
 
             if (static::$debug_level >0){
                 if (static::$silent){
-                    Files::dump($e->getMessage(), null, true);
+                    Logger::dump($e->getMessage(), null, true);
                 } else {
                     dd($e->getMessage());
                 }
