@@ -61,24 +61,26 @@ use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
+use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\FileUploader;
-use Endroid\QrCode\Label\Font\NotoSans;
 
+use simplerest\core\libs\LangDetector;
+use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\i18n\POParser;
+
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
-
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
+
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\HtmlBuilder\Tag;
-
 use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
@@ -91,13 +93,12 @@ use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
+
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
-
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\core\libs\ZipManager;
 
 class DumbController extends Controller
 {
@@ -7874,45 +7875,23 @@ class DumbController extends Controller
             'D:\www\woo2\wp-content\plugins\betheme-premium-wordpress-theme\betheme-otro-child.zip'
         );
 
-        if (count($zips) > 1){
-            $first = null;
-            $after = [];
-            foreach ($zips as $ix => $zip){
-                if (Strings::contains('child', $zip)){
-                    $after[] = $ix;
-                }
-            }
-
-            $_all   = range(0, count($zips)-1);
-            $before = array_diff($_all, $after);
-
-            $first = null;
-            $shortestLength = PHP_INT_MAX;
-            foreach ($before as $index) {
-                $length = strlen($zips[$index]);
-                if ($length < $shortestLength) {
-                    $shortestLength = $length;
-                    $first = $index;
-                }
-            }
-
-            $after = array_diff($_all, [$first]);
-
-            $order = [$first, ...$after]; 
-            dd($order); // 1 0 2 
-
-            $orderedZips = [];
-            foreach ($order as $index) {
-                $orderedZips[] = $zips[$index];
-            }
-
-            $zips = $orderedZips;
-        }
-
-
+        // ...
     }
 
+    function test_lang_detector()
+    {
+        $str = '
+        BRIDGE es un tema de WordPress multipropósito de retina responsivo perfecto para casi cualquier tipo de sitio web.
+        ';
 
+        dd(
+            LangDetector::is($str, 'en'), 'Is English'
+        );
+
+        dd(
+            LangDetector::is($str, 'es'), 'Is Spanish'
+        );
+    }
 
 
 }   // end class
