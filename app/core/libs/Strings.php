@@ -1110,6 +1110,40 @@ class Strings
 		return $match_arr[0];
 	}
 
+	static function getWords(string $str){
+		// Reemplazar múltiples espacios, tabuladores y signos de puntuación con un espacio
+		$str = preg_replace('/\s+|[\p{P}]+/u', ' ', $str);
+
+		// Convertir el texto a minúsculas
+		$str = strtolower($str);
+	
+		// Dividir el texto en palabras
+		$words = explode(' ', $str);
+	
+		// Eliminar palabras vacías o que solo contengan espacios
+		$words = array_filter($words, function($palabra) {
+			return trim($palabra) !== '';
+		});
+	
+		// Devolver el array de palabras
+		return $words;
+	}
+
+	// alias
+	static function words(string $str){
+		return static::getWords($str);
+	}
+
+	static function wordsCount(string $str, bool $unique = false){
+		$words = static::getWords($str);
+		
+		if ($unique){
+			$words = array_unique($words);
+		}
+
+		return count($words);
+	}
+
 	/*
 		Revise el DOM y acorte los textos utilizando el metodo getUpToNWords() 
 		listado mas abajo a $n_words palabras 
