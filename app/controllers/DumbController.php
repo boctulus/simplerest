@@ -15,7 +15,6 @@ use simplerest\core\Request;
 use simplerest\core\libs\Env;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Xml;
-use simplerest\core\libs\Zip;
 use simplerest\core\Container;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
@@ -98,6 +97,7 @@ use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\core\libs\ZipManager;
 
 class DumbController extends Controller
 {
@@ -3704,7 +3704,7 @@ class DumbController extends Controller
         $ori = '/home/www/html/pruebas/drag';
         $dst = '/home/feli/Desktop/UPDATE/drag.zip';
 
-        Zip::zip($ori, $dst, [
+        ZipManager::zip($ori, $dst, [
             'file_to_be_ignored.txt',
             "$ori/jquery-ui-1.12.1.custom"
         ]);
@@ -7838,7 +7838,7 @@ class DumbController extends Controller
         $file = ETC_PATH . 'Livemesh Addons for Elementor Premium v7.2.4.zip';
 
         dd(
-            Zip::unzip($file, ETC_PATH . 'test')
+            ZipManager::unzip($file, ETC_PATH . 'test')
         );
     }
     
@@ -7863,6 +7863,53 @@ class DumbController extends Controller
 
         // true
         dd($result, 'RESULT');
+    }
+
+
+    function test_idea(){
+        $zips = Array
+        (
+            'D:\www\woo2\wp-content\plugins\betheme-premium-wordpress-theme\betheme-child.zip',
+            'D:\www\woo2\wp-content\plugins\betheme-premium-wordpress-theme\betheme.zip',
+            'D:\www\woo2\wp-content\plugins\betheme-premium-wordpress-theme\betheme-otro-child.zip'
+        );
+
+        if (count($zips) > 1){
+            $first = null;
+            $after = [];
+            foreach ($zips as $ix => $zip){
+                if (Strings::contains('child', $zip)){
+                    $after[] = $ix;
+                }
+            }
+
+            $_all   = range(0, count($zips)-1);
+            $before = array_diff($_all, $after);
+
+            $first = null;
+            $shortestLength = PHP_INT_MAX;
+            foreach ($before as $index) {
+                $length = strlen($zips[$index]);
+                if ($length < $shortestLength) {
+                    $shortestLength = $length;
+                    $first = $index;
+                }
+            }
+
+            $after = array_diff($_all, [$first]);
+
+            $order = [$first, ...$after]; 
+            dd($order); // 1 0 2 
+
+            $orderedZips = [];
+            foreach ($order as $index) {
+                $orderedZips[] = $zips[$index];
+            }
+
+            $zips = $orderedZips;
+        }
+
+
     }
 
 
