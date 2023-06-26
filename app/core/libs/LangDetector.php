@@ -2,31 +2,34 @@
 
 namespace simplerest\core\libs;
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
+/*
+    @author Pablo Bozzolo < boctulus@gmail.com >
+*/
+
+use simplerest\core\libs\Strings;
 
 class LangDetector
 {
-    protected $common_words = [
+    protected static $common_words = [
         'en' => [
             'in', 'on', 'at', 'to', 'for', 'by', 'with', 'from', 'about', 'against', 'between',
             'through', 'during', 'before', 'after', 'above', 'below', 'over', 'under', 'down', 
             'up', 'with', 'of', 'and', 'best', 'only', 'are', 'will', 'able', 'have', 'had', 'get',
             'that', 'most', 'was', 'were', 'which', 'each', 'more', 'less', 'make', 'made', 'does', 
-            'like', 'your', 'been', 'all', 'into', 'take', 'since', 'buy', 'sell', 'solution'
+            'like', 'your', 'been', 'all', 'going', 'into', 'take', 'since', 'buy', 'sell', 'free', 
+            'solution'
         ],
         'es' => [
             'bajo', 'con', 'contra', 'desde', 'hacia', 'hasta', 'para', 'mediante', 'una', 'este', 
             'del', 'esta', 'como', 'menos', 'cierto', 'gratis', 'más', 'fácil', 'crear', 'cantidad', 'solo',
             'muy', 'mucho', 'mucha', 'muchos', 'muchas', 'tipo', 'cualquier', 'cualquiera', 'poder', 'hacer',
-            'crecer', 'gran', 'sitio', 'puede', 'permite', 'permitir', 'tienda', 'comercio' 
+            'casi', 'poco', 'crecer', 'gran', 'sitio', 'puede', 'permite', 'permitir', 'tienda', 'comercio' 
         ]
     ];
 
-    protected $common_word_groups = [
+    protected static $common_word_groups = [
         'en' => [
-            'is an', 'is a'
+            'is an', 'is a', 'are the', 'middle of', 'kind of', 'for free'
         ],
         'es' => [
             'es un', 'es una', 'son las', 'es la', 'por lo tanto', 'por medio', 'en la', 'en el',
@@ -34,8 +37,38 @@ class LangDetector
         ]
     ];
 
+    static function langs(){
+        return array_keys(static::$common_words);
+    }
+
+    /*
+        Retorna un score de 0 a 100 con una "probabilidad" estimada
+        de que el texto este escrito en cierto idioma
+    */
     static function is(string $str, string $lang){
-       
+        if (!in_array($lang, static::langs())){
+            throw new \InvalidArgumentException("Language is not supported");
+        }
+
+        $score = 0;
+        foreach(static::$common_word_groups[$lang] as $word){
+            if (Strings::contains($word, $str, false)){
+                $score += 49;
+            }
+        }
+
+        $word_count = Strings::wordsCount($str);
+
+        $word_score = 0;
+        foreach(static::$common_words[$lang] as $word){
+            if (Strings::containsWord($word, $str, false)){
+                $word_score += 1;
+            }
+        }
+
+        $score += round(100 * ($word_score / $word_count));
+        
+        return min($score, 100);
     } 
 
 
