@@ -14,26 +14,32 @@ class LangDetector
         'en' => [
             'in', 'on', 'at', 'to', 'for', 'by', 'with', 'from', 'about', 'against', 'between',
             'through', 'during', 'before', 'after', 'above', 'below', 'over', 'under', 'down', 
-            'up', 'with', 'of', 'and', 'best', 'only', 'are', 'will', 'able', 'have', 'had', 'get',
-            'that', 'most', 'was', 'were', 'which', 'each', 'more', 'less', 'make', 'made', 'does', 
-            'like', 'your', 'been', 'all', 'going', 'into', 'take', 'since', 'buy', 'sell', 'free', 
-            'solution'
+            'up', 'with', 'of', 'and', 'or', 'best', 'only', 'is', 'are', 'will', 'able', 'have', 'had', 
+            'get', 'that', 'most', 'was', 'were', 'each', 'more', 'less', 'make', 'made', 
+            'does', 'like', 'your', 'been', 'all', 'going', 'into', 'take', 'since', 'buy', 'sell', 
+            'but', 'this', 'that', 'free', 'type', 'allow', 'allows', 'solution', 'add', 'adds',
+            'which', 'where', 'who', 'how', 'if',
+            'big', 'small', 'very', 'give', 'gives'
         ],
+
         'es' => [
             'bajo', 'con', 'contra', 'desde', 'hacia', 'hasta', 'para', 'mediante', 'una', 'este', 
             'del', 'esta', 'como', 'menos', 'cierto', 'gratis', 'más', 'fácil', 'crear', 'cantidad', 'solo',
             'muy', 'mucho', 'mucha', 'muchos', 'muchas', 'tipo', 'cualquier', 'cualquiera', 'poder', 'hacer',
-            'casi', 'poco', 'crecer', 'gran', 'sitio', 'puede', 'permite', 'permitir', 'tienda', 'comercio' 
+            'casi', 'poco', 'crecer', 'gran', 'sitio', 'puede', 'permite', 'permitir', 'y', 'o', 'de', 'del',
+            'que', 'cual', 'quien', 'donde', 'cuando', 'si', 'su', 'sus'
         ]
     ];
 
     protected static $common_word_groups = [
         'en' => [
-            'is an', 'is a', 'are the', 'middle of', 'kind of', 'for free'
+            'is an', 'is a', 'are the', 'middle of', 'kind of', 'type of', 'for free', 'for any', 'is the', 
+            'are the', 'it is', "it's"
         ],
+
         'es' => [
             'es un', 'es una', 'son las', 'es la', 'por lo tanto', 'por medio', 'en la', 'en el',
-            'de la', 'de los', 'de las'
+            'de la', 'de los', 'de las', 'con una', 'con unas', 'que le', 'que les', 'tipo de', 'ya que'
         ]
     ];
 
@@ -44,6 +50,23 @@ class LangDetector
     /*
         Retorna un score de 0 a 100 con una "probabilidad" estimada
         de que el texto este escrito en cierto idioma
+
+        Luego se puede escribir una regla de desicion adaptada al contexto
+
+        Ej:
+
+        $en_score = LangDetector::is($str, 'en');
+        $es_score = LangDetector::is($str, 'es');
+
+        if ($es_score == 0 && $en_score == 0){
+            $lang = '??';
+        } else {
+            if ($es_score >= $en_score){
+                $lang = 'es';
+            } elseif ($en_score > $es_score) {
+                $lang = 'en';
+            }
+        }          
     */
     static function is(string $str, string $lang){
         if (!in_array($lang, static::langs())){
