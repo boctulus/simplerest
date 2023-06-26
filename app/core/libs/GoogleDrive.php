@@ -230,14 +230,25 @@ class GoogleDrive
                 if (FileCache::expired(filemtime($destination), $expiration_time)){
                     unlink($destination);
                 } else {
-                    //dd("Using cache for $id ...");
+                    dd("Using cache for $id ...");
 
                     return true;
                 }
             }
         }
 
-        //dd("Downloading $id ...");
+        if ($micro_seconds === null){
+            $micro_seconds = rand(10, 45) * rand(900000, 1000000);
+        }
+
+        static $downloads_in_a_row;
+        
+        if ($downloads_in_a_row === null){
+            $downloads_in_a_row = 0;
+        }
+
+        dd("Downloading $id ...");
+
 
         $service = $this->__getDriveService();
         
@@ -262,10 +273,22 @@ class GoogleDrive
             
             fclose($fileHandle);
 
-            if (!empty($micro_seconds)){
-                usleep($micro_seconds);
-            }
+            $downloads_in_a_row++;
+            dd($downloads_in_a_row, "Downloads in a row");
 
+            // Cada 10 downloads, hago una pausa
+            if ($downloads_in_a_row % 10 === 0){
+                dd("Taking a nap ...");
+
+                sleep(60 * rand(10, 14));
+                usleep(rand(500000, 1000000));
+            } else {
+                // Sino aplico la pausa especificada
+                if (!empty($micro_seconds)){
+                    usleep($micro_seconds);
+                }
+            }
+          
             return true;
         } catch (\Exception $e) {  
             $err_msg = $e->getMessage();
@@ -275,6 +298,10 @@ class GoogleDrive
                 'your computer or network may be sending automated queries',
                 'support.google.com/websearch/answer/'
             ], $err_msg);    
+
+            if ($fatal_error){
+                $downloads_in_a_row = 0;
+            }
             
             if ($throw || $fatal_error){
                 if (Strings::contains('<html>', $err_msg)){
