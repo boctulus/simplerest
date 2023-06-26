@@ -27,36 +27,37 @@ use simplerest\core\Paginator;
 
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Utils;
 
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
+
 use simplerest\core\libs\Logger;
 
 use simplerest\core\libs\Schema;
-
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
 use simplerest\core\libs\DBCache;
-use simplerest\core\libs\Numbers;
 
+use simplerest\core\libs\Numbers;
 use simplerest\core\libs\Strings;
+
 use Spatie\ArrayToXml\ArrayToXml;
 
 use simplerest\core\libs\Factory;;
 
 use simplerest\core\libs\Hardware;
-
 use simplerest\core\libs\JobQueue;
-use simplerest\models\az\BarModel;
 
+use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\FileCache;
+
 use simplerest\core\libs\Reflector;
 
 use simplerest\core\libs\Validator;
-
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
@@ -65,20 +66,20 @@ use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\SimpleCrypt;
-use simplerest\core\libs\FileUploader;
 
+use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
 use Endroid\QrCode\Label\Font\NotoSans;
-use simplerest\core\libs\i18n\POParser;
 
+use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
-use simplerest\core\api\v1\ApiController;
 
+use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\ValidationRules;
@@ -92,8 +93,8 @@ use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\libs\scrapers\LeroyMerlinScraper;
 
+use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
@@ -7881,7 +7882,7 @@ class DumbController extends Controller
     function test_lang_detector()
     {
         $str = '
-        BRIDGE es un tema de WordPress multipropósito de retina responsivo perfecto para casi cualquier tipo de sitio web.
+        PublishPress is the plugin for managing and scheduling WordPress content. They include a content calendar, notifications and customized statuses.
         ';
 
         dd(
@@ -7891,6 +7892,114 @@ class DumbController extends Controller
         dd(
             LangDetector::is($str, 'es'), 'Is Spanish'
         );
+    }
+
+
+    function test_lang_detector_2()
+    {
+        $lang = 'en';
+
+        $filename = 'D:\Desktop\MUTAWP PLUGINS - FERNANDO AR\JSONs\products-all-lang.json';
+        $file = Files::getContent($filename);
+
+        $data = json_decode($file, true);
+        $rows = $data['data']['products'];
+
+        // Primero, creamos un nuevo array para almacenar los productos agrupados por 'title'
+        $groupedRows = [];
+
+        foreach ($rows as $row) {
+            // Obtenemos el título del producto actual
+            $title = $row['title'];
+
+            // Verificamos si el título ya está presente como clave en el array $groupedRows
+            if (array_key_exists($title, $groupedRows)) {
+                // Si ya existe, agregamos el producto actual al array existente
+                $groupedRows[$title][] = $row;
+            } else {
+                // Si el título no está presente como clave, creamos una nueva clave y agregamos el primer producto con ese título
+                $groupedRows[$title] = [$row];
+            }
+        }
+
+
+        $rows = [];
+
+        // Ahora, $groupedRows contiene los productos agrupados por el mismo valor de 'title'
+        foreach ($groupedRows as $title => $group) {
+
+            if (count($group) == 1){
+                $en_score = 0;
+                $es_score = 0;
+
+                if (!empty($row['_desc'])){
+                    $str = $row['_desc'];
+
+                    $en_score += LangDetector::is($str, 'en');
+                    $es_score += LangDetector::is($str, 'es');
+                }
+
+                if (!empty($row['short_desc'])){
+                    $str = $row['short_desc'];
+                    
+                    $en_score += LangDetector::is($str, 'en');
+                    $es_score += LangDetector::is($str, 'es');
+                }
+
+                if ($es_score == 0 && $en_score == 0){
+                    $_lang = 'xx';
+                } else {
+                    if ($es_score >= $en_score){
+                        $_lang = 'es';
+                    } elseif ($en_score > $es_score) {   
+                        $_lang = 'en';
+                    } 
+                } 
+
+                if (!empty($lang) && $lang == $_lang){
+                    $rows[] = $row;
+                }   
+
+                continue;
+            }
+
+            foreach ($group as $row){
+
+                $en_score = 0;
+                $es_score = 0;
+
+                if (!empty($row['_desc'])){
+                    $str = $row['_desc'];
+
+                    $en_score += LangDetector::is($str, 'en');
+                    $es_score += LangDetector::is($str, 'es');
+                }
+
+                if (!empty($row['short_desc'])){
+                    $str = $row['short_desc'];
+                    
+                    $en_score += LangDetector::is($str, 'en');
+                    $es_score += LangDetector::is($str, 'es');
+                }
+
+                if ($es_score == 0 && $en_score == 0){
+                    $_lang = 'xx';
+                } else {
+                    if ($es_score >= $en_score){
+                        $_lang = 'es';
+                    } elseif ($en_score > $es_score) {   
+                        $_lang = 'en';
+                    } 
+                } 
+
+                if (!empty($lang) && $lang == $_lang){
+                    $rows[] = $row;
+                }   
+            }
+        }
+
+        dd($rows);
+
     }
 
 
