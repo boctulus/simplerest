@@ -221,7 +221,7 @@ class GoogleDrive
         // true
         dd($result, 'RESULT');
      */
-    function download(string $link_or_id, string $destination, bool $throw = false, $expiration_time = null): bool
+    function download(string $link_or_id, string $destination, bool $throw = false, $expiration_time = null, $micro_seconds = null): bool
     {       
         $id = $this->getId($link_or_id);
 
@@ -230,10 +230,14 @@ class GoogleDrive
                 if (FileCache::expired(filemtime($destination), $expiration_time)){
                     unlink($destination);
                 } else {
+                    //dd("Using cache for $id ...");
+
                     return true;
                 }
             }
         }
+
+        //dd("Downloading $id ...");
 
         $service = $this->__getDriveService();
         
@@ -258,10 +262,26 @@ class GoogleDrive
             
             fclose($fileHandle);
 
+            if (!empty($micro_seconds)){
+                usleep($micro_seconds);
+            }
+
             return true;
-        } catch (\Exception $e) {           
-            if ($throw){
-                throw new \Exception($e->getMessage());
+        } catch (\Exception $e) {  
+            $err_msg = $e->getMessage();
+
+            $fatal_error = Strings::containsAny([
+                '<html>',
+                'your computer or network may be sending automated queries',
+                'support.google.com/websearch/answer/'
+            ], $err_msg);    
+            
+            if ($throw || $fatal_error){
+                if (Strings::contains('<html>', $err_msg)){
+                    $err_msg = XML::HTML2Text($err_msg);
+                }
+
+                throw new \Exception($err_msg);
             }
 
             return false;
