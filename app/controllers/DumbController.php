@@ -7917,6 +7917,11 @@ class DumbController extends Controller
             D:\www\woo2\wp-content\plugins\wp_runa\views\cotizador.php
         
         y sobre esas, buscar las reglas de CSS para cada archivo
+
+        En vez de buscar las reglas en un directorio es mejor scrapear los archivos .css
+        referenciados en el rendering de la pagina 
+
+        Ademas debe obtenerse todo CSS incrustado mediante <style> de esa misma pagina
     */
     function get_css_rules(){
         System::setMemoryLimit('2048M');

@@ -16,6 +16,17 @@ class Files
 	const SLASHES 		  = ['/', '\\'];
 
 	/*
+		Chequea si una ruta existe
+	*/
+	static function exists(string $path){
+		if (strlen($path) > 4096){
+			return false;
+		}
+
+		return file_exists($path);
+	}
+
+	/*
 		Fuerza la descarga del archivo
 	*/
 	static function download($file){
