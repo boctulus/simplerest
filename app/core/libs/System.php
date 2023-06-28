@@ -218,6 +218,11 @@ class System
         return ini_get('memory_limit');
     }
 
+    /*
+        Ej:
+
+        setMemoryLimit('768M');
+    */
     static function setMemoryLimit(string $limit)
     {
         if (!static::isINIChangeable('memory_limit')){
