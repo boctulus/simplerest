@@ -13,6 +13,8 @@ use Sabberworm\CSS\Parser;
 class CSSUtils {
     
     /*
+        @param  string $css    CSS en si o la ruta al archivo .css
+
         Ej:
 
         $path = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css';
@@ -21,8 +23,12 @@ class CSSUtils {
             CSSUtils::beautifier($path)
         );
     */
-    static function beautifier(string $path) {
-        $parser = new Parser(file_get_contents($path));
+    static function beautifier(string $css) {
+        if (Url::isValid($css) || (Strings::endsWith('.css', $css) && Files::exists($css))){
+            $css = file_get_contents($css);
+        }
+
+        $parser = new Parser($css);
 
         $css            = $parser->parse();
         $desminifiedCSS = $css->render();

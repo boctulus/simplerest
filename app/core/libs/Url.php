@@ -2,10 +2,19 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 
 class Url
 {
+    static function isValid(string $url){
+        if (!Strings::startsWith('http://', $url) && !Strings::startsWith('https://', $url)){
+            return false;
+        }
+
+        return filter_var($url, FILTER_VALIDATE_URL);
+    }
+
     /*
         Obtiene la url final luego de redirecciones
 
