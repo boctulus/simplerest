@@ -7895,18 +7895,6 @@ class DumbController extends Controller
         );
     }
 
-
-   function test_get_css(){
-        $html = '<div class="container">
-            <h1 class="title headline">Hello, World!</h1>
-            <p class="description">This is a sample paragraph.</p>
-        </div>';
-
-        $cssClasses = XML::getCSSClasses($html);
-        dd($cssClasses);
-    }
-
-
     function css_beautifier(){
         $path = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css';
 
@@ -7915,13 +7903,31 @@ class DumbController extends Controller
         );
     }
 
+   function test_get_css(){
+        $html = Files::getContent('D:\www\woo2\wp-content\plugins\wp_runa\views\contact_form.php');
+
+        $cssClasses = XML::getCSSClasses($html);
+        dd($cssClasses);
+    }
+
+    /*
+        Para "RUNA" obtener las clases con XML::getCSSClasses() de CSS de:
+
+            D:\www\woo2\wp-content\plugins\wp_runa\views\contact_form.php
+            D:\www\woo2\wp-content\plugins\wp_runa\views\cotizador.php
+        
+        y sobre esas, buscar las reglas de CSS para cada archivo
+    */
     function get_css_rules(){
-        $path = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css';
+        System::setMemoryLimit('2048M');
+
+        $path        = 'D:\Desktop\OMAR FUENTES\RUNA\test';   
+        // $path        = 'D:\www\D:\Desktop\OMAR FUENTES\RUNA\testwoo2\wp-content\themes\kadence\assets\css\slider.min.css';
         $css_classes = ['tns-slider', 'tns-item'];
 
-        $matchingRules = CSSUtils::getCSSRules($path, $css_classes);
+        $css_rules   = CSSUtils::getCSSRules($path, $css_classes);
 
-        dd($matchingRules);
+        dd($css_rules);
     }
 
 }   // end class
