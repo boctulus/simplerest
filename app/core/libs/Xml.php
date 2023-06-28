@@ -1361,6 +1361,21 @@ class XML
 		return $page;
 	}
 
+    static function getCSSClasses(string $html) {
+        $dom = static::getDocument($html);
+
+        $xpath = new \DOMXPath($dom);
+        $classNodes = $xpath->query('//*[@class]');
+
+        $cssClasses = array();
+        foreach ($classNodes as $node) {
+            $classes = explode(' ', $node->getAttribute('class'));
+            $cssClasses = array_merge($cssClasses, $classes);
+        }
+
+        $cssClasses = array_unique($cssClasses);
+        return $cssClasses;
+    }
    
 }
 
