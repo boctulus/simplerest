@@ -432,11 +432,17 @@ class Strings
 		@param bool $empty_lines
 	*/
 	static function lines(?string $str, bool $trim = false, bool $empty_lines = true){
-		if ($str == null){
+		if (empty($str)){
 			return [];
 		}
 
-		$lines = explode(static::carriageReturn($str), $str);
+		$cr = static::carriageReturn($str);
+		
+		if (empty($cr)){
+			return [ $str ];
+		}
+
+		$lines = explode($cr, $str);
 
 		if (!$empty_lines){
 			foreach ($lines as $ix => $line){
