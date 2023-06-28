@@ -45,18 +45,19 @@ use simplerest\core\libs\Strings;
 
 use Spatie\ArrayToXml\ArrayToXml;
 
+use simplerest\core\libs\CSSUtils;
+
 use simplerest\core\libs\Factory;;
-
 use simplerest\core\libs\Hardware;
-use simplerest\core\libs\JobQueue;
 
+use simplerest\core\libs\JobQueue;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
+
 use simplerest\core\libs\FileCache;
 
 use simplerest\core\libs\Reflector;
-
 use simplerest\core\libs\Validator;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
@@ -65,20 +66,20 @@ use simplerest\core\libs\Supervisor;
 use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
-use simplerest\core\libs\SimpleCrypt;
 
+use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
-use Endroid\QrCode\Label\Font\NotoSans;
 
+use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
-use simplerest\libs\LaravelApiGenerator;
 
+use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\HtmlBuilder\Tag;
@@ -92,8 +93,8 @@ use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
 
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
@@ -7895,112 +7896,32 @@ class DumbController extends Controller
     }
 
 
-    function test_lang_detector_2()
-    {
-        $lang = 'en';
+   function test_get_css(){
+        $html = '<div class="container">
+            <h1 class="title headline">Hello, World!</h1>
+            <p class="description">This is a sample paragraph.</p>
+        </div>';
 
-        $filename = 'D:\Desktop\MUTAWP PLUGINS - FERNANDO AR\JSONs\products-all-lang.json';
-        $file = Files::getContent($filename);
-
-        $data = json_decode($file, true);
-        $rows = $data['data']['products'];
-
-        // Primero, creamos un nuevo array para almacenar los productos agrupados por 'title'
-        $groupedRows = [];
-
-        foreach ($rows as $row) {
-            // Obtenemos el título del producto actual
-            $title = $row['title'];
-
-            // Verificamos si el título ya está presente como clave en el array $groupedRows
-            if (array_key_exists($title, $groupedRows)) {
-                // Si ya existe, agregamos el producto actual al array existente
-                $groupedRows[$title][] = $row;
-            } else {
-                // Si el título no está presente como clave, creamos una nueva clave y agregamos el primer producto con ese título
-                $groupedRows[$title] = [$row];
-            }
-        }
-
-
-        $rows = [];
-
-        // Ahora, $groupedRows contiene los productos agrupados por el mismo valor de 'title'
-        foreach ($groupedRows as $title => $group) {
-
-            if (count($group) == 1){
-                $en_score = 0;
-                $es_score = 0;
-
-                if (!empty($row['_desc'])){
-                    $str = $row['_desc'];
-
-                    $en_score += LangDetector::is($str, 'en');
-                    $es_score += LangDetector::is($str, 'es');
-                }
-
-                if (!empty($row['short_desc'])){
-                    $str = $row['short_desc'];
-                    
-                    $en_score += LangDetector::is($str, 'en');
-                    $es_score += LangDetector::is($str, 'es');
-                }
-
-                if ($es_score == 0 && $en_score == 0){
-                    $_lang = 'xx';
-                } else {
-                    if ($es_score >= $en_score){
-                        $_lang = 'es';
-                    } elseif ($en_score > $es_score) {   
-                        $_lang = 'en';
-                    } 
-                } 
-
-                if (!empty($lang) && $lang == $_lang){
-                    $rows[] = $row;
-                }   
-
-                continue;
-            }
-
-            foreach ($group as $row){
-
-                $en_score = 0;
-                $es_score = 0;
-
-                if (!empty($row['_desc'])){
-                    $str = $row['_desc'];
-
-                    $en_score += LangDetector::is($str, 'en');
-                    $es_score += LangDetector::is($str, 'es');
-                }
-
-                if (!empty($row['short_desc'])){
-                    $str = $row['short_desc'];
-                    
-                    $en_score += LangDetector::is($str, 'en');
-                    $es_score += LangDetector::is($str, 'es');
-                }
-
-                if ($es_score == 0 && $en_score == 0){
-                    $_lang = 'xx';
-                } else {
-                    if ($es_score >= $en_score){
-                        $_lang = 'es';
-                    } elseif ($en_score > $es_score) {   
-                        $_lang = 'en';
-                    } 
-                } 
-
-                if (!empty($lang) && $lang == $_lang){
-                    $rows[] = $row;
-                }   
-            }
-        }
-
-        dd($rows);
-
+        $cssClasses = XML::getCSSClasses($html);
+        dd($cssClasses);
     }
 
+
+    function css_beautifier(){
+        $path = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css';
+
+        dd(
+            CSSUtils::beautifier($path)
+        );
+    }
+
+    function get_css_rules(){
+        $path = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css';
+        $css_classes = ['tns-slider', 'tns-item'];
+
+        $matchingRules = CSSUtils::getCSSRules($path, $css_classes);
+
+        dd($matchingRules);
+    }
 
 }   // end class
