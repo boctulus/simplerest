@@ -7,6 +7,18 @@ use simplerest\core\libs\ApiClient;
 
 class Url
 {
+    static function inArray(array $links, $link) {
+        foreach ($links as $existingLink) {
+            $existingLinkId = parse_url($existingLink, PHP_URL_QUERY);
+            $linkId = parse_url($link, PHP_URL_QUERY);
+
+            if ($existingLinkId === $linkId) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     static function isValid(string $url){
         if (!Strings::startsWith('http://', $url) && !Strings::startsWith('https://', $url)){
             return false;

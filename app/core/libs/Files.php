@@ -259,14 +259,36 @@ class Files
 		return $path;
 	}
 
-	static function glob(string $path, string $pattern, $flags = 0){
+	/*
+		Ej:
+
+		$zips    = Files::glob($ori, '*.zip');
+		$entries = Files::glob($content_dir, '*', GLOB_ONLYDIR, '__MACOSX');
+	*/
+	static function glob(string $path, string $pattern, $flags = 0, $exclude = null){
 		$last_char = Strings::lastChar($path);
 
 		if ($last_char != '/' && $last_char != '\\'){
 			$path .= DIRECTORY_SEPARATOR;
 		}
 
-		return glob($path . $pattern, $flags);
+		$entries = glob($path . $pattern, $flags);
+
+		if (!empty($exclude)){
+			if (!is_array($exclude)){
+				$exclude = [ $exclude ];
+			}
+
+			foreach ($entries as $ix => $entry){
+				$filename = basename($entry);
+				
+				if (in_array($filename, $exclude)){
+					unset($entries[$ix]);
+				}
+			}
+		}
+
+		return $entries;
 	}
 
 	// https://stackoverflow.com/a/17161106/980631
