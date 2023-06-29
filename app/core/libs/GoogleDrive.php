@@ -52,7 +52,7 @@ class GoogleDrive
     }
 
     protected function getId(string $link_or_id){
-        if (Strings::startsWith('https://docs.google.com/', $link_or_id)){
+        if (Strings::startsWith('https://', $link_or_id)){
             $id = Url::getQueryParam($link_or_id, 'id');
         } else {
             $id = $link_or_id;
@@ -280,7 +280,20 @@ class GoogleDrive
             if ($downloads_in_a_row % 10 === 0){
                 dd("Taking a nap ...");
 
-                sleep(60 * rand(10, 14));
+                sleep(60 * rand(12, 15));
+                usleep(rand(500000, 1000000));
+            } else {
+                // Sino aplico la pausa especificada
+                if (!empty($micro_seconds)){
+                    usleep($micro_seconds);
+                }
+            }
+
+            // Cada 10 downloads, hago una pausa cada 33 downloads
+            if ($downloads_in_a_row % 33 === 0 && $downloads_in_a_row % 99 !== 0){
+                dd("Taking a nap ...");
+
+                sleep(60 * rand(12, 15));
                 usleep(rand(500000, 1000000));
             } else {
                 // Sino aplico la pausa especificada
