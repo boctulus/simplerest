@@ -6,6 +6,11 @@ use simplerest\core\libs\XML;
 
 class Strings 
 {	
+	static $regex = [
+		'URL'	=> "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
+		// ...
+	];
+
 	/*
 		Extrae la parte numerica de una cadena que contenga una cantidad
 		y la castea a un float
@@ -725,8 +730,21 @@ class Strings
 	/*
 		Returns false if fails
 
-		$pattern can be an Array
-		$result_position can be an Array 
+		@param 	string|array 	$pattern
+		@param	string|array	$result_position
+
+		@return string|boolean
+
+		Ej:
+
+		$namespace = Strings::match($file_str, '/namespace[ ]{1,}([^;]+)/');
+		$table     = Strings::match($raw_sql, '/insert[ ]+(ignore[ ]+)?into[ ]+[`]?([a-z_]+[a-z0-9]?)[`]? /i', 2);
+
+		Si $pattern es un array, busca coindicencias con cada patron 
+
+		Nota: esta funcion deberia ser revisda (!)
+		
+		Tener en cuenta las dependencias de esta funcion.
 	*/
 	static function match(string $str, $pattern, $result_position = null){
 		if (is_array($pattern)){
@@ -773,16 +791,30 @@ class Strings
 		return false;
 	}
 
-	static function matchOrFail(string $str, string $pattern, string $error_msg = null) { 
-		if (preg_match($pattern, $str, $matches)){			
+	/*
+		Ej:
+
+		$id = static::matchOrFail($filename, '/installation-file-([0-9]+)\.zip$/');
+	*/
+	static function matchOrFail(string $str, string $pattern, $flags = 0, $offset = 0) { 
+		if (preg_match($pattern, $str, $matches, $flags, $offset)){			
 			return $matches[1];
 		}
 
-		if (empty($error_msg)){
-			$error_msg = "String $str does not match with $pattern";
+		throw new \Exception("String $str does not match with $pattern");
+	}
+
+	/*
+		Ej:
+
+		Strings::matchAll($str, Strings::$regex['URL']);
+	*/
+	static function matchAll(string $str, string $pattern, $flags = 0, $offset = 0) { 
+		if (preg_match_all($pattern, $str, $matches, $flags, $offset)){			
+			return $matches;
 		}
 
-		throw new \Exception($error_msg);
+		return false;
 	}
 
 	static function ifMatch(string $str, $pattern, callable $fn_success, callable $fn_fail = NULL){
