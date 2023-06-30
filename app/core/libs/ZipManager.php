@@ -4,6 +4,12 @@ namespace simplerest\core\libs;
 
 class ZipManager 
 {
+    static $include_macosx_dir = true;
+
+    static function setIncludeMacOSXDir(bool $include = false) {
+        static::$include_macosx_dir = $include;
+    }
+
     /*
         https://stackoverflow.com/a/1334949/980631
 
@@ -125,7 +131,7 @@ class ZipManager
         } else {
             $destination_folder = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('unzip_');
         }
-
+    
         // Verificar si la extensión ZipArchive está disponible
         if (extension_loaded('zip')) {
             $zip = new \ZipArchive();
@@ -134,25 +140,35 @@ class ZipManager
             if ($zip->open($file_path) !== true) {
                 throw new \Exception("ZIP file was unable to be opened");                
             }
-
+    
             $extraction_folder = rtrim($zip->getNameIndex(0), '/');
             $extraction_folder = Strings::beforeIfContains($extraction_folder, '/'); // parche -probado en Windows-
-
+            $extraction_folder = trim($extraction_folder);
+    
             // Extraer los archivos en la carpeta de destino
             $zip->extractTo($destination_folder);
             $zip->close();
-
+    
             if ($verify && !static::verifyUnzip($file_path, $destination)){
-                throw new \Exception("Uncompression failled or finish with errors");                    
+                throw new \Exception("Uncompression failed or finished with errors");                    
             }
-            
+    
+            if (static::$include_macosx_dir === false) {
+                // Eliminar la carpeta "__MACOSX" si existe en la ruta de destino
+                $macosx_dir = $destination_folder . '__MACOSX';
+
+                if (is_dir($macosx_dir)) {
+                    Files::delTree($macosx_dir, true);
+                }
+            }
+
             // Retornar la ruta de la carpeta de destino
             return $extraction_folder;
         }
         
         // Verificar si el comando unzip está disponible
         if (self::isUnzipCommandAvailable()) {
-            // ....
+            // ...
         }
         
         // Lanzar excepción si ninguna opción está disponible

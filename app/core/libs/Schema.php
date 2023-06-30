@@ -99,12 +99,28 @@ class Schema
 		return $row[0]['Field'];
 	}
 
-	// Válido para MySQL, en un solo sentido: presentes en / hacia la tabla
+	 /**
+     * Obtiene las columnas que representan claves foráneas en una tabla específica o en toda la base de datos.
+	 * 
+	 * Válido para MySQL, en un solo sentido: presentes en / hacia la tabla
+     *
+     * @param string|null $table      El nombre de la tabla para la cual se desean obtener las columnas que representan claves foráneas.
+     *                                Si no se especifica, se obtendrán las columnas de todas las tablas en la base de datos.
+	 * 
+     * @param bool        $not_table  Indica si se desean obtener las columnas que NO representan claves foráneas en lugar de las que sí lo hacen.
+     *                                El valor predeterminado es false, lo que significa que se obtendrán las columnas que representan claves foráneas.
+	 * 
+     * @param string|null $db         El nombre de la base de datos en la que se encuentran las tablas.
+     *                                Si no se especifica, se utilizará la base de datos actual.
+     *
+     * @return array  Un arreglo que contiene los nombres de las columnas que representan claves foráneas.
+     */
 	static function getFKs(string $table = null, bool $not_table = false, ?string $db = null)
 	{
+		DB::getConnection();
+
 		if ($db == null){
-			DB::getConnection();
-        	$db  = DB::database();
+        	$db = DB::database();
 		}		
 		
         $sql = "SELECT COLUMN_NAME FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` 
@@ -117,7 +133,7 @@ class Schema
 
 		$sql .= "ORDER BY `REFERENCED_COLUMN_NAME`;";
 
-        $cols = Model::query($sql);
+        $cols = DB::select($sql);
 		$fks  = array_column($cols, 'COLUMN_NAME');
 
 		return $fks;
@@ -126,8 +142,9 @@ class Schema
 	// Válido para MySQL, en un solo sentido
 	static function getRelations(string $table = null, bool $not_table = false, string $db = null)
 	{
-		if ($db == null){
-			DB::getConnection();
+		DB::getConnection();
+
+		if ($db == null){			
         	$db  = DB::database();
 		}		
 		
@@ -141,7 +158,7 @@ class Schema
 
 		$sql .= "ORDER BY `REFERENCED_COLUMN_NAME`;";
 
-        $rels = Model::query($sql);
+        $rels = DB::select($sql);
         
         $relationships = [];
         foreach($rels as $rel){
@@ -443,9 +460,11 @@ class Schema
 
 	static function hasTable(string $tb_name, string $db_name = null)
 	{	
+		DB::getConnection();
+
 		switch (DB::driver()){
 			case 'sqlite':
-				$res = Model::query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='$tb_name';");	
+				$res = DB::select("SELECT 1 FROM sqlite_master WHERE type='table' AND name='$tb_name';");	
 				return (!empty($res));
 
 			case 'mysql':
