@@ -877,6 +877,25 @@ class Files
 
 		return $ok;
 	}
+
+	// chatGPT alternative to delTree()
+	static function deleteDirectory(string $dir) {
+		if (!is_dir($dir)) {
+			return;
+		}
+	
+		$files = array_diff(scandir($dir), array('.', '..'));
+		foreach ($files as $file) {
+			$path = $dir . '/' . $file;
+			if (is_dir($path)) {
+				self::deleteDirectory($path);
+			} else {
+				unlink($path);
+			}
+		}
+	
+		rmdir($dir);
+	}
 	
 	static function mkDirOrFail(string $dir, int $permissions = 0777, $recursive = true, string $error = "Failed trying to create %s"){
 		$ok = null;

@@ -230,7 +230,7 @@ class GoogleDrive
                 if (FileCache::expired(filemtime($destination), $expiration_time)){
                     unlink($destination);
                 } else {
-                    dd("Using cache for $id ...");
+                    // dd("Using cache for $id ...");
 
                     return true;
                 }
@@ -247,8 +247,7 @@ class GoogleDrive
             $downloads_in_a_row = 0;
         }
 
-        dd("Downloading $id ...");
-
+        // dd("Downloading $id ...");
 
         $service = $this->__getDriveService();
         
@@ -274,11 +273,11 @@ class GoogleDrive
             fclose($fileHandle);
 
             $downloads_in_a_row++;
-            dd($downloads_in_a_row, "Downloads in a row");
+            // dd($downloads_in_a_row, "Downloads in a row");
 
             // Cada 10 downloads, hago una pausa
             if ($downloads_in_a_row % 10 === 0){
-                dd("Taking a nap ...");
+                // dd("Taking a nap ...");
 
                 sleep(60 * rand(12, 15));
                 usleep(rand(500000, 1000000));
