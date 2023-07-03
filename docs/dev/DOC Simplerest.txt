@@ -9741,7 +9741,7 @@ Ej:
 
 # Paginacion
 
-Una forma sencilla de paginar es agregar los parametros de paginacion con queryParam()
+Una forma sencilla de paginar es agregar los parametros de paginacion con queryParam() y queryParams($array)
 
 Ej:
 
@@ -9757,6 +9757,59 @@ Ej:
 
 	dd($cli->data());
 
+
+Puede ser buena idea construir una funcion de paginado personalizada para separar la logica del paginado
+de la logica de negocio.
+
+Ej:
+
+    static function paginate(callable $callback, ...$args){
+        $page  = 1;
+        $pages = PHP_INT_MAX;
+
+        while ($page <= $pages){
+            dd("Trayendo pagina $page de ". ($pages == PHP_INT_MAX ? '??' : $pages));
+
+            $res  = MaxImport::getProducts([
+                'page' => $page
+            ], ...$args);
+
+            /*
+                Paginacion
+
+                Ej:
+
+                [page] => 1
+                [length] => 7282
+                [pageSize] => 20
+                [pages] => 365
+            */
+            $rows     = $res['data']['rows'] ?? null;
+            $length   = $res['data']['length'] ?? null;
+            $pageSize = $res['data']['pageSize'] ?? null;
+            $page     = $res['data']['page'] ?? null;
+            $pages    = $res['data']['pages'] ?? null;
+
+            // $rows     = $res['data']['rows'];
+
+            // Llamo al callback
+            $callback($res);
+
+            $page++;
+        }
+    }
+
+Forma de uso
+
+	Sync::paginate(function($res){
+		$rows     = $res['data']['rows'] ?? null;
+		$page     = $res['data']['page'] ?? null;
+		$pages    = $res['data']['pages'] ?? null;
+
+		// Hago algo con la respuesta (paginada) del endpoint que estoy consumiendo
+		dd($rows, "DATA [page = $page/$pages]");
+
+	}, true);
 
 # Mocking
 
