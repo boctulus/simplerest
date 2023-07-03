@@ -31,17 +31,23 @@ class Arrays
         }
     }
     
-    /*
-        array_column() que funciona con array de arrays o arrays de objetos
-    */
-    static function arrayColumn(Array $arr, $col_name){
-        $out = [];
-        foreach ($arr as $val){
-            $val   = (array) $val;
-            $out[] = $val[$col_name];
+    // by chatGPT
+    static function getColumns(array $rows, array $keys) {
+        $filtered = array();
+
+        foreach ($rows as $row) {
+            $filteredRow = [];
+
+            foreach ($keys as $key) {
+                if (array_key_exists($key, $row)) {
+                    $filteredRow[$key] = $row[$key];
+                }
+            }
+
+            $filtered[] = $filteredRow;
         }
 
-        return $out;
+        return $filtered;
     }
     
     /*

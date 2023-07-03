@@ -7983,4 +7983,31 @@ class DumbController extends Controller
         dd($res->data());
     }
 
+    function test_arr(){
+        // Uso del método estático
+        $rows = array(
+            array(
+                'id' => 1,
+                'code' => 'ABC',
+                'stockByWarehouse' => 10,
+                'otherField' => 'value'
+            ),
+            array(
+                'id' => 2,
+                'code' => 'DEF',
+                'stockByWarehouse' => 5,
+                'otherField' => 'value'
+            )
+        );
+
+        $filtered = Arrays::getColumns($rows, [
+            'id',
+            'code',
+            'stockByWarehouse',
+        ]);
+
+        dd($filtered);
+
+    }
+
 }   // end class
