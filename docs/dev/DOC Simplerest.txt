@@ -9807,9 +9807,18 @@ Forma de uso
 		$pages    = $res['data']['pages'] ?? null;
 
 		// Hago algo con la respuesta (paginada) del endpoint que estoy consumiendo
-		dd($rows, "DATA [page = $page/$pages]");
 
+		$filtered = Arrays::getColumns($rows, [
+			'id',
+			'code',
+			'stockByWarehouse',
+		]);
+
+		dd([
+			$filtered
+		], "DATA [page = $page/$pages]");
 	}, true);
+
 
 # Mocking
 
