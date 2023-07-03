@@ -154,9 +154,20 @@ class ApiClient
         return new ApiClient($url);
     }
 
-    // add new query param
+    // Add new query param
     function queryParam(string $name, $value){
         $this->query_params[$name] = $value;
+        return $this;
+    }
+
+    /*
+        Add array of params
+    */
+    function queryParams(array $params){
+        foreach ($params as $name => $value){
+            $this->query_params[$name] = $value;
+        }
+        
         return $this;
     }
 

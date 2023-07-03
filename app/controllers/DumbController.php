@@ -7935,4 +7935,52 @@ class DumbController extends Controller
         dd($css_rules);
     }
 
+    function test_api_client_query()
+    {
+        $including_warehouses =  true;
+
+        $config   = [
+            'token'    =>  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoid2ViQG1heGltcG9ydGFjaW9uZXMuY29tLnBlIiwicm9sZSI6ImxvZ2lzdGljIiwiaWF0IjoxNjg2NzI2Mjg3fQ.U4Z5Hbud2jl31LcM8ZMX0pxhVAJQW8OLIIXQ_NJQ_44',
+            
+            'endpoint_products'         => 'https://appdesa.maximportaciones.com.pe/api/products', // no tiene paginacion
+            'endpoint_products_detail'  => 'https://146.190.123.27/api/products',
+            'endpoint_product_detail'   => 'https://146.190.123.27/api/products/', // + id
+            'debug'                     => true
+        ];
+
+        $token 		        = $config['token'];
+        $catalog_url		= $config['endpoint_products'];
+        $catalog_detail_url	= $config['endpoint_products_detail'];
+        $url        		= $including_warehouses ? $catalog_detail_url : $catalog_url; 
+        
+        $exp_time = ($config['debug'] ? 3600 * 24 * 15 :  ($config['api_cache'] ?? 0));
+
+        $client   = ApiClient::instance()
+        ->setJWTAuth($token)
+        ->withoutStrictSSL()
+        //->setCache($exp_time)  // <-- solo para pruebas mas de 3600 * 24
+        ->decode(true); 
+
+        $client->setUrl($url);
+        $client->queryParams([
+            'page' => 364   
+        ]);
+
+        $res = $client->get();
+
+        if ($res->status() != 200 || !empty($res->error())){
+            $msg = "Error al connectar con '$url'. Detalle: ". $res->error();
+            dd($msg);
+
+            return;
+        }
+
+        if (empty($res)){
+            $msg = "API no está proveyendo datos";
+            dd($msg);
+        }
+
+        dd($res->data());
+    }
+
 }   // end class
