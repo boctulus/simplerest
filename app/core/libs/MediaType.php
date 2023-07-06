@@ -4,6 +4,24 @@ namespace simplerest\core\libs;
 
 class MediaType
 {
+    /*
+        Devuelve png, jpeg, etc
+    */
+    static function getImageType(string $image_content){
+        // Verificar si es base64
+        if (strpos($image_content, 'base64') === false) {
+            throw new \InvalidArgumentException('No se proporcionó una cadena de base64 válida');
+        }
+    
+        // Obtener el tipo de imagen
+        $matches = [];
+        preg_match('/data:image\/(.*?);/', $image_content, $matches);
+        
+        $image_type = $matches[1];
+
+        return $image_type;
+    }
+
     /*       
         Ej:
 
@@ -15,17 +33,9 @@ class MediaType
             MediaType::renderImage($str);
         }
     */
-    static function renderImage(string $image_content) {
-        // Verificar si es base64
-        if (strpos($image_content, 'base64') === false) {
-            echo 'No se proporcionó una cadena de base64 válida.';
-            return;
-        }
-    
-        // Obtener el tipo de imagen
-        $matches = [];
-        preg_match('/data:image\/(.*?);/', $image_content, $matches);
-        $image_type = $matches[1];
+    static function renderImage(string $image_content)
+    {    
+        $image_type = static::getImageType($image_content);
     
         // Decodificar la cadena de base64
         $image_data = base64_decode(preg_replace('/data:image\/(.*?);base64,/', '', $image_content));
