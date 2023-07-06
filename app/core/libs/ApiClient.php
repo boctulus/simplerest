@@ -618,6 +618,11 @@ class ApiClient
             }
         }
 
+        // Evito sobrecargar al servidor
+        if (isset(config()['sleep_time'])){
+            rest(config()['sleep_time'], true);
+        }
+
         $ok = null;
         $retries = 0;
 

@@ -94,15 +94,15 @@ class DB
 		*/
 
 		if ($driver == 'mariadb'){
-			$driver = DB::MYSQL;
+			$driver = static::MYSQL;
 		}
 
 		if ($driver == 'postgres'){
-			$driver = DB::PGSQL;
+			$driver = static::PGSQL;
 		}
 
 		if ($driver == 'sqlsrv' || $driver == 'mssql'){
-			$driver = DB::SQLSRV;
+			$driver = static::SQLSRV;
 		}
 
 		// faltaría dar soporte a ODBC
@@ -110,14 +110,14 @@ class DB
 
 		try {
 			switch ($driver) {
-				case DB::MYSQL:
+				case static::MYSQL:
 					self::$connections[static::$current_id_conn] = new \PDO(
 						"$driver:host=$host;dbname=$db_name;port=$port",  /* DSN */
 						$user, 
 						$pass, 
 						$pdo_opt);				
 					break;
-				case DB::SQLITE:
+				case static::SQLITE:
 					$db_file = Strings::contains(DIRECTORY_SEPARATOR, $db_name) ?  $db_name : STORAGE_PATH . $db_name;
 	
 					self::$connections[static::$current_id_conn] = new \PDO(
@@ -127,7 +127,7 @@ class DB
 						$pdo_opt);
 					break;
 
-				case DB::PGSQL:
+				case static::PGSQL:
 					self::$connections[static::$current_id_conn] = new \PDO(
 						"pgsql:host=$host;dbname=$db_name;port=$port", /* DSN */
 						$user, 
@@ -135,7 +135,7 @@ class DB
 						$pdo_opt);
 					break;	
 				
-				case DB::SQLSRV:
+				case static::SQLSRV:
 					self::$connections[static::$current_id_conn] = new \PDO(
 						"sqlsrv:Server=$host,$port;Database=$db_name", /* DSN */
 						$user, 
@@ -150,17 +150,17 @@ class DB
 			$conn = &self::$connections[static::$current_id_conn];
 
 			if ($charset != null){
-				switch (DB::driver()){
-					case DB::MYSQL:
-					case DB::PGSQL:
+				switch (static::driver()){
+					case static::MYSQL:
+					case static::PGSQL:
 						$charset = str_replace('-', '', $charset);
 						$cmd = "SET NAMES '$charset'";
 						break;
-					case DB::SQLITE:
+					case static::SQLITE:
 						$charset = preg_replace('/UTF([0-9]{1,2})/i', "UTF-$1", $charset);
 						$cmd = "PRAGMA encoding = '$charset'";
 						break;
-					case DB::SQLSRV:
+					case static::SQLSRV:
 						// it could be unnecesary
 						// https://docs.microsoft.com/en-us/sql/connect/php/constants-microsoft-drivers-for-php-for-sql-server?view=sql-server-ver15
 						if ($charset == 'UTF8' || $charset == 'UTF-8'){
@@ -253,7 +253,7 @@ class DB
 
 	public static function getCurrentConnectionId(bool $auto_connect = false){
 		if ($auto_connect && !static::$current_id_conn){
-			DB::getConnection();
+			static::getConnection();
 		}
 
 		return static::$current_id_conn;
@@ -293,30 +293,30 @@ class DB
 			static::getConnection($db_conn_id);
 		}
 
-		switch (DB::driver()){
-			case DB::MYSQL:
+		switch (static::driver()){
+			case static::MYSQL:
 				$db_name = static::getCurrentDB();
 
 				$sql = "SELECT table_name FROM information_schema.tables
 				WHERE table_schema = '$db_name';";
 				
 				return array_column(static::select($sql), 'TABLE_NAME');
-			// case DB::PGSQL:
+			// case static::PGSQL:
 			// 	break;
-			// case DB::SQLSRV:
+			// case static::SQLSRV:
 			// 	break;
-			// case DB::SQLITE:
+			// case static::SQLITE:
 			// 	break;
-			// case DB::INFOMIX:
+			// case static::INFOMIX:
 			// 	break;
-			// case DB::ORACLE:
+			// case static::ORACLE:
 			// 	break;
-			// case DB::DB2:
+			// case static::DB2:
 			// 	break;
-			// case DB::SYBASE:
+			// case static::SYBASE:
 			// 	break;
 			default:
-				throw new \Exception("Method " . __METHOD__ . " not supported for ". DB::driver());
+				throw new \Exception("Method " . __METHOD__ . " not supported for ". static::driver());
 		}
 	}
 
@@ -327,7 +327,7 @@ class DB
 		It's possible to override tentant representants giving $db_representants array
 	*/
 	public static function getAllTenantRepresentants(Array $db_representants = []){
-		$grouped = DB::getDatabasesGroupedByTenantGroup(true);
+		$grouped = static::getDatabasesGroupedByTenantGroup(true);
 		
 		$db_conn_ids = [];
 		foreach ($grouped as $group_name => $db_name){
@@ -447,7 +447,7 @@ class DB
         $dbs = Schema::getDatabases();
 
         foreach ($dbs as $db){
-            $group = DB::getTenantGroupName($db);
+            $group = static::getTenantGroupName($db);
             
             if (!$group){
                 continue;
@@ -476,8 +476,8 @@ class DB
 		Lista conexiones de bases de datos registradas que *no* forman parte de ningún tenant group
 	*/
 	static function getUngroupedDatabases(bool $exclude_default_conn = true){
-		$db_conns = DB::getAllConnectionIds();
-        $grouped  = DB::getGroupedDatabases();
+		$db_conns = static::getAllConnectionIds();
+        $grouped  = static::getGroupedDatabases();
         
 		$grouped_flat = [];
         foreach ($grouped as $g_name => $gc){
@@ -710,7 +710,7 @@ class DB
 
 		///////////////[ BUG FIXES ]/////////////////
 
-		$driver = DB::driver();
+		$driver = static::driver();
 
 		if (!empty($vals))
 		{
@@ -740,8 +740,8 @@ class DB
 		
 		///////////////////////////////////////////
 
-		$current_id_conn = DB::getCurrentConnectionId();
-		$conn = DB::getConnection($tenant_id);
+		$current_id_conn = static::getCurrentConnectionId();
+		$conn = static::getConnection($tenant_id);
 		
 		try {
 			$st = $conn->prepare($q);			
@@ -795,7 +795,7 @@ class DB
 		} finally {	
 			// Restore previous connection
 			if (!empty($current_id_conn)){
-				DB::setConnection($current_id_conn);
+				static::setConnection($current_id_conn);
 			}
 		}
 
@@ -807,7 +807,7 @@ class DB
 	}
 
 	public static function truncate(string $table, ?string $tenant_id = null){
-		DB::getConnection($tenant_id);
+		static::getConnection($tenant_id);
 		static::statement("TRUNCATE TABLE `$table`");
 	}
 
@@ -817,8 +817,8 @@ class DB
 		static::$values  = $vals; 
 		$q = $raw_sql;
 	
-		$current_id_conn = DB::getCurrentConnectionId();
-		$conn = DB::getConnection($tenant_id);
+		$current_id_conn = static::getCurrentConnectionId();
+		$conn = static::getConnection($tenant_id);
 
 		try {
 			$st = $conn->prepare($q);
@@ -885,7 +885,7 @@ class DB
 		} finally {
 			// Restore previous connection
 			if (empty(!$current_id_conn)){
-				DB::setConnection($current_id_conn);
+				static::setConnection($current_id_conn);
 			}
 		}
 		
@@ -899,8 +899,8 @@ class DB
 		static::$values  = $vals; 
 		$q = $raw_sql;
 	
-		$current_id_conn = DB::getCurrentConnectionId();
-		$conn = DB::getConnection($tenant_id);
+		$current_id_conn = static::getCurrentConnectionId();
+		$conn = static::getConnection($tenant_id);
 
 		try {
 			$st = $conn->prepare($q);
@@ -950,7 +950,7 @@ class DB
 		} finally {
 			// Restore previous connection
 			if (!empty($current_id_conn)){
-				DB::setConnection($current_id_conn);
+				static::setConnection($current_id_conn);
 			}
 		}
 		
@@ -978,6 +978,18 @@ class DB
 	}
 
 	/*
+		Escapa strings que pudieran contener comillas dobles
+
+		Util cuando se hace un INSERT de un campo tipo JSON
+	*/
+	static function quoteValue(string $val){
+		$conn = static::getConnection();
+		return $conn->quote($val);
+	}
+
+	/*
+		Rodea con las comillas correctas campos y nombres de tablas
+
 		https://stackoverflow.com/a/10574031/980631
 		https://dba.stackexchange.com/questions/23129/benefits-of-using-backtick-in-mysql-queries
 	*/
@@ -985,30 +997,30 @@ class DB
 		$d1 = '';
 		$d2 = '';
 
-		switch (DB::driver()){
-			case DB::MYSQL:
+		switch (static::driver()){
+			case static::MYSQL:
 				$d1 = $d2 = "`";
 				break;
-			case DB::PGSQL:
+			case static::PGSQL:
 				$d1 = $d2 = '"';
 				break;
-			case DB::SQLSRV:
+			case static::SQLSRV:
 				// SELECT [select] FROM [from] WHERE [where] = [group by];
 				$d1 = '[';
 				$d2 = ']';
 				break;
-			case DB::SQLITE:
+			case static::SQLITE:
 				$d1 = $d2 = '"';
 				break;
-			case DB::INFOMIX:
+			case static::INFOMIX:
 				return $str;
-			case DB::ORACLE:
+			case static::ORACLE:
 				$d1 = $d2 = '"';
 				break;
-			case DB::DB2:
+			case static::DB2:
 				$d1 = $d2 = '"';
 				break;
-			case DB::SYBASE:
+			case static::SYBASE:
 				$d1 = $d2 = '"';
 				break;
 			default:
@@ -1032,15 +1044,15 @@ class DB
 		https://stackoverflow.com/questions/19412/how-to-request-a-random-row-in-sql
 	*/
 	static function random(){
-		switch (DB::driver()){
-			case DB::MYSQL:
-			case DB::SQLITE:
-			case DB::INFOMIX:
-			case DB::FIREBIRD:
+		switch (static::driver()){
+			case static::MYSQL:
+			case static::SQLITE:
+			case static::INFOMIX:
+			case static::FIREBIRD:
 				return ' ORDER BY RAND()';
-			case DB::PGSQL:
+			case static::PGSQL:
 				return ' ORDER BY RANDOM()';
-			case DB::SQLSRV:
+			case static::SQLSRV:
 				// SELECT TOP 1 * FROM MyTable ORDER BY newid()
 				return ' ORDER BY newid()';
 			default: 
@@ -1079,7 +1091,7 @@ class DB
 	static function optimize($tables, bool $quote = false){
 		if (is_array($tables)){
 			if ($quote){
-				$tables = array_map([DB::class, 'quote'], $tables);
+				$tables = array_map([static::class, 'quote'], $tables);
 			}
 
 			$tables = implode(', ', $tables);
@@ -1112,7 +1124,7 @@ class DB
 	static function repair($tables, bool $quote = false){
 		if (is_array($tables)){
 			if ($quote){
-				$tables = array_map([DB::class, 'quote'], $tables);
+				$tables = array_map([static::class, 'quote'], $tables);
 			}
 
 			$tables = implode(', ', $tables);
