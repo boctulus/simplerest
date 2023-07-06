@@ -247,6 +247,5 @@ class System
     static function getMemoryPeakUsage(bool $real_usage = false){
         return (round(memory_get_peak_usage($real_usage) / 1048576, 2)) . 'M';
     }
-
 }
 
