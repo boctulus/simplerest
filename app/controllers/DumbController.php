@@ -7995,4 +7995,26 @@ class DumbController extends Controller
         MediaType::renderImage($str);
     }
 
+    /*
+        Intentar hacer auto quoteValue() para campos tipo VARCHAR, JSON etc de encontrar comillas dobles
+    */
+    function insert(){
+        DB::getConnection('woo3');
+
+        $rows = require 'D:\www\woo3\wp-content\plugins\mutawp_admin\etc\metadata.php';
+    
+        foreach ($rows as $link_id => $metadata){
+            $metadata = json_encode($metadata);
+            $metadata = DB::quoteValue($metadata); // necesario porque contiene comillas dobles
+
+            $sql      = "INSERT INTO `wp_link2product_metadata` (`link_id`, `metadata`) VALUES ('$link_id', $metadata);";
+    
+            dd(DB::statement($sql), $sql);
+        }
+    }
+
+    function test_rest(){
+        rest(0.99);
+    }
+
 }   // end class
