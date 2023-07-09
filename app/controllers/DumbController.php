@@ -2579,6 +2579,8 @@ class DumbController extends Controller
     // OK
     function ex()
     {
+        DB::getConnection('az');
+
         $m = DB::table('products')
             ->dontBind()   // <--- here 
             ->dontExec()   // <--- here 
@@ -7509,6 +7511,20 @@ class DumbController extends Controller
         dd($info);
     }
 
+    function test_get_zip_from_google_drive()
+    {
+        // "https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR"
+        $fileId      = '1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
+        $destination = ETC_PATH . 'downloads/file.zip';
+
+        $result = (new GoogleDrive())
+        ->download($fileId, $destination, false, 300);
+
+        // true
+        dd($result, 'RESULT');
+    }
+
+
     function test_file_cache_put(){
         dd(
             FileCache::put('constelacion', 'andromeda X', 2)
@@ -7835,20 +7851,6 @@ class DumbController extends Controller
         ));
     }
 
-    function test_get_zip_from_google_drive()
-    {
-        // "https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR"
-        $fileId      = '1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
-        $destination = ETC_PATH . 'downloads/file.zip';
-
-        $result = (new GoogleDrive())
-        ->download($fileId, $destination, false, 300);
-
-        // true
-        dd($result, 'RESULT');
-    }
-
-
     function test_idea(){
         $zips = Array
         (
@@ -8015,6 +8017,10 @@ class DumbController extends Controller
 
     function test_rest(){
         rest(0.99);
+    }
+
+    function test_argsv(){
+        dd($_GET);
     }
 
 }   // end class
