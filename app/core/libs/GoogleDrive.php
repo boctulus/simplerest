@@ -29,7 +29,7 @@ class GoogleDrive
         $client = new \Google\Client();
 
         // Disable SSL check in local
-        if (env('APP_ENV') == 'local' || env('APP_ENV') == 'debug' || env('DEGUG') == 'true'){  
+        if ($cfg['ssl_cert'] === false || env('APP_ENV') == 'local' || env('APP_ENV') == 'debug' || env('DEGUG') == 'true'){  
             $guzzleClient = new \GuzzleHttp\Client(["curl" => [
                 CURLOPT_SSL_VERIFYPEER => false
             ]]);        

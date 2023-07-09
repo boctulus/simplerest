@@ -1998,93 +1998,56 @@ class Model {
 			return false;	
 	}
 
-	function avg($field, $alias = NULL){
-		$q = $this->toSql(null, null, null, null, false, 'AVG', $field, $alias);
+	protected function aggregate(string $fn_name, $field, $alias)
+	{
+		$fn_name = strtoupper($fn_name);
+
+		if (!in_array($fn_name, [
+			'MAX',
+			'MIN',
+			'COUNT',
+			'SUM',
+			'AVG'
+		])){
+			throw new \InvalidArgumentException("Invalid aggregate function");
+		}
+		
+		$q = $this->toSql(null, null, null, null, false, $fn_name, $field, $alias);
 		$st = $this->bind($q);
 
 		if (empty($this->group)){
-			if ($this->exec && $st->execute())
-				return $st->fetch($this->getFetchMode());
-			else
+			if ($this->exec && $st->execute()){
+				// fetch
+				return(int) $st->fetch($this->getFetchMode('COLUMN'));
+			}else
 				return false;	
 		}else{
-			if ($this->exec && $st->execute())
-				return $st->fetchAll($this->getFetchMode());
-			else
+			if ($this->exec && $st->execute()){
+				// fetch all
+				return (int) $st->fetchAll($this->getFetchMode('COLUMN'));
+			}else
 				return false;
 		}	
+	}
+
+	function avg($field, $alias = NULL){
+		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
 	function sum($field, $alias = NULL){
-		$q = $this->toSql(null, null, null, null, false, 'SUM', $field, $alias);
-		$st = $this->bind($q);
-
-		if (empty($this->group)){
-			if ($this->exec && $st->execute())
-				return $st->fetch($this->getFetchMode());
-			else
-				return false;	
-		}else{
-			if ($this->exec && $st->execute())
-				return $st->fetchAll($this->getFetchMode());
-			else
-				return false;
-		}	
+		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
 	function min($field, $alias = NULL){
-		$q = $this->toSql(null, null, null, null, false, 'MIN', $field, $alias);
-		$st = $this->bind($q);
-
-		if (empty($this->group)){
-			if ($this->exec && $st->execute())
-				return $st->fetch($this->getFetchMode());
-			else
-				return false;	
-		}else{
-			if ($this->exec && $st->execute())
-				return $st->fetchAll($this->getFetchMode());
-			else
-				return false;
-		}	
+		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
 	function max($field, $alias = NULL){
-		$q = $this->toSql(null, null, null, null, false, 'MAX', $field, $alias);
-		$st = $this->bind($q);
-
-		if (empty($this->group)){
-			if ($this->exec && $st->execute())
-				return $st->fetch($this->getFetchMode());
-			else
-				return false;	
-		}else{
-			if ($this->exec && $st->execute())
-				return $st->fetchAll($this->getFetchMode());
-			else
-				return false;
-		}	
+		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
 	function count($field = NULL, $alias = NULL){
-		$q = $this->toSql(null, null, null, null, false, 'COUNT', $field, $alias);
-		$st = $this->bind($q);
-
-		// dd($q, 'Q');
-		// dd($this->table_raw_q, 'RAW Q');
-		// exit;
-
-		if (empty($this->group)){
-			if ($this->exec && $st->execute()){
-				return $st->fetch($this->getFetchMode('COLUMN'));
-			}else
-				return false;	
-		}else{
-			if ($this->exec && $st->execute()){
-				return $st->fetchAll($this->getFetchMode('COLUMN'));
-			}else
-				return false;
-		}	
+		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
 	function getWhereVals(){
