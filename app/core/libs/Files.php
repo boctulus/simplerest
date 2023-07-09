@@ -1122,6 +1122,8 @@ class Files
 
 	/*
 		Lee archivo o falla.
+
+		Revisar!
 	*/
 	static function readOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
 		if (is_dir($path)){
@@ -1133,7 +1135,7 @@ class Files
 			throw new \InvalidArgumentException("Path '$path' does not exist!");
 		}
 
-		$content =  @file_get_contents($path, $use_include_path, $context, $offset, $length);
+		$content = file_get_contents($path, $use_include_path, $context, $offset, $length); // @
 
 		if ($content === false || $content === null){
 			$path = realpath($path);
