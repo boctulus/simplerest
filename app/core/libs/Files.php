@@ -986,6 +986,12 @@ class Files
 		}
 	}
 
+	static function isDirectoryWritableOrFail(string $directory){
+		if (!static::isDirectoryWritable($directory)){
+			throw new \Exception("$directory is not writable");
+		}
+	}
+
 	static function hasWritePermission(string $path)
 	{
 		$stat = stat($path);
@@ -1176,6 +1182,55 @@ class Files
 	static function fileExtension(string $filename){
 		return Strings::last($filename, '.');
 	}
+
+	/*
+		Mueve archivos y directorios de un directorio a otro
+
+		Ej:
+
+		Files::move($ori, $dst, ['license.txt']);
+
+		Si el directorio destino no existe, se crea.
+
+		@param string $exclude entradas (a ser excluidas). Solo a primer nivel.
+
+		Ej:
+
+		Files::move("some-path/plugins", "someother-path/plugins", [ "__MACOSX" ])
+	*/
+	static function move(string $from, string $to, ?array $exclude = null) {
+		if (!is_dir($to)){
+			Files::mkDirOrFail($to);
+		} else {
+			Files::isDirectoryWritableOrFail($to);
+		}
+
+		if (is_dir($from)) {
+			if ($dh = opendir($from)) {
+				while (($file = readdir($dh)) !== false) {
+					if ($exclude !== null && in_array($file, $exclude)) {
+						continue;
+					}
+					
+					if ($file == "." || $file == "..") {
+						continue;
+					}
+					
+					$sourcePath      = $from . DIRECTORY_SEPARATOR . $file;
+					$destinationPath = $to   . DIRECTORY_SEPARATOR . $file;
+					
+					//dd("Intentando mover $sourcePath a $destinationPath");
+
+					if (!rename($sourcePath, $destinationPath)) {
+						throw new \Exception("Failed to move file: $sourcePath");
+					}
+				}
+				
+				closedir($dh);
+			}
+		}
+	}
+	
 }   
 
 

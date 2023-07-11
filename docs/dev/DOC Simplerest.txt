@@ -213,6 +213,15 @@ Ej:
         throw new \Exception('DB connection fails: ' . $e->getMessage());
     }
 
+El helper env() admite un segundo parametro opcional que es el valor por defecto.
+
+
+Nota:
+
+Se da prioridad al archivo '.dev-env' sobre '.env' asi que en produccion es solo no subir el archivo '.dev-env' o bien incluirlo en el .gitignore
+
+O se carga un archivo o el otro asi que no hay "complementariedad" con el archivo ".env" y de existir el '.dev-env' debe tener todo lo necesario.
+
 
 # Configuración de endpoints
 
