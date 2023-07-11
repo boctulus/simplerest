@@ -3094,7 +3094,7 @@ class DumbController extends Controller
 
     function test_env()
     {
-        dd(Env::get());
+        // dd(Env::get());
         dd(Env::get('MAIL_PORT'));
     }
 
@@ -5282,7 +5282,7 @@ class DumbController extends Controller
         $excluded = <<<FILES
         assets
         logs
-        README.md
+        README.md   
         config.php
         woo-sizes.php
         FILES;
@@ -8021,6 +8021,73 @@ class DumbController extends Controller
 
     function test_argsv(){
         dd($_GET);
+    }
+
+    function obf_muta()
+    {
+        $ori = 'D:\www\woo2\wp-content\plugins\mutawp';
+        $dst = 'D:\www\woo2\wp-content\plugins\mutawp.obfuscated';
+        $excluded = <<<FILES
+        mutawp.php
+        vendor
+        assets
+        *.bak
+        *.ph_
+        *.jpeg
+        *.jpg
+        *.png
+        *.gif
+        logs
+        README.md   
+        config.php
+        routes.php
+        constants.php
+        Model.php
+        DB.php    
+        FILES;
+
+        Obfuscator::obfuscate($ori, $dst, null, $excluded, [
+            "--obfuscate-function-name",
+            "--obfuscate-class_constant-name",
+            "--obfuscate-label-name"
+        ]);
+    }
+
+    function obf_muta_admin()
+    {
+        $ori = 'D:\www\woo3\wp-content\plugins\mutawp';
+        $dst = 'D:\www\woo3\wp-content\plugins\mutawp.obfuscated';
+        $excluded = <<<FILES
+        mutawp.php
+        vendor
+        assets
+        *.bak
+        *.ph_
+        *.jpeg
+        *.jpg
+        *.png
+        *.gif
+        logs
+        README.md   
+        config.php
+        routes.php
+        constants.php
+        Model.php
+        DB.php    
+        FILES;
+
+        Obfuscator::obfuscate($ori, $dst, null, $excluded, [
+            "--obfuscate-function-name",
+            "--obfuscate-class_constant-name",
+            "--obfuscate-label-name"
+        ]);
+    }
+
+    function test_move(){
+        $ori = 'D:\Downloads\wordpress-6.0-beta1\wordpress';
+        $dst = 'D:\Desktop\EN LANG\wp';
+
+        Files::move($ori, $dst, ['license.txt']);
     }
 
 }   // end class

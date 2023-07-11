@@ -1,3 +1,11 @@
+TODO SimpleRest
+===============
+
+- Investigar curl_file_create() y ver ejemplos para transferir archivos via HTTP lo que permitiria "emular" un FTP via HTTP, util para subir archivos a servidores de WP sin acceso FTP.
+
+https://code-boxx.com/move-files-php/
+
+
 - Usar #[\ReturnTypeWillChange] donde corresponda para silenciar warnings
 
 - Modificar el composer.json y reemplazar masivamente:
