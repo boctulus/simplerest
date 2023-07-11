@@ -144,6 +144,8 @@ class Obfuscator
         if (is_string($excluded)){
             if (Strings::contains(PHP_EOL, $excluded)){
                 $excluded = explode(PHP_EOL, $excluded);
+            } else {
+                $excluded = [ $excluded ];
             }
         }
 
@@ -238,7 +240,7 @@ class Obfuscator
         // (4)
         Files::copy("$dst2/yakpro-po/obfuscated", $dst, null, $execept);
 
-        d('Hecho!');
+        dd('Hecho!');
     }
 
     // https://stackoverflow.com/a/60283328/980631
