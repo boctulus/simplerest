@@ -11130,6 +11130,27 @@ Lo anterior renderizará algo como:
 	<label for="c1" class="form-label">Color</label>
 
 
+# Compatibilidad con PHP 7.4 y 8.1+
+
+En PHP 8.1+ es posible hacer lo siguiente:
+
+	Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+
+	$html = tag('note')
+	->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit ...	soluta porro?')
+	->color('secondary')
+	->class('mb-5');
+
+Sin embargo en PHP 7.4, no es posible usar "named arguments" y por tanto debe usarse asi:
+
+	$html = Bt5Form::note(
+	'<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit ...	soluta porro?', 
+	[
+		'color' => 'secondary',
+		'class' => 'mb-5'
+	]); 
+
+
 # Anidamiento de etiquetas
 
 Como cada etiqueta renderiza a un string, siempre podrá anidarlas pero además si utiliza Form::group() o los tags que lo implementan como Form:div y Form:picture entre otros, podrá enviar un Array en vez de un string. 

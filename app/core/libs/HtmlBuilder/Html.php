@@ -1418,8 +1418,62 @@ class Html
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' ' . static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::group($content, 'ul', $attributes, ...$args);
     }
+    
+    static function main($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
 
-    // Otros métodos similares (main, section, article, aside, details, summary, mark, picture, figure, figcaption, time, footer, ol, ul) siguen el mismo patrón de documentación.
+    static function section($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function article($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function aside($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function details($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function summary($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    function mark($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function picture($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function figure($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function figcaption($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    function time($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function footer($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function ol($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function ul($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
 
     /**
      * Genera una etiqueta <blockquote> con contenido y atributos opcionales.
@@ -1499,9 +1553,6 @@ class Html
 
         return static::group($content,'button', $attributes, ...$args);
     }
-
-
-    // Otros métodos similares (q, cite, code) siguen el mismo patrón de documentación.
 
     /**
      * Genera una etiqueta <button> con contenido y atributos opcionales.
