@@ -2,6 +2,10 @@
 
 namespace simplerest\core\libs\HtmlBuilder;
 
+/*
+    @author Pablo Bozzolo <boctulus@gmail.com>
+*/
+
 class Tag
 {
     protected $name;
