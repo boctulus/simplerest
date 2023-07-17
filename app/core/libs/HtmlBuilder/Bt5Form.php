@@ -6,6 +6,9 @@ use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\HtmlBuilder\Html;
 
+/*
+    @author Pablo Bozzolo <boctulus@gmail.com>
+*/
 
 class Bt5Form extends Html
 {
@@ -127,9 +130,15 @@ class Bt5Form extends Html
         return static::label($for, $text, $attributes, ...$args);
     }
 
-    /* Nav    */
-
-    static function nav(mixed $content, $attributes = [], ...$args){
+    /*
+        Genera una etiqueta de navegación (nav) con enlaces de navegación (navLinks).
+        @param mixed $content El contenido del conjunto de enlaces de navegación. Puede ser un string o un array con etiquetas HTML. Por defecto es null.
+        @param array $attributes Los atributos HTML y clases CSS para la etiqueta de navegación.
+        @param mixed ...$args Argumentos adicionales que se aplicarán como atributos o clases CSS a la etiqueta de navegación y enlaces de navegación.
+        @return string La etiqueta de navegación (nav) generada, que puede contener enlaces de navegación (navLinks) si se proporciona el contenido adecuado.
+        @throws \Exception Si se intenta generar una etiqueta de navegación (nav) con el rol "tablist" y no se proporcionan enlaces de navegación (navLinks) con los atributos "anchor" y "href", o si el atributo "href" no comienza con el carácter '#'.
+    */
+    static function nav($content, $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         if (isset($args['vertical']) || (isset($attributes['vertical']) && $attributes['vertical'] !== false)){
