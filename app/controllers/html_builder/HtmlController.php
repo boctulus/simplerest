@@ -12,7 +12,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
-class TestController extends MyController
+class HtmlController extends MyController
 {
     function __construct()
     {
@@ -21,22 +21,10 @@ class TestController extends MyController
     }
 
     function index()
-    {   
-        // $json  = file_get_contents(ETC_PATH . 'countries_states.json');
+    {  
+        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Html::class);
 
-        // css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
-        // css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
-
-        // js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
-
-        // view('select2/diagnosticojournal.php', [
-        //     'json' => $json
-        // ], 'templates/tpl_basic.php');              
-        
-
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
-
-        $html = tag('inputText')->value(microtime());
+        $html = tag('inputText')->value('Pablo');
         
         return $html->render();
     }

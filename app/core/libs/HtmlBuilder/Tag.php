@@ -37,7 +37,8 @@ class Tag
     }
 
     function render(){
-        return static::$builder::{$this->name}(...$this->props);
+        // return static::$builder::{$this->name}(...$this->props);
+        return call_user_func_array([static::$builder, $this->name], array_values($this->props));
     }
 
     function __toString()

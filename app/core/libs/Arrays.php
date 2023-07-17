@@ -30,8 +30,7 @@ class Arrays
             unset($array[$id]);
         }
     }
-    
-    // by chatGPT
+
     static function getColumns(array $rows, array $keys) {
         $filtered = array();
 
