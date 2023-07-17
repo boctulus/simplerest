@@ -8090,4 +8090,48 @@ class DumbController extends Controller
         Files::move($ori, $dst, ['license.txt']);
     }
 
+    function csv_debug_juanita()
+    {
+        $path = 'D:\Desktop\PRECIOS MAYOREO - JUANITA\CSVs\wc-product-export-9-5-2023-1683646857175.csv';
+
+        $csv    = Files::getCSV($path);
+        $rows   = $csv['rows'];
+        $header = $csv['header'];
+
+        // usort($rows, function ($a, $b) {
+        //     return $a['Código Isp'] <=> $b['Código Isp'];
+        // });
+
+        // $tipos = [];
+        // foreach ($rows as $row){
+        //     $tipos[] = $row['Tipo'];
+        // }
+
+        // $tipos = array_unique($tipos);
+        // print_array($tipos, 'TIPOS');
+
+        // print_array(array_column($rows,'Nombre del atributo 1'), '', '. ');
+        // print_array(array_column($rows,'Valor(es) del atributo 1'), '', '. ');
+        // print_array(array_column($rows,'Imágenes'), '', '. ');
+        // exit;
+
+        // $rows = Arrays::getColumns($rows, [
+        //     'ID',
+        //     'Tipo',
+        //     'SKU'
+        // ]);
+
+        // print_array($rows);
+
+        foreach ($rows as $row){
+            if ($row['Tipo'] == 'variable' || $row['Tipo'] == 'variation'){
+                dd($row, null, false);
+            }            
+        }
+
+
+        $total = count($rows);
+        dd($total, 'TOTAL');
+    }
+
 }   // end class
