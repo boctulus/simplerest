@@ -94,7 +94,14 @@ class Files
 		}  else {
 			$assoc    = false;
 		}
+
+		foreach ($cabecera as $ix => $name){
+			$cabecera[$ix] = Strings::cleanString($name);
+		}
 		
+		// dd($cabecera);
+		// exit;
+
 		$i = 0;
 		while ( ($data = fgetcsv($handle, null, $separator) ) !== FALSE ) {
 			if ($assoc){
