@@ -5,7 +5,7 @@ namespace simplerest\controllers\html_builder;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Time;
 
-class DemoController extends Controller
+class HtmlDemo2Controller extends Controller
 {
     /*
         De momento NO usar cache !!!
