@@ -16,7 +16,7 @@ use simplerest\core\libs\HtmlBuilder\Tag;
     Controlador de prueba de generador de tags
 */
 
-class HtmlController extends MyController
+class HtmlDemo1Controller extends MyController
 {
     function __construct()
     {
