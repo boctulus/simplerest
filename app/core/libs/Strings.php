@@ -12,6 +12,13 @@ class Strings
 	];
 
 	/*
+		Elimina caracteres especiales
+	*/	
+	static function cleanString(string $str) {
+		return preg_replace('/[^a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ-]/u', '', trim($str));
+	}
+
+	/*
 		Extrae la parte numerica de una cadena que contenga una cantidad
 		y la castea a un float
 	*/
