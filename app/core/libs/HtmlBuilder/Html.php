@@ -7,6 +7,9 @@ use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
+/*
+    @author Pablo Bozzolo <boctulus@gmail.com>
+*/
 
 class Html
 {
@@ -450,7 +453,7 @@ class Html
         }      
     }
 
-    static function addClasses(mixed $new, string &$to){
+    static function addClasses($new, string &$to){
         if (empty($to)){
             if (is_array($new)){
                 $new = implode(' ', $new);
@@ -1410,7 +1413,7 @@ class Html
      * @param mixed ...$args Argumentos adicionales que se aplicarán como atributos o clases CSS a la etiqueta <nav>.
      * @return string La etiqueta <nav> generada.
      */
-    static function nav(mixed $content, $attributes = [], ...$args) : string
+    static function nav($content, $attributes = [], ...$args)
     {
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' ' . static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::group($content, 'ul', $attributes, ...$args);
@@ -1426,7 +1429,7 @@ class Html
      * @param mixed ...$args Argumentos adicionales que se aplicarán como atributos o clases CSS a la etiqueta <blockquote>.
      * @return string La etiqueta <blockquote> generada.
      */
-    static function blockquote(mixed $content, $attributes = [], ...$args) : string
+    static function blockquote($content, $attributes = [], ...$args) : string
     {   
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' ' . static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
@@ -1604,27 +1607,27 @@ class Html
         return static::tag('img', null, $attributes, null, ...$args); 
     }
 
-    static function table(mixed $content, $attributes = [], ...$args){
+    static function table($content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function thead(mixed $content, $attributes = [], ...$args){
+    static function thead($content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function tbody(mixed $content, $attributes = [], ...$args){
+    static function tbody($content, $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function th(mixed $content, Array $attributes = [], ...$args){
+    static function th($content, Array $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function tr(mixed $content, Array $attributes = [], ...$args){
+    static function tr($content, Array $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);;
     }
 
-    static function td(mixed $content, Array $attributes = [], ...$args){
+    static function td($content, Array $attributes = [], ...$args){
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
     
