@@ -2,10 +2,6 @@
 
 namespace simplerest\core\libs\HtmlBuilder;
 
-/*
-    @author Pablo Bozzolo <boctulus@gmail.com>
-*/
-
 class Tag
 {
     protected $name;
@@ -42,7 +38,7 @@ class Tag
 
     function render(){
         // return static::$builder::{$this->name}(...$this->props);
-        return call_user_func_array([static::$builder, $this->name], array_values($this->props));
+        return call_user_func_array([static::$builder, $this->name], $this->props);
     }
 
     function __toString()
