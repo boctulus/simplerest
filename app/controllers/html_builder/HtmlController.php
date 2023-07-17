@@ -54,7 +54,7 @@ class HtmlController extends MyController
     */
     function note_r()
     {
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        // Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
         // $html = tag('note')
         // ->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
@@ -64,17 +64,11 @@ class HtmlController extends MyController
         // ->color('secondary')
         // ->class('mb-5');
 
-        $html = Bt5Form::note('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
-        elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
-        necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
-        soluta porro?', [ // Pasa el segundo argumento como un array
+        $html = Bt5Form::note(
+        '<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit ...	soluta porro?', 
+        [
             'color' => 'secondary',
             'class' => 'mb-5'
-        ], [
-           'text' => '<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
-           elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
-           necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
-           soluta porro?' 
         ]); 
 
         set_template('templates/tpl_basic.php');
@@ -89,27 +83,27 @@ class HtmlController extends MyController
 
     function steps()
     {   
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        $html = Bt5Form::wizard_steps(2, 10, 
+            [
+                [
+                  'href'        => "#s1",
+                  'title'       => 'Step 1',
+                  'description' => 'Step 1 description'
+                ],
+                [
+                  'href'        => "#s2",
+                  'title'       => 'Step 2',
+                  'description' => 'Step 2 description'
+                ],
+                [
+                  'href'        => "#s3",
+                  'title'       => 'Step 3',
+                  'description' => 'Step 3 description'
+                ],       
+            ]
+        );
 
-        $html = tag('wizard_steps')
-        ->content([
-          [
-            'href'        => "#s1",
-            'title'       => 'Step 1',
-            'description' => 'Step 1 description'
-          ],
-          [
-            'href'        => "#s2",
-            'title'       => 'Step 2',
-            'description' => 'Step 2 description'
-          ],
-          [
-            'href'        => "#s3",
-            'title'       => 'Step 3',
-            'description' => 'Step 3 description'
-          ],       
-        ])
-        ->current(2);
+        set_template('templates/tpl_basic.php');
 
         return render($html);
     }
