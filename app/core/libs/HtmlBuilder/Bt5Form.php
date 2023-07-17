@@ -14,8 +14,8 @@ class Bt5Form extends Html
 {
     /* Tables */
 
-    static function table(mixed $content = [], $attributes = [], ...$args)
-    {   
+    static function table($content = [], $attributes = [], ...$args)
+    {
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         if (empty($content)){
@@ -25,7 +25,6 @@ class Bt5Form extends Html
             $cols = $args['cols'] ?? $attributes['cols'] ?? null;
 
             // Color para columnas (en principio aplica solo a una)
-            
             $colorCol = $args['colorCol'] ?? $attributes['colorCol'] ?? null;
 
             if ($colorCol !== null){
@@ -49,7 +48,7 @@ class Bt5Form extends Html
                     $att['class'] = "table-{$col_color}";
                 }
 
-                $header[] = static::th($r, attributes:$att);
+                $header[] = static::th($r, $att);
             }
 
             $_cols = [];
@@ -68,38 +67,37 @@ class Bt5Form extends Html
                         $att['class'] = "table-{$col_color}";
                     }
                     
-                    $tds[] = static::$t(content:$val, attributes:$att);
+                    $tds[] = static::$t($val, $att);
                 }
 
                 $_cols[] = static::tr($tds);
             }
 
-
             // head options
+            $headAtt = []; // Declarar $headAtt antes del bloque if
 
             $headOptions = $args['headOptions'] ?? $attributes['headOptions'] ?? null;
 
             if ($headOptions != null){
                 if (isset($headOptions['class'])){
                     $headAtt['class'] = $headAtt['class'] ?? '';
-                    static::addClass($headOptions['class'], $headClass);
+                    static::addClass($headOptions['class'], $headAtt['class']);
                 }
 
                 if (isset($headOptions['color'])){
                     $headAtt['class'] = $headAtt['class'] ?? '';
                     static::addClass( "table-{$headOptions['color']}", $headAtt['class']);
                 }
-             
+
                 unset($args['headOptions']);
             }
 
             $content = [
                 static::thead($header, $headAtt),
-                static::tbody(content:$_cols)
+                static::tbody($_cols)
             ];
 
             // color
-
             $color = $args['color'] ?? $attributes['color'] ?? null;
 
             if ($color !== null){
@@ -120,7 +118,7 @@ class Bt5Form extends Html
     
     /* Stacked checkbox & radios */
 
-    static function formCheck(mixed $content, Array $attributes = [], ...$args){     
+    static function formCheck($content, Array $attributes = [], ...$args){     
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
@@ -292,7 +290,7 @@ class Bt5Form extends Html
 
     /* Offcanvas    */
 
-    static function offcanvas(mixed $content = null, ?string $title = null, mixed $body = null, Array $attributes = [], ...$args){
+    static function offcanvas($content = null, ?string $title = null, mixed $body = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $pos    = $args['pos'] ?? $attributes['pos'] ?? 'left';
@@ -352,12 +350,12 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function offcanvasHeader(mixed $content, Array $attributes = [], ...$args){
+    static function offcanvasHeader($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function offcanvasBody(mixed $content, Array $attributes = [], ...$args){
+    static function offcanvasBody($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
@@ -386,7 +384,7 @@ class Bt5Form extends Html
         return static::offcanvasLink($anchor, $href, 'button', $attributes, ...$args);
     }
     
-    static function offcanvasCloseButton(mixed $content = null, Array $attributes = [], ...$args){  
+    static function offcanvasCloseButton($content = null, Array $attributes = [], ...$args){  
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);      
         
         $attributes['data-bs-dismiss'] = "offcanvas";
@@ -398,7 +396,7 @@ class Bt5Form extends Html
 
     /* Nav    */
 
-    static function container(mixed $content, Array $attributes = [], ...$args){
+    static function container($content, Array $attributes = [], ...$args){
         if (isset($args['fluid']) || (isset($attributes['fluid']) && $attributes['fluid'] !== false)){
             $attributes['class'] = "container-fluid";
             unset($args['fluid']);
@@ -412,7 +410,7 @@ class Bt5Form extends Html
 
     /* Navbar   */
 
-    static function navbar(mixed $content, Array $attributes = [], ...$args){
+    static function navbar($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
         if (isset($args['expand']) || (isset($attributes['expand']) && $attributes['expand'] == false)){            
@@ -452,7 +450,7 @@ class Bt5Form extends Html
     /*
         El método es casi idéntico a collapseButton
     */
-    static function navbarToggler(mixed $content = null, ?string $target = null, Array $attributes = [], ...$args){  
+    static function navbarToggler($content = null, ?string $target = null, Array $attributes = [], ...$args){  
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);      
 
         $content = $content ?? '<span class="navbar-toggler-icon"></span>';
@@ -473,12 +471,12 @@ class Bt5Form extends Html
         return static::basicButton($content, $attributes, ...$args);
     }
 
-    static function navbarCollapse(mixed $content, Array $attributes = [], ...$args){
+    static function navbarCollapse($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function navbarNav(mixed $content, Array $attributes = [], ...$args){
+    static function navbarNav($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
         if (is_array($content) && count($content) >0){
@@ -561,7 +559,7 @@ class Bt5Form extends Html
                 $att_li['class'] .= 'active';
                 $inner = "<span class=\"page-link\">$anchor</span";
             } else {
-                $inner = static::link(anchor:$anchor, href:$href, attributes:['class' => 'page-link']);
+                $inner = static::link($anchor, $href, ['class' => 'page-link']);
             }
 
             return static::li($inner, $att_li, ...$e);     
@@ -610,7 +608,7 @@ class Bt5Form extends Html
                     $inner = "<span class=\"page-link\">$anchor</span";
                 } else {
 
-                    $inner = static::link(anchor:$anchor, href:$href, attributes:['class' => 'page-link']);
+                    $inner = static::link($anchor, $href, ['class' => 'page-link']);
                 }
  
                 $content[$ix] = static::li($inner, $att_li, ...$e);            
@@ -631,7 +629,7 @@ class Bt5Form extends Html
 
     /* Toasts     */
 
-    static function toast(mixed $content, Array $attributes = [], ...$args){     
+    static function toast($content, Array $attributes = [], ...$args){     
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
         $attributes['role'] = "alert";
@@ -641,17 +639,17 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function toastHeader(mixed $content, Array $attributes = [], ...$args){     
+    static function toastHeader($content, Array $attributes = [], ...$args){     
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function toastBody(mixed $content, Array $attributes = [], ...$args){     
+    static function toastBody($content, Array $attributes = [], ...$args){     
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function toastCloseButton(mixed $content = '', Array $attributes = [], $target = null, ...$args){        
+    static function toastCloseButton($content = '', Array $attributes = [], $target = null, ...$args){        
         $attributes['class'] = "btn-close";
         $attributes['data-bs-dismiss'] = "toast";
         $attributes['aria-label'] = 'Close';
@@ -659,7 +657,7 @@ class Bt5Form extends Html
         return static::basicButton($content, $attributes, ...$args);
     }
 
-    static function toastContainer(mixed $content, Array $attributes = [], ...$args){     
+    static function toastContainer($content, Array $attributes = [], ...$args){     
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
@@ -667,7 +665,7 @@ class Bt5Form extends Html
 
     /* List group */
 
-    static function listGroup(mixed $content, Array $attributes = [], ...$args){
+    static function listGroup($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
         if ((isset($attributes['flush']) && $attributes['flush']) || (isset($args['flush']) && $args['flush']  !== false)){
@@ -737,7 +735,9 @@ class Bt5Form extends Html
             static::div([
                 static::checkbox($text, $checked, $attributes, ...$args)
             ],  
-                class:'form-check form-switch'
+                [
+                    'class' => 'form-check form-switch' # 17/7
+                ]
             );
     }
 
@@ -754,35 +754,41 @@ class Bt5Form extends Html
         $elems = [];
         foreach ($items as $ix => $arr){
             $elems[] = 
-                static::div(class:"accordion-item", content:
-                    static::h2(class:"accordion-header", 
-                    id:'heading-'.$arr['id'], 
-
+                static::div(
+                    static::h2(
                     /*
                         Content debería poder no ser un array sino un string
                     */
-                    text:static::basicButton(
-                        class:"accordion-button" . ($ix != 0 ? ' collapsed' : ''),
-                        data_bs_toggle:"collapse",
-                        data_bs_target:"#{$arr['id']}",
-                        aria_expanded:"false",
-                        aria_controls:$arr['id'],
-                        content:$arr['title'] 
-                    )
-                ) 
+                        static::basicButton(
+                            $arr['title'],
+                            [
+                                'class' => "accordion-button" . ($ix != 0 ? ' collapsed' : ''),
+                                'data_bs_toggle' => "collapse",
+                                'data_bs_target' => "#{$arr['id']}",
+                                'aria_expanded' => "false",
+                                'aria_controls' => $arr['id'],
+                            ]
+                        ), [
+                            'class' => "accordion-header", 
+                            'id' => 'heading-'.$arr['id'], 
+                        ]
+                    , [
+                        'class' => "accordion-item"
+                    ]) 
                 .
                 static::div(
-                        id:$arr['id'],
-                        class:"accordion-collapse collapse" . ($ix == 0 ? ' show' : ''), 
-                        aria_labelledby:'heading-'.$arr['id'],
-                        data_bs_parent:!$always_open ? "#{$attributes['id']}" : null,
-                        content:
-                            static::div(
-                                class:"accordion-body",
-                                content:$arr['body']
-                            ),
-                        attributes:$attributes
-                )
+                        static::div(
+                            $arr['body'],
+                            [
+                                'class'  => "accordion-body"
+                            ]
+                        ),[
+                            'id' => $arr['id'],
+                            'class'  => "accordion-collapse collapse" . ($ix == 0 ? ' show' : ''), 
+                            'aria_labelledby'  =>'heading-'.$arr['id'],
+                            'data_bs_parent'  => !$always_open ? "#{$attributes['id']}" : null
+                        ]                      
+                    )
                 )
             ;
         }
@@ -793,21 +799,21 @@ class Bt5Form extends Html
         ->attributes($attributes);
     }
 
-    static function prepend(mixed $content, Array $attributes = [], ...$args){    
+    static function prepend($content, Array $attributes = [], ...$args){    
         $_ = "input-group-prepend"; 
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_ : $_;
         
         return static::div($content, $attributes, ...$args);
     }
 
-    static function append(mixed $content, Array $attributes = [], ...$args){    
+    static function append($content, Array $attributes = [], ...$args){    
         $_ = "input-group-append"; 
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_ : $_;
 
         return static::div($content, $attributes, ...$args);
     }
 
-    static function inputGroup(mixed $content, Array $attributes = [], ...$args){     
+    static function inputGroup($content, Array $attributes = [], ...$args){     
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
         $prepend = $args['prepend'] ?? $attributes['prepend'] ?? [];
@@ -846,12 +852,12 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function checkGroup(mixed $content, Array $attributes = [], ...$args){
+    static function checkGroup($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function buttonGroup(mixed $content, Array $attributes = [], ...$args){
+    static function buttonGroup($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['role']  = "group";
 
@@ -875,7 +881,7 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function buttonToolbar(mixed $content, Array $attributes = [], ...$args){
+    static function buttonToolbar($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['role']  = "toolbar";
         return static::div($content, $attributes, ...$args);
@@ -989,7 +995,7 @@ class Bt5Form extends Html
         return static::link($anchor, $href, $attributes, ...$args);
     }
 
-    static function collapseButton(mixed $content, Array $attributes = [], $target = null, ...$args){        
+    static function collapseButton($content, Array $attributes = [], $target = null, ...$args){        
         $attributes['data-bs-toggle'] = "collapse";
 
         $target = $args['target'] ?? $attributes['target'] ?? $target ?? null;
@@ -1001,7 +1007,7 @@ class Bt5Form extends Html
         return static::button($content, $attributes, ...$args);
     }
 
-    static function collapse(mixed $content, Array $attributes = [], bool $multiple = false, ...$args){
+    static function collapse($content, Array $attributes = [], bool $multiple = false, ...$args){
         $attributes['class']  = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
        
         if ($multiple || isset($args['multiple'])){
@@ -1012,7 +1018,7 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function collapseBody(mixed $content, Array $attributes = [], ...$args){
+    static function collapseBody($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
@@ -1022,12 +1028,12 @@ class Bt5Form extends Html
 
     /* Dropdown Begin*/
 
-    static function dropdown(mixed $content, Array $attributes = [], ...$args){
+    static function dropdown($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function dropdownButton(mixed $content, Array $attributes = [], ...$args){  
+    static function dropdownButton($content, Array $attributes = [], ...$args){  
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);      
 
         if (isset($args['split']) || (isset($attributes['split']) && $attributes['split'] !== false)){
@@ -1053,7 +1059,7 @@ class Bt5Form extends Html
         return static::link($anchor, $href , $attributes, ...$args);
     }
 
-    static function dropdownMenu(mixed $content, string $ariaLabel, $attributes = [], ...$args){
+    static function dropdownMenu($content, string $ariaLabel, $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $attributes['aria-labelledby'] = $ariaLabel;
@@ -1070,7 +1076,7 @@ class Bt5Form extends Html
         return '<li><hr class="dropdown-divider"></li>';
     }
 
-    static function tabContent(mixed $content, Array $attributes = [], ...$args){
+    static function tabContent($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
@@ -1079,12 +1085,12 @@ class Bt5Form extends Html
 
     /* Split button */
 
-    static function split(mixed $content, Array $attributes = [], ...$args){
+    static function split($content, Array $attributes = [], ...$args){
         
         return static::buttonGroup($content, $attributes, ...$args);
     }
 
-    static function splitButton(mixed $content, Array $attributes = [], ...$args){  
+    static function splitButton($content, Array $attributes = [], ...$args){  
         $_ = "btn-default dropdown-toggle dropdown-icon";
 
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. $_ : $_;      
@@ -1108,7 +1114,7 @@ class Bt5Form extends Html
 
     /* Cards Begin */
 
-    static function card(mixed $content = null, Array $attributes = [], ...$args){
+    static function card($content = null, Array $attributes = [], ...$args){
         css('
             .card-primary.card-outline {
                 border-top: 3px solid #007bff;
@@ -1154,7 +1160,7 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function cardBody(mixed $content = '', Array $attributes = [], ...$args){
+    static function cardBody($content = '', Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
@@ -1270,12 +1276,12 @@ class Bt5Form extends Html
         return static::img($src, $attributes, null, ...$args); 
     }
 
-    static function cardImgOverlay(mixed $content, Array $attributes = [], ...$args){
+    static function cardImgOverlay($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function cardListGroup(mixed $content, $attributes = [], ...$args){
+    static function cardListGroup($content, $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::ul($content, __FUNCTION__, $attributes, ...$args);
     }
@@ -1285,17 +1291,17 @@ class Bt5Form extends Html
         return static::li($text, $attributes, ...$args);
     }
 
-    static function cardHeader(mixed $content, Array $attributes = [], ...$args){
+    static function cardHeader($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function cardHeaderTabs(mixed $content, $attributes = [], ...$args){
+    static function cardHeaderTabs($content, $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::ul($content, __FUNCTION__, $attributes, ...$args);
     }
 
-    static function cardFooter(mixed $content, Array $attributes = [], ...$args){
+    static function cardFooter($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
@@ -1308,7 +1314,7 @@ class Bt5Form extends Html
 
     /* Progress bar */
 
-    static function progress(mixed $content, Array $attributes = [], ...$args){
+    static function progress($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         // size
@@ -1334,7 +1340,7 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function progressBar(mixed $content = null, Array $attributes = [], ...$args){
+    static function progressBar($content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
         $attributes['role'] = "progressbar";
@@ -1403,7 +1409,7 @@ class Bt5Form extends Html
 
     /* Spinners  */
 
-    static function spinner(mixed $content = 'Loading...', Array $attributes = [], ...$args)
+    static function spinner($content = 'Loading...', Array $attributes = [], ...$args)
     {
         $attributes['class'] = '';
         
@@ -1463,7 +1469,7 @@ class Bt5Form extends Html
     
     /* Popover   */
 
-    static function popover(mixed $content, Array $attributes = [], ...$args){
+    static function popover($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. 'btn btn-primary' : 'btn btn-primary';
         
         static::addClass('popovers', $attributes['class']);
@@ -1520,7 +1526,7 @@ class Bt5Form extends Html
 
     /* Tooltips  */
 
-    static function tooltip(mixed $content, Array $attributes = [], ...$args){
+    static function tooltip($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. 'btn btn-primary' : 'btn btn-primary';
        
         $attributes['data-bs-toggle'] = "tooltip";
@@ -1560,7 +1566,7 @@ class Bt5Form extends Html
     /*
         It should be contained in a blockquote
     */
-    static function blockquoteFooter(mixed $content, Array $attributes = [], ...$args){
+    static function blockquoteFooter($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::footer($content, $attributes, ...$args);
     }
@@ -1577,7 +1583,7 @@ class Bt5Form extends Html
         https://codepen.io/planetoftheweb/pen/wvgNPwL
     
     */
-    static function carousel(mixed $content = [], Array $attributes = [], ...$args){
+    static function carousel($content = [], Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['data-bs-ride'] = "carousel";
 
@@ -1660,12 +1666,12 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function carouselInner(mixed $content, Array $attributes = [], ...$args){
+    static function carouselInner($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function carouselItem(mixed $content, Array $attributes = [], int $interval = -1, mixed $caption = null, ...$args){
+    static function carouselItem($content, Array $attributes = [], int $interval = -1, mixed $caption = null, ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         if ($interval > 0){
@@ -1680,35 +1686,35 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function carouselIndicators(mixed $content, Array $attributes = [], ...$args){
+    static function carouselIndicators($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function carouselCaption(mixed $content, Array $attributes = [], ...$args){
+    static function carouselCaption($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         return static::div($content, $attributes, ...$args);
     }
 
-    static function carouselControlPrev(mixed $content, Array $attributes = [], ...$args){
+    static function carouselControlPrev($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['data-bs-slide'] = "prev";
         return static::basicButton($content, $attributes, ...$args);
     }
 
-    static function carouselControlNext(mixed $content, Array $attributes = [], ...$args){
+    static function carouselControlNext($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['data-bs-slide'] = "next";
         return static::basicButton($content, $attributes, ...$args);
     }
 
-    static function carouselControlPrevIcon(mixed $text, Array $attributes = [], ...$args){
+    static function carouselControlPrevIcon($text, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['aria-hidden']="true";
         return static::span($text, $attributes, ...$args);
     }
 
-    static function carouselControlNextIcon(mixed $text, Array $attributes = [], ...$args){
+    static function carouselControlNextIcon($text, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         $attributes['aria-hidden']="true";
         return static::span($text, $attributes, ...$args);
@@ -1721,7 +1727,7 @@ class Bt5Form extends Html
 
     /* Carousel End */
 
-    static function closeButton(mixed $content = null, Array $attributes = [], ...$args){
+    static function closeButton($content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $attributes['aria-label'] = "Close";
@@ -1735,7 +1741,7 @@ class Bt5Form extends Html
 
     /* Modal Begin */
 
-    static function modal(mixed $content = null, Array $attributes = [], ...$args){
+    static function modal($content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         $attributes['tabindex'] = "-1";
@@ -1781,7 +1787,7 @@ class Bt5Form extends Html
     }
 
 
-    static function closeModal(mixed $content = null, Array $attributes = [], ...$args){
+    static function closeModal($content = null, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         if (empty($content)){
@@ -1794,7 +1800,7 @@ class Bt5Form extends Html
         return static::button($content, $attributes, ...$args);
     }
 
-    static function openButton(mixed $content, string $target, Array $attributes = [], ...$args){
+    static function openButton($content, string $target, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
         
         static::addClass('btn-primary', $attributes['class']);
@@ -1805,7 +1811,7 @@ class Bt5Form extends Html
         return static::button($content, $attributes, ...$args);
     }
 
-    static function modalDialog(mixed $content, Array $attributes = [], bool $scrollable = false, bool $centered = false, ...$args){
+    static function modalDialog($content, Array $attributes = [], bool $scrollable = false, bool $centered = false, ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         if ($scrollable || array_key_exists('scrollable', $args) || in_array('scrollable', $attributes)){
@@ -1848,25 +1854,25 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function modalContent(mixed $content, Array $attributes = [], ...$args){
+    static function modalContent($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         return static::div($content, $attributes, ...$args);
     }
 
-    static function modalHeader(mixed $content, Array $attributes = [], ...$args){
+    static function modalHeader($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         return static::div($content, $attributes, ...$args);
     }
 
-    static function modalBody(mixed $content, Array $attributes = [], ...$args){
+    static function modalBody($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         return static::div($content, $attributes, ...$args);
     }
 
-    static function modalFooter(mixed $content, Array $attributes = [], ...$args){
+    static function modalFooter($content, Array $attributes = [], ...$args){
         $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
 
         return static::div($content, $attributes, ...$args);
@@ -1913,7 +1919,7 @@ class Bt5Form extends Html
 
         https://www.codeply.com/p/jYwDonANZl
     */
-    static function searchTool(mixed $content = 'Search', Array $attributes = [], ...$args)
+    static function searchTool($content = 'Search', Array $attributes = [], ...$args)
     {
         css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
         
@@ -1941,7 +1947,7 @@ class Bt5Form extends Html
         MBD image masks
     */
 
-    static function mask(mixed $content = '', Array $attributes = [], ...$args){
+    static function mask($content = '', Array $attributes = [], ...$args){
         css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
         $attributes['class'] = 'bg-image rounded';
@@ -1973,7 +1979,7 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function shadow(mixed $content = '', Array $attributes = [], ...$args){       
+    static function shadow($content = '', Array $attributes = [], ...$args){       
         css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
         $class = $args['class'] ?? $attributes['class'] ?? null;
@@ -1986,7 +1992,10 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function note(mixed $text, Array $attributes = [], ...$args){     
+    static function note($text, Array $attributes = [], ...$args){    
+        var_dump($attributes, 'ATTS');
+        var_dump($args);
+        
         css_file('css/html_builder/note/note.css');
         
         $attributes['class'] = "note";
@@ -2035,7 +2044,7 @@ class Bt5Form extends Html
     /*
         https://www.bootdey.com/snippets/view/timeline-steps#preview
     */
-    static function h_timeline(mixed $content, Array $attributes = [], ...$args){
+    static function h_timeline($content, Array $attributes = [], ...$args){
         css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 
         $attributes['class'] = 'timeline-steps aos-init aos-animate';

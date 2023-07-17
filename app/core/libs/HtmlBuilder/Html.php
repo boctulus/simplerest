@@ -1445,6 +1445,62 @@ class Html
         return static::group($content, __FUNCTION__, $attributes, ...$args);
     }
 
+    static function q($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function cite($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function code($content, $attributes = [], ...$args){
+        return static::group($content, __FUNCTION__, $attributes, ...$args);
+    }
+
+    static function basicButton($content = null, $attributes = [], ...$args){
+        $attributes['type']="button";
+        $attributes['class'] = isset($attributes['class']) ? $attributes['class'] . ' '. static::getClass(__FUNCTION__) : static::getClass(__FUNCTION__);
+
+        if ($content === null){
+            if (isset($args['text'])){
+                $content = $args['text'];
+            } elseif (isset($args['value'])){
+                $content = $args['value'];
+            }
+        }
+
+        if (isset($args['large'])){
+            static::addClass('btn-lg', $attributes['class']);
+        }
+
+        if (isset($args['small'])){
+            static::addClass('btn-sm', $attributes['class']);
+        }
+
+        foreach ($args as $k => $val){
+            if (in_array($k, static::$colors)){
+                static::addColor("btn-$k", $attributes['class']); 
+                unset($args[$k]);
+                break;
+            }           
+        }
+
+        if ($content === null){
+            if (isset($args['text'])){
+                $content = $args['text'];
+                unset($args['text']);
+            } elseif (isset($args['value'])){
+                $content = $args['value'];
+                unset($args['value']);
+            }
+        }
+
+        static::removeColors('btn', $args);
+
+        return static::group($content,'button', $attributes, ...$args);
+    }
+
+
     // Otros métodos similares (q, cite, code) siguen el mismo patrón de documentación.
 
     /**

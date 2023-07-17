@@ -12,6 +12,10 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
 
+/*
+    Controlador de prueba de generador de tags
+*/
+
 class HtmlController extends MyController
 {
     function __construct()
@@ -40,7 +44,7 @@ class HtmlController extends MyController
             tag('steps')->max(10)->current(7),
         ]);
 
-        return view('generic', [
+        return view('tpl', [
             'content' => $html
         ]);
     }
@@ -52,12 +56,26 @@ class HtmlController extends MyController
     {
         Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
-        $html = tag('note')
-        ->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
+        // $html = tag('note')
+        // ->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
+        // elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
+        // necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
+        // soluta porro?')
+        // ->color('secondary')
+        // ->class('mb-5');
+
+        $html = Bt5Form::note('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
         elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
         necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
-        soluta porro?')
-        ->color('secondary')->class('mb-5');
+        soluta porro?', [ // Pasa el segundo argumento como un array
+            'color' => 'secondary',
+            'class' => 'mb-5'
+        ], [
+           'text' => '<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
+           elit. Cum doloremque officia laboriosam. Itaque ex obcaecati architecto! Qui
+           necessitatibus delectus placeat illo rem id nisi consequatur esse, sint perspiciatis
+           soluta porro?' 
+        ]); 
 
         set_template('templates/tpl_basic.php');
 
