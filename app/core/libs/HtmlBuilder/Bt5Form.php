@@ -1992,10 +1992,7 @@ class Bt5Form extends Html
         return static::div($content, $attributes, ...$args);
     }
 
-    static function note($text, Array $attributes = [], ...$args){    
-        var_dump($attributes, 'ATTS');
-        var_dump($args);
-        
+    static function note($text, Array $attributes = [], ...$args){          
         css_file('css/html_builder/note/note.css');
         
         $attributes['class'] = "note";
@@ -2091,12 +2088,13 @@ class Bt5Form extends Html
 
         $li = [];
 
-        if (empty($content)){
+        if (empty($content)){          
             if (empty($max)){
                 throw new \Exception("Max is required");
             }
 
             for ($step=1; $step <= $max; $step++){
+                dd($step);
                 $li_att['class']  = ($step <= $current) ? 'selected' : 'disabled';
                 $li_att['isdone'] = ($step <= $current) ? '1' : '0';
 
