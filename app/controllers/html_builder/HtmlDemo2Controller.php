@@ -28,6 +28,9 @@ class HtmlDemo2Controller extends Controller
         view('html_builder_examples/test');
     }
 
+    /*
+        Componente (a encapsular) que muestra selector de categorias (para WordPress)
+    */
     function test_multiple(){
         view('html_builder_examples/multiple');
     }
