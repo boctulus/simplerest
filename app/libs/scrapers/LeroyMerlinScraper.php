@@ -5,9 +5,17 @@ namespace simplerest\libs\scrapers;
 use simplerest\core\Model;
 use simplerest\core\libs\Dom;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\XML;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
+
+/*
+    Ya solo es posible scrapearlo con "Selenium"
+
+    Response: "Please enable JS and disable any ad blocker"
+*/
 
 class LeroyMerlinScraper 
 {    
@@ -87,11 +95,11 @@ class LeroyMerlinScraper
 
         // Verifico que SI sea una página de producto (detalle)
         if (!Strings::contains('descriptionText', $html)){
-            Files::logger("Parsing of $ori as failed");
+            Logger::logError("Parsing of $ori as failed");
             return;
         }
 
-        $doc   = Dom::getDomDocument($html);
+        $doc   = XML::getDocument($html);
         $xpath = new \DOMXPath($doc);
         
         // // Title
