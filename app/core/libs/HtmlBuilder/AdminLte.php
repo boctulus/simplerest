@@ -353,14 +353,14 @@ class AdminLte extends Bt5Form
         return static::div($content, $attributes, ...$args);
     }
 
-    static function select2(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args){
+    static function select2(Array $options, $default = null, $placeholder = null, Array $attributes = [], ...$args){
         $attributes['class'] = $attributes['class'] ?? $args['class'] ?? '';
         static::addClass('select2', $attributes['class']);
 
         return static::select($options, $default, $placeholder, $attributes, ...$args);
     }
 
-    static function duallistbox(Array $options, ?string $default = null, ?string $placeholder = null, Array $attributes = [], ...$args){        
+    static function duallistbox(Array $options, $default = null, $placeholder = null, Array $attributes = [], ...$args){        
         $attributes['class'] = $attributes['class'] ?? $args['class'] ?? '';
         static::addClass('duallistbox', $attributes['class']);
 
@@ -398,14 +398,14 @@ class AdminLte extends Bt5Form
         return static::inputGroup($content, $attributes, ...$args);
     }
 
-    static function dateMask(?string $format = null, Array $attributes = [], ...$args){    
+    static function dateMask($format = null, Array $attributes = [], ...$args){    
         $format = $format ?? $args['format'] ?? $attributes['format'] ?? "dd/mm/yyyy";
         unset($args['format']);
 
         return static::inputMask('fa-calendar-alt', $format, $attributes, ...$args);
     }
 
-    static function phoneMask(?string $format = null, Array $attributes = [], ...$args){    
+    static function phoneMask($format = null, Array $attributes = [], ...$args){    
         $format = $format ?? $args['format'] ?? $attributes['format'] ?? "(999) 999-9999";
         unset($args['format']);
 
@@ -456,7 +456,7 @@ class AdminLte extends Bt5Form
     /*
         ->openAll() hace que cada nav-item comience abierto
     */
-    static function navItemSideMenu(Array $items, ?string $default = null, Array $attributes = [], ...$args)
+    static function navItemSideMenu(Array $items, $default = null, Array $attributes = [], ...$args)
     {
         //css_file('css/html_builder/' . __FUNCTION__ . '/' . __FUNCTION__ . '.css');
 

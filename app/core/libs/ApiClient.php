@@ -3,6 +3,7 @@
 namespace simplerest\core\libs;
 
 use simplerest\core\libs\Url;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\FileCache;
 
 /*
@@ -27,6 +28,7 @@ use simplerest\core\libs\FileCache;
 */
 class ApiClient
 {
+
     const     HTTP_METH_POST   = "POST";
     const     HTTP_METH_GET    = "GET";
     const     HTTP_METH_PATCH  = "PATCH";
@@ -64,9 +66,31 @@ class ApiClient
     // Mock
     protected $mocked;
 
+    // Logs
+    protected $log_req    = false;
+    protected $log_res    = false;
+    protected $logger_fn  = 'log';
+
     // Extras
     protected $query_params = [];
 
+    function logReq($log_file  = 'req.txt'){
+        if ($log_file === true  ||  $log_file === 1){
+            $log_file = 'req.txt';
+        }
+
+        $this->log_req = $log_file;
+        return $this;
+    }
+
+    function logRes($log_file = 'res.txt'){
+        if ($log_file === true  ||  $log_file === 1){
+            $log_file = 'res.txt';
+        }
+
+        $this->log_res = $log_file;
+        return $this;
+    }
 
     /*
         Debe usarse *antes* de llamar a request(), get(), post(), etc
@@ -590,6 +614,12 @@ class ApiClient
             $expired         = is_file($cached_path) ? FileCache::expired(filemtime($cached_path), $this->expiration) : true;  // fixex on jun-17/24
         }
        
+        // Logs
+
+        if ($this->log_req){
+            Logger::{$this->logger_fn}(static::dump(), $this->log_req);
+        }
+
         if (!$expired){
             $res = $this->getCache();
 
@@ -662,6 +692,12 @@ class ApiClient
         }
 
         // dd($res, 'RES');
+
+        // Logs
+
+        if ($this->log_res){
+            Logger::{$this->logger_fn}($res, $this->log_res);
+        }
 
         if ($this->expiration && $res !== null && !$this->read_only){
             $this->saveResponse($res);
@@ -996,4 +1032,5 @@ class ApiClient
 		return function_exists('curl_init');
 	}
 }
+
 

@@ -623,7 +623,7 @@ class Html
                 $args[$k] = $v;
             }
 
-            // data-* in camelCase
+            // data-* in camelCasef
             if (strlen($k) > 4 && (substr($k, 0, 4) == 'data') && ctype_upper($k[4])){
                unset($args[$k]);
                $k = Strings::camelToSnake($k, '-');
@@ -1651,7 +1651,7 @@ class Html
     static function p(string $text = '', Array $attributes = [], ...$args) : string
     {
         return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
-}
+    }
 
     static function li(string $text, Array $attributes = [], ...$args){
         return static::tag(__FUNCTION__, $text, $attributes, null, ...$args);
