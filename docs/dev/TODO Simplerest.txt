@@ -1,6 +1,15 @@
 TODO SimpleRest
 ===============
 
+- Para ApiClient, implementar exportRequest($to)
+
+  donde $to seria:
+
+  EXPORT_REQ_TO_CURL
+  EXPORT_REQ_TO_JQUERY
+  EXPORT_REQ_TO_FETCH
+  EXPORT_REQ_TO_AXIOS
+
 - Investigar curl_file_create() y ver ejemplos para transferir archivos via HTTP lo que permitiria "emular" un FTP via HTTP, util para subir archivos a servidores de WP sin acceso FTP.
 
 https://code-boxx.com/move-files-php/
@@ -27,9 +36,9 @@ Debe hacerse porque al crear un paquete en Composer automaticamente se crea de l
 - Crear equivalente a get_option() y set_option (update_uption) de WordPress
 
   . Deben leer / escribir en tabla "options" como clave-valor
-  . La tabla debe sorportar "belongs_to" y escribir/leer en la base de datos seleccionada.
+  . Para el caso de multitenant, opcionalmente setear el valor en el scope de la base de datos seleccionada (tabla options para esa DB)
 
-  NO esta agragndo la PKEY !!
+- NO esta agragndo la PRIMARY KEY !!
 
   class Options implements IMigration
   {
@@ -68,7 +77,6 @@ Debe hacerse porque al crear un paquete en Composer automaticamente se crea de l
     $sc->addPrimary('the_key'); // <------------ *
     $sc->alter();
 
-
 - Resolver problema de templates duplicados. Depredicar carpeta de templates
 
 - Crear IMPORTER de ASSETs o sea... debe leer un HTML con referencias ya sea locales o CDNs y 
@@ -93,8 +101,6 @@ Debe hacerse porque al crear un paquete en Composer automaticamente se crea de l
 
     . Refactorizar funciones de la clasee Date que que no dependan de ninguna tabla en base de datos 
     para estimar TimeZone Gap
-
-- Axios / fetch / jQuery script generator for consuming APIs 
 
 - Poder exportar rutas del FrontController en formato que puedan usarse en el Router (GET::xxxxxxxx, dado que el segundo es mas performante y seguro). Usar solo el FrontController en desarrollo.
 
