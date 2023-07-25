@@ -298,6 +298,9 @@ class ApiClient
         return $this->setCache($expiration_time);
     }
 
+    /*
+        Que diferencia hay con FileCache::forget($this->url) ????
+    */
     function clearCache(){
         unlink($this->getCachePath());
         return $this;
@@ -699,7 +702,9 @@ class ApiClient
             Logger::{$this->logger_fn}($res, $this->log_res);
         }
 
-        if ($this->expiration && $res !== null && !$this->read_only){
+        $status_code = (int) $this->status;
+
+        if ($this->expiration && $res !== null && !$this->read_only && ($status_code >=200 && $status_code < 400)) {
             $this->saveResponse($res);
         }
 
