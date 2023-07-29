@@ -8136,4 +8136,97 @@ class DumbController extends Controller
         dd($total, 'TOTAL');
     }
 
+    /*
+        Encapsular
+
+        Depende de FontAwesome
+    */
+    function test_notices(){
+        render('
+        <style>
+        .message-box {
+            width: 440px;
+            border-radius: 6px;
+            margin: 20px auto;
+            padding: auto 0;
+            position: relative;
+          }
+          .message-box i {
+            vertical-align: middle;
+            padding: 20px;
+          }
+          .message-box i.exit-button {
+            float: right;
+            opacity: 0.4;
+          }
+          .message-box i.exit-button:hover {
+            opacity: 0.8;
+          }
+          
+          .message-text {
+            vertical-align: middle;
+          }
+          
+          .message-box-info {
+            background-color: #CDE8F6;
+            border: #2697d1 2px solid;
+            color: #447EAF;
+          }
+          
+          .message-box-warn {
+            background-color: #F8F4D5;
+            border: #e9dd7e 2px solid;
+            color: #96722E;
+          }
+          
+          .message-box-error {
+            background-color: #ECC8C5;
+            border: #d37f78 2px solid;
+            color: #B83C37;
+          }
+          
+          .message-box-success {
+            background-color: #DDF3D5;
+            border: #9ddc86 2px solid;
+            color: #597151;
+          }
+          
+        </style>
+        <div class="message-box message-box-info">
+            <i class="fa fas fa-info-circle fa-2x"></i>
+            <span class="message-text"><strong>Info:</strong> User pending action</span>
+            <i class="fa fas fa-times fa-2x exit-button "></i>
+        </div>
+        <div class="message-box message-box-warn">
+            <i class="fa fas fa-warning fa-2x"></i>
+            <span class="message-text"><strong>Warning:</strong> User has to be admin</span>
+            <i class="fa fas fa-times fa-2x exit-button "></i>
+        </div>
+        <div class="message-box message-box-error">
+            <i class="fa fas fa-ban fa-2x"></i>
+            <span class="message-text"><strong>Error:</strong> Internal Server Error</span>
+            <i class="fa fas fa-times fa-2x exit-button "></i>
+        </div>
+        <div class="message-box message-box-success">
+            <i class="fa fas fa-check fa-2x"></i>
+            <span class="message-text"><strong>Success:</strong> Updated member status</span>
+            <i class="fa fas fa-times fa-2x exit-button "></i>
+        </div>');
+    }
+
+    function test_wpcron(){
+        set_time_limit(-1);
+
+        for ($i=0; $i< 1000; $i++){
+            file_get_contents('http://woo6.lan/');
+
+            dd(
+                file_get_contents('D:\www\woo6\wp-content\plugins\wp_runa\logs\log.txt'),
+                "Web page requested | iteracion $i - now: " . at()
+            );
+
+            sleep(45);
+        }
+    }
+
 }   // end class

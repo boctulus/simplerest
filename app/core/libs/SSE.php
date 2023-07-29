@@ -1,14 +1,19 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace simplerest\core\libs;
+/*
+    @author  Pablo Bozzolo boctulus@gmail.com
+*/
 
-use simplerest\core\libs\Url; 
+namespace boctulus\SW\core\libs;
 
 /*
 	Author: boctulus
 	
 	Reference:
 	https://developer.mozilla.org/es/docs/Web/API/Server-sent_events/Using_server-sent_events
+
+
+	Tener en cuenta que para que SSE funcione correctamente, el servidor web debe permitir conexiones persistentes y estar configurado para permitir tiempos de espera más largos de lo normal. SSE es útil para casos en los que se requiera una comunicación unidireccional desde el servidor hacia el cliente en tiempo real.
 */
 
 class SSE
@@ -75,7 +80,7 @@ class SSE
 		}		
 	}
 
-	function error($data, $channel = null){
+	function sendError($data, $channel = null){
 		if (empty($channel)){
 			$channel = $this->channel;
 		}
@@ -83,7 +88,7 @@ class SSE
 		echo "event: $channel\n";
 
 		if (is_array($data)){
-			echo 'error: ' . json_encode($data);	
+			echo 'error: ' . json_encode($data);
 		} else {
 			echo 'error: ' . $data;
 		}
@@ -96,6 +101,8 @@ class SSE
 
 			sleep($this->interval);
 		}
+
+		exit;	
 	}
 
 
