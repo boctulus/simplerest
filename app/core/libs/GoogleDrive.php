@@ -2,6 +2,13 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Url;
+use simplerest\core\libs\XML;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\FileCache;
+
 /*
     Wrapper sobre el SDK de Google Drive
 
@@ -205,8 +212,11 @@ class GoogleDrive
     /*
       Descarga un archivo de Google Drive
      
-      @param string $link_or_id del archivo a descargar
-      @param string $destination Ruta de destino para guardar el archivo descargado
+      @param string         $link_or_id     
+      @param string         $destination        ruta de destino para guardar el archivo descargado
+      @param bool           $throw              si se lanza Exception
+      @param callable|null  $progress_id_cb     callback para nombrar archivos de progreso de descarga (por default se toma el ID del link de GDrive)
+
       @return bool  true si la descarga se realizó correctamente, false en caso contrario
       
       Ej:
@@ -220,9 +230,19 @@ class GoogleDrive
 
         // true
         dd($result, 'RESULT');
+
+        
+      Ej:
+
+        $result      = (new GoogleDrive($g_key))
+        ->download($link, $destination, true, $expiration_time, 0, function() use ($pid){
+            return $pid;
+        });
      */
-    function download(string $link_or_id, string $destination, bool $throw = false, $expiration_time = null, $micro_seconds = null): bool
+    function download(string $link_or_id, string $destination, bool $throw = false, $expiration_time = null, $micro_seconds = null, $progress_id_cb = null): bool
     {       
+        $chunkSize = 256; // Chunk size to read from the response stream
+
         $id = $this->getId($link_or_id);
 
         if ($expiration_time !== null){
@@ -231,11 +251,13 @@ class GoogleDrive
                     unlink($destination);
                 } else {
                     // dd("Using cache for $id ...");
-
                     return true;
                 }
             }
         }
+
+        $progress_path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . '.my_store';
+        Files::mkDirOrFail($progress_path);
 
         if ($micro_seconds === null){
             $micro_seconds = rand(10, 45) * rand(900000, 1000000);
@@ -266,8 +288,30 @@ class GoogleDrive
 
             $fileHandle = fopen($destination, 'w');
 
+            $totalSize = (int) $response->getBody()->getSize();
+            $bytesDownloaded = 0;
+
+            // dd($totalSize, 'Size');
+    
             while (!$response->getBody()->eof()) {
-                fwrite($fileHandle, $response->getBody()->read(1024));
+                // Traigo chunk
+
+                $chunk = $response->getBody()->read($chunkSize);
+                fwrite($fileHandle, $chunk);
+    
+                $bytesDownloaded += strlen($chunk);
+    
+                // Calculate and display the download progress percentage
+        
+                $progress = round(($bytesDownloaded / $totalSize) * 100);
+
+                // Almaceno % de progreso
+
+                $path = $progress_path . DIRECTORY_SEPARATOR . (is_callable($progress_id_cb) ? $progress_id_cb($id) : $id);
+
+                // dd($path);
+
+                file_put_contents($path, $progress);
             }
             
             fclose($fileHandle);
@@ -290,7 +334,7 @@ class GoogleDrive
 
             // Cada 10 downloads, hago una pausa cada 33 downloads
             if ($downloads_in_a_row % 33 === 0 && $downloads_in_a_row % 99 !== 0){
-                dd("Taking a nap ...");
+                StdOut::pprint("Taking a nap ...");
 
                 sleep(60 * rand(12, 15));
                 usleep(rand(500000, 1000000));
@@ -328,6 +372,5 @@ class GoogleDrive
     }
 
 }
-
 
 
