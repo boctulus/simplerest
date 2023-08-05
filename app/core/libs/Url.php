@@ -171,8 +171,7 @@ class Url
     static function query($url = null){
         return static::queryString($url);
     }
-
-
+  
     /*
         Si esta cerrado el puerto 443 puede demorar demasiado en contestar !
     */

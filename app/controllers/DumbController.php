@@ -8229,4 +8229,98 @@ class DumbController extends Controller
         }
     }
 
+    /*  
+        https://dev.cloudtrades.lat/api/register/
+
+        post api/register/
+
+        Content-Type: application/json
+
+        {
+        "name":"jeison",
+        "username": "@jeison_cisneros_user",
+        "email":"jecsnroxf@gmail.com",
+        "country": "Colombia",
+        "number_telephone": "3222551222",
+        "password_user": "cb7327ddd",
+        "password_user_2":"cb7327ddd",
+        "key_word": "hola_mundo"
+        }
+    */
+    function fer_register(){
+        $url = 'https://dev.cloudtrades.lat/api/register';
+
+        $cli = ApiClient::instance();
+        
+        $body = json_encode('
+        {
+            "name":"jeison",
+            "username": "@jeison_cisneros_user",
+            "email":"jecsnroxf@gmail.com",
+            "country": "Colombia",
+            "number_telephone": "3222551222",
+            "password_user": "cb7327ddd",
+            "password_user_2":"cb7327ddd",
+            "key_word": "hola_mundo"
+        }');
+
+        $res = $cli
+        ->setHeaders(
+            [
+                "Content-type"  => "application/json"
+            ]
+        )
+        ->withoutStrictSSL()
+        ->setBody($body)
+        ->disableSSL()
+        ->post($url)
+        ->getResponse();
+
+        dd($cli->error(),  'ERROR');
+        dd($cli->status(), 'STATUS');
+
+        $res = $cli->data();
+
+        dd($res, 'DATA');     
+    }
+
+
+    /*
+        https://dev.cloudtrades.lat/api/login/
+    */
+    function fer_login(){
+        $url = 'https://dev.cloudtrades.lat/api/login/';
+
+        $body = [
+            "username" => "jeison",
+            "password" => "cb7327ddd"
+        ];
+
+        $cli = ApiClient::instance();
+
+        $res = $cli
+        ->setHeaders(
+            [
+                "Content-type"  => "application/json"
+            ]
+        )
+        ->withoutStrictSSL()
+        ->setBody($body)
+        ->disableSSL()
+        ->post($url)
+        ->getResponse();
+
+        dd($cli->error(),  'ERROR');
+        dd($cli->status(), 'STATUS');
+
+        $res = $cli->data();
+
+        dd($res, 'DATA');        
+    }
+
+    function fer_login_2x(){
+        $this->fer_login();
+        $this->fer_login();
+    }
+
 }   // end class
