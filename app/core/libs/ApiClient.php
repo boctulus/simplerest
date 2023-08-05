@@ -571,6 +571,12 @@ class ApiClient
     }
 
     function request(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null){
+        static $prev_hosts;
+
+        if ($prev_hosts === null){
+            $prev_hosts = [];
+        }
+
         if ($this->mocked){
             return $this;
         }
@@ -585,7 +591,7 @@ class ApiClient
 
         $this->url  = $url;
         $this->verb = strtoupper($http_verb);
-
+        
         //
         // Sino se aplico nada sobre SSL, vale lo que diga el config
         // 
@@ -651,9 +657,22 @@ class ApiClient
             }
         }
 
-        // Evito sobrecargar al servidor
+        $domain = Url::getHostname($url);
+
         if (isset(config()['sleep_time'])){
-            rest(config()['sleep_time'], true);
+            /*
+                Solo si se ha solicitado antes (en principio en el mismo request),
+                hago la pausa
+
+                En vez de usar $prev_hosts como variable estatica deberia ser 
+                con uso de transcientes
+
+                Tambien deberia guardarse y tomarse en cuenta cuando fue la ultima
+                solicitud http a ese dominio
+            */
+            if (isset($prev_hosts[$domain])){
+                nap(config()['sleep_time'], true);
+            } 
         }
 
         $ok = null;
@@ -666,6 +685,7 @@ class ApiClient
         while (!$ok && $retries < $this->max_retries)
         {   
             $res = $this->consumeAPI($url, $http_verb, $body, $headers, $options, false, $this->encode_body);
+
             $this->status   = $res['http_code'];
             $this->error    = $res['error'];
             $this->response = $res['data'];
@@ -691,6 +711,7 @@ class ApiClient
             $ok = empty($this->error);
             $retries++;
 
+            $prev_hosts[ $domain ] = true;
             //d($ok ? 'ok' : 'fail', 'INTENTOS: '. $retries);
         }
 
