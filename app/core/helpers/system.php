@@ -15,7 +15,7 @@ function is_unix(){
 
 	Acepta valores decimales. Ej: 0.7 o 1.3
 */
-function rest($time, $echo = false){
+function nap($time, $echo = false){
 	if ($echo){
 		StdOut::pprint("Taking a nap of $time seconds");
 	}
