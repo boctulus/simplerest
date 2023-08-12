@@ -8323,4 +8323,39 @@ class DumbController extends Controller
         $this->fer_login();
     }
 
+    function check_content(){
+        dd(
+            consume_api('https://www.deltron.com.pe/login.php')
+        );
+    }
+
+    /*
+        La idea es crear un comando "make css-scan --dir={ruta}"
+
+        El output seran css_file('{ruta-al-archivo.css}'), uno por cada .css encontrado
+
+        Podria utilizarse en WordPress igualmente
+    */
+    function scan_for_css_files(){
+        $dir         = 'D:\www\woo2\wp-content\plugins\mutawp\assets\css\storefront';
+        $is_relative = true;
+
+        if ($is_relative){
+            $slash = Strings::getSlash($dir);
+        }
+        
+        $files = Files::glob($dir, '*.css');
+        
+        $lines = [];
+        foreach ($files as $file){
+            if ($is_relative){
+                $file = Strings::afterIfContains($file, "assets{$slash}");
+            }
+            
+            $lines[] = "css_file('$file');";           
+        }
+
+        return implode(PHP_EOL, $lines);
+    }
+
 }   // end class
