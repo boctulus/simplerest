@@ -268,6 +268,14 @@ class MakeControllerBase extends Controller
 
         make migration foo --fromField=user_id --toField=id --toTable=users --onDelete=cascade --onUpdate=setNull
 
+        CSS Scan
+
+        make css_scan --dir={path} [--relative=yes|no|1|0]
+
+        Ex:
+
+        make css_scan --dir="D:\www\woo2\wp-content\plugins\mutawp\assets\css\storefront"
+
         STR;
 
         print_r(PHP_EOL);
@@ -2221,5 +2229,64 @@ class MakeControllerBase extends Controller
         if (!$protected){
             $this->write($dest_path, $data, $protected, $remove);
         }
+    }
+
+    /*
+        Escanea un PATH en busca de archivos .css y devuelvee algo como
+
+        css_file('css/storefront/admin.css');
+        css_file('css/storefront/admin_notices.css');
+        css_file('css/storefront/dropzone.css');
+        css_file('css/storefront/fontawesome-all.min.css');
+        css_file('css/storefront/jquery-ui.structure.min.css');
+        css_file('css/storefront/jquery-ui.theme.min.css');
+        css_file('css/storefront/provider_admin.css');
+        css_file('css/storefront/spectrum.css');
+        css_file('css/storefront/unitecreator_browser.css');
+        css_file('css/storefront/unitecreator_styles.css');
+    */
+    function css_scan(...$opt) {
+        $is_relative = true;
+        $dir         = null;
+
+        foreach ($opt as $o){ 
+            if (Strings::startsWith('--relative=', $o)){
+                if (preg_match('~^--(relative)[=|:]([a-z0-9A-Z]+)$~', $o, $matches)){
+                    $val = strtolower($matches[2]);
+                    $is_relative = ($val != "0" && $val != "false"); 
+                }
+            }
+
+            if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o)){
+                // Convert windows directory separator into *NIX
+                $o = str_replace('\\', '/', $o);
+
+                if (preg_match('~^--(dir)[=:]([a-z:0-9A-ZñÑ_\-/]+)$~', $o, $matches)){
+                    $dir = $matches[2] . '/';
+                }
+            }
+        }
+
+        if (empty($dir)){
+            StdOut::pprint("Please specify path with --dir=");
+            exit;
+        }
+
+        if ($is_relative){
+            $slash = Strings::getSlash($dir);
+        }
+        
+        $files = Files::glob($dir, '*.css');
+        
+        $lines = [];
+        foreach ($files as $file){
+            if ($is_relative){
+                $file = Strings::afterIfContains($file, "assets{$slash}");
+            }
+            
+            $lines[] = "css_file('$file');";           
+        }
+
+        return implode(PHP_EOL, $lines);
     }
 }

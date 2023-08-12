@@ -1631,6 +1631,20 @@ class Strings
 		return $_path === false ? $path : $_path;
 	}
 
+	/*
+		Asumiendo que hay un solo tipo de slash como sucede en un path,
+		devuelve si es '/' o '\\'
+	*/
+	static function getSlash(string $str) {
+		if (strpos($str, '/') !== false) {
+			return '/';
+		} elseif (strpos($str, '\\') !== false) {
+			return '\\';
+		} else {
+			return null; // No se encontró ningún tipo de slash en la cadena
+		}
+	}
+
 	static function replaceSlashes(string $path) : string {
 		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
 	}
