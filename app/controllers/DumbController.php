@@ -8464,6 +8464,11 @@ class DumbController extends Controller
                 color: white;
             }
 
+            .sr-btn-red {
+                background-color: red;
+                color: white;
+            }
+
             .sr-btn-black {
                 background-color: #000000;
                 color: white;
@@ -8476,7 +8481,7 @@ class DumbController extends Controller
             /*
                 Extra: pills del mismo width
             */
-            
+
             .sr-rounded-pill-button {
                 width: 130px;
             }
@@ -8556,7 +8561,10 @@ class DumbController extends Controller
             */
 
             .sr-card-front {
-                background: url('/public/assets/andrea/img/globe.png') no-repeat center center / cover;
+                background-image: var(--img-url);
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: contain; /* Cambiado a 'contain' para ajustar la imagen sin recortes */
             }
     
             /* Overlay for the front side */
@@ -8576,14 +8584,14 @@ class DumbController extends Controller
             <?php foreach (range(0, 10) as $ix): ?>
                 <div class="sr-card">
                     <div class="sr-card-content">
-                        <div class="sr-card-front">
+                        <div class="sr-card-front" style="--img-url:url('/public/assets/andrea/img/globe.png')">
                             <div class="sr-card-front-text">Elementor Pro Super Cool</div>
                         </div>
             
                         <div class="sr-card-back">
                             
                             <div style="display: inline-block;">
-                                <a href="#" class="sr-rounded-pill-button sr-btn-blue">Actualizar</a> 
+                                <a href="#" class="sr-rounded-pill-button sr-btn-red">Actualizar</a> 
                                 <a href="#" class="sr-rounded-pill-button sr-btn-black">Saber más</a>
                             </div>
                         
