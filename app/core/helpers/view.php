@@ -99,10 +99,12 @@ function set_template(string $file){
     Siempre de /public/assets
 */
 function asset($resource){
+    $resource = str_replace('\\', '/', $resource);
+
     $protocol = is_cli() ? 'http' : httpProtocol();
     
     $base  = config()['base_url'];
- 
+
     if (Strings::endsWith('/', $base)){
         $base = substr($base, 0, -1); 
     }
