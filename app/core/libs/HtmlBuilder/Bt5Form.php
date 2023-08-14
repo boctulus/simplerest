@@ -1945,6 +1945,8 @@ class Bt5Form extends Html
 
     /*
         MBD image masks
+
+        Crea un OVERLAY que oscurece el contenido dando contraste.
     */
 
     static function mask($content = '', Array $attributes = [], ...$args){
