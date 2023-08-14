@@ -8329,7 +8329,12 @@ class DumbController extends Controller
         );
     }
 
-    function render_view() {
+    /*
+        No depende de ningun framework como Boostrap
+
+        Convertir eventualmente en componente 
+    */
+    function cards_with_overlays() {
         ob_start();
         ?>
         
@@ -8379,7 +8384,6 @@ class DumbController extends Controller
                 left: 50%;
                 transform: translate(-50%, -50%);
                 color: white;
-                font-size: 60px;
             }
     
             .sr-card-back {
@@ -8388,7 +8392,7 @@ class DumbController extends Controller
                 background: #03446A;
                 color: white;
                 transform: rotateY(180deg);
-                font-size: 60px;
+                font-size: 30px;
             }
 
             /*
@@ -8435,5 +8439,164 @@ class DumbController extends Controller
         render($content);
     }
     
+
+    function render_view() {
+        ob_start();
+        ?>
+
+        <style>
+            /* 
+                Botones redondeados
+            */
+
+            .sr-rounded-pill-button {
+                display: inline-block;
+                padding: 10px 20px;
+                border-radius: 20px;
+                text-align: center;
+                text-decoration: none;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+            .sr-btn-blue {
+                background-color: #5F79F9;
+                color: white;
+            }
+
+            .sr-btn-black {
+                background-color: #000000;
+                color: white;
+            }
+
+            .sr-rounded-pill-button:hover, .sr-rounded-pill-button:focus, .sr-rounded-pill-button:active {
+                color: white !important;
+            }
+          
+            /*
+                Extra: pills del mismo width
+            */
+            
+            .sr-rounded-pill-button {
+                width: 130px;
+            }
+
+
+            /*
+                Flip cards
+            */
+
+            .sr-card-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 20px;
+                justify-content: center;
+                align-items: center; /* Asegurar alineación vertical */
+                perspective: 500px;
+            }
+    
+            .sr-card {
+                position: relative;
+                width: 100%;
+                height: 300px;
+            }
+    
+            .sr-card-content {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                box-shadow: 0 0 15px rgba(0,0,0,0.1);
+                transform-style: preserve-3d;
+                transition: transform 0.5s;
+            }
+    
+            /*
+                Animacion
+            */
+            .sr-card:hover .sr-card-content {
+                transform: rotateY(180deg); 
+            }
+    
+            .sr-card-front,
+            .sr-card-back {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 5px;
+                backface-visibility: hidden;
+                overflow: hidden; /* Ensure the overlay doesn't overflow */
+            }
+    
+            /* White text on the front side */
+            .sr-card-front-text {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 24px;
+            }
+    
+            .sr-card-back {
+                text-align: center; /* horizontal alignment */
+                background: #03446A;
+                color: white;
+                transform: rotateY(180deg);
+                font-size: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /*
+                Extras
+
+                - Coloco imagen de fondo en la cara frontal
+                - Creo overlay sobre la imagen para aumentar contraste 
+            */
+
+            .sr-card-front {
+                background: url('/public/assets/andrea/img/globe.png') no-repeat center center / cover;
+            }
+    
+            /* Overlay for the front side */
+            .sr-card-front::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6); /* Overlay color and opacity */
+            }
+    
+        </style>
+    
+        <div class="sr-card-container">
+            <?php foreach (range(0, 10) as $ix): ?>
+                <div class="sr-card">
+                    <div class="sr-card-content">
+                        <div class="sr-card-front">
+                            <div class="sr-card-front-text">Elementor Pro Super Cool</div>
+                        </div>
+            
+                        <div class="sr-card-back">
+                            
+                            <div style="display: inline-block;">
+                                <a href="#" class="sr-rounded-pill-button sr-btn-blue">Actualizar</a> 
+                                <a href="#" class="sr-rounded-pill-button sr-btn-black">Saber más</a>
+                            </div>
+                        
+                        </div>
+
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    
+        <?php
+        $content = ob_get_clean();
+        render($content);
+    }
 
 }   // end class
