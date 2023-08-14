@@ -8329,33 +8329,81 @@ class DumbController extends Controller
         );
     }
 
-    /*
-        La idea es crear un comando "make css-scan --dir={ruta}"
-
-        El output seran css_file('{ruta-al-archivo.css}'), uno por cada .css encontrado
-
-        Podria utilizarse en WordPress igualmente
-    */
-    function scan_for_css_files(){
-        $dir         = 'D:\www\woo2\wp-content\plugins\mutawp\assets\css\storefront';
-        $is_relative = true;
-
-        if ($is_relative){
-            $slash = Strings::getSlash($dir);
-        }
+    function render_view() {
+        ob_start();
+        ?>
         
-        $files = Files::glob($dir, '*.css');
-        
-        $lines = [];
-        foreach ($files as $file){
-            if ($is_relative){
-                $file = Strings::afterIfContains($file, "assets{$slash}");
+        <style>
+            .sr-card-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 20px;
+                justify-content: center;
+                align-items: center;
+                perspective: 500px;
             }
-            
-            $lines[] = "css_file('$file');";           
-        }
 
-        return implode(PHP_EOL, $lines);
+            .sr-card {
+                position: relative;
+                width: 100%;
+                height: 300px;
+            }
+
+            .sr-card-content {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                box-shadow: 0 0 15px rgba(0,0,0,0.1);
+                transform-style: preserve-3d;
+                transition: transform 0.5s;
+            }
+
+            .sr-card:hover .sr-card-content {
+                transform: rotateY(180deg);
+            }
+
+            .sr-card-front,
+            .sr-card-back {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: white;
+                line-height: 300px;
+                color: #03446A;
+                text-align: center;
+                font-size: 60px;
+                border-radius: 5px;
+                backface-visibility: hidden;
+            }
+
+            .sr-card-back {
+                background: #03446A;
+                color: white;
+                transform: rotateY(180deg);
+            }
+        </style>
+
+        <div class="sr-card-container">
+            <?php foreach (range(0, 10) as $ix): ?>
+
+            <div class="sr-card">
+                <div class="sr-card-content">
+                <div class="sr-card-front">
+                    Front
+                </div>
+                <div class="sr-card-back">
+                    Back!
+                </div>
+                </div>
+            </div>
+            
+            <?php endforeach; ?>
+        </div>
+
+        <?php
+
+        $content = ob_get_clean();
+        render($content);
     }
 
 }   // end class
