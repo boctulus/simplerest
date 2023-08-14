@@ -8191,6 +8191,21 @@ o,..
 
 Nota: actualmente cuando se usa render() no se carga ningún css o js en el template !
 
+La funcion render() puede ser util para probar algo sin necesidad de generar un archivo para la vista.
+
+Ej:
+
+	ob_start();
+	?>
+
+	<!-- Algun HTML -->    
+	<p>Hello</p>
+	
+	<?php
+
+	$content = ob_get_clean();
+	render($content);
+
 
 # Assets
 
