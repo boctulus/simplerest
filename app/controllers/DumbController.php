@@ -8342,13 +8342,13 @@ class DumbController extends Controller
                 align-items: center;
                 perspective: 500px;
             }
-
+    
             .sr-card {
                 position: relative;
                 width: 100%;
                 height: 300px;
             }
-
+    
             .sr-card-content {
                 position: absolute;
                 width: 100%;
@@ -8357,40 +8357,52 @@ class DumbController extends Controller
                 transform-style: preserve-3d;
                 transition: transform 0.5s;
             }
-
+    
             .sr-card:hover .sr-card-content {
                 transform: rotateY(180deg);
             }
-
+    
             .sr-card-front,
             .sr-card-back {
                 position: absolute;
                 width: 100%;
                 height: 100%;
-                background: white;                
-                color: #03446A;                
-                font-size: 60px;
                 border-radius: 5px;
                 backface-visibility: hidden;
+                overflow: hidden; /* Ensure the overlay doesn't overflow */
             }
-
+    
+            /* White text on the front side */
+            .sr-card-front-text {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 60px;
+            }
+    
             .sr-card-back {
                 text-align: center; /* horizontal alignment */
                 line-height: 280px; /* vertical alignment */
                 background: #03446A;
                 color: white;
                 transform: rotateY(180deg);
+                font-size: 60px;
             }
 
             /*
                 Extras
+
+                - Coloco imagen de fondo en la cara frontal
+                - Creo overlay sobre la imagen para aumentar contraste 
             */
 
             .sr-card-front {
                 background: url('/public/assets/andrea/img/globe.png') no-repeat center center / cover;
             }
-
-             /* Overlay for the front side */
+    
+            /* Overlay for the front side */
             .sr-card-front::before {
                 content: '';
                 position: absolute;
@@ -8398,33 +8410,30 @@ class DumbController extends Controller
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: rgba(0, 0, 0, 0.25); /* Overlay color and opacity */
+                background-color: rgba(0, 0, 0, 0.6); /* Overlay color and opacity */
             }
-
-
+    
         </style>
-
+    
         <div class="sr-card-container">
             <?php foreach (range(0, 10) as $ix): ?>
-
-            <div class="sr-card">
-                <div class="sr-card-content">
-                <div class="sr-card-front">
-                    Front
+                <div class="sr-card">
+                    <div class="sr-card-content">
+                        <div class="sr-card-front">
+                            <div class="sr-card-front-text">Front</div>
+                        </div>
+                        <div class="sr-card-back">
+                            Back!
+                        </div>
+                    </div>
                 </div>
-                <div class="sr-card-back">
-                    Back!
-                </div>
-                </div>
-            </div>
-            
             <?php endforeach; ?>
         </div>
-
+    
         <?php
-
         $content = ob_get_clean();
         render($content);
     }
+    
 
 }   // end class
