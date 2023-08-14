@@ -8367,20 +8367,41 @@ class DumbController extends Controller
                 position: absolute;
                 width: 100%;
                 height: 100%;
-                background: white;
-                line-height: 300px;
-                color: #03446A;
-                text-align: center;
+                background: white;                
+                color: #03446A;                
                 font-size: 60px;
                 border-radius: 5px;
                 backface-visibility: hidden;
             }
 
             .sr-card-back {
+                text-align: center; /* horizontal alignment */
+                line-height: 280px; /* vertical alignment */
                 background: #03446A;
                 color: white;
                 transform: rotateY(180deg);
             }
+
+            /*
+                Extras
+            */
+
+            .sr-card-front {
+                background: url('/public/assets/andrea/img/globe.png') no-repeat center center / cover;
+            }
+
+             /* Overlay for the front side */
+            .sr-card-front::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.25); /* Overlay color and opacity */
+            }
+
+
         </style>
 
         <div class="sr-card-container">
