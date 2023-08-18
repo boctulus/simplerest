@@ -35,10 +35,10 @@ class CSS
             css_file('https://practicatest.cl/static/fonts/css/solid.css');
             css_file('https://practicatest.cl/static/fonts/css/regular.css');
             css_file('https://practicatest.cl/static/fonts/css/light.css');
-            
+
     */
-    static function extractLinkUrls(string $html, bool $use_helper = false) {
-        $arr = XML::extractLinkUrls($html, ['css']);
+    static function extractLinkUrls(string $html, bool $include_query_params = true, bool $use_helper = false) {
+        $arr = XML::extractLinkUrls($html, ['css'], $include_query_params);
 
         if ($use_helper === false){
             return $arr;
