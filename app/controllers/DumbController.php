@@ -8451,7 +8451,7 @@ class DumbController extends Controller
 
             .sr-rounded-pill-button {
                 display: inline-block;
-                padding: 10px 20px;
+                padding: 14px 20px;
                 border-radius: 20px;
                 text-align: center;
                 text-decoration: none;
