@@ -10075,23 +10075,50 @@ Hay más clases relacionadas pero se mencionaron las principales.
 
 	Logger
 
-
 # Manejo de errores
 
 	ExceptionHandler 	Trait 
 
-
 # Manejo de cadenas
 
-	Strings 			librería
-
+	Strings 			Librería
 
 # Envio de correos
 
-	Mails				librería
+	Mails				Librería
+
+# Strings
+
+	Strings				Librería
+
+# CSS
+
+	XML					Algunas funciones
+	CSSUtils
+	MakeControllerBase	Commando 
 
 
-### Strings
+### Herramientas para manejo de CSS
+
+La funcion getCSSClasses() devuelve un array con todas las clases de CSS utilizadas en el documento
+
+Puede servir para:
+
+- Luego solo seleccionar archivos CSS que las contengan o las reglas en especifico
+- Determinar si se utiliza un framework como Bootstrap (col-??-??, etc)
+
+Ej:
+    
+	$html        = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
+    $css_classes = XML::getCSSClasses($html); // array
+	
+
+Comando "make"
+
+	make css_scan --dir="D:\www\woo2\wp-content\plugins\mutawp\assets\css\storefront"
+
+
+### La clase Strings
 
 La clase Strings provee una batería de métodos para manejo conveniente de cadena de caracteres.
 
