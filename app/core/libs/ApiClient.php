@@ -823,7 +823,7 @@ class ApiClient
         ->setBinary()
         ->withoutStrictSSL();
 
-        $bytes = $cli->downloadZipFile(ETC_PATH . 'file.zip');
+        $bytes = $cli->download();
 
         dd($bytes, 'BYTES escritos');
     */
