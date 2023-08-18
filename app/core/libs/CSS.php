@@ -21,6 +21,15 @@ class CSS
 
         Ej:
 
+            $path        = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css'; //  <--- archivo
+            $css_classes = ['tns-slider', 'tns-item'];
+
+            $css_rules   = CSSUtils::getCSSRules($path, $css_classes)
+
+        o...
+
+        Ej:
+
             $path        = 'D:\www\woo2\wp-content\themes\kadence\assets\css';  // <---- directory
             $css_classes = ['tns-slider', 'tns-item'];
 
@@ -37,19 +46,6 @@ class CSS
                 [4] => .tns-horizontal.tns-carousel.tns-no-subpixel>.tns-item {margin-right: -100%;}
                 [5] => .tns-gallery>.tns-item {position: absolute;left: -100%;transition: opacity 0s,-webkit-transform 0s;transition: transform 0s,opacity 0s;transition: transform 0s,opacity 0s,-webkit-transform 0s;}
             )
-
-        TODO
-
-        El path debe poder ser no solo a un archivo sino a una carpeta
-        y buscar recursivamente con glob() por ejemplo
-
-        Ej:
-
-            $path        = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css';
-            $css_classes = ['tns-slider', 'tns-item'];
-
-            $css_rules   = CSSUtils::getCSSRules($path, $css_classes)
-
     */
     static function getCSSRules(string $path, array $css_classes) {        
         if (!Strings::endsWith('.css', $path)){
