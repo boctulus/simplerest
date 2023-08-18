@@ -12,51 +12,53 @@ use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 
+use simplerest\core\libs\CSS;
 use simplerest\core\libs\Env;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Xml;
-use simplerest\core\Container;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\Container;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
-use simplerest\core\Paginator;
 
+use simplerest\core\Paginator;
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\Utils;
 
+use simplerest\core\libs\Utils;
 use simplerest\core\libs\Arrays;
+
 use simplerest\core\libs\Config;
 
 use simplerest\core\libs\Logger;
-
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
-use simplerest\core\libs\DBCache;
 
+use simplerest\core\libs\DBCache;
 use simplerest\core\libs\Numbers;
+
 use simplerest\core\libs\Strings;
 
 use Spatie\ArrayToXml\ArrayToXml;
 
 use simplerest\core\libs\CSSUtils;
-
 use simplerest\core\libs\Factory;;
-use simplerest\core\libs\Hardware;
 
+use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
+
 use simplerest\core\libs\ApiClient;
 
 use simplerest\core\libs\FileCache;
-
+use simplerest\core\libs\MediaType;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\core\libs\GoogleMaps;
@@ -64,21 +66,21 @@ use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
 use simplerest\core\libs\ZipManager;
+
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
-
 use simplerest\core\libs\SimpleCrypt;
+
 use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
-
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
+
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
-
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
@@ -91,9 +93,9 @@ use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
+
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
-
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
@@ -101,7 +103,6 @@ use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\core\libs\MediaType;
 
 class DumbController extends Controller
 {
@@ -7911,10 +7912,12 @@ class DumbController extends Controller
         System::setMemoryLimit('2048M');
 
         $path        = 'D:\Desktop\OMAR FUENTES\RUNA\test';   
-        // $path        = 'D:\www\D:\Desktop\OMAR FUENTES\RUNA\testwoo2\wp-content\themes\kadence\assets\css\slider.min.css';
+        // $path        = 'D:\Desktop\OMAR FUENTES\RUNA\test\slider.min.css';
+        // $path        = 'D:\Desktop\OMAR FUENTES\RUNA\test\slider_extra.min.css';
+
         $css_classes = ['tns-slider', 'tns-item'];
 
-        $css_rules   = CSSUtils::getCSSRules($path, $css_classes);
+        $css_rules   = CSS::getCSSRules($path, $css_classes);
 
         dd($css_rules);
     }
