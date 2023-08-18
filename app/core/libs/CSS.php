@@ -10,9 +10,45 @@ class CSS
 {
     /*
         Extrae todas las referencias a archivos .css del header de una pagina
+
+        Ej:
+
+        Array
+        (
+            [1] => https://practicatest.cl/dist/css/basic.min.css
+            [2] => https://practicatest.cl/dist/css/style.themed.css
+            [3] => https://practicatest.cl/static/fonts/css/fontawesome.css
+            [4] => https://practicatest.cl/static/fonts/css/brands.css
+            [5] => https://practicatest.cl/static/fonts/css/solid.css
+            [6] => https://practicatest.cl/static/fonts/css/regular.css
+            [7] => https://practicatest.cl/static/fonts/css/light.css
+        )
+
+        Si $use_helper es true, devuelve un string con el uso de css_file()
+
+        Ej:
+
+            css_file('https://practicatest.cl/dist/css/basic.min.css');
+            css_file('https://practicatest.cl/dist/css/style.themed.css');
+            css_file('https://practicatest.cl/static/fonts/css/fontawesome.css');
+            css_file('https://practicatest.cl/static/fonts/css/brands.css');
+            css_file('https://practicatest.cl/static/fonts/css/solid.css');
+            css_file('https://practicatest.cl/static/fonts/css/regular.css');
+            css_file('https://practicatest.cl/static/fonts/css/light.css');
     */
-    static function extractLinkUrls(string $html) {
-        return XML::extractLinkUrls($html, ['css']);
+    static function extractLinkUrls(string $html, bool $use_helper = false) {
+        $arr = XML::extractLinkUrls($html, ['css']);
+
+        if ($use_helper === false){
+            return $arr;
+        }
+
+        $lines = [];
+        foreach ($arr as $file){
+            $lines[] = "css_file('$file');";           
+        }
+
+        return implode(PHP_EOL, $lines);
     }
 
      /*
