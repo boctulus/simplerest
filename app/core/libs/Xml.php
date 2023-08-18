@@ -219,7 +219,13 @@ class XML
         );
     }   
 
-    static function removeHTMLTextModifiers(string $html, array|string $tags = null): string {
+    /*
+        $html string
+        $tags array|string|null
+
+        @return string
+    */
+    static function removeHTMLTextModifiers(string $html, $tags = null): string {
 		$dom   = static::getDocument($html);
 		$xpath = new \DOMXPath($dom);  // HERE
 	
@@ -383,8 +389,13 @@ class XML
 		Puede usarse para remover <head>, <footer>, <style> y <script>
 
         Es recomendable usar stripTag() en su lugar
+
+        $page string
+        $tag  array|string
+
+        @return string
 	*/
-	public static function removeTags(string $page, array|string $tag) : string {
+	public static function removeTags(string $page, $tag) : string {
         if (is_string($tag)) {
             // Si se proporciona un solo tag como string, convertirlo a un array de un solo elemento
             $tag = [$tag];
@@ -401,8 +412,13 @@ class XML
 
 	/*
 		Util para eliminar eventos de JS y atributos como style y class
+
+        $page string
+        $attr array|string
+
+        @return string
 	*/
-	public static function removeHTMLAttributes(string $page, array|string $attr = null) : string {
+	public static function removeHTMLAttributes(string $page, $attr = null) : string {
         // if ($attr === null) {
         //     // Si no se proporciona ningún atributo, eliminar todos los atributos en las etiquetas
         //     return preg_replace('/\s*([a-z]+\s*=\s*"[^"]*"|([a-z]+\s*=\s*\'[^\']*\'))/i', '', $page);
@@ -1361,6 +1377,14 @@ class XML
 		return $page;
 	}
 
+    /*
+        Devuelve un array con todas las clases de CSS utilizadas en el documento
+
+        Puede servir para:
+
+        - Luego solo seleccionar archivos CSS que las contengan o las reglas en especifico
+        - Determinar si se utiliza un framework como Bootstrap (col-??-??, etc)
+    */
     static function getCSSClasses(string $html) {
         $dom = static::getDocument($html);
 
@@ -1376,6 +1400,25 @@ class XML
         $cssClasses = array_unique($cssClasses);
         return $cssClasses;
     }
-   
+
+    static function extractLinkUrls(string $html, $extension = null) {
+        $urls = [];
+
+        $dom = static::getDocument($html);
+
+        $linkElements = $dom->getElementsByTagName('link');
+
+        foreach ($linkElements as $linkElement) {
+            $href = $linkElement->getAttribute('href');
+            if (!empty($href)) {
+                $urlExtension = pathinfo($href, PATHINFO_EXTENSION);
+                if ($extension === null || Files::matchExtension($urlExtension, $extension)) {
+                    $urls[] = $href;
+                }
+            }
+        }
+
+        return $urls;
+    }
 }
 
