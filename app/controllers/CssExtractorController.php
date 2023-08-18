@@ -25,13 +25,13 @@ class CssExtractorController extends MyController
             https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap
         */
 
-        $domain = Url::getDomain('https://practicatest.cl/static/fonts/css/light.css');
-        $path   = ASSETS_PATH . $domain;
+        // $domain = Url::getDomain('https://practicatest.cl/static/fonts/css/light.css');
+        // $path   = ASSETS_PATH . $domain;
 
-        Files::mkDirOrFail($path);
+        // Files::mkDirOrFail($path);
 
-        dd($path);
-        exit;
+        // dd($path);
+        // exit;
 
         $html = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
 

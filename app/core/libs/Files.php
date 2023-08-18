@@ -1257,6 +1257,15 @@ static function readOrFail(string $path, bool $use_include_path = false, $contex
             return $urlExtension === $allowedExtensions;
         }
     }
+
+	/*
+		Devuelve la extension de un archivo
+		
+		Funciona con urls del tipo "https://some-domain.com/css/fontawesome.css?v=1"
+	*/
+	static function getExtension(string $file){
+		return Strings::beforeIfContains(pathinfo($file, PATHINFO_EXTENSION), '?');
+	}
 }   
 
 
