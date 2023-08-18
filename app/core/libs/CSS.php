@@ -35,6 +35,7 @@ class CSS
             css_file('https://practicatest.cl/static/fonts/css/solid.css');
             css_file('https://practicatest.cl/static/fonts/css/regular.css');
             css_file('https://practicatest.cl/static/fonts/css/light.css');
+            
     */
     static function extractLinkUrls(string $html, bool $use_helper = false) {
         $arr = XML::extractLinkUrls($html, ['css']);

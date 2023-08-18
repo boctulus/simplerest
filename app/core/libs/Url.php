@@ -483,8 +483,22 @@ class Url
         }
     }
 
+     /*
+        Salida:
+
+        https://practicatest.cl
+    */
     static function getBaseUrl(?string $url = null){
         return static::getHostname($url, true);
+    }
+
+    /*
+        Salida:
+
+        practicatest.cl
+    */
+    static function getDomain(?string $url = null){
+        return static::getHostname($url, false);
     }
 
     /*
