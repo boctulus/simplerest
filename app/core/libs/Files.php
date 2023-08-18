@@ -1151,6 +1151,7 @@ static function readOrFail(string $path, bool $use_include_path = false, $contex
 		if ($length !== null){
 			$content = file_get_contents($path, $use_include_path, $context, $offset, $length); // @
 		} else {
+
 			$content = file_get_contents($path, $use_include_path, $context, $offset); // @
 		}
 		
@@ -1241,7 +1242,21 @@ static function readOrFail(string $path, bool $use_include_path = false, $contex
 			}
 		}
 	}
-	
+
+	/**
+	 * Check if a given URL extension matches the allowed extension(s).
+	 *
+	 * @param  string       $urlExtension The extension of the URL.
+	 * @param  string|array $allowedExtensions The allowed extension(s) to match against.
+	 * @return bool         Returns true if the URL extension matches any of the allowed extensions, false otherwise.
+	 */
+    static function matchExtension($urlExtension, $allowedExtensions) {
+        if (is_array($allowedExtensions)) {
+            return in_array($urlExtension, $allowedExtensions);
+        } else {
+            return $urlExtension === $allowedExtensions;
+        }
+    }
 }   
 
 

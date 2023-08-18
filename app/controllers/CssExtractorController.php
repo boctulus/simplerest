@@ -17,7 +17,7 @@ class CssExtractorController extends MyController
         $html = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
 
         dd(
-            XML::extractLinkUrls($html, ['css', 'json'])
+            XML::extractLinkUrls($html, 'css')
         );
     }
 }
