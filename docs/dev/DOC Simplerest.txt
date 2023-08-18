@@ -10093,8 +10093,7 @@ Hay más clases relacionadas pero se mencionaron las principales.
 
 # CSS
 
-	XML					Algunas funciones
-	CSSUtils
+	CSS					Librería
 	MakeControllerBase	Commando 
 
 
@@ -10110,7 +10109,7 @@ Puede servir para:
 Ej:
     
 	$html        = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
-    $css_classes = XML::getCSSClasses($html); // array
+    $css_classes = CSS::getCSSClasses($html); // array
 	
 
 Comando "make"
