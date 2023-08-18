@@ -27,9 +27,36 @@ class Files
 	}
 
 	/*
+		Descarga localmente archivos dadas una o varias urls
+
+		$url 	   string|array url para descarga
+		$dest_path string       ubicacion donde se dejaran las descargas
+	*/
+	static function download($url, string $dest_dir){
+		if (is_string($url)){
+			$url = [ $url ];
+		}
+
+		$cli = new ApiClient();
+		$cli
+			->setBinary()
+			->withoutStrictSSL();
+
+		foreach ($url as $uri){	
+			Url::validateOrFail($uri);
+
+			$filename = static::getFilenameFromURL($uri);	
+			$bytes    = $cli->download($dest_dir . DIRECTORY_SEPARATOR . $filename, $uri);
+		}
+
+		// retorna la longitud del ultimo archivo descargado (util si es solo uno)
+		return $bytes;
+	}
+
+	/*
 		Fuerza la descarga del archivo
 	*/
-	static function download($file){
+	static function forceDownload($file){
 		if (!file_exists($file)) {
 			throw new \InvalidArgumentException("File not found for '$file'");
 		}
@@ -1259,9 +1286,17 @@ static function readOrFail(string $path, bool $use_include_path = false, $contex
     }
 
 	/*
+		Extrae el nombre de archivo de una url 
+		(que podria coincidir con el ultimo segmento)
+	*/
+	static function getFilenameFromURL(string $url){
+		return Strings::beforeIfContains(Strings::lastSegmentOrFail($url, '/'), '?');
+	}
+
+	/*
 		Devuelve la extension de un archivo
 		
-		Funciona con urls del tipo "https://some-domain.com/css/fontawesome.css?v=1"
+		Funciona con paths y tambien con urls del tipo "https://some-domain.com/css/fontawesome.css?v=1"
 	*/
 	static function getExtension(string $file){
 		return Strings::beforeIfContains(pathinfo($file, PATHINFO_EXTENSION), '?');

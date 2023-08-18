@@ -17,27 +17,33 @@ class CssExtractorController extends MyController
         /*
             La idea es:
 
-            - Descargar cada archivo .css
+            - Descargar cada archivo .css    -- ok
             - Generar una linea con css_file() para cada uno
-            - Traer los parametros query como "?family=Roboto:wght@400&display=swap" y pero opcionalmente no hacelro
             - Permitir excepciones o en algunos casos hacerlas de forma automatica como con Google Fonts
 
             https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap
         */
 
-        // $domain = Url::getDomain('https://practicatest.cl/static/fonts/css/light.css');
-        // $path   = ASSETS_PATH . $domain;
+        // provendria de otra funcion
 
-        // Files::mkDirOrFail($path);
+        $urls = [
+            'https://practicatest.cl/dist/css/basic.min.css',
+            'https://practicatest.cl/dist/css/style.themed.css?v=1'
+        ];
 
-        // dd($path);
-        // exit;
+        foreach ($urls as $url){
+            $domain = Url::getDomain($url);
+            $path   = ASSETS_PATH . $domain;
 
-        $html = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
+            Files::mkDirOrFail($path);        
+            Files::download($url, $path);
+        }
 
-        dd(
-            CSS::extractLinkUrls($html, true)
-        );
+        // $html = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
+
+        // dd(
+        //     CSS::extractLinkUrls($html, true)
+        // );
     }
 }
 

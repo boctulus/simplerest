@@ -8021,7 +8021,7 @@ class DumbController extends Controller
     }
 
     function test_rest(){
-        rest(0.99);
+        nap(0.99);
     }
 
     function test_argsv(){
@@ -8608,6 +8608,16 @@ class DumbController extends Controller
         <?php
         $content = ob_get_clean();
         render($content);
+    }
+
+    function df(){
+        $url = [
+            'https://practicatest.cl/dist/css/basic.min.css',
+            'https://practicatest.cl/dist/css/style.themed.css?v=1'
+        ];
+       
+        // El directorio debe existir
+        Files::download($url, 'D:\www\simplerest\public\assets\practicatest.cl');
     }
 
 }   // end class
