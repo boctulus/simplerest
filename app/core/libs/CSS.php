@@ -8,6 +8,74 @@ use Sabberworm\CSS\Parser;
 
 class CSS
 {
+    /*  
+        Dado el HTML de una pagina o el path,
+
+        - Descarga cada archivo .css
+        - Generar una linea con css_file() para cada uno
+
+        Con $use_helper en true,
+
+        Salida:
+
+            css_file('practicatest.cl\basic.min.css');
+            css_file('practicatest.cl\style.themed.css');
+            css_file('practicatest.cl\fontawesome.css');
+            css_file('practicatest.cl\brands.css');
+
+        Con $use_helper en false,
+
+        Array
+        (
+            [0] => D:\www\simplerest\public\assets\practicatest.cl\basic.min.css
+            [1] => D:\www\simplerest\public\assets\practicatest.cl\style.themed.css
+            [2] => D:\www\simplerest\public\assets\practicatest.cl\fontawesome.css
+            [3] => D:\www\simplerest\public\assets\practicatest.cl\brands.css
+        )
+    */
+    static function downloadAll(string $html, bool $use_helper = true)
+    {
+        if (Strings::startsWith('https://', $html) || Strings::startsWith('http://', $html)){
+            $html = consume_api($html);
+        } else {
+            if (strlen($html) <= 255 && Strings::containsAny(['\\', '/'], $html)){
+                if (file_exists($html)){
+                    $html = Files::getContent($html);
+                }            
+            }
+        }
+
+        $urls = CSS::extractLinkUrls($html, true);
+
+        $filenames = [];
+        foreach ($urls as $url){
+            $domain = Url::getDomain($url);
+            $path   = ASSETS_PATH . $domain;
+
+            Files::mkDirOrFail($path);        
+            $bytes = Files::download($url, $path);   
+
+            if (empty($bytes)){
+                throw new \Exception("Download '$url' was not possible");
+            }
+
+            $filename    = Files::getFilenameFromURL($url);
+            $filenames[] = $path . DIRECTORY_SEPARATOR . $filename;
+        }
+
+        if (!$use_helper){
+            return $filenames;
+        }
+
+        $out = '';
+        foreach ($filenames as $ix => $filename){
+            $filenames[$ix] = Strings::diff($filename, ASSETS_PATH);
+            $out .= PHP_EOL . "css_file('$filenames[$ix]');";
+        }
+
+        return $out;       
+    }
+
     /*
         Extrae todas las referencias a archivos .css del header de una pagina
 
