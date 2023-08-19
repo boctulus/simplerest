@@ -37,8 +37,8 @@ class CSS
             css_file('https://practicatest.cl/static/fonts/css/light.css');
 
     */
-    static function extractLinkUrls(string $html, bool $include_query_params = true, bool $use_helper = false) {
-        $arr = XML::extractLinksByRelType($html, "stylesheet", $include_query_params);
+    static function extractLinkUrls(string $html, bool $include_query_params = true, bool $include_fonts = false, bool $use_helper = false) {
+        $arr = XML::extractLinksByRelType($html, "stylesheet", (!$include_fonts ? "css" : null), $include_query_params);
 
         if ($use_helper === false){
             return $arr;
