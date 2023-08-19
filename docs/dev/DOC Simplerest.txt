@@ -9597,7 +9597,7 @@ Ej:
 	->setBinary()
 	->withoutStrictSSL();
 
-	$bytes = $cli->download(ETC_PATH . 'file.zip');
+	$bytes = $cli->download(ETC_PATH . 'file.zip'); // <-- aca la ruta donde se guardara el archivo
 
 	// empty => OK
 	if (!empty($cli->error())){
