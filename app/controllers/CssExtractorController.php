@@ -2,18 +2,25 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
 use simplerest\core\libs\CSS;
-use simplerest\core\Response;
-use simplerest\core\libs\Files;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\XML;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Strings;
 use simplerest\controllers\MyController;
 
 class CssExtractorController extends MyController
 {
     function parse()
     {
+        $html = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
+
+        dd(
+            XML::extractLinksByRelType($html, "stylesheet")
+        );
+
+        exit;
+
         /*
             La idea es:
 
@@ -31,19 +38,33 @@ class CssExtractorController extends MyController
             'https://practicatest.cl/dist/css/style.themed.css?v=1'
         ];
 
+        $filenames = [];
         foreach ($urls as $url){
             $domain = Url::getDomain($url);
             $path   = ASSETS_PATH . $domain;
 
-            Files::mkDirOrFail($path);        
-            Files::download($url, $path);
+            // Files::mkDirOrFail($path);        
+            // $bytes = Files::download($url, $path);   
+
+            // if (empty($bytes)){
+            //     throw new \Exception("Download '$url' was not possible");
+            // }
+
+            $filename    = Files::getFilenameFromURL($url);
+            $filenames[] = $path . DIRECTORY_SEPARATOR . $filename;
+            
+            // "css_file('$file');"; 
         }
 
-        // $html = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
+        $out = '';
+        foreach ($filenames as $ix => $filename){
+            $filenames[$ix] = Strings::diff($filename, ASSETS_PATH);
+            $out .= PHP_EOL . "css_file('$filenames[$ix]');";
+        }
 
-        // dd(
-        //     CSS::extractLinkUrls($html, true)
-        // );
+        dd($out);
+
+       
     }
 }
 
