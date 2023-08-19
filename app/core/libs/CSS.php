@@ -38,7 +38,7 @@ class CSS
 
     */
     static function extractLinkUrls(string $html, bool $include_query_params = true, bool $use_helper = false) {
-        $arr = XML::extractLinkUrls($html, ['css'], $include_query_params);
+        $arr = XML::extractLinksByRelType($html, "stylesheet", $include_query_params);
 
         if ($use_helper === false){
             return $arr;
