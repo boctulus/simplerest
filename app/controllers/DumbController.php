@@ -112,7 +112,8 @@ class DumbController extends Controller
         //DB::getConnection('az');
     }
 
-    function index(){
+    function index()
+    {
         dd(System::getMemoryLimit(), 'Memory limit');
         dd(System::getMemoryUsage(), 'Memory usage');
         dd(System::getMemoryUsage(true), 'Memory usage (real)');
@@ -121,58 +122,66 @@ class DumbController extends Controller
         dd(System::getMemoryPeakUsage(true), 'Memory peak usage (real)');
     }
 
-    function phpinfo(){
+    function phpinfo()
+    {
         phpinfo();
     }
 
-    function info(){
+    function info()
+    {
         phpinfo();
     }
 
-    function get_rand_str(){
+    function get_rand_str()
+    {
         $len = 6770;
-    
+
         return Strings::randomString($len);
-      }
-    
-      function testy(){
+    }
+
+    function testy()
+    {
         dd(
-          Strings::parseCurrency('son EUR 108.000,40 a pagar', '.', ',')
+            Strings::parseCurrency('son EUR 108.000,40 a pagar', '.', ',')
         );
-      }
-    
-      function testx(){
+    }
+
+    function testx()
+    {
         DB::getConnection();
-    
+
         dd(
-          DB::driver()
+            DB::driver()
         );
-      }
-    
-    
-      static function get_url_slugs(){
+    }
+
+
+    static function get_url_slugs()
+    {
         $url = "http://127.0.0.1:8889/api/xxx/777/";
-    
+
         dd(
-          Url::getSlugs($url)
+            Url::getSlugs($url)
         );
-      }
-      
-      static function get_rand_hex(){
+    }
+
+    static function get_rand_hex()
+    {
         return Strings::randomHexaString(6);
-      }
-    
-      function test_db(){
+    }
+
+    function test_db()
+    {
         DB::getConnection('mpp');
-      
+
         dd(
-          DB::getTableNames()
-        );    
-      }
-    
-      function test_remove_sp()
-      {
-          $str = "		array (
+            DB::getTableNames()
+        );
+    }
+
+    function test_remove_sp()
+    {
+        $str = "		array (
               'ID_COC' => 
               array (
                 'type' => 'int',
@@ -197,9 +206,9 @@ class DumbController extends Controller
                 'type' => 'timestamp',
               ),
             );";
-            
-            echo Strings::trimMultiline($str). PHP_EOL;
-      }
+
+        echo Strings::trimMultiline($str) . PHP_EOL;
+    }
 
     function test_dd()
     {
@@ -215,26 +224,28 @@ class DumbController extends Controller
         dd([4, 5, 7], "My Array", true, false);
     }
 
-    function now(){
+    function now()
+    {
         return at();
     }
 
-    function test_apiclient_cache(){
+    function test_apiclient_cache()
+    {
         $url    = base_url() . '/dumb/now';
 
         $client = new ApiClient($url);
 
         $res = $client->disableSSL()
-        ->followLocations()
-        ->cache(5)  
-        ->get()
-        ->getResponse(false);
+            ->followLocations()
+            ->cache(5)
+            ->get()
+            ->getResponse(false);
 
-        if ($res === null){
+        if ($res === null) {
             return;
         }
 
-        if ($res['http_code'] != 200){
+        if ($res['http_code'] != 200) {
             return;
         }
 
@@ -246,27 +257,29 @@ class DumbController extends Controller
         ]);
     }
 
-    function test_apiclient_cache_until(){
+    function test_apiclient_cache_until()
+    {
         $url    = base_url() . '/dumb/now';
 
         $client = new ApiClient($url);
 
         $res = $client->disableSSL()
-        ->followLocations()
-        //->clearCache()
-        ->cacheUntil('9:56')  
-        ->get()
-        ->getResponse(false);
+            ->followLocations()
+            //->clearCache()
+            ->cacheUntil('9:56')
+            ->get()
+            ->getResponse(false);
 
         dd(
-            $client->getCachePath(), 'CACHE PATH'
+            $client->getCachePath(),
+            'CACHE PATH'
         );
 
-        if ($res === null){
+        if ($res === null) {
             return;
         }
 
-        if ($res['http_code'] != 200){
+        if ($res['http_code'] != 200) {
             return;
         }
 
@@ -279,7 +292,8 @@ class DumbController extends Controller
     }
 
 
-    function test_view_cache(){
+    function test_view_cache()
+    {
         view('random', null, null, 10);
     }
 
@@ -293,14 +307,15 @@ class DumbController extends Controller
         ], ETC_PATH . 'some_file.txt');
     }
 
-    function test_truncate(){
+    function test_truncate()
+    {
         Logger::truncate();
-        
+
         dd(Logger::getContent(), Logger::getLogFilename(true), true, false);
     }
 
-    function test_fsockopen(){
-        
+    function test_fsockopen()
+    {
     }
 
     /*
@@ -316,13 +331,15 @@ class DumbController extends Controller
     /*
         Probar en un contenedor con SSL
     */
-    function has_ssl(){
+    function has_ssl()
+    {
         dd(
             Url::isSSL()
         );
     }
 
-    function test_php_operators(){
+    function test_php_operators()
+    {
         // ...
     }
 
@@ -512,11 +529,13 @@ class DumbController extends Controller
         view('casa_cambio/home.htm', null, 'casa_cambio/layout.php');
     }
 
-    function random_res(){
+    function random_res()
+    {
         return rand(1, 9999);
     }
 
-    function no_processing(){
+    function no_processing()
+    {
         $str = <<<STR
         <!DOCTYPE html>
         <html lang="es">
@@ -683,11 +702,12 @@ class DumbController extends Controller
         </body>
         </html>
         STR;
- 
+
         return strlen($str);
     }
 
-    function just_string(){
+    function just_string()
+    {
         return 'TUpHG 0VQ IImwRMTLBAHhL4QoJeUTy sJjqb6hI1dpArfm NP Rtv2qYLbiE wtSwO0 skm2 dpgpPXpNJrJIFhDhf8zl7O8C5bCcX 6 gMiU OgpXYZyqhyWdFnQq6BbYpZD1M6MuAPLQvMHBHkyX1boS4 h2K2vS7XAVGy7AM y6f5xA JwAd3CE91no eLzmeZ7lonHm cPUZb4Iv08 XCCoDhJRfzEoJI989Urr44l5z amFKv4UMlRZJDdHMNisj2srm5t8t k79tl7Kcl1IWSzP mWzrbGzrgOS JSBpQFnM2uaoM Gbwekga6ZEUkmsEQKOYOVA LpQcQCooMLTX93a0wu2i5uGLituy p BnDJt n3mUskFs Meh73Os xpno2SueX 5OIrQvFJVJc7DRqeoxd0UwvXeKHlK9hr9QZ7xY PP Hq 9yhsVPcDLayajQv3ZSU ty3aBlY5wfWGb 917NRDXDQX GZ1Em4u4X2Aftqvmb jUG8pKZgzHc4XGj YS3pztrFijhoCQyE wkcH1V hk2AwTLlTrZgjohtiSArDjzrrxZcdzBgBmaW2eF fInWvEQdknXr61iX5MNZKK6K DzOfQekZC16EBMyYdc6iFR9tpp lOGPEWBIZcj1xsTcM4 6 8ll 2k 09 AIqm VnbmEbsXSvgcVvY8 9 O4ks 2ZoBqxps rW5Q i L ps ubgdh QFtisxQ G mzrJoNUbc Yu8ljmhT1t8moYsTK bEsMLSdPASD0Ny8g znJqAzbYhzmr i3tKcCYOpC yD Ur8n 1YhSrHjws395XjVl1oTbiy 4BQDC zLwk68541sAsC Z YCOoHZ dnr AQ ED8sYbA5Zn44J158vzOd9w iBf Sc9Gfl ARgR4pyX 7LTRwA6WbEauIKTwTk0Nuz9 F63OQ17g bJpVNetO9a RvRTDoG1bESc3Kt7o6Rvldiz 8 j0KJEsquQ70rxjNvHjUnQY4jJ 8XkIMwUNMgGdBXUxuNUK pde rktHya2MXz Yf QcXc 59ui UtNHV unXhsBg 5msGND wgBh E45DcsnMBU1 NsjTvD bs7GVYxzjHHd3tAaTKIp zZu6Lt yz 78uFB2Gilw7mB WHfuF6UCneNn0xgMk8llV8xsH6QlOAkf6dZcA7MmEtZ jZI5WWESJeM Fkv8CLmqBB6KQRzpaGLetlbD2Mz08o3LtktLjxJ2YeYqlkzbd 7RV0 ln09vCoeqMJMuxpvS0JsBJ5fVSk j9XztsOLhhtHBcYxLoH5oeKqMpX KZ5aBjzR Q 8RbfuGmeytn1Ec8R MCSEsMgV9Q Y3KWBPE1aRxpZL a7vTGV7j8YgG 2I hiXRKp8KhPsmUpe C Nm2LIJ VIZVhp5Q3X6gxHZ W9nj2m E9ycdmmO5X6G6nUFL0gK38sAuRTSaXuyl5 a vzEHruQ0gd40l Mnh89IOR ZTZMbV1kZdQDJ Y1XVoDahIITDd90jiaLYIAxmuDOGFRDuMtQpqWmG6Dkkc2 hLULNsvHgQz4dLkN21H7cg Hh116 H3ytpPx olFit3J1Vo 3yz yoHiv vbbe7gUhOOtB8i0IRwo4Vpzlof5HmD92DP7A F zUaPnYdCmNngwDw lZx 9Lj4m57WIdO9W5YenJBws M rDZ mYnTNLv 1psP BK0TlBCPOLt0 KCJTMyuJ6BP9iOgVCokVUk69 muUqyBeL0HFdf5 a DTbUhKLvPL 8MW4rEirgiDgcIPy6PVcAaVIIEeLZjQ qpFb Y w9oBZW odft0vFwSF4mfnsh1WUm6Wb7DR7NEivWcPyKTodhvJ7dt68 01z0Nxyr snMZXcxScsOJ48RwqZZt A Wb6ayXK tkiSwHn8aNX2Agkx Pa3W hb318xTlKWtsfSU hVMCU xf VEAp4nBASSN1u abIymJ QOu OE eCxP VVlESNgaz 5CNU7AkQbZMCKLCZNEd5D Od7ECTE3 0BXrMZP EjK HtoLhjhTjZ 3SnbDzy80v2cFw5JB HZK nqm HxYdkhL2y53EZkgSACO4jrKlhXQHFyKuSx2lGpHQrCtm5DF dHeD58Wiq Sm 33d mG o6B0cYGNtJDBvtBFF2e alu2B3oje0nB8lv4rucsePbojxREM g90lrvu0YD6jP2yZw4bmmdTK z y eyc roq jtP2nF45R aa7VSw5g yWGP7zXxwVlEVAnC uQC0y2HJc Di oeVX1CvDQheJ7ES MWbj05eaMSw0wxlajiF kbrU1sVxVH 2J0dvtYz6rtHSbpm9SKQscHH4uF iEkLOFt 6pWNrQ5OHhNhqlI0TBcQ eSQkettYFqDw3nBW7CO7bdl7qxk2j4NvFlHB94OKCxmb99c 9 fWb YEcWb7 nRwcr RDkXrDXSYGxEp ZTNCkjf2m3yzMxu5ykxx1BfK9tS 87e JY q JpJfV0RovaaiDqavPpXexebq8 Bjuv A kvLyDoze0 pzg7aR25IDJcPHE6ISTbIeXN aSY6VwhY1 3Jo nE54N8ke5If MoPEXD0 n2AfIqPz8RiZIsUY Iw X 3mUvPQURWKJOCTEmtMbF NKmJ2n7aIpZ OzD1O q3ihRbgAspM IPV8XnahRlo y3 xWgrRffbfpMX SA k aN9G5XO 4Cpllpo q6FsL YcxyCQYQwAj3E4SR0LdpyAIboBWcMdzQBfCK J eVhlF0uMZV3kIM7 0D R Zhp1BWs1u QU YEfPgbnN3z4RYke3q3w758GMROl2q JrAUQ zIP6ppe62SAqx7DK1EfuKmIPafv7gix10aHO66 f2gHuN5JpygND Vk8vrf8wLAsu TjQG MKMXIVtdSqdjKkzqjaUNicg2CSaQbk5Rgq11YTY UN9I4eIyg5A9wWgQmhcQ2YodnoRoPShICCOrTDVwuFZaXGN p4 DGUhgSnRhvwI QtLHiqpc Se eI 3708 lAU23Q3kUjraJyIkVqbKWBKB6dHpIrUPseBSFY Obnojqmx OzSYClU2AJudV wIqXr vJp8lNrpkBmTGEPg7Bjhfd bN YyDt6KNzn 9 8uOouaRuXRFiBbze366K3Skyj7s8pegG y9aWMjbOeHiG4pZKLUaj79HIe01JUE dc9ABbpHG G7JU SD5Mx SiLgZbCgSypRy3uI Cd93BsAdqw fL814ScOqoi3GGi HfSP89PkRbtHBTbQept1i GQle nc J uy PirocOJqy7 DlNXFCULE 4 eSe dWMjWuQsHF pw Uo5qrnYcBMdEbbnvTeOQVo vP E582 m4jlR KWQKn4NUW3Byx71PuW22 TBR3ash UIIPwclAJrjci ZUw7f2LFrdD Xy6Z5kTlNqbnOQHH srPYljX8 lkWZmAXgXc8vNBGhwyYB8jJE9SRJ ji1LIkn7 0iJlFrPvJ9miPU wQ5ap1 V2CEPUGNdM01G2k3KZsnfPJBDA yf2VqhOc58kX3mLB Pow8MIqYTTJKfDvnIFkaF5ijd47o0g9O6EZxCR uKILC NpL9n576TrCQcvMZioAcqOYvWrZnL9N c Julcv5Kc SumY JCT7ur3V 8 DFU0D16JzsRcqX0L5ZHV4qUFGXCecubsN3 YLu1AYr 1a1IeV3haGwZxnjurDmo84Ro Z4Xt16DNXYrmZ1 zTG M5BYdkti3myNvUGQ0H6UTYDaOv5M Wn8kv5IaY94h2VQjAbMuogKXyvCYok8lNy9WQbmIsHLNuH9cxxrD60ek oOGVvN3q9ifEcL3 AZ4V9xqgESezwdcE6d4ATd xU1TkFqN08P8 Mm8I05JXBOVu 3F0dUF7NYVC2S HPxe1R3KlzpRtA 6Z Wnh1rGAGfSwjCsI8E 1ET r4cn9H0LPNv22KNtnsg2M I1lNfkM2xM7R0LS2Bgmp5EUMO76VVOMBFiwwEZzZpr1ZpOxj5uu1cQjKIN56rsTwHlntk88hccAfh37i4DFOtgWBdba 1U86ne3eSlLKq4rig FaaExTWxjMO C RyDj6tHXt9Cq FeJ8Oa 8bW0S7 4MhwjksWvA4 jWb6e1 j q TNTl48VO7oNzKr4kZiBhG toCLqfdmhNPEjC2Aio stC08 WggDZA wjbq ZNvys3zp3WcTI A oj5VPC2N1Y LoFUyJ41 7o bdYET rzT d 2JLDPvQ1 5Wse SgdXi2 6cEP n4Oxg8oMtKQ4yUw8NBUBp78wLdyvU5BAkDsia7rtfEbVDYhN9 2f3cocYHGfof1YnaqvDqU7sx Nb1MjSuE7i ff oE y05KA9b9KfzDVF8 0eK31 VwbV7qpLb1SLOAcx R5hCIXc5lgDKvAtQ4W Cff0H uMu ntwvz9J kJ HZI6C1YFYVV1aLSz8dwI3d PmWOI0 AP4 eE9LipgTX96Lz0CzgMuQOG784qbisJeWZ6gqrd0h YiwL YdxaaUevSfBuI d FSQeEF7Tseq5ZiivecU UwBvXNpvvd bmoHS6ScHqW CT0Qn9aW 5Jn WNg3PG3lbRszbOk cL8VqyqKW Tu0fGu aQ Z wfM4usdv 1Y svLrSeguRCV7Lhw Lb818 qTJW7 TG7Vs To BFfB8jxgG HAFGYDrw7URihp uAC MEaKFffy A9r3w z12AygnKGjWdVoLpcDPX Cdq9FLdW3e HXU4dCtkiKtdV3p RXNy6 XciU2eaA UTxkAsT6C5jv8M 6kn4LW Uw c9Gco erDLVfR oUhWvCYhA2hh031LhgQls1xFwR uyTEKdbf k7yRhn3acgX q6hKL440xnFbdUfyZrVo7WU5QnyweG8TDW4S3vs G54wkv UtMZsHQ4pxlo JCPnn6mumakD6L1j0z0YIn6m41G TJp6z4WiW8 VRX FWX 2g yK9HJo faz kN8t63so3Qbu67 4IFGb2 CIGq2k KGIVMIcaHQPe p4Giaa6qBs CySsxsSj3YSm T R3Q1eWJulU QJ 3U4szk3t3ZrIA 0RchE rfBP4dGMvHKGWExxPGMdf6w5abq7x96tMqyAtoymXY JWK xNYXd quTmdjOhaUB2 gzUTOZ iTgnvEcxtXIpiMJoiPvYohxrm Pu pNQb2iiyNAVegkGOgQ4kmtuWgaaqq4DiffVi7T 7AlLfkxn I2P m9IhIj Bxk 00g4lKU Y2IH2oN68 jUrqR0G mZYW Gfya M7os6XKh f91DDU2tQ9fOmoPilYlR4nHdO qffCqk2ekbbdAR94L0ldaHdcUT Z5k6dfCi E9w8P o NWjnftx0nPYwFhLYtly FoyZ0I5iIlQTG2 yW D PMQwBhA66IELOvfXKmpSPATCk mRn84C9fZPB6mFRc NPDx Oe YMgNHEAZFgG3bgKf9uNsL5GSTgiTL1SK3FZAhvlbM MVB6z8xiP4tsCEjZCFVc2XVG87NbhqiVanwxT7pWIZrvjcR0sO4tTB0ndHlNgi4 Py5CFud5F14 ycxaut1g5Qi89XsStvNtYf5nx10Ju9LonA v3axQFEhfh n1 JMG01zIGjE wPW zV2gsFgUpy96jfM4P MvDE feyOO53pDTk7EP7lXpWNTj4O7R95 6iUFATFFeIamDAqNuT15 2wsG 3EEzGrNZryza4P9 iRvz2sSC4fHCeJd5YYFnHuX4T0Ojc V9q0XsThlM P6jETugK5qJyaek vyT3rIDI RilK GttttRRq29 tfrkn7Gvnl22R5fAOicrK3C 5gOb 4 RRXRrvP0nzGN6ezjB pk wmp hlOlgHTmjKOUlar zTJ yW17M0PV TPC3u2Cu rR oNixKW3HawtO0mZR0 V z z rJxB0lz FpfIM qzhKtfg2nfHlmTW663kSCWM7sjRM4BY06mOV C07 YgsLozKXFDsnKwOk Zr07lOApwPwpGW6H aivLG15LgiNhXrD7BWhwbuXxZ2a yOCQgX ehXjxfHlRE0dGO9eHiLV XpCWes8hQBHRzrv3dD5ot5e56Ws8yR XB hMCOnFmqfZF6kywzujRxuRXh9vtG 7uCGf x ztxIgZLs2S9D2gJZbwiT n2Ddxov zwOLCm1R CKawGaHKqOAX9jsbGSwT OtN2qkDfJiTp18NGhflJ9wN 9Kwd 8 KBemidxy o44p9xco7UWYkUHA zJrVQIkF BrNAF3 KQBfXQ QE2wRpdSVgSv9PmmjGrFJWZzzJQf LPdilJI2HcV1lNzWP6c7milzJn0SO0y 2url0OV UAhHFe9qMqXrxaj5xImQFv64CRF9neK9A5ES1rz wlHDTAaEPBaB 8x73 SzlrFeVqxEsUfuS3EGAZO pP8d33WEbwG3uZ SjOE5LtDpW FH J0FtwRe3X SIR0Yw2sx5h9pR6JYJg2Vmk qY4WU70ox3v1 NAPjLbVwXSYjPj7I lBB HC2eXhEXrJcrZt9zQO1ckKLE974q VHl A6ePlDCKPR5uqSywR6SWuaV1mFqUG Ta2UL u PqDF 5j 5ZigYhQIFUaVIP12dTz o8EOBzcGHh GBgpyWTQJ3ZxVFA';
     }
 
@@ -764,33 +784,6 @@ class DumbController extends Controller
     }
     */
 
-
-    /*
-    function csv(){
-        DB::getConnection('db3');
-        $m = (new Model())->connect()->table('currencies');
-
-        $file = file_get_contents(UPLOADS_PATH . 'iso_4217.csv');
-        $lines = explode("\n", $file);
-        
-        $regs = [];
-
-        foreach($lines as $line){
-            $r = explode(';', $line);
-            $r[4] = explode(',', $r[4]);
-            array_walk($r[4], function(&$str){ $str =  trim($str);});
-            $r[4] = json_encode($r[4]);
-            //dd($r);
-            
-            $reg = array_combine(['code', 'num', 'digits', 'cur_name', 'locations'], $r);
-            dd($reg);
-
-            dd($m->create($reg));
-        }
-    }
-    */
-
-
     /*
     function mul(Request $req){
         $res = (int) $req[0] * (int) $req[1];
@@ -818,9 +811,9 @@ class DumbController extends Controller
 
         $t1 = Time::exec(function () use (&$res) {
             $res = (new ApiClient)
-            ->disableSSL()
-            ->setUrl('https://mindicador.cl/api')
-            ->get();
+                ->disableSSL()
+                ->setUrl('https://mindicador.cl/api')
+                ->get();
         });
 
         dd($res);
@@ -1034,7 +1027,7 @@ class DumbController extends Controller
         dd($index, 'INDEX');
     }
 
-    
+
     function test_route()
     {
         /*
@@ -1088,14 +1081,14 @@ class DumbController extends Controller
 
     function test_trace()
     {
-        $fn = function(){
+        $fn = function () {
             //throw new \InvalidArgumentException("El argumento xxx es invalido");
             //die("Ouch!");
 
-            $x = 1/0;
+            $x = 1 / 0;
         };
 
-        $fn();       
+        $fn();
     }
 
     /*
@@ -1107,11 +1100,11 @@ class DumbController extends Controller
     */
     function test_trace2()
     {
-        $fn = function(int $x){
-            $z = $x/2;
+        $fn = function (int $x) {
+            $z = $x / 2;
         };
 
-        $fn("hello");       
+        $fn("hello");
     }
 
     /*
@@ -1126,10 +1119,10 @@ class DumbController extends Controller
         $method = 'metodo_inexistente';
 
         $x = new stdClass();
-        $x->$method();    
+        $x->$method();
     }
 
-  
+
 
 
     /*
@@ -1161,12 +1154,12 @@ class DumbController extends Controller
     function test_api0b()
     {
         // ruta absoluta al certificado	
-        $cert = "D:\wamp64\ca-bundle.crt"; 
+        $cert = "D:\wamp64\ca-bundle.crt";
 
         $res = ApiClient::instance()
-        //->setSSLCrt($cert)
-        ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
-        ->getResponse();
+            //->setSSLCrt($cert)
+            ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
+            ->getResponse();
 
         dd($res);
     }
@@ -1177,13 +1170,13 @@ class DumbController extends Controller
     function test_api0c()
     {
         $res = ApiClient::instance()
-        ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
-        ->getResponse();
+            ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
+            ->getResponse();
 
         dd($res);
     }
 
-    
+
     /*
         Dolar TRM - 
         DataSource: API Banco de la República (de Colombia)
@@ -1191,13 +1184,13 @@ class DumbController extends Controller
     function dolar()
     {
         $client = ApiClient::instance();
-        
+
         $res = $client
-        ->disableSSL()
-        //->setSSLCrt("c:\php\cacert.pem")
-        ->request('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET')
-        ->getResponse();
-    
+            ->disableSSL()
+            //->setSSLCrt("c:\php\cacert.pem")
+            ->request('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET')
+            ->getResponse();
+
         dd($res);
 
         // dd($client->getStatus(), 'STATUS');
@@ -2335,7 +2328,7 @@ class DumbController extends Controller
         $t2 = 'product_categories';
 
         // dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?"); 
-        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?"); 
+        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
         // dd(is_n_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
         // dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
 
@@ -3972,21 +3965,22 @@ class DumbController extends Controller
         dd($rows);
     }
 
-    function delete_counter(){
+    function delete_counter()
+    {
         DB::getConnection('az');
 
         $m = DB::table('foo')
-        ->where(['id', 2, '>']);
+            ->where(['id', 2, '>']);
 
         $cnt = $m->delete();
 
         dd($cnt, 'regs');
-    }  
-    
+    }
+
     function test_delete()
     {
         // DB::getConnection('az');
-        
+
         $m = table('product_valoraciones');
 
         $m
@@ -4183,7 +4177,7 @@ class DumbController extends Controller
         dd($id);
     }
 
-    
+
 
     /*
         Haciendo uso de Container::useContract(), intentar replicar:
@@ -5021,23 +5015,25 @@ class DumbController extends Controller
     //     dd($this->cotiza(10, 1, 19.7, 19.7, 19.7, 'pulg'));
     // }
 
-    function test_format_num(){
-        $format_number = function($num){
-			$num = (float) $num;
-			return number_format($num, 10, '.', '');
-		};
+    function test_format_num()
+    {
+        $format_number = function ($num) {
+            $num = (float) $num;
+            return number_format($num, 10, '.', '');
+        };
 
-        $n = '400'; 
+        $n = '400';
 
         dd(Strings::formatNumber($n, 'en-EN'));
         //dd($format_number($n));        
     }
 
-    function test_rr(){
-        $round = function($num){
-			$num = (float) $num;
-			return round($num, 4);
-		};
+    function test_rr()
+    {
+        $round = function ($num) {
+            $num = (float) $num;
+            return round($num, 4);
+        };
 
         dd($round(4.9995558));
     }
@@ -5377,22 +5373,20 @@ class DumbController extends Controller
 
     function csv_debug1()
     {
-        $path = 'D:\Desktop\PRECIOS MAYOREO - JUANITA\wc-product-export-30-5-2023-1685450160446.csv';
+        $path = 'D:\Desktop\TEST DE MANEJO\BASE DE DATOS PRUEBA ACT.csv';
 
         $rows = Files::getCSV($path)['rows'];
 
-        foreach ($rows as $key => $row) {
-            // if (Strings::contains(' #ff6404', $key)){
-                dd($row, $key);
-            // }
-            
+        foreach ($rows as $key => $row) {           
+            dd($row, $key);
+            break;
         }
     }
 
 
     ////////////
 
-        /*
+    /*
         Rutas
 
         $base  = 'https://demoapi.sinergia.pe';  // la nueva ruta es https://devapi.sinergia.pe
@@ -5415,7 +5409,8 @@ class DumbController extends Controller
         _username = admin
         _password = 1234Admin
     */
-    function test_sinergia_login(){
+    function test_sinergia_login()
+    {
         $body = [
             "_username" => 'admin',
             "password"  => '1234Admin'
@@ -5425,17 +5420,17 @@ class DumbController extends Controller
         $ruta = 'https://demoapi.sinergia.pe/interfaces/login_check';
 
         $response = ApiClient::instance()
-        ->setHeaders(
-            [
-                "Content-Type"  => "multipart/form-data"
-            ]
-        )
-        ->setBody($body)
-        ->disableSSL()
-        ->post($ruta)
-        ->getResponse();
+            ->setHeaders(
+                [
+                    "Content-Type"  => "multipart/form-data"
+                ]
+            )
+            ->setBody($body)
+            ->disableSSL()
+            ->post($ruta)
+            ->getResponse();
 
-        dd($response, 'RES');      
+        dd($response, 'RES');
     }
 
 
@@ -5516,7 +5511,7 @@ class DumbController extends Controller
             // Bien (b) y Servicio (s)
             "F17_BIENSERVICIO":"s"
         */
-        
+
 
         // Sería el mismo JSON que para homologarModVenta
         $body = '{
@@ -5578,133 +5573,134 @@ class DumbController extends Controller
         //     "Content-type"  => "Application/json",
         //     "authToken" => "$token"
         // ], $options);
-            
+
         // ruta absoluta al certificado	
-        $cert = "D:\wamp64\ca-bundle.crt"; 
+        $cert = "D:\wamp64\ca-bundle.crt";
 
         $response = ApiClient::instance()
-        ->setHeaders(
-            [
-                "Content-type"  => "Application/json",
-                "authToken" => "$token"
-            ]
-        )
-        ->setBody($body)
-        ->disableSSL()
-        //->certificate($cert)
-        ->post($ruta)
-        ->getResponse();
+            ->setHeaders(
+                [
+                    "Content-type"  => "Application/json",
+                    "authToken" => "$token"
+                ]
+            )
+            ->setBody($body)
+            ->disableSSL()
+            //->certificate($cert)
+            ->post($ruta)
+            ->getResponse();
 
-        dd($response, 'RES');       
+        dd($response, 'RES');
     }
 
     function test_ssl_no_check()
     {
-        $arr = array (
+        $arr = array(
             'url' => 'https://demoapi.sinergia.pe/interfaces/interfacesventa/homologarBienesServicios',
             'verb' => 'POST',
             'headers' =>
-            array (
-              'Content-type' => 'Application/json',
-              'authToken' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo',
+            array(
+                'Content-type' => 'Application/json',
+                'authToken' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo',
             ),
             'options' =>
-            array (
-              81 => 0,
-              64 => 0,
+            array(
+                81 => 0,
+                64 => 0,
             ),
             'body' =>
-            array (
-              'ruc' => '12345678910',
-              'tabla_ventas' =>
-              array (
-                0 =>
-                array (
-                  'A1_ID' => NULL,
-                  'A2_FECHAEMISION' => '2022-05-30',
-                  'A3_HORAEMISION' => NULL,
-                  'A4_TIPODOCUMENTO' => '03',
-                  'A5_MONEDA' => 'USD',
-                  'A6_FECHAVENCIMIENTO' => NULL,
-                  'A7_DOCUMENTOREFERENCIA' => NULL,
-                  'A8_MOTIVONC' => NULL,
-                  'A9_FECHABAJA' => NULL,
-                  'A10_OBSERVACION' => NULL,
-                  'A11_TIPODOCUMENTOREFERENCIA' => NULL,
-                  'A12_WEIGHT' => 0.0,
-                  'B1_RUC' => '12345678910',
-                  'D1_DOCUMENTO' => '',
-                  'D2_TIPODOCUMENTO' => '1',
-                  'D3_DESCRIPCION' => 'Pablo Bozzolo',
-                  'D4_LEGAL_STREET' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
-                  'D4_LEGAL_DISTRICT' => '',
-                  'D4_LEGAL_PROVINCE' => '',
-                  'D4_LEGAL_STATE' => '',
-                  'D4_UBIGEO' => NULL,
-                  'D5_DIRECCION' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
-                  'D6_URBANIZACION' => NULL,
-                  'D7_PROVINCIA' => '',
-                  'D8_DEPARTAMENTO' => 'CO-VAC',
-                  'D9_DISTRITO' => 'Cali',
-                  'D10_PAIS' => NULL,
-                  'D11_CORREO' => 'info@solucionbinaria.com',
-                  'D12_CODIGO' => NULL,
-                  'D13_CODIGODIR' => '',
-                  'G1_TOTALEXPORTA' => 0,
-                  'G2_TOTALGRAVADA' => 0,
-                  'G3_TOTALINAFECTA' => 0,
-                  'G4_TOTALEXONERADA' => 0,
-                  'G5_TOTAGRATUITA' => 0,
-                  'G6_TOTALDESCUENTOS' => 0,
-                  'G7_PORCENDETRA' => 0,
-                  'G8_TOTALDETRA' => 0,
-                  'G9_TOTALIGV' => 0,
-                  'G10_TOTALSUBTOTAL' => 0,
-                  'G13_TOTALGLOBALDESCU' => 0,
-                  'G14_TOTALVENTA' => 0.0,
-                  'G15_SUBTOTAL' => 0,
-                  'H1_CODALMACEN' => '1',
-                  'H2_SUCURSAL' => '',
-                  'detalle' =>
-                  array (
+            array(
+                'ruc' => '12345678910',
+                'tabla_ventas' =>
+                array(
                     0 =>
-                    array (
-                      'F1_ITEM' => NULL,
-                      'F2_UNIDAD' => 'NIU',
-                      'F3_CANTIDAD' => 4,
-                      'F4_CODIGO_PRODUCTO' => 'HPC-113',
-                      'F5_CODIGO_SUNAT' => '000',
-                      'F7_DESCRIPCION' => 'HP 711 Magenta Ink Cartridge (29 ml)',
-                      'F8_PRECIO' => '23564',
-                      'F9_PRECIOVENTA' => '',
-                      'F10_TIPOPRECIO' => '01',
-                      'F11_PRECIOGRATIS' => 0,
-                      'F12_MONTOIGV' => 18,
-                      'F13_SUBTOTAL' => 0,
-                      'F14_TIPOAFECTA' => 10,
-                      'F15_CODIGOSIS' => 'HPC-113',
-                      'F16_PORCENTAJE_DESCUENTO' => 0,
-                      'F17_BIENSERVICIO' => 'b',
-                      'F18_IGV_TAX' => true,
-                      'F18_IGV_AMOUNT' => 18,
-                      'F19_ISC_TAX' => false,
-                      'F19_ISC_AMOUNT' => 0,
+                    array(
+                        'A1_ID' => NULL,
+                        'A2_FECHAEMISION' => '2022-05-30',
+                        'A3_HORAEMISION' => NULL,
+                        'A4_TIPODOCUMENTO' => '03',
+                        'A5_MONEDA' => 'USD',
+                        'A6_FECHAVENCIMIENTO' => NULL,
+                        'A7_DOCUMENTOREFERENCIA' => NULL,
+                        'A8_MOTIVONC' => NULL,
+                        'A9_FECHABAJA' => NULL,
+                        'A10_OBSERVACION' => NULL,
+                        'A11_TIPODOCUMENTOREFERENCIA' => NULL,
+                        'A12_WEIGHT' => 0.0,
+                        'B1_RUC' => '12345678910',
+                        'D1_DOCUMENTO' => '',
+                        'D2_TIPODOCUMENTO' => '1',
+                        'D3_DESCRIPCION' => 'Pablo Bozzolo',
+                        'D4_LEGAL_STREET' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
+                        'D4_LEGAL_DISTRICT' => '',
+                        'D4_LEGAL_PROVINCE' => '',
+                        'D4_LEGAL_STATE' => '',
+                        'D4_UBIGEO' => NULL,
+                        'D5_DIRECCION' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
+                        'D6_URBANIZACION' => NULL,
+                        'D7_PROVINCIA' => '',
+                        'D8_DEPARTAMENTO' => 'CO-VAC',
+                        'D9_DISTRITO' => 'Cali',
+                        'D10_PAIS' => NULL,
+                        'D11_CORREO' => 'info@solucionbinaria.com',
+                        'D12_CODIGO' => NULL,
+                        'D13_CODIGODIR' => '',
+                        'G1_TOTALEXPORTA' => 0,
+                        'G2_TOTALGRAVADA' => 0,
+                        'G3_TOTALINAFECTA' => 0,
+                        'G4_TOTALEXONERADA' => 0,
+                        'G5_TOTAGRATUITA' => 0,
+                        'G6_TOTALDESCUENTOS' => 0,
+                        'G7_PORCENDETRA' => 0,
+                        'G8_TOTALDETRA' => 0,
+                        'G9_TOTALIGV' => 0,
+                        'G10_TOTALSUBTOTAL' => 0,
+                        'G13_TOTALGLOBALDESCU' => 0,
+                        'G14_TOTALVENTA' => 0.0,
+                        'G15_SUBTOTAL' => 0,
+                        'H1_CODALMACEN' => '1',
+                        'H2_SUCURSAL' => '',
+                        'detalle' =>
+                        array(
+                            0 =>
+                            array(
+                                'F1_ITEM' => NULL,
+                                'F2_UNIDAD' => 'NIU',
+                                'F3_CANTIDAD' => 4,
+                                'F4_CODIGO_PRODUCTO' => 'HPC-113',
+                                'F5_CODIGO_SUNAT' => '000',
+                                'F7_DESCRIPCION' => 'HP 711 Magenta Ink Cartridge (29 ml)',
+                                'F8_PRECIO' => '23564',
+                                'F9_PRECIOVENTA' => '',
+                                'F10_TIPOPRECIO' => '01',
+                                'F11_PRECIOGRATIS' => 0,
+                                'F12_MONTOIGV' => 18,
+                                'F13_SUBTOTAL' => 0,
+                                'F14_TIPOAFECTA' => 10,
+                                'F15_CODIGOSIS' => 'HPC-113',
+                                'F16_PORCENTAJE_DESCUENTO' => 0,
+                                'F17_BIENSERVICIO' => 'b',
+                                'F18_IGV_TAX' => true,
+                                'F18_IGV_AMOUNT' => 18,
+                                'F19_ISC_TAX' => false,
+                                'F19_ISC_AMOUNT' => 0,
+                            ),
+                        ),
                     ),
-                  ),
                 ),
-              ),
             ),
         );
 
         $response = ApiClient::instance()
-        ->setHeaders($arr['headers']
-        )
-        ->setBody($arr['body'])
-        ->setOptions($arr['options'])
-        ->request($arr['url'], $arr['verb'])
-        ->getResponse();
+            ->setHeaders(
+                $arr['headers']
+            )
+            ->setBody($arr['body'])
+            ->setOptions($arr['options'])
+            ->request($arr['url'], $arr['verb'])
+            ->getResponse();
 
-        dd($response, 'RES');   
+        dd($response, 'RES');
     }
 
     /*
@@ -5714,113 +5710,114 @@ class DumbController extends Controller
     */
     function load_ssl_cert()
     {
-        $arr = array (
+        $arr = array(
             'url' => 'https://demoapi.sinergia.pe/interfaces/interfacesventa/homologarBienesServicios',
             'verb' => 'POST',
             'headers' =>
-            array (
-              'Content-type' => 'Application/json',
-              'authToken' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo',
+            array(
+                'Content-type' => 'Application/json',
+                'authToken' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MDkxNTc1MiwiZXhwIjoxNjgyNDUxNzUyfQ.MxBo0y4_7GnBi7RAi8GxkxSykpYnIcexWcVcAoUInqo',
             ),
             'options' =>
-            array (
-              81 => 0,
-              64 => 0,
+            array(
+                81 => 0,
+                64 => 0,
             ),
             'body' =>
-            array (
-              'ruc' => '12345678910',
-              'tabla_ventas' =>
-              array (
-                0 =>
-                array (
-                  'A1_ID' => NULL,
-                  'A2_FECHAEMISION' => '2022-05-30',
-                  'A3_HORAEMISION' => NULL,
-                  'A4_TIPODOCUMENTO' => '03',
-                  'A5_MONEDA' => 'USD',
-                  'A6_FECHAVENCIMIENTO' => NULL,
-                  'A7_DOCUMENTOREFERENCIA' => NULL,
-                  'A8_MOTIVONC' => NULL,
-                  'A9_FECHABAJA' => NULL,
-                  'A10_OBSERVACION' => NULL,
-                  'A11_TIPODOCUMENTOREFERENCIA' => NULL,
-                  'A12_WEIGHT' => 0.0,
-                  'B1_RUC' => '12345678910',
-                  'D1_DOCUMENTO' => '',
-                  'D2_TIPODOCUMENTO' => '1',
-                  'D3_DESCRIPCION' => 'Pablo Bozzolo',
-                  'D4_LEGAL_STREET' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
-                  'D4_LEGAL_DISTRICT' => '',
-                  'D4_LEGAL_PROVINCE' => '',
-                  'D4_LEGAL_STATE' => '',
-                  'D4_UBIGEO' => NULL,
-                  'D5_DIRECCION' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
-                  'D6_URBANIZACION' => NULL,
-                  'D7_PROVINCIA' => '',
-                  'D8_DEPARTAMENTO' => 'CO-VAC',
-                  'D9_DISTRITO' => 'Cali',
-                  'D10_PAIS' => NULL,
-                  'D11_CORREO' => 'info@solucionbinaria.com',
-                  'D12_CODIGO' => NULL,
-                  'D13_CODIGODIR' => '',
-                  'G1_TOTALEXPORTA' => 0,
-                  'G2_TOTALGRAVADA' => 0,
-                  'G3_TOTALINAFECTA' => 0,
-                  'G4_TOTALEXONERADA' => 0,
-                  'G5_TOTAGRATUITA' => 0,
-                  'G6_TOTALDESCUENTOS' => 0,
-                  'G7_PORCENDETRA' => 0,
-                  'G8_TOTALDETRA' => 0,
-                  'G9_TOTALIGV' => 0,
-                  'G10_TOTALSUBTOTAL' => 0,
-                  'G13_TOTALGLOBALDESCU' => 0,
-                  'G14_TOTALVENTA' => 0.0,
-                  'G15_SUBTOTAL' => 0,
-                  'H1_CODALMACEN' => '1',
-                  'H2_SUCURSAL' => '',
-                  'detalle' =>
-                  array (
+            array(
+                'ruc' => '12345678910',
+                'tabla_ventas' =>
+                array(
                     0 =>
-                    array (
-                      'F1_ITEM' => NULL,
-                      'F2_UNIDAD' => 'NIU',
-                      'F3_CANTIDAD' => 4,
-                      'F4_CODIGO_PRODUCTO' => 'HPC-113',
-                      'F5_CODIGO_SUNAT' => '000',
-                      'F7_DESCRIPCION' => 'HP 711 Magenta Ink Cartridge (29 ml)',
-                      'F8_PRECIO' => '23564',
-                      'F9_PRECIOVENTA' => '',
-                      'F10_TIPOPRECIO' => '01',
-                      'F11_PRECIOGRATIS' => 0,
-                      'F12_MONTOIGV' => 18,
-                      'F13_SUBTOTAL' => 0,
-                      'F14_TIPOAFECTA' => 10,
-                      'F15_CODIGOSIS' => 'HPC-113',
-                      'F16_PORCENTAJE_DESCUENTO' => 0,
-                      'F17_BIENSERVICIO' => 'b',
-                      'F18_IGV_TAX' => true,
-                      'F18_IGV_AMOUNT' => 18,
-                      'F19_ISC_TAX' => false,
-                      'F19_ISC_AMOUNT' => 0,
+                    array(
+                        'A1_ID' => NULL,
+                        'A2_FECHAEMISION' => '2022-05-30',
+                        'A3_HORAEMISION' => NULL,
+                        'A4_TIPODOCUMENTO' => '03',
+                        'A5_MONEDA' => 'USD',
+                        'A6_FECHAVENCIMIENTO' => NULL,
+                        'A7_DOCUMENTOREFERENCIA' => NULL,
+                        'A8_MOTIVONC' => NULL,
+                        'A9_FECHABAJA' => NULL,
+                        'A10_OBSERVACION' => NULL,
+                        'A11_TIPODOCUMENTOREFERENCIA' => NULL,
+                        'A12_WEIGHT' => 0.0,
+                        'B1_RUC' => '12345678910',
+                        'D1_DOCUMENTO' => '',
+                        'D2_TIPODOCUMENTO' => '1',
+                        'D3_DESCRIPCION' => 'Pablo Bozzolo',
+                        'D4_LEGAL_STREET' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
+                        'D4_LEGAL_DISTRICT' => '',
+                        'D4_LEGAL_PROVINCE' => '',
+                        'D4_LEGAL_STATE' => '',
+                        'D4_UBIGEO' => NULL,
+                        'D5_DIRECCION' => 'Calle 6 Oeste # 1C-35, Cali, CO-VAC',
+                        'D6_URBANIZACION' => NULL,
+                        'D7_PROVINCIA' => '',
+                        'D8_DEPARTAMENTO' => 'CO-VAC',
+                        'D9_DISTRITO' => 'Cali',
+                        'D10_PAIS' => NULL,
+                        'D11_CORREO' => 'info@solucionbinaria.com',
+                        'D12_CODIGO' => NULL,
+                        'D13_CODIGODIR' => '',
+                        'G1_TOTALEXPORTA' => 0,
+                        'G2_TOTALGRAVADA' => 0,
+                        'G3_TOTALINAFECTA' => 0,
+                        'G4_TOTALEXONERADA' => 0,
+                        'G5_TOTAGRATUITA' => 0,
+                        'G6_TOTALDESCUENTOS' => 0,
+                        'G7_PORCENDETRA' => 0,
+                        'G8_TOTALDETRA' => 0,
+                        'G9_TOTALIGV' => 0,
+                        'G10_TOTALSUBTOTAL' => 0,
+                        'G13_TOTALGLOBALDESCU' => 0,
+                        'G14_TOTALVENTA' => 0.0,
+                        'G15_SUBTOTAL' => 0,
+                        'H1_CODALMACEN' => '1',
+                        'H2_SUCURSAL' => '',
+                        'detalle' =>
+                        array(
+                            0 =>
+                            array(
+                                'F1_ITEM' => NULL,
+                                'F2_UNIDAD' => 'NIU',
+                                'F3_CANTIDAD' => 4,
+                                'F4_CODIGO_PRODUCTO' => 'HPC-113',
+                                'F5_CODIGO_SUNAT' => '000',
+                                'F7_DESCRIPCION' => 'HP 711 Magenta Ink Cartridge (29 ml)',
+                                'F8_PRECIO' => '23564',
+                                'F9_PRECIOVENTA' => '',
+                                'F10_TIPOPRECIO' => '01',
+                                'F11_PRECIOGRATIS' => 0,
+                                'F12_MONTOIGV' => 18,
+                                'F13_SUBTOTAL' => 0,
+                                'F14_TIPOAFECTA' => 10,
+                                'F15_CODIGOSIS' => 'HPC-113',
+                                'F16_PORCENTAJE_DESCUENTO' => 0,
+                                'F17_BIENSERVICIO' => 'b',
+                                'F18_IGV_TAX' => true,
+                                'F18_IGV_AMOUNT' => 18,
+                                'F19_ISC_TAX' => false,
+                                'F19_ISC_AMOUNT' => 0,
+                            ),
+                        ),
                     ),
-                  ),
                 ),
-              ),
             ),
         );
 
-        $cert = "D:\wamp64\ca-bundle.crt"; 
+        $cert = "D:\wamp64\ca-bundle.crt";
 
         $response = ApiClient::instance()
-        ->setHeaders($arr['headers']
-        )
-        ->setBody($arr['body'])
-        ->setSSLCrt($cert)
-        ->request($arr['url'], $arr['verb'])
-        ->getResponse();
+            ->setHeaders(
+                $arr['headers']
+            )
+            ->setBody($arr['body'])
+            ->setSSLCrt($cert)
+            ->request($arr['url'], $arr['verb'])
+            ->getResponse();
 
-        dd($response, 'RES');   
+        dd($response, 'RES');
     }
 
     function test_sinergia_registrar_cliente()
@@ -5831,7 +5828,7 @@ class DumbController extends Controller
         $ruta  = "$base/interfaces/interfacesventa/homologarCliente";
 
         $body = '{
-            "ruc": "'.$ruc.'",
+            "ruc": "' . $ruc . '",
             "tabla_ventas": [
               { 
                 "D1_DOCUMENTO": "20603374097",
@@ -5862,7 +5859,7 @@ class DumbController extends Controller
             "authToken" => "$token"
         ]);
 
-        dd($response, 'RES');       
+        dd($response, 'RES');
     }
 
 
@@ -5941,14 +5938,15 @@ class DumbController extends Controller
         dd($response, 'RES');
     }
 
-    function test_api_client(){
+    function test_api_client()
+    {
         $ruc = '12345678910';
 
         $base  = 'https://demoapi.sinergia.pe';
         $ruta  = "$base/interfaces/interfacesventa/homologarCliente";
 
         $body = '{
-            "ruc": "'.$ruc.'",
+            "ruc": "' . $ruc . '",
             "tabla_ventas": [
                 { 
                 "D1_DOCUMENTO": "20603374097",
@@ -5977,47 +5975,47 @@ class DumbController extends Controller
         $client = new ApiClient();
 
         $client
-        ->setBody($body)
-        ->setHeaders([
-            "Content-type"  => "Application/json",
-            "authToken" => "$token"
-        ])
-        ->disableSSL()
-        ->post($ruta);        
+            ->setBody($body)
+            ->setHeaders([
+                "Content-type"  => "Application/json",
+                "authToken" => "$token"
+            ])
+            ->disableSSL()
+            ->post($ruta);
 
         dd($client->getStatus(), 'STATUS');
         dd($client->getError(), 'ERROR');
-        dd($client->getResponse(), 'RES');  
+        dd($client->getResponse(), 'RES');
     }
 
     function test_api_client2()
-    {        
+    {
         $client = new ApiClient();
 
         $user = 'intergrade';
         $pass = '9660ed881416fad88c5f48eddd7334c6';
 
         $client
-        /*
+            /*
             Si se le pasa una cantidad de segundos *debería* guardar por esa cantidad de tiempo
             el archivo y pasado ese tiempo, ignorarlo y volver a generarlo
 
             Sin resolver !!!!
         */
-        //->setCache()
-        ->setRetries(3)
-        ->setBasicAuth($user, $pass)
-        ->disableSSL()
-        ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
+            //->setCache()
+            ->setRetries(3)
+            ->setBasicAuth($user, $pass)
+            ->disableSSL()
+            ->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');
 
         dd($client->getStatus(), 'STATUS');
         dd($client->getError(), 'ERROR');
-        dd($client->getResponse(true), 'RES'); 
+        dd($client->getResponse(true), 'RES');
     }
 
 
     function test_api_client3()
-    {        
+    {
         $client = new ApiClient();
 
         $postfields = array();
@@ -6025,43 +6023,44 @@ class DumbController extends Controller
         $postfields['_password'] = '1234Admin';
 
         $client
-        //->setRetries(3)
-        ->setHeaders([
-            'Content-Type' => 'multipart/form-data'
-        ])
-        ->setBody($postfields, false)
-        ->disableSSL()
-        ->request('https://devapi.sinergia.pe/login_check', 'POST');        
+            //->setRetries(3)
+            ->setHeaders([
+                'Content-Type' => 'multipart/form-data'
+            ])
+            ->setBody($postfields, false)
+            ->disableSSL()
+            ->request('https://devapi.sinergia.pe/login_check', 'POST');
 
         dd($client->getStatus(), 'STATUS');
         dd($client->getError(), 'ERROR');
-        dd($client->getResponse(true), 'RES'); 
+        dd($client->getResponse(true), 'RES');
     }
 
 
-    static function getClient($endpoint){
+    static function getClient($endpoint)
+    {
         global $config;
 
         $ruta         = $config['url_base_endpoints'] . $endpoint;
         $token        = $config['token'];
-        
+
         dd($ruta, 'ENDPOINT *****');
 
         $client = (new ApiClient($ruta));
 
         $client
-        ->setHeaders(
-            [
-                "Content-type"  => "Application/json",
-                "authToken" => "$token"
-            ]
-        )
-        ->setRetries(3);
+            ->setHeaders(
+                [
+                    "Content-type"  => "Application/json",
+                    "authToken" => "$token"
+                ]
+            )
+            ->setRetries(3);
 
-        if ($config['dev_mode']){
+        if ($config['dev_mode']) {
             $client->disableSSL();
-        }        
-        
+        }
+
         return $client;
     }
 
@@ -6071,18 +6070,19 @@ class DumbController extends Controller
     static function registrar($data, $endpoint)
     {
         $response = static::getClient($endpoint)
-        ->setBody($data)
-        ->post()
-        ->getResponse();
+            ->setBody($data)
+            ->post()
+            ->getResponse();
 
         return $response;
     }
 
-    function test_sinergia(){
+    function test_sinergia()
+    {
         global $config;
 
         $config = [
-            'dev_mode' => true,       
+            'dev_mode' => true,
             'token' => "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1MzkzNTU2NCwiZXhwIjoxNjU0NTQwMzY0fQ.igAEIhqDTBLBMEvHI7KePGn3HVaZ6jv_cyeToGNAya8",  // obtenida con el nuevo endpoint en Insomnia
 
             'B1_RUC'            => '20602903312',
@@ -6095,7 +6095,7 @@ class DumbController extends Controller
         ];
 
         $body = '{
-            "ruc": "'. $config['B1_RUC'] .'",
+            "ruc": "' . $config['B1_RUC'] . '",
             "tabla_ventas": [
                 { 
                 "D1_DOCUMENTO": "20603374097",
@@ -6124,27 +6124,28 @@ class DumbController extends Controller
         );
     }
 
-    function test_file_upload(){
+    function test_file_upload()
+    {
         $data = $_POST;
 
         $uploader = (new FileUploader())
-        ->setFileHandler(function($uid) {
-            $prefix = ($uid ?? '0').'-';
-            return uniqid($prefix, true);
-        }, auth()->uid());
+            ->setFileHandler(function ($uid) {
+                $prefix = ($uid ?? '0') . '-';
+                return uniqid($prefix, true);
+            }, auth()->uid());
 
 
-        $files    = $uploader->doUpload()->getFileNames();   
-        $failures = $uploader->getErrors();     
+        $files    = $uploader->doUpload()->getFileNames();
+        $failures = $uploader->getErrors();
 
-        if (count($files) == 0){
+        if (count($files) == 0) {
             error('No files or file upload failed', 400);
-        }        
+        }
 
         /*
             Almaceno los nombres de los archivos en DB
         */
-        foreach($files as $ix => $f){
+        foreach ($files as $ix => $f) {
             $ori_filename = $f['ori_name'];
             $as_stored    = $f['as_stored'];
 
@@ -6152,7 +6153,7 @@ class DumbController extends Controller
 
             $files[$ix]['id'] = $id;
         }
-        
+
         return [
             'data'     => $data,
             'files'    => $files,
@@ -6165,13 +6166,13 @@ class DumbController extends Controller
     function test_file_upload_base64()
     {
         $uploader = (new Base64Uploader())
-        ->setFileHandler(function($uid) {
-            $prefix = ($uid ?? '0').'-';
-            return uniqid($prefix, true);
-        }, auth()->uid());
+            ->setFileHandler(function ($uid) {
+                $prefix = ($uid ?? '0') . '-';
+                return uniqid($prefix, true);
+            }, auth()->uid());
 
-        $files    = $uploader->doUpload()->getFileNames();   
-        $failures = $uploader->getErrors();     
+        $files    = $uploader->doUpload()->getFileNames();
+        $failures = $uploader->getErrors();
 
         return [
             'files'    => $files,
@@ -6179,62 +6180,66 @@ class DumbController extends Controller
         ];
     }
 
-    function fix_csv(){
+    function fix_csv()
+    {
         $out = [];
 
         $path = 'D:\Desktop\CSV\completo.csv';
 
         $rows = Files::getCSV($path)['rows'];
-        
-        foreach ($rows as $ix => $row){
+
+        foreach ($rows as $ix => $row) {
             $sku         = $row['SKU'];
             $precio      = $row['Precio'];
             $precio_plus = $row['Precio Plus'];
 
-            if (!isset($out[$sku])){
+            if (!isset($out[$sku])) {
                 $out[$sku] = [];
             }
-           
+
             $out[$sku]['precio']      = $precio;
             $out[$sku]['precio_plus'] = $precio_plus;
         }
-        
+
         Logger::varExport(UPLOADS_PATH . 'completo-csv.php', $out);
-    
+
         // dd($out);
         // dd(count($out), 'COUNT');      
     }
 
-    function test_follow_redirect(){
+    function test_follow_redirect()
+    {
         $url = 'https://www.awin1.com/cread.php?awinmid=20598&awinaffid=856219&platform=dl&ued=https%3A%2F%2Fwww.leroymerlin.es%2Ffp%2F81926166%2Fespejo-rectangular-pierre-roble-roble-152-x-52-cm';
 
         $api = (new ApiClient($url))
-        ->logReq()
-        ->logRes();
+            ->logReq()
+            ->logRes();
 
         $res = $api
-        ->disableSSL()
-        ->redirect()
-        //->cache()
-        ->get();
+            ->disableSSL()
+            ->redirect()
+            //->cache()
+            ->get();
 
         dd($res->data());
     }
 
-    function test_follow_redirs(){
+    function test_follow_redirs()
+    {
         $url = 'https://amzn.to/2M0SCXb';
 
         dd(
             ApiClient::instance($url)
-            ->disableSSL()
-            ->followLocations()
-            ->cache()
-            ->get()
-            ->getResponse(false)
+                ->disableSSL()
+                ->followLocations()
+                ->cache()
+                ->get()
+                ->getResponse(false)
         );
     }
 
-    function get_bruno_csv(){
+    function get_bruno_csv()
+    {
         $proveedores = [
             'MAISONS DU MONDE',
             'LEROY MERLIN',
@@ -6256,32 +6261,31 @@ class DumbController extends Controller
                 [PROVEEDOR] => AMAZON
         */
         $rows = Files::getCSV($path)['rows'];
-        
-        foreach ($rows as $ix => $row){
-            if ($row['PROVEEDOR'] != $proveedores[1]){
+
+        foreach ($rows as $ix => $row) {
+            if ($row['PROVEEDOR'] != $proveedores[1]) {
                 continue;
             }
 
             $url = $row['URL de afiliado'];
             //$url = Url::getFinalUrl($url);
-        
+
             // dd($url);
             // exit;
 
             $q   = Url::getQueryParams($url);
 
-            if ($q['awinmid'] != 20598 || $q['awinaffid'] != 856219 || $q['platform'] != 'dl'){
+            if ($q['awinmid'] != 20598 || $q['awinaffid'] != 856219 || $q['platform'] != 'dl') {
                 dd($row);
                 exit;
             }
-
         }
 
         dd('OK');
     }
 
     function maps()
-    { 
+    {
         $maps = new GoogleMaps();
 
         dd(
@@ -6292,7 +6296,8 @@ class DumbController extends Controller
     /*
         Descarga archivo
     */
-    function download_link(){
+    function download_link()
+    {
         $url = 'https://docs.google.com/uc?export=download&id=1Ki34FJX-iCqTErvsU_EQFrs9JwHL62KJ';
         //$url = 'https://docs.google.com/uc?export=download&id=1Fdtxt56oCI1-rUwLmFXkzaXzQxdMhc8v';
 
@@ -6309,14 +6314,16 @@ class DumbController extends Controller
             Url::getUrlContent($url, true, true)
         );
     }
-     
-    function testggg(){
+
+    function testggg()
+    {
         dd(
             include 'D:\www\woo1\wp-content\plugins\plugin-theme-installer\logs\mutawp_product_export.php'
         );
     }
 
-    function unquote(){
+    function unquote()
+    {
         $str = <<<STR
         <div id="error"><p class="wpdberror"><strong>Error en la base de datos de WordPress:</strong> [You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#039;, CURRENT_TIMESTAMP)&#039; at line 1]<br /><code>INSERT INTO `wp_sinergia_boletas` (`correlativo`, `serie`, `order_id`, `datetime`) VALUES (NULL, &#039;B001&#039;   , , CURRENT_TIMESTAMP);</code></p></div>--[ CORRELATIVO BOLETA ]--
         STR;
@@ -6324,15 +6331,17 @@ class DumbController extends Controller
         return html_entity_decode($str);
     }
 
-    function get_alltable(){
+    function get_alltable()
+    {
         $names = DB::getTableNames('mpo');
 
-        foreach ($names as $name){
+        foreach ($names as $name) {
             print_r("->addResourcePermissions('$name', ['read_all', 'write'])\r\n");
         }
     }
 
-    function test_str_fn500(){
+    function test_str_fn500()
+    {
         $str = 'TBL_ESCALAS_TERRITORIALES';
 
         dd(
@@ -6343,16 +6352,17 @@ class DumbController extends Controller
             Strings::snakeToCamel('hola_mundo_cruel')
         );
     }
-    
-    function test_scraper_1(){
+
+    function test_scraper_1()
+    {
         $url = 'https://www.maisonsdumonde.com/ES/es/p/espejo-de-teca-153x75-rivage-121734.htm?utm_source=effiliation_es&utm_campaign=generique_affiliation&utm_medium=affiliation&utm_content=43_1395110640&eff_cpt=22616853';
 
         $url = 'https://www.maisonsdumonde.com/FR/fr/p/canape-lit-3-4-places-en-lin-lave-bleu-petrole-barcelone-180512.htm';
 
         dd(
             MaisonsScraper::parseProduct($url)
-        );       
-        
+        );
+
         dd(
             ApiClient::instance($url)->getCachePath()
         );
@@ -6362,33 +6372,37 @@ class DumbController extends Controller
     /*
        Leroy Merlin esta dando HTTP request failed! HTTP/1.1 403 Forbidden
     */
-    function test_scraper_2(){
+    function test_scraper_2()
+    {
         $url = 'https://www.leroymerlin.es/fp/81873733/barbacoa-de-gas-naterial-kenton-de-4-quemadores-y-14-kw-de-potencia';
 
         dd(
             file_get_contents($url),
-        'VIA FILE GET CONTENTS');
+            'VIA FILE GET CONTENTS'
+        );
         exit;
 
         dd(
             LeroyMerlinScraper::parseProduct($url)
-        );        
+        );
     }
 
-    function test_scraper_3(){
+    function test_scraper_3()
+    {
         $url = 'https://amzn.to/2N7LgBZ';
-        
+
         dd(
             AmazonScraper::parseProduct($url)
-        );        
+        );
     }
 
-    function test_scraper_4(){
+    function test_scraper_4()
+    {
         $url = 'https://www.curiosite.es/producto/zapatillas-de-andar-por-casa-multicolores.html';
-        
+
         dd(
             Curiosite::parseProduct($url)
-        );        
+        );
     }
 
 
@@ -6397,7 +6411,8 @@ class DumbController extends Controller
 
         "Using the main scrollbar to scroll an iframe" 
     */
-    function test_iframe(){
+    function test_iframe()
+    {
         /*
             Make iframe automatically adjust height according to the contents without using scrollbar?
             
@@ -6443,7 +6458,7 @@ class DumbController extends Controller
             position:absolute; top:0; left: 0;
         }
         ');
-        ?>
+?>
 
         <center>
             <div class="iframe_container">
@@ -6451,40 +6466,44 @@ class DumbController extends Controller
             </div>
         </center>
 
-        <?php
+    <?php
     }
 
     /*
         Tiene sentido pero quizas sea mejor que sea el primero y no el ultimo
     */
-    function test_response_twice(){
+    function test_response_twice()
+    {
         response('Uno');
         response('Dos'); // solo el ultimo es el que sale
     }
 
-    function test_response_twice_2(){
+    function test_response_twice_2()
+    {
         response('Uno');
 
         return 'Dos'; // solo el ultimo es el que sale
     }
 
-    function test_conditional_response_1(){
-        if (response()->isEmpty()){
+    function test_conditional_response_1()
+    {
+        if (response()->isEmpty()) {
             response([
                 'message' => 'OK'
-            ]);  
+            ]);
         }
     }
 
-    function test_conditional_response_2(){
+    function test_conditional_response_2()
+    {
         response('Respuesta previa');
 
         // ...
 
-        if (response()->isEmpty()){
+        if (response()->isEmpty()) {
             response([
                 'message' => 'OK'
-            ]);  
+            ]);
         }
     }
 
@@ -6492,19 +6511,21 @@ class DumbController extends Controller
         Las rutas absolutas deben ubicarse dentro del proyecto 
         y de momento estar dentro de VIEWS_PATH
         pero podria ser otra........ permitiendo crear modulos en otro lado
-    */  
-    function test_asset_local_ruta_absoluta(){
+    */
+    function test_asset_local_ruta_absoluta()
+    {
         js_file(VIEWS_PATH . 'factory_parts/js/custom_dt.js');
 
         render("Hola Sr. Putin");
     }
 
-    function test_cached_form(){
+    function test_cached_form()
+    {
         Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
 
         $content = Files::getFromTempFile('my_component.html');
 
-        if (empty($content)){
+        if (empty($content)) {
             $content = tag('accordion')->items([
                 [
                     'id' => "flush-collapseOne",
@@ -6522,10 +6543,9 @@ class DumbController extends Controller
                     'body' =>  'Placeholder 3'
                 ]
             ])
-            ->id('accordionExample')
-            ->always_open(true)
-            ->attributes(['class' => 'accordion-flush'])
-            ;
+                ->id('accordionExample')
+                ->always_open(true)
+                ->attributes(['class' => 'accordion-flush']);
 
             Files::saveToTempFile($content, 'my_component.html');
         }
@@ -6533,8 +6553,9 @@ class DumbController extends Controller
         render($content);
     }
 
-    
-    function test_middle_str(){
+
+    function test_middle_str()
+    {
         $str = "";
 
         dd(
@@ -6542,7 +6563,8 @@ class DumbController extends Controller
         );
     }
 
-    function test_trimafter(){
+    function test_trimafter()
+    {
         $str = "Class XXX extends Model {\r\n \r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nprotected \$yoquese;\r\nprotected \$otra_cosa;";
 
         var_dump(
@@ -6550,7 +6572,8 @@ class DumbController extends Controller
         );
     }
 
-    function test_remove_empty_lines_after(){
+    function test_remove_empty_lines_after()
+    {
         $str = "Class XXX extends Model {\r\n \r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nprotected \$yoquese;\r\n\r\nprotected \$otra_cosa;";
 
         var_dump(
@@ -6558,7 +6581,8 @@ class DumbController extends Controller
         );
     }
 
-    function test_remove_empty_lines_before(){
+    function test_remove_empty_lines_before()
+    {
         $str = "Class XXX extends Model {\r\n \r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nprotected \$yoquese;\r\n\r\nprotected \$otra_cosa;";
 
         $str = Strings::trimEmptyLinesBefore("protected", $str, 0, null, 1);
@@ -6570,18 +6594,18 @@ class DumbController extends Controller
 
 
     function test_curl_no_proxy()
-    {  
+    {
         $url  = 'https://iplocation.net/';
 
         $res  = ApiClient::instance()
-        ->disableSSL()
-        ->redirect()
-        //->decode(true)
-        ->get($url);
-    
+            ->disableSSL()
+            ->redirect()
+            //->decode(true)
+            ->get($url);
+
         //$export = $res->dump();
         //Files::varExport($export, 'api_debug.php');
-       
+
         dd($res->data());
     }
 
@@ -6592,24 +6616,24 @@ class DumbController extends Controller
     */
 
     function test_curl_proxy_2()
-    {  
+    {
         $url       = 'https://amzn.to/3k7jfX5';
         $proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
 
         dd($url, 'URL');
 
-        $scraper = function(string $url){
-            if (Strings::startsWith('https://amzn.to/', $url)){
+        $scraper = function (string $url) {
+            if (Strings::startsWith('https://amzn.to/', $url)) {
                 return AmazonScraper::class;
-            } 
+            }
 
-            if (Strings::startsWith('https://www.awin1.com/', $url)){
+            if (Strings::startsWith('https://www.awin1.com/', $url)) {
                 return LeroyMerlinScraper::class;
-            } 
+            }
 
-            if (Strings::startsWith('https://track.effiliation.com/', $url)){
+            if (Strings::startsWith('https://track.effiliation.com/', $url)) {
                 return MaisonsScraper::class;
-            } 
+            }
 
             throw new \Exception("Scraper correcto no encontrado para '$url'");
         };
@@ -6618,52 +6642,55 @@ class DumbController extends Controller
 
         dd(
             $class::parseProduct($url)
-        ); 
-        
+        );
+
         $client = ApiClient::instance($proxy_url)
-        ->setHeaders([
-            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
-            'Proxy-Target-URL: '.$url
-        ]);
+            ->setHeaders([
+                'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+                'Proxy-Target-URL: ' . $url
+            ]);
 
         $client
-        ->disableSSL()
-        //->cache()
-        ->redirect()
-        ->get();
+            ->disableSSL()
+            //->cache()
+            ->redirect()
+            ->get();
 
-        if ($client->getStatus() != 200){
+        if ($client->getStatus() != 200) {
             throw new \Exception($client->error());
         }
 
         dd(
-            $client->data()         
-        );  
+            $client->data()
+        );
     }
-    
-    function test39393(){
+
+    function test39393()
+    {
         dd(Files::fileExtension('xxxx.htm.php'));
     }
 
-    function test_tb_prefix(){
+    function test_tb_prefix()
+    {
         DB::getConnection('woo3');
 
         $rows = table('users')
-        //->wp()
-        ->first();
+            //->wp()
+            ->first();
 
         dd($rows);
 
 
         $rows = table('users')
-        ->wp()
-        ->orderBy(['ID' => 'DESC'])
-        ->first();
+            ->wp()
+            ->orderBy(['ID' => 'DESC'])
+            ->first();
 
         dd($rows);
     }
 
-    function test_xxxxx(){
+    function test_xxxxx()
+    {
         DB::getConnection('woo3');
 
         dd(
@@ -6677,9 +6704,10 @@ class DumbController extends Controller
         );
     }
 
-    function test_bg(){
+    function test_bg()
+    {
         $params = "com dumb fnx";
-        $cmd    = "D:\wamp64\bin\php\php7.4.26\php.exe ". ROOT_PATH . $params;
+        $cmd    = "D:\wamp64\bin\php\php7.4.26\php.exe " . ROOT_PATH . $params;
         dd($cmd);
 
         $shell = new \COM("WScript.Shell");
@@ -6687,25 +6715,29 @@ class DumbController extends Controller
         $shell = null;
     }
 
-    function fnx(){
-        for ($i=0; $i< 50; $i++){
+    function fnx()
+    {
+        for ($i = 0; $i < 50; $i++) {
             Logger::log("S-> $i");
             usleep(100000);
         }
     }
 
-    function test_run_in_background(){
-        $php = System::isWindows() ? shell_exec("where php.exe") : "php";        
-        System::runInBackground("$php com dumb fnx");    
+    function test_run_in_background()
+    {
+        $php = System::isWindows() ? shell_exec("where php.exe") : "php";
+        System::runInBackground("$php com dumb fnx");
     }
 
-    function test_look_for_exe(){
+    function test_look_for_exe()
+    {
         dd(
             System::isExecutableInPath('php.exe')
         );
     }
 
-    function debug_api_client(){
+    function debug_api_client()
+    {
         $path  = 'D:\www\woo3\wp-content\plugins\reactorv2\logs\exported_prods_2.php';
 
         $prods = include $path;
@@ -6714,65 +6746,69 @@ class DumbController extends Controller
         $url   = 'http://woo4.lan/wp-json/connector/v1/products';
 
         $res  = ApiClient::instance()
-        ->setBody([
-            'data' => [
-                "products" => $prods
-            ]
-        ])
-        ->setHeaders([
-            'X-API-KEY' => $user_api_key
-        ])
-        ->disableSSL()
-        //->decode(true)
-        ->post($url);
+            ->setBody([
+                'data' => [
+                    "products" => $prods
+                ]
+            ])
+            ->setHeaders([
+                'X-API-KEY' => $user_api_key
+            ])
+            ->disableSSL()
+            //->decode(true)
+            ->post($url);
 
         dd($res->dump());
 
         //$export = $res->dump();
         //Files::varExport($export, 'api_debug.php');
-       
+
         dd($res->data());
     }
 
-    function debug_api_client_exec(){
+    function debug_api_client_exec()
+    {
         $data = include 'D:\www\simplerest\logs\api_debug.php';
 
         dd($data);
 
         $res = ApiClient::instance()
-        ->exec($data);
+            ->exec($data);
 
-        if ($res->status() != 200){
+        if ($res->status() != 200) {
             dd($res->error(), 'ERROR');
         }
 
         dd($res->status(), 'STATUS CODE');
 
         dd(
-            $res->data()         
-        , 'DATA');
+            $res->data(),
+            'DATA'
+        );
     }
 
 
-    function test_basic_auth(){
+    function test_basic_auth()
+    {
         $username = 'intergrade';
         $password = '9660ed881416fad88c5f48eddd7334c6';
 
         $url = 'http://200.6.78.34/stock/v1/catalogfilter/packaging';
 
         $client = ApiClient::instance()
-        //->setBody($body)
-        ->setHeaders([
-            'Authorization: Basic '. base64_encode("$username:$password")
-        ])
-        ->setCache(3600)
-        ->decode(true);
+            //->setBody($body)
+            ->setHeaders([
+                'Authorization: Basic ' . base64_encode("$username:$password")
+            ])
+            ->setCache(3600)
+            ->decode(true);
 
         $client->setUrl($url);
 
         dd(
-            $client->getCachePath()
-        , 'CACHE PATH');
+            $client->getCachePath(),
+            'CACHE PATH'
+        );
 
         exit;
 
@@ -6782,7 +6818,7 @@ class DumbController extends Controller
         dd($res->getError(), 'ERROR');
         dd($res->data(), 'DATA');
     }
-    
+
     function respuesta()
     {
         error('Acceso no autorizado', 401, 'Header vacio');
@@ -6798,7 +6834,8 @@ class DumbController extends Controller
         response()->error("No encontrado", 404, "El recurso no existe");
     }
 
-    function test_error2(){
+    function test_error2()
+    {
         // No acepta mas que dos parametros
         response('Todo mal', 500);
     }
@@ -6809,18 +6846,21 @@ class DumbController extends Controller
         error("No encontrado", 404, "El recurso no existe");
     }
 
-    function test_add_sub_dates(){
+    function test_add_sub_dates()
+    {
         $date = '27 Feb 2023';
 
         $d    = 25;
 
         dd(
-            Date::addDays($date, $d)
-        , "+ $d dias");
+            Date::addDays($date, $d),
+            "+ $d dias"
+        );
     }
 
 
-    function get_model_defs(){
+    function get_model_defs()
+    {
         DB::getConnection('az');
 
         dd(
@@ -6832,7 +6872,8 @@ class DumbController extends Controller
         // );
     }
 
-    function get_api_rest_defs(){
+    function get_api_rest_defs()
+    {
         DB::getConnection('az');
 
         dd(
@@ -6844,7 +6885,8 @@ class DumbController extends Controller
         // );
     }
 
-    function boom(){
+    function boom()
+    {
         puff();
     }
 
@@ -6867,20 +6909,21 @@ class DumbController extends Controller
 
         y en todos los casos... los ultimos dos digitos seran 00
     */
-    function custom_round(){
-        $my_round = function($val){
+    function custom_round()
+    {
+        $my_round = function ($val) {
 
-            if ($val > 100){
+            if ($val > 100) {
                 $val = 100 * number_format(0.01 * $val, 0, '.', '');
             }
-           
-            if ($val < 10000){
+
+            if ($val < 10000) {
                 return $val;
             }
 
             $last_4_str = substr($val, -4);
 
-            if ($last_4_str > 5000){
+            if ($last_4_str > 5000) {
                 $last_4_str = substr($last_4_str, 0, 1) . '900';
                 //dd(" <--------- ! para $val");
                 $val = substr($val, 0, -4) . $last_4_str;
@@ -6889,15 +6932,14 @@ class DumbController extends Controller
 
             return $val;
         };
-        
-        for ($i=0; $i<10000000; $i++){
 
-            $i = $i+ rand(0, 1+ 0.5*$i);
-            
+        for ($i = 0; $i < 10000000; $i++) {
+
+            $i = $i + rand(0, 1 + 0.5 * $i);
+
             dd(
-                $i . "\t>\t" .$my_round($i)
+                $i . "\t>\t" . $my_round($i)
             );
-
         }
         dd("Done");
     }
@@ -6908,7 +6950,8 @@ class DumbController extends Controller
 
         Si, pero debe agregarse un "return " al comienzo
     */
-    function test_eval(){
+    function test_eval()
+    {
         $code = "return table('my_tb')
         ->group(function(\$q){
             \$q->whereOr([
@@ -6937,41 +6980,45 @@ class DumbController extends Controller
             eval($code)
         );
     }
-    function test_if_array_is_multi_but_simple(){
+    function test_if_array_is_multi_but_simple()
+    {
         $a = [
             ['a', 'c'],
             ['x' => 7], // <--- false
             ['a', 'c', 5],
         ];
-        
+
         dd(
             Arrays::areSimpleAllSubArrays($a)
         );
     }
 
-    function get_extensions(){
+    function get_extensions()
+    {
         dd(get_loaded_extensions());
     }
 
-    function test_byte(){
-        $x= true;
-       
+    function test_byte()
+    {
+        $x = true;
+
         var_dump($x);
         echo $x;
     }
 
-    function test_hola(){
+    function test_hola()
+    {
         $client = ApiClient::instance()
-        ->setHeaders([
-            'Authorization: PRHN5lqx7B5TraYBOjCv13U48tgNbqLJaRpI6m8S',
-            'Content-Type: application/json'
-        ]);
+            ->setHeaders([
+                'Authorization: PRHN5lqx7B5TraYBOjCv13U48tgNbqLJaRpI6m8S',
+                'Content-Type: application/json'
+            ]);
 
         $client
-        ->disableSSL()
-        //->cache()
-        //->redirect()
-        ->setBody('[
+            ->disableSSL()
+            //->cache()
+            //->redirect()
+            ->setBody('[
             "fname" => "Tomas",
             "lname" => "Cruz",
             "email" => "cruz_t@gmail.com",
@@ -6983,41 +7030,41 @@ class DumbController extends Controller
                 "rango_de_presupuesto" => "2M-3M"
             ]            
         ]')
-        ->setUrl('https://api.eterniasoft.com/v3/clients')
-        ->post()
-        ->getResponse();
+            ->setUrl('https://api.eterniasoft.com/v3/clients')
+            ->post()
+            ->getResponse();
 
         $status = $client->getStatus();
 
-        if ($status != 201 && $status != 200){
+        if ($status != 201 && $status != 200) {
             throw new \Exception($client->error());
         }
 
         dd(
-            $client->data()         
-        );  
+            $client->data()
+        );
     }
 
-    
-   
+
+
     function test_ggg()
     {
         $curl = curl_init();
-        
+
         $data = [
-                'pass' => 'f32fq3fq32412', 
-                'data' => '<ped><num>1234321</num><cli><rut>1-9</rut><nom>david lara oyarzun</nom><dir>los dominicos 7177</dir><gir>sin giro</gir><fon>8999345043</fon><ema>dlara@runasssssss.cl</ema><com>huechuraba</com></cli><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art></ped>'
+            'pass' => 'f32fq3fq32412',
+            'data' => '<ped><num>1234321</num><cli><rut>1-9</rut><nom>david lara oyarzun</nom><dir>los dominicos 7177</dir><gir>sin giro</gir><fon>8999345043</fon><ema>dlara@runasssssss.cl</ema><com>huechuraba</com></cli><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art><art><cod>2345432134532</cod><pre>1000</pre><can>1</can><des>0</des><tot>1000</tot></art></ped>'
         ];
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => Url::buildUrl('http://201.148.107.125/~runa/js/zoh/pedidos.php', $data),
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_URL => Url::buildUrl('http://201.148.107.125/~runa/js/zoh/pedidos.php', $data),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
         ));
 
         $response = curl_exec($curl);
@@ -7027,31 +7074,34 @@ class DumbController extends Controller
     }
 
 
-    function debug_api_client_exec_2(){
+    function debug_api_client_exec_2()
+    {
         $data = include 'D:\www\simplerest\logs\api_debug.php';
 
         dd($data);
 
         $res = ApiClient::instance()
-        ->exec($data);
+            ->exec($data);
 
-        if ($res->status() != 200){
+        if ($res->status() != 200) {
             dd($res->error(), 'ERROR');
         }
 
         dd($res->status(), 'STATUS CODE');
 
         dd(
-            $res->data()         
-        , 'DATA');
+            $res->data(),
+            'DATA'
+        );
     }
 
-     
-    function test_runa(){
+
+    function test_runa()
+    {
         $base_url = "http://201.148.107.125/~runa/js/zoh/pedidos.php";
         $password = "f32fq3fq32412";
-        
-        $cli = array (
+
+        $cli = array(
             'rut' => '1-9',
             'nom' => 'david lara oyarzun',
             'dir' => 'los dominicos 7177',
@@ -7074,7 +7124,7 @@ class DumbController extends Controller
                 'des' => '0',
                 'tot' => '1000',
             ],
-      
+
             [
                 'cod' => '2345432134532',
                 'pre' => '1000',
@@ -7088,7 +7138,7 @@ class DumbController extends Controller
             'num' => $quote_num,
 
             'cli' => $cli,
-            
+
             'art' => $items
         ];
 
@@ -7122,12 +7172,13 @@ class DumbController extends Controller
         // dd(
         //     $client->data()         
         // );  
-    }      
+    }
 
     /*
         I will receive 15600 PHP
     */
-    function refund(){
+    function refund()
+    {
         $d1 = '2023-04-28';
         $d2 = '2023-05-08';
 
@@ -7163,56 +7214,60 @@ class DumbController extends Controller
         );
     }
 
-    function gen_file(){
+    function gen_file()
+    {
         $size = 10 * 1024 * 1024;
         Files::writeOrFail(ETC_PATH . 'big_file.txt', str_repeat('*', $size));
     }
 
-   
-    function api_callback(){
+
+    function api_callback()
+    {
         /*
             http://test.lan/callback.php
             https://catasto.000webhostapp.com/callback.php
         */
-        
+
         $url = 'http://test.lan/callback.php';
         //$url = 'https://ticiwe.com/callbacks';
-    
+
         $client = new ApiClient($url);
 
         $client
-        ->disableSSL()
-        ->redirect()
-        ->setBody([
-            'data' => [
-                'name' => 'Fabio',
-            'age'  => 27
-            ]
-        ])
-        ->post();
-      
+            ->disableSSL()
+            ->redirect()
+            ->setBody([
+                'data' => [
+                    'name' => 'Fabio',
+                    'age'  => 27
+                ]
+            ])
+            ->post();
+
         dd(
-            $client->data()         
-        );  
+            $client->data()
+        );
     }
 
-    function reordenarArray($a, $b) {
+    function reordenarArray($a, $b)
+    {
         $first_pos_b_in_a = array_search($b[0], $a);
-        
+
         $a = array_diff($a, $b);
 
         list($a1, $a2) = array_chunk($a, $first_pos_b_in_a);
 
         $a = array_merge($a1, $b, $a2);
-        
+
         return $a;
     }
-    
-    function test_ra(){
+
+    function test_ra()
+    {
         // Ejemplo de uso
         $a = ['X', 'A', 'B', 'C', 'D', 'E'];
         $b = ['C', 'A'];
-        
+
         /*
             Array
             (
@@ -7225,12 +7280,13 @@ class DumbController extends Controller
             )
         */
         $resultado = $this->reordenarArray($a, $b);
-        
+
         // Imprimimos el resultado
         print_r($resultado);
     }
 
-    function test_casting_to_number(){
+    function test_casting_to_number()
+    {
         var_dump(
             Strings::toIntOrFail(null)
         );
@@ -7256,7 +7312,8 @@ class DumbController extends Controller
         );
     }
 
-    function test_casting_int_to_str(){
+    function test_casting_int_to_str()
+    {
         var_dump(
             Strings::fromInt(null)
         );
@@ -7280,7 +7337,8 @@ class DumbController extends Controller
         );
     }
 
-    function test_casting_float_to_str(){
+    function test_casting_float_to_str()
+    {
         var_dump(
             Strings::fromFloat(null)
         );
@@ -7296,7 +7354,7 @@ class DumbController extends Controller
         // Invalid integer for '52.7'
         var_dump(
             Strings::fromFloat("52.7")
-    );
+        );
 
         // Invalid integer for '52.7'
         var_dump(
@@ -7304,47 +7362,50 @@ class DumbController extends Controller
         );
     }
 
-    function test_format_json(){
+    function test_format_json()
+    {
         $str = '{"endpoint":"ricerca_nazionale_pg","stato":"evasa","callback":{"url":"https:\/\/ticiwe.com\/callbacks?r=realstate&sub=ricerca_nazionale","field":"data","method":"POST","data":[]},"parametri":{"cf_piva":"12485671007","tipo_catasto":"TF","provincia":"NAZIONALE-IT"},"risultato":{"soggetti":[{"denominazione":"ALTRAVIA SERVIZI SOCIETA\' A RESPONSABILITA\' LIMITATA","sede":"ROMA (RM)","cf":"12485671007","id_soggetto":"OTgwMzI3NTA1MiMwI0FMVFJBVklBIFNFUlZJWkkgU09DSUVUQScgQSBSRVNQT05TQUJJTElUQScgTElNSVRBVEEjUk9NQSAoUk0pIzEyNDg1NjcxMDA3","catasti":[{"citta":"ROMA","fabbricati":1,"terreni":0}]}]},"esito":"OK","timestamp":1683988870,"owner":"fabio56istrefi@gmail.com","id":"645fa18682673817d87710e8"}';
 
         dd(Strings::formatJSON($str));
     }
 
-    function test_file_fn(){
+    function test_file_fn()
+    {
         var_dump(Logger::getContent());
 
         dd(Files::readOrFail("c:\ddd"));
     }
 
     function test_curl_proxy_3()
-    {  
+    {
         $url       = 'https://academico.upla.edu.pe/uplanet/frm_login.aspx';
         $proxy_url = 'http://2.56.221.125/php-proxy/Proxy.php';
 
         dd($url, 'URL');
 
         $client = ApiClient::instance($proxy_url)
-        ->setHeaders([
-            'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
-            'Proxy-Target-URL: '.$url
-        ]);
+            ->setHeaders([
+                'Proxy-Auth: Bj5pnZEX6DkcG6Nz6AjDUT1bvcGRVhRaXDuKDX9CjsEs2',
+                'Proxy-Target-URL: ' . $url
+            ]);
 
         $client
-        ->disableSSL()
-        //->cache()
-        ->redirect()
-        ->get();
+            ->disableSSL()
+            //->cache()
+            ->redirect()
+            ->get();
 
-        if ($client->getStatus() != 200){
+        if ($client->getStatus() != 200) {
             throw new \Exception($client->error());
         }
 
         dd(
-            $client->data()         
-        );  
+            $client->data()
+        );
     }
 
-    function test_remove_css(){
+    function test_remove_css()
+    {
         $html = '<html>
                 <head>
                     <style>
@@ -7364,7 +7425,8 @@ class DumbController extends Controller
         dd($cleanHtml);
     }
 
-    function test_remove_tag(){
+    function test_remove_tag()
+    {
         $html = '</li>
         <li class="nav-item">
             <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank">
@@ -7385,14 +7447,15 @@ class DumbController extends Controller
         dd($html); // Salida: 
     }
 
-    function test_removehtmlattributes() {
+    function test_removehtmlattributes()
+    {
         $html = '<div onclick="alert(\'Hello\');" style="color: red;" class="container">Content</div>';
-    
+
         // Eliminar el atributo 'onclick'
         $result1 = HTML::removeHTMLAttributes($html, 'onclick');
         dd($result1, 'PRUEBA 1');
         // Salida esperada: '<div style="color: red;" class="container">Content</div>'
-    
+
         // Eliminar los atributos 'style' y 'class'
         $result2 = HTML::removeHTMLAttributes($html, ['style', 'class']);
         dd($result2, 'PRUEBA 2');
@@ -7400,7 +7463,7 @@ class DumbController extends Controller
     }
 
     function test_var_export()
-    {        
+    {
         $content = [
             'A', 'B', 'C'
         ];
@@ -7412,11 +7475,13 @@ class DumbController extends Controller
         Logger::varExport($content, $path);
 
         dd(
-            Files::getContent($path), 'CONTENT'
+            Files::getContent($path),
+            'CONTENT'
         );
     }
-    
-    function test_remove_bt_classes(){
+
+    function test_remove_bt_classes()
+    {
         $html = '</li>
         <li class="nav-item">
             <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank" style="color:red">
@@ -7427,8 +7492,8 @@ class DumbController extends Controller
         <li class="nav-item">
             <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/bootstrap/templates?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank"><p>XXX</p></a>
         </li>';
-        
-        
+
+
         $html = XML::removeCSS($html);
         $html = XML::removeHTMLAttributes($html, ['rel', 'target']);
 
@@ -7448,11 +7513,12 @@ class DumbController extends Controller
                 <a class="d-inline-flex align-items-center" href="https://shuffle.dev/bootstrap/templates?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank"><p>XXX</p></a>
             </li>
         */
-        dd($html); 
+        dd($html);
     }
 
 
-    function test_remove_social_links(){
+    function test_remove_social_links()
+    {
         // Ejemplo de uso
         $html = '
         <a href="https://www.facebook.com/mi-pagina">Visita mi página de Facebook</a>
@@ -7463,17 +7529,19 @@ class DumbController extends Controller
         ';
 
         $filteredHtml = XML::removeSocialLinks($html);
-        
+
         dd($filteredHtml);
     }
 
-    function test_until_n_words(){
+    function test_until_n_words()
+    {
         dd(
             Strings::getUpToNWords("To add support, for other word breaks like commas and dashes, preg_match gives a quick way and doesn't require splitting the string", 8)
         );
     }
 
-    function test_reducetext() {
+    function test_reducetext()
+    {
         /*
             Prueba 1
         */
@@ -7482,7 +7550,7 @@ class DumbController extends Controller
         $result1 = Strings::reduceText($html1, $n_words1);
         dd($result1, 'PRUEBA 1');
         // Salida esperada: "<p>Lorem ipsum dolor sit amet,</p>"
-    
+
         /*
             Prueba 2
         */
@@ -7504,7 +7572,8 @@ class DumbController extends Controller
         dd($updateDate, 'INFO');
     }
 
-    function test_gdrive_info(){
+    function test_gdrive_info()
+    {
 
         $googleDrive = new GoogleDrive();
         $info        = $googleDrive->getFolderInfo('1oUqLiey81m0keXAo1ZtOsGYfd5c1VTeT', [
@@ -7521,14 +7590,15 @@ class DumbController extends Controller
         $destination = ETC_PATH . 'downloads/file.zip';
 
         $result = (new GoogleDrive())
-        ->download($fileId, $destination, false, 300);
+            ->download($fileId, $destination, false, 300);
 
         // true
         dd($result, 'RESULT');
     }
 
 
-    function test_file_cache_put(){
+    function test_file_cache_put()
+    {
         dd(
             FileCache::put('constelacion', 'andromeda X', 2)
         );
@@ -7541,40 +7611,45 @@ class DumbController extends Controller
 
         C:\Users\jayso\AppData\Local\Temp\8302505164ff597cfd342a21e60c849d26093d73.cache
     */
-    function test_file_cache_path(){
+    function test_file_cache_path()
+    {
         dd(
             FileCache::getCachePath('constelacion')
         );
     }
 
-    function test_file_cache_get(){
+    function test_file_cache_get()
+    {
         dd(
             FileCache::get('constelacion')
         );
     }
 
-    function is_expired(){
+    function is_expired()
+    {
         $file = FileCache::getCachePath('constelacion');
 
         dd(
-            FileCache::expiredFile($file    )
+            FileCache::expiredFile($file)
         );
     }
 
-    function test_db_cache_put(){
+    function test_db_cache_put()
+    {
         $data = [
             'the_key'   => 'nombre',
             'the_value' => serialize('Feli'),
             'cached_at' => time(),
             'expiration_time' => 100000,
         ];
-        
-        DB::table('cache')->create($data);  
+
+        DB::table('cache')->create($data);
 
         //DBCache::put('galaxia', 'voa lactea', 60);
     }
 
-    function testtttttt(){
+    function testtttttt()
+    {
         $link     = 'https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
 
         $id       = Url::getQueryParam($link, 'id');
@@ -7583,14 +7658,16 @@ class DumbController extends Controller
     }
 
 
-    function test_consume_api(){
+    function test_consume_api()
+    {
         dd(
             consume_api('www.yahoo.in')
         );
     }
 
-    
-    function test_format_json_to_file(){
+
+    function test_format_json_to_file()
+    {
         $path = 'D:\Desktop\SHADOWR FIVERR\CategoriesJsonFile(4).json';
 
         $str = Strings::formatJSON($path);
@@ -7598,39 +7675,45 @@ class DumbController extends Controller
         file_put_contents('D:\Desktop\SHADOWR FIVERR\formatted\CategoriesJsonFile(4).json', $str);
     }
 
-    function get_url_params(){
+    function get_url_params()
+    {
         dd(Url::getSlugs(null, true));
     }
 
-    function dolar_widget_test(){
+    function dolar_widget_test()
+    {
         js_file("https://www.dolar-colombia.com/widget.js?t=2&c=1");
 
         render();
     }
 
-    function test_csv_uploader(){
+    function test_csv_uploader()
+    {
         view('csv_uploader');
     }
 
-    function test_update_htaccess(){
+    function test_update_htaccess()
+    {
         ApacheWebServer::updateHtaccessFile([
             'upload_max_filesize' => '1024M',
             'post_max_size' => '1024M',
-        ], ROOT_PATH);    
+        ], ROOT_PATH);
     }
 
-    function test_upload_limits(){
+    function test_upload_limits()
+    {
         FileUploader::setLimits();
 
         dd([
-		    "memory_limit"          => ini_get("memory_limit"),
-		    "max_execution_time"    => ini_get("max_execution_time"),
+            "memory_limit"          => ini_get("memory_limit"),
+            "max_execution_time"    => ini_get("max_execution_time"),
             "upload_max_filesize"   => ini_get("upload_max_filesize"),
-		    "post_max_size"         => ini_get("post_max_size")
+            "post_max_size"         => ini_get("post_max_size")
         ]);
     }
 
-    function cfg(){
+    function cfg()
+    {
         dd(
             get_cfg('log_file')
         );
@@ -7642,7 +7725,8 @@ class DumbController extends Controller
         );
     }
 
-    function opt(){
+    function opt()
+    {
         dd(
             get_option('free_mem')
         );
@@ -7654,21 +7738,24 @@ class DumbController extends Controller
         );
     }
 
-    function test_optimize(){
+    function test_optimize()
+    {
         DB::getConnection();
 
         $tb = DB::getTableNames()[0];
 
         dd(
             DB::repair($tb, true),
-        $tb);
+            $tb
+        );
     }
 
-    function test_query_param() {       
+    function test_query_param()
+    {
         echo Url::addQueryParam('http://simplerest.lan/api/v1/products', 'q', 'fiesta') . "\n";
         echo Url::addQueryParam('http://simplerest.lan/api/v1/products?v=1', 'q', 'fiesta') . "\n";
         echo Url::addQueryParam('http://simplerest.lan/api/v1/products?v=1', 'v', '3') . "\n";
-        
+
         // http://www.google.com?q=fiesta
         echo Url::addQueryParam('http://www.google.com', 'q', 'fiesta') . "\n";
 
@@ -7681,12 +7768,12 @@ class DumbController extends Controller
         $cli  = ApiClient::instance('http://simplerest.lan/api/v1/products?v=1');
 
         $cli
-        ->queryParam('size', 3)
-        ->queryParam('page', 2)
-        
-        ->setMethod('GET') 
+            ->queryParam('size', 3)
+            ->queryParam('page', 2)
 
-        ->send();
+            ->setMethod('GET')
+
+            ->send();
 
         dd($cli->data());
     }
@@ -7700,11 +7787,11 @@ class DumbController extends Controller
         $cli  = new ApiClient();
 
         $res  = $cli
-        ->when(!empty($mock), function($it) use ($mock){
-            $it->mock($mock);
-        })
-        ->request('http://jsonplaceholder.typicode.com/posts/3', 'GET')
-        ->getResponse();
+            ->when(!empty($mock), function ($it) use ($mock) {
+                $it->mock($mock);
+            })
+            ->request('http://jsonplaceholder.typicode.com/posts/3', 'GET')
+            ->getResponse();
 
         /*
             Array
@@ -7740,41 +7827,44 @@ class DumbController extends Controller
         $cli  = new ApiClient();
 
         $res  = $cli
-        ->when(!empty($mock), function($it) use ($mock){
-            $it->mock($mock);
-        })
-        ->request('https://mutawp.com/ajax/get_products?v=1', 'GET')
-        ->getResponse();
+            ->when(!empty($mock), function ($it) use ($mock) {
+                $it->mock($mock);
+            })
+            ->request('https://mutawp.com/ajax/get_products?v=1', 'GET')
+            ->getResponse();
 
         dd($res);
         dd($cli->data());
     }
 
-    function test_chunk(){
+    function test_chunk()
+    {
         $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         $chunks = Arrays::chunk($data, 5, 1);
 
         dd($chunks);
     }
 
-    function test_makearray() {
+    function test_makearray()
+    {
         $array = [
             'name' => 'John Doe',
             'age' => 30,
             'country' => 'USA'
         ];
-    
+
         $path = 'data.products';
-    
+
         $result = Arrays::makeArray($array, $path);
-    
+
         print_r($result);
     }
 
     /*
         Paginarlo y usarlo para alimentar WP Muta !!!
-    */  
-    function serve_json(){
+    */
+    function serve_json()
+    {
         $path      = 'D:\www\woo2\wp-content\plugins\mutawp\etc\responses\products.json';
         $row_path  = "data.products"; // ['data']['products']
         $page      = $_GET['page'] ?? 1;
@@ -7797,9 +7887,9 @@ class DumbController extends Controller
         $cli = new ApiClient($url);
 
         $res  = $cli
-        ->withoutStrictSSL()
-        ->setMethod('GET')
-        ->getResponse();
+            ->withoutStrictSSL()
+            ->setMethod('GET')
+            ->getResponse();
 
         dd($res);
         dd($cli->data());
@@ -7809,22 +7899,22 @@ class DumbController extends Controller
     function test_get_binary()
     {
         $url = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample.tar';
-        $cli = new ApiClient($url); 
+        $cli = new ApiClient($url);
 
         $cli
-        ->setBinary()
-        ->withoutStrictSSL();
+            ->setBinary()
+            ->withoutStrictSSL();
 
         $bytes = $cli
-        ->download(ETC_PATH . 'file.zip');
+            ->download(ETC_PATH . 'file.zip');
 
         // empty => OK
-        if (!empty($cli->error())){
+        if (!empty($cli->error())) {
             dd("HTTP Error. Detail: " . $cli->error());
         }
-        
+
         // 200 OK
-        if ($cli->status() != 200){
+        if ($cli->status() != 200) {
             dd("HTTP status code" . $cli->status());
             exit;
         }
@@ -7843,8 +7933,9 @@ class DumbController extends Controller
             ZipManager::unzip($file, ETC_PATH . 'test')
         );
     }
-    
-    function test_crypt(){
+
+    function test_crypt()
+    {
         $str = "Hola mundo";
 
         dd(SimpleCrypt::encrypt($str));
@@ -7854,9 +7945,9 @@ class DumbController extends Controller
         ));
     }
 
-    function test_idea(){
-        $zips = Array
-        (
+    function test_idea()
+    {
+        $zips = array(
             'D:\www\woo2\wp-content\plugins\betheme-premium-wordpress-theme\betheme-child.zip',
             'D:\www\woo2\wp-content\plugins\betheme-premium-wordpress-theme\betheme.zip',
             'D:\www\woo2\wp-content\plugins\betheme-premium-wordpress-theme\betheme-otro-child.zip'
@@ -7872,15 +7963,18 @@ class DumbController extends Controller
         ';
 
         dd(
-            LangDetector::is($str, 'en'), 'Is English'
+            LangDetector::is($str, 'en'),
+            'Is English'
         );
 
         dd(
-            LangDetector::is($str, 'es'), 'Is Spanish'
+            LangDetector::is($str, 'es'),
+            'Is Spanish'
         );
     }
 
-    function css_beautifier(){
+    function css_beautifier()
+    {
         $path = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css';
 
         dd(
@@ -7888,7 +7982,8 @@ class DumbController extends Controller
         );
     }
 
-   function test_get_css(){
+    function test_get_css()
+    {
         $html = Files::getContent('D:\www\woo2\wp-content\plugins\wp_runa\views\contact_form.php');
 
         $cssClasses = XML::getCSSClasses($html);
@@ -7908,10 +8003,11 @@ class DumbController extends Controller
 
         Ademas debe obtenerse todo CSS incrustado mediante <style> de esa misma pagina
     */
-    function get_css_rules(){
+    function get_css_rules()
+    {
         System::setMemoryLimit('2048M');
 
-        $path        = 'D:\Desktop\OMAR FUENTES\RUNA\test';   
+        $path        = 'D:\Desktop\OMAR FUENTES\RUNA\test';
         // $path        = 'D:\Desktop\OMAR FUENTES\RUNA\test\slider.min.css';
         // $path        = 'D:\Desktop\OMAR FUENTES\RUNA\test\slider_extra.min.css';
 
@@ -7928,41 +8024,41 @@ class DumbController extends Controller
 
         $config   = [
             'token'    =>  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoid2ViQG1heGltcG9ydGFjaW9uZXMuY29tLnBlIiwicm9sZSI6ImxvZ2lzdGljIiwiaWF0IjoxNjg2NzI2Mjg3fQ.U4Z5Hbud2jl31LcM8ZMX0pxhVAJQW8OLIIXQ_NJQ_44',
-            
+
             'endpoint_products'         => 'https://appdesa.maximportaciones.com.pe/api/products', // no tiene paginacion
             'endpoint_products_detail'  => 'https://146.190.123.27/api/products',
             'endpoint_product_detail'   => 'https://146.190.123.27/api/products/', // + id
             'debug'                     => true
         ];
 
-        $token 		        = $config['token'];
-        $catalog_url		= $config['endpoint_products'];
-        $catalog_detail_url	= $config['endpoint_products_detail'];
-        $url        		= $including_warehouses ? $catalog_detail_url : $catalog_url; 
-        
-        $exp_time = ($config['debug'] ? 3600 * 24 * 15 :  ($config['api_cache'] ?? 0));
+        $token                 = $config['token'];
+        $catalog_url        = $config['endpoint_products'];
+        $catalog_detail_url    = $config['endpoint_products_detail'];
+        $url                = $including_warehouses ? $catalog_detail_url : $catalog_url;
+
+        $exp_time = ($config['debug'] ? 3600 * 24 * 15 : ($config['api_cache'] ?? 0));
 
         $client   = ApiClient::instance()
-        ->setJWTAuth($token)
-        ->withoutStrictSSL()
-        //->setCache($exp_time)  // <-- solo para pruebas mas de 3600 * 24
-        ->decode(true); 
+            ->setJWTAuth($token)
+            ->withoutStrictSSL()
+            //->setCache($exp_time)  // <-- solo para pruebas mas de 3600 * 24
+            ->decode(true);
 
         $client->setUrl($url);
         $client->queryParams([
-            'page' => 364   
+            'page' => 364
         ]);
 
         $res = $client->get();
 
-        if ($res->status() != 200 || !empty($res->error())){
-            $msg = "Error al connectar con '$url'. Detalle: ". $res->error();
+        if ($res->status() != 200 || !empty($res->error())) {
+            $msg = "Error al connectar con '$url'. Detalle: " . $res->error();
             dd($msg);
 
             return;
         }
 
-        if (empty($res)){
+        if (empty($res)) {
             $msg = "API no está proveyendo datos";
             dd($msg);
         }
@@ -7970,7 +8066,8 @@ class DumbController extends Controller
         dd($res->data());
     }
 
-    function test_arr_fn(){
+    function test_arr_fn()
+    {
         // Uso del método estático
         $rows = array(
             array(
@@ -7995,8 +8092,9 @@ class DumbController extends Controller
 
         dd($filtered);
     }
-    
-    function image(){
+
+    function image()
+    {
         $str = 'data:image/png;base64,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';
 
         MediaType::renderImage($str);
@@ -8005,26 +8103,29 @@ class DumbController extends Controller
     /*
         Intentar hacer auto quoteValue() para campos tipo VARCHAR, JSON etc de encontrar comillas dobles
     */
-    function insert(){
+    function insert()
+    {
         DB::getConnection('woo3');
 
         $rows = require 'D:\www\woo3\wp-content\plugins\mutawp_admin\etc\metadata.php';
-    
-        foreach ($rows as $link_id => $metadata){
+
+        foreach ($rows as $link_id => $metadata) {
             $metadata = json_encode($metadata);
             $metadata = DB::quoteValue($metadata); // necesario porque contiene comillas dobles
 
             $sql      = "INSERT INTO `wp_link2product_metadata` (`link_id`, `metadata`) VALUES ('$link_id', $metadata);";
-    
+
             dd(DB::statement($sql), $sql);
         }
     }
 
-    function test_rest(){
+    function test_rest()
+    {
         nap(0.99);
     }
 
-    function test_argsv(){
+    function test_argsv()
+    {
         dd($_GET);
     }
 
@@ -8088,7 +8189,8 @@ class DumbController extends Controller
         ]);
     }
 
-    function test_move(){
+    function test_move()
+    {
         $ori = 'D:\Downloads\wordpress-6.0-beta1\wordpress';
         $dst = 'D:\Desktop\EN LANG\wp';
 
@@ -8128,10 +8230,10 @@ class DumbController extends Controller
 
         // print_array($rows);
 
-        foreach ($rows as $row){
-            if ($row['Tipo'] == 'variable' || $row['Tipo'] == 'variation'){
+        foreach ($rows as $row) {
+            if ($row['Tipo'] == 'variable' || $row['Tipo'] == 'variation') {
                 dd($row, null, false);
-            }            
+            }
         }
 
 
@@ -8144,7 +8246,8 @@ class DumbController extends Controller
 
         Depende de FontAwesome
     */
-    function test_notices(){
+    function test_notices()
+    {
         render('
         <style>
         .message-box {
@@ -8217,10 +8320,11 @@ class DumbController extends Controller
         </div>');
     }
 
-    function test_wpcron(){
+    function test_wpcron()
+    {
         set_time_limit(-1);
 
-        for ($i=0; $i< 1000; $i++){
+        for ($i = 0; $i < 1000; $i++) {
             file_get_contents('http://woo6.lan/');
 
             dd(
@@ -8250,11 +8354,12 @@ class DumbController extends Controller
         "key_word": "hola_mundo"
         }
     */
-    function fer_register(){
+    function fer_register()
+    {
         $url = 'https://dev.cloudtrades.lat/api/register';
 
         $cli = ApiClient::instance();
-        
+
         $body = json_encode('
         {
             "name":"jeison",
@@ -8268,30 +8373,31 @@ class DumbController extends Controller
         }');
 
         $res = $cli
-        ->setHeaders(
-            [
-                "Content-type"  => "application/json"
-            ]
-        )
-        ->withoutStrictSSL()
-        ->setBody($body)
-        ->disableSSL()
-        ->post($url)
-        ->getResponse();
+            ->setHeaders(
+                [
+                    "Content-type"  => "application/json"
+                ]
+            )
+            ->withoutStrictSSL()
+            ->setBody($body)
+            ->disableSSL()
+            ->post($url)
+            ->getResponse();
 
         dd($cli->error(),  'ERROR');
         dd($cli->status(), 'STATUS');
 
         $res = $cli->data();
 
-        dd($res, 'DATA');     
+        dd($res, 'DATA');
     }
 
 
     /*
         https://dev.cloudtrades.lat/api/login/
     */
-    function fer_login(){
+    function fer_login()
+    {
         $url = 'https://dev.cloudtrades.lat/api/login/';
 
         $body = [
@@ -8302,31 +8408,33 @@ class DumbController extends Controller
         $cli = ApiClient::instance();
 
         $res = $cli
-        ->setHeaders(
-            [
-                "Content-type"  => "application/json"
-            ]
-        )
-        ->withoutStrictSSL()
-        ->setBody($body)
-        ->disableSSL()
-        ->post($url)
-        ->getResponse();
+            ->setHeaders(
+                [
+                    "Content-type"  => "application/json"
+                ]
+            )
+            ->withoutStrictSSL()
+            ->setBody($body)
+            ->disableSSL()
+            ->post($url)
+            ->getResponse();
 
         dd($cli->error(),  'ERROR');
         dd($cli->status(), 'STATUS');
 
         $res = $cli->data();
 
-        dd($res, 'DATA');        
+        dd($res, 'DATA');
     }
 
-    function fer_login_2x(){
+    function fer_login_2x()
+    {
         $this->fer_login();
         $this->fer_login();
     }
 
-    function check_content(){
+    function check_content()
+    {
         dd(
             consume_api('https://www.deltron.com.pe/login.php')
         );
@@ -8337,115 +8445,10 @@ class DumbController extends Controller
 
         Convertir eventualmente en componente 
     */
-    function cards_with_overlays() {
+    function cards_with_overlays()
+    {
         ob_start();
-        ?>
-        
-        <style>
-            .sr-card-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 20px;
-                justify-content: center;
-                align-items: center;
-                perspective: 500px;
-            }
-    
-            .sr-card {
-                position: relative;
-                width: 100%;
-                height: 300px;
-            }
-    
-            .sr-card-content {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                box-shadow: 0 0 15px rgba(0,0,0,0.1);
-                transform-style: preserve-3d;
-                transition: transform 0.5s;
-            }
-    
-            .sr-card:hover .sr-card-content {
-                transform: rotateY(180deg);
-            }
-    
-            .sr-card-front,
-            .sr-card-back {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                border-radius: 5px;
-                backface-visibility: hidden;
-                overflow: hidden; /* Ensure the overlay doesn't overflow */
-            }
-    
-            /* White text on the front side */
-            .sr-card-front-text {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                color: white;
-            }
-    
-            .sr-card-back {
-                text-align: center; /* horizontal alignment */
-                line-height: 280px; /* vertical alignment */
-                background: #03446A;
-                color: white;
-                transform: rotateY(180deg);
-                font-size: 30px;
-            }
-
-            /*
-                Extras
-
-                - Coloco imagen de fondo en la cara frontal
-                - Creo overlay sobre la imagen para aumentar contraste 
-            */
-
-            .sr-card-front {
-                background: url('/public/assets/andrea/img/globe.png') no-repeat center center / cover;
-            }
-    
-            /* Overlay for the front side */
-            .sr-card-front::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.6); /* Overlay color and opacity */
-            }
-    
-        </style>
-    
-        <div class="sr-card-container">
-            <?php foreach (range(0, 10) as $ix): ?>
-                <div class="sr-card">
-                    <div class="sr-card-content">
-                        <div class="sr-card-front">
-                            <div class="sr-card-front-text">Front</div>
-                        </div>
-                        <div class="sr-card-back">
-                            Back!
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    
-        <?php
-        $content = ob_get_clean();
-        render($content);
-    }
-    
-
-    function render_view() {
-        ob_start();
-        ?>
+    ?>
 
         <style>
             /* 
@@ -8458,7 +8461,7 @@ class DumbController extends Controller
                 border-radius: 20px;
                 text-align: center;
                 text-decoration: none;
-                font-size: 16px;
+                font-size: 13px;
                 cursor: pointer;
             }
 
@@ -8467,8 +8470,13 @@ class DumbController extends Controller
                 color: white;
             }
 
+            .sr-btn-green {
+                background-color: #0DA078;
+                color: white;
+            }
+
             .sr-btn-red {
-                background-color: red;
+                background-color: #ff2626;
                 color: white;
             }
 
@@ -8476,19 +8484,31 @@ class DumbController extends Controller
                 background-color: #000000;
                 color: white;
             }
+            
+            .sr-btn-disabled {
+                background-color: #C7C7C7;
+                color: white;
+            }
 
-            .sr-rounded-pill-button:hover, .sr-rounded-pill-button:focus, .sr-rounded-pill-button:active {
+            .sr-rounded-pill-button:hover,
+            .sr-rounded-pill-button:focus,
+            .sr-rounded-pill-button:active {
                 color: white !important;
             }
-          
+
+            .sr-btn-red.sr-rounded-pill-button:hover,
+            .sr-btn-red.sr-rounded-pill-button:focus,
+            .sr-btn-red.sr-rounded-pill-button:active {
+                background-color: #f40000;
+            }
+
             /*
                 Extra: pills del mismo width
             */
 
             .sr-rounded-pill-button {
-                width: 130px;
+                width: 120px;
             }
-
 
             /*
                 Flip cards
@@ -8499,32 +8519,33 @@ class DumbController extends Controller
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
                 gap: 20px;
                 justify-content: center;
-                align-items: center; /* Asegurar alineación vertical */
+                align-items: center;
+                /* Asegurar alineación vertical */
                 perspective: 500px;
             }
-    
+
             .sr-card {
                 position: relative;
                 width: 100%;
                 height: 300px;
             }
-    
+
             .sr-card-content {
                 position: absolute;
                 width: 100%;
                 height: 100%;
-                box-shadow: 0 0 15px rgba(0,0,0,0.1);
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
                 transform-style: preserve-3d;
                 transition: transform 0.5s;
             }
-    
+
             /*
                 Animacion
             */
             .sr-card:hover .sr-card-content {
-                transform: rotateY(180deg); 
+                transform: rotateY(180deg);
             }
-    
+
             .sr-card-front,
             .sr-card-back {
                 position: absolute;
@@ -8532,9 +8553,10 @@ class DumbController extends Controller
                 height: 100%;
                 border-radius: 5px;
                 backface-visibility: hidden;
-                overflow: hidden; /* Ensure the overlay doesn't overflow */
+                overflow: hidden;
+                /* Ensure the overlay doesn't overflow */
             }
-    
+
             /* White text on the front side */
             .sr-card-front-text {
                 position: absolute;
@@ -8543,10 +8565,13 @@ class DumbController extends Controller
                 transform: translate(-50%, -50%);
                 color: white;
                 font-size: 24px;
+                line-height: 150%;
+                text-align: center;
             }
-    
+
             .sr-card-back {
-                text-align: center; /* horizontal alignment */
+                text-align: center;
+                /* horizontal alignment */
                 background: #03446A;
                 color: white;
                 transform: rotateY(180deg);
@@ -8567,9 +8592,10 @@ class DumbController extends Controller
                 background-image: var(--img-url);
                 background-repeat: no-repeat;
                 background-position: center center;
-                background-size: contain; /* Cambiado a 'contain' para ajustar la imagen sin recortes */
+                background-size: contain;
+                /* Cambiado a 'contain' para ajustar la imagen sin recortes */
             }
-    
+
             /* Overlay for the front side */
             .sr-card-front::before {
                 content: '';
@@ -8578,46 +8604,88 @@ class DumbController extends Controller
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: rgba(0, 0, 0, 0.6); /* Overlay color and opacity */
+                background-color: rgba(0, 0, 0, 0.6);
+                /* Overlay color and opacity */
             }
-    
-        </style>
-    
-        <div class="sr-card-container">
-            <?php foreach (range(0, 10) as $ix): ?>
-                <div class="sr-card">
-                    <div class="sr-card-content">
-                        <div class="sr-card-front" style="--img-url:url('/public/assets/andrea/img/globe.png')">
-                            <div class="sr-card-front-text">Elementor Pro Super Cool</div>
-                        </div>
-            
-                        <div class="sr-card-back">
-                            
-                            <div style="display: inline-block;">
-                                <a href="#" class="sr-rounded-pill-button sr-btn-red">Actualizar</a> 
-                                <a href="#" class="sr-rounded-pill-button sr-btn-black">Saber más</a>
-                            </div>
-                        
-                        </div>
 
+            /*
+                Banda diagnal
+            */
+
+            .sr-card-ribbon {
+                position: absolute;
+                right: -5px;
+                top: -5px;
+                z-index: 1;
+                overflow: hidden;
+                width: 75px;
+                height: 75px;
+                text-align: right;
+            }
+
+            .sr-card-ribbon span {
+                font-size: 10px;
+                color: #fff;
+                text-transform: uppercase;
+                text-align: center;
+                font-weight: bold;
+                line-height: 20px;
+                transform: rotate(45deg);
+                width: 100px;
+                display: block;
+                background: #79A70A;
+                background: linear-gradient(#9BC90D 0%, #79A70A 100%);
+                box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+                position: absolute;
+                top: 19px;
+                right: -21px;
+            }
+
+            .sr-card-ribbon span::before {
+                content: '';
+                position: absolute;
+                left: 0px;
+                top: 100%;
+                z-index: -1;
+                border-left: 3px solid #79A70A;
+                border-right: 3px solid transparent;
+                border-bottom: 3px solid transparent;
+                border-top: 3px solid #79A70A;
+            }
+
+            .sr-card-ribbon span::after {
+                content: '';
+                position: absolute;
+                right: 0%;
+                top: 100%;
+                z-index: -1;
+                border-right: 3px solid #79A70A;
+                border-left: 3px solid transparent;
+                border-bottom: 3px solid transparent;
+                border-top: 3px solid #79A70A;
+            }
+
+        </style>
+
+        <div class="sr-card-container">
+            <?php foreach (range(0, 10) as $ix) : ?>
+                <div class="sr-card">                    
+                    <div class="sr-card-content">                        
+                        <div class="sr-card-front">
+                            <div class="sr-card-ribbon"><span>Update</span></div>
+                            <div class="sr-card-front-text">Front</div>
+                        </div>
+                        <div class="sr-card-back">
+                            <a href="#" class="btn2install sr-rounded-pill-button sr-btn-disabled" data-pid="450" aria-label="Actualizar o instalar" data-name="Asset CleanUp Pro v1.2.3.3" role="button">Actualizar</a>
+                            <a href="https://mutawp.com/descargar/asset-cleanup-pro/" class="sr-rounded-pill-button sr-btn-black">Saber más</a>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
-    
-        <?php
+
+<?php
         $content = ob_get_clean();
         render($content);
     }
-
-    function df(){
-        $url = [
-            'https://practicatest.cl/dist/css/basic.min.css',
-            'https://practicatest.cl/dist/css/style.themed.css?v=1'
-        ];
-       
-        // El directorio debe existir
-        Files::download($url, 'D:\www\simplerest\public\assets\practicatest.cl');
-    }
-
 }   // end class

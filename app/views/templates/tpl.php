@@ -144,7 +144,7 @@
     <script src="<?= asset('vendors/adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') ?>"></script>
 
     
-    <script src="<?= asset('js/bootstrap/boostrap_notices.js') ?>"></script>
+    <script src="<?= asset('js/bootstrap/bt_notices.js') ?>"></script>
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>
