@@ -169,7 +169,7 @@
     </script>
     
     
-    <script src="<?= asset('js/boostrap/boostrap_notices.js') ?>"></script>
+    <script src="<?= asset('js/boostrap/bt_notices.js') ?>"></script>
     <script src="<?= asset('js/login.js') ?>"></script>
 </body>
 </html>
