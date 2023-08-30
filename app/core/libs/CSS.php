@@ -18,10 +18,10 @@ class CSS
 
         Salida:
 
-            css_file('practicatest.cl\basic.min.css');
-            css_file('practicatest.cl\style.themed.css');
-            css_file('practicatest.cl\fontawesome.css');
-            css_file('practicatest.cl\brands.css');
+            css_file('practicatest.cl/basic.min.css');
+            css_file('practicatest.cl/style.themed.css');
+            css_file('practicatest.cl/fontawesome.css');
+            css_file('practicatest.cl/brands.css');
 
         Con $use_helper en false,
 
@@ -69,7 +69,7 @@ class CSS
 
         $out = '';
         foreach ($filenames as $ix => $filename){
-            $filenames[$ix] = Strings::diff($filename, ASSETS_PATH);
+            $filenames[$ix] = str_replace('\\', '/', Strings::diff($filename, ASSETS_PATH));
             $out .= PHP_EOL . "css_file('$filenames[$ix]');";
         }
 
