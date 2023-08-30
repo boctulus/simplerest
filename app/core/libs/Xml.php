@@ -1401,7 +1401,43 @@ class XML
         return $cssClasses;
     }
 
-    static function extractLinkUrls(string $html, $extension = null) {
+    static function extractLinkUrls(string $html, $extension = null, bool $include_query_params = true) {
+        $urls = [];
+    
+        $dom = static::getDocument($html);
+    
+        $linkElements = $dom->getElementsByTagName('link');
+    
+        foreach ($linkElements as $linkElement) {
+            $href = $linkElement->getAttribute('href');            
+            $ext  = Files::getExtension($href);
+
+            if (!empty($href)) {
+                if ($extension === null || Files::matchExtension($ext, $extension)) {
+                    if ($include_query_params) {
+                        $urls[] = $href;
+                    } else {
+                        $parsedUrl = parse_url($href);
+                        $urlWithoutQuery = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
+                        $urls[] = $urlWithoutQuery;
+                    }
+                }
+            }
+        }
+    
+        return $urls;
+    }
+    
+    /**
+     * Extract links by their rel type.
+     *
+     * @param string $html The HTML content to parse.
+     * @param string|array $rel_type The rel type(s) of links to extract.
+     * @param string|null $extension Extension to filter URLs (only for rel_type "stylesheet").
+     * @param bool $include_query_params Include query parameters in URLs.
+     * @return array An array of extracted links.
+     */
+    static function extractLinksByRelType(string $html, $rel_type, $extension = null, bool $include_query_params = true) {
         $urls = [];
 
         $dom = static::getDocument($html);
@@ -1409,16 +1445,39 @@ class XML
         $linkElements = $dom->getElementsByTagName('link');
 
         foreach ($linkElements as $linkElement) {
-            $href = $linkElement->getAttribute('href');
-            if (!empty($href)) {
-                $urlExtension = pathinfo($href, PATHINFO_EXTENSION);
-                if ($extension === null || Files::matchExtension($urlExtension, $extension)) {
-                    $urls[] = $href;
+            $linkRel = $linkElement->getAttribute('rel');
+            $linkRel = explode(' ', $linkRel); // Split rel attribute into an array of rel types
+
+            if (!empty(array_intersect((array)$rel_type, $linkRel))) {
+                $href = $linkElement->getAttribute('href');
+                if (!empty($href)) {
+                    if ($rel_type === 'stylesheet') {
+                        $ext = Files::getExtension($href);
+                        if ($extension === null || Files::matchExtension($ext, $extension)) {
+                            if ($include_query_params) {
+                                $urls[] = $href;
+                            } else {
+                                $parsedUrl = parse_url($href);
+                                $urlWithoutQuery = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
+                                $urls[] = $urlWithoutQuery;
+                            }
+                        }
+                    } else {
+                        if ($include_query_params) {
+                            $urls[] = $href;
+                        } else {
+                            $parsedUrl = parse_url($href);
+                            $urlWithoutQuery = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
+                            $urls[] = $urlWithoutQuery;
+                        }
+                    }
                 }
             }
         }
 
         return $urls;
     }
+
+
 }
 

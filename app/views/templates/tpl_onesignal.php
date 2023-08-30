@@ -160,7 +160,7 @@
     </script>
     
     
-    <script src="<?= asset('js/bootstrap/boostrap_notices.js') ?>"></script>
+    <script src="<?= asset('js/bootstrap/bt_notices.js') ?>"></script>
     <script src="<?= asset('js/login.js') ?>"></script>
 </body>
 </html>

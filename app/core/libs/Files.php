@@ -108,7 +108,7 @@ class Files
 		fclose($f);
 	}
 
-	static function getCSV(string $path, string $separator = ",", bool $header = true, bool $assoc = true){	
+	static function getCSV(string $path, string $separator = ",", bool $header = true, bool $assoc = true, $header_defs = null){	
 		$rows = [];
 
 		ini_set('auto_detect_line_endings', 'true');
@@ -122,13 +122,11 @@ class Files
 			$assoc    = false;
 		}
 
-		foreach ($cabecera as $ix => $name){
-			$cabecera[$ix] = Strings::cleanString($name);
+		// Puedo re-definir
+		if ($header_defs != null){
+			$cabecera = $header_defs;
 		}
 		
-		// dd($cabecera);
-		// exit;
-
 		$i = 0;
 		while ( ($data = fgetcsv($handle, null, $separator) ) !== FALSE ) {
 			if ($assoc){
@@ -1176,15 +1174,14 @@ static function readOrFail(string $path, bool $use_include_path = false, $contex
 		}
 
 		if ($length !== null){
-			$content = file_get_contents($path, $use_include_path, $context, $offset, $length); // @
+			$content = @file_get_contents($path, $use_include_path, $context, $offset, $length); // @
 		} else {
-
-			$content = file_get_contents($path, $use_include_path, $context, $offset); // @
+			$content = @file_get_contents($path, $use_include_path, $context, $offset); // @
 		}
 		
 		if ($content === false || $content === null){
 			$path = realpath($path);
-			throw new \Exception("File '$path' was unabble to be written!");
+			throw new \Exception("File '$path' was unable to be written!");
 		}
 
 		return $content;

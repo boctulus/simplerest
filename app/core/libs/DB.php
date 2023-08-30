@@ -16,7 +16,8 @@ class DB
 	protected static $raw_sql;
 	protected static $values = [];
 	protected static $tb_name;
-	protected static $inited_transaction   = false; 
+	protected static $inited_transaction = false; 
+	protected static $default_primary_key_name = 'id';
 
 	const INFOMIX    = 'infomix';
 	const MYSQL      = 'mysql';
@@ -27,6 +28,11 @@ class DB
 	const ORACLE     = 'oracle';
 	const SYBASE     = 'sybase';
 	const FIREBIRD   = 'firebird';
+
+	// Util para establecer la PRIMARY KEY por defecto en caso de que no haya scheme definido
+	public static function setPrimaryKeyName(string $name){
+		static::$default_primary_key_name = $name;
+	}
 
 	public static function setConnection(string $id)
 	{
@@ -811,7 +817,7 @@ class DB
 		static::statement("TRUNCATE TABLE `$table`");
 	}
 
-	public static function insert(string $raw_sql, Array $vals = [], ?string $tenant_id = null)
+	public static function insert(string $raw_sql, Array $vals = [], $tenant_id = null, $prikey_name = 'id')
 	{
 		static::$raw_sql = $q = $raw_sql;
 		static::$values  = $vals; 
@@ -871,7 +877,7 @@ class DB
 
 			if ($result){
 				// sin schema no hay forma de saber la PRI Key. Intento con 'id' 
-				$id_name = ($schema != NULL) ? $schema['id_name'] : 'id';		
+				$id_name = ($schema != NULL) ? $schema['id_name'] : ($prikey_name ?? static::$default_primary_key_name);		
 
 				if (isset($data[$id_name])){
 					$last_inserted_id =	$data[$id_name];
