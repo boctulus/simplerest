@@ -32,8 +32,18 @@ class CSS
             [2] => D:\www\simplerest\public\assets\practicatest.cl\fontawesome.css
             [3] => D:\www\simplerest\public\assets\practicatest.cl\brands.css
         )
+
+        Usando $if_callback() se puede filtrar dada una condicion dentro del string
+
+        Ej:
+
+        CSS::downloadAll($url, true, function($url){
+            return Strings::contains('/xstore', $url);
+        })
+
+        <-- solo descarga si contiene el substring '/store'
     */
-    static function downloadAll(string $html, bool $use_helper = true)
+    static function downloadAll(string $html, bool $use_helper = true, $if_callback = null)
     {
         if (Strings::startsWith('https://', $html) || Strings::startsWith('http://', $html)){
             $html = consume_api($html);
@@ -45,7 +55,15 @@ class CSS
             }
         }
 
-        $urls = CSS::extractLinkUrls($html, true);
+        $urls = CSS::extractStyleUrls($html, true);
+
+        foreach ($urls as $ix => $url){
+            if (!$if_callback($url)){
+                unset($urls[$ix]);
+            }
+        }
+
+        // dd($urls, 'URLS');
 
         $filenames = [];
         foreach ($urls as $url){
@@ -77,7 +95,9 @@ class CSS
     }
 
     /*
-        Extrae todas las referencias a archivos .css del header de una pagina
+        Extrae referencias a archivos .css del header de una pagina usando funciones de DOM
+
+        Usar pero tener en cuenta que extractStyleUrls() puede funcionar mejor
 
         Ej:
 
@@ -118,6 +138,25 @@ class CSS
         }
 
         return implode(PHP_EOL, $lines);
+    }
+
+    /*
+        Usando expresiones regulares que recupera todas las urls de 
+
+            <link rel='stylesheet> 
+        
+        de un string.
+    */
+    static function extractStyleUrls(string $input) {
+        $pattern = "/<link\s+rel=['\"]stylesheet['\"].*?href=['\"](.*?)['\"].*?>/i";
+        preg_match_all($pattern, $input, $matches);
+        
+        $styleUrls = array();
+        foreach ($matches[1] as $match) {
+            $styleUrls[] = $match;
+        }
+        
+        return $styleUrls;
     }
 
      /*
