@@ -41,7 +41,7 @@ class CSS
             return Strings::contains('/xstore', $url);
         })
 
-        <-- solo descarga si contiene el substring '/store'
+        <-- solo descarga si contiene el substring '/xstore'
     */
     static function downloadAll(string $html, bool $use_helper = true, $if_callback = null)
     {
