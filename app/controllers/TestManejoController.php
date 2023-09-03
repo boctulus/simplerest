@@ -16,13 +16,8 @@ class TestManejoController extends MyController
     {
         parent::__construct(); 
 
-        css_file('practicatest.cl/basic.min.css'); // Boostrap 3 
+        css_file('practicatest.cl/bootstrap-3.4.1_min.css'); 
         css_file('practicatest.cl/style.themed.css');
-        // css_file('practicatest.cl/fontawesome.css');
-        // css_file('practicatest.cl/brands.css');
-        // css_file('practicatest.cl/solid.css');
-        // css_file('practicatest.cl/regular.css');
-        // css_file('practicatest.cl/light.css');
     }
 
     function register_modal()
