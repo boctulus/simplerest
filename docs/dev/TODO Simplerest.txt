@@ -1,6 +1,36 @@
 TODO SimpleRest
 ===============
 
+- Depurar CSS usando SimpleRest ... no puede pesar 1Mb !!!
+
+- Ademas deberiaaaaa minificarse y quedar en /dist y si config()['app_env']=production entonces 
+  ... la carpeta /assets se leeria de /dist/assets
+  
+		La carpeta /dist (abreviatura de "distribución") en un proyecto generalmente contiene los archivos y recursos que están listos para ser distribuidos o desplegados en producción. El contenido específico de la carpeta /dist puede variar según el tipo de proyecto, el entorno de desarrollo y las herramientas utilizadas, pero aquí hay una lista general de lo que suele encontrarse en ella:
+
+# Que puede haber dentro de /dist ?
+
+    Archivos compilados: Si estás trabajando en un proyecto de desarrollo web, la carpeta /dist a menudo contendrá los archivos HTML, CSS y JavaScript optimizados y compilados para su uso en producción. Esto significa que los archivos pueden estar minificados y/o concatenados para reducir el tamaño y mejorar el rendimiento.
+
+    Imágenes optimizadas: Las imágenes utilizadas en tu proyecto suelen estar optimizadas para la web y listas para su uso. Esto puede incluir la compresión de imágenes para reducir el tamaño de los archivos.
+
+    Recursos estáticos: Cualquier recurso estático necesario para el proyecto, como fuentes, archivos de iconos, archivos de audio o video, puede estar presente en la carpeta /dist.
+
+    Archivos de configuración: Algunos proyectos pueden incluir archivos de configuración específicos para el entorno de producción en la carpeta /dist. Estos archivos pueden contener configuraciones como rutas de servidor, ajustes de base de datos y otros parámetros que son diferentes en producción que en desarrollo.
+
+    Archivos de indexación y rutas: En aplicaciones web, es común encontrar un archivo HTML principal (como index.html) que sirve como punto de entrada para la aplicación. Este archivo y otros relacionados con la navegación o enrutamiento pueden estar en la carpeta /dist.
+
+    Archivos de activos adicionales: Cualquier otro archivo necesario para que la aplicación o proyecto funcione correctamente en producción, como archivos de traducción, hojas de estilo específicas para la impresión, etc., puede estar presente en /dist.
+
+    Archivos de servicio: En aplicaciones web progresivas (PWA), es posible que encuentres archivos relacionados con el servicio de trabajadores (service workers) en la carpeta /dist. Estos archivos son esenciales para el funcionamiento offline y otras características avanzadas de las PWAs.
+
+    Archivos de documentación: En algunos proyectos, especialmente en bibliotecas o paquetes, es posible que encuentres documentación generada automáticamente, como archivos README, documentación HTML o archivos de ayuda.
+
+# Automatización
+
+  Si estás trabajando con un sistema de construcción (como Webpack o Gulp), es posible que puedas automatizar la detección del entorno utilizando scripts o complementos específicos para configurar las construcciones en función del entorno actual.
+  
+
 - Para ApiClient, implementar exportRequest($to)
 
   donde $to seria:
