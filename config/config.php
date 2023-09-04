@@ -10,6 +10,7 @@ require_once __DIR__ . '/constants.php';
 return [
 	'app_url' => env('APP_URL'),
 	'app_name'=> env('APP_NAME'),
+	'app_env' => env('APP_ENV'),
 
 	/*
 		For a sub-foder in /var/www/html just set as
