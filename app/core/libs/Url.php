@@ -472,7 +472,7 @@ class Url
         return static::currentUrl();
     }
 
-    static function getHostname(?string $url = null, bool $include_protocol = false)
+    static function getHostname($url = null, bool $include_protocol = false)
     {
         if (is_cli() && empty($url)){
             return config()['app_url'];
@@ -484,7 +484,11 @@ class Url
 
         $url_info = parse_url($url);
 
-        $hostname = $url_info['host'] . (isset($url_info['port']) ? ':'. $url_info['port'] : '');
+        if (!isset($url_info['path'])){
+            throw new \Exception("URL invalid");
+        }
+
+        $hostname = ($url_info['host'] ?? '') . (isset($url_info['port']) ? ':'. $url_info['port'] : '');
 
         if ($include_protocol){
             return $url_info['scheme'] . '://' . $hostname;
