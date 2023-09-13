@@ -43,10 +43,10 @@ class CSS
 
         <-- solo descarga si contiene el substring '/xstore'
     */
-    static function downloadAll(string $html, bool $use_helper = true, $if_callback = null)
+    static function downloadAll(string $html, bool $use_helper = true, $if_callback = null, $exp_cache = 1800)
     {
         if (Strings::startsWith('https://', $html) || Strings::startsWith('http://', $html)){
-            $html = consume_api($html);
+            $html = consume_api($html, 'GET', null, null, null, false, false, $exp_cache);
         } else {
             if (strlen($html) <= 255 && Strings::containsAny(['\\', '/'], $html)){
                 if (file_exists($html)){
@@ -58,7 +58,7 @@ class CSS
         $urls = CSS::extractStyleUrls($html, true);
 
         foreach ($urls as $ix => $url){
-            if (!$if_callback($url)){
+            if ($if_callback !== null && is_callable($if_callback) && !$if_callback($url)){
                 unset($urls[$ix]);
             }
         }
@@ -147,9 +147,19 @@ class CSS
         
         de un string.
     */
-    static function extractStyleUrls(string $input) {
+    static function extractStyleUrls(string $html, $exp_cache = null) {
+        if (Strings::startsWith('https://', $html) || Strings::startsWith('http://', $html)){
+            $html = consume_api($html, 'GET', null, null, null, false, false, $exp_cache);
+        } else {
+            if (strlen($html) <= 255 && Strings::containsAny(['\\', '/'], $html)){
+                if (file_exists($html)){
+                    $html = Files::getContent($html);
+                }            
+            }
+        }
+
         $pattern = "/<link\s+rel=['\"]stylesheet['\"].*?href=['\"](.*?)['\"].*?>/i";
-        preg_match_all($pattern, $input, $matches);
+        preg_match_all($pattern, $html, $matches);
         
         $styleUrls = array();
         foreach ($matches[1] as $match) {
@@ -158,6 +168,11 @@ class CSS
         
         return $styleUrls;
     }
+
+    // Parsear fonts: https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/src
+    // static function fontExtractor($html, $exp_cache = null) {
+    //     // ...
+    // }
 
      /*
         Devuelve todas las reglas de CSS donde sobre determinadas clases
