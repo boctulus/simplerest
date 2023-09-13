@@ -6,16 +6,9 @@
 
     <title><?= $title ?? '' ?></title>
 
-    <?= base() ?>
-
-    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
-
-    <!-- jQuery -->
-    <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
-
     <?php
-        head();  
+        echo base(); 
+        head(); 
     ?>
 
 </head>
@@ -28,13 +21,7 @@
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>
-            
-        <!-- Bootstrap 5.1.3 -->
-        <script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
-    
-        <?php
-            footer();  
-        ?>
+        <?php footer(); ?>
     </footer>
 </body>
 </html>
