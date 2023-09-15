@@ -99,6 +99,8 @@
 
       <div id="step-02" class="active tab-pane clearfix d-none">
         <div class="clearfix row">
+
+          <!-- left half-tab -->
           <div class="-item-tab-half col-md-6">
             <div class="-caption" >
               <h4 >Do you want wire decking?</h4>
@@ -117,24 +119,27 @@
               <img src="<?= asset('racks/images/tab2-img01.png') ?>">
             </div>
           </div>
-          <div class="-item-tab-half col-md-6">
-            <div class="-caption d-none">
+
+          <!-- right half-tab -->
+          <div class="-item-tab-half col-md-6"> <!-- d-none -->
+            <div class="-caption"> 
               <h4 >Do you want pallet supports?</h4>
               <div class="radio-wrapper">
                 <label for="palletSupportsY" class="check-default">
-                  <input type="radio" name="palletSupports" id="palletSupportsY"   class="ng-pristine " value="true">
+                  <input type="radio" name="palletSupports" id="palletSupportsY" class="ng-pristine " >
                   <span >Yes</span>
                 </label>
                 <label for="palletSupportsN" class="check-default">
-                  <input type="radio" name="palletSupports" id="palletSupportsN"   class="ng-pristine " value="false">
+                  <input type="radio" name="palletSupports" id="palletSupportsN" class="ng-pristine ">
                   <span >No</span>
                 </label>
               </div>
             </div>
-            <div class="-img d-none">
+            <div class="-img">
               <img src="<?= asset('racks/images/tab2-img02.png') ?>">
             </div>
           </div>
+
         </div>
       </div>
 
@@ -193,143 +198,142 @@
 </div>
 
 <script>
-  if (typeof $ == 'undefined'){
-    $=jQuery;
+if (typeof $ == 'undefined') {
+  $ = jQuery;
+}
+
+const prev = $('#tabPrev');
+const next = $('#tabNext');
+const wireDeckingY = $("label[for='wireDeckingY']");
+const wireDeckingN = $("label[for='wireDeckingN']");
+const palletSupportsY = $("label[for='palletSupportsY']");
+const palletSupportsN = $("label[for='palletSupportsN']");
+
+palletSupportsY
+
+const disable = (selector) => {
+  $(selector).prop('disabled', true);
+}
+
+const enable = (selector) => {
+  $(selector).prop('disabled', false);
+}
+
+const show = (selector) => {
+  $(selector).removeClass('d-none').prop('disabled', false);
+}
+
+const hide = (selector) => {
+  $(selector).addClass('d-none');
+}
+
+const showPrevBtn = () => {
+  show(prev);
+}
+
+const hidePrevBtn = () => {
+  hide(prev);
+}
+
+const move2Step = (num) => {
+  $(`#step-0${num}`).addClass('active').removeClass('d-none');
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const steps = $('.list-step li').length;
+
+  const updateNavigationButtons = () => {
+    const currentStep = $('.list-step li.active').index() + 1;
+
+    if (currentStep === 1) {
+      disable(prev);
+      show(next);
+    } else if (currentStep < steps) {
+      show(prev);
+      show(next);
+    } else {
+      show(prev);
+      hide(next);
+    }
+  };
+
+  const updateContent = () => {
+    const currentStep = $('.list-step li.active').index() + 1;
+    move2Step(currentStep);
   }
 
-  const prev = $('#tabPrev');
-  const next = $('#tabNext');
+  // Inicializar el primer paso como activo
+  $('.list-step li:first').addClass('active');
+  $('.tab-pane:first').addClass('active');
 
-  const disable = (selector) => {
-    $(selector).prop('disabled', true);
-  }
+  show(prev);
+  disable(prev);
 
-  const enable = (selector) => {
-    $(selector).prop('disabled', false);
-  }
+  // Manejar el evento de clic en los elementos de la lista de pasos
+  $('.list-step li').click(function() {
+    $('.list-step li').removeClass('active');
+    $(this).addClass('active');
 
-  const show = (selector) => {
-    $(selector).removeClass('d-none').prop('disabled', false);
-  }
+    const target = $(this).find('a').attr('href');
+    $('.tab-pane').removeClass('active');
+    $(target).addClass('active');
 
-  const hide = (selector) => {
-    $(selector).addClass('d-none');
-  }
-
-  const showPrevBtn = () => {
-    show(prev);
-  }
-
-  const hidePrevBtn = () => {
-    show(prev);
-  }
-
-  const move2Step = (num) => {
-    $(`#step-0${num}`).addClass('active')
-    $(`#step-0${num}`).removeClass('d-none')
-  }
-
-  document.addEventListener("DOMContentLoaded", function() {
-    const steps = $('.list-step li').length    
-
-    // Inicializar el primer paso como activo
-    $('.list-step li:first').addClass('active');
-    $('.tab-pane:first').addClass('active');
-
-    show(prev);
-    disable(prev);
-
-    // Manejar el evento de clic en los elementos de la lista de pasos
-    $('.list-step li').click(function() {
-      $('.list-step li').removeClass('active');
-      $(this).addClass('active');
-
-      var target = $(this).find('a').attr('href');
-      $('.tab-pane').removeClass('active');
-      $(target).addClass('active');
-
-      const currentStep = $('.list-step li.active').index() + 1;
-
-      if (currentStep == 1){
-        disable(prev);
-        show(next)
-      } else {
-        if (currentStep < steps){
-          show(next);
-          show(prev);
-        } else {
-          show(prev);
-          hide(next);
-        }
-      }
-
-      move2Step(currentStep)    
-    });
+    updateNavigationButtons();
+    updateContent();
+  });
 
   // Manejar el evento de clic en los botones de navegación
-  $('#tabPrev').click(function() {   
-    var activeStep    = $('.list-step li.active');
-    var prevStep      = activeStep.prev();
+  $('#tabPrev').click(function() {
+    const activeStep = $('.list-step li.active');
+    const prevStep = activeStep.prev();
 
     if (prevStep.length > 0) {
       activeStep.removeClass('active');
       prevStep.addClass('active');
 
-      var target = prevStep.find('a').attr('href');
+      const target = prevStep.find('a').attr('href');
       $('.tab-pane').removeClass('active');
       $(target).addClass('active');
+
+      updateNavigationButtons();
+      updateContent();
     }
-
-    const currentStep = $('.list-step li.active').index() + 1;
-    // console.log('-', currentStep, steps);
-
-    if (currentStep == 1){
-        disable(prev);
-        show(next)
-    } else {
-      if (currentStep < steps){
-        show(next);
-        show(prev);
-      } else {
-        show(prev);
-        hide(next);
-      }
-    }
-
-    move2Step(currentStep)  
   });
 
-  $('#tabNext').click(function() {   
-    var activeStep    = $('.list-step li.active');
-    var nextStep      = activeStep.next();
+  $('#tabNext').click(function() {
+    const activeStep = $('.list-step li.active');
+    const nextStep = activeStep.next();
 
     if (nextStep.length > 0) {
       activeStep.removeClass('active');
       nextStep.addClass('active');
 
-      var target = nextStep.find('a').attr('href');
+      const target = nextStep.find('a').attr('href');
       $('.tab-pane').removeClass('active');
       $(target).addClass('active');
+
+      updateNavigationButtons();
+      updateContent();
     }
+  });
 
-    const currentStep = $('.list-step li.active').index() + 1;
-    // console.log('+', currentStep, steps);
 
-    if (currentStep == 1){
-        disable(prev);
-        show(next)
-    } else {
-      if (currentStep < steps){
-        show(next);
-        show(prev);
-      } else {
-        show(prev);
-        hide(next);
-      }
-    }
+  wireDeckingY.click(function() {
+    
+  });
 
-    move2Step(currentStep)  
+  wireDeckingN.click(function() {
+   
+  });
+
+  palletSupportsY.click(function() {
+    
+  });
+
+  palletSupportsN.click(function() {
+   
   });
 
 });
+
 </script>
