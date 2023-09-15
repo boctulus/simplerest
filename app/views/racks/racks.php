@@ -1,3 +1,10 @@
+<?php
+  
+  $cfg  = config();
+
+  $dims = $cfg['dims'];
+?>
+
 <div class="row">
   <div class="main-form">
     <!---->
@@ -29,12 +36,10 @@
             <label class="control-label col-sm-4">
               <span >Upright Height</span>: </label>
             <div class="col-sm-8 select-wrapper -secondary">
-              <select   class="form-control ">
-                <option label="96&quot;" value="object:244">96"</option>
-                <option label="120&quot;" value="object:245">120"</option>
-                <option label="144&quot;" value="object:243" selected="selected">144"</option>
-                <option label="192&quot;" value="object:246">192"</option>
-                <option label="240&quot;" value="object:247">240"</option>
+              <select class="form-control ">
+                <?php foreach ($dims['h'] as $e): ?>
+                  <option label="<?= $e ?>&quot;" value="<?= $e ?>"><?= $e ?>"</option>
+                <?php endforeach; ?>
               </select>
               <i class="fa fa-angle-down"></i>
             </div>
@@ -44,9 +49,9 @@
               <span >Upright Depth</span>: </label>
             <div class="col-sm-8 select-wrapper -secondary">
               <select   class="form-control ">
-                <option label="36&quot;" value="object:248" selected="selected">36"</option>
-                <option label="42&quot;" value="object:249">42"</option>
-                <option label="48&quot;" value="object:250">48"</option>
+                <?php foreach ($dims['d'] as $e): ?>
+                  <option label="<?= $e ?>&quot;" value="<?= $e ?>"><?= $e ?>"</option>
+                <?php endforeach; ?>
               </select>
               <i class="fa fa-angle-down"></i>
             </div>
@@ -56,10 +61,9 @@
               <span >Beam Length</span>: </label>
             <div class="col-sm-8 select-wrapper">
               <select   class="form-control ">
-                <option label="96&quot; Long" value="object:251" selected="selected">96" Long</option>
-                <option label="108&quot; Long" value="object:252">108" Long</option>
-                <option label="120&quot; Long" value="object:253">120" Long</option>
-                <option label="144&quot; Long" value="object:254">144" Long</option>
+              <?php foreach ($dims['l'] as $e): ?>
+                  <option label="<?= $e ?>&quot;" value="<?= $e ?>"><?= $e ?>" Long</option>
+                <?php endforeach; ?>
               </select>
               <i class="fa fa-angle-down"></i>
             </div>
