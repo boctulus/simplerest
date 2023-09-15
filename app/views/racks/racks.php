@@ -48,7 +48,7 @@
             <label class="control-label col-sm-4">
               <span >Upright Depth</span>: </label>
             <div class="col-sm-8 select-wrapper -secondary">
-              <select   class="form-control ">
+              <select class="form-control ">
                 <?php foreach ($dims['d'] as $e): ?>
                   <option label="<?= $e ?>&quot;" value="<?= $e ?>"><?= $e ?>"</option>
                 <?php endforeach; ?>
@@ -60,7 +60,7 @@
             <label class="control-label col-sm-4">
               <span >Beam Length</span>: </label>
             <div class="col-sm-8 select-wrapper">
-              <select   class="form-control ">
+              <select class="form-control ">
               <?php foreach ($dims['l'] as $e): ?>
                   <option label="<?= $e ?>&quot;" value="<?= $e ?>"><?= $e ?>" Long</option>
                 <?php endforeach; ?>
@@ -76,32 +76,14 @@
             </label>
             <div class="col-sm-8">
               <div class="check-wrapper">
+                <?php foreach (range(2,$dims['max_levels']) as $level): ?>
                 <!---->
                 <label class="check-default line">
-                  <input type="radio" name="selected-level" value="2"  class="ng-pristine ">
-                  <span >2</span>
+                  <input type="radio" name="selected-level" value="<?= $level ?>"  class="ng-pristine ">
+                  <span ><?= $level ?></span>
                 </label>
                 <!---->
-                <label class="check-default line" >
-                  <input type="radio" name="selected-level" value="3"  class="ng-pristine ">
-                  <span >3</span>
-                </label>
-                <!---->
-                <label class="check-default line" >
-                  <input type="radio" name="selected-level" value="4"  class="ng-pristine ">
-                  <span >4</span>
-                </label>
-                <!---->
-                <label class="check-default line" >
-                  <input type="radio" name="selected-level" value="5"  class="ng-pristine ">
-                  <span >5</span>
-                </label>
-                <!---->
-                <label class="check-default line" >
-                  <input type="radio" name="selected-level" value="6"  class="ng-pristine ">
-                  <span >6</span>
-                </label>
-                <!---->
+                <?php endforeach; ?>
               </div>
             </div>
           </div>
@@ -199,9 +181,83 @@
     </button>
     <button id="tabNext" class="btn btn-primary -next"  >
       <span>Next</span>
-      <span   class="d-none">View Drawing</span>
+      <span class="d-none">View Drawing</span>
       <i class="fa fa-angle-right"></i>
     </button>
   </div>
   <!---->
 </div>
+
+<script>
+  const show = (selector) => {
+    $(selector).removeClass('d-none');
+  }
+
+  const hide = (selector) => {
+    $(selector).addClass('d-none');
+  }
+
+  const showPrevBtn = () => {
+    show('#tabPrev');
+  }
+
+  const hidePrevBtn = () => {
+    show('#tabPrev');
+  }
+
+  const disableNextBtn = () => {
+    $('#tabNext').prop('disabled', true);
+  }
+
+  const enableNextBtn = () => {
+    $('#tabNext').prop('disabled', false);
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    
+    // Inicializar el primer paso como activo
+    $('.list-step li:first').addClass('active');
+    $('.tab-pane:first').addClass('active');
+
+    // Manejar el evento de clic en los elementos de la lista de pasos
+    $('.list-step li').click(function() {
+      $('.list-step li').removeClass('active');
+      $(this).addClass('active');
+
+      var target = $(this).find('a').attr('href');
+      $('.tab-pane').removeClass('active');
+      $(target).addClass('active');
+    });
+
+    // Manejar el evento de clic en los botones de navegación
+    $('#tabPrev').click(function() {
+      var activeStep = $('.list-step li.active');
+      var prevStep = activeStep.prev();
+
+      if (prevStep.length > 0) {
+        activeStep.removeClass('active');
+        prevStep.addClass('active');
+
+        var target = prevStep.find('a').attr('href');
+        $('.tab-pane').removeClass('active');
+        $(target).addClass('active');
+      }
+    });
+
+    $('#tabNext').click(function() {
+      var activeStep = $('.list-step li.active');
+      var nextStep = activeStep.next();
+
+      if (nextStep.length > 0) {
+        activeStep.removeClass('active');
+        nextStep.addClass('active');
+
+        var target = nextStep.find('a').attr('href');
+        $('.tab-pane').removeClass('active');
+        $(target).addClass('active');
+      }
+    });
+
+});
+
+</script>
