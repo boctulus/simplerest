@@ -30,6 +30,7 @@
     </ul>
     <!---->
     <div class="tab-content">
+
       <div id="step-01" class="active tab-pane clearfix">
         <div class="-item">
           <div class="form-group clearfix">
@@ -95,6 +96,7 @@
           <p class="-img-caption" >4 Beam Levels in diagram</p>
         </div>
       </div>
+
       <div id="step-02" class="active tab-pane clearfix d-none">
         <div class="clearfix row">
           <div class="-item-tab-half col-md-6">
@@ -135,6 +137,7 @@
           </div>
         </div>
       </div>
+
       <div id="step-03" class="active clearfix tab-pane text-center d-none">
         <!---->
         <!---->
@@ -171,6 +174,7 @@
           </div>
         </form>
       </div>
+
       <!---->
     </div>
   </div>
@@ -220,6 +224,11 @@
     show(prev);
   }
 
+  const move2Step = (num) => {
+    $(`#step-0${num}`).addClass('active')
+    $(`#step-0${num}`).removeClass('d-none')
+  }
+
   document.addEventListener("DOMContentLoaded", function() {
     const steps = $('.list-step li').length    
 
@@ -253,6 +262,8 @@
           hide(next);
         }
       }
+
+      move2Step(currentStep)    
     });
 
   // Manejar el evento de clic en los botones de navegación
@@ -270,7 +281,7 @@
     }
 
     const currentStep = $('.list-step li.active').index() + 1;
-    console.log('-', currentStep, steps);
+    // console.log('-', currentStep, steps);
 
     if (currentStep == 1){
         disable(prev);
@@ -284,6 +295,8 @@
         hide(next);
       }
     }
+
+    move2Step(currentStep)  
   });
 
   $('#tabNext').click(function() {   
@@ -300,7 +313,7 @@
     }
 
     const currentStep = $('.list-step li.active').index() + 1;
-    console.log('+', currentStep, steps);
+    // console.log('+', currentStep, steps);
 
     if (currentStep == 1){
         disable(prev);
@@ -314,6 +327,8 @@
         hide(next);
       }
     }
+
+    move2Step(currentStep)  
   });
 
 });
