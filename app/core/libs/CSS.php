@@ -270,7 +270,10 @@ class CSS
     static function removeCSSClasses(string $html, $classesToRemove = null) : string {
         if (!empty($classesToRemove)) {
             foreach ($classesToRemove as $class) {
-                $html = str_replace($class, '', $html);
+                $html = str_replace(" $class ", ' ', $html);
+                $html = str_replace(" $class\"", ' "', $html);
+                // $html = str_replace("\"$class ", '" ', $html);
+                // $html = str_replace("\"$class\"", '""', $html);
             }
 
             return $html;
