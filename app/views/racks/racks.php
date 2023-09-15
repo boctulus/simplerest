@@ -29,7 +29,7 @@
             <label class="control-label col-sm-4">
               <span >Upright Height</span>: </label>
             <div class="col-sm-8 select-wrapper -secondary">
-              <select   class="form-control    ">
+              <select   class="form-control ">
                 <option label="96&quot;" value="object:244">96"</option>
                 <option label="120&quot;" value="object:245">120"</option>
                 <option label="144&quot;" value="object:243" selected="selected">144"</option>
@@ -43,7 +43,7 @@
             <label class="control-label col-sm-4">
               <span >Upright Depth</span>: </label>
             <div class="col-sm-8 select-wrapper -secondary">
-              <select   class="form-control    ">
+              <select   class="form-control ">
                 <option label="36&quot;" value="object:248" selected="selected">36"</option>
                 <option label="42&quot;" value="object:249">42"</option>
                 <option label="48&quot;" value="object:250">48"</option>
@@ -55,7 +55,7 @@
             <label class="control-label col-sm-4">
               <span >Beam Length</span>: </label>
             <div class="col-sm-8 select-wrapper">
-              <select   class="form-control    ">
+              <select   class="form-control ">
                 <option label="96&quot; Long" value="object:251" selected="selected">96" Long</option>
                 <option label="108&quot; Long" value="object:252">108" Long</option>
                 <option label="120&quot; Long" value="object:253">120" Long</option>
@@ -74,27 +74,27 @@
               <div class="check-wrapper">
                 <!---->
                 <label class="check-default line">
-                  <input type="radio" name="selected-level" value="2">
+                  <input type="radio" name="selected-level" value="2"  class="ng-pristine ">
                   <span >2</span>
                 </label>
                 <!---->
                 <label class="check-default line" >
-                  <input type="radio" name="selected-level" value="3">
+                  <input type="radio" name="selected-level" value="3"  class="ng-pristine ">
                   <span >3</span>
                 </label>
                 <!---->
                 <label class="check-default line" >
-                  <input type="radio" name="selected-level" value="4">
+                  <input type="radio" name="selected-level" value="4"  class="ng-pristine ">
                   <span >4</span>
                 </label>
                 <!---->
                 <label class="check-default line" >
-                  <input type="radio" name="selected-level" value="5">
+                  <input type="radio" name="selected-level" value="5"  class="ng-pristine ">
                   <span >5</span>
                 </label>
                 <!---->
                 <label class="check-default line" >
-                  <input type="radio" name="selected-level" value="6">
+                  <input type="radio" name="selected-level" value="6"  class="ng-pristine ">
                   <span >6</span>
                 </label>
                 <!---->
@@ -116,11 +116,11 @@
               <h4 >Do you want wire decking?</h4>
               <div class="check-wrapper">
                 <label for="wireDeckingY" class="check-default">
-                  <input type="radio" name="wireDecking" id="wireDeckingY" value="true">
+                  <input type="radio" name="wireDecking" id="wireDeckingY"   class="ng-pristine " value="true">
                   <span >Yes</span>
                 </label>
                 <label for="wireDeckingN" class="check-default">
-                  <input type="radio" name="wireDecking" id="wireDeckingN" value="false">
+                  <input type="radio" name="wireDecking" id="wireDeckingN"   class="ng-pristine " value="false">
                   <span >No</span>
                 </label>
               </div>
@@ -134,11 +134,11 @@
               <h4 >Do you want pallet supports?</h4>
               <div class="radio-wrapper">
                 <label for="palletSupportsY" class="check-default">
-                  <input type="radio" name="palletSupports" id="palletSupportsY" value="true">
+                  <input type="radio" name="palletSupports" id="palletSupportsY"   class="ng-pristine " value="true">
                   <span >Yes</span>
                 </label>
                 <label for="palletSupportsN" class="check-default">
-                  <input type="radio" name="palletSupports" id="palletSupportsN" value="false">
+                  <input type="radio" name="palletSupports" id="palletSupportsN"   class="ng-pristine " value="false">
                   <span >No</span>
                 </label>
               </div>
@@ -162,12 +162,12 @@
           <!---->
           <!---->
         </div>
-        <form role="form" name="areaForm" class="form-material  -maxlength  -required" style="margin-top: 50px;">
+        <form role="form" name="areaForm" class="form-material ng-valid-maxlength ng-valid-required" style="margin-top: 50px;">
           <div class="clearfix">
             <div class="form-inline">
               <div class="form-group -custom validation-group">
                 <label for="length" class="-primary" >Length</label>
-                <input type="text" id="length" name="length" class="form-control   -maxlength   -required"  valid-number=""   placeholder="feet">
+                <input type="text" id="length" name="length" class="form-control ng-valid-maxlength ng-valid-required"  valid-number=""   placeholder="feet">
                 <div class="text-right " >
                   <!---->
                 </div>
@@ -175,7 +175,7 @@
               <!---->
               <div  class="form-group -custom validation-group">
                 <label for="width" class="-secondary" >Width</label>
-                <input type="text" id="width" name="width" class="form-control   -maxlength   -required"  valid-number=""   placeholder="feet">
+                <input type="text" id="width" name="width" class="form-control ng-valid-maxlength ng-valid-required"  valid-number=""   placeholder="feet">
                 <div class="text-right " >
                   <!---->
                 </div>
