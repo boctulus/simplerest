@@ -189,8 +189,23 @@
 </div>
 
 <script>
+  if (typeof $ == 'undefined'){
+    $=jQuery;
+  }
+
+  const prev = $('#tabPrev');
+  const next = $('#tabNext');
+
+  const disable = (selector) => {
+    $(selector).prop('disabled', true);
+  }
+
+  const enable = (selector) => {
+    $(selector).prop('disabled', false);
+  }
+
   const show = (selector) => {
-    $(selector).removeClass('d-none');
+    $(selector).removeClass('d-none').prop('disabled', false);
   }
 
   const hide = (selector) => {
@@ -198,26 +213,22 @@
   }
 
   const showPrevBtn = () => {
-    show('#tabPrev');
+    show(prev);
   }
 
   const hidePrevBtn = () => {
-    show('#tabPrev');
-  }
-
-  const disableNextBtn = () => {
-    $('#tabNext').prop('disabled', true);
-  }
-
-  const enableNextBtn = () => {
-    $('#tabNext').prop('disabled', false);
+    show(prev);
   }
 
   document.addEventListener("DOMContentLoaded", function() {
-    
+    const steps = $('.list-step li').length    
+
     // Inicializar el primer paso como activo
     $('.list-step li:first').addClass('active');
     $('.tab-pane:first').addClass('active');
+
+    show(prev);
+    disable(prev);
 
     // Manejar el evento de clic en los elementos de la lista de pasos
     $('.list-step li').click(function() {
@@ -227,37 +238,83 @@
       var target = $(this).find('a').attr('href');
       $('.tab-pane').removeClass('active');
       $(target).addClass('active');
-    });
 
-    // Manejar el evento de clic en los botones de navegación
-    $('#tabPrev').click(function() {
-      var activeStep = $('.list-step li.active');
-      var prevStep = activeStep.prev();
+      const currentStep = $('.list-step li.active').index() + 1;
 
-      if (prevStep.length > 0) {
-        activeStep.removeClass('active');
-        prevStep.addClass('active');
-
-        var target = prevStep.find('a').attr('href');
-        $('.tab-pane').removeClass('active');
-        $(target).addClass('active');
+      if (currentStep == 1){
+        disable(prev);
+        show(next)
+      } else {
+        if (currentStep < steps){
+          show(next);
+          show(prev);
+        } else {
+          show(prev);
+          hide(next);
+        }
       }
     });
 
-    $('#tabNext').click(function() {
-      var activeStep = $('.list-step li.active');
-      var nextStep = activeStep.next();
+  // Manejar el evento de clic en los botones de navegación
+  $('#tabPrev').click(function() {   
+    var activeStep    = $('.list-step li.active');
+    var prevStep      = activeStep.prev();
 
-      if (nextStep.length > 0) {
-        activeStep.removeClass('active');
-        nextStep.addClass('active');
+    if (prevStep.length > 0) {
+      activeStep.removeClass('active');
+      prevStep.addClass('active');
 
-        var target = nextStep.find('a').attr('href');
-        $('.tab-pane').removeClass('active');
-        $(target).addClass('active');
+      var target = prevStep.find('a').attr('href');
+      $('.tab-pane').removeClass('active');
+      $(target).addClass('active');
+    }
+
+    const currentStep = $('.list-step li.active').index() + 1;
+    console.log('-', currentStep, steps);
+
+    if (currentStep == 1){
+        disable(prev);
+        show(next)
+    } else {
+      if (currentStep < steps){
+        show(next);
+        show(prev);
+      } else {
+        show(prev);
+        hide(next);
       }
-    });
+    }
+  });
+
+  $('#tabNext').click(function() {   
+    var activeStep    = $('.list-step li.active');
+    var nextStep      = activeStep.next();
+
+    if (nextStep.length > 0) {
+      activeStep.removeClass('active');
+      nextStep.addClass('active');
+
+      var target = nextStep.find('a').attr('href');
+      $('.tab-pane').removeClass('active');
+      $(target).addClass('active');
+    }
+
+    const currentStep = $('.list-step li.active').index() + 1;
+    console.log('+', currentStep, steps);
+
+    if (currentStep == 1){
+        disable(prev);
+        show(next)
+    } else {
+      if (currentStep < steps){
+        show(next);
+        show(prev);
+      } else {
+        show(prev);
+        hide(next);
+      }
+    }
+  });
 
 });
-
 </script>
