@@ -101,7 +101,7 @@
         <div class="clearfix row">
 
           <!-- left half-tab -->
-          <div class="-item-tab-half col-md-6">
+          <div class="-item-tab-half decking col-md-6">
             <div class="-caption" >
               <h4 >Do you want wire decking?</h4>
               <div class="check-wrapper">
@@ -121,7 +121,7 @@
           </div>
 
           <!-- right half-tab -->
-          <div class="-item-tab-half col-md-6"> <!-- d-none -->
+          <div class="-item-tab-half pallets col-md-6"> <!-- d-none -->
             <div class="-caption"> 
               <h4 >Do you want pallet supports?</h4>
               <div class="radio-wrapper">
@@ -202,14 +202,21 @@ if (typeof $ == 'undefined') {
   $ = jQuery;
 }
 
-const prev = $('#tabPrev');
-const next = $('#tabNext');
-const wireDeckingY = $("label[for='wireDeckingY']");
-const wireDeckingN = $("label[for='wireDeckingN']");
-const palletSupportsY = $("label[for='palletSupportsY']");
-const palletSupportsN = $("label[for='palletSupportsN']");
+let model = {}
 
-palletSupportsY
+model.wireDecking    = false
+model.palletSupports = false
+
+const prev             = $('#tabPrev');
+const next             = $('#tabNext');
+const decking          = $('.-item-tab-half.decking')
+const pallets          = $('.-item-tab-half.pallets')
+
+const wireDeckingY     = $("label[for='wireDeckingY']");
+const wireDeckingN     = $("label[for='wireDeckingN']");
+const palletSupportsY  = $("label[for='palletSupportsY']");
+const palletSupportsN  = $("label[for='palletSupportsN']");
+
 
 const disable = (selector) => {
   $(selector).prop('disabled', true);
@@ -225,6 +232,11 @@ const show = (selector) => {
 
 const hide = (selector) => {
   $(selector).addClass('d-none');
+}
+
+const visibilize = (selector, state) => {
+  state = (state === true || state === 1 || state == 'visibile') 
+  $(selector).css('visibility', state ? 'visible' : 'hidden');
 }
 
 const showPrevBtn = () => {
@@ -317,21 +329,48 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
+  /*  
+    model.wireDecking    = false
+    model.palletSupports = false
 
-  wireDeckingY.click(function() {
+    . Por defecto se muestra el tab de la izquierda por defecto y esta oculto el de la derecha
     
+    . Por defecto wireDeckingY.find('input').prop('checked') == true 
+        y
+      palletSupportsY.find('input').prop('checked') == false
+
+    . Si se clickea wireDeckingY entonces se muestra el panel de la derecha y se oculta el de la izquierda.
+
+    . Si se clickea palletSupportsY entonces se muestra el panel de la izquierda y se oculta el de la derecha.
+
+  */
+
+  const wireDeckingHandler = () => {
+    model.wireDecking = wireDeckingY.find('input').prop('checked')
+    visibilize(pallets, !model.wireDecking)
+  }
+
+  wireDeckingY.find('input').change(function() {
+    wireDeckingHandler()
   });
 
-  wireDeckingN.click(function() {
-   
+  wireDeckingN.find('input').change(function() {
+    wireDeckingHandler()
   });
 
-  palletSupportsY.click(function() {
-    
+
+
+  const palletsHandler = () => {
+    model.palletSupports = palletSupportsY.find('input').prop('checked')
+    visibilize(decking, !model.palletSupports)
+  }
+
+  palletSupportsY.find('input').change(function() {
+    palletsHandler()
   });
 
-  palletSupportsN.click(function() {
-   
+  palletSupportsN.find('input').change(function() {
+    palletsHandler()
   });
 
 });
