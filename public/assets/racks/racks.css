@@ -44,3 +44,7 @@
     font-family: 'MyraidProSemiboldItalic';
     src: url(/assets/fonts/MyraidProSemiboldItalic/MyraidProSemiboldItalic.woff2) format("woff2"), url(/assets/fonts/MyraidProSemiboldItalic/MyraidProSemiboldItalic.woff) format("woff")
 }
+
+.d-none {
+    display: none !important;
+}

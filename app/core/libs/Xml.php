@@ -451,19 +451,17 @@ class XML
         return $page;
     }
 
+    static function removeEmptyAttributes($html) {
+        // Encuentra y reemplaza atributos vacíos
+        $html = preg_replace('/\s+(\w+)\s*=\s*["\']\s*["\']/', '', $html);
+        return $html;
+    }
+    
+
     // static function removeCSSClass(string $html, $class){
     //     // IMPLEMENTAR
     // }
 
-    /*
-        https://www.itsupportguides.com/knowledge-base/wordpress/wordpress-php-code-to-remove-html-class-attributes-from-post-content/
-    */
-    static function removeCSSClasses(string $html) : string {
-        return preg_replace_callback('/<[^<>]*\sclass=[\'"`][^\'"`]*[\'"`][^<>]*>/i', function($match) {
-            return preg_replace('/\sclass=[\'"`][^\'"`]*[\'"`]/i', '', $match[0]);
-        }, $html);    
-    }
-   
     static function removeCSS(string $page, bool $remove_style_sections = true, bool $remove_css_inline = true, bool $remove_bt_classes = true) : string
      {
 		// Eliminar CSS entre etiquetas <style></style>
