@@ -4,10 +4,31 @@ use simplerest\core\Paginator;
 
 require_once __DIR__ . '/constants.php';
 
-// puede afectar el punto decimal al formar sentencias SQL !!!
-// setlocale(LC_ALL, 'es_AR.UTF-8');
-
 return [
+	'dims' => [
+		'h' => [
+			96,
+			120,
+			144,
+			192,
+			240
+		],
+		'd' => [
+			36,
+			42,
+			48
+		],	
+		'l' => [
+			96,
+			108,
+			120,
+			144
+		],
+
+		// fixed -- dont' edit
+		'max_levels' => 6 
+	],
+
 	'app_url' => env('APP_URL'),
 	'app_name'=> env('APP_NAME'),
 	'app_env' => env('APP_ENV'),
