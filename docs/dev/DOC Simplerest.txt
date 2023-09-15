@@ -8110,42 +8110,51 @@ Ej:
 
 Helpers que pueden incluirse en un template:
 
-	a_meta()	crea un meta-tag a partir se sus parámetros
-	a_css()		crea un tag <link rel="stylesheet" type="text/css">
-	a_js()		crea un tag <script type="text/javascript">
-	base_url()	bastante auto-explicatorio
-	asset()		devuelve la url de un recurso 
-	head()		es un simple wrapper sobre render_metas(), render_css() y render_js(VIEW::HEAD)
-	umodel()	script con los nombres de los campos para username, password y e-mail  del user model a ser usados en el endpoint /auth
-	js()		hace el enqueue de un javascript "inline"
-	css()		hace el enqueue de un css "inline"
-	js_file() 	hace el enqueue de un archivo .js
-	css_file()	hace el enqueue de un archivo .css
-	section()	incluye una vista
-	footer()	es un alias de render_js(VIEW::FOOTER)
+	a_meta()		crea un meta-tag a partir se sus parámetros
+	a_css()			crea un tag <link rel="stylesheet" type="text/css">
+	a_js()			crea un tag <script type="text/javascript">
+	base_url()		bastante auto-explicatorio
+	asset()			devuelve la url de un recurso 
+	head()			es un simple wrapper sobre render_metas(), render_css() y render_js(VIEW::HEAD)
+	umodel()		script con los nombres de los campos para username, password y e-mail  del user model a ser usados en el endpoint /auth
+	js()			hace el enqueue de un javascript "inline"
+	css()			hace el enqueue de un css "inline"
+	js_file() 		hace el enqueue de un archivo .js
+	css_file()		hace el enqueue de un archivo .css
+	section()		incluye una vista
+	footer()		es un alias de render_js(VIEW::FOOTER)
 
 Ya dentro de una vista o sub-vista:
 
-	asset()		devuelve la url de un recurso 
-	section()	incluye una vista. La vista es renderizada.
-	get_view()	retorna una vista. No queda incluida dentro del template.
-	js()		hace el enqueue de un javascript "inline"
-	css()		hace el enqueue de un css "inline"
-	js_file() 	hace el enqueue de un archivo .js
-	css_file()	hace el enqueue de un archivo .css
+	asset()			devuelve la url de un recurso 
+	section()		incluye una vista. La vista es renderizada.
+	get_view()		retorna una vista. No queda incluida dentro del template.
+	js()			hace el enqueue de un javascript "inline"
+	css()			hace el enqueue de un css "inline"
+	js_file() 		hace el enqueue de un archivo .js
+	css_file()		hace el enqueue de un archivo .css
+
+Y dentro de un controlador:
+
+	set_template() 	setea un template (opcional)
+	view()
 
 
-Nota: El helper section() sirve para incluir vistas. En campo get_view() obtiene el contenido de una vista lo cual permite manipularla, parametrizarla e inyectarla dentro de otra vista.
+Notas: 
 
-El uso de get_view() puede reemplazar al de sector() aunque lo contrario dependerá del caso.
+	El helper section() sirve para incluir vistas. 
 
-Ej:
+	En campo get_view() obtiene el contenido de una vista lo cual permite manipularla, parametrizarla e inyectarla dentro de otra vista.
 
-	sector('my_section.php', [ 'my_var' => $my_var ]);
+	El uso de get_view() puede reemplazar al de section() aunque lo contrario dependerá del caso.
 
-puede reemplazarse por,......
+	Ej:
 
-	echo get_view('my_section.php', [ 'my_var' => $my_var ]);
+		section('my_section.php', [ 'my_var' => $my_var ]);
+
+	puede reemplazarse por,......
+
+		echo get_view('my_section.php', [ 'my_var' => $my_var ]);
 
 
 Otros helpers,...

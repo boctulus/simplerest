@@ -267,5 +267,19 @@ class CSS
         return $desminifiedCSS;
     }
 
+    static function removeCSSClasses(string $html, $classesToRemove = null) : string {
+        if (!empty($classesToRemove)) {
+            foreach ($classesToRemove as $class) {
+                $html = str_replace($class, '', $html);
+            }
+
+            return $html;
+        }
+
+        return preg_replace_callback('/<[^<>]*\sclass=[\'"`][^\'"`]*[\'"`][^<>]*>/i', function($match) {
+            return preg_replace('/\sclass=[\'"`][^\'"`]*[\'"`]/i', '', $match[0]);
+        }, $html);        
+    }
+    
 }
 
