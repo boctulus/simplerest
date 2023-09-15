@@ -36,14 +36,6 @@ class Angular
             'lang-bind-attr'
         ]);
 
-        // $page = str_replace([
-        //     '-maxlength',
-        //     '-required',
-        //     '-img',
-        //     '-item',
-        //     '-secondary'
-        // ], '', $page);
-
         $page = str_replace('ng-hide', 'd-none', $page);
 
         $page = CSS::removeCSSClasses($page,[
@@ -51,7 +43,7 @@ class Angular
             'ng-untouched',
             'ng-valid',
             'ng-not-empty',
-            'ng-inactive'
+            'ng-inactive'          
         ]);
 
         $page = XML::removeEmptyAttributes($page);
