@@ -23,25 +23,29 @@ class FileCache extends Cache
     /*
         Logica para saber si un archivo usado como cache ha expirado
 
-        Esta implementacion requiere deserializar el archivo que fue serializado con put()
+        Si se ha utilizado put() debe usarse con $was_serialized = 1
     */
-    static function expiredFile(string $path, ?int $expiration_time = null) : bool {
+    static function expiredFile(string $path, ?int $expiration_time = null, bool $was_serialized = false) : bool {
         $exists = file_exists($path);
 
         if (!$exists){
             return true;
         }
 
-        if ($expiration_time !== null){
-            $updated_at = filemtime($path);
+        if (!$was_serialized){
+            if ($expiration_time !== null){
+                $updated_at = filemtime($path);
 
-            if (static::expired($updated_at, $expiration_time)){
-                // Cache has expired, delete the file
-                unlink($path);
-            
-                return true;
+                if (static::expired($updated_at, $expiration_time)){
+                    // Cache has expired, delete the file
+                    unlink($path);
+                
+                    return true;
+                }
             }
-        } 
+            
+            return false;
+        }
 
         $content = file_get_contents($path);
         $data    = unserialize($content);
@@ -56,10 +60,15 @@ class FileCache extends Cache
         return false;
     }
 
-    static function put($key, $value, $minutes)
+    /*
+        @param string $key
+        @param mixed  $value    
+        @param int    $exp_time en segundos
+    */
+    static function put($key, $value, $exp_time)
     {
         $path = static::getCachePath($key);
-        $expiresAt = time() + ($minutes * 60);
+        $expiresAt = time() + ($exp_time);
         $data = [
             'value' => $value,
             'expires_at' => $expiresAt,

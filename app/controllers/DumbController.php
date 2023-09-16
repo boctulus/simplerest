@@ -7600,7 +7600,7 @@ class DumbController extends Controller
     function test_file_cache_put()
     {
         dd(
-            FileCache::put('constelacion', 'andromeda X', 2)
+            FileCache::put('constelacion', 'andromeda X', 10)
         );
     }
 
@@ -7630,9 +7630,46 @@ class DumbController extends Controller
         $file = FileCache::getCachePath('constelacion');
 
         dd(
-            FileCache::expiredFile($file)
+            FileCache::expiredFile($file, null, true)
         );
     }
+
+
+    function test_file_cache_put_simple()
+    {
+        dd(
+            Files::writeOrFail(CACHE_PATH . 'constelacion.txt', 'andromeda X')
+        );
+    }
+
+    function test_file_cache_get_simple()
+    {
+        $file     = CACHE_PATH . 'constelacion.txt';
+        $exp_time = 5;
+
+        /*
+            Es nuestra responsabilidad llamar a esta funcion antes
+            que no solo dice si el archivo ha expirado sino que lo remueve si es el caso
+        */
+        $is_expired = FileCache::expiredFile($file, $exp_time);
+
+        dd(
+            Files::getContent($file)
+        );
+    }
+
+    function is_expired_simple()
+    {
+        $file     = CACHE_PATH . 'constelacion.txt';
+        $exp_time = 5;
+
+        // Chequeo si todavia es valido para 5 segundos de tiempo de expiracion
+
+        dd(
+            FileCache::expiredFile($file, $exp_time), 'Expired?'
+        );
+    }
+
 
     function test_db_cache_put()
     {
