@@ -6,6 +6,7 @@ use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\FileCache;
 use simplerest\core\traits\ExceptionHandler;
 
 class View
@@ -41,7 +42,7 @@ class View
         if ($expiration_time !== 0){
             $cached_path = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
-            $expired = Cache::expiredFile($cached_path, $expiration_time);
+            $expired = FileCache::expiredFile($cached_path, $expiration_time);
             $cached  = !$expired;
 
             if ($expired){
@@ -59,7 +60,12 @@ class View
             }      
 
             ob_start();
-            include VIEWS_PATH . $view_path;
+
+            if (Files::isAbsolutePath($view_path)){
+                include $view_path;
+            } else {
+                include VIEWS_PATH . $view_path;
+            }
             
             $content = ob_get_contents();
             ob_end_clean();
@@ -81,6 +87,8 @@ class View
     }
 
     static function get_view_src(string $view_path, int $expiration_time = 0){
+        $path = Files::isAbsolutePath($view_path) ?  $view_path : VIEWS_PATH . $view_path;
+        
         if (!Strings::endsWith('.php', $view_path)){
             $view_path .= '.php';
         }
@@ -90,7 +98,7 @@ class View
         }
 
         $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
-        $expired     = Cache::expiredFile($cached_path, $expiration_time);
+        $expired     = FileCache::expiredFile($cached_path, $expiration_time);
 
         if (!$expired){
             $src = $cached_path;
@@ -102,28 +110,27 @@ class View
     }
 
     static function get_view(string $view_path, int $expiration_time = 0){
-        $path = Files::isAbsolutePath($view_path) ?  $view_path : VIEWS_PATH . $view_path;
-        
         if (!Strings::endsWith('.php', $view_path)){
             $view_path .= '.php';
         }
         
-        $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
+        $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  
+        str_replace(':', '-DRIVE', $view_path));
 
-        $expired     = Cache::expiredFile($cached_path, $expiration_time);
+        $expired = FileCache::expiredFile($cached_path, $expiration_time);
 
         if (!$expired){
             $content = Files::reader($cached_path);
         } else {
             ob_start();
-            include $path;
+            include $view_path;
             
             $content = ob_get_contents();
             ob_end_clean();
             
             if ($expiration_time != 0){
                 Files::writableOrFail($cached_path);
-                $bytes = Files::writter($cached_path, $content);
+                $bytes = Files::writter($cached_path, $content); // ****
             }
         }
         

@@ -31,7 +31,8 @@ class FrontController
             */
 
             $allowed_paths = [
-                '/app/views/'
+                '/app/views/',
+                '/app/shortcodes/'
             ];
 
             foreach($allowed_paths as $ok_path){

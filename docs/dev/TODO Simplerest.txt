@@ -26,6 +26,7 @@ TODO SimpleRest
 
     Archivos de documentación: En algunos proyectos, especialmente en bibliotecas o paquetes, es posible que encuentres documentación generada automáticamente, como archivos README, documentación HTML o archivos de ayuda.
 
+
 # Automatización
 
   Si estás trabajando con un sistema de construcción (como Webpack o Gulp), es posible que puedas automatizar la detección del entorno utilizando scripts o complementos específicos para configurar las construcciones en función del entorno actual.

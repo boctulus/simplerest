@@ -1158,12 +1158,26 @@ class Files
 		return static::file_get_contents_locking($filename, $flags);
 	}
 
-	/*
-		Lee archivo o falla.
+	static function read(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
+		if (is_dir($path)){
+			$path = realpath($path);
+			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
+		} 
 
-		Revisar!
-	*/
-static function readOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
+		if (!file_exists($path)){	
+			return false;
+		}
+
+		if ($length !== null){
+			$content = @file_get_contents($path, $use_include_path, $context, $offset, $length); // @
+		} else {
+			$content = @file_get_contents($path, $use_include_path, $context, $offset); // @
+		}
+		
+		return $content;
+	}
+
+	static function readOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
 		if (is_dir($path)){
 			$path = realpath($path);
 			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
@@ -1179,9 +1193,8 @@ static function readOrFail(string $path, bool $use_include_path = false, $contex
 			$content = @file_get_contents($path, $use_include_path, $context, $offset); // @
 		}
 		
-		if ($content === false || $content === null){
-			$path = realpath($path);
-			throw new \Exception("File '$path' was unable to be written!");
+		if (strlen($content) === false){
+			throw new \InvalidArgumentException("File '$path' can not be read");
 		}
 
 		return $content;
@@ -1189,6 +1202,11 @@ static function readOrFail(string $path, bool $use_include_path = false, $contex
 
 	// alias
 	static function getContent(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
+		return static::read($path, $use_include_path, $context, $offset, $length);
+	}
+
+	// alias
+	static function getContentOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
 		return static::readOrFail($path, $use_include_path, $context, $offset, $length);
 	}
 

@@ -2,6 +2,7 @@
 
 use simplerest\core\View;
 use simplerest\views\MyView; 
+use simplerest\core\libs\Files;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
 
@@ -98,25 +99,41 @@ function set_template(string $file){
 
     Siempre de /public/assets
 */
-function asset($resource){
-    $resource = str_replace('\\', '/', $resource);
-
+function asset($resource)
+{
     $protocol = is_cli() ? 'http' : httpProtocol();
-    
-    $base  = config()['base_url'];
 
-    if (Strings::endsWith('/', $base)){
-        $base = substr($base, 0, -1); 
+    if (Strings::startsWith(SHORTCODES_PATH, $resource)){
+        $resource = Strings::substract($resource, SHORTCODES_PATH);
+        $resource = str_replace('\\', '/', $resource);
+        
+        $base     = config()['base_url'];
+
+        if (Strings::endsWith('/', $base)){
+            $base = substr($base, 0, -1); 
+        }
+
+        $url  = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')) . '/app/shortcodes' . '/';
+        $url .= $resource;
+
+    } else {
+        $resource = str_replace('\\', '/', $resource);
+        
+        $base     = config()['base_url'];
+
+        if (Strings::endsWith('/', $base)){
+            $base = substr($base, 0, -1); 
+        }
+        
+        $public = $base . '/public';
+        $url    = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/';
+
+        if (!Strings::startsWith('assets/', $resource)){
+            $url .= 'assets/';
+        }
+
+        $url .= $resource;
     }
-
-    $public = $base . '/public';
-    $url    = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/';
-
-    if (!Strings::startsWith('assets/', $resource)){
-        $url .= 'assets/';
-    }
-
-    $url .= $resource;
 
     return $url;    
 }
