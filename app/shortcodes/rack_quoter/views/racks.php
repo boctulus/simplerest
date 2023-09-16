@@ -4,7 +4,6 @@
 
   $dims = $cfg['dims'];
 
-  nap(1);
 ?>
 
 <div class="row">
