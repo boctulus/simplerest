@@ -1,8 +1,10 @@
 <?php
   
-  $cfg  = config();
+  $cfg  = include __DIR__ . '/../config/config.php';
 
   $dims = $cfg['dims'];
+
+  nap(1);
 ?>
 
 <div class="row">
@@ -91,13 +93,13 @@
         </div>
         <div class="-item -img">
           <!---->
-          <img src="<?= asset('racks/images/NewPalletRack.png') ?>">
+          <img src="<?= asset(SHORTCODES_PATH . 'rack_quoter/assets/images/NewPalletRack.png') ?>">
           <!---->
           <p class="-img-caption" >4 Beam Levels in diagram</p>
         </div>
       </div>
 
-      <div id="step-02" class="active tab-pane clearfix d-none">
+      <div id="step-02" class="tab-pane clearfix d-none">
         <div class="clearfix row">
 
           <!-- left half-tab -->
@@ -116,12 +118,12 @@
               </div>
             </div>
             <div class="-img" >
-              <img src="<?= asset('racks/images/tab2-img01.png') ?>">
+              <img src="<?= asset(SHORTCODES_PATH . 'rack_quoter/assets/images/tab2-img01.png') ?>">
             </div>
           </div>
 
           <!-- right half-tab -->
-          <div class="-item-tab-half pallets col-md-6"> <!-- d-none -->
+          <div class="-item-tab-half pallets col-md-6">
             <div class="-caption"> 
               <h4 >Do you want pallet supports?</h4>
               <div class="radio-wrapper">
@@ -136,14 +138,14 @@
               </div>
             </div>
             <div class="-img">
-              <img src="<?= asset('racks/images/tab2-img02.png') ?>">
+              <img src="<?= asset(SHORTCODES_PATH . 'rack_quoter/assets/images/tab2-img02.png') ?>">
             </div>
           </div>
 
         </div>
       </div>
 
-      <div id="step-03" class="active clearfix tab-pane text-center d-none">
+      <div id="step-03" class="clearfix tab-pane text-center d-none">
         <!---->
         <!---->
         <!---->
@@ -151,7 +153,7 @@
         <!---->
         <div class="-img centered">
           <!---->
-          <img src="<?= asset('racks/images/multiple.png') ?>" >
+          <img src="<?= asset(SHORTCODES_PATH . 'rack_quoter/assets/images/multiple.png') ?>" >
           <!---->
           <!---->
           <!---->
@@ -190,7 +192,7 @@
     </button>
     <button id="tabNext" class="btn btn-primary -next"  >
       <span>Next</span>
-      <span class="d-none">View Drawing</span>
+      <!-- span class="d-none">View Drawing</span -->
       <i class="fa fa-angle-right"></i>
     </button>
   </div>
@@ -245,6 +247,10 @@ const showPrevBtn = () => {
 
 const hidePrevBtn = () => {
   hide(prev);
+}
+
+const hideStep = (num) => {
+  $(`#step-0${num}`).remove('active').addClass('d-none');
 }
 
 const move2Step = (num) => {

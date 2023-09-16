@@ -8710,6 +8710,88 @@ A futuro se implementará un comando para la limpieza de la cache de la siguient
 El comando podrá borrar otro tipo de caches como la del Acl.
 
 
+# File cache
+
+Hay dos implementaciones de cache de archivo, una donde los datos se serializan con FileCache::put() y se recuperan con FileCache::get() y otra donde no se serializan ni se almacena el tiempo de expiración.
+
+		    Serializado?   Almacenado de fecha de expiracion?
+----------+--------------+-------------------------------------
+Impl. #1  | Si           |  Si
+----------+--------------+-------------------------------------
+Impl. #2  | No           |  No
+----------+--------------+-------------------------------------
+
+Implementación #1
+
+- Almaceno un valor ('Andromeda X') bajo una clave ('constelacion') durante cierto tiempo (10 segundos)
+
+Ej:
+
+	FileCache::put('constelacion', 'Andromeda X', 10)
+
+- Donde se ha guardado el archivo serializado?
+
+	dd(
+		FileCache::getCachePath('constelacion')
+	);
+
+Lo anterior devuelve un path como C:\Users\jayso\AppData\Local\Temp\8302505164ff597cfd342a21e60c849d26093d73.cache
+
+- Recuperar el valor 
+
+	dd(
+        FileCache::get('constelacion')
+    );
+
+- Comprobar si ha expirado
+
+	$file    = FileCache::getCachePath('constelacion');
+	$expired = FileCache::expiredFile($file, null, true);
+
+
+Implementación #2
+
+Esta implementación es mas simple: 
+
+Solo se debe almacenar el archivo en cualquier ubicacion y bajo cualquier nombre y luego utilizar FileCache::expiredFile($file, $exp_time) para saber si el archivo ha sido almacenado antes o despues de $exp_time segundos con lo cual seria valido o por el contrario estaria expirado respectivamente.
+
+- Almaceno un valor
+
+	Files::writeOrFail(CACHE_PATH . 'constelacion.txt', 'andromeda X')
+
+<--  se almacena por tiempo indefinido
+
+- Comprobar si ha expirado
+
+Ej:
+
+	$file     = CACHE_PATH . 'constelacion.txt';  // ruta arbitraria (cualquiera sirve)
+    $exp_time = 5;
+
+	// Chequeo si todavia es valido para 5 segundos de tiempo de expiracion
+
+	dd(
+		FileCache::expiredFile($file, $exp_time), 'Expired?'
+	);
+
+<-- Esta vez FileCache::expiredFile() se ha llamado con un tiempo de expiracion
+
+- Recuperar el valor 
+
+ 	$file     = CACHE_PATH . 'constelacion.txt';
+    $exp_time = 5;
+
+	/*
+		Es nuestra responsabilidad llamar a FileCache::expiredFile() antes
+		que no solo dice si el archivo ha expirado sino que lo remueve si es el caso
+	*/
+
+	$is_expired = FileCache::expiredFile($file, $exp_time);
+
+	dd(
+		Files::getContent($file)
+	);
+
 
 # Internacionalización
 
