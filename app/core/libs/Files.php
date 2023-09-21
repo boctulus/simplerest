@@ -281,6 +281,30 @@ class Files
 	}
 
 	/*
+		Determina si una ruta comienza con root (\) tanto en Unix como Windows
+
+		A diferencia de isAbsolutePath() aca no importa si hay ".." en medio
+	*/
+	static function startsWithRoot(string $path){
+		if (PHP_OS_FAMILY === "Windows") {
+			if (preg_match('~[A-Z]:'.preg_quote('\\').'~i', $path)){
+				return true;
+			}
+
+			if (Strings::startsWith('\\', $path)){
+				return true;
+			}
+		}
+
+		if (Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/*
 		Returns absolute path relative to root path
 	*/
 	static function getAbsolutePath(string $path, string $relative_to =  null){

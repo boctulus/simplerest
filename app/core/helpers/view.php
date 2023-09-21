@@ -103,7 +103,7 @@ function asset($resource)
 {   
     $protocol = is_cli() ? 'http' : httpProtocol();
 
-    if (Strings::startsWith(SHORTCODES_PATH, $resource)){
+    if (Files::startsWithRoot($resource)){
         $resource = Strings::substract($resource, SHORTCODES_PATH);
         $resource = str_replace('\\', '/', $resource);
         
