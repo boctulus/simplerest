@@ -8721,8 +8721,15 @@ class DumbController extends Controller
             <?php endforeach; ?>
         </div>
 
-<?php
-        $content = ob_get_clean();
-        render($content);
+        <?php
+            $content = ob_get_clean();
+            render($content);
+    }
+
+    function test_normaliza_ruta(){        
+        $ruta = '../zz/../xx/yy';
+        $rutaNormalizada = Files::normalize($ruta, '/');
+
+        dd($rutaNormalizada); 
     }
 }   // end class
