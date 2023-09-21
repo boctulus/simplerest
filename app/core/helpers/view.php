@@ -126,6 +126,9 @@ function asset($resource)
         }
         
         $public = $base . '/public';
+
+        dd(realpath($resource), $resource);
+
         $url    = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/';
 
         if (!Strings::startsWith('assets/', $resource)){
