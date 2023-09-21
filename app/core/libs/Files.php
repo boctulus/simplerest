@@ -230,8 +230,29 @@ class Files
 		return $path;
 	}
 
-	// alias 
+	/**
+	 * Normaliza una ruta eliminando los segmentos ".." y convierte las barras diagonales a un formato específico si se especifica.
+	 *
+	 * @param string $path La ruta a normalizar.
+	 * @param string|null $to_slash (Opcional) El formato de barras diagonales al que se debe convertir la ruta (por ejemplo, '\\' para Windows).
+	 * @return string La ruta normalizada.
+	 */
 	static function normalize($path, $to_slash = null){
+		$path = str_replace('\\', '/', $path);
+
+		$segmentos = explode('/', $path);
+		$nuevaRuta = [];
+	
+		foreach ($segmentos as $segmento) {
+			if ($segmento === '..') {
+				array_pop($nuevaRuta);
+			} else {
+				$nuevaRuta[] = $segmento;
+			}
+		}
+	
+        $path = implode('/', $nuevaRuta);
+
 		return static::convertSlashes($path, $to_slash);
 	}
 
