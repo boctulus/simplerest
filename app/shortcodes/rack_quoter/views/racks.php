@@ -1,5 +1,15 @@
-<div class="clearfix text-center"><a href="http://warehouserack.com/" class="navbar-brand"><img
-            src="<?= asset(__DIR__ . '/../assets/images/WES-Logo.png') ?>" alt="logo" style="max-height: 34px;"></a>
+<?php
+
+  // $url = shortcode_asset(__DIR__ . '/images/WES-Logo.png');
+
+  // dd($url, 'URL');
+
+  // echo "<img src=\"$url\">";
+  // exit;
+?>
+
+<div class="clearfix text-center"><a href="http://warehouserack.com/" class="navbar-brand">
+    <img src="<?= shortcode_asset(__DIR__ . '/images/WES-Logo.png') ?>" alt="logo" style="max-height: 34px;"></a>
     <h2>
         Pallet Rack Layout Drawing</h2><!---->
     <p id="palletsCount" class="subheading">
