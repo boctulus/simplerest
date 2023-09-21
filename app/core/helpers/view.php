@@ -95,6 +95,35 @@ function set_template(string $file){
 }
 
 /*
+    Para ser usado dentro de un shortcode
+
+    Ej:
+
+    <img src="<?= shortcode_asset(__DIR__ . '/images/WES-Logo.png') ?>" />
+*/
+function shortcode_asset($resource)
+{   
+    $protocol = is_cli() ? 'http' : httpProtocol();
+
+    $resource = Strings::substract($resource, SHORTCODES_PATH);
+    $resource = str_replace('\\', '/', $resource);
+    $resource = str_replace('/views/', '/assets/', $resource);
+    
+    $base     = config()['base_url'];
+
+    if (Strings::endsWith('/', $base)){
+        $base = substr($base, 0, -1); 
+    }
+
+    $url  = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')) . '/app/shortcodes/';
+    $url .= $resource;
+
+    $url = Files::normalize($url, '/');
+
+    return $url;    
+}
+
+/*
     Incluye assets
 
     Siempre de /public/assets
@@ -103,38 +132,24 @@ function asset($resource)
 {   
     $protocol = is_cli() ? 'http' : httpProtocol();
 
-    if (Files::startsWithRoot($resource)){
-        $resource = Strings::substract($resource, SHORTCODES_PATH);
-        $resource = str_replace('\\', '/', $resource);
-        
-        $base     = config()['base_url'];
+    $resource = str_replace('\\', '/', $resource);
+    
+    $base     = config()['base_url'];
 
-        if (Strings::endsWith('/', $base)){
-            $base = substr($base, 0, -1); 
-        }
-
-        $url  = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')) . '/app/shortcodes' . '/';
-        $url .= $resource;
-
-    } else {
-        $resource = str_replace('\\', '/', $resource);
-        
-        $base     = config()['base_url'];
-
-        if (Strings::endsWith('/', $base)){
-            $base = substr($base, 0, -1); 
-        }
-        
-        $public = $base . '/public';
-
-        $url    = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/';
-
-        if (!Strings::startsWith('assets/', $resource)){
-            $url .= 'assets/';
-        }
-
-        $url .= $resource;
+    if (Strings::endsWith('/', $base)){
+        $base = substr($base, 0, -1); 
     }
+    
+    $public = $base . '/public';
+
+    $url    = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/';
+
+    if (!Strings::startsWith('assets/', $resource)){
+        $url .= 'assets/';
+    }
+
+    $url .= $resource;
+
 
     $url = Files::normalize($url, '/');
 
