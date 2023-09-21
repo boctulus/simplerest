@@ -8727,7 +8727,7 @@ class DumbController extends Controller
     }
 
     function test_normaliza_ruta(){        
-        $ruta = '../zz/../xx/yy';
+        $ruta = '..zz/../xx/yy';
         $rutaNormalizada = Files::normalize($ruta, '/');
 
         dd($rutaNormalizada); 
