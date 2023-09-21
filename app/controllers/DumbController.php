@@ -8726,6 +8726,10 @@ class DumbController extends Controller
             render($content);
     }
 
+    function test_asset(){
+        echo '<img src="' .asset('img/ai_logo.png') . '">';
+    }
+
     function test_normaliza_ruta(){        
         $ruta = '..zz/../xx/yy';
         $rutaNormalizada = Files::normalize($ruta, '/');
