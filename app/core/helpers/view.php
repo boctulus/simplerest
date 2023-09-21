@@ -100,7 +100,7 @@ function set_template(string $file){
     Siempre de /public/assets
 */
 function asset($resource)
-{
+{   
     $protocol = is_cli() ? 'http' : httpProtocol();
 
     if (Strings::startsWith(SHORTCODES_PATH, $resource)){
@@ -127,8 +127,6 @@ function asset($resource)
         
         $public = $base . '/public';
 
-        dd(realpath($resource), $resource);
-
         $url    = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/';
 
         if (!Strings::startsWith('assets/', $resource)){
@@ -137,6 +135,8 @@ function asset($resource)
 
         $url .= $resource;
     }
+
+    $url = Files::normalize($url, '/');
 
     return $url;    
 }
