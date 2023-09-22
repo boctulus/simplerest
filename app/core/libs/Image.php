@@ -13,12 +13,12 @@ class Image
     protected $h;
     protected $im;
     protected $colors = [];
+    protected $shapes = [];
 
     function __construct($w, $h){
         $this->w = $w;
         $this->h = $h;
 
-        // Crear una nueva imagen
         $this->im = imagecreatetruecolor($w, $h);
     }
 
@@ -30,8 +30,16 @@ class Image
         $this->colors[$name] = imagecolorallocate($this->im, $r, $g, $b);; 
     }
 
+    function getColor($color){
+        if (is_string($color)){
+            $color = $this->colors[$color];
+        }
+
+        return $color;
+    }
+
     function setBackgroundColor($color){
-        imagefill($this->im, 0, 0, $color);
+        imagefill($this->im, 0, 0, $this->getColor($color));
     }
 
     function render(){
@@ -40,7 +48,7 @@ class Image
         imagepng($this->im);
 
         // Liberar memoria
-        // imagedestroy($this->im); 
+        imagedestroy($this->im); 
     }
 
     function rectangle($x1, $y1, $width, $height, $color_name){
@@ -49,6 +57,10 @@ class Image
 
         imagerectangle($this->im, $x1, $y1, $x2, $y2, $this->colors[$color_name]);
         return $this;
+    }
+
+    function setShape(string $name, callable $callback){
+        $this->shapes[$name] = $callback;
     }
 
 }
