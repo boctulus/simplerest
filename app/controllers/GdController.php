@@ -36,7 +36,7 @@ class GdController extends MyController
             $x2 = $x1 + $width;
             $y2 = $y1 + $height;
 
-            imagefilledrectangle($image, $x1, $y1, $x2, $y2, $color);
+            imagerectangle($image, $x1, $y1, $x2, $y2, $color);
         }
         
         // Crear una nueva imagen
