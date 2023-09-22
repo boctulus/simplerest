@@ -25,30 +25,50 @@ class GdController extends MyController
 
     function render_00()
     {
+        $color_inv = true;
+
         // Definir dimensiones y colores
-        $ancho = 400;
-        $alto = 200;
+        $ancho = 1780;
+        $alto  = 1280;
+
+        // helper
+        function rectangle($x1, $y1, $width, $height, $image, $color){
+            $x2 = $x1 + $width;
+            $y2 = $y1 + $height;
+
+            imagefilledrectangle($image, $x1, $y1, $x2, $y2, $color);
+        }
         
         // Crear una nueva imagen
         $im = imagecreatetruecolor($ancho, $alto);
 
+        $c_blk = [255,255,255];
+        $c_wht = [0,0,0]; 
+
+        if ($color_inv){
+            $c_blk = [0,0,0];
+            $c_wht = [255,255,255]; 
+        }
+
         // Create some colors
-        $white = imagecolorallocate($im, 255, 255, 255);
-        $black = imagecolorallocate($im, 0, 0, 0);
+        $white = imagecolorallocate($im, ...$c_blk);
+        $black = imagecolorallocate($im, ...$c_wht);
 
         // Definir color de fondo
         imagefill($im, 0, 0, $white);
+        
+        $x1 = 50;
+        $y1 = 50;
+        $w  = 80;
+        $h  = 20;
+        
+        $x_sp = 5;
 
-        // // Dibujar los rectángulos
-        for ($i = 0; $i < 5; $i++) {
-            for ($j = 0; $j < 10; $j++) {
-                $x1 = $j * 40;
-                $y1 = $i * 40;
-                $x2 = $x1 + 40;
-                $y2 = $y1 + 40;
-                imagefilledrectangle($im, $x1, $y1, $x2, $y2, $black);
-            }
+        foreach (range(0,5) as $c ){
+            $x1 += $x_sp + $w;
+            rectangle($x1, $y1, $w, $h, $im, $black);       
         }
+
 
         // Dibujar las líneas verticales
         // for ($i = 0; $i < 10; $i++) {
