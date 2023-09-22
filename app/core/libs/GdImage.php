@@ -7,11 +7,13 @@ namespace simplerest\core\libs;
 
     By Pablo Bozzolo
 */
-class Image
+class GdImage
 {
     protected $w;
     protected $h;
     protected $im;
+    protected $foreground_color_name;
+    protected $background_color_name;
     protected $colors = [];
     protected $shapes = [];
 
@@ -30,7 +32,7 @@ class Image
         $this->colors[$name] = imagecolorallocate($this->im, $r, $g, $b);; 
     }
 
-    function getColor($color){
+    protected function __color($color){
         if (is_string($color)){
             $color = $this->colors[$color];
         }
@@ -38,8 +40,30 @@ class Image
         return $color;
     }
 
+    function setForegroundColor(string $color_name){
+        $this->foreground_color_name = $color_name;
+    }
+
+    /*
+        Devuelve el foreground color por defecto
+        o el primer color que encuentra distinto del de background
+    */
+    function getForegroundColor(){
+        if ($this->foreground_color_name != null){
+            return $this->foreground_color_name;
+        }
+
+        foreach (array_keys($this->colors) as $color_name){
+            if ($color_name != $this->background_color_name){
+                $this->foreground_color_name = $color_name;                
+                return $color_name;
+            }
+        }           
+    }
+
     function setBackgroundColor($color){
-        imagefill($this->im, 0, 0, $this->getColor($color));
+        $this->background_color_name = $color;
+        imagefill($this->im, 0, 0, $this->__color($color));
     }
 
     function render(){
