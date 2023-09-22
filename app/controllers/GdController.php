@@ -53,6 +53,9 @@ class GdController extends MyController
         // Definir color de fondo
         $im->setBackgroundColor('white');
         
+
+        $boxes_per_row = 5;
+
         $x1 = 50;
         $y1 = 50;
         $w  = 80;
@@ -60,10 +63,14 @@ class GdController extends MyController
         
         $x_sp = 5;
 
-        foreach (range(0,5) as $c ){
-            $x1 += $x_sp + $w;
-            $im->rectangle($x1, $y1, $w, $h, 'black');       
-        }
+        $im->setShape('row', function($boxes_per_row, $x1, $y1, $w, $h, $x_sp = 0) use($im) {
+            foreach (range(0, $boxes_per_row-1) as $c ){
+                $x1 += $x_sp + $w;
+                $im->rectangle($x1, $y1, $w, $h, 'black');       
+            }
+        });
+
+        $im->shape('row', 10, 20, 20, 40, 40, 2);
 
         $im->render();                      
     }
