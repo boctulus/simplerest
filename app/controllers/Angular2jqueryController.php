@@ -19,6 +19,7 @@ class Angular2JqueryController extends MyController
         $page = Files::getContent($path);
 
         $page = Angular::remove($path);
+        $page = str_replace(" -mark ", '', $page);  // <--- debo quitar esas clases de CSS como sea de los radio
     
         file_put_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks.php', $page);
 
