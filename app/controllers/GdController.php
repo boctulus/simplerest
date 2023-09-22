@@ -47,8 +47,8 @@ class GdController extends MyController
         }
 
         // Create some colors
-        $white = imagecolorallocate($im->getImage(), ...$c_blk);
-        $black = imagecolorallocate($im->getImage(), ...$c_wht);
+        $white = $im->createColor('white', ...$c_blk);
+        $black = $im->createColor('black', ...$c_wht);
 
         // Definir color de fondo
         $im->setBackgroundColor($white);
@@ -62,7 +62,7 @@ class GdController extends MyController
 
         foreach (range(0,5) as $c ){
             $x1 += $x_sp + $w;
-            $im->rectangle($x1, $y1, $w, $h, $black);       
+            $im->rectangle($x1, $y1, $w, $h, 'black');       
         }
 
        $im->render();                      
