@@ -109,7 +109,7 @@ function shortcode_asset($resource)
     $resource = str_replace('\\', '/', $resource);
     $resource = str_replace('/views/', '/assets/', $resource);
     
-    $base     = config()['base_url'];
+    $base     = config()['base_url'] ?? '';
 
     if (Strings::endsWith('/', $base)){
         $base = substr($base, 0, -1); 
