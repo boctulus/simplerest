@@ -51,7 +51,7 @@ class GdController extends MyController
         $black = $im->createColor('black', ...$c_wht);
 
         // Definir color de fondo
-        $im->setBackgroundColor($white);
+        $im->setBackgroundColor('white');
         
         $x1 = 50;
         $y1 = 50;
@@ -65,7 +65,7 @@ class GdController extends MyController
             $im->rectangle($x1, $y1, $w, $h, 'black');       
         }
 
-       $im->render();                      
+        $im->render();                      
     }
 
 
