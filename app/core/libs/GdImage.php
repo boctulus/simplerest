@@ -75,7 +75,11 @@ class GdImage
         imagedestroy($this->im); 
     }
 
-    function rectangle($x1, $y1, $width, $height, $color_name){
+    function rectangle($x1, $y1, $width, $height, $color_name = null){
+        if ($color_name == null){
+            $color_name = $this->getForegroundColor();
+        }
+
         $x2 = $x1 + $width;
         $y2 = $y1 + $height;
 
@@ -83,14 +87,26 @@ class GdImage
         return $this;
     }
 
+    // Mas formas nativas como arc(), etc
+    // ...
+
+    /*
+        Seteo forma personalizada
+    */
     function setShape(string $name, callable $callback){
         $this->shapes[$name] = $callback;
     }
 
+    /*
+        Dibuja forma personalizada
+    */
     function shape($name, ...$args){
         $this->shapes[$name](...$args);
     }
 
+    /*
+        Recupera forma, quizas color
+    */
     function __call($name, $args){
         $this->shapes[$name](...$args);
     }
