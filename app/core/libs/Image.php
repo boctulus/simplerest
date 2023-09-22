@@ -12,6 +12,7 @@ class Image
     protected $w;
     protected $h;
     protected $im;
+    protected $colors = [];
 
     function __construct($w, $h){
         $this->w = $w;
@@ -23,6 +24,10 @@ class Image
 
     function getImage(){
         return $this->im;
+    }
+
+    function createColor($name, $r, $g, $b){
+        $this->colors[$name] = imagecolorallocate($this->im, $r, $g, $b);; 
     }
 
     function setBackgroundColor($color){
@@ -38,11 +43,11 @@ class Image
         // imagedestroy($this->im); 
     }
 
-    function rectangle($x1, $y1, $width, $height, $color){
+    function rectangle($x1, $y1, $width, $height, $color_name){
         $x2 = $x1 + $width;
         $y2 = $y1 + $height;
 
-        imagerectangle($this->im, $x1, $y1, $x2, $y2, $color);
+        imagerectangle($this->im, $x1, $y1, $x2, $y2, $this->colors[$color_name]);
         return $this;
     }
 
