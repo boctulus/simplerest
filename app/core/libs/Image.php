@@ -63,5 +63,13 @@ class Image
         $this->shapes[$name] = $callback;
     }
 
+    function shape($name, ...$args){
+        $this->shapes[$name](...$args);
+    }
+
+    function __call($name, ...$args){
+        $this->shapes[$name](...$args);
+    }
+
 }
 
