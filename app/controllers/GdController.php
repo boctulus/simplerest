@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\libs\Image;
+use simplerest\core\libs\GdImage;
 use simplerest\core\libs\Factory;
 use simplerest\controllers\MyController;
 
@@ -36,10 +36,11 @@ class GdController extends MyController
         $alto  = 1280;
         
         // Crear una nueva imagen
-        $im = new Image($ancho, $alto);
+        $im = new GdImage($ancho, $alto);
 
         $c_blk = [255,255,255];
         $c_wht = [0,0,0]; 
+
 
         if ($color_inv){
             $c_blk = [0,0,0];
@@ -47,17 +48,26 @@ class GdController extends MyController
         }
 
         // Create some colors
-        $white = $im->createColor('white', ...$c_blk);
-        $black = $im->createColor('black', ...$c_wht);
+        $white     = $im->createColor('white', ...$c_blk);
+        $black     = $im->createColor('black', ...$c_wht);
+        // ...
+        $steelblue = $im->createColor('steelblue', 70,130,180);
 
         // Definir color de fondo
         $im->setBackgroundColor('white');
+
+        // Defino color defecto de pincel
+        #$im->setForegroundColor('steelblue');
         
         // Defino forma personalizada
-        $im->setShape('row', function($cells_per_row, $x1, $y1, $w, $h, $x_sp = 0) use($im) {
+        $im->setShape('row', function($cells_per_row, $x1, $y1, $w, $h, $color = null, $x_sp = 0) use($im) {
+            if ($color == null){
+                $color = $im->getForegroundColor();
+            }
+
             foreach (range(0, $cells_per_row-1) as $c ){
                 $x1 += $x_sp + $w;
-                $im->rectangle($x1, $y1, $w, $h, 'black');       
+                $im->rectangle($x1, $y1, $w, $h, $color);       
             }
         });
 
@@ -73,7 +83,12 @@ class GdController extends MyController
         /*
             Ahora debo crear el arreglo de filas
         */
-        $im->row($boxes_per_row, $x, $y, $w, $h, $x_sp);
+
+        foreach (range(0,1) as $i){
+            $im->row($boxes_per_row, $x, $y, $w, $h, null, $x_sp);
+        }
+
+        // ...
 
         $im->render();                      
     }
