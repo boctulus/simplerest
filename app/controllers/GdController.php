@@ -79,20 +79,18 @@ class GdController extends MyController
         $y = 50;
         $w = 80;
         $h = 20;
-        
-        $x_sp = 5;
 
         /*
             Ahora debo crear el arreglo de filas
         */
 
-        // $im->setShape('col', function($row, int $n) use($im) {
+        $im->setShape('multipleRow', function($n, $cells_per_row, $x1, $y1, $w, $h, $color = null, $x_sp = 0) use($im) {
+            foreach (range(0,$n-1) as $i){
+                $im->row($cells_per_row, $x1, $y1 + ($h * $i), $w, $h, $color, $x_sp);
+            }
+        });        
 
-        // });
-
-        foreach (range(0,1) as $i){
-            $im->row($boxes_per_row, $x, $y + ($h * $i), $w, $h, null, $x_sp);
-        }
+        $im->multipleRow(3, $boxes_per_row, $x, $y, $w, $h, 'steelblue');
 
         // ...
 
