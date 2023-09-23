@@ -80,6 +80,10 @@ class Imaginator
     }
 
     function render($image_format = 'png'){
+        if (!in_array($image_format, ['png', 'gif', 'jpeg'])){
+            throw new \InvalidArgumentException("Invalid image file format");
+        }
+
         if ($this->filter !== null){
             imagefilter($this->im, $this->filter);
         }
@@ -90,9 +94,11 @@ class Imaginator
             return;
         }
 
+        $fn = "image{$image_format}";
+
         // Enviar imagen al navegador
         header('Content-Type: image/' . $image_format);
-        imagepng($this->im);
+        $fn($this->im);
 
         // Liberar memoria
         imagedestroy($this->im); 
