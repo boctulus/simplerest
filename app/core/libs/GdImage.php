@@ -12,11 +12,18 @@ class GdImage
     protected $w;
     protected $h;
     protected $im;
+    protected $image_format;
     protected $foreground_color_name;
     protected $background_color_name;
     protected $colors = [];
     protected $shapes = [];
     protected $filter;
+
+    protected static $rendering = true;
+
+    static function disable(){
+        static::$rendering = false;
+    }
 
     function __construct($w, $h){
         $this->w = $w;
@@ -72,20 +79,37 @@ class GdImage
         $this->filter = IMG_FILTER_NEGATE;
     }
 
-    function render(){
+    function render($image_format = 'png'){
         if ($this->filter !== null){
             imagefilter($this->im, $this->filter);
         }
 
+        $image_format = $this->image_format ?? $image_format;
+
+        if (static::$rendering === false){
+            return;
+        }
+
         // Enviar imagen al navegador
-        header('Content-Type: image/png');
+        header('Content-Type: image/' . $image_format);
         imagepng($this->im);
 
         // Liberar memoria
         imagedestroy($this->im); 
     }
 
-    function rectangle($x1, $y1, $width, $height, $color_name = null){
+    function rectangleTo($x1, $y1, $x2, $y2, $color_name = null, bool $filled = false){
+        if ($color_name == null){
+            $color_name = $this->getForegroundColor();
+        }
+
+        $fn = $filled ? 'imagefilledrectangle' : 'imagerectangle';
+
+        $fn($this->im, $x1, $y1, $x2, $y2, $this->colors[$color_name]);
+        return $this;
+    }
+
+    function rectangle($x1, $y1, $width, $height, $color_name = null, bool $filled = false){
         if ($color_name == null){
             $color_name = $this->getForegroundColor();
         }
@@ -93,7 +117,28 @@ class GdImage
         $x2 = $x1 + $width;
         $y2 = $y1 + $height;
 
-        imagerectangle($this->im, $x1, $y1, $x2, $y2, $this->colors[$color_name]);
+        $this->rectangleTo($x1, $y1, $x2, $y2, $color_name, $filled);
+        return $this;
+    }
+
+    function lineTo(int $x1, int $y1, int $x2, int $y2, $color_name = null){
+        if ($color_name == null){
+            $color_name = $this->getForegroundColor();
+        }
+
+        imageline($this->im, $x1, $y1, $x2, $y2, $this->colors[$color_name]);
+        return $this;
+    }
+
+    function line(int $x1, int $y1, int $delta_x, int $delta_y, $color_name = null){
+        if ($color_name == null){
+            $color_name = $this->getForegroundColor();
+        }
+
+        $x2 = $x1 + $delta_x;
+        $y2 = $y1 + $delta_y;
+
+        $this->lineTo($x1, $y1, $x2, $y2, $color_name);
         return $this;
     }
 
@@ -107,7 +152,7 @@ class GdImage
         $this->shapes[$name] = $callback;
     }
 
-    /*
+    /*PDOC
         Dibuja forma personalizada
     */
     function shape($name, ...$args){
@@ -119,6 +164,22 @@ class GdImage
     */
     function __call($name, $args){
         $this->shapes[$name](...$args);
+    }
+
+    function copyFrom(GdImage $src_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height){
+        imagecopy($this->im, $src_image->getImage(), $dst_x, $dst_y, $src_x, $src_y, $src_width, $src_height);
+    }
+
+    function copyTo($dst_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height){
+        imagecopy($dst_image->getImage(), $this->im, $dst_x, $dst_y, $src_x, $src_y, $src_width, $src_height);
+    }
+
+    function mergeFrom(GdImage $src_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height, int $pct){
+        imagecopymerge($this->im, $src_image->getImage(), $dst_x, $dst_y, $src_x, $src_y, $src_width, $src_height, $pct);
+    }
+
+    function mergeTo($dst_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height, int $pct){
+        imagecopymerge($dst_image->getImage(), $this->im, $dst_x, $dst_y, $src_x, $src_y, $src_width, $src_height, $pct);
     }
 
 }
