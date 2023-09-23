@@ -16,6 +16,7 @@ class GdImage
     protected $background_color_name;
     protected $colors = [];
     protected $shapes = [];
+    protected $filter;
 
     function __construct($w, $h){
         $this->w = $w;
@@ -66,7 +67,16 @@ class GdImage
         imagefill($this->im, 0, 0, $this->__color($color));
     }
 
+    function invertColors(){
+        // Aplicar el filtro para invertir colores
+        $this->filter = IMG_FILTER_NEGATE;
+    }
+
     function render(){
+        if ($this->filter !== null){
+            imagefilter($this->im, $this->filter);
+        }
+
         // Enviar imagen al navegador
         header('Content-Type: image/png');
         imagepng($this->im);
