@@ -97,7 +97,31 @@ class GdController extends MyController
         $im->render();                      
     }
 
+    function render_00()
+    {
+        // Definir dimensiones y colores
+        $ancho = 1780;
+        $alto  = 1280;
 
+        // Crear una nueva imagen
+        $im = new GdImage($ancho, $alto);
+
+        $im->createColor('black', 0,0,0);
+        $im->createColor('white', 255,255,255);
+
+        // Definir color de fondo
+        $im->setBackgroundColor('white');
+
+        $x1 = 10;
+        $y1 = 10;
+        $w  = 40;
+        $h  = 20;
+
+        // Defino forma personalizada
+        $im->rectangle($x1, $y1, $w, $h);
+        
+        $im->render();                      
+    }
    
 
 }
