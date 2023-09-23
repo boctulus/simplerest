@@ -41,6 +41,8 @@ class GdController extends MyController
             'steelblue' => [70,130,180]
         ];
         
+        //////////////////////////////////
+
         // Crear una nueva imagen
         $im = new GdImage($ancho, $alto);
 
@@ -84,8 +86,12 @@ class GdController extends MyController
             Ahora debo crear el arreglo de filas
         */
 
+        // $im->setShape('col', function($row, int $n) use($im) {
+
+        // });
+
         foreach (range(0,1) as $i){
-            $im->row($boxes_per_row, $x, $y, $w, $h, null, $x_sp);
+            $im->row($boxes_per_row, $x, $y + ($h * $i), $w, $h, null, $x_sp);
         }
 
         // ...
