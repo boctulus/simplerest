@@ -15414,7 +15414,7 @@ También es posible cambiar de lugar el botón con el ícono de calendario cambi
 
 ### Manipulacion de imagenes
 
-Se ha creado un wrapper de la libreria "GD" bajo el nombre de "GdImage".
+Se ha creado un wrapper de la libreria "GD" bajo el nombre de "Imaginator".
 
 Instanciar la libreria
 
@@ -15425,7 +15425,7 @@ Ej:
 	$alto  = 1280;
 
 	// Crear una nueva imagen
-	$im = new GdImage($ancho, $alto);
+	$im = new Imaginator($ancho, $alto);
 
 
 Crear colores y dibujar
@@ -15437,7 +15437,7 @@ Ej:
 	$alto  = 1280;
 
 	// Crear una nueva imagen
-	$im = new GdImage($ancho, $alto);
+	$im = new Imaginator($ancho, $alto);
 
 	$im->createColor('black', 0,0,0);
 	$im->createColor('white', 255,255,255);
@@ -15466,7 +15466,7 @@ Ej:
 	$alto  = 1280;
 
 	// Crear una nueva imagen
-	$im = new GdImage($ancho, $alto);
+	$im = new Imaginator($ancho, $alto);
 
 	$im->createColor('black', 0,0,0);
 	$im->createColor('white', 255,255,255);
@@ -15493,7 +15493,7 @@ Ej:
 	$alto  = 1280;
 
 	// Crear una nueva imagen
-	$im = new GdImage($ancho, $alto);
+	$im = new Imaginator($ancho, $alto);
 
 	$im->createColor('black', 0,0,0);
 	$im->createColor('white', 255,255,255);
@@ -15531,7 +15531,7 @@ Ej:
 	];
 
 	// Crear una nueva imagen
-	$im = new GdImage($ancho, $alto);
+	$im = new Imaginator($ancho, $alto);
 
 	// Create some colors
 	foreach ($colors as $color_name => $color_value){
@@ -15568,7 +15568,7 @@ Ej:
 	$alto  = 1280;
 
 	// Crear una nueva imagen
-	$im = new GdImage($ancho, $alto);
+	$im = new Imaginator($ancho, $alto);
 
 	$im->createColor('black', 0,0,0);
 	$im->createColor('white', 255,255,255);
@@ -15624,7 +15624,7 @@ Ej:
 	//////////////////////////////////
 
 	// Crear una nueva imagen
-	$im = new GdImage($ancho, $alto);
+	$im = new Imaginator($ancho, $alto);
 
 	if ($color_inv){
 		$im->invertColors();
@@ -15687,11 +15687,17 @@ Ej:
 	$im->render();                      
 
 
-# Debug de ImageGd
+# Debug de Imaginator
 
 Para poder ver errores se puede desactivar el rendering asi:
 
-	GdImage::disable();
+	Imaginator::disable();
+
+
+# Notas sobre Imaginator
+
+La libreria seria realmente potente si en vez de ir escribiendo directamente sobre la instancia de "GdImage",
+se devolviera una instancia de "Imaginator"
 
 
 Notas Dev:

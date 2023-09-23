@@ -7,7 +7,7 @@ namespace simplerest\core\libs;
 
     By Pablo Bozzolo
 */
-class GdImage
+class Imaginator
 {
     protected $w;
     protected $h;
@@ -166,7 +166,7 @@ class GdImage
         $this->shapes[$name](...$args);
     }
 
-    function copyFrom(GdImage $src_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height){
+    function copyFrom(Imaginator $src_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height){
         imagecopy($this->im, $src_image->getImage(), $dst_x, $dst_y, $src_x, $src_y, $src_width, $src_height);
     }
 
@@ -174,7 +174,7 @@ class GdImage
         imagecopy($dst_image->getImage(), $this->im, $dst_x, $dst_y, $src_x, $src_y, $src_width, $src_height);
     }
 
-    function mergeFrom(GdImage $src_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height, int $pct){
+    function mergeFrom(Imaginator $src_image, int $dst_x, int $dst_y, int $src_x, int $src_y, int $src_width, int $src_height, int $pct){
         imagecopymerge($this->im, $src_image->getImage(), $dst_x, $dst_y, $src_x, $src_y, $src_width, $src_height, $pct);
     }
 

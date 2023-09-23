@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\libs\GdImage;
+use simplerest\core\libs\Imaginator;
 use simplerest\core\libs\Factory;
 use simplerest\controllers\MyController;
 
@@ -44,7 +44,7 @@ class GdController extends MyController
         //////////////////////////////////
 
         // Crear una nueva imagen
-        $im = new GdImage($ancho, $alto);
+        $im = new Imaginator($ancho, $alto);
 
         if ($color_inv){
             $im->invertColors();
@@ -123,7 +123,7 @@ class GdController extends MyController
         Voy a intentar simular "layers"
     */
     function render_02(){
-        $im_1 = new GdImage(1000, 1000);
+        $im_1 = new Imaginator(1000, 1000);
 
         $im_1->createColor('black', 0,0,0);
         $im_1->createColor('white', 255,255,255);
