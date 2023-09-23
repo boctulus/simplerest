@@ -6,7 +6,7 @@ use simplerest\core\libs\Imaginator;
 use simplerest\core\libs\Factory;
 use simplerest\controllers\MyController;
 
-class GdController extends MyController
+class ImgController extends MyController
 {
     function debug(){
         $this->render_01();
@@ -19,7 +19,7 @@ class GdController extends MyController
         <!-- Algun HTML -->    
         <h1>Probando GD</h1>
         
-        <img src="/gd/render_01"/>
+        <img src="/img/render_01"/>
 
         <?php
 
