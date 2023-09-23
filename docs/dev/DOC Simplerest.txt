@@ -15640,18 +15640,6 @@ Ej:
 
 	// Defino color defecto de pincel
 	$im->setForegroundColor('black');
-	
-	// Defino forma personalizada
-	$im->setShape('row', function($cells_per_row, $x1, $y1, $w, $h, $color = null, $x_sp = 0) use($im) {
-		if ($color == null){
-			$color = $im->getForegroundColor();
-		}
-
-		foreach (range(0, $cells_per_row-1) as $c ){
-			$x1 += $x_sp + $w;
-			$im->rectangle($x1, $y1, $w, $h, $color);       
-		}
-	});
 
 	$boxes_per_row = 10;
 
@@ -15661,21 +15649,49 @@ Ej:
 	$h = 20;
 
 	/*
+            Defino formas personalizadas
+	*/
+	
+	$im->setShape('row', function($cells_per_row, $x1, $y1, $w, $h, $color = null, bool $filled = false, $x_sp) use($im) {
+		if ($color == null){
+			$color = $im->getForegroundColor();
+		}
+
+		foreach (range(0, $cells_per_row-1) as $c ){
+			$x1 += $x_sp + $w;
+			$im->rectangle($x1, $y1, $w, $h, $color, $filled);       
+		}
+	});
+
+	$im->setShape('multipleRow', function($n, $cells_per_row, $x1, $y1, $w, $h, $color=null, bool $filled=false, $x_sp=0, $y_sp=0) use($im) {
+		foreach (range(0,$n-1) as $i){
+			$im->row($cells_per_row, $x1, $y1 + (($h + $y_sp) * $i), $w, $h, $color, $filled, $x_sp);
+		}
+	});      
+
+
+	/*
 		Ahora debo crear el arreglo de filas
 	*/
 
-	$im->setShape('multipleRow', function($n, $cells_per_row, $x1, $y1, $w, $h, $color = null, $x_sp = 0) use($im) {
-		foreach (range(0,$n-1) as $i){
-			$im->row($cells_per_row, $x1, $y1 + ($h * $i), $w, $h, $color, $x_sp);
-		}
-	});        
 
-	$im->multipleRow(3, $boxes_per_row, $x, $y, $w, $h, 'steelblue');
+	$im->multipleRow(1, $boxes_per_row, $x, $y,       $w, $h);
+
+	$im->multipleRow(2, $boxes_per_row, $x, $y + 200, $w, $h);
+
+	$im->multipleRow(1, $boxes_per_row, $x, $y + 400, $w, $h);
+
 
 	// ...
 
 	$im->render();                      
 
+
+# Debug de ImageGd
+
+Para poder ver errores se puede desactivar el rendering asi:
+
+	GdImage::disable();
 
 
 Notas Dev:
