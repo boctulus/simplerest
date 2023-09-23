@@ -90,54 +90,16 @@ class GdController extends MyController
             }
         });        
 
-        $im->multipleRow(3, $boxes_per_row, $x, $y, $w, $h, 'steelblue');
+        $im->multipleRow(1, $boxes_per_row, $x, $y,       $w, $h);
+
+        $im->multipleRow(2, $boxes_per_row, $x, $y + 200, $w, $h);
+
+        $im->multipleRow(1, $boxes_per_row, $x, $y + 400, $w, $h);
+
+
 
         // ...
 
-        $im->render();                      
-    }
-
-    function render_00()
-    {
-        // Definir dimensiones y colores
-        $ancho = 1780;
-        $alto  = 1280;
-
-        // Crear una nueva imagen
-        $im = new GdImage($ancho, $alto);
-
-        $im->createColor('black', 0,0,0);
-        $im->createColor('white', 255,255,255);
-
-        // Definir color de fondo
-        $im->setBackgroundColor('white');
-
-        $x1 = 10;
-        $y1 = 10;
-        $w  = 40;
-        $h  = 20;
-
-        // Defino forma personalizada
-        $im->setShape('row', function($cells_per_row, $x1, $y1, $w, $h, $color = null, $x_sp = 0) use($im) {
-            if ($color == null){
-                $color = $im->getForegroundColor();
-            }
-
-            foreach (range(0, $cells_per_row-1) as $c ){
-                $x1 += $x_sp + $w;
-                $im->rectangle($x1, $y1, $w, $h, $color);       
-            }
-        });
-
-        $boxes_per_row = 10;
-
-        $x = 50;
-        $y = 50;
-        $w = 80;
-        $h = 20;
-
-        $im->row($boxes_per_row, $x1, $y1, $w, $h, null, 2);
-        
         $im->render();                      
     }
    
