@@ -34,24 +34,24 @@ class GdController extends MyController
         // Definir dimensiones y colores
         $ancho = 1780;
         $alto  = 1280;
+
+        $colors = [ 
+            'white' => [255,255,255],
+            'black' => [0,0,0],
+            'steelblue' => [70,130,180]
+        ];
         
         // Crear una nueva imagen
         $im = new GdImage($ancho, $alto);
 
-        $c_blk = [255,255,255];
-        $c_wht = [0,0,0]; 
-
-
         if ($color_inv){
-            $c_blk = [0,0,0];
-            $c_wht = [255,255,255]; 
+            $im->invertColors();
         }
-
+       
         // Create some colors
-        $white     = $im->createColor('white', ...$c_blk);
-        $black     = $im->createColor('black', ...$c_wht);
-        // ...
-        $steelblue = $im->createColor('steelblue', 70,130,180);
+        foreach ($colors as $color_name => $color_value){
+            $im->createColor($color_name, ...$color_value);
+        }
 
         // Definir color de fondo
         $im->setBackgroundColor('white');
