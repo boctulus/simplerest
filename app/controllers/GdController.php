@@ -118,7 +118,25 @@ class GdController extends MyController
         $h  = 20;
 
         // Defino forma personalizada
-        $im->rectangle($x1, $y1, $w, $h);
+        $im->setShape('row', function($cells_per_row, $x1, $y1, $w, $h, $color = null, $x_sp = 0) use($im) {
+            if ($color == null){
+                $color = $im->getForegroundColor();
+            }
+
+            foreach (range(0, $cells_per_row-1) as $c ){
+                $x1 += $x_sp + $w;
+                $im->rectangle($x1, $y1, $w, $h, $color);       
+            }
+        });
+
+        $boxes_per_row = 10;
+
+        $x = 50;
+        $y = 50;
+        $w = 80;
+        $h = 20;
+
+        $im->row($boxes_per_row, $x1, $y1, $w, $h, null, 2);
         
         $im->render();                      
     }
