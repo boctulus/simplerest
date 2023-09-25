@@ -92,7 +92,7 @@ class ImgController extends MyController
         $boxes_per_row = 10;
 
         $x = 50;
-        $y = 50;
+        $y = 100;
         $w = 80;
         $h = 20;
 
@@ -106,18 +106,22 @@ class ImgController extends MyController
             - Conocer el punto medio en X y en Y 
         */
 
+        $row_count = 15;
+        $interline = ($alto - 150)/ ($row_count);
+        
+
+        $multi = 1;
+        for ($i=0; $i<$row_count; $i++){
+            $multi = ($i==0 || $i == $row_count-1) ? 1 : 2;
+            $im->multipleRow($multi, $boxes_per_row, $x, $y + $interline * $i, $w, $h);
+        }
    
-        $im->multipleRow(1, $boxes_per_row, $x, $y,       $w, $h);
-
-        $im->multipleRow(2, $boxes_per_row, $x, $y + 200, $w, $h);
-
-        $im->multipleRow(1, $boxes_per_row, $x, $y + 400, $w, $h);
-
 
         // ...
 
         $im->render();                      
     }
+    
    
     /*
         Voy a intentar simular "layers"

@@ -15697,7 +15697,7 @@ Para poder ver errores se puede desactivar el rendering asi:
 # Notas sobre Imaginator
 
 La libreria seria realmente potente si en vez de ir escribiendo directamente sobre la instancia de "GdImage",
-se devolviera una instancia de "Imaginator"
+se hiciera al llamar a render()
 
 
 Notas Dev:
