@@ -89,13 +89,13 @@ class ImgController extends MyController
         });        
 
 
-        $boxes_per_row = 10;
-
-        $x = 50;
+        $x = 750;
         $y = 100;
-        $w = 80;
+        $w = 50;
         $h = 20;
 
+        $max_row_w = $ancho * 0.9;
+        $margin_r  = $ancho * 0.1;
 
         /*
             Ahora debo crear el arreglo de filas
@@ -106,16 +106,40 @@ class ImgController extends MyController
             - Conocer el punto medio en X y en Y 
         */
 
-        $row_count = 15;
-        $interline = ($alto - 150)/ ($row_count);
-        
+        $row_count     = 8;
+        $boxes_per_row = 12;
+        $interline     = ($alto - 150)/ ($row_count);  
+        $x             = ($ancho - $margin_r) - ($w * $boxes_per_row);      
+
+        /*
+            Vertical lines
+        */
+
+        $x_end = ($ancho - $margin_r) + $w;
+        $x_ini = $x_end - ($boxes_per_row * $w);
+        $x_med = ($x_end + $x_ini) * 0.5;
+
+        // duplas considerando que la primera linea y la ultima formarian otra
+        $duos  = ($row_count-1);
+
+        $y_dif = ($duos * $h) + ($interline * ($row_count-1)) - 1   - ($row_count -2)*$h;
+
+        // Middle line
+        $im->line($x_med, $y, 0, $y_dif);
+
+        // Line at the right
+        $im->line($x_end + 20, $y, 0, $y_dif);
+   
+        /*
+            Rows
+        */
 
         $multi = 1;
         for ($i=0; $i<$row_count; $i++){
             $multi = ($i==0 || $i == $row_count-1) ? 1 : 2;
             $im->multipleRow($multi, $boxes_per_row, $x, $y + $interline * $i, $w, $h);
         }
-   
+
 
         // ...
 
