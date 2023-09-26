@@ -116,6 +116,76 @@ class Imaginator
         imagedestroy($this->im); 
     }
 
+    /**
+     * Carga una fuente de texto para su uso en funciones de dibujo de GD.
+     *
+     * @param string $path Ruta del archivo de fuente.
+     *
+     * @return resource|false Devuelve el recurso de fuente si se carga correctamente, o false si hay un error.
+     *
+     * @throws \Exception Si el archivo de fuente no se encuentra en la ruta especificada.
+     * @throws \Exception Si el formato de archivo de fuente no es compatible (solo se admiten 'gdf' y 'ttf').
+     */
+    function loadFont($path){
+        if (!file_exists($path)){
+            throw new \Exception("Font not found in '$path'");
+        }
+
+        $ext = Files::getExtension($path);
+
+        switch ($ext){
+            case 'gdf':
+                $fn = 'imageloadfont';
+                break;
+            case 'ttf':
+                $fn = 'imagettftext';
+                break;
+            default:
+                throw new \Exception("Unsupported font file format: $ext");
+        }
+
+        return $fn($path);
+    }
+
+    /**
+     * Imprime texto en la imagen usando fuentes integradas o fuentes cargadas desde archivos TTF.
+     *
+     * @param int    $x       La coordenada x de la posición del texto.
+     * @param int    $y       La coordenada y de la posición del texto.
+     * @param mixed  $text    El texto que se va a imprimir.
+     * @param mixed  $color_name El nombre del color del texto (opcional).
+     * @param mixed  $font    Puede ser un número del 1 al 5 para fuentes integradas en codificación latin2 (donde números más altos corresponden a fuentes más grandes) o una instancia GdFont devuelta por imageloadfont(). También se puede proporcionar la ruta de un archivo TTF (opcional).
+     * @param int    $size    El tamaño de la fuente en puntos (solo se aplica si se proporciona una fuente TTF, opcional).
+     * @param int    $angle   El ángulo de inclinación del texto (solo se aplica si se proporciona una fuente TTF, opcional).
+     * @param array  $extra   Parámetros adicionales para la función imagefttext() (solo se aplica si se proporciona una fuente TTF, opcional).
+     *
+     * @return void
+     * 
+     * Ej:
+     *
+     *  $im->text(50,50, "Pablo ama a Felipito", null, 5);
+     *  $im->text(450,500, "Pablo ama a Felipito", null, ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf', 20, 90);
+     */
+    function text(int $x, int $y, $text, $color_name = null, $font = null, $size = 13, $angle = 0, $extra = []){
+        if ($font === null){
+            $font = 5;
+        }
+
+        if ($color_name == null){
+            $color_name = $this->getForegroundColorName();
+        }
+
+        if ($color_name == null){
+            $color_name = $this->getForegroundColorName();
+        }
+
+        if ((is_integer($font) && $font <6) || $font instanceof \GdFont){
+            imagestring($this->im, $font, $x, $y, $text, $this->colors[$color_name]);
+        } else {
+            imagefttext($this->im, $size, $angle, $x, $y, $this->colors[$color_name], $font, $text, $extra);
+        }        
+    }
+
     function rectangleTo($x1, $y1, $x2, $y2, $color_name = null, bool $filled = false){
         if ($color_name == null){
             $color_name = $this->getForegroundColorName();
