@@ -19,7 +19,9 @@ class ImgController extends MyController
         <!-- Algun HTML -->    
         <h1>Probando GD</h1>
         
-        <img src="/img/render_01"/>
+        <center>
+            <img src="/img/render_01"/>
+        </center>
 
         <?php
 
@@ -32,7 +34,7 @@ class ImgController extends MyController
         $color_inv = true;
 
         // Definir dimensiones y colores
-        $ancho = 1780;
+        $ancho = 800;
         $alto  = 1280;
 
         $colors = [ 
@@ -41,6 +43,22 @@ class ImgController extends MyController
             'steelblue' => [70,130,180]
         ];
         
+        $row_count     = 20;
+        $boxes_per_row = 30;
+
+
+        if ($row_count > 25){
+            $alto *= ($row_count/25); 
+        }
+
+        if ($boxes_per_row > 22){
+            $ancho *= ($boxes_per_row/22);
+        }
+
+        $max_row_w = $ancho * 0.9;
+        $margin_r  = max($ancho * 0.1, 150);
+
+
         //////////////////////////////////
 
         // Crear una nueva imagen
@@ -89,27 +107,13 @@ class ImgController extends MyController
         });        
 
 
-        $x = 750;
-        $y = 100;
-        $w = 50;
+        $x = 1000;
+        $y = 50;
+        $w = 30;
         $h = 20;
-
-        $max_row_w = $ancho * 0.9;
-        $margin_r  = $ancho * 0.1;
-
-        /*
-            Ahora debo crear el arreglo de filas
-
-            Necesito:
-
-            - Saber los limites de la forma
-            - Conocer el punto medio en X y en Y 
-        */
-
-        $row_count     = 8;
-        $boxes_per_row = 12;
+   
         $interline     = ($alto - 150)/ ($row_count);  
-        $x             = ($ancho - $margin_r) - ($w * $boxes_per_row);      
+        $x             = ($ancho - $margin_r) - ($w * $boxes_per_row);   
 
         /*
             Vertical lines
