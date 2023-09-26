@@ -8,11 +8,13 @@ use simplerest\controllers\MyController;
 
 class ImgController extends MyController
 {
-    function debug(){
-        Imaginator::disable();
-        $this->render_01();
+    function __construct()
+    {
+        if (isset($_GET['debug'])){
+            Imaginator::disable();
+        }
     }
-
+    
     function test(){
         ob_start();
         ?>
@@ -44,8 +46,8 @@ class ImgController extends MyController
             'steelblue' => [70,130,180]
         ];
         
-        $row_count     = 20;
-        $boxes_per_row = 30;
+        $row_count     = 10;
+        $boxes_per_row = 20;
 
 
         if ($row_count > 25){
@@ -153,7 +155,7 @@ class ImgController extends MyController
     
    
     /*
-        Voy a intentar simular "layers"
+        Voy a intentar simular "layers" -- no funciona
     */
     function render_02(){
         $im_1 = new Imaginator(1000, 1000);
@@ -168,26 +170,48 @@ class ImgController extends MyController
         $im_1->line(0, 0, 200, 200, 'steelblue');
         $im_1->rectangle(50, 50, 100, 30, null, true);  // si se dibuja despues queda "arriba"       
 
-        $im_1->render();
-                    
+        $im_1->render();                    
     }
 
 
     function render_50(){
-        $redimg = imagecreatetruecolor(100, 100);
-        $image = imagecreatefrompng('image.png');
+        $im = new Imaginator(1000, 1000);
 
-        // sets background to red
-        $red = imagecolorallocate($redimg, 255, 0, 0);
-        imagefill($redimg, 0, 0, $red);
+        $im->createColor('black', 0,0,0);
+        $im->createColor('white', 255,255,255);
+        $im->createColor('steelblue', 70,130,180);
 
-        // Merge the red image onto the PNG image
-        imagecopymerge($image, $redimg, 0, 0, 0, 0, 100, 100, 75);
+        $im->setBackgroundColor('white');
+        $im->invertColors();
+       
+        $im->text(50,50, "Pablo ama a Feli", null, 5);
+        $im->text(450,500, "Pablo ama a Feli", null, ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf', 20, 90);
+        
 
-        header('Content-type: image/png');
-        imagepng($image);
-        imagedestroy($image);
-        imagedestroy($redimg);
+        $im->render();    
+    }
+
+    function render_51(){
+        // Create a 300x100 image
+        $im = imagecreatetruecolor(300, 100);
+        $red = imagecolorallocate($im, 0xFF, 0x00, 0x00);
+        $black = imagecolorallocate($im, 0x00, 0x00, 0x00);
+
+        // Make the background red
+        imagefilledrectangle($im, 0, 0, 299, 99, $red);
+
+        // Path to our ttf font file
+        $font_file = ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf';
+
+        // Draw the text 'PHP Manual' using font size 13
+        imagefttext($im, 13, 0, 105, 55, $black, $font_file, 'PHP Manual');
+
+
+        // Output image to the browser
+        header('Content-Type: image/png');
+
+        imagepng($im);
+        imagedestroy($im);
     }
 
 }
