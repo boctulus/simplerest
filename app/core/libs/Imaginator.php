@@ -148,6 +148,8 @@ class Imaginator
             En vez de 2 pixeles de un color y otros 2 de otro, 
             podria ser cualquier otro patron
 
+            Ademas $dashed podria aplicarse a cualquier figura
+
             https://www.php.net/manual/en/function.imagesetstyle.php
         */
         if ($dashed){
