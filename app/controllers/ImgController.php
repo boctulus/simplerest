@@ -9,6 +9,7 @@ use simplerest\controllers\MyController;
 class ImgController extends MyController
 {
     function debug(){
+        Imaginator::disable();
         $this->render_01();
     }
 
@@ -129,7 +130,7 @@ class ImgController extends MyController
         $y_dif = ($duos * $h) + ($interline * ($row_count-1)) - 1   - ($row_count -2)*$h;
 
         // Middle line
-        $im->line($x_med, $y, 0, $y_dif);
+        $im->line($x_med, $y, 0, $y_dif, null, true);
 
         // Line at the right
         $im->line($x_end + 20, $y, 0, $y_dif);
