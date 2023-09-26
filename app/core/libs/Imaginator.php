@@ -56,7 +56,7 @@ class Imaginator
         Devuelve el foreground color por defecto
         o el primer color que encuentra distinto del de background
     */
-    function getForegroundColor(){
+    function getForegroundColorName(){
         if ($this->foreground_color_name != null){
             return $this->foreground_color_name;
         }
@@ -67,6 +67,18 @@ class Imaginator
                 return $color_name;
             }
         }           
+    }
+
+    function getBackgroundColorName(){
+        return $this->background_color_name;
+    }
+
+    function getForegroundColor(){
+        return $this->colors[$this->getForegroundColorName()];
+    }
+
+    function getBackgroundColor(){
+        return $this->colors[$this->getBackgroundColorName()];
     }
 
     function setBackgroundColor($color){
@@ -106,7 +118,7 @@ class Imaginator
 
     function rectangleTo($x1, $y1, $x2, $y2, $color_name = null, bool $filled = false){
         if ($color_name == null){
-            $color_name = $this->getForegroundColor();
+            $color_name = $this->getForegroundColorName();
         }
 
         $fn = $filled ? 'imagefilledrectangle' : 'imagerectangle';
@@ -117,7 +129,7 @@ class Imaginator
 
     function rectangle($x1, $y1, $width, $height, $color_name = null, bool $filled = false){
         if ($color_name == null){
-            $color_name = $this->getForegroundColor();
+            $color_name = $this->getForegroundColorName();
         }
 
         $x2 = $x1 + $width;
@@ -127,24 +139,38 @@ class Imaginator
         return $this;
     }
 
-    function lineTo(int $x1, int $y1, int $x2, int $y2, $color_name = null){
+    function lineTo(int $x1, int $y1, int $x2, int $y2, $color_name = null, bool $dashed = false){
         if ($color_name == null){
-            $color_name = $this->getForegroundColor();
+            $color_name = $this->getForegroundColorName();
         }
 
-        imageline($this->im, $x1, $y1, $x2, $y2, $this->colors[$color_name]);
+        /*
+            En vez de 2 pixeles de un color y otros 2 de otro, 
+            podria ser cualquier otro patron
+
+            https://www.php.net/manual/en/function.imagesetstyle.php
+        */
+        if ($dashed){
+            $fg = $this->getForegroundColor();
+            $bg = $this->getBackgroundColor();
+
+            $style = array($fg, $fg, $bg, $bg);
+            imagesetstyle($this->im, $style);
+        }
+
+        imageline($this->im, $x1, $y1, $x2, $y2, $dashed ? IMG_COLOR_STYLED : $this->colors[$color_name]);
         return $this;
     }
 
-    function line(int $x1, int $y1, int $delta_x, int $delta_y, $color_name = null){
+    function line(int $x1, int $y1, int $delta_x, int $delta_y, $color_name = null, bool $dashed = false){
         if ($color_name == null){
-            $color_name = $this->getForegroundColor();
+            $color_name = $this->getForegroundColorName();
         }
 
         $x2 = $x1 + $delta_x;
         $y2 = $y1 + $delta_y;
 
-        $this->lineTo($x1, $y1, $x2, $y2, $color_name);
+        $this->lineTo($x1, $y1, $x2, $y2, $color_name, $dashed);
         return $this;
     }
 
