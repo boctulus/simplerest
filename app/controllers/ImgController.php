@@ -34,6 +34,9 @@ class ImgController extends MyController
 
     function render_01()
     {
+        $row_count     = 3;
+        $boxes_per_row = 10;
+
         $color_inv = true;
 
         // Definir dimensiones y colores
@@ -45,11 +48,10 @@ class ImgController extends MyController
             'black' => [0,0,0],
             'steelblue' => [70,130,180]
         ];
+
+        $font_1 = ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf';
+        $font_2 = ASSETS_PATH . 'fonts/Swiss721BT-Light.otf';
         
-        $row_count     = 10;
-        $boxes_per_row = 20;
-
-
         if ($row_count > 25){
             $alto *= ($row_count/25); 
         }
@@ -129,7 +131,7 @@ class ImgController extends MyController
         // duplas considerando que la primera linea y la ultima formarian otra
         $duos  = ($row_count-1);
 
-        $y_dif = ($duos * $h) + ($interline * ($row_count-1)) - 1   - ($row_count -2)*$h;
+        $y_dif = ($duos * $h) + ($interline * ($row_count-1)) - 1   - ($row_count -2) * $h -$h;
 
         // Middle line
         $im->line($x_med, $y, 0, $y_dif, null, true);
@@ -141,13 +143,25 @@ class ImgController extends MyController
             Rows
         */
 
-        $multi = 1;
-        for ($i=0; $i<$row_count; $i++){
-            $multi = ($i==0 || $i == $row_count-1) ? 1 : 2;
-            $im->multipleRow($multi, $boxes_per_row, $x, $y + $interline * $i, $w, $h);
+        $im->multipleRow(1, $boxes_per_row, $x, $y, $w, $h);
+
+        for ($i=1; $i<$row_count; $i++){
+            $multi = ($i == $row_count-1) ? 1 : 2;
+            $im->multipleRow($multi, $boxes_per_row, $x, $y + $interline * $i -$h, $w, $h);
         }
 
+        /*
+            Texts
+        */
 
+        $im->text($x - 2, $y + $h -3, "36''", null, $font_2, 15);
+        $im->text($x + $w + 2, $y + 2 * $h + 2 , "96''", null, $font_2, 15);
+
+        $lbl = "5' 6''";
+        for ($i=0; $i<$row_count -1; $i++){
+            $im->text($x_med - 20 - strlen($lbl) * 6, $y + $interline * ($i+0.5) +  0.5 * $h , $lbl, null, $font_1, 20);
+        }
+        
         // ...
 
         $im->render();                      
@@ -179,14 +193,17 @@ class ImgController extends MyController
 
         $im->createColor('black', 0,0,0);
         $im->createColor('white', 255,255,255);
-        $im->createColor('steelblue', 70,130,180);
 
         $im->setBackgroundColor('white');
         $im->invertColors();
        
-        $im->text(50,50, "Pablo ama a Feli", null, 5);
-        $im->text(450,500, "Pablo ama a Feli", null, ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf', 20, 90);
-        
+        $im->text(50,50, "Pablo ama a Feli");
+
+        $font_1 = ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf';
+        $font_2 = ASSETS_PATH . 'fonts/Swiss721BT-Light.otf';
+
+        $im->text(450,500, "Pablo ama a Feli", null, $font_1, 20);
+        $im->text(450,600, "Pablo ama a Feli", null, $font_2, 20);
 
         $im->render();    
     }
@@ -212,6 +229,32 @@ class ImgController extends MyController
 
         imagepng($im);
         imagedestroy($im);
+    }   
+
+    function render_pie(){
+        $im = new Imaginator(400, 400);
+
+        $im->createColor('black', 0,0,0);
+        $im->createColor('white', 255,255,255);
+        $im->createColor('azul', 52, 152, 219);
+        $im->createColor('rojo', 231, 76, 60);  
+        $im->createColor('transparente', 0, 0, 0, 127);      
+
+        $im->setBackgroundColor('transparente');
+        // $im->invertColors();
+       
+        // $im->text(50,50, "leyenda");
+
+        // $font_1 = ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf';
+        // $font_2 = ASSETS_PATH . 'fonts/Swiss721BT-Light.otf';
+
+        $cantidadActivos = 66; // Cantidad de activos
+        $cantidadInactivos = 11; // Cantidad de inactivos
+
+        $im->arcPie(200, 200, 300, 300, 0, (360 * $cantidadActivos / ($cantidadActivos + $cantidadInactivos)), 'rojo');
+        $im->arcPie(200, 200, 300, 300, (360 * $cantidadActivos / ($cantidadActivos + $cantidadInactivos)), 360, 'azul');
+
+        $im->render();    
     }
 
 }

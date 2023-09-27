@@ -36,8 +36,20 @@ class Imaginator
         return $this->im;
     }
 
-    function createColor($name, $r, $g, $b){
-        $this->colors[$name] = imagecolorallocate($this->im, $r, $g, $b);; 
+    /*
+        @param ?int $transparency de 0 (opaco) a 127 (totalmente transparente)
+    */
+    function createColor($name, $r, $g, $b, $transparency = null){
+        if ($transparency){
+            // Habilita la transparencia
+            imagesavealpha($this->im, true);
+
+            $this->colors[$name] = imagecolorallocatealpha($this->im, $r, $g, $b, $transparency);
+
+            return;
+        }
+
+        $this->colors[$name] = imagecolorallocate($this->im, $r, $g, $b);
     }
 
     protected function __color($color){
@@ -117,14 +129,14 @@ class Imaginator
     }
 
     /**
-     * Carga una fuente de texto para su uso en funciones de dibujo de GD.
+     * Carga una fuente GDF de texto para su uso en funciones de dibujo de GD.
      *
      * @param string $path Ruta del archivo de fuente.
      *
      * @return resource|false Devuelve el recurso de fuente si se carga correctamente, o false si hay un error.
      *
      * @throws \Exception Si el archivo de fuente no se encuentra en la ruta especificada.
-     * @throws \Exception Si el formato de archivo de fuente no es compatible (solo se admiten 'gdf' y 'ttf').
+     * @throws \Exception Si el formato de archivo de fuente no es compatible 
      */
     function loadFont($path){
         if (!file_exists($path)){
@@ -137,9 +149,7 @@ class Imaginator
             case 'gdf':
                 $fn = 'imageloadfont';
                 break;
-            case 'ttf':
-                $fn = 'imagettftext';
-                break;
+            // ...
             default:
                 throw new \Exception("Unsupported font file format: $ext");
         }
@@ -244,6 +254,23 @@ class Imaginator
 
         $this->lineTo($x1, $y1, $x2, $y2, $color_name, $dashed);
         return $this;
+    }
+
+    /*
+        Ej:
+    
+        $cantidadActivos = 66; 
+        $cantidadInactivos = 11; 
+
+        $im->arcPie(200, 200, 300, 300, 0, (360 * $cantidadActivos / ($cantidadActivos + $cantidadInactivos)), 'rojo');
+        $im->arcPie(200, 200, 300, 300, (360 * $cantidadActivos / ($cantidadActivos + $cantidadInactivos)), 360, 'azul');
+    */
+    function arcPie(int $x, int $y, int $w, int $h, int $start_angle, int $end_angle, string $color_name){
+        if ($color_name == null){
+            $color_name = $this->getForegroundColorName();
+        }
+
+        imagefilledarc($this->im, $x, $y, $w, $h, $start_angle, $end_angle, $this->colors[$color_name], IMG_ARC_PIE);
     }
 
     // Mas formas nativas como arc(), etc
