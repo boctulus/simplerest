@@ -15687,6 +15687,64 @@ Ej:
 	$im->render();                      
 
 
+# Textos 
+
+Ej:
+
+	$im = new Imaginator(1000, 1000);
+
+	$im->createColor('black', 0,0,0);
+	$im->createColor('white', 255,255,255);
+
+	$im->setBackgroundColor('white');
+	$im->invertColors();
+	
+	// Simple
+	$im->text(50,50, "Pablo ama a Feli");
+
+	// Fuente especifica, font-size y rotacion
+	$im->text(450,500, "Pablo ama a Feli", null, ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf', 20, 90);
+
+	$im->render();    
+
+
+# Transparencias
+
+Crear y aplicar color transparente
+
+	$im->createColor('transparente', 0, 0, 0, 127); 
+    $im->setBackgroundColor('transparente');
+
+
+# Grafico de tortas
+
+Ej:
+
+ 	$im = new Imaginator(400, 400);
+
+	$im->createColor('black', 0,0,0);
+	$im->createColor('white', 255,255,255);
+	$im->createColor('azul', 52, 152, 219);
+	$im->createColor('rojo', 231, 76, 60);  
+	$im->createColor('transparente', 0, 0, 0, 127);      
+
+	$im->setBackgroundColor('transparente');
+	// $im->invertColors();
+	
+	// $im->text(50,50, "leyenda");
+
+	// $font_1 = ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf';
+	// $font_2 = ASSETS_PATH . 'fonts/Swiss721BT-Light.otf';
+
+	$cantidadActivos = 66; // Cantidad de activos
+	$cantidadInactivos = 11; // Cantidad de inactivos
+
+	$im->arcPie(200, 200, 300, 300, 0, (360 * $cantidadActivos / ($cantidadActivos + $cantidadInactivos)), 'rojo');
+	$im->arcPie(200, 200, 300, 300, (360 * $cantidadActivos / ($cantidadActivos + $cantidadInactivos)), 360, 'azul');
+
+    $im->render();    
+
+
 # Debug de Imaginator
 
 Para poder ver errores se puede desactivar el rendering asi:
