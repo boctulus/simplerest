@@ -249,6 +249,8 @@ class Translate
     }
 
     static function convertPot(string $locale_path = null){
+        // StdOut::showResponse();
+
         if ($locale_path === null){
             $locale_path = LOCALE_PATH;
         }
@@ -258,37 +260,51 @@ class Translate
         foreach ($php_pot as $pp){
             $pot_domain = Strings::beforeIfContains(basename($pp), '.pot.php');
             
-            dd($pot_domain, 'DOMAIN');
+            // dd($pot_domain, 'DOMAIN');
 
             foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
                 if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
                 
                 $dir = $fileInfo->getBasename();
+                
                 // dd($dir, 'DIR');
                 // StdOut::pprint($dir);
     
                 $path = $locale_path . DIRECTORY_SEPARATOR . $dir;
                 foreach (new \DirectoryIterator($path) as $fileInfo) {
-                    if($fileInfo->isDot() || $fileInfo->isDir()){
+                    if($fileInfo->isDot()){
                         continue;
                     } 
+
+                    // dd($dir, 'DIR');   
     
-                    $filename = $path . DIRECTORY_SEPARATOR . $pot_domain . '.php';
+                    $filename = "$path/$pot_domain.php";
+
+                    // dd(file_exists($filename), $filename);
             
                     $defs = include $pp;
 
                     if (!file_exists($filename)){
-                        dd("Creo archivo $pot_domain.php en $dir");
+                        StdOut::pprint("Creando archivo $pot_domain.php en $dir");
 
                         $p_defs = [];
                         foreach ($defs as $def){
-                            $p_defs[$def] = "";
+                            $clean_def = str_replace([
+                                ':/f/', 
+                                ':/m/'
+                            ], '', trim($def));
+
+                            $p_defs[$def] = ($dir == 'en_US') ? $clean_def : "";
                         }
 
                         Files::varExport($p_defs, $filename);
                     } else {
                         $current_defs      = include $filename;
+
+                        // dd($current_defs, "DEFS de $filename");
+
                         $current_def_keys  = array_keys($current_defs);
+
                         $not_incl_def_keys = array_diff($defs, $current_def_keys);
 
                         if (!empty($not_incl_def_keys)){
@@ -296,22 +312,19 @@ class Translate
                                 $current_defs[$def] = "";
                             }
                             
-                            //dd($current_defs);
+                            // dd($current_defs, $dir);
 
-                            Files::varExport($p_defs, $filename);
+                            StdOut::pprint("Actualizando $filename");
+                            Files::varExport($current_defs, $filename);
                         }
-
-                        exit;
                     }
 
-                    // dd("$dir > $pot_domain");
+                   
                 }
             }
 
         }
-    
 
-        exit; /////////
     }
     
 }

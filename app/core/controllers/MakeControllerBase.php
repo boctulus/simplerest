@@ -200,6 +200,7 @@ class MakeControllerBase extends Controller
         make system_constants
         
         php com make trans
+        php com make trans --pot
         php com make trans --po --mo
         php com make trans --po
         php com make trans --dir='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
@@ -2193,6 +2194,7 @@ class MakeControllerBase extends Controller
 
         if ($pot){
             Translate::convertPot($dir);
+            exit;
         }
 
         if ($po === true){
