@@ -9,8 +9,10 @@ namespace simplerest\core\libs\i18n;
 use simplerest\core\Container;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\StdOut;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\i18n\POParser;
+use simplerest\core\libs\System;
 
 /*
     Ver mejores soluciones que la clase POParse que estoy usando como:
@@ -77,7 +79,7 @@ class Translate
         $ret = textdomain($domain);
 
         if ($ret != $domain){
-            Files::logger("Error trying to set text domain to '$domain'");
+            Logger::logError("Error trying to set text domain to '$domain'");
             return false;
         }
 
@@ -235,7 +237,14 @@ class Translate
 
                 if ($include_mo){
                     StdOut::pprint("Compiling to $mo_path");
-                    $exit_code = (int) shell_exec("msgfmt $po_path -o $mo_path; echo $?");
+
+                    if (System::isWindows()){
+                        shell_exec("msgfmt $po_path -o $mo_path");
+                        $exit_code = (int) shell_exec("cmd /c echo %errorlevel%");
+                    } else {
+                        $exit_code = (int) shell_exec("msgfmt $po_path -o $mo_path; echo $?");
+                    }
+                    
                     StdOut::pprint("Compilation to $mo_path " . ($exit_code === 0 ? '-- ok' : '-- error'));
                     StdOut::pprint('');
                 }
