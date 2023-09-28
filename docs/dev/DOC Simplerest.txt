@@ -8829,7 +8829,15 @@ Los textos a ser traducidos se encuentran config/messages.php y son compilados a
 El comando genera el archivo app/core/libs/SystemConstants.php y *debería* también generar un array para el dominio "system" que sería compilado a .po
 
 
-Conversión de arrays a archivos .po y .mo
+# Archivos .pot
+
+A partir de archivos "{domain}.pot.php" en el la carpeta de locales, se pueden generar todos los archivos "{domain}.php" para cada idioma 
+que seran editados manualmente para colocar las traducciones.
+	
+	php com make trans --pot
+
+
+# Conversión de arrays a archivos .po y .mo
 
 El helper exportLangDef() exporta a .po todos arrays de traducciones (de cada dominio) al subfolder LC_MESSAGES dentro de cada folder de lenguaje.
 

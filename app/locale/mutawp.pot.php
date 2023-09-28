@@ -43,8 +43,8 @@
 		'learn more',
 		'inactive licence',
 		'no active',
-		'licencia de ?',
-		'licence to connect with your ?\'s account', // 'La licencia para conectar con tu cuenta de ?'
+		'? licence',
+		'licence to connect with your ? account', // 'la licencia para conectar con tu cuenta de ?'
 		'get your licence key here.', // Obtenga su clave de licencia aquí.
 		'plugin list', // lista de plugins
 

@@ -14,57 +14,51 @@ msgid "version"
 msgstr "version"
 
 msgid "support"
-msgstr "support"
+msgstr "soporto"
+
+msgid "plugin list"
+msgstr "lista da plugins"
 
 msgid "activate"
-msgstr "activate"
+msgstr ""
 
 msgid "active:/f/"
-msgstr "active"
+msgstr ""
 
 msgid "active:/m/"
-msgstr "active"
+msgstr ""
 
 msgid "licence"
-msgstr "licence"
+msgstr ""
 
 msgid "repository"
-msgstr "repository"
+msgstr ""
 
 msgid "plugin"
-msgstr "plugin"
+msgstr ""
 
 msgid "theme"
-msgstr "theme"
+msgstr ""
 
 msgid "plugins"
-msgstr "plugins"
+msgstr ""
 
 msgid "themes"
-msgstr "temas"
-
-msgid "only themes"
-msgstr "only themes"
-
-msgid "search"
-msgstr "search"
-
-msgid "install"
-msgstr "install"
-
-msgid "learn more"
-msgstr "learn more"
-
-msgid "inactive licence"
-msgstr "inactive licence"
-
-msgid "no active"
-msgstr "no active"
+msgstr ""
 
 msgid "plugins + themes"
 msgstr ""
 
 msgid "help"
+msgstr ""
+
+msgid "only themes"
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+msgid "install"
 msgstr ""
 
 msgid "installed"
@@ -91,6 +85,15 @@ msgstr ""
 msgid "save"
 msgstr ""
 
+msgid "learn more"
+msgstr ""
+
+msgid "inactive licence"
+msgstr ""
+
+msgid "no active"
+msgstr ""
+
 msgid "licencia de ?"
 msgstr ""
 
@@ -98,7 +101,4 @@ msgid "licence to connect with your ? account"
 msgstr ""
 
 msgid "get your licence key here."
-msgstr ""
-
-msgid "plugin list"
 msgstr ""
