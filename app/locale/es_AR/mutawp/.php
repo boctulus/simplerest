@@ -1,9 +1,8 @@
 <?php 
 
 return array (
-  'version' => 'version',
-  'support' => 'soporto',
-  'plugin list' => 'lista da plugins',
+  'version' => '',
+  'support' => '',
   'activate' => '',
   'active:/f/' => '',
   'active:/m/' => '',
@@ -29,8 +28,8 @@ return array (
   'learn more' => '',
   'inactive licence' => '',
   'no active' => '',
-  'licencia de ?' => '',
+  '? licence' => '',
   'licence to connect with your ? account' => '',
   'get your licence key here.' => '',
-  '? licence' => '',
+  'plugin list' => '',
 );

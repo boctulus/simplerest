@@ -54,3 +54,51 @@ msgstr "instalar"
 
 msgid "learn more"
 msgstr "saber más"
+
+msgid "plugins + themes"
+msgstr ""
+
+msgid "help"
+msgstr ""
+
+msgid "installed"
+msgstr ""
+
+msgid "update"
+msgstr ""
+
+msgid "downloading"
+msgstr ""
+
+msgid "successfully installed"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "since"
+msgstr ""
+
+msgid "since v? to v?"
+msgstr ""
+
+msgid "save"
+msgstr ""
+
+msgid "inactive licence"
+msgstr ""
+
+msgid "no active"
+msgstr ""
+
+msgid "licencia de ?"
+msgstr ""
+
+msgid "licence to connect with your ? account"
+msgstr ""
+
+msgid "get your licence key here."
+msgstr ""
+
+msgid "plugin list"
+msgstr ""
