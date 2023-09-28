@@ -1,6 +1,6 @@
 <?php
 
-$intl = [
+return [
 	'quotation' => 'cotización',
 	'shipping quotation' => 'cotización de envio',
 	'quote' => 'cotizar',

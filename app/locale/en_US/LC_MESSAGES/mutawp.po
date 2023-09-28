@@ -1,0 +1,62 @@
+#
+msgid ""
+msgstr	"Project-Id-Version: SimpleRest Translations 0.0.1\n"
+	"Report-Msgid-Bugs-To: boctulus@gmail.com\n"
+	"POT-Creation-Date: 2010-05-28 06:18-0500\n"
+	"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+	"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+	"Language-Team: LANGUAGE <boctulus@gmail.com\n"
+	"MIME-Version: 1.0\n"
+	"Content-Type: text/plain; charset=UTF-8\n"
+	"Content-Transfer-Encoding: 8bit\n"
+
+msgid "version"
+msgstr "version"
+
+msgid "support"
+msgstr "support"
+
+msgid "activate"
+msgstr "activate"
+
+msgid "active:/f/"
+msgstr "active"
+
+msgid "active:/m/"
+msgstr "active"
+
+msgid "licence"
+msgstr "licence"
+
+msgid "repository"
+msgstr "repository"
+
+msgid "plugin"
+msgstr "plugin"
+
+msgid "theme"
+msgstr "theme"
+
+msgid "plugins"
+msgstr "plugins"
+
+msgid "themes"
+msgstr "temas"
+
+msgid "only themes"
+msgstr "only themes"
+
+msgid "search"
+msgstr "search"
+
+msgid "install"
+msgstr "install"
+
+msgid "learn more"
+msgstr "learn more"
+
+msgid "inactive licence"
+msgstr "inactive licence"
+
+msgid "no active"
+msgstr "no active"
