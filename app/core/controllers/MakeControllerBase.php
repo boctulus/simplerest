@@ -2162,11 +2162,17 @@ class MakeControllerBase extends Controller
 
     // for translations
     function trans(...$opt){
+        $pot = false;
         $po  = null;
         $mo  = false;
+
         $dir = null;
 
         foreach ($opt as $o){ 
+            if (preg_match('/^(--pot)$/', $o)){
+                $pot = true;
+            }
+
             if (preg_match('/^(--po)$/', $o)){
                 $po = true;
             }
@@ -2183,7 +2189,10 @@ class MakeControllerBase extends Controller
                     $dir= $matches[2] . '/';
                 }
             }
+        }
 
+        if ($pot){
+            Translate::convertPot($dir);
         }
 
         if ($po === true){

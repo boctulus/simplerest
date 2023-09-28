@@ -238,6 +238,7 @@ class Files
 	 * @return string La ruta normalizada.
 	 */
 	static function normalize($path, $to_slash = null){
+		$path = str_replace('\/', '/', $path);
 		$path = str_replace('\\', '/', $path);
 
 		$segmentos = explode('/', $path);
@@ -1360,6 +1361,35 @@ class Files
 	*/
 	static function getExtension(string $file){
 		return Strings::beforeIfContains(pathinfo($file, PATHINFO_EXTENSION), '?');
+	}
+
+	static function varExport($data, string $path, $variable = null){
+		if ($variable === null){
+			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . 'return ' . var_export($data, true). ';');
+		} else {
+			if (!Strings::startsWith('$', $variable)){
+				$variable = '$'. $variable;
+			}
+			
+			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
+		}
+
+		return ($bytes > 0);
+	}
+
+	static function JSONExport($data, string $path, bool $pretty = false){
+		if (is_dir($path)){
+			$path = Strings::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'export.json';
+		}
+
+		$flags = JSON_UNESCAPED_SLASHES;
+
+		if ($pretty){
+			$flags = $flags|JSON_PRETTY_PRINT;
+		}
+
+		$bytes = Files::writeOrFail($path, json_encode($data, $flags));
+		return ($bytes > 0);
 	}
 }   
 

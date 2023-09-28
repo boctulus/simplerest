@@ -1,0 +1,92 @@
+#
+msgid ""
+msgstr	"Project-Id-Version: SimpleRest Translations 0.0.1\n"
+	"Report-Msgid-Bugs-To: boctulus@gmail.com\n"
+	"POT-Creation-Date: 2010-05-28 06:18-0500\n"
+	"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+	"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+	"Language-Team: LANGUAGE <boctulus@gmail.com\n"
+	"MIME-Version: 1.0\n"
+	"Content-Type: text/plain; charset=UTF-8\n"
+	"Content-Transfer-Encoding: 8bit\n"
+
+msgid "quotation"
+msgstr "cotización"
+
+msgid "shipping quotation"
+msgstr "cotización de envio"
+
+msgid "quote"
+msgstr "cotizar"
+
+msgid "item"
+msgstr "item"
+
+msgid "value"
+msgstr "valor"
+
+msgid "currency"
+msgstr "moneda"
+
+msgid "purchase value in dollars"
+msgstr "valor de la compra en dólares"
+
+msgid "rate to be charged per ?"
+msgstr "tarifa a cobrar por ?"
+
+msgid "gross weight"
+msgstr "peso bruto"
+
+msgid "air freight (?-?)"
+msgstr "flete aéreo (?-?)"
+
+msgid "insurance (?%)"
+msgstr "seguro (?%)"
+
+msgid "CIF value"
+msgstr "valor CIF"
+
+msgid "duty (?%)"
+msgstr "derechos (?%)"
+
+msgid "net value"
+msgstr "valor neto"
+
+msgid "VAT"
+msgstr "IVA"
+
+msgid "final value"
+msgstr "valor final"
+
+msgid "exchange rate"
+msgstr "tasa de cambio"
+
+msgid "total"
+msgstr "total"
+
+msgid "send details by e-mail"
+msgstr "enviar detalle por correo"
+
+msgid "e.g."
+msgstr "ej:"
+
+msgid "total amount to be paid"
+msgstr "monto total a pagar"
+
+msgid "This value includes the transfer from our warehouse in ? to our office in ?."
+msgstr "Este valor contempla el traslado desde nuestra bodega en ? hasta nuestra oficina en ?."
+
+msgid "date"
+msgstr "fecha"
+
+msgid "virtual PO Box"
+msgstr "casillero virtual"
+
+msgid "shipment management"
+msgstr "gestión de envíos"
+
+msgid "send e-mail"
+msgstr "enviar al e-mail"
+
+msgid "I am aware of the restricted items"
+msgstr "conozco los artículos restringidos"

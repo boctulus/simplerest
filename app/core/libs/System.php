@@ -129,7 +129,7 @@ class System
     /*
         Ejecuta un comando / script situandose primero en el root del proyecto
     */
-    static function exec($command, ...$args){
+    static function exec_root($command, ...$args){
         $extra = implode(' ', array_values($args));
 
         $current_dir = getcwd();
@@ -149,7 +149,7 @@ class System
         Ejecuta un comando "com"
     */
     static function com($command, ...$args){
-        return static::exec(static::getPHP() . " com $command", ...$args);
+        return static::exec_root(static::getPHP() . " com $command", ...$args);
     }
 
 
