@@ -1,6 +1,6 @@
 <?php
 
-$intl = [
+return [
 	'version'     => 'versión',
 	'support'     => 'soporte',
 	'activate'    => 'activación',

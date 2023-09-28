@@ -52,7 +52,7 @@ class Logger
 	*/
 	static function varExport($data, $path = null, $variable = null){
 		if ($path === null){
-			$path = LOGS_PATH . 'exported.php';
+			$path = LOGS_PATH . 'export.php';
 		} else {
 			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
 				$path = LOGS_PATH . $path;

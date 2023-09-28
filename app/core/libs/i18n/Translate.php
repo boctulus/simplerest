@@ -194,7 +194,7 @@ class Translate
 
                 //StdOut::pprint($def_file);
 
-                include $locale_path . "$dir/" . $def_file;
+                $intl = include $locale_path . "$dir/" . $def_file;
 
                 Files::mkdir($locale_path . "$dir/" . "LC_MESSAGES");
 
@@ -238,12 +238,7 @@ class Translate
                 if ($include_mo){
                     StdOut::pprint("Compiling to $mo_path");
 
-                    if (System::isWindows()){
-                        shell_exec("msgfmt $po_path -o $mo_path");
-                        $exit_code = (int) shell_exec("cmd /c echo %errorlevel%");
-                    } else {
-                        $exit_code = (int) shell_exec("msgfmt $po_path -o $mo_path; echo $?");
-                    }
+                    exec("msgfmt $po_path -o $mo_path", $output, $exit_code);
                     
                     StdOut::pprint("Compilation to $mo_path " . ($exit_code === 0 ? '-- ok' : '-- error'));
                     StdOut::pprint('');
@@ -252,5 +247,72 @@ class Translate
             }
         } 
     }
+
+    static function convertPot(string $locale_path = null){
+        if ($locale_path === null){
+            $locale_path = LOCALE_PATH;
+        }
+
+        $php_pot = glob($locale_path . '*.pot.php');
+
+        foreach ($php_pot as $pp){
+            $pot_domain = Strings::beforeIfContains(basename($pp), '.pot.php');
+            
+            dd($pot_domain, 'DOMAIN');
+
+            foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
+                if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
+                
+                $dir = $fileInfo->getBasename();
+                // dd($dir, 'DIR');
+                // StdOut::pprint($dir);
+    
+                $path = $locale_path . DIRECTORY_SEPARATOR . $dir;
+                foreach (new \DirectoryIterator($path) as $fileInfo) {
+                    if($fileInfo->isDot() || $fileInfo->isDir()){
+                        continue;
+                    } 
+    
+                    $filename = $path . DIRECTORY_SEPARATOR . $pot_domain . '.php';
+            
+                    $defs = include $pp;
+
+                    if (!file_exists($filename)){
+                        dd("Creo archivo $pot_domain.php en $dir");
+
+                        $p_defs = [];
+                        foreach ($defs as $def){
+                            $p_defs[$def] = "";
+                        }
+
+                        Files::varExport($p_defs, $filename);
+                    } else {
+                        $current_defs      = include $filename;
+                        $current_def_keys  = array_keys($current_defs);
+                        $not_incl_def_keys = array_diff($defs, $current_def_keys);
+
+                        if (!empty($not_incl_def_keys)){
+                            foreach ($not_incl_def_keys as $def){
+                                $current_defs[$def] = "";
+                            }
+                            
+                            //dd($current_defs);
+
+                            Files::varExport($p_defs, $filename);
+                        }
+
+                        exit;
+                    }
+
+                    // dd("$dir > $pot_domain");
+                }
+            }
+
+        }
+    
+
+        exit; /////////
+    }
+    
 }
 
