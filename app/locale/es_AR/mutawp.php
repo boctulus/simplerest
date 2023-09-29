@@ -3,7 +3,7 @@
 return array (
   'version' => 'versión',
   'support' => 'soporte',
-  'activate' => 'activación',
+  'activate' => 'activar',
   'active:/f/' => 'activa',
   'active:/m/' => 'activo',
   'licence' => 'licencia',
@@ -32,4 +32,12 @@ return array (
   'licence to connect with your ? account' => 'la licencia para conectar con tu cuenta de ?',
   'get your licence key here.' => 'obtenga su clave de licencia aquí.',
   'plugin list' => 'lista de plugins',
+  'activation' => 'activación',
+  'learn +' => 'saber más',
+  'licence to connect with your account' => 'licencia para conectar con tu cuenta',
+  'welcome to' => 'bienvenido a',
+  'licence activation' => 'activación de licencia',
+  'visit store' => 'ir a la tienda',
+  'licence for' => 'licencia de',
+  'Grow your business with MutaWP! Use our official plugin to create fantastic websites.' => '¡Haz crecer tu negocio con MutaWp! Usa nuestro plugin oficial para crear fantásticos sitios webs.',
 );

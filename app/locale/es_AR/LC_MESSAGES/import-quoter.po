@@ -32,22 +32,22 @@ msgid "purchase value in dollars"
 msgstr "valor de la compra en dólares"
 
 msgid "rate to be charged per ?"
-msgstr "tarifa a cobrar por ?"
+msgstr "tarifa a cobrar por %s"
 
 msgid "gross weight"
 msgstr "peso bruto"
 
 msgid "air freight (?-?)"
-msgstr "flete aéreo (?-?)"
+msgstr "flete aéreo (%s-%s)"
 
 msgid "insurance (?%)"
-msgstr "seguro (?%)"
+msgstr "seguro (%s%)"
 
 msgid "CIF value"
 msgstr "valor CIF"
 
 msgid "duty (?%)"
-msgstr "derechos (?%)"
+msgstr "derechos (%s%)"
 
 msgid "net value"
 msgstr "valor neto"
@@ -74,7 +74,7 @@ msgid "total amount to be paid"
 msgstr "monto total a pagar"
 
 msgid "This value includes the transfer from our warehouse in ? to our office in ?."
-msgstr "Este valor contempla el traslado desde nuestra bodega en ? hasta nuestra oficina en ?."
+msgstr "Este valor contempla el traslado desde nuestra bodega en %s hasta nuestra oficina en %s."
 
 msgid "date"
 msgstr "fecha"

@@ -21,6 +21,7 @@
 		'activate',
 		'active:/f/',
 		'active:/m/',
+		'activation',
 		'licence',
 		'repository',
 		'plugin',
@@ -40,14 +41,20 @@
 		'since', // desde
 		'since v? to v?', // 'desde v? a v?'
 		'save', // guardar
-		'learn more',
+		'learn +',
 		'inactive licence',
 		'no active',
 		'? licence',
-		'licence to connect with your ? account', // 'la licencia para conectar con tu cuenta de ?'
+		'licence to connect with your account', // 'la licencia para conectar con tu cuenta de ?'
 		'get your licence key here.', // Obtenga su clave de licencia aquí.
-		'plugin list', // lista de plugins
-
+		'plugin list', // lista de plugins,
+		'welcome to',
+		'licence activation',
+		'visit store',
+		'licence for',
+		'visit store', 
+		'Grow your business with MutaWP! Use our official plugin to create fantastic websites.', 
+		
 		
 		// ...
 
