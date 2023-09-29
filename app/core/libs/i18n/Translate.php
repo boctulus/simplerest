@@ -8,6 +8,7 @@ namespace simplerest\core\libs\i18n;
 
 use simplerest\core\Container;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
@@ -168,11 +169,14 @@ class Translate
         Exporta a .po y .mo todos arrays de traducciones al subfolder LC_MESSAGES dentro
         de cada folder de lenguaje.
     */
-    static function exportLangDef(bool $include_mo = true, string $locale_path = null, string $text_domain = null)
+    static function exportLangDef(bool $include_mo = true, string $locale_path = null, string $to = null, string $text_domain = null)
     {   
         if ($locale_path === null){
             $locale_path = LOCALE_PATH;
         }
+
+        $to = $to ?? $locale_path;
+        $to = rtrim($to, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         // dd($locale_path);
 
@@ -199,12 +203,12 @@ class Translate
 
                 //StdOut::pprint($def_file);
 
-                $intl = include $locale_path . "$dir/" . $def_file;
+                $intl    = include $locale_path . "$dir/" . $def_file;
 
-                Files::mkdir($locale_path . "$dir/" . "LC_MESSAGES");
+                Files::mkdir($to . "$dir/" . "LC_MESSAGES");
 
-                $po_path = $locale_path . "$dir/" . "LC_MESSAGES/$domain.po";
-                $mo_path = $locale_path . "$dir/" . "LC_MESSAGES/$domain.mo";
+                $po_path = $to . "$dir/" . "LC_MESSAGES/$domain.po";
+                $mo_path = $to . "$dir/" . "LC_MESSAGES/$domain.mo";
 
                 $fp = fopen($po_path, 'w');
                 StdOut::pprint("Generating $po_path");
