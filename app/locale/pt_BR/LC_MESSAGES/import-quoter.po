@@ -1,0 +1,92 @@
+#
+msgid ""
+msgstr	"Project-Id-Version: SimpleRest Translations 0.0.1\n"
+	"Report-Msgid-Bugs-To: boctulus@gmail.com\n"
+	"POT-Creation-Date: 2010-05-28 06:18-0500\n"
+	"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+	"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+	"Language-Team: LANGUAGE <boctulus@gmail.com\n"
+	"MIME-Version: 1.0\n"
+	"Content-Type: text/plain; charset=UTF-8\n"
+	"Content-Transfer-Encoding: 8bit\n"
+
+msgid "quotation"
+msgstr ""
+
+msgid "shipping quotation"
+msgstr ""
+
+msgid "quote"
+msgstr ""
+
+msgid "item"
+msgstr ""
+
+msgid "value"
+msgstr ""
+
+msgid "currency"
+msgstr ""
+
+msgid "purchase value in dollars"
+msgstr ""
+
+msgid "rate to be charged per ?"
+msgstr ""
+
+msgid "gross weight"
+msgstr ""
+
+msgid "air freight (?-?)"
+msgstr ""
+
+msgid "insurance (?%)"
+msgstr ""
+
+msgid "CIF value"
+msgstr ""
+
+msgid "duty (?%)"
+msgstr ""
+
+msgid "net value"
+msgstr ""
+
+msgid "VAT"
+msgstr ""
+
+msgid "final value"
+msgstr ""
+
+msgid "exchange rate"
+msgstr ""
+
+msgid "total"
+msgstr ""
+
+msgid "send details by e-mail"
+msgstr ""
+
+msgid "e.g."
+msgstr ""
+
+msgid "total amount to be paid"
+msgstr ""
+
+msgid "This value includes the transfer from our warehouse in ? to our office in ?."
+msgstr ""
+
+msgid "date"
+msgstr ""
+
+msgid "virtual PO Box"
+msgstr ""
+
+msgid "shipment management"
+msgstr ""
+
+msgid "send e-mail"
+msgstr ""
+
+msgid "I am aware of the restricted items"
+msgstr ""
