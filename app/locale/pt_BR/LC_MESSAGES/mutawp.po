@@ -102,3 +102,30 @@ msgstr ""
 
 msgid "get your licence key here."
 msgstr ""
+
+msgid "? licence"
+msgstr ""
+
+msgid "activation"
+msgstr ""
+
+msgid "learn +"
+msgstr ""
+
+msgid "licence to connect with your account"
+msgstr ""
+
+msgid "welcome to"
+msgstr ""
+
+msgid "licence activation"
+msgstr ""
+
+msgid "visit store"
+msgstr ""
+
+msgid "licence for"
+msgstr ""
+
+msgid "Grow your business with MutaWP! Use our official plugin to create fantastic websites."
+msgstr ""

@@ -34,7 +34,7 @@ class Translate
     static $useGettext        = null;
 
     /*
-        Si debe usarse gettext() o por el contrario un reemplazo
+        Define si debe usarse gettext() o por el contrario un reemplazo
     */
     static function useGettext(bool $val = true){
         static::$useGettext = $val;
@@ -174,13 +174,14 @@ class Translate
             $locale_path = LOCALE_PATH;
         }
 
-        //d($locale_path);
+        // dd($locale_path);
 
         foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
             if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
             
             $dir = $fileInfo->getBasename();
-            //StdOut::pprint($dir);
+            // StdOut::pprint($dir);
+            // continue; //
 
             foreach (new \DirectoryIterator($locale_path . "/$dir") as $fileInfo) {
                 if($fileInfo->isDot() || $fileInfo->isDir()) continue;
@@ -225,6 +226,8 @@ class Translate
                         continue;
                     }
 
+                    $value = str_replace('?', '%s', $value);
+
                     $key   = addslashes($key);
                     $value = addslashes($value);
 
@@ -248,15 +251,27 @@ class Translate
         } 
     }
 
-    static function convertPot(string $locale_path = null){
-        // StdOut::showResponse();
-
+    static function convertPot(string $locale_path = null, string $text_domain = null){
         if ($locale_path === null){
             $locale_path = LOCALE_PATH;
         }
 
-        $php_pot = glob($locale_path . '*.pot.php');
+        if ($text_domain !== null){
+            $php_pot = [ $locale_path . "$text_domain.pot.php" ];
 
+            if (!file_exists($php_pot[0])){
+                StdOut::pprint("File '$text_domain.pot.php' not found");
+                exit;
+            }
+        } else {
+            $php_pot = glob($locale_path . '*.pot.php');
+        }
+
+        if (empty($php_pot)){
+            StdOut::pprint("No *.pot.php files found");
+            exit;
+        }
+        
         foreach ($php_pot as $pp){
             $pot_domain = Strings::beforeIfContains(basename($pp), '.pot.php');
             
@@ -283,6 +298,8 @@ class Translate
                     // dd(file_exists($filename), $filename);
             
                     $defs = include $pp;
+
+                    // dd($defs, $filename   );
 
                     if (!file_exists($filename)){
                         StdOut::pprint("Creando archivo $pot_domain.php en $dir");

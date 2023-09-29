@@ -41,7 +41,13 @@ msgid "plugins"
 msgstr "plugins"
 
 msgid "themes"
-msgstr "temas"
+msgstr "themes"
+
+msgid "plugins + themes"
+msgstr "plugins + themes"
+
+msgid "help"
+msgstr "help"
 
 msgid "only themes"
 msgstr "only themes"
@@ -52,8 +58,32 @@ msgstr "search"
 msgid "install"
 msgstr "install"
 
+msgid "installed"
+msgstr "installed"
+
+msgid "update"
+msgstr "update"
+
+msgid "downloading"
+msgstr "downloading"
+
+msgid "successfully installed"
+msgstr "successfully installed"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "since"
+msgstr "since"
+
+msgid "since v? to v?"
+msgstr "since v%s to v%s"
+
+msgid "save"
+msgstr "save"
+
 msgid "learn more"
-msgstr "learn more"
+msgstr "learn +"
 
 msgid "inactive licence"
 msgstr "inactive licence"
@@ -61,44 +91,38 @@ msgstr "inactive licence"
 msgid "no active"
 msgstr "no active"
 
-msgid "plugins + themes"
-msgstr ""
-
-msgid "help"
-msgstr ""
-
-msgid "installed"
-msgstr ""
-
-msgid "update"
-msgstr ""
-
-msgid "downloading"
-msgstr ""
-
-msgid "successfully installed"
-msgstr ""
-
-msgid "OK"
-msgstr ""
-
-msgid "since"
-msgstr ""
-
-msgid "since v? to v?"
-msgstr ""
-
-msgid "save"
-msgstr ""
-
-msgid "licencia de ?"
-msgstr ""
+msgid "? licence"
+msgstr "%s licence"
 
 msgid "licence to connect with your ? account"
-msgstr ""
+msgstr "licence to connect with your %s account"
 
 msgid "get your licence key here."
-msgstr ""
+msgstr "get your licence key here."
 
 msgid "plugin list"
-msgstr ""
+msgstr "plugin list"
+
+msgid "activation"
+msgstr "activation"
+
+msgid "learn +"
+msgstr "lern more"
+
+msgid "licence to connect with your account"
+msgstr "licence to connect with your account"
+
+msgid "welcome to"
+msgstr "welcome to"
+
+msgid "licence activation"
+msgstr "licence activation"
+
+msgid "visit store"
+msgstr "visit store"
+
+msgid "licence for"
+msgstr "licence for"
+
+msgid "Grow your business with MutaWP! Use our official plugin to create fantastic websites."
+msgstr "Grow your business with MutaWP! Use our official plugin to create fantastic websites."
