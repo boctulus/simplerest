@@ -199,17 +199,18 @@ class MakeControllerBase extends Controller
 
         # Translation files
         
-        make trans
+        make trans [--preset={name}]
         make trans --pot [--domain={text-domain}]
-        make trans --po --mo
+        make trans --po --mo [--preset={name}]
         make trans --po
         make trans [--from={dir}] [--to={dir}] [--domain={text-domain}] 
 
         Ex.
 
-        php com make trans --from='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
+        make trans --from='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
+        make trans --domain=mutawp --to='D:\www\woo2\wp-content\plugins\mutawp\languages\test' --preset=wp
 
-
+        
         # System constants
 
         make system_constants
@@ -2192,6 +2193,7 @@ class MakeControllerBase extends Controller
         $mo          = false;
 
         $text_domain = null;
+        $preset      = null;
 
         // dirs
         $from        = null;
@@ -2208,6 +2210,17 @@ class MakeControllerBase extends Controller
 
             if (preg_match('/^(--mo)$/', $o)){
                 $mo = true;
+            }
+
+            if (Strings::startsWith('--preset=', $o) || Strings::startsWith('--preset:', $o)){
+                // Convert windows directory separator into *NIX
+                $o = str_replace('\\', '/', $o);
+
+                here();
+
+                if (preg_match('~^--(preset)[=|:]([a-z0-9A-ZñÑ_-]+)$~', $o, $matches)){
+                    $preset= $matches[2];
+                }
             }
 
             if (Strings::startsWith('--domain=', $o) || Strings::startsWith('--domain:', $o)){
@@ -2249,7 +2262,7 @@ class MakeControllerBase extends Controller
             $include_po = true;
         }        
 
-        Translate::exportLangDef($include_po, $from, $to, $text_domain);   
+        Translate::exportLangDef($include_po, $from, $to, $text_domain, $preset);   
     }
 
     /*

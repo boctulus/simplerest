@@ -166,10 +166,14 @@ class Translate
     }
 
     /*
-        Exporta a .po y .mo todos arrays de traducciones al subfolder LC_MESSAGES dentro
-        de cada folder de lenguaje.
+        Exporta a archivos .po y .mo todos arrays de traducciones de lenguaje.
+
+        @param bool   $include_mo  dermina si debe generarse el archivo .mo
+        @param string $locale_path si se especifica lo toma como directorio de entrada (para los .pot.php) y de salida sino se especificara
+        @param string $to si se especifca se toma como directorio de salida para generacion de archivos .php y .po / .mo
+        @param string $preset es un nombre para una determinada forma de hacer el scaffolding
     */
-    static function exportLangDef(bool $include_mo = true, string $locale_path = null, string $to = null, string $text_domain = null)
+    static function exportLangDef(bool $include_mo = true, string $locale_path = null, string $to = null, string $text_domain = null, string $preset = null)
     {   
         if ($locale_path === null){
             $locale_path = LOCALE_PATH;
@@ -183,11 +187,11 @@ class Translate
         foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
             if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
             
-            $dir = $fileInfo->getBasename();
-            // StdOut::pprint($dir);
+            $lang = $fileInfo->getBasename();
+            // StdOut::pprint($lang);
             // continue; //
 
-            foreach (new \DirectoryIterator($locale_path . "/$dir") as $fileInfo) {
+            foreach (new \DirectoryIterator($locale_path . "/$lang") as $fileInfo) {
                 if($fileInfo->isDot() || $fileInfo->isDir()) continue;
 
                 if ($fileInfo->getExtension() != 'php'){
@@ -197,20 +201,34 @@ class Translate
                 $def_file = $fileInfo->getBasename();
                 $domain   = Strings::beforeLast($def_file, '.');
 
+                dd($domain, 'D');
+
                 if ($text_domain != null && $domain != $text_domain){
                     continue;
                 }
 
                 //StdOut::pprint($def_file);
 
-                $intl    = include $locale_path . "$dir/" . $def_file;
+                $intl = include $locale_path . "$lang/" . $def_file;
 
-                Files::mkdir($to . "$dir/" . "LC_MESSAGES");
+                switch ($preset){
+                    case "wp":
+                        $path_no_ext = "$to{$domain}-$lang";
 
-                $po_path = $to . "$dir/" . "LC_MESSAGES/$domain.po";
-                $mo_path = $to . "$dir/" . "LC_MESSAGES/$domain.mo";
+                        $po_path     = "$path_no_ext.po";
+                        $mo_path     = "$path_no_ext.mo";
+                        break;
+                    default:
+                        Files::mkdir($to . "$lang/" . "LC_MESSAGES");
+
+                        $po_path = $to   . "$lang/" . "LC_MESSAGES/$domain.po";
+                        $mo_path = $to   . "$lang/" . "LC_MESSAGES/$domain.mo";
+                }                
+
+                $po_path = Files::normalize($po_path);
 
                 $fp = fopen($po_path, 'w');
+
                 StdOut::pprint("Generating $po_path");
 
                 $header = <<<HEADER
