@@ -208,9 +208,9 @@ class MakeControllerBase extends Controller
         Ex.
 
         make trans --from='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
-        make trans --domain=mutawp --to='D:\www\woo2\wp-content\plugins\mutawp\languages\test' --preset=wp
+        make trans --domain=mutawp --to='D:\www\woo2\wp-content\plugins\mutawp\languages' --preset=wp
 
-        
+
         # System constants
 
         make system_constants
@@ -219,7 +219,6 @@ class MakeControllerBase extends Controller
         # Acl file
 
         make acl
-
         make acl [ --debug ]
 
 
