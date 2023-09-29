@@ -140,12 +140,6 @@ class MakeControllerBase extends Controller
         --unignore | --retry
         --remove
         --strict
-
-        php com make update {version}
-
-        Ex:
-
-        php com make update 0.8.0
           
         make helper my_helper [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make lib my_lib [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
@@ -188,48 +182,64 @@ class MakeControllerBase extends Controller
 
                             -sam  = -s -a -m
                             -samf = -s -a -m -f
+
+        # Database scan
+
+        make db_scan [ -- from= ]
+
+
+        # Update
+
+        make update {version}
+
+        Ex.
+
+        make update 0.8.0
+
+
+        # Translation files
         
+        make trans
+        make trans --pot [--domain={text-domain}]
+        make trans --po --mo
+        make trans --po
+        make trans [--from={dir}] [--to={dir}] [--domain={text-domain}] 
+
+        Ex.
+
+        php com make trans --from='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
+
+
+        # System constants
+
+        make system_constants
+
+
+        # Acl file
+
+        make acl
+
+        make acl [ --debug ]
+
+
+        # Pages
+
+        make page
+
+        make page admin/graficos
+        make page admin/control_usuarios
+
+
+        # Migrations
+                
         make migration rename_some_column --table=foo
         make migration --dir=test --name=books
         make migration books --table=books --class_name=BooksAddDescription --to:main        
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3'
         make migration --dir=test --to=az --table=boletas --class_name=BoletasDropNullable
 
-        make db_scan [ -- from= ]
 
-        make system_constants
-        
-        php com make trans
-        php com make trans --pot [--domain={text-domain}]
-        php com make trans --po --mo
-        php com make trans --po
-        php com make trans --from='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale' [--domain={text-domain}]
-
-        make acl
-
-        php com make acl [ --debug ]
-
-        make page
-
-        php com make page admin/graficos
-        php com make page admin/control_usuarios
-        
-        Examples:
-        
-        make lib my_lib
-        make lib my_folder\my_lib
-        make helper my_helper
-        make interface pluggable 
-        make interface pluggable --remove
-        make any baz -s -m -a -f
-        make any tbl_contacto -sam --from:some_conn_id
-        make any all -sam  --from:some_conn_id
-        make any all -samf --from:some_conn_id
-        make any all -s -f --from:main 
-        make any all -s -f --from:main --unignore  
-
-        
-        Inline migrations
+        # Inline migrations
         
         make migration foo --dropColumn=algun_campo
         make migration foo --renameColumn=viejo_nombre,nuevo_nombre
@@ -252,7 +262,7 @@ class MakeControllerBase extends Controller
         make migration foo --trucateTable=campo
         make migration foo --comment=campo
         
-        Ex:
+        Ex.
 
         php com make migration --dir=test --table=my_table --dropPrimary --unique=some_field,another_field
 
@@ -269,13 +279,27 @@ class MakeControllerBase extends Controller
 
         make migration foo --fromField=user_id --toField=id --toTable=users --onDelete=cascade --onUpdate=setNull
 
-        CSS Scan
+        # CSS Scan
 
         make css_scan --dir={path} [--relative=yes|no|1|0]
 
         Ex:
 
         make css_scan --dir="D:\www\woo2\wp-content\plugins\mutawp\assets\css\storefront"
+
+        # Mixed examples
+        
+        make lib my_lib
+        make lib my_folder\my_lib
+        make helper my_helper
+        make interface pluggable 
+        make interface pluggable --remove
+        make any baz -s -m -a -f
+        make any tbl_contacto -sam --from:some_conn_id
+        make any all -sam  --from:some_conn_id
+        make any all -samf --from:some_conn_id
+        make any all -s -f --from:main 
+        make any all -s -f --from:main --unignore  
 
         STR;
 
