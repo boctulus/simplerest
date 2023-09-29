@@ -168,7 +168,7 @@ class Translate
         Exporta a .po y .mo todos arrays de traducciones al subfolder LC_MESSAGES dentro
         de cada folder de lenguaje.
     */
-    static function exportLangDef(bool $include_mo = true, string $locale_path = null)
+    static function exportLangDef(bool $include_mo = true, string $locale_path = null, string $text_domain = null)
     {   
         if ($locale_path === null){
             $locale_path = LOCALE_PATH;
@@ -192,6 +192,10 @@ class Translate
 
                 $def_file = $fileInfo->getBasename();
                 $domain   = Strings::beforeLast($def_file, '.');
+
+                if ($text_domain != null && $domain != $text_domain){
+                    continue;
+                }
 
                 //StdOut::pprint($def_file);
 
