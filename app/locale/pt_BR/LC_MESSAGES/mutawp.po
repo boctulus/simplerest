@@ -49,21 +49,6 @@ msgstr ""
 msgid "plugins + themes"
 msgstr ""
 
-msgid "help"
-msgstr ""
-
-msgid "only themes"
-msgstr ""
-
-msgid "search"
-msgstr ""
-
-msgid "install"
-msgstr ""
-
-msgid "installed"
-msgstr ""
-
 msgid "update"
 msgstr ""
 
@@ -128,4 +113,19 @@ msgid "licence for"
 msgstr ""
 
 msgid "Grow your business with MutaWP! Use our official plugin to create fantastic websites."
+msgstr ""
+
+msgid "help"
+msgstr ""
+
+msgid "only themes"
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+msgid "install"
+msgstr ""
+
+msgid "installed"
 msgstr ""

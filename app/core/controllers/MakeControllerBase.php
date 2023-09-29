@@ -200,10 +200,10 @@ class MakeControllerBase extends Controller
         make system_constants
         
         php com make trans
-        php com make trans --pot
+        php com make trans --pot [--domain={text-domain}]
         php com make trans --po --mo
         php com make trans --po
-        php com make trans --dir='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
+        php com make trans --from='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale' [--domain={text-domain}]
 
         make acl
 
@@ -2215,7 +2215,7 @@ class MakeControllerBase extends Controller
             $include_po = true;
         }        
 
-        Translate::exportLangDef($include_po, $from);   
+        Translate::exportLangDef($include_po, $from, $text_domain);   
     }
 
     /*
