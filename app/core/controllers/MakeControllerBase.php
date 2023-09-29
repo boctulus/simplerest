@@ -2163,12 +2163,15 @@ class MakeControllerBase extends Controller
 
     // for translations
     function trans(...$opt){
-        $pot = false;
-        $po  = null;
-        $mo  = false;
+        $pot         = false;
+        $po          = null;
+        $mo          = false;
 
-        $dir = null;
+        $text_domain = null;
 
+        // dir
+        $from        = null;
+      
         foreach ($opt as $o){ 
             if (preg_match('/^(--pot)$/', $o)){
                 $pot = true;
@@ -2182,18 +2185,27 @@ class MakeControllerBase extends Controller
                 $mo = true;
             }
 
-            if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o)){
+            if (Strings::startsWith('--domain=', $o) || Strings::startsWith('--domain:', $o)){
                 // Convert windows directory separator into *NIX
                 $o = str_replace('\\', '/', $o);
 
-                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-ZñÑ_\-/]+)$~', $o, $matches)){
-                    $dir= $matches[2] . '/';
+                if (preg_match('~^--(domain)[=|:]([a-z0-9A-ZñÑ_-]+)$~', $o, $matches)){
+                    $text_domain= $matches[2];
+                }
+            }
+
+            if (Strings::startsWith('--from=', $o) || Strings::startsWith('--from:', $o)){
+                // Convert windows directory separator into *NIX
+                $o = str_replace('\\', '/', $o);
+
+                if (preg_match('~^--(from)[=|:]([a-z0-9A-ZñÑ_\-/:]+)$~', $o, $matches)){
+                    $from= $matches[2] . '/';
                 }
             }
         }
 
         if ($pot){
-            Translate::convertPot($dir);
+            Translate::convertPot($from, $text_domain);
             exit;
         }
 
@@ -2203,7 +2215,7 @@ class MakeControllerBase extends Controller
             $include_po = true;
         }        
 
-        Translate::exportLangDef($include_po, $dir);   
+        Translate::exportLangDef($include_po, $from);   
     }
 
     /*

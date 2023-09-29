@@ -6,11 +6,50 @@ use simplerest\core\libs\XML;
 
 class Strings 
 {	
+	const UPPERCASE_FILTER = 'up';
+	const LOWERCASE_FILTER = 'lo';
+	const UCFIRST_FILTER   = 'uc';
+	const UCWORDS_FILTER   = 'uw';
+	const SNAKECASE_FILTER = 'sn';
+	const CAMELCASE_FILTER = 'cm';
+
 	static $regex = [
 		'URL'	=> "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
 		// ...
 	];
 
+	/*
+		Aplica un filtro de tipo case
+
+		La idea es "normalizar" la forma de aplicar cambios de CASE
+	*/
+	static function case($filter, string $str){
+		switch ($filter){
+			case Strings::UPPERCASE_FILTER :
+				$str = strtoupper($str);
+				break;
+			case Strings::LOWERCASE_FILTER :
+				$str = strtolower($str);
+				break;
+			case Strings::UCFIRST_FILTER :
+				$str = ucfirst($str);
+				break;
+			case Strings::UCWORDS_FILTER :
+				$str = ucfirst($str);
+				break;
+			case Strings::CAMELCASE_FILTER :
+				$str = static::snakeToCamel($str);
+				break;
+			case Strings::SNAKECASE_FILTER :
+				$str = static::toSnakeCase($str);
+				break;
+			default:
+				throw new \InvalidArgumentException("Invalid filter type");
+		}
+
+		return $str;
+	}
+	
 	/*
 		Elimina caracteres especiales
 	*/	
@@ -1975,7 +2014,7 @@ class Strings
 		}
 
 		if ($level >= 4){
-			$html = XML::removeCSSClasses($html);			
+			$html = CSS::removeCSSClasses($html);			
 		}
 
 		if ($level >= 5){
