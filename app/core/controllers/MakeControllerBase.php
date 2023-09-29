@@ -2169,8 +2169,9 @@ class MakeControllerBase extends Controller
 
         $text_domain = null;
 
-        // dir
+        // dirs
         $from        = null;
+        $to          = null;
       
         foreach ($opt as $o){ 
             if (preg_match('/^(--pot)$/', $o)){
@@ -2202,6 +2203,15 @@ class MakeControllerBase extends Controller
                     $from= $matches[2] . '/';
                 }
             }
+
+            if (Strings::startsWith('--to=', $o) || Strings::startsWith('--to:', $o)){
+                // Convert windows directory separator into *NIX
+                $o = str_replace('\\', '/', $o);
+
+                if (preg_match('~^--(to)[=|:]([a-z0-9A-ZñÑ_\-/:]+)$~', $o, $matches)){
+                    $to= $matches[2] . '/';
+                }
+            }
         }
 
         if ($pot){
@@ -2215,7 +2225,7 @@ class MakeControllerBase extends Controller
             $include_po = true;
         }        
 
-        Translate::exportLangDef($include_po, $from, $text_domain);   
+        Translate::exportLangDef($include_po, $from, $to, $text_domain);   
     }
 
     /*
