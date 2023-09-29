@@ -87,19 +87,21 @@ class Translate
         return true;
     }
 
-    static function gettext(string $text){
+    static function gettext(string $text, $text_domain = null){
         if (static::$useGettext){
             return gettext($text);
         }
 
-        $translation = static::$translations[static::$currentTextDomain][$text] ?? $text;
+        $text_domain = $text_domain ?? static::$currentTextDomain;
+
+        $translation = static::$translations[$text_domain][$text] ?? $text;
 
         return !empty($translation) ? $translation : $text;
     }
 
     // alias de Translate::gettext()
-    static function trans(string $text){
-        return static::gettext($text);
+    static function trans(string $text, $text_domain = null){
+        return static::gettext($text, $text_domain);
     }
 
     /*
@@ -200,8 +202,6 @@ class Translate
 
                 $def_file = $fileInfo->getBasename();
                 $domain   = Strings::beforeLast($def_file, '.');
-
-                dd($domain, 'D');
 
                 if ($text_domain != null && $domain != $text_domain){
                     continue;

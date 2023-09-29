@@ -11,4 +11,4 @@ msgstr	"Project-Id-Version: SimpleRest Translations 0.0.1\n"
 	"Content-Transfer-Encoding: 8bit\n"
 
 msgid "field is required"
-msgstr "field is required"
+msgstr ""
