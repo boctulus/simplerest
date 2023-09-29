@@ -29,13 +29,16 @@ class TranslatorController extends MyController
     {
         #Translate::useGettext(true); // usar funciones nativas
 
-        setLang('es_AR');
+        setLang('it');
 
         // i18n
         Translate::bind('validator');
 
         // El campo es requerido (traducido)
-        dd(trans('Field is required'), Translate::getLocale());
+        dd(
+            trans('field is required'), 
+            Translate::getLocale()
+        );
     }
 
     // OK
