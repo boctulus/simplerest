@@ -27,9 +27,9 @@ class TranslatorController extends MyController
 
     function test_trans()
     {
-        #Translate::useGettext(true); // usar funciones nativas
+        //Translate::useGettext(true); // usar funciones nativas
 
-        setLang('it');
+        setLang('es');
 
         // i18n
         Translate::bind('validator');
