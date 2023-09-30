@@ -13,6 +13,6 @@ function setLang(?string $lang){
     Translate::setLang($lang);
 }
 
-function trans(string $text){
-    return Translate::trans($text);
+function trans(string $text, $domain = null){
+    return Translate::trans($text, $domain);
 }
