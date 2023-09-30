@@ -41,6 +41,27 @@ class TranslatorController extends MyController
         );
     }
 
+    function test_trans_2()
+    {
+        //Translate::useGettext(true);
+
+        setLang('es');
+
+        dd(Translate::getDomain(), 'Current Text Domain');
+
+        dd(
+            trans('field is required', 'validator'), 
+            Translate::getLocale()
+        );
+
+        // Translate::bind('validator');
+
+        // dd(
+        //     trans('field is required'), 
+        //     Translate::getLocale()
+        // );
+    }
+
     // OK
     function test_po_parser(){
         //Translate::useGettext(false); // usar alternativa
