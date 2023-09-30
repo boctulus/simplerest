@@ -48,6 +48,7 @@ class Translate
         if (static::$useGettext){
             setlocale(LC_ALL, "$lang.$encoding");  
             putenv("LANGUAGE=$lang.$encoding");
+            putenv("LC_ALL=$lang"); // Windows
         }
     }
 
@@ -253,9 +254,6 @@ class Translate
                     }
 
                     $value = str_replace('?', '%s', $value);
-
-                    $key   = addslashes($key);
-                    $value = addslashes($value);
 
                     fwrite($fp, "\n");
                     fwrite($fp, "msgid \"$key\"\n");
