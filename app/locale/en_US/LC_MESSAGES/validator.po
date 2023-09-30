@@ -12,3 +12,6 @@ msgstr	"Project-Id-Version: SimpleRest Translations 0.0.1\n"
 
 msgid "field is required"
 msgstr "field is required"
+
+msgid "it's not a valid integer"
+msgstr "it's not a valid integer"
