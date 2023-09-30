@@ -8,7 +8,6 @@ namespace simplerest\core\libs\i18n;
 
 use simplerest\core\Container;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
@@ -284,6 +283,9 @@ class Translate
         } 
     }
 
+    /*
+        De .pot.php a precursores de .po para cada lenguaje
+    */
     static function convertPot(string $locale_path = null, string $text_domain = null){
         if ($locale_path === null){
             $locale_path = LOCALE_PATH;
