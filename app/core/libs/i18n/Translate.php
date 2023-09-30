@@ -55,6 +55,10 @@ class Translate
     static function getLocale(){
         return static::$currentLang;
     }
+
+    static function getDomain(){
+        return static::$currentTextDomain;
+    }
     
     static function bind(string $domain, $path = LOCALE_PATH){
         static::$currentTextDomain    = $domain;
@@ -89,6 +93,11 @@ class Translate
     }
 
     static function gettext(string $text, $text_domain = null){
+        if ($text_domain !== null){
+            static::bind($text_domain);
+            static::$currentTextDomain = $text_domain;
+        }
+
         if (static::$useGettext){
             return gettext($text);
         }
