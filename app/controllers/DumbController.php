@@ -8736,4 +8736,44 @@ class DumbController extends Controller
 
         dd($rutaNormalizada); 
     }
+
+    function test_parse_text_nodes(){
+        $html = '</li>
+        <li class="nav-item">
+            <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank" style="color:red">
+              
+                Bootstrap Components
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/bootstrap/templates?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank"><p>XXX</p></a>
+        </li>
+        
+        <ul class="list-step" >
+            <li   class="active">
+                <a aria-controls="step-01"  >Rack Dimensions</a>
+            </li>
+            <li>
+                <a aria-controls="step-02"  >Decking Options</a>
+            </li>
+            <!---->
+            <li>
+                <a aria-controls="step-03"  >Space Availability</a>
+            </li>
+            <!---->
+            <!---->
+            <li   >
+                <a aria-controls="step-04"  >Aisle Dimensions</a>
+            </li>
+            <!---->
+            <!---->
+            <!---->
+        </ul>
+        ';
+
+        $nodes = XML::getTextFromNodes($html);
+
+        dd($nodes);
+    }
+
 }   // end class
