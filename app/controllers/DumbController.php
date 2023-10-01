@@ -8015,7 +8015,7 @@ class DumbController extends Controller
         $path = 'D:\www\woo2\wp-content\themes\kadence\assets\css\slider.min.css';
 
         dd(
-            CSSUtils::beautifier($path)
+            CSS::beautifier($path)
         );
     }
 
@@ -8788,6 +8788,8 @@ class DumbController extends Controller
             <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/bootstrap/templates?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank"><p>XXX</p></a>
         </li>
         
+        <?php echo "Hola mundo" ?>
+
         <ul class="list-step" >
             <li   class="active">
                 <a aria-controls="step-01"  >Rack Dimensions</a>
@@ -8814,5 +8816,18 @@ class DumbController extends Controller
 
         dd($nodes);
     }
+
+    function test_php_marker_replacer(){
+        $html = '<?php echo "Hola mundo" ?>';
+        $html  = XML::replacePHPmarkers($html);
+
+        dd($html);
+
+        $html  = XML::replacePHPmarkersBack($html);
+
+        dd($html);
+    }
+
+
 
 }   // end class
