@@ -47,7 +47,10 @@
     <link rel="stylesheet" href="<?= asset('vendors/ionicframework/ionicons.min.css') ?>">
 
     <!-- bootstrap 5.1.3 solo css -->
-    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/3.x/bootstrap.min.css') ?>">
+
+    <!-- Bootstrap 5.1.3 -->
+    <script src="<?= asset('vendors/bootstrap/3.x/bootstrap.bundle.min.js') ?>"></script>
     
     <!-- iCheck -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
@@ -67,9 +70,7 @@
     <!-- Datatables -->
     <link rel="stylesheet" href="<?= asset('css/lib/datatables-net/datatables.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/lib/datatables-net/datatables-net.min.css') ?>">
-     
-    <!-- Bootstrap 5.1.3 -->
-    <script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
+
     
     <!-- FILEPOND -->
     <!--link rel="stylesheet" href="... 'js/plugins/filepond/dist/filepond.css') ?>"-->
