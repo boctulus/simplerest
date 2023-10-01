@@ -54,12 +54,16 @@ class ViewController extends MyController
         render("Hola Sr. Putin");
     }
 
-    function test_asset_local(){
+    function test_enqueue_js_asset_local(){
         js_file('js/dojo/dojo.js');
-
-        render("Hola Sr. Putin");
+        render("Deberia haberse encolado un .js");
     }
     
+    function test_enqueue_css_asset_local(){
+        css_file('vendors/bootstrap/3.x/normalize.css');
+        render("Deberia haberse encolado un .css");
+    }
+
     /*
         Decorado de vistas 
     */
