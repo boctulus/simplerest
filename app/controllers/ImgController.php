@@ -36,16 +36,16 @@ class ImgController extends MyController
     function render_01()
     {
         // Step 1
-        $upright_height = 120;
+        $upright_height = 120;  // inches
 
-        $upright_depth  = 42;       
-        $beam_length    = 96;
+        $upright_depth  = 42;   // inches   
+        $beam_length    = 96;   // inches
         
         $beam_levels    = 2;
   
         // Step 3
-        $height = 20;
-        $width = 50;
+        $height = 10;           // feet
+        $width = 50;            // feet
 
         // Step 4
         $aisle = M::toInches(5, 6);
@@ -58,12 +58,27 @@ class ImgController extends MyController
             y 7'' dividido 5'6'' da 1 y fraccion 
         */
 
-        $row_count     = 3; //  <--------------------------------------- aun HARDCODED !
-        $boxes_per_row = floor((M::toInches($height - 3)) / $aisle);
+        $upright_height_feets = floor($upright_height/12); 
+        $upright_depth_feets  = floor($upright_depth/12);  
+        $beam_length_feets    = floor($beam_length/12);  
+        
+        $boxes_per_row = floor((M::toInches($height - 4)) / $aisle);
 
+
+        $w_acc = 2 * $upright_depth;
+
+        $row_count=1;
+        while ($row_count<999999 && $w_acc < $height - $upright_depth){
+            $w_acc += M::toInches($aisle) + ($upright_depth * 2);
+            $row_count++;
+        }
+
+    
         // dd($height, 'h');
         // dd($aisle, 'aisle');
         // dd($boxes_per_row, 'boxes per row');
+
+        $w_cell        = ($beam_length + (0.5 * 12));
     
         // exit;
 
@@ -174,10 +189,13 @@ class ImgController extends MyController
         */
 
         $im->multipleRow(1, $boxes_per_row, $x, $y, $w, $h);
+        $w_acc = $w;
 
         for ($i=1; $i<$row_count; $i++){
             $multi = ($i == $row_count-1) ? 1 : 2;
             $im->multipleRow($multi, $boxes_per_row, $x, $y + $interline * $i -$h, $w, $h);
+
+            $w_acc += M::toInches($aisle) + ($w * $multi); 
         }
 
         /*
@@ -186,7 +204,7 @@ class ImgController extends MyController
 
 
         // Numero que aparece arriba de la primera celda
-        $im->text($x + $w + 2, $y - 6, M::toFeetAndInches($beam_length + 0.5 * 12),   null, $font_2, 15); // <-- $beam_length debe formatearse tambien
+        $im->text($x + $w + 2, $y - 6, M::toFeetAndInches($w_cell * $boxes_per_row),   null, $font_2, 15); // <-- $beam_length debe formatearse tambien
 
         // Numero que aparece a la izquierda de la primera celda
         $im->text($x - 2, $y + $h  -3, "$upright_depth''"              , null, $font_2, 15); // <-- $upright_depth debe formatearse en feets+inches
