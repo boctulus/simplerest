@@ -72,13 +72,12 @@ class ImgController extends MyController
         // Calculo        
         $boxes_per_row = floor((M::toInches($h_feets - 4)) / $aisle);
 
-        // dd($w_feets, 'width');
-        // dd($aisle_feets, 'aisle feets');
-
-        StdOut::pprint($h - $upright_depth, "Max");
+        //  StdOut::pprint($w_feets, 'width');
+        //  StdOut::pprint($aisle_feets, 'aisle feets');
 
         $w_acc = $upright_depth;
 
+        StdOut::pprint($h - $upright_depth, "Max");
         StdOut::pprint($w_acc, 'w acc');
 
         // 42 + 60 + 2*42 + 60 + 2*42 + 60 + 2*42 + 60 + 42
@@ -93,9 +92,9 @@ class ImgController extends MyController
             StdOut::pprint($row_count, 'row count');
         }
     
-        // dd($h_feets, 'h');
-        // dd($aisle, 'aisle');
-        // dd($boxes_per_row, 'boxes per row');    
+        //  StdOut::pprint($h_feets, 'h');
+        //  StdOut::pprint($aisle, 'aisle');
+        //  StdOut::pprint$boxes_per_row, 'boxes per row');    
 
         $w_cell        = ($beam_length + (0.5 * 12));
     
@@ -221,12 +220,15 @@ class ImgController extends MyController
             Texts
         */
 
-
         // Numero que aparece arriba de la primera celda
         $im->text($x + $w + 2, $y - 6, M::toFeetAndInches($w_cell * $boxes_per_row),   null, $font_2, 15); // <-- $beam_length debe formatearse tambien
 
         // Numero que aparece a la izquierda de la primera celda
         $im->text($x - 2, $y + $h  -3, "$upright_depth''"              , null, $font_2, 15); // <-- $upright_depth debe formatearse en feets+inches
+
+        // Numero que aparece apaisado del lado derecho
+        $im->text($x_end + 45, floor($y_dif / 2), $w_feets . "'",   null, $font_2, 15, 90);
+
 
         $lbl = M::toFeetAndInches($aisle);
         for ($i=0; $i<$row_count -1; $i++){
