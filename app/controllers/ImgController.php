@@ -6,6 +6,7 @@ use simplerest\core\libs\Factory;
 use simplerest\core\libs\Imaginator;
 use simplerest\core\libs\Messurements as M;
 use simplerest\controllers\MyController;
+use simplerest\core\libs\StdOut;
 
 class ImgController extends MyController
 {
@@ -13,6 +14,8 @@ class ImgController extends MyController
     {
         if (isset($_GET['debug'])){
             Imaginator::disable();
+        } else {
+            StdOut::hideResponse();
         }
     }
     
@@ -44,12 +47,12 @@ class ImgController extends MyController
         $beam_levels    = 2;
   
         // Step 3
-        $height = 10;           // feet
-        $width = 50;            // feet
+        $h_feets = 10;           // feet
+        $w_feets = 50;           // feet
 
         // Step 4
-        $aisle = M::toInches(5, 6);
-
+        $aisle = M::toInches(5, 6); // es convertido a inches
+                
         /*
             Voy a intentar calcular el row_count y boxes_per_row
 
@@ -61,22 +64,38 @@ class ImgController extends MyController
         $upright_height_feets = floor($upright_height/12); 
         $upright_depth_feets  = floor($upright_depth/12);  
         $beam_length_feets    = floor($beam_length/12);  
-        
-        $boxes_per_row = floor((M::toInches($height - 4)) / $aisle);
+        $aisle_feets          = round($aisle/12, 2);  
 
+        $h                    = M::toInches($h_feets);  // inches
+        $w                    = M::toInches($w_feets);  // inches
 
-        $w_acc = 2 * $upright_depth;
+        // Calculo        
+        $boxes_per_row = floor((M::toInches($h_feets - 4)) / $aisle);
 
-        $row_count=1;
-        while ($row_count<999999 && $w_acc < $height - $upright_depth){
-            $w_acc += M::toInches($aisle) + ($upright_depth * 2);
-            $row_count++;
+        // dd($w_feets, 'width');
+        // dd($aisle_feets, 'aisle feets');
+
+        StdOut::pprint($h - $upright_depth, "Max");
+
+        $w_acc = $upright_depth;
+
+        StdOut::pprint($w_acc, 'w acc');
+
+        // 42 + 60 + 2*42 + 60 + 2*42 + 60 + 2*42 + 60 + 42
+
+        $row_count = 1;
+        while ($row_count<999999 && $w_acc < $w - $upright_depth - $aisle) {
+            $w_acc += $aisle + ($upright_depth * 2);
+            $row_count += 1;
+
+            StdOut::pprint("+= $aisle + ($upright_depth * 2)");
+            StdOut::pprint($w_acc, 'w acc');
+            StdOut::pprint($row_count, 'row count');
         }
-
     
-        // dd($height, 'h');
+        // dd($h_feets, 'h');
         // dd($aisle, 'aisle');
-        // dd($boxes_per_row, 'boxes per row');
+        // dd($boxes_per_row, 'boxes per row');    
 
         $w_cell        = ($beam_length + (0.5 * 12));
     
