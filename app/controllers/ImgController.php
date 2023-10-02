@@ -2,8 +2,9 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\libs\Imaginator;
 use simplerest\core\libs\Factory;
+use simplerest\core\libs\Imaginator;
+use simplerest\core\libs\Messurements as M;
 use simplerest\controllers\MyController;
 
 class ImgController extends MyController
@@ -34,8 +35,37 @@ class ImgController extends MyController
 
     function render_01()
     {
-        $row_count     = 3;
-        $boxes_per_row = 10;
+        // Step 1
+        $upright_height = 120;
+
+        $upright_depth  = 42;       
+        $beam_length    = 96;
+        
+        $beam_levels    = 2;
+  
+        // Step 3
+        $height = 20;
+        $width = 50;
+
+        // Step 4
+        $aisle = M::toInches(5, 6);
+
+        /*
+            Voy a intentar calcular el row_count y boxes_per_row
+
+            Parece ser que se reservan 1,5 feet de cada lado o sea se deben restar al height
+            y si digamos el Aisle es de 5'6'' entonces boxes_per_row = 1 porque 10'' - 3'' = 7''
+            y 7'' dividido 5'6'' da 1 y fraccion 
+        */
+
+        $row_count     = 3; //  <--------------------------------------- aun HARDCODED !
+        $boxes_per_row = floor((M::toInches($height - 3)) / $aisle);
+
+        // dd($height, 'h');
+        // dd($aisle, 'aisle');
+        // dd($boxes_per_row, 'boxes per row');
+    
+        // exit;
 
         $color_inv = true;
 
@@ -154,12 +184,16 @@ class ImgController extends MyController
             Texts
         */
 
-        $im->text($x - 2, $y + $h -3, "36''", null, $font_2, 15);
-        $im->text($x + $w + 2, $y + 2 * $h + 2 , "96''", null, $font_2, 15);
 
-        $lbl = "5' 6''";
+        // Numero que aparece arriba de la primera celda
+        $im->text($x + $w + 2, $y - 6, M::toFeetAndInches($beam_length + 0.5 * 12),   null, $font_2, 15); // <-- $beam_length debe formatearse tambien
+
+        // Numero que aparece a la izquierda de la primera celda
+        $im->text($x - 2, $y + $h  -3, "$upright_depth''"              , null, $font_2, 15); // <-- $upright_depth debe formatearse en feets+inches
+
+        $lbl = M::toFeetAndInches($aisle);
         for ($i=0; $i<$row_count -1; $i++){
-            $im->text($x_med - 20 - strlen($lbl) * 6, $y + $interline * ($i+0.5) +  0.5 * $h , $lbl, null, $font_1, 20);
+            $im->text($x_med - 20 - strlen($lbl) * 6, $y + $interline * ($i+0.5) +  0.5 * $h , $lbl, null, $font_2, 15);
         }
         
         // ...

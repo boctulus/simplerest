@@ -32,7 +32,7 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Utils;
 use simplerest\core\libs\Arrays;
 
-use simplerest\core\libs\Config;
+use simplerest\core\libs\Messurements;
 
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Schema;
@@ -8737,6 +8737,17 @@ class DumbController extends Controller
         dd($rutaNormalizada); 
     }
 
+    function test_php_marker_replacer(){
+        $html = '<?php echo "Hola mundo" ?>';
+        $html  = XML::replacePHPmarkers($html);
+
+        dd($html);
+
+        $html  = XML::replacePHPmarkersBack($html);
+
+        dd($html);
+    }
+
     function test_parse_text_nodes(){
         $html = '</li>
         <li class="nav-item">
@@ -8777,7 +8788,7 @@ class DumbController extends Controller
     }
 
     function test_replacer(){
-        $html = '</li>
+        $code = '</li>
         <li class="nav-item">
             <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank" style="color:red">
               
@@ -8812,22 +8823,24 @@ class DumbController extends Controller
         </ul>
         ';
 
-        $nodes = XML::insertTranslator($html);
+        $code = XML::insertTranslator($code);
 
-        dd($nodes);
+        dd($code);
     }
 
-    function test_php_marker_replacer(){
-        $html = '<?php echo "Hola mundo" ?>';
-        $html  = XML::replacePHPmarkers($html);
+    function test_replacer_2(){
+        $code = file_get_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks_copy-ok.php');
 
-        dd($html);
+        $code = XML::insertTranslator($code);
 
-        $html  = XML::replacePHPmarkersBack($html);
-
-        dd($html);
+        file_put_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks.php', $code);
     }
 
+    function test_feet_inch_conversion(){
+        dd(
+            Messurements::toInches(5, 6)
+        );
+    }
 
 
 }   // end class
