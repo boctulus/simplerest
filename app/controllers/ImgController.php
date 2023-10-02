@@ -47,7 +47,7 @@ class ImgController extends MyController
         $beam_levels    = 2;
   
         // Step 3
-        $h_feets        = 60;  // feet <-- length **
+        $l_feets        = 60;  // feet <-- length **
         $w_feets        = 20;  // feet
 
         // Step 4
@@ -66,7 +66,7 @@ class ImgController extends MyController
         $beam_length_feets    = floor($beam_length/12);  
         $aisle_feets          = round($aisle/12, 2);  
 
-        $h                    = M::toInches($h_feets);  // inches
+        $l                    = M::toInches($l_feets);  // inches
         $w                    = M::toInches($w_feets);  // inches
 
         // Calculo        
@@ -103,12 +103,12 @@ class ImgController extends MyController
         //  StdOut::pprint($aisle, 'aisle');
         //  StdOut::pprint$boxes_per_row, 'boxes per row');    
 
-        $boxes_per_row  = floor($h / $beam_length);
+        $boxes_per_row  = floor($l / $beam_length);
 
         $h_with_margins = ($beam_length * $boxes_per_row);
         // $h_with_margins = ($beam_length * $boxes_per_row) + 39; 
 
-        if ($h_with_margins > $h){
+        if ($h_with_margins > $l){
             $boxes_per_row--;
         }
 
