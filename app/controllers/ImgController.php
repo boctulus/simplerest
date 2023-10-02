@@ -47,8 +47,8 @@ class ImgController extends MyController
         $beam_levels    = 2;
   
         // Step 3
-        $l_feets        = 60;  // feet <-- length **
-        $w_feets        = 20;  // feet
+        $l_feets        = 25;  // feet <-- length **
+        $w_feets        = 100;  // feet
 
         // Step 4
         $aisle          = M::toInches(5, 6); // es convertido a inches
@@ -69,14 +69,12 @@ class ImgController extends MyController
         $l                    = M::toInches($l_feets);  // inches
         $w                    = M::toInches($w_feets);  // inches
 
-        // Calculo        
+        // StdOut::pprint($l - $upright_depth, "Max");
 
-        //  StdOut::pprint($w_feets, 'width');
-        //  StdOut::pprint($aisle_feets, 'aisle feets');
+        // Calculo    
 
         $w_acc = $upright_depth;
 
-        // StdOut::pprint($h - $upright_depth, "Max");
         // StdOut::pprint($w_acc, 'w acc');
 
         // 42 + 60 + 2*42 + 60 + 2*42 + 60 + 2*42 + 60 + 42
@@ -86,12 +84,12 @@ class ImgController extends MyController
             $w_acc += $aisle + ($upright_depth * 2);
             $row_count += 1;
 
-            // StdOut::pprint("+= $aisle + ($upright_depth * 2)");
-            // StdOut::pprint($w_acc, 'w acc');
-            // StdOut::pprint($row_count, 'row count');
+            // // StdOut::pprint("+= $aisle + ($upright_depth * 2)");
+            // // StdOut::pprint($w_acc, 'w acc');
+            // // StdOut::pprint($row_count, 'row count');
         }
     
-        if ($w_acc < $w){
+        if ($w_acc < $w && $w_acc + $aisle + $upright_depth < $w){
             $w_acc += $aisle + $upright_depth;
             $row_count++;
         }
