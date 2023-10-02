@@ -42,16 +42,16 @@ class ImgController extends MyController
         $upright_height = 120;  // inches
 
         $upright_depth  = 42;   // inches   
-        $beam_length    = 96;   // inches
+        $beam_length    = 96;   // inches *
         
         $beam_levels    = 2;
   
         // Step 3
-        $h_feets = 100;           // feet
-        $w_feets = 100;           // feet
+        $h_feets        = 100;  // feet
+        $w_feets        = 100;  // feet
 
         // Step 4
-        $aisle = M::toInches(5, 6); // es convertido a inches
+        $aisle          = M::toInches(5, 6); // es convertido a inches
                 
         /*
             Voy a intentar calcular el row_count y boxes_per_row
@@ -70,7 +70,6 @@ class ImgController extends MyController
         $w                    = M::toInches($w_feets);  // inches
 
         // Calculo        
-        $boxes_per_row = floor((M::toInches($h_feets)) / $upright_height);
 
         //  StdOut::pprint($w_feets, 'width');
         //  StdOut::pprint($aisle_feets, 'aisle feets');
@@ -92,11 +91,18 @@ class ImgController extends MyController
             StdOut::pprint($row_count, 'row count');
         }
     
+        if ($w_acc < $w){
+            $w_acc += $aisle + $upright_depth;
+        }
+
+        StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
+
         //  StdOut::pprint($h_feets, 'h');
         //  StdOut::pprint($aisle, 'aisle');
         //  StdOut::pprint$boxes_per_row, 'boxes per row');    
 
-        $w_cell        = ($beam_length + (0.5 * 12));
+        $boxes_per_row        = floor($h / $beam_length);
+
     
         // exit;
 
@@ -221,7 +227,7 @@ class ImgController extends MyController
         */
 
         // Suma
-        $im->text($x_med - 12, $y - 6, M::toFeetAndInches($w_cell * $boxes_per_row),   null, $font_2, 15);
+        $im->text($x_med - 12, $y - 6, M::toFeetAndInches($beam_length * $boxes_per_row),   null, $font_2, 15);
 
         // Numero que aparece arriba de la primera celda
         $im->text($x + $w + 2, $y + $w + 12, "$beam_length''",   null, $font_2, 15); 
