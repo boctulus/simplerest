@@ -47,8 +47,8 @@ class ImgController extends MyController
         $beam_levels    = 2;
   
         // Step 3
-        $h_feets = 40;           // feet
-        $w_feets = 40;           // feet
+        $h_feets = 100;           // feet
+        $w_feets = 100;           // feet
 
         // Step 4
         $aisle = M::toInches(5, 6); // es convertido a inches
@@ -220,8 +220,11 @@ class ImgController extends MyController
             Texts
         */
 
+        // Suma
+        $im->text($x_med - 12, $y - 6, M::toFeetAndInches($w_cell * $boxes_per_row),   null, $font_2, 15);
+
         // Numero que aparece arriba de la primera celda
-        $im->text($x + $w + 2, $y - 6, M::toFeetAndInches($w_cell * $boxes_per_row),   null, $font_2, 15); 
+        $im->text($x + $w + 2, $y + $w + 12, "$beam_length''",   null, $font_2, 15); 
 
         // Numero que aparece a la izquierda de la primera celda
         $im->text($x - 2, $y + $h  -3, "$upright_depth''"              , null, $font_2, 15);
