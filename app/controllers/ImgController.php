@@ -86,16 +86,18 @@ class ImgController extends MyController
             $w_acc += $aisle + ($upright_depth * 2);
             $row_count += 1;
 
-            StdOut::pprint("+= $aisle + ($upright_depth * 2)");
-            StdOut::pprint($w_acc, 'w acc');
-            StdOut::pprint($row_count, 'row count');
+            // StdOut::pprint("+= $aisle + ($upright_depth * 2)");
+            // StdOut::pprint($w_acc, 'w acc');
+            // StdOut::pprint($row_count, 'row count');
         }
     
         if ($w_acc < $w){
             $w_acc += $aisle + $upright_depth;
+            $row_count++;
         }
 
         StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
+        StdOut::pprint("$row_count : row count");
 
         //  StdOut::pprint($h_feets, 'h');
         //  StdOut::pprint($aisle, 'aisle');
