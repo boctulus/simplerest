@@ -219,6 +219,62 @@ class XML
         );
     }   
 
+    // Recupera textos de nodos
+    static function getTextFromNodes($html) {
+        $dom   = static::getDocument($html);
+        $xpath = new \DOMXPath($dom);
+        
+        $nodes = $xpath->query('//text()');
+
+        $textNodes = [];
+        foreach ($nodes as $node) {
+            $text = trim($node->nodeValue);
+            if (!empty($text)) {
+                $textNodes[] = $text;
+            }
+        }
+
+        return $textNodes;
+    }
+
+    static function replacePHPmarkers($html) {
+        $html = str_replace('<?php', '<!-- PHP_INI -->', $html);
+        $html = str_replace('<?=', '<!-- PHP_INI echo -->', $html);
+        $html = str_replace('?>', '<!-- PHP_END -->', $html);
+
+        return $html;
+    }
+
+    static function replacePHPmarkersBack($html) {
+        $html = str_replace('<!-- PHP_INI -->', '<?php', $html);
+        $html = str_replace('<!-- PHP_END -->', '?>', $html);
+        $html = str_replace('<?php echo', '<?=', $html);
+    
+        return $html;
+    }    
+
+    /*
+        Procesa un archivo de vista y agrega referencias al traductor
+    */
+    static function insertTranslator($html) {
+        $dom   = static::getDocument($html);
+        $xpath = new \DOMXPath($dom);
+        
+        $nodes = $xpath->query('//text()');
+
+        foreach ($nodes as $node) {
+            $text = trim($node->nodeValue);
+            if (!empty($text)) {
+                $newNode = $dom->createCDATASection('<?= trans("' . $text . '") ?>');
+                $node->parentNode->replaceChild($newNode, $node);
+            }
+        }
+
+        $html = $dom->saveHTML();
+
+        return $html;
+    }
+
     /*
         $html string
         $tags array|string|null
