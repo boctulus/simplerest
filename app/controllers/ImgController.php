@@ -47,8 +47,8 @@ class ImgController extends MyController
         $beam_levels    = 2;
   
         // Step 3
-        $h_feets        = 100;  // feet
-        $w_feets        = 100;  // feet
+        $h_feets        = 60;  // feet <-- length **
+        $w_feets        = 20;  // feet
 
         // Step 4
         $aisle          = M::toInches(5, 6); // es convertido a inches
@@ -76,8 +76,8 @@ class ImgController extends MyController
 
         $w_acc = $upright_depth;
 
-        StdOut::pprint($h - $upright_depth, "Max");
-        StdOut::pprint($w_acc, 'w acc');
+        // StdOut::pprint($h - $upright_depth, "Max");
+        // StdOut::pprint($w_acc, 'w acc');
 
         // 42 + 60 + 2*42 + 60 + 2*42 + 60 + 2*42 + 60 + 42
 
@@ -96,15 +96,25 @@ class ImgController extends MyController
             $row_count++;
         }
 
-        StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
-        StdOut::pprint("$row_count : row count");
+        // StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
+        // StdOut::pprint("$row_count : row count");
 
         //  StdOut::pprint($h_feets, 'h');
         //  StdOut::pprint($aisle, 'aisle');
         //  StdOut::pprint$boxes_per_row, 'boxes per row');    
 
-        $boxes_per_row        = floor($h / $beam_length);
+        $boxes_per_row  = floor($h / $beam_length);
 
+        $h_with_margins = ($beam_length * $boxes_per_row);
+        // $h_with_margins = ($beam_length * $boxes_per_row) + 39; 
+
+        if ($h_with_margins > $h){
+            $boxes_per_row--;
+        }
+
+        $pallets = ($row_count -1) * $boxes_per_row * 12;
+
+        StdOut::pprint("This Layout Will Store $pallets Pallets");
     
         // exit;
 
@@ -228,8 +238,8 @@ class ImgController extends MyController
             Texts
         */
 
-        // Suma
-        $im->text($x_med - 12, $y - 6, M::toFeetAndInches($beam_length * $boxes_per_row),   null, $font_2, 15);
+        // Numero que aparece al centro y totaliza
+        $im->text($x_med - 12, $y - 6, M::toFeetAndInches($h_with_margins),   null, $font_2, 15);
 
         // Numero que aparece arriba de la primera celda
         $im->text($x + $w + 2, $y + $w + 12, "$beam_length''",   null, $font_2, 15); 
