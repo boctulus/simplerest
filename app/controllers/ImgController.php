@@ -22,13 +22,80 @@ class ImgController extends MyController
     function test(){
         ob_start();
         ?>
+         
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-3">
+                <form action="/img/test" method="get">
+                    <div class="mb-3 d-none">
+                        <label for="design" class="form-label">Diseño</label>
+                        <input type="text" class="form-control" id="design" name="design" value="multiple-rows">
+                    </div>
+                    <div class="mb-3 d-none">
+                        <label for="condition" class="form-label">Condición</label>
+                        <input type="text" class="form-control" id="condition" name="condition" value="new">
+                    </div>
+                    <div class="mb-3">
+                        <label for="height" class="form-label">Altura</label>
+                        <input type="text" class="form-control" id="height" name="height" value="<?= $_GET["height"] ?? 120 ?>" required>
+                    </div>
 
-        <!-- Algun HTML -->    
-        <h1>Probando GD</h1>
-        
-        <center>
-            <img src="/img/render_01?design=<?= $_GET['design'] ?>&condition=<?= $_GET['condition'] ?>&height=<?= $_GET['height'] ?>&depth=<?= $_GET['depth'] ?>&beam_length=<?= $_GET['beam_length'] ?>&levels=<?= $_GET['beam_levels'] ?>&length=<?= $_GET['length'] ?>&width=<?= $_GET['width'] ?>&aisle=<?= $_GET['aisle'] ?>&usesupport=<?= $_GET['usesupport'] ?>&usewiredeck=<?= $_GET['usewiredeck'] ?>" />
-        </center>
+                    <div class="mb-3">
+                        <label for="depth" class="form-label">Profundidad</label>
+                        <input type="text" class="form-control" id="depth" name="depth" value="<?= $_GET["depth"] ?? 42 ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="beam_length" class="form-label">Longitud de Viga</label>
+                        <input type="text" class="form-control" id="beam_length" name="beam_length" value="<?= $_GET["beam_length"] ?? 96 ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="beam_levels" class="form-label">Niveles de Viga</label>
+                        <input type="text" class="form-control" id="beam_levels" name="beam_levels" value="<?= $_GET["beam_levels"] ?? 2 ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="length" class="form-label">Longitud</label>
+                        <input type="text" class="form-control" id="length" name="length" value="<?= $_GET["length"] ?? 25 ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="width" class="form-label">Ancho</label>
+                        <input type="text" class="form-control" id="width" name="width" value="<?= $_GET["width"] ?? 100 ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="aisle" class="form-label">Pasillo</label>
+                        <input type="text" class="form-control" id="aisle" name="aisle" value="<?= $_GET["aisle"] ?? 132 ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="usesupport" class="form-label">Usar Soporte</label>
+                        <input type="text" class="form-control" id="usesupport" name="usesupport" value="<?= $_GET["usesupport"] ?? 'false' ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="usewiredeck" class="form-label">Usar Wiredeck</label>
+                        <input type="text" class="form-control" id="usewiredeck" name="usewiredeck" value="<?= $_GET["usewiredeck"] ?? 'false' ?>">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+
+                </div>
+
+                <div class="col-md-9">    
+                    <?php
+                   
+                    $params    = http_build_query($_GET);
+                    $image_src = "/img/render_01" . '?' . $params;
+                    
+                    echo "<img src=\"$image_src\" width=\"100%\" >";
+                ?>
+                </div>
+            </div>
+        </div>
 
         <?php
 
@@ -39,25 +106,25 @@ class ImgController extends MyController
     function render_01()
     {
         // Step 1
-        $upright_height = $_GET['height']; // inches
+        $upright_height = (float) $_GET['height']; // inches
 
-        $upright_depth  = $_GET['depth'];   // inches     
-        $beam_length    = $_GET['beam_length'];   // inches * 
+        $upright_depth  = (float) $_GET['depth'];   // inches     
+        $beam_length    = (float) $_GET['beam_length'];   // inches * 
 
-        $beam_levels    = $_GET['beam_levels'] ?? 2;
+        $beam_levels    = (int)   $_GET['beam_levels'] ?? 2;
 
         // Step 3
-        $l_feets        = $_GET['length'];  // feet <-- length **
-        $w_feets        = 100;  // feet
+        $l_feets        = (float) $_GET['length'];  // feet <-- length **
+        $w_feets        = (float) $_GET['width'];;  // feet
 
         // Step 4
-        $aisle          = $_GET['aisle']; // inches
+        $aisle          = (float) $_GET['aisle']; // inches
                 
         /*
            Calculo
         */
 
-        $l                    = M::toInches($l_feets);  // inches
+        $len                  = M::toInches($l_feets);  // inches
         $w                    = M::toInches($w_feets);  // inches
 
         // StdOut::pprint($l - $upright_depth, "Max");
@@ -92,12 +159,14 @@ class ImgController extends MyController
         //  StdOut::pprint($aisle, 'aisle');
         //  StdOut::pprint$boxes_per_row, 'boxes per row');    
 
-        $boxes_per_row  = floor($l / $beam_length);
+        $boxes_per_row  = floor($len / $beam_length);
 
-        $h              = ($beam_length * $boxes_per_row);
-        $h_with_margins = $h * 1.034599; 
+        $bl              = ($beam_length * $boxes_per_row);
+        $bl_with_margins = (int) ($bl * 1.034599); 
 
-        if ($h_with_margins > $l){
+        StdOut::pprint("bl_with_margins " .$bl_with_margins);
+
+        if ($bl_with_margins > $len){
             $boxes_per_row--;
         }
 
@@ -228,7 +297,7 @@ class ImgController extends MyController
         */
 
         // Numero que aparece al centro y totaliza
-        $im->text($x_med - 12, $y - 6, M::toFeetAndInches($h_with_margins),   null, $font_2, 15);
+        $im->text($x_med - 12, $y - 6, M::toFeetAndInches($bl_with_margins),   null, $font_2, 15);
 
         // Numero que aparece abajo de la primera celda
         $im->text($x + $w + 2 - 5 * strlen((string) $beam_length), $y + $w + 12, "$beam_length''",   null, $font_2, 15); 
