@@ -47,10 +47,10 @@
     <link rel="stylesheet" href="<?= asset('vendors/ionicframework/ionicons.min.css') ?>">
 
     <!-- bootstrap 5.1.3 solo css -->
-    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/3.x/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/5.x/bootstrap.min.css') ?>">
 
     <!-- Bootstrap 5.1.3 -->
-    <script src="<?= asset('vendors/bootstrap/3.x/bootstrap.bundle.min.js') ?>"></script>
+    <script src="<?= asset('vendors/bootstrap/5.x/bootstrap.bundle.min.js') ?>"></script>
     
     <!-- iCheck -->
     <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
