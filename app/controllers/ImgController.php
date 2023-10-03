@@ -120,84 +120,9 @@ class ImgController extends MyController
 
     function calc_pallets()
     {
-        // Step 1
-        $upright_height = (float) $_GET['height']; // inches
+        global $upright_height, $upright_depth, $beam_length, $beam_levels, $l_feets, $w_feets, $aisle, $len;
+        global $w, $w_acc, $row_count, $boxes_per_row, $bl, $bl_with_margins;
 
-        $upright_depth  = (float) $_GET['depth'];   // inches     
-        $beam_length    = (float) $_GET['beam_length'];   // inches * 
-
-        $beam_levels    = (int)   $_GET['beam_levels'] ?? 2;
-
-        // Step 3
-        $l_feets        = (float) $_GET['length'];  // feet <-- length **
-        $w_feets        = (float) $_GET['width'];;  // feet
-
-        // Step 4
-        $aisle          = (float) $_GET['aisle']; // inches
-                
-        /*
-           Calculo
-        */
-
-        $len                  = M::toInches($l_feets);  // inches
-        $w                    = M::toInches($w_feets);  // inches
-
-        // StdOut::pprint($l - $upright_depth, "Max");
-
-        // Calculo    
-
-        $w_acc = $upright_depth;
-
-        // StdOut::pprint($w_acc, 'w acc');
-
-        // 42 + 60 + 2*42 + 60 + 2*42 + 60 + 2*42 + 60 + 42
-
-        $row_count = 1;
-        while ($row_count<999999 && $w_acc < $w - $upright_depth - $aisle) {
-            $w_acc += $aisle + ($upright_depth * 2);
-            $row_count += 1;
-
-            // // StdOut::pprint("+= $aisle + ($upright_depth * 2)");
-            // // StdOut::pprint($w_acc, 'w acc');
-            // // StdOut::pprint($row_count, 'row count');
-        }
-    
-        if ($w_acc < $w && $w_acc + $aisle + $upright_depth < $w){
-            $w_acc += $aisle + $upright_depth;
-            $row_count++;
-        }
-
-        $boxes_per_row  = floor($len / $beam_length);
-
-        $bl              = ($beam_length * $boxes_per_row);
-        $bl_with_margins = (int) ($bl * 1.038);  // <------------- factor de correccion
-
-        if ($bl_with_margins > $len){
-            $boxes_per_row--;
-        }
-
-        $pallets = ($row_count -1) * $boxes_per_row * 12;
-
-        switch ($beam_levels){
-            case 3:
-                $pallets = round( $pallets * 4/3);
-                break;
-            case 4:
-                $pallets = round( $pallets * 5/3);
-                break;
-            case 5:
-                $pallets = round( $pallets * 2);
-                break;
-            case 6:
-                $pallets = round( $pallets * 7/3);
-                break;
-        }   
-
-        return $pallets;
-    }
-
-    function render_01()
-    {
         // Step 1
         $upright_height = (float) $_GET['height']; // inches
 
@@ -250,7 +175,7 @@ class ImgController extends MyController
 
         //  StdOut::pprint($h_feets, 'h');
         //  StdOut::pprint($aisle, 'aisle');
-        //  StdOut::pprint$boxes_per_row, 'boxes per row');    
+        //  StdOut::pprint$boxes_per_row, 'boxes per row'
 
         $boxes_per_row  = floor($len / $beam_length);
 
@@ -260,8 +185,37 @@ class ImgController extends MyController
         if ($bl_with_margins > $len){
             $boxes_per_row--;
         }
-    
-        // exit;
+
+        $pallets = ($row_count -1) * $boxes_per_row * 12;
+
+        switch ($beam_levels){
+            case 3:
+                $pallets = round( $pallets * 4/3);
+                break;
+            case 4:
+                $pallets = round( $pallets * 5/3);
+                break;
+            case 5:
+                $pallets = round( $pallets * 2);
+                break;
+            case 6:
+                $pallets = round( $pallets * 7/3);
+                break;
+        }   
+
+        return $pallets;
+    }
+
+    function render_01()
+    {
+        /*
+            Seria mejor que fueran propiedades estaticas para evitar re-calcular
+        */
+        
+        global $upright_height, $upright_depth, $beam_length, $beam_levels, $l_feets, $w_feets, $aisle, $len;
+        global $w, $w_acc, $row_count, $boxes_per_row, $bl, $bl_with_margins;
+
+        $this->calc_pallets();
 
         $color_inv = true;
 
@@ -286,9 +240,7 @@ class ImgController extends MyController
             $ancho *= intval($boxes_per_row/22);
         }
 
-        $max_row_w = $ancho * 0.9;
         $margin_r  = max(intval($ancho * 0.1), 150);
-
 
         //////////////////////////////////
 
