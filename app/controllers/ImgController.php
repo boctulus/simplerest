@@ -20,10 +20,17 @@ class ImgController extends MyController
     }
     
     function test(){
+
+        $pallets = $this->calc_pallets();
+
         ob_start();
         ?>
-         
-        <div class="container mt-5">
+     
+        <center style="margin-top: 20px;">
+            <h3>This Layout Will Store <?= $pallets ?> Pallets</h3>
+        </center>
+
+        <div class="container mt-4">
             <div class="row">
                 <div class="col-md-3">
                 <form action="/img/test" method="get">
@@ -101,6 +108,69 @@ class ImgController extends MyController
 
         $content = ob_get_clean();
         render($content);
+    }
+
+    function calc_pallets()
+    {
+        // Step 1
+        $upright_height = (float) $_GET['height']; // inches
+
+        $upright_depth  = (float) $_GET['depth'];   // inches     
+        $beam_length    = (float) $_GET['beam_length'];   // inches * 
+
+        $beam_levels    = (int)   $_GET['beam_levels'] ?? 2;
+
+        // Step 3
+        $l_feets        = (float) $_GET['length'];  // feet <-- length **
+        $w_feets        = (float) $_GET['width'];;  // feet
+
+        // Step 4
+        $aisle          = (float) $_GET['aisle']; // inches
+                
+        /*
+           Calculo
+        */
+
+        $len                  = M::toInches($l_feets);  // inches
+        $w                    = M::toInches($w_feets);  // inches
+
+        // StdOut::pprint($l - $upright_depth, "Max");
+
+        // Calculo    
+
+        $w_acc = $upright_depth;
+
+        // StdOut::pprint($w_acc, 'w acc');
+
+        // 42 + 60 + 2*42 + 60 + 2*42 + 60 + 2*42 + 60 + 42
+
+        $row_count = 1;
+        while ($row_count<999999 && $w_acc < $w - $upright_depth - $aisle) {
+            $w_acc += $aisle + ($upright_depth * 2);
+            $row_count += 1;
+
+            // // StdOut::pprint("+= $aisle + ($upright_depth * 2)");
+            // // StdOut::pprint($w_acc, 'w acc');
+            // // StdOut::pprint($row_count, 'row count');
+        }
+    
+        if ($w_acc < $w && $w_acc + $aisle + $upright_depth < $w){
+            $w_acc += $aisle + $upright_depth;
+            $row_count++;
+        }
+
+        $boxes_per_row  = floor($len / $beam_length);
+
+        $bl              = ($beam_length * $boxes_per_row);
+        $bl_with_margins = (int) ($bl * 1.038);  // <------------- factor de correccion
+
+        if ($bl_with_margins > $len){
+            $boxes_per_row--;
+        }
+
+        $pallets = ($row_count -1) * $boxes_per_row * 12;
+
+        return $pallets;
     }
 
     function render_01()
