@@ -27,7 +27,7 @@ class ImgController extends MyController
         <h1>Probando GD</h1>
         
         <center>
-            <img src="/img/render_01"/>
+            <img src="/img/render_01?design=<?= $_GET['design'] ?>&condition=<?= $_GET['condition'] ?>&height=<?= $_GET['height'] ?>&depth=<?= $_GET['depth'] ?>&beam_length=<?= $_GET['beam_length'] ?>&levels=<?= $_GET['beam_levels'] ?>&length=<?= $_GET['length'] ?>&width=<?= $_GET['width'] ?>&aisle=<?= $_GET['aisle'] ?>&usesupport=<?= $_GET['usesupport'] ?>&usewiredeck=<?= $_GET['usewiredeck'] ?>" />
         </center>
 
         <?php
@@ -39,32 +39,23 @@ class ImgController extends MyController
     function render_01()
     {
         // Step 1
-        $upright_height = 120;  // inches
+        $upright_height = $_GET['height']; // inches
 
-        $upright_depth  = 42;   // inches   
-        $beam_length    = 96;   // inches *
-        
-        $beam_levels    = 2;
-  
+        $upright_depth  = $_GET['depth'];   // inches     
+        $beam_length    = $_GET['beam_length'];   // inches * 
+
+        $beam_levels    = $_GET['beam_levels'] ?? 2;
+
         // Step 3
-        $l_feets        = 25;  // feet <-- length **
+        $l_feets        = $_GET['length'];  // feet <-- length **
         $w_feets        = 100;  // feet
 
         // Step 4
-        $aisle          = M::toInches(5, 6); // es convertido a inches
+        $aisle          = $_GET['aisle']; // inches
                 
         /*
-            Voy a intentar calcular el row_count y boxes_per_row
-
-            Parece ser que se reservan 1,5 feet de cada lado o sea se deben restar al height
-            y si digamos el Aisle es de 5'6'' entonces boxes_per_row = 1 porque 10'' - 3'' = 7''
-            y 7'' dividido 5'6'' da 1 y fraccion 
+           Calculo
         */
-
-        $upright_height_feets = floor($upright_height/12); 
-        $upright_depth_feets  = floor($upright_depth/12);  
-        $beam_length_feets    = floor($beam_length/12);  
-        $aisle_feets          = round($aisle/12, 2);  
 
         $l                    = M::toInches($l_feets);  // inches
         $w                    = M::toInches($w_feets);  // inches
@@ -103,8 +94,8 @@ class ImgController extends MyController
 
         $boxes_per_row  = floor($l / $beam_length);
 
-        $h_with_margins = ($beam_length * $boxes_per_row);
-        // $h_with_margins = ($beam_length * $boxes_per_row) + 39; 
+        $h              = ($beam_length * $boxes_per_row);
+        $h_with_margins = $h * 1.034599; 
 
         if ($h_with_margins > $l){
             $boxes_per_row--;
@@ -239,8 +230,8 @@ class ImgController extends MyController
         // Numero que aparece al centro y totaliza
         $im->text($x_med - 12, $y - 6, M::toFeetAndInches($h_with_margins),   null, $font_2, 15);
 
-        // Numero que aparece arriba de la primera celda
-        $im->text($x + $w + 2, $y + $w + 12, "$beam_length''",   null, $font_2, 15); 
+        // Numero que aparece abajo de la primera celda
+        $im->text($x + $w + 2 - 5 * strlen((string) $beam_length), $y + $w + 12, "$beam_length''",   null, $font_2, 15); 
 
         // Numero que aparece a la izquierda de la primera celda
         $im->text($x - 2, $y + $h  -3, "$upright_depth''"              , null, $font_2, 15);
