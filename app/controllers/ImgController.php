@@ -162,7 +162,7 @@ class ImgController extends MyController
         $boxes_per_row  = floor($len / $beam_length);
 
         $bl              = ($beam_length * $boxes_per_row);
-        $bl_with_margins = (int) ($bl * 1.034599); 
+        $bl_with_margins = (int) ($bl * 1.038);  // <------------- factor de correccion
 
         if ($bl_with_margins > $len){
             $boxes_per_row--;
@@ -178,7 +178,7 @@ class ImgController extends MyController
 
         // Definir dimensiones y colores
         $ancho = 600;
-        $alto  = 1280;
+        $alto  = 600; // antes 1280
 
         $colors = [ 
             'white' => [255,255,255],
@@ -308,7 +308,7 @@ class ImgController extends MyController
         $im->text($x - 2, $y + $h  -3, "$upright_depth''"              , null, $font_2, 15);
 
         // Numero que aparece apaisado del lado derecho
-        $im->text($x_end + 45, floor($y_usr / 2), $w_feets . "'",   null, $font_2, 15, 90);
+        $im->text($x_end + 45, $y + floor($y_usr / 2), $w_feets . "'",   null, $font_2, 15, 90);
 
         // Leyendas de los pasillos (aisle)
         $lbl = M::toFeetAndInches($aisle);
