@@ -107,7 +107,7 @@ class ImgController extends MyController
                 </div>
 
                 <div class="col-md-9"> 
-                    <img src="/img/render_01?<?= $params ?>" width="100%" >
+                    <img src="/img/render_01?<?= $params ?>" id="rendered-img" width="100%" >
                 </div>
             </div>
         </div>
@@ -211,9 +211,15 @@ class ImgController extends MyController
         /*
             Seria mejor que fueran propiedades estaticas para evitar re-calcular
         */
-        
+
         global $upright_height, $upright_depth, $beam_length, $beam_levels, $l_feets, $w_feets, $aisle, $len;
         global $w, $w_acc, $row_count, $boxes_per_row, $bl, $bl_with_margins;
+
+        /*
+            A veces puede quedar un poco "pasado" de ancho quedando el ultimo pasillo con alguna pulgada menos
+
+            /img/test?design=multiple-rows&condition=new&height=96&depth=42&beam_length=96&beam_levels=2&length=50&width=200&aisle=132&usesupport=false&usewiredeck=false
+        */
 
         $this->calc_pallets();
 
