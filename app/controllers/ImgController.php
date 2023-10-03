@@ -170,6 +170,21 @@ class ImgController extends MyController
 
         $pallets = ($row_count -1) * $boxes_per_row * 12;
 
+        switch ($beam_levels){
+            case 3:
+                $pallets = round( $pallets * 4/3);
+                break;
+            case 4:
+                $pallets = round( $pallets * 5/3);
+                break;
+            case 5:
+                $pallets = round( $pallets * 2);
+                break;
+            case 6:
+                $pallets = round( $pallets * 7/3);
+                break;
+        }   
+
         return $pallets;
     }
 
@@ -237,10 +252,6 @@ class ImgController extends MyController
         if ($bl_with_margins > $len){
             $boxes_per_row--;
         }
-
-        $pallets = ($row_count -1) * $boxes_per_row * 12;
-
-        StdOut::pprint("This Layout Will Store $pallets Pallets");
     
         // exit;
 
