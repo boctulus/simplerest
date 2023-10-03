@@ -18,16 +18,30 @@ class ImgController extends MyController
             StdOut::hideResponse();
         }
     }
+
+    function debug(){
+        dd($_GET);
+
+        Imaginator::disable();
+        StdOut::showResponse();
+
+        $this->render_01();
+    }
     
     function test(){
 
         $pallets = $this->calc_pallets();
-
+        $params  = http_build_query($_GET);
+        
         ob_start();
         ?>
-     
+
         <center style="margin-top: 20px;">
-            <h3>This Layout Will Store <?= $pallets ?> Pallets</h3>
+            <h3>This Layout Will Store <?= $pallets ?> Pallets 
+                <a href="/img/debug?<?= $params ?>" target="_blank">
+                    <img src="http://simplerest.lan/public/assets/img/debug-icon.jpg" width="50px" height="50px" style="margin-left:10px;">
+                </a>
+            </h3>  
         </center>
 
         <div class="container mt-4">
@@ -92,14 +106,8 @@ class ImgController extends MyController
 
                 </div>
 
-                <div class="col-md-9">    
-                    <?php
-                   
-                    $params    = http_build_query($_GET);
-                    $image_src = "/img/render_01" . '?' . $params;
-                    
-                    echo "<img src=\"$image_src\" width=\"100%\" >";
-                ?>
+                <div class="col-md-9"> 
+                    <img src="/img/render_01?<?= $params ?>" width="100%" >
                 </div>
             </div>
         </div>
@@ -237,7 +245,7 @@ class ImgController extends MyController
             $row_count++;
         }
 
-        //StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
+        StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
         // StdOut::pprint("$row_count : row count");
 
         //  StdOut::pprint($h_feets, 'h');
@@ -269,17 +277,17 @@ class ImgController extends MyController
 
         $font_1 = ASSETS_PATH . 'fonts/Swiss 721 Light BT.ttf';
         $font_2 = ASSETS_PATH . 'fonts/Swiss721BT-Light.otf';
-        
-        if ($row_count > 25){
-            $alto *= ($row_count/25); 
+
+        if ($row_count > 5){
+            $alto *= intval($row_count/4.5); 
         }
 
         if ($boxes_per_row > 22){
-            $ancho *= ($boxes_per_row/22);
+            $ancho *= intval($boxes_per_row/22);
         }
 
         $max_row_w = $ancho * 0.9;
-        $margin_r  = max($ancho * 0.1, 150);
+        $margin_r  = max(intval($ancho * 0.1), 150);
 
 
         //////////////////////////////////
