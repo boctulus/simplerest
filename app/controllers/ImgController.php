@@ -152,7 +152,7 @@ class ImgController extends MyController
             $row_count++;
         }
 
-        // StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
+        //StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
         // StdOut::pprint("$row_count : row count");
 
         //  StdOut::pprint($h_feets, 'h');
@@ -163,8 +163,6 @@ class ImgController extends MyController
 
         $bl              = ($beam_length * $boxes_per_row);
         $bl_with_margins = (int) ($bl * 1.034599); 
-
-        StdOut::pprint("bl_with_margins " .$bl_with_margins);
 
         if ($bl_with_margins > $len){
             $boxes_per_row--;
@@ -179,7 +177,7 @@ class ImgController extends MyController
         $color_inv = true;
 
         // Definir dimensiones y colores
-        $ancho = 800;
+        $ancho = 600;
         $alto  = 1280;
 
         $colors = [ 
@@ -270,13 +268,17 @@ class ImgController extends MyController
         // duplas considerando que la primera linea y la ultima formarian otra
         $duos  = ($row_count-1);
 
+        // Altura de todo el arreglo
         $y_dif = ($duos * $h) + ($interline * ($row_count-1)) - 1   - ($row_count -2) * $h -$h;
+
+        // Ancho total especificado (convertido a pixels) por el usuario como parametro
+        $y_usr = $y_dif * $w_feets / M::toFeet($w_acc);
 
         // Middle line
         $im->line($x_med, $y, 0, $y_dif, null, true);
 
         // Line at the right
-        $im->line($x_end + 20, $y, 0, $y_dif);
+        $im->line($x_end + 20, $y, 0, $y_usr);
    
         /*
             Rows
@@ -306,7 +308,7 @@ class ImgController extends MyController
         $im->text($x - 2, $y + $h  -3, "$upright_depth''"              , null, $font_2, 15);
 
         // Numero que aparece apaisado del lado derecho
-        $im->text($x_end + 45, floor($y_dif / 2), $w_feets . "'",   null, $font_2, 15, 90);
+        $im->text($x_end + 45, floor($y_usr / 2), $w_feets . "'",   null, $font_2, 15, 90);
 
         // Leyendas de los pasillos (aisle)
         $lbl = M::toFeetAndInches($aisle);
@@ -319,6 +321,8 @@ class ImgController extends MyController
         $im->render();                      
     }
     
+
+     //////////////////////////////// x ///////////////////////////////////
    
     /*
         Voy a intentar simular "layers" -- no funciona
