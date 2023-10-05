@@ -22,6 +22,10 @@ function base_url(){
 }
 
 function consume_api(string $url, string $http_verb = 'GET', $body = null, $headers = null, $options = null, $decode = true, $encode_body = true, $cache_time = null){
+    if (substr($url, 0, 1) == '/'){
+        $url = base_url() . $url;
+    }
+    
     $cli = (new ApiClient($url))
     ->withoutStrictSSL();
 

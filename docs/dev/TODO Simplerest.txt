@@ -1,6 +1,23 @@
 TODO SimpleRest
 ===============
 
+- Implementar modularizacion via "plugins" que permitira "encapsular" y asi poder "portar" facilmente a WordPress y evitar que DumbController
+se siga llenando de basura de diversos plugins.
+
+app\plugins\rack_quoter +
+                          config +
+                                  config.php
+                                  routes.php
+                          controllers
+                          models
+                          views
+                          ...
+                          shortcodes 
+
+Tendria que existir una forma via comando de convertir un "plugin" en un "package" con lo cual podria ser instalado via Composer dentro de SimpleRest.
+
+Esto tiene sentido si los plugins de SR pudieran ser utilizados en aplicaciones y no simplemente como "banco de pruebas" (testbed) para Wordpress.
+
 - Depurar CSS usando SimpleRest ... no puede pesar 1Mb !!!
 
 - Ademas deberiaaaaa minificarse y quedar en /dist y si config()['app_env']=production entonces 
