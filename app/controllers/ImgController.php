@@ -25,7 +25,7 @@ class ImgController extends MyController
         Imaginator::disable();
         StdOut::showResponse();
 
-        $this->render_01();
+        $this->render_rack_array();
     }
     
     function test(){
@@ -107,7 +107,7 @@ class ImgController extends MyController
                 </div>
 
                 <div class="col-md-9"> 
-                    <img src="/img/render_01?<?= $params ?>" id="rendered-img" width="100%" >
+                    <img src="/img/render_rack_array?<?= $params ?>" id="rendered-img" width="100%" >
                 </div>
             </div>
         </div>
@@ -206,7 +206,7 @@ class ImgController extends MyController
         return $pallets;
     }
 
-    function render_01()
+    function render_rack_array()
     {
         /*
             Seria mejor que fueran propiedades estaticas para evitar re-calcular
@@ -226,7 +226,7 @@ class ImgController extends MyController
         $color_inv = true;
 
         // Definir dimensiones y colores
-        $ancho = 600;
+        $ancho = 800; // $_GET['img_w']
         $alto  = 600; // antes 1280
 
         $colors = [ 
