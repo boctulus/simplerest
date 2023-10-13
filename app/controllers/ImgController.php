@@ -239,7 +239,7 @@ class ImgController extends MyController
         $font_2 = ASSETS_PATH . 'fonts/Swiss721BT-Light.otf';
 
         if ($row_count > 5){
-            $alto *= intval($row_count/4.5); 
+            $alto *= intval($row_count/4); 
         }
 
         if ($boxes_per_row > 22){
