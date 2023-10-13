@@ -21,6 +21,7 @@
 		'activate',
 		'active:/f/',
 		'active:/m/',
+		'licence activation',
 		'activation',
 		'licence',
 		'repository',
