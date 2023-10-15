@@ -75,12 +75,12 @@ class Curiosite
 
         if ($is_url){
             if (!Strings::contains('/producto/', $ori)){
-                Files::logger("Parsing of $ori as failed");
+                Logger::log("Parsing of $ori as failed");
                 return;
             }
         } else {
             if (!Strings::contains('product-details', $html)){
-                Files::logger("Parsing of $ori as failed");
+                Logger::log("Parsing of $ori as failed");
                 return;
             }
         }

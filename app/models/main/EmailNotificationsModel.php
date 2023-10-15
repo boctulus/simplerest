@@ -38,7 +38,7 @@ class EmailNotificationsModel extends MyModel
 
 			if ($username == false){
 				$username = 'Usuario';
-				Files::logger("Username para {$data['to_addr']} es indefinido !");
+				Logger::log("Username para {$data['to_addr']} es indefinido !");
 			}
 
 			Mails::sendMail($data['to_addr'], $username, $data['subject'], $data['body']);
