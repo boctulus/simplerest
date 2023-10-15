@@ -10896,7 +10896,7 @@ La estructura básica de un CronJob es:
 		static protected $month;
 		static protected $monthday;
 		static protected $weekday;
-		static protected $hour; 
+		static protected $hour; 	
 		static protected $minute;
 		static protected $second;
 		static protected $is_active = true;
@@ -10949,7 +10949,7 @@ El comando para crear un CronJon es "make cronjob {name}"
 
 	php com make cronjob {name}
 
-Para remover un cronJon con --remove
+Para remover un cronJob con --remove
 
 	php com make cronjob {name} --remove 
 

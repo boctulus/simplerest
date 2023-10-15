@@ -1,7 +1,7 @@
 <?php
 
 use simplerest\core\libs\CronJob;
-use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 
 class OtherJob extends CronJob
 {
@@ -14,6 +14,6 @@ class OtherJob extends CronJob
 
 	function run(){
 		// your logic here
-		Files::logger(get_class());
+		Logger::log(get_class());
 	}
 }

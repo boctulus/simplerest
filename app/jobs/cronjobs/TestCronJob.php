@@ -1,15 +1,15 @@
 <?php
 
-use simplerest\core\libs\CronJob;
 use simplerest\core\libs\Logger;
+use simplerest\core\libs\CronJob;
 
-class XCronJob extends CronJob
+class TestCronJob extends CronJob
 {
 	static protected $month;
     static protected $monthday;
 	static protected $weekday;
 	static protected $hour = 21; 
-	static protected $minute;
+	static protected $minute = 10;
 	static protected $second = 5;
 	static protected $is_active = true;
 
@@ -21,8 +21,7 @@ class XCronJob extends CronJob
 
 
 	function run(){
-		// your logic here
-		Logger::log("Bum bum bum");
+		Logger::log(__CLASS__);
 	}
 	
     /*
