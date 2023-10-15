@@ -1,7 +1,7 @@
 <?php
 
 use simplerest\core\libs\CronJob;
-use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 
 class SomeJob extends CronJob
 {
@@ -23,7 +23,7 @@ class SomeJob extends CronJob
 	function run(){
 		// your logic here
 		echo "hi ";
-		Files::logger(get_class());
+		Logger::log(get_class());
 
 		$num = rand(1,10);
 
@@ -37,7 +37,7 @@ class SomeJob extends CronJob
 	}
 
 	function onFail(\Exception $error, int $times){
-		Files::logger(get_class() . " has failed $times times. Now with ". $error->getMessage());
+		Logger::log(get_class() . " has failed $times times. Now with ". $error->getMessage());
 	}
 
 }
