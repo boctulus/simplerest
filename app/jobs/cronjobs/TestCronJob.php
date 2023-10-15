@@ -9,8 +9,8 @@ class TestCronJob extends CronJob
     static protected $monthday;
 	static protected $weekday;
 	static protected $hour = 21; 
-	static protected $minute = 10;
-	static protected $second = 5;
+	static protected $minute;
+	static protected $second = 2;
 	static protected $is_active = true;
 
 	/*
@@ -21,6 +21,7 @@ class TestCronJob extends CronJob
 
 
 	function run(){
+		// Codigo a ejecutar periodicamente. Ej:
 		Logger::log(__CLASS__);
 	}
 	
@@ -29,7 +30,8 @@ class TestCronJob extends CronJob
         @param $times int number of fails
     */
     function onFail(\Exception $error, int $times){
-    }
+    
+	}
 
     function onSuccess(){
 

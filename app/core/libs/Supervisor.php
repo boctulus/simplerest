@@ -12,6 +12,7 @@ class Supervisor
 
     static function start() {
         static::stop();
+        sleep(1);
         static::scan();
 
         DB::getDefaultConnection();
@@ -47,24 +48,36 @@ class Supervisor
 
     static function stop(){
         DB::getDefaultConnection();
-
+    
         $pids = DB::table('background_process')
         ->pluck('pid');
-
+    
         if (empty($pids)){
             return;
         }
-
+    
         foreach ($pids as $pid){
-            $exit_code = shell_exec("kill $pid 2>/dev/null && echo $?");
-
+            $exit_code = null;
+    
+            switch (PHP_OS_FAMILY) {
+                case 'Windows':
+                    $exit_code = shell_exec("taskkill /F /PID $pid 2>nul && echo %errorlevel%");
+                    break;
+                case 'Linux':
+                    $exit_code = shell_exec("kill $pid 2>/dev/null && echo $?");
+                    break;
+                default:
+                    // unsupported
+                    break;
+            }
+    
             if ($exit_code == 0){
                 DB::table('background_process')
                 ->where(['pid' => $pid])
                 ->delete();
             }
         }
-    }
+    }    
 
     static protected function scan(){
         foreach (new \FilesystemIterator(CRONOS_PATH) as $fileInfo) {
