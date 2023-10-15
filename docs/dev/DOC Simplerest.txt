@@ -10943,6 +10943,17 @@ El siguiente cron job se ejecuta cada 5 segundos a las 21 Hs de cada día.
 		}
 	}
 
+Si quisiera a las 21 Hs ejecutar *cada minuto* seria asi:
+
+	static protected $month;
+	static protected $monthday;
+	static protected $weekday;
+	static protected $hour = 21;  // a las 21 Hs
+	static protected $minute = 1;  // cada minuto
+	static protected $second;
+	static protected $is_active = true;
+
+
 Comandos 
 
 El comando para crear un CronJon es "make cronjob {name}"
