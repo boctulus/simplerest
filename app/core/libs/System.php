@@ -104,11 +104,12 @@ class System
                 if ($output_path !== null){
                     $cmd .= " >> $output_path";
                 }
-
-                $shell = new \COM("WScript.Shell");
-                $shell->Run($cmd);
-                $shell = null;
-
+    
+                $WshShell = new \COM("WScript.Shell");
+                $oExec = $WshShell->Exec($cmd);
+                $pid = (int) $oExec->ProcessID;
+                $WshShell = null;
+    
                 break;
             case 'Linux':
                 if ($output_path !== null){

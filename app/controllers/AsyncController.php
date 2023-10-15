@@ -22,7 +22,7 @@ class AsyncController extends MyController
         } 
 
         $job = new $class_name();
-        d($class_name, 'job name');
+        //dd($class_name, 'job name');
 
         if (! $job instanceof CronJob){
             throw new \Exception ("Class '$class_name' should be instance of CronJob");
