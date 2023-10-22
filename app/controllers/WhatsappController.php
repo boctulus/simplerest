@@ -59,6 +59,11 @@ class WhatsappController extends MyController
         return $this->link($phone, $message);
     }
 
+    // Ej: php com whatsapp to '+55 11 91846‑0531'
+    function to($phone = null){
+        return $this->link($phone);
+    }
+
     /*
         El front controller requiere explicitamentar el action del controlador. No funciona. Podria fixearse
 
