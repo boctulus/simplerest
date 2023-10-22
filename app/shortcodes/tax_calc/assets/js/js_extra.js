@@ -1,0 +1,1 @@
+var tf_options = {"cash_outlay_bg":"#009900","tax_savings_bg":"#424242","title_color":"#F7690A","title_style":"normal","title_font":"Lato","title_size":"20","tooltip_bg":"#888888"};

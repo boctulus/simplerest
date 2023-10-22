@@ -5,8 +5,14 @@ use simplerest\libs\Debug;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Logger;
+use simplerest\shortcodes\tax_calc\TaxCalcShortcode;
 
 $route = Route::getInstance();
+
+Route::get("tax_calc", function() use ($route) {
+	set_template('templates/tpl_bt3.php');          
+	render(TaxCalcShortcode::get());
+});
 
 Route::get('mem', function(){
 	dd(System::getMemoryLimit(), 'Memory limit');
@@ -19,7 +25,7 @@ Route::get('mem', function(){
 
 Route::get('git/pull', function(){
 	dd(
-		System::exec("git pull")
+		System::execAtRoot("git pull")
 	);
 });
 
