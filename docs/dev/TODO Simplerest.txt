@@ -199,13 +199,7 @@ Ej:
 	_________________________
 	_}________________________
 
-	[ Resultado               ]
-
-	_{________________________
-	_________________________
-	_}________________________
-
-
+	
 * Ademas debe validar el token y JSON del request.
 
 https://api.inmofactory.com/Help/Property/JsonValidator

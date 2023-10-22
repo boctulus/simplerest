@@ -8698,8 +8698,7 @@ En este caso la pagina se buscara dentro de /pages/admin
 # Shortcodes
 
 Como una forma de poder portar codigo desde y hacia WordPress se han implementado "shortcodes" que no es mas que una forma
-de organizar el codigo de forma modular.
-
+de organizar el codigo de forma modular:
 
 app\
 	shortcodes\
@@ -8728,7 +8727,7 @@ Dentro de la carpeta del shortcode se debe crear un archivo .php que actua como 
 
 Como se pude observar dentro del shortcode se hace en enccolado de assets y se llama a la vista.
 
-Luego a fin de poder usar el shortcode se crearia un controller o se podria invocar desde una ruta:
+Luego a fin de poder usar el shortcode se crearia un controller:
 
 	class PalletRackQuoterController extends MyController
 	{
@@ -8738,6 +8737,19 @@ Luego a fin de poder usar el shortcode se crearia un controller o se podria invo
 			render(RackQuoterShortcode::get());
 		}
 	}
+
+O desde una ruta:
+
+	Route::get("tax_calc", function() {
+		set_template('templates/tpl_bt3.php');          
+		render('RackQuoterShortcode::get());
+	});
+
+Nota:
+
+Lo ideal seria que la ruta a la carpeta que contiene el "shortcode" pudiera ser arbitraria con lo cual podria 
+usarse como un HMVC de CodeIgniter. Ademas podria contener el o los controladores con lo que quedaria complementado empaquetado
+no dejando nada suelto.
 
 
 # Cache
