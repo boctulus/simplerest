@@ -1,6 +1,17 @@
 TODO SimpleRest
 ===============
 
+- Ver de utilizar el siguiente Form Builder (drag and drop) para jQuery <-- util tb para WP
+
+https://github.com/kevinchappell/formBuilder
+https://formbuilder.online/ <-- demo
+
+
+- Ver de utilizar complemento para jQuery que permite calcular en tiempo real como planilla de Excel <-- util tb para WP
+
+https://github.com/xsanisty/calx.js
+
+
 - Implementar modularizacion via "plugins" que permitira "encapsular" y asi poder "portar" facilmente a WordPress y evitar que DumbController
 se siga llenando de basura de diversos plugins.
 

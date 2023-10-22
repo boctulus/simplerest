@@ -3,7 +3,7 @@
 namespace simplerest\jobs\tasks;
 
 use simplerest\core\libs\Task;
-use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 
 class UnaTask extends Task
 { 
