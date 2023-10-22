@@ -8842,5 +8842,21 @@ class DumbController extends Controller
         );
     }
 
+    function just_asdf(){
+        $urls = <<<URLS
+        https://terrafunds.ca/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1
+        https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/js/numeral.min.js?ver=6.3.2
+        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/jquery-calx-2.2.6.js?ver=1697748178
+        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/tf_tc_script.js?ver=1697748178
+        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/tf_tc_charts_config.js?ver=1697748178
+        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/js/jquery.formatCurrency.js?ver=1697748178
+        https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/jquery.ui.touch-punch.min.js?ver=6.3.2
+        URLS;
+
+        $url_ay = Strings::lines($urls, true, true);
+
+        Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
+    }
+
 
 }   // end class

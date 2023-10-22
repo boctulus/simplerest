@@ -10305,6 +10305,7 @@ La clase Strings provee una batería de métodos para manejo conveniente de cade
 	removeTrailingSlash(string $path): string
 	addTrailingSlash(string $path): string
 	...
+	lines()
 
 
 Strings::match() verifica si el string cumple con el patrón o alguno de los patrones proporcionados.
@@ -10347,6 +10348,27 @@ Ej:
 El parámetro *no* lleva argumento y puede ser --dropPrimary o --delPrimary 
 
 	$_dropPrimary  = Strings::matchParam($str, ['dropPrimary', 'delPrimary'], null);
+
+
+Metodo lines()
+
+Una forma sencilla de convertir una lista en un archivo de texto o HEREDOC a un array de strings es usando Strings::lines()
+
+Ej:
+
+	$urls = <<<URLS
+	https://terrafunds.ca/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1
+	https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/js/numeral.min.js?ver=6.3.2
+	https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/jquery-calx-2.2.6.js?ver=1697748178
+	https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/tf_tc_script.js?ver=1697748178
+	https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/tf_tc_charts_config.js?ver=1697748178
+	https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/js/jquery.formatCurrency.js?ver=1697748178
+	https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/jquery.ui.touch-punch.min.js?ver=6.3.2
+	URLS;
+
+	$url_ay = Strings::lines($urls, true, true);
+
+	Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
 
 
 # Casting
