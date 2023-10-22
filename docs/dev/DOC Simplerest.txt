@@ -8519,6 +8519,12 @@ Los hooks están presentes en la clase View y su clase derivada MyView.
 
 # Pages
 
+El objetivo es tener el equivalente a distintos mini-controllers (llamados paginas) que conviran en la misma ruta de la url donde 
+a a su vez cada pagina podra tener su propio theme (template).
+
+Esto mismo se podria lograr simplemente creando mas controladores y luego configurando el router aunque como el router actualmente
+no permite crear "grupos" seria algo mas verboso. Sin embargo, las "pages" no son escenciales y pueden estar aportando complejidad innecesaria.
+
 Cualquier controlador puede contener "paginas" las cuales deben estar dentro de /pages o alguna sub-carpeta. 
 Para poder utilizarlas es necesario incluir el Trait PagesTrait.
 
@@ -8545,7 +8551,7 @@ Ej:
 		// ..
 	}
 
-Entonces podran cargarse paginas como /controlador/pagina via FrontController y convivir con entradas del router para el mismo segmento correspondiente al nombre del controlador.  
+Entonces podran cargarse paginas como /controlador/{pagina} via FrontController y convivir con entradas del router para el mismo segmento correspondiente al nombre del controlador.  
 
 	Ej:
 
@@ -8687,6 +8693,51 @@ Ej:
 	}
 
 En este caso la pagina se buscara dentro de /pages/admin	
+
+
+# Shortcodes
+
+Como una forma de poder portar codigo desde y hacia WordPress se han implementado "shortcodes" que no es mas que una forma
+de organizar el codigo de forma modular.
+
+
+app\
+	shortcodes\
+				{nombre}\
+						  assets\
+						  config\
+						  views\
+
+Dentro de la carpeta del shortcode se debe crear un archivo .php que actua como index. Ej: RackQuoterShortcode.php
+
+	<?php
+
+	namespace simplerest\shortcodes\rack_quoter;
+
+	class RackQuoterShortcode
+	{
+		static function get()
+		{ 
+			css_file('vendors/bootstrap/3.x/normalize.css');
+			css_file(__DIR__ . '/assets/css/racks.css'); 
+			css_file(__DIR__ . '/assets/css/styles.css');
+		
+			return get_view(__DIR__ . '/views/racks.php', null);              
+		}
+	}
+
+Como se pude observar dentro del shortcode se hace en enccolado de assets y se llama a la vista.
+
+Luego a fin de poder usar el shortcode se crearia un controller o se podria invocar desde una ruta:
+
+	class PalletRackQuoterController extends MyController
+	{
+		function index()
+		{  
+			set_template('templates/tpl_bt3.php');          
+			render(RackQuoterShortcode::get());
+		}
+	}
 
 
 # Cache
