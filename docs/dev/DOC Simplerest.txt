@@ -8745,11 +8745,28 @@ O desde una ruta:
 		render('RackQuoterShortcode::get());
 	});
 
+Assets dentro de shortcodes
+
+El path de assets se obtiene normalmente con asset() pero para el caso de que este dentro de un shortcode,
+es con shortcode_asset()
+
+Ej:
+
+	<div class="main-img">
+	  <img src="<?= asset('img/1x1-00ff007f.png') ?>" id="rendered-img">
+	  <br>
+	  <img src="<?= shortcode_asset(__DIR__ . '/img/datasheet_blank.jpeg') ?>" id="rendered-datasheet">
+	</div>
+
+
 Nota:
 
 Lo ideal seria que la ruta a la carpeta que contiene el "shortcode" pudiera ser arbitraria con lo cual podria 
 usarse como un HMVC de CodeIgniter. Ademas podria contener el o los controladores con lo que quedaria complementado empaquetado
 no dejando nada suelto.
+
+Si se generalizara la ruta de los shortcodes entonces deberia depredicarse shortcode_asset() y buscar una funcion
+que pudiera reemplazarla quizassssss cargando assets con rutas relativas !!!
 
 
 # Cache

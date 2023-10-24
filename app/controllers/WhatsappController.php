@@ -2,22 +2,42 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
-use simplerest\core\Request;
-use simplerest\core\Response;
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Strings;
-use simplerest\core\libs\DB;
+use simplerest\controllers\MyController;
+
 
 class WhatsappController extends MyController
 {
     /*
         https://tinyurl.com/wa-boctulus
     */
-    protected $phone = '+44 754 1919915';
+    protected $phones = [
+        'uk' => '+44 754 1919915',
+        'ph' => '+63 9620738513',
+        'es' => '+34 644 149161',
+    ];
 
     function __construct()
     {
-       $this->setPhone($this->phone);
+       $this->setPhone(Arrays::arrayValueFirst($this->phones));
+    }
+
+    function help(){
+        echo <<<STR
+        WHATSAPP COMMAND HELP
+
+        Ex.
+
+        php com whatsapp
+        php com whatsapp {numero}
+        php com whatsapp {numero} '{mensaje}'
+        php com whatsapp alias=ph
+        php com whatsapp getPhone es
+        php com whatsapp tinyurl
+        STR;
+
+        print_r(PHP_EOL);
     }
 
     private function sanitize($phone){
@@ -28,23 +48,46 @@ class WhatsappController extends MyController
     }
 
     function setPhone($phone){
-        $this->phone = $this->sanitize($phone); 
-    }
-
-    function index()
-    {
-        return $this->link();            
+        $this->phones[] = $this->sanitize($phone); 
     }
 
     /*
-        Tiene quemado el numero de UK
+        Ej:
+        
+        php com whatsapp getPhone uk
     */
-    function tinyurl(){
-        return 'https://tinyurl.com/wa-boctulus';
+    function getPhone($alias){
+        return ($this->phones[$alias]); 
     }
 
-    function link($phone = null, $message = null){
-        $phone = $phone ?? $this->phone;        
+    function index($alias = null)
+    {
+        if (!empty($alias)){
+            $phone = $this->phones[$alias];
+            return $this->_link($phone);
+        }
+
+        return $this->_link();            
+    }
+
+    /*
+        Devuelve:
+
+        https://tinyurl.com/wa-boctulus-uk
+        https://tinyurl.com/wa-boctulus-es
+        https://tinyurl.com/wa-boctulus-ph
+        
+        o sino se especifica alias,...
+
+        https://tinyurl.com/wa-boctulus
+    */
+
+    function tinyurl($alias = null){
+        return 'https://tinyurl.com/wa-boctulus' . ($alias != null ? "-$alias" :'');
+    }
+
+    private function _link($phone = null, $message = null){
+        $phone = $phone ?? Arrays::arrayValueFirst($this->phones);        
 
         $phone = $this->sanitize($phone);
 
@@ -55,27 +98,26 @@ class WhatsappController extends MyController
         }
     }   
 
-    function get($phone = null, $message = null){
-        return $this->link($phone, $message);
-    }
-
     // Ej: php com whatsapp to '+55 11 91846‑0531'
-    function to($phone = null){
-        return $this->link($phone);
+    function to($phone = null, $message = null){
+        return $this->_link($phone, $message);
     }
 
     /*
-        El front controller requiere explicitamentar el action del controlador. No funciona. Podria fixearse
+        Habilita nuevos comandos y opciones
 
-        Otra opcion seria tener un router para la consola
+        Ej:
+
+        php com whatsapp {numero}
+        php com whatsapp alias=ph
     */
     function __call($name, $arguments)
     {
-        if (!is_numeric($name)){
-            throw new \InvalidArgumentException("Comando '$name' no valido");
-        }
-
-        return $this->link($name, ...$arguments);
+        if (is_numeric($name)){
+            return $this->_link($name, ...$arguments);
+        } else if (Strings::contains("=", $name)){
+            return $this->index(Strings::after($name,"="), $arguments);
+        }        
     }
 }
 
