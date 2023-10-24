@@ -3,10 +3,13 @@
 namespace simplerest\controllers;
 
 use simplerest\controllers\MyController;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
+
+/*
+    php com paypal_calc
+    php com paypal_calc fee 100
+    php com paypal_calc get 100
+    php com paypal_calc send 100
+*/
 
 class PaypalCalcController extends MyController
 {
@@ -17,11 +20,26 @@ class PaypalCalcController extends MyController
     static protected $per   = 5.4;
     static protected $fixed = 0.3;
     static protected $round_fn = null; // 'floor';
-    static protected $paypal_me = 'paypal.me/binsolver';
+    static protected $paypal_me = 'paypal.me/kodeservices';
 
     function __construct()
     {
         parent::__construct();        
+    }
+
+    function help(){
+        echo <<<STR
+        PAYPAL_CALC COMMAND HELP
+
+        Ex.
+
+        php com paypal_calc
+        php com paypal_calc fee 100
+        php com paypal_calc get 100
+        php com paypal_calc send 100
+        STR;
+
+        print_r(PHP_EOL);
     }
 
     function index(){
