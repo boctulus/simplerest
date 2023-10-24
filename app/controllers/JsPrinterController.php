@@ -14,10 +14,16 @@ class JsPrinterController extends MyController
     {
         parent::__construct();        
     }
-
+    
     function index()
     {
-       view('js_printer.php');                
+       js_file("vendors/printThis/printThis.js");
+       view('js_print-this.php');                
+    }
+
+    function basic()
+    {
+       view('js_printer-2.php');                
     }
 }
 
