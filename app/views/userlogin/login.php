@@ -16,7 +16,7 @@
 
 		Bt5Form::setIdAsName();
 
-		// css_file('vendors/adminlte/dist/css/adminlte.css');
+		// css_file('third_party/adminlte/dist/css/adminlte.css');
 	
 		echo tag('card')
 		->header(tag('cardTitle')->text('Ingreso'))

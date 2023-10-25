@@ -17,7 +17,7 @@ class JsPrinterController extends MyController
     
     function index()
     {
-       js_file("vendors/printThis/printThis.js");
+       js_file("third_party/printThis/printThis.js");
        view('js_print-this.php');                
     }
 
