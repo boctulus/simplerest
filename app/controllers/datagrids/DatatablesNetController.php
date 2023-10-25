@@ -26,7 +26,7 @@ class DatatablesNetController extends MyController
     function index()
     {   
         css_file('https://cdn.datatables.net/v/dt/jqc-1.12.4/dt-1.13.1/b-2.3.2/sl-1.5.0/datatables.min.css');
-		css_file('vendors/datatables/css/editor.dataTables.min.css');
+		css_file('third_party/datatables/css/editor.dataTables.min.css');
         css_file('https://cdn.datatables.net/buttons/1.1.2/css/buttons.dataTables.min.css');
         css_file('https://cdn.datatables.net/select/1.1.2/css/select.dataTables.min.css');
         css_file("https://cdn.datatables.net/responsive/2.0.2/css/responsive.dataTables.min.css");
