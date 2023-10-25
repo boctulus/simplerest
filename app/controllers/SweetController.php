@@ -12,8 +12,8 @@ class SweetController extends MyController
 {
     function index()
     {
-        css_file('vendors/sweetalert2/sweetalert2.min.css');
-        js_file('vendors/sweetalert2/sweetalert.js');
+        css_file('third_party/sweetalert2/sweetalert2.min.css');
+        js_file('third_party/sweetalert2/sweetalert.js');
 
         view('sweet.php');                       
     }

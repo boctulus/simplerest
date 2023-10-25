@@ -25,19 +25,19 @@ var_encode('entity',   $entity);
 var_encode('tenantid', $tenantid ?? 'main');
 
 /** Hojas de estilo */
-css_file('vendors/tabulator/dist/css/tabulator_bootstrap5.min.css');
+css_file('third_party/tabulator/dist/css/tabulator_bootstrap5.min.css');
 css_file('css/theme.css');
 css_file('css/bt-custom.css');
 
 /** Scripts */
-js_file('vendors/axios/axios.min.js', null, true);
+js_file('third_party/axios/axios.min.js', null, true);
 js_file('js/bootstrap/bt_validation_ss.js');
 js_file('js/bootstrap/bt-utilities.js');
 js_file('js/utilities.js', null, true);
 js_file('js/main/view.js', null, true); // Scripts de la vista
 js_file('js/plugins/jsPDF/jspdf.umd.min.js');
 js_file('js/plugins/jsPDF/autotable/jspdf.plugin.autotable.min.js');
-js_file('vendors/sweetalert2/sweetalert2@11.js');
+js_file('third_party/sweetalert2/sweetalert2@11.js');
 
 echo tag('div')->content([
     tag('openButton')

@@ -8,11 +8,11 @@
 
     <?= base() ?>
 
-    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/3.x/bootstrap.min.css') ?>">  <!-- Bootstrap 3.x -->
-    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
+    <link rel="stylesheet" href="<?= asset('third_party/bootstrap/3.x/bootstrap.min.css') ?>">  <!-- Bootstrap 3.x -->
+    <link rel="stylesheet" href="<?= asset('third_party/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
 
     <!-- jQuery -->
-    <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= asset('third_party/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
 
     <?php
         head();  
@@ -30,7 +30,7 @@
         <?= $footer_content ?? '' ?>
             
         <!-- Bootstrap 3.x -->
-        <script src="<?= asset('vendors/bootstrap/3.x/bootstrap.bundle.min.js') ?>"></script>
+        <script src="<?= asset('third_party/bootstrap/3.x/bootstrap.bundle.min.js') ?>"></script>
     
         <?php
             footer();  

@@ -21,7 +21,7 @@ class HtmlDemo1Controller extends MyController
     function __construct()
     {
         parent::__construct();
-        //css_file('vendors/tabulator/dist/css/tabulator_bootstrap5.min.css');
+        //css_file('third_party/tabulator/dist/css/tabulator_bootstrap5.min.css');
     }
 
     function index()

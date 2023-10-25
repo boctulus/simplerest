@@ -207,6 +207,6 @@ user!</a></td>
         Importante para la DEMO
     */
 
-    js_file('vendors/x-editable/demo/demo.js');
-    js_file('vendors/x-editable/demo/demo-mock.js');
+    js_file('third_party/x-editable/demo/demo.js');
+    js_file('third_party/x-editable/demo/demo-mock.js');
 ?>
