@@ -13,9 +13,9 @@ class Tabulator /* extends Page */
 
     function __construct()
     {   
-        css_file('vendors/tabulator/dist/css/tabulator.min.css');
-        //css_file('vendors/tabulator/dist/css/tabulator_bootstrap5.min.css');
-        js_file('vendors/tabulator/dist/js/tabulator.min.js');
+        css_file('third_party/tabulator/dist/css/tabulator.min.css');
+        //css_file('third_party/tabulator/dist/css/tabulator_bootstrap5.min.css');
+        js_file('third_party/tabulator/dist/js/tabulator.min.js');
     }
 
     function index($entity = 'emergencias')

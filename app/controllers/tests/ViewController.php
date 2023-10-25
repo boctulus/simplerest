@@ -60,7 +60,7 @@ class ViewController extends MyController
     }
     
     function test_enqueue_css_asset_local(){
-        css_file('vendors/bootstrap/3.x/normalize.css');
+        css_file('third_party/bootstrap/3.x/normalize.css');
         render("Deberia haberse encolado un .css");
     }
 

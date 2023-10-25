@@ -14,7 +14,7 @@ AdminLte::macro('salutor', function ($name, $adj, Array $att = []) {
 
 AdminLte::setIdAsName();
 
-View::css_file(ASSETS_PATH . 'vendors/adminlte/dist/css/adminlte.css');
+View::css_file(ASSETS_PATH . 'third_party/adminlte/dist/css/adminlte.css');
 
 ?>
 
@@ -1355,7 +1355,7 @@ View::css_file(ASSETS_PATH . 'vendors/adminlte/dist/css/adminlte.css');
 
 <?php
     // revisar no este roto
-    View::js_file(ASSETS_PATH . 'vendors/adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
+    View::js_file(ASSETS_PATH . 'third_party/adminlte/plugins/ion-rangeslider/js/ion.rangeSlider.min.js');
 ?>
 
 <script>

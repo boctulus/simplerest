@@ -16,17 +16,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="<?= asset('vendors/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
+    <link rel="stylesheet" href="<?= asset('third_party/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
     <!-- Theme style -->
-    <link rel="stylesheet" href="<?= asset('vendors/adminlte/dist/css/adminlte.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('third_party/adminlte/dist/css/adminlte.min.css') ?>">
 
     <!-- bootstrap 5.1.3 solo css -->
-    <link rel="stylesheet" href="<?= asset('vendors/bootstrap/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('third_party/bootstrap/bootstrap.min.css') ?>">
 
     <!--
         https://jsfiddle.net/u910ed2L/6/v
     -->
-    <link href="<?= asset('vendors/tabulator/dist/css/tabulator_midnight.min.css') ?>" rel="stylesheet">
+    <link href="<?= asset('third_party/tabulator/dist/css/tabulator_midnight.min.css') ?>" rel="stylesheet">
 
     <?=
         umodel();
@@ -36,7 +36,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
      <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
 
     <!-- jQuery -->
-    <script src="<?= asset('vendors/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= asset('third_party/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
 
     <script src="<?= asset('js/login.js') ?>"></script>
 
@@ -122,7 +122,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="<?= asset('vendors/adminlte/dist/img/user1-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                <img src="<?= asset('third_party/adminlte/dist/img/user1-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Brad Diesel
@@ -138,7 +138,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="<?= asset('vendors/adminlte/dist/img/user8-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="<?= asset('third_party/adminlte/dist/img/user8-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         John Pierce
@@ -154,7 +154,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="<?= asset('vendors/adminlte/dist/img/user3-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="<?= asset('third_party/adminlte/dist/img/user3-128x128.jpg') ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Nora Silvester
@@ -220,7 +220,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="/" class="brand-link text-decoration-none">
-                <img src="<?= asset($logo ?? 'vendors/adminlte/dist/img/AdminLTELogo.png') ?>" alt="<?= $logo_alt ?? '' ?>" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src="<?= asset($logo ?? 'third_party/adminlte/dist/img/AdminLTELogo.png') ?>" alt="<?= $logo_alt ?? '' ?>" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light"><?= $brand_name ?? '&nbsp;' ?></span>
             </a>
 
@@ -329,8 +329,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
     
     <!-- AdminLTE App -->
-    <script src="<?= asset('vendors/adminlte/dist/js/adminlte.min.js') ?>"></script>
-    <script src="<?= asset('vendors/adminlte/dist/js/darktheme.js') ?>"></script>
+    <script src="<?= asset('third_party/adminlte/dist/js/adminlte.min.js') ?>"></script>
+    <script src="<?= asset('third_party/adminlte/dist/js/darktheme.js') ?>"></script>
 
     <?php
         footer();  
