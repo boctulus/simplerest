@@ -7,9 +7,11 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Dom;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
+use simplerest\core\libs\XML;
 
 class Curiosite
 {
@@ -87,7 +89,7 @@ class Curiosite
 
       
 
-        $doc   = Dom::getDomDocument($html);
+        $doc   = XML::getDocument($html);
         $xpath = new \DOMXPath($doc);
         
         

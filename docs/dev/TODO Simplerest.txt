@@ -1,6 +1,23 @@
 TODO SimpleRest
 ===============
 
+- Implementar urgente campos tipo:
+
+  Dropdown (select-option)
+  TinyMCE
+  File upload
+  Image upload (debe generar y mostrar thumbnail de el o los tamaños especificados)
+  Gallery image upload (Similar a "Image upload" pero el tamaño por defecto seria mayor)
+
+- Implementar relaciones usando Select2 
+
+- Implementar filtros de Tabulator
+
+Puede quedar como aqui:
+
+https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y ya salio la 5.5
+
+
 - Ver de utilizar el siguiente Form Builder (drag and drop) para jQuery <-- util tb para WP
 
 https://github.com/kevinchappell/formBuilder
@@ -7507,3 +7524,14 @@ de la tabla
 https://codex.wordpress.org/Creating_Tables_with_Plugins#Creating_or_Updating_the_Table
 
 Es posible con Schema lograrlo? Creo recordar haber implementado algo.
+
+
+- Implementar protección CSRF 
+
+En si, un string es generado al azar desde el backend enviado a JS en el front que luego es chequeado nuevamente
+al implementar la API en el backend
+
+Seria necesario implementar el equivalente a:
+
+  wp_create_nonce()
+  wp_verify_nonce()

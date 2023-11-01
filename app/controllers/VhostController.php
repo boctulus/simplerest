@@ -39,21 +39,21 @@ class VhostController extends MyController
         */
         
         $vhost_template = "
-<VirtualHost *:{$port}>
-    ServerName {$name}.{$extension}
-    DocumentRoot \"{$this->www_dir}{$name}\"
+        <VirtualHost *:{$port}>
+            ServerName {$name}.{$extension}
+            DocumentRoot \"{$this->www_dir}{$name}\"
 
-    ServerAlias {$name}.{$extension}
+            ServerAlias {$name}.{$extension}
 
-    <Directory \"{$this->www_dir}{$name}\">
-        DirectoryIndex index.htm index.html index.php
-        AllowOverride All
-        Order allow,deny
-        Allow from all
-        Options +Indexes +Includes +FollowSymLinks +MultiViews
-        Require local
-    </Directory>
-</VirtualHost>
+            <Directory \"{$this->www_dir}{$name}\">
+                DirectoryIndex index.htm index.html index.php
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+                Options +Indexes +Includes +FollowSymLinks +MultiViews
+                Require local
+            </Directory>
+        </VirtualHost>
         ";
 
         if (!Strings::contains("{$name}.{$extension}", file_get_contents($this->vhost_conf_path))){
