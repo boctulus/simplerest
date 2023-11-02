@@ -34,10 +34,58 @@ http://acmeextension.com/integrate-twig-with-codeigniter/
 
 - Ver de utilizar el siguiente Form Builder (drag and drop) para jQuery <-- util tb para WP
 
-  -> Tener zonas de anclaje de "widgets"
+  -> Tener zonas de anclaje de "widgets" para un "form builder" de arrastrar y soltar.
 
 https://github.com/kevinchappell/formBuilder
 https://formbuilder.online/ <-- demo
+
+- Poder hookear las distintas vistas de los CRUDs para poder personalizarlas y agregar otros componentes.
+
+Ej:
+
+En /admin/tabulator/orders poder hacer esto:
+
+. Usando un Hook para el CREATE de Orders definir la vista que al estar presente aplicaria. Asi:
+
+  {f:order.created_at}
+  {f:client.name}
+  {f:client.phone_number}
+
+  {hr}
+
+  {row:start}
+    {f:product.name} {f:order.qty} {computed:total; f:product.name * f:order.qty} {btn:add; handler=...}
+  {row:end}
+
+  {row:start}
+    {btn:close; handler=...} {btn:save;handler=...}
+  {row:end}
+
+  {hr}
+
+<-- De estar definido el nombre en singular para esa entidad en el Model correspondiente, podria usarse "order" en vez de "orders" por ejemplo.
+
+Ej: 
+https://www.youtube.com/watch?v=9UZM8MmY1T8
+
+Notas:
+
+Con {f:tabla:nombre-campo} se declararia que un campo de una tabla debe ser mostrado en el datagrid.
+
+Los campos dentro de {row} intentaran ser renderizados en el mismo row
+
+. Mediante el Hook "DATAGRID" para Orders hacer algo similar apuntandole a una vista:
+
+  <h1>Orders</h1>
+
+  {datagrid:start}
+    {filter;params=...}
+    {grid}
+    // ...
+  {datagrid:end}
+
+* Los campos fuera de {datagrid:start} podrian tener otro uso como por ejemplo en {f:cities.name} podria mostrar un select-option 
+pero faltaria en hanlder. Ej: {f:cities.name;on_change:callback()}
 
 - Mediante hooks al estilo WP por ejemplo, permitir parametrizar componentes de las plantillas. Quizas hooks por cada componente de las plantillas.
 
@@ -51,6 +99,11 @@ https://formbuilder.online/ <-- demo
 - Ver de utilizar complemento para jQuery que permite calcular en tiempo real como planilla de Excel <-- util tb para WP
 
 https://github.com/xsanisty/calx.js
+
+
+- En algun momento considerar usar DaisyUI en vez de Bootstrap
+
+https://daisyui.com/components/
 
 
 - Implementar modularizacion via "plugins" que permitira "encapsular" y asi poder "portar" facilmente a WordPress y evitar que DumbController
