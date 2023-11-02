@@ -4,12 +4,20 @@ TODO SimpleRest
 - Implementar urgente campos tipo:
 
   Dropdown (select-option)
+  Radio
+  Checkboxes
   TinyMCE
   File upload
   Image upload (debe generar y mostrar thumbnail de el o los tamaños especificados)
   Gallery image upload (Similar a "Image upload" pero el tamaño por defecto seria mayor)
+  Date picker
+  Time picker
+  Data-time picker
 
-- Implementar relaciones usando Select2 
+- Implementar relaciones usando Select2. Tambien podrian ser opcionalmente con: 
+
+  Checkboxes (sino son demasiados)
+  Radios (sobre todo si las opciones son de tipo si/no o sea campo de tipo "bool")
 
 - Implementar filtros de Tabulator
 
@@ -17,11 +25,27 @@ Puede quedar como aqui:
 
 https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y ya salio la 5.5
 
+- Probar de usar Smarty, Twig o Blade en algún proyecto con SimpleRest. Inclusive se pueden hacer funcionar en CodeIgniter !
+
+https://medium.com/hackeradda/codeigniter-with-blade-templating-engine-daf8d0dd51e9
+http://acmeextension.com/integrate-twig-with-codeigniter/
+
+- Implementar algun motor de plantillas 
 
 - Ver de utilizar el siguiente Form Builder (drag and drop) para jQuery <-- util tb para WP
 
+  -> Tener zonas de anclaje de "widgets"
+
 https://github.com/kevinchappell/formBuilder
 https://formbuilder.online/ <-- demo
+
+- Mediante hooks al estilo WP por ejemplo, permitir parametrizar componentes de las plantillas. Quizas hooks por cada componente de las plantillas.
+
+- Estar en capacidad de implementar algo generico para:
+
+  . Que Registros obtenidos mediante un filtro sean seleccionables via casillas tipo checkbox y con un botón se permita relacionar en un solo paso todos esos registros a otra tabla. Ejemplo: trabajadores a un incendio
+
+  . Poder colorear condicionalmente rows (ej: verde o rojo) de acuerdo a cierto criterio. Ej: si trabajadores o medios están asignados a un incendio.
 
 
 - Ver de utilizar complemento para jQuery que permite calcular en tiempo real como planilla de Excel <-- util tb para WP
@@ -1818,12 +1842,6 @@ Aparentemente es algo parecido a lo que hago con Tag() para simplificar el uso d
 
 
   App::make('some_service')->methodName();
-
-- Probar de usar Smarty, Twig o Blade en algún proyecto con SimpleRest. Inclusive se pueden hacer funcionar en CodeIgniter !
-
-https://medium.com/hackeradda/codeigniter-with-blade-templating-engine-daf8d0dd51e9
-http://acmeextension.com/integrate-twig-with-codeigniter/
-  
 
 ---
 

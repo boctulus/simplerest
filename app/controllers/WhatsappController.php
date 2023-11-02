@@ -113,7 +113,7 @@ class WhatsappController extends MyController
     */
     function __call($name, $arguments)
     {
-        if (is_numeric($name)){
+        if (is_numeric($name) || Strings::startsWith('+', $name)) {
             return $this->_link($name, ...$arguments);
         } else if (Strings::contains("=", $name)){
             return $this->index(Strings::after($name,"="), $arguments);
