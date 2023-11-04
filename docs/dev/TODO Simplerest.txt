@@ -32,6 +32,30 @@ http://acmeextension.com/integrate-twig-with-codeigniter/
 
 - Implementar algun motor de plantillas 
 
+  Columnas y filas en un grid podrian declarase asi:
+
+  {grid}
+    {row}
+        {col} {$valor_3} {/col}   {col} {$valor_4} {/col}
+    {/row}
+  {/grid}
+
+
+Saltos de linea como nuevos "rows" dentro de un grid:
+
+  {grid; breaks_as_rows}
+    {$valor_1}
+    {$valor_2}
+
+    {hr}
+
+    {row}
+      {$valor_3} {$valor_4}
+    {/row}
+
+    {$valor_6}
+  {/grid}
+
 - Ver de utilizar el siguiente Form Builder (drag and drop) para jQuery <-- util tb para WP
 
   -> Tener zonas de anclaje de "widgets" para un "form builder" de arrastrar y soltar.
@@ -47,21 +71,21 @@ En /admin/tabulator/orders poder hacer esto:
 
 . Usando un Hook para el CREATE de Orders definir la vista que al estar presente aplicaria. Asi:
 
+{grid; breaks_as_rows}
   {f:order.created_at}
   {f:client.name}
   {f:client.phone_number}
 
   {hr}
 
-  {row:start}
-    {f:product.name} {f:order.qty} {computed:total; f:product.name * f:order.qty} {btn:add; handler=...}
-  {row:end}
+  {f:product.name} {f:order.qty} {computed:total; f:product.name * f:order.qty} {btn:add; handler=...}
 
-  {row:start}
+  <div class=class="d-flex justify-content-end">
     {btn:close; handler=...} {btn:save;handler=...}
-  {row:end}
+  </div>
 
   {hr}
+{/grid}
 
 <-- De estar definido el nombre en singular para esa entidad en el Model correspondiente, podria usarse "order" en vez de "orders" por ejemplo.
 
