@@ -377,6 +377,10 @@ class Files
 			}
 		}
 
+		foreach ($entries as $ix => $entry){
+			$entries[$ix] = realpath($entry);
+		}
+
 		return $entries;
 	}
 
