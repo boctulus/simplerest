@@ -23,7 +23,6 @@ use simplerest\core\libs\DB;
 */
 class Shopify
 {
-    protected $api_token;
     protected $api_key;
     protected $api_secret;
     protected $api_ver;
@@ -49,29 +48,26 @@ class Shopify
 
     function __construct($shop = null, $api_token = null, $api_key = null, $api_secret = null, $api_ver = null)
     {
-        if (!empty($shop)) {
-            $this->shop       = $shop;                
-            $this->api_token  = $api_token;
-            $this->api_key    = $api_key;
-            $this->api_secret = $api_secret;
-            $this->api_ver    = $api_ver;
+        $this->shop       = $shop;                
+        $this->api_key    = $api_key;
+        $this->api_secret = $api_secret;
+        $this->api_ver    = $api_ver;
 
-            /*
-                Array utilizado por ShopifyController::shopify_test_create_webooks()
-            */
-        
-            if (!empty($api_token) && !empty($api_key) && !empty($api_secret) && !empty($api_ver)) {
-                Config::set('shopify', [
-                    'api' => [
-                        $shop => [
-                            'api_token'  => $api_token,
-                            'api_key'    => $api_key,
-                            'api_secret' => $api_secret,
-                            'api_ver'    => $api_ver
-                        ]
+        /*
+            Array utilizado por ShopifyController::shopify_create_webooks()
+        */
+    
+        if (!empty($shop) && !empty($api_token) && !empty($api_key) && !empty($api_secret) && !empty($api_ver)) {
+            Config::set('shopify', [
+                'api' => [
+                    $shop => [
+                        'api_token'  => $api_token,
+                        'api_key'    => $api_key,
+                        'api_secret' => $api_secret,
+                        'api_ver'    => $api_ver
                     ]
-                ]);
-            }
+                ]
+            ]);
         }
     }
 
@@ -272,6 +268,10 @@ class Shopify
 
     /*
         Convierte la estructura de productos de Shopify a la de WooCommerce
+
+        La estructura puede haber cambiado revisa el array que proviene del source code de WooCommerce:
+
+        $this->shopify_to_woocommerce_eq
     */
     function adaptToWooCommerce(Array $a, $shop, $api_key, $api_secret, $api_ver){
 
