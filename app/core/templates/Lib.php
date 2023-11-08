@@ -2,9 +2,7 @@
 
 namespace __NAMESPACE;
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
+use simplerest\core\libs\Strings;
 
 class __NAME__
 {
