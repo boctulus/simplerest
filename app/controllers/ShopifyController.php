@@ -2,7 +2,6 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\Request;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Shopify;
 use simplerest\core\libs\Strings;
@@ -13,6 +12,8 @@ use simplerest\controllers\MyController;
     que proveera de una url como https://f920c96f987d.ngrok.io
 
     De pagar suscripcion, la url no es temporal
+
+    Cada webhook comienza con "shopify_webhook_"
 */
 class ShopifyController extends MyController
 {
@@ -49,7 +50,12 @@ class ShopifyController extends MyController
         // registrar y/o actualizar producto en base de datos que Shopify indica se ha actualizado
     }
 
-    function shopify_webhook_insert_or_update_products(){
+    /*
+        Recibe un objeto que permite persistir los datos
+
+        El objeto podria ser un adaptador sobre la clase Products de WooCommerce por ejemplo
+    */
+    function shopify_webhook_insert_or_update_products(object $persistent_object){
         $config = config();
     
         if ($config['debug']){
@@ -95,20 +101,21 @@ class ShopifyController extends MyController
     
             $sku = $row['sku'];
     
-            // $pid = wc_get_product_id_by_sku($sku);
+            $pid = $persistent_object->getProductIdBySku($sku);
         
-            // if (!empty($pid)){
-            //     Products::updateProductBySku($row);
-            // } else {
+            if (!empty($pid)){
+                $persistent_object->updateProductBySku($row);
+            } else {
     
-            //     if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
-            //         $row['status'] = $config['status_at_creation'];
-            //     }
+                if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
+                    $row['status'] = $config['status_at_creation'];
+                }
     
-            //     $pid = Products::createProduct($row);
-            // }
+                $pid = $persistent_object->createProduct($row);
+            }
     
-            // Sync::updateVendor($api['slug'], $pid);
+            // En caso que hubiera varios proveedores, guardar el proveedor asociado al producto
+            $persistent_object->updateVendor($api['slug'], $pid);
         }   
     }
     
