@@ -19,6 +19,7 @@ class Queue implements IMigration
 
         $sc
         ->integer('id')->auto()->pri()
+        ->varchar('category', 25)->nullable()
         ->json('data')
         ->datetime('created_at');
 

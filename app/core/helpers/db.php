@@ -9,23 +9,41 @@ use simplerest\core\libs\Strings;
 use simplerest\core\exceptions\SqlException;
 use simplerest\core\controllers\MakeControllerBase;
 
-function enqueue_data($data) {
+/*
+    Ej:
+
+    enqueue_data([        
+        'user_id' => $user_id
+    ]);
+*/
+function enqueue_data($data, $category = null) {
     $tb = (object) table("queue");
 
     $tb->insert([
-        'data' => json_encode($data)
+        'category' => $category,
+        'data'     => json_encode($data)
     ]);
 }
 
-function deque_data(bool $full_row = false) {
+/*
+    Ej:
+
+    $row     = deque_data();
+
+    $user_id = $row['user_id'];
+    // ....
+*/
+function deque_data($category = null, bool $full_row = false) {
     $tb = (object) table("queue");
 
     $row = $tb
+    ->when(!empty($category), function ($q) use ($category) {
+        $q->where(["category" => $category]);
+    })
     ->orderBy([
         'id' => 'asc'
     ])
     ->getOne();
-
     
     if (empty($row)){
         return false;
