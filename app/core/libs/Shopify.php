@@ -20,6 +20,8 @@ use simplerest\core\libs\DB;
     it also contains X-Shopify-Hmac-SHA256 to verify aunthenticity of request.
 
     https://stackoverflow.com/questions/29567824/how-to-get-shopify-shop-id-inside-of-product-update-webhook
+
+    Tanto la libreria como el Controlador se han generalizado por que podrian empaquetarse en un package !!!!
 */
 class Shopify
 {
