@@ -9,6 +9,36 @@ use simplerest\core\libs\Strings;
 use simplerest\core\exceptions\SqlException;
 use simplerest\core\controllers\MakeControllerBase;
 
+function enqueue_data($data) {
+    $tb = (object) table("queue");
+
+    $tb->insert([
+        'data' => json_encode($data)
+    ]);
+}
+
+function deque_data(bool $full_row = false) {
+    $tb = (object) table("queue");
+
+    $row = $tb
+    ->orderBy([
+        'id' => 'asc'
+    ])
+    ->getOne();
+
+    
+    if (empty($row)){
+        return false;
+    }
+
+    $id          = $row['id'];
+    $row['data'] = json_decode($row['data'], true);
+
+    $tb = (object) table("queue");
+    $tb->where(['id' => $id])->delete();
+
+    return $full_row ? $row : $row['data'];
+}
 
 function get_default_connection(){
     return DB::getDefaultConnection();
