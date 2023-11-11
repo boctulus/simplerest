@@ -2,9 +2,10 @@
 
 namespace simplerest\core\libs;
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
+use simplerest\core\libs\Logger;
 
+use PHPMailer\PHPMailer\PHPMailer;
 use simplerest\core\interfaces\IMail;
 
 /*
@@ -26,7 +27,7 @@ class Mail extends MailBase implements IMail
     }
 
     static function getMailer(){
-        global $config;
+        $config = config();
         return static::$mailer ?? $config['email']['mailer_default'];
     }
 
@@ -114,7 +115,7 @@ class Mail extends MailBase implements IMail
             $alt_body = null
         )
     */
-    static function send(Array $to, $subject = '', $body = '', $attachments = null, Array $from = [], Array $cc = [], Array $bcc = [], Array $reply_to = [], $alt_body = null){
+    static function send($to, $subject = '', $body = '', $attachments = null, $from = [], Array $cc = [], $bcc = [], $reply_to = [], $alt_body = null){
 		$config = config();
 
         $body = trim($body);
@@ -131,17 +132,41 @@ class Mail extends MailBase implements IMail
             throw new \Exception("Body or alt_body is required");
         }
 
-        if (Arrays::is_assoc($to)){
-            $to = [ $to ];
+        if (!is_array($to)){
+            $tmp = $to;
+            $to  = [];
+            $to[]['email'] = $tmp;
+        } else {
+            if (Arrays::is_assoc($to)){
+                $to = [ $to ];
+            }
         }
 
-        if (Arrays::is_assoc($cc)){
-            $cc = [ $cc ];
+        if (!is_array($cc)){
+            $tmp = $cc;
+            $cc  = [];
+            $cc[]['email'] = $tmp;
+        } else {
+            if (Arrays::is_assoc($cc)){
+                $cc = [ $cc ];
+            }
         }
 
-        if (Arrays::is_assoc($bcc)){
-            $bcc = [ $bcc ];
+        if (!is_array($bcc)){
+            $tmp = $bcc;
+            $bcc  = [];
+            $bcc[]['email'] = $tmp;
+        } else {
+            if (Arrays::is_assoc($bcc)){
+                $bcc = [ $bcc ];
+            }
         }
+
+        if (!is_array($from)){
+            $tmp = $from;
+            $from = [];
+            $from['email'] = $tmp;
+        } 
 
         // if (empty($reply_to)){
         //     $reply_to = $from;
@@ -165,15 +190,15 @@ class Mail extends MailBase implements IMail
         if (!empty($reply_to)){
             $mail->addReplyTo($reply_to['email'], $reply_to['name'] ?? '');
         }
+        
 
         $from['email'] = $from['email'] ?? $config['email']['from']['address'] ?? $config['email']['mailers'][$mailer]['Username'];
-        $from['mame'] = $from['mame'] ?? $config['email']['from']['name'];
+        $from['mame']  = $from['mame']  ?? $config['email']['from']['name'];
 
-        
         if (!empty($from)){
             $mail->setFrom($from['email'], $from['name'] ?? '');
         }
-
+        
         foreach ($to as $_to){
             $mail->addAddress($_to['email'], $_to['name'] ?? '');
         }
@@ -216,13 +241,13 @@ class Mail extends MailBase implements IMail
             static::$errors = $mail->ErrorInfo;
 
             if (static::$silent){
-                Files::dump(static::$errors, 'dump.txt', true);
+                Logger::dump(static::$errors, 'dump.txt', true);
             }
 
             $ret = static::$errors;
         }else{
             if (static::$silent){
-                Files::dump(true, 'dump.txt', true);
+                Logger::dump(true, 'dump.txt', true);
             }
 
             static::$errors = null;

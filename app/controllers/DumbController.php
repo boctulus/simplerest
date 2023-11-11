@@ -4785,6 +4785,11 @@ class DumbController extends Controller
         dd(Factory::request()->acceptEncoding());
     }
 
+    function mail(){
+        dd(
+            Mail::send('boctulus@gmail.com', 'Pablo', 'Pruebita '. rand(99,999999), null, 'boctulus@gmail.com')
+        ); 
+    }
 
     // function show_email_template(){
     //     $cols = [
