@@ -8874,22 +8874,22 @@ class DumbController extends Controller
 
         Un saludo!';
 
-        $logo    = 'img/logo.png';
+        $logo    = 'assets/img/logo.png';
         
         $url     = 'https://cafesguilis.com/api/wp_mail/send';
 
 
-        $content = EmailTemplate::formatContentWithHeader($content);
+        $content  = EmailTemplate::formatContentWithHeader($content);
 
-        $logo_url = asset($logo);
-        $logo_url = str_replace('sales-agent-coupons','sales-agent-coupons-1', $logo_url); // caso concreto
+        $logo_url = "https://cafesguilis.com/wp-content/plugins/sales-agent-coupons-1/$logo";
 
-        $content = get_view('email/simple_with_logo', compact('email', 'subject', 'content', 'logo_url'));
+
+        $body     = get_view('email/simple_with_logo', compact('email', 'subject', 'content', 'logo_url'));
 
 
         MailFromRemoteWP::setRemote($url);
 
-        $res = MailFromRemoteWP::send($email, $subject, $content);
+        $res = MailFromRemoteWP::send($email, $subject, $body);
 
         // resultado
         dd($res);
