@@ -13,7 +13,13 @@ abstract class MailBase
     protected static $status      = null; 
     protected static $silent      = false;
     protected static $debug_level = null;
+    protected static $mailer      = null;
 
+     // change mailer
+    static function setMailer(string $name){
+        static::$mailer = $name;
+    }
+    
     static function errors(){
         return static::$errors;
     }
