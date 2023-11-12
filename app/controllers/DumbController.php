@@ -32,32 +32,31 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Utils;
 use simplerest\core\libs\Arrays;
 
-use simplerest\core\libs\Messurements;
-
 use simplerest\core\libs\Logger;
+
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
-
 use simplerest\core\libs\DBCache;
-use simplerest\core\libs\Numbers;
 
+use simplerest\core\libs\Numbers;
 use simplerest\core\libs\Strings;
 
 use Spatie\ArrayToXml\ArrayToXml;
 
 use simplerest\core\libs\CSSUtils;
-use simplerest\core\libs\Factory;;
 
+use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
+
 use simplerest\core\libs\JobQueue;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
-
 use simplerest\core\libs\ApiClient;
 
 use simplerest\core\libs\FileCache;
+
 use simplerest\core\libs\MediaType;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
@@ -66,13 +65,14 @@ use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\Supervisor;
 use simplerest\core\libs\ZipManager;
-
 use Endroid\QrCode\Encoding\Encoding;
+
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\SimpleCrypt;
-
 use simplerest\core\libs\FileUploader;
+
 use simplerest\core\libs\LangDetector;
+use simplerest\core\libs\Messurements;
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
@@ -90,14 +90,16 @@ use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
+use simplerest\core\libs\MailFromRemoteWP;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
-use simplerest\core\controllers\Controller;
 
+use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
+use simplerest\core\libs\EmailTemplate;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
@@ -8863,5 +8865,34 @@ class DumbController extends Controller
         Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
     }
 
+    function test_mail_wp_remote(){
+        $email   = 'boctulus@gmail.com';
+        $subject = 'Prueba test '. rand(9999,999999);
+        $content = 'Hola! 
+
+        Este es un contenido de <b>prueba en negrita</b> #'.rand(9999,999999) . '
+
+        Un saludo!';
+
+        $logo    = 'img/logo.png';
+        
+        $url     = 'https://cafesguilis.com/api/wp_mail/send';
+
+
+        $content = EmailTemplate::formatContentWithHeader($content);
+
+        $logo_url = asset($logo);
+        $logo_url = str_replace('sales-agent-coupons','sales-agent-coupons-1', $logo_url); // caso concreto
+
+        $content = get_view('email/simple_with_logo', compact('email', 'subject', 'content', 'logo_url'));
+
+
+        MailFromRemoteWP::setRemote($url);
+
+        $res = MailFromRemoteWP::send($email, $subject, $content);
+
+        // resultado
+        dd($res);
+    }
 
 }   // end class
