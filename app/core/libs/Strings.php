@@ -482,18 +482,22 @@ class Strings
 		@param bool $trim
 		@param bool $empty_lines
 	*/
-	static function lines(?string $str, bool $trim = false, bool $empty_lines = true){
+	static function lines(?string $str, bool $trim = false, bool $empty_lines = true, $carry_ret = null){
 		if (empty($str)){
 			return [];
 		}
 
-		$cr = static::carriageReturn($str);
+		$cr = $carry_ret ?? static::carriageReturn($str);
 		
 		if (empty($cr)){
 			return [ $str ];
 		}
 
 		$lines = explode($cr, $str);
+
+		if (trim($lines[0]) == '') {
+			unset($lines[0]);
+		}
 
 		if (!$empty_lines){
 			foreach ($lines as $ix => $line){
