@@ -14,6 +14,10 @@ class JsonLd
         // Encuentra todos los bloques JSON-LD en la cadena de HTML
         $ok = preg_match_all($pattern, $html, $matches);
 
+        if ($ok === false) {
+            return [];
+        }
+
         // $matches[1] contendrá todos los bloques JSON-LD encontrados
         $jsonLdBlocks = $matches[1];
         
