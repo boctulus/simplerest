@@ -58,6 +58,18 @@ class JsonldController extends MyController
             [slug] => /donna/abbigliamento/intimo/
             [name] => Intimo e lingerie
         ]
+
+        WARNING !!!
+
+        No usar el slug mas que como una referencia que se sabe es UNIQUE porque a veces contiene basura. Ej:
+
+        Array
+        (
+            [slug] => /scarpe-uomo_sneakers-alexander-mcqueen-586198whx52.html
+            [name] => Stivaletti
+        )
+
+        Claramente hay varios problemas pero el principal es que el slug no tiene la jerarquia
     */
     static protected function getCatego($html){
         $dom = new \DOMDocument;
@@ -71,33 +83,32 @@ class JsonldController extends MyController
         // Encuentra el último elemento 'li' dentro de la lista de migas de pan
         $lastLiElement = $xpath->query('//ol[@class="breadcrumbs"]/li[last()]')->item(0);
     
-        if ($lastLiElement) {        
-            // Obtener el valor del atributo 'itemid' del elemento 'span'
-            $itemid = $xpath->evaluate('string(./span[@itemprop="item"]/@itemid)', $lastLiElement);
-    
-            // Obtener el nodo de texto directo dentro de 'span'
-            $textNode = $xpath->query('./span/text()', $lastLiElement)->item(0);
-    
-            if ($textNode) {
-                // Limpiar el contenido del nodo de texto
-                $name = trim($textNode->nodeValue);
-    
-                // Formar el slug usando el valor de 'itemid'
-                $slug = parse_url($itemid, PHP_URL_PATH);
-    
-                // Puedes imprimir o devolver el resultado
-                $result = [
-                    'slug' => $slug,
-                    'name' => $name,
-                ];
-    
-                return $result;
+        if ($lastLiElement) {
+            // Limpiar el contenido del nodo de texto dentro de 'span'
+            $name = trim($xpath->evaluate('string(./span/text())', $lastLiElement));
+
+            $linkElements = $xpath->query('//ol[@class="breadcrumbs"]/li/a[@itemprop="item"]', $lastLiElement);
+
+            if ($linkElements->length > 0) {
+                // Obtener el valor del atributo 'href' del último enlace
+                $lastLinkElement = $linkElements[$linkElements->length - 1];
+                $href = $lastLinkElement->getAttribute('href');
+
+                // Formar el slug eliminando la parte inicial de la URL
+                $slug = preg_replace('#https://www\.giglio\.com#', '', $href);
             }
+
+            // Puedes imprimir o devolver el resultado
+            $result = [
+                'slug' => $slug,
+                'name' => $name,
+            ];
+    
+            return $result;
         }
     
         return null; // Devolver null si no se encuentra el elemento
-    }
-    
+    }    
     
     static function getCategos($html){
         $dom = new \DOMDocument;
