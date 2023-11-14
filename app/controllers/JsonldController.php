@@ -86,18 +86,20 @@ class JsonldController extends MyController
         if ($lastLiElement) {
             // Limpiar el contenido del nodo de texto dentro de 'span'
             $name = trim($xpath->evaluate('string(./span/text())', $lastLiElement));
+    
+            
+            $linkElement = $xpath->query('.//a', $lastLiElement)->item(0);
 
-            $linkElements = $xpath->query('//ol[@class="breadcrumbs"]/li/a[@itemprop="item"]', $lastLiElement);
+        if ($linkElement) {
+            // Obtener el valor del atributo 'href' del enlace
+            $href = $linkElement->getAttribute('href');
 
-            if ($linkElements->length > 0) {
-                // Obtener el valor del atributo 'href' del último enlace
-                $lastLinkElement = $linkElements[$linkElements->length - 1];
-                $href = $lastLinkElement->getAttribute('href');
+            // Limpiar el contenido del nodo de texto dentro de 'span'
+            $name = trim($xpath->evaluate('string(./span/text())', $lastLiElement));
 
-                // Formar el slug eliminando la parte inicial de la URL
-                $slug = preg_replace('#https://www\.giglio\.com#', '', $href);
-            }
-
+            // Formar el slug eliminando la parte inicial de la URL
+            $slug = preg_replace('#https://www\.giglio\.com#', '', $href);
+    
             // Puedes imprimir o devolver el resultado
             $result = [
                 'slug' => $slug,
