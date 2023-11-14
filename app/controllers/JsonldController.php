@@ -10,6 +10,9 @@ use simplerest\core\libs\JsonLd;
 
 class JsonldController extends MyController
 {   
+    protected static $urlBase  = 'https://www.giglio.com';
+    protected static $exp_time = 600000; // 7 dias aprox <------- cambiar en prod
+
     function getProductBasicAttr($html){
         $dom = new \DOMDocument;
 
@@ -81,7 +84,6 @@ class JsonldController extends MyController
             //     $slug = preg_replace('#https://www\.giglio\.com#', '', $href);
             // }
             
-            
             // $result = [
             //     // 'slug' => $slug,
             //     'name' => $name,
@@ -92,6 +94,40 @@ class JsonldController extends MyController
     
         return null; // Devolver null si no se encuentra el elemento
     }    
+
+    ////////////////////// CATEGORIES ////////////////////////
+
+    /* 
+        Categorias de primer nivel
+
+        <ul class="header__nav__main">
+        <li><a data-menu="0" class="header__nav__main__wom" href="/donna/">Donna</a></li>
+        <li><a data-menu="0" class="header__nav__main__man sel gender--sel" href="/uomo/">Uomo</a></li>
+        <li><a data-menu="0" class="header__nav__main__kid" href="/bambino/">Bambini</a></li>
+        <li><a data-menu="0" class="header__nav__main__lif" href="/lifestyle/">Lifestyle</a></li>
+        </ul>
+    */
+    static protected function getFirstLevelCategos($html){
+        $dom = new \DOMDocument;
+
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($dom);
+
+        // Busca los slugs de las categorías de primer nivel
+        $slugs = $xpath->query('//ul[@class="header__nav__main"]/li/a/@href');
+
+        $result = [];
+
+        // Itera sobre los nodos de los slugs y los agrega al resultado
+        foreach ($slugs as $slug) {
+            $result[] = $slug->nodeValue;
+        }
+
+        return $result;
+    }
     
     static function getCategos($html){
         $dom = new \DOMDocument;
@@ -228,16 +264,62 @@ class JsonldController extends MyController
 
         return $brands;
     }    
-    
 
     static protected function getCategosList($html) {
-        dd(static::getBrands($html));
+        $main_categos = static::getFirstLevelCategos($html);
 
-        exit;
-        dd(static::getCategos($html));
-        // exit; 
-        
-        // ...
+        $main_categos_ay = [];
+        foreach ($main_categos as $slug) {
+            $main_categos_ay[] = [
+                'slug' => $slug,
+                'name'=> ucfirst(str_replace('/', '', $slug)),
+            ];
+        }
+
+        $arr = $main_categos_ay;
+        foreach ($main_categos as $main_cat) {
+            $url  = static::$urlBase . $main_cat;
+
+            // obtengo el html de las categorias principales
+            $html = static::getHTML($url, static::$exp_time);
+
+            $arr  = array_merge($arr, static::getCategos($html));
+        }
+
+        return $arr;
+    }
+
+    /*
+        Similar en formato a getCategosList() pero no deberian insertarse 
+        sino usarse de forma temporal para recuperar mas productos
+
+        Usar getCategosList() primero y luego getBrandList()
+
+        A los productos no se les debe cambiar el titulo ni categoria ni descripcion
+        una vez asignados
+    */
+    static protected function getBrandList($html) {
+        $main_categos = static::getFirstLevelCategos($html);
+
+        $main_categos_ay = [];
+        foreach ($main_categos as $slug) {
+            $main_categos_ay[] = [
+                'slug' => $slug,
+                'name'=> ucfirst(str_replace('/', '', $slug)),
+            ];
+        }
+
+        $arr = $main_categos_ay;
+        foreach ($main_categos as $main_cat) {
+            $url  = static::$urlBase . $main_cat;
+
+            // obtengo el html de las categorias principales
+            $html = static::getHTML($url, static::$exp_time);
+
+            $arr  = array_merge($arr, static::getBrands($html));
+        }
+
+        return $arr;
     }
 
     static protected function getHTML($url, $exp_time = 21600){
@@ -246,6 +328,7 @@ class JsonldController extends MyController
         ->setHeaders([
             'User-Agent' => 'PostmanRuntime/7.34.0',
         ])
+        ->redirect()
         ->cache($exp_time);
 
         $cli->setMethod('GET');
@@ -264,10 +347,13 @@ class JsonldController extends MyController
 
         $url  = $_GET['url']; 
 
-        $html = static::getHTML($url, 600000);
+        $html = static::getHTML($url, static::$exp_time);
         
-        dd(static::getCatego($html));
-        exit; ///
+        dd(static::getCategosList($html)); exit; ///
+
+        dd(static::getFirstLevelCategos($html)); exit; ///
+
+        dd(static::getCatego($html)); exit; ///
 
         $data = JsonLd::extract($html);
 
