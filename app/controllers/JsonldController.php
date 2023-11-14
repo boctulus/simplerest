@@ -52,24 +52,7 @@ class JsonldController extends MyController
     /*
         Obtiene categoria de producto indidual
 
-        Debe devolver un array como:
-
-        [
-            [slug] => /donna/abbigliamento/intimo/
-            [name] => Intimo e lingerie
-        ]
-
-        WARNING !!!
-
-        No usar el slug mas que como una referencia que se sabe es UNIQUE porque a veces contiene basura. Ej:
-
-        Array
-        (
-            [slug] => /scarpe-uomo_sneakers-alexander-mcqueen-586198whx52.html
-            [name] => Stivaletti
-        )
-
-        Claramente hay varios problemas pero el principal es que el slug no tiene la jerarquia
+        Hay muchas inconcistncias con el slug que a veces se halla dentro de un enlace y otras veces dentro de un span asi que no se considera
     */
     static protected function getCatego($html){
         $dom = new \DOMDocument;
@@ -86,27 +69,25 @@ class JsonldController extends MyController
         if ($lastLiElement) {
             // Limpiar el contenido del nodo de texto dentro de 'span'
             $name = trim($xpath->evaluate('string(./span/text())', $lastLiElement));
-    
+
+            // $linkElements = $xpath->query('//ol[@class="breadcrumbs"]/li/a[@itemprop="item"]', $lastLiElement);
+
+            // if ($linkElements->length > 0) {
+            //     // Obtener el valor del atributo 'href' del último enlace
+            //     $lastLinkElement = $linkElements[$linkElements->length - 1];
+            //     $href = $lastLinkElement->getAttribute('href');
+
+            //     // Formar el slug eliminando la parte inicial de la URL
+            //     $slug = preg_replace('#https://www\.giglio\.com#', '', $href);
+            // }
             
-            $linkElement = $xpath->query('.//a', $lastLiElement)->item(0);
-
-        if ($linkElement) {
-            // Obtener el valor del atributo 'href' del enlace
-            $href = $linkElement->getAttribute('href');
-
-            // Limpiar el contenido del nodo de texto dentro de 'span'
-            $name = trim($xpath->evaluate('string(./span/text())', $lastLiElement));
-
-            // Formar el slug eliminando la parte inicial de la URL
-            $slug = preg_replace('#https://www\.giglio\.com#', '', $href);
+            
+            // $result = [
+            //     // 'slug' => $slug,
+            //     'name' => $name,
+            // ];
     
-            // Puedes imprimir o devolver el resultado
-            $result = [
-                'slug' => $slug,
-                'name' => $name,
-            ];
-    
-            return $result;
+            return $name;
         }
     
         return null; // Devolver null si no se encuentra el elemento
