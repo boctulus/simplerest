@@ -25,8 +25,7 @@ class ScraperTestController extends MyController
         libxml_use_internal_errors(true);
         $dom->loadHTML($html);
         libxml_clear_errors();
-
-        // Crear un objeto DOMXPath para realizar consultas XPath en el documento
+        
         $xpath = new \DOMXPath($dom);
 
         // Array para almacenar los datos extraídos
