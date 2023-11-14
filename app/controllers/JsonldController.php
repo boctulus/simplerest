@@ -49,35 +49,192 @@ class JsonldController extends MyController
         return $productDetails;
     }
 
-    function run()
-    {
-        $prod = [];
+    static function getCategos($html){
+        $dom = new \DOMDocument;
+    
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+        
+        $xpath = new \DOMXPath($dom);
+    
+        $categoryElements = $xpath->query('//li[contains(translate(span/text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "categoria") or contains(translate(span/text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "categoria")]');
+    
+        $categos = [];
+    
+        foreach ($categoryElements as $categoryElement) {
+            $categoryName = $xpath->evaluate('string(span)', $categoryElement);
+            $categoryElements = $xpath->query('.//li[.//a]', $categoryElement);
+    
+            if ($categoryElements->length > 0) {
+                foreach ($categoryElements as $categoryElement) {
+                    $categoryName = $xpath->evaluate('string(a)', $categoryElement);
+                    $categorySlug = $categoryElement->getElementsByTagName('a')->item(0)->getAttribute('href');
 
-        $prod_url = $_GET['url']; // url='https://www.giglio.com/scarpe-uomo_sneakers-alexander-mcqueen-586198whx52.html?cSel=002'
- 
-        $cli = (new ApiClient($prod_url))
+                    $categoryName = trim($categoryName);
+    
+                    $categos[] = [
+                        'slug' => $categorySlug,
+                        'name' => $categoryName
+                    ];
+                }
+            } else {
+                // No hay categorías, solo la categoría principal
+                $categorySlug = $categoryElement->getElementsByTagName('a')->item(0)->getAttribute('href');
+
+                if (empty($categorySlug)){
+                    continue;
+                }
+                
+                $categoryName = trim($categoryName);
+
+                $categos[] = [
+                    'slug' => $categorySlug,
+                    'name' => $categoryName
+                ];
+            }
+        }
+
+         // data processing
+
+         foreach ($categos as $ix => $cat) {
+            $cat['name'] = trim($cat['name']);
+
+            // por alguna razon a veces falla y lo deja pasar
+            if (Strings::contains('Vedi tutt', $cat['name'])){
+                $categos[$ix] = null;
+            }
+
+        }
+    
+        return $categos;
+    }
+
+    /*
+
+    */
+    static function getBrands($html){
+        $dom = new \DOMDocument;
+    
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+        
+        $xpath = new \DOMXPath($dom);
+    
+        $brandElements = $xpath->query('//li[contains(translate(span/text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "designer")]');
+    
+        $brands = [];
+    
+        foreach ($brandElements as $brandElement) {
+            $name = $xpath->evaluate('string(span)', $brandElement);
+            $categoryElements = $xpath->query('.//li[.//a]', $brandElement);
+    
+            if ($categoryElements->length > 0) {
+                foreach ($categoryElements as $categoryElement) {
+                    $name = $xpath->evaluate('string(a)', $categoryElement);
+                    $slug = $categoryElement->getElementsByTagName('a')->item(0)->getAttribute('href');
+
+                    if (empty($slug)){
+                        continue;
+                    }
+
+                    $name = trim($name);
+    
+                    $brands[] = [
+                        'slug' => $slug,
+                        'name' => $name
+                    ];
+                }
+            } else {
+                // No hay subcategorías, solo la categoría principal
+                $slug = $brandElement->getElementsByTagName('a')->item(0)->getAttribute('href');
+
+                if (empty($slug)){
+                    continue;
+                }
+
+                $name = trim($name);
+
+                $brands[] = [
+                    'slug' => $slug,
+                    'name' => $name
+                ];
+            }
+        }
+    
+        // data processing
+
+        foreach ($brands as $ix => $brand) {
+            if (empty($brand) || !is_array($brand) || !array_key_exists('name', $brand)) {
+                unset($brands[ $ix ]);
+            }
+
+            $brand['name'] = trim($brand['name']);            
+            $brand['name'] = preg_replace('/[^a-zA-Z0-9\-_ ]/', '', $brand['name']);
+
+            // por alguna razon a veces falla y lo deja pasar
+            if (Strings::contains('Vedi tutt', $brand['name'], false)){
+                $brands[$ix] = null;
+            }
+
+        }
+
+        return $brands;
+    }    
+    
+
+    static protected function getCategosList($html) {
+        dd(static::getBrands($html));
+
+        exit;
+        dd(static::getCategos($html));
+        // exit; 
+        
+        // ...
+    }
+
+    static protected function getHTML($url, $exp_time = 21600){
+        $cli = (new ApiClient($url))
         ->withoutStrictSSL()
         ->setHeaders([
             'User-Agent' => 'PostmanRuntime/7.34.0',
         ])
-        ->cache(600000);
+        ->cache($exp_time);
 
         $cli->setMethod('GET');
         $cli->send();
-        $res = $cli->data();
+        $res = $cli->data(); // html
+
+        return $res;
+    }
+
+    /*
+        url='https://www.giglio.com/scarpe-uomo_sneakers-alexander-mcqueen-586198whx52.html?cSel=002'
+    */
+    function run()
+    {
+        $prod = [];
+
+        $url  = $_GET['url']; 
+
+        $html = static::getHTML($url, 600000);
         
-        $data = JsonLd::extract($res);
+        $data = JsonLd::extract($html);
 
         if (empty($data)){
             die('No hay JSON-LD ?');
         }
+
+        static::getCategosList($html);
+        exit; //
 
         /*
             Armo la respuesta
         */
 
         // nombre de producto,..
-        $prod = $this->getProductBasicAttr($res);
+        $prod = $this->getProductBasicAttr($html);
 
         $prod['availability'] = str_replace('https://schema.org/', '', $data[0]['offers']['availability']) ?? null;   
 
