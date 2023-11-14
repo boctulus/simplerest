@@ -1,6 +1,11 @@
 TODO SimpleRest
 ===============
 
+- Cada "comando" (make, migrations,...) debe ser una clase.
+
+  . Dos o mas clases podrian sumar comandos a "make" por ejemplo si se especificara como propiedad el nombre de la "utility"
+  . Luego portar a WP donde podria no dejar ningun comando al entregar o... los que necesite.
+
 - Implementar urgente campos tipo:
 
   Dropdown (select-option)
