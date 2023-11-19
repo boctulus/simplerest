@@ -15,7 +15,19 @@ class WooCommerceRestAPI
         $this->consumer_secret = $consumer_secret;
     }
 
-    public function setOAuth( $request ) { 
+    public function getBasicAuth($username, $password){
+        return 'Basic '. base64_encode("$username:$password");
+    }
+
+    /*
+        De uso obligado para peticiones HTTP
+    */
+    public function getOAuth($url, $method) { 
+        $request = array(
+            'method' => $method,
+            'url'    => $url
+        );
+
         $wc_rest_api = array(
             'key'    => $this->consumer_key,
             'secret' => $this->consumer_secret
@@ -27,7 +39,7 @@ class WooCommerceRestAPI
         $nonce = md5(mt_rand());
         $version = '1.0';
      
-        $oauthSignature = $this->generateSignature( $request, $timestamp, $nonce, $signatureMethod, $version ) ;
+        $oauthSignature = $this->generateSignature($request, $timestamp, $nonce, $signatureMethod, $version) ;
      
         // echo "Signature: " . $oauthSignature . "<br>"; 
      
