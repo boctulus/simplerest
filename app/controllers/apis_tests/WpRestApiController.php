@@ -25,8 +25,20 @@ use simplerest\controllers\MyController;
 */
 class WpRestApiController extends MyController
 {   
-    // apis_tests wp_rest_api
-    function index()
+    function getClient(){
+        $cli = (new ApiClient())
+        ->withoutStrictSSL()        
+
+        ->contentType('application/json')
+        ->userAgent('PostmanRuntime/7.34.0')
+       
+        ->decode();
+
+        return $cli;
+    }
+
+    // apis_tests wp_rest_api get_products
+    function get_products()
     {
         $base_url = 'http://woo1.lan';
         $endpoint = '/wp-json/wc/v3/products';
@@ -34,30 +46,12 @@ class WpRestApiController extends MyController
                        
         $url    = "{$base_url}{$endpoint}";
   
-        $request = array(
-            'method' => $method,
-            'url'    => $url
-        );
-
         $woo = new WooCommerceRestAPI('ck_185ddf7e2fa4f631b8a460f3963b1dc818bc5abf', 'cs_50688595c64b40a0cc1bb610b3852c9ab43be245');
 
-        $cli = (new ApiClient($url))
-        ->withoutStrictSSL()
-        ->setHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => $woo->setOAuth( $request),
-            'User-Agent'   => 'PostmanRuntime/7.34.0',
-        ])
-
-        // ->queryParams([
-        //     'consumer_key'    => $consumer_key,
-        //     'consumer_secret' => $consumer_secret
-        // ])       
-        
-        //->cache(600000)
-        ;
-
-        $cli->setMethod('GET');
+        $cli = $this->getClient($url)
+        ->url($url)
+        ->authorization($woo->getOAuth($url, $method))        
+        ->setMethod('GET');
 
         $cli->send();
 
@@ -65,7 +59,6 @@ class WpRestApiController extends MyController
 
         $res = $cli->data();
 
-        // {"errors":[{"code":"woocommerce_api_authentication_error","message":"oauth_consumer_key parameter is missing"}]}
         dd($res, 'RES');
     }
 }
