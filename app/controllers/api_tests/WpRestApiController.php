@@ -24,8 +24,6 @@ use simplerest\controllers\MyController;
 */
 class WpRestApiController extends MyController
 {   
-    
-
     // api_tests wp_rest_api get_products
     function get_products()
     {
