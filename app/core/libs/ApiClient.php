@@ -280,6 +280,32 @@ class ApiClient
         return $this->setDecode(false);
     }
 
+    function contentType($type){
+        $this->addHeader('Content-Type', $type);
+        return $this;
+    }
+    
+    function accept($type){
+        $this->addHeader('Accept', $type);
+        return $this;
+    }
+
+    function userAgent($str){
+        $this->addHeader('User-Agent', $str);
+        return $this;
+    }
+    
+    // Ej: "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
+    function setUserAgent($str){
+        $this->option(CURLOPT_USERAGENT, $str);
+        return $this;
+    }
+
+    function authorization($str){
+        $this->addHeader('Authorization', $str);
+        return $this;
+    }
+
     /*
         @param $expiration_time int seconds 
     */
@@ -810,12 +836,6 @@ class ApiClient
 
     function getBody(){
         return $this->data();
-    }
-
-    // Ej: "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
-    function setUserAgent(string $webbrowser){
-        $this->option(CURLOPT_USERAGENT, $webbrowser);
-        return $this;
     }
     
     // Para descargar archivos binarios
