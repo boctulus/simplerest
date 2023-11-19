@@ -201,6 +201,11 @@ class ApiClient
         return $this;
     }
 
+    function addHeader($key, $value){
+        $this->req_headers[$key] = $value;
+        return $this;
+    }
+
     function setHeaders(Array $headers){
         $this->req_headers = $headers;
         return $this;
@@ -912,9 +917,7 @@ class ApiClient
 
     // BASIC
     function setBasicAuth($username, $password){
-        $this->setHeaders([
-            'Authorization: Basic '. base64_encode("$username:$password")
-        ]);
+        $this->addHeader('Authorization', 'Basic '. base64_encode("$username:$password"));
 
         return $this;
     }

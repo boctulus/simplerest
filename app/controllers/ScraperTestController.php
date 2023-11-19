@@ -85,17 +85,17 @@ class ScraperTestController extends MyController
         $productDetails['descrizione'] = $descriptionNode ? trim($descriptionNode->nodeValue) : '';
 
         // // Obtener el bloque de detalles del producto
-        // $productDetailsNode = $xpath->query('//span[contains(@class, "product__details")]')->item(0);
-        // $productDetailsText = $productDetailsNode ? $productDetailsNode->nodeValue : '';
+        $productDetailsNode = $xpath->query('//span[contains(@class, "product__details")]')->item(0);
+        $productDetailsText = $productDetailsNode ? $productDetailsNode->nodeValue : '';
 
-        // // Extraer campos específicos del bloque de detalles del producto
-        // $designerCode = self::getDetailField($productDetailsText, 'Designer code:');
-        // $designerColorCode = self::getDetailField($productDetailsText, 'Designer color code:');
-        // $giglioCode = self::getDetailField($productDetailsText, 'Giglio Code:');
+        // Extraer campos específicos del bloque de detalles del producto
+        $designerCode = self::getDetailField($productDetailsText, 'Designer code:');
+        $designerColorCode = self::getDetailField($productDetailsText, 'Designer color code:');
+        $giglioCode = self::getDetailField($productDetailsText, 'Giglio Code:');
 
-        // $productDetails['designer_code'] = $designerCode;
-        // $productDetails['designer_color_code'] = $designerColorCode;
-        // $productDetails['giglio_code'] = $giglioCode;
+        $productDetails['designer_code'] = $designerCode;
+        $productDetails['designer_color_code'] = $designerColorCode;
+        $productDetails['giglio_code'] = $giglioCode;
 
         return $productDetails;
     }

@@ -15,7 +15,7 @@ use simplerest\core\libs\XML;
 
 class Curiosite
 {
-    static function parseProduct(string $ori){
+    static function getProduct(string $ori){
         $is_url = false;
 
         if (Strings::startsWith('http', $ori)){

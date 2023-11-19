@@ -19,7 +19,7 @@ use simplerest\core\libs\ApiClient;
 
 class LeroyMerlinScraper 
 {    
-    static function parseProduct(string $ori){
+    static function getProduct(string $ori){
         if (Strings::startsWith('http', $ori)){
             /*
                 Es una url

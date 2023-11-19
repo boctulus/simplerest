@@ -21,7 +21,7 @@ class MaisonsScraper
         ]);
     }
 
-    static function parseProduct(string $ori){
+    static function getProduct(string $ori){
         if (Strings::startsWith('http', $ori)){
             /*
                 Es una url

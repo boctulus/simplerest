@@ -26,7 +26,7 @@ class AmazonScraper
         return (new ApiClient($url));
     }
 
-    static function parseProduct(string $ori) {
+    static function getProduct(string $ori) {
         $decimal_sep   = ',';
         $thousand_sep  = '.';
 

@@ -121,8 +121,6 @@ class GiglioScraper
     {
         $prod = [];
 
-        $url  = $_GET['url']; 
-
         $html = static::getHTML($url, static::$exp_time);
 
         $data = JsonLd::extract($html);
@@ -171,7 +169,7 @@ class GiglioScraper
         }
         
 
-        dd($prod);                 
+        return $prod;                 
     }
 
     ////////////////////// CATEGORIES ////////////////////////
