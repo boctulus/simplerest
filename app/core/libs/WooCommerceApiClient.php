@@ -6,13 +6,13 @@ use simplerest\core\libs\Strings;
 
 class WooCommerceApiClient extends ApiClient
 {
-    protected $consumer_key;
-    protected $consumer_secret;
+    protected $username;
+    protected $password;
 
-    function __construct($consumer_key, $consumer_secret)
+    function __construct($consumer_key = null, $consumer_secret = null)
     {
-        $this->consumer_key = $consumer_key;
-        $this->consumer_secret = $consumer_secret;
+        $this->username = $consumer_key;
+        $this->password = $consumer_secret;
 
         $this
         ->withoutStrictSSL()        
@@ -37,8 +37,8 @@ class WooCommerceApiClient extends ApiClient
         );
 
         $wc_rest_api = array(
-            'key'    => $this->consumer_key,
-            'secret' => $this->consumer_secret
+            'key'    => $this->username,
+            'secret' => $this->password
         );
      
         $consumerKey = $wc_rest_api['key'];
@@ -54,8 +54,8 @@ class WooCommerceApiClient extends ApiClient
      
     protected function generateSignature($request, $timestamp, $nonce, $signatureMethod, $version) {
         $wc_rest_api = array(
-            'key'    => $this->consumer_key,
-            'secret' => $this->consumer_secret
+            'key'    => $this->username,
+            'secret' => $this->password
         );
      
         $base = $request['method'] . "&"
