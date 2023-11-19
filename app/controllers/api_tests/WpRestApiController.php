@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers\apis_tests;
+namespace simplerest\controllers\api_tests;
 
 use simplerest\core\libs\DB;
 use simplerest\core\libs\WooCommerceRestAPI;
@@ -37,7 +37,7 @@ class WpRestApiController extends MyController
         return $cli;
     }
 
-    // apis_tests wp_rest_api get_products
+    // api_tests wp_rest_api get_products
     function get_products()
     {
         $base_url = 'http://woo1.lan';
