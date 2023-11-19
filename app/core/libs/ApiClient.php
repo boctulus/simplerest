@@ -27,8 +27,7 @@ use simplerest\core\libs\FileCache;
 
 */
 class ApiClient
-{
-
+{   
     const     HTTP_METH_POST   = "POST";
     const     HTTP_METH_GET    = "GET";
     const     HTTP_METH_PATCH  = "PATCH";
@@ -45,6 +44,10 @@ class ApiClient
     protected $encode_body;
     protected $max_retries = 1;
     protected $cert_ssl  = null;
+
+    // Username & password
+    protected $username;
+    protected $password;
 
     // Response
     protected $raw_response;
@@ -936,7 +939,9 @@ class ApiClient
     */
 
     // BASIC
-    function setBasicAuth($username, $password){
+    function setBasicAuth($username = null, $password = null){
+        $username = $username ?? $this->username;
+        $password = $password ?? $this->password;
         $this->addHeader('Authorization', 'Basic '. base64_encode("$username:$password"));
 
         return $this;
