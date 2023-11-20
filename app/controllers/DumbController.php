@@ -5,7 +5,7 @@ namespace simplerest\controllers;
 use Client;
 use stdClass;
 use simplerest\core\Acl;
-use simplerest\core\traits\MemoizationTrait;
+use simplerest\core\libs\Memoization;
 use simplerest\core\View;
 use simplerest\core\Model;
 use simplerest\core\Route;
@@ -108,8 +108,6 @@ use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 
 class DumbController extends Controller
 {
-    use MemoizationTrait;
-
     function __construct()
     {
         parent::__construct();
@@ -8900,21 +8898,21 @@ class DumbController extends Controller
 
     function memoize_test()
     {       
-        MemoizationTrait::memoize('nombre.hijo', 'Feli');
-        MemoizationTrait::memoize('nombre.papa', 'Pablo');
+        Memoization::memoize('nombre.hijo', 'Feli');
+        Memoization::memoize('nombre.papa', 'Pablo');
 
         dd(
-            MemoizationTrait::memoize('nombre.hijo')
+            Memoization::memoize('nombre.hijo')
         );
 
-        MemoizationTrait::memoize('nombre.mama', '????');
+        Memoization::memoize('nombre.mama', '????');
 
         dd(
-            MemoizationTrait::memoize('nombre.papa')
+            Memoization::memoize('nombre.papa')
         );
 
         dd(
-            MemoizationTrait::memoize('nombre.mama')
+            Memoization::memoize('nombre.mama')
         );
     }
 

@@ -5,6 +5,7 @@ namespace simplerest\core\libs;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\FileCache;
+use simplerest\core\traits\MemoizationTrait;
 
 /*
     @author Pablo Bozzolo
