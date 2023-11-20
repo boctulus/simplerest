@@ -8791,6 +8791,51 @@ A futuro se implementará un comando para la limpieza de la cache de la siguient
 El comando podrá borrar otro tipo de caches como la del Acl.
 
 
+# In-memory cache
+
+Implementación del patrón Memoization. De momento el unico "driver" permite solo memorizacion dentro del mismo request. 
+
+A futuro podrian usarse FileCache, DatabaseCache, Redis, Memcached etc para persistir valores.
+
+Ej:
+
+	Memoization::memoize('nombre.hijo', 'Feli');
+	Memoization::memoize('nombre.papa', 'Pablo');
+
+	Memoization::memoize('calculations.complex_calc', function($a, $b){
+		dd("Doing some expensive calculations ...");
+		return $a + $b;
+	}, 2, 1);
+
+	// Usando use() para pasar variables al callback
+
+	$x = 2;
+	$y = 3;
+
+	Memoization::memoize('calculations.more_calc', function() use ($x, $y){
+		dd("Doing some expensive calculations ...");
+		return $x * $y;
+	}, 2, 1);
+
+	dd(
+		Memoization::memoize('nombre.hijo')
+	);
+
+	Memoization::memoize('nombre.mama', '????');
+
+	dd(
+		Memoization::memoize('nombre.papa')
+	);
+
+	dd(
+		Memoization::memoize('nombre.mama')
+	);
+
+	dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
+	dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
+	dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
+
+
 # File cache
 
 Hay dos implementaciones de cache de archivo, una donde los datos se serializan con FileCache::put() y se recuperan con FileCache::get() y otra donde no se serializan ni se almacena el tiempo de expiración.
@@ -12961,11 +13006,12 @@ Solo aplique vertical() a tag('nav')
 
 Ej:
 
-	tag('navLink')->anchor('Active')->active(),
+	echo tag('nav')->content([
+		tag('navLink')->anchor('Active')->active(),
 		tag('navLink')->anchor('Link'),
 		tag('navLink')->anchor('Link'),
 		tag('navLink')->anchor('Disabled')->disabled()
-	])
+	])->class('mb-3')
 	->vertical();    
 
 Justify right
@@ -12984,13 +13030,13 @@ Solo aplique tabs() a tag('nav')
 
 Ej:
 
-	tag('navLink')->anchor('Active')->active(),
+	echo tag('nav')->content([
+		tag('navLink')->anchor('Active')->active(),
 		tag('navLink')->anchor('Link'),
 		tag('navLink')->anchor('Link'),
 		tag('navLink')->anchor('Disabled')->disabled()
 	])
-	->pills
-	->tabs(); 
+	->tabs();    
 
 Fill
 
@@ -12998,12 +13044,14 @@ Para que el nav ocupe todo el espacio disponible en ancho use fill()
 
 Ej:
 
-	tag('navLink')->anchor('Active')->active(),
+	echo tag('nav')->content([
+		tag('navLink')->anchor('Active')->active(),
 		tag('navLink')->anchor('Link'),
 		tag('navLink')->anchor('Link'),
 		tag('navLink')->anchor('Disabled')->disabled()
 	])
-	->fill();    
+	->fill()
+	->tabs();
 
 
 Justify

@@ -472,7 +472,7 @@ class Url
         return static::currentUrl();
     }
 
-    function getHostname($url = null, bool $include_protocol = false)
+    static function getHostname($url = null, bool $include_protocol = false)
     {
         static $cachedHostnames = [];
      
