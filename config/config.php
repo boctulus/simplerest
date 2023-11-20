@@ -285,7 +285,7 @@ return [
 		ApiClient default sleep time between requests
 	*/
 
-	'sleep_time' => 0.5,
+	'sleep_time' => 0.15,
 
 	/*
 		i18n
