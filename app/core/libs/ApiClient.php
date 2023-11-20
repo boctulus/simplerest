@@ -611,10 +611,16 @@ class ApiClient
     }
 
     function request(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null){
-        static $prev_hosts;
+        static $access;
+        
+        if (isset(config()['sleep_time'])){
+            $domain = Url::getHostname($url);
 
-        if ($prev_hosts === null){
-            $prev_hosts = [];
+            if ($access === null){
+                $access = [
+                    $domain => time()
+                ];
+            }
         }
 
         if ($this->mocked){
@@ -697,20 +703,18 @@ class ApiClient
             }
         }
 
-        $domain = Url::getHostname($url);
-
         if (isset(config()['sleep_time'])){
             /*
                 Solo si se ha solicitado antes (en principio en el mismo request),
                 hago la pausa
 
-                En vez de usar $prev_hosts como variable estatica deberia ser 
+                En vez de usar $access como variable estatica deberia ser 
                 con uso de transcientes
 
                 Tambien deberia guardarse y tomarse en cuenta cuando fue la ultima
                 solicitud http a ese dominio
             */
-            if (isset($prev_hosts[$domain])){
+            if ($access[$domain] + 1000000 < microtime()){
                 nap(config()['sleep_time'], true);
             } 
         }
@@ -751,7 +755,7 @@ class ApiClient
             $ok = empty($this->error);
             $retries++;
 
-            $prev_hosts[ $domain ] = true;
+            $access[ $domain ] = time();
             //d($ok ? 'ok' : 'fail', 'INTENTOS: '. $retries);
         }
 
