@@ -5,7 +5,7 @@ namespace simplerest\controllers;
 use Client;
 use stdClass;
 use simplerest\core\Acl;
-use simplerest\libs\Foo;
+use simplerest\core\traits\MemoizationTrait;
 use simplerest\core\View;
 use simplerest\core\Model;
 use simplerest\core\Route;
@@ -108,6 +108,8 @@ use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 
 class DumbController extends Controller
 {
+    use MemoizationTrait;
+
     function __construct()
     {
         parent::__construct();
@@ -6367,7 +6369,7 @@ class DumbController extends Controller
         $url = 'https://www.maisonsdumonde.com/FR/fr/p/canape-lit-3-4-places-en-lin-lave-bleu-petrole-barcelone-180512.htm';
 
         dd(
-            MaisonsScraper::parseProduct($url)
+            MaisonsScraper::getProduct($url)
         );
 
         dd(
@@ -6390,7 +6392,7 @@ class DumbController extends Controller
         exit;
 
         dd(
-            LeroyMerlinScraper::parseProduct($url)
+            LeroyMerlinScraper::getProduct($url)
         );
     }
 
@@ -6399,7 +6401,7 @@ class DumbController extends Controller
         $url = 'https://amzn.to/2N7LgBZ';
 
         dd(
-            AmazonScraper::parseProduct($url)
+            AmazonScraper::getProduct($url)
         );
     }
 
@@ -6408,7 +6410,7 @@ class DumbController extends Controller
         $url = 'https://www.curiosite.es/producto/zapatillas-de-andar-por-casa-multicolores.html';
 
         dd(
-            Curiosite::parseProduct($url)
+            Curiosite::getProduct($url)
         );
     }
 
@@ -6648,7 +6650,7 @@ class DumbController extends Controller
         $class = $scraper($url);
 
         dd(
-            $class::parseProduct($url)
+            $class::getProduct($url)
         );
 
         $client = ApiClient::instance($proxy_url)
@@ -8893,6 +8895,27 @@ class DumbController extends Controller
 
         // resultado
         dd($res);
+    }
+
+
+    function memoize_test()
+    {       
+        MemoizationTrait::memoize('nombre.hijo', 'Feli');
+        MemoizationTrait::memoize('nombre.papa', 'Pablo');
+
+        dd(
+            MemoizationTrait::memoize('nombre.hijo')
+        );
+
+        MemoizationTrait::memoize('nombre.mama', '????');
+
+        dd(
+            MemoizationTrait::memoize('nombre.papa')
+        );
+
+        dd(
+            MemoizationTrait::memoize('nombre.mama')
+        );
     }
 
    
