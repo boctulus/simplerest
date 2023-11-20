@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\traits;
+namespace simplerest\core\libs;
 
-trait MemoizationTrait
+class Memoization
 {
     protected static $cache = [];
 
@@ -22,4 +22,6 @@ trait MemoizationTrait
         // Si no se proporciona $value y la clave no existe en el caché, retorna null
         return null;
     }
+
 }
+
