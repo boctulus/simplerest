@@ -472,8 +472,10 @@ class Url
         return static::currentUrl();
     }
 
-    static function getHostname($url = null, bool $include_protocol = false)
+    function getHostname($url = null, bool $include_protocol = false)
     {
+        static $cachedHostnames = [];
+     
         if (is_cli() && empty($url)){
             return config()['app_url'];
         }
@@ -481,7 +483,11 @@ class Url
         if (is_null($url)){
             $url = static::currentUrl();
         }
-
+    
+        if (isset($cachedHostnames[$url])) {
+            return $cachedHostnames[$url];
+        }
+    
         $url_info = parse_url($url);
 
         if (!isset($url_info['path'])){
@@ -491,10 +497,14 @@ class Url
         $hostname = ($url_info['host'] ?? '') . (isset($url_info['port']) ? ':'. $url_info['port'] : '');
 
         if ($include_protocol){
-            return $url_info['scheme'] . '://' . $hostname;
+            $result = $url_info['scheme'] . '://' . $hostname;
         } else {
-            return $hostname;
+            $result = $hostname;
         }
+
+        $cachedHostnames[$url] = $result;
+
+        return $result;
     }
 
      /*
