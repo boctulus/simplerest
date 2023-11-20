@@ -8901,6 +8901,21 @@ class DumbController extends Controller
         Memoization::memoize('nombre.hijo', 'Feli');
         Memoization::memoize('nombre.papa', 'Pablo');
 
+        Memoization::memoize('calculations.complex_calc', function($a, $b){
+            dd("Doing some expensive calculations ...");
+            return $a + $b;
+        }, 2, 1);
+
+        // Usando use() para pasar variables al callback
+
+        $x = 2;
+        $y = 3;
+
+        Memoization::memoize('calculations.more_calc', function() use ($x, $y){
+            dd("Doing some expensive calculations ...");
+            return $x * $y;
+        }, 2, 1);
+
         dd(
             Memoization::memoize('nombre.hijo')
         );
@@ -8914,6 +8929,10 @@ class DumbController extends Controller
         dd(
             Memoization::memoize('nombre.mama')
         );
+
+        dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
+        dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
+        dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
     }
 
    
