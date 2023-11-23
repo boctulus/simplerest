@@ -4,6 +4,9 @@ namespace simplerest\core\libs;
 
 /*
     Antes de ...$args podria incluirse un $exp_time en segundos
+
+    De momento utiliza un solo "driver" y no hay persistencia
+    entre distintos requests.
 */
 class Memoization
 {

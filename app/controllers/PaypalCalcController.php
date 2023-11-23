@@ -14,13 +14,26 @@ use simplerest\controllers\MyController;
 class PaypalCalcController extends MyController
 {
     /*  
+        Supuestamente sigue siendo 5.7% + 0.30 pero ...
+
+        -------
+
         https://www.paypal.com/us/webapps/mpp/paypal-fees
+
+        Desde Chile:
+
+        79,35 USD --- 4198,25 --- 3,998.53 PHP (72.04 USD)
+
+        1 USD = 52.9080 cuando el real es 1 USD = 55.50 
+            
+        PayPal esta llevandose aprox 10%
     */
 
-    static protected $per   = 5.4;
-    static protected $fixed = 0.3;
+    static protected $per   = 10.0;
+    static protected $fixed = 0;
     static protected $round_fn = null; // 'floor';
     static protected $paypal_me = 'paypal.me/kodeservices';
+    static protected $email = 'revelynpaduapadua+2@gmail.com';
 
     function __construct()
     {
@@ -44,6 +57,14 @@ class PaypalCalcController extends MyController
 
     function index(){
         return 'https://'.static::$paypal_me;
+    }
+
+    function email(){
+        return static::$email;
+    }
+
+    function mail(){
+        return static::$email;
     }
 
     /*
