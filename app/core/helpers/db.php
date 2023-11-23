@@ -9,54 +9,6 @@ use simplerest\core\libs\Strings;
 use simplerest\core\exceptions\SqlException;
 use simplerest\core\controllers\MakeControllerBase;
 
-/*
-    Ej:
-
-    enqueue_data([        
-        'user_id' => $user_id
-    ]);
-*/
-function enqueue_data($data, $category = null) {
-    $tb = (object) table("queue");
-
-    $tb->insert([
-        'category' => $category,
-        'data'     => json_encode($data)
-    ]);
-}
-
-/*
-    Ej:
-
-    $row     = deque_data();
-
-    $user_id = $row['user_id'];
-    // ....
-*/
-function deque_data($category = null, bool $full_row = false) {
-    $tb = (object) table("queue");
-
-    $row = $tb
-    ->when(!empty($category), function ($q) use ($category) {
-        $q->where(["category" => $category]);
-    })
-    ->orderBy([
-        'id' => 'asc'
-    ])
-    ->getOne();
-    
-    if (empty($row)){
-        return false;
-    }
-
-    $id          = $row['id'];
-    $row['data'] = json_decode($row['data'], true);
-
-    $tb = (object) table("queue");
-    $tb->where(['id' => $id])->delete();
-
-    return $full_row ? $row : $row['data'];
-}
 
 function get_default_connection(){
     return DB::getDefaultConnection();
@@ -1092,4 +1044,12 @@ function process_sql_file(string $path, string $delimeter = ';', bool $stop_if_e
             }
         }
     }    
+
+    function enqueue_data($data, $category = null) {
+        return DB::enqueue($data, $category);
+    }
+    
+    function deque_data($category = null, bool $full_row = false) {
+        return DB::deque($category, $full_row);
+    }     
 }

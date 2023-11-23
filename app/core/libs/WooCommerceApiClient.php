@@ -9,7 +9,7 @@ class WooCommerceApiClient extends ApiClient
     protected $username;
     protected $password;
 
-    function __construct($consumer_key = null, $consumer_secret = null)
+    function __construct($consumer_key , $consumer_secret)
     {
         $this->username = $consumer_key;
         $this->password = $consumer_secret;
@@ -22,15 +22,28 @@ class WooCommerceApiClient extends ApiClient
 
         parent::__construct();
     }
-
-    public function getBasicAuth($username, $password){
-        return 'Basic '. base64_encode("$username:$password");
-    }
-
+    
     /*
         De uso obligado para peticiones HTTP
     */
-    public function getOAuth($url, $method) { 
+    public function setOAuth()
+    {
+        if ($this->url === null){
+            throw new \Exception("Undefined url");
+        }
+
+        if ($this->verb === null){
+            throw new \Exception("Undefined HTTP verb");
+        }
+    
+        $this->authorization(
+            $this->getOAuth($this->url, $this->verb)
+        );
+
+        return $this;        
+    }
+
+    protected function getOAuth($url, $method) { 
         $request = array(
             'method' => $method,
             'url'    => $url
@@ -71,23 +84,6 @@ class WooCommerceApiClient extends ApiClient
         $signature = base64_encode( hash_hmac('sha1', $base, $key, true) );
      
         return $signature;
-    }
-
-    public function setOAuth()
-    {
-        if ($this->url === null){
-            throw new \Exception("Undefined url");
-        }
-
-        if ($this->verb === null){
-            throw new \Exception("Undefined HTTP verb");
-        }
-    
-        $this->authorization(
-            $this->getOAuth($this->url, $this->verb)
-        );
-
-        return $this;        
     }
 
 }
