@@ -2,12 +2,14 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\interfaces\ICache;
+
 /*
     Idealmente implementar PSR 6 cache interface
 
     https://www.php-fig.org/psr/psr-6/
 */
-abstract class Cache
+abstract class Cache implements ICache
 {
     const NEVER   = -1;
     const EXPIRED =  0;
