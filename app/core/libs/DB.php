@@ -1142,4 +1142,58 @@ class DB
 
 		return static::select("REPAIR TABLE $tables");
 	}
+
+	/*
+		Queues
+	*/
+	
+	/*
+		Ej:
+
+		enqueue([        
+			'user_id' => $user_id
+		]);
+	*/
+	static function enqueue($data, $category = null) {
+		$tb = (object) table("queue");
+
+		$tb->insert([
+			'category' => $category,
+			'data'     => json_encode($data)
+		]);
+	}
+
+	/*
+		Ej:
+
+		$row     = deque();
+
+		$user_id = $row['user_id'];
+		// ....
+	*/
+	static function deque($category = null, bool $full_row = false) {
+		$tb = (object) table("queue");
+
+		$row = $tb
+		->when(!empty($category), function ($q) use ($category) {
+			$q->where(["category" => $category]);
+		})
+		->orderBy([
+			'id' => 'asc'
+		])
+		->getOne();
+		
+		if (empty($row)){
+			return false;
+		}
+
+		$id          = $row['id'];
+		$row['data'] = json_decode($row['data'], true);
+
+		$tb = (object) table("queue");
+		$tb->where(['id' => $id])->delete();
+
+		return $full_row ? $row : $row['data'];
+	}
+
 }
