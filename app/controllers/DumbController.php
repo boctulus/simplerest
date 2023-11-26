@@ -4207,83 +4207,6 @@ class DumbController extends Controller
         }
     }
 
-    /*
-        Si se desea ser notificado cuando el job a terminado con éxito o un fallo,
-        pueden hacerse:
-
-        command && command-after-only-if-success &
-        command || command-after-only-if-fail &
-
-        https://superuser.com/a/345455/402377
-    */
-    function test_background_task()
-    {
-        $cmd = 'php com dumb some';
-        $pid = System::runInBackground($cmd);
-
-        dd($pid, 'pid');
-    }
-
-    function test_supervisor_start()
-    {
-        Supervisor::start();
-    }
-
-    function test_supervisor_stop()
-    {
-        Supervisor::stop();
-    }
-
-    function test_is_job_running()
-    {
-        dd(Supervisor::isRunning('some.php'));
-    }
-
-    function test_dispatch_q1()
-    {
-        $queue = new JobQueue("q1");
-        $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
-        $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
-    }
-
-    function test_dispatch_q2()
-    {
-        $queue = new JobQueue("q2");
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '1 - Juan', 39);
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '2 - Maria', 21);
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '3 - Felipito', 10);
-    }
-
-    function test_worker_factory_q2()
-    {
-        $queue = new JobQueue("q2");
-        $queue->addWorkers(30);
-    }
-
-    function test_worker_factory2()
-    {
-        $queue = new JobQueue();
-        $queue->addWorkers(3);
-    }
-
-    function test_worker_factory_q1()
-    {
-        $queue = new JobQueue("q1");
-        $queue->addWorkers(2);
-    }
-
-    function test_worker_stop()
-    {
-        JobQueue::stop();
-    }
-
-    function test_worker_stop_q1()
-    {
-        JobQueue::stop('q1');
-    }
-
     function test_tag()
     {
         Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
@@ -8935,5 +8858,106 @@ class DumbController extends Controller
         dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
     }
 
+    function test_memory_solution(){
+        System::registerStats(true, false); 
+
+        // register_shutdown_function(function(){
+        //    dd("FINNNNNNNNN");
+        // });
+    }
+
+    function test_serialize_code(){
+        $accumulator = function($val){
+            static $acc;
+            $acc += $val;
+            return $acc;
+        };
+
+        dd($accumulator(3));
+        dd($accumulator(5));
+        dd($accumulator(2));
+
+        // Serialization of 'Closure' is not allowed
+        dd(serialize($accumulator));
+    }
+    
+
+    /*
+        Si se desea ser notificado cuando el job a terminado con éxito o un fallo,
+        pueden hacerse:
+
+        command && command-after-only-if-success &
+        command || command-after-only-if-fail &
+
+        https://superuser.com/a/345455/402377
+    */
+    function test_background_task()
+    {
+        $cmd = 'php com dumb some';
+        $pid = System::runInBackground($cmd);
+
+        dd($pid, 'pid');
+    }
+
+    function test_supervisor_start()
+    {
+        Supervisor::start();
+    }
+
+    function test_supervisor_stop()
+    {
+        Supervisor::stop();
+    }
+
+    function test_is_job_running()
+    {
+        dd(Supervisor::isRunning('some.php'));
+    }
+
+    function test_dispatch_q1()
+    {
+        $queue = new JobQueue("q1");
+        $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
+        $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
+    }
+
+    function test_dispatch_q2()
+    {
+        $queue = new JobQueue("q2");
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '1 - Juan', 39);
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '2 - Maria', 21);
+        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '3 - Felipito', 10);
+    }
+
+    function test_worker_factory_q2()
+    {
+        $queue = new JobQueue("q2");
+        $queue->addWorkers(30);
+    }
+
+    function test_worker_factory2()
+    {
+        $queue = new JobQueue();
+        $queue->addWorkers(3);
+    }
+
+    function test_worker_factory_q1()
+    {
+        $queue = new JobQueue("q1");
+        $queue->addWorkers(10);
+    }
+
+    function test_worker_stop()
+    {
+        JobQueue::stop();
+    }
+
+    function test_worker_stop_q1()
+    {
+        JobQueue::stop('q1');
+    }
+    
    
 }   // end class

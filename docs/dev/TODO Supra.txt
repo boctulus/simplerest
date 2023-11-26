@@ -10,11 +10,10 @@ Ej de uso:
 https://www.youtube.com/watch?v=cDjMJHH2Y4s&ab_channel=TexvnOnline
 
 
-- En proyectos es recomendable tener otro template como "TK. ThemeKit"
+- Se veria bien tener un template con cajitas como:
 
-    https://github.com/ThemeKit/BootstrapAdmin
+https://bnrs.dti.gov.ph/registration/create
 
-Como usa BT4 es posible que sea compatible con los componentes de AdminLTE
 
 - Tomar fuentes o algo mas de
 
