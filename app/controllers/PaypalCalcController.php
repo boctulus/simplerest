@@ -29,7 +29,7 @@ class PaypalCalcController extends MyController
         PayPal esta llevandose aprox 10%
     */
 
-    static protected $per   = 10.0;
+    static protected $per   = 6.0;
     static protected $fixed = 0;
     static protected $round_fn = null; // 'floor';
     static protected $paypal_me = 'paypal.me/kodeservices';
