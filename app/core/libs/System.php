@@ -256,5 +256,96 @@ class System
     static function getMemoryPeakUsage(bool $real_usage = false){
         return (round(memory_get_peak_usage($real_usage) / 1048576, 2)) . 'M';
     }
+
+    /*
+        CPU usage como porcentaje %
+
+        @author Rick <rick@rctonline.nl>
+
+        Ver discusion:
+        https://www.reddit.com/r/PowerShell/comments/arxr8h/getwmiobject_win32_processor_returns_load/
+    */
+    static function getServerLoad() {
+    
+        if (stristr(PHP_OS, 'win')) {
+        
+            $wmi = new \COM("Winmgmts://");
+            $server = $wmi->execquery("SELECT LoadPercentage FROM Win32_Processor");
+            
+            $cpu_num = 0;
+            $load_total = 0;
+            
+            foreach($server as $cpu){
+                $cpu_num++;
+                $load_total += $cpu->loadpercentage;
+            }
+            
+            $load = round($load_total/$cpu_num);
+            
+        } else {
+        
+            $sys_load = sys_getloadavg();
+            $load = $sys_load[0];
+        
+        }
+        
+        return (int) $load;
+    }
+
+    static function setMaxExecutionTime($seconds = -1){
+        return @ini_set("max_execution_time", (string) $seconds);
+    }
+
+    /*
+        Registra estadisticas al salir
+
+        Ej:
+
+        --| SYSTEM STATS AT SHUTDOWN
+        CPU usage: 4%
+        Memory limit: 256M
+        Memory usage: 139.27M
+        Memory peak: 139.27M
+        Last error: 1
+        Uncaught TypeError: shuffle(): Argument #1 ($array) must be of type array, null given in /home/fwbibudd/public_html/wp-content/plugins/giglio-sync/libs/Sync.php:352
+        Stack trace:
+        #0 /home/fwbibudd/public_html/wp-content/plugins/giglio-sync/libs/Sync.php(352): shuffle(NULL)
+        #1 /home/fwbibudd/public_html/wp-content/plugins/giglio-sync/libs/Sync.php(495): boctulus\SW\libs\Sync::processCategory(Array)
+        #2 /home/fwbibudd/public_html/wp-content/plugins/giglio-sync/sync.php(69): boctulus\SW\libs\Sync::init()
+        #3 {main}
+        thrown
+        /home/fwbibudd/public_html/wp-content/plugins/giglio-sync/libs/Sync.php
+        352
+        Exiting at 2023-11-25 11:21:02
+    */
+    static function registerStats(bool $stdout = false, $filename = 'sys_stats.txt')
+    {
+        register_shutdown_function(function() use ($stdout, $filename){
+            $cpu_usage = static::getServerLoad();
+            $mem_limit = static::getMemoryLimit();
+            $mem_peak  = static::getMemoryPeakUsage();
+            $mem_usage = static::getMemoryUsage();
+            
+            $msg = "CPU usage: $cpu_usage%\r\n".
+            "Memory limit: $mem_limit\r\n".
+            "Memory usage: $mem_usage\r\n".
+            "Memory peak: $mem_peak\r\n";
+
+            if (!empty(error_get_last())){
+                $last_err = implode("\r\n", error_get_last());
+                $msg     .= "Last error: $last_err\r\n";
+            }
+
+            $msg .= "Exiting at ". at();
+    
+            if ($stdout){
+                dd($msg, 'SYSTEM STATS AT SHUTDOWN');
+            }
+
+            if ($filename !== false){
+                file_put_contents(LOGS_PATH . $filename, $msg);
+            }
+        });
+    }
 }
 

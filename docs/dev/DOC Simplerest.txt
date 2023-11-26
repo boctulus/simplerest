@@ -11044,7 +11044,7 @@ El framework dispone de tareas programadas o "cron jobs". Estos cronjobs se alma
 
 La estructura básica de un CronJob es:
 
-	class {Name}Worker extends CronJob
+	class {Name}CronJob extends CronJob
 	{
 		static protected $month;
 		static protected $monthday;
@@ -11125,24 +11125,29 @@ Para detener los cronJobs:
 
 	Supervisor::stop()
 
-<-- obviamente toca crear los comandos "cronjobs start" y "cronjobs stop" que llamen a Supervisor::start() y Supervisor::stop() respectivamente
+<-- obviamente toca crear los comandos "cronjob start" y "cronjob stop" que llamen a Supervisor::start() y Supervisor::stop() respectivamente
 
 
 # Cola de tareas
 
 La cola de tareas es una forma eficiente de reducir los tiempos de respuesta de peticiones ya que la o las tareas se encolan, el script termina y en segundo plano se atenderá la cola.
 
-Un caso de uso es el envio de correos:
+Un caso de uso es el envio de correos, seria algo como:
 	
 	$queue->dispatch(\simplerest\jobs\tasks\SendWelcomeEmail::class, $user);
 
 Estas tareas se almacenan en /app/jobs/tasks
 
-Las tareas se crean mediante el comando:
+
+Pasos
+
+1.- Crean de "jobs" (referidos como "tasks") mediante el comando:
 
 	php com make task {name}
 
-Las tareas deben extender de Task e implementar el método run() el cual puede recibir parámetros. Ej:
+Las tareas deben extender de Task e implementar el método run() el cual puede recibir parámetros. 
+
+Ej:
 
 	class DosTask extends Task
 	{ 
@@ -11158,7 +11163,9 @@ Las tareas deben extender de Task e implementar el método run() el cual puede r
 		}
 	}
 
-Luego, es posible "encolar" (despachar) las tareas a una cola que puede tener un nombre. Ej:
+2.- Las tareas se deben "encolar" (despachar) en a una cola que puede tener un nombre. 
+
+Ej:
 
 	$queue = new JobQueue("q1");
 	$queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
@@ -11170,12 +11177,20 @@ Luego, es posible "encolar" (despachar) las tareas a una cola que puede tener un
 	
 	$queue->dispatch(\simplerest\jobs\tasks\DosTask::class, 'Felipito', 10);
 
-
 Se pueden crear cuantas colas se necesiten diferenciándose por el nombre que llevan.
 
 Las tareas (tasks) en cada cola corren de forma síncrona (una detrás de otra) donde la primera en entrar a la cola es la primera en salir (FIFO).
 
-Para atender las colas se necesitan trabajadores (workers) y se pueden agregar uno o más. A más workers más rápido irá la cola pero más recursos consumirá.
+3.- Asignar "workers"
+
+Para atender las colas se necesitan trabajadores (workers) que las atiendan y se pueden agregar uno o más. A más workers más rápido irá la cola pero más recursos consumirá.
+
+Ej:
+
+	queue = new JobQueue("q1");
+    $queue->addWorkers(2);
+
+En detalle:
 
 	/*
 		Declaro a la cola que deseo acceder
@@ -11188,7 +11203,18 @@ Para atender las colas se necesitan trabajadores (workers) y se pueden agregar u
     $queue->addWorkers(3);
 
 
-La forma de detener la ejecución de tareas de una cola es mediante JobQueue::stop();
+-- Inicio
+
+Apenas asignados los workers, la será atendida. No se ha implementado un "start". 
+
+
+-- Finalizacion
+
+Cuando una tarea (job) se ha completado, es removido de la cola y por tanto de la tabla "jobs".
+
+Los workers no son desasignados en el sentido  de que permanecen en la tabla "background_workers" hasta que no se remuevan explicitamente.
+
+La forma de detener la ejecución de tareas de una cola es mediante JobQueue::stop() que ademas remueve los workers de la tabla "background_workers".
 
 Ej:
 
@@ -11197,7 +11223,6 @@ Ej:
 En caso de querer detener la ejecución de todas las colas, no envie el nombre de la cola:
 
 	JobQueue::stop()
-
 
 <-- se implementará el comando "queue stop [ name ]"
 

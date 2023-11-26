@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers;
+namespace simplerest\controllers\honeys;
 
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Shopify;
