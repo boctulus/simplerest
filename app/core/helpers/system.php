@@ -1,6 +1,8 @@
 <?php
 
 use simplerest\core\libs\StdOut;
+use simplerest\core\libs\System;
+use simplerest\core\libs\ApacheWebServer;
 
 function is_cli(){
 	return (php_sapi_name() == 'cli');
@@ -9,6 +11,37 @@ function is_cli(){
 function is_unix(){
 	return (DIRECTORY_SEPARATOR === '/');
 }
+
+function set_server_limits($upload_max_filesize = '1024M', $post_max_size = '1024M', $memory_limit = '768M', $max_exec_time = '600'){
+    $config = config();
+
+    /*
+        Si no funciona, debe modificarse el php.ini
+    */
+
+    ApacheWebServer::updateHtaccessFile([
+        'upload_max_filesize' => $upload_max_filesize,
+        'post_max_size'       => $post_max_size,
+    ], ROOT_PATH);
+
+    @ini_set("memory_limit", $memory_limit ?? $config["memory_limit"] ?? "768M");
+    @ini_set("max_execution_time", $max_exec_time ?? $config["max_execution_time"] ?? "600");
+}
+
+function get_server_limits(){
+    return [
+        "upload_max_filesize"   => ini_get("upload_max_filesize"),
+        "post_max_size"         => ini_get("post_max_size"),
+        "memory_limit"          => ini_get("memory_limit"),
+        "max_execution_time"    => ini_get("max_execution_time"),
+    ];
+}
+
+function long_run(){
+	System::setMemoryLimit('1024M');
+	System::setMaxExecutionTime(-1);
+}
+
 
 /*
 	Tiempo en segundos de sleep
