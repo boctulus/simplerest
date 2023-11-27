@@ -14,12 +14,12 @@ class BackgroundProcessSchema implements ISchema
 
 			'id_name'			=> 'id',
 
-			'fields'			=> ['id', 'job', 'pid', 'created_at'],
+			'fields'			=> ['id', 'filename', 'pid', 'created_at'],
 
 			'attr_types'		=> [
-				'id' => 'INT',
-				'job' => 'STR',
-				'pid' => 'INT',
+				'id'       => 'INT',
+				'filename' => 'STR',
+				'pid'      => 'INT',
 				'created_at' => 'STR'
 			],
 
@@ -33,13 +33,13 @@ class BackgroundProcessSchema implements ISchema
 
 			'nullable'			=> ['id'],
 
-			'required'			=> ['job', 'pid', 'created_at'],
+			'required'			=> ['filename', 'pid', 'created_at'],
 
 			'uniques'			=> ['pid'],
 
 			'rules' 			=> [
 				'id' => ['type' => 'int'],
-				'job' => ['type' => 'str', 'max' => 60, 'required' => true],
+				'filename' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'pid' => ['type' => 'int', 'required' => true],
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
