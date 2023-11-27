@@ -3,8 +3,9 @@
 namespace simplerest\core\libs;
 
 /*
-    Pablo Bozzolo
-    boctulus@gmail.com
+    Pablo Bozzolo < boctulus@gmail.com >
+
+    Wrapper sobre https://github.com/pk-fr/yakpro-po
 */
 
 use simplerest\core\libs\Files;

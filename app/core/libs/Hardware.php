@@ -10,12 +10,18 @@ class Hardware
     static function UniqueMachineID($salt = "") {
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $temp = sys_get_temp_dir().DIRECTORY_SEPARATOR."diskpartscript.txt";
-            if(!file_exists($temp) && !is_file($temp)) file_put_contents($temp, "select disk 0\ndetail disk");
+            
+            if(!file_exists($temp) && !is_file($temp)){
+                file_put_contents($temp, "select disk 0\ndetail disk");
+            }
+            
             $output = shell_exec("diskpart /s ".$temp);
-            $lines = explode("\n",$output);
+            $lines  = explode("\n",$output);
+
             $result = array_filter($lines,function($line) {
                 return stripos($line,"ID:")!==false;
             });
+            
             if(count($result)>0) {
                 $result = array_shift(array_values($result));
                 $result = explode(":",$result);

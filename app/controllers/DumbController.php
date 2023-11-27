@@ -8881,6 +8881,11 @@ class DumbController extends Controller
         dd(serialize($accumulator));
     }
     
+    function is_alive(){
+        $pid = 4804;
+
+        dd(System::isProcessAlive($pid), 'Running?');
+    }
 
     /*
         Si se desea ser notificado cuando el job a terminado con éxito o un fallo,
@@ -8915,7 +8920,7 @@ class DumbController extends Controller
 
     function is_cron_running()
     {
-        dd(CronJobMananger::isRunning('some.php'));
+        dd(CronJobMananger::isRunning('other.php'));
     }
 
     /*
