@@ -793,9 +793,8 @@ class DB
 			}
 
 		} catch (\Exception $e){
-
-			logger($e->getMessage());
-			log_sql(static::getLog());
+			// logger($e->getMessage());
+			// log_sql(static::getLog());
 
 			throw ($e);
 		} finally {	

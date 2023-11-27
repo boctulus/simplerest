@@ -11246,12 +11246,12 @@ NOTAS:
 - Cronjobs y jobs si bien corren en background son manejados de forma distinta, por clases distintas y ocupan tablas distintas. 
 
 
-			extienden clase		clase handler		tablas
-----------------------------------------------------------------------------------
-Cronjobs	CronJob				CronJobMananger		`background_process`
-----------------------------------------------------------------------------------
-Jobs		Task				JobQueue			`jobs` y `job_workers`
-----------------------------------------------------------------------------------
+			extienden clase		clase handler							tablas
+------------------------------------------------------------------------------------------------
+Cronjobs	CronJob				CronJobMananger, BackgroundService		`background_process`
+------------------------------------------------------------------------------------------------
+Jobs		Task				JobQueue								`jobs` y `job_workers`
+------------------------------------------------------------------------------------------------
 
 - No hay equivalente implementado a los metodos start() ni isRunning() para la clase JobQueue
 

@@ -1,4 +1,4 @@
-\<?php
+<?php
 
 use simplerest\core\libs\CronJob;
 use simplerest\core\libs\Logger;

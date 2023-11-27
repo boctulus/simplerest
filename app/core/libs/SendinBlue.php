@@ -6,9 +6,6 @@ use GuzzleHttp;
 use simplerest\core\libs\Logger;
 use simplerest\core\interfaces\IMail;
 use simplerest\libs\SendinBlue\Client\Configuration;
-use simplerest\libs\SendinBlue\Client\Api\AccountApi;
-use simplerest\libs\SendinBlue\Client\ObjectSerializer;
-
 use simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail;
 use simplerest\libs\SendinBlue\Client\Api\TransactionalEmailsApi;
 
