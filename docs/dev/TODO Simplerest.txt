@@ -3182,7 +3182,7 @@ Para mantener el proceso en background usar un "process management tool" como:
   Circus
   daemontools
   Monit
-  Supervisor
+  CronJobMananger
   Upstart
 
 https://reustle.org/managing-long-running-processes-with-supervisor.html

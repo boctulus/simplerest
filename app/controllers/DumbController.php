@@ -63,7 +63,7 @@ use simplerest\core\libs\Validator;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
-use simplerest\core\libs\Supervisor;
+use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
 
@@ -8903,19 +8903,19 @@ class DumbController extends Controller
         CronJobs
     */
 
-    function test_supervisor_start()
+    function cronjob_manager_start()
     {
-        Supervisor::start();
+        CronJobMananger::start();
     }
 
-    function test_supervisor_stop()
+    function cronjob_manager_stop()
     {
-        Supervisor::stop();
+        CronJobMananger::stop();
     }
 
-    function test_is_cron_running()
+    function is_cron_running()
     {
-        dd(Supervisor::isRunning('some.php'));
+        dd(CronJobMananger::isRunning('some.php'));
     }
 
     /*

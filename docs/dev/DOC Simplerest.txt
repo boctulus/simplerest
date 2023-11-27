@@ -11044,7 +11044,7 @@ El framework dispone de tareas programadas o "cron jobs". Estos cronjobs se alma
 
 La estructura básica de un CronJob es:
 
-	class {Name}CronJob extends CronJob
+	class {Name} extends CronJob
 	{
 		static protected $month;
 		static protected $monthday;
@@ -11119,13 +11119,13 @@ Para remover un cronJob con --remove
 
 Para iniciar los cronjobs:
 
-	Supervisor::start()
+	CronJobMananger::start()
 
 Para detener los cronJobs:
 
-	Supervisor::stop()
+	CronJobMananger::stop()
 
-<-- obviamente toca crear los comandos "cronjob start" y "cronjob stop" que llamen a Supervisor::start() y Supervisor::stop() respectivamente
+<-- obviamente toca crear los comandos "cronjob start" y "cronjob stop" que llamen a CronJobMananger::start() y CronJobMananger::stop() respectivamente
 
 
 # Cola de tareas
@@ -11248,13 +11248,14 @@ NOTAS:
 
 			extienden clase		clase handler		tablas
 ----------------------------------------------------------------------------------
-Cronjobs	CronJob				Supervisor			`background_process`
+Cronjobs	CronJob				CronJobMananger		`background_process`
 ----------------------------------------------------------------------------------
 Jobs		Task				JobQueue			`jobs` y `job_workers`
 ----------------------------------------------------------------------------------
 
-
 - No hay equivalente implementado a los metodos start() ni isRunning() para la clase JobQueue
+
+- Podria crearse una clase Supervisor para manejar tanto CronJobs como Jobs
 
 
 # Upload de archivos
