@@ -4,7 +4,7 @@ namespace simplerest\core\libs;
 
 use simplerest\core\libs\System;
 
-class Supervisor
+class CronJobMananger
 {
     static protected Array $filenames;
     static protected Array $classes;
@@ -20,11 +20,7 @@ class Supervisor
         DB::table('background_process')
         ->truncate();
 
-        foreach (static::$classes as $ix => $class){
-            if (!$class::isActive()){
-                continue;
-            }
-
+        foreach (static::$classes as $ix => $class){          
             $file = static::$filenames[$ix];
             $pid  = System::runInBackground("php com async loop $file", 'logs/output.txt');
             
@@ -32,18 +28,38 @@ class Supervisor
             
             DB::table('background_process')
             ->insert([
-                'job' => $file,
+                'filename' => $file,
                 'pid' => $pid
             ]);
         }
     }
 
+    /*
+        Verifica si el proceso de un CronJob esta ejecutandose
+        
+        Sino lo esta, elimina la referencia al PID de la tabla
+
+        Esto tiene sentido porque solo puede haber un cronjob
+        bajo el mismo fichero
+    */
     static function isRunning(string $job) : bool {
         DB::getDefaultConnection();
 
-        return DB::table('background_process')
-        ->where(['job' => $job])
-        ->exists();
+        $pid = DB::table('background_process')
+        ->where(['filename' => $job])
+        ->value('pid');
+
+        if (empty($pid)){
+            $ret = false;
+        } else {
+            $ret = System::isProcessAlive($pid);
+        }
+
+        DB::table('background_process')
+        ->where(['pid' => $pid])
+        ->delete();
+
+        return $ret;
     }
 
     static function stop(){
@@ -71,18 +87,25 @@ class Supervisor
         foreach (new \FilesystemIterator(CRONOS_PATH) as $fileInfo) {
             if($fileInfo->isDir() || $fileInfo->getExtension() != 'php') continue;
 
-            $filename   = CRONOS_PATH . $fileInfo->getFilename();
-            $class_name = Strings::getClassNameByFileName($filename);
+            $filename = CRONOS_PATH . $fileInfo->getFilename();
+            $class    = Strings::getClassNameByFileName($filename);
 
             require_once $filename;
 
-            if (!class_exists($class_name)){
-                throw new \Exception ("Class '$class_name' doesn't exist in $file");
+            if (!class_exists($class)){
+                throw new \Exception ("Class '$class' doesn't exist in $file");
             } 
 
-            static::$classes[]   = $class_name;
+            if (!$class::isActive()){
+                continue;
+            }
+
+            static::$classes[]   = $class;
             static::$filenames[] = basename($filename);
         }   
+
+        // dd(static::$classes);
+        // dd(static::$filenames);
     }
 
 }

@@ -127,6 +127,30 @@ class System
         return $pid ?? null;
     }
 
+    public static function isProcessAlive(int $pid): bool 
+    {
+        // Comprobar si el sistema operativo es Linux
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'LIN') {
+            $output = null;
+            // Ejecutar el comando 'ps' para obtener información sobre los procesos
+            exec("ps -p $pid", $output);
+
+            // Comprobar si se encontró una línea correspondiente al proceso
+            return count($output) > 1;
+        }
+        // Comprobar si el sistema operativo es Windows
+        elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // Ejecutar el comando 'tasklist' para obtener información sobre los procesos
+            exec("tasklist /FI \"PID eq $pid\"", $output);
+
+            // Comprobar si se encontró una línea correspondiente al proceso
+            return count($output) > 3;
+        }
+
+        // En caso de que el sistema operativo no sea compatible, retornar false
+        return false;
+    }
+
     static function kill($pid){
         $exit_code = null;
     
