@@ -6,7 +6,7 @@ use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
-class BackgroundWorkers implements IMigration
+class JobWorkers implements IMigration
 {
     /**
 	* Run migration.
@@ -15,7 +15,7 @@ class BackgroundWorkers implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('background_workers');
+        $sc = new Schema('job_workers');
         
         $sc->int('id')->pri()->auto();
         $sc->varchar('queue')->index();

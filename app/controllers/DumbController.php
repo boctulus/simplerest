@@ -8899,6 +8899,10 @@ class DumbController extends Controller
         dd($pid, 'pid');
     }
 
+    /*
+        CronJobs
+    */
+
     function test_supervisor_start()
     {
         Supervisor::start();
@@ -8909,10 +8913,14 @@ class DumbController extends Controller
         Supervisor::stop();
     }
 
-    function test_is_job_running()
+    function test_is_cron_running()
     {
         dd(Supervisor::isRunning('some.php'));
     }
+
+    /*
+        Jobs
+    */
 
     function test_dispatch_q1()
     {

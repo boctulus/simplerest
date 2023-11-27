@@ -4,9 +4,9 @@ namespace simplerest\models\main;
 
 
 use simplerest\models\MyModel;
-use simplerest\schemas\main\BackgroundWorkersSchema;
+use simplerest\schemas\main\JobWorkersSchema;
 
-class BackgroundWorkersModel extends MyModel
+class JobWorkersModel extends MyModel
 {
 	protected $hidden   = [];
 	protected $not_fillable = [];
@@ -14,7 +14,7 @@ class BackgroundWorkersModel extends MyModel
 	protected $createdAt = 'created_at';
 
     function __construct(bool $connect = false){
-        parent::__construct($connect, BackgroundWorkersSchema::class);
+        parent::__construct($connect, JobWorkersSchema::class);
 	}	
 }
 
