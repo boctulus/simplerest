@@ -7,7 +7,7 @@ class OtherJob extends CronJob
 {
 	static protected $month;
     static protected $monthday;
-	static protected $weekday = 3;
+	static protected $weekday = 3; // miercoles
 	static protected $hour    = 20;
 	static protected $minute  = 10;
 	static protected $second;
