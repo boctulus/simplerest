@@ -57,19 +57,7 @@ class Supervisor
         }
     
         foreach ($pids as $pid){
-            $exit_code = null;
-    
-            switch (PHP_OS_FAMILY) {
-                case 'Windows':
-                    $exit_code = shell_exec("taskkill /F /PID $pid 2>nul && echo %errorlevel%");
-                    break;
-                case 'Linux':
-                    $exit_code = shell_exec("kill $pid 2>/dev/null && echo $?");
-                    break;
-                default:
-                    // unsupported
-                    break;
-            }
+            $exit_code = System::kill($pid);
     
             if ($exit_code == 0){
                 DB::table('background_process')
