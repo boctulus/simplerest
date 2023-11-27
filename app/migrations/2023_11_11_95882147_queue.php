@@ -6,6 +6,11 @@ use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
+/*
+    Cola de uso general. 
+    
+    No esta relacionada (en principio) con jobs o tareas en background.
+*/
 class Queue implements IMigration
 {
     /**

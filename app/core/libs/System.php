@@ -127,6 +127,25 @@ class System
         return $pid ?? null;
     }
 
+    static function kill($pid){
+        $exit_code = null;
+    
+        switch (PHP_OS_FAMILY) {
+            case 'Windows':
+                $exit_code = shell_exec("taskkill /F /PID $pid 2>nul && echo %errorlevel%");
+                break;
+            case 'Linux':
+                $exit_code = shell_exec("kill $pid 2>/dev/null && echo $?");
+                break;
+            default:
+                // unsupported
+                break;
+        }
+
+        return $exit_code;
+    }
+
+
     static function exec($command, ...$args){
         $extra = implode(' ', array_values($args));
 
