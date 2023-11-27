@@ -11227,6 +11227,24 @@ En caso de querer detener la ejecución de todas las colas, no envie el nombre d
 <-- se implementará el comando "queue stop [ name ]"
 
 
+NOTAS:
+
+- Cronjobs y jobs si bien corren en background son manejados de forma distinta, por clases distintas y ocupan tablas distintas. 
+
+
+			extienden clase		clase handler		tablas
+----------------------------------------------------------------------------------
+Cronjobs	CronJob				Supervisor			`background_process`
+----------------------------------------------------------------------------------
+Jobs		Task				JobQueue			`jobs` y `background_workers`
+----------------------------------------------------------------------------------
+
+
+- No hay equivalente implementado a los metodos start() ni isRunning() para la clase JobQueue
+
+- La clase Supervisor asi como la tabla "background_process" que maneja hacen referencia a "jobs" pero son cronjobs.
+
+
 # Upload de archivos
 
 Con la clase FileUploader es muy fácil recibir archivos y de hecho el endpoint /files implementa esta clase aunque hace uso del ACL y sino lo necesitamos podemos hacer nuestra propia implementación de forma sencilla.
