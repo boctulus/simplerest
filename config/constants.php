@@ -60,11 +60,11 @@ if (!defined('SCHEMA_PATH')){
 }
 
 if (!defined('CRONOS_PATH')){
-    define('CRONOS_PATH', APP_PATH . 'jobs/cronjobs' . DIRECTORY_SEPARATOR);
+    define('CRONOS_PATH', APP_PATH . 'background/cronjobs' . DIRECTORY_SEPARATOR);
 }
 
 if (!defined('TASKS_PATH')){
-    define('TASKS_PATH', APP_PATH . 'jobs/tasks' . DIRECTORY_SEPARATOR);
+    define('TASKS_PATH', APP_PATH . 'background/tasks' . DIRECTORY_SEPARATOR);
 }
 
 if (!defined('MIGRATIONS_PATH'))

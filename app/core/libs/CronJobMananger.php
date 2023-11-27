@@ -55,9 +55,11 @@ class CronJobMananger
             $ret = System::isProcessAlive($pid);
         }
 
-        DB::table('background_process')
-        ->where(['pid' => $pid])
-        ->delete();
+        if ($ret == false){    
+            DB::table('background_process')
+            ->where(['pid' => $pid])
+            ->delete();
+        }
 
         return $ret;
     }
@@ -103,9 +105,6 @@ class CronJobMananger
             static::$classes[]   = $class;
             static::$filenames[] = basename($filename);
         }   
-
-        // dd(static::$classes);
-        // dd(static::$filenames);
     }
 
 }

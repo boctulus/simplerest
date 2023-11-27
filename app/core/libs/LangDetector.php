@@ -4,6 +4,8 @@ namespace simplerest\core\libs;
 
 /*
     @author Pablo Bozzolo < boctulus@gmail.com >
+
+    Detector de lenguaje efectivo
 */
 
 use simplerest\core\libs\Strings;

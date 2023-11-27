@@ -7635,3 +7635,6 @@ Seria necesario implementar el equivalente a:
 
   wp_create_nonce()
   wp_verify_nonce()
+
+
+- FIX para BackgroundService.php ya que en los CronJobs esta NO repitiendose como es debido cad N-segundos

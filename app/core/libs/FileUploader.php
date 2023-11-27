@@ -51,7 +51,7 @@ class FileUploader
 	}	
 	
 	static function setLimits($upload_max_filesize = '1024M', $post_max_size = '1024M', $memory_limit = '768M', $max_exec_time = '600'){
-		set_upload_limits($upload_max_filesize, $post_max_size, $memory_limit, $max_exec_time);
+		set_server_limits($upload_max_filesize, $post_max_size, $memory_limit, $max_exec_time);
 	}
 
 	// @param string path (sin / al final)
