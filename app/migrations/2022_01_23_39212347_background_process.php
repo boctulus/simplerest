@@ -17,10 +17,15 @@ class BackgroundProcess implements IMigration
     {
         $sc = new Schema('background_process');
         $sc->int('id')->pri()->auto();
-        $sc->varchar('job')->unique();
+        $sc->varchar('filename')->unique();
         $sc->int('pid', 5)->unique(); 
         $sc->datetime('created_at');
 		$sc->create();		
+    }
+    
+    public function down()
+    {
+        Schema::dropIfExists('background_process');
     }
 }
 

@@ -1480,11 +1480,30 @@ Ej:
 
 Lo anterior equivaldría (asumiendo que el id se llama 'id') a lo siguiente:
 
-	B::table('products')
+	DB::table('products')
 	->where['id' => 145]
 	->delete();
 
 También la condición podría estar dada por un whereRaw()
+
+Nota importante:
+
+El metodo find() requiere del Schema para determinar el "id" (clave primaria) de la tabla y este solo es utilizado con DB::table() pero no con el helper table()
+
+// OK
+DB::table('products')
+->find(145)
+->delete();
+
+// Funcionara solo si la clave primaria se llama "id"
+table('products')
+->find(145)
+->delete();
+
+// OK
+table('products')
+->where['id' => 145]
+->delete();
 
 
 # Borrado "suave" o soft-delete

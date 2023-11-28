@@ -4,6 +4,14 @@ namespace simplerest\core\libs;
 
 use simplerest\core\libs\System;
 
+/*
+    Para debugging
+
+    1.- Asegurese que el timezone sea el correcto
+    2.- php com async loop {nombre-del-cron}.php
+
+    Tambien puede reemplazarse el System::runInBackground() por System::exec() para ver errores en la terminal
+*/
 class CronJobMananger
 {
     static protected Array $filenames;
@@ -17,7 +25,7 @@ class CronJobMananger
 
         DB::getDefaultConnection();
 
-        DB::table('background_process')
+        table('background_process')
         ->truncate();
 
         foreach (static::$classes as $ix => $class){          
@@ -26,7 +34,7 @@ class CronJobMananger
             
             // lo ideal es poder elegir el "driver" ya sea en base de datos o en memoria tipo REDIS para los PIDs
             
-            DB::table('background_process')
+            table('background_process')
             ->insert([
                 'filename' => $file,
                 'pid' => $pid
@@ -45,7 +53,7 @@ class CronJobMananger
     static function isRunning(string $job) : bool {
         DB::getDefaultConnection();
 
-        $pid = DB::table('background_process')
+        $pid = table('background_process')
         ->where(['filename' => $job])
         ->value('pid');
 
@@ -56,7 +64,7 @@ class CronJobMananger
         }
 
         if ($ret == false){    
-            DB::table('background_process')
+            table('background_process')
             ->where(['pid' => $pid])
             ->delete();
         }
@@ -67,7 +75,7 @@ class CronJobMananger
     static function stop(){
         DB::getDefaultConnection();
     
-        $pids = DB::table('background_process')
+        $pids = table('background_process')
         ->pluck('pid');
     
         if (empty($pids)){
@@ -78,7 +86,7 @@ class CronJobMananger
             $exit_code = System::kill($pid);
     
             if ($exit_code == 0){
-                DB::table('background_process')
+                table('background_process')
                 ->where(['pid' => $pid])
                 ->delete();
             }
