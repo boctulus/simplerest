@@ -127,6 +127,88 @@ Helpers
 	set_cfg()
 
 
+### Archivo databases.php
+
+En el archivo config/databases.php hay varias definiciones muy importantes que son inyectadas en la configuración.
+
+Ej:
+
+	<?php
+
+	return 
+	[
+		'tb_prefix'      => 'edu_',
+		'db_connections' => [
+			// ...
+		],
+		//..
+	]
+
+# Prefijo para tablas
+
+En el archivo databases.php se define prefijo de las tablas. En WordPress por ejemplo por defecto es "wp_"
+
+Ej:
+
+	<?php
+
+	return 
+	[
+		'tb_prefix'      => 'edu_',
+
+
+El metodo DB::statement() intenta agregar el prefijo a las tablas para CREATE TABLE, ALTER TABLE, INSERT INTO, etc lo cual puede ser util en algunos casos. 
+
+Sino se desea que se agregue nada simplemente deje 'tb_prefix' en null, false o como candena vacia ('').
+
+Si se utiliza DB::statement() en migraciones claramente habria agregado de prefijo.
+
+Ej:
+
+	/**
+	* Run migration.
+    *
+    * @return void
+    */
+    public function up()
+    {
+        DB::statement("
+        CREATE TABLE IF NOT EXISTS `my_table` (
+            `id` int(11) PRIMARY KEY NOT NULL,
+            `db` varchar(50) DEFAULT NULL,
+            `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `created_at` DATETIME NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        ");
+
+        DB::statement("
+        ALTER TABLE `my_table`
+            MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;"); 
+    }
+
+Tambien se ha agregado soporte para prefijos en Schema, la clase principal para manejo de migraciones.
+
+Ej:
+
+ 	/**
+	* Run migration.
+    *
+    * @return void
+    */
+    public function up()
+    {
+        $sc = new Schema('test2');  // <-- el prefijo es agregado
+
+        $sc
+        ->integer('id')->auto()->pri()
+        ->varchar('category', 25)->nullable()
+        ->json('data')
+        ->datetime('created_at');
+
+		$sc->create();
+    }
+
+
 ### Options
 
 Para brindar cierto grado de compatibiidad con WordPress se implementan helpers analogos
@@ -2511,6 +2593,26 @@ Ej:
 	$res = DB::select('SELECT * FROM my_table', [], null, 'conn_2');
 
 	dd(DB::getCurrentConnectionId());
+
+
+Nota:
+
+En el archivo config/databases.php hay varias definiciones que son inyectadas en la configuración y entre ellas el prefijo de las tablas. En WordPress por ejemplo por defecto es "wp_"
+
+Ej:
+
+	<?php
+
+	return 
+	[
+		'tb_prefix'      => 'edu_',
+
+
+El metodo DB::statement() intenta agregar el prefijo a las tablas para CREATE TABLE, ALTER TABLE, INSERT INTO, etc lo cual puede ser util en algunos casos. 
+
+Sino se desea que se agregue nada simplemente deje 'tb_prefix' en null, false o como candena vacia ('').
+
+Si se utiliza DB::statement() en migraciones claramente habria agregado de prefijo.
 
 
 # Procedimientos almacenados
