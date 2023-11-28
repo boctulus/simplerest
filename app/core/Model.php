@@ -3795,6 +3795,11 @@ class Model {
 			return $st;
 		}
 
+		// Para evitar agregarlo dos veces
+		if (Strings::contains($tb_prefix, $st)){
+			return $st;
+		}
+
 		$tb        = Strings::match($st, "/REFERENCES[ ]+`?([^\b^`^ ]+)`?/i");
 		$tb_quoted = preg_quote($tb, '/');
 

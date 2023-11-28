@@ -464,6 +464,8 @@ class Schema
 
 	static function hasTable(string $tb_name, string $db_name = null)
 	{	
+		$tb_name = tb_prefix() . $tb_name;
+
 		DB::getConnection();
 
 		switch (DB::driver()){
@@ -496,6 +498,9 @@ class Schema
 	static function renameTable(string $ori, string $final){
 		$conn = DB::getConnection();   
 
+		$ori   = tb_prefix() . $ori;
+		$final = tb_prefix() . $final;
+
 		$st = $conn->prepare("RENAME TABLE `$ori` TO `$final`;");
 		return $st->execute();
 	}	
@@ -508,9 +513,11 @@ class Schema
 	}
 
 	static function dropIfExists(string $table){
-		$conn = DB::getConnection();   
+		$table = tb_prefix() . $table;
 
-		$st = $conn->prepare("DROP TABLE IF EXISTS `{$table}`;");
+		$conn  = DB::getConnection();   
+
+		$st    = $conn->prepare("DROP TABLE IF EXISTS `{$table}`;");
 		return $st->execute();
 	}
 

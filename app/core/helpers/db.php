@@ -7,8 +7,21 @@ use simplerest\core\libs\Arrays;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
 use simplerest\core\exceptions\SqlException;
+use simplerest\controllers\MigrationsController;
 use simplerest\core\controllers\MakeControllerBase;
 
+/*
+    @param Array ...$args por ejemplo "--dir=$folder", "--to=$tenant"
+*/
+function migrate(bool $show_response = true, ...$args){
+    $mgr = new MigrationsController();
+
+    if (!$show_response){
+        StdOut::hideResponse();
+    }
+
+    $mgr->migrate(...$args);
+}
 
 function get_default_connection(){
     return DB::getDefaultConnection();
@@ -1012,6 +1025,9 @@ function get_fks(string $t1, string $t2, ?string $tenant_id = null){
     return $fks_t2;
 }
 
+function tb_prefix(){
+    return config()['tb_prefix'] ?? null;
+}
 
 function sql_formatter(string $sql, ...$options){
     return MyModel::sqlFormatter($sql, ...$options);
