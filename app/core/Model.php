@@ -3781,4 +3781,53 @@ class Model {
 	function getConn(){
 		return $this->conn;
 	}
+
+	/*	
+		Adds prefix to raw statements / queries
+
+		it's a partial implementation
+	*/
+	static function addPrefix(string $st, $tb_prefix = null)
+	{
+		$tb = Strings::match($st, "/CREATE[ ]+TABLE(?: IF NOT EXISTS)?[ ]+`?([^\b^`]+)`?/i");
+
+        if (!empty($tb)){
+            $st = preg_replace("/CREATE TABLE IF NOT EXISTS?[ ]+`$tb`/i", "CREATE TABLE IF NOT EXISTS `{prefix}{$tb}`", $st);
+            $st = preg_replace("/CREATE TABLE[ ]+`$tb`/i", "CREATE TABLE `{prefix}{$tb}`", $st);
+            $st = preg_replace("/CREATE TABLE IF NOT EXISTS?[ ]+$tb/i", "CREATE TABLE IF NOT EXISTS {prefix}{$tb}", $st);
+            $st = preg_replace("/CREATE TABLE[ ]+$tb/i", "CREATE TABLE {prefix}{$tb}", $st);
+
+			return $st;
+        }
+
+		$tb = Strings::match($st, "/UPDATE[ ]+`?([^\b^`]+)`?/i");
+
+		if (!empty($tb)){
+			$st = preg_replace("/UPDATE[ ]+`$tb`/i", "UPDATE `{prefix}{$tb}`", $st);
+			$st = preg_replace("/UPDATE[ ]+$tb/i", "UPDATE {prefix}{$tb}", $st);
+
+			return $st;
+		}
+
+		$tb = Strings::match($st, "/DELETE[ ]+FROM[ ]+`?([^\b^`]+)`?/i");
+
+		if (!empty($tb)){
+			$st = preg_replace("/DELETE[ ]+FROM[ ]+`$tb`/i", "DELETE FROM `{prefix}{$tb}`", $st);
+			$st = preg_replace("/DELETE[ ]+FROM[ ]+$tb/i", "DELETE FROM {prefix}{$tb}", $st);
+
+			return $st;
+		}
+
+		if (Strings::match($st, "/(SELECT)[ ]/i")){
+			$tb = Strings::match($st, "/FROM[ ]+`?([^\b^`]+)`?/i");
+
+			if (!empty($tb)){
+				$st = preg_replace("/FROM[ ]+`$tb`/i", "FROM `{prefix}{$tb}`", $st);
+				$st = preg_replace("/FROM[ ]+$tb/i", "FROM {prefix}{$tb}", $st);
+			}
+		}
+
+		return $st;		
+	}
+
 }
