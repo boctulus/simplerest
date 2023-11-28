@@ -8980,6 +8980,16 @@ class DumbController extends Controller
     function test(){
         // Ejemplo de uso
         dd(
+            Model::addPrefix("CREATE TABLE Orders (
+                OrderID int NOT NULL,
+                OrderNumber int NOT NULL,
+                PersonID int,
+                PRIMARY KEY (OrderID),
+                FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+            );")
+        );
+
+        dd(
             Model::addPrefix("CREATE TABLE IF NOT EXISTS migrations")
         );
 
@@ -8990,11 +9000,33 @@ class DumbController extends Controller
         );
 
         dd(
+            Model::addPrefix("
+            INSERT INTO `sp_permissions` (`id`, `name`) VALUES
+            (1, 'read_all'),
+            (2, 'read_all_folders'),
+            (3, 'read_all_trashcan'),
+            (4, 'write_all'),
+            (5, 'write_all_folders'),
+            (6, 'write_all_trashcan'),
+            (7, 'write_all_collections'),
+            (8, 'fill_all'),
+            (9, 'grant'),
+            (10, 'impersonate'),
+            (11, 'lock'),
+            (12, 'transfer');")
+        );
+
+        dd(
             Model::addPrefix("DELETE FROM `table_name` WHERE condition;")
         );
 
         dd(
             Model::addPrefix("SELECT CustomerName, City FROM `Customers`;")
+        );
+
+        dd(
+            Model::addPrefix("ALTER TABLE `migrations`
+            MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;")
         );
        
     }

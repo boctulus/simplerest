@@ -3789,41 +3789,70 @@ class Model {
 	*/
 	static function addPrefix(string $st, $tb_prefix = null)
 	{
-		$tb = Strings::match($st, "/CREATE[ ]+TABLE(?: IF NOT EXISTS)?[ ]+`?([^\b^`]+)`?/i");
+		$cfg_tb_pr = config()['tb_prefix'];
+		$tb_prefix = ($tb_prefix != null) ? $tb_prefix : ($cfg_tb_pr === null ? '{prefix}' : $cfg_tb_pr);
 
-        if (!empty($tb)){
-            $st = preg_replace("/CREATE TABLE IF NOT EXISTS?[ ]+`$tb`/i", "CREATE TABLE IF NOT EXISTS `{prefix}{$tb}`", $st);
-            $st = preg_replace("/CREATE TABLE[ ]+`$tb`/i", "CREATE TABLE `{prefix}{$tb}`", $st);
-            $st = preg_replace("/CREATE TABLE IF NOT EXISTS?[ ]+$tb/i", "CREATE TABLE IF NOT EXISTS {prefix}{$tb}", $st);
-            $st = preg_replace("/CREATE TABLE[ ]+$tb/i", "CREATE TABLE {prefix}{$tb}", $st);
-
-			return $st;
-        }
-
-		$tb = Strings::match($st, "/UPDATE[ ]+`?([^\b^`]+)`?/i");
+		$tb        = Strings::match($st, "/REFERENCES[ ]+`?([^\b^`^ ]+)`?/i");
+		$tb_quoted = preg_quote($tb, '/');
 
 		if (!empty($tb)){
-			$st = preg_replace("/UPDATE[ ]+`$tb`/i", "UPDATE `{prefix}{$tb}`", $st);
-			$st = preg_replace("/UPDATE[ ]+$tb/i", "UPDATE {prefix}{$tb}", $st);
+			$st = preg_replace("/REFERENCES[ ]+`$tb_quoted`/i", "REFERENCES `$tb_prefix{$tb}`", $st);
+			$st = preg_replace("/REFERENCES[ ]+$tb_quoted/i", "REFERENCES $tb_prefix{$tb}", $st);
+		}
+
+		$tb = Strings::match($st, "/CREATE[ ]+TABLE(?: IF NOT EXISTS)?[ ]+`?([^\b^`^ ]+)`?/i");
+
+		if (!empty($tb)){
+			$st = preg_replace("/CREATE TABLE IF NOT EXISTS?[ ]+`$tb`/i", "CREATE TABLE IF NOT EXISTS `$tb_prefix{$tb}`", $st);
+			$st = preg_replace("/CREATE TABLE[ ]+`$tb`/i", "CREATE TABLE `$tb_prefix{$tb}`", $st);
+			$st = preg_replace("/CREATE TABLE IF NOT EXISTS?[ ]+$tb/i", "CREATE TABLE IF NOT EXISTS $tb_prefix{$tb}", $st);
+			$st = preg_replace("/CREATE TABLE[ ]+$tb/i", "CREATE TABLE $tb_prefix{$tb}", $st);
 
 			return $st;
 		}
 
-		$tb = Strings::match($st, "/DELETE[ ]+FROM[ ]+`?([^\b^`]+)`?/i");
+		$tb = Strings::match($st, "/UPDATE[ ]+`?([^\b^`^ ]+)`?/i");
 
 		if (!empty($tb)){
-			$st = preg_replace("/DELETE[ ]+FROM[ ]+`$tb`/i", "DELETE FROM `{prefix}{$tb}`", $st);
-			$st = preg_replace("/DELETE[ ]+FROM[ ]+$tb/i", "DELETE FROM {prefix}{$tb}", $st);
+			$st = preg_replace("/UPDATE[ ]+`$tb`/i", "UPDATE `$tb_prefix{$tb}`", $st);
+			$st = preg_replace("/UPDATE[ ]+$tb/i", "UPDATE $tb_prefix{$tb}", $st);
+
+			return $st;
+		}
+
+		$tb = Strings::match($st, "/DELETE[ ]+FROM[ ]+`?([^\b^`^ ]+)`?/i");
+
+		if (!empty($tb)){
+			$st = preg_replace("/DELETE[ ]+FROM[ ]+`$tb`/i", "DELETE FROM `$tb_prefix{$tb}`", $st);
+			$st = preg_replace("/DELETE[ ]+FROM[ ]+$tb/i", "DELETE FROM $tb_prefix{$tb}", $st);
+
+			return $st;
+		}
+
+		$tb = Strings::match($st, "/ALTER[ ]+TABLE[ ]+`?([^\b^`^ ]+)`?/i");
+
+		if (!empty($tb)){
+			$st = preg_replace("/ALTER[ ]+TABLE[ ]+`$tb`/i", "ALTER TABLE `$tb_prefix{$tb}`", $st);
+			$st = preg_replace("/ALTER[ ]+TABLE[ ]+$tb/i", "ALTER TABLE $tb_prefix{$tb}", $st);
+
+			return $st;
+		}
+
+		$tb = Strings::match($st, "/INSERT[ ]+INTO[ ]+`?([^\b^`^ ]+)`?/i");
+
+		if (!empty($tb)){
+			$st = preg_replace("/INSERT[ ]+INTO[ ]+`$tb`/i", "INSERT INTO `$tb_prefix{$tb}`", $st);
+			$st = preg_replace("/INSERT[ ]+INTO[ ]+$tb/i", "INSERT INTO $tb_prefix{$tb}", $st);
 
 			return $st;
 		}
 
 		if (Strings::match($st, "/(SELECT)[ ]/i")){
-			$tb = Strings::match($st, "/FROM[ ]+`?([^\b^`]+)`?/i");
+			$tb = Strings::match($st, "/FROM[ ]+`?([^\b^`^ ]+)`?/i");
 
 			if (!empty($tb)){
-				$st = preg_replace("/FROM[ ]+`$tb`/i", "FROM `{prefix}{$tb}`", $st);
-				$st = preg_replace("/FROM[ ]+$tb/i", "FROM {prefix}{$tb}", $st);
+				$st = preg_replace("/FROM[ ]+`$tb`/i", "FROM `$tb_prefix{$tb}`", $st);
+				$st = preg_replace("/FROM[ ]+$tb/i", "FROM $tb_prefix{$tb}", $st);
 			}
 		}
 
