@@ -10,18 +10,16 @@ use simplerest\core\libs\DB;
 
 class WorkerController extends MyController
 {
-    function __construct()
-    {
-        parent::__construct();        
-    }
-
-    function listen(?string $queue = null)
+    /*
+        @return void
+    */
+    function listen($queue = null)
     {
         while (true)
         {
             // dequeue
            
-            $job_row = DB::table('jobs')
+            $job_row = table('jobs')
             ->when(!is_null($queue), function($q) use ($queue) {
                 $q->where(['queue' => $queue]);
             })
@@ -37,8 +35,8 @@ class WorkerController extends MyController
 
             $id = $job_row['id'];
 
-            $ok = (bool) DB::table('jobs')
-            ->find($id)
+            $ok = (bool) table('jobs')
+            ->where(['id' => $id])
             ->delete();
                 
             if (!$ok){
@@ -53,7 +51,7 @@ class WorkerController extends MyController
             $job->run(...$params);
         }
 
-        d("Quit");
+        // dd("Quit");
     }
 }
 

@@ -434,7 +434,7 @@ class MigrationsControllerBase extends Controller
                     $q->where(['db' => $to_db]);
                 }
             )
-            ->orderBy(['created_at' => 'DESC'])
+            ->orderBy(['id' => 'DESC'])
             ->pluck('filename');
         }    
 
