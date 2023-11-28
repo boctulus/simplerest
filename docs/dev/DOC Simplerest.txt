@@ -11134,7 +11134,7 @@ La cola de tareas es una forma eficiente de reducir los tiempos de respuesta de 
 
 Un caso de uso es el envio de correos, seria algo como:
 	
-	$queue->dispatch(\simplerest\jobs\tasks\SendWelcomeEmail::class, $user);
+	$queue->dispatch(\simplerest\background\tasks\SendWelcomeEmail::class, $user);
 
 Estas tareas se almacenan en /app/jobs/tasks
 
@@ -11168,26 +11168,26 @@ Ej:
 Ej:
 
 	$queue = new JobQueue("q1");
-	$queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
+	$queue->dispatch(\simplerest\background\tasks\UnaTask::class);
 
 Varias tareas se pueden asignar bajo un mismo "job queue"
 
 Ej:
 
 	$queue = new JobQueue("q1");
-	$queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
-	$queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
-	$queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
-	$queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
+	$queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+	$queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+	$queue->dispatch(\simplerest\background\tasks\OtraTask::class);
+	$queue->dispatch(\simplerest\background\tasks\OtraTask::class);
 
 Se pueden pasar parametros a las colas
 
 Ej:
 
 	$queue = new JobQueue("q2");
-	$queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '1 - Juan', 39);
-	$queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '2 - Maria', 21);
-	$queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '3 - Felipito', 10);
+	$queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
+	$queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
+	$queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
 
 Se pueden crear cuantas colas se necesiten diferenciándose por el nombre que llevan.
 
