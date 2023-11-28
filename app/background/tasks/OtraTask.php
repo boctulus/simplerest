@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\jobs\tasks;
+namespace simplerest\background\tasks;
 
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Logger;

@@ -4144,7 +4144,7 @@ class DumbController extends Controller
 
     function test_unserialize()
     {
-        $s_object = 'O:29:"simplerest\jobs\tasks\DosTask":0:{}';
+        $s_object = 'O:29:"simplerest\background\tasks\DosTask":0:{}';
         $s_params = 'a:2:{i:0;s:4:"Juan";i:1;i:39;}';
 
         $o = unserialize($s_object);
@@ -8930,18 +8930,18 @@ class DumbController extends Controller
     function test_dispatch_q1()
     {
         $queue = new JobQueue("q1");
-        $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\jobs\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
-        $queue->dispatch(\simplerest\jobs\tasks\OtraTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
+        $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
     }
 
     function test_dispatch_q2()
     {
         $queue = new JobQueue("q2");
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '1 - Juan', 39);
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '2 - Maria', 21);
-        $queue->dispatch(\simplerest\jobs\tasks\DosTask::class, '3 - Felipito', 10);
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
     }
 
     function test_worker_factory_q2()
@@ -8972,5 +8972,31 @@ class DumbController extends Controller
         JobQueue::stop('q1');
     }
     
+    /////////////////////
+
+    /*
+        Agregar prefijo a CREATE TABLE
+    */
+    function test(){
+        // Ejemplo de uso
+        dd(
+            Model::addPrefix("CREATE TABLE IF NOT EXISTS migrations")
+        );
+
+        dd(
+            Model::addPrefix("UPDATE `Customers`
+            SET ContactName='Juan'
+            WHERE Country='Mexico'")
+        );
+
+        dd(
+            Model::addPrefix("DELETE FROM `table_name` WHERE condition;")
+        );
+
+        dd(
+            Model::addPrefix("SELECT CustomerName, City FROM `Customers`;")
+        );
+       
+    }
    
 }   // end class
