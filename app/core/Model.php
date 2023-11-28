@@ -2508,6 +2508,10 @@ class Model {
 	}
 
 	function find($id){
+		if (empty($this->schema)){
+			return $this->where(['id' => $id]);
+		}		
+
 		return $this->where([$this->getFullyQualifiedField($this->schema['id_name']) => $id]);
 	}
 

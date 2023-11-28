@@ -31,7 +31,7 @@ class JobQueue
         DB::getDefaultConnection();
 
         // enqueue
-        DB::table('jobs')
+        table('jobs')
         ->insert([
             'queue'  => $this->name,
             'object' => serialize($job),
@@ -45,7 +45,7 @@ class JobQueue
 
             DB::getDefaultConnection();
             
-            DB::table('job_workers')
+            table('job_workers')
             ->insert([
                 'queue' => $this->name,
                 'pid'   => $pid
@@ -63,7 +63,7 @@ class JobQueue
     static function stop(?string $queue = null){
         DB::getDefaultConnection();
 
-        $pids = DB::table('job_workers')
+        $pids = table('job_workers')
         ->when(!is_null($queue), function($q) use ($queue){
             $q->where(['queue' => $queue]);
         })
@@ -77,7 +77,7 @@ class JobQueue
             $exit_code = System::kill($pid);
 
             if ($exit_code == 0){
-                DB::table('job_workers')
+                table('job_workers')
                 ->where(['pid' => $pid])
                 ->delete();
             }
@@ -85,7 +85,7 @@ class JobQueue
 
         // Borro cualquier otro proceso que haya quedado escrito en la tabla
 
-        DB::table('job_workers')
+        table('job_workers')
         ->when(!is_null($queue), function($q) use ($queue){
             $q->where(['queue' => $queue]);
         })

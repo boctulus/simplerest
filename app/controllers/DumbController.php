@@ -369,6 +369,14 @@ class DumbController extends Controller
         //dd($queue);
     }
 
+    function test_find(){
+        $res = DB::table('users')
+        ->find(9)
+        ->getOne();
+
+        dd($res);
+    }
+
     // ok
     function test504()
     {
