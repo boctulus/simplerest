@@ -3789,8 +3789,11 @@ class Model {
 	*/
 	static function addPrefix(string $st, $tb_prefix = null)
 	{
-		$cfg_tb_pr = config()['tb_prefix'];
-		$tb_prefix = ($tb_prefix != null) ? $tb_prefix : ($cfg_tb_pr === null ? '{prefix}' : $cfg_tb_pr);
+		$tb_prefix = $tb_prefix ?? config()['tb_prefix'] ?? null;
+
+		if (empty($tb_prefix)){
+			return $st;
+		}
 
 		$tb        = Strings::match($st, "/REFERENCES[ ]+`?([^\b^`^ ]+)`?/i");
 		$tb_quoted = preg_quote($tb, '/');

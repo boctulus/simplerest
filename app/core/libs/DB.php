@@ -900,15 +900,16 @@ class DB
 
 	public static function statement(string $raw_sql, Array $vals = [], ?string $tenant_id = null)
 	{
-		static::$raw_sql = $q = $raw_sql;
+		static::$raw_sql = $raw_sql;
 		static::$values  = $vals; 
-		$q = $raw_sql;
+		
+		$sql = Model::addPrefix($raw_sql);
 	
 		$current_id_conn = static::getCurrentConnectionId();
-		$conn = static::getConnection($tenant_id);
+		$conn            = static::getConnection($tenant_id);
 
 		try {
-			$st = $conn->prepare($q);
+			$st = $conn->prepare($sql);
 
 			if (is_null($vals)){
 				$vals = [];
