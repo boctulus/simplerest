@@ -2,6 +2,8 @@
 
 return 
 [
+	'tb_prefix'      => 'wp_',
+
 	/*
 		Es posible cargar la lista de conexiones disponibles
 		de forma dinámica

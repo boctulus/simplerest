@@ -20,12 +20,14 @@ class HoneysController extends MyController
 
     function index()
     {
+        $token  = 'GWP8BTI1WMRU0DZB';
+
         $client = ApiClient::instance()
         ->setHeaders(
             [
                 "Content-type" => "text/xml",
                 "Accept"       => "text/xml",
-                // "authToken" => "$token"
+                "authToken" => "$token"
             ]
         )
         //->setBody($body)
@@ -43,8 +45,8 @@ class HoneysController extends MyController
     function test2(){
         $url = "https://www.honeysplace.com/ws/";
 
-        $user = 'boctulus@gmail.com';
-        $pass = '8Z9!Z46Ep9#w2We.D';
+        $user = '23033DS';
+        $pass = 'GWP8BTI1WMRU0DZB';
 
         $post_string = '<?xml version="1.0" encoding="UTF-8"?>
         <HPEnvelope>
