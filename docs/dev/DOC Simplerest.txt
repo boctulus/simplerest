@@ -208,6 +208,22 @@ Ej:
 		$sc->create();
     }
 
+Nota importante:
+
+Usar un prefijo distinto del predeterminado ('') llevaria a tener que re-generar todos los schemas dado que hacen referencias a las tablas:
+
+
+Ej:
+
+class MigrationsSchema implements ISchema
+{ 
+	static function get(){
+		return [
+			'table_name'	=> 'migrations',  // <-- aqui
+			//..
+		];
+	}
+}
 
 ### Options
 

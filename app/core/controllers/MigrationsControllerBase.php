@@ -145,7 +145,7 @@ class MigrationsControllerBase extends Controller
                 /*
                     En todos loa casos debería agregar la DB y el directorio de la migración !
                 */
-                $ok = DB::table('migrations')
+                $ok = DB::table(tb_prefix() . 'migrations')
                 ->create([
                     'filename' => $filename
                 ]);
@@ -301,7 +301,7 @@ class MigrationsControllerBase extends Controller
             }
 
             //dd($data, 'DATA');
-            $ok = DB::table('migrations')->create($data);
+            $ok = table('migrations')->create($data);
             //dd($ok, 'OK');
 
             $ix++;
@@ -425,7 +425,7 @@ class MigrationsControllerBase extends Controller
         StdOut::pprint("Rolling back up to $steps migrations\r\n");
 
         if (!isset($filenames)){
-            $filenames = DB::table('migrations')
+            $filenames = table('migrations')
             ->when($to_db == '__NULL__', 
                 function($q){
                     $q->whereNull('db');
@@ -489,7 +489,7 @@ class MigrationsControllerBase extends Controller
                 
                 DB::getDefaultConnection();
 
-                $aff = DB::table('migrations')
+                $aff = table('migrations')
                 ->when($to_db == '__NULL__', 
                     function($q){
                         $q->whereNull('db');
@@ -535,7 +535,7 @@ class MigrationsControllerBase extends Controller
         DB::getDefaultConnection();
 
 
-        $affected = DB::table('migrations')
+        $affected = table('migrations')
         ->when($to_db != DB::getDefaultConnectionId(), function($q) use($to_db){
             $q->where(['db' => $to_db]);
         },function($q){
