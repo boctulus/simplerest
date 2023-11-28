@@ -2,7 +2,7 @@
 
 return 
 [
-	'tb_prefix'      => 'wp_',
+	'tb_prefix'      => 'sr_',
 
 	/*
 		Es posible cargar la lista de conexiones disponibles

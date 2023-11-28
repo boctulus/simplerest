@@ -42,9 +42,13 @@ class Schema
 	protected $query;
 	protected $exec = true;
 
-	function __construct(string $tb_name){
-		$this->tables = self::getTables();
+	function __construct(string $tb_name)
+	{		
+		$tb_name = Model::addPrefix($tb_name);
+
+		$this->tables  = self::getTables();
 		$this->tb_name = $tb_name;
+
 		$this->fromDB();
 	}
 
