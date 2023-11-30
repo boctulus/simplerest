@@ -72,7 +72,10 @@ class Logger
 		return ($bytes > 0);
 	}
 
-	static function log($data, ?string $path = null, $append = true, bool $datetime = true, bool $extra_cr = false){	
+	static function log($data, ?string $path = null, $append = true, bool $datetime = true, bool $extra_cr = false)
+	{
+		$custom_path = ($path !== null);
+		
 		if ($path === null){
 			$path = LOGS_PATH . static::getLogFilename();
 		} else {
@@ -84,7 +87,17 @@ class Logger
 		if (is_array($data) || is_object($data))
 			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
 
-		error_log($data . (!$datetime ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $datetime ? 0 : 3, $path);
+		$mode = 0;
+		if ($custom_path || $datetime === false){
+			$mode = 3;
+		}
+
+		$prefix = '';
+		if ($mode == 1 && $datetime){
+			$prefix = at();
+		}	
+
+		error_log($prefix . $data . ($mode == 3 ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $mode, $path);
 	}
 
 	static function dd($data, $msg, bool $append = true){
