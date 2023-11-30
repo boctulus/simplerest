@@ -40,7 +40,51 @@ class Logger
 		return Files::readOrFail($path);
     }
 
+	static function log($data, ?string $path = null, $append = true, bool $datetime = true, bool $extra_cr = false)
+	{
+		$custom_path = ($path !== null);
+		
+		if ($path === null){
+			$path = LOGS_PATH . static::getLogFilename();
+		} else {
+			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
+				$path = LOGS_PATH . $path;
+			}
+		}
 
+		if (is_array($data) || is_object($data))
+			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
+
+		$mode = 0;
+		if ($custom_path || $datetime === false){
+			$mode = 3;
+		}
+
+		$prefix = '';
+		if ($mode == 1 && $datetime){
+			$prefix = at() . ' ';
+		}	
+
+		error_log($prefix . $data . ($mode == 3 ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $mode, $path);
+	}
+
+	static function dd($data, $msg, bool $append = true){
+		static::log([$msg => $data], null, $append);
+	}
+
+	static function logError($error){
+		if ($error instanceof \Exception){
+			$error = $error->getMessage();
+		}
+
+		static::log($error, 'errors.txt');
+	}
+
+	static function logSQL(string $sql_str){
+		static::log($sql_str, 'sql_log.txt');
+	}
+
+	
 	/*
 		Resultado:
 
@@ -70,50 +114,6 @@ class Logger
 		}
 
 		return ($bytes > 0);
-	}
-
-	static function log($data, ?string $path = null, $append = true, bool $datetime = true, bool $extra_cr = false)
-	{
-		$custom_path = ($path !== null);
-		
-		if ($path === null){
-			$path = LOGS_PATH . static::getLogFilename();
-		} else {
-			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
-				$path = LOGS_PATH . $path;
-			}
-		}
-
-		if (is_array($data) || is_object($data))
-			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
-
-		$mode = 0;
-		if ($custom_path || $datetime === false){
-			$mode = 3;
-		}
-
-		$prefix = '';
-		if ($mode == 1 && $datetime){
-			$prefix = at();
-		}	
-
-		error_log($prefix . $data . ($mode == 3 ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $mode, $path);
-	}
-
-	static function dd($data, $msg, bool $append = true){
-		static::log([$msg => $data], null, $append);
-	}
-
-	static function logError($error){
-		if ($error instanceof \Exception){
-			$error = $error->getMessage();
-		}
-
-		static::log($error, 'errors.txt');
-	}
-
-	static function logSQL(string $sql_str){
-		static::log($sql_str, 'sql_log.txt');
 	}
 
 }
