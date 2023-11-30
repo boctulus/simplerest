@@ -2,56 +2,114 @@
 
 namespace simplerest\controllers;
 
+use simplerest\core\libs\System;
 use simplerest\controllers\MyController;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\DB;
 
 class WorkerController extends MyController
 {
     /*
         @return void
+
+        Ej:
+
+        php com worker listen name=procesar_cat
+        php com worker listen name=procesar_cat max=4
+        php com worker listen max=4
     */
-    function listen($queue = null)
+    function listen()
     {
+        $queue     = $_GET['name'] ?? null;
+        $max_tasks = $_GET['max']  ?? 1;
+
+        /*
+            Para pruebas
+        */
+        //Logger::truncate(); 
+        
         while (true)
         {
-            // dequeue
-           
-            $job_row = table('jobs')
+            $proc_ids  = table('job_process')
             ->when(!is_null($queue), function($q) use ($queue) {
-                $q->where(['queue' => $queue]);
+                $q->where([
+                    'queue' => $queue
+                ]);
             })
-            ->orderBy(['id' => 'ASC'])
-            ->first();  
-            
-            if (empty($job_row)){
-                // para no pegarle continuamente a la DB
-                sleep(1);
+            ->pluck('pid');
 
+            if (!empty($proc_ids)){
+                foreach ($proc_ids as $pid){
+                    dd("Checking for pid = $pid");
+    
+                    if (!System::isProcessAlive($pid)){
+                        table('job_process')
+                        ->where(['pid' => $pid])
+                        ->delete();
+                    }
+                }
+            }
+
+            // Controlo nivel de parelelismo
+            $count = table('job_process')
+            ->when(!is_null($queue), function($q) use ($queue) {
+                $q->where([
+                    'queue' => $queue
+                ]);
+            })
+            ->count();
+
+            if ($count >= $max_tasks){
+                dd("Nivel de parelismo $max_tasks alcanzado ***");
+                sleep(1);
                 continue;
             }
 
-            $id = $job_row['id'];
+            // dequeue           
+            $job_id = table('jobs')
+            ->when(!is_null($queue), function($q) use ($queue) {
+                $q->where([
+                    'queue' => $queue
+                ]);
+            })
+            ->where(['taken' => 0])
+            ->orderBy(['id' => 'ASC'])
+            ->value('id');  
 
-            $ok = (bool) table('jobs')
-            ->where(['id' => $id])
-            ->delete();
-                
-            if (!$ok){
-               continue; 
+            dd($job_id, 'JOB ID');
+
+            // Para evitar darle palos a la DB
+            if (empty($job_id)){
+                usleep(800000); 
+                continue;
             }
 
-            //d($job_row);
+            // System::runInBackground
+            $pid = System::runInBackground("php com inflator inflate $job_id");
+            dd("Se ha lanzado proceso en background para '$queue' con job_id = $job_id bajo el PID = $pid");
 
-            $job    = unserialize($job_row['object']);
-            $params = unserialize($job_row['params']);
+            //
+            // Deberia usar esta data chequeando si los PIDs estan activos para determinar si
+            // el grado max de paralelismo se ha alanzado
+            //
+            // El problema con usar simplemente la tabla 'jobs' es ante un re-inicio del sistema
+            //
+            table('job_process')
+            ->insert([
+                'queue'  => $queue,
+                'job_id' => $job_id,
+                'pid'    => $pid,
+                'created_at' => at()
+            ]);
 
-            $job->run(...$params);
+            $ok =  table('jobs')
+            ->where(['id' => $job_id])
+            ->update([
+                'taken' => 1
+            ]);
+
+            // exit;
+
+            usleep(200000);            
         }
-
-        // dd("Quit");
     }
 }
 

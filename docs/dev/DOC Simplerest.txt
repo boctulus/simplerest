@@ -11392,7 +11392,9 @@ Jobs		Task				JobQueue								`jobs` y `job_workers`
 
 - No hay equivalente implementado a los metodos start() ni isRunning() para la clase JobQueue
 
-- Podria crearse una clase Supervisor para manejar tanto CronJobs como Jobs
+- Podria crearse una clase *Supervisor* para Jobs con capacidad de:
+
+Detectar si hay jobs sin atender pero no hay workers y no hay registro de que se hayan des-asignado (siguen exitiendo en la tabla de workers) y por tanto deben volver a crearse !!!!!!!!!
 
 
 # Upload de archivos

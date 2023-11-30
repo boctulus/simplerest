@@ -326,6 +326,29 @@ class Strings
 		return $array[$position];
 	}
 
+	/*
+		Separator es expresion regular
+	*/
+	static function segmentByRegEx(string $string, string $separator, int $position) {
+		$array = preg_split( $separator , $string);
+	
+		if (isset($array[$position])) {
+			return $array[$position];
+		}
+	
+		return false;
+	}
+
+	static function segmentOrFailByRegEx(string $string, string $separator, int $position) {
+		$ret = static::segmentByRegEx($string, $separator, $position);
+
+		if ($ret === false){
+			throw new \Exception("There is no segment in position $position after exploding '$string'");
+		}
+
+		return $ret;
+	}	
+
 	// String antes de la N-ésima ocurrencia del substring
 	static function before(string $string, string $substr, $occurrence = 1){
 		$parts = explode($substr, $string, $occurrence +1);
@@ -1387,20 +1410,24 @@ class Strings
 
 	/*
 		Parse php class from file
+
+		Actualizada 29/11/2023
 	*/
 	static function getClassName(string $file_str, bool $fully_qualified = true){
 		$pre_append = '';
 			
 		if ($fully_qualified){
-			$namespace = Strings::match($file_str, '/namespace[ ]{1,}([^;]+)/');
+			$namespace = Strings::match($file_str, '/namespace[\s]{1,}([^;]+)/');
 			$namespace = !empty($namespace) ? trim($namespace) : '';
 
 			if (!empty($namespace)){
 				$pre_append = "$namespace\\";
 			}
 		}	
-		
-		$class_name = $pre_append . Strings::matchOrFail($file_str, '/class ([a-z][a-z0-9_]+)/i');
+
+		$before_bkt = Strings::matchOrFail($file_str, '/class[\s]+([^{]+)/i');
+		$class_name = Strings::segmentOrFailByRegEx($before_bkt, '/\s+/',0);
+		$class_name = $pre_append . $class_name;
 
 		return $class_name;
 	}
