@@ -212,10 +212,14 @@ class DumbController extends Controller
         echo Strings::trimMultiline($str) . PHP_EOL;
     }
 
-    function test_dd()
+    function log(){
+        Logger::log('zzzzzzzzzz');
+    }
+
+    function dd()
     {
-        //show_debug_trace();
-        //hide_debug_response();
+        show_debug_trace();
+        hide_debug_response();
 
         dd([4, 5, 7], "My Array", true);
         dd('hola!', null, true);
@@ -226,7 +230,7 @@ class DumbController extends Controller
         dd([4, 5, 7], "My Array", true, false);
     }
 
-    function now()
+    function at()
     {
         return at();
     }
@@ -9029,7 +9033,9 @@ class DumbController extends Controller
         $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
         $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
         $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-                
+
+        $queue->dispatch(\simplerest\background\tasks\ZTask::class);
+
         // $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
         // $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
     }
