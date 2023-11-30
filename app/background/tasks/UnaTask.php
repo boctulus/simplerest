@@ -14,7 +14,9 @@ class UnaTask extends Task
 
 	function run(...$params){
 		// your logic here
-		error_log(rand(1000,7000));
-        sleep(3);
+
+        dd("Generando numero ...");
+		Logger::log('Num: #' . rand(1000,7000));
+        sleep(5);
 	}
 }

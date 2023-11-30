@@ -301,17 +301,28 @@ class DumbController extends Controller
 
     function test_logger()
     {
+        // [30-Nov-2023 18:45:05 Asia/Manila] Hola Mundo
         Logger::log('Holaaa mundo');
+
+        // R.I.P.
         Logger::log('R.I.P.', null, null, false);
 
+        // [30-Nov-2023 18:46:33 Asia/Manila] {"x":"0"}
         Logger::log([
             'x' => '0'
         ]);
+
+        // {"x":"1"}
         Logger::log([
             'x' => '1'
         ], null, null, false);
 
-        // Utiliza la ruta y en este caso lo guarda en /etc/some_file.txt
+        // [30-Nov-2023 18:46:33 Asia/Manila] {"job_id":45}
+        Logger::dd(45, 'job_id');
+
+        /*
+            Utiliza la ruta y en este caso lo guarda en /etc/some_file.txt
+        */
         Logger::log([
             'x' => 'y'
         ], ETC_PATH . 'some_file.txt');
@@ -8874,108 +8885,7 @@ class DumbController extends Controller
         dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
     }
 
-    function test_memory_solution(){
-        System::registerStats(true, false); 
-
-        // register_shutdown_function(function(){
-        //    dd("FINNNNNNNNN");
-        // });
-    }
-
-    function is_alive(){
-        $pid = 4804;
-
-        dd(System::isProcessAlive($pid), 'Running?');
-    }
-
-    /*
-        Si se desea ser notificado cuando el job a terminado con éxito o un fallo,
-        pueden hacerse:
-
-        command && command-after-only-if-success &
-        command || command-after-only-if-fail &
-
-        https://superuser.com/a/345455/402377
-    */
-    function test_background_task()
-    {
-        $cmd = 'php com dumb some';
-        $pid = System::runInBackground($cmd);
-
-        dd($pid, 'pid');
-    }
-
-    /*
-        CronJobs
-    */
-
-    function cronjob_manager_start()
-    {
-        CronJobMananger::start();
-    }
-
-    function cronjob_manager_stop()
-    {
-        CronJobMananger::stop();
-    }
-
-    function is_cron_running()
-    {
-        dd(CronJobMananger::isRunning('other.php'));
-    }
-
-    /*
-        Jobs
-    */
-
-    function test_dispatch_q1()
-    {
-        $queue = new JobQueue("q1");
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
-        $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
-    }
-
-   function test_worker_factory()
-    {
-        $queue = new JobQueue();
-        $queue->addWorkers(3);
-    }
-
-    function test_worker_factory_q1()
-    {
-        $queue = new JobQueue("q1");
-        $queue->addWorkers(1);
-    }
-
-    function test_worker_stop()
-    {
-        JobQueue::stop();
-    }
-
-    function test_worker_stop_q1()
-    {
-        JobQueue::stop("q1");
-    }
-    
-    
-    function test_worker_factory_q2()
-    {
-        $queue = new JobQueue("q2");
-        $queue->addWorkers(30);
-    }
-
-    function test_dispatch_q2()
-    {
-        $queue = new JobQueue("q2");
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
-    }
-    
-
-    /////////////////////
+        /////////////////////
 
     /*
         Agregar prefijo a CREATE TABLE
@@ -9037,5 +8947,130 @@ class DumbController extends Controller
         error_log('HERE');
         error_log("You messed up!\r\n", 3, LOGS_PATH . "my-errors.log");
     }
+
+    function test_memory_solution(){
+        System::registerStats(true, false); 
+
+        // register_shutdown_function(function(){
+        //    dd("FINNNNNNNNN");
+        // });
+    }
+
+    function is_alive(){
+        $pid = 4804;
+
+        dd(System::isProcessAlive($pid), 'Running?');
+    }
+
+    /*
+        Si se desea ser notificado cuando el job a terminado con éxito o un fallo,
+        pueden hacerse:
+
+        command && command-after-only-if-success &
+        command || command-after-only-if-fail &
+
+        https://superuser.com/a/345455/402377
+    */
+    function test_background_task()
+    {
+        $cmd = 'php com dumb some';
+        $pid = System::runInBackground($cmd);
+
+        dd($pid, 'pid');
+    }
+
+    /*
+        CronJobs
+    */
+
+    function cronjob_manager_start()
+    {
+        CronJobMananger::start();
+    }
+
+    function cronjob_manager_stop()
+    {
+        CronJobMananger::stop();
+    }
+
+    function is_cron_running()
+    {
+        dd(CronJobMananger::isRunning('other.php'));
+    }
+
+    /*
+        Jobs
+    */
+
+    function test_dispatch_q1()
+    {
+        $queue = new JobQueue("q1");
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+                
+        // $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
+        // $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
+    }
+
+    function test_worker_factory_q1()
+    {
+        $queue = new JobQueue("q1");
+        $queue->addWorkers(1);
+    }
+
+    function test_worker_stop_q1()
+    {
+        JobQueue::stop("q1");
+    }
+
+
+    function test_worker_factory()
+    {
+        $queue = new JobQueue();
+        $queue->addWorkers(3);
+    }
+
+    function test_worker_stop()
+    {
+        JobQueue::stop();
+    }
+
+    function test_worker_factory_q2()
+    {
+        $queue = new JobQueue("q2");
+        $queue->addWorkers(30);
+    }
+
+    function test_dispatch_q2()
+    {
+        $queue = new JobQueue("q2");
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
+    }   
+
+
 
 }   // end class

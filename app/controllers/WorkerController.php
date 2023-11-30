@@ -83,7 +83,9 @@ class WorkerController extends MyController
             }
 
             // System::runInBackground
-            $pid = System::runInBackground("php com inflator inflate $job_id");
+
+            $php = System::getPHP();
+            $pid = System::runInBackground("$php com inflator inflate $job_id");
             dd("Se ha lanzado proceso en background para '$queue' con job_id = $job_id bajo el PID = $pid");
 
             //
@@ -106,7 +108,7 @@ class WorkerController extends MyController
                 'taken' => 1
             ]);
 
-            // exit;
+            //exit;
 
             usleep(200000);            
         }
