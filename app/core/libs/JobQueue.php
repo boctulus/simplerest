@@ -34,9 +34,11 @@ class JobQueue
         // enqueue
         $id = table('jobs')
         ->insert([
-            'queue'  => $this->name,
-            'object' => serialize($job),
-            'params' => serialize($params)
+            'queue'      => $this->name,
+            'class'      => $job_class,
+            'object'     => serialize($job),
+            'params'     => serialize($params),
+            'created_at' => at(),
         ]);
 
         Logger::log("Job id: [$id] --dispatched");

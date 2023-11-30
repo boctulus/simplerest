@@ -16,7 +16,8 @@ class Jobs implements IMigration
         $sc = new Schema('jobs');
         $sc
         ->int('id')->primary()->auto()
-        ->varchar('queue')    // usar para que los workers sean específicos de una cola
+        ->varchar('class', 60)
+        ->varchar('queue', 60)    // usar para que los workers sean específicos de una cola
         ->blob('object')
         ->blob('params')
         ->bool('taken')->default(0)
