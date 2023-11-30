@@ -2,7 +2,7 @@
 
 return 
 [
-	'tb_prefix'      => 'sr_',
+	'tb_prefix'      => '',
 
 	/*
 		Es posible cargar la lista de conexiones disponibles

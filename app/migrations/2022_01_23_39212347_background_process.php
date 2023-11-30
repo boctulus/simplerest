@@ -1,10 +1,7 @@
 <?php
 
 use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Factory;
 use simplerest\core\libs\Schema;
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
 
 class BackgroundProcess implements IMigration
 {
@@ -22,7 +19,7 @@ class BackgroundProcess implements IMigration
         $sc->datetime('created_at');
 		$sc->create();		
     }
-    
+
     public function down()
     {
         Schema::dropIfExists('background_process');

@@ -1406,6 +1406,18 @@ class Files
 		$bytes = Files::writeOrFail($path, json_encode($data, $flags));
 		return ($bytes > 0);
 	}
+
+	static function dump($object, string $path = null, $append = false){
+		if (is_dir($path)){
+			$path = Strings::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'dump.txt';
+		}
+
+		if ($append){
+			Files::writeOrFail($path, var_export($object,  true) . "\n", FILE_APPEND);
+		} else {
+			Files::writeOrFail($path, var_export($object,  true) . "\n");
+		}		
+	}
 }   
 
 

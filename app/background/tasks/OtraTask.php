@@ -14,7 +14,7 @@ class OtraTask extends Task
 
 	function run(...$params){
 		// your logic here
-		Logger::log("Hola Mundo");
+		error_log("Hola Mundo");
         sleep(2);
 	}
 }
