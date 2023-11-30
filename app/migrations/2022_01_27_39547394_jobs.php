@@ -1,10 +1,8 @@
 <?php
 
 use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Factory;
 use simplerest\core\libs\Schema;
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
+
 
 class Jobs implements IMigration
 {
@@ -21,10 +19,14 @@ class Jobs implements IMigration
         ->varchar('queue')    // usar para que los workers sean específicos de una cola
         ->blob('object')
         ->blob('params')
+        ->bool('taken')->default(0)
         ->datetime('created_at')
         ;
-		$sc->create();
-		
+		$sc->create();		
+    }
+
+    function down(){
+        Schema::dropIfExists('jobs');
     }
 }
 

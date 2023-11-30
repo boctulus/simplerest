@@ -72,26 +72,7 @@ class Logger
 		return ($bytes > 0);
 	}
 
-	static function JSONExport($data, ?string $path = null, bool $pretty = false){
-		if ($path === null){
-			$path = LOGS_PATH . 'exported.json';
-		} else {
-			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
-				$path = LOGS_PATH . $path;
-			}
-		}
-
-		$flags = JSON_UNESCAPED_SLASHES;
-
-		if ($pretty){
-			$flags = $flags|JSON_PRETTY_PRINT;
-		}
-
-		$bytes = Files::writeOrFail($path, json_encode($data, $flags));
-		return ($bytes > 0);
-	}
-
-	static function log($data, ?string $path = null, $append = true, bool $extra_cr = false){	
+	static function log($data, ?string $path = null, $append = true, bool $datetime = true, bool $extra_cr = false){	
 		if ($path === null){
 			$path = LOGS_PATH . static::getLogFilename();
 		} else {
@@ -102,26 +83,8 @@ class Logger
 
 		if (is_array($data) || is_object($data))
 			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
-		
-		$data = date("Y-m-d H:i:s"). "\t" .$data;
 
-		return Files::writeOrFail($path, $data. "\n" . ($extra_cr ? "\n" : ""),  $append ? FILE_APPEND : 0);
-	}
-
-	static function dump($object, ?string $path = null, $append = false){
-		if ($path === null){
-			$path = LOGS_PATH . static::getLogFilename();
-		} else {
-			if (!Strings::contains('/', $path) && !Strings::contains(DIRECTORY_SEPARATOR, $path)){
-				$path = LOGS_PATH . $path;
-			}
-		}
-
-		if ($append){
-			Files::writeOrFail($path, var_export($object,  true) . "\n", FILE_APPEND);
-		} else {
-			Files::writeOrFail($path, var_export($object,  true) . "\n");
-		}		
+		error_log($data . (!$datetime ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $datetime ? 0 : 3, $path);
 	}
 
 	static function dd($data, $msg, bool $append = true){

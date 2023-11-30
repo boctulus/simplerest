@@ -40,7 +40,7 @@ class Base64Uploader
 		Renamer
 	*/
 	public function setFileHandler($fn, ...$params){
-		$this->renamer = [$fn, $params];
+		$this->renamerFn = [$fn, $params];
 		return $this;
 	}
 	
@@ -60,8 +60,8 @@ class Base64Uploader
 			
 	public function doUpload($input_name = NULL)
 	{				
-		$renamer = $this->renamer[0];
-		$subfijo = $this->renamer[1][0];	
+		$renamer = $this->renamerFn[0];
+		$subfijo = $this->renamerFn[1][0];	
 
 		// reset	
 		$this->filenames  = [];	

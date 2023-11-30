@@ -3,7 +3,7 @@
 use simplerest\core\interfaces\IMigration;
 use simplerest\core\libs\Schema;
 
-class JobWorkers implements IMigration
+class JobProcess implements IMigration
 {
     /**
 	* Run migration.
@@ -12,18 +12,20 @@ class JobWorkers implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('job_workers');
+        $sc = new Schema('job_process');
         
         $sc->int('id')->pri()->auto();
-        $sc->varchar('queue')->index();
-        $sc->int('pid', 5)->unique(); 
+        $sc->varchar('queue')->nullable()->index();
+        $sc->int('job_id')->unique(); 
+        $sc->int('pid')->unique(); 
         $sc->datetime('created_at');
-		$sc->create();		
+		$sc->create();			
     }
 
     public function down()
     {
-        Schema::dropIfExists('job_workers');
+        Schema::dropIfExists('job_process');
     }
 }
+
 
