@@ -70,7 +70,12 @@ class Route
         return static::$instance;
     }
 
-    public static function resolve(){
+    public static function resolve()
+    {
+        if (is_cli()){
+            return;
+        }
+
         //dd(static::$routes, 'ROUTEs');
         //dd(static::$wheres, 'WHEREs');
         //dd(static::$ck_params, 'CK PARAMS');

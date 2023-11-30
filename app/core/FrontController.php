@@ -15,7 +15,7 @@ class FrontController
     {
         global $argv;
         global $api_version;
-        
+
         $config      = config();
         $middlewares = include CONFIG_PATH . 'middlewares.php';
         
@@ -179,6 +179,11 @@ class FrontController
         
         $class_name = str_replace('/', "\\", $class_name);
 
+        // error_log(var_export([
+        //     'class' => $class_name,
+        //     'method' => $method,
+        //     'params' => $params
+        // ], 1));
 
         if (!class_exists($class_name)){
             $res->error(Msg::CLASS_NOT_FOUND, 404, "Internal error - controller class $class_name not found"); 
