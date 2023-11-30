@@ -3868,6 +3868,23 @@ class Model {
 			}
 		}
 
+		/*
+			JOIN es complejo porque el ON puede incluir nombres de tablas 
+			o de alias y en este ultimo caso no tendria sentido agregar prefijo
+
+			SELECT Orders.OrderID, Customers.CustomerName
+			FROM Orders
+			INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+		*/
+		$tb = Strings::match($st, "/JOIN[ ]+`?([^\b^`^ ]+)`?/i");
+
+		if (!empty($tb)){
+			$st = preg_replace("/JOIN[ ]+`$tb`/i", "JOIN `$tb_prefix{$tb}`", $st);
+			$st = preg_replace("/JOIN[ ]+$tb/i", "JOIN $tb_prefix{$tb}", $st);
+
+			// Aca podria ver de agregar prefijo en la parte del "ON" en JOINs
+		}
+
 		return $st;		
 	}
 

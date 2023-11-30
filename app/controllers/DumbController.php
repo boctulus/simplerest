@@ -302,7 +302,11 @@ class DumbController extends Controller
     function test_logger()
     {
         Logger::log('Holaaa mundo');
-        Logger::log('R.I.P.');
+        Logger::log('R.I.P.', null, null, false);
+
+        Logger::log([
+            'x' => '0'
+        ]);
 
         Logger::log([
             'x' => 'y'
@@ -8874,21 +8878,6 @@ class DumbController extends Controller
         // });
     }
 
-    function test_serialize_code(){
-        $accumulator = function($val){
-            static $acc;
-            $acc += $val;
-            return $acc;
-        };
-
-        dd($accumulator(3));
-        dd($accumulator(5));
-        dd($accumulator(2));
-
-        // Serialization of 'Closure' is not allowed
-        dd(serialize($accumulator));
-    }
-    
     function is_alive(){
         $pid = 4804;
 
@@ -8944,21 +8933,7 @@ class DumbController extends Controller
         $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
     }
 
-    function test_dispatch_q2()
-    {
-        $queue = new JobQueue("q2");
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
-    }
-
-    function test_worker_factory_q2()
-    {
-        $queue = new JobQueue("q2");
-        $queue->addWorkers(30);
-    }
-
-    function test_worker_factory2()
+   function test_worker_factory()
     {
         $queue = new JobQueue();
         $queue->addWorkers(3);
@@ -8967,7 +8942,7 @@ class DumbController extends Controller
     function test_worker_factory_q1()
     {
         $queue = new JobQueue("q1");
-        $queue->addWorkers(10);
+        $queue->addWorkers(1);
     }
 
     function test_worker_stop()
@@ -8977,9 +8952,25 @@ class DumbController extends Controller
 
     function test_worker_stop_q1()
     {
-        JobQueue::stop('q1');
+        JobQueue::stop("q1");
     }
     
+    
+    function test_worker_factory_q2()
+    {
+        $queue = new JobQueue("q2");
+        $queue->addWorkers(30);
+    }
+
+    function test_dispatch_q2()
+    {
+        $queue = new JobQueue("q2");
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
+        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
+    }
+    
+
     /////////////////////
 
     /*
@@ -9036,7 +9027,11 @@ class DumbController extends Controller
             Model::addPrefix("ALTER TABLE `migrations`
             MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;")
         );
-       
     }
    
+    function test_error_log(){               
+        error_log('HERE');
+        error_log("You messed up!\r\n", 3, LOGS_PATH . "my-errors.log");
+    }
+
 }   // end class
