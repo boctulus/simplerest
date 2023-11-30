@@ -301,16 +301,17 @@ class DumbController extends Controller
 
     function test_logger()
     {
-        // Logger::log('Holaaa mundo');
-        // Logger::log('R.I.P.', null, null, false);
+        Logger::log('Holaaa mundo');
+        Logger::log('R.I.P.', null, null, false);
 
-        // Logger::log([
-        //     'x' => '0'
-        // ]);
-        // Logger::log([
-        //     'x' => '1'
-        // ], null, null, false);
+        Logger::log([
+            'x' => '0'
+        ]);
+        Logger::log([
+            'x' => '1'
+        ], null, null, false);
 
+        // Utiliza la ruta y en este caso lo guarda en /etc/some_file.txt
         Logger::log([
             'x' => 'y'
         ], ETC_PATH . 'some_file.txt');
