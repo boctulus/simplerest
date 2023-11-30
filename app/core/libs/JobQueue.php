@@ -7,6 +7,7 @@ use simplerest\core\libs\System;
 
 class JobQueue
 {
+    // El $name coincide con el campo "queue" en la tabla "jobs"
     protected $name;
 
     function __construct(string $name = 'default') {
@@ -31,25 +32,36 @@ class JobQueue
         DB::getDefaultConnection();
 
         // enqueue
-        table('jobs')
+        $id = table('jobs')
         ->insert([
             'queue'  => $this->name,
             'object' => serialize($job),
             'params' => serialize($params)
         ]);
+
+        Logger::log("Job id: [$id] --dispatched");
     }
 
-    public function addWorkers(int $workers = 1){  
+    /*
+        Agrega worker, le asigna una tarea y lo deja corriendo en segundo plano 
+    */
+    public function addWorkers(int $workers = 1, $tasks_per_worker = 1){  
         for ($i=0; $i<$workers; $i++){
-            $pid = System::runInBackground("php com worker listen {$this->name}");
+            /*
+                Ejecuta workerController::listen($this->name)
+            */
+            $php = System::getPHP();
+            $pid = System::runInBackground("$php com worker listen name={$this->name} max=$tasks_per_worker");
 
             DB::getDefaultConnection();
             
-            table('job_workers')
+            $id = table('job_workers')
             ->insert([
                 'queue' => $this->name,
                 'pid'   => $pid
             ]);
+
+            Logger::log("Worker id: [$id] --dispatched");
         }
     }
 
@@ -66,6 +78,9 @@ class JobQueue
         $pids = table('job_workers')
         ->when(!is_null($queue), function($q) use ($queue){
             $q->where(['queue' => $queue]);
+        }, 
+        function($q) use ($queue){
+            $q->whereRaw('1 = 1');
         })
         ->pluck('pid');
 
