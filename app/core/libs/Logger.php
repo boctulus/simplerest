@@ -42,7 +42,7 @@ class Logger
 
 	static function log($data, ?string $path = null, $append = true, bool $datetime = true, bool $extra_cr = false)
 	{
-		$custom_path = ($path !== null);
+		$custom_path = true;
 		
 		if ($path === null){
 			$path = LOGS_PATH . static::getLogFilename();
@@ -56,19 +56,24 @@ class Logger
 			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
 
 		$mode = 0;
-		if ($custom_path || $datetime === false){
+		if ($custom_path){
 			$mode = 3;
 		}
 
 		$prefix = '';
-		if ($mode == 1 && $datetime){
-			$prefix = at() . ' ';
+		if ($mode === 3 && $datetime){
+			$prefix = date('[d-M-Y H:i:s e]') . ' ';
 		}	
 
 		error_log($prefix . $data . ($mode == 3 ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $mode, $path);
 	}
 
-	static function dd($data, $msg, bool $append = true){
+	static function dd($data, $msg = '', bool $append = true){
+		if (empty($msg)){
+			static::log($data, null, $append);
+			return;
+		}
+
 		static::log([$msg => $data], null, $append);
 	}
 

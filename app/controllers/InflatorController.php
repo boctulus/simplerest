@@ -1,11 +1,8 @@
 <?php
 
-namespace boctulus\SW\controllers;
+namespace simplerest\controllers;
 
-use boctulus\SW\core\libs\Date;
-use boctulus\SW\core\libs\Logger;
-use boctulus\SW\core\libs\CronJob;
-use boctulus\SW\core\libs\Strings;
+use simplerest\core\libs\Logger;
 use simplerest\controllers\MyController;
 
 class InflatorController extends MyController
@@ -36,7 +33,7 @@ class InflatorController extends MyController
                 )
             */
             
-            error_log($job_row);
+            dd($job_row, 'job');
         
             $sr_job_ob = $job_row['object'] ?? null;
             $sr_params = $job_row['params'] ?? null;
@@ -55,7 +52,11 @@ class InflatorController extends MyController
             // Parseando $serialized_object es posible obtener el nombre de la clase para enviarlo a logs asi
     
             try {
-                error_log("Ejecutando job con job_id = $job_id");
+                dd("Ejecutando job con job_id = $job_id");
+
+                if (!is_object($job_ob) || !method_exists($job_ob, 'run')) {
+                    throw new \Exception("Job::run() with job_id = $job_id is not callable");
+                }
 
                 $job_ob->run(...$params);
     
@@ -64,9 +65,9 @@ class InflatorController extends MyController
                 ->delete();
 
                 if ($ok){
-                    error_log("Eliminado job con job_id = $job_id");
+                    dd("Eliminado job con job_id = $job_id");
                 } else {
-                    error_log("Fallo al eliminar job con job_id = $job_id");
+                    dd("Fallo al eliminar job con job_id = $job_id");
                 }
 
                 $ok = (bool) table('job_process')
@@ -74,9 +75,9 @@ class InflatorController extends MyController
                 ->delete();
 
                 if ($ok){
-                    error_log("Eliminado registro de processs para job_id = $job_id");
+                    dd("Eliminado registro de processs para job_id = $job_id");
                 } else {
-                    error_log("Fallo al eliminar registro de processs para job_id = $job_id");
+                    dd("Fallo al eliminar registro de processs para job_id = $job_id");
                 }                
     
             } catch (\Exception $e){
@@ -91,7 +92,7 @@ class InflatorController extends MyController
             }  
 
         } catch (\Exception $e) {
-            error_log("Job id: [$job_id] ". $e->getMessage());
+            dd("Job id: [$job_id] ". $e->getMessage());
         }
 
         

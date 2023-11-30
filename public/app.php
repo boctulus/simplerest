@@ -11,7 +11,7 @@ error_reporting(E_ALL);
 require_once  __DIR__ . '/../config/constants.php';
 
 ini_set("log_errors", 1);
-ini_set('error_log', LOGS_PATH . 'log.txt');
+ini_set('error_log', LOGS_PATH . 'errors.txt');
 
 if (!file_exists(ROOT_PATH .'composer.json')){
     throw new \Exception("File composer.json is missing");
