@@ -624,24 +624,23 @@ class DB
 	public static function beginTransaction(){
 		#dd("Solicitud de inicio de transacción para => ". static::getCurrentConnectionId());
 
-		if (phpversion() >= 8){
-			return;
-		}
-
 		if (static::$inited_transaction){
 			// don't start it again!
 			return;
 		}
 
-		#d("Inicio de transacción para => ". static::getCurrentConnectionId());
+		#dd("Inicio de transacción para => ". static::getCurrentConnectionId());
 
+		try {
+			static::getConnection()->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			static::getConnection()->beginTransaction();
 
-		/* 
-		  Not much to it! Forcing PDO to throw exceptions instead errors is the key to being able to use the try / catch which simplifies the logic needed to perform the rollback.
-		*/
-		static::getConnection()->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		static::getConnection()->beginTransaction();
-		static::$inited_transaction = true;
+			static::$inited_transaction = true;
+		} catch (\Exception $e){
+			
+		} finally {
+        	static::$inited_transaction = false;
+    	}		
 	}
 
 	public static function commit(){

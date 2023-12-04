@@ -26,7 +26,7 @@ class Logger
         Files::writeOrFail(LOGS_PATH . ($log_file ?? static::getLogFilename()), '');
     }
     
-    static function getContent(?string $file = null){
+    static function getContent( $file = null){
         if ($file == null){
 	        $file = static::getLogFilename();
         }
@@ -40,9 +40,10 @@ class Logger
 		return Files::readOrFail($path);
     }
 
-	static function log($data, ?string $path = null, $append = true, bool $datetime = true, bool $extra_cr = false)
+	static function log($data,  $path = null, $append = true, bool $datetime = true, bool $extra_cr = false)
 	{
 		$custom_path = true;
+		$append      = $append ?? true;
 		
 		if ($path === null){
 			$path = LOGS_PATH . static::getLogFilename();
@@ -55,17 +56,26 @@ class Logger
 		if (is_array($data) || is_object($data))
 			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
 
-		$mode = 0;
-		if ($custom_path){
-			$mode = 3;
+		if (config()['error_log'] ?? true){
+			$mode = 0;
+			if ($custom_path){
+				$mode = 3;
+			}
+
+			$prefix = '';
+			if ($mode === 3 && $datetime){
+				$prefix = date('[d-M-Y H:i:s e]') . ' ';
+			}	
+
+			error_log($prefix . $data . ($mode == 3 ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $mode, $path);
+		} else {
+			$prefix = '';
+			if ($datetime){
+				$prefix = date('[d-M-Y H:i:s e]') . ' ';
+			}			
+			
+			return Files::writeOrFail($path, $prefix . $data . "\n" . ($extra_cr ? "\n" : ""),  $append ? FILE_APPEND : 0);
 		}
-
-		$prefix = '';
-		if ($mode === 3 && $datetime){
-			$prefix = date('[d-M-Y H:i:s e]') . ' ';
-		}	
-
-		error_log($prefix . $data . ($mode == 3 ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $mode, $path);
 	}
 
 	static function dd($data, $msg = '', bool $append = true){

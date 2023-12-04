@@ -62,7 +62,15 @@ return [
 
 	'debug'   		 => true,  //env('APP_DEBUG', true),
 
-	'log_file' => 'log.txt',
+	/*
+		Si error_log es true entonces se usara error_log()
+		como logger() y sino sera implementacion propia
+		del framework 
+	*/
+
+	'error_log'      =>  true,
+
+	'log_file'       => 'log.txt',
 	
 	/*
 		Loguea cada consulta / statement -al menos las ejecutadas usando Model-
