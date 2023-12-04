@@ -14,7 +14,7 @@ use simplerest\controllers\MakeController;
 /*
     Migration commands
 */
-class MigrationsControllerBase extends Controller
+class MigrationsControllerBase /* extends Controller */
 {
     function make(...$opt) {
         return (new MakeController)->migration(...$opt);
@@ -143,21 +143,27 @@ class MigrationsControllerBase extends Controller
                 $filename = $filenames[0];
                 
                 /*
-                    En todos loa casos debería agregar la DB y el directorio de la migración !
+                    Al dia de hoy, no entiendo el proposito de este bloque:
                 */
-                $ok = DB::table(tb_prefix() . 'migrations')
-                ->create([
-                    'filename' => $filename
-                ]);
+                if (Schema::hasTable('migrations')){
+                    /*
+                        En todos loa casos debería agregar la DB y el directorio de la migración !
+                    */
+                    $ok = table('migrations')
+                    ->create([
+                        'filename' => $filename
+                    ]);
 
-                if ($ok){
-                    StdOut::pprint("Migration file '$filename' was marked as ignored");
+                    if ($ok){
+                        StdOut::pprint("Migration file '$filename' was marked as ignored");
+                        return;
+                    }
+
+                    StdOut::pprint("Error trying to ignore file '$filename'd");
+
                     return;
                 }
-
-                StdOut::pprint("Error trying to ignore file '$filename'd");
-
-                return;
+               
             }
     
         } 
@@ -202,7 +208,7 @@ class MigrationsControllerBase extends Controller
         foreach ($filenames as $filename)
         { 
             if (!$retry){
-                $m = table('migrations');
+                $m = (object) table('migrations');
 
                 if ($m
                 ->where([
@@ -300,9 +306,10 @@ class MigrationsControllerBase extends Controller
                 }
             }
 
-            //dd($data, 'DATA');
-            $ok = table('migrations')->create($data);
-            //dd($ok, 'OK');
+            $m = (object) table('migrations');
+
+            $ok = $m
+            ->create($data);
 
             $ix++;
         }     
@@ -425,7 +432,9 @@ class MigrationsControllerBase extends Controller
         StdOut::pprint("Rolling back up to $steps migrations\r\n");
 
         if (!isset($filenames)){
-            $filenames = table('migrations')
+            $m = (object) table('migrations');
+
+            $filenames = $m
             ->when($to_db == '__NULL__', 
                 function($q){
                     $q->whereNull('db');
@@ -489,7 +498,9 @@ class MigrationsControllerBase extends Controller
                 
                 DB::getDefaultConnection();
 
-                $aff = table('migrations')
+                $m = (object) table('migrations');
+
+                $aff = $m
                 ->when($to_db == '__NULL__', 
                     function($q){
                         $q->whereNull('db');
@@ -534,8 +545,9 @@ class MigrationsControllerBase extends Controller
 
         DB::getDefaultConnection();
 
+        $m = (object) table('migrations');
 
-        $affected = table('migrations')
+        $affected = $m
         ->when($to_db != DB::getDefaultConnectionId(), function($q) use($to_db){
             $q->where(['db' => $to_db]);
         },function($q){
