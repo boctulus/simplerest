@@ -88,7 +88,7 @@ Cómo "índice" para buscar documentación puede buscar por las características
 
 # Requerimientos 
 
-	PHP 7.4+
+	PHP 7.4+ / 8.x
 	MySQL / MariaDB - SqlLite - PostgreSql (*)
 	Apache Web Server 2.4
 
@@ -10484,7 +10484,58 @@ Comando "make"
 	make css_scan --dir="D:\www\woo2\wp-content\plugins\mutawp\assets\css\storefront"
 
 
-### La clase Strings
+### Clase Logger
+
+Provee de varios metodos para generar logs entre las que destacan:
+
+	Logger::log()
+	Logger::logError()
+	Logger::dd()
+	Logger::truncate()
+
+Ej:
+
+	// [30-Nov-2023 18:45:05 Asia/Manila] Hola Mundo
+	Logger::log('Holaaa mundo');
+
+	// R.I.P.
+	Logger::log('R.I.P.', null, null, false);
+
+	// [30-Nov-2023 18:46:33 Asia/Manila] {"x":"0"}
+	Logger::log([
+		'x' => '0'
+	]);
+
+	// {"x":"1"}
+	Logger::log([
+		'x' => '1'
+	], null, null, false);
+
+	// [30-Nov-2023 18:46:33 Asia/Manila] {"job_id":45}
+	Logger::dd(45, 'job_id');
+
+	/*
+		Utiliza la ruta y en este caso lo guarda en /etc/some_file.txt
+	*/
+	Logger::log([
+		'x' => 'y'
+	], ETC_PATH . 'some_file.txt');
+
+
+Tiene dos implementaciones, una de ellas utilizando por debajo la funcion error_log() de PHP. 
+
+	# config/config.php
+
+	/*
+		Si error_log es true entonces se usara error_log()
+		como logger() y sino sera implementacion propia
+		del framework 
+	*/
+
+	'error_log'      =>  true,
+
+
+### Clase Strings
 
 La clase Strings provee una batería de métodos para manejo conveniente de cadena de caracteres.
 
