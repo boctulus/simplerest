@@ -73,7 +73,8 @@ class System
         Returns PHP path
         as it is needed to be used with runInBackground()
 
-        Pre-requisito: php.exe debe estar en el PATH
+        Setear la variable de entorno PHP_BINARY en caso
+        de necesitar ejecutar desde el navegador
     */  
     static function getPHP(){
         static $location;
@@ -82,7 +83,17 @@ class System
             return $location;
         }
 
-        $location =  trim(System::isWindows() ? shell_exec("where php.exe") : "php");
+        $location = env('PHP_BINARY');
+
+        if (!empty($location)){
+            return $location;
+        }
+
+        $location =  System::isWindows() ? shell_exec("where.exe php.exe") : "php";
+
+        if (empty($location)){
+            throw new \Exception("Impossible to find php location");
+        }
         
         return  $location;
     }
@@ -94,10 +105,19 @@ class System
         https://gist.github.com/damienalexandre/1300820
         https://stackoverflow.com/questions/13257571/call-command-vs-start-with-wait-option
     */
-    static function runInBackground(string $cmd, string $output_path = null, $ignore_user_abort = true, int $execution_time = 0)
+    static function runInBackground(string $cmd, string $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null)
     {
         ignore_user_abort($ignore_user_abort);
-        set_time_limit($execution_time);
+
+        if ($execution_time !== null){
+            set_time_limit($execution_time);
+        }
+
+        $working_dir = $working_dir ?? ROOT_PATH;
+
+        if ($working_dir){
+		    chdir($working_dir);
+        }
 
         switch (PHP_OS_FAMILY) {
             case 'Windows':
