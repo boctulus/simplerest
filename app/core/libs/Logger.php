@@ -8,18 +8,50 @@ use simplerest\core\libs\Files;
 	Idealmente implementar PSR 3 logger
 
 	https://www.php-fig.org/psr/psr-3/
+
+	Change log:
+
+	- Posibilidad de cambiar archivos a escribir por defecto
+	
+	- Modo de depuracion (debug) con opcion de mostrar el "trace"
 */
 class Logger
 {
-    static $logFile = 'log.txt';
+    static protected $logfile     = 'log.txt';
+	static protected $err_logfile = 'errors.txt';
+	static protected $sql_logfile = 'sql_log.txt';
+
+	static protected $debug       = false;
+	static protected $trace       = false; 
+
+
+	static function debug(bool $show_trace = false){
+		static::$debug = true;
+
+		if ($show_trace){
+			static::$trace = true;
+		}		
+	}
+
+	static function setLogFilename($name){
+		static::$logfile = $name;
+	}
+
+	static function setErrFilename($name){
+		static::$err_logfile = $name;
+	}
+
+	static function setSqlfilename($name){
+		static::$err_logfile = $name;
+	}
 
     static function getLogFilename(bool $full_path = false)
     {
-        if (static::$logFile == null){
-            static::$logFile = config()['log_file'];
+        if (static::$logfile == null){
+            static::$logfile = config()['log_file'];
         }
 
-        return ($full_path ? LOGS_PATH : '') . static::$logFile;
+        return ($full_path ? LOGS_PATH : '') . static::$logfile;
     }
     
     static function truncate($log_file = null){
@@ -53,8 +85,21 @@ class Logger
 			}
 		}
 
-		if (is_array($data) || is_object($data))
+		if (is_array($data) || is_object($data)){
 			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
+		}
+
+		$extra = '';
+		if (static::$trace){
+			$file  = debug_backtrace()[0]['file'];
+			$line  = debug_backtrace()[0]['line'];
+		
+			$extra = " | LOCATION: {$file}:{$line}" . VarDump::p();			
+		}
+
+		if (static::$debug){
+			dd($data, date('[d-M-Y H:i:s e]') . $extra) ;
+		}
 
 		if (config()['error_log'] ?? true){
 			$mode = 0;
@@ -92,11 +137,11 @@ class Logger
 			$error = $error->getMessage();
 		}
 
-		static::log($error, 'errors.txt');
+		static::log($error, static::$err_logfile);
 	}
 
 	static function logSQL(string $sql_str){
-		static::log($sql_str, 'sql_log.txt');
+		static::log($sql_str, static::$sql_logfile);
 	}
 
 	
@@ -118,14 +163,20 @@ class Logger
 			}
 		}
 
+		$export = var_export($data, true);
+
 		if ($variable === null){
-			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . 'return ' . var_export($data, true). ';');
+			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . 'return ' . $export . ';');
 		} else {
 			if (!Strings::startsWith('$', $variable)){
 				$variable = '$'. $variable;
 			}
 			
-			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
+			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . $export . ';');
+		}
+
+		if (static::$debug){
+			dd($export, $path);
 		}
 
 		return ($bytes > 0);

@@ -250,7 +250,7 @@ Debe hacerse porque al crear un paquete en Composer automaticamente se crea de l
     php com migrations find "{algun string}"
 
   . Comando para agregar el metodo down() con DropIfExists() si el up() hace un "CREATE TABLE". Otra opcion seria no exigir el metodo down() si el up() incluye el CREATE TABLE pero seria menos performante.
-
+`
 - NO esta agragndo la PRIMARY KEY !!
 
   class Options implements IMigration
@@ -686,6 +686,8 @@ De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes
 - Soporte full de JSON. Es pre-requisito para Transients.
 
 - Transients (DB, archivos son locking, REDIS, Memcached)
+
+  https://kinsta.com/blog/memcached-vs-redis/
 
 - CSV a migraciones => Simplificar'a la creacion de tablas.
 
