@@ -94,7 +94,7 @@ class Logger
 			$file  = debug_backtrace()[0]['file'];
 			$line  = debug_backtrace()[0]['line'];
 		
-			$extra = " | LOCATION: {$file}:{$line}" . VarDump::p();			
+			$extra = " | LOCATION: {$file}:{$line}";			
 		}
 
 		if (static::$debug){
