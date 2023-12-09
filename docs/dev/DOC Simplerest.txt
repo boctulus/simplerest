@@ -10535,6 +10535,45 @@ Tiene dos implementaciones, una de ellas utilizando por debajo la funcion error_
 	'error_log'      =>  true,
 
 
+Cambiar archivos a escribir por defecto
+
+	Logger::setLogFilename($name)
+	Logger::setErrFilename($name)
+	Logger::setSqlfilename($name)
+
+
+Modo debug
+
+Se puede habilitar el modo de depuracion que renderiza lo mismo que envia archivo log
+
+	Logger::debug($trace)
+
+Ej:
+
+	Logger::debug();
+	Logger::dd('asdf');
+
+Salida:
+
+--| [09-Dec-2023 16:00:28 UTC]
+asdf
+	
+
+Modo de depuracion (debug) con opcion de mostrar el "trace"
+
+	Logger::debug(true)
+
+Ej:
+
+	Logger::debug(true);
+	Logger::dd('asdf');
+
+Salida:
+
+--| [09-Dec-2023 16:00:28 UTC] | LOCATION: D:\www\woo4\wp-content\plugins\sales-agent-coupons-lt\test.php:37
+asdf
+
+
 ### Clase Strings
 
 La clase Strings provee una batería de métodos para manejo conveniente de cadena de caracteres.
