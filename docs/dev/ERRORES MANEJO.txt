@@ -1,0 +1,35 @@
+SALIDAS, ERRORES Y NOTIFICACIONES
+=================================
+
+Entendiendo que en el ambito web, "stdout" seria salida por pantalla ya sea por consola o navegador,...
+
+error()     -->         -----error-----
+dd()                    -----stdout----
+
+La idea es que al igual que en Linux, Output::stdout y Output::stderr se pueden redirigir
+
+    stderr ----> stdout
+    stderr ----> log
+    stderr ----> callback (*)
+
+    stdout ----> log
+    stdout ----> callback (*)
+
+Registrar un callback para Output::stdout y Output::stderr permitiria poder hacer lo que se desee con la salida incluyendo interceptarla y modificarla como si fuera un Middleware. O sea.. un Middleware implementaria por debajo
+estos callbacks.
+
+Actualmente,...
+
+    VarDump::log()      envia dd() a log
+    Logger::debug()     envia todo a stdout
+
+
+Implementar
+
+-   MailBase::log()     --> envia todo a archivo log
+    
+-   Excepciones, errores y warnings --> 
+
+    WPNotices::send(bool $from_current_plugin)
+
+- En SR implementar FlashNotices como equivalente a WPNotices
