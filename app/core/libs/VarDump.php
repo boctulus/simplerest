@@ -9,6 +9,11 @@ class VarDump
 {
 	public static $render       = true;
 	public static $render_trace = false;
+	protected static $log       = false;
+
+	static function log(bool $value = true){
+		static::$log = $value;
+	}
 
 	static function p(){
 		return (php_sapi_name() == 'cli' || Url::isPostmanOrInsomnia()) ? PHP_EOL . PHP_EOL : '<p/>';
@@ -137,6 +142,10 @@ class VarDump
 		
 			static::export("{$file}:{$line}", "LOCATION", true, $msg_at_top);
 		}
+
+		if (static::$log){
+			Logger::dd($val, $msg);
+		}		
 
 		self::export($val, $msg, $additional_carriage_return, $msg_at_top);
 	}

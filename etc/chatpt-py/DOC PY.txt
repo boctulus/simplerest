@@ -1,0 +1,7 @@
+DEPENDENCIES
+------------
+
+pip install chatgpt --user
+pip install openai --user
+pip install beautifulsoup4 --user
+
