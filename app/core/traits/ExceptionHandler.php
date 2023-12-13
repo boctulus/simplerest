@@ -2,12 +2,7 @@
 
 namespace simplerest\core\traits;
 
-use simplerest\libs\Debug;
 use simplerest\core\libs\DB;
-use simplerest\core\libs\Url; 
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Factory;
 
 trait ExceptionHandler
 {
@@ -18,7 +13,7 @@ trait ExceptionHandler
      *
      * @return void
      */
-    function exception_handler($e) {
+    function exception_handler(\Throwable $e) {
         $current_conn = DB::getCurrentConnectionId();
         DB::closeAllConnections();
 
@@ -66,7 +61,7 @@ trait ExceptionHandler
                 log_error("Error: $error_msg");
             }
 
-            error($error_msg, 500, $backtrace, $error_location);
+            error($error_msg, 500, $backtrace);
         } else {
             error($error_msg, 500);
         }

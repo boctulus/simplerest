@@ -2065,6 +2065,14 @@ class Strings
 
 		return $html;		
 	}
+
+	static function isSerialized($str){
+		return (unserialize($str) !== false);
+	}
+
+	static function enumerateWithLetters($value, bool $starting_by_zero = true){
+		return chr($value + 97 + ($starting_by_zero == false ? -1 : 0));
+	}
 }
 
 

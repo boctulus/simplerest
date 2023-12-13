@@ -5,43 +5,43 @@ namespace simplerest\controllers;
 use Client;
 use stdClass;
 use simplerest\core\Acl;
-use simplerest\core\libs\Memoization;
 use simplerest\core\View;
 use simplerest\core\Model;
 use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
-
 use simplerest\core\libs\CSS;
+
 use simplerest\core\libs\Env;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Xml;
+use simplerest\core\Container;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use simplerest\core\Container;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
-
 use simplerest\core\Paginator;
+
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
-
 use simplerest\core\libs\Utils;
-use simplerest\core\libs\Arrays;
 
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Logger;
 
 use simplerest\core\libs\Schema;
+
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
 use simplerest\core\libs\DBCache;
-
 use simplerest\core\libs\Numbers;
+
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\VarDump;
 
 use Spatie\ArrayToXml\ArrayToXml;
 
@@ -63,27 +63,29 @@ use simplerest\core\libs\Validator;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
-use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
-
 use simplerest\core\libs\GoogleDrive;
+
+use simplerest\core\libs\Memoization;
 use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\FileUploader;
 
 use simplerest\core\libs\LangDetector;
 use simplerest\core\libs\Messurements;
 use Endroid\QrCode\Label\Font\NotoSans;
+use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
-use simplerest\controllers\api\Products;
 
+use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
+use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
@@ -91,17 +93,17 @@ use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\MailFromRemoteWP;
+
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
-
 use simplerest\core\controllers\Controller;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
-use simplerest\core\libs\EmailTemplate;
 use simplerest\core\controllers\MakeControllerBase;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
@@ -218,8 +220,9 @@ class DumbController extends Controller
 
     function dd()
     {
-        show_debug_trace();
-        hide_debug_response();
+        VarDump::log();
+        VarDump::showTrace();
+        // VarDump::hideResponse();
 
         dd([4, 5, 7], "My Array", true);
         dd('hola!', null, true);
@@ -5233,25 +5236,6 @@ class DumbController extends Controller
     // }
 
 
-    function obf_test()
-    {
-        $ori = '/home/www/woo4/wp-content/plugins/woo-sizes';
-        $dst = '/home/www/woo4/wp-content/plugins/woo-sizes.obfuscated';
-        $excluded = <<<FILES
-        assets
-        logs
-        README.md   
-        config.php
-        woo-sizes.php
-        FILES;
-
-        Obfuscator::obfuscate($ori, $dst, null, $excluded, [
-            "--obfuscate-function-name",
-            "--obfuscate-class_constant-name",
-            "--obfuscate-label-name"
-        ]);
-    }
-
     function scan()
     {
         $dir = '/home/www/woo4/wp-content/plugins/woo-sizes';
@@ -8803,22 +8787,6 @@ class DumbController extends Controller
         );
     }
 
-    function just_asdf(){
-        $urls = <<<URLS
-        https://terrafunds.ca/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1
-        https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/js/numeral.min.js?ver=6.3.2
-        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/jquery-calx-2.2.6.js?ver=1697748178
-        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/tf_tc_script.js?ver=1697748178
-        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/tf_tc_charts_config.js?ver=1697748178
-        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/js/jquery.formatCurrency.js?ver=1697748178
-        https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/jquery.ui.touch-punch.min.js?ver=6.3.2
-        URLS;
-
-        $url_ay = Strings::lines($urls, true, true);
-
-        Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
-    }
-
     function test_mail_wp_remote(){
         $email   = 'boctulus@gmail.com';
         $subject = 'Prueba test '. rand(9999,999999);
@@ -9078,5 +9046,57 @@ class DumbController extends Controller
     }   
 
 
+    
+    /*
+        Hacer como comando MAKE     ------------------------ revisar !!!
+
+        php com make dark --ori={path} --dest={path}
+    */
+    function obf()
+    {
+        $ori = 'D:\\www\\woo4\\wp-content\\plugins\\sales-agent-coupons-v2\\';
+        $dst = 'D:\\www\\woo4\\wp-content\\plugins\\sales-agent-coupons-obfuscated\\';
+        $excluded = <<<FILES
+        .git
+        .env
+        composer.json
+        assets
+        logs
+        etc
+        README.md
+        index.php
+        main.php
+        config   
+        config.php
+        FILES;
+
+        Obfuscator::obfuscate($ori, $dst, null, $excluded, [
+            "--obfuscate-function-name",
+            "--obfuscate-class_constant-name",
+            "--obfuscate-label-name"
+        ]);
+    }
+
+    
+    function just_asdf(){
+        $urls = <<<URLS
+        https://terrafunds.ca/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1
+        https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/js/numeral.min.js?ver=6.3.2
+        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/jquery-calx-2.2.6.js?ver=1697748178
+        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/tf_tc_script.js?ver=1697748178
+        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/tf_tc_charts_config.js?ver=1697748178
+        https://terrafunds.ca/wp-content/cache/min/1/wp-content/plugins/terrafunds-tax-calculator/js/js/jquery.formatCurrency.js?ver=1697748178
+        https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/jquery.ui.touch-punch.min.js?ver=6.3.2
+        URLS;
+
+        $url_ay = Strings::lines($urls, true, true);
+
+        Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
+    }
+
+    function rating_slider(){
+        set_template('templates/tpl_basic.php');  
+        render(StarRatingShortcode::get());
+    }
 
 }   // end class

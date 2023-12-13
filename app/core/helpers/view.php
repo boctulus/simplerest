@@ -15,7 +15,7 @@ function a_js($js_file){
 }
 
 function a_css($css_file){
-    return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$css_file\">\r\n";
+    return "<link href=\"$css_file\" rel=\"stylesheet\" />\r\n";
 }
 
 function base(){
