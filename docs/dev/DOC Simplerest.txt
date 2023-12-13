@@ -11016,7 +11016,7 @@ Una forma más sencilla y poderosa de utilizar la librería Obfuscator es hacien
 
 	(_PWD=$PWD && cd /home/www/simplerest && php com obfuscator fromdir $_PWD)
 
-Entonces parados en el directorio a ofuscar llamaremosa obf:
+Entonces parados en el directorio a ofuscar llamaremos a obf:
 
 	$ obf
 
