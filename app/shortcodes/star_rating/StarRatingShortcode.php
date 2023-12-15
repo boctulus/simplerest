@@ -2,6 +2,8 @@
 
 namespace simplerest\shortcodes\star_rating;
 
+use simplerest\core\libs\Url;
+
 class StarRatingShortcode
 {
     function __construct(){
@@ -70,9 +72,9 @@ class StarRatingShortcode
                 <tbody>
                     <?php foreach ($data['rows'] as $row) : ?>
                         <tr>
-                            <td><?php echo $row['comentario']; ?></td>
-                            <td><?php echo $row['puntaje']; ?></td>
-                            <td><?php echo $row['cliente']; ?></td>
+                            <td><?= $row['comment']; ?></td>
+                            <td><?= str_repeat('⭐', $row['score']) ?></td>
+                            <td><?= $row['client_name']; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -81,8 +83,10 @@ class StarRatingShortcode
             <!-- Paginador -->
             <nav aria-label="Page navigation">
                 <ul class="pagination">
-                    <?php for ($i = 1; $i <= $data['paginator']['total_pages']; $i++) : ?>
-                        <li class="page-item"><a class="page-link" href="#"><?php echo $i; ?></a></li>
+                    <?php for ($i = 1; $i <= $data['paginator']['last_page']; $i++) : 
+                        $page_link = Url::addQueryParam(Url::currentUrl(), 'page', $i);
+                    ?>
+                        <li class="page-item"><a class="page-link" href="<?= $page_link ?>"><?= $i ?></a></li>
                     <?php endfor; ?>
                 </ul>
             </nav>
