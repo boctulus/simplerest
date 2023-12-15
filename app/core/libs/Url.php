@@ -433,6 +433,36 @@ class Url
         return $x;
     }
 
+    static function removeParam($url, $parameter) {
+        $urlParts = parse_url($url);
+    
+        if (isset($urlParts['query'])) {
+            parse_str($urlParts['query'], $params);
+
+            if (!isset($params[$parameter])){
+                return $url;
+            }
+    
+            unset($params[$parameter]);
+    
+            $newQuery = http_build_query($params);
+    
+            $urlParts['query'] = $newQuery;
+        }
+    
+        $newUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'];
+    
+        if (isset($urlParts['fragment'])) {
+            $newUrl .= '#' . $urlParts['fragment'];
+        }
+    
+        if (isset($urlParts['query']) && !empty($urlParts['query'])) {
+            $newUrl .= '?' . $urlParts['query'];
+        }
+    
+        return $newUrl;
+    }
+
     static function encodeParams(array $data, string $numeric_prefix = "", ?string $arg_separator = '&', int $encoding_type = PHP_QUERY_RFC1738){
         return http_build_query($data, $numeric_prefix, $arg_separator, $encoding_type);
     }

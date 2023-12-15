@@ -9122,19 +9122,28 @@ class DumbController extends Controller
 
     function rating_table()
     {
-        $rows =  [
-            ["comentario" => "Este es un comentario de ejemplooo", "puntaje" => 5, "cliente" => "Cliente A"],
-            ["comentario" => "Otro comentario interesante.", "puntaje" => 4, "cliente" => "Cliente B"],
-            // Puedes agregar más filas según sea necesario
-        ];
+        $page_size = $_GET['size'] ?? 10;
+        $page      = $_GET['page'] ?? 1;
+
+        $offset = Paginator::calcOffset($page, $page_size);
+
+        DB::getConnection();
+
+        $rows = table('star_rating')
+        ->take($page_size)
+        ->offset($offset)
+        ->get();
+
+        $row_count = table('star_rating')->count();
+
+        $paginator = Paginator::calc($page, $page_size, $row_count);
+        $last_page = $paginator['totalPages'];
 
         $data = [
             "paginator" => [
-                "total"       => 20,
-                "count"       => 5,
-                "last_page"   => 4,
-                "total_pages" => 4,
-                "page_size"   => 5
+                "current_page" => $page,
+                "last_page"    => $last_page,
+                "page_size"    => $page_size,
             ],
             "rows"      => $rows
         ];
