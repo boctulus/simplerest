@@ -1,6 +1,19 @@
 TODO SimpleRest
 ===============
 
+- Investigar problema por el que no se estan cargando los .css --pedir ayuda--
+
+- Clase Assets para simplicar carga de "third party libraries" (JS y/o CSS)
+
+Ej:
+	Assets::repo('local');					// posibiliades local|cdn
+
+	Assets::load('jquery')
+	Assets::load('jquery', 3.6)
+	Assets::load(Assets::JQuery)
+	Assets::load(Assets::JQuery, 3.6)
+	Assets::load(Assets::JQuery, '3.*')		// podria ser 3.x o 3.* o seguir la nomenclatura de Composer
+
 - Implementar FlashNotices como equivalente a WPNotices bajo la misma interfaz INotice
 
 - Cada "comando" (make, migrations,...) debe ser una clase.
@@ -37,6 +50,22 @@ https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y y
 
 https://medium.com/hackeradda/codeigniter-with-blade-templating-engine-daf8d0dd51e9
 http://acmeextension.com/integrate-twig-with-codeigniter/
+
+- Implementar herencia de plantillas
+
+Ej:
+
+  class basicBT3 extends Template {
+    protected $tpl = 'basictpl.php';
+  }
+
+Y luego otra template lo podria extender
+
+  class miTpl extends basicBT3 {
+    protected $tpl = 'mi_tpl.php';
+  }
+
+En este caso, va a heredar assets y habria que ver que mas puede heredar... ver como es en otros motores !!!
 
 - Implementar algun motor de plantillas 
 
