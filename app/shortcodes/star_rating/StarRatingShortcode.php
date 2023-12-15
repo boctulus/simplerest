@@ -10,7 +10,7 @@ class StarRatingShortcode
         js_file('third_party/jquery/3.3.1/jquery.min.js');  # external
     }
 
-    function footer($rows, $count, $avg)
+    function footer($rows, $count, $avg, $ratings)
     {
         css_file('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/assets/owl.carousel.css');
         css_file('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/assets/owl.theme.default.css');
@@ -35,7 +35,8 @@ class StarRatingShortcode
         return get_view(__DIR__ . '/views/star_rating.php', [
             'reviews' => $rows,
             'count'   => $count,
-            'avg'     => $avg
+            'avg'     => $avg,
+            'ratings' => $ratings
         ]);              
     }
 
