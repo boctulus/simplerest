@@ -59,13 +59,13 @@ class StarRatingShortcode
 
         ?>
         <div class="container mt-5">
-            <h2>Reviews</h2>
+            <!-- <h2>Reviews</h2> -->
 
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">Comentario</th>
-                        <th scope="col">Puntaje</th>
+                        <th scope="col">Commento</th>
+                        <th scope="col">Punteggio</th>
                         <th scope="col">Cliente</th>
                     </tr>
                 </thead>
