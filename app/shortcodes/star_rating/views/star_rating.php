@@ -326,60 +326,9 @@ body {
     <?php endforeach; ?>
     
   </div>
+  
 
-  <!-- reviews-summary -->
-  <div class="reviews-summary">
-      <div class="reviews-summary_main">
-        <div class="reviews-dropdown js-reviews-dropdown">
-          <div class="reviews-stars">
-            <div class="reviews-stars_outer">
-              <div class="reviews-stars_inner js-reviews-stars_inner" style="width: 90%;"></div>
-            </div>
-          </div>
-        </div>
-        <span class="reviews-count js-review-count"><?= $count ?> reviews</span>
-      </div>
-      <div class="reviews-summary_details js-reviews-details hide">
-        <span class="reviews-summary_details_title js-reviews-details-title">4.5 out of 5</span>
-        <div class="reviews-summary_details_item">
-          <span class="reviews-star-id">5 star</span>
-          <div class="reviews-star-bar">
-            <div class="reviews-star-bar_outer">
-              <div class="reviews-star-bar_inner js-reviews-star-bar_inner" data-star-id="1" style="width: 80%;"></div>
-            </div>
-          </div>
-          <span class="reviews-star-percent js-reviews-star-percent">80%</span>
-        </div>
-        <div class="reviews-summary_details_item">
-          <span class="reviews-star-id">4 star</span>
-          <div class="reviews-star-bar">
-            <div class="reviews-star-bar_outer">
-              <div class="reviews-star-bar_inner js-reviews-star-bar_inner" data-star-id="2" style="width: 10%;"></div>
-            </div>
-          </div>
-          <span class="reviews-star-percent js-reviews-star-percent">10%</span>
-        </div>
-        <div class="reviews-summary_details_item">
-          <span class="reviews-star-id">3 star</span>
-          <div class="reviews-star-bar">
-            <div class="reviews-star-bar_outer">
-              <div class="reviews-star-bar_inner js-reviews-star-bar_inner" data-star-id="3" style="width: 5%;"></div>
-            </div>
-          </div>
-          <span class="reviews-star-percent js-reviews-star-percent">5%</span>
-        </div>
-        <div class="reviews-summary_details_item">
-          <span class="reviews-star-id">2 star</span>
-          <div class="reviews-star-bar">
-            <div class="reviews-star-bar_outer">
-              <div class="reviews-star-bar_inner js-reviews-star-bar_inner" data-star-id="4" style="width: 3%;"></div>
-            </div>
-          </div>
-          <span class="reviews-star-percent js-reviews-star-percent">3%</span></div>
-       
-    
-      </div>
-  </div>
+  <span class="reviews-count js-review-count"><?= str_repeat('⭐', $avg) . ' '. $count ?> reviews</span>
 
 
     <div class="review-ratings">

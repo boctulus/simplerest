@@ -9124,11 +9124,14 @@ class DumbController extends Controller
         $count = table('star_rating')
         ->count();
 
+        $avg  = table('star_rating')
+        ->avg('score');
+
         set_template('templates/tpl_basic.php');  
 
         $sc = new StarRatingShortcode();
 
-        render($sc->footer($rows, $count));
+        render($sc->footer($rows, $count, $avg));
     }
 
     function rating_table()
