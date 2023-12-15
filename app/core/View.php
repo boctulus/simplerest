@@ -87,14 +87,12 @@ class View
     }
 
     static function get_view_src(string $view_path, int $expiration_time = 0){
-        $path = Files::isAbsolutePath($view_path) ?  $view_path : VIEWS_PATH . $view_path;
-        
         if (!Strings::endsWith('.php', $view_path)){
             $view_path .= '.php';
         }
-
+        
         if ($expiration_time === 0){
-            return VIEWS_PATH . $view_path;
+            return $view_path;
         }
 
         $cached_path = CACHE_PATH . 'views'. DIRECTORY_SEPARATOR . str_replace(['\\', '/'], '__dir__',  $view_path);
@@ -103,7 +101,7 @@ class View
         if (!$expired){
             $src = $cached_path;
         } else {
-            $src = VIEWS_PATH . $view_path;
+            $src = $view_path;
         }
 
         return $src;
