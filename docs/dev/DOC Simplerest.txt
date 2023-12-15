@@ -1835,7 +1835,7 @@ Renderizaremos una tabla con su paginador 100% funcional en pocas lineas.
                         <tr>
                             <td><?php echo $row['comment']; ?></td>
                             <td><?php echo $row['score']; ?></td>
-                            <td><?php echo $row['client_name']; ?></td>
+                            <td><?php echo $row['author']; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
