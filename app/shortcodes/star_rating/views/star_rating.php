@@ -309,54 +309,21 @@ body {
   <div class="uk-section">
     <div class="owl-carousel owl-theme">
 
-    <div class="item">
-        <div class="review uk-card uk-card-primary uk-card-hover uk-card-body uk-light">
-            <h3 class="review__title uk-card-title">Look ma, a review title!</h4>
-            <div class="review__score">
-              <span class="score">4.9</span>
-              <span>&nbsp;/&nbsp;5&nbsp;</span>
-              <span class="score-stars">⭐⭐⭐⭐⭐</span>
+    <?php foreach ($reviews as $review) : ?>
+        <div class="item">
+            <div class="review uk-card uk-card-primary uk-card-hover uk-card-body uk-light">
+                <?php if (isset($review['title'])): ?>
+                  <h3 class="review__title uk-card-title"><?= $review['title'] ?></h4>
+                <?php endif; ?>
+                <div class="review__score">
+                    <span class="score"><?= $review['score']; ?></span>
+                    <span>&nbsp;/&nbsp;5&nbsp;</span>
+                    <span class="score-stars"><?= str_repeat('⭐', $review['score']); ?></span>
+                </div>
+                <div class="review__text">"<i><?= $review['comment']; ?></i>" – <small><?= $review['author']; ?></small></div>
             </div>
-            <div class="review__text">"<i>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo quam eveniet harum perferendis facere blanditiis molestias sit omnis, fugit, amet enim error eius aperiam dolorum autem nam voluptatibus velit. Inventore!</i>" – <small>John Green</small></div>
-        </div>        
-    </div>
-
-    <div class="item">
-        <div class="review uk-card uk-card-primary uk-card-hover uk-card-body uk-light">
-            <h3 class="review__title uk-card-title">Look ma, a review title!</h4>
-            <div class="review__score">
-              <span class="score">4.9</span>
-              <span>&nbsp;/&nbsp;5&nbsp;</span>
-              <span class="score-stars">⭐⭐⭐⭐⭐</span>
-            </div>
-            <div class="review__text">"<i>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo quam eveniet harum perferendis facere blanditiis molestias sit omnis, fugit, amet enim error eius aperiam dolorum autem nam voluptatibus velit. Inventore!</i>" – <small>John Green</small></div>
-        </div>        
-    </div>
-
-    <div class="item">
-        <div class="review uk-card uk-card-primary uk-card-hover uk-card-body uk-light">
-            <h3 class="review__title uk-card-title">Look ma, a review title!</h4>
-            <div class="review__score">
-              <span class="score">4.9</span>
-              <span>&nbsp;/&nbsp;5&nbsp;</span>
-              <span class="score-stars">⭐⭐⭐⭐⭐</span>
-            </div>
-            <div class="review__text">"<i>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo quam eveniet harum perferendis facere blanditiis molestias sit omnis, fugit, amet enim error eius aperiam dolorum autem nam voluptatibus velit. Inventore!</i>" – <small>John Green</small></div>
-        </div>        
-    </div>
-
-
-    <div class="item">
-        <div class="review uk-card uk-card-primary uk-card-hover uk-card-body uk-light">
-            <h3 class="review__title uk-card-title">Look ma, a review title!</h4>
-            <div class="review__score">
-              <span class="score">4.9</span>
-              <span>&nbsp;/&nbsp;5&nbsp;</span>
-              <span class="score-stars">⭐⭐⭐⭐⭐</span>
-            </div>
-            <div class="review__text">"<i>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo quam eveniet harum perferendis facere blanditiis molestias sit omnis, fugit, amet enim error eius aperiam dolorum autem nam voluptatibus velit. Inventore!</i>" – <small>John Green</small></div>
-        </div>        
-    </div>
+        </div>
+    <?php endforeach; ?>
     
   </div>
 
@@ -370,7 +337,7 @@ body {
             </div>
           </div>
         </div>
-        <span class="reviews-count js-review-count">1756 reviews</span>
+        <span class="reviews-count js-review-count"><?= $count ?> reviews</span>
       </div>
       <div class="reviews-summary_details js-reviews-details hide">
         <span class="reviews-summary_details_title js-reviews-details-title">4.5 out of 5</span>
@@ -412,64 +379,29 @@ body {
        
     
       </div>
-    </div>
+  </div>
 
 
     <div class="review-ratings">
-      <a class="reviews-link" href="https://wordpress.org/support/plugin/ultimate-reviews/reviews/">See all</a>
+      <a class="reviews-link" href="#">See all</a>
 
             <div class="rating">
               <div class="wporg-ratings" aria-label="4 out of 5 stars" data-title-template="%s out of 5 stars" data-rating="4" style="color: rgb(255, 185, 0); --darkreader-inline-color: #ffcd16;" data-darkreader-inline-color=""><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-empty"></span></div>			</div>
 
-            <ul class="ratings-list">
-                        <li class="counter-container">
-                  <a href="https://wordpress.org/support/plugin/ultimate-reviews/reviews/?filter=5">
-                    <span class="counter-label">5 stars</span>
-                <span class="counter-back">
-                  <span class="counter-bar" style="width: 65.51724137931%;"></span>
-                </span>
-                    <span class="counter-count">38</span>
-                  </a>
-                </li>
-                        <li class="counter-container">
-                  <a href="https://wordpress.org/support/plugin/ultimate-reviews/reviews/?filter=4">
-                    <span class="counter-label">4 stars</span>
-                <span class="counter-back">
-                  <span class="counter-bar" style="width: 10.344827586207%;"></span>
-                </span>
-                    <span class="counter-count">6</span>
-                  </a>
-                </li>
-                        <li class="counter-container">
-                  <a href="https://wordpress.org/support/plugin/ultimate-reviews/reviews/?filter=3">
-                    <span class="counter-label">3 stars</span>
-                <span class="counter-back">
-                  <span class="counter-bar" style="width: 3.448275862069%;"></span>
-                </span>
-                    <span class="counter-count">2</span>
-                  </a>
-                </li>
-                        <li class="counter-container">
-                  <a href="https://wordpress.org/support/plugin/ultimate-reviews/reviews/?filter=2">
-                    <span class="counter-label">2 stars</span>
-                <span class="counter-back">
-                  <span class="counter-bar" style="width: 1.7241379310345%;"></span>
-                </span>
-                    <span class="counter-count">1</span>
-                  </a>
-                </li>
-                        <li class="counter-container">
-                  <a href="https://wordpress.org/support/plugin/ultimate-reviews/reviews/?filter=1">
-                    <span class="counter-label">1 star</span>
-                <span class="counter-back">
-                  <span class="counter-bar" style="width: 18.965517241379%;"></span>
-                </span>
-                    <span class="counter-count">11</span>
-                  </a>
-                </li>
-              </ul>          
+              <ul class="ratings-list">
+                <?php foreach ($ratings as $rating) : ?>
+                    <li class="counter-container">
+                        <a href="<?= $rating['url']; ?>">
+                            <span class="counter-label"><?= $rating['label']; ?></span>
+                            <span class="counter-back">
+                                <span class="counter-bar" style="width: <?= $rating['percentage']; ?>%;"></span>
+                            </span>
+                            <span class="counter-count"><?= $rating['count']; ?></span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>      
     </div>
-
 
 
 </div>

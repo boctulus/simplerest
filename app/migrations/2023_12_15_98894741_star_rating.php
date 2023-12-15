@@ -21,7 +21,7 @@ class StarRating implements IMigration
         ->integer('id')->auto()->pri()
         ->text('comment')->nullable()
         ->int('score')
-        ->varchar('client_name')
+        ->varchar('author')
         ->datetime('created_at');
 
 		$sc->create();

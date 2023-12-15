@@ -10,7 +10,7 @@ class StarRatingShortcode
         js_file('third_party/jquery/3.3.1/jquery.min.js');  # external
     }
 
-    function footer()
+    function footer($rows, $count)
     {
         css_file('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/assets/owl.carousel.css');
         css_file('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/assets/owl.theme.default.css');
@@ -32,7 +32,10 @@ class StarRatingShortcode
         js_file('https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js');
         js_file('https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js');
         
-        return get_view(__DIR__ . '/views/star_rating.php', null);              
+        return get_view(__DIR__ . '/views/star_rating.php', [
+            'reviews' => $rows,
+            'count'   => $count
+        ]);              
     }
 
     /*
@@ -74,7 +77,7 @@ class StarRatingShortcode
                         <tr>
                             <td><?= $row['comment']; ?></td>
                             <td><?= str_repeat('⭐', $row['score']) ?></td>
-                            <td><?= $row['client_name']; ?></td>
+                            <td><?= $row['author']; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

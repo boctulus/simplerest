@@ -9103,7 +9103,7 @@ class DumbController extends Controller
             $createdAt = now(); // Fecha y hora actual
 
             // Construir la consulta INSERT
-            $insertQuery = "INSERT INTO star_rating (comment, score, client_name, created_at) VALUES ('$comment', $score, '$clientName', '$createdAt');";
+            $insertQuery = "INSERT INTO star_rating (comment, score, author, created_at) VALUES ('$comment', $score, '$clientName', '$createdAt');";
 
             // Ejecutar la consulta
             DB::statement($insertQuery);
@@ -9113,11 +9113,22 @@ class DumbController extends Controller
     }
 
     function rating_slider(){
+        $rows = table('star_rating')
+        ->take(10)
+        ->offset(0)
+        ->orderBy([
+            'id' => 'DESC'
+        ])
+        ->get();
+
+        $count = table('star_rating')
+        ->count();
+
         set_template('templates/tpl_basic.php');  
 
         $sc = new StarRatingShortcode();
 
-        render($sc->footer());
+        render($sc->footer($rows, $count));
     }
 
     function rating_table()
