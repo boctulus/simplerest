@@ -9094,9 +9094,56 @@ class DumbController extends Controller
         Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
     }
 
+    function rating_random(){
+        // Generar 21 registros con datos al azar
+        for ($i = 0; $i < 21; $i++) {
+            $comment = "Comentario #" . ($i + 1);
+            $score = rand(1, 5);
+            $clientName = "Cliente " . chr(rand(65, 90)) . rand(1, 99); // Cliente A, Cliente B, etc.
+            $createdAt = now(); // Fecha y hora actual
+
+            // Construir la consulta INSERT
+            $insertQuery = "INSERT INTO star_rating (comment, score, client_name, created_at) VALUES ('$comment', $score, '$clientName', '$createdAt');";
+
+            // Ejecutar la consulta
+            DB::statement($insertQuery);
+        }
+
+        dd("Registros insertados exitosamente.");
+    }
+
     function rating_slider(){
         set_template('templates/tpl_basic.php');  
-        render(StarRatingShortcode::get());
+
+        $sc = new StarRatingShortcode();
+
+        render($sc->footer());
+    }
+
+    function rating_table()
+    {
+        $rows =  [
+            ["comentario" => "Este es un comentario de ejemplooo", "puntaje" => 5, "cliente" => "Cliente A"],
+            ["comentario" => "Otro comentario interesante.", "puntaje" => 4, "cliente" => "Cliente B"],
+            // Puedes agregar más filas según sea necesario
+        ];
+
+        $data = [
+            "paginator" => [
+                "total"       => 20,
+                "count"       => 5,
+                "last_page"   => 4,
+                "total_pages" => 4,
+                "page_size"   => 5
+            ],
+            "rows"      => $rows
+        ];
+
+        set_template('templates/tpl_basic.php');  
+
+        $sc = new StarRatingShortcode();
+
+        render($sc->table($data));
     }
 
 }   // end class
