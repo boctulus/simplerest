@@ -248,6 +248,10 @@ body {
   background: #e67300;
 }
 
+.reviews-link {
+  text-decoration: underline;
+}
+
 /*
   WP reviews
 */
@@ -304,53 +308,73 @@ body {
 </style>
 
 
-<h2 class="widget-title">Ratings</h2>		
+<h2 class="widget-title">Recensioni</h2>		
 
-  <div class="uk-section">
+<div class="uk-section">
     <div class="owl-carousel owl-theme">
-
-    <?php foreach ($reviews as $review) : ?>
-        <div class="item">
-            <div class="review uk-card uk-card-primary uk-card-hover uk-card-body uk-light">
-                <?php if (isset($review['title'])): ?>
-                  <h3 class="review__title uk-card-title"><?= $review['title'] ?></h4>
-                <?php endif; ?>
-                <div class="review__score">
-                    <span class="score"><?= $review['score']; ?></span>
-                    <span>&nbsp;/&nbsp;5&nbsp;</span>
-                    <span class="score-stars"><?= str_repeat('⭐', $review['score']); ?></span>
-                </div>
-                <div class="review__text">"<i><?= $review['comment']; ?></i>" – <small><?= $review['author']; ?></small></div>
-            </div>
-        </div>
-    <?php endforeach; ?>
-    
+      <?php foreach ($reviews as $review) : ?>
+          <div class="item">
+              <div class="review uk-card uk-card-primary uk-card-hover uk-card-body uk-light">
+                  <?php if (isset($review['title'])): ?>
+                    <h3 class="review__title uk-card-title"><?= $review['title'] ?></h4>
+                  <?php endif; ?>
+                  <div class="review__score">
+                      <span class="score"><?= $review['score']; ?></span>
+                      <span>&nbsp;/&nbsp;5&nbsp;</span>
+                      <span class="score-stars"><?= str_repeat('⭐', $review['score']); ?></span>
+                  </div>
+                  <div class="review__text">"<i><?= $review['comment']; ?></i>" – <small><?= $review['author']; ?></small></div>
+              </div>
+          </div>
+      <?php endforeach; ?>
   </div>
   
-
-  <span class="reviews-count js-review-count"><?= str_repeat('⭐', $avg) . ' '. $count ?> reviews</span>
-
+  <div style="margin-left: 45px;">
+    <span style="font-weight:600;"><?= str_repeat('⭐', $avg) . ' '. $count ?> recensioni</span>
 
     <div class="review-ratings">
-      <a class="reviews-link" href="#">See all</a>
+    <a class="reviews-link" href="/dumb/rating_table">Vedi tutto</a>
+    <div class="rating">
+        <div class="wporg-ratings" aria-label="<?= number_format($avg, 1); ?> out of 5 stars" data-title-template="%s out of 5 stars" data-rating="<?= $avg; ?>" style="color: rgb(255, 185, 0); --darkreader-inline-color: #ffcd16;" data-darkreader-inline-color="">
+            <?php
+            $fullStars = floor($avg);
+            $emptyStars = 5 - $fullStars;
 
-            <div class="rating">
-              <div class="wporg-ratings" aria-label="4 out of 5 stars" data-title-template="%s out of 5 stars" data-rating="4" style="color: rgb(255, 185, 0); --darkreader-inline-color: #ffcd16;" data-darkreader-inline-color=""><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-empty"></span></div>			</div>
+            for ($i = 0; $i < $fullStars; $i++) {
+                echo '<span class="dashicons dashicons-star-filled"></span>';
+            }
 
-              <ul class="ratings-list">
-                <?php foreach ($ratings as $rating) : ?>
-                    <li class="counter-container">
-                        <a href="<?= $rating['url']; ?>">
-                            <span class="counter-label"><?= $rating['label']; ?></span>
-                            <span class="counter-back">
-                                <span class="counter-bar" style="width: <?= $rating['percentage']; ?>%;"></span>
-                            </span>
-                            <span class="counter-count"><?= $rating['count']; ?></span>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>      
+            for ($i = 0; $i < $emptyStars; $i++) {
+                echo '<span class="dashicons dashicons-star-empty"></span>';
+            }
+            ?>
+        </div>
     </div>
+
+    <ul class="ratings-list">
+      <?php
+      // Calcular el total de todas las clasificaciones
+      $totalRatings = array_sum($ratings);
+
+      foreach ($ratings as $stars => $count) :
+          // Normalizar la longitud de la barra en relación con el total de las clasificaciones
+          $normalizedPercentage = ($count / $totalRatings) * 100;
+      ?>
+          <li class="counter-container">
+              <span class="counter-label"><?= $stars; ?> stelle</span>
+              <span class="counter-back">
+                  <span class="counter-bar" style="width: <?= $normalizedPercentage; ?>%;"></span>
+              </span>
+              <span class="counter-count"><?= $count; ?></span>
+          </li>
+      <?php endforeach; ?>
+  </ul>
+
+    
+</div>
+
+
+  </div>
 
 
 </div>

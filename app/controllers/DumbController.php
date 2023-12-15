@@ -9127,11 +9127,30 @@ class DumbController extends Controller
         $avg  = table('star_rating')
         ->avg('score');
 
+        $ratings = [];
+        for ($stars=1; $stars<=5; $stars++){            
+            $ratings[$stars] = table('star_rating')
+            ->where(['score' => $stars])
+            ->count();
+        }
+
+        /*
+            Array
+            (
+                [1] => 8
+                [2] => 3
+                [3] => 4
+                [4] => 3
+                [5] => 4
+            )
+        */
+        // dd($ratings);
+
         set_template('templates/tpl_basic.php');  
 
         $sc = new StarRatingShortcode();
 
-        render($sc->footer($rows, $count, $avg));
+        render($sc->footer($rows, $count, $avg, $ratings));
     }
 
     function rating_table()
