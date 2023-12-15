@@ -6,12 +6,7 @@ use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
-/*
-    Cola de uso general. 
-    
-    No esta relacionada (en principio) con jobs o tareas en background.
-*/
-class Queue implements IMigration
+class StarRating implements IMigration
 {
     /**
 	* Run migration.
@@ -20,16 +15,16 @@ class Queue implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('queue');
+        $sc = new Schema('star_rating');
 
         $sc
         ->integer('id')->auto()->pri()
-        ->varchar('category', 25)->nullable()
-        ->json('data')
+        ->text('comment')->nullable()
+        ->int('score')
+        ->varchar('client_name')
         ->datetime('created_at');
 
 		$sc->create();
-		
     }
 
     /**
@@ -39,9 +34,7 @@ class Queue implements IMigration
     */
     public function down()
     {
-        ### DOWN
-
-        $sc = new Schema('queue');
+        $sc = new Schema('star_rating');
         $sc->dropTableIfExists();
     }
 }
