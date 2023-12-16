@@ -9135,4 +9135,13 @@ class DumbController extends Controller
         render($sc->rating_table());
     }
 
+    function parse_answers(){
+        $path = 'D:\www\simplerest\etc\review-generator\answers.txt';
+        $file = file_get_contents($path);
+
+        $rows = Strings::lines($file, true, true);
+
+        dd($rows);
+    }
+
 }   // end class

@@ -472,24 +472,21 @@ class Strings
 	*/
 	static function carriageReturn(string $str){
 		$qty_rn = substr_count($str, "\r\n");
+		$qty_r  = substr_count($str, "\r");
+		$qty_n  = substr_count($str, "\n");
 
-		if ($qty_rn != 0){
+		// Priorizar \r\n sobre \r y \n
+		if ($qty_rn > $qty_r && $qty_rn > $qty_n) {
 			return "\r\n";
 		}
 
-		$qty_r  = substr_count($str, "\r");
-
-		if ($qty_r != 0){
+		// En caso de empate, priorizar \r sobre \n
+		if ($qty_r > $qty_n) {
 			return "\r";
 		}
 
-		$qty_n  = substr_count($str, "\n");
-		
-		if ($qty_n != 0){
-			return "\n";
-		}
-
-		return null;
+		// Si no hay \r ni \r\n, devolver \n
+		return "\n";
 	}
 
 	// alias
@@ -511,29 +508,26 @@ class Strings
 		}
 
 		$cr = $carry_ret ?? static::carriageReturn($str);
-		
+
 		if (empty($cr)){
 			return [ $str ];
 		}
 
 		$lines = explode($cr, $str);
 
-		if (trim($lines[0]) == '') {
-			unset($lines[0]);
+		if ($empty_lines) {
+			// Mantener solo líneas no vacías
+			$lines = array_filter($lines, function($line) {
+				return trim($line) !== '';
+			});
+		} else {
+			// Eliminar líneas vacías
+			$lines = array_filter($lines, 'strlen');
 		}
 
-		if (!$empty_lines){
-			foreach ($lines as $ix => $line){
-				$trimmed = trim($line);
-
-				if (empty($trimmed)){
-					unset($lines[$ix]);
-				} else {
-					if ($trim){
-						$lines[$ix] = $trimmed;
-					}
-				}
-			}
+		if ($trim) {
+			// Aplicar trim a todas las líneas si es necesario
+			$lines = array_map('trim', $lines);
 		}
 
 		return $lines;
