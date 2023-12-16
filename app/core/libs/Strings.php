@@ -502,7 +502,7 @@ class Strings
 		@param bool $trim
 		@param bool $empty_lines
 	*/
-	static function lines(?string $str, bool $trim = false, bool $empty_lines = true, $carry_ret = null){
+	static function lines(string $str, bool $trim = false, bool $empty_lines = true, $carry_ret = null){
 		if (empty($str)){
 			return [];
 		}

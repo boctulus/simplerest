@@ -9116,8 +9116,6 @@ class DumbController extends Controller
         Test de shortcode
     */
     function rating_slider(){        
-        set_template('templates/tpl_basic.php');  
-
         $sc = new StarRatingShortcode();
 
         render($sc->rating_slider());
@@ -9128,11 +9126,31 @@ class DumbController extends Controller
     */
     function rating_table()
     {
-        set_template('templates/tpl_basic.php');  
-
         $sc = new StarRatingShortcode();
 
         render($sc->rating_table());
+    }
+
+    function get_full_it_name() {
+        $names    = include 'D:\www\simplerest\etc\review-generator\common_names-it.php'; // array
+        $surnames = include 'D:\www\simplerest\etc\review-generator\common_surnames-it.php'; // array
+    
+        // Obtener un nombre al azar
+        $random_name = $names[array_rand($names)];
+    
+        // Obtener un apellido al azar
+        $random_surname = $surnames[array_rand($surnames)];
+    
+        // Generar un número aleatorio entre 1 y 5 para determinar si se incluirá una inicial
+        $include_initial = rand(1, 5);
+    
+        // Si el número aleatorio es 1 (20% de probabilidad), incluir una inicial seguida de punto como segundo nombre
+        $second_name = ($include_initial === 1) ? $random_name[0] . '.' : $random_name;
+    
+        // Formar y devolver el nombre completo
+        $full_name = $random_name . ' ' . $second_name . ' ' . $random_surname;
+
+        return $full_name;
     }
 
     function parse_answers(){
@@ -9141,7 +9159,34 @@ class DumbController extends Controller
 
         $rows = Strings::lines($file, true, true);
 
+        // ahora debo seguir limpiando... eliminar duplicados e insertar
+        foreach ($rows as $ix => $row){
+            $ok = preg_match_all('/([a-zA-Z].*)/', $row, $matches);
+            
+            if ($ok){
+                $rows[$ix] = rtrim($matches[0][0], '"');
+            }            
+        }
+
+        $rows = array_unique($rows);
         dd($rows);
+
+        exit; ////
+
+        foreach($rows as $row) {
+            $comment = $row;
+            $score = rand(4, 5);
+            $clientName = "Cliente " . chr(rand(65, 90)) . rand(1, 99); // funcion generadora de cliente
+            $createdAt = now(); // Fecha y hora actual
+
+            // Construir la consulta INSERT
+            $insertQuery = "INSERT INTO star_rating (comment, score, author, created_at) VALUES ('$comment', $score, '$clientName', '$createdAt');";
+
+            // Ejecutar la consulta
+            DB::statement($insertQuery);
+        }
+
+        dd("Registros insertados exitosamente.");
     }
 
 }   // end class
