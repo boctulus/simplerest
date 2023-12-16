@@ -9112,80 +9112,27 @@ class DumbController extends Controller
         dd("Registros insertados exitosamente.");
     }
 
-    function rating_slider(){
-        $rows = table('star_rating')
-        ->take(10)
-        ->offset(0)
-        ->orderBy([
-            'id' => 'DESC'
-        ])
-        ->get();
-
-        $count = table('star_rating')
-        ->count();
-
-        $avg  = table('star_rating')
-        ->avg('score');
-
-        $ratings = [];
-        for ($stars=1; $stars<=5; $stars++){            
-            $ratings[$stars] = table('star_rating')
-            ->where(['score' => $stars])
-            ->count();
-        }
-
-        /*
-            Array
-            (
-                [1] => 8
-                [2] => 3
-                [3] => 4
-                [4] => 3
-                [5] => 4
-            )
-        */
-        // dd($ratings);
-
+    /*
+        Test de shortcode
+    */
+    function rating_slider(){        
         set_template('templates/tpl_basic.php');  
 
         $sc = new StarRatingShortcode();
 
-        render($sc->footer($rows, $count, $avg, $ratings));
+        render($sc->rating_slider());
     }
 
+    /*
+        Test de shortcode
+    */
     function rating_table()
     {
-        $page_size = $_GET['size'] ?? 10;
-        $page      = $_GET['page'] ?? 1;
-
-        $offset = Paginator::calcOffset($page, $page_size);
-
-        DB::getConnection();
-
-        $rows = table('star_rating')
-        ->take($page_size)
-        ->offset($offset)
-        ->get();
-
-        $row_count = table('star_rating')->count();
-
-        $paginator = Paginator::calc($page, $page_size, $row_count);
-        $last_page = $paginator['totalPages'];
-
-        $data = [
-            "paginator" => [
-                "current_page" => $page,
-                "last_page"    => $last_page,
-                "page_size"    => $page_size,
-            ],
-            "rows"      => $rows
-        ];
-
         set_template('templates/tpl_basic.php');  
 
         $sc = new StarRatingShortcode();
 
-        render($sc->table($data));
+        render($sc->rating_table());
     }
 
 }   // end class
