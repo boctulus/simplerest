@@ -25,7 +25,7 @@ completion = openai.ChatCompletion.create(
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": prompt},
     ],
-    max_tokens=1024,
+    max_tokens=1700,
     n=1,
     stop=None,
     temperature=0.5,
