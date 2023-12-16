@@ -289,10 +289,7 @@
 
 37. "Ho acquistato diversi capi di abbigliamento da questo negozio online e devo dire che sono molto soddisfatta. La qualità è sempre alta e i prezzi sono molto convenienti. Tornerò sicuramente per i miei prossimi acquisti!"
 
-38. "Ho trovato un bellissimo e comodo paio di scarpe
-Tokens: 2175
-PS D:\www\simplerest\etc\review-generator\py-files> py.exe .\make_website_review.py 25
-Answer:
+38. "Ho trovato un bellissimo e comodo paio di scarpe."
 
 1. "Sono rimasta molto soddisfatta del mio acquisto su questo sito. Ho trovato una vasta scelta di abbigliamento e accessori per tutta la famiglia e la qualità è davvero ottima. Consiglio vivamente!"
 
