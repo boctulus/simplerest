@@ -9132,8 +9132,8 @@ class DumbController extends Controller
     }
 
     function get_full_it_name() {
-        $names    = include 'D:\www\simplerest\etc\review-generator\common_names-it.php'; // array
-        $surnames = include 'D:\www\simplerest\etc\review-generator\common_surnames-it.php'; // array
+        $names    = include ETC_PATH . 'review-generator/common_names-it.php'; // array
+        $surnames = include ETC_PATH . 'review-generator/common_surnames-it.php'; // array
     
         // Obtener un nombre al azar
         $random_name = $names[array_rand($names)];
@@ -9141,18 +9141,27 @@ class DumbController extends Controller
         // Obtener un apellido al azar
         $random_surname = $surnames[array_rand($surnames)];
     
-        // Generar un número aleatorio entre 1 y 5 para determinar si se incluirá una inicial
-        $include_initial = rand(1, 5);
+        // Generar un número aleatorio entre 1 y 100 para determinar si habrá segundo nombre o inicial
+        $random_percent = rand(1, 100);
     
-        // Si el número aleatorio es 1 (20% de probabilidad), incluir una inicial seguida de punto como segundo nombre
-        $second_name = ($include_initial === 1) ? $random_name[0] . '.' : $random_name;
+        // 66% de las veces no hay segundo nombre ni inicial
+        if ($random_percent <= 66) {
+            $second_name = '';
+        } else {
+            // 11% de las veces hay inicial
+            if ($random_percent <= 77) {
+                $second_name = $random_name[0] . '.';
+            } else {
+                // 22% de las veces hay segundo nombre
+                $second_name = $random_name;
+            }
+        }
     
         // Formar y devolver el nombre completo
         $full_name = $random_name . ' ' . $second_name . ' ' . $random_surname;
-
         return $full_name;
     }
-
+    
     function parse_answers(){
         $path = 'D:\www\simplerest\etc\review-generator\answers.txt';
         $file = file_get_contents($path);
