@@ -33,7 +33,7 @@
     <script src="<?= asset('js/login.js') ?>"></script>
 
     <!-- ICONOS FONTAWESOME -->
-    <script src="<?= asset('third_party/fontawesome/fontawesome_kit.js') ?>" crossorigin="anonymous"></script>
+    <script src="<?= asset('third_party/fontawesome/5/fontawesome_kit.js') ?>" crossorigin="anonymous"></script>
     
     <!-- TEMPLATE ADMIN LTE -->
 

@@ -1,5 +1,7 @@
 <?php
 
+use simplerest\core\libs\Strings;
+
 $cfg  = include __DIR__ . '/../config/config.php';
 
 
@@ -13,7 +15,6 @@ $cfg  = include __DIR__ . '/../config/config.php';
 ?>
 
 <style>
-
 .widget-title {
   margin-left: 2rem;
   margin-top: 1rem;
@@ -48,9 +49,8 @@ h3 {
   margin-bottom: 10px
 }
 
-p {
-  margin-top: 30px;
-  margin-bottom: 0;
+.uk-card-title {
+  padding-bottom: 20px;
 }
 
 .owl-next {
@@ -62,11 +62,7 @@ p {
 }
 
 .owl-dots {
-  margin-top: -10px !important;
-}
-
-.uk-card-title {
-  padding-bottom: 20px
+  margin-top: 20px !important;
 }
 
 .owl-dot {
@@ -252,6 +248,8 @@ body {
   text-decoration: underline;
 }
 
+
+
 /*
   WP reviews
 */
@@ -305,8 +303,83 @@ body {
   padding-top:0;
   margin-top:0;
 }
-</style>
 
+
+.owl-carousel .item .review:hover {
+    background-color: #3286f0 !important;
+    color: #fff !important;
+} 
+
+/* Estilos generales */
+
+.owl-dots {
+  margin-top: 20px !important;
+}
+
+.owl-dot {
+  border: none;
+  background-color: transparent;
+  margin: 5px;
+  padding: 0;
+  width: 10px;
+  height: 10px;
+}
+
+/* Estilos específicos para resoluciones más pequeñas */
+
+@media (max-width: 768px) {
+  .owl-dots {
+    margin-top: 10px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .owl-dots {
+    display: none; /* Ocultar completamente los dots en resoluciones aún más pequeñas */
+  }
+}
+
+/* .owl-dot:hover, .owl-dot:focus {
+  outline: none !important;
+} */
+
+.review {
+  background-color: transparent;
+  color: #545454;
+  height: 240px;
+  overflow: hidden; /* Evitar que el contenido se escape */
+}
+
+.review__score {
+    display: flex;
+    align-items: center;
+  }
+
+  .score {
+    font-size: 2rem;
+  }
+
+  .score-stars {
+    display: flex;
+    margin-left: 0.8rem;
+  }
+
+  .score-stars img {
+    width: 2rem; /* Ajusta el tamaño de la imagen de la estrella según sea necesario */
+  }
+
+  /* Estilo predeterminado para pantallas más grandes que teléfonos móviles */
+  .stars-container {
+    margin-top: -30px;
+  }
+
+  /* Estilo específico para teléfonos móviles */
+  @media screen and (max-width: 767px) {
+    .stars-container {
+      margin-top: 20px;
+    }
+  }
+</style>
 
 <h2 class="widget-title">Recensioni</h2>		
 
@@ -314,22 +387,24 @@ body {
     <div class="owl-carousel owl-theme">
       <?php foreach ($reviews as $review) : ?>
           <div class="item">
-              <div class="review uk-card uk-card-primary uk-card-hover uk-card-body uk-light">
+              <div class="review uk-card uk-card-hover uk-card-body uk-light" style="background-color: transparent; color: #545454; margin-bottom: 0px !important;">
                   <?php if (isset($review['title'])): ?>
                     <h3 class="review__title uk-card-title"><?= $review['title'] ?></h4>
                   <?php endif; ?>
-                  <div class="review__score">
+                  <div class="review__score" >
                       <span class="score"><?= $review['score']; ?></span>
                       <span>&nbsp;/&nbsp;5&nbsp;</span>
                       <span class="score-stars"><?= str_repeat('⭐', $review['score']); ?></span>
                   </div>
-                  <div class="review__text">"<i><?= $review['comment']; ?></i>" – <small><?= $review['author']; ?></small></div>
+                  <div class="review__text">"<i><?= Strings::getUpTo($review['comment'], 40, 150); ?></i>" – <small><?= $review['author']; ?></small></div>
               </div>
           </div>
       <?php endforeach; ?>
   </div>
+</div>
+
   
-  <div>
+  <div class="stars-container">
     <span style="margin-left: 45px; font-weight:600;"><?= str_repeat('⭐', $avg) . ' '. $count ?> recensioni</span>
 
     <div class="review-ratings">
@@ -339,6 +414,8 @@ body {
       <?php
       // Calcular el total de todas las clasificaciones
       $totalRatings = array_sum($ratings);
+
+      $ratings = array_reverse($ratings, true);
 
       foreach ($ratings as $stars => $count) :
           // Normalizar la longitud de la barra en relación con el total de las clasificaciones
@@ -362,4 +439,5 @@ body {
 
 
 </div>
+
 
