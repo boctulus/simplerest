@@ -1418,6 +1418,32 @@ class Files
 			Files::writeOrFail($path, var_export($object,  true) . "\n");
 		}		
 	}
+
+	/*
+		Ej:
+
+		$search  = 'simplerest\\';
+		$replace = 'boctulus\\SW\\';
+
+		Files::searchAndReplaceInFiles(APP_PATH, '*.php', $search, $replace);
+	*/
+	static function searchAndReplaceInFiles($directory, $filePattern, $searchString, $replaceString) {
+		$files = static::recursiveGlob("$directory/$filePattern", GLOB_BRACE);
+	
+		foreach ($files as $file) {
+			if (is_file($file)) {
+				$content = file_get_contents($file);
+				$updatedContent = str_replace($searchString, $replaceString, $content);
+	
+				if ($content !== $updatedContent) {
+					file_put_contents($file, $updatedContent);
+					StdOut::pprint("Replaced in file: $file");
+				}
+			} elseif (is_dir($file)) {
+				static::searchAndReplaceInFiles($file, $filePattern, $searchString, $replaceString);
+			}
+		}
+	}
 }   
 
 

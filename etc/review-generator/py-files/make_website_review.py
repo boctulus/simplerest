@@ -2,6 +2,10 @@ import openai
 import os
 import sys
 
+
+model_engine = "gpt-3.5-turbo-instruct"
+max_tokens   = 1024
+
 # Verificar si se proporcionó el título como argumento
 if len(sys.argv) == 1:
     print("Por favor, proporciona qty")
@@ -14,7 +18,7 @@ qty   = sys.argv[1] if len(sys.argv) >1 else 1
 # print(qty)
 # sys.exit()
 
-prompt = "Write {r_qty} reviews in Italian for E-commerce that sells clothes, accessories such as bags and shoes for men, women and children"
+prompt = "Write {r_qty} reviews in Italian for E-commerce that sells clothes, accessories such as bags and shoes for men, women and children. Return as PHP array"
 prompt = prompt.format(r_qty=qty)
 
 # print(prompt)
@@ -22,11 +26,22 @@ prompt = prompt.format(r_qty=qty)
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-# Model	Input	Output
-# gpt-3.5-turbo-1106	    $0.0010 / 1K tokens	$0.0020 / 1K tokens
-# gpt-3.5-turbo-instruct	$0.0015 / 1K tokens	$0.0020 / 1K tokens
+# Modelos y tarifas
 
-model_engine = "gpt-3.5-turbo-instruct"
+# https://openai.com/pricing
+
+# Model	Input	Output
+
+# davinci-002	                $0.0020 / 1K tokens
+# babbage-002	                $0.0004 / 1K tokens  -- muy malo
+
+# gpt-3.5-turbo-1106	        $0.0010 / 1K tokens	$0.0020 / 1K tokens
+# gpt-3.5-turbo-instruct	    $0.0015 / 1K tokens	$0.0020 / 1K tokens
+
+# gpt-4	$0.03 / 1K tokens	    $0.0600 / 1K tokens
+# gpt-4-32k	$0.06 / 1K tokens	$0.1200 / 1K tokens
+
+
 
 # En este código, he eliminado el uso de openai.ChatCompletion.create y he vuelto a la función openai.Completion.create, 
 # que es la API estándar de OpenAI GPT-3. 
@@ -37,7 +52,7 @@ model_engine = "gpt-3.5-turbo-instruct"
 response = openai.Completion.create(
     engine=model_engine,
     prompt=prompt,
-    max_tokens=1024,  # fijo aunque el modelo soportaria hasta 4096
+    max_tokens=max_tokens,  # fijo aunque el modelo soportaria hasta 4096
     n=1,
     stop=None,
     temperature=0.9,
@@ -63,7 +78,6 @@ tokens_used = response['usage']['total_tokens']           # 210 tokens
 print(f"Tokens: {tokens_used}")
 
 
-# Modelos y tarifas
-# https://platform.openai.com/docs/models/continuous-model-upgrades
+
 
 

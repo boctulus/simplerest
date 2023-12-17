@@ -329,28 +329,12 @@ body {
       <?php endforeach; ?>
   </div>
   
-  <div style="margin-left: 45px;">
-    <span style="font-weight:600;"><?= str_repeat('⭐', $avg) . ' '. $count ?> recensioni</span>
+  <div>
+    <span style="margin-left: 45px; font-weight:600;"><?= str_repeat('⭐', $avg) . ' '. $count ?> recensioni</span>
 
     <div class="review-ratings">
     <a class="reviews-link" href="/dumb/rating_table">Vedi tutto</a>
-    <div class="rating">
-        <div class="wporg-ratings" aria-label="<?= number_format($avg, 1); ?> out of 5 stars" data-title-template="%s out of 5 stars" data-rating="<?= $avg; ?>" style="color: rgb(255, 185, 0); --darkreader-inline-color: #ffcd16;" data-darkreader-inline-color="">
-            <?php
-            $fullStars = floor($avg);
-            $emptyStars = 5 - $fullStars;
-
-            for ($i = 0; $i < $fullStars; $i++) {
-                echo '<span class="dashicons dashicons-star-filled"></span>';
-            }
-
-            for ($i = 0; $i < $emptyStars; $i++) {
-                echo '<span class="dashicons dashicons-star-empty"></span>';
-            }
-            ?>
-        </div>
-    </div>
-
+   
     <ul class="ratings-list">
       <?php
       // Calcular el total de todas las clasificaciones
