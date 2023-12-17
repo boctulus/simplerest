@@ -112,7 +112,7 @@ return [
 		'position' => Paginator::TOP,
 		'params'   => [
 			'pageSize' => 'size',
-			'page'	   => 'page'
+			'page'	   => 'page_num' // redefinido para WordPress
 		],
 		'formatter' => function ($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
 			return [
