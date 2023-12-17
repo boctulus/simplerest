@@ -9094,108 +9094,14 @@ class DumbController extends Controller
         Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
     }
 
-    function rating_random(){
-        // Generar 21 registros con datos al azar
-        for ($i = 0; $i < 21; $i++) {
-            $comment = "Comentario #" . ($i + 1);
-            $score = rand(1, 5);
-            $clientName = "Cliente " . chr(rand(65, 90)) . rand(1, 99); // Cliente A, Cliente B, etc.
-            $createdAt = now(); // Fecha y hora actual
+    function test_random_replacer(){
+        // Ejemplo de uso
+        $originalText = "I just bought a pair of shoes from this website and I'm really satisfied! I just bought another pair of shoes yesterday.";
 
-            // Construir la consulta INSERT
-            $insertQuery = "INSERT INTO star_rating (comment, score, author, created_at) VALUES ('$comment', $score, '$clientName', '$createdAt');";
+        $modifiedText = Strings::replaceSubstringRandomly($originalText, 'shoes', ['sneakers', 'boots', 'sandals', 'slippers']);
 
-            // Ejecutar la consulta
-            DB::statement($insertQuery);
-        }
-
-        dd("Registros insertados exitosamente.");
-    }
-
-    /*
-        Test de shortcode
-    */
-    function rating_slider(){        
-        $sc = new StarRatingShortcode();
-
-        render($sc->rating_slider());
-    }
-
-    /*
-        Test de shortcode
-    */
-    function rating_table()
-    {
-        $sc = new StarRatingShortcode();
-
-        render($sc->rating_table());
-    }
-
-    function get_full_it_name() {
-        $names    = include ETC_PATH . 'review-generator/common_names-it.php'; // array
-        $surnames = include ETC_PATH . 'review-generator/common_surnames-it.php'; // array
-    
-        // Obtener un nombre al azar
-        $random_name = $names[array_rand($names)];
-    
-        // Obtener un apellido al azar
-        $random_surname = $surnames[array_rand($surnames)];
-    
-        // Generar un número aleatorio entre 1 y 100 para determinar si habrá segundo nombre o inicial
-        $random_percent = rand(1, 100);
-    
-        // 66% de las veces no hay segundo nombre ni inicial
-        if ($random_percent <= 66) {
-            $second_name = '';
-        } else {
-            // 11% de las veces hay inicial
-            if ($random_percent <= 77) {
-                $second_name = $random_name[0] . '.';
-            } else {
-                // 22% de las veces hay segundo nombre
-                $second_name = $random_name;
-            }
-        }
-    
-        // Formar y devolver el nombre completo
-        $full_name = $random_name . ' ' . $second_name . ' ' . $random_surname;
-        return $full_name;
-    }
-    
-    function parse_answers(){
-        $path = 'D:\www\simplerest\etc\review-generator\answers.txt';
-        $file = file_get_contents($path);
-
-        $rows = Strings::lines($file, true, true);
-
-        // ahora debo seguir limpiando... eliminar duplicados e insertar
-        foreach ($rows as $ix => $row){
-            $ok = preg_match_all('/([a-zA-Z].*)/', $row, $matches);
-            
-            if ($ok){
-                $rows[$ix] = rtrim($matches[0][0], '"');
-            }            
-        }
-
-        $rows = array_unique($rows);
-        dd($rows);
-
-        exit; ////
-
-        foreach($rows as $row) {
-            $comment = $row;
-            $score = rand(4, 5);
-            $clientName = "Cliente " . chr(rand(65, 90)) . rand(1, 99); // funcion generadora de cliente
-            $createdAt = now(); // Fecha y hora actual
-
-            // Construir la consulta INSERT
-            $insertQuery = "INSERT INTO star_rating (comment, score, author, created_at) VALUES ('$comment', $score, '$clientName', '$createdAt');";
-
-            // Ejecutar la consulta
-            DB::statement($insertQuery);
-        }
-
-        dd("Registros insertados exitosamente.");
+        dd("Original String: $originalText");
+        dd("Modified String: $modifiedText");
     }
 
 }   // end class

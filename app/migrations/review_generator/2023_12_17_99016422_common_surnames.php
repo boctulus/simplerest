@@ -6,7 +6,7 @@ use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
-class StarRating implements IMigration
+class CommonSurnames implements IMigration
 {
     /**
 	* Run migration.
@@ -15,16 +15,16 @@ class StarRating implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('star_rating');
+        $sc = new Schema('common_surnames');
 
         $sc
         ->integer('id')->auto()->pri()
-        ->text('comment')->nullable()
-        ->int('score')
-        ->varchar('author')
+        ->varchar('text')->unique()->nullable()
+        ->varchar('language', 20)->nullable()
+        ->varchar('country', 20)->nullable()
         ->datetime('created_at');
 
-		$sc->create();
+		$sc->create();		
     }
 
     /**
@@ -34,7 +34,7 @@ class StarRating implements IMigration
     */
     public function down()
     {
-        $sc = new Schema('star_rating');
+        $sc = new Schema('common_surnames');
         $sc->dropTableIfExists();
     }
 }
