@@ -2,6 +2,7 @@
 
 namespace simplerest\shortcodes\star_rating;
 
+use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Paginator;
