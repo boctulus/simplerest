@@ -679,7 +679,7 @@ function get_pivot(Array $tables, ?string $tenant_id = null){
     $dir = get_schema_path(null, $tenant_id);
     
     if (!file_exists($dir . 'Pivots.php')){
-        \simplerest\core\libs\StdOut::hideResponse();
+        StdOut::hideResponse();
 
         $mk = new MakeControllerBase();
 
@@ -689,7 +689,7 @@ function get_pivot(Array $tables, ?string $tenant_id = null){
             $mk->pivot_scan();
         }
 
-        \simplerest\core\libs\StdOut::showResponse();
+        StdOut::showResponse();
     }
 
     include $dir . 'Pivots.php';

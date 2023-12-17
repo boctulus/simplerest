@@ -1314,6 +1314,48 @@ class Strings
 		return preg_replace("/^((?:(?:.*?$search){".--$occurrence."}.*?))$search/", "$1$replace", $subject);
 	}
    
+	/*
+		Recibe un string y un substring a buscar y un arrray de reemplazos alternativos 
+		y devuelve al azar el string con uno de los reemplazos
+
+		Ej:
+
+		$originalString     = "I just bought a pair of shoes from this website and I'm really satisfied!";
+        $substringToReplace = "shoes";
+        $replacementArray   = ["sneakers", "boots", "sandals", "slippers"];
+
+        $modifiedString = Strings::replaceSubstringRandomly($originalString, $substringToReplace, $replacementArray);
+
+        dd("Original String: $originalString");
+        dd("Modified String: $modifiedString");
+	*/
+	static function replaceSubstringRandomly($originalString, $substringToReplace, $replacementArray) {
+		// Buscar todas las ocurrencias del substring en el string original
+		$positions = [];
+		$startPos = 0;
+
+		while (($pos = strpos($originalString, $substringToReplace, $startPos)) !== false) {
+			$positions[] = $pos;
+			$startPos = $pos + 1;
+		}
+
+		// Si no hay ocurrencias, devolver el string original sin cambios
+		if (empty($positions)) {
+			return $originalString;
+		}
+
+		// Realizar múltiples reemplazos
+		foreach ($positions as $pos) {
+			// Elegir al azar un reemplazo del array de reemplazos
+			$randomReplacement = $replacementArray[array_rand($replacementArray)];
+
+			// Realizar el reemplazo en esta posición
+			$originalString = substr_replace($originalString, $randomReplacement, $pos, strlen($substringToReplace));
+		}
+
+		return $originalString;
+	}
+
 	static function removeMultipleSpaces($str){
 		return preg_replace('!\s+!', ' ', $str);
 	}
