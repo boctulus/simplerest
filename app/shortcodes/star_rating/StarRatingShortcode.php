@@ -98,8 +98,8 @@ class StarRatingShortcode
 
         js_file('third_party/owl_slider/owl.carousel.min.js');          # external
 
-        js_file('third_party/fontawesome/fontawesome_kit.js');          # external
-        #css_file('third_party/fontawesome/all.min.css');                # external
+        js_file('third_party/fontawesome/5/fontawesome_kit.js');          # external
+        #css_file('third_party/fontawesome/5/all.min.css');                # external
 
         js_file(__DIR__ . '/assets/js/card-slider.js')  ;
 
