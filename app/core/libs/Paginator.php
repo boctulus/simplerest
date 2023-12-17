@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace simplerest\core;
+namespace simplerest\core\libs;
 
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;

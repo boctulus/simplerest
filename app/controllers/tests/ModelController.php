@@ -6,7 +6,7 @@ use simplerest\core\Model;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\Paginator;
+use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
 use simplerest\models\az\BarModel;
