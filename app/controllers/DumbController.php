@@ -107,6 +107,7 @@ use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\libs\ItalianReviews;
 
 class DumbController extends Controller
 {
@@ -9094,11 +9095,31 @@ class DumbController extends Controller
         Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
     }
 
+    
+    /*
+        Test de shortcode
+    */
+    function rating_slider(){        
+        $sc = new StarRatingShortcode();
+
+        render($sc->rating_slider());
+    }
+
+    /*
+        Test de shortcode
+    */
+    function rating_table()
+    {
+        $sc = new StarRatingShortcode();
+
+        render($sc->rating_table());
+    }
+    
     function test_random_replacer(){
         // Ejemplo de uso
-        $originalText = "I just bought a pair of shoes from this website and I'm really satisfied! I just bought another pair of shoes yesterday.";
+        $originalText = "Ho appena ricevuto il mio ordine di scarpe da questo sito e sono davvero soddisfatta! La qualità e il design sono incredibili e il prezzo è stato molto conveniente. Consiglio vivamente questo negozio per chiunque sia alla ricerca di scarpe eleganti e di buona qualità.";
 
-        $modifiedText = Strings::replaceSubstringRandomly($originalText, 'shoes', ['sneakers', 'boots', 'sandals', 'slippers']);
+        $modifiedText = ItalianReviews::randomizePhrase($originalText);
 
         dd("Original String: $originalText");
         dd("Modified String: $modifiedText");

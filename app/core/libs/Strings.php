@@ -1333,29 +1333,27 @@ class Strings
 		// Buscar todas las ocurrencias del substring en el string original
 		$positions = [];
 		$startPos = 0;
-
-		$replacementArray[] = $originalString;
-
+	
 		while (($pos = strpos($originalString, $substringToReplace, $startPos)) !== false) {
 			$positions[] = $pos;
 			$startPos = $pos + 1;
 		}
-
+	
 		// Si no hay ocurrencias, devolver el string original sin cambios
 		if (empty($positions)) {
 			return $originalString;
 		}
-
-		// Realizar múltiples reemplazos
-		foreach ($positions as $pos) {
-			// Elegir al azar un reemplazo del array de reemplazos
-			$randomReplacement = $replacementArray[array_rand($replacementArray)];
-
-			// Realizar el reemplazo en esta posición
-			$originalString = substr_replace($originalString, $randomReplacement, $pos, strlen($substringToReplace));
-		}
-
-		return $originalString;
+	
+		// Elegir al azar una posición para reemplazar
+		$randomPosition = $positions[array_rand($positions)];
+	
+		// Elegir al azar un reemplazo del array de reemplazos
+		$randomReplacement = $replacementArray[array_rand($replacementArray)];
+	
+		// Realizar el reemplazo
+		$modifiedString = substr_replace($originalString, $randomReplacement, $randomPosition, strlen($substringToReplace));
+	
+		return $modifiedString;
 	}
 
 	static function removeMultipleSpaces($str){
