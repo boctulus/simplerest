@@ -1334,6 +1334,8 @@ class Strings
 		$positions = [];
 		$startPos = 0;
 
+		$replacementArray[] = $originalString;
+
 		while (($pos = strpos($originalString, $substringToReplace, $startPos)) !== false) {
 			$positions[] = $pos;
 			$startPos = $pos + 1;
