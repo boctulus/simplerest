@@ -157,6 +157,18 @@ class ReviewsController extends MyController
                 'recentemente'
             ]);
 
+            $text = Strings::replaceSubstringRandomly($text, 'Ho trovato', [
+                'In questo sito ho trovato',
+                'Recentemente ho scoperto',
+                'Navigando online ho individuato',
+                'Mi sono imbattuto in',
+                'Ho fatto una scoperta su',
+                'Ho incontrato',
+                'Ho ottenuto',
+                'Ho selezionato',
+                // Agrega más reemplazos según sea necesario
+            ]);
+            
             $reviews[$ix]['text'] = $text; 
             
             dd($text, null, false);
