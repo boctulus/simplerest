@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\Paginator;
+use simplerest\core\libs\Paginator;
 
 require_once __DIR__ . '/constants.php';
 

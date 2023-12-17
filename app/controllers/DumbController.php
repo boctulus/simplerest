@@ -23,7 +23,7 @@ use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
-use simplerest\core\Paginator;
+use simplerest\core\libs\Paginator;
 
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;

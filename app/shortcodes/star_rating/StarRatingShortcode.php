@@ -4,7 +4,7 @@ namespace simplerest\shortcodes\star_rating;
 
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
-use simplerest\core\Paginator;
+use simplerest\core\libs\Paginator;
 
 class StarRatingShortcode
 {
@@ -51,8 +51,11 @@ class StarRatingShortcode
 
     function rating_table()
     {
+        // En WordPress por ejemplo, no puedo usar ?page=
+        $page_key   = config()['paginator']['params']['page'] ?? 'page';
+    
         $page_size = $_GET['size'] ?? 10;
-        $page      = $_GET['page'] ?? 1;
+        $page      = $_GET[$page_key] ?? 1;
 
         $offset = Paginator::calcOffset($page, $page_size);
 
