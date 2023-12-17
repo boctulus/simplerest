@@ -3,7 +3,7 @@
 namespace simplerest\core;
 
 use simplerest\core\libs\DB;
-use simplerest\core\Paginator;
+use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
