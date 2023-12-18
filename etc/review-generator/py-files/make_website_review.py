@@ -18,8 +18,8 @@ qty   = sys.argv[1] if len(sys.argv) >1 else 1
 # print(qty)
 # sys.exit()
 
-prompt = "Write {r_qty} reviews in Italian for E-commerce that sells clothes, accessories such as bags and shoes for men, women and children. Return as PHP array"
-prompt = prompt.format(r_qty=qty)
+prompt = f"Write {qty} reviews in Italian for E-commerce that sells clothes, accessories such as bags and shoes for men, women and children. If the reviewer is a male finish with [m] and it's a female ends the sentences with [f]"
+system_message = "Format the output as a PHP unidimensional array (like a list). Avoid extra comments"
 
 # print(prompt)
 # sys.exit()
@@ -41,17 +41,14 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # gpt-4	$0.03 / 1K tokens	    $0.0600 / 1K tokens
 # gpt-4-32k	$0.06 / 1K tokens	$0.1200 / 1K tokens
 
-
-
-# En este código, he eliminado el uso de openai.ChatCompletion.create y he vuelto a la función openai.Completion.create, 
-# que es la API estándar de OpenAI GPT-3. 
-#
-# Ahora, la respuesta se obtiene directamente de la llamada a esta función sin necesidad de mensajes de "usuario" y "sistema".
+# Agregar un punto al final si no lo tiene
+if not prompt.endswith('.'):
+    prompt += '.'
 
 # Generar una respuesta utilizando la API estándar
 response = openai.Completion.create(
     engine=model_engine,
-    prompt=prompt,
+    prompt=prompt + ' ' + system_message,
     max_tokens=max_tokens,  # fijo aunque el modelo soportaria hasta 4096
     n=1,
     stop=None,
@@ -63,10 +60,11 @@ generated_text = response['choices'][0]['text']
 print(f"Answer: {generated_text}")
 
 """
-    Tokens utilizados
-    
-    1 review             
-    2                   280
+    Tokens utilizados           v2
+
+    1 review                
+    2                   280     
+    3                   --      361
     5                   400
     10                  820 
     15 - 21             1024 
