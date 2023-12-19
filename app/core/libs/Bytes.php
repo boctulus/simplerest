@@ -6,13 +6,13 @@ use simplerest\core\Model;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
 
-class Numbers
+class Bytes
 {
     /*  
         Ej:
 
         $value1 = "1024M";
-        $result1 = Numbers::toBytes($value1);
+        $result1 = Bytes::toBytes($value1);
         echo $result1 . "\r\n";  // Output: 1073741824
     */
     static function toBytes(string $value)
