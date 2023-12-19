@@ -11,24 +11,6 @@ use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
 class ReviewsController extends MyController
 {
-    function rating_random(){
-        // Generar 21 registros con datos al azar
-        for ($i = 0; $i < 21; $i++) {
-            $comment = "Comentario #" . ($i + 1);
-            $score = rand(1, 5);
-            $clientName = "Cliente " . chr(rand(65, 90)) . rand(1, 99); // Cliente A, Cliente B, etc.
-            $createdAt = now(); // Fecha y hora actual
-
-            // Construir la consulta INSERT
-            $insertQuery = "INSERT INTO star_rating (comment, score, author, created_at) VALUES ('$comment', $score, '$clientName', '$createdAt');";
-
-            // Ejecutar la consulta
-            DB::statement($insertQuery);
-        }
-
-        dd("Registros insertados exitosamente.");
-    }
-
     /*
         Test de shortcode
     */
@@ -64,9 +46,9 @@ class ReviewsController extends MyController
             dd(DB::getLog(),"ID=$id");
         }
 
-        // foreach ($surnames as $name){
-        //     DB::insert("INSERT IGNORE INTO `common_surnames` (`id`, `text`, `language`, `country`, `created_at`) VALUES (NULL, \"$name\", 'it', NULL, '$now');");
-        // }
+        foreach ($surnames as $name){
+            DB::insert("INSERT IGNORE INTO `common_surnames` (`id`, `text`, `language`, `country`, `created_at`) VALUES (NULL, \"$name\", 'it', NULL, '$now');");
+        }
     }
 
     function parse(){
@@ -111,6 +93,11 @@ class ReviewsController extends MyController
             $clientName = ItalianReviews::getFullName();
             $createdAt  = now(); 
 
+            // Incremento la probabilidad
+            if (rand(1,10) > 3){
+                $score = 5;
+            }
+
             // <---------------------------------------------- aca debo meter la variabilidad
             $comment    = ItalianReviews::randomizePhrase($comment);
 
@@ -153,6 +140,23 @@ class ReviewsController extends MyController
         }
     }
     
+    function get_reviews(){
+        $reviews = table('star_rating')->get();
+
+        foreach ($reviews as $ix => $review){
+            $text = $review['comment'];
+
+            $reviews[$ix]['text'] = ItalianReviews::randomizePhrase($text); 
+            
+            dd($reviews[$ix]['text']);
+        }
+    }
+
+
+    /*
+        Testing
+    */
+
     function test()
     {
         for ($i=0; $i<20; $i++){
@@ -179,20 +183,6 @@ class ReviewsController extends MyController
             );
         }
     }
-
-    function get_reviews(){
-        $reviews = table('star_rating')->get();
-
-        foreach ($reviews as $ix => $review){
-            $text = $review['comment'];
-
-            $reviews[$ix]['text'] = ItalianReviews::randomizePhrase($text); 
-            
-            dd($reviews[$ix]['text']);
-        }
-    }
-
-
 
 }
 

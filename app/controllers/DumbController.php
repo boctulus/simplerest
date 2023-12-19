@@ -110,6 +110,7 @@ use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 use simplerest\libs\Reviews;
+use simplerest\core\libs\RandomGenerator;
 
 class DumbController extends Controller
 {
@@ -9128,17 +9129,28 @@ class DumbController extends Controller
     }
 
     function test_it_gramamar_anal()
-    { 
-        // for ($i=0; $i<80; $i++){
-        //    dd(Reviews::getFullName('n'), null, false);
-        // }       
-        // exit;
-
+    {        
         dd(ItalianGrammarAnalyzer::getGender("La qualità degli abiti è eccellente e ho trovato un bellissimo paio di scarpe per mio marito. Servizio impeccabile.")); 
         dd(ItalianGrammarAnalyzer::getGender("Oggi sono molto felice")); // n --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono soddisfatta"));  // f  --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono molto soddisfatta")); // f --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono soddisfatto")); // m
     }
+
+    function test_num_gen(){
+        $score      = rand(4, 5);
+
+        // Incremento la probabilidad
+        if (rand(1,10) > 3){
+            $score = 5;
+        }
+
+        dd($score);
+        exit;
+
+        $result = RandomGenerator::getRandomIntegers(4, 5, [4 => 30, 5 => 70]);
+        
+    }
+
 
 }   // end class
