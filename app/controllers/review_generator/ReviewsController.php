@@ -154,6 +154,12 @@ class ReviewsController extends MyController
     
     function test()
     {
+        for ($i=0; $i<20; $i++){
+            dd(ItalianReviews::getParaphrase('f'));
+        }
+        
+        exit;
+
         $rows = $this->parse();
 
         foreach($rows as $row) {
@@ -184,6 +190,8 @@ class ReviewsController extends MyController
             dd($reviews[$ix]['text']);
         }
     }
+
+
 
 }
 
