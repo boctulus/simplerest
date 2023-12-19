@@ -17,6 +17,14 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
         // Protejo la oracion de "molto" ya que termina en "-to" a pesar de ser adverbio.
         $s = preg_replace('/sono\s+molto/', 'sono bene', $s);
 
+        if (Strings::containsAnyWord(['marito', 'fidanzato'], $s)){
+            return 'f';
+        }
+
+        if (Strings::containsAnyWord(['moglie', 'fidanzata'], $s)){
+            return 'm';
+        }
+
         $f_patt = [
             '/sono\s+(\w*issima)/',
             '/sono\s+(\w*ta)/',
