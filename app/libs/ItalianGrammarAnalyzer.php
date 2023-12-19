@@ -3,9 +3,13 @@
 namespace simplerest\libs;
 
 use simplerest\core\libs\Strings;
+use simplerest\libs\GrammarAnalyzer;
 
-class ItalianGrammarAnalyzer
+class ItalianGrammarAnalyzer extends GrammarAnalyzer
 {
+    /*
+        Retorna genero: 'f', 'm' o 'n'
+    */
     static function getGender($sentence) {
         // Convertir a minúsculas para ignorar el caso
         $s = strtolower($sentence);
@@ -25,7 +29,7 @@ class ItalianGrammarAnalyzer
             '/sono\s+\w+\s+(\w*to)/'
         ];
 
-        dd($s, 'Sentence'); // debug
+        // dd($s, 'Sentence'); 
 
         foreach ($f_patt as $p){
             if (Strings::match($s, $p)){

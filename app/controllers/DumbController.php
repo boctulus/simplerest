@@ -9126,7 +9126,7 @@ class DumbController extends Controller
         dd("Modified String: $modifiedText");
     }
 
-    function test_it_gramamar_anal(){         
+    function test_it_gramamar_anal(){     
         dd(ItalianGrammarAnalyzer::getGender("Oggi sono molto felice")); // n --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono soddisfatta"));  // f  --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono molto soddisfatta")); // f --ok
