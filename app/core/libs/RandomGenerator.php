@@ -12,6 +12,12 @@ class RandomGenerator
 
         De acuerdo a los valores relativos en $values sera la probabilidad de obtener ese valor
 
+        getRandomIntegers([
+            {valor} => {frecuencia},
+            {valor} => {frecuencia},
+            // ...
+        ])
+
         Ej:
 
         getRandomIntegers([
@@ -36,6 +42,8 @@ class RandomGenerator
     {
         // Paso 1: Normalizar los pesos
         $normalizednumbers = Num::normalize($values);
+
+        // dd($normalizednumbers);
 
         $n = mt_rand(0, 99);
 

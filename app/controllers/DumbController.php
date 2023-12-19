@@ -9140,7 +9140,7 @@ class DumbController extends Controller
     function test_num_gen(){
 
         for ($i=0; $i<50; $i++){
-            $result = RandomGenerator::getRandomIntegers([4 => 2, 5 => 8]);
+            $result = RandomGenerator::getRandomIntegers([5 => 10, 7 => 100]);
             dd($result, null, false);
         }
        
