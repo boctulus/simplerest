@@ -9138,18 +9138,12 @@ class DumbController extends Controller
     }
 
     function test_num_gen(){
-        $score      = rand(4, 5);
 
-        // Incremento la probabilidad
-        if (rand(1,10) > 3){
-            $score = 5;
+        for ($i=0; $i<50; $i++){
+            $result = RandomGenerator::getRandomIntegers([4 => 2, 5 => 8]);
+            dd($result, null, false);
         }
-
-        dd($score);
-        exit;
-
-        $result = RandomGenerator::getRandomIntegers(4, 5, [4 => 30, 5 => 70]);
-        
+       
     }
 
 
