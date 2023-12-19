@@ -129,6 +129,7 @@ class ReviewsController extends MyController
     function update_by_gender(){
         $rows = table('star_rating')
         ->select(['id', 'comment', 'gender'])
+        //->where(['id' => 69])  /////////////////////
         ->get();
 
         // dd($rows);
@@ -148,7 +149,7 @@ class ReviewsController extends MyController
             $author = str_replace("'", "\'", $author);
 
             $id = DB::update("UPDATE star_rating SET gender='$gender', author='$author' WHERE id={$row['id']}");
-            dd(DB::getLog(), "ID=$id");
+            // dd(DB::getLog(), "ID=$id");
         }
     }
     
