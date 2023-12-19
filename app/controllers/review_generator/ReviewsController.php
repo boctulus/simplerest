@@ -6,6 +6,7 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 use simplerest\libs\ItalianReviews;
 use simplerest\controllers\MyController;
+use simplerest\libs\ItalianGrammarAnalyzer;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
 class ReviewsController extends MyController
@@ -61,31 +62,32 @@ class ReviewsController extends MyController
         }
     }
 
-    function parse_answers(){
-        $path = 'D:\www\simplerest\etc\review-generator\answers.txt';
-        $file = file_get_contents($path);
+    function parse(){
+        $path = 'D:\www\simplerest\etc\review-generator\answers.php';
+        $rows = include $path;
 
-        $rows = Strings::lines($file, true, true);
-
-        // dd(count($rows));
-        // exit;
-
-        // ahora debo seguir limpiando... eliminar duplicados e insertar
         foreach ($rows as $ix => $row){
-            $ok = preg_match_all('/([a-zA-Z].*)/', $row, $matches);
-            
-            if ($ok){
-                $rows[$ix] = rtrim($matches[0][0], '"');
-            }  else {
-                dd($row, "ERROR para ...");
-                exit;
-            }          
+            // Elimina lo que está entre la última "!" o "." y "]"
+            $rows[$ix] = preg_replace('/[!.\[]([^!.\[]*?)\]/', '', $rows[$ix]);
+
+            // Elimina números seguidos de punto al inicio
+            $rows[$ix] = preg_replace('/^\d+\./', '', $rows[$ix]);
+
+            // Agrega un punto al final si no termina en "!" o "."
+            if (!preg_match('/[!.\]]$/', $rows[$ix])) {
+                $rows[$ix] .= '.';
+            }
         }
 
         $rows = array_unique($rows);
 
         // dd(count($rows));
         // exit;
+
+        foreach($rows as $row){
+            $gender = ItalianGrammarAnalyzer::getGender($row);
+            dd($row . "[$gender]", null, false);
+        }
 
         return $rows;     
     }
@@ -94,9 +96,7 @@ class ReviewsController extends MyController
     {
         $prefix = config()['tb_prefix'];
 
-        DB::truncate("{$prefix}star_rating"); ///    
-
-        $rows = $this->parse_answers();
+        $rows = $this->parse();
 
         foreach($rows as $row) {
             $comment    = $row;
@@ -121,7 +121,7 @@ class ReviewsController extends MyController
     
     function test()
     {
-        $rows = $this->parse_answers();
+        $rows = $this->parse();
 
         foreach($rows as $row) {
             $comment    = $row;
