@@ -2,6 +2,7 @@
 
 namespace simplerest\libs;
 
+use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 
 abstract class Reviews
@@ -23,13 +24,29 @@ abstract class Reviews
 
         Podria usar Faker?
     */
-    static function getFullName($lang = null, $country = null) 
+    static function getFullName($gender = null, $lang = null, $country = null) 
     {
         $lang    = $lang    ?? static::$lang;
         $country = $country ?? static::$country;
 
+        if ($gender == 'male'){
+            $gender == 'm';
+        }
+
+        if ($gender == 'female'){
+            $gender == 'f';
+        }
+
+        if ($gender == 'neutro'){
+            $gender == 'n';
+        }
+
+        if ($gender == 'n'){
+            $gender = (rand(0,1) == 1) ? 'm' : 'f';
+        }
+
         // Obtener un nombre al azar
-        $random_name    = table('common_names')
+        $random_name = table('common_names')
         ->when(!empty($lang), function($q) use ($lang){
             $q->where([
                 'language' => $lang
@@ -40,9 +57,14 @@ abstract class Reviews
                 'country' => $country
             ]);
         })
+        ->when(!empty($gender), function($q) use ($gender){
+            $q->where([
+                'gender' => $gender
+            ]);
+        })
         ->random()
         ->value('text');
-    
+
         // Obtener un apellido al azar
         $random_surname = table('common_surnames')->random()->value('text');
     
