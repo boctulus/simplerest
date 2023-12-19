@@ -10,53 +10,55 @@ use simplerest\core\Model;
 use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
-use simplerest\core\libs\CSS;
+use simplerest\libs\Reviews;
 
+use simplerest\core\libs\CSS;
 use simplerest\core\libs\Env;
+use simplerest\core\libs\Num;
 use simplerest\core\libs\Url;
-use simplerest\core\libs\Xml;
-use simplerest\core\Container;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\libs\Xml;
+use simplerest\core\Container;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
+
 use simplerest\core\libs\Time;
 use simplerest\core\libs\Cache;
-
 use simplerest\core\libs\Files;
+
 use simplerest\core\libs\Utils;
 use simplerest\core\libs\Arrays;
 
 use simplerest\core\libs\Logger;
+
 use simplerest\core\libs\Schema;
-
 use simplerest\core\libs\StdOut;
-
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
 use simplerest\core\libs\DBCache;
+
 use simplerest\core\libs\Numbers;
 use simplerest\core\libs\Strings;
 
 use simplerest\core\libs\VarDump;
+
 use Spatie\ArrayToXml\ArrayToXml;
 
 use simplerest\core\libs\CSSUtils;
-
 use simplerest\core\libs\Factory;;
 
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
-
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
+
 use simplerest\core\libs\ApiClient;
+
 use simplerest\core\libs\FileCache;
-
 use simplerest\core\libs\MediaType;
-
 use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
@@ -64,21 +66,21 @@ use simplerest\libs\ItalianReviews;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
+
 use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
-
 use simplerest\core\libs\GoogleDrive;
+
 use simplerest\core\libs\Memoization;
 use simplerest\core\libs\SimpleCrypt;
-
 use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
 use simplerest\core\libs\Messurements;
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\EmailTemplate;
+
 use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
-
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
@@ -88,12 +90,13 @@ use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\HtmlBuilder\Tag;
+use simplerest\core\libs\RandomGenerator;
 use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
+
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
-
 use simplerest\core\libs\MailFromRemoteWP;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
@@ -109,8 +112,6 @@ use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\libs\Reviews;
-use simplerest\core\libs\RandomGenerator;
 
 class DumbController extends Controller
 {
@@ -9137,10 +9138,18 @@ class DumbController extends Controller
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono soddisfatto")); // m
     }
 
-    function test_num_gen(){
+    function test_num_gen()
+    {
+        dd(
+            Num::normalize([
+                5, 6, 7
+            ])
+        );
+
+        exit;
 
         for ($i=0; $i<50; $i++){
-            $result = RandomGenerator::getRandomIntegers([5 => 10, 7 => 100]);
+            $result = RandomGenerator::get(['A' => 1, 'B' => 100]);
             dd($result, null, false);
         }
        
