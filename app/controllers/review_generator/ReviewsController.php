@@ -6,6 +6,7 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 use simplerest\libs\ItalianReviews;
 use simplerest\controllers\MyController;
+use simplerest\core\libs\RandomGenerator;
 use simplerest\libs\ItalianGrammarAnalyzer;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
@@ -89,7 +90,7 @@ class ReviewsController extends MyController
 
         foreach($rows as $row) {
             $comment    = $row;
-            $score      = rand(4, 5);
+            $score      = RandomGenerator::get([5 => 10, 7 => 100]);
             $clientName = ItalianReviews::getFullName();
             $createdAt  = now(); 
 
