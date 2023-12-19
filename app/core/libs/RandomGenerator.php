@@ -12,7 +12,7 @@ class RandomGenerator
 
         De acuerdo a los valores relativos en $values sera la probabilidad de obtener ese valor
 
-        getRandomIntegers([
+        get([
             {valor} => {frecuencia},
             {valor} => {frecuencia},
             // ...
@@ -20,34 +20,30 @@ class RandomGenerator
 
         Ej:
 
-        getRandomIntegers([
-            4 => 30
-            5 => 70
-        ])
+            $result = RandomGenerator::get(['A' => 20, 'B' => 80]);
 
-        En este caso seria 30% vs 70% las probabilidades
+        En este caso seria 20% vs 80% las probabilidades
 
         o
 
-        getRandomIntegers([
-            2 => 1
-            3 => 0
-            4 => 2
-            5 => 3
-        ])
+            get([
+                2 => 234
+                3 => 354
+                4 => 500
+                5 => 102
+            ])
 
-        En este caso las probabilidades surgen de normalizar
+        En este caso las probabilidades de obtener 2, 3, 4 o 5 surgen de normalizar 234, 354, etc 
+        o sea sus "pesos"
     */
-    public static function getRandomIntegers($values)
+    public static function get($values)
     {
         // Paso 1: Normalizar los pesos
-        $normalizednumbers = Num::normalize($values);
-
-        // dd($normalizednumbers);
-
+        $normalized = Num::normalize($values);
+        
         $n = mt_rand(0, 99);
 
-        foreach ($normalizednumbers as $val => $w){
+        foreach ($normalized as $val => $w){
             $w = $w * 100;
 
             if ($w > $n){
