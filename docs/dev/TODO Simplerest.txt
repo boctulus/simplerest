@@ -1,7 +1,11 @@
 TODO SimpleRest
 ===============
 
-- Investigar problema por el que no se estan cargando los .css --pedir ayuda--
+- Investigar problema 
+
+  $id = DB::update("UPDATE star_rating SET gender='?', author='?' WHERE id=?", [$gender, $author, $row['id']]);
+
+<-- no actualiza
 
 - Clase Assets para simplicar carga de "third party libraries" (JS y/o CSS)
 

@@ -109,6 +109,7 @@ use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\libs\Reviews;
 
 class DumbController extends Controller
 {
@@ -9126,7 +9127,14 @@ class DumbController extends Controller
         dd("Modified String: $modifiedText");
     }
 
-    function test_it_gramamar_anal(){     
+    function test_it_gramamar_anal()
+    { 
+        // for ($i=0; $i<80; $i++){
+        //    dd(Reviews::getFullName('n'), null, false);
+        // }       
+        // exit;
+
+        dd(ItalianGrammarAnalyzer::getGender("La qualità degli abiti è eccellente e ho trovato un bellissimo paio di scarpe per mio marito. Servizio impeccabile.")); 
         dd(ItalianGrammarAnalyzer::getGender("Oggi sono molto felice")); // n --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono soddisfatta"));  // f  --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono molto soddisfatta")); // f --ok
