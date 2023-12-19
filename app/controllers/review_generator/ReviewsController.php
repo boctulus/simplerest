@@ -49,17 +49,24 @@ class ReviewsController extends MyController
     }
 
     function insert_names(){
-        $names    = include ETC_PATH . 'review-generator/common_names-it.php'; // array
-        $surnames = include ETC_PATH . 'review-generator/common_surnames-it.php'; // array
+        $names_male   = include ETC_PATH . 'review-generator/common_names_male-it.php'; // array
+        $names_female = include ETC_PATH . 'review-generator/common_names_female-it.php'; 
+        $surnames     = include ETC_PATH . 'review-generator/common_surnames-it.php'; // array
 
         $now = at();
-        foreach ($names as $name){
-            DB::insert("INSERT IGNORE INTO `common_names` (`id`, `text`, `language`, `country`, `created_at`) VALUES (NULL, '$name', 'it', NULL, '$now');");
+        foreach ($names_male as $name){
+            $id = DB::insert("INSERT IGNORE INTO `common_names` (`id`, `gender`, `text`, `language`, `country`, `created_at`) VALUES (NULL, 'm', '$name', 'it', NULL, '$now');");
+            dd(DB::getLog(), "ID=$id");
         }
 
-        foreach ($surnames as $name){
-            DB::insert("INSERT IGNORE INTO `common_surnames` (`id`, `text`, `language`, `country`, `created_at`) VALUES (NULL, \"$name\", 'it', NULL, '$now');");
+        foreach ($names_female as $name){
+            $id = DB::insert("INSERT IGNORE INTO `common_names` (`id`, `gender`, `text`, `language`, `country`, `created_at`) VALUES (NULL, 'f', '$name', 'it', NULL, '$now');");
+            dd(DB::getLog(),"ID=$id");
         }
+
+        // foreach ($surnames as $name){
+        //     DB::insert("INSERT IGNORE INTO `common_surnames` (`id`, `text`, `language`, `country`, `created_at`) VALUES (NULL, \"$name\", 'it', NULL, '$now');");
+        // }
     }
 
     function parse(){
@@ -117,6 +124,32 @@ class ReviewsController extends MyController
         }
 
         dd("Registros insertados exitosamente.");
+    }
+
+    function update_by_gender(){
+        $rows = table('star_rating')
+        ->select(['id', 'comment', 'gender'])
+        ->get();
+
+        // dd($rows);
+
+        foreach($rows as $row){
+            $gender = ItalianGrammarAnalyzer::getGender($row['comment']);
+            // dd($row['comment'] . "[$gender]", null, false);
+
+            $author = ItalianReviews::getFullName($gender);
+
+            /*
+                No esta funcionando
+
+                $id = DB::update("UPDATE star_rating SET gender='?', author='?' WHERE id=?", [$gender, $author, $row['id']]);
+            */
+
+            $author = str_replace("'", "\'", $author);
+
+            $id = DB::update("UPDATE star_rating SET gender='$gender', author='$author' WHERE id={$row['id']}");
+            dd(DB::getLog(), "ID=$id");
+        }
     }
     
     function test()

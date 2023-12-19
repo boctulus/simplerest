@@ -19,6 +19,7 @@ class CommonNames implements IMigration
 
         $sc
         ->integer('id')->auto()->pri()
+        ->varchar('gender')->nullable()
         ->varchar('text')->unique()->nullable()
         ->varchar('language', 20)->nullable()
         ->varchar('country', 20)->nullable()

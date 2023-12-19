@@ -21,7 +21,7 @@ class StarRating implements IMigration
         ->integer('id')->auto()->pri()
         ->text('comment')->nullable()
         ->int('score')
-        ->varchar('author')
+        ->varchar('author', 100)
         ->varchar('gender', 1)->nullable()
         ->datetime('deleted_at')
         ->datetime('created_at');
