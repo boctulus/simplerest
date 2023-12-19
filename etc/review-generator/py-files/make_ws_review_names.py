@@ -3,18 +3,23 @@ import os
 import sys
 
 # Verificar si se proporcionó el título como argumento
-if len(sys.argv) == 1 or not sys.argv[1].startswith('title='):
-    print("Por favor, proporciona title y qty")
+if len(sys.argv) == 1:
+    print("Por favor, proporciona qty")
     sys.exit(1)
 
-# Params de línea de comandos
-title = sys.argv[1][len('title='):]
-qty   = sys.argv[2][len('qty=')] if len(sys.argv) > 2 and sys.argv[2].startswith('qty=') else 1
+# Params de línea de comandos. 
+# Ej: script.php 5
+qty   = sys.argv[1] if len(sys.argv) >1 else 1
 
-prompt = """Write {r_qty} reviews of a product in Italian. Each review in one paragraph and be positive. 
-Use ; as review separator. Subject: for '{p_title}'"""
+prompt = f"Write {qty} positive reviews in Italian for E-commerce that sells clothes, accessories such as bags and shoes for men, women and children. At the end inside brackets the reviewer full name and gender like  [Luca Rizzo, male]. Paying attention if reviewer should be female or male"
 
-prompt = prompt.format(p_title=title,r_qty=qty)
+system_message = "Format the output as a PHP unidimensional array (like a list). Avoid extra comments"
+
+# Agregar un punto al final si no lo tiene
+if not prompt.endswith('.'):
+    prompt += '.'
+
+prompt = prompt + ' ' + system_message
 
 print(prompt)
 # sys.exit()
@@ -40,7 +45,7 @@ response = openai.Completion.create(
     n=1,
     stop=None,
     temperature=0.5,
-    timeout=2000
+    timeout=3000
 )
 
 generated_text = response['choices'][0]['text']
