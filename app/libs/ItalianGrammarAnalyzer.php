@@ -17,24 +17,28 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
         // Protejo la oracion de "molto" ya que termina en "-to" a pesar de ser adverbio.
         $s = preg_replace('/sono\s+molto/', 'sono bene', $s);
 
+        if (Strings::containsAnyWord(['moglie', 'fidanzata'], $s)){
+            return 'm';
+        }
+
         if (Strings::containsAnyWord(['marito', 'fidanzato'], $s)){
             return 'f';
         }
 
-        if (Strings::containsAnyWord(['moglie', 'fidanzata'], $s)){
-            return 'm';
-        }
+        $m_patt = [
+            '/sono\s+(\w*issimo)/',
+            '/sono\s+(\w*to)/',
+            '/sono\s+\w+\s+(\w*to)/',
+            '/sono\s+(\w*ico)/',
+            '/sono\s+\w+\s+(\w*ico)/'            
+        ];
 
         $f_patt = [
             '/sono\s+(\w*issima)/',
             '/sono\s+(\w*ta)/',
             '/sono\s+\w+\s+(\w*ta)/',
-        ];
-
-        $m_patt = [
-            '/sono\s+(\w*issimo)/',
-            '/sono\s+(\w*to)/',
-            '/sono\s+\w+\s+(\w*to)/'
+            '/sono\s+(\w*ica)/',
+            '/sono\s+\w+\s+(\w*ica)/',
         ];
 
         // dd($s, 'Sentence'); 
@@ -50,6 +54,14 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
                 return 'm';
             }
         }
+
+        if (Strings::containsAnyWord(['da donna'], $s)){
+            return 'f';
+        }       
+        
+        if (Strings::containsAnyWord(['da uomo'], $s)){
+            return 'm';
+        }   
        
        return 'n';
     }
