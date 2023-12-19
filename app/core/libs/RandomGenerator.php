@@ -10,37 +10,45 @@ class RandomGenerator
     /*
         Objetivo:
 
-        De acuerdo a los valores relativos en $weights sera la probabilidad de obtener ese numero.
+        De acuerdo a los valores relativos en $values sera la probabilidad de obtener ese valor
 
         Ej:
 
-        getRandomIntegers(4, 5, [
+        getRandomIntegers([
             4 => 30
             5 => 70
         ])
 
+        En este caso seria 30% vs 70% las probabilidades
+
         o
 
-        getRandomIntegers(4, 5, [
+        getRandomIntegers([
             2 => 1
             3 => 0
             4 => 2
             5 => 3
         ])
 
-        Terminar !
+        En este caso las probabilidades surgen de normalizar
     */
-    public static function getRandomIntegers($min, $max, $weights)
+    public static function getRandomIntegers($values)
     {
         // Paso 1: Normalizar los pesos
-        $totalWeight       = array_sum($weights);
-        $normalizedWeights = array_map(function ($weight) use ($totalWeight) {
-            return $weight / $totalWeight;
-        }, $weights);
+        $normalizednumbers = Num::normalize($values);
 
-        
-        # dd($normalizedWeights); // ok
+        $n = mt_rand(0, 99);
 
-        // < completar >
+        foreach ($normalizednumbers as $val => $w){
+            $w = $w * 100;
+
+            if ($w > $n){
+                return $val;
+            }
+        }
+
+        $keys = array_keys($values); 
+
+        return $keys[rand(0, count($keys)-1)];
     }
 }
