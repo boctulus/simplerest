@@ -439,7 +439,7 @@ body {
     <span style="margin-left: 45px; font-weight:600;"><?= str_repeat('⭐', $avg) . ' '. $count ?> recensioni</span>
 
     <div class="review-ratings">
-    <a class="reviews-link" href="/dumb/rating_table">Vedi tutto</a>
+    <a class="reviews-link" href="/rating_slider/rating_table">Vedi tutto</a>
    
     <ul class="ratings-list">
       <?php
