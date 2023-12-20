@@ -27,27 +27,21 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
 
         $m_patt = [
             '/sono\s+(\w*issimo)/',
-            '/sono\s+(\w*to)/',
-            '/sono\s+\w+\s+(\w*to)/',
+            '/sono\s+(\w*[oò]to)\b/u',
+            '/sono\s+\w+\s+(\w*[oò]to)\b/u',
             '/sono\s+(\w*ico)/',
-            '/sono\s+\w+\s+(\w*ico)/'            
+            '/sono\s+\w+\s+(\w*ico)/',
         ];
 
         $f_patt = [
             '/sono\s+(\w*issima)/',
-            '/sono\s+(\w*ta)/',
-            '/sono\s+\w+\s+(\w*ta)/',
+            '/sono\s+(\w*[aà]ta)\b/u',
+            '/sono\s+\w+\s+(\w*[aà]ta)\b/u',
             '/sono\s+(\w*ica)/',
             '/sono\s+\w+\s+(\w*ica)/',
         ];
 
         // dd($s, 'Sentence'); 
-
-        foreach ($f_patt as $p){
-            if (Strings::match($s, $p)){
-                return 'f';
-            }
-        }
 
         foreach ($m_patt as $p){
             if (Strings::match($s, $p)){
@@ -55,14 +49,21 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
             }
         }
 
+        foreach ($f_patt as $p){
+            if (Strings::match($s, $p)){
+                return 'f';
+            }
+        }
+
+        if (Strings::containsAnyWord(['da uomo'], $s)){
+            return 'm';
+        }   
+
         if (Strings::containsAnyWord(['da donna'], $s)){
             return 'f';
         }       
         
-        if (Strings::containsAnyWord(['da uomo'], $s)){
-            return 'm';
-        }   
-       
+
        return 'n';
     }
 
