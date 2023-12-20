@@ -9131,7 +9131,8 @@ class DumbController extends Controller
 
     function test_it_gramamar_anal()
     {        
-        dd(ItalianGrammarAnalyzer::getGender("I tessuti sono di alta qualità e si vedono e si sentono, davvero soddisfatto."));
+        dd(ItalianGrammarAnalyzer::getGender("I tessuti sono di alta qualità e si vedono e si sentono, molto soddisfatto.")); // m
+        dd(ItalianGrammarAnalyzer::getGender("I tessuti sono di alta qualità e si vedono e si sentono, soddisfatto.")); // n -- mal
         exit;
 
         dd(ItalianGrammarAnalyzer::getGender("La qualità degli abiti è eccellente e ho trovato un bellissimo paio di scarpe per mio marito. Servizio impeccabile.")); 
