@@ -15,7 +15,7 @@ class __NAME__ extends MyController
 
     function index()
     {
-                       
+        dd("Index of ". __CLASS__);                   
     }
 }
 
