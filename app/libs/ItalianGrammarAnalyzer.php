@@ -17,6 +17,9 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
         // Protejo la oracion de "molto" ya que termina en "-to" a pesar de ser adverbio.
         $s = preg_replace('/sono\s+molto/', 'sono bene', $s);
 
+        Strings::replace('perfetto', 'perfect', $s);
+        Strings::replace('perfetta', 'perfect', $s);
+
         if (Strings::containsAnyWord(['moglie', 'fidanzata'], $s)){
             return 'm';
         }
@@ -31,6 +34,15 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
             '/sono\s+\w+\s+(\w*[oò]to)\b/u',
             '/sono\s+(\w*ico)/',
             '/sono\s+\w+\s+(\w*ico)/',
+
+            # caso ", soddisfatto"
+
+            '/,\s+(\w*tto)/',
+            
+            # caso ", molto soddisfatto"
+      
+            '/,\s+(molto)?\s*(\w*tto)/',
+            '/,\s+(davvero)?\s*(\w*tto)/',
         ];
 
         $f_patt = [
@@ -39,6 +51,15 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
             '/sono\s+\w+\s+(\w*[aà]ta)\b/u',
             '/sono\s+(\w*ica)/',
             '/sono\s+\w+\s+(\w*ica)/',
+
+            # caso ", soddisfatta"
+
+            '/,\s+(\w*tta)/',
+
+            # caso ", molto soddisfatta"
+
+            '/,\s+(molto)?\s*(\w*tta)/',
+            '/,\s+(davvero)?\s*(\w*tta)/',
         ];
 
         // dd($s, 'Sentence'); 
@@ -59,7 +80,7 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
             return 'm';
         }   
 
-        if (Strings::containsAnyWord(['da donna'], $s)){
+        if (Strings::containsAnyWord(['da donna', 'vestito', 'gonna'], $s)){
             return 'f';
         }       
         
