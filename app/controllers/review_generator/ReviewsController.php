@@ -75,8 +75,8 @@ class ReviewsController extends MyController
         // exit;
 
         foreach($rows as $row){
-            $gender = ItalianGrammarAnalyzer::getGender($row);
-            dd($row . "[$gender]", null, false);
+            $gender = ItalianGrammarAnalyzer::getGender($row);            
+            dd($row . " [$gender]", null, false);
         }
 
         return $rows;     
