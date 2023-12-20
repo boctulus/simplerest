@@ -351,54 +351,85 @@ body {
 }
 
 .review__score {
-    display: flex;
-    align-items: center;
-  }
+  display: flex;
+  align-items: center;
+}
 
-  .score {
-    font-size: 2rem;
-  }
+.score {
+  font-size: 2rem;
+}
 
-  .score-stars {
-    display: flex;
-    margin-left: 0.8rem;
-  }
+.score-stars {
+  display: flex;
+  margin-left: 0.8rem;
+}
 
-  .score-stars img {
-    width: 2rem; /* Ajusta el tamaño de la imagen de la estrella según sea necesario */
-  }
+.score-stars img {
+  width: 2rem; /* Ajusta el tamaño de la imagen de la estrella según sea necesario */
+}
 
-  /* Estilo predeterminado para pantallas más grandes que teléfonos móviles */
+/* Estilo predeterminado para pantallas más grandes que teléfonos móviles */
+.stars-container {
+  margin-top: -30px;
+}
+
+/* Estilo específico para teléfonos móviles */
+@media screen and (max-width: 767px) {
   .stars-container {
-    margin-top: -30px;
+    margin-top: 20px;
   }
-
-  /* Estilo específico para teléfonos móviles */
-  @media screen and (max-width: 767px) {
-    .stars-container {
-      margin-top: 20px;
-    }
-  }
+}
 </style>
 
 <h2 class="widget-title">Recensioni</h2>		
 
 <div class="uk-section">
     <div class="owl-carousel owl-theme">
-      <?php foreach ($reviews as $review) : ?>
-          <div class="item">
-              <div class="review uk-card uk-card-hover uk-card-body uk-light" style="background-color: transparent; color: #545454; margin-bottom: 0px !important;">
-                  <?php if (isset($review['title'])): ?>
-                    <h3 class="review__title uk-card-title"><?= $review['title'] ?></h4>
-                  <?php endif; ?>
-                  <div class="review__score" >
-                      <span class="score"><?= $review['score']; ?></span>
-                      <span>&nbsp;/&nbsp;5&nbsp;</span>
-                      <span class="score-stars"><?= str_repeat('⭐', $review['score']); ?></span>
-                  </div>
-                  <div class="review__text">"<i><?= Strings::getUpTo($review['comment'], 40, 150); ?></i>" – <small><?= $review['author']; ?></small></div>
+      <?php foreach ($reviews as $review) : 
+        
+        $date = (new DateTime($review['created_at']))->format('d-m-Y');
+      
+        #$comment_prepend          = "<small>{$review['author']}</small>";
+        $comment_append           = "– <small>{$review['author']}</small>";
+        $comment_append_new_line  = "<small>$date</small>";        
+      ?>
+        
+        <div class="item">
+        <div class="review uk-card uk-card-hover uk-card-body uk-light"
+          style="background-color: transparent; color: #545454; margin-bottom: 0px !important; margin-right: 10px; margin-left: 10px;">
+          <?php if (isset($review['title'])): ?>
+            <h3 class="review__title uk-card-title">
+              <?= $review['title'] ?>
+              </h4>
+            <?php endif; ?>
+
+            <?php if (isset($comment_prepend)): ?>
+            <div class="review__date" style="text-align: center; margin-top: 0px; margin-bottom: 10px">
+                <?= $comment_prepend  ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="review__score">
+              <span class="score">
+                <?= $review['score']; ?>
+              </span>
+              <span>&nbsp;/&nbsp;5&nbsp;</span>
+              <span class="score-stars">
+                <?= str_repeat('⭐', $review['score']); ?>
+              </span>
+            </div>
+            <div class="review__text">"<i>
+                <?= Strings::getUpTo($review['comment'], 22, 85); ?>
+              </i>" <?= $comment_append ?? '' ?>
+            </div>
+
+            <?php if ($comment_append_new_line): ?>
+              <div class="review__date" style="text-align: center; margin-top: 20px;">
+                  <?= $comment_append_new_line ?>
               </div>
-          </div>
+            <?php endif; ?>
+        </div>
+      </div>
       <?php endforeach; ?>
   </div>
 </div>
