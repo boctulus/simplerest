@@ -9164,16 +9164,11 @@ class DumbController extends Controller
     function test_openai_1(){
         $chat = new OpenAI();
 
-        $chat->client
-        ->enablePostRequestCache()
-        ->cache(120);
-
         $chat->addContent('Hola, ¿cómo estás?');
         $res = $chat->exec();    
         dd($res);
     }
 
-    // ERROR
     function test_openai_2(){
         $chat = new OpenAI();
 
@@ -9187,6 +9182,19 @@ class DumbController extends Controller
         dd($res);
     }
 
+    function test_openai_3(){
+        $chat = new OpenAI();
+
+        $chat->addContent('Todos los elementos de la tabla periodica con sus estados de oxidacion');
+        
+        $chat->setParams([
+            "max_tokens"      => 200,
+            "temperature"     => 0.5
+        ]);
+
+        $res = $chat->exec();    
+        dd($res);
+    }
     
 
 }   // end class
