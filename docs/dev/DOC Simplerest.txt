@@ -16368,7 +16368,6 @@ Obteniendo la instancia de ApiClient se puede configurar por ejemplo agregando c
 	$chat = new OpenAI();
 
 	$chat->client
-	->enablePostRequestCache()
 	->cache(120);
 
 	$chat->addContent('Hola, ¿cómo estás hoy?');       
