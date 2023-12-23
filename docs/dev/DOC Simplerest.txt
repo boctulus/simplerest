@@ -16344,4 +16344,44 @@ https://github.com/andreossido/laravel-odbc
 	<-- quizas mas acoplada a Laravel
 
 
+# OpenAI
+
+Ejemplo base:
+
+	$chat = new OpenAI();
+
+	$chat->addContent('Hola, ¿cómo estás?');
+	$res = $chat->exec();    
+	dd($res);
+
+Se puede especificar el modelo en exec()
+
+	$chat = new OpenAI();
+
+	$chat->addContent('Hola, ¿cómo estás hoy?');       
+	$res = $chat->exec('gpt-4');    
+
+	dd($res);
+
+Obteniendo la instancia de ApiClient se puede configurar por ejemplo agregando cache:
+
+	$chat = new OpenAI();
+
+	$chat->client
+	->enablePostRequestCache()
+	->cache(120);
+
+	$chat->addContent('Hola, ¿cómo estás hoy?');       
+	$res = $chat->exec('gpt-4');    
+
+	dd($res);
+
+Nota:
+
+Algunos modelos usan el endpoint /completions y otros /chat/completions y 
+la lista de modelos asi como que modelos supuestamente usan qué endpoint
+esta dentro de la clase OpenAI.
+
+No todos los modelos se han ensayado.
+
 

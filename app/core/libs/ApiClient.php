@@ -798,7 +798,8 @@ class ApiClient
     }
 
     function post($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
-        $url = $this->url ?? $url;
+        $url  = $this->url ?? $url;
+        $body = $body      ?? $this->body ?? null;
 
         if ($url === null){
             throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . "() or constructor or setUrl()");
