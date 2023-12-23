@@ -31,6 +31,7 @@ class OpenAI
             ]
         )
         ->disableSSL()
+        ->enablePostRequestCache()
         ->decode();
     }
 

@@ -9173,7 +9173,6 @@ class DumbController extends Controller
         $chat = new OpenAI();
 
         $chat->client
-        ->enablePostRequestCache()
         ->cache(120);
 
         $chat->addContent('Hola, ¿cómo estás hoy?');       
