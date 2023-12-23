@@ -3,15 +3,29 @@
 namespace simplerest\controllers\review_generator;
 
 use simplerest\core\libs\DB;
+use simplerest\core\libs\OpenAI;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\ApiClient;
 use simplerest\libs\ItalianReviews;
 use simplerest\controllers\MyController;
 use simplerest\core\libs\RandomGenerator;
 use simplerest\libs\ItalianGrammarAnalyzer;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
+
 class ReviewsController extends MyController
 {
+    function generate_using_chatgpt() {
+        $chat = new OpenAI();
+
+        $chat->addContent('Hola, ¿cómo estás?');
+
+        $res = $chat->exec();
+    
+        dd($res);
+    }
+    
+    
     /*
         Test de shortcode
     */
@@ -163,17 +177,15 @@ class ReviewsController extends MyController
         for ($i=0; $i<20; $i++){
             dd(ItalianReviews::getParaphrase('f'));
         }
-        
-        exit;
 
-        $rows = $this->parse();
+        // $rows = $this->parse();
 
-        foreach($rows as $row) {
-            $comment    = $row;
-            $comment    = ItalianReviews::randomizePhrase($comment);
+        // foreach($rows as $row) {
+        //     $comment    = $row;
+        //     $comment    = ItalianReviews::randomizePhrase($comment);
 
-            dd($comment);
-        }
+        //     dd($comment);
+        // }
     }
 
     # php com review_generator reviews test_name_gen

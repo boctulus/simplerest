@@ -10,6 +10,9 @@ en lugar de la API de Completions estándar.
 
 model_engine = "gpt-3.5-turbo-1106"
 
+# print(os.getenv('OPENAI_API_KEY'))
+# sys.exit(1)
+
 # Verificar si se proporcionó el título como argumento
 if len(sys.argv) < 2:
     print("Por favor, proporciona qty")
@@ -21,7 +24,7 @@ qty     = int(qty_str[0][len('qty='):]) if qty_str else 1
 
 # gender   = sys.argv[1][len('gender='):]
 
-max_tokens = 50 + (25 * qty)
+max_tokens = 50 + (30 * qty)
 
 if (max_tokens > (2048 - 50)):
     print("Demasiados tokens. Re-preguntar") 
