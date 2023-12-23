@@ -9160,15 +9160,24 @@ class DumbController extends Controller
        
     }
 
-    function test_openai(){
+    // OK 
+    function test_openai_1(){
         $chat = new OpenAI();
 
         $chat->addContent('Hola, ¿cómo estás?');
-
-        $res = $chat->exec();
-    
+        $res = $chat->exec();    
         dd($res);
     }
 
+    // ERROR
+    function test_openai_2(){
+        $chat = new OpenAI();
+
+        $chat->addContent('Hola, ¿cómo estás hoy?');
+        $res = $chat->exec('gpt-4');    
+        dd($res);
+    }
+
+    
 
 }   // end class
