@@ -275,20 +275,6 @@ return [
 		'mailer_default' => 'google'
 	],
 
-	'sendinblue_api_key' => env('SENDINBLUE_API_KEY'),
-
-	'google_auth'  => [
-		'client_id' 	=> env('OAUTH_GOOGLE_CLIENT_ID'),
-		'client_secret' => env('OAUTH_GOOGLE_CLIENT_SECRET'),
-		'callback_url' 	=> env('OAUTH_GOOGLE_CALLBACK')
-	],
-
-	'facebook_auth' => [
-		'app_id' 		=> env('OAUTH_FACEBOOK_CLIENT_ID'),
-		'app_secret'	=> env('OAUTH_FACEBOOK_CLIENT_SECRET'), 
-		'callback_url'	=> env('OAUTH_FACEBOOK_CALLBACK')
-	],
-
 	/*
 		ApiClient default sleep time between requests
 	*/
@@ -321,10 +307,6 @@ return [
 	],
 
 
-	'google_console_api_key' => env('GOOGLE_CONSOLE_API_KEY'),
-	'google_maps_api_key'    => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY',
-
-
 	/*
 		Si falta un paquete de Composer o el autoload.php o el composer.json intenta resolverlo
 
@@ -332,5 +314,24 @@ return [
 	*/
 
 	'use_composer' => true,
+
+	'openai_api_key'         => env('OPENAI_API_KEY'),
+	
+	'google_console_api_key' => env('GOOGLE_CONSOLE_API_KEY'),
+	'google_maps_api_key'    => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY',
+	
+	'sendinblue_api_key' => env('SENDINBLUE_API_KEY'),
+
+	'google_auth'  => [
+		'client_id' 	=> env('OAUTH_GOOGLE_CLIENT_ID'),
+		'client_secret' => env('OAUTH_GOOGLE_CLIENT_SECRET'),
+		'callback_url' 	=> env('OAUTH_GOOGLE_CALLBACK')
+	],
+
+	'facebook_auth' => [
+		'app_id' 		=> env('OAUTH_FACEBOOK_CLIENT_ID'),
+		'app_secret'	=> env('OAUTH_FACEBOOK_CLIENT_SECRET'), 
+		'callback_url'	=> env('OAUTH_FACEBOOK_CALLBACK')
+	],
 		
 ];

@@ -6,6 +6,11 @@ $cfg  = include __DIR__ . '/../config/config.php';
 
 
 /*
+  Vistas para crear nuevos reviews que deben ser aprobados:
+
+  https://codepen.io/ajesamann/pen/ZEYEoZm
+  https://codepen.io/alinsimoc/pen/XWjjjbJ
+
   Credits
   
   https://codepen.io/vcoppolecchia/pen/oaBVEE
