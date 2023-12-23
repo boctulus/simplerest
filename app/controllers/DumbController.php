@@ -34,29 +34,30 @@ use simplerest\core\libs\Arrays;
 
 use simplerest\core\libs\Logger;
 
+use simplerest\core\libs\OpenAI;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
-use simplerest\core\libs\DBCache;
 
+use simplerest\core\libs\DBCache;
 use simplerest\core\libs\Numbers;
+
 use simplerest\core\libs\Strings;
 
 use simplerest\core\libs\VarDump;
 
 use Spatie\ArrayToXml\ArrayToXml;
-
 use simplerest\core\libs\CSSUtils;
-use simplerest\core\libs\Factory;;
 
+use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
 use simplerest\models\az\BarModel;
+
 use Endroid\QrCode\Builder\Builder;
 
 use simplerest\core\libs\ApiClient;
-
 use simplerest\core\libs\FileCache;
 use simplerest\core\libs\MediaType;
 use simplerest\core\libs\Paginator;
@@ -65,20 +66,20 @@ use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
-use simplerest\core\libs\SendinBlue;
 
+use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
-use simplerest\core\libs\GoogleDrive;
 
+use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\Memoization;
 use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
 use simplerest\core\libs\Messurements;
 use Endroid\QrCode\Label\Font\NotoSans;
-use simplerest\core\libs\EmailTemplate;
 
+use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
@@ -92,8 +93,8 @@ use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\RandomGenerator;
 use simplerest\core\libs\ValidationRules;
-use PhpParser\Node\Scalar\MagicConst\File;
 
+use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
@@ -9157,6 +9158,16 @@ class DumbController extends Controller
             dd($result, null, false);
         }
        
+    }
+
+    function test_openai(){
+        $chat = new OpenAI();
+
+        $chat->addContent('Hola, ¿cómo estás?');
+
+        $res = $chat->exec();
+    
+        dd($res);
     }
 
 

@@ -19,7 +19,6 @@
         "jdorn/sql-formatter": "^1.2",
         "php-http/curl-client": "^2.2",
         "nyholm/psr7": "^1.4",
-        "php-http/message": "^1.12",
         "florianv/swap": "^4.3",
         "league/oauth2-google": "^4.0",
         "sendgrid/sendgrid": "~7",
