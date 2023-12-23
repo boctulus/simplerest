@@ -15,13 +15,16 @@ use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
 class ReviewsController extends MyController
 {
-    function generate_using_chatgpt() {
+    function generate_using_chatgpt($qty = 3) {
+        $prompt = "Write $qty positive reviews in Italian for E-commerce that sells clothes, accessories such as bags and shoes for men, women and children";
+        $sys    = "Format the output as a Python unidimensional array. Avoid extra comments";
+
+        $prompt = "$prompt. $sys"; 
+
         $chat = new OpenAI();
 
-        $chat->addContent('Hola, ¿cómo estás?');
-
-        $res = $chat->exec();
-    
+        $chat->addContent($prompt);
+        $res = $chat->exec();    
         dd($res);
     }
     
