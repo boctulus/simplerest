@@ -17,6 +17,7 @@ class ItalianGrammarAnalyzer extends GrammarAnalyzer
         // Protejo la oracion de "molto" ya que termina en "-to" a pesar de ser adverbio.
         $s = preg_replace('/sono\s+molto/', 'sono bene', $s);
 
+        // Protejo la oracion de "perfetto/a" ya que termina en "-to/ta"
         Strings::replace('perfetto', 'perfect', $s);
         Strings::replace('perfetta', 'perfect', $s);
 
