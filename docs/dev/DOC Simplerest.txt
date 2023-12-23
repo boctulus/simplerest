@@ -16376,6 +16376,22 @@ Obteniendo la instancia de ApiClient se puede configurar por ejemplo agregando c
 
 	dd($res);
 
+Seteando parametros adicionales con setParams()
+
+Ej:
+
+	$chat = new OpenAI();
+
+	$chat->addContent('Dime todos los elementos de la tabla periodica con sus estados de oxidacion');
+	
+	$chat->setParams([
+		"max_tokens"      => 100,
+		"temperature"     => 0.5,
+	]);
+
+	$res = $chat->exec();    
+	dd($res);
+
 Nota:
 
 Algunos modelos usan el endpoint /completions y otros /chat/completions y 
