@@ -15,16 +15,37 @@ use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
 class ReviewsController extends MyController
 {
+    /*
+        Falta completar parseando la salida
+        e insertando
+
+        Revisar parse() e insert_answers()
+    */
     function generate_using_chatgpt($qty = 3) {
         $prompt = "Write $qty positive reviews in Italian for E-commerce that sells clothes, accessories such as bags and shoes for men, women and children";
         $sys    = "Format the output as a Python unidimensional array. Avoid extra comments";
 
         $prompt = "$prompt. $sys"; 
 
+        /*
+            Intento estimar cantidad de tokens
+        */
+        $max_tokens = 50 + (30 * $qty);
+
+        if ($max_tokens > (2048 - 50)){
+            die("Demasiados tokens. Re-preguntar"); 
+        }
+
         $chat = new OpenAI();
 
+        $chat->setParams([
+            "max_tokens"      => $max_tokens,
+            "temperature"     => 0.9
+        ]);
+
         $chat->addContent($prompt);
-        $res = $chat->exec();    
+        $res = $chat->exec();  
+
         dd($res);
     }
     
