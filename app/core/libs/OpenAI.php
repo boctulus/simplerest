@@ -8,6 +8,9 @@ class OpenAI
     protected $api_key;
     protected $messages;
     protected $response;
+    
+    // API client
+    public $client;
 
     const COMPLETIONS = 1;
     const CHAT_COMPLETIONS = 2;
@@ -18,6 +21,16 @@ class OpenAI
 
     function __construct($api_key = null) {
         $this->api_key = $api_key ?? config()['openai_api_key'] ?? die('openai_api_key is required');
+
+        $this->client = ApiClient::instance()
+        ->setHeaders(
+            [
+                "Content-type"  => "application/json",
+                "Authorization" => "Bearer {$this->api_key}"
+            ]
+        )
+        ->disableSSL()
+        ->decode();
     }
 
     function addContent($content, $role = 'user'){
@@ -108,25 +121,15 @@ class OpenAI
             'model'    => $model, 
             'messages' => $this->messages
         ];
-   
-        $cli = ApiClient::instance()
-        ->decode();
     
-        $cli
-        ->setHeaders(
-            [
-                "Content-type"  => "application/json",
-                "Authorization" => "Bearer {$this->api_key}"
-            ]
-        )
+        $this->client
         ->setBody($data)
-        ->disableSSL()
         ->post($endpoint);
 
         $this->response = [
-            'status' => $cli->getStatus(),
-            'error'  => $cli->getError(),
-            'data'   => $cli->getResponse()
+            'status' => $this->client->getStatus(),
+            'error'  => $this->client->getError(),
+            'data'   => $this->client->getResponse()
         ];
 
         if (is_string($this->response['data'])){
@@ -153,23 +156,14 @@ class OpenAI
             'prompt' => $this->messages[0]['content']
         ];
    
-        $cli = ApiClient::instance();
-    
-        $cli
-        ->setHeaders(
-            [
-                "Content-type"  => "application/json",
-                "Authorization" => "Bearer {$this->api_key}"
-            ]
-        )
+        $this->client
         ->setBody($data)
-        ->disableSSL()
         ->post($endpoint);
 
         $this->response = [
-            'status' => $cli->getStatus(),
-            'error'  => $cli->getError(),
-            'data'   => $cli->getResponse()
+            'status' => $this->client->getStatus(),
+            'error'  => $this->client->getError(),
+            'data'   => $this->client->getResponse()
         ];
 
         if (is_string($this->response['data'])){
