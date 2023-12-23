@@ -9164,6 +9164,10 @@ class DumbController extends Controller
     function test_openai_1(){
         $chat = new OpenAI();
 
+        $chat->client
+        ->enablePostRequestCache()
+        ->cache(120);
+
         $chat->addContent('Hola, ¿cómo estás?');
         $res = $chat->exec();    
         dd($res);
@@ -9173,8 +9177,13 @@ class DumbController extends Controller
     function test_openai_2(){
         $chat = new OpenAI();
 
-        $chat->addContent('Hola, ¿cómo estás hoy?');
+        $chat->client
+        ->enablePostRequestCache()
+        ->cache(120);
+
+        $chat->addContent('Hola, ¿cómo estás hoy?');       
         $res = $chat->exec('gpt-4');    
+
         dd($res);
     }
 
