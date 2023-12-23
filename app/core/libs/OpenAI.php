@@ -8,7 +8,8 @@ class OpenAI
     protected $api_key;
     protected $messages;
     protected $response;
-    
+    protected $params;
+
     // API client
     public $client;
 
@@ -39,6 +40,10 @@ class OpenAI
             'role'    => $role, 
             'content' => $content
         ];
+    }
+
+    function setParams(Array $arr){
+        $this->params = $arr;
     }
 
     function exec($model = 'gpt-3.5-turbo-1106')
@@ -121,6 +126,10 @@ class OpenAI
             'model'    => $model, 
             'messages' => $this->messages
         ];
+
+        if (!empty($this->params)){
+            $data = array_merge($data, $this->params);
+        }        
     
         $this->client
         ->setBody($data)
@@ -155,6 +164,10 @@ class OpenAI
         $data = [
             'prompt' => $this->messages[0]['content']
         ];
+
+        if (!empty($this->params)){
+            $data = array_merge($data, $this->params);
+        }    
    
         $this->client
         ->setBody($data)
