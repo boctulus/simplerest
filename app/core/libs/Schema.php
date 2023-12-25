@@ -377,6 +377,13 @@ class Schema
 		return DB::select('SHOW DATABASES', null, 'COLUMN');
 	}
 
+	static function existDatabase(string $database){
+		$sql   = "SELECT COUNT(*) as total FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$database';";
+		$total = DB::select($sql, null, 'COLUMN')[0];
+
+		return $total != 0;
+	}
+
 	static function getTables(string $conn_id = null) {	
 		$config = config();
 		
