@@ -9195,5 +9195,12 @@ class DumbController extends Controller
         dd($res);
     }
     
+    function test_lflfglfg(){      
+        DB::getConnection();
+
+        dd(
+            Schema::existDatabase('simplerest')
+        );
+    }
 
 }   // end class
