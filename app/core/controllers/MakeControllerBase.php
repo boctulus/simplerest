@@ -16,14 +16,15 @@ use simplerest\core\libs\i18n\Translate;
 */
 class MakeControllerBase extends Controller
 {
-    const SERVICE_PROVIDERS_PATH = ROOT_PATH . 'packages' . DIRECTORY_SEPARATOR; //
+    const SERVICE_PROVIDERS_PATH = ROOT_PATH . 'packages' . DIRECTORY_SEPARATOR;
 
     const TEMPLATES = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR;
 
     const MODEL_TEMPLATE  = self::TEMPLATES . 'Model.php';
     const MODEL_NO_SCHEMA_TEMPLATE  = self::TEMPLATES . 'Model-no-schema.php';
     const SCHEMA_TEMPLATE = self::TEMPLATES . 'Schema.php';
-    const MIGRATION_TEMPLATE  = self::TEMPLATES . 'Migration.php'; // todas estas constantes quedaran depredicadas
+    const MIGRATION_TEMPLATE = self::TEMPLATES . 'Migration.php'; 
+    const MIGRATION_TEMPLATE_CREATE = self::TEMPLATES . 'Migration_New.php'; // new
     const API_TEMPLATE = self::TEMPLATES . 'ApiRestfulController.php';
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; 
     const SYSTEM_CONST_TEMPLATE = self::TEMPLATES . 'SystemConstants.php';
@@ -171,7 +172,7 @@ class MakeControllerBase extends Controller
 
         make widget [ --include-js | --js ]
              
-        make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --strict ] [ --remove ]
+        make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ] [ --strict ] [ --remove ]
 
         make any Something  [--schema | -s] [--force | -f] [ --unignore | -u ]
                             [--model | -m] [--force | -f] [ --unignore | -u ]
@@ -237,6 +238,7 @@ class MakeControllerBase extends Controller
         make migration books --table=books --class_name=BooksAddDescription --to:main        
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3'
         make migration --dir=test --to=az --table=boletas --class_name=BoletasDropNullable
+        make migration brands --dir=giglio --to=giglio --create
 
 
         # Inline migrations
@@ -1599,8 +1601,6 @@ class MakeControllerBase extends Controller
 
     /*
         Debería estar en otro archivo!!! de hecho solo se deberían incluir y no estar todos los comandos acá !!!
-
-        Falta el --remove para borrar el archivo generado
     */
     function migration(...$opt) 
     {
@@ -1609,9 +1609,19 @@ class MakeControllerBase extends Controller
             unset($opt[0]);
         }
 
+        $mode = 'edit';
+
         foreach ($opt as $o){
             if (preg_match('/^--name[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $name = $matches[1];
+            }
+
+            if (preg_match('/^--create$/', $o)){
+                $mode = "create";
+            }
+
+            if (preg_match('/^--(edit|modify)$/', $o)){
+                $mode = "edit";
             }
         }
 
@@ -1619,7 +1629,7 @@ class MakeControllerBase extends Controller
             $this->setup($name);
         }        
 
-        $file = file_get_contents(self::MIGRATION_TEMPLATE);
+        $file = file_get_contents($mode == 'edit' ? self::MIGRATION_TEMPLATE : self::MIGRATION_TEMPLATE_CREATE);
 
         $path    = MIGRATIONS_PATH;
         $to_db   = null;
@@ -1724,215 +1734,218 @@ class MakeControllerBase extends Controller
             $tb_name = Strings::camelToSnake($class_name);
         }
 
-        foreach ($opt as $o)
-        {
-            /*
-                Schema changes
-            */
 
+        /*
+            Schema changes
+        */
+        if ($mode == 'edit'){
+            foreach ($opt as $o)
+            {
+                $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri', 'setPrimary'], '.*');
 
-            $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri', 'setPrimary'], '.*');
-
-            if (!empty($primary)){
-                $primary_ay[] = $primary;
-            }
-
-            $_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary', 'removePrimary'], null);
-
-            if (!empty($_dropPrimary)){
-                $dropPrimary = $_dropPrimary;
-            }
-
-            $_auto         = Strings::matchParam($o, ['auto', 'autoincrement', 'addAuto', 'addAutoincrement', 'setAuto']);
-            
-            if (!empty($_auto)){
-                $auto = $_auto;
-            }
-            
-            $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto', 'notAuto', 'noAuto'], null);
-            
-            if (!empty($_dropAuto)){
-                $dropAuto = $_dropAuto;
-            }
-
-            $unsigned     = Strings::matchParam($o, 'unsigned');
-
-            if (!empty($unsigned)){
-                $unsigned_ay[] = $unsigned;
-            }
-
-            $zeroFill     = Strings::matchParam($o, 'zeroFill');
-
-            if (!empty($zeroFill)){
-                $zeroFill_ay[] = $zeroFill;
-            }
-
-            $binaryAttr   = Strings::matchParam($o, ['binaryAttr', 'binary']);
-
-            if (!empty($binaryAttr)){
-                $binaryAttr_ay[] = $binaryAttr;
-            }
-
-            $dropAttr     = Strings::matchParam($o, ['dropAttributes', 'dropAttr', 'dropAttr', 'delAttr', 'removeAttr']);
-
-            if (!empty($dropAttr)){
-                $dropAttr_ay[] = $dropAttr;
-            }
-
-            $dropColumn = Strings::matchParam($o, [
-                'dropColumn',
-                'removeColumn',
-                'delColumn'
-            ], '.*');
-
-            if (!empty($dropColumn)){
-                $dropColumn_ay[] =  $dropColumn;
-            }
-
-            $renameColumn = Strings::matchParam($o, 'renameColumn', '[a-z0-9A-ZñÑ_-]+\,[a-z0-9A-ZñÑ_-]+'); // from,to
-
-            if (!empty($renameColumn)){
-                $renameColumn_ay[] = $renameColumn;
-            }
-
-            $_renameTable  = Strings::matchParam($o, 'renameTable');
-
-            if (!empty($_renameTable)){
-                $renameTable = $_renameTable;
-            }
-
-            $nullable     = Strings::matchParam($o, ['nullable'], '.*');
-
-            if (!empty($nullable)){
-                $nullable_ay[] = $nullable;
-            }
-
-            $dropNullable = Strings::matchParam($o, ['dropNullable', 'delNullable', 'removeNullable', 'notNullable', 'noNullable'], '.*');
-
-            if (!empty($dropNullable)){
-                $dropNullable_ay[] = $dropNullable;
-            }
-            
-
-            // va a devolver una lista
-            $addUnique    = Strings::matchParam($o, ['addUnique', 'setUnique', 'unique'], '.*');
-
-            if (!empty($addUnique)){
-                $addUnique_ay[] = $addUnique;
-            }
-
-            $dropUnique   = Strings::matchParam($o, ['dropUnique', 'removeUnique', 'delUnique']);
-
-            if (!empty($dropUnique)){
-                $dropUnique_ay[] = $dropUnique;
-            }
-
-            // $addSpatial   = Strings::matchParam($o, 'addSpatial');
-
-            // if (!empty($addSpatial)){
-            //     $addSpatial_ay[] = $addSpatial;
-            // }
-
-            $dropSpatial  = Strings::matchParam($o, ['dropSpatial', 'delSpatial', 'removeSpatial']);
-
-            if (!empty($dropSpatial)){
-                $dropSpatial_ay[] = $dropSpatial;
-            }
-
-            $dropForeign  = Strings::matchParam($o, ['dropForeign', 'dropFK', 'delFK', 'removeFK', 'dropFk', 'delFk', 'removeFk']);
-
-            if (!empty($dropForeign)){
-                $dropForeign_ay[] = $dropForeign;
-            }
-
-            $addIndex     = Strings::matchParam($o, ['index', 'addIndex'], '.*');
-
-            if (!empty($addIndex)){
-                $addIndex_ay[] = $addIndex;
-            }
-
-            $dropIndex    = Strings::matchParam($o, ['dropIndex', 'delIndex', 'removeIndex']);
-
-            if (!empty($dropIndex)){
-                $dropIndex_ay[] = $dropIndex;
-            }
-
-            $_truncate     = Strings::matchParam($o, ['truncateTable', 'truncate', 'clearTable'], null);
-
-            if (!empty($_truncate)){
-                $truncate = $_truncate;
-            }
-
-            /*
-                FKs 
-            */
-
-            if (preg_match('/^--(foreign|fk|fromField)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
-                $fromField = $matches[2];
-            }
-
-            if (preg_match('/^--(references|reference|toField)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
-                $toField = $matches[2];
-            }
-
-            if (preg_match('/^--(constraint)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
-                $constraint = $matches[2];
-            }
-
-            if (preg_match('/^--(on|onTable|toTable)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
-                $toTable = $matches[2];
-            }
-
-            if (preg_match('/^--(onDelete)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
-                $onDelete = $matches[2];
-            }
-
-            if (preg_match('/^--(onUpdate)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
-                $onUpdate = $matches[2];
-            }
-
-            $check_action = function (string $onRestriction){
-                $onRestriction = strtoupper($onRestriction);
-
-                switch ($onRestriction){
-                    case 'NO ACTION':
-                        break;
-                    case 'SET NULL':
-                        break;    
-                    case 'SET DEFAULT':
-                        break;
-                    case 'RESTRICT':
-                        break;
-                    case 'CASCADE':
-                        break;
-                    case 'NOACTION':
-                        $onRestriction = 'NO ACTION';
-                        break;
-                    case 'SETNULL':
-                        $onRestriction = 'SET NULL';
-                        break;
-                    case 'SETDEFAULT':
-                        $onRestriction = 'SET DEFAULT';
-                        break;                    
-                    default:
-                        StdOut::pprint("\r\nInvalid action '$onRestriction' for ON UPDATE / ON DELETE");
-                        exit;
+                if (!empty($primary)){
+                    $primary_ay[] = $primary;
                 }
 
-                return $onRestriction;
-            };
+                $_dropPrimary  = Strings::matchParam($o, ['dropPrimary', 'delPrimary', 'removePrimary'], null);
+
+                if (!empty($_dropPrimary)){
+                    $dropPrimary = $_dropPrimary;
+                }
+
+                $_auto         = Strings::matchParam($o, ['auto', 'autoincrement', 'addAuto', 'addAutoincrement', 'setAuto']);
+                
+                if (!empty($_auto)){
+                    $auto = $_auto;
+                }
+                
+                $_dropAuto     = Strings::matchParam($o, ['dropAuto', 'DropAutoincrement', 'delAuto', 'delAutoincrement', 'removeAuto', 'notAuto', 'noAuto'], null);
+                
+                if (!empty($_dropAuto)){
+                    $dropAuto = $_dropAuto;
+                }
+
+                $unsigned     = Strings::matchParam($o, 'unsigned');
+
+                if (!empty($unsigned)){
+                    $unsigned_ay[] = $unsigned;
+                }
+
+                $zeroFill     = Strings::matchParam($o, 'zeroFill');
+
+                if (!empty($zeroFill)){
+                    $zeroFill_ay[] = $zeroFill;
+                }
+
+                $binaryAttr   = Strings::matchParam($o, ['binaryAttr', 'binary']);
+
+                if (!empty($binaryAttr)){
+                    $binaryAttr_ay[] = $binaryAttr;
+                }
+
+                $dropAttr     = Strings::matchParam($o, ['dropAttributes', 'dropAttr', 'dropAttr', 'delAttr', 'removeAttr']);
+
+                if (!empty($dropAttr)){
+                    $dropAttr_ay[] = $dropAttr;
+                }
+
+                $dropColumn = Strings::matchParam($o, [
+                    'dropColumn',
+                    'removeColumn',
+                    'delColumn'
+                ], '.*');
+
+                if (!empty($dropColumn)){
+                    $dropColumn_ay[] =  $dropColumn;
+                }
+
+                $renameColumn = Strings::matchParam($o, 'renameColumn', '[a-z0-9A-ZñÑ_-]+\,[a-z0-9A-ZñÑ_-]+'); // from,to
+
+                if (!empty($renameColumn)){
+                    $renameColumn_ay[] = $renameColumn;
+                }
+
+                $_renameTable  = Strings::matchParam($o, 'renameTable');
+
+                if (!empty($_renameTable)){
+                    $renameTable = $_renameTable;
+                }
+
+                $nullable     = Strings::matchParam($o, ['nullable'], '.*');
+
+                if (!empty($nullable)){
+                    $nullable_ay[] = $nullable;
+                }
+
+                $dropNullable = Strings::matchParam($o, ['dropNullable', 'delNullable', 'removeNullable', 'notNullable', 'noNullable'], '.*');
+
+                if (!empty($dropNullable)){
+                    $dropNullable_ay[] = $dropNullable;
+                }
+                
+
+                // va a devolver una lista
+                $addUnique    = Strings::matchParam($o, ['addUnique', 'setUnique', 'unique'], '.*');
+
+                if (!empty($addUnique)){
+                    $addUnique_ay[] = $addUnique;
+                }
+
+                $dropUnique   = Strings::matchParam($o, ['dropUnique', 'removeUnique', 'delUnique']);
+
+                if (!empty($dropUnique)){
+                    $dropUnique_ay[] = $dropUnique;
+                }
+
+                // $addSpatial   = Strings::matchParam($o, 'addSpatial');
+
+                // if (!empty($addSpatial)){
+                //     $addSpatial_ay[] = $addSpatial;
+                // }
+
+                $dropSpatial  = Strings::matchParam($o, ['dropSpatial', 'delSpatial', 'removeSpatial']);
+
+                if (!empty($dropSpatial)){
+                    $dropSpatial_ay[] = $dropSpatial;
+                }
+
+                $dropForeign  = Strings::matchParam($o, ['dropForeign', 'dropFK', 'delFK', 'removeFK', 'dropFk', 'delFk', 'removeFk']);
+
+                if (!empty($dropForeign)){
+                    $dropForeign_ay[] = $dropForeign;
+                }
+
+                $addIndex     = Strings::matchParam($o, ['index', 'addIndex'], '.*');
+
+                if (!empty($addIndex)){
+                    $addIndex_ay[] = $addIndex;
+                }
+
+                $dropIndex    = Strings::matchParam($o, ['dropIndex', 'delIndex', 'removeIndex']);
+
+                if (!empty($dropIndex)){
+                    $dropIndex_ay[] = $dropIndex;
+                }
+
+                $_truncate     = Strings::matchParam($o, ['truncateTable', 'truncate', 'clearTable'], null);
+
+                if (!empty($_truncate)){
+                    $truncate = $_truncate;
+                }
+
+                /*
+                    FKs 
+                */
+
+                if (preg_match('/^--(foreign|fk|fromField)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
+                    $fromField = $matches[2];
+                }
+
+                if (preg_match('/^--(references|reference|toField)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
+                    $toField = $matches[2];
+                }
+
+                if (preg_match('/^--(constraint)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
+                    $constraint = $matches[2];
+                }
+
+                if (preg_match('/^--(on|onTable|toTable)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
+                    $toTable = $matches[2];
+                }
+
+                if (preg_match('/^--(onDelete)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
+                    $onDelete = $matches[2];
+                }
+
+                if (preg_match('/^--(onUpdate)[=|:]([a-z0-9A-ZñÑ_]+)$/', $o, $matches)){
+                    $onUpdate = $matches[2];
+                }
+
+                $check_action = function (string $onRestriction){
+                    $onRestriction = strtoupper($onRestriction);
+
+                    switch ($onRestriction){
+                        case 'NO ACTION':
+                            break;
+                        case 'SET NULL':
+                            break;    
+                        case 'SET DEFAULT':
+                            break;
+                        case 'RESTRICT':
+                            break;
+                        case 'CASCADE':
+                            break;
+                        case 'NOACTION':
+                            $onRestriction = 'NO ACTION';
+                            break;
+                        case 'SETNULL':
+                            $onRestriction = 'SET NULL';
+                            break;
+                        case 'SETDEFAULT':
+                            $onRestriction = 'SET DEFAULT';
+                            break;                    
+                        default:
+                            StdOut::pprint("\r\nInvalid action '$onRestriction' for ON UPDATE / ON DELETE");
+                            exit;
+                    }
+
+                    return $onRestriction;
+                };
 
 
-            if (isset($onDelete)){
-                $onDelete = $check_action($onDelete);
-            }
-            
-            if (isset($onUpdate)){
-                $onUpdate = $check_action($onUpdate);
+                if (isset($onDelete)){
+                    $onDelete = $check_action($onDelete);
+                }
+                
+                if (isset($onUpdate)){
+                    $onUpdate = $check_action($onUpdate);
+                }
             }
         }
+        
 
         $file = str_replace('__NAME__', $this->camel_case, $file); 
+        $file = str_replace('__TB_NAME__', $tb_name, $file);
 
         if (!empty($dir)){
             $path .= "$dir/";
@@ -2084,8 +2097,11 @@ class MakeControllerBase extends Controller
             $up_rep .= ";\r\n";
         }
 
-
-        $up_rep .= "\$sc->alter();\r\n";
+        if ($mode == 'edit'){
+            $up_rep .= "\$sc->alter();\r\n";
+        } else {
+            $up_rep .= "\$sc->create();\r\n";
+        }            
 
         /////////////////////////////////////////////////////
         
