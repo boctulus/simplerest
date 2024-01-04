@@ -378,6 +378,8 @@ class Schema
 	}
 
 	static function existDatabase(string $database){
+		DB::getConnection();
+
 		$sql   = "SELECT COUNT(*) as total FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$database';";
 		$total = DB::select($sql, null, 'COLUMN')[0];
 
