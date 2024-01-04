@@ -746,7 +746,7 @@ class MigrationsControllerBase /* extends Controller */
         echo <<<STR
         MIGRATIONS COMMAND HELP
 
-        migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ]         
+        migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ]         
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3 
         migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ] [ --ignore ] [ --make= ]
         migrations rollback --to={some_db_conn} [ --dir= ] [ --file= ] [ --step=={N} | --all] [ --simulate ]
@@ -767,7 +767,10 @@ class MigrationsControllerBase /* extends Controller */
         migrations make --class_name=Filesss --table=files
         migrations make --class_name=Files --to:main
         migrations make --class_name=Filesss --table=files --to:main --dir='test\sub3
+        migrations make brands --create
+        migrations make brands --dir=giglio --to=giglio --create
 
+        
         migrations migrate
         
         migrations rollback --to=db_195 --dir=compania
@@ -805,6 +808,7 @@ class MigrationsControllerBase /* extends Controller */
 
         migrations migrate --make=schema,model
         migrations migrate --fresh --to:main --force --make=schema
+
 
         Inline migrations
         

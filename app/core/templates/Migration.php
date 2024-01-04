@@ -8,6 +8,10 @@ use simplerest\core\libs\DB;
 
 class __NAME__ implements IMigration
 {
+    protected $table = '__TB_NAME__';
+
+    function __construct(){}
+
     /**
 	* Run migration.
     *
@@ -15,7 +19,11 @@ class __NAME__ implements IMigration
     */
     public function up()
     {
-        ### UP
+        $sc = new Schema($this->table);
+
+        $sc
+        // ..
+        ->alter();
     }
 
     /**
@@ -25,7 +33,11 @@ class __NAME__ implements IMigration
     */
     public function down()
     {
-        ### DOWN
+        $sc = new Schema($this->table);
+
+        $sc
+        // ..
+        ->alter();
     }
 }
 
