@@ -10,6 +10,8 @@ class __NAME__ implements IMigration
 {
     protected $table = '__TB_NAME__';
 
+    function __construct(){}
+
     /**
 	* Run migration.
     *
@@ -18,7 +20,13 @@ class __NAME__ implements IMigration
     public function up()
     {
         $sc = new Schema($this->table);
+
+        $sc
+        ->integer('id')->auto()->pri()
+        // ->varchar('name')
 		// ...
+        ->datetimes();
+
         $sc->create();
     }
 
