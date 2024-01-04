@@ -108,6 +108,7 @@ use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
+use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
@@ -9180,6 +9181,20 @@ class DumbController extends Controller
 
         dd($res);
     }
+   
+    function test_lflfglfg(){     
+       
+    }
+
+    /*
+        Test de shortcode
+    */
+    function countdown()
+    {
+        $sc = new CountDownShortcode();
+
+        render($sc->counter());
+    }
 
     function test_openai_3(){
         $chat = new OpenAI();
@@ -9193,14 +9208,6 @@ class DumbController extends Controller
 
         $res = $chat->exec();    
         dd($res);
-    }
-    
-    function test_lflfglfg(){      
-        DB::getConnection();
-
-        dd(
-            Schema::existDatabase('simplerest')
-        );
     }
 
 }   // end class

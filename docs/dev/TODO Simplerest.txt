@@ -1,6 +1,23 @@
 TODO SimpleRest
 ===============
 
+- Revisar porque carga los estilos no pero no funciona css_file(), ej:
+
+class CountDownShortcode
+{   
+    function counter()
+    {
+        #css_file(__DIR__ . '/css/styles.css');   // <--- 
+    }
+}
+
+```
+The stylesheet http://simplerest.lan/app/shortcodes/countdown/css/styles.css was not loaded because its MIME type, 
+“text/html”, is not “text/css”.
+```
+
+<---- pedir ayuda
+
 - Investigar problema 
 
   $id = DB::update("UPDATE star_rating SET gender='?', author='?' WHERE id=?", [$gender, $author, $row['id']]);
@@ -17,6 +34,32 @@ Ej:
 	Assets::load(Assets::JQuery)
 	Assets::load(Assets::JQuery, 3.6)
 	Assets::load(Assets::JQuery, '3.*')		// podria ser 3.x o 3.* o seguir la nomenclatura de Composer
+
+- Deberia poder usarse un identificador que prevenga de cargarlo dos veces
+
+Como en Wordpress y compatible con WordPress
+
+class CountDownShortcode
+{
+    function __construct(){
+        js_file('third_party/jquery/3.3.1/jquery.min.js'); 
+    }
+
+    function counter()
+    {
+        #css_file(__DIR__ . '/css/styles.css');
+
+        js_file('https://raw.githack.com/epiksel/countdown/master/jquery.countdown.js');
+        js_file('https://colaoled.it/js/countdown.js');
+
+        // Deberia poder usarse un identificador que prevenga de cargarlo dos veces
+        // como en Wordpress y compatible con WordPress
+        css_file('third_party/bootstrap/5.x/bootstrap.min.css');
+        js_file('third_party/bootstrap/5.x/bootstrap.bundle.min.js');        
+        
+        return get_view(__DIR__ . '/views/counter.php');
+    }
+}
 
 - Implementar FlashNotices como equivalente a WPNotices bajo la misma interfaz INotice
 
