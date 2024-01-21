@@ -18,6 +18,13 @@ The stylesheet http://simplerest.lan/app/shortcodes/countdown/css/styles.css was
 
 <---- pedir ayuda
 
+- Para Migraciones hacer:
+
+  . Si al crear una migracion se usa simultaneamente --dir= y --to= se debe crear archivo .db 
+  que contiene el nombre de la conexion de base de datos.
+  
+  . Si dentro del directorio apuntado por --dir= esta el archivo .db entonces automaticamente aplicar esa conexion a cada migracion
+
 - Investigar problema 
 
   $id = DB::update("UPDATE star_rating SET gender='?', author='?' WHERE id=?", [$gender, $author, $row['id']]);
@@ -60,11 +67,6 @@ class CountDownShortcode
         return get_view(__DIR__ . '/views/counter.php');
     }
 }
-
-- Comenzar a analizar errores con PHPStan
-
-https://github.com/PHPOffice/PHPWord
-
 
 - Implementar FlashNotices como equivalente a WPNotices bajo la misma interfaz INotice
 
@@ -151,6 +153,10 @@ Saltos de linea como nuevos "rows" dentro de un grid:
 
 https://github.com/kevinchappell/formBuilder
 https://formbuilder.online/ <-- demo
+
+- Via JSON por ejemplo poder definir "templates" de componentes (de los form builders) al estilo Elementor.
+
+Luego via AI se pueden generar esas plantillas que parametrizan los distintos componentes y sus ubicaciones asi como define el numero de columnas y diseno. 
 
 - Poder hookear las distintas vistas de los CRUDs para poder personalizarlas y agregar otros componentes.
 

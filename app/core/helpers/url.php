@@ -55,6 +55,13 @@ function consume_api(string $url, string $http_verb = 'GET', $body = null, $head
 
     if ($decode && Strings::isJSON($res)){
         $res = json_decode($res, true);
+        $res['status'] = $cli->getStatus();
+
+        $err = $cli->getError();
+
+        if (!empty($err)){
+            $res['error'] = $err;
+        }
     }
 
     return $res;
