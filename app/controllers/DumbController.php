@@ -9210,4 +9210,31 @@ class DumbController extends Controller
         dd($res);
     }
 
+    /*
+        Para obtener el API token
+
+        https://github.com/settings/apps
+
+        > Personal access tokens
+    */
+    function test_github_commit_list()
+    {
+        $user  = 'boctulus';
+        $repo  = 'simplerest';
+        $token = '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';
+
+        $url = "https://api.github.com/repos/$user/$repo/commits";
+        
+        $headers = [
+            'Authorization' => $token,
+            'User-Agent'    => 'Awesome-Octocat-App',
+            'Accept'        => 'application/vnd.github+json',
+            'X-GitHub-Api-Version' => '2022-11-28'
+        ];
+
+        dd(
+            consume_api($url, 'GET', null, $headers)
+        );
+    }
+
 }   // end class
