@@ -9216,12 +9216,20 @@ class DumbController extends Controller
         https://github.com/settings/apps
 
         > Personal access tokens
+
+        Existe un problema y los tokens no estan funcionando (reportado multiples veces)
+
+        Tokens ensayados
+
+        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
+        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
+        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
     */
     function test_github_commit_list()
     {
         $user  = 'boctulus';
         $repo  = 'simplerest';
-        $token = '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';
+        $token = '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';
 
         $url = "https://api.github.com/repos/$user/$repo/commits";
         
