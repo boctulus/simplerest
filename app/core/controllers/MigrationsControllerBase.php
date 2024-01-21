@@ -42,6 +42,7 @@ class MigrationsControllerBase /* extends Controller */
         $ignore    = null; 
         $fresh     = false;
         $make      = false;
+        $debug     = false;
         
         $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
 
@@ -70,6 +71,9 @@ class MigrationsControllerBase /* extends Controller */
                 $fresh = true;
             }
 
+            if ('--debug' == $o){
+                $debug = true;
+            }
 
             if (preg_match('/^--make[=|:](.*)$/', $o, $matches)){
                 $make = $matches[1];
@@ -113,6 +117,11 @@ class MigrationsControllerBase /* extends Controller */
             /*
                 Ahora acepto rutas absolutas -útiles para manejarse dentro de Service Providers-
             */
+
+            if (Strings::startsWith('--folder=', $o)){
+                $o = str_replace('--folder=', '--dir=', $o);
+            }
+
             if (Strings::startsWith('--dir=', $o)){
                 $dir_opt = true;
                 $_dir    = substr($o, 6);
@@ -129,30 +138,42 @@ class MigrationsControllerBase /* extends Controller */
             }
         } // end foreach
 
-
         if (!$file_opt){
             foreach (new \DirectoryIterator($path) as $fileInfo) {
                 if($fileInfo->isDot()  || $fileInfo->isDir()) continue;
-                $filenames[] = $fileInfo->getFilename();
+                
+                $filename = $fileInfo->getFilename();
+
+                // No proceso como archivo de migracion a ".db" (a implementar)
+                if (Strings::startsWith('.', $filename) || $fileInfo->getExtension() != 'php'){
+                    continue;               
+                }
+
+                $filenames[] = $filename;
             }   
     
             sort($filenames);    
         } else {
-
             if ($ignore){
                 $filename = $filenames[0];
                 
+                DB::getDefaultConnection();
+
                 /*
-                    Al dia de hoy, no entiendo el proposito de este bloque:
+                    Debe existir la tabla 'migrations'
                 */
                 if (Schema::hasTable('migrations')){
-                    /*
-                        En todos loa casos debería agregar la DB y el directorio de la migración !
-                    */
-                    $ok = table('migrations')
-                    ->create([
+                   
+                    $data = [
                         'filename' => $filename
-                    ]);
+                    ];
+
+                    if ($to_db != 'default'){
+                       $data['db'] = $to_db;
+                    }
+
+                    $ok = table('migrations')
+                    ->create($data);
 
                     if ($ok){
                         StdOut::pprint("Migration file '$filename' was marked as ignored");
@@ -240,7 +261,18 @@ class MigrationsControllerBase /* extends Controller */
                 continue;
             }
 
-            $full_path = str_replace('//', '/', $path . '/'. trim($filename));
+            $full_path = $path . '/'. trim($filename);
+            $full_path = realpath($full_path);
+
+            $simulation = false;
+            if (in_array('--simulate', $opt) || in_array('--simulation', $opt) || in_array('simulate', $opt) || in_array('simulation', $opt)){
+                $simulation = true;
+                $debug      = true;
+            }
+
+            if ($debug){
+                dd("Processing: $full_path [...]");
+            }
 
             require_once $full_path;
 
@@ -252,7 +284,7 @@ class MigrationsControllerBase /* extends Controller */
 
             StdOut::pprint("Migrating '$filename'\r\n");
 
-            if (!in_array('--simulate', $opt)){
+            if (!$simulation){
                 if (!empty($to_db)){
                     DB::setConnection($to_db);
                 }
@@ -298,12 +330,12 @@ class MigrationsControllerBase /* extends Controller */
 
             $main = get_default_connection_id();
 
+            if ($to_db != null && $to_db != $main){
+                $data['db'] = $to_db;
+            }
+
             if ($to_db == 'default'){
                 $to_db = $main;
-            } else {
-                if ($to_db != null && $to_db != $main){
-                    $data['db'] = $to_db;
-                }
             }
 
             $m = (object) table('migrations');
@@ -358,7 +390,15 @@ class MigrationsControllerBase /* extends Controller */
             if (isset($opt[0]) && $opt[0] !== NULL){
                 if (Strings::startsWith('--step=', $o)){
                     $steps = Strings::slice($o, '/^--step=([0-9]+)$/');
-                }
+                } else {
+                    if (Strings::startsWith('--steps=', $o)){
+                        $steps = Strings::slice($o, '/^--steps=([0-9]+)$/');
+                    } else {
+                        if (Strings::startsWith('--n=', $o)){
+                            $steps = Strings::slice($o, '/^--n=([0-9]+)$/');
+                        }
+                    }
+                }               
                 
                 if ($o == '--all'){
                     $steps = PHP_INT_MAX;
@@ -372,6 +412,10 @@ class MigrationsControllerBase /* extends Controller */
                     if ($to_db == $main || $to_db == 'default'){
                         $to_db = '__NULL__';
                     }
+                }
+
+                if (Strings::startsWith('--folder=', $o)){
+                    $o = str_replace('--folder=', '--dir=', $o);
                 }
 
                 if (Strings::startsWith('--dir=', $o)){
@@ -417,7 +461,7 @@ class MigrationsControllerBase /* extends Controller */
                 } 
      
 
-                if (in_array($o, ['--simulate', 'simulate', '--sim'])){
+                if (in_array($o, ['--simulate', 'simulate', '--sim', 'simulation', '--simulation'])){
                     StdOut::pprint("*** This is a Simulation ***" . PHP_EOL);
                     $simulate = true;
                 }
@@ -460,7 +504,7 @@ class MigrationsControllerBase /* extends Controller */
             $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;          
             
 
-            $full_path = $path . '/'. ( isset($_dir) ? $_dir . '/' : '' ). $filename;
+            $full_path = $path . ( isset($_dir) ? $_dir . '/' : '' ). $filename;
             $full_path = preg_replace('#/+#','/',$full_path);
            
             if (!file_exists($full_path)){
@@ -545,7 +589,7 @@ class MigrationsControllerBase /* extends Controller */
 
         DB::getDefaultConnection();
 
-        $m = (object) table('migrations');
+        $m = table('migrations');
 
         $affected = $m
         ->when($to_db != DB::getDefaultConnectionId(), function($q) use($to_db){
@@ -610,6 +654,10 @@ class MigrationsControllerBase /* extends Controller */
 
             if (Strings::startsWith('--file=', $o)){
                 $_f = substr($o, 7);
+            }
+
+            if (Strings::startsWith('--folder=', $o)){
+                $o = str_replace('--folder=', '--dir=', $o);
             }
 
             if (Strings::startsWith('--dir=', $o)){
@@ -748,7 +796,7 @@ class MigrationsControllerBase /* extends Controller */
 
         migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ]         
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3 
-        migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ] [ --ignore ] [ --make= ]
+        migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ] [ --ignore ] [ --make= ] [ --debug ]
         migrations rollback --to={some_db_conn} [ --dir= ] [ --file= ] [ --step=={N} | --all] [ --simulate ]
         migrations fresh [ --dir= ] [ --file= ] --to=some_db_conn [ --force ] [ --migrate ]
         migrations redo --to={some_db_conn} [ --dir= ] [ --file= ] [ --simulate ]
@@ -769,7 +817,7 @@ class MigrationsControllerBase /* extends Controller */
         migrations make --class_name=Filesss --table=files --to:main --dir='test\sub3
         migrations make brands --create
         migrations make brands --dir=giglio --to=giglio --create
-
+        
         
         migrations migrate
         

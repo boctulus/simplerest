@@ -31,7 +31,7 @@ class VarDump
 
 	protected static function export($v = null, $msg = null, bool $additional_carriage_return = false, bool $msg_at_top = true) 
 	{	
-		$type = gettype($v);
+		$type = is_null($v) ? 'null' : gettype($v);
 
 		$postman = Url::isPostmanOrInsomnia();
 		
@@ -57,6 +57,9 @@ class VarDump
 			};
 
 			switch ($type){
+				case 'null':
+					$pp('print_r', "<null>");
+					break;
 				case 'boolean':
 				case 'string':
 				case 'double':

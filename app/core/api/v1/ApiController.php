@@ -290,7 +290,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
      *
      * @param  mixed $id
      *
-     * @return void
+     * @return array|null
      */
     function get($id = null) {
         global $api_version;
@@ -304,8 +304,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             return $res;
         }
 
-        if (!empty($defs)){         
-            $the_defs = get_defs($this->table_name, null, false, true, false); // <-- si el 5to param es false ... 
+        if (!empty($defs)){  
+            $the_defs = get_defs($this->table_name, null, false, true); 
 
             if (isset($the_defs['__related_tables'])){                
                 $rel_tables_defs = [];
