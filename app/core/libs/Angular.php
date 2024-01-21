@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core;
+namespace simplerest\core\libs;
 
 use simplerest\core\libs\CSS;
 use simplerest\core\libs\XML;
