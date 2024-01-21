@@ -10,7 +10,9 @@ class __NAME__ implements IMigration
 {
     protected $table = '__TB_NAME__';
 
-    function __construct(){}
+    function __construct(){
+        ### CONSTRUCTOR
+    }
 
     /**
 	* Run migration.
@@ -19,7 +21,7 @@ class __NAME__ implements IMigration
     */
     public function up()
     {
-        $sc = new Schema($this->table);
+        ### UP
 
         $sc
         // ..
@@ -33,6 +35,8 @@ class __NAME__ implements IMigration
     */
     public function down()
     {
+        ### DOWN
+
         $sc = new Schema($this->table);
 
         $sc

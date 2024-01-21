@@ -1721,8 +1721,8 @@ class Model {
 		foreach($bindings as $ix => $val){			
 			if(is_null($val)){
 				$bindings[$ix] = 'NULL';
-			}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$vars[$ix]])){
-				$const = $this->schema['attr_types'][$vars[$ix]];
+			}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$val])){
+				$const = $this->schema['attr_types'][$val];
 				if ($const == 'STR')
 					$bindings[$ix] = "'$val'";
 			}elseif(is_int($val)){
@@ -2451,7 +2451,13 @@ class Model {
 		return $this;
 	}
 
-	function where($conditions, $conjunction = 'AND'){
+	function where($conditions, $conjunction = 'AND')
+	{
+		// Si se hace where(1) lo convierte en WHERE 1=1
+		if ($conditions == 1){
+			$conditions = [1, 1];
+		}
+
 		/*
 			Laravel compatibility
 			

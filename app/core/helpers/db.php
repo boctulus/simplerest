@@ -103,7 +103,8 @@ function get_api_name($resource_name, $api_ver = null){
         }
     }        
 */
-function get_model_defs(string $table_name, $tenant_id = null, bool $include_hidden = true, bool $include_related = true){
+function get_model_defs(string $table_name, $tenant_id = null, bool $include_hidden = true, bool $include_related = true)
+{
     if ($tenant_id != null){
         DB::getConnection($tenant_id);
     }
@@ -238,7 +239,10 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
 
 
 
-function get_defs(string $table_name, $tenant_id = null, bool $include_hidden = true, bool $include_hidden_from_api = true){
+function get_defs(string $table_name, $tenant_id = null, bool $include_hidden = true, bool $include_hidden_from_api = true)
+{
+    $tenant_id = $tenant_id ?? DB::getCurrentConnectionId();    
+    
     $defs       = get_model_defs($table_name, $tenant_id, $include_hidden);
 
     $api        = get_api_name($table_name, 1);

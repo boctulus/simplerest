@@ -15,17 +15,24 @@ use simplerest\core\libs\Memoization;
     https://stackoverflow.com/a/42375193/980631
     https://stackoverflow.com/a/20605980/980631
 
-    IMPLEMENTAR alias de metodos restantes de distintas librerias
+    TO-DO:
+
+    - IMPLEMENTAR alias de metodos restantes de distintas librerias
 
     https://www.twilio.com/blog/5-ways-to-make-http-requests-in-php
 
-    Devolver la respuesta como objeto con el metodo send() y request()
+    -  Devolver la respuesta como objeto con el metodo send() y request()
     y ese objeto podria implementar metodos como:
 
     toArray()
 
     Mantener data() y getBody() sin cambios
 
+    - Para cache, usar FileMemoization o bien el driver por defecto
+    que se configure
+
+    Tener en cuenta que si se genera error, no se debe cachear (y documentar
+    este comportamiento)
 */
 class ApiClient
 {   
