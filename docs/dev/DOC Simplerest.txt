@@ -240,7 +240,7 @@ Es un almacen de clave-valor almacenado en base de datos (tabla `options`)
 
 Si se tienen varias bases de datos se deben configurar los "tentant_groups" en el archivo config.php
 
-La implementación de "tenant groups" permite en principio separar schemas y modelos de distintas bases de datos y agrupar los que se se supone son de bases de datos con igual estructura.
+La implementación de "tenant groups" permite en principio separar schemas, modelos y controladores de las apis de las distintas bases de datos de forma que no colisionen por nombres y a la vez agrupar los que se se supone son de bases de datos con igual estructura.
 
 Ej:
 
@@ -255,11 +255,17 @@ Ej:
 		],
 	],
 
-Es recomendado definir grupos de multitenencia aunque se tenga bases de datos que no constituyan "clusters" para que los schemas queden organizados en carpetas distintas dentro de app/models/schemas y no se mezclen.
+
+Las "keys" en "tentant_groups" son los nombres de las conexiones como se definen en principio en config/databases.php
+
+Como se puede observar para cada "key" en "tentant_groups" puede tener varios nombres de las distintas bases de datos
+con la misma estructura y ademas pueden ser expresiones regulares.
+
+Es recomendado definir grupos de multitenencia aunque se tenga bases de datos que no constituyan "clusters" para que los schemas queden organizados en carpetas distintas dentro de app y no se mezclen.
 
 Además, si llegaran a existir dos tablas en dos bases de datos distintas con el mismo nombre no habrá problemas.
 
-Se pueden definir varios patrones de nombres para un mismo grupo que en si son expresiones regulares de PHP. El órden en que se definan puede alterar el resultado de la clasificación de haber superposición de patrones.
+El órden en que se definan las expresiones regulares para nombres de las bases de datos puede alterar el resultado de la clasificación de haber superposición de patrones ya que se procesan en orden marcado por el indice del array.
 
 Ej:
 
@@ -288,6 +294,20 @@ Pero... lo siguiente define dos pero clasificará todo en el primero pues la pri
 			'db_az'
 		],
 	],
+
+
+Nota: a su vez los nombres de las conexiones (keys del sub-array "tentant_groups") en principio le dará nombre a las carpetas
+dentro de app/models, app/schemas y app/controllers/api
+
+Ej:
+
+	/app
+		/models
+				/legion
+				/db_az
+		/schemas
+				/legion
+				/db_az
 
 
 # Variables de entorno
@@ -4530,6 +4550,64 @@ Estos permisos especiales sobre "resource permissions" pueden tener otros usos i
     ->addResourcePermissions('products', ['read_all'])  // <--
 
 
+# Persistencia del ACL
+
+Las reglas del ACL se declaran en el archivo config/acl.php y son almacenadas en base de datos en la tabla "roles"
+
+Luego el ACL es serializado y se almacena como asi como un archivo de cache en /storage/security
+
+Para re-generar se puede usar el comando:
+
+	make acl --force
+
+Para poder deguear lo que construye el ACL antes de serializacion se puede usar --debug
+
+Ej:
+
+	make acl --force --debug
+
+En realidad no suele ser necesario regenerar manualmente el ACL porque suele hacerse en automatico
+pero eso depende de la logica dentro de acl.php --que puede modificarse--
+
+Sin embargo si se quisiera cambiar el ID asociado a cada rol entonces podria ocurrir una colision de IDs o de nombres
+y en ese caso deberian regenerarse.
+
+Por otro lado en cualquier momemento es posible agregar un nuevo rol con sus reglas. Ej:
+
+->addRole('admin', 50) 
+->addInherit('registered')
+->addSpecialPermissions(['read_all', 'write_all'])
+->addResourcePermissions('tbl_contacto', ['read'])
+
+->addRole('supervisor', 60)  
+->addInherit('registered')
+->addResourcePermissions('tbl_usuario_empresa', ['read_all']) 
+->addSpecialPermissions([
+    'fill_all', 
+])
+
+y no hay problema en agregar un rol intermedio:
+
+->addRole('admin', 50) 
+->addInherit('registered')
+->addSpecialPermissions(['read_all', 'write_all'])
+->addResourcePermissions('tbl_contacto', ['read'])
+
+	/*
+		NEW ***
+	*/
+	->addRole('admin2', 51) 
+	->addInherit('admin')
+	->addSpecialPermissions(['read_all', 'write_all'])
+	->addResourcePermissions('tbl_contacto', ['read'])
+
+->addRole('supervisor', 60)  
+->addInherit('registered')
+->addResourcePermissions('tbl_usuario_empresa', ['read_all']) 
+->addSpecialPermissions([
+   'fill_all', 
+])
+
 ### Permisos
 
 Los permisos sobre los endpoints son en general del tipo CRUD + permiso para listar los recursos: ['show', 'list', 'create', 'update',  'delete']
@@ -5134,7 +5212,7 @@ Ej:
 
 	DELETE /api/v1/collections/3?entity=products&tenantid=az
 
-Recordar que el tenant-id se puede pasar por header como X-TENANT
+Recordar que el tenant-id se puede pasar por header como X-TENANT-ID
 
 
 Cabe destacar que las operaciones PATCH y DELETE se efectuan sobre los registros contenidos en la colección de sus respectiva entidad o dicho de otro modo un DELETE sobre una colección no borra solo el registro de la colección sino los registros asociados + el registro de la colección.
@@ -6301,6 +6379,17 @@ Ej:
 	$ php com migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
 
 
+# Modo debug
+
+En el modo debug se puede ver la ruta completa del archivo de migracion se esta por procesar lo que puede ser util si hay un fallo muy prematuro.
+
+Ej:
+
+	$ php com migrations migrate --dir=giglio --debug
+
+Por supuesto es combinable con otras opciones como "--simulate"
+
+
 # Volver para atrás 
 
 Para volver para atrás migraciones es con el comando "migrations rollback" pero debe existir el método down() y éste debe habere sido escrito de forma tal que revierta el cambio en la base de datos (es responsabilidad del usuario por ahora)
@@ -6376,26 +6465,28 @@ Ej:
 
 Se extendió el comando "make migration" para que simplificar el agregado o remoción de campos:
 
-make migration foo --dropColumn=algun_campo
-make migration foo --renameColumn=viejo_nombre,nuevo_nombre
-make migration foo --renameTable=viejo_nombre,nuevo_nombre
-make migration foo --nullable=campo
-make migration foo --dropNullable=campo
-make migration foo --primary=campo
-make migration foo --dropPrimary=campo
-make migration foo --unsigned=campo
-make migration foo --zeroFill=campo
-make migration foo --binaryAttr=campo
-make migration foo --dropAttributes=campo
-make migration foo --addUnique=campo
-make migration foo --dropUnique=campo
-make migration foo --addSpatial=campo
-make migration foo --dropSpatial=campo
-make migration foo --dropForeign=campo
-make migration foo --addIndex=campo
-make migration foo --dropIndex=campo
-make migration foo --trucateTable=campo
-make migration foo --comment=campo
+	make migration foo -e --dropColumn=algun_campo
+	make migration foo -e --renameColumn=viejo_nombre,nuevo_nombre
+	make migration foo -e --renameTable=viejo_nombre,nuevo_nombre
+	make migration foo -e --nullable=campo
+	make migration foo -e --dropNullable=campo
+	make migration foo -e --primary=campo
+	make migration foo -e --dropPrimary=campo
+	make migration foo -e --unsigned=campo
+	make migration foo -e --zeroFill=campo
+	make migration foo -e --binaryAttr=campo
+	make migration foo -e --dropAttributes=campo
+	make migration foo -e --addUnique=campo
+	make migration foo -e --dropUnique=campo
+	make migration foo -e --addSpatial=campo
+	make migration foo -e --dropSpatial=campo
+	make migration foo -e --dropForeign=campo
+	make migration foo -e --addIndex=campo
+	make migration foo -e --dropIndex=campo
+	make migration foo -e --trucateTable=campo
+    make migration foo -e --comment=campo
+
+Nota: -e es por --edit y ambas opciones son validas. El modo por defecto es el que se corresponde con --create
 
 En principio no se daría soporte a --addColumn= desde la propia línea de comandos porque la definción de un campo puede incluir varios atributos y sería algo complejo hacerlo inline.
 
@@ -8134,9 +8225,8 @@ Un Service Provider debe extender la clase ServiceProvider y de mínima implemen
      *
      * @return void
      */
-    public function boot()
-    {
-        
+    public function boot() {    
+
     }
 
     /**
@@ -8144,14 +8234,82 @@ Un Service Provider debe extender la clase ServiceProvider y de mínima implemen
      *
      * @return void
      */
-    public function register()
-    {
-       
+    public function register() {  
+
     }     
+
+
+# Config
+
+Incluir archivos de configuracion es tan simple como usar requiere()
+
+
+# Inclusion de migraciones
+
+Tener archivos de migraciones dentro de un servicio seria relativamente facil por el parametro --dir= 
+
+
+# Inclusion de modelos, schemas y controladores dentro de un "package"
+
+1) La clase principal del service provider en su metodo register() carga el archivo de rutas
+
+Ej:
+
+	class ExchangeRateServiceProvider extends ServiceProvider
+	{
+		/**
+		* Register the application services.
+		*
+		* @return void
+		*/
+		public function register()
+		{
+			// Carga las rutas 
+        	require_once __DIR__.'/../config/my_routes.php';
+		}    
+
+		/**
+		* Bootstrap the application services.
+		*
+		* @return void
+		*/
+		public function boot()
+		{
+			// dd("Initing service");
+		}		
+	}
+
+
+2) Rutas del Router le apuntarian -via namespaces- a los controladores de la API definida dentro del service provider.
+
+3) Cada controlador de API le podria apuntar a un Model -via namespaces-
+
+4) Cada Model le podria apuntar un archivo de Schema -via namespaces-
+
+
+<-- el unico problema es que al dia de hoy, el Router no tendria la flexibilidad necesaria para servir al ApiController.
+ 
+
+Nota:
+
+Es necesario admitir el parametro dir= con "make" schema / model / api / controller / middleware / view ya que asi podrian crearse facilmente dentro del directorio del package. 
 
 
 Leer 
 https://devdojo.com/devdojo/how-to-create-a-laravel-package
+
+
+# Packages vs. shortcodes
+
+En principio ambos pueden incluir archivos de configuracion, vistas, controladores, ... modelos, migraciones.
+
+Sin embargo:
+
+- Un shortcode en principio se almacena dentro de app/shortcodes aunque se podria hacer que puedan ejecutarse desde otra ubicación incluida el interior de un package.
+
+- Un package tiene en principio una estructura mas rigida que un shortcode porque deberia contener un package.json (si la intencion es distribuirlo) y el scafolding esta mas predefinido.
+
+- El objetivo de cada uno es distinto. Los packages sirven para crear service providers distribuibles via Composer mientras que los shortcodes persiguen compatibiidad con el framework hermano SW para WordPress.
 
 
 # Como servir vistas en el FrontEnd
@@ -8973,31 +9131,25 @@ A futuro se implementará un comando para la limpieza de la cache de la siguient
 
 	php com cache clear [ --view={view_path} ]
 
-El comando podrá borrar otro tipo de caches como la del Acl.
 
+# Memorizacion
 
-# In-memory cache
+Implementaciones del patrón Memoization con distintos drivers. 
 
-Implementación del patrón Memoization. De momento el unico "driver" permite solo memorizacion dentro del mismo request. 
+La mas basica implementacion usa static para persistir en memoria dentro del mismo request y no implementa tiempo
+de expiracion ya que no tendria sentido porque no es persistente. 
 
-A futuro podrian usarse FileCache, DatabaseCache, Redis, Memcached etc para persistir valores.
+Es la opcion mas eficente si solo se necesita evitar un recalculo dentro del marco de un request.
 
 Ej:
 
 	Memoization::memoize('nombre.hijo', 'Feli');
 	Memoization::memoize('nombre.papa', 'Pablo');
 
-	Memoization::memoize('calculations.complex_calc', function($a, $b){
-		dd("Doing some expensive calculations ...");
-		return $a + $b;
-	}, 2, 1);
-
-	// Usando use() para pasar variables al callback
-
 	$x = 2;
 	$y = 3;
 
-	Memoization::memoize('calculations.more_calc', function() use ($x, $y){
+	Memoization::memoize('alculations.complex_calc', function() use ($x, $y){
 		dd("Doing some expensive calculations ...");
 		return $x * $y;
 	}, 2, 1);
@@ -9020,8 +9172,35 @@ Ej:
 	dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
 	dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
 
+Por otro lado, FileMemoization utiliza como "driver" a FileCache, peristiendo en unidad de almacenamiento.
 
-# File cache
+Ej:
+
+	$url = 'http://apis.lan/dumb/now';
+        
+	FileMemoization::memoize($url, function() use ($url) {
+		dd("...");
+		return file_get_contents($url);
+	}, 2);  // <-------------------------------- cache por 2 segundos
+
+	dd(
+		FileMemoization::memoize($url)
+	, 'VALOR RECUPERADO');      
+	
+	sleep(3);  
+	
+	// Ya no le alcanzan los 2 segundos especificados!
+	dd(
+		FileMemoization::memoize($url)
+	, 'VALOR RECUPERADO');  
+
+
+Nota:
+
+A futuro se implementarán mas drivers como Database, Redis, Memcached etc para persistir valores.
+
+
+# Driver "File cache"
 
 Hay dos implementaciones de cache de archivo, una donde los datos se serializan con FileCache::put() y se recuperan con FileCache::get() y otra donde no se serializan ni se almacena el tiempo de expiración.
 
@@ -9104,9 +9283,12 @@ Ej:
 	);
 
 
-# Database cache
+# Driver "Database cache"
 
-	Implementar usando extendiendo la clase Cache y usando DB::enqueue() / DB::deque()
+	Implementar usando extendiendo la clase Cache
+
+Las funciones set_transient() y get_transient() de WordPress son facilmente implementables con Memoization
+para el driver para Database
 
 
 # Internacionalización
