@@ -243,26 +243,26 @@ class MakeControllerBase extends Controller
 
         # Inline migrations
         
-        make migration foo --dropColumn=algun_campo
-        make migration foo --renameColumn=viejo_nombre,nuevo_nombre
-        make migration foo --renameTable=viejo_nombre,nuevo_nombre
-        make migration foo --nullable=campo
-        make migration foo --dropNullable=campo
-        make migration foo --primary=campo
-        make migration foo --dropPrimary=campo
-        make migration foo --unsigned=campo
-        make migration foo --zeroFill=campo
-        make migration foo --binaryAttr=campo
-        make migration foo --dropAttributes=campo
-        make migration foo --addUnique=campo
-        make migration foo --dropUnique=campo
-        make migration foo --addSpatial=campo
-        make migration foo --dropSpatial=campo
-        make migration foo --dropForeign=campo
-        make migration foo --addIndex=campo
-        make migration foo --dropIndex=campo
-        make migration foo --trucateTable=campo
-        make migration foo --comment=campo
+        make migration foo -e --dropColumn=algun_campo
+        make migration foo -e --renameColumn=viejo_nombre,nuevo_nombre
+        make migration foo -e --renameTable=viejo_nombre,nuevo_nombre
+        make migration foo -e --nullable=campo
+        make migration foo -e --dropNullable=campo
+        make migration foo -e --primary=campo
+        make migration foo -e --dropPrimary=campo
+        make migration foo -e --unsigned=campo
+        make migration foo -e --zeroFill=campo
+        make migration foo -e --binaryAttr=campo
+        make migration foo -e --dropAttributes=campo
+        make migration foo -e --addUnique=campo
+        make migration foo -e --dropUnique=campo
+        make migration foo -e --addSpatial=campo
+        make migration foo -e --dropSpatial=campo
+        make migration foo -e --dropForeign=campo
+        make migration foo -e --addIndex=campo
+        make migration foo -e --dropIndex=campo
+        make migration foo -e --trucateTable=campo
+        make migration foo -e --comment=campo
         
         Ex.
 
@@ -412,6 +412,7 @@ class MakeControllerBase extends Controller
         $fname     = (!$lowercase ? $this->camel_case : strtolower($this->snake_case));  
     
         $filename  = $prefix . $fname . $subfix . '.php';
+
         $dest_path = $dest_path . $sub_path . $filename;
 
         $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
@@ -438,23 +439,44 @@ class MakeControllerBase extends Controller
 
     function acl(...$opt){
         $debug = false;
+        $force = false;
 
         foreach ($opt as $o){            
-            if ($o == '--debug' || $o == '--dd'){
+            if ($o == '--debug' || $o == '--dd' || $o == '-d'){
                 $debug = true;
             }
+
+            if ($o == '--force' || $o == '-f'){
+                $force = true;
+            }
         }
+
+        if (!isset(config()['acl_file'])){
+            throw new \Exception("ACL filename not defined");
+        }
+
+        if (file_exists(config()['acl_file'])){
+            unlink(config()['acl_file']);
+        }
+
+        if ($force){
+            dd("Deleting previous roles");
+
+            DB::table('roles')
+            ->where([1, 1])
+            ->delete();
+        }   
 
         try {
             $acl = include CONFIG_PATH . 'acl.php';
 
             if ($debug){
-                dd($acl, 'ACL generated');
+                dd((array) $acl, 'ACL generated');
             }
 
             dd("ACL file was generated. Path: ". SECURITY_PATH);
         } catch (\Exception $e){
-            dd("Acl generation fails. Detail: " . $e->getMessage());
+            throw new \Exception("Acl generation fails. Detail: " . $e->getMessage());
         }
     }
 
@@ -586,7 +608,7 @@ class MakeControllerBase extends Controller
         $prefix = 'I';
         $subfix = '';  // Ej: 'Controller'
 
-        $this->generic($prefix . $name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function helper($name, ...$opt) {
@@ -776,7 +798,7 @@ class MakeControllerBase extends Controller
             $ok = Files::delete($dest_path);    
 
             if (!$ok) {
-                throw new \Exception("Failed trying to delete $dest_path");
+                throw new \Exception("Delete of $dest_path has failed");
             } else {
                 StdOut::pprint("$dest_path was deleted\r\n");
             }
@@ -784,7 +806,7 @@ class MakeControllerBase extends Controller
             $ok = (bool) file_put_contents($dest_path, $file);
 
             if (!$ok) {
-                throw new \Exception("Failed trying to write $dest_path");
+                throw new \Exception("Writing of $dest_path has failed");
             } else {
                 StdOut::pprint("$dest_path was generated\r\n");
             }     
@@ -1609,18 +1631,18 @@ class MakeControllerBase extends Controller
             unset($opt[0]);
         }
 
-        $mode = 'edit';
+        $mode = 'create';
 
         foreach ($opt as $o){
             if (preg_match('/^--name[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)){
                 $name = $matches[1];
             }
 
-            if (preg_match('/^--create$/', $o)){
+            if (preg_match('/^--create$/', $o) || preg_match('/^-c$/', $o)){
                 $mode = "create";
             }
 
-            if (preg_match('/^--(edit|modify)$/', $o)){
+            if (preg_match('/^--(edit|modify)$/', $o) || preg_match('/^-e$/', $o)){
                 $mode = "edit";
             }
         }
@@ -1631,12 +1653,15 @@ class MakeControllerBase extends Controller
 
         $file = file_get_contents($mode == 'edit' ? self::MIGRATION_TEMPLATE : self::MIGRATION_TEMPLATE_CREATE);
 
+        $eol = Strings::carriageReturn($file);
+
         $path    = MIGRATIONS_PATH;
         $to_db   = null;
         $tb_name = null;    
         $script  = null;
         $dir     = null;
         $up_rep  = '';
+        $constructor = '';
 
         $dropColumn_ay = [];
         $renameColumn_ay = [];
@@ -1658,7 +1683,7 @@ class MakeControllerBase extends Controller
         $dropForeign_ay  = [];
         $addIndex_ay  = [];
         $dropIndex_ay  = [];
-        $truncate  = null;
+        $truncate  = null;    
 
         foreach ($opt as $o)
         {
@@ -1693,7 +1718,7 @@ class MakeControllerBase extends Controller
                 $file = str_replace('__NAME__', $class_name, $file); 
             } 
 
-            if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o)){
+            if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o) || Strings::startsWith('--folder=', $o) || Strings::startsWith('--folder:', $o) ){
                 // Convert windows directory separator into *NIX
                 $o = str_replace('\\', '/', $o);
 
@@ -1733,13 +1758,13 @@ class MakeControllerBase extends Controller
         if (empty($tb_name) && isset($class_name)){
             $tb_name = Strings::camelToSnake($class_name);
         }
-
-
-        /*
-            Schema changes
-        */
-        if ($mode == 'edit'){
-            foreach ($opt as $o)
+       
+        foreach ($opt as $o)
+        {
+            /*
+                Schema changes
+            */
+            if ($mode == 'edit')
             {
                 $primary      = Strings::matchParam($o, ['pri', 'primary', 'addPrimary', 'addPri', 'setPri', 'setPrimary'], '.*');
 
@@ -1942,7 +1967,7 @@ class MakeControllerBase extends Controller
                 }
             }
         }
-        
+              
 
         $file = str_replace('__NAME__', $this->camel_case, $file); 
         $file = str_replace('__TB_NAME__', $tb_name, $file);
@@ -1950,6 +1975,10 @@ class MakeControllerBase extends Controller
         if (!empty($dir)){
             $path .= "$dir/";
             Files::mkDir($path);
+        }
+
+        if ($mode == 'edit'){
+            $up_rep = '$sc = new Schema($this->table);' . "\r\n\r\n";
         }
 
         if (!empty($script)){
@@ -1965,11 +1994,7 @@ class MakeControllerBase extends Controller
         } 
 
         if (!empty($to_db)){
-            $up_rep .= "DB::setConnection('$to_db');\r\n\r\n";
-        }
-        
-        if (!empty($tb_name)){
-            $up_rep .= "\$sc = new Schema('$tb_name');\r\n";
+            $constructor = "DB::setConnection('$to_db');";
         }
 
         /////////////////////////////////////////////////////
@@ -2095,22 +2120,25 @@ class MakeControllerBase extends Controller
             }
 
             $up_rep .= ";\r\n";
-        }
-
-        if ($mode == 'edit'){
-            $up_rep .= "\$sc->alter();\r\n";
-        } else {
-            $up_rep .= "\$sc->create();\r\n";
-        }            
+        }       
 
         /////////////////////////////////////////////////////
+
+        $up_rep       = rtrim($up_rep, "\r\n\r\n");
         
         $up_before    = $up_rep;
         $file_before  = $file; 
-        
-        $up_rep = Strings::tabulate($up_rep, 2, 0);
-        Strings::replace('### UP', $up_rep, $file);
 
+        $constructor = Strings::tabulate($constructor, 2, 0);
+        if (!empty($constructor)){
+            Strings::replace('### CONSTRUCTOR', $constructor, $file);
+        }
+
+        if (!empty(trim($up_rep))){
+            $up_rep = Strings::tabulate($up_rep, 2);
+            Strings::replace("### UP", "### UP\r\n". $up_rep, $file);
+        }
+       
         // destination
         $date = date("Y_m_d");
         $secs = time() - 1603750000;
@@ -2128,7 +2156,6 @@ class MakeControllerBase extends Controller
             $this->write($dest_path, $file, false);
         }
     }    
-
 
     function provider($name, ...$opt) {
         $this->setup($name);    

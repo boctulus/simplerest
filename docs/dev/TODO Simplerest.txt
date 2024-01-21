@@ -61,6 +61,11 @@ class CountDownShortcode
     }
 }
 
+- Comenzar a analizar errores con PHPStan
+
+https://github.com/PHPOffice/PHPWord
+
+
 - Implementar FlashNotices como equivalente a WPNotices bajo la misma interfaz INotice
 
 - Cada "comando" (make, migrations,...) debe ser una clase.
