@@ -860,6 +860,7 @@ class Schema
 		$this->current_field = 'deleted_at';
 		$this->fields[$this->current_field] = [];
 		$this->fields[$this->current_field]['type'] = 'DATETIME';
+		$this->fields[$this->current_field]['nullable'] = 'NULL';
 		return $this;		
 	}
 	
@@ -870,6 +871,7 @@ class Schema
 		$this->current_field = 'updated_at';
 		$this->fields[$this->current_field] = [];
 		$this->fields[$this->current_field]['type'] = 'DATETIME';
+		$this->fields[$this->current_field]['nullable'] = 'NULL';
 		return $this;		
 	}
 
@@ -1245,6 +1247,12 @@ class Schema
 		
 		return trim($cmd);
 	}
+
+	// agregado 4-enero-2024
+	static function createDatabase(string $db_name, string $collation = 'utf8mb4_unicode_520_ci') {
+		$query = "CREATE DATABASE $db_name COLLATE $collation;";
+		return DB::statement($query);
+	}	
 
 	private function showTable(){
 		$conn = DB::getConnection();

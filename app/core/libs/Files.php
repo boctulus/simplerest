@@ -119,10 +119,27 @@ class Files
 		fclose($f);
 	}
 
+	/*
+		Admite redefinir los nombres de las columnas de la cabecera que interesan. Es condicion  enviar todas
+		o sino al menos colocar el indice.
+
+		Ej:
+
+		Files::getCSV(ETC_PATH . 'prod_categories.csv', ',', true, true, [
+			0 => 'term_id',
+			1 => 'name',
+			2 => 'slug',
+			3 => 'description',
+			4 => 'parent_id',
+			5 => 'parent_name',
+			6 => 'parent_slug',
+			10 => 'thumbnail_id',		
+			13 => 'img_url'
+		])
+
+	*/
 	static function getCSV(string $path, string $separator = ",", bool $header = true, bool $assoc = true, $header_defs = null){	
 		$rows = [];
-
-		ini_set('auto_detect_line_endings', 'true');
 
 		$handle = fopen($path,'r');
 
@@ -135,7 +152,16 @@ class Files
 
 		// Puedo re-definir
 		if ($header_defs != null){
-			$cabecera = $header_defs;
+			if (isset($cabecera) && !empty($cabecera)){
+				foreach ($cabecera as $ix => $key){
+					if (isset($header_defs[$ix]) && !empty($header_defs[$ix])){
+						$cabecera[$ix] = $header_defs[$ix]; 
+					}
+				}
+			} else {
+				$cabecera = $header_defs;
+			}
+			
 		}
 		
 		$i = 0;
@@ -154,8 +180,6 @@ class Files
 			$i++;		
 		}
 		
-		ini_set('auto_detect_line_endings', 'false');
-
 		if ($header){
 			return [
 				'rows'   => $rows,
@@ -807,8 +831,11 @@ class Files
 		@return bool
 	*/
 	static function delete(string $file){
-		$file = realpath($file);		
-		return @unlink($file);
+		$file = realpath($file);	
+		
+		if (file_exists($file)){
+            return unlink($file);
+        }
 	}
 
 	/*
