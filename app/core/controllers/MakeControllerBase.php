@@ -869,7 +869,7 @@ class MakeControllerBase extends Controller
             }
 
             $full_path = $dir . '/' . $filename;            
-            $class_name = Strings::getClassNameByFileName($full_path);
+            $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
 
             if (!class_exists($class_name)){
                 throw new \Exception ("Class '$class_name' doesn't exist in $filename. Full path: $full_path");

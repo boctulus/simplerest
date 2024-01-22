@@ -3,6 +3,7 @@
 namespace simplerest\controllers;
 
 use Client;
+use simplerest\core\libs\PHPLexicalAnalyzer;
 use stdClass;
 use simplerest\core\Acl;
 use simplerest\core\View;
@@ -1311,7 +1312,7 @@ class DumbController extends Controller
         $path = MIGRATIONS_PATH . '2021_09_14_27905675_user_sp_permissions.php';
         $file = file_get_contents($path);
 
-        dd(Strings::getClassNameByFileName($file));
+        dd(PHPLexicalAnalyzer::getClassNameByFileName($file));
     }
 
     function serve_assets()
@@ -9243,6 +9244,16 @@ class DumbController extends Controller
         dd(
             consume_api($url, 'GET', null, $headers)
         );
+    }
+
+    function test_function_parser()
+    {
+        $code = file_get_contents('D:\www\simplerest\app\core\libs\PHPLexicalAnalyzer.php');
+
+        dd(
+            PHPLexicalAnalyzer::getFunctionNames($code)
+        );
+
     }
 
 }   // end class

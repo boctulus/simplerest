@@ -208,7 +208,7 @@ class MigrationsControllerBase /* extends Controller */
             $full_path_mg = str_replace('//', '/', $path_mg . '/'. $filename_mg);
             require_once $full_path_mg;
             
-            $class_name_mg = Strings::getClassNameByFileName($full_path_mg);
+            $class_name_mg = PHPLexicalAnalyzer::getClassNameByFileName($full_path_mg);
 
             if (!class_exists($class_name_mg)){
                 throw new \Exception ("Class '$class_name_mg' doesn't exist in $filename_mg");
@@ -276,7 +276,7 @@ class MigrationsControllerBase /* extends Controller */
 
             require_once $full_path;
 
-            $class_name = Strings::getClassNameByFileName($full_path);
+            $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
 
             if (!class_exists($class_name)){
                 throw new \Exception ("Class '$class_name' doesn't exist in $filename");
@@ -514,7 +514,7 @@ class MigrationsControllerBase /* extends Controller */
 
             require_once $full_path;
             
-            $class_name = Strings::getClassNameByFileName($full_path);
+            $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
 
             if (!class_exists($class_name)){
                 StdOut::pprint("Class '$class_name' doesn't exist in $filename");

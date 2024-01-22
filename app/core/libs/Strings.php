@@ -878,7 +878,7 @@ class Strings
 	*/
 	static function matchAll(string $str, string $pattern, $flags = 0, $offset = 0) { 
 		if (preg_match_all($pattern, $str, $matches, $flags, $offset)){			
-			return $matches;
+			return $matches[1];
 		}
 
 		return false;
@@ -1442,38 +1442,6 @@ class Strings
 	// alias for exceptLastChar
 	static function untilLastChar(string $str) : string {
 		return substr($str, 0, -1);
-	}
-
-	/*
-		Parse php class from file
-
-		Actualizada 29/11/2023
-	*/
-	static function getClassName(string $file_str, bool $fully_qualified = true){
-		$pre_append = '';
-			
-		if ($fully_qualified){
-			$namespace = Strings::match($file_str, '/namespace[\s]{1,}([^;]+)/');
-			$namespace = !empty($namespace) ? trim($namespace) : '';
-
-			if (!empty($namespace)){
-				$pre_append = "$namespace\\";
-			}
-		}	
-
-		$before_bkt = Strings::matchOrFail($file_str, '/class[\s]+([^{]+)/i');
-		$class_name = Strings::segmentOrFailByRegEx($before_bkt, '/\s+/',0);
-		$class_name = $pre_append . $class_name;
-
-		return $class_name;
-	}
-
-	/*
-		Parse php class given the filename
-	*/
-	static function getClassNameByFileName(string $filename, bool $fully_qualified = true){
-		$file = file_get_contents($filename);
-		return self::getClassName($file, $fully_qualified);
 	}
 
 	/*
