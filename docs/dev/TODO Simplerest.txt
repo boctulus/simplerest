@@ -23,6 +23,15 @@ The stylesheet http://simplerest.lan/app/shortcodes/countdown/css/styles.css was
     app.php (y dejar referencia a /app/core)
     com (y dejar referencia a /app/core)
 
+- Reparar MakeControllerBase.php:
+
+   if (isset($pivot_data['pivots'])){
+        $pivots = $pivot_data['pivots'];
+    } else {
+        $dir = get_schema_path(null, $from_db ?? null);
+        include $dir . 'Pivots.php'; 
+    }        
+
 - Para Migraciones hacer:
 
   . Si al crear una migracion se usa simultaneamente --dir= y --to= se debe crear archivo .db 

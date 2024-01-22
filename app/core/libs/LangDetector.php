@@ -5,7 +5,12 @@ namespace simplerest\core\libs;
 /*
     @author Pablo Bozzolo < boctulus@gmail.com >
 
-    Detector de lenguaje efectivo
+    Detector de lenguaje efectivo y sencillo
+
+    Lenguas soportadas: ingles y castellano
+
+    Puede extenderse la clase para disernir entre mas idiomas
+    o agregar nuevas palabras
 */
 
 use simplerest\core\libs\Strings;
