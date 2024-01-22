@@ -48,9 +48,13 @@ if (!defined('CORE_LIBS_PATH'))
 if (!defined('CORE_HELPERS_PATH'))
     define('CORE_HELPERS_PATH', CORE_PATH  . 'helpers' . DIRECTORY_SEPARATOR);
 
-
 if (!defined('TEMPLATES_PATH'))
 	define('TEMPLATES_PATH', CORE_PATH  . 'templates' . DIRECTORY_SEPARATOR);
+
+// added 22-01-2024
+if (!defined('CORE_EXCEPTIONS_PATH'))
+	define('CORE_EXCEPTIONS_PATH', CORE_PATH  . 'exceptions' . DIRECTORY_SEPARATOR);
+
 
 if (!defined('MODELS_PATH'))
     define('MODELS_PATH', APP_PATH . 'models'. DIRECTORY_SEPARATOR);   
@@ -87,6 +91,10 @@ if (!defined('PAGES_PATH'))
 
 if (!defined('THIRD_PARTY_PATH'))
     define('THIRD_PARTY_PATH', APP_PATH . 'third-party' . DIRECTORY_SEPARATOR);      
+
+// added 22-01-2024
+if (!defined('EXCEPTIONS_PATH'))
+	define('EXCEPTIONS_PATH', APP_PATH  . 'exceptions' . DIRECTORY_SEPARATOR);
 
 if (!defined('SECURITY_PATH'))
     define('SECURITY_PATH', STORAGE_PATH . 'security'. DIRECTORY_SEPARATOR);

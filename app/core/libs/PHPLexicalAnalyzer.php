@@ -8,6 +8,17 @@ class PHPLexicalAnalyzer
 {
     /*
         Devuelve todos los nombres de funciones no-anonimas 
+
+        Retorna algo como...
+
+        Ej:
+
+        Array
+        (
+            [0] => getFunctionNames
+            [1] => getClassName
+            [2] => getClassNameByFileName
+        )
     */
     static function getFunctionNames(string $file_str) {
         return Strings::matchAll($file_str, '/function[ ]+([a-z][0-9a-z_]+)/i');
