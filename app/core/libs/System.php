@@ -246,7 +246,7 @@ class System
     /**
      * Determines whether a PHP ini value is changeable at runtime.
      *
-     * Tomado del core de WordPress
+     * Taken from WordPress core 
      * 
      * Uso. Ej:
      * 
@@ -266,11 +266,6 @@ class System
             if ( function_exists( 'ini_get_all' ) ) {
                 $ini_all = ini_get_all();
             }
-        }
-
-        // Bit operator to workaround https://bugs.php.net/bug.php?id=44936 which changes access level to 63 in PHP 5.2.6 - 5.2.17.
-        if ( isset( $ini_all[ $setting ]['access'] ) && ( INI_ALL === ( $ini_all[ $setting ]['access'] & 7 ) || INI_USER === ( $ini_all[ $setting ]['access'] & 7 ) ) ) {
-            return true;
         }
 
         // If we were unable to retrieve the details, fail gracefully to assume it's changeable.
