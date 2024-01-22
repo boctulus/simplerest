@@ -70,6 +70,15 @@ class System
     }
 
     /*
+        Ej:
+    */
+    static function inPATH(string $command){
+        $w = System::isWindows() ? 'where.exe' : 'where';
+               
+        return exec("$w $command", $output, $exit_code) == 0;
+    }
+
+    /*
         Returns PHP path
         as it is needed to be used with runInBackground()
 
@@ -190,7 +199,7 @@ class System
     }
 
 
-    static function exec($command, ...$args){
+    static function exec(string $command, ...$args){
         $extra = implode(' ', array_values($args));
 
         exec("$command $extra", $ret, static::$res_code);
@@ -199,18 +208,29 @@ class System
     }
 
     /*
-        Ejecuta un comando / script situandose primero en el root del proyecto
+        Ejecuta un comando / script situandose primero en el directorio especificado
+
+        Ej:
+
+        $git_log_repo_1 = System::execAt("git log", $path_repo_1)
     */
-    static function execAtRoot($command, ...$args){
+    static function execAt(string $command, string $dir, ...$args){
         $extra = implode(' ', array_values($args));
 
         $current_dir = getcwd();
 
-		chdir(ROOT_PATH);
+		chdir($dir);
         exec("$command $extra", $ret, static::$res_code);
         chdir($current_dir);
         
         return $ret;
+    }
+
+    /*
+        Ejecuta un comando / script situandose primero en el root del proyecto
+    */
+    static function execAtRoot(string $command, ...$args){
+        return static::execAt($command, ROOT_PATH, ...$args);
     }
 
     static function resultCode(){
@@ -220,7 +240,7 @@ class System
     /*
         Ejecuta un comando "com"
     */
-    static function com($command, ...$args){
+    static function com(string $command, ...$args){
         return static::execAtRoot(static::getPHP() . " com $command", ...$args);
     }
 
