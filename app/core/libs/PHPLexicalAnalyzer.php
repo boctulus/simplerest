@@ -20,8 +20,8 @@ class PHPLexicalAnalyzer
             [2] => getClassNameByFileName
         )
     */
-    static function getFunctionNames(string $file_str) {
-        return Strings::matchAll($file_str, '/function[ ]+([a-z][0-9a-z_]+)/i');
+    static function getFunctionNames(string $file_str){
+        return Strings::matchAll($file_str, '/function[\s]+([a-z][0-9a-z_]+)/i');
     }
 
     /*
