@@ -55,7 +55,9 @@ class GitHub
 
             - Si el archivo no existe mas mas en $path_repo_1 o $path_repo_2, nada que hacer.
 
-            - Listar funciones / metodos en cada archivo que han sufrido cambios y almacena esa lista de funciones por archivo.
+            - Listar funciones / metodos en cada archivo que han sufrido cambios y almacena esa lista de funciones por archivo.  ~
+
+                Usar PHPLexicalAnalyzer::getFunctionNames($code) 
 
             - Si el archivo en $path_repo_2 contiene funciones inexistentes en $path_repo_1 
             
@@ -72,6 +74,15 @@ class GitHub
                 - FUNCION(ES)  <--- porque podrian listarse juntas separadas por ","
 
         */
+
+        dd(System::inPATH('git'));
+        exit;
+        
+
+        $git_log_repo_1 = System::execAt("git log", $path_repo_1);
+        $git_log_repo_2 = System::execAt("git log", $path_repo_2);
+
+        dd($git_log_repo_1);
 
     }
 
