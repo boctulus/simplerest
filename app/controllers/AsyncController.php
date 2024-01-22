@@ -19,7 +19,7 @@ class AsyncController extends MyController
     {   
         $path = CRONOS_PATH . $job_filename;
 
-        $class_name = Strings::getClassNameByFileName($path);
+        $class_name = PHPLexicalAnalyzer::getClassNameByFileName($path);
 
         require_once $path;
 

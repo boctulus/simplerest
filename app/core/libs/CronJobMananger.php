@@ -98,7 +98,7 @@ class CronJobMananger
             if($fileInfo->isDir() || $fileInfo->getExtension() != 'php') continue;
 
             $filename = CRONOS_PATH . $fileInfo->getFilename();
-            $class    = Strings::getClassNameByFileName($filename);
+            $class    = PHPLexicalAnalyzer::getClassNameByFileName($filename);
 
             require_once $filename;
 
