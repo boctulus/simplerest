@@ -24,7 +24,7 @@ class MakeControllerBase extends Controller
     const MODEL_NO_SCHEMA_TEMPLATE  = self::TEMPLATES . 'Model-no-schema.php';
     const SCHEMA_TEMPLATE = self::TEMPLATES . 'Schema.php';
     const MIGRATION_TEMPLATE = self::TEMPLATES . 'Migration.php'; 
-    const MIGRATION_TEMPLATE_CREATE = self::TEMPLATES . 'Migration_New.php'; // new
+    const MIGRATION_TEMPLATE_CREATE = self::TEMPLATES . 'Migration_New.php'; 
     const API_TEMPLATE = self::TEMPLATES . 'ApiRestfulController.php';
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; 
     const SYSTEM_CONST_TEMPLATE = self::TEMPLATES . 'SystemConstants.php';
@@ -35,6 +35,7 @@ class MakeControllerBase extends Controller
     const CRONJOBS_TEMPLATE = self::TEMPLATES . 'CronJob.php';
     const TASK_TEMPLATE = self::TEMPLATES . 'Task.php';
     const MIDDLEWARE_TEMPLATE = self::TEMPLATES . 'Middleware.php';
+    const EXCEPTION_TEMPLATE = self::TEMPLATES . 'Exception.php';
 
     protected $table_name;
     protected $class_name;
@@ -607,6 +608,30 @@ class MakeControllerBase extends Controller
         $template_path = self::INTERFACE_TEMPLATE;
         $prefix = 'I';
         $subfix = '';  // Ej: 'Controller'
+
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
+    }
+
+    function exception($name, ...$opt) {
+        $core = false;
+
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--core|-c)$/', $o)){
+                $core = true;
+            }
+        }
+
+        if ($core){
+            $namespace = 'simplerest\\core\\exceptions';
+            $dest_path = CORE_EXCEPTIONS_PATH;
+        } else {
+            $namespace = 'simplerest\\exceptions';
+            $dest_path = EXCEPTIONS_PATH;
+        }
+
+        $template_path = self::EXCEPTION_TEMPLATE;
+        $prefix = '';
+        $subfix = 'Exception';  // Ej: 'Controller'
 
         $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }

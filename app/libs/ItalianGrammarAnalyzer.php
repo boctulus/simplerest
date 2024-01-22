@@ -5,6 +5,9 @@ namespace simplerest\libs;
 use simplerest\core\libs\Strings;
 use simplerest\libs\GrammarAnalyzer;
 
+/*
+    Esbozo de analizador gramatical
+*/
 class ItalianGrammarAnalyzer extends GrammarAnalyzer
 {
     /*
