@@ -41,7 +41,7 @@ class UpdateController extends ConsoleController
                 continue;
             }
 
-            $class_name = Strings::getClassNameByFileName($file);
+            $class_name = PHPLexicalAnalyzer::getClassNameByFileName($file);
 
             require_once $file;
 
