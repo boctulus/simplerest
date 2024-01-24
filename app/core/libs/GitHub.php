@@ -23,6 +23,8 @@ class GitHub
         git show -s --format=%ci c482f0a6492a1d9ebf13bc3fd9f86b5e84875bae
         git diff c482f0a6492a1d9ebf13bc3fd9f86b5e84875bae~1 c482f0a6492a1d9ebf13bc3fd9f86b5e84875bae
 
+        NOTA: solo funciona en modo "cli"
+
     */
     static function diff($path_repo_1, $path_repo_2)
     {
@@ -75,15 +77,35 @@ class GitHub
 
         */
 
-        dd(System::inPATH('git'));
-        exit;
-        
+        $git_installed = FileMemoization::memoize('git executable', function() {
+            return System::inPATH('git');
+        } )
+
+
+        if (!$git_installed){
+            throw new \Exception("git not found");
+        }
 
         $git_log_repo_1 = System::execAt("git log", $path_repo_1);
-        $git_log_repo_2 = System::execAt("git log", $path_repo_2);
+        // $git_log_repo_2 = System::execAt("git log", $path_repo_2);
 
-        dd($git_log_repo_1);
 
+        $lines = $git_log_repo_1;
+
+        $ix = 0;
+        $commit = Strings::match($lines[0], '/commmit ([a-f0-9]+)/', 0);
+
+        dd($commit, 'COMMIT');
+        exit;
+
+        while (!$commit){
+            $ix++;
+            $commit = Strings::startsWith('commmit', $lines[0]);
+            
+
+        }
+
+        // CONTINUAR (...)
     }
 
     /*
