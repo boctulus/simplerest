@@ -1201,23 +1201,22 @@ class Files
 
 	/*
 		https://tqdev.com/2018-locking-file-cache-php
+
+		"file_put_contents con locking"
 	*/
-	static function file_put_contents_locking(string $filename, string $string, int $flags = LOCK_EX)
+	static function writter(string $filename, string $string, int $flags = LOCK_EX)
 	{
 		return file_put_contents($filename, $string, $flags);
 	}
 
-	// alias
-	static function writter(string $filename, string $string, int $flags = LOCK_EX){
-		return static::file_put_contents_locking($filename,$string, $flags);
-	}
-
 	/*
 		https://tqdev.com/2018-locking-file-cache-php
+
+		"file_get_contents con locking"
 	*/
-	static function file_get_contents_locking(string $filename, int $flags = LOCK_SH)
+	static function reader(string $filename, $mode = 'rb', $block_size = 8192, int $flags = LOCK_SH)
 	{
-		$file = fopen($filename, 'rb');
+		$file = fopen($filename, $mode);
 
 		if ($file === false) {
 			return false;
@@ -1232,18 +1231,13 @@ class Files
 		
 		$string = '';
 		while (!feof($file)) {
-			$string .= fread($file, 8192);
+			$string .= fread($file, $block_size);
 		}
 		
 		flock($file, LOCK_UN);
 		fclose($file);
 		
 		return $string;
-	}
-
-	// alias
-	static function reader(string $filename, int $flags = LOCK_SH){
-		return static::file_get_contents_locking($filename, $flags);
 	}
 
 	static function read(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
