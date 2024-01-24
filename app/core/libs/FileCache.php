@@ -78,7 +78,10 @@ class FileCache extends Cache
     */
     static function put($key, $value, $exp_time)
     {
-        $path = static::getCachePath($key);
+
+        $path      = static::getCachePath($key);
+
+        $exp_time  = $exp_time ?? 3600 * 365;
         $expiresAt = time() + ($exp_time);
 
         $data = [
