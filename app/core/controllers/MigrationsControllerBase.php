@@ -10,6 +10,7 @@ use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Strings;
 use simplerest\controllers\MakeController;
+use simplerest\core\libs\PHPLexicalAnalyzer;
 
 /*
     Migration commands
