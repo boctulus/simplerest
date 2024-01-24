@@ -17,7 +17,8 @@ abstract class Cache implements ICache
     /*
         Logica para saber si un recurso ha expirado
 
-        @$cached_at int|false
+        @param int|false $cached_at
+        @param int       expiration_time es el delta en segundos
     */
     static function expired($cached_at, int $expiration_time) : bool {
         if (!is_int($cached_at) && $cached_at !== false){
