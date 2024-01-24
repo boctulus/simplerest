@@ -301,6 +301,14 @@ return [
 		//boctulus\hello_world\HelloServiceProvider::class
 	],
 
+	
+	/*
+		Cache
+	*/
+
+	'default_driver' => simplerest\core\libs\DBCache::class,
+
+
 	'var_dump_separators' => [
 		'start' => '--| ',
 		'end'   => ''
