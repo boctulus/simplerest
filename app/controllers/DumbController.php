@@ -9364,16 +9364,16 @@ class DumbController extends Controller
     }
 
     function test_set_transient(){
-        // dd(FileCache::getCachePath('minas_culeadas'));
+        // dd(FileCache::getCachePath('mascotas'));
 
-        set_transient('minas_culeadas', 30, 5);
+        set_transient('time', at(), 10);
     }
 
     function test_get_transient(){
-        // dd(FileCache::getCachePath('minas_culeadas'));
+        // dd(FileCache::getCachePath('mascotas'));
 
         dd(
-            get_transient('minas_culeadas')
+            get_transient('time')
         );
     }
 

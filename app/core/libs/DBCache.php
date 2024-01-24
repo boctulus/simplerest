@@ -50,13 +50,13 @@ class DBCache implements ICache
                 return unserialize($cache['value']);
             }
 
-            // dd("EXPIRED -> CLEANING...");
+            dd("EXPIRED -> CLEANING...");
 
             // Cache has expired, delete it
             self::forget($key);
         }
 
-        // dd("NON-CACHED -> RETURNING DEFAULT...");
+        dd("NON-CACHED -> RETURNING DEFAULT...");
 
         return $default;
     }
