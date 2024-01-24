@@ -9296,10 +9296,41 @@ Ej:
 
 # Driver "Database cache"
 
-	Implementar usando extendiendo la clase Cache
+Tambien implementando la interfaz ICache provee de los mismos metodos.
 
-Las funciones set_transient() y get_transient() de WordPress son facilmente implementables con Memoization
-para el driver para Database
+Ej:
+	
+	DBCache::put('galaxia', 'via lactea', 5);
+
+y para recuperar el valor:
+
+    $val = DBCache::get('galaxia');
+
+
+# Transientes
+
+Las funciones set_transient() y get_transient() de WordPress se han implementado usando los drivers disponibles.
+
+Ej:
+
+    set_transient('last_category_processed', $cat_id, $exp_time);
+    
+y para recuperar el valor:
+
+	$last_category = get_transient('last_category_processed');
+
+
+Notas:
+
+Sino se pasara un valor para $exp_time toma aproximadamente un año calendario
+
+El driver por defecto a utiliza para transientes se define en el config/config.php
+
+Ej:
+
+	'default_driver' => simplerest\core\libs\DBCache::class,
+
+Podria cambiarse por ejemplo a FileCache::class
 
 
 # Internacionalización
