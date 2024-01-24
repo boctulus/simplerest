@@ -42,8 +42,10 @@ class FileCache extends Cache
                 $updated_at = filemtime($path);
 
                 if (static::expired($updated_at, $exp_time)){
-                    // Cache has expired, delete the file
-                    unlink($path);
+                    // Cache has expired, delete the file only if it is not locked
+                    if (Files::reader($path, 'r', 1, LOCK_SH | LOCK_NB)) {
+                        unlink($path);
+                    }
                 
                     return true;
                 }
@@ -52,18 +54,21 @@ class FileCache extends Cache
             return false;
         }
 
-        $content = file_get_contents($path);
+        $content = Files::reader($path);
         $data    = unserialize($content);
 
         if ($data['expires_at'] < time()) {
-            // Cache has expired, delete the file
-            unlink($path);
+            // Cache has expired, delete the file only if it is not locked
+            if (Files::reader($path, 'r', 1, LOCK_SH | LOCK_NB)) {
+                unlink($path);
+            }
 
             return true;
         }
 
         return false;
     }
+
 
     static function expiredFileByKey($key, $exp_time = null, bool $was_serialized = false){
         $path = static::getCachePath($key);  
@@ -78,7 +83,6 @@ class FileCache extends Cache
     */
     static function put($key, $value, $exp_time)
     {
-
         $path      = static::getCachePath($key);
 
         $exp_time  = $exp_time ?? 3600 * 365;
@@ -91,7 +95,7 @@ class FileCache extends Cache
         
         $content = serialize($data);
 
-        if (file_put_contents($path, $content) !== false) {
+        if (Files::writter($path, $content) !== false) {
             return true;
         }
 
@@ -106,7 +110,7 @@ class FileCache extends Cache
             return $default;
         }
 
-        $content = file_get_contents($path);
+        $content = Files::reader($path);
         $data    = unserialize($content);
 
         if ($data['expires_at'] < time()) {
