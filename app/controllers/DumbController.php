@@ -9362,8 +9362,21 @@ class DumbController extends Controller
             return System::execAtRoot("git log");
         }, 3600 );
 
-        dd($git_log);
-        
+        dd($git_log);        
+    }
+
+    function test_set_transient(){
+        // dd(FileCache::getCachePath('minas_culeadas'));
+
+        set_transient('minas_culeadas', 30, 5);
+    }
+
+    function test_get_transient(){
+        // dd(FileCache::getCachePath('minas_culeadas'));
+
+        dd(
+            get_transient('minas_culeadas')
+        );
     }
 
 }   // end class

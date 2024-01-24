@@ -40,8 +40,12 @@ abstract class Cache implements ICache
         return time() > $cached_at + $expiration_time;
     }
 
+   
+
     abstract static function put(string $key, $value, int $time);
-    abstract static function get(string $key);
+    abstract static function get(string $key, $default = null);
     abstract static function forget(string $key);
+
+
 }
 
