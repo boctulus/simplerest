@@ -9212,12 +9212,12 @@ A futuro se implementarán mas drivers como Database, Redis, Memcached etc para 
 
 Hay dos implementaciones de cache de archivo, una donde los datos se serializan con FileCache::put() y se recuperan con FileCache::get() y otra donde no se serializan ni se almacena el tiempo de expiración.
 
-		    Serializado?   Almacenado de fecha de expiracion?
-----------+--------------+-------------------------------------
-Impl. #1  | Si           |  Si
-----------+--------------+-------------------------------------
-Impl. #2  | No           |  No
-----------+--------------+-------------------------------------
+		    Serializado?   Almacenado de fecha de expiracion?    Expirado
+----------+--------------+-----------------------------------------------------------------------------------------
+Impl. #1  | Si           |  Si                                 | FileCache::expiredFileByKey('{key}', null, true)
+----------+--------------+-----------------------------------------------------------------------------------------
+Impl. #2  | No           |  No								   | FileCache::expiredFileByKey('{key}', $exp_time)
+----------+--------------+-----------------------------------------------------------------------------------------
 
 Implementación #1
 
@@ -9243,8 +9243,12 @@ Lo anterior devuelve un path como C:\Users\jayso\AppData\Local\Temp\8302505164ff
 
 - Comprobar si ha expirado
 
-	$file    = FileCache::getCachePath('constelacion');
-	$expired = FileCache::expiredFile($file, null, true);
+	$cache_file = FileCache::getCachePath('constelacion');
+	$expired    = FileCache::expiredFile($cache_file, null, true);
+
+O mas facil,...
+
+	$expired = FileCache::expiredFileByKey('constelacion', null, true)
 
 
 Implementación #2
@@ -9268,9 +9272,8 @@ Ej:
 
 	// Chequeo si todavia es valido para 5 segundos de tiempo de expiracion
 
-	dd(
-		FileCache::expiredFile($file, $exp_time), 'Expired?'
-	);
+	$expired  = FileCache::expiredFile($file, $exp_time);
+
 
 <-- Esta vez FileCache::expiredFile() se ha llamado con un tiempo de expiracion
 

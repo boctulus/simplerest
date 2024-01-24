@@ -7583,10 +7583,10 @@ class DumbController extends Controller
 
     function is_expired()
     {
-        $file = FileCache::getCachePath('constelacion');
+        dd(FileCache::getCachePath('constelacion'));
 
         dd(
-            FileCache::expiredFile($file, null, true)
+            FileCache::expiredFileByKey('constelacion', null, true)
         );
     }
 
