@@ -9176,23 +9176,19 @@ Por otro lado, FileMemoization utiliza como "driver" a FileCache, peristiendo en
 
 Ej:
 
-	$url = 'http://apis.lan/dumb/now';
-        
-	FileMemoization::memoize($url, function() use ($url) {
-		dd("...");
-		return file_get_contents($url);
-	}, 2);  // <-------------------------------- cache por 2 segundos
+	$git_installed = FileMemoization::memoize('git exists', function() {
+        return System::inPATH('git') ? 1 : 0;
+    }, 3600 );
 
-	dd(
-		FileMemoization::memoize($url)
-	, 'VALOR RECUPERADO');      
-	
-	sleep(3);  
-	
-	// Ya no le alcanzan los 2 segundos especificados!
-	dd(
-		FileMemoization::memoize($url)
-	, 'VALOR RECUPERADO');  
+
+En caso que el valor a memorizar sea una estructura de datos como un Array debe usarse la version serializada 
+o sea FileMemoizationV2
+
+Ej:
+
+	$git_log = FileMemoizationV2::memoize('git log', function() {
+            return System::execAtRoot("git log");
+    }, 3600 );
 
 
 Nota:

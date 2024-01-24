@@ -71,10 +71,12 @@ class System
 
     /*
         Ej:
+
+        $git_installed = System::inPATH('git');
     */
     static function inPATH(string $command){
         $w = System::isWindows() ? 'where.exe' : 'where';
-               
+
         return exec("$w $command", $output, $exit_code) == 0;
     }
 
