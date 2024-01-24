@@ -16,10 +16,16 @@ class CacheTable implements IMigration
     public function up()
     {
         $sc = new Schema('cache');
-        $sc->string('key')->primary(); // no esta agregando el primary !!!
-        $sc->text('value');
-        $sc->timestamp('cached_at')->nullable();
-        $sc->integer('expiration_time');
+
+        $sc
+        ->integer('id')->auto()->pri()
+        ->string('_key_', 191)
+        ->text('value')
+        ->integer('expires_at')
+        ->timestamp('cached_at')->nullable()
+		// ...
+        ->datetimes();
+
 		$sc->create();
     }
 

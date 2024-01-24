@@ -322,7 +322,7 @@ Debe hacerse porque al crear un paquete en Composer automaticamente se crea de l
 
   . Deben leer / escribir en tabla "options" como clave-valor
   . Para el caso de multitenant, opcionalmente setear el valor en el scope de la base de datos seleccionada (tabla options para esa DB)
-  
+
 
 - En Migrations:
 
