@@ -614,6 +614,8 @@ class MigrationsControllerBase /* extends Controller */
 
     /*  
         rollback + migrate
+
+        Deberia aceptar --file=
     */
     function redo(...$opt){
         $this->rollback(...$opt);
