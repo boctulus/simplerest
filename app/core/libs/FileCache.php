@@ -25,7 +25,7 @@ class FileCache extends Cache
 
         Si se ha utilizado put() debe usarse con $was_serialized = 1
     */
-    static function expiredFile(string $path, $expiration_time = null, bool $was_serialized = false) : bool 
+    static function expiredFile(string $path, $exp_time = null, bool $was_serialized = false) : bool 
     {
         $exists = file_exists($path);
 
@@ -33,15 +33,15 @@ class FileCache extends Cache
             return true;
         }
 
-        if ($expiration_time == Cache::NEVER){
+        if ($exp_time == Cache::NEVER){
             return false;
         }
 
         if (!$was_serialized){
-            if ($expiration_time !== null){
+            if ($exp_time !== null){
                 $updated_at = filemtime($path);
 
-                if (static::expired($updated_at, $expiration_time)){
+                if (static::expired($updated_at, $exp_time)){
                     // Cache has expired, delete the file
                     unlink($path);
                 
@@ -63,6 +63,12 @@ class FileCache extends Cache
         }
 
         return false;
+    }
+
+    static function expiredFileByKey($key, $exp_time = null, bool $was_serialized = false){
+        $path = static::getCachePath($key);  
+
+        return static::expiredFile($path, $exp_time, $was_serialized);
     }
 
     /*
