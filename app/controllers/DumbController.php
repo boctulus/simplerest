@@ -91,10 +91,11 @@ use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\CronJobMananger;
+use simplerest\core\libs\FileMemoization;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\RandomGenerator;
-use simplerest\core\libs\ValidationRules;
 
+use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
@@ -103,6 +104,7 @@ use simplerest\core\libs\MailFromRemoteWP;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
+use simplerest\core\libs\FileMemoizationV2;
 use simplerest\libs\ItalianGrammarAnalyzer;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\core\libs\PHPLexicalAnalyzer;
@@ -7639,6 +7641,117 @@ class DumbController extends Controller
         //DBCache::put('galaxia', 'voa lactea', 60);
     }
 
+    function test_memorizacion()
+    {
+        $url = 'http://apis.lan/dumb/now';
+        
+        Memoization::memoize($url, function($url){
+            dd("...");
+            return file_get_contents($url);
+        });
+
+        dd(
+            Memoization::memoize($url)
+        );      
+        
+        sleep(2);
+
+        dd(
+            Memoization::memoize($url)  // mismo valor
+        );   
+    }
+
+    function test_memorizacion_2()
+    {
+        $url = 'http://apis.lan/dumb/now';
+        
+        FileMemoization::memoize($url, function() use ($url) {
+            dd("...");
+            return file_get_contents($url);
+        }, 2);  // <-------------------------------- cache por 2 segundos
+
+        dd(
+            FileMemoization::memoize($url)
+        , 'VALOR RECUPERADO');      
+        
+        sleep(3);  
+        
+        // Ya no le alcanzan los 2 segundos especificados!
+        dd(
+            FileMemoization::memoize($url)
+        , 'VALOR RECUPERADO');  
+    }    
+
+    function test_memorizacion_3()
+    {
+        $url = 'http://luxuritop.test/wp-json/wc/v3/products';
+        
+        FileMemoization::memoize($url, function() use ($url) {
+            $cli = new WooCommerceApiClient('ck_f710ad18c309b89f309e7144da238814bd4bf6b4', 
+            'cs_53b05e639bdba922eb296fb7ab40e162eb7570d6');
+
+            $pid = null;
+            
+            $base_url = 'http://luxuritop.test';
+            $endpoint = '/wp-json/wc/v3/products' . (!empty($pid) ? "/$pid" : '');
+                        
+            $url      = "{$base_url}{$endpoint}";
+    
+            $cli
+            ->url($url)
+            ->get()
+            ->setOAuth();
+
+            $cli->send();
+
+            $res = $cli->data();
+
+            return $res;
+        }, 10);  // <-------------------------------- cache por 2 segundos
+
+        dd(
+            FileMemoization::memoize($url)
+        , 'VALOR RECUPERADO');      
+        
+        sleep(3);  
+        
+        // Ya no le alcanzan los 2 segundos especificados!
+        dd(
+            FileMemoization::memoize($url)
+        , 'VALOR RECUPERADO');  
+    }    
+    
+    function memoize_test()
+    {       
+        Memoization::memoize('nombre.hijo', 'Feli');
+        Memoization::memoize('nombre.papa', 'Pablo');
+
+        $x = 2;
+        $y = 3;
+
+        Memoization::memoize('calculations.more_calc', function() use ($x, $y){
+            dd("Doing some expensive calculations ...");
+            return $x * $y;
+        });
+
+        dd(
+            Memoization::memoize('nombre.hijo')
+        );
+
+        Memoization::memoize('nombre.mama', 'Mmm');
+
+        dd(
+            Memoization::memoize('nombre.papa')
+        );
+
+        dd(
+            Memoization::memoize('nombre.mama')
+        );
+
+        dd(Memoization::memoize('calculations.more_calc'), 'calculations.more_calc');
+
+    }
+    
     function testtttttt()
     {
         $link     = 'https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
@@ -8826,46 +8939,6 @@ class DumbController extends Controller
         dd($res);
     }
 
-
-    function memoize_test()
-    {       
-        Memoization::memoize('nombre.hijo', 'Feli');
-        Memoization::memoize('nombre.papa', 'Pablo');
-
-        Memoization::memoize('calculations.complex_calc', function($a, $b){
-            dd("Doing some expensive calculations ...");
-            return $a + $b;
-        }, 2, 1);
-
-        // Usando use() para pasar variables al callback
-
-        $x = 2;
-        $y = 3;
-
-        Memoization::memoize('calculations.more_calc', function() use ($x, $y){
-            dd("Doing some expensive calculations ...");
-            return $x * $y;
-        }, 2, 1);
-
-        dd(
-            Memoization::memoize('nombre.hijo')
-        );
-
-        Memoization::memoize('nombre.mama', '????');
-
-        dd(
-            Memoization::memoize('nombre.papa')
-        );
-
-        dd(
-            Memoization::memoize('nombre.mama')
-        );
-
-        dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
-        dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
-        dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
-    }
-
         /////////////////////
 
     /*
@@ -9267,5 +9340,30 @@ class DumbController extends Controller
         );
     }
     
+    function test_m(){
+        // $git_installed = Memoization::memoize('git executable', function() {
+        //     return at();
+        // });
+
+        // dd($git_installed);
+
+        // sleep(2);
+
+        // dd($git_installed);
+
+        // $git_installed = FileMemoization::memoize('git exists', function() {
+        //     return System::inPATH('git') ? 1 : 0;
+        // }, 3600 );
+
+        // dd($git_installed);
+
+
+        $git_log = FileMemoizationV2::memoize('git log', function() {
+            return System::execAtRoot("git log");
+        }, 3600 );
+
+        dd($git_log);
+        
+    }
 
 }   // end class

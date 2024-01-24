@@ -33,8 +33,6 @@ class FileCache extends Cache
             return true;
         }
 
-        dd($expiration_time);
-
         if ($expiration_time == Cache::NEVER){
             return false;
         }
@@ -76,10 +74,12 @@ class FileCache extends Cache
     {
         $path = static::getCachePath($key);
         $expiresAt = time() + ($exp_time);
+
         $data = [
             'value' => $value,
             'expires_at' => $expiresAt,
         ];
+        
         $content = serialize($data);
 
         if (file_put_contents($path, $content) !== false) {
