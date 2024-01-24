@@ -7628,17 +7628,15 @@ class DumbController extends Controller
 
 
     function test_db_cache_put()
-    {
-        $data = [
-            'the_key'   => 'nombre',
-            'the_value' => serialize('Feli'),
-            'cached_at' => time(),
-            'expiration_time' => 100000,
-        ];
+    {       
+       DBCache::put('galaxia', 'via lactea', 5);
+    }
 
-        DB::table('cache')->create($data);
-
-        //DBCache::put('galaxia', 'voa lactea', 60);
+    function test_db_cache_get()
+    {       
+        dd(
+            DBCache::get('galaxia')
+        );
     }
 
     function test_memorizacion()

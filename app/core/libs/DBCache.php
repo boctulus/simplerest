@@ -2,54 +2,61 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\interfaces\ICache;
 use simplerest\core\libs\DB;
 
-class DBCache extends Cache
+class DBCache implements ICache
 {
      /**
      * Store data in the cache.
      *
      * @param string $key
      * @param mixed $value
-     * @param int $expiration_time
+     * @param int $exp_time
      * @return bool
      */
-    static function put(string $key, $value, int $expiration_time): bool
+    static function put(string $key, $value, int $exp_time): bool
     {
+        $expires_at = time() + $exp_time;
+
         $data = [
-            'the_key'   => $key,
-            'the_value' => serialize($value),
-            'cached_at' => time(),
-            'expiration_time' => $expiration_time,
+            '_key_'      => $key,
+            'value'      => serialize($value),
+            'cached_at'  => time(),
+            'expires_at' => $expires_at,
         ];
 
-        dd($data, 'DATA for put()');  // <------------- revisaR
+        // dd($data, 'DATA for put()'); 
 
-        return DB::table('cache')
+        return table('cache')
         ->create($data);
     }
 
     /**
      * Retrieve data from the cache.
      *
-     * @param string $key
+     * @param mixed $key
      * @param mixed $default
      * @return mixed
      */
-    static function get(string $key, $default = null)
+    static function get($key, $default = null)
     {
-        $cache = DB::table('cache')
-        ->where('the_key', $key)
+        $cache = table('cache')
+        ->where(['_key_' => $key])
         ->first();
 
         if ($cache) {
-            if (!self::expired($cache->cached_at, $cache->expiration_time)) {
-                return unserialize($cache->the_value)['the_value'];
+            if ($cache['expires_at'] >= time()) {
+                return unserialize($cache['value']);
             }
+
+            // dd("EXPIRED -> CLEANING...");
 
             // Cache has expired, delete it
             self::forget($key);
         }
+
+        // dd("NON-CACHED -> RETURNING DEFAULT...");
 
         return $default;
     }
@@ -62,9 +69,11 @@ class DBCache extends Cache
      */
     static function forget(string $key): bool
     {
-        return DB::table('cache')->where('the_key', $key)->delete();
+        return DB::table('cache')->where('_key_', $key)->delete();
     }
 
-
+    static function expired($cached_at, int $exp_time) : bool {
+        return $cached_at < time();
+    }
 }
 
