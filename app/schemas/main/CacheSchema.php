@@ -12,36 +12,42 @@ class CacheSchema implements ISchema
 		return [
 			'table_name'		=> 'cache',
 
-			'id_name'			=> 'the_key',
+			'id_name'			=> 'id',
 
-			'fields'			=> ['the_key', 'the_value', 'cached_at', 'expiration_time'],
+			'fields'			=> ['id', '_key_', 'value', 'expires_at', 'cached_at', 'created_at', 'updated_at'],
 
 			'attr_types'		=> [
-				'the_key' => 'STR',
-				'the_value' => 'STR',
-				'cached_at' => 'INT',
-				'expiration_time' => 'INT'
+				'id' => 'INT',
+				'_key_' => 'STR',
+				'value' => 'STR',
+				'expires_at' => 'INT',
+				'cached_at' => 'STR',
+				'created_at' => 'STR',
+				'updated_at' => 'STR'
 			],
 
 			'attr_type_detail'	=> [
 
 			],
 
-			'primary'			=> ['the_key'],
+			'primary'			=> ['id'],
 
-			'autoincrement' 	=> null,
+			'autoincrement' 	=> 'id',
 
-			'nullable'			=> ['cached_at'],
+			'nullable'			=> ['id', 'cached_at', 'updated_at'],
 
-			'required'			=> ['the_key', 'the_value', 'expiration_time'],
+			'required'			=> ['_key_', 'value', 'expires_at', 'created_at'],
 
 			'uniques'			=> [],
 
 			'rules' 			=> [
-				'the_key' => ['type' => 'str', 'max' => 60, 'required' => true],
-				'the_value' => ['type' => 'str', 'required' => true],
-				'cached_at' => ['type' => 'int'],
-				'expiration_time' => ['type' => 'int', 'required' => true]
+				'id' => ['type' => 'int'],
+				'_key_' => ['type' => 'str', 'max' => 191, 'required' => true],
+				'value' => ['type' => 'str', 'required' => true],
+				'expires_at' => ['type' => 'int', 'required' => true],
+				'cached_at' => ['type' => 'timestamp'],
+				'created_at' => ['type' => 'datetime', 'required' => true],
+				'updated_at' => ['type' => 'datetime']
 			],
 
 			'fks' 				=> [],
