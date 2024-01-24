@@ -9191,6 +9191,18 @@ Ej:
     }, 3600 );
 
 
+Refactorizacion
+
+Suponiendo que deseamos usa la cache provista por el driver FileMemoizationV2 y tenemos
+
+	$git_log_repo_1 = System::execAt("git log", $path_repo_1);
+
+Entonces para usar la cache cambiaria a ...
+
+	$git_log_repo_1 = FileMemoizationV2::memoize('git log', function() use ($path_repo_1) {
+		return System::execAt("git log", $path_repo_1);
+	}, 3600 );
+
 Nota:
 
 A futuro se implementarán mas drivers como Database, Redis, Memcached etc para persistir valores.
