@@ -4,6 +4,14 @@ namespace simplerest\core\libs;
 
 /*
     Implementacion SIN persistencia
+    
+    TO-DO
+
+    - Convertir a static en un driver mas (StaticCache)
+
+    - Hacer que esta clase Memorization utilice los distintos drivers
+
+    $driver = config('cache_driver');
 */
 class Memoization
 {
@@ -25,6 +33,5 @@ class Memoization
 
         return static::$cache[$key] ?? null;
     }
-
 }
 

@@ -21,7 +21,7 @@ class FileMemoizationV2 implements IMemoization
             return System::execAtRoot("git log");
         }, 3600 );
     */
-    static function memoize($key, $callback_or_value = null, $expiration_time = null) 
+    static function memoize($key, $callback = null, $expiration_time = null) 
     {
         $key = md5($key);
 
@@ -31,11 +31,9 @@ class FileMemoizationV2 implements IMemoization
             return $value;
         }
 
-        if ($callback_or_value != null && is_callable($callback_or_value)){
-            $value = $callback_or_value();
-        } else {
-            $value = $callback_or_value;
-        }
+        if ($callback != null && is_callable($callback)){
+            $value = $callback();
+        } 
 
         FileCache::put($key, $value, $expiration_time);
 
