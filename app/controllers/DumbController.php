@@ -112,6 +112,7 @@ use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\core\libs\PHPLexicalAnalyzer;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
+use simplerest\core\libs\WooCommerceApiClient;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use simplerest\shortcodes\countdown\CountDownShortcode;
@@ -7644,17 +7645,19 @@ class DumbController extends Controller
     function test_memorizacion()
     {
         $url = 'http://apis.lan/dumb/now';
+
+        set_cache_driver(DBCache::class);
         
-        Memoization::memoize($url, function($url){
+        Memoization::memoize($url, function() use ($url) {
             dd("...");
             return file_get_contents($url);
-        });
+        }, 1);
 
         dd(
             Memoization::memoize($url)
         );      
         
-        sleep(2);
+        sleep(5);
 
         dd(
             Memoization::memoize($url)  // mismo valor
@@ -7664,29 +7667,33 @@ class DumbController extends Controller
     function test_memorizacion_2()
     {
         $url = 'http://apis.lan/dumb/now';
+
+        set_cache_driver(FileCache::class);
         
-        FileMemoization::memoize($url, function() use ($url) {
+        Memoization::memoize($url, function() use ($url) {
             dd("...");
             return file_get_contents($url);
         }, 2);  // <-------------------------------- cache por 2 segundos
 
         dd(
-            FileMemoization::memoize($url)
+            Memoization::memoize($url)
         , 'VALOR RECUPERADO');      
         
         sleep(3);  
         
         // Ya no le alcanzan los 2 segundos especificados!
         dd(
-            FileMemoization::memoize($url)
+            Memoization::memoize($url)
         , 'VALOR RECUPERADO');  
     }    
 
     function test_memorizacion_3()
     {
         $url = 'http://luxuritop.test/wp-json/wc/v3/products';
+
+        set_cache_driver(FileCache::class);
         
-        FileMemoization::memoize($url, function() use ($url) {
+        Memoization::memoize($url, function() use ($url) {
             $cli = new WooCommerceApiClient('ck_f710ad18c309b89f309e7144da238814bd4bf6b4', 
             'cs_53b05e639bdba922eb296fb7ab40e162eb7570d6');
 
@@ -7710,46 +7717,44 @@ class DumbController extends Controller
         }, 10);  // <-------------------------------- cache por 2 segundos
 
         dd(
-            FileMemoization::memoize($url)
+            Memoization::memoize($url)
         , 'VALOR RECUPERADO');      
         
         sleep(3);  
         
         // Ya no le alcanzan los 2 segundos especificados!
         dd(
-            FileMemoization::memoize($url)
+            Memoization::memoize($url)
         , 'VALOR RECUPERADO');  
     }    
     
     function memoize_test()
     {       
-        Memoization::memoize('nombre.hijo', 'Feli');
-        Memoization::memoize('nombre.papa', 'Pablo');
+        set_cache_driver(InMemoryCache::class);
 
-        $x = 2;
-        $y = 3;
-
-        Memoization::memoize('calculations.more_calc', function() use ($x, $y){
-            dd("Doing some expensive calculations ...");
-            return $x * $y;
-        });
-
-        dd(
-            Memoization::memoize('nombre.hijo')
-        );
-
-        Memoization::memoize('nombre.mama', 'Mmm');
+        Memoization::memoize('nombre.hijo', function(){ return 'Pablo'; });
+        Memoization::memoize('nombre.papa', function(){ return 'Feli'; });
 
         dd(
             Memoization::memoize('nombre.papa')
         );
 
         dd(
-            Memoization::memoize('nombre.mama')
+            Memoization::memoize('nombre.hijo')
         );
 
-        dd(Memoization::memoize('calculations.more_calc'), 'calculations.more_calc');
+        $x = 2;
+        $y = 3;
 
+        Memoization::memoize('calculations.more_calc', function() use ($x, $y){
+            dd("Doing some expensive calculations ...");
+            sleep(2);
+            return $x * $y;
+        });
+
+        dd(Memoization::memoize('calculations.more_calc'), 'calculations.more_calc');
+        dd(Memoization::memoize('calculations.more_calc'), 'calculations.more_calc');
+        dd(Memoization::memoize('calculations.more_calc'), 'calculations.more_calc');
     }
     
     function testtttttt()
@@ -9366,7 +9371,7 @@ class DumbController extends Controller
     }
 
     function test_set_transient(){
-        Config::set('cache_driver', InMemoryCache::class);
+        set_cache_driver(InMemoryCache::class);
 
         set_transient('time', at(), 10);
 
@@ -9376,7 +9381,7 @@ class DumbController extends Controller
     }
 
     function test_get_transient(){
-        Config::set('cache_driver', InMemoryCache::class);
+        set_cache_driver(InMemoryCache::class);
 
         dd(
             get_transient('time')

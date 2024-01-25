@@ -17,7 +17,7 @@ class InMemoryCache implements ICache
         return false;
     }
 
-    static function put(string $key, $value, int $exp_time = -1) {
+    static function put(string $key, $value, $exp_time = -1) {
         static::$cache[$key] = $value;
     }
 

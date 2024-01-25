@@ -2,36 +2,27 @@
 
 namespace simplerest\core\libs;
 
-/*
-    Implementacion SIN persistencia
-    
-    TO-DO
-
-    - Convertir a static en un driver mas (StaticCache)
-
-    - Hacer que esta clase Memorization utilice los distintos drivers
-
-    $driver = config('cache_driver');
-*/
 class Memoization
 {
-    protected static $cache = [];
-
-    static function memoize($key, $callback_or_value = null)
+    static function memoize($key, $callback = null, $expiration_time = null) 
     {
-        if ($callback_or_value != null && is_callable($callback_or_value)){
-            $value = $callback_or_value();
-        } else {
-            $value = $callback_or_value;
-        }
-        
-        // Si se proporciona $value, asigna ese valor al caché y retorna el valor
-        if ($value !== null) {
-            static::$cache[$key] = $value;
+        $driver = config('cache_driver');
+
+        $key    = md5($key);
+        $value  = $driver::get($key, null);
+
+        if ($value !== null){
             return $value;
         }
 
-        return static::$cache[$key] ?? null;
+        if ($callback != null && is_callable($callback)){
+            $value = $callback();
+        } 
+
+        $driver::put($key, $value, $expiration_time);
+
+        return $value;
     }
+
 }
 

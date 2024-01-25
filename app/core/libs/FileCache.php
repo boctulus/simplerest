@@ -81,7 +81,7 @@ class FileCache extends Cache
         @param mixed  $value    
         @param int    $exp_time en segundos
     */
-    static function put($key, $value, $exp_time)
+    static function put($key, $value, $exp_time  = -1)
     {
         $path      = static::getCachePath($key);
 
