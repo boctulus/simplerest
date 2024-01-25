@@ -9156,59 +9156,38 @@ Cada driver tiene sus ventajas y desventajas:
 
 Implementaciones del patrón Memoization con distintos drivers. 
 
-La mas basica implementacion usa static para persistir en memoria dentro del mismo request y no implementa tiempo
-de expiracion ya que no tendria sentido porque no es persistente. 
-
-Es la opcion mas eficente si solo se necesita evitar un recalculo dentro del marco de un request.
-
 Ej:
 
-	Memoization::memoize('nombre.hijo', 'Feli');
-	Memoization::memoize('nombre.papa', 'Pablo');
+	$url = 'http://apis.lan/dumb/now';
 
-	$x = 2;
-	$y = 3;
-
-	Memoization::memoize('alculations.complex_calc', function() use ($x, $y){
-		dd("Doing some expensive calculations ...");
-		return $x * $y;
-	}, 2, 1);
+	set_cache_driver(DBCache::class);
+	
+	Memoization::memoize($url, function() use ($url) {
+		dd("...");
+		return file_get_contents($url);
+	}, 2);  // <-------------------------------- cache por 2 segundos
 
 	dd(
-		Memoization::memoize('nombre.hijo')
-	);
-
-	Memoization::memoize('nombre.mama', '????');
-
+		Memoization::memoize($url)
+	, 'VALOR RECUPERADO');      
+	
+	sleep(3);  
+	
+	// Ya no le alcanzan los 2 segundos especificados!
 	dd(
-		Memoization::memoize('nombre.papa')
-	);
-
-	dd(
-		Memoization::memoize('nombre.mama')
-	);
-
-	dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
-	dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
-	dd(Memoization::memoize('calculations.complex_calc'), 'Time-consuming calculation');
+		Memoization::memoize($url)
+	, 'VALOR RECUPERADO');  
 
 Por otro lado, FileMemoization utiliza como "driver" a FileCache, peristiendo en unidad de almacenamiento.
 
 Ej:
 
-	$git_installed = FileMemoization::memoize('git exists', function() {
+	set_cache_driver(FileCache::class);
+
+	$git_installed = Memoization::memoize('git exists', function() {
         return System::inPATH('git') ? 1 : 0;
     }, 3600 );
 
-
-En caso que el valor a memorizar sea una estructura de datos como un Array debe usarse la version serializada 
-o sea FileMemoizationV2
-
-Ej:
-
-	$git_log = FileMemoizationV2::memoize('git log', function() {
-            return System::execAtRoot("git log");
-    }, 3600 );
 
 
 Refactorizacion
@@ -9355,6 +9334,10 @@ Podria cambiarse por ejemplo a FileCache::class
 Para hacer el cambio dinamicamente:
 
 	Config::set('cache_driver', FileCache::class);
+
+o usando el helper
+
+	set_cache_driver(FileCache::class);
 
 
 # Internacionalización
