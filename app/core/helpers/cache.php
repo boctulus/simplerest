@@ -1,5 +1,7 @@
 <?php
 
+use simplerest\core\libs\Config;
+
 /*
     Implementacion de transientes
 
@@ -20,4 +22,8 @@ function get_transient(string $key, $default = null){
     $driver = config('cache_driver');
 
     return $driver::get($key, $default);
+}
+
+function set_cache_driver($class){
+    Config::set('cache_driver', $class);
 }

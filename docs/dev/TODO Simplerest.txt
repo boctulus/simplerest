@@ -32,6 +32,12 @@ The stylesheet http://simplerest.lan/app/shortcodes/countdown/css/styles.css was
         include $dir . 'Pivots.php'; 
     }        
 
+
+- Publicar inmediatamente ya que Spiral Framework no me daria ya ninguna opportunidad
+
+https://github.com/spiral/framework
+https://spiral.dev/docs
+
 - Para Migraciones hacer:
 
   . Si al crear una migracion se usa simultaneamente --dir= y --to= se debe crear archivo .db 
