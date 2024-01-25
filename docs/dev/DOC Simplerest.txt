@@ -9113,7 +9113,7 @@ Si se generalizara la ruta de los shortcodes entonces deberia depredicarse short
 que pudiera reemplazarla quizassssss cargando assets con rutas relativas !!!
 
 
-# Cache
+# Cache de vistas
 
 Es posible cachear las vistas especificando el tiempo de expiración expresado en segundos como cuarto parámetro de view() y en caso de pasar -1 no expirá nunca hasta que el archivo no sea borrado.
 
@@ -9130,6 +9130,26 @@ Ej:
 A futuro se implementará un comando para la limpieza de la cache de la siguiente manera:
 
 	php com cache clear [ --view={view_path} ]
+
+
+# Drivers de cache
+
+Se han implementado varios drivers de cache y otros nuevos estan en camino:
+
+Clase			Persistencia		Nota
+-------------------------------------------------------------------------
+InMemoryCache 	Memoria volatil		Dura lo que el request
+FileCache 		Archivos
+DBCache 		Base de datos
+
+Todos los drivers implementan la interfaz ICache con los mismos metodos:
+
+static function expired($cached_at, int $expiration_time) : bool;
+static function put(string $key, $value, int $time = -1);
+static function get(string $key);
+static function forget(string $key);
+
+Cada driver tiene sus ventajas y desventajas:
 
 
 # Memorizacion
@@ -9331,6 +9351,10 @@ Ej:
 	'default_driver' => simplerest\core\libs\DBCache::class,
 
 Podria cambiarse por ejemplo a FileCache::class
+
+Para hacer el cambio dinamicamente:
+
+	Config::set('cache_driver', FileCache::class);
 
 
 # Internacionalización
