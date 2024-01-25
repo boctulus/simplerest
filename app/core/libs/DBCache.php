@@ -15,7 +15,7 @@ class DBCache implements ICache
      * @param int $exp_time
      * @return bool
      */
-    static function put(string $key, $value, int $exp_time): bool
+    static function put(string $key, $value, $exp_time = -1): bool
     {
         $expires_at = time() + $exp_time;
 
@@ -25,8 +25,6 @@ class DBCache implements ICache
             'cached_at'  => time(),
             'expires_at' => $expires_at,
         ];
-
-        // dd($data, 'DATA for put()'); 
 
         return table('cache')
         ->create($data);
@@ -50,13 +48,9 @@ class DBCache implements ICache
                 return unserialize($cache['value']);
             }
 
-            dd("EXPIRED -> CLEANING...");
-
             // Cache has expired, delete it
             self::forget($key);
         }
-
-        dd("NON-CACHED -> RETURNING DEFAULT...");
 
         return $default;
     }
