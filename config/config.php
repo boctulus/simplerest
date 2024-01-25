@@ -306,7 +306,7 @@ return [
 		Cache
 	*/
 
-	'default_driver' => simplerest\core\libs\DBCache::class,
+	'cache_driver' => simplerest\core\libs\DBCache::class,
 
 
 	'var_dump_separators' => [

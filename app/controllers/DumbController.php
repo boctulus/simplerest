@@ -12,25 +12,26 @@ use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\libs\Reviews;
 use simplerest\core\libs\CSS;
-
 use simplerest\core\libs\Env;
+
 use simplerest\core\libs\Num;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Xml;
+use simplerest\core\Container;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use simplerest\core\Container;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
-
 use simplerest\core\libs\Cache;
+
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Utils;
-
 use simplerest\core\libs\Arrays;
+
+use simplerest\core\libs\Config;
 use simplerest\core\libs\GitHub;
 
 use simplerest\core\libs\Logger;
@@ -82,6 +83,7 @@ use Endroid\QrCode\Label\Font\NotoSans;
 
 use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
+use simplerest\core\libs\InMemoryCache;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
@@ -93,8 +95,8 @@ use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\FileMemoization;
 use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\core\libs\RandomGenerator;
 
+use simplerest\core\libs\RandomGenerator;
 use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
@@ -9364,13 +9366,17 @@ class DumbController extends Controller
     }
 
     function test_set_transient(){
-        // dd(FileCache::getCachePath('mascotas'));
+        Config::set('cache_driver', InMemoryCache::class);
 
         set_transient('time', at(), 10);
+
+        $this->test_get_transient();
+        sleep(2);
+        $this->test_get_transient();
     }
 
     function test_get_transient(){
-        // dd(FileCache::getCachePath('mascotas'));
+        Config::set('cache_driver', InMemoryCache::class);
 
         dd(
             get_transient('time')

@@ -21,7 +21,7 @@ class FileMemoization implements IMemoization
              return System::inPATH('git') ? 1 : 0;
         }, 3600 * 24 );
     */
-    static function memoize($key, $callback_or_value = null, $expiration_time = null) 
+    static function memoize($key, $callback = null, $expiration_time = null) 
     {
         $key = md5($key);
 
@@ -31,11 +31,9 @@ class FileMemoization implements IMemoization
             return file_get_contents($filename);
         }
 
-        if ($callback_or_value != null && is_callable($callback_or_value)){
-            $value = $callback_or_value();
-        } else {
-            $value = $callback_or_value;
-        }
+        if ($callback != null && is_callable($callback)){
+            $value = $callback();
+        } 
 
         file_put_contents($filename, $value);
 
