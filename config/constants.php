@@ -63,6 +63,9 @@ if (!defined('SCHEMA_PATH')){
     define('SCHEMA_PATH', APP_PATH . 'schemas' . DIRECTORY_SEPARATOR);
 }
 
+if (!defined('DAO_PATH'))
+    define('DAO_PATH', APP_PATH . 'DAO' . DIRECTORY_SEPARATOR);
+
 if (!defined('CRONOS_PATH')){
     define('CRONOS_PATH', APP_PATH . 'background/cronjobs' . DIRECTORY_SEPARATOR);
 }
