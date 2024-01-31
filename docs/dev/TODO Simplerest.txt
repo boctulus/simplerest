@@ -18,26 +18,6 @@ The stylesheet http://simplerest.lan/app/shortcodes/countdown/css/styles.css was
 
 <---- pedir ayuda
 
-- Mover al core: 
-
-    app.php (y dejar referencia a /app/core)
-    com (y dejar referencia a /app/core)
-
-- Reparar MakeControllerBase.php:
-
-   if (isset($pivot_data['pivots'])){
-        $pivots = $pivot_data['pivots'];
-    } else {
-        $dir = get_schema_path(null, $from_db ?? null);
-        include $dir . 'Pivots.php'; 
-    }        
-
-
-- Publicar inmediatamente ya que Spiral Framework no me daria ya ninguna opportunidad
-
-https://github.com/spiral/framework
-https://spiral.dev/docs
-
 - Para Migraciones hacer:
 
   . Si al crear una migracion se usa simultaneamente --dir= y --to= se debe crear archivo .db 
@@ -286,6 +266,7 @@ Esto tiene sentido si los plugins de SR pudieran ser utilizados en aplicaciones 
     Archivos de servicio: En aplicaciones web progresivas (PWA), es posible que encuentres archivos relacionados con el servicio de trabajadores (service workers) en la carpeta /dist. Estos archivos son esenciales para el funcionamiento offline y otras características avanzadas de las PWAs.
 
     Archivos de documentación: En algunos proyectos, especialmente en bibliotecas o paquetes, es posible que encuentres documentación generada automáticamente, como archivos README, documentación HTML o archivos de ayuda.
+
 
 # Automatización
 
@@ -1114,15 +1095,19 @@ https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versi
 
 [ OPTIMIZACIONES para maxima performance ]
 
-- Testear en Nginx y LiteSpeed y nuevamente en Apache. Eventualmente testear en IIS  ********
+- NGINX
 
 - Zipear las respuestas http (en Apache al menos debe hacerse explicitamente)
+
+- Con NGINX usar "full-page caching" powered by Nginx.
 
 - Ver de usar el módulo de Apache PHP-FPM (idealmente en Linux) -> habilita opcode caching
 
 - OPCache
 
 - Memcached / Redis
+
+- Cachear views 
 
 - Cachear views de componentes (cuando sea posible)
 
@@ -1140,7 +1125,7 @@ https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versi
 
 - Cachear respuestas http !!! 
 
-- HTTP 2.0 y 3.0
+- HTTP 2.0
 
 - Al leer archivos si son demasiado grandes leerlos de a "chunks" (para ahorrar memoria)
 
@@ -1210,6 +1195,26 @@ Igualmente podria considerarse importar Carbon para manejo de fechas
 [ Migraciones ]
 
 - El nombre de la tabla se debe tomar conversion a "dash case" (_)
+
+- Si se pasa el parametro "--create" como en:
+
+  php com make migration books --create
+
+Entonces debe crear completar asi:
+
+  public function up()
+  {
+    $sc = new Schema('books');
+    $sc->id();
+    $sc->timestamps();
+    $sc->create();
+  }
+
+  public function down()
+  {
+    Schema::dropIfExists('books');
+  }
+
 
 - Poder crear "macros" para extender las funcionalidades de la clase Schema. 
 
@@ -1328,6 +1333,7 @@ En Laravel es
   $url = Storage::url('file.jpg');
 
 En Simplerest podria ser storage_url()
+
 
 - Permitir limitar / validar tipo de archivos, extensiones y tamaño en bytes de archivos subidos 
 
