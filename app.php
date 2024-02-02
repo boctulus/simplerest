@@ -8,7 +8,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once  __DIR__ . '/../config/constants.php';
+require_once  __DIR__ . '/config/constants.php';
 
 ini_set("log_errors", 1);
 ini_set('error_log', LOGS_PATH . 'errors.txt');
@@ -23,11 +23,11 @@ if (!file_exists(ROOT_PATH . 'vendor'. DIRECTORY_SEPARATOR .'autoload.php')){
     sleep(10);
 }
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 if (class_exists('Dotenv\\Dotenv')){
     $class  = Dotenv\Dotenv::class;
-    $dotenv = $class::createImmutable(__DIR__ . '/..');
+    $dotenv = $class::createImmutable(__DIR__);
     $dotenv->load();
 }
 
@@ -45,7 +45,7 @@ $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 /* Helpers */
-$helper_dirs = [__DIR__ . '/../app/core/helpers', __DIR__ . '/../app/helpers'];
+$helper_dirs = [__DIR__ . '/app/core/helpers', __DIR__ . '/app/helpers'];
 
 foreach ($helper_dirs as $dir){
     foreach (new \DirectoryIterator($dir) as $fileInfo) {
@@ -59,7 +59,7 @@ foreach ($helper_dirs as $dir){
     }    
 }
     
-$config = include __DIR__ . '/../config/config.php';
+$config = include __DIR__ . '/config/config.php';
         
 /*
     i18n
