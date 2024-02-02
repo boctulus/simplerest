@@ -1,27 +1,3 @@
-<style>
-  .ore, .minuti, .secondi {
-    border: 4px solid red;
-    background: #f7f7f7;
-    border-radius: 100px;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0px 0px 5px #b40202;
-  }
-
-  span.hours, span.minutes, span.seconds {
-    font-size: 26px !important;
-    font-weight: 700;
-  }
-
-  span.testo {
-    font-size: 12px !important;
-  }
-</style>
-
 <div class="elementor-widget-container">
    <div id="deliveryCountdown" class="text-center pt-4 mt-2 px-0">
       <span class="text-dark pb-2">Vuoi riceverlo entro <span class="nextDeliveryDate text-capitalize font-weight-bold">jueves 28 diciembre</span>?</span>
