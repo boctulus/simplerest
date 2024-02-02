@@ -42,7 +42,7 @@ abstract class Cache implements ICache
 
    
 
-    abstract static function put(string $key, $value, int $time);
+    abstract static function put(string $key, $value, int $time = -1);
     abstract static function get(string $key, $default = null);
     abstract static function forget(string $key);
 

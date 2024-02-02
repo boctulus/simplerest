@@ -77,7 +77,7 @@ class GitHub
 
         */
 
-        $git_installed = FileMemoization::memoize('git executable', function() {
+        $git_installed = Memoization::memoize('git executable', function() {
             return System::inPATH('git');
         }, 2 );
 
@@ -86,7 +86,7 @@ class GitHub
             throw new \Exception("git not found");
         }
 
-        $git_log_repo_1 = FileMemoizationV2::memoize('git log', function() use ($path_repo_1) {
+        $git_log_repo_1 = Memoization::memoize('git log', function() use ($path_repo_1) {
             return System::execAt("git log", $path_repo_1);
         }, 3600 );
 
