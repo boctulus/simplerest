@@ -13,6 +13,7 @@ span.hours, span.minutes, span.seconds {
   display: block !important;
   font-size: 26px !important;
   font-weight: 700;
+  padding-top: 32px;
 }
 
 span.testo {

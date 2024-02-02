@@ -15,7 +15,7 @@ class CountDownShortcode
 
     function counter()
     {
-        #css_file(__DIR__ . '/css/styles.css');
+        css_file(__DIR__ . '/assets/css/styles.css');
 
         js_file('https://raw.githack.com/epiksel/countdown/master/jquery.countdown.js');
         js_file('https://colaoled.it/js/countdown.js');
