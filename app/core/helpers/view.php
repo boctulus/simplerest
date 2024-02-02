@@ -204,10 +204,12 @@ function render_css(){
     }
    
     foreach ($head['css'] as $_css){
-        if (isset($_css['file'])){
-            echo a_css($_css['file']) . "\r\n";
+        if (is_array($_css)){
+            if (isset($_css['file'])){
+                echo a_css($_css['file']) . "\r\n";
+            }            
         } else {
-            echo "<style>$_css</style>\r\n";
+            echo "<style>". $_css . "</style>\r\n";
         }
     }
 }
