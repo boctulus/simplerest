@@ -3,6 +3,34 @@ TODO SimpleRestxmp
 
 [ Generador de Front ]
 
+- En Movil el datatable debe ocupar todo el ancho de la pantalla y al seleccionar una o mas rows, en el footer debe aparecer una navbar
+con la opcion de borrar. No se verian el boton cuadrado de "New" sino que seria un boton circular.
+
+- Centrar a la izquierda contenidos de cada celda haciendo que queden alineados con las cabeceras de Tabulator
+
+- Agregar con checkbox [x] delante del primer campo para "seleccionar todos"
+
+- Ocultar el boton superior "Delete" hasta que no haya al menos un registro seleccionado
+
+- Depredicar los 3 botones por row y reemplazar por un "..." que despliegue las opciones de borrar y editar
+
+- Depredicar el editar "inline" por defecto dejando la posibilidad abierta cuando se especifique.
+
+- Al hacer click sobre el row debe abrirse en modo "view" desplegandose hacia abajo y a la derecha de cada registro estara 
+la opcion de cambiar al modo "edit". Esto seria configurable y en modo "auto" si son muchos campos se abriria en un nuevo panel.
+
+Las opciones serian:
+
+  - Desplegado hacia bajo de la misma row como en AMELIA BOOKING.
+  - Modal <----------------------------------------------------------- corregir ubicacion del boton "CLOSE"
+  - Desplegado en panel derecho
+  - AUTO
+
+- Cuando se deselecciona o selecciona un campo para ser mostrado se debe *recordar* y mostrar los mismos campos la siguiente vez 
+y tambien en el selector
+
+- Debe poder agregarse un icono en cada opcion del sidebar izquierdo
+
 - Implementar urgente campos tipo:
 
   Dropdown (select-option)
@@ -51,7 +79,10 @@ https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y y
 
 - Poder definir "filtros" que permitan hacer busquedas.
 
+- Hacer uso de las opciones del navbar !
+
 - Finalmente en algun punto... podriiiia el front pasar a React.
+
 
 --x--
 
