@@ -1,24 +1,39 @@
-TODO SimpleRest
+TODO SimpleRestxmp
 ===============
 
-- Revisar porque carga los estilos no pero no funciona css_file(), ej:
-
-class CountDownShortcode
-{   
-    function counter()
-    {
-        #css_file(__DIR__ . '/css/styles.css');   // <--- 
-    }
-}
-
-```
-The stylesheet http://simplerest.lan/app/shortcodes/countdown/css/styles.css was not loaded because its MIME type, 
-“text/html”, is not “text/css”.
-```
-
-<---- pedir ayuda
-
 [ Generador de Front ]
+
+- Implementar urgente campos tipo:
+
+  Dropdown (select-option)
+  Radio
+  Checkboxes
+  TinyMCE
+  File upload
+  Image upload (debe generar y mostrar thumbnail de el o los tamaños especificados)
+  Gallery image upload (Similar a "Image upload" pero el tamaño por defecto seria mayor)
+  Date picker
+  Time picker
+  Data-time picker
+
+- Implementar relaciones usando Select2. Tambien podrian ser opcionalmente con: 
+
+  Checkboxes (sino son demasiados)
+  Radios (sobre todo si las opciones son de tipo si/no o sea campo de tipo "bool")
+
+- Implementar filtros de Tabulator
+
+Puede quedar como aqui:
+
+https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y ya salio la 5.5
+
+- Crear filtro ¨avanzado¨ a nivel de frontend en algun componente con opciones similares a las de ¨flexiContent¨ de Joomla
+
+  . Busqueda de texto
+  . Filtros con distinto tipo de elementos de formulario 
+  . Sub-categorias (enlaces)
+  . Categorias hermanas (enlacesº)
+  . Botonera para buscar facil en moviles
 
 - Poder definir como metadata agrupamiento de campos en distinas secciones que visualmente se veran dentro de una caja
 
@@ -42,8 +57,8 @@ The stylesheet http://simplerest.lan/app/shortcodes/countdown/css/styles.css was
 
 - Mover al core: 
 
-    app.php (y dejar referencia a /app/core)
-    com (y dejar referencia a /app/core)
+    app.php (y dejar referencia)
+    com (y dejar referencia)
 
 - Reparar MakeControllerBase.php:
 
@@ -117,30 +132,6 @@ class CountDownShortcode
   . Dos o mas clases podrian sumar comandos a "make" por ejemplo si se especificara como propiedad el nombre de la "utility"
 
   . Luego portar a WP donde podria no dejar ningun comando al entregar o... los que necesite.
-
-- Implementar urgente campos tipo:
-
-  Dropdown (select-option)
-  Radio
-  Checkboxes
-  TinyMCE
-  File upload
-  Image upload (debe generar y mostrar thumbnail de el o los tamaños especificados)
-  Gallery image upload (Similar a "Image upload" pero el tamaño por defecto seria mayor)
-  Date picker
-  Time picker
-  Data-time picker
-
-- Implementar relaciones usando Select2. Tambien podrian ser opcionalmente con: 
-
-  Checkboxes (sino son demasiados)
-  Radios (sobre todo si las opciones son de tipo si/no o sea campo de tipo "bool")
-
-- Implementar filtros de Tabulator
-
-Puede quedar como aqui:
-
-https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y ya salio la 5.5
 
 - Probar de usar Smarty, Twig o Blade en algún proyecto con SimpleRest. Inclusive se pueden hacer funcionar en CodeIgniter !
 
@@ -706,15 +697,9 @@ Ademàs, no tiene sentido lo siguiente:
   ->varchar('nombre', 20)
   ->create();	
 
-Ya que la talla es solo eso... y puede ser un numero o no asi que el nombre del campo podria siempre ser incorrecto.
+Ya que la talla es solo eso... y puede ser un numero o no asi que el nombre del campo podria siempre ser incorrecto. 
 
-- Crear filtro ¨avanzado¨ a nivel de frontend en algun componente con opciones similares a las de ¨flexiContent¨ de Joomla
-
-  . Busqueda de texto
-  . Filtros con distinto tipo de elementos de formulario 
-  . Sub-categorias (enlaces)
-  . Categorias hermanas (enlacesº)
-  . Botonera para buscar facil en moviles
+<-- poder "relajar" las validaciones
 
 - Invalidacion de tokens.
 
@@ -7467,7 +7452,7 @@ https://www.youtube.com/watch?v=6XO6vSiioWE&ab_channel=CodeOpinion
 https://www.techtarget.com/searchapparchitecture/definition/CQRS-command-query-responsibility-segregation#:~:text=Command%20query%20responsibility%20segregation%20(CQRS,complex%2C%20multi%2Dsystem%20changes.
 
 
-- Reemplazar clases Resonse y Request por http_foundation
+- Reemplazar clases Response y Request por http_foundation
 
 https://symfony.com/doc/current/create_framework/http_foundation.html
 https://symfony.com/doc/current/components/http_foundation.html
@@ -7775,5 +7760,8 @@ Seria necesario implementar el equivalente a:
   wp_create_nonce()
   wp_verify_nonce()
 
-
 - FIX para BackgroundService.php ya que en los CronJobs esta NO repitiendose como es debido cad N-segundos
+
+- Implementar patron COMMANDER tipo Artisan y migrar desde MakeControllerBase y MakeController
+
+https://chat.openai.com/c/8aa0011e-c2f2-43f6-bdff-4c65dcbb1c39
