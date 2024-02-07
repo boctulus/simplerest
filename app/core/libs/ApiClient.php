@@ -558,9 +558,9 @@ class ApiClient
         $__filename = null;
 
         $header_fn = function ($cURLHandle, $header) use (&$__headers, &$__filename) {
-            $pieces = explode(":", $header);
+            $pieces = explode(":", $header, 2);
 
-            if (count($pieces) >= 2)
+            if (count($pieces) == 2)
                 $__headers[trim($pieces[0])] = trim($pieces[1]);
 
 

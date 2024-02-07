@@ -81,7 +81,15 @@ https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y y
 
 - Hacer uso de las opciones del navbar !
 
-- Finalmente en algun punto... podriiiia el front pasar a React.
+- Para ubicar widgets de forma drag-n-drop`
+
+  https://packery.metafizzy.co/
+
+- Finalmente en algun punto... podriiiia el front pasar a REACT JS
+
+  https://github.com/react-grid-layout/react-grid-layout
+  https://github.com/gridstack/gridstack.js
+  https://techaffinity.com/blog/7-javascript-layout-libraries-for-creating-dashboards/  
 
 
 --x--
