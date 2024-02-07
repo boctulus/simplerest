@@ -44,13 +44,35 @@ class Response
         return static::$instance;
     }
     
-    static function redirect(string $url){
-        if (!headers_sent()) {
+    static function redirect(string $url, int $http_code = 307) {
+        // Verificar si las cabeceras ya han sido enviadas
+        if (!headers_sent()) {          
+            // Verificar si se ha proporcionado un código HTTP válido
+            switch ($http_code){
+                case 301:
+                    header('HTTP/1.1 301 Moved Permanently');
+                    break;
+                case 302:
+                    header('HTTP/1.1 302 Found');
+                    break;
+                case 307:
+                    header('HTTP/1.1 307 Temporary Redirect');
+                    break;
+                case 308:
+                    header('HTTP/1.1 308 Permanent Redirect');
+                    break;
+                default:
+                    throw new \InvalidArgumentException("Código HTTP no válido para redirección");
+            }
+            
+            // Configurar la cabecera de ubicación para la redirección
             header("Location: $url");
             exit;
-        }else
-            throw new \Exception("Headers already sent");
-    }
+        } else {
+            // Si las cabeceras ya han sido enviadas, lanzar una excepción
+            throw new \Exception("Las cabeceras ya han sido enviadas");
+        }
+    }    
 
     function asObject(bool $val = true){
         static::$as_object = $val;
@@ -382,4 +404,5 @@ class Response
         
         return $this;
     }
+
 }
