@@ -9388,4 +9388,16 @@ class DumbController extends Controller
         );
     }
 
+    /*
+        Con este formato se envia de forma temporal a otra URL
+    */
+    function ret_307(){
+        response()->redirect('http://yahoo.es', 307);
+
+        // exit;
+        // header('HTTP/1.1 307 Temporary Redirect');
+        // header('Location: http://yahoo.com');  // nueva URL
+        // exit();
+    }
+
 }   // end class
