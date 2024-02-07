@@ -10081,6 +10081,51 @@ Ej:
 	->post($ruta);   
 
 
+# El metodo data()
+
+El metodo getResponse() es util para debugging pero si solo se quiere recuperar el body de la respuesta se puede usar directamente el metodo data() o en combinacion con decode() para especificar que se quiere hacer un "decode del JSON" de la respuesta (asumiento sabemos es un JSON) 
+
+Nota: En el siguiente ejemplo creamos un metodo getClient() para evitarnos tener que repetir las parametrizaciones que son comunes a distintos requests de la misma API.
+
+Ej:
+
+	protected function getClient()
+    {
+        $cli = new ApiClient();
+    
+        $cli
+        ->withoutStrictSSL()
+        ->followLocations()
+        ->setHeaders([
+            "Content-type"  => "application/json",
+            "Amelia" => $this->api_key
+        ])
+        ->decode();
+
+        return $cli;
+    }
+
+    function get_coupons()
+    {
+        $url  = "{$this->base_url}/coupons";
+    
+        $cli = $this->getClient();
+        $cli->request($url, 'GET');        
+
+        /*
+            Recojo respuesta
+        */
+
+        dd($cli->getStatus(), 'STATUS');
+        dd($cli->getError(), 'ERRORS');
+        // dd($cli->getResponse(), 'RES');  
+
+        $data = $cli->data();
+
+        dd($data);
+    }
+
+
 # Chequeo de certificado SSL
 
 Consideremos el siguiente ejemplo con Amazon:
