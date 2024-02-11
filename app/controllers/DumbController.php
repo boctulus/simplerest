@@ -230,6 +230,35 @@ class DumbController extends Controller
 
     function log(){
         Logger::log('zzzzzzzzzz');
+
+        $subscription = (new stdClass());
+        $subscription->name="Pablo";
+        $subscription->apel="Bzz";
+
+        /*
+            [11-Feb-2024 16:15:45 Asia/Manila] {"name":"Pablo","apel":"Bzz"}
+        */
+        Logger::log($subscription, 'sub.txt');   
+
+        /*
+            (object) array(
+                'name' => 'Pablo',
+                'apel' => 'Bzz',
+            )
+        */
+        Files::dump($subscription, 'dump_s.php');  
+
+        /*
+            <?php 
+
+            return (object) array(
+                'name' => 'Pablo',
+                'apel' => 'Bzz',
+            );
+        */
+        Logger::varExport($subscription);
+
+        dd("Test");
     }
 
     function dd()
@@ -9356,14 +9385,15 @@ class DumbController extends Controller
 
         // dd($git_installed);
 
-        // $git_installed = FileMemoization::memoize('git exists', function() {
+        set_cache_driver(FileCache::class);
+
+        // $git_installed = Memoization::memoize('git exists', function() {
         //     return System::inPATH('git') ? 1 : 0;
         // }, 3600 );
 
         // dd($git_installed);
 
-
-        $git_log = FileMemoizationV2::memoize('git log', function() {
+        $git_log = Memoization::memoize('git log', function() {
             return System::execAtRoot("git log");
         }, 3600 );
 
