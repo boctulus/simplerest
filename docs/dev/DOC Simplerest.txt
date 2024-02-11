@@ -10942,6 +10942,40 @@ Salida:
 asdf
 
 
+Comparativa
+
+Logger::log() vs Files::dump() vs Logger::varExport()
+
+Ej:
+
+	$subscription = (new stdClass());
+	$subscription->name="Pablo";
+	$subscription->apel="Bzz";
+
+	/*
+		[11-Feb-2024 16:15:45 Asia/Manila] {"name":"Pablo","apel":"Bzz"}
+	*/
+	Logger::log($subscription, 'sub.txt');   
+
+	/*
+		(object) array(
+			'name' => 'Pablo',
+			'apel' => 'Bzz',
+		)
+	*/
+	Files::dump($subscription, 'dump_s.php');  
+
+	/*
+		<?php 
+
+		return (object) array(
+			'name' => 'Pablo',
+			'apel' => 'Bzz',
+		);
+	*/
+	Logger::varExport($subscription);
+
+
 ### Clase Strings
 
 La clase Strings provee una batería de métodos para manejo conveniente de cadena de caracteres.

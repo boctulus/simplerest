@@ -1,6 +1,36 @@
 TODO SimpleRestxmp
 ===============
 
+- Implementar "LFU (Least Frequently Used)" con "descuento progresivo"
+
+Tomar una "ventana" arbitraria de 1:1000 registros o sea 500 de 500K por ejemplo y anotar la cantidad de hits sobre esa tabla... y cuando este llena reemplazar el registro con menos hits. <-- valor ajustable
+
+https://chat.openai.com/c/d5e6c6ca-de69-4728-9fa6-57b581204161
+
+Implementar colas para actualizaciones en segundo plano
+
+Aplicar "descuento progresivo" diario a los hits para los datos más antiguos: al 1% de registros mas antiguos restarle un 1% de su valor cada dia. <-- valores ajustables 
+
+Considera otros algoritmos: FIFO, LRU, RR
+
+  . FIFO (First-In-First-Out):
+
+  Ventajas: Simple y fácil de implementar. Puede funcionar bien en escenarios donde el orden de llegada refleja la importancia.
+  Desventajas: No considera la frecuencia o la recencia de acceso.
+
+  . LRU (Least Recently Used):
+
+  Ventajas: Mantiene los datos más recientes, útil cuando la temporalidad es importante.
+  Desventajas: No tiene en cuenta la frecuencia de acceso.
+
+  . RR (Random Replacement):
+
+  Ventajas: Simple y de bajo costo computacional.
+  Desventajas: Puede eliminar datos valiosos sin considerar la recencia o la frecuencia de acceso.
+
+https://redis.com/glossary/lru-cache/
+https://www.interviewcake.com/concept/java/lru-cache 
+
 [ Generador de Front ]
 
 - En Movil el datatable debe ocupar todo el ancho de la pantalla y al seleccionar una o mas rows, en el footer debe aparecer una navbar

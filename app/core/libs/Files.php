@@ -1017,13 +1017,13 @@ class Files
 		rmdir($dir);
 	}
 	
-	static function mkDirOrFail(string $dir, int $permissions = 0777, $recursive = true, string $error = "Failed trying to create %s"){
+	static function mkDirOrFail(string $dir, int $permissions = 0777, $recursive = true){
 		$ok = null;
 
 		if (!is_dir($dir)) {
 			$ok = @mkdir($dir, $permissions, $recursive);
 			if ($ok !== true){
-				throw new \Exception(sprintf($error, $dir));
+				throw new \Exception("Error trying to create '$dir'");
 			}
 		}
 
@@ -1155,17 +1155,14 @@ class Files
 	/*
 		Escribe archivo o falla.
 	*/
-	static function writeOrFail(string $path, $content, int $flags = 0){
+	static function writeOrFail(string $path, $content, int $flags = 0)
+	{
 		if (is_dir($path)){
 			$path = realpath($path);
 			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
 		} 
 
 		$dir = static::getDir($path);
-
-		if (!file_exists($path)){	
-			static::mkDirOrFail($dir);
-		}
 
 		static::writableOrFail($dir);
 
@@ -1431,6 +1428,10 @@ class Files
 	static function dump($object, string $path = null, $append = false){
 		if (is_dir($path)){
 			$path = Strings::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'dump.txt';
+		} else {
+			if (!static::isAbsolutePath($path)){
+				$path = ETC_PATH . $path;
+			}	
 		}
 
 		if ($append){
