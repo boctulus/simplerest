@@ -10411,12 +10411,75 @@ Ej:
         return $response;
     }
 
+Otra posibilidad es extender la clase ApiClient
+
+Ej:
+
+	use boctulus\SW\core\libs\ApiClient;
+
+	class WPAmelia extends ApiClient
+	{
+		protected $base_url;
+		protected $api_key;
+
+		function __construct($base_url = null, $api_key = null){
+			$this->base_url = $base_url ?? env('AMELIA_API_URL');
+			$this->api_key  = $api_key  ?? env('AMELIA_API_KEY');
+
+			$this
+			->withoutStrictSSL()
+			->followLocations()
+			->setHeaders([
+				"Content-type"  => "application/json",
+				"Amelia" => $this->api_key
+			])
+			->decode();
+		}
+
+		/*
+			Endpoints
+		*/
+		function setCouponEndpoint(){
+			$this->setUrl("{$this->base_url}/coupons");
+			return $this;
+		}
+	}
+
+y para hacer uso de nuestra libreria:
+
+	$cli = new WPAmelia();
+    $cli->setCouponEndpoint();
+    
+    $data = [
+        'code'     => 'MYCOUPON',  
+        'discount' => 100,                   
+    ];
+
+    $cli
+    ->setBody($data)
+    ->post();       
+    
+    /*
+        Recojo respuesta
+    */
+
+    $cli->getResponse();
+
+    dd($cli->getStatus(), 'STATUS');
+    dd($cli->getError(), 'ERRORS');
+    dd($cli->getResponse(), 'RES');  
+
+    $data = $cli->data();
+
+    dd($data);
+
 
 Metodos para acceder a la respuesta:
 
 	status()	el código http de la respuesta
 	error()		mensaje de error si lo hubiera	
 	data()		data obtenida
+	headers()   headers de la respuesta
 
 Ej:
 
