@@ -29,9 +29,7 @@ class Env
         if (static::$data === false){
             $ini_file = ROOT_PATH . '.env';
 
-            echo !is_cli() ? '<pre>' : '';
             throw new \Exception("Invalid .ini file. Syntax error in \"$ini_file\"");
-            echo !is_cli() ? '</pre>' : '';
         }
 
     }
@@ -46,6 +44,10 @@ class Env
         } 
 
         return static::$data[$key] ?? $default_value;
+    }
+
+    static function set(string $key = null, $value){
+        static::$data[$key] = $value;
     }
 }
 
