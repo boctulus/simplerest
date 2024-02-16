@@ -37,6 +37,7 @@ class MakeControllerBase extends Controller
     const MIDDLEWARE_TEMPLATE = self::TEMPLATES . 'Middleware.php';
     const EXCEPTION_TEMPLATE = self::TEMPLATES . 'Exception.php';
 
+    protected $namespace;
     protected $table_name;
     protected $class_name;
     protected $ctr_name;
@@ -51,6 +52,8 @@ class MakeControllerBase extends Controller
         if (php_sapi_name() != 'cli'){
             Factory::response()->send("Error: Make can only be excecuted in console", 403);
         }
+
+        $this->namespace = config()['namespace'];
 
         if (file_exists(APP_PATH. '.make_ignore')){
             $this->excluded_files = preg_split('/\R/', file_get_contents(APP_PATH. '.make_ignore'));
@@ -482,7 +485,7 @@ class MakeControllerBase extends Controller
     }
 
     function page($name, ...$opt) {
-        $namespace = 'simplerest\\controllers';
+        $namespace = $this->namespace . '\\controllers';
         $dest_path = PAGES_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -492,7 +495,7 @@ class MakeControllerBase extends Controller
     }
 
     function controller($name, ...$opt) {
-        $namespace = 'simplerest\\controllers';
+        $namespace = $this->namespace . '\\controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -502,7 +505,7 @@ class MakeControllerBase extends Controller
     }
 
     function console($name, ...$opt) {
-        $namespace = 'simplerest\\controllers';
+        $namespace = $this->namespace . '\\controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -512,7 +515,7 @@ class MakeControllerBase extends Controller
     }
 
     function middleware($name, ...$opt) {
-        $namespace = 'simplerest\\middlewares';
+        $namespace = $this->namespace . '\\middlewares';
         $dest_path = MIDDLEWARES_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -532,7 +535,7 @@ class MakeControllerBase extends Controller
     }
 
     function task($name, ...$opt) {
-        $namespace = 'simplerest\\jobs\\tasks';
+        $namespace = $this->namespace . '\\jobs\\tasks';
         $dest_path = TASKS_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -551,10 +554,10 @@ class MakeControllerBase extends Controller
         }
 
         if ($core){
-            $namespace = 'simplerest\\core\\libs';
+            $namespace = $this->namespace . '\\core\\libs';
             $dest_path = CORE_LIBS_PATH;
         } else {
-            $namespace = 'simplerest\\libs';
+            $namespace = $this->namespace . '\\libs';
             $dest_path = LIBS_PATH;
         }
 
@@ -575,10 +578,10 @@ class MakeControllerBase extends Controller
         }
 
         if ($core){
-            $namespace = 'simplerest\\core\\traits';
+            $namespace = $this->namespace . '\\core\\traits';
             $dest_path = CORE_TRAIT_PATH;
         } else {
-            $namespace = 'simplerest\\traits';
+            $namespace = $this->namespace . '\\traits';
             $dest_path = TRAIT_PATH;
         }
 
@@ -598,10 +601,10 @@ class MakeControllerBase extends Controller
         }
 
         if ($core){
-            $namespace = 'simplerest\\core\\interfaces';
+            $namespace = $this->namespace . '\\core\\interfaces';
             $dest_path = CORE_INTERFACE_PATH;
         } else {
-            $namespace = 'simplerest\\interfaces';
+            $namespace = $this->namespace . '\\interfaces';
             $dest_path = INTERFACE_PATH;
         }
 
@@ -622,10 +625,10 @@ class MakeControllerBase extends Controller
         }
 
         if ($core){
-            $namespace = 'simplerest\\core\\exceptions';
+            $namespace = $this->namespace . '\\core\\exceptions';
             $dest_path = CORE_EXCEPTIONS_PATH;
         } else {
-            $namespace = 'simplerest\\exceptions';
+            $namespace = $this->namespace . '\\exceptions';
             $dest_path = EXCEPTIONS_PATH;
         }
 
@@ -646,10 +649,10 @@ class MakeControllerBase extends Controller
         }
 
         if ($core){
-            $namespace = 'simplerest\\core\\helpers';
+            $namespace = $this->namespace . '\\core\\helpers';
             $dest_path = CORE_HELPERS_PATH;
         } else {
-            $namespace = 'simplerest\\helpers';
+            $namespace = $this->namespace . '\\helpers';
             $dest_path = HELPERS_PATH;
         }
 

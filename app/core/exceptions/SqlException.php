@@ -26,5 +26,4 @@ class SqlException extends \PDOException {
         // do some logging here
         Logger::logError($message);
     }
-
 }
