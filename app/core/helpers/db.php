@@ -1029,8 +1029,15 @@ function get_fks(string $t1, string $t2, ?string $tenant_id = null){
     return $fks_t2;
 }
 
-function tb_prefix(){
-    return config()['tb_prefix'] ?? null;
+// 16-feb-2024
+function tb_prefix() {
+    $conn_id = DB::getCurrentConnectionId();
+
+    if ($conn_id == null){
+        return config()['db_connections']['main']['tb_prefix'] ?? null;
+    }
+
+    return config()['db_connections'][$conn_id]['tb_prefix'] ?? null;
 }
 
 function sql_formatter(string $sql, ...$options){
