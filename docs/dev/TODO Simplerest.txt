@@ -1,4 +1,4 @@
-TODO SimpleRestxmp
+TODO SimpleRest
 ===============
 
 - Implementar "LFU (Least Frequently Used)" con "descuento progresivo"
@@ -32,6 +32,13 @@ https://redis.com/glossary/lru-cache/
 https://www.interviewcake.com/concept/java/lru-cache 
 
 [ Generador de Front ]
+
+- Considerar portar a BT5 esta datatable
+
+https://wenzhixin.github.io/fresh-bootstrap-table/compact-table.html
+https://github.com/wenzhixin/fresh-bootstrap-table/
+
+<--- se ve mucho mejor que Tabulator 
 
 - En Movil el datatable debe ocupar todo el ancho de la pantalla y al seleccionar una o mas rows, en el footer debe aparecer una navbar
 con la opcion de borrar. No se verian el boton cuadrado de "New" sino que seria un boton circular.

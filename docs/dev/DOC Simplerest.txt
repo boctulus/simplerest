@@ -2702,14 +2702,58 @@ Nota:
 
 En el archivo config/databases.php hay varias definiciones que son inyectadas en la configuración y entre ellas el prefijo de las tablas. En WordPress por ejemplo por defecto es "wp_"
 
+Se puede definir un prefijo de tablas distinto para cada "conexión"
+
 Ej:
 
 	<?php
 
 	return 
-	[
-		'tb_prefix'      => 'edu_',
+    
+		'db_connections' => 
+		
+		[
+			// ...
 
+			'woo3' => [
+				'host'		=> env('DB_HOST_WOO3', '127.0.0.1'),
+				'port'		=> env('DB_PORT_WOO3'),
+				'driver' 	=> env('DB_CONNECTION_WOO3'),
+				'db_name' 	=> env('DB_NAME_WOO3'),
+				'user'		=> env('DB_USERNAME_WOO3'), 
+				'pass'		=> env('DB_PASSWORD_WOO3'),
+				'charset'	=> env('DB_CHARSET_WOO3', 'utf8'),
+				'schema'	=> null,  
+				'pdo_options' => [
+					\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+					\PDO::ATTR_EMULATE_PREPARES => true 
+				],
+				'tb_prefix'  => 'wp_',  // <------------------------------- aqui
+			],
+
+			// ..
+		]
+
+
+	Entonces,...
+
+	DB::getConnection('woo3');
+
+	// wp_
+	dd(
+		tb_prefix(), 'PREFIX'
+	);
+
+	$rows = table('users')
+		->orderBy(['ID' => 'DESC'])
+		->first();
+
+	dd($rows);
+
+
+Notas:
+
+El prefijo puede usarse para hacer queries como en el ejemplo previo.
 
 El metodo DB::statement() intenta agregar el prefijo a las tablas para CREATE TABLE, ALTER TABLE, INSERT INTO, etc lo cual puede ser util en algunos casos. 
 
