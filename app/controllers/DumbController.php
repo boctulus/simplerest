@@ -6671,7 +6671,6 @@ class DumbController extends Controller
 
         dd($rows);
 
-
         $rows = table('users')
             ->orderBy(['ID' => 'DESC'])
             ->first();
