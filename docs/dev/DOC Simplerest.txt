@@ -2759,7 +2759,11 @@ El metodo DB::statement() intenta agregar el prefijo a las tablas para CREATE TA
 
 Sino se desea que se agregue nada simplemente deje 'tb_prefix' en null, false o como candena vacia ('').
 
-Si se utiliza DB::statement() en migraciones claramente habria agregado de prefijo.
+Si se utiliza DB::statement() en migraciones se agregará de prefijo. 
+
+Ej:
+
+	php com migrations migrate --to=woo3 --dir=woo3
 
 
 # Procedimientos almacenados
