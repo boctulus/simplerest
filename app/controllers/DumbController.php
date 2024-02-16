@@ -6662,15 +6662,17 @@ class DumbController extends Controller
     {
         DB::getConnection('woo3');
 
+        dd(
+            tb_prefix(), 'PREFIX'
+        );
+
         $rows = table('users')
-            //->wp()
             ->first();
 
         dd($rows);
 
 
         $rows = table('users')
-            ->wp()
             ->orderBy(['ID' => 'DESC'])
             ->first();
 
