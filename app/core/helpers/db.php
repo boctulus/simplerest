@@ -324,7 +324,7 @@ function get_api_namespace($resource_name){
 function get_user_model_name(){
     static $model_name;
     
-    $users_table = get_users_table(true);
+    $users_table = get_users_table();
     $conn_id     = DB::getCurrentConnectionId(true);
     $key         = $conn_id . '.' . $users_table;
 

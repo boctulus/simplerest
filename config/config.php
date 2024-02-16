@@ -341,5 +341,6 @@ return [
 		'app_secret'	=> env('OAUTH_FACEBOOK_CLIENT_SECRET'), 
 		'callback_url'	=> env('OAUTH_FACEBOOK_CALLBACK')
 	],
-		
+
+	'namespace' => 'simplerest'		
 ];
