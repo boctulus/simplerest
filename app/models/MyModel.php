@@ -27,13 +27,9 @@ class MyModel extends Model
         ];
     }
 
-    function wp(){
-		return $this->prefix('wp_');
-	}
-
     protected function boot(){          
         // if (empty($this->prefix) && (in_array(DB::getCurrentConnectionId(), ['woo3', null]))){
-		// 	$this->wp();
+		// 	$this->prefix('wp_');
 		// }        
     }
 

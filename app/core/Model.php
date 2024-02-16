@@ -225,6 +225,8 @@ class Model {
 	{
 		$this->boot();
 
+		$this->prefix = tb_prefix();
+
 		// static::$sql_formatter_callback = function(string $sql, bool $highlight = false){
 		// 	return \SqlFormatter::format($sql, $highlight);
 		// };
@@ -584,13 +586,13 @@ class Model {
 		return $this->table($table, $table_alias);		
 	}
 
-	function prefix(?string $prefix = ''){
+	function prefix($prefix = ''){
 		$this->prefix     = $prefix;
 		return $this;
 	}
 
 	// alias for prefix()
-	function setPrefix(?string $prefix = ''){
+	function setPrefix($prefix = ''){
 		return $this->prefix($prefix);
 	}
 	
@@ -3799,7 +3801,7 @@ class Model {
 	*/
 	static function addPrefix(string $st, $tb_prefix = null)
 	{
-		$tb_prefix = $tb_prefix ?? config()['tb_prefix'] ?? null;
+		$tb_prefix = $tb_prefix ?? tb_prefix() ?? null;
 
 		if (empty($tb_prefix)){
 			return $st;
