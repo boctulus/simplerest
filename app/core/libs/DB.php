@@ -700,7 +700,7 @@ class DB
 	//
 	// https://laravel.com/docs/5.0/database
 	//
-	public static function select(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null, bool $only_one = false){
+	public static function select(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, bool $only_one = false, bool $close_cursor = false){
 		if ($vals === null){
 			$vals = [];
 		}
@@ -789,6 +789,10 @@ class DB
 				$result = $st->fetch($fetch_const);
 			} else {
 				$result = $st->fetchAll($fetch_const);
+
+				if ($close_cursor){
+					$st->closeCursor();
+				}
 			}
 
 		} catch (\Exception $e){
@@ -804,6 +808,27 @@ class DB
 		}
 
 		return $result;
+	}
+
+
+	/*
+		SP SELECT
+
+		Resuelve varios problemas presentes al hacer un fetchAll sobre un Store Procedure (SP)
+
+		Ej:
+
+		DB::safeSelect("CALL partFinder(?, ?, ?)", [$partNumExact, $namePartial, $descriptionPartial])
+
+		Ver
+
+		https://stackoverflow.com/a/17582620/980631
+	*/
+	public static function safeSelect(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null){
+		$conn = static::getConnection($tenant_id);
+		$conn->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+
+		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, false, true);
 	}
 
 	public static function selectOne(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null, bool $only_one = false){

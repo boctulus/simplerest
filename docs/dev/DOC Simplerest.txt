@@ -127,6 +127,28 @@ Helpers
 	set_cfg()
 
 
+# La clase Config
+
+El objetivo de Config es poder leer y cambiar (sin persistir esos cambios) la configuracion. 
+
+Ej:
+
+	Config::set('db_connection_default') = 'db_xyz';
+
+Ademas, tanto set() como get() aceptan "dot sintax".
+
+Ej:
+
+	Config::set('db_connections.main.tb_prefix', 'wp_');
+
+	dd(
+		config()['db_connections']['main']['tb_prefix']
+	);
+
+	dd(
+		Config::get('db_connections.main.tb_prefix')
+	);
+
 ### Archivo databases.php
 
 En el archivo config/databases.php hay varias definiciones muy importantes que son inyectadas en la configuración.
@@ -2772,6 +2794,7 @@ Para la ejecución de procedimientos almacenados se puede sacar ventaja de los m
 
 DB::statement()         para ejecución de sentencias que no devuelven resultado
 DB::select()            para la ejecución de sentencias que devuelven resultado
+DB::safeSelect() 		similar a select() pero optimizado para SP donde se haga un fetchAll
 
 En los siguientes ejemplos se usará la keyword "CALL" presente en MySQL pero se entiende que deba usarse la equivalente según el RDBMS donde en SQLSRV por ejemplo es "EXEC".
 
@@ -2794,6 +2817,27 @@ Ej:
 Además es posible especificar el "modo" en el que se traen los resultados ("ASSOC", "NUM", ...) que se corresponden a los de PDO:
 
 Finalmente tanto DB::statement() como DB::select() permiten pasar el id de la conexión en el último parámetro
+
+y con safeSelect()
+
+Ej:
+
+	$s = 'TX';
+
+	$partNumExact = $s;
+	$namePartial  = $s;
+	$descriptionPartial = $s;
+
+	try {
+		$conn = DB::getConnection('parts');
+
+		dd(
+			DB::safeSelect("CALL partFinder(?, ?, ?)", [$partNumExact, $namePartial, $descriptionPartial])
+		);
+
+	} catch (\Exception $e) {
+		dd("Error: " . $e->getMessage());
+	}
 
 
 # Transacciones
