@@ -88,6 +88,22 @@ return
 			'tb_prefix'  => 'xx_',
 		],
 
+		'parts-remote' => [
+			'host'		=> env('DB_HOST_PARTS', '167.99.226.45'),
+			'port'		=> env('DB_PORT_PARTS', 3306),
+			'driver' 	=> env('DB_CONNECTION_PARTS', 'mysql'),
+			'db_name' 	=> 'nhcmrxnpdy',
+			'user'		=> 'nhcmrxnpdy', 
+			'pass'		=> 'MQzSGjm39Q',
+			'charset'	=> env('DB_CHARSET_PARTS', 'utf8'),
+			'schema'	=> null,  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => true // *
+			],
+			'tb_prefix'  => '',
+		],
+
 		'eb' => [
 			'host'		=> env('DB_HOST_2', '127.0.0.1'),
 			'port'		=> env('DB_PORT_2'),

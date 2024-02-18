@@ -6678,6 +6678,14 @@ class DumbController extends Controller
         dd($rows);
     }
 
+    function test_xy(){
+        DB::getConnection('parts-remote');
+
+        dd(
+            Schema::getTables()
+        );
+    }
+
     function test_xxxxx()
     {
         DB::getConnection('woo3');
@@ -8203,6 +8211,18 @@ class DumbController extends Controller
         }
 
         dd($res->data());
+    }
+
+    function test_config_set(){
+        Config::set('db_connections.main.tb_prefix', 'wp_');
+
+        dd(
+            config()['db_connections']['main']['tb_prefix']
+        );
+
+        dd(
+            Config::get('db_connections.main.tb_prefix')
+        );
     }
 
     function test_arr_fn()

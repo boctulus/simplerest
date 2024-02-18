@@ -530,11 +530,24 @@ class Schema
 		return $st->execute();
 	}
 
-
 	function tableExists(){
 		return in_array($this->tb_name, $this->tables);
 	} 
 
+	function createStoreProcedure(string $proc){
+		return DB::statement($proc);
+	}
+
+	// MySQL sintax
+	function dropStoreProcedure(string $name){
+		$conn  = DB::getConnection();
+
+		$st = $conn->prepare("DROP PROCEDURE IF EXISTS `:name`;");
+		$st->bindParam(':name', $name, \PDO::PARAM_STR);
+
+		return $st->execute();
+	}
+	
 	function columnExists(string $column){
 		return static::hasColumn($this->tb_name, $column);
 	}
