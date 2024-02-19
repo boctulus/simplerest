@@ -700,7 +700,7 @@ class DB
 	//
 	// https://laravel.com/docs/5.0/database
 	//
-	public static function select(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, bool $only_one = false, bool $close_cursor = false){
+	public static function select(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, bool $only_one = false, bool $close_cursor = false, &$st = null){
 		if ($vals === null){
 			$vals = [];
 		}
@@ -810,7 +810,6 @@ class DB
 		return $result;
 	}
 
-
 	/*
 		SP SELECT
 
@@ -824,11 +823,11 @@ class DB
 
 		https://stackoverflow.com/a/17582620/980631
 	*/
-	public static function safeSelect(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null){
+	public static function SafeSelect(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, &$st = null){
 		$conn = static::getConnection($tenant_id);
 		$conn->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
-		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, false, true);
+		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, false, true, $st);
 	}
 
 	public static function selectOne(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null, bool $only_one = false){
@@ -903,7 +902,7 @@ class DB
 				$id_name = ($schema != NULL) ? $schema['id_name'] : ($prikey_name ?? static::$default_primary_key_name);		
 
 				if (isset($data[$id_name])){
-					$last_inserted_id =	$data[$id_name];
+					$last_inserted_id =	$vals[$id_name]; // probable fix -19/02/2024
 				} else {
 					$last_inserted_id = $conn->lastInsertId();
 				}
@@ -1221,3 +1220,4 @@ class DB
 	}
 
 }
+

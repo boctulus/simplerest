@@ -2824,20 +2824,82 @@ Ej:
 
 	$s = 'TX';
 
-	$partNumExact = $s;
-	$namePartial  = $s;
-	$descriptionPartial = $s;
-
 	try {
 		$conn = DB::getConnection('parts');
 
 		dd(
-			DB::safeSelect("CALL partFinder(?, ?, ?)", [$partNumExact, $namePartial, $descriptionPartial])
+			DB::safeSelect("CALL partFinder(?)", [$s])
 		);
 
 	} catch (\Exception $e) {
 		dd("Error: " . $e->getMessage());
 	}
+
+Tambien es posible recuperar parametros de salida (los que llevan la keyword OUT) de un Store Procedure ejecutando codigo adicional.
+
+Ej:
+
+	$s = 'X';
+	$offset = 2;
+	$limit  = 2; 
+
+	try {
+		$conn = DB::getConnection('parts');
+		$rows =	DB::safeSelect("CALL partFinder(?, ?, ?, @rowCount)", [$s, $offset, $limit], 'ASSOC', null, $stmt);
+
+		// Obtener el valor del parámetro de salida
+		$stmt   = $conn->query("SELECT @rowCount as rowCount");
+		$result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+		// Recuperar el valor de rowCount
+		$row_count = $result['rowCount'];
+
+		// Cerrar cursor del procedimiento almacenado
+		$stmt->closeCursor();
+
+		dd($rows, 'ROWS');
+		dd($row_count, 'COUNT');
+
+	} catch (\Exception $e) {
+		dd("Error: " . $e->getMessage());
+	}
+	
+o dentro de una transacción.
+
+Ej:
+
+	$s = 'X';
+	$offset = 2;
+	$limit  = 2; 
+
+	$conn = DB::getConnection('parts');
+
+	DB::beginTransaction();
+
+	try {
+
+		$rows =	DB::safeSelect("CALL partFinder(?, ?, ?, @rowCount)", [$s, $offset, $limit], 'ASSOC', null, $stmt);
+
+		// Obtener el valor del parámetro de salida
+		$stmt   = $conn->query("SELECT @rowCount as rowCount");
+		$result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+		// Recuperar el valor de rowCount
+		$row_count = $result['rowCount'];
+
+		// Cerrar cursor del procedimiento almacenado
+		$stmt->closeCursor();
+
+		dd($rows, 'ROWS');
+		dd($row_count, 'COUNT');
+		
+		DB::commit(); 
+
+	}catch(\Exception $e){
+		DB::rollback();
+
+		dd($e->getMessage(), "Error en transacción");
+	}	
 
 
 # Transacciones
