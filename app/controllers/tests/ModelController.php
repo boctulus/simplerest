@@ -1010,7 +1010,7 @@ class ModelController extends MyController
     // WHERE NULL
     function where7()
     {
-        dd(DB::table('products')->whereNull('workspace')->get());
+        dd(DB::table('products')->whereNull('workspace')->dd());
     }
 
     // WHERE NOT NULL

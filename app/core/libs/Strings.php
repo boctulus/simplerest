@@ -49,12 +49,35 @@ class Strings
 
 		return $str;
 	}
-	
+
+	static function replaceNonAllowedChars($input, $allowedCharsRegex = 'a-z0-9-', $replace = '-', $case_sensitive = false) {
+        // Añade la bandera 'i' para hacer la expresión regular insensible a mayúsculas y minúsculas si $case_sensitive es false
+        $modifiers = $case_sensitive ? '' : 'i';
+
+        return preg_replace('/[^'. $allowedCharsRegex . ']/' . $modifiers, $replace, $input);
+    }
+
 	/*
 		Elimina caracteres especiales
 	*/	
 	static function cleanString(string $str) {
-		return preg_replace('/[^a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ-]/u', '', trim($str));
+		return static::replaceNonAllowedChars($str, 'a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ-', '');
+	}
+
+	/*
+		Elimina caracteres duplicados
+	*/
+	static function replaceDupes($str, $haystack) {
+		 // Reemplaza repetidamente hasta que no haya más repeticiones sucesivas
+		 while (strpos($str, $haystack . $haystack) !== false) {
+			 $str = str_replace($haystack . $haystack, $haystack, $str);
+		 }
+ 
+		 return $str;
+    }
+
+	static function removeMultipleSpaces($str){
+		return static::replaceDupes($str, ' ');
 	}
 
 	/*
@@ -1356,11 +1379,6 @@ class Strings
 		return $modifiedString;
 	}
 
-	static function removeMultipleSpaces($str){
-		return preg_replace('!\s+!', ' ', $str);
-	}
-
-
 	/*
 		Atomiza string (divivirlo en caracteres constituyentes)
 		Source: php.net
@@ -1368,7 +1386,6 @@ class Strings
 	static function stringTochars($s){
 		return	preg_split('//u', $s, -1, PREG_SPLIT_NO_EMPTY);
 	}	
-		
 	
 	/*
 		str_replace() de solo la primera ocurrencia
@@ -2078,5 +2095,6 @@ class Strings
 		return chr($value + 97 + ($starting_by_zero == false ? -1 : 0));
 	}
 }
+
 
 
