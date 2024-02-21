@@ -9451,4 +9451,10 @@ class DumbController extends Controller
         // exit();
     }
 
+    function asdgtyt(){
+        dd(
+            Strings::slug('lo que EL viento se llevó de España')
+        );
+    }
+
 }   // end class
