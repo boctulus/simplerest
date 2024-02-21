@@ -1,8 +1,8 @@
 RewriteEngine On
 
 # Evitar acceso a archivos .php desde el navegador
-RewriteCond %{REQUEST_URI} \.php$
-RewriteRule ^ - [F,L]
+#RewriteCond %{REQUEST_URI}.php -f
+#RewriteRule ^(.+)\.php$ /index.php [QSA,L]
 
 # Evitar acceso a archivos que comienzan con "."
 RewriteCond %{REQUEST_URI} /\.
