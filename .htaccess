@@ -1,5 +1,13 @@
 RewriteEngine On
 
+# Evitar acceso a archivos .php desde el navegador
+RewriteCond %{REQUEST_URI} \.php$
+RewriteRule ^ - [F,L]
+
+# Evitar acceso a archivos que comienzan con "."
+RewriteCond %{REQUEST_URI} /\.
+RewriteRule ^ - [F,L]
+
 RewriteCond %{REQUEST_URI} ^(.+)/$
 RewriteRule ^ %1 [L,R=301]
 
@@ -19,7 +27,6 @@ RewriteRule ^ %1 [L,R=301]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [L]
-
 
 php_value upload_max_filesize 1024M
 php_value post_max_size 1024M
