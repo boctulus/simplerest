@@ -25,22 +25,22 @@ class Strings
 	*/
 	static function case($filter, string $str){
 		switch ($filter){
-			case Strings::UPPERCASE_FILTER :
+			case static::UPPERCASE_FILTER :
 				$str = strtoupper($str);
 				break;
-			case Strings::LOWERCASE_FILTER :
+			case static::LOWERCASE_FILTER :
 				$str = strtolower($str);
 				break;
-			case Strings::UCFIRST_FILTER :
+			case static::UCFIRST_FILTER :
 				$str = ucfirst($str);
 				break;
-			case Strings::UCWORDS_FILTER :
+			case static::UCWORDS_FILTER :
 				$str = ucfirst($str);
 				break;
-			case Strings::CAMELCASE_FILTER :
+			case static::CAMELCASE_FILTER :
 				$str = static::snakeToCamel($str);
 				break;
-			case Strings::SNAKECASE_FILTER :
+			case static::SNAKECASE_FILTER :
 				$str = static::toSnakeCase($str);
 				break;
 			default:
@@ -121,7 +121,7 @@ class Strings
 			return false;
 		}
 
-		if (!Strings::contains($thousand_sep, $num)){
+		if (!static::contains($thousand_sep, $num)){
 			return (int) $num;
 		}
 
@@ -223,7 +223,7 @@ class Strings
 
 		$num = (string) $num;
 	
-		if ((!is_numeric($num) && !static::match($num, '/([0-9]+)/')) || (Strings::contains('.', $num))){
+		if ((!is_numeric($num) && !static::match($num, '/([0-9]+)/')) || (static::contains('.', $num))){
 			throw new \Exception("Invalid integer for '$num'");
 		}
 
@@ -729,7 +729,7 @@ class Strings
 	/*
 		Apply tabs to some string
 
-		En vez de PHP_EOL, deberias usar Strings::carriageReturn($str)
+		En vez de PHP_EOL, deberias usar static::carriageReturn($str)
 	*/
 	static function tabulate(string $str, int $tabs, ?int $first = null, ?int $last = null){
 		$lines = explode(PHP_EOL, $str);
@@ -827,8 +827,8 @@ class Strings
 
 		Ej:
 
-		$namespace = Strings::match($file_str, '/namespace[ ]{1,}([^;]+)/');
-		$table     = Strings::match($raw_sql, '/insert[ ]+(ignore[ ]+)?into[ ]+[`]?([a-z_]+[a-z0-9]?)[`]? /i', 2);
+		$namespace = static::match($file_str, '/namespace[ ]{1,}([^;]+)/');
+		$table     = static::match($raw_sql, '/insert[ ]+(ignore[ ]+)?into[ ]+[`]?([a-z_]+[a-z0-9]?)[`]? /i', 2);
 
 		Si $pattern es un array, busca coindicencias con cada patron 
 
@@ -897,7 +897,7 @@ class Strings
 	/*
 		Ej:
 
-		Strings::matchAll($str, Strings::$regex['URL']);
+		static::matchAll($str, static::$regex['URL']);
 	*/
 	static function matchAll(string $str, string $pattern, $flags = 0, $offset = 0) { 
 		if (preg_match_all($pattern, $str, $matches, $flags, $offset)){			
@@ -972,13 +972,13 @@ class Strings
 		if (is_array($param_name)){
 			$patt = [];
 			foreach ($param_name as $p){
-				$patt[] = Strings::getParamRegex($p, $arg_expr);
+				$patt[] = static::getParamRegex($p, $arg_expr);
 			}	
 		} else {
-			$patt =	Strings::getParamRegex($param_name, $arg_expr);
+			$patt =	static::getParamRegex($param_name, $arg_expr);
 		}
 
-		$res = Strings::match($str, $patt, 1);
+		$res = static::match($str, $patt, 1);
 
 		if ($arg_expr === null){
 			return ($res !== false); 
@@ -1347,7 +1347,7 @@ class Strings
         $substringToReplace = "shoes";
         $replacementArray   = ["sneakers", "boots", "sandals", "slippers"];
 
-        $modifiedString = Strings::replaceSubstringRandomly($originalString, $substringToReplace, $replacementArray);
+        $modifiedString = static::replaceSubstringRandomly($originalString, $substringToReplace, $replacementArray);
 
         dd("Original String: $originalString");
         dd("Modified String: $modifiedString");
@@ -1591,42 +1591,42 @@ class Strings
 								}
 								break;	
 							case 'contains':
-								if (Strings::contains($val, $reg[$field])){                           
+								if (static::contains($val, $reg[$field])){                           
 									continue 2;
 								}
 								break;    
 							case 'notContains':
-								if (!Strings::contains($val, $reg[$field])){                  ;
+								if (!static::contains($val, $reg[$field])){                  ;
 									continue 2;
 								}
 								break; 
 							case 'startsWith':
-								if (Strings::startsWith($val, $reg[$field])){                           
+								if (static::startsWith($val, $reg[$field])){                           
 									continue 2;
 								}
 								break; 
 							case 'notStartsWith':
-								if (!Strings::startsWith($val, $reg[$field])){               
+								if (!static::startsWith($val, $reg[$field])){               
 									continue 2;
 								}
 								break; 
 							case 'endsWith':             
-								if (Strings::endsWith($val, $reg[$field])){                 
+								if (static::endsWith($val, $reg[$field])){                 
 									continue 2;
 								}
 								break;      
 							case 'notEndsWith':
-								if (!Strings::endsWith($val, $reg[$field])){                           
+								if (!static::endsWith($val, $reg[$field])){                           
 									continue 2;
 								}
 								break;  
 							case 'containsWord':
-								if (Strings::containsWord($val, $reg[$field])){                           
+								if (static::containsWord($val, $reg[$field])){                           
 									continue 2;
 								}
 								break;   
 							case 'notContainsWord':
-								if (!Strings::containsWord($val, $reg[$field])){                           
+								if (!static::containsWord($val, $reg[$field])){                           
 									continue 2;
 								}
 								break;  
@@ -1670,22 +1670,22 @@ class Strings
 								}
 								break; 
 							case 'contains':
-								if (Strings::containsAny($vals, $reg[$field])){                           
+								if (static::containsAny($vals, $reg[$field])){                           
 									continue 2;
 								}
 								break;   
 							case 'notContains':
-								if (!Strings::containsAny($vals, $reg[$field])){                           
+								if (!static::containsAny($vals, $reg[$field])){                           
 									continue 2;
 								}
 								break;        
 							case 'containsWord':
-								if (Strings::containsAnyWord($vals, $reg[$field])){                           
+								if (static::containsAnyWord($vals, $reg[$field])){                           
 									continue 2;
 								}
 								break;   
 							case 'notContainsWord':
-								if (!Strings::containsAnyWord($vals, $reg[$field])){                           
+								if (!static::containsAnyWord($vals, $reg[$field])){                           
 									continue 2;
 								}
 								break;     
@@ -1754,7 +1754,7 @@ class Strings
 
 		$path = static::realPathNoCoercive($path);
 
-		if (Strings::endsWith('\\', $path) || Strings::endsWith('/', $path)){
+		if (static::endsWith('\\', $path) || static::endsWith('/', $path)){
 			return substr($path, 0, strlen($path)-1);
 		}
 
@@ -1771,11 +1771,11 @@ class Strings
 			return $path;
 		}
 
-		if (Strings::startsWith('\\', $path)){
+		if (static::startsWith('\\', $path)){
 			return substr($path, 1);
 		}
 
-		if (Strings::startsWith('/', $path)){
+		if (static::startsWith('/', $path)){
 			return substr($path, 1);
 		}
 
@@ -1790,7 +1790,7 @@ class Strings
 	static function addTrailingSlash(string $path) : string{
 		$path = static::realPathNoCoercive($path);
 
-		if (!Strings::endsWith('\\', $path) && !Strings::endsWith('/', $path)){
+		if (!static::endsWith('\\', $path) && !static::endsWith('/', $path)){
 			return $path . '/';
 		}
 
@@ -2021,7 +2021,7 @@ class Strings
 			return $html;
 		}
 
-		$html = Strings::removeHTMLentities($html);
+		$html = static::removeHTMLentities($html);
 		$html = XML::stripTag($html, 'head');
 		$html = XML::stripTag($html, 'footer');
 		$html = XML::stripTag($html, 'script');
@@ -2054,7 +2054,7 @@ class Strings
 		]);
 
 		$html = XML::removeHTMLAttributes($html, ['style', 'class', 'rel', 'target', 'type']);
-		$html = Strings::removeMultiLineComments($html);
+		$html = static::removeMultiLineComments($html);
 		$html = XML::removeCSS($html);
 
 		if ($level >=2){
@@ -2062,7 +2062,7 @@ class Strings
 		}
 
 		if ($level >=3){
-			$html = Strings::removeHTMLTextModifiers($html);
+			$html = static::removeHTMLTextModifiers($html);
 		}
 
 		if ($level >= 4){
@@ -2070,17 +2070,17 @@ class Strings
 		}
 
 		if ($level >= 5){
-			$html = Strings::removeDataAttr($html); // bye data-*
+			$html = static::removeDataAttr($html); // bye data-*
 		}
 
-		$html = Strings::removeSpaceBetweenTags($html);
-		$html = Strings::removeMultipleSpacesInLines($html);
-		$html = Strings::wipeEmptyTags($html);		
+		$html = static::removeSpaceBetweenTags($html);
+		$html = static::removeMultipleSpacesInLines($html);
+		$html = static::wipeEmptyTags($html);		
 
 		
 		$html = static::afterIfContains($html, '<body>');
 
-		if (Strings::contains('</body>', $html)){
+		if (static::contains('</body>', $html)){
 			$html = static::beforeLast($html, '</body>');
 		}	
 
@@ -2093,6 +2093,41 @@ class Strings
 
 	static function enumerateWithLetters($value, bool $starting_by_zero = true){
 		return chr($value + 97 + ($starting_by_zero == false ? -1 : 0));
+	}
+
+	/**
+	 * Converts accentuated characters (àéïöû etc.) 
+	 * to their ASCII equivalent (aeiou etc.)
+	 *
+	 * @param  string $str
+	 * @param  string $charset
+	 * @return string
+	 * 
+	 * https://dev.to/bdelespierre/convert-accentuated-character-to-their-ascii-equivalent-in-php-3kf1
+	 */
+	static function accent2ascii(string $str, string $charset = 'utf-8'): string
+	{
+		$str = htmlentities($str, ENT_NOQUOTES, $charset);
+
+		$str = preg_replace('#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str);
+		$str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str); // pour les ligatures e.g. '&oelig;'
+		$str = preg_replace('#&[^;]+;#', '', $str); // supprime les autres caractères
+
+		return $str;
+	}
+
+	/*
+		Genera un slug a partir de un string
+	*/
+	static function slug(string $str)
+	{
+		$str = str_replace('/', '', $str);
+		$str = static::accent2ascii($str);
+		$str = static::replaceNonAllowedChars($str, 'a-z0-9-');
+		$str = strtolower($str);
+		$str = static::replaceDupes($str, '-');
+		
+		return trim($str, '-');
 	}
 }
 
