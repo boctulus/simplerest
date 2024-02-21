@@ -1605,6 +1605,34 @@ class Schema
 		return $this;
 	}
 
+	/*
+		Ej:
+		
+		ALTER TABLE `parts` ADD FULLTEXT(`name`, `part_num`, `description`);
+	*/	 
+	function addFullText($column){
+		if (is_array($column)){
+			$cols = implode(',', Strings::backticks($column));
+		} else {
+			$cols = "`$column`";
+		}
+		
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD FULLTEXT($cols);";
+		
+		return $this;
+	}
+
+	// setea el campo actual como UNIQUE (de forma solitaria)
+	function setFullText(){		
+		$this->commands[] = "ALTER TABLE `{$this->tb_name}` ADD FULLTEXT(`{$this->current_field}`);";
+		return $this;
+	}
+		
+	function dropFullText(string $constraint_name){
+		$this->commands[] = $this->dropIndex($constraint_name);
+		return $this;
+	}
+
 	function addSpatial(string $column){
 		$this->commands[] = "ALTER TABLE ADD SPATIAL INDEX(`$column`);";
 		return $this;
@@ -1615,10 +1643,10 @@ class Schema
 		return $this;
 	}	
 
-	function addFullText(string $column){
-		$this->commands[] = "ALTER TABLE ADD FULLTEXT INDEX(`$column`);";
-		return $this;
-	}
+	// function addFullText(string $column){
+	// 	$this->commands[] = "ALTER TABLE ADD FULLTEXT INDEX(`$column`);";
+	// 	return $this;
+	// }
 
 	function dropForeign(string $constraint_name){
 		$this->commands[] = "ALTER TABLE `{$this->tb_name}` DROP FOREIGN KEY `$constraint_name`";
