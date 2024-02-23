@@ -26,7 +26,7 @@ class Select2Controller extends MyController
 
         view('select2/test.php', [
             'json' => $json
-        ], 'templates/tpl_basic.php');              
+        ], 'templates/tpl.php');              
     }
     
     /*
