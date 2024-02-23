@@ -37,6 +37,22 @@ class Url
         return filter_var($url, FILTER_VALIDATE_URL);
     }
 
+    static function getHeaders($url, bool $verify_ssl = true)
+    {
+        $options = [];
+        
+        if (!$verify_ssl){
+            $options["ssl"] = [
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            ];
+        }
+
+        $context = stream_context_create($options);
+
+        return get_headers($url, 1, $context);
+    }
+
     /*
         Obtiene la url final luego de redirecciones
 
@@ -44,14 +60,14 @@ class Url
 
         https://stackoverflow.com/a/7555543/980631
     */
-    static function getFinalUrl($url) {
+    static function getFinalUrl($url, bool $verify_ssl = true) {
         stream_context_set_default(array(
             'http' => array(
                 'method' => 'HEAD'
             )
         ));
 
-        $headers = get_headers($url, 1);
+        $headers = static::getHeaders($url, $verify_ssl);
 
         if ($headers !== false && isset($headers['Location'])) {
             return $headers['Location'];

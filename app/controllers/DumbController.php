@@ -3,6 +3,7 @@
 namespace simplerest\controllers;
 
 use Client;
+use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
 use stdClass;
 use simplerest\core\Acl;
 use simplerest\core\View;
@@ -9456,5 +9457,13 @@ class DumbController extends Controller
             Strings::slug('lo que EL viento se llevó de España')
         );
     }
+    
+    function ciudades_cl(){
+        define ('ABSPATH'  , 'D:\\www\\woo5\\');
+        define ('PLUGINDIR', 'wp-content\\plugins');
+       
+        new CiudadesCLShortcode();
+    }
+
 
 }   // end class

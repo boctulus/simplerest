@@ -1219,7 +1219,12 @@ https://www.freecodecamp.org/news/how-to-version-a-rest-api/#:~:text=API%20versi
 
 - Indexar correctamente en la DB
 
-- Usar una paginacion eficiente como la de tipo "seek"
+- Usar una paginacion eficiente como la de tipo  "seek method" ("keyset pagination")
+
+  WHERE id > offset ORDER BY id LIMIT y;
+
+  https://chat.openai.com/c/c19b8cc6-6427-4c19-8e17-8b2ae864550b
+  https://www.percona.com/blog/mysql-order-by-limit-performance-optimization/
 
 - Cachear respuestas http !!! 
 
