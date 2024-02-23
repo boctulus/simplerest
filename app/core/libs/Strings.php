@@ -2122,7 +2122,7 @@ class Strings
 	static function slug(string $str)
 	{
 		$str = str_replace('/', '', $str);
-		$str = static::accent2ascii($str);
+		$str = static::accent2ascii($str); // remove_accents() en WP
 		$str = static::replaceNonAllowedChars($str, 'a-z0-9-');
 		$str = strtolower($str);
 		$str = static::replaceDupes($str, '-');

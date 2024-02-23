@@ -8818,6 +8818,13 @@ Ej:
 		'json' => $json
 	], 'tpl_basic.php');    
 
+
+El template se puede asignar dinamicamente también con set_template()
+
+Ej:
+
+	set_template('my_tpl.php');
+
 Al template se le pueden enviar los archivos css y js a incluir así como meta-tags que se quiere se agregen dinámicamente. 
 
 Ej:
