@@ -53,7 +53,7 @@
 }
 </style>
 
-<div id="myModal" class="modal">
+<div id="addressModal" class="modal">
   <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -65,20 +65,20 @@
 </div>
 
 <script>
-  const showMyModal = () => {
-    document.getElementById('myModal').style.display = 'block';
+  const showAddrModal = () => {
+    document.getElementById('addressModal').style.display = 'block';
   }
 
-  const closeModal = () => {
-    const modal = document.getElementById('myModal');
-    modal.style.display = 'block';
+  const closeAddrModal = () => {
+    const modal = document.getElementById('addressModal');
+    modal.style.display = 'none';
   }
 
   // Abrir la ventana modal al cargar la página
   window.onload = function () {
     // Cerrar la ventana modal al hacer clic en la "X"
     document.getElementsByClassName('btn-close')[0].onclick = function () {
-      document.getElementById('myModal').style.display = 'none';
+      document.getElementById('addressModal').style.display = 'none';
     }
 
     // Cerrar la ventana modal al presionar la tecla "ESC"
@@ -89,7 +89,7 @@
     });
 
 
-    showMyModal();
+    showAddrModal();
   }
 
 </script>
