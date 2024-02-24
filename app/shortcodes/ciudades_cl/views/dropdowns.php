@@ -46,7 +46,14 @@
 
 
 <script>
-    const arr = <?= $json ?>
+    const arr           = <?= $json ?>;
+    const regionInicial = "Antofagasta";  // debe provenir del backend
+    const ciudadInicial = "Calama";       // debe provenir del backend
+
+    // Función para seleccionar un valor inicial en un selector
+    const selectInitialValue = (select_elem, value) => {
+        $(select_elem).val(value).trigger('change');
+    };
 
     document.addEventListener("DOMContentLoaded", (event) => {
         if (typeof $ == 'undefined') {
@@ -61,7 +68,9 @@
 
         fill_states();
         setSelect2Options(states_elem, state_items, { 'id': 'NULL', 'text': 'Región' });
+        selectInitialValue(states_elem, regionInicial); //
 
+        // Evento de cambio en el selector de regiones
         $(states_elem).change(function () {
             let state_name_selected = states_elem.value;
 
@@ -74,10 +83,19 @@
             }
         });
 
+        // Llenar y seleccionar la ciudad inicial
+        if (regionInicial) {
+            selectInitialValue(states_elem, regionInicial);
+
+            if (ciudadInicial) {
+                selectInitialValue(cities_elem, ciudadInicial);
+            }
+        }
+
         // Agrega el evento de clic al botón "Mantener"
         document.getElementById('btnMantener').addEventListener('click', function () {
             // Cierra el modal (ajusta esta línea según cómo cierres el modal en tu código)
-            closeAddrModal();
+            closeAddrModal();   
         });
 
         // Agrega el evento de clic al botón "Cambiar"
