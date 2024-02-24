@@ -24,18 +24,41 @@
   height: 380px;
 }
 
-@media screen and (min-width: 1024px) {
+
+/* Modal de ancho completo en dispositivos móviles */
+@media only screen and (max-width: 600px) {
   .modal-content {
-    max-width: 33% !important;
+    max-width: 99%;
   }
 }
 
-/* Modal de ancho completo en dispositivos móviles */
-@media screen and (max-width: 600px) {
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
   .modal-content {
-    max-width: 99% !important;
+    max-width: 50%;
   }
 }
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .modal-content {
+    max-width: 66%;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .modal-content {
+    max-width: 50%;
+  }
+}
+
+@media only screen and (min-width: 1366px) {
+  .modal-content {
+    max-width: 30%;
+  }
+}
+
 
 /* The Close Button */
 .btn-close {
