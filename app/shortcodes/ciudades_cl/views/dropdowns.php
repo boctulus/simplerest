@@ -1,3 +1,48 @@
+<style>
+  #botonera-cambio-direccion {
+    font-family: Arial, sans-serif;
+  }
+
+  .btn-pill {
+    display: block;
+    width: 100%; /* Cambié el ancho para que ocupen toda la línea */
+    padding: 10px;
+    margin: 10px 0;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+
+  .btn-info {
+    background-color: #007bff;
+  }
+</style>
+
+<div class="container" id="botonera-cambio-direccion">
+  <h3>Cambiar mi ubicación</h3>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <select class="select2-states" name="states[]" id="states" style="width:100%">
+        <option value="">Estado</option>
+      </select>
+    </div>
+
+    <div class="col-md-12 mt-3">
+      <select class="select2-cities" name="cities[]" id="cities" style="width:100%">
+        <option value="">Ciudad</option>
+      </select>
+    </div>
+
+    <div class="col-12 mt-4 d-flex" role="group">
+      <button type="button" class="btn btn-info btn-pill me-2">Mantener</button>
+      <button type="button" class="btn btn-success btn-pill" id="cambiar">Cambiar</button>
+    </div>
+  </div>
+</div>
+
+
 <script>
   const arr = <?= $json ?>
 
@@ -86,16 +131,3 @@
   }
 </script>
 
-<h3>Dropdowns dependientes</h3>
-
-<p></p>
-
-<select class="select2-states" name="states[]" id="states" style="width:300px">
-  <option value="">Estado</option>
-</select>
-
-<p></p>
-
-<select class="select2-cities" name="cities[]" id="cities" style="width:300px">
-  <option value="">Ciudad</option>
-</select>

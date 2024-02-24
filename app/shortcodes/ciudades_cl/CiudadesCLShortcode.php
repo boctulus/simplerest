@@ -27,7 +27,7 @@ class CiudadesCLShortcode
         
         $json = json_encode($data);
 
-        view(__DIR__ . '/views/cities_modal.php', [
+        view(__DIR__ . '/views/bt5_modal_variant.php', [
             'json' =>  $json
         ]);              
     }
