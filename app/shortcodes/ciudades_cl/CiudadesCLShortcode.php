@@ -17,25 +17,18 @@ class CiudadesCLShortcode
     }
 
     function index()
-    {   
-        // require_once ABSPATH . PLUGINDIR . '/states-cities-and-places-for-woocommerce/states/CL.php';
+    {  
+        require_once ABSPATH . PLUGINDIR . '/states-cities-and-places-for-woocommerce/places/CL.php';
 
-        // dd(
-        //     $states ['CL' ]
-        // );
-
-        // require_once ABSPATH . PLUGINDIR . '/states-cities-and-places-for-woocommerce/places/CL.php';
-
-        // dd(
-        //     $places['CL']
-        // );
-
-        $json  = file_get_contents(ETC_PATH . 'countries_states.json');
-
-        set_template('templates/tpl.php');
+        foreach ($places['CL'] as $state => $cities) {
+            $stateArray = array('state' => $state, 'cities' => $cities);
+            $data['states'][] = $stateArray;
+        }  
+        
+        $json = json_encode($data);
 
         view(__DIR__ . '/views/cities_modal.php', [
-            'json' => $json
+            'json' =>  $json
         ]);              
     }
     
