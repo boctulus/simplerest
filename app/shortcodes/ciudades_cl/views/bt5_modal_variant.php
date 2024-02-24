@@ -4,7 +4,7 @@
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+  padding-top: 50px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -20,7 +20,8 @@
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 96%;
+  height: 380px;
 }
 
 @media screen and (min-width: 1024px) {
@@ -37,10 +38,10 @@
 }
 
 /* The Close Button */
-.close {
+.btn-close {
   color: #aaaaaa;
   float: right;
-  font-size: 28px;
+  font-size: 12px;
   font-weight: bold;
 }
 
@@ -53,8 +54,10 @@
 </style>
 
 <div id="myModal" class="modal">
-  <div class="modal-content modal_narrow" style="height: 500px">
-    <span class="close">&times;</span>
+  <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
     <p>
       <?php include __DIR__ . '/dropdowns.php'; ?>
     </p>
@@ -74,7 +77,7 @@
   // Abrir la ventana modal al cargar la página
   window.onload = function () {
     // Cerrar la ventana modal al hacer clic en la "X"
-    document.getElementsByClassName('close')[0].onclick = function () {
+    document.getElementsByClassName('btn-close')[0].onclick = function () {
       document.getElementById('myModal').style.display = 'none';
     }
 

@@ -9462,7 +9462,7 @@ class DumbController extends Controller
         define ('ABSPATH'  , 'D:\\www\\woo5\\');
         define ('PLUGINDIR', 'wp-content\\plugins');
 
-        set_template('templates\tpl_basic.php');
+        // set_template('templates\tpl_basic.php');
        
         new CiudadesCLShortcode();
     }
