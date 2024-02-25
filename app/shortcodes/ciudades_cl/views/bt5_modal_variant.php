@@ -1,3 +1,9 @@
+<!--
+Flavicon attribution
+
+<a href="https://www.flaticon.com/free-icons/location" title="location icons">Location icons created by Good Ware - Flaticon</a>
+-->
+
 <style>
 /* The Modal (background) */
 .modal {
