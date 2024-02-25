@@ -178,29 +178,8 @@
             }
         }
 
-        // Agrega el evento de clic al botón "Mantener"
-        document.getElementById('btnMantener').addEventListener('click', function () {
-            // Cierra el modal (ajusta esta línea según cómo cierres el modal en tu código)
-            closeAddrModal();   
-        });
-
-        // Agrega el evento de clic al botón "Cambiar"
-        document.getElementById('btnCambiar').addEventListener('click', function () {
-            // Obtiene y muestra el value de cada SELECT en la consola
-            console.log('Estado seleccionado:', states_elem.value);
-            console.log('Ciudad seleccionada:', cities_elem.value);
-        });
-
-        // Evento de cambio en el selector de ciudades
-        $(cities_elem).change(function() {
-            toggleChangeButton(); // Verificar si se habilita el botón "Cambiar"
-        });
-
-        // Agrega el evento de clic al botón "Cambiar"
-        document.getElementById('btnCambiar').addEventListener('click', function() {
-            const state = states_elem.value;
-            const city = cities_elem.value;
-
+        // Función para enviar el request al presionar el botón "Cambiar"
+        function sendChangeRequest(state, city) {
             var changeSettings = {
                 "url": "http://woo5.lan/address/change?__user_id=1",
                 "method": "POST",
@@ -214,12 +193,36 @@
                 }),
             };
 
-            // Realizar la solicitud para cambiar la dirección
             $.ajax(changeSettings)
-            .done(function(response) {
+            .done(function (response) {
                 console.log(response);
                 // Aquí puedes realizar cualquier otra acción después de cambiar la dirección
             });
+        }      
+
+        // Agrega el evento de clic al botón "Mantener"
+        document.getElementById('btnMantener').addEventListener('click', function () {
+            // Cierra el modal (ajusta esta línea según cómo cierres el modal en tu código)
+            closeAddrModal();   
+        });
+
+        // Agrega el evento de clic al botón "Cambiar"
+        document.getElementById('btnCambiar').addEventListener('click', function () {
+            // 4. Enviar un request al presionar el botón "Cambiar" con los valores del formulario.
+            let selectedState = states_elem.value;
+            let selectedCity = cities_elem.value;
+
+            console.log('Estado seleccionado:', selectedState);
+            console.log('Ciudad seleccionada:', selectedCity);
+
+            if (selectedState && selectedCity) {
+                sendChangeRequest(selectedState, selectedCity);
+            }
+        });
+
+        // Evento de cambio en el selector de ciudades
+        $(cities_elem).change(function() {
+            toggleChangeButton(); // Verificar si se habilita el botón "Cambiar"
         });
 
     });
