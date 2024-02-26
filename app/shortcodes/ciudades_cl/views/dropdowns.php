@@ -18,6 +18,10 @@
     .btn-info {
         background-color: #007bff;
     }
+
+    #states, #cities {
+        z-index: 999999;
+    }
 </style>
 
 <div class="container" id="botonera-cambio-direccion">
@@ -80,13 +84,6 @@
             "Accept": "application/json"
         }
     };
-
-    $.ajax(initialSettings)
-    .done(function(response) {
-        const { state, city } = response.data;
-        setDefaultValues(state, city);
-        toggleChangeButton(); // Verificar si se habilita el botón "Cambiar"
-    }); 
 
     // Función para seleccionar un valor inicial en un selector
     const selectInitialValue = (select_elem, value) => {
@@ -154,6 +151,13 @@
         fill_states();
         setSelect2Options(states_elem, state_items, { 'id': 'NULL', 'text': 'Región' });
         selectInitialValue(states_elem, regionInicial); //
+
+        $.ajax(initialSettings)
+        .done(function(response) {
+            const { state, city } = response.data;
+            setDefaultValues(state, city);
+            toggleChangeButton(); // Verificar si se habilita el botón "Cambiar"
+        }); 
 
         // Evento de cambio en el selector de regiones
         $(states_elem).change(function () {
