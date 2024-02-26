@@ -2,7 +2,12 @@
 
 namespace simplerest\shortcodes\ciudades_cl;
 
-use simplerest\core\libs\DB;
+/*
+    Especificamente en Wordpress se corrompe y se queda en "Searching..." muchas veces
+
+    Es un tipo de interferencia que NO tiene relacion directa con el plugin 
+    "states-cities-and-places-for-woocommerce"
+*/
 
 class CiudadesCLShortcode
 {
@@ -18,6 +23,8 @@ class CiudadesCLShortcode
 
     function index()
     {  
+        global $places;
+
         require_once ABSPATH . PLUGINDIR . '/states-cities-and-places-for-woocommerce/places/CL.php';
 
         foreach ($places['CL'] as $state => $cities) {
