@@ -7,15 +7,15 @@ use simplerest\core\libs\Url;
 /**
  * Configura las cabeceras CORS según los parámetros proporcionados.
  *
- * @param bool  $crossOrigin - Indica si se permite acceso desde cualquier origen.
+ * @param string $crossOrigin 
  * @param bool  $allowCredentials - Indica si se permiten credenciales (cookies).
  * @param array $allowedHeaders - Lista de cabeceras permitidas.
  * @param array $allowedMethods - Lista de métodos HTTP permitidos.
  */
 function cors(
-    bool  $crossOrigin = false,
-    bool  $allowCredentials = true,
-    array $allowedHeaders = [
+    string $crossOrigin = '*',
+    bool   $allowCredentials = true,
+    array  $allowedHeaders = [
         'Origin',
         'Content-Type',
         'X-Auth-Token',
@@ -31,12 +31,8 @@ function cors(
     ],
     array $allowedMethods = ['POST', 'OPTIONS']
 ) {
-    if ($crossOrigin) {
-        header('Access-Control-Allow-Origin: *');
-    } else {
-        header("Access-Control-Allow-Origin: " . get_header("Origin") ?? get_header("origin"));
-    }
-
+    
+    header("Access-Control-Allow-Origin: $crossOrigin");
     header('Access-Control-Allow-Credentials: ' . ($allowCredentials ? 'True' : 'False'));
     header('Access-Control-Allow-Headers: ' . implode(', ', $allowedHeaders));
     header('Access-Control-Allow-Methods: ' . implode(', ', $allowedMethods));
