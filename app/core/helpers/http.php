@@ -4,11 +4,42 @@ use simplerest\core\Route;
 use simplerest\core\Response;
 use simplerest\core\libs\Url;
 
-function cors(){
-    header('Access-Control-Allow-Credentials: True');
-    header('Access-Control-Allow-Headers: Origin,Content-Type,X-Auth-Token,AccountKey,X-requested-with,Authorization,Accept, Client-Security-Token,Host,Date,Cookie,Cookie2'); 
-    header('Access-Control-Allow-Methods: POST,OPTIONS'); 
-    header('Access-Control-Allow-Origin: *');
+/**
+ * Configura las cabeceras CORS según los parámetros proporcionados.
+ *
+ * @param bool  $crossOrigin - Indica si se permite acceso desde cualquier origen.
+ * @param bool  $allowCredentials - Indica si se permiten credenciales (cookies).
+ * @param array $allowedHeaders - Lista de cabeceras permitidas.
+ * @param array $allowedMethods - Lista de métodos HTTP permitidos.
+ */
+function cors(
+    bool  $crossOrigin = false,
+    bool  $allowCredentials = true,
+    array $allowedHeaders = [
+        'Origin',
+        'Content-Type',
+        'X-Auth-Token',
+        'AccountKey',
+        'X-Requested-With',
+        'Authorization',
+        'Accept',
+        'Client-Security-Token',
+        'Host',
+        'Date',
+        'Cookie',
+        'Cookie2',
+    ],
+    array $allowedMethods = ['POST', 'OPTIONS']
+) {
+    if ($crossOrigin) {
+        header('Access-Control-Allow-Origin: *');
+    } else {
+        header("Access-Control-Allow-Origin: " . get_header("Origin") ?? get_header("origin"));
+    }
+
+    header('Access-Control-Allow-Credentials: ' . ($allowCredentials ? 'True' : 'False'));
+    header('Access-Control-Allow-Headers: ' . implode(', ', $allowedHeaders));
+    header('Access-Control-Allow-Methods: ' . implode(', ', $allowedMethods));
 }
 
 function route(string $name){

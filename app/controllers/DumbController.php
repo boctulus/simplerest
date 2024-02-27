@@ -5360,18 +5360,6 @@ class DumbController extends Controller
         dd($names_repetidos, "NAMES REPETIDOS : " . count($names_repetidos));
     }
 
-    function csv_debug1()
-    {
-        $path = 'D:\Desktop\TEST DE MANEJO\BASE DE DATOS PRUEBA ACT.csv';
-
-        $rows = Files::getCSV($path)['rows'];
-
-        foreach ($rows as $key => $row) {           
-            dd($row, $key);
-            break;
-        }
-    }
-
 
     ////////////
 
@@ -9467,5 +9455,16 @@ class DumbController extends Controller
         new CiudadesCLShortcode();
     }
 
+    
+    function csv_debug1()
+    {
+        $path = 'D:\Desktop\SANDRA ES BeKIND\PRODUCTOS\productos.csv';
+
+        $rows = Files::getCSV($path)['rows'];
+
+        foreach ($rows as $key => $row) {           
+            dd($row, $key);
+        }
+    }
 
 }   // end class
