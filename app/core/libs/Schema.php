@@ -401,7 +401,7 @@ class Schema
 
 		return DB::select("SELECT TABLE_NAME 
 		FROM information_schema.tables
-		WHERE table_schema = '$db_name'", [], 'COLUMN');
+		WHERE table_schema = '$db_name'", [], 'COLUMN', null, false, false, false);
 	}
 
 	/*
