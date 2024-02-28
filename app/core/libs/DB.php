@@ -700,11 +700,15 @@ class DB
 	//
 	// https://laravel.com/docs/5.0/database
 	//
-	public static function select(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, bool $only_one = false, bool $close_cursor = false, &$st = null){
+	public static function select(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, bool $only_one = false, bool $close_cursor = false, bool $tb_prefix = true, &$st = null){
 		if ($vals === null){
 			$vals = [];
 		}
 		
+		if ($tb_prefix){
+			$raw_sql = Model::addPrefix($raw_sql);
+		}		
+
 		static::$raw_sql = $q = $raw_sql;
 		static::$values  = $vals; 
 
@@ -725,7 +729,7 @@ class DB
 			foreach($vals as $ix => $val)
 			{				
 				if($val === NULL){
-					$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
+					$q = Strings::replaceNth('?', 'NULL', $q, (int) $ix+1-$reps);
 					$reps++;
 
 				/*
