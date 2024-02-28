@@ -841,15 +841,16 @@ class DB
 
 	public static function insert(string $raw_sql, Array $vals = [], $tenant_id = null, $prikey_name = 'id')
 	{
-		static::$raw_sql = $q = $raw_sql;
+		static::$raw_sql = $raw_sql;
 		static::$values  = $vals; 
-		$q = $raw_sql;
+		
+		$raw_sql = Model::addPrefix($raw_sql);
 	
 		$current_id_conn = static::getCurrentConnectionId();
 		$conn = static::getConnection($tenant_id);
 
 		try {
-			$st = $conn->prepare($q);
+			$st = $conn->prepare($raw_sql);
 
 			if (is_null($vals)){
 				$vals = [];
