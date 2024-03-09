@@ -39,7 +39,7 @@ Route::get('revolut', function(){
 Route::post('api/v1/save_demo', function(){
 	$req = request()->as_array()->getBody();
 	
-	Logger::dump($req);
+	Logger::dd($req);
 });
 
 Route::get('api/v1/cool',  'DumbAuthController@super_cool_action');

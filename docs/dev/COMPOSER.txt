@@ -32,7 +32,7 @@ y ejecutar:
 
   https://packagist.org/packages/submit
 
-- Para probarlo, hacer el "composer requiere" correspondiente. Ej:
+- Para probarlo, hacer el "composer require" correspondiente. Ej:
 
   $ composer require boctulus/hello_world:dev-main
 

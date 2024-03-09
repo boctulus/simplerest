@@ -120,27 +120,30 @@ class Files
 	}
 
 	/*
-		Admite redefinir los nombres de las columnas de la cabecera que interesan. Es condicion  enviar todas
-		o sino al menos colocar el indice.
+		Admite redefinir los nombres de las columnas de la cabecera que interesan. Hay dos formas de hacerlo:
+			
+		Enviando las cabeceras en un array con sus indices de posicion en el array original.
 
 		Ej:
 
 		Files::getCSV(ETC_PATH . 'prod_categories.csv', ',', true, true, [
-			0 => 'term_id',
-			1 => 'name',
-			2 => 'slug',
 			3 => 'description',
-			4 => 'parent_id',
-			5 => 'parent_name',
 			6 => 'parent_slug',
-			10 => 'thumbnail_id',		
-			13 => 'img_url'
+		])
+
+		Tambien es posible enviar un array asociativo con las columnas a refefinir:
+
+		Files::getCSV(ETC_PATH . 'prod_categories.csv', ',', true, true, [
+			'Desc'       => 'description',
+			'ParentSlug' => 'parent_slug',
 		])
 
 	*/
 	static function getCSV(string $path, string $separator = ",", bool $header = true, bool $assoc = true, $header_defs = null){	
 		$rows = [];
 
+		static::existsOrFail($path);
+		
 		$handle = fopen($path,'r');
 
 		if ($header){
@@ -151,17 +154,21 @@ class Files
 		}
 
 		// Puedo re-definir
-		if ($header_defs != null){
-			if (isset($cabecera) && !empty($cabecera)){
-				foreach ($cabecera as $ix => $key){
-					if (isset($header_defs[$ix]) && !empty($header_defs[$ix])){
-						$cabecera[$ix] = $header_defs[$ix]; 
+		if ($header_defs != null) {
+			if (isset($cabecera) && !empty($cabecera)) {
+				foreach ($cabecera as $ix => $key) {
+					if (Arrays::is_assoc($header_defs)) {
+						// Si es un array asociativo, verifica si la columna actual está definida
+						$head_key = isset($header_defs[$key]) ? $header_defs[$key] : $key;
+					} else {
+						// Si no es asociativo, verifica si la columna por posición está definida
+						$head_key = isset($header_defs[$ix]) ? $header_defs[$ix] : $key;
 					}
+					$cabecera[$ix] = $head_key;
 				}
 			} else {
 				$cabecera = $header_defs;
 			}
-			
 		}
 		
 		$i = 0;
