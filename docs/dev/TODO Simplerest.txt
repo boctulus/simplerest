@@ -1,35 +1,50 @@
 TODO SimpleRest
 ===============
 
-- Implementar "LFU (Least Frequently Used)" con "descuento progresivo"
+- Poder ejecutar metodos de cualquier libreria (sean estadicos o no) asi:
 
-Tomar una "ventana" arbitraria de 1:1000 registros o sea 500 de 500K por ejemplo y anotar la cantidad de hits sobre esa tabla... y cuando este llena reemplazar el registro con menos hits. <-- valor ajustable
+  php com lib {nombre-lib}:{metodo} [ params ]
 
-https://chat.openai.com/c/d5e6c6ca-de69-4728-9fa6-57b581204161
+Ej:
 
-Implementar colas para actualizaciones en segundo plano
+  php com lib files:mkdir_or_fail new_directory
 
-Aplicar "descuento progresivo" diario a los hits para los datos más antiguos: al 1% de registros mas antiguos restarle un 1% de su valor cada dia. <-- valores ajustables 
+Luego mediante rutas podrian crearse alias como:
 
-Considera otros algoritmos: FIFO, LRU, RR
+  php com lib files:{metodo} [ params ]
 
-  . FIFO (First-In-First-Out):
+equivaliendo a:
 
-  Ventajas: Simple y fácil de implementar. Puede funcionar bien en escenarios donde el orden de llegada refleja la importancia.
-  Desventajas: No considera la frecuencia o la recencia de acceso.
+  php com files metodo [ params ]
 
-  . LRU (Least Recently Used):
+- Comandos para listar rutas --de routes.php-
 
-  Ventajas: Mantiene los datos más recientes, útil cuando la temporalidad es importante.
-  Desventajas: No tiene en cuenta la frecuencia de acceso.
+  php com routes list
+  php com routes list --contains="{algun string}"
+  php com routes find "{algun string}"
 
-  . RR (Random Replacement):
+- Comandos para listar tablas, y ejecutar archivos .sql
 
-  Ventajas: Simple y de bajo costo computacional.
-  Desventajas: Puede eliminar datos valiosos sin considerar la recencia o la frecuencia de acceso.
+  php com db list  <-- lista conexiones 
+  php com db list --tables
+  php com db list --tables --contains="{algun string}"
+  php com db import --path= [ --to= ]
+  php com db import --file=  <-- a diferencia de --path= busca dentro de ETC_PATH
 
-https://redis.com/glossary/lru-cache/
-https://www.interviewcake.com/concept/java/lru-cache 
+- Seeders
+
+- Comando de busqueda y listado de migraciones
+
+  // Busca migraciones por el nombre del archivo o clase o metadescripcion
+  
+  php com migrations list
+  php com migrations list --contains="{algun string}" <-- equivale a "list"
+  php com migrations find "{algun string}"
+
+- CSV a migraciones
+
+com make migration --from-csv={file.csv} [ --to= ]
+
 
 [ Generador de Front ]
 
@@ -442,13 +457,7 @@ Debe hacerse porque al crear un paquete en Composer automaticamente se crea de l
 
   . Agregar metadescripcion como nombre y description
 
-  . Comando de busqueda
 
-    // Busca migraciones por el nombre del archivo o metadescripcion
-    php com migrations find "{algun string}"
-
-  . Comando para agregar el metodo down() con DropIfExists() si el up() hace un "CREATE TABLE". Otra opcion seria no exigir el metodo down() si el up() incluye el CREATE TABLE pero seria menos performante.
-`
 - NO esta agragndo la PRIMARY KEY !!
 
   class Options implements IMigration
@@ -886,10 +895,6 @@ De tomar librerias de Laravel, CodeIgniter u otros fws, usarlas como componentes
 - Terminal Router HTTP. Va a permitir anular el FrontController y simplificar.
 
 - Hacer router para consola. Pre-requisito para aboler el FrontController
-
-- CSV a migraciones
-
-  com make migration --csv={file.csv}
 
 
 [ FrontEnd ]
@@ -3220,19 +3225,6 @@ https://github.com/florianv/swap/blob/master/doc/readme.md
 - Detectar referencias circulares entre tablas.
 
 - Dar soporte para referencias circulares.
-
-- Implementar comandos "make" para la creación de tablas como usuarios y otras
-
-Ej:
-
-  php com make table queue
-  php com make table users [ --name=usuarios ]
-  
-Se crearán las migraciones correspondientes
-
-Luego será necesario ejecutar:
-
-  php com migrations migrate
 
 ---
 
@@ -7846,3 +7838,34 @@ Seria necesario implementar el equivalente a:
 - Implementar patron COMMANDER tipo Artisan y migrar desde MakeControllerBase y MakeController
 
 https://chat.openai.com/c/8aa0011e-c2f2-43f6-bdff-4c65dcbb1c39
+
+
+- Implementar "LFU (Least Frequently Used)" con "descuento progresivo"
+
+Tomar una "ventana" arbitraria de 1:1000 registros o sea 500 de 500K por ejemplo y anotar la cantidad de hits sobre esa tabla... y cuando este llena reemplazar el registro con menos hits. <-- valor ajustable
+
+https://chat.openai.com/c/d5e6c6ca-de69-4728-9fa6-57b581204161
+
+Implementar colas para actualizaciones en segundo plano
+
+Aplicar "descuento progresivo" diario a los hits para los datos más antiguos: al 1% de registros mas antiguos restarle un 1% de su valor cada dia. <-- valores ajustables 
+
+Considera otros algoritmos: FIFO, LRU, RR
+
+  . FIFO (First-In-First-Out):
+
+  Ventajas: Simple y fácil de implementar. Puede funcionar bien en escenarios donde el orden de llegada refleja la importancia.
+  Desventajas: No considera la frecuencia o la recencia de acceso.
+
+  . LRU (Least Recently Used):
+
+  Ventajas: Mantiene los datos más recientes, útil cuando la temporalidad es importante.
+  Desventajas: No tiene en cuenta la frecuencia de acceso.
+
+  . RR (Random Replacement):
+
+  Ventajas: Simple y de bajo costo computacional.
+  Desventajas: Puede eliminar datos valiosos sin considerar la recencia o la frecuencia de acceso.
+
+https://redis.com/glossary/lru-cache/
+https://www.interviewcake.com/concept/java/lru-cache 

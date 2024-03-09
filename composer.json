@@ -1,8 +1,9 @@
 {
-    "name": "felipe/simplerest",
-    "description": "API Rest framework for PHP",
+    "name": "boctulus/simplerest",
     "type": "project",
-    "license": "Commercial.",
+    "description": "API Rest framework for PHP",
+    "keywords": ["simplerest", "framework", "boctulus"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Pablo Gabriel Bozzolo <boctulus>",
@@ -46,8 +47,11 @@
         }
     },
     "config": {
+        "optimize-autoloader": true,
         "allow-plugins": {
             "php-http/discovery": true
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
