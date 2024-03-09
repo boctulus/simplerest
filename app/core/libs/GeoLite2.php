@@ -24,11 +24,21 @@ class GeoLite2
 
         import_csv_city-blocks.php
         import_csv_city-locations.php
+
+        Ej:
+        
+        $lat = 13.8529237;
+        $lon = 120.9901801;
+
+        // Muestra el resultado
+        dd(
+            GeoLite2::getLocation($lat, $lon)
+        );
     */
     static function getLocation($lat, $lon) {
         DB::getConnection();
 
-        // Calcula la distancia usando la fórmula de haversine y ordena los resultados por distancia
+        // Calcula la distancia usando la fórmula de Haversine y ordena los resultados por distancia
         $closestLocation = DB::select("SELECT c.*, b.network,
         (6371 * acos(cos(radians(?)) * cos(radians(b.latitude)) * cos(radians(b.longitude) - radians(?)) + sin(radians(?)) * sin(radians(b.latitude)))) AS distance
         FROM `wp_city-locations` c
