@@ -14,7 +14,6 @@ use simplerest\core\libs\Config;
 
 function set_transient(string $key, $value, $exp_time = null){
     $driver = config('cache_driver');
-
     return $driver::put($key, $value, $exp_time);
 }
 
