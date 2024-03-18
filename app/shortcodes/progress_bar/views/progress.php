@@ -7,7 +7,7 @@
          <div class="row px-0">
             <div class="cold-flex justify-content-center justify-content-sm-end px-0">
 
-            <div id="loading-text">
+            <div>
                <!-- Coloca la imagen aquí -->
                <img src="<?= shortcode_asset(__DIR__ . '/img/loading-2.gif') ?>" id="loading-image" width="60px">
                <img src="<?= shortcode_asset(__DIR__ . '/img/time_over.png') ?>" id="timeover" height="60px" style="display:none">
@@ -30,9 +30,15 @@
         setProgress(46)
     */
     function setProgress(value){
-        if (value < 0 || value > 100){
-            throw "Progress bar only accept values from 0 to 100"
+        if (value == null){
+            return;
         }
+
+        if (value < 0 || value > 100){
+            throw `Progress bar only accept values from 0 to 100. Current value ='${value}'`
+        }
+
+        console.log(`Setting value ='${value}'`);
 
         $('progress#progress-bar').val(value)
     }
@@ -68,8 +74,8 @@
 
                     // Verificar si la completitud es igual a 100
                     if (data.data.completion == 100) {
-                        // Ocultar
-                        jQuery('#loading-text').hide();
+                        setProgress(100); 
+                        // ...
                     } else {
                         if (!isOver(startTime, max_polling_time)){
                             // Si no es 100, seguir haciendo la llamada periódicamente
@@ -83,7 +89,7 @@
                         }
                        
                         if (data.data.completion == 0){
-                            completion =  completion + 10; // sumo 10% de forma arbitraria (si continua en 0%)
+                            //completion =  completion + 10; // sumo 10% de forma arbitraria (si continua en 0%)
                         } else {
                             completion = data.data.completion 
                         }
@@ -101,5 +107,8 @@
         pollCompletion();
     }
 
+    setTimeout(()=>{
+        get_completion_callback();
+    }, 100)
    
 </script>
