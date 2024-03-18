@@ -119,6 +119,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\WooCommerceApiClient;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
+use simplerest\shortcodes\progress_bar\ProgressShortcode;
 use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
@@ -9473,32 +9474,6 @@ class DumbController extends Controller
         }
     }
 
-    function csv_transfom()
-    {
-       // Tu array original
-        $miArray = array(
-            'nombre' => 'Pablo',
-            'edad' => 99
-        );
-
-        // Definir el mapeo de claves
-        $mapeoClaves = array(
-            'nombre' => 'name',
-            'edad' => 'age'
-        );
-
-        // Función para aplicar el mapeo de claves
-        function renombrarClaves($clave, $valor, $mapeoClaves) {
-            return array_key_exists($clave, $mapeoClaves) ? array($mapeoClaves[$clave] => $valor) : array($clave => $valor);
-        }
-
-        // Aplicar el mapeo de claves utilizando array_map
-        $arrayTransformado = array_reduce(array_map(fn($k, $v) => renombrarClaves($k, $v, $mapeoClaves), array_keys($miArray), $miArray), 'array_merge', array());
-
-        // Mostrar el array transformado
-        dd($arrayTransformado);
-    }
-
     function csv_transfom_2()
     {
         $path = 'D:\Desktop\SANDRA ES BeKIND\PRODUCTOS\productos.csv';
@@ -9521,14 +9496,43 @@ class DumbController extends Controller
         $rows = Files::getCSV($path, ',', true, true, [
             'SKU' => '__sku__',
             'IVA' => '__iva__',
+        ], [
             'nuevo_campo' => 'def_val',
             'nuevo_campo-2' => 'def_val-2'
         ])['rows'];
 
         foreach ($rows as $key => $row) {           
             dd($row, $key);
-            exit;
         }
+    }
+
+    function test_arr_key_repl(){
+        // Ejemplo de uso
+        $miArray = [
+            [
+                'nombre' => 'Pablo',
+                'edad' => 99
+            ],
+            [
+                'nombre' => 'Feli',
+                'edad' => 12
+            ]
+        ];
+
+        $mapeoClaves = [
+            'nombre' => 'name',
+            'edad' => 'age'
+        ];
+
+        $arrayTransformado = Arrays::renameKeys($miArray, $mapeoClaves);
+
+        // Mostrar el array transformado
+        dd($arrayTransformado);
+    }
+    
+    function test_progress(){
+        $pr = new ProgressShortcode();
+        render($pr->index());        
     }
 
 

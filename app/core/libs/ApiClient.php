@@ -461,7 +461,7 @@ class ApiClient
         if ($headers === null){
             $headers = [];
         } else {
-            if (!Arrays::is_assoc($headers)){
+            if (!Arrays::isAssocc($headers)){
                 $_hs = [];
                 foreach ($headers as $h){
                     list ($k, $v)= explode(':', $h, 2);
