@@ -620,7 +620,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 #var_export($_get);
 
                 // Importante:
-                $_get = Arrays::nonassoc($_get);
+                $_get = Arrays::nonAssoc($_get);
 
                 $allops = ['eq', 'gt', 'gteq', 'lteq', 'lt', 'neq'];
                 $eqops  = ['=',  '>' , '>=',   '<=',   '<',  '!=' ];

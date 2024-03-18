@@ -57,9 +57,9 @@ class VarDump
 			};
 
 			switch ($type){
-				case 'null':
-					$pp('print_r', "<null>");
-					break;
+				case 'NULL':
+					$pp('print_r', '<null>' . static::br());
+				break;
 				case 'boolean':
 				case 'string':
 				case 'double':

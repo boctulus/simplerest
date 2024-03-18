@@ -135,6 +135,8 @@ https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y y
 
 - Para ubicar widgets de forma drag-n-drop`
 
+  https://github.com/givanz/VvvebJs
+
   https://packery.metafizzy.co/
 
 - Finalmente en algun punto... podriiiia el front pasar a REACT JS

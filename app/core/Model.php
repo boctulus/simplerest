@@ -1736,7 +1736,7 @@ class Model {
 				$bindings[$ix] = "'$val'";	
 		}
 
-		$sql = Arrays::str_replace_array('?', $bindings, $pre_compiled_sql);
+		$sql = Arrays::strReplace('?', $bindings, $pre_compiled_sql);
 		$sql = trim(preg_replace('!\s+!', ' ', $sql));
 
 		if ($this->semicolon_ending){
@@ -2350,8 +2350,8 @@ class Model {
 			return;
 		}
 
-		if (Arrays::is_assoc($conditions)){
-			$conditions = Arrays::nonassoc($conditions);
+		if (Arrays::isAssocc($conditions)){
+			$conditions = Arrays::nonAssoc($conditions);
 		}
 
 		if (isset($conditions[0]) && is_string($conditions[0]))
@@ -2619,8 +2619,8 @@ class Model {
 	
 	function _having(array $conditions = null, $group_op = 'AND', $conjunction = null)
 	{	
-		if (Arrays::is_assoc($conditions)){
-            $conditions = Arrays::nonassoc($conditions);
+		if (Arrays::isAssocc($conditions)){
+            $conditions = Arrays::nonAssoc($conditions);
         }
 
 		if ((count($conditions) == 3 || count($conditions) == 2) && !is_array($conditions[1]))
@@ -2631,7 +2631,7 @@ class Model {
 		$_having = [];
 		foreach ((array) $conditions as $cond)
 		{	
-			if (Arrays::is_assoc($cond)){
+			if (Arrays::isAssocc($cond)){
 				$cond[0] = Arrays::arrayKeyFirst($cond);
 				$cond[1] = $cond[$cond[0]];
 			}
@@ -2693,8 +2693,8 @@ class Model {
 
 	function having(array $conditions, $conjunction = 'AND')
 	{	
-		if (Arrays::is_assoc($conditions)){
-            $conditions = Arrays::nonassoc($conditions);
+		if (Arrays::isAssocc($conditions)){
+            $conditions = Arrays::nonAssoc($conditions);
         }
 
 		if (!is_array($conditions[0])){
@@ -2759,7 +2759,7 @@ class Model {
 			throw new SqlException('There is no data to update');
 		}
 
-		if (!Arrays::is_assoc($data)){
+		if (!Arrays::isAssocc($data)){
 			throw new SqlException('Array of data should be associative');
 		}
 
@@ -3165,7 +3165,7 @@ class Model {
 		if ($this->conn == null)
 			throw new SqlException('No connection');
 
-		if (!Arrays::is_assoc($data)){
+		if (!Arrays::isAssocc($data)){
 			foreach ($data as $dato){
 				if (is_array($dato)){					
 					$last_id = $this->create($dato, $ignore_duplicates);
@@ -3352,7 +3352,7 @@ class Model {
 	}
 
 	function insert(array $data, bool $ignore_duplicates = false){
-		if (!Arrays::is_assoc($data)){
+		if (!Arrays::isAssocc($data)){
 			if (is_array($data[0]))
 			{	
 				DB::beginTransaction();

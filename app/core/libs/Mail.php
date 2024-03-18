@@ -137,7 +137,7 @@ class Mail extends MailBase implements IMail
             $to  = [];
             $to[]['email'] = $tmp;
         } else {
-            if (Arrays::is_assoc($to)){
+            if (Arrays::isAssocc($to)){
                 $to = [ $to ];
             }
         }
@@ -147,7 +147,7 @@ class Mail extends MailBase implements IMail
             $cc  = [];
             $cc[]['email'] = $tmp;
         } else {
-            if (Arrays::is_assoc($cc)){
+            if (Arrays::isAssocc($cc)){
                 $cc = [ $cc ];
             }
         }
@@ -157,7 +157,7 @@ class Mail extends MailBase implements IMail
             $bcc  = [];
             $bcc[]['email'] = $tmp;
         } else {
-            if (Arrays::is_assoc($bcc)){
+            if (Arrays::isAssocc($bcc)){
                 $bcc = [ $bcc ];
             }
         }
