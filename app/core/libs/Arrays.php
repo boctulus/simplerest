@@ -111,15 +111,80 @@ class Arrays
         return $out;
     }
 
+    /*
+      Renombra las claves de un array según el mapeo proporcionado.
+     
+      @param array $arr      El array original.
+      @param array $mapeoClaves El mapeo de claves a aplicar.
+      @return array El array transformado con las claves renombradas.
+      
+      Ej:
+      
+        $miArray = [
+            [
+                'nombre' => 'Pablo',
+                'edad' => 99
+            ],
+            [
+                'nombre' => 'Feli',
+                'edad' => 12
+            ]
+        ];
+
+        $mapeoClaves = [
+            'nombre' => 'name',
+            'edad' => 'age'
+        ];
+
+        $arrayTransformado = Arrays::renameKeys($miArray, $mapeoClaves);
+
+        // Resultado:
+
+        Array
+        (
+            [0] => Array
+                (
+                    [name] => Pablo
+                    [age] => 99
+                )
+
+            [1] => Array
+                (
+                    [name] => Feli
+                    [age] => 12
+                )
+
+        )
+     */
+    public static function renameKeys(array $arr, array $mapeoClaves): array {
+        $renombrarClaves = function ($clave, $valor) use ($mapeoClaves) {
+            return array_key_exists($clave, $mapeoClaves) ? [$mapeoClaves[$clave] => $valor] : [$clave => $valor];
+        };
+
+        return array_replace_recursive(...array_map(fn($k, $v) => $renombrarClaves($k, is_array($v) ? self::renameKeys($v, $mapeoClaves) : $v), array_keys($arr), $arr));
+    }
+    
+    // Renombra una key de un Array
+    static function renameKey(&$arr, $current_key, $new_key){
+        $arr[$new_key] = $arr[$current_key];
+        unset($arr[$current_key]);
+    }
+
+
+    static function toJSON($arr){
+        $data = json_encode($arr, JSON_UNESCAPED_SLASHES);
+        return  str_replace("\r\n", '', $data);
+    }
+
     /**
-     * nonassoc
+     * nonAssoc
      * Turns associative into non associative array
      * 
      * @param  array $arr
      *
      * @return array
      */
-    static function nonassoc(array $arr){
+    static function nonAssoc(array $arr){
         $out = [];
         foreach ($arr as $key => $val) {
             $out[] = [$key, $val];
@@ -130,7 +195,7 @@ class Arrays
     /*
         Solo se es no-asociativo si ninguna key es no-numerica
     */
-    static function is_non_assoc(array $arr)
+    static function isNonAssoc(array $arr)
     {
         $keys = array_keys($arr);
 
@@ -146,12 +211,12 @@ class Arrays
     /*
         Un array es asociativo con que al menos una key sea un string
     */
-    static function is_assoc(array $arr){
-        return !static::is_non_assoc($arr);
+    static function isAssocc(array $arr){
+        return !static::isNonAssoc($arr);
     }
 
     /**
-     * A str_replace_array for PHP
+     * A strReplace for PHP
      *
      * As described in http://php.net/str_replace this wouldnot make sense
      * However there are chances that we need it, so often !
@@ -165,7 +230,7 @@ class Arrays
      *
      * @return string
      */
-    static function str_replace_array($search, array $replace, $subject)
+    static function strReplace($search, array $replace, $subject)
     {
         if (empty($subject)){
             return '';
@@ -236,7 +301,7 @@ class Arrays
                 return false;
             }
 
-            if (static::is_assoc($sub)){
+            if (static::isAssocc($sub)){
                 return false;
             }
         }

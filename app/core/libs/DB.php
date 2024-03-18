@@ -516,7 +516,7 @@ class DB
 	// Returns last executed query 
 	static public function getLog(){
 		if (!is_null(static::$raw_sql)){
-			$sql = Arrays::str_replace_array('?', static::$values, static::$raw_sql);
+			$sql = Arrays::strReplace('?', static::$values, static::$raw_sql);
 			$sql = trim(preg_replace('!\s+!', ' ', $sql));
 
 			if (!Strings::endsWith(';', $sql)){
@@ -546,7 +546,7 @@ class DB
 				$bindings[$ix] = "'$val'";	
 		}
 
-		$sql = Arrays::str_replace_array('?', $bindings, $pre_compiled_sql);
+		$sql = Arrays::strReplace('?', $bindings, $pre_compiled_sql);
 		$sql = trim(preg_replace('!\s+!', ' ', $sql));
 
 		if (!Strings::endsWith(';', $sql)){
