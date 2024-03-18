@@ -40,7 +40,7 @@ class MailFromRemoteWP extends MailBase
             $to  = [];
             $to[]['email'] = $tmp;
         } else {
-            if (Arrays::is_assoc($to)){
+            if (Arrays::isAssocc($to)){
                 $to = [ $to ];
             }
         }
@@ -50,7 +50,7 @@ class MailFromRemoteWP extends MailBase
             $cc  = [];
             $cc[]['email'] = $tmp;
         } else {
-            if (Arrays::is_assoc($cc)){
+            if (Arrays::isAssocc($cc)){
                 $cc = [ $cc ];
             }
         }
@@ -60,7 +60,7 @@ class MailFromRemoteWP extends MailBase
             $bcc  = [];
             $bcc[]['email'] = $tmp;
         } else {
-            if (Arrays::is_assoc($bcc)){
+            if (Arrays::isAssocc($bcc)){
                 $bcc = [ $bcc ];
             }
         }

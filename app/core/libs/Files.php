@@ -138,26 +138,36 @@ class Files
 			'ParentSlug' => 'parent_slug',
 		])
 
+		Y pueden agregarse "columnas extra" con sus valores por defecto:
+
+		$rows = Files::getCSV($path, ',', true, true, [
+            'SKU' => '__sku__',
+            'IVA' => '__iva__',
+        ], [
+            'nuevo_campo' => 'def_val',
+            'nuevo_campo-2' => 'def_val-2'
+        ])['rows'];
+
 	*/
-	static function getCSV(string $path, string $separator = ",", bool $header = true, bool $assoc = true, $header_defs = null){	
+	static function getCSV(string $path, string $separator = ",", bool $header = true, bool $assoc = true, $header_defs = null, $extra_cols = null) {
 		$rows = [];
-
+	
 		static::existsOrFail($path);
-		
-		$handle = fopen($path,'r');
-
-		if ($header){
+	
+		$handle = fopen($path, 'r');
+	
+		if ($header) {
 			$cabecera = fgetcsv($handle, null, $separator);
-			$ch       = count($cabecera);
-		}  else {
-			$assoc    = false;
+			$ch = count($cabecera);
+		} else {
+			$assoc = false;
 		}
-
+	
 		// Puedo re-definir
 		if ($header_defs != null) {
 			if (isset($cabecera) && !empty($cabecera)) {
 				foreach ($cabecera as $ix => $key) {
-					if (Arrays::is_assoc($header_defs)) {
+					if ($assoc) {
 						// Si es un array asociativo, verifica si la columna actual está definida
 						$head_key = isset($header_defs[$key]) ? $header_defs[$key] : $key;
 					} else {
@@ -170,32 +180,47 @@ class Files
 				$cabecera = $header_defs;
 			}
 		}
-		
+	
+		// Agregar nuevos campos si se proporcionan
+		if ($extra_cols != null && is_array($extra_cols)) {
+			foreach ($extra_cols as $nuevo_campo => $def_val) {
+				$cabecera[] = $nuevo_campo;
+			}
+		}
+	
 		$i = 0;
-		while ( ($data = fgetcsv($handle, null, $separator) ) !== FALSE ) {
-			if ($assoc){
-				for ($j=0;$j<$ch; $j++){					
+		while (($data = fgetcsv($handle, null, $separator)) !== false) {
+			if ($assoc) {
+				for ($j = 0; $j < $ch; $j++) {
 					$head_key = $cabecera[$j];
-					$val      = $data[$j] ?? '';
-
+					$val = $data[$j] ?? '';
+	
 					$rows[$i][$head_key] = $val;
 				}
 			} else {
 				$rows[] = $data;
-			}	
-
-			$i++;		
+			}
+	
+			// Agregar valores para los nuevos campos
+			if ($extra_cols != null && is_array($extra_cols)) {
+				foreach ($extra_cols as $nuevo_campo => $def_val) {
+					$rows[$i][$nuevo_campo] = $def_val;
+				}
+			}
+	
+			$i++;
 		}
-		
-		if ($header){
+	
+		if ($header) {
 			return [
 				'rows'   => $rows,
 				'header' => $cabecera ?? []
 			];
-		} 
-
-		return $rows;		
+		}
+	
+		return $rows;
 	}
+	
 
 	/*
 		Hace un "diff" entre dos rutas de archivos
