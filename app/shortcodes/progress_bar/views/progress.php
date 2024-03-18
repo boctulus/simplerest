@@ -9,7 +9,8 @@
 
             <div id="loading-text">
                <!-- Coloca la imagen aquí -->
-               <img src="<?= shortcode_asset(__DIR__ . '/img/loading.gif') ?>" id="loading-image" width="40px">
+               <img src="<?= shortcode_asset(__DIR__ . '/img/loading-2.gif') ?>" id="loading-image" width="60px">
+               <img src="<?= shortcode_asset(__DIR__ . '/img/time_over.png') ?>" id="timeover" height="60px" style="display:none">
 
                <div id="progress-bar-container">   
                   <progress id="progress-bar" value="0" max="100" style="width:300px; height: 24px;"> 0% </progress>
@@ -45,7 +46,15 @@
 
     let completion = null;
 
-    function get_completion_callback() {
+    // aun no ha terminado?
+    function isOver(startTime, max_polling_time) {
+        let currentTime = new Date().getTime();
+        return (currentTime - startTime > max_polling_time * 1000);
+    }
+
+    function get_completion_callback(max_polling_time = 3600) {
+        let startTime = new Date().getTime();
+
         function pollCompletion() {
             jQuery.ajax({
                 url: `/bzz_import/get_completion`,
@@ -62,11 +71,19 @@
                         // Ocultar
                         jQuery('#loading-text').hide();
                     } else {
-                        // Si no es 100, seguir haciendo la llamada periódicamente
-                        setTimeout(pollCompletion, 1000);
+                        if (!isOver(startTime, max_polling_time)){
+                            // Si no es 100, seguir haciendo la llamada periódicamente
+                            setTimeout(pollCompletion, 1000);
+                        } else {
+                            console.log("Time is over!");
 
+                            // Reemplazar el icono de carga por el de tiempo agotado
+                            $('#loading-image').hide()
+                            $('#timeover').show()                          
+                        }
+                       
                         if (data.data.completion == 0){
-                            completion =  completion + 10; // sumo 10% a pedido de Facundo (si continua en 0%)
+                            completion =  completion + 10; // sumo 10% de forma arbitraria (si continua en 0%)
                         } else {
                             completion = data.data.completion 
                         }
