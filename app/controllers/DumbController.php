@@ -9421,7 +9421,7 @@ class DumbController extends Controller
         set_transient('time', at(), 10);
 
         $this->test_get_transient();
-        sleep(2);
+        sleep(1);
         $this->test_get_transient();
     }
 
