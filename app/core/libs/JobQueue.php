@@ -52,8 +52,8 @@ class JobQueue
             /*
                 Ejecuta workerController::listen($this->name)
             */
-            $php = System::getPHP();
-            $pid = System::runInBackground("$php com worker listen name={$this->name} max=$tasks_per_worker");
+
+            $pid = bg_com("worker listen name={$this->name} max=$tasks_per_worker");
 
             DB::getDefaultConnection();
             

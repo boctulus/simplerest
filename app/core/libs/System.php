@@ -116,7 +116,7 @@ class System
         https://gist.github.com/damienalexandre/1300820
         https://stackoverflow.com/questions/13257571/call-command-vs-start-with-wait-option
     */
-    static function runInBackground(string $cmd, string $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null)
+    static function runInBackground(string $cmd, $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null)
     {
         ignore_user_abort($ignore_user_abort);
 
