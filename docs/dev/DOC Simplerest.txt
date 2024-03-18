@@ -11885,10 +11885,34 @@ Puede utilizar System::runInBackground() desde la versión 0.7.0
 
 Ej: 
 
-	$cmd = 'php com dumb some_work';
+	$cmd = 'php com dumb some';
 	$pid = System::runInBackground($cmd, true);
 
 En el caso de Linux, devuelve el PID del proceso ejecutado en background.
+
+Es importante notar que para que funcione en Windows se necesitan ajustes:
+
+	/*
+		Las rutas absolutas son necesarias
+	*/
+
+	$php = System::getPHP();
+	$dir = ROOT_PATH;
+	$cmd = "$php {$dir}com dumb some";
+
+	dd($cmd, 'CMD');
+
+	chdir(ROOT_PATH);
+	$pid = System::runInBackground($cmd);
+
+	dd($pid, 'pid');    
+
+
+Si se deseara especificamente ejecutar controladores o rutas del framework puede usar el helper bg_com()
+
+Ej:
+
+	bg_com("bzz_import do_process");
 
 
 # CronJobs 
