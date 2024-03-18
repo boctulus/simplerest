@@ -13,18 +13,22 @@ class BzzImportController extends MyController
     {
         // Mock de registros de productos
         $rows = [
-            '{A}','{B}','{C}','{D}','{E}','{F}'
+            '{A}','{B}','{C}','{D}','{E}','{F}','{G}','{H}'
         ];
 
         $cnt  = count($rows);
    
+        set_transient('bzz-import_completion', 0);
+
         foreach ($rows as $cur => $row){
             // some heavy work
-            // sleep(2);
-            set_transient('bzz-import_completion', round($cur / $cnt) * 100, 9999);
-
+            sleep(2);
+            set_transient('bzz-import_completion', round($cur * 100 / $cnt));
             dd(get_transient('bzz-import_completion', 0));
-        }        
+        }     
+
+        set_transient('bzz-import_completion', 100);   
+        dd(get_transient('bzz-import_completion', 0));
     }
 
     function get_completion()

@@ -26,7 +26,7 @@ class DBCache implements ICache
             'expires_at' => $expires_at,
         ];
 
-        if (table('cache')->where(['_key_' => $key])){
+        if (table('cache')->where(['_key_' => $key])->exists()){
             return table('cache')
             ->where(['_key_' => $key])
             ->update($data);

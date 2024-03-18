@@ -4281,7 +4281,6 @@ class DumbController extends Controller
         DB::getConnection('db_docker_php81_mysql');
     }
 
-
     function some_work()
     {
         for ($i = 1; $i <= rand(5, 10); $i++) {
@@ -6716,8 +6715,7 @@ class DumbController extends Controller
 
     function test_run_in_background()
     {
-        $php = System::isWindows() ? shell_exec("where php.exe") : "php";
-        System::runInBackground("$php com dumb fnx");
+        bg_com("dumb fnx");
     }
 
     function test_look_for_exe()
@@ -7672,6 +7670,12 @@ class DumbController extends Controller
         dd(
             DBCache::get('galaxia')
         );
+    }
+
+    function test_db_transient(){
+        set_transient('bzz-import_completion', 55);
+
+        dd(get_transient('bzz-import_completion', 0));
     }
 
     function test_memorizacion()
@@ -9065,6 +9069,14 @@ class DumbController extends Controller
         dd(System::isProcessAlive($pid), 'Running?');
     }
 
+    function some()
+    {
+        for ($i = 1; $i <= 7; $i++) {
+            Logger::dd($i, "Current");
+            sleep(1);
+        }
+    }
+
     /*
         Si se desea ser notificado cuando el job a terminado con éxito o un fallo,
         pueden hacerse:
@@ -9076,8 +9088,21 @@ class DumbController extends Controller
     */
     function test_background_task()
     {
-        $cmd = 'php com dumb some';
+        $php = System::getPHP();
+        $dir = ROOT_PATH;
+        $cmd = "$php {$dir}com dumb some";
+
+        dd($cmd, 'CMD');
+
+        chdir(ROOT_PATH);
         $pid = System::runInBackground($cmd);
+
+        dd($pid, 'pid');    
+    }
+
+    function test_background_task_2()
+    {
+        $pid = bg_com("dumb some");
 
         dd($pid, 'pid');
     }
@@ -9535,5 +9560,10 @@ class DumbController extends Controller
         render($pr->index());        
     }
 
+    function test_background_task_3()
+    {
+        $pid = bg_com("bzz_import do_process");
+        dd($pid, 'pid');
+    }
 
 }   // end class
