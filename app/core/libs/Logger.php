@@ -91,8 +91,8 @@ class Logger
 
 		$extra = '';
 		if (static::$trace){
-			$file  = debug_backtrace()[0]['file'];
-			$line  = debug_backtrace()[0]['line'];
+			$file  = debug_backtrace()[0]['file'] ?? '?';
+			$line  = debug_backtrace()[0]['line'] ?? '?';
 		
 			$extra = " | LOCATION: {$file}:{$line}";			
 		}
