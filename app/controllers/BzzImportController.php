@@ -11,7 +11,10 @@ use simplerest\controllers\MyController;
 class BzzImportController extends MyController
 {
     function run(){
+        // Resuelvo CORS
         cors();
+
+        // Ejecuto el proceso en segundo plano
         $pid = bg_com("bzz_import do_process");
     }   
 
@@ -35,11 +38,11 @@ class BzzImportController extends MyController
                 // some heavy work
                 sleep(2);
                 set_transient('bzz-import_completion', round(($cur+1) * 100 / $cnt), 9999);
-                Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
+                // Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
             }     
 
             set_transient('bzz-import_completion', 100, 9999);   
-            Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
+            // Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
         } catch (\Exception $e){
             Logger::logError($e->getMessage());
         }
