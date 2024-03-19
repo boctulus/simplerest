@@ -130,6 +130,6 @@
 
     setTimeout(()=>{
         get_completion_callback();
-    }, 100)
+    }, 200)
    
 </script>
