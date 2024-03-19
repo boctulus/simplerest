@@ -12,6 +12,9 @@ class VarDump
 	public static $render_trace = false;
 	protected static $log       = false;
 
+	/*
+		Falla silenciosamente en segundo plano
+	*/
 	static function log(bool $value = true){
 		static::$log = $value;
 	}
@@ -141,8 +144,8 @@ class VarDump
 		//var_dump(static::$render_trace);
 
 		if (static::$render_trace){
-			$file = debug_backtrace()[1]['file'] ?? 'unknow file';
-			$line = debug_backtrace()[1]['line'] ?? 'unknow line';
+			$file = debug_backtrace()[1]['file'] ?? '?';
+			$line = debug_backtrace()[1]['line'] ?? '?';
 		
 			static::export("{$file}:{$line}", "LOCATION", true, $msg_at_top);
 		}

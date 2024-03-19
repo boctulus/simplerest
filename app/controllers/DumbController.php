@@ -9565,5 +9565,5 @@ class DumbController extends Controller
         $pid = bg_com("bzz_import do_process");
         dd($pid, 'pid');
     }
-
+    
 }   // end class

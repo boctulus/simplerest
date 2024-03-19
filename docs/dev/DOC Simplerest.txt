@@ -11915,6 +11915,41 @@ Ej:
 	bg_com("bzz_import do_process");
 
 
+Advertencia de bug
+
+	El uso de VarDump::log() + dd() en vez de Logger::dd() falla silenciosamente cuando el proceso se ejecuta en segundo plano.
+
+Ej:
+
+	/*
+		ESTO FALLA e interrumpe el script
+	*/
+
+ 	VarDump::log();
+   
+	try {
+		for ($i=0; $i<5; $i++){  
+			dd($i, 'i');
+		}
+	} catch (\Exception $e){
+		Logger::logError($e->getMessage());
+	}
+
+	/*
+		ESTO SI FUNCIONA
+	*/
+   
+	try {
+		for ($i=0; $i<5; $i++){  
+			Logger::dd($i, 'I');
+		}
+	} catch (\Exception $e){
+		Logger::logError($e->getMessage());
+	}
+
+El fallo es independiente de si se usa la implementacion con error_log() o no.
+
+
 # CronJobs 
 
 El framework dispone de tareas programadas o "cron jobs". Estos cronjobs se almacenan en /app/jobs/cronjobs
