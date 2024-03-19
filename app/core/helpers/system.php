@@ -9,6 +9,8 @@ use simplerest\core\libs\ApacheWebServer;
     Ej:
 
     bg_com("bzz_import do_process")
+
+    Parecido a System::com() pero corre en background y los parametros son parte de $command
 */
 function bg_com(string $command, $output_path = null){
     $php = System::getPHP();

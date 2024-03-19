@@ -210,7 +210,7 @@ class System
     }
 
     /*
-        Ejecuta un comando / script situandose primero en el directorio especificado
+        Ejecuta un comando situandose primero en el directorio especificado
 
         Ej:
 
@@ -229,7 +229,7 @@ class System
     }
 
     /*
-        Ejecuta un comando / script situandose primero en el root del proyecto
+        Ejecuta un comando situandose primero en el root del proyecto
     */
     static function execAtRoot(string $command, ...$args){
         return static::execAt($command, ROOT_PATH, ...$args);
@@ -243,7 +243,8 @@ class System
         Ejecuta un comando "com"
     */
     static function com(string $command, ...$args){
-        return static::execAtRoot(static::getPHP() . " com $command", ...$args);
+        $dir = ROOT_PATH;
+        return static::execAtRoot(static::getPHP() . " {$dir}com $command", ...$args);
     }
 
 

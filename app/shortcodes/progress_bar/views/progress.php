@@ -88,12 +88,8 @@
                             $('#timeover').show()                          
                         }
                        
-                        if (data.data.completion == 0){
-                            //completion =  completion + 10; // sumo 10% de forma arbitraria (si continua en 0%)
-                        } else {
-                            completion = data.data.completion 
-                        }
-
+                        completion = data.data.completion 
+                     
                         setProgress(completion); 
                     }
                 },
