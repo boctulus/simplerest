@@ -58,8 +58,33 @@
         return (currentTime - startTime > max_polling_time * 1000);
     }
 
-    function get_completion_callback(max_polling_time = 3600) {
+    function get_completion_callback(max_polling_time = 3600)
+    {
+        let data = {
+            'some_key':'some value'
+        };
+
+        /*
+            Iniciar el proceso en background
+        */
+
+        jQuery.ajax({
+            url: `/bzz_import/run`,
+            type: "POST",
+            dataType: "json",
+            success: function(res) {
+                console.log(res);               
+            },
+            error: function(xhr, status, error) {
+                console.error("Error en la llamada Ajax: " + error);
+            }
+        });
+        
         let startTime = new Date().getTime();
+
+        /*
+            Obtencion de datos en tiempo real
+        */
 
         function pollCompletion() {
             jQuery.ajax({

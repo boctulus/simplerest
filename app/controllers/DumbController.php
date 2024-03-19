@@ -9562,8 +9562,8 @@ class DumbController extends Controller
 
     function test_background_task_3()
     {
-        $pid = bg_com("bzz_import do_process");
+        $pid = bg_com("bzz_import run");
         dd($pid, 'pid');
     }
-    
+
 }   // end class
