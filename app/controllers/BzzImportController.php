@@ -10,20 +10,25 @@ use simplerest\controllers\MyController;
 
 class BzzImportController extends MyController
 {
+    function run(){
+        cors();
+        $pid = bg_com("bzz_import do_process");
+    }   
+
     // Simulo proceso de importacion
-    function run()
+    function do_process()
     {
         // Mock de registros de productos
         $rows = [
             '{A}','{B}','{C}','{D}','{E}','{F}','{G}','{H}'
         ];
 
+        set_transient('bzz-import_completion', 0, 9999);
+        Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
+
         $cnt = count($rows);
    
         try {
-            set_transient('bzz-import_completion', 0, 9999);
-            Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
-
             foreach ($rows as $cur => $row){
                 Logger::dd("Processing row='$cur' ({$row})");
 

@@ -51,6 +51,7 @@
     */
 
     let completion = null;
+    let startTime;
 
     // aun no ha terminado?
     function isOver(startTime, max_polling_time) {
@@ -60,28 +61,6 @@
 
     function get_completion_callback(max_polling_time = 3600)
     {
-        let data = {
-            'some_key':'some value'
-        };
-
-        /*
-            Iniciar el proceso en background
-        */
-
-        jQuery.ajax({
-            url: `/bzz_import/run`,
-            type: "POST",
-            dataType: "json",
-            success: function(res) {
-                console.log(res);               
-            },
-            error: function(xhr, status, error) {
-                console.error("Error en la llamada Ajax: " + error);
-            }
-        });
-        
-        let startTime = new Date().getTime();
-
         /*
             Obtencion de datos en tiempo real
         */
@@ -124,12 +103,34 @@
             });
         }
 
-        // Iniciar el bucle de llamadas
         pollCompletion();
     }
 
-    setTimeout(()=>{
+    
+    let data = {
+        'some_key':'some value'
+    };
+
+    /*
+        Iniciar el proceso en background
+    */
+
+    jQuery.ajax({
+        url: `/bzz_import/run`,
+        type: "POST",
+        dataType: "json",
+        success: function(res) {
+            console.log('DONE', res); 
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en la llamada Ajax: " + error);
+        }
+    });
+
+    setTimeout(() => {
+         // Iniciar el bucle de llamadas
+        startTime = new Date().getTime();
         get_completion_callback();
-    }, 200)
+    }, 300)
    
 </script>
