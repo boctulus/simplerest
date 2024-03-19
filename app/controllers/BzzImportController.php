@@ -11,7 +11,7 @@ use simplerest\controllers\MyController;
 class BzzImportController extends MyController
 {
     // Simulo proceso de importacion
-    function do_process()
+    function run()
     {
         // Mock de registros de productos
         $rows = [
