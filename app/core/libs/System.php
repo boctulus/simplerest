@@ -115,6 +115,8 @@ class System
         Ver tambi'en
         https://gist.github.com/damienalexandre/1300820
         https://stackoverflow.com/questions/13257571/call-command-vs-start-with-wait-option
+
+        El envio a $output_path falla en Windows
     */
     static function runInBackground(string $cmd, $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null)
     {
