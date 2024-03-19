@@ -3,6 +3,7 @@
 namespace simplerest\core\libs;
 
 use simplerest\core\libs\Url; 
+use simplerest\core\libs\Logger;
 
 // Dumper
 class VarDump
@@ -140,8 +141,8 @@ class VarDump
 		//var_dump(static::$render_trace);
 
 		if (static::$render_trace){
-			$file = debug_backtrace()[1]['file'];
-			$line = debug_backtrace()[1]['line'];
+			$file = debug_backtrace()[1]['file'] ?? 'unknow file';
+			$line = debug_backtrace()[1]['line'] ?? 'unknow line';
 		
 			static::export("{$file}:{$line}", "LOCATION", true, $msg_at_top);
 		}
