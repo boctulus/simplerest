@@ -13,8 +13,6 @@ class BzzImportController extends MyController
     // Simulo proceso de importacion
     function do_process()
     {
-        // VarDump::log();
-
         // Mock de registros de productos
         $rows = [
             '{A}','{B}','{C}','{D}','{E}','{F}','{G}','{H}'
@@ -23,19 +21,20 @@ class BzzImportController extends MyController
         $cnt = count($rows);
    
         try {
-            set_transient('bzz-import_completion', 0);
+            set_transient('bzz-import_completion', 0, 9999);
+            Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
 
             foreach ($rows as $cur => $row){
                 Logger::dd("Processing row='$cur' ({$row})");
 
                 // some heavy work
                 sleep(2);
-                set_transient('bzz-import_completion', round($cur * 100 / $cnt));
-                // dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
+                set_transient('bzz-import_completion', round(($cur+1) * 100 / $cnt), 9999);
+                Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
             }     
 
-            set_transient('bzz-import_completion', 100);   
-            // dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
+            set_transient('bzz-import_completion', 100, 9999);   
+            Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
         } catch (\Exception $e){
             Logger::logError($e->getMessage());
         }
