@@ -238,15 +238,14 @@ class Files
             dd($row, 'ROW');
         });
 	*/
-	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null) {	
-		static::existsOrFail($path);
-	
+	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null) 
+	{
 		$handle = fopen($path, 'r');
 
 		if (!$handle){
 			return;
 		}
-	
+
 		if ($header) {
 			$cabecera = fgetcsv($handle, null, $separator);
 			$ch = count($cabecera);
@@ -257,6 +256,8 @@ class Files
 
 		// Puedo re-definir
 		if ($header_defs != null) {
+			$assoc = true;
+
 			if (isset($cabecera) && !empty($cabecera)) {
 				foreach ($cabecera as $ix => $key) {
 					if ($assoc) {
@@ -271,6 +272,8 @@ class Files
 			} else {
 				$cabecera = $header_defs;
 			}
+
+			$ch = count($cabecera);
 		}
 
 		// loop through the file line-by-line
@@ -281,7 +284,7 @@ class Files
 				for ($j = 0; $j < $ch; $j++) {
 					$head_key = $cabecera[$j];
 					$val = $data[$j] ?? '';
-	
+
 					$row[$head_key] = $val;
 				}
 			} else {
@@ -295,6 +298,13 @@ class Files
 		}
 
 		fclose($handle);
+	}
+
+	/*
+		Reads an entire file into an array.
+	*/
+	static function toArray(string $filename, $flags = FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES){
+		return file($filename, $flags);
 	}
 
 	/*
