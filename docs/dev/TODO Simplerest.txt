@@ -1,6 +1,13 @@
 TODO SimpleRest
 ===============
 
+- Implementar importador de CSV via comando
+
+  $sql = "LOAD DATA LOCAL INFILE '/path/to/file.csv' 
+        REPLACE INTO TABLE table_name FIELDS TERMINATED BY ',' 
+        ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES";
+    $result = $mysqli->query($sql);
+
 - Poder ejecutar metodos de cualquier libreria (sean estadicos o no) asi:
 
   php com lib {nombre-lib}:{metodo} [ params ]
