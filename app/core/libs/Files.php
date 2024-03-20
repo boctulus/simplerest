@@ -120,6 +120,10 @@ class Files
 	}
 
 	/*
+		Lee un archivo CSV y lo devuelve como string
+
+		Solo puede usarse para CSV de pequeno tamano. Se recomienda usar processCSV()
+
 		Admite redefinir los nombres de las columnas de la cabecera que interesan. Hay dos formas de hacerlo:
 			
 		Enviando las cabeceras en un array con sus indices de posicion en el array original.
@@ -208,9 +212,12 @@ class Files
 				}
 			}
 	
+			unset($data);
 			$i++;
 		}
 	
+		fclose($handle);
+
 		if ($header) {
 			return [
 				'rows'   => $rows,
@@ -221,6 +228,74 @@ class Files
 		return $rows;
 	}
 	
+	/*
+		Procesa archivo CSV row a row
+
+		Ej:
+
+		 Files::processCSV($path, ',', true, function($row){
+			// Procesamiento del row
+            dd($row, 'ROW');
+        });
+	*/
+	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null) {	
+		static::existsOrFail($path);
+	
+		$handle = fopen($path, 'r');
+
+		if (!$handle){
+			return;
+		}
+	
+		if ($header) {
+			$cabecera = fgetcsv($handle, null, $separator);
+			$ch = count($cabecera);
+			$assoc = true;
+		} else {
+			$assoc = false;
+		}
+
+		// Puedo re-definir
+		if ($header_defs != null) {
+			if (isset($cabecera) && !empty($cabecera)) {
+				foreach ($cabecera as $ix => $key) {
+					if ($assoc) {
+						// Si es un array asociativo, verifica si la columna actual está definida
+						$head_key = isset($header_defs[$key]) ? $header_defs[$key] : $key;
+					} else {
+						// Si no es asociativo, verifica si la columna por posición está definida
+						$head_key = isset($header_defs[$ix]) ? $header_defs[$ix] : $key;
+					}
+					$cabecera[$ix] = $head_key;
+				}
+			} else {
+				$cabecera = $header_defs;
+			}
+		}
+
+		// loop through the file line-by-line
+		while (($data = fgetcsv($handle, null, $separator)) !== false)
+		{			
+			$row = [];
+			if ($assoc) {
+				for ($j = 0; $j < $ch; $j++) {
+					$head_key = $cabecera[$j];
+					$val = $data[$j] ?? '';
+	
+					$row[$head_key] = $val;
+				}
+			} else {
+				$row = $data;
+			}
+
+			// Ejecuto callback
+			call_user_func($fn, $row);
+
+			unset($data);
+		}
+
+		fclose($handle);
+	}
 
 	/*
 		Hace un "diff" entre dos rutas de archivos

@@ -5364,7 +5364,6 @@ class DumbController extends Controller
         dd($names_repetidos, "NAMES REPETIDOS : " . count($names_repetidos));
     }
 
-
     ////////////
 
     /*
@@ -9555,15 +9554,80 @@ class DumbController extends Controller
         dd($arrayTransformado);
     }
     
+    /*
+        Importante: scope de "use"
+    */
+    function test_use_scope()
+    {
+        $x = 5;
+     
+        $fn = function () use ($x) {
+            $x = $x * 2;
+        };
+
+        $fn($x);
+
+        // Imprime 5 y no 10
+        dd($x, 'x');
+    }
+
     function test_progress(){
         $pr = new ProgressShortcode();
         render($pr->index());        
     }
 
+
+    /*
+        >>> Ver porque los transientes con DB driver requieren de tiempo de expiracion !!!
+	
+	    >>> Poder exigir un solo proceso del mismo tipo dado un idenfificador => importante para job queues
+    */
+
     function test_background_task_3()
     {
-        $pid = bg_com("bzz_import run");
+        $pid = bg_com("bzz_import do_process");
         dd($pid, 'pid');
     }
+
+    function test_read_csv()
+    {
+        System::registerStats(true, false); 
+
+        $path = 'D:\Desktop\SANDRA ES BeKIND\PRODUCTOS\productos.csv';
+
+        $rows = Files::getCSV($path)['rows'];
+
+        dd($rows, 'RES');
+    }
+
+    /*
+        https://github.com/datablist/sample-csv-files
+    */
+    function test_read_csv_2()
+    {
+        System::registerStats(true, false); 
+
+        $path = 'C:\Users\jayso\OneDrive\Documentos\customers-2000000.csv';
+
+        global $emails_ending_org;
+        global $processed;
+
+        Files::processCSV($path, ',', true, function($row){
+            // Ex.
+            global $emails_ending_org, $processed;
+
+            if (Strings::endsWith('.org', $row['Email'])){
+                $emails_ending_org++;
+                // dd($row['Email']);
+            }
+            
+            $processed++;
+        });
+
+        // Result
+        dd($emails_ending_org, 'EMAILS ENDING IN .ORG');
+        dd($processed, 'PROCESSED');
+    }
+
 
 }   // end class
