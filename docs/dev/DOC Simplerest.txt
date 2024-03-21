@@ -11617,6 +11617,74 @@ Lo interesante es que la clase para la API generada tiene dos propiedades públi
 Si se modifica $model_name a por ejemplo "OtroModel" entonces los permisos sobre recursos del ACL -definidos en acl.php- aplicarán para la tabla "otro".
 
 
+# Archivos CSV
+
+Ej:
+
+	Files::processCSV($path, ',', true, function($row){
+		// Procesamiento del row
+		dd($row, 'ROW');
+	});
+
+o si el archivo no tiene cabecera se la puede especificar:
+
+	Files::processCSV($archivo, ';', false, function($p) { 
+		dd($p, 'P (por procesar)');
+	}, [
+		'sku',
+		'stock',
+		'price',
+		'sale_price'
+	]);
+
+y aun si la tiene se pueden redefinir algunos campos:
+
+	Files::processCSV($archivo, ';', true, function($p) { 
+		dd($p, 'P (por procesar)');
+	}, [
+		'SKU'            => 'sku',
+		'stock_quantiy'  => 'stock',
+		'discount_price' => 'sale_price'
+	]);
+
+Admite offset y limit
+
+	Ej:
+	
+	Files::processCSV($archivo, ';', false, function($p) { 
+		dd($p, 'P (por procesar)');
+	}, [
+		'sku',
+		'stock',
+		'price',
+		'sale_price'
+	],36332,5);  
+
+o si el archivo tiene ya cabecera entonces asi:
+
+	Files::processCSV($archivo, ';', true, function($p) { 
+		dd($p, 'P (por procesar)');
+	}, null ,36332,5); 
+
+En cuanto a la redefinicion de columnas esta puede hacerse de dos formas:
+
+Enviando las cabeceras en un array con sus indices de posicion en el array original.
+
+Ej:
+
+	Files::processCSV(ETC_PATH . 'prod_categories.csv', ',', true, true, [
+		3 => 'description',
+		6 => 'parent_slug',
+	])
+
+Tambien es posible enviar un array asociativo con las columnas a refefinir:
+
+	Files::processCSV(ETC_PATH . 'prod_categories.csv', ',', true, true, [
+		'Desc'       => 'description',
+		'ParentSlug' => 'parent_slug',
+	])
+
+
 ### Ofuscación de archivos
 
 Ej:
