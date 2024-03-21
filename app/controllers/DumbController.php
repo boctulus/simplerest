@@ -9630,4 +9630,13 @@ class DumbController extends Controller
     }
 
 
+    function test_read_csv_3(){
+        $archivo = 'D:\www\woo4' . '/wp-content/pekeinventario/articulosweb.txt'; 
+
+        Files::processCSV($archivo, ';', true, function($p) { 
+            dd($p, 'P (por procesar)');
+        }, null ,36332,5);  
+    }
+
+
 }   // end class
