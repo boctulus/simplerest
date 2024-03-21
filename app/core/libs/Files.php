@@ -98,6 +98,30 @@ class Files
 	}
 
 	/*
+		Cuenta la cantidad de lineas de un archivo de texto
+
+		Util para paginar en processCSV()
+	*/
+	static function countLines(string $path): int
+	{
+		$handle = fopen($path, 'r');
+
+		if (!$handle) {
+			return 0;
+		}
+
+		$line_count = 0;
+		while (!feof($handle)) {
+			fgets($handle);
+			$line_count++;
+		}
+
+		fclose($handle);
+
+		return $line_count;
+	}
+
+	/*
 		https://www.codewall.co.uk/write-php-array-to-csv-file/
 		https://fuelingphp.com/how-to-convert-associative-array-to-csv-in-php/
 	*/
@@ -172,7 +196,7 @@ class Files
 		}, null ,36332,5); 
 
     */
-    static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null, int $start_line = 0, $limit = false)
+	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null, $start_line = 0, $limit = false)
     {
         $handle = fopen($path, 'r');
 
@@ -239,7 +263,7 @@ class Files
             $count++;
 
             // Verificar si se alcanzó el límite
-            if ($limit !== false && $count >= $limit) {
+            if ($limit !== false && $limit !== null && $count >= $limit) {
                 break;
             }
         }
