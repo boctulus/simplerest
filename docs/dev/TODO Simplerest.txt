@@ -1,6 +1,8 @@
 TODO SimpleRest
 ===============
 
+- Implementar delete_transient( string $transient ): bool
+
 - Implementar importador de CSV via comando
 
   $sql = "LOAD DATA LOCAL INFILE '/path/to/file.csv' 
