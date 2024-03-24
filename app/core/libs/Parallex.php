@@ -38,6 +38,8 @@ class Parallex
     protected static function checkMaxTimeLocked(){
         $transient = static::getTransient();
 
+        // var_dump($transient); exit;
+
         if ($transient !== false && $transient['lock']) {
             $start_time = $transient['locked_time'];
 
@@ -191,7 +193,7 @@ class Parallex
         $res = ($offset >= $rows - 1);
 
         if ($res) {
-            debug("Done. ALL lots were already processed");
+            dd("Done. ALL lots were already processed");
         }
 
         return $res;

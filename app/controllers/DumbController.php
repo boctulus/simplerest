@@ -10,44 +10,44 @@ use boctulus\libs\XML;
 
 use simplerest\core\Acl;
 use simplerest\core\View;
+use simplerest\libs\Sync;
 use simplerest\core\Model;
 use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\libs\Reviews;
 use simplerest\core\libs\CSS;
+
 use simplerest\core\libs\Env;
-
 use simplerest\core\libs\Num;
-use simplerest\core\libs\Url;
 
-use simplerest\core\Container;
+use simplerest\core\libs\Url;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\Container;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
-use simplerest\core\libs\Cache;
 
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Utils;
-use simplerest\core\libs\Arrays;
 
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
+
 use simplerest\core\libs\GitHub;
 
 use simplerest\core\libs\Logger;
-
 use simplerest\core\libs\OpenAI;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
-use simplerest\core\libs\Update;
 
+use simplerest\core\libs\Update;
 use simplerest\core\libs\DBCache;
-use simplerest\core\libs\Numbers;
 
 use simplerest\core\libs\Strings;
 
@@ -59,10 +59,11 @@ use simplerest\core\libs\CSSUtils;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
+use simplerest\core\libs\Parallex;
+
 use simplerest\models\az\BarModel;
 
 use Endroid\QrCode\Builder\Builder;
-
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\FileCache;
 use simplerest\core\libs\MediaType;
@@ -71,20 +72,20 @@ use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
 use simplerest\core\libs\GoogleMaps;
-use simplerest\core\libs\Obfuscator;
 
+use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\ZipManager;
-use Endroid\QrCode\Encoding\Encoding;
 
+use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\Memoization;
 use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
 use simplerest\core\libs\Messurements;
-use Endroid\QrCode\Label\Font\NotoSans;
 
+use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\core\libs\InMemoryCache;
@@ -98,8 +99,8 @@ use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\FileMemoization;
-use simplerest\core\libs\HtmlBuilder\Tag;
 
+use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\RandomGenerator;
 use simplerest\core\libs\ValidationRules;
 use PhpParser\Node\Scalar\MagicConst\File;
@@ -119,9 +120,9 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\WooCommerceApiClient;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
-use simplerest\shortcodes\progress_bar\ProgressShortcode;
 use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+use simplerest\shortcodes\progress_bar\ProgressShortcode;
 use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
@@ -7661,7 +7662,7 @@ class DumbController extends Controller
 
     function test_db_cache_put()
     {       
-       DBCache::put('galaxia', 'via lactea', 5);
+       DBCache::put('galaxia', 'via lacteaaaaa', 90);
     }
 
     function test_db_cache_get()
@@ -9636,6 +9637,37 @@ class DumbController extends Controller
         Files::processCSV($archivo, ';', true, function($p) { 
             dd($p, 'P (por procesar)');
         }, null ,36332,5);  
+    }
+
+    function test_parallex(){
+        $csv_path     = ETC_PATH . 'pekeinventario/articulosweb.txt';
+        $min_t_locked = 3;
+        $max_t_locked = 5;
+        $limit        = 2;
+
+        Sync::$path = $csv_path;
+
+        new Parallex(new Sync(), $min_t_locked, $max_t_locked);
+
+        if (Parallex::getOffset() == -1){
+            if (is_cli()){
+                dd("COMPLETED LOCKED VIA NEGATIVE OFFSET UNTIL CRON UNLOCK [!]");
+            }   
+    
+            return;
+        }
+
+        if (is_cli()){
+            // return;
+        } 
+
+        /*
+            Paso el control al Task Manager
+        */
+    
+        Parallex::run($limit);
+
+        dd(Parallex::getTransient(), 'T');
     }
 
 
