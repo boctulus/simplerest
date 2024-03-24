@@ -12240,6 +12240,209 @@ Jobs		Task				JobQueue								`jobs` y `job_workers`
 Detectar si hay jobs sin atender pero no hay workers y no hay registro de que se hayan des-asignado (siguen exitiendo en la tabla de workers) y por tanto deben volver a crearse !!!!!!!!!
 
 
+# Parallex
+
+La clase Parallex es un "Task Manager" implementado para situaciones donde no se puedan usar "Jobs" como es el caso de un servidor con limitaciones para crear procesos en background.
+
+Su uso es un poco complejo pero la idea es dividir una tarea pesada en "lotes" y que con cada ejecución se procesen N-lotes lo que ira actualizando el offset.
+
+Ej:
+
+	$csv_path   = ABSPATH . env('CSV_PATH');
+    $limit      = env('LOT_SIZE');
+
+    Sync::$path = $csv_path;
+
+    new Parallex(Sync::class, env('MIN_T_LOCKED'), env('MAX_T_LOCKED'));
+
+    if (isset($_GET['lock'])){
+        if ($_GET['lock'] == 1 || $_GET['lock'] == 'on' || $_GET['lock'] == 'true'){
+            if (Parallex::setLock(true)){
+                debug("LOCKED!");
+        
+                dd(
+                    Parallex::getTransient()
+                );
+            } 
+        } else if ($_GET['lock'] == 0 || $_GET['lock'] == 'off' || $_GET['lock'] == 'false'){
+            if (Parallex::setLock(false)){
+                debug("UNLOCKED!");
+        
+                dd(
+                    Parallex::getTransient()
+                );
+            } 
+        }
+    
+        return;
+    }
+
+    if (isset($_GET['offset'])){
+        if (is_numeric($_GET['offset'])){
+            if (Parallex::setOffset($_GET['offset'])){
+                dd("OFFSET NOW is {$_GET['offset']}");
+            }
+        } else {
+            dd(Parallex::getOffset(), 'OFFSET');
+        }
+        
+        return;
+    }
+
+    if (isset($_GET['T'])){
+        dd(Parallex::getTransient(), "TRANSIENT");
+        return;
+    }
+
+    if (isset($_GET['destroy_t']) || isset($_GET['delete_t'])){
+        Parallex::deleteTransient();;
+        dd("Transient was destroyed.");
+        exit;
+    }
+
+    if (Parallex::getOffset() == -1){
+        if (is_cli()){
+            debug("COMPLETED LOCKED VIA NEGATIVE OFFSET UNTIL CRON UNLOCK [!]");
+        }   
+
+        return;
+    }
+
+    dd("Start");
+
+    if (Parallex::getTransient() === false){
+        $rows = Sync::count();
+
+        // Bloqueo antes de comenzar
+        Parallex::initTransient(0, true);
+
+        Sync::run(null, 0, $limit);
+
+        // Valido para la primer pagina
+        if ($rows > $limit){
+            $offset = $limit;
+        }
+        
+        if (Parallex::isDone($rows, $offset)){
+            // Bloqueo por completo
+            Parallex::setOffset(-1);            
+        } else {
+            Parallex::setOffset($offset);  
+        }
+
+        Parallex::setLock(false);      
+    } else {
+        $data = Parallex::getTransient();
+
+        dd($data, 'T');
+
+        // Si hay datos en el transient, continuar desde donde se quedó
+        $rows        = $data['rows'];
+        $offset      = $data['offset'];
+        $lock        = $data['lock'];
+
+        /// Verificar si ya se procesaron todos los registros
+        if ($offset >= $rows) {
+            // Bloque total porque se ha completado el procesamiento de todos los lotes        
+            $offset = -1;
+        } else {
+            // Verificar si el proceso está bloqueado
+            if (!$lock) {
+                // Bloqueo antes de comenzar
+                Parallex::setLock(true);
+
+                // Proceso lote
+                Sync::run(null, $offset, $limit);
+
+                // Calcular el nuevo offset para la siguiente iteración
+                $offset = $offset + $limit;
+
+                if (Parallex::isDone($rows, $offset)){
+                    // Bloqueo por completo
+                    Parallex::setOffset(-1);            
+                } else {
+                    Parallex::setOffset($offset);  
+                }
+
+                Parallex::setLock(false);                
+                
+                dd($data, 'T');
+            } else {
+                dd("LOCKED");
+            }
+        }
+    }
+
+    dd("End");
+
+
+En el servidor solo es necesario crear un cronJob que durara una fraccion de segundo en ejecutarse y debe dejar en cero (o cualquier valor no-negativo) el offset siguiendo una ruta.
+
+Ej:
+
+	/importer/v1/offset/set?offset=0
+
+Settings
+
+Via archivo .env se configuraria la ruta al archivo CSV que es la fuente de datos, el tamano de lote que se recomienda ajustar cuidadosamente, etc.
+
+    CSV_PATH='wp-content/pekeinventario/articulosweb.txt'
+    LOT_SIZE=250
+
+El tamano de lote se ajusta teniendo en cuenta que si se creara un cronjob de frecuencia diaria y hay por ejemplo 50000 registros en el CSV entonces 50000/250 si fuera 250 el tamano de lote implicaria tener al menos 200 visitas en ese periodo. Si se crearan 2 o 3 crons diarios entonces serian necesarias mas visitas.
+
+Tiempos mínimos y máximos de bloqueo:
+
+    MIN_T_LOCKED=120
+    MAX_T_LOCKED=300
+
+# Funcionamiento
+
+Por qué el tamaño de lote depende del numero de visitas?
+
+Porque el cronjob lo único que hace es des-bloquear el importador (bloqueo por offset negativo) dado que web-hostings en sus planes shared especialmente (caso IONOS) restrigen la RAM y el tiempo de ejecución (entre otros parámetros) del cronjob con lo cual no puede garantizarse el cronjob termine con éxito procesando todos los registros.
+
+
+# Bloqueo
+
+Existen tres tipos de bloqueos que se combinan para garantizar que el proceso de importación funcione de manera segura y eficiente, evitando problemas de concurrencia, asegurando que todos los registros se procesen correctamente y controlando el tiempo de ejecución del proceso para evitar problemas de recursos.
+
+
+Bloqueo para concurrencia:
+
+Este tipo de bloqueo se refiere a la necesidad de evitar que múltiples procesos intenten modificar el mismo recurso simultáneamente, lo que podría conducir a inconsistencias o corrupción de datos.
+
+Este tipo de bloqueo se implementa mediante la propiedad $lock en el transitorio. Cuando $lock es true, indica que el proceso está bloqueado y otros procesos no deberían ejecutar simultáneamente el mismo proceso de importación.
+
+Para realizar este tipo de bloqueo, se utiliza la función setLock() en el objeto ParallelImporter. Cuando se establece el bloqueo, se registra el tiempo en el que se bloqueó el proceso (locked_time) para evitar que se desbloquee hasta que haya transcurrido cierto tiempo.
+
+Para desbloquear el proceso, se utiliza la función setLock(false), que actualiza el estado del bloqueo a false, permitiendo que otros procesos puedan ejecutarse.
+
+El flag "lock" se utiliza para controlar si una tarea está en curso o no. Cuando se establece en true, indica que el proceso está bloqueado, lo que impide que otros procesos intenten ejecutar la tarea al mismo tiempo, lo que podría consumir recursos del servidor de manera innecesaria o provocar conflictos en el acceso a los datos.
+
+MAX_T_LOCKED permite que el sistema desbloquee automáticamente el proceso si ha transcurrido un tiempo máximo desde que se bloqueó y no ha habido actividad. Esto ayuda a evitar situaciones en las que el proceso permanece bloqueado indefinidamente debido a un fallo del servidor u otro problema. El valor de MAX_T_LOCKED se establece en segundos y debe ser igual o superior al tiempo máximo esperado para completar la tarea, es decir, el tiempo máximo que puede llevar procesar un lote de datos.
+
+Por otro lado, MIN_T_LOCKED garantiza que haya un tiempo mínimo entre la finalización del procesamiento de un lote y el inicio del siguiente. Esto puede ser útil para evitar que se inicien nuevas tareas demasiado rápido, lo que podría provocar congestión en el servidor o interferencias con otras operaciones.
+
+
+Bloqueo total por offset negativo:
+
+Este tipo de bloqueo se refiere a un mecanismo para indicar que se han procesado todos los registros del archivo CSV. En lugar de seguir procesando registros, el proceso se bloquea completamente.
+
+En el código, este bloqueo se implementa asignando un valor de -1 al offset en el transitorio cuando se han procesado todos los registros.
+
+Cuando el offset es -1, el proceso se considera bloqueado por completo y no realizará más operaciones de importación hasta que se modifique el offset.
+
+
+Bloqueo por tiempo:
+
+Este tipo de bloqueo asegura que el proceso de importación no se ejecute durante un período prolongado, incluso si no hay otros procesos en ejecución. Esto puede ser útil para evitar problemas de recursos o para garantizar que el proceso se reinicie periódicamente.
+
+En el código proporcionado, el bloqueo por tiempo se controla mediante la propiedad locked_time en el transitorio. Cuando el proceso se bloquea, se registra el tiempo actual en esta propiedad.
+
+La función isTimeLocked() se encarga de verificar si ha transcurrido el tiempo máximo de bloqueo desde que se inició el proceso. Si el tiempo transcurrido es mayor que el tiempo máximo de bloqueo, el proceso se desbloquea automáticamente.
+
+
 # Upload de archivos
 
 Con la clase FileUploader es muy fácil recibir archivos y de hecho el endpoint /files implementa esta clase aunque hace uso del ACL y sino lo necesitamos podemos hacer nuestra propia implementación de forma sencilla.
