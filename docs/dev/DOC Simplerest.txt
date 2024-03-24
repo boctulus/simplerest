@@ -12244,7 +12244,16 @@ Detectar si hay jobs sin atender pero no hay workers y no hay registro de que se
 
 La clase Parallex es un "Task Manager" implementado para situaciones donde no se puedan usar "Jobs" como es el caso de un servidor con limitaciones para crear procesos en background.
 
-Su uso es un poco complejo pero la idea es dividir una tarea pesada en "lotes" y que con cada ejecución se procesen N-lotes lo que ira actualizando el offset.
+La idea detras de Parallex es dividir una tarea pesada en "lotes" y que con cada ejecución se procesen N-lotes lo que ira actualizando el offset.
+
+Es requisito para Parallex que la clase a manejar implemente la intefaz IProcessable:
+
+	interface Processable extends ICountable
+	{
+		public function run($query_sku = null, $offset = null, $limit = null);
+		
+		public function paginate($offset, $limit);
+	}
 
 Ej:
 
@@ -12253,7 +12262,11 @@ Ej:
 
     Sync::$path = $csv_path;
 
-    new Parallex(Sync::class, env('MIN_T_LOCKED'), env('MAX_T_LOCKED'));
+    new Parallex(new Sync(), env('MIN_T_LOCKED'), env('MAX_T_LOCKED'));
+
+	/*
+		Implemento algunos "comandos"
+	*/
 
     if (isset($_GET['lock'])){
         if ($_GET['lock'] == 1 || $_GET['lock'] == 'on' || $_GET['lock'] == 'true'){
@@ -12308,72 +12321,21 @@ Ej:
         return;
     }
 
-    dd("Start");
 
-    if (Parallex::getTransient() === false){
-        $rows = Sync::count();
+	/*
+		Paso el control al Task Manager
+	*/
 
-        // Bloqueo antes de comenzar
-        Parallex::initTransient(0, true);
+    Parallex::run($limit);
 
-        Sync::run(null, 0, $limit);
 
-        // Valido para la primer pagina
-        if ($rows > $limit){
-            $offset = $limit;
-        }
-        
-        if (Parallex::isDone($rows, $offset)){
-            // Bloqueo por completo
-            Parallex::setOffset(-1);            
-        } else {
-            Parallex::setOffset($offset);  
-        }
 
-        Parallex::setLock(false);      
-    } else {
-        $data = Parallex::getTransient();
+Nota:
 
-        dd($data, 'T');
+Para entender el funcionamiento o mejorar la solucion revisar:
 
-        // Si hay datos en el transient, continuar desde donde se quedó
-        $rows        = $data['rows'];
-        $offset      = $data['offset'];
-        $lock        = $data['lock'];
-
-        /// Verificar si ya se procesaron todos los registros
-        if ($offset >= $rows) {
-            // Bloque total porque se ha completado el procesamiento de todos los lotes        
-            $offset = -1;
-        } else {
-            // Verificar si el proceso está bloqueado
-            if (!$lock) {
-                // Bloqueo antes de comenzar
-                Parallex::setLock(true);
-
-                // Proceso lote
-                Sync::run(null, $offset, $limit);
-
-                // Calcular el nuevo offset para la siguiente iteración
-                $offset = $offset + $limit;
-
-                if (Parallex::isDone($rows, $offset)){
-                    // Bloqueo por completo
-                    Parallex::setOffset(-1);            
-                } else {
-                    Parallex::setOffset($offset);  
-                }
-
-                Parallex::setLock(false);                
-                
-                dd($data, 'T');
-            } else {
-                dd("LOCKED");
-            }
-        }
-    }
-
-    dd("End");
+https://github.com/boctulus/adolf-csv
+D:\www\woo4\wp-content\plugins\adolf-csv
 
 
 En el servidor solo es necesario crear un cronJob que durara una fraccion de segundo en ejecutarse y debe dejar en cero (o cualquier valor no-negativo) el offset siguiendo una ruta.
