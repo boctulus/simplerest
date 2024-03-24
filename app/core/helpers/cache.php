@@ -12,12 +12,12 @@ use simplerest\core\libs\Config;
     El driver usado es configurable via config.php 
 */
 
-function set_transient(string $key, $value, $exp_time = null){
+function set_transient(string $key, $value, $exp_time = 3600 * 24 * 365){
     $driver = config('cache_driver');
     return $driver::put($key, $value, $exp_time);
 }
 
-function get_transient(string $key, $default = null){
+function get_transient(string $key, $default = false){
     $driver = config('cache_driver');
     return $driver::get($key, $default);
 }
