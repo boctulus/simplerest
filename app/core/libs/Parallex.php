@@ -36,12 +36,12 @@ class Parallex
 
     // Función para verificar y desbloquear si se superó el tiempo máximo de bloqueo
     protected static function checkMaxTimeLocked(){
-        $transient = static::getTransient();
+        $State = static::getState();
 
-        // var_dump($transient); exit;
+        // var_dump($State); exit;
 
-        if ($transient !== false && $transient['lock']) {
-            $start_time = $transient['locked_time'];
+        if ($State !== false && $State['lock']) {
+            $start_time = $State['locked_time'];
 
             if ($start_time !== null) {
                 
@@ -56,12 +56,12 @@ class Parallex
         }
     }
 
-    public static function setTransient($data)
+    public static function setState($data)
     {
         set_transient(static::$transient_name, $data);
     }
 
-    public static function initTransient($offset = null, $lock = null)
+    public static function initState($offset = null, $lock = null)
     {
         if ($offset === null) {
             $offset = 0;
@@ -78,42 +78,42 @@ class Parallex
             'locked_time' => $lock ? time() : null,
         ];
 
-        dd($data, "Initializing Transient");
+        dd($data, "Initializing State");
 
-        static::setTransient($data);
+        static::setState($data);
     }
 
-    public static function getTransient()
+    public static function getState()
     {
         return get_transient(static::$transient_name);
     }
 
-    public static function deleteTransient()
+    public static function clear()
     {
         delete_transient(static::$transient_name);
     }
 
     public static function isLocked()
     {
-        $transient = static::getTransient();
+        $State = static::getState();
 
-        if ($transient === false) {
+        if ($State === false) {
             return false;
         }
 
-        return $transient['lock'];
+        return $State['lock'];
     }
 
     public static function isTimeLocked()
     {
-        $transient = static::getTransient();
+        $State = static::getState();
 
-        if ($transient === false) {
+        if ($State === false) {
             return false;
         }
 
         // Verificar si ha pasado al menos un minuto desde el inicio
-        $start_time = $transient['locked_time'];
+        $start_time = $State['locked_time'];
 
         if ($start_time === null) {
             return false;
@@ -128,7 +128,7 @@ class Parallex
     // lock / unlock
     public static function setLock(bool $val)
     {
-        $transient = static::getTransient();
+        $State = static::getState();
 
         if (static::isTimeLocked()){
             return false;
@@ -136,56 +136,56 @@ class Parallex
 
         // Actualizar timestamp cuando se bloquea
         if ($val === true) {
-            $transient['locked_time'] = time();
+            $State['locked_time'] = time();
         } else {
-            $transient['locked_time'] = null;
+            $State['locked_time'] = null;
         }
 
-        if ($transient['lock'] && $val ===  false){
+        if ($State['lock'] && $val ===  false){
             dd("[^] Unlocking...");
         } else {
-            if ($transient['lock'] === false && $val){
+            if ($State['lock'] === false && $val){
                 dd("[^] Locking... ");
             }
         }
 
-        $transient['lock'] = $val;
+        $State['lock'] = $val;
 
-        set_transient(static::$transient_name, $transient);
+        set_transient(static::$transient_name, $State);
 
         return true;
     }
 
     public static function setOffset(int $val)
     {
-        $transient = static::getTransient();
+        $State = static::getState();
 
-        if ($transient === false) {
-            static::initTransient($val);
+        if ($State === false) {
+            static::initState($val);
             return false;
         }
 
-        $transient['offset'] = $val;
+        $State['offset'] = $val;
 
         // Al setear offset quito el otro tipo de bloqueo
         if ($val === 0){
-            $transient['lock'] = false;
+            $State['lock'] = false;
         }
 
-        set_transient(static::$transient_name, $transient);
+        set_transient(static::$transient_name, $State);
 
         return true;
     }
 
     public static function getOffset()
     {
-        $transient = static::getTransient();
+        $State = static::getState();
 
-        if ($transient === false) {
+        if ($State === false) {
             return false;
         }
 
-        return $transient['offset'] ?? null;
+        return $State['offset'] ?? null;
     }
 
     public static function isDone($rows, $offset)
@@ -200,11 +200,11 @@ class Parallex
     }
 
     public static function run(int $limit){
-        if (static::getTransient() === false){
+        if (static::getState() === false){
             $rows = static::$processHandler::count();
     
             // Bloqueo antes de comenzar
-            static::initTransient(0, true);
+            static::initState(0, true);
     
             static::$processHandler::run(null, 0, $limit);
     
@@ -222,11 +222,11 @@ class Parallex
     
             static::setLock(false);      
         } else {
-            $data = static::getTransient();
+            $data = static::getState();
     
             dd($data, 'T');
     
-            // Si hay datos en el transient, continuar desde donde se quedó
+            // Si hay datos en el State, continuar desde donde se quedó
             $rows        = $data['rows'];
             $offset      = $data['offset'];
             $lock        = $data['lock'];
