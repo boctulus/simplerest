@@ -12326,6 +12326,11 @@ Ej:
 		Paso el control al Task Manager
 	*/
 
+	if (is_cli()){
+		// No tiene sentido se ejecute en modo "cli"
+        return;
+    }
+
     Parallex::run($limit);
 
 
