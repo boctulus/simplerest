@@ -12259,29 +12259,34 @@ Es requisito para Parallex que la clase a manejar implemente la intefaz IProcess
 
 Ej:
 
-	$csv_path   = ABSPATH . env('CSV_PATH');
-    $limit      = env('LOT_SIZE');
+	$csv_path     = ETC_PATH . 'pekeinventario/articulosweb.txt';
+	$min_t_locked = 3;
+	$max_t_locked = 5;
+	$limit        = 2;
 
-    Sync::$path = $csv_path;
+	Sync::$path = $csv_path;
 
-    new Parallex(new Sync(), env('MIN_T_LOCKED'), env('MAX_T_LOCKED'));
+	new Parallex(new Sync(), $min_t_locked, $max_t_locked);
 
-    if (Parallex::getOffset() == -1){
-        if (is_cli()){
-            debug("COMPLETED LOCKED VIA NEGATIVE OFFSET UNTIL CRON UNLOCK [!]");
-        }   
+	if (Parallex::getOffset() == -1){
+		if (is_cli()){
+			dd("COMPLETED LOCKED VIA NEGATIVE OFFSET UNTIL CRON UNLOCK [!]");
+		}   
 
-        return;
-    }
+		return;
+	}
+
+	if (is_cli()){
+		// return;
+	} 
 
 	/*
 		Paso el control al Task Manager
 	*/
 
-	if (is_cli()) return;
+	Parallex::run($limit);
 
-    Parallex::run($limit);
-
+	dd(Parallex::getState(), 'S');
 
 
 Nota:
