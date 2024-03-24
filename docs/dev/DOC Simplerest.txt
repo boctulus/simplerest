@@ -12246,6 +12246,8 @@ La clase Parallex es un "Task Manager" implementado para situaciones donde no se
 
 La idea detras de Parallex es dividir una tarea pesada en "lotes" y que con cada ejecución se procesen N-lotes lo que ira actualizando el offset.
 
+https://chat.openai.com/c/ab9ca055-9d08-4aeb-a675-bd9a1a32894f
+
 Es requisito para Parallex que la clase a manejar implemente la intefaz IProcessable:
 
 	interface Processable extends ICountable
