@@ -4,20 +4,47 @@ namespace simplerest\core\libs;
 
 use simplerest\core\interfaces\IProcessable;
 
-/*
-    Parallex Task Manager
-
-    @author Pablo Bozzolo boctulus@gmail.com
-*/
-
+/**
+ * Parallex Task Manager
+ * 
+ * This class manages parallel tasks with locking mechanisms to prevent concurrent execution.
+ * 
+ * @author Pablo Bozzolo boctulus@gmail.com
+ */
 class Parallex
 {
+    /**
+     * @var int|null The current offset for processing tasks.
+     */
     protected static $offset;
-    protected static $min_secs_t_locked = 120; // Tiempo mínimo de bloqueo en segundos
-    protected static $max_secs_t_locked = 300; // Tiempo máximo de bloqueo en segundos
-    protected static $transient_name    = 'parallex';
+
+    /**
+     * @var int The minimum time in seconds for locking tasks.
+     */
+    protected static $min_secs_t_locked = 120;
+
+    /**
+     * @var int The maximum time in seconds for locking tasks.
+     */
+    protected static $max_secs_t_locked = 300;
+
+    /**
+     * @var string The name of the transient used for storing task state.
+     */
+    protected static $transient_name = 'parallex';
+
+    /**
+     * @var IProcessable The handler for the processable tasks.
+     */
     protected static $processHandler;
 
+    /**
+     * Constructor method for Parallex.
+     *
+     * @param IProcessable $processHandler The handler for the processable tasks.
+     * @param int|null $min_t_locked The minimum time in seconds for locking tasks. Default is null.
+     * @param int|null $max_t_locked The maximum time in seconds for locking tasks. Default is null.
+     */
     public function __construct(IProcessable $processHandler, $min_t_locked = null, $max_t_locked = null)
     { 
         static::$processHandler = $processHandler;
@@ -30,18 +57,18 @@ class Parallex
             static::$max_secs_t_locked = $max_t_locked;
         }
 
-        // Verificar si se superó el tiempo máximo de bloqueo y desbloquear si es necesario
+        // Check if the maximum locking time is exceeded and unlock if necessary
         static::checkMaxTimeLocked();
     }
 
-    // Función para verificar y desbloquear si se superó el tiempo máximo de bloqueo
+    /**
+     * Check if the maximum locking time is exceeded and unlock if necessary.
+     */
     protected static function checkMaxTimeLocked(){
-        $State = static::getState();
+        $state = static::getState();
 
-        // var_dump($State); exit;
-
-        if ($State !== false && $State['lock']) {
-            $start_time = $State['locked_time'];
+        if ($state !== false && $state['lock']) {
+            $start_time = $state['locked_time'];
 
             if ($start_time !== null) {
                 
@@ -49,18 +76,29 @@ class Parallex
                 $elapsed_time = $current_time - $start_time;
 
                 if ($elapsed_time > static::$max_secs_t_locked) {
-                    // Desbloquear si se superó el tiempo máximo de bloqueo
+                    // Unlock if the maximum locking time is exceeded
                     static::setLock(false);
                 }
             }
         }
     }
 
-    public static function setState($data)
+    /**
+     * Set the state of the task.
+     *
+     * @param array $data The data to set as the task state.
+     */
+    protected static function setState($data)
     {
         set_transient(static::$transient_name, $data);
     }
 
+    /**
+     * Initialize the state of the task.
+     *
+     * @param int|null $offset The offset for processing tasks. Default is null.
+     * @param bool|null $lock Whether to lock the task. Default is null.
+     */
     protected static function initState($offset = null, $lock = null)
     {
         if ($offset === null) {
@@ -78,42 +116,58 @@ class Parallex
             'locked_time' => $lock ? time() : null,
         ];
 
-        dd($data, "Initializing State");
-
+        // Initialize the task state
         static::setState($data);
     }
 
+    /**
+     * Get the state of the task.
+     *
+     * @return mixed The state of the task, or false if not found.
+     */
     public static function getState()
     {
         return get_transient(static::$transient_name);
     }
 
+    /**
+     * Clear the task state.
+     */
     public static function clear()
     {
         delete_transient(static::$transient_name);
     }
 
+    /**
+     * Check if the task is locked.
+     *
+     * @return bool True if the task is locked, false otherwise.
+     */
     public static function isLocked()
     {
-        $State = static::getState();
+        $state = static::getState();
 
-        if ($State === false) {
+        if ($state === false) {
             return false;
         }
 
-        return $State['lock'];
+        return $state['lock'];
     }
 
+    /**
+     * Check if the task is time locked.
+     *
+     * @return bool True if the task is time locked, false otherwise.
+     */
     public static function isTimeLocked()
     {
-        $State = static::getState();
+        $state = static::getState();
 
-        if ($State === false) {
+        if ($state === false) {
             return false;
         }
 
-        // Verificar si ha pasado al menos un minuto desde el inicio
-        $start_time = $State['locked_time'];
+        $start_time = $state['locked_time'];
 
         if ($start_time === null) {
             return false;
@@ -126,69 +180,88 @@ class Parallex
     }
     
     // lock / unlock
+
+    /**
+     * Set the lock status of the task.
+     *
+     * @param bool $val The value to set for the lock status.
+     * @return bool True if the lock status was set successfully, false otherwise.
+     */
     public static function setLock(bool $val)
     {
-        $State = static::getState();
+        $state = static::getState();
 
         if (static::isTimeLocked()){
             return false;
         }
 
-        // Actualizar timestamp cuando se bloquea
         if ($val === true) {
-            $State['locked_time'] = time();
+            $state['locked_time'] = time();
         } else {
-            $State['locked_time'] = null;
+            $state['locked_time'] = null;
         }
 
-        if ($State['lock'] && $val ===  false){
-            dd("[^] Unlocking...");
-        } else {
-            if ($State['lock'] === false && $val){
-                dd("[^] Locking... ");
-            }
-        }
+        $state['lock'] = $val;
 
-        $State['lock'] = $val;
-
-        set_transient(static::$transient_name, $State);
+        set_transient(static::$transient_name, $state);
 
         return true;
     }
 
+    /**
+     * Set the offset for processing tasks.
+     *
+     * @param int $val The value to set for the offset.
+     * @return bool True if the offset was set successfully, false otherwise.
+     */
     public static function setOffset(int $val)
     {
-        $State = static::getState();
+        $state = static::getState();
 
-        if ($State === false) {
+        if ($state === false) {
             static::initState($val);
             return false;
         }
 
-        $State['offset'] = $val;
+        $state['offset'] = $val;
 
-        // Al setear offset quito el otro tipo de bloqueo
         if ($val === 0){
-            $State['lock'] = false;
+            $state['lock'] = false;
         }
 
-        set_transient(static::$transient_name, $State);
+        set_transient(static::$transient_name, $state);
 
         return true;
     }
 
+    /**
+     * Get the current offset for processing tasks.
+     *
+     * @return int|null The current offset for processing tasks, or null if not found.
+     */
     public static function getOffset()
     {
-        $State = static::getState();
+        $state = static::getState();
 
-        if ($State === false) {
+        if ($state === false) {
             return false;
         }
 
-        return $State['offset'] ?? null;
+        return $state['offset'] ?? null;
     }
 
-    public static function isDone($rows, $offset)
+    public static function reset(){
+        return static::setOffset(0);
+    }
+
+    /**
+     * Check if all tasks have been processed.
+     *
+     * @param int $rows The total number of rows to process.
+     * @param int $offset The current offset for processing tasks.
+     * @return bool True if all tasks have been processed, false otherwise.
+     */
+    protected static function isDone($rows, $offset)
     {
         $res = ($offset >= $rows - 1);
 
@@ -199,22 +272,29 @@ class Parallex
         return $res;
     }
 
-    public static function run(int $limit){
+    /**
+     * Run the task.
+     *
+     * @param int $limit The limit for processing tasks
+     * @return void
+     */
+    public static function run(int $limit)
+    {
         if (static::getState() === false){
             $rows = static::$processHandler::count();
     
-            // Bloqueo antes de comenzar
+            // Lock before starting
             static::initState(0, true);
     
             static::$processHandler::run(null, 0, $limit);
     
-            // Valido para la primer pagina
+            // Check for the first page
             if ($rows > $limit){
                 $offset = $limit;
             }
             
             if (static::isDone($rows, $offset)){
-                // Bloqueo por completo
+                // Lock completely
                 static::setOffset(-1);            
             } else {
                 static::setOffset($offset);  
@@ -226,29 +306,29 @@ class Parallex
     
             dd($data, 'T');
     
-            // Si hay datos en el State, continuar desde donde se quedó
+            // If there is data in the State, continue from where it left off
             $rows        = $data['rows'];
             $offset      = $data['offset'];
             $lock        = $data['lock'];
     
-            /// Verificar si ya se procesaron todos los registros
+            // Check if all records have been processed
             if ($offset >= $rows) {
-                // Bloque total porque se ha completado el procesamiento de todos los lotes        
+                // Completely lock because all batches processing is completed        
                 $offset = -1;
             } else {
-                // Verificar si el proceso está bloqueado
+                // Check if the process is locked
                 if (!$lock) {
-                    // Bloqueo antes de comenzar
+                    // Lock before starting
                     static::setLock(true);
     
-                    // Proceso lote
+                    // Process batch
                     static::$processHandler::run(null, $offset, $limit);
     
-                    // Calcular el nuevo offset para la siguiente iteración
+                    // Calculate the new offset for the next iteration
                     $offset = $offset + $limit;
     
                     if (static::isDone($rows, $offset)){
-                        // Bloqueo por completo
+                        // Completely lock
                         static::setOffset(-1);            
                     } else {
                         static::setOffset($offset);  
