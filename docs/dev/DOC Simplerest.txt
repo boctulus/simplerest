@@ -12264,55 +12264,6 @@ Ej:
 
     new Parallex(new Sync(), env('MIN_T_LOCKED'), env('MAX_T_LOCKED'));
 
-	/*
-		Implemento algunos "comandos"
-	*/
-
-    if (isset($_GET['lock'])){
-        if ($_GET['lock'] == 1 || $_GET['lock'] == 'on' || $_GET['lock'] == 'true'){
-            if (Parallex::setLock(true)){
-                debug("LOCKED!");
-        
-                dd(
-                    Parallex::getTransient()
-                );
-            } 
-        } else if ($_GET['lock'] == 0 || $_GET['lock'] == 'off' || $_GET['lock'] == 'false'){
-            if (Parallex::setLock(false)){
-                debug("UNLOCKED!");
-        
-                dd(
-                    Parallex::getTransient()
-                );
-            } 
-        }
-    
-        return;
-    }
-
-    if (isset($_GET['offset'])){
-        if (is_numeric($_GET['offset'])){
-            if (Parallex::setOffset($_GET['offset'])){
-                dd("OFFSET NOW is {$_GET['offset']}");
-            }
-        } else {
-            dd(Parallex::getOffset(), 'OFFSET');
-        }
-        
-        return;
-    }
-
-    if (isset($_GET['T'])){
-        dd(Parallex::getTransient(), "TRANSIENT");
-        return;
-    }
-
-    if (isset($_GET['destroy_t']) || isset($_GET['delete_t'])){
-        Parallex::deleteTransient();;
-        dd("Transient was destroyed.");
-        exit;
-    }
-
     if (Parallex::getOffset() == -1){
         if (is_cli()){
             debug("COMPLETED LOCKED VIA NEGATIVE OFFSET UNTIL CRON UNLOCK [!]");
@@ -12321,15 +12272,11 @@ Ej:
         return;
     }
 
-
 	/*
 		Paso el control al Task Manager
 	*/
 
-	if (is_cli()){
-		// No tiene sentido se ejecute en modo "cli"
-        return;
-    }
+	if (is_cli()) return;
 
     Parallex::run($limit);
 
