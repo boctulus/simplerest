@@ -214,7 +214,7 @@ class Parallex
      * @param int $val The value to set for the offset.
      * @return bool True if the offset was set successfully, false otherwise.
      */
-    public static function setOffset(int $val)
+    protected static function setOffset(int $val)
     {
         $state = static::getState();
 
