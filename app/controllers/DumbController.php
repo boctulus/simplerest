@@ -9667,7 +9667,7 @@ class DumbController extends Controller
     
         Parallex::run($limit);
 
-        dd(Parallex::getTransient(), 'T');
+        dd(Parallex::getState(), 'S');
     }
 
 
