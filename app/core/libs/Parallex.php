@@ -61,7 +61,7 @@ class Parallex
         set_transient(static::$transient_name, $data);
     }
 
-    public static function initState($offset = null, $lock = null)
+    protected static function initState($offset = null, $lock = null)
     {
         if ($offset === null) {
             $offset = 0;
