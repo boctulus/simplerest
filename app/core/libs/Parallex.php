@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\interfaces\IProcessable;
+
 /*
     Parallex Task Manager
 
@@ -16,7 +18,7 @@ class Parallex
     protected static $transient_name    = 'parallex';
     protected static $processHandler;
 
-    public function __construct($processHandler, $min_t_locked = null, $max_t_locked = null)
+    public function __construct(IProcessable $processHandler, $min_t_locked = null, $max_t_locked = null)
     { 
         static::$processHandler = $processHandler;
 
@@ -193,5 +195,70 @@ class Parallex
         }
 
         return $res;
+    }
+
+    public static function run(int $limit){
+        if (static::getTransient() === false){
+            $rows = static::$processHandler::count();
+    
+            // Bloqueo antes de comenzar
+            static::initTransient(0, true);
+    
+            static::$processHandler::run(null, 0, $limit);
+    
+            // Valido para la primer pagina
+            if ($rows > $limit){
+                $offset = $limit;
+            }
+            
+            if (static::isDone($rows, $offset)){
+                // Bloqueo por completo
+                static::setOffset(-1);            
+            } else {
+                static::setOffset($offset);  
+            }
+    
+            static::setLock(false);      
+        } else {
+            $data = static::getTransient();
+    
+            dd($data, 'T');
+    
+            // Si hay datos en el transient, continuar desde donde se quedó
+            $rows        = $data['rows'];
+            $offset      = $data['offset'];
+            $lock        = $data['lock'];
+    
+            /// Verificar si ya se procesaron todos los registros
+            if ($offset >= $rows) {
+                // Bloque total porque se ha completado el procesamiento de todos los lotes        
+                $offset = -1;
+            } else {
+                // Verificar si el proceso está bloqueado
+                if (!$lock) {
+                    // Bloqueo antes de comenzar
+                    static::setLock(true);
+    
+                    // Proceso lote
+                    static::$processHandler::run(null, $offset, $limit);
+    
+                    // Calcular el nuevo offset para la siguiente iteración
+                    $offset = $offset + $limit;
+    
+                    if (static::isDone($rows, $offset)){
+                        // Bloqueo por completo
+                        static::setOffset(-1);            
+                    } else {
+                        static::setOffset($offset);  
+                    }
+    
+                    static::setLock(false);                
+                    
+                    dd($data, 'T');
+                } else {
+                    dd("LOCKED");
+                }
+            }
+        }
     }
 }
