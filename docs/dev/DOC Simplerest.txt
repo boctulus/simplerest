@@ -10345,21 +10345,25 @@ La Básica es mediante el método setBasicAuth($user, $pass)
 
 Ej:
 
+	$url  = 'https://xxxxxxx.com/courses?order=desc&orderby=ID&paged=1';
+
+	$user = 'key_f7a2062021f6a2218f96818631bf9a5c';
+	$pass = 'secret_7b11f511f92355956e77aeaa2d9bba520b8e86025daae0ef6e94c33e885ccb7c';
+
 	$client = new ApiClient();
-
-	$user = 'intergrade';
-	$pass = '9660ed881416fad88c5f48eddd7334c6';
-
 	$client
+
 	/*
 		Seteo parámetos
 	*/
+	->disableSSL()
 	->setBasicAuth($user, $pass)
-	->request('http://200.6.78.34/stock/v1/catalog/YX0-947', 'GET');        
+	->request($url, 'GET');        
 
-	d($client->getStatus(), 'STATUS');
-	d($client->getError(), 'ERROR');
-	d($client->getResponse(true), 'RES'); 
+	dd($client->getStatus(), 'STATUS');
+	dd($client->getError(), 'ERROR');
+	dd($client->getHeaders(), 'HEADERS');
+	dd($client->getResponse(true), 'RES'); 
 
 
 Hay casos donde se necesita enviar el body sin encodear como JSON. Para esto se puede enviar false en el segundo parametro de setBody()
