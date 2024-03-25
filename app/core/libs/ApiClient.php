@@ -606,8 +606,12 @@ class ApiClient
         return $ret;
     }
 
-    function getHeaders(){
+    function getRequestHeaders(){
         return $this->req_headers;
+    }
+
+    function getHeaders(){
+        return $this->res_headers;
     }
 
     function getContentType(){
