@@ -9670,7 +9670,7 @@ class DumbController extends Controller
         dd(Parallex::getState(), 'S');
     }
 
-    function test_auth(){
+    function tutorlms_courses_get(){
         $url  = 'https://taxes4pros.com/wp-json/tutor/v1/courses?order=desc&orderby=ID&paged=1';
 
         $user = 'key_f7a2062021f6a2218f96818631bf9a4c';
@@ -9689,9 +9689,41 @@ class DumbController extends Controller
 
         dd($client->getStatus(), 'STATUS');
         dd($client->getError(), 'ERROR');
+        // dd($client->getHeaders(), 'HEADERS');
+        dd($client->getResponse(true), 'RES'); 
+    }
+
+    function tutorlms_enrollment(){
+        $uid       = 8;
+        $course_id = 20044;
+
+        $url  = 'https://taxes4pros.com/wp-json/tutor/v1/enrollments';
+
+        $user = 'key_f7a2062021f6a2218f96818631bf9a4c';
+        $pass = 'secret_7b11f511f92355956e77aeaa2d9bba520b8e86025dbfe0ef6e94c33e885ccb7c';
+
+        $client = new ApiClient();
+        
+        $data = [
+            'user_id'   => $uid,   
+            'course_id' => $course_id, 
+        ];
+
+        $client
+
+        /*
+            Seteo parámetos
+        */
+        ->disableSSL()
+        ->followLocations()
+        ->setBasicAuth($user, $pass)
+        ->setBody($data)
+        ->request($url, 'POST');        
+
+        dd($client->getStatus(), 'STATUS');
+        dd($client->getError(), 'ERROR');
         dd($client->getHeaders(), 'HEADERS');
         dd($client->getResponse(true), 'RES'); 
-
     }
 
 
