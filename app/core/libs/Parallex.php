@@ -275,7 +275,7 @@ class Parallex
     /**
      * Run the task.
      *
-     * @param int $limit The limit for processing tasks
+     * @param int $limit The row limit for processing tasks
      * @return void
      */
     public static function run(int $limit)
