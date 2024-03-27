@@ -9647,9 +9647,9 @@ class DumbController extends Controller
 
         Sync::$path = $csv_path;
 
-        new Parallex(new Sync(), $min_t_locked, $max_t_locked);
+        $px = new Parallex(new Sync(), $min_t_locked, $max_t_locked);
 
-        if (Parallex::getOffset() == -1){
+        if ($px->getOffset() == -1){
             if (is_cli()){
                 dd("COMPLETED LOCKED VIA NEGATIVE OFFSET UNTIL CRON UNLOCK [!]");
             }   
@@ -9665,9 +9665,28 @@ class DumbController extends Controller
             Paso el control al Task Manager
         */
     
-        Parallex::run($limit);
+        $px->run($limit);
 
-        dd(Parallex::getState(), 'S');
+        dd($px->getState(), 'S');
+    }
+
+    function get_users(){
+        $url = 'https://taxes4pros.com/wp-json/wp/v2/users';
+
+        $client = new ApiClient();
+        $client
+
+        /*
+            Seteo parámetos
+        */
+        ->disableSSL()
+        ->followLocations()
+        ->request($url, 'GET');        
+
+        dd($client->getStatus(), 'STATUS');
+        dd($client->getError(), 'ERROR');
+        // dd($client->getHeaders(), 'HEADERS');
+        dd($client->getResponse(true), 'RES'); 
     }
 
     function tutorlms_courses_get(){
@@ -9694,8 +9713,8 @@ class DumbController extends Controller
     }
 
     function tutorlms_enrollment(){
-        $uid       = 8;
-        $course_id = 20044;
+        $uid       = 168;
+        $course_id = 17515;
 
         $url  = 'https://taxes4pros.com/wp-json/tutor/v1/enrollments';
 
