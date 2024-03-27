@@ -38,6 +38,8 @@ class Parallex
      */
     protected $processHandler;
 
+    protected $processId;
+
     /**
      * Constructor method for Parallex.
      *
@@ -57,15 +59,24 @@ class Parallex
             $this->max_secs_t_locked = $max_t_locked;
         }
 
+        // De momento no es real, sino un ID generado al azar
+        $this->processId = mt_rand(10000000, 99999999) . substr(time(), -3);
+
         // Check if the maximum locking time is exceeded and unlock if necessary
-        $this->checkMaxTimeLocked();
+        static::checkMaxTimeLocked();
+    }
+
+    protected function getProcessId()
+    {
+        // Obtener el ID único del proceso actual (PID)
+        return $this->processId;
     }
 
     /**
      * Check if the maximum locking time is exceeded and unlock if necessary.
      */
     protected function checkMaxTimeLocked(){
-        $state = $this->getState();
+        $state = static::getState();
 
         if ($state !== false && $state['lock']) {
             $start_time = $state['locked_time'];
@@ -77,7 +88,7 @@ class Parallex
 
                 if ($elapsed_time > $this->max_secs_t_locked) {
                     // Unlock if the maximum locking time is exceeded
-                    $this->setLock(false);
+                    static::setLock(false);
                 }
             }
         }
@@ -114,10 +125,11 @@ class Parallex
             'offset'      => $offset,
             'lock'        => $lock,
             'locked_time' => $lock ? time() : null,
+            'locked_by'   => null
         ];
 
         // Initialize the task state
-        $this->setState($data);
+        static::setState($data);
     }
 
     /**
@@ -138,6 +150,11 @@ class Parallex
         delete_transient($this->transient_name);
     }
 
+    protected function waitRandomMicroseconds()
+    {
+        usleep(mt_rand(10, 30)); // Esperar entre 10 y 30 microsegundos
+    }
+
     /**
      * Check if the task is locked.
      *
@@ -145,13 +162,14 @@ class Parallex
      */
     public function isLocked()
     {
-        $state = $this->getState();
+        $state = static::getState();
 
         if ($state === false) {
             return false;
         }
 
-        return $state['lock'];
+        // Verificar si el proceso está bloqueado y si el bloqueo es propio
+        return $state['lock'] && $this->processId !== null && $state['locked_by'] !== $this->processId;
     }
 
     /**
@@ -161,7 +179,7 @@ class Parallex
      */
     public function isTimeLocked()
     {
-        $state = $this->getState();
+        $state = static::getState();
 
         if ($state === false) {
             return false;
@@ -189,16 +207,18 @@ class Parallex
      */
     public function setLock(bool $val)
     {
-        $state = $this->getState();
+        $state = static::getState();
 
-        if ($this->isTimeLocked()){
+        if (static::isTimeLocked()){
             return false;
         }
 
         if ($val === true) {
             $state['locked_time'] = time();
+            $state['locked_by']   = $this->getProcessId();
         } else {
             $state['locked_time'] = null;
+            $state['locked_by']   = null;
         }
 
         $state['lock'] = $val;
@@ -216,10 +236,10 @@ class Parallex
      */
     protected function setOffset(int $val)
     {
-        $state = $this->getState();
+        $state = static::getState();
 
         if ($state === false) {
-            $this->initState($val);
+            static::initState($val);
             return false;
         }
 
@@ -241,7 +261,7 @@ class Parallex
      */
     public function getOffset()
     {
-        $state = $this->getState();
+        $state = static::getState();
 
         if ($state === false) {
             return false;
@@ -251,7 +271,7 @@ class Parallex
     }
 
     public function reset(){
-        return $this->setOffset(0);
+        return static::setOffset(0);
     }
 
     /**
@@ -270,7 +290,6 @@ class Parallex
         }
 
         return $res;
-   
     }
 
     /**
@@ -281,11 +300,11 @@ class Parallex
      */
     public function run(int $limit)
     {
-        if ($this->getState() === false){
+        if (static::getState() === false){
             $rows = $this->processHandler::count();
     
             // Lock before starting
-            $this->initState(0, true);
+            static::initState(0, true);
     
             $this->processHandler::run(null, 0, $limit);
     
@@ -294,16 +313,16 @@ class Parallex
                 $offset = $limit;
             }
             
-            if ($this->isDone($rows, $offset)){
+            if (static::isDone($rows, $offset)){
                 // Lock completely
-                $this->setOffset(-1);            
+                static::setOffset(-1);            
             } else {
-                $this->setOffset($offset);  
+                static::setOffset($offset);  
             }
     
-            $this->setLock(false);      
+            static::setLock(false);      
         } else {
-            $data = $this->getState();
+            $data = static::getState();
     
             dd($data, 'T');
     
@@ -320,7 +339,15 @@ class Parallex
                 // Check if the process is locked
                 if (!$lock) {
                     // Lock before starting
-                    $this->setLock(true);
+                    static::setLock(true);
+
+                    // Esperar un tiempo aleatorio antes de verificar nuevamente el bloqueo
+                    $this->waitRandomMicroseconds();
+                    
+                    // Verificar si el proceso está bloqueado y si el bloqueo es propio
+                    if ($this->isLocked()) {
+                        return; // Si está bloqueado por otro, salir sin ejecutar
+                    }
     
                     // Process batch
                     $this->processHandler::run(null, $offset, $limit);
@@ -328,14 +355,14 @@ class Parallex
                     // Calculate the new offset for the next iteration
                     $offset = $offset + $limit;
     
-                    if ($this->isDone($rows, $offset)){
+                    if (static::isDone($rows, $offset)){
                         // Completely lock
-                        $this->setOffset(-1);            
+                        static::setOffset(-1);            
                     } else {
-                        $this->setOffset($offset);  
+                        static::setOffset($offset);  
                     }
     
-                    $this->setLock(false);                
+                    static::setLock(false);                
                     
                     dd($data, 'T');
                 } else {
