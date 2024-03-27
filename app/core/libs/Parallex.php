@@ -16,27 +16,27 @@ class Parallex
     /**
      * @var int|null The current offset for processing tasks.
      */
-    protected static $offset;
+    protected $offset;
 
     /**
      * @var int The minimum time in seconds for locking tasks.
      */
-    protected static $min_secs_t_locked = 120;
+    protected $min_secs_t_locked = 120;
 
     /**
      * @var int The maximum time in seconds for locking tasks.
      */
-    protected static $max_secs_t_locked = 300;
+    protected $max_secs_t_locked = 300;
 
     /**
      * @var string The name of the transient used for storing task state.
      */
-    protected static $transient_name = 'parallex';
+    protected $transient_name = 'parallex';
 
     /**
      * @var IProcessable The handler for the processable tasks.
      */
-    protected static $processHandler;
+    protected $processHandler;
 
     /**
      * Constructor method for Parallex.
@@ -47,25 +47,25 @@ class Parallex
      */
     public function __construct(IProcessable $processHandler, $min_t_locked = null, $max_t_locked = null)
     { 
-        static::$processHandler = $processHandler;
+        $this->processHandler = $processHandler;
 
         if ($min_t_locked !== null){
-            static::$min_secs_t_locked = $min_t_locked;
+            $this->min_secs_t_locked = $min_t_locked;
         }
 
         if ($max_t_locked !== null){
-            static::$max_secs_t_locked = $max_t_locked;
+            $this->max_secs_t_locked = $max_t_locked;
         }
 
         // Check if the maximum locking time is exceeded and unlock if necessary
-        static::checkMaxTimeLocked();
+        $this->checkMaxTimeLocked();
     }
 
     /**
      * Check if the maximum locking time is exceeded and unlock if necessary.
      */
-    protected static function checkMaxTimeLocked(){
-        $state = static::getState();
+    protected function checkMaxTimeLocked(){
+        $state = $this->getState();
 
         if ($state !== false && $state['lock']) {
             $start_time = $state['locked_time'];
@@ -75,9 +75,9 @@ class Parallex
                 $current_time = time();
                 $elapsed_time = $current_time - $start_time;
 
-                if ($elapsed_time > static::$max_secs_t_locked) {
+                if ($elapsed_time > $this->max_secs_t_locked) {
                     // Unlock if the maximum locking time is exceeded
-                    static::setLock(false);
+                    $this->setLock(false);
                 }
             }
         }
@@ -88,9 +88,9 @@ class Parallex
      *
      * @param array $data The data to set as the task state.
      */
-    protected static function setState($data)
+    protected function setState($data)
     {
-        set_transient(static::$transient_name, $data);
+        set_transient($this->transient_name, $data);
     }
 
     /**
@@ -99,7 +99,7 @@ class Parallex
      * @param int|null $offset The offset for processing tasks. Default is null.
      * @param bool|null $lock Whether to lock the task. Default is null.
      */
-    protected static function initState($offset = null, $lock = null)
+    protected function initState($offset = null, $lock = null)
     {
         if ($offset === null) {
             $offset = 0;
@@ -110,14 +110,14 @@ class Parallex
         }
 
         $data = [
-            'rows'        => static::$processHandler::count(),
+            'rows'        => $this->processHandler::count(),
             'offset'      => $offset,
             'lock'        => $lock,
             'locked_time' => $lock ? time() : null,
         ];
 
         // Initialize the task state
-        static::setState($data);
+        $this->setState($data);
     }
 
     /**
@@ -125,17 +125,17 @@ class Parallex
      *
      * @return mixed The state of the task, or false if not found.
      */
-    public static function getState()
+    public function getState()
     {
-        return get_transient(static::$transient_name);
+        return get_transient($this->transient_name);
     }
 
     /**
      * Clear the task state.
      */
-    public static function clear()
+    public function clear()
     {
-        delete_transient(static::$transient_name);
+        delete_transient($this->transient_name);
     }
 
     /**
@@ -143,9 +143,9 @@ class Parallex
      *
      * @return bool True if the task is locked, false otherwise.
      */
-    public static function isLocked()
+    public function isLocked()
     {
-        $state = static::getState();
+        $state = $this->getState();
 
         if ($state === false) {
             return false;
@@ -159,9 +159,9 @@ class Parallex
      *
      * @return bool True if the task is time locked, false otherwise.
      */
-    public static function isTimeLocked()
+    public function isTimeLocked()
     {
-        $state = static::getState();
+        $state = $this->getState();
 
         if ($state === false) {
             return false;
@@ -176,7 +176,7 @@ class Parallex
         $current_time = time();
         $elapsed_time = $current_time - $start_time;
 
-        return ($elapsed_time <= static::$min_secs_t_locked);
+        return ($elapsed_time <= $this->min_secs_t_locked);
     }
     
     // lock / unlock
@@ -187,11 +187,11 @@ class Parallex
      * @param bool $val The value to set for the lock status.
      * @return bool True if the lock status was set successfully, false otherwise.
      */
-    public static function setLock(bool $val)
+    public function setLock(bool $val)
     {
-        $state = static::getState();
+        $state = $this->getState();
 
-        if (static::isTimeLocked()){
+        if ($this->isTimeLocked()){
             return false;
         }
 
@@ -203,7 +203,7 @@ class Parallex
 
         $state['lock'] = $val;
 
-        set_transient(static::$transient_name, $state);
+        set_transient($this->transient_name, $state);
 
         return true;
     }
@@ -214,12 +214,12 @@ class Parallex
      * @param int $val The value to set for the offset.
      * @return bool True if the offset was set successfully, false otherwise.
      */
-    protected static function setOffset(int $val)
+    protected function setOffset(int $val)
     {
-        $state = static::getState();
+        $state = $this->getState();
 
         if ($state === false) {
-            static::initState($val);
+            $this->initState($val);
             return false;
         }
 
@@ -229,7 +229,7 @@ class Parallex
             $state['lock'] = false;
         }
 
-        set_transient(static::$transient_name, $state);
+        set_transient($this->transient_name, $state);
 
         return true;
     }
@@ -239,9 +239,9 @@ class Parallex
      *
      * @return int|null The current offset for processing tasks, or null if not found.
      */
-    public static function getOffset()
+    public function getOffset()
     {
-        $state = static::getState();
+        $state = $this->getState();
 
         if ($state === false) {
             return false;
@@ -250,8 +250,8 @@ class Parallex
         return $state['offset'] ?? null;
     }
 
-    public static function reset(){
-        return static::setOffset(0);
+    public function reset(){
+        return $this->setOffset(0);
     }
 
     /**
@@ -261,7 +261,7 @@ class Parallex
      * @param int $offset The current offset for processing tasks.
      * @return bool True if all tasks have been processed, false otherwise.
      */
-    protected static function isDone($rows, $offset)
+    protected function isDone($rows, $offset)
     {
         $res = ($offset >= $rows - 1);
 
@@ -270,6 +270,7 @@ class Parallex
         }
 
         return $res;
+   
     }
 
     /**
@@ -278,31 +279,31 @@ class Parallex
      * @param int $limit The row limit for processing tasks
      * @return void
      */
-    public static function run(int $limit)
+    public function run(int $limit)
     {
-        if (static::getState() === false){
-            $rows = static::$processHandler::count();
+        if ($this->getState() === false){
+            $rows = $this->processHandler::count();
     
             // Lock before starting
-            static::initState(0, true);
+            $this->initState(0, true);
     
-            static::$processHandler::run(null, 0, $limit);
+            $this->processHandler::run(null, 0, $limit);
     
             // Check for the first page
             if ($rows > $limit){
                 $offset = $limit;
             }
             
-            if (static::isDone($rows, $offset)){
+            if ($this->isDone($rows, $offset)){
                 // Lock completely
-                static::setOffset(-1);            
+                $this->setOffset(-1);            
             } else {
-                static::setOffset($offset);  
+                $this->setOffset($offset);  
             }
     
-            static::setLock(false);      
+            $this->setLock(false);      
         } else {
-            $data = static::getState();
+            $data = $this->getState();
     
             dd($data, 'T');
     
@@ -319,22 +320,22 @@ class Parallex
                 // Check if the process is locked
                 if (!$lock) {
                     // Lock before starting
-                    static::setLock(true);
+                    $this->setLock(true);
     
                     // Process batch
-                    static::$processHandler::run(null, $offset, $limit);
+                    $this->processHandler::run(null, $offset, $limit);
     
                     // Calculate the new offset for the next iteration
                     $offset = $offset + $limit;
     
-                    if (static::isDone($rows, $offset)){
+                    if ($this->isDone($rows, $offset)){
                         // Completely lock
-                        static::setOffset(-1);            
+                        $this->setOffset(-1);            
                     } else {
-                        static::setOffset($offset);  
+                        $this->setOffset($offset);  
                     }
     
-                    static::setLock(false);                
+                    $this->setLock(false);                
                     
                     dd($data, 'T');
                 } else {
