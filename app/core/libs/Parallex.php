@@ -152,7 +152,7 @@ class Parallex
 
     protected function waitRandomMicroseconds()
     {
-        usleep(mt_rand(10, 30)); // Esperar entre 10 y 30 microsegundos
+        usleep(mt_rand(25, 35)); // Esperar algunos microsegundos
     }
 
     /**
