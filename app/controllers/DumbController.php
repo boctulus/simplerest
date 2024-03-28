@@ -7082,6 +7082,53 @@ class DumbController extends Controller
         );
     }
 
+    function test_arr_to_xml(){
+        $cli = array(
+            'rut' => '1-9',
+            'nom' => 'david lara oyarzun',
+            'dir' => 'los dominicos 7177',
+            'gir' => 'sin giro',
+            'fon' => '89993450773',
+            'ema' => 'dlara@runasssssssss.cl',
+            'com' => 'huechuraba'
+        );
+
+        $quote_num = '123434421';
+
+        /*
+            los precios informados deben incluir el iva ***
+        */
+        $items = [
+            [
+                'cod' => '2345432134532',
+                'pre' => '1000',
+                'can' => '1',
+                'des' => '0',
+                'tot' => '1000',
+            ],
+
+            [
+                'cod' => '2345432134532',
+                'pre' => '1000',
+                'can' => '1',
+                'des' => '0',
+                'tot' => '1000',
+            ]
+        ];
+
+        $arr = [
+            'num' => $quote_num,
+
+            'cli' => $cli,
+
+            'art' => $items
+        ];
+
+        $data = XML::fromArray($arr, 'ped', false);
+
+        dd($data);
+    }
+
 
     function test_runa()
     {
@@ -7130,9 +7177,6 @@ class DumbController extends Controller
         ];
 
         $data = XML::fromArray($arr, 'ped', false);
-
-        dd($data);
-        exit;
 
         // $params = [
         //     'pass' => 'f32fq3fq32412', 
