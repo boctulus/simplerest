@@ -60,6 +60,7 @@ class ApiClient
     // Response
     protected $raw_response;
     protected $response;
+
     protected $filename;
     protected $res_headers;
     protected $auto_decode;
@@ -386,8 +387,8 @@ class ApiClient
         return $raw ? $this->raw_response : $this->response;
     }
 
-    function getResponse(?bool $decode = null, ?bool $as_array = null){       
-        if ($decode == null){
+    function getResponse($decode = null, $as_array = null){       
+        if ($decode === null){
             $decode = $this->auto_decode;
         }
 
@@ -397,14 +398,14 @@ class ApiClient
 
         $data = $this->response;
 
-        if ($decode){
-            if (Strings::isJSON($data)){
-                $data = json_decode($this->response, $as_array);
-            } else if (XML::isXML($data)){
-                $data = XML::toArray($data);
-            }
-        } 
-
+        if (Strings::startsWith('application/json', $this->content_type) || ($decode && Strings::isJSON($data))){
+            $data = json_decode($this->response, $as_array);
+        } else 
+        
+        if (Strings::containsAny(['/xml', '+xml'], $this->content_type)  || ($decode && XML::isXML($data))){
+            $data = XML::toArray($data);
+        }
+        
         $res = [
             'data'      => $data,
             'http_code' => $this->status,
@@ -481,19 +482,10 @@ class ApiClient
         }
 
         $keys = array_keys($headers);
-
-        $content_type_found = false;
+        
         foreach ($keys as $key){
             if (strtolower($key) == 'content-type'){
-                $content_type_found = $key;
-                break;
-            }
-        }
-
-        $accept_found = false;
-        foreach ($keys as $key){
-            if (strtolower($key) == 'accept'){
-                $accept_found = $key;
+                $this->content_type = $key;
                 break;
             }
         }
