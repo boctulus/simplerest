@@ -1,14 +1,43 @@
 TODO SimpleRest
 ===============
 
-- Implementar delete_transient( string $transient ): bool
-
 - Implementar importador de CSV via comando
 
   $sql = "LOAD DATA LOCAL INFILE '/path/to/file.csv' 
         REPLACE INTO TABLE table_name FIELDS TERMINATED BY ',' 
         ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES";
     $result = $mysqli->query($sql);
+
+- Para Validator implementar validacion de datos anidados. 
+
+https://chat.openai.com/c/a81cd27c-0a3a-40c8-be43-9cdfdbb10c83
+
+Ej:
+
+  $rules = [
+      'token' => ['type' => 'string', 'required' => true],
+      'numero' => ['type' => 'string', 'required' => true],
+      'fecha' => ['type' => 'date', 'required' => true],
+      'fechaentrega' => ['type' => 'date', 'required' => true],
+      'nit' => ['type' => 'string', 'required' => true],
+      'observaciones' => ['type' => 'string', 'required' => true],
+      'idbodega' => ['type' => 'string', 'required' => true],
+      'detalle' => [
+          'type' => 'array',
+          'required' => true,
+          'min'      => 1,
+          'messages' => [
+              'type' => 'The detalle field must be an array',
+              'required' => 'The detalle field is required',
+          ],
+      ],
+      'detalle.*.idreferencia' => ['type' => 'string', 'required' => true],
+      'detalle.*.cantidad' => ['type' => 'string', 'required' => true],
+      'detalle.*.precio' => ['type' => 'string', 'required' => true],
+      'detalle.*.descuento' => ['type' => 'string', 'required' => true],
+  ];     
+
+<-- notar "detalle.*"   
 
 - Poder ejecutar metodos de cualquier libreria (sean estadicos o no) asi:
 
