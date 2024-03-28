@@ -3,7 +3,9 @@
 namespace simplerest\libs;
 
 use simplerest\core\libs\ApiClient;
+use simplerest\core\libs\Validator;
 use simplerest\libs\NITColombiaValidator;
+use simplerest\core\exceptions\InvalidValidationException;
 
 class RibiSOAP extends ApiClient
 {
@@ -118,25 +120,67 @@ class RibiSOAP extends ApiClient
         return $data;
     }    
 
-    function crearcliente($params)
+    function crearcliente($nit, $tipodocumento, $tiporegimen, $nombres, $iddepartamento, $idciudad, $direccion, $telefono, $celular, $correo, $contacto, $idvendedor)
     {
-        $method = 'crearcliente';
-        $token  = $this->token;
 
-        // Construir el cuerpo de la solicitud SOAP
-        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <ser:crearcliente>
-                 <ser:token>$token</ser:token>";
-        
-        foreach ($params as $key => $value) {
-            $data .= "<ser:$key>$value</ser:$key>";
-        }
+    // Validar los parámetros usando el validador Validator
+    $validator = new Validator();
 
-        $data .= "</ser:crearcliente>
-           </soapenv:Body>
-        </soapenv:Envelope>";
+    $rules = [
+        'nit' => ['type' => 'string', 'required' => true],
+        'tipodocumento' => ['type' => 'string', 'required' => true],
+        'tiporegimen' => ['type' => 'string', 'required' => true],
+        'nombres' => ['type' => 'string', 'required' => true],
+        'iddepartamento' => ['type' => 'string', 'required' => true],
+        'idciudad' => ['type' => 'string', 'required' => true],
+        'direccion' => ['type' => 'string', 'required' => true],
+        'telefono' => ['type' => 'string', 'required' => true],
+        'celular' => ['type' => 'string', 'required' => true],
+        'correo' => ['type' => 'email', 'required' => true],
+        'contacto' => ['type' => 'string', 'required' => true],
+        'idvendedor' => ['type' => 'string', 'required' => true],
+    ];
+
+    if (!$validator->validate([
+        'nit' => $nit,
+        'tipodocumento' => $tipodocumento,
+        'tiporegimen' => $tiporegimen,
+        'nombres' => $nombres,
+        'iddepartamento' => $iddepartamento,
+        'idciudad' => $idciudad,
+        'direccion' => $direccion,
+        'telefono' => $telefono,
+        'celular' => $celular,
+        'correo' => $correo,
+        'contacto' => $contacto,
+        'idvendedor' => $idvendedor,
+    ], $rules)) {
+        throw new InvalidValidationException(json_encode($validator->getErrors()));
+    }
+
+    // Construir el cuerpo de la solicitud SOAP
+    $method = 'crearcliente';
+    $token  = $this->token;
+    $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
+       <soapenv:Header/>
+       <soapenv:Body>
+          <ser:crearcliente>
+             <ser:token>$token</ser:token>
+             <ser:nit>$nit</ser:nit>
+             <ser:tipodocumento>$tipodocumento</ser:tipodocumento>
+             <ser:tiporegimen>$tiporegimen</ser:tiporegimen>
+             <ser:nombres>$nombres</ser:nombres>
+             <ser:iddepartamento>$iddepartamento</ser:iddepartamento>
+             <ser:idciudad>$idciudad</ser:idciudad>
+             <ser:direccion>$direccion</ser:direccion>
+             <ser:telefono>$telefono</ser:telefono>
+             <ser:celular>$celular</ser:celular>
+             <ser:correo>$correo</ser:correo>
+             <ser:contacto>$contacto</ser:contacto>
+             <ser:idvendedor>$idvendedor</ser:idvendedor>
+          </ser:crearcliente>
+       </soapenv:Body>
+    </soapenv:Envelope>";
 
         $this->op($method, $data);
 
