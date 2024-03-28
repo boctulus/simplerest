@@ -13,6 +13,7 @@ class RibiSOAP extends ApiClient
     protected $base_url   = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
 
     protected $allowed_op = [
+        'consultarproductos',
         'consultarinventario',
         'consultarcliente',
         'crearcliente',
@@ -58,21 +59,73 @@ class RibiSOAP extends ApiClient
         $client->send($url, $data);
     }
 
-    function consultarinventario($idbodega, $codigos = [])
+    function consultarproductos()
+    {
+        $method = 'consultarproductos';
+        $token  = $this->token;
+
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+            <soapenv:Header/>
+            <soapenv:Body>
+            <loc:consultarproductos>
+                <!--Optional:-->
+                <loc:token>$token</loc:token>
+            </loc:consultarproductos>
+            </soapenv:Body>
+        </soapenv:Envelope>";
+
+        $this->op($method, $data);       
+        
+        $data  = $this->getResponse();
+        $data  = $data['data'] ?? null;
+
+        if ($data && !empty($data[4]['FAULTSTRING'][0])){
+           $data = $data[4]['FAULTSTRING'][0];
+        }
+
+        return $data;
+    }
+
+    function consultarinventario($idbodega, $codigos)
     {
         $method = 'consultarinventario';
         $token  = $this->token;
-       
-        $include_codigos = (!empty($codigos) ? "<ser:codigos>".implode(',', $codigos)."</ser:codigos>" : '');
 
-        $data     = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
-        <soapenv:Header/>
+        $validator = new Validator();
+
+        $params = [
+            'idbodega' => $idbodega,
+            'codigos'  => $codigos
+        ];
+
+        $rules = [
+            'idbodega' => [ 'type' => 'string', 'required' => true ],
+            'codigos' => [
+                'type' => 'array',
+                'required' => true,
+                'min'      => 1,   // no esta validando la long min del array 
+                'messages' => [
+                    'type' => 'The detalle field must be an array',
+                    'required' => 'codigos field is required',
+                ],
+            ],
+        ];        
+
+        if (!$validator->validate($params, $rules)) {
+            throw new InvalidValidationException(json_encode($validator->getErrors()));
+        }
+       
+        $str_cods = implode(',', $codigos);
+
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+            <soapenv:Header/>
             <soapenv:Body>
-            <ser:consultarinventario>
-                <ser:token>$token</ser:token>
-                <ser:idbodega>$idbodega</ser:idbodega>
-                $include_codigos
-            </ser:consultarinventario>
+            <loc:consultarinventario>
+                <!--Optional:-->
+                <loc:token>$token</loc:token>
+                <loc:idbodega>$idbodega</loc:idbodega>
+                <loc:codigos>$str_cods</loc:codigos>
+            </loc:consultarinventario>
             </soapenv:Body>
         </soapenv:Envelope>";
 
