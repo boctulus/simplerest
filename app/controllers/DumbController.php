@@ -286,6 +286,11 @@ class DumbController extends Controller
         return at();
     }
 
+    function now()
+    {
+        return at();
+    }
+
     function test_apiclient_cache()
     {
         $url    = base_url() . '/dumb/now';
@@ -299,10 +304,12 @@ class DumbController extends Controller
             ->getResponse(false);
 
         if ($res === null) {
+            dd("RES is NULL");
             return;
         }
 
         if ($res['http_code'] != 200) {
+            dd("HTTP CODE is ". $res['http_code']);
             return;
         }
 
@@ -1243,7 +1250,7 @@ class DumbController extends Controller
         $res = ApiClient::instance()
             //->setSSLCrt($cert)
             ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
-            ->getResponse();
+            ->getResponse(true);
 
         dd($res);
     }
@@ -1255,7 +1262,7 @@ class DumbController extends Controller
     {
         $res = ApiClient::instance()
             ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
-            ->getResponse();
+            ->getResponse(true);
 
         dd($res);
     }
@@ -9847,15 +9854,20 @@ class DumbController extends Controller
         ->disableSSL()
         ->followLocations()
         ->setBody($data)
+
+        // Solo para pruebas !!!!!!!!
+        // ->enablePostRequestCache()
+        // ->cache(850000)
+        
         ->request($url, 'POST');       
         
         $error = $client->getError();
-        $data  = $client->getResponse(false);
+        $data  = $client->getResponse(true);
 
         $data  = $data['data'];
 
-        if ($data){
-           $data = XML::toArray($data)[4]['FAULTSTRING'][0];
+        if ($data && !empty($data[4]['FAULTSTRING'][0])){
+           $data = $data[4]['FAULTSTRING'][0];
         }
 
         dd($client->getStatus(), 'STATUS');

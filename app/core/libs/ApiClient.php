@@ -395,16 +395,20 @@ class ApiClient
             $as_array = true;
         }
 
+        $data = $this->response;
+
         if ($decode){
-            $data = json_decode($this->response, $as_array);
-        } else {
-            $data = $this->response;
-        }   
+            if (Strings::isJSON($data)){
+                $data = json_decode($this->response, $as_array);
+            } else if (XML::isXML($data)){
+                $data = XML::toArray($data);
+            }
+        } 
 
         $res = [
-            'data' => $data,
+            'data'      => $data,
             'http_code' => $this->status,
-            'error' => $this->error
+            'error'     => $this->error
         ];
 
         return $res;
@@ -451,7 +455,7 @@ class ApiClient
         return $this->setSSLCrt($cert_path);
     }
 
-    function consumeAPI(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
+    function consumeAPI(string $url, string $http_verb, $data = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
     {
         if (!extension_loaded('curl'))
 		{
@@ -492,28 +496,6 @@ class ApiClient
                 $accept_found = $key;
                 break;
             }
-        }
-
-        if (!$content_type_found){
-            $headers = array_merge(
-                [
-                    'Content-Type' => 'application/json'
-                ],
-                ($headers ?? [])
-            );
-        }
-
-        if ($accept_found) {
-            if (Strings::startsWith('text/plain', $headers[$accept_found]) ||
-                Strings::startsWith('text/html', $headers[$accept_found])){
-                $decode = false;
-            }
-        }
-
-        if ($encode_body && is_array($body)){
-            $data = json_encode($body);
-        } else {
-            $data = $body;
         }
 
         $curl = curl_init();
