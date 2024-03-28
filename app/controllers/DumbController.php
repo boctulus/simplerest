@@ -9724,6 +9724,18 @@ class DumbController extends Controller
         dd($px->getState(), 'S');
     }
 
+    function test_nit_co(){
+        // Ejemplos de uso
+        $valid_nits = ['901143974', '9005726197', '900218578', '9009752417', '9009752415'];
+        foreach ($valid_nits as $nit) {
+            if (NITColombiaValidator::isValid($nit, true)) {
+                echo "El NIT $nit ES válido.\n";
+            } else {
+                echo "El NIT $nit no es válido.\n";
+            }
+        }
+    }
+
     function get_users(){
         $url = 'https://taxes4pros.com/wp-json/wp/v2/users';
 
@@ -9804,9 +9816,9 @@ class DumbController extends Controller
 
         dd(XML::toArray($xml)[4]['FAULTSTRING'][0], 'XML -> ARR');
     }
-
+    
     function test_soap_erp_req_consultar_inv(){
-        $idbodega = 2;
+        $idbodega = '01';
         $codigos  = [];
 
         $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
@@ -9822,18 +9834,10 @@ class DumbController extends Controller
         dd($error, 'ERROR');
         dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
+
+        // dd($cli->dump(), 'REQ');
     }
 
-    function test_nit_co(){
-        // Ejemplos de uso
-        $valid_nits = ['901143974', '9005726197', '900218578', '9009752417', '9009752415'];
-        foreach ($valid_nits as $nit) {
-            if (NITColombiaValidator::isValid($nit, true)) {
-                echo "El NIT $nit ES válido.\n";
-            } else {
-                echo "El NIT $nit no es válido.\n";
-            }
-        }
-    }
-
+    
+    
 }   // end class
