@@ -9969,18 +9969,6 @@ Y bien podría haber una lógica de control de errores:
         
         //...   
     }
-
-Por defecto se hace un "decode" de la respuesta o sea se la trata como un JSON pero se puede des-activar ese comportamiento de dos formas:
-
-1) Pasando un Accept de tipo 'text/plain' o ...
-
-	$res = consume_api('http://xxxxxxxxxxxxx', 'GET', null, [
-		'Accept' => 'text/plain'
-	]);
-
-2) Pasando como 6to parámetro false 
-
-	$res = consume_api('http://xxxxxxxxxxxxx', 'GET', null, null, null, false);
   
 # Crear un recurso
 
@@ -10984,10 +10972,8 @@ Ej:
 
 	$idbodega = 2;
 	$codigos  = [];
-
 	$token    = 'xxxxxxxx-xxxx-xxx-xxxx-xxxxxxxxxxx';
 	$method   = 'consultarinventario';
-
 
 	$url_base = 'http://xxxxxxxxxxxxxxxxxxxx.com:380/service.asmx?wsdl';
 
@@ -11019,16 +11005,17 @@ Ej:
 	->disableSSL()
 	->followLocations()
 	->setBody($data)
+
+	// Solo para pruebas !!!!!!!!
+	// ->enablePostRequestCache()
+	// ->cache(850000)
+	
 	->request($url, 'POST');       
 	
 	$error = $client->getError();
-	$data  = $client->getResponse(false);
+	$data  = $client->getResponse(true);
 
 	$data  = $data['data'];
-
-	if ($data){
-		$data = XML::toArray($data)[4]['FAULTSTRING'][0];
-	}
 
 	dd($client->getStatus(), 'STATUS');
 	dd($error, 'ERROR');
