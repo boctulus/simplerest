@@ -1088,7 +1088,7 @@ class Strings
     static function endsWith(string $substr, string $text, bool $case_sensitive = true)
 	{
 		if (!$case_sensitive){
-			$text = strtolower($text);
+			$text   = strtolower($text);
 			$substr = strtolower($substr);
 		}
 
