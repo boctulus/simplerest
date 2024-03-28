@@ -201,10 +201,10 @@ class RibiSOAP extends ApiClient
                     'required' => 'The detalle field is required',
                 ],
             ],
-            'detalle.*.idreferencia' => ['type' => 'string', 'required' => true],
-            'detalle.*.cantidad' => ['type' => 'string', 'required' => true],
-            'detalle.*.precio' => ['type' => 'string', 'required' => true],
-            'detalle.*.descuento' => ['type' => 'string', 'required' => true],
+            // 'detalle.*.idreferencia' => ['type' => 'string', 'required' => true],
+            // 'detalle.*.cantidad' => ['type' => 'string', 'required' => true],
+            // 'detalle.*.precio' => ['type' => 'string', 'required' => true],
+            // 'detalle.*.descuento' => ['type' => 'string', 'required' => true],
         ];        
 
         if (!$validator->validate($params, $rules)) {
