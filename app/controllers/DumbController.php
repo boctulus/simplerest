@@ -5,9 +5,7 @@ namespace simplerest\controllers;
 use Client;
 use stdClass;
 
-use boctulus\libs\XML;
-// use simplerest\core\libs\Xml;
-
+use simplerest\core\libs\XML;
 use simplerest\core\Acl;
 use simplerest\core\View;
 use simplerest\libs\Sync;
@@ -16,53 +14,53 @@ use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\libs\Reviews;
+
 use simplerest\core\libs\CSS;
-
 use simplerest\core\libs\Env;
-use simplerest\core\libs\Num;
 
-use simplerest\core\libs\Url;
+use simplerest\core\libs\Num;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\libs\Url;
 use simplerest\core\Container;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
-use simplerest\core\libs\Time;
 
+use simplerest\core\libs\Time;
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\Utils;
 
+use simplerest\core\libs\Utils;
 use simplerest\core\libs\Arrays;
+
 use simplerest\core\libs\Config;
 
 use simplerest\core\libs\GitHub;
-
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\OpenAI;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
-use simplerest\core\libs\System;
 
+use simplerest\core\libs\System;
 use simplerest\core\libs\Update;
+
 use simplerest\core\libs\DBCache;
 
 use simplerest\core\libs\Strings;
 
 use simplerest\core\libs\VarDump;
-
 use Spatie\ArrayToXml\ArrayToXml;
-use simplerest\core\libs\CSSUtils;
 
+use simplerest\core\libs\CSSUtils;
 use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
+
 use simplerest\core\libs\Parallex;
 
 use simplerest\models\az\BarModel;
-
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\FileCache;
@@ -71,20 +69,20 @@ use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
-use simplerest\core\libs\GoogleMaps;
 
+use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
-use simplerest\core\libs\ZipManager;
 
+use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\Memoization;
 use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
-use simplerest\core\libs\Messurements;
 
+use simplerest\core\libs\Messurements;
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
@@ -98,8 +96,8 @@ use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\CronJobMananger;
-use simplerest\core\libs\FileMemoization;
 
+use simplerest\core\libs\FileMemoization;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\RandomGenerator;
 use simplerest\core\libs\ValidationRules;
@@ -9743,6 +9741,73 @@ class DumbController extends Controller
         dd($client->getError(), 'ERROR');
         dd($client->getHeaders(), 'HEADERS');
         dd($client->getResponse(true), 'RES'); 
+    }
+
+    function test_soap_erp_req_post(){
+        $xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
+
+        $xml_file_encoded = base64_encode($xml_file);
+
+        $response = consume_api('http://34.204.139.241:8084/api/SendDIAN', 'POST', $xml_file_encoded, [
+            "Content-type"  => "text/plain",
+            "Authorization" => "Bearer eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9hZGFwdGFkb3JAbnVtcm90LmNvbSIsInJvbGUiOiJDbGllbnRlIiwibmJmIjoxNjM2MDQ0NTQ0LCJleHAiOjE2OTkxMTY1NDQsImlhdCI6MTYzNjA0NDU0NCwiaXNzIjoibnVtcm90IiwiYXVkIjoicmVhZGVycyJ9.yejhLDwaVb4enDgKPssXyf8SYP1AyrEEa5m99joo3EjG3bhMToUPnY5696sjU6Kb"
+        ]);
+
+        dd($response, 'RES');
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    function test_soap_erp_req_consultar_inv(){
+        $idbodega = '????';
+        $codigos  = [];
+
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $method   = 'consultarinventario';
+
+
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+
+        $include_codigos = (!empty($codigos) ? "<ser:codigos>".implode(',', $codigos)."</ser:codigos>" : '');
+
+        $data     = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
+        <soapenv:Header/>
+        <soapenv:Body>
+           <ser:consultarinventario>
+              <ser:token>$token</ser:token>
+              <ser:idbodega>$idbodega</ser:idbodega>
+              $include_codigos
+           </ser:consultarinventario>
+        </soapenv:Body>
+     </soapenv:Envelope>";
+
+        $url      = "$url_base/$method";
+
+        $client = new ApiClient();
+        $client
+
+        /*
+            Seteo parámetos
+        */
+        ->setHeaders([
+            'Content-Type' => 'text/xml;charset=UTF-8',
+            'Accept' => 'text/xml',
+        ])
+        ->disableSSL()
+        ->followLocations()
+        ->setBody($data)
+        ->request($url, 'POST');        
+
+        dd($client->getStatus(), 'STATUS');
+        dd($client->getError(), 'ERROR');
+        dd($client->getHeaders(), 'HEADERS');
+        dd($client->getResponse(false), 'RES');
+    }
+
+    function test_decode_xml(){
+        $xml = '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><soap:Fault><faultcode>soap:Server</faultcode><faultstring>Server was unable to process request. ---&gt; Error: La bodega no existe</faultstring><detail /></soap:Fault></soap:Body></soap:Envelope>';
+
+        dd(XML::toArray($xml)[4]['FAULTSTRING'][0], 'XML -> ARR');
     }
 
 
