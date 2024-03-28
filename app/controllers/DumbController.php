@@ -102,6 +102,7 @@ use simplerest\core\libs\FileMemoization;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\RandomGenerator;
 use simplerest\core\libs\ValidationRules;
+use simplerest\libs\NITColombiaValidator;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
@@ -9821,6 +9822,18 @@ class DumbController extends Controller
         dd($error, 'ERROR');
         dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
+    }
+
+    function test_nit_co(){
+        // Ejemplos de uso
+        $valid_nits = ['901143974', '9005726197', '900218578', '9009752417', '9009752415'];
+        foreach ($valid_nits as $nit) {
+            if (NITColombiaValidator::validate($nit, true)) {
+                echo "El NIT $nit ES válido.\n";
+            } else {
+                echo "El NIT $nit no es válido.\n";
+            }
+        }
     }
 
 }   // end class
