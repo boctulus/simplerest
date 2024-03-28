@@ -10976,6 +10976,66 @@ Ej:
 	}
 
 
+# SOAP API con ApiClient
+
+El siguiente es un ejemplo para una API SOAP concreta y debe ajustarse en cada caso.
+
+Ej:
+
+	$idbodega = 2;
+	$codigos  = [];
+
+	$token    = 'xxxxxxxx-xxxx-xxx-xxxx-xxxxxxxxxxx';
+	$method   = 'consultarinventario';
+
+
+	$url_base = 'http://xxxxxxxxxxxxxxxxxxxx.com:380/service.asmx?wsdl';
+
+	$include_codigos = (!empty($codigos) ? "<ser:codigos>".implode(',', $codigos)."</ser:codigos>" : '');
+
+	$data     = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
+	<soapenv:Header/>
+	<soapenv:Body>
+		<ser:consultarinventario>
+			<ser:token>$token</ser:token>
+			<ser:idbodega>$idbodega</ser:idbodega>
+			$include_codigos
+		</ser:consultarinventario>
+	</soapenv:Body>
+	</soapenv:Envelope>";
+
+	$url      = "$url_base/$method";
+
+	$client = new ApiClient();
+	$client
+
+	/*
+		Seteo parámetos
+	*/
+	->setHeaders([
+		'Content-Type' => 'text/xml;charset=UTF-8',
+		'Accept' => 'text/xml',
+	])
+	->disableSSL()
+	->followLocations()
+	->setBody($data)
+	->request($url, 'POST');       
+	
+	$error = $client->getError();
+	$data  = $client->getResponse(false);
+
+	$data  = $data['data'];
+
+	if ($data){
+		$data = XML::toArray($data)[4]['FAULTSTRING'][0];
+	}
+
+	dd($client->getStatus(), 'STATUS');
+	dd($error, 'ERROR');
+	dd($client->getHeaders(), 'HEADERS');
+	dd($data, 'RES');
+
+
 ### Componentes del core del framework
 
 # Base de datos
