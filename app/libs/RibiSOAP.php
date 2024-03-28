@@ -46,7 +46,7 @@ class RibiSOAP extends ApiClient
         return $this;
     }
 
-    function op(string $name, $data = null){
+    protected function op(string $name, $data = null){
         if (!in_array($name, $this->allowed_op)){
             throw new \InvalidArgumentException("Operación no soportada");
         }
@@ -75,7 +75,7 @@ class RibiSOAP extends ApiClient
             </ser:consultarinventario>
             </soapenv:Body>
         </soapenv:Envelope>";
-        
+
         $this->op($method, $data);       
         
         $data  = $this->getResponse();
