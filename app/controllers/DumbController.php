@@ -9743,6 +9743,13 @@ class DumbController extends Controller
         dd($client->getResponse(true), 'RES'); 
     }
 
+    function test_decode_xml(){
+        $xml = '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><soap:Fault><faultcode>soap:Server</faultcode><faultstring>Server was unable to process request. ---&gt; Error: La bodega no existe</faultstring><detail /></soap:Fault></soap:Body></soap:Envelope>';
+
+        dd(XML::toArray($xml)[4]['FAULTSTRING'][0], 'XML -> ARR');
+    }
+
+
     function test_soap_erp_req_post(){
         $xml_file = file_get_contents(ETC_PATH . 'ad00148980970002000000067.xml');
 
@@ -9759,7 +9766,7 @@ class DumbController extends Controller
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     function test_soap_erp_req_consultar_inv(){
-        $idbodega = '????';
+        $idbodega = 2;
         $codigos  = [];
 
         $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
@@ -9796,19 +9803,23 @@ class DumbController extends Controller
         ->disableSSL()
         ->followLocations()
         ->setBody($data)
-        ->request($url, 'POST');        
+        ->request($url, 'POST');       
+        
+        $error = $client->getError();
+        $data  = $client->getResponse(false);
+
+        $data  = $data['data'];
+
+        if ($data){
+           $data = XML::toArray($data)[4]['FAULTSTRING'][0];
+        }
 
         dd($client->getStatus(), 'STATUS');
-        dd($client->getError(), 'ERROR');
+        dd($error, 'ERROR');
         dd($client->getHeaders(), 'HEADERS');
-        dd($client->getResponse(false), 'RES');
+        dd($data, 'RES');
     }
 
-    function test_decode_xml(){
-        $xml = '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><soap:Fault><faultcode>soap:Server</faultcode><faultstring>Server was unable to process request. ---&gt; Error: La bodega no existe</faultstring><detail /></soap:Fault></soap:Body></soap:Envelope>';
-
-        dd(XML::toArray($xml)[4]['FAULTSTRING'][0], 'XML -> ARR');
-    }
 
 
 }   // end class
