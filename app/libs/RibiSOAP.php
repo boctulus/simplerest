@@ -120,67 +120,50 @@ class RibiSOAP extends ApiClient
         return $data;
     }    
 
-    function crearcliente($nit, $tipodocumento, $tiporegimen, $nombres, $iddepartamento, $idciudad, $direccion, $telefono, $celular, $correo, $contacto, $idvendedor)
+    function crearcliente(array $params)
     {
+        $method = 'crearcliente';
+        $token  = $this->token;
 
-    // Validar los parámetros usando el validador Validator
-    $validator = new Validator();
+        $validator = new Validator();
 
-    $rules = [
-        'nit' => ['type' => 'string', 'required' => true],
-        'tipodocumento' => ['type' => 'string', 'required' => true],
-        'tiporegimen' => ['type' => 'string', 'required' => true],
-        'nombres' => ['type' => 'string', 'required' => true],
-        'iddepartamento' => ['type' => 'string', 'required' => true],
-        'idciudad' => ['type' => 'string', 'required' => true],
-        'direccion' => ['type' => 'string', 'required' => true],
-        'telefono' => ['type' => 'string', 'required' => true],
-        'celular' => ['type' => 'string', 'required' => true],
-        'correo' => ['type' => 'email', 'required' => true],
-        'contacto' => ['type' => 'string', 'required' => true],
-        'idvendedor' => ['type' => 'string', 'required' => true],
-    ];
+        $rules = [
+            'nit' => ['type' => 'string', 'required' => true],
+            'tipodocumento' => ['type' => 'string', 'required' => true],
+            'tiporegimen' => ['type' => 'string', 'required' => true],
+            'nombres' => ['type' => 'string', 'required' => true],
+            'iddepartamento' => ['type' => 'string', 'required' => true],
+            'idciudad' => ['type' => 'string', 'required' => true],
+            'direccion' => ['type' => 'string', 'required' => true],
+            'telefono' => ['type' => 'string', 'required' => true],
+            'celular' => ['type' => 'string', 'required' => true],
+            'correo' => ['type' => 'email', 'required' => true],
+            'contacto' => ['type' => 'string', 'required' => true],
+            'idvendedor' => ['type' => 'string', 'required' => true],
+        ];
 
-    if (!$validator->validate([
-        'nit' => $nit,
-        'tipodocumento' => $tipodocumento,
-        'tiporegimen' => $tiporegimen,
-        'nombres' => $nombres,
-        'iddepartamento' => $iddepartamento,
-        'idciudad' => $idciudad,
-        'direccion' => $direccion,
-        'telefono' => $telefono,
-        'celular' => $celular,
-        'correo' => $correo,
-        'contacto' => $contacto,
-        'idvendedor' => $idvendedor,
-    ], $rules)) {
-        throw new InvalidValidationException(json_encode($validator->getErrors()));
-    }
+        if (!$validator->validate($params, $rules)) {
+            throw new InvalidValidationException(json_encode($validator->getErrors()));
+        }
 
-    // Construir el cuerpo de la solicitud SOAP
-    $method = 'crearcliente';
-    $token  = $this->token;
-    $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
-       <soapenv:Header/>
-       <soapenv:Body>
-          <ser:crearcliente>
-             <ser:token>$token</ser:token>
-             <ser:nit>$nit</ser:nit>
-             <ser:tipodocumento>$tipodocumento</ser:tipodocumento>
-             <ser:tiporegimen>$tiporegimen</ser:tiporegimen>
-             <ser:nombres>$nombres</ser:nombres>
-             <ser:iddepartamento>$iddepartamento</ser:iddepartamento>
-             <ser:idciudad>$idciudad</ser:idciudad>
-             <ser:direccion>$direccion</ser:direccion>
-             <ser:telefono>$telefono</ser:telefono>
-             <ser:celular>$celular</ser:celular>
-             <ser:correo>$correo</ser:correo>
-             <ser:contacto>$contacto</ser:contacto>
-             <ser:idvendedor>$idvendedor</ser:idvendedor>
-          </ser:crearcliente>
-       </soapenv:Body>
-    </soapenv:Envelope>";
+        if (!NITColombiaValidator::isValid($params['nit'], true)) {
+            throw new \InvalidArgumentException("NIT no válido");
+        }
+
+        // Construir el cuerpo de la solicitud SOAP
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
+           <soapenv:Header/>
+           <soapenv:Body>
+              <ser:crearcliente>
+                 <ser:token>$token</ser:token>";
+        
+        foreach ($params as $key => $value) {
+            $data .= "<ser:$key>$value</ser:$key>";
+        }
+
+        $data .= "</ser:crearcliente>
+           </soapenv:Body>
+        </soapenv:Envelope>";
 
         $this->op($method, $data);
 
@@ -198,6 +181,39 @@ class RibiSOAP extends ApiClient
     {
         $method = 'crearpedido';
         $token  = $this->token;
+
+        $validator = new Validator();
+
+        $rules = [
+            'token' => ['type' => 'string', 'required' => true],
+            'numero' => ['type' => 'string', 'required' => true],
+            'fecha' => ['type' => 'date', 'required' => true],
+            'fechaentrega' => ['type' => 'date', 'required' => true],
+            'nit' => ['type' => 'string', 'required' => true],
+            'observaciones' => ['type' => 'string', 'required' => true],
+            'idbodega' => ['type' => 'string', 'required' => true],
+            'detalle' => [
+                'type' => 'array',
+                'required' => true,
+                'min'      => 1,
+                'messages' => [
+                    'type' => 'The detalle field must be an array',
+                    'required' => 'The detalle field is required',
+                ],
+            ],
+            'detalle.*.idreferencia' => ['type' => 'string', 'required' => true],
+            'detalle.*.cantidad' => ['type' => 'string', 'required' => true],
+            'detalle.*.precio' => ['type' => 'string', 'required' => true],
+            'detalle.*.descuento' => ['type' => 'string', 'required' => true],
+        ];        
+
+        if (!$validator->validate($params, $rules)) {
+            throw new InvalidValidationException(json_encode($validator->getErrors()));
+        }
+
+        if (!NITColombiaValidator::isValid($params['nit'], true)) {
+            throw new \InvalidArgumentException("NIT no válido");
+        }
 
         // Construir el cuerpo de la solicitud SOAP
         $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
