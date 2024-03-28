@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "168a11a9618299298a14cd0122a27da4",
+    "content-hash": "92b58080644a5339c143525c254bbe1d",
     "packages": [
         {
             "name": "boctulus/hello_world",
@@ -46,35 +46,6 @@
                 "source": "https://github.com/boctulus/hello_world/tree/v1.0.0"
             },
             "time": "2023-06-23T12:24:43+00:00"
-        },
-        {
-            "name": "boctulus/xml",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/boctulus/XML.git",
-                "reference": "b8828d021c7a540b0c3ed3832e611c9e2dce88b4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/boctulus/XML/zipball/b8828d021c7a540b0c3ed3832e611c9e2dce88b4",
-                "reference": "b8828d021c7a540b0c3ed3832e611c9e2dce88b4",
-                "shasum": ""
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "boctulus\\XML\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Useful XML library",
-            "support": {
-                "issues": "https://github.com/boctulus/XML/issues",
-                "source": "https://github.com/boctulus/XML/tree/main"
-            },
-            "time": "2024-03-03T04:23:13+00:00"
         },
         {
             "name": "byjg/jwt-session",
@@ -2734,6 +2705,70 @@
             "time": "2022-03-09T20:21:56+00:00"
         },
         {
+            "name": "spatie/array-to-xml",
+            "version": "2.17.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/array-to-xml.git",
+                "reference": "5cbec9c6ab17e320c58a259f0cebe88bde4a7c46"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/array-to-xml/zipball/5cbec9c6ab17e320c58a259f0cebe88bde4a7c46",
+                "reference": "5cbec9c6ab17e320c58a259f0cebe88bde4a7c46",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.2",
+                "pestphp/pest": "^1.21",
+                "phpunit/phpunit": "^9.0",
+                "spatie/pest-plugin-snapshots": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\ArrayToXml\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://freek.dev",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Convert an array to xml",
+            "homepage": "https://github.com/spatie/array-to-xml",
+            "keywords": [
+                "array",
+                "convert",
+                "xml"
+            ],
+            "support": {
+                "source": "https://github.com/spatie/array-to-xml/tree/2.17.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-12-26T08:22:07+00:00"
+        },
+        {
             "name": "starkbank/ecdsa",
             "version": "0.0.5",
             "source": {
@@ -3394,10 +3429,8 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "boctulus/xml": 20
-    },
-    "prefer-stable": false,
+    "stability-flags": [],
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.4"
