@@ -398,11 +398,13 @@ class ApiClient
 
         $data = $this->response;
 
-        if (Strings::startsWith('application/json', $this->content_type) || ($decode && Strings::isJSON($data))){
+        // dd($this->content_type. 'CONTENT TYPE');        
+
+        if ((!empty($this->content_type) && Strings::startsWith('application/json', $this->content_type)) || ($decode && Strings::isJSON($data))){
             $data = json_decode($this->response, $as_array);
         } else 
         
-        if (Strings::containsAny(['/xml', '+xml'], $this->content_type)  || ($decode && XML::isXML($data))){
+        if ((!empty($this->content_type) && Strings::containsAny(['/xml', '+xml'], $this->content_type))  || ($decode && XML::isXML($data))){
             $data = XML::toArray($data);
         }
         
