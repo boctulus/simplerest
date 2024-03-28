@@ -10,7 +10,7 @@ namespace simplerest\libs;
 */
 class NITColombiaValidator
 {
-    public static function validate(int $nit, bool $accept_with_no_verification_digit = false) {
+    public static function isValid(int $nit, bool $accept_with_no_verification_digit = false) {
         $nit = trim((string) $nit);
         
         if (empty($nit)) {
@@ -26,7 +26,7 @@ class NITColombiaValidator
         }
 
         if (strlen($nit) !== 10) {
-            throw new \InvalidArgumentException("Longitud inválida");
+            throw new \InvalidArgumentException("Longitud inválida para NIT");
         }
 
         $multipliers = [41, 37, 29, 23, 19, 17, 13, 7, 3];

@@ -9828,7 +9828,7 @@ class DumbController extends Controller
         // Ejemplos de uso
         $valid_nits = ['901143974', '9005726197', '900218578', '9009752417', '9009752415'];
         foreach ($valid_nits as $nit) {
-            if (NITColombiaValidator::validate($nit, true)) {
+            if (NITColombiaValidator::isValid($nit, true)) {
                 echo "El NIT $nit ES válido.\n";
             } else {
                 echo "El NIT $nit no es válido.\n";

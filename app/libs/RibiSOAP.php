@@ -3,6 +3,7 @@
 namespace simplerest\libs;
 
 use simplerest\core\libs\ApiClient;
+use simplerest\libs\NITColombiaValidator;
 
 class RibiSOAP extends ApiClient
 {
@@ -87,6 +88,10 @@ class RibiSOAP extends ApiClient
 
     function consultarcliente($nit)
     {
+        if (!NITColombiaValidator::isValid($nit, true)) {
+            throw new \InvalidArgumentException("NIT no válido");
+        }
+
         $method = 'consultarcliente';
         $token  = $this->token;
     
@@ -111,8 +116,7 @@ class RibiSOAP extends ApiClient
         }
     
         return $data;
-    }
-    
+    }    
 
     function crearcliente($params)
     {
