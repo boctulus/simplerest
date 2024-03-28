@@ -1247,12 +1247,15 @@ class DumbController extends Controller
         // ruta absoluta al certificado	
         $cert = "D:\wamp64\ca-bundle.crt";
 
-        $res = ApiClient::instance()
+        $cli = ApiClient::instance();
+
+        $res = $cli
             //->setSSLCrt($cert)
             ->request('http://jsonplaceholder.typicode.com/posts', 'GET')
             ->getResponse(true);
 
-        dd($res);
+        dd($res, 'RES');
+        dd($cli->getHeaders(), 'HEADERS');
     }
 
     /*
@@ -9856,13 +9859,13 @@ class DumbController extends Controller
         ->setBody($data)
 
         // Solo para pruebas !!!!!!!!
-        // ->enablePostRequestCache()
-        // ->cache(850000)
+        ->enablePostRequestCache()
+        ->cache(850000)
         
         ->request($url, 'POST');       
         
         $error = $client->getError();
-        $data  = $client->getResponse(true);
+        $data  = $client->getResponse(false);
 
         $data  = $data['data'];
 
