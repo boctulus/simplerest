@@ -11005,10 +11005,6 @@ Ej:
 	->disableSSL()
 	->followLocations()
 	->setBody($data)
-
-	// Solo para pruebas !!!!!!!!
-	// ->enablePostRequestCache()
-	// ->cache(850000)
 	
 	->request($url, 'POST');       
 	
