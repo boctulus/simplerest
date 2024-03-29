@@ -59,6 +59,7 @@ class RibiSOAP extends ApiClient
         $client->send($url, $data);
     }
 
+    // OK pero faltarian algunos campos como categoria y foto
     function consultarproductos()
     {
         $method = 'consultarproductos';
@@ -86,6 +87,7 @@ class RibiSOAP extends ApiClient
         return $data;
     }
 
+    // OK
     function consultarinventario($idbodega, $codigos)
     {
         $method = 'consultarinventario';
@@ -141,38 +143,16 @@ class RibiSOAP extends ApiClient
         return $data;
     }
 
-    function consultarcliente($nit)
-    {
-        if (!NITColombiaValidator::isValid($nit, true)) {
-            throw new \InvalidArgumentException("NIT no válido");
-        }
+    /*
+        Faltan:
 
-        $method = 'consultarcliente';
-        $token  = $this->token;
-    
-        // Construir el cuerpo de la solicitud SOAP
-        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <ser:consultarcliente>
-                 <ser:token>$token</ser:token>
-                 <ser:nit>$nit</ser:nit>
-              </ser:consultarcliente>
-           </soapenv:Body>
-        </soapenv:Envelope>";
-    
-        $this->op($method, $data);
-    
-        $data  = $this->getResponse();
-        $data  = $data['data'] ?? null;
-    
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-           $data = $data[4]['FAULTSTRING'][0];
-        }
-    
-        return $data;
-    }    
+        consultarciudades
+        consultardepartamentos
+        consultartiposdocumentos
+        consultarregimenes
 
+        Como obtengo idvendedor ???
+    */
     function crearcliente(array $params)
     {
         $method = 'crearcliente';
@@ -204,17 +184,17 @@ class RibiSOAP extends ApiClient
         }
 
         // Construir el cuerpo de la solicitud SOAP
-        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
            <soapenv:Header/>
            <soapenv:Body>
-              <ser:crearcliente>
-                 <ser:token>$token</ser:token>";
+              <loc:crearcliente>
+                 <loc:token>$token</loc:token>";
         
         foreach ($params as $key => $value) {
-            $data .= "<ser:$key>$value</ser:$key>";
+            $data .= "<loc:$key>$value</loc:$key>";
         }
 
-        $data .= "</ser:crearcliente>
+        $data .= "</loc:crearcliente>
            </soapenv:Body>
         </soapenv:Envelope>";
 
@@ -229,6 +209,39 @@ class RibiSOAP extends ApiClient
 
         return $data;
     }
+
+    function consultarcliente($nit)
+    {
+        if (!NITColombiaValidator::isValid($nit, true)) {
+            throw new \InvalidArgumentException("NIT no válido");
+        }
+
+        $method = 'consultarcliente';
+        $token  = $this->token;
+    
+        // Construir el cuerpo de la solicitud SOAP
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+           <soapenv:Header/>
+           <soapenv:Body>
+              <loc:consultarcliente>
+                 <loc:token>$token</loc:token>
+                 <loc:nit>$nit</loc:nit>
+              </loc:consultarcliente>
+           </soapenv:Body>
+        </soapenv:Envelope>";
+    
+        $this->op($method, $data);
+    
+        $data  = $this->getResponse();
+        $data  = $data['data'] ?? null;
+    
+        if ($data && !empty($data[4]['FAULTSTRING'][0])){
+           $data = $data[4]['FAULTSTRING'][0];
+        }
+    
+        return $data;
+    }    
+
 
     function crearpedido($params)
     {
@@ -272,14 +285,14 @@ class RibiSOAP extends ApiClient
         $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
            <soapenv:Header/>
            <soapenv:Body>
-              <ser:crearpedido>
-                 <ser:token>$token</ser:token>";
+              <loc:crearpedido>
+                 <loc:token>$token</loc:token>";
         
         foreach ($params as $key => $value) {
-            $data .= "<ser:$key>$value</ser:$key>";
+            $data .= "<loc:$key>$value</loc:$key>";
         }
 
-        $data .= "</ser:crearpedido>
+        $data .= "</loc:crearpedido>
            </soapenv:Body>
         </soapenv:Envelope>";
 
