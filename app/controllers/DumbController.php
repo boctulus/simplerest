@@ -26,40 +26,40 @@ use simplerest\core\libs\XML;
 use simplerest\libs\RibiSOAP;
 use simplerest\core\Container;
 use simplerest\core\libs\Date;
-use simplerest\core\libs\Mail;
 
+use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
 use simplerest\core\libs\Time;
-use simplerest\core\libs\Cache;
 
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
+
 use simplerest\core\libs\Utils;
 
 use simplerest\core\libs\Arrays;
-
 use simplerest\core\libs\Config;
 use simplerest\core\libs\GitHub;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\OpenAI;
-use simplerest\core\libs\Schema;
 
+use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
+
 use simplerest\core\libs\System;
 
 use simplerest\core\libs\Update;
 
 use simplerest\core\libs\DBCache;
-
 use simplerest\core\libs\Strings;
-use simplerest\core\libs\VarDump;
 
+use simplerest\core\libs\VarDump;
 use Spatie\ArrayToXml\ArrayToXml;
 use simplerest\core\libs\CSSUtils;
 use simplerest\core\libs\Factory;;
+
 use simplerest\core\libs\Hardware;
 
 use simplerest\core\libs\JobQueue;
-
 use simplerest\core\libs\Parallex;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
@@ -68,20 +68,20 @@ use simplerest\core\libs\FileCache;
 use simplerest\core\libs\MediaType;
 use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Reflector;
-use simplerest\core\libs\Validator;
 
+use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
 use simplerest\core\libs\GoogleMaps;
-use simplerest\core\libs\Obfuscator;
 
+use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\Memoization;
 use simplerest\core\libs\SimpleCrypt;
-use simplerest\core\libs\FileUploader;
 
+use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
 use simplerest\core\libs\Messurements;
 use Endroid\QrCode\Label\Font\NotoSans;
@@ -95,8 +95,8 @@ use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
-use simplerest\core\libs\ApacheWebServer;
 
+use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\FileMemoization;
 use simplerest\core\libs\HtmlBuilder\Tag;
@@ -114,6 +114,7 @@ use simplerest\core\controllers\Controller;
 use simplerest\core\libs\FileMemoizationV2;
 use simplerest\libs\ItalianGrammarAnalyzer;
 use simplerest\libs\scrapers\AmazonScraper;
+use simplerest\shortcodes\eat_leaf\EatLeaf;
 use simplerest\core\libs\PHPLexicalAnalyzer;
 use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
@@ -8997,7 +8998,7 @@ class DumbController extends Controller
         </ul>
         ';
 
-        $code = XML::insertTranslator($code);
+        $code = HTML::insertTranslator($code);
 
         dd($code);
     }
@@ -9005,7 +9006,7 @@ class DumbController extends Controller
     function test_replacer_2(){
         $code = file_get_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks_copy-ok.php');
 
-        $code = XML::insertTranslator($code);
+        $code = HTML::insertTranslator($code);
 
         file_put_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks.php', $code);
     }
@@ -9856,6 +9857,17 @@ class DumbController extends Controller
         // dd($cli->dump(), 'REQ');
     }
 
+
+    /*
+        Test de shortcode
+    */
+    function nick(){        
+        // set_template('templates\tpl.php');
+
+        $sc = new EatLeaf();
+
+        render($sc->index());
+    }
     
     
 }   // end class

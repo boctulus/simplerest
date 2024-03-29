@@ -1,0 +1,90 @@
+/* Estilos generales */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.section1, .section2 {
+    height: 100vh; /* 100% del alto del viewport */
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.background-image-1, .background-image-2 {
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Asegura que esté detrás del contenido */
+}
+
+.background-image-1 {
+    background-image: url('../img/bg1.jpg');
+}
+
+.background-image-2 {
+    background-image: url('../img/bg2.jpg');
+}
+
+.content {
+    text-align: center;
+    z-index: 1; /* Asegura que esté por encima de la imagen de fondo */
+}
+
+.logo-s1 {
+    width: 25%; /* Ocupa un 25% del ancho */
+    max-width: 500px; 
+    position: absolute;
+    top: 15%; /* A 15% del tope */
+    left: 50%; /* Centrado horizontal */
+    transform: translateX(-50%); /* Centrado horizontal */
+}
+
+.column-wrapper {
+    display: flex;
+}
+
+.left-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.left-column-bottom {
+    text-align: justify;
+}
+
+.right-column {
+    flex: 1;
+    /* Estilos de la columna derecha */
+}
+
+.logo-s2 {
+    width: 50%; /* Ancho del logo */
+    max-width: 200px; /* Tamaño máximo del logo */
+    align-self: flex-start; /* Centrado vertical del logo en la parte superior */
+    margin-bottom: 20px; /* Espacio entre el logo y el texto */
+}
+
+
+.title-s1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7rem; 
+    color: #f4f4eb;
+    margin-top: 70vh; 
+}
+
+/* Media queries para dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .logo-s1 {
+        width: 50%; /* Ocupa un 50% del ancho en dispositivos móviles */
+        top: 10%; /* A 10% del tope en dispositivos móviles */
+    }
+}
