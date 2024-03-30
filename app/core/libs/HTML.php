@@ -6,6 +6,42 @@ use simplerest\core\libs\XML;
 
 class HTML extends XML
 {
+
+    /*
+        Devuelve un array con todos los IDs utilizados en el documento HTML
+
+        Puede ser útil para identificar elementos específicos en el DOM.
+
+        Ej:
+
+            $html = Files::getContent('D:\Desktop\EAT-LEAF (NICK)\#SECTIONS\section-1.html');
+            $ids  = HTMLTools::getIDs($html);
+
+        Salida:
+
+            Array
+            (
+                [0] => I5yDDTg9dkNxvJNF
+                [1] => XGGspzT0WdnBFWbQ
+                ...
+            )
+    */
+    static function getIDs(string $html) {
+        $dom = XML::getDocument($html);
+
+        // Obtenemos todos los elementos con atributo 'id'
+        $idNodes = $dom->getElementsByTagName('*');
+        $ids = [];
+
+        foreach ($idNodes as $node) {
+            if ($node->hasAttribute('id')) {
+                $ids[] = $node->getAttribute('id');
+            }
+        }
+
+        return $ids;
+    }
+
     
     public static function HTML2Text(string $page): string {
         $dom = new \DOMDocument();
