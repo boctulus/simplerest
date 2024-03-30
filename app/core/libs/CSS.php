@@ -310,6 +310,8 @@ class CSS
 
         - Luego solo seleccionar archivos CSS que las contengan o las reglas en especifico
         - Determinar si se utiliza un framework como Bootstrap (col-??-??, etc)
+
+        Usar en combinacion HTML::getIDs()
     */
     static function getCSSClasses(string $html) {
         $dom = XML::getDocument($html);

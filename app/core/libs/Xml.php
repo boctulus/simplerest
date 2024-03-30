@@ -8,10 +8,35 @@ require_once __DIR__ . '/../../../vendor/composer/InstalledVersions.php';
 
 class XML
 {
+    static function isXML($str) 
+    {
+        $str = trim($str);
+
+        if ((substr($str, 0, 1) != '<') || substr($str, -1) !== '>'){
+            return false;
+        }
+
+        // Habilitar el uso de errores internos de libxml
+        libxml_use_internal_errors(true);
+        
+        // Intentar cargar el string XML
+        $xml = simplexml_load_string($str);
+
+        // Verificar si hubo errores al cargar el XML
+        $is_xml = ($xml !== false);
+
+        // Limpiar los errores de libxml
+        libxml_clear_errors();
+
+        return $is_xml;
+    }
+
     /*
-        The intend is to get the "DOM selector" given a text which should be found as substring of a text node. The problem is an error.
+        The intend is to get the "DOM selector" given a text which should be found as substring of a text node
+
+        Verificar si funciona!
     */
-    public static function getSelector(string $html, string $text) : string {
+    static function getSelector(string $html, string $text) : string {
             $dom = static::getDocument($html);
 
             $xpath = new \DOMXPath($dom);
