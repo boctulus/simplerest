@@ -54,5 +54,76 @@ class RibisoftController extends MyController
         // dd($cli->dump(), 'REQ');
     }
 
+    //////////// NUEVOS /////////////////////////////////////////////////////////////////////////
+
+    function test_soap_erp_req_consultar_ciudades(){
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+    
+        $cli   = new RibiSOAP($token, $url_base);        
+    
+        $res   = $cli->consultarciudades();
+        $error = $cli->getError();
+    
+        dd($cli->getStatus(), 'STATUS');
+        dd($error, 'ERROR');
+        dd($cli->getHeaders(), 'HEADERS');
+        dd($res, 'DATA');
+    
+        // dd($cli->dump(), 'REQ');
+    }
+    
+    function test_soap_erp_req_consultar_departamentos(){
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+    
+        $cli   = new RibiSOAP($token, $url_base);        
+    
+        $res   = $cli->consultardepartamentos();
+        $error = $cli->getError();
+    
+        dd($cli->getStatus(), 'STATUS');
+        dd($error, 'ERROR');
+        dd($cli->getHeaders(), 'HEADERS');
+        dd($res, 'DATA');
+    
+        // dd($cli->dump(), 'REQ');
+    }
+    
+    function test_soap_erp_req_consultar_tipos_documento(){
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+    
+        $cli   = new RibiSOAP($token, $url_base);        
+    
+        $res   = $cli->consultartiposdocumento();
+        $error = $cli->getError();
+    
+        dd($cli->getStatus(), 'STATUS');
+        dd($error, 'ERROR');
+        dd($cli->getHeaders(), 'HEADERS');
+        dd($res, 'DATA');
+    
+        // dd($cli->dump(), 'REQ');
+    }
+    
+    function test_soap_erp_req_consultar_regimenes(){
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+    
+        $cli   = new RibiSOAP($token, $url_base);        
+    
+        $res   = $cli->consultarregimenes();
+        $error = $cli->getError();
+    
+        dd($cli->getStatus(), 'STATUS');
+        dd($error, 'ERROR');
+        dd($cli->getHeaders(), 'HEADERS');
+        dd($res, 'DATA');
+    
+        // dd($cli->dump(), 'REQ');
+    }
+    
+
 }
 
