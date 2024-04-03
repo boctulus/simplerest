@@ -175,19 +175,19 @@
 }
 
 
-
-.background-image-1, .background-image-2 {
+.background-image-1 {
+    background-image: url('../img/bg1.jpg'); /* Reemplazado shortcode con URL directa */
     background-size: cover;
     width: 100%;
     height: 100%;
     z-index: -1; /* Asegura que esté detrás del contenido */
 }
 
-.background-image-1 {
-    background-image: url('../img/bg1.jpg');
-}
-
 .background-image-2 {
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Asegura que esté detrás del contenido */
     background-image: url('../img/bg2.jpg');
 }
 
@@ -211,6 +211,21 @@
     font-family: 'Montserrat', sans-serif;
     font-size: 7rem; 
     color: #f4f4eb;
-    margin-top: 70vh; 
+    margin-top: 70px; /* Cambiado a 70px en lugar de 70vh */
 }
+
+@media (min-width: 768px) {
+    .logo-s1 {
+        width: 50%; /* Reducido el tamaño del logo para dispositivos medianos y superiores */
+    }
+}
+
+/* Corrige el cambio de color cerca de 580px, ajusta los valores según necesites */
+@media (max-width: 580px) {
+    .logo-s1 {
+        color: #000; /* Cambia el color del logo para evitar el cambio no deseado */
+    }
+}
+
+
 
