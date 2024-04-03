@@ -13,11 +13,17 @@ class RibiSOAP extends ApiClient
     protected $base_url   = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
 
     protected $allowed_op = [
-        'consultarproductos',
-        'consultarinventario',
-        'consultarcliente',
-        'crearcliente',
-        'crearpedido'
+        "consultarinventario",
+        "consultarcliente",
+        "crearpedido",
+        "consultarproductos",
+        "consultardepartamentos",
+        "consultarciudades",
+        "consultargrupos",
+        "consultartiposdocumento",
+        "consultarvendedores",
+        "crearcliente",
+        "consultartiposregimen", 
     ];
 
     function __construct($token, $base_url = null, $cache_exp_t = null) {
@@ -87,7 +93,11 @@ class RibiSOAP extends ApiClient
         return $data;
     }
 
-    // OK
+    /*
+        OK
+
+        idbodega es 001 y 002
+    */
     function consultarinventario($idbodega, $codigos)
     {
         $method = 'consultarinventario';
@@ -144,14 +154,14 @@ class RibiSOAP extends ApiClient
     }
 
     /*
-        Faltan:
+        Depende de:
 
         consultarciudades
         consultardepartamentos
         consultartiposdocumentos
-        consultarregimenes
+        ...
 
-        Como obtengo idvendedor ???
+        idvendedor es 01
     */
     function crearcliente(array $params)
     {
@@ -307,6 +317,119 @@ class RibiSOAP extends ApiClient
 
         return $data;
     }
+
+    ///////////////////////////////////////////////////////////////////
+    ////////////////////////// NUEVOS /////////////////////////////////
+    ///////////////////////////////////////////////////////////////////
+
+    function consultarciudades()
+    {
+        $method = 'consultarciudades';
+        $token  = $this->token;
+
+        // Construir el cuerpo de la solicitud SOAP
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <loc:consultarciudades>
+                <loc:token>$token</loc:token>
+            </loc:consultarciudades>
+        </soapenv:Body>
+        </soapenv:Envelope>";
+
+        $this->op($method, $data);
+
+        $data  = $this->getResponse();
+        $data  = $data['data'] ?? null;
+
+        if ($data && !empty($data[4]['FAULTSTRING'][0])){
+        $data = $data[4]['FAULTSTRING'][0];
+        }
+
+        return $data;
+    }
+
+    function consultardepartamentos()
+    {
+        $method = 'consultardepartamentos';
+        $token  = $this->token;
+
+        // Construir el cuerpo de la solicitud SOAP
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <loc:consultardepartamentos>
+                <loc:token>$token</loc:token>
+            </loc:consultardepartamentos>
+        </soapenv:Body>
+        </soapenv:Envelope>";
+
+        $this->op($method, $data);
+
+        $data  = $this->getResponse();
+        $data  = $data['data'] ?? null;
+
+        if ($data && !empty($data[4]['FAULTSTRING'][0])){
+        $data = $data[4]['FAULTSTRING'][0];
+        }
+
+        return $data;
+    }
+
+    function consultartiposdocumento()
+    {
+        $method = 'consultartiposdocumento';
+        $token  = $this->token;
+
+        // Construir el cuerpo de la solicitud SOAP
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <loc:consultartiposdocumento>
+                <loc:token>$token</loc:token>
+            </loc:consultartiposdocumento>
+        </soapenv:Body>
+        </soapenv:Envelope>";
+
+        $this->op($method, $data);
+
+        $data  = $this->getResponse();
+        $data  = $data['data'] ?? null;
+
+        if ($data && !empty($data[4]['FAULTSTRING'][0])){
+        $data = $data[4]['FAULTSTRING'][0];
+        }
+
+        return $data;
+    }
+
+    function consultarregimenes()
+    {
+        $method = 'consultarregimenes';
+        $token  = $this->token;
+
+        // Construir el cuerpo de la solicitud SOAP
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <loc:consultarregimenes>
+                <loc:token>$token</loc:token>
+            </loc:consultarregimenes>
+        </soapenv:Body>
+        </soapenv:Envelope>";
+
+        $this->op($method, $data);
+
+        $data  = $this->getResponse();
+        $data  = $data['data'] ?? null;
+
+        if ($data && !empty($data[4]['FAULTSTRING'][0])){
+        $data = $data[4]['FAULTSTRING'][0];
+        }
+
+        return $data;
+    }
+
 
 
 }
