@@ -7,6 +7,9 @@ use simplerest\core\libs\Validator;
 use simplerest\libs\NITColombiaValidator;
 use simplerest\core\exceptions\InvalidValidationException;
 
+/*
+    /c/5034bd75-3b16-4bcd-ad6a-fd1decb1cfed
+*/
 class RibiSOAP extends ApiClient
 {
     protected $token;
@@ -405,16 +408,16 @@ class RibiSOAP extends ApiClient
 
     function consultarregimenes()
     {
-        $method = 'consultarregimenes';
+        $method = 'consultartiposregimen';
         $token  = $this->token;
 
         // Construir el cuerpo de la solicitud SOAP
         $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
         <soapenv:Header/>
         <soapenv:Body>
-            <loc:consultarregimenes>
+            <loc:consultartiposregimen>
                 <loc:token>$token</loc:token>
-            </loc:consultarregimenes>
+            </loc:consultartiposregimen>
         </soapenv:Body>
         </soapenv:Envelope>";
 
