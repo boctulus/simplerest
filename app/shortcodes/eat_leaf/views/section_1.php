@@ -6,8 +6,8 @@
             </div>
         </div>
         <div class="row justify-content-center align-items-center">
-            <div class="col-6">
-                <img src="<?= shortcode_asset(__DIR__ . '/img/logo.webp') ?>" alt="Logo" class="logo-s1">
+            <div class="col-12 col-md-6">
+                <img src="<?= shortcode_asset(__DIR__ . '/img/logo.webp') ?>" alt="Logo" class="logo-s1 img-fluid">
             </div>
             <div class="col-12 text-center">
                 <h1 class="title-s1">Elevate your plate</h1>

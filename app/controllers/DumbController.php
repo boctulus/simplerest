@@ -9818,45 +9818,6 @@ class DumbController extends Controller
 
         dd(XML::toArray($xml)[4]['FAULTSTRING'][0], 'XML -> ARR');
     }
-    
-    function test_soap_erp_req_consultar_inv(){
-        $idbodega = '001';  // son  '001' y  '002'
-        $codigos  = [ '01003','01004','01005' ];
-
-        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
-        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
-
-
-        $cli   = new RibiSOAP($token, $url_base);        
-        
-        $res   = $cli->consultarinventario($idbodega, $codigos);
-        $error = $cli->getError();
-
-        dd($cli->getStatus(), 'STATUS');
-        dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
-        dd($res, 'DATA');
-
-        // dd($cli->dump(), 'REQ');
-    }
-
-    function test_soap_erp_req_consultar_productos(){
-        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
-        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
-
-
-        $cli   = new RibiSOAP($token, $url_base);        
-        
-        $res   = $cli->consultarproductos();
-        $error = $cli->getError();
-
-        dd($cli->getStatus(), 'STATUS');
-        dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
-        dd($res, 'DATA');
-
-        // dd($cli->dump(), 'REQ');
-    }
 
 
     /*
