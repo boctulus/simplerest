@@ -196,8 +196,12 @@ class Files
 		}, null ,36332,5); 
 
     */
-	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null, $start_line = 0, $limit = false)
+	static function processCSV(string $path = '', string $separator = ",", bool $header = true, $fn = null, $header_defs = null, $start_line = 0, $limit = false)
     {
+		if (empty($path)){
+			throw new \Exception("path is required");
+		}
+
         $handle = fopen($path, 'r');
 
         if (!$handle) {

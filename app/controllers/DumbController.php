@@ -6398,6 +6398,12 @@ class DumbController extends Controller
         );
     }
 
+    function test_iframe_0(){
+        ?>
+        <iframe src="https://onedrive.live.com/embed?resid=C8AC521BBD6F3B93%21106&authkey=!AGgxeD1WZbCu8uY&em=2" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>
+        <?php
+    }
+
 
     /*
         Investigar 
@@ -6439,7 +6445,7 @@ class DumbController extends Controller
         css('
         .iframe_container {
             position:relative; 
-            width:600px;
+            width:1500px;
             height:100%;
             max-width:100%;
         }
@@ -6455,7 +6461,7 @@ class DumbController extends Controller
 
         <center>
             <div class="iframe_container">
-                <iframe class="my_iframe" marginwidth="0" marginheight="0" allowfullscreen frameborder="0" scrolling="no" onload="resizeIframe(this)" src="https://produzione.familyintale.com/">Your Browser Does Not Support iframes!</iframe>
+                <iframe class="my_iframe" marginwidth="0" marginheight="0" allowfullscreen frameborder="0" scrolling="no" onload="resizeIframe(this)" src="https://onedrive.live.com/embed?resid=C8AC521BBD6F3B93%21106&authkey=!AGgxeD1WZbCu8uY&em=2">Your Browser Does Not Support iframes!</iframe>
             </div>
         </center>
 
@@ -10086,6 +10092,22 @@ class DumbController extends Controller
 
         // Guardar el HTML modificado en el archivo de destino
         file_put_contents($dst, $html);
+    }
+
+    function test_xml_decode(){
+        $xml = '
+        <NewDataSet>
+            <Table>
+                <idgrupo>01</idgrupo>
+                <grupo>BEBIDAS CALIENTES</grupo>
+            </Table>
+            <Table>
+                <idgrupo>02</idgrupo>
+                <grupo>EXPRESSOS</grupo>
+            </Table>
+        </NewDataSet>';
+
+        dd(XML::toArray($xml), 'XML -> ARR');
     }
 
     
