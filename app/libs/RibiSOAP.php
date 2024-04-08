@@ -2,6 +2,7 @@
 
 namespace simplerest\libs;
 
+use simplerest\core\libs\XML;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Validator;
 use simplerest\libs\NITColombiaValidator;
@@ -89,9 +90,7 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
 
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-           $data = $data[4]['FAULTSTRING'][0];
-        }
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
 
         return $data;
     }
@@ -149,9 +148,7 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
 
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-           $data = $data[4]['FAULTSTRING'][0];
-        }
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
 
         return $data;
     }
@@ -216,9 +213,7 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
 
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-           $data = $data[4]['FAULTSTRING'][0];
-        }
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
 
         return $data;
     }
@@ -248,9 +243,7 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
     
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-           $data = $data[4]['FAULTSTRING'][0];
-        }
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
     
         return $data;
     }    
@@ -314,9 +307,7 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
 
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-           $data = $data[4]['FAULTSTRING'][0];
-        }
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
 
         return $data;
     }
@@ -345,9 +336,7 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
 
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-        $data = $data[4]['FAULTSTRING'][0];
-        }
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
 
         return $data;
     }
@@ -372,9 +361,7 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
 
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-        $data = $data[4]['FAULTSTRING'][0];
-        }
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
 
         return $data;
     }
@@ -399,9 +386,7 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
 
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-        $data = $data[4]['FAULTSTRING'][0];
-        }
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
 
         return $data;
     }
@@ -426,13 +411,97 @@ class RibiSOAP extends ApiClient
         $data  = $this->getResponse();
         $data  = $data['data'] ?? null;
 
-        if ($data && !empty($data[4]['FAULTSTRING'][0])){
-        $data = $data[4]['FAULTSTRING'][0];
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
+
+        if (!empty($data) && XML::isXML($data)){
+            $data = XML::toArray($data);            
+        }
+
+        if (isset($data['NewDataSet']['Table'])){
+            $data = $data['NewDataSet']['Table'];
         }
 
         return $data;
     }
 
+    /*
+        OK 
+
+        Retorna algo como:
+
+        <NewDataSet>
+            <Table>
+                <idgrupo>01</idgrupo>
+                <grupo>BEBIDAS CALIENTES</grupo>
+            </Table>
+            <Table>
+                <idgrupo>02</idgrupo>
+                <grupo>EXPRESSOS</grupo>
+            </Table>
+            ...
+            ...
+        </NewDataSet>
+    */
+    public function consultargrupos() {
+        $method = 'consultargrupos';
+        $token  = $this->token;
+
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+            <soapenv:Header/>
+            <soapenv:Body>
+            <loc:consultargrupos>
+                <loc:token>$token</loc:token>
+            </loc:consultargrupos>
+            </soapenv:Body>
+        </soapenv:Envelope>";
+
+        $this->op($method, $data);
+
+        $data  = $this->getResponse();
+        $data  = $data['data'] ?? null;
+
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
+
+        return $data;
+    }
+
+    /*
+        OK 
+
+        Retorna algo como:
+
+        <NewDataSet>
+            <Table>
+                <idvendedor>01</idvendedor>
+                <nombres>GENERICO</nombres>
+            </Table>
+            ... (otras tablas si las hubiera)
+        </NewDataSet>
+
+        Dado que hay un solo vendedor y este es "01" no se ocupara este endpoint
+    */
+    public function consultarvendedores() {
+        $method = 'consultarvendedores';
+        $token  = $this->token;
+
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+            <soapenv:Header/>
+            <soapenv:Body>
+            <loc:consultarvendedores>
+                <loc:token>$token</loc:token>
+            </loc:consultarvendedores>
+            </soapenv:Body>
+        </soapenv:Envelope>";
+
+        $this->op($method, $data);
+
+        $data  = $this->getResponse();
+        $data  = $data['data'] ?? null;
+
+        $data  = $data['soap:Envelope']['soap:Body'][$method . 'Response'][$method . 'Result'] ?? $data;
+
+        return $data;
+    }
 
 
 }
