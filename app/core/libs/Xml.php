@@ -146,46 +146,70 @@ class XML
 
         return ltrim($str);
     }
+
+    /*
+        @author Eaten by a Grue 
+        https://stackoverflow.com/users/1767412/eaten-by-a-grue
+    */
+    static protected function DOMtoArray($root) {
+        $result = array();
     
-    static function toArray(string $xml){
-        $xml = trim($xml);
-
-        libxml_use_internal_errors(true);
-
-        $parser = xml_parser_create();
-        
-        xml_parse_into_struct($parser, $xml, $vals, $index);
-        xml_parser_free($parser);
-
-        $tree = array();
-        $refs = array();
-        foreach ($vals as $xml_elem) {
-            $tag = $xml_elem['tag'];
-            $level = $xml_elem['level'];
-            if ($xml_elem['type'] == 'open') {
-                $tree[$level][$tag][] = isset($xml_elem['attributes']) ? $xml_elem['attributes'] : array();
-                $cur = &$tree[$level][$tag][count($tree[$level][$tag]) - 1];
-
-                if (isset($xml_elem['value'])) {
-                    $cur['_value'] = $xml_elem['value'];
-                }
-                
-                if (isset($xml_elem['attribute']['ID'])){
-                    $refs[$xml_elem['attribute']['ID']] = &$cur;
-                }
-
-            } elseif ($xml_elem['type'] == 'complete') {
-                $tree[$level][$tag][] = isset($xml_elem['value']) ? ($xml_elem['value']) : array();
-            } elseif ($xml_elem['type'] == 'close') {
-                $current = &$tree[$level - 1];
-                $current[$tag . '_assoc'] = $tree[$level][$tag];
-                unset($tree[$level][$tag]);
+        if ($root->hasAttributes()) {
+            $attrs = $root->attributes;
+            foreach ($attrs as $attr) {
+                $result['@attributes'][$attr->name] = $attr->value;
             }
         }
+    
+        if ($root->hasChildNodes()) {
+            $children = $root->childNodes;
+            if ($children->length == 1) {
+                $child = $children->item(0);
+                if (in_array($child->nodeType,[XML_TEXT_NODE,XML_CDATA_SECTION_NODE])) {
+                    $result['_value'] = $child->nodeValue;
+                    return count($result) == 1
+                        ? $result['_value']
+                        : $result;
+                }
+    
+            }
+            $groups = array();
+            foreach ($children as $child) {
+                if (!isset($result[$child->nodeName])) {
+                    $result[$child->nodeName] = static::DOMtoArray($child);
+                } else {
+                    if (!isset($groups[$child->nodeName])) {
+                        $result[$child->nodeName] = array($result[$child->nodeName]);
+                        $groups[$child->nodeName] = 1;
+                    }
+                    $result[$child->nodeName][] = static::DOMtoArray($child);
+                }
+            }
+        }
+        return $result;
+    }
 
-        return $tree;
-    }  
+    /*
+        @author Eaten by a Grue 
+        https://stackoverflow.com/users/1767412/eaten-by-a-grue
+    */
+    static function toArray($xml) {
+        $previous_value = libxml_use_internal_errors(true);
 
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        
+        $dom->preserveWhiteSpace = false; 
+        $dom->loadXml($xml);
+
+        libxml_use_internal_errors($previous_value);
+        
+        if (libxml_get_errors()) {
+            return [];
+        }
+        
+        return static::DOMtoArray($dom);
+    }
+    
     /*
         Requiere del paquete de Composer spatie/array-to-xml
 
