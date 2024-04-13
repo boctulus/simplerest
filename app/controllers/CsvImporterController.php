@@ -50,7 +50,7 @@ class CSVImporterController
         $paginator = Paginator::calc($page, $page_size, $row_cnt);
 	    $last_page = $paginator['totalPages'];
 
-        // $this->do_process($as_stored, $offset, $page_size);
+        $this->do_process($as_stored, $offset, $page_size);
 
         // set_transient('bzz-import_completion', $page, 9999);
 
@@ -77,8 +77,8 @@ class CSVImporterController
         try {
             $csv_path = UPLOADS_PATH . $csv_filename;
 
-            Files::processCSV($csv_path , ';', true, function($p) { 
-                dd($p, 'P (por procesar)');
+            Files::processCSV($csv_path , ';', true, function($row) { 
+                Logger::dd($row, 'ROW (por procesar)');
             }, null, $offset, $limit);  
             
             
