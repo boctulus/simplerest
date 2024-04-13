@@ -2,14 +2,10 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Logger;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\VarDump;
 use simplerest\core\libs\Paginator;
 use simplerest\core\libs\FileUploader;
-use simplerest\controllers\MyController;
 
 class CSVImporterController
 {
@@ -57,7 +53,7 @@ class CSVImporterController
         return [
             'upload'   => [
                 'data'     => $data,
-                'files'    => $files,
+                'file'     => $as_stored,
                 'failures' => $failures,
             ],  
 
@@ -71,14 +67,17 @@ class CSVImporterController
         ];
     }
     
-    // Simulo proceso de importacion
-    function do_process($csv_filename, $offset, $limit)
+    // Hago la importacion de forma paginada
+    protected function do_process($csv_filename, $offset, $limit)
     {
         try {
             $csv_path = UPLOADS_PATH . $csv_filename;
 
             Files::processCSV($csv_path , ';', true, function($row) { 
+
+                // Aca ira la logica del importador
                 Logger::dd($row, 'ROW (por procesar)');
+
             }, null, $offset, $limit);  
             
             
@@ -87,6 +86,33 @@ class CSVImporterController
         }
     }
 
+    // Ajax -- ok
+    function process_page()
+    {
+        // Obtener los datos del cuerpo de la solicitud
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        // Verificar si se han proporcionado los parámetros necesarios
+        if (!isset($data['page']) || !isset($data['page_size']) || !isset($data['csv_file']) ) {
+            error('Missing required parameters', 400);
+        }
+
+        // Obtener los parámetros de paginación
+        $page          = $data['page'];
+        $page_size     = $data['page_size'];
+
+        // Obtener el nombre del archivo CSV y otros datos necesarios
+        $csv_filename = $data['csv_file'];
+
+        $offset       = Paginator::calcOffset($page, $page_size);
+
+        $this->do_process($csv_filename, $offset, $page_size);
+
+        // Responder con un mensaje de éxito
+        response()->send(['message' => 'Page processed successfully']);
+    }
+
+    // Ajax
     function get_completion()
     {
        $data = [

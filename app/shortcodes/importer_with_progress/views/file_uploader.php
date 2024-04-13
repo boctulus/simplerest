@@ -46,9 +46,9 @@
         .then(data => {
             // Manejar la respuesta del servidor
             console.log(data);
+
             // Limpiar el input de tipo file después de procesar el archivo
-            fileInput.value = ''; // Esto establece el valor del input en una cadena vacía
-            // Aquí puedes agregar cualquier lógica adicional para manejar la respuesta del servidor
+            //fileInput.value = ''; 
         })
         .catch(error => {
             console.error('Error:', error);
