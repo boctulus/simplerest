@@ -125,6 +125,7 @@ use simplerest\core\controllers\MakeControllerBase;
 use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\shortcodes\progress_bar\ProgressShortcode;
+use simplerest\shortcodes\importer_with_progress\ImporterShortcode;
 use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
@@ -9634,12 +9635,6 @@ class DumbController extends Controller
         dd($x, 'x');
     }
 
-    function test_progress(){
-        $pr = new ProgressShortcode();
-        render($pr->index());        
-    }
-
-
     /*
         >>> Ver porque los transientes con DB driver requieren de tiempo de expiracion !!!
 	
@@ -10109,6 +10104,17 @@ class DumbController extends Controller
 
         dd(XML::toArray($xml), 'XML -> ARR');
     }
+
+    function test_progress(){
+        $pr = new ProgressShortcode();
+        render($pr->index());        
+    }
+
+    function test_importer_progress(){
+        $pr = new ImporterShortcode();
+        render($pr->index());        
+    }
+
 
     
 }   // end class
