@@ -9,7 +9,7 @@
                             <label for="csvFile" class="form-label">Select CSV File</label>
                             <input class="form-control" type="file" id="csvFile" name="csvFile">
                         </div>
-                        <button type="button" class="btn btn-primary">Import CSV</button>
+                        <button type="button" class="btn btn-primary" onclick="uploadCSV()">Import CSV</button>
                     </form>
                 </div>
             </div>
@@ -18,13 +18,24 @@
 </div>
 
 <script>
-    // Esta función se ejecuta cuando se selecciona un archivo
-    function handleFileSelect(event) {
-        const files = event.target.files;
-        const formData = new FormData();
+    // Esta función se ejecuta cuando se hace clic en el botón "Import CSV"
+    function uploadCSV() {
+        // Obtener el input de tipo file
+        const fileInput = document.getElementById('csvFile');
 
-        // Agregar el archivo seleccionado al FormData
-        formData.append('csvFile', files[0]);
+        // Verificar si se ha seleccionado un archivo
+        if (fileInput.files.length === 0) {
+            // Si no se ha seleccionado ningún archivo, mostrar un mensaje de error
+            console.error('No file selected');
+            return;
+        }
+
+        // Obtener el archivo seleccionado
+        const file = fileInput.files[0];
+
+        // Crear FormData y agregar el archivo seleccionado
+        const formData = new FormData();
+        formData.append('csvFile', file);
 
         // Realizar la solicitud Ajax
         fetch('/csv_importer/upload', {
@@ -41,8 +52,4 @@
             console.error('Error:', error);
         });
     }
-
-    // Escuchar el evento 'change' en el input de tipo file
-    document.getElementById('csvFile').addEventListener('change', handleFileSelect);
 </script>
-
