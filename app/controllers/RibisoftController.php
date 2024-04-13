@@ -32,7 +32,7 @@ class RibisoftController extends MyController
 
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
 
         // dd($cli->dump(), 'REQ');
@@ -51,7 +51,7 @@ class RibisoftController extends MyController
 
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
 
         // dd($cli->dump(), 'REQ');
@@ -71,7 +71,7 @@ class RibisoftController extends MyController
     
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
     
         // dd($cli->dump(), 'REQ');
@@ -89,7 +89,7 @@ class RibisoftController extends MyController
     
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
     
         // dd($cli->dump(), 'REQ');
@@ -107,7 +107,7 @@ class RibisoftController extends MyController
     
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
     
         // dd($cli->dump(), 'REQ');
@@ -125,7 +125,7 @@ class RibisoftController extends MyController
     
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
     
         // dd($cli->dump(), 'REQ');
@@ -135,19 +135,6 @@ class RibisoftController extends MyController
     /*
         Respuesta:
 
-        --| DATA
-        <NewDataSet>
-        <Table>
-            <idgrupo>01</idgrupo>
-            <grupo>BEBIDAS CALIENTES</grupo>
-        </Table>
-        <Table>
-            <idgrupo>02</idgrupo>
-            <grupo>EXPRESSOS</grupo>
-        </Table>
-        ...
-        ...
-        </NewDataSet>
     */
     function test_soap_erp_req_consultar_grupos(){
         $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
@@ -160,7 +147,7 @@ class RibisoftController extends MyController
     
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
     
         // dd($cli->dump(), 'REQ');
@@ -177,7 +164,7 @@ class RibisoftController extends MyController
     
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
     
         // dd($cli->dump(), 'REQ');
@@ -193,7 +180,7 @@ class RibisoftController extends MyController
     
         // Ejemplo de parámetros para crear un pedido
         $params = [
-            'token' => 'your_token_here',
+            'token' => $token,
             'numero' => '123456',
             'fecha' => '2024-04-03',
             'fechaentrega' => '2024-04-10',
@@ -211,9 +198,43 @@ class RibisoftController extends MyController
     
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
-        dd($cli->getHeaders(), 'HEADERS');
+        // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
     }
+
+    public function test_soap_erp_req_crear_cliente()
+    {
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+    
+        $cli   = new RibiSOAP($token, $url_base); 
+
+        // Simular los parámetros de entrada
+        $params = array(
+            'token' => $token,
+            'nit' => '385807',
+            'tipodocumento' => 'CEDULA DE EXTRANJERIA',
+            'tiporegimen' => 'RS', // Regimen Simplificado
+            'nombres' => 'Pablo Bzz',
+            'iddepartamento' => '1',
+            'idciudad' => '1',
+            'direccion' => 'Calle 123',
+            'telefono' => '1234567',
+            'celular' => '987654321',
+            'correo' => 'juan@example.com',
+            'contacto' => 'Maria Gomez',
+            'idvendedor' => '01'
+        );
+
+        $res = $cli->crearpedido($params);
+        $error = $cli->error();
+    
+        dd($cli->getStatus(), 'STATUS');
+        dd($error, 'ERROR');
+        // dd($cli->getHeaders(), 'HEADERS');
+        dd($res, 'DATA');
+    }
+
 
 }
 
