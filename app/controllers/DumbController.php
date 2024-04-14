@@ -10115,6 +10115,58 @@ class DumbController extends Controller
         render($pr->index());        
     }
 
+    function test_wp_login()
+    {
+        // Define los datos de inicio de sesión
+        $login_data = [
+            'log' => 'boctulus',
+            'pwd' => '!0EJEbwu)Oa!3Fd&ev',
+            'rememberme' => 'forever',
+            'redirect_to' => 'http://woo5.lan/my-account/', // Redirecciona a la página de la cuenta después del inicio de sesión
+            'redirect_to_automatic' => '1'
+        ];
+
+        // Crea una instancia de la clase ApiClient
+        $cli = new ApiClient();
+
+        $cli
+        ->followLocations()
+        ->withoutStrictSSL();
+    
+        // Establece las cookies utilizando el método setCookies()
+        $cli->setCookies('cookies.txt');
+
+        // Realiza la solicitud POST para iniciar sesión
+        $cli->post('http://woo5.lan/wp-login.php', $login_data);
+
+        $res = $cli->getResponse(false);
+
+        // Verifica si la solicitud fue exitosa (código de estado 200)
+        if ($res['http_code'] === 200) {
+            dd("Inicio de sesión exitoso.");
+        } else {
+            dd("Error al iniciar sesión: ");
+
+            dd($cli->getStatus(), 'STATUS');
+            dd($cli->getError(), 'ERROR');
+            dd($cli->getResponse(), 'RES');
+            dd($cli->getHeaders(), 'HEADERS');
+       
+            exit;
+        }
+
+        // Ahora, puedes realizar una solicitud GET para acceder a la página de la cuenta
+        $page_login = $cli->get('http://woo5.lan/my-account/')->getResponse(false);
+
+        // Verifica si la solicitud de la página de la cuenta fue exitosa
+        if ($page_login['http_code'] === 200) {
+            dd("Acceso a la página de la cuenta exitoso.");
+            // Aquí puedes procesar la página de la cuenta según sea necesario
+            // Por ejemplo, puedes extraer información o realizar acciones adicionales
+        } else {
+            dd("Error al acceder a la página de la cuenta: " . $page_login['error']);
+        }
+    }
 
     
 }   // end class
