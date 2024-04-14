@@ -10,7 +10,7 @@ class CookieJar
 
     public function __construct(string $cookieFile = 'cookies.txt')
     {
-        $this->cookieFile = $cookieFile;
+        $this->cookieFile = ETC_PATH . $cookieFile;
     }
 
     public function getCookies()
