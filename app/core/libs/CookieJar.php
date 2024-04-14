@@ -6,7 +6,7 @@ use simplerest\core\libs\Strings;
 
 class CookieJar
 {
-    private $cookieFile;
+    protected $cookieFile;
 
     public function __construct(string $cookieFile = 'cookies.txt')
     {
@@ -21,5 +21,9 @@ class CookieJar
     public function saveCookies($cookies)
     {
         file_put_contents($this->cookieFile, $cookies);
+    }
+
+    public function getCookieFile() {
+        return $this->cookieFile;
     }
 }

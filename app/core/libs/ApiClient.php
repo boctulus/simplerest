@@ -552,7 +552,7 @@ class ApiClient
 
         // Agregar manejo de cookies
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieJar->getCookies());
-        curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieJar->cookieFile);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieJar->getCookieFile());
 
         $__headers  = [];
         $__filename = null;
@@ -584,10 +584,13 @@ class ApiClient
         $content_type  = curl_getinfo($curl,CURLINFO_CONTENT_TYPE);
         $effective_url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
 
+        // Obtener información sobre las cookies antes de cerrar la sesión cURL
+        $cookie_info = curl_getinfo($curl, CURLINFO_COOKIELIST);
+
         curl_close($curl);
 
         // Guardar las cookies después de cada solicitud
-        $this->cookieJar->saveCookies(curl_getinfo($curl, CURLINFO_COOKIELIST));
+        $this->cookieJar->saveCookies($cookie_info);
 
         // Preservo la respuesta
         $this->raw_response = $response;
