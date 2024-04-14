@@ -125,7 +125,7 @@ use simplerest\core\controllers\MakeControllerBase;
 use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\shortcodes\progress_bar\ProgressShortcode;
-use simplerest\shortcodes\importer_with_progress\ImporterShortcode;
+use simplerest\shortcodes\csv_importer\ImporterShortcode;
 use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;

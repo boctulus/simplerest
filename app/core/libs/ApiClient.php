@@ -43,6 +43,10 @@ class ApiClient
     const     HTTP_METH_DELETE = "DELETE";
     const     HTTP_METH_HEAD   = "HEAD";
 
+    
+    // Cookies
+    protected $cookieJar;
+
     // Request
     protected $url;
     protected $verb;
@@ -86,6 +90,8 @@ class ApiClient
 
     // Extras
     protected $query_params = [];
+
+
 
     function logReq($log_file  = 'req.txt'){
         if ($log_file === true  ||  $log_file === 1){
@@ -186,6 +192,21 @@ class ApiClient
     {
         $this->setUrl($url);
     }
+
+    function setCookies($filename){
+        $this->cookieJar = new CookieJar($filename);
+    }
+    
+	public function setCookieOptions($params = array())
+	{
+		if (is_array($params))
+		{
+			$params = http_build_query($params, '', '&');
+		}
+
+		$this->option(CURLOPT_COOKIE, $params);
+		return $this;
+	}
 
     static function instance($url = null) : ApiClient {
         return new ApiClient($url);
@@ -529,6 +550,9 @@ class ApiClient
             500
         ]);  //
 
+        // Agregar manejo de cookies
+        curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieJar->getCookies());
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieJar->cookieFile);
 
         $__headers  = [];
         $__filename = null;
@@ -562,6 +586,8 @@ class ApiClient
 
         curl_close($curl);
 
+        // Guardar las cookies después de cada solicitud
+        $this->cookieJar->saveCookies(curl_getinfo($curl, CURLINFO_COOKIELIST));
 
         // Preservo la respuesta
         $this->raw_response = $response;
@@ -1030,22 +1056,6 @@ class ApiClient
 		$this->option(CURLOPT_VERBOSE, TRUE);
 
 		return $this->get();
-	}
-
-	/* =================================================================================
-	 * ADVANCED METHODS
-	 * Use these methods to build up more complex queries
-	 * ================================================================================= */
-
-	public function setCookies($params = array())
-	{
-		if (is_array($params))
-		{
-			$params = http_build_query($params, '', '&');
-		}
-
-		$this->option(CURLOPT_COOKIE, $params);
-		return $this;
 	}
 
 	public function httpHeader($header, $content = NULL)
