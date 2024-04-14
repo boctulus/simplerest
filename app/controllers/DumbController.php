@@ -10142,7 +10142,7 @@ class DumbController extends Controller
         $res = $cli->getResponse(false);
 
         // Verifica si la solicitud fue exitosa (código de estado 200)
-        if ($res['http_code'] === 200) {
+        if ($res['http_code'] === 200 || $res['http_code'] === 301 || $res['http_code'] === 302) {
             dd("Inicio de sesión exitoso.");
         } else {
             dd("Error al iniciar sesión: ");
@@ -10160,7 +10160,8 @@ class DumbController extends Controller
 
         // Verifica si la solicitud de la página de la cuenta fue exitosa
         if ($page_login['http_code'] === 200) {
-            dd("Acceso a la página de la cuenta exitoso.");
+            dd($page_login['data'], 'PAGINA DETRAS DEL LOGIN'); // vuelve a mostrar el form del login !!
+
             // Aquí puedes procesar la página de la cuenta según sea necesario
             // Por ejemplo, puedes extraer información o realizar acciones adicionales
         } else {
