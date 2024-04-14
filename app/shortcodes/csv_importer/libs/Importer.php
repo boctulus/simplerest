@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\shortcodes\importer_with_progress\libs;
+namespace simplerest\shortcodes\csv_importer\libs;
 
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Logger;
