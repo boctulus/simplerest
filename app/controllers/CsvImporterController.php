@@ -110,6 +110,21 @@ class CSVImporterController
         $row_cnt       = get_transient('bzz-import_rows');
         $csv_filename  = get_transient('bzz-import_file');
 
+        if (empty($csv_filename) || empty($row_cnt)){
+            response()->sendJson([
+                'message'    => 'Nothing to do. Aborting.',
+                'completion' => null,
+                'paginator' => [
+                    'current' => null,
+                    'next'    => null,
+                    'last'    => null, 
+                    'count'   => null
+                ],
+            ]);
+
+            return;
+        }
+
         $offset       = Paginator::calcOffset($page, $page_size);
         $paginator    = Paginator::calc($page, $page_size, $row_cnt);
 	    $last_page    = $paginator['totalPages'];
@@ -118,6 +133,12 @@ class CSVImporterController
         
         $completion = intval($page * 100 / $last_page);
         set_transient('bzz-import_completion', $completion, 9999);
+
+        // Verificar si es la última página procesada y limpiar transientes
+        if ($completion == 100) {
+            delete_transient('bzz-import_rows');
+            delete_transient('bzz-import_file');
+        }
 
         // Responder con un mensaje de éxito
         response()->sendJson([

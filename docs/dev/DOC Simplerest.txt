@@ -9734,11 +9734,11 @@ Respuesta condicional
 
 Ej:
 
-if (response()->isEmpty()){
-	response([
-		'message' => 'OK'
-	]);  
-}
+	if (response()->isEmpty()){
+		response([
+			'message' => 'OK'
+		]);  
+	}
 
 # Redireccion
 

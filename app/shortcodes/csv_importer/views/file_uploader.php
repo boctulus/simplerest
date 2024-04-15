@@ -1,14 +1,16 @@
 <style>
     #upload_btn {
         width: 130px;
-    }    
+    }
 </style>
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header"><h1>CSV Importer</h1></div>
+                <div class="card-header">
+                    <h1>CSV Importer</h1>
+                </div>
                 <div class="card-body">
                     <form enctype="multipart/form-data">
                         <div class="mb-3">
@@ -25,7 +27,7 @@
 
                     </form>
                     <!-- Barra de progreso -->
-                    <div id="progress-bar-container" class="mt-3">   
+                    <div id="progress-bar-container" class="mt-3">
                         <progress id="progress-bar" value="0" max="100" style="width:100%; height: 24px;">0%</progress>
                     </div>
                 </div>
@@ -77,20 +79,20 @@
 
         // Realizar la solicitud Ajax
         fetch('/csv_importer/upload', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json()) // Convertir la respuesta a JSON
-        .then(data => {
-            // Manejar la respuesta del servidor
-            console.log(data);
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json()) // Convertir la respuesta a JSON
+            .then(data => {
+                // Manejar la respuesta del servidor
+                console.log(data);
 
-            // Limpiar el input de tipo file después de procesar el archivo
-            //fileInput.value = ''; 
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+                // Limpiar el input de tipo file después de procesar el archivo
+                //fileInput.value = ''; 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 
     /*
@@ -98,12 +100,12 @@
 
         setProgress(46)
     */
-    function setProgress(value){
-        if (value == null){
+    function setProgress(value) {
+        if (value == null) {
             return;
         }
 
-        if (value < 0 || value > 100){
+        if (value < 0 || value > 100) {
             throw `Progress bar only accept values from 0 to 100. Current value ='${value}'`
         }
 
@@ -128,77 +130,76 @@
         return (currentTime - startTime > max_polling_time * 1000);
     }
 
-    function get_until_completion_callback(max_polling_time = 3600)
-    {
+    function get_until_completion_callback(max_polling_time = 3600) {
         /*
             Obtencion de datos en tiempo real
         */
 
         function pollUntilCompletion() {
-    let currentPage = 1;
+            let currentPage = 1;
 
-    function pollPage() {
-        // Obtener los parámetros de página
-        const data = {
-            "page": currentPage.toString(),
-            "page_size": "10"
-        };
+            function pollPage() {
+                // Obtener los parámetros de página
+                const data = {
+                    "page": currentPage.toString(),
+                    "page_size": "10"
+                };
 
-        // Realizar la solicitud Ajax con los parámetros de página
-        jQuery.ajax({
-            url: `/csv_importer/process_page`,
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function(data) {
-                // Actualizar la respuesta en la página
-                $("#response").text(JSON.stringify(data));
+                // Realizar la solicitud Ajax con los parámetros de página
+                jQuery.ajax({
+                    url: `/csv_importer/process_page`,
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function(data) {
+                        console.log(data)
 
-                console.log('%', data.data.completion);
+                        // Actualizar la respuesta en la página
+                        $("#response").text(JSON.stringify(data));
 
-                // Verificar si la completitud es igual a 100
-                if (data.data.completion == 100) {
-                    setProgress(100); 
-                    // ...
-                } else {
-                    completion = data.data.completion; 
-                    setProgress(completion); 
+                        console.log('%', data.data.completion);
 
-                    // Verificar si hay una página siguiente
-                    if (data.data.paginator.next !== null) {
-                        // Incrementar el contador de página y continuar solicitando
-                        currentPage++;
-                        pollPage();
-                    } else {
-                        console.log("All pages processed!");
-                        $('#loading-image').hide();
+                        // Verificar si la completitud es igual a 100
+                        if (data.data.completion == 100) {
+                            setProgress(100);
+                            // ...
+                        } else {
+                            completion = data.data.completion;
+                            setProgress(completion);
+
+                            // Verificar si hay una página siguiente
+                            if (data.data.paginator.next !== null) {
+                                // Incrementar el contador de página y continuar solicitando
+                                currentPage++;
+                                pollPage();
+                            } else {
+                                console.log("All pages processed!");
+                                $('#loading-image').hide();
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en la llamada Ajax: ", error);
                     }
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error en la llamada Ajax: " + error);
+                });
             }
-        });
-    }
 
-    // Comenzar a solicitar páginas
-    pollPage();
-}
-
+            // Comenzar a solicitar páginas
+            pollPage();
+        }
 
         pollUntilCompletion();
     }
 
-    
+
     let data = {
-        'some_key':'some value'
+        'some_key': 'some value'
     };
 
     setTimeout(() => {
-         // Iniciar el bucle de llamadas
+        // Iniciar el bucle de llamadas
         startTime = new Date().getTime();
         get_until_completion_callback();
     }, 300)
-   
 </script>
