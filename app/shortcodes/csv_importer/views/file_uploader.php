@@ -135,41 +135,57 @@
         */
 
         function pollUntilCompletion() {
-            jQuery.ajax({
-                url: `/csv_importer/process_page`,
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    // Actualizar la respuesta en la página
-                    $("#response").text(JSON.stringify(data));
+    let currentPage = 1;
 
-                    console.log('%', data.data.completion);
+    function pollPage() {
+        // Obtener los parámetros de página
+        const data = {
+            "page": currentPage.toString(),
+            "page_size": "10"
+        };
 
-                    // Verificar si la completitud es igual a 100
-                    if (data.data.completion == 100) {
-                        setProgress(100); 
-                        // ...
+        // Realizar la solicitud Ajax con los parámetros de página
+        jQuery.ajax({
+            url: `/csv_importer/process_page`,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(data) {
+                // Actualizar la respuesta en la página
+                $("#response").text(JSON.stringify(data));
+
+                console.log('%', data.data.completion);
+
+                // Verificar si la completitud es igual a 100
+                if (data.data.completion == 100) {
+                    setProgress(100); 
+                    // ...
+                } else {
+                    completion = data.data.completion; 
+                    setProgress(completion); 
+
+                    // Verificar si hay una página siguiente
+                    if (data.data.paginator.next !== null) {
+                        // Incrementar el contador de página y continuar solicitando
+                        currentPage++;
+                        pollPage();
                     } else {
-                        if (!isOver(startTime, max_polling_time)){
-                            // Si no es 100, seguir haciendo la llamada periódicamente
-                            setTimeout(pollUntilCompletion, 0);
-                        } else {
-                            console.log("Time is over!");
-
-                            $('#loading-image').hide()
-                            $('#timeover').show()                          
-                        }
-                       
-                        completion = data.data.completion 
-                     
-                        setProgress(completion); 
+                        console.log("All pages processed!");
+                        $('#loading-image').hide();
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error en la llamada Ajax: " + error);
                 }
-            });
-        }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error en la llamada Ajax: " + error);
+            }
+        });
+    }
+
+    // Comenzar a solicitar páginas
+    pollPage();
+}
+
 
         pollUntilCompletion();
     }
