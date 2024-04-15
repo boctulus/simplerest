@@ -49,7 +49,8 @@ class CSVImporterController
 
         $this->do_process($as_stored, $offset, $page_size);
 
-        set_transient('bzz-import_rows', $row_cnt, 9999);
+        set_transient('bzz-import_rows', $row_cnt,   9999);
+        set_transient('bzz-import_file', $as_stored, 9999);
 
         $completion = intval($page * 100 / $last_page);
         set_transient('bzz-import_completion', $completion, 9999);
@@ -99,17 +100,15 @@ class CSVImporterController
         $data = json_decode(file_get_contents('php://input'), true);
 
         // Verificar si se han proporcionado los parámetros necesarios
-        if (!isset($data['page']) || !isset($data['page_size']) || !isset($data['csv_file']) ) {
+        if (!isset($data['page']) || !isset($data['page_size'])) {
             error('Missing required parameters', 400);
         }
 
-        // Obtener los parámetros de paginación
+        // Obtener los parámetros
         $page          = $data['page'];
         $page_size     = $data['page_size'];
         $row_cnt       = get_transient('bzz-import_rows');
-
-        // Obtener el nombre del archivo CSV y otros datos necesarios
-        $csv_filename = $data['csv_file'];
+        $csv_filename  = get_transient('bzz-import_file');
 
         $offset       = Paginator::calcOffset($page, $page_size);
         $paginator    = Paginator::calc($page, $page_size, $row_cnt);
