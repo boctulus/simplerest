@@ -42,7 +42,7 @@ class Route
             }   
     
             if (Strings::contains('/api/', $path) || in_array(strtolower(request()->getRequestMethod()),['post', 'put', 'patch'] )){
-                $res->encoded();
+                $res->encode();
             }
 
             if ($path === false || ! Url::urlCheck($_SERVER['REQUEST_URI']) ){

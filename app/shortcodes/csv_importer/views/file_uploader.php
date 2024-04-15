@@ -1,3 +1,9 @@
+<style>
+    #upload_btn {
+        width: 130px;
+    }    
+</style>
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -9,8 +15,19 @@
                             <label for="csvFile" class="form-label">Select CSV File</label>
                             <input class="form-control" type="file" id="csvFile" name="csvFile">
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="uploadCSV()">Import CSV</button>
+                        <!-- Botón de importación con spinner -->
+                        <button type="button" id="upload_btn" class="btn btn-primary" onclick="uploadCSV()">
+                            <span id="spinner-container" class="spinner-container d-none">
+                                <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            </span>
+                            Import CSV
+                        </button>
+
                     </form>
+                    <!-- Barra de progreso -->
+                    <div id="progress-bar-container" class="mt-3">   
+                        <progress id="progress-bar" value="0" max="100" style="width:100%; height: 24px;">0%</progress>
+                    </div>
                 </div>
             </div>
         </div>
@@ -18,6 +35,27 @@
 </div>
 
 <script>
+    function spinnerUp() {
+        // Obtener el botón y el contenedor del spinner
+        const button = document.querySelector('.btn-primary');
+        const spinnerContainer = document.getElementById('spinner-container');
+
+        // Mostrar el contenedor del spinner y desactivar el botón
+        spinnerContainer.classList.remove('d-none');
+        button.disabled = true;
+    }
+
+    function spinnerDown() {
+        // Obtener el botón y el contenedor del spinner
+        const button = document.querySelector('.btn-primary');
+        const spinnerContainer = document.getElementById('spinner-container');
+
+        // Ocultar el contenedor del spinner y activar el botón
+        spinnerContainer.classList.add('d-none');
+        button.disabled = false;
+    }
+
+
     // Esta función se ejecuta cuando se hace clic en el botón "Import CSV"
     function uploadCSV() {
         // Obtener el input de tipo file
@@ -54,5 +92,97 @@
             console.error('Error:', error);
         });
     }
-</script>
 
+    /*
+        Ej:
+
+        setProgress(46)
+    */
+    function setProgress(value){
+        if (value == null){
+            return;
+        }
+
+        if (value < 0 || value > 100){
+            throw `Progress bar only accept values from 0 to 100. Current value ='${value}'`
+        }
+
+        console.log(`Setting value ='${value}'`);
+
+        $('progress#progress-bar').val(value)
+    }
+
+    /*
+        Función que realiza la llamada Ajax para completion
+
+        Se utiliza la tecnica de "polling" o "bucle de llamadas" para realizar llamadas periódicas hasta que se cumpla la condición deseada
+        para evitar recursividad
+    */
+
+    let completion = null;
+    let startTime;
+
+    // aun no ha terminado?
+    function isOver(startTime, max_polling_time) {
+        let currentTime = new Date().getTime();
+        return (currentTime - startTime > max_polling_time * 1000);
+    }
+
+    function get_until_completion_callback(max_polling_time = 3600)
+    {
+        /*
+            Obtencion de datos en tiempo real
+        */
+
+        function pollUntilCompletion() {
+            jQuery.ajax({
+                url: `/csv_importer/process_page`,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    // Actualizar la respuesta en la página
+                    $("#response").text(JSON.stringify(data));
+
+                    console.log('%', data.data.completion);
+
+                    // Verificar si la completitud es igual a 100
+                    if (data.data.completion == 100) {
+                        setProgress(100); 
+                        // ...
+                    } else {
+                        if (!isOver(startTime, max_polling_time)){
+                            // Si no es 100, seguir haciendo la llamada periódicamente
+                            setTimeout(pollUntilCompletion, 0);
+                        } else {
+                            console.log("Time is over!");
+
+                            $('#loading-image').hide()
+                            $('#timeover').show()                          
+                        }
+                       
+                        completion = data.data.completion 
+                     
+                        setProgress(completion); 
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en la llamada Ajax: " + error);
+                }
+            });
+        }
+
+        pollUntilCompletion();
+    }
+
+    
+    let data = {
+        'some_key':'some value'
+    };
+
+    setTimeout(() => {
+         // Iniciar el bucle de llamadas
+        startTime = new Date().getTime();
+        get_until_completion_callback();
+    }, 300)
+   
+</script>
