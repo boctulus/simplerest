@@ -19,7 +19,7 @@ class EatLeaf
         return ''
             // . get_view(__DIR__ . '/views/section_1.php') 
             // . get_view(__DIR__ . '/views/section_2.php')
-            . get_view(__DIR__ . '/views/section_3.php')
+            . get_view(__DIR__ . '/views/section_3-static.php')
             // . get_view(__DIR__ . '/views/section_4.php')
             // . get_view(__DIR__ . '/views/section_5.php')
             // . get_view(__DIR__ . '/views/section_6.php')

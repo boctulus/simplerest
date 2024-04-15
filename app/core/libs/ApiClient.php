@@ -550,6 +550,10 @@ class ApiClient
             500
         ]);  //
 
+
+        // dd($this->cookieJar->getCookies(), 'COOKIES');
+        // dd($this->cookieJar->getCookieFile(), 'COOKIE FILE');
+
         // Agregar manejo de cookies
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieJar->getCookies());
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieJar->getCookieFile());
@@ -585,7 +589,7 @@ class ApiClient
         $effective_url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
 
         // Obtener información sobre las cookies antes de cerrar la sesión cURL
-        $cookie_info = curl_getinfo($curl, CURLINFO_COOKIELIST);
+        $cookie_info   = curl_getinfo($curl, CURLINFO_COOKIELIST);
 
         curl_close($curl);
 
