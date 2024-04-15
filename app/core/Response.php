@@ -118,13 +118,13 @@ class Response
         return static::getInstance();
     }
 
-    protected function encode($data){       
+    protected function do_encode($data){       
         $options = static::$pretty ? static::$options | JSON_PRETTY_PRINT : static::$pretty;
             
         return json_encode($data, $options);  
     }
 
-    function encoded(){
+    function encode(){
         static::$to_be_encoded = true;
         return static::getInstance();
     }
@@ -344,7 +344,7 @@ class Response
         // print_r("<br>");
 
         if (self::$to_be_encoded){
-            static::$data = $this->encode(static::$data);
+            static::$data = $this->do_encode(static::$data);
             header('Content-type:application/json;charset=utf-8');
         } else {
             $accept = request()->header('Accept');
@@ -352,7 +352,7 @@ class Response
             if (Strings::startsWith('application/json', $accept)){
                 self::$to_be_encoded = true;
 
-                static::$data = $this->encode(static::$data);
+                static::$data = $this->do_encode(static::$data);
                 header('Content-type:application/json;charset=utf-8');
             }
         }
@@ -384,7 +384,7 @@ class Response
             
         } else {
             if (is_array(static::$data) && !self::$to_be_encoded){
-                echo $this->encode(static::$data);
+                echo $this->do_encode(static::$data);
             } else {
                 echo static::$data; 
             }                            

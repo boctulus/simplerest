@@ -28,7 +28,7 @@ p.card-text {
 }
 </style>
 
-<div class="container-fluid">
+<div class="container-fluid" style="background-color: chartreuse;">
     <div class="row">
         <?php
         // Card 1

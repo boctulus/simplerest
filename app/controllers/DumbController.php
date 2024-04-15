@@ -10105,16 +10105,6 @@ class DumbController extends Controller
         dd(XML::toArray($xml), 'XML -> ARR');
     }
 
-    function test_progress(){
-        $pr = new ProgressShortcode();
-        render($pr->index());        
-    }
-
-    function test_importer_progress(){
-        $pr = new ImporterShortcode();
-        render($pr->index());        
-    }
-
     function test_wp_login()
     {
         // Define los datos de inicio de sesión
@@ -10169,5 +10159,14 @@ class DumbController extends Controller
         }
     }
 
+    function test_progress(){
+        $pr = new ProgressShortcode();
+        render($pr->index());        
+    }
+
+    function test_importer_progress(){
+        $pr = new ImporterShortcode();
+        render($pr->index());        
+    }
     
 }   // end class

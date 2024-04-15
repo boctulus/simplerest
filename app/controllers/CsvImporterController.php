@@ -14,6 +14,7 @@ class CSVImporterController
         cors();
     }
     
+    // -- ok
     function upload()
     {
         $data = $_POST;
@@ -39,16 +40,20 @@ class CSVImporterController
 
         Logger::log("$ori_filename stored as $as_stored");
 
-        $row_cnt   = Files::countLines(UPLOADS_PATH . $as_stored);
-        $page      = 0;
-        $page_size = 5;
-        $offset    = Paginator::calcOffset($page, $page_size);
-        $paginator = Paginator::calc($page, $page_size, $row_cnt);
-	    $last_page = $paginator['totalPages'];
+        $row_cnt    = Files::countLines(UPLOADS_PATH . $as_stored);
+        $page       = 0;
+        $page_size  = 5;
+        $offset     = Paginator::calcOffset($page, $page_size);
+        $paginator  = Paginator::calc($page, $page_size, $row_cnt);
+	    $last_page  = $paginator['totalPages'];
 
         $this->do_process($as_stored, $offset, $page_size);
 
-        // set_transient('bzz-import_completion', $page, 9999);
+        set_transient('bzz-import_rows', $row_cnt, 9999);
+
+        $completion = intval($page * 100 / $last_page);
+        set_transient('bzz-import_completion', $completion, 9999);
+                
 
         return [
             'upload'   => [
@@ -63,11 +68,12 @@ class CSVImporterController
                 'count'   => $row_cnt
             ],
             
-            'message'  => !empty($failures) ? 'Got errors during file upload' : null
+            'message'    => !empty($failures) ? 'Got errors during file upload' : null,
+            'completion' => $completion
         ];
     }
     
-    // Hago la importacion de forma paginada
+    // Hago la importacion de forma paginada -- ok
     protected function do_process($csv_filename, $offset, $limit)
     {
         try {
@@ -100,26 +106,41 @@ class CSVImporterController
         // Obtener los parámetros de paginación
         $page          = $data['page'];
         $page_size     = $data['page_size'];
+        $row_cnt       = get_transient('bzz-import_rows');
 
         // Obtener el nombre del archivo CSV y otros datos necesarios
         $csv_filename = $data['csv_file'];
 
         $offset       = Paginator::calcOffset($page, $page_size);
+        $paginator    = Paginator::calc($page, $page_size, $row_cnt);
+	    $last_page    = $paginator['totalPages'];
 
         $this->do_process($csv_filename, $offset, $page_size);
+        
+        $completion = intval($page * 100 / $last_page);
+        set_transient('bzz-import_completion', $completion, 9999);
 
         // Responder con un mensaje de éxito
-        response()->send(['message' => 'Page processed successfully']);
+        response()->sendJson([
+            'message'    => 'Page processed successfully',
+            'completion' => $completion,
+            'paginator' => [
+                'current' => $page,
+                'next'    => ($completion < 100) ? ($page+1) : null,
+                'last'    => $last_page, 
+                'count'   => $row_cnt
+            ],
+        ]);
     }
 
-    // Ajax
+    // Ajax -- ok
     function get_completion()
     {
        $data = [
-        'completion' => get_transient('bzz-import_completion', 0)
+            'completion' => get_transient('bzz-import_completion', 0)
        ];
 
-       response()->send($data);
+       response()->sendJson($data);
     }
 
     function index()
