@@ -103,7 +103,7 @@ class CSVImporterController
         }
 
         // Obtener los parámetros
-        $page          = $data['page'];
+        $page          = $data['page'] ?? null;
         $page_size     = $data['page_size'] ?? 10;
         $row_cnt       = get_transient('bzz-import_rows');
         $csv_filename  = get_transient('bzz-import_file');
