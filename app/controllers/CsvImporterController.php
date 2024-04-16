@@ -43,11 +43,8 @@ class CSVImporterController
         $row_cnt    = Files::countLines(UPLOADS_PATH . $as_stored);
         $page       = 1;
         $page_size  = 10;
-        $offset     = Paginator::calcOffset($page, $page_size);
         $paginator  = Paginator::calc($page, $page_size, $row_cnt);
 	    $last_page  = $paginator['totalPages'];
-
-        $this->do_process($as_stored, $offset, $page_size);
 
         set_transient('bzz-import_rows', $row_cnt,   9999);
         set_transient('bzz-import_file', $as_stored, 9999);
@@ -140,6 +137,8 @@ class CSVImporterController
             delete_transient('bzz-import_rows');
             delete_transient('bzz-import_file');
         }
+
+        // sleep(2);
 
         // Responder con un mensaje de éxito
         response()->sendJson([
