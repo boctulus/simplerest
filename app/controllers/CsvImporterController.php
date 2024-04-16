@@ -41,8 +41,8 @@ class CSVImporterController
         Logger::log("$ori_filename stored as $as_stored");
 
         $row_cnt    = Files::countLines(UPLOADS_PATH . $as_stored);
-        $page       = 0;
-        $page_size  = 5;
+        $page       = 1;
+        $page_size  = 10;
         $offset     = Paginator::calcOffset($page, $page_size);
         $paginator  = Paginator::calc($page, $page_size, $row_cnt);
 	    $last_page  = $paginator['totalPages'];
@@ -65,6 +65,7 @@ class CSVImporterController
 
             'paginator' => [
                 'current' => $page,
+                'next'    => ($completion < 100) ? ($page+1) : null,
                 'last'    => $last_page, 
                 'count'   => $row_cnt
             ],
@@ -100,13 +101,13 @@ class CSVImporterController
         $data = json_decode(file_get_contents('php://input'), true);
 
         // Verificar si se han proporcionado los parámetros necesarios
-        if (!isset($data['page']) || !isset($data['page_size'])) {
+        if (!isset($data['page'])) {
             error('Missing required parameters', 400);
         }
 
         // Obtener los parámetros
         $page          = $data['page'];
-        $page_size     = $data['page_size'];
+        $page_size     = $data['page_size'] ?? 10;
         $row_cnt       = get_transient('bzz-import_rows');
         $csv_filename  = get_transient('bzz-import_file');
 
