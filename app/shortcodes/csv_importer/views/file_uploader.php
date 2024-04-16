@@ -146,10 +146,8 @@
         return (currentTime - startTime > max_polling_time * 1000);
     }
 
-    function get_until_completion_callback(max_polling_time = 3600) 
+    function get_until_completion_callback(page = 1, max_polling_time = 3600) 
     { 
-        let page = 1;
-
         function pollPage(page) {
             // Obtener los parámetros de página
             const data = {
@@ -203,17 +201,19 @@
        
     }
 
-   // Función para obtener el estado de completitud
+   // Función para obtener el estado de completitud y la página actual
     function checkCompletionStatus() {
         fetch('/csv_importer/get_completion')
             .then(response => response.json())
             .then(data => {
-                const completion = data.data.completion;
+                const completion  = data.data.completion;
+                const currentPage = parseInt(data.data.current_page);
+
                 if (completion !== null && completion < 100) {
                     showProgress();
-                    // Iniciar el bucle de llamadas para actualizar el progreso
+                    // Iniciar el bucle de llamadas para actualizar el progreso desde la página actual
                     startTime = new Date().getTime();
-                    get_until_completion_callback();
+                    get_until_completion_callback(currentPage);
                 }
             })
             .catch(error => {
@@ -225,6 +225,7 @@
     $(document).ready(function() {
         checkCompletionStatus();
     });
+
 
 
 </script>

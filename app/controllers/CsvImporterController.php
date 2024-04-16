@@ -46,13 +46,13 @@ class CSVImporterController
         $paginator  = Paginator::calc($page, $page_size, $row_cnt);
 	    $last_page  = $paginator['totalPages'];
 
+        $completion = intval($page * 100 / $last_page);
+
         set_transient('bzz-import_rows', $row_cnt,   9999);
         set_transient('bzz-import_file', $as_stored, 9999);
-
-        $completion = intval($page * 100 / $last_page);
         set_transient('bzz-import_completion', $completion, 9999);
+        set_transient('bzz-import_current', $page, 9999);
                 
-
         return [
             'upload'   => [
                 'data'     => $data,
@@ -131,6 +131,7 @@ class CSVImporterController
         
         $completion = intval($page * 100 / $last_page);
         set_transient('bzz-import_completion', $completion, 9999);
+        set_transient('bzz-import_current',    $page, 9999);
 
         // Verificar si es la última página procesada y limpiar transientes
         if ($completion == 100) {
@@ -138,7 +139,7 @@ class CSVImporterController
             delete_transient('bzz-import_file');
         }
 
-        // sleep(2);
+        sleep(2);
 
         // Responder con un mensaje de éxito
         response()->sendJson([
@@ -157,7 +158,8 @@ class CSVImporterController
     function get_completion()
     {
        $data = [
-            'completion' => get_transient('bzz-import_completion', 0)
+            'completion'   => get_transient('bzz-import_completion', 0),
+            'current_page' => get_transient('bzz-import_current', null)
        ];
 
        response()->sendJson($data);
