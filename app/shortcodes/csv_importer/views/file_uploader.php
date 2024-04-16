@@ -213,7 +213,7 @@
                     showProgress();
                     // Iniciar el bucle de llamadas para actualizar el progreso desde la página actual
                     startTime = new Date().getTime();
-                    get_until_completion_callback(currentPage);
+                    get_until_completion_callback(currentPage + 1);
                 }
             })
             .catch(error => {
