@@ -7,13 +7,46 @@ use simplerest\core\libs\Logger;
 use simplerest\core\libs\Paginator;
 use simplerest\core\libs\FileUploader;
 
+/*
+    Deberia encapsularse con el "shortcode" csv_importer
+
+    Realiza el procesamiento paginado de en CSV
+
+    El proceso de importacion se realiza en __process()
+
+    La clase del controlador CSVImporterController deberia *extenderse* 
+    para reemplazar el row() por un codigo personalizado
+*/
 class CSVImporterController
 {
+    protected $separator = ';';
+
+    /*
+        Aca va la logica del importador
+    */
+    protected function row($data){
+        Logger::dd($data, 'ROW (por procesar)');
+    }
+
     function __construct(){
-        // Resuelvo CORS
         cors();
     }
-    
+
+    // Procesamiento paginado -- ok
+    protected function __process($csv_filename, $offset, $limit)
+    {
+        try {
+            $csv_path = UPLOADS_PATH . $csv_filename;
+
+            Files::processCSV($csv_path , $this->separator, true, function($data) { 
+                $this->row($data);
+            }, null, $offset, $limit);  
+            
+        } catch (\Exception $e){
+            Logger::logError($e->getMessage());
+        }
+    }
+
     // -- ok
     function upload()
     {
@@ -72,25 +105,6 @@ class CSVImporterController
         ];
     }
     
-    // Hago la importacion de forma paginada -- ok
-    protected function do_process($csv_filename, $offset, $limit)
-    {
-        try {
-            $csv_path = UPLOADS_PATH . $csv_filename;
-
-            Files::processCSV($csv_path , ';', true, function($row) { 
-
-                // Aca ira la logica del importador
-                Logger::dd($row, 'ROW (por procesar)');
-
-            }, null, $offset, $limit);  
-            
-            
-        } catch (\Exception $e){
-            Logger::logError($e->getMessage());
-        }
-    }
-
     // Ajax -- ok
     function process_page()
     {
@@ -127,7 +141,7 @@ class CSVImporterController
         $paginator    = Paginator::calc($page, $page_size, $row_cnt);
 	    $last_page    = $paginator['totalPages'];
 
-        $this->do_process($csv_filename, $offset, $page_size);
+        $this->__process($csv_filename, $offset, $page_size);
         
         $completion = intval($page * 100 / $last_page);
         set_transient('bzz-import_completion', $completion, 9999);
@@ -139,7 +153,7 @@ class CSVImporterController
             delete_transient('bzz-import_file');
         }
 
-        sleep(2);
+        // sleep(2);
 
         // Responder con un mensaje de éxito
         response()->sendJson([

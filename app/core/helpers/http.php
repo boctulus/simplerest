@@ -1,41 +1,14 @@
 <?php
 
 use simplerest\core\Route;
-use simplerest\core\Response;
 use simplerest\core\libs\Url;
+use simplerest\core\Response;
+use simplerest\core\libs\HTTP;
 
-/**
- * Configura las cabeceras CORS según los parámetros proporcionados.
- *
- * @param string $crossOrigin 
- * @param bool  $allowCredentials - Indica si se permiten credenciales (cookies).
- * @param array $allowedHeaders - Lista de cabeceras permitidas.
- * @param array $allowedMethods - Lista de métodos HTTP permitidos.
- */
-function cors(
-    string $crossOrigin = '*',
-    bool   $allowCredentials = true,
-    array  $allowedHeaders = [
-        'Origin',
-        'Content-Type',
-        'X-Auth-Token',
-        'AccountKey',
-        'X-Requested-With',
-        'Authorization',
-        'Accept',
-        'Client-Security-Token',
-        'Host',
-        'Date',
-        'Cookie',
-        'Cookie2',
-    ],
-    array $allowedMethods = ['POST', 'OPTIONS']
-) {
-    
-    header("Access-Control-Allow-Origin: $crossOrigin");
-    header('Access-Control-Allow-Credentials: ' . ($allowCredentials ? 'True' : 'False'));
-    header('Access-Control-Allow-Headers: ' . implode(', ', $allowedHeaders));
-    header('Access-Control-Allow-Methods: ' . implode(', ', $allowedMethods));
+if (!function_exists('cors')){
+    function cors(){
+        HTTP::cors();
+    }    
 }
 
 function route(string $name){
