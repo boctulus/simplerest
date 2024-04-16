@@ -70,6 +70,8 @@
             return;
         }
 
+        showProgress();
+
         // Obtener el archivo seleccionado
         const file = fileInput.files[0];
 
@@ -88,7 +90,10 @@
                 console.log(data);
 
                 // Limpiar el input de tipo file después de procesar el archivo
-                //fileInput.value = ''; 
+                fileInput.value = ''; 
+
+                startTime = new Date().getTime();
+                get_until_completion_callback();
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -114,6 +119,16 @@
         $('progress#progress-bar').val(value)
     }
 
+    // Función para mostrar la barra de progreso
+    function showProgress() {
+        $('#progress-bar-container').show();
+    }
+
+    // Función para ocultar la barra de progreso
+    function hideProgress() {
+        $('#progress-bar-container').hide();
+    }
+
     /*
         Función que realiza la llamada Ajax para completion
 
@@ -130,76 +145,76 @@
         return (currentTime - startTime > max_polling_time * 1000);
     }
 
-    function get_until_completion_callback(max_polling_time = 3600) {
-        /*
-            Obtencion de datos en tiempo real
-        */
+    function get_until_completion_callback(max_polling_time = 3600) 
+    { 
+        let page = 1;
 
-        function pollUntilCompletion() {
-            let currentPage = 1;
+        function pollPage(page) {
+            // Obtener los parámetros de página
+            const data = {
+                "page": page.toString()
+            };
 
-            function pollPage() {
-                // Obtener los parámetros de página
-                const data = {
-                    "page": currentPage.toString(),
-                    "page_size": "10"
-                };
+            // Realizar la solicitud Ajax con los parámetros de página
+            jQuery.ajax({
+                url: `/csv_importer/process_page`,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function(data) {
+                    console.log(data)
 
-                // Realizar la solicitud Ajax con los parámetros de página
-                jQuery.ajax({
-                    url: `/csv_importer/process_page`,
-                    type: "POST",
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify(data),
-                    success: function(data) {
-                        console.log(data)
+                    // Actualizar la respuesta en la página
+                    $("#response").text(JSON.stringify(data));
 
-                        // Actualizar la respuesta en la página
-                        $("#response").text(JSON.stringify(data));
+                    console.log('%', data.data.completion);
 
-                        console.log('%', data.data.completion);
+                    // Verificar si la completitud es igual a 100
+                    if (data.data.completion == 100) {
+                        setProgress(100);
+                        // ...
+                    } else {
+                        completion = data.data.completion;
+                        setProgress(completion);
 
-                        // Verificar si la completitud es igual a 100
-                        if (data.data.completion == 100) {
-                            setProgress(100);
-                            // ...
+                        console.log('Next page', data.data.paginator.next);
+
+                        // Verificar si hay una página siguiente
+                        if (data.data.paginator.next !== null) {
+                            // Incrementar el contador de página y continuar solicitando
+                            page++;
+                            pollPage(page);
                         } else {
-                            completion = data.data.completion;
-                            setProgress(completion);
-
-                            // Verificar si hay una página siguiente
-                            if (data.data.paginator.next !== null) {
-                                // Incrementar el contador de página y continuar solicitando
-                                currentPage++;
-                                pollPage();
-                            } else {
-                                console.log("All pages processed!");
-                                $('#loading-image').hide();
-                            }
+                            console.log("All pages processed!");
+                            $('#loading-image').hide();
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error en la llamada Ajax: ", error);
                     }
-                });
-            }
-
-            // Comenzar a solicitar páginas
-            pollPage();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en la llamada Ajax: ", error);
+                }
+            });
         }
 
-        pollUntilCompletion();
+        // Comenzar a solicitar páginas
+        pollPage(page);
+       
     }
-
-
-    let data = {
-        'some_key': 'some value'
-    };
 
     setTimeout(() => {
         // Iniciar el bucle de llamadas
         startTime = new Date().getTime();
         get_until_completion_callback();
     }, 300)
+    
+    // Ocultar la barra de progreso al cargar la página
+    $(document).ready(function() {
+        // Verificar si la importación previa no ha completado al cargar la página
+        const completion = data.completion; // Suponiendo que esta variable está disponible en el contexto
+        if (completion !== null && completion < 100) {
+            showProgress();
+        }
+    });
+
 </script>
