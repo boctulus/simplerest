@@ -89,8 +89,9 @@
                 // Manejar la respuesta del servidor
                 console.log(data);
 
-                // Limpiar el input de tipo file después de procesar el archivo
+                // Limpiar el input file y mostrar barra
                 fileInput.value = ''; 
+                showProgress();
 
                 startTime = new Date().getTime();
                 get_until_completion_callback();
@@ -178,7 +179,7 @@
                         completion = data.data.completion;
                         setProgress(completion);
 
-                        console.log('Next page', data.data.paginator.next);
+                        // console.log('Next page', data.data.paginator.next);
 
                         // Verificar si hay una página siguiente
                         if (data.data.paginator.next !== null) {
@@ -202,19 +203,28 @@
        
     }
 
-    setTimeout(() => {
-        // Iniciar el bucle de llamadas
-        startTime = new Date().getTime();
-        get_until_completion_callback();
-    }, 300)
-    
-    // Ocultar la barra de progreso al cargar la página
+   // Función para obtener el estado de completitud
+    function checkCompletionStatus() {
+        fetch('/csv_importer/get_completion')
+            .then(response => response.json())
+            .then(data => {
+                const completion = data.data.completion;
+                if (completion !== null && completion < 100) {
+                    showProgress();
+                    // Iniciar el bucle de llamadas para actualizar el progreso
+                    startTime = new Date().getTime();
+                    get_until_completion_callback();
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener el estado de completitud:', error);
+            });
+    }
+
+    // Verificar el estado de completitud al cargar la página
     $(document).ready(function() {
-        // Verificar si la importación previa no ha completado al cargar la página
-        const completion = data.completion; // Suponiendo que esta variable está disponible en el contexto
-        if (completion !== null && completion < 100) {
-            showProgress();
-        }
+        checkCompletionStatus();
     });
+
 
 </script>
