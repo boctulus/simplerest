@@ -17,7 +17,7 @@ use simplerest\core\libs\FileUploader;
     La clase del controlador CSVImporterController deberia *extenderse* 
     para reemplazar el row() por un codigo personalizado
 */
-class CSVImporterController
+class CsvImporterController
 {
     protected $separator = ';';
 
@@ -52,57 +52,73 @@ class CSVImporterController
     {
         $data = $_POST;
 
-        $uploader = (new FileUploader())
-        ->setFileHandler(function ($timestamp) {
-            $prefix = ($timestamp) . '-';
-            return uniqid($prefix, true);
-        }, time());
+        try {
+            delete_transient('bzz-import_rows');
+            delete_transient('bzz-import_file');
+            delete_transient('bzz-import_completion');
+            delete_transient('bzz-import_current');
 
+            $uploader = (new FileUploader())
+            ->setFileHandler(function ($timestamp) {
+                $prefix = ($timestamp) . '-';
+                return uniqid($prefix, true);
+            }, time());
+    
+    
+            $files    = $uploader->doUpload()->getFileNames();
+            $failures = $uploader->getErrors();
 
-        $files    = $uploader->doUpload()->getFileNames();
-        $failures = $uploader->getErrors();
+            // dd($files, 'FILES');
+            // dd($failures, 'FAILURES');
 
-        if (count($files) == 0) {
-            error('No files or file upload failed', 400);
-        }
+    
+            if (count($files) == 0) {
+                error('No files or file upload failed', 400);
+            }
+    
+            $f = $files[0];
+    
+            $ori_filename = $f['ori_name'];
+            $as_stored    = $f['as_stored'];
+    
+            // Logger::log("$ori_filename stored as $as_stored");
+    
+            $row_cnt    = Files::countLines(UPLOADS_PATH . $as_stored);
 
-        $f = $files[0];
+            // dd($row_cnt, 'ROW COUNT'); //
 
-        $ori_filename = $f['ori_name'];
-        $as_stored    = $f['as_stored'];
-
-        Logger::log("$ori_filename stored as $as_stored");
-
-        $row_cnt    = Files::countLines(UPLOADS_PATH . $as_stored);
-        $page       = 1;
-        $page_size  = 10;
-        $paginator  = Paginator::calc($page, $page_size, $row_cnt);
-	    $last_page  = $paginator['totalPages'];
-
-        $completion = intval($page * 100 / $last_page);
-
-        set_transient('bzz-import_rows', $row_cnt,   9999);
-        set_transient('bzz-import_file', $as_stored, 9999);
-        set_transient('bzz-import_completion', $completion, 9999);
-        set_transient('bzz-import_current', $page, 9999);
+            $page       = 1;
+            $page_size  = 10;
+            $paginator  = Paginator::calc($page, $page_size, $row_cnt);
+            $last_page  = $paginator['totalPages'];
+    
+            $completion = 0;
+    
+            set_transient('bzz-import_rows', $row_cnt,   9999);
+            set_transient('bzz-import_file', $as_stored, 9999);
+            set_transient('bzz-import_completion', $completion, 9999);
+            set_transient('bzz-import_current', $page, 9999);
+                    
+            response()->sendJson([
+                'upload'   => [
+                    'data'     => $data,
+                    'file'     => $as_stored,
+                    'failures' => $failures,
+                ],  
+    
+                'paginator' => [
+                    'current' => $page,
+                    'next'    => ($last_page > 1) ? ($page+1) : null,
+                    'last'    => $last_page, 
+                    'count'   => $row_cnt
+                ],
                 
-        return [
-            'upload'   => [
-                'data'     => $data,
-                'file'     => $as_stored,
-                'failures' => $failures,
-            ],  
-
-            'paginator' => [
-                'current' => $page,
-                'next'    => ($completion < 100) ? ($page+1) : null,
-                'last'    => $last_page, 
-                'count'   => $row_cnt
-            ],
-            
-            'message'    => !empty($failures) ? 'Got errors during file upload' : null,
-            'completion' => $completion
-        ];
+                'message'    => !empty($failures) ? 'Got errors during file upload' : null,
+                'completion' => $completion
+            ]);
+        } catch (\Exception $e) {
+            Logger::logError($e->getMessage());
+        }      
     }
     
     // Ajax -- ok
@@ -161,7 +177,7 @@ class CSVImporterController
             'completion' => $completion,
             'paginator' => [
                 'current' => $page,
-                'next'    => ($completion < 100) ? ($page+1) : null,
+                'next'    => ($last_page > 1) ? ($page+1) : null,
                 'last'    => $last_page, 
                 'count'   => $row_cnt
             ],
@@ -172,8 +188,8 @@ class CSVImporterController
     function get_completion()
     {
        $data = [
-            'completion'   => get_transient('bzz-import_completion', 0),
-            'current_page' => get_transient('bzz-import_current', null)
+            'completion'   => get_transient('bzz-import_completion'),
+            'current_page' => get_transient('bzz-import_current')
        ];
 
        response()->sendJson($data);
@@ -184,4 +200,6 @@ class CSVImporterController
         dd("Index of ". __CLASS__);                   
     }
 }
+
+
 
