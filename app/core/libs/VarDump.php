@@ -141,12 +141,11 @@ class VarDump
 			return;
 		}
 
-		//var_dump(static::$render_trace);
-
 		if (static::$render_trace){
-			$file = debug_backtrace()[1]['file'] ?? '?';
-			$line = debug_backtrace()[1]['line'] ?? '?';
-		
+			$trace = debug_backtrace();
+			$file  = debug_backtrace()[count($trace)-1]['file'] ?? '?';
+			$line  = debug_backtrace()[count($trace)-1]['line'] ?? '?';
+
 			static::export("{$file}:{$line}", "LOCATION", true, $msg_at_top);
 		}
 
