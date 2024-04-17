@@ -10,6 +10,7 @@ use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\i18n\Translate;
+use simplerest\core\libs\PHPLexicalAnalyzer;
 
 /*
     Class builder
@@ -773,6 +774,8 @@ class MakeControllerBase extends Controller
             }
         }    
 
+        $dest_path = Files::normalize($dest_path);
+
         if ($warn_ignored_file && in_array($dest_path, $this->excluded_files)){
             StdOut::pprint("[ Skipping ] '$dest_path'. File '$filename' was ignored\r\n"); 
             return true; 
@@ -821,6 +824,8 @@ class MakeControllerBase extends Controller
         );
 
         Files::writableOrFail($dest_path);
+
+        $dest_path = Files::normalize($dest_path);
 
         if ($remove){
             $ok = Files::delete($dest_path);    
