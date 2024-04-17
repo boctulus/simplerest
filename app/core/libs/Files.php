@@ -121,25 +121,31 @@ class Files
 		return $line_count;
 	}
 
-	/*
-		https://www.codewall.co.uk/write-php-array-to-csv-file/
-		https://fuelingphp.com/how-to-convert-associative-array-to-csv-in-php/
-	*/
-	static function arrayToCSV(string $filename, Array $array){
+	static function arrayToFile(string $filename, array $array){
+		file_put_contents($filename, implode(PHP_EOL, $array));
+	}
+
+	static function arrayToCSV(string $filename, array $array, bool $header = true)
+	{
 		if (!Strings::endsWith('.csv', strtolower($filename))){
 			$filename .= '.csv';
 		}
 
-		$f = fopen($filename, 'a'); // Configure fopen to create, open, and write data.
+		$f = fopen($filename, 'w'); 
  
-		fputcsv($f, array_keys($array[0])); // Add the keys as the column headers
+		if ($header){			
+			fputcsv($f, array_keys($array[0])); 
+		}
+
+		fclose($f);
+
+		$f = fopen($filename, 'a'); 
 		
-		// Loop over the array and passing in the values only.
 		foreach ($array as $row)
 		{
 			fputcsv($f, $row);
 		}
-		// Close the file
+
 		fclose($f);
 	}
 
