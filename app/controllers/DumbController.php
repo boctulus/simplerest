@@ -10171,7 +10171,7 @@ class DumbController extends Controller
     
 
     function test_sanitize_old_school(){
-        $path = 'D:\\www\\woo8\\wp-content\\plugins\\tutorlms-import-export\\etc\\prod\\user_export_2024-04-19-07-25-35.csv';
+        $path = 'D:\\Desktop\\TUTOR LMS -2 (FER ANCONA)\\CSVs\prod-import\\user_export.txt';
 
         $str  = file_get_contents($path);
 
@@ -10181,7 +10181,7 @@ class DumbController extends Controller
     }
 
     function test_sanitize(){
-        $path = 'D:\\www\\woo8\\wp-content\\plugins\\tutorlms-import-export\\etc\\prod\\user_export_2024-04-19-07-25-35.csv';
+        $path = 'D:\\Desktop\\TUTOR LMS -2 (FER ANCONA)\\CSVs\prod-import\\user_export.txt';
 
         $str  = file_get_contents($path);
 
