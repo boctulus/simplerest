@@ -63,6 +63,18 @@ class Arrays
     static function ltrimArray(array $arr){
         return array_map('rtrim', $arr);
     }
+
+    // Sanitiza Keys de array asociativo
+	static function sanitizeArrayKeys($data){
+		$keys    = array_keys($data);
+		$values  = array_values($data);
+
+		foreach ($keys as $ix => $key){
+			$keys[$ix] = Strings::sanitize($key);
+		}
+
+		return array_combine($keys, $values);
+	}
        
     /**
      * Gets the first key of an array
@@ -370,5 +382,6 @@ class Arrays
         
         return $result;
     }
+    
 }
 
