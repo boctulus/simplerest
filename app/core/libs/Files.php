@@ -248,12 +248,8 @@ class Files
 		}, null ,36332,5); 
 
     */
-	static function processCSV(string $path = '', string $separator = ",", bool $header = true, $fn = null, $header_defs = null, $start_line = 0, $limit = false)
+	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null, $start_line = 0, $limit = false)
     {
-		if (empty($path)){
-			throw new \Exception("path is required");
-		}
-
         $handle = fopen($path, 'r');
 
         if (!$handle) {
@@ -261,8 +257,8 @@ class Files
         }
 
         if ($header) {
-            $cabecera = fgetcsv($handle, null, $separator);           
-			$ch       = count($cabecera);
+            $cabecera = fgetcsv($handle, null, $separator);
+            $ch       = count($cabecera);
 
 			foreach ($cabecera as $ix => $row){				
 				$cabecera[$ix] = Strings::sanitize($row);
@@ -304,6 +300,15 @@ class Files
 
         // loop through the file line-by-line
         while (($data = fgetcsv($handle, null, $separator)) !== false) {
+			$line = '';
+			foreach ($data as $k => $val){
+				$line .= trim($val);
+			}
+
+			if (empty($line)){
+				continue;
+			}
+
             $row = [];
             if ($assoc) {
                 for ($j = 0; $j < $ch; $j++) {
@@ -317,7 +322,11 @@ class Files
             }
 
             // Ejecuto callback
-            call_user_func($fn, $row);
+            if (empty($row)){
+				continue;
+			}
+
+			call_user_func($fn, $row);
 
             unset($data);
 
