@@ -9535,7 +9535,7 @@ class DumbController extends Controller
 
     function asdgtyt(){
         dd(
-            Strings::slug('lo que EL viento se llevó de España')
+            Strings::slug('lo que EL viento se llevó    de España 2022')
         );
     }
     

@@ -2153,18 +2153,21 @@ class Strings
 
 	/*
 		Genera un slug a partir de un string
+
+		Ej:
+
+		dd(Strings::slug('lo que EL viento se llevó de España 2022')); 
 	*/
 	static function slug(string $str)
 	{
 		$str = str_replace('/', '', $str);
 		$str = static::sanitize($str, true, true);
 		$str = mb_strtolower($str);
+		$str = str_replace(' ', '-', $str);
 		$str = static::replaceDupes($str, '-');
 		
 		return trim($str, '-');
 	}
-
-
 }
 
 
