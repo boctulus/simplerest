@@ -10169,4 +10169,28 @@ class DumbController extends Controller
         render($pr->index());        
     }
     
+    function test_sanitize(){
+        $path = 'D:\\www\\woo8\\wp-content\\plugins\\tutorlms-import-export\\etc\\prod\\user_export_2024-04-19-07-25-35.csv';
+
+        $str  = file_get_contents($path);
+
+        Files::processCSV($path, ',', true, function($row){
+            // Procesamiento del row
+
+            $keys    = array_keys($row);
+            $values  = array_values($row);
+    
+            foreach ($keys as $ix => $key){
+                $keys[$ix] = Strings::sanitize($key);
+            }
+    
+            $row = array_combine($keys, $values);
+
+            dd($row, 'ROW');
+        });
+
+        // $str  = Strings::sanitize($str);
+
+    }
+
 }   // end class
