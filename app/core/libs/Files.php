@@ -149,6 +149,52 @@ class Files
 		fclose($f);
 	}
 
+	static function getCSV(string $path, string $separator = ",", bool $header = true, bool $assoc = true){	
+		$rows = [];
+
+		ini_set('auto_detect_line_endings', 'true');
+
+		$handle = fopen($path,'r');
+
+		if ($header){
+			$cabecera = fgetcsv($handle, null, $separator);
+			$ch       = count($cabecera);
+
+			foreach ($cabecera as $ix => $row){				
+				$cabecera[$ix] = Strings::sanitize($row);
+			}
+		}  else {
+			$assoc    = false;
+		}
+		
+		$i = 0;
+		while ( ($data = fgetcsv($handle, null, $separator) ) !== FALSE ) {
+			if ($assoc){
+				for ($j=0;$j<$ch; $j++){					
+					$head_key = $cabecera[$j];
+					$val      = $data[$j] ?? '';
+
+					$rows[$i][$head_key] = $val;
+				}
+			} else {
+				$rows[] = $data;
+			}	
+
+			$i++;		
+		}
+		
+		ini_set('auto_detect_line_endings', 'false');
+
+		if ($header){
+			return [
+				'rows'   => $rows,
+				'header' => $cabecera ?? []
+			];
+		} 
+
+		return $rows;		
+	}
+
 	/*
         Procesa archivo CSV row a row
 
@@ -215,8 +261,13 @@ class Files
         }
 
         if ($header) {
-            $cabecera = fgetcsv($handle, null, $separator);
-            $ch = count($cabecera);
+            $cabecera = fgetcsv($handle, null, $separator);           
+			$ch       = count($cabecera);
+
+			foreach ($cabecera as $ix => $row){				
+				$cabecera[$ix] = Strings::sanitize($row);
+			}
+
             $assoc = true;
         } else {
             $assoc = false;

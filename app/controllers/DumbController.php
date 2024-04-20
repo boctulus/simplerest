@@ -10176,20 +10176,9 @@ class DumbController extends Controller
 
         Files::processCSV($path, ',', true, function($row){
             // Procesamiento del row
-
-            $keys    = array_keys($row);
-            $values  = array_values($row);
-    
-            foreach ($keys as $ix => $key){
-                $keys[$ix] = Strings::sanitize($key);
-            }
-    
-            $row = array_combine($keys, $values);
-
+           
             dd($row, 'ROW');
         });
-
-        // $str  = Strings::sanitize($str);
 
     }
 
