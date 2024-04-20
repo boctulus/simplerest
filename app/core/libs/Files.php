@@ -248,7 +248,7 @@ class Files
 		}, null ,36332,5); 
 
     */
-	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null, $start_line = 0, $limit = false)
+	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null, $start_line = 0, $limit = false, bool $replace_spaces = true, bool $lowecase = false)
     {
         $handle = fopen($path, 'r');
 
@@ -262,6 +262,16 @@ class Files
 
 			foreach ($cabecera as $ix => $row){				
 				$cabecera[$ix] = Strings::sanitize($row);
+
+				// Normalizacion
+				if ($lowecase){
+					$cabecera[$ix] = strtolower($cabecera[$ix]);
+				}
+				
+				// Normalizacion
+				if ($replace_spaces){
+					$cabecera[$ix] = str_replace(' ', '-', $cabecera[$ix]);
+				}				
 			}
 
             $assoc = true;
@@ -302,6 +312,10 @@ class Files
         while (($data = fgetcsv($handle, null, $separator)) !== false) {
 			$line = '';
 			foreach ($data as $k => $val){
+				if (empty($val)){
+					continue;
+				}
+
 				$line .= trim($val);
 			}
 
