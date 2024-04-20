@@ -10169,6 +10169,17 @@ class DumbController extends Controller
         render($pr->index());        
     }
     
+
+    function test_sanitize_old_school(){
+        $path = 'D:\\www\\woo8\\wp-content\\plugins\\tutorlms-import-export\\etc\\prod\\user_export_2024-04-19-07-25-35.csv';
+
+        $str  = file_get_contents($path);
+
+        $csv = Files::getCSV($path);
+          
+        dd($csv, 'ROW');
+    }
+
     function test_sanitize(){
         $path = 'D:\\www\\woo8\\wp-content\\plugins\\tutorlms-import-export\\etc\\prod\\user_export_2024-04-19-07-25-35.csv';
 
@@ -10179,7 +10190,6 @@ class DumbController extends Controller
            
             dd($row, 'ROW');
         });
-
     }
 
 }   // end class
