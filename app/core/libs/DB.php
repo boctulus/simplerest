@@ -827,7 +827,7 @@ class DB
 
 		https://stackoverflow.com/a/17582620/980631
 	*/
-	public static function SafeSelect(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, &$st = null){
+	public static function safeSelect(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, &$st = null){
 		$conn = static::getConnection($tenant_id);
 		$conn->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
