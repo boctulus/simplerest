@@ -2091,7 +2091,7 @@ class Strings
 		return (unserialize($str) !== false);
 	}
 
-	static function enumerateWithLetters($value, bool $starting_by_zero = true){
+	static function enumerateWithLetters(int $value, bool $starting_by_zero = true){
 		return chr($value + 97 + ($starting_by_zero == false ? -1 : 0));
 	}
 
@@ -2105,7 +2105,7 @@ class Strings
 	 * 
 	 * https://dev.to/bdelespierre/convert-accentuated-character-to-their-ascii-equivalent-in-php-3kf1
 	 */
-	static function accent2ascii(string $str, string $charset = 'utf-8'): string
+	static function accents2Ascii(string $str, string $charset = 'utf-8'): string
 	{
 		$str = htmlentities($str, ENT_NOQUOTES, $charset);
 
@@ -2116,19 +2116,55 @@ class Strings
 		return $str;
 	}
 
+	static function convertAccents($input, $encoding = 'UTF-8') {
+		return mb_convert_encoding($input, 'ASCII', $encoding);
+	}
+
+	static function convertSlashesToHTML($str)
+	{
+        $str = str_replace("\r\n", '<br>', $str);
+        $str = str_replace("\n", '<br>', $str);
+        $str = str_replace("\r", '<br>', $str);
+
+        return $str;
+	}
+
+	static function fixBOM($input) {
+		return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $input);;
+	}	
+
+	static function sanitize($str, bool $replace_accents = false, bool $trim = false, $allowed = 'a-z0-9- ') {
+		$str = static::fixBOM($str);
+
+		if ($replace_accents){
+			$str = static::accents2Ascii($str);
+		}
+
+		if (!empty($allowed)){
+			$str = static::replaceNonAllowedChars($str, $allowed, '');
+		}
+
+		if ($trim){
+			$str = static::trim($str);
+		}
+		
+		return $str;
+	}
+
 	/*
 		Genera un slug a partir de un string
 	*/
 	static function slug(string $str)
 	{
 		$str = str_replace('/', '', $str);
-		$str = static::accent2ascii($str); // remove_accents() en WP
-		$str = static::replaceNonAllowedChars($str, 'a-z0-9-');
-		$str = strtolower($str);
+		$str = static::sanitize($str, true, true);
+		$str = mb_strtolower($str);
 		$str = static::replaceDupes($str, '-');
 		
 		return trim($str, '-');
 	}
+
+
 }
 
 
