@@ -2116,10 +2116,6 @@ class Strings
 		return $str;
 	}
 
-	static function convertAccents($input, $encoding = 'UTF-8') {
-		return mb_convert_encoding($input, 'ASCII', $encoding);
-	}
-
 	static function convertSlashesToHTML($str)
 	{
         $str = str_replace("\r\n", '<br>', $str);
@@ -2129,17 +2125,21 @@ class Strings
         return $str;
 	}
 
+	// Si hay caracteres BOM entonces deben primero convertirse los acentos y recien entonces remover los BOM
 	static function fixBOM($input) {
 		return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $input);;
 	}	
 
-	static function sanitize($str, bool $replace_accents = false, bool $trim = false, $allowed = 'a-z0-9- ') {
-		$str = static::fixBOM($str);
-
+	static function sanitize($str, bool $replace_accents = true, bool $trim = false, $allowed = 'a-z0-9- ') 
+	{
+		// Si hay caracteres BOM entonces deben primero convertirse los acentos y recien entonces remover los BOM
 		if ($replace_accents){
-			$str = static::accents2Ascii($str);
+			$str = Strings::accents2Ascii($str);
+			$str = Strings::fixBOM($str);
 		}
 
+		$str = str_replace('_', '-', $str);
+		
 		if (!empty($allowed)){
 			$str = static::replaceNonAllowedChars($str, $allowed, '');
 		}

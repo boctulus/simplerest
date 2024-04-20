@@ -10168,7 +10168,6 @@ class DumbController extends Controller
         $pr = new ImporterShortcode();
         render($pr->index());        
     }
-    
 
     function test_sanitize_old_school(){
         $path = 'D:\\Desktop\\TUTOR LMS -2 (FER ANCONA)\\CSVs\prod-import\\user_export.txt';
@@ -10191,5 +10190,15 @@ class DumbController extends Controller
             dd($row, 'ROW');
         });
     }
+
+    function test_accent_conv(){
+        $str = 'Cóurse';
+
+    	$str = Strings::sanitize($str);
+
+        dd($str); // Course
+
+    }
+    
 
 }   // end class
