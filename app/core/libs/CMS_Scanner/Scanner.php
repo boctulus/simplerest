@@ -43,16 +43,25 @@ class Scanner
         return $res;
     }
 
-
     static function runsLaravel(){
         return Strings::containsAny(['<meta name="csrf-token"', 'blade'], static::$content, false);
     }
 
-    static function runsNodeJs(){
-        // ..
+    static function runsExpressJs(){
+        return Strings::containsAny(['express'], static::$headers['server'] ?? ''); 
+    }
+    
+    static function runsVueJs(){
+        return Strings::containsAny(['/vue@', 'vue.global.js'], static::$content); 
     }
 
-
+    static function runsNuxtJs(){
+        return Strings::containsAny(['nuxt-link-active', 'nuxt-link-exact-active', 'nuxtjs'], static::$content);
+    }
+        
+    static function runsVue_SSR(){        
+        return Strings::containsAny(['data-vue-ssr-id'], static::$content);
+    }
 
     static function runsReactJs(){
         return Strings::containsAny(['/react-dom@', '/react-intl@'], static::$content);
@@ -61,8 +70,7 @@ class Scanner
     static function runsAngular(){
         return Strings::containsAny(['ng-star-inserted', 'ng-transition', '<app-root ', 'ng-version='], static::$content);
     }
-
-    
+        
     static function runsAngular_SSR(){        
         return Strings::containsAny(['ng-server-context="ssr"'], static::$content);
     }
@@ -78,6 +86,7 @@ class Scanner
         $url = 'www.leifshop.com'; // Shopify
         $url = 'https://www.lechocolat-alainducasse.com/'; // PrestaShop
         $url = 'https://www.fredperry.com'; // Magento
+        $url = 'moderne.st' // NuxtJs 
     */
     static function identify(string $url)
     {
@@ -107,13 +116,25 @@ class Scanner
             $data['backend'][] = 'Laravel';
         }
 
-        if (static::runsNodeJs()){
-            $data['backend'][] = 'NodeJs';
+        if (static::runsExpressJs()){
+            $data['backend'][] = 'Express.js (Node)'; 
         }
 
         if (static::runsReactJs()){
             $data['frontend'][] = 'ReactJs';
         }
+
+        if (static::runsNuxtJs()){
+            $data['frontend'][] = 'NuxtJs (Vue)';
+        }
+
+        if (static::runsVueJs()){
+            if (static::runsVue_SSR()){
+                $data['frontend'][] = 'VueJs (SSR)';
+            } else {
+                $data['frontend'][] = 'VueJs';
+            }
+        } 
 
         if (static::runsAngular()){
             if (static::runsAngular_SSR()){
