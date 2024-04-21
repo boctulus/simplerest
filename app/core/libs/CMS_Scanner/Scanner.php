@@ -8,21 +8,28 @@ use simplerest\core\libs\Reflector;
 
 class Scanner
 {
+    protected static $url;
+    protected static $content;
+    protected static $headers;
+
+
     protected static function __getSite(string $url){
         $cli = ApiClient::instance($url)
         ->followLocations()
-        ->withoutStrictSSL()
-        ->cache(3600 * 24 * 31)
+        ->withoutStrictSSL() 
+        ->cache(3600 * 24 * 31)  // <-------------- deberian almacenarse headers tambien !!!
         ->userAgent(ApiClient::USER_AG_CHROME)
         ->get();   
 
         $status  = $cli->getStatus();
         $data    = $cli->data();
+        $error   = $cli->getError();
+        $headers = $cli->getHeaders();
+        
+        static::$content = $data;
+        static::$headers = $headers;
 
         if ($status == 0 || $status >= 400 || empty($data)){
-            $error   = $cli->getError();
-            $headers = $cli->getHeaders();
-
             dd($status,  'STATUS');
             dd($error,   'ERROR');
             dd($headers, 'HEADERS');
@@ -33,9 +40,38 @@ class Scanner
     
         $res = $cli->getResponse();
 
-        return $res['data'];
+        return $res;
     }
 
+
+    static function runsLaravel(){
+        return Strings::containsAny(['<meta name="csrf-token"', 'blade'], static::$content, false);
+    }
+
+    static function runsNodeJs(){
+        // ..
+    }
+
+
+
+    static function runsReactJs(){
+        return Strings::containsAny(['/react-dom@', '/react-intl@'], static::$content);
+    }
+
+    static function runsAngular(){
+        return Strings::containsAny(['ng-star-inserted', 'ng-transition', '<app-root ', 'ng-version='], static::$content);
+    }
+
+    
+    static function runsAngular_SSR(){        
+        return Strings::containsAny(['ng-server-context="ssr"'], static::$content);
+    }
+
+    // 
+    static function hasBootstrap(){
+        return Strings::containsAnyWord(['btn-primary', 'container-fluid', 'pull-left', 'pull-right'], static::$content);
+    }
+   
     /*
         
         $url = 'http://woo4.lan';  // WordPress
@@ -45,7 +81,7 @@ class Scanner
     */
     static function identify(string $url)
     {
-        $site = static::__getSite($url);
+        $site     = static::__getSite($url);
 
         $cmsFiles = scandir(__DIR__ . '/CMSs');
         foreach ($cmsFiles as $file) {
@@ -56,13 +92,42 @@ class Scanner
                     throw new \Exception("Class '$className' not found");   
                 }
 
-                if ($className::isIt($site)) {
+                if ($className::isIt(static::$content)) {
                     return substr($className, strrpos($className, '\\') + 1);
                 }            
             }
         }
 
-        return null;
+        $data = [
+            'frontend' => [],
+            'backend'  => []
+        ];
+
+        if (static::runsLaravel()){
+            $data['backend'][] = 'Laravel';
+        }
+
+        if (static::runsNodeJs()){
+            $data['backend'][] = 'NodeJs';
+        }
+
+        if (static::runsReactJs()){
+            $data['frontend'][] = 'ReactJs';
+        }
+
+        if (static::runsAngular()){
+            if (static::runsAngular_SSR()){
+                $data['frontend'][] = 'Angular (SSR)';
+            } else {
+                $data['frontend'][] = 'Angular';
+            }
+        }
+
+        if (static::hasBootstrap()){
+            $data['frontend'][] = 'Bootstrap';
+        }
+
+        return $data;
     }
     
 
