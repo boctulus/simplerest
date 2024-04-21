@@ -27,6 +27,17 @@ class Container
         ];
     }
 
+    /*
+        Ej:
+
+        Container::singleton('foo', Foo::class);
+
+        $foo = Container::make('foo');
+        print_r($foo->bar());
+        
+        $foo = Container::make('foo');
+        print_r($foo->bar());
+    */
     static public function singleton(string $key, $value){
         static::bind($key, $value, true);
     }
