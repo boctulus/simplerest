@@ -10205,8 +10205,8 @@ class DumbController extends Controller
             Clasificar incluyendo los no identificados
         */
 
-        $url = 'http://woo4.lan';  // WP
-        //$url = 'www.leifshop.com'; // Shopify
+        //$url = 'http://woo4.lan';  // WP
+        $url = 'www.leifshop.com'; // Shopify
         //$url = 'https://www.lechocolat-alainducasse.com/'; // PS
 
         dd(

@@ -79,6 +79,28 @@ class Reflector
         return static::$info_constructor[$class_name];
     }
 
+    static function getPublicMethods(string $class_name): array
+    {
+        $reflection = new \ReflectionClass($class_name);
+        $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+        
+        return $methods;
+    }
+
+    static function getPublicMethodsStartingWith(string $class_name, string $prefix): array
+    {
+        $methods   = static::getPublicMethods($class_name);
+        $callbacks = [];
+
+        foreach ($methods as $method) {
+            if (strpos($method->name, $prefix) === 0) {
+                $callbacks[] = $method->name;
+            }
+        }
+
+        return $callbacks;
+    }
+
 
 }
 
