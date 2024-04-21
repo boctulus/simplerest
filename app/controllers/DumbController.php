@@ -10287,6 +10287,7 @@ class DumbController extends Controller
         ladylee.com
         elgallomasgallo.com.gt
         ektguatemala.myvtex.com
+        www.sonjavanduelmen.com
         LIST;
 
         $urls = Strings::lines($list, true, true);
