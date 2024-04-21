@@ -4304,9 +4304,6 @@ class DumbController extends Controller
         print_r($foo->bar());
     }
 
-    /*
-        Revisar: parece que el Singleton no esta bien implementado
-    */
     function test_container3(){
         Container::singleton('foo', Foo::class);
 
