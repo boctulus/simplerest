@@ -77,7 +77,7 @@ use simplerest\core\libs\Reflector;
 
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
-use simplerest\core\libs\CMSScanner;
+use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
@@ -10270,8 +10270,9 @@ class DumbController extends Controller
         */
 
         //$url = 'http://woo4.lan';  // WP
-        $url = 'www.leifshop.com'; // Shopify
-        //$url = 'https://www.lechocolat-alainducasse.com/'; // PS
+        //  $url = 'www.leifshop.com'; // Shopify
+        // $url = 'https://www.lechocolat-alainducasse.com/'; // PS
+        $url = 'https://www.fredperry.com'; // magento
 
         dd(
             CMSScanner::identify($url)
