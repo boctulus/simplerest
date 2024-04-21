@@ -41,9 +41,10 @@ class Container
             if (class_exists(static::$bindings[$key]['value'])){
                 $params_to_pass = [];
 
-                $refl    = Reflector::getConstructor(static::$bindings[$key]['value']);
+                $refl        = Reflector::getConstructor(static::$bindings[$key]['value']);   
+                
                 $_params     = $refl['params'];
-                $req_params  = $refl['required_parms'];
+                $req_params  = $refl['required_params'];
                 $req_qty     = $refl['required_qty'];
                 $param_names = $refl['param_names'];
 

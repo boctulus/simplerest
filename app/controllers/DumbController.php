@@ -7,64 +7,68 @@ use stdClass;
 
 use simplerest\core\Acl;
 use simplerest\core\View;
+use simplerest\libs\Cake;
 use simplerest\libs\Sync;
 use simplerest\core\Model;
 use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\libs\Reviews;
+
 use simplerest\core\libs\CSS;
-
 use simplerest\core\libs\Env;
-use simplerest\core\libs\Num;
 
-use simplerest\core\libs\Url;
+use simplerest\core\libs\Num;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\libs\Url;
 use simplerest\core\libs\XML;
 use simplerest\libs\RibiSOAP;
 use simplerest\core\Container;
-use simplerest\core\libs\Date;
 
+use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
-use simplerest\core\libs\Time;
 
+use simplerest\core\libs\Time;
 use simplerest\core\libs\Cache;
+
 use simplerest\core\libs\Files;
 
 use simplerest\core\libs\Utils;
-
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\GitHub;
 use simplerest\core\libs\Logger;
-use simplerest\core\libs\OpenAI;
 
+use simplerest\core\libs\OpenAI;
 use simplerest\core\libs\Schema;
+
 use simplerest\core\libs\StdOut;
 
 use simplerest\core\libs\System;
 
 use simplerest\core\libs\Update;
+use simplerest\libs\Ingredient1;
 
+use simplerest\libs\Ingredient2;
 use simplerest\core\libs\DBCache;
 use simplerest\core\libs\Strings;
-
 use simplerest\core\libs\VarDump;
+
 use Spatie\ArrayToXml\ArrayToXml;
+
 use simplerest\core\libs\CSSUtils;
 use simplerest\core\libs\Factory;;
-
 use simplerest\core\libs\Hardware;
-
 use simplerest\core\libs\JobQueue;
 use simplerest\core\libs\Parallex;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\FileCache;
+
 use simplerest\core\libs\MediaType;
 use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Reflector;
@@ -72,15 +76,14 @@ use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
 use simplerest\core\libs\CMSScanner;
-
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\ZipManager;
+
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\Memoization;
-
 use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
@@ -92,10 +95,10 @@ use simplerest\core\libs\InMemoryCache;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
+
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
-
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\libs\ApacheWebServer;
 use simplerest\core\libs\CronJobMananger;
@@ -8923,13 +8926,13 @@ class DumbController extends Controller
 
     function test_php_marker_replacer(){
         $html = '<?php echo "Hola mundo" ?>';
-        $html  = XML::replacePHPmarkers($html);
+        // $html  = XML::replacePHPmarkers($html);
 
-        dd($html);
+        // dd($html);
 
-        $html  = XML::replacePHPmarkersBack($html);
+        // $html  = XML::replacePHPmarkersBack($html);
 
-        dd($html);
+        // dd($html);
     }
 
     function test_parse_text_nodes(){
@@ -10198,6 +10201,24 @@ class DumbController extends Controller
     	$str = Strings::sanitize($str);
 
         dd($str); // Course
+    }
+
+    function test_dep_container()
+    {
+        Container::bind(Cake::class, function() {
+            $ingredient1 = new Ingredient1();
+            $ingredient2 = new Ingredient2();
+      
+            return new Cake($ingredient1, $ingredient2, 25);
+        });
+
+        Container::singleton('cake', Cake::class);
+
+        $foo = Container::make('cake');
+        print_r($foo->bar());
+        
+        $foo = Container::make('cake');
+        print_r($foo->bar());
     }
 
     function identity_cms_theme(){
