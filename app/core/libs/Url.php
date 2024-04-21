@@ -28,13 +28,15 @@ class Url
         }
         return false;
     }
-    
-    static function isValid(string $url){
-        if (!Strings::startsWith('http://', $url) && !Strings::startsWith('https://', $url)){
-            return false;
-        }
 
-        return filter_var($url, FILTER_VALIDATE_URL);
+
+    /*
+        Cheque si es una URL
+
+        El chequeo es estricto
+    */
+    static function isValid(string $url){
+        return filter_var($url, FILTER_VALIDATE_URL) != false;
     }
 
     static function getHeaders($url, bool $verify_ssl = true)
@@ -535,10 +537,6 @@ class Url
         }
     
         $url_info = parse_url($url);
-
-        if (!isset($url_info['path'])){
-            throw new \Exception("URL invalid");
-        }
 
         $hostname = ($url_info['host'] ?? '') . (isset($url_info['port']) ? ':'. $url_info['port'] : '');
 
