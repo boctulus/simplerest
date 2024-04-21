@@ -60,23 +60,17 @@ class CMSScanner
     */
     static function identify(string $url){
         $site = static::__getSite($url);
-
-        $callbacks = [
-            'isBuiltWithMagento', 
-            'isBuiltWithWordPress', 
-            'isBuiltWithShopify', 
-            'isBuiltWithPrestaShop'
-        ];
-
+    
+        // Obtener los métodos públicos que empiezan con "isBuiltWith"
+        $callbacks = Reflector::getPublicMethodsStartingWith(__CLASS__, 'isBuiltWith');
+    
         foreach ($callbacks as $cb) {
-            // dd("Verificando si $url $cb");
-
             if (static::$cb($site)){
                 return $cb;
             }
         }
     }
-
+    
 
 }
 
