@@ -10268,17 +10268,6 @@ class DumbController extends Controller
         /*
             Clasificar incluyendo los no identificados
         */
-
-        //$url = 'http://woo4.lan';  // WP
-        //  $url = 'www.leifshop.com'; // Shopify
-        // $url = 'https://www.lechocolat-alainducasse.com/'; // PS
-        // $url = 'https://www.fredperry.com'; // magento
-
-        // dd(
-        //     CMSScanner::identify($url)
-        // );
-
-        // exit;
   
         $list = <<<LIST
         lacuracaonline.com
