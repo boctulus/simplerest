@@ -66,7 +66,7 @@ class CMSScanner
     
         foreach ($callbacks as $cb) {
             if (static::$cb($site)){
-                return $cb;
+                return substr($cb, 11); // luego de "isBuiltWith"
             }
         }
     }
