@@ -2,7 +2,7 @@
 
 namespace simplerest\interfaces;
 
-interface Vehicle {
+interface IVehicle {
     function run();
     function stop();
 }

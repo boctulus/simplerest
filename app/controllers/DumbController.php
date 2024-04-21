@@ -8,6 +8,8 @@ use stdClass;
 use simplerest\core\Acl;
 use simplerest\core\View;
 use simplerest\libs\Cake;
+use simplerest\libs\Foo;
+use simplerest\libs\Foo2;
 use simplerest\libs\Sync;
 use simplerest\core\Model;
 use simplerest\core\Route;
@@ -4279,17 +4281,79 @@ class DumbController extends Controller
     {
         dd($id);
     }
+   
+    function test_container(){
+        Container::bind('foo', function(){
+            return new Foo();
+        });
 
+        $foo = Container::make('foo');
+        print_r($foo->bar());
 
+        $foo = Container::make('foo');
+        print_r($foo->bar());
+    }
 
+    function test_container2(){
+        Container::bind('foo', Foo::class);
+
+        $foo = Container::make('foo');
+        print_r($foo->bar());
+
+        $foo = Container::make('foo');
+        print_r($foo->bar());
+    }
+
+    /*
+        Revisar: parece que el Singleton no esta bien implementado
+    */
+    function test_container3(){
+        Container::singleton('foo', Foo::class);
+
+        $foo = Container::make('foo');
+        print_r($foo->bar());
+        
+        $foo = Container::make('foo');
+        print_r($foo->bar());
+    }
+
+    function test_container4(){
+        Container::bind('car', \simplerest\libs\Car::class);
+
+        $o = Container::makeWith('car', ['color' => 'blue', 'max_speed' => 200]);
+        print_r($o->run());
+        print_r($o);
+    }
+
+    /*
+        Leer la documentacion
+    */
+    function test_dep_container()
+    {
+        Container::bind(Cake::class, function() {
+            $ingredient1 = new Ingredient1();
+            $ingredient2 = new Ingredient2();
+      
+            return new Cake($ingredient1, $ingredient2, 25);
+        });
+
+        Container::singleton('cake', Cake::class);
+
+        // $foo = Container::make('cake');
+        // print_r($foo->bar());
+        
+        // $foo = Container::make('cake');
+        // print_r($foo->bar());
+    }
+
+    
     /*
         Haciendo uso de Container::useContract(), intentar replicar:
 
         https://stackoverflow.com/a/52778193/980631
     */
-    function test_container5()
-    {
-
+    function test_container5(){
+        
         // ....
     }
 
@@ -10201,24 +10265,6 @@ class DumbController extends Controller
     	$str = Strings::sanitize($str);
 
         dd($str); // Course
-    }
-
-    function test_dep_container()
-    {
-        Container::bind(Cake::class, function() {
-            $ingredient1 = new Ingredient1();
-            $ingredient2 = new Ingredient2();
-      
-            return new Cake($ingredient1, $ingredient2, 25);
-        });
-
-        Container::singleton('cake', Cake::class);
-
-        $foo = Container::make('cake');
-        print_r($foo->bar());
-        
-        $foo = Container::make('cake');
-        print_r($foo->bar());
     }
 
     function identity_cms_theme(){
