@@ -36,14 +36,22 @@ use simplerest\core\libs\Memoization;
 */
 class ApiClient
 {   
-    const     HTTP_METH_POST   = "POST";
-    const     HTTP_METH_GET    = "GET";
-    const     HTTP_METH_PATCH  = "PATCH";
-    const     HTTP_METH_PUT    = "PUT";
-    const     HTTP_METH_DELETE = "DELETE";
-    const     HTTP_METH_HEAD   = "HEAD";
+    const HTTP_METH_POST   = "POST";
+    const HTTP_METH_GET    = "GET";
+    const HTTP_METH_PATCH  = "PATCH";
+    const HTTP_METH_PUT    = "PUT";
+    const HTTP_METH_DELETE = "DELETE";
+    const HTTP_METH_HEAD   = "HEAD";
 
-    
+    /*
+        User Agents
+    */
+    const USER_AG_FIREFOX = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0';
+    const USER_AG_SAFARI  = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15';
+    const USER_AGT_EDGE   = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.79 Safari/537.36 Edg/100.0.4896.79';
+    const USER_AG_CHROME  = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36';
+
+
     // Cookies
     protected $cookieJar;
 
@@ -268,20 +276,8 @@ class ApiClient
         return $this;
     }
 
-    function setOptions(Array $options){
-        $this->options = $options;
-        return $this;
-    }
-
-    function addOptions(Array $options){
-        $this->options = array_merge($this->options, $options);
-        return $this;
-    }
-
     // redirect
     function followLocations($max_redirs = 10){
-        $options = [];
-
         $this->options[CURLOPT_FOLLOWLOCATION] = ($max_redirs > 0);
         $this->options[CURLOPT_MAXREDIRS] = $max_redirs;
 
@@ -447,10 +443,8 @@ class ApiClient
         // dejo claro se aplican settings
         $this->cert_ssl = true;
 
-        $this->options = [
-            CURLOPT_SSL_VERIFYHOST => 0,
-            CURLOPT_SSL_VERIFYPEER => 0
-        ];
+        $this->setOption(CURLOPT_SSL_VERIFYHOST, 0);
+        $this->setOption(CURLOPT_SSL_VERIFYPEER, 0);
 
         return $this;
     }
@@ -466,10 +460,8 @@ class ApiClient
         // dejo claro se aplican settings
         $this->cert_ssl = true;
 
-        $this->addOptions([
-            CURLOPT_CAINFO => $crt_path,
-            CURLOPT_CAPATH => $crt_path,
-        ]);
+        $this->setOption(CURLOPT_CAINFO, $crt_path);
+        $this->setOption(CURLOPT_CAPATH, $crt_path);
         
         return $this;
     }
@@ -554,10 +546,12 @@ class ApiClient
         // dd($this->cookieJar->getCookies(), 'COOKIES');
         // dd($this->cookieJar->getCookieFile(), 'COOKIE FILE');
 
-        // Agregar manejo de cookies
-        curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieJar->getCookies());
-        curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieJar->getCookieFile());
-
+         // Agregar manejo de cookies
+        if ($this->cookieJar !== null){
+            curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieJar->getCookies());
+            curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieJar->getCookieFile());    
+        }
+ 
         $__headers  = [];
         $__filename = null;
 
@@ -594,8 +588,10 @@ class ApiClient
         curl_close($curl);
 
         // Guardar las cookies después de cada solicitud
-        $this->cookieJar->saveCookies($cookie_info);
-
+        if ($this->cookieJar !== null){
+            $this->cookieJar->saveCookies($cookie_info);
+        }
+            
         // Preservo la respuesta
         $this->raw_response = $response;
 

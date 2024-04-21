@@ -27,39 +27,38 @@ use simplerest\libs\RibiSOAP;
 use simplerest\core\Container;
 use simplerest\core\libs\Date;
 
-use simplerest\core\libs\HTML as HTMLTools;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
-
 use simplerest\core\libs\Time;
-use simplerest\core\libs\Cache;
 
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
 
 use simplerest\core\libs\Utils;
+
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\GitHub;
 use simplerest\core\libs\Logger;
-
 use simplerest\core\libs\OpenAI;
-use simplerest\core\libs\Schema;
 
+use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 
 use simplerest\core\libs\System;
 
 use simplerest\core\libs\Update;
-use simplerest\core\libs\DBCache;
 
+use simplerest\core\libs\DBCache;
 use simplerest\core\libs\Strings;
+
 use simplerest\core\libs\VarDump;
 use Spatie\ArrayToXml\ArrayToXml;
 use simplerest\core\libs\CSSUtils;
-
 use simplerest\core\libs\Factory;;
 
 use simplerest\core\libs\Hardware;
+
 use simplerest\core\libs\JobQueue;
 use simplerest\core\libs\Parallex;
 use simplerest\models\az\BarModel;
@@ -68,10 +67,11 @@ use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\FileCache;
 use simplerest\core\libs\MediaType;
 use simplerest\core\libs\Paginator;
-
 use simplerest\core\libs\Reflector;
+
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
+use simplerest\core\libs\CMSScanner;
 
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
@@ -113,6 +113,7 @@ use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\FileMemoizationV2;
+use simplerest\core\libs\HTML as HTMLTools;
 use simplerest\libs\ItalianGrammarAnalyzer;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\shortcodes\eat_leaf\EatLeaf;
@@ -124,8 +125,8 @@ use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\controllers\MakeControllerBase;
 use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
-use simplerest\shortcodes\progress_bar\ProgressShortcode;
 use simplerest\shortcodes\csv_importer\ImporterShortcode;
+use simplerest\shortcodes\progress_bar\ProgressShortcode;
 use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
@@ -10197,6 +10198,49 @@ class DumbController extends Controller
     	$str = Strings::sanitize($str);
 
         dd($str); // Course
+    }
+
+    function identity_cms_theme(){
+        /*
+            Clasificar incluyendo los no identificados
+        */
+
+        $url = 'http://woo4.lan';  // WP
+        //$url = 'www.leifshop.com'; // Shopify
+        //$url = 'https://www.lechocolat-alainducasse.com/'; // PS
+
+        dd(
+            CMSScanner::identify($url)
+        );
+
+        exit;
+  
+        $list = <<<LIST
+        lacuracaonline.com
+        mabeglobal.com
+        almacenestropigas.com
+        gollo.com
+        prado.com.sv
+        omnisport.com
+        ladylee.net
+        panafoto.com
+        elektra.com.gt
+        verdugotienda.com
+        tiendamonge.com
+        elektra.com.hn
+        mabeglobalpanama.com
+        elgallomasgallo.com.ni
+        ladylee.com
+        elgallomasgallo.com.gt
+        ektguatemala.myvtex.com
+        LIST;
+
+        $urls = Strings::lines($list);
+
+        foreach ($urls as $url){
+            CMSScanner::identify($url);
+            exit;
+        }
 
     }
     
