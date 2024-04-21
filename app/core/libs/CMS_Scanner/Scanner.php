@@ -4,8 +4,20 @@ namespace simplerest\core\libs\CMS_Scanner;
 
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\Reflector;
 
+/*
+    mutawp.com                      // WordPress
+    www.leifshop.com                // Shopify
+    www.lechocolat-alainducasse.com // PrestaShop
+    www.fredperry.com               // Magento
+    moderne.st                      // NuxtJs 
+    www.sonjavanduelmen.com         // Wix
+    www.sundaystate.ca              // Squarespace
+    omnisport.com                   // Laravel
+    ladylee.net                     // Angular (SSR)
+    ladylee.com                     // Angular (SSR)
+    elektra.com.gt                  // ReactJs
+*/
 class Scanner
 {
     protected static $url;
@@ -80,14 +92,6 @@ class Scanner
         return Strings::containsAnyWord(['btn-primary', 'container-fluid', 'pull-left', 'pull-right'], static::$content);
     }
    
-    /*
-        
-        $url = 'http://woo4.lan';  // WordPress
-        $url = 'www.leifshop.com'; // Shopify
-        $url = 'https://www.lechocolat-alainducasse.com/'; // PrestaShop
-        $url = 'https://www.fredperry.com'; // Magento
-        $url = 'moderne.st' // NuxtJs 
-    */
     static function identify(string $url)
     {
         $site     = static::__getSite($url);
