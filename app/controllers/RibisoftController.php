@@ -170,7 +170,44 @@ class RibisoftController extends MyController
         // dd($cli->dump(), 'REQ');
     }
 
-    // SIN ENSAYAR !!!!!!!!!!
+
+    /*
+        CREATE(s)
+    */
+
+    // ok
+    public function test_soap_erp_req_crear_cliente()
+    {
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+    
+        $cli   = new RibiSOAP($token, $url_base); 
+
+        // Simular los parámetros de entrada
+        $params = array(
+            'token' => $token,
+            'nit' => '6042688649',
+            'tipodocumento' => 'NIT',
+            'tiporegimen' => 'RS', // Regimen Simplificado
+            'nombres' => 'Tal Cual Restaurante S A S',
+            'iddepartamento' => '1',
+            'idciudad' => '1',
+            'direccion' => 'Calle 123',
+            'telefono' => '1234567',
+            'celular' => '987654321',
+            'correo' => 'juan@example.com',
+            'contacto' => 'Maria Gomez',
+            'idvendedor' => '01'
+        );
+
+        $res = $cli->crearcliente($params);
+        $error = $cli->error();
+    
+        dd($cli->getStatus(), 'STATUS');
+        dd($error, 'ERROR');
+        // dd($cli->getHeaders(), 'HEADERS');
+        dd($res, 'DATA');
+    }
 
     function test_soap_erp_req_crear_pedido(){
         $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
@@ -201,40 +238,6 @@ class RibisoftController extends MyController
         // dd($cli->getHeaders(), 'HEADERS');
         dd($res, 'DATA');
     }
-
-    public function test_soap_erp_req_crear_cliente()
-    {
-        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
-        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
-    
-        $cli   = new RibiSOAP($token, $url_base); 
-
-        // Simular los parámetros de entrada
-        $params = array(
-            'token' => $token,
-            'nit' => '385807',
-            'tipodocumento' => 'CEDULA DE EXTRANJERIA',
-            'tiporegimen' => 'RS', // Regimen Simplificado
-            'nombres' => 'Pablo Bzz',
-            'iddepartamento' => '1',
-            'idciudad' => '1',
-            'direccion' => 'Calle 123',
-            'telefono' => '1234567',
-            'celular' => '987654321',
-            'correo' => 'juan@example.com',
-            'contacto' => 'Maria Gomez',
-            'idvendedor' => '01'
-        );
-
-        $res = $cli->crearpedido($params);
-        $error = $cli->error();
-    
-        dd($cli->getStatus(), 'STATUS');
-        dd($error, 'ERROR');
-        // dd($cli->getHeaders(), 'HEADERS');
-        dd($res, 'DATA');
-    }
-
 
 }
 

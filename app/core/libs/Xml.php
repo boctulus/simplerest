@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../../vendor/composer/InstalledVersions.php';
 
 class XML
 {
-    static function isXML($str) 
+    static function isXML(string $str) 
     {
         $str = trim($str);
 
