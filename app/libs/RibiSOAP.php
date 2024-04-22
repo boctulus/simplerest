@@ -3,6 +3,7 @@
 namespace simplerest\libs;
 
 use simplerest\core\libs\XML;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\Validator;
 use simplerest\libs\NITColombiaValidator;
@@ -63,26 +64,40 @@ class RibiSOAP extends ApiClient
             throw new \InvalidArgumentException("Operación no soportada");
         }
 
-        $client = $this->client();
+        $client    = $this->client();
 
-        $url    = "$this->base_url/$name";
+        $url       = "$this->base_url/$name";
 
         $client->send($url, $data);
 
-        $data  = $this->getResponse();
-        $data  = $data['data'] ?? null;
+        $res       = $this->getResponse();
+        $res_data  = $res['data'] ?? null;
 
-        $data  = $data['soap:Envelope']['soap:Body'][$name . 'Response'][$name . 'Result'] ?? $data;
+        $res_data  = $data['soap:Envelope']['soap:Body'][$name . 'Response'][$name . 'Result'] ?? $res_data;
 
-        if (!empty($data) && XML::isXML($data)){
-            $data = XML::toArray($data);            
+        if (isset($res_data['soap:Envelope']['soap:Body']['soap:Fault'])){
+            Logger::logError($res_data['soap:Envelope']['soap:Body']['soap:Fault']);
+
+            dd($data, 'DATA SENT'); //
+            
+            throw new \Exception(var_export($res_data['soap:Envelope']['soap:Body']['soap:Fault']), true);
+        }
+        
+        if (!is_string($res_data)){
+            Logger::logError($res_data);
+
+            throw new \Exception("Expected Array. Found: ". gettype($res_data));
         }
 
-        if (isset($data['NewDataSet']['Table'])){
-            $data = $data['NewDataSet']['Table'];
+        if (!empty($res_data) && XML::isXML($res_data)){
+            $res_data = XML::toArray($res_data);            
         }
 
-        return $data;
+        if (isset($res_data['NewDataSet']['Table'])){
+            $res_data = $res_data['NewDataSet']['Table'];
+        }
+
+        return $res_data;
     }
 
     // OK 
@@ -309,7 +324,7 @@ class RibiSOAP extends ApiClient
 
         idvendedor es 01
     */
-    function crearcliente(array $params)
+    function crearcliente(array $params, bool $validate_nit = false)
     {
         $method = 'crearcliente';
         $token  = $this->token;
@@ -335,10 +350,12 @@ class RibiSOAP extends ApiClient
             throw new InvalidValidationException(json_encode($validator->getErrors()));
         }
 
-        if (!NITColombiaValidator::isValid($params['nit'], true)) {
-            throw new \InvalidArgumentException("NIT no válido");
+        if ($validate_nit && $params['tipodocumento'] == 'NIT'){
+            if (!NITColombiaValidator::isValid($params['nit'], true)) {
+                throw new \InvalidArgumentException("NIT no válido");
+            }
         }
-
+      
         $params['token'] = $this->token;
 
         // Construir el cuerpo de la solicitud SOAP
@@ -358,7 +375,7 @@ class RibiSOAP extends ApiClient
         return $this->op($method, $data);
     }
 
-    function crearpedido($params)
+    function crearpedido($params, bool $validate_nit = false)
     {
         $method = 'crearpedido';
         $token  = $this->token;
@@ -392,22 +409,39 @@ class RibiSOAP extends ApiClient
             throw new InvalidValidationException(json_encode($validator->getErrors()));
         }
 
-        if (!NITColombiaValidator::isValid($params['nit'], true)) {
-            throw new \InvalidArgumentException("NIT no válido");
+        if ($validate_nit){
+            if (!NITColombiaValidator::isValid($params['nit'], true)) {
+                throw new \InvalidArgumentException("NIT no válido");
+            }
         }
 
         // Construir el cuerpo de la solicitud SOAP
-        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ser=\"http://localhost/\">
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
            <soapenv:Header/>
            <soapenv:Body>
               <loc:$method>
                  <loc:token>$token</loc:token>";
         
-        foreach ($params as $key => $value) {
-            $data .= "<loc:$key>$value</loc:$key>";
-        }
+                foreach ($params as $key => $value) {
+                    if ($key === 'detalle') {
+                        // Construir la estructura XML para el detalle del pedido
+                        $data .= "<loc:$key>";
+                        foreach ($value as $detalleItem) {
+                            $data .= "<loc:detalle>";
+                            foreach ($detalleItem as $detalleKey => $detalleValue) {
+                                $data .= "<loc:$detalleKey>$detalleValue</loc:$detalleKey>";
+                            }
+                            $data .= "</loc:detalle>";
+                        }
+                        $data .= "</loc:$key>";
+                    } else {
+                        // Agregar otros parámetros directamente
+                        $data .= "<loc:$key>$value</loc:$key>";
+                    }
+                }
+        
 
-        $data .= "</loc:$method>
+        $data .= "</loc:$method>    
            </soapenv:Body>
         </soapenv:Envelope>";
 
