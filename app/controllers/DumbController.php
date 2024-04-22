@@ -9917,244 +9917,7 @@ class DumbController extends Controller
         dd("Done.");
     }
 
-    function nick_replace_ids(){
-        $ori  = 'D:\www\eat-nick\index.html';
-        $dst  = 'D:\www\eat-nick\index-2.html';
-
-        $html = file_get_contents($ori);
-
-        $ids = [
-            "XGGspzT0WdnBFWbQ" => "s1-background_container",
-            "n4w5jRFDGOm1Njhc" => "s1-background_image_container",
-            "RYokOzQ7pxW2fmWp" => "s1-background_image_wrapper",
-            "VXT4C7LN6UOdfwck" => "s1-background_image_inner_wrapper",
-            "KCxpMOIZmEhxzo66" => "s1-background_image_overlay",
-            "W68OSnioSBSFDwxu" => "s1-content_container",
-            "GLnrCSUZHerqsvqx" => "s1-logo_container",
-            "vDqHzxm4k5AYDwHc" => "s1-logo_wrapper",
-            "j89u4SCQkNIrWIZV" => "s1-logo_image_container",
-            "tw0E3OvvDZU8JaGV" => "s1-logo_image_wrapper",
-            "lLEFUk3NEILS3Fxg" => "s1-logo_image_inner_wrapper",
-            "B3dbgok4malUhzcs" => "s1-text_container",
-            "UTjOaBRpLPrcQ3C4" => "s1-text_wrapper",
-            "Z24jaRqNz5iyREPw" => "s1-text_animation_container",
-            "MeY4QMCelrF8NSUf" => "s1-text_paragraph",
-            "IEOIMPWwP0yjz2Hu" => "s1-text_span",
-            "lgJjvUZjAGDmD8BE" => "s2-background_container",
-            "KaeKB1EjFXJa9kzQ" => "s2-background_image_container",
-            "D50W3JqQhBRM8oBC" => "s2-background_image_wrapper",
-            "wqIGHuDaKHH4V8j7" => "s2-background_image_inner_wrapper",
-            "f09kjZfrmDshcVbZ" => "s2-background_image_overlay",
-            "LPYTNPIvVNmKZd6D" => "s2-content_container",
-            "l8gdQoI2tsSYgeSw" => "s2-logo_container",
-            "yhqCKXCEU8HkaVwm" => "s2-logo_wrapper",
-            "oFGDu9LMO6yb6zRr" => "s2-logo_image_container",
-            "iz5ITD54M8K9bILo" => "s2-logo_image_wrapper",
-            "MGK8gatlPDceHcaB" => "s2-logo_image_inner_wrapper",
-            "sbBeRcfBVgxXt5oM" => "s2-text_container",
-            "wspGOkqrE5j0aZLq" => "s2-text_wrapper",
-            "MLiD97WNfYKi26Sh" => "s2-text_animation_container",
-            "YJ3dIdGzMN0ZRl5U" => "s2-text_paragraph_1",
-            "rPNIt2ensmNiEDIN" => "s2-text_span_1",
-            "v1VlQlUc4kSTzmbW" => "s2-text_span_2",
-            "AjsewfXVGpwgLoBN" => "s2-text_span_3",
-            "LnpBRSBZwJOUJ7qU" => "s2-text_paragraph_2",
-            "I0vjnykr6VPXcsBi" => "s2-text_paragraph_3",
-            "Yo3W4lQZVLfrbfHp" => "s2-text_span_4",
-            "cTaFAbHXWT74Gt2n" => "s2-text_span_5",
-            "ysnYac4FMEqn1HtX" => "s2-text_span_6",
-             'nTUqOuFJ1jSFxPX4' => 's3-unique-container-1',
-            'wH3C3KeQ4ACF1dwW' => 's3-background-container-1',
-            'RQojqWGsXnuhBEv6' => 's3-background-layer-1',
-            'ye8MtyCHo3fdtofS' => 's3-background-image-1',
-            'qA3cbxxnZgAuKmkn' => 's3-background-overlay-1',
-            'XV9C6G1TFtS5tGGO' => 's3-content-container-1',
-            'uOPj2UEBOjlDsOJO' => 's3-animation-container-1',
-            'qbWo0JYF0CLiUqvr' => 's3-animation-layer-1',
-            'SeLCKXFZSzvHYiVl' => 's3-animation-element-1',
-            'KSxn6vP4mRUu69XS' => 's3-heading-1',
-            'I4Q6f4IB1ilwOI8T' => 's3-grid-container-1',
-            'XBuQoROCiRDYXXQE' => 's3-grid-item-1',
-            'n1cAGCgJEOkJ7cvj' => 's3-image-container-1',
-            'YINfplakHm6VoDvK' => 's3-image-layer-1',
-            'CPxuczXSSxuWc6iX' => 's3-image-wrapper-1',
-            'AfD7Kf8e3wLvxWvf' => 's3-image-element-1',
-            'CqucD7tOGZPXve4i' => 's3-image-overlay-1',
-            'PzV0YUBE2K1Irvb8' => 's3-image-pulse-1',
-            'XBuQoROCiRDYXXQE' => 's3-grid-item-1',
-            'n1cAGCgJEOkJ7cvj' => 's3-image-container-1',
-            'YINfplakHm6VoDvK' => 's3-image-layer-1',
-            'CPxuczXSSxuWc6iX' => 's3-image-wrapper-1',
-            'AfD7Kf8e3wLvxWvf' => 's3-image-element-1',
-            'CqucD7tOGZPXve4i' => 's3-image-overlay-1',
-            'PzV0YUBE2K1Irvb8' => 's3-image-pulse-1',
-            'VbgkEQGHH4f7Vehs' => 's3-grid-item-2',
-            'HBVt09TkhVZLKXMD' => 's3-image-container-2',
-            'iDdOHi3S7l6ykdFQ' => 's3-image-layer-2',
-            'etWcwFBwlA7EdcNy' => 's3-image-wrapper-2',
-            'Bmddeq1Ytvl2fEu7' => 's3-image-element-2',
-            'tMqzHf6pth4MLVWW' => 's3-image-overlay-2',
-            'ahIlIJE70MxEpnDl' => 's3-image-pulse-2',
-            'UMNnZwwDylEFsf56' => 's3-grid-item-3',
-            'O5uOu2haurpZa4W6' => 's3-image-container-3',
-            'dX8Th1huz3sr4woc' => 's3-image-layer-3',
-            'qGa6sVtY62qH7Etb' => 's3-image-wrapper-3',
-            'RfcU3JIEiGecYNtE' => 's3-image-element-3',
-            'QrN4B6InmyYkoS2R' => 's3-image-overlay-3',
-            'Q4UVG1D000rTgSKB' => 's3-image-pulse-3',
-            'ngdwHAjEDKdgdM1K' => 's3-grid-item-4',
-            'iOPak4GWdKUGpl7o' => 's3-heading-2',
-            'jOFvdi87SxTr6I3I' => 's3-paragraph-1',
-            'KXxNdEBAvOE5Jkil' => 's3-heading-3',
-            'hlGgkyxaIBtJURgU' => 's3-paragraph-2',
-            'eqiVKV9eCuLIIeb9' => 's3-heading-4',
-            'gbwsI4eQXtaMOleX' => 's3-paragraph-3',
-            'UVBpQezcIaBK0dc3' => 's3-heading-5',
-            'RiyqJAxcBUnBTKYD' => 's3-paragraph-4',
-            'wHJsgP8CNrUCqmhc' => 's3-heading-6',
-            'kWmedUGwN3aeH0VZ' => 's3-paragraph-5',
-            'iiFfSs2f6X97g7mI' => 's3-heading-7',
-            'f7LpZgY3HADCDkfA' => 's3-paragraph-6',
-            'UTwdIOjo6hGfiJs7' => 's3-grid-item-5',
-            'RW5Os4dbtunZ7Tx1' => 's3-image-container-4',
-            'ojdObsYOCoZaX5wS' => 's3-image-layer-4',
-            'WWuncO6J663p2xXs' => 's3-image-wrapper-4',
-            'vp7V45nsx6xmGbuK' => 's3-image-element-4',
-            'OoHyzhKVyvLegFVJ' => 's3-image-overlay-4',
-            'DTq7A64nLQCcSxqC' => 's3-image-pulse-4',
-            'wKEdYjdyNW5spM8X' => 's3-grid-item-6',
-            'meguPjLPUo2X0SAp' => 's3-heading-8',
-            'pucJxTDImxFQQs79' => 's3-paragraph-7',
-            'ZsQv1PMemaLTOL7y' => 's4-unique-container-1',
-            'Op2yGo0Oxj3elOno' => 's4-background-container-1',
-            'UX7r2BA3dc9zhdy7' => 's4-background-layer-1',
-            'SsqqxKeC6cc3LTc6' => 's4-background-image-1',
-            'cdh2Cm8aoLJNOblb' => 's4-background-overlay-1',
-            'YKxo0jeiPZw6zvo5' => 's4-content-container-1',
-            'o0HBIDGBKgPbqSOu' => 's4-animation-container-1',
-            'fg1h9Oak83qQVW1M' => 's4-animation-layer-1',
-            'yuf6zak4UY8exCmr' => 's4-animation-element-1',
-            'LXD5eRXd1dxIUhYQ' => 's4-heading-1',
-            'nAqyxiCXPkqYA845' => 's4-grid-container-1',
-            'TvhtI2LbyQLsBRgP' => 's4-grid-item-1',
-            't2klvKFXWKCMUDqs' => 's4-image-container-1',
-            'VuIgg6pNEWdng6Uh' => 's4-image-layer-1',
-            'Vx23JRbivnXW7dl6' => 's4-image-wrapper-1',
-            'KkxwrIYhSgEnx9DB' => 's4-image-element-1',
-            'jtxDTa1j1omZliCx' => 's4-image-overlay-1',
-            'section-page-4' => 's4-image-pulse-1',
-            't2klvKFXWKCMUDqs' => 's4-grid-item-1',
-            'VuIgg6pNEWdng6Uh' => 's4-image-container-1',
-            'Vx23JRbivnXW7dl6' => 's4-image-layer-1',
-            'KkxwrIYhSgEnx9DB' => 's4-image-wrapper-1',
-            'jtxDTa1j1omZliCx' => 's4-image-element-1',
-            'section-page-4' => 's4-image-overlay-1',
-            't2klvKFXWKCMUDqs' => 's4-image-pulse-1',
-            'section-page-4' => 's4-grid-item-2',
-            'section-page-4' => 's4-heading-2',
-            'section-page-4' => 's4-paragraph-1',
-            'section-page-4' => 's4-heading-3',
-            'section-page-4' => 's4-paragraph-2',
-            'section-page-4' => 's4-heading-4',
-            'section-page-4' => 's4-paragraph-3',
-            'section-page-4' => 's4-heading-5',
-            'section-page-4' => 's4-paragraph-4',
-            'section-page-4' => 's4-heading-6',
-            'section-page-4' => 's4-paragraph-5',
-            'section-page-4' => 's4-heading-7',
-            'section-page-4' => 's4-paragraph-6',
-            'section-page-4' => 's4-grid-item-3',
-            'section-page-4' => 's4-image-container-2',
-            'section-page-4' => 's4-image-layer-2',
-            'section-page-4' => 's4-image-wrapper-2',
-            'section-page-4' => 's4-image-element-2',
-            'section-page-4' => 's4-image-overlay-2',
-            'section-page-4' => 's4-image-pulse-2',
-            'section-page-4' => 's4-grid-item-4',
-            'section-page-4' => 's4-heading-8',
-            'section-page-4' => 's4-paragraph-7',
-            "SQgNrNoZrmhrHqz8" => "s5-main-container",
-            "C81mkkEMrTfqzBT8" => "s5-image-container",
-            "qZmGDFWZQU1ZgxBS" => "s5-image-wrapper",
-            "b6CdhwloP5EbHVbu" => "s5-image-inner-wrapper",
-            "aV8erGjq0Imtd0uL" => "s5-background-container",
-            "d3vUaf4wP4TFlypq" => "s5-background-image",
-            "ornMdu0nnbYlAMWI" => "s5-text-container",
-            "tutjsYMa6yEFnXmi" => "s5-text-wrapper",
-            "WZ3jtDa31xavwnfX" => "s5-text-content",
-            "lrjEzIGEGY3bkQqJ" => "s5-testimonial-container",
-            "XoDmkFLgeimJCcti" => "s5-testimonial-text",
-            "QBqlRQnLdS7evdK1" => "s5-quote-container",
-            "jYmb4UxR1yn9SFl8" => "s5-quote-wrapper",
-            "HOqzeJXq4ZDGnMHH" => "s5-quote-background",
-            "fL0T6ZydQz5tmQ60" => "s5-quote-inner-wrapper",
-            "s0PyNHCdAS4lCh7T" => "s5-quote-svg",
-            "RzugmCvohPZsps7r" => "s5-quote-text-container",
-            "xLsBxCtWPDcgd2dO" => "s5-quote-text-wrapper",
-            "leRg7J54yt8zYqss" => "s5-quote-text-content",
-            "SKNIAboFWEMoxDjD" => "s5-quote-author-container",
-            "SVsIKtNesTY3Y7op" => "s5-quote-author-wrapper",
-            "afilzR6eNWwJPbQm" => "s5-quote-author-text",
-            "u5KRPN9pbNB4glYw" => "s5-customer-container",
-            "CBvomGEbvbSREVOm" => "s5-customer-wrapper",
-            "DDx1J2AjjeOL1rz9" => "s5-customer-background",
-            "GrVRgNN9LKEJeILG" => "s5-customer-inner-wrapper",
-            "YYfzFJZzh0TvfboM" => "s5-customer-svg",
-            "DOABUzMf7Ol22KPq" => "s5-customer-text-container",
-            "Qn4XaVWR2NF8dbTY" => "s5-customer-text-wrapper",
-            "BPcMdR9TWsc4Zehd" => "s5-customer-text-content",
-            "PT9JLpd0hIfhepmf" => "s5-customer-name-container",
-            "RhYiCfOKQrHYPZdi" => "s5-customer-name-wrapper",
-            "lOi4RWEfeh1v3pe9" => "s5-customer-name-text",
-            "RXO6FKu8MrEnmqfx" => "s6-background-container",
-            "iFKQecl6aeq8zCrL" => "s6-background-wrapper",
-            "beF7ZO1kBWFv2WMg" => "s6-background-inner-wrapper",
-            "Z97elJvpYCXUiQ9t" => "s6-background-image",
-            "NTwcVoScRdPmWAZ9" => "s6-color-overlay",
-            "tH38ONyRgQQgDqti" => "s6-content-container",
-            "vekxZtKTk0Wvni2J" => "s6-content-wrapper",
-            "Kt3wS0A3AiFnlNNa" => "s6-content-inner-wrapper",
-            "QWEp8viMKzMXBJge" => "s6-contact-container",
-            "bhDCW8sFIa2D5zzY" => "s6-contact-text",
-            "QazrWQvTo02IEDpq" => "s6-contact-name-container",
-            "adfRnvx7mxUom74r" => "s6-contact-name-wrapper",
-            "rxitxLdEQ8BIIiRX" => "s6-contact-name-text",
-            "NFJA3ZdvLCWR3ii9" => "s6-contact-details-container",
-            "yOYZgLnZp8YGszJr" => "s6-contact-details-wrapper",
-            "vX9SLGen5rzwl6dJ" => "s6-contact-details-text",
-            "iA0Nm5fDL7xcdaBB" => "s6-contact-name-container",
-            "dtyQCMvvW07aityZ" => "s6-contact-name-wrapper",
-            "U7i7oYhn1s2YsOsw" => "s6-contact-name-text",
-            "iv3iNzxwYh3NBvPn" => "s6-contact-details-container",
-            "K3fks3llH5TbRm7X" => "s6-contact-details-wrapper",
-            "Jlv6M1qyNEyUo5WN" => "s6-contact-details-text",
-            "YOdKZuhlUPwFEx3N" => "s6-follow-container",
-            "SXMxGH20B3rECQRU" => "s6-follow-inner-container",
-            "emLvNgdheTuBy02d" => "s6-follow-text",
-            "cfnd5H3DNVTcEYoH" => "s6-facebook-icon-container",
-            "NcPAqJRwb50YUd0x" => "s6-facebook-icon-inner-container",
-            "zAtPkW7ELFPznwDe" => "s6-facebook-icon-image-wrapper",
-            "r45W7YjlaFcQccJa" => "s6-facebook-icon-image",
-            "UPbz6R1p0qANe2Qa" => "s6-instagram-icon-container",
-            "JrjOXUb0ouDWpUAT" => "s6-instagram-icon-inner-container",
-            "JtjSo7c6058FMdJc" => "s6-instagram-icon-image-wrapper",
-            "UUbTwR8hvDvpqNxN" => "s6-instagram-icon-image",
-            "gzq6r2MPz0MpSADB" => "s6-image-container",
-            "MD2D7yLJMDfSb8sG" => "s6-image-inner-container",
-            "kpzFuL66KDtEhc5Y" => "s6-image-wrapper",
-            "bGfG5HV9nRBidZH8" => "s6-image",
-        ];
-
-         // Iterar sobre cada par de IDs y reemplazar en el HTML
-        foreach ($ids as $original_id => $nuevo_id) {
-            $html = str_replace($original_id, $nuevo_id, $html);
-        }
-
-        // Guardar el HTML modificado en el archivo de destino
-        file_put_contents($dst, $html);
-    }
-
-    function test_xml_decode(){
+   function test_xml_decode(){
         $xml = '
         <NewDataSet>
             <Table>
@@ -10168,60 +9931,6 @@ class DumbController extends Controller
         </NewDataSet>';
 
         dd(XML::toArray($xml), 'XML -> ARR');
-    }
-
-    function test_wp_login()
-    {
-        // Define los datos de inicio de sesión
-        $login_data = [
-            'log' => 'boctulus',
-            'pwd' => '!0EJEbwu)Oa!3Fd&ev',
-            'rememberme' => 'forever',
-            'redirect_to' => 'http://woo5.lan/my-account/', // Redirecciona a la página de la cuenta después del inicio de sesión
-            'redirect_to_automatic' => '1'
-        ];
-
-        // Crea una instancia de la clase ApiClient
-        $cli = new ApiClient();
-
-        $cli
-        ->followLocations()
-        ->withoutStrictSSL();
-    
-        // Establece las cookies utilizando el método setCookies()
-        $cli->setCookies('cookies.txt');
-
-        // Realiza la solicitud POST para iniciar sesión
-        $cli->post('http://woo5.lan/wp-login.php', $login_data);
-
-        $res = $cli->getResponse(false);
-
-        // Verifica si la solicitud fue exitosa (código de estado 200)
-        if ($res['http_code'] === 200 || $res['http_code'] === 301 || $res['http_code'] === 302) {
-            dd("Inicio de sesión exitoso.");
-        } else {
-            dd("Error al iniciar sesión: ");
-
-            dd($cli->getStatus(), 'STATUS');
-            dd($cli->getError(), 'ERROR');
-            dd($cli->getResponse(), 'RES');
-            dd($cli->getHeaders(), 'HEADERS');
-       
-            exit;
-        }
-
-        // Ahora, puedes realizar una solicitud GET para acceder a la página de la cuenta
-        $page_login = $cli->get('http://woo5.lan/my-account/')->getResponse(false);
-
-        // Verifica si la solicitud de la página de la cuenta fue exitosa
-        if ($page_login['http_code'] === 200) {
-            dd($page_login['data'], 'PAGINA DETRAS DEL LOGIN'); // vuelve a mostrar el form del login !!
-
-            // Aquí puedes procesar la página de la cuenta según sea necesario
-            // Por ejemplo, puedes extraer información o realizar acciones adicionales
-        } else {
-            dd("Error al acceder a la página de la cuenta: " . $page_login['error']);
-        }
     }
 
     function test_progress(){
@@ -10299,8 +10008,61 @@ class DumbController extends Controller
                 CMSScanner::identify($url)
             , $url);
         }
-
     }
+
+    function test_wp_login()
+    {
+        // Define los datos de inicio de sesión
+        $login_data = [
+            'log' => 'boctulus',
+            'pwd' => '!0EJEbwu)Oa!3Fd&ev',
+            'rememberme' => 'forever',
+            'redirect_to' => 'http://woo5.lan/my-account/', // Redirecciona a la página de la cuenta después del inicio de sesión
+            'redirect_to_automatic' => '1'
+        ];
+
+        // Crea una instancia de la clase ApiClient
+        $cli = new ApiClient();
+
+        $cli
+        ->followLocations()
+        ->withoutStrictSSL();
     
+        // Establece las cookies utilizando el método setCookies()
+        $cli->setCookies('cookies.txt');
+
+        // Realiza la solicitud POST para iniciar sesión
+        $cli->post('http://woo5.lan/wp-login.php', $login_data);
+
+        $res = $cli->getResponse(false);
+
+        // Verifica si la solicitud fue exitosa (código de estado 200)
+        if ($res['http_code'] === 200 || $res['http_code'] === 301 || $res['http_code'] === 302) {
+            dd("Inicio de sesión exitoso.");
+        } else {
+            dd("Error al iniciar sesión: ");
+
+            dd($cli->getStatus(), 'STATUS');
+            dd($cli->getError(), 'ERROR');
+            dd($cli->getResponse(), 'RES');
+            dd($cli->getHeaders(), 'HEADERS');
+       
+            exit;
+        }
+
+        // Ahora, puedes realizar una solicitud GET para acceder a la página de la cuenta
+        $page_login = $cli->get('http://woo5.lan/my-account/')->getResponse(false);
+
+        // Verifica si la solicitud de la página de la cuenta fue exitosa
+        if ($page_login['http_code'] === 200) {
+            dd($page_login['data'], 'PAGINA DETRAS DEL LOGIN'); // vuelve a mostrar el form del login !!
+
+            // Aquí puedes procesar la página de la cuenta según sea necesario
+            // Por ejemplo, puedes extraer información o realizar acciones adicionales
+        } else {
+            dd("Error al acceder a la página de la cuenta: " . $page_login['error']);
+        }
+    }
+
 
 }   // end class
