@@ -177,9 +177,9 @@ class RibiSOAP extends ApiClient
     // OK
     function consultarcliente($nit)
     {
-        if (!NITColombiaValidator::isValid($nit, true)) {
-            throw new \InvalidArgumentException("NIT no válido");
-        }
+        // if (!NITColombiaValidator::isValid($nit, true)) {
+        //     throw new \InvalidArgumentException("NIT no válido");
+        // }
 
         $method = 'consultarcliente';
         $token  = $this->token;
@@ -379,6 +379,7 @@ class RibiSOAP extends ApiClient
         return $this->op($method, $data);
     }
 
+    // ok
     function crearpedido($params, bool $validate_nit = false)
     {
         $method = 'crearpedido';
@@ -413,29 +414,28 @@ class RibiSOAP extends ApiClient
             throw new InvalidValidationException(json_encode($validator->getErrors()));
         }
 
-        if ($validate_nit){
-            if (!NITColombiaValidator::isValid($params['nit'], true)) {
-                throw new \InvalidArgumentException("NIT no válido");
-            }
-        }
+        // if ($validate_nit){
+        //     if (!NITColombiaValidator::isValid($params['nit'], true)) {
+        //         throw new \InvalidArgumentException("NIT no válido");
+        //     }
+        // }
 
         // Construir el cuerpo de la solicitud SOAP
-        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <loc:$method>
-                 <loc:token>$token</loc:token>";
-        
+        $data = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:loc=\"http://localhost/\">
+        <soap:Header/>
+        <soap:Body>
+              <loc:$method>";        
                 foreach ($params as $key => $value) {
                     if ($key === 'detalle') {
                         // Construir la estructura XML para el detalle del pedido
                         $data .= "<loc:$key>";
                         foreach ($value as $detalleItem) {
-                            $data .= "<loc:detalle>";
+                            $data .= "<loc:listadetallepedidos>";
                             foreach ($detalleItem as $detalleKey => $detalleValue) {
                                 $data .= "<loc:$detalleKey>$detalleValue</loc:$detalleKey>";
                             }
-                            $data .= "</loc:detalle>";
+                            $data .= "
+                                </loc:listadetallepedidos>";
                         }
                         $data .= "</loc:$key>";
                     } else {
@@ -443,11 +443,10 @@ class RibiSOAP extends ApiClient
                         $data .= "<loc:$key>$value</loc:$key>";
                     }
                 }
-        
 
         $data .= "</loc:$method>    
-           </soapenv:Body>
-        </soapenv:Envelope>";
+           </soap:Body>
+        </soap:Envelope>";
 
         return $this->op($method, $data);
     }
