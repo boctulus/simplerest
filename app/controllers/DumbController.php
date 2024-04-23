@@ -10073,7 +10073,7 @@ class DumbController extends Controller
     /*
         Logueo y sigo navegando al propaga cookies
     */
-    function test_wp_login()
+    function wp_login_test()
     {
         // Define los datos de inicio de sesión
         $login_data = [
