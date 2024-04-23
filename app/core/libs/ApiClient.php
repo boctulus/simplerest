@@ -55,6 +55,7 @@ class ApiClient
 
     // Cookies
     protected $cookieJar;
+    protected $curl;
 
     // Request
     protected $url;
@@ -100,6 +101,14 @@ class ApiClient
     // Extras
     protected $query_params = [];
 
+
+    function getResource(){
+        return $this->curl;
+    }
+
+    function close(){
+        curl_close($this->curl);
+    }
 
 
     function logReq($log_file  = 'req.txt'){
@@ -200,10 +209,11 @@ class ApiClient
     function __construct($url = null)
     {
         $this->setUrl($url);
+        $this->curl = curl_init();
     }
 
-    function setCookies($filename){
-        $this->cookieJar = new CookieJar($filename);
+    function useCookieJar(){
+        $this->cookieJar = new CookieJar();
     }
     
 	public function setCookieOptions($params = array())
@@ -506,12 +516,10 @@ class ApiClient
             }
         }
 
-        $curl = curl_init();
-
-        $http_verb = strtoupper($http_verb);
+        $http_verb  = strtoupper($http_verb);
 
         if ($http_verb != 'GET' && !empty($data)){
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
 
             if ($encode_body){
                 $headers['Content-Length']   = strlen($data);
@@ -527,36 +535,34 @@ class ApiClient
             CURLOPT_HTTPHEADER => $h
         ] + ($options ?? []);
 
-        curl_setopt_array($curl, $options);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_ENCODING, '' );
-        curl_setopt($curl, CURLOPT_TIMEOUT, 0 );
+        curl_setopt_array($this->curl, $options);
+        curl_setopt($this->curl, CURLOPT_URL, $url);
+        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->curl, CURLOPT_ENCODING, '' );
+        curl_setopt($this->curl, CURLOPT_TIMEOUT, 0 );
 
-        curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_verb);
+        curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $http_verb);
 
         // https://stackoverflow.com/a/6364044/980631
-        curl_setopt($curl, CURLOPT_FAILONERROR, false);
-        curl_setopt($curl, CURLOPT_HTTP200ALIASES, [
+        curl_setopt($this->curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($this->curl, CURLOPT_HTTP200ALIASES, [
             400,
             500
         ]);  //
 
-
-        // dd($this->cookieJar->getCookies(), 'COOKIES');
-        // dd($this->cookieJar->getCookieFile(), 'COOKIE FILE');
+        curl_setopt($this->curl, CURLINFO_HEADER_OUT, true); // 23-abr-2024
 
          // Agregar manejo de cookies
         if ($this->cookieJar !== null){
-            curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieJar->getCookies());
-            curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieJar->getCookieFile());    
+            curl_setopt($this->curl, CURLOPT_COOKIEJAR,  $this->cookieJar->getCookieFile());
+            curl_setopt($this->curl, CURLOPT_COOKIEFILE, $this->cookieJar->getCookieFile());    
         }
  
         $__headers  = [];
         $__filename = null;
 
-        $header_fn = function ($cURLHandle, $header) use (&$__headers, &$__filename) {
+        $header_fn = function ($curl_handle, $header) use (&$__headers, &$__filename) {
             $pieces = explode(":", $header, 2);
 
             if (count($pieces) == 2)
@@ -572,21 +578,19 @@ class ApiClient
             return strlen($header); // <-- this is the important line!
         };
 
-        curl_setopt($curl, CURLOPT_HEADERFUNCTION,
+        curl_setopt($this->curl, CURLOPT_HEADERFUNCTION,
             $header_fn
         );
 
-        $response      = curl_exec($curl);
-        $err_msg       = curl_error($curl);
-        $http_code     = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $response      = curl_exec($this->curl);
+        $err_msg       = curl_error($this->curl);
+        $http_code     = (int) curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 
-        $content_type  = curl_getinfo($curl,CURLINFO_CONTENT_TYPE);
-        $effective_url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+        $content_type  = curl_getinfo($this->curl,CURLINFO_CONTENT_TYPE);
+        $effective_url = curl_getinfo($this->curl, CURLINFO_EFFECTIVE_URL);
 
         // Obtener información sobre las cookies antes de cerrar la sesión cURL
-        $cookie_info   = curl_getinfo($curl, CURLINFO_COOKIELIST);
-
-        curl_close($curl);
+        $cookie_info   = curl_getinfo($this->curl, CURLINFO_COOKIELIST);
 
         // Guardar las cookies después de cada solicitud
         if ($this->cookieJar !== null){
@@ -887,7 +891,10 @@ class ApiClient
     function download($filepath, $url = null, $body = null, $headers = null, $options = null)
     {   
         $fp = fopen($filepath, 'w+');
-        $ch = curl_init($url ?? $this->url);
+
+        if ($this->curl == null){
+            $this->curl = curl_init($url ?? $this->url);
+        }
    
         $this->setOption(CURLOPT_RETURNTRANSFER, false);
         $this->setOption(CURLOPT_FILE, $fp);
@@ -900,7 +907,7 @@ class ApiClient
             }
         }
 
-        $this->url  = $url;
+        $this->url = $url;
 
         //
         // Sino se aplico nada sobre SSL, vale lo que diga el config
@@ -927,25 +934,25 @@ class ApiClient
         $headers = $headers ?? $this->req_headers ?? null;        
     
         if (!empty($this->options)){
-            foreach ($this->options as $curl_op => $value){
-                curl_setopt($ch, $curl_op, $value);
+            foreach ($this->options as $_op => $value){
+                curl_setopt($this->curl, $_op, $value);
             }    
         }
         
-        curl_exec($ch);
+        curl_exec($this->curl);
 
         // if (!empty($this->header_callback)){
-        //     curl_setopt($ch, CURLOPT_HEADERFUNCTION, $this->header_callback);
+        //     curl_setopt($this->curl, CURLOPT_HEADERFUNCTION, $this->header_callback);
         // }
 
-        $response      = curl_exec($ch);
-        $err_msg       = curl_error($ch);
-        $http_code     = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response      = curl_exec($this->curl);
+        $err_msg       = curl_error($this->curl);
+        $http_code     = (int) curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 
-        $content_type  = curl_getinfo($ch,CURLINFO_CONTENT_TYPE);
-        $effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+        $content_type  = curl_getinfo($this->curl,CURLINFO_CONTENT_TYPE);
+        $effective_url = curl_getinfo($this->curl, CURLINFO_EFFECTIVE_URL);
    
-        curl_close($ch);
+        // curl_close($this->curl);
         fclose($fp);
 
         $this->response      = $response;

@@ -3,6 +3,7 @@
 namespace simplerest\controllers;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Firefox\FirefoxOptions;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 
@@ -15,24 +16,44 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 
     composer require php-webdriver/webdriver
 
-    PODRIA requerir el driver para Java:
+    y correr el driver:
 
-    java -jar selenium-server-standalone-3.141.59.jar
-
-    Luego ver esto:
-
-    https://stackoverflow.com/questions/10792403/how-do-i-get-chrome-working-with-selenium-using-php-webdriver
+    D:\selenium> java -jar .\selenium-server-standalone-3.9.1.jar
+    
 */
-class ScraperTestController 
+class ScraperTestController
 {
-    function __construct(){
-        
-        // Chromedriver (if started using --port=4444 as above)
+
+    function firefox_init()
+    {
+        $host = 'http://localhost:4444/web/hub';
+
+        $capabilities = DesiredCapabilities::firefox();
+
+        $options = new FirefoxOptions();
+
+        $options->addArguments([
+            '--no-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-extensions',
+            '--disable-gpu',
+            // '--headless'
+        ]);
+
+        $capabilities->setCapability(FirefoxOptions::CAPABILITY, $options);
+        $capabilities->setCapability('acceptSslCerts', false);
+
+
+        // Firefox
+        $driver = RemoteWebDriver::create($host, $capabilities);
+    }
+    
+    function chrome_init()
+    {
         $host = 'http://localhost:4444/web/hub';
 
         $capabilities = DesiredCapabilities::chrome();
 
-        // Add arguments via FirefoxOptions to start headless firefox
         $options = new ChromeOptions();
         $options->setExperimentalOption('w3c', false);
 
@@ -51,5 +72,6 @@ class ScraperTestController
         // Chrome
         $driver = RemoteWebDriver::create($host, $capabilities);
     }
+
 }
 
