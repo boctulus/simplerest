@@ -20,5 +20,9 @@ class MyController extends Controller
     function __view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
         parent::__view($view_path, $vars_to_be_passed, self::$default_template, $expiration_time);
     }
+
+    function index(){
+        return __METHOD__;
+    }
 }
 
