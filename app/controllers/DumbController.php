@@ -4,11 +4,11 @@ namespace simplerest\controllers;
 
 use Client;
 use stdClass;
-
 use simplerest\core\Acl;
+
+use simplerest\libs\Foo;
 use simplerest\core\View;
 use simplerest\libs\Cake;
-use simplerest\libs\Foo;
 use simplerest\libs\Foo2;
 use simplerest\libs\Sync;
 use simplerest\core\Model;
@@ -16,31 +16,32 @@ use simplerest\core\Route;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\libs\Reviews;
-
 use simplerest\core\libs\CSS;
-use simplerest\core\libs\Env;
 
+use simplerest\core\libs\Env;
 use simplerest\core\libs\Num;
+
+use simplerest\core\libs\Url;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use simplerest\core\libs\Url;
 use simplerest\core\libs\XML;
 use simplerest\libs\RibiSOAP;
 use simplerest\core\Container;
-
 use simplerest\core\libs\Date;
+
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
-
 use simplerest\core\libs\Time;
-use simplerest\core\libs\Cache;
 
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
 
 use simplerest\core\libs\Utils;
+
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
+use simplerest\core\libs\Cookie;
 use simplerest\core\libs\GitHub;
 use simplerest\core\libs\Logger;
 
@@ -69,15 +70,15 @@ use simplerest\core\libs\Parallex;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\FileCache;
+use simplerest\core\libs\CookieJar;
 
+use simplerest\core\libs\FileCache;
 use simplerest\core\libs\MediaType;
 use simplerest\core\libs\Paginator;
-use simplerest\core\libs\Reflector;
 
+use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
-use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
@@ -91,13 +92,14 @@ use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\LangDetector;
 use simplerest\core\libs\Messurements;
 use Endroid\QrCode\Label\Font\NotoSans;
+use simplerest\core\libs\EasyHTMLTable;
 use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\core\libs\InMemoryCache;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
-use simplerest\controllers\api\Products;
 
+use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
@@ -134,6 +136,7 @@ use simplerest\shortcodes\csv_importer\ImporterShortcode;
 use simplerest\shortcodes\progress_bar\ProgressShortcode;
 use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
+use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
@@ -10010,6 +10013,24 @@ class DumbController extends Controller
         }
     }
 
+    function test_easy_table_1(){
+        $table = new EasyHTMLTable('table' ,'style="background-color: silver"');
+        $table->setHead('th_blue',['name','lastname','age']);        
+        $table->setRows([
+            ['name'=>'John','lastname'=>'Doe','age'=>35],
+            ['name'=>'Ann','lastname'=>'White','age'=>23],
+            ['name'=>'Pablo','lastname'=>'Bozzolo','age'=>41]
+        ]);                
+        
+        $table->addRow(['name'=>'Pepito','lastname'=>'Ferandez','age'=>21]);  
+        $table->addRow(['name'=>'Fulano','lastname'=>'Jimenez','age'=>21, 'id' => 8]);  
+
+        // optional
+        $table->setRowClases(['info','','warning']);    
+        
+        echo $table; 
+    }
+
     function test_wp_login()
     {
         // Define los datos de inicio de sesión
@@ -10021,20 +10042,24 @@ class DumbController extends Controller
             'redirect_to_automatic' => '1'
         ];
 
+        $jar = new CookieJar();
+        
         // Crea una instancia de la clase ApiClient
         $cli = new ApiClient();
+        $cli->useCookieJar();
 
         $cli
         ->followLocations()
         ->withoutStrictSSL();
-    
-        // Establece las cookies utilizando el método setCookies()
-        $cli->setCookies('cookies.txt');
 
         // Realiza la solicitud POST para iniciar sesión
         $cli->post('http://woo5.lan/wp-login.php', $login_data);
 
         $res = $cli->getResponse(false);
+
+        dd($jar->getCookies(), 'COOKIES');
+
+        ////////////// SIGUENTE SOLICITUD HTTP >>>>
 
         // Verifica si la solicitud fue exitosa (código de estado 200)
         if ($res['http_code'] === 200 || $res['http_code'] === 301 || $res['http_code'] === 302) {
@@ -10050,8 +10075,13 @@ class DumbController extends Controller
             exit;
         }
 
-        // Ahora, puedes realizar una solicitud GET para acceder a la página de la cuenta
-        $page_login = $cli->get('http://woo5.lan/my-account/')->getResponse(false);
+        // Sigo navegando,....
+
+        $cli->setUrl('http://woo5.lan/my-account/');
+
+        $page_login = $cli
+        ->get()
+        ->getResponse(false);
 
         // Verifica si la solicitud de la página de la cuenta fue exitosa
         if ($page_login['http_code'] === 200) {
@@ -10064,5 +10094,26 @@ class DumbController extends Controller
         }
     }
 
+    function test_cookies_set(){
+        // Crear una cookie que caduque en 60 segundos
+        $caducidad = time() + 10;
+        Cookie::set('idioma', 'es', $caducidad);
+    }
+    
+    function test_cookies_get(){
+        // Obtener el valor de la cookie
+        dd(Cookie::get('idioma'), 'IDIOMA'); // Output: es
+    }
+
+    function test_cookies_get_all(){
+        // Obtener el valor de la cookie
+        dd(Cookie::get(), 'COOKIES'); 
+    }
+    
+    function test_cookies_delete(){
+        // Borrar la cookie
+        Cookie::delete('idioma');
+        dd("COOKIE ELIMINADA");
+    }
 
 }   // end class
