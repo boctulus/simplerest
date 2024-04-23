@@ -73,6 +73,12 @@ class RibiSOAP extends ApiClient
         $res       = $this->getResponse();
         $res_data  = $res['data'] ?? null;
 
+        
+        if ($res['http_code'] == 0){
+            throw new \Exception("CONNECTION ERROR: ". var_export($res));
+        }
+
+
         $res_data  = $data['soap:Envelope']['soap:Body'][$name . 'Response'][$name . 'Result'] ?? $res_data;
 
         if (isset($res_data['soap:Envelope']['soap:Body']['soap:Fault'])){
@@ -82,19 +88,17 @@ class RibiSOAP extends ApiClient
             
             throw new \Exception(var_export($res_data['soap:Envelope']['soap:Body']['soap:Fault']), true);
         }
-        
-        if (!is_string($res_data)){
-            Logger::logError($res_data);
 
-            throw new \Exception("Expected Array. Found: ". gettype($res_data));
-        }
-
-        if (!empty($res_data) && XML::isXML($res_data)){
+        if (!empty($res_data) && is_string($res_data) && XML::isXML($res_data)){
             $res_data = XML::toArray($res_data);            
         }
 
         if (isset($res_data['NewDataSet']['Table'])){
             $res_data = $res_data['NewDataSet']['Table'];
+        }
+
+        if (isset($res_data['soap:Envelope']['soap:Body']["{$name}Response"]["{$name}Result"])){
+            $res_data = $res_data['soap:Envelope']['soap:Body']["{$name}Response"]["{$name}Result"];
         }
 
         return $res_data;
