@@ -140,6 +140,7 @@ use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\core\Response;
 
 class DumbController extends Controller
 {
@@ -7341,15 +7342,31 @@ class DumbController extends Controller
     }
 
 
+    function callbacks()
+    {
+        $input = file_get_contents('php://input');
+
+        if (empty($input)){
+            response()->error("No data received");
+        }
+
+        response()->sendJson([
+            "message" => "Recibido",
+            "data"    => $input
+        ]);
+    }
+
+
     function api_callback()
     {
         /*
             http://test.lan/callback.php
             https://catasto.000webhostapp.com/callback.php
+            https://ticiwe.com/callbacks
+            etc
         */
 
-        $url = 'http://test.lan/callback.php';
-        //$url = 'https://ticiwe.com/callbacks';
+        $url = 'http://simplerest.lan/dumb/callbacks';
 
         $client = new ApiClient($url);
 
@@ -10031,6 +10048,31 @@ class DumbController extends Controller
         echo $table; 
     }
 
+    function test_cookies_set(){
+        // Crear una cookie que caduque en 60 segundos
+        $caducidad = time() + 10;
+        Cookie::set('idioma', 'es', $caducidad);
+    }
+    
+    function test_cookies_get(){
+        // Obtener el valor de la cookie
+        dd(Cookie::get('idioma'), 'IDIOMA'); // Output: es
+    }
+
+    function test_cookies_get_all(){
+        // Obtener el valor de la cookie
+        dd(Cookie::get(), 'COOKIES'); 
+    }
+    
+    function test_cookies_delete(){
+        // Borrar la cookie
+        Cookie::delete('idioma');
+        dd("COOKIE ELIMINADA");
+    }
+
+    /*
+        Logueo y sigo navegando al propaga cookies
+    */
     function test_wp_login()
     {
         // Define los datos de inicio de sesión
@@ -10077,7 +10119,7 @@ class DumbController extends Controller
 
         // Sigo navegando,....
 
-        $cli->setUrl('http://woo5.lan/my-account/');
+        $cli->setUrl('http://woo5.lan/my-account/orders/');
 
         $page_login = $cli
         ->get()
@@ -10087,33 +10129,12 @@ class DumbController extends Controller
         if ($page_login['http_code'] === 200) {
             dd($page_login['data'], 'PAGINA DETRAS DEL LOGIN'); // vuelve a mostrar el form del login !!
 
-            // Aquí puedes procesar la página de la cuenta según sea necesario
-            // Por ejemplo, puedes extraer información o realizar acciones adicionales
+            // Seguir procesando .....
         } else {
             dd("Error al acceder a la página de la cuenta: " . $page_login['error']);
         }
     }
 
-    function test_cookies_set(){
-        // Crear una cookie que caduque en 60 segundos
-        $caducidad = time() + 10;
-        Cookie::set('idioma', 'es', $caducidad);
-    }
-    
-    function test_cookies_get(){
-        // Obtener el valor de la cookie
-        dd(Cookie::get('idioma'), 'IDIOMA'); // Output: es
-    }
 
-    function test_cookies_get_all(){
-        // Obtener el valor de la cookie
-        dd(Cookie::get(), 'COOKIES'); 
-    }
-    
-    function test_cookies_delete(){
-        // Borrar la cookie
-        Cookie::delete('idioma');
-        dd("COOKIE ELIMINADA");
-    }
 
 }   // end class
