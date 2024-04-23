@@ -152,6 +152,7 @@ class RibisoftController extends MyController
     
         // dd($cli->dump(), 'REQ');
     }
+   
 
     function test_soap_erp_req_consultar_vendedores(){
         $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
@@ -170,6 +171,24 @@ class RibisoftController extends MyController
         // dd($cli->dump(), 'REQ');
     }
 
+    function test_soap_erp_req_consultarcliente(){
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+    
+        $cli   = new RibiSOAP($token, $url_base);        
+    
+        $nit   = "1088562365"; // <-- debo conocerlo
+
+        $res   = $cli->consultarcliente($nit);
+        $error = $cli->getError();
+    
+        dd($cli->getStatus(), 'STATUS');
+        dd($error, 'ERROR');
+        // dd($cli->getHeaders(), 'HEADERS');
+        dd($res, 'DATA');
+    
+        // dd($cli->dump(), 'REQ');
+    }
 
     /*
         CREATE(s)
@@ -218,18 +237,18 @@ class RibisoftController extends MyController
         // Ejemplo de parámetros para crear un pedido
         $params = [
             'token' => $token,
-            'numero' => '123456',
+            'numero' => '99999992',  // 1111111119292, cualquier otro numero de pedido
             'fecha' => '2024-04-03',
             'fechaentrega' => '2024-04-10',
-            'nit' => '6042688649',
+            'nit' => '1088562365',
             'observaciones' => 'Test order',
             'idbodega' => '001',
             'detalle' => [
-                ['idreferencia' => '01007', 'cantidad' => '2',  'precio' => '15000', 'descuento' => '0'],
-                ['idreferencia' => '>01001', 'cantidad' => '3', 'precio' => '15000', 'descuento' => '0']
+                ['idreferencia' => '01007', 'cantidad' => '2',  'precio' => '8000', 'descuento' => '0'],
+                ['idreferencia' => '01001', 'cantidad' => '3', 'precio' => '15000', 'descuento' => '0']
             ]
         ];
-    
+
         $res = $cli->crearpedido($params, true);
         $error = $cli->getError();
     
