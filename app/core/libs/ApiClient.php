@@ -287,6 +287,16 @@ class ApiClient
         return $this;
     }
 
+    function setOptions($options){
+        if (!empty($this->options) && !empty($options)){
+            $this->options = array_merge($this->options, $options);
+        } else {
+            $this->options = $options ?? $this->options ?? null;
+        }
+
+        return $this;
+    }
+
     // redirect
     function followLocations($max_redirs = 10){
         $this->options[CURLOPT_FOLLOWLOCATION] = ($max_redirs > 0);
@@ -516,7 +526,15 @@ class ApiClient
             }
         }
 
+        if ($encode_body && is_array($data)){
+            $data = json_encode($data);
+        } 
+
         $http_verb  = strtoupper($http_verb);
+
+        if ($this->curl == null){
+            $this->curl = curl_init($url ?? $this->url);
+        }
 
         if ($http_verb != 'GET' && !empty($data)){
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
@@ -589,11 +607,11 @@ class ApiClient
         $content_type  = curl_getinfo($this->curl,CURLINFO_CONTENT_TYPE);
         $effective_url = curl_getinfo($this->curl, CURLINFO_EFFECTIVE_URL);
 
-        // Obtener información sobre las cookies antes de cerrar la sesión cURL
-        $cookie_info   = curl_getinfo($this->curl, CURLINFO_COOKIELIST);
-
         // Guardar las cookies después de cada solicitud
         if ($this->cookieJar !== null){
+            // Obtener información sobre las cookies antes de cerrar la sesión cURL
+            $cookie_info   = curl_getinfo($this->curl, CURLINFO_COOKIELIST);
+
             $this->cookieJar->saveCookies($cookie_info);
         }
             
