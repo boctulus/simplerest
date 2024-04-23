@@ -2,76 +2,48 @@
 
 namespace simplerest\controllers;
 
-use Facebook\WebDriver\Chrome\ChromeOptions;
-use Facebook\WebDriver\Firefox\FirefoxOptions;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\Remote\DesiredCapabilities;
+use simplerest\controllers\MyController;
+use Symfony\Component\DomCrawler\Crawler;
 
 /*
-    DE MOMENTO NO ME ESTA FUNCIONANDO CON PHP
+    Dependencia:
 
-    https://github.com/php-webdriver/php-webdriver
-
-    Install:
-
-    composer require php-webdriver/webdriver
-
-    y correr el driver:
-
-    D:\selenium> java -jar .\selenium-server-standalone-3.9.1.jar
-    
+    composer require symfony/dom-crawler
 */
-class ScraperTestController
+class ScraperTestController extends MyController
 {
-
-    function firefox_init()
-    {
-        $host = 'http://localhost:4444/web/hub';
-
-        $capabilities = DesiredCapabilities::firefox();
-
-        $options = new FirefoxOptions();
-
-        $options->addArguments([
-            '--no-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-extensions',
-            '--disable-gpu',
-            // '--headless'
-        ]);
-
-        $capabilities->setCapability(FirefoxOptions::CAPABILITY, $options);
-        $capabilities->setCapability('acceptSslCerts', false);
-
-
-        // Firefox
-        $driver = RemoteWebDriver::create($host, $capabilities);
-    }
-    
-    function chrome_init()
-    {
-        $host = 'http://localhost:4444/web/hub';
-
-        $capabilities = DesiredCapabilities::chrome();
-
-        $options = new ChromeOptions();
-        $options->setExperimentalOption('w3c', false);
-
-        $options->addArguments([
-            '--no-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-extensions',
-            '--disable-gpu',
-            // '--headless'
-        ]);
-
-        $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
-        $capabilities->setCapability('acceptSslCerts', false);
-
-
-        // Chrome
-        $driver = RemoteWebDriver::create($host, $capabilities);
+    function index(){
+        $this->scrape();
     }
 
+    function scrape()
+    {
+        // Tu HTML de ejemplo
+        $html = '
+        <tr class="woocommerce-orders-table__row woocommerce-orders-table__row--status-processing order">
+            <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-number" data-title="Pedido">
+                <a href="http://woo5.lan/my-account/view-order/923/">#923</a>
+            </td>
+            <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-number" data-title="Pedido">
+                <a href="http://woo5.lan/my-account/view-order/924/">#924</a>
+            </td>
+            <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-number" data-title="Pedido">
+                <a href="http://woo5.lan/my-account/view-order/925/">#925</a>
+            </td>
+        </tr>';
+
+        // Crear una instancia de Crawler
+        $crawler = new Crawler($html);
+
+        // Obtener todos los números de orden
+        $orders = $crawler->filter('td.woocommerce-orders-table__cell-order-number a')->each(function (Crawler $node, $i) {
+            return $node->text();
+        });
+
+        // Imprimir los números de orden
+        foreach ($orders as $order) {
+            echo $order . "\n";
+        }           
+    }
 }
 
