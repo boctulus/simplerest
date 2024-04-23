@@ -201,7 +201,7 @@ class RibisoftController extends MyController
         );
 
         $res = $cli->crearcliente($params);
-        $error = $cli->error();
+        $error = $cli->getError();
     
         dd($cli->getStatus(), 'STATUS');
         dd($error, 'ERROR');
@@ -221,16 +221,16 @@ class RibisoftController extends MyController
             'numero' => '123456',
             'fecha' => '2024-04-03',
             'fechaentrega' => '2024-04-10',
-            'nit' => '123456789',
+            'nit' => '6042688649',
             'observaciones' => 'Test order',
             'idbodega' => '001',
             'detalle' => [
-                ['idreferencia' => '1', 'cantidad' => '2', 'precio' => '10', 'descuento' => '0'],
-                ['idreferencia' => '2', 'cantidad' => '3', 'precio' => '15', 'descuento' => '0']
+                ['idreferencia' => '01007', 'cantidad' => '2',  'precio' => '15000', 'descuento' => '0'],
+                ['idreferencia' => '>01001', 'cantidad' => '3', 'precio' => '15000', 'descuento' => '0']
             ]
         ];
     
-        $res = $cli->crearpedido($params);
+        $res = $cli->crearpedido($params, true);
         $error = $cli->getError();
     
         dd($cli->getStatus(), 'STATUS');
