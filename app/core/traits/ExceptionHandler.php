@@ -3,6 +3,7 @@
 namespace simplerest\core\traits;
 
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Url;
 
 trait ExceptionHandler
 {
@@ -21,7 +22,8 @@ trait ExceptionHandler
 
         $config    = config();
        
-        if ($config['debug']){
+        $backtrace = null;
+        if ($config['debug']) {
             $e      = new \Exception();
             $traces = $e->getTrace();
 
@@ -60,12 +62,28 @@ trait ExceptionHandler
             } else{
                 log_error("Error: $error_msg");
             }
+        } 
 
+        if (is_cli()){
+            dd($traces, $error_msg);   
+            exit(1);
+        }
+
+        // O.... si se solicita salida como JSON en header "Accept"
+        if (Url::isPostmanOrInsomnia()){
             error($error_msg, 500, $backtrace);
-        } else {
-            error($error_msg, 500);
+            exit(1);
         }
         
+        view('error.php', [
+            'status'    => 500,
+            'type'      => 'Exception',
+            'code'      => $traces[0]['args'][0]['code'] ?? '',
+            'location'  => $traces[0]['args'][0]['file'] . ':'. $traces[0]['args'][0]['line'], 
+            'message'   => $traces[0]['args'][0]['message'] ?? '',
+            'detail'    => $traces[0]['args'][0]['trace'] ?? '',
+        ], 'templates\tpl_bt5.php');
+
         exit(1);
     }
     
