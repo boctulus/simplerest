@@ -118,9 +118,12 @@ class Response
         return static::getInstance();
     }
 
-    protected function do_encode($data){       
+    protected function do_encode($data)
+    {       
+        header('Content-type:application/json;charset=utf-8');
+
         $options = static::$pretty ? static::$options | JSON_PRETTY_PRINT : static::$pretty;
-            
+        
         return json_encode($data, $options);  
     }
 
@@ -362,25 +365,21 @@ class Response
         if (isset(static::$data['error']) && !empty(static::$data['error'])){
             // print_r('*'); // *
 
-            // if (!$cli){
-            //     view('error.php', [
-            //         'status'    => static::$http_code,
-            //         'type'      => static::$data['error']['type'],
-            //         'code'      => static::$data['error']['code'],
-            //         'location'  => static::$data['error']['location'] ?? '',
-            //         'message'   => static::$data['error']['message'] ?? '',
-            //         'detail'    => static::$data['error']['detail'] ?? '',
-            //     ], 'templates\tpl_basic.php');
+            $message  = static::$data['error']['message'] ?? '--';
+            $type     = static::$data['error']['type'] ?? '--';
+            $code     = static::$data['error']['code'] ?? '--';
+            $detail   = static::$data['error']['detail'] ?? '--';
+            $location = static::$data['error']['location'] ?? '--';
 
-            // } else {
-                $message  = static::$data['error']['message'] ?? '--';
-                $type     = static::$data['error']['type'] ?? '--';
-                $code     = static::$data['error']['code'] ?? '--';
-                $detail   = static::$data['error']['detail'] ?? '--';
-                $location = static::$data['error']['location'] ?? '--';
+            if (is_array($detail)){
+                $detail = json_encode($detail);
+            }
 
+            if (is_array($detail) || !self::$to_be_encoded){
+                echo $this->do_encode(static::$data['error']);
+            } else {
                 echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;
-            //}
+            }
             
         } else {
             if (is_array(static::$data) && !self::$to_be_encoded){
