@@ -9,6 +9,7 @@ use Symfony\Component\DomCrawler\Crawler;
     Dependencia:
 
     composer require symfony/dom-crawler
+    composer require symfony/css-selector
 */
 class ScraperTestController extends MyController
 {
@@ -42,7 +43,7 @@ class ScraperTestController extends MyController
 
         // Imprimir los números de orden
         foreach ($orders as $order) {
-            echo $order . "\n";
+           dd($order);
         }           
     }
 }
