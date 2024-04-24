@@ -190,6 +190,24 @@ class RibisoftController extends MyController
         // dd($cli->dump(), 'REQ');
     }
 
+    function test_soap_erp_req_consultarclientes(){  // LISTAR
+        $token    = 'b3d748f3-9238-465a-b748-9811d5b7a545';
+        $url_base = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
+    
+        $cli   = new RibiSOAP($token, $url_base);        
+    
+
+        $res   = $cli->consultarclientes();
+        $error = $cli->getError();
+    
+        dd($cli->getStatus(), 'STATUS');
+        dd($error, 'ERROR');
+        // dd($cli->getHeaders(), 'HEADERS');
+        dd($res, 'DATA');
+    
+        // dd($cli->dump(), 'REQ');
+    }
+
     /*
         CREATE(s)
     */
@@ -206,11 +224,11 @@ class RibisoftController extends MyController
         $params = array(
             'token' => $token,
             'nit' => '6042688649',
-            'tipodocumento' => 'NIT',
-            'tiporegimen' => 'RS', // Regimen Simplificado
+            'tipodocumento' => 'NIT', 
+            'tiporegimen' => 'RS', // <----------------------------- usar MAESTRO
             'nombres' => 'Tal Cual Restaurante S A S',
-            'iddepartamento' => '1',
-            'idciudad' => '1',
+            'iddepartamento' => '05',  // <----------------------------- usar MAESTRO
+            'idciudad' => '001', // <----------------------------- usar MAESTRO
             'direccion' => 'Calle 123',
             'telefono' => '1234567',
             'celular' => '987654321',
@@ -237,10 +255,10 @@ class RibisoftController extends MyController
         // Ejemplo de parámetros para crear un pedido
         $params = [
             'token' => $token,
-            'numero' => '99999992',  // 1111111119292, cualquier otro numero de pedido
+            'numero' => '99999997',  // 1111111119292, cualquier otro numero de pedido
             'fecha' => '2024-04-03',
             'fechaentrega' => '2024-04-10',
-            'nit' => '1088562365',
+            'nit' => '6042688649',
             'observaciones' => 'Test order',
             'idbodega' => '001',
             'detalle' => [

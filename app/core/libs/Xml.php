@@ -8,12 +8,16 @@ require_once __DIR__ . '/../../../vendor/composer/InstalledVersions.php';
 
 class XML
 {
-    static function isXML(string $str) 
+    static function isXML(string $str, bool $fast_check = false) 
     {
         $str = trim($str);
 
         if ((substr($str, 0, 1) != '<') || substr($str, -1) !== '>'){
             return false;
+        }
+
+        if ($fast_check){
+            return true;
         }
 
         // Habilitar el uso de errores internos de libxml
