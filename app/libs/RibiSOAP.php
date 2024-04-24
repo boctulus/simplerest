@@ -18,17 +18,18 @@ class RibiSOAP extends ApiClient
     protected $base_url   = 'http://ribifacturaelectronica.com:380/EASYPODSTEST/ribiservice.asmx?wsdl';
 
     protected $allowed_op = [
-        "consultarinventario",
+        "consultarinventario", // listar
+        "consultarclientes",   // listar
+        "consultarproductos",  // listar
+        "consultardepartamentos", // listar
+        "consultarciudades",  // listar
+        "consultargrupos",    // listar
+        "consultartiposdocumento",  // listar
+        "consultarvendedores", // listar
+        "consultartiposregimen",  // listar
         "consultarcliente",
         "crearpedido",
-        "consultarproductos",
-        "consultardepartamentos",
-        "consultarciudades",
-        "consultargrupos",
-        "consultartiposdocumento",
-        "consultarvendedores",
         "crearcliente",
-        "consultartiposregimen", 
     ];
 
     function __construct($token, $base_url = null, $cache_exp_t = null) {
@@ -89,16 +90,20 @@ class RibiSOAP extends ApiClient
             throw new \Exception(var_export($res_data['soap:Envelope']['soap:Body']['soap:Fault']), true);
         }
 
-        if (!empty($res_data) && is_string($res_data) && XML::isXML($res_data)){
+        if (!empty($res_data) && is_string($res_data) && XML::isXML($res_data, true)){
+            $res_data = XML::toArray($res_data);            
+        }
+
+        if (isset($res_data['soap:Envelope']['soap:Body']["{$name}Response"]["{$name}Result"])){
+            $res_data = $res_data['soap:Envelope']['soap:Body']["{$name}Response"]["{$name}Result"];
+        }
+
+        if (!empty($res_data) && is_string($res_data) && XML::isXML($res_data, true)){
             $res_data = XML::toArray($res_data);            
         }
 
         if (isset($res_data['NewDataSet']['Table'])){
             $res_data = $res_data['NewDataSet']['Table'];
-        }
-
-        if (isset($res_data['soap:Envelope']['soap:Body']["{$name}Response"]["{$name}Result"])){
-            $res_data = $res_data['soap:Envelope']['soap:Body']["{$name}Response"]["{$name}Result"];
         }
 
         return $res_data;
@@ -173,6 +178,29 @@ class RibiSOAP extends ApiClient
 
         return $this->op($method, $data);
     }  
+
+    // LISTAR
+    function consultarclientes()
+    {
+        // if (!NITColombiaValidator::isValid($nit, true)) {
+        //     throw new \InvalidArgumentException("NIT no válido");
+        // }
+
+        $method = 'consultarclientes';
+        $token  = $this->token;
+    
+        // Construir el cuerpo de la solicitud SOAP
+        $data = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:loc=\"http://localhost/\">
+           <soapenv:Header/>
+           <soapenv:Body>
+              <loc:$method>
+                 <loc:token>$token</loc:token>
+              </loc:$method>
+           </soapenv:Body>
+        </soapenv:Envelope>";
+    
+        return $this->op($method, $data);
+    }    
 
     // OK
     function consultarcliente($nit)
@@ -354,11 +382,11 @@ class RibiSOAP extends ApiClient
             throw new InvalidValidationException(json_encode($validator->getErrors()));
         }
 
-        if ($validate_nit && $params['tipodocumento'] == 'NIT'){
-            if (!NITColombiaValidator::isValid($params['nit'], true)) {
-                throw new \InvalidArgumentException("NIT no válido");
-            }
-        }
+        // if ($validate_nit && $params['tipodocumento'] == 'NIT'){
+        //     if (!NITColombiaValidator::isValid($params['nit'], true)) {
+        //         throw new \InvalidArgumentException("NIT no válido");
+        //     }
+        // }
       
         $params['token'] = $this->token;
 
