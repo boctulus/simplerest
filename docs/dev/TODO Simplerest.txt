@@ -2866,7 +2866,7 @@ Usaria Client de Guzzle en vez de ApiClient
   
   $response = $client->request('GET', 'ip');
   
-  echo $response->getStatusCOde(), "<br>";
+  echo $response->getStatusCode(), "<br>";
   $body = $response->getBody();
   echo $body->getContents(), "<br>";
   
