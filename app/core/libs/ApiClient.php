@@ -63,6 +63,7 @@ class ApiClient
     protected $req_headers;
     protected $options = [];
     protected $body;
+    protected $req_body;
     protected $encode_body;
     protected $max_retries = 1;
     protected $cert_ssl  = null;
@@ -492,7 +493,7 @@ class ApiClient
         return $this->setSSLCrt($cert_path);
     }
 
-    function consumeAPI(string $url, string $http_verb, $data = null, ?Array $headers = null, ?Array $options = null, $decode = true, $encode_body = true)
+    function consumeAPI(string $url, string $http_verb, $data = null, $headers = null, $options = null, $decode = true, $encode_body = true)
     {
         if (!extension_loaded('curl'))
 		{
@@ -650,7 +651,7 @@ class ApiClient
         return $this->effective_url;
     }
 
-    function request(string $url, string $http_verb, $body = null, ?Array $headers = null, ?Array $options = null){
+    function request(string $url, string $http_verb, $body = null, $headers = null, $options = null){
         static $access;
         
         if (isset(config()['sleep_time'])){
@@ -675,8 +676,10 @@ class ApiClient
             }
         }
 
-        $this->url  = $url;
-        $this->verb = strtoupper($http_verb);
+        $this->url      = $url;
+        $this->verb     = strtoupper($http_verb);
+
+        $this->req_body = $body;
         
         //
         // Sino se aplico nada sobre SSL, vale lo que diga el config
@@ -816,7 +819,7 @@ class ApiClient
         return $this;
     }
 
-    function get($url = null, ?Array $headers = null, ?Array $options = null){    
+    function get($url = null, $headers = null, $options = null){    
         $url = $this->url ?? $url;
 
         if ($url === null){
@@ -826,7 +829,7 @@ class ApiClient
         return $this->request($url, 'GET', null, $headers, $options);
     }
 
-    function delete($url = null, ?Array $headers = null, ?Array $options = null){
+    function delete($url = null, $headers = null, $options = null){
         $url = $this->url ?? $url;
 
         if ($url === null){
@@ -836,7 +839,7 @@ class ApiClient
         return $this->request($url, 'DELETE', null, $headers, $options);
     }
 
-    function post($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+    function post($url = null, $body = null, $headers = null, $options = null){
         $url  = $this->url ?? $url;
         $body = $body      ?? $this->body ?? null;
 
@@ -847,7 +850,7 @@ class ApiClient
         return $this->request($url, 'POST', $body, $headers, $options);
     }
 
-    function put($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+    function put($url = null, $body = null, $headers = null, $options = null){
         $url = $this->url ?? $url;
 
         if ($url === null){
@@ -857,7 +860,7 @@ class ApiClient
         return $this->request($url, 'PUT', $body, $headers, $options);
     }
 
-    function patch($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+    function patch($url = null, $body = null, $headers = null, $options = null){
         $url = $this->url ?? $url;
 
         if ($url === null){
@@ -878,7 +881,7 @@ class ApiClient
         return $this;
     }
 
-    function send($url = null, $body = null, ?Array $headers = null, ?Array $options = null){
+    function send($url = null, $body = null, $headers = null, $options = null){
         return $this->request($url ?? $this->url, $this->verb, $body, $headers, $options);
     }
 
@@ -1021,7 +1024,13 @@ class ApiClient
             throw new \Exception("Undefined URL");
         }
 
-        return FileCache::getCachePath($this->url);
+        $input = $this->url;
+
+        if ($this->cache_post_request && $this->verb == 'POST'){
+            $input .= "+body={$this->req_body}";
+        }
+
+        return FileCache::getCachePath($input);
     }
 
 	protected function saveResponse(Array $response){
