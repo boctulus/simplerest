@@ -7,8 +7,56 @@ use simplerest\core\libs\ApiClient;
 
 class Url
 {
+    /*
+     * Determines the boolean value of a query parameter.
+     *
+     * This function checks if a query parameter exists and evaluates its boolean value.
+     * It accepts a key corresponding to the query parameter name and an optional default value.
+     * The function returns true if the parameter value is 'on', 'yes', or '1',
+     * false if the parameter value is 'off', 'no', or '0', and the default value otherwise.
+     *
+     * @param string $key The name of the query parameter to check.
+     * @param bool $default (optional) The default value to return if the parameter is not set. Default is false.
+     * @return bool The boolean value of the query parameter.
+     *
+     * 
+        Ej:
+
+        $sku          = ['01004','17', '001', '01006'];
+        $sync_categos = Url::boolOption('C');
+        $inventory    = Url::boolOption('I');
+
+        try {
+            Sync::init($sync_categos, $sku ?? null, $inventory);
+        } catch (\Exception $e){
+            Logger::logError($e);
+        }
+     */
+    static function boolOption(string $key, bool $default = false){
+        if (!isset($_GET[$key])){
+            return $default;
+        }
+
+        $val = strtolower($_GET[$key]);
+
+        if (in_array($val, ['on', 'yes', '1'])){
+            return true;
+        }
+
+        if (in_array($val, ['off', 'no', '0'])){
+            return false;
+        }
+
+        return $default;
+    }
+
     static function validate(string $url){
         return filter_var($url, FILTER_VALIDATE_URL);
+    }
+
+    // Alias
+    static function isValid(string $url){
+        return static::validate($url);
     }
 
     static function validateOrFail(string $url){
@@ -27,16 +75,6 @@ class Url
             }
         }
         return false;
-    }
-
-
-    /*
-        Cheque si es una URL
-
-        El chequeo es estricto
-    */
-    static function isValid(string $url){
-        return filter_var($url, FILTER_VALIDATE_URL) != false;
     }
 
     static function getHeaders($url, bool $verify_ssl = true)
@@ -623,7 +661,7 @@ class Url
             CURLOPT_VERBOSE   => true
         ], $options);
 
-        $client->addOptions([
+        $client->setOptions([
             $options
         ]);
 
