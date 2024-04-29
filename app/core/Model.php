@@ -3870,7 +3870,7 @@ class Model {
 		if (Strings::match($st, "/(SELECT)[ ]/i")){
 			$tb = Strings::match($st, "/FROM[ ]+`?([^\b^`^ ]+)`?/i");
 
-			if (!empty($tb)){
+			if (!Strings::startsWith('information_schema.tables', $tb) && !empty($tb)){
 				$st = preg_replace("/FROM[ ]+`$tb`/i", "FROM `$tb_prefix{$tb}`", $st);
 				$st = preg_replace("/FROM[ ]+$tb/i", "FROM $tb_prefix{$tb}", $st);
 			}

@@ -101,7 +101,14 @@ class ApiClient
 
     // Extras
     protected $query_params = [];
+    protected $debug   =  false;
+    protected $show_req = false;
+    protected $show_res = false;
 
+
+    function showRequest(){
+        $this->show_req = true;
+    }
 
     function getResource(){
         return $this->curl;
@@ -110,7 +117,6 @@ class ApiClient
     function close(){
         curl_close($this->curl);
     }
-
 
     function logReq($log_file  = 'req.txt'){
         if ($log_file === true  ||  $log_file === 1){
@@ -181,6 +187,7 @@ class ApiClient
             'encode_body' => $this->encode_body,
             'max_retries' => $this->max_retries,
             'ssl'         => $this->cert_ssl,
+            'cache_path'  => $this->getCachePath()
         ];
     }
 
@@ -195,6 +202,10 @@ class ApiClient
         $this->cert_ssl    = $args['ssl'];
 
         return $this->request($this->url, $this->verb, $this->body, $this->req_headers, $this->options);
+    }
+
+    function debug(){
+        $this->debug = true;
     }
 
     function setUrl($url){
@@ -654,9 +665,9 @@ class ApiClient
     function request(string $url, string $http_verb, $body = null, $headers = null, $options = null){
         static $access;
         
-        if (isset(config()['sleep_time'])){
-            $domain = Url::getHostname($url);
+        $domain = Url::getHostname($url);
 
+        if (isset(Config::get()['sleep_time'])){
             if ($access === null){
                 $access = [
                     $domain => time()
@@ -685,7 +696,7 @@ class ApiClient
         // Sino se aplico nada sobre SSL, vale lo que diga el config
         // 
         if (!$this->cert_ssl){    
-            $cert = config()['ssl_cert'];
+            $cert = Config::get()['ssl_cert'];
             
             if ($cert === false){
                 $this->disableSSL();
@@ -703,7 +714,10 @@ class ApiClient
         }
 
         $body    = $body    ?? $this->body    ?? null;
-        $headers = $headers ?? $this->req_headers ?? null;        
+        $headers = $headers ?? $this->req_headers ?? null;    
+        
+        // Para dump()
+        $this->body = $body;
     
         if ($this->expiration == null){
             $expired = true;
@@ -716,6 +730,12 @@ class ApiClient
 
         if ($this->log_req){
             Logger::{$this->logger_fn}(static::dump(), $this->log_req);
+        }
+
+        if ($this->show_req){
+            dd(
+                $this->dump()
+            );
         }
 
         if (!$expired){
@@ -746,7 +766,7 @@ class ApiClient
             }
         }
 
-        if (isset(config()['sleep_time'])){
+        if (isset(Config::get()['sleep_time'])){
             /*
                 Solo si se ha solicitado antes (en principio en el mismo request),
                 hago la pausa
@@ -758,7 +778,7 @@ class ApiClient
                 solicitud http a ese dominio
             */
             if ($access[$domain] + 1000000 < microtime()){
-                nap(config()['sleep_time'], true);
+                nap(Config::get()['sleep_time'], true);
             } 
         }
 
@@ -814,7 +834,7 @@ class ApiClient
 
         if ($this->expiration && $res !== null && !$this->read_only && ($status_code >=200 && $status_code < 400)) {
             $this->saveResponse($res);
-        }
+        }       
 
         return $this;
     }
@@ -934,7 +954,7 @@ class ApiClient
         // Sino se aplico nada sobre SSL, vale lo que diga el config
         // 
         if (!$this->cert_ssl){    
-            $cert = config()['ssl_cert'];
+            $cert = Config::get()['ssl_cert'];
             
             if ($cert === false){
                 $this->disableSSL();
@@ -1030,7 +1050,13 @@ class ApiClient
             $input .= "+body={$this->req_body}";
         }
 
-        return FileCache::getCachePath($input);
+        $full_path = FileCache::getCachePath($input);
+
+        if ($this->debug){
+            Logger::log($full_path, 'CACHE-PATH');
+        }
+
+        return $full_path;
     }
 
 	protected function saveResponse(Array $response){
