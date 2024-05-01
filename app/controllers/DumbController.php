@@ -10098,7 +10098,11 @@ class DumbController extends Controller
         ->withoutStrictSSL();
 
         // Realiza la solicitud POST para iniciar sesión
-        $cli->post("{$login_data['site_url']}/{$login_data['login_page']}", $login_data);
+        $cli->post("{$login_data['site_url']}/{$login_data['login_page']}", [
+            'log'        => $login_data['log'],
+            'pwd'        => $login_data['pwd'],
+            'rememberme' => $login_data['rememberme']
+        ]);
 
         $res = $cli->getResponse(false);
 
