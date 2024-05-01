@@ -10075,27 +10075,30 @@ class DumbController extends Controller
     */
     function wp_login_test()
     {
-        // Define los datos de inicio de sesión
         $login_data = [
+            'site_url'   => 'http://woo5.lan',
+            'login_page' => 'wp-login.php',
             'log' => 'boctulus',
             'pwd' => '!0EJEbwu)Oa!3Fd&ev',
             'rememberme' => 'forever',
-            'redirect_to' => 'http://woo5.lan/my-account/', // Redirecciona a la página de la cuenta después del inicio de sesión
+            'redirect_to' => 'http://woo5.lan/my-account/',
             'redirect_to_automatic' => '1'
         ];
 
-        $jar = new CookieJar();
+        $jar = new CookieJar('woo5.lan-cookies.txt');
         
         // Crea una instancia de la clase ApiClient
-        $cli = new ApiClient();
-        $cli->useCookieJar();
+        $cli = ApiClient::instance()
+        ->setUserAgent(ApiClient::USER_AG_FIREFOX);
+
+        $cli->useCookieJar($jar);
 
         $cli
         ->followLocations()
         ->withoutStrictSSL();
 
         // Realiza la solicitud POST para iniciar sesión
-        $cli->post('http://woo5.lan/wp-login.php', $login_data);
+        $cli->post("{$login_data['site_url']}/{$login_data['login_page']}", $login_data);
 
         $res = $cli->getResponse(false);
 
@@ -10119,7 +10122,7 @@ class DumbController extends Controller
 
         // Sigo navegando,....
 
-        $cli->setUrl('http://woo5.lan/my-account/orders/');
+        $cli->setUrl("{$login_data['site_url']}/my-account/edit-address/");
 
         $page_login = $cli
         ->get()
@@ -10133,6 +10136,80 @@ class DumbController extends Controller
         } else {
             dd("Error al acceder a la página de la cuenta: " . $page_login['error']);
         }
+    }
+
+
+    function wp_login_test_2()
+    {
+        $login_data = [
+            'site_url' => 'https://torrepadregourmet.es',
+            'login_page' => 'wp-login.php',
+            'log' => 'pablo@tiendaonline.com.ar',
+            'pwd' => 'pablo123$=Nn',
+            'rememberme' => 'forever',
+            'redirect_to' => 'https://torrepadregourmet.es/my-account/', 
+            'redirect_to_automatic' => '1'
+        ];
+
+        $jar = new CookieJar('cookies-torrepadregourmet.es.txt');
+        
+        // Crea una instancia de la clase ApiClient
+        $cli = ApiClient::instance()
+        ->setUserAgent(ApiClient::USER_AG_FIREFOX);
+
+        $cli->useCookieJar($jar);
+
+        $cli
+        ->followLocations()
+        ->withoutStrictSSL();
+
+        // Realiza la solicitud POST para iniciar sesión
+        $cli->post("{$login_data['site_url']}/{$login_data['login_page']}", $login_data);
+
+        $res = $cli->getResponse(false);
+
+        dd($jar->getCookies(), 'COOKIES');
+
+        ////////////// SIGUENTE SOLICITUD HTTP >>>>
+
+        // Verifica si la solicitud fue exitosa (código de estado 200)
+        if ($res['http_code'] === 200 || $res['http_code'] === 301 || $res['http_code'] === 302) {
+            dd("Inicio de sesión exitoso.");
+        } else {
+            dd("Error al iniciar sesión: ");
+
+            dd($cli->getStatus(), 'STATUS');
+            dd($cli->getError(), 'ERROR');
+            dd($cli->getResponse(), 'RES');
+            dd($cli->getHeaders(), 'HEADERS');
+
+            dd($cli->dump());
+       
+            exit;
+        }
+
+        // Sigo navegando,....
+
+        $cli->setUrl("{$login_data['site_url']}/my-account/orders/");
+
+        $page_login = $cli
+        ->get()
+        ->getResponse(false);
+
+        // Verifica si la solicitud de la página de la cuenta fue exitosa
+        if ($page_login['http_code'] === 200) {
+            dd($page_login['data'], 'PAGINA DETRAS DEL LOGIN'); // vuelve a mostrar el form del login !!
+
+            // Seguir procesando .....
+        } else {
+            dd("Error al acceder a la página de la cuenta: " . $page_login['error']);
+        }
+    }
+
+    function curl_opts(){
+        dd(            
+            Utils::getConstants('curl')
+        );
     }
 
 
