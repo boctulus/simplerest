@@ -10109,6 +10109,8 @@ class DumbController extends Controller
         // Verifica si la solicitud fue exitosa (código de estado 200)
         if ($res['http_code'] === 200 || $res['http_code'] === 301 || $res['http_code'] === 302) {
             dd("Inicio de sesión exitoso.");
+
+            var_export($cli->dump());
         } else {
             dd("Error al iniciar sesión: ");
 
@@ -10206,11 +10208,7 @@ class DumbController extends Controller
         }
     }
 
-    function curl_opts(){
-        dd(            
-            Utils::getConstants('curl')
-        );
-    }
+
 
 
 
