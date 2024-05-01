@@ -3,6 +3,7 @@
 namespace simplerest\core\libs;
 
 use simplerest\core\libs\Url;
+use simplerest\core\libs\Utils;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\FileCache;
 use simplerest\core\libs\Memoization;
@@ -176,13 +177,18 @@ class ApiClient
             }
         }
     }
+    function dump()
+    {
+        $options = [];
+        foreach ($this->options as $op => $val){   
+            $options[Utils::getConstantName($op, 'curl')] = $val;
+        }
 
-    function dump(){
         return [
             'url'         => $this->url,
             'verb'        => $this->verb,
             'headers'     => $this->req_headers,
-            'options'     => $this->options,
+            'options'     => $options,
             'body'        => $this->body,
             'encode_body' => $this->encode_body,
             'max_retries' => $this->max_retries,
@@ -224,8 +230,8 @@ class ApiClient
         $this->curl = curl_init();
     }
 
-    function useCookieJar(){
-        $this->cookieJar = new CookieJar();
+    function useCookieJar(CookieJar $jar){
+        $this->cookieJar = $jar;
     }
     
 	public function setCookieOptions($params = array())
