@@ -15,5 +15,17 @@ class Utils
 
         return $default_value;
     }
+
+    /*
+        Ej:
+
+        $const_name = Utils::getConstants(10018, 'curl');  // CURLOPT_USERAGENT
+    */
+    static function getConstantName(int $value, string $domain){
+        $constants = get_defined_constants(true)[$domain];
+        $name      = array_search($value, $constants, TRUE);  
+
+        return $name;
+    }
 }
 
