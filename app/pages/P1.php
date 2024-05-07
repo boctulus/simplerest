@@ -4,7 +4,7 @@ namespace simplerest\pages\admin;
 
 use simplerest\pages\Page;
 
-class __NANE__ extends Page
+class __NAME__ extends Page
 {
     public $tpl_params = [
         'title'      => 'The Page Title',

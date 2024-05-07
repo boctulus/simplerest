@@ -4,9 +4,8 @@ namespace simplerest\controllers;
 
 use Client;
 use stdClass;
-use simplerest\core\Acl;
-
 use simplerest\libs\Foo;
+
 use simplerest\core\View;
 use simplerest\libs\Cake;
 use simplerest\libs\Foo2;
@@ -17,15 +16,16 @@ use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\libs\Reviews;
 use simplerest\core\libs\CSS;
-
 use simplerest\core\libs\Env;
-use simplerest\core\libs\Num;
 
+use simplerest\core\libs\Num;
 use simplerest\core\libs\Url;
+
+use simplerest\core\libs\XML;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use simplerest\core\libs\XML;
+use simplerest\core\Response;
 use simplerest\libs\RibiSOAP;
 use simplerest\core\Container;
 use simplerest\core\libs\Date;
@@ -79,11 +79,12 @@ use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
+use simplerest\core\libs\DomCrawler;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
-use simplerest\core\libs\ZipManager;
 
+use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\Memoization;
@@ -97,8 +98,8 @@ use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\core\libs\InMemoryCache;
 use simplerest\libs\scrapers\Curiosite;
-use simplerest\models\az\ProductsModel;
 
+use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
 use simplerest\core\libs\i18n\Translate;
@@ -111,6 +112,7 @@ use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\RandomGenerator;
 use simplerest\core\libs\ValidationRules;
 use simplerest\libs\NITColombiaValidator;
+use Symfony\Component\DomCrawler\Crawler;
 use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\libs\HtmlBuilder\Form;
@@ -140,7 +142,7 @@ use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\core\Response;
+use simplerest\core\libs\StatoScraper;
 
 class DumbController extends Controller
 {
@@ -4161,7 +4163,7 @@ class DumbController extends Controller
             ->forceDelete();
     }
 
-    function get_products_no_filter()
+    function get_products_no_get()
     {
         $m = DB::table('products');
         $cnt = $m->count();
@@ -10212,6 +10214,16 @@ class DumbController extends Controller
         }
     }
 
+    
+    function test_dom_crawler(){
+        $url = 'https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/';
+
+        // 30 dias
+        StatoScraper::setup($url, 3600 * 24 * 30);
+        
+        dd(StatoScraper::getProduct('?ObjectPath=/Shops/63993920/Products/dtvp1153x2'));
+
+    }
 
 
 

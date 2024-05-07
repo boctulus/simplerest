@@ -10,14 +10,15 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
+use simplerest\core\libs\ProductScraper;
 
 /*
-    Ya solo es posible scrapearlo con "Selenium"
+    Ya solo es posible scrapearlo con "Web Driver"
 
     Response: "Please enable JS and disable any ad blocker"
 */
 
-class LeroyMerlinScraper 
+class LeroyMerlinScraper extends ProductScraper
 {    
     static function getProduct(string $ori){
         if (Strings::startsWith('http', $ori)){
