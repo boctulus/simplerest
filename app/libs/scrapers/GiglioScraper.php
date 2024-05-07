@@ -5,8 +5,9 @@ namespace simplerest\libs\scrapers;
 use simplerest\core\libs\JsonLd;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
+use simplerest\core\libs\ProductScraper;
 
-class GiglioScraper
+class GiglioScraper extends ProductScraper
 {
     function __construct() { }
 
@@ -15,22 +16,6 @@ class GiglioScraper
 
     static function setExpTime($exp_time) {
         self::$exp_time = $exp_time;
-    }
-
-    static function getHTML($url, $exp_time = 21600){
-        $cli = (new ApiClient($url))
-        ->withoutStrictSSL()
-        ->setHeaders([
-            'User-Agent' => 'PostmanRuntime/7.34.0',
-        ])
-        ->redirect()
-        ->cache($exp_time ?? static::$exp_time);
-
-        $cli->setMethod('GET');
-        $cli->send();
-        $res = $cli->data(); // html
-
-        return $res;
     }
 
     ///////////////////////////// PRODUCTO ///////////////////////
@@ -342,7 +327,7 @@ class GiglioScraper
         return $brands;
     }    
 
-    static protected function getCategosList($html) {
+    static function getCategosList(string $html) {
         $main_categos = static::getFirstLevelCategos($html);
 
         $main_categos_ay = [];
@@ -375,7 +360,7 @@ class GiglioScraper
         A los productos no se les debe cambiar el titulo ni categoria ni descripcion
         una vez asignados
     */
-    static protected function getBrandList($html) {
+    static function getBrandList(string $html) {
         $main_categos = static::getFirstLevelCategos($html);
 
         $main_categos_ay = [];
