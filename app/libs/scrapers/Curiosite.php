@@ -6,14 +6,15 @@ use simplerest\core\Model;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Dom;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\XML;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\XML;
+use simplerest\core\libs\ProductScraper;
 
-class Curiosite
+class Curiosite extends ProductScraper
 {
     static function getProduct(string $ori){
         $is_url = false;
