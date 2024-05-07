@@ -5,7 +5,10 @@ namespace simplerest\core\libs;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ProductScraper;
 
-class StatoScraper extends ProductScraper
+/*
+    strato.es
+*/
+class StratoScraper extends ProductScraper
 {
     public static function getProduct(string $slug){
         $html = static::getHTML($slug);
@@ -16,13 +19,13 @@ class StatoScraper extends ProductScraper
         $crawler = new DomCrawler($html);
 
         // Extraer información del producto
-        $productName = $crawler->get('h1[itemprop="name"]');
-        $itemCondition = $crawler->get('meta[itemprop="itemCondition"]','content');
-        $sku = $crawler->get('meta[itemprop="sku"]','content');
-        $manufacturer = $crawler->get('meta[itemprop="manufacturer"]','content');
-        $brand = $crawler->get('meta[itemprop="brand"]','content');
-        $category = $crawler->get('meta[itemprop="category"]','content');
-        $description = $crawler->get('.description[itemprop="description"]');
+        $productName = $crawler->getText('h1[itemprop="name"]');
+        $itemCondition = $crawler->getAttr('meta[itemprop="itemCondition"]','content');
+        $sku = $crawler->getAttr('meta[itemprop="sku"]','content');
+        $manufacturer = $crawler->getAttr('meta[itemprop="manufacturer"]','content');
+        $brand = $crawler->getAttr('meta[itemprop="brand"]','content');
+        $category = $crawler->getAttr('meta[itemprop="category"]','content');
+        $description = $crawler->getText('.description[itemprop="description"]');
 
         // Imprimir la información del producto
         $productData = [

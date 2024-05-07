@@ -142,7 +142,7 @@ use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\core\libs\StatoScraper;
+use simplerest\core\libs\StratoScraper;
 
 class DumbController extends Controller
 {
@@ -10219,9 +10219,9 @@ class DumbController extends Controller
         $url = 'https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/';
 
         // 30 dias
-        StatoScraper::setup($url, 3600 * 24 * 30);
+        StratoScraper::setup($url, 3600 * 24 * 30);
         
-        dd(StatoScraper::getProduct('?ObjectPath=/Shops/63993920/Products/dtvp1153x2'));
+        dd(StratoScraper::getProduct('?ObjectPath=/Shops/63993920/Products/dtvp1153x2'));
 
     }
 
