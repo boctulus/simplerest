@@ -29,6 +29,11 @@ class StratoScraper extends ProductScraper
         return $slug;
     }
 
+    /*
+        TO-DO
+
+        - Generar salida basada en Interfaz y validaciones (opcional)
+    */
     protected static function transformCategories($categories, $parentSlug = '')
     {
         global $transformedCategories;
@@ -101,6 +106,45 @@ class StratoScraper extends ProductScraper
         return $transformedCategories;
     }
 
+    public static function getCatego(string $html)
+    {
+        $crawler = new DomCrawler($html);
+        
+        // Encuentra el elemento que contiene la información de la categoría
+        $categoryElement = $crawler->filter('.CategoryList');
+
+        // Extrae el nombre de la categoría
+        $categoryName = $categoryElement->filter('.CategoryText i b')->text();
+        
+        // Extrae la descripción de la categoría
+        $categoryDescription = $categoryElement->filter('.CategoryText')->text();
+
+        // Encuentra todas las imágenes de la categoría
+        $imageElements = $categoryElement->filter('.CategoryImage img');
+        $images = [];
+
+        // Itera sobre cada imagen y obtén su URL
+        $imageElements->each(function ($imageElement) use (&$images) {
+            $imageUrl = $imageElement->attr('src');
+            $images[] = $imageUrl;
+        });
+
+        // Almacena la información de la categoría en un array
+        $categoryData = [
+            'name' => $categoryName,
+            'description' => $categoryDescription,
+            'images' => $images,
+        ];
+
+        return $categoryData;
+    }
+
+    /*
+        TO-DO
+
+        - Completar separando atributos
+        - Generar salida basada en Interfaz y validaciones (opcional)
+    */
     public static function getProduct(string $slug){
         $html = static::getHTML($slug);        
 
