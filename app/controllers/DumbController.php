@@ -10236,7 +10236,10 @@ class DumbController extends Controller
         dd(StratoScraper::getCategoList($html));
     }
 
+    function test_dom_crawler_cat(){   
+        $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 30);
 
-
+        dd(StratoScraper::getCatego($html));
+    }
 
 }   // end class

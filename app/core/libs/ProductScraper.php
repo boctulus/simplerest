@@ -20,10 +20,14 @@ abstract class ProductScraper
         self::$exp_time = $exp_time;
     }
 
-    static function getHTML($slug)
+    /*  
+        @param string $slug slug o url
+        @param int|null $exp_time tiempo de duracion de la cache
+    */
+    static function getHTML($slug, $exp_time = null)
     {
         // Podria normalizar la URL
-        $url = rtrim(static::$urlBase, '/') . '/' . ltrim($slug, '/');
+        $url = Strings::startsWith('https://', $slug) ?  $slug : rtrim(static::$urlBase, '/') . '/' . ltrim($slug, '/');
 
         $cli = (new ApiClient($url))
         ->withoutStrictSSL()
@@ -31,7 +35,7 @@ abstract class ProductScraper
             'User-Agent' => 'PostmanRuntime/7.34.0',
         ])
         ->redirect()
-        ->cache(static::$exp_time)
+        ->cache($exp_time ?? static::$exp_time)
         ;
 
         $cli->setMethod('GET');
@@ -52,20 +56,18 @@ abstract class ProductScraper
     {
         throw new NotImplementedException('Method getProductBasicAttr() is not implemented.');
     }
-
-    public static function getCategos(string $html)
-    {
-        throw new NotImplementedException('Method getCategos() is not implemented.');
-    }
-
-    public static function getBrands(string $html)
-    {
-        throw new NotImplementedException('Method getBrands() is not implemented.');
-    }
-
+    
     public static function getCategosList(string $html)
     {
         throw new NotImplementedException('Method getCategosList() is not implemented.');
+    }
+
+    /*
+        Devuelve descripcion e imagenes de cada categoria
+    */
+    public static function getCatego(string $html)
+    {
+        throw new NotImplementedException('Method getCategos() is not implemented.');
     }
 
     public static function getBrandList(string $html)
