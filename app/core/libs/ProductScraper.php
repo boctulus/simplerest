@@ -54,12 +54,35 @@ abstract class ProductScraper
 
     public static function getProductBasicAttr(string $html)
     {
-        throw new NotImplementedException('Method getProductBasicAttr() is not implemented.');
+        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
     }
     
     public static function getCategosList(string $html)
     {
-        throw new NotImplementedException('Method getCategosList() is not implemented.');
+        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
+    }
+
+    /*
+        Obtiene paginador de pagina de productos (u otras)
+    */
+    public static function getPaginator($html){
+        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
+    }
+
+    /*
+        Obtiene URL de pagina de categoria paginada
+    */
+    public static function getCategoryPageURL(int $page, $page_size = null)
+    {
+        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
+    }
+
+    /*
+        Obtiene de pagina de categoria paginada
+    */
+    public static function getCategoryPage(int $page, $page_size = null)
+    {
+        return static::getHTML(static::getCategoryPageURL($page, $page_size));
     }
 
     /*
@@ -67,17 +90,17 @@ abstract class ProductScraper
     */
     public static function getCatego(string $html)
     {
-        throw new NotImplementedException('Method getCategos() is not implemented.');
+        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
     }
 
     public static function getBrandList(string $html)
     {
-        throw new NotImplementedException('Method getBrandList() is not implemented.');
+        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
     }
 
     public static function getProductLinks(string $html)
     {
-        throw new NotImplementedException('Method getProductLinks() is not implemented.');
+        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
     }
 
 }
