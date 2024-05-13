@@ -12,18 +12,19 @@ class StratoScraper extends ProductScraper
 {
     protected static function getUrlSlug($url)
     {
-        // Obtener la parte de la URL después del último "/"
-        $parts = explode('/', $url);
-        $lastPart = end($parts);
-        
         // Decodificar la URL
-        $decodedUrl = urldecode($lastPart);
+        $decodedUrl = urldecode($url);
+
+        $decodedUrl = Strings::lastSegmentOrFail($decodedUrl, '/');
+        
+        // Convertir caracteres a su equivalente ASCII
+        $asciiUrl = Strings::accents2Ascii($decodedUrl);
         
         // Reemplazar caracteres especiales con "-"
-        $slug = preg_replace('/[^a-zA-Z0-9]+/', '-', $decodedUrl);
+        $slug = preg_replace('/[^a-zA-Z0-9\/]+/', '-', $asciiUrl);
         
         // Convertir a minúsculas
-        $slug = strtolower($slug);
+        $slug = trim(strtolower($slug), '-');
         
         return $slug;
     }
@@ -41,6 +42,7 @@ class StratoScraper extends ProductScraper
                 'name' => $category['name'],
                 'slug' => $slug,
                 'parent_slug' => $parentSlug,
+                'url' => $category['url'], // Conservar la URL original
             ];
             
             // Agregar la categoría transformada al array resultante
