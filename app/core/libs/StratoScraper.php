@@ -10,8 +10,68 @@ use simplerest\core\libs\ProductScraper;
 */
 class StratoScraper extends ProductScraper
 {
+    protected static function getUrlSlug($url)
+    {
+        // Obtener la parte de la URL después del último "/"
+        $parts = explode('/', $url);
+        $lastPart = end($parts);
+        
+        // Decodificar la URL
+        $decodedUrl = urldecode($lastPart);
+        
+        // Reemplazar caracteres especiales con "-"
+        $slug = preg_replace('/[^a-zA-Z0-9]+/', '-', $decodedUrl);
+        
+        // Convertir a minúsculas
+        $slug = strtolower($slug);
+        
+        return $slug;
+    }
+
+    public static function getCategoList(string $html){
+        $crawler = new DomCrawler($html);
+
+        $categories = [];
+
+        // Encontrar todas las categorías principales
+        $categoryElements = $crawler->filter('.ep-megamenu-first-level-element');
+
+        // Recorrer cada elemento de categoría principal
+        $categoryElements->each(function ($categoryElement) use (&$categories) {
+            $categoryName = $categoryElement->filter('a')->text();
+            $categoryUrl = $categoryElement->filter('a')->attr('href');
+
+            // Array temporal para almacenar las subcategorías
+            $subcategories = [];
+
+            // Encontrar todas las subcategorías
+            $subcategoryElements = $categoryElement->filter('.ep-megamenu-second-level-element');
+
+            // Recorrer cada elemento de subcategoría
+            $subcategoryElements->each(function ($subcategoryElement) use (&$subcategories) {
+                $subcategoryName = $subcategoryElement->filter('a')->text();
+                $subcategoryUrl = $subcategoryElement->filter('a')->attr('href');
+
+                // Almacenar la subcategoría en el array temporal
+                $subcategories[] = [
+                    'name' => $subcategoryName,
+                    'url' => $subcategoryUrl,
+                ];
+            });
+
+            // Almacenar la categoría y sus subcategorías en el array principal
+            $categories[] = [
+                'name' => $categoryName,
+                'url' => $categoryUrl,
+                'subcategories' => $subcategories,
+            ];
+        });
+
+        return $categories;
+    }
+
     public static function getProduct(string $slug){
-        $html = static::getHTML($slug);
+        $html = static::getHTML($slug);        
 
         preg_match_all('/data-src-l="([^"]+)"/', $html, $matches);
         $image_urls = $matches[1];

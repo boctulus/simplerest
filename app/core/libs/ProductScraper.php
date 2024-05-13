@@ -20,7 +20,7 @@ abstract class ProductScraper
         self::$exp_time = $exp_time;
     }
 
-    static function getHTML($slug, $exp_time = 21600)
+    static function getHTML($slug)
     {
         // Podria normalizar la URL
         $url = rtrim(static::$urlBase, '/') . '/' . ltrim($slug, '/');
@@ -31,10 +31,16 @@ abstract class ProductScraper
             'User-Agent' => 'PostmanRuntime/7.34.0',
         ])
         ->redirect()
-        ->cache($exp_time ?? static::$exp_time);
+        ->cache(static::$exp_time)
+        ;
 
         $cli->setMethod('GET');
         $cli->send();
+
+        if ($cli->error()){
+            throw new \Exception("HTTP ERROR: ". $cli->error());
+        }
+
         $res = $cli->data(); // html
 
         return $res;
