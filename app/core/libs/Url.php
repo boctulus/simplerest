@@ -147,6 +147,17 @@ class Url
         return "{$p['scheme']}://{$p['host']}{$p['path']}$query";
     }
 
+    /*  
+        Convierte una url o slug de relativo a absoluta
+
+        Ej:
+
+        Url::toAbsolute('/WebRoot/StoreES2/Shops/63993920/Categories/Category1/../../MediaGallery/Categories/Category1/AMB_BLANCOS_30X60.jpg');
+    */
+    static function toAbsolute($url){
+        return Files::normalize($url, Files::LINUX_DIR_SLASH);
+    }
+
     // Body decode
     static function bodyDecode(string $data)
     {
