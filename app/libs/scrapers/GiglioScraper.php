@@ -842,7 +842,7 @@ class GiglioScraper extends ProductScraper
         return $result;
     }
     
-    static function getCategos($html){
+    protected static function getCategos($html){
         $dom = new \DOMDocument;
     
         libxml_use_internal_errors(true);
@@ -908,7 +908,7 @@ class GiglioScraper extends ProductScraper
 
         Luego se puede obtener la categoria dentro de cada pagina de producto
     */
-    static function getBrands($html){
+    protected static function getBrands($html){
         $dom = new \DOMDocument;
     
         libxml_use_internal_errors(true);
