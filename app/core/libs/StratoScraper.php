@@ -10,6 +10,7 @@ use simplerest\core\libs\ProductScraper;
 */
 class StratoScraper extends ProductScraper
 {
+    protected static $objectID;
 
     /*
         Obtiene paginador de pagina de productos (u otras)
@@ -32,11 +33,11 @@ class StratoScraper extends ProductScraper
         preg_match('/(\d+) - (\d+) de (\d+) resultados/', $paginatorInfoText, $matches);
     
         // Extraer la cantidad de resultados, la cantidad de páginas y la página actual
-        $startIndex = intval($matches[1]);
-        $endIndex = intval($matches[2]);
+        $startIndex   = intval($matches[1]);
+        $endIndex     = intval($matches[2]);
         $totalResults = intval($matches[3]);
-        $pageSize = $endIndex - $startIndex + 1;
-        $totalPages = ceil($totalResults / $pageSize);
+        $pageSize     = $endIndex - $startIndex + 1;
+        $totalPages   = ceil($totalResults / $pageSize);
     
         // Determinar la página actual
         $currentPage = 1;
@@ -45,6 +46,7 @@ class StratoScraper extends ProductScraper
             $currentPage = intval($currentPageElement->text());
         }
 
+        static::$objectID = Strings::matchOrFail($html, "/objectId: '(\d+)'/");
     
         // Retornar un array con la información del paginador
         return [
@@ -54,6 +56,19 @@ class StratoScraper extends ProductScraper
         ];
     }
     
+    /*
+        Obtiene URL de pagina de categoria paginada
+
+        Asi puede ser almacenada para redireccionamientos
+    */
+    public static function getCategoryPageURL(int $page, $page_size = null)
+    {
+        if ($page_size === null){
+            $page_size = 50;
+        }
+
+        return "?ViewAction=View&ObjectID=14658561&PageSize=$page_size&Page=$page";
+    }   
 
     protected static function getUrlSlug($url)
     {
@@ -185,6 +200,32 @@ class StratoScraper extends ProductScraper
 
         return $categoryData;
     }
+    
+    public static function getProductLinks(string $html)
+    {
+        $crawler = new DomCrawler($html);
+
+        // Seleccionar la sección HotDealList
+        $hotDealList = $crawler->filter('div.HotDealList');
+
+        // Array para almacenar los enlaces de productos
+        $productLinks = [];
+
+        // Verificar si se encontró la sección HotDealList
+        if ($hotDealList->count() > 0) {
+            // Buscar todos los enlaces dentro de la sección HotDealList
+            $hotDealList->filter('div.HotDeal')->each(function ($hotDeal) use (&$productLinks) {
+                // Obtener el enlace del producto
+                $productLink = $hotDeal->filter('a.ProductName')->attr('href');
+                // Agregar el enlace al array de enlaces de productos
+                $productLinks[] = $productLink;
+            });
+        }
+
+        // Devolver el array de enlaces de productos
+        return $productLinks;
+    }
+
 
     /*
         TO-DO
@@ -223,6 +264,7 @@ class StratoScraper extends ProductScraper
 
         return $productData;
     }
+
 
 
 }
