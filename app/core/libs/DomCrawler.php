@@ -24,5 +24,10 @@ class DomCrawler extends Crawler
     {
         return $this->filter($selector)->text();
     }
+
+    function getHTML(string $selector)
+    {
+        return $this->filter($selector)->html();
+    }
 }
 
