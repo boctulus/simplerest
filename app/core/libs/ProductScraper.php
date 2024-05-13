@@ -5,6 +5,15 @@ namespace simplerest\core\libs;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\exceptions\NotImplementedException;
 
+/*
+    Scraper base preparado para:
+
+    ✅ Lista de categorias de productos
+    ✅ Paginador de categorias
+    ✅ Pagina de categoria
+    ✅ Links de productos dentro de pagina de cat.
+    ✅ Pagina de producto 
+*/
 abstract class ProductScraper
 {
     protected static $urlBase;
@@ -26,7 +35,7 @@ abstract class ProductScraper
     */
     static function getHTML($slug, $exp_time = null)
     {
-        // Podria normalizar la URL
+        // Normalizar la URL
         $url = Strings::startsWith('https://', $slug) ?  $slug : rtrim(static::$urlBase, '/') . '/' . ltrim($slug, '/');
 
         $cli = (new ApiClient($url))
@@ -72,7 +81,7 @@ abstract class ProductScraper
     /*
         Obtiene URL de pagina de categoria paginada
     */
-    public static function getCategoryPageURL(int $page, $page_size = null)
+    public static function getCategoryPageURL(string $category_url, int $page, $page_size = null)
     {
         throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
     }
@@ -80,9 +89,9 @@ abstract class ProductScraper
     /*
         Obtiene de pagina de categoria paginada
     */
-    public static function getCategoryPage(int $page, $page_size = null)
+    public static function getCategoryPage(string $category_url, int $page, $page_size = null)
     {
-        return static::getHTML(static::getCategoryPageURL($page, $page_size));
+        return static::getHTML(static::getCategoryPageURL($category_url, $page, $page_size));
     }
 
     /*

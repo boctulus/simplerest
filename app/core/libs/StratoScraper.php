@@ -7,6 +7,12 @@ use simplerest\core\libs\ProductScraper;
 
 /*
     strato.es
+
+    ✅ Lista de categorias de productos
+    ✅ Paginador de categorias
+    ✅ Pagina de categoria
+    ✅ Links de productos dentro de pagina de cat.
+    ✅ Pagina de producto 
 */
 class StratoScraper extends ProductScraper
 {
@@ -46,28 +52,28 @@ class StratoScraper extends ProductScraper
             $currentPage = intval($currentPageElement->text());
         }
 
-        static::$objectID = Strings::matchOrFail($html, "/objectId: '(\d+)'/");
-    
         // Retornar un array con la información del paginador
         return [
             'totalResults' => $totalResults,
-            'totalPages' => $totalPages,
-            'currentPage' => $currentPage
+            'totalPages'   => $totalPages,
+            'currentPage'  => $currentPage
         ];
     }
     
     /*
-        Obtiene URL de pagina de categoria paginada
-
-        Asi puede ser almacenada para redireccionamientos
+        Obtiene URL de pagina de categoria paginada o sea la parametriza a fin de paginarla
     */
-    public static function getCategoryPageURL(int $page, $page_size = null)
+    public static function getCategoryPageURL(string $category_url, int $page, $page_size = null)
     {
         if ($page_size === null){
             $page_size = 50;
         }
 
-        return "?ViewAction=View&ObjectID=14658561&PageSize=$page_size&Page=$page";
+        $html      = static::getHTML($category_url);
+
+        $object_id = Strings::matchOrFail($html, "/objectId: '(\d+)'/");
+
+        return static::$urlBase . "?ViewAction=View&ObjectID=$object_id&PageSize=$page_size&Page=$page";
     }   
 
     protected static function getUrlSlug($url)
