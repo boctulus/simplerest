@@ -117,7 +117,7 @@ class StratoScraper extends ProductScraper
         $categoryName = $categoryElement->filter('.CategoryText i b')->text();
         
         // Extrae la descripción de la categoría
-        $categoryDescription = $categoryElement->filter('.CategoryText')->text();
+        $categoryDescription = $categoryElement->filter('.CategoryText')->html();
 
         // Encuentra todas las imágenes de la categoría
         $imageElements = $categoryElement->filter('.CategoryImage img');
@@ -126,6 +126,8 @@ class StratoScraper extends ProductScraper
         // Itera sobre cada imagen y obtén su URL
         $imageElements->each(function ($imageElement) use (&$images) {
             $imageUrl = $imageElement->attr('src');
+            $imageUrl = Url::toAbsolute($imageUrl);
+
             $images[] = $imageUrl;
         });
 
@@ -160,7 +162,7 @@ class StratoScraper extends ProductScraper
         $manufacturer = $crawler->getAttr('meta[itemprop="manufacturer"]','content');
         $brand = $crawler->getAttr('meta[itemprop="brand"]','content');
         $category = $crawler->getAttr('meta[itemprop="category"]','content');
-        $description = $crawler->getText('.description[itemprop="description"]');
+        $description = $crawler->getHTML('.description[itemprop="description"]');
 
         // Imprimir la información del producto
         $productData = [
