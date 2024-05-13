@@ -28,6 +28,31 @@ class StratoScraper extends ProductScraper
         return $slug;
     }
 
+    protected static function transformCategories($categories, $parentSlug = '')
+    {
+        global $transformedCategories;
+        
+        foreach ($categories as $category) {
+            // Obtener el slug de la URL
+            $slug = static::getUrlSlug($category['url']);
+            
+            // Crear un array con la estructura deseada
+            $transformedCategory = [
+                'name' => $category['name'],
+                'slug' => $slug,
+                'parent_slug' => $parentSlug,
+            ];
+            
+            // Agregar la categoría transformada al array resultante
+            $transformedCategories[] = $transformedCategory;
+            
+            // Si la categoría tiene subcategorías, llamar recursivamente a esta función
+            if (!empty($category['subcategories'])) {
+                static::transformCategories($category['subcategories'], $slug);
+            }
+        }
+    }
+
     public static function getCategoList(string $html){
         $crawler = new DomCrawler($html);
 
@@ -67,7 +92,11 @@ class StratoScraper extends ProductScraper
             ];
         });
 
-        return $categories;
+        global $transformedCategories;
+
+        static::transformCategories($categories);
+
+        return $transformedCategories;
     }
 
     public static function getProduct(string $slug){
