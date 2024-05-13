@@ -10215,14 +10215,25 @@ class DumbController extends Controller
     }
 
     
-    function test_dom_crawler(){
-        $url = 'https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/';
+    // OK
+    function test_dom_crawler_p(){
+        $url = 'https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920';
 
         // 30 dias
         StratoScraper::setup($url, 3600 * 24 * 30);
         
-        dd(StratoScraper::getProduct('?ObjectPath=/Shops/63993920/Products/dtvp1153x2'));
+        dd(StratoScraper::getProduct('/Products/dtvp1153x2'));
+    }
 
+    // OK
+    function test_dom_crawler_cats(){
+        $url = 'https://www.azulejosmadridonline.es/';
+
+        // 30 dias
+        StratoScraper::setup($url, 3600 * 24 * 30);
+        $html = StratoScraper::getHTML('');
+
+        dd(StratoScraper::getCategoList($html));
     }
 
 

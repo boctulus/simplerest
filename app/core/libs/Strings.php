@@ -898,13 +898,15 @@ class Strings
 		Ej:
 
 		static::matchAll($str, static::$regex['URL']);
+
+		Antes si fallaba devolvia false, ahora []
 	*/
 	static function matchAll(string $str, string $pattern, $flags = 0, $offset = 0) { 
 		if (preg_match_all($pattern, $str, $matches, $flags, $offset)){			
 			return $matches[1];
 		}
 
-		return false;
+		return [];
 	}
 
 	static function ifMatch(string $str, $pattern, callable $fn_success, callable $fn_fail = NULL){
@@ -2168,6 +2170,18 @@ class Strings
 		
 		return trim($str, '-');
 	}
+
+	/*
+		Extrae emails de un string
+
+		@param string $str
+		@return array
+
+		No los valida, es una funcion sencilla
+	*/
+	static function getEmails($str){
+        return Strings::matchAll($str, '/([a-z0-9_\.]+@[a-z0-9_\.]+)/i');
+    }
 }
 
 
