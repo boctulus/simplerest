@@ -10242,4 +10242,10 @@ class DumbController extends Controller
         dd(StratoScraper::getCatego($html));
     }
 
+    function test_dom_crawler_cat_paginator(){   
+        $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ViewAction=View&ObjectID=14658561&PageSize=50&Page=2', 3600 * 24 * 30);
+
+        dd(StratoScraper::getPaginator($html));
+    }
+
 }   // end class
