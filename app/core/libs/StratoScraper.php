@@ -8,11 +8,13 @@ use simplerest\core\libs\ProductScraper;
 /*
     strato.es
 
-    ✅ Lista de categorias de productos
-    ✅ Paginador de categorias
-    ✅ Pagina de categoria
-    ✅ Links de productos dentro de pagina de cat.
-    ✅ Pagina de producto 
+    ✅ Lista de categorias de productos                 getCategoList
+    ✅ Paginador de categorias                          getPaginator
+    ✅ Pagina de categoria                              getCategoryPageURL, getCategoryPage
+    ✅ Links de productos dentro de pagina de cat.      getProductLinks
+    ✅ Pagina de producto (completar, al 70%)           getProduct
+
+    getCategoList -> getPaginator -> getCategoryPageURL -> getProductLink -> getProduct
 */
 class StratoScraper extends ProductScraper
 {
