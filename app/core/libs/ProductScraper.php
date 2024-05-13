@@ -8,11 +8,15 @@ use simplerest\core\exceptions\NotImplementedException;
 /*
     Scraper base preparado para:
 
-    ✅ Lista de categorias de productos
-    ✅ Paginador de categorias
-    ✅ Pagina de categoria
-    ✅ Links de productos dentro de pagina de cat.
-    ✅ Pagina de producto 
+    ✅ Lista de categorias de productos                 getCategoList
+    ✅ Paginador de categorias                          getPaginator
+    ✅ Pagina de categoria                              getCategoryPageURL, getCategoryPage
+    ✅ Links de productos dentro de pagina de cat.      getProductLinks
+    ✅ Pagina de producto                               getProduct
+
+    Flujo:
+
+    getCategoList -> getPaginator -> getCategoryPageURL -> getProductLink -> getProduct
 */
 abstract class ProductScraper
 {
@@ -66,25 +70,17 @@ abstract class ProductScraper
         throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
     }
     
-    public static function getCategosList(string $html)
-    {
-        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
-    }
+    abstract public static function getCategoList(string $html);
 
     /*
         Obtiene paginador de pagina de productos (u otras)
     */
-    public static function getPaginator($html){
-        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
-    }
+    abstract public static function getPaginator($html);
 
     /*
         Obtiene URL de pagina de categoria paginada
     */
-    public static function getCategoryPageURL(string $category_url, int $page, $page_size = null)
-    {
-        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
-    }
+    abstract public static function getCategoryPageURL(string $category_url, int $page, $page_size = null);
 
     /*
         Obtiene de pagina de categoria paginada
@@ -107,10 +103,7 @@ abstract class ProductScraper
         throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
     }
 
-    public static function getProductLinks(string $html)
-    {
-        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
-    }
+    abstract public static function getProductLinks(string $html);
 
 }
 
