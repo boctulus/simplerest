@@ -978,7 +978,7 @@ class GiglioScraper extends ProductScraper
         return $brands;
     }    
 
-    static function getCategosList($html = null) 
+    static function getCategoList($html = null) 
     {
         $cached_list = get_transient('catego_list');
 
@@ -1026,10 +1026,10 @@ class GiglioScraper extends ProductScraper
     }
 
     /*
-        Similar en formato a getCategosList() pero no deberian insertarse 
+        Similar en formato a getCategoList() pero no deberian insertarse 
         sino usarse de forma temporal para recuperar mas productos
 
-        Usar getCategosList() primero y luego getBrandList()
+        Usar getCategoList() primero y luego getBrandList()
 
         A los productos no se les debe cambiar el titulo ni categoria ni descripcion
         una vez asignados
