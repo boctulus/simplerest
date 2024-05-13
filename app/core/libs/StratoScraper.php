@@ -10,6 +10,51 @@ use simplerest\core\libs\ProductScraper;
 */
 class StratoScraper extends ProductScraper
 {
+
+    /*
+        Obtiene paginador de pagina de productos (u otras)
+
+        TO-DO
+
+        - Generar salida basada en Interfaz y validaciones (opcional)
+    */
+    public static function getPaginator($html){
+        $crawler = new DomCrawler($html);
+    
+        // Encontrar el elemento que contiene la información del paginador
+        $paginatorElement = $crawler->filter('.PagedProduct .PagerTable');
+    
+        // Obtener el texto que contiene la información de resultados
+        $paginatorInfoText = $paginatorElement->filter('.PagerInfoLeft')->text();
+    
+        // Utilizar expresiones regulares para extraer la información necesaria
+        $matches = [];
+        preg_match('/(\d+) - (\d+) de (\d+) resultados/', $paginatorInfoText, $matches);
+    
+        // Extraer la cantidad de resultados, la cantidad de páginas y la página actual
+        $startIndex = intval($matches[1]);
+        $endIndex = intval($matches[2]);
+        $totalResults = intval($matches[3]);
+        $pageSize = $endIndex - $startIndex + 1;
+        $totalPages = ceil($totalResults / $pageSize);
+    
+        // Determinar la página actual
+        $currentPage = 1;
+        $currentPageElement = $paginatorElement->filter('.PagerSizeContainer li.Current');
+        if ($currentPageElement->count() > 0) {
+            $currentPage = intval($currentPageElement->text());
+        }
+
+    
+        // Retornar un array con la información del paginador
+        return [
+            'totalResults' => $totalResults,
+            'totalPages' => $totalPages,
+            'currentPage' => $currentPage
+        ];
+    }
+    
+
     protected static function getUrlSlug($url)
     {
         // Decodificar la URL
