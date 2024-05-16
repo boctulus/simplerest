@@ -25,6 +25,12 @@ class RobotController extends MyController
         $this->robot_path = Env::get('ROBOT_PATH');
     }
 
+   function index()
+    {
+        new Robot();                
+    }
+
+
     protected function setupConnection(){
         Config::set('db_connections.robot', [            
             'host'		=> env('DB_HOST', '127.0.0.1'),
@@ -90,11 +96,6 @@ class RobotController extends MyController
             $res->error($e->getMessage());
         }
     }    
-
-    function index()
-    {
-        new Robot();                
-    }
 
     /*
         Esta funcionando pero deberia ejecutarlo ahora en segundo plano
