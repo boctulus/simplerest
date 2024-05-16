@@ -118,7 +118,7 @@ class System
 
         El envio a $output_path falla en Windows
     */
-    static function runInBackground(string $cmd, $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null)
+    static function runInBackground(string $cmd, $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null, bool $debug = false)
     {
         ignore_user_abort($ignore_user_abort);
 
@@ -129,12 +129,21 @@ class System
         $working_dir = $working_dir ?? ROOT_PATH;
 
         if ($working_dir){
+            if ($working_dir){
+                dd("cd '$working_dir'");
+            }
+
 		    chdir($working_dir);
+        }
+
+        if ($debug){
+            dd(PHP_OS_FAMILY, 'OS');
         }
 
         switch (PHP_OS_FAMILY) {
             case 'Windows':
                 if ($output_path !== null){
+                    $output_path = Files::normalize($output_path);
                     $cmd .= " >> $output_path";
                 }
     
@@ -142,19 +151,20 @@ class System
                 $oExec = $WshShell->Exec($cmd);
                 $pid = (int) $oExec->ProcessID;
                 $WshShell = null;
-    
+
                 break;
             case 'Linux':
-                if ($output_path !== null){
-                    $pid = (int) shell_exec("nohup nice -n 19 $cmd > $output_path 2>&1 & echo $!");
-                } else {
-                    $pid = (int) shell_exec("nohup nice -n 19 $cmd > /dev/null 2>&1 & echo $!");
-                }
-
+                $cmd = ($output_path !== null) ? "nohup nice -n 19 $cmd > $output_path 2>&1 & echo $!" : "nohup nice -n 19 $cmd > /dev/null 2>&1 & echo $!";
+                
+                $pid = (int) shell_exec($cmd);                
                 break;
             default:
             // unsupported
             return false;
+        }
+
+        if ($debug){
+            dd($cmd, 'CMD');
         }
 
         return $pid ?? null;
@@ -216,7 +226,11 @@ class System
 
         Ej:
 
-        $git_log_repo_1 = System::execAt("git log", $path_repo_1)
+        $git_log_repo_1 = System::execAt("git log", $repository_path)
+
+        Ej:
+
+        $res = System::execAt(Env::get('PYTHON_BINARY') . " index.py", Env::get('ROBOT_PATH'), 'pablotol.json');
     */
     static function execAt(string $command, string $dir, ...$args){
         $extra = implode(' ', array_values($args));
