@@ -101,7 +101,7 @@ class RobotController extends MyController
         try {
             $res = Response::getInstance();
 
-            $path = $this->robot_path . "/screenshots/$filename.png";
+            $path = $this->robot_path . "/screenshots/$filename";
 
             if (!file_exists($path)){
                 http_response_code(404);
