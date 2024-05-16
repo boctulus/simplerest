@@ -97,6 +97,32 @@ class RobotController extends MyController
         }
     }    
 
+    function screenshots($filename){
+        try {
+            $res = Response::getInstance();
+
+            $path = $this->robot_path . "/screenshots/$filename.png";
+
+            if (!file_exists($path)){
+                http_response_code(404);
+                $res->error('File not found', 404);
+            }
+            
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="'.basename($path).'"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($path));
+            readfile($path);
+            exit;
+
+        } catch (\Exception $e){
+            $res->error($e->getMessage());
+        }
+    }
+
     /*
         Esta funcionando pero deberia ejecutarlo ahora en segundo plano
 
