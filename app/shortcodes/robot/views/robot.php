@@ -57,6 +57,8 @@ function fetchDataAndUpdateTable() {
 
     // Función para realizar la solicitud AJAX
     function fetchData() {
+        console.log('solicitando ...');
+        
         // Realizar la solicitud AJAX
         fetch(endpoint)
             .then(response => response.json())
@@ -87,7 +89,7 @@ function fetchDataAndUpdateTable() {
 
         let image_url = defaultImg;
         if (data.last_screenshot != null){
-            image_url = 'http://simplerest.lan/robot/screenshots/' + data.last_screenshot + '.png';
+            image_url = 'http://simplerest.lan/robot/screenshots/' + data.last_screenshot;
         }      
 
         // Crear la fila de la tabla con los datos recibidos
