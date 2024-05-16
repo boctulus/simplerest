@@ -64,6 +64,7 @@ use Spatie\ArrayToXml\ArrayToXml;
 
 use simplerest\core\libs\CSSUtils;
 use simplerest\core\libs\Factory;;
+
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
 use simplerest\core\libs\Parallex;
@@ -250,17 +251,18 @@ class DumbController extends Controller
         echo Strings::trimMultiline($str) . PHP_EOL;
     }
 
-    function log(){
+    function log()
+    {
         Logger::log('zzzzzzzzzz');
 
         $subscription = (new stdClass());
-        $subscription->name="Pablo";
-        $subscription->apel="Bzz";
+        $subscription->name = "Pablo";
+        $subscription->apel = "Bzz";
 
         /*
             [11-Feb-2024 16:15:45 Asia/Manila] {"name":"Pablo","apel":"Bzz"}
         */
-        Logger::log($subscription, 'sub.txt');   
+        Logger::log($subscription, 'sub.txt');
 
         /*
             (object) array(
@@ -268,7 +270,7 @@ class DumbController extends Controller
                 'apel' => 'Bzz',
             )
         */
-        Files::dump($subscription, 'dump_s.php');  
+        Files::dump($subscription, 'dump_s.php');
 
         /*
             <?php 
@@ -326,7 +328,7 @@ class DumbController extends Controller
         }
 
         if ($res['http_code'] != 200) {
-            dd("HTTP CODE is ". $res['http_code']);
+            dd("HTTP CODE is " . $res['http_code']);
             return;
         }
 
@@ -467,10 +469,11 @@ class DumbController extends Controller
         //dd($queue);
     }
 
-    function test_find(){
+    function test_find()
+    {
         $res = DB::table('users')
-        ->find(9)
-        ->getOne();
+            ->find(9)
+            ->getOne();
 
         dd($res);
     }
@@ -4287,9 +4290,10 @@ class DumbController extends Controller
     {
         dd($id);
     }
-   
-    function test_container(){
-        Container::bind('foo', function(){
+
+    function test_container()
+    {
+        Container::bind('foo', function () {
             return new Foo();
         });
 
@@ -4300,7 +4304,8 @@ class DumbController extends Controller
         print_r($foo->bar());
     }
 
-    function test_container2(){
+    function test_container2()
+    {
         Container::bind('foo', Foo::class);
 
         $foo = Container::make('foo');
@@ -4310,17 +4315,19 @@ class DumbController extends Controller
         print_r($foo->bar());
     }
 
-    function test_container3(){
+    function test_container3()
+    {
         Container::singleton('foo', Foo::class);
 
         $foo = Container::make('foo');
         print_r($foo->bar());
-        
+
         $foo = Container::make('foo');
         print_r($foo->bar());
     }
 
-    function test_container4(){
+    function test_container4()
+    {
         Container::bind('car', \simplerest\libs\Car::class);
 
         $o = Container::makeWith('car', ['color' => 'blue', 'max_speed' => 200]);
@@ -4333,10 +4340,10 @@ class DumbController extends Controller
     */
     function test_dep_container()
     {
-        Container::bind(Cake::class, function() {
+        Container::bind(Cake::class, function () {
             $ingredient1 = new Ingredient1();
             $ingredient2 = new Ingredient2();
-      
+
             return new Cake($ingredient1, $ingredient2, 25);
         });
 
@@ -4344,19 +4351,20 @@ class DumbController extends Controller
 
         // $foo = Container::make('cake');
         // print_r($foo->bar());
-        
+
         // $foo = Container::make('cake');
         // print_r($foo->bar());
     }
 
-    
+
     /*
         Haciendo uso de Container::useContract(), intentar replicar:
 
         https://stackoverflow.com/a/52778193/980631
     */
-    function test_container5(){
-        
+    function test_container5()
+    {
+
         // ....
     }
 
@@ -4877,10 +4885,11 @@ class DumbController extends Controller
         dd(Factory::request()->acceptEncoding());
     }
 
-    function mail(){
+    function mail()
+    {
         dd(
-            Mail::send('boctulus@gmail.com', 'Pablo', 'Pruebita '. rand(99,999999), null, 'boctulus@gmail.com')
-        ); 
+            Mail::send('boctulus@gmail.com', 'Pablo', 'Pruebita ' . rand(99, 999999), null, 'boctulus@gmail.com')
+        );
     }
 
     // function show_email_template(){
@@ -6470,10 +6479,11 @@ class DumbController extends Controller
         );
     }
 
-    function test_iframe_0(){
-        ?>
+    function test_iframe_0()
+    {
+?>
         <iframe src="https://onedrive.live.com/embed?resid=C8AC521BBD6F3B93%21106&authkey=!AGgxeD1WZbCu8uY&em=2" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>
-        <?php
+    <?php
     }
 
 
@@ -6529,7 +6539,7 @@ class DumbController extends Controller
             position:absolute; top:0; left: 0;
         }
         ');
-?>
+    ?>
 
         <center>
             <div class="iframe_container">
@@ -6746,7 +6756,8 @@ class DumbController extends Controller
         DB::getConnection('woo3');
 
         dd(
-            tb_prefix(), 'PREFIX'
+            tb_prefix(),
+            'PREFIX'
         );
 
         $rows = table('users')
@@ -6761,7 +6772,8 @@ class DumbController extends Controller
         dd($rows);
     }
 
-    function test_xy(){
+    function test_xy()
+    {
         DB::getConnection('parts-remote');
 
         dd(
@@ -7174,7 +7186,8 @@ class DumbController extends Controller
         );
     }
 
-    function test_arr_to_xml(){
+    function test_arr_to_xml()
+    {
         $cli = array(
             'rut' => '1-9',
             'nom' => 'david lara oyarzun',
@@ -7348,7 +7361,7 @@ class DumbController extends Controller
     {
         $input = file_get_contents('php://input');
 
-        if (empty($input)){
+        if (empty($input)) {
             response()->error("No data received");
         }
 
@@ -7805,24 +7818,26 @@ class DumbController extends Controller
         // Chequeo si todavia es valido para 5 segundos de tiempo de expiracion
 
         dd(
-            FileCache::expiredFile($file, $exp_time), 'Expired?'
+            FileCache::expiredFile($file, $exp_time),
+            'Expired?'
         );
     }
 
 
     function test_db_cache_put()
-    {       
-       DBCache::put('galaxia', 'via lacteaaaaa', 90);
+    {
+        DBCache::put('galaxia', 'via lacteaaaaa', 90);
     }
 
     function test_db_cache_get()
-    {       
+    {
         dd(
             DBCache::get('galaxia')
         );
     }
 
-    function test_db_transient(){
+    function test_db_transient()
+    {
         set_transient('bzz-import_completion', 55);
 
         dd(get_transient('bzz-import_completion', 0));
@@ -7833,21 +7848,21 @@ class DumbController extends Controller
         $url = 'http://apis.lan/dumb/now';
 
         set_cache_driver(DBCache::class);
-        
-        Memoization::memoize($url, function() use ($url) {
+
+        Memoization::memoize($url, function () use ($url) {
             dd("...");
             return file_get_contents($url);
         }, 1);
 
         dd(
             Memoization::memoize($url)
-        );      
-        
+        );
+
         sleep(5);
 
         dd(
             Memoization::memoize($url)  // mismo valor
-        );   
+        );
     }
 
     function test_memorizacion_2()
@@ -7855,45 +7870,49 @@ class DumbController extends Controller
         $url = 'http://apis.lan/dumb/now';
 
         set_cache_driver(FileCache::class);
-        
-        Memoization::memoize($url, function() use ($url) {
+
+        Memoization::memoize($url, function () use ($url) {
             dd("...");
             return file_get_contents($url);
         }, 2);  // <-------------------------------- cache por 2 segundos
 
         dd(
-            Memoization::memoize($url)
-        , 'VALOR RECUPERADO');      
-        
-        sleep(3);  
-        
+            Memoization::memoize($url),
+            'VALOR RECUPERADO'
+        );
+
+        sleep(3);
+
         // Ya no le alcanzan los 2 segundos especificados!
         dd(
-            Memoization::memoize($url)
-        , 'VALOR RECUPERADO');  
-    }    
+            Memoization::memoize($url),
+            'VALOR RECUPERADO'
+        );
+    }
 
     function test_memorizacion_3()
     {
         $url = 'http://luxuritop.test/wp-json/wc/v3/products';
 
         set_cache_driver(FileCache::class);
-        
-        Memoization::memoize($url, function() use ($url) {
-            $cli = new WooCommerceApiClient('ck_f710ad18c309b89f309e7144da238814bd4bf6b4', 
-            'cs_53b05e639bdba922eb296fb7ab40e162eb7570d6');
+
+        Memoization::memoize($url, function () use ($url) {
+            $cli = new WooCommerceApiClient(
+                'ck_f710ad18c309b89f309e7144da238814bd4bf6b4',
+                'cs_53b05e639bdba922eb296fb7ab40e162eb7570d6'
+            );
 
             $pid = null;
-            
+
             $base_url = 'http://luxuritop.test';
             $endpoint = '/wp-json/wc/v3/products' . (!empty($pid) ? "/$pid" : '');
-                        
+
             $url      = "{$base_url}{$endpoint}";
-    
+
             $cli
-            ->url($url)
-            ->get()
-            ->setOAuth();
+                ->url($url)
+                ->get()
+                ->setOAuth();
 
             $cli->send();
 
@@ -7903,23 +7922,29 @@ class DumbController extends Controller
         }, 10);  // <-------------------------------- cache por 2 segundos
 
         dd(
-            Memoization::memoize($url)
-        , 'VALOR RECUPERADO');      
-        
-        sleep(3);  
-        
+            Memoization::memoize($url),
+            'VALOR RECUPERADO'
+        );
+
+        sleep(3);
+
         // Ya no le alcanzan los 2 segundos especificados!
         dd(
-            Memoization::memoize($url)
-        , 'VALOR RECUPERADO');  
-    }    
-    
+            Memoization::memoize($url),
+            'VALOR RECUPERADO'
+        );
+    }
+
     function memoize_test()
-    {       
+    {
         set_cache_driver(InMemoryCache::class);
 
-        Memoization::memoize('nombre.hijo', function(){ return 'Pablo'; });
-        Memoization::memoize('nombre.papa', function(){ return 'Feli'; });
+        Memoization::memoize('nombre.hijo', function () {
+            return 'Pablo';
+        });
+        Memoization::memoize('nombre.papa', function () {
+            return 'Feli';
+        });
 
         dd(
             Memoization::memoize('nombre.papa')
@@ -7932,7 +7957,7 @@ class DumbController extends Controller
         $x = 2;
         $y = 3;
 
-        Memoization::memoize('calculations.more_calc', function() use ($x, $y){
+        Memoization::memoize('calculations.more_calc', function () use ($x, $y) {
             dd("Doing some expensive calculations ...");
             sleep(2);
             return $x * $y;
@@ -7942,7 +7967,7 @@ class DumbController extends Controller
         dd(Memoization::memoize('calculations.more_calc'), 'calculations.more_calc');
         dd(Memoization::memoize('calculations.more_calc'), 'calculations.more_calc');
     }
-    
+
     function testtttttt()
     {
         $link     = 'https://docs.google.com/uc?export=download&id=1yMrPb6j51mvXV2taGiSa57fcElpbApGR';
@@ -8361,7 +8386,8 @@ class DumbController extends Controller
         dd($res->data());
     }
 
-    function test_config_set(){
+    function test_config_set()
+    {
         Config::set('db_connections.main.tb_prefix', 'wp_');
 
         dd(
@@ -8791,7 +8817,7 @@ class DumbController extends Controller
                 background-color: #000000;
                 color: white;
             }
-            
+
             .sr-btn-disabled {
                 background-color: #C7C7C7;
                 color: white;
@@ -8971,13 +8997,12 @@ class DumbController extends Controller
                 border-bottom: 3px solid transparent;
                 border-top: 3px solid #79A70A;
             }
-
         </style>
 
         <div class="sr-card-container">
             <?php foreach (range(0, 10) as $ix) : ?>
-                <div class="sr-card">                    
-                    <div class="sr-card-content">                        
+                <div class="sr-card">
+                    <div class="sr-card-content">
                         <div class="sr-card-front">
                             <div class="sr-card-ribbon"><span>Update</span></div>
                             <div class="sr-card-front-text">Front</div>
@@ -8991,23 +9016,26 @@ class DumbController extends Controller
             <?php endforeach; ?>
         </div>
 
-        <?php
-            $content = ob_get_clean();
-            render($content);
+    <?php
+        $content = ob_get_clean();
+        render($content);
     }
 
-    function test_asset(){
-        echo '<img src="' .asset('img/ai_logo.png') . '">';
+    function test_asset()
+    {
+        echo '<img src="' . asset('img/ai_logo.png') . '">';
     }
 
-    function test_normaliza_ruta(){        
+    function test_normaliza_ruta()
+    {
         $ruta = '..zz/../xx/yy';
         $rutaNormalizada = Files::normalize($ruta, '/');
 
-        dd($rutaNormalizada); 
+        dd($rutaNormalizada);
     }
 
-    function test_php_marker_replacer(){
+    function test_php_marker_replacer()
+    {
         $html = '<?php echo "Hola mundo" ?>';
         // $html  = XML::replacePHPmarkers($html);
 
@@ -9018,7 +9046,8 @@ class DumbController extends Controller
         // dd($html);
     }
 
-    function test_parse_text_nodes(){
+    function test_parse_text_nodes()
+    {
         $html = '</li>
         <li class="nav-item">
             <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank" style="color:red">
@@ -9057,7 +9086,8 @@ class DumbController extends Controller
         dd($nodes);
     }
 
-    function test_replacer(){
+    function test_replacer()
+    {
         $code = '</li>
         <li class="nav-item">
             <a class="nav-link d-inline-flex align-items-center" href="https://shuffle.dev/components/bootstrap?utm_source=bootstrap&amp;utm_medium=class-list" rel="noopener" target="_blank" style="color:red">
@@ -9098,7 +9128,8 @@ class DumbController extends Controller
         dd($code);
     }
 
-    function test_replacer_2(){
+    function test_replacer_2()
+    {
         $code = file_get_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks_copy-ok.php');
 
         $code = HTML::insertTranslator($code);
@@ -9106,23 +9137,25 @@ class DumbController extends Controller
         file_put_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks.php', $code);
     }
 
-    function test_feet_inch_conversion(){
+    function test_feet_inch_conversion()
+    {
         dd(
             Messurements::toInches(5, 6)
         );
     }
 
-    function test_mail_wp_remote(){
+    function test_mail_wp_remote()
+    {
         $email   = 'boctulus@gmail.com';
-        $subject = 'Prueba test '. rand(9999,999999);
+        $subject = 'Prueba test ' . rand(9999, 999999);
         $content = 'Hola! 
 
-        Este es un contenido de <b>prueba en negrita</b> #'.rand(9999,999999) . '
+        Este es un contenido de <b>prueba en negrita</b> #' . rand(9999, 999999) . '
 
         Un saludo!';
 
         $logo    = 'assets/img/logo.png';
-        
+
         $url     = 'https://cafesguilis.com/api/wp_mail/send';
 
 
@@ -9142,12 +9175,13 @@ class DumbController extends Controller
         dd($res);
     }
 
-        /////////////////////
+    /////////////////////
 
     /*
         Agregar prefijo a CREATE TABLE
     */
-    function test(){
+    function test()
+    {
         // Ejemplo de uso
         dd(
             Model::addPrefix("CREATE TABLE Orders (
@@ -9199,21 +9233,24 @@ class DumbController extends Controller
             MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;")
         );
     }
-   
-    function test_error_log(){               
+
+    function test_error_log()
+    {
         error_log('HERE');
         error_log("You messed up!\r\n", 3, LOGS_PATH . "my-errors.log");
     }
 
-    function test_memory_solution(){
-        System::registerStats(true, false); 
+    function test_memory_solution()
+    {
+        System::registerStats(true, false);
 
         // register_shutdown_function(function(){
         //    dd("FINNNNNNNNN");
         // });
     }
 
-    function is_alive(){
+    function is_alive()
+    {
         $pid = 4804;
 
         dd(System::isProcessAlive($pid), 'Running?');
@@ -9247,7 +9284,7 @@ class DumbController extends Controller
         chdir(ROOT_PATH);
         $pid = System::runInBackground($cmd);
 
-        dd($pid, 'pid');    
+        dd($pid, 'pid');
     }
 
     function test_background_task_2()
@@ -9349,10 +9386,10 @@ class DumbController extends Controller
         $queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
         $queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
         $queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
-    }   
+    }
 
 
-    
+
     /*
         Hacer como comando MAKE     ------------------------ revisar !!!
 
@@ -9383,8 +9420,9 @@ class DumbController extends Controller
         ]);
     }
 
-    
-    function just_asdf(){
+
+    function just_asdf()
+    {
         $urls = <<<URLS
         https://terrafunds.ca/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1
         https://terrafunds.ca/wp-content/plugins/terrafunds-tax-calculator/js/js/numeral.min.js?ver=6.3.2
@@ -9400,11 +9438,12 @@ class DumbController extends Controller
         Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
     }
 
-    
+
     /*
         Test de shortcode
     */
-    function rating_slider(){        
+    function rating_slider()
+    {
         $sc = new StarRatingShortcode();
 
         render($sc->rating_slider());
@@ -9419,8 +9458,9 @@ class DumbController extends Controller
 
         render($sc->rating_table());
     }
-    
-    function test_random_replacer(){
+
+    function test_random_replacer()
+    {
         // Ejemplo de uso
         $originalText = "Ho appena ricevuto il mio ordine di scarpe da questo sito e sono davvero soddisfatta! La qualità e il design sono incredibili e il prezzo è stato molto conveniente. Consiglio vivamente questo negozio per chiunque sia alla ricerca di scarpe eleganti e di buona qualità.";
 
@@ -9431,12 +9471,12 @@ class DumbController extends Controller
     }
 
     function test_it_gramamar_anal()
-    {        
+    {
         dd(ItalianGrammarAnalyzer::getGender("I tessuti sono di alta qualità e si vedono e si sentono, molto soddisfatto.")); // m
         dd(ItalianGrammarAnalyzer::getGender("I tessuti sono di alta qualità e si vedono e si sentono, soddisfatto.")); // n -- mal
         exit;
 
-        dd(ItalianGrammarAnalyzer::getGender("La qualità degli abiti è eccellente e ho trovato un bellissimo paio di scarpe per mio marito. Servizio impeccabile.")); 
+        dd(ItalianGrammarAnalyzer::getGender("La qualità degli abiti è eccellente e ho trovato un bellissimo paio di scarpe per mio marito. Servizio impeccabile."));
         dd(ItalianGrammarAnalyzer::getGender("Oggi sono molto felice")); // n --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono soddisfatta"));  // f  --ok
         dd(ItalianGrammarAnalyzer::getGender("Con questo produtto sono molto soddisfatta")); // f --ok
@@ -9453,36 +9493,37 @@ class DumbController extends Controller
 
         exit;
 
-        for ($i=0; $i<50; $i++){
+        for ($i = 0; $i < 50; $i++) {
             $result = RandomGenerator::get(['A' => 1, 'B' => 100]);
             dd($result, null, false);
         }
-       
     }
 
     // OK 
-    function test_openai_1(){
+    function test_openai_1()
+    {
         $chat = new OpenAI();
 
         $chat->addContent('Hola, ¿cómo estás?');
-        $res = $chat->exec();    
+        $res = $chat->exec();
         dd($res);
     }
 
-    function test_openai_2(){
+    function test_openai_2()
+    {
         $chat = new OpenAI();
 
         $chat->client
-        ->cache(120);
+            ->cache(120);
 
-        $chat->addContent('Hola, ¿cómo estás hoy?');       
-        $res = $chat->exec('gpt-4');    
+        $chat->addContent('Hola, ¿cómo estás hoy?');
+        $res = $chat->exec('gpt-4');
 
         dd($res);
     }
-   
-    function test_lflfglfg(){     
-       
+
+    function test_lflfglfg()
+    {
     }
 
     /*
@@ -9495,17 +9536,18 @@ class DumbController extends Controller
         render($sc->counter());
     }
 
-    function test_openai_3(){
+    function test_openai_3()
+    {
         $chat = new OpenAI();
 
         $chat->addContent('Todos los elementos de la tabla periodica con sus estados de oxidacion');
-        
+
         $chat->setParams([
             "max_tokens"      => 200,
             "temperature"     => 0.5
         ]);
 
-        $res = $chat->exec();    
+        $res = $chat->exec();
         dd($res);
     }
 
@@ -9531,7 +9573,7 @@ class DumbController extends Controller
         $token = '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';
 
         $url = "https://api.github.com/repos/$user/$repo/commits";
-        
+
         $headers = [
             'Authorization' => $token,
             'User-Agent'    => 'Awesome-Octocat-App',
@@ -9544,7 +9586,8 @@ class DumbController extends Controller
         );
     }
 
-    function test_exec_at(){
+    function test_exec_at()
+    {
         dd(System::execAt("dir", "c:\windows"));
     }
 
@@ -9555,16 +9598,17 @@ class DumbController extends Controller
         dd(
             PHPLexicalAnalyzer::getFunctionNames($code)
         );
-
     }
 
-    function test_github_lib(){
+    function test_github_lib()
+    {
         dd(
             GitHub::diff(ROOT_PATH, 'D:\www\apis')
         );
     }
-    
-    function test_m(){
+
+    function test_m()
+    {
         // $git_installed = Memoization::memoize('git executable', function() {
         //     return at();
         // });
@@ -9583,14 +9627,15 @@ class DumbController extends Controller
 
         // dd($git_installed);
 
-        $git_log = Memoization::memoize('git log', function() {
+        $git_log = Memoization::memoize('git log', function () {
             return System::execAtRoot("git log");
-        }, 3600 );
+        }, 3600);
 
-        dd($git_log);        
+        dd($git_log);
     }
 
-    function test_set_transient(){
+    function test_set_transient()
+    {
         set_cache_driver(InMemoryCache::class);
 
         set_transient('time', at(), 10);
@@ -9600,7 +9645,8 @@ class DumbController extends Controller
         $this->test_get_transient();
     }
 
-    function test_get_transient(){
+    function test_get_transient()
+    {
         set_cache_driver(InMemoryCache::class);
 
         dd(
@@ -9611,7 +9657,8 @@ class DumbController extends Controller
     /*
         Con este formato se envia de forma temporal a otra URL
     */
-    function ret_307(){
+    function ret_307()
+    {
         response()->redirect('http://yahoo.es', 307);
 
         // exit;
@@ -9620,22 +9667,24 @@ class DumbController extends Controller
         // exit();
     }
 
-    function asdgtyt(){
+    function asdgtyt()
+    {
         dd(
             Strings::slug('lo que EL viento se llevó    de España 2022')
         );
     }
-    
-    function ciudades_cl(){
-        define ('ABSPATH'  , 'D:\\www\\woo5\\');
-        define ('PLUGINDIR', 'wp-content\\plugins');
+
+    function ciudades_cl()
+    {
+        define('ABSPATH', 'D:\\www\\woo5\\');
+        define('PLUGINDIR', 'wp-content\\plugins');
 
         // set_template('templates\adminlte_tpl.php');
-       
+
         new CiudadesCLShortcode();
     }
 
-    
+
     function csv_debug1()
     {
         $path = 'D:\Desktop\SANDRA ES BeKIND\PRODUCTOS\productos.csv';
@@ -9643,7 +9692,7 @@ class DumbController extends Controller
 
         $rows = Files::getCSV($path)['rows'];
 
-        foreach ($rows as $key => $row) {           
+        foreach ($rows as $key => $row) {
             dd($row, $key);
             exit;
         }
@@ -9658,7 +9707,7 @@ class DumbController extends Controller
             'id', 'name'
         ])['rows'];
 
-        foreach ($rows as $key => $row) {           
+        foreach ($rows as $key => $row) {
             dd($row, $key);
             exit;
         }
@@ -9676,12 +9725,13 @@ class DumbController extends Controller
             'nuevo_campo-2' => 'def_val-2'
         ])['rows'];
 
-        foreach ($rows as $key => $row) {           
+        foreach ($rows as $key => $row) {
             dd($row, $key);
         }
     }
 
-    function test_arr_key_repl(){
+    function test_arr_key_repl()
+    {
         // Ejemplo de uso
         $miArray = [
             [
@@ -9704,14 +9754,14 @@ class DumbController extends Controller
         // Mostrar el array transformado
         dd($arrayTransformado);
     }
-    
+
     /*
         Importante: scope de "use"
     */
     function test_use_scope()
     {
         $x = 5;
-     
+
         $fn = function () use ($x) {
             $x = $x * 2;
         };
@@ -9736,7 +9786,7 @@ class DumbController extends Controller
 
     function test_read_csv()
     {
-        System::registerStats(true, false); 
+        System::registerStats(true, false);
 
         $path = 'D:\Desktop\SANDRA ES BeKIND\PRODUCTOS\productos.csv';
 
@@ -9750,22 +9800,22 @@ class DumbController extends Controller
     */
     function test_read_csv_2()
     {
-        System::registerStats(true, false); 
+        System::registerStats(true, false);
 
         $path = 'C:\Users\jayso\OneDrive\Documentos\customers-2000000.csv';
 
         global $emails_ending_org;
         global $processed;
 
-        Files::processCSV($path, ',', true, function($row){
+        Files::processCSV($path, ',', true, function ($row) {
             // Ex.
             global $emails_ending_org, $processed;
 
-            if (Strings::endsWith('.org', $row['Email'])){
+            if (Strings::endsWith('.org', $row['Email'])) {
                 $emails_ending_org++;
                 // dd($row['Email']);
             }
-            
+
             $processed++;
         });
 
@@ -9775,15 +9825,17 @@ class DumbController extends Controller
     }
 
 
-    function test_read_csv_3(){
-        $archivo = 'D:\www\woo4' . '/wp-content/pekeinventario/articulosweb.txt'; 
+    function test_read_csv_3()
+    {
+        $archivo = 'D:\www\woo4' . '/wp-content/pekeinventario/articulosweb.txt';
 
-        Files::processCSV($archivo, ';', true, function($p) { 
+        Files::processCSV($archivo, ';', true, function ($p) {
             dd($p, 'P (por procesar)');
-        }, null ,36332,5);  
+        }, null, 36332, 5);
     }
 
-    function test_parallex(){
+    function test_parallex()
+    {
         $csv_path     = ETC_PATH . 'pekeinventario/articulosweb.txt';
         $min_t_locked = 3;
         $max_t_locked = 5;
@@ -9793,28 +9845,29 @@ class DumbController extends Controller
 
         $px = new Parallex(new Sync(), $min_t_locked, $max_t_locked);
 
-        if ($px->getOffset() == -1){
-            if (is_cli()){
+        if ($px->getOffset() == -1) {
+            if (is_cli()) {
                 dd("COMPLETED LOCKED VIA NEGATIVE OFFSET UNTIL CRON UNLOCK [!]");
-            }   
-    
+            }
+
             return;
         }
 
-        if (is_cli()){
+        if (is_cli()) {
             // return;
-        } 
+        }
 
         /*
             Paso el control al Task Manager
         */
-    
+
         $px->run($limit);
 
         dd($px->getState(), 'S');
     }
 
-    function test_nit_co(){
+    function test_nit_co()
+    {
         // Ejemplos de uso
         $valid_nits = ['901143974', '9005726197', '900218578', '9009752417', '9009752415'];
         foreach ($valid_nits as $nit) {
@@ -9826,26 +9879,28 @@ class DumbController extends Controller
         }
     }
 
-    function get_users(){
+    function get_users()
+    {
         $url = 'https://taxes4pros.com/wp-json/wp/v2/users';
 
         $client = new ApiClient();
         $client
 
-        /*
+            /*
             Seteo parámetos
         */
-        ->disableSSL()
-        ->followLocations()
-        ->request($url, 'GET');        
+            ->disableSSL()
+            ->followLocations()
+            ->request($url, 'GET');
 
         dd($client->getStatus(), 'STATUS');
         dd($client->getError(), 'ERROR');
         // dd($client->getHeaders(), 'HEADERS');
-        dd($client->getResponse(true), 'RES'); 
+        dd($client->getResponse(true), 'RES');
     }
 
-    function tutorlms_courses_get(){
+    function tutorlms_courses_get()
+    {
         $url  = 'https://taxes4pros.com/wp-json/tutor/v1/courses?order=desc&orderby=ID&paged=1';
 
         $user = 'key_f7a2062021f6a2218f96818631bf9a4c';
@@ -9854,21 +9909,22 @@ class DumbController extends Controller
         $client = new ApiClient();
         $client
 
-        /*
+            /*
             Seteo parámetos
         */
-        ->disableSSL()
-        ->followLocations()
-        ->setBasicAuth($user, $pass)
-        ->request($url, 'GET');        
+            ->disableSSL()
+            ->followLocations()
+            ->setBasicAuth($user, $pass)
+            ->request($url, 'GET');
 
         dd($client->getStatus(), 'STATUS');
         dd($client->getError(), 'ERROR');
         // dd($client->getHeaders(), 'HEADERS');
-        dd($client->getResponse(true), 'RES'); 
+        dd($client->getResponse(true), 'RES');
     }
 
-    function tutorlms_enrollment(){
+    function tutorlms_enrollment()
+    {
         $uid       = 168;
         $course_id = 17515;
 
@@ -9878,30 +9934,31 @@ class DumbController extends Controller
         $pass = 'secret_7b11f511f92355956e77aeaa2d9bba520b8e86025dbfe0ef6e94c33e885ccb7c';
 
         $client = new ApiClient();
-        
+
         $data = [
-            'user_id'   => $uid,   
-            'course_id' => $course_id, 
+            'user_id'   => $uid,
+            'course_id' => $course_id,
         ];
 
         $client
 
-        /*
+            /*
             Seteo parámetos
         */
-        ->disableSSL()
-        ->followLocations()
-        ->setBasicAuth($user, $pass)
-        ->setBody($data)
-        ->request($url, 'POST');        
+            ->disableSSL()
+            ->followLocations()
+            ->setBasicAuth($user, $pass)
+            ->setBody($data)
+            ->request($url, 'POST');
 
         dd($client->getStatus(), 'STATUS');
         dd($client->getError(), 'ERROR');
         dd($client->getHeaders(), 'HEADERS');
-        dd($client->getResponse(true), 'RES'); 
+        dd($client->getResponse(true), 'RES');
     }
 
-    function test_decode_xml(){
+    function test_decode_xml()
+    {
         $xml = '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><soap:Fault><faultcode>soap:Server</faultcode><faultstring>Server was unable to process request. ---&gt; Error: La bodega no existe</faultstring><detail /></soap:Fault></soap:Body></soap:Envelope>';
 
         dd(XML::toArray($xml)[4]['FAULTSTRING'][0], 'XML -> ARR');
@@ -9911,14 +9968,15 @@ class DumbController extends Controller
     /*
         Test de shortcode
     */
-    function nick(){        
+    function nick()
+    {
         set_template('templates\tpl_bt5.php');
 
         $sc = new EatLeaf();
 
         render($sc->index());
     }
-    
+
     function nick_get_ids()
     {
         $html = Files::getContent('D:\Desktop\EAT-LEAF (NICK)\#SECTIONS\section-1.html');
@@ -9939,7 +9997,8 @@ class DumbController extends Controller
         dd("Done.");
     }
 
-   function test_xml_decode(){
+    function test_xml_decode()
+    {
         $xml = '
         <NewDataSet>
             <Table>
@@ -9955,51 +10014,57 @@ class DumbController extends Controller
         dd(XML::toArray($xml), 'XML -> ARR');
     }
 
-    function test_progress(){
+    function test_progress()
+    {
         $pr = new ProgressShortcode();
-        render($pr->index());        
+        render($pr->index());
     }
 
-    function test_importer_progress(){
+    function test_importer_progress()
+    {
         $pr = new ImporterShortcode();
-        render($pr->index());        
+        render($pr->index());
     }
 
-    function test_sanitize_old_school(){
+    function test_sanitize_old_school()
+    {
         $path = 'D:\\Desktop\\TUTOR LMS -2 (FER ANCONA)\\CSVs\prod-import\\user_export.txt';
 
         $str  = file_get_contents($path);
 
         $csv = Files::getCSV($path);
-          
+
         dd($csv, 'ROW');
     }
 
-    function test_sanitize(){
+    function test_sanitize()
+    {
         $path = 'D:\\Desktop\\TUTOR LMS -2 (FER ANCONA)\\CSVs\prod-import\\user_export.txt';
 
         $str  = file_get_contents($path);
 
-        Files::processCSV($path, ',', true, function($row){
+        Files::processCSV($path, ',', true, function ($row) {
             // Procesamiento del row
-           
+
             dd($row, 'ROW');
         });
     }
 
-    function test_accent_conv(){
+    function test_accent_conv()
+    {
         $str = 'Cóurse';
 
-    	$str = Strings::sanitize($str);
+        $str = Strings::sanitize($str);
 
         dd($str); // Course
     }
 
-    function identity_cms_theme(){
+    function identity_cms_theme()
+    {
         /*
             Clasificar incluyendo los no identificados
         */
-  
+
         $list = <<<LIST
         lacuracaonline.com
         mabeglobal.com
@@ -10025,51 +10090,120 @@ class DumbController extends Controller
 
         // $urls = ['mabeglobalpanama.com'];
 
-        foreach ($urls as $url){
+        foreach ($urls as $url) {
             dd(
-                CMSScanner::identify($url)
-            , $url);
+                CMSScanner::identify($url),
+                $url
+            );
         }
     }
 
-    function test_easy_table_1(){
-        $table = new EasyHTMLTable('table' ,'style="background-color: silver"');
-        $table->setHead('th_blue',['name','lastname','age']);        
+    function test_easy_table_1()
+    {
+        $table = new EasyHTMLTable('table', 'style="background-color: silver"');
+        $table->setHead('th_blue', ['name', 'lastname', 'age']);
         $table->setRows([
-            ['name'=>'John','lastname'=>'Doe','age'=>35],
-            ['name'=>'Ann','lastname'=>'White','age'=>23],
-            ['name'=>'Pablo','lastname'=>'Bozzolo','age'=>41]
-        ]);                
-        
-        $table->addRow(['name'=>'Pepito','lastname'=>'Ferandez','age'=>21]);  
-        $table->addRow(['name'=>'Fulano','lastname'=>'Jimenez','age'=>21, 'id' => 8]);  
+            ['name' => 'John', 'lastname' => 'Doe', 'age' => 35],
+            ['name' => 'Ann', 'lastname' => 'White', 'age' => 23],
+            ['name' => 'Pablo', 'lastname' => 'Bozzolo', 'age' => 41]
+        ]);
+
+        $table->addRow(['name' => 'Pepito', 'lastname' => 'Ferandez', 'age' => 21]);
+        $table->addRow(['name' => 'Fulano', 'lastname' => 'Jimenez', 'age' => 21, 'id' => 8]);
 
         // optional
-        $table->setRowClases(['info','','warning']);    
-        
-        echo $table; 
+        $table->setRowClases(['info', '', 'warning']);
+
+        echo $table;
     }
 
-    function test_cookies_set(){
+    function test_cookies_set()
+    {
         // Crear una cookie que caduque en 60 segundos
         $caducidad = time() + 10;
         Cookie::set('idioma', 'es', $caducidad);
     }
-    
-    function test_cookies_get(){
+
+    function test_cookies_get()
+    {
         // Obtener el valor de la cookie
         dd(Cookie::get('idioma'), 'IDIOMA'); // Output: es
     }
 
-    function test_cookies_get_all(){
+    function test_cookies_get_all()
+    {
         // Obtener el valor de la cookie
-        dd(Cookie::get(), 'COOKIES'); 
+        dd(Cookie::get(), 'COOKIES');
     }
-    
-    function test_cookies_delete(){
+
+    function test_cookies_delete()
+    {
         // Borrar la cookie
         Cookie::delete('idioma');
         dd("COOKIE ELIMINADA");
+    }
+
+    function test_radios_1()
+    {
+    ?>
+        <table>
+            <td data-title="Envío">
+                <ul id="shipping_method" class="woocommerce-shipping-methods">
+                    <li>
+                        <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_flat_rate8" value="flat_rate:8" class="shipping_method" checked="checked"><label for="shipping_method_0_flat_rate8">Moto CABA: <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">AR$</span>98,500</bdi></span></label>
+                    </li>
+                    <li>
+                        <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_flat_rate7" value="flat_rate:7" class="shipping_method"><label for="shipping_method_0_flat_rate7">Moto GRAN BUENOS AIRES: <span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">AR$</span>1,970,000</bdi></span></label>
+                    </li>
+                    <li>
+                        <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_local_pickup15" value="local_pickup:15" class="shipping_method"><label for="shipping_method_0_local_pickup15">Recogida local</label>
+                    </li>
+                </ul>
+
+
+            </td>
+        </table>
+    <?php
+    }
+
+    function test_radios_2(){
+    ?>
+        <ul class="wc_payment_methods payment_methods methods">
+            <li class="wc_payment_method payment_method_bacs">
+                <input id="payment_method_bacs" type="radio" class="input-radio" name="payment_method" value="bacs" checked="checked" data-order_button_text="">
+
+                <label for="payment_method_bacs">
+                    Transferencia bancaria directa </label>
+                <div class="payment_box payment_method_bacs">
+                    <p>Realiza tu pago directamente en nuestra cuenta bancaria. Por favor, usa el número del pedido como referencia de pago. Tu pedido no se procesará hasta que se haya recibido el importe en nuestra cuenta.</p>
+                </div>
+            </li>
+            <li class="wc_payment_method payment_method_cheque">
+                <input id="payment_method_cheque" type="radio" class="input-radio" name="payment_method" value="cheque" data-order_button_text="">
+
+                <label for="payment_method_cheque">
+                    Pagos por cheque </label>
+                <div class="payment_box payment_method_cheque" style="display:none;">
+                    <p>Por favor, envía un cheque a Nombre de la tienda, Calle de la tienda, Ciudad de la tienda, Provincia/País de la tienda, Código postal de la tienda.</p>
+                </div>
+            </li>
+            <li class="wc_payment_method payment_method_cod">
+                <input id="payment_method_cod" type="radio" class="input-radio" name="payment_method" value="cod" data-order_button_text="">
+
+                <label for="payment_method_cod">
+                    Contra reembolso </label>
+                <div class="payment_box payment_method_cod" style="display:none;">
+                    <p>Paga en efectivo en el momento de la entrega.</p>
+                </div>
+            </li>
+            <li class="wc_payment_method payment_method_mobbex">
+                <input id="payment_method_mobbex" type="radio" class="input-radio" name="payment_method" value="mobbex" data-order_button_text="">
+
+                <label for="payment_method_mobbex">
+                    Pagar con Mobbex <img src="https://pablo.tol.ar/wp-content/plugins/woocommerce-mobbex/icon.png" alt="Pagar con Mobbex"> </label>
+            </li>
+        </ul>
+        <?php
     }
 
     /*
@@ -10088,16 +10222,16 @@ class DumbController extends Controller
         ];
 
         $jar = new CookieJar('woo5.lan-cookies.txt');
-        
+
         // Crea una instancia de la clase ApiClient
         $cli = ApiClient::instance()
-        ->setUserAgent(ApiClient::USER_AG_FIREFOX);
+            ->setUserAgent(ApiClient::USER_AG_FIREFOX);
 
         $cli->useCookieJar($jar);
 
         $cli
-        ->followLocations()
-        ->withoutStrictSSL();
+            ->followLocations()
+            ->withoutStrictSSL();
 
         // Realiza la solicitud POST para iniciar sesión
         $cli->post("{$login_data['site_url']}/{$login_data['login_page']}", [
@@ -10124,7 +10258,7 @@ class DumbController extends Controller
             dd($cli->getError(), 'ERROR');
             dd($cli->getResponse(), 'RES');
             dd($cli->getHeaders(), 'HEADERS');
-       
+
             exit;
         }
 
@@ -10133,8 +10267,8 @@ class DumbController extends Controller
         $cli->setUrl("{$login_data['site_url']}/my-account/edit-address/");
 
         $page_login = $cli
-        ->get()
-        ->getResponse(false);
+            ->get()
+            ->getResponse(false);
 
         // Verifica si la solicitud de la página de la cuenta fue exitosa
         if ($page_login['http_code'] === 200) {
@@ -10155,21 +10289,21 @@ class DumbController extends Controller
             'log' => 'pablo@tiendaonline.com.ar',
             'pwd' => 'pablo123$=Nn',
             'rememberme' => 'forever',
-            'redirect_to' => 'https://torrepadregourmet.es/my-account/', 
+            'redirect_to' => 'https://torrepadregourmet.es/my-account/',
             'redirect_to_automatic' => '1'
         ];
 
         $jar = new CookieJar('cookies-torrepadregourmet.es.txt');
-        
+
         // Crea una instancia de la clase ApiClient
         $cli = ApiClient::instance()
-        ->setUserAgent(ApiClient::USER_AG_FIREFOX);
+            ->setUserAgent(ApiClient::USER_AG_FIREFOX);
 
         $cli->useCookieJar($jar);
 
         $cli
-        ->followLocations()
-        ->withoutStrictSSL();
+            ->followLocations()
+            ->withoutStrictSSL();
 
         // Realiza la solicitud POST para iniciar sesión
         $cli->post("{$login_data['site_url']}/{$login_data['login_page']}", $login_data);
@@ -10192,7 +10326,7 @@ class DumbController extends Controller
             dd($cli->getHeaders(), 'HEADERS');
 
             dd($cli->dump());
-       
+
             exit;
         }
 
@@ -10201,8 +10335,8 @@ class DumbController extends Controller
         $cli->setUrl("{$login_data['site_url']}/my-account/orders/");
 
         $page_login = $cli
-        ->get()
-        ->getResponse(false);
+            ->get()
+            ->getResponse(false);
 
         // Verifica si la solicitud de la página de la cuenta fue exitosa
         if ($page_login['http_code'] === 200) {
@@ -10214,35 +10348,40 @@ class DumbController extends Controller
         }
     }
 
-    
+
     // OK
-    function test_dom_crawler_p(){
+    function test_dom_crawler_p()
+    {
         StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 30);
-        
+
         dd(StratoScraper::getProduct('/Products/dtvp1153x2'));
     }
 
     // OK
-    function test_dom_crawler_cats(){
+    function test_dom_crawler_cats()
+    {
         StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 30);
         $html = StratoScraper::getHTML('');
 
         dd(StratoScraper::getCategoList($html));
     }
 
-    function test_dom_crawler_cat(){   
+    function test_dom_crawler_cat()
+    {
         $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 30);
 
         dd(StratoScraper::getCatego($html));
     }
 
-    function test_dom_crawler_cat_paginator(){   
+    function test_dom_crawler_cat_paginator()
+    {
         $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 30);
 
         dd(StratoScraper::getPaginator($html));
     }
 
-    function test_dom_crawler_product_links(){
+    function test_dom_crawler_product_links()
+    {
         $page = 3;
 
         StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 30);
@@ -10250,10 +10389,9 @@ class DumbController extends Controller
         $url  = StratoScraper::getCategoryPageURL('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', $page);
 
         $html = StratoScraper::getHTML($url, 3600 * 24 * 30);
-        
+
         dd(
             StratoScraper::getProductLinks($html)
         );
     }
-
 }   // end class
