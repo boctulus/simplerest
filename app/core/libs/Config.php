@@ -56,7 +56,7 @@ class Config
         }
 
         // Split the property into an array of keys
-        $keys = explode('.', $property);
+        $keys      = explode('.', $property);
         $tempArray = &static::$data;
 
         // Traverse the nested array to set the final value
@@ -69,4 +69,5 @@ class Config
 
         $tempArray = $value;
     }
+    
 }

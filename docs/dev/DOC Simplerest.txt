@@ -149,6 +149,51 @@ Ej:
 		Config::get('db_connections.main.tb_prefix')
 	);
 
+Esto es especialmente util si se quisiera agregar una nueva conexion a la base de datos en tiempo de ejecucion.
+
+Ej:
+
+	Config::set('db_connections.robot', [            
+		'host'		=> env('DB_HOST', '127.0.0.1'),
+		'port'		=> env('DB_PORT'),
+		'driver' 	=> env('DB_CONNECTION'),
+		'db_name' 	=> 'robot',
+		'user'		=> env('DB_USERNAME'), 
+		'pass'		=> env('DB_PASSWORD'),
+		'charset'	=> 'utf8',
+		'pdo_options' => [
+			\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+			\PDO::ATTR_EMULATE_PREPARES => false
+		]
+	]);
+
+	DB::getConnection('robot');
+
+	dd(
+		table('robot_execution')->get()
+	);
+
+Podria inclusive encasularse convenientemente como:
+
+	protected function setupConnection(){
+        Config::set('db_connections.robot', [            
+            'host'		=> env('DB_HOST', '127.0.0.1'),
+            'port'		=> env('DB_PORT'),
+            'driver' 	=> env('DB_CONNECTION'),
+            'db_name' 	=> 'robot',
+            'user'		=> env('DB_USERNAME'), 
+            'pass'		=> env('DB_PASSWORD'),
+            'charset'	=> 'utf8',
+            'pdo_options' => [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_EMULATE_PREPARES => false
+            ]
+        ]);
+
+        DB::getConnection('robot');
+    }
+
+
 ### Archivo databases.php
 
 En el archivo config/databases.php hay varias definiciones muy importantes que son inyectadas en la configuración.
