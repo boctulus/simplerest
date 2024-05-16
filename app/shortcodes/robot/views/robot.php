@@ -15,8 +15,11 @@
             </div>
         </div>
         <div class="tab-pane fade" id="resultado" role="tabpanel" aria-labelledby="resultado-tab">
-            <div class="mt-3 row">
-                <div class="col-md-6">
+            <div class="mt-3">
+                <div class="mb-3">
+                    <img src="<?= shortcode_asset(__DIR__ . '/img/no-image.jpg') ?>" alt="Resultado" class="img-fluid w-100">
+                </div>
+                <div>
                     <table class="table">
                         <thead>
                             <tr>
@@ -27,12 +30,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Aquí puedes agregar dinámicamente las filas de la tabla con los datos -->
+                            <td>xxx</td>
+                            <td>xxx</td>
+                            <td>xxx</td>
+                            <td>xxx</td>
                         </tbody>
                     </table>
-                </div>
-                <div class="col-md-6">
-                    <img src="image_placeholder.png" alt="Resultado" class="img-fluid">
                 </div>
             </div>
         </div>
