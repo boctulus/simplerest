@@ -1,0 +1,231 @@
+/*
+    Fuente EBGaramond-Regular
+*/
+
+/* Define la fuente EBGaramond-Regular */
+@font-face {
+    font-family: 'EBGaramond-Regular';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdJtfMD6Y/0/EBGaramond-Regular.ce6af642f469dceba18a5.31c65729847dd0d8831d50625627d1f2.woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+/* Define la fuente EBGaramond-SemiBold */
+@font-face {
+    font-family: 'EBGaramond-SemiBold';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdJtfMD6Y/0/EBGaramond-SemiBold.919b37dab70e3c2c1a43.b0d3e1551b4123c2a6d64f77816d0e7e.woff2');
+    font-style: normal;
+    font-weight: 700;
+}
+
+/* Define la fuente EBGaramond-Italic */
+@font-face {
+    font-family: 'EBGaramond-Italic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdJtfMD6Y/0/EBGaramond-Italic.c3bb4571bda0ae9e2e43b9.0a35f610c91fd3205bc8815484a71655.woff2');
+    font-style: italic;
+    font-weight: 400;
+}
+
+/*
+    Fuente Montserrat
+*/
+
+/* Define la fuente Montserrat-Regular */
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-Regular.b1c97ca3ccb1538ad290d.881b8da5ad9b82b143ab37dcdf069c4c.woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+/* Define la fuente Montserrat-Bold */
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-Bold.541101364a6cca2fe958b78e.527cd5a6be21d4e008281f52ae03e6de.woff2');
+    font-style: normal;
+    font-weight: 700;
+}
+
+/* Define la fuente Montserrat-Italic */
+@font-face {
+    font-family: 'Montserrat-Italic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-Italic.9041417ec1323314c149c4.e8e51b9875286101e41224d1f8f57146.woff2');
+    font-style: italic;
+    font-weight: 400;
+}
+
+/* Define la fuente Montserrat-BoldItalic */
+@font-face {
+    font-family: 'Montserrat-BoldItalic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-BoldItalic.2685c0048a0abbcece.ccfa3463500b1d2425324b3a1a304119.woff2');
+    font-style: italic;
+    font-weight: 700;
+}
+
+/* Define la fuente Montserrat-Thin */
+@font-face {
+    font-family: 'Montserrat-Thin';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-Thin.112b7f7a89b95431822667a3.b9d3823184fbb6d5a9d5804d114b70ba.woff2');
+    font-style: normal;
+    font-weight: 100;
+}
+
+/* Define la fuente Montserrat-ThinItalic */
+@font-face {
+    font-family: 'Montserrat-ThinItalic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-ThinItalic.e8ec302a2d98e67c12.b33f6386bd461ec492dd56577e13136c.woff2');
+    font-style: italic;
+    font-weight: 100;
+}
+
+/* Define la fuente Montserrat-ExtraLight */
+@font-face {
+    font-family: 'Montserrat-ExtraLight';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-ExtraLight.e5f668e77279a41232.b09eaaf9341f54a150766b674dd4dd66.woff2');
+    font-style: normal;
+    font-weight: 200;
+}
+
+/* Define la fuente Montserrat-ExtraLightItalic */
+@font-face {
+    font-family: 'Montserrat-ExtraLightItalic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-ExtraLightItalic.2e58571a5552.c076bd8c37058ebdedabdda5c2d6b111.woff2');
+    font-style: italic;
+    font-weight: 200;
+}
+
+/* Define la fuente Montserrat-Light */
+@font-face {
+    font-family: 'Montserrat-Light';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-Light.0e307add03dade7539d0c10.9f211f1e580dd0c34c98242b67b454a1.woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+
+/* Define la fuente Montserrat-LightItalic */
+@font-face {
+    font-family: 'Montserrat-LightItalic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-LightItalic.ffcb10da6ceaf8d98.2ffd130498e37c9f925c671e0342f1e6.woff2');
+    font-style: italic;
+    font-weight: 300;
+}
+
+/* Define la fuente Montserrat-Medium */
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-Medium.a9d5fbd6b24346eeda92d8.b13d468f88f904752a71651083120b9b.woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+/* Define la fuente Montserrat-MediumItalic */
+@font-face {
+    font-family: 'Montserrat-MediumItalic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-MediumItalic.ae5b72f2e70498d9.2f9ca4e3b153c05839a1665e2deae5bd.woff2');
+    font-style: italic;
+    font-weight: 500;
+}
+
+/* Define la fuente Montserrat-SemiBold */
+@font-face {
+    font-family: 'Montserrat-SemiBold';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-SemiBold.c9710b28cd6952581b6d.10bae089b2dee90878d1d146921cad11.woff2');
+    font-style: normal;
+    font-weight: 600;
+}
+
+/* Define la fuente Montserrat-SemiBoldItalic */
+@font-face {
+    font-family: 'Montserrat-SemiBoldItalic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-SemiBoldItalic.dfac44e926a3ac.5300a700676e268371e3693408559b01.woff2');
+    font-style: italic;
+    font-weight: 600;
+}
+
+/* Define la fuente Montserrat-ExtraBold */
+@font-face {
+    font-family: 'Montserrat-ExtraBold';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-ExtraBold.7917a92969312cfb134.5da2f7e7b5289e2ae1f44d0ac2886371.woff2');
+    font-style: normal;
+    font-weight: 800;
+}
+
+/* Define la fuente Montserrat-ExtraBoldItalic */
+@font-face {
+    font-family: 'Montserrat-ExtraBoldItalic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-ExtraBoldItalic.d0373ff7aec70.b76554414c3fa738aad9e680f54c765d.woff2');
+    font-style: italic;
+    font-weight: 800;
+}
+
+/* Define la fuente Montserrat-Black */
+@font-face {
+    font-family: 'Montserrat-Black';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-Black.1f69958a569d3eeb4829437.5c07b773952ecd9eb4715de302811a45.woff2');
+    font-style: normal;
+    font-weight: 900;
+}
+
+/* Define la fuente Montserrat-BlackItalic */
+@font-face {
+    font-family: 'Montserrat-BlackItalic';
+    src: url('https://s3.amazonaws.com/font-public.canva.com/YAFdtQi73Xs/0/Montserrat-BlackItalic.b0418375225ecfb84.82e327672f883fc5445ed4de237127fd.woff2');
+    font-style: italic;
+    font-weight: 900;
+}
+
+
+.background-image-1 {
+    background-image: url('../img/bg1.jpg'); /* Reemplazado shortcode con URL directa */
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Asegura que esté detrás del contenido */
+}
+
+.background-image-2 {
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Asegura que esté detrás del contenido */
+    background-image: url('../img/bg2.jpg');
+}
+
+.logo-s1 {
+    width: 25%; /* Ocupa un 25% del ancho */
+    max-width: 500px; 
+    position: absolute;
+    top: 15%; /* A 15% del tope */
+    left: 50%; /* Centrado horizontal */
+    transform: translateX(-50%); /* Centrado horizontal */
+}
+
+.logo-s2 {
+    width: 50%; /* Ancho del logo */
+    max-width: 200px; /* Tamaño máximo del logo */
+    align-self: flex-start; /* Centrado vertical del logo en la parte superior */
+    margin-bottom: 20px; /* Espacio entre el logo y el texto */
+}
+
+.title-s1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7rem; 
+    color: #f4f4eb;
+    margin-top: 70px; /* Cambiado a 70px en lugar de 70vh */
+}
+
+@media (min-width: 768px) {
+    .logo-s1 {
+        width: 50%; /* Reducido el tamaño del logo para dispositivos medianos y superiores */
+    }
+}
+
+/* Corrige el cambio de color cerca de 580px, ajusta los valores según necesites */
+@media (max-width: 580px) {
+    .logo-s1 {
+        color: #000; /* Cambia el color del logo para evitar el cambio no deseado */
+    }
+}
+
+
+
