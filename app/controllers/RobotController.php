@@ -8,7 +8,9 @@ use simplerest\core\libs\Env;
 use simplerest\core\Response;
 use simplerest\core\libs\HTTP;
 use simplerest\core\libs\Config;
+use simplerest\core\libs\System;
 use simplerest\core\libs\Strings;
+use simplerest\shortcodes\robot\Robot;
 use simplerest\controllers\MyController;
 
 class RobotController extends MyController
@@ -43,6 +45,10 @@ class RobotController extends MyController
 
     /*
         Crea una orden a ejecutar
+
+        TO-DO
+
+        - La crea pero la debe poner en ejecucion invocando a Python con el script y el archivo de instrucciones
     */
     function order(){
         try {
@@ -58,7 +64,7 @@ class RobotController extends MyController
             $res->sendJson([
                 "message"  => "Orden puesta para ejecucion",                
                 "order"    => $order,
-                "filename" => $file
+                "filename" => "$file.json"
             ]);
 
         } catch (\Exception $e){
@@ -87,7 +93,27 @@ class RobotController extends MyController
 
     function index()
     {
-        dd("Index of ". __CLASS__);                   
+        new Robot();                
+    }
+
+    /*
+        Esta funcionando pero deberia ejecutarlo ahora en segundo plano
+
+        Usar:
+
+        runInBackground(string $cmd, $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null)
+    */
+    function test_py(){
+        $res = System::runInBackground(
+            Env::get('PYTHON_BINARY') . " index.py pablotol.json", 
+            Env::get('ROBOT_PATH') . '/logs/output.txt', 
+            true,
+            null,
+            Env::get('ROBOT_PATH'),
+            true
+        );
+
+        dd($res);
     }
 }
 

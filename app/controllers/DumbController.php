@@ -9277,7 +9277,7 @@ class DumbController extends Controller
     {
         $php = System::getPHP();
         $dir = ROOT_PATH;
-        $cmd = "$php {$dir}com dumb some";
+        $cmd = "$php {$dir}com dumb some_work";
 
         dd($cmd, 'CMD');
 
@@ -9289,7 +9289,7 @@ class DumbController extends Controller
 
     function test_background_task_2()
     {
-        $pid = bg_com("dumb some");
+        $pid = bg_com("dumb some_work");
 
         dd($pid, 'pid');
     }
