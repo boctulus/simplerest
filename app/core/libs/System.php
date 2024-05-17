@@ -109,6 +109,40 @@ class System
         return  $location;
     }
 
+    static function execInBackgroundWindows($filePath, $workingDirectory = null, $arguments = null, bool $hidden = false) 
+    {
+        try {
+            $cmd = "powershell.exe Start-Process -FilePath '$filePath'";
+        
+            // $cmd .= "  -ExecutionPolicy Bypass";
+
+            if ($hidden){
+                $cmd .= " -WindowStyle hidden";
+            }
+
+            if (!empty($workingDirectory)){
+                chdir($workingDirectory);
+                $cmd .= " -WorkingDirectory $workingDirectory";
+            }
+            
+            if (!empty($arguments)){
+                if (is_array($arguments)){
+                    $arguments = implode(' ', $arguments);
+                }
+
+                $cmd .= " -ArgumentList '$arguments'";
+            }
+
+            // $cmd .= " -RedirectStandardOutput '$workingDirectory/logs/log.txt' -RedirectStandardError '$workingDirectory/logs/error-log.txt'";
+
+            exec($cmd, $output, $result_code);
+
+        } catch (\Exception $e){
+           Logger::logError($e);
+        }
+    } 
+
+
     /*
         https://factory.dev/pimcore-knowledge-base/how-to/execute-php-pimcore
 
@@ -140,21 +174,14 @@ class System
             dd(PHP_OS_FAMILY, 'OS');
         }
 
+        $pid = null;
         switch (PHP_OS_FAMILY) {
             case 'Windows':
-                if ($output_path !== null){
-                    $output_path = Files::normalize($output_path);
-                    $cmd .= " >> $output_path";
-                }
-    
-                $WshShell = new \COM("WScript.Shell");
-                $oExec = $WshShell->Exec($cmd);
-                $pid = (int) $oExec->ProcessID;
-                $WshShell = null;
+                static::execInBackgroundWindows($cmd, $working_dir, null, true);
 
                 break;
             case 'Linux':
-                $cmd = ($output_path !== null) ? "nohup nice -n 19 $cmd > $output_path 2>&1 & echo $!" : "nohup nice -n 19 $cmd > /dev/null 2>&1 & echo $!";
+                $cmd = ($output_path !== null) ? "nohup $cmd > $output_path 2>&1 & echo $!" : "nohup $cmd > /dev/null 2>&1 & echo $!";
                 
                 $pid = (int) shell_exec($cmd);                
                 break;
