@@ -109,6 +109,43 @@ class System
         return  $location;
     }
 
+    /*
+        Parsea la salida de exec() en PowerShell en busca del PID
+
+        0 => '',
+        1 => 'Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName',
+        2 => '-------  ------    -----      -----     ------     --  -- -----------',
+        3 => '     20       5      432       2148       0,02  16600   1 python',
+        4 => '',
+        5 => '',
+
+    */
+    static function parseWindowsPID(array $output)
+    {
+        foreach ($output as $lx => $line){
+            // Primero busco cabecera
+            if (Strings::startsWith('Handles', $line) && Strings::endsWith('ProcessName', $line)){
+                $cols = explode(' ', Strings::removeMultipleSpaces(trim($line)));
+
+                $col_pos = false;
+                foreach ($cols as $ix => $col){
+                    if (strtolower($col) == 'id'){
+                        $col_pos = $ix;
+                        $lc = $lx + 2;
+                        continue 2;
+                    }
+                }
+            }  
+            
+            if (isset($lc) && $lx == $lc){
+                $data = explode(' ', Strings::removeMultipleSpaces(trim($line)));
+                return $data[$col_pos];
+            }
+        }
+
+        return null;
+    }
+
     static function execInBackgroundWindows($filePath, $workingDirectory = null, $arguments = null, bool $hidden = false) 
     {
         try {
@@ -135,7 +172,14 @@ class System
 
             // $cmd .= " -RedirectStandardOutput '$workingDirectory/logs/log.txt' -RedirectStandardError '$workingDirectory/logs/error-log.txt'";
 
+            $cmd .= " -PassThru ";
+
             exec($cmd, $output, $result_code);
+
+            Files::varExport($output, ETC_PATH . '/toparse.php');
+
+            // Devolver el PID
+            return !empty($output) ? static::parseWindowsPID($output) : null;
 
         } catch (\Exception $e){
            Logger::logError($e);
@@ -149,8 +193,6 @@ class System
         Ver tambi'en
         https://gist.github.com/damienalexandre/1300820
         https://stackoverflow.com/questions/13257571/call-command-vs-start-with-wait-option
-
-        El envio a $output_path falla en Windows
     */
     static function runInBackground(string $cmd, $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null, bool $debug = false)
     {
@@ -177,7 +219,7 @@ class System
         $pid = null;
         switch (PHP_OS_FAMILY) {
             case 'Windows':
-                static::execInBackgroundWindows($cmd, $working_dir, null, true);
+                $pid = static::execInBackgroundWindows($cmd, $working_dir, null, true);
 
                 break;
             case 'Linux':
