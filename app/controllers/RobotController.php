@@ -62,17 +62,20 @@ class RobotController extends MyController
             $raw   = file_get_contents("php://input");
             $order = json_decode($raw, true);
 
-            $file  = time() . '-' . rand(100,999);            
-            $path  = $this->robot_path . "/instructions/$file.json";
+            $file  = 'order-' . ((string) time()) . '-' . ((string) rand(100,999)) . '.json';            
+            $path  = $this->robot_path . "/instructions/$file";
 
             file_put_contents($path, $raw);
+
+            $pid = System::execInBackgroundWindows(Env::get('PYTHON_BINARY'), Env::get('ROBOT_PATH'), " index.py $file", true);
 
             $res = Response::getInstance();
 
             $res->sendJson([
                 "message"  => "Orden puesta para ejecucion",                
                 "order"    => $order,
-                "filename" => "$file.json"
+                "filename" => $file,
+                "PID"      => $pid
             ]);
 
         } catch (\Exception $e){
@@ -125,31 +128,11 @@ class RobotController extends MyController
         }
     }
 
-    public static function execInBackgroundWindows_Start(string $filePath, string $workingDirectory = null, $arguments = null, &$result_code = null): void
-    {
-        $cmd = "start /B cmd /C $filePath";
-        
-        if (!empty($arguments)) {
-            if (is_array($arguments)) {
-                $arguments = implode(' ', $arguments);
-            }
-            $cmd .= " $arguments";
-        }
-        
-        # $cmd .= " > mylog.txt 2>&1\"";
-        
-        if (!empty($workingDirectory)) {
-            chdir($workingDirectory);
-        }
-    
-        exec($cmd, $output, $result_code);
-    }
-    
-
-    
     function test_py_bg()
     {   
-        System::execInBackgroundWindows(Env::get('PYTHON_BINARY'), Env::get('ROBOT_PATH'), " index.py pablotol.py", true);
+        $pid = System::execInBackgroundWindows(Env::get('PYTHON_BINARY'), Env::get('ROBOT_PATH'), " index.py pablotol.py", true);
+
+        dd($pid, 'PID');
     }
 }
 

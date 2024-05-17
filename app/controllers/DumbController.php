@@ -10394,4 +10394,5 @@ class DumbController extends Controller
             StratoScraper::getProductLinks($html)
         );
     }
+
 }   // end class
