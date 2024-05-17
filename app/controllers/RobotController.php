@@ -12,6 +12,7 @@ use simplerest\core\libs\System;
 use simplerest\core\libs\Strings;
 use simplerest\shortcodes\robot\Robot;
 use simplerest\controllers\MyController;
+use simplerest\core\libs\Logger;
 
 class RobotController extends MyController
 {
@@ -61,9 +62,10 @@ class RobotController extends MyController
             $raw   = file_get_contents("php://input");
             $order = json_decode($raw, true);
 
-            $file  = time() . '-' . rand(100,999);
+            $file  = time() . '-' . rand(100,999);            
+            $path  = $this->robot_path . "/instructions/$file.json";
 
-            file_put_contents($this->robot_path . "/instructions/$file.json", $raw);
+            file_put_contents($path, $raw);
 
             $res = Response::getInstance();
 
@@ -123,24 +125,31 @@ class RobotController extends MyController
         }
     }
 
-    /*
-        Esta funcionando pero deberia ejecutarlo ahora en segundo plano
+    public static function execInBackgroundWindows_Start(string $filePath, string $workingDirectory = null, $arguments = null, &$result_code = null): void
+    {
+        $cmd = "start /B cmd /C $filePath";
+        
+        if (!empty($arguments)) {
+            if (is_array($arguments)) {
+                $arguments = implode(' ', $arguments);
+            }
+            $cmd .= " $arguments";
+        }
+        
+        # $cmd .= " > mylog.txt 2>&1\"";
+        
+        if (!empty($workingDirectory)) {
+            chdir($workingDirectory);
+        }
+    
+        exec($cmd, $output, $result_code);
+    }
+    
 
-        Usar:
-
-        runInBackground(string $cmd, $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null)
-    */
-    function test_py(){
-        $res = System::runInBackground(
-            Env::get('PYTHON_BINARY') . " index.py pablotol.json", 
-            Env::get('ROBOT_PATH') . '/logs/output.txt', 
-            true,
-            null,
-            Env::get('ROBOT_PATH'),
-            true
-        );
-
-        dd($res);
+    
+    function test_py_bg()
+    {   
+        System::execInBackgroundWindows(Env::get('PYTHON_BINARY'), Env::get('ROBOT_PATH'), " index.py pablotol.py", true);
     }
 }
 
