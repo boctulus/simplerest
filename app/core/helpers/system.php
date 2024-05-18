@@ -10,14 +10,18 @@ use simplerest\core\libs\ApacheWebServer;
 
     bg_com("bzz_import do_process")
 
-    Parecido a System::com() pero corre en background y los parametros son parte de $command
+    Parecido a System::com() pero corre en background
 */
-function bg_com(string $command, $output_path = null){
-    $php = System::getPHP();
-    $dir = ROOT_PATH;
+function bg_com(string $cmd, bool $debug = false){
+    $file_path  = System::getPHP();
+    $dir        = ROOT_PATH;
+    $args       = "{$dir}com $cmd";
 
-    $cmd = "$php {$dir}com $command";
-    $pid = System::runInBackground($cmd, $output_path);
+    if ($debug){
+        dd("$file_path $args", 'CMD');
+    }
+
+    $pid = System::runInBackground($file_path, $dir, $args);
 
     return $pid;
 }

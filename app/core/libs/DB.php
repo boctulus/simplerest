@@ -29,6 +29,26 @@ class DB
 	const SYBASE     = 'sybase';
 	const FIREBIRD   = 'firebird';
 
+	/*
+		Ej:
+
+		DB::getConnection('woo3');
+
+        // wp_
+        dd(
+            DB::getTablePrefix()
+        );
+	*/
+	static function getTablePrefix(){
+		$curr_conn_id = static::$current_id_conn;
+
+		if (static::$current_id_conn == null){
+			$curr_conn_id = DB::getDefaultConnectionId();
+		}
+
+		return Config::get("db_connections.{$curr_conn_id}.tb_prefix");
+	}
+
 	// Util para establecer la PRIMARY KEY por defecto en caso de que no haya scheme definido
 	public static function setPrimaryKeyName(string $name){
 		static::$default_primary_key_name = $name;

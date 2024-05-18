@@ -9258,7 +9258,7 @@ class DumbController extends Controller
 
     function some()
     {
-        for ($i = 1; $i <= 7; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             Logger::dd($i, "Current");
             sleep(1);
         }
@@ -9275,23 +9275,27 @@ class DumbController extends Controller
     */
     function test_background_task()
     {
-        $php = System::getPHP();
-        $dir = ROOT_PATH;
-        $cmd = "$php {$dir}com dumb some_work";
+        $file_path  = System::getPHP();
+        $dir        = ROOT_PATH;
+        $args       = "{$dir}com dumb some";
 
-        dd($cmd, 'CMD');
+        dd("$file_path $args", 'CMD');
 
-        chdir(ROOT_PATH);
-        $pid = System::runInBackground($cmd);
+        // $pid = System::execInBackgroundWindows($file_path, $dir, $args); // ok
+        $pid = System::runInBackground($file_path, $dir, $args); // ok
 
         dd($pid, 'pid');
+        sleep(1);
+        dd(System::isProcessAlive($pid), "Running (PID=$pid) ?");
     }
 
     function test_background_task_2()
     {
-        $pid = bg_com("dumb some_work");
+        $pid = bg_com("dumb some");
 
         dd($pid, 'pid');
+        sleep(1);
+        dd(System::isProcessAlive($pid), "Running (PID=$pid) ?");
     }
 
     /*
@@ -10392,6 +10396,15 @@ class DumbController extends Controller
 
         dd(
             StratoScraper::getProductLinks($html)
+        );
+    }
+
+    function test_get_table_prefix(){
+        DB::getConnection('woo3');
+
+        // wp_
+        dd(
+            DB::getTablePrefix()
         );
     }
 
