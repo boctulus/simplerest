@@ -225,7 +225,7 @@ class Model {
 	{
 		$this->boot();
 
-		$this->prefix = tb_prefix();
+		$this->prefix = DB::getTablePrefix();
 
 		// static::$sql_formatter_callback = function(string $sql, bool $highlight = false){
 		// 	return \SqlFormatter::format($sql, $highlight);
@@ -3801,7 +3801,7 @@ class Model {
 	*/
 	static function addPrefix(string $st, $tb_prefix = null)
 	{
-		$tb_prefix = $tb_prefix ?? tb_prefix() ?? null;
+		$tb_prefix = $tb_prefix ?? DB::getTablePrefix() ?? null;
 
 		if (empty($tb_prefix)){
 			return $st;

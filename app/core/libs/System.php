@@ -194,7 +194,7 @@ class System
         https://gist.github.com/damienalexandre/1300820
         https://stackoverflow.com/questions/13257571/call-command-vs-start-with-wait-option
     */
-    static function runInBackground(string $cmd, $output_path = null, $ignore_user_abort = true, int $execution_time = null, $working_dir = null, bool $debug = false)
+    static function runInBackground(string $filePath,  $working_dir = null, $arguments = null, $ignore_user_abort = true, int $execution_time = null, bool $debug = false, $output_path = null)
     {
         ignore_user_abort($ignore_user_abort);
 
@@ -202,7 +202,7 @@ class System
             set_time_limit($execution_time);
         }
 
-        $working_dir = $working_dir ?? ROOT_PATH;
+        // $working_dir = $working_dir ?? ROOT_PATH;
 
         if ($working_dir){
             if ($working_dir){
@@ -219,10 +219,11 @@ class System
         $pid = null;
         switch (PHP_OS_FAMILY) {
             case 'Windows':
-                $pid = static::execInBackgroundWindows($cmd, $working_dir, null, true);
+                $pid = static::execInBackgroundWindows($filePath, $working_dir, $arguments, true);
 
                 break;
             case 'Linux':
+                $cmd = $filePath . ' '. is_array($arguments) ? implode(' ', $arguments) : $arguments;
                 $cmd = ($output_path !== null) ? "nohup $cmd > $output_path 2>&1 & echo $!" : "nohup $cmd > /dev/null 2>&1 & echo $!";
                 
                 $pid = (int) shell_exec($cmd);                
@@ -236,7 +237,7 @@ class System
             dd($cmd, 'CMD');
         }
 
-        return $pid ?? null;
+        return $pid;
     }
 
     public static function isProcessAlive(int $pid): bool 

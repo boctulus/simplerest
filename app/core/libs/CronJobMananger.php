@@ -32,7 +32,7 @@ class CronJobMananger
             $file = static::$filenames[$ix];
 
             // System::runInBackground
-            $pid  = bg_com("async loop $file", 'logs/output.txt');
+            $pid  = bg_com("async loop $file");
             
             // lo ideal es poder elegir el "driver" ya sea en base de datos o en memoria tipo REDIS para los PIDs
             
