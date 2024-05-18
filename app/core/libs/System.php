@@ -205,7 +205,7 @@ class System
         // $working_dir = $working_dir ?? ROOT_PATH;
 
         if ($working_dir){
-            if ($working_dir){
+            if ($debug){
                 dd("cd '$working_dir'");
             }
 
