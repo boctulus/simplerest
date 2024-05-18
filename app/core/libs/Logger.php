@@ -77,7 +77,9 @@ class Logger
 		$custom_path = true;
 		$append      = $append ?? true;
 
-		Files::writableOrFail($path); // 22-abr-2024
+		if ($path != null){
+			Files::writableOrFail($path);
+		}		
 		
 		if ($path === null){
 			$path = LOGS_PATH . static::getLogFilename();

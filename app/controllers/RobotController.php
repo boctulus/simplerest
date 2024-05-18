@@ -88,13 +88,14 @@ class RobotController extends MyController
     */
     function status(){
         try {
+            $res = Response::getInstance();
+
             $this->setupConnection();
 
             $rows = table('robot_execution')
             ->orderBy(['id' => 'DESC'])
             ->getOne();
-
-            $res = Response::getInstance();
+           
             $res->sendJson($rows);
 
         } catch (\Exception $e){
