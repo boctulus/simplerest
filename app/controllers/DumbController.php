@@ -196,6 +196,14 @@ class DumbController extends Controller
         );
     }
 
+    function test_get_table_prefix(){
+        DB::getConnection('woo3');
+
+        // wp_
+        dd(
+            DB::getTablePrefix()
+        );
+    }
 
     static function get_url_slugs()
     {
@@ -4376,8 +4384,10 @@ class DumbController extends Controller
 
     function some_work()
     {
+        VarDump::log();
+
         for ($i = 1; $i <= rand(5, 10); $i++) {
-            dd($i);
+            dd($i, 'i');
             sleep(1);
         }
     }
@@ -9258,7 +9268,7 @@ class DumbController extends Controller
 
     function some()
     {
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             Logger::dd($i, "Current");
             sleep(1);
         }
@@ -9273,7 +9283,7 @@ class DumbController extends Controller
 
         https://superuser.com/a/345455/402377
     */
-    function test_background_task()
+    function test_background_process()
     {
         $file_path  = System::getPHP();
         $dir        = ROOT_PATH;
@@ -9289,13 +9299,44 @@ class DumbController extends Controller
         dd(System::isProcessAlive($pid), "Running (PID=$pid) ?");
     }
 
-    function test_background_task_2()
+    function test_background_process_2()
     {
         $pid = bg_com("dumb some");
 
         dd($pid, 'pid');
         sleep(1);
         dd(System::isProcessAlive($pid), "Running (PID=$pid) ?");
+    }
+
+    /*
+        >>> Ver porque los transientes con DB driver requieren de tiempo de expiracion !!!
+	
+	    >>> Poder exigir un solo proceso del mismo tipo dado un idenfificador => importante para job queues
+    */
+
+    function test_background_process_3()
+    {
+        $pid = bg_com("bzz_import do_process");
+        dd($pid, 'pid');
+    }
+
+    function test_background_process_4()
+    {
+        $pid = bg_com("dumb _4");
+        dd($pid, 'pid');
+    }
+
+    function _4(){
+        VarDump::log();
+   
+        try {
+            for ($i=0; $i<5; $i++){  
+                dd($i, 'i');
+                sleep(1);
+            }
+        } catch (\Exception $e){
+            Logger::logError($e->getMessage());
+        }
     }
 
     /*
@@ -9774,18 +9815,6 @@ class DumbController extends Controller
 
         // Imprime 5 y no 10
         dd($x, 'x');
-    }
-
-    /*
-        >>> Ver porque los transientes con DB driver requieren de tiempo de expiracion !!!
-	
-	    >>> Poder exigir un solo proceso del mismo tipo dado un idenfificador => importante para job queues
-    */
-
-    function test_background_task_3()
-    {
-        $pid = bg_com("bzz_import do_process");
-        dd($pid, 'pid');
     }
 
     function test_read_csv()
@@ -10399,13 +10428,5 @@ class DumbController extends Controller
         );
     }
 
-    function test_get_table_prefix(){
-        DB::getConnection('woo3');
-
-        // wp_
-        dd(
-            DB::getTablePrefix()
-        );
-    }
 
 }   // end class
