@@ -193,7 +193,6 @@ Podria inclusive encasularse convenientemente como:
         DB::getConnection('robot');
     }
 
-
 ### Archivo databases.php
 
 En el archivo config/databases.php hay varias definiciones muy importantes que son inyectadas en la configuración.
@@ -217,11 +216,41 @@ En el archivo databases.php se define prefijo de las tablas. En WordPress por ej
 
 Ej:
 
-	<?php
+<?php
 
 	return 
-	[
-		'tb_prefix'      => 'edu_',
+	[    
+		'db_connections' =>
+			[
+			'woo3' => [
+				'host'		=> env('DB_HOST_WOO3', '127.0.0.1'),
+				'port'		=> env('DB_PORT_WOO3'),
+				'driver' 	=> env('DB_CONNECTION_WOO3'),
+				'db_name' 	=> env('DB_NAME_WOO3'),
+				'user'		=> env('DB_USERNAME_WOO3'), 
+				'pass'		=> env('DB_PASSWORD_WOO3'),
+				'charset'	=> env('DB_CHARSET_WOO3', 'utf8'),
+				'schema'	=> null,  
+				'pdo_options' => [
+					\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+					\PDO::ATTR_EMULATE_PREPARES => true // *
+				],
+				'tb_prefix'  => 'wp_',
+			],
+
+			// mas conexiones ...
+		]
+
+Chequear el prefijo para una conexion
+
+Ej:
+
+	DB::getConnection('woo3');
+
+	// wp_
+	dd(
+		DB::getTablePrefix()
+	);
 
 
 El metodo DB::statement() intenta agregar el prefijo a las tablas para CREATE TABLE, ALTER TABLE, INSERT INTO, etc lo cual puede ser util en algunos casos. 
@@ -278,7 +307,6 @@ Ej:
 Nota importante:
 
 Usar un prefijo distinto del predeterminado ('') llevaria a tener que re-generar todos los schemas dado que hacen referencias a las tablas:
-
 
 Ej:
 
@@ -12164,75 +12192,44 @@ Ej:
 
 # Correr procesos en background
 
-Puede utilizar System::runInBackground() desde la versión 0.7.0
-
-	runInBackground(string $cmd, bool $capture_output = true)
-
-Ej: 
-
-	$cmd = 'php com dumb some';
-	$pid = System::runInBackground($cmd, true);
-
-En el caso de Linux, devuelve el PID del proceso ejecutado en background.
-
-Es importante notar que para que funcione en Windows se necesitan ajustes:
-
-	/*
-		Las rutas absolutas son necesarias
-	*/
-
-	$php = System::getPHP();
-	$dir = ROOT_PATH;
-	$cmd = "$php {$dir}com dumb some";
-
-	dd($cmd, 'CMD');
-
-	chdir(ROOT_PATH);
-	$pid = System::runInBackground($cmd);
-
-	dd($pid, 'pid');    
-
-
-Si se deseara especificamente ejecutar controladores o rutas del framework puede usar el helper bg_com()
+Puede utilizar System::runInBackground() para correr procesos en background.
 
 Ej:
 
-	bg_com("bzz_import do_process");
+	$file_path  = System::isWindows() ? Env::get('PYTHON_BINARY') : 'python3';
+	$dir        = Env::get('ROBOT_PATH');
+	
+	$pid = System::runInBackground($file_path, $dir, $args);
 
-
-Advertencia de bug
-
-	El uso de VarDump::log() + dd() en vez de Logger::dd() falla silenciosamente cuando el proceso se ejecuta en segundo plano.
+Podria ser un metodo de un controlador del propio framework:
 
 Ej:
 
-	/*
-		ESTO FALLA e interrumpe el script
-	*/
+	$file_path  = System::getPHP();
+	$dir        = ROOT_PATH;
+	$args       = "{$dir}com my_ctrl my_method";
 
- 	VarDump::log();
-   
-	try {
-		for ($i=0; $i<5; $i++){  
-			dd($i, 'i');
-		}
-	} catch (\Exception $e){
-		Logger::logError($e->getMessage());
-	}
+	dd("$file_path $args", 'CMD');
 
-	/*
-		ESTO SI FUNCIONA
-	*/
-   
-	try {
-		for ($i=0; $i<5; $i++){  
-			Logger::dd($i, 'I');
-		}
-	} catch (\Exception $e){
-		Logger::logError($e->getMessage());
-	}
+	$pid = System::runInBackground($file_path, $dir, $args);
 
-El fallo es independiente de si se usa la implementacion con error_log() o no.
+	dd($pid, 'pid');
+	sleep(1);
+	dd(System::isProcessAlive($pid), "Running (PID=$pid) ?");
+
+Para el caso particular en que se quiera correr en background un metodo de un controlador del propio framework se puede simplificar a:
+
+	$pid = bg_com("my_ctrl my_method");
+
+	dd($pid, 'pid');
+	sleep(1);
+	dd(System::isProcessAlive($pid), "Running (PID=$pid) ?");
+
+Notas:
+
+Es importante notar que para que funcione en Windows se necesita que el framework conozca la ruta del ejecutable ya sea el interprete de PHP, Python, etc.
+
+Las rutas deben ser siempre absolutas.
 
 
 # CronJobs 
