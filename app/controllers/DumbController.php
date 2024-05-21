@@ -10385,15 +10385,15 @@ class DumbController extends Controller
     // OK
     function test_dom_crawler_p()
     {
-        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 30);
+        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
 
-        dd(StratoScraper::getProduct('/Products/dtvp1153x2'));
+        dd(StratoScraper::getProduct('/Products/zami'));
     }
 
     // OK
     function test_dom_crawler_cats()
     {
-        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 30);
+        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
         $html = StratoScraper::getHTML('');
 
         dd(StratoScraper::getCategoList($html));
@@ -10401,14 +10401,14 @@ class DumbController extends Controller
 
     function test_dom_crawler_cat()
     {
-        $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 30);
+        $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 60);
 
         dd(StratoScraper::getCatego($html));
     }
 
     function test_dom_crawler_cat_paginator()
     {
-        $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 30);
+        $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 60);
 
         dd(StratoScraper::getPaginator($html));
     }
@@ -10417,15 +10417,26 @@ class DumbController extends Controller
     {
         $page = 3;
 
-        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 30);
+        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
 
         $url  = StratoScraper::getCategoryPageURL('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', $page);
 
-        $html = StratoScraper::getHTML($url, 3600 * 24 * 30);
+        $html = StratoScraper::getHTML($url, 3600 * 24 * 60);
 
         dd(
             StratoScraper::getProductLinks($html)
         );
+    }
+
+    function test_get_availability(){
+        $str = "<p>
+    
+        En existencias <br>se puede enviar en 3-4 días
+    </p>";
+
+        $p = Strings::matchAll($str, "<p>([^<]+)</p>");
+
+        dd($p);
     }
 
 
