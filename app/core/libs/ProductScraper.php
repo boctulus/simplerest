@@ -37,10 +37,10 @@ abstract class ProductScraper
         @param string $slug slug o url
         @param int|null $exp_time tiempo de duracion de la cache
     */
-    static function getHTML($slug, $exp_time = null)
+    static function getHTML($url_or_slug, $exp_time = null)
     {
         // Normalizar la URL
-        $url = Strings::startsWith('https://', $slug) ?  $slug : rtrim(static::$urlBase, '/') . '/' . ltrim($slug, '/');
+        $url = (Strings::startsWith('https://', $url_or_slug) || Strings::startsWith('http://', $url_or_slug)) ?  $url_or_slug : rtrim(static::$urlBase, '/') . '/' . ltrim($url_or_slug, '/');
 
         $cli = (new ApiClient($url))
         ->withoutStrictSSL()
@@ -48,14 +48,22 @@ abstract class ProductScraper
             'User-Agent' => 'PostmanRuntime/7.34.0',
         ])
         ->redirect()
-        ->cache($exp_time ?? static::$exp_time)
-        ;
+        ->cache($exp_time != null ? $exp_time : static::$exp_time);
 
         $cli->setMethod('GET');
         $cli->send();
 
-        if ($cli->error()){
-            throw new \Exception("HTTP ERROR: ". $cli->error());
+        $err = $cli->error();
+        if ($err){
+            
+            // OpenSSL SSL_connect: Connection was reset in connection to www.azulejosmadridonline.es:443
+            if (Strings::startsWith("OpenSSL SSL_connect: Connection was reset in connection to ", $err)){
+                static::$urlBase = str_replace('https://', 'http://', static::$urlBase);
+
+                return static::getHTML($url_or_slug, $exp_time);
+            }            
+
+            throw new \Exception("HTTP ERROR: ". $err);
         }
 
         $res = $cli->data(); // html
