@@ -100,15 +100,29 @@ class Strings
 		return $result;
 	}
 
+	static function convertToDecimalFormat(string $price): string {
+		// Eliminar cualquier carácter que no sea numérico, punto o coma
+		$numericPrice = preg_replace('/[^0-9,.]/', '', $price);
+	
+		// Reemplazar la coma por el punto si es necesario
+		$numericPrice = str_replace(',', '.', $numericPrice);
+	
+		return $numericPrice;
+	}
+
 	// alias -- depredicar?
-	static function parseCurrency(string $num, $thousand_sep = null, $decimal_sep = null){
+	static function parseCurrency(string $num, $thousand_sep = '.', $decimal_sep = ","){
 		return static::parseFloat($num, $thousand_sep, $decimal_sep);
 	}
 
-	static function parseFloatOrFail(string $num, $thousand_sep = null, $decimal_sep = null){
-		if (static::parseFloat($num, $thousand_sep, $decimal_sep) === false){
+	static function parseFloatOrFail(string $num, $thousand_sep = '.', $decimal_sep = ","){
+		$res = static::parseFloat($num, $thousand_sep, $decimal_sep);
+
+		if ($res === false){
 			throw new \Exception("String '$num' is not a Float");
 		}
+
+		return $res;
 	}
 
 	/*

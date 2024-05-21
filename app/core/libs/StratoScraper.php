@@ -236,6 +236,65 @@ class StratoScraper extends ProductScraper
 
 
     /*
+        Duvuelve "New" por ej.
+    */
+    protected static function extractCondition($url) {
+        // Define the regex pattern
+        $pattern = '|schema\.org/([^/]+)|';
+        
+        // Perform the match
+        return Strings::matchOrFail($url, $pattern);
+    }
+
+    /*
+        @return array slugs de productos que son accesorios
+    */
+    public static function extractAccessories($html) : array {    
+        // Crear un objeto Crawler para analizar el HTML
+        $crawler = new DomCrawler($html);
+    
+        // Seleccionar la tabla con la clase "VariationsTable"
+        $container = $crawler->filter('table.VariationsTable');
+    
+        // Verificar si se encontró la tabla
+        if ($container->count() > 0) {
+            // Imprimir el HTML de la tabla
+            $containerContent = $container->html();
+        } else {
+            return [];
+        }
+
+        $p_slugs = Strings::matchAll($containerContent, '/href="\?ObjectPath=\/Shops\/[0-9]+\/Products\/([a-z0-9%]+)">/i');
+
+        return $p_slugs;
+    }
+
+    /*
+        @return array slugs de productos relacionados
+    */
+    public static function extractRelatedProdducts($html) : array {
+        $arr = [];   
+
+        // Crear un objeto Crawler para analizar el HTML
+        $crawler = new DomCrawler($html);
+    
+        $crawler->filter('div.CrossellingImageArea')->each(function ($container) use (&$arr) {
+              // Verificar si se encontró la tabla
+            if ($container->count() > 0) {
+                // Imprimir el HTML de la tabla
+                $content = $container->html();
+
+                $slug = Strings::match($content, '|Shops/[0-9]+/Products/([a-z0-9%]+)|i');
+
+                $arr[] = $slug;
+            } 
+        });          
+     
+
+        return $arr;
+    }
+
+    /*
         TO-DO
 
         - Completar separando atributos
@@ -247,7 +306,7 @@ class StratoScraper extends ProductScraper
         preg_match_all('/data-src-l="([^"]+)"/', $html, $matches);
         $image_urls = $matches[1];
 
-        $crawler = new DomCrawler($html);
+        $crawler = new DomCrawler($html);       
 
         // Extraer información del producto
         $productName = $crawler->getText('h1[itemprop="name"]');
@@ -258,6 +317,27 @@ class StratoScraper extends ProductScraper
         $category = $crawler->getAttr('meta[itemprop="category"]','content');
         $description = $crawler->getHTML('.description[itemprop="description"]');
 
+        // Obtener el contenedor de precios
+        $priceContainer = $crawler->filter('.PriceContainer');
+
+        // Obtener el precio regular (regular price)
+        $regularPrice = $priceContainer->filter('.AlignLeft')->text();
+        $regularPrice = preg_replace('/¡OFERTA!, antes: | €/', '', $regularPrice);
+
+        // Obtener el precio de oferta (sale price)
+        $salePrice = $priceContainer->filter('.Price .price-value')->text();
+
+        // Obtener el porcentaje de descuento, si está disponible
+        $discountPercentage = $crawler->filter('.HotPrice')->text();
+
+        /*
+            Post-procesamientos
+        */
+
+        $itemCondition = static::extractCondition($itemCondition);
+        $regularPrice  = Strings::parseFloatOrFail($regularPrice);
+        $salePrice     = Strings::parseFloatOrFail($salePrice);
+
         // Imprimir la información del producto
         $productData = [
             'name' => $productName,
@@ -267,7 +347,14 @@ class StratoScraper extends ProductScraper
             'brand' => $brand,
             'category' => $category,
             'description' => $description,
-            'images'  => $image_urls
+            'images'  => $image_urls,
+
+            'regularPrice' => $regularPrice,
+            'salePrice' => $salePrice,
+            'discountPercentage' => $discountPercentage,
+
+            "accesories" => static::extractAccessories($html),
+            "related"    => static::extractRelatedProdducts($html)
         ];
 
         return $productData;
