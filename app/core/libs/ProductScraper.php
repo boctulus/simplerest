@@ -71,6 +71,10 @@ abstract class ProductScraper
         return $res;
     }
 
+    public static function __getVariantAttrs($html, $ucfirst = false){
+        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
+    }
+
     abstract public static function getProduct(string $url);
 
     public static function getProductBasicAttr(string $html)
