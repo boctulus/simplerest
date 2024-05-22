@@ -10381,7 +10381,6 @@ class DumbController extends Controller
         }
     }
 
-
     // OK
     function test_dom_crawler_p()
     {
@@ -10434,9 +10433,23 @@ class DumbController extends Controller
         En existencias <br>se puede enviar en 3-4 días
     </p>";
 
-        $p = Strings::matchAll($str, "<p>([^<]+)</p>");
+        $ps = Strings::matchAll($str, "/<p>([\s\S]*?)<\/p>/");
 
-        dd($p);
+        $stock          = "outofstock"; // aunque siempre envian
+        $available_in_t = null;
+
+        foreach ($ps as $p){    
+            if (Strings::contains("En existencias", $p)){
+                $stock = "instock";
+            }
+
+            $available_in_t = Strings::match($p, "/se puede enviar en ([0-9-]{1,} días)/");
+        }
+
+        dd([
+            $stock,
+            $available_in_t 
+        ]);
     }
 
 
