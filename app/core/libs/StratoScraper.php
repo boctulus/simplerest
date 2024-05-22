@@ -12,7 +12,8 @@ use simplerest\core\libs\ProductScraper;
     ✅ Paginador de categorias                          getPaginator
     ✅ Pagina de categoria                              getCategoryPageURL, getCategoryPage
     ✅ Links de productos dentro de pagina de cat.      getProductLinks
-    ✅ Pagina de producto (completar, al 70%)           getProduct
+    ✅ Atributos prentes en variaciones                 __getVariantAttrs
+    ✅ Pagina de producto (faltan variaciones)          getProduct
 
     getCategoList -> getPaginator -> getCategoryPageURL -> getProductLink -> getProduct
 */
@@ -294,6 +295,97 @@ class StratoScraper extends ProductScraper
         return $arr;
     }
 
+    static function __getVariantAttrs($html, $ucfirst = false)
+    {
+        /*
+            Devuelve atributos de un producto variable
+
+            Es compatible con la interfaz de Giglio
+
+            Array
+            (
+                [Medida] => Array
+                    (
+                        [0] => Array
+                            (
+                                [0] => 60x45x60
+                                [1] => 125988553
+                            )
+
+                        [1] => Array
+                            (
+                                [0] => 80x45x60
+                                [1] => 125988558
+                            )
+
+                        [2] => Array
+                            (
+                                [0] => 100x45x60
+                                [1] => 125988563
+                            )
+
+                        [3] => Array
+                            (
+                                [0] => 120x45x60 Dos muebles.
+                                [1] => 125988568
+                            )
+
+                    )
+
+            )
+        */
+
+        $variations = [];
+    
+        // Crear un objeto Crawler para analizar el HTML
+        $crawler = new DomCrawler($html);
+    
+        // Seleccionar todas las tablas con la clase "SelectVariation"
+        $crawler->filter('table.SelectVariation')->each(function ($table) use (&$variations, &$ucfirst) {
+            // Recuperar todos los <th> con sus correspondientes 'for' y textos
+            $headers = [];
+            $table->filter('th')->each(function ($th) use (&$headers) {
+                $label = $th->filter('label');
+                if ($label->count() > 0) {
+                    $for = $label->attr('for');
+                    $text = trim($label->text());
+                    $headers[$for] = $text;
+                }
+            });
+    
+            // Recorrer todos los <td> y verificar los <select>
+            $table->filter('td')->each(function ($td) use (&$headers, &$variations, &$ucfirst) {
+                $select = $td->filter('select');
+                if ($select->count() > 0) {
+                    $id = $select->attr('id');
+                    if (isset($headers[$id])) {
+                        $variationName = $headers[$id];
+                        $options = [];
+                        $select->filter('option')->each(function ($option) use (&$options, &$ucfirst) {
+                            $value = $option->attr('value');
+                            $text = trim($option->text());
+
+                            if ($ucfirst && !is_numeric($value)){
+                                $value = ucfirst(strtolower($value));
+                            }
+
+                            if (!empty($value)){
+                                $options[] = [
+                                    $text,
+                                    $value
+                                ];
+                            }
+                        });
+
+                        $variations[$variationName] = $options;
+                    }
+                }
+            });
+        });
+    
+        return $variations;
+    }
+
     /*
         TO-DO
 
@@ -301,7 +393,9 @@ class StratoScraper extends ProductScraper
         - Generar salida basada en Interfaz y validaciones (opcional)
     */
     public static function getProduct(string $slug){
-        $html = static::getHTML($slug);        
+        $html = static::getHTML($slug);   
+        
+        dd(static::__getVariantAttrs($html)); exit; ///
 
         preg_match_all('/data-src-l="([^"]+)"/', $html, $matches);
         $image_urls = $matches[1];
@@ -331,6 +425,23 @@ class StratoScraper extends ProductScraper
         $discountPercentage = $crawler->filter('.HotPrice')->text();
 
         /*
+            Estado de stock y cuando se envia (en t-dias)
+        */
+
+        $ps = Strings::matchAll($html, "/<p>([\s\S]*?)<\/p>/");
+
+        $stock_status   = "outofstock"; // aunque siempre envian
+        $available_in_t = null;
+
+        foreach ($ps as $p){    
+            if (Strings::contains("En existencias", $p)){
+                $stock_status = "instock";
+            }
+
+            $available_in_t = Strings::match($p, "/se puede enviar en ([0-9-])/");
+        }
+
+        /*
             Post-procesamientos
         */
 
@@ -354,7 +465,10 @@ class StratoScraper extends ProductScraper
             'discountPercentage' => $discountPercentage,
 
             "accesories" => static::extractAccessories($html),
-            "related"    => static::extractRelatedProdducts($html)
+            "related"    => static::extractRelatedProdducts($html),
+
+            'stock_status' => $stock_status,
+            'in_t_days'    => $available_in_t
         ];
 
         return $productData;

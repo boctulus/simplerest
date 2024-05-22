@@ -70,9 +70,9 @@ class ReviewsController extends MyController
     }
 
     function insert_names(){
-        $names_male   = include ETC_PATH . 'review-generator/common_names_male-it.php'; // array
-        $names_female = include ETC_PATH . 'review-generator/common_names_female-it.php'; 
-        $surnames     = include ETC_PATH . 'review-generator/common_surnames-it.php'; // array
+        $names_male   = include ETC_PATH . 'py-review-generator/common_names_male-it.php'; // array
+        $names_female = include ETC_PATH . 'py-review-generator/common_names_female-it.php'; 
+        $surnames     = include ETC_PATH . 'py-review-generator/common_surnames-it.php'; // array
 
         $now = at();
         foreach ($names_male as $name){
@@ -91,7 +91,7 @@ class ReviewsController extends MyController
     }
 
     function parse(){
-        $path = 'D:\www\simplerest\etc\review-generator\answers.php';
+        $path = 'D:\www\simplerest\etc\py-review-generator\answers.php';
         $rows = include $path;
 
         foreach ($rows as $ix => $row){
