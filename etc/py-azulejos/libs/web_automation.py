@@ -148,7 +148,7 @@ class WebAutomation:
         ret = self._get(selector, single=True, root=root, fail_if_not_exist=fail_if_not_exist, timeout=timeout, debug=debug)
 
         if single:
-            return not ret
+            return ret is not False and ret is not None
         else:
             return len(ret) > 0
 
@@ -325,10 +325,13 @@ class WebAutomation:
         try:
             with open(json_file_path, 'r') as f:
                 data = f.read()
+                
                 if not data:
                     print(f"Error: File '{json_file}' is empty.")
                     return
+                
                 instructions = json.loads(data)
+
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON in file '{json_file}': {e}")
             return
@@ -345,7 +348,7 @@ class WebAutomation:
             return self.load_instructions_from_python(file_name) 
 
     def login(self, slug, selectors, username, password, debug = False):
-        self.nav(slug)
+        self.nav_slug(slug)
 
         # Obtener los selectores personalizados o los predeterminados
         username_selector = selectors.get('username_input')

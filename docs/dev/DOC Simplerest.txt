@@ -10616,6 +10616,15 @@ Ej:
 	$data = $client->data();
 
 
+# Ignorar ciertos status codes y guardar en cache
+
+Ej:
+
+	$cli = (new ApiClient($url))
+	->ignoreStatusCodes([404])    # Se guarda en cache aunque devuelva 404
+	->cache($exp_time);
+
+
 # Descarga de archivos
 
 Se utiliza el metodo download($filename)
