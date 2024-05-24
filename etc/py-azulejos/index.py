@@ -21,16 +21,12 @@ from libs.instruction_loader import InstructionLoader
 from libs.select2 import Select2
 from libs.label import Label
 from libs.files import Files
+from libs.dataobject import DataObject
 
 import shutil
 import logging
 from logging.handlers import RotatingFileHandler
 
-
-class DataObject:
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
 
 class MyScraper(WebAutomation):
     """
@@ -39,7 +35,7 @@ class MyScraper(WebAutomation):
     
     def __init__(self):
         self.driver = None
-        self.debug  = True ###
+        self.debug  = True
 
     def sleep(self, t: int):
         logging.debug(f"Taking a nap for {t} seconds ...zzzz...") #
@@ -50,7 +46,7 @@ class MyScraper(WebAutomation):
         def print(self):
             print("Title:", self.title)
             print("Price:", self.price)
-            # print("Avail:", self.avail)
+            print("Avail:", self.avail)
             # print("SKU:",   self.sku)
             print("--------------------------------------\r\n")
 
@@ -89,7 +85,7 @@ class MyScraper(WebAutomation):
         p.title       = self.get_text("XPATH://h1[@itemprop='name']") # solo como control
         p.price       = self.get_text("XPATH://div[@class='Price']//span[@class='price-value']//span[@itemprop='price']")
 
-        # p.avail       = self.exists("XPATH://p[contains(text(), 'En existencias')]", fail_if_not_exist=False)
+        p.avail       = self.exists("XPATH://p[contains(text(), 'En existencias')]", fail_if_not_exist=False)
         # p.sku         = self.get_attr("XPATH://meta[@itemprop='sku']", "content", fail_if_not_exist=False) 
 
         p.var_url     = self.driver.current_url

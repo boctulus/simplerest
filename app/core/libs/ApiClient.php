@@ -81,6 +81,7 @@ class ApiClient
     protected $res_headers;
     protected $auto_decode;
     protected $status;
+    protected $ignore_status_codes = false;
     protected $error;
 
     // Response Info
@@ -177,18 +178,13 @@ class ApiClient
             }
         }
     }
-    function dump()
-    {
-        $options = [];
-        foreach ($this->options as $op => $val){   
-            $options[Utils::getConstantName($op, 'curl')] = $val;
-        }
 
+    function dump(){
         return [
             'url'         => $this->url,
             'verb'        => $this->verb,
             'headers'     => $this->req_headers,
-            'options'     => $options,
+            'options'     => $this->options,
             'body'        => $this->body,
             'encode_body' => $this->encode_body,
             'max_retries' => $this->max_retries,
@@ -211,11 +207,22 @@ class ApiClient
     }
 
     function debug(){
-        $this->debug = true;
+        $this->debug = true;        
+		$this->option(CURLOPT_VERBOSE, True);
+        
+        return $this;
     }
 
+    function setTimeOut(int $value){
+        $this->option(CURLOPT_TIMEOUT, $value); 
+    }
+
+    function setConnectionTimeOut(int $value){
+        $this->option(CURLOPT_CONNECTTIMEOUT, $value); 
+    }
+    
     function setUrl($url){
-        $this->url = $url;
+        $this->url = Url::normalize($url);
         return $this;
     }
     
@@ -230,8 +237,8 @@ class ApiClient
         $this->curl = curl_init();
     }
 
-    function useCookieJar(CookieJar $jar){
-        $this->cookieJar = $jar;
+    function useCookieJar(){
+        $this->cookieJar = new CookieJar();
     }
     
 	public function setCookieOptions($params = array())
@@ -415,6 +422,7 @@ class ApiClient
         return $this->raw_response;
     }
 
+    // Get Status Code
     function getStatus(){
         return $this->status;
     }
@@ -422,6 +430,11 @@ class ApiClient
     // alias de getStatus()
     function status(){
         return $this->getStatus();
+    }
+
+    function ignoreStatusCodes(array $codes){
+        $this->ignore_status_codes = $codes;
+        return $this;
     }
 
     function getError(){
@@ -575,7 +588,8 @@ class ApiClient
         curl_setopt($this->curl, CURLOPT_URL, $url);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_ENCODING, '' );
-        curl_setopt($this->curl, CURLOPT_TIMEOUT, 0 );
+        curl_setopt($this->curl, CURLOPT_TIMEOUT, 0); // Sin límite de tiempo para la solicitud
+        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 0); // Sin límite de tiempo para la conexión
 
         curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $http_verb);
@@ -693,8 +707,12 @@ class ApiClient
             }
         }
 
-        $this->url      = $url;
-        $this->verb     = strtoupper($http_verb);
+        if ($this->debug){
+            dd($url, 'URL');
+        }
+
+        $this->setUrl($url);
+        $this->verb = strtoupper($http_verb);
 
         $this->req_body = $body;
         
@@ -838,8 +856,17 @@ class ApiClient
 
         $status_code = (int) $this->status;
 
-        if ($this->expiration && $res !== null && !$this->read_only && ($status_code >=200 && $status_code < 400)) {
-            $this->saveResponse($res);
+        if ($this->expiration && $res !== null && !$this->read_only){
+            if (!empty($this->ignore_status_codes)){
+                foreach ($this->ignore_status_codes as $code){
+                    if ($status_code == $code){
+                        $this->saveResponse($res);
+                        break;
+                    }
+                }
+            } else if ($status_code >=200 && $status_code < 400){
+                $this->saveResponse($res);
+            }            
         }       
 
         return $this;
@@ -1050,7 +1077,7 @@ class ApiClient
             throw new \Exception("Undefined URL");
         }
 
-        $input = $this->url;
+        $input = str_replace(['https://', 'http://'], '', $this->url);
 
         if ($this->cache_post_request && $this->verb == 'POST'){
             $input .= "+body={$this->req_body}";
@@ -1058,14 +1085,11 @@ class ApiClient
 
         $full_path = FileCache::getCachePath($input);
 
-        if ($this->debug){
-            Logger::log($full_path, 'CACHE-PATH');
-        }
-
         return $full_path;
     }
 
-	protected function saveResponse(Array $response){
+	protected function saveResponse(Array $response)
+    {
         if ($this->cache_post_request === false && $this->verb != 'GET'){
             return;
         }
@@ -1087,6 +1111,10 @@ class ApiClient
         }
 
         if (file_exists($path)){
+            if ($this->debug){
+                dd($path, 'CACHE PATH');
+            }
+
             return include $path;
         }
     }
@@ -1123,7 +1151,6 @@ class ApiClient
 		$url .= $file_path;
 
 		//$this->option(CURLOPT_BINARYTRANSFER, TRUE);
-		$this->option(CURLOPT_VERBOSE, TRUE);
 
 		return $this->get();
 	}
@@ -1165,5 +1192,6 @@ class ApiClient
 		return function_exists('curl_init');
 	}
 }
+
 
 

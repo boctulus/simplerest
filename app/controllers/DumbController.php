@@ -10381,6 +10381,32 @@ class DumbController extends Controller
         }
     }
 
+    function test_get_availability(){
+        $str = "<p>
+    
+        En existencias <br>se puede enviar en 3-4 días
+    </p>";
+
+        $ps = Strings::matchAll($str, "/<p>([\s\S]*?)<\/p>/");
+
+        $stock          = "outofstock"; // aunque siempre envian
+        $available_in_t = null;
+
+        foreach ($ps as $p){    
+            if (Strings::contains("En existencias", $p)){
+                $stock = "instock";
+            }
+
+            $available_in_t = Strings::match($p, "/se puede enviar en ([0-9-]{1,} días)/");
+        }
+
+        dd([
+            $stock,
+            $available_in_t 
+        ]);
+    }
+
+
     // OK
     function test_dom_crawler_p()
     {
@@ -10427,30 +10453,6 @@ class DumbController extends Controller
         );
     }
 
-    function test_get_availability(){
-        $str = "<p>
-    
-        En existencias <br>se puede enviar en 3-4 días
-    </p>";
-
-        $ps = Strings::matchAll($str, "/<p>([\s\S]*?)<\/p>/");
-
-        $stock          = "outofstock"; // aunque siempre envian
-        $available_in_t = null;
-
-        foreach ($ps as $p){    
-            if (Strings::contains("En existencias", $p)){
-                $stock = "instock";
-            }
-
-            $available_in_t = Strings::match($p, "/se puede enviar en ([0-9-]{1,} días)/");
-        }
-
-        dd([
-            $stock,
-            $available_in_t 
-        ]);
-    }
 
 
 }   // end class
