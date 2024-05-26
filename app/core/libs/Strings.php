@@ -81,6 +81,46 @@ class Strings
 	}
 
 	/*
+		Ej:
+
+		Strings::parseNumeric('El precio es de 238,003.00 pesos')  # 238,003.00
+		Strings::parseNumeric('El precio es de 238,003.00 pesos para 5 productos')  # 238,003.00
+	*/
+	static function parseNumeric(string $str){
+		$ret = static::matchAll($str, '/([0-9\.,]+)/');
+
+		return $ret[0] ?? null;
+	}
+
+	static function parseNumericOrFail(string $str){
+		$ret = static::parseNumeric($str);
+
+		if ($ret === ''){
+			throw new \Exception("Not numeric value found for '$str'");
+		}
+
+		return $ret;
+	}
+	
+	/*
+		Ej:
+
+		Strings::parseNumericAll('El precio es de 238,003.00 pesos para 5 productos');
+
+		salida:
+
+		[
+			238,003.00,
+			5
+		]
+	*/
+	static function parseNumericAll(string $str){
+		$ret = static::matchAll($str, '/([0-9\.,]+)/');
+
+		return $ret;
+	}
+
+	/*
 		Extrae la parte numerica de una cadena que contenga una cantidad
 		y la castea a un float
 	*/
