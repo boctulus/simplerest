@@ -9096,6 +9096,31 @@ class DumbController extends Controller
         dd($nodes);
     }
 
+    function test_xml_node_extractor(){
+        $html = '
+        <html>
+            <body>
+                <div class="content">Content 1</div>
+                <div class="content">Content 2</div>
+                <div class="footer">Footer</div>
+            </body>
+        </html>';
+
+        dd(
+            XML::extractNodes($html, "//div[@class='content']")
+        );
+
+        /*
+            Resultado:
+
+            Array
+            (
+                [0] => <div class="content">Content 1</div>
+                [1] => <div class="content">Content 2</div>
+            )
+        */
+    }   
+
     function test_replacer()
     {
         $code = '</li>
