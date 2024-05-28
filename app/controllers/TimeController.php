@@ -6,11 +6,11 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\TimeZone;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\models\main\TimezonesModel;
 
 
-class TimeController extends MyController
+class TimeController extends Controller
 {    
     /*
         Convertir por ejemplo de hora de Chile a horario local

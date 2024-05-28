@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\View;
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class ViewController extends MyController
+class ViewController extends Controller
 {
     function test_async_defer_1(){
         set_template('test_async_await/my_tpl_1.php');

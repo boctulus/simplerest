@@ -1,16 +1,16 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\libs\LaravelApiGenerator;
 
-class LaravelApiGenController extends MyController
+class LaravelApiGenController extends Controller
 {
         // Mini-endpoint
         function gen_laravel_mp_proyectos(){

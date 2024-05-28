@@ -29,7 +29,7 @@ class Collections extends MyApiController
 
     function __construct()
     {
-        $this->forbidden_tables[] = $this->users_table;
+        $this->forbidden_tables[] = get_users_table();
 
         if (Factory::request()->authMethod() !== NULL){
             $this->callable = ['get', 'post', 'put', 'patch', 'delete'];

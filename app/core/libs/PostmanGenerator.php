@@ -33,7 +33,7 @@ class PostmanGenerator
 
 
     static function setDestPath(string $path){
-        $path = Strings::addTrailingSlash($path);
+        $path = Files::addTrailingSlash($path);
         static::$resource_output_path = $path;
         Files::mkDirOrFail(static::$resource_output_path, false);
     }

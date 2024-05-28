@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Factory;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class PaginatorController extends MyController
+class PaginatorController extends Controller
 {
     function pagination  (){
         $page_size = $_GET['size'] ?? 10;

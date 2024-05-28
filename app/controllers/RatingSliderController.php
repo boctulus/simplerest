@@ -4,10 +4,10 @@ namespace simplerest\controllers;
 
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
-class RatingSliderController extends MyController
+class RatingSliderController extends Controller
 {
     function index(){
         $this->rating_slider();

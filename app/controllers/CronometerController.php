@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
@@ -11,7 +11,7 @@ use simplerest\core\libs\DB;
 /*
     Podria armar componente para el cronometro de JS
 */
-class CronometerController extends MyController
+class CronometerController extends Controller
 {
     function index()
     {

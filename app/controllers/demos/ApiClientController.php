@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
@@ -8,9 +8,9 @@ use simplerest\core\libs\Url;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\ApiClient;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class ApiClientController extends MyController
+class ApiClientController extends Controller
 {
     function test_api01a()
     {

@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
 
 /*
@@ -17,7 +17,7 @@ use simplerest\controllers\MyController;
     22  por defecto para SFTP
     990 por defecto para FTPS
 */
-class FtpController extends MyController
+class FtpController extends Controller
 {
     protected $host;
     protected $user;

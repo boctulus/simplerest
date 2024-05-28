@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\libs\Strings;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
 /*
     Ajustar nomenclatura a esta misma test_{nombre de metodo snake-case}
     y... convertir en pruebas unitarias
 */
-class StringsController extends MyController
+class StringsController extends Controller
 {
     // ok
     function test_to_snake_case(){

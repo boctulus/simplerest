@@ -37,6 +37,92 @@ class Files
 		}
 	}
 
+	static function realPathNoCoercive($path = null){
+		if ($path === null){
+			return false;
+		}
+
+		$_path = realpath($path);
+
+		return $_path === false ? $path : $_path;
+	}
+
+	static function addTrailingSlash(string $path) : string{
+		$path = static::realPathNoCoercive($path);
+
+		if (!Strings::endsWith('\\', $path) && !Strings::endsWith('/', $path)){
+			return $path . DIRECTORY_SEPARATOR;
+		}
+
+		return $path;		
+	}
+	
+	/*
+		Asumiendo que hay un solo tipo de slash como sucede en un path,
+		devuelve si es '/' o '\\'
+	*/
+	static function getSlash(string $str) {
+		if (strpos($str, '/') !== false) {
+			return '/';
+		} elseif (strpos($str, '\\') !== false) {
+			return '\\';
+		} else {
+			return null; // No se encontró ningún tipo de slash en la cadena
+		}
+	}
+    
+	/*
+		'Util para normalizar rutas de archivos o URLs y asegurarse de que no haya barras diagonales duplicadas
+	*/
+	static function removeUnnecessarySlashes(string $path) : string {
+       	return preg_replace('#/+#','/',$path);
+	}
+	
+	static function replaceSlashes(string $path) : string {
+		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+	}
+
+	static function removeTrailingSlash(?string $path = null) : ?string {
+		if (empty($path)){
+			return $path;
+		}
+
+		$path = Files::realPathNoCoercive($path);
+
+		if (Strings::endsWith('\\', $path) || Strings::endsWith('/', $path)){
+			return substr($path, 0, strlen($path)-1);
+		}
+
+		return $path;
+	}
+
+	// alias
+	static function trimTrailingSlash($path = null){
+		return static::removeTrailingSlash($path);
+	}
+
+	static function removeFirstSlash(?string $path = null) : ?string {
+		if (empty($path)){
+			return $path;
+		}
+
+		if (Strings::startsWith('\\', $path)){
+			return substr($path, 1);
+		}
+
+		if (Strings::startsWith('/', $path)){
+			return substr($path, 1);
+		}
+
+		return $path;
+	}
+
+	// alias
+	static function trimFirstSlash($path = null){
+		return static::removeFirstSlash($path);
+	}
+
+
 	/*
 		Descarga localmente archivos dadas una o varias urls
 
@@ -662,7 +748,7 @@ class Files
 	static function setCallback(?callable $fn) : void {
 		static::$callable = $fn;
 	}
-	
+
 	/*
 		Copy single files
 		
@@ -682,7 +768,7 @@ class Files
 
 		if (is_dir($dst)){
 			$filename = basename($ori);
-			$dst = Strings::addTrailingSlash($dst) . $filename;
+			$dst = static::addTrailingSlash($dst) . $filename;
 		}
 
 		if (!$overwrite){
@@ -704,7 +790,7 @@ class Files
 
 				$trailing_dst_path = Strings::diff($ori_dir, ROOT_PATH);
 				
-				static::$backup_path = Strings::addTrailingSlash(static::$backup_path);
+				static::$backup_path = static::addTrailingSlash(static::$backup_path);
 				
 				$bk_dir_path = static::$backup_path . $trailing_dst_path;
 
@@ -776,7 +862,7 @@ class Files
 
 		$dst = Strings::removeTrailingSlash($dst);
 
-		$ori_with_trailing_slash = Strings::addTrailingSlash($ori);
+		$ori_with_trailing_slash = static::addTrailingSlash($ori);
 		$ori = Strings::removeTrailingSlash(trim($ori));
         $dst = trim($dst);
 
@@ -890,7 +976,7 @@ class Files
 				$_dir = static::getDir($ori_path);
 
 				$rel = Strings::substract($_dir, $ori_with_trailing_slash);	
-				$_dir_dst = Strings::addTrailingSlash($dst) . $rel;
+				$_dir_dst = static::addTrailingSlash($dst) . $rel;
 			
 				static::mkDir($_dir_dst);
 			}

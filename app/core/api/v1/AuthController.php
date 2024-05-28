@@ -49,7 +49,7 @@ class AuthController extends Controller implements IAuth
         $this->__confirmed_email = $model::$confirmed_email;
         $this->__active          = $model::$is_active;
 
-        $this->__id = get_id_name($this->users_table);
+        $this->__id = get_id_name(get_users_table());
     }
        
     protected function gen_jwt(array $props, string $token_type, int $expires_in = null){
@@ -142,7 +142,7 @@ class AuthController extends Controller implements IAuth
         $this->onLogin($data);
 
         try {              
-            $u = DB::table($this->users_table);
+            $u = DB::table(get_users_table());
 
             $row = $u->assoc()->unhide([$this->__password])
             ->where([$this->__email => $email, $this->__username => $username ], 'OR')
@@ -252,7 +252,7 @@ class AuthController extends Controller implements IAuth
             }
 
             $acl   = acl();
-            $u     = DB::table($this->users_table);
+            $u     = DB::table(get_users_table());
 
             if ($u->inSchema([$this->role_field])){
                 $roles = [ $acl->getRoleName($u->find($payload->uid)->value($this->role_field)) ];
@@ -292,7 +292,7 @@ class AuthController extends Controller implements IAuth
             if (!empty($impersonate_user)){ 
                 $uid = $impersonate_user;
 
-                $u = DB::table($this->users_table);
+                $u = DB::table(get_users_table());
 
                 $row = $u->assoc()
                 ->find($uid) 
@@ -480,7 +480,7 @@ class AuthController extends Controller implements IAuth
 
             if (!$impersonated_by || $impersonated_by_role) 
             {
-                $u = DB::table($this->users_table);
+                $u = DB::table(get_users_table());
 
                 $row = $u->assoc()
                 ->where([$u->getIdName() => $payload->uid])->first();
@@ -554,7 +554,7 @@ class AuthController extends Controller implements IAuth
             // Hook
             $this->onRegister($data);        
             
-            $u = DB::table($this->users_table);
+            $u = DB::table(get_users_table());
 
             $many_to_many = false;
 
@@ -616,11 +616,11 @@ class AuthController extends Controller implements IAuth
                 if (!filter_var($data[$this->__email], FILTER_VALIDATE_EMAIL))
                     throw new \Exception("Invalid email");  
 
-                if (DB::table($this->users_table)->where([$this->__email, $data[$this->__email]])->exists())
+                if (DB::table(get_users_table())->where([$this->__email, $data[$this->__email]])->exists())
                     error('Email already exists');    
             }            
 
-            if (DB::table($this->users_table)->where([$this->__username , $data[$this->__username]])->exists())
+            if (DB::table(get_users_table())->where([$this->__username , $data[$this->__username]])->exists())
                 error('Username already exists');
 
             if ($u->inSchema([$this->__active])){  
@@ -731,7 +731,7 @@ class AuthController extends Controller implements IAuth
                     error('Unauthorized',401,'Lacks id in web token');  
 
                 // Lacks is_active status
-                if (DB::table($this->users_table)->inSchema(['is_active']) && !isset($payload->is_active) && $payload->uid != -1){
+                if (DB::table(get_users_table())->inSchema(['is_active']) && !isset($payload->is_active) && $payload->uid != -1){
                     error('Unauthorized', 401, 'Lacks is_active status. Please log in.');
                 }    
 
@@ -794,7 +794,7 @@ class AuthController extends Controller implements IAuth
                     error('Invalid API Key', 401);
                 }
 
-                $u = DB::table($this->users_table);
+                $u = DB::table(get_users_table());
 
                 if ($u->inSchema([$this->role_field])){
                     $rid   = $u->where([$u->getIdName() => $uid])->value($this->role_field);
@@ -818,7 +818,7 @@ class AuthController extends Controller implements IAuth
             case 'JWT':
                 $ret = $this->jwtPayload();
 
-                if (DB::table($this->users_table)->inSchema([$this->role_field])){
+                if (DB::table(get_users_table())->inSchema([$this->role_field])){
                     $ret['roles'] = [ Factory::acl()->getRoleName($ret['roles']) ]; 
                 } else {
                     if ($this->isRegistered()){
@@ -903,7 +903,7 @@ class AuthController extends Controller implements IAuth
                 if ($payload->exp < time())
                     $error = 'Token expired';
                 
-                $u = DB::table($this->users_table);
+                $u = DB::table(get_users_table());
 
                 if (!$u->inSchema([$this->__confirmed_email])){
                     error('Email confirmation is not implemented', 501);
@@ -994,7 +994,7 @@ class AuthController extends Controller implements IAuth
 			error($this->__email . ' is required', 400);
 
 		try {	
-			$u    = DB::table($this->users_table)->assoc();
+			$u    = DB::table(get_users_table())->assoc();
 			$rows = $u->where([$this->__email, $email])->get([$this->__id, $this->__active]);
 
 			if (count($rows) === 0){
@@ -1071,7 +1071,7 @@ class AuthController extends Controller implements IAuth
 
                     $acl   = Factory::acl();                    
 
-                    $u = DB::table($this->users_table);
+                    $u = DB::table(get_users_table());
 
                     if ($u->inSchema([$this->role_field])){
                         $rid   = $u->find($uid)->value($this->role_field);
@@ -1181,7 +1181,7 @@ class AuthController extends Controller implements IAuth
                 error('uid is required',400);
             }
 
-            $ok = DB::table($this->users_table)
+            $ok = DB::table(get_users_table())
             ->find($payload->uid)
             ->update([
                 $this->__password => $data->password
@@ -1193,7 +1193,7 @@ class AuthController extends Controller implements IAuth
 
             $uid = $payload->uid;
             
-            $u = DB::table($this->users_table);
+            $u = DB::table(get_users_table());
             $row = $u->find($uid)->first();
 
 

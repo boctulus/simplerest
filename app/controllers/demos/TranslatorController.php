@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\i18n\Translate;
 
-class TranslatorController extends MyController
+class TranslatorController extends Controller
 {
        /*
         Ver mejores soluciones como:
