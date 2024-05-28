@@ -90,7 +90,7 @@ class RibiSOAP extends ApiClient
             throw new \Exception(var_export($res_data['soap:Envelope']['soap:Body']['soap:Fault']), true);
         }
 
-        if (!empty($res_data) && is_string($res_data) && XML::isXML($res_data, true)){
+        if (!empty($res_data) && is_string($res_data) && XML::isValidXML($res_data, true)){
             $res_data = XML::toArray($res_data);            
         }
 
@@ -98,7 +98,7 @@ class RibiSOAP extends ApiClient
             $res_data = $res_data['soap:Envelope']['soap:Body']["{$name}Response"]["{$name}Result"];
         }
 
-        if (!empty($res_data) && is_string($res_data) && XML::isXML($res_data, true)){
+        if (!empty($res_data) && is_string($res_data) && XML::isValidXML($res_data, true)){
             $res_data = XML::toArray($res_data);            
         }
 
