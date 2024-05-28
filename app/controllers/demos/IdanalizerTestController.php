@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers;
+namespace simplerest\controllers\demos;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 
-class IdanalizerTestController extends MyController
+class IdanalizerTestController extends Controller
 {
     /*
         - Requiere de API KEY

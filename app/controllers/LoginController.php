@@ -11,6 +11,7 @@ class LoginController extends Controller
 		Nombres de los campos en la tabla "users"
 	*/
 	
+	protected $__id;
     protected $__email;
     protected $__username;
     protected $__password;
@@ -209,7 +210,7 @@ class LoginController extends Controller
 			// donde poder setear una nueva contraseña
 			//
 
-			$email = DB::table($this->users_table)->where([$this->__id => $payload->uid])->value($this->__email);
+			$email = DB::table(get_users_table())->where([$this->__id => $payload->uid])->value($this->__email);
 
 			$this->__view('userlogin/update_pass.php', [
 				'title'		 =>'Recuperación de contraseña', 

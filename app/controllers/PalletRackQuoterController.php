@@ -2,10 +2,10 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\shortcodes\rack_quoter\RackQuoterShortcode;
 
-class PalletRackQuoterController extends MyController
+class PalletRackQuoterController extends Controller
 {
     function index()
     {  

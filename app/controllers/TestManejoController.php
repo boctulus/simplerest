@@ -8,9 +8,9 @@ use simplerest\core\libs\XML;
 use simplerest\core\Response;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Factory;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class TestManejoController extends MyController
+class TestManejoController extends Controller
 {
     function __construct()
     {

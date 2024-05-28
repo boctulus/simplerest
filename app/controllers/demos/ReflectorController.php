@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\libs\Reflector;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class ReflectorController extends MyController
+class ReflectorController extends Controller
 {
     function test_refl()
     {

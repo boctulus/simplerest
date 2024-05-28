@@ -2,11 +2,11 @@
 
 namespace __NAMESPACE;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\DB;
 
-class __NAME__ extends MyController
+class __NAME__ extends Controller
 {
     function __construct()
     {

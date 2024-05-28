@@ -1689,7 +1689,6 @@ class Strings
 						
 							default:
 								throw new \InvalidArgumentException("Operator '$op' is unknown", 1);
-								break;
 						}
 
 					} else {
@@ -1766,91 +1765,6 @@ class Strings
 		} 
 
 		return $ok;
-	}
-
-	static function realPathNoCoercive($path = null){
-		if ($path === null){
-			return false;
-		}
-
-		$_path = realpath($path);
-
-		return $_path === false ? $path : $_path;
-	}
-
-	/*
-		Asumiendo que hay un solo tipo de slash como sucede en un path,
-		devuelve si es '/' o '\\'
-	*/
-	static function getSlash(string $str) {
-		if (strpos($str, '/') !== false) {
-			return '/';
-		} elseif (strpos($str, '\\') !== false) {
-			return '\\';
-		} else {
-			return null; // No se encontró ningún tipo de slash en la cadena
-		}
-	}
-
-	static function replaceSlashes(string $path) : string {
-		return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
-	}
-    
-	/*
-		'Util para normalizar rutas de archivos o URLs y asegurarse de que no haya barras diagonales duplicadas
-	*/
-	static function removeUnnecessarySlashes(string $path) : string {
-       	return preg_replace('#/+#','/',$path);
-	}
-
-	static function removeTrailingSlash(?string $path = null) : ?string {
-		if (empty($path)){
-			return $path;
-		}
-
-		$path = static::realPathNoCoercive($path);
-
-		if (static::endsWith('\\', $path) || static::endsWith('/', $path)){
-			return substr($path, 0, strlen($path)-1);
-		}
-
-		return $path;
-	}
-
-	// alias
-	static function trimTrailingSlash($path = null){
-		return static::removeTrailingSlash($path);
-	}
-
-	static function removeFirstSlash(?string $path = null) : ?string {
-		if (empty($path)){
-			return $path;
-		}
-
-		if (static::startsWith('\\', $path)){
-			return substr($path, 1);
-		}
-
-		if (static::startsWith('/', $path)){
-			return substr($path, 1);
-		}
-
-		return $path;
-	}
-
-	// alias
-	static function trimFirstSlash($path = null){
-		return static::removeFirstSlash($path);
-	}
-
-	static function addTrailingSlash(string $path) : string{
-		$path = static::realPathNoCoercive($path);
-
-		if (!static::endsWith('\\', $path) && !static::endsWith('/', $path)){
-			return $path . '/';
-		}
-
-		return $path;		
 	}
 
 	/*

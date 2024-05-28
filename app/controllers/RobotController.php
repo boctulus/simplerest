@@ -11,10 +11,10 @@ use simplerest\core\libs\Config;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Strings;
 use simplerest\shortcodes\robot\Robot;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Logger;
 
-class RobotController extends MyController
+class RobotController extends Controller
 {
     protected $robot_path;
 

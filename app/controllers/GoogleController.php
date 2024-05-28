@@ -171,14 +171,14 @@ class GoogleController extends Controller
                 preg_match('/[^@]+/', $payload['email'], $matches);
                 $username = substr($matches[0], 0, 12);
         
-                $existe = DB::table($this->users_table)->where([$this->__username, $username])->exists();
+                $existe = DB::table(get_users_table())->where([$this->__username, $username])->exists();
                 
                 if ($existe){
                     $_username = $username;
                     $append = 1;
                     while($existe){
                         $_username = $username . $append;
-                        $existe = DB::table($this->users_table)->where([$this->__username, $_username])->exists();
+                        $existe = DB::table(get_users_table())->where([$this->__username, $_username])->exists();
                         $append++;
                     }
                     $username = $_username;
@@ -192,7 +192,7 @@ class GoogleController extends Controller
                     return ['error' => 'Error in user registration!', 'code' => 500];
     
                 if ($u->inSchema([$u->belongsTo()])){
-                    DB::table($this->users_table)
+                    DB::table(get_users_table())
                     ->where([$this->__id, $uid])
                     ->update([$u->belongsTo() => $uid]);
                 }

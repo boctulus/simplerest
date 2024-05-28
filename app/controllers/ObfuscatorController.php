@@ -3,13 +3,13 @@
 namespace simplerest\controllers;
 
 use PhpParser\Node\Scalar\MagicConst\Dir;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
 
-class ObfuscatorController extends MyController
+class ObfuscatorController extends Controller
 {
     function __construct()
     {

@@ -5,13 +5,13 @@ namespace simplerest\controllers\honeys;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
 /*
     http://ws.honeysplace.com/ws/xml/honeysinventoryv2_0.xml - XML Data Feed
     http://ws.honeysplace.com/ws/xml/honeysinventory_v_1.0.txt - Tab Delimited Data Feed
 */
-class HoneysController extends MyController
+class HoneysController extends Controller
 {
     protected $endpoints = [
         'products_xml' => 'http://ws.honeysplace.com/ws/xml/honeysinventoryv2_0.xml',

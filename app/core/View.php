@@ -173,7 +173,7 @@ class View
             $file = str_replace('\\', '/', $file);
         } else {
             if (!Strings::startsWith('http', $file)){
-                $file = '/public/assets/' . Strings::removeFirstSlash($file);
+                $file = '/public/assets/' . Files::removeFirstSlash($file);
             } 
         }
 
@@ -212,7 +212,7 @@ class View
             $file = str_replace('\\', '/', $file);
         } else {
             if (!Strings::startsWith('http', $file)){
-                $file = '/public/assets/' . Strings::removeFirstSlash($file);
+                $file = '/public/assets/' . Files::removeFirstSlash($file);
             } 
         }
      
