@@ -7,10 +7,10 @@ use simplerest\core\libs\CSS;
 use simplerest\core\libs\XML;
 use simplerest\core\Response;
 use simplerest\core\libs\Files;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Angular;
 
-class Angular2JqueryController extends MyController
+class Angular2JqueryController extends Controller
 {
     function run()
     {

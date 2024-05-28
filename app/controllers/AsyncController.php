@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\CronJob;
@@ -13,7 +13,7 @@ use simplerest\core\libs\CronJob;
     1.- Asegurese que el timezone sea el correcto
     2.- php com async loop {nombre-del-cron}.php
 */
-class AsyncController extends MyController
+class AsyncController extends Controller
 {
     public function loop(string $job_filename)
     {   

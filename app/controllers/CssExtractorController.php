@@ -4,9 +4,9 @@ namespace simplerest\controllers;
 
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\CSS;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class CssExtractorController extends MyController
+class CssExtractorController extends Controller
 {
     function parse()
     {

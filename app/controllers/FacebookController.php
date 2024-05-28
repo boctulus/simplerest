@@ -128,7 +128,7 @@ class FacebookController extends Controller
                     $data['firstname'] = $firstname ?? NULL;
                     $data['lastname']  = $lastname ?? NULL;
             
-                    $exists = DB::table($this->users_table)
+                    $exists = DB::table(get_users_table())
                     ->where(['username', $username])
                     ->exists();
 
@@ -141,7 +141,7 @@ class FacebookController extends Controller
                     }
 
 
-                    $exists = DB::table($this->users_table)
+                    $exists = DB::table(get_users_table())
                     ->where(['username', $username])
                     ->exists();
 
@@ -153,7 +153,7 @@ class FacebookController extends Controller
 
                         while($exists){
                             $_username = $username . $append;
-                            $exists = DB::table($this->users_table)->where(['username', $_username])->exists();
+                            $exists = DB::table(get_users_table())->where(['username', $_username])->exists();
                             $append++;
                         }
 
@@ -168,7 +168,7 @@ class FacebookController extends Controller
                         throw new \Exception('Error in user registration!');
         
                     if ($u->inSchema(['belongs_to'])){
-                        DB::table($this->users_table)
+                        DB::table(get_users_table())
                         ->where(['id', $uid])
                         ->update(['belongs_to' => $uid]);
                     }

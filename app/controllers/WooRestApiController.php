@@ -4,7 +4,7 @@ namespace simplerest\controllers;
 
 use simplerest\core\libs\DB;
 use simplerest\core\libs\WooCommerceApiClient;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Arrays;
 
 /*
@@ -31,7 +31,7 @@ use simplerest\core\libs\Arrays;
     - Crear adapter para Products::dump(), Products::create() y Products::update()
     con los arrays requeridos por los endpoints de la API oficial de WooCommerce
 */
-class WooRestApiController extends MyController
+class WooRestApiController extends Controller
 {   
     function __construct(){
         header('Content-Type: application/json; charset=utf-8');

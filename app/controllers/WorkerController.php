@@ -3,9 +3,9 @@
 namespace simplerest\controllers;
 
 use simplerest\core\libs\System;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class WorkerController extends MyController
+class WorkerController extends Controller
 {
     /*
         @return void

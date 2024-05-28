@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
@@ -12,10 +12,10 @@ use simplerest\core\libs\Strings;
 use simplerest\models\az\BarModel;
 use simplerest\core\libs\Validator;
 use simplerest\models\az\ProductsModel;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\models\az\AutomovilesModel;
 
-class ModelController extends MyController
+class ModelController extends Controller
 {
     
     function where_basico()

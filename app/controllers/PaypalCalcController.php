@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
 /*
     php com paypal_calc
@@ -11,7 +11,7 @@ use simplerest\controllers\MyController;
     php com paypal_calc send 100
 */
 
-class PaypalCalcController extends MyController
+class PaypalCalcController extends Controller
 {
     /*  
         Supuestamente sigue siendo 5.7% + 0.30 pero ...

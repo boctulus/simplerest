@@ -4,9 +4,9 @@ namespace simplerest\controllers;
 
 use simplerest\core\libs\Url;
 use simplerest\core\libs\ApiClient;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class MoneyController extends MyController
+class MoneyController extends Controller
 {
     function swap(){
 

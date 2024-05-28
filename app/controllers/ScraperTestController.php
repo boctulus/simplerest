@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use Symfony\Component\DomCrawler\Crawler;
 
 /*
@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
     composer require symfony/dom-crawler
     composer require symfony/css-selector
 */
-class ScraperTestController extends MyController
+class ScraperTestController extends Controller
 {
     function index(){
         $this->scrape();

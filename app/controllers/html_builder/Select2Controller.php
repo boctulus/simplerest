@@ -3,9 +3,9 @@
 namespace simplerest\controllers\html_builder;
 
 use simplerest\core\View;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class Select2Controller extends MyController
+class Select2Controller extends Controller
 {
     function __construct()
     {

@@ -2,12 +2,12 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Tag;
 
-class XEditableController extends MyController
+class XEditableController extends Controller
 {
     function __construct()
     {

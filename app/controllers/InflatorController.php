@@ -3,9 +3,9 @@
 namespace simplerest\controllers;
 
 use simplerest\core\libs\Logger;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class InflatorController extends MyController
+class InflatorController extends Controller
 {
     /*
         Deserializa un objeto y le da vida

@@ -8,7 +8,7 @@ use simplerest\core\Response;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
 /*
     Este controlador podria ser parte del comando make
@@ -17,7 +17,7 @@ use simplerest\controllers\MyController;
     Obvio es mejor usar Docker
 */
 
-class VhostController extends MyController
+class VhostController extends Controller
 {
     protected $www_dir         = 'D:\\www\\';
     protected $vhost_conf_path = 'D:\\wamp64\\bin\\apache\\apache2.4.51\\conf\\extra\\httpd-vhosts.conf';

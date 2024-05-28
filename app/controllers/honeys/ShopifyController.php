@@ -5,7 +5,7 @@ namespace simplerest\controllers\honeys;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Shopify;
 use simplerest\core\libs\Strings;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
 /*
     Para hacer pruebas con WebHooks es posible usar NgrOk
@@ -15,7 +15,7 @@ use simplerest\controllers\MyController;
 
     Cada webhook comienza con "shopify_webhook_"
 */
-class ShopifyController extends MyController
+class ShopifyController extends Controller
 {
     protected $data;
 

@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers\tests;
+namespace simplerest\controllers\demos;
 
 use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\Factory;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class DBController extends MyController
+class DBController extends Controller
 {
     function test_get_db_ver(){
         DB::getDefaultConnection();

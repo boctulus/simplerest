@@ -5,9 +5,9 @@ namespace simplerest\controllers;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\XML;
 use simplerest\libs\RibiSOAP;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class RibisoftController extends MyController
+class RibisoftController extends Controller
 {
     function test_decode_xml(){
         $xml = '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><soap:Fault><faultcode>soap:Server</faultcode><faultstring>Server was unable to process request. ---&gt; Error: La bodega no existe</faultstring><detail /></soap:Fault></soap:Body></soap:Envelope>';

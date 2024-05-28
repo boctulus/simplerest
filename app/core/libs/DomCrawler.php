@@ -22,7 +22,7 @@ use Symfony\Component\DomCrawler\Crawler;
     $buttonExists = $crawler->exists('button[name="AddToBasket"]');
 
     // Obtener todos los enlaces
-    $links = $crawler->getAllLinks();
+    $links = $crawler->getLinks();
 
     // Obtener el texto de un elemento específico
     $text = $crawler->getText('h1.page-title');
@@ -107,22 +107,52 @@ class DomCrawler extends Crawler
         return $node_list->html();
     }
 
-     /**
+    /**
+     * Obtiene todos los nodos de los elementos seleccionados.
+     *
+     * @param string $selector
+     * @param string $attr_name
+     * @return array nodes
+     */
+    function getAll(string $selector): array
+    {
+        $results = [];
+        $this->filter($selector)->each(function (Crawler $node) use (&$results) {
+            $results[] = $node;
+        });
+
+        return $results;
+    }
+
+    /**
      * Obtiene todos los valores de un atributo específico de los elementos seleccionados.
      *
      * @param string $selector
      * @param string $attr_name
-     * @return array
+     * @return array attributes
      */
-    function getAll(string $selector, string $attr_name = null): array
+    function getAttributes(string $selector, string $attr_name): array
     {
         $results = [];
         $this->filter($selector)->each(function (Crawler $node) use (&$results, $attr_name) {
-            if ($attr_name) {
-                $results[] = $node->attr($attr_name);
-            } else {
-                $results[] = $node->text();
-            }
+            $results[] = $node->attr($attr_name);
+        });
+
+        return $results;
+    }
+
+    /**
+     * Obtiene todos los valores de un atributo específico de los elementos seleccionados.
+     *
+     * @param string $selector
+     * @param string $attr_name
+     * @return array texts
+     */
+    function getTexts(string $selector, string $attr_name): array
+    {
+        $results = [];
+        $this->filter($selector)->each(function (Crawler $node) use (&$results, $attr_name) {
+            $results[] = $node->text();
         });
 
         return $results;
@@ -133,8 +163,9 @@ class DomCrawler extends Crawler
      *
      * @return array
      */
-    function getAllLinks(): array
+    function getLinks(): array
     {
-        return $this->getAll('a', 'href');
+        return $this->getAttributes('a', 'href');
     }
 }
+
