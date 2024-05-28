@@ -5,6 +5,7 @@ namespace simplerest\core;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Msg;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\Files;
 
 
 class FrontController
@@ -47,7 +48,7 @@ class FrontController
                 }
             }
 
-            $config['base_url'] = Strings::addTrailingSlash($config['base_url']);
+            $config['base_url'] = Files::addTrailingSlash($config['base_url']);
 
             if ($config['base_url'] != '/' && strpos($path, $config['base_url']) === 0) {
                 $path = substr($path, strlen($config['base_url']));

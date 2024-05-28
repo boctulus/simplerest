@@ -6,9 +6,9 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\VarDump;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class BzzImportController extends MyController
+class BzzImportController extends Controller
 {
     function run(){
         // Resuelvo CORS

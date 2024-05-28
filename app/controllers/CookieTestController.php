@@ -6,9 +6,9 @@ namespace simplerest\controllers;
 use simplerest\core\libs\Cookie;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\CookieJar;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class CookieTestController extends MyController
+class CookieTestController extends Controller
 {
     // Crea una cookie
     function create()

@@ -3,9 +3,9 @@
 namespace simplerest\controllers;
 
 use boctulus\hello_world\Hello;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
-class Dumb2Controller extends MyController
+class Dumb2Controller extends Controller
 {   
     function index()
     {

@@ -11,11 +11,9 @@ abstract class Controller
     use ExceptionHandler;
 
     protected $callable = [];
-    protected $users_table;
     protected $_title;
     protected $config;
-
-    protected static $_printable = true;
+    protected static $default_template = 'templates/tpl_basic.php';
     
     function __construct() {
         $this->config = config();
@@ -23,8 +21,6 @@ abstract class Controller
         if ($this->config['error_handling']) {
             set_exception_handler([$this, 'exception_handler']);
         }
-
-        $this->users_table = get_users_table();
     }
 
     protected function getConnection() {
@@ -42,8 +38,8 @@ abstract class Controller
     function __view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
         global $ctrl;
 
-        $_ctrl = explode('\\',get_class($this));
-        $ctrl  = $_ctrl[count($_ctrl)-1];
+        $_ctrl  = explode('\\',get_class($this));
+        $ctrl   = $_ctrl[count($_ctrl)-1];
         $_title = substr($ctrl,0,strlen($ctrl)-10);     
         
         if(!isset($vars_to_be_passed['title'])){
@@ -52,6 +48,10 @@ abstract class Controller
 
         $ctrl  = strtolower(substr($ctrl, 0, -strlen('Controller')));
         $vars_to_be_passed['ctrl'] = $ctrl; //
+
+        if (empty($layout)){
+            $layout = self::$default_template;
+        }
 
         view($view_path, $vars_to_be_passed, $layout, $expiration_time);
     }

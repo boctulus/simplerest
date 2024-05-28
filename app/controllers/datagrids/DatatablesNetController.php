@@ -2,7 +2,7 @@
 
 namespace simplerest\controllers\datagrids;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use
     DataTables\Database,
     DataTables\Editor,
@@ -16,7 +16,7 @@ use
     https://datatables.net/forums/discussion/72902/is-this-the-paid-version-of-data-tables
 */
 
-class DatatablesNetController extends MyController
+class DatatablesNetController extends Controller
 {
     function __construct()
     {

@@ -4,7 +4,7 @@ namespace simplerest\controllers\api_tests;
 
 use simplerest\core\libs\DB;
 use simplerest\core\libs\WooCommerceApiClient;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Arrays;
 
 /*
@@ -22,7 +22,7 @@ use simplerest\core\libs\Arrays;
     
     . For non-secure connections (HTTP), you need to use "oAuth1 Authentication".  <--------- !!!
 */
-class WooRestApiController extends MyController
+class WooRestApiController extends Controller
 {   
     protected function getClient(){
         return new WooCommerceApiClient('ck_f710ad18c309b89f309e7144da238814bd4bf6b4', 

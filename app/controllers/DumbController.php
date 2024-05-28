@@ -3219,8 +3219,8 @@ class DumbController extends Controller
         dd(Strings::removeUnnecessarySlashes('c:\\windows'));
         dd(Strings::removeTrailingSlash('/home/www/simplerest/'));
         dd(Strings::removeTrailingSlash('/home/www/simplerest'));
-        dd(Strings::addTrailingSlash('/home/www/simplerest'));
-        dd(Strings::addTrailingSlash('/home/www/simplerest/'));
+        dd(Files::addTrailingSlash('/home/www/simplerest'));
+        dd(Files::addTrailingSlash('/home/www/simplerest/'));
     }
 
 
@@ -10453,6 +10453,6 @@ class DumbController extends Controller
         );
     }
 
-
+    
 
 }   // end class

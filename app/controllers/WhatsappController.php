@@ -4,10 +4,10 @@ namespace simplerest\controllers;
 
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Strings;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 
 
-class WhatsappController extends MyController
+class WhatsappController extends Controller
 {
     /*
         https://tinyurl.com/wa-boctulus

@@ -7,13 +7,13 @@ use simplerest\core\libs\OpenAI;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 use simplerest\libs\ItalianReviews;
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\RandomGenerator;
 use simplerest\libs\ItalianGrammarAnalyzer;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
 
-class ReviewsController extends MyController
+class ReviewsController extends Controller
 {
     /*
         Falta completar parseando la salida

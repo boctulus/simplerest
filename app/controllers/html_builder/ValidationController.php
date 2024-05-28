@@ -2,13 +2,13 @@
 
 namespace simplerest\controllers\html_builder;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 
-class ValidationController extends MyController
+class ValidationController extends Controller
 {
     /*
         Basico  

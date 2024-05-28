@@ -2,11 +2,11 @@
 
 namespace simplerest\controllers;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use boctulus\SW\libs\currency\VercelARS;
 use boctulus\SW\libs\currency\ExchangeRate;
 
-class RateExchangeTesterController extends MyController
+class RateExchangeTesterController extends Controller
 {
       function index()
     {       

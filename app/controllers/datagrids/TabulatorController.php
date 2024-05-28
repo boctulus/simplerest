@@ -2,10 +2,10 @@
 
 namespace simplerest\controllers\datagrids;
 
-use simplerest\controllers\MyController;
+use simplerest\core\controllers\Controller;
 use simplerest\core\Request;
 
-class TabulatorController extends MyController
+class TabulatorController extends Controller
 {
     function __construct()
     {
