@@ -1338,7 +1338,7 @@ class Strings
 	*/
 	static function reduceText(string $html, int $n_words): string {
         // Cargar el HTML en un objeto DOMDocument
-        $dom = XML::getDocument($html);
+        $dom = HTML::getDocument($html);
 
         // Obtener todos los nodos de texto
         $xpath = new \DOMXPath($dom);
@@ -1747,7 +1747,6 @@ class Strings
 
 							default:
 								throw new \InvalidArgumentException("Operator '$op' is unknown", 1);
-								break;    
 						}
 
 					}
@@ -1980,10 +1979,10 @@ class Strings
 	*/
 	static function minimifyHTML($html, int $level = 5) : string {
 		if ($level >= 7){
-			$html = XML::stripTag($html, 'nav');
-            $html = XML::stripTag($html, 'img');
-			$html = XML::stripTag($html, 'footer');
-			$html = XML::HTML2Text($html);
+			$html = HTML::stripTag($html, 'nav');
+            $html = HTML::stripTag($html, 'img');
+			$html = HTML::stripTag($html, 'footer');
+			$html = HTML::HTML2Text($html);
 
 			// Replace multiple (one ore more) line breaks with a single one.
 			$html = preg_replace("/[\r\n]+/", "\n", $html);
@@ -1992,13 +1991,13 @@ class Strings
 		}
 
 		$html = static::removeHTMLentities($html);
-		$html = XML::stripTag($html, 'head');
-		$html = XML::stripTag($html, 'footer');
-		$html = XML::stripTag($html, 'script');
-		$html = XML::stripTag($html, 'style');
-		$html = XML::stripTag($html, 'iframe');
-		$html = XML::stripTag($html, 'svg');		
-		$html = XML::removeHTMLAttributes($html, [
+		$html = HTML::stripTag($html, 'head');
+		$html = HTML::stripTag($html, 'footer');
+		$html = HTML::stripTag($html, 'script');
+		$html = HTML::stripTag($html, 'style');
+		$html = HTML::stripTag($html, 'iframe');
+		$html = HTML::stripTag($html, 'svg');		
+		$html = HTML::removeHTMLAttributes($html, [
 			'onclick',
 			'ondblclick',
 			'onmousedown',
@@ -2023,12 +2022,12 @@ class Strings
 			'onscroll'
 		]);
 
-		$html = XML::removeHTMLAttributes($html, ['style', 'class', 'rel', 'target', 'type']);
+		$html = HTML::removeHTMLAttributes($html, ['style', 'class', 'rel', 'target', 'type']);
 		$html = static::removeMultiLineComments($html);
-		$html = XML::removeCSS($html);
+		$html = CSS::removeCSS($html);
 
 		if ($level >=2){
-			$html = XML::removeComments($html);
+			$html = HTML::removeComments($html);
 		}
 
 		if ($level >=3){

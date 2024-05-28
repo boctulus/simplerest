@@ -4,11 +4,10 @@ namespace simplerest\core\libs;
 
 use Composer\InstalledVersions;
 
-require_once __DIR__ . '/../../../vendor/composer/InstalledVersions.php';
-
 class XML
 {
-    static function isXML(string $str, bool $fast_check = false) 
+    // antes isXML
+    static function isValidXML(string $str, bool $fast_check = false) 
     {
         $str = trim($str);
 
@@ -40,31 +39,31 @@ class XML
 
         Verificar si funciona!
     */
-    static function getSelector(string $html, string $text) : string {
-            $dom = static::getDocument($html);
+    static function getSelectorByText(string $html, string $text) : string {
+        $dom = static::getDocument($html);
 
-            $xpath = new \DOMXPath($dom);
-            $nodes = $xpath->query("//text()[contains(., '$text')]/parent::*");
+        $xpath = new \DOMXPath($dom);
+        $nodes = $xpath->query("//text()[contains(., '$text')]/parent::*");
 
-            $selector = '';
-            foreach ($nodes as $node) {
-                $selector .= self::getNodeSelector($node) . '/';
-            }
-
-            $selector = rtrim($selector, '/');
-
-            return $selector;
+        $selector = '';
+        foreach ($nodes as $node) {
+            $selector .= self::getNodeSelector($node) . '/';
         }
 
-        private static function getNodeSelector(\DOMNode $node) : string {
+        $selector = rtrim($selector, '/');
+
+        return $selector;
+    }
+
+    private static function getNodeSelector(\DOMNode $node) : string {
         $selector = '';
 
         while ($node && $node->nodeType === XML_ELEMENT_NODE) {
             $nodeName = $node->nodeName;
             $nodeIndex = self::getNodeIndex($node);
-            $selector = "{$nodeName}[{$nodeIndex}]{$selector}"; // Update the order of concatenation
+            $selector = "{$nodeName}[{$nodeIndex}]{$selector}"; 
 
-            $node = $node->parentNode; // Move to the parent node
+            $node = $node->parentNode;
         }
 
         $selector = '/' . rtrim($selector, '/');
@@ -88,17 +87,30 @@ class XML
     }
 
     /*
-        Ej:
+        Devuelve array de los nodos (en XML/HTML) de los que coinciden con el selector
 
-        $selector = '//p';
-        $result = XML::getTag($html, $selector);
-        dd($result, $selector); 
-    
-        $selector = '//div[contains(@class, "my_class")]';
-        $result = XML::getTag($html, $selector);
-        dd($result, $selector); 
+        $html = '
+        <html>
+            <body>
+                <div class="content">Content 1</div>
+                <div class="content">Content 2</div>
+                <div class="footer">Footer</div>
+            </body>
+        </html>';
+
+        dd(
+            XML::extractNodes($html, "//div[@class='content']")
+        );
+
+        Resultado:
+
+        Array
+        (
+            [0] => <div class="content">Content 1</div>
+            [1] => <div class="content">Content 2</div>
+        )
     */
-    static function getTag(string $html, string $selector): array {
+    static function extractNodes(string $html, string $selector): array {
         $dom = static::getDocument($html);
         
         $xpath = new \DOMXPath($dom);
@@ -112,36 +124,40 @@ class XML
         return $result;
     }
 
-    /*
-        Devuelve ocurrencias de <article>
+    // Recupera textos de nodos
+    static function getTextFromNodes($html) {
+        $dom   = static::getDocument($html);
+        $xpath = new \DOMXPath($dom);
+        
+        $nodes = $xpath->query('//text()');
 
-        Ej:
+        $textNodes = [];
+        foreach ($nodes as $node) {
+            $text = trim($node->nodeValue);
+            if (!empty($text)) {
+                $textNodes[] = $text;
+            }
+        }
 
-        $html = Files::getContent(ETC_PATH . 'page.html');        
-        $html = XML::getArticles($html) ?? $html;
+        return $textNodes;
+    }
 
-        dd($html);
-    */
-    static function getArticles(string $html, bool $as_string = true){
-        $arts = XML::query($html, '//article');
+    // Depredicar
+    static function getNodesAsString(string $html, $selector, bool $as_string = true){
+        $arr = XML::extractNodes($html, $selector);
 
-        if (empty($arts)){
+        if (empty($arr)){
             return;
         }
 
         if ($as_string){
-            $arts = implode("\r\n\r\n", $arts);
+            $arr = implode("\r\n\r\n", $arr);
         }   
 
-        return $arts;
-    }
-
-    // alias
-    static function query(string $html, string $selector): array {
-        return static::getTag($html, $selector);
+        return $arr;
     }
     
-    static function saveXMLNoHeader(\DOMDocument $dom) : string {
+    static function saveXMLWithoutHeader(\DOMDocument $dom) : string {
         $str = $dom->saveXML();
 
         $str = Strings::afterIfContains($str, '<?xml version="1.0" standalone="yes"?>');
@@ -219,11 +235,15 @@ class XML
 
         composer require spatie/array-to-xml
     */
-    static function fromArray(array $arr, string $root_elem = 'root', $header = true){
-        if (!InstalledVersions::isInstalled('spatie/array-to-xml')){
+    static function fromArray(array $arr, string $root_elem = 'root', $header = true)
+    {
+        require_once __DIR__ . '/../../../vendor/composer/InstalledVersions.php';
+
+        $class = 'InstalledVersions';
+
+        if (!$class::isInstalled('spatie/array-to-xml')){
             throw new \Exception("Composer package spatie/array-to-xml is requiered");
         }
-
 
         $class = "\Spatie\ArrayToXml\ArrayToXml";
 
@@ -263,24 +283,6 @@ class XML
         );
     }   
 
-    // Recupera textos de nodos
-    static function getTextFromNodes($html) {
-        $dom   = static::getDocument($html);
-        $xpath = new \DOMXPath($dom);
-        
-        $nodes = $xpath->query('//text()');
-
-        $textNodes = [];
-        foreach ($nodes as $node) {
-            $text = trim($node->nodeValue);
-            if (!empty($text)) {
-                $textNodes[] = $text;
-            }
-        }
-
-        return $textNodes;
-    }
-
     /*
         Puede remover cualquier <tag>
 
@@ -305,7 +307,7 @@ class XML
             $item->parentNode->removeChild($item); 
         }
 
-        $html = static::saveXMLNoHeader($dom);
+        $html = static::saveXMLWithoutHeader($dom);
         
         return $html;
     }
@@ -326,7 +328,7 @@ class XML
         }
         
         // Obtén el XML resultante como string
-        $newPage = static::saveXMLNoHeader($dom);
+        $newPage = static::saveXMLWithoutHeader($dom);
         
         return $newPage;
     }
@@ -343,6 +345,8 @@ class XML
         $stripped_page = preg_replace($pattern, '', $page);
         return $stripped_page;
     }
+
+
    
 }
 
