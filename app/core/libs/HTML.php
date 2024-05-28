@@ -169,7 +169,7 @@ class HTML extends XML
         }
         
         // Obtén el XML resultante como string
-        $newPage = static::saveXMLNoHeader($dom);
+        $newPage = static::saveXMLWithoutHeader($dom);
         
         return $newPage;
     }
@@ -301,7 +301,7 @@ class HTML extends XML
 			}
 		}
 	
-		$output = static::saveXMLNoHeader($dom);
+		$output = static::saveXMLWithoutHeader($dom);
 	
 		// Eliminar la etiqueta <!DOCTYPE> y la envoltura <html><body> agregadas por DOMDocument
 		// $output = preg_replace('~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i', '', $output);
@@ -329,8 +329,7 @@ class HTML extends XML
         return $html;
     }
 
-
-        /*
+    /*
         Procesa un archivo de vista y agrega referencias al traductor
     */
     static function insertTranslator($html) {

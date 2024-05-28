@@ -8,7 +8,7 @@ use simplerest\core\libs\Files;
 
 class ImgController extends Controller
 {
-    function mov($ori = 'D:\Downloads', $dst = null)
+    function mv($ori = 'D:\Downloads', $dst = null)
     {
         $jpg = array_merge(
             Files::glob($ori, '*.jpg'),
