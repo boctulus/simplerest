@@ -23,7 +23,7 @@ class Obfuscator
             return;
         }
 
-        $tmp  = sys_get_temp_dir();
+        $tmp  = Files::tempDir();
         $_dst = "$tmp/to_obsfuscate";
 
         Files::mkDir  ($_dst);
@@ -129,7 +129,7 @@ class Obfuscator
             throw new \InvalidArgumentException("Invalid profile. It can only be ". implode(',', $allowed_profiles). ". Given '$profile'");
         }
 
-        $tmp  = sys_get_temp_dir();
+        $tmp  = Files::tempDir();
         $_dst = "$tmp/to_obsfuscate";
 
         static::clear($_dst);

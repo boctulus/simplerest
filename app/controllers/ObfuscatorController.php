@@ -32,7 +32,7 @@ class ObfuscatorController extends Controller
     {
         $_excluded = [];
 
-        $ori_non_trailing_slash = Strings::removeTrailingSlash($ori);
+        $ori_non_trailing_slash = Files::removeTrailingSlash($ori);
         $yaml_file = $ori_non_trailing_slash . DIRECTORY_SEPARATOR . 'obf.yaml';
 
         if (!file_exists($yaml_file)){
@@ -102,7 +102,7 @@ class ObfuscatorController extends Controller
             Sin grupo
         */
 
-        $tmp  = sys_get_temp_dir();
+        $tmp  = Files::tempDir();
         $_dst = "$tmp/to_obsfuscate_no_group";
 
         // Deltree sobre $_dst

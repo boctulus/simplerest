@@ -9952,6 +9952,17 @@ Verificar que la compresión funcione!
 http://www.gidnetwork.com/tools/gzip-test.php
 
 
+# Cambiar el directorio temporal
+
+El directorio temporal es usado por varias clases entre ellas ApiClient asi que si fuera necesario modificarlo se puede hacer con Config::set()
+
+Ej:
+
+	Config::set('tmp_dir', '<<< path-to-cache-folder >>>'); 
+
+La forma recomendada de leerlo es con Files::tempDir()
+
+
 # NGINX web server
 
 Agregar en el bloque lo siguiente:
