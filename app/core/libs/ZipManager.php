@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Files;
+
 class ZipManager 
 {
     static $include_macosx_dir = true;
@@ -129,7 +131,7 @@ class ZipManager
         if ($destination !== null) {
             $destination_folder = rtrim($destination, '/');
         } else {
-            $destination_folder = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('unzip_');
+            $destination_folder = Files::tempDir() . DIRECTORY_SEPARATOR . uniqid('unzip_');
         }
     
         // Verificar si la extensión ZipArchive está disponible

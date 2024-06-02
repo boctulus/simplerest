@@ -5,9 +5,10 @@ use simplerest\core\libs\Paginator;
 require_once __DIR__ . '/constants.php';
 
 return [
-	'app_url' => env('APP_URL'),
-	'app_name'=> env('APP_NAME'),
-	'app_env' => env('APP_ENV'),
+	'app_url'   => env('APP_URL'),
+	'app_name'  => env('APP_NAME'),
+	'app_env'   => env('APP_ENV'),
+	'namespace' => 'simplerest',	// es usado ?
 
 	/*
 		For a sub-foder in /var/www/html just set as
@@ -25,7 +26,7 @@ return [
 	*/	
 
 	'remove_api_slug' => false, 
-	
+
 	'default_controller' => 'HomeController',
 
 	'template' => 'templates/tpl.php',
@@ -44,9 +45,11 @@ return [
 		false -> deshabilita la verificacion
 	*/
 	
-	'ssl_cert' => null,  // 'D:\wamp64\ca-bundle.crt',
+	'ssl_cert'     => null,  // 'D:\wamp64\ca-bundle.crt',
 
 	'DateTimeZone' => 'Asia/Manila',
+
+	'tmp_dir'	   => sys_get_temp_dir(),
 
 	/*
 		Intercepta errores
@@ -308,12 +311,10 @@ return [
 
 	'cache_driver' => simplerest\core\libs\DBCache::class,
 
-
 	'var_dump_separators' => [
 		'start' => '--| ',
 		'end'   => ''
 	],
-
 
 	/*
 		Si falta un paquete de Composer o el autoload.php o el composer.json intenta resolverlo
@@ -342,5 +343,4 @@ return [
 		'callback_url'	=> env('OAUTH_FACEBOOK_CALLBACK')
 	],
 
-	'namespace' => 'simplerest'		
 ];

@@ -256,7 +256,7 @@ class GoogleDrive
             }
         }
 
-        $progress_path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . '.my_store';
+        $progress_path = Files::tempDir() . DIRECTORY_SEPARATOR . '.my_store';
         Files::mkDirOrFail($progress_path);
 
         if ($micro_seconds === null){

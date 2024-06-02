@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs\i18n;
 
+use simplerest\core\libs\Files;
+
 /**
  * Gettext's po file parser.
  * The parsed result would be cached into your file instead of Apache's memory.
@@ -41,7 +43,7 @@ namespace simplerest\core\libs\i18n;
         }
         else {
             if (function_exists('sys_get_temp_dir')) {
-                $this->setCachePath(sys_get_temp_dir());
+                $this->setCachePath(Files::tempDir());
             } elseif (substr(PHP_OS, 0, 3) == 'WIN') {
                 if (file_exists('c:\\WINNT\\Temp\\')) {
                     $this->setCachePath('c:\\WINNT\\Temp\\');
