@@ -20,13 +20,22 @@ use simplerest\core\exceptions\NotImplementedException;
 */
 abstract class ProductScraper
 {
-    protected static $urlBase;
-    protected static $exp_time = 3600 * 6;
+    protected static $baseUrl;
+    protected static $exp_time = 3600 * 24 * 30;
 
     
-    static function setup($urlBase, $exp_time){
-        static::$urlBase  = $urlBase;
-        static::$exp_time = $exp_time;
+    static function setup($baseUrl = null, $exp_time = null){
+
+        if (!empty($baseUrl)){
+            static::$baseUrl  = $baseUrl;
+        }
+        
+        if (!empty($exp_time)){
+            static::$exp_time = $exp_time;
+        }
+
+        System::setMaxExecutionTime(-1);
+        System::setMemoryLimit(99999999);
     }
 
     static function setExpTime($exp_time) {
@@ -37,17 +46,17 @@ abstract class ProductScraper
         @param string $slug slug o url
         @param int|null $exp_time tiempo de duracion de la cache
     */
-    static function getHTML($url_or_slug, $exp_time = null)
+    static function getHTML($url, $exp_time = null)
     {
-        // Normalizar la URL
-        $url = (Strings::startsWith('https://', $url_or_slug) || Strings::startsWith('http://', $url_or_slug)) ?  $url_or_slug : rtrim(static::$urlBase, '/') . '/' . ltrim($url_or_slug, '/');
-
         $cli = (new ApiClient($url))
         ->withoutStrictSSL()
         ->setHeaders([
             'User-Agent' => 'PostmanRuntime/7.34.0',
         ])
         ->redirect()
+        //->debug() //
+        // ->ignoreStatusCodes([404])
+        ->setRetries(10)
         ->cache($exp_time != null ? $exp_time : static::$exp_time);
 
         $cli->setMethod('GET');
@@ -58,9 +67,9 @@ abstract class ProductScraper
             
             // OpenSSL SSL_connect: Connection was reset in connection to www.azulejosmadridonline.es:443
             if (Strings::startsWith("OpenSSL SSL_connect: Connection was reset in connection to ", $err)){
-                static::$urlBase = str_replace('https://', 'http://', static::$urlBase);
+                static::$baseUrl = str_replace('https://', 'http://', static::$baseUrl);
 
-                return static::getHTML($url_or_slug, $exp_time);
+                return static::getHTML($url, $exp_time);
             }            
 
             throw new \Exception("HTTP ERROR: ". $err);
@@ -71,18 +80,25 @@ abstract class ProductScraper
         return $res;
     }
 
+    static function getHTMLfromSlug($slug, $exp_time = null){
+        $url = rtrim(static::$baseUrl, '/') . '/' . ltrim($slug, '/');
+        return static::getHTML($url, $exp_time);
+    }
+
     public static function __getVariantAttrs($html, $ucfirst = false){
-        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
+        throw new \Exception('Method '. __METHOD__ .' is not implemented.');
     }
 
     abstract public static function getProduct(string $url);
 
     public static function getProductBasicAttr(string $html)
     {
-        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
+        throw new \Exception('Method '. __METHOD__ .' is not implemented.');
     }
     
-    abstract public static function getCategoList(string $html);
+
+    // Si es $html = null, entonces hace uso interno de otras funciones quizas partiendo de una lista filtrada
+    abstract public static function getCategoList(?string $html = null);
 
     /*
         Obtiene paginador de pagina de productos (u otras)
@@ -107,12 +123,12 @@ abstract class ProductScraper
     */
     public static function getCatego(string $html)
     {
-        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
+        throw new \Exception('Method '. __METHOD__ .' is not implemented.');
     }
 
     public static function getBrandList(string $html)
     {
-        throw new NotImplementedException('Method '. __METHOD__ .' is not implemented.');
+        throw new \Exception('Method '. __METHOD__ .' is not implemented.');
     }
 
     abstract public static function getProductLinks(string $html);

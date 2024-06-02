@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Files;
+
 class FileCache extends Cache
 {
     /*
@@ -16,7 +18,7 @@ class FileCache extends Cache
 
         $filename = sha1($key);
 
-        $path[$key] = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename . '.cache';
+        $path[$key] = Files::tempDir() . DIRECTORY_SEPARATOR . $filename . '.cache';
         return $path[$key];
     }
 
