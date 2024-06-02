@@ -1,6 +1,12 @@
 TODO SimpleRest
 ===============
 
+- Revisar implementacion de Url::cache() porque NO es compatible con FileCache::getCachePath()
+y de hecho pareciera que Url::cache() no tiene utilidad, hoy al menos.
+
+- Revisar Url::download()
+
+
 - Implementar importador de CSV via comando
 
   $sql = "LOAD DATA LOCAL INFILE '/path/to/file.csv' 

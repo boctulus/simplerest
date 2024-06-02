@@ -10,6 +10,9 @@ class ImgController extends Controller
 {
     function mv($ori = 'D:\Downloads', $dst = null)
     {
+        // HARDCODED
+        $dst = 'D:\Downloads\0';
+
         $jpg = array_merge(
             Files::glob($ori, '*.jpg'),
             Files::glob($ori, '*.jpeg')

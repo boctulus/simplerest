@@ -475,7 +475,7 @@ class Files
 			$clean_paths = static::removePath([ $path1, $path2, $path_n ], static::PLUGINDIR);
 	*/
 	static function removePath($to_clean, string $path) {
-		$path_non_trailing_slash = Strings::removeTrailingSlash($path);
+		$path_non_trailing_slash = Files::removeTrailingSlash($path);
 
 		$len = strlen($path_non_trailing_slash) + 1;
 
@@ -604,7 +604,7 @@ class Files
 	static function getAbsolutePath(string $path, string $relative_to =  null){
 		// sin chequear si tiene uso actualmente.
 		if ($relative_to !== null){
-			return Strings::removeTrailingSlash($relative_to) . DIRECTORY_SEPARATOR . ltrim(ltrim($path, '/'), '\\');
+			return Files::removeTrailingSlash($relative_to) . DIRECTORY_SEPARATOR . ltrim(ltrim($path, '/'), '\\');
 		}
 
 		if (static::isAbsolutePath($path)){
@@ -674,7 +674,7 @@ class Files
 		}
 
 		foreach ($files as $ix => $f){
-			$files[$ix] = Strings::removeUnnecessarySlashes($f);
+			$files[$ix] = Files::removeUnnecessarySlashes($f);
 		}	
 
 		return $files;
@@ -860,10 +860,10 @@ class Files
 		$to_cp  = [];
 		$copied = [];
 
-		$dst = Strings::removeTrailingSlash($dst);
+		$dst = Files::removeTrailingSlash($dst);
 
 		$ori_with_trailing_slash = static::addTrailingSlash($ori);
-		$ori = Strings::removeTrailingSlash(trim($ori));
+		$ori = Files::removeTrailingSlash(trim($ori));
         $dst = trim($dst);
 
 		if (empty($files)){
@@ -970,7 +970,7 @@ class Files
 				$is_file = is_file($ori_path);
 			}
 
-			$ori_path = Strings::removeUnnecessarySlashes($ori_path);
+			$ori_path = Files::removeUnnecessarySlashes($ori_path);
 
 			if ($is_file){	
 				$_dir = static::getDir($ori_path);
@@ -1218,7 +1218,7 @@ class Files
 		}
 
 		if (!$include_self){
-			return static::globDelete($dir, '{*,.*,*.*}', true, true);
+			return static::globDelete($dir, '{*,.*,*.*}', true);
 		}
 		
 		/*
@@ -1338,8 +1338,6 @@ class Files
 				return static::isDirectoryWritable($dir);
 			}
 		}
-
-		return static::isFileWritable($path);
 	}
 
 	static function isDirectoryWritable(string $directory)
@@ -1413,7 +1411,7 @@ class Files
 	/*
 		Escribe archivo o falla.
 	*/
-	static function writeOrFail(string $path, $content, int $flags = 0)
+	static function writeOrFail(string $path, $data, int $flags = 0, $context)
 	{
 		if (is_dir($path)){
 			$path = realpath($path);
@@ -1425,15 +1423,15 @@ class Files
 		static::writableOrFail($dir);
 
 		// Pruebo a ver si tiene __toString()
-		if (is_string($content)){
-			$string = $content;
-		} elseif (is_object($content)){
-			$string = (string) $content;
-		} elseif (is_array($content)){
-			$string = implode(PHP_EOL, $content);
+		if (is_string($data)){
+			$string = $data;
+		} elseif (is_object($data)){
+			$string = (string) $data;
+		} elseif (is_array($data)){
+			$string = implode(PHP_EOL, $data);
 		} 
 
-		$bytes = @file_put_contents($path, $string, $flags);
+		$bytes = @file_put_contents($path, $string, $flags, $context);
 
 		return $bytes;
 	}
@@ -1555,8 +1553,12 @@ class Files
 		return static::writeOrFail($filename, '', $flags) !== false;
 	}
 
+	static function tempDir(){
+		return Config::get('tmp_dir');
+	}
+
 	static function getTempFilename(?string $extension = null){
-		return sys_get_temp_dir(). DIRECTORY_SEPARATOR . Strings::randomString(60, false). ".$extension";
+		return static::tempDir(). DIRECTORY_SEPARATOR . Strings::randomString(60, false). ".$extension";
 	}
 
 	static function saveToTempFile($data, ?string $filename = null, $flags = null, $context = null){
@@ -1567,7 +1569,7 @@ class Files
 	}
 
 	static function getFromTempFile(string $filename){
-		return static::readOrFail(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename);
+		return static::readOrFail(static::tempDir() . DIRECTORY_SEPARATOR . $filename);
 	}
 
 	static function fileExtension(string $filename){
@@ -1670,7 +1672,7 @@ class Files
 
 	static function JSONExport($data, string $path, bool $pretty = false){
 		if (is_dir($path)){
-			$path = Strings::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'export.json';
+			$path = Files::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'export.json';
 		}
 
 		$flags = JSON_UNESCAPED_SLASHES;
@@ -1685,7 +1687,7 @@ class Files
 
 	static function dump($object, string $path = null, $append = false){
 		if (is_dir($path)){
-			$path = Strings::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'dump.txt';
+			$path = Files::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'dump.txt';
 		} else {
 			if (!static::isAbsolutePath($path)){
 				$path = ETC_PATH . $path;
