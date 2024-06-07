@@ -2266,7 +2266,7 @@ class Model {
 	}
 
 	/*
-	Interpreta un array como el siguiente:
+		Interpreta un array como el siguiente:
 
       	[
 			'AND' => [
@@ -2333,6 +2333,8 @@ class Model {
         );
 
 		Podria eventualmente armar solamente el where() y encolar los parametros para hacer luego el binding sin requerir eval.
+
+		Antes llamada where_ay()
 	*/
 	static function where_array(Array $cond_ay){
 		return ltrim(

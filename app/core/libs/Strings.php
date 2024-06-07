@@ -1159,11 +1159,15 @@ class Strings
 	static function contains(string $substr, string $text, bool $case_sensitive = true)
 	{
 		if (!$case_sensitive){
-			$text = strtolower($text);
+			$text   = strtolower($text);
 			$substr = strtolower($substr);
 		}
 
-		return ($substr !== '' &&  mb_strpos($text, $substr) !== false);
+		if (function_exists('str_contains')){
+			return str_contains($text, $substr);
+		}
+
+		return ($substr !== '' && strpos($text, $substr) !== false);
 	}
 
 	static function containsAny(Array $substr, $text, $case_sensitive = true)
