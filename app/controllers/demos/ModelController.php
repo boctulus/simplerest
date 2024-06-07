@@ -3750,14 +3750,14 @@ class ModelController extends Controller
 
         $q = Model::where_array($ay);
 
-        $code = Strings::beforeLast("return table('products')$q", ';') . '->dd();';
+        $code = Strings::beforeLast("table('products')$q", ';') . '->dd();';
 
-        dd($code);
+        dd(pre($code));
 
         DB::getConnection("az");
 
         dd(
-            eval($code)
+            eval("return $code")
         );
     }
 
