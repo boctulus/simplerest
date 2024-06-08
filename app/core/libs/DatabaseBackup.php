@@ -60,7 +60,7 @@ class DatabaseBackup
         
         Sin embargo, este comando tiene limitaciones y no es tan completo como mysqldump. SELECT INTO OUTFILE solo exporta los datos de una tabla y no incluye la estructura de la base de datos ni otras características como triggers, procedures, etc.
     */
-    public static function exportTableAsCSV(string $tableName, string &$outputFilePath): void
+    public static function exportTableAsCSV(string $tableName)
     {        
         $pdo = DB::getConnection();
 
@@ -86,6 +86,8 @@ class DatabaseBackup
 
         // Ejecutar el comando
         $pdo->exec($sql);
+
+        return $file;
     }
 }
 
