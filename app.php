@@ -1,6 +1,7 @@
 <?php
 
 use simplerest\core\libs\i18n\Translate;
+use simplerest\core\libs\Config;
 
 // App bootstraping
 
@@ -65,7 +66,7 @@ $config = include __DIR__ . '/config/config.php';
     i18n
 */
 
-Translate::useGettext(config()['translate']['use_gettext']);
+Translate::useGettext($config['translate']['use_gettext']);
 
 $req  = request(); 
 $lang = $req->shiftQuery('lang') ?? $req->header('Accept-Language');
@@ -83,11 +84,22 @@ foreach ($config['providers'] as $provider){
     Lo ideal seria que esto este dentro de un package y que se pueda desconectar
 */
 
-$cfg = config();
-if (isset($cfg['DateTimeZone'])){
-    $ok = date_default_timezone_set($cfg['DateTimeZone']);
+if (isset($config['DateTimeZone'])){
+    $ok = date_default_timezone_set($config['DateTimeZone']);
     
     if (!$ok){
         dd("FALLO AL INTENTAR CAMBIAR TIMEZONE");
     }
+}
+
+// Mostrar errores
+if ((php_sapi_name() === 'cli') || (isset($_GET['show_errors']) && $_GET['show_errors'] == 1)){
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+} else {
+	if ($config['debug'] == false){
+		error_reporting(E_ALL & ~E_WARNING);
+		error_reporting(0);
+	}	
 }
