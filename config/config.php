@@ -1,13 +1,15 @@
 <?php
 
+use simplerest\core\libs\Env;
 use simplerest\core\libs\Paginator;
+
 
 require_once __DIR__ . '/constants.php';
 
 return [
-	'app_url'   => env('APP_URL'),
-	'app_name'  => env('APP_NAME'),
-	'app_env'   => env('APP_ENV'),
+	'app_url'   => Env::get('APP_URL'),
+	'app_name'  => Env::get('APP_NAME'),
+	'app_env'   => Env::get('APP_ENV'),
 	'namespace' => 'simplerest',	// es usado ?
 
 	/*
@@ -63,7 +65,7 @@ return [
 		Ver 'log_sql'
 	*/
 
-	'debug'   		 => true,  //env('APP_DEBUG', true),
+	'debug'   		 => true,  //Env::get('APP_DEBUG', true),
 
 	/*
 		Si error_log es true entonces se usara error_log()
@@ -146,19 +148,19 @@ return [
 	'acl_file' => SECURITY_PATH . 'acl.cache',
 
 	'access_token' => [
-		'secret_key' 		=> env('TOKENS_ACCSS_SECRET_KEY'),
+		'secret_key' 		=> Env::get('TOKENS_ACCSS_SECRET_KEY'),
 		'expiration_time'	=> 60 * 15 * 50000,   // seconds (normalmente 60 * 15)
 		'encryption'		=> 'HS256'			
 	],
 
 	'refresh_token' => [
-		'secret_key'		=> env('TOKENS_REFSH_SECRET_KEY'),
+		'secret_key'		=> Env::get('TOKENS_REFSH_SECRET_KEY'),
 		'expiration_time' 	=> 315360000,   // seconds
 		'encryption' 		=> 'HS256'	
 	],
 
 	'email_token' => [
-		'secret_key' => env('TOKENS_EMAIL_SECRET_KEY'),
+		'secret_key' => Env::get('TOKENS_EMAIL_SECRET_KEY'),
 		'expires_in' => 7 * 24 * 3600,
 		'encryption' => 'HS256'
 	],
@@ -183,18 +185,18 @@ return [
 
 	'email' => [
 		'from'		=> [
-			'address' 		=> env('MAIL_DEFAULT_FROM_ADDR'), 
-			'name' 			=> env('MAIL_DEFAULT_FROM_NAME')
+			'address' 		=> Env::get('MAIL_DEFAULT_FROM_ADDR'), 
+			'name' 			=> Env::get('MAIL_DEFAULT_FROM_NAME')
 		],	
 
 		'mailers' => [
 			'google' => [
-				'Host'			=> env('MAIL_HOST'),
-				'Port'			=> env('MAIL_PORT'),
-				'Username' 		=> env('MAIL_USERNAME'),
-				'Password' 		=> env('MAIL_PASSWORD'),
-				'SMTPSecure'	=> env('MAIL_ENCRYPTION'),
-				'SMTPAuth' 		=> env('MAIL_AUTH'),
+				'Host'			=> Env::get('MAIL_HOST'),
+				'Port'			=> Env::get('MAIL_PORT'),
+				'Username' 		=> Env::get('MAIL_USERNAME'),
+				'Password' 		=> Env::get('MAIL_PASSWORD'),
+				'SMTPSecure'	=> Env::get('MAIL_ENCRYPTION'),
+				'SMTPAuth' 		=> Env::get('MAIL_AUTH'),
 				'SMTPDebug' 	=> 3,
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
@@ -210,12 +212,12 @@ return [
 			],
 
 			'pulque' => [
-				'Host'			=> env('MAIL_HOST_3'),
-				'Port'			=> env('MAIL_PORT_3'),
-				'Username' 		=> env('MAIL_USERNAME_3'),
-				'Password' 		=> env('MAIL_PASSWORD_3'),
-				'SMTPSecure'	=> env('MAIL_ENCRYPTION_3'),
-				'SMTPAuth' 		=> env('MAIL_AUTH_3'),
+				'Host'			=> Env::get('MAIL_HOST_3'),
+				'Port'			=> Env::get('MAIL_PORT_3'),
+				'Username' 		=> Env::get('MAIL_USERNAME_3'),
+				'Password' 		=> Env::get('MAIL_PASSWORD_3'),
+				'SMTPSecure'	=> Env::get('MAIL_ENCRYPTION_3'),
+				'SMTPAuth' 		=> Env::get('MAIL_AUTH_3'),
 				//'SMTPAutoTLS'   => false,
 				'SMTPDebug' 	=> 0,
 				'CharSet' 		=> 'UTF-8',
@@ -232,12 +234,12 @@ return [
 			],
 
 			'miguel_peru' => [
-				'Host'			=> env('MAIL_HOST_4'),
-				'Port'			=> env('MAIL_PORT_4'),
-				'Username' 		=> env('MAIL_USERNAME_4'),
-				'Password' 		=> env('MAIL_PASSWORD_4'),
-				'SMTPSecure'	=> env('MAIL_ENCRYPTION_4'),
-				'SMTPAuth' 		=> env('MAIL_AUTH_4'),
+				'Host'			=> Env::get('MAIL_HOST_4'),
+				'Port'			=> Env::get('MAIL_PORT_4'),
+				'Username' 		=> Env::get('MAIL_USERNAME_4'),
+				'Password' 		=> Env::get('MAIL_PASSWORD_4'),
+				'SMTPSecure'	=> Env::get('MAIL_ENCRYPTION_4'),
+				'SMTPAuth' 		=> Env::get('MAIL_AUTH_4'),
 				'SMTPDebug' 	=> 0,
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
@@ -253,12 +255,12 @@ return [
 			],
 
 			'solbin_sblue' => [
-				'Host'			=> env('MAIL_HOST_5'),
-				'Port'			=> env('MAIL_PORT_5'),
-				'Username' 		=> env('MAIL_USERNAME_5'),
-				'Password' 		=> env('MAIL_PASSWORD_5'),
-				'SMTPSecure'	=> env('MAIL_ENCRYPTION_5'),
-				'SMTPAuth' 		=> env('MAIL_AUTH_5'),
+				'Host'			=> Env::get('MAIL_HOST_5'),
+				'Port'			=> Env::get('MAIL_PORT_5'),
+				'Username' 		=> Env::get('MAIL_USERNAME_5'),
+				'Password' 		=> Env::get('MAIL_PASSWORD_5'),
+				'SMTPSecure'	=> Env::get('MAIL_ENCRYPTION_5'),
+				'SMTPAuth' 		=> Env::get('MAIL_AUTH_5'),
 				'SMTPDebug' 	=> 0,
 				'CharSet' 		=> 'UTF-8',
 				'Debugutput' 	=> 'html',
@@ -324,23 +326,23 @@ return [
 
 	'use_composer' => true,
 
-	'openai_api_key'         => env('OPENAI_API_KEY'),
+	'openai_api_key'         => Env::get('OPENAI_API_KEY'),
 	
-	'google_console_api_key' => env('GOOGLE_CONSOLE_API_KEY'),
+	'google_console_api_key' => Env::get('GOOGLE_CONSOLE_API_KEY'),
 	'google_maps_api_key'    => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY',
 	
-	'sendinblue_api_key' => env('SENDINBLUE_API_KEY'),
+	'sendinblue_api_key' => Env::get('SENDINBLUE_API_KEY'),
 
 	'google_auth'  => [
-		'client_id' 	=> env('OAUTH_GOOGLE_CLIENT_ID'),
-		'client_secret' => env('OAUTH_GOOGLE_CLIENT_SECRET'),
-		'callback_url' 	=> env('OAUTH_GOOGLE_CALLBACK')
+		'client_id' 	=> Env::get('OAUTH_GOOGLE_CLIENT_ID'),
+		'client_secret' => Env::get('OAUTH_GOOGLE_CLIENT_SECRET'),
+		'callback_url' 	=> Env::get('OAUTH_GOOGLE_CALLBACK')
 	],
 
 	'facebook_auth' => [
-		'app_id' 		=> env('OAUTH_FACEBOOK_CLIENT_ID'),
-		'app_secret'	=> env('OAUTH_FACEBOOK_CLIENT_SECRET'), 
-		'callback_url'	=> env('OAUTH_FACEBOOK_CALLBACK')
+		'app_id' 		=> Env::get('OAUTH_FACEBOOK_CLIENT_ID'),
+		'app_secret'	=> Env::get('OAUTH_FACEBOOK_CLIENT_SECRET'), 
+		'callback_url'	=> Env::get('OAUTH_FACEBOOK_CALLBACK')
 	],
 
 ];
