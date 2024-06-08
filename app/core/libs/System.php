@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Files;
+
 class System
 {
     static $res_code;
@@ -122,6 +124,8 @@ class System
     */
     static function parseWindowsPID(array $output)
     {
+        // Files::varExport($output, ETC_PATH . '/toparse.php');
+
         foreach ($output as $lx => $line){
             // Primero busco cabecera
             if (Strings::startsWith('Handles', $line) && Strings::endsWith('ProcessName', $line)){
@@ -146,7 +150,26 @@ class System
         return null;
     }
 
-    static function execInBackgroundWindows($filePath, $workingDirectory = null, $arguments = null, bool $hidden = false) 
+    static function execInBackgroundLinux(string $filePath, $arguments = null, $output_path = null, bool $debug = false){
+        if (is_null($arguments)){
+            $arguments = '';
+        } else if (is_array($arguments)) {
+            $arguments = implode(' ', $arguments);
+        }
+
+        $cmd = $filePath . ' '. $arguments;
+        $cmd = ($output_path !== null) ? "nohup $cmd > $output_path 2>&1 & echo $!" : "nohup $cmd > /dev/null 2>&1 & echo $!";
+
+        if ($debug){
+            dd($cmd, 'CMD');
+        }
+        
+        $pid = (int) shell_exec($cmd);
+        
+        return $pid;
+    }
+
+    static function execInBackgroundWindows($filePath, $workingDirectory = null, $arguments = null, bool $hidden = false, bool $debug = false) 
     {
         try {
             $cmd = "powershell.exe Start-Process -FilePath '$filePath'";
@@ -174,9 +197,11 @@ class System
 
             $cmd .= " -PassThru ";
 
-            exec($cmd, $output, $result_code);
+            if ($debug){
+                dd($cmd, 'CMD');
+            }
 
-            Files::varExport($output, ETC_PATH . '/toparse.php');
+            exec($cmd, $output, $result_code);
 
             // Devolver el PID
             return !empty($output) ? static::parseWindowsPID($output) : null;
@@ -205,6 +230,8 @@ class System
         // $working_dir = $working_dir ?? ROOT_PATH;
 
         if ($working_dir){
+            $working_dir = Files::normalize($working_dir);
+ 
             if ($debug){
                 dd("cd '$working_dir'");
             }
@@ -220,21 +247,13 @@ class System
         switch (PHP_OS_FAMILY) {
             case 'Windows':
                 $pid = static::execInBackgroundWindows($filePath, $working_dir, $arguments, true);
-
                 break;
             case 'Linux':
-                $cmd = $filePath . ' '. is_array($arguments) ? implode(' ', $arguments) : $arguments;
-                $cmd = ($output_path !== null) ? "nohup $cmd > $output_path 2>&1 & echo $!" : "nohup $cmd > /dev/null 2>&1 & echo $!";
-                
-                $pid = (int) shell_exec($cmd);                
+                $pid = static::execInBackgroundLinux($filePath, $arguments, $output_path, $debug);                
                 break;
             default:
             // unsupported
             return false;
-        }
-
-        if ($debug){
-            dd($cmd, 'CMD');
         }
 
         return $pid;
@@ -355,7 +374,7 @@ class System
     /**
      * Determines whether a PHP ini value is changeable at runtime.
      *
-     * Taken from WordPress core 
+     * Taken from WordPress core ***
      * 
      * Uso. Ej:
      * 
