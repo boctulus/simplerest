@@ -45,14 +45,36 @@ if (class_exists('Dotenv\\Dotenv')){
 $_GET   = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-/* Helpers */
-$helper_dirs = [__DIR__ . '/app/core/helpers', __DIR__ . '/app/helpers'];
 
-foreach ($helper_dirs as $dir){
-    foreach (new \DirectoryIterator($dir) as $fileInfo) {
+/* Helpers */
+
+$autoload = include __DIR__ . '/config/autoload.php';
+
+$includes  = $autoload['include']; 
+$excluded  = $autoload['exclude'];     
+
+foreach ($includes as $file_entry){
+    if (!is_dir($file_entry)){
+        if(pathinfo($file_entry, PATHINFO_EXTENSION) == 'php'){
+            require_once $file_entry;
+            continue;
+        }
+    }
+
+    foreach (new \DirectoryIterator($file_entry) as $fileInfo) {
         if($fileInfo->isDot()) continue;
         
-        $path = $fileInfo->getPathName();
+        $path     = $fileInfo->getPathName();
+        $filename = $fileInfo->getFilename();
+
+        // No incluyo archivos que comiencen con "_"
+        if (substr($filename, 0, 1) == '_'){            
+            continue;
+        }
+
+        if (in_array($path, $excluded)){
+            continue;
+        }
 
         if(pathinfo($path, PATHINFO_EXTENSION) == 'php'){
             require_once $path;
@@ -87,8 +109,8 @@ foreach ($config['providers'] as $provider){
 if (isset($config['DateTimeZone'])){
     $ok = date_default_timezone_set($config['DateTimeZone']);
     
-    if (!$ok){
-        dd("FALLO AL INTENTAR CAMBIAR TIMEZONE");
+    if (!$ok && $config['debug']){
+        dd("Error trying to change TimeZone");
     }
 }
 
