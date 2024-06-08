@@ -3,6 +3,7 @@
 namespace simplerest\controllers;
 
 use Client;
+use simplerest\core\libs\DatabaseBackup;
 use stdClass;
 use simplerest\libs\Foo;
 
@@ -10478,6 +10479,12 @@ class DumbController extends Controller
         );
     }
 
+    function test_table_export(){
+        $path = '';
+        DatabaseBackup::exportTableAsCSV('roles', $path);
+
+        dd($path, 'PATH');
+    }
     
 
 }   // end class
