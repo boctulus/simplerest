@@ -10480,10 +10480,7 @@ class DumbController extends Controller
     }
 
     function test_table_export(){
-        $path = '';
-        DatabaseBackup::exportTableAsCSV('roles', $path);
-
-        dd($path, 'PATH');
+        dd(DatabaseBackup::exportTableAsCSV('roles'), 'PATH');
     }
     
 
