@@ -35,7 +35,7 @@ class Env
     }
 
     static function get(?string $key = null, $default_value = null){
-        if (empty(static::$data)){
+        if (static::$data === null){
             static::setup();
         }
 
@@ -47,6 +47,10 @@ class Env
     }
 
     static function set(string $key = null, $value){
+        if (static::$data === null){
+            static::setup();
+        }
+        
         static::$data[$key] = $value;
     }
 }

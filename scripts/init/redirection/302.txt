@@ -1,0 +1,4 @@
+http://simplerest.lan/tonto http://simplerest.lan/dumb
+/phpinfo2 http://simplerest.lan/dumb/info
+/testsetenv /dumb/test_set_env
+http://simplerest.lan/testrndstr /dumb/get_rand_str

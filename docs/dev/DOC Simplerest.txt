@@ -193,6 +193,16 @@ Podria inclusive encasularse convenientemente como:
         DB::getConnection('robot');
     }
 
+Existe una clase analoga Env con los metodos Env::set() y Env::get()
+
+
+Simular valores de archivo de configuracion desde la linea de comandos
+
+Ej:
+
+php com my_controller cfg:my_config_variable=3
+
+
 ### Archivo databases.php
 
 En el archivo config/databases.php hay varias definiciones muy importantes que son inyectadas en la configuración.
@@ -428,12 +438,18 @@ Ej:
 
 El helper env() admite un segundo parametro opcional que es el valor por defecto.
 
-
 Nota:
 
 Se da prioridad al archivo '.dev-env' sobre '.env' asi que en produccion es solo no subir el archivo '.dev-env' o bien incluirlo en el .gitignore
 
 O se carga un archivo o el otro asi que no hay "complementariedad" con el archivo ".env" y de existir el '.dev-env' debe tener todo lo necesario.
+
+
+Simular valores de archivo de ambiente desde la linea de comandos
+
+Ej:
+
+php com my_controller my_action env:variable=valor
 
 
 # Configuración de endpoints
@@ -17463,3 +17479,75 @@ esta dentro de la clase OpenAI.
 No todos los modelos se han ensayado.
 
 
+# Redirecciones 301 | 302
+
+El framework tiene un mecanismo eficiente para manejar redirecciones 301 y 302. El script se ejecuta antes que cualquier otra parte del framework.
+
+Debe crear o editar los archivos segun necesite: 
+
+	\scripts\init\redirection\301.txt
+	\scripts\init\redirection\302.txt
+
+La estructura es la siguiente:
+
+old_url new_url
+old_url new_url
+old_url new_url
+...
+
+Ej:
+
+http://simplerest.lan/tonto http://simplerest.lan/dumb
+...
+...
+
+
+Nota: 
+
+Por eficiencia se ha simplificado el diseno y se considera un solo espacio entre old_url y new_url. 
+Tampoco se soportan expresiones regulares o wildcards. Sin embargo es flexible en el sentido de que procolo:dominio es opcional
+
+Por tanto son equivalentes:
+
+http://simplerest.lan/tonto http://simplerest.lan/dumb
+/tonto http://simplerest.lan/dumb
+http://simplerest.lan/tonto /dumb
+/tonto /dumb
+
+
+Ignorar una redireccion
+
+Solo debe agregar ";" al comienzo de la lina y sera ignorada.
+
+Ej:
+
+http://simplerest.lan/tonto http://simplerest.lan/dumb
+; /phpinfo2 http://simplerest.lan/dumb/info
+/testsetenv /dumb/test_set_env
+http://simplerest.lan/testrndstr /dumb
+
+Nota para SW:
+
+En el framework SW se debe agregar como primera linea del index.php de WordPress el include al script de redireccion
+
+<?php
+
+// Aqui:
+include_once __DIR__ . '/wp-content/plugins/{NOMBRE-DEL-PLUGIN}/scripts/init/redirection/redirection.php';
+
+/**
+ * Front to the WordPress application. This file doesn't do anything, but loads
+ * wp-blog-header.php which does and tells WordPress to load the theme.
+ *
+ * @package WordPress
+ */
+
+/**
+ * Tells WordPress to load the WordPress theme and output it.
+ *
+ * @var bool
+ */
+define( 'WP_USE_THEMES', true );
+
+/** Loads the WordPress Environment and Template */
+require __DIR__ . '/wp-blog-header.php';

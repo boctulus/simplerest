@@ -43,7 +43,7 @@ class PostmanGenerator
     }
 
     static function setBaseUrl(string $base_url){
-        static::$base_url = Strings::removeTrailingSlash($base_url);
+        static::$base_url = Files::removeTrailingSlash($base_url);
     }
 
     // Su uso es opcional
@@ -56,7 +56,7 @@ class PostmanGenerator
     }
 
     static function setSegment(string $segment){
-        static::$segment =  Strings::removeTrailingSlash($segment) . '/';
+        static::$segment =  Files::removeTrailingSlash($segment) . '/';
     }
 
     static function addEndpoints(Array $endpoints, Array $operations, bool $folder = false){
