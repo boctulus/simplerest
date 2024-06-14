@@ -141,8 +141,9 @@ class Url
 
         $p = parse_url($url);
 
-        $p['path'] = rtrim($p['path'], '/');
+        $p['path'] = isset($p['path']) ? rtrim($p['path'], '/') : '';
         $query     = isset($p['query']) ? "?{$p['query']}" : '';
+        $p['host'] = str_replace('//', '/', $p['host']);
 
         return "{$p['scheme']}://{$p['host']}{$p['path']}$query";
     }
@@ -535,7 +536,7 @@ class Url
     }
 
     static function buildUrl(string $base_url, array $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
-        return  Strings::removeTrailingSlash($base_url) . '?'. static::encodeParams($data);
+        return Files::removeTrailingSlash($base_url) . '?'. static::encodeParams($data);
     }
     
     /*

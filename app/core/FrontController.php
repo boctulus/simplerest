@@ -39,7 +39,7 @@ class FrontController
             foreach($allowed_paths as $ok_path){
                 if (Strings::startsWith($ok_path, $path)){
                     $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
-                    $path = Strings::removeTrailingSlash(ROOT_PATH) . $path;
+                    $path = Files::removeTrailingSlash(ROOT_PATH) . $path;
 
                     include $path;
 
