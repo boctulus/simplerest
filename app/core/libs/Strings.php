@@ -2125,7 +2125,7 @@ class Strings
 	}
 
 	/*
-		Genera un slug a partir de un string
+		Genera un slug a partir de un string (compatible con WP)
 
 		Ej:
 
@@ -2137,10 +2137,12 @@ class Strings
 		$str = static::sanitize($str, true, true);
 		$str = mb_strtolower($str);
 		$str = str_replace(' ', '-', $str);
+		$str = str_replace('.', '', $str); //
 		$str = static::replaceDupes($str, '-');
 		
 		return trim($str, '-');
 	}
+
 
 	/*
 		Extrae emails de un string

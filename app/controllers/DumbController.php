@@ -3218,8 +3218,8 @@ class DumbController extends Controller
     function test_slash_string_fns()
     {
         dd(Strings::removeUnnecessarySlashes('c:\\windows'));
-        dd(Strings::removeTrailingSlash('/home/www/simplerest/'));
-        dd(Strings::removeTrailingSlash('/home/www/simplerest'));
+        dd(Files::removeTrailingSlash('/home/www/simplerest/'));
+        dd(Files::removeTrailingSlash('/home/www/simplerest'));
         dd(Files::addTrailingSlash('/home/www/simplerest'));
         dd(Files::addTrailingSlash('/home/www/simplerest/'));
     }
@@ -10118,6 +10118,9 @@ class DumbController extends Controller
         dd($str); // Course
     }
 
+    /*
+        CMS scanner
+    */
     function identity_cms_theme()
     {
         /*
@@ -10145,9 +10148,9 @@ class DumbController extends Controller
         www.sonjavanduelmen.com
         LIST;
 
-        $urls = Strings::lines($list, true, true);
+        // $urls = Strings::lines($list, true, true);
 
-        // $urls = ['mabeglobalpanama.com'];
+        $urls = ['https://sexyqfans.com'];
 
         foreach ($urls as $url) {
             dd(
@@ -10483,5 +10486,17 @@ class DumbController extends Controller
         dd(DatabaseBackup::exportTableAsCSV('roles'), 'PATH');
     }
     
+    function test_set_env(){
+        // valor
+        dd(
+            Env::get('variable')
+        );
+
+        // valor
+        dd(
+            Config::get('my_config_variable')
+        );
+    }
+
 
 }   // end class

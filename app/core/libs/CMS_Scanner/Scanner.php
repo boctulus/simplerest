@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs\CMS_Scanner;
 
+use simplerest\core\exceptions\NotImplementedException;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 
@@ -90,6 +91,17 @@ class Scanner
     // 
     static function hasBootstrap(){
         return Strings::containsAnyWord(['btn-primary', 'container-fluid', 'pull-left', 'pull-right'], static::$content);
+    }
+
+    /*
+        Sin implementar!
+
+        Deberia parsear el parametro "v"
+
+        <link href="https://sexyqfans.com/public/css/bootstrap-icons.css?v=5.1" rel="stylesheet">
+    */
+    static function getBootstrapVersion(){
+        throw new NotImplementedException();
     }
    
     static function identify(string $url)
