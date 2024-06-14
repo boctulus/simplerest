@@ -9,7 +9,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once  __DIR__ . '/config/constants.php';
+include_once __DIR__ . '/scripts/init/redirection/redirection.php';
+
+require_once __DIR__ . '/config/constants.php';
 
 ini_set("log_errors", 1);
 ini_set('error_log', LOGS_PATH . 'errors.txt');
@@ -31,10 +33,6 @@ if (class_exists('Dotenv\\Dotenv')){
     $dotenv = $class::createImmutable(__DIR__);
     $dotenv->load();
 }
-
-/*
-    El nivel de reporte de errores debería depender de si el modo es DEBUG o no
-*/
 
 /* 
     Prevent XSS.

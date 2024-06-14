@@ -88,7 +88,7 @@ class LaravelApiGenerator
     }
 
     static function setResourceDestPath($path){
-        $path = Strings::removeTrailingSlash($path); //
+        $path = Files::removeTrailingSlash($path); //
         static::$resource_output_path = $path;
         Files::mkDirOrFail(static::$resource_output_path);
     }
