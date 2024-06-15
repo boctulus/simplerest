@@ -1057,13 +1057,9 @@ class MakeControllerBase extends Controller
             => no aparencen antes
         */
 
-        if (isset($pivot_data['pivots'])){
-            $pivots = $pivot_data['pivots'];
-        } else {
-            $dir = get_schema_path(null, $from_db ?? null);
-            include $dir . 'Pivots.php'; 
-        }        
-
+        $dir = get_schema_path(null, $from_db ?? null);
+        include $dir . 'Pivots.php'; 
+        
         // 
 
         $pivot_pairs = array_keys($pivots);    

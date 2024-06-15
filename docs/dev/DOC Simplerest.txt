@@ -12371,9 +12371,13 @@ Estas tareas se almacenan en /app/jobs/tasks
 
 Pasos
 
-1.- Crean de "jobs" (referidos como "tasks") mediante el comando:
+1.- Crear "job" (referidos como "tasks") mediante el comando:
 
 	php com make task {name}
+
+Ej:
+
+	php com make task ytDownload
 
 Las tareas deben extender de Task e implementar el método run() el cual puede recibir parámetros. 
 
@@ -17423,7 +17427,7 @@ https://github.com/andreossido/laravel-odbc
 	<-- quizas mas acoplada a Laravel
 
 
-# OpenAI
+# ChatGPT
 
 Ejemplo base:
 

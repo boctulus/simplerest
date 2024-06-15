@@ -3,15 +3,16 @@
 namespace simplerest\background\tasks;
 
 use simplerest\core\libs\Task;
+use simplerest\core\libs\System;
 
-class TestTask extends Task
+class YtDownloadTask extends Task
 { 
     static protected $priority = 10;
     static protected $exec_time_limit;
     static protected $memory_limit;
     static protected $overlap = false;
 
-	function run(string $name, int $age){
-		// your logic here
+	function run(string $url){
+		System::exec("yt $url");
 	}
 }
