@@ -490,6 +490,8 @@ class DumbController extends Controller
     // ok
     function test504()
     {
+        DB::getConnection('az');
+
         $vals = DB::table('products')
             ->setFetchMode('COLUMN')
             ->selectRaw('cost * 1.05 as cost_after_inc')->get();
@@ -1782,7 +1784,7 @@ class DumbController extends Controller
         $m = DB::table('product_tags');
 
         $id = $m
-            ->insert($data, false, false);
+            ->insert($data, false);
 
         dd($id);
         dd($m->getLog());
@@ -10496,6 +10498,10 @@ class DumbController extends Controller
         dd(
             Config::get('my_config_variable')
         );
+    }
+
+    function test_log_queries(){
+        DB::dbLogStart('mysql-log.txt');
     }
 
 

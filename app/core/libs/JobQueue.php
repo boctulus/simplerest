@@ -53,7 +53,12 @@ class JobQueue
                 Ejecuta workerController::listen($this->name)
             */
 
-            $pid = bg_com("worker listen name={$this->name} max=$tasks_per_worker");
+            $pid = bg_com("worker listen name={$this->name} max=$tasks_per_worker", true);
+
+            if ($pid === null){
+                dd("Worker process failed to start");
+                return;
+            }
 
             DB::getDefaultConnection();
             
