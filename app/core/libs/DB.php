@@ -4,6 +4,7 @@ namespace simplerest\core\libs;
 
 use simplerest\core\Model;
 use simplerest\models\MyModel;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\Strings;
 use simplerest\core\exceptions\SqlException;
@@ -1244,5 +1245,66 @@ class DB
 		return $full_row ? $row : $row['data'];
 	}
 
+	static function dbLogTruncate(){
+		DB::statement("TRUNCATE `mysql`.`general_log`");
+	}
+	
+	function dbLogDump(bool $to_file = false){
+		DB::getConnection();
+	
+		DB::statement("USE `mysql`;");
+	
+		$m = (object) table('general_log');
+	
+		$rows = $m
+		->removePrefix(DB::getTablePrefix())
+		->get();
+	
+		if ($to_file){
+			Logger::dd($rows, 'sql_log.txt');
+		}
+	
+		return $rows;
+	}
+	
+	static function dbLogOn(){
+		static::dbLogTruncate();
+		DB::statement("SET global general_log = 'ON';");
+	}
+	
+	static function dbLogOff(){
+		DB::statement("SET global general_log = 'OFF';");
+	}
+	
+	/*
+		En Windows al menos, solo esta funcionando hacia tabla 
+		porque crea el archivo pero luego no ingresa nada  !!!
+	
+		La ruta debe tener el formato de Linux aun en Windows
+	
+		E:
+	
+		/www/woo4/wp-content/plugins/droppishop/logs/mysql_log.txt
+	*/
+	static function dbLogStart($filename = null){
+		static::dbLogOn();
+	
+		if ($filename == null){
+			DB::statement("SET global log_output = 'table';"); // ok -> mysql.general_log
+		} else {
+
+			if (!Strings::containsAny(['/', '\\'], $filename)){
+				$filename = LOGS_PATH . $filename;
+			} else {
+				if (!Files::isAbsolutePath($filename)){
+					$filename = ROOT_PATH . $filename;
+				}
+			}
+
+			$filename = Files::convertSlashes($filename, Files::LINUX_DIR_SLASH);
+
+			DB::statement("SET global general_log_file = '$filename';"); 
+		}
+	}
 }
 

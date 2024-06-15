@@ -3291,8 +3291,8 @@ class Model {
 					$type = \PDO::PARAM_STR;
 			}
 			
-			// d($type, "TYPE");	
-			// d([$vals[$ix], $symbols[$ix], $type]);
+			// dd($type, "TYPE");	
+			// dd([$vals[$ix], $symbols[$ix], $type]);
 
 			$st->bindParam($symbols[$ix], $vals[$ix], $type);
 		}
