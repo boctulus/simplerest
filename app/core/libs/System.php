@@ -108,7 +108,7 @@ class System
             throw new \Exception("Impossible to find php location");
         }
         
-        return  $location;
+        return trim($location);
     }
 
     /*
