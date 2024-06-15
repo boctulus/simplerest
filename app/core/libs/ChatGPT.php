@@ -3,7 +3,7 @@
 namespace simplerest\core\libs;
 
 
-class OpenAI
+class ChatGPT
 {
     protected $api_key;
     protected $messages;
@@ -94,7 +94,7 @@ class OpenAI
             'curie'                    => static::COMPLETIONS,
             'babbage'                  => static::COMPLETIONS,
             'ada'                      => static::COMPLETIONS,
-            // ... otros modelos según la documentación de OpenAI
+            // ... otros modelos según la documentación de ChatGPT
         ];
         
 

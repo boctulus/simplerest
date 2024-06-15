@@ -46,7 +46,7 @@ use simplerest\core\libs\Cookie;
 use simplerest\core\libs\GitHub;
 use simplerest\core\libs\Logger;
 
-use simplerest\core\libs\OpenAI;
+use simplerest\core\libs\ChatGPT;
 use simplerest\core\libs\Schema;
 
 use simplerest\core\libs\StdOut;
@@ -9573,7 +9573,7 @@ class DumbController extends Controller
     // OK 
     function test_openai_1()
     {
-        $chat = new OpenAI();
+        $chat = new ChatGPT();
 
         $chat->addContent('Hola, ¿cómo estás?');
         $res = $chat->exec();
@@ -9582,7 +9582,7 @@ class DumbController extends Controller
 
     function test_openai_2()
     {
-        $chat = new OpenAI();
+        $chat = new ChatGPT();
 
         $chat->client
             ->cache(120);
@@ -9609,7 +9609,7 @@ class DumbController extends Controller
 
     function test_openai_3()
     {
-        $chat = new OpenAI();
+        $chat = new ChatGPT();
 
         $chat->addContent('Todos los elementos de la tabla periodica con sus estados de oxidacion');
 

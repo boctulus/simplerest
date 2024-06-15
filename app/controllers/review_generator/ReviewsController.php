@@ -3,7 +3,7 @@
 namespace simplerest\controllers\review_generator;
 
 use simplerest\core\libs\DB;
-use simplerest\core\libs\OpenAI;
+use simplerest\core\libs\ChatGPT;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 use simplerest\libs\ItalianReviews;
@@ -36,7 +36,7 @@ class ReviewsController extends Controller
             die("Demasiados tokens. Re-preguntar"); 
         }
 
-        $chat = new OpenAI();
+        $chat = new ChatGPT();
 
         $chat->setParams([
             "max_tokens"      => $max_tokens,
