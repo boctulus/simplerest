@@ -1307,7 +1307,11 @@ class DB
 				$argument  = trim($row['argument']);
 				$comm_type = trim($row['command_type']);
 
-				if ($comm_type != 'Execute' || $argument == 'SELECT * FROM `general_log`'){
+				if ($comm_type != 'Execute' || in_array($argument, [
+												"SELECT * FROM `general_log`",
+												"SET global general_log = 'ON'",
+												"SET global log_output = 'table'"
+											    ]))	{
 					unset($rows[$ix]);
 				}
 			}

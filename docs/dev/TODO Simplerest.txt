@@ -1,6 +1,10 @@
 TODO SimpleRest
 ===============
 
+- Implementar correctamente patron Command en "com"
+
+https://chatgpt.com/c/b27203dd-bc30-4950-a3c8-8a4e6ecb25d8
+
 - Implementar "router a librerias" directo desde la terminal com 
 
   php com lib {nombre-lib}::{metodo} [ params ]
@@ -40,6 +44,7 @@ a:
   php com db import --path= [ --to= ]
   php com db import --file=  <-- a diferencia de --path= busca dentro de ETC_PATH
 
+https://chatgpt.com/c/b27203dd-bc30-4950-a3c8-8a4e6ecb25d8
 
 - Revisar implementacion de Url::cache() porque NO es compatible con FileCache::getCachePath()
 y de hecho pareciera que Url::cache() no tiene utilidad, hoy al menos.
