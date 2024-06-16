@@ -3780,6 +3780,79 @@ class MaestroModel extends Model
 Desde cualquier hook del modelo es posible acceder a propiedades (si son públicas) útiles como $w_vars y $w_vals -entre otras- con las que es posible reconstruir el where.
 
 
+# Métodos de Registro General de MySQL
+
+En el manejo de bases de datos MySQL, el registro de operaciones (logging) es una herramienta esencial para el monitoreo y diagnóstico del rendimiento y comportamiento de las consultas SQL. Los métodos presentados a continuación forman parte de una clase de utilidad para gestionar el registro general de MySQL (general_log). 
+
+Estos métodos permiten activar y desactivar el registro, truncar la tabla de logs, volcar su contenido, y definir la salida del log a un archivo o a la tabla general_log. A continuación, se detallan cada uno de estos métodos, sus parámetros y funcionamiento.
+
+Métodos y Casos de Uso
+
+1. dbLogTruncate
+
+Resumen:
+Este método limpia (trunca) la tabla general_log, eliminando todos sus registros.
+
+Caso de Uso:
+
+Limpieza Inicial: Antes de iniciar un nuevo ciclo de registro, se puede usar este método para limpiar los logs previos, asegurando que los nuevos registros sean relevantes y actuales.
+Ejemplo:
+
+
+DB::dbLogTruncate();
+
+2. dbLogDump
+
+Resumen:
+Este método extrae el contenido de la tabla general_log. Puede filtrar los registros no deseados, extraer solo las consultas SQL y opcionalmente guardar el log en un archivo.
+
+Casos de Uso:
+
+Análisis de Logs: Extraer y analizar las consultas SQL ejecutadas en el servidor para identificar patrones, problemas de rendimiento o auditoría de seguridad.
+
+Generación de Reportes: Guardar los logs en un archivo para un análisis posterior o para generar reportes de actividad.
+Ejemplo:
+
+$logEntries = DB::dbLogDump(true, true, true); // Escribir en archivo, limpiar y solo SQL
+
+3. dbLogOn
+
+Resumen:
+Este método activa el registro general de MySQL, asegurando primero que la tabla general_log esté vacía.
+
+Caso de Uso:
+
+Inicio de Monitoreo: Usar al inicio de una sesión de monitoreo para comenzar a registrar todas las actividades de la base de datos.
+Ejemplo:
+
+
+DB::dbLogOn();
+4. dbLogOff
+Resumen:
+Este método desactiva el registro general de MySQL.
+
+Caso de Uso:
+
+Finalización de Monitoreo: Usar al finalizar una sesión de monitoreo para detener el registro de actividades, conservando los logs para análisis posterior.
+Ejemplo:
+
+
+DB::dbLogOff();
+
+5. dbLogStart
+
+Resumen:
+Este método activa el registro general y permite definir si el log se almacena en la tabla general_log o en un archivo especificado.
+
+Casos de Uso:
+
+Configuración Flexible de Logs: Dependiendo de la necesidad, se puede configurar para que los logs se guarden en un archivo específico, lo cual es útil para integraciones con sistemas de análisis de logs externos.
+Ejemplo:
+
+
+DB::dbLogStart('/path/to/logfile.log'); // Registrar en un archivo
+
+
 # Hooks en APIs
 
 Al igual que los modelos, las APIs que extienden a ApiController también tienen varios event hooks

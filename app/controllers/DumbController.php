@@ -1828,7 +1828,7 @@ class DumbController extends Controller
         $m = DB::table('product_tags');
 
         $id = $m
-            ->insert($data, false, false);
+            ->insert($data, false);
 
         dd($id);
         dd($m->getLog());
@@ -10500,9 +10500,16 @@ class DumbController extends Controller
         );
     }
 
-    function test_log_queries(){
-        DB::dbLogStart('mysql-log.txt');
+    function test_log_queries(){        
+        DB::dbLogStart();
     }
+
+    function dump_db_log(){
+        dd(
+            DB::dbLogDump()
+        );
+    }
+
 
 
 }   // end class

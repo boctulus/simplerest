@@ -1245,54 +1245,127 @@ class DB
 		return $full_row ? $row : $row['data'];
 	}
 
+	/**
+	 * Retrieves the MySQL secure file privilege directory.
+	 *
+	 * This function queries the MySQL server to get the value of the `secure_file_priv` variable,
+	 * which indicates the directory that MySQL is allowed to write to for secure file operations.
+	 * 
+	 * @return string|null The directory path where MySQL is allowed to write files, or null if no specific directory is set.
+	 */
+	static function getMySQLSecureFilePriv() 
+	{
+		DB::getConnection();
+
+		$result = DB::select("SHOW VARIABLES LIKE 'secure_file_priv';");
+		if (!empty($result) && isset($result[0]['Value'])) {
+			return $result[0]['Value'];
+		}
+		return null;
+	}
+
+	/**
+	 * Truncates the MySQL general log table.
+	 *
+	 * This function executes a TRUNCATE statement on the `mysql`.`general_log` table to clear its contents.
+	 * 
+	 * @return void
+	 */
 	static function dbLogTruncate(){
 		DB::statement("TRUNCATE `mysql`.`general_log`");
 	}
-	
-	function dbLogDump(bool $to_file = false){
+
+	/**
+	 * Dumps the MySQL general log.
+	 *
+	 * This function retrieves the contents of the `mysql`.`general_log` table. Depending on the parameters,
+	 * it can filter and clean the log entries, and optionally write them to a file named 'sql_log.txt'.
+	 *
+	 * @param bool $to_file Optional. Default is false. If true, writes the log entries to a file.
+	 * @param bool $clean Optional. Default is true. If true, filters out non-SQL commands and a specific query from the log.
+	 * @param bool $only_sql Optional. Default is true. If true, returns only the SQL statements from the log.
+	 * @return array The filtered rows from the general_log table or just the SQL statements, depending on $only_sql.
+	 */
+	static function dbLogDump(bool $to_file = false, bool $clean = true, $only_sql = true){
 		DB::getConnection();
-	
+
 		DB::statement("USE `mysql`;");
-	
+
 		$m = (object) table('general_log');
-	
+
+		$prefix = DB::getTablePrefix();
+
+		if (!empty($prefix)){
+			$m->removePrefix($prefix);
+		}
+
 		$rows = $m
-		->removePrefix(DB::getTablePrefix())
 		->get();
-	
+
+		if ($clean){
+			foreach ($rows as $ix => $row){
+				$argument  = trim($row['argument']);
+				$comm_type = trim($row['command_type']);
+
+				if ($comm_type != 'Execute' || $argument == 'SELECT * FROM `general_log`'){
+					unset($rows[$ix]);
+				}
+			}
+		}
+
+		if ($only_sql){
+			$rows = array_column($rows, 'argument');
+		} else {
+			$rows = array_values($rows);
+		}
+		
 		if ($to_file){
 			Logger::dd($rows, 'sql_log.txt');
 		}
-	
+
 		return $rows;
 	}
-	
+
+	/**
+	 * Enables MySQL general logging and truncates the log table.
+	 *
+	 * This function truncates the `mysql`.`general_log` table and then sets the global general_log variable to ON,
+	 * enabling the MySQL general logging.
+	 * 
+	 * @return void
+	 */
 	static function dbLogOn(){
 		static::dbLogTruncate();
 		DB::statement("SET global general_log = 'ON';");
 	}
-	
+
+	/**
+	 * Disables MySQL general logging.
+	 *
+	 * This function sets the global general_log variable to OFF, disabling the MySQL general logging.
+	 * 
+	 * @return void
+	 */
 	static function dbLogOff(){
 		DB::statement("SET global general_log = 'OFF';");
 	}
-	
-	/*
-		En Windows al menos, solo esta funcionando hacia tabla 
-		porque crea el archivo pero luego no ingresa nada  !!!
-	
-		La ruta debe tener el formato de Linux aun en Windows
-	
-		E:
-	
-		/www/woo4/wp-content/plugins/droppishop/logs/mysql_log.txt
-	*/
+
+	/**
+	 * Starts MySQL general logging.
+	 *
+	 * This function enables MySQL general logging and sets the log output to a specified file or to the `mysql`.`general_log` table.
+	 * If the $filename parameter is provided, it sets the log output to the specified file. The filename path must follow
+	 * Linux format even on Windows.
+	 *
+	 * @param string|null $filename Optional. The file path to log the output. If null, logs to the table.
+	 * @return void
+	 */
 	static function dbLogStart($filename = null){
 		static::dbLogOn();
-	
-		if ($filename == null){
-			DB::statement("SET global log_output = 'table';"); // ok -> mysql.general_log
-		} else {
 
+		if ($filename == null){
+			DB::statement("SET global log_output = 'table';"); // Logs to mysql.general_log
+		} else {
 			if (!Strings::containsAny(['/', '\\'], $filename)){
 				$filename = LOGS_PATH . $filename;
 			} else {
@@ -1306,5 +1379,6 @@ class DB
 			DB::statement("SET global general_log_file = '$filename';"); 
 		}
 	}
+
 }
 
