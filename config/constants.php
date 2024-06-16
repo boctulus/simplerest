@@ -74,6 +74,10 @@ if (!defined('TASKS_PATH')){
     define('TASKS_PATH', APP_PATH . 'background/tasks' . DIRECTORY_SEPARATOR);
 }
 
+if (!defined('COMMANDS_PATH')){  // --------------------------------------------------------- new
+    define('COMMANDS_PATH', APP_PATH . 'commands' . DIRECTORY_SEPARATOR);
+}
+
 if (!defined('MIGRATIONS_PATH'))
     define('MIGRATIONS_PATH', APP_PATH . 'migrations'. DIRECTORY_SEPARATOR);   
 
