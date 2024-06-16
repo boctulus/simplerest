@@ -1,10 +1,6 @@
 TODO SimpleRest
 ===============
 
-- Implementar correctamente patron Command en "com"
-
-https://chatgpt.com/c/b27203dd-bc30-4950-a3c8-8a4e6ecb25d8
-
 - Implementar "router a librerias" directo desde la terminal com 
 
   php com lib {nombre-lib}::{metodo} [ params ]

@@ -3,8 +3,9 @@
 
 use simplerest\core\FrontController;
 use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
 use simplerest\core\libs\Env;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Strings;
 
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
@@ -43,84 +44,42 @@ foreach ($_GET as $var => $val)
 }
 
 
-# Implementar patron Command
+# Implementacoon de patron Command
 #
 # https://chatgpt.com/c/b27203dd-bc30-4950-a3c8-8a4e6ecb25d8
+# https://chatgpt.com/c/2e4ac7e1-7ac7-4d86-ba9f-f1d61264504b
 #
 
-/*
-   Command mysql_log
-
-   php com mysql_log on                                  DB::dbLogOn()
-   php com mysql_log off                                 DB::dbLogOff()
-   php com mysql_log start [-filename=]  que ejecuta ..  DB::dbLogStart()       
-   php com mysql_log dump                                DB::dbLogDump()   
-*/
-
-function mysql_log($args)
-{
-   $fst = array_shift($args);
-
-   if ($fst == 'on'){
-      dd("Iniciando logs ...");
-      DB::dbLogOn();
-      return;
-   }
-
-   if ($fst == 'off'){
-      dd("Desactivando logs ...");
-      DB::dbLogOff();
-      return;
-   }
-
-   if ($fst == 'start'){
-      dd("Activando logs ...");
-      DB::dbLogStart();
-      return;
-   }
-
-   if ($fst == 'dump'){
-      dd("Volcando logs ...");
-      DB::dbLogDump();
-      return;
-   }         
-}
-
-/*
-   Command help
-*/
-function help($args){
-   $str = <<<STR
-   php com mysql_log on                                  DB::dbLogOn()
-   php com mysql_log off                                 DB::dbLogOff()
-   php com mysql_log start [-filename=]  que ejecuta ..  DB::dbLogStart()       
-   php com mysql_log dump                                DB::dbLogDump() 
-   STR;
-
-   dd($str);
-}
-
-
 $routing = true;
-
-$args = array_slice($argv, 1);
+$args    = array_slice($argv, 1);
 
 if (count($args) > 0){
-   $method_name = array_shift($args);
+   $name         = Strings::snakeToCamel(array_shift($args));
+   $commandClass = $name . "Command";
 
-   // Aca habria un foreach y si coincide con el nombre de una clase de tipo Command invocaria el handle()
+   $comm_files   = Files::glob(COMMANDS_PATH, '*Command.php');
 
-   if ($method_name == 'mysql_log'){
-      mysql_log($args);
-      $routing = false;
-   }
+   foreach ($comm_files as $file){
+      $_name      = Strings::matchOrFail(Files::convertSlashes($file, '/'), '|/([a-zA-Z0-9_]+)Command.php|');
+      
+      if ($name != $_name){
+         continue;
+      }
 
-   if ($method_name == 'help'){
-      help($args);
-      $routing = false;
+      require $file;
+
+      if (class_exists($commandClass)){      
+         $commandInstance = new $commandClass();
+         
+         if (method_exists($commandInstance, 'handle')) {
+            $commandInstance->handle($args);
+            $routing = false;
+         } else {
+            throw new \Exception("Command without handle");
+         }
+      }
    }
 }
-
 
 
 if ($routing){
