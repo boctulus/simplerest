@@ -43,6 +43,12 @@ class Response
         }
         return static::$instance;
     }
+
+    static protected function header(string $header, bool $replace = true, int $response_code = 0){
+        if (php_sapi_name() != 'cli'){
+            header($header, $replace, $response_code);
+        }  
+    }
     
     static function redirect(string $url, int $http_code = 307) {
         // Verificar si las cabeceras ya han sido enviadas
@@ -98,6 +104,10 @@ class Response
      * @return void
      */
     private function sendHeaders(array $headers = []) {
+        if (php_sapi_name() == 'cli'){
+            return;
+        }
+
         foreach ($headers as $k => $val){
             if (empty($val))
                 continue;
@@ -120,7 +130,7 @@ class Response
 
     protected function do_encode($data)
     {       
-        header('Content-type:application/json;charset=utf-8');
+        $this->header('Content-type:application/json;charset=utf-8');
 
         $options = static::$pretty ? static::$options | JSON_PRETTY_PRINT : static::$pretty;
         
@@ -151,7 +161,7 @@ class Response
 
         $http_code = $http_code != NULL ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
 
-        if (!headers_sent()) {
+        if (php_sapi_name() != 'cli' && !headers_sent()) {
             header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
         }    
 
@@ -225,7 +235,7 @@ class Response
         
         self::$to_be_encoded = true; 
 
-        if (!headers_sent()) {
+        if (php_sapi_name() != 'cli' && !headers_sent()) {
             header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
         }
 
@@ -267,7 +277,7 @@ class Response
             $code    = $error['code'];
         }
 
-        if (!is_cli()){
+        if (php_sapi_name() != 'cli'){
             if (!headers_sent()) {
                 if ($http_code == NULL)
                     if (static::$http_code != NULL)
@@ -319,7 +329,7 @@ class Response
         // Parche aplicado el 14-Nov-2022
         
         if (is_array(static::$data)){
-            header('Content-type:application/json;charset=utf-8');
+            $this->header('Content-type:application/json;charset=utf-8');
             return json_encode(static::$data);
         }
         
@@ -348,7 +358,7 @@ class Response
 
         if (self::$to_be_encoded){
             static::$data = $this->do_encode(static::$data);
-            header('Content-type:application/json;charset=utf-8');
+            $this->header('Content-type:application/json;charset=utf-8');
         } else {
             $accept = request()->header('Accept');
 
@@ -356,7 +366,7 @@ class Response
                 self::$to_be_encoded = true;
 
                 static::$data = $this->do_encode(static::$data);
-                header('Content-type:application/json;charset=utf-8');
+                $this->header('Content-type:application/json;charset=utf-8');
             }
         }
 
