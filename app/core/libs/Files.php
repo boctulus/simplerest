@@ -633,8 +633,9 @@ class Files
 	/*
 		Ej:
 
-		$zips    = Files::glob($ori, '*.zip');
-		$entries = Files::glob($content_dir, '*', GLOB_ONLYDIR, '__MACOSX');
+		$zips      = Files::glob($ori, '*.zip');
+		$com_files = Files::glob(COMMANDS_PATH, '*Command.php')
+		$entries   = Files::glob($content_dir, '*', GLOB_ONLYDIR, '__MACOSX');
 	*/
 	static function glob(string $path, string $pattern, $flags = 0, $exclude = null){
 		$last_char = Strings::lastChar($path);

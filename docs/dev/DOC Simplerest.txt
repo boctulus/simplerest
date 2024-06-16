@@ -17628,3 +17628,47 @@ define( 'WP_USE_THEMES', true );
 
 /** Loads the WordPress Environment and Template */
 require __DIR__ . '/wp-blog-header.php';
+
+
+# Commandos personalizados
+
+El framework implementa comandos personalizados bajo el patron "Command"
+
+Ej:
+
+<?php
+
+use simplerest\core\libs\DB;
+use simplerest\interfaces\ICommand;
+
+class MysqlLogCommand implements ICommand 
+{
+    function handle($args){
+        $fst = array_shift($args);
+
+        if ($fst == 'on'){
+            dd("Iniciando logs ...");
+            DB::dbLogOn();
+            return;
+        }
+
+        if ($fst == 'off'){
+            dd("Desactivando logs ...");
+            DB::dbLogOff();
+            return;
+        }
+
+        if ($fst == 'start'){
+            dd("Activando logs ...");
+            DB::dbLogStart();
+            return;
+        }
+
+        if ($fst == 'dump'){
+            dd("Volcando logs ...");
+            DB::dbLogDump();
+            return;
+        }         
+    }    
+} 
+
