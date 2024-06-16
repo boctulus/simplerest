@@ -15,6 +15,9 @@ class ZTask extends Task
 
 	function run(){
 		// your logic here
+
+        Logger::debug();
+
         while (1){
             dd("Generando string ...");
             Logger::log(Strings::randomString());

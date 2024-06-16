@@ -48,6 +48,7 @@ class MakeControllerBase extends Controller
     protected $excluded_files = [];
     protected $all_uppercase = false;
 
+
     function __construct()
     {
         if (php_sapi_name() != 'cli'){
@@ -1059,7 +1060,7 @@ class MakeControllerBase extends Controller
 
         $dir = get_schema_path(null, $from_db ?? null);
         include $dir . 'Pivots.php'; 
-        
+
         // 
 
         $pivot_pairs = array_keys($pivots);    
@@ -2414,7 +2415,7 @@ class MakeControllerBase extends Controller
         }
 
         if ($is_relative){
-            $slash = Strings::getSlash($dir);
+            $slash = Strings::slash($dir);
         }
         
         $files = Files::glob($dir, '*.css');
@@ -2430,4 +2431,5 @@ class MakeControllerBase extends Controller
 
         return implode(PHP_EOL, $lines);
     }
+
 }
