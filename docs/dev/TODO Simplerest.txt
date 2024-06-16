@@ -1,11 +1,50 @@
 TODO SimpleRest
 ===============
 
+- Implementar "router a librerias" directo desde la terminal com 
+
+  php com lib {nombre-lib}::{metodo} [ params ]
+
+O sea ...
+
+  php com [lib] Sync::test param1 param2 ...
+  php com core_lib CoreLib::test param1 param2 ...
+
+Ej:
+
+  php com core_lib Files:mkdir_or_fail new_directory
+
+Sino se incluye core_lib antes de libreria::action se asume es para app/libs y no app/core/libs 
+
+Si los metodos no son estaticos se deberia usar un contenedor de dependencias inversas para instanciar apropiadamente la clase.
+
+Nediante rutas podrian crearse alias como de:
+
+  php com core_lib Files::{metodo} [ params ]
+
+a:
+
+  php com files metodo [ params ]
+
+- Comandos para listar rutas --de routes.php-
+
+  php com routes list
+  php com routes list --contains="{algun string}"
+  php com routes find "{algun string}"
+
+- Comandos para listar tablas, y ejecutar archivos .sql
+
+  php com db list  <-- lista conexiones 
+  php com db list --tables
+  php com db list --tables --contains="{algun string}"
+  php com db import --path= [ --to= ]
+  php com db import --file=  <-- a diferencia de --path= busca dentro de ETC_PATH
+
+
 - Revisar implementacion de Url::cache() porque NO es compatible con FileCache::getCachePath()
 y de hecho pareciera que Url::cache() no tiene utilidad, hoy al menos.
 
 - Revisar Url::download()
-
 
 - Implementar importador de CSV via comando
 
@@ -44,36 +83,6 @@ Ej:
   ];     
 
 <-- notar "detalle.*"   
-
-- Poder ejecutar metodos de cualquier libreria (sean estadicos o no) asi:
-
-  php com lib {nombre-lib}:{metodo} [ params ]
-
-Ej:
-
-  php com lib files:mkdir_or_fail new_directory
-
-Luego mediante rutas podrian crearse alias como:
-
-  php com lib files:{metodo} [ params ]
-
-equivaliendo a:
-
-  php com files metodo [ params ]
-
-- Comandos para listar rutas --de routes.php-
-
-  php com routes list
-  php com routes list --contains="{algun string}"
-  php com routes find "{algun string}"
-
-- Comandos para listar tablas, y ejecutar archivos .sql
-
-  php com db list  <-- lista conexiones 
-  php com db list --tables
-  php com db list --tables --contains="{algun string}"
-  php com db import --path= [ --to= ]
-  php com db import --file=  <-- a diferencia de --path= busca dentro de ETC_PATH
 
 - Seeders
 
