@@ -193,10 +193,23 @@ Podria inclusive encasularse convenientemente como:
         DB::getConnection('robot');
     }
 
-Existe una clase analoga Env con los metodos Env::set() y Env::get()
+
+Merge a nivel de root
+
+Se puede hacer un merge a nivel de "root" (/) pasando como key null o '' o '/' o '.'
+
+Ej:
+
+	Config::set('', include __DIR__ . '/config/config.php');
 
 
-Simular valores de archivo de configuracion desde la linea de comandos
+Esto puede ser util dentro de un modulo como podria ser un shortcode o un package para incluir un archivo de configuracion como el config.php del modulo / paquete / shortcode dentro del config a nivel global.
+
+
+* Existe una clase analoga Env con los metodos Env::set() y Env::get()
+
+
+# Simular valores de archivo de configuracion desde la linea de comandos
 
 Ej:
 
