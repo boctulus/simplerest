@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\interfaces;
+namespace simplerest\core\interfaces;
 
 interface ICommand {
     function handle($args);
