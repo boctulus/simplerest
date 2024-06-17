@@ -2288,8 +2288,6 @@ class MakeControllerBase extends Controller
                 // Convert windows directory separator into *NIX
                 $o = str_replace('\\', '/', $o);
 
-                here();
-
                 if (preg_match('~^--(preset)[=|:]([a-z0-9A-ZñÑ_-]+)$~', $o, $matches)){
                     $preset= $matches[2];
                 }

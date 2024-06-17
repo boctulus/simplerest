@@ -596,8 +596,7 @@ class Files
 
 		return false;
 	}
-
-
+	
 	/*
 		Returns absolute path relative to root path
 	*/
