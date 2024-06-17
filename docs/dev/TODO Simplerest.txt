@@ -99,6 +99,38 @@ Ej:
 
 com make migration --from-csv={file.csv} [ --to= ]
 
+- Interfaz (PSH por "PHP SHell) para ejecutar controller/actions de forma remota para SR/SW como:
+
+    listActions {controller}  (incluiria parametros)
+    com {controller} {action} [params] [--bg] [--output={file}] [--error={file}]
+    getLog [--file={archivo}]
+    getErrorLog
+    truncateLog [--file={archivo}]
+    truncateErrorLog [--file={archivo}]
+
+Los requests serian POST en todos los casos por seguridad viajando las credenciales como headers.
+
+De forma local en "com" estarian disponibles comandos como listActions, getLog,... 
+
+PSH (que se ejecutaria localmente bajo "com") implementaria los comandos:
+
+    connect --server= --port= --password= 
+    com (para ejecutar controller/action/params)
+    dir {ruta} (lista en principio con ruta relativa al root del framework)
+    cat {similar al de Linux}
+    exit / close (para salir de PSH)
+
+Podrian configurarse alias como:
+
+    alias conn_w1='connect --server={woo1.lan} --password={..}'
+
+y asi poder conectar facilmente
+
+Ej:
+
+    com conn_w1
+
+https://chatgpt.com/c/4cb0f434-18ab-4273-b104-84e2f800608c
 
 [ Generador de Front ]
 
@@ -5597,7 +5629,6 @@ Nesting transactions without savepoints is deprecated, but is the default behavi
 https://www.doctrine-project.org/projects/doctrine-dbal/en/current/reference/transactions.html#transaction-nesting
 
 <-- leer bien como debe funcionar con la DOC de Doctrine2
-
 
 - Para la clase Schema
 
