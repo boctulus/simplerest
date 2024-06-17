@@ -235,6 +235,7 @@ class Translate
                 }                
 
                 $po_path = Files::normalize($po_path);
+                $mo_path = Files::normalize($mo_path);
 
                 $fp = fopen($po_path, 'w');
 
