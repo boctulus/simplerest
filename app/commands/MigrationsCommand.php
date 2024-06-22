@@ -790,11 +790,7 @@ class MigrationsCommand implements ICommand
         }
     }
 
-    /*
-        Sería ideal que cada comando tuviera su propia sección de ayuda y este comando "concatenara"
-        esas secciones.
-    */
-    function help(){
+    function help($name = null, ...$args){
         $str = <<<STR
         migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ]         
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3 

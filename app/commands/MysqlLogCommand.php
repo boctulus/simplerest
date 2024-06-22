@@ -34,7 +34,7 @@ class MysqlLogCommand implements ICommand
         }         
     }   
     
-    function help(){
+    function help($name = null, ...$args){
         $str = <<<STR
         php com mysql_log on                                  DB::dbLogOn()
         php com mysql_log off                                 DB::dbLogOff()
