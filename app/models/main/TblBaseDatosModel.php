@@ -2,13 +2,13 @@
 
 namespace simplerest\models\main;
 
+use MakeCommand;
+use simplerest\core\libs\DB;
 use simplerest\models\MyModel;
 use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\MakeControllerBase;
-use simplerest\controllers\MigrationsController;
 use simplerest\core\libs\StdOut;
 use simplerest\schemas\main\TblBaseDatosSchema;
+use simplerest\controllers\MigrationsController;
 
 
 class TblBaseDatosModel extends MyModel
@@ -66,7 +66,7 @@ class TblBaseDatosModel extends MyModel
 			Creo schemas y modelos
 		*/
 
-		$mk = MakeControllerBase::class;
+		$mk = MakeCommand::class;
 		$mk_o = new $mk();
 
 		StdOut::hideResponse();

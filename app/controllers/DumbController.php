@@ -2,8 +2,6 @@
 
 namespace simplerest\controllers;
 
-use Client;
-use simplerest\core\libs\DatabaseBackup;
 use stdClass;
 use simplerest\libs\Foo;
 
@@ -18,8 +16,7 @@ use simplerest\core\Request;
 use simplerest\libs\Reviews;
 use simplerest\core\libs\CSS;
 use simplerest\core\libs\Env;
-
-use simplerest\core\libs\Num;
+;
 use simplerest\core\libs\Url;
 
 use simplerest\core\libs\XML;
@@ -46,17 +43,17 @@ use simplerest\core\libs\Cookie;
 use simplerest\core\libs\GitHub;
 use simplerest\core\libs\Logger;
 
-use simplerest\core\libs\ChatGPT;
 use simplerest\core\libs\Schema;
-
 use simplerest\core\libs\StdOut;
 
 use simplerest\core\libs\System;
 
 use simplerest\core\libs\Update;
-use simplerest\libs\Ingredient1;
 
+use simplerest\libs\Ingredient1;
 use simplerest\libs\Ingredient2;
+
+use simplerest\core\libs\ChatGPT;
 use simplerest\core\libs\DBCache;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\VarDump;
@@ -99,11 +96,13 @@ use simplerest\core\libs\EasyHTMLTable;
 use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\core\libs\InMemoryCache;
-use simplerest\libs\scrapers\Curiosite;
+use simplerest\core\libs\StratoScraper;
 
+use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
 use simplerest\core\libs\Base64Uploader;
+use simplerest\core\libs\DatabaseBackup;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\libs\LaravelApiGenerator;
 use simplerest\core\api\v1\ApiController;
@@ -133,7 +132,6 @@ use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\WooCommerceApiClient;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
-use simplerest\core\controllers\MakeControllerBase;
 use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\shortcodes\csv_importer\ImporterShortcode;
@@ -144,7 +142,6 @@ use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use simplerest\core\libs\StratoScraper;
 
 class DumbController extends Controller
 {
@@ -1433,7 +1430,7 @@ class DumbController extends Controller
     */
     function gen_scripts()
     {
-        $mk = new MakeControllerBase();
+        $mk = new MakeCommand();
 
         $rows = DB::table('tbl_scritp_tablas')
             ->orderBy(['scr_intOrden' => 'ASC'])
@@ -3754,8 +3751,6 @@ class DumbController extends Controller
 
         $str_files = <<<'FILES'
         app/libs
-        app/core/MakeControllerBase.php
-        app/controllers/MigrationsController.php
         docs
         config/constants.php
         FILES;
