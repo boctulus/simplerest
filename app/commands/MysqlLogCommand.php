@@ -45,5 +45,4 @@ class MysqlLogCommand implements ICommand
         dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
         dd($str);
     }
-
 } 
