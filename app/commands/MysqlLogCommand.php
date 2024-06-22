@@ -1,6 +1,7 @@
 <?php
 
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
 use simplerest\core\interfaces\ICommand;
 
 class MysqlLogCommand implements ICommand 
@@ -41,7 +42,8 @@ class MysqlLogCommand implements ICommand
         php com mysql_log dump                                DB::dbLogDump() 
         STR;
 
-        dd($str, __METHOD__);
+        dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
+        dd($str);
     }
 
 } 

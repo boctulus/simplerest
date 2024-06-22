@@ -19,9 +19,9 @@ class HelpCommand implements ICommand
 
     function help($name = null, ...$args)
     {
-        dd("Sections:");
-
         if ($name == null){
+            dd("Sections:");
+
             $comm_files   = Files::glob(COMMANDS_PATH, '*Command.php');
 
             foreach ($comm_files as $file){
