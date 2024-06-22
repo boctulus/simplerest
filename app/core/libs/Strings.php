@@ -19,36 +19,48 @@ class Strings
 	];
 
 	/*
-		Aplica un filtro de tipo case
+		Aplica un filtro de tipo case a un string o a cada string en un array de strings.
+		
+		@param string $filter El tipo de filtro de case a aplicar. Debe ser una de las constantes definidas en la clase.
+		@param string|array $input El string o array de strings a los que se les aplicará el filtro.
+		@return string|array El string o array de strings con el filtro aplicado.
+		@throws \InvalidArgumentException Si el filtro no es válido o si el input no es un string o un array de strings.
+		
+		// Ejemplo de uso
+		$stringExample = "HELLO WORLD";
+		$arrayExample = ["HELLO", "WORLD"];
 
-		La idea es "normalizar" la forma de aplicar cambios de CASE
+		dd(Strings::toCase(Strings::LOWERCASE_FILTER, $stringExample)); // "hello world"
+		dd(Strings::toCase(Strings::LOWERCASE_FILTER, $arrayExample)); // ["hello", "world"]
 	*/
-	static function case($filter, string $str){
-		switch ($filter){
-			case static::UPPERCASE_FILTER :
-				$str = strtoupper($str);
-				break;
-			case static::LOWERCASE_FILTER :
-				$str = strtolower($str);
-				break;
-			case static::UCFIRST_FILTER :
-				$str = ucfirst($str);
-				break;
-			case static::UCWORDS_FILTER :
-				$str = ucfirst($str);
-				break;
-			case static::CAMELCASE_FILTER :
-				$str = static::snakeToCamel($str);
-				break;
-			case static::SNAKECASE_FILTER :
-				$str = static::toSnakeCase($str);
-				break;
-			default:
-				throw new \InvalidArgumentException("Invalid filter type");
-		}
+	static function toCase($filter, $input){
+        $applyFilter = function(string $str) use ($filter) {
+            switch ($filter){
+                case static::UPPERCASE_FILTER :
+                    return strtoupper($str);
+                case static::LOWERCASE_FILTER :
+                    return strtolower($str);
+                case static::UCFIRST_FILTER :
+                    return ucfirst($str);
+                case static::UCWORDS_FILTER :
+                    return ucwords($str);
+                case static::CAMELCASE_FILTER :
+                    return static::snakeToCamel($str);
+                case static::SNAKECASE_FILTER :
+                    return static::toSnakeCase($str);
+                default:
+                    throw new \InvalidArgumentException("Invalid filter type");
+            }
+        };
 
-		return $str;
-	}
+        if (is_array($input)) {
+            return array_map($applyFilter, $input);
+        } elseif (is_string($input)) {
+            return $applyFilter($input);
+        } else {
+            throw new \InvalidArgumentException("Input must be a string or an array of strings.");
+        }
+    }
 
 	static function replaceNonAllowedChars($input, $allowedCharsRegex = 'a-z0-9-', $replace = '-', $case_sensitive = false) {
         // Añade la bandera 'i' para hacer la expresión regular insensible a mayúsculas y minúsculas si $case_sensitive es false
