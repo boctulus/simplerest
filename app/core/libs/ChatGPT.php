@@ -2,11 +2,10 @@
 
 namespace simplerest\core\libs;
 
-
 class ChatGPT
 {
     protected $api_key;
-    protected $messages;
+    protected $messages = [];
     protected $response;
     protected $params;
 
@@ -51,9 +50,10 @@ class ChatGPT
     {
         $model_endpoints = [
             // Modelos GPT-4
+            'gpt-4o'                   => static::CHAT_COMPLETIONS, // Modelo con capacidades de visión (mas barato que 'gpt-4-vision-preview')
+            'gpt-4o-2024-05-13'        => static::CHAT_COMPLETIONS, // Modelo con capacidades de visión
             'gpt-4'                    => static::CHAT_COMPLETIONS, // ok
             'gpt-4-1106-preview'       => static::COMPLETIONS,
-            'gpt-4-vision-preview'     => static::COMPLETIONS, // Modelo con capacidades de visión
             'gpt-4-0613'               => static::COMPLETIONS,
             'gpt-4-32k'                => static::COMPLETIONS,
             'gpt-4-32k-0613'           => static::COMPLETIONS,
@@ -96,7 +96,6 @@ class ChatGPT
             'ada'                      => static::COMPLETIONS,
             // ... otros modelos según la documentación de ChatGPT
         ];
-        
 
         if (!array_key_exists($model, $model_endpoints)){
             throw new \Exception("ChatGPT model not found for '$model'");
@@ -114,11 +113,13 @@ class ChatGPT
             if ($endpoint == static::COMPLETIONS){
                 return $this->exec_completion($model);
             }
+
+            if ($endpoint == static::IMAGES){
+                return $this->exec_image_generation($model);
+            }
         }
     }
 
-    
-    // gpt-3.5-turbo-1106, gpt-4 y otros
     function exec_chat_completion($model)
     {
         $endpoint = 'https://api.openai.com/v1/chat/completions';
@@ -196,5 +197,42 @@ class ChatGPT
         return $this->response;
     }
 
-}
+    function exec_image_generation($model)
+    {
+        $endpoint = 'https://api.openai.com/v1/images/generations';
 
+        $data = [
+            'model'  => $model,
+            'prompt' => $this->messages[0]['content']
+        ];
+
+        if (!empty($this->params)){
+            $data = array_merge($data, $this->params);
+        }
+
+        $this->client
+        ->setBody($data)
+        ->post($endpoint);
+
+        $this->response = [
+            'status' => $this->client->getStatus(),
+            'error'  => $this->client->getError(),
+            'data'   => $this->client->getResponse()
+        ];
+
+        if (is_string($this->response['data'])){
+            $this->response['data'] = json_decode($this->response['data'], true);
+        }
+
+        if (isset($this->response['data']['data'])){
+            $this->response['data'] = $this->response['data']['data'];
+        }
+
+        if (isset($this->response['data']['error'])){
+            $this->response['error'] = $this->response['data']['error'];
+            unset($this->response['data']['error']);
+        }
+
+        return $this->response;
+    }
+}

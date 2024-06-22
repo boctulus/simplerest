@@ -9558,41 +9558,10 @@ class DumbController extends Controller
 
     function test_num_gen()
     {
-        dd(
-            Num::normalize([
-                5, 6, 7
-            ])
-        );
-
-        exit;
-
         for ($i = 0; $i < 50; $i++) {
             $result = RandomGenerator::get(['A' => 1, 'B' => 100]);
             dd($result, null, false);
         }
-    }
-
-    // OK 
-    function test_openai_1()
-    {
-        $chat = new ChatGPT();
-
-        $chat->addContent('Hola, ¿cómo estás?');
-        $res = $chat->exec();
-        dd($res);
-    }
-
-    function test_openai_2()
-    {
-        $chat = new ChatGPT();
-
-        $chat->client
-            ->cache(120);
-
-        $chat->addContent('Hola, ¿cómo estás hoy?');
-        $res = $chat->exec('gpt-4');
-
-        dd($res);
     }
 
     function test_lflfglfg()
@@ -9609,21 +9578,7 @@ class DumbController extends Controller
         render($sc->counter());
     }
 
-    function test_openai_3()
-    {
-        $chat = new ChatGPT();
-
-        $chat->addContent('Todos los elementos de la tabla periodica con sus estados de oxidacion');
-
-        $chat->setParams([
-            "max_tokens"      => 200,
-            "temperature"     => 0.5
-        ]);
-
-        $res = $chat->exec();
-        dd($res);
-    }
-
+ 
     /*
         Para obtener el API token
 
@@ -10510,5 +10465,175 @@ class DumbController extends Controller
         );
     }
 
+    // OK 
+    function test_openai_1()
+    {
+        $chat = new ChatGPT();
+
+        $chat->addContent('Hola, ¿cómo estás?');
+        $res = $chat->exec();
+        dd($res);
+    }
+
+    function test_openai_2()
+    {
+        $chat = new ChatGPT();
+
+        $chat->client
+            ->cache(120);
+
+        $chat->addContent('Hola, ¿cómo estás hoy?');
+        $res = $chat->exec('gpt-4');
+
+        dd($res);
+    }
+        
+    function test_openai_3()
+    {
+        $chat = new ChatGPT();
+
+        $chat->addContent('Todos los elementos de la tabla periodica con sus estados de oxidacion');
+
+        $chat->setParams([
+            "max_tokens"      => 200,
+            "temperature"     => 0.5
+        ]);
+
+        $res = $chat->exec();
+        dd($res);
+    }
+
+    /*
+        Probar ejemplos en Python y Node
+
+        https://platform.openai.com/docs/guides/vision
+    */
+    function analyzeImage($imagePath) {
+        // Crear instancia de la clase ChatGPT
+        $chat = new ChatGPT();
+    
+        // Leer el contenido de la imagen y convertirla a base64
+        $image_data = base64_encode(file_get_contents($imagePath));
+    
+        // Crear el mensaje con el contenido de texto y la imagen en formato base64
+        $messages = [
+            [
+                'role' => 'user',
+                'content' => [
+                    [
+                        'type' => 'text',
+                        'text' => 'El paciente tiene acne? Clasificar y estimar severidad (baja, media, alta)',
+                    ],
+                    [
+                        'type' => 'image_url',
+                        'image_url' => [
+                            'url' => 'data:image/jpeg;base64,' . $image_data,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    
+        // Añadir el mensaje a la instancia de ChatGPT
+        foreach ($messages as $message) {
+            $chat->addContent($message, $message['role']);
+        }
+    
+        // Configurar parámetros adicionales si es necesario (opcional)
+        $params = [
+            'temperature' => 0.5,
+            'max_tokens' => 300
+        ];
+        $chat->setParams($params);
+    
+        // Ejecutar el análisis de la imagen con el modelo de visión
+        $response = $chat->exec('gpt-4o');
+    
+        // Manejar la respuesta
+        if ($response['status'] == 200) {
+            $analysis = $response['data']['choices'][0]['message']['content'];
+            echo 'Análisis de la imagen: ' . $analysis;
+        } else {
+            echo 'Error: ' . $response['error']['message'];
+        }
+    }
+    
+
+    function test_chatgpt_vision()
+    {
+        $imagePath = 'D:\\Desktop\\GERARDO DERMA\\acne_imgs\\moderate\\100110101.jpg';
+        $this->analyzeImage($imagePath);
+    }
+
+    function test_case(){
+        // Ejemplo de uso
+        $stringExample = "HELLO WORLD";
+        $arrayExample = ["HELLO", "WORLD"];
+
+        dd(Strings::toCase(Strings::LOWERCASE_FILTER, $stringExample)); // "hello world"
+        dd(Strings::toCase(Strings::LOWERCASE_FILTER, $arrayExample)); // ["hello", "world"]
+    }
+
+    /*  
+        Para dominios:
+
+        podrian comenzar con ...
+
+        new, next,.....
+
+        podrian terminar en ...
+
+        space, zone, app, ify, ... us, u, square, hub
+    */
+    function brand_maker($max_combinations = 10, int $minLength = 5, int  $maxLength = 7) {
+        $syllables = [
+            'ap', 'ple', 'goo', 'gle', 'a', 'ma', 'zon', 'mi', 'cro', 
+            'tes', 'la', 'ni', 'ke', 'adi', 'das', 'in', 'tel', 'ci', 'sco', 'or', 'a', 'cle', 
+            'ado', 'be', 'spot', 'i', 'fy', 'air', 'bnb', 'u', 'ber', 'net', 'flix', 'i', 'b', 'm', 
+            'so', 'ny', 'pal', 'e', 'bay', 'linked', 'in', 'red', 'dit', 
+            'pin', 'ter', 'est', 'slack', 'tik', 'tok', 'ya', 'hoo', 'what', 'app', 
+            'al', 'i', 'ba', 'ba', 'shop', 'ify', 'box', 'vi', 'me', 'o', 
+            'hu', 'lu', 'yelp', 'zi', 'llow', 'space', 'x', 'dock', 'er', 'pa', 'tre', 'on', 
+            'base', 'camp', 'me', 'di', 'um', 'square', 'sales', 'force', 'trend', 'ify',
+
+            'Ni', 'Ke', 'Cha', 'Ne', 'Di', 'Or', 'Za', 'Ra', 'Pr', 'Da', 'Next', 'Pu', 'Ma', 'Ga', 'Ma', 'O', 'Me', 'As', 'Ic', 'Pu', 'Ma', 'Old', 'Na', 'Di', 'Es', 'Gap', 'Gap', 'Fur', 'La', 'GAP', 'Sis', 'Le', 'tod', 'Tis', 'Sot', 'Lac', 'Os', 'Top', 'Sh', 'Op', 'Al', 'Do', 'Oa', 'K', 'Le', 'Jim', 'My', 'Choo', 'Fos', 'Sil', 'Pa', 'Ta', 'Go', 'New', 'Look', 'Es', 'Ca', 'Ca', 'Vall', 'Li', 'Sa', 'Swat', 'Ch', 'Te', 'Da', 'Ba', 'Ka'            
+        ];
+
+        $syllables = Strings::toCase(Strings::LOWERCASE_FILTER, $syllables);
+
+        // Eliminar duplicados
+        $syllables_unique = array_unique($syllables);
+    
+        $combinations = [];
+
+        while (count($combinations) < $max_combinations) {
+            // Generar una combinación al azar
+            $combination = '';
+            $num_syllables = mt_rand(2, 7); // Número aleatorio de sílabas entre 2 y 7
+
+            while (strlen($combination) < $maxLength && $num_syllables > 0) {
+                // Seleccionar una sílaba aleatoria
+                $random_syllable = $syllables_unique[array_rand($syllables_unique)];
+
+                // Evitar repetir la misma sílaba en la misma combinación
+                if (!strpos($combination, $random_syllable)) {
+                    // Agregar la sílaba a la combinación
+                    $combination .= $random_syllable;
+                    $num_syllables--;
+                }
+            }
+
+            // Añadir la combinación si tiene entre $minLength y $maxLength caracteres y no está repetida
+            if (strlen($combination) >= $minLength && strlen($combination) <= $maxLength && !in_array($combination, $combinations)) {
+                $combinations[] = $combination;
+            }
+        }
+
+        // Imprimir el resultado
+        print_array($combinations);
+    }
+
+
+    
 
 }   // end class

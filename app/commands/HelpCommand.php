@@ -1,7 +1,7 @@
 <?php
 
 use simplerest\core\libs\DB;
-use simplerest\interfaces\ICommand;
+use simplerest\core\interfaces\ICommand;
 
 class HelpCommand implements ICommand 
 {

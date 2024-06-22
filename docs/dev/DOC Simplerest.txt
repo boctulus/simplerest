@@ -17517,7 +17517,7 @@ https://github.com/andreossido/laravel-odbc
 
 Ejemplo base:
 
-	$chat = new OpenAI();
+	$chat = new ChatGPT();
 
 	$chat->addContent('Hola, ¿cómo estás?');
 	$res = $chat->exec();    
@@ -17525,7 +17525,7 @@ Ejemplo base:
 
 Se puede especificar el modelo en exec()
 
-	$chat = new OpenAI();
+	$chat = new ChatGPT();
 
 	$chat->addContent('Hola, ¿cómo estás hoy?');       
 	$res = $chat->exec('gpt-4');    
@@ -17534,7 +17534,7 @@ Se puede especificar el modelo en exec()
 
 Obteniendo la instancia de ApiClient se puede configurar por ejemplo agregando cache:
 
-	$chat = new OpenAI();
+	$chat = new ChatGPT();
 
 	$chat->client
 	->cache(120);
@@ -17548,7 +17548,7 @@ Seteando parametros adicionales con setParams()
 
 Ej:
 
-	$chat = new OpenAI();
+	$chat = new ChatGPT();
 
 	$chat->addContent('Dime todos los elementos de la tabla periodica con sus estados de oxidacion');
 	
@@ -17567,6 +17567,88 @@ la lista de modelos asi como que modelos supuestamente usan qué endpoint
 esta dentro de la clase OpenAI.
 
 No todos los modelos se han ensayado.
+
+> ChatGPT Vision
+
+Ejemplo de generacion de imagenes:
+
+	use simplerest\core\libs\ChatGPT;
+
+	// Configuración de la API key
+	$api_key = 'tu_api_key_aqui';
+
+	// Crear instancia de la clase ChatGPT
+	$chatgpt = new ChatGPT($api_key);
+
+	// Añadir contenido con un prompt que describa la imagen que quieres generar
+	$prompt = "Una pintura de un paisaje futurista con montañas y ríos fluorescentes bajo un cielo estrellado.";
+	$chatgpt->addContent($prompt);
+
+	// Configurar parámetros adicionales si es necesario (opcional)
+	$params = [
+		'n' => 1, // Número de imágenes a generar
+		'size' => '1024x1024' // Tamaño de la imagen
+	];
+	$chatgpt->setParams($params);
+
+	// Ejecutar la generación de imagen con el modelo de visión
+	$response = $chatgpt->exec('dall-e-3');
+
+	// Manejar la respuesta
+	if ($response['status'] == 200) {
+		$image_urls = $response['data']['data'];
+		foreach ($image_urls as $image) {
+			echo "Imagen generada: " . $image['url'] . "\n";
+		}
+	} else {
+		echo "Error: " . $response['error']['message'] . "\n";
+	}
+
+
+Ejemplo de analisis de imagenes 
+
+function analyzeImage($imagePath) 
+{
+    use simplerest\core\libs\ChatGPT;
+
+    // Configuración de la API key
+    $api_key = 'tu_api_key_aqui';
+
+    // Crear instancia de la clase ChatGPT
+    $chatgpt = new ChatGPT($api_key);
+
+    // Leer el contenido de la imagen
+    $image_data = base64_encode(file_get_contents($imagePath));
+
+    // Añadir la imagen como contenido
+    $chatgpt->addContent([
+        'role' => 'user',
+        'content' => 'Analyze this image for acne and provide details about the type and severity.'
+    ]);
+
+    $chatgpt->addContent([
+        'role' => 'user',
+        'image' => $image_data
+    ]);
+
+    // Configurar parámetros adicionales si es necesario (opcional)
+    $params = [
+        'model' => 'gpt-4-vision-preview',
+        'temperature' => 0.5
+    ];
+    $chatgpt->setParams($params);
+
+    // Ejecutar la análisis de la imagen con el modelo de visión
+    $response = $chatgpt->exec('gpt-4-vision-preview');
+
+    // Manejar la respuesta
+    if ($response['status'] == 200) {
+        $analysis = $response['data']['choices'][0]['message']['content'];
+        echo "Análisis de la imagen: " . $analysis . "\n";
+    } else {
+        echo "Error: " . $response['error']['message'] . "\n";
+    }
+}
 
 
 # Redirecciones 301 | 302
