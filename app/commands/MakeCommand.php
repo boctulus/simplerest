@@ -116,7 +116,7 @@ class MakeCommand implements ICommand
         $this->snake_case  = $snake_case;
     }
 
-    function help(){
+    function help($name = null, ...$args){
         $str = <<<STR
         In general, 
 
@@ -366,6 +366,10 @@ class MakeCommand implements ICommand
     function generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace = null, ...$opt) {        
         $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
 
+        if (Strings::endsWith($subfix, $name, false)){
+            $name   = Strings::before($name, $subfix);
+        }
+
         $unignore  = false;
         $remove    = false;
         $force     = false;
@@ -412,7 +416,7 @@ class MakeCommand implements ICommand
         }
         
         $data = file_get_contents($template_path);
-        $data = str_replace('__NAME__', $this->camel_case . $subfix, $data);
+        $data = str_replace('__NAME__', $this->camel_case , $data);
 
         if (!is_null($namespace)){
             $data = str_replace('__NAMESPACE', $namespace, $data);
