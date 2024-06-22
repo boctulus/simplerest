@@ -1,15 +1,16 @@
 <?php
 
-use simplerest\core\libs\DB;
+use simplerest\core\interfaces\ICommand;
 use simplerest\core\libs\Cache;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\StdOut;
+use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\core\libs\PHPLexicalAnalyzer;
-use simplerest\core\interfaces\ICommand;
+use simplerest\core\libs\Schema;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\Strings;
+use simplerest\core\traits\CommandTrait;
 
 class MakeCommand implements ICommand 
 {   
@@ -46,6 +47,8 @@ class MakeCommand implements ICommand
     protected $excluded_files = [];
     protected $all_uppercase = false;
 
+    use CommandTrait;
+
     function __construct()
     {
         if (php_sapi_name() != 'cli'){
@@ -76,25 +79,6 @@ class MakeCommand implements ICommand
                 }                 
             }
         }
-    }
-
-    /*
-        Metodo handle() generico
-    */
-    function handle($args){
-        if (count($args) === 0){
-            $this->help();
-            return;
-        }
-
-        $method = array_shift($args);
-
-        if (!is_callable([$this, $method])){
-            dd("Method not found for ". __CLASS__ . "::$method");
-            exit;
-        }
-
-        call_user_func([$this, $method], ...$args);
     }
 
     protected function setup(string $name) {
