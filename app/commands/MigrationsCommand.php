@@ -1,6 +1,7 @@
 <?php
 
 use simplerest\core\interfaces\ICommand;
+use simplerest\core\traits\CommandTrait;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\PHPLexicalAnalyzer;
@@ -10,25 +11,8 @@ use simplerest\core\libs\Strings;
 
 class MigrationsCommand implements ICommand 
 {
-	/*
-		Draft of handle method
-	*/
-	function handle($args) {
-		if (count($args) === 0){
-			$this->help();
-			return;
-		}
-
-		$method = array_shift($args);
-
-		if (!is_callable([$this, $method])){
-			dd("Method not found for ". __CLASS__ . "::$method");
-			exit;
-		}
-
-		call_user_func([$this, $method], ...$args);
-	}
-
+    use CommandTrait;
+    
     function make(...$opt) {
         require_once COMMANDS_PATH . 'MakeCommand.php';
         return (new MakeCommand())->migration(...$opt);

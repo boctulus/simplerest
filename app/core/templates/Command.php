@@ -1,26 +1,14 @@
 <?php
 
 use simplerest\core\interfaces\ICommand;
+use simplerest\core\traits\CommandTrait;
 
 class __NAME__Command implements ICommand 
 {
-	/*
-		Draft of handle method
+	use CommandTrait;
+
+	/*	
+		Your methods here
 	*/
-	function handle($args) {
-		// if (count($args) === 0){
-		//	$this->help();
-		//	return;
-		// }
-
-		$method = array_shift($args);
-
-		if (!is_callable([$this, $method])){
-			dd("Method not found for ". __CLASS__ . "::$method");
-			exit;
-		}
-
-		call_user_func([$this, $method], ...$args);
-	}
 }
 
