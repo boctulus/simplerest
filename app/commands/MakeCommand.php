@@ -158,6 +158,8 @@ class MakeCommand implements ICommand
         make model medios_transporte --no-schema --from:az
 
         make widget [ --include-js | --js ]
+
+        make command myCommand
              
         make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ] [ --strict ] [ --remove ]
 

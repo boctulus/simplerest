@@ -17727,43 +17727,68 @@ require __DIR__ . '/wp-blog-header.php';
 
 # Commandos personalizados
 
-El framework implementa comandos personalizados bajo el patron "Command"
+El framework implementa comandos personalizados bajo el patron "Command" y se generan con "php com make command {nombre}"
 
 Ej:
 
-<?php
+	php com make command myCommand
 
-use simplerest\core\libs\DB;
-use simplerest\interfaces\ICommand;
+Cada comando tiene un metodo handle($args) que se puede redefinir (generalmente no es necesario) y un metodo help() requerido por la interfaz ICommand.
 
-class MysqlLogCommand implements ICommand 
-{
-    function handle($args){
-        $fst = array_shift($args);
+Ej:
 
-        if ($fst == 'on'){
-            dd("Iniciando logs ...");
-            DB::dbLogOn();
-            return;
-        }
+	<?php
 
-        if ($fst == 'off'){
-            dd("Desactivando logs ...");
-            DB::dbLogOff();
-            return;
-        }
+	use simplerest\core\libs\DB;
+	use simplerest\interfaces\ICommand;
 
-        if ($fst == 'start'){
-            dd("Activando logs ...");
-            DB::dbLogStart();
-            return;
-        }
+	class MysqlLogCommand implements ICommand 
+	{
+		/*
+			Redefino handler()
+		*/
+		function handle($args){
+			$fst = array_shift($args);
 
-        if ($fst == 'dump'){
-            dd("Volcando logs ...");
-            DB::dbLogDump();
-            return;
-        }         
-    }    
-} 
+			if ($fst == 'on'){
+				dd("Iniciando logs ...");
+				DB::dbLogOn();
+				return;
+			}
+
+			if ($fst == 'off'){
+				dd("Desactivando logs ...");
+				DB::dbLogOff();
+				return;
+			}
+
+			if ($fst == 'start'){
+				dd("Activando logs ...");
+				DB::dbLogStart();
+				return;
+			}
+
+			if ($fst == 'dump'){
+				dd("Volcando logs ...");
+				DB::dbLogDump();
+				return;
+			}         
+		}   
+		
+		/*
+			Proveo ayuda requerida
+		*/
+		function help($name = null, ...$args){
+			$str = <<<STR
+			php com mysql_log on                                  DB::dbLogOn()
+			php com mysql_log off                                 DB::dbLogOff()
+			php com mysql_log start [-filename=]  que ejecuta ..  DB::dbLogStart()       
+			php com mysql_log dump                                DB::dbLogDump() 
+			STR;
+
+			dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
+			dd($str);
+		}
+	} 
+	
 
