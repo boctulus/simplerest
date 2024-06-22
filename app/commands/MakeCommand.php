@@ -33,6 +33,8 @@ class MakeCommand implements ICommand
     const TASK_TEMPLATE = self::TEMPLATES . 'Task.php';
     const MIDDLEWARE_TEMPLATE = self::TEMPLATES . 'Middleware.php';
     const EXCEPTION_TEMPLATE = self::TEMPLATES . 'Exception.php';
+    const COMMAND_TEMPLATE = self::TEMPLATES . 'Command.php';
+
 
     protected $namespace;
     protected $table_name;
@@ -76,23 +78,23 @@ class MakeCommand implements ICommand
         }
     }
 
+    /*
+        Metodo handle() generico
+    */
     function handle($args){
-        $method = array_shift($args);
-        call_user_func([$this, $method], ...$args);
-    }
-
-    // Rutear "make -h" y "make --help" a "make index -h" y "make index --help" respectivamente
-    function index(...$opt){
-        if (!isset($opt[0])){
+        if (count($args) === 0){
             $this->help();
             return;
         }
-        
-        /*
-        if ($opt[0] == '-h' || $opt[0] == '--help'){
-            $this->help();
+
+        $method = array_shift($args);
+
+        if (!is_callable([$this, $method])){
+            dd("Method not found for ". __CLASS__ . "::$method");
+            exit;
         }
-        */
+
+        call_user_func([$this, $method], ...$args);
     }
 
     protected function setup(string $name) {
@@ -706,35 +708,6 @@ class MakeCommand implements ICommand
         $data = str_replace('__SOFT_DELETE__', 'true', $data); // debe depender del schema
 
         $this->write($dest_path, $data, $protected);
-    }
-
-    function widget(string $name, ...$opt) {
-        $dir = WIDGETS_PATH . $name;
-
-        $js = false;
-        foreach ($opt as $o){ 
-            if (preg_match('/^(--js|--javascript|--include-js)$/', $o)){
-                $js = true;
-            }
-        }
-
-        if (!is_dir($dir)){
-            if (Files::mkDirOrFail($dir)){
-                dd("$dir was created");
-            }
-        }
-
-        $exists = file_exists("$dir/$name.css");
-
-        if (Files::touch("$dir/$name.css")){
-            dd("$dir/$name.css was " . (!$exists ? 'created' : 'touched'));
-        }
-
-        if ($js){
-            if (Files::touch("$dir/$name.js")){
-                dd("$dir/$name.js was created");
-            }
-        }                
     }
 
     protected function get_pdo_const(string $sql_type){
@@ -2425,6 +2398,43 @@ class MakeCommand implements ICommand
         }
 
         return implode(PHP_EOL, $lines);
+    }
+
+    function widget(string $name, ...$opt) {
+        $dir = WIDGETS_PATH . $name;
+
+        $js = false;
+        foreach ($opt as $o){ 
+            if (preg_match('/^(--js|--javascript|--include-js)$/', $o)){
+                $js = true;
+            }
+        }
+
+        if (!is_dir($dir)){
+            if (Files::mkDirOrFail($dir)){
+                dd("$dir was created");
+            }
+        }
+
+        $exists = file_exists("$dir/$name.css");
+
+        if (Files::touch("$dir/$name.css")){
+            dd("$dir/$name.css was " . (!$exists ? 'created' : 'touched'));
+        }
+
+        if ($js){
+            if (Files::touch("$dir/$name.js")){
+                dd("$dir/$name.js was created");
+            }
+        }                
+    }
+
+    function command($name, ...$opt) {
+        $template_path = self::COMMAND_TEMPLATE;
+        $prefix = '';
+        $subfix = 'Command';  // Ej: 'Controller'
+
+        $this->generic($name, $prefix, $subfix, COMMANDS_PATH, $template_path, '', ...$opt);
     }
     
 } 

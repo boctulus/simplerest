@@ -1,24 +1,37 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace simplerest\core\controllers;
-
-use Migrations;
+use simplerest\core\interfaces\ICommand;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\PHPLexicalAnalyzer;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
-use simplerest\core\libs\System;
 use simplerest\core\libs\Strings;
-use simplerest\controllers\MakeController;
-use simplerest\core\libs\PHPLexicalAnalyzer;
 
-/*
-    Migration commands
-*/
-class MigrationsControllerBase /* extends Controller */
+class MigrationsCommand implements ICommand 
 {
+	/*
+		Draft of handle method
+	*/
+	function handle($args) {
+		if (count($args) === 0){
+			$this->help();
+			return;
+		}
+
+		$method = array_shift($args);
+
+		if (!is_callable([$this, $method])){
+			dd("Method not found for ". __CLASS__ . "::$method");
+			exit;
+		}
+
+		call_user_func([$this, $method], ...$args);
+	}
+
     function make(...$opt) {
-        return (new MakeController)->migration(...$opt);
+        require_once COMMANDS_PATH . 'MakeCommand.php';
+        return (new MakeCommand())->migration(...$opt);
     }
     
     /*
@@ -358,15 +371,19 @@ class MigrationsControllerBase /* extends Controller */
         */
 
         if (!empty($make)){
+            require_once COMMANDS_PATH . 'MakeCommand.php';
+
             $actions = explode(',', $make);
 
             foreach ($actions as $action){
                 if ($action == 'schema'){
-                    $make_o = (new MakeController())->schema('all');
+                    (new MakeCommand())
+                    ->schema('all');
                 }
 
                 if ($action == 'model'){
-                    $make_o = (new MakeController())->model('all');
+                    (new MakeCommand())
+                    ->model('all');
                 }
             }
         }
@@ -893,3 +910,4 @@ class MigrationsControllerBase /* extends Controller */
         print_r(PHP_EOL);
     }    
 }
+
