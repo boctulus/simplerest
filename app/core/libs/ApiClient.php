@@ -107,6 +107,14 @@ class ApiClient
     protected $show_req = false;
     protected $show_res = false;
 
+    function __construct($url = null)
+    {
+        if ($url !== null){
+            $this->setUrl($url);
+        }
+
+        $this->curl = curl_init();
+    }
 
     function showRequest(){
         $this->show_req = true;
@@ -229,12 +237,6 @@ class ApiClient
     // alias
     function url($url){
         return $this->setUrl($url);
-    }
-
-    function __construct($url = null)
-    {
-        $this->setUrl($url);
-        $this->curl = curl_init();
     }
 
     function useCookieJar(){
