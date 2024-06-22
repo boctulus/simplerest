@@ -7,8 +7,6 @@ use simplerest\core\libs\Arrays;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
 use simplerest\core\exceptions\SqlException;
-use simplerest\controllers\MigrationsController;
-use simplerest\core\controllers\MakeControllerBase;
 
 /*
     @param Array ...$args por ejemplo "--dir=$folder", "--to=$tenant"
@@ -685,7 +683,7 @@ function get_pivot(Array $tables, ?string $tenant_id = null){
     if (!file_exists($dir . 'Pivots.php')){
         StdOut::hideResponse();
 
-        $mk = new MakeControllerBase();
+        $mk = new MakeCommand();
 
         if (!empty($tenant_id)){
             $mk->pivot_scan("--from:$tenant_id");
@@ -1059,7 +1057,7 @@ function process_sql_file(string $path, string $delimeter = ';', bool $stop_if_e
             continue;
         }
 
-        StdOut::pprint($sentence, 'SENTENCE');
+        StdOut::pprint('SENTENCE : ' . $sentence);
 
         try {
             $ok = DB::statement($sentence);
