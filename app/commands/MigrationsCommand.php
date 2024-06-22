@@ -12,7 +12,7 @@ use simplerest\core\libs\Strings;
 class MigrationsCommand implements ICommand 
 {
     use CommandTrait;
-    
+
     function make(...$opt) {
         require_once COMMANDS_PATH . 'MakeCommand.php';
         return (new MakeCommand())->migration(...$opt);
@@ -795,9 +795,7 @@ class MigrationsCommand implements ICommand
         esas secciones.
     */
     function help(){
-        echo <<<STR
-        MIGRATIONS COMMAND HELP
-
+        $str = <<<STR
         migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ]         
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3 
         migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ] [ --ignore ] [ --make= ] [ --debug ]
@@ -891,7 +889,8 @@ class MigrationsCommand implements ICommand
 
         STR;
         
-        print_r(PHP_EOL);
+        dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
+        dd($str);
     }    
 }
 

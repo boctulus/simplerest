@@ -117,9 +117,7 @@ class MakeCommand implements ICommand
     }
 
     function help(){
-        echo <<<STR
-        MAKE COMMAND HELP
-
+        $str = <<<STR
         In general, 
 
         make {name} [options]
@@ -294,7 +292,8 @@ class MakeCommand implements ICommand
 
         STR;
 
-        print_r(PHP_EOL);
+        dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
+        dd($str);
     }
 
 
