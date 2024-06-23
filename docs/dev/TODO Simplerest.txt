@@ -1,6 +1,27 @@
 TODO SimpleRest
 ===============
 
+-  Los helpers (que ya deberian ser parte de la clase Options), get_option() y set_option (update_uption) deberian ser similares a los de WordPress:
+
+  . Deben leer / escribir en tabla "options" como clave-valor
+  . Para el caso de multitenant, opcionalmente setear el valor en el scope de la base de datos seleccionada (tabla options para esa DB)
+
+
+- Modificar el composer.json y reemplazar masivamente:
+
+  simplerest\
+  Simplerest\
+
+<-- hacerlo con tiempo y luego de pushear porque puede romper todo.
+
+Debe hacerse porque al crear un paquete en Composer automaticamente se crea de la siguiente forma el composer.json del package:
+
+  "autoload": {
+        "psr-4": {
+            "Simplerest\\HelloWorld\\": "src/"  <--- notar la mayuscula inicial
+        }
+    },
+
 - Implementar "router a librerias" directo desde la terminal com 
 
   php com lib {nombre-lib}::{metodo} [ params ]
@@ -46,6 +67,11 @@ https://chatgpt.com/c/b27203dd-bc30-4950-a3c8-8a4e6ecb25d8
 y de hecho pareciera que Url::cache() no tiene utilidad, hoy al menos.
 
 - Revisar Url::download()
+
+- Poder elegir par el froncontroler:
+
+    'front_controller_http'    => yes/no,
+    'front_controller_console' => yes/no,
 
 - Implementar importador de CSV via comando
 
@@ -97,7 +123,7 @@ Ej:
 
 - CSV a migraciones
 
-com make migration --from-csv={file.csv} [ --to= ]
+com make migration --from_csv={file.csv} [ --to= ]
 
 - Interfaz (PSH por "PHP SHell) para ejecutar controller/actions de forma remota para SR/SW como:
 
@@ -239,16 +265,6 @@ https://tabulator.info/examples/4.9?#filter-header   -- tengo la version 5.4 y y
     app.php (y dejar referencia)
     com (y dejar referencia)
 
-- Reparar MakeControllerBase.php:
-
-   if (isset($pivot_data['pivots'])){
-        $pivots = $pivot_data['pivots'];
-    } else {
-        $dir = get_schema_path(null, $from_db ?? null);
-        include $dir . 'Pivots.php'; 
-    }        
-
-
 - Publicar inmediatamente ya que Spiral Framework no me daria ya ninguna opportunidad
 
 https://github.com/spiral/framework
@@ -305,12 +321,6 @@ class CountDownShortcode
 }
 
 - Implementar FlashNotices como equivalente a WPNotices bajo la misma interfaz INotice
-
-- Cada "comando" (make, migrations,...) debe ser una clase.
-
-  . Dos o mas clases podrian sumar comandos a "make" por ejemplo si se especificara como propiedad el nombre de la "utility"
-
-  . Luego portar a WP donde podria no dejar ningun comando al entregar o... los que necesite.
 
 - Probar de usar Smarty, Twig o Blade en algún proyecto con SimpleRest. Inclusive se pueden hacer funcionar en CodeIgniter !
 
@@ -497,30 +507,7 @@ Esto tiene sentido si los plugins de SR pudieran ser utilizados en aplicaciones 
 
 https://code-boxx.com/move-files-php/
 
-
 - Usar #[\ReturnTypeWillChange] donde corresponda para silenciar warnings
-
-- Modificar el composer.json y reemplazar masivamente:
-
-  simplerest\
-  Simplerest\
-
-<-- hacerlo con tiempo y luego de pushear porque puede romper todo.
-
-Debe hacerse porque al crear un paquete en Composer automaticamente se crea de la siguiente forma el composer.json del package:
-
-  "autoload": {
-        "psr-4": {
-            "Simplerest\\HelloWorld\\": "src/"  <--- notar la mayuscula inicial
-        }
-    },
-
-
-- Crear equivalente a get_option() y set_option (update_uption) de WordPress
-
-  . Deben leer / escribir en tabla "options" como clave-valor
-  . Para el caso de multitenant, opcionalmente setear el valor en el scope de la base de datos seleccionada (tabla options para esa DB)
-
 
 - En Migrations:
 

@@ -1,28 +1,26 @@
 <?php
 
-use simplerest\core\libs\DB;
+use simplerest\core\libs\Options;
 
-function get_option($key){
-    return table('options')
-    ->where(['the_key' => $key])
-    ->value('the_val');
+/**
+ * Retrieves the value of a given key from the options table.
+ * If the value is serialized, it will be deserialized before returning.
+ *
+ * @param string $key The key for the option to retrieve.
+ * @return mixed The value of the option, deserialized if necessary.
+ */
+function get_option(string $key) {
+    return Options::getOption($key);
 }
 
-function set_option($key, $val){
-    if (get_option($key) === false){
-        return table('options')
-        ->noValidation()
-        ->insert([
-            'the_key' => $key,
-            'the_val' => $val
-        ]);
-    } else {
-        return table('options')
-        ->noValidation()
-        ->where(['the_key' => $key])
-        ->update([
-            'the_val' => $val
-        ]);
-    }
-
+/**
+ * Sets the value of a given key in the options table.
+ * The value will be serialized before storing.
+ *
+ * @param string $key The key for the option to set.
+ * @param mixed $val The value to set, which will be serialized.
+ * @return bool Whether the operation was successful.
+ */
+function set_option(string $key, $val) {
+    return Options::setOption($key, $val);
 }

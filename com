@@ -50,8 +50,10 @@ foreach ($_GET as $var => $val)
 # https://chatgpt.com/c/2e4ac7e1-7ac7-4d86-ba9f-f1d61264504b
 #
 
+// The "routing" system is disabled after found a command to execute
 $routing = true;
-$args    = array_slice($argv, 1);
+
+$args = array_slice($argv, 1);
 
 if (count($args) > 0){
    $name         = Strings::snakeToCamel(array_shift($args));
