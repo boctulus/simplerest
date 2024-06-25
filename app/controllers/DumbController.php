@@ -10628,6 +10628,13 @@ class DumbController extends Controller
         print_array($combinations);
     }
 
+    function test_nth(){
+        dd(
+            Strings::after('D:/www/simplerest/app/shortcodes/progress_bar/views/img/time_over.png',
+            '/app/shortcodes/')
+        );
+    }
+
 
     
 

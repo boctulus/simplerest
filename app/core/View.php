@@ -39,6 +39,10 @@ class View
             response("Layout path '$layout_path' not found", 404);
         }
 
+        if (!Strings::endsWith('.php', $view_path)){
+            $view_path .= '.php';
+        }    
+
         if ($expiration_time !== 0){
             $cached_path = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 

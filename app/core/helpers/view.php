@@ -1,7 +1,7 @@
 <?php
 
 use simplerest\core\View;
-use simplerest\views\MyView; 
+use simplerest\core\libs\Url;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
@@ -58,11 +58,7 @@ function get_view(string $view_path, ?Array $vars = null, int $expiration_time =
 }
 
 function view(string $view_path, ?array $vars  = null, ?string $layout = null, int $expiration_time = 0){
-    if (!Strings::endsWith('.php', $view_path)){
-        $view_path .= '.php';
-    }
-
-    (new MyView($view_path, $vars, $layout, $expiration_time)); 
+    (new View($view_path, $vars, $layout, $expiration_time)); 
 }
 
 /*
@@ -103,23 +99,12 @@ function set_template(string $file){
 */
 function shortcode_asset($resource)
 {   
-    $protocol = is_cli() ? 'http' : httpProtocol();
+    $resource = Files::normalize($resource, '/');
+    $resource = Strings::since($resource, '/app/shortcodes/'); 
 
-    $resource = Strings::substract($resource, SHORTCODES_PATH);
-    $resource = str_replace('\\', '/', $resource);
-    $resource = str_replace('/views/', '/assets/', $resource);
     
-    $base     = config()['base_url'] ?? '';
-
-    if (Strings::endsWith('/', $base)){
-        $base = substr($base, 0, -1); 
-    }
-
-    $url  = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')) . '/app/shortcodes/';
-    $url .= $resource;
-
-    $url = Files::normalize($url, '/');
-
+    $url = Url::getBaseUrl() . str_replace('/views/', '/assets/', $resource);
+    
     return $url;    
 }
 
@@ -130,30 +115,13 @@ function shortcode_asset($resource)
 */
 function asset($resource)
 {   
-    $protocol = is_cli() ? 'http' : httpProtocol();
+    $resource = Files::normalize($resource, '/');
+    $resource = 'public/assets/' . trim($resource, '/');
 
-    $resource = str_replace('\\', '/', $resource);
-    
-    $base     = config()['base_url'];
+    $url      = Url::getBaseUrl() . '/';   
+    $url      = $url . (!$resource === null ? '' : $resource);
 
-    if (Strings::endsWith('/', $base)){
-        $base = substr($base, 0, -1); 
-    }
-    
-    $public = $base . '/public';
-
-    $url    = $protocol . '://' . ($_SERVER['HTTP_HOST'] ?? env('APP_URL')). $public. '/';
-
-    if (!Strings::startsWith('assets/', $resource)){
-        $url .= 'assets/';
-    }
-
-    $url .= $resource;
-
-
-    $url = Files::normalize($url, '/');
-
-    return $url;    
+    return $url;
 }
 
 function section($view, Array $vars = []){
@@ -191,6 +159,10 @@ function render_js(bool $in_head = false){
             
             echo a_js($path);
         } else {
+            if (!is_string($_js)){
+                throw new \Exception("Expected string. Got " . gettype($_js));
+            }
+
             echo "<script>$_js</script>\r\n";
         }
     }
@@ -209,6 +181,10 @@ function render_css(){
                 echo a_css($_css['file']) . "\r\n";
             }            
         } else {
+            if (!is_string($_css)){
+                throw new \Exception("Expected string. Got " . gettype($_css));
+            }
+
             echo "<style>". $_css . "</style>\r\n";
         }
     }
