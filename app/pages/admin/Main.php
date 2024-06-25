@@ -2,11 +2,7 @@
 
 namespace simplerest\pages\admin;
 
-use Color;
-use simplerest\pages\Page;
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use Google\Service\Docs\Background;
+use simplerest\abstracts\pages\Page;
 
 /*
     Pagina por defecto si estuviera asi seteada en el Controller

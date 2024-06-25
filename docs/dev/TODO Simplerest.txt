@@ -1,11 +1,9 @@
 TODO SimpleRest
 ===============
 
--  Los helpers (que ya deberian ser parte de la clase Options), get_option() y set_option (update_uption) deberian ser similares a los de WordPress:
+-  Options > get_option() y set_option (update_uption):
 
-  . Deben leer / escribir en tabla "options" como clave-valor
-  . Para el caso de multitenant, opcionalmente setear el valor en el scope de la base de datos seleccionada (tabla options para esa DB)
-
+  para el caso de multitenant, opcionalmente setear el valor en el scope de la base de datos seleccionada (tabla options para esa DB)
 
 - Modificar el composer.json y reemplazar masivamente:
 
@@ -7895,7 +7893,6 @@ de la tabla
 https://codex.wordpress.org/Creating_Tables_with_Plugins#Creating_or_Updating_the_Table
 
 Es posible con Schema lograrlo? Creo recordar haber implementado algo.
-
 
 - Implementar protección CSRF 
 
